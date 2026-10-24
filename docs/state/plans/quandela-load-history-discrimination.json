@@ -1,0 +1,25 @@
+{
+  "schema": "work-plan-v1",
+  "id": "quandela-load-history-discrimination",
+  "kind": "experiment",
+  "summary": "Quandela Belenos strategy guide",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/b32eeb89bdc23c950ab183c19fd961496484fedbae5282895fe3af3661d898b7.txt",
+    "docs/notes/quandela/strategy.md"
+  ],
+  "state": "inbox",
+  "scope": "Quandela Belenos strategy guide",
+  "next_action": "Discriminate load history using current qualification and retained counterexamples.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The simple first-load explanation is refuted by later evidence; use registered outcomes and a fresh bounded case."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Discriminate load history using current qualification and retained counterexamples.",
+      "acceptance": "The simple first-load explanation is refuted by later evidence; use registered outcomes and a fresh bounded case.",
+      "state": "todo"
+    }
+  ]
+}

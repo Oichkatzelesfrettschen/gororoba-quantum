@@ -1,0 +1,116 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/boxkite-research-program.md
+
+# boxkite-research-program: Walsh exemplars, ladder follow-ups, the A_5 gap, D_(5,12)
+
+Owner session: boxkite-quantum-main. Covers tuna-walsh (#116), the ladder
+open questions of tuna-17-run-design.md, and F4/R1 of research-ibm-parked
+(#97, #51). Device use: Tuna-17 only, in one combined series; no IBM.
+
+## Finding
+
+- #116: `scripts/associator_walsh_classes.py` EXPECTED_CUBIC_CLASSES holds
+  the two dimension-32 cubic classes: |W| multiset {0:24, 8:7, 24:1}
+  (K = 11/32, 234 pairs, (1,16) among them) and {0:22, 8:8, 16:2}
+  (K = 5/32, 126 pairs, (9,18)). The draft design doc on
+  tuna/bipartite-walsh-and-lcu-packing (6fc0af4, another session, old main)
+  gives blocks X = (1|2,4,8,12), Y = (10,13,11,14) | (13,11,14,16) and 5 vs
+  6 CZ from an uncommitted search (unverified).
+- Both Y blocks contain q13, whose e10 the ladder showed to depend on its
+  neighbors' context (0.088 all-excited, 0.042 isolated). In a Walsh circuit
+  q10 and q11 are in block Y and vary shot by shot, so a single bracket
+  cannot correct q13; #116 depends on the readout-context follow-up.
+- Ladder open questions (tuna-17-run-design.md "Open questions"): X X
+  neighbor control and one-neighbor-at-a-time context readouts (new runs);
+  rho in line-phase bins and the larger-of-1f/2f line test (analysis of the
+  retained raw shots, no new run); H vs Y90-X pricing and wait ladders
+  (new runs, lower priority).
+- #97: docs/notes/rank_locus_two_dimension_gap.md designs three exact
+  computations. Nobody else holds the rank-locus code (last commits
+  211001c, 566ff07 from this program; no other plan row).
+- #51: items 3-8 of RANK_STRATUM_TOPOLOGY.md; item 3's first deliverable
+  (D_(5,12) components) rests on #97 computation 2.
+
+## Reachability
+
+Tuna through `qi_platform.py submit` of generated `batch-NN/` cases; the
+ladder re-analysis through a second analysis of unchanged raw files; #97
+and #51 through new `--check`/`--self-test` scripts and registry claims.
+
+## Design
+
+Order (each step its own branch and PR from main):
+
+1. analysis/ladder-line-phase-bins -- rho per line-phase bin (8 bins,
+   stationary bins at the modulation extrema) and the larger-of-1f/2f line
+   statistic over the retained ladder raw shots. A second analysis record
+   beside box_kite_tuna_17_ladder_analysis.json, its own digest; the ladder
+   record is not rewritten. The 2f rule on already-seen data is exploratory
+   and labeled so; it binds only a fresh run. Gate core-433 (--check) and
+   core-550 (--self-test). Sonnet agent.
+2. algebra/rank-locus-gap-directions -- #97 computation 1: complement of T_F
+   in T_1(x) at every certified non-zero-divisor witness, its projection
+   onto span{e8, e24}; prediction rank 2 at every witness, falsifier rank
+   below 2. parallel.py over witnesses. Gates core-551/552. Sonnet agent,
+   concurrent with step 1.
+3. tuna/walsh-readout-context-series -- generator
+   `scripts/qi_walsh_exemplar_cases.py`:
+   - phases from predict.associator_phase; relabeled circuits asserted to
+     reproduce the census |W| signatures above (never hand spectra);
+   - CCZ / CCZ+CZ on a 4-path by an exhaustive gated search with a free end
+     map, T/Tdag on the pi/36 grid; relabel map y = (A_fin A)^T z + c;
+   - layout checked against the exclusion set {0,3,5,6,7,9,15} and the
+     coupler graph; draft doc ported onto the fresh branch;
+   - readout-context circuits: readout-xx (q13 X, X X on q10 and q11),
+     readout-q10 (q13 and q10 excited), readout-q11.
+   Series (each batch 3 circuits, 131072 shots, about 72 s per job):
+   batch-00 readout-0, readout-1, readout-xx; batch-01 C1 (high on X, low
+   on Y), C2 (swapped), readout-q10; batch-02 C1 and C2 replicates,
+   readout-q11. About 650 s execution, about 25 min wall with pauses.
+   q13 correction preregistered three ways: raw, isolated bracket, and
+   context-resolved (conditioned on the measured q10/q11 bits of each shot).
+   Predictions and falsifiers: forbidden-outcome weight, spectral shape
+   (weight moved among allowed coefficients = coherent error), class-by-block
+   asymmetry from the C1/C2 swap, K per line-phase bin. No depolarizing-K
+   falsifier: rho above 1 already excludes global depolarizing. Gates
+   core-428 (--check), core-429 (--self-test), core-431 (analysis replay),
+   core-432 (QX conformance). Built by this session.
+4. Written case against the QX dry run, then the owner's approval in this
+   session, then Tuna under the 3-circuit / one-queued / 120 s limits.
+5. algebra/rank-locus-second-order -- #97 computation 2: centered Schur
+   construction of nullity_twelve_locus.py at the {a, 0} witnesses, then
+   nullity 8 and 4; full T(x), every variable kept, sum-of-squares
+   splitting of V against T_F. Outcome: V in T_F refutes the conjecture at
+   that nullity; a transverse real solution names a candidate only.
+   Gates core-553/554. Opus-level work, this session.
+6. #51 item 3 first deliverable: D_(5,12) pieces (B17, A15, {a,0},
+   Proposition 8.2 points) with the {a,0} dimension from step 5. Gates
+   core-555/556. Starts only after step 5 settles.
+
+## Acceptance and falsifier
+
+Per step above; every gate in normal and -O modes; `premerge_gates.py`
+exit 0 and Codex per the review rules before each merge.
+
+## Shared files and dependencies
+
+ci/gates.json, ci/full_gate_inputs.json, docs/state/research_state.json
+(claims: Walsh run, readout context, ladder bins exploratory,
+a5-nonzero-divisor-two-dimension-gap update). Gate block core-550 to
+core-569 claimed for this session in README.md. Step 3 waits on nothing;
+step 4 waits on step 3 and approval; step 6 waits on step 5.
+
+## Effort and agents
+
+Steps 1 and 2 small (one sonnet agent each, concurrent). Step 3 medium,
+this session. Step 5 large. Step 6 open-ended beyond its first deliverable.
+
+## Out of scope
+
+#51 items 4-8 (regularity, kernel bundles, attachments, global model,
+uniform n): research obligations with no defined end, left on the roadmap.
+#97 computation 3 (A15 closure onto {a,0}) waits for step 5's answer.
+H vs Y90-X pricing and wait-cycle ladders: a later Tuna series.
+Subset-register measurement and MCP queue reads: separate items.
+
+State: planned, awaiting owner approval of the build.

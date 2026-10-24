@@ -1,0 +1,49 @@
+{
+  "schema": "work-plan-v1",
+  "id": "rank-locus-global-classification",
+  "kind": "investigation",
+  "summary": "Exact rank strata and restricted Cayley-Dickson attachment topology",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/7247a9bf1d1ac6d1376ff09f068cbed1250ce0a8be4a5ad7ac5728c1a419aa5c.txt",
+    "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md"
+  ],
+  "state": "inbox",
+  "scope": "Exact rank strata and restricted Cayley-Dickson attachment topology",
+  "next_action": "Certify all-real semialgebraic components of the dimension32 rank strata.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Restricted slices, polynomial paths and matching homology remain insufficient for a global homotopy equivalence."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Certify all-real semialgebraic components of the dimension32 rank strata.",
+      "acceptance": "Restricted slices, polynomial paths and matching homology remain insufficient for a global homotopy equivalence.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Prove regularity and local links.",
+      "acceptance": "Restricted slices, polynomial paths and matching homology remain insufficient for a global homotopy equivalence.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-3",
+      "action": "Classify kernel-bundle transitions and attaching maps.",
+      "acceptance": "Restricted slices, polynomial paths and matching homology remain insufficient for a global homotopy equivalence.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-4",
+      "action": "Construct a global finite model and its invariants.",
+      "acceptance": "Restricted slices, polynomial paths and matching homology remain insufficient for a global homotopy equivalence.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-5",
+      "action": "Prove an arbitrary-dimensional covering theorem.",
+      "acceptance": "Restricted slices, polynomial paths and matching homology remain insufficient for a global homotopy equivalence.",
+      "state": "todo"
+    }
+  ]
+}

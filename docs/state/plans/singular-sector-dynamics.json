@@ -1,0 +1,31 @@
+{
+  "schema": "work-plan-v1",
+  "id": "singular-sector-dynamics",
+  "kind": "investigation",
+  "summary": "Singular sectors of two-term Cayley-Dickson elements and the dynamics they fix",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/a6e6d14ab42398baebda9b8ccb6c01210ffc63d32863d5208cff47f3b9bfd95e.txt",
+    "docs/notes/singular_sector_dynamics.md"
+  ],
+  "state": "inbox",
+  "scope": "Singular sectors of two-term Cayley-Dickson elements and the dynamics they fix",
+  "next_action": "Certify exact and multistep square-root-two synthesis costs.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Exact algebraic results and a prospective device experiment retain separate evidence classes."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Certify exact and multistep square-root-two synthesis costs.",
+      "acceptance": "Exact algebraic results and a prospective device experiment retain separate evidence classes.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Design an identifiable coherent-versus-incoherent discriminator.",
+      "acceptance": "Exact algebraic results and a prospective device experiment retain separate evidence classes.",
+      "state": "todo"
+    }
+  ]
+}

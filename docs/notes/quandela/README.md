@@ -385,6 +385,10 @@ error or canceled job (or records its absence), requires the result's job id
 and shots to match the receipt and status, and parses the BSCount string itself: a result is service data,
 and `perceval.serialization.deserialize` evaluates parameter expressions.
 
+Spaced jobs of an approved case run unattended from a committed schedule
+through GitHub Actions, which calls the same plan, submit and collect
+([quandela-scheduled-runs.md](../../runbooks/quandela-scheduled-runs.md)).
+
 ## Strategy guide
 
 [strategy.md](strategy.md) is the living guide to cost, platform behavior,
@@ -534,19 +538,15 @@ standard library. Circuit-conformance behavioral tests use the Perceval and
 exqalibur versions pinned in ci/requirements-ci.txt. Every retained run enters docs/state/research_state.json
 under the `quandela` provider in the change that retains it.
 
-Gates core-500 (`capture_qd_docs.py --check`), core-501 (its
-`--self-test`), core-502 (`qd_platform.py check docs/evidence/quandela
---agents docs/notes/quandela/README.md`), core-503 (its
-`--self-test`, the runner's stubbed-service contract included), core-504
-(`qd_box_kite_cases.py --check results/quandela/cases`), core-505 (its
-`--self-test`), core-506 (`cd_two_blade_blocks.py --check
-docs/evidence/box_kite_census/two_blade_blocks.json`), core-507 (its
-`--self-test`), core-508 (`qd_box_kite_analysis.py --check` over every
-retained run but the qpu:belenos mesh runs, which core-537 replays on the
-full tier), core-509 (its `--self-test`), core-510
+Gates `core-record-check-05` (`tests/test_cli_record_checks.py`) (`capture_qd_docs.py --check`), core-502 (`qd_platform.py check docs/evidence/quandela
+--agents docs/notes/quandela/README.md`), core-504
+(`qd_box_kite_cases.py --check results/quandela/cases`), `core-record-check-05` (`cd_two_blade_blocks.py --check
+docs/evidence/box_kite_census/two_blade_blocks.json`), core-508 (`qd_box_kite_analysis.py --check --runs-under
+results/quandela/runs` over every retained run whose case schema is a
+box-kite or Belenos mesh case, but the qpu:belenos mesh runs, which core-537
+replays on the full tier; the BDSC runs belong to the bdsc gates), core-510
 (`qd_belenos_mesh.py --check results/quandela/cases`), core-511 (its
-`--check-rca` replay of the leakage record), core-512 (its
-`--self-test`), core-515 (full tier, `--self-test-rule`: the decision
+`--check-rca` replay of the leakage record), core-515 (full tier, `--self-test-rule`: the decision
 rule on synthetic in-family and out-of-family truths), core-513 (full tier, `--self-test-static`: static offsets
 are declared on a static truth and on no dephasing, out-of-family or
 simulator data) and core-514 (full tier, `--check-static` of the retained
@@ -565,4 +565,7 @@ core-545 (`qd_belenos_cone.py --self-test`, the series readout rules
 included), core-546 (its `--check` of
 the light-cone reading), core-547 (its `--check-readout` of job-13, the
 seeded single job) and core-563 (its `--check-readout-series` of the
-payload-class series, job-14 and the extended job-16).
+payload-class series, job-14 and the extended job-16). The `--self-test` of
+`capture_qd_docs.py`, `qd_platform.py` (the runner's stubbed-service contract
+included), `qd_box_kite_cases.py`, `cd_two_blade_blocks.py`,
+`qd_box_kite_analysis.py` and `qd_belenos_mesh.py` runs in gates `core-self-test-02`, `core-self-test-07`, `core-self-test-08` and `core-self-test-09` (`tests/test_cli_self_tests.py`).

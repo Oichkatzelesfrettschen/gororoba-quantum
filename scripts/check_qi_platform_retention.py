@@ -619,36 +619,48 @@ class RetentionChecks(unittest.TestCase):
                     platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=deadline)
 
     def test_unauthorized_project_expiry_retains_proven_rejection_and_attempt(self) -> None:
-        client = FakeClient(self.case_dir)
-        transport = platform.Client.__new__(platform.Client)
-        transport.expires = 10000
-        transport.session = Mock()
-        transport.session.request.return_value.status_code = 401
-        clock = [1.0]
-
-        def refresh() -> None:
-            clock[0] = 11.0
-
-        with (
-            patch.object(platform, "Client", return_value=client),
-            patch.object(platform.time, "time", return_value=100.0),
-            patch.object(platform.time, "monotonic", side_effect=lambda: clock[0]),
-            patch.object(transport, "refresh", side_effect=refresh),
-            patch.object(client, "post", side_effect=transport.post),
+        expired = {"detail": platform.EXPIRED_SIGNATURE}
+        for status, body, receipt in (
+            (401, {}, {"method": "POST", "path": "/projects", "status_code": 401}),
+            (403, expired, {"method": "POST", "path": "/projects", "status_code": 403, **expired}),
         ):
-            with self.assertRaisesRegex(TimeoutError, "deadline"):
-                platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
-        self.assertEqual(transport.session.request.call_count, 1)
-        state = json.loads((self.case_dir / "submission-state.json").read_text())
-        self.assertEqual(state["phase"], "resource-request-rejected")
-        self.assertEqual(state["resource_requests_dispatched"], 1)
-        self.assertEqual(state["resource_requests_applied"], 0)
-        self.assertEqual(state["rejected_request"], {"method": "POST", "path": "/projects", "status_code": 401})
-        self.assertFalse(platform.pre_dispatch_refused(self.case_dir, state["cases_sha256"]))
-        self.assertTrue(platform.creation_refused(self.case_dir, state["cases_sha256"]))
-        self.assert_retry_blocked()
-        with self.assertRaisesRegex(platform.PlatformError, "401.*separately approved"):
-            self.reconcile(client)
+            with self.subTest(status=status):
+                client = FakeClient(self.case_dir)
+                transport = platform.Client.__new__(platform.Client)
+                transport.expires = 10000
+                transport.session = Mock()
+                transport.session.request.return_value.status_code = status
+                transport.session.request.return_value.json.return_value = body
+                clock = [1.0]
+
+                def refresh(clock: list[float] = clock) -> None:
+                    clock[0] = 11.0
+
+                with (
+                    patch.object(platform, "Client", return_value=client),
+                    patch.object(platform.time, "time", return_value=100.0),
+                    patch.object(platform.time, "monotonic", side_effect=lambda clock=clock: clock[0]),
+                    patch.object(transport, "refresh", side_effect=refresh),
+                    patch.object(client, "post", side_effect=transport.post),
+                ):
+                    with self.assertRaisesRegex(TimeoutError, f"HTTP {status} rejected"):
+                        platform.submit(self.case_dir, 7, "fixture approval", execution_deadline=10.0)
+                self.assertEqual(transport.session.request.call_count, 1)
+                state_path = self.case_dir / "submission-state.json"
+                state = json.loads(state_path.read_text())
+                self.assertEqual(state["phase"], "resource-request-rejected")
+                self.assertEqual(state["resource_requests_dispatched"], 1)
+                self.assertEqual(state["resource_requests_applied"], 0)
+                self.assertEqual(state["rejected_request"], receipt)
+                self.assertFalse(platform.pre_dispatch_refused(self.case_dir, state["cases_sha256"]))
+                self.assertTrue(platform.creation_refused(self.case_dir, state["cases_sha256"]))
+                self.assert_retry_blocked()
+                with self.assertRaisesRegex(platform.PlatformError, f"HTTP {status} and was not.*separately approved"):
+                    self.reconcile(client)
+                for forged in ({**receipt, "status_code": 500}, {**receipt, "detail": "other"}):
+                    state_path.write_text(json.dumps({**state, "rejected_request": forged}))
+                    self.assertFalse(platform.creation_refused(self.case_dir, state["cases_sha256"]))
+                state_path.unlink()
 
     def test_rejection_after_project_creation_keeps_partial_resource_boundary(self) -> None:
         for rejected_path in ("/batch_jobs", "/algorithms", "/jobs"):
@@ -1432,7 +1444,14 @@ class RetentionChecks(unittest.TestCase):
                 module.qi_submit_case(str(self.case_dir), 7, "fixture approval")
             self.assertEqual(client.calls, before)
         self.assertEqual(self.output.getvalue(), "")
-        self.assertEqual(len(module.server.tools), 11)
+        self.assertEqual(len(module.server.tools), 13)
+
+    def test_mcp_performance_outage_is_a_tool_error(self) -> None:
+        module = mcp_with_stubs()
+        failing = Mock(side_effect=module.monitoring_query.__globals__["MonitoringError"]("every query failed"))
+        with patch.object(module, "monitoring_query", failing), self.assertRaisesRegex(FakeToolError, "every query"):
+            module.qi_performance_query("tuna-17", 3)
+        failing.assert_called_once_with("tuna-17", 3, 6.0)
 
     def test_mcp_compile_rejects_unknown_backend_before_remote_creation(self) -> None:
         module = mcp_with_stubs()
@@ -1679,6 +1698,64 @@ class TokenRefreshChecks(unittest.TestCase):
             self.assertEqual((self.server["exchanges"], self.stored_refresh_token()), (2, "r2"))
             self.assertFalse(self.server["revoked"])
             self.assertEqual(second.session.headers["Authorization"], "Bearer a2")
+
+    def refresh_records(self) -> list[dict[str, Any]]:
+        log = self.file.with_name("refresh-log.jsonl")
+        self.assertEqual(stat.S_IMODE(log.stat().st_mode), 0o600)
+        text = log.read_text(encoding="utf-8")
+        for token in ("a0", "r0", "a1", "r1", "a2", "r2"):
+            self.assertNotIn(f'"{token}"', text)
+        return [json.loads(line) for line in text.splitlines()]
+
+    def test_each_exchange_is_logged_without_token_bytes(self) -> None:
+        with (
+            patch.dict(sys.modules, self.sdk()),
+            patch.object(platform, "TOKEN_FILE", self.file),
+            patch.object(platform, "TOKEN_LOCK", self.file.with_name("config.json.lock")),
+            patch.object(platform.time, "time", side_effect=lambda: self.clock[0]),
+        ):
+            client = platform.Client()
+            client.refresh()
+            self.clock[0] += 3600
+            client.refresh()
+        records = self.refresh_records()
+        self.assertEqual([record["outcome"] for record in records], ["exchanged", "exchanged"])
+        self.assertEqual({record["pid"] for record in records}, {os.getpid()})
+
+    def test_a_dead_refresh_token_names_the_forced_login(self) -> None:
+        self.server["live"] = "r9"
+        with (
+            patch.dict(sys.modules, self.sdk()),
+            patch.object(platform, "TOKEN_FILE", self.file),
+            patch.object(platform, "TOKEN_LOCK", self.file.with_name("config.json.lock")),
+            patch.object(platform.time, "time", side_effect=lambda: self.clock[0]),
+        ):
+            with self.assertRaises(platform.PlatformError) as caught:
+                platform.Client()
+        self.assertIn('qi" login --force', str(caught.exception))
+        self.assertIn("plain `qi login` cannot recover it", str(caught.exception))
+        self.assertEqual([record["outcome"] for record in self.refresh_records()], ["rejected"])
+        self.assertEqual(self.stored_refresh_token(), "r0")
+
+    def test_an_expired_signature_refreshes_once_and_another_403_refuses(self) -> None:
+        for detail, calls in ((platform.EXPIRED_SIGNATURE, 2), ("Not authorized for this backend", 1)):
+            with self.subTest(detail=detail):
+                client = platform.Client.__new__(platform.Client)
+                client.expires = float("inf")
+                refused = Mock(status_code=403, text=json.dumps({"detail": detail}))
+                refused.json.return_value = {"detail": detail}
+                served = Mock(status_code=200, content=b"{}")
+                served.json.return_value = {}
+                client.session = Mock()
+                client.session.request.side_effect = [refused, served]
+                with patch.object(client, "refresh") as refresh:
+                    if calls == 2:
+                        self.assertEqual(client.get("/backend_types/7"), {})
+                    else:
+                        with self.assertRaisesRegex(platform.PlatformError, "403"):
+                            client.get("/backend_types/7")
+                self.assertEqual(client.session.request.call_count, calls)
+                self.assertEqual(refresh.call_count, calls - 1)
 
 
 if __name__ == "__main__":

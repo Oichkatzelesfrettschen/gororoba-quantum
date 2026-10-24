@@ -12,7 +12,7 @@ broadcast stays ideal, while on hardware it relaxes. The retained
 qubit; charged at the snapshot's T1 and T2, it gives the idle error E_idle,
 and `c_idle = 1 + E_idle / E_cz` is the CZ factor a fit would need if idle
 relaxation were the only omission ([idle_budget.json](idle_budget.json),
-gate core-343; the script's docstring states the charge and why it is an
+gate `core-record-check-01` (`tests/test_cli_record_checks.py`); the script's docstring states the charge and why it is an
 upper estimate).
 
 ## Fitted factor against the idle budget
@@ -98,8 +98,8 @@ headers, concatenates their runs in argument order and requires the
 regeneration of the merged part to equal `part_b.json` byte for byte. Both
 kernel sets sample under the fixed seed 20261016, so the identity shows that
 part b reproduces across sessions and commits; it is one deterministic
-computation run twice, not two independent samples. Gate core-389
-(`--self-test`) drives the merge on synthetic shards and requires swapped or
+computation run twice, not two independent samples. The
+`--self-test`, run by gate `core-self-test-09` (`tests/test_cli_self_tests.py`), drives the merge on synthetic shards and requires swapped or
 missing shards, a differing header and a reserialized part to fail.
 The `bundle` digests in each run's `submission.json` record the files each
 kernel carried. Gate core-339 is the recomputation gate: it runs

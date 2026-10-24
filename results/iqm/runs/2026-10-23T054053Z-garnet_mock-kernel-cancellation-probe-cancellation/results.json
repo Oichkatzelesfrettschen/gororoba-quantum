@@ -1,0 +1,57 @@
+{
+ "billed_credits": 0.0,
+ "compilation": {
+  "calibration_set_id": "f04fe114-002f-46bd-8fa4-2a577ff56501",
+  "execution_runtime_estimate_ms": 3092,
+  "execution_runtime_estimate_seconds": 3.092288
+ },
+ "credit_after": {
+  "currentBalance": "24.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "credits_charged": 0.0,
+ "errors": null,
+ "job_id": "01a16746-cb06-747a-baa5-adf28b0d52ec",
+ "metrics": {
+  "billed_seconds": 1.0,
+  "compilation_seconds": 0.084778,
+  "execution_seconds": 0.674138,
+  "runtime_seconds": 0.758916
+ },
+ "raw_sha256": {
+  "job.json": "9adffd54a244d7c10f26fb18ec37183ce3388c29879447edcbc0a999abaa7ece",
+  "measurement_counts.json": "3054fec55b7d7ca8b8e770c23bd5caacfb85af93cde79989a8adf0615da73d3c",
+  "measurements.json": "e7f879decfcf72b57c4d3e59e12f02b34d5d3e074ca6f7ef939bfa38b0291fff"
+ },
+ "schema": "iqm-results-v1",
+ "shots_per_circuit": [
+  1000,
+  1004,
+  992,
+  1003,
+  947,
+  954,
+  1048,
+  956,
+  1005,
+  1001,
+  992,
+  1022,
+  1009,
+  1000,
+  974,
+  2017,
+  2012,
+  1987,
+  1931,
+  1994,
+  2027,
+  2085,
+  1939,
+  1986,
+  1999,
+  1997,
+  1989
+ ],
+ "status": "completed"
+}

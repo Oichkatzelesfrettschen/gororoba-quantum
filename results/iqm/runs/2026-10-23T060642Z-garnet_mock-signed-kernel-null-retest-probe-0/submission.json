@@ -1,0 +1,17 @@
+{
+ "approval": "if those mocks are \"free\" then we should use those",
+ "body_sha256": "b11ce808d4746de0fb893ccc7831c1ee4d3c0835d828c55a7a0c4061ec8ee1ff",
+ "cases_sha256": "1adcfab2d9ca90abfb6865e2a42b5303cf2184a3df8c426c2570c35dfe6f8fa1",
+ "credit_before": {
+  "currentBalance": "24.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 9.92,
+ "job": "probe-0",
+ "job_id": "01a1675e-7df1-7122-b01a-40efc0801597",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-23T06:06:48Z"
+}

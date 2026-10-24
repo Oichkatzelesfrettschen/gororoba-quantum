@@ -7,6 +7,15 @@
       "results/**"
     ],
     "core-063": [],
+    "core-662": [
+      "docs/evidence/rank_locus_nullity12_refinement/**"
+    ],
+    "core-668": [
+      "docs/evidence/rank_locus_padic_lift/**"
+    ],
+    "core-677": [
+      "docs/evidence/rank_locus_quadric_germ/**"
+    ],
     "core-069": [],
     "core-080": [],
     "core-089": [],
@@ -57,6 +66,14 @@
       "results/quantum_inspire/readout_ringdown_tuna_17_*_analysis.json"
     ],
     "core-329": [
+      "docs/evidence/atlas_coherent_families/**",
+      "docs/evidence/atlas_detuning_map/**",
+      "docs/evidence/calibration/history/**",
+      "results/ripple/measured-ripple.json",
+      "results/live/2026-10-13T025444.603480Z/**",
+      "results/live/2026-10-15T031229.371738Z/**"
+    ],
+    "core-661": [
       "docs/evidence/atlas_coherent_families/**",
       "docs/evidence/atlas_detuning_map/**",
       "docs/evidence/calibration/history/**",
@@ -454,6 +471,36 @@
       "results/quandela/cases/bdsc_qualification/**",
       "results/quandela/runs/*-qpu_belenos-bdsc_qualification-*/**",
       "results/quandela/runs/*-sim_belenos-bdsc_qualification-*/**"
+    ],
+    "core-638": [
+      "results/iqm/cases/signed-kernel-probe/**"
+    ],
+    "core-640": [
+      "results/iqm/cases/signed-kernel-probe/**",
+      "results/iqm/signed_kernel_probe_audit.json"
+    ],
+    "core-642": [
+      "results/iqm/cases/kernel-cancellation-probe/**"
+    ],
+    "core-644": [
+      "results/iqm/cases/signed-kernel-null-retest/**"
+    ],
+    "core-666": [
+      "docs/evidence/evidence-closure/**"
+    ],
+    "core-671": [
+      "docs/**",
+      "results/**",
+      "scripts/**",
+      "gororoba_quantum/**",
+      "ci/**",
+      "requirements.txt",
+      "tests/scripts/test_algebra_device_conjectures.py",
+      "tests/scripts/test_algebra_conjecture_circuits.py"
+    ],
+    "core-behavior-03": [
+      "pyproject.toml",
+      "tests/conftest.py"
     ]
   }
 }

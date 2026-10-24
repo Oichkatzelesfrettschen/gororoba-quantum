@@ -5,6 +5,8 @@ fallback under GOROROBA_PINS_REQUIRED=1.
 
 from __future__ import annotations
 
+import json
+import re
 import sys
 from collections.abc import Callable
 from pathlib import Path
@@ -50,7 +52,7 @@ def test_replay_resolution() -> None:
         raise AssertionError("an interpreter that cannot start reads as matching")
 
     def resolve(probe: list[str], explicit: str | None, environment: dict[str, str]) -> tuple[str | None, str]:
-        with patch.object(pins, "mismatches", lambda _python, _pins: list(probe)):
+        with patch.object(pins, "mismatches", lambda _python, _pins, _patches=None: list(probe)):
             return pins.resolve_replay("qiskit-2.5", explicit, environment, python)
 
     differing = ["qiskit 2.6.0 (pin 2.5.2)"]
@@ -79,13 +81,155 @@ def test_replay_resolution() -> None:
             raise AssertionError(f"a tree's own pins were not applied: {chosen} ({reason})")
 
 
+def test_installer_state_enters_the_comparison() -> None:
+    # ci/install_pins.sh installs its --no-deps pins and patches site-packages
+    # after the pin files; an interpreter without either differs from a built one.
+    if pins.installer_pins().get("mpmath") != "1.4.1":
+        raise AssertionError(f"install_pins.sh's --no-deps pins read {pins.installer_pins()}")
+    with TemporaryDirectory(prefix="ci-pins-patch-") as temporary:
+        tree = Path(temporary)
+        (tree / "ci" / "patches").mkdir(parents=True)
+        (tree / "ci" / "install_pins.sh").write_text(
+            '"$PYTHON" -m pip install --no-deps pip-package-that-is-absent==2.0\n'
+        )
+        (tree / "ci" / "patches" / "absent.patch").write_text(
+            "--- a/package-that-is-absent/module.py\n+++ b/package-that-is-absent/module.py\n@@ -1 +1 @@\n-old\n+new\n"
+        )
+        found = pins.environment_mismatches(sys.executable, {}, tree)
+        if found != ["pip-package-that-is-absent absent (pin 2.0)", "absent.patch not applied"]:
+            raise AssertionError(f"the installer state of a tree reads {found}")
+        # A host without the patch binary reports the patch unverified rather than raising.
+        run = pins.subprocess.run
+
+        def without_patch(argv: list[str], **options: Any) -> Any:
+            if argv[0] == "patch":
+                raise FileNotFoundError(2, "No such file or directory", "patch")
+            return run(argv, **options)
+
+        with patch.object(pins.subprocess, "run", without_patch):
+            found = pins.environment_mismatches(sys.executable, {}, tree)
+        if found[1:] != ["absent.patch could not be checked: [Errno 2] No such file or directory: 'patch'"]:
+            raise AssertionError(f"the installer state without the patch binary reads {found}")
+
+
+def test_host_environment_fallback() -> None:
+    # A drifted running interpreter falls back to the runtime's host
+    # environment when that holds every pin; neither names the build command.
+    python = sys.executable
+    differing = ["qiskit 2.5.2 (pin 2.6.0)"]
+    with TemporaryDirectory(prefix="ci-pins-cache-") as temporary:
+        cache = {"XDG_CACHE_HOME": temporary}
+        current_host = pins.host_env("current", cache)
+        replay_host = pins.host_env("qiskit-2.5", cache)
+        if current_host.parent.parent.name != f"ci-py{pins.PYTHON_VERSION}":
+            raise AssertionError(f"the current runtime's host environment is {current_host}")
+
+        def resolve(probe: dict[str, list[str]], environment: dict[str, str]) -> dict[str, tuple[str | None, str]]:
+            with patch.object(
+                pins, "mismatches", lambda candidate, _pins, _patches=None: list(probe.get(candidate, differing))
+            ):
+                return {
+                    "current": pins.resolve_current(environment, python),
+                    "replay": pins.resolve_replay("qiskit-2.5", None, environment, python),
+                }
+
+        absent = resolve({}, cache)
+        for runtime, (chosen, reason) in absent.items():
+            if chosen is not None or pins.BUILD_COMMAND not in reason:
+                raise AssertionError(f"{runtime} without a host environment chose {chosen} ({reason})")
+        for host in (current_host, replay_host):
+            host.parent.mkdir(parents=True)
+            host.write_text("")
+        built = resolve({str(current_host): [], str(replay_host): []}, cache)
+        if built["current"][0] != str(current_host) or built["replay"][0] != str(replay_host):
+            raise AssertionError(f"a host environment holding every pin was not chosen: {built}")
+        drifted = resolve({}, cache)
+        if any(chosen is not None for chosen, _reason in drifted.values()):
+            raise AssertionError(f"a host environment that differs from its pins was chosen: {drifted}")
+        running = resolve({python: []}, cache)
+        if running["current"][0] != python or running["replay"][0] != python:
+            raise AssertionError(f"a running interpreter holding every pin lost to the host environment: {running}")
+        strict = resolve({str(current_host): [], str(replay_host): []}, {**cache, **STRICT})
+        if any(chosen is not None for chosen, _reason in strict.values()):
+            raise AssertionError(f"{pins.PINS_REQUIRED}=1 took a host environment: {strict}")
+        named = resolve({}, {**cache, "PYTHON": "/named/python"})["current"]
+        if named[0] != "/named/python" or "runs as named" not in named[1]:
+            raise AssertionError(f"an explicit PYTHON was replaced: {named}")
+        refused = resolve({}, {**cache, **STRICT, "PYTHON": "/named/python"})["current"]
+        if refused[0] is not None:
+            raise AssertionError(f"{pins.PINS_REQUIRED}=1 ran a PYTHON that differs from its pins: {refused}")
+        with patch.object(pins, "mismatches", lambda candidate, _pins, _patches=None: list(differing)):
+            admitted = pins.resolve_current({**cache, "PYTHON": "/named/python"}, python, admission=True)
+        if admitted[0] is not None or "cannot decide admission" not in admitted[1]:
+            raise AssertionError(f"an admission run took a PYTHON that differs from its pins: {admitted}")
+        with patch.object(pins, "mismatches", lambda candidate, _pins, _patches=None: []):
+            admitted = pins.resolve_current({**cache, "PYTHON": "/named/python"}, python, admission=True)
+        if admitted[0] != "/named/python":
+            raise AssertionError(f"an admission run refused a PYTHON holding every pin: {admitted}")
+    with TemporaryDirectory(prefix="ci-pins-tree-") as temporary:
+        chosen, reason = pins.resolve_current({}, python, Path(temporary))
+        if chosen != python or "pins no current runtime" not in reason:
+            raise AssertionError(f"a tree without pin files verified {chosen} ({reason})")
+
+
+def test_lane_resolution() -> None:
+    # A pr_checks lane runs an explicit PYTHON only when it holds the lane's pins, takes the host environment
+    # when PYTHON is unset, and refuses a drifted interpreter with the command that runs the lane correctly.
+    python = sys.executable
+    differing = ["ruff 0.14.11 (pin 0.17.1)"]
+    with TemporaryDirectory(prefix="ci-pins-lane-") as temporary:
+        cache = {"XDG_CACHE_HOME": temporary}
+        host = pins.host_env("current", cache)
+        asked: list[dict[str, str]] = []
+
+        def resolve(lane: str, holding: set[str], environment: dict[str, str]) -> tuple[str | None, str]:
+            def probe(candidate: str, wanted: dict[str, str], _patches: object = None) -> list[str]:
+                asked.append(dict(wanted))
+                return [] if candidate in holding else list(differing)
+
+            with patch.object(pins, "mismatches", probe):
+                return pins.resolve_lane(lane, environment, python)
+
+        refuses(lambda: resolve("audit", set(), cache), "not one of")
+        chosen, reason = resolve("lint", set(), cache)
+        if chosen is not None or pins.BUILD_COMMAND not in reason:
+            raise AssertionError(f"a drifted lint interpreter without a host environment ran: {chosen} ({reason})")
+        if asked[-1] != {"ruff": pins.current_pins()["ruff"]}:
+            raise AssertionError(f"lint probed pins beyond ruff: {asked[-1]}")
+        resolve("tests", {python}, cache)
+        if set(asked[-1]) < set(pins.current_pins()):
+            raise AssertionError("tests probed fewer than every current pin")
+        if resolve("lint", {python}, cache)[0] != python:
+            raise AssertionError("a running interpreter holding the lint pins was refused")
+        host.parent.mkdir(parents=True)
+        host.write_text("")
+        for lane in pins.LANES:
+            if resolve(lane, {str(host)}, cache)[0] != str(host):
+                raise AssertionError(f"{lane} with PYTHON unset passed over a host environment holding its pins")
+        chosen, reason = resolve("types", {str(host)}, {**cache, "PYTHON": "/named/python"})
+        if chosen is not None or f"PYTHON={host} sh ci/pr_checks.sh types" not in reason:
+            raise AssertionError(f"a drifted explicit PYTHON was not refused with the host command: {reason}")
+        if resolve("tests", {"/named/python", str(host)}, {**cache, "PYTHON": "/named/python"})[0] != "/named/python":
+            raise AssertionError("an explicit PYTHON holding every pin was replaced")
+
+
+def test_host_environment_python_version() -> None:
+    # The host environments sit on the Python CI's setup-python installs.
+    workflow = (pins.ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+    script = (pins.ROOT / "ci/build_host_envs.sh").read_text(encoding="utf-8")
+    if f'python-version: "{pins.PYTHON_VERSION}"' not in workflow:
+        raise AssertionError(f"ci.yml installs no Python {pins.PYTHON_VERSION}")
+    if f"python_version={pins.PYTHON_VERSION}\n" not in script:
+        raise AssertionError(f"ci/build_host_envs.sh builds on another Python than {pins.PYTHON_VERSION}")
+
+
 def test_pinned_tool() -> None:
     uv, python = "/usr/bin/uv", "/usr/bin/python3"
+    # An installed pin runs as the requesting interpreter's module, so the distribution whose version was probed
+    # runs, never a PATH executable of another install, and mypy's imports resolve against that interpreter.
     argv, notice = pinned_tool.command("ruff", ["check", "ci"], "0.17.1", "0.17.1", {}, uv, python)
-    if Path(argv[0]).name != "ruff" or argv[1:] != ["check", "ci"] or notice is not None:
+    if argv != [python, "-m", "ruff", "check", "ci"] or notice is not None:
         raise AssertionError(f"an installed pin runs {argv} with notice {notice}")
-    # An installed mypy runs as the requested interpreter's module, so its
-    # imports resolve against that interpreter and not the PATH executable's.
     argv, notice = pinned_tool.command("mypy", ["."], "2.4.0", "2.4.0", {}, uv, python)
     if argv != [python, "-m", "mypy", "."] or notice is not None:
         raise AssertionError(f"an installed mypy pin runs {argv}")
@@ -112,3 +256,23 @@ def test_pinned_tool() -> None:
     missing = [tool for tool in pinned_tool.TOOLS if tool not in pinned]
     if missing:
         raise AssertionError(f"{pinned_tool.REQUIREMENTS.name} pins no {', '.join(missing)}")
+
+
+def test_gate_lint_tools_are_pinned() -> None:
+    # A bare ruff or mypy resolves through PATH, where a host install of
+    # another release reports its own defects as gate failures.
+    gates = json.loads((pins.ROOT / "ci/gates.json").read_text(encoding="utf-8"))["gates"]
+    bare = re.compile(r"(?:(?:^|&&|\|\||;|\||\$\(|\bthen|\bxargs)\s*(?:\w+=\S+\s+)*|-m\s+)(?:ruff|mypy)\b")
+    unpinned = [gate["name"] for gate in gates if bare.search(gate["cmd"])]
+    if unpinned:
+        raise AssertionError(f"gates run ruff or mypy outside ci/pinned_tool.py: {', '.join(unpinned)}")
+    planted = (
+        "MYPYPATH=docs mypy docs",
+        '"$PYTHON" -m mypy scripts',
+        "true && ruff check ci",
+        "git ls-files | xargs ruff check",
+        "test -d ci && $(ruff check ci)",
+    )
+    pinned = ('MYPYPATH=docs "$PYTHON" ci/pinned_tool.py mypy docs', '"$PYTHON" ../ci/pinned_tool.py ruff check .')
+    if not all(bare.search(command) for command in planted) or any(bare.search(command) for command in pinned):
+        raise AssertionError("the bare-tool pattern misreads a planted command")

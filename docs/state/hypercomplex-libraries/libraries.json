@@ -1836,11 +1836,13 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_toolchain_check.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_toolchain_check.py"
    ]
@@ -2104,9 +2106,13 @@
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "scripts/rank_locus_nullity12_refinement.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/rank_locus_nullity12_refinement.py"
+   ]
   },
   {
    "distribution": "mthree",
@@ -2264,7 +2270,9 @@
     "scripts/provider_patch_packing.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/provider_patch_packing.py"
+   ]
   },
   {
    "distribution": "numba",
@@ -2388,6 +2396,11 @@
     "kaggle_kernel/gpu_env_report.py",
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
+    "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_coherence_analysis.py",
+    "scripts/ascella_coherence_repeat.py",
+    "scripts/ascella_coherence_request.py",
+    "scripts/ascella_response_geometry.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/associator_walsh_classes.py",
     "scripts/atlas_coherent_families.py",
@@ -2398,9 +2411,12 @@
     "scripts/bdsc_cases.py",
     "scripts/bdsc_certificate.py",
     "scripts/bdsc_diagnostic.py",
+    "scripts/bdsc_drift_series.py",
     "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
     "scripts/bdsc_pauli.py",
+    "scripts/bdsc_stationarity.py",
+    "scripts/bdsc_stray_mode_veto.py",
     "scripts/box_kite_analysis.py",
     "scripts/box_kite_cases.py",
     "scripts/box_kite_follow_design.py",
@@ -2425,8 +2441,14 @@
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
     "scripts/hypercomplex_photonic_cases.py",
+    "scripts/iqm_cancellation_probe.py",
+    "scripts/iqm_probe_audit.py",
+    "scripts/iqm_signed_resolve.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
+    "scripts/local_optical_operator_replay.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_exact_crosscheck.py",
@@ -2451,6 +2473,7 @@
     "scripts/qd_platform.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
+    "scripts/qi_cancellation_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
@@ -2462,6 +2485,7 @@
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
     "scripts/qi_zz_map_analysis.py",
+    "scripts/rank_locus_nullity12_refinement.py",
     "scripts/render_rank_sector_norms.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_wide_control_job.py",
@@ -2469,6 +2493,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
     "scripts/tpu_probe.py",
     "scripts/walk_scaffold_channels.py"
@@ -2547,6 +2572,11 @@
     "kaggle_kernel/gpu_env_report.py",
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
+    "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_coherence_analysis.py",
+    "scripts/ascella_coherence_repeat.py",
+    "scripts/ascella_coherence_request.py",
+    "scripts/ascella_response_geometry.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/associator_walsh_classes.py",
     "scripts/atlas_coherent_families.py",
@@ -2557,9 +2587,12 @@
     "scripts/bdsc_cases.py",
     "scripts/bdsc_certificate.py",
     "scripts/bdsc_diagnostic.py",
+    "scripts/bdsc_drift_series.py",
     "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
     "scripts/bdsc_pauli.py",
+    "scripts/bdsc_stationarity.py",
+    "scripts/bdsc_stray_mode_veto.py",
     "scripts/box_kite_analysis.py",
     "scripts/box_kite_cases.py",
     "scripts/box_kite_follow_design.py",
@@ -2584,8 +2617,14 @@
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
     "scripts/hypercomplex_photonic_cases.py",
+    "scripts/iqm_cancellation_probe.py",
+    "scripts/iqm_probe_audit.py",
+    "scripts/iqm_signed_resolve.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
+    "scripts/local_optical_operator_replay.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_exact_crosscheck.py",
@@ -2610,6 +2649,7 @@
     "scripts/qd_platform.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
+    "scripts/qi_cancellation_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_ladder_line_bins.py",
@@ -2621,6 +2661,7 @@
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
     "scripts/qi_zz_map_analysis.py",
+    "scripts/rank_locus_nullity12_refinement.py",
     "scripts/render_rank_sector_norms.py",
     "scripts/replay_et_pilot.py",
     "scripts/review_wide_control_job.py",
@@ -2628,6 +2669,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
     "scripts/tpu_probe.py",
     "scripts/walk_scaffold_channels.py"
@@ -2968,10 +3010,12 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/opensquirrel_fullprecision.py",
     "scripts/qi_toolchain_check.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/opensquirrel_fullprecision.py",
     "scripts/qi_toolchain_check.py"
    ]
   },
@@ -3351,18 +3395,22 @@
    "independent_algebra_witness": false,
    "hardware_execution": true,
    "imported_by": [
+    "scripts/ascella_coherence_request.py",
     "scripts/bdsc_cases.py",
     "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/ascella_coherence_request.py",
     "scripts/bdsc_cases.py",
     "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_platform.py"
@@ -3582,11 +3630,13 @@
    "hardware_execution": false,
    "imported_by": [
     "scripts/lsq_conditioning_study.py",
+    "scripts/rank_locus_padic_lift.py",
     "scripts/wheel_zero_divisors.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/lsq_conditioning_study.py",
+    "scripts/rank_locus_padic_lift.py",
     "scripts/wheel_zero_divisors.py"
    ]
   },
@@ -3940,16 +3990,22 @@
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
+    "scripts/rank_locus_padic_lift.py",
+    "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_rotation_composite.py",
-    "scripts/rank_locus_second_order.py"
+    "scripts/rank_locus_second_order.py",
+    "scripts/rank_locus_tangent_linearity.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
+    "scripts/rank_locus_padic_lift.py",
+    "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_rotation_composite.py",
-    "scripts/rank_locus_second_order.py"
+    "scripts/rank_locus_second_order.py",
+    "scripts/rank_locus_tangent_linearity.py"
    ]
   },
   {
@@ -4134,6 +4190,7 @@
     "gororoba_quantum/heron_multiprogramming.py",
     "gororoba_quantum/hybrid_shor.py",
     "gororoba_quantum/jax_bridge.py",
+    "gororoba_quantum/kernel_cancellation.py",
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
     "gororoba_quantum/local_compute.py",
@@ -4170,6 +4227,7 @@
     "scripts/aer_blocking_probe.py",
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
+    "scripts/algebra_conjecture_circuits.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/atlas_coherent_families.py",
     "scripts/atlas_detuning_map.py",
@@ -4194,6 +4252,11 @@
     "scripts/heron_target_snapshot.py",
     "scripts/hypercomplex_cases.py",
     "scripts/ibm_runtime_options_inventory.py",
+    "scripts/iqm_cancellation_probe.py",
+    "scripts/iqm_probe_audit.py",
+    "scripts/iqm_signed_probe.py",
+    "scripts/iqm_signed_resolve.py",
+    "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/mod15_signed_multiplier_census.py",
@@ -4205,6 +4268,7 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/packed_pauli_probe.py",
     "scripts/qi_bdsc_pauli_cases.py",
+    "scripts/qi_cancellation_cases.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -4257,6 +4321,7 @@
     "gororoba_quantum/heron_multiprogramming.py",
     "gororoba_quantum/hybrid_shor.py",
     "gororoba_quantum/jax_bridge.py",
+    "gororoba_quantum/kernel_cancellation.py",
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
     "gororoba_quantum/local_compute.py",
@@ -4293,6 +4358,7 @@
     "scripts/aer_blocking_probe.py",
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
+    "scripts/algebra_conjecture_circuits.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/atlas_coherent_families.py",
     "scripts/atlas_detuning_map.py",
@@ -4317,6 +4383,11 @@
     "scripts/heron_target_snapshot.py",
     "scripts/hypercomplex_cases.py",
     "scripts/ibm_runtime_options_inventory.py",
+    "scripts/iqm_cancellation_probe.py",
+    "scripts/iqm_probe_audit.py",
+    "scripts/iqm_signed_probe.py",
+    "scripts/iqm_signed_resolve.py",
+    "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/local_member_cz_conformance.py",
     "scripts/mod15_signed_multiplier_census.py",
@@ -4328,6 +4399,7 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/packed_pauli_probe.py",
     "scripts/qi_bdsc_pauli_cases.py",
+    "scripts/qi_cancellation_cases.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -4573,6 +4645,10 @@
     "scripts/ghost_event_scale.py",
     "scripts/ghost_run.py",
     "scripts/gl52_split_conjugators.py",
+    "scripts/iqm_cancellation_probe.py",
+    "scripts/iqm_probe_audit.py",
+    "scripts/iqm_signed_probe.py",
+    "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/n21_conjugation_noise.py",
     "scripts/n21_exact_crosscheck.py",
@@ -4618,6 +4694,10 @@
     "scripts/ghost_event_scale.py",
     "scripts/ghost_run.py",
     "scripts/gl52_split_conjugators.py",
+    "scripts/iqm_cancellation_probe.py",
+    "scripts/iqm_probe_audit.py",
+    "scripts/iqm_signed_probe.py",
+    "scripts/iqm_sim.py",
     "scripts/jax_bridge_sweep.py",
     "scripts/n21_conjugation_noise.py",
     "scripts/n21_exact_crosscheck.py",
@@ -5329,6 +5409,8 @@
    "hardware_execution": false,
    "imported_by": [
     "scripts/box_kite_qx_sweep.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
     "scripts/qx_local_series.py"
@@ -5336,6 +5418,8 @@
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
     "scripts/box_kite_qx_sweep.py",
+    "scripts/local_photonic_compiler_crosscheck.py",
+    "scripts/local_simulation_replay.py",
     "scripts/n21_qx_conformance.py",
     "scripts/qi_mcp_server.py",
     "scripts/qx_local_series.py"
@@ -5611,10 +5695,15 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/variance.py",
+    "scripts/ascella_coherence_repeat.py",
+    "scripts/ascella_response_geometry.py",
     "scripts/atlas_fringe_amplitudes.py",
     "scripts/axis_tilt_substrate_split.py",
     "scripts/bdsc_diagnostic.py",
+    "scripts/bdsc_drift_series.py",
     "scripts/bdsc_forensics.py",
+    "scripts/bdsc_stationarity.py",
+    "scripts/bdsc_stray_mode_veto.py",
     "scripts/ghost_error_scale_branching.py",
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
@@ -5649,10 +5738,15 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/variance.py",
+    "scripts/ascella_coherence_repeat.py",
+    "scripts/ascella_response_geometry.py",
     "scripts/atlas_fringe_amplitudes.py",
     "scripts/axis_tilt_substrate_split.py",
     "scripts/bdsc_diagnostic.py",
+    "scripts/bdsc_drift_series.py",
     "scripts/bdsc_forensics.py",
+    "scripts/bdsc_stationarity.py",
+    "scripts/bdsc_stray_mode_veto.py",
     "scripts/ghost_error_scale_branching.py",
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
@@ -6128,8 +6222,10 @@
     "gororoba_quantum/real_frontier_graphs.py",
     "gororoba_quantum/schur_acceleration.py",
     "gororoba_quantum/skew_schur_charts.py",
+    "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
+    "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -6161,8 +6257,10 @@
     "gororoba_quantum/real_frontier_graphs.py",
     "gororoba_quantum/schur_acceleration.py",
     "gororoba_quantum/skew_schur_charts.py",
+    "scripts/algebra_device_conjectures.py",
     "scripts/algebra_package_tables.py",
     "scripts/bdsc_packages.py",
+    "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_second_order.py"
    ]
   },
@@ -6626,7 +6724,7 @@
   "scripts/kaggle_run.py": "04e69833aefcd34311c033747cf73e9bf207bf56684a877f16d0f966ae634114",
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
-  "scripts/hypercomplex_libraries.py": "a674e6a43f0089f7560150a04e9f52afef986400045e52f034e923c81a5235fc",
+  "scripts/hypercomplex_libraries.py": "4e57cdd6be4967ebbbbfb5698e8a43174b29b3cc91572904f0c4207d622a1141",
   "docs/notes/quandela/python-stack.md": "2f4be7a75a82b1c94a11e6bd45b7ff9d415c10c9a02953a9768100c03fac856e",
   "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
@@ -6642,6 +6740,14 @@
    "pathlib",
    "re",
    "statistics",
+   "typing"
+  ],
+  "ci/audit_report.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "sys",
    "typing"
   ],
   "ci/changed_paths.py": [
@@ -6663,6 +6769,12 @@
    "json",
    "pathlib",
    "re",
+   "sys"
+  ],
+  "ci/gate_env.py": [
+   "__future__",
+   "os",
+   "run_gates",
    "sys"
   ],
   "ci/gate_inputs.py": [
@@ -6727,8 +6839,11 @@
    "__future__",
    "collections",
    "json",
+   "os",
    "pathlib",
-   "subprocess"
+   "re",
+   "subprocess",
+   "sys"
   ],
   "ci/premerge_gates.py": [
    "__future__",
@@ -6736,6 +6851,7 @@
    "collections",
    "contextlib",
    "fcntl",
+   "functools",
    "hashlib",
    "host_identity",
    "json",
@@ -6755,6 +6871,17 @@
    "importlib",
    "os",
    "sys",
+   "typing"
+  ],
+  "ci/replay_check.py": [
+   "__future__",
+   "argparse",
+   "fnmatch",
+   "json",
+   "pathlib",
+   "subprocess",
+   "sys",
+   "tempfile",
    "typing"
   ],
   "ci/run_gates.py": [
@@ -6778,6 +6905,22 @@
    "time",
    "typing"
   ],
+  "ci/runner_image_records.py": [
+   "__future__",
+   "hashlib",
+   "json",
+   "os",
+   "pathlib",
+   "run_gates",
+   "shlex",
+   "shutil",
+   "subprocess",
+   "sys",
+   "tempfile",
+   "time",
+   "typing",
+   "unittest"
+  ],
   "ci/runner_specs.py": [
    "__future__",
    "json",
@@ -6788,6 +6931,21 @@
    "scipy",
    "sys",
    "threadpoolctl"
+  ],
+  "ci/seed_provenance.py": [
+   "__future__",
+   "argparse",
+   "ast",
+   "collections",
+   "json",
+   "parallel",
+   "pathlib",
+   "qrng_seeds",
+   "re",
+   "subprocess",
+   "sys",
+   "typing",
+   "zlib"
   ],
   "gororoba_quantum/adjudicate.py": [
    "__future__",
@@ -6805,6 +6963,7 @@
    "pathlib",
    "qiskit",
    "qiskit_ibm_runtime",
+   "qrng_seeds",
    "sys",
    "tempfile",
    "types",
@@ -6881,6 +7040,7 @@
    "pathlib",
    "qiskit",
    "qiskit_ibm_runtime",
+   "qrng_seeds",
    "shlex",
    "statistics",
    "sys",
@@ -7088,6 +7248,7 @@
    "platform",
    "qiskit",
    "qiskit_ibm_runtime",
+   "qrng_seeds",
    "shlex",
    "statistics",
    "subprocess",
@@ -7274,6 +7435,7 @@
    "qiskit_ibm_runtime",
    "qpe_diagnostics",
    "qpu_planning",
+   "qrng_seeds",
    "typing"
   ],
   "gororoba_quantum/correction_preparation_contracts.py": [
@@ -7626,6 +7788,7 @@
    "pathlib",
    "qiskit",
    "qiskit_aer",
+   "qrng_seeds",
    "typing"
   ],
   "gororoba_quantum/hypercomplex_clifford_envelope.py": [
@@ -7692,6 +7855,14 @@
    "qiskit_aer",
    "typing"
   ],
+  "gororoba_quantum/kernel_cancellation.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "math",
+   "qiskit",
+   "sys"
+  ],
   "gororoba_quantum/kernel_determinant.py": [
    "__future__",
    "collections",
@@ -7755,6 +7926,7 @@
    "qiskit",
    "qiskit_aer",
    "qiskit_ibm_runtime",
+   "qrng_seeds",
    "shlex",
    "statistics",
    "sys",
@@ -8235,6 +8407,19 @@
    "typing",
    "unittest"
   ],
+  "gororoba_quantum/qrng_seeds.py": [
+   "__future__",
+   "anu_qrng",
+   "argparse",
+   "collections",
+   "json",
+   "outshift_qrng",
+   "pathlib",
+   "quandela_qrng",
+   "re",
+   "sys",
+   "typing"
+  ],
   "gororoba_quantum/qubit_baseline.py": [
    "__future__",
    "experiments",
@@ -8631,6 +8816,16 @@
    "time",
    "typing"
   ],
+  "scripts/acquisition_decisions.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "re",
+   "typing"
+  ],
   "scripts/aer_blocking_probe.py": [
    "__future__",
    "aer_gpu_probe",
@@ -8690,6 +8885,40 @@
    "qiskit",
    "sys"
   ],
+  "scripts/algebra_conjecture_circuits.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "designs",
+   "hashlib",
+   "importlib",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "platform",
+   "qiskit",
+   "sys",
+   "typing"
+  ],
+  "scripts/algebra_device_conjectures.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "hashlib",
+   "importlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "platform",
+   "research_state",
+   "subprocess",
+   "sympy",
+   "sys",
+   "typing"
+  ],
   "scripts/algebra_package_tables.py": [
    "Cayley_Calculator",
    "SplitOct",
@@ -8739,6 +8968,86 @@
    "sys",
    "typing",
    "urllib"
+  ],
+  "scripts/ascella_coherence_analysis.py": [
+   "__future__",
+   "collections",
+   "math",
+   "numpy",
+   "typing"
+  ],
+  "scripts/ascella_coherence_repeat.py": [
+   "__future__",
+   "ascella_coherence_analysis",
+   "ascella_coherence_run",
+   "bdsc_certificate",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "photonic_compilation_audit",
+   "qd_belenos_mesh",
+   "re",
+   "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_coherence_request.py": [
+   "__future__",
+   "bdsc_certificate",
+   "collections",
+   "copy",
+   "dataclasses",
+   "datetime",
+   "functools",
+   "hypercomplex_cases",
+   "hypercomplex_operators",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_platform",
+   "qd_schedule",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_coherence_run.py": [
+   "__future__",
+   "ascella_coherence_analysis",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_order_retry_collector.py": [
+   "__future__",
+   "analysis",
+   "argparse",
+   "bdsc_certificate",
+   "copy",
+   "json",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_response_geometry.py": [
+   "__future__",
+   "ascella_coherence_analysis",
+   "ascella_coherence_repeat",
+   "bdsc_certificate",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "sys",
+   "typing"
   ],
   "scripts/associator_cubic_normal_form.py": [
    "__future__",
@@ -8903,6 +9212,22 @@
    "tempfile",
    "typing"
   ],
+  "scripts/bdsc_drift_series.py": [
+   "__future__",
+   "argparse",
+   "bdsc_stationarity",
+   "functools",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "re",
+   "scipy",
+   "sys",
+   "typing"
+  ],
   "scripts/bdsc_forensics.py": [
    "__future__",
    "argparse",
@@ -8954,6 +9279,36 @@
    "numpy",
    "parallel",
    "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/bdsc_stationarity.py": [
+   "__future__",
+   "argparse",
+   "bdsc_diagnostic",
+   "bdsc_stray_mode_veto",
+   "hashlib",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "qi_readout_ringdown_cases",
+   "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/bdsc_stray_mode_veto.py": [
+   "__future__",
+   "argparse",
+   "bdsc_diagnostic",
+   "hashlib",
+   "json",
+   "math",
+   "numpy",
+   "pathlib",
+   "scipy",
    "sys",
    "typing"
   ],
@@ -9209,9 +9564,29 @@
    "cd_core",
    "collections",
    "numpy",
+   "parallel",
    "pathlib",
    "sys",
    "time"
+  ],
+  "scripts/cd_sign_rocq_ast.py": [
+   "__future__",
+   "argparse",
+   "ast",
+   "pathlib",
+   "sys"
+  ],
+  "scripts/cd_star_lattice.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "itertools",
+   "json",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
   ],
   "scripts/cd_two_blade_blocks.py": [
    "__future__",
@@ -9557,6 +9932,20 @@
    "json",
    "law_encoding",
    "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/evidence_closure.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "re",
+   "subprocess",
    "sys",
    "typing"
   ],
@@ -9919,6 +10308,43 @@
    "sys",
    "typing"
   ],
+  "scripts/iqm_cancellation_probe.py": [
+   "__future__",
+   "argparse",
+   "iqm_jobs",
+   "iqm_platform",
+   "iqm_probe_audit",
+   "iqm_signed_probe",
+   "iqm_sim",
+   "json",
+   "kernel_cancellation",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_readout_ringdown_cases",
+   "qiskit",
+   "qiskit_aer",
+   "shutil",
+   "sys",
+   "typing"
+  ],
+  "scripts/iqm_jobs.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "fcntl",
+   "iqm_platform",
+   "json",
+   "math",
+   "os",
+   "pathlib",
+   "shutil",
+   "sys",
+   "tempfile",
+   "time",
+   "typing"
+  ],
   "scripts/iqm_mcp_server.py": [
    "__future__",
    "anyio",
@@ -9957,6 +10383,72 @@
    "typing",
    "urllib"
   ],
+  "scripts/iqm_probe_audit.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "iqm_signed_probe",
+   "iqm_sim",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "qiskit_aer",
+   "signed_kernel_probe",
+   "sys",
+   "typing"
+  ],
+  "scripts/iqm_signed_probe.py": [
+   "__future__",
+   "argparse",
+   "iqm_jobs",
+   "iqm_platform",
+   "iqm_sim",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "qiskit_aer",
+   "shutil",
+   "signed_kernel_probe",
+   "sys",
+   "typing"
+  ],
+  "scripts/iqm_signed_resolve.py": [
+   "__future__",
+   "argparse",
+   "iqm_cancellation_probe",
+   "iqm_jobs",
+   "iqm_platform",
+   "iqm_signed_probe",
+   "iqm_sim",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "shutil",
+   "signed_kernel_probe",
+   "sys",
+   "typing"
+  ],
+  "scripts/iqm_sim.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "qiskit_aer",
+   "qrng_seeds",
+   "sys",
+   "typing"
+  ],
   "scripts/jax_bridge_sweep.py": [
    "__future__",
    "aer_resources",
@@ -9976,6 +10468,7 @@
    "pathlib",
    "qiskit",
    "qiskit_aer",
+   "qrng_seeds",
    "sys",
    "time",
    "typing"
@@ -10051,6 +10544,7 @@
    "parallel",
    "pathlib",
    "platform",
+   "qrng_seeds",
    "random",
    "sys",
    "target_flip",
@@ -10073,6 +10567,61 @@
    "qiskit",
    "qpe_diagnostics",
    "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/local_optical_operator_replay.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "importlib",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
+  "scripts/local_photonic_compiler_crosscheck.py": [
+   "__future__",
+   "argparse",
+   "cqasm",
+   "hashlib",
+   "importlib",
+   "json",
+   "numpy",
+   "opensquirrel_fullprecision",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "platform",
+   "qd_platform",
+   "qi_stack",
+   "qi_toolchain_check",
+   "qxelarator",
+   "re",
+   "sys",
+   "time",
+   "typing",
+   "warnings"
+  ],
+  "scripts/local_simulation_replay.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "local_photonic_compiler_crosscheck",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "pins",
+   "qi_stack",
+   "qi_toolchain_check",
+   "qxelarator",
+   "subprocess",
    "sys",
    "typing"
   ],
@@ -10124,6 +10673,7 @@
    "pathlib",
    "qiskit",
    "qiskit_ibm_runtime",
+   "qrng_seeds",
    "statistics",
    "sys",
    "time",
@@ -10200,6 +10750,7 @@
    "pathlib",
    "qiskit",
    "qiskit_aer",
+   "qrng_seeds",
    "snapshot_laws",
    "sys",
    "time",
@@ -10227,6 +10778,7 @@
    "copy",
    "datetime",
    "diagnostic_experiments",
+   "fractions",
    "functools",
    "hashlib",
    "heapq",
@@ -10400,6 +10952,13 @@
    "random",
    "sys"
   ],
+  "scripts/opensquirrel_fullprecision.py": [
+   "__future__",
+   "importlib",
+   "math",
+   "opensquirrel",
+   "typing"
+  ],
   "scripts/oq_mcp_server.py": [
    "__future__",
    "collections",
@@ -10429,6 +10988,22 @@
    "sys",
    "tempfile",
    "typing"
+  ],
+  "scripts/outshift_qrng.py": [
+   "__future__",
+   "anu_qrng",
+   "argparse",
+   "copy",
+   "datetime",
+   "functools",
+   "hashlib",
+   "json",
+   "os",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing",
+   "urllib"
   ],
   "scripts/packed_pauli_analysis.py": [
    "__future__",
@@ -10524,6 +11099,43 @@
    "pathlib",
    "photonic_repeat_readout",
    "qd_platform",
+   "typing"
+  ],
+  "scripts/plan_inventory.py": [
+   "__future__",
+   "check_markdown_links",
+   "hashlib",
+   "pathlib",
+   "plan_records",
+   "re",
+   "subprocess",
+   "typing"
+  ],
+  "scripts/plan_records.py": [
+   "__future__",
+   "datetime",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "re",
+   "sys",
+   "typing",
+   "urllib"
+  ],
+  "scripts/plan_tracker.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "copy",
+   "fcntl",
+   "os",
+   "pathlib",
+   "plan_inventory",
+   "plan_records",
+   "subprocess",
+   "sys",
+   "tempfile",
    "typing"
   ],
   "scripts/provider_api_audit.py": [
@@ -10691,6 +11303,24 @@
    "urllib",
    "zlib"
   ],
+  "scripts/qd_schedule.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "contextlib",
+   "datetime",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "qd_platform",
+   "re",
+   "shutil",
+   "subprocess",
+   "sys",
+   "time",
+   "typing"
+  ],
   "scripts/qet_two_qubit_reference.py": [
    "__future__",
    "argparse",
@@ -10725,6 +11355,22 @@
    "sys",
    "tempfile",
    "time",
+   "typing"
+  ],
+  "scripts/qi_cancellation_cases.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "json",
+   "kernel_cancellation",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_zero_divisor_cases",
+   "qiskit",
+   "statistics",
+   "sys",
    "typing"
   ],
   "scripts/qi_coupler_zz_map.py": [
@@ -10818,8 +11464,18 @@
    "functools",
    "mcp",
    "pathlib",
+   "qi_monitoring",
    "qi_platform",
    "qxelarator",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_monitoring.py": [
+   "__future__",
+   "datetime",
+   "importlib",
+   "json",
+   "re",
    "sys",
    "typing"
   ],
@@ -11073,6 +11729,21 @@
    "typing",
    "urllib"
   ],
+  "scripts/quandela_qrng.py": [
+   "__future__",
+   "argparse",
+   "copy",
+   "datetime",
+   "functools",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "sys",
+   "typing"
+  ],
   "scripts/quantum_artifact_retention.py": [
    "__future__",
    "argparse",
@@ -11142,6 +11813,62 @@
    "sys",
    "typing"
   ],
+  "scripts/rank_locus_nullity12_refinement.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "fractions",
+   "json",
+   "mpmath",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "rank_locus_local_dimension",
+   "sys",
+   "typing"
+  ],
+  "scripts/rank_locus_padic_lift.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "copy",
+   "flint",
+   "fractions",
+   "functools",
+   "importlib",
+   "json",
+   "math",
+   "nullity_twelve_locus",
+   "parallel",
+   "pathlib",
+   "pyadic",
+   "random",
+   "rank_locus_local_dimension",
+   "sys",
+   "typing"
+  ],
+  "scripts/rank_locus_quadric_germ.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "copy",
+   "dataclasses",
+   "flint",
+   "fractions",
+   "importlib",
+   "itertools",
+   "json",
+   "math",
+   "nullity_twelve_curves",
+   "parallel",
+   "pathlib",
+   "rank_locus_local_dimension",
+   "sympy",
+   "sys",
+   "typing"
+  ],
   "scripts/rank_locus_rotation_composite.py": [
    "__future__",
    "algebra_package_tables",
@@ -11179,6 +11906,22 @@
    "rank_locus_local_dimension",
    "skew_schur_charts",
    "sympy",
+   "sys",
+   "typing"
+  ],
+  "scripts/rank_locus_tangent_linearity.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "copy",
+   "flint",
+   "fractions",
+   "json",
+   "parallel",
+   "pathlib",
+   "random",
+   "rank_locus_gap_directions",
+   "rank_locus_local_dimension",
    "sys",
    "typing"
   ],
@@ -11303,6 +12046,7 @@
    "copy",
    "datetime",
    "hashlib",
+   "iqm_jobs",
    "json",
    "os",
    "parallel",
@@ -11443,6 +12187,19 @@
    "scipy",
    "sys",
    "tempfile",
+   "typing"
+  ],
+  "scripts/stiefel_pfaffian_identity.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "json",
+   "moreno_stiefel_nullity",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "random",
+   "sys",
    "typing"
   ],
   "scripts/stiefel_witness_certificate.py": [
@@ -11628,6 +12385,9 @@
   ],
   "mcp": [
    "mcp"
+  ],
+  "mpmath": [
+   "mpmath"
   ],
   "networkx": [
    "networkx"

@@ -1,0 +1,14 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "key": "c"
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "ro0"
+}

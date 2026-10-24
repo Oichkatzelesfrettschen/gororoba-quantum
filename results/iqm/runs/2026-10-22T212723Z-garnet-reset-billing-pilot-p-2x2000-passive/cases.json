@@ -1,0 +1,59 @@
+{
+ "case": "reset-billing-pilot",
+ "estimate_model": {
+  "active_shot_seconds": 8.7e-06,
+  "job_seconds": 1.6,
+  "passive_shot_seconds": 0.0003,
+  "source": "garnet:mock execution_runtime_estimate_seconds of the timing pilot"
+ },
+ "ideal": {
+  "x": {
+   "p1": 1.0
+  },
+  "zero": {
+   "p1": 0.0
+  }
+ },
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/p-2x2000-passive-x.json",
+     "sha256": "dbfe2f03e25f9001c17fe185c8896c9b213e51eb6fb1063932cb6d45de898a7b"
+    },
+    {
+     "file": "circuits/p-2x2000-passive-zero.json",
+     "sha256": "54c09021eec3a355040e000b8a145938f8757f259b0dc6a293f86a32ad19fd32"
+    }
+   ],
+   "expected_seconds": 2.8,
+   "job": "p-2x2000-passive",
+   "options": {
+    "active_reset_cycles": null,
+    "heralding_mode": "none"
+   },
+   "shots": 2000
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/a-2x2000-active1-x.json",
+     "sha256": "95246eba8adf5d4b4fba33b4e7276c57fe2a458e393aedc3ccd41626de866dac"
+    },
+    {
+     "file": "circuits/a-2x2000-active1-zero.json",
+     "sha256": "461dfb881d36df7a957c07d3d952e7bd677b12fe970e92ebf338c506af7887e7"
+    }
+   ],
+   "expected_seconds": 1.635,
+   "job": "a-2x2000-active1",
+   "options": {
+    "active_reset_cycles": 1,
+    "heralding_mode": "none"
+   },
+   "shots": 2000
+  }
+ ],
+ "question": "Does Garnet bill ceil(its compiler estimate), does that estimate follow a fixed job cost plus each shot's schedule, does active reset run and keep initialization, and does the calibration-built simulator predict QB1?",
+ "schema": "iqm-circuit-case-v1"
+}

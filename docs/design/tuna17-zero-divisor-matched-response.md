@@ -44,7 +44,7 @@ also leaves region-dependent visibility and time-dependent region offsets unreso
 
 ## Budget, replay and admission
 
-The [proposal](../../results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response/proposal.json)
+The [proposal](../../results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery/proposal.json)
 contains nine unsubmitted jobs on `tuna_17`: three witness jobs and six readout-control jobs,
 each with 16384 shots, totaling 147456 shots. The provisional budget is 101.55168 device seconds,
 using the [retained timing model](../notes/quantum_inspire/README.md) of 2.6 seconds fixed overhead
@@ -52,25 +52,30 @@ plus 0.53 ms per shot per job, at zero metered credits under the recorded
 service terms. Two interbatch pauses of at least 120 seconds require at least 240 seconds total.
 Refresh availability, terms, queue limits and duration before presenting an execution approval.
 
-The generator binds the retained catalogue digest and its own source digest. Replay locally:
+The generator binds the retained catalogue digest and its own source digest, so a change to
+`scripts/qi_matched_zero_divisor.py` retains a separately named proposal. The
+[first proposal](../../results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response/proposal.json) binds the generator before its compiler receipt
+moved to the token-recovery toolchain record; the nine circuits are byte-identical. Replay locally:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
 export QI_PYTHON
-"$PYTHON" scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response
-"$PYTHON" scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response
+"$PYTHON" scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery
+"$PYTHON" scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery
 ```
 
 The first command uses the pinned Qiskit replay runtime. The second checks the
-[current compiler receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-pause-ladder.json)
+[current compiler receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-token-recovery.json)
 against the producer and its compiler/admission/adapter/pool sources, catalogue, locked toolchain
 and all nine circuit hashes. The [first receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain.json)
 retains its original bytes and top-level-only source binding. The
 [intermediate receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-source-closure.json)
 preserves the compiler closure before the backend batch-admission source was included, and the
 [admission-closed receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-admission-closure.json)
-the closure before `scripts/qi_platform.py` gained the hardware pause ladder; every compiled row is
-identical across the last two. With `QI_PYTHON`
+the closure before `scripts/qi_platform.py` gained the hardware pause ladder, and the
+[pause-ladder receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-pause-ladder.json)
+the closure before it gained the expired-signature retry and the token-exchange log; every compiled
+row is identical across the last three. With `QI_PYTHON`
 set, the second command also repeats local parsing and compilation through the repository's
 `qi_stack` adapter and compares every receipt field. Gate `core-633` requires that live path
 in the Quantum Inspire CI stack; the ordinary stack checks the retained receipt explicitly.

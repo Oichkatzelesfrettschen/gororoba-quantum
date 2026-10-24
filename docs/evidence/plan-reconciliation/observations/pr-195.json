@@ -1,0 +1,11 @@
+{
+  "number": 195,
+  "title": "n21: exact-model planning and replica-covariance contract for the encoded N=21 run",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T14:47:02Z",
+  "closed_at": "2026-10-17T14:47:02Z",
+  "merge_commit_sha": "934db60efa4732f12b1c888db1a7c8006c5dec1d",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/195",
+  "merge_ancestor_of_canonical_head": true
+}

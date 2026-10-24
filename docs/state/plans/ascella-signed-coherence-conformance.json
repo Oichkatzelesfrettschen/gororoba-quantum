@@ -1,0 +1,233 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-signed-coherence-conformance",
+  "kind": "experiment",
+  "summary": "Ascella signed-coherence coefficient acquisition: 64 settings, 27 primary endpoints, theory atlas and frozen native request",
+  "sources": [
+    "docs/design/ascella-signed-coherence-conformance.md",
+    "docs/evidence/ascella-order-coefficients/README.md",
+    "docs/state/plans/ascella-approved-order-retry.json"
+  ],
+  "state": "active",
+  "scope": "One 64-setting Ascella order-family job measuring sign-odd and sign-even X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
+  "owner": "Quandela experiment operator",
+  "next_action": "Fit restricted physical response models (detector efficiency, additive background, small phase-shifter and coupler perturbations) on job-00 and predict job-01 pooled configurations without refitting setting-dependent terms, to name the configuration error behind X0 + Xc2 = -0.028; the outside-block alternation sits in a catalogue-dark-shaped component, and a timing budget for larger sample counts still needs controlled repeats that vary only the samples per iteration.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The approved acquisition ran and is retained with its reproducing analysis; all 27 endpoints qualify. The outside-block share above the dark-count bound remains an open mechanism question."
+  },
+  "steps": [
+    {
+      "id": "freeze-native-request",
+      "action": "Generate the serialized 64-setting request: twelve-entry input, twelve-mode circuit, output width twelve, explicit empty mitigation, budgets and exact entry order.",
+      "acceptance": "A builder writes the request with a digest, and a check rejects any setting whose full unitary, analyzer or output width differs from the design.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "The builder writes the 64-iteration twelve-mode template request; gate core-680 validates the retained bytes against Perceval and the closed-form operators and refuses a perturbed unitary, exchanged X/Y analyzers and a four-mode input occupation.",
+          "observed_at": "2026-10-24T05:57:21+00:00",
+          "revision": "767415cb652f98a212234db8df75dc319c0412a6",
+          "evidence": [
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/cases.json",
+              "sha256": "3c92af45df7502bab5c6f2d74779aa83b04f7af2094b62b499b6e29ca0e69520"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
+            },
+            {
+              "ref": "scripts/ascella_coherence_request.py",
+              "sha256": "6c1c010acfcee9da709ee634af5dc7d9a5706e3aac30e6ee9e660cb7494a63be"
+            }
+          ],
+          "scope_sha256": "7fa0703e609b4031e512351e5115cb944570d6ae72acd09a8bfc492c3f485da7"
+        },
+        {
+          "result": "The builder writes the 64-iteration twelve-mode template request and, through qd_platform.payload without sending, its serialized job body (Perceval estimate 524,288 shots); gate core-680 validates the retained case and body against Perceval and the closed-form operators and refuses a perturbed unitary, exchanged X/Y analyzers and a four-mode input occupation.",
+          "observed_at": "2026-10-24T06:07:17+00:00",
+          "revision": "f74154f735d4ea572c8d93be8a0d387c8602768a",
+          "evidence": [
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/cases.json",
+              "sha256": "3c92af45df7502bab5c6f2d74779aa83b04f7af2094b62b499b6e29ca0e69520"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/circuit.json",
+              "sha256": "1fed0081cd440ffd6bb3b6c286750484041d70146d3dc5f13855d61598d2da0f"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/job-body.json",
+              "sha256": "7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/body-build.json",
+              "sha256": "b4a1ccfff4ac9e5aab9cf8fa827b79486a189e42bcda800316d219a75a43a28a"
+            },
+            {
+              "ref": "scripts/ascella_coherence_request.py",
+              "sha256": "1327a9a3b13b74b0cd883b91cd8db3fe6ca8b674f4ab2bd31942a0933cbcfaf2"
+            }
+          ],
+          "scope_sha256": "7fa0703e609b4031e512351e5115cb944570d6ae72acd09a8bfc492c3f485da7"
+        }
+      ]
+    },
+    {
+      "id": "replay-request-locally",
+      "action": "Replay the frozen request through the local SLOS backend and run the registered estimators on the ideal response, the equal-contrast mutation counterexample and the sign-even counterexample.",
+      "acceptance": "The ideal replay qualifies every primary endpoint; the equal-contrast counterexample fails mutation closure; the sign-even counterexample keeps all fifteen sign-odd and dark coefficients ideal and fails tolerance-conformance on the three sign-even coefficients replay.py names; the weak 0.05 twist excludes the exact ideal while conforming to the coefficient tolerance.",
+      "state": "done",
+      "depends_on": [
+        "freeze-native-request"
+      ],
+      "receipts": [
+        {
+          "result": "SLOS and Naive replay the 64-entry body with twelve-mode single-photon outputs matching the manifest within 1e-12; the ideal and sampled responses qualify all 27 endpoints, the equal-contrast case fails mutation closure, the 0.2 sign-even twist keeps the 15 sign-odd and dark coefficients ideal and falsifies exactly the derivation's three sign-even coefficients, and the 0.05 twist excludes their ideal while every endpoint qualifies.",
+          "observed_at": "2026-10-24T06:31:42+00:00",
+          "revision": "c4ea9f94d455a0a90432e443e5aa821e96643815",
+          "evidence": [
+            {
+              "ref": "results/local-simulation/ascella-signed-coherence-replay/replay.json",
+              "sha256": "cbcf38f3bbd9c725148a96894ca60bf71895663c185a2d456bb8848b3c90bf86"
+            },
+            {
+              "ref": "results/local-simulation/ascella-signed-coherence-replay/producer.py",
+              "sha256": "3163d7e37ac0bb9c553f2c079a3778ca9a0ba3ea0f4764e731863701c7ce236b"
+            },
+            {
+              "ref": "scripts/ascella_coherence_analysis.py",
+              "sha256": "d3ea8599f7132dac12c1d2df9fce1af87c00d4a5c39647861457c4efb8e0df63"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/job-body.json",
+              "sha256": "7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8"
+            }
+          ],
+          "scope_sha256": "406e8b2bedcc0dfeacb29a9053e9d683abc1a43e53c1c8db603bd65508113385"
+        },
+        {
+          "result": "SLOS and Naive replay the 64-entry body with twelve-mode single-photon outputs matching the manifest within 1e-12; the ideal and sampled responses qualify all 27 endpoints, the equal-contrast case fails mutation closure, the 0.2 sign-even twist keeps the 15 sign-odd and dark coefficients ideal and falsifies exactly the derivation's three sign-even coefficients, and the 0.05 twist excludes their ideal while every endpoint qualifies. Missing and zero-eligible iterations yield no decisions.",
+          "observed_at": "2026-10-24T06:35:48+00:00",
+          "revision": "4ebf1b807d58c9be6224bc0b369535e0a9f37915",
+          "evidence": [
+            {
+              "ref": "results/local-simulation/ascella-signed-coherence-replay/replay.json",
+              "sha256": "e6d9e8ceba1d6f6feb17c076a1785ce0160848583fa4ee0cb1d59236ea6e6238"
+            },
+            {
+              "ref": "results/local-simulation/ascella-signed-coherence-replay/producer.py",
+              "sha256": "84c42818d74191f8a5f1162600e2ace0b61bd828406f9a4a6a60ae0e530c3585"
+            },
+            {
+              "ref": "scripts/ascella_coherence_analysis.py",
+              "sha256": "4fc9ae4b3b4a46fa1646370f1b7f076a190c6552196107c82f9585c38e90a890"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/job-body.json",
+              "sha256": "7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8"
+            }
+          ],
+          "scope_sha256": "406e8b2bedcc0dfeacb29a9053e9d683abc1a43e53c1c8db603bd65508113385"
+        }
+      ]
+    },
+    {
+      "id": "written-case-and-approval",
+      "action": "Write the acquisition case with fresh availability, tariff and expected credits, and wait for the user's approval.",
+      "acceptance": "An approved case names the request digest, samples, cap and expected credits; without approval nothing is submitted.",
+      "state": "done",
+      "depends_on": [
+        "replay-request-locally"
+      ],
+      "receipts": [
+        {
+          "result": "The owner approved the written acquisition case on 2026-10-24; the submission record quotes the approval, the 1.016384-credit ceiling, 524288 samples and the 200-second expectation.",
+          "observed_at": "2026-10-24T09:28:11+00:00",
+          "revision": "98d2584aa9b6e2331b81b0ff3ad38aba3c46566e",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/submission.json",
+              "sha256": "9e1650b7f94f1099f81076d95541f0a2e37d34501ee0f10ffc5718364cce69d5"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/preflight.json",
+              "sha256": "84ccce20c5358d3b700307ac54a24968729acb0859a538f979c532d863fa3a4b"
+            }
+          ],
+          "scope_sha256": "14f88941b432d8c3eabec16a5adb7bc7cc24d9a1c84f7b57365934d79ae2892e"
+        }
+      ]
+    },
+    {
+      "id": "acquire-and-analyze",
+      "action": "Under the approved case, preflight, submit the frozen body once, collect the raw result and run the registered analysis on the retained run.",
+      "acceptance": "A retained run directory under results/quandela/runs/ holds the receipt, raw result, results.json and analysis.json that ascella_coherence_run.py --run reproduces; the run enters research_state.json and the strategy run log.",
+      "state": "done",
+      "depends_on": [
+        "written-case-and-approval"
+      ],
+      "receipts": [
+        {
+          "result": "Job 739a5271 completed 524288 samples in 186 s for 1.016384 free credits; ascella_coherence_run.py --run reproduces analysis.json, in which all 27 endpoints qualify and 1.27 percent of events fall outside the logical block; claim ascella-signed-coherence-conformance and the strategy run log carry the run.",
+          "observed_at": "2026-10-24T09:28:11+00:00",
+          "revision": "98d2584aa9b6e2331b81b0ff3ad38aba3c46566e",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+              "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis.json",
+              "sha256": "1e36eff94b7939b4d87afb0cb9fcb22f1458f4e3d59377bf32ab212b7ac152da"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/raw/result.json",
+              "sha256": "b2bef57a8bbf721ddcf4ffcf21ef0195b28ff1c7d223f8c033da206578cad1c3"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "bb87c3279a37842f823c7326ee4aede5283cec21fbe4c5f06efec8dd591b5d83"
+            }
+          ],
+          "scope_sha256": "38576236e39d163b17c0b217dc2b2d05cf9b9a3aa0ce255ee85ebf5329598285"
+        }
+      ]
+    },
+    {
+      "id": "permuted-repeat",
+      "state": "done",
+      "action": "Diagnose job-00 outside-block clicks and analyzer contrast, preregister a permuted repeat at twice the samples with a between-job comparison, and run it under its own approval.",
+      "acceptance": "A retained job-01 run whose registered analysis and preregistered comparison replay through their gates, entered in research_state.json and the strategy run log.",
+      "depends_on": [
+        "acquire-and-analyze"
+      ],
+      "receipts": [
+        {
+          "result": "Job 6ef8e8db ran the permuted repeat: 27 of 27 endpoints qualify; outside-block clicks follow the execution sequence (lag-1 -0.653) with budget-proportional exposure, not the setting (Spearman -0.075); analyzer residuals reproduce (X 0.974, Y 0.802).",
+          "observed_at": "2026-10-24T15:46:15+00:00",
+          "revision": "b986267dbf363837cd5fa147839b5edd3dc78161",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/analysis.json",
+              "sha256": "a0548293da65ffdb603799be6ab71fb94d008bbbaee164e7dcfe6f1645478121"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/repeat-comparison.json",
+              "sha256": "922c442a075680199c592a4f8c7132d266162aa893d417c57f9c1fb9e33162aa"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/raw/result.json",
+              "sha256": "d87a4e6318b94a3e19f79654f3393ade73483e7f9974c3ecc6cfb3f2ab53c0a8"
+            }
+          ],
+          "scope_sha256": "737384a22fb7357f37cf339dace5595c426fe7e876899375796ca35a92c8f4a0"
+        }
+      ]
+    }
+  ],
+  "related": [
+    "ascella-approved-order-retry",
+    "ascella-instrument-readiness-and-packed-tests"
+  ]
+}

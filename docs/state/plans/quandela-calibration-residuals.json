@@ -1,0 +1,37 @@
+{
+  "schema": "work-plan-v1",
+  "id": "quandela-calibration-residuals",
+  "kind": "investigation",
+  "summary": "Quandela QPU calibration",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/89a433e118214af79a80ca4ca0247ad429ec83cde27fef43975588bc312e078f.txt",
+    "docs/notes/quandela/calibration.md"
+  ],
+  "state": "inbox",
+  "scope": "Quandela QPU calibration",
+  "next_action": "Verify architecture, commands, defaults and mitigation completeness against source observations.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Date provider observations and distinguish a mechanism hypothesis from a measured result."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Verify architecture, commands, defaults and mitigation completeness against source observations.",
+      "acceptance": "Date provider observations and distinguish a mechanism hypothesis from a measured result.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Resolve the HOM hold policy.",
+      "acceptance": "Date provider observations and distinguish a mechanism hypothesis from a measured result.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-3",
+      "action": "Investigate the mode5 dark-count increase under named controls.",
+      "acceptance": "Date provider observations and distinguish a mechanism hypothesis from a measured result.",
+      "state": "todo"
+    }
+  ]
+}

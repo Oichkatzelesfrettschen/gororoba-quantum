@@ -57,12 +57,31 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(102 established, 48 exploratory, 4 open, 10 proposed, 4 superseded, 11 withdrawn) and every executed acquisition. Open and
+by evidence class and every executed acquisition. Open and
 proposed work, in dependency order:
 
+| Evidence class | Status | Claim records |
+| --- | --- | ---: |
+| circuit-conformance check | established | 8 |
+| exact finite certificate | established | 22 |
+| exploratory reanalysis | exploratory | 62 |
+| exploratory reanalysis | superseded | 2 |
+| machine-checked proof | established | 8 |
+| mathematical claim | established | 21 |
+| mathematical claim | open | 3 |
+| numerical or stochastic simulation | established | 8 |
+| preregistered emulator control | established | 10 |
+| preregistered hardware inference | established | 52 |
+| preregistered hardware inference | superseded | 1 |
+| proposed experiment | proposed | 11 |
+| proposed experiment | superseded | 4 |
+| withdrawn claim | withdrawn | 11 |
+
+These metadata counts are not summed into a headline of established scientific results.
+Independent hardware replication requires an adjudicated replication design, not a job count.
+
 - **proposed-tuna17-zero-divisor-matched-response** (proposed, proposed experiment). Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.
-- **cd-moving-pair-walsh-proof** (open, mathematical claim). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.
-- **a5-stiefel-universal** (open, mathematical claim). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open. Depends on a5-stiefel-selected-nullity.
+- **a5-stiefel-universal** (open, mathematical claim). Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open. Depends on a5-stiefel-selected-nullity, a5-stiefel-pfaffian-reduction, a5-stiefel-pfaffian-identity-test.
 - **dimension32-global-topology** (open, mathematical claim). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants. Depends on four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone.
 - **proposed-conditional-ramsey-hamiltonian** (proposed, proposed experiment). Add Ramsey of qubit A conditioned on B in |0> and |1> to the Bell odd and even coherence rates: the design matrix for H/hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B)/2 rises from rank 2 to 3, J = (nu_A|0 - nu_A|1)/2, and nu_odd + nu_even = nu_A|0 + nu_A|1 is the falsifier of the reduced diagonal model. Depends on hw-coherence-window.
 - **proposed-signed-kernel-probe** (proposed, proposed experiment). Perturb the certified kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) by t L_e2: the dark probability t^2/(2+|t|)^2 is even in t, while the Hermitian dilation reference reads Re<v|B(t)|u> = t/(2+|t|), signed and first order. Depends on algebra-circuit-fixtures.
@@ -74,6 +93,7 @@ proposed work, in dependency order:
 - **a5-nonzero-divisor-two-dimension-gap** (open, mathematical claim). At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24. Depends on a5-rank-locus-local-dimension, nullity-twelve-cone.
 - **proposed-tuna17-q0-q6-double-x-discriminator** (proposed, proposed experiment). P1 after X X with no wait, beside a readout-0 and readout-1 pair in one Tuna-17 batch, separates an under-rotated X from |1> misassignment on Q0 and Q6: under-rotation by the angle their zero-wait P(1|1) implies predicts 0.98 and 0.52, misassignment 0.038 and 0.013. Ramsey inverted with the matched calibration cannot separate them when X and X90 share the under-rotation, because the raw quadratures then take the readout-scale form sin^2(beta) (1 + cos phi) / 2; a fault confined to native X keeps the X90 Ramsey at the earlier scale, which Q6's raw quadrature mean (0.064 against a floor of 0.148) excludes and Q0's (0.287 against 0.175) does not. Depends on qi-tuna17-q0-q6-loss-not-readout-relaxation.
 - **qi-tuna17-effective-idle-zz-map** (proposed, proposed experiment). A proposed confirmatory cross-check of the retained exploratory coupler map uses a gate-level conditional-Ramsey case covering all 24 edges of the retained Tuna-17 coupling graph in eight induced matchings, with both probe directions, static neighbor states 0 and 1, X/Y quadratures, six identical physical delay values including zero, and full four-state joint readout calibration. The 384 Ramsey and 32 calibration circuits form 139 batches at 8192 shots each (3407872 job shots), with no CZ gates. A source-bound analyzer reconstructs omega_A, omega_B and J, checks signal quality and reciprocal-J agreement, and uses Holm correction over 24 edge tests. A separately budgeted compact QX preflight contains the same 416 circuits and 139 batches on 2 to 8 qubits at 1024 shots each (425984 emulator job shots), with fixed ideal-output criteria. Neither case has been submitted. The hardware pause ladder puts its interbatch pauses between 4140 seconds at the 30-second first step and 16560 seconds at the 120-second ceiling. It is retained as a complete offline design reference and needs a revised delay/calibration acquisition plan before submission. Depends on qi-tuna17-zero-divisor-common-response, hw-idle-detuning-scale, qi-tuna17-coupler-zz-map.
+- **proposed-algebra-device-controlled-extensions** (proposed, proposed experiment). Operational case contracts pair algebra-specific response, singular-sector dynamics, coherent selection, sequential measurement and effective nonunitarity with property-removing mutations, unconditional accounting and prospective calibration controls. Depends on algebra-device-operational-falsifiers, algebra-device-logical-instrument-bank.
 <!-- research-state:end -->
 
 The correction pilot, coherence window, ripple and rank-sector transfers,

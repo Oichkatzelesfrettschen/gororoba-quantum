@@ -1,7 +1,7 @@
 """Planted truths for scripts/n21_q143_segmented_sweep.py: the one-segment chain is the binomial, every
 telegraph segment marginal is the beat kernel, a refused segment marginalizes, a later-segment offset breaks
 exchangeability, a herald backaction plant is detected, and segment correlation separates a line mixture
-from an exchange-coupled TLS in both directions.
+from an exchange-coupled TLS in both directions. The preconditioned fit leaves no coordinate at its start.
 """
 
 from __future__ import annotations
@@ -11,6 +11,8 @@ import math
 import n21_q143_segmented_sweep as sweep
 import numpy as np
 import pytest
+
+pytestmark = pytest.mark.audit
 
 beat = sweep.beat
 TRUTH_STATIC = sweep.TRUTH_STATIC
@@ -171,3 +173,15 @@ def test_tls_plant_rejects_the_line_mixture(p0: float) -> None:
     reverse = line[0] - own[0]
     if reverse <= math.log(1.0 / TEST_ALPHA):
         raise AssertionError(f"a tls plant started at p0={p0} favors the line mixture by {reverse}")
+
+
+def test_preconditioned_fit_moves_the_soft_coordinates() -> None:
+    points = sweep.asimov("static", TRUTH_STATIC, sweep.design_points(2, 256, backaction=False))
+    start = sweep.static_start(TRUTH_STATIC[7], TRUTH_STATIC[8])
+    value, params = sweep.Fit()(("static", start, points, 0))
+    truth = sweep.negative_log_likelihood(np.array(TRUTH_STATIC), "static", points)
+    if value > truth + 1e-3:
+        raise AssertionError(f"the fit stops {value - truth:.4f} nats above the planted truth")
+    for name, index in (("t_us", 1), ("t1_us", 5)):
+        if abs(params[index] - start[index]) < 1.0:
+            raise AssertionError(f"{name} stays at its start {start[index]}")

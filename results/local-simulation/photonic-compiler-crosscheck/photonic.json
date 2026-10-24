@@ -1,0 +1,350 @@
+{
+  "rows": [
+    {
+      "case": "results/hypercomplex/cases/quandela/order",
+      "index": 0,
+      "name": "order-i0-j0-representative0",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.5489098060061224
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/order",
+      "index": 1,
+      "name": "order-i0-j0-representative1",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.5319538530020509
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/order",
+      "index": 2,
+      "name": "order-i0-j1-representative0",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.45406744797946885
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/order",
+      "index": 3,
+      "name": "order-i0-j1-representative1",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.5284452910127584
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/order",
+      "index": 4,
+      "name": "order-i1-j0-representative0",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.4876667039934546
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/order",
+      "index": 5,
+      "name": "order-i1-j0-representative1",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.5442716919933446
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/order",
+      "index": 6,
+      "name": "order-i1-j1-representative0",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.5089343700092286
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/order",
+      "index": 7,
+      "name": "order-i1-j1-representative1",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.40305689701926894
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/transform",
+      "index": 0,
+      "name": "transform-forward-representative0",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.7982086420233827
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/transform",
+      "index": 1,
+      "name": "transform-forward-representative1",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.632555141026387
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/transform",
+      "index": 2,
+      "name": "transform-identity-reference-representative0",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.2817066370043904
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/transform",
+      "index": 3,
+      "name": "transform-identity-reference-representative1",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.183213287993567
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/transform",
+      "index": 4,
+      "name": "transform-forward-real-superposition-representative0",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.6020094109990168
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/transform",
+      "index": 5,
+      "name": "transform-forward-real-superposition-representative1",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.420173231017543
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/transform",
+      "index": 6,
+      "name": "transform-forward-imaginary-superposition-representative0",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.48139570298371837
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/transform",
+      "index": 7,
+      "name": "transform-forward-imaginary-superposition-representative1",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.4196050480240956
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 0,
+      "name": "wave-frame-00",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.4056416749954224
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 1,
+      "name": "wave-frame-01",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 2.1573025140096433
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 2,
+      "name": "wave-frame-02",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.730921214009868
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 3,
+      "name": "wave-frame-03",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.5205375629884657
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 4,
+      "name": "wave-frame-04",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.9916978009860031
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 5,
+      "name": "wave-frame-05",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.798703904991271
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 6,
+      "name": "wave-frame-06",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.2790968140179757
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 7,
+      "name": "wave-frame-07",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 5.175811415014323
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 8,
+      "name": "wave-frame-08",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 5.1103156020108145
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 9,
+      "name": "wave-frame-09",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 3.6386843630170915
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 10,
+      "name": "wave-frame-10",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 2.784783884009812
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 11,
+      "name": "wave-frame-11",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.9460131939849816
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 12,
+      "name": "wave-frame-12",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.4028997139830608
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 13,
+      "name": "wave-frame-13",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 5.3054307509737555
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 14,
+      "name": "wave-frame-14",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 5.15614646699396
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 15,
+      "name": "wave-frame-15",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 4.808063260978088
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 16,
+      "name": "wave-frame-16",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 2.0028357729897834
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 17,
+      "name": "free-reference-0",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.9302436059806496
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 18,
+      "name": "free-reference-1",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 1.3482904540142044
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 19,
+      "name": "free-reference-2",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.7604160770133603
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 20,
+      "name": "free-reference-3",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.7126990770047996
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 21,
+      "name": "free-reference-4",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.5690659889951348
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 22,
+      "name": "wave-ray-check-1",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.4453651119838469
+    },
+    {
+      "case": "results/hypercomplex/cases/quandela/wave",
+      "index": 23,
+      "name": "wave-ray-check-2",
+      "passed": false,
+      "error": "AttributeError: 'Experiment' object has no attribute 'circuit'",
+      "seconds": 0.776929318002658
+    }
+  ],
+  "source_sha256": {
+    "results/hypercomplex/cases/quandela/order/cases.json": "1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa",
+    "results/hypercomplex/cases/quandela/order/circuit.json": "f2e7ea115d91f962cb045e824d8d3f5c3da432fe0b812e0e58dfc7b23f7ac550",
+    "results/hypercomplex/cases/quandela/transform/cases.json": "5eab5a4699a2f96f41c1e56092198198d59bfee39ebfb9ca3064a58cd8a8eff9",
+    "results/hypercomplex/cases/quandela/transform/circuit.json": "b7928b75db4b5b934b91be3decdc5b32242d720a843d0bf7ee6213b3ba310b63",
+    "results/hypercomplex/cases/quandela/wave/cases.json": "632cfe0e88de64d3bf752493e531c8788765683a3dc426858e22518ea935f556",
+    "results/hypercomplex/cases/quandela/wave/circuit.json": "b7928b75db4b5b934b91be3decdc5b32242d720a843d0bf7ee6213b3ba310b63"
+  },
+  "versions": {
+    "perceval-quandela": "1.3.1",
+    "exqalibur": "1.4.2",
+    "numpy": "2.5.4"
+  },
+  "schema": "local-photonic-compiler-simulation-v1",
+  "python": "3.14.8",
+  "runner_sha256": "7a1213ead472bde730279b8750a98380499e3f04c2da2d4ff48ec7df7ed09919",
+  "seed": 20261022,
+  "shots": 1024,
+  "elapsed_seconds": 87.76266619199305,
+  "evidence_class": "local noiseless simulation; sampled counts are simulated",
+  "authorization": "User approved additive background simulation on this machine while Ascella waits",
+  "boundary": "Mathematical and compiler checks; hardware loss, drift and device conformance remain unmeasured",
+  "dialects": {
+    "cQASM": "3.0 through libqasm and OpenSquirrel",
+    "OpenQASM": "absent from the selected frozen cases"
+  }
+}

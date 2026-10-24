@@ -1091,6 +1091,37 @@
       },
       "redistribution": "explicit_license_verified",
       "path": "docs/pdf/2608.20259v1.pdf"
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/2103.12805v1",
+      "note": "docs/notes/papers/2103.12805.md",
+      "audited_at_utc": "2026-10-24T15:18:17+00:00",
+      "status": "retained",
+      "sha256": "e1cf74159d98ce9846fc86e56f0f3e41a21e6d094d2c028635989e9d07223fc5",
+      "bytes": 832785,
+      "pages": 13,
+      "acquisition": "download",
+      "prior_note_hash_match": true,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "e1cf74159d98ce9846fc86e56f0f3e41a21e6d094d2c028635989e9d07223fc5",
+        "verified_at_utc": "2026-10-24T15:18:17+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2103.12805v1",
+        "evidence_sha256": "8856fd002331e7753843f9fb5c1b4ec3230c7362458bdc9ce1bc5b9f7957c3cb",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and claim-specific construction/discussion passages; mathematical proofs remain independently unverified.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2103.12805v1.html",
+        "evidence_retrieved_at_utc": "2026-10-24T15:18:13+00:00",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify changes. Repository licensing leaves original source licensing intact."
+      },
+      "redistribution": "explicit_license_verified",
+      "path": "docs/pdf/2103.12805v1.pdf"
     }
   ],
   "aliases": [
@@ -1155,9 +1186,117 @@
     },
     "docs/notes/papers/2411.18881.md": {"status": "journal-venue-unverified"},
     "docs/notes/papers/2512.13002.md": {"status": "journal-venue-unverified"},
-    "docs/notes/papers/2505.11747.md": {"status": "journal-venue-unverified"}
+    "docs/notes/papers/2505.11747.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/schafer-1954-cayley-dickson-flexible.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.2307/2372583",
+      "venue": "American Journal of Mathematics 76(2), 435-446 (1954)",
+      "receipt_url": "https://api.crossref.org/works/10.2307/2372583"
+    },
+    "docs/notes/papers/2205.07986.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/s00006-023-01296-6",
+      "venue": "Advances in Applied Clifford Algebras 33(4), article 49 (2023)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/s00006-023-01296-6"
+    },
+    "docs/notes/papers/1003.0429.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/s00220-011-1279-9",
+      "venue": "Communications in Mathematical Physics 306(1), 83-118 (2011)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/s00220-011-1279-9"
+    }
   },
   "web_sources": [
+    {
+      "url": "https://arxiv.org/abs/2408.15139",
+      "note": "docs/notes/quandela/literature.md",
+      "sha256": "ebf63c1a4a4bd3cf79c5dbd660c1cbae986fcd6c17c775a24e0734e9d6442ad3",
+      "bytes": 41524,
+      "retrieved_at_utc": "2026-10-24T15:34:08Z",
+      "reading_scope": "Title, authors and abstract only; paper body unreviewed. Pradip et al., fast thermo-optic switching on silicon nitride through parity-time symmetry breaking: 8.5 us rise for a pi shift",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/2405.11044",
+      "note": "docs/notes/quandela/literature.md",
+      "sha256": "ed7475f961ad330c0fe68f56d2a940495de5f34d3b022bcb2919e2d79dc4b59d",
+      "bytes": 42400,
+      "retrieved_at_utc": "2026-10-24T15:34:08Z",
+      "reading_scope": "Title, authors and abstract only; paper body unreviewed. Chen et al., slow-light silicon thermal phase shifter: P_pi 3.63 mW, P_pi tau 5.1 mW us",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/2601.10289",
+      "note": "docs/notes/quandela/literature.md",
+      "sha256": "e3cc679ecaae82a8a5a42b86915c5c3af27e164535867e99b1b02e5e31673a4f",
+      "bytes": 43137,
+      "retrieved_at_utc": "2026-10-24T15:34:08Z",
+      "reading_scope": "Title, authors and abstract only; paper body unreviewed. Sanz et al., QFT benchmark of genuine multiphoton indistinguishability on a Quandela processor",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/2203.01234",
+      "note": "docs/notes/papers/operational-instrument-sources.md",
+      "sha256": "13f3c712785887756796f50fb8f6cd94e7b12f4e7048d91e6023554346993eb8",
+      "bytes": 44809,
+      "retrieved_at_utc": "2026-10-23T17:59:26Z",
+      "reading_scope": "Title, authors, supplied DOI/journal metadata and abstract only; paper body unreviewed. Dynamical analysis of logarithmic energy-momentum squared gravity; authors: Acquaviva, Giovanni; Katirci, Nihan",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/physics/9712001",
+      "note": "docs/notes/papers/operational-instrument-sources.md",
+      "sha256": "efc2533362471b5ed8cb177aa53847bcedd9be0cf032a6f89069436fa752ee67",
+      "bytes": 41201,
+      "retrieved_at_utc": "2026-10-23T17:59:26Z",
+      "reading_scope": "Title, authors, supplied DOI/journal metadata and abstract only; paper body unreviewed. Real Spectra in Non-Hermitian Hamiltonians Having PT Symmetry; authors: Bender, Carl M.; Boettcher, Stefan",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/quant-ph/9604034",
+      "note": "docs/notes/papers/operational-instrument-sources.md",
+      "sha256": "8e0003ad8c550b44a3559c600e16495de37206c19dd0f5f230976215a9116985",
+      "bytes": 44219,
+      "retrieved_at_utc": "2026-10-23T17:59:26Z",
+      "reading_scope": "Title, authors, supplied DOI/journal metadata and abstract only; paper body unreviewed. A Theory of Quantum Error-Correcting Codes; authors: Knill, Emanuel; Laflamme, Raymond",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/quant-ph/0004040v1",
+      "note": "docs/notes/papers/operational-instrument-sources.md",
+      "sha256": "652ed0a161016f144efa90a24ca3b44d1fa7c466aca3c29a818325d1593cef59",
+      "bytes": 39252,
+      "retrieved_at_utc": "2026-10-23T18:01:17Z",
+      "reading_scope": "Title, authors, supplied DOI/journal metadata and abstract only; paper body unreviewed. Quantum Zeno Dynamics; authors: Facchi, P.; Gorini, V.; Marmo, G.; Pascazio, S.; Sudarshan, E. C. G.",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/1110.3234",
+      "note": "docs/notes/papers/operational-instrument-sources.md",
+      "sha256": "69143782177d8c185e66fcfa20e55c03114e9c8839b33cde3cb38e8a3da0baf6",
+      "bytes": 44316,
+      "retrieved_at_utc": "2026-10-23T17:59:43Z",
+      "reading_scope": "Title, authors, supplied DOI/journal metadata and abstract only; paper body unreviewed. Gaussian Quantum Information; authors: Weedbrook, Christian; Pirandola, Stefano; Garcia-Patron, Raul; Cerf, Nicolas J.; Ralph, Timothy C.; Shapiro, Jeffrey H.; Lloyd, Seth",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/quant-ph/9707021",
+      "note": "docs/notes/papers/operational-instrument-sources.md",
+      "sha256": "b0bc03b47f2f9638f1e4d3d0a9064a595d80a801464e19bafb729a070e7bb921",
+      "bytes": 40617,
+      "retrieved_at_utc": "2026-10-23T17:59:43Z",
+      "reading_scope": "Title, authors, supplied DOI/journal metadata and abstract only; paper body unreviewed. Fault-tolerant quantum computation by anyons; authors: Kitaev, A. Yu.",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/abs/1812.05226v1",
+      "note": "docs/notes/papers/operational-instrument-sources.md",
+      "sha256": "d77591d21e851b310b8b3e5b07f50775ae008304b4449ecced8198ac098c1b21",
+      "bytes": 43054,
+      "retrieved_at_utc": "2026-10-23T18:07:11Z",
+      "reading_scope": "Title, authors, supplied DOI/journal metadata and abstract only; paper body unreviewed. Observation of parity-time symmetry breaking in a single spin system; authors: Wu, Yang; Liu, Wenqiang; Geng, Jianpei; Song, Xingrui; Ye, Xiangyu; Duan, Chang-Kui; Rong, Xing; Du, Jiangfeng",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
     {
       "url": "https://api.crossref.org/works/10.1080%2F00927870701724094",
       "note": "docs/notes/papers/hypercomplex_quantum_crossref_records.md",
@@ -1690,6 +1829,105 @@
       "retrieved_at_utc": "2026-10-22T09:19:58.872345+00:00",
       "reading_scope": "Stueckelberg 1960: deposited title, author, year, publisher and DOI; body unreviewed",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://users.cecs.anu.edu.au/~bdm/data/hadamard.html",
+      "note": "docs/notes/papers/mckay-hadamard-matrices.md",
+      "sha256": "151e0b0a86b4f70639f1009fe9b67919475ab050c29dd57c09bef29259afdc90",
+      "bytes": 2086,
+      "retrieved_at_utc": "2026-10-23T22:23:57+00:00",
+      "reading_scope": "McKay Hadamard data page: file format, equivalence relation, class counts per order, order-32 transpose files",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://users.cecs.anu.edu.au/~bdm/data/",
+      "note": "docs/notes/papers/mckay-hadamard-matrices.md",
+      "sha256": "ad346572677e19cb10ffc3e7f7f6cbfcdb6f70bef022175812df4afe7434f3b8",
+      "bytes": 3626,
+      "retrieved_at_utc": "2026-10-23T22:53:28+00:00",
+      "reading_scope": "License section: CC BY 4.0 for the collection's data files, except data compiled by others; HTML files excluded",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://users.cecs.anu.edu.au/~bdm/data/hadamard/had16.txt",
+      "note": "docs/notes/papers/mckay-hadamard-matrices.md",
+      "sha256": "67fb6f1a36f6893fca541a85754329812b9b8b454b3438ec9b6fd00005c2f170",
+      "bytes": 400,
+      "retrieved_at_utc": "2026-10-23T22:23:57+00:00",
+      "reading_scope": "Five order-16 Hadamard class representatives, read in full; bytes equal docs/evidence/cd-star-lattice/external/mckay_had16.txt",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.2307/2372583",
+      "note": "docs/notes/papers/schafer-1954-cayley-dickson-flexible.md",
+      "sha256": "582c917cc4bed40072a858045177ee98583e57fcfa017ee79afe175652dd1bf0",
+      "bytes": 1488,
+      "retrieved_at_utc": "2026-10-23T22:24:10+00:00",
+      "reading_scope": "Schafer 1954, American Journal of Mathematics 76(2), 435-446: bibliographic identity; body unread",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://en.wikipedia.org/w/index.php?title=Flexible_algebra&oldid=1378034384",
+      "note": "docs/notes/papers/schafer-1954-cayley-dickson-flexible.md",
+      "sha256": "763caa8759a17bfb78ee2a36b612812f69e018309712f4f03e896cd504f49974",
+      "bytes": 74736,
+      "retrieved_at_utc": "2026-10-23T22:26:45+00:00",
+      "reading_scope": "Flexible algebra, revision 1378034384: the sentence attributing flexibility of every Cayley-Dickson algebra to Schafer 1954 and its citation",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/pdf/2205.07986v2",
+      "note": "docs/notes/papers/2205.07986.md",
+      "sha256": "bbad08fca3cd21463ce4e5a62f2ddfe4876c06f1796cbecd02a92c5a7668860e",
+      "bytes": 171034,
+      "retrieved_at_utc": "2026-10-24T09:18:51+00:00",
+      "reading_scope": "Ren and Zhao, arXiv 2205.07986v2, 13 pages: Sections 1 to 4 in full (conventions, Proposition 1, Lemma 4, Theorem 1 and proof, Remark 1, Example 1); Section 5 skimmed",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1007/s00006-023-01296-6",
+      "note": "docs/notes/papers/2205.07986.md",
+      "sha256": "bc82e6de9b8ce808cdb30f81b627ce4c1153cb7ce09dbf28c2045d53f56631cb",
+      "bytes": 9668,
+      "retrieved_at_utc": "2026-10-24T09:38:57+00:00",
+      "reading_scope": "Ren and Zhao 2023, Advances in Applied Clifford Algebras 33(4), article 49: bibliographic identity",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/pdf/1107.1375v1",
+      "note": "docs/notes/papers/1107.1375.md",
+      "sha256": "4a1b8e4f1369d5bc0a7a0fc6672d585bbeffc426cc698099cce0f7045f9b1c2f",
+      "bytes": 211088,
+      "retrieved_at_utc": "2026-10-24T09:20:17+00:00",
+      "reading_scope": "Bales, arXiv 1107.1375v1, 22 pages: abstract, Sections 1 to 3, and a full-text search for degree, polynomial and Boolean statements",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/pdf/2103.12805v1",
+      "note": "docs/notes/papers/2103.12805.md",
+      "sha256": "e1cf74159d98ce9846fc86e56f0f3e41a21e6d094d2c028635989e9d07223fc5",
+      "bytes": 832785,
+      "retrieved_at_utc": "2026-10-24T09:20:17+00:00",
+      "reading_scope": "Flaut and Boboescu, arXiv 2103.12805v1, 13 pages: abstract, Propositions 2.6 and 2.7, Theorem 2.8, and a full-text search for degree, polynomial and Boolean statements",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/pdf/1003.0429v3",
+      "note": "docs/notes/papers/1003.0429.md",
+      "sha256": "97dfc7afbb33faa961c442a5c721db5f9dec5e3ed6f355297e5e7f2adbfc3ad1",
+      "bytes": 880640,
+      "retrieved_at_utc": "2026-10-24T09:18:50+00:00",
+      "reading_scope": "Morier-Genoud and Ovsienko, arXiv 1003.0429v3, 36 pages: introduction, Section 3, the statements of Section 4 and the passages naming the Cayley-Dickson algebras; proofs of Sections 5 to 8 unread",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1007/s00220-011-1279-9",
+      "note": "docs/notes/papers/1003.0429.md",
+      "sha256": "9d049f99843f99af80f8a3683df94ed95b8a36b84d2b5ed56c0dd2db44f57c2e",
+      "bytes": 11089,
+      "retrieved_at_utc": "2026-10-24T09:40:44+00:00",
+      "reading_scope": "Morier-Genoud and Ovsienko 2011, Communications in Mathematical Physics 306(1), 83-118: bibliographic identity",
+      "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -6059,6 +6297,99 @@
       "local_cache_path": "docs/local_source_cache/1709.09246v3.pdf",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "ArXiv metadata supplies an arXiv distribution grant; publisher-license admission is a separate route."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/2205.07986v2",
+      "note": "docs/notes/papers/2205.07986.md",
+      "audited_at_utc": "2026-10-24T15:18:25+00:00",
+      "status": "external_only",
+      "sha256": "bbad08fca3cd21463ce4e5a62f2ddfe4876c06f1796cbecd02a92c5a7668860e",
+      "bytes": 171034,
+      "pages": 13,
+      "acquisition": "download",
+      "prior_note_hash_match": true,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "bbad08fca3cd21463ce4e5a62f2ddfe4876c06f1796cbecd02a92c5a7668860e",
+        "verified_at_utc": "2026-10-24T15:18:25+00:00",
+        "license_identifier": "CC-BY-NC-ND-4.0",
+        "license_url": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2205.07986v2",
+        "evidence_sha256": "f219e18d05044bb24baaf0cb6418ba772cce5e9e5e7e1b9ed62f9b7eb262b1f1",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and claim-specific construction/discussion passages; mathematical proofs remain independently unverified.",
+        "decision": "external_only",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2205.07986v2.html",
+        "evidence_retrieved_at_utc": "2026-10-24T15:18:21+00:00"
+      },
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/2205.07986v2.pdf",
+      "local_cache_path": "docs/local_source_cache/2205.07986v2.pdf",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The abstract page names CC BY-NC-ND 4.0; the NoDerivatives term excludes sharing adapted material and the NonCommercial term excludes repository rehosting of a retained copy."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1003.0429v3",
+      "note": "docs/notes/papers/1003.0429.md",
+      "audited_at_utc": "2026-10-24T15:18:33+00:00",
+      "status": "external_only",
+      "sha256": "97dfc7afbb33faa961c442a5c721db5f9dec5e3ed6f355297e5e7f2adbfc3ad1",
+      "bytes": 880640,
+      "pages": 36,
+      "acquisition": "download",
+      "prior_note_hash_match": true,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "97dfc7afbb33faa961c442a5c721db5f9dec5e3ed6f355297e5e7f2adbfc3ad1",
+        "verified_at_utc": "2026-10-24T15:18:33+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1003.0429v3",
+        "evidence_sha256": "6e36bf576c9e4fff83a4fe0b507b33b387372880a186334ac1e78e80fc06dbec",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and claim-specific construction/discussion passages; mathematical proofs remain independently unverified.",
+        "decision": "external_only",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1003.0429v3.html",
+        "evidence_retrieved_at_utc": "2026-10-24T15:18:29+00:00"
+      },
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/1003.0429v3.pdf",
+      "local_cache_path": "docs/local_source_cache/1003.0429v3.pdf",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1107.1375v1",
+      "note": "docs/notes/papers/1107.1375.md",
+      "audited_at_utc": "2026-10-24T15:18:41+00:00",
+      "status": "external_only",
+      "sha256": "4a1b8e4f1369d5bc0a7a0fc6672d585bbeffc426cc698099cce0f7045f9b1c2f",
+      "bytes": 211088,
+      "pages": 22,
+      "acquisition": "download",
+      "prior_note_hash_match": true,
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "4a1b8e4f1369d5bc0a7a0fc6672d585bbeffc426cc698099cce0f7045f9b1c2f",
+        "verified_at_utc": "2026-10-24T15:18:41+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1107.1375v1",
+        "evidence_sha256": "53f1729dae1945523841efd69c119581a5bf5532c26f783f3ece9a71b43de7ad",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and claim-specific construction/discussion passages; mathematical proofs remain independently unverified.",
+        "decision": "external_only",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1107.1375v1.html",
+        "evidence_retrieved_at_utc": "2026-10-24T15:18:37+00:00"
+      },
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/1107.1375v1.pdf",
+      "local_cache_path": "docs/local_source_cache/1107.1375v1.pdf",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",
@@ -6099,6 +6430,12 @@
       "sha256": "ca0597fd98c6fb2417993e867b5cbc91ebdc55e24839c38e4674e8c78d817f17",
       "reading_scope": "Operative permission, NonCommercial and ShareAlike conditions, recipient scope and attribution requirements.",
       "verified_at_utc": "2026-10-13T23:31:23.837125+00:00"
+    },
+    "CC-BY-NC-ND-4.0": {
+      "url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+      "sha256": "0389dccad7bdfebd9b7294ccd1582d8197b450295ff5263bafa41763e5f40b27",
+      "reading_scope": "License deed: attribution, NonCommercial and NoDerivatives terms; the NoDerivatives term excludes sharing adapted material and the NonCommercial term excludes repository rehosting.",
+      "verified_at_utc": "2026-10-24T15:18:45+00:00"
     }
   },
   "source_archives": [

@@ -1,0 +1,24 @@
+{
+  "schema": "work-plan-v1",
+  "id": "box-kite-exhaustive-emulator-sweep",
+  "kind": "implementation",
+  "summary": "boxkite-kaggle-sweep: exhaustive family (a) on a Kaggle CPU kernel with qxelarator",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/3f19580e8f6988f8b70e39b93bfb0439a2dbb9af11e89d66204c333d4847851e.txt"
+  ],
+  "state": "inbox",
+  "scope": "boxkite-kaggle-sweep: exhaustive family (a) on a Kaggle CPU kernel with qxelarator",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Source variants compared; historical assertions retain their source boundary. Current obligation-level validation needs the linked evidence."
+  },
+  "steps": [
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Prediction: zero deterministic violations and every P = 1/2 row inside the bound (QX is exact). Falsifier: any violation refutes that circuit's emission, stops the family and blocks the QX smoke submission until explained.",
+      "state": "todo"
+    }
+  ]
+}

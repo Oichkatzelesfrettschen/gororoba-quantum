@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "generated-dataset-verification",
+  "kind": "implementation",
+  "summary": "ISSUE 62: verify.py in CI over a pinned open_gororoba checkout",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/63f74f941d1e336c7f1f5ba81865caca41fbfbcce01a52016e42295b38ec4a56.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-200.json"
+  ],
+  "state": "inbox",
+  "scope": "ISSUE 62: verify.py in CI over a pinned open_gororoba checkout",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #200 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-200-integration",
+      "action": "Verify the recorded integration state of PR #200.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "166c8c37bd05b88b07ff2520a97cebf88b5ad98d1418bf611dd3e31d1fef0e93",
+          "result": "PR #200 merged as cb0ef66df11ad7bde93f5aaf40b09d86c409496b; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-200.json",
+              "sha256": "e41e6da3665eb3371ca247f36a147278d64454815733ba6654674e4b561f5370"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Local, before push (the Python 3.14 pins from the build host): - `\"$PYTHON\" -B -W error scripts/materialize_gororoba_csv.py --self-test`: prediction exit 0. - scratch replica: `sh ci/fetch_open_gororoba.sh \"$S/og\" registry/data/project_csv proofs` then the materializer then `GOROROBA_ROOT=\"$S/og\" \"$PYTHON\" gororoba_quantum/verify.py`: prediction exit 0, last line \"<L_e_m> order log2 per dim: {4: 3, 8: 7, 16: 12, 32: 21, 64: 38}; exponent 4 (enumerated through dim 16)\", wall under 60 s excluding clone. - `shellcheck -S error ci/fetch_open_gororoba.sh`, `ruff check scripts ci`, `ruff format --check`, `mypy scripts/materialize_gororoba_csv.py`: prediction clean. - `\"$PYTHON\" ci/run_gates.py --tier pr --shard 0/1 --only core-401 core-402` (or the repository's single-gate form): prediction pass. CI: the new job green on the PR; a deliberate mutation test on a scratch branch (flip one sign in cd_core.cd_sign for e1*e2) turns it red with \"FAIL: ... disagrees\" or a cell mismatch. Falsifier of the design: (a) any of the 9 records yields bytes whose sha256 differs from `source_sha256` under csv.writer (observed none at 7d95d228; a record added later with quoting or CRLF would fail, and the materializer reports it); (b) verify.py fails at the pin for a reason other than a missing file, which shows a pin or registry drift; (c) the job exceeds 5 minutes, which shows the sparse clone is not sparse. Any of these sends the design to the vendored-fixture alternative.",
+      "state": "todo"
+    }
+  ]
+}

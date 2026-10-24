@@ -1,0 +1,80 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/cd-star-lattice-groups.md
+
+# Cayley-Dickson star lattices: group identifications and the Paley reading
+
+Findings against the open questions of
+`docs/notes/topics/cd-star-lattice-tower.md`. Replay scripts sit in
+`cd-star-lattice-groups/` beside this file; tools: GAP 4.16dev (SmallGrp),
+SageMath 10.10 (nauty-backed `automorphism_group`), numpy, the repository's
+`cd_core.cd_sign`. Every result below is [E] from those scripts unless tagged
+[T] or [P]; none is gated yet. Replay from this directory: `"$PYTHON" export.py`
+(groups.json), `"$PYTHON" tower32.py 32` (g32.json, 417 s), `"$PYTHON" to_gap.py`,
+`gap -q id.g rep.g p1.g p13.g g32id.g`, `sage aut.sage`, `"$PYTHON" structure.py`,
+`"$PYTHON" paley.py`, `"$PYTHON" autperm.py`, `"$PYTHON" saturation.py` (imports Sage).
+
+## Closed questions
+
+| n | Group | SmallGroup id | Line action | Real rep type | Commutant |
+|---|---|---|---|---|---|
+| 2 | C4 | (4,1) | - | - | - |
+| 4 | SL(2,3), isomorphism by GAP | (24,3) | A4 = PSL(2,3) on P^1(F_3), kernel {+-1} | 2 + 2bar, FS indicator 0 (complex) | Q(sqrt -3) |
+| 8 | SL(2,7), isomorphism by GAP | (336,114) | PSL(2,7) on P^1(F_7), 2-transitive, kernel {+-1} | 4 + 4bar, FS 0 (complex) | Q(sqrt -7) |
+| 16 | 2.PGL(2,7), unique involution, Sylow-2 Q32, derived SL(2,7) | (672,1045) | PGL(2,7) on the 8 doubling pairs {a, a+8}, 3-transitive | 8 with multiplicity 2, FS -1 (quaternionic) | quaternion algebra |
+| 32 to 128 | same group as n = 16 (GAP isomorphism at 32; nauty order 672 at 64, 128) | (672,1045) | n/16 orbits of 32 signed units; at 32, G/Z of order 336 transitive on the 16 pairs {a, a+16} | - | - |
+
+- The full graph automorphism group of S_n equals the signed-permutation
+  boundary group at n = 2, 4, 8, 16 (nauty orders 4, 24, 336, 672).
+- The n = 4 action is abstractly SL(2,3) but not the Hurwitz-unit left
+  multiplication: that action is quaternionic (FS -1), this one is complex
+  (FS 0). The note's "binary tetrahedral group of the 24 Hurwitz units" names
+  the abstract group only.
+
+## The mechanism: the boundary is a skew conference matrix
+
+The arc matrix W_n[a XOR b, a] = cd_sign(n, a, b), b >= 1, is right
+multiplication by s = e_1 + ... + e_{n-1}, and B_n is its signed support, so
+the boundary group is exactly the signed permutations commuting with W_n [T].
+W_n is skew with W_n^T W_n = (n-1) I at n = 2..128, so I + W_n is a skew
+Hadamard matrix of Sylvester order in every tested dimension.
+
+- n = 4, 8: W_n is signed-permutation equivalent to the Paley skew conference
+  matrix of q = 3, 7 (24 and 336 equivalences, equal to each automorphism
+  group). The lattice group is the Paley matrix's automorphism group, which
+  Hall's theorem places over PSL(2,q) acting by Moebius maps [P, to source].
+  The octonion case is the quadratic-residue difference set {1, 2, 4} mod 7.
+- The e_0 stabilizer (order 21 at n = 8, 16) equals, as a set, the
+  index permutations that are XOR-linear and preserve cd_sign: the lattice
+  group meets the algebra's automorphisms only there (6, 42, 42 elements of
+  G_4, G_8, G_16 have XOR-linear index maps).
+- n = 16: no Paley matrix exists (15 is no prime power); the group grows
+  by an outer involution class to 2.PGL(2,7). The 120 index pairs split into
+  orbits 8 (doubling pairs) + 56 (all 42 assessors plus 14) + 56; B_16 splits
+  32 + 224 + 224.
+
+## Falsified prediction
+
+Predicted before the run: if the e_0 stabilizer stays 21 and the action stays
+transitive, |G_32| = 64 x 21 = 1344. Observed: |G_32| = 672, stabilizer 21,
+two orbits of 32 signed units ({0, 17..31} and {1..16}). The nauty count of
+the signed centralizer of W_n, calibrated at n = 4, 8, 16, 32 against the
+backtracker, stays 672 at n = 64 and 128 with n/16 orbits of 32. W_32 is not
+Paley-equivalent [T]: x -> x + 1 preserves the q = 31 Paley matrix, an
+automorphism of order 31, and 31 does not divide 672.
+
+## Open conjectures with falsifiers
+
+1. W_n^T W_n = (n-1) I for every Cayley-Dickson n (right multiplication by the
+   imaginary sum is a similarity). [E] to n = 128. Falsifier: a failing
+   n >= 256. Lead: Kivunge (Mile High 2013 abstract) reports Cayley-Dickson
+   sign matrices are Hadamard; prove the skew form by induction on the
+   cd_sign doubling recursion.
+2. |G_n| = 672 for all n >= 16, acting as G_16 on each block of 32 signed
+   units. [E] to n = 128. Falsifier: a larger order at n = 256, or a block
+   action not permutation-isomorphic to G_16 on 32 points.
+3. Settled: the n = 16 commutant has an integer basis 1, J, K, JK with
+   J^2 = -7, K^2 = -1, JK = -KJ [E], so it is (-7, -1)_Q, ramified at
+   {7, infinity} [T]: -7 is a square in Q_2, and -1 is a non-residue mod 7.
+   K = +-R_e8, right multiplication by the doubling unit.
+4. A boundary rule built from the four-index assessor relation is the
+   sedenion analogue of the Paley rule (still open from the note).

@@ -1,0 +1,12 @@
+5eee2aea6be9c0abf9b60e8e4ec42f5b2e3b3ef861454bc41c5b0db6966dd843  README.md
+78ccb2ce2875aee9f8212a4bb7992116f2c0a45738caf417687ee95848eb1fec  replay.py
+80558b89bd6099ba9d86d194214e4d0355028c6a0f35deed6b7a116ccaa7f423  result.json
+dfdf89d5ba972870159245f3c4db3d84fe7fb3997ddbd07ea0151963a5e94a09  proof_obligations.json
+e6b9568041f21d17f57b23e9849ff413844c1085f1f4a039ef458700552b6b55  ../../notes/projective_kernel_frontiers.md
+aa399e54d6e435a45c46e469977c20ee931e9a12cee116408bdbaa7c8a1f3d46  ../../../gororoba_quantum/projective_kernel_limits.py
+662b9a98e883a05e0356507a35ee3b54f20929d003f72cf11917a8d33a7ba708  ../../../gororoba_quantum/projective_kernel_contracts.py
+46591b43f37086bce51d6d600c0b0ae6e1d5055c0e0c475a5185d0c2d351e6a7  ../../../gororoba_quantum/kernel_limits.py
+a8daff05282a0affff406ed1fc067a340e9943816ed4145387c73fc4725763f0  ../../../gororoba_quantum/complex_skew.py
+f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c  ../../../gororoba_quantum/rank_charts.py
+3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0  ../../../gororoba_quantum/cd_core.py
+d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92  ../../../gororoba_quantum/parallel.py

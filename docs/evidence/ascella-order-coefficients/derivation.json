@@ -1,0 +1,241 @@
+{
+  "coefficient_basis": [
+    "constant",
+    "cos(2 theta)",
+    "sin(2 theta)",
+    "cos(4 theta)",
+    "sin(4 theta)"
+  ],
+  "coefficient_rows": [
+    "X",
+    "Y",
+    "dark"
+  ],
+  "coefficients": [
+    [
+      0.4999999999999999,
+      -0.5000000000000002,
+      -2.7755575615628914e-16,
+      -2.7755575615628914e-16,
+      1.1102230246251565e-16
+    ],
+    [
+      0.0,
+      1.1310862329349138e-16,
+      0.49999999999999994,
+      -1.1327024753409878e-16,
+      -5.781242707064874e-17
+    ],
+    [
+      0.24999999999999994,
+      -0.2500000000000001,
+      -1.3877787807814457e-16,
+      -1.3877787807814457e-16,
+      5.551115123125783e-17
+    ]
+  ],
+  "events_per_iteration_for_superseded_radii": 8658.063774051381,
+  "evidence_class": "exact identities and local matrix computation; artwork is theoretical",
+  "exact_zero_residuals": {
+    "coherence_circle": "0",
+    "common_phase_cancels": "0",
+    "complex_coherence_form": "0",
+    "dark_coherence_link": "0",
+    "gain_model_coefficients": "0",
+    "quadrature_dark_link": "0",
+    "rotated_coefficient_equal_norm": "0",
+    "rotated_coefficient_orientation": "0",
+    "rotated_coefficient_orthogonality": "0"
+  },
+  "hoeffding_radii_at_8192": {
+    "analyzer_coefficients": [
+      0.010242514792964008,
+      0.014485103333016752,
+      0.01448510333301675,
+      0.01448510333301675,
+      0.01448510333301675
+    ],
+    "dark_coefficients": [
+      0.005121257396482004,
+      0.007242551666508376,
+      0.007242551666508375,
+      0.007242551666508375,
+      0.007242551666508375
+    ],
+    "mutation_dark": 0.016194837856867116,
+    "mutation_difference": 0.022902959337614704,
+    "sign_even_analyzer_coefficients": [
+      0.010242514792964008,
+      0.014485103333016752,
+      0.01448510333301675,
+      0.01448510333301675,
+      0.01448510333301675
+    ]
+  },
+  "maximum_residuals": {
+    "coherence_residual": 4.577566798522237e-16,
+    "dark_residual": 5.551115123125783e-16,
+    "purity_minor_residual": 2.220446049250313e-16,
+    "state_residual": 2.2887833992611187e-16
+  },
+  "mutation": {
+    "dark_tolerance": 0.05,
+    "equal_contrast_counterexample": {
+      "mutation_dark": 0.08,
+      "target_dark": 0.25274575140626315
+    },
+    "ideal_contrast": 0.17274575140626314
+  },
+  "numerical_points": 51,
+  "operator_sha256": "62e4b0afc94731465d3edbff81de6601309ad4eb969b67894bb4b2c02fb9a4fe",
+  "pilot_analysis_sha256": "2e62dd6661f849f47443cb26b2cec599ab7a45699dfecdd1fef0801543757d62",
+  "pilot_dark_counts": [
+    {
+      "dark": 10,
+      "eligible": 8192,
+      "name": "order-i0-j0-representative0"
+    },
+    {
+      "dark": 14,
+      "eligible": 8192,
+      "name": "order-i0-j0-representative1"
+    },
+    {
+      "dark": 10,
+      "eligible": 8188,
+      "name": "order-i0-j1-representative0"
+    },
+    {
+      "dark": 7,
+      "eligible": 8190,
+      "name": "order-i0-j1-representative1"
+    },
+    {
+      "dark": 2,
+      "eligible": 8192,
+      "name": "order-i1-j0-representative0"
+    },
+    {
+      "dark": 14,
+      "eligible": 8192,
+      "name": "order-i1-j0-representative1"
+    },
+    {
+      "dark": 2198,
+      "eligible": 8190,
+      "name": "order-i1-j1-representative0"
+    },
+    {
+      "dark": 2167,
+      "eligible": 8187,
+      "name": "order-i1-j1-representative1"
+    }
+  ],
+  "pointwise_envelope_of_coefficient_tolerance": [
+    0.15000000000000002,
+    0.1828437878668761,
+    0.1828437878668761,
+    0.1828437878668761,
+    0.18284378786687608
+  ],
+  "primary_endpoints": 27,
+  "radius_scale_from_superseded_endpoints": 1.0280527956011702,
+  "sign_even_counterexample": {
+    "bright_population": 0.52,
+    "maximum_sign_even_magnitude": 0.19021130325903077,
+    "minimum_remaining_population": 0.027745751406263064,
+    "rejected_at_expected_counts": [
+      {
+        "basis": "sin(2 theta)",
+        "row": "X",
+        "value": -0.09999999999999999
+      },
+      {
+        "basis": "constant",
+        "row": "Y",
+        "value": 0.10000000000000002
+      },
+      {
+        "basis": "cos(2 theta)",
+        "row": "Y",
+        "value": -0.1
+      }
+    ],
+    "sign_even_coefficients": [
+      [
+        1.840311960187874e-17,
+        -1.096880244049759e-17,
+        -0.09999999999999999,
+        -7.84918458471962e-18,
+        2.5527044565341143e-18
+      ],
+      [
+        0.10000000000000002,
+        -0.1,
+        -2.4151464295051992e-17,
+        -7.896720246711005e-19,
+        2.1532551445735833e-17
+      ]
+    ],
+    "twist": 0.2
+  },
+  "sign_specific_coefficient_radii": [
+    0.020485029585928016,
+    0.028970206666033504,
+    0.0289702066660335,
+    0.0289702066660335,
+    0.0289702066660335
+  ],
+  "sign_specific_coefficient_tolerance": 0.1,
+  "simultaneous_xy_pointwise_radii": [
+    0.03921272145899751,
+    0.04872763468098515,
+    0.04872763468098515,
+    0.04872763468098515,
+    0.04872763468098514
+  ],
+  "superseded_endpoints": 17,
+  "versions": {
+    "matplotlib": "3.11.2",
+    "numpy": "2.5.4",
+    "sympy": "1.14.0"
+  },
+  "weak_sign_even_case": {
+    "disposition": "exact ideal excluded; coefficient-tolerance conformance supported",
+    "ideal_excluded_at_expected_counts": [
+      {
+        "basis": "sin(2 theta)",
+        "row": "X",
+        "value": -0.024999999999999998
+      },
+      {
+        "basis": "constant",
+        "row": "Y",
+        "value": 0.025000000000000005
+      },
+      {
+        "basis": "cos(2 theta)",
+        "row": "Y",
+        "value": -0.025
+      }
+    ],
+    "maximum_interval_magnitude": 0.039485103333016754,
+    "sign_even_coefficients": [
+      [
+        3.2130011196882396e-18,
+        -1.865171589536413e-18,
+        -0.024999999999999998,
+        -5.841846479980405e-19,
+        2.269607915709054e-18
+      ],
+      [
+        0.025000000000000005,
+        -0.025,
+        -6.037866073762998e-18,
+        1.537305469809032e-18,
+        3.648414385457151e-18
+      ]
+    ],
+    "twist": 0.05
+  }
+}

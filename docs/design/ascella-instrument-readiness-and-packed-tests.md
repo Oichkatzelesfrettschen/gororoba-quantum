@@ -68,9 +68,9 @@ investigate and debug supplies context, rather than an explicit supersession
 of the recorded stopping rule. Their errors remain descriptive diagnostic
 observations; they cannot qualify as adherence to that preregistered protocol
 or successful device conformance. The receipts, approval text, cases and raw
-results retain their original bytes. Further Ascella execution is paused and
-requires the user's heads-up plus an explicit replacement or override of the
-stopping rule, as well as the applicable case and resource approval.
+results retain their original bytes. The stop applies until the user's
+heads-up explicitly replaces or overrides it under the applicable case and
+resource approval. Subsequent authorizations and their outcomes follow.
 
 The user subsequently authorized Ascella again. The
 [authorized order-retry preflight](../evidence/quandela/ascella-order-pilot-retry-preflight/README.md)
@@ -80,6 +80,34 @@ separate active Belenos diagnostic acquisition and submitted zero jobs.
 The bounded retry authorization replaces the execution hold for that attempt;
 it establishes neither instrument recovery nor authority to cancel the other
 workflow's acquisition.
+
+The user resumed submission after restoring shell network access. The
+[authorized order-pilot retry](../../results/quandela/runs/ascella-approved-order-pilot-retry/README.md)
+waited through an observed calibration status, then submitted the unchanged
+approved manifest at 06:56:37 UTC on 23 October 2026 after both live status
+records reported `available` and token occupancy was empty. Job
+`3f707140-4413-40ed-bc31-58e09238926f` returned the same input-port diagnostic
+after one execution second, with zero shots and zero samples. Token usage
+increased from 56 to 57 jobs and from five to six Ascella execution seconds;
+both credit counters stayed unchanged. The authorized retry is consumed,
+and its instrument error triggers the stopping rule. The public availability
+transition again supplies insufficient evidence of restored input control.
+
+### Successful sampling after the advertised Mosaiq update
+
+A later processor read on 23 October advertised mosaiq-arcturus
+2.1.5.2.post4 instead of the earlier observed 2.1.5.1.post2. The user
+explicitly approved one updated-deployment retry of the unchanged manifest.
+The [completed acquisition](../../results/quandela/runs/ascella-mosaiq-update-order-retry/README.md)
+returned all eight settings and 65,536 detected samples in 25 execution
+seconds, with a token-reported debit of 1.016384 free credits. The exact
+serialized computation also completed locally on SLOS and Naive before
+submission. The completed sampling establishes recovery of this tested
+four-output path. The provider's configuration change and executing worker
+identity remain unobserved; the advertised version change does not identify
+the exact repair. Full-output leakage, absolute loss and isolated drift
+remain separate measurement questions. The acquisition note records the
+user's subsequent 1.1-credit ceiling for a larger prospective design.
 
 A safe protobuf inspection of the published architecture finds empty logical
 `input_ports` and `output_ports` maps, alongside the six-source occupation,
@@ -96,8 +124,11 @@ two platform parameters: `final_mode_number` and the legacy
 `use_photon_recycling`. Neither interface documents a hardware configuration
 write or an input-port instrument map.
 
-Perceval 1.3.1's `PlatformSpecs.parameters` describes the advertised
-parameters as the supported `RemoteComputer.set_parameters()` keys.
+Perceval 1.3.1 exposes platform parameters through
+`RemoteComputer.parameters = {...}`, inherited from `AComputer`.
+`PlatformSpecs.parameters` contains a stale reference to
+`RemoteComputer.set_parameters()`: that method belongs to the legacy
+`RemoteProcessor` interface and is absent from `RemoteComputer`.
 `RemoteComputer.prepare_payload()` serializes the computation, mitigation
 request, platform parameters and custom noise. `RPCBasedCommunicationLayer.send()`
 serializes that payload and creates the Cloud job. Those client operations
@@ -106,6 +137,10 @@ The [vendor compilation guide](../notes/quandela/guide/user-guide/04-compilation
 documents input-state routing, unitary transpilation and detection setup;
 pre-compilation reuses `computed_input` and `computed_circuit`, rather than
 provisioning physical source channels.
+
+The [refreshed API and client audit](../evidence/quandela/input-port-api-audit/README.md#input-map-and-client-contract-refresh)
+corrects the compilation example's metadata extraction and sampler binding.
+Those client documentation repairs do not provision the instrument map.
 
 The provider-configuration hypothesis predicts that an operator inspecting
 Ascella's deployed configuration will find a missing physical input-port map.
@@ -119,12 +154,14 @@ an undocumented `hardware_config` field into jobs.
 
 An instrument-level causal trace needs the retained job IDs, terminal
 timestamps, exact error, source occupations and minimal static circuit.
-Ascella reports hardware-core 3.9.3, mosaiq-arcturus 2.1.5.1.post2,
+The failing-job processor observations reported hardware-core 3.9.3,
+mosaiq-arcturus 2.1.5.1.post2,
 pcvl-worker 2.1.1 and universalchipworker 2.1.3. The local client versions
 are Perceval 1.3.1 and exqalibur 1.4.2. Unobserved causal inputs include the
 deployed configuration and worker revision that handled each job and the
-mapping the worker loaded. A successful sampling job must demonstrate recovery. The Cloud
-portal's public `available` flag remains weaker evidence than that acquisition.
+mapping the worker loaded. The completed order acquisition demonstrates
+sampling recovery; the Cloud portal's public `available` flag alone supplies
+weaker evidence.
 
 ## First-principles measurement model
 
@@ -192,11 +229,12 @@ the measured rule. Shared circuit structure, photon filter and processing
 policy define a packable job. Incompatible filters or policies require
 separate jobs. Every cap and price receives a fresh read-only check.
 
-Ascella's per-setting overhead remains unmeasured because the tested jobs
-failed before acquisition. Belenos timing cannot establish Ascella timing.
-A successful small acquisition must measure compilation/setup overhead and
-sampling rate before a 300-second pack is sized. Packing maximizes informative
-completed observations per credit subject to that measured envelope. A partial
+The completed eight-setting Ascella pilot used 25 execution seconds for
+65,536 detected samples. That aggregate timing does not separate setup,
+compilation and sampling costs or establish scaling with settings and shots.
+Belenos timing cannot establish Ascella timing. A larger 300-second pack must
+retain a bounded completion claim until Ascella timing separates those costs.
+Packing maximizes informative completed observations per credit subject to that measured envelope. A partial
 answer remains partial and cannot qualify a full finite frontier.
 
 The approved Belenos repeat programme has five jobs, each capped at 180
@@ -223,8 +261,24 @@ All five approved jobs completed on 22 October 2026:
 The [conditional readout](../../results/hypercomplex/belenos-repeat-readout-pooled.json)
 binds every case, circuit, submission, sent body, result and raw result by
 digest. All requested parameter echoes and compilation seeds match. Of the
-983040 returned samples, 350 are vacuum or multiple-click outcomes and remain
-explicitly excluded from the one-click denominator. The 120 matched-repeat
+983040 returned samples, 350 have reported total occupation zero or greater
+than one and remain excluded from the reported single-photon denominator.
+The retained JSON's historical `one-click` wording and
+`multiple_click_samples` field name refer to that occupation-sum selection,
+rather than a reconstruction of physical detector clicks. A reported state
+with two photons in one mode remains outside that denominator.
+
+The [provider catalogue](../evidence/quandela/catalogue.json) records both a
+generic `threshold` spec and Belenos documentation stating that some detectors
+distinguish one-photon from n-photon states; its simulator documentation says
+threshold or quasi-PNR detectors follow the QPU configuration.
+The [retained hardware literature](../notes/quandela/literature.md) describes
+photon-number-resolving modes 0 through 15, including mode 5, where one wave
+acquisition reports a two-photon state. Occupied-mode count and reported
+photon number therefore define different observable selections. The retained
+analysis uses the latter; its raw state counts preserve multiplicity.
+
+The 120 matched-repeat
 pair comparisons have maximum conditional total variation 0.036181. Every
 matched pair carries identical returned compiled-circuit bytes; physical
 heater states and calibration-event identity remain unobserved.
@@ -346,3 +400,9 @@ template validation and new static/failed-result regressions are independent
 gates on their named surfaces. A library-by-library execution ledger must
 distinguish used, locally qualified, infrastructure, deferred and incompatible;
 an import count cannot stand in for that ledger.
+
+The [signed-coherence and order-conformance plan](ascella-signed-coherence-conformance.md)
+proposes one 64-iteration, twelve-output Ascella job after the retained sampling
+recovery. The plan measures five-angle signed quadrature coefficients, their geometric
+identities and a commuting mutation within a 1.2-credit ceiling;
+its generated native request and submission admission remain prospective.

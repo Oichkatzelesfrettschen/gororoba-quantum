@@ -46,6 +46,7 @@ from qiskit.quantum_info import Operator
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
 import parallel
+import qrng_seeds
 from compile_evidence import (
     BASE,
     MODULUS,
@@ -323,7 +324,13 @@ def _problem_record(problem: str, winners: list[dict[str, Any]], seeds: tuple[in
     }
 
 
-def capture(search_path: Path, top: int, seeds: tuple[int, ...], output_path: Path | None) -> dict[str, Any]:
+def capture(
+    search_path: Path,
+    top: int,
+    seeds: tuple[int, ...],
+    output_path: Path | None,
+    seed_spellings: list[str] | None = None,
+) -> dict[str, Any]:
     search = json.loads(search_path.read_text(encoding="utf-8"))
     baseline_source = _build_source(_baseline_candidate())[0]
     _require(
@@ -338,7 +345,7 @@ def capture(search_path: Path, top: int, seeds: tuple[int, ...], output_path: Pa
     if top != DEFAULT_TOP:
         arguments.extend(("--top", str(top)))
     if seeds != DEFAULT_SEEDS:
-        arguments.extend(("--seeds", *(str(seed) for seed in seeds)))
+        arguments.extend(("--seeds", *(seed_spellings if seed_spellings is not None else map(str, seeds))))
     portable_output = _portable_output_path(output_path)
     if portable_output is not None:
         arguments.extend(("--out", portable_output))
@@ -450,7 +457,7 @@ def main() -> int:
     mode.add_argument("--search", type=Path, help="merged linear_conjugation_search record")
     mode.add_argument("--check", type=Path, help="retained challenger record to replay")
     parser.add_argument("--top", type=int, default=DEFAULT_TOP)
-    parser.add_argument("--seeds", nargs="+", type=int, default=list(DEFAULT_SEEDS))
+    qrng_seeds.add_seed_argument(parser, "--seeds", nargs="+", default=list(DEFAULT_SEEDS))
     parser.add_argument("--out", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
     if args.check:
@@ -459,7 +466,17 @@ def main() -> int:
     seeds = tuple(args.seeds)
     if not seeds or len(set(seeds)) != len(seeds) or args.top < 1:
         raise SystemExit("transpiler seeds must form a nonempty set and --top must be positive")
-    record = capture(args.search, args.top, seeds, args.out)
+    non_default = any(source != "default" for source in args.seeds_source)
+    record = capture(
+        args.search, args.top, seeds, args.out, qrng_seeds.spellings(seeds, args.seeds_source) if non_default else None
+    )
+    if non_default:
+        record["seed_source"] = qrng_seeds.seed_record(
+            "gororoba_quantum/linear_conjugation_challenger.py",
+            "--seeds",
+            qrng_seeds.repo_relative(args.search),
+            args.seeds_source,
+        )
     _write_atomic(args.out, json.dumps(record, indent=2, sort_keys=True) + "\n")
     for problem, entry in record["problems"].items():
         for candidate in [entry["baseline"], *entry["challengers"]]:

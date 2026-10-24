@@ -1,0 +1,196 @@
+{
+ "admitted_statuses": [
+  "available",
+  "running"
+ ],
+ "approval": "set up a Monitor not a \"background watcher\" and your job is then approved to submit as soon as the monitor state changes to an acceptable statue, and your fifth job is approved that repeats job 1 after the calibration, so all of block 1 sits inside one calibration, you reccomended skipping it but is there anything else you need for that? Have your Advisor review your planned run and the other active items, resolve any issues, get the Monitor set up and then GO GO GO out the gate when able.",
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "09df3fd169537a50fcf01bfada90e6a5d6af08c6db74f3ca236cee2ecde3034d",
+ "case": "2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2",
+ "cases_sha256": "5ccff5514d323cdc4f1bd2ce1c67ddc800dfce534ce4105eb3889c1be076b5d2",
+ "credit_ceiling": 1.12,
+ "estimated_credits": 1.12,
+ "estimated_shots": 2400000,
+ "expected_seconds": 213.6,
+ "job_id": "f9b370b9-9b80-465f-a4ed-f4ce5933a52c",
+ "max_credits": 1.12,
+ "max_samples": 2400000,
+ "max_shots": 2880000,
+ "payload_version_basis": "declared",
+ "per_job_credits": 1.0,
+ "perfs_at_plan": {
+  "Clock (MHz)": 4.94,
+  "Dark counts (detection/s)": [
+   19.1,
+   4.2,
+   0.1,
+   0.7,
+   0.0,
+   48440.3,
+   0.1,
+   0.2,
+   0.1,
+   17.9,
+   0.1,
+   0.0,
+   0.1,
+   0.1,
+   0.2,
+   3.2,
+   0.0,
+   0.0,
+   0.0,
+   0.1,
+   0.0,
+   0.0,
+   0.1,
+   0.0
+  ],
+  "HOM (%)": 86.7,
+  "Transmission per mode (%)": {
+   "t_in": [
+    6.78,
+    0.0,
+    5.93,
+    0.0,
+    5.53,
+    0.0,
+    7.24,
+    0.0,
+    5.3,
+    6.72,
+    0.0,
+    0.0,
+    6.5,
+    5.24,
+    0.0,
+    0.0,
+    5.37,
+    0.0,
+    5.0,
+    0.0,
+    4.54,
+    0.0,
+    3.1,
+    0.0
+   ],
+   "t_out": [
+    103.6,
+    99.33,
+    79.38,
+    77.23,
+    104.87,
+    64.51,
+    92.75,
+    82.77,
+    100.67,
+    83.88,
+    108.51,
+    98.44,
+    71.78,
+    87.23,
+    78.82,
+    109.61,
+    101.84,
+    126.22,
+    117.76,
+    110.17,
+    65.08,
+    125.3,
+    108.54,
+    103.6
+   ]
+  },
+  "Transmittance (%)": 5.99,
+  "g2 (%)": 1.1
+ },
+ "platform": "qpu:belenos",
+ "platform_at_plan": {
+  "bookable": true,
+  "description": "Belenos QPU",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": {
+   "end_time": "2026-10-29T12:00:00Z",
+   "maintenance_title": "Weekly maintenance",
+   "start_time": "2026-10-29T08:30:00Z",
+   "time_zone": "Europe/Paris"
+  },
+  "max_duration": 300,
+  "name": "qpu:belenos",
+  "price_per_shot": 1e-06,
+  "statistic": {
+   "2026-10-16": {
+    "availability": 72.11
+   },
+   "2026-10-17": {
+    "availability": 86.72999999999999
+   },
+   "2026-10-18": {
+    "availability": 89.42
+   },
+   "2026-10-19": {
+    "availability": 74.5
+   },
+   "2026-10-20": {
+    "availability": 81.96000000000001
+   },
+   "2026-10-21": {
+    "availability": 82.28
+   },
+   "2026-10-22": {
+    "availability": 81.74
+   },
+   "2026-10-23": {
+    "availability": 75.92
+   }
+  },
+  "status": "available",
+  "type": "qpu"
+ },
+ "schema": "qd-submission-v1",
+ "status_at_plan": {
+  "explorer": "available",
+  "processor": "available"
+ },
+ "submitted_utc": "2026-10-23T20:22:40+00:00",
+ "usage_before": [
+  {
+   "total_jobs": 62,
+   "usage": [
+    {
+     "credits": 0.0,
+     "duration_seconds": 31,
+     "free_credits": 1.016384,
+     "nb_jobs": 7,
+     "platform_name": "qpu:ascella"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1128,
+     "free_credits": 16.0,
+     "nb_jobs": 17,
+     "platform_name": "sim:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 3587,
+     "free_credits": 36.86742,
+     "nb_jobs": 38,
+     "platform_name": "qpu:belenos"
+    }
+   ]
+  }
+ ],
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}
