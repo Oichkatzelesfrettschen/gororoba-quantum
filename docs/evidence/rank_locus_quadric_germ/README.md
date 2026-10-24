@@ -2,11 +2,13 @@
 
 Yes. At the three nonzd-axis witnesses e_r + e_(24+r) (r = 1, 2, 3) and the
 seven Proposition 8.2 points e_8 + e_(16+j), the germ of the closed rank cone
-R_12 = {y : rank L_y <= 20} of A_5 is the cone V below. D_(5,12) therefore has
-local dimension 15 there, its tangent bound.
+R_12 = {y : rank L_y <= 20} of A_5 is the cone V below. D_(5,12), the
+unit-sphere section of R_12, therefore has local dimension 15 there, one less
+than the tangent bound 16 of the cone.
 
 `result.json` is written by `scripts/rank_locus_quadric_germ.py --out` and
-recomputed by `--check`, which compares the complete record. That replay is
+recomputed by `--check`, which compares the complete record apart from the
+library versions that wrote it. That replay is
 gate core-677 and takes about 25 seconds. `--self-test` is gate core-678; in
 normal and `-O` modes it rejects:
 - a flipped sign of the sedenion table;
@@ -14,7 +16,8 @@ normal and `-O` modes it rejects:
 - a minor combination in the place of Q, whose Hilbert value in degree 2 is
   99;
 - three point controls (off V, singular on V, and x0);
-- six corrupted record fields.
+- nine corrupted record fields, among them a missing key and an extra null
+  field.
 
 ## The cone V
 
@@ -163,6 +166,11 @@ Proposition 8.2 points dF has a dmu term, so e_8 and e_24 are not tangent.
 | e_8 + e_(16+j), j = 1..7 | 12 | 16 | 16 | 12 |
 | x0 = e_1 + e_18 (control) | 12 | 22 | 16 | 12 |
 | e_1 - e_10 + e_18 + e_25 (singular, dF = 0) | 16 | 12 | 14 | 8 |
+
+At the singular control the kernels have dimension 16, so its T(x) is the
+tangent bound of the rank-16 locus {rank L_y <= 16}. Every 21 x 21 minor
+vanishes to order 5 at a rank-16 point, so R_12 has no first-order constraint
+there.
 
 ## x0 and the A15 family
 

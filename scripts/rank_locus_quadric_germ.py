@@ -35,18 +35,18 @@ Degree. The Hilbert function of C[z]/(u ^ v, Q) in degrees 0..5 is 1, 15, 98, 42
 ideal, which gives that series exactly: V is a cone of dimension 8 and degree 14. The 44 real quadrics
 have integer coefficients, so over C they cut V x V in (z, w) with w_k = y_k - i y_(16+k), of degree 196.
 
-Controls. x0 = e1 + e18 is a smooth point of V where T(x0) has dimension 22, so R_12 is larger
-than V there; its cone is A15 union B17 (nullity_twelve_local_geometry.md). The four-parameter
+Controls. x0 = e1 + e18 is a smooth point of V where T(x0) has dimension 22 and R_12 contains B17
+beside V; its cone is A15 union B17 (nullity_twelve_local_geometry.md). The four-parameter
 slice of nullity_twelve_curves lies in V identically, and the 14 octonion derivations act on u and v
 by one real skew matrix and fix mu, so the A15 family germ lies in V. The fixed-norm tangent of V at
 x0 contains the A15 frame, and both have dimension 15. The exact path
 y(alpha) = e1 - sc e10 + c e18 + sc e24 + s e25 (s = sin alpha, c = cos alpha) lies in V and keeps
-rank 20 by two principal minors whose closed forms are positive on complementary arcs. It joins
-x0 to the witness e1 + e25 and is a rescaled slice point for c > 0. e1 - e10 + e18 + e25 lies on V
-where dF = 0, with nullity 16: V lies in the closed locus R_12 and carries nullity above 12 at its
-singular points.
+rank 20 by two principal minors whose closed forms are positive on two arcs that together cover
+[0, pi/2]. It joins x0 to the witness e1 + e25 and is a rescaled slice point for c > 0.
+e1 - e10 + e18 + e25 lies on V where dF = 0, with nullity 16, so V lies in the closed locus R_12 and
+reaches nullity above 12 at that singular point.
 
-Falsifier, stated before the run: an entry of E outside the span of the minors, a failed kernel or
+Falsifiers: an entry of E outside the span of the minors, a failed kernel or
 transport identity, a scope point off V, with dF = 0, with nullity other than 12, or with a tangent
 bound other than 16 refutes the argument at that point; a Hilbert value off the series refutes the
 degree.
@@ -93,6 +93,10 @@ MU = 7
 V_OFFSET = 8
 NULLITY = 12
 GERM_DIMENSION = 16
+# Sylvester on C_z^2 = z z^T over C^15: 2 rank C_z - 15 <= 1.
+CROSS_RANK_BOUND = 8
+DERIVATIONS = 14
+ORBIT_RANK = 11
 SCOPE = ("nonzd-axis", "proposition-8.2")
 OTHER_GAP_FAMILIES = ("zd-nonzd-locus", "zd-nonzd-generic", "nonzd-nonzd-locus")
 SIGNS = [[cd_sign(HALF, i, j) for j in range(HALF)] for i in range(HALF)]
@@ -115,6 +119,7 @@ PATH_MINORS = {
     "0..19": "16*c**8*(1 + s**2*c**2)**2*(1 - s**2*c**2)**4",
     "0..17,24,25": "16*s**4*(1 + 2*c**2)**2*(1 + s**2*c**2)**2*(1 - s**2*c**2)**4",
 }
+PATH_MINOR_INDICES = {"0..19": list(range(20)), "0..17,24,25": [*range(18), 24, 25]}
 
 
 def _require(ok: bool, message: str) -> None:
@@ -316,28 +321,32 @@ def coordinates(y: Sequence[int]) -> list[Gauss]:
     return [Gauss(y[k], y[HALF + k]) for k in range(1, HALF)]
 
 
-def transport(conjugate_s: bool = True) -> dict[str, Any]:
-    """Phi L_y = Real(A(z, t)) Conj Phi on every imaginary basis y, with Phi(r, s) = (r, conj(s)) as (Re xi, Im xi)."""
+def transport_case(item: tuple[int, bool]) -> bool:
+    """Phi L_y = Real(A(z, t)) Conj Phi at the basis element y = e_k, with Phi(r, s) = (r, conj(s))."""
+    k, conjugate_s = item
     phi = [1] * HALF + [1] + [-1 if conjugate_s else 1] * (HALF - 1)
-    agrees = 0
-    for k in [index for index in range(DIM) if index not in (0, HALF)]:
-        y = [int(index == k) for index in range(DIM)]
-        z = coordinates(y)
-        t = [value.conj() for value in z]
-        c = cross(z, ZERO, SIGNS)
-        a = [[ZERO] * HALF for _ in range(HALF)]
-        for index in range(1, HALF):
-            a[0][index] = -t[index - 1]
-            a[index][0] = t[index - 1]
-            for column in range(1, HALF):
-                a[index][column] = c[index - 1][column - 1]
-        real = [[a[r][col].re for col in range(HALF)] + [-a[r][col].im for col in range(HALF)] for r in range(HALF)]
-        real += [[a[r][col].im for col in range(HALF)] + [a[r][col].re for col in range(HALF)] for r in range(HALF)]
-        conjugated = [[real[r][col] * (1 if col < HALF else -1) for col in range(DIM)] for r in range(DIM)]
-        lhs = [[phi[r] * value for value in row] for r, row in enumerate(left_matrix(y))]
-        rhs = [[conjugated[r][col] * phi[col] for col in range(DIM)] for r in range(DIM)]
-        agrees += lhs == rhs
-    return {"imaginary_basis_elements": DIM - 2, "agreeing": agrees}
+    y = [int(index == k) for index in range(DIM)]
+    z = coordinates(y)
+    t = [value.conj() for value in z]
+    c = cross(z, ZERO, SIGNS)
+    a = [[ZERO] * HALF for _ in range(HALF)]
+    for index in range(1, HALF):
+        a[0][index] = -t[index - 1]
+        a[index][0] = t[index - 1]
+        for column in range(1, HALF):
+            a[index][column] = c[index - 1][column - 1]
+    real = [[a[r][col].re for col in range(HALF)] + [-a[r][col].im for col in range(HALF)] for r in range(HALF)]
+    real += [[a[r][col].im for col in range(HALF)] + [a[r][col].re for col in range(HALF)] for r in range(HALF)]
+    conjugated = [[real[r][col] * (1 if col < HALF else -1) for col in range(DIM)] for r in range(DIM)]
+    lhs = [[phi[r] * value for value in row] for r, row in enumerate(left_matrix(y))]
+    rhs = [[conjugated[r][col] * phi[col] for col in range(DIM)] for r in range(DIM)]
+    return lhs == rhs
+
+
+def transport(conjugate_s: bool = True) -> dict[str, Any]:
+    """The transport identity on every imaginary basis element (Re xi, Im xi) = (r, conj(s))."""
+    cases = [(k, conjugate_s) for k in range(DIM) if k not in (0, HALF)]
+    return {"imaginary_basis_elements": DIM - 2, "agreeing": sum(parallel.ordered_map(transport_case, cases))}
 
 
 def fmpz(rows: list[list[int]]) -> flint.fmpz_mat:
@@ -480,6 +489,7 @@ def admit(row: dict[str, Any]) -> None:
     """The conditions under which the germ argument holds at a point, by its role."""
     where = f"{row['family']} {row['point']}"
     _require(row["on_v"], f"{where} is off V")
+    _require(row["cross_rank"] <= CROSS_RANK_BOUND, f"{where}: rank C_z exceeds the Sylvester bound on V")
     chart_row = row["chart"]
     _require(chart_row is not None and chart_row["residual"] == [0, 0], f"{where} has no unit-anchor chart on V")
     smooth = any(v != [0, 0] for v in (chart_row["d_mu"], chart_row["d_lambda"], *chart_row["d_w"]))
@@ -537,37 +547,50 @@ def rational_chart() -> dict[str, Any]:
     }
 
 
+def on_rank_one_locus(x: list[Any]) -> bool:
+    """u ^ v = 0 at the rational point x."""
+    values = [Fraction(value) for value in x]
+    # The minors are homogeneous, so clearing denominators keeps their zero set.
+    scale = math.lcm(*(value.denominator for value in values))
+    return all(m == ZERO for m in minors(coordinates([int(value * scale) for value in values])))
+
+
 def other_gap_witnesses() -> dict[str, list[int]]:
     """The nullity-8 and nullity-4 gap witnesses of rank_locus_local_dimension, split by whether u ^ v vanishes."""
+    rows = [row for row in witnesses() if row["family"] in OTHER_GAP_FAMILIES]
+    flags = parallel.ordered_map(on_rank_one_locus, [row["x"] for row in rows])
     split: dict[str, list[int]] = {"on_rank_one_locus": [], "off_rank_one_locus": []}
-    for row in witnesses():
-        if row["family"] in OTHER_GAP_FAMILIES:
-            values = [Fraction(value) for value in row["x"]]
-            # The minors are homogeneous, so clearing denominators keeps their zero set.
-            scale = math.lcm(*(value.denominator for value in values))
-            z = coordinates([int(value * scale) for value in values])
-            key = "on_rank_one_locus" if all(m == ZERO for m in minors(z)) else "off_rank_one_locus"
-            split[key].append(row["witness"])
+    for row, on in zip(rows, flags, strict=True):
+        split["on_rank_one_locus" if on else "off_rank_one_locus"].append(row["witness"])
     return split
+
+
+def _path() -> tuple[sp.Symbol, sp.Symbol, sp.Expr, list[sp.Expr]]:
+    s, c = sp.symbols("s c", real=True)
+    y = [sp.Integer(0)] * DIM
+    y[1], y[10], y[18], y[24], y[25] = sp.Integer(1), -s * c, c, s * c, s
+    return s, c, s**2 + c**2 - 1, y
+
+
+def path_minor(label: str) -> bool:
+    """The principal minor of L_y(alpha) on the rows and columns PATH_MINOR_INDICES[label] equals its closed form."""
+    s, c, circle, y = _path()
+    indices = PATH_MINOR_INDICES[label]
+    matrix = sp.Matrix([[y[row ^ column] * SIGNS32[row ^ column][column] for column in indices] for row in indices])
+    ring = sp.ZZ[s, c]
+    determinant = ring.to_sympy(DomainMatrix.from_Matrix(matrix).convert_to(ring).det())
+    closed = sp.sympify(PATH_MINORS[label], locals={"s": s, "c": c})
+    return bool(sp.rem(sp.expand(determinant - closed), circle, s) == 0)
 
 
 def path_link() -> dict[str, Any]:
     """y(alpha) = e1 - sc e10 + c e18 + sc e24 + s e25 on V, its two rank-20 minors and its slice form."""
     from nullity_twelve_curves import _base_numerator, _phase_vector
 
-    s, c = sp.symbols("s c", real=True)
-    circle = s**2 + c**2 - 1
-    y = [sp.Integer(0)] * DIM
-    y[1], y[10], y[18], y[24], y[25] = sp.Integer(1), -s * c, c, s * c, s
+    s, c, circle, y = _path()
     z = [y[k] + sp.I * y[HALF + k] for k in range(1, HALF)]
     on_v = all(sp.rem(sp.expand(value), circle, s) == 0 for value in [*minors(z), isotropy(z, sp.Integer(0))])
-    matrix = sp.Matrix(DIM, DIM, lambda k, j: y[k ^ j] * SIGNS32[k ^ j][j])
-    ring = sp.ZZ[s, c]
-    minors_ok = {}
-    for label, indices in (("0..19", list(range(20))), ("0..17,24,25", [*range(18), 24, 25])):
-        determinant = ring.to_sympy(DomainMatrix.from_Matrix(matrix.extract(indices, indices)).convert_to(ring).det())
-        closed = sp.sympify(PATH_MINORS[label], locals={"s": s, "c": c})
-        minors_ok[label] = sp.rem(sp.expand(determinant - closed), circle, s) == 0
+    minors_ok = dict(zip(PATH_MINORS, parallel.ordered_map(path_minor, list(PATH_MINORS)), strict=True))
     numerator, denominator = _base_numerator(sp.Integer(0), 2 * s * c / (1 + c), s)
     slice_point = _phase_vector(numerator / denominator, sp.Integer(0))
     rescaled = all(
@@ -686,6 +709,8 @@ def measure(full: bool = True) -> dict[str, Any]:
         a15 = data["a15"]
         _require(
             a15["slice_on_v"]
+            and a15["derivations"] == DERIVATIONS
+            and a15["orbit_rank"] == ORBIT_RANK
             and a15["derivations_preserve_v"]
             and a15["slice_completes_a15"]
             and a15["fixed_norm_tangent_dimension"] == a15["a15_frame_rank"] == GERM_DIMENSION - 1
@@ -695,12 +720,16 @@ def measure(full: bool = True) -> dict[str, Any]:
     return data
 
 
+_MISSING = object()
+
+
 def differences(retained: Any, fresh: Any, path: str = "") -> list[str]:
+    """Paths where the records differ; a key present on one side only, or a value of another type, differs."""
     if isinstance(retained, dict) and isinstance(fresh, dict):
         return [
             item
             for key in sorted(set(retained) | set(fresh))
-            for item in differences(retained.get(key), fresh.get(key), f"{path}/{key}")
+            for item in differences(retained.get(key, _MISSING), fresh.get(key, _MISSING), f"{path}/{key}")
         ]
     if isinstance(retained, list) and isinstance(fresh, list) and len(retained) == len(fresh):
         return [
@@ -708,7 +737,7 @@ def differences(retained: Any, fresh: Any, path: str = "") -> list[str]:
             for index, pair in enumerate(zip(retained, fresh, strict=True))
             for item in differences(*pair, f"{path}[{index}]")
         ]
-    return [] if retained == fresh else [path or "/"]
+    return [] if type(retained) is type(fresh) and retained == fresh else [path or "/"]
 
 
 def _refused(row: dict[str, Any]) -> bool:
@@ -723,7 +752,10 @@ def _assign(data: dict[str, Any], path: tuple[Any, ...], value: Any) -> None:
     target: Any = data
     for key in path[:-1]:
         target = target[key]
-    target[path[-1]] = value
+    if value is _MISSING:
+        del target[path[-1]]
+    else:
+        target[path[-1]] = value
 
 
 def self_test() -> str:
@@ -734,8 +766,10 @@ def self_test() -> str:
     flipped[3][12] = -flipped[3][12]
     broken = identity(flipped)
     _require(
-        not (broken["cross_matrix_skew"] and broken["remainder_in_minor_span"] and broken["kernel_right_identity"]),
-        "a flipped sign in the sedenion table leaves every identity intact",
+        not broken["cross_matrix_skew"]
+        and not broken["remainder_in_minor_span"]
+        and not broken["kernel_left_identity"],
+        "a flipped sign in the sedenion table leaves the skewness, minor-span or left-kernel identity intact",
     )
     _require(transport(conjugate_s=False)["agreeing"] < DIM - 2, "transport without conj(s) still agrees")
     _require(hilbert(top=3)["agrees"], "the Hilbert function of C[z]/(u ^ v, Q) moved")
@@ -745,8 +779,8 @@ def self_test() -> str:
         ("e1-e10+e18+e25", ((1, 1), (10, -1), (18, 1), (25, 1))),
         ("e1+e18", ((1, 1), (18, 1))),
     )
-    for name, support in controls:
-        row = certify_point(("nonzd-axis", name, support))
+    rows = parallel.ordered_map(certify_point, [("nonzd-axis", name, support) for name, support in controls])
+    for (name, _), row in zip(controls, rows, strict=True):
         _require(_refused(row), f"{name} is admitted as a nonzd-axis germ point")
     first = algebra["remainder"][0][4]
     # Each corruption must change the record; the ones on a point row must also fail admission.
@@ -757,6 +791,9 @@ def self_test() -> str:
         ("nullity", ("points", 3, "nullity"), 8, True),
         ("tangent bound", ("points", 4, "tangent_bound_dimension"), 17, True),
         ("cubic frame", ("points", 5, "cubic_kernel_annihilated"), False, True),
+        ("cross rank", ("points", 6, "cross_rank"), CROSS_RANK_BOUND + 1, True),
+        ("missing field", ("points", 7, "e8_e24_tangent"), _MISSING, False),
+        ("extra null field", ("points", 8, "extra"), None, False),
     )
     for label, path, value, row_level in corruptions:
         damaged = copy.deepcopy(data)
@@ -780,7 +817,11 @@ def main() -> int:
         return 0
     data = measure()
     if arguments.check is not None:
-        differing = differences(json.loads(arguments.check.read_text()), data)
+        retained = json.loads(arguments.check.read_text())
+        # The record states the library versions that wrote it; the mathematics is compared without them.
+        differing = differences(
+            {k: v for k, v in retained.items() if k != "versions"}, {k: v for k, v in data.items() if k != "versions"}
+        )
         if differing:
             raise SystemExit(f"rank_locus_quadric_germ: {differing} differ from {arguments.check}")
     else:

@@ -164,10 +164,11 @@ and is never evidence of the gap.
      orbit tangent space at two slice points is 13-dimensional and inside
      the family span; two of its generators move e_8 or e_24 across the
      halves.
-   - The nullity-12 question stays open. The next step is equations that
-     cut out D_(5,12) near {e_i, 0} (the centered Schur complement of
-     computation 2 with its higher-order terms), or a curve family that is
-     not a product of half turns.
+   - Half turns leave the question open. Computation 7 gives the positive
+     answer: its path y(alpha) = e1 - sc e10 + c e18 + sc e24 + s e25 is a
+     rescaled point of the A15 slice for c > 0, keeps nullity exactly 12 by
+     two closed-form principal minors, and reaches the witness e1 + e25 at
+     alpha = pi/2.
 4. **Extended-precision probe of the {a, 0} witnesses.** Near-rank-20
    points reached from seeded starts near each witness keep their distance
    from the family when refined at 110 digits to sigma_21/sigma_1 < 1e-40,
