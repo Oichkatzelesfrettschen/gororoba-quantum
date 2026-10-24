@@ -9546,6 +9546,7 @@
    "cd_core",
    "collections",
    "numpy",
+   "parallel",
    "pathlib",
    "sys",
    "time"
