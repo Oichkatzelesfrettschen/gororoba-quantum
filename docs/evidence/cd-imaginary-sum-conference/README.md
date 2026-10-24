@@ -60,7 +60,8 @@ sha256sum -c docs/evidence/cd-imaginary-sum-conference/source_hashes.sha256
 source and [assumptions.v](assumptions.v) in temporary storage with
 `-w @all`, fails on any warning or compiler output, runs `rocq check`, and
 compares the outputs byte for byte with [assumptions.txt](assumptions.txt)
-and [kernel.txt](kernel.txt). The ci.yml job rocq-replay runs it on a pull
-request that touches `proofs/` or this bundle. `source_hashes.sha256` binds
+and [kernel.txt](kernel.txt). The ci.yml job rocq-replay runs it on the
+nightly schedule and on manual dispatch, which always replay; a pull request's
+premerge replay runs by hand and is recorded against the reviewed PR head. `source_hashes.sha256` binds
 the source and receipts, so an edit to the proof without new receipts fails
 the hash gate. The compile takes about 3 s on the build host.
