@@ -11,7 +11,7 @@
   "state": "active",
   "scope": "One 64-setting Ascella order-family job measuring sign-odd and sign-even X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
   "owner": "Quandela experiment operator",
-  "next_action": "Model the setting-dependent outside-block share of the retained run, and decide whether a repeat job with a preregistered between-job analysis follows.",
+  "next_action": "Identify which acquisition stage alternates between consecutive iterations and which configuration error the reproducing X residuals carry; a following case can raise samples per iteration, which cost no measurable time.",
   "reconciliation": {
     "status": "unresolved",
     "note": "The approved acquisition ran and is retained with its reproducing analysis; all 27 endpoints qualify. The outside-block share above the dark-count bound remains an open mechanism question."
@@ -191,6 +191,37 @@
             }
           ],
           "scope_sha256": "38576236e39d163b17c0b217dc2b2d05cf9b9a3aa0ce255ee85ebf5329598285"
+        }
+      ]
+    },
+    {
+      "id": "permuted-repeat",
+      "state": "done",
+      "action": "Diagnose job-00 outside-block clicks and analyzer contrast, preregister a permuted repeat at twice the samples with a between-job comparison, and run it under its own approval.",
+      "acceptance": "A retained job-01 run whose registered analysis and preregistered comparison replay through their gates, entered in research_state.json and the strategy run log.",
+      "depends_on": [
+        "acquire-and-analyze"
+      ],
+      "receipts": [
+        {
+          "result": "Job 6ef8e8db ran the permuted repeat: 27 of 27 endpoints qualify; outside-block clicks follow the execution sequence (lag-1 -0.653) with budget-proportional exposure, not the setting (Spearman -0.075); analyzer residuals reproduce (X 0.974, Y 0.802).",
+          "observed_at": "2026-10-24T15:46:15+00:00",
+          "revision": "b986267dbf363837cd5fa147839b5edd3dc78161",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/analysis.json",
+              "sha256": "a0548293da65ffdb603799be6ab71fb94d008bbbaee164e7dcfe6f1645478121"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/repeat-comparison.json",
+              "sha256": "922c442a075680199c592a4f8c7132d266162aa893d417c57f9c1fb9e33162aa"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/raw/result.json",
+              "sha256": "d87a4e6318b94a3e19f79654f3393ade73483e7f9974c3ecc6cfb3f2ab53c0a8"
+            }
+          ],
+          "scope_sha256": "737384a22fb7357f37cf339dace5595c426fe7e876899375796ca35a92c8f4a0"
         }
       ]
     }
