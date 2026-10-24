@@ -31,10 +31,25 @@ and the index facts reduce to `Nat.lxor` identities that `btauto` closes bit
 by bit. Conjugation fixes e_0 and negates every other unit, and sigma_k(0, q)
 = sigma_k(p, 0) = 1. The Corollary 4.3 exponent starts from the trivial group,
 so level 1 reproduces the paper's f(x, y) = xy, and its diagonal
-f(x, x) = [x != 0] carries the e_x e_x = -1 case of the induction. Integer
-coefficients keep every theorem free of axioms: all seven assumption queries
-print `Closed under the global context`, and the kernel check lists no axioms,
-type-in-type, unsafe fixpoints or assumed positivity.
+f(x, x) = [x != 0] carries the e_x e_x = -1 case of the induction.
+
+Every theorem rests on the type theory that `rocq check` re-verifies
+([kernel.txt](kernel.txt)): the Calculus of Inductive Constructions with a
+predicative Set and no rewrite rules, with the equality types `eq`, `eq_true`
+and `eq_dep` and Btauto's `null` typed under the default rule that inductive
+indices do not raise the universe level. Beyond that kernel, the proofs use
+only definitions and proved lemmas of Corelib and Stdlib 9.2.0: the integers
+and their ring structure (ZArith, through `ring` and `lia`), the natural-number
+bitwise operations `Nat.lxor`, `Nat.testbit` and `Nat.log2` with their
+Stdlib lemmas, and Btauto's Boolean normalization. Each of the seven
+assumption queries prints `Closed under the global context`, meaning the
+proof term reaches the kernel through those definitions alone, with every
+classical, extensionality or choice principle absent. The integer
+coefficients are what make that possible, since the real-number Stdlib
+carries axioms. The remaining trust is in the transcriptions: `sigma` and
+`cd_sign_loop` against the Python loop of cd_core.cd_sign, which the bridge
+below checks through n = 64, the tower doubling against the algebra, and
+`am_exponent` against the printed Corollary 4.3.
 
 ## Bridge to cd_sign
 
