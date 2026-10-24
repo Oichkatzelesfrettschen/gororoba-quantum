@@ -6724,7 +6724,7 @@
   "scripts/kaggle_run.py": "04e69833aefcd34311c033747cf73e9bf207bf56684a877f16d0f966ae634114",
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
-  "scripts/hypercomplex_libraries.py": "4e57cdd6be4967ebbbbfb5698e8a43174b29b3cc91572904f0c4207d622a1141",
+  "scripts/hypercomplex_libraries.py": "de1125f46866b0df683500c9a992bd08f38e0d25b6559c14e98114f0151a31f1",
   "docs/notes/quandela/python-stack.md": "2f4be7a75a82b1c94a11e6bd45b7ff9d415c10c9a02953a9768100c03fac856e",
   "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
@@ -6934,15 +6934,13 @@
   ],
   "ci/seed_provenance.py": [
    "__future__",
-   "anu_qrng",
    "argparse",
    "ast",
    "collections",
    "json",
-   "outshift_qrng",
    "parallel",
    "pathlib",
-   "quandela_qrng",
+   "qrng_seeds",
    "re",
    "subprocess",
    "sys",
@@ -6965,6 +6963,7 @@
    "pathlib",
    "qiskit",
    "qiskit_ibm_runtime",
+   "qrng_seeds",
    "sys",
    "tempfile",
    "types",
@@ -7041,6 +7040,7 @@
    "pathlib",
    "qiskit",
    "qiskit_ibm_runtime",
+   "qrng_seeds",
    "shlex",
    "statistics",
    "sys",
@@ -7248,6 +7248,7 @@
    "platform",
    "qiskit",
    "qiskit_ibm_runtime",
+   "qrng_seeds",
    "shlex",
    "statistics",
    "subprocess",
@@ -7434,6 +7435,7 @@
    "qiskit_ibm_runtime",
    "qpe_diagnostics",
    "qpu_planning",
+   "qrng_seeds",
    "typing"
   ],
   "gororoba_quantum/correction_preparation_contracts.py": [
@@ -7786,6 +7788,7 @@
    "pathlib",
    "qiskit",
    "qiskit_aer",
+   "qrng_seeds",
    "typing"
   ],
   "gororoba_quantum/hypercomplex_clifford_envelope.py": [
@@ -7923,6 +7926,7 @@
    "qiskit",
    "qiskit_aer",
    "qiskit_ibm_runtime",
+   "qrng_seeds",
    "shlex",
    "statistics",
    "sys",
@@ -8402,6 +8406,19 @@
    "types",
    "typing",
    "unittest"
+  ],
+  "gororoba_quantum/qrng_seeds.py": [
+   "__future__",
+   "anu_qrng",
+   "argparse",
+   "collections",
+   "json",
+   "outshift_qrng",
+   "pathlib",
+   "quandela_qrng",
+   "re",
+   "sys",
+   "typing"
   ],
   "gororoba_quantum/qubit_baseline.py": [
    "__future__",
@@ -10428,6 +10445,7 @@
    "pathlib",
    "qiskit",
    "qiskit_aer",
+   "qrng_seeds",
    "sys",
    "typing"
   ],
@@ -10450,6 +10468,7 @@
    "pathlib",
    "qiskit",
    "qiskit_aer",
+   "qrng_seeds",
    "sys",
    "time",
    "typing"
@@ -10525,6 +10544,7 @@
    "parallel",
    "pathlib",
    "platform",
+   "qrng_seeds",
    "random",
    "sys",
    "target_flip",
@@ -10653,6 +10673,7 @@
    "pathlib",
    "qiskit",
    "qiskit_ibm_runtime",
+   "qrng_seeds",
    "statistics",
    "sys",
    "time",
@@ -10729,6 +10750,7 @@
    "pathlib",
    "qiskit",
    "qiskit_aer",
+   "qrng_seeds",
    "snapshot_laws",
    "sys",
    "time",

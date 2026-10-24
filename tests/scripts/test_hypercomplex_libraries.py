@@ -10,14 +10,17 @@ from typing import Any
 import pytest
 from hypercomplex_libraries import (
     ROOT,
+    _file_imports,
     check_execution_coverage,
     check_import_coverage,
+    check_import_projection,
     check_inventory_denominator,
     execution_declarations,
     inventory,
     main,
     markdown,
     tracked_imports,
+    tracked_sources,
 )
 
 
@@ -212,8 +215,7 @@ def import_snapshot(tmp_path: Path) -> tuple[Path, dict[str, Any]]:
     return tmp_path, record
 
 
-@pytest.mark.audit
-@pytest.mark.parametrize("change", ["add", "remove"])
+@pytest.mark.parametrize("change", ["add", "remove", "new_file"])
 def test_current_import_scan_rejects_tracked_source_changes(
     import_snapshot: tuple[Path, dict[str, Any]], change: str
 ) -> None:
@@ -221,10 +223,46 @@ def test_current_import_scan_rejects_tracked_source_changes(
     source = root / "scripts/consumer.py"
     if change == "add":
         source.write_text(source.read_text() + "import scipy\n")
-    else:
+    elif change == "remove":
         source.write_text(source.read_text().replace("import numpy\n", ""))
+    else:
+        (root / "scripts/new_tool.py").write_text("import json\n")
+        subprocess.run(["git", "add", "scripts/new_tool.py"], cwd=root, check=True)
     with pytest.raises(ValueError, match="inventory tracked import roots differ"):
         check_import_coverage(record, root)
+
+
+# The retained inventory against the tree. check_import_coverage reads git ls-files, each file's AST and
+# the retained mapping, never the installed distributions, so the pull-request interpreter decides it as
+# the system python3 that regenerates the inventory would; distribution resolution stays with the audit.
+# The parse of every runtime file splits into SHARDS cases so the xdist pool spreads it.
+SHARDS = 8
+REGENERATE = "PYTHON=python3 python3 scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries"
+
+
+def retained_inventory() -> dict[str, Any]:
+    return json.loads((ROOT / "docs/state/hypercomplex-libraries/libraries.json").read_text())
+
+
+@pytest.mark.parametrize("shard", range(SHARDS))
+def test_retained_inventory_records_each_tracked_file_imports(shard: int) -> None:
+    retained = retained_inventory()["tracked_import_roots"]
+    runtime_files, _ = tracked_sources(ROOT)
+    differing = [
+        name for name in runtime_files[shard::SHARDS] if retained.get(name) != _file_imports((str(ROOT), name))[1]
+    ]
+    if differing:
+        raise ValueError(f"inventory import roots differ for {', '.join(differing)}; regenerate with {REGENERATE}")
+
+
+def test_retained_inventory_projects_the_tracked_file_set() -> None:
+    record = retained_inventory()
+    runtime_files, local_modules = tracked_sources(ROOT)
+    retained = record["tracked_import_roots"]
+    if set(retained) != set(runtime_files):
+        stale = sorted(set(retained) ^ set(runtime_files))
+        raise ValueError(f"inventory tracked files differ at {', '.join(stale)}; regenerate with {REGENERATE}")
+    check_import_projection(record, retained, local_modules)
 
 
 @pytest.mark.parametrize("field", ["imported_by", "unresolved", "mapping"])
