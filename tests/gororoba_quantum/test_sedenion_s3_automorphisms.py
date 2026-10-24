@@ -10,6 +10,7 @@ epsilon psi = psi^2 epsilon, so they generate an S3 inside the automorphism grou
 from fractions import Fraction
 
 import cd_core
+import parallel
 
 N = 16
 Vector = list[Fraction]
@@ -65,22 +66,32 @@ def product(p: int, q: int) -> Element:
     return [cd_core.cd_sign(N, p, q) * x for x in unit(p ^ q)], zero()
 
 
+TRANSFORMS = {"psi": psi, "epsilon": epsilon}
+
+
+def breaks_product(item: tuple[str, int, int]) -> bool:
+    """Whether the named transform maps e_p e_q to something other than T(e_p) T(e_q)."""
+    name, p, q = item
+    transform = TRANSFORMS[name]
+    return transform(product(p, q)) != multiply(transform(basis(p)), transform(basis(q)))
+
+
+def breaks_relations(p: int) -> bool:
+    """Whether psi^3 = epsilon^2 = Id or epsilon psi = psi^2 epsilon fails on e_p."""
+    e = basis(p)
+    return psi(psi(psi(e))) != e or epsilon(epsilon(e)) != e or epsilon(psi(e)) != psi(psi(epsilon(e)))
+
+
 def test_psi_and_epsilon_preserve_every_basis_product() -> None:
-    for transform in (psi, epsilon):
-        failing = [
-            (p, q)
-            for p in range(N)
-            for q in range(N)
-            if transform(product(p, q)) != multiply(transform(basis(p)), transform(basis(q)))
-        ]
-        if failing:
-            raise AssertionError(f"{transform.__name__} breaks T(e_p e_q) = T(e_p) T(e_q) at {failing}")
+    items = [(name, p, q) for name in TRANSFORMS for p in range(N) for q in range(N)]
+    failing = [item for item, bad in zip(items, parallel.ordered_map(breaks_product, items), strict=True) if bad]
+    if failing:
+        raise AssertionError(f"T(e_p e_q) = T(e_p) T(e_q) fails at {failing}")
 
 
 def test_psi_and_epsilon_satisfy_the_s3_relations() -> None:
-    for p in range(N):
-        e = basis(p)
-        if psi(psi(psi(e))) != e or epsilon(epsilon(e)) != e:
-            raise AssertionError(f"psi^3 or epsilon^2 is not the identity on e_{p}")
-        if epsilon(psi(e)) != psi(psi(epsilon(e))):
-            raise AssertionError(f"epsilon psi differs from psi^2 epsilon on e_{p}")
+    failing = [
+        p for p, bad in zip(range(N), parallel.ordered_map(breaks_relations, list(range(N))), strict=True) if bad
+    ]
+    if failing:
+        raise AssertionError(f"an S3 relation fails on e_p for p in {failing}")
