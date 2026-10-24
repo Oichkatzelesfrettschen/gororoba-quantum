@@ -60,6 +60,18 @@ experiments.py also gets a dry run, `"$PYTHON" live_run.py --out
 `proofs/`, a replay bundle or its receipts follows the Rocq replay of
 [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates).
 
+**Seeds.** Every new random seed, on any provider or simulator, comes from the
+ANU QRNG: a numpy or `random` generator seed, `seed_transpiler`,
+`seed_simulator`, a Perceval `compilation_seed`, a bootstrap or null-calibration
+seed. `"$PYTHON" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng` retains
+the response bytes and their sha256 (`--source legacy` is the keyless JSON API,
+one request per minute; the default `aqn` service is keyed, 100 requests a
+month), and the code or case cites the draw file and the index of every value
+it takes, in index order, each value used once. The draw needs no approval. A
+seed that reproduces a retained record, an approved plan or a known compiled
+mesh is an identifier and keeps its value, because the record's replay and the
+approved-record comparison depend on it.
+
 ## Work planning
 
 [docs/state/plans.md](docs/state/plans.md) is the planning entry point. JSON records own work status;
@@ -252,8 +264,8 @@ checkout and never enter a commit, log or memory.
   interpreter `iqm-python` of the iqm-resonance-stack package; MCP `iqm`; token
   pair file named by `IQM_TOKENS_FILE`.
 
-Every job (QPU, emulator, simulator or mock), upload, QRNG read, timeslot
-booking and notebook session on any provider waits for the user's approval of a
+Every job (QPU, emulator, simulator or mock), upload, provider QRNG read,
+timeslot booking and notebook session on any provider waits for the user's approval of a
 written case: what it measures, why a simulation cannot answer it, the backend,
 shots, expected seconds and expected credits. A Quantum Inspire hardware batch
 also keeps its pause and queue limits, and Open Quantum Public Compute makes
