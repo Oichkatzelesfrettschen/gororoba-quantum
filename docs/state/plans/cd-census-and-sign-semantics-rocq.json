@@ -45,9 +45,35 @@
     },
     {
       "id": "cd-sign-python-semantics",
-      "state": "todo",
+      "state": "done",
       "action": "Extract cd_core.cd_sign's syntax tree into a Rocq term, give the Python subset it uses a Rocq semantics, and prove the run equals sigma for every k.",
-      "acceptance": "The extraction test passes in pytest, and the semantics theorem compiles closed under the global context in a hash-bound replay with -w @all that passes against its receipts."
+      "acceptance": "The extraction test passes in pytest, and the semantics theorem compiles closed under the global context in a hash-bound replay with -w @all that passes against its receipts.",
+      "receipts": [
+        {
+          "result": "cd_sign_returns_sigma, cd_sign_raises_dimension, cd_sign_raises_index, dimension_guard_pow, cd_sign_spec and cd_sign_mutant_differs compile under -w @all; all six assumption queries print Closed under the global context, rocq check passes with the shared kernel receipt, replay_rocq.sh passes against its receipts, and the 85 cases of tests/scripts/test_cd_sign_rocq_ast.py and scripts/cd_sign_rocq_ast.py --check pass.",
+          "observed_at": "2026-10-24T16:17:24Z",
+          "revision": "d95b6c004f12ba98260af7898b53766de1fa5c13",
+          "evidence": [
+            {
+              "ref": "proofs/CdSignPythonSemantics.v",
+              "sha256": "539460c7b13b62b96782f5a331d358936c290851a3395c2f9d57b4d1e2252637"
+            },
+            {
+              "ref": "scripts/cd_sign_rocq_ast.py",
+              "sha256": "377affd7ffcdf0064925cd03dca5afa515cf5a32fb5379662d016193bd84a6de"
+            },
+            {
+              "ref": "tests/scripts/test_cd_sign_rocq_ast.py",
+              "sha256": "ac5f565acc8e26f303c43f0c138bf3daeff7cc7d878e676f049ed9e0e783785e"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-semantics/assumptions.txt",
+              "sha256": "99a6704258822ca71cbc86001bd22c279bfa19b98dd2513510b2a59528c8e97f"
+            }
+          ],
+          "scope_sha256": "4c32729c0b8d7409c41a3ce0015518f7a00caecf7a4407a5cda6b76b430bdd24"
+        }
+      ]
     }
   ],
   "related": [
