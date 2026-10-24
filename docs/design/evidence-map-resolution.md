@@ -72,6 +72,9 @@ that distinction does not need to be invented again.
 | EM-15 | Provider-dependent capability and hardware certificate | Keep M2-M4 unresolved until supported | Bound provider evidence and a frozen qualified experiment; no source-code patch alone suffices |
 | EM-16 | Mathematical frontier and future hardware spending | Keep frontier papers and proposals separate from physical validation | Explicit hypothesis, observation model, budget, and closure rule before execution |
 
+The plan record [evidence-map-resolution](../state/plans/evidence-map-resolution.json)
+owns the status, owner and receipts of the open items (EM-06 to EM-09, EM-11 to
+EM-13 and EM-15); the disposition record supplies their context.
 These IDs are work-item identifiers only. They do not replace registered claim
 IDs, change a frozen verdict, or assert that an open question is refuted.
 

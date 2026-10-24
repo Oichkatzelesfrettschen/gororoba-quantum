@@ -129,9 +129,9 @@
     {
       "id": "EM-14",
       "subject": "gate_and_fitter_repairs",
-      "work_status": "existing_pr",
+      "work_status": "merged_on_main",
       "canonical_path": "ci/AGENTS.md",
-      "next_action": "Review existing PR 358 rather than duplicate its code changes.",
+      "next_action": "None; PR 358 merged as 4250b062fc3f09870dd8c602a2658ed61e12658b.",
       "closure_evidence": "Current-head review and required gates pass including the declared environment checks."
     },
     {
