@@ -8,12 +8,13 @@
     "docs/evidence/cd-tower-basis-sign/README.md",
     "docs/notes/cd_phase_degree.md",
     "scripts/cd_phase_degree.py",
-    "docs/notes/math-9802116.md"
+    "docs/notes/math-9802116.md",
+    "proofs/CdSignRowAnf.v",
+    "docs/evidence/cd-sign-row-anf/README.md"
   ],
-  "state": "active",
+  "state": "closed",
   "scope": "CdTowerBasisSign.v proves the Corollary 4.3 cochain equal to the transposed sign. This investigation carries the paper's Proposition 4.2 and 4.4 statements, the unit involutions, coefficient recovery, the scaled isometry and the R_s versus L_s discriminator into Rocq, and records the ANF coefficient results of cd_phase_degree.md: Theorem 3 (leading layer), Lemma E (right involution), Proposition 4 (exact right-row degree, measured) and the bilinear layer. Rocq ANF machinery and a written proof of Proposition 4 remain open.",
   "owner": "Repository Rocq maintainer",
-  "next_action": "Define the ANF coefficient of a truth table on 2^k entries in Rocq and state Theorem 3 against am_exponent, or record why the definition does not close the induction.",
   "reconciliation": {
     "status": "verified",
     "note": "Scope read from CdTowerBasisSign.v, cd_phase_degree.md and cd_phase_degree.py."
@@ -79,6 +80,26 @@
             }
           ],
           "scope_sha256": "41a668871cf22fb7a9ddb1dbe71f543d3889f3988ee3b999a5fc49ba33a77c9d"
+        },
+        {
+          "result": "cd_phase_degree.py --max-n 8 exits 0 with the right-row slices and the Ren-Zhao closed form added; stdout is byte-identical to the earlier run and both recorded mutations are still caught.",
+          "observed_at": "2026-10-24T09:46:22Z",
+          "revision": "de61e5557df2423e855170d75de68e6a7bb24a83",
+          "evidence": [
+            {
+              "ref": "scripts/cd_phase_degree.py",
+              "sha256": "52dcc55ae3d4e75d76bb439ae79bf0f3d6a3885446b7f8f4a557299a6373ce29"
+            },
+            {
+              "ref": "docs/notes/cd_phase_degree.md",
+              "sha256": "0b7515d34b28f598e5e14983cbe3bf55b3dfc73d06a1aecc195f3219b021dc5b"
+            },
+            {
+              "ref": "gororoba_quantum/cd_core.py",
+              "sha256": "cccd78580b5931ed72ea6c364361fa3d920a1617fa1ab70460e3e11ce6ca9300"
+            }
+          ],
+          "scope_sha256": "41a668871cf22fb7a9ddb1dbe71f543d3889f3988ee3b999a5fc49ba33a77c9d"
         }
       ]
     },
@@ -86,18 +107,86 @@
       "id": "leading-layer-rocq",
       "action": "Define ANF coefficients on 2^k-entry truth tables in Rocq and prove Theorem 3 of cd_phase_degree.md for every k >= 3 against am_exponent.",
       "acceptance": "The theorem compiles closed under the global context in a hash-bound replay. Stop condition: a step of the written proof that the definition cannot express is recorded and ends the step.",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "paper-laws-rocq"
+      ],
+      "receipts": [
+        {
+          "result": "sign_row_top, sign_row_leading, sign_row_degree and sign_row_degree_all compile on the Moebius-transform ANF of CdSignRowAnf.v with anf_inversion and anf_unique; all ten assumption queries of the cd-sign-row-anf replay print Closed under the global context, and replay_rocq.sh passes against its receipts.",
+          "observed_at": "2026-10-24T09:46:22Z",
+          "revision": "de61e5557df2423e855170d75de68e6a7bb24a83",
+          "evidence": [
+            {
+              "ref": "proofs/CdSignRowAnf.v",
+              "sha256": "bea8796c80b2b3ade99274d20156228a1ed5498f6139d0c957cc043880e760a0"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-row-anf/assumptions.v",
+              "sha256": "9ba56c603f9b7472f8ee447743b286415612eb744fae0e90b6a4c3b95aee92df"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-row-anf/assumptions.txt",
+              "sha256": "f990327820c7e0de2c2185fa0c21ec662d961c689506a2b21b1afe9a2f285d04"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-row-anf/kernel.txt",
+              "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+            }
+          ],
+          "scope_sha256": "a93e4bff28aa28523d2cd5dc0d0f90251fa1a0efad0b206876fbdd7ea56e5ca3"
+        }
       ]
     },
     {
       "id": "right-row-degree-proof",
       "action": "Write a proof of Proposition 4 of cd_phase_degree.md, the exact degree of the right sign rows, or find an m that breaks it at n >= 9.",
       "acceptance": "The proof lands in cd_phase_degree.md with the checker covering every identity it uses, or the counterexample is recorded and the proposition corrected.",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "coefficient-checks"
+      ],
+      "receipts": [
+        {
+          "result": "Proposition 4 of cd_phase_degree.md now has a written proof through three right-row slices, which cd_phase_degree.py --max-n 8 checks cell by cell (each slice check rejects a wrong target) beside the degree on every m; right_row_degree in CdSignRowAnf.v proves it for every n.",
+          "observed_at": "2026-10-24T09:46:22Z",
+          "revision": "de61e5557df2423e855170d75de68e6a7bb24a83",
+          "evidence": [
+            {
+              "ref": "docs/notes/cd_phase_degree.md",
+              "sha256": "0b7515d34b28f598e5e14983cbe3bf55b3dfc73d06a1aecc195f3219b021dc5b"
+            },
+            {
+              "ref": "scripts/cd_phase_degree.py",
+              "sha256": "52dcc55ae3d4e75d76bb439ae79bf0f3d6a3885446b7f8f4a557299a6373ce29"
+            },
+            {
+              "ref": "proofs/CdSignRowAnf.v",
+              "sha256": "bea8796c80b2b3ade99274d20156228a1ed5498f6139d0c957cc043880e760a0"
+            }
+          ],
+          "scope_sha256": "455cfb46806b48a073cf53e2f17a114008adc9ce994ff94fb422a2ad4a10636e"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "CdSignRowAnf.v proves for every k, closed under the global context, the Moebius-transform ANF with inversion and uniqueness, Theorem 3 and Theorem 1 for the left sign rows and Proposition 4 for the right sign rows; cd_phase_degree.md carries the written proof of Proposition 4 and cd_phase_degree.py checks its slices through n = 8.",
+  "receipts": [
+    {
+      "scope_sha256": "9321ffd1a2d46263442009c2a83aaeba43cd6a0a0a6ffd712c84cafe98e5b380",
+      "result": "All four steps are done with receipts at the revision that carries the proofs.",
+      "observed_at": "2026-10-24T09:46:43Z",
+      "revision": "de61e5557df2423e855170d75de68e6a7bb24a83",
+      "evidence": [
+        {
+          "ref": "proofs/CdSignRowAnf.v",
+          "sha256": "bea8796c80b2b3ade99274d20156228a1ed5498f6139d0c957cc043880e760a0"
+        },
+        {
+          "ref": "docs/notes/cd_phase_degree.md",
+          "sha256": "0b7515d34b28f598e5e14983cbe3bf55b3dfc73d06a1aecc195f3219b021dc5b"
+        }
       ]
     }
   ]
