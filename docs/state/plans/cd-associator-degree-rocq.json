@@ -1,0 +1,85 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-associator-degree-rocq",
+  "kind": "implementation",
+  "summary": "Prove Theorem 2 of cd_phase_degree.md, the exact associator-phase degree, in Rocq for every Cayley-Dickson level, and admit the twist-function papers the degree notes cite through the source library's PDF routes.",
+  "sources": [
+    "proofs/CdAssociatorAnf.v",
+    "docs/evidence/cd-associator-anf/README.md",
+    "docs/notes/cd_phase_degree.md",
+    "docs/SOURCES.json"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "scope": "CdSignRowAnf.v proves Theorems 1 and 3 and Proposition 4 of cd_phase_degree.md; Theorem 2, the associator-phase degree, has a written proof only. This implementation proves Theorem 2 for every k in a new hash-bound Rocq bundle tied to predict.associator_phase and to the tower product, and admits Ren-Zhao, Morier-Genoud-Ovsienko, Bales 2011 and Flaut-Boboescu as PDF records with transcribed statements.",
+  "owner": "Repository Rocq maintainer",
+  "related": [
+    "cd-phase-coefficient-structure"
+  ],
+  "next_action": "Prove assoc_degree_is in CdAssociatorAnf.v and replay the bundle.",
+  "steps": [
+    {
+      "id": "associator-degree-rocq",
+      "action": "Prove Theorem 2 of cd_phase_degree.md in CdAssociatorAnf.v for every k >= 3 against am_exponent, with the phase tied to the cd_sign factors of predict.associator_phase.",
+      "acceptance": "assoc_degree_is and assoc_sigma compile closed under the global context in a hash-bound replay with -w @all that passes against its receipts.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "assoc_degree_is, assoc_sigma, assoc_basis, assoc_degenerate, assoc_quaternion and two_point compile under -w @all; all six assumption queries of the cd-associator-anf replay print Closed under the global context, rocq check passes with the shared kernel receipt, and replay_rocq.sh passes against its receipts.",
+          "observed_at": "2026-10-24T15:28:33Z",
+          "revision": "861b19f6a303ad66a86ce1f90a797c9aa41adbbd",
+          "evidence": [
+            {
+              "ref": "proofs/CdAssociatorAnf.v",
+              "sha256": "5fbec4bf0a2160766ee7d7d74c5b5139d65b1c31ada7bbfe5e1dd65abc479d1b"
+            },
+            {
+              "ref": "docs/evidence/cd-associator-anf/assumptions.v",
+              "sha256": "ac4b863b40163067cfa1a80935d7ed0826af8d0936f268d72865b5d0d33f56b8"
+            },
+            {
+              "ref": "docs/evidence/cd-associator-anf/assumptions.txt",
+              "sha256": "99a6704258822ca71cbc86001bd22c279bfa19b98dd2513510b2a59528c8e97f"
+            },
+            {
+              "ref": "docs/evidence/cd-associator-anf/kernel.txt",
+              "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+            }
+          ],
+          "scope_sha256": "02838b679666d100197e430386dce9d760359df36539d13f2854cfa9238248d9"
+        }
+      ]
+    },
+    {
+      "id": "twist-source-admission",
+      "action": "Admit 2205.07986v2, 1003.0429v3, 1107.1375v1 and 2103.12805v1 through the published or external-only PDF route their exact-version license allows, with captured rights evidence and per-paper notes carrying the transcribed statements the repository cites.",
+      "acceptance": "docs/verify_sources.py, docs/check_verify_sources.py and the Markdown link check pass, and every PDF digest equals the digest recorded before admission.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "2103.12805v1 is published under its captured CC BY 4.0 grant; 2205.07986v2 (CC BY-NC-ND 4.0), 1003.0429v3 and 1107.1375v1 (arXiv nonexclusive license) are external-only records with captured rights pages; every PDF digest equals the digest recorded before admission, and verify_sources.py, check_verify_sources.py and the link check pass.",
+          "observed_at": "2026-10-24T15:28:33Z",
+          "revision": "9d10823b579ad59b183ffba47646b88516c56e85",
+          "evidence": [
+            {
+              "ref": "docs/SOURCES.json",
+              "sha256": "09c6d064d3d0633f797cb9b6826435f74ddb492ae78c066ef9b96e56cfcaae73"
+            },
+            {
+              "ref": "docs/pdf/2103.12805v1.pdf",
+              "sha256": "e1cf74159d98ce9846fc86e56f0f3e41a21e6d094d2c028635989e9d07223fc5"
+            },
+            {
+              "ref": "docs/verify_sources.py",
+              "sha256": "0036bda76e0870bce6eea2d0009204b38c2db412b92d61c0fb00e4ea4d9514ca"
+            }
+          ],
+          "scope_sha256": "017cce3eb7877c9b9e7ec2c1a06f6114d37c87ff010110f538b892ebf2b2dae7"
+        }
+      ]
+    }
+  ]
+}
