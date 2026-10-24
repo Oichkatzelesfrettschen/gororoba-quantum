@@ -2423,6 +2423,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_coherence_request.py --check",
+   "name": "core-680",
+   "seconds": 5.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qd_box_kite_cases.py --check results/quandela/cases",
    "name": "core-504",
    "seconds": 2.4,
