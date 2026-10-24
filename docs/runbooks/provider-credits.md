@@ -18,7 +18,7 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 
 `snapshot` runs one reader per provider concurrently, each in its own interpreter
 (`scripts/provider_credit_readers.py NAME`): the running interpreter for IBM, Kaggle, IQM, Quandela, qBraid,
-BlueQubit, AWS and ANU, `QI_PYTHON` for Quantum Inspire and `OQ_PYTHON` for Open Quantum (defaults
+BlueQubit, AWS, Azure and ANU, `QI_PYTHON` for Quantum Inspire and `OQ_PYTHON` for Open Quantum (defaults
 `~/.local/share/quantuminspire/venv` and `~/.local/share/openquantum/venv`). A reader that exceeds its timeout (30 s,
 90 s for IBM, whose job-metrics walk reads one record per job) or fails becomes a row reading
 `read failed: <reason>`; the other readers finish. It writes `DIR/<UTC stamp>.json`, `DIR/latest.json` and
@@ -43,6 +43,7 @@ request suite.
 | qBraid credits, simulators | `/billing/credits/balance`, `/usage/simulator` | credit balance; per-simulator quota with the same figures grouped into one row, reset at `resetsAt` |
 | BlueQubit | `/balance`, `/usage` | balance and the latest month's costs |
 | AWS Free plan | `aws freetier get-account-plan-state`, `aws ce get-cost-and-usage` (profile `gororoba`) | remaining plan credits and expiry; used is the month-to-date UnblendedCost estimate |
+| Azure Quantum | `az quantum workspace quotas` on workspace `gororoba-quantum`, subscription policies | one row per free-plan quota (Quantinuum eHQC one-time, Pasqal emulator hours monthly); the note carries the trial and spending-limit state; the trial credit balance is portal-only ([azure/README.md](../notes/azure/README.md)) |
 | ANU QRNG | `docs/evidence/anu_qrng/draw-*.json` | draws of this UTC month against 100 requests; a lower bound of use, since draws retained in other checkouts or never retained do not count |
 | IonQ, Quafu, Origin Quantum | none | `not readable`: the provider offers no balance route to an API key |
 
