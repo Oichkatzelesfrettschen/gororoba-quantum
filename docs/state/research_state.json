@@ -8746,11 +8746,11 @@
       "evidence": [
         {
           "path": "results/quandela/bdsc_stationarity_calibration_contrast.json",
-          "sha256": "8481d6563c530bc315c82bcd19c108eacedfc8acac0a943b395ff582b3d5433b"
+          "sha256": "b72b8b154e5eb88f89d7174d2fa65678aa6a231a5fcee2d4767bd69ec7c05418"
         },
         {
           "path": "results/quandela/bdsc_stationarity_readout.json",
-          "sha256": "48a477b28a1dd8ce10e8a119ed33741d85987aab764fc8f0202694a4888f5d1e"
+          "sha256": "fd95b1eb105d7818f2c2dc8561c55de0768668f2cd7a97ad30c8ecf5658d5ad1"
         }
       ],
       "documents": [
