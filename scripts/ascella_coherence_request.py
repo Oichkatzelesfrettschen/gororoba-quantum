@@ -23,13 +23,13 @@ Q- = 0 for the commuting mutation) and the readout law that form implies. The
 check also requires the rejection of a perturbed unitary, an exchanged
 analyzer and a four-mode output width.
 
---body builds the job body through qd_platform.payload, which reads the live
+--body JOB builds the job body through qd_platform.payload, which reads the live
 qpu:ascella processor record with the job token and records the body that
 RemoteComputer would send instead of sending it, and retains job-body.json and
 body-build.json beside the case; the frozen body is never rewritten. --check
 reads only retained files: it also deserializes the body's computation and
-requires 64 entries carrying the manifest's circuit_params, 8,192 samples,
-16,384 shots and seed 0, the twelve-entry input, the one-photon filter, the
+requires 64 entries carrying the manifest's circuit_params, the job's
+per-iteration samples and shots and seed 0, the twelve-entry input, the one-photon filter, the
 empty mitigation list, and each entry's bound unitary equal to the design
 operator.
 
@@ -45,8 +45,16 @@ route, RUN/platform-before/observation.json, and sends nothing; --submit passes 
 same binding to qd_platform.submit as its verify step, so a request that
 departs from the frozen body is refused before its checkpoint is written.
 
+JOBS registers each retained request of the family. job-00 runs the design
+order at 8,192 samples per iteration. job-01, the permuted repeat, submits the
+same 64 settings in the order the ANU QRNG draw ORDER_DRAW sets at 16,384
+samples per iteration; each of its settings names its design_index, and its
+manifest names the draw and the indices it consumes. A run directory's
+cases.json names its job, so --preflight and --submit plan against that job's
+budgets, credit ceiling and expected seconds and bind its own retained body.
+
 Usage:
-  "$PYTHON" scripts/ascella_coherence_request.py [--check | --body]
+  "$PYTHON" scripts/ascella_coherence_request.py [--check | JOB | --body JOB]
   "$PYTHON" scripts/ascella_coherence_request.py --preflight RUN
   "$PYTHON" scripts/ascella_coherence_request.py --submit RUN APPROVAL
 """
@@ -57,9 +65,11 @@ import copy
 import json
 import math
 import sys
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from functools import cache
 from pathlib import Path
+from collections.abc import Callable
 from typing import Any
 
 import numpy as np
@@ -98,21 +108,38 @@ ARM_SIGNS = (1, -1, -1, 1)
 PHI = math.pi / 4
 MUTATION_THETA = math.pi / 5
 MUTATION_GENERATORS = ("j", "i", "i", "j")
-SAMPLES = 8192
-SHOTS = 16384
 MAX_DURATION = 300
 TOLERANCE = 1e-12
 # Perceval's BS.Rx and PS products carry the template angles to the design operator within this bound.
 BODY_TOLERANCE = 1e-9
 PLATFORM = "qpu:ascella"
-OUT = ROOT / "results/quandela/cases/ascella_signed_coherence/job-00"
+CASES = ROOT / "results/quandela/cases/ascella_signed_coherence"
 DESIGN = "docs/design/ascella-signed-coherence-conformance.md"
-# The written case's arguments to qd_platform.plan and submit: the per-job
-# price plus the 16,384-shot iteration cap at 1e-6 credits per shot, and the
-# upper bound on 64 iterations that scales the 25-second eight-iteration pilot.
-CREDIT_CEILING = 1.016384
-EXPECTED_SECONDS = 200.0
 PER_JOB_CREDITS = 1.0
+# The ANU QRNG draw whose values 0..63 order the permuted repeat: position p
+# submits the design entry of the p-th smallest value, ties broken by index.
+ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-10-18T083846Z.json"
+
+
+@dataclass(frozen=True)
+class Job:
+    """One retained request of the family: per-iteration budgets, order and the written case's plan arguments.
+
+    The credit ceiling is the per-job price plus the iteration's max_shots at 1e-6 credits per shot, written out so
+    the plan compares a literal; expected seconds are the written case's upper bound."""
+
+    name: str
+    samples: int
+    shots: int
+    credit_ceiling: float
+    expected_seconds: float
+    permuted: bool
+
+
+JOBS = {
+    "job-00": Job("job-00", 8192, 16384, 1.016384, 200.0, False),
+    "job-01": Job("job-01", 16384, 32768, 1.032768, 240.0, True),
+}
 STAGED = ("cases.json", "circuit.json")
 # qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers
 # taken at preflight; the design's procedure writes platform-after/ at collection.
@@ -162,8 +189,8 @@ def embed(matrix: ComplexMatrix) -> ComplexMatrix:
     return full
 
 
-def entries() -> list[dict[str, Any]]:
-    """The 64 iterations in submission order, each with its block, readout, arm and angles."""
+def design_order() -> list[dict[str, Any]]:
+    """The 64 iterations in design order, each with its block, readout, arm and angles."""
     rows: list[dict[str, Any]] = []
     for k in range(ANGLES):
         for readout in READOUTS:
@@ -194,6 +221,21 @@ def entries() -> list[dict[str, Any]]:
             }
         )
     return rows
+
+
+def permutation() -> list[int]:
+    """Design positions in submission order: ascending ANU QRNG values 0..63 of ORDER_DRAW, ties by index."""
+    values = json.loads((ROOT / ORDER_DRAW).read_text(encoding="utf-8"))["values"][:64]
+    require(len(values) == 64, f"{ORDER_DRAW} holds {len(values)} values, not 64")
+    return sorted(range(64), key=lambda index: (values[index], index))
+
+
+def entries(job: Job) -> list[dict[str, Any]]:
+    """The job's iterations in submission order; a permuted job's rows also name their design position."""
+    rows = design_order()
+    if not job.permuted:
+        return rows
+    return [{**rows[position], "design_index": position} for position in permutation()]
 
 
 def closed_form(theta: float, phi: float, generator: str) -> ComplexMatrix:
@@ -240,9 +282,16 @@ def build_setting(item: tuple[int, dict[str, Any]]) -> tuple[dict[str, Any], dic
     }
 
 
-def documents() -> dict[str, bytes]:
-    """{"cases.json": bytes, "circuit.json": bytes} of the request."""
-    built = ordered_map(build_setting, list(enumerate(entries())), min_items=1)
+def job_of(manifest: dict[str, Any]) -> Job:
+    """The registered job a manifest names; an unregistered job raises."""
+    name = manifest.get("job")
+    require(isinstance(name, str) and name in JOBS, f"{manifest.get('family')}: job {name!r} is not registered")
+    return JOBS[name]
+
+
+def documents(job: Job) -> dict[str, bytes]:
+    """{"cases.json": bytes, "circuit.json": bytes} of the job's request."""
+    built = ordered_map(build_setting, list(enumerate(entries(job))), min_items=1)
     template = built[0][0]
     for index, (mesh, _) in enumerate(built):
         require(mesh == template, f"iteration {index} needs another mesh than iteration 0")
@@ -255,14 +304,14 @@ def documents() -> dict[str, bytes]:
     manifest = {
         "schema": "qd-hypercomplex-cases-v1",
         "family": "ascella_signed_coherence",
-        "job": "job-00",
+        "job": job.name,
         "platforms": ["qpu:ascella", "sim:ascella"],
         "command": "sample_count",
         "gate_form": "template",
         "iterations": len(settings),
         "min_detected_photons": 1,
-        "max_samples": SAMPLES * len(settings),
-        "max_shots": SHOTS * len(settings),
+        "max_samples": job.samples * len(settings),
+        "max_shots": job.shots * len(settings),
         "max_duration": MAX_DURATION,
         "mitigations": [],
         "output_modes": MODES,
@@ -280,6 +329,12 @@ def documents() -> dict[str, bytes]:
             "interpretation": "complex-encoding conformance of the compiled circuit family",
         },
     }
+    if job.permuted:
+        manifest["order"] = {
+            "draw": ORDER_DRAW,
+            "indices": list(range(64)),
+            "rule": "position p submits the design entry of the p-th smallest draw value, ties by index",
+        }
     return {"cases.json": (json.dumps(manifest, indent=1) + "\n").encode(), "circuit.json": circuit_bytes}
 
 
@@ -291,13 +346,14 @@ def operator_of(setting: dict[str, Any]) -> ComplexMatrix:
 def validate(manifest: dict[str, Any], circuit: dict[str, Any]) -> None:
     """Require the design's request: fields, entry order, full unitaries, analyzers and twelve-mode output."""
     owner = f"{manifest.get('family')}/{manifest.get('job')}"
+    job = job_of(manifest)
     for key, value in (
         ("command", "sample_count"),
         ("gate_form", "template"),
         ("iterations", 64),
         ("min_detected_photons", 1),
-        ("max_samples", SAMPLES * 64),
-        ("max_shots", SHOTS * 64),
+        ("max_samples", job.samples * 64),
+        ("max_shots", job.shots * 64),
         ("max_duration", MAX_DURATION),
         ("mitigations", []),
         ("output_modes", MODES),
@@ -312,7 +368,7 @@ def validate(manifest: dict[str, Any], circuit: dict[str, Any]) -> None:
         all(LOGICAL > op[1] + (op[0] == "BS") for op in circuit["ops"]), f"{owner}: a template op leaves modes 0..3"
     )
     require(iteration_form(manifest) == "template", f"{owner}: the iterations do not form a template job")
-    rows = entries()
+    rows = entries(job)
     settings = manifest["settings"]
     require(len(settings) == len(rows), f"{owner}: {len(settings)} settings, not {len(rows)}")
     template_experiment(manifest, circuit)
@@ -364,13 +420,14 @@ def serialized_computation(text: str) -> Any:
     return deserialize(json.loads(text)["payload"]["computation"])
 
 
-def body_entry(item: tuple[str, int]) -> None:
+def body_entry(item: tuple[str, str, int]) -> None:
     """Require entry index of the serialized body to carry its budgets, seed, input, filter and design unitary."""
-    text, index = item
+    name, text, index = item
+    job = JOBS[name]
     computation = serialized_computation(text)
     entry = computation.iterations[index]
     label = f"job-body.json entry {index}"
-    budgets = {"max_samples": SAMPLES, "max_shots": SHOTS, "compilation_seed": 0}
+    budgets = {"max_samples": job.samples, "max_shots": job.shots, "compilation_seed": 0}
     # An entry that names only circuit_params and budgets inherits the base experiment's input state and filter.
     require(sorted(entry) == sorted([*budgets, "circuit_params"]), f"{label}: entry keys {sorted(entry)}")
     require({key: entry[key] for key in budgets} == budgets, f"{label}: budgets {entry} differ from {budgets}")
@@ -388,7 +445,7 @@ def body_entry(item: tuple[str, int]) -> None:
     for parameter in parameters:
         parameter.set_value(entry["circuit_params"][parameter.name])
     unitary = np.asarray(circuit.compute_unitary(), dtype=np.complex128)
-    deviation = float(np.max(np.abs(unitary - expected_operator(entries()[index]))))
+    deviation = float(np.max(np.abs(unitary - expected_operator(entries(job)[index]))))
     require(deviation <= BODY_TOLERANCE, f"{label}: the serialized unitary departs from the design by {deviation:.2e}")
 
 
@@ -396,6 +453,7 @@ def validate_body(body: dict[str, Any], manifest: dict[str, Any]) -> None:
     """Require the retained job body to carry the frozen request: name, platform, policy, budgets and 64 entries."""
     from perceval.serialization import deserialize
 
+    job = job_of(manifest)
     for key, value in (
         ("job_name", f"{manifest['family']}/{manifest['job']}"),
         ("platform_name", "qpu:ascella"),
@@ -403,7 +461,7 @@ def validate_body(body: dict[str, Any], manifest: dict[str, Any]) -> None:
     ):
         require(body.get(key) == value, f"job-body.json: {key} is {body.get(key)!r}, not {value!r}")
     content = body["payload"]
-    for key, value in (("command", "sample_count"), ("max_samples", SAMPLES), ("max_shots", SHOTS)):
+    for key, value in (("command", "sample_count"), ("max_samples", job.samples), ("max_shots", job.shots)):
         require(content.get(key) == value, f"job-body.json: payload {key} is {content.get(key)!r}, not {value!r}")
     require(body_mitigations(body) == [], "job-body.json: the payload does not carry the empty mitigation list")
     computation = deserialize(content["computation"])
@@ -415,16 +473,18 @@ def validate_body(body: dict[str, Any], manifest: dict[str, Any]) -> None:
             f"job-body.json entry {index}: circuit_params differ from {setting['name']}",
         )
     text = json.dumps(body)
-    ordered_map(body_entry, [(text, index) for index in range(len(iterations))])
+    ordered_map(body_entry, [(job.name, text, index) for index in range(len(iterations))])
 
 
 def rejections(manifest: dict[str, Any], circuit: dict[str, Any]) -> list[str]:
     """Mutated requests that validate must refuse: a perturbed unitary, an exchanged analyzer, four output modes."""
+    position = {setting["name"]: index for index, setting in enumerate(manifest["settings"])}
+    x_index, y_index = position["theta1-x-arm0"], position["theta1-y-arm0"]
     perturbed = copy.deepcopy(manifest)
-    parameter = sorted(perturbed["settings"][20]["circuit_params"])[0]
-    perturbed["settings"][20]["circuit_params"][parameter] += 1e-3
+    parameter = sorted(perturbed["settings"][y_index]["circuit_params"])[0]
+    perturbed["settings"][y_index]["circuit_params"][parameter] += 1e-3
     exchanged = copy.deepcopy(manifest)
-    x_setting, y_setting = exchanged["settings"][16], exchanged["settings"][20]
+    x_setting, y_setting = exchanged["settings"][x_index], exchanged["settings"][y_index]
     for key in ("circuit_params", "column", "operator", "ideal"):
         x_setting[key], y_setting[key] = y_setting[key], x_setting[key]
     narrow = {**circuit, "input_state": circuit["input_state"][:LOGICAL]}
@@ -449,37 +509,46 @@ def refusal(item: tuple[str, dict[str, Any], dict[str, Any]]) -> str:
 
 
 def check() -> int:
-    """Rebuild in memory, require the retained bytes, validate them and require each mutation's refusal."""
-    built = documents()
-    require(documents() == built, "a second build differs from the first")
-    retained = {name: (OUT / name).read_bytes() for name in built}
-    # The template angles come from complex matrix products whose last bit can move between BLAS kernels, so the
-    # retained manifest, which holds the request bytes, is compared within cert.CHECK_TOLERANCE; the circuit carries
-    # no float and stays exact.
-    close(json.loads(built["cases.json"]), json.loads(retained["cases.json"]), f"{OUT.relative_to(ROOT)}/cases.json")
-    require(retained["circuit.json"] == built["circuit.json"], f"{OUT.relative_to(ROOT)}/circuit.json differs")
-    manifest, circuit = json.loads(retained["cases.json"]), json.loads(retained["circuit.json"])
-    validate(manifest, circuit)
-    refused = rejections(manifest, circuit)
-    body_bytes = (OUT / "job-body.json").read_bytes()
-    record = json.loads((OUT / "body-build.json").read_text(encoding="utf-8"))
-    body = json.loads(body_bytes)
-    require(record["cases_sha256"] == sha256_bytes(retained["cases.json"]), "body-build.json names other case bytes")
-    require(record["job_body_sha256"] == sha256_bytes(body_bytes), "body-build.json names other body bytes")
-    validate_body(body, manifest)
-    digest = sha256_bytes(retained["cases.json"])
-    print(
-        f"ascella signed coherence: 64 iterations and job-body.json validated, cases.json {digest}, "
-        f"job-body.json {record['job_body_sha256']}; refused {', '.join(refused)}"
-    )
+    """For every retained job: rebuild in memory, require the retained bytes, validate them and their body, and
+    require each mutation's refusal. A job whose case directory holds no job-body.json yet checks its request alone."""
+    for job in JOBS.values():
+        out = CASES / job.name
+        if not (out / "cases.json").is_file():
+            continue
+        built = documents(job)
+        require(documents(job) == built, f"{job.name}: a second build differs from the first")
+        retained = {name: (out / name).read_bytes() for name in built}
+        label = (out / "cases.json").relative_to(ROOT)
+        # The template angles come from complex matrix products whose last bit can move between BLAS kernels, so the
+        # retained manifest, which holds the request bytes, is compared within cert.CHECK_TOLERANCE; the circuit
+        # carries no float and stays exact.
+        close(json.loads(built["cases.json"]), json.loads(retained["cases.json"]), str(label))
+        require(retained["circuit.json"] == built["circuit.json"], f"{out.relative_to(ROOT)}/circuit.json differs")
+        manifest, circuit = json.loads(retained["cases.json"]), json.loads(retained["circuit.json"])
+        validate(manifest, circuit)
+        refused = rejections(manifest, circuit)
+        digest = sha256_bytes(retained["cases.json"])
+        if not (out / "job-body.json").is_file():
+            print(f"ascella signed coherence {job.name}: 64 iterations validated, cases.json {digest}, no body yet")
+            continue
+        body_bytes = (out / "job-body.json").read_bytes()
+        record = json.loads((out / "body-build.json").read_text(encoding="utf-8"))
+        require(record["cases_sha256"] == digest, f"{job.name}: body-build.json names other case bytes")
+        require(record["job_body_sha256"] == sha256_bytes(body_bytes), f"{job.name}: body-build.json names other body")
+        validate_body(json.loads(body_bytes), manifest)
+        print(
+            f"ascella signed coherence {job.name}: 64 iterations and job-body.json validated, cases.json {digest}, "
+            f"job-body.json {record['job_body_sha256']}; refused {', '.join(refused)}"
+        )
     return 0
 
 
-def freeze_body() -> int:
+def freeze_body(job: Job) -> int:
     """Build the job body against the live qpu:ascella command set, without sending it, and retain it."""
-    manifest, circuit, cases_sha256 = load_case(OUT)
+    out = CASES / job.name
+    manifest, circuit, cases_sha256 = load_case(out)
     validate(manifest, circuit)
-    built = payload(OUT, manifest, circuit, PLATFORM)
+    built = payload(out, manifest, circuit, PLATFORM)
     validate_body(built["body"], manifest)
     body_bytes = (json.dumps(built["body"], indent=1, sort_keys=True) + "\n").encode()
     record = {
@@ -493,35 +562,45 @@ def freeze_body() -> int:
         "sent": False,
     }
     for name in ("job-body.json", "body-build.json"):
-        require(not (OUT / name).exists(), f"{(OUT / name).relative_to(ROOT)} exists; the retained body is frozen")
-    (OUT / "job-body.json").write_bytes(body_bytes)
-    (OUT / "body-build.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
-    print(f"ascella signed coherence: job-body.json {record['job_body_sha256']}, {built['estimated_shots']} shots")
+        require(not (out / name).exists(), f"{(out / name).relative_to(ROOT)} exists; the retained body is frozen")
+    (out / "job-body.json").write_bytes(body_bytes)
+    (out / "body-build.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    print(
+        f"ascella signed coherence {job.name}: job-body.json {record['job_body_sha256']}, {built['estimated_shots']} shots"
+    )
     return 0
 
 
-def staged(run: Path) -> None:
-    """Require RUN to hold the frozen request bytes and nothing a submission writes."""
+def staged(run: Path) -> Job:
+    """The job whose frozen request bytes RUN holds; RUN may hold nothing a submission writes."""
+    job = job_of(json.loads((run / "cases.json").read_text(encoding="utf-8")))
+    out = CASES / job.name
     for name in STAGED:
-        require((run / name).read_bytes() == (OUT / name).read_bytes(), f"{run / name} is not the frozen {name}")
+        require((run / name).read_bytes() == (out / name).read_bytes(), f"{run / name} is not the frozen {name}")
     extra = sorted(path.name for path in run.iterdir() if path.name not in (*STAGED, "preflight.json", BEFORE))
     require(not extra, f"{run} holds {extra}; a run directory starts from the frozen request alone")
+    return job
 
 
-def bound(checked: dict[str, Any]) -> None:
-    """Require the planned body to be the retained frozen body in every field except process_id."""
-    manifest = json.loads((OUT / "cases.json").read_text(encoding="utf-8"))
-    validate_body(checked["body"], manifest)
-    retained = json.loads((OUT / "job-body.json").read_text(encoding="utf-8"))
-    fresh, frozen = body_digest(checked["body"]), body_digest(retained)
-    require(fresh == frozen, f"the planned body {fresh} differs from the retained body {frozen} beyond process_id")
+def binding(job: Job) -> Callable[[dict[str, Any]], None]:
+    """The verify step that requires a planned body to be the job's retained body in every field but process_id."""
+    out = CASES / job.name
+
+    def bound(checked: dict[str, Any]) -> None:
+        manifest = json.loads((out / "cases.json").read_text(encoding="utf-8"))
+        validate_body(checked["body"], manifest)
+        retained = json.loads((out / "job-body.json").read_text(encoding="utf-8"))
+        fresh, frozen = body_digest(checked["body"]), body_digest(retained)
+        require(fresh == frozen, f"the planned body {fresh} differs from the retained body {frozen} beyond process_id")
+
+    return bound
 
 
 def preflight(run: Path) -> int:
     """Plan the written case read-only against the live platform and retain the plan without its body."""
-    staged(run)
-    checked = plan(run, PLATFORM, CREDIT_CEILING, EXPECTED_SECONDS, PER_JOB_CREDITS)
-    bound(checked)
+    job = staged(run)
+    checked = plan(run, PLATFORM, job.credit_ceiling, job.expected_seconds, PER_JOB_CREDITS)
+    binding(job)(checked)
     snapshot(run / BEFORE)
     observe(run / BEFORE)
     record = {key: value for key, value in checked.items() if key != "body"}
@@ -537,38 +616,46 @@ def preflight(run: Path) -> int:
 
 def send(run: Path, approval: str) -> int:
     """Submit the approved case once, through qd_platform.submit with the frozen-body binding as its verify step."""
-    staged(run)
+    job = staged(run)
     require((run / "preflight.json").is_file(), f"{run} has no preflight.json; run --preflight first")
-    record = submit(run, PLATFORM, approval, CREDIT_CEILING, EXPECTED_SECONDS, PER_JOB_CREDITS, verify=bound)
+    record = submit(
+        run, PLATFORM, approval, job.credit_ceiling, job.expected_seconds, PER_JOB_CREDITS, verify=binding(job)
+    )
     print(f"job {record['job_id']} on {record['platform']}")
+    return 0
+
+
+def build(job: Job) -> int:
+    """Write the job's request bytes into its case directory; retained bytes are never rewritten."""
+    built = documents(job)
+    validate(json.loads(built["cases.json"]), json.loads(built["circuit.json"]))
+    out = CASES / job.name
+    out.mkdir(parents=True, exist_ok=True)
+    for name, content in built.items():
+        path = out / name
+        require(not path.exists() or path.read_bytes() == content, f"{path.relative_to(ROOT)} differs from the rebuild")
+        if not path.exists():
+            path.write_bytes(content)
+    digest = sha256_bytes(built["cases.json"])
+    print(f"ascella signed coherence: {out.relative_to(ROOT)} cases.json {digest}")
     return 0
 
 
 def main(argv: list[str]) -> int:
     if argv == ["--check"]:
         return check()
-    if argv == ["--body"]:
-        return freeze_body()
+    if len(argv) == 2 and argv[0] == "--body" and argv[1] in JOBS:
+        return freeze_body(JOBS[argv[1]])
     if len(argv) == 2 and argv[0] == "--preflight":
         return preflight(Path(argv[1]))
     if len(argv) == 3 and argv[0] == "--submit":
         return send(Path(argv[1]), argv[2])
-    require(
-        not argv,
-        f"usage: ascella_coherence_request.py [--check | --body | --preflight RUN | --submit RUN APPROVAL], not {argv}",
+    if len(argv) == 1 and argv[0] in JOBS:
+        return build(JOBS[argv[0]])
+    raise ValueError(
+        "usage: ascella_coherence_request.py [--check | JOB | --body JOB | --preflight RUN | --submit RUN APPROVAL], "
+        f"JOB in {sorted(JOBS)}, not {argv}"
     )
-    built = documents()
-    validate(json.loads(built["cases.json"]), json.loads(built["circuit.json"]))
-    OUT.mkdir(parents=True, exist_ok=True)
-    for name, content in built.items():
-        path = OUT / name
-        # The case directory holds the request bytes, which no rebuild rewrites.
-        require(not path.exists() or path.read_bytes() == content, f"{path.relative_to(ROOT)} differs from the rebuild")
-        if not path.exists():
-            path.write_bytes(content)
-    digest = sha256_bytes(built["cases.json"])
-    print(f"ascella signed coherence: {OUT.relative_to(ROOT)} cases.json {digest}")
-    return 0
 
 
 if __name__ == "__main__":
