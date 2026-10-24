@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import importlib
 import importlib.util
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -198,3 +199,41 @@ def test_comparison_attribution_and_companion_pin_follow_their_bound_sources(mut
         manifest["companion_pin"] = "0" * 40
     with pytest.raises(ValueError):
         module.validate_manifest(manifest)
+
+
+@pytest.mark.parametrize("mutation", ["reason", "base_commit", "digest", "extra"])
+def test_predecessor_record_requires_digest_commit_and_reason(mutation: str) -> None:
+    module = implementation()
+    manifest = module.load_manifest(module.DEFAULT_MANIFEST)
+    if "supersedes" not in manifest:
+        raise AssertionError("the refreshed manifest names no predecessor")
+    predecessor = manifest["supersedes"]
+    if mutation == "reason":
+        predecessor["reason"] = " "
+    elif mutation == "base_commit":
+        predecessor["base_commit"] = predecessor["base_commit"][:12]
+    elif mutation == "digest":
+        predecessor["manifest_sha256"] = predecessor["manifest_sha256"].upper()
+    else:
+        predecessor["note"] = "unbound"
+    with pytest.raises(ValueError, match="predecessor"):
+        module.validate_manifest(manifest)
+
+
+def test_freeze_binds_only_bytes_head_holds(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = implementation()
+
+    def git(*arguments: str) -> None:
+        subprocess.run(["git", *arguments], cwd=tmp_path, check=True, capture_output=True)
+
+    git("init", "-q")
+    for name in ("kept", "edited"):
+        (tmp_path / name).write_text(f"{name}\n")
+    git("add", "kept", "edited")
+    git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit", "-q", "-m", "base")
+    (tmp_path / "edited").write_text("changed\n")
+    (tmp_path / "untracked").write_text("new\n")
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    found = module._uncommitted(["edited", "kept", "untracked"])
+    if found != ["edited", "untracked"]:
+        raise AssertionError(f"uncommitted bytes reported as {found}")

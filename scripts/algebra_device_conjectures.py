@@ -69,9 +69,40 @@ def _source_record(path: str) -> dict[str, str]:
     return {"path": path, "sha256": digest(local_path(path))}
 
 
-def freeze_manifest(manifest: dict[str, Any], census_path: Path) -> dict[str, Any]:
-    """Explicitly refresh the frozen inventory through the existing offline provider adapters."""
+def _uncommitted(paths: list[str]) -> list[str]:
+    """The paths whose checkout bytes differ from HEAD's, so a freeze's base_commit names every bound byte."""
+    listed = subprocess.run(
+        ["git", "ls-tree", "-z", "HEAD", "--", *paths], cwd=ROOT, capture_output=True, check=True
+    ).stdout.decode()
+    committed = {}
+    for entry in filter(None, listed.split("\0")):
+        meta, path = entry.split("\t", 1)
+        committed[path] = meta.split()[2]
+    hashed = subprocess.run(
+        ["git", "hash-object", "--no-filters", "--stdin-paths"],
+        cwd=ROOT,
+        input="\n".join(paths) + "\n",
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.split()
+    return [path for path, blob in zip(paths, hashed, strict=True) if committed.get(path) != blob]
+
+
+def freeze_manifest(manifest: dict[str, Any], census_path: Path, reason: str) -> dict[str, Any]:
+    """Explicitly refresh the frozen inventory through the existing offline provider adapters.
+
+    The successor names its predecessor's digest and base commit and the
+    reason for the refresh, and freezes only bytes HEAD holds.
+    """
     import research_state
+
+    require(bool(reason.strip()), "a refresh needs a reason")
+    predecessor = {
+        "manifest_sha256": hashlib.sha256(encode(manifest).encode()).hexdigest(),
+        "base_commit": manifest["base_commit"],
+        "reason": reason.strip(),
+    }
 
     registry = json.loads((ROOT / "docs/state/research_state.json").read_text())
     selected = set(manifest["selected_claim_ids"])
@@ -101,8 +132,11 @@ def freeze_manifest(manifest: dict[str, Any], census_path: Path) -> dict[str, An
             paths.update(
                 path.relative_to(ROOT).as_posix() for path in local_path(row["run"]).rglob("*") if path.is_file()
             )
+    uncommitted = _uncommitted(sorted(paths))
+    require(not uncommitted, f"freeze binds bytes HEAD lacks: {', '.join(uncommitted[:5])}")
     manifest = {
         **manifest,
+        "supersedes": predecessor,
         "base_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
         "companion_pin": (ROOT / "ci/open_gororoba.pin").read_text().strip(),
         "claims": claims,
@@ -131,6 +165,10 @@ def _verify_source(source: dict[str, str]) -> None:
     require(digest(path) == source["sha256"], f"source digest differs: {source['path']}")
 
 
+def _hex(value: Any, length: int) -> bool:
+    return isinstance(value, str) and len(value) == length and all(char in "0123456789abcdef" for char in value)
+
+
 def validate_manifest(manifest: dict[str, Any]) -> None:
     require(manifest.get("schema") == SCHEMA, "manifest schema differs")
     for field, key in (("proposals", "id"), ("sources", "path"), ("claims", "id"), ("acquisitions", "id")):
@@ -141,6 +179,17 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
     require(
         set(manifest["selected_claim_ids"]) == {claim["id"] for claim in manifest["claims"]}, "claim selection differs"
     )
+    if "supersedes" in manifest:
+        predecessor = manifest["supersedes"]
+        require(
+            isinstance(predecessor, dict)
+            and set(predecessor) == {"manifest_sha256", "base_commit", "reason"}
+            and _hex(predecessor["manifest_sha256"], 64)
+            and _hex(predecessor["base_commit"], 40)
+            and isinstance(predecessor["reason"], str)
+            and bool(predecessor["reason"].strip()),
+            "predecessor record needs a manifest digest, a base commit and a reason",
+        )
     ordered_map(_verify_source, manifest["sources"], min_items=1)
     _verify_source(manifest["census"])
     census = json.loads(local_path(manifest["census"]["path"]).read_text())
@@ -591,6 +640,7 @@ def synthesis(manifest: dict[str, Any]) -> dict[str, Any]:
         "producer_sha256": digest(Path(__file__)),
         "versions": {"python": platform.python_version(), "sympy": version("sympy")},
         "frozen_base": manifest["base_commit"],
+        "supersedes": manifest.get("supersedes"),
         "acquisitions": manifest["acquisitions"],
         "proposals": manifest["proposals"],
         "comparisons": comparisons,
@@ -627,6 +677,14 @@ def render(result: dict[str, Any]) -> str:
         "",
         f"Checkout HEAD at freeze: `{result['frozen_base']}`. Input bytes are bound individually by the manifest.",
         f"Manifest digest: `{result['manifest_sha256']}`.",
+        *(
+            [
+                f"Supersedes manifest `{result['supersedes']['manifest_sha256']}`, frozen at "
+                f"`{result['supersedes']['base_commit']}`: {result['supersedes']['reason']}"
+            ]
+            if result["supersedes"]
+            else []
+        ),
         "",
         f"Acquisitions accounted for: {len(result['acquisitions'])}; "
         f"selected: {sum(row['included'] for row in result['acquisitions'])}.",
@@ -666,10 +724,13 @@ def main() -> int:
     target.add_argument(
         "--freeze", action="store_true", help="explicitly refresh manifest from offline provider adapters"
     )
+    parser.add_argument("--reason", help="why --freeze refreshes the manifest, recorded beside its predecessor")
     args = parser.parse_args()
     if args.freeze:
+        if args.reason is None:
+            parser.error("--freeze requires --reason")
         args.manifest.write_text(
-            encode(freeze_manifest(load_manifest(args.manifest), args.manifest.with_name("census.json")))
+            encode(freeze_manifest(load_manifest(args.manifest), args.manifest.with_name("census.json"), args.reason))
         )
         print("frozen manifest refreshed; regenerate derived outputs explicitly")
         return 0
