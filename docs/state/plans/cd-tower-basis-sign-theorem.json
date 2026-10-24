@@ -10,10 +10,12 @@
     "gororoba_quantum/cd_core.py",
     "docs/notes/topics/cd-star-lattice-tower.md",
     "docs/evidence/albuquerque-majid-convention/README.md",
-    "docs/notes/math-9802116.md"
+    "docs/notes/math-9802116.md",
+    "proofs/CdTowerBasisSign.v",
+    "docs/evidence/cd-tower-basis-sign/README.md"
   ],
-  "state": "closed",
-  "scope": "proofs/CdImaginarySumConference.v proves the skew and Gram identities of right multiplication by the imaginary sum on the integer pair tower for every k. The standard-basis entries of that map, and their agreement with cd_core.cd_sign, are an exact finite check through n = 64 in tower_bridge.py. The investigation states and proves the entry theorem for every k, and proves that the cochain recursion of Albuquerque and Majid, Corollary 4.3, gives the transposed sign at every k, which am_convention_replay.py checks only through n = 64; the Python bridges stay as the implementation checks.",
+  "state": "active",
+  "scope": "proofs/CdImaginarySumConference.v proves the skew and Gram identities of right multiplication by the imaginary sum on the integer pair tower for every k. The standard-basis entries of that map, and their agreement with cd_core.cd_sign, are an exact finite check through n = 64 in tower_bridge.py. The investigation states and proves the entry theorem for every k in proofs/CdTowerBasisSign.v, which requires the conference proof unchanged, and proves that the cochain recursion of Albuquerque and Majid, Corollary 4.3, gives the transposed sign at every k, which am_convention_replay.py checks only through n = 64; the Python bridges stay as the implementation checks.",
   "owner": "Repository Rocq maintainer",
   "reconciliation": {
     "status": "verified",
@@ -24,142 +26,35 @@
       "id": "basis-product-lemma",
       "action": "Define e_a^(k) for a < 2^k and sigma_k by the cd_sign recursion, and prove mul (e a) (e b) = scale (sigma k a b) (e (a XOR b)) for all a, b < 2^k by induction on k, under rocq-9.3 with -w @all and no axioms.",
       "acceptance": "rocq compile succeeds; Print Assumptions on the lemma prints Closed under the global context. Stop condition: a counterexample cell from tower_bridge.py's transcription, or a case of the recursion that the induction cannot close, is recorded and ends the step.",
-      "state": "done",
-      "receipts": [
-        {
-          "result": "basis_mul compiles under rocq 9.3.0 with -w @all and Print Assumptions prints Closed under the global context; replay_rocq.sh passes against the regenerated receipts.",
-          "observed_at": "2026-10-24T06:32:00Z",
-          "revision": "56e4e89190e2c44b5528861d2e681103e960adef",
-          "evidence": [
-            {
-              "ref": "proofs/CdImaginarySumConference.v",
-              "sha256": "736caf2f0adc3f478116df7ad81987e444a2e00f0938c981c626779a712fdb18"
-            },
-            {
-              "ref": "docs/evidence/cd-imaginary-sum-conference/assumptions.v",
-              "sha256": "d453ce3fd3b5f0bd0137ba34b0c18e1fc30dfce77c9bc23a84adadf8d0779d6c"
-            },
-            {
-              "ref": "docs/evidence/cd-imaginary-sum-conference/assumptions.txt",
-              "sha256": "003974cb4fe114d51c7d2eed462e080514b2036c2028e95effd020fa8e9fb5fb"
-            },
-            {
-              "ref": "docs/evidence/cd-imaginary-sum-conference/kernel.txt",
-              "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
-            }
-          ],
-          "scope_sha256": "facd0f88e63f00181f6a95341b162434c22b7d173820067f262b67e172a6b693"
-        }
-      ]
+      "state": "todo"
     },
     {
       "id": "arc-matrix-entries",
       "action": "Derive from the basis products that coord (mul (e a) s) (a XOR b) = sigma k a b for b != 0, with s the tower's imaginary sum, and that coord (mul (e a) s) a = 0.",
       "acceptance": "The two entry theorems compile closed under the global context and, with isum_conference, state W_n as a skew conference matrix in the standard basis for every k.",
-      "state": "done",
+      "state": "todo",
       "depends_on": [
         "basis-product-lemma"
-      ],
-      "receipts": [
-        {
-          "result": "arc_entry and arc_diagonal compile closed under the global context beside isum_conference, so W_n is a skew conference matrix in the standard basis for every k.",
-          "observed_at": "2026-10-24T06:32:00Z",
-          "revision": "56e4e89190e2c44b5528861d2e681103e960adef",
-          "evidence": [
-            {
-              "ref": "proofs/CdImaginarySumConference.v",
-              "sha256": "736caf2f0adc3f478116df7ad81987e444a2e00f0938c981c626779a712fdb18"
-            },
-            {
-              "ref": "docs/evidence/cd-imaginary-sum-conference/assumptions.txt",
-              "sha256": "003974cb4fe114d51c7d2eed462e080514b2036c2028e95effd020fa8e9fb5fb"
-            },
-            {
-              "ref": "docs/evidence/cd-imaginary-sum-conference/kernel.txt",
-              "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
-            }
-          ],
-          "scope_sha256": "ca912bc07ad24e7a56735d0f07fc9e031c01d4b27ed33e2bfbc84ed0205fa6e2"
-        }
       ]
     },
     {
       "id": "sign-transcription-check",
       "action": "Extend tower_bridge.py to compare the Rocq sigma transcription, mirrored in Python, with cd_core.cd_sign on every pair through n = 64, keeping the existing tower comparison.",
       "acceptance": "tower_bridge.py exits 0 under its gate, and a flipped sign in the mirrored transcription makes it exit nonzero.",
-      "state": "done",
+      "state": "todo",
       "depends_on": [
         "basis-product-lemma"
-      ],
-      "receipts": [
-        {
-          "result": "tower_bridge.py exits 0 with sigma equal to cd_sign on all 5,460 pairs through n = 64; negating any one of the four sigma branches makes it exit nonzero.",
-          "observed_at": "2026-10-24T06:32:00Z",
-          "revision": "56e4e89190e2c44b5528861d2e681103e960adef",
-          "evidence": [
-            {
-              "ref": "docs/evidence/cd-imaginary-sum-conference/tower_bridge.py",
-              "sha256": "b6d5aa720b9e5cefbdd22b2feaa39f86c192ba44c9b209dda6d9e58779364b31"
-            },
-            {
-              "ref": "gororoba_quantum/cd_core.py",
-              "sha256": "cccd78580b5931ed72ea6c364361fa3d920a1617fa1ab70460e3e11ce6ca9300"
-            }
-          ],
-          "scope_sha256": "e0ebe116ad478178855cd193849467a0cf3f280834cdcaba4db53bb065ff2cc1"
-        }
       ]
     },
     {
       "id": "am-recursion-sign",
       "action": "Define the exponent f_k of the Albuquerque-Majid cochain (arXiv math/9802116v1, Corollary 4.3) as a Fixpoint on k from the trivial group, so level 1 is f(x, y) = xy, and prove (-1)^f_k(a, b) = sigma k b a for all a, b < 2^k.",
       "acceptance": "am_sign and am_complex compile closed under the global context in the same replay, and am_convention_replay.py --check still passes.",
-      "state": "done",
+      "state": "todo",
       "depends_on": [
         "basis-product-lemma"
-      ],
-      "receipts": [
-        {
-          "result": "am_sign and am_complex compile closed under the global context in the same replay, and am_convention_replay.py --check passes.",
-          "observed_at": "2026-10-24T06:32:00Z",
-          "revision": "56e4e89190e2c44b5528861d2e681103e960adef",
-          "evidence": [
-            {
-              "ref": "proofs/CdImaginarySumConference.v",
-              "sha256": "736caf2f0adc3f478116df7ad81987e444a2e00f0938c981c626779a712fdb18"
-            },
-            {
-              "ref": "docs/evidence/cd-imaginary-sum-conference/assumptions.txt",
-              "sha256": "003974cb4fe114d51c7d2eed462e080514b2036c2028e95effd020fa8e9fb5fb"
-            },
-            {
-              "ref": "docs/evidence/albuquerque-majid-convention/am_convention_replay.py",
-              "sha256": "f073565c586949de9c6171fa605b6dfb90f25aecd5c258d3c1c3f53ab50ccb6d"
-            },
-            {
-              "ref": "docs/evidence/albuquerque-majid-convention/derivation.json",
-              "sha256": "ed873419642684af8af4452386f75de91e0e88c23ecd7667300700f3c36c3e07"
-            }
-          ],
-          "scope_sha256": "50b7cf0e3227fb33461d0cd40a54ecb4657bd097bd5a0fbad89c291f9b02cc4f"
-        }
       ]
     }
   ],
-  "disposition": "completed",
-  "resolution": "basis_mul, arc_entry, arc_diagonal and am_sign hold for every k on the integer pair tower, closed under the global context; tower_bridge.py ties the Rocq sigma to cd_core.cd_sign through n = 64.",
-  "receipts": [
-    {
-      "scope_sha256": "adba1f5bf28732c7e2509b7e95fff0eeffa80e1eddc18f7952623bcf050d7cb8",
-      "result": "All four steps are done with receipts at the revision that carries the proofs.",
-      "observed_at": "2026-10-24T06:32:00Z",
-      "revision": "56e4e89190e2c44b5528861d2e681103e960adef",
-      "evidence": [
-        {
-          "ref": "proofs/CdImaginarySumConference.v",
-          "sha256": "736caf2f0adc3f478116df7ad81987e444a2e00f0938c981c626779a712fdb18"
-        }
-      ]
-    }
-  ]
+  "next_action": "Attach receipts for the four steps at the commit that carries the proofs, then close the plan."
 }

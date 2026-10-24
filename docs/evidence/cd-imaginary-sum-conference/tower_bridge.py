@@ -6,9 +6,10 @@ coordinate lists and requires e_a e_b = cd_sign(n, a, b) e_(a XOR b) for every a
 imaginary sum (s, 1 + s) to equal e_1 + ... + e_(n-1). The Rocq theorems hold for the tower; this finite check
 carries them to the sign table the census reads.
 
-It also mirrors the Rocq Fixpoint sigma, whose theorem basis_mul gives e_a e_b = sigma_k(a, b) e_(a XOR b) for every
-k, and requires sigma_k(a, b) = cd_sign(2^k, a, b) on every pair through n = 64. As a negative control, negating any
-one of sigma's four branches must disagree with cd_sign on some pair at every n >= 4.
+It also mirrors the Fixpoint sigma of proofs/CdTowerBasisSign.v, whose theorem basis_mul gives
+e_a e_b = sigma_k(a, b) e_(a XOR b) for every k, and requires sigma_k(a, b) = cd_sign(2^k, a, b) on every pair
+through n = 64. As a negative control, negating any one of sigma's four branches must disagree with cd_sign on some
+pair at every n >= 4.
 
 Usage: "$PYTHON" docs/evidence/cd-imaginary-sum-conference/tower_bridge.py
 """

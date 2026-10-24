@@ -986,6 +986,22 @@
   {
    "suite": "sources",
    "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-tower-basis-sign/replay_rocq.sh",
+   "name": "sources-396",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "sha256sum -c docs/evidence/cd-tower-basis-sign/source_hashes.sha256",
+   "name": "sources-397",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error docs/evidence/cd-imaginary-sum-conference/tower_bridge.py",
    "name": "sources-393",
    "seconds": 7.0,

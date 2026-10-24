@@ -107,6 +107,7 @@ also binds the extended `rank_polynomials.py`; its scientific fields remain iden
 | [evidence/cd-star-lattice/README.md](evidence/cd-star-lattice/README.md) | exact star-lattice census bound to the Tuna-17 catalogue topology, with SL(2, q) and PGL(2, 7) certificates and a nauty replay |
 | [evidence/albuquerque-majid-convention/README.md](evidence/albuquerque-majid-convention/README.md) | replay of the Albuquerque-Majid cochain recursion against cd_sign: transposed map exact on 5,460 pairs, untransposed control fails, associators agree on 37,448 triples |
 | [evidence/cd-imaginary-sum-conference/README.md](evidence/cd-imaginary-sum-conference/README.md) | Rocq proof, for every Cayley-Dickson dimension, that right multiplication by the imaginary sum is a skew conference matrix, with its kernel receipts and the bridge to cd_sign |
+| [evidence/cd-tower-basis-sign/README.md](evidence/cd-tower-basis-sign/README.md) | Rocq proof, for every Cayley-Dickson dimension, that the tower's basis products are e_a e_b = sigma_k(a, b) e_(a XOR b) with sigma_k the cd_sign loop, the arc-matrix entries, and the Albuquerque-Majid Corollary 4.3 sign, with its kernel receipts |
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the open_gororoba Rocq corpus |
 | [prior_work_synthesis.md](notes/prior_work_synthesis.md) | what is known, what is new, labeled per claim |
