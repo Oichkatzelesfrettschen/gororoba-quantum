@@ -11,10 +11,10 @@
   "state": "active",
   "scope": "One 64-setting Ascella order-family job measuring sign-odd and sign-even X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
   "owner": "Quandela experiment operator",
-  "next_action": "Replay the frozen request in results/quandela/cases/ascella_signed_coherence/job-00 through local SLOS and run the registered estimators on the ideal response and the registered counterexamples.",
+  "next_action": "Write the acquisition case for results/quandela/cases/ascella_signed_coherence/job-00 with fresh availability, tariff and expected credits, and wait for the user's approval.",
   "reconciliation": {
     "status": "unresolved",
-    "note": "The derivation, endpoints, theory atlas and frozen native request are retained; its local replay, the written case and any submission remain prospective."
+    "note": "The derivation, endpoints, theory atlas and frozen native request and its local replay are retained; the written case and any submission remain prospective."
   },
   "steps": [
     {
@@ -77,9 +77,59 @@
       "id": "replay-request-locally",
       "action": "Replay the frozen request through the local SLOS backend and run the registered estimators on the ideal response, the equal-contrast mutation counterexample and the sign-even counterexample.",
       "acceptance": "The ideal replay qualifies every primary endpoint; the equal-contrast counterexample fails mutation closure; the sign-even counterexample keeps all fifteen sign-odd and dark coefficients ideal and fails tolerance-conformance on the three sign-even coefficients replay.py names; the weak 0.05 twist excludes the exact ideal while conforming to the coefficient tolerance.",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "freeze-native-request"
+      ],
+      "receipts": [
+        {
+          "result": "SLOS and Naive replay the 64-entry body with twelve-mode single-photon outputs matching the manifest within 1e-12; the ideal and sampled responses qualify all 27 endpoints, the equal-contrast case fails mutation closure, the 0.2 sign-even twist keeps the 15 sign-odd and dark coefficients ideal and falsifies exactly the derivation's three sign-even coefficients, and the 0.05 twist excludes their ideal while every endpoint qualifies.",
+          "observed_at": "2026-10-24T06:31:42+00:00",
+          "revision": "c4ea9f94d455a0a90432e443e5aa821e96643815",
+          "evidence": [
+            {
+              "ref": "results/local-simulation/ascella-signed-coherence-replay/replay.json",
+              "sha256": "cbcf38f3bbd9c725148a96894ca60bf71895663c185a2d456bb8848b3c90bf86"
+            },
+            {
+              "ref": "results/local-simulation/ascella-signed-coherence-replay/producer.py",
+              "sha256": "3163d7e37ac0bb9c553f2c079a3778ca9a0ba3ea0f4764e731863701c7ce236b"
+            },
+            {
+              "ref": "scripts/ascella_coherence_analysis.py",
+              "sha256": "d3ea8599f7132dac12c1d2df9fce1af87c00d4a5c39647861457c4efb8e0df63"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/job-body.json",
+              "sha256": "7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8"
+            }
+          ],
+          "scope_sha256": "406e8b2bedcc0dfeacb29a9053e9d683abc1a43e53c1c8db603bd65508113385"
+        },
+        {
+          "result": "SLOS and Naive replay the 64-entry body with twelve-mode single-photon outputs matching the manifest within 1e-12; the ideal and sampled responses qualify all 27 endpoints, the equal-contrast case fails mutation closure, the 0.2 sign-even twist keeps the 15 sign-odd and dark coefficients ideal and falsifies exactly the derivation's three sign-even coefficients, and the 0.05 twist excludes their ideal while every endpoint qualifies. Missing and zero-eligible iterations yield no decisions.",
+          "observed_at": "2026-10-24T06:35:48+00:00",
+          "revision": "4ebf1b807d58c9be6224bc0b369535e0a9f37915",
+          "evidence": [
+            {
+              "ref": "results/local-simulation/ascella-signed-coherence-replay/replay.json",
+              "sha256": "e6d9e8ceba1d6f6feb17c076a1785ce0160848583fa4ee0cb1d59236ea6e6238"
+            },
+            {
+              "ref": "results/local-simulation/ascella-signed-coherence-replay/producer.py",
+              "sha256": "84c42818d74191f8a5f1162600e2ace0b61bd828406f9a4a6a60ae0e530c3585"
+            },
+            {
+              "ref": "scripts/ascella_coherence_analysis.py",
+              "sha256": "4fc9ae4b3b4a46fa1646370f1b7f076a190c6552196107c82f9585c38e90a890"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-00/job-body.json",
+              "sha256": "7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8"
+            }
+          ],
+          "scope_sha256": "406e8b2bedcc0dfeacb29a9053e9d683abc1a43e53c1c8db603bd65508113385"
+        }
       ]
     },
     {
