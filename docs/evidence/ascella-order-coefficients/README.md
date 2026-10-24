@@ -84,7 +84,8 @@ prediction of job-01.
 [`scripts/ascella_physical_models.py`](../../../scripts/ascella_physical_models.py),
 holds the preregistered physical-model test: shared error families of the
 returned 12-mode meshes fitted on job-00 and scored on job-01's pooled
-configurations
+configurations, with supplementary families and a leave-one-configuration-out
+refit of the static ones
 ([design](../../design/ascella-signed-coherence-conformance.md#restricted-physical-models-of-the-analyzer-response)).
 The `core-ascella-signed-coherence-*` gates replay the first four within the
 certificate tolerance and the fitted families of the fifth within a relative

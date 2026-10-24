@@ -11,7 +11,7 @@
   "state": "active",
   "scope": "One 64-setting Ascella order-family job measuring sign-odd and sign-even X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
   "owner": "Quandela experiment operator",
-  "next_action": "Fit static heater offsets plus a setting-dependent heater term (per-heater gain or drive-dependent response) on job-00 and test it against job-01's pooled configurations, since shared static offsets reproduce X0 + Xc2 and the X residual pattern but underfit both jobs and every low-dimensional family fails; a timing budget for larger sample counts still needs controlled repeats that vary only the samples per iteration.",
+  "next_action": "Test a drive-dependent heater response (per-heater nonlinear phase error of the returned phases) by leave-one-configuration-out on job-00, the one shared mesh family left untested; if it also fails to predict left-out configurations, naming the per-configuration error behind X0 + Xc2 needs applied-voltage calibration data from the provider or a hardware case that repeats one configuration under perturbed compilations. A timing budget for larger sample counts still needs controlled repeats that vary only the samples per iteration.",
   "reconciliation": {
     "status": "unresolved",
     "note": "The approved acquisition ran and is retained with its reproducing analysis; all 27 endpoints qualify. The outside-block share above the dark-count bound remains an open mechanism question."

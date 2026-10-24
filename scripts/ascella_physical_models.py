@@ -11,14 +11,21 @@ returned 12-mode mesh (fixed characterized couplers, 126 heater phases) by one s
 - coupler offset: every coupler angle shifts by delta, with dephasing;
 - coupler noise: independent Gaussian coupler-angle noise of variance t, with dephasing;
 - static heater offsets: one offset per heater, maximum a posteriori under a N(0, tau^2) prior, pure state;
-- detector efficiency (supplementary, fitted after the preregistered table): relative efficiencies of modes 1..3
-  against mode 0, with dephasing.
+- supplementary families, fitted after the preregistered table and deciding nothing: relative detection
+  efficiencies of modes 1..3 against mode 0, with dephasing; one static angle offset per coupler under a
+  N(0, 0.1^2) prior; and heater offsets (tau 0.3) with coupler offsets (tau 0.1) together.
 
 Variances rather than widths are the fitted noise parameters, because a width's likelihood gradient vanishes at
 zero and the zero-perturbation start would never move. The block-conditioned four-mode multinomial of every
 setting carries a fixed in-block background: the setting's outside-block count shared over modes 0..3 by the
 plan-time catalogue dark rates, B_m = outside * d_m / sum_{k >= 4} d_k. Every family carries the same term, so it
 decides nothing between them.
+
+Leave-one-configuration-out, fitted after the preregistered table and deciding nothing, refits each static
+family on job-00 without one configuration and scores that configuration's X and Y statistics against the
+prediction in their multinomial variances alone, for all 30 configurations; the nominal mesh gives the
+reference. A shared mesh error predicts a configuration it was not fitted on, and a per-configuration lookup
+does not.
 
 The held-out statistic of each readout is r^T (diag(v) + J C J^T)^{-1} r over job-01's pooled configuration
 statistics, with v job-01's multinomial variances, C the inverse Fisher information of the job-00 fit (plus the
@@ -75,8 +82,14 @@ FAMILIES: dict[str, tuple[tuple[str, float, float], ...]] = {
     ),
 }
 # Families fitted beside the preregistered table; their verdicts are reported and decide nothing.
-SUPPLEMENTARY = ("detector_efficiency",)
-STATIC_TAUS = (0.1, 0.3)
+SUPPLEMENTARY = ("detector_efficiency", "static_coupler_offsets_tau_0.1", "static_heater_0.3_coupler_0.1_offsets")
+# Static families: (name, heater prior width, coupler prior width); a width of None leaves that kind at zero.
+STATIC_FAMILIES: tuple[tuple[str, float | None, float | None], ...] = (
+    ("static_heater_offsets_tau_0.1", 0.1, None),
+    ("static_heater_offsets_tau_0.3", 0.3, None),
+    ("static_coupler_offsets_tau_0.1", None, 0.1),
+    ("static_heater_0.3_coupler_0.1_offsets", 0.3, 0.1),
+)
 STEP = 1e-5
 # L-BFGS endpoints of fits the data identify weakly follow the BLAS build, so every fitted family's numbers replay
 # within this relative bound; the observed relation, keys, counts and verdicts replay exactly.
@@ -84,7 +97,7 @@ FIT_REPLAY_TOLERANCE = 1e-2
 # A model probability never falls below this floor, so a count in a cell the mesh leaves dark stays finite.
 PROBABILITY_FLOOR = 1e-9
 FIT_TOLERANCE = 1e-12
-FIT_ITERATIONS = 2000
+FIT_ITERATIONS = 20000
 STATIC_GRADIENT_TOLERANCE = 1e-8
 
 
@@ -337,62 +350,179 @@ def fit_family(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str, An
     return out
 
 
-def static_light(data: dict[str, Any], offsets: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Pure-state block-conditioned light and its offset Jacobian (configurations x 4 x heaters)."""
-    p, dp = mesh.jacobians(data["arch"], data["phases"] + offsets[None, :], list(data["sources"]))
+def pure_jacobians(
+    couplers: np.ndarray, arch: list[Any], phases: np.ndarray, sources: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """Detection probabilities (C x 12) and their derivatives (C x 12 x (heaters + couplers)) by adjoint.
+
+    The forward pass keeps each element's input amplitude; the backward pass carries G, the product of the
+    elements after the current one, so d psi_out = G[:, :, pair] dB psi_pair for a coupler with
+    dB/dtheta = (1/2) [[-sin, i cos], [i cos, -sin]](theta / 2), and G[:, :, q] i psi_q for a heater on mode q."""
+    count = len(sources)
+    psi = np.zeros((count, MODES), dtype=complex)
+    psi[np.arange(count), sources] = 1
+    before = []
+    ib = it = 0
+    for kind, m, _ in arch:
+        if kind == "bs":
+            c, s = math.cos(couplers[ib] / 2), math.sin(couplers[ib] / 2)
+            before.append(psi[:, m : m + 2].copy())
+            psi[:, m : m + 2] = psi[:, m : m + 2] @ np.array([[c, 1j * s], [1j * s, c]]).T
+            ib += 1
+        else:
+            psi[:, m] *= np.exp(1j * phases[:, it])
+            before.append(psi[:, m].copy())
+            it += 1
+    heaters, count_b = it, ib
+    g = np.broadcast_to(np.eye(MODES, dtype=complex), (count, MODES, MODES)).copy()
+    d = np.zeros((count, MODES, heaters + count_b), dtype=complex)
+    for index in range(len(arch) - 1, -1, -1):
+        kind, m, _ = arch[index]
+        if kind == "bs":
+            ib -= 1
+            c, s = math.cos(couplers[ib] / 2), math.sin(couplers[ib] / 2)
+            local = before[index] @ (0.5 * np.array([[-s, 1j * c], [1j * c, -s]])).T
+            d[:, :, heaters + ib] = np.einsum("cij,cj->ci", g[:, :, m : m + 2], local)
+            g[:, :, m : m + 2] = g[:, :, m : m + 2] @ np.array([[c, 1j * s], [1j * s, c]])
+        else:
+            it -= 1
+            d[:, :, it] = g[:, :, m] * (1j * before[index])[:, None]
+            g[:, :, m] *= np.exp(1j * phases[:, it])[:, None]
+    return np.abs(psi) ** 2, 2 * np.real(np.conj(psi)[:, :, None] * d)
+
+
+def prior_widths(data: dict[str, Any], heater_tau: float | None, coupler_tau: float | None) -> np.ndarray:
+    """Per-parameter prior widths over (heaters, couplers); a family without one kind gives it width zero."""
+    heaters, couplers = data["phases"].shape[1], len(data["couplers"])
+    return np.concatenate([np.full(heaters, heater_tau or 0.0), np.full(couplers, coupler_tau or 0.0)])
+
+
+def static_light(data: dict[str, Any], offsets: np.ndarray, free: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Pure-state block-conditioned light and its Jacobian over the free offsets (configurations x 4 x free)."""
+    heaters = data["phases"].shape[1]
+    full = np.zeros(len(free))
+    full[free] = offsets
+    p, dp = pure_jacobians(
+        data["couplers"] + full[heaters:], data["arch"], data["phases"] + full[None, :heaters], data["sources"]
+    )
     raw = np.clip(p[:, :LOGICAL], PROBABILITY_FLOOR, None)
     total = raw.sum(axis=1)
     light = raw / total[:, None]
-    dlight = (dp[:, :LOGICAL, :] - light[:, :, None] * dp[:, :LOGICAL, :].sum(axis=1)[:, None, :]) / total[
-        :, None, None
-    ]
+    block = dp[:, :LOGICAL, :][:, :, free]
+    dlight = (block - light[:, :, None] * block.sum(axis=1)[:, None, :]) / total[:, None, None]
     return light, dlight
 
 
-def static_objective(data: dict[str, Any], tau: float, offsets: np.ndarray) -> tuple[float, np.ndarray]:
-    """Negative log posterior of shared heater offsets under the N(0, tau^2) prior, and its gradient."""
+def static_objective(
+    data: dict[str, Any], tau: np.ndarray, free: np.ndarray, offsets: np.ndarray
+) -> tuple[float, np.ndarray]:
+    """Negative log posterior of shared static offsets under independent N(0, tau^2) priors, and its gradient."""
     total = data["block"].sum(axis=1)
     light_share = (total - data["background"].sum(axis=1)) / total
-    light, dlight = static_light(data, offsets)
+    light, dlight = static_light(data, offsets, free)
     pi = setting_probabilities(data, light)
     dpi = light_share[:, None, None] * dlight[data["configuration"]]
-    value = -float((data["block"] * np.log(pi)).sum()) + float(offsets @ offsets) / (2 * tau * tau)
-    grad = -np.einsum("sm,smh->h", data["block"] / pi, dpi) + offsets / (tau * tau)
+    precision = 1 / (tau * tau)
+    value = -float((data["block"] * np.log(pi)).sum()) + float((precision * offsets * offsets).sum()) / 2
+    grad = -np.einsum("sm,smh->h", data["block"] / pi, dpi) + precision * offsets
     return value, grad
 
 
-def static_offsets(data: dict[str, Any], tau: float) -> np.ndarray:
-    """Maximum a posteriori heater offsets from zero."""
+def static_offsets(data: dict[str, Any], tau: np.ndarray, free: np.ndarray) -> np.ndarray:
+    """Maximum a posteriori static offsets from zero."""
     result = minimize(
-        lambda offsets: static_objective(data, tau, offsets),
-        np.zeros(data["phases"].shape[1]),
+        lambda offsets: static_objective(data, tau, free, offsets),
+        np.zeros(int(free.sum())),
         jac=True,
         method="L-BFGS-B",
         options={"ftol": FIT_TOLERANCE, "gtol": STATIC_GRADIENT_TOLERANCE, "maxiter": FIT_ITERATIONS},
     )
-    require(bool(result.success), f"static tau {tau}: the fit did not converge: {result.message}")
+    require(bool(result.success), f"static fit: the fit did not converge: {result.message}")
     return np.asarray(result.x)
 
 
-def fit_static(item: tuple[float, dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
-    tau, a, b = item
-    heaters = a["phases"].shape[1]
-    offsets = static_offsets(a, tau)
-    light_a, jacobian_a = static_light(a, offsets)
-    covariance = np.linalg.inv(fisher(a, jacobian_a, light_a) + np.eye(heaters) / (tau * tau))
-    light_b, jacobian_b = static_light(b, offsets)
-    out = summarize(f"static_heater_offsets_tau_{tau}", a, b, covariance, light_a, light_b, jacobian_b)
-    out["offset_rms"] = float(math.sqrt(float(offsets @ offsets) / heaters))
-    out["offset_max_abs"] = float(np.abs(offsets).max())
-    # Heater positions as (mode, mesh column) of the returned layout, in heater order.
+def fit_static(item: tuple[str, float | None, float | None, dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    family, heater_tau, coupler_tau, a, b = item
+    widths = prior_widths(a, heater_tau, coupler_tau)
+    free = widths > 0
+    tau = widths[free]
+    offsets = static_offsets(a, tau, free)
+    light_a, jacobian_a = static_light(a, offsets, free)
+    covariance = np.linalg.inv(fisher(a, jacobian_a, light_a) + np.diag(1 / (tau * tau)))
+    light_b, jacobian_b = static_light(b, offsets, free)
+    out = summarize(family, a, b, covariance, light_a, light_b, jacobian_b)
+    # Element positions as (mode, mesh column) of the returned layout, heaters then couplers in layout order.
     column = mesh.column_index(a["arch"])
-    where = [(a["arch"][j][1], column[j]) for j in mesh.phase_slots(a["arch"])]
+    heaters = [j for j, (kind, _, _) in enumerate(a["arch"]) if kind == "ps"]
+    couplers = [j for j, (kind, _, _) in enumerate(a["arch"]) if kind == "bs"]
     se = np.sqrt(np.diag(covariance))
-    out["offsets"] = [
-        {"mode": int(where[h][0]), "column": int(where[h][1]), "value": float(offsets[h]), "se": float(se[h])}
-        for h in range(heaters)
-    ]
+    rows = iter(zip(offsets, se, strict=True))
+    for kind, slots, width in (("heater", heaters, heater_tau), ("coupler", couplers, coupler_tau)):
+        if width is None:
+            continue
+        values = [next(rows) for _ in slots]
+        out[f"{kind}_offsets"] = {
+            "tau": width,
+            "rms": float(math.sqrt(sum(v * v for v, _ in values) / len(values))),
+            "rows": [
+                {"mode": int(a["arch"][j][1]), "column": int(column[j]), "value": float(v), "se": float(e)}
+                for j, (v, e) in zip(slots, values, strict=True)
+            ],
+        }
     return out
+
+
+def without_configuration(data: dict[str, Any], left_out: int) -> dict[str, Any]:
+    """The run with one configuration's settings removed, configurations renumbered in order."""
+    kept = [c for c in range(len(data["keys"])) if c != left_out]
+    renumber = {c: i for i, c in enumerate(kept)}
+    rows = data["configuration"] != left_out
+    out = dict(data)
+    out["phases"], out["sources"] = data["phases"][kept], data["sources"][kept]
+    out["keys"] = [data["keys"][c] for c in kept]
+    out["configuration"] = np.array([renumber[int(c)] for c in data["configuration"][rows]])
+    out["block"], out["background"] = data["block"][rows], data["background"][rows]
+    return out
+
+
+def left_out_statistics(
+    data: dict[str, Any], light: np.ndarray, left_out: int
+) -> list[tuple[str, float, float, float]]:
+    """(readout, observed, predicted, variance) of each analyzer readout the left-out configuration serves."""
+    settings = data["record"]["manifest"]["settings"]
+    expected = setting_probabilities(data, light) * data["block"].sum(axis=1)[:, None]
+    out = []
+    for readout in SCORED:
+        chosen = [
+            i
+            for i in np.flatnonzero(data["configuration"] == left_out)
+            if settings[i]["readout"] == readout and settings[i]["block"] != "mutation"
+        ]
+        if chosen:
+            z, variance = geometry.statistic(data["block"][chosen].sum(axis=0), readout)
+            model = geometry.statistic(expected[chosen].sum(axis=0), readout)[0]
+            out.append((readout, float(z), float(model), float(variance)))
+    return out
+
+
+def configuration_fold(item: tuple[str, float | None, float | None, dict[str, Any], int]) -> list[Any]:
+    """Static offsets fitted on job-00 without one configuration, scored on that configuration."""
+    _, heater_tau, coupler_tau, data, left_out = item
+    widths = prior_widths(data, heater_tau, coupler_tau)
+    free = widths > 0
+    offsets = static_offsets(without_configuration(data, left_out), widths[free], free)
+    return left_out_statistics(data, static_light(data, offsets, free)[0], left_out)
+
+
+def configuration_score(rows: list[tuple[str, float, float, float]]) -> dict[str, Any]:
+    """Per readout, the multinomial-only statistic of every configuration against its left-out prediction."""
+    return {
+        readout: chi_square(
+            sum((z - model) ** 2 / variance for r, z, model, variance in rows if r == readout),
+            sum(1 for r, *_ in rows if r == readout),
+        )
+        for readout in SCORED
+    }
 
 
 def summarize(
@@ -405,7 +535,11 @@ def summarize(
     jacobian_b: np.ndarray,
 ) -> dict[str, Any]:
     scored = held_out(b, light_b, jacobian_b, covariance)
-    in_sample = held_out(a, light_a, np.zeros((*light_a.shape, 0)), np.zeros((0, 0)))
+    # The fit used job-00's counts, so its statistic has no chi-square reference and carries no p.
+    in_sample = {
+        readout: {"statistic": row["statistic"], "configurations": row["dof"]}
+        for readout, row in held_out(a, light_a, np.zeros((*light_a.shape, 0)), np.zeros((0, 0))).items()
+    }
     relation_b = relation_value(b, light_b)
     interval = observed_relation(b)["interval"]
     passes = all(scored[r]["p"] > DECISION_P for r in SCORED) and interval[0] <= relation_b <= interval[1]
@@ -429,7 +563,19 @@ def build(a_dir: Path, b_dir: Path) -> dict[str, Any]:
     order = [b["keys"].index(key) for key in a["keys"]]
     require(bool(np.allclose(a["phases"], b["phases"][order], atol=0, rtol=0)), "the jobs compile other heater phases")
     low = ordered_map(fit_family, [(family, a, b) for family in FAMILIES], min_items=1)
-    static = ordered_map(fit_static, [(tau, a, b) for tau in STATIC_TAUS], min_items=1)
+    static = ordered_map(fit_static, [(*spec, a, b) for spec in STATIC_FAMILIES], min_items=1)
+    folds = ordered_map(
+        configuration_fold, [(*spec, a, k) for spec in STATIC_FAMILIES for k in range(len(a["keys"]))], min_items=1
+    )
+    count = len(a["keys"])
+    for index, row in enumerate(static):
+        row["leave_configuration_out"] = configuration_score(
+            [entry for fold in folds[index * count : (index + 1) * count] for entry in fold]
+        )
+    nominal_light = family_probabilities(a, "nominal", np.zeros(0))
+    low[0]["leave_configuration_out"] = configuration_score(
+        [entry for k in range(count) for entry in left_out_statistics(a, nominal_light, k)]
+    )
     nominal = low[0]["job_00_log_likelihood"]
     rows = []
     for row in [*low, *static]:

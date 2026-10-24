@@ -77,16 +77,41 @@ def test_nominal_counts_leave_every_noise_family_at_zero() -> None:
             raise AssertionError((family, values))
 
 
+def test_adjoint_jacobian_matches_the_reference_and_finite_differences() -> None:
+    d = data()
+    p, dp = models.pure_jacobians(d["couplers"], d["arch"], d["phases"], d["sources"])
+    ref_p, ref_dp = mesh.jacobians(d["arch"], d["phases"], list(d["sources"]))
+    heaters = d["phases"].shape[1]
+    if not np.allclose(p, ref_p[:, : models.MODES]) or not np.allclose(dp[:, :, :heaters], ref_dp[:, : models.MODES]):
+        raise AssertionError("heater derivatives differ from qd_belenos_mesh.jacobians")
+    step = 1e-6
+    for b in (0, 9, len(d["couplers"]) - 1):
+        up, down = d["couplers"].copy(), d["couplers"].copy()
+        up[b] += step
+        down[b] -= step
+        numeric = (
+            models.pure_jacobians(up, d["arch"], d["phases"], d["sources"])[0]
+            - models.pure_jacobians(down, d["arch"], d["phases"], d["sources"])[0]
+        ) / (2 * step)
+        if not np.allclose(dp[:, :, heaters + b], numeric, atol=1e-8):
+            raise AssertionError((b, np.abs(dp[:, :, heaters + b] - numeric).max()))
+
+
 def test_static_gradient_matches_finite_differences() -> None:
     d = data({"family": "heater_gain", "values": [0.0, 0.03]})
-    offsets = np.array([0.01 * math.cos(h) for h in range(d["phases"].shape[1])])
-    _, grad = models.static_objective(d, 0.3, offsets)
+    widths = models.prior_widths(d, 0.3, 0.1)
+    free = widths > 0
+    offsets = np.array([0.01 * math.cos(h) for h in range(int(free.sum()))])
+    _, grad = models.static_objective(d, widths[free], free, offsets)
     step = 1e-6
-    for h in (0, 7, 19):
+    for h in (0, 7, 19, int(free.sum()) - 1):
         up, down = offsets.copy(), offsets.copy()
         up[h] += step
         down[h] -= step
-        numeric = (models.static_objective(d, 0.3, up)[0] - models.static_objective(d, 0.3, down)[0]) / (2 * step)
+        numeric = (
+            models.static_objective(d, widths[free], free, up)[0]
+            - models.static_objective(d, widths[free], free, down)[0]
+        ) / (2 * step)
         if not math.isclose(grad[h], numeric, rel_tol=1e-4, abs_tol=1e-3):
             raise AssertionError((h, grad[h], numeric))
 
