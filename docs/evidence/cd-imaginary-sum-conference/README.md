@@ -12,8 +12,8 @@ dimension. The zero diagonal follows from skewness in every dimension:
 coordinate of e_a s is 0 (a direct consequence, not a separately compiled
 lemma). The entries +-1 off the diagonal follow from the basis products
 e_a e_b = +-e_(a XOR b), which the bridge below checks against cd_sign through
-n = 64; the Rocq theorem for them is the open step of the
-[basis-sign plan](../../state/plans/cd-tower-basis-sign-theorem.json).
+n = 64; the Rocq theorem for them, for every dimension, is the
+[tower basis-sign bundle](../cd-tower-basis-sign/README.md).
 
 | Theorem | Statement, for every k |
 | --- | --- |

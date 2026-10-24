@@ -10,6 +10,7 @@ while IFS= read -r path; do
   proofs/* | \
     docs/evidence/c881_exhaustive/* | \
     docs/evidence/cd-imaginary-sum-conference/* | \
+    docs/evidence/cd-tower-basis-sign/* | \
     docs/evidence/folding_proofs/* | \
     docs/evidence/formal_certificates/* | \
     docs/evidence/stiefel_witness/* | \

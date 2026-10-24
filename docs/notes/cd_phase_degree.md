@@ -206,6 +206,70 @@ n - 2 does the work.
 **Census.** A pair with bitlen(max(i, j)) = b has j in [2^(b-1), 2^b) and
 i < j, i != 0, so the count is sum_j (j - 1) = 3 2^(b-2) (2^(b-1) - 1).
 
+## Leading coefficients, right rows and the bilinear layer
+
+**Theorem 3 (leading layer).** For n >= 3 and m != 0, the ANF of f_m has
+no degree-n term, and its degree-(n-1) layer is
+
+    [f_m]_(n-1)(x) = sum_j m_j prod_(l != j) x_l,
+
+so the coefficient of the monomial that omits x_j is the index bit m_j.
+
+*Proof.* Write m = (m', mu) and x = (y, xi) as in the proof of Theorem 1,
+whose cases combine into f_m = f_{m'}(y) + xi (N(m') + delta_0 + delta_{m'})
++ mu (N(y) + xi). By Theorem 1 at level n - 1 (or f_0 = 0), f_{m'} has
+degree at most n - 2 and no xi. Lemma B's coefficient formula puts
+[supp p within S] on y^S in delta_p. The full monomial y^all xi would need
+the full y-coefficient of delta_0 + delta_{m'}, which is 1 + 1 = 0. The
+monomial y^all omits xi = x_(n-1) and gets coefficient mu = m_(n-1) from
+N(y) = 1 + delta_0 alone. The monomial xi y^(all - j) gets the coefficient
+of y^(all - j) in delta_0 + delta_{m'}, which is 1 + [m'_j = 0] = m_j; the
+constant N(m') and the mu xi term have degree below n - 1 because n >= 3.
+
+Modulo functions of degree at most n - 2 the leading layers add as the
+indices do, [f_i] + [f_j] = [f_(i^j)]. In g_ij the translate
+f_i(j ^ x) keeps f_i's leading layer, so the three sign rows cancel there
+and deg g_ij <= n - 2, the upper bound that Theorem 2 sharpens to an exact
+value. Theorem 3 at k = 2 fails: the quaternion rows are affine and their
+linear coefficients follow a different map.
+
+**Lemma E (right involution).** phi_n(a, m) + phi_n(a^m, m) = N(m) for every
+a, m.
+
+*Proof.* Lemma 1 turns phi(a, m) into phi(m, a) + C(m, a) and phi(a^m, m)
+into phi(m, a^m) + C(m, a^m). Lemma A gives phi(m, a) + phi(m, a^m) = N(m),
+and C(m, a) + C(m, a^m) = (N(m) + delta_0(a) + delta_m(a)) + (N(m) +
+delta_m(a) + delta_0(a)) = 0.
+
+So (e_x e_m) e_m = -e_x for m != 0. Pairing a with a ^ m in the Walsh sum
+of s_m(a) = (-1)^phi(a, m) cancels every term at z with m . z = 0, so
+those coefficients vanish and R_{e_m} = X^m diag(s_m) expands only over
+Pauli words X^m Z^z with m . z odd.
+
+**Proposition 4 (right rows, measured).** For n >= 2 and m != 0 the right
+sign row h_m = phi_n(., m) has degree 1 when m is a power of two and
+max(1, bitlen(m) - 2) otherwise. Lemma 1 gives h_m = f_m + N(m) + delta_0 +
+delta_m, whose degree-(n-1) layer is Theorem 3's layer again, so
+deg h_m <= n - 2 for n >= 3 is proved. The exact value is checked on every
+m through n = 8 and has no written proof; a single m off the formula at
+n >= 9 falsifies it.
+
+**Bilinear layer (Albuquerque-Majid, p. 19).** The paper states without
+proof that the cochain of every algebra in the family has the bilinear part
+sum_(i <= j) x_i y_j. For f = f_AM(x, y) = phi_n(y, x) on the 2n variables
+of (x, y), with paper index i on bit i - 1: the ANF of f has no constant or
+linear term, and its degree-2 layer is sum_(i <= j) x_i y_j.
+
+*Proof.* Induction over Corollary 4.3, starting from f = xy. A monomial of
+degree at least 3 in (x, y) has two distinct x-variables or two distinct
+y-variables, so its restriction to y = x has degree at least 2; f(x, x)
+therefore has linear layer sum_i x_i from the diagonal terms x_i y_i and no
+constant. In f'((x, x'), (y, y')) = f(x, y)(1 + x') + f(y, x) x' + y' f(x, x)
++ x' y', the degree-2 layer is [f(x, y)]_2 + x' [f(x, y) + f(y, x)]_1 +
+y' sum_i x_i + x' y'. The middle term vanishes by induction, and the last
+two add exactly the pairs (i, new) with i <= new. No term is constant or
+linear.
+
 ## Formalization statement
 
 A Rocq statement for open_gororoba, against its `cd_sign_fuel` (the
@@ -238,12 +302,19 @@ to n = 8:
 - (D0) and (D1) on all 4^n ordered pairs, degenerate ones included;
 - the upper-pair closed form;
 - both theorems on every ordered pair;
-- the census.
+- the census;
+- Theorem 3's leading layer on every m;
+- Lemma E and the Walsh coefficients it forces to zero;
+- Proposition 4 on every m;
+- the bilinear layer of the 2n-variable cochain.
 
-It runs in under a second. `--mutate high-low-unconditional` and `--mutate
+It runs in about 2 s. `--mutate high-low-unconditional` and `--mutate
 high-high-no-early-return` each replace one cd_sign branch, and the run
 exits 0 only when a check catches the change. gororoba_quantum/verify.py
 keeps its pure-Python degree checks at dims 8 to 128.
+[CdTowerBasisSign.v](../../proofs/CdTowerBasisSign.v) proves Lemma 1 as
+`am_altercommutative`, Lemma A as `am_left_involution` and Lemma E as
+`sigma_right_involution`, in the paper's argument order, for every n.
 
 | n | dim | sign-row degree | new unordered pairs | their degree |
 | --- | --- | --- | --- | --- |
