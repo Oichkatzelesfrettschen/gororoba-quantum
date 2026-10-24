@@ -11,8 +11,9 @@ through ci/runner_image.sh, before their replay gates report float
 differences.
 
 ``"$PYTHON" ci/runner_image_records.py write COMMAND...`` runs COMMAND
-through ci/runner_image.sh and appends a receipt (path, sha256, image digest)
-to RECEIPTS for every file under the tree that the command wrote.
+through ci/runner_image.sh over a snapshot of the tree, copies back every
+file the command wrote there and appends a receipt (path, sha256, image
+digest) for each to RECEIPTS.
 ``"$PYTHON" ci/runner_image_records.py add PATH...`` binds records under the
 current digest and refuses a path whose bytes carry no receipt for it, so a
 record written by a host interpreter, whose libm and Python build differ from
@@ -27,8 +28,10 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from pathlib import Path
 from typing import Any
@@ -148,23 +151,31 @@ def written_since(start_ns: int, root: Path) -> list[Path]:
 
 
 def write(command: list[str]) -> int:
-    """Run command in the runner image and record a receipt for each file it wrote under the tree."""
+    """Run command in the runner image over a snapshot of the tree, then copy back and receipt what it wrote.
+
+    The container mounts the snapshot, which no host process touches, so a file the snapshot gains or rewrites
+    after the run starts came from the container. .git stays out of the snapshot; the image carries no git.
+    """
     image = image_id()
-    # The kernel stamps a write with its coarse clock, which trails time.time_ns() by at most one tick (10 ms at
-    # HZ=100, the lowest tick rate Linux builds with).
-    start = time.time_ns() - 10_000_000
-    status = subprocess.run(["sh", str(ROOT / "ci" / "runner_image.sh"), *command], cwd=ROOT, check=False).returncode
-    if status != 0:
-        return status
-    rows = [
-        {
-            "path": path.relative_to(ROOT).as_posix(),
-            "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-            "image": image,
-        }
-        for path in written_since(start, ROOT)
-    ]
     RECEIPTS.parent.mkdir(parents=True, exist_ok=True)
+    snapshot = Path(tempfile.mkdtemp(prefix="write-", dir=RECEIPTS.parent))
+    try:
+        shutil.copytree(ROOT, snapshot, symlinks=True, dirs_exist_ok=True, ignore=shutil.ignore_patterns(".git"))
+        # The kernel stamps a write with its coarse clock, which trails time.time_ns() by at most one tick (10 ms at
+        # HZ=100, the lowest tick rate Linux builds with); the pause puts every copied file's time below the margin.
+        time.sleep(0.05)
+        start = time.time_ns() - 10_000_000
+        status = subprocess.run(["sh", str(snapshot / "ci" / "runner_image.sh"), *command], cwd=snapshot, check=False)
+        if status.returncode != 0:
+            return status.returncode
+        rows = []
+        for path in written_since(start, snapshot):
+            name = path.relative_to(snapshot).as_posix()
+            (ROOT / name).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(path, ROOT / name)
+            rows.append({"path": name, "sha256": hashlib.sha256(path.read_bytes()).hexdigest(), "image": image})
+    finally:
+        shutil.rmtree(snapshot)
     with RECEIPTS.open("a", encoding="utf-8") as stream:
         stream.writelines(json.dumps(row, sort_keys=True) + "\n" for row in rows)
     return 0

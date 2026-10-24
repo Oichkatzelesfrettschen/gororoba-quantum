@@ -159,8 +159,9 @@ every runner and build host executes, so a fitted value rounds one way on all
 of them given one libm and Python build. A record a gate byte-replays is
 written in the runner's userland, which supplies both, through
 `"$PYTHON" ci/runner_image_records.py write sh -c '"$PYTHON" PRODUCER ...'`:
-it runs `ci/runner_image.sh` (podman) and receipts each file the command
-writes under the tree. `ci/runner_image_records.json` binds the record to that
+it runs `ci/runner_image.sh` (podman) over a snapshot of the tree, which no
+host process writes, then copies back and receipts each file the command
+wrote there. `ci/runner_image_records.json` binds the record to that
 image and its pins through `ci/runner_image_records.py add`, which refuses
 bytes without a receipt, and gate core-635 checks the ledger.
 `ci/replay_check.py` compares such a record with a fresh run bit for bit,
