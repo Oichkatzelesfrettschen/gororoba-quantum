@@ -35,10 +35,14 @@ schedule check, the unit tests and shellcheck.
    schedule is the approval, so the environment carries no reviewer.
 
 3. The repository variable `QUANDELA_SCHEDULE_ENABLED=true` arms submitting
-   ticks; any other value stops them, and a plan-only dispatch still runs:
+   ticks; any other value stops them, and a plan-only dispatch still runs.
+   A tick disables the workflow once no schedule has work left, so arming a
+   new schedule also enables the workflow again:
 
    ```sh
-   gh variable set QUANDELA_SCHEDULE_ENABLED --body true --repo Oichkatzelesfrettschen/gororoba-quantum
+   R=Oichkatzelesfrettschen/gororoba-quantum
+   gh api -X PUT "repos/$R/actions/workflows/quandela-schedule.yml/enable"
+   gh variable set QUANDELA_SCHEDULE_ENABLED --body true --repo "$R"
    ```
 
 4. Settings > Actions > General > "Allow GitHub Actions to create and approve
@@ -101,6 +105,7 @@ every step:
 | submitted | `collect` until 10 minutes before the tick's deadline; an unfinished job waits for the next tick |
 | collected | run the matched check and the snapshot, write `KEY.receipt.json` |
 | passed | the next job |
+| every enabled schedule done or stopped | a full run tick (no schedule argument) whose schedules all end `done` or `stop`, or that finds no enabled schedule, disables `quandela-schedule.yml` through REST (`actions: write`); a disabled or cancelled schedule therefore stops the timer at the next tick |
 
 Scheduler state lives in `results/quandela/schedules/NAME/`. A tick
 publishes a checkpoint even when its step fails, through the exit trap of
