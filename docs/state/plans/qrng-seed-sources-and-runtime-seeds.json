@@ -1,0 +1,51 @@
+{
+  "schema": "work-plan-v1",
+  "id": "qrng-seed-sources-and-runtime-seeds",
+  "kind": "implementation",
+  "summary": "Draw every new seed from a registered QRNG source (ANU keyed and keyless, Outshift, Quandela) and enforce run-time seed flags through qrng references, the CLI default or repro:N, with a consumption ledger keyed by script, flag and experiment.",
+  "sources": [
+    "AGENTS.md",
+    "scripts/anu_qrng.py",
+    "ci/seed_provenance.py"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Builds on the literal check of PR #433; the Outshift endpoint answered one 4-block probe."
+  },
+  "owner": "claude",
+  "scope": "QRNG draw adapters (ANU keyed and keyless, Outshift, Quandela /qt/qrng/ints), their source registry in ci/seed_provenance.py, the provider guide, and run-time seed flags with a consumption ledger across the CLIs that take a seed.",
+  "next_action": "Write scripts/outshift_qrng.py and register its evidence directory in ci/seed_provenance.py.",
+  "steps": [
+    {
+      "id": "outshift-adapter",
+      "action": "Write scripts/outshift_qrng.py: draw, check and self-test over retained raw responses under docs/evidence/outshift_qrng/, key in ~/.config/outshift-qrng/api-key.",
+      "acceptance": "The self-test rejects disagreeing representations, a wrong block width and an edited raw byte; check admits the retained probe draw.",
+      "state": "doing"
+    },
+    {
+      "id": "quandela-adapter",
+      "action": "Write scripts/quandela_qrng.py over GET /qt/qrng/ints with draws gated on an approved written case.",
+      "acceptance": "The self-test admits a well-formed response and rejects edits; a draw without --approved-case refuses before any request.",
+      "state": "todo"
+    },
+    {
+      "id": "source-registry",
+      "action": "Register each source's evidence directory and admit function in ci/seed_provenance.py and accept allocations from any registered source.",
+      "acceptance": "The self-test admits an allocation from each registered source and refuses an unregistered directory.",
+      "state": "todo"
+    },
+    {
+      "id": "provider-guide",
+      "action": "Write docs/notes/qrng/README.md: sources, fallback order, quotas, key files, approval rules, with a docs/README.md map row.",
+      "acceptance": "scripts/check_markdown_links.py passes and the AGENTS.md Seeds rule links the guide.",
+      "state": "todo"
+    },
+    {
+      "id": "runtime-seed-flags",
+      "action": "Give every CLI seed flag a type accepting qrng:<source>/<draw>#I, the CLI default or repro:N, and append consumption rows keyed by script, flag and experiment to the allocation ledger.",
+      "acceptance": "A bare non-default integer is refused at parse time on every seed flag; the ledger check refuses an index consumed under two experiment keys.",
+      "state": "todo"
+    }
+  ]
+}
