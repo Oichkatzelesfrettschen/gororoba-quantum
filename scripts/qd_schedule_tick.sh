@@ -121,6 +121,11 @@ for schedule in $schedules; do
 done
 
 if [ "$mode" = run ] && [ -z "$only" ] && [ "$waiting" = 0 ]; then
-	gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/quandela-schedule.yml/disable"
+	# A tick queued in the concurrency group starts after the tick that ended the
+	# series, and the disable endpoint answers 403 for a workflow already disabled.
+	state=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/quandela-schedule.yml" --jq .state)
+	if [ "$state" = active ]; then
+		gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/quandela-schedule.yml/disable"
+	fi
 	echo "::notice::no enabled schedule has a job left to run; quandela-schedule.yml is disabled until the next schedule is armed"
 fi
