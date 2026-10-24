@@ -1687,6 +1687,64 @@ class TokenRefreshChecks(unittest.TestCase):
             self.assertFalse(self.server["revoked"])
             self.assertEqual(second.session.headers["Authorization"], "Bearer a2")
 
+    def refresh_records(self) -> list[dict[str, Any]]:
+        log = self.file.with_name("refresh-log.jsonl")
+        self.assertEqual(stat.S_IMODE(log.stat().st_mode), 0o600)
+        text = log.read_text(encoding="utf-8")
+        for token in ("a0", "r0", "a1", "r1", "a2", "r2"):
+            self.assertNotIn(f'"{token}"', text)
+        return [json.loads(line) for line in text.splitlines()]
+
+    def test_each_exchange_is_logged_without_token_bytes(self) -> None:
+        with (
+            patch.dict(sys.modules, self.sdk()),
+            patch.object(platform, "TOKEN_FILE", self.file),
+            patch.object(platform, "TOKEN_LOCK", self.file.with_name("config.json.lock")),
+            patch.object(platform.time, "time", side_effect=lambda: self.clock[0]),
+        ):
+            client = platform.Client()
+            client.refresh()
+            self.clock[0] += 3600
+            client.refresh()
+        records = self.refresh_records()
+        self.assertEqual([record["outcome"] for record in records], ["exchanged", "exchanged"])
+        self.assertEqual({record["pid"] for record in records}, {os.getpid()})
+
+    def test_a_dead_refresh_token_names_the_forced_login(self) -> None:
+        self.server["live"] = "r9"
+        with (
+            patch.dict(sys.modules, self.sdk()),
+            patch.object(platform, "TOKEN_FILE", self.file),
+            patch.object(platform, "TOKEN_LOCK", self.file.with_name("config.json.lock")),
+            patch.object(platform.time, "time", side_effect=lambda: self.clock[0]),
+        ):
+            with self.assertRaises(platform.PlatformError) as caught:
+                platform.Client()
+        self.assertIn('qi" login --force', str(caught.exception))
+        self.assertIn("plain `qi login` cannot recover it", str(caught.exception))
+        self.assertEqual([record["outcome"] for record in self.refresh_records()], ["rejected"])
+        self.assertEqual(self.stored_refresh_token(), "r0")
+
+    def test_an_expired_signature_refreshes_once_and_another_403_refuses(self) -> None:
+        for detail, calls in ((platform.EXPIRED_SIGNATURE, 2), ("Not authorized for this backend", 1)):
+            with self.subTest(detail=detail):
+                client = platform.Client.__new__(platform.Client)
+                client.expires = float("inf")
+                refused = Mock(status_code=403, text=json.dumps({"detail": detail}))
+                refused.json.return_value = {"detail": detail}
+                served = Mock(status_code=200, content=b"{}")
+                served.json.return_value = {}
+                client.session = Mock()
+                client.session.request.side_effect = [refused, served]
+                with patch.object(client, "refresh") as refresh:
+                    if calls == 2:
+                        self.assertEqual(client.get("/backend_types/7"), {})
+                    else:
+                        with self.assertRaisesRegex(platform.PlatformError, "403"):
+                            client.get("/backend_types/7")
+                self.assertEqual(client.session.request.call_count, calls)
+                self.assertEqual(refresh.call_count, calls - 1)
+
 
 if __name__ == "__main__":
     unittest.main()

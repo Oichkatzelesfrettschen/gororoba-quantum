@@ -119,6 +119,60 @@ TOKEN_FILE = Path.home() / ".quantuminspire" / "config.json"
 TOKEN_LOCK = TOKEN_FILE.with_name("config.json.lock")
 # Held from the hardware pause and queue checks until a batch is enqueued.
 SUBMIT_LOCK = TOKEN_FILE.with_name("submit.lock")
+# The API answers a request carrying an expired access token with HTTP 403 and
+# this detail, not with 401.
+EXPIRED_SIGNATURE = "Signature has expired"
+# Plain `qi login` on an existing login calls AuthManager.refresh_tokens, which
+# presents the same dead refresh token and keeps any rotated one in memory only.
+LOGIN_DEAD = (
+    "the Quantum Inspire refresh token is no longer valid (invalid_grant); run "
+    '`"$QI_ENV/bin/qi" login --force`, approve the device code, then '
+    "`chmod 600 ~/.quantuminspire/config.json`; plain `qi login` cannot recover it "
+    "(docs/notes/quantum_inspire/setup.md#login-failures)"
+)
+
+
+def refresh_log() -> Path:
+    """The local exchange log beside the token file; it carries no token bytes."""
+    return TOKEN_FILE.with_name("refresh-log.jsonl")
+
+
+def _parent_name() -> str | None:
+    try:
+        return Path(f"/proc/{os.getppid()}/comm").read_text(encoding="utf-8").strip()
+    except OSError:
+        return None
+
+
+def _log_refresh(outcome: str, error: str | None = None) -> None:
+    """Append one exchange record; a log failure never blocks authentication."""
+    record = {
+        "utc": datetime.datetime.now(datetime.UTC).isoformat(timespec="milliseconds"),
+        "outcome": outcome,
+        "pid": os.getpid(),
+        "parent": _parent_name(),
+        "script": Path(sys.argv[0]).name if sys.argv and sys.argv[0] else None,
+        "error": None if error is None else error[:300],
+    }
+    try:
+        descriptor = os.open(refresh_log(), os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o600)
+        try:
+            os.write(descriptor, (json.dumps(record) + "\n").encode())
+        finally:
+            os.close(descriptor)
+    except OSError:
+        pass
+
+
+def _expired_signature(response: Any) -> bool:
+    """True for the API's HTTP 403 on an expired access token; any other 403 is a refusal."""
+    if response.status_code != 403:
+        return False
+    try:
+        body = response.json()
+    except ValueError:
+        return False
+    return isinstance(body, dict) and body.get("detail") == EXPIRED_SIGNATURE
 
 
 @contextlib.contextmanager
@@ -233,7 +287,7 @@ class RequestNotDispatched(TimeoutError):
 
 
 class RequestRejectedBeforeRetry(TimeoutError):
-    """One dispatched request received HTTP 401; its replacement was refused locally."""
+    """One dispatched request received HTTP 401 or the expired-signature 403; its replacement was refused locally."""
 
     def __init__(self, method: str, path: str) -> None:
         super().__init__("execution deadline expired before retry of the HTTP 401 rejected request")
@@ -288,12 +342,26 @@ class Client:
             self._load()
             settings = self.config.user_settings
             spent = settings.auths[self.host].tokens.refresh_token
-            self.auth.refresh_tokens(self.host)
+            try:
+                self.auth.refresh_tokens(self.host)
+            except Exception as error:
+                # The SDK's AuthorisationError derives from Exception alone, so
+                # callers that catch RuntimeError (the MCP tools) see it only as
+                # this PlatformError.
+                _log_refresh("rejected", str(error))
+                if "invalid_grant" in str(error):
+                    raise PlatformError(LOGIN_DEAD) from error
+                raise
             if settings.auths[self.host].tokens.refresh_token != spent:
                 # AuthManager.refresh_tokens keeps the rotated tokens in memory
                 # only; the next process would otherwise read the spent refresh
                 # token from disk and present it.
-                _publish_text(Path(type(settings).json_file()), settings.model_dump_json(indent=4), mode=0o600)
+                try:
+                    _publish_text(Path(type(settings).json_file()), settings.model_dump_json(indent=4), mode=0o600)
+                except OSError as error:
+                    _log_refresh("exchanged-not-persisted", str(error))
+                    raise
+                _log_refresh("exchanged")
         tokens = self.config.user_settings.auths[self.host].tokens
         self.expires = tokens.generated_at + tokens.expires_in
         self.session.headers["Authorization"] = f"Bearer {tokens.access_token}"
@@ -306,7 +374,7 @@ class Client:
         except TimeoutError as error:
             raise RequestNotDispatched(str(error)) from error
         response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
-        if response.status_code == 401:
+        if response.status_code == 401 or _expired_signature(response):
             self.refresh()
             try:
                 _check_execution_deadline(execution_deadline)
