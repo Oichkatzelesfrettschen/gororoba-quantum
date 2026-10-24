@@ -8,6 +8,12 @@
 # one locally). The environment below is the one the hosted jobs run under.
 set -eu
 PYTHON=${PYTHON:-python3}
+# A relative interpreter path names a file from the caller's directory, and
+# the checks below change directory; dirname keeps a venv's symlinked python.
+case $PYTHON in
+/*) ;;
+*/*) PYTHON=$(cd "$(dirname "$PYTHON")" && pwd)/$(basename "$PYTHON") ;;
+esac
 export PYTHON
 # ci/pinned_tool.py takes ruff and mypy from PATH, so the interpreter's own
 # bin directory, a venv's, leads it.

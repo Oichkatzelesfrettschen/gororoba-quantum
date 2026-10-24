@@ -477,6 +477,8 @@ jobs:
           while IFS= read -r job; do [ -z "$job" ] || set -- "$@" --failed-job "$job"; done <<JOBS
           $jobs
           JOBS
+          # download-artifact creates no directory when no gate job ran.
+          mkdir -p "$RUNNER_TEMP/timings"
           find "$RUNNER_TEMP/timings" -name '*timings.json' > "$RUNNER_TEMP/timings.list"
           while IFS= read -r file; do set -- "$@" "$file"; done < "$RUNNER_TEMP/timings.list"
           python3 ci/audit_report.py "$@" > "$RUNNER_TEMP/body.md"
