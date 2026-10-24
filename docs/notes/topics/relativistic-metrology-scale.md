@@ -49,7 +49,7 @@ qubit frequency.
 | Gravitational redshift between paths 15 mm apart in height, over a chip transit time tau | Belenos | 3.3e-12 rad per ns of tau | 2 pi nu tau g dh / c^2; tau is unrecorded |
 | Gravitational redshift across 1 mm of a chip, over 152.3 us | Heron r2 | 6.9e-16 rad per GHz of qubit frequency per us per mm, 1.0e-13 rad per GHz here | the fitted component envelope of the October 20 Ramsey beat model |
 | Height of the room-temperature reference oscillator above the chip, taken as 2 m | Heron r2 | fractional 2.2e-16, about 2e-7 Hz per GHz, static | absorbed into the calibrated qubit frequency like any static offset |
-| Motion relative to the CMB, 369.82 km/s (Planck 2018) | all | gamma - 1 = 7.6e-7, common to qubit, reference and detector | local Lorentz invariance makes a common velocity unobservable in a co-moving experiment |
+| Motion relative to the CMB, 369.82 km/s ([Planck 2018](../papers/1807.06205.md)) | all | gamma - 1 = 7.6e-7, common to qubit, reference and detector | local Lorentz invariance makes a common velocity unobservable in a co-moving experiment |
 
 The measured instabilities these would have to explain:
 
@@ -92,6 +92,21 @@ errors across neighboring qubits within one shot, and a relaxation signature
 beside the phase signature. A run that reads many neighboring qubits in every
 shot can measure both, and that is the only cosmic-origin hypothesis these
 devices can test.
+
+## Sources
+
+The relativistic couplings follow the [fiber Sagnac entanglement experiment](../papers/2310.16903.md),
+the [millimeter-scale redshift gradient](../papers/2109.12238.md), the
+[proper-time visibility witness](../papers/1105.4531.md) and its
+[composite-particle extension](../papers/1311.1095.md), the treatment of solar gravity in a freely
+falling geocentric frame ([Ashby and Nelson](../papers/ashby-nelson-2009-gps-relativity.md)), the
+[local position invariance null test](../papers/ashby-2018-null-test-lpi.md), the
+[orientation-dependent Lorentz-violation bounds](../papers/2206.00570.md), the
+[spin-entropy covariance limit](../papers/quant-ph-0203033.md) and the
+[satellite entanglement link](../papers/1707.01339.md). The radiation coupling follows
+[ionizing radiation and transmon coherence](../papers/2001.09190.md),
+[chip-wide cosmic-ray error bursts](../papers/2104.05219.md) and
+[detector-coincident correlated errors](../papers/2402.03208.md).
 
 ## Falsifiers of this note
 
