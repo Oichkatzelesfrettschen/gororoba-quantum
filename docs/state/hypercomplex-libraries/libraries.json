@@ -6933,8 +6933,10 @@
    "ast",
    "collections",
    "json",
+   "outshift_qrng",
    "parallel",
    "pathlib",
+   "quandela_qrng",
    "re",
    "subprocess",
    "sys",
@@ -10945,6 +10947,22 @@
    "tempfile",
    "typing"
   ],
+  "scripts/outshift_qrng.py": [
+   "__future__",
+   "anu_qrng",
+   "argparse",
+   "copy",
+   "datetime",
+   "functools",
+   "hashlib",
+   "json",
+   "os",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing",
+   "urllib"
+  ],
   "scripts/packed_pauli_analysis.py": [
    "__future__",
    "collections",
@@ -11668,6 +11686,21 @@
    "re",
    "typing",
    "urllib"
+  ],
+  "scripts/quandela_qrng.py": [
+   "__future__",
+   "argparse",
+   "copy",
+   "datetime",
+   "functools",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "sys",
+   "typing"
   ],
   "scripts/qx_local_series.py": [
    "__future__",
