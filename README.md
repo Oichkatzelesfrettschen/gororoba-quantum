@@ -34,8 +34,8 @@ acquisition of every provider:
 | exact finite certificate | established | 22 |
 | exploratory reanalysis | exploratory | 61 |
 | exploratory reanalysis | superseded | 2 |
-| machine-checked proof | established | 4 |
-| mathematical claim | established | 19 |
+| machine-checked proof | established | 5 |
+| mathematical claim | established | 20 |
 | mathematical claim | open | 3 |
 | numerical or stochastic simulation | established | 8 |
 | preregistered emulator control | established | 10 |

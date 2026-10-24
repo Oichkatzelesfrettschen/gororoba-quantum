@@ -35,11 +35,17 @@ Status. Both theorems carried the label "candidate new result" in
 [prior_work_synthesis.md](prior_work_synthesis.md): Bales 2016 states no ANF
 degree ([1602.02843.md](1602.02843.md)), and Albuquerque-Majid's Corollary
 4.3, Proposition 4.2 and Proposition 4.5 state the cochain recursions with
-no degree ([math-9802116.md](math-9802116.md)). The proofs below are this
+no degree ([math-9802116.md](math-9802116.md)). Ren and Zhao's closed form
+of the sign table ([2205.07986.md](papers/2205.07986.md)) and Morier-Genoud
+and Ovsienko's cubic twisted group algebras, which exclude the
+Cayley-Dickson series ([1003.0429.md](papers/1003.0429.md)), state none
+either. The proofs below are this
 note's (new proof or formalization). They are written proofs;
 scripts/cd_phase_degree.py checks every identity they use, cell by cell
 against cd_sign, and both statements on every pair through n = 8 (gates
-listed under Replay); no proof assistant has checked them.
+listed under Replay). Rocq proves Theorem 1, Theorem 3 and Proposition 4
+below for every n ([sign-row ANF bundle](../evidence/cd-sign-row-anf/README.md));
+Theorem 2 has no machine-checked proof.
 
 Upper bound only, as a cross-check: g_ij = s_{i,j} + phi_n(i, j) with
 s_{i,j} the Schreier sign vector of
@@ -231,7 +237,11 @@ indices do, [f_i] + [f_j] = [f_(i^j)]. In g_ij the translate
 f_i(j ^ x) keeps f_i's leading layer, so the three sign rows cancel there
 and deg g_ij <= n - 2, the upper bound that Theorem 2 sharpens to an exact
 value. Theorem 3 at k = 2 fails: the quaternion rows are affine and their
-linear coefficients follow a different map.
+linear coefficients follow a different map. `sign_row_leading` in
+[CdSignRowAnf.v](../../proofs/CdSignRowAnf.v) proves Theorem 3 for every
+n >= 3, and `sign_row_top` the absent degree-n term for n >= 2, on ANF
+coefficients defined as the Moebius transform (`anf_coef`), which
+`anf_inversion` and `anf_unique` identify with the ANF.
 
 **Lemma E (right involution).** phi_n(a, m) + phi_n(a^m, m) = N(m) for every
 a, m.
@@ -246,13 +256,28 @@ of s_m(a) = (-1)^phi(a, m) cancels every term at z with m . z = 0, so
 those coefficients vanish and R_{e_m} = X^m diag(s_m) expands only over
 Pauli words X^m Z^z with m . z odd.
 
-**Proposition 4 (right rows, measured).** For n >= 2 and m != 0 the right
-sign row h_m = phi_n(., m) has degree 1 when m is a power of two and
-max(1, bitlen(m) - 2) otherwise. Lemma 1 gives h_m = f_m + N(m) + delta_0 +
-delta_m, whose degree-(n-1) layer is Theorem 3's layer again, so
-deg h_m <= n - 2 for n >= 3 is proved. The exact value is checked on every
-m through n = 8 and has no written proof; a single m off the formula at
-n >= 9 falsifies it.
+**Proposition 4 (right rows).** For n >= 1 and m != 0 the right sign row
+h_m = phi_n(., m) has degree 1 when m is a power of two and
+max(1, bitlen(m) - 2) otherwise, independent of n.
+
+*Proof.* Induction on n; at n = 1, h_1 = y has degree 1. (R) with the
+variable x = (y, xi) in the first argument and m = (m', mu) reads
+h_m(y, xi) = phi'^(mu)(y, m') + xi (N(m') + mu), which splits into three
+slices:
+
+- mu = 0, m = m' != 0: h_m(y, xi) = h'_m(y) + xi. The term xi adds only the
+  monomial x_(n-1), of degree 1, so deg h_m = deg h'_m >= 1, the degree at
+  level n - 1.
+- m = 2^(n-1): phi'(0, y) = 0 by Lemma 0, so h_m = xi, of degree 1.
+- mu = 1, m' != 0: h_m(y, xi) = f'_(m')(y), the left sign row of e_(m') at
+  level n - 1, independent of xi. Theorem 1 gives degree n - 2 for n >= 3,
+  and at n = 2 the row f'_1 = y has degree 1.
+
+In the last two slices bitlen(m) = n, so the degree is 1 at the power of two
+and max(1, n - 2) = max(1, bitlen(m) - 2) otherwise; the first slice carries
+that value up unchanged from level bitlen(m). `right_row_degree` in
+[CdSignRowAnf.v](../../proofs/CdSignRowAnf.v) proves the proposition for
+every n through the same three slices.
 
 **Bilinear layer (Albuquerque-Majid, p. 19).** The paper states without
 proof that the cochain of every algebra in the family has the bilinear part
@@ -271,6 +296,12 @@ two add exactly the pairs (i, new) with i <= new. No term is constant or
 linear.
 
 ## Formalization statement
+
+[CdSignRowAnf.v](../../proofs/CdSignRowAnf.v) proves the sign-row
+statement in this repository's terms: `sign_row_degree_all` gives degree
+max(1, n - 1) for every n against the tower sign sigma, which the
+[tower basis-sign bundle](../evidence/cd-tower-basis-sign/README.md) ties to
+cd_sign. The associator statement has no Rocq proof.
 
 A Rocq statement for open_gororoba, against its `cd_sign_fuel` (the
 function the [Stiefel witness](../evidence/stiefel_witness/README.md) uses)
@@ -305,8 +336,9 @@ to n = 8:
 - the census;
 - Theorem 3's leading layer on every m;
 - Lemma E and the Walsh coefficients it forces to zero;
-- Proposition 4 on every m;
-- the bilinear layer of the 2n-variable cochain.
+- the three right-row slices of Proposition 4 and its degree on every m;
+- the bilinear layer of the 2n-variable cochain;
+- Ren and Zhao's Theorem 1 closed form against the table, and its transpose as the control.
 
 It runs in about 2 s. `--mutate high-low-unconditional` and `--mutate
 high-high-no-early-return` each replace one cd_sign branch, and the run
@@ -314,7 +346,9 @@ exits 0 only when a check catches the change. gororoba_quantum/verify.py
 keeps its pure-Python degree checks at dims 8 to 128.
 [CdTowerBasisSign.v](../../proofs/CdTowerBasisSign.v) proves Lemma 1 as
 `am_altercommutative`, Lemma A as `am_left_involution` and Lemma E as
-`sigma_right_involution`, in the paper's argument order, for every n.
+`sigma_right_involution`, in the paper's argument order, for every n, and
+[CdSignRowAnf.v](../../proofs/CdSignRowAnf.v) proves Theorem 1, Theorem 3
+and Proposition 4.
 
 | n | dim | sign-row degree | new unordered pairs | their degree |
 | --- | --- | --- | --- | --- |

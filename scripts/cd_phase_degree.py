@@ -27,11 +27,17 @@ cell by cell against tables built from cd_sign, and the statements:
   census      unordered pairs of degree n - 2 added at level n: 3 2^(n-2) (2^(n-1) - 1)
   leading     for n >= 3 and m != 0, the degree-(n-1) ANF layer of f_m is
               sum_j m_j prod_(l != j) x_l and f_m has no degree-n term
+  right slice h_m = phi_n(., m) with m = (m', mu): h_m(y, xi) = h'_m(y) + xi for mu = 0, m != 0;
+              h_m = xi for m = 2^(n-1); h_m(y, xi) = f'_(m')(y) for mu = 1, m' != 0
   right rows  deg phi_n(., m) = 1 when m is a power of two, else max(1, bitlen(m) - 2)
   right inv   phi_n(a, m) + phi_n(a^m, m) = 1 for m != 0, so the Walsh coefficients of
               (-1)^phi_n(., m) vanish at every z with popcount(m & z) even
   bilinear    the degree-2 ANF layer of f_AM(x, y) = phi_n(y, x) on the 2n variables of
               (x, y) is sum_(i <= j) x_i y_j, with no constant or linear term
+  closed form Ren and Zhao, Adv. Appl. Clifford Algebras 33 (2023) 49, Theorem 1: with
+              d(v) the lowest set bit of v and l = max(d(a), d(b), d(a^b)), phi_n(a, b) =
+              b_l + c, 1 + a_l + c or a_l + c for d(a) >, < or = d(b), c the number of
+              bits i >= l set in a | b, for distinct nonzero a, b; its transpose fails (n >= 2)
 
 Stdout is byte-deterministic; --timing adds per-level seconds on stderr.
 --mutate replaces one branch of cd_sign by a wrong one and inverts the
@@ -153,6 +159,25 @@ def check_coefficients(n: int, phi: Table) -> None:
     _require(not joint[weight2 <= 1].any(), f"bilinear: constant or linear term at n = {n}")
 
 
+def check_closed_form(n: int, phi: Table) -> None:
+    """Ren-Zhao Theorem 1 against the cd_sign table, and the transposed control."""
+    dim = 1 << n
+    a, b = (v.astype(np.int64) for v in np.meshgrid(np.arange(dim), np.arange(dim), indexing="ij"))
+
+    def low(v: npt.NDArray[np.int64]) -> npt.NDArray[np.int64]:
+        return np.bitwise_count((v & -v) - 1).astype(np.int64)
+
+    generic = (a != 0) & (b != 0) & (a != b)
+    da, db = low(np.where(a == 0, 1, a)), low(np.where(b == 0, 1, b))
+    level = np.maximum(np.maximum(da, db), low(np.where(generic, a ^ b, 1)))
+    count = np.bitwise_count((a | b) >> level).astype(np.int64)
+    a_bit, b_bit = (a >> level) & 1, (b >> level) & 1
+    value = np.where(da > db, b_bit + count, np.where(da < db, 1 + a_bit + count, a_bit + count)) % 2
+    sigma = np.where(generic, value, ((a == b) & (a != 0)).astype(np.int64)).astype(np.uint8)
+    _require(bool((sigma == phi).all()), f"closed form: n = {n}")
+    _require(n < 2 or bool((sigma != phi.T).any()), f"closed form: transposed control passes at n = {n}")
+
+
 def check_two_point(k: int) -> None:
     size = 1 << k
     y = np.arange(size)
@@ -202,6 +227,16 @@ def check_level(n: int, phi: Table, low: Table) -> tuple[int, int]:
             ^ (mu * (nz_low[ylow] ^ xi))
         )
         _require(bool((phi[m] == want).all()), f"sign cases: n = {n}, m = {m}")
+    # Right sign rows h_m = phi[:, m], the three slice identities of Proposition 4.
+    _require(
+        bool((phi[:half, 1:half] == low[:, 1:half]).all() and (phi[half:, 1:half] == 1 - low[:, 1:half]).all()),
+        f"right slice: m in the low half at n = {n}",
+    )
+    _require(not phi[:half, half].any() and bool(phi[half:, half].all()), f"right slice: m = 2^(n-1) at n = {n}")
+    _require(
+        bool((phi[:half, half + 1 :] == low[1:].T).all() and (phi[half:, half + 1 :] == low[1:].T).all()),
+        f"right slice: m in the top half at n = {n}",
+    )
     if n >= 2:
         degrees = anf_degrees(phi[1:])
         _require(bool((degrees == n - 1).all()), f"sign degree: n = {n} rows of degree {sorted(set(degrees))}")
@@ -285,6 +320,7 @@ def main() -> int:
             check_two_point(n)
             new, degree = check_level(n, phi, low)
             check_coefficients(n, phi)
+            check_closed_form(n, phi)
             if n >= 3:
                 print(f"{n} {1 << n} {n - 1} {new} {degree}")
             if args.timing:

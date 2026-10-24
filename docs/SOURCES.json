@@ -1161,6 +1161,18 @@
       "doi": "10.2307/2372583",
       "venue": "American Journal of Mathematics 76(2), 435-446 (1954)",
       "receipt_url": "https://api.crossref.org/works/10.2307/2372583"
+    },
+    "docs/notes/papers/2205.07986.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/s00006-023-01296-6",
+      "venue": "Advances in Applied Clifford Algebras 33(4), article 49 (2023)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/s00006-023-01296-6"
+    },
+    "docs/notes/papers/1003.0429.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/s00220-011-1279-9",
+      "venue": "Communications in Mathematical Physics 306(1), 83-118 (2011)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/s00220-011-1279-9"
     }
   },
   "web_sources": [
@@ -1804,6 +1816,60 @@
       "retrieved_at_utc": "2026-10-23T22:26:45+00:00",
       "reading_scope": "Flexible algebra, revision 1378034384: the sentence attributing flexibility of every Cayley-Dickson algebra to Schafer 1954 and its citation",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/pdf/2205.07986v2",
+      "note": "docs/notes/papers/2205.07986.md",
+      "sha256": "bbad08fca3cd21463ce4e5a62f2ddfe4876c06f1796cbecd02a92c5a7668860e",
+      "bytes": 171034,
+      "retrieved_at_utc": "2026-10-24T09:18:51+00:00",
+      "reading_scope": "Ren and Zhao, arXiv 2205.07986v2, 13 pages: Sections 1 to 4 in full (conventions, Proposition 1, Lemma 4, Theorem 1 and proof, Remark 1, Example 1); Section 5 skimmed",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1007/s00006-023-01296-6",
+      "note": "docs/notes/papers/2205.07986.md",
+      "sha256": "bc82e6de9b8ce808cdb30f81b627ce4c1153cb7ce09dbf28c2045d53f56631cb",
+      "bytes": 9668,
+      "retrieved_at_utc": "2026-10-24T09:38:57+00:00",
+      "reading_scope": "Ren and Zhao 2023, Advances in Applied Clifford Algebras 33(4), article 49: bibliographic identity",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://arxiv.org/pdf/1107.1375v1",
+      "note": "docs/notes/papers/2205.07986.md",
+      "sha256": "4a1b8e4f1369d5bc0a7a0fc6672d585bbeffc426cc698099cce0f7045f9b1c2f",
+      "bytes": 211088,
+      "retrieved_at_utc": "2026-10-24T09:20:17+00:00",
+      "reading_scope": "Bales, arXiv 1107.1375v1, 22 pages: abstract, Sections 1 to 3, and a full-text search for degree, polynomial and Boolean statements",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/pdf/2103.12805v1",
+      "note": "docs/notes/papers/2205.07986.md",
+      "sha256": "e1cf74159d98ce9846fc86e56f0f3e41a21e6d094d2c028635989e9d07223fc5",
+      "bytes": 832785,
+      "retrieved_at_utc": "2026-10-24T09:20:17+00:00",
+      "reading_scope": "Flaut and Boboescu, arXiv 2103.12805v1, 13 pages: abstract, Propositions 2.6 and 2.7, Theorem 2.8, and a full-text search for degree, polynomial and Boolean statements",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://arxiv.org/pdf/1003.0429v3",
+      "note": "docs/notes/papers/1003.0429.md",
+      "sha256": "97dfc7afbb33faa961c442a5c721db5f9dec5e3ed6f355297e5e7f2adbfc3ad1",
+      "bytes": 880640,
+      "retrieved_at_utc": "2026-10-24T09:18:50+00:00",
+      "reading_scope": "Morier-Genoud and Ovsienko, arXiv 1003.0429v3, 36 pages: introduction, Section 3, the statements of Section 4 and the passages naming the Cayley-Dickson algebras; proofs of Sections 5 to 8 unread",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1007/s00220-011-1279-9",
+      "note": "docs/notes/papers/1003.0429.md",
+      "sha256": "9d049f99843f99af80f8a3683df94ed95b8a36b84d2b5ed56c0dd2db44f57c2e",
+      "bytes": 11089,
+      "retrieved_at_utc": "2026-10-24T09:40:44+00:00",
+      "reading_scope": "Morier-Genoud and Ovsienko 2011, Communications in Mathematical Physics 306(1), 83-118: bibliographic identity",
+      "retention": "retrieval_receipt; response bytes are unretained"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
