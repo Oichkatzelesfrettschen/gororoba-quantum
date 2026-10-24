@@ -9514,6 +9514,13 @@
    "sys",
    "time"
   ],
+  "scripts/cd_sign_rocq_ast.py": [
+   "__future__",
+   "argparse",
+   "ast",
+   "pathlib",
+   "sys"
+  ],
   "scripts/cd_star_lattice.py": [
    "__future__",
    "argparse",
