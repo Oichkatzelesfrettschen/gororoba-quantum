@@ -7119,9 +7119,11 @@
    "ast",
    "fnmatch",
    "gate_ledger",
+   "itertools",
    "json",
    "os",
    "pathlib",
+   "re",
    "shlex",
    "subprocess",
    "typing"
