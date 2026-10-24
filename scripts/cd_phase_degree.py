@@ -95,21 +95,9 @@ def phi_table(n: int, sign: Callable[[int, int, int], int]) -> Table:
     return np.array([[sign(dim, a, x) < 0 for x in range(dim)] for a in range(dim)], dtype=np.uint8)
 
 
-def anf_degrees(rows: Table) -> npt.NDArray[np.int64]:
-    """ANF degree of each row of a 0/1 truth-table matrix (Moebius transform over F_2)."""
-    a = rows.astype(np.uint8, copy=True)
-    count, size = a.shape
-    k = size.bit_length() - 1
-    for b in range(k):
-        a = a.reshape(count, -1, 2, 1 << b)
-        a[:, :, 1, :] ^= a[:, :, 0, :]
-        a = a.reshape(count, size)
-    weight = np.bitwise_count(np.arange(size)).astype(np.int64)
-    return np.where(a.any(axis=1), (a * weight).max(axis=1), 0)
-
-
 def anf(rows: Table) -> Table:
-    """ANF coefficients of each row of a 0/1 truth-table matrix, monomial m at column m."""
+    """ANF coefficients of each row of a 0/1 truth-table matrix (Moebius transform over F_2), monomial m at
+    column m."""
     a = rows.astype(np.uint8, copy=True)
     count, size = a.shape
     for b in range(size.bit_length() - 1):
@@ -117,6 +105,13 @@ def anf(rows: Table) -> Table:
         a[:, :, 1, :] ^= a[:, :, 0, :]
         a = a.reshape(count, size)
     return a
+
+
+def anf_degrees(rows: Table) -> npt.NDArray[np.int64]:
+    """ANF degree of each row of a 0/1 truth-table matrix."""
+    a = anf(rows)
+    weight = np.bitwise_count(np.arange(a.shape[1])).astype(np.int64)
+    return np.where(a.any(axis=1), (a * weight).max(axis=1), 0)
 
 
 def check_coefficients(n: int, phi: Table) -> None:
