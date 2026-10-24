@@ -296,6 +296,71 @@ y' sum_i x_i + x' y'. The middle term vanishes by induction, and the last
 two add exactly the pairs (i, new) with i <= new. No term is constant or
 linear.
 
+## Point-indicator pairs and the cost of W
+
+Theorem 2 fixes the degree of g_ij but not its ANF beyond the top layer, and
+the census puts 3n/(4(n - 1)) of the unordered pairs of A_n (n = 2^k >= 16
+here) at the top degree k - 2, 64/85 of them at dim 256. A degree stratum
+is therefore far from uniform in the cost of W_ij. Positive-polarity
+Reed-Muller synthesis, `phase_oracle_from_truth_table` in designs.py, emits
+one multi-controlled Z per ANF monomial, and the monomial count of the
+pairs new at level n spans 2 to 2^(n-1) - 1 (`--sparsity` below).
+
+**Proposition 5 (point-indicator pairs).** For n >= 3 and 0 <= m <
+2^(n-2), let i = 2^(n-1) + m, j = i + 2^(n-2), and z the low n - 2 bits of
+x. Then
+
+    g_ij(x) = x_(n-1) + delta_m(z)   for m != 0,
+    g_ij(x) = N(z)                   for m = 0.
+
+*Proof.* At level n, i = (i', 1) and j = (j', 1) with i' = m, j' = m +
+2^(n-2) and k' = 2^(n-2), an upper pair with (alpha, beta) = (1, 1), so
+g = g' + delta_0 + delta_{k'} + const + c xi with c = N(i') + N(j') + N(k')
+= N(m). At level n - 1 write y = (z, xi'). Then i' = (m, 0) and j' = (m,
+1) form an upper pair with (alpha', beta') = (0, 1) and i'' = j'' = m,
+k'' = 0. For m != 0 the degenerate case of the closed form gives g' =
+1 + delta_0(z) + delta_m(z), and for m = 0 Lemma C gives g' = 0 because
+i' = 0. As functions of y, delta_(0,0) + delta_(0,1) = delta_0(z). For
+m != 0 the sum is delta_m(z) + xi + 1 + const, and g(0) = 0 with
+delta_m(0) = 0 sets const = 1. For m = 0 it is delta_0(z) + const, and
+g(0) = 0 sets const = 1, leaving 1 + delta_0(z) = N(z).
+
+By Lemma B both phases have degree n - 2, as Theorem 2 requires for
+bitlen(j) = n. delta_m(z) carries the monomials z^S with supp m within S,
+so the ANF of g_ij has 1 + 2^(n-2-|m|) monomials for m != 0 and 2^(n-2) - 1
+for m = 0. Its circuit does not depend on m:
+(-1)^delta_m(z) is one multi-controlled Z on qubits 0 to n - 3, conjugated
+by X on each qubit whose bit of m is 0. The factor (-1)^x_(n-1) is a Z on
+qubit n - 1, and (-1)^N(z) = -(-1)^delta_0(z) is the same gate up to a
+global sign. Qubit n - 2 carries no gate. These 2^(n-2) pairs are the
+top-degree associators that one (n - 2)-qubit multi-controlled Z
+implements. Their Reed-Muller monomial count runs from 2 at m = 2^(n-2) - 1
+to 1 + 2^(n-3) at |m| = 1, so neither the degree nor the positive-polarity
+monomial count of g_ij measures the cost of W_ij. A degree-stratified
+experiment that compares implementation behavior also controls the
+synthesis cost of each pair.
+
+`--sparsity` measures the unordered pairs new at each level:
+
+| n | new pairs | distinct ANF degree histograms | least monomials | most monomials | pairs at most |
+| --- | --- | --- | --- | --- | --- |
+| 3 | 18 | 3 | 1 | 3 | 3 |
+| 4 | 84 | 10 | 2 | 7 | 6 |
+| 5 | 360 | 44 | 2 | 15 | 2 |
+| 6 | 1488 | 169 | 2 | 31 | 2 |
+| 7 | 6048 | 659 | 2 | 63 | 2 |
+| 8 | 24384 | 2554 | 2 | 127 | 2 |
+
+A lower pair lifts to g' + xi (Lemma D), which adds the one monomial
+x_(n-1) to g', so each row's histograms reappear one level up with one more
+degree-1 monomial. From n = 4 on the least count is 2, and from n = 5 on
+the only pair attaining it is Proposition 5's m = 2^(n-2) - 1. The least
+count, the largest count 2^(n-1) - 1, the pairs attaining the largest (for
+5 <= n <= 9 exactly (2^(n-1) - 1, 2^(n-1) + 2^(n-2) - 1) and
+(2^(n-1) - 1, 2^(n-1) + 2^(n-2))) and the histogram counts are
+measurements without a proof. At n = 9 a separate computation finds 9851
+histograms and counts 2 to 255.
+
 ## Formalization statement
 
 [CdSignRowAnf.v](../../proofs/CdSignRowAnf.v) proves the sign-row
@@ -348,13 +413,16 @@ to n = 8:
 - the upper-pair closed form;
 - both theorems on every ordered pair;
 - the census;
+- Proposition 5 on every point-indicator pair, with its Reed-Muller
+  monomial counts;
 - Theorem 3's leading layer on every m;
 - Lemma E and the Walsh coefficients it forces to zero;
 - the three right-row slices of Proposition 4 and its degree on every m;
 - the bilinear layer of the 2n-variable cochain;
 - Ren and Zhao's Theorem 1 closed form against the table, and its transpose as the control.
 
-It runs in about 2 s. `--mutate high-low-unconditional` and `--mutate
+It runs in about 2 s; `--sparsity` adds the table of the point-indicator
+section. `--mutate high-low-unconditional` and `--mutate
 high-high-no-early-return` each replace one cd_sign branch, and the run
 exits 0 only when a check catches the change. gororoba_quantum/verify.py
 keeps its pure-Python degree checks at dims 8 to 128.
