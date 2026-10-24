@@ -95,7 +95,11 @@ transcription to the Python source: it mirrors `sigma` branch for branch and
 requires sigma_k(a, b) = cd_sign(2^k, a, b) on all 5,460 pairs at n = 2 to 64,
 with a negative control that negates each of the four branches in turn and
 requires a disagreement at every n >= 4. The bridge is exact finite
-computation; the Rocq side holds for every k.
+computation; the Rocq side holds for every k. The
+[cd_sign Python-semantics bundle](../cd-sign-python-semantics/README.md)
+proves the same agreement for every k, by running the syntax tree of
+cd_core.cd_sign under a Rocq semantics of the Python subset it uses, and
+the bridge stays as an independent cross-check.
 
 ## Replay
 
