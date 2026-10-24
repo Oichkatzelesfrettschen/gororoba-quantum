@@ -1,0 +1,280 @@
+{
+ "lag_profile_centered": [
+  {
+   "lag_hours": 2,
+   "mean_excess": 7.448782310694741e-06,
+   "pairs": 6
+  },
+  {
+   "lag_hours": 4,
+   "mean_excess": 1.0902905804038003e-05,
+   "pairs": 5
+  },
+  {
+   "lag_hours": 6,
+   "mean_excess": 1.637050258265717e-05,
+   "pairs": 4
+  },
+  {
+   "lag_hours": 8,
+   "mean_excess": 2.109978268202005e-05,
+   "pairs": 3
+  },
+  {
+   "lag_hours": 10,
+   "mean_excess": 2.1264522352233982e-05,
+   "pairs": 2
+  },
+  {
+   "lag_hours": 12,
+   "mean_excess": 2.269115959016115e-05,
+   "pairs": 1
+  }
+ ],
+ "lag_trend": {
+  "orderings": 5040,
+  "p_value": 0.006150793650793651,
+  "pairs": 21,
+  "spearman": 0.6545454545454545
+ },
+ "schema": "bdsc-drift-series-diagnostic-v1",
+ "standing": "exploratory: chosen after the preregistered readout, which no reading here revises",
+ "stray_share_against_plan_rate": {
+  "all_runs": {
+   "p_value_two_sided": 0.7080687830687831,
+   "runs": 9,
+   "spearman": 0.15
+  },
+  "series_runs": {
+   "p_value_two_sided": 0.8396825396825397,
+   "runs": 7,
+   "spearman": -0.10714285714285714
+  }
+ },
+ "sum_rules": {
+  "contrasts": 56,
+  "max": -0.1401538673661743,
+  "mean": -0.19886645150017096,
+  "min": -0.2506196228925086,
+  "negative": 56,
+  "runs": [
+   {
+    "groups": [
+     {
+      "delta_i": -0.1787746629050342,
+      "delta_r": -0.20382404212099292,
+      "group": 0
+     },
+     {
+      "delta_i": -0.17025379750876546,
+      "delta_r": -0.1401538673661743,
+      "group": 1
+     },
+     {
+      "delta_i": -0.23040987805965307,
+      "delta_r": -0.1927393240538502,
+      "group": 6
+     },
+     {
+      "delta_i": -0.19907198991111408,
+      "delta_r": -0.19120433228891642,
+      "group": 7
+     }
+    ],
+    "run": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1"
+   },
+   {
+    "groups": [
+     {
+      "delta_i": -0.19620673403505995,
+      "delta_r": -0.20915720645439861,
+      "group": 0
+     },
+     {
+      "delta_i": -0.18927892717755113,
+      "delta_r": -0.16363146728770672,
+      "group": 1
+     },
+     {
+      "delta_i": -0.2464762346300513,
+      "delta_r": -0.21342596091135801,
+      "group": 6
+     },
+     {
+      "delta_i": -0.21294253409164154,
+      "delta_r": -0.20576214107552038,
+      "group": 7
+     }
+    ],
+    "run": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2"
+   },
+   {
+    "groups": [
+     {
+      "delta_i": -0.19298200771019014,
+      "delta_r": -0.21152922162621046,
+      "group": 0
+     },
+     {
+      "delta_i": -0.18430327314838446,
+      "delta_r": -0.1578898286065924,
+      "group": 1
+     },
+     {
+      "delta_i": -0.24609483710808855,
+      "delta_r": -0.20161489125418897,
+      "group": 6
+     },
+     {
+      "delta_i": -0.21121595743413268,
+      "delta_r": -0.19810679970659428,
+      "group": 7
+     }
+    ],
+    "run": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3"
+   },
+   {
+    "groups": [
+     {
+      "delta_i": -0.19674823622629334,
+      "delta_r": -0.21071464535014794,
+      "group": 0
+     },
+     {
+      "delta_i": -0.18022918352348438,
+      "delta_r": -0.1563482660960308,
+      "group": 1
+     },
+     {
+      "delta_i": -0.2413208515365488,
+      "delta_r": -0.20464498875914416,
+      "group": 6
+     },
+     {
+      "delta_i": -0.2101221661559025,
+      "delta_r": -0.20024426034259457,
+      "group": 7
+     }
+    ],
+    "run": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4"
+   },
+   {
+    "groups": [
+     {
+      "delta_i": -0.1908463883692788,
+      "delta_r": -0.21727562084428742,
+      "group": 0
+     },
+     {
+      "delta_i": -0.18081238246804576,
+      "delta_r": -0.14768491664073868,
+      "group": 1
+     },
+     {
+      "delta_i": -0.2337136499852982,
+      "delta_r": -0.19682014291082073,
+      "group": 6
+     },
+     {
+      "delta_i": -0.2113151387015879,
+      "delta_r": -0.20315728379036901,
+      "group": 7
+     }
+    ],
+    "run": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5"
+   },
+   {
+    "groups": [
+     {
+      "delta_i": -0.1819949169370222,
+      "delta_r": -0.21047179584070208,
+      "group": 0
+     },
+     {
+      "delta_i": -0.1807209709782075,
+      "delta_r": -0.14343559334488065,
+      "group": 1
+     },
+     {
+      "delta_i": -0.23144756541820244,
+      "delta_r": -0.1880017213900652,
+      "group": 6
+     },
+     {
+      "delta_i": -0.19845104893251408,
+      "delta_r": -0.1881885767666428,
+      "group": 7
+     }
+    ],
+    "run": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6"
+   },
+   {
+    "groups": [
+     {
+      "delta_i": -0.20742175833007492,
+      "delta_r": -0.21934093551067269,
+      "group": 0
+     },
+     {
+      "delta_i": -0.2014296549005692,
+      "delta_r": -0.1685330315727711,
+      "group": 1
+     },
+     {
+      "delta_i": -0.2506196228925086,
+      "delta_r": -0.20753178848234488,
+      "group": 6
+     },
+     {
+      "delta_i": -0.22108462407434415,
+      "delta_r": -0.2087996404653074,
+      "group": 7
+     }
+    ],
+    "run": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7"
+   }
+  ]
+ },
+ "superposition_unweighted_means": {
+  "range": 0.011404219311743069,
+  "runs": [
+   {
+    "mean": 0.4041970322048602,
+    "run": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+    "se": 0.0004081640476041405
+   },
+   {
+    "mean": 0.39585313683217255,
+    "run": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+    "se": 0.00042307852103036503
+   },
+   {
+    "mean": 0.3978955702815502,
+    "run": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
+    "se": 0.0003949878352559206
+   },
+   {
+    "mean": 0.39815673202693014,
+    "run": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
+    "se": 0.0004021688315791181
+   },
+   {
+    "mean": 0.39919378036065883,
+    "run": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5",
+    "se": 0.00039263158288183037
+   },
+   {
+    "mean": 0.4024511351623447,
+    "run": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6",
+    "se": 0.00041266832104876926
+   },
+   {
+    "mean": 0.3927928128931171,
+    "run": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7",
+    "se": 0.00041746373713165305
+   }
+  ],
+  "sample_sd": 0.0038396058834655974,
+  "von_neumann": 2.0216885288742223
+ }
+}

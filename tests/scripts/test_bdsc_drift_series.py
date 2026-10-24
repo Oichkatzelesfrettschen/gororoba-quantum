@@ -1,3 +1,4 @@
+import itertools
 import json
 import math
 import sys
@@ -146,3 +147,36 @@ def test_a_stack_of_series_returns_each_series_bit_for_bit() -> None:
     stats = ds.ordering_statistics(np.array(stack))
     if any(ds.ordering_statistics(x).tobytes() != stats[k].tobytes() for k, x in enumerate(stack)):
         raise AssertionError("the batched statistics differ from the single-series ones")
+
+
+def test_the_centered_counting_variance_is_the_mean_over_every_sign_pattern() -> None:
+    se = [0.001 * (1 + k % 5) for k in range(16)]
+    first = {"values": {k: {"label": LABELS[k], "p": 0.4, "se": 0.0} for k in range(16)}}
+    signs = np.array(list(itertools.product((-1.0, 1.0), repeat=16)))
+    changes = signs * np.array(se)
+    centered = changes - changes.mean(axis=1, keepdims=True)
+    second = {"values": {k: {"label": LABELS[k], "p": 0.4, "se": se[k]} for k in range(16)}}
+    expected = ds.centered_counting_variances(first, second)
+    observed = (centered**2).mean(axis=0)
+    if not np.allclose(observed, [expected[k] for k in range(16)], rtol=1e-12, atol=0):
+        raise AssertionError((observed, expected))
+
+
+def test_a_fixed_linear_effect_obeys_both_sum_rules_in_every_group() -> None:
+    bank = {"f": 0.1, "g": 0.9, "+": 0.6, "-": 0.4, "+i": 0.7, "-i": 0.3}
+    values = {6 * g + k: {"label": label, "p": p} for g in (0, 1, 6) for k, (label, p) in enumerate(bank.items())}
+    rules = ds.sum_rules(values)
+    if [r["group"] for r in rules] != [0, 1, 6] or any(abs(r["delta_r"]) + abs(r["delta_i"]) > 1e-15 for r in rules):
+        raise AssertionError(rules)
+
+
+def test_an_excess_that_grows_with_lag_reaches_the_smallest_relabeling_p() -> None:
+    runs = [
+        run([0.4 + (-1) ** k * 0.001 * t for k in range(16)] + [0.001] * 4 + [0.99] * 4, 7200.0 * t) for t in range(7)
+    ]
+    for record in runs:
+        for value in record["values"].values():
+            value["se"] = 1e-9
+    trend = ds.lag_trend(runs)
+    if abs(trend["spearman"] - 1) > 1e-12 or abs(trend["p_value"] - 2 / 5040) > 1e-15:
+        raise AssertionError(trend)

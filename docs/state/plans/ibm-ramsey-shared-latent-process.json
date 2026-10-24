@@ -1,0 +1,16 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ibm-ramsey-shared-latent-process",
+  "kind": "investigation",
+  "summary": "Reanalyze the segmented Ramsey run 2026-10-21T064222.721454Z for a component shared by the five delay arms at matched shot indices (an external reanalysis reports pairwise correlations 0.60 to 0.85, not yet reproduced here) and fit one latent process against independent-arm switching.",
+  "sources": [
+    "results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json",
+    "results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Reproduce the cross-arm correlation matrix from the raw job files and its 64-column displacement control; a correlation that survives only at matched indices supports a shared process, one that survives displacement points at a static arm effect."
+}

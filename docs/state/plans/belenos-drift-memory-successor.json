@@ -1,0 +1,18 @@
+{
+  "schema": "work-plan-v1",
+  "id": "belenos-drift-memory-successor",
+  "kind": "experiment",
+  "summary": "Preregistered successor of the drift-series lag trend (Spearman 0.65, post-hoc exact p 0.006): a 48 h span at 6 h spacing separates a random walk from mean-reverting drift, with an in-job reference to remove the 0.004 shared jump.",
+  "sources": [
+    "scripts/bdsc_drift_series.py",
+    "results/quandela/bdsc_drift_series_diagnostic_pinned.json",
+    "docs/design/bdsc-qualification.md",
+    "https://arxiv.org/abs/1907.13608"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Freeze the lag-trend statistic and the walk-versus-bounded model comparison as the primary, compute its power for both models at 9 runs over 48 h from the fitted excess, and write the case only if the power exceeds 0.8; it waits behind belenos-sum-rule-output-swap."
+}
