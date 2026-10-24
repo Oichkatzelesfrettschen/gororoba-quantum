@@ -58,6 +58,7 @@ def test_keyed_requests_refuse_redirects() -> None:
         request = urllib.request.Request(f"http://127.0.0.1:{origin.server_port}/", headers={"x-api-key": "k"})
         with pytest.raises(urllib.error.HTTPError) as refused:
             anu_qrng.OPENER.open(request, timeout=5)
+        refused.value.close()
         if refused.value.code != 302 or reached:
             raise AssertionError(f"redirect followed: status {refused.value.code}, target saw {reached}")
     finally:
