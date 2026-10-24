@@ -371,7 +371,13 @@ code-review quota, the owner decides how the PR proceeds.
    what that review finds.
 3. Codex reviews the head once more; that round's threads are answered and
    resolved the same way.
-4. GitHub reports mergeable_state clean.
+4. The pr tier and the affected full gates pass on the head under the pinned
+   runtime (`ci/run_gates.py --changed-files`, which refuses a `$PYTHON` that
+   differs from the pins). A gate that also fails on main still blocks the
+   merge: only an owner's exception naming that gate and that PR, quoted in
+   the PR body, admits it. `ci/premerge_gates.py` separates introduced from
+   shared failures and exits nonzero for both.
+5. GitHub reports mergeable_state clean.
 
 Then, bottom-up, for each PR:
 1. Merge it with a merge commit:

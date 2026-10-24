@@ -13,9 +13,10 @@ seconds are at most --max-seconds in each tree through that tree's own
 ci/run_gates.py, with $PYTHON resolved to an absolute interpreter, and
 reports every gate that passes on BASE and fails on the merge, or that the
 merge adds and that fails. Gates that fail on both trees are host or main
-failures and are listed without failing the run, so a lint or type gate
-whose local toolchain differs from CI's does not mask the comparison. A
-textual conflict stops the run with the conflicted paths.
+failures, listed apart from the introduced ones so neither masks the other;
+they still block admission, which requires every gate green (AGENTS.md
+Merging), so the run exits 3 for them. A textual conflict stops the run with
+the conflicted paths.
 
 Current-runtime gates run under the interpreter pins.resolve_current
 chooses ($PYTHON, the running interpreter or the host environment), and
@@ -42,8 +43,9 @@ The worktrees live under --worktrees (default
 <system temporary directory>/gororoba-quantum/premerge-worktrees/<repository>,
 <repository> naming the primary checkout), named by base, ref and process id,
 and are removed on exit. Exit
-status: 0 when the merge introduces no failure, 1 when it does, 2 on a merge
-conflict.
+status: 0 when every gate passes on the merge, 1 when the merge introduces a
+failure, 2 on a merge conflict or an unresolved runtime, 3 when the only
+failures also fail on the base.
 
 Usage: "$PYTHON" ci/premerge_gates.py REF [--base origin/main] [--max-seconds 5] [--no-fetch] [--replay-python PATH]
                                      [--cache DIR | --no-cache]
@@ -116,9 +118,10 @@ def interpreter(root: Path) -> str:
     under an interpreter holding the new pins. Every gate runs with its cwd
     inside a scratch worktree, so the path is absolute; a tree whose running
     interpreter and host environment both differ from its pins stops here
-    with the build command.
+    with the build command, and so does an explicit $PYTHON that differs
+    from them, since a premerge verdict decides admission.
     """
-    chosen, reason = pins.resolve_current(os.environ, sys.executable, root)
+    chosen, reason = pins.resolve_current(os.environ, sys.executable, root, admission=True)
     print(f"premerge: {root.name} current runtime: {reason}", flush=True)
     if chosen is None:
         raise SystemExit(f"premerge: the current runtime cannot run: {reason}")
@@ -323,7 +326,7 @@ def premerge(
         tail = "\n".join(merge_results[name][1].splitlines()[-TAIL_LINES:])
         print(f"=== {name} fails on the merge and passes on {base_ref}\n{tail}\n")
     if shared:
-        print(f"failing on {base_ref} and on the merge (host or main): {', '.join(shared)}")
+        print(f"failing on {base_ref} and on the merge (host or main), blocking admission: {', '.join(shared)}")
     if introduced and passes is not None:
         print(
             "premerge: a failure that also occurs on the base under a host change the key omits reads as "
@@ -333,7 +336,7 @@ def premerge(
         f"premerge {ref} ({ref_commit[:12]}) into {base_ref} ({base_commit[:12]}): "
         f"{len(merge_results)} gates at most {max_seconds:g} s, {len(introduced)} introduced failures"
     )
-    return 1 if introduced else 0
+    return 1 if introduced else 3 if shared else 0
 
 
 def base_gates(

@@ -88,7 +88,7 @@ def repo(tmp_path: Path) -> Path:
 
 @pytest.mark.parametrize(
     ("ref", "expected", "marker"),
-    (("adds-record", 1, "=== record fails on the merge"), ("consistent", 0, "0 introduced failures")),
+    (("adds-record", 1, "=== record fails on the merge"), ("consistent", 3, "0 introduced failures")),
 )
 def test_merge_classification(repo: Path, tmp_path: Path, ref: str, expected: int, marker: str) -> None:
     worktrees = tmp_path / "worktrees"
@@ -96,7 +96,7 @@ def test_merge_classification(repo: Path, tmp_path: Path, ref: str, expected: in
     with contextlib.redirect_stdout(output):
         status = premerge(repo, ref, "main", DEFAULT_MAX_SECONDS, worktrees)
     text = output.getvalue()
-    if status != expected or marker not in text or "(host or main): host" not in text:
+    if status != expected or marker not in text or "blocking admission: host" not in text:
         raise AssertionError(f"premerge {ref} returned {status}, expected {expected}:\n{text}")
     if git(repo, "worktree", "list", "--porcelain").count("worktree ") != 1 or worktrees.exists():
         raise AssertionError(f"premerge {ref} left a worktree or its directory behind")
@@ -152,22 +152,22 @@ def test_base_cache(repo: Path, tmp_path: Path) -> None:
 
     status, text = run("consistent")
     entries = sorted(cache.glob("*.json"))
-    if status != 0 or "base cache miss" not in text or len(entries) != 1:
+    if status != 3 or "base cache miss" not in text or len(entries) != 1:
         raise AssertionError(f"the first cached run returned {status} with entries {entries}:\n{text}")
     if json.loads(entries[0].read_text())["passed"] != ["always"]:
         raise AssertionError(f"the cache entry stores more than the base passes: {entries[0].read_text()}")
     # A hit skips the base run, so the host gate's base failure comes from
     # the --gates rerun; without it the shared failure reads as introduced.
     for ref, expected, marker, rerun in (
-        ("consistent", 0, "0 introduced failures", "host"),
+        ("consistent", 3, "0 introduced failures", "host"),
         ("adds-record", 1, "=== record fails on the merge", "host, record"),
     ):
         status, text = run(ref)
         hit = "base cache hit" in text and f"merge failures on the base: {rerun}\n" in text
-        if status != expected or marker not in text or not hit or "(host or main): host" not in text:
+        if status != expected or marker not in text or not hit or "blocking admission: host" not in text:
             raise AssertionError(f"a cached run of {ref} returned {status}, expected {expected}:\n{text}")
     status, text = run("consistent", DEFAULT_MAX_SECONDS / 2)
-    if status != 0 or "base cache miss" not in text or len(list(cache.glob("*.json"))) != 2:
+    if status != 3 or "base cache miss" not in text or len(list(cache.glob("*.json"))) != 2:
         raise AssertionError(f"a changed --max-seconds reused another key's entry:\n{text}")
     # A base runner without --gates reruns every gate. Its results replace
     # only the requested failures, so a cached pass whose rerun happens to
@@ -188,7 +188,7 @@ def test_base_cache(repo: Path, tmp_path: Path) -> None:
         raise AssertionError(f"a legacy base rerun overwrote a cached pass:\n{text}")
     with mock.patch.dict(os.environ, {"GOROROBA_AER_DEVICE": "premerge-key-probe"}):
         status, text = run("consistent")
-    if status != 0 or "base cache miss" not in text or len(list(cache.glob("*.json"))) != 3:
+    if status != 3 or "base cache miss" not in text or len(list(cache.glob("*.json"))) != 3:
         raise AssertionError(f"a changed gate variable reused another key's entry:\n{text}")
     if "premerge-key-probe" in "".join(path.read_text() for path in cache.glob("*.json")):
         raise AssertionError("a cache entry stores an environment value in plain text")
@@ -196,5 +196,5 @@ def test_base_cache(repo: Path, tmp_path: Path) -> None:
     for foreign in foreign_entries:
         entries[0].write_text(json.dumps(foreign))
         status, text = run("consistent")
-        if status != 0 or "base cache miss" not in text or "(host or main): host" not in text:
+        if status != 3 or "base cache miss" not in text or "blocking admission: host" not in text:
             raise AssertionError(f"the entry {foreign!r} was trusted:\n{text}")

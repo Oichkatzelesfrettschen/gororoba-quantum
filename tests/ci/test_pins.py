@@ -5,6 +5,8 @@ fallback under GOROROBA_PINS_REQUIRED=1.
 
 from __future__ import annotations
 
+import json
+import re
 import sys
 from collections.abc import Callable
 from pathlib import Path
@@ -156,6 +158,14 @@ def test_host_environment_fallback() -> None:
         refused = resolve({}, {**cache, **STRICT, "PYTHON": "/named/python"})["current"]
         if refused[0] is not None:
             raise AssertionError(f"{pins.PINS_REQUIRED}=1 ran a PYTHON that differs from its pins: {refused}")
+        with patch.object(pins, "mismatches", lambda candidate, _pins, _patches=None: list(differing)):
+            admitted = pins.resolve_current({**cache, "PYTHON": "/named/python"}, python, admission=True)
+        if admitted[0] is not None or "cannot decide admission" not in admitted[1]:
+            raise AssertionError(f"an admission run took a PYTHON that differs from its pins: {admitted}")
+        with patch.object(pins, "mismatches", lambda candidate, _pins, _patches=None: []):
+            admitted = pins.resolve_current({**cache, "PYTHON": "/named/python"}, python, admission=True)
+        if admitted[0] != "/named/python":
+            raise AssertionError(f"an admission run refused a PYTHON holding every pin: {admitted}")
     with TemporaryDirectory(prefix="ci-pins-tree-") as temporary:
         chosen, reason = pins.resolve_current({}, python, Path(temporary))
         if chosen != python or "pins no current runtime" not in reason:
@@ -205,3 +215,16 @@ def test_pinned_tool() -> None:
     missing = [tool for tool in pinned_tool.TOOLS if tool not in pinned]
     if missing:
         raise AssertionError(f"{pinned_tool.REQUIREMENTS.name} pins no {', '.join(missing)}")
+
+
+def test_gate_lint_tools_are_pinned() -> None:
+    # A bare ruff or mypy resolves through PATH, where a host install of
+    # another release reports its own defects as gate failures.
+    gates = json.loads((pins.ROOT / "ci/gates.json").read_text(encoding="utf-8"))["gates"]
+    bare = re.compile(r"(?:^|&&|;|\|)\s*(?:\w+=\S+\s+)*(?:ruff|mypy)\s")
+    unpinned = [gate["name"] for gate in gates if bare.search(gate["cmd"])]
+    if unpinned:
+        raise AssertionError(f"gates run ruff or mypy outside ci/pinned_tool.py: {', '.join(unpinned)}")
+    planted = 'MYPYPATH=docs mypy docs && "$PYTHON" ci/pinned_tool.py ruff check ci'
+    if not bare.search(planted) or bare.search('MYPYPATH=docs "$PYTHON" ci/pinned_tool.py mypy docs'):
+        raise AssertionError("the bare-tool pattern misreads a planted command")
