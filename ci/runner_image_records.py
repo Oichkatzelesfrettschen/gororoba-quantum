@@ -20,7 +20,18 @@ record written by a host interpreter, whose libm and Python build differ from
 the runner's, never enters the ledger. Once the digest moves, ``add`` accepts
 only a set of paths that covers every bound record, so the ledger advances
 to the new image in one step after all of them are rewritten. ``check``
-verifies the ledger; ``id`` prints the current digest.
+verifies the ledger and the replay declarations of ci/gates.json; ``id``
+prints the current digest.
+
+A gate that byte-compares a retained record names it in its ``replays``
+list. ``replay_problems`` requires each gate whose command compares a record
+through ``ci/replay_check.py RETAINED``, ``| cmp - FILE`` or ``--out FILE``
+beside ``--check`` or ``--replay`` to declare that record, each declared
+record (each file of a declared directory) to be bound in this ledger, to
+be JSON holding no float, or to carry a reason under the ledger's ``exempt``
+map, and each bound record to be declared by some gate. A float record outside the ledger escapes the image
+rebinding that keeps its replay exact, and a bound record no gate replays
+forces rewrites that verify nothing.
 """
 
 from __future__ import annotations
@@ -28,6 +39,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shlex
 import shutil
 import subprocess
 import sys
@@ -41,6 +53,7 @@ import run_gates
 
 ROOT = Path(__file__).resolve().parent.parent
 LEDGER = ROOT / "ci" / "runner_image_records.json"
+GATES = ROOT / "ci" / "gates.json"
 SCHEMA = "runner-image-records-v1"
 # Receipts live beside the image and its pin venvs, outside every checkout, so a worktree's removal keeps them.
 RECEIPTS = (
@@ -138,6 +151,86 @@ def problems(ledger: dict[str, Any], root: Path = ROOT) -> list[str]:
     return found
 
 
+def compared_records(gate: dict[str, Any]) -> list[str]:
+    """The repository-relative records a gate's command compares through ci/replay_check.py, ``| cmp -`` or
+    --out beside --check or --replay; a producer that compares a path it names internally declares it by hand.
+    A path under a shell variable names a scratch output, not a record."""
+    lexer = shlex.shlex(gate["cmd"], posix=True, punctuation_chars=True)
+    lexer.whitespace_split = True
+    segments: list[list[str]] = [[]]
+    for token in lexer:
+        if token in {"&&", "||", ";"}:
+            segments.append([])
+        else:
+            segments[-1].append(token)
+    found = []
+    for words in segments:
+        named = []
+        for index, word in enumerate(words[:-1]):
+            if word.endswith("replay_check.py"):
+                named.append(words[index + 1])
+            # cmp of two stored files proves a copy; cmp of standard input or of a scratch output under a shell
+            # variable compares a fresh output with the record.
+            if word == "cmp" and index + 2 < len(words) and (words[index + 1] == "-" or "$" in words[index + 1]):
+                named.append(words[index + 2])
+        if "--out" in words[:-1] and ("--check" in words or "--replay" in words):
+            named.append(words[words.index("--out") + 1])
+        found += [os.path.normpath(os.path.join(gate.get("cwd", "."), name)) for name in named if "$" not in name]
+    return found
+
+
+def holds_float(value: Any) -> bool:
+    if isinstance(value, float):
+        return True
+    if isinstance(value, dict):
+        return any(holds_float(item) for item in value.values())
+    if isinstance(value, list):
+        return any(holds_float(item) for item in value)
+    return False
+
+
+def float_free(path: Path) -> bool:
+    """Whether path is a JSON file holding no float, whose replay therefore needs no runner arithmetic."""
+    if not path.is_file() or path.suffix != ".json":
+        return False
+    return not holds_float(json.loads(path.read_text(encoding="utf-8")))
+
+
+def replay_problems(gates: list[dict[str, Any]], ledger: dict[str, Any], root: Path = ROOT) -> list[str]:
+    """Each compared record a gate leaves undeclared, each declared record neither bound, float-free nor
+    exempt, and each bound record no gate declares. A declared directory stands for every file under it,
+    and an exempt entry covers the files under it."""
+    records, exempt = ledger.get("records", {}), ledger.get("exempt", {})
+    found, declared = [], set()
+    for gate in gates:
+        replays = gate.get("replays", [])
+        for name in sorted(set(compared_records(gate)) - set(replays)):
+            found.append(f"{gate['name']} compares {name} without declaring it in replays")
+        for name in replays:
+            declared.add(name)
+            if name in exempt:
+                continue
+            path = root / name
+            files = sorted(item for item in path.rglob("*") if item.is_file()) if path.is_dir() else [path]
+            for item in files:
+                member = item.relative_to(root).as_posix()
+                declared.add(member)
+                if member in exempt or any(member.startswith(f"{entry}/") for entry in exempt):
+                    continue
+                if member not in records and not float_free(item):
+                    found.append(
+                        f"{gate['name']} replays {member}, which is not float-free JSON and is not bound; write it "
+                        "with `write` and bind it with `add`"
+                    )
+    for name in sorted(set(records) - declared):
+        found.append(f"{name} is bound but no gate declares it in replays")
+    for name, reason in sorted(exempt.items()):
+        covered = name in declared or any(name.startswith(f"{entry}/") for entry in declared)
+        if not covered or not isinstance(reason, str) or not reason.strip():
+            found.append(f"exempt {name} needs a declaring gate and a reason")
+    return found
+
+
 def written_since(start_ns: int, root: Path) -> list[Path]:
     """Every file under root, .git and bytecode caches excepted, whose modification time is at or after start_ns."""
     found = []
@@ -201,7 +294,7 @@ def main(argv: list[str]) -> int:
         if not LEDGER.is_file():
             print(f"{LEDGER.relative_to(ROOT)} is missing")
             return 1
-        found = problems(ledger)
+        found = problems(ledger) + replay_problems(json.loads(GATES.read_text())["gates"], ledger)
         for line in found:
             print(line)
         return 1 if found else 0
@@ -223,7 +316,8 @@ def main(argv: list[str]) -> int:
                 '`"$PYTHON" ci/runner_image_records.py write sh -c \'"$PYTHON" PRODUCER ...\'`'
             )
         records.update(digests)
-        text = json.dumps({"schema": SCHEMA, "image": current, "records": dict(sorted(records.items()))}, indent=1)
+        bound = {**ledger, "schema": SCHEMA, "image": current, "records": dict(sorted(records.items()))}
+        text = json.dumps(bound, indent=1)
         LEDGER.write_text(text + "\n")
         return 0
     raise SystemExit("usage: runner_image_records.py id | check | add PATH... | write COMMAND...")
