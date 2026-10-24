@@ -1,6 +1,6 @@
 # Python libraries in the hypercomplex campaign
 
-The inventory explains 347 distributions over the declared source surfaces.
+The inventory explains 344 distributions over the declared source surfaces.
 
 Each row names a distribution, its scientific or operational role, and the observed host version. The JSON register retains environment pins and import locations separately. A missing host distribution may belong to an isolated provider environment. Current import locations and unresolved roots follow a fresh tracked-source AST scan through the retained normalized module mapping. Historical import locations remain separately recorded.
 
@@ -12,13 +12,13 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 
 | Distribution | Host observation | Role |
 |---|---|---|
-| aiohappyeyeballs | 2.7.1 | SDK/environment infrastructure: Happy Eyeballs for asyncio |
-| aiohttp | 3.14.3 | SDK/environment infrastructure: Async http client/server framework (asyncio) |
+| aiohappyeyeballs | 2.7.1 | SDK/environment infrastructure: Environment support dependency |
+| aiohttp | 3.14.3 | SDK/environment infrastructure: Environment support dependency |
 | aiohttp-retry | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
-| aiosignal | 1.4.0 | SDK/environment infrastructure: aiosignal: a list of registered asynchronous callbacks |
+| aiosignal | 1.4.0 | SDK/environment infrastructure: Environment support dependency |
 | alabaster | 1.0.0 | SDK/environment infrastructure: A light, configurable Sphinx theme |
 | alembic | 1.20.0 | SDK/environment infrastructure: A database migration tool for SQLAlchemy. |
-| annotated-doc | 0.0.5 | SDK/environment infrastructure: Document parameters, class attributes, return types, and variables inline, with Annotated. |
+| annotated-doc | 0.0.5 | SDK/environment infrastructure: Environment support dependency |
 | annotated-types | 0.8.0 | SDK/environment infrastructure: Reusable constraint types to use with typing.Annotated |
 | antlr4-python3-runtime | 4.13.2 | Parser runtime for OpenQASM import. |
 | anyio | 4.15.1 | SDK/environment infrastructure: High-level concurrency and networking framework on top of asyncio or Trio |
@@ -28,7 +28,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | autoray | 0.11.0 | Array dispatch for qualified tensor-network backends. |
 | babel | 2.18.0 | SDK/environment infrastructure: Internationalization utilities |
 | benchpress | separate/unobserved | Documented compiler benchmark alternative; qualification needs the same full-operator oracle. |
-| build | 1.6.1 | SDK/environment infrastructure: A simple, correct Python build frontend |
+| build | 1.6.1 | SDK/environment infrastructure: Environment support dependency |
 | cayley-calculator | 1.3.1 | Independent multiplication reference; qualify each special function before use. |
 | cayley-dickson | 0.1.0 | Independent recursive doubling reference; local reading and checks under its license boundary. |
 | certifi | 2026.10.18 | SDK/environment infrastructure: Python package for providing Mozilla's CA Bundle. |
@@ -40,7 +40,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | clifford | 1.5.1 | Associative Clifford envelopes and rotor/spinor controls, not octonion multiplication. |
 | cloudpickle | 3.1.2 | SDK/environment infrastructure: Pickler class to extend the standard pickle.Pickler functionality |
 | coheriq | separate/unobserved | Documented ecosystem alternative outside the maintained IBM execution workflow. |
-| colorama | 0.4.6 | SDK/environment infrastructure: Cross-platform colored terminal text. |
+| colorama | 0.4.6 | SDK/environment infrastructure: Environment support dependency |
 | colorlog | 6.10.0 | SDK/environment infrastructure: Add colours to the output of Python's logging module. |
 | comm | 0.2.3 | SDK/environment infrastructure: Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc. |
 | contourpy | 1.4.0 | SDK/environment infrastructure: Python library for calculating contours of 2D quadrilateral grids |
@@ -59,7 +59,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | debugpy | separate/unobserved | SDK/environment infrastructure: An implementation of the Debug Adapter Protocol for Python |
 | dill | 0.4.1 | SDK/environment infrastructure: serialize all of Python |
 | dimod | separate/unobserved | SDK/environment infrastructure: A shared API for binary quadratic model samplers. |
-| distro | 1.9.0 | SDK/environment infrastructure: Distro - an OS platform information API |
+| distro | 1.9.0 | SDK/environment infrastructure: Environment support dependency |
 | docutils | 0.23 | SDK/environment infrastructure: Docutils -- Python Documentation Utilities |
 | dual-numbers | separate/unobserved | Documented algebra candidate: R[eps]/eps^2. Decision: **skip**: runtime monkey-patching of built-ins |
 | dual-quaternions | separate/unobserved | Documented algebra candidate: dual quaternions (H tensor R[eps]/eps^2) for rigid motions. Decision: **skip**: no table beyond D = 4 |
@@ -68,7 +68,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | exqalibur | 1.4.2 | Compiled photonic simulator and mesh backend; preserve binary distribution constraints. |
 | fastjsonschema | 2.21.2 | SDK/environment infrastructure: Fastest Python implementation of JSON schema |
 | fonttools | 4.67.0 | SDK/environment infrastructure: Tools to manipulate font files |
-| frozenlist | 1.8.0 | SDK/environment infrastructure: A list-like structure which implements collections.abc.MutableSequence |
+| frozenlist | 1.8.0 | SDK/environment infrastructure: Environment support dependency |
 | galgebra | 0.6.0 | Symbolic geometric calculus in an associative Clifford algebra. |
 | galois | 0.4.11 | Finite-field Fano incidence and binary algebra certificates. |
 | geoalg | separate/unobserved | Documented algebra candidate: calculators for quaternions, octonions, sedenions and split "ultronions"; Clifford algebra. Decision: **skip**: reading and cross-checking only, like cayley-dickson |
@@ -78,10 +78,10 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | h11 | 0.16.0 | SDK/environment infrastructure: A pure-Python, bring-your-own-I/O implementation of HTTP/1.1 |
 | highspy | 1.15.1 | SDK/environment infrastructure: A thin set of pybind11 wrappers to HiGHS |
 | httpcore | 1.0.9 | SDK/environment infrastructure: A minimal low-level HTTP client. |
-| httpcore2 | 2.13.1 | SDK/environment infrastructure: A minimal low-level HTTP client. |
+| httpcore2 | 2.13.1 | SDK/environment infrastructure: Environment support dependency |
 | httpx | 0.28.1 | SDK/environment infrastructure: The next generation HTTP client. |
 | httpx-sse | 0.4.3 | SDK/environment infrastructure: Consume Server-Sent Event (SSE) messages with HTTPX. |
-| httpx2 | 2.13.1 | SDK/environment infrastructure: The next generation HTTP client. |
+| httpx2 | 2.13.1 | SDK/environment infrastructure: Environment support dependency |
 | hypercomplex | 0.3.4 | Independent recursive CD products; Fraction-based exact witnesses. |
 | hypercomplex-algebra | 0.2.0.2 | Expression and tensor notation; shares the hypercomplex-engine implementation. |
 | hypercomplex-engine | 0.5.0 | Fast basis signs and higher-dimensional finite checks. |
@@ -119,8 +119,6 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | jupyter-cache | separate/unobserved | SDK/environment infrastructure: A defined interface for working with a cache of jupyter notebooks. |
 | jupyter-client | 8.10.0 | SDK/environment infrastructure: Jupyter protocol implementation and client libraries |
 | jupyter-core | 5.9.1 | SDK/environment infrastructure: Jupyter core package. A base package on which Jupyter projects rely. |
-| kaggle | 2.2.4 | SDK/environment infrastructure: Access Kaggle resources anywhere |
-| kagglesdk | 0.1.37 | SDK/environment infrastructure: Bindings to access kaggle's external-facing APIs |
 | kingdon | 3.0.0 | Generated symbolic or batched Clifford operators. |
 | kiwisolver | 1.5.1 | SDK/environment infrastructure: A fast implementation of the Cassowary constraint solver |
 | libqasm | separate/unobserved | cQASM parsing and validation before upload. |
@@ -142,7 +140,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | mpmath | 1.4.1 | Arbitrary-precision numerical controls; convergence and precision need explicit error budgets. |
 | mthree | 3.0.0 | Readout sensitivity analysis with explicit calibration and factorization assumptions. |
 | multicomplex | separate/unobserved | Documented algebra candidate: multicomplex numbers C++ extension. Decision: **skip** |
-| multidict | 7.0.0 | SDK/environment infrastructure: multidict implementation |
+| multidict | 7.0.0 | SDK/environment infrastructure: Environment support dependency |
 | mypy | 2.4.0 | Pinned static type gate. |
 | myst-nb | separate/unobserved | SDK/environment infrastructure: A Jupyter Notebook Sphinx reader built on top of the MyST markdown parser. |
 | myst-parser | 5.1.0 | SDK/environment infrastructure: An extended [CommonMark](https://spec.commonmark.org/) compliant parser, |
@@ -161,7 +159,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | nvidia-cusolver | separate/unobserved | Pinned CUDA 13 GPU solver library for simulator numerical linear algebra; not a tomography SDP modeling layer. |
 | nvidia-cusparse | separate/unobserved | Pinned CUDA 13 sparse GPU linear algebra support in the simulator environment. |
 | nvidia-nvjitlink | separate/unobserved | Pinned CUDA 13 device-code JIT linking support; installation establishes neither GPU execution nor a numerical result. |
-| oauthlib | 3.3.1 | SDK/environment infrastructure: A generic, spec-compliant, thorough implementation of the OAuth request-signing logic |
+| oauthlib | 3.3.1 | SDK/environment infrastructure: Environment support dependency |
 | octonion | 0.1.0 | PyTorch octonion/Fano batches after the certified signed relabeling. |
 | octonion-sedenion | 1.0.0 | Independent product witness over numpy-quaternion; exclude documented mutating functions. |
 | openqasm3 | 1.0.1 | OpenQASM syntax and AST support. |
@@ -201,17 +199,17 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | pillow | 13.0.0 | SDK/environment infrastructure: Python Imaging Library (fork) |
 | pip | 26.2.1 | SDK/environment infrastructure: The PyPA recommended tool for installing Python packages. |
 | platformdirs | 4.13.0 | SDK/environment infrastructure: A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`. |
-| playwright | 1.64.0 | SDK/environment infrastructure: A high-level API to automate web browsers |
+| playwright | 1.64.0 | SDK/environment infrastructure: Environment support dependency |
 | pluggy | 1.7.0 | SDK/environment infrastructure: plugin and hook calling mechanisms for python |
 | ply | 3.11 | SDK/environment infrastructure: Python Lex & Yacc |
 | prompt-toolkit | 3.0.53 | SDK/environment infrastructure: Library for building powerful interactive command lines in Python |
-| propcache | 0.5.4 | SDK/environment infrastructure: Accelerated property cache |
+| propcache | 0.5.4 | SDK/environment infrastructure: Environment support dependency |
 | protobuf | 7.36.1 | SDK/environment infrastructure: Runtime dependency |
 | psutil | 7.2.2 | SDK/environment infrastructure: Cross-platform lib for process and system monitoring. |
 | ptyprocess | 0.7.0 | SDK/environment infrastructure: Run a subprocess in a pseudo terminal |
 | pure-eval | 0.2.3 | SDK/environment infrastructure: Safely evaluate AST nodes without side effects |
 | pyadic | 0.3.0 | Finite-field and finite-precision p-adic coefficients; a separate arithmetic experiment. |
-| pybind11 | 3.1.0 | SDK/environment infrastructure: Seamless operability between C++11 and Python |
+| pybind11 | 3.1.0 | SDK/environment infrastructure: Environment support dependency |
 | pycparser | 3.11 | SDK/environment infrastructure: C parser in Python |
 | pycurl | 7.48.0 | SDK/environment infrastructure: PycURL -- A Python Interface To The cURL library |
 | pydantic | 2.14.1 | SDK/environment infrastructure: Data validation using Python type hints |
@@ -224,7 +222,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | pymatching | separate/unobserved | Error-model decoding when a detector-code experiment requires it. |
 | pyoctonion | 3.12 | Small octonion cross-check; depends on pyquaternion. |
 | pyparsing | 3.3.3 | SDK/environment infrastructure: pyparsing - Classes and methods to define and execute parsing grammars |
-| pyproject-hooks | 1.3.3 | SDK/environment infrastructure: Wrappers to call pyproject.toml-based build backend hooks. |
+| pyproject-hooks | 1.3.3 | SDK/environment infrastructure: Environment support dependency |
 | pyquaternion | 0.9.9 | Scalar quaternion and rotation bookkeeping. |
 | pyspnego | 0.12.4 | SDK/environment infrastructure: Windows Negotiate Authentication Client and Server |
 | pytest | 9.1.1 | Behavioral regressions and mutation checks. |
@@ -294,7 +292,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | referencing | 0.37.0 | SDK/environment infrastructure: JSON Referencing + Python |
 | requests | 2.34.2 | SDK/environment infrastructure: Python HTTP for Humans. |
 | requests-ntlm | 1.3.0 | SDK/environment infrastructure: This package allows for HTTP NTLM authentication using the requests library. |
-| rich | 15.0.0 | SDK/environment infrastructure: Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal |
+| rich | 15.0.0 | SDK/environment infrastructure: Environment support dependency |
 | roman-numerals | 4.1.0 | SDK/environment infrastructure: Manipulate well-formed Roman numerals |
 | rpds-py | 2026.9.1 | SDK/environment infrastructure: Python bindings to Rust's persistent data structures (rpds) |
 | ruamel-yaml | 0.19.1 | SDK/environment infrastructure: ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order |
@@ -303,15 +301,14 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | rustworkx | 0.18.1 | Coupling graphs, placement and disjoint-support candidates. |
 | sagemath | 10.10 | Exact derivations, Clifford and Albert references through certified convention maps. |
 | samplomatic | 0.21.0 | Runtime circuit preparation; dynamic-circuit restrictions remain binding. |
-| scikit-build | 0.19.1 | SDK/environment infrastructure: Improved build system generator for Python C/C++/Fortran/Cython extensions |
+| scikit-build | 0.19.1 | SDK/environment infrastructure: Environment support dependency |
 | scipy | 1.18.1 | Matrix exponentiation, linear algebra, integration and uncertainty estimates. |
 | scipy-stubs | separate/unobserved | SDK/environment infrastructure: The official type stubs for SciPy |
 | scmver | 1.10 | A package version manager based on SCM tags |
 | scs | 3.3.1 | First-order splitting conic solver supporting PSD tomography through CVXPY; qualify convergence, constraint residuals and tolerances for the actual fit. |
 | seaborn | 0.13.2 | SDK/environment infrastructure: Statistical data visualization |
-| selenium | 4.44.0 | SDK/environment infrastructure: Official Python bindings for Selenium WebDriver. |
 | setuptools | 84.0.0 | SDK/environment infrastructure: Most extensible Python build backend with support for C/C++ extension modules |
-| shellingham | 1.5.4 | SDK/environment infrastructure: Tool to Detect Surrounding Shell |
+| shellingham | 1.5.4 | SDK/environment infrastructure: Environment support dependency |
 | sinter | separate/unobserved | Documented ecosystem candidate: skip, same reason as pymatching |
 | six | 1.17.0 | SDK/environment infrastructure: Python 2 and 3 compatibility utilities |
 | snowballstemmer | 3.1.1 | SDK/environment infrastructure: This package provides 36 stemmers for 34 languages generated from Snowball algorithms. |
@@ -341,8 +338,8 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | tornado | 6.5.10 | SDK/environment infrastructure: Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed. |
 | tqdm | 4.70.1 | SDK/environment infrastructure: Fast, Extensible Progress Meter |
 | traitlets | 5.16.1 | SDK/environment infrastructure: Traitlets Python configuration system |
-| truststore | 0.10.4 | SDK/environment infrastructure: Verify certificates using native system trust stores |
-| typer | 0.27.3 | SDK/environment infrastructure: Typer, build great CLIs. Easy to code. Based on Python type hints. |
+| truststore | 0.10.4 | SDK/environment infrastructure: Environment support dependency |
+| typer | 0.27.3 | SDK/environment infrastructure: Environment support dependency |
 | types-networkx | separate/unobserved | SDK/environment infrastructure: Typing stubs for networkx |
 | types-protobuf | separate/unobserved | SDK/environment infrastructure: Typing stubs for protobuf |
 | types-requests | separate/unobserved | SDK/environment infrastructure: Typing stubs for requests |
@@ -355,7 +352,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | uv | separate/unobserved | Pinned environment installer used by Kaggle kernel bootstrap; records package resolution rather than quantum evidence. |
 | uvicorn | 0.54.0 | SDK/environment infrastructure: The lightning-fast ASGI server. |
 | wcwidth | 0.9.2 | SDK/environment infrastructure: Measures the displayed width of unicode strings in a terminal |
-| wheel | 0.48.0 | SDK/environment infrastructure: Command line tool for manipulating wheel files |
+| wheel | 0.48.0 | SDK/environment infrastructure: Environment support dependency |
 | xarray | separate/unobserved | Labeled acquisition arrays and parameter axes. |
-| yarl | 1.25.1 | SDK/environment infrastructure: Yet another URL library |
+| yarl | 1.25.1 | SDK/environment infrastructure: Environment support dependency |
 | zipp | 3.21.0 | SDK/environment infrastructure: Backport of pathlib-compatible object wrapper for zip files |

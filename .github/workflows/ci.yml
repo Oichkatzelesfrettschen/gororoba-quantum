@@ -430,3 +430,54 @@ jobs:
           path: |
             ${{ runner.temp }}/rocq_replay.json
             ${{ runner.temp }}/opam_list.txt
+
+  audit-issue:
+    name: track the audit outcome
+    needs: [changes, gates, ledger, qi-stack, external-ground-truth, rocq-replay]
+    # A scheduled run opens or updates one tracking issue when a job fails and
+    # closes it when every job passes; manual dispatch leaves the issue alone.
+    if: always() && github.event_name == 'schedule'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TITLE: Nightly audit failing
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      FAILED: ${{ join(needs.*.result, ' ') }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2, Node 24
+        with:
+          pattern: gate-timings-*
+          path: ${{ runner.temp }}/timings
+      - name: Open, update or close the tracking issue
+        run: |
+          set -eu
+          number=$(gh api "repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
+            --jq "[.[] | select(.pull_request == null and .title == \"$TITLE\")][0].number // empty")
+          jobs=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/jobs?per_page=100" \
+            --jq '.jobs[] | select(.conclusion == "failure") | .name')
+          case " $FAILED " in
+          *" failure "* | *" cancelled "*) ;;
+          *)
+            [ -z "$number" ] || gh api "repos/$GITHUB_REPOSITORY/issues/$number/comments" \
+              -f body="The scheduled audit run $RUN_URL passed every job." --silent
+            [ -z "$number" ] || gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/$number" -f state=closed --silent
+            exit 0
+            ;;
+          esac
+          set -- --run-url "$RUN_URL"
+          while IFS= read -r job; do [ -z "$job" ] || set -- "$@" --failed-job "$job"; done <<JOBS
+          $jobs
+          JOBS
+          find "$RUNNER_TEMP/timings" -name gate-timings.json > "$RUNNER_TEMP/timings.list"
+          while IFS= read -r file; do set -- "$@" "$file"; done < "$RUNNER_TEMP/timings.list"
+          python3 ci/audit_report.py "$@" > "$RUNNER_TEMP/body.md"
+          if [ -z "$number" ]; then
+            gh api "repos/$GITHUB_REPOSITORY/issues" -f title="$TITLE" -F body=@"$RUNNER_TEMP/body.md" --silent
+          else
+            gh api "repos/$GITHUB_REPOSITORY/issues/$number/comments" -F body=@"$RUNNER_TEMP/body.md" --silent
+          fi
