@@ -115,8 +115,13 @@ Each provider draft fills these fields:
      the falsifier is a contrast difference whose interval excludes zero.
   2. The Design B zero-divisor witness without routing: dark probability
      against bright, compared with the routed Tuna-17 and Heron r2 values.
-  3. The signed kernel probe at the depth IQM Garnet used, to separate a
-     coherent sign error from connectivity.
+  3. The kernel cancellation probe with its bright control and null arm,
+     at the depth of `iqm-garnet-kernel-cancellation`, whose ideal
+     observable changes when the zero-divisor kernel is removed; the
+     falsifier is a kernel contrast that matches the bright control. The
+     signed kernel probe is excluded here: its ideal overlap is the same
+     for kernel and non-kernel vectors (`signed-overlap-kernel-independence`),
+     so on any device it reads carried device phase, not the algebra.
 - **Resources.** `[SHOTS PER ARM]` per arm from the survey's contract; the
   HQC cost follows the published formula once the circuits are compiled,
   and the draft states that number, not an estimate.
