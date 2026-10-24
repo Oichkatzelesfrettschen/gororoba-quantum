@@ -2,7 +2,8 @@
 # Pull-request checks, one command for .github/workflows/pr.yml and local runs:
 #   sh ci/pr_checks.sh lint            Ruff check and format over the code directories
 #   sh ci/pr_checks.sh types           mypy over the same directories
-#   sh ci/pr_checks.sh tests [PATH...] pytest without the audit marker, over tests/ or PATHs
+#   sh ci/pr_checks.sh tests [ARG...]  pytest without the audit marker, over tests/ or the
+#                                      given paths; -m audit PATH selects the marked tests
 # PYTHON names an interpreter holding the pins (sh ci/build_host_envs.sh builds
 # one locally). The environment below is the one the hosted jobs run under.
 set -eu
@@ -56,7 +57,7 @@ tests)
 		{
 			echo '### Slowest pull-request tests'
 			echo '```'
-			sed -n '/slowest 25 durations/,/^=.*\(passed\|failed\|error\)/p' "$log"
+			awk '/slowest 25 durations/ { on = 1 } on { print } on && /^=+ .*(passed|failed|error).* in / { exit }' "$log"
 			echo '```'
 		} >>"$GITHUB_STEP_SUMMARY"
 	fi

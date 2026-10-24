@@ -429,7 +429,7 @@ prefix, measured against the same shard without one, reopens the change.
 
 `.github/workflows/pr.yml` runs `sh ci/pr_checks.sh lint|types|tests`; the
 audit marker of pyproject.toml separates its pytest selection from the
-nightly audit. Measured on the merge of PR #414 (`7f06448`, ubuntu-26.04,
+nightly audit. Measured on PR #414's head (`7f06448`, ubuntu-26.04,
 pinned-venv cache hit): `lint` 27 s end to end, Ruff about 1 s; `tests` 59 s
 end to end, pytest 555 passed and 2 skipped in 25.3 s, slowest test 4.97 s.
 On the build host under `taskset -c 0-3` with the same environment, the same

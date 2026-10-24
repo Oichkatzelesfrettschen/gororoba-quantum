@@ -111,7 +111,7 @@ for schedule in $schedules; do
 		done | stop)
 			if [ "$ahead" -gt 0 ]; then
 				gh api -X POST "repos/$GITHUB_REPOSITORY/actions/workflows/pr.yml/dispatches" -f ref="$branch" ||
-					echo "::warning::dispatching pr.yml on $branch failed; run it by hand" >&2
+					echo "::warning::dispatching pr.yml on $branch failed (a branch cut before pr.yml accepted workflow_dispatch); merge main into $branch and push" >&2
 			fi
 			;;
 		esac

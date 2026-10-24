@@ -30,12 +30,15 @@ timing file. Branch protection on main requires `lint`, `types` and `tests`
 green on the head, for administrators too, without requiring the branch to
 be current with main. A pull request that `GITHUB_TOKEN` opened starts no
 `pull_request` workflow, so its author dispatches pr.yml on the branch
-(scripts/qd_schedule_tick.sh does so when a schedule finishes). With the Codex
+(scripts/qd_schedule_tick.sh does so when a schedule finishes); a branch whose
+pr.yml predates `workflow_dispatch` gets its checks from merging main into it
+and pushing. With the Codex
 review loop the checks admit a merge
 ([Merging](../AGENTS.md#reviews-and-merges)); a local gate run, premerge
 replay or Rocq replay is never a merge requirement. Locally,
 `sh ci/pr_checks.sh tests tests/path/test_x.py` runs one module under the
-hosted environment.
+hosted environment, and `sh ci/pr_checks.sh tests -m audit tests/path/test_x.py`
+runs its audit-marked tests (pytest keeps the last `-m`).
 
 **The audit.** `ci.yml` runs on its nightly schedule and on manual dispatch
 only: every gate of both tiers on main with `--ledger-audit`, the
