@@ -2573,6 +2573,7 @@
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
     "scripts/ascella_coherence_analysis.py",
+    "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/associator_walsh_classes.py",
@@ -5734,6 +5735,7 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/variance.py",
+    "scripts/ascella_coherence_repeat.py",
     "scripts/atlas_fringe_amplitudes.py",
     "scripts/axis_tilt_substrate_split.py",
     "scripts/bdsc_diagnostic.py",
@@ -6901,9 +6903,14 @@
    "__future__",
    "hashlib",
    "json",
+   "os",
    "pathlib",
    "run_gates",
+   "shutil",
+   "subprocess",
    "sys",
+   "tempfile",
+   "time",
    "typing",
    "unittest"
   ],
@@ -8933,7 +8940,6 @@
    "ascella_coherence_analysis",
    "ascella_coherence_run",
    "bdsc_certificate",
-   "copy",
    "json",
    "math",
    "numpy",
@@ -9507,6 +9513,13 @@
    "pathlib",
    "sys",
    "time"
+  ],
+  "scripts/cd_sign_rocq_ast.py": [
+   "__future__",
+   "argparse",
+   "ast",
+   "pathlib",
+   "sys"
   ],
   "scripts/cd_star_lattice.py": [
    "__future__",
