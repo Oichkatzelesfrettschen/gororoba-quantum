@@ -1,9 +1,10 @@
 """Markdown body of the nightly audit's tracking issue.
 
-Reads the shard timing records ci/run_gates.py writes with --timings (one
-``status`` per gate) and docs/state/research_state.json, whose claims name the
-gates their evidence rests on, and lists every failing gate beside the claims
-that cite it, then each failing workflow job given on the command line.
+Reads the shard timing records ci/run_gates.py writes with --timings (schema
+SHARD_SCHEMA, one ``status`` per gate) and docs/state/research_state.json,
+whose claims name the gates their evidence rests on, and lists every failing
+gate beside the claims that cite it, then each failing workflow job given on
+the command line.
 
 Usage: "$PYTHON" ci/audit_report.py --run-url URL [--failed-job NAME ...] TIMINGS...
 """
@@ -18,10 +19,14 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 RESEARCH_STATE = ROOT / "docs/state/research_state.json"
+# The record ci/run_gates.py --timings writes; the merged cost file of
+# ci/merge_gate_timings.py shares the artifact pattern under another schema.
+SHARD_SCHEMA = "gororoba-gate-timings-v1"
 
 
 def failing_gates(records: list[dict[str, Any]]) -> list[str]:
-    return sorted({gate["name"] for record in records for gate in record["gates"] if gate["status"] != 0})
+    shards = [record for record in records if record.get("schema") == SHARD_SCHEMA]
+    return sorted({gate["name"] for record in shards for gate in record["gates"] if gate["status"] != 0})
 
 
 def citing_claims(state: dict[str, Any], gates: list[str]) -> dict[str, list[str]]:

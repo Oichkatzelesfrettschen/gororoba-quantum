@@ -2,11 +2,16 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import audit_report
 
-RECORDS = [
-    {"gates": [{"name": "core-1", "status": 0}, {"name": "core-2", "status": 1}]},
-    {"gates": [{"name": "core-3", "status": 124}]},
+SHARD = audit_report.SHARD_SCHEMA
+RECORDS: list[dict[str, Any]] = [
+    {"schema": SHARD, "gates": [{"name": "core-1", "status": 0}, {"name": "core-2", "status": 1}]},
+    {"schema": SHARD, "gates": [{"name": "core-3", "status": 124}]},
+    # The merged cost file of ci/merge_gate_timings.py: gates maps names to costs.
+    {"schema": "gororoba-gate-measured-v1", "gates": {"core-4": {"seconds": 1.0}}},
 ]
 STATE = {
     "claims": [
@@ -30,5 +35,5 @@ def test_report_names_citing_claims_and_failed_jobs() -> None:
         "Failing jobs: `rocq-replay`.",
     )
     missing = [line for line in expected if line not in body]
-    if missing or "core-1" in body:
+    if missing or "core-1" in body or "core-4" in body:
         raise AssertionError(body)
