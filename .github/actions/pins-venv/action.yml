@@ -1,0 +1,40 @@
+name: pinned venv
+description: >-
+  Restore the venv of requirements.txt and ci/requirements-ci.txt under ci.yml's
+  cache key, build it with ci/install_pins.sh on a miss, and export PYTHON and
+  PATH for it.
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
+      id: python
+      with:
+        python-version: "3.14.7"
+    # ci.yml's key, so a pull request restores the venv main's nightly run saved.
+    - name: Restore the pinned environment
+      id: pins-cache
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+      with:
+        path: /home/runner/.cache/gororoba-ci/pins-venv
+        key: pins-venv-ubuntu-26.04-${{ runner.arch }}-py3.14.7-${{ hashFiles('requirements.txt', 'ci/requirements-ci.txt', 'ci/install_pins.sh', 'ci/patches/**') }}
+    - name: Install pinned dependencies
+      if: steps.pins-cache.outputs.cache-hit != 'true'
+      shell: sh
+      env:
+        BASE_PYTHON: ${{ steps.python.outputs.python-path }}
+        PINS_VENV: /home/runner/.cache/gororoba-ci/pins-venv
+      run: |
+        set -eu
+        "$BASE_PYTHON" -m venv "$PINS_VENV"
+        PYTHON="$PINS_VENV/bin/python" sh ci/install_pins.sh
+    - name: Save the pinned environment
+      if: steps.pins-cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+      with:
+        path: /home/runner/.cache/gororoba-ci/pins-venv
+        key: ${{ steps.pins-cache.outputs.cache-primary-key }}
+    - name: Use the pinned environment
+      shell: sh
+      run: |
+        echo "PYTHON=/home/runner/.cache/gororoba-ci/pins-venv/bin/python" >> "$GITHUB_ENV"
+        echo "/home/runner/.cache/gororoba-ci/pins-venv/bin" >> "$GITHUB_PATH"

@@ -424,3 +424,17 @@ the distribution's own `__pycache__`; which cost outweighs the saved
 compilation is unmeasured. The gate commands keep
 `-B` without a prefix. A CI shard whose summed CPU seconds fall with a warm
 prefix, measured against the same shard without one, reopens the change.
+
+## Pull-request workflow
+
+`.github/workflows/pr.yml` runs `sh ci/pr_checks.sh lint|types|tests`; the
+audit marker of pyproject.toml separates its pytest selection from the
+nightly audit. Measured on the merge of PR #414 (`7f06448`, ubuntu-26.04,
+pinned-venv cache hit): `lint` 27 s end to end, Ruff about 1 s; `tests` 59 s
+end to end, pytest 555 passed and 2 skipped in 25.3 s, slowest test 4.97 s.
+On the build host under `taskset -c 0-3` with the same environment, the same
+selection took 12.8 s and the 295 audit-marked tests 648.7 s; mypy over the
+five code directories took 35.3 s; a cold `ci/install_pins.sh` into a fresh
+Python 3.14.7 venv with `PIP_NO_CACHE_DIR=1` took 31.9 s on the build host's
+network. The hosted cold install, and the `types` job, are measured by the
+first pr.yml run that misses the cache or carries the job.

@@ -12,17 +12,19 @@ lint and type-check configuration only. [ci/AGENTS.md](ci/AGENTS.md) holds the
 gate machinery: runner and shards, the gate ledger and premerge cache, the
 Python and Qiskit pins, replay runtimes, the Rocq replays and gate cost.
 
-**Pull requests and the audit.** The workflow `pr.yml` runs on every pull
-request push: job `lint` (Ruff over ci/, tests/, gororoba_quantum/, scripts/
-and kaggle_kernel/) and job `tests` (pytest over tests/ with
-`-m "not audit"`), each with an 8-minute timeout. Those two jobs green on the
-reviewed head and the Codex review loop admit a merge
-([Merging](#reviews-and-merges)); no local gate run or premerge replay is
-required. `ci.yml` is the audit: every gate, the retained-evidence replays, the
-Rocq replays and the ledger, nightly on main and on manual dispatch
-([ci/AGENTS.md](ci/AGENTS.md)). An audit failure qualifies the claims its
-evidence carries and gets an issue; it blocks no unrelated pull request.
-Locally, run the tests a change touches; pushing needs no exhaustive run.
+**Pull requests and the audit.** The workflow `pr.yml` runs
+`sh ci/pr_checks.sh lint|types|tests` on every pull request push: Ruff and
+mypy over ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/, and
+pytest over tests/ with `-m "not audit"`. Branch protection on main requires
+the three checks `lint`, `types` and `tests` green on the head; with the Codex
+review loop they admit a merge ([Merging](#reviews-and-merges)), and no local
+gate run or premerge replay is required. Locally, `sh ci/pr_checks.sh tests
+PATH` runs the touched tests under the hosted environment; pushing needs no
+exhaustive run. `ci.yml` is the audit: every gate, the retained-evidence
+replays, the Rocq replays and the ledger, nightly on main and on manual
+dispatch ([ci/AGENTS.md](ci/AGENTS.md)). A failing scheduled run updates the
+issue "Nightly audit failing" with each failing gate and the claims citing it;
+it blocks no unrelated pull request.
 
 **Code style.** Every Python file a change touches passes, before each push,
 through `"$PYTHON" ci/pinned_tool.py TOOL ARGS` (the versions of
@@ -380,8 +382,9 @@ code-review quota, the owner decides how the PR proceeds.
    what that review finds.
 3. Codex reviews the head once more; that round's threads are answered and
    resolved the same way.
-4. The `pr.yml` jobs `lint` and `tests` pass on the head. A push that changes
-   the head reruns them; a red job gets its fix commit on the branch.
+4. The `pr.yml` jobs `lint`, `types` and `tests` pass on the head. A push
+   that changes the head reruns them; a red job gets its fix commit on the
+   branch.
 5. GitHub reports mergeable_state clean.
 
 Then, bottom-up, for each PR:

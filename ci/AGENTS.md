@@ -12,22 +12,41 @@ package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only.
 
 **Pull requests.** [.github/workflows/pr.yml](../.github/workflows/pr.yml)
-runs on every pull-request push, cancels the run a newer push replaces, and
-holds two jobs with an 8-minute timeout each. `lint` installs the Ruff pin of
-ci/requirements-ci.txt and runs `ruff check` and `ruff format --check` over
-ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/. `tests` restores
-the pinned venv under ci.yml's cache key (built by ci/install_pins.sh on a
-miss) and runs `pytest -n auto --dist loadgroup -m "not audit"` over tests/.
-The workflow reads no gate manifest, ledger or timing file. Its two jobs green
-on the reviewed head and the Codex review loop admit a merge
+runs on every pull-request push and on `workflow_dispatch`, cancels the run a
+newer push replaces, and holds three jobs, each with an 8-minute timeout, that
+call [ci/pr_checks.sh](pr_checks.sh) with its environment (loader TLS, one
+thread per native library, `GOROROBA_PINS_REQUIRED=1`):
+- `lint` installs the Ruff pin of ci/requirements-ci.txt and runs `ruff check`
+  and `ruff format --check` over ci/, tests/, gororoba_quantum/, scripts/ and
+  kaggle_kernel/;
+- `types` runs mypy over the same directories from gororoba_quantum/;
+- `tests` runs `pytest -n auto --dist loadgroup -m "not audit"` over tests/
+  under a 4-minute step timeout and writes the 25 slowest tests to the job
+  summary.
+`types` and `tests` restore the pinned venv through
+.github/actions/pins-venv, under ci.yml's cache key, and build it with
+ci/install_pins.sh on a miss. The workflow reads no gate manifest, ledger or
+timing file. Branch protection on main requires `lint`, `types` and `tests`
+green on the head, for administrators too, without requiring the branch to
+be current with main. A pull request that `GITHUB_TOKEN` opened starts no
+`pull_request` workflow, so its author dispatches pr.yml on the branch
+(scripts/qd_schedule_tick.sh does so when a schedule finishes). With the Codex
+review loop the checks admit a merge
 ([Merging](../AGENTS.md#reviews-and-merges)); a local gate run, premerge
-replay or Rocq replay is never a merge requirement.
+replay or Rocq replay is never a merge requirement. Locally,
+`sh ci/pr_checks.sh tests tests/path/test_x.py` runs one module under the
+hosted environment.
 
 **The audit.** `ci.yml` runs on its nightly schedule and on manual dispatch
 only: every gate of both tiers on main with `--ledger-audit`, the
-retained-evidence replays, the Rocq replays and the Quantum Inspire stack. An
-audit failure qualifies the research-state claims whose evidence it replays
-and gets an issue; it blocks no unrelated pull request. A branch's affected
+retained-evidence replays, the Rocq replays and the Quantum Inspire stack.
+After a scheduled run, job `audit-issue` opens or comments on the issue
+"Nightly audit failing" with the body [ci/audit_report.py](audit_report.py)
+writes: each failing gate from the shard timing records beside the claims of
+docs/state/research_state.json that cite it, and each failing job. A cited
+claim is qualified until its gate passes again; the next all-green scheduled
+run closes the issue. An audit failure blocks no unrelated pull request.
+A branch's affected
 gates run on request, `git diff --no-renames --name-only -z origin/main HEAD >
 CHANGED` then `"$PYTHON" ci/run_gates.py --changed-files CHANGED`, or by
 dispatching ci.yml on the branch. A gate over 30 s of measured wall sits in
@@ -307,16 +326,34 @@ of them. The manual procedure remains the local replay.
 **Behavioral suite.** tests/ holds one pytest suite with two selections.
 `pr.yml` runs every test the `audit` marker (pyproject.toml) leaves
 unmarked, so a new test needs no gate entry, timing entry or group and runs
-on every pull request. Mark a test `audit`, or a whole module through
-`pytestmark = pytest.mark.audit`, when it replays retained evidence, binds the
-digest of a document other changes may edit, or checks the gate machinery and
-its manifests; give an expensive test a small unmarked counterpart. A bug fix
-adds a focused unmarked regression test, and the `tests` job's measured
-runtime stays inside its timeout. The audit gates select by path and ignore
-the marker, so they still run every marked test. In the audit, gate core-615
-runs `pytest -n auto --dist loadgroup` over tests/ in one process pool, so
-each worker imports the repository modules once; issue #291 carries the migration plan and its falsifier, a planted
-mutant per moved contract. core-615 ignores the paths its sibling gates
+on every pull request. The rules that keep that run small:
+- A bug fix adds a focused unmarked test that fails before the fix.
+- A pull-request test builds its input in the test or reads it from
+  tests/**/data/. A test that reads a file other changes legitimately edit
+  (a source note, a manifest, a research-state record), a large retained
+  bundle, or the gate machinery and its manifests carries `audit`, on the
+  function or on the module through `pytestmark = pytest.mark.audit`.
+  Provider clients are mocked; no pull-request test reaches the network.
+- tests/conftest.py fails an unmarked test whose call phase exceeds
+  `CALL_BUDGET_SECONDS` (10 s, about twice the slowest hosted test;
+  `GOROROBA_TEST_CALL_SECONDS` replaces it on a contended host and 0 lifts
+  it). An exhaustive or slow check carries `audit` and gets a small unmarked
+  counterpart that tests the same rule on a small input.
+- Setup that several tests share is a `scope="module"` or `"session"`
+  fixture. Each xdist worker builds its own copy, and `--dist loadgroup`
+  places tests in any order, so a shared fixture returns immutable data or a
+  fresh copy per test.
+- Cases that differ in kind are `pytest.mark.parametrize` rows of one test;
+  a numeric sweep belongs in an audit test.
+- The job summary lists the 25 slowest tests. Hosted pytest time at about
+  2 minutes is the point to shrink or mark tests, well inside the 4-minute
+  step timeout; the PR job adds no coverage or other plugin.
+The audit gates select by path and ignore the marker, so they still run every
+marked test. In the audit, gate core-615 runs `pytest -n auto --dist
+loadgroup` over tests/ in one process pool, so each worker imports the
+repository modules once; issue #291 carries the migration plan and its
+falsifier, a planted mutant per moved contract. core-615 ignores the paths
+its sibling gates
 `core-behavior-NN` run, each a list of test modules or directories sized
 under the 30 s pr budget, or a full gate for a test whose single node
 exceeds it (core-behavior-03, the segmented-sweep fits);
