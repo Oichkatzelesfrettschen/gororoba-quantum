@@ -196,3 +196,25 @@ def test_unresolved_runtime_runs_no_gate(root: Path, tmp_path: Path) -> None:
     text = output.getvalue()
     if status != 2 or marker.exists() or "ci/build_host_envs.sh" not in text:
         raise AssertionError(f"an unresolved runtime returned {status} or ran a gate:\n{text}")
+
+
+def test_only_a_changed_files_run_decides_admission(root: Path, tmp_path: Path) -> None:
+    # A --changed-files run is the merge verdict, so pins.resolve_current
+    # refuses a $PYTHON that differs from the pins there and only there.
+    manifest(root, [{"name": "fast", "cwd": ".", "cmd": "true", "seconds": 1.0}])
+    changed = tmp_path / "changed"
+    changed.write_bytes(b"")
+    seen: list[bool] = []
+
+    def record(_environment: Any, current: str, _root: Path, admission: bool = False) -> tuple[str, str]:
+        seen.append(admission)
+        return current, "recorded"
+
+    with (
+        patch.object(run_gates.pins, "resolve_current", record),
+        patch.object(run_gates.gate_inputs, "affected_full", lambda _root, _gates, _changed: set()),
+        runner(root) as output,
+    ):
+        statuses = [run_gates.main([]), run_gates.main(["--changed-files", str(changed)])]
+    if statuses != [0, 0] or seen != [False, True]:
+        raise AssertionError(f"admission passed as {seen} with statuses {statuses}:\n{output.getvalue()}")

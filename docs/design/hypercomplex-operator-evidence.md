@@ -95,9 +95,14 @@ additional wave, transform, packing or replication acquisitions retain separate 
 
 ## Operational conjecture synthesis
 
-The [conjecture bundle](../evidence/algebra-device-conjectures/README.md) accounts for the ten retained-data proposals and
+The [conjecture bundle](../evidence/algebra-device-conjectures-2/README.md) accounts for the ten retained-data proposals and
 twelve algebra/device extensions. Its frozen manifest names each proposal, falsifier, disposition, selected claim and
 acquisition exclusion. The registry remains the authority for claims and acquisitions; the bundle is a derived view.
+A refresh freezes a successor bundle at the next generation's path
+(`--freeze --predecessor OLD --manifest NEW --reason TEXT`) and leaves the
+predecessor's bytes in place; the successor names and re-verifies it. The
+[first bundle](../evidence/algebra-device-conjectures/README.md) is retained
+evidence and checks only on its own base commit.
 `scripts/algebra_device_conjectures.py --freeze` explicitly refreshes that view through the existing offline provider
 adapters. Ordinary replay verifies the separately bound census, exact source inventory, selected registry entries,
 and every frozen acquisition fact and native unit through those same offline adapters. New acquisitions outside the
@@ -224,7 +229,7 @@ Run with the repository's pinned current interpreter and exported `PYTHON`:
 
 ```sh
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
-"$PYTHON" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures
+"$PYTHON" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-2
 "$PYTHON" -B -W error scripts/algebra_conjecture_circuits.py
 "$PYTHON" -B -m pytest -q tests/scripts/test_algebra_device_conjectures.py tests/scripts/test_algebra_conjecture_circuits.py
 ```

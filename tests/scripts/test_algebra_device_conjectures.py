@@ -5,6 +5,8 @@ from __future__ import annotations
 import copy
 import importlib
 import importlib.util
+import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -198,3 +200,75 @@ def test_comparison_attribution_and_companion_pin_follow_their_bound_sources(mut
         manifest["companion_pin"] = "0" * 40
     with pytest.raises(ValueError):
         module.validate_manifest(manifest)
+
+
+@pytest.mark.parametrize("mutation", ["reason", "base_commit", "digest", "extra", "path", "bytes"])
+def test_predecessor_record_requires_digest_commit_and_reason(mutation: str) -> None:
+    module = implementation()
+    manifest = module.load_manifest(module.DEFAULT_MANIFEST)
+    if "supersedes" not in manifest:
+        raise AssertionError("the refreshed manifest names no predecessor")
+    predecessor = manifest["supersedes"]
+    if mutation == "reason":
+        predecessor["reason"] = " "
+    elif mutation == "base_commit":
+        predecessor["base_commit"] = predecessor["base_commit"][:12]
+    elif mutation == "digest":
+        predecessor["manifest_sha256"] = predecessor["manifest_sha256"].upper()
+    elif mutation == "extra":
+        predecessor["note"] = "unbound"
+    elif mutation == "path":
+        predecessor["path"] = 7
+    else:
+        # A rewritten predecessor bundle no longer matches the digest its successor recorded.
+        predecessor["manifest_sha256"] = "0" * 64
+    with pytest.raises(ValueError, match="predecessor" if mutation != "bytes" else "source digest differs"):
+        module.validate_manifest(manifest)
+
+
+def test_freeze_runs_only_on_a_checkout_identical_to_head(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = implementation()
+
+    def git(*arguments: str) -> None:
+        subprocess.run(["git", *arguments], cwd=tmp_path, check=True, capture_output=True)
+
+    git("init", "-q")
+    for name in ("kept", "edited", "moved", "with space"):
+        (tmp_path / name).write_text(f"{name}\n")
+    git("add", ".")
+    git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit", "-q", "-m", "base")
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    manifest = {"base_commit": "0" * 40, "selected_claim_ids": []}
+    if module._uncommitted():
+        raise AssertionError("a clean checkout reported changes")
+    with pytest.raises(ValueError, match="reason"):
+        module.freeze_manifest(manifest, tmp_path / "census.json", " ", "kept")
+    (tmp_path / "edited").write_text("changed\n")
+    (tmp_path / "with space").write_text("changed\n")
+    (tmp_path / "untracked").write_text("new\n")
+    git("mv", "moved", "renamed")
+    found = sorted(module._uncommitted())
+    if found != ["edited", "renamed", "untracked", "with space"]:
+        raise AssertionError(f"uncommitted state reported as {found}")
+    with pytest.raises(ValueError, match="identical to HEAD"):
+        module.freeze_manifest(manifest, tmp_path / "census.json", "a reason", "kept")
+
+
+@pytest.mark.parametrize(
+    ("arguments", "message"),
+    [
+        (["--freeze", "--predecessor", "x.json"], "requires --reason and --predecessor"),
+        (["--freeze", "--reason", "r"], "requires --reason and --predecessor"),
+        (["--freeze", "--reason", "r", "--predecessor", "x.json"], "writes a new bundle"),
+    ],
+)
+def test_freeze_needs_a_reason_a_predecessor_and_a_new_bundle(
+    arguments: list[str], message: str, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    # The default --manifest names the current bundle, which a freeze never overwrites.
+    module = implementation()
+    monkeypatch.setattr(sys, "argv", ["algebra_device_conjectures.py", *arguments])
+    with pytest.raises(SystemExit) as stopped:
+        module.main()
+    if stopped.value.code != 2 or message not in capsys.readouterr().err:
+        raise AssertionError(f"--freeze {arguments} was accepted")

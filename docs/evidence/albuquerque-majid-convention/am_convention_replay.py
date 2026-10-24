@@ -13,8 +13,9 @@ alone and uses cd_core only as the comparison target. It requires
 - the untransposed comparison F_AM(a, b) = cd_sign(n, a, b) to fail with the recorded disagreement counts,
   starting at n = 4, so the check detects an omitted transpose;
 - the paper's associator phi(x, y, z) = F(x, y) F(x + y, z) / (F(y, z) F(x, y + z)), its Eq. (11), to equal the
-  product of cd_core.triple_sign and to vanish exactly where cd_core.associator of three basis units is zero,
-  n = 2 to 32. The associator is blind to the transpose, so this comparison stands beside the raw-cochain one.
+  product of cd_core.triple_sign and to equal +1 exactly where the additive associator (e_x e_y) e_z - e_x (e_y e_z)
+  of cd_core.associator vanishes, n = 2 to 32. The associator is blind to the transpose, so this comparison
+  stands beside the raw-cochain one.
 
 derivation.json records the source identity, the bit convention, the coverage and the counts; --check
 recomputes it and compares the bytes.
@@ -39,7 +40,8 @@ SOURCES = ROOT / "docs/SOURCES.json"
 SOURCE_URL = "https://arxiv.org/pdf/math/9802116v1"
 COCHAIN_DIMENSIONS = (2, 4, 8, 16, 32, 64)
 ASSOCIATOR_DIMENSIONS = (2, 4, 8, 16, 32)
-# Disagreements of the untransposed comparison: zero at n = 2, where the algebra is commutative.
+# Disagreements of the untransposed comparison, (n - 1)(n - 2): the ordered pairs of distinct nonzero units,
+# which anticommute, so reversing the arguments flips their sign.
 UNTRANSPOSED_DISAGREEMENTS = {2: 0, 4: 6, 8: 42, 16: 210, 32: 930, 64: 3906}
 
 Cochain = list[list[int]]

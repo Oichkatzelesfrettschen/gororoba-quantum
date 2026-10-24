@@ -190,14 +190,18 @@ def current_pins(root: Path = ROOT) -> dict[str, str]:
     return merged
 
 
-def resolve_current(environment: Mapping[str, str], current: str, root: Path = ROOT) -> tuple[str | None, str]:
+def resolve_current(
+    environment: Mapping[str, str], current: str, root: Path = ROOT, admission: bool = False
+) -> tuple[str | None, str]:
     """The interpreter for current-runtime gates and a one-line account of the choice.
 
     An explicit $PYTHON is the caller's choice: it runs whatever it holds,
-    with the differing pins named, unless PINS_REQUIRED demands every pin.
-    Without one, the running interpreter serves when it holds every pin, then
-    the host environment; None means no interpreter holds them. A tree
-    without pin files verifies nothing.
+    with the differing pins named, unless PINS_REQUIRED demands every pin or
+    the run decides admission (``run_gates.py --changed-files``, the merge
+    verdict), whose gates count only under the pinned runtime. Without one,
+    the running interpreter serves when it holds every pin, then the host
+    environment; None means no interpreter holds them. A tree without pin
+    files verifies nothing.
     """
     pins = current_pins(root)
     files = " and ".join(path.name for path in CURRENT_PINS)
@@ -210,6 +214,8 @@ def resolve_current(environment: Mapping[str, str], current: str, root: Path = R
             return named, f"PYTHON={named} holds every pin of {files}"
         if pins_required(environment):
             return None, f"PYTHON={named} differs from {files} under {PINS_REQUIRED}=1: {', '.join(missing)}"
+        if admission:
+            return None, f"PYTHON={named} differs from {files} and cannot decide admission: {', '.join(missing)}"
         return named, f"PYTHON={named} differs from {files} and runs as named: {', '.join(missing)}"
     missing = environment_mismatches(current, pins, root)
     if not missing:
