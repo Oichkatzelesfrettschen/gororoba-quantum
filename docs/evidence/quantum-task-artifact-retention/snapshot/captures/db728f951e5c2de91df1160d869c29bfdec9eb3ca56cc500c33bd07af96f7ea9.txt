@@ -1,0 +1,24 @@
+historical runtime qiskit-2.5: REPLAY_PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/replay-py3.14.7/bin/python holds every pin of requirements-replay.txt
+PASS core-447   428.7s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --check results/li
+PASS core-534   578.6s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-efficiency
+PASS core-537   281.0s  "$PYTHON" -B -W error scripts/qd_box_kite_analysis.py --check results/quandela/runs/*-qpu_belenos-be
+  untraceable core-537: shell command beyond $PYTHON invocations joined by &&
+PASS core-434   152.9s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/rea
+PASS core-329   123.6s  "$PYTHON" -B -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_
+PASS core-535   837.2s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-efficiency results/quandela/sessions/2026-1
+PASS core-360   131.5s  "$PYTHON" -B -W error ../scripts/atlas_fringe_amplitudes.py --check ../docs/evidence/atlas_fringe_am
+PASS core-094   265.7s  "$PYTHON" -B -W error qpu_planning_contracts.py
+  untraceable core-094: program git
+PASS core-523    95.6s  "$PYTHON" -B -W error qpu_planning_contracts.py --rep-delay
+  untraceable core-523: program git
+PASS core-582   503.0s  "$PYTHON" check_et_runtime.py
+  untraceable core-582: program git
+PASS core-570   772.2s  "$PYTHON" -B -W error qpu_planning_contracts.py --submit-reuse-herald
+  untraceable core-570: program git
+PASS core-597--slice1   769.0s  "$PYTHON" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs pairs
+PASS core-554   176.6s  "$PYTHON" -B -W error scripts/rank_locus_second_order.py --self-test
+PASS core-553   194.7s  "$PYTHON" -B -W error scripts/rank_locus_second_order.py --check docs/evidence/rank_locus_second_ord
+PASS core-089   210.3s  PYTHONOPTIMIZE=1 "$PYTHON" correction_planning_contracts.py
+  untraceable core-089: program git
+PASS sources-215   734.5s  "$PYTHON" -W error ../scripts/cd_associator_defect_census.py --replay ../docs/evidence/cd_associator
+PASS core-438   135.9s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --null-equivalence results/quantum_inspir

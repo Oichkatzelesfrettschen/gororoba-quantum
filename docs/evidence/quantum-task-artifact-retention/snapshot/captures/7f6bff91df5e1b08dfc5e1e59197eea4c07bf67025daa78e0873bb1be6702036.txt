@@ -1,0 +1,5 @@
+PASS core-039     1.2s  "$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/ver
+PASS core-630     2.2s  "$PYTHON" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/
+PASS core-615   146.6s  "$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests
+
+3 passed, 0 failed of 3 gates in shard 0/1 on CPU

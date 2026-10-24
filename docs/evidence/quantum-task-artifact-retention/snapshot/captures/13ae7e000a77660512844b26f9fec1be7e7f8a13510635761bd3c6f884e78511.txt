@@ -1,0 +1,34 @@
+# Hypercomplex operator whole-PR review
+
+Reviewed commit: `35fba2111e7ab2e09ce685ba5cc9e09fad1300da`.
+Observed integration head at completion: `6ca991a0e339cf3d8bed5dd3d45d7888272a8a82`.
+PR merge base: `ae44a4c2ba48eda70cd7e4d075c527579bcca7c6`.
+Target main observed: `42f810a`.
+
+## Coverage
+
+Read every changed Python hunk across all 22 Python files in the actual three-dot PR diff, together with the reachable numerical, provider, retention, analysis and CLI context. The review covers every author.
+
+Runtime sources: bdsc.py; hypercomplex_clifford_envelope.py; hypercomplex_dynamics.py; hypercomplex_operators.py; qpu_planning.py; check_qi_platform_retention.py; compare_submitted_circuits.py; hypercomplex_campaign.py; hypercomplex_cases.py; hypercomplex_evidence.py; hypercomplex_libraries.py; qd_platform.py; qi_platform.py. The nine changed test modules cover their mathematical, compilation, receipt, provenance, concurrency, deadline, rendering and inventory contracts.
+
+The review assessed faithful quaternion encoding and paired observables; finite octonion and sedenion operator certificates; Fourier and Strang propagation; diagonal GKSL dephasing and resource growth; full photonic synthesis and native quantization/layout; documented library independence and execution boundaries; source-bound historical QPY replay; campaign intent/refusal retention; digest checks and account locking; first resource-request deadline handling; descriptive statistical scope and separate future-case approvals. Relevant design, admission, provider and runbook context was read.
+
+The apparent two-dot deletion of bdsc_pauli.py was incoming main-only work. The integration merge 6ca991a incorporates it; the file matches origin/main. The feature's other reviewed Python source remains unchanged by that merge.
+
+## Evidence inspected
+
+- git diff --check against the PR merge base passed.
+- Qualified gate receipts and prior independent focused probes were inspected rather than repeating all builds. The collector's core-281/core-039/core-615 run passed all three gates. The diagonal-dephasing receipt also records three passing gates.
+- The complete eight-batch audit receipt at docs/local/hypercomplex-operator-evidence/tuna-order-all-eight-account-ledger-audit.json has SHA-256 d38a5680f92171d153fae15b518527097583403150340e27d81f8cee735fd3f2. Its recorded coverage is 24 jobs, 393216 shots, 186.801814 provider seconds, zero recorded credit debit, minimum retained account pause 126.813124 seconds, and all 316 ledger jobs retained at that observation.
+- The full pilot summary, retained per-batch analysis bindings and finite audit implementation were inspected. Raw/proposal corpora were covered through finite audit receipts, digest checks and earlier independent raw-register checks, rather than reading hundreds of thousands of generated JSON lines as prose.
+- Earlier independent checks established correct full native operators for all eight order settings, local QX/Perceval agreement, preserved original proposal bytes, exact successor circuit identity, historical QPY compatibility, stable rank-four principal angles and diagonal GKSL equivalence to dense reference terms.
+
+## Findings and verdict
+
+No new actionable correctness, scientific-interpretation, approval or provenance blocker was found in the reviewed feature source. Previously identified defects are closed: Fourier identity labeling, complete photonic checks, compiler seed provenance, swapped-layout readout gating, descriptive admission, refusal-classification locking, durable campaign enumeration, pooled numerical work, GKSL result-memory growth and historical comparison completeness.
+
+The hardware pilot supports descriptive device frequencies. Representative differences remain confounded with preparation, compilation and time; the source withholds equivalence, process-fidelity, calibrated-coverage and scalar-field claims. Future wave, transform and packed acquisitions retain separate reviewed admission and approval boundaries.
+
+## Limits
+
+This receipt is an operator source review, not a clean hosted-review signal or a global all-gates-green claim. Hosted review remains a separate current-head gate. Externally owned broad numerical-report mismatches remain integration work and were not relabeled as passing. Finite experiments and exact low-dimensional certificates establish their stated finite domains rather than a general physics theorem. The ledger/pause audit establishes retained-history consistency, not independent access to past provider state. This review made no provider requests and changed only this ignored receipt.

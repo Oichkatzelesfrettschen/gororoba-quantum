@@ -1,0 +1,13 @@
+Reviewed owner checkout: ${USER_HOME}/worktrees/IBMQuantum/ci/main-gate-failures
+Reviewed HEAD: 9d4ef5b79c11f69007f9260922b2a9bfe38bce5f
+Review performed 2026-10-22. Read-only owner source inspection.
+
+The proposal remains unsuitable for adoption in PR 342.
+ci/replay_check.py lines 62-63 accepts differences(1.0, inf, 1e-9, 0) as equal: error and bound both become infinity.
+Lines 58-63 accept differences(3, 3.0001, 1e-3, 0), contradicting exact integer semantics.
+The proposed rule parser lines 103-108 accepts infinite, NaN and negative bounds; global tolerance arguments have the same gap.
+Four owner tests and pinned Ruff pass, demonstrating missing numerical edge coverage.
+Actual field-rule consumers and source-grounded numerical error budgets remain required. A field-rule plumbing test alone cannot justify scientific likelihood drift.
+
+Required corrections: explicit nonfinite semantics; exact mixed integer/type handling; finite nonnegative bounds at every entry point; adversarial regression tests; independently justified field-specific error bounds and provenance checks.
+Owner files and processes remain untouched by the review.

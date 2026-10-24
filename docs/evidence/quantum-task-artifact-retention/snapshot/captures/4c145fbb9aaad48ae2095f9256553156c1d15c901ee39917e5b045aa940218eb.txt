@@ -1,0 +1,427 @@
+{
+ "actual_seconds": 186.801814,
+ "approved_plan_sha256": "43e0b67a8aaaa1203eacd5f0be9e4c74ac5f4f55576dc16f96591245864dc8a2",
+ "batches": [
+  {
+   "account_pause_seconds": 305766.968441,
+   "account_prior_latest_job": 1535773,
+   "adjacent_pilot_pause_seconds": null,
+   "batch": "order-batch-00",
+   "finished_at": "2026-10-22T06:28:01.342390+00:00",
+   "grouped_predictions": {
+    "native": [
+     1.0,
+     0.0
+    ],
+    "requested": [
+     0.9999999999999996,
+     5.004680467665246e-34
+    ]
+   },
+   "grouped_science_counts": [
+    15731,
+    653
+   ],
+   "jobs": [
+    {
+     "debit": 0,
+     "file": "readout-0.cq",
+     "job": 1565780,
+     "raw_sha256": "531f322ba206d97e083bda696399d23cce81573aaf5b090b681a62c345f06222",
+     "seconds": 7.470225,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "readout-1.cq",
+     "job": 1565781,
+     "raw_sha256": "1eb263e651ecfc51b318d125b548f6991451e6fbe96aa6dad4bb56310cea7c63",
+     "seconds": 7.672604,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "order-i0-j0-representative0.cq",
+     "job": 1565782,
+     "raw_sha256": "007487d6d69ffe50c550b6b8e6a7462ca27a0fe5029d73146ddbe481c9cfc239",
+     "seconds": 7.445812,
+     "shots": 16384
+    }
+   ],
+   "receipt_sha256": "4f9a28ae57ae9b0bec7afe585b116685e450ae1566dd277e77ed6bc71b81cb9c",
+   "results_sha256": "55b298e04fe7c86d5108264930046d0373289ea297c1a247c50d0abb8667f084",
+   "seconds": 22.588641,
+   "started_utc": "2026-10-22T06:27:22+00:00"
+  },
+  {
+   "account_pause_seconds": 127.65761,
+   "account_prior_latest_job": 1565782,
+   "adjacent_pilot_pause_seconds": 127.65761,
+   "batch": "order-batch-01",
+   "finished_at": "2026-10-22T06:54:32.483218+00:00",
+   "grouped_predictions": {
+    "native": [
+     0.9999999999999996,
+     0.0
+    ],
+    "requested": [
+     0.9999999999999996,
+     5.004680467665246e-34
+    ]
+   },
+   "grouped_science_counts": [
+    15618,
+    766
+   ],
+   "jobs": [
+    {
+     "debit": 0,
+     "file": "readout-0.cq",
+     "job": 1565803,
+     "raw_sha256": "0345890894fea8769f5f326fb8bb7445e526c68edd25a0fa3c362d1fdbc7b80a",
+     "seconds": 7.477733,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "readout-1.cq",
+     "job": 1565804,
+     "raw_sha256": "c8e6a3d701e545eaecd62d8a2b5389088f74662ec8c8d6e7153acab4704bbbb4",
+     "seconds": 7.722842,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "order-i0-j0-representative1.cq",
+     "job": 1565805,
+     "raw_sha256": "b73a8b1c88f1f9696e57b0db9e4922cb1a8375d67eecedba7e59b2914ca3a53c",
+     "seconds": 7.836541,
+     "shots": 16384
+    }
+   ],
+   "receipt_sha256": "0faa854fcc39760886aed16f03bba4c804ac50b1ce519d0cfdf50060776ce5e9",
+   "results_sha256": "d1f860113cbb37350f500452b1deab312416af40c7540b3438794bac56f4709c",
+   "seconds": 23.037116,
+   "started_utc": "2026-10-22T06:30:09+00:00"
+  },
+  {
+   "account_pause_seconds": 127.516782,
+   "account_prior_latest_job": 1565803,
+   "adjacent_pilot_pause_seconds": 127.516782,
+   "batch": "order-batch-02",
+   "finished_at": "2026-10-22T06:57:21.156540+00:00",
+   "grouped_predictions": {
+    "native": [
+     1.0,
+     0.0
+    ],
+    "requested": [
+     0.9999999999999997,
+     5.286997409534849e-34
+    ]
+   },
+   "grouped_science_counts": [
+    15735,
+    649
+   ],
+   "jobs": [
+    {
+     "debit": 0,
+     "file": "readout-0.cq",
+     "job": 1565840,
+     "raw_sha256": "74de9578d1d79ff135cdc67a425f0d75c5e36ec24472c88a491eb65959e8ad75",
+     "seconds": 7.492356,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "readout-1.cq",
+     "job": 1565841,
+     "raw_sha256": "45d2bf18420bfb6c8a7cc554e70ae9953d0d229b27fd67792573596dbba9f5cb",
+     "seconds": 7.649441,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "order-i0-j1-representative0.cq",
+     "job": 1565842,
+     "raw_sha256": "aa1b3cf00ccf53676e25cde0f700456384a7a581f7674a4697ec10dbd52ef0ee",
+     "seconds": 7.7769,
+     "shots": 16384
+    }
+   ],
+   "receipt_sha256": "cc58e90aca7b7a911cb850600b241baeac2c36f5ddf96ca33b1091d57a253eb3",
+   "results_sha256": "c70d01b6b49fac20c856383e123077438c5219007a98939527bf65848d67b1be",
+   "seconds": 22.918697,
+   "started_utc": "2026-10-22T06:56:40+00:00"
+  },
+  {
+   "account_pause_seconds": 127.84346,
+   "account_prior_latest_job": 1565841,
+   "adjacent_pilot_pause_seconds": 127.84346,
+   "batch": "order-batch-03",
+   "finished_at": "2026-10-22T07:00:25.275778+00:00",
+   "grouped_predictions": {
+    "native": [
+     0.9999999999999997,
+     0.0
+    ],
+    "requested": [
+     0.9999999999999997,
+     5.286997409534849e-34
+    ]
+   },
+   "grouped_science_counts": [
+    15599,
+    785
+   ],
+   "jobs": [
+    {
+     "debit": 0,
+     "file": "readout-0.cq",
+     "job": 1565875,
+     "raw_sha256": "f0450555d17c80d4f6bfd4c58dc1277d40f19e9226e22c79f63d1ad79e32073e",
+     "seconds": 7.524161,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "readout-1.cq",
+     "job": 1565876,
+     "raw_sha256": "2a0f2ec56ab3d6463c54b72db87785e42ba2bc987b41830abb761f135bb45c03",
+     "seconds": 7.727438,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "order-i0-j1-representative1.cq",
+     "job": 1565877,
+     "raw_sha256": "2d7d7b7af2743cdab331f5db609ecb6b5a31c243f47ddfd8578bfe5cb2c7736e",
+     "seconds": 7.80624,
+     "shots": 16384
+    }
+   ],
+   "receipt_sha256": "d3a581d4adddfc7dee8add101b10077073b8170cff6ca2b2989963dbd9319249",
+   "results_sha256": "a0b46dbe8ce84fdd1b238fa261a6cfc4fc42e1292215f7de402ff5fe405ea0a3",
+   "seconds": 23.057839,
+   "started_utc": "2026-10-22T06:59:29+00:00"
+  },
+  {
+   "account_pause_seconds": 127.724222,
+   "account_prior_latest_job": 1565877,
+   "adjacent_pilot_pause_seconds": 127.724222,
+   "batch": "order-batch-04",
+   "finished_at": "2026-10-22T07:03:33.274520+00:00",
+   "grouped_predictions": {
+    "native": [
+     1.0,
+     0.0
+    ],
+    "requested": [
+     0.9999999999999996,
+     5.286997409534849e-34
+    ]
+   },
+   "grouped_science_counts": [
+    15715,
+    669
+   ],
+   "jobs": [
+    {
+     "debit": 0,
+     "file": "readout-0.cq",
+     "job": 1565920,
+     "raw_sha256": "be0042950c37a7d81500b1e734cfa96467f63a85ccadd03d4c2142ecbb73e5cd",
+     "seconds": 7.464794,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "readout-1.cq",
+     "job": 1565921,
+     "raw_sha256": "f9aa0a6476b79496a09c94bf444003a6c9a882b7f6788b8e0f8d106e6585b7cd",
+     "seconds": 7.737028,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "order-i1-j0-representative0.cq",
+     "job": 1565922,
+     "raw_sha256": "02fddecd81a9344d40c116db8f336773545906c4e2d88e81a979e3e0743f75f3",
+     "seconds": 7.505946,
+     "shots": 16384
+    }
+   ],
+   "receipt_sha256": "e3b5030221c81c9330f5f6e00a349355ba60be6510016ec317139abd304f7385",
+   "results_sha256": "27055f38a7e4fcbdf8c9faea64be959f814f2feb21ccb27efc8a65703301be39",
+   "seconds": 22.707768,
+   "started_utc": "2026-10-22T07:02:33+00:00"
+  },
+  {
+   "account_pause_seconds": 127.72548,
+   "account_prior_latest_job": 1565921,
+   "adjacent_pilot_pause_seconds": 127.72548,
+   "batch": "order-batch-05",
+   "finished_at": "2026-10-22T07:06:32.186876+00:00",
+   "grouped_predictions": {
+    "native": [
+     1.0,
+     0.0
+    ],
+    "requested": [
+     0.9999999999999996,
+     5.286997409534849e-34
+    ]
+   },
+   "grouped_science_counts": [
+    15551,
+    833
+   ],
+   "jobs": [
+    {
+     "debit": 0,
+     "file": "readout-0.cq",
+     "job": 1565955,
+     "raw_sha256": "5ce832cace7d1948dcd94ddd3ad7202d85f22338600fa4d276b9532ae1350007",
+     "seconds": 7.532832,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "readout-1.cq",
+     "job": 1565956,
+     "raw_sha256": "f9cee510f310a53f578f7ffaf8f8588ddbddd859daa66fb2fe947c65677a4d13",
+     "seconds": 7.649398,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "order-i1-j0-representative1.cq",
+     "job": 1565957,
+     "raw_sha256": "e1a51118a2a6dd8db221bc8d7e99758c53effcd28fbec47abe282502dcadca5e",
+     "seconds": 7.778583,
+     "shots": 16384
+    }
+   ],
+   "receipt_sha256": "584b65090630bc0feb1bf2b07c919e76de761c919be4d25dae2903859cdebd30",
+   "results_sha256": "99db2c9a0a22fc89b0717291dcf43b1aeeab22605afce3a81b95860cf8c7acea",
+   "seconds": 22.960813,
+   "started_utc": "2026-10-22T07:05:41+00:00"
+  },
+  {
+   "account_pause_seconds": 126.813124,
+   "account_prior_latest_job": 1565957,
+   "adjacent_pilot_pause_seconds": 126.813124,
+   "batch": "order-batch-06",
+   "finished_at": "2026-10-22T07:09:54.056329+00:00",
+   "grouped_predictions": {
+    "native": [
+     0.7499999999999998,
+     0.24999999999999983
+    ],
+    "requested": [
+     0.7499999999999998,
+     0.24999999999999983
+    ]
+   },
+   "grouped_science_counts": [
+    12011,
+    4373
+   ],
+   "jobs": [
+    {
+     "debit": 0,
+     "file": "readout-0.cq",
+     "job": 1565985,
+     "raw_sha256": "08c5de048f4b88aa5d30f83f52f7b3332f024ebf0c1e4bccf68fdc7d310e6d0c",
+     "seconds": 7.499453,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "readout-1.cq",
+     "job": 1565986,
+     "raw_sha256": "f11a500ace33260c68bd66e1644e2537df66235b8b2d76ee98a4c905b3766d18",
+     "seconds": 7.755324,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "order-i1-j1-representative0.cq",
+     "job": 1565987,
+     "raw_sha256": "2363046f957dd81578d38380a093c3e36fc39c58626261189a7af3bbe0e3bfa1",
+     "seconds": 9.580995,
+     "shots": 16384
+    }
+   ],
+   "receipt_sha256": "82fbf3cfa0412d2ec97badd37e9a753be88bf42d0d134406db7b175d8080cb73",
+   "results_sha256": "72f2de5ee39ec80516ba7a01b7cd483db311e69c777d17973d0c7be56101f9e1",
+   "seconds": 24.835772,
+   "started_utc": "2026-10-22T07:08:39+00:00"
+  },
+  {
+   "account_pause_seconds": 144.943671,
+   "account_prior_latest_job": 1565985,
+   "adjacent_pilot_pause_seconds": 144.943671,
+   "batch": "order-batch-07",
+   "finished_at": "2026-10-22T07:14:58.891610+00:00",
+   "grouped_predictions": {
+    "native": [
+     0.7499999999999998,
+     0.2499999999999999
+    ],
+    "requested": [
+     0.7499999999999998,
+     0.24999999999999983
+    ]
+   },
+   "grouped_science_counts": [
+    11954,
+    4430
+   ],
+   "jobs": [
+    {
+     "debit": 0,
+     "file": "readout-0.cq",
+     "job": 1566041,
+     "raw_sha256": "6dd595098db20da154df149c6901ac8caf4036d96ad15b507cf095ba89904ff9",
+     "seconds": 7.489302,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "readout-1.cq",
+     "job": 1566042,
+     "raw_sha256": "41669a2e32c8478162bfc8032dbaa133433ce4ccf6a9f22d21aacfa97eab537d",
+     "seconds": 7.718015,
+     "shots": 16384
+    },
+    {
+     "debit": 0,
+     "file": "order-i1-j1-representative1.cq",
+     "job": 1566043,
+     "raw_sha256": "706ca6714709f2bc011b2af7c59deb97b9dcd8a969af25abd0b380c024faf99b",
+     "seconds": 9.487851,
+     "shots": 16384
+    }
+   ],
+   "receipt_sha256": "e99c68006553364c28a46f30cd6a56097b4500f3fbe0e92379e13b9d72185235",
+   "results_sha256": "0a9f34641bc9f21780312c7d5fb323e84cc1149c2149f2e859d58eabbf0174f1",
+   "seconds": 24.695168,
+   "started_utc": "2026-10-22T07:12:19+00:00"
+  }
+ ],
+ "completed_jobs": 24,
+ "credit_debit": 0,
+ "declared_unretained_jobs": [],
+ "inference_boundary": "retained descriptive acquisition; API history beyond ledger timestamps and live past queue state remain bounded by retained receipts",
+ "ledger_jobs": 316,
+ "ledger_retained_jobs": 316,
+ "minimum_account_pause_seconds": 126.813124,
+ "minimum_adjacent_pause_seconds": 126.813124,
+ "observed_utc": "2026-10-22T07:28:00.576454+00:00",
+ "provider_reads": false,
+ "schema": "independent-tuna-order-complete-audit-v1",
+ "total_shots": 393216,
+ "usage_sha256": "54a1c5ce3d311dff558996971f11facfee828f8a48d55fb8384cbe45f5797976"
+}

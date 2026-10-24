@@ -1,0 +1,91 @@
+PASS core-080    98.6s  "$PYTHON" correction_planning_contracts.py
+FAIL core-594     0.4s  "$PYTHON" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz_map_tuna_17 && "
+
+=== core-594 exit 1 in .
+"$PYTHON" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz_map_tuna_17 && "$PYTHON" -B -W error scripts/qi_zz_map.py --self-test && "$PYTHON" -B -O -W error scripts/qi_zz_map.py --self-test
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/qi_zz_map.py", line 571, in <module>
+    main()
+    ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/qi_zz_map.py", line 565, in main
+    check(args.check, args.catalogue, args.shots)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/qi_zz_map.py", line 487, in check
+    require((directory / relative).read_text(encoding="utf-8") == content, f"{relative}: differs from regeneration")
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/qi_zz_map.py", line 69, in require
+    raise ValueError(message)
+ValueError: batch-000/cases.json: differs from regeneration
+FAIL core-600     2.7s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --between-arm resu
+
+=== core-600 exit 1 in .
+PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T231043.083602Z --check
+results/live/2026-10-19T231043.083602Z/between-arm.json differs from the report its archived raw files regenerate
+FAIL core-602     5.3s  "$PYTHON" -B -W error qpu_planning_contracts.py --ground-ramsey-sweep
+
+=== core-602 exit 1 in gororoba_quantum
+"$PYTHON" -B -W error qpu_planning_contracts.py --ground-ramsey-sweep
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/gororoba_quantum/qpu_planning_contracts.py", line 3326, in <module>
+    _verify_ground_ramsey_sweep_only()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/gororoba_quantum/qpu_planning_contracts.py", line 2914, in _verify_ground_ramsey_sweep_only
+    _verify_ground_ramsey_sweep(snapshot)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/gororoba_quantum/qpu_planning_contracts.py", line 2586, in _verify_ground_ramsey_sweep
+    _require(
+    ~~~~~~~~^
+        moved["ramsey_analyzer_closure"]["files"]["scripts/n21_spectator_ramsey.py"]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        "a change to n21_orbit_rca.py alone leaves the approved record's policy equal",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/gororoba_quantum/qpu_planning_contracts.py", line 42, in _require
+    raise RuntimeError(message)
+RuntimeError: a change to n21_orbit_rca.py alone leaves the approved record's policy equal
+FAIL core-603     9.2s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_spectator_ramsey.py results/liv
+
+=== core-603 exit 1 in .
+PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_spectator_ramsey.py results/live/2026-10-20T031212.175942Z --check
+results/live/2026-10-20T031212.175942Z/ramsey.json differs from the report its archived raw files regenerate
+FAIL core-606    27.8s  "$PYTHON" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc
+
+=== core-606 exit 1 in .
+"$PYTHON" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/bdsc_certificate.py", line 1976, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/bdsc_certificate.py", line 1971, in main
+    check(args.check)
+    ~~~~~^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/bdsc_certificate.py", line 1682, in check
+    close(json.loads(fresh[name]), json.loads((directory / name).read_text(encoding="utf-8")), name)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/bdsc_certificate.py", line 1661, in close
+    close(a[key], b[key], f"{path}.{key}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/bdsc_certificate.py", line 1665, in close
+    close(x, y, f"{path}[{i}]")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/bdsc_certificate.py", line 1661, in close
+    close(a[key], b[key], f"{path}.{key}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/bdsc_certificate.py", line 1661, in close
+    close(a[key], b[key], f"{path}.{key}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/bdsc_certificate.py", line 1657, in close
+    require(abs(a - b) <= CHECK_TOLERANCE * max(1.0, abs(a), abs(b)), f"{path}: {a} against {b}")
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/provider-independent-replay-checks/scripts/bdsc_certificate.py", line 141, in require
+    raise ValueError(message)
+ValueError: controls.json.controls[5].truth.theta: 1.430542e-06 against 1.599798e-06
+FAIL core-612    53.1s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --between-arm resu
+
+=== core-612 exit 1 in .
+PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T151959.226467Z --check
+results/live/2026-10-19T151959.226467Z/between-arm.json differs from the report its archived raw files regenerate
+
+1 passed, 6 failed of 7 gates in shard 0/1 on CPU

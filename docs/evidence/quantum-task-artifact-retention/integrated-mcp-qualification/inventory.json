@@ -1,0 +1,63 @@
+{
+ "artifacts": [
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "2ec337e77e652c25931b2973db634a12b6c3a243",
+   "retained": "captures/74b5fd1ed10aa672ae3b863794b7e8b90748a819da1c4b36fbc5a48755292284.txt",
+   "retained_bytes": 1971,
+   "retained_sha256": "74b5fd1ed10aa672ae3b863794b7e8b90748a819da1c4b36fbc5a48755292284",
+   "source": "integrated-mcp-launcher",
+   "source_bytes": 1956,
+   "source_sha256": "3dc537e1434d9840aa3bc20b3040b26aaa163948d62aaf905a618dbafb614191"
+  },
+  {
+   "classification": "gate-ledger-summary",
+   "gate_count": 392,
+   "gate_keys_sha256": "8b8f5d5847bfd33e76b20f778bb7ed33a417781c9aa967615225a624f7f38266",
+   "git_blob_oid": "58c877ea7013330a3da337593d52d72c73737ab0",
+   "ledger_schema": "gororoba-gate-ledger-v2",
+   "reason": "A run_gates ledger regenerates from a rerun; its counts and digests identify it.",
+   "selected_count": 536,
+   "selected_sha256": "0f4b4c11f39a85cfc331e5cdae521f130395ffefbd42af0743f771cd7212dd07",
+   "source": "integrated-mcp-ledger",
+   "source_bytes": 5405220,
+   "source_sha256": "ea8e09f4e379d2195eee76a57968fb66254f8ea3d1235c417cdc9a9fcbdccd14"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "ae9bcb8ae10150fb9694c7002f175c0624d3f41c",
+   "retained": "captures/e507057ae5170908f8693072fa0357678cd6d1aef5deb74ae98e3a8081ce19c5.txt",
+   "retained_bytes": 680,
+   "retained_sha256": "e507057ae5170908f8693072fa0357678cd6d1aef5deb74ae98e3a8081ce19c5",
+   "source": "integrated-mcp-orchestration",
+   "source_bytes": 674,
+   "source_sha256": "192f41b453b2dbd4c724639a5c0f48ebbef7ef9a31a5b07f2d3e3fd26722a21c"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "7ce81a1627cc29479168b78a6f621edee22fdf8d",
+   "retained": "captures/4da34348f48865cea9244f98f6f61d12181d2ddd396df2d2313b9d045a653567.txt",
+   "retained_bytes": 108994,
+   "retained_sha256": "4da34348f48865cea9244f98f6f61d12181d2ddd396df2d2313b9d045a653567",
+   "source": "integrated-mcp-timings",
+   "source_bytes": 125325,
+   "source_sha256": "451ed84886583606749c47e219994fcf49b590770ed8f922c2b5071744d3e1d6"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "42a8fc152c2620cbba4969b17692de6a81efd7a7",
+   "retained": "captures/fe53a1f7ecd119ac92a80fce9c8b8b05c1a06b2d2fdf158137ef3620b10c95cc.txt",
+   "retained_bytes": 57626,
+   "retained_sha256": "fe53a1f7ecd119ac92a80fce9c8b8b05c1a06b2d2fdf158137ef3620b10c95cc",
+   "source": "integrated-mcp-validation",
+   "source_bytes": 57617,
+   "source_sha256": "07741c0039cc28d25e9d4c741e41384243eb418a101f4817637136dbce9b320a"
+  }
+ ],
+ "boundary": "Sanitized source snapshots and dispositions; original digests identify inputs, not preserved raw bytes or completed execution.",
+ "schema": "quantum-task-artifact-retention-v1"
+}

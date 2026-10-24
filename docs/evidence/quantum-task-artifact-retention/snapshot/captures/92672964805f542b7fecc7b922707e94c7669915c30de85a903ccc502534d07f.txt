@@ -1,0 +1,5 @@
+PASS core-347     0.2s  "$PYTHON" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents docs/notes
+PASS core-594     1.2s  "$PYTHON" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-submi
+PASS core-270    12.9s  "$PYTHON" -B -W error scripts/research_state.py --check
+
+3 passed, 0 failed of 3 gates in shard 0/1 on CPU

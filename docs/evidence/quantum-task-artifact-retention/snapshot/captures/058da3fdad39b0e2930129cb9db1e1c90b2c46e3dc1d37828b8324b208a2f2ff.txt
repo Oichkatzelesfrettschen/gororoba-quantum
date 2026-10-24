@@ -1,0 +1,20 @@
+{
+ "analysis_files_sha256": {
+  "order-batch-00/hypercomplex-analysis.json": "0bc4057667e29a90eb8011b3b07653693292f84cd94a087c0aa3f4a858bcc1ae",
+  "order-batch-01/hypercomplex-analysis.json": "83889e52ddb342591251c52398fc68588a5f515c268932a9edb61186ddffbca2",
+  "order-batch-02/hypercomplex-analysis.json": "864422ca90b971e2174a0f24838772a32c1c6acd93601d27df2372ab0e94eb0f",
+  "order-batch-03/hypercomplex-analysis.json": "ad791fbe36bd5220cbbeb3dc8b65f39f69122fe974ac987b9d1968d6b6fef25b",
+  "order-batch-04/hypercomplex-analysis.json": "34dc1530c70289e9509defb51f06775c9c9d3ba27040d04d40fa2897ccf7dfa0",
+  "order-batch-05/hypercomplex-analysis.json": "f374fd93f4ae949f756508ea5639a53f8c01ecd55f81d0ac654764e62ec59c0a",
+  "order-batch-06/hypercomplex-analysis.json": "0e76fb592e1a09c0f65857eba9c5c785dbec6e57729af27f0ae88e37c80e234d",
+  "order-batch-07/hypercomplex-analysis.json": "5504e32ee3e76cd3ae8500434e5787dc00808879f3ed46b941f1423ab3082c4a"
+ },
+ "interpretation": "raw measured frequencies and ideal predictions; fixed-order confounding; confidence coverage unestablished",
+ "matplotlib_version": "3.11.2",
+ "png_sha256": "5dee086e1d829b9272e8b05ee7110300931bd46724d85d917d544b027fb248ad",
+ "producer": "docs/evidence/hypercomplex-operators/tuna-order-measured-probabilities.py",
+ "producer_sha256": "c93293824d6560351471f89807e2cd930453f0676562e044b8b7e615eb715cb1",
+ "schema": "hypercomplex-measured-probabilities-figure-v1",
+ "summary": "docs/local/hypercomplex-operator-evidence/figure-summary-mutation/summary.json",
+ "summary_sha256": "bae04a5b6bbeb14b7f380f7bc8b060b44e83b0fe3c5d59029eaa3b9fd48dea0a"
+}

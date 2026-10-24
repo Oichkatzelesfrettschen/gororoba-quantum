@@ -1,0 +1,17 @@
+Waiting for frozen-source gate runner 2021133
+Traceback (most recent call last):
+  File "${TEMP}/quandela-final-head-qualification.py", line 19, in <module>
+    time.sleep(30)
+    ~~~~~~~~~~^^^^
+KeyboardInterrupt
+Waiting for frozen-source gate runner 2021133
+Traceback (most recent call last):
+  File "${TEMP}/quandela-final-head-qualification.py", line 19, in <module>
+    time.sleep(30)
+    ~~~~~~~~~~^^^^
+KeyboardInterrupt
+Waiting for frozen-source gate runner 2021133
+Frozen-source completion: ('535', '1', '536') ; final head reruns failed or changed gates
+Starting exact final-head qualification 278d41587c4e78a6406023536b5b4b5d77bca0aa
+Final-head gate runner exit 0
+exit=0

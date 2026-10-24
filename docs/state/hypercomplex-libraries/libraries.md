@@ -1,6 +1,6 @@
 # Python libraries in the hypercomplex campaign
 
-The inventory explains 349 distributions over the declared source surfaces.
+The inventory explains 362 distributions over the declared source surfaces.
 
 Each row names a distribution, its scientific or operational role, and the observed host version. The JSON register retains environment pins and import locations separately. A missing host distribution may belong to an isolated provider environment. Current import locations and unresolved roots follow a fresh tracked-source AST scan through the retained normalized module mapping. Historical import locations remain separately recorded.
 
@@ -22,12 +22,15 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | annotated-types | 0.8.0 | SDK/environment infrastructure: Reusable constraint types to use with typing.Annotated |
 | antlr4-python3-runtime | 4.13.2 | Parser runtime for OpenQASM import. |
 | anyio | 4.15.1 | SDK/environment infrastructure: High-level concurrency and networking framework on top of asyncio or Trio |
+| ast-serialize | 0.12.1 | SDK/environment infrastructure: Python bindings for mypy AST serialization |
 | asteval | 1.0.10 | SDK/environment infrastructure: Safe, minimalistic evaluator of python expression using ast module |
 | asttokens | 3.0.2 | SDK/environment infrastructure: Annotate AST trees with source code positions |
 | attrs | 26.1.0 | SDK/environment infrastructure: Classes Without Boilerplate |
+| autograd | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | autoray | 0.11.0 | Array dispatch for qualified tensor-network backends. |
 | babel | 2.18.0 | SDK/environment infrastructure: Internationalization utilities |
 | benchpress | separate/unobserved | Documented compiler benchmark alternative; qualification needs the same full-operator oracle. |
+| bluequbit | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | build | 1.6.1 | SDK/environment infrastructure: A simple, correct Python build frontend |
 | cayley-calculator | 1.3.1 | Independent multiplication reference; qualify each special function before use. |
 | cayley-dickson | 0.1.0 | Independent recursive doubling reference; local reading and checks under its license boundary. |
@@ -57,6 +60,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | cython | 3.3.0 | SDK/environment infrastructure: The Cython compiler for writing C extensions in the Python language. |
 | cytoolz | 1.1.0 | SDK/environment infrastructure: Cython implementation of Toolz: High performance functional utilities |
 | debugpy | separate/unobserved | SDK/environment infrastructure: An implementation of the Debug Adapter Protocol for Python |
+| decorator | 5.3.1 | SDK/environment infrastructure: Decorators for Humans |
 | dill | 0.4.1 | SDK/environment infrastructure: serialize all of Python |
 | dimod | separate/unobserved | SDK/environment infrastructure: A shared API for binary quadratic model samplers. |
 | distro | 1.9.0 | SDK/environment infrastructure: Distro - an OS platform information API |
@@ -74,6 +78,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | geoalg | separate/unobserved | Documented algebra candidate: calculators for quaternions, octonions, sedenions and split "ultronions"; Clifford algebra. Decision: **skip**: reading and cross-checking only, like cayley-dickson |
 | gmpy2 | 2.3.2 | Exact integer/rational arithmetic and accelerated symbolic coefficient support. |
 | googleapis-common-protos | separate/unobserved | SDK/environment infrastructure: Common protobufs used in Google APIs |
+| graphviz | 0.21 | SDK/environment infrastructure: Simple Python interface for Graphviz |
 | grpcio | 1.84.0 | SDK/environment infrastructure: HTTP/2-based RPC framework |
 | h11 | 0.16.0 | SDK/environment infrastructure: A pure-Python, bring-your-own-I/O implementation of HTTP/1.1 |
 | highspy | 1.15.1 | SDK/environment infrastructure: A thin set of pybind11 wrappers to HiGHS |
@@ -124,6 +129,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | kingdon | 3.0.0 | Generated symbolic or batched Clifford operators. |
 | kiwisolver | 1.5.1 | SDK/environment infrastructure: A fast implementation of the Cassowary constraint solver |
 | libqasm | separate/unobserved | cQASM parsing and validation before upload. |
+| librt | 0.16.0 | SDK/environment infrastructure: Mypyc runtime library |
 | llvmlite | 0.50.0 | SDK/environment infrastructure: lightweight wrapper around basic LLVM functionality |
 | lmfit | 1.3.4 | Identifiable device/noise parameter fitting with retained residuals. |
 | mako | 1.4.3.dev0 | SDK/environment infrastructure: A super-fast templating language that borrows the best ideas from the existing templating languages. |
@@ -144,6 +150,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | multicomplex | separate/unobserved | Documented algebra candidate: multicomplex numbers C++ extension. Decision: **skip** |
 | multidict | 7.0.0 | SDK/environment infrastructure: multidict implementation |
 | mypy | 2.4.0 | Pinned static type gate. |
+| mypy-extensions | 1.1.0 | SDK/environment infrastructure: Type system extensions for programs checked with the mypy type checker. |
 | myst-nb | separate/unobserved | SDK/environment infrastructure: A Jupyter Notebook Sphinx reader built on top of the MyST markdown parser. |
 | myst-parser | 5.1.0 | SDK/environment infrastructure: An extended [CommonMark](https://spec.commonmark.org/) compliant parser, |
 | nbclient | 0.11.0 | SDK/environment infrastructure: A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor. |
@@ -192,6 +199,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | padic | separate/unobserved | Documented algebra candidate: p-adic intervals `a p^v + O(p^N)`, Hensel roots, log/exp/sin/cos. Decision: **skip**: pyadic covers Fraction input and finite-field work; single-author, 2023 |
 | pandas | 2.3.3 | Tabular evidence joins and summaries. |
 | parso | 0.8.7 | SDK/environment infrastructure: A Python Parser |
+| pathspec | 1.1.1 | SDK/environment infrastructure: Utility library for gitignore style pattern matching of file paths. |
 | pauli-prop | separate/unobserved | Documented ecosystem candidate: skip: Pauli propagation for large observables |
 | pennylane | separate/unobserved | Documented alternative differentiable circuit stack; not required for current cases. |
 | pennylane-quantuminspire | separate/unobserved | Documented optional provider adapter; preserve its separate compatibility caps. |
@@ -226,6 +234,8 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | pyparsing | 3.3.3 | SDK/environment infrastructure: pyparsing - Classes and methods to define and execute parsing grammars |
 | pyproject-hooks | 1.3.3 | SDK/environment infrastructure: Wrappers to call pyproject.toml-based build backend hooks. |
 | pyqasm | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
+| pyqpanda3 | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
+| pyquafu | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | pyquaternion | 0.9.9 | Scalar quaternion and rotation bookkeeping. |
 | pyspnego | 0.12.4 | SDK/environment infrastructure: Windows Negotiate Authentication Client and Server |
 | pytest | 9.1.1 | Behavioral regressions and mutation checks. |
@@ -276,6 +286,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | qiskit-ibm-runtime-mcp-server | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | qiskit-ibm-transpiler | separate/unobserved | Documented ecosystem candidate: skip: cloud AI passes (credential) and a hard conflict with the pin |
 | qiskit-ibm-transpiler-mcp-server | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
+| qiskit-ionq | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | qiskit-machine-learning | separate/unobserved | Documented ecosystem candidate: skip |
 | qiskit-mcp-servers | separate/unobserved | SDK/environment infrastructure: Environment support dependency |
 | qiskit-mitigation | 0.1.1 | Hardware mitigation tasks; invocation can submit and needs the written case. |
@@ -317,6 +328,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | sinter | separate/unobserved | Documented ecosystem candidate: skip, same reason as pymatching |
 | six | 1.17.0 | SDK/environment infrastructure: Python 2 and 3 compatibility utilities |
 | snowballstemmer | 3.1.1 | SDK/environment infrastructure: This package provides 36 stemmers for 34 languages generated from Snowball algorithms. |
+| sparse | 0.17.0 | SDK/environment infrastructure: Sparse n-dimensional arrays for the PyData ecosystem |
 | sparsediffpy | 0.8.0 | SDK/environment infrastructure: Python bindings for SparseDiffEngine algorithmic differentiation |
 | sphinx | 9.1.0 | SDK/environment infrastructure: Python documentation generator |
 | sphinxcontrib-applehelp | 2.0.0 | SDK/environment infrastructure: sphinxcontrib-applehelp is a Sphinx extension which outputs Apple help books |
@@ -352,6 +364,7 @@ CVXPY models reconstruction constraints; SCS and Clarabel expose conic/PSD capab
 | types-tqdm | separate/unobserved | SDK/environment infrastructure: Typing stubs for tqdm |
 | typing-extensions | 4.16.0 | SDK/environment infrastructure: Backported and Experimental Type Hints for Python 3.9+ |
 | typing-inspection | 0.4.4 | SDK/environment infrastructure: Runtime typing introspection tools |
+| tzdata | 2026.5 | SDK/environment infrastructure: Provider of IANA time zone data |
 | uncertainties | 3.2.4 | SDK/environment infrastructure: calculations with values with uncertainties, error propagation |
 | urllib3 | 2.8.0 | SDK/environment infrastructure: HTTP library with thread-safe connection pooling, file post, and more. |
 | uv | separate/unobserved | Pinned environment installer used by Kaggle kernel bootstrap; records package resolution rather than quantum evidence. |

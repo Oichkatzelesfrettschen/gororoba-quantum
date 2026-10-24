@@ -1,0 +1,24 @@
+[
+ {
+  "analysis_sha256": "0bc4057667e29a90eb8011b3b07653693292f84cd94a087c0aa3f4a858bcc1ae",
+  "batch": "order-batch-00",
+  "dark_probability": 0.03985595703125,
+  "native_dark": 0.0,
+  "science_counts": [
+   15731,
+   653
+  ],
+  "science_job": 1565782
+ },
+ {
+  "analysis_sha256": "83889e52ddb342591251c52398fc68588a5f515c268932a9edb61186ddffbca2",
+  "batch": "order-batch-01",
+  "dark_probability": 0.0467529296875,
+  "native_dark": 0.0,
+  "science_counts": [
+   15618,
+   766
+  ],
+  "science_job": 1565805
+ }
+]

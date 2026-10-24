@@ -1,0 +1,37 @@
+{
+ "cpu_capacity": 12,
+ "gates": [
+  {
+   "estimated_seconds": 0.7,
+   "name": "core-000",
+   "resources": {
+    "max_rss_kib": 114816,
+    "system_seconds": 0.10949199999999999,
+    "user_seconds": 0.651473,
+    "workers": 4
+   },
+   "runtime": "current",
+   "seconds": 2.6546759370248765,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 51.6,
+   "name": "core-039",
+   "resources": {
+    "max_rss_kib": 722168,
+    "system_seconds": 0.63755,
+    "user_seconds": 53.543851,
+    "workers": 4
+   },
+   "runtime": "current",
+   "seconds": 228.46111524800654,
+   "status": 0
+  }
+ ],
+ "ledger_audit_misses": [],
+ "schema": "gororoba-gate-timings-v1",
+ "shard": "0/1",
+ "shard_cpus": 4,
+ "skipped": [],
+ "wall_seconds": 228.46202387101948
+}

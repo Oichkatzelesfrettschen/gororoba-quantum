@@ -1,0 +1,98 @@
+[
+ {
+  "abs_sha256": "afb0959e2a23dfef12a5c02c6c0cc473f606ca6e292e0a71c68042a4ba1196e6",
+  "bytes": 568260,
+  "evidence_url": "https://arxiv.org/abs/1806.00612v1",
+  "license_urls": [
+   "http://arxiv.org/licenses/nonexclusive-distrib/1.0/"
+  ],
+  "sha256": "4258820f00014b03fad4359342cb826dec3729f95fcbd4265461c8fb092cf248",
+  "source_url": "https://arxiv.org/pdf/1806.00612v1",
+  "title": "$SU(3)_C\\times SU(2)_L\\times U(1)_Y\\left( \\times U(1)_X \\right)$ as a symmetry of division algebraic ladder operators",
+  "version": "1806.00612v1"
+ },
+ {
+  "abs_sha256": "baef6de8b2ddbea6dbbf753b21938f13fdeeaed36160999e1bc2aa3651b7f38b",
+  "bytes": 639563,
+  "evidence_url": "https://arxiv.org/abs/2409.17948v2",
+  "license_urls": [
+   "http://creativecommons.org/licenses/by/4.0/"
+  ],
+  "sha256": "0efc1c5ef05118d942084a132e09e4c7ea36e5da2ff135c56ea4756b094acbb0",
+  "source_url": "https://arxiv.org/pdf/2409.17948v2",
+  "title": "Three Generations and a Trio of Trialities",
+  "version": "2409.17948v2"
+ },
+ {
+  "abs_sha256": "7a815e11744476ec8215cef56b85d8a824bbdebfe76aefd96c89ec7a401f18d3",
+  "bytes": 964722,
+  "evidence_url": "https://arxiv.org/abs/2607.18450v3",
+  "license_urls": [
+   "http://creativecommons.org/licenses/by/4.0/"
+  ],
+  "sha256": "f1e20f1014d696d6566f41540a4a9027a546aab044459a5a60d534fdd9e75d02",
+  "source_url": "https://arxiv.org/pdf/2607.18450v3",
+  "title": "Standard Model Symmetries and the Nested Embeddings of $\\mathbb{R}\\subset\\mathbb{C}\\subset\\mathbb{H}\\subset\\mathbb{O}$",
+  "version": "2607.18450v3"
+ },
+ {
+  "abs_sha256": "53a51e8be01e28b3062664a6a34634ea4cc33681cd1e3b9bf40b571caa023f35",
+  "bytes": 4115838,
+  "evidence_url": "https://arxiv.org/abs/2505.07923v4",
+  "license_urls": [
+   "http://creativecommons.org/licenses/by/4.0/"
+  ],
+  "sha256": "11aa3c8f5888f742ec3f64f657eb8974551a31759d817c9567d89b5271f11957",
+  "source_url": "https://arxiv.org/pdf/2505.07923v4",
+  "title": "A Superalgebra Within: representations of lightest standard model particles form a $\\mathbb{Z}_2^5$-graded algebra",
+  "version": "2505.07923v4"
+ },
+ {
+  "abs_sha256": "d69ddbaacd92b6fd5611f28ab535e6fa494e3211dd486e491b0a1c097fe07793",
+  "bytes": 411642,
+  "evidence_url": "https://arxiv.org/abs/2604.24795v1",
+  "license_urls": [
+   "http://arxiv.org/licenses/nonexclusive-distrib/1.0/"
+  ],
+  "sha256": "6d0e490f2a039d55a82cdecaeb209620255bb26e68b893b9344c0c5a884b894f",
+  "source_url": "https://arxiv.org/pdf/2604.24795v1",
+  "title": "Higgs Sector and Flavour Structure in an Algebraic Three-Generation Model with S3 Family Symmetry",
+  "version": "2604.24795v1"
+ },
+ {
+  "abs_sha256": "a634ca46fd93ae96ff5a43f34f8fd6c415583840a5692ae3daf3e86d9a044197",
+  "bytes": 368747,
+  "evidence_url": "https://arxiv.org/abs/quant-ph/0307017v2",
+  "license_urls": [
+   "http://arxiv.org/licenses/assumed-1991-2003/"
+  ],
+  "sha256": "d2e0cc6513ed682874b4bd2ea3fc4851f0e0080f3299a861f2466494e21d902c",
+  "source_url": "https://arxiv.org/pdf/quant-ph/0307017v2",
+  "title": "Quaternionic Computing",
+  "version": "quant-ph/0307017v2"
+ },
+ {
+  "abs_sha256": "572e5c26ab1613a18d2413f0c851b1bb3724c6158a31fd238766cca3bbfcb688",
+  "bytes": 725328,
+  "evidence_url": "https://arxiv.org/abs/1709.09246v3",
+  "license_urls": [
+   "http://arxiv.org/licenses/nonexclusive-distrib/1.0/"
+  ],
+  "sha256": "992f51df4be44640c7a48269ad347d1c157f498a60654293d864f6b2bcd91397",
+  "source_url": "https://arxiv.org/pdf/1709.09246v3",
+  "title": "Quantum theory in quaternionic Hilbert space: How Poincar\\&#39;e symmetry reduces the theory to the standard complex one",
+  "version": "1709.09246v3"
+ },
+ {
+  "abs_sha256": "5a2aff4f503ce1d944baadb7bc580c3fc9bc1423d51c836926a89bb5b30202f0",
+  "bytes": 411224,
+  "evidence_url": "https://arxiv.org/abs/2608.20259v1",
+  "license_urls": [
+   "http://creativecommons.org/licenses/by/4.0/"
+  ],
+  "sha256": "7358ade4b192c07ff30a5107ddfd7afea47a32fe2d4ce754a6bff3681311a0dc",
+  "source_url": "https://arxiv.org/pdf/2608.20259v1",
+  "title": "Operational Foundations for Quaternionic and Octonionic Quantum Models: Exact Quaternionic Channels and Error Correction, Para-Linear Operators, and Categorical Closure Boundaries Beyond Associativity",
+  "version": "2608.20259v1"
+ }
+]
