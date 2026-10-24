@@ -4084,6 +4084,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_physical_models.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01 docs/evidence/ascella-order-coefficients/physical-models.json --check",
+   "name": "core-ascella-signed-coherence-physical-models-replay",
+   "seconds": 360.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
