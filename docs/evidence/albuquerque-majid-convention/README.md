@@ -14,7 +14,10 @@ cd_core only as the comparison target.
 | `F_AM(a, b)` against `cd_sign(n, a, b)`, the untransposed negative control | the same pairs | 0, 6, 42, 210, 930, 3906 |
 | Eq. (11) associator of `F_AM` against `triple_sign` and the support of `cd_core.associator` on basis units | 37,448 triples, n = 2 to 32 | 0 at every n |
 
-The associator is blind to the transpose, because `phi(x, y, z) = phi(z, y, x)`
+The control counts are (n - 1)(n - 2), the ordered pairs of distinct nonzero
+units: they anticommute, so reversing the arguments flips exactly their signs,
+and units sharing an index or involving the identity commute. The associator is
+blind to the transpose, because `phi(x, y, z) = phi(z, y, x)`
 (Lemma 3.4), so the raw-cochain comparison is the one that detects an omitted
 transpose. Its first separating pair is n = 4, a = 1, b = 2: `F_AM(1, 2) = -1`
 while `cd_sign(4, 1, 2) = +1`, recorded as `untransposed_witness`. Replacing the
