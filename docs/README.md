@@ -113,6 +113,30 @@ differs from it only in the `cd_core.py` digest.
 | [2103.12805.md](notes/papers/2103.12805.md) | Flaut and Boboescu 2021 twist-tree recursion and the twisted-group-algebra theorem for the Cayley-Dickson process (hosted, CC BY 4.0) |
 | [1003.0429.md](notes/papers/1003.0429.md) | Morier-Genoud and Ovsienko 2011 cubic twisted group algebras; the octonion cochain and the Cayley-Dickson algebras outside the cubic class |
 | [pmc-4957665-nonlinearity-measures.md](notes/papers/pmc-4957665-nonlinearity-measures.md) | nonlinearity measures for Boolean functions |
+| [2306.00874.md](notes/papers/2306.00874.md) | Maring et al. 2024 Quandela Ascella platform: source, chip, phase-voltage model and gate benchmarks |
+| [2310.15349.md](notes/papers/2310.15349.md) | Fyrillas et al. 2024 clear-box machine-learning characterization of a 12-mode photonic chip: imperfection model and amplitude fidelities (hosted, CC BY 4.0) |
+| [2506.05988.md](notes/papers/2506.05988.md) | Fyrillas et al. 2025 induced phase shifters and the acyclic-pruned-graph crosstalk-robustness criterion (hosted, CC BY 4.0) |
+| [2606.18408.md](notes/papers/2606.18408.md) | Tully et al. 2026 Walsh parity-check filters on Belenos: fixed-pattern bias, compilation-dependent leakage and a calibration-linked HOM episode (unrefereed) |
+| [2005.01743.md](notes/papers/2005.01743.md) | Ollivier et al. 2021 Hong-Ou-Mandel visibility with multi-photon noise: separation of g2 and indistinguishability |
+| [2004.14018.md](notes/papers/2004.14018.md) | White et al. 2020 process-tensor characterization and the intervention-based memory lower bound on IBM devices |
+| [riley-2008-nist-sp-1065.md](notes/papers/riley-2008-nist-sp-1065.md) | Riley 2008 NIST SP 1065: Allan, overlapping Allan and modified Allan variances and the noise types they separate |
+| [quant-ph-0501020.md](notes/papers/quant-ph-0501020.md) | Toth and Guhne 2005 stabilizer entanglement witnesses and the two-qubit Bell-fidelity form F > 1/2 |
+| [jafferis-2022-traversable-wormhole.md](notes/papers/jafferis-2022-traversable-wormhole.md) | Jafferis et al. 2022 traversable wormhole dynamics on a quantum processor: abstract-level record of a closed article |
+| [2302.07897.md](notes/papers/2302.07897.md) | Kobrin, Schuster and Yao 2023 comment on the wormhole-dynamics experiment (hosted, CC BY 4.0) |
+| [2303.15423.md](notes/papers/2303.15423.md) | Jafferis et al. 2023 reply to the comment: counterfactual scenarios, size winding and random-Hamiltonian null (hosted, CC BY 4.0) |
+| [2310.16903.md](notes/papers/2310.16903.md) | Silvestri et al. 2024 -- fiber Sagnac interferometer with two-photon entanglement measures Earth's rotation (715 m^2; 2.8 and 5.5 mrad) |
+| [1807.06205.md](notes/papers/1807.06205.md) | Planck 2018 results I: solar-system dipole velocity relative to the CMB (369.82 km/s) and its direction |
+| [2206.00570.md](notes/papers/2206.00570.md) | Dreissen et al. 2022 -- Yb+ composite-pulse Ramsey bounds on Lorentz violation at the 10^-21 level, sidereal modulation |
+| [quant-ph-0203033.md](notes/papers/quant-ph-0203033.md) | Peres, Scudo and Terno 2002 -- spin entropy of a free spin-1/2 particle is not Lorentz covariant |
+| [2109.12238.md](notes/papers/2109.12238.md) | Bothwell et al. 2022 -- gravitational redshift gradient resolved within a millimeter strontium sample (-1.09e-19 per mm predicted) |
+| [1105.4531.md](notes/papers/1105.4531.md) | Zych et al. 2011 -- interferometric visibility as a witness of general-relativistic proper time, V = |cos(Delta E Delta V Delta T / 2 hbar c^2)| |
+| [1311.1095.md](notes/papers/1311.1095.md) | Pikovski et al. 2015 -- decoherence of a composite particle from gravitational time dilation, tau_dec formula and estimate |
+| [1707.01339.md](notes/papers/1707.01339.md) | Yin et al. 2017 -- satellite entanglement distribution over 1203 km, CHSH S = 2.37 +- 0.09 |
+| [ashby-nelson-2009-gps-relativity.md](notes/papers/ashby-nelson-2009-gps-relativity.md) | Ashby and Nelson 2009 -- free-fall cancellation of solar gravity and the tidal terms in terrestrial clock comparisons (NIST author PDF) |
+| [ashby-2018-null-test-lpi.md](notes/papers/ashby-2018-null-test-lpi.md) | Ashby, Parker and Patla 2018 -- local position invariance null test, beta = (2.2 +- 2.5)e-7 (NIST-hosted PDF) |
+| [2001.09190.md](notes/papers/2001.09190.md) | Vepsäläinen et al. 2020 -- ionizing radiation limits transmon T1 to about 4 ms; power density and shield test |
+| [2402.03208.md](notes/papers/2402.03208.md) | Harrington et al. 2025 -- cosmic rays cause 17.1 % of correlated qubit errors; coincidence rates, qubit participation, recovery times |
+| [2104.05219.md](notes/papers/2104.05219.md) | McEwen et al. 2022 -- chip-wide cosmic-ray error bursts, one per 10 s, 25 ms recovery, 26 qubits |
 
 ### Algebra and proofs
 

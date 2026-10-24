@@ -35,13 +35,13 @@ and compiler publications.
 
 | # | arXiv or id | Short name | Topic | Depth |
 |---|---|---|---|---|
-| 1 | 2306.00874v1 | Maring, Ascella platform | d, a, b | full |
+| 1 | 2306.00874v1 | [Maring, Ascella platform](../papers/2306.00874.md) | d, a, b | full |
 | 2 | 2308.14582v1 | Maring, cloud availability | d | sections |
 | 3 | 2505.01609v2 | Barzaghi, 24-mode glass chip | d, a, b | full |
 | 4 | 2510.07240v2 | Thomas, classical shadows (Belenos hardware) | d | sections |
 | 5 | 2609.14153v1 | Karooby, QSP on Belenos | d | sections |
 | 6 | 2605.10471v1 | Lopez Carreno, photonic reservoir | d | sections |
-| 7 | 2606.18408v2 | Tully, Walsh filters on Belenos | d | sections |
+| 7 | 2606.18408v2 | [Tully, Walsh filters on Belenos](../papers/2606.18408.md) | d | sections |
 | 8 | 2604.04691v2 | Franco, IFM on Ascella | d, c | sections |
 | 9 | 2609.13379v1 | Forster, subcircuit compilation | c, d | sections |
 | 10 | 2202.04735v1 | Mezher, photonic quality factor | d | sections |
@@ -50,8 +50,8 @@ and compiler publications.
 | 13 | 1208.2868v1 | Laing, O'Brien | a | sections |
 | 14 | 1210.6463v3 | Rahimi-Keshari | a | sections |
 | 15 | 1508.00283v2 | Dhand, accurate characterization | a | sections |
-| 16 | 2310.15349v2 | Fyrillas, clear-box ML | a, c, d | sections |
-| 17 | 2506.05988v1 | Fyrillas, induced phase shifters | a, b, c, d | sections |
+| 16 | 2310.15349v2 | [Fyrillas, clear-box ML](../papers/2310.15349.md) | a, c, d | sections |
+| 17 | 2506.05988v1 | [Fyrillas, induced phase shifters](../papers/2506.05988.md) | a, b, c, d | sections |
 | 18 | 2310.19718v1 | Pentangelo, laser-written UPPs | a, b | sections |
 | 19 | 2203.01801v5 | Taballione, 20-mode processor | a, b | sections |
 | 20 | 1603.08788v2 | Clements | b | sections |
@@ -119,7 +119,8 @@ and compiler publications.
   general-purpose single-photon-based quantum computing platform." Published
   as "A versatile single-photon-based quantum computing platform," Nature
   Photonics 18, 603-609 (2024). arXiv:2306.00874v1 (1 Jun 2023, the only
-  version). https://arxiv.org/abs/2306.00874. Retrieved 2026-10-17. Depth: full.
+  version). https://arxiv.org/abs/2306.00874. Retrieved 2026-10-17. Depth: full. Source-library note:
+  [2306.00874.md](../papers/2306.00874.md).
 - Summary. Ascella is the 12-mode predecessor of Belenos: a quantum-dot source,
   an active demultiplexer, a 12-mode Si3N4 rectangular interferometer with 126
   voltage-controlled thermo-optic phase shifters and 132 directional couplers,
@@ -351,7 +352,8 @@ and compiler publications.
 - Citation: E. Tully, J. Washburn, M. Simons. "Characterization of nested
   Walsh parity-check filters in a single-photon eight-mode register on a cloud
   photonic processor." arXiv:2606.18408v2 (16 Jun 2026).
-  https://arxiv.org/abs/2606.18408. Retrieved 2026-10-17. Depth: sections
+  https://arxiv.org/abs/2606.18408. Source-library note:
+  [2606.18408.md](../papers/2606.18408.md). Retrieved 2026-10-17. Depth: sections
   (hardware, Table II, Table IX, systematics). Provenance caveat: an
   unrefereed preprint by authors outside Quandela; its numbers are recorded as
   reported and unreplicated.
@@ -637,7 +639,8 @@ and compiler publications.
   "Scalable machine learning-assisted clear-box characterization for
   optimally controlled photonic circuits." Optica 11(3), 427-436 (2024).
   arXiv:2310.15349v2 (23 Oct 2023, v2 22 Feb 2024).
-  https://arxiv.org/abs/2310.15349. Retrieved 2026-10-17. Depth: sections
+  https://arxiv.org/abs/2310.15349. Source-library note:
+  [2310.15349.md](../papers/2310.15349.md). Retrieved 2026-10-17. Depth: sections
   (Secs. I-V, Apps. B, D, E, F read; Apps. A, C, G, H skimmed).
 - Summary. A virtual replica of the chip is trained by gradient descent so that
   its predicted output intensity distributions match measured ones. The
@@ -716,7 +719,8 @@ and compiler publications.
 - Citation: A. Fyrillas, N. Heurtel, S. Piacentini, N. Maring, J. Senellart,
   N. Belabas. "Resource-efficient crosstalk mitigation for the high-fidelity
   operation of photonic integrated circuits with induced phase shifters."
-  arXiv:2506.05988v1 (6 Jun 2025). https://arxiv.org/abs/2506.05988. Retrieved
+  arXiv:2506.05988v1 (6 Jun 2025). https://arxiv.org/abs/2506.05988. Source-library note:
+  [2506.05988.md](../papers/2506.05988.md). Retrieved
   2026-10-17. Depth: sections (Secs. II-V, Methods; appendices skimmed).
 - Summary. The ML characterization of source 16 recovered unphysical long-range
   crosstalk. The paper models crosstalk on bare waveguide sections as
