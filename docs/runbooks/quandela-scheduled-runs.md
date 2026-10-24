@@ -57,6 +57,7 @@ whose jobs exist as frozen case directories under `results/quandela/cases/`:
 | `approval` | the user's approval, quoted; it reaches every `submission.json` |
 | `case` | the written case document |
 | `platform`, `max_total_credits` | the platform and the case's total ceiling, at least the sum of the job ceilings |
+| `on_stop` | optional, `halt` (the default) or `skip`: under `skip`, for a series of independent jobs, a held or failed job keeps its record and the next job runs; a `skip` schedule names no `after` |
 | `jobs[].key`, `run_name` | the job's key and the run directory suffix, `STAMP-RUN_NAME`; an enabled schedule's run names are new, since a run directory carrying one without an intent stops the job |
 | `jobs[].case_dir`, `inputs_sha256` | the frozen case and the sha256 of its `cases.json` and `circuit.json` |
 | `jobs[].body_sha256` | the planned request body's sha256 without `process_id`, written by `pin` |
@@ -92,6 +93,7 @@ every step:
 
 | state | step |
 | --- | --- |
+| pending, due within an hour | sleep on the runner until `not_before` when the job's `expected_seconds` and the 10-minute collection margin still fit before the tick's deadline, then step on |
 | pending, due, platform or token not ready | wait: the platform reads a status outside `available` and `admit_statuses` (a calibration), or the token has a running or queued job; nothing is staged |
 | pending, due, ready | stage the run directory, plan, compare `body_sha256`, run the plan check, write `KEY.intent.json` (outcome `prepared`, pushed before submit) |
 | prepared by this workflow run | `qd_platform.py submit` with the schedule's approval |
@@ -115,16 +117,20 @@ retained run directory to appear there.
 
 | state | meaning | step |
 | --- | --- | --- |
-| held | a stop condition before anything was sent; `KEY.hold.json` names the stage (`plan`, `body`, `plan_check`, `submit`, `latest_start`) | the case's own stop rule decides; a resubmission is a schedule amendment with a new key, reviewed and merged like the first |
+| held | a stop condition before anything was sent; `KEY.hold.json` names the stage (`plan`, `body`, `plan_check`, `submit`, `latest_start`) | under `halt`, the case's own stop rule decides; a resubmission is a schedule amendment with a new key, reviewed and merged like the first; under `skip`, the next job runs |
 | interrupted | an intent from an earlier workflow run with no checkpoint, an interrupted checkpoint, or a missing run directory | read the provider's job list (MCP `qd_job_status`) for a job posted at the intent's time; the request may or may not have been posted |
-| failed | the matched check or the snapshot failed; the receipt holds the output | analyze the run; later jobs stay unsent |
+| failed | the matched check or the snapshot failed; the receipt holds the output | analyze the run; under `halt` later jobs stay unsent, under `skip` the next job runs |
 | foreign | a run directory with the job's run_name exists without an intent | a job ran outside the scheduler; amend the schedule |
 
 ## Limits
 
 - GitHub starts scheduled workflows late, by tens of minutes under load, and
-  drops some; `not_before` and `min_gap_seconds` are lower bounds, so an
-  analysis reads the provider's recorded times, never the schedule's.
+  drops some: the first twelve ticks of the workflow fired 9 to 55 minutes
+  apart against a 15-minute cron. A tick that finds a job due within an
+  hour sleeps until it, so a start window (`latest_start` after
+  `not_before`) of about 90 minutes or more survives one dropped tick.
+  `not_before` and `min_gap_seconds` stay lower bounds, so an analysis
+  reads the provider's recorded times, never the schedule's.
 - GitHub disables a scheduled workflow after 60 days without repository
   activity; a dispatch or a push re-enables it.
 - `workflow_dispatch` reaches a workflow only once its file is on main.

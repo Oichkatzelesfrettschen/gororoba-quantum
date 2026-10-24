@@ -1,0 +1,222 @@
+{
+ "approval": "User, 2026-10-24: \"I approve but get me those questions, maybe 7 jobs?\"; answers: design \"elucidate the optimal jobs, runs, etc.\", spacing \"Every 2 h, ~12 h span (Recommended)\", on failure \"Skip it, continue (Recommended)\", timing \"Ticks + wait-until-due (Recommended)\". Written case: docs/design/bdsc-qualification.md#drift-series-of-one-frozen-request, 7 jobs of 1.12 credits, 7.84 credits.",
+ "case": "docs/design/bdsc-qualification.md",
+ "enabled": true,
+ "jobs": [
+  {
+   "admit_statuses": [
+    "running"
+   ],
+   "after": null,
+   "body_sha256": "3d5db1e25213d7a915be00a5072da9c754ffc34fed0ebe5fcb10483a0facf2dd",
+   "case_dir": "results/quandela/cases/bdsc_stationarity/b1-j1",
+   "expected_seconds": 213.6,
+   "inputs_sha256": {
+    "cases.json": "528934f57cd4f63089e4e08041639be57259e481d4eaeb93e7cc4835ed333344",
+    "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   },
+   "key": "t1",
+   "latest_start": "2026-10-24T13:40:00Z",
+   "matched_check": [
+    "scripts/bdsc_stationarity.py",
+    "--matched-check",
+    "{run}"
+   ],
+   "max_credits": 1.12,
+   "not_before": "2026-10-24T12:00:00Z",
+   "per_job_credits": 1.0,
+   "plan_check": [
+    "scripts/bdsc_stationarity.py",
+    "--plan-check",
+    "{plan}"
+   ],
+   "run_name": "qpu_belenos-bdsc_drift_series-t1",
+   "snapshot_out": "results/quandela/bdsc_drift_series_dark/after-t1"
+  },
+  {
+   "admit_statuses": [
+    "running"
+   ],
+   "after": null,
+   "body_sha256": "3d5db1e25213d7a915be00a5072da9c754ffc34fed0ebe5fcb10483a0facf2dd",
+   "case_dir": "results/quandela/cases/bdsc_stationarity/b1-j1",
+   "expected_seconds": 213.6,
+   "inputs_sha256": {
+    "cases.json": "528934f57cd4f63089e4e08041639be57259e481d4eaeb93e7cc4835ed333344",
+    "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   },
+   "key": "t2",
+   "latest_start": "2026-10-24T15:40:00Z",
+   "matched_check": [
+    "scripts/bdsc_stationarity.py",
+    "--matched-check",
+    "{run}"
+   ],
+   "max_credits": 1.12,
+   "not_before": "2026-10-24T14:00:00Z",
+   "per_job_credits": 1.0,
+   "plan_check": [
+    "scripts/bdsc_stationarity.py",
+    "--plan-check",
+    "{plan}"
+   ],
+   "run_name": "qpu_belenos-bdsc_drift_series-t2",
+   "snapshot_out": "results/quandela/bdsc_drift_series_dark/after-t2"
+  },
+  {
+   "admit_statuses": [
+    "running"
+   ],
+   "after": null,
+   "body_sha256": "3d5db1e25213d7a915be00a5072da9c754ffc34fed0ebe5fcb10483a0facf2dd",
+   "case_dir": "results/quandela/cases/bdsc_stationarity/b1-j1",
+   "expected_seconds": 213.6,
+   "inputs_sha256": {
+    "cases.json": "528934f57cd4f63089e4e08041639be57259e481d4eaeb93e7cc4835ed333344",
+    "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   },
+   "key": "t3",
+   "latest_start": "2026-10-24T17:40:00Z",
+   "matched_check": [
+    "scripts/bdsc_stationarity.py",
+    "--matched-check",
+    "{run}"
+   ],
+   "max_credits": 1.12,
+   "not_before": "2026-10-24T16:00:00Z",
+   "per_job_credits": 1.0,
+   "plan_check": [
+    "scripts/bdsc_stationarity.py",
+    "--plan-check",
+    "{plan}"
+   ],
+   "run_name": "qpu_belenos-bdsc_drift_series-t3",
+   "snapshot_out": "results/quandela/bdsc_drift_series_dark/after-t3"
+  },
+  {
+   "admit_statuses": [
+    "running"
+   ],
+   "after": null,
+   "body_sha256": "3d5db1e25213d7a915be00a5072da9c754ffc34fed0ebe5fcb10483a0facf2dd",
+   "case_dir": "results/quandela/cases/bdsc_stationarity/b1-j1",
+   "expected_seconds": 213.6,
+   "inputs_sha256": {
+    "cases.json": "528934f57cd4f63089e4e08041639be57259e481d4eaeb93e7cc4835ed333344",
+    "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   },
+   "key": "t4",
+   "latest_start": "2026-10-24T19:40:00Z",
+   "matched_check": [
+    "scripts/bdsc_stationarity.py",
+    "--matched-check",
+    "{run}"
+   ],
+   "max_credits": 1.12,
+   "not_before": "2026-10-24T18:00:00Z",
+   "per_job_credits": 1.0,
+   "plan_check": [
+    "scripts/bdsc_stationarity.py",
+    "--plan-check",
+    "{plan}"
+   ],
+   "run_name": "qpu_belenos-bdsc_drift_series-t4",
+   "snapshot_out": "results/quandela/bdsc_drift_series_dark/after-t4"
+  },
+  {
+   "admit_statuses": [
+    "running"
+   ],
+   "after": null,
+   "body_sha256": "3d5db1e25213d7a915be00a5072da9c754ffc34fed0ebe5fcb10483a0facf2dd",
+   "case_dir": "results/quandela/cases/bdsc_stationarity/b1-j1",
+   "expected_seconds": 213.6,
+   "inputs_sha256": {
+    "cases.json": "528934f57cd4f63089e4e08041639be57259e481d4eaeb93e7cc4835ed333344",
+    "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   },
+   "key": "t5",
+   "latest_start": "2026-10-24T21:40:00Z",
+   "matched_check": [
+    "scripts/bdsc_stationarity.py",
+    "--matched-check",
+    "{run}"
+   ],
+   "max_credits": 1.12,
+   "not_before": "2026-10-24T20:00:00Z",
+   "per_job_credits": 1.0,
+   "plan_check": [
+    "scripts/bdsc_stationarity.py",
+    "--plan-check",
+    "{plan}"
+   ],
+   "run_name": "qpu_belenos-bdsc_drift_series-t5",
+   "snapshot_out": "results/quandela/bdsc_drift_series_dark/after-t5"
+  },
+  {
+   "admit_statuses": [
+    "running"
+   ],
+   "after": null,
+   "body_sha256": "3d5db1e25213d7a915be00a5072da9c754ffc34fed0ebe5fcb10483a0facf2dd",
+   "case_dir": "results/quandela/cases/bdsc_stationarity/b1-j1",
+   "expected_seconds": 213.6,
+   "inputs_sha256": {
+    "cases.json": "528934f57cd4f63089e4e08041639be57259e481d4eaeb93e7cc4835ed333344",
+    "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   },
+   "key": "t6",
+   "latest_start": "2026-10-24T23:40:00Z",
+   "matched_check": [
+    "scripts/bdsc_stationarity.py",
+    "--matched-check",
+    "{run}"
+   ],
+   "max_credits": 1.12,
+   "not_before": "2026-10-24T22:00:00Z",
+   "per_job_credits": 1.0,
+   "plan_check": [
+    "scripts/bdsc_stationarity.py",
+    "--plan-check",
+    "{plan}"
+   ],
+   "run_name": "qpu_belenos-bdsc_drift_series-t6",
+   "snapshot_out": "results/quandela/bdsc_drift_series_dark/after-t6"
+  },
+  {
+   "admit_statuses": [
+    "running"
+   ],
+   "after": null,
+   "body_sha256": "3d5db1e25213d7a915be00a5072da9c754ffc34fed0ebe5fcb10483a0facf2dd",
+   "case_dir": "results/quandela/cases/bdsc_stationarity/b1-j1",
+   "expected_seconds": 213.6,
+   "inputs_sha256": {
+    "cases.json": "528934f57cd4f63089e4e08041639be57259e481d4eaeb93e7cc4835ed333344",
+    "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
+   },
+   "key": "t7",
+   "latest_start": "2026-10-25T01:40:00Z",
+   "matched_check": [
+    "scripts/bdsc_stationarity.py",
+    "--matched-check",
+    "{run}"
+   ],
+   "max_credits": 1.12,
+   "not_before": "2026-10-25T00:00:00Z",
+   "per_job_credits": 1.0,
+   "plan_check": [
+    "scripts/bdsc_stationarity.py",
+    "--plan-check",
+    "{plan}"
+   ],
+   "run_name": "qpu_belenos-bdsc_drift_series-t7",
+   "snapshot_out": "results/quandela/bdsc_drift_series_dark/after-t7"
+  }
+ ],
+ "max_total_credits": 7.84,
+ "name": "bdsc-drift-series",
+ "on_stop": "skip",
+ "platform": "qpu:belenos",
+ "schema": "qd-schedule-v1"
+}
