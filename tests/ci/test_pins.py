@@ -172,6 +172,47 @@ def test_host_environment_fallback() -> None:
             raise AssertionError(f"a tree without pin files verified {chosen} ({reason})")
 
 
+def test_lane_resolution() -> None:
+    # A pr_checks lane runs an explicit PYTHON only when it holds the lane's pins, takes the host environment
+    # when PYTHON is unset, and refuses a drifted interpreter with the command that runs the lane correctly.
+    python = sys.executable
+    differing = ["ruff 0.14.11 (pin 0.17.1)"]
+    with TemporaryDirectory(prefix="ci-pins-lane-") as temporary:
+        cache = {"XDG_CACHE_HOME": temporary}
+        host = pins.host_env("current", cache)
+        asked: list[dict[str, str]] = []
+
+        def resolve(lane: str, holding: set[str], environment: dict[str, str]) -> tuple[str | None, str]:
+            def probe(candidate: str, wanted: dict[str, str], _patches: object = None) -> list[str]:
+                asked.append(dict(wanted))
+                return [] if candidate in holding else list(differing)
+
+            with patch.object(pins, "mismatches", probe):
+                return pins.resolve_lane(lane, environment, python)
+
+        refuses(lambda: resolve("audit", set(), cache), "not one of")
+        chosen, reason = resolve("lint", set(), cache)
+        if chosen is not None or pins.BUILD_COMMAND not in reason:
+            raise AssertionError(f"a drifted lint interpreter without a host environment ran: {chosen} ({reason})")
+        if asked[-1] != {"ruff": pins.current_pins()["ruff"]}:
+            raise AssertionError(f"lint probed pins beyond ruff: {asked[-1]}")
+        resolve("tests", {python}, cache)
+        if set(asked[-1]) < set(pins.current_pins()):
+            raise AssertionError("tests probed fewer than every current pin")
+        if resolve("lint", {python}, cache)[0] != python:
+            raise AssertionError("a running interpreter holding the lint pins was refused")
+        host.parent.mkdir(parents=True)
+        host.write_text("")
+        for lane in pins.LANES:
+            if resolve(lane, {str(host)}, cache)[0] != str(host):
+                raise AssertionError(f"{lane} with PYTHON unset passed over a host environment holding its pins")
+        chosen, reason = resolve("types", {str(host)}, {**cache, "PYTHON": "/named/python"})
+        if chosen is not None or f"PYTHON={host} sh ci/pr_checks.sh types" not in reason:
+            raise AssertionError(f"a drifted explicit PYTHON was not refused with the host command: {reason}")
+        if resolve("tests", {"/named/python", str(host)}, {**cache, "PYTHON": "/named/python"})[0] != "/named/python":
+            raise AssertionError("an explicit PYTHON holding every pin was replaced")
+
+
 def test_host_environment_python_version() -> None:
     # The host environments sit on the Python CI's setup-python installs.
     workflow = (pins.ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
@@ -184,11 +225,11 @@ def test_host_environment_python_version() -> None:
 
 def test_pinned_tool() -> None:
     uv, python = "/usr/bin/uv", "/usr/bin/python3"
+    # An installed pin runs as the requesting interpreter's module, so the distribution whose version was probed
+    # runs, never a PATH executable of another install, and mypy's imports resolve against that interpreter.
     argv, notice = pinned_tool.command("ruff", ["check", "ci"], "0.17.1", "0.17.1", {}, uv, python)
-    if Path(argv[0]).name != "ruff" or argv[1:] != ["check", "ci"] or notice is not None:
+    if argv != [python, "-m", "ruff", "check", "ci"] or notice is not None:
         raise AssertionError(f"an installed pin runs {argv} with notice {notice}")
-    # An installed mypy runs as the requested interpreter's module, so its
-    # imports resolve against that interpreter and not the PATH executable's.
     argv, notice = pinned_tool.command("mypy", ["."], "2.4.0", "2.4.0", {}, uv, python)
     if argv != [python, "-m", "mypy", "."] or notice is not None:
         raise AssertionError(f"an installed mypy pin runs {argv}")

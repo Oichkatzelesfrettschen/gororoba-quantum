@@ -49,16 +49,19 @@ the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_re
 The active [C5 exact replay](evidence/c5_zero_divisor_code/replay-exact.py) uses rational products
 and matrices for certificates, retaining numerical noisy decoding and the original result bytes.
 The checksum-bound historical README and replay keep their bytes. The active source ledgers
-for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-contracts),
-[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-contracts) and
-[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-contracts) bind the validated
-`cd_core.py` source and preserve every other identity in their historical `SHA256SUMS` files.
+for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-int-dimension),
+[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-int-dimension) and
+[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-int-dimension) bind the
+`cd_core.py` whose dimension guard admits only exact int, and preserve every other identity of
+their `SHA256SUMS-exact-contracts` predecessors and historical `SHA256SUMS` files.
 
 The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
 retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
 with the exact-contract `cd_core.py` source identity. The historical report keeps its original bytes.
 The [determinant-contract successor](../results/live/rank-sector-endpoint-decomposition-determinant-contracts.json)
-also binds the extended `rank_polynomials.py`; its scientific fields remain identical.
+also binds the extended `rank_polynomials.py`; its scientific fields remain identical. The
+[exact-int-dimension successor](../results/live/rank-sector-endpoint-decomposition-exact-int-dimension.json)
+differs from it only in the `cd_core.py` digest.
 
 | Task | Read in order |
 |---|---|

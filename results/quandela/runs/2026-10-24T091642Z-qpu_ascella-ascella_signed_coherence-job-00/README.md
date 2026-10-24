@@ -75,10 +75,14 @@ mechanism is a separate question this run does not answer.
 
 The [device diagnostics](../../../../docs/evidence/ascella-order-coefficients/job-00-diagnostics.json)
 and the [permuted repeat](../2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/README.md)
-replace the two inferences above. The outside-block clicks are mostly dark
-counts (modes 8 to 10) whose exposure alternates with execution position and
-grows with the sample budget; the repeat in another order shows no
-per-setting cause. Dilution accounts for about a fifth of the two sign-odd
-shortfalls: block-conditioned counts give 0.4751 and 0.4851, and the
-remainder is an analyzer contrast of 0.970 on X and Y with per-setting
-residuals that reproduce across the two jobs.
+replace the two inferences above. The outside-block count alternates with
+execution position and grows with the sample budget, and the repeat in
+another order shows no per-setting cause. Most of it follows the catalogue
+dark profile (modes 8 to 10), and the alternating part sits in that
+component; a smaller component spread over modes 4 to 9 alternates weakly
+([response geometry](../../../../docs/design/ascella-signed-coherence-conformance.md#response-geometry-of-both-jobs)).
+Dilution removes 18 % of the X sign-odd shortfall and 33 % of the Y one:
+block-conditioned counts give 0.4751 and 0.4851. The remainder is an analyzer
+contrast near 0.97 on X and Y with per-configuration residuals that reproduce
+across the two jobs, and X0 + Xc2 = -0.028 excludes the zero a uniform gain
+requires.

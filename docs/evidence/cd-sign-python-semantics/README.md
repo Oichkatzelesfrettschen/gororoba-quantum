@@ -36,8 +36,9 @@ removed, as `cd_sign_mutant_ast`. That is the mutation
 
 The term is built from the syntax tree, not from CPython bytecode. The
 syntax tree is the level at which the Language Reference defines Python's
-semantics, and it is stable across the interpreters the repository runs.
-For cd_sign's own definition, `ast.dump` is byte-identical under Python
+semantics. The `ast` module documents that the abstract syntax can change
+between releases, so the extractor check runs on every pull request, and
+the extractor rejects a node it does not map. For cd_sign's own definition, `ast.dump` is byte-identical under Python
 3.13.15 (the Quantum Inspire interpreter's minor version) and 3.14.8. The
 compiled bytecode is not identical: it has 95 instructions under 3.13.15
 and 100 under 3.14.8, with different `co_code` digests. The extractor writes
@@ -106,15 +107,28 @@ it breaks:
   against the Rocq clauses on every int dim and index from -3 to 70.
 - **The evaluator's reading of the Language Reference sections above.**
 
-The theorems cover int arguments other than bool. The model identifies True
-with 1, but both guards reject a bool before the loop. `_dimension` rejects
-every non-int dim, and `_index` returns a Python int for any `__index__`
-object. Every call that reaches the loop therefore runs on the int domain
-the theorems cover, and the contract checks these three facts.
+The theorems cover arguments of exact type int. Python lets an int subclass
+override every operator, so an object that passes `isinstance(dim, int)`
+need not compute as an integer: a subclass whose `&` returns 0 passes a
+power-of-two test at dim 6, and one whose `>>` returns 0 skips the loop
+and returns +1 for e_1 e_1 in dimension 4, where sigma is -1.
+`_dimension` therefore tests `type(dim) is not int` before it applies any
+operator to dim, which rejects bool and every int subclass, IntEnum
+included. `_index` passes each index through `operator.index`, which since
+Python 3.10 returns an exact int and reads an int subclass's value without
+calling its overrides. Every call that reaches the loop therefore applies
+int's own operators to ints, the domain the theorems cover. The contract
+checks both guards against these subclasses.
+
+`Raised` records that an exception occurs, not its class, message or
+traceback; the pytest contract pins ValueError for every guard rejection.
+A fuel bound counts evaluator steps and is no bound on Python's time or
+memory.
 
 Executable semantics of Python exist: K-Python, Dwight Guth's semantics of
 Python 3.3 in the K framework (Illinois M.S. thesis,
-https://github.com/kframework/python-semantics), and lambda-py, from Politz
+https://github.com/runtimeverification/python-semantics, to which
+github.com/kframework/python-semantics redirects), and lambda-py, from Politz
 et al., "Python: The Full Monty", OOPSLA 2013
 (https://doi.org/10.1145/2509136.2509536). Neither targets Rocq 9.3, so
 this proof depends on neither. The evaluator here covers only the

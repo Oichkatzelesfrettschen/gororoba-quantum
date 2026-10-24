@@ -25,6 +25,9 @@ cell by cell against tables built from cd_sign, and the statements:
   closed form A = g' + delta_u + delta_v + const with u != v for an upper pair
   degree      deg g_ij = max(1, bitlen(max(i, j)) - 2) on every ordered pair (n >= 3)
   census      unordered pairs of degree n - 2 added at level n: 3 2^(n-2) (2^(n-1) - 1)
+  point pairs for n >= 3, 0 <= m < 2^(n-2), i = 2^(n-1) + m and j = i + 2^(n-2), with z the low
+              n - 2 bits of x: g_ij = x_(n-1) + delta_m(z) for m != 0 and N(z) for m = 0, whose
+              ANF has 1 + 2^(n-2-popcount(m)) and 2^(n-2) - 1 monomials
   leading     for n >= 3 and m != 0, the degree-(n-1) ANF layer of f_m is
               sum_j m_j prod_(l != j) x_l and f_m has no degree-n term
   right slice h_m = phi_n(., m) with m = (m', mu): h_m(y, xi) = h'_m(y) + xi for mu = 0, m != 0;
@@ -40,6 +43,13 @@ cell by cell against tables built from cd_sign, and the statements:
               bits i >= l set in a | b, for distinct nonzero a, b; its transpose fails (n >= 2)
 
 Stdout is byte-deterministic; --timing adds per-level seconds on stderr.
+--sparsity also prints, for the pairs of degree n - 2 new at each level, the
+number of distinct ANF degree histograms and the least and largest monomial
+counts with the number of pairs at the largest; then, minimized over the
+2^n polarity vectors p of the fixed-polarity form ANF(g(x ^ p)), the least
+monomial count and the count of monomials of degree at least 2 (the
+multi-controlled Z gates of that form), with the pairs that need one such
+gate and the largest such count.
 --mutate replaces one branch of cd_sign by a wrong one and inverts the
 verdict: the run exits 0 only when a check catches the mutation.
 """
@@ -188,6 +198,65 @@ def check_two_point(k: int) -> None:
     _require(int(anf_degrees((y != 0).astype(np.uint8)[None, :])[0]) == k, f"two-point: deg N != {k} at k = {k}")
 
 
+def associator_phases(phi: Table, i: npt.NDArray[np.int64], j: npt.NDArray[np.int64]) -> Table:
+    """Truth tables of g_ij over every x, one row per index pair."""
+    x = np.arange(phi.shape[0])
+    g = phi[j[:, None], x[None, :]] ^ phi[i[:, None], j[:, None] ^ x[None, :]] ^ phi[(i ^ j)[:, None], x[None, :]]
+    return g ^ phi[i, j][:, None]
+
+
+def check_point_family(n: int, phi: Table) -> None:
+    """Proposition 5: the pairs (2^(n-1) + m, 2^(n-1) + 2^(n-2) + m) carry a point indicator on the low n - 2 bits."""
+    dim, quarter = 1 << n, 1 << (n - 2)
+    x = np.arange(dim)
+    m = np.arange(quarter)
+    g = associator_phases(phi, (dim >> 1) + m, (dim >> 1) + quarter + m)
+    point = ((x & (quarter - 1))[None, :] == m[:, None]).astype(np.uint8)
+    want = np.where(m[:, None] != 0, (x >> (n - 1)).astype(np.uint8)[None, :] ^ point, 1 ^ point)
+    _require(bool((g == want).all()), f"point pairs: n = {n}")
+    counts = anf(g).sum(axis=1)
+    want_counts = np.where(m != 0, 1 + (1 << (n - 2)) // (1 << np.bitwise_count(m).astype(np.int64)), quarter - 1)
+    _require(bool((counts == want_counts).all()), f"point pairs: n = {n} Reed-Muller monomial counts")
+
+
+def polarity_minima(task: tuple[Table, range]) -> tuple[npt.NDArray[np.int64], npt.NDArray[np.int64]]:
+    """Per row, the least monomial count and the least count of degree >= 2 monomials over the polarities."""
+    phases, polarities = task
+    x = np.arange(phases.shape[1])
+    nonlinear = (np.bitwise_count(x) >= 2).astype(np.int64)
+    total = np.full(phases.shape[0], phases.shape[1], dtype=np.int64)
+    cubes = total.copy()
+    for p in polarities:
+        coefficients = anf(phases[:, x ^ p]).astype(np.int64)
+        total = np.minimum(total, coefficients.sum(axis=1))
+        cubes = np.minimum(cubes, coefficients @ nonlinear)
+    return total, cubes
+
+
+def top_sparsity(n: int, phi: Table) -> str:
+    """ANF and fixed-polarity monomial statistics over the unordered pairs new at level n."""
+    from parallel import ordered_map
+
+    dim, half = 1 << n, 1 << (n - 1)
+    j, i = (a.ravel() for a in np.meshgrid(np.arange(half, dim), np.arange(1, dim), indexing="ij"))
+    keep = i < j
+    phases = associator_phases(phi, i[keep], j[keep])
+    coefficients = anf(phases)
+    weight = np.bitwise_count(np.arange(dim)).astype(np.int64)
+    histograms = np.stack([(coefficients * (weight == d)).sum(axis=1) for d in range(n + 1)], axis=1)
+    counts = coefficients.sum(axis=1).astype(np.int64)
+    distinct = np.unique(histograms, axis=0).shape[0]
+    block = max(1, dim // 16)
+    tasks = [(phases, range(p, min(dim, p + block))) for p in range(0, dim, block)]
+    minima = ordered_map(polarity_minima, tasks, min_items=1)
+    total = np.min([pair[0] for pair in minima], axis=0)
+    cubes = np.min([pair[1] for pair in minima], axis=0)
+    return (
+        f"{n} {int(keep.sum())} {distinct} {counts.min()} {counts.max()} {int((counts == counts.max()).sum())} "
+        f"{total.min()} {int((cubes == 1).sum())} {cubes.max()}"
+    )
+
+
 def check_level(n: int, phi: Table, low: Table) -> tuple[int, int]:
     """Assert every identity at level n from the level-(n-1) table; return (new pairs, their degree)."""
     dim, half = 1 << n, 1 << (n - 1)
@@ -243,8 +312,7 @@ def check_level(n: int, phi: Table, low: Table) -> tuple[int, int]:
 
     # Associator phases on every ordered pair, degenerate ones included.
     i, j = (a.ravel() for a in np.meshgrid(x, x, indexing="ij"))
-    g = phi[j[:, None], x[None, :]] ^ phi[i[:, None], j[:, None] ^ x[None, :]] ^ phi[(i ^ j)[:, None], x[None, :]]
-    g ^= phi[i, j][:, None]
+    g = associator_phases(phi, i, j)
     degenerate = (i == 0) | (j == 0) | (i == j)
     _require(not g[degenerate].any(), f"degenerate: n = {n}")
     _require(not g[:, 0].any(), f"degenerate: g_ij(0) != 0 at n = {n}")
@@ -303,6 +371,7 @@ def main() -> int:
     parser.add_argument("--max-n", type=int, default=8, help="largest n = log2(dim), at least 3")
     parser.add_argument("--timing", action="store_true", help="print per-level seconds on stderr")
     parser.add_argument("--mutate", choices=MUTATIONS, help="replace one cd_sign branch; exit 0 only if caught")
+    parser.add_argument("--sparsity", action="store_true", help="print the monomial counts of each level's new pairs")
     args = parser.parse_args()
     if args.max_n < 3:
         parser.error("--max-n must be at least 3")
@@ -312,6 +381,7 @@ def main() -> int:
 
     sign = _mutated_sign(args.mutate) if args.mutate else cd_sign
     print("n dim sign_row_degree new_pairs new_pair_degree")
+    sparsity: list[str] = []
     try:
         low = phi_table(0, sign)
         for n in range(1, args.max_n + 1):
@@ -322,7 +392,10 @@ def main() -> int:
             check_coefficients(n, phi)
             check_closed_form(n, phi)
             if n >= 3:
+                check_point_family(n, phi)
                 print(f"{n} {1 << n} {n - 1} {new} {degree}")
+                if args.sparsity:
+                    sparsity.append(top_sparsity(n, phi))
             if args.timing:
                 print(f"n={n}: {time.perf_counter() - start:.2f} s", file=sys.stderr)
             low = phi
@@ -332,6 +405,12 @@ def main() -> int:
             return 0
         print(f"mismatch: {exc}", file=sys.stderr)
         return 1
+    if sparsity:
+        print(
+            "n new_pairs distinct_histograms least_monomials most_monomials pairs_at_most "
+            "least_fixed_polarity_monomials pairs_with_one_fixed_polarity_cube most_fixed_polarity_cubes"
+        )
+        print("\n".join(sparsity))
     if args.mutate:
         print(f"mutation {args.mutate} survived every check through n={args.max_n}", file=sys.stderr)
         return 1

@@ -103,14 +103,9 @@ exempted qubit until the exemption reached that check.
 - Process control reads the run directories, never a harness task-output
   file, whose lines are flushed late: a handover keyed to those lines can stop
   a runner moments after a submit.
-- The quantuminspire 4.1 `AuthManager.refresh_tokens` rotates tokens in
-  memory and never saves them, and it exchanges only within 5 s of expiry.
-  A second process then presents a spent refresh token. With reuse detection
-  (inferred; no probe), that revokes the login. `Client.refresh` in
-  `scripts/qi_platform.py` takes an flock, rereads the file, exchanges near
-  expiry and writes the rotated tokens back. A long-lived process started
-  before that rule, such as an MCP server, holds stale tokens and restarts
-  after `qi login`.
+- Token renewal, the paths that spend a login outside the repository's
+  lock and the recovery by `qi login --force` are in
+  [setup.md](setup.md#login-failures).
 - Sessions that share the account alternate hardware batches at Ramsey-pair
   boundaries, paced by the account-wide pause (`HARDWARE_PAUSE_SECONDS`,
   [usage.md](usage.md#pause-escalation)). Series P and Q calibrate

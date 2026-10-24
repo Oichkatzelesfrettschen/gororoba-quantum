@@ -38,7 +38,12 @@ review loop the checks admit a merge
 replay or Rocq replay is never a merge requirement. Locally,
 `sh ci/pr_checks.sh tests tests/path/test_x.py` runs one module under the
 hosted environment, and `sh ci/pr_checks.sh tests -m audit tests/path/test_x.py`
-runs its audit-marked tests (pytest keeps the last `-m`).
+runs its audit-marked tests (pytest keeps the last `-m`). Each lane first
+resolves its interpreter through `ci/pins.py lane LANE`: an explicit `PYTHON`
+runs only when it holds the lane's pins (ruff for lint, every current pin for
+types and tests), an unset one takes the host environment, and a drifted one
+exits 2 naming the differing pins and the command that runs the lane under
+the host environment.
 
 **The audit.** `ci.yml` runs on its nightly schedule and on manual dispatch
 only: every gate of both tiers on main with `--ledger-audit`, the
@@ -163,7 +168,14 @@ it runs `ci/runner_image.sh` (podman) over a snapshot of the tree, which no
 host process writes, then copies back and receipts each file the command
 wrote there. `ci/runner_image_records.json` binds the record to that
 image and its pins through `ci/runner_image_records.py add`, which refuses
-bytes without a receipt, and gate core-635 checks the ledger.
+bytes without a receipt, and gate core-635 checks the ledger. A gate that
+byte-compares a retained record lists it under `"replays"` in ci/gates.json,
+and the unmarked pr test `test_every_replayed_record_is_declared_bound_float_free_or_exempt`
+requires each listed record (each file of a listed directory) to be bound in
+the ledger, float-free JSON, or covered by a reason under the ledger's
+`exempt` map, and each bound record to be listed by some gate;
+`ci/replay_check.py`, `| cmp -` and `--out` beside `--check` or `--replay`
+must be listed.
 `ci/replay_check.py` compares such a record with a fresh run bit for bit,
 skipping only the paths that name the analyzer (core-613, core-617).
 Only an AVX-512 CPU exercises the dispatch cap, so `ci/avx512_replay.sh` runs

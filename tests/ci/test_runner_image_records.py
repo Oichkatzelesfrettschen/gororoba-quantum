@@ -11,6 +11,7 @@ import shutil
 import subprocess
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from typing import Any
 from unittest import mock
 
 import pytest
@@ -204,3 +205,78 @@ def test_write_receipts_only_the_files_the_container_wrote(tmp_path: Path) -> No
             raise AssertionError("a failed command's status was lost")
     if len(receipts.read_text().splitlines()) != 1 or [path.name for path in cache.iterdir()] != ["receipts.jsonl"]:
         raise AssertionError("a failed command left receipts or its snapshot")
+
+
+def test_every_replayed_record_is_declared_bound_float_free_or_exempt() -> None:
+    gates = json.loads((ROOT / "ci" / "gates.json").read_text())["gates"]
+    found = records.replay_problems(gates, records.read())
+    if found:
+        raise AssertionError("\n".join(found))
+
+
+def test_replay_declarations_fail_on_each_unbound_or_undeclared_record(tmp_path: Path) -> None:
+    (tmp_path / "results").mkdir()
+    (tmp_path / "results" / "x.json").write_text('{"fit": 0.5}\n')
+    (tmp_path / "results" / "exact.json").write_text('{"count": 3, "label": "1/2"}\n')
+    (tmp_path / "results" / "bound.json").write_text('{"fit": 0.25}\n')
+    replay: dict[str, Any] = {
+        "name": "g-1",
+        "cmd": '"$PYTHON" ci/replay_check.py results/x.json -- "$PYTHON" p.py --out {out}',
+    }
+    piped: dict[str, Any] = {
+        "name": "g-2",
+        "cmd": '"$PYTHON" p.py | cmp - results/exact.json && cmp results/a.json results/b.json',
+    }
+    checked: dict[str, Any] = {"name": "g-3", "cmd": '"$PYTHON" p.py --out "results/bound.json" --check', "cwd": "."}
+    ledger: dict[str, Any] = {
+        "records": {"results/bound.json": "0" * 64, "results/orphan.json": "0" * 64},
+        "exempt": {},
+    }
+    found = records.replay_problems([replay, piped, checked], ledger, tmp_path)
+    expected = [
+        "g-1 compares results/x.json without declaring it in replays",
+        "g-2 compares results/exact.json without declaring it in replays",
+        "g-3 compares results/bound.json without declaring it in replays",
+        "results/bound.json is bound but no gate declares it in replays",
+        "results/orphan.json is bound but no gate declares it in replays",
+    ]
+    if found != expected:
+        raise AssertionError(found)
+    replay["replays"], piped["replays"], checked["replays"] = (
+        ["results/x.json"],
+        ["results/exact.json"],
+        ["results/bound.json"],
+    )
+    found = records.replay_problems([replay, piped, checked], ledger, tmp_path)
+    if len(found) != 2 or not found[0].startswith("g-1 replays results/x.json, which is not float-free JSON"):
+        raise AssertionError(found)
+    if found[1] != "results/orphan.json is bound but no gate declares it in replays":
+        raise AssertionError(found)
+    ledger = {
+        "records": {"results/bound.json": "0" * 64},
+        "exempt": {"results/x.json": "values replay with fields skipped"},
+    }
+    if records.replay_problems([replay, piped, checked], ledger, tmp_path):
+        raise AssertionError(records.replay_problems([replay, piped, checked], ledger, tmp_path))
+    ledger["exempt"]["results/x.json"] = " "
+    if records.replay_problems([replay, piped, checked], ledger, tmp_path) != [
+        "exempt results/x.json needs a declaring gate and a reason"
+    ]:
+        raise AssertionError("an exemption without a reason passed")
+
+
+def test_a_declared_directory_stands_for_each_file_unless_exempt(tmp_path: Path) -> None:
+    (tmp_path / "out" / "frozen").mkdir(parents=True)
+    (tmp_path / "out" / "fit.json").write_text("[0.5]\n")
+    (tmp_path / "out" / "frozen" / "case.json").write_text("[0.125]\n")
+    gate = {"name": "g", "cmd": '"$PYTHON" p.py --out out --check', "replays": ["out"]}
+    ledger: dict[str, Any] = {
+        "records": {"out/fit.json": "0" * 64},
+        "exempt": {"out/frozen": "frozen operators the check reads"},
+    }
+    if records.replay_problems([gate], ledger, tmp_path):
+        raise AssertionError(records.replay_problems([gate], ledger, tmp_path))
+    del ledger["exempt"]["out/frozen"]
+    found = records.replay_problems([gate], ledger, tmp_path)
+    if len(found) != 1 or not found[0].startswith("g replays out/frozen/case.json"):
+        raise AssertionError(found)

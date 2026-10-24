@@ -15,7 +15,7 @@ libqasm 1.2.1 and opensquirrel 0.9.1) the script
   waits, barriers and measurements (with each measurement's bit) and of
   gates, and records every difference;
 
-and writes docs/evidence/quantum_inspire/toolchain-pause-ladder.json. A libqasm
+and writes docs/evidence/quantum_inspire/toolchain-token-recovery.json. A libqasm
 error or a failed compilation fails the run after the record is written; a
 changed sequence is reported.
 
@@ -66,7 +66,7 @@ import qi_stack  # noqa: E402
 
 CASES = ROOT / "results/quantum_inspire/cases"
 CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
-RECORD = ROOT / "docs/evidence/quantum_inspire/toolchain-pause-ladder.json"
+RECORD = ROOT / "docs/evidence/quantum_inspire/toolchain-token-recovery.json"
 SCHEMA = "qi-toolchain-check-v1"
 EXPORTER = "opensquirrel/passes/exporter/quantify_scheduler_exporter.py"
 CONTROL = ("wait", "barrier", "measure")

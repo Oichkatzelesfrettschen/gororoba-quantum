@@ -22,7 +22,7 @@ Read through the MCP tools `qi_backend` (type 6) and `qi_hardware_status` at
 | Last heartbeat | 2026-10-17T03:25:10Z (current) |
 | `messages` | "Please be aware that Q8 is affected by a spurious two-level system (TLS)" |
 | Queue | 8 jobs; wait min 1009108 s (11.7 days), mean 3397597 s (39.3 days), max 4728363 s (54.7 days) |
-| Limits | 9 qubits, shots 8192 default and 131072 maximum, 300 s per job, 5 circuits per batch, 5 batches per queue |
+| Limits | 9 qubits, shots 8192 default and 131072 maximum, 300 s per job; the API ceilings of 5 circuits per batch and 5 queued batches yield to the FAQ's 3 queued jobs ([usage.md](usage.md#queue-rules-the-faq-governs)) |
 
 The heartbeat is current while the status is offline, so the control
 software reports and the device accepts no execution; Tuna-5 differs, with

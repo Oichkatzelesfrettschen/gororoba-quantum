@@ -1,0 +1,158 @@
+{
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "batch_index": 104,
+ "circuits": [
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-06-readout-00.cq",
+   "kind": "readout",
+   "packing_id": "pack-06",
+   "pairs": [
+    {
+     "edge": [
+      2,
+      4
+     ],
+     "prepared": [
+      0,
+      0
+     ]
+    },
+    {
+     "edge": [
+      9,
+      12
+     ],
+     "prepared": [
+      0,
+      0
+     ]
+    },
+    {
+     "edge": [
+      11,
+      13
+     ],
+     "prepared": [
+      0,
+      0
+     ]
+    }
+   ],
+   "prepared_pair": [
+    0,
+    0
+   ],
+   "sha256": "6b98e70f9b01dfe2664e778731879750e6c676b98660d16c7cfcb106d3fc4e55"
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-06-readout-01.cq",
+   "kind": "readout",
+   "packing_id": "pack-06",
+   "pairs": [
+    {
+     "edge": [
+      2,
+      4
+     ],
+     "prepared": [
+      0,
+      1
+     ]
+    },
+    {
+     "edge": [
+      9,
+      12
+     ],
+     "prepared": [
+      0,
+      1
+     ]
+    },
+    {
+     "edge": [
+      11,
+      13
+     ],
+     "prepared": [
+      0,
+      1
+     ]
+    }
+   ],
+   "prepared_pair": [
+    0,
+    1
+   ],
+   "sha256": "6f0ad415a904794243db653dc3f02ee77a3aa490d3f15ba697c5aeb9ecc09c6b"
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-06-readout-10.cq",
+   "kind": "readout",
+   "packing_id": "pack-06",
+   "pairs": [
+    {
+     "edge": [
+      2,
+      4
+     ],
+     "prepared": [
+      1,
+      0
+     ]
+    },
+    {
+     "edge": [
+      9,
+      12
+     ],
+     "prepared": [
+      1,
+      0
+     ]
+    },
+    {
+     "edge": [
+      11,
+      13
+     ],
+     "prepared": [
+      1,
+      0
+     ]
+    }
+   ],
+   "prepared_pair": [
+    1,
+    0
+   ],
+   "sha256": "29587db896ea0eb2292af149a26e7cad069a98cb69ac1b4ec344415b4cfae878"
+  }
+ ],
+ "nqubits": 17,
+ "plan_schema": "qi-zz-map-plan-v1",
+ "schema": "qi-zz-map-cases-v1",
+ "shots": 8192,
+ "source_digests": {
+  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
+  "conditional_ramsey_note_sha256": "ddac02db9715550afcd22d19d312dc668d2558adb42ff7476c4c75b7940cb087",
+  "conditional_ramsey_source_sha256": "2ba6de1ce013c5c22adffc934ceefbbc7aaa7794f3f93a4b73c417f47317055f",
+  "proposal_builder_sha256": "b2cd54495e728b666f15444105367853229ad7cc603ee3503692f3ed8fdd84a7",
+  "qi_platform_source_sha256": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b",
+  "tuna_operations_sha256": "f6f0e603b73b1693c7fce17d85f9388067d914485d85e957b633ed585ef2f8ca"
+ },
+ "status": "proposed_not_submitted"
+}
