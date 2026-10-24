@@ -1362,7 +1362,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_determinant",
-   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
+   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
    "name": "sources-183",
    "seconds": 0.1,
    "tier": "pr"
@@ -1378,7 +1378,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/projective_kernel_limits",
-   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
+   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
    "name": "sources-186",
    "seconds": 0.1,
    "tier": "pr"
@@ -1418,7 +1418,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/real_frontier_graphs",
-   "cmd": "sha256sum -c SHA256SUMS-exact-contracts",
+   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
    "seconds": 0.1,
    "tier": "pr",
    "name": "sources-194"
@@ -2060,7 +2060,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition-determinant-contracts.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector-endpoint-decomposition-exact-int-dimension.json",
    "name": "core-269",
    "seconds": 4.0,
    "tier": "pr"
@@ -3821,7 +3821,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-contracts.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-figure-replay.py && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/certificate-cd-core-exact-int-dimension.json && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-figure-replay.py && \"$PYTHON\" -B -W error docs/evidence/hypercomplex-operators/tuna-order-analysis-bound-probabilities.py --self-test && \"$PYTHON\" -B -W error scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check",
    "name": "core-630",
    "seconds": 13.0,
    "tier": "pr"
@@ -3829,7 +3829,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/sedenion-clifford-envelope/certificate-cd-core-exact-contracts.json",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/sedenion-clifford-envelope/certificate-cd-core-exact-int-dimension.json",
    "name": "core-631",
    "seconds": 1.0,
    "tier": "pr"
@@ -3988,7 +3988,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-4",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-5",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
