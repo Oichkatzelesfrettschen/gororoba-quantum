@@ -10,8 +10,10 @@ from __future__ import annotations
 
 import ast
 import fnmatch
+import itertools
 import json
 import os
+import re
 import shlex
 import subprocess
 from pathlib import Path
@@ -39,6 +41,10 @@ RUNTIME_INPUTS = (
     "ci/install_pins.sh",
     "ci/patches/**",
 )
+
+
+# A sha256sum line: the digest, a space, a space or ``*`` (binary mode), then the path.
+CHECKSUM_LINE = re.compile(r"^(?:\\)?[0-9a-fA-F]{64} [ *](?P<path>.+)$")
 
 
 def matches(path: str, pattern: str) -> bool:
@@ -194,6 +200,39 @@ def command_paths(root: Path, gate: dict[str, Any]) -> set[str]:
     return named
 
 
+def checksum_paths(root: Path, gate: dict[str, Any]) -> set[str]:
+    """The files the checksum manifests of a gate's ``sha256sum -c`` commands bind.
+
+    ``sha256sum -c MANIFEST`` reads each ``DIGEST  PATH`` line and hashes PATH from the working
+    directory; the read tracer cannot follow it (gate_ledger.shell_untraceable), so each listed
+    file is a declared input of the gate.
+    """
+    try:
+        words = shlex.split(gate["cmd"])
+    except ValueError:
+        return set()
+    base = (root / gate["cwd"]).resolve()
+    bound: set[str] = set()
+    for index, word in enumerate(words):
+        if word != "sha256sum":
+            continue
+        operands = list(itertools.takewhile(lambda token: token not in ("&&", "||", ";", "|"), words[index + 1 :]))
+        if "-c" not in operands and "--check" not in operands:
+            continue
+        for operand in operands:
+            manifest = base / operand
+            if operand.startswith("-") or not manifest.is_file():
+                continue
+            for line in manifest.read_text(encoding="utf-8", errors="replace").splitlines():
+                match = CHECKSUM_LINE.match(line)
+                if match is None:
+                    continue
+                candidate = base.joinpath(match["path"]).resolve()
+                if candidate.is_relative_to(root.resolve()):
+                    bound.add(candidate.relative_to(root.resolve()).as_posix())
+    return bound
+
+
 def ledger_reaches(reads: dict[str, list[Any]], changed: set[str], listed: set[str]) -> bool:
     """Whether a traced read set (ci/gate_ledger.py) reads a changed path or lists an added or removed one.
 
@@ -245,6 +284,7 @@ def affected(
     for gate in gates:
         name = gate["name"]
         sources = dependencies(root, gate, modules, references) | command_paths(root, gate)
+        sources |= checksum_paths(root, gate)
         patterns = scopes.get(name, [])
         reads = [entry["reads"] for key, entry in entries.items() if key == name or key.startswith(f"{name}--")]
         if (

@@ -86,6 +86,18 @@ def test_a_new_or_changed_manifest_entry_reaches_its_gate(tree: Path) -> None:
         raise AssertionError("an unchanged manifest reaches no gate")
 
 
+def test_a_checksum_manifest_binds_each_listed_file(tree: Path) -> None:
+    (tree / "proofs").mkdir()
+    (tree / "proofs/Witness.v").write_text("Lemma w : True.\n")
+    (tree / "results/sums").mkdir()
+    (tree / "results/sums/SHA256SUMS").write_text(f"{'0' * 64}  ../../proofs/Witness.v\n{'1' * 64} *local.bin\n")
+    gates = json.loads((tree / "ci/gates.json").read_text())["gates"]
+    gates.append({"name": "sums", "cwd": "results/sums", "cmd": "sha256sum -c SHA256SUMS"})
+    for changed in (["proofs/Witness.v"], ["results/sums/local.bin"]):
+        if gate_inputs.affected(tree, gates, changed, []) != {"sums"}:
+            raise AssertionError(f"{changed} is bound by the checksum manifest and must reach its gate")
+
+
 def test_a_traced_read_set_reaches_an_unnamed_input(tree: Path) -> None:
     reads = {
         "files": ["docs/catalogue.json"],
