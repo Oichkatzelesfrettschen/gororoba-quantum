@@ -178,7 +178,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "asteval",
@@ -240,7 +241,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "autoray",
@@ -301,7 +303,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "build",
@@ -801,7 +804,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "dill",
@@ -1088,7 +1092,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "grpcio",
@@ -1955,7 +1960,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "llvmlite",
@@ -2306,7 +2312,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "myst-nb",
@@ -3476,7 +3483,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "pauli-prop",
@@ -4053,7 +4061,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "pyquafu",
@@ -4067,7 +4076,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "pyquaternion",
@@ -5342,7 +5352,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "qiskit-machine-learning",
@@ -6163,7 +6174,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "sparsediffpy",
@@ -6803,7 +6815,8 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
   },
   {
    "distribution": "uncertainties",
