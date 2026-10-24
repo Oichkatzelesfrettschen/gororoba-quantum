@@ -25,14 +25,17 @@ per native library, `GOROROBA_PINS_REQUIRED=1`):
   summary;
 - `gates` diffs the head from its merge base with main and runs, through
   `ci/run_gates.py --affected-by`, every gate of at most 15 measured seconds
-  (`GATES_MAX_SECONDS`) the diff reaches: a changed path in the gate's import
-  closure, at or under a path its command names, in a full-tier gate's
+  (`GATES_MAX_SECONDS`) the diff reaches: every gate when the diff changes a
+  file the pinned or replay venv cache keys hash (`gate_inputs.RUNTIME_INPUTS`),
+  else a gate whose ci/gates.json entry is new or changed, or a changed path in
+  its import closure, at or under a path its command names, in a full-tier gate's
   ci/full_gate_inputs.json scopes, or in the read set main's audit ledger
   traced for it, where an added or removed non-Python file also reaches a
   listed directory, glob or existence probe (`gate_inputs.affected`). It
   restores the replay runtime and the gate ledger from ci.yml's caches
   read-only and builds the runtime on a miss; slower gates stay with the
-  audit.
+  audit. Concurrent gates run mypy, so `ci/pinned_tool.py` gives each mypy
+  invocation its own `.mypy_cache/KEY` directory unless the caller names one.
 `lint`, `types` and `tests` time out at 8 minutes and `gates` at 30.
 `types`, `tests` and `gates` restore the pinned venv through
 .github/actions/pins-venv, under ci.yml's cache key, and build it with

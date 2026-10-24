@@ -17,6 +17,8 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
+from gate_ledger import MANIFEST_FIELDS
+
 GLOBAL_INPUTS = (
     "ci/**",
     ".github/**",
@@ -25,6 +27,17 @@ GLOBAL_INPUTS = (
     "pyproject.toml",
     "**/AGENTS.md",
     "AGENTS.md",
+)
+
+
+# The files the pinned and replay venv cache keys hash (.github/workflows/ci.yml, pins-venv): a change
+# to one changes the interpreter every gate runs under.
+RUNTIME_INPUTS = (
+    "requirements.txt",
+    "ci/requirements-ci.txt",
+    "ci/requirements-replay.txt",
+    "ci/install_pins.sh",
+    "ci/patches/**",
 )
 
 
@@ -207,12 +220,17 @@ def affected(
     changed: list[str],
     listed: list[str],
     traced: dict[str, dict[str, Any]] | None = None,
+    base: list[dict[str, Any]] | None = None,
 ) -> set[str]:
-    """The gates a change reaches: through their import closure, the paths their commands name, the
-    reviewed scopes of full-tier gates, or the read sets a traced run recorded (``traced`` maps a gate or
-    case name to its ledger entry). ``changed`` holds every changed path and ``listed`` the added and
-    removed ones.
+    """The gates a change reaches: every gate when it changes the pinned runtime, else each gate whose
+    manifest entry differs from ``base`` (the merge base's ci/gates.json gates), and each gate reached
+    through its import closure, the paths its command names, the reviewed scopes of a full-tier gate, or
+    the read set a traced run recorded (``traced`` maps a gate or case name to its ledger entry).
+    ``changed`` holds every changed path and ``listed`` the added and removed ones.
     """
+    if any(matches(path, pattern) for path in changed for pattern in RUNTIME_INPUTS):
+        return {gate["name"] for gate in gates}
+    before = {gate["name"]: {field: gate.get(field) for field in MANIFEST_FIELDS} for gate in base or []}
     scopes = full_gate_scopes(root, gates)
     modules = module_index(root)
     for path in changed:
@@ -230,7 +248,8 @@ def affected(
         patterns = scopes.get(name, [])
         reads = [entry["reads"] for key, entry in entries.items() if key == name or key.startswith(f"{name}--")]
         if (
-            not ancestry.isdisjoint(sources)
+            (base is not None and before.get(name) != {field: gate.get(field) for field in MANIFEST_FIELDS})
+            or not ancestry.isdisjoint(sources)
             or any(matches(path, pattern) for path in edited for pattern in patterns)
             or any(ledger_reaches(read, edited, created) for read in reads)
         ):

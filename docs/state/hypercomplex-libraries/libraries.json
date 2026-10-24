@@ -6781,6 +6781,7 @@
    "__future__",
    "ast",
    "fnmatch",
+   "gate_ledger",
    "json",
    "os",
    "pathlib",
@@ -6827,6 +6828,8 @@
   "ci/pinned_tool.py": [
    "__future__",
    "collections",
+   "hashlib",
+   "json",
    "os",
    "pathlib",
    "pins",

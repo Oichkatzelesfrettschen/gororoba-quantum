@@ -89,7 +89,8 @@ gates)
 	diff=$(mktemp)
 	trap 'rm -f "$diff"' EXIT
 	git diff --no-renames --name-status -z "$base" HEAD >"$diff"
-	"$PYTHON" ci/run_gates.py --affected-by "$diff" ${GATES_LEDGER:+--affected-ledger "$GATES_LEDGER"} \
+	"$PYTHON" ci/run_gates.py --affected-by "$diff" --affected-base "$base" \
+		${GATES_LEDGER:+--affected-ledger "$GATES_LEDGER"} \
 		--max-seconds "${GATES_MAX_SECONDS:-15}" "$@"
 	;;
 *)

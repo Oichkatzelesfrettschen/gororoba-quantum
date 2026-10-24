@@ -70,6 +70,22 @@ def test_a_change_reaches_the_gates_that_check_it(tree: Path, changed: list[str]
         raise AssertionError(f"{changed} reached {reached(tree, changed)}, expected {expected}")
 
 
+@pytest.mark.parametrize("pin", ["requirements.txt", "ci/requirements-replay.txt", "ci/patches/fix.patch"])
+def test_a_runtime_pin_change_reaches_every_gate(tree: Path, pin: str) -> None:
+    if reached(tree, [pin]) != {"proposal", "other", "scoped"}:
+        raise AssertionError(f"{pin} must reach every gate, since it changes their interpreter")
+
+
+def test_a_new_or_changed_manifest_entry_reaches_its_gate(tree: Path) -> None:
+    gates = json.loads((tree / "ci/gates.json").read_text())["gates"]
+    base = [dict(gate, cmd=gate["cmd"] + " --old") if gate["name"] == "other" else gate for gate in gates]
+    base = [gate for gate in base if gate["name"] != "scoped"]
+    if gate_inputs.affected(tree, gates, ["ci/gates.json"], [], None, base) != {"other", "scoped"}:
+        raise AssertionError("a changed command and a new gate must each be reached")
+    if gate_inputs.affected(tree, gates, ["ci/gates.json"], [], None, gates):
+        raise AssertionError("an unchanged manifest reaches no gate")
+
+
 def test_a_traced_read_set_reaches_an_unnamed_input(tree: Path) -> None:
     reads = {
         "files": ["docs/catalogue.json"],

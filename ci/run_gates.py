@@ -428,6 +428,10 @@ def main(argv: list[str] | None = None) -> int:
         help="a gate ledger whose traced read sets also decide which gates --affected-by reaches",
     )
     parser.add_argument(
+        "--affected-base",
+        help="the revision whose ci/gates.json entries --affected-by compares; a new or changed entry is reached",
+    )
+    parser.add_argument(
         "--gates",
         help="comma-separated gate names; a registered case gate matches by its own or its parent's name",
     )
@@ -457,8 +461,8 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.changed_files is not None:
         changed = arguments.changed_files.read_bytes().decode("utf-8").split("\0")
         changed = [path for path in changed if path]
-    if arguments.affected_ledger is not None and arguments.affected_by is None:
-        parser.error("--affected-ledger requires --affected-by")
+    if (arguments.affected_ledger is not None or arguments.affected_base is not None) and arguments.affected_by is None:
+        parser.error("--affected-ledger and --affected-base require --affected-by")
     if arguments.affected_by is not None and changed is not None:
         parser.error("--affected-by and --changed-files select differently; pass one")
     tier = "full" if arguments.affected_by is not None else arguments.tier
@@ -466,7 +470,13 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.affected_by is not None:
         edited, listed = name_status(arguments.affected_by.read_bytes())
         traced = gate_ledger.load(arguments.affected_ledger) if arguments.affected_ledger is not None else None
-        reached = gate_inputs.affected(ROOT, select(ROOT, "full"), edited, listed, traced)
+        base = None
+        if arguments.affected_base is not None:
+            shown = subprocess.run(
+                ["git", "show", f"{arguments.affected_base}:ci/gates.json"], cwd=ROOT, capture_output=True, check=False
+            )
+            base = json.loads(shown.stdout)["gates"] if shown.returncode == 0 else []
+        reached = gate_inputs.affected(ROOT, select(ROOT, "full"), edited, listed, traced, base)
         gates = [gate for gate in gates if gate["name"] in reached]
         print(f"affected: {len(reached)} gates reached by {len(edited)} changed paths, {len(gates)} selected")
     candidates = gate_inputs.expand_cases(ROOT, gates)

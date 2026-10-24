@@ -78,9 +78,20 @@ jobs:
       - name: Fetch main
         run: git fetch --no-tags origin +refs/heads/main:refs/remotes/origin/main
       - uses: ./.github/actions/pins-venv
+      # The audit's merged ledger from main; its read sets add the data files a
+      # gate opens without naming them. A miss leaves the static selection;
+      # the plan and the run read the same ledger, so both select the same gates.
+      - name: Restore the gate ledger
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.LEDGER }}
+          key: gate-ledger-${{ github.sha }}
+          restore-keys: gate-ledger-
       - name: Plan the historical replay environment
         id: plan
-        run: sh ci/pr_checks.sh gates --plan "$RUNNER_TEMP/gate-plan.json" --github-output "$GITHUB_OUTPUT"
+        run: >-
+          GATES_LEDGER="$LEDGER" sh ci/pr_checks.sh gates
+          --plan "$RUNNER_TEMP/gate-plan.json" --github-output "$GITHUB_OUTPUT"
       # ci.yml's key, so a pull request restores the runtime main's audit saved.
       - name: Restore the recorded compiler runtime
         id: replay-cache
@@ -98,14 +109,6 @@ jobs:
       - name: Use the recorded compiler runtime
         if: steps.plan.outputs.historical == 'true'
         run: echo "REPLAY_PYTHON=$REPLAY_VENV/bin/python" >> "$GITHUB_ENV"
-      # The audit's merged ledger from main; its read sets add the data files a
-      # gate opens without naming them. A miss leaves the static selection.
-      - name: Restore the gate ledger
-        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
-        with:
-          path: ${{ env.LEDGER }}
-          key: gate-ledger-${{ github.sha }}
-          restore-keys: gate-ledger-
       - name: Affected gates
         timeout-minutes: 20
         run: GATES_LEDGER="$LEDGER" sh ci/pr_checks.sh gates
