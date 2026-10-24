@@ -302,7 +302,9 @@ linear.
 statement in this repository's terms: `sign_row_degree_all` gives degree
 max(1, n - 1) for every n against the tower sign sigma, which the
 [tower basis-sign bundle](../evidence/cd-tower-basis-sign/README.md) ties to
-cd_sign. [CdAssociatorAnf.v](../../proofs/CdAssociatorAnf.v) proves the
+cd_sign through dim 64 and the
+[cd_sign Python-semantics bundle](../evidence/cd-sign-python-semantics/README.md)
+for every n, by running cd_sign's syntax tree. [CdAssociatorAnf.v](../../proofs/CdAssociatorAnf.v) proves the
 associator statement on the same terms: `assoc_degree_is` gives degree
 max(1, Nat.log2 (max p q) - 1) for every k >= 3 and distinct nonzero p, q,
 following Lemmas A to D and the induction above; `assoc_sigma` equates the

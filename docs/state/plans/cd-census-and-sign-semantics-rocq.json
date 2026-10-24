@@ -9,7 +9,7 @@
     "gororoba_quantum/cd_core.py",
     "docs/evidence/cd-tower-basis-sign/README.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "unresolved",
     "note": "Captured context; triage and evidence review pending."
@@ -45,9 +45,35 @@
     },
     {
       "id": "cd-sign-python-semantics",
-      "state": "todo",
+      "state": "done",
       "action": "Extract cd_core.cd_sign's syntax tree into a Rocq term, give the Python subset it uses a Rocq semantics, and prove the run equals sigma for every k.",
-      "acceptance": "The extraction test passes in pytest, and the semantics theorem compiles closed under the global context in a hash-bound replay with -w @all that passes against its receipts."
+      "acceptance": "The extraction test passes in pytest, and the semantics theorem compiles closed under the global context in a hash-bound replay with -w @all that passes against its receipts.",
+      "receipts": [
+        {
+          "result": "cd_sign_returns_sigma, cd_sign_raises_dimension, cd_sign_raises_index, dimension_guard_pow, cd_sign_spec and cd_sign_mutant_differs compile under -w @all; all six assumption queries print Closed under the global context, rocq check passes with the shared kernel receipt, replay_rocq.sh passes against its receipts, and the 85 cases of tests/scripts/test_cd_sign_rocq_ast.py and scripts/cd_sign_rocq_ast.py --check pass.",
+          "observed_at": "2026-10-24T16:17:24Z",
+          "revision": "d95b6c004f12ba98260af7898b53766de1fa5c13",
+          "evidence": [
+            {
+              "ref": "proofs/CdSignPythonSemantics.v",
+              "sha256": "539460c7b13b62b96782f5a331d358936c290851a3395c2f9d57b4d1e2252637"
+            },
+            {
+              "ref": "scripts/cd_sign_rocq_ast.py",
+              "sha256": "377affd7ffcdf0064925cd03dca5afa515cf5a32fb5379662d016193bd84a6de"
+            },
+            {
+              "ref": "tests/scripts/test_cd_sign_rocq_ast.py",
+              "sha256": "ac5f565acc8e26f303c43f0c138bf3daeff7cc7d878e676f049ed9e0e783785e"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-semantics/assumptions.txt",
+              "sha256": "99a6704258822ca71cbc86001bd22c279bfa19b98dd2513510b2a59528c8e97f"
+            }
+          ],
+          "scope_sha256": "4c32729c0b8d7409c41a3ce0015518f7a00caecf7a4407a5cda6b76b430bdd24"
+        }
+      ]
     }
   ],
   "related": [
@@ -56,5 +82,28 @@
   ],
   "scope": "The census of pairs by degree is counted only by scripts/cd_phase_degree.py, and the agreement of sigma with cd_core.cd_sign rests on tower_bridge.py through n = 64. This implementation proves the census for every k in a hash-bound Rocq bundle, and proves for every k that a Rocq semantics of the Python subset cd_sign uses, run on the syntax tree extracted from cd_core.py, returns sigma.",
   "owner": "Repository Rocq maintainer",
-  "next_action": "Extract cd_core.cd_sign's syntax tree and prove its Rocq semantics returns sigma."
+  "disposition": "completed",
+  "resolution": "CdAssociatorCensus.v proves the associator-phase census for every k >= 3, and CdSignPythonSemantics.v proves for every k that the syntax tree of cd_core.cd_sign, run under a Rocq semantics of the Python int subset it uses, returns the tower sign sigma; tower_bridge.py stays as a finite cross-check.",
+  "receipts": [
+    {
+      "result": "Both steps are done with receipts; the degree note, the tower basis-sign README, the docs map and the research state record both proofs.",
+      "observed_at": "2026-10-24T16:17:42Z",
+      "revision": "870db05b47e91d37c41274baf01a03200b766081",
+      "evidence": [
+        {
+          "ref": "proofs/CdAssociatorCensus.v",
+          "sha256": "bbd2562527a32c820259181a336db5b89bea03a85ea81caacb79b0452392591b"
+        },
+        {
+          "ref": "proofs/CdSignPythonSemantics.v",
+          "sha256": "539460c7b13b62b96782f5a331d358936c290851a3395c2f9d57b4d1e2252637"
+        },
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "568a4e700b3e3bd77f0cb8637add901c3fbda7b081aff0db576f21320420b82b"
+        }
+      ],
+      "scope_sha256": "6b061a453cd5ae70f0e8c53fd84d43af74d6024e844c19fdacd503da49f5e06f"
+    }
+  ]
 }

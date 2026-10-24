@@ -4352,7 +4352,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The rows are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64; claim cd-associator-anf-rocq proves the associator-phase degree on the same tower.",
+      "boundary": "The rows are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k; claim cd-associator-anf-rocq proves the associator-phase degree on the same tower.",
       "evidence": [
         {
           "path": "proofs/CdSignRowAnf.v",
@@ -4380,7 +4380,9 @@
       },
       "acquisitions": [],
       "assumptions": [],
-      "depends_on": [],
+      "depends_on": [
+        "cd-sign-python-semantics-rocq"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "kernel_receipt": "docs/evidence/cd-sign-row-anf/kernel.txt"
@@ -4391,7 +4393,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64; claim cd-associator-census-rocq counts the pairs by degree in Rocq.",
+      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k; claim cd-associator-census-rocq counts the pairs by degree in Rocq.",
       "evidence": [
         {
           "path": "proofs/CdAssociatorAnf.v",
@@ -4432,7 +4434,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64.",
+      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k.",
       "evidence": [
         {
           "path": "proofs/CdAssociatorCensus.v",
@@ -4466,6 +4468,49 @@
       "supersedes": [],
       "superseded_by": null,
       "kernel_receipt": "docs/evidence/cd-associator-census/kernel.txt"
+    },
+    {
+      "id": "cd-sign-python-semantics-rocq",
+      "statement": "For every Cayley-Dickson level k, kernel-checked by Rocq 9.3.0 with six closed assumption queries: a big-step semantics of the Python int subset, run on the syntax tree of cd_core.cd_sign that scripts/cd_sign_rocq_ast.py extracts with ast.parse, returns the tower sign sigma_k(p, q) of CdTowerBasisSign.v for cd_sign(2^k, p, q) with p, q < 2^k, and raises whenever a guard fails on int arguments other than bool; the guard _dimension admits exactly the powers of two, and the term with the high-low q != 0 guard removed returns -1 at e_1 e_0 where sigma_1(1, 0) = 1.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "Three readings stay outside the proof, each with a failing check: the extractor's one-to-one node map, which tests/scripts/test_cd_sign_rocq_ast.py and gate sources-406 compare with the embedded term; the int behavior of the guards _dimension and _index, whose ast.dump digests and clauses on every int from -3 to 70 the same contract pins; and the evaluator's reading of the cited Python Language Reference sections. Bool arguments, which both guards reject, are outside the int model; tower_bridge.py remains as an independent finite cross-check through dimension 64.",
+      "evidence": [
+        {
+          "path": "proofs/CdSignPythonSemantics.v",
+          "sha256": "539460c7b13b62b96782f5a331d358936c290851a3395c2f9d57b4d1e2252637"
+        },
+        {
+          "path": "scripts/cd_sign_rocq_ast.py",
+          "sha256": "377affd7ffcdf0064925cd03dca5afa515cf5a32fb5379662d016193bd84a6de"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-semantics/assumptions.v",
+          "sha256": "205f2a482526015f16ea01ec8379aa0fd6d9f2e0721b294641fe8d2ec7c048b9"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-semantics/assumptions.txt",
+          "sha256": "99a6704258822ca71cbc86001bd22c279bfa19b98dd2513510b2a59528c8e97f"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-semantics/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-sign-python-semantics/README.md",
+        "docs/evidence/cd-tower-basis-sign/README.md"
+      ],
+      "gates": {
+        "sources-405": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-sign-python-semantics/kernel.txt"
     },
     {
       "id": "cd-associator-phase-degree",
