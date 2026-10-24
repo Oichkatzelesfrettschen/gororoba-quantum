@@ -7,6 +7,9 @@ from __future__ import annotations
 from pathlib import Path
 
 import merge_gate_timings
+import pytest
+
+pytestmark = pytest.mark.audit
 
 ROOT = Path(__file__).resolve().parents[2]
 

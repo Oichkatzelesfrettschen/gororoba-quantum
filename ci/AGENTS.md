@@ -1,7 +1,7 @@
 # CI and gate guide
 
-This file applies to the gate machinery under ci/ and to the gate, replay and
-cost rules that every change follows. The repository's root AGENTS.md carries
+This file applies to the pull-request workflow, the audit's gate machinery
+under ci/, and the replay and cost rules of the audit. The repository's root AGENTS.md carries
 the short form of the code-style commands and the merge flow; CLAUDE.md loads
 this file.
 
@@ -11,18 +11,29 @@ The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only.
 
-**CI runs nightly.** The GitHub Actions workflow `ci.yml` runs on its nightly
-schedule and on manual dispatch only: every gate of both tiers on main with
-`--ledger-audit`. A pull request's gates run by hand on the PR head before
-merge, never per commit or push: the pr tier and every full gate whose
-imports or declared inputs the branch changes,
-`git diff --no-renames --name-only -z origin/main HEAD > CHANGED` then
-`"$PYTHON" ci/run_gates.py --changed-files CHANGED`. Admission takes those
-gates green under the pinned runtime and the Codex review loop, in the order
-of [Merging](../AGENTS.md#reviews-and-merges). A pr
-gate over 30 s of measured wall moves to the full tier with its non-imported
-inputs declared in ci/full_gate_inputs.json, so a merge runs it when its own
-inputs change and the nightly run covers the reads the tracer cannot see.
+**Pull requests.** [.github/workflows/pr.yml](../.github/workflows/pr.yml)
+runs on every pull-request push, cancels the run a newer push replaces, and
+holds two jobs with an 8-minute timeout each. `lint` installs the Ruff pin of
+ci/requirements-ci.txt and runs `ruff check` and `ruff format --check` over
+ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/. `tests` restores
+the pinned venv under ci.yml's cache key (built by ci/install_pins.sh on a
+miss) and runs `pytest -n auto --dist loadgroup -m "not audit"` over tests/.
+The workflow reads no gate manifest, ledger or timing file. Its two jobs green
+on the reviewed head and the Codex review loop admit a merge
+([Merging](../AGENTS.md#reviews-and-merges)); a local gate run, premerge
+replay or Rocq replay is never a merge requirement.
+
+**The audit.** `ci.yml` runs on its nightly schedule and on manual dispatch
+only: every gate of both tiers on main with `--ledger-audit`, the
+retained-evidence replays, the Rocq replays and the Quantum Inspire stack. An
+audit failure qualifies the research-state claims whose evidence it replays
+and gets an issue; it blocks no unrelated pull request. A branch's affected
+gates run on request, `git diff --no-renames --name-only -z origin/main HEAD >
+CHANGED` then `"$PYTHON" ci/run_gates.py --changed-files CHANGED`, or by
+dispatching ci.yml on the branch. A gate over 30 s of measured wall sits in
+the full tier with its non-imported inputs declared in
+ci/full_gate_inputs.json, so `--changed-files` selects it when its own inputs
+change and the nightly run covers the reads the tracer cannot see.
 
 The numerical-model gates `core-600`, `core-603`, `core-605`, `core-612`,
 `core-616`, `core-619` and `core-620` each select a distinct synthetic pytest
@@ -39,8 +50,9 @@ acquisitions; their research-state role is regression rather than replay.
 - `ruff check` (lint: pycodestyle, pyflakes, import order, bugbear,
   pyupgrade, and S101, so checks raise explicitly instead of asserting);
 - `mypy` (static type checking against the configuration in pyproject.toml):
-  on the touched files, and over the whole scope of gate core-039 when a
-  change alters a function, class or type signature another module imports,
+  on the touched files, and over gororoba_quantum/, scripts/, ci/, tests/ and
+  kaggle_kernel/ (from gororoba_quantum/: `mypy . ../scripts ../ci ../tests
+  ../kaggle_kernel`) when a change alters a function, class or type signature another module imports,
   since a per-file run never reads the unchanged callers.
 Run them through `"$PYTHON" ci/pinned_tool.py TOOL ARGS`, which uses the
 versions ci/requirements-ci.txt pins. Formatting is only ruff format; mypy
@@ -145,15 +157,15 @@ those pins in a `-I` subprocess. With neither, the running interpreter serves
 when it holds every pin, then the host environment below. Current-runtime
 gates take an explicit `$PYTHON` as named, else the running interpreter when
 it holds every pin of requirements.txt and ci/requirements-ci.txt, else the
-host environment. A run that decides admission (`--changed-files`, and every
-premerge run) refuses an explicit `$PYTHON` that differs from those pins,
-since a verdict under another runtime admits nothing. The runner prints each
+host environment. A `--changed-files` run and every premerge run refuse an
+explicit `$PYTHON` that differs from those pins, since a verdict under another
+runtime says nothing about the pinned one. The runner prints each
 choice before the first gate, and a selection with an unresolved runtime runs
 no gate and exits 2 naming the differing versions; premerge refuses the same
 way with exit 2, since such gates fail on both trees and read as shared
 failures that hide a gate the branch breaks. Premerge otherwise exits 0 when
 every gate passes on the merge, 1 when the merge introduces a failure and 3
-when every failure also fails on the base, which still blocks admission.
+when every failure also fails on the base.
 CI installs the replay environment only for shards whose plan requires it
 and passes it as `REPLAY_PYTHON`.
 
@@ -284,14 +296,24 @@ bundles under the opam switch of `ci/rocq_toolchain.pin` (Rocq 9.3.0 on OCaml
 only triggers ci.yml declares; both replay every bundle, stiefel_witness
 included. The path selector of `ci/rocq_changed.sh` (`proofs/`, a replay
 bundle, the replay driver, a pin or the workflow) applies to pull-request and
-push events, which ci.yml declares no trigger for, so a pull request's Rocq
-replay runs by hand and is recorded against the reviewed PR head.
+push events, which ci.yml declares no trigger for, so a pull request that
+changes a proof input runs the local replay or dispatches ci.yml on its
+branch, and the nightly run replays every bundle on main.
 tests/ci/test_rocq_ci_pins.py holds the pin, the toolchain.txt banners, the
 path list and the open_gororoba fetch in agreement and rejects each mutation
 of them. The manual procedure remains the local replay.
 
-**Behavioral suite.** Gate core-615 runs `pytest -n auto --dist loadgroup`
-over tests/ in one process pool, so each worker imports the repository modules
+**Behavioral suite.** tests/ holds one pytest suite with two selections.
+`pr.yml` runs every test the `audit` marker (pyproject.toml) leaves
+unmarked, so a new test needs no gate entry, timing entry or group and runs
+on every pull request. Mark a test `audit`, or a whole module through
+`pytestmark = pytest.mark.audit`, when it replays retained evidence, binds the
+digest of a document other changes may edit, or checks the gate machinery and
+its manifests; give an expensive test a small unmarked counterpart. A bug fix
+adds a focused unmarked regression test, and the `tests` job's measured
+runtime stays inside its timeout. The audit gates select by path and ignore
+the marker, so they still run every marked test. In the audit, gate core-615
+runs `pytest -n auto --dist loadgroup` over tests/ in one process pool, so each worker imports the repository modules
 once; issue #291 carries the migration plan and its falsifier, a planted
 mutant per moved contract. core-615 ignores the paths its sibling gates
 `core-behavior-NN` run, each a list of test modules or directories sized

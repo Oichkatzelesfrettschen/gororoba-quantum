@@ -20,6 +20,8 @@ import run_gates
 from host_identity import KEY_PREFIXES, KEY_VARIABLES
 from premerge_gates import CACHE_SCHEMA, DEFAULT_MAX_SECONDS, MERGE_IDENTITY, ROOT, git, premerge
 
+pytestmark = pytest.mark.audit
+
 RUNNER_FILES = (
     "ci/run_gates.py",
     "ci/gate_inputs.py",
