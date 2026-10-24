@@ -64,8 +64,20 @@ The device readings of the two acquisitions come from
 exploratory reading (`--diagnose`): outside-block counts and their mode
 composition against the plan-time dark rates, their serial structure, the
 compiled-circuit check, the analyzer contrast fits with per-setting residuals,
-and the endpoints under block-conditioned denominators.
+and the endpoints under block-conditioned denominators. Two fields of those
+records carry no inferential reading: `residual_chi2` standardizes
+ordinary-least-squares residuals by unequal variances and has no chi-square
+reference, and the `block_less_dark_share` variant passes estimated,
+clipped, fractional counts to the Hoeffding engine, so its `verdicts` and
+`ideal_excluded` are descriptive sensitivity values without the registered
+coverage.
 [`repeat-comparison.json`](repeat-comparison.json) holds the preregistered
-comparison of the permuted repeat with job-00 (`--compare`). The
-`core-ascella-signed-coherence-*` gates replay all three within the
-certificate tolerance.
+comparison of the permuted repeat with job-00 (`--compare`).
+[`response-geometry.json`](response-geometry.json), from
+[`scripts/ascella_response_geometry.py`](../../../scripts/ascella_response_geometry.py),
+holds the exploratory reading of both runs with analytic references: the
+gain relations projected onto the simultaneous intervals, inverse-variance
+contrast fits, dilution fractions, outside-block profile tests, the
+two-component background fit, the configuration grouping and the held-out
+prediction of job-01. The `core-ascella-signed-coherence-*` gates replay all
+four within the certificate tolerance.

@@ -3,8 +3,11 @@
 Usage: "$PYTHON" ci/pinned_tool.py TOOL ARGS...
 
 The installed tool runs directly when it reports the pin exactly, which is
-the CI case: ruff as the executable on PATH, mypy as ``"$PYTHON" -m mypy``
-so its imports resolve against that interpreter's packages. Otherwise, unless GOROROBA_PINS_REQUIRED=1, uv runs
+the CI case: each runs as the requesting interpreter's module, ``"$PYTHON" -m
+ruff`` and ``"$PYTHON" -m mypy``, so the version checked is the
+interpreter's own distribution and mypy's imports resolve against that
+interpreter's packages; a ruff executable earlier on PATH from another
+install never stands in for it. Otherwise, unless GOROROBA_PINS_REQUIRED=1, uv runs
 the pinned release: ruff through ``uv tool run``, which needs nothing from
 the project environment, and mypy through ``uv run --no-project --python
 "$PYTHON" --with mypy==PIN``, which layers the pinned mypy over the calling
@@ -34,20 +37,16 @@ TOOLS = ("ruff", "mypy")
 _VERSION = re.compile(r"^\S+ (\S+)")
 
 
-def launcher(tool: str, python: str) -> list[str] | None:
-    """ruff as its executable on PATH; mypy as the requested interpreter's module, so imports resolve there."""
-    if tool == "mypy":
-        return [python, "-m", "mypy"]
-    executable = shutil.which(tool)
-    return [executable] if executable else None
+def launcher(tool: str, python: str) -> list[str]:
+    """The tool as the requesting interpreter's module, so the version probed is the one that runs."""
+    return [python, "-m", tool]
 
 
 def installed_version(tool: str, python: str) -> str | None:
-    prefix = launcher(tool, python)
-    if prefix is None:
-        return None
     try:
-        completed = subprocess.run([*prefix, "--version"], capture_output=True, text=True, check=False, timeout=60)
+        completed = subprocess.run(
+            [*launcher(tool, python), "--version"], capture_output=True, text=True, check=False, timeout=60
+        )
     except (OSError, subprocess.TimeoutExpired):
         return None
     match = _VERSION.match(completed.stdout.strip())
@@ -67,7 +66,7 @@ def command(
     if tool not in TOOLS:
         raise SystemExit(f"pinned_tool: {tool!r} is not one of {', '.join(TOOLS)}")
     if installed == pin:
-        return [*(launcher(tool, python) or [tool]), *arguments], None
+        return [*launcher(tool, python), *arguments], None
     found = f"{tool} {installed}" if installed else f"no {tool}"
     if pins.pins_required(environment):
         raise SystemExit(f"pinned_tool: {found} is installed; {pins.PINS_REQUIRED}=1 requires {tool} {pin}")

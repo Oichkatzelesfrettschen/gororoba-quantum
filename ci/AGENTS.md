@@ -38,7 +38,12 @@ review loop the checks admit a merge
 replay or Rocq replay is never a merge requirement. Locally,
 `sh ci/pr_checks.sh tests tests/path/test_x.py` runs one module under the
 hosted environment, and `sh ci/pr_checks.sh tests -m audit tests/path/test_x.py`
-runs its audit-marked tests (pytest keeps the last `-m`).
+runs its audit-marked tests (pytest keeps the last `-m`). Each lane first
+resolves its interpreter through `ci/pins.py lane LANE`: an explicit `PYTHON`
+runs only when it holds the lane's pins (ruff for lint, every current pin for
+types and tests), an unset one takes the host environment, and a drifted one
+exits 2 naming the differing pins and the command that runs the lane under
+the host environment.
 
 **The audit.** `ci.yml` runs on its nightly schedule and on manual dispatch
 only: every gate of both tiers on main with `--ledger-audit`, the
