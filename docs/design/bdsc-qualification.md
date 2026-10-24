@@ -694,8 +694,8 @@ runs through the scheduled workflow
 ([runbook](../runbooks/quandela-scheduled-runs.md)) with `on_stop` skip.
 Slot k starts at its own `not_before`, two hours after slot k-1's, and
 holds unsent after `latest_start`, 100 minutes later, so a late slot drops
-and the next still runs. The slots run from 2026-10-24T12:00Z (`t1`) to
-2026-10-25T00:00Z (`t7`). A platform status outside `available` and
+and the next still runs. The slots run from 2026-10-24T07:00Z (`t1`) to
+2026-10-24T19:00Z (`t7`). A platform status outside `available` and
 `running`, or a token busy with another job, waits inside the window.
 
 **Stop conditions, per job.** Each one holds or fails that job alone and

@@ -16,14 +16,14 @@
     "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
    },
    "key": "t1",
-   "latest_start": "2026-10-24T13:40:00Z",
+   "latest_start": "2026-10-24T08:40:00Z",
    "matched_check": [
     "scripts/bdsc_stationarity.py",
     "--matched-check",
     "{run}"
    ],
    "max_credits": 1.12,
-   "not_before": "2026-10-24T12:00:00Z",
+   "not_before": "2026-10-24T07:00:00Z",
    "per_job_credits": 1.0,
    "plan_check": [
     "scripts/bdsc_stationarity.py",
@@ -46,14 +46,14 @@
     "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
    },
    "key": "t2",
-   "latest_start": "2026-10-24T15:40:00Z",
+   "latest_start": "2026-10-24T10:40:00Z",
    "matched_check": [
     "scripts/bdsc_stationarity.py",
     "--matched-check",
     "{run}"
    ],
    "max_credits": 1.12,
-   "not_before": "2026-10-24T14:00:00Z",
+   "not_before": "2026-10-24T09:00:00Z",
    "per_job_credits": 1.0,
    "plan_check": [
     "scripts/bdsc_stationarity.py",
@@ -76,14 +76,14 @@
     "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
    },
    "key": "t3",
-   "latest_start": "2026-10-24T17:40:00Z",
+   "latest_start": "2026-10-24T12:40:00Z",
    "matched_check": [
     "scripts/bdsc_stationarity.py",
     "--matched-check",
     "{run}"
    ],
    "max_credits": 1.12,
-   "not_before": "2026-10-24T16:00:00Z",
+   "not_before": "2026-10-24T11:00:00Z",
    "per_job_credits": 1.0,
    "plan_check": [
     "scripts/bdsc_stationarity.py",
@@ -106,14 +106,14 @@
     "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
    },
    "key": "t4",
-   "latest_start": "2026-10-24T19:40:00Z",
+   "latest_start": "2026-10-24T14:40:00Z",
    "matched_check": [
     "scripts/bdsc_stationarity.py",
     "--matched-check",
     "{run}"
    ],
    "max_credits": 1.12,
-   "not_before": "2026-10-24T18:00:00Z",
+   "not_before": "2026-10-24T13:00:00Z",
    "per_job_credits": 1.0,
    "plan_check": [
     "scripts/bdsc_stationarity.py",
@@ -136,14 +136,14 @@
     "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
    },
    "key": "t5",
-   "latest_start": "2026-10-24T21:40:00Z",
+   "latest_start": "2026-10-24T16:40:00Z",
    "matched_check": [
     "scripts/bdsc_stationarity.py",
     "--matched-check",
     "{run}"
    ],
    "max_credits": 1.12,
-   "not_before": "2026-10-24T20:00:00Z",
+   "not_before": "2026-10-24T15:00:00Z",
    "per_job_credits": 1.0,
    "plan_check": [
     "scripts/bdsc_stationarity.py",
@@ -166,14 +166,14 @@
     "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
    },
    "key": "t6",
-   "latest_start": "2026-10-24T23:40:00Z",
+   "latest_start": "2026-10-24T18:40:00Z",
    "matched_check": [
     "scripts/bdsc_stationarity.py",
     "--matched-check",
     "{run}"
    ],
    "max_credits": 1.12,
-   "not_before": "2026-10-24T22:00:00Z",
+   "not_before": "2026-10-24T17:00:00Z",
    "per_job_credits": 1.0,
    "plan_check": [
     "scripts/bdsc_stationarity.py",
@@ -196,14 +196,14 @@
     "circuit.json": "206bcfd5e45b96567016559a3e07de998849291110bec354a54d4dfc1642d80c"
    },
    "key": "t7",
-   "latest_start": "2026-10-25T01:40:00Z",
+   "latest_start": "2026-10-24T20:40:00Z",
    "matched_check": [
     "scripts/bdsc_stationarity.py",
     "--matched-check",
     "{run}"
    ],
    "max_credits": 1.12,
-   "not_before": "2026-10-25T00:00:00Z",
+   "not_before": "2026-10-24T19:00:00Z",
    "per_job_credits": 1.0,
    "plan_check": [
     "scripts/bdsc_stationarity.py",
