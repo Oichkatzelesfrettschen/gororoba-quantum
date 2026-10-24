@@ -9,8 +9,9 @@ predicted harmonic coefficients, and renders their measured geometry.
 The plan contains one proposed 64-setting order-family job, a 300-second cap
 and a 1.2-credit ceiling. The recorded tariff gives 1.016384 credits. The
 [frozen request](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json)
-and its serialized job body exist; the local replay, written case and
-submission remain prospective. Wave evolution
+, its serialized job body and their
+[local replay](../../results/local-simulation/ascella-signed-coherence-replay/README.md)
+exist; the written case and submission remain prospective. Wave evolution
 and Fourier families retain separate cases. The science-led design replaces
 the fixed-angle reference-and-repeat design in this document's Git history;
 all settings now probe the order mathematics, its sign symmetry or its
@@ -495,13 +496,18 @@ entries carrying the manifest's `circuit_params`, 8,192 samples, 16,384 shots
 and seed 0, the twelve-entry input, the one-photon filter and the empty
 mitigation list, with each entry's bound unitary equal to the design operator
 within 1e-9. Preflight compares the fresh body with the retained one in every
-field except `process_id`. Local replay executes the serialized request
-through SLOS/Naive.
-Synthetic diagonal mixtures, conjugation, swapped readouts, aliasing and missing
-arms exercise the analysis. Fresh preflight and the applicable
+field except `process_id`. The
+[local replay](../../results/local-simulation/ascella-signed-coherence-replay/README.md)
+executes the serialized body through SLOS and Naive and runs the registered
+estimators of [`ascella_coherence_analysis.py`](../../scripts/ascella_coherence_analysis.py)
+on the ideal response, a seeded sample of the iterator, the equal-contrast and
+sign-even counterexamples, a diagonal mixture, conjugation, exchanged readouts
+and a missing iteration; every disposition this section registers holds.
+Aliasing is a property of the five-point transform, which the derivation
+records. Fresh preflight and the applicable
 [evidence-closure procedure](../runbooks/evidence-closure.md) precede submission.
 The retained deliverables are the scientific plan, the local derivation
-evidence and the frozen request.
+evidence, the frozen request and its local replay.
 
 A later axis-angle experiment can vary the generator from I toward J. For
 `B=cos(phi)+sin(phi)(cos(gamma)I+sin(gamma)J)`, the commutator norm predicts
