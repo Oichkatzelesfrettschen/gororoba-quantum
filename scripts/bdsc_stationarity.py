@@ -84,15 +84,17 @@ PROJECTION_SEED = 20261023
 PROJECTION_REPLICATES = 10000
 # The retained readout of the four post-calibration runs, in job order, and the calibration contrast of the b1-j1
 # requests read before and after the Belenos calibration (docs/runbooks/bdsc-qualification-case.md).
+# Both are the pinned interpreter's bytes; the unsuffixed predecessors keep the registered bytes of a system-numpy
+# build that differs in the last ulps.
 RUNS_DIR = ROOT / "results/quandela/runs"
-READOUT = ROOT / "results/quandela/bdsc_stationarity_readout.json"
+READOUT = ROOT / "results/quandela/bdsc_stationarity_readout_pinned.json"
 READOUT_RUNS = (
     "2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",
     "2026-10-23T202212Z-qpu_belenos-bdsc_stationarity-b1-j2",
     "2026-10-23T213050Z-qpu_belenos-bdsc_stationarity-b2-j1",
     "2026-10-23T213450Z-qpu_belenos-bdsc_stationarity-b2-j2",
 )
-CONTRAST = ROOT / "results/quandela/bdsc_stationarity_calibration_contrast.json"
+CONTRAST = ROOT / "results/quandela/bdsc_stationarity_calibration_contrast_pinned.json"
 CONTRAST_RUNS = (
     "2026-10-23T195000Z-qpu_belenos-bdsc_stationarity-b1-j1",
     "2026-10-23T201808Z-qpu_belenos-bdsc_stationarity-b1-j1-repeat",

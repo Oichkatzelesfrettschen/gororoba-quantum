@@ -8794,12 +8794,12 @@
       "boundary": "One device and one calibration, two blocks about an hour apart; the case separates neither slow drift from a step change nor drift within a window. Standard errors and p-values are reference values under independent Bernoulli trials, uncalibrated while the provider contract leaves count provenance unresolved. The calibration hold and the post-calibration repeat of b1-j1 were amendments committed before the jobs they govern; the pre-calibration b1-j1 run enters no frozen test. The plan-time dark-count figure is a platform reading, not an acquisition-time measurement, so the mode-5 mechanism stays a candidate. An inconclusive primary decides neither branch; it makes no certification decision.",
       "evidence": [
         {
-          "path": "results/quandela/bdsc_stationarity_calibration_contrast.json",
-          "sha256": "8481d6563c530bc315c82bcd19c108eacedfc8acac0a943b395ff582b3d5433b"
+          "path": "results/quandela/bdsc_stationarity_calibration_contrast_pinned.json",
+          "sha256": "b72b8b154e5eb88f89d7174d2fa65678aa6a231a5fcee2d4767bd69ec7c05418"
         },
         {
-          "path": "results/quandela/bdsc_stationarity_readout.json",
-          "sha256": "48a477b28a1dd8ce10e8a119ed33741d85987aab764fc8f0202694a4888f5d1e"
+          "path": "results/quandela/bdsc_stationarity_readout_pinned.json",
+          "sha256": "fd95b1eb105d7818f2c2dc8561c55de0768668f2cd7a97ad30c8ecf5658d5ad1"
         }
       ],
       "documents": [
@@ -8843,8 +8843,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-2/result.json",
-          "sha256": "cc3b3c3bf970a66e64e6fc2042743b3802d3dddec6a974c3292569d1129d4996"
+          "path": "docs/evidence/algebra-device-conjectures-3/result.json",
+          "sha256": "5decce616f924df3bd885fe0db8e11d71b9834f62dbc02f8e0b882fc66c8770f"
         }
       ],
       "gates": {
