@@ -437,7 +437,7 @@ to n = 8:
 - Ren and Zhao's Theorem 1 closed form against the table, and its transpose as the control.
 
 It runs in about 2 s; `--sparsity` adds the table of the point-indicator
-section in about 30 s. `--mutate high-low-unconditional` and `--mutate
+section in about 10 s. `--mutate high-low-unconditional` and `--mutate
 high-high-no-early-return` each replace one cd_sign branch, and the run
 exits 0 only when a check catches the change. gororoba_quantum/verify.py
 keeps its pure-Python degree checks at dims 8 to 128.

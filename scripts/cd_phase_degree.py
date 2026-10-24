@@ -247,7 +247,8 @@ def top_sparsity(n: int, phi: Table) -> str:
     counts = coefficients.sum(axis=1).astype(np.int64)
     distinct = np.unique(histograms, axis=0).shape[0]
     block = max(1, dim // 16)
-    minima = ordered_map(polarity_minima, [(phases, range(p, min(dim, p + block))) for p in range(0, dim, block)])
+    tasks = [(phases, range(p, min(dim, p + block))) for p in range(0, dim, block)]
+    minima = ordered_map(polarity_minima, tasks, min_items=1)
     total = np.min([pair[0] for pair in minima], axis=0)
     cubes = np.min([pair[1] for pair in minima], axis=0)
     return (
