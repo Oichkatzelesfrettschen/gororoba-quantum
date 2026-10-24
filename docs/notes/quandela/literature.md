@@ -1176,9 +1176,12 @@ and compiler publications.
   quantum Fourier transform interferometer; the resulting protocol needs a
   constant sample count for prime photon numbers and validates on "Quandela's
   reconfigurable photonic quantum processor" (the abstract names no chip).
-- Use here: a one-photon interferometric contrast deficit, as on Ascella's X
-  and Y analyzers, is not a distinguishability effect: one photon interferes
-  only with itself, so the multiphoton benchmarks bound a different quantity.
+- Use here: the multiphoton benchmarks bound interphoton
+  indistinguishability, a quantity the one-photon contrast of Ascella's X and
+  Y analyzers does not measure. A one-photon contrast deficit can still carry
+  an internal-state effect: a photon in a|0>|alpha> + b|3>|beta>, with an
+  internal state correlated to its path, gives path coherence proportional to
+  <beta|alpha>. The Ascella records do not test that mechanism.
 
 ---
 

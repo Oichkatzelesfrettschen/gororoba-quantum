@@ -11,7 +11,7 @@
   "state": "active",
   "scope": "One 64-setting Ascella order-family job measuring sign-odd and sign-even X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
   "owner": "Quandela experiment operator",
-  "next_action": "Identify which acquisition stage alternates between consecutive iterations and which configuration error the reproducing X residuals carry; a timing budget for larger sample counts needs controlled repeats that vary only the samples per iteration.",
+  "next_action": "Fit restricted physical response models (detector efficiency, additive background, small phase-shifter and coupler perturbations) on job-00 and predict job-01 pooled configurations without refitting setting-dependent terms, to name the configuration error behind X0 + Xc2 = -0.028; the outside-block alternation sits in a catalogue-dark-shaped component, and a timing budget for larger sample counts still needs controlled repeats that vary only the samples per iteration.",
   "reconciliation": {
     "status": "unresolved",
     "note": "The approved acquisition ran and is retained with its reproducing analysis; all 27 endpoints qualify. The outside-block share above the dark-count bound remains an open mechanism question."
