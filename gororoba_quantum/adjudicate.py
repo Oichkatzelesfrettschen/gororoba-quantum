@@ -42,6 +42,8 @@ import numpy as np
 from qiskit import QuantumCircuit, qpy
 from qiskit.circuit import Delay
 
+import qrng_seeds
+
 ANALYSIS_SEED = 20261011
 BLOCK_SHOTS = 512
 QPE_PREFIX = "folded_qpe"
@@ -331,7 +333,9 @@ def _simulate(simulator: Any, circuit: QuantumCircuit, shots: int, seed: int) ->
     return {name: np.array(values, dtype=np.int64) for name, values in per_register.items()}
 
 
-def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[str, Any]:
+def adjudicate(
+    service: Any, run_dir: Path, seed: int = ANALYSIS_SEED, seed_source: dict[str, Any] | None = None
+) -> dict[str, Any]:
     import live_run
 
     record = json.loads((run_dir / "record.json").read_text())
@@ -351,6 +355,8 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
         "seed": seed,
         "jobs": {},
     }
+    if seed_source is not None:
+        out["seed_source"] = seed_source
     replicas_by_group = {group["group"]: group["replicas"] for group in record["groups"]}
     for job_entry in jobs:
         job_id = job_entry["job_id"]
@@ -861,7 +867,7 @@ def _check() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("run", nargs="?", type=Path, help="run directory with record.json, isa.qpy, and raw/")
-    parser.add_argument("--seed", type=int, default=ANALYSIS_SEED)
+    qrng_seeds.add_seed_argument(parser, "--seed", default=ANALYSIS_SEED)
     parser.add_argument("--check", action="store_true", help="run the self-check on synthetic data and exit")
     args = parser.parse_args()
     if args.check:
@@ -874,7 +880,12 @@ def main() -> int:
     import ibm_account
 
     try:
-        out = adjudicate(ibm_account.open_service(QiskitRuntimeService), args.run, args.seed)
+        seed_source = None
+        if args.seed_source != "default":
+            seed_source = qrng_seeds.seed_record(
+                "gororoba_quantum/adjudicate.py", "--seed", qrng_seeds.repo_relative(args.run), args.seed_source
+            )
+        out = adjudicate(ibm_account.open_service(QiskitRuntimeService), args.run, args.seed, seed_source)
     except AdjudicationError as error:
         print(f"FAIL: {error}", file=sys.stderr)
         return 1

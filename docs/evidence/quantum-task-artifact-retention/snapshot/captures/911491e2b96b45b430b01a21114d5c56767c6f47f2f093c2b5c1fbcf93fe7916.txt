@@ -1,0 +1,31 @@
+{
+ "after_head": "ae44a4c2ba48eda70cd7e4d075c527579bcca7c6",
+ "after_status": "",
+ "command": [
+  "${USER_HOME}/.local/share/gororoba-quantum/validation/hypercomplex-operator-evidence/ci-py3.14.7/bin/python",
+  "-B",
+  "-W",
+  "error",
+  "scripts/n21_orbit_rca.py",
+  "--between-arm",
+  "results/live/2026-10-19T151959.226467Z",
+  "--check"
+ ],
+ "env": {
+  "BLIS_NUM_THREADS": "1",
+  "GLIBC_TUNABLES": "glibc.rtld.optional_static_tls=4096",
+  "GOROROBA_WORKERS": "1",
+  "MKL_NUM_THREADS": "1",
+  "OMP_NUM_THREADS": "1",
+  "OPENBLAS_CORETYPE": null,
+  "OPENBLAS_NUM_THREADS": "1",
+  "PYTHONDONTWRITEBYTECODE": "1",
+  "PYTHONWARNINGS": "error"
+ },
+ "exit_code": 1,
+ "finish_utc": "2026-10-22T06:51:26.543967+00:00",
+ "gate": "core-612",
+ "head": "ae44a4c2ba48eda70cd7e4d075c527579bcca7c6",
+ "log_sha256": "f4db1a891665caadacc55699de367e7eb019418bf0a837eaae90b7590c7aef25",
+ "start_utc": "2026-10-22T06:50:30.228919+00:00"
+}

@@ -1,0 +1,31 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.7, pytest-9.1.1, pluggy-1.7.0
+rootdir: ${USER_HOME}/worktrees/IBMQuantum/quandela-mcp-contract-repairs
+configfile: pyproject.toml
+created: 4/4 workers
+4 workers [395 items]
+
+........................................................................ [ 18%]
+........................................................................ [ 36%]
+........................................................................ [ 54%]
+........................................................................ [ 72%]
+........................................................................ [ 91%]
+...................................                                      [100%]
+============================= slowest 15 durations =============================
+91.09s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.95]
+76.87s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.0]
+72.67s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_tls_plant_rejects_the_line_mixture[0.0]
+69.93s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.5]
+64.74s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_tls_plant_rejects_the_line_mixture[0.5]
+38.28s call     tests/ci/test_gate_inputs.py::SelectionTests::test_slow_pr_gates_select_on_their_own_inputs
+36.53s call     tests/ci/test_gate_inputs.py::SelectionTests::test_quandela_static_scopes_follow_named_fixtures
+25.86s call     tests/ci/test_gate_inputs.py::SelectionTests::test_expensive_archive_replays_have_input_scopes
+13.82s call     tests/scripts/test_hypercomplex_libraries.py::test_documented_candidates_and_provider_adapters_have_roles
+13.76s call     tests/ci/test_gate_ledger.py::test_every_read_kind_reruns_exactly_its_gate
+12.91s call     tests/ci/test_premerge_gates.py::test_base_cache
+11.79s call     tests/scripts/test_hypercomplex_libraries.py::test_inventory_covers_locks_and_independent_roles
+7.49s call     tests/gororoba_quantum/test_live_run_wide_records.py::test_comparison_accepts_the_plan_and_refuses_an_edit
+7.40s call     tests/ci/test_gate_inputs.py::SelectionTests::test_synthetic_units_refuse_archive_access
+4.77s call     tests/scripts/test_quandela_mcp_transport.py::test_stdio_tool_routes_redaction_output_isolation_and_concurrency
+======================= 395 passed in 199.46s (0:03:19) ========================
+exit=0

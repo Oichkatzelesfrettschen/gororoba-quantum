@@ -1,0 +1,10 @@
+historical runtime qiskit-2.5: REPLAY_PYTHON=${USER_HOME}/.local/share/gororoba-quantum/validation/hypercomplex-operator-evidence/replay-py3.14.7/bin/python holds every pin of requirements-replay.txt
+FAIL core-281     0.1s  "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check
+
+=== core-281 exit 1 in .
+"$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check
+jobs differ
+PASS core-011    14.2s  PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/n21_
+PASS core-379   216.2s  "$PYTHON" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/nois
+
+2 passed, 1 failed of 3 gates in shard 0/1 on CPU

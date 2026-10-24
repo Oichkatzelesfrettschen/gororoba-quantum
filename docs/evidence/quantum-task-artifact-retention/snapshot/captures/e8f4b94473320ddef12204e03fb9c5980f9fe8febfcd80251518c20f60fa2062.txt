@@ -1,0 +1,17 @@
+Quaternionic encodings and octonion ladder conventions need finite falsifiers before hardware runs. Add exact derivation/stabilizer/Clifford certificates, paired-channel quaternion observables, unitary periodic evolution, dephasing and Fourier controls. Retain a local probability explorer and a register explaining 334 Python distributions and documented candidates. The exact sedenion certificate verifies Cl(0,8) for eight left operators and a 256-word Gram matrix, separately from the full fifteen-generator failure.
+
+Generate 40 isolated Quantum Inspire batches and three full-operator photonic families through provider guards. Bind approval digests under the account submit lock, preserve account pauses, and bind measured analysis to receipts and raw hashes. The approved eight-setting Tuna order pilot is descriptive reconnaissance; its addendum withholds equivalence, invariance and automatic continuation claims. Other acquisition families require separate approval.
+
+Import eight exact literature versions with source and rights records; host four CC BY papers and retain four external-only reading copies. State the draft claims refuted by exact algebra and later literature.
+
+Validation: whole-scope mypy, complete behavioral suite, both exact replay gates, touched Python lint/format, source verifier and Markdown links pass. Independent scientific, statistical and policy reviewers closed the reachable findings. Local MCP QX/Perceval probes and installed-package QX probes are retained. Direct API and MCP show live Tuna status transitions; the audit reproduced no status-cache defect.
+
+The full affected keep-going run remains active. Retained segmented-sweep gates core-616/core-619/core-620 disagree with fresh analysis; their analyzer and input evidence match the base revision. Integration and hardware execution remain held for the validation disposition and current-head review. Shared-account deferral elapsed; every eventual submission repeats live queue, availability and account-pause checks.
+
+Companion Rust repair: https://github.com/Oichkatzelesfrettschen/open_gororoba/pull/235
+
+Generated-by: ChatGPT Codex
+
+Nested acquisitions now use an immutable campaign container and durable per-batch intent records. Planned batches remain separate from attempted acquisitions; strict enumeration preserves missing-receipt failures. Preflight refusal classification and direct submission share the account lock. The final combined validation passes all four relevant gates; 58 provider retention tests and eight focused campaign tests pass. A current-head hosted review remains pending.
+
+The broad run additionally reports between-arm and BDSC replay differences on baseline-identical principal sources and retained inputs; the numerical cause remains unresolved. The checkout-provenance probe passes its stable historical-runtime rerun, and current successor-certificate replays pass. These results do not establish a green broad merge suite.

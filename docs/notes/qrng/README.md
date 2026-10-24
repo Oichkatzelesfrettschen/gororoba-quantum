@@ -54,6 +54,33 @@ log or a commit is revoked at its service and replaced.
   `rng-tools`, `haveged` and `/dev/hwrng` draw classical entropy; none is a
   quantum source.
 
+## Seeds given at run time
+
+A CLI seed flag is declared through `qrng_seeds.add_seed_argument`
+(`gororoba_quantum/qrng_seeds.py`) and takes one of three spellings per value:
+
+| spelling | meaning | record |
+|---|---|---|
+| `qrng:docs/evidence/<source>/draw-<UTC>.json#<index>` | a new seed: one value of a retained draw, admitted by its source's adapter | `seed_source` names the reference, the script, the flag and the experiment |
+| the flag's default | the integer the code already holds, a reproduction seed of `ci/reproduction_seeds.json` | the record is unchanged, so retained outputs replay byte for byte |
+| `repro:<integer>` | an explicit reproduction of an earlier run whose seed the code does not hold | `seed_source` marks the value for review |
+
+Any other integer is refused when the arguments are parsed. The experiment a
+record names stays the same across the dry run, the submission and the
+collection of one experiment, so they share their QRNG values; a second
+experiment needs another index. The ledger row that consumes a value lands in
+the change that retains the run: `"$PYTHON" ci/seed_provenance.py --add-runtime`
+appends a row to the `runtime` list of
+`docs/evidence/qrng_seeds/allocations.json` for every retained reference that
+lacks one, and `--runtime` (run by the `tests` check) requires every qrng
+reference under `results/` to be declared by some `seed_source` entry there
+(a replay command, a copy or a `scripts/kaggle_run.py` submission manifest may
+repeat it), to have one experiment, and to match exactly one row. A
+qrng-seeded Kaggle run therefore retains its collected output, which carries
+the `seed_source`, in the same change as its submission manifest. A reference with an index consumes
+that index only; a case manifest that names a draw without an index owns the
+whole draw.
+
 ## Checks
 
 ```sh
@@ -61,6 +88,7 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" scripts/anu_qrng.py check docs/evidence/anu_qrng
 "$PYTHON" scripts/outshift_qrng.py check docs/evidence/outshift_qrng
 "$PYTHON" ci/seed_provenance.py --check
+"$PYTHON" ci/seed_provenance.py --runtime
 ```
 
 `tests/scripts/test_qrng_adapters.py` runs every adapter's self-test and

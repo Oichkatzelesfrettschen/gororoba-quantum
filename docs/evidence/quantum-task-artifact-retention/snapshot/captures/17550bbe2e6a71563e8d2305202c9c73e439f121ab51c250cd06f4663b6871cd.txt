@@ -1,0 +1,737 @@
+historical runtime qiskit-2.5: --replay-python=${USER_HOME}/.local/share/gororoba-quantum/validation/hypercomplex-operator-evidence/replay-py3.14.7/bin/python holds every pin of requirements-replay.txt
+FAIL core-619  1660.6s  "$PYTHON" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T064222.721454Z --c
+
+=== core-619 exit 1 in .
+"$PYTHON" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T064222.721454Z --check --against results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1259, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1248, in main
+    raise RuntimeError(f"{args.against} differs from a fresh analysis outside the analyzer identity")
+RuntimeError: results/live/2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json differs from a fresh analysis outside the analyzer identity
+PASS core-534   369.3s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-efficiency
+FAIL core-620  2114.8s  "$PYTHON" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T043156.858484Z --c
+
+=== core-620 exit 1 in .
+"$PYTHON" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T043156.858484Z --check --against results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1259, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1248, in main
+    raise RuntimeError(f"{args.against} differs from a fresh analysis outside the analyzer identity")
+RuntimeError: results/live/2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json differs from a fresh analysis outside the analyzer identity
+PASS core-447   201.5s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --check results/li
+FAIL core-616  2267.0s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_q143_segmented_sweep.py --desig
+
+=== core-616 exit 1 in .
+PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_q143_segmented_sweep.py --design-check results/live/n21-q143-segmented-design.json
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1259, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/n21_q143_segmented_sweep.py", line 1233, in main
+    raise RuntimeError(f"{args.design_check} differs from a fresh design table")
+RuntimeError: results/live/n21-q143-segmented-design.json differs from a fresh design table
+PASS core-434   138.5s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity results/quantum_inspire/rea
+PASS core-537   213.7s  "$PYTHON" -B -W error scripts/qd_box_kite_analysis.py --check results/quandela/runs/*-qpu_belenos-be
+  untraceable core-537: shell command beyond $PYTHON invocations joined by &&
+PASS core-329   155.9s  "$PYTHON" -B -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_
+PASS core-535   481.8s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-efficiency results/quandela/sessions/2026-1
+PASS core-360    59.2s  "$PYTHON" -B -W error ../scripts/atlas_fringe_amplitudes.py --check ../docs/evidence/atlas_fringe_am
+PASS core-094   235.1s  "$PYTHON" -B -W error qpu_planning_contracts.py
+  untraceable core-094: program git
+PASS core-523   129.8s  "$PYTHON" -B -W error qpu_planning_contracts.py --rep-delay
+  untraceable core-523: program git
+PASS core-582   421.3s  "$PYTHON" check_et_runtime.py
+  untraceable core-582: program git
+PASS core-570   660.9s  "$PYTHON" -B -W error qpu_planning_contracts.py --submit-reuse-herald
+  untraceable core-570: program git
+PASS core-554   131.2s  "$PYTHON" -B -W error scripts/rank_locus_second_order.py --self-test
+PASS core-597--slice1   682.8s  "$PYTHON" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs pairs
+PASS core-553   131.8s  "$PYTHON" -B -W error scripts/rank_locus_second_order.py --check docs/evidence/rank_locus_second_ord
+PASS core-089   150.9s  PYTHONOPTIMIZE=1 "$PYTHON" correction_planning_contracts.py
+  untraceable core-089: program git
+PASS sources-215   435.3s  "$PYTHON" -W error ../scripts/cd_associator_defect_census.py --replay ../docs/evidence/cd_associator
+PASS core-438    75.6s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --null-equivalence results/quantum_inspir
+PASS core-597--slice0   852.2s  "$PYTHON" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs pairs
+PASS core-080   103.6s  "$PYTHON" correction_planning_contracts.py
+  untraceable core-080: program git
+PASS core-597--slice3   778.5s  "$PYTHON" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs pairs
+FAIL core-605   159.6s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_q143_beat_model.py results/live
+
+=== core-605 exit 1 in .
+PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_q143_beat_model.py results/live/2026-10-20T031212.175942Z --check
+results/live/2026-10-20T031212.175942Z/beat-model.json differs from the report its archived raw files regenerate
+PASS core-562    33.6s  "$PYTHON" -B -W error scripts/ghost_error_scale.py --self-test-cz-free
+PASS core-390    36.1s  "$PYTHON" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part
+PASS sources-146    42.1s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/principal_skew_atlas/replay.py --check
+PASS core-423   138.4s  cmp docs/evidence/box_kite_qx_sweep/family-a.json results/kaggle/2026-10-17T131115Z-box-kite-qx-swee
+  untraceable core-423: shell runs cmp; program python
+PASS core-379    50.0s  "$PYTHON" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/nois
+PASS core-339    43.5s  "$PYTHON" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.js
+PASS core-508    19.0s  "$PYTHON" -B -W error scripts/qd_box_kite_analysis.py --check $(for d in results/quandela/runs/*/; d
+  untraceable core-508: shell command beyond $PYTHON invocations joined by &&
+PASS core-614   573.4s  "$PYTHON" -B -W error scripts/ghost_error_scale.py --check docs/evidence/ghost_error_scale/part_a.js
+PASS core-499    23.1s  "$PYTHON" -B -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.
+  untraceable core-499: program python
+PASS core-352    49.5s  "$PYTHON" -B -W error scripts/jax_bridge_sweep.py --self-test >/dev/null
+  untraceable core-352: shell command beyond $PYTHON invocations joined by &&
+PASS core-491    71.0s  "$PYTHON" -B -W error scripts/gl52_split_conjugators.py --check docs/evidence/gl52_split_conjugators
+PASS sources-149    23.2s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/schur_acceleration/replay.py --check
+PASS core-287   525.5s  "$PYTHON" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs resul
+  untraceable core-287: shell command beyond $PYTHON invocations joined by &&
+PASS core-548   110.1s  "$PYTHON" -B -W error qpu_planning_contracts.py --serialized-noise
+PASS core-063    33.1s  "$PYTHON" -W error complex_skew_contracts.py >/dev/null
+  untraceable core-063: shell command beyond $PYTHON invocations joined by &&
+PASS core-053    42.6s  "$PYTHON" -W error schur_acceleration.py >/dev/null
+  untraceable core-053: shell command beyond $PYTHON invocations joined by &&
+PASS sources-166    77.5s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/complex_skew/replay.py --check
+PASS core-514   239.7s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-static results/quandela/runs/2026-10-17T232
+PASS core-445    94.2s  "$PYTHON" -B -W error qpu_planning_contracts.py --init-herald
+PASS sources-160   122.3s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/nullity_twelve_locus/replay.py --check
+PASS core-069   104.4s  "$PYTHON" modular_arithmetic.py
+PASS core-242   144.7s  "$PYTHON" -W error ../scripts/singular_sector_dynamics.py --check-fake-backend ../docs/evidence/sing
+PASS core-444    50.8s  "$PYTHON" -B -W error scripts/ghost_error_scale_branching.py --check-converter
+PASS core-211    95.7s  PYTHONWARNINGS=error "$PYTHON" scripts/patch_window_analysis.py --self-check
+PASS core-099    70.3s  PYTHONOPTIMIZE=1 "$PYTHON" pub_shot_runtime_contracts.py
+  untraceable core-099: program git
+PASS core-311    38.2s  "$PYTHON" -B -W error scripts/walk_scaffold_channels.py --check docs/evidence/walk_scaffold_channels
+PASS core-301    37.7s  "$PYTHON" -B -W error scripts/conditional_ramsey_power.py --check docs/evidence/conditional_ramsey_p
+PASS core-515    63.6s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-rule
+PASS core-513--static_0_1    38.8s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-static --case static_0_1
+PASS core-098    62.4s  "$PYTHON" pub_shot_runtime_contracts.py
+  untraceable core-098: program git
+PASS core-549    87.8s  "$PYTHON" -B -W error qpu_planning_contracts.py --submit-reuse
+  untraceable core-549: program git
+PASS core-074--submit_refreshes_backend_identity   105.0s  "$PYTHON" runtime_contracts.py --case submit_refreshes_backend_identity
+  untraceable core-074--submit_refreshes_backend_identity: program git
+PASS core-074--schema_lifecycle   115.9s  "$PYTHON" runtime_contracts.py --case schema_lifecycle
+  untraceable core-074--schema_lifecycle: program git
+PASS core-074--approved_record_gate   111.4s  "$PYTHON" runtime_contracts.py --case approved_record_gate
+  untraceable core-074--approved_record_gate: program git
+PASS core-278    84.0s  "$PYTHON" -B -W error scripts/associator_cubic_normal_form.py --check
+PASS core-443   100.5s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --check results/li
+PASS core-039   103.4s  "$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/ver
+  untraceable core-039: writes gororoba_quantum/.mypy_cache/.gitignore; writes gororoba_quantum/.mypy_cache/CACHEDIR.TAG
+PASS core-513--out_of_family   212.3s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-static --case out_of_family
+PASS core-074--fused_collection    43.2s  "$PYTHON" runtime_contracts.py --case fused_collection
+  untraceable core-074--fused_collection: program git
+PASS core-059    42.3s  "$PYTHON" -W error kernel_limit_contracts.py >/dev/null
+  untraceable core-059: shell command beyond $PYTHON invocations joined by &&
+PASS core-487    32.5s  "$PYTHON" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crossche
+PASS core-359    60.8s  "$PYTHON" -B -W error ../scripts/atlas_fringe_amplitudes.py --self-test
+PASS core-363   123.6s  "$PYTHON" -B -W error scripts/ghost_error_scale_branching.py --self-test >/dev/null
+  untraceable core-363: shell command beyond $PYTHON invocations joined by &&
+PASS core-513--dephasing_0_6   188.5s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-static --case dephasing_0_6
+PASS core-617    10.1s  "$PYTHON" -B -W error scripts/n21_q143_line_switching.py results/live/2026-10-21T064222.721454Z resu
+PASS core-618    38.9s  "$PYTHON" -B -W error scripts/encode_wide_run.py --check results/live/2026-10-21T025706.848746Z resu
+PASS core-583   171.1s  "$PYTHON" -B scripts/replay_et_sources.py --check
+  untraceable core-583: program et-reference; program rustc
+PASS core-055    94.7s  "$PYTHON" -W error nullity_twelve_locus.py >/dev/null
+  untraceable core-055: shell command beyond $PYTHON invocations joined by &&
+PASS core-615   346.4s  "$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests
+  untraceable core-615: child environment drops the trace; program git; program python
+PASS core-271   308.4s  "$PYTHON" -B -W error scripts/research_state.py --self-test
+PASS core-074--approval_calibration_values   121.7s  "$PYTHON" runtime_contracts.py --case approval_calibration_values
+  untraceable core-074--approval_calibration_values: program git
+PASS core-289    84.9s  "$PYTHON" -B -W error scripts/local_member_cz_conformance.py --check
+PASS core-489    33.0s  "$PYTHON" -B -W error scripts/lsq_conditioning_study.py --check docs/evidence/lsq_conditioning/resul
+PASS core-349   110.2s  "$PYTHON" -B -W error scripts/ghost_error_scale.py --provenance docs/evidence/ghost_error_scale/part
+  untraceable core-349: shell runs cmp
+PASS core-070    62.6s  "$PYTHON" order_finding.py
+PASS sources-163   110.8s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/kernel_limits/replay.py --check
+PASS core-526    53.3s  "$PYTHON" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crossche
+PASS core-074--instance_and_ceiling    66.4s  "$PYTHON" runtime_contracts.py --case instance_and_ceiling
+  untraceable core-074--instance_and_ceiling: program git
+PASS core-584    34.6s  "$PYTHON" -B scripts/replay_et_pilot.py --self-test && "$PYTHON" -B scripts/replay_et_pilot.py
+PASS core-409    29.7s  "$PYTHON" -B -W error scripts/local_member_cz_conformance.py --check-dynamic
+PASS core-446    17.7s  "$PYTHON" -B -W error qpu_planning_contracts.py --window-bracket
+PASS core-494    11.4s  "$PYTHON" -B -W error scripts/wheel_zero_divisors.py --check docs/evidence/wheel_zero_divisors/resul
+PASS sources-143    28.7s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/dimension32_skew_schur/replay.py --check
+PASS core-513--s3_simulator    30.4s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-static --case s3_simulator
+PASS core-550    52.1s  "$PYTHON" -B -W error scripts/qi_ladder_line_bins.py --self-test
+PASS sources-192    20.6s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/real_frontier_graphs/replay.py --check
+PASS core-057    23.7s  "$PYTHON" -W error nullity_twelve_curves.py >/dev/null
+  untraceable core-057: shell command beyond $PYTHON invocations joined by &&
+PASS sources-181    10.7s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/kernel_determinant/replay.py --check
+PASS core-074--backend_identity_records    25.1s  "$PYTHON" runtime_contracts.py --case backend_identity_records
+  untraceable core-074--backend_identity_records: program git
+PASS core-280    23.8s  "$PYTHON" -B -W error scripts/kaggle_run.py self-test
+  untraceable core-280: program git
+PASS core-177    10.7s  "$PYTHON" -W error kernel_determinant_contracts.py >/dev/null
+  untraceable core-177: shell command beyond $PYTHON invocations joined by &&
+PASS core-030    23.0s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_measured_ripple.py
+PASS core-196    25.2s  "$PYTHON" -B -W error scripts/reconcile_qpu_inventory.py --check
+PASS sources-184    18.4s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/projective_kernel_limits/replay.py --chec
+PASS core-585    10.7s  "$PYTHON" -B -W error scripts/rank_locus_rotation_composite.py --check docs/evidence/rank_locus_rota
+PASS core-074--packed_replica_split    22.0s  "$PYTHON" runtime_contracts.py --case packed_replica_split
+PASS core-521    34.1s  "$PYTHON" -B -W error runtime_contracts.py --case approval_calibration_values
+  untraceable core-521: program git
+PASS core-525    20.2s  "$PYTHON" -B -W error dynamic_density.py --prep-excitation-test && "$PYTHON" -B -W error qpu_plannin
+PASS core-223    19.0s  PYTHONOPTIMIZE=1 "$PYTHON" -W error maximal_contracts.py
+PASS core-040    15.7s  "$PYTHON" designs.py
+PASS core-336    16.1s  "$PYTHON" -B -W error gororoba_quantum/linear_conjugation_challenger.py --check results/hw_estimate/
+PASS core-conjugation-target    18.8s  "$PYTHON" -B -W error scripts/check_n21_conjugation_target.py
+PASS core-282    17.5s  "$PYTHON" -B -W error ../scripts/design_c_cubic_noise.py --check ../docs/evidence/design_c_cubic_noi
+  untraceable core-282: shell command beyond $PYTHON invocations joined by &&
+PASS core-325    12.9s  "$PYTHON" -B -W error ../scripts/atlas_coherent_families.py --self-test
+PASS core-092    21.1s  "$PYTHON" qpe_diagnostics.py
+PASS core-304     7.4s  "$PYTHON" -B -W error scripts/signed_kernel_noise.py --check docs/evidence/signed_kernel_noise/resul
+PASS core-028    14.5s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_extract_measured_ripple.py
+PASS core-536     8.4s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-followup results/quandela/sessions/2026-10-
+PASS core-074--every_job_revalidates     9.0s  "$PYTHON" runtime_contracts.py --case every_job_revalidates
+PASS core-495    42.0s  "$PYTHON" -B -W error scripts/patch_window_analysis.py results/live/2026-10-13T201757.782152Z --chec
+PASS core-597--slice2   446.2s  "$PYTHON" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs pairs
+PASS core-424    11.3s  "$PYTHON" -B -W error scripts/box_kite_analysis.py --analyze-self-test
+PASS core-432    14.5s  "$PYTHON" -B -W error scripts/qi_walsh_exemplar_cases.py --check-conformance results/quantum_inspire
+  untraceable core-432: program python
+PASS core-222    12.7s  "$PYTHON" -W error maximal_contracts.py
+PASS core-095    11.6s  "$PYTHON" algebra_planning_contracts.py
+PASS core-190    11.5s  "$PYTHON" -W error real_frontier_contracts.py >/dev/null
+  untraceable core-190: shell command beyond $PYTHON invocations joined by &&
+PASS core-436     5.2s  cmp results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json results/kaggle/2026-10-17
+  untraceable core-436: shell runs cmp
+PASS core-601    27.7s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_spectator_ramsey.py --self-chec
+PASS core-313     4.7s  "$PYTHON" -B -W error scripts/echo_dilation_noise.py --check docs/evidence/echo_dilation_noise/resul
+PASS core-288     9.5s  "$PYTHON" -B -W error scripts/census_frequency_design.py --check docs/evidence/census_frequency_desi
+  untraceable core-288: shell command beyond $PYTHON invocations joined by &&
+PASS core-302     7.7s  "$PYTHON" -B -W error snapshot_laws.py
+PASS core-074--live_reselection     6.7s  "$PYTHON" runtime_contracts.py --case live_reselection
+PASS core-480     6.9s  "$PYTHON" -B -W error dynamic_density.py --self-test
+PASS core-074--snapshot_and_fingerprint_coherence     6.7s  "$PYTHON" runtime_contracts.py --case snapshot_and_fingerprint_coherence
+PASS core-285    11.8s  "$PYTHON" -B -W error ../scripts/atlas_detuning_map.py --check ../docs/evidence/atlas_detuning_map/r
+PASS core-328     3.8s  "$PYTHON" -B -W error scripts/rank_locus_local_dimension.py --check docs/evidence/rank_locus_local_d
+PASS core-100     7.7s  "$PYTHON" ripple_contracts.py
+PASS core-429     5.1s  "$PYTHON" -B -W error scripts/qi_walsh_exemplar_cases.py --self-test
+PASS core-005    12.2s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/check_verify_evidence
+FAIL core-612    24.3s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --between-arm resu
+
+=== core-612 exit 1 in .
+PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T151959.226467Z --check
+results/live/2026-10-19T151959.226467Z/between-arm.json differs from the report its archived raw files regenerate
+PASS sources-389    22.7s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c5_zero_divisor_code/replay.py --check
+PASS core-552     2.6s  "$PYTHON" -B -W error scripts/rank_locus_gap_directions.py --self-test
+PASS core-524    17.3s  "$PYTHON" -B -W error diagnostic_experiments.py --self-test && "$PYTHON" -B -W error qpu_planning_co
+PASS sources-210     5.7s  "$PYTHON" -B -W error docs/evidence/kernel_determinant/replay.py --check
+PASS core-312     4.7s  ruff check scripts/echo_dilation_noise.py && ruff format --target-version py313 --check scripts/echo
+  untraceable core-312: shell runs ruff; writes .mypy_cache/.gitignore; writes .mypy_cache/3.14/@plugins_snapshot.json.6a3880c0bc045df2
+PASS core-091     2.5s  PYTHONOPTIMIZE=1 "$PYTHON" correction_case_contracts.py
+PASS sources-134     3.0s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_geometry/replay.py --check
+PASS core-426     4.2s  "$PYTHON" -B -W error scripts/qi_shot_record_line.py --check results/quantum_inspire/tuna_17_shot_re
+PASS core-303     0.5s  ruff check scripts/signed_kernel_noise.py && ruff format --target-version py313 --check scripts/sign
+  untraceable core-303: shell runs ruff; writes .mypy_cache/3.14/@plugins_snapshot.json.7a0c6b0bbcd14366; writes .mypy_cache/3.14/signed_kernel_noise.data.json.a47256e8e66b97e3
+PASS core-179    11.0s  "$PYTHON" -W error projective_kernel_contracts.py >/dev/null
+  untraceable core-179: shell command beyond $PYTHON invocations joined by &&
+PASS core-484     9.3s  "$PYTHON" -B -W error scripts/n21_usage_budget.py --self-test && "$PYTHON" -B -W error scripts/n21_u
+PASS core-195     0.8s  ruff check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/revie
+  untraceable core-195: shell runs ruff; writes .mypy_cache/3.14/@plugins_snapshot.json.98835e1cba23ac03; writes .mypy_cache/3.14/check_reconcile_qpu_inventory.data.json.4a4959756d7f6ce6
+PASS core-581    10.8s  "$PYTHON" check_et_campaign.py
+PASS core-208     5.4s  "$PYTHON" -B -W error kernel_determinant_contracts.py
+PASS core-022     5.7s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_review_folded_jobs.py
+PASS core-335     2.9s  "$PYTHON" -B -W error scripts/linear_conjugation_search.py --check docs/evidence/linear_conjugation/
+PASS core-074--discovered_capabilities     4.8s  "$PYTHON" runtime_contracts.py --case discovered_capabilities
+PASS core-344     0.8s  ruff check scripts/ghost_event_scale.py && ruff format --target-version py313 --check scripts/ghost_
+  untraceable core-344: shell runs ruff; writes .mypy_cache/3.14/@plugins_snapshot.json.3e7e7816a8d75f31; writes .mypy_cache/3.14/ghost_error_scale.data.json.2ea340179ca7ab92
+PASS core-276     5.6s  "$PYTHON" -B -W error scripts/scaffolding_exposure.py --check
+PASS core-267     4.7s  "$PYTHON" -B -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity
+PASS core-459     6.2s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --self-test-herald
+PASS core-090     3.0s  PYTHONOPTIMIZE=1 "$PYTHON" correction_collection_contracts.py
+PASS sources-122     1.6s  MYPYPATH=docs mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs
+  untraceable sources-122: shell runs mypy; writes .mypy_cache/3.14/@plugins_snapshot.json.0e0b0cd61acd2d63; writes .mypy_cache/3.14/_markupbase.data.json.3f4dfa0ea9c64c1c
+PASS core-061     3.9s  "$PYTHON" -W error circle_kernel_attachments.py >/dev/null
+  untraceable core-061: shell command beyond $PYTHON invocations joined by &&
+PASS core-428     3.6s  "$PYTHON" -B -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases
+PASS core-088     3.4s  PYTHONOPTIMIZE=1 "$PYTHON" correction_preparation_contracts.py
+PASS core-362     6.0s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --check results/quantum_inspire/cases && 
+PASS core-279     9.1s  "$PYTHON" -B -W error gororoba_quantum/calibration_snapshot.py --check docs/evidence/calibration/ibm
+PASS core-101     3.2s  "$PYTHON" rank_sector_contracts.py
+PASS sources-249     2.7s  "$PYTHON" -B -W error ../docs/notes/packages/manual/checks/albert_algebra.py --check >/dev/null
+  untraceable sources-249: shell command beyond $PYTHON invocations joined by &&
+PASS core-264     1.7s  "$PYTHON" -B -W error scripts/inventory_retained_runs.py
+PASS core-481     3.5s  "$PYTHON" -B -W error scripts/n21_exact_model_validation.py --self-test
+PASS core-212     6.5s  "$PYTHON" -W error ../scripts/cd_associator_defect_census.py >/dev/null
+  untraceable core-212: shell command beyond $PYTHON invocations joined by &&
+PASS core-586     3.8s  "$PYTHON" -B -W error scripts/rank_locus_rotation_composite.py --audit-check docs/evidence/rank_locu
+PASS core-024     5.6s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_rank_sector_norms.py
+  untraceable core-024: program convert; program gs; program inkscape
+PASS core-324     2.6s  "$PYTHON" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json
+PASS core-425     7.1s  "$PYTHON" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17
+PASS core-498     1.6s  "$PYTHON" -B -W error gaussian_wheel.py --self-test
+PASS core-361     9.7s  "$PYTHON" -B -W error star_ramsey.py
+PASS core-408     9.5s  "$PYTHON" -B -W error scripts/local_member_cz_conformance.py --cross-check-n21
+PASS core-490    15.4s  "$PYTHON" -B -W error scripts/gl52_split_conjugators.py --self-test docs/evidence/gl52_split_conjuga
+PASS core-072     4.9s  "$PYTHON" ../scripts/mod15_signed_multiplier_census.py
+PASS core-373     1.9s  "$PYTHON" -B -W error scripts/box_kite_census.py --self-test
+PASS core-589     3.6s  "$PYTHON" -B -W error scripts/capture_iqm_docs.py --self-test
+PASS core-272     4.3s  "$PYTHON" -B -W error conditional_ramsey.py
+PASS core-192    13.4s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --self-check
+PASS core-205     3.1s  "$PYTHON" -B -W error scripts/extract_measured_ripple.py --run results/live/2026-10-13T025444.603480
+PASS core-074--discovery_failure_isolation     5.7s  "$PYTHON" runtime_contracts.py --case discovery_failure_isolation
+PASS core-482     3.8s  "$PYTHON" -B -W error n21_exact_planning.py
+PASS core-630     1.3s  "$PYTHON" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/
+PASS core-345     4.1s  "$PYTHON" -B -W error scripts/ghost_event_scale.py --self-test
+PASS core-343     2.0s  "$PYTHON" -B -W error scripts/ghost_idle_budget.py --check docs/evidence/ghost_error_scale/idle_budg
+PASS core-372     1.5s  "$PYTHON" -B -W error scripts/box_kite_census.py --check docs/evidence/box_kite_census/census.json
+PASS core-042     1.7s  "$PYTHON" sedenion_bundle.py >/dev/null
+  untraceable core-042: shell command beyond $PYTHON invocations joined by &&
+PASS core-341     7.1s  "$PYTHON" -B -W error scripts/check_qi_platform_retention.py
+PASS core-011     4.4s  PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/n21_
+  untraceable core-011: program git
+PASS core-551     1.4s  "$PYTHON" -B -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_dire
+PASS core-097     0.8s  PYTHONOPTIMIZE=1 "$PYTHON" pub_shot_allocation_contracts.py
+PASS sources-247     6.6s  "$PYTHON" -B -W error ../docs/notes/packages/manual/checks/algebra_interplay.py --check >/dev/null
+  untraceable sources-247: shell command beyond $PYTHON invocations joined by &&
+PASS sources-251     1.0s  "$PYTHON" -B -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit
+PASS sources-131     2.4s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_rank/replay.py --check
+PASS core-081     3.2s  "$PYTHON" correction_collection_contracts.py
+PASS core-486     3.8s  "$PYTHON" -B -W error replica_covariance_contracts.py
+PASS core-546     2.5s  "$PYTHON" -B -W error scripts/qd_belenos_cone.py --check docs/evidence/quandela/belenos_light_cone.j
+PASS core-496     3.6s  "$PYTHON" -B -W error qpu_planning_contracts.py --static-group-admission
+PASS core-564     2.6s  "$PYTHON" -B -W error scripts/state_prep_control_parameters.py --check
+PASS core-433     4.2s  "$PYTHON" -B -W error scripts/qi_ladder_line_bins.py --check results/quantum_inspire/box_kite_tuna_1
+PASS core-300     0.5s  ruff check scripts/conditional_ramsey_power.py && ruff format --target-version py313 --check scripts
+  untraceable core-300: shell runs ruff; writes .mypy_cache/3.14/@plugins_snapshot.json.07adefacbadb155e; writes .mypy_cache/3.14/conditional_ramsey_power.data.json.4459ce59092b4a3e
+PASS core-338     2.7s  t=$(mktemp -d) && "$PYTHON" -B -W error scripts/linear_conjugation_search.py --merge results/kaggle/
+  untraceable core-338: shell command beyond $PYTHON invocations joined by &&
+PASS core-422     2.1s  "$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --self-test
+PASS core-606     8.2s  "$PYTHON" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd
+PASS core-108     1.7s  "$PYTHON" local_compute.py
+PASS core-219     2.5s  "$PYTHON" -W error ../scripts/n21_orbit_context_refit.py --self-check
+PASS core-497     1.3s  "$PYTHON" -B -W error scripts/wheel_zero_divisors.py --self-test
+PASS core-003     2.2s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
+  untraceable core-003: shell command beyond $PYTHON invocations joined by &&
+PASS core-330     2.4s  "$PYTHON" -B -W error scripts/qi_zero_divisor_cases.py --replay results/quantum_inspire/runs/2026-10
+PASS core-194     0.8s  PYTHONOPTIMIZE=1 PYTHONWARNINGS=error "$PYTHON" patch_characterization.py
+PASS core-085     1.9s  PYTHONOPTIMIZE=1 "$PYTHON" correction_circuits_contracts.py
+PASS core-052     2.8s  PYTHONWARNINGS=error MPLCONFIGDIR="${MPLCONFIGDIR:-${TEMP}/rank-sector-mplconfig}" "$PYTHON" ../scripts
+  untraceable core-052: shell command beyond $PYTHON invocations joined by &&; program convert; program gs
+PASS core-485     3.3s  "$PYTHON" -B -W error scripts/n21_exact_model_validation.py --check docs/evidence/n21_exact_model/va
+PASS core-074--operator_qubit_exclusion     3.1s  "$PYTHON" runtime_contracts.py --case operator_qubit_exclusion
+PASS core-326     2.1s  "$PYTHON" -B -W error scripts/calibration_median_drift.py --check docs/evidence/calibration_median_d
+PASS core-348     2.2s  "$PYTHON" -B -W error scripts/qi_zero_divisor_cases.py --check results/quantum_inspire/cases && "$PY
+PASS core-421     2.2s  "$PYTHON" -B -W error scripts/box_kite_cases.py --self-test
+PASS core-450     2.0s  "$PYTHON" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-ae
+PASS core-364     1.5s  "$PYTHON" -B -W error scripts/ghost_error_scale_branching.py --replay docs/evidence/ghost_error_scal
+PASS core-437     4.4s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --null-self-test
+PASS core-333     1.9s  "$PYTHON" -B -W error scripts/qi_coupler_zz_map.py --analyze results/quantum_inspire/coupler_zz_tuna
+PASS core-native-predicate-current     2.8s  "$PYTHON" -B -W error results/local_compute/n21_shared_predicate/check_probe.py --current-sdk
+  untraceable core-native-predicate-current: program git
+PASS core-074--pub_fusion_contracts     2.0s  "$PYTHON" runtime_contracts.py --case pub_fusion_contracts
+PASS core-102     4.4s  "$PYTHON" native_preflight_contracts.py
+PASS core-539     2.1s  "$PYTHON" -B -W error scripts/state_prep_excess.py --check
+PASS core-367     1.9s  "$PYTHON" -B -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.js
+PASS core-walk-extract     1.9s  "$PYTHON" -B -W error scripts/walk_scaffold_channels.py --check-extract
+PASS core-374     1.8s  "$PYTHON" -B -W error scripts/qi_zero_divisor_cases.py --select-regions
+PASS core-074--joint_fusion_placement     3.8s  "$PYTHON" runtime_contracts.py --case joint_fusion_placement
+PASS core-228     1.8s  "$PYTHON" -W error ../scripts/octonion_structure_checks.py
+PASS core-010     2.2s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/n21_shared_predicate/
+  untraceable core-010: program git
+PASS sources-137     2.0s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_doubling/replay.py --check
+PASS core-074--fragmented_target_layout     2.0s  "$PYTHON" runtime_contracts.py --case fragmented_target_layout
+PASS core-431     3.3s  "$PYTHON" -B -W error scripts/qi_walsh_exemplar_analysis.py --self-test
+PASS core-442     1.9s  "$PYTHON" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-18T072718Z-gororoba-ae
+PASS core-000     8.1s  "$PYTHON" ci/pinned_tool.py ruff check ci tests && "$PYTHON" ci/pinned_tool.py ruff format --target-
+  untraceable core-000: program ruff; program uv; writes .mypy_cache/.gitignore
+PASS core-511     1.8s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-rca docs/evidence/quandela/belenos_leakage_
+PASS core-510     1.6s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check results/quandela/cases
+PASS core-270     3.5s  "$PYTHON" -B -W error scripts/research_state.py --check
+PASS core-074--joint_fusion_candidate_backtracking     1.7s  "$PYTHON" runtime_contracts.py --case joint_fusion_candidate_backtracking
+PASS core-071     3.9s  "$PYTHON" compile_evidence.py --seeds 20261010 --candidate one_clean_cycle >/dev/null
+  untraceable core-071: shell command beyond $PYTHON invocations joined by &&; program git
+PASS core-050     2.4s  "$PYTHON" ripple_dynamics.py --check ../results/ripple/evidence.json
+PASS core-507     1.6s  "$PYTHON" -B -W error scripts/cd_two_blade_blocks.py --self-test
+PASS core-545     1.8s  "$PYTHON" -B -W error scripts/qd_belenos_cone.py --self-test
+PASS core-593     1.7s  "$PYTHON" -B -W error qpu_planning_contracts.py --overlap-split
+PASS core-074--capability_admission     1.5s  "$PYTHON" runtime_contracts.py --case capability_admission
+PASS core-068     1.8s  "$PYTHON" affine_residual.py
+PASS core-240     3.9s  "$PYTHON" -W error ../scripts/singular_sector_dynamics.py
+PASS core-453     1.4s  "$PYTHON" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_err
+PASS core-592     1.6s  "$PYTHON" -B -W error qpu_planning_contracts.py --pin-layout
+PASS core-074--dynamic_mitigation_boundaries     1.5s  "$PYTHON" runtime_contracts.py --case dynamic_mitigation_boundaries
+PASS core-074--schema_discrimination     2.5s  "$PYTHON" runtime_contracts.py --case schema_discrimination
+PASS core-074--target_and_bad_qubit_status     3.0s  "$PYTHON" runtime_contracts.py --case target_and_bad_qubit_status
+PASS sources-127     1.3s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/local_schur/probe.py --check
+PASS core-074--compile_panic_isolation     1.7s  "$PYTHON" runtime_contracts.py --case compile_panic_isolation
+PASS core-505     1.4s  "$PYTHON" -B -W error scripts/qd_box_kite_cases.py --self-test
+PASS core-529     2.0s  "$PYTHON" -B -W error empirical_bernstein_contracts.py --coverage
+PASS core-045     1.6s  "$PYTHON" rank_charts.py >/dev/null
+  untraceable core-045: shell command beyond $PYTHON invocations joined by &&
+PASS core-269     1.7s  "$PYTHON" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector
+PASS core-074--packed_static_stays_static     1.3s  "$PYTHON" runtime_contracts.py --case packed_static_stays_static
+PASS core-323     0.6s  "$PYTHON" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json -
+PASS core-043     2.2s  "$PYTHON" annihilator_strata.py --max-dimension 256 >/dev/null
+  untraceable core-043: shell command beyond $PYTHON invocations joined by &&
+PASS core-522     1.9s  "$PYTHON" -B -W error scripts/state_prep_excess.py --self-test
+PASS core-591     1.3s  "$PYTHON" -B -W error scripts/iqm_platform.py --self-test
+FAIL core-603     3.8s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_spectator_ramsey.py results/liv
+
+=== core-603 exit 1 in .
+PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_spectator_ramsey.py results/live/2026-10-20T031212.175942Z --check
+results/live/2026-10-20T031212.175942Z/ramsey.json differs from the report its archived raw files regenerate
+PASS core-074--usage_wait     1.2s  "$PYTHON" runtime_contracts.py --case usage_wait
+PASS core-420     2.0s  "$PYTHON" -B -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases
+PASS core-104     0.8s  PYTHONOPTIMIZE=1 "$PYTHON" placement_feasibility_contracts.py
+PASS core-273     1.4s  "$PYTHON" -B -W error signed_kernel_probe.py --check ../docs/evidence/signed_kernel_probe/result.jso
+PASS core-079     2.3s  "$PYTHON" correction_preparation_contracts.py
+PASS core-074--scheduler_timing_cases     1.4s  "$PYTHON" runtime_contracts.py --case scheduler_timing_cases
+PASS core-033     1.4s  PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error MPLCONFIGDIR="${MPLCONFIGDIR:-${TEMP}/folded-review-mplc
+  untraceable core-033: shell command beyond $PYTHON invocations joined by &&; program convert; program gs
+PASS core-406     2.6s  "$PYTHON" -B -W error scripts/local_member_cz_conformance.py --self-test
+PASS core-531     1.4s  "$PYTHON" -B -W error empirical_bernstein_contracts.py --planner
+PASS core-082     2.7s  "$PYTHON" correction_case_contracts.py
+PASS core-340     1.9s  "$PYTHON" -B -W error scripts/qi_ibm_noise_replay.py --check
+PASS core-206     2.0s  "$PYTHON" -B -W error scripts/extract_measured_ripple.py --run results/live/2026-10-13T032011.664435
+PASS core-074--raw_scrubbing     1.2s  "$PYTHON" runtime_contracts.py --case raw_scrubbing
+PASS core-074--nested_operations     1.2s  "$PYTHON" runtime_contracts.py --case nested_operations
+PASS core-074--replay_seed_independence     1.2s  "$PYTHON" runtime_contracts.py --case replay_seed_independence
+PASS core-074--packing_global_phase     1.3s  "$PYTHON" runtime_contracts.py --case packing_global_phase
+PASS core-074--buffer_scope     1.2s  "$PYTHON" runtime_contracts.py --case buffer_scope
+PASS core-074--result_register_order     1.2s  "$PYTHON" runtime_contracts.py --case result_register_order
+PASS core-074--approved_backend_scope     1.4s  "$PYTHON" runtime_contracts.py --case approved_backend_scope
+PASS core-565     1.6s  "$PYTHON" -B -W error scripts/state_prep_control_parameters.py --self-test
+PASS core-587     1.9s  "$PYTHON" -B -W error ibm_account.py --self-test
+PASS core-048     1.5s  "$PYTHON" rank_path_topology.py >/dev/null
+  untraceable core-048: shell command beyond $PYTHON invocations joined by &&
+PASS core-087     1.2s  PYTHONOPTIMIZE=1 "$PYTHON" correction_schedule_contracts.py
+PASS core-074--unchanged_since_planning     1.2s  "$PYTHON" runtime_contracts.py --case unchanged_since_planning
+PASS core-563     1.0s  "$PYTHON" -B -W error scripts/qd_belenos_cone.py --check-readout-series docs/evidence/quandela/belen
+PASS sources-123     1.6s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/verify_sources.py
+  untraceable sources-123: program git
+PASS core-044     1.0s  "$PYTHON" rank_polynomials.py >/dev/null
+  untraceable core-044: shell command beyond $PYTHON invocations joined by &&
+PASS core-114     1.2s  "$PYTHON" adjudicate.py --check
+PASS core-075     1.2s  "$PYTHON" parameter_binding_contracts.py
+PASS core-506     1.4s  "$PYTHON" -B -W error scripts/cd_two_blade_blocks.py --check docs/evidence/box_kite_census/two_blade
+PASS core-274     1.1s  "$PYTHON" -B -W error crossed_tile_template.py
+PASS core-493     0.5s  "$PYTHON" -B -W error wheel_algebra.py --self-test
+PASS core-074--packing_equivalence     1.2s  "$PYTHON" runtime_contracts.py --case packing_equivalence
+PASS core-119     1.0s  "$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
+PASS core-020     2.1s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_folded_job_review.py
+PASS core-078     1.3s  "$PYTHON" correction_schedule_contracts.py
+PASS core-074--static_placement_judge     1.7s  "$PYTHON" runtime_contracts.py --case static_placement_judge
+PASS core-251     1.7s  "$PYTHON" -W error ../scripts/algebra_circuit_fixtures.py
+PASS core-074--rate_keys     1.7s  "$PYTHON" runtime_contracts.py --case rate_keys
+PASS core-076     2.1s  "$PYTHON" correction_circuits_contracts.py
+PASS core-602     1.9s  "$PYTHON" -B -W error qpu_planning_contracts.py --ground-ramsey-sweep
+PASS core-266     1.6s  "$PYTHON" -B -W error scripts/calibration_scoped_family_analysis.py results/live/2026-10-15T031229.3
+PASS core-504     1.0s  "$PYTHON" -B -W error scripts/qd_box_kite_cases.py --check results/quandela/cases
+PASS core-527     8.0s  "$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a
+  untraceable core-527: program python
+PASS core-034     1.0s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error results/local_compute/mixed_pub_client/probe.py >/dev/n
+  untraceable core-034: shell command beyond $PYTHON invocations joined by &&
+PASS core-106     1.2s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error qpu_case_allocation_contracts.py
+PASS core-066     1.1s  "$PYTHON" target_flip.py
+PASS core-074--experiment_source_manifest     1.6s  "$PYTHON" runtime_contracts.py --case experiment_source_manifest
+PASS core-074--worker_quota     1.2s  "$PYTHON" runtime_contracts.py --case worker_quota
+PASS core-260     1.3s  "$PYTHON" -W error scripts/qpu_runtime_levers.py --check results/live/kingston-algebra-runtime-lever
+  untraceable core-260: shell command beyond $PYTHON invocations joined by &&
+PASS core-084     1.0s  PYTHONOPTIMIZE=1 "$PYTHON" -W error correction_reanalysis.py --self-check
+PASS core-074--required_placement_backtracking     1.8s  "$PYTHON" runtime_contracts.py --case required_placement_backtracking
+PASS core-533     1.8s  "$PYTHON" -B -W error scripts/ibm_runtime_options_inventory.py --check docs/evidence/ibm_runtime_opt
+PASS core-281     3.2s  "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_ci
+PASS core-332     1.6s  "$PYTHON" -B -W error scripts/qi_coupler_zz_map.py --check results/quantum_inspire/cases && "$PYTHON
+PASS core-257     1.7s  "$PYTHON" -W error scripts/heron_spatial_multiprogramming.py --check docs/evidence/heron_platform/sp
+PASS core-074--dynamic_classification     1.4s  "$PYTHON" runtime_contracts.py --case dynamic_classification
+PASS core-074--replica_floor_resolution     1.9s  "$PYTHON" runtime_contracts.py --case replica_floor_resolution
+PASS core-113     1.9s  "$PYTHON" variance.py
+PASS core-036     1.2s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest check_probe
+PASS core-439     0.8s  "$PYTHON" -B -W error scripts/box_kite_follow_design.py --check docs/evidence/box_kite_follow_design
+PASS core-387     1.8s  "$PYTHON" -B -W error scripts/qi_tuna17_device_context.py --check
+PASS core-026     1.6s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_ripple_visualization.py
+PASS core-350     0.5s  ruff check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/
+  untraceable core-350: shell runs ruff; writes .mypy_cache/3.14/@plugins_snapshot.json.821d176663e9b8d1; writes .mypy_cache/3.14/albert_algebra.data.json.609299d7beb42f60
+PASS core-074--twirling_shot_contract     1.2s  "$PYTHON" runtime_contracts.py --case twirling_shot_contract
+PASS core-074--placement_duplicate_branch_order     1.2s  "$PYTHON" runtime_contracts.py --case placement_duplicate_branch_order
+PASS core-walk-extract-contract     0.8s  "$PYTHON" -B -W error scripts/walk_scaffold_channels.py --self-test
+PASS core-226     1.3s  "$PYTHON" -W error ../scripts/coherence_window_analysis.py --self-check
+PASS core-530     1.1s  "$PYTHON" -B -W error empirical_bernstein_contracts.py --methods
+PASS core-111     0.9s  "$PYTHON" aer_delay_sentinels.py >/dev/null
+  untraceable core-111: shell command beyond $PYTHON invocations joined by &&
+PASS core-049     1.5s  "$PYTHON" rank_path_topology.py --stage 6 >/dev/null
+  untraceable core-049: shell command beyond $PYTHON invocations joined by &&
+PASS core-225     0.8s  PYTHONOPTIMIZE=1 "$PYTHON" -W error coherence_window.py
+PASS core-083     0.9s  "$PYTHON" -W error correction_reanalysis.py --self-check
+PASS core-074--feed_forward_structure     1.2s  "$PYTHON" runtime_contracts.py --case feed_forward_structure
+PASS core-074--job_usage_cases     1.2s  "$PYTHON" runtime_contracts.py --case job_usage_cases
+PASS core-fringe-channel-contract     0.8s  "$PYTHON" -B -W error scripts/atlas_fringe_amplitudes.py --self-test-channels
+PASS core-256     1.4s  "$PYTHON" -W error test_heron_multiprogramming.py
+PASS core-277     0.9s  "$PYTHON" -B -W error diagnostic_controls.py
+PASS core-268     0.8s  "$PYTHON" -B -W error qubit_baseline.py
+PASS core-595     2.4s  "$PYTHON" -B -W error scripts/qi_zz_map_analysis.py --self-test && "$PYTHON" -B -O -W error scripts/
+PASS core-557     1.4s  "$PYTHON" -B -W error scripts/qi_walsh_exemplar_analysis.py --check results/quantum_inspire/walsh_ex
+  untraceable core-557: shell command beyond $PYTHON invocations joined by &&
+PASS core-458     1.3s  "$PYTHON" -B -W error scripts/axis_tilt_substrate_split.py --check docs/evidence/lsq_conditioning/su
+PASS core-342     0.4s  ruff check scripts/ghost_idle_budget.py && ruff format --target-version py313 --check scripts/ghost_
+  untraceable core-342: shell runs ruff; writes .mypy_cache/3.14/@plugins_snapshot.json.5d1dcf6d45b807d3; writes .mypy_cache/3.14/ghost_idle_budget.data.json.74829f430ea27481
+PASS core-609     0.3s  "$PYTHON" -B -W error scripts/check_replay_interpreter_scope.py
+PASS core-407     1.2s  "$PYTHON" -B -W error scripts/local_member_cz_conformance.py --self-test-undeclared
+PASS core-613     1.3s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --between-arm resu
+PASS core-103     0.8s  "$PYTHON" placement_feasibility_contracts.py
+PASS core-077     0.7s  "$PYTHON" correction_statistics_contracts.py
+PASS core-018     0.9s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_diagnose_qiskit_mock.py
+PASS core-512     2.4s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test
+PASS core-275     0.7s  "$PYTHON" -B -W error scripts/stiefel_witness_certificate.py --check
+PASS core-492     1.3s  "$PYTHON" -B -W error scripts/lsq_conditioning_study.py --self-test
+PASS core-430     0.8s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --analyze results/quantum_inspire/readout
+PASS sources-140     1.3s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_homology/replay.py --check
+PASS core-258     1.1s  "$PYTHON" -W error scripts/heron_spatial_multiprogramming.py --self-test
+PASS core-532     1.1s  "$PYTHON" -B -W error empirical_bernstein_contracts.py --default-identity
+PASS core-386     0.7s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --analyze results/quantum_inspire/readout
+PASS core-435     0.8s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --sensitivity-self-test
+PASS core-483     0.8s  "$PYTHON" -B -W error scripts/n21_replica_covariance.py --self-test
+PASS sources-187     0.1s  shellcheck docs/evidence/c881_exhaustive/replay_rocq.sh
+  untraceable sources-187: shell runs shellcheck; no traced Python process
+FAIL core-596     0.3s  "$PYTHON" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz_map_qx && "$P
+
+=== core-596 exit 1 in .
+"$PYTHON" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz_map_qx && "$PYTHON" -B -W error scripts/qi_zz_map_qx.py --self-test && "$PYTHON" -B -O -W error scripts/qi_zz_map_qx.py --self-test
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/qi_zz_map_qx.py", line 428, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/qi_zz_map_qx.py", line 413, in main
+    require(
+    ~~~~~~~^
+        all((directory / name).read_text(encoding="utf-8") == text for name, text in files.items()),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "QX proposal content differs",
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates/scripts/qi_zz_map.py", line 69, in require
+    raise ValueError(message)
+ValueError: QX proposal content differs
+PASS core-073     0.7s  "$PYTHON" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null
+  untraceable core-073: shell command beyond $PYTHON invocations joined by &&
+PASS core-488     1.0s  "$PYTHON" -B -W error scripts/n21_exact_crosscheck.py --self-test
+PASS core-224     1.0s  "$PYTHON" -W error coherence_window.py
+PASS core-625     0.9s  "$PYTHON" -B -W error scripts/bdsc_pauli.py --check docs/evidence/bdsc/pauli/pauli_form.json
+PASS sources-153     1.2s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_models/probe.py --check
+PASS core-jax-program-contract     0.6s  "$PYTHON" -B -W error scripts/jax_bridge_sweep.py --unit-test
+PASS core-607     2.2s  "$PYTHON" -B -W error scripts/bdsc_certificate.py --self-test
+PASS core-116     0.6s  "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 8
+PASS core-320     0.8s  "$PYTHON" -B -W error scripts/cd_phase_degree.py --max-n 8
+PASS core-528     0.6s  "$PYTHON" -B -W error scripts/exact_rank.py --self-test
+PASS core-067     0.5s  "$PYTHON" target_flip_certificate.py --check
+PASS core-452     0.5s  "$PYTHON" -B -W error scripts/aer_blocking_probe.py --self-test
+  untraceable core-452: program nvidia-smi
+PASS core-096     0.8s  "$PYTHON" pub_shot_allocation_contracts.py
+PASS core-286     0.5s  "$PYTHON" -B -W error scripts/ghost_calibrations.py --check
+PASS core-588     0.4s  "$PYTHON" -B -W error scripts/capture_iqm_docs.py --check
+PASS core-109     0.4s  "$PYTHON" aer_identity.py
+PASS core-193     0.8s  PYTHONWARNINGS=error "$PYTHON" patch_characterization.py
+PASS core-604     0.9s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_q143_beat_model.py --self-check
+PASS core-200     0.5s  "$PYTHON" -B -W error scripts/review_wide_control_job.py --check
+PASS core-580     1.1s  "$PYTHON" check_et_rows.py
+PASS core-293     0.5s  cmp docs/evidence/atlas_detuning_map/result.json results/kaggle/2026-10-16T114149Z-gororoba-atlas-de
+  untraceable core-293: shell runs cmp
+PASS core-331     0.5s  "$PYTHON" -B -W error scripts/qi_crosstalk_teleport_cases.py --replay results/quantum_inspire/runs/2
+PASS core-041     1.1s  "$PYTHON" claim_boundaries.py >/dev/null
+  untraceable core-041: shell command beyond $PYTHON invocations joined by &&
+PASS core-032     0.4s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/review_folded_jobs.py --run-dir results/live/20
+PASS core-440     0.4s  "$PYTHON" -B -W error scripts/box_kite_follow_design.py --self-test
+PASS core-046     0.9s  "$PYTHON" rank_attachments.py >/dev/null
+  untraceable core-046: shell command beyond $PYTHON invocations joined by &&
+PASS core-atlas-channel-contract     0.4s  "$PYTHON" -B -W error scripts/atlas_coherent_families.py --self-test-channels
+PASS core-qx-emitter-contract     0.4s  "$PYTHON" -B -W error scripts/n21_qx_conformance.py --unit-test && if [ "${GOROROBA_QI_REQUIRED:-0}"
+  untraceable core-qx-emitter-contract: shell command beyond $PYTHON invocations joined by &&
+PASS core-402     0.1s  shellcheck -S error ci/fetch_open_gororoba.sh ci/install_pins.sh
+  untraceable core-402: shell runs shellcheck; no traced Python process
+PASS core-427     1.4s  "$PYTHON" -B -W error scripts/qi_shot_record_line.py --self-test
+PASS core-369     0.3s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --analyze results/quantum_inspire/readout
+PASS core-004     0.5s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/verify_evidence.py
+FAIL core-600     0.8s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --between-arm resu
+
+=== core-600 exit 1 in .
+PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --between-arm results/live/2026-10-19T231043.083602Z --check
+results/live/2026-10-19T231043.083602Z/between-arm.json differs from the report its archived raw files regenerate
+PASS core-611     0.5s  "$PYTHON" -B -W error scripts/check_markdown_links.py
+  untraceable core-611: program git
+PASS core-503     1.9s  "$PYTHON" -B -W error scripts/qd_platform.py --self-test
+PASS core-631     0.2s  "$PYTHON" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/seden
+PASS core-608     1.3s  "$PYTHON" -B -W error scripts/bdsc_packages.py --check docs/evidence/bdsc/packages/packages.json
+PASS core-310     0.2s  ruff check scripts/walk_scaffold_channels.py && ruff format --target-version py313 --check scripts/w
+  untraceable core-310: shell runs ruff; writes .mypy_cache/3.14/@plugins_snapshot.json.1397456c5453118b; writes .mypy_cache/3.14/walk_scaffold_channels.meta.json.15f5d72eb46d4998
+PASS sources-129     0.3s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/fold_projection_counterexa
+  untraceable sources-129: shell command beyond $PYTHON invocations joined by &&
+PASS sources-152     0.5s  GOROROBA_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_models/probe.py
+PASS core-594     0.5s  "$PYTHON" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-submi
+PASS core-086     0.7s  PYTHONOPTIMIZE=1 "$PYTHON" correction_statistics_contracts.py
+PASS sources-240     0.4s  "$PYTHON" -I -W error docs/evidence/reviewer_associator_audit/audit.py | cmp - docs/evidence/reviewe
+  untraceable sources-240: shell command beyond $PYTHON invocations joined by &&; no traced Python process
+PASS core-014     0.3s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest test_folded_raw_analysis
+  untraceable core-014: writes results/live/synthetic-665m2y4e/isa.qpy; writes results/live/synthetic-665m2y4e/raw/synthetic_dynamic/index.json; writes results/live/synthetic-665m2y4e/raw/synthetic_dynamic/job_metrics.json
+PASS core-441     0.4s  "$PYTHON" -B -W error scripts/ghost_branching_benchmark.py --check docs/evidence/ghost_error_scale_b
+PASS sources-244     0.1s  shellcheck docs/evidence/stiefel_witness/replay_rocq.sh
+  untraceable sources-244: shell runs shellcheck; no traced Python process
+PASS core-207     0.3s  "$PYTHON" -B -W error scripts/render_measured_ripple.py --evidence results/ripple/measured-ripple.js
+PASS core-400     0.5s  "$PYTHON" -B -W error scripts/qi_tuna17_readout_faults.py --check
+PASS core-001     0.4s  "$PYTHON" ci/pinned_tool.py ruff check gororoba_quantum scripts kaggle_kernel results/live/verify_so
+  untraceable core-001: program ruff; program uv
+PASS core-202     0.4s  "$PYTHON" -B -W error scripts/review_wide_control_job.py --self-test
+PASS core-501     0.2s  "$PYTHON" -B -W error scripts/capture_qd_docs.py --self-test
+PASS core-547     0.2s  "$PYTHON" -B -W error scripts/qd_belenos_cone.py --check-readout docs/evidence/quandela/belenos_seed
+PASS core-561     0.4s  "$PYTHON" -B -W error scripts/ghost_run.py --self-test
+PASS sources-157     0.2s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest check_probe
+PASS core-560     0.3s  "$PYTHON" -B -W error scripts/ghost_calibrations.py --self-test
+PASS core-451     0.3s  "$PYTHON" -B -W error scripts/aer_blocking_probe.py --check results/kaggle/2026-10-17T230346Z-gororo
+PASS core-571     0.3s  "$PYTHON" -B -W error scripts/qi_zero_divisor_secondary.py --check results/quantum_inspire/secondary
+PASS core-290     0.4s  "$PYTHON" -B -W error scripts/kaggle_run.py verify
+PASS core-284     0.3s  "$PYTHON" -B -W error scripts/associator_cubic_normal_form.py --cross-check
+PASS core-017     0.2s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error results/live/folded_raw_analysis.py results/live/2026-1
+  untraceable core-017: shell command beyond $PYTHON invocations joined by &&
+PASS core-590     0.2s  "$PYTHON" -B -W error scripts/iqm_platform.py check docs/evidence/iqm --agents docs/notes/iqm/README
+PASS core-115     0.2s  "$PYTHON" cd_core.py >/dev/null
+  untraceable core-115: shell command beyond $PYTHON invocations joined by &&
+FAIL core-368     0.3s  "$PYTHON" -B -W error scripts/qi_toolchain_check.py --check
+
+=== core-368 exit 1 in .
+"$PYTHON" -B -W error scripts/qi_toolchain_check.py --check
+832 circuits differ from the record in bytes, backend or compiler configuration, first results/quantum_inspire/cases/zz-map-tuna17-campaign-retention/batch-000/pack-00-readout-00.cq; rerun under $QI_PYTHON
+PASS sources-155     0.2s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_endpoint_information/probe.py --ch
+PASS core-105     0.4s  "$PYTHON" qpu_cases.py --check
+PASS core-389     0.3s  "$PYTHON" -B -W error scripts/ghost_error_scale.py --self-test
+PASS core-006     0.3s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/cpu_branching_reuse_a
+PASS core-110     0.4s  "$PYTHON" aer_resources.py
+PASS core-002     0.4s  "$PYTHON" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum scripts kagg
+  untraceable core-002: program ruff; program uv
+PASS sources-125     0.4s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/check_verify_sources.py
+  untraceable sources-125: program git
+PASS core-509     0.1s  "$PYTHON" -B -W error scripts/qd_box_kite_analysis.py --self-test
+PASS core-047     0.3s  "$PYTHON" integral_homology.py >/dev/null
+  untraceable core-047: shell command beyond $PYTHON invocations joined by &&
+PASS core-544     0.1s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-bridge
+PASS core-542     0.1s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-dwell
+PASS core-543     0.1s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-dwell results/quandela/sessions/2026-10-18T
+PASS core-381     0.2s  "$PYTHON" -B -W error scripts/capture_oq_docs.py --self-test
+PASS core-520     0.1s  "$PYTHON" -B -W error parallel.py --self-test
+PASS core-230     0.2s  "$PYTHON" -W error ../scripts/design_c_hardware_verdict.py --check
+PASS sources-252     0.1s  "$PYTHON" -B -W error scripts/wheel_rust_audit.py --self-test
+PASS core-541     0.1s  "$PYTHON" -B -W error scripts/anu_qrng.py --self-test && "$PYTHON" -B -W error scripts/anu_qrng.py c
+PASS core-371     0.2s  "$PYTHON" -B -W error scripts/capture_qi_docs.py --self-test
+PASS core-346     0.1s  "$PYTHON" -B -W error scripts/capture_qi_docs.py --check
+PASS core-112     0.1s  "$PYTHON" ../results/live/verify_source_closure.py --check
+  untraceable core-112: program git
+PASS sources-171     0.1s  shellcheck docs/evidence/folding_proofs/replay_rocq.sh
+  untraceable sources-171: shell runs shellcheck; no traced Python process
+PASS core-327     0.1s  "$PYTHON" -B -W error scripts/qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases
+PASS core-383     0.1s  "$PYTHON" -B -W error scripts/oq_platform.py --self-test
+PASS core-500     0.1s  "$PYTHON" -B -W error scripts/capture_qd_docs.py --check
+PASS core-538     0.1s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-pair results/quandela/sessions/2026-10-18T0
+PASS core-502     0.1s  "$PYTHON" -B -W error scripts/qd_platform.py check docs/evidence/quandela --agents docs/notes/quande
+PASS core-540     0.1s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-bridge results/quandela/sessions/2026-10-18
+PASS core-322     0.1s  "$PYTHON" -B -W error scripts/cd_phase_degree.py --max-n 5 --mutate high-high-no-early-return
+PASS sources-188     0.1s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c881_exhaustive/check_replay.py
+  untraceable sources-188: program sh
+PASS core-321     0.1s  "$PYTHON" -B -W error scripts/cd_phase_degree.py --max-n 5 --mutate high-low-unconditional
+PASS core-351     0.1s  "$PYTHON" -B -W error scripts/kaggle_sessions.py --self-test
+PASS core-198     0.1s  "$PYTHON" -B -W error scripts/check_reconcile_qpu_inventory.py
+PASS core-210     0.1s  "$PYTHON" -B -W error scripts/validate_measured_explorer.py --check
+PASS core-401     0.1s  "$PYTHON" -B -W error scripts/materialize_gororoba_csv.py --self-test
+PASS core-254     0.1s  "$PYTHON" -W error scripts/heron_target_snapshot.py --check docs/evidence/heron_platform/targets.jso
+PASS sources-169     0.1s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/check_compiler_gate.py
+  untraceable sources-169: program sh
+PASS sources-212     0.1s  "$PYTHON" -B -W error docs/evidence/c881_exhaustive/check_replay.py
+  untraceable sources-212: program sh
+PASS core-610     0.1s  "$PYTHON" -B -W error scripts/check_markdown_links.py --self-test
+PASS core-051     0.1s  "$PYTHON" ../scripts/render_ripple_visualization.py --evidence ../results/ripple/evidence.json --out
+PASS core-347     0.1s  "$PYTHON" -B -W error scripts/qi_platform.py check docs/evidence/quantum_inspire --agents docs/notes
+PASS core-457     0.1s  "$PYTHON" -B -W error scripts/qx_reset_phase_probe.py --self-test
+PASS core-093     0.1s  "$PYTHON" experiment_optimizer.py
+PASS sources-172     0.1s  shellcheck docs/evidence/formal_certificates/replay_rocq.sh
+  untraceable sources-172: shell runs shellcheck; no traced Python process
+PASS core-456     0.1s  "$PYTHON" -B -W error scripts/qx_reset_phase_probe.py --replay results/quantum_inspire/qx_reset_phas
+PASS core-370     0.1s  "$PYTHON" -B -W error scripts/qi_ry_probe_cases.py --check results/quantum_inspire/cases
+PASS sources-388     0.1s  "$PYTHON" -W error scripts/heron_backend_config_snapshot.py --check docs/evidence/heron_platform/bac
+PASS core-117     0.1s  "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-low-unconditional
+PASS sources-216     0.1s  "$PYTHON" -W error ../scripts/algebra_package_tables.py --check >/dev/null
+  untraceable sources-216: shell command beyond $PYTHON invocations joined by &&
+PASS core-118     0.1s  "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-high-no-early-return
+PASS core-380     0.1s  "$PYTHON" -B -W error scripts/capture_oq_docs.py --check
+PASS core-214     0.1s  "$PYTHON" -W error ../scripts/qet_two_qubit_reference.py >/dev/null
+  untraceable core-214: shell command beyond $PYTHON invocations joined by &&
+PASS core-283     0.1s  "$PYTHON" -B -W error scripts/capture_kaggle_docs.py --check
+PASS core-262     0.1s  "$PYTHON" -W error scripts/qpu_runtime_levers.py --self-test
+PASS core-382     0.1s  "$PYTHON" -B -W error scripts/oq_platform.py check docs/evidence/open_quantum --agents docs/notes/op
+PASS core-263     0.0s  "$PYTHON" -W error results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_b
+PASS core-385     0.1s  "$PYTHON" -B -W error scripts/qi_ry_probe_cases.py --analyze results/quantum_inspire/ry_probe_analys
+PASS core-012     0.1s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" docs/sources/open_gororoba/check_signed_kit
+  untraceable core-012: shell command beyond $PYTHON invocations joined by &&
+PASS sources-120     0.1s  ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence
+  untraceable sources-120: shell runs ruff; no traced Python process
+PASS sources-390     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-390: shell runs sha256sum; no traced Python process
+PASS sources-121     0.0s  ruff format --target-version py313 --check --no-cache docs/verify_sources.py docs/check_verify_sourc
+  untraceable sources-121: shell runs ruff; no traced Python process
+PASS core-065     0.1s  "$PYTHON" factoring.py
+PASS core-008     0.0s  sha256sum -c SHA256SUMS
+  untraceable core-008: shell runs sha256sum; no traced Python process
+PASS core-455     0.1s  "$PYTHON" -B -W error scripts/qx_reset_phase_probe.py --check results/quantum_inspire/cases
+PASS sources-246     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-246: shell runs sha256sum; no traced Python process
+PASS core-009     0.0s  sha256sum -c SHA256SUMS
+  untraceable core-009: shell runs sha256sum; no traced Python process
+PASS core-016     0.0s  sha256sum -c SHA256SUMS
+  untraceable core-016: shell runs sha256sum; no traced Python process
+PASS core-038     0.0s  sha256sum -c SHA256SUMS
+  untraceable core-038: shell runs sha256sum; no traced Python process
+PASS core-334     0.0s  cmp docs/evidence/atlas_coherent_families/result.json results/kaggle/2026-10-16T222749Z-gororoba-atl
+  untraceable core-334: shell runs cmp; no traced Python process
+PASS sources-136     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-136: shell runs sha256sum; no traced Python process
+PASS sources-145     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-145: shell runs sha256sum; no traced Python process
+PASS sources-159     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-159: shell runs sha256sum; no traced Python process
+PASS sources-165     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-165: shell runs sha256sum; no traced Python process
+PASS sources-176     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-176: shell runs sha256sum; no traced Python process
+PASS sources-245     0.0s  sha256sum -c docs/evidence/stiefel_witness/repo_sources.sha256
+  untraceable sources-245: shell runs sha256sum; no traced Python process
+PASS core-007     0.0s  sha256sum -c SHA256SUMS
+  untraceable core-007: shell runs sha256sum; no traced Python process
+PASS sources-139     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-139: shell runs sha256sum; no traced Python process
+PASS sources-151     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-151: shell runs sha256sum; no traced Python process
+PASS sources-162     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-162: shell runs sha256sum; no traced Python process
+PASS sources-168     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-168: shell runs sha256sum; no traced Python process
+PASS sources-175     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-175: shell runs sha256sum; no traced Python process
+PASS sources-183     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-183: shell runs sha256sum; no traced Python process
+PASS sources-186     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-186: shell runs sha256sum; no traced Python process
+PASS sources-194     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-194: shell runs sha256sum; no traced Python process
+PASS sources-243     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-243: shell runs sha256sum; no traced Python process
+PASS core-292     0.0s  cmp docs/evidence/rocq_kaggle_replay/result.json results/kaggle/2026-10-16T085651Z-gororoba-rocq-rep
+  untraceable core-292: shell runs cmp; no traced Python process
+PASS sources-133     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-133: shell runs sha256sum; no traced Python process
+PASS sources-174     0.0s  sha256sum -c docs/evidence/formal_certificates/source_hashes.sha256
+  untraceable sources-174: shell runs sha256sum; no traced Python process
+PASS sources-214     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-214: shell runs sha256sum; no traced Python process
+PASS sources-242     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-242: shell runs sha256sum; no traced Python process
+PASS core-013     0.0s  sha256sum -c SHA256SUMS
+  untraceable core-013: shell runs sha256sum; no traced Python process
+PASS core-204     0.0s  sha256sum -c SHA256SUMS
+  untraceable core-204: shell runs sha256sum; no traced Python process
+PASS sources-142     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-142: shell runs sha256sum; no traced Python process
+PASS sources-148     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-148: shell runs sha256sum; no traced Python process
+PASS sources-154     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-154: shell runs sha256sum; no traced Python process
+PASS sources-173     0.0s  sha256sum -c SHA256SUMS
+  untraceable sources-173: shell runs sha256sum; no traced Python process
+
+516 passed, 9 failed of 525 gates in shard 0/1 on CPU

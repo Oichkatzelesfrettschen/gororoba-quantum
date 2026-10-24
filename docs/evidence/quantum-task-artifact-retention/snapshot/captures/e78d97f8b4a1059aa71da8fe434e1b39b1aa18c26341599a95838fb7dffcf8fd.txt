@@ -1,0 +1,66 @@
+# Numerical replay runtime and comparator audit
+
+The audit reads retained acquisition records, admitted analysis reports, source history, current checker branches and runtime configuration. The audit executes metadata/native-library probes only; it executes zero fits and changes zero archived reports. Parent-owned native replay processes remain independent of this review.
+
+## Observed numerical runtime
+
+All five underlying acquisition records (2026-10-19T151959.226467Z, 2026-10-19T231043.083602Z, 2026-10-20T031212.175942Z, 2026-10-21T043156.858484Z and 2026-10-21T064222.721454Z) record NumPy 2.5.4, SciPy 1.18.1 and Qiskit 2.5.2 in record.json versions. Both requirements.txt and ci/requirements-replay.txt retain the same NumPy/SciPy versions. Requirements at the report-admission commits also retain those numerical versions. The numerical failures therefore do not establish a NumPy/SciPy release-version mismatch.
+
+Read-only interpreter probes observe:
+
+| Surface | Python | Numerical packages | Native numerical libraries |
+|---|---|---|---|
+| Installed native candidate | 3.14.8, GCC 16.2.1 | NumPy 2.5.4; SciPy 1.18.1 | AOCL-BLAS 5.3.0 Build 20260612, BLIS Zen3 |
+| Canonical validation venv | 3.14.7, Clang 22.1.3 | NumPy 2.5.4; SciPy 1.18.1 | OpenBLAS 0.3.34.106.0 and 0.3.31.dev, Haswell |
+| Existing Qiskit 2.5 replay venv | 3.14.7, Clang 22.1.3 | NumPy 2.5.4; SciPy 1.18.1 | The same two OpenBLAS builds, Haswell |
+
+The native probe explicitly bounded BLAS/OpenMP threads to one. The parent's separately retained native-numerical-runtime.json is its own fingerprint; its captured OpenMP thread count differs, so the two probes are not silently treated as an identical thread configuration.
+
+Pacman records place Python 3.14.8 installation on 18 October, NumPy installation on 11 October, SciPy installation on 24 August and AOCL installation on 12 June 2026. Those installations precede the acquisitions. docs/notes/build_host/python-stack.md records AOCL as the host BLAS/LAPACK provider. These observations identify a strong native runtime candidate. The admitted numerical reports omit per-analysis compiler, Python patch version, native-library hashes, CPU dispatch and thread fingerprints. Their acquisition records establish package observations at acquisition, not a complete runtime identity for every later analysis. An exact historical numerical environment remains uncertified.
+
+## Controlled numerical-build cross-probes for core-600
+
+The parent executed the unchanged between-arm check with each numerical package bundle loaded before the analysis. The cross-probe logs independently record NumPy/SciPy version numbers and import roots, plus the actual checker outcome; the launch interpreter identities are the parent's recorded execution context. The native and validation package bundles both report NumPy 2.5.4 and SciPy 1.18.1.
+
+| CPython launch build | Preloaded NumPy/SciPy bundle | Observed core-600 outcome | Retained evidence |
+|---|---|---|---|
+| Native 3.14.8 | Native system bundle with AOCL | Exact serialized bytes match | [native-core600.log](native-core600.log) |
+| Native 3.14.8 | Validation wheel bundle with OpenBLAS | Retained report differs | [native-python-openblas-core600.log](native-python-openblas-core600.log) |
+| Validation 3.14.7 | Native system bundle with AOCL | Exact serialized bytes match | [validation-python-aocl-core600.log](validation-python-aocl-core600.log) |
+| Validation 3.14.7 | Validation wheel bundle with OpenBLAS | Retained report differs | [frozen-affected-gates.log](frozen-affected-gates.log), core-600 failure block |
+
+The observed pass/fail pattern follows the numerical package-build bundle across both CPython launch builds. Switching that bundle is sufficient to switch the observed checker outcome in both tested interpreter contexts. CPython patch version alone therefore fails to explain the discrepancy. This finding is bounded to the checked core-600 acquisition and the four tested configurations.
+
+The cross-probes move NumPy and SciPy together with their compiled numerical dependencies. They do not isolate NumPy from SciPy, BLAS vendor from LAPACK implementation, extension/compiler build flags from math-library behavior, CPU/SIMD dispatch, accumulation order or any remaining native-library and thread-setting differences. The data support a numerical-build boundary, not a unique attribution to AOCL, OpenBLAS or a specific optimizer defect. The test does not establish a globally optimal fit or reproduce the other six gates. The native bundle remains a candidate historical numerical substrate until its per-report reproduction and complete runtime identity are independently qualified.
+
+Cross-probe log SHA-256 identities:
+
+- `native-core600.log`: `52f6fb03672e2d861563cee3b664abad8a39fbfcb3e486b5aae6c8101b96571a`
+- `native-python-openblas-core600.log`: `d1c60275f9c782b4021f3b2c4add52bc7a085af43fc83638f34a6e59975de74f`
+- `validation-python-aocl-core600.log`: `a2f1de0133d8b88d17246bd039567236776f711c1d8b8e9a76a603dab10aa5f1`
+
+## Actual gate comparison branches
+
+| Gate | Checked report | Comparator and scope |
+|---|---|---|
+| core-600 | 2026-10-19T231043.083602Z/between-arm.json | n21_orbit_rca.py main --between-arm --check compares read_bytes() directly with serialize(report).encode(). Exact serialized byte equality; zero replay epsilon. |
+| core-612 | 2026-10-19T151959.226467Z/between-arm.json | The same between-arm byte comparison. |
+| core-603 | 2026-10-20T031212.175942Z/ramsey.json | n21_spectator_ramsey.py main --check compares read_text() with serialize(report). Exact decoded text equality; zero replay epsilon. read_text normalizes line endings, so arbitrary input-byte identity is a stronger claim than the code requires. |
+| core-605 | 2026-10-20T031212.175942Z/beat-model.json | n21_q143_beat_model.py main --check compares read_text() with serialize(report). Exact serialized text equality after report() recursively rounds finite floating output to six significant digits and maps magnitudes below 1e-9 to zero. No additional replay epsilon. |
+| core-616 | results/live/n21-q143-segmented-design.json | --design-check compares read_text() with serialize(design table). Exact serialized text equality after beat.rounded applies the same six-significant-digit/1e-9 convention. No additional replay epsilon. |
+| core-619 | 2026-10-21T064222.721454Z/segmented-sweep-6d59d710eb61.json | --check --against parses retained JSON and freshly rounded serialized JSON, removes analyzer_closure, preregistered and amendment, and compares the remaining Python dictionaries with ordinary structural equality. Zero explicit replay epsilon. Formatting/key-order identity is not required. Python numerical equality is not a strict numeric-type identity check. |
+| core-620 | 2026-10-21T043156.858484Z/segmented-sweep-6d59d710eb61.json | The same amended-analysis structural comparison and three identity exclusions. |
+
+The generic n21_orbit_rca.differences helper admits relative/absolute 1e-6 with a separate split-field rule. The seven command paths above do not invoke that generic comparison. Applying its tolerance description to core-600 or core-612 would misdescribe their actual execution branches.
+
+The parent's native-core600.log and validation-python-aocl-core600.log record successful byte regeneration through the actual between-arm branch; both OpenBLAS-bundle configurations fail as recorded above. Other native jobs were still parent-owned ongoing work when this audit was written; their logs determine their individual outcomes. A runtime match on one report does not establish agreement for the other six reports or certify a unique/global optimizer minimum.
+
+## Source admission and bounded closure route
+
+The retained Ramsey report's two-file analyzer closure matches the inspected feature sources exactly. The two retained segmented reports bind 63 source files; their differing paths are qpu_planning.py and n21_q143_segmented_sweep.py. Source history since admission shows an explicit resolver-directory provenance change and the new --against comparison interface; the inspected differences do not change the fitting algorithm. The beat report and prospective design table lack a complete per-analysis runtime receipt. The beat report explicitly labels its models descriptive and post hoc.
+
+All seven gates currently run in the canonical runtime. ci/pins.py registers only the qiskit-2.5 historical profile and validates distribution versions through importlib.metadata. Its existing replay venv remains OpenBLAS-based. Retagging a numerical gate with that profile alone would not recover the native AOCL substrate. ci/run_gates.py returns 127 when a registered runtime lacks its interpreter; ci/premerge_gates.py requires resolution under strict pins. The hosted workflow provisions the historical profile by installing Python wheels. These mechanisms do not currently express an optional native AOCL replay with binary/CPU qualification.
+
+Complete the parent's bounded native probes using unchanged checker comparisons. Retain each exit code, source/data identities and actual runtime/thread/native-library fingerprint beside the gate outcome. Label successful results native-candidate historical report replay, while retaining the canonical OpenBLAS failure as a separate portability residual. Do not report native success as a canonical/hosted pass. Before registering a future native profile, specify and verify the interpreter and extension bytes, BLAS/LAPACK libraries, CPU dispatch, worker/thread settings and immutable input/source identities. Keep portable retained-byte/provenance verification distinct from conditional native numerical reproduction; absence of a native runtime cannot count as a numerical replay. This audit implements no runtime profile and changes no gate requirements.
+
+The separate [review of proposed numerical amendments](retained-log-inputs/proposed-numerical-amendments-review.txt) establishes that the owner's dirty optimization proposals include materially changed alias inference and prospective design choices. Those changes require immutable successors, explicit scientific amendments, optimizer controls and downstream claim review. Neither a wider replay tolerance nor a Qiskit version relabeling justifies adopting them.

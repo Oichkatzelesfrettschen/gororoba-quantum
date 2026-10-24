@@ -18,3 +18,7 @@ def test_tree_seeds_are_accounted(shard: int) -> None:
 
 def test_reproduction_seeds_only_shrink() -> None:
     seed_provenance.check_shrink()
+
+
+def test_retained_qrng_references_match_the_runtime_ledger() -> None:
+    seed_provenance.check_runtime_tree()

@@ -1,0 +1,26 @@
+{
+ "artifact": "ci/replay_check.py",
+ "artifact_revision": "9d4ef5b79c11f69007f9260922b2a9bfe38bce5f",
+ "findings": [
+  {
+   "mechanism": "finite result compared with infinity produces infinite bound",
+   "remedy": "Require finite result pairs and finite nonnegative tolerance arguments before comparison.",
+   "severity": "serious",
+   "witness": "differences(1.0, float(\"inf\"), 1e-3, 0.0) == []"
+  },
+  {
+   "mechanism": "mixed integer and float values enter tolerant numeric branch",
+   "remedy": "Preserve declared exact integer/discrete type and value boundary.",
+   "severity": "serious",
+   "witness": "differences(1, 1.0001, 1e-3, 0.0) == []"
+  },
+  {
+   "mechanism": "uniform fitted-value relative tolerances require scientific error budget",
+   "remedy": "Verify conditioning, uncertainty bounds and decision stability for admitted fields; preserve immutable evidence.",
+   "severity": "unresolved"
+  }
+ ],
+ "scope": "A concrete archived overflow has not been demonstrated. The analyzers inspected do not globally exclude nonfinite serialized output. The helper is not integrated.",
+ "verdict": "integration held",
+ "visibility": "complete helper read; isolated numerical branch probes; current retained analyzers inspected by independent reviewer"
+}

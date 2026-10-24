@@ -1,0 +1,30 @@
+Read-only canonical-environment gate-key probe
+
+Plan: parent docs/local/hypercomplex-operator-evidence/final-gate-plan.json
+Ledger: parent docs/local/hypercomplex-operator-evidence/frozen-qualified-gate-ledger.json
+Current parent HEAD at probe: f04115783bce33dcd5eeed1d89d674750ce08460
+Planned gates: 529
+Exact ledger-key matches: 0
+Execution candidates under existing ledger mechanics: 529
+Host digest: 07ffc463b46468d92e27eeda7ea0297c4c5fd36f63aa32fa049377a49c114346
+
+The probe uses run_gates.environment_for, host_identity.identity,
+gate_ledger.host_digest, gate_ledger.Content, run_gates.allocated_workers,
+and gate_ledger.gate_key. The probe never calls execute or run_all.
+The probe retains original keys; global invalidation cause remains unestablished.
+
+Direct historical optimizer/report refits among execution candidates:
+core-443: n21_orbit_rca.py --check results/live/2026-10-13T080216.451663Z
+core-447: n21_orbit_rca.py --check results/live/2026-10-13T083417.634585Z
+core-495: patch_window_analysis.py historical run --check historical patch-analysis.json;
+          optimizer calls at scripts/patch_window_analysis.py:204,222
+core-617: n21_q143_line_switching.py historical run and retained segmented analysis --check;
+          report calls switching_fit and bootstrap fits at lines 186,187
+
+Other direct historical numerical report regeneration/comparison candidates:
+core-613: n21_orbit_rca.py --between-arm historical run --check
+core-287: ghost_run.py --check --runs historical runs; --report piped to cmp
+core-339 and core-614: ghost_error_scale.py --check retained parts --runs historical runs
+
+The seven replacement pytest gates remain synthetic regression nodes.
+No gate, historical report, provider job or numerical fit executes during this probe.

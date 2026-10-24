@@ -13,9 +13,11 @@ gate machinery: runner and shards, the gate ledger and premerge cache, the
 Python and Qiskit pins, replay runtimes, the Rocq replays and gate cost.
 
 **Pull requests and the audit.** The workflow `pr.yml` runs
-`sh ci/pr_checks.sh lint|types|tests` on every pull request push: Ruff and
-mypy over ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/, and
-pytest over tests/ with `-m "not audit"`. Branch protection on main requires
+`sh ci/pr_checks.sh lint|types|tests|gates` on every pull request push: Ruff
+and mypy over ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/,
+pytest over tests/ with `-m "not audit"`, and the ci/gates.json gates of at
+most 15 measured seconds that the diff from main reaches (a record binding an
+edited producer's digest fails there). Branch protection on main requires
 the three checks `lint`, `types` and `tests` green on the head; with the Codex
 review loop they admit a merge ([Merging](#reviews-and-merges)), and no local
 gate run or premerge replay is required. Locally, `sh ci/pr_checks.sh tests
@@ -79,7 +81,12 @@ fresh layout or twirl, a new mesh) takes new values from a draw.
 literal in the code directories to be a row of ci/reproduction_seeds.json,
 which only shrinks against main, or an entry of
 docs/evidence/qrng_seeds/allocations.json naming a registered source's draw
-that no case manifest owns and the index holding that value.
+that no case manifest owns and the index holding that value. A seed a CLI takes
+at run time goes through `qrng_seeds.add_seed_argument`, which accepts
+`qrng:<draw>#<index>`, the flag's default or `repro:<integer>` and refuses any
+other integer; the run record's `seed_source` names the spelling, and the
+change that retains a qrng-seeded run adds its ledger row with
+`"$PYTHON" ci/seed_provenance.py --add-runtime`.
 
 ## Work planning
 
@@ -272,6 +279,10 @@ checkout and never enter a commit, log or memory.
 - IQM Resonance: [docs/notes/iqm/README.md](docs/notes/iqm/README.md);
   interpreter `iqm-python` of the iqm-resonance-stack package; MCP `iqm`; token
   pair file named by `IQM_TOKENS_FILE`.
+- IonQ, BlueQubit, Quafu, Origin Quantum and Planck: one guide each under
+  `docs/notes/<provider>/` (`ionq`, `bluequbit`, `quafu`, `originquantum`,
+  `planck`), each with a pinned venv under `~/.local/share/<provider>/venv`
+  and a one-line key file under `~/.config/<provider>/`; no MCP server.
 
 Every job (QPU, emulator, simulator or mock), upload, provider QRNG read,
 timeslot booking and notebook session on any provider waits for the user's approval of a
@@ -403,7 +414,7 @@ code-review quota, the owner decides how the PR proceeds.
    what that review finds.
 3. Codex reviews the head once more; that round's threads are answered and
    resolved the same way.
-4. The `pr.yml` jobs `lint`, `types` and `tests` pass on the head. A push
+4. The `pr.yml` jobs `lint`, `types`, `tests` and `gates` pass on the head. A push
    that changes the head reruns them; a red job gets its fix commit on the
    branch.
 5. GitHub reports mergeable_state clean.

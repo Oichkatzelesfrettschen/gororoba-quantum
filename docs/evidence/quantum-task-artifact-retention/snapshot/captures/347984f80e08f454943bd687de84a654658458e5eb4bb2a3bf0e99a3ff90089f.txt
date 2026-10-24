@@ -1,0 +1,6 @@
+{
+ "entrypoint_scripts_relocated": 76,
+ "previous_validation_root": "${USER_HOME}/.local/share/gororoba-quantum/validation/hypercomplex-operator-evidence",
+ "temporary_root": "${TEMP}/gororoba-hypercomplex-9sn5hyoj",
+ "validation": "${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation"
+}

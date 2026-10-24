@@ -1,0 +1,44 @@
+"""Queue simulation PR qualification behind the dependency's exact-head gates."""
+
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+import time
+
+environment = dict(
+    entry.split("=", 1)
+    for entry in Path("/proc/2021133/environ").read_bytes().decode().split("\0")
+    if "=" in entry
+)
+checkout = Path("${USER_HOME}/worktrees/IBMQuantum/local-photonic-compiler-crosscheck")
+dependency_ledger = Path("${TEMP}/quandela-final-fd65f74-ledger.json")
+dependency_log = Path("${TEMP}/quandela-final-fd65f74-validation.log")
+print("Waiting for dependency's exact-head qualification ledger", flush=True)
+while not dependency_ledger.is_file():
+    time.sleep(30)
+summary = re.findall(r"(\d+) passed, (\d+) failed of (\d+) gates", dependency_log.read_text())
+if not summary or summary[-1][1] != "0":
+    raise SystemExit("Dependency qualification needs triage")
+head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=checkout, text=True).strip()
+if subprocess.check_output(["git", "status", "--porcelain"], cwd=checkout, text=True):
+    raise SystemExit("Simulation checkout requires a clean committed head")
+changed = Path("${TEMP}/local-simulation-qualification-changed.z")
+changed.write_bytes(subprocess.check_output(
+    ["git", "diff", "--no-renames", "--name-only", "-z", "origin/main", "HEAD"], cwd=checkout
+))
+command = [
+    environment["PYTHON"], "-B", "-W", "error", "ci/run_gates.py",
+    "--changed-files", str(changed), "--ledger", str(dependency_ledger),
+    "--ledger-out", "${TEMP}/local-simulation-head-ledger.json",
+    "--timings", "${TEMP}/local-simulation-head-timings.json",
+]
+print("Qualifying simulation PR head", head, "launcher", os.getpid(), flush=True)
+with Path("${TEMP}/local-simulation-head-validation.log").open("x") as output:
+    result = subprocess.run(command, cwd=checkout, env=environment, stdout=output, stderr=subprocess.STDOUT)
+end_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=checkout, text=True).strip()
+record = {"head": head, "end_head": end_head, "exit_code": result.returncode}
+Path("${TEMP}/local-simulation-head-qualification-result.json").write_text(json.dumps(record, indent=2) + "\n")
+print("Simulation head qualification", json.dumps(record), flush=True)
+raise SystemExit(result.returncode if head == end_head else 1)

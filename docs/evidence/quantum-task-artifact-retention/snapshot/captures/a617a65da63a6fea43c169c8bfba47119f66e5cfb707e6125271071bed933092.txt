@@ -1,0 +1,64 @@
+{
+ "completed_batches": [
+  {
+   "batch": "order-batch-00",
+   "creation_after_previous_batch_finish_seconds": null,
+   "execution_seconds": 22.588641,
+   "jobs": 3,
+   "latest_finished_at": "2026-10-22T06:28:01.342390+00:00",
+   "receipt_sha256": "4f9a28ae57ae9b0bec7afe585b116685e450ae1566dd277e77ed6bc71b81cb9c",
+   "results_sha256": "55b298e04fe7c86d5108264930046d0373289ea297c1a247c50d0abb8667f084",
+   "science_counts": [
+    15731,
+    653
+   ],
+   "shots": 49152
+  },
+  {
+   "batch": "order-batch-01",
+   "creation_after_previous_batch_finish_seconds": 130.65761,
+   "execution_seconds": 23.037116,
+   "jobs": 3,
+   "latest_finished_at": "2026-10-22T06:54:32.483218+00:00",
+   "receipt_sha256": "0faa854fcc39760886aed16f03bba4c804ac50b1ce519d0cfdf50060776ce5e9",
+   "results_sha256": "d1f860113cbb37350f500452b1deab312416af40c7540b3438794bac56f4709c",
+   "science_counts": [
+    15618,
+    766
+   ],
+   "shots": 49152
+  },
+  {
+   "batch": "order-batch-02",
+   "creation_after_previous_batch_finish_seconds": 130.516782,
+   "execution_seconds": 22.918697,
+   "jobs": 3,
+   "latest_finished_at": "2026-10-22T06:57:21.156540+00:00",
+   "receipt_sha256": "cc58e90aca7b7a911cb850600b241baeac2c36f5ddf96ca33b1091d57a253eb3",
+   "results_sha256": "c70d01b6b49fac20c856383e123077438c5219007a98939527bf65848d67b1be",
+   "science_counts": [
+    15735,
+    649
+   ],
+   "shots": 49152
+  },
+  {
+   "batch": "order-batch-03",
+   "creation_after_previous_batch_finish_seconds": 130.84346,
+   "execution_seconds": 23.057839,
+   "jobs": 3,
+   "latest_finished_at": "2026-10-22T07:00:25.275778+00:00",
+   "receipt_sha256": "d3a581d4adddfc7dee8add101b10077073b8170cff6ca2b2989963dbd9319249",
+   "results_sha256": "a0b46dbe8ce84fdd1b238fa261a6cfc4fc42e1292215f7de402ff5fe405ea0a3",
+   "science_counts": [
+    15599,
+    785
+   ],
+   "shots": 49152
+  }
+ ],
+ "coverage": "all batches with retained completed analysis at observation",
+ "observed_utc": "2026-10-22T07:00:58.288287+00:00",
+ "pause_scope": "adjacent retained pilot batches; accountwide ledger pending",
+ "provider_reads": false
+}

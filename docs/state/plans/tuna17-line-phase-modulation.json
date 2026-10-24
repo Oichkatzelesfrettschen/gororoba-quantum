@@ -1,0 +1,18 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna17-line-phase-modulation",
+  "kind": "experiment",
+  "summary": "Tuna-17 50.38 Hz shot-record line: test whether a phase-modulation model predicts first and second harmonics and the averaged contrast loss when analyzer phase, idle duration and CZ exposure vary as separate randomized factors.",
+  "sources": [
+    "results/quantum_inspire/tuna_17_shot_record_line.json",
+    "results/quantum_inspire/box_kite_tuna_17_ladder_analysis.json",
+    "docs/notes/quantum_inspire/experiments.md",
+    "https://arxiv.org/abs/1101.4707"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Derive the harmonic predictions of P = (1 + V cos(phi0 + A cos Omega t))/2 for the retained ladder settings, check them on the retained jobs held out by batch, and only then design a randomized three-factor dry run; chronological shot order stays a pending provenance check."
+}

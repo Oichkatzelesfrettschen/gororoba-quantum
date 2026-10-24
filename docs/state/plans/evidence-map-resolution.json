@@ -1,0 +1,70 @@
+{
+  "schema": "work-plan-v1",
+  "id": "evidence-map-resolution",
+  "kind": "coordination",
+  "summary": "Close the open evidence-map work items EM-06 to EM-09, EM-11 to EM-13 and EM-15 with the closure evidence the resolution design names.",
+  "sources": [
+    "docs/design/evidence-map-resolution.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "steps": [
+    {
+      "id": "em-06",
+      "state": "todo",
+      "action": "EM-06 (transform cause): Replay full retained provenance and prepare a bounded predecessor-intervention case.",
+      "acceptance": "Qualified changed-predecessor and target-only comparison distinguishes the declared alternatives."
+    },
+    {
+      "id": "em-07",
+      "state": "todo",
+      "action": "EM-07 (opening budget cause): Retain sweep artifacts and separate budget, time, recovery and prevention.",
+      "acceptance": "Preregistered matched interventions or a correctly bounded inconclusive/closed route."
+    },
+    {
+      "id": "em-08",
+      "state": "todo",
+      "action": "EM-08 (linear observation and likelihood): Qualify preparations, acceptance, effective processing and eligible trials.",
+      "acceptance": "A supported observation law and common-effect scope, not returned integers alone."
+    },
+    {
+      "id": "em-09",
+      "state": "todo",
+      "action": "EM-09 (phase and ensemble): Preserve held-fixed diagnostic variables and add coherent readout only through an approved case.",
+      "acceptance": "Phase-sensitive and ensemble claims attach to supported physical models."
+    },
+    {
+      "id": "em-11",
+      "state": "todo",
+      "action": "EM-11 (ledger identity): Deduplicate the 24 matched IDs across snapshots without changing the historical ledger.",
+      "acceptance": "Reviewed integrated adapter/registry coverage, with each physical execution counted once."
+    },
+    {
+      "id": "em-12",
+      "state": "todo",
+      "action": "EM-12 (registry integration): Merge records with schema-v2 semantics and explicit conflict adjudication.",
+      "acceptance": "Integrated registry, generated state and provider adapters agree without lost evidence."
+    },
+    {
+      "id": "em-13",
+      "state": "todo",
+      "action": "EM-13 (denominators and dependencies): Derive unit-specific totals and support-root withdrawal reports; classify unbound directories.",
+      "acceptance": "Complete inspected coverage, shared-root logic and unresolved identities are explicit."
+    },
+    {
+      "id": "em-15",
+      "state": "todo",
+      "action": "EM-15 (physical certificate): Keep M2-M4 blockers; close only with supported capability and bounded physical evidence.",
+      "acceptance": "Primary certificate admitted, alternative supported, route unavailable, or allocated case inconclusive."
+    }
+  ],
+  "related": [
+    "quandela-load-history-discrimination",
+    "ascella-instrument-readiness-and-packed-tests"
+  ],
+  "scope": "The open items of docs/evidence/evidence-map-resolution/disposition.json; each step's acceptance is that item's closure_evidence, and a physical step runs only through its own approved case.",
+  "next_action": "Start EM-13: derive unit-specific totals and support-root withdrawal reports from scripts/research_state.py."
+}

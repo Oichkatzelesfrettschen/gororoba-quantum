@@ -1,0 +1,194 @@
+# qBraid
+
+> Official documentation for qBraid, the quantum computing platform: Lab (cloud IDE), Runtime (SDK, CLI, and REST API), and 20+ QPUs and simulators from 11 providers, unified behind one account and credit system.
+
+> ## Agent Instructions
+> Prefer the qBraid CLI for programmatic platform actions: pip install 'qbraid-cli>=0.12', then run `qbraid configure` once with an API key from https://account.qbraid.com/account/api-keys.
+> When writing Python, prefer the qBraid SDK: `from qbraid.runtime import QbraidProvider` wraps devices, job submission (`device.run()`), and batch groups (`GroupJobSession`).
+> Always install the latest packages (pip install -U qbraid qbraid-cli); do not pin versions from memory. qbraid-cli below 0.12.0 is incompatible with the current API.
+> Device IDs use the QRN format vendor:provider:type:name (e.g. qbraid:qbraid:sim:qir-sv, rigetti:rigetti:qpu:cepheus-1-108q). Legacy underscore IDs are deprecated.
+> The REST API base URL is https://api-v2.qbraid.com/api/v1, authenticated with an X-API-Key header.
+> For endpoints without a dedicated wrapper, use `QbraidSessionV1` from `qbraid_core` — an authenticated session (`.get()`/`.post()`) that sets the X-API-Key header. Full spec: https://docs.qbraid.com/openapi-v2.json
+> Free simulators cost no credits; QPU and GPU jobs consume credits. Surface the estimated cost to the user before submitting a paid job.
+> For account signup, API keys, credits, and end-to-end action recipes, see https://qbraid.com/llms.txt.
+
+- [qBraid Docs](https://docs.qbraid.com/v2/home/introduction.md): Guides and references for qBraid Account, quantum computing, Lab, and AI.
+- [On-demand pricing](https://docs.qbraid.com/v2/home/pricing.md): Understand credits, resource billing units, AI token rates, and subscription allowances.
+- [Learn with qBook](https://docs.qbraid.com/v2/home/learning.md): Find courses in Account and open chapters and sections in qBook.
+- [Migration Guide](https://docs.qbraid.com/v2/home/migration.md)
+- [Legacy Jobs Retrieval](https://docs.qbraid.com/v2/home/legacy-jobs.md)
+- [FAQ](https://docs.qbraid.com/v2/home/faq.md): Frequently asked questions about the V2 platform.
+- [Account overview](https://docs.qbraid.com/v2/account/overview.md): Launch compute, build circuits, use AI chat, and manage your qBraid workspace.
+- [Sign in](https://docs.qbraid.com/v2/account/sign-in.md): Create an account and sign in with Google, a password, an email code, or a passkey.
+- [Dashboard and instances](https://docs.qbraid.com/v2/account/dashboard.md): Launch qBraid Lab, manage running and stopped instances, and download your files.
+- [Devices and quantum jobs](https://docs.qbraid.com/v2/account/quantum-jobs.md): Find quantum hardware and simulators, then inspect and manage your submitted jobs.
+- [Circuit Composer](https://docs.qbraid.com/v2/account/composer.md): Build circuits visually, edit QASM, inspect probabilities, and run on quantum devices.
+- [Chat and Agent](https://docs.qbraid.com/v2/account/chat.md): Use AI chat for quantum computing questions or attach Agent to a compute instance.
+- [Models and pricing](https://docs.qbraid.com/v2/account/models.md): Find available AI models, compare token rates, and understand plan allowances and credits.
+- [Profile](https://docs.qbraid.com/v2/account/profile.md): Edit your profile, manage passkeys and notification preferences, and request account deletion.
+- [Refresh account data](https://docs.qbraid.com/v2/account/refresh.md): Update your organizations, roles, credits, and account access without signing out.
+- [API keys](https://docs.qbraid.com/v2/account/api-keys.md): Create, inspect, rotate, and revoke API keys for the selected workspace.
+- [Usage](https://docs.qbraid.com/v2/account/usage.md): Review compute and AI allowances, inspect session charges, and control automatic credit spending.
+- [Support](https://docs.qbraid.com/v2/account/support.md): Submit support requests, track their status, and reply to the qBraid team.
+- [Open Quantum](https://docs.qbraid.com/v2/account/integrations/openquantum.md): Create and connect an Open Quantum account, review its credits, and run jobs through qBraid.
+- [Overview](https://docs.qbraid.com/v2/account/wallet/overview.md): What you see when you open your wallet: subscription, prepaid credits, transactions, and invoices.
+- [Buy credits](https://docs.qbraid.com/v2/account/wallet/buy-credits.md): Top up your credit balance with a preset or custom amount, and apply a promo code at checkout.
+- [Personal subscriptions](https://docs.qbraid.com/v2/account/wallet/subscriptions.md): Compare personal plans, change your plan, and manage billing.
+- [Payment history](https://docs.qbraid.com/v2/account/wallet/payment-history.md): See every transaction on your account, filter by type or category, search, and export to CSV.
+- [Overview](https://docs.qbraid.com/v2/account/organizations/overview.md): Share resources, manage members, and centralize team billing in a qBraid organization.
+- [Create an organization](https://docs.qbraid.com/v2/account/organizations/creating-an-organization.md): Request a team workspace and track or cancel your pending request.
+- [Members and invitations](https://docs.qbraid.com/v2/account/organizations/members.md): Invite members, manage roles and access, create invite codes, and transfer ownership.
+- [Join an organization](https://docs.qbraid.com/v2/account/organizations/invitations.md): Accept an email invitation or redeem an organization invite code.
+- [Invite codes](https://docs.qbraid.com/v2/account/organizations/invite-codes.md): Create and share organization invite codes, join with a code, and manage limits and access.
+- [Seats](https://docs.qbraid.com/v2/account/organizations/seats.md): Assign your subscription's seats to specific members and revoke them when people move on.
+- [Credits](https://docs.qbraid.com/v2/account/organizations/credits.md): Buy credits for the organization, transfer them to members, and approve credit requests.
+- [Credit requests](https://docs.qbraid.com/v2/account/organizations/credit-requests.md): Request organization credits, cancel a pending request, and approve or reject requests as an administrator.
+- [Team subscriptions](https://docs.qbraid.com/v2/account/organizations/subscriptions.md): Buy a team plan, change tier or interval, add capacity, and handle cancellations.
+- [Transactions](https://docs.qbraid.com/v2/account/organizations/transactions.md): Filter organization credit activity, export matching transactions, and inspect charges.
+- [Organization usage](https://docs.qbraid.com/v2/account/organizations/usage.md): Find which members consume organization credits, inspect their transactions, and review quantum job activity.
+- [Audit logs](https://docs.qbraid.com/v2/account/organizations/audit-logs.md): Find who changed organization settings, members, credits, subscriptions, jobs, and API keys, then export the recorded activity.
+- [Settings](https://docs.qbraid.com/v2/account/organizations/settings.md): Set your org's name and logo, control what happens when new members join, and find owner-only actions.
+- [Explore catalog](https://docs.qbraid.com/v2/account/explore-catalog.md): Find projects, courses, events, and challenges, or submit a project for the qBraid catalog.
+- [Partner guide](https://docs.qbraid.com/v2/account/explore.md): Prepare a project and its environment for publication on qBraid Explore.
+- [Overview](https://docs.qbraid.com/v2/lab/user-guide/overview.md)
+- [Getting Started](https://docs.qbraid.com/v2/lab/user-guide/getting-started.md): This section will walk you through the basics of using the Lab interface and managing your server instance.
+- [Files](https://docs.qbraid.com/v2/lab/user-guide/files.md): Open, create, rename, delete, and download files in the qBraid Lab file browser, and see how file sync differs on subscription and on-demand instances.
+- [Notebooks](https://docs.qbraid.com/v2/lab/user-guide/notebooks.md)
+- [Kernels](https://docs.qbraid.com/v2/lab/user-guide/kernels.md)
+- [Environment Manager](https://docs.qbraid.com/v2/lab/user-guide/environments.md): Install, create, share, and manage Python virtual environments for quantum computing.
+- [Quantum Devices](https://docs.qbraid.com/v2/lab/user-guide/quantum-devices.md): Monitor availability, status, and specifications of quantum devices and simulators.
+- [Quantum Jobs](https://docs.qbraid.com/v2/lab/user-guide/quantum-jobs.md): Submit, monitor, cancel, and delete quantum jobs across multiple providers.
+- [Intel® Quantum SDK](https://docs.qbraid.com/v2/lab/user-guide/featured-environments/intel-quantum-sdk.md): How to set up and use the Intel® Quantum SDK in qBraid Lab
+- [GPUs](https://docs.qbraid.com/v2/lab/user-guide/gpus.md)
+- [On-Demand Instances](https://docs.qbraid.com/v2/lab/user-guide/on-demand-instances.md): Launch, manage, and understand the lifecycle of on-demand GPU and CPU instances on qBraid Lab.
+- [Settings](https://docs.qbraid.com/v2/lab/user-guide/settings.md): Monitor usage, configure session behavior, and manage notifications from the qBraid Lab Settings extension.
+- [Usage limits](https://docs.qbraid.com/v2/lab/user-guide/usage-limits.md): Check compute hours, storage quotas, and AI allowances in qBraid Lab.
+- [Usage Guidelines](https://docs.qbraid.com/v2/lab/user-guide/guidelines.md): Instructions to help you navigate, manage, and customize your lab environment effectively.
+- [Troubleshooting](https://docs.qbraid.com/v2/lab/user-guide/troubleshooting.md)
+- [Overview](https://docs.qbraid.com/v2/vscode/user-guide/overview.md): Get an overview of the qBraid VS Code extension pack and our custom VS Code deployment.
+- [Quantum Console](https://docs.qbraid.com/v2/vscode/user-guide/quantum-console.md): Manage qBraid jobs and devices directly within Visual Studio Code.
+- [Environment Manager](https://docs.qbraid.com/v2/vscode/user-guide/environment-manager.md): Manage your quantum environments directly within Visual Studio Code.
+- [qBraid VS Code](https://docs.qbraid.com/v2/vscode/user-guide/code-editor.md): Directly connect to an online VS Code environment with pre-installed quantum extensions.
+- [qBraid AI](https://docs.qbraid.com/v2/ai/user-guide/overview.md): Use AI Chat, run an agent in a compute instance, or connect your own AI client.
+- [AI Chat](https://docs.qbraid.com/v2/ai/user-guide/ai-chat.md): Start and manage conversations, choose a model, and inspect tool results in qBraid Account.
+- [Agent mode](https://docs.qbraid.com/v2/ai/user-guide/agent-mode.md): Attach a coding agent to a running compute instance or launch an instance from Account.
+- [AI usage quotas](https://docs.qbraid.com/v2/ai/user-guide/usage-quotas.md): Check your AI allowance, token costs, and policy for spending credits.
+- [MCP Server](https://docs.qbraid.com/v2/ai/integrations/mcp-server.md): Manage quantum devices, jobs, environments, and credits from Claude, Claude Code, ChatGPT, or Perplexity.
+- [AI Gateway](https://docs.qbraid.com/v2/ai/integrations/ai-gateway.md): Call GPT and Claude models through the qBraid API with one API key.
+- [Overview](https://docs.qbraid.com/v2/sdk/user-guide/overview.md)
+- [Programs](https://docs.qbraid.com/v2/sdk/user-guide/programs.md): Extract and manage metadata from supported quantum program types, with the flexibility to introduce new types.
+- [Interface](https://docs.qbraid.com/v2/sdk/user-guide/interface.md): Generate random circuits, unitary matrices, and test circuit equivalence.
+- [Transpiler](https://docs.qbraid.com/v2/sdk/user-guide/transpiler.md): Graph-based approach to quantum program type conversions.
+- [Transforms](https://docs.qbraid.com/v2/sdk/user-guide/transforms.md): Adapt quantum programs to specific hardware requirements.
+- [Runtime Components](https://docs.qbraid.com/v2/sdk/user-guide/runtime/components.md): Universal building blocks for constructing client-side quantum software pipelines.
+- [Runtime Options](https://docs.qbraid.com/v2/sdk/user-guide/runtime/options.md): Settings applied at the device level that control the behavior of a device.run call
+- [Writing a New Provider](https://docs.qbraid.com/v2/sdk/user-guide/runtime/new-provider.md): A step-by-step guide to implementing a new provider class.
+- [Run on qBraid](https://docs.qbraid.com/v2/sdk/user-guide/providers/getting-started.md): Submit to every quantum device and simulator on qBraid with one qBraid API key, using the QbraidProvider.
+- [Managing jobs](https://docs.qbraid.com/v2/sdk/user-guide/providers/managing-jobs.md): Estimate what a job will cost, label and track it, read its cost and timing, see what ran on the device, and reconnect to it later.
+- [Batch and group jobs](https://docs.qbraid.com/v2/sdk/user-guide/providers/jobs.md): Run several circuits through the QbraidProvider as separate jobs, as one batch job on one device, or as a group of jobs across devices.
+- [Device calibrations and connectivity](https://docs.qbraid.com/v2/sdk/user-guide/providers/calibrations.md): Fetch live coupling maps and calibration data for QPUs on qBraid, plot connectivity graphs, and use the data to place circuits on the best-calibrated qubits before submitting.
+- [AQT](https://docs.qbraid.com/v2/sdk/user-guide/providers/aqt.md): Run on Alpine Quantum Technologies' IBEX Q1 trapped-ion QPU through qBraid, with only a qBraid API key.
+- [GPU simulators](https://docs.qbraid.com/v2/sdk/user-guide/providers/gpu-simulators.md): Running circuits on qBraid's GPU state-vector and tensor-network simulators through the QbraidProvider, with every option, their limits, daily allowance, and per-minute pricing.
+- [IonQ](https://docs.qbraid.com/v2/sdk/user-guide/providers/ionq.md): Run on IonQ's Forte trapped-ion QPUs and the IonQ simulator through qBraid, with only a qBraid API key.
+- [IQM](https://docs.qbraid.com/v2/sdk/user-guide/providers/iqm.md): Run on IQM's Garnet and Emerald superconducting QPUs through qBraid, with only a qBraid API key.
+- [Quobly Alloy Forge](https://docs.qbraid.com/v2/sdk/user-guide/providers/quobly.md): Running circuits against Quobly's silicon spin-qubit emulator through the QbraidProvider, with and without the Pioneer hardware noise model.
+- [QuEra](https://docs.qbraid.com/v2/sdk/user-guide/providers/quera.md): Run analog Hamiltonian simulation programs on QuEra's Aquila neutral-atom QPU through qBraid, with only a qBraid API key.
+- [Rigetti](https://docs.qbraid.com/v2/sdk/user-guide/providers/rigetti.md): Run gate-model and timing-aware programs on Rigetti's Cepheus-1-108Q through qBraid, with only a qBraid API key and from any qBraid-supported framework.
+- [Amazon Braket](https://docs.qbraid.com/v2/sdk/user-guide/providers/aws.md): The Amazon Braket submission path: how compilation, qubit placement, bit ordering, and Braket runtime options work for every aws:* device on qBraid, plus Braket's SV1 and DM1 simulators.
+- [Open Quantum](https://docs.qbraid.com/v2/sdk/user-guide/providers/open-quantum.md): How devices with openquantum: IDs work through qBraid: linking an Open Quantum account, how jobs are billed, and what they accept.
+- [Self-managed providers](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed.md): Use the qBraid SDK with your own account and credentials at a quantum vendor or cloud. Jobs, billing, and keys are between you and the vendor.
+- [Amazon Braket (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/aws.md): Run on Amazon Braket devices with your own AWS account, using the BraketProvider.
+- [AQT (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/aqt.md): Run on AQT trapped-ion quantum processors with your own AQT arnica account, using the AQTProvider.
+- [Azure Quantum (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/azure.md): Run on Azure Quantum devices with your own Azure Quantum workspace, using the AzureQuantumProvider.
+- [IBM Quantum (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/ibm.md): Install, authenticate, and submit jobs to IBM Quantum backends through the qBraid SDK using the QiskitRuntimeProvider and IBM Cloud CRN.
+- [IonQ (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/ionq.md): Run on IonQ simulators and QPUs with your own IonQ API key, using the IonQProvider.
+- [Open Quantum (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/openquantum.md): Run on Open Quantum's QPUs with your own Open Quantum API credentials, using the OpenQuantumProvider.
+- [OQC (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/oqc.md): Run on OQC simulators and QPUs with your own OQC credentials, using the OQCProvider.
+- [Origin Quantum (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/origin.md): Run on Origin Quantum simulators and processors with your own QCloud API key, using the OriginProvider.
+- [Pasqal (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/pasqal.md): Run Pulser sequences on Pasqal neutral-atom QPUs and emulators with your own Pasqal Cloud account, using the PasqalProvider.
+- [QPerfect (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/qperfect.md): Run on QPerfect's MIMIQ cloud emulator with your own MIMIQ account, using the QPerfectProvider.
+- [Quantinuum (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/quantinuum.md): Run on Quantinuum trapped-ion devices with your own Quantinuum Nexus account, using the QuantinuumProvider.
+- [QUDORA (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/qudora.md): Run on QUDORA trapped-ion systems with your own QUDORA Cloud token, using the QudoraProvider.
+- [Rigetti (self-managed)](https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/rigetti.md): Run on Rigetti quantum processors with your own Rigetti QCS account, using the RigettiProvider.
+- [Visualization](https://docs.qbraid.com/v2/sdk/user-guide/visualization.md): Draw circuit diagrams and plot experimental results, conversion graphs, and more.
+- [Overview](https://docs.qbraid.com/v2/qir/user-guide/overview.md)
+- [Qiskit conversions](https://docs.qbraid.com/v2/qir/user-guide/qiskit-qir.md)
+- [Cirq conversions](https://docs.qbraid.com/v2/qir/user-guide/cirq-qir.md)
+- [OpenQASM 3 conversions](https://docs.qbraid.com/v2/qir/user-guide/qasm3-qir.md)
+- [Squin conversions](https://docs.qbraid.com/v2/qir/user-guide/qir-squin.md)
+- [QIR Profiles](https://docs.qbraid.com/v2/qir/user-guide/profiles.md)
+- [Overview](https://docs.qbraid.com/v2/pyqasm/user-guide/overview.md)
+- [Usage Examples](https://docs.qbraid.com/v2/pyqasm/user-guide/examples.md)
+- [Advanced Features](https://docs.qbraid.com/v2/pyqasm/user-guide/advanced-features.md)
+- [Circuit Drawer](https://docs.qbraid.com/v2/pyqasm/user-guide/circuit-drawer.md)
+- [PyQASM CLI](https://docs.qbraid.com/v2/pyqasm/user-guide/cli.md)
+- [OpenPulse](https://docs.qbraid.com/v2/pyqasm/user-guide/openpulse.md): A low-level pulse programming extension of OpenQASM 3, giving developers direct control over the physical signals that manipulate qubits.
+- [Overview](https://docs.qbraid.com/v2/core/user-guide/overview.md)
+- [Overview](https://docs.qbraid.com/v2/algorithms/user-guide/overview.md)
+- [Usage Examples](https://docs.qbraid.com/v2/algorithms/user-guide/examples.md)
+- [CLI](https://docs.qbraid.com/v2/algorithms/user-guide/cli.md)
+- [Overview](https://docs.qbraid.com/v2/cli/user-guide/overview.md)
+- [Configuration Files](https://docs.qbraid.com/v2/cli/user-guide/config-files.md): Manage your qBraid account credentials and settings
+- [Environments](https://docs.qbraid.com/v2/cli/user-guide/environments.md)
+- [Magic Commands](https://docs.qbraid.com/v2/cli/user-guide/magic-commands.md)
+- [qbraid](https://docs.qbraid.com/v2/cli/api-reference/qbraid.md): The qBraid CLI — A unified interface for AI agents, quantum computing, Python environments, and cloud compute.
+- [qbraid account](https://docs.qbraid.com/v2/cli/api-reference/qbraid_account.md): Manage qBraid account.
+- [qbraid admin](https://docs.qbraid.com/v2/cli/api-reference/qbraid_admin.md): CI/CD commands for qBraid maintainers.
+- [qbraid agents](https://docs.qbraid.com/v2/cli/api-reference/qbraid_agents.md): Manage AI coding agent sessions.
+- [qbraid compute](https://docs.qbraid.com/v2/cli/api-reference/qbraid_compute.md): Manage cloud compute and SSH.
+- [qbraid configure](https://docs.qbraid.com/v2/cli/api-reference/qbraid_configure.md): Configure CLI settings.
+- [qbraid devices](https://docs.qbraid.com/v2/cli/api-reference/qbraid_devices.md): Browse quantum devices.
+- [qbraid envs](https://docs.qbraid.com/v2/cli/api-reference/qbraid_envs.md): Manage Python environments.
+- [qbraid jobs](https://docs.qbraid.com/v2/cli/api-reference/qbraid_jobs.md): Submit and track quantum computing jobs.
+- [qbraid kernels](https://docs.qbraid.com/v2/cli/api-reference/qbraid_kernels.md): Add, remove, and repair Jupyter kernels.
+- [qbraid lab](https://docs.qbraid.com/v2/cli/api-reference/qbraid_lab.md): Launch qBraid Lab (JupyterLab). Extra arguments are passed through.
+- [qbraid pip](https://docs.qbraid.com/v2/cli/api-reference/qbraid_pip.md): Run pip command in active qBraid environment.
+- [qbraid projects](https://docs.qbraid.com/v2/cli/api-reference/qbraid_projects.md): Browse and install qBraid Hub projects.
+- [qbraid skills](https://docs.qbraid.com/v2/cli/api-reference/qbraid_skills.md): Create, install, and share AI coding skills.
+- [qbraid troubleshoot](https://docs.qbraid.com/v2/cli/api-reference/qbraid_troubleshoot.md): Diagnose qBraid platform issues.
+- [Overview](https://docs.qbraid.com/v2/api-reference/user-guide/overview.md): Learn to work with qBraid APIs
+- [Migrating from V1](https://docs.qbraid.com/v2/api-reference/rest/migration.md)
+- [Get Device](https://docs.qbraid.com/v2/api-reference/rest/get-device.md)
+- [Get All Devices](https://docs.qbraid.com/v2/api-reference/rest/get-quantum-devices.md)
+- [Get Device Calibrations](https://docs.qbraid.com/v2/api-reference/rest/get-device-calibrations.md)
+- [Get Job](https://docs.qbraid.com/v2/api-reference/rest/get-quantum-jobs.md)
+- [Get All Jobs](https://docs.qbraid.com/v2/api-reference/rest/get-quantum-jobs-list.md)
+- [Estimate Job Cost](https://docs.qbraid.com/v2/api-reference/rest/get-quantum-jobs-cost-estimate.md)
+- [Create Job](https://docs.qbraid.com/v2/api-reference/rest/post-quantum-jobs.md)
+- [Get Job Result](https://docs.qbraid.com/v2/api-reference/rest/get-quantum-jobs-result.md)
+- [Get Job Program](https://docs.qbraid.com/v2/api-reference/rest/get-job-program.md)
+- [Cancel Job](https://docs.qbraid.com/v2/api-reference/rest/cancel-quantum-job.md)
+- [Delete Job](https://docs.qbraid.com/v2/api-reference/rest/delete-quantum-job.md)
+- [Delete Multiple Jobs](https://docs.qbraid.com/v2/api-reference/rest/delete-quantum-jobs.md)
+- [Get Compiled Program](https://docs.qbraid.com/v2/api-reference/rest/get-job-compiled-program.md)
+- [Get ASCII Circuit Diagram](https://docs.qbraid.com/v2/api-reference/rest/get-job-program-ascii.md)
+- [Get Job Summary](https://docs.qbraid.com/v2/api-reference/rest/get-jobs-summary.md)
+- [Get Job Status Counts](https://docs.qbraid.com/v2/api-reference/rest/get-jobs-statuses.md)
+- [Create Job Group](https://docs.qbraid.com/v2/api-reference/rest/create-job-group.md)
+- [List Job Groups](https://docs.qbraid.com/v2/api-reference/rest/list-job-groups.md)
+- [Get Job Group](https://docs.qbraid.com/v2/api-reference/rest/get-job-group.md)
+- [List Jobs in Group](https://docs.qbraid.com/v2/api-reference/rest/get-job-group-jobs.md)
+- [Close Job Group](https://docs.qbraid.com/v2/api-reference/rest/close-job-group.md)
+- [Cancel Job Group](https://docs.qbraid.com/v2/api-reference/rest/cancel-job-group.md)
+- [Get Credit Balance](https://docs.qbraid.com/v2/api-reference/rest/get-credit-balance.md)
+- [Get Credit Pricing](https://docs.qbraid.com/v2/api-reference/rest/get-credit-pricing.md)
+- [Get Simulator Usage](https://docs.qbraid.com/v2/api-reference/rest/get-simulator-usage.md)
+- [Get Simulator Usage Series](https://docs.qbraid.com/v2/api-reference/rest/get-simulator-usage-series.md)
+- [Update Simulator Usage Settings](https://docs.qbraid.com/v2/api-reference/rest/update-simulator-usage-settings.md)
+
+## OpenAPI Specs
+
+- [openapi-v2](https://docs.qbraid.com/openapi-v2.json)
+
+## Optional
+
+- [lab.qbraid.com](https://lab.qbraid.com)
+- [qbraid](https://qbraid.github.io/qBraid/api/qbraid.html)
+- [qbraid-qir](https://qbraid.github.io/qbraid-qir/api/qbraid_qir.html)
+- [pyqasm](https://qbraid.github.io/pyqasm/api/pyqasm.html)
+- [qbraid-core](https://qbraid.github.io/qbraid-core/api/qbraid_core.html)
+- [qbraid-core-js](https://qbraid.github.io/qbraid-core-js/)
+- [qbraid-algorithms](https://qbraid.github.io/qbraid-algorithms/api/qbraid_algorithms.html)
+- [Contact](https://www.qbraid.com/contact)
+- [Community](https://discord.com/invite/9jpmpeEV65)
+- [Example Notebooks](https://github.com/qBraid/qbraid-lab-demo)

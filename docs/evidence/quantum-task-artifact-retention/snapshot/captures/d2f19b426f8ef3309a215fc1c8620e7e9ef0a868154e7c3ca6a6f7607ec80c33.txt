@@ -1,0 +1,24 @@
+{
+ "cpu_capacity": 12,
+ "gates": [
+  {
+   "estimated_seconds": 15.1,
+   "name": "core-615",
+   "resources": {
+    "max_rss_kib": 305728,
+    "system_seconds": 5.391085,
+    "user_seconds": 176.913799,
+    "workers": 12
+   },
+   "runtime": "current",
+   "seconds": 39.72539405799762,
+   "status": 1
+  }
+ ],
+ "ledger_audit_misses": [],
+ "schema": "gororoba-gate-timings-v1",
+ "shard": "0/1",
+ "shard_cpus": 4,
+ "skipped": [],
+ "wall_seconds": 39.725963119999506
+}

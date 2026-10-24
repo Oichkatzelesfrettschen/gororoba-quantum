@@ -1,0 +1,17 @@
+{
+  "schema": "work-plan-v1",
+  "id": "algebra-sequential-herald-and-projector-probes",
+  "kind": "investigation",
+  "summary": "Exact sedenion predictions: two successive heralds of L_a/2 give joint success 1/4 (nullity 0) or 3/8 (nullity 4) on the maximally mixed input, and paired kernel projectors read 0, 1/4 or 1/2 for equal-spectrum operands; check both with cd_core before any circuit design.",
+  "sources": [
+    "gororoba_quantum/cd_core.py",
+    "docs/notes/singular_sector_dynamics.md",
+    "docs/notes/annihilator_kernel_limits.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Write a cd_core-backed exact check of tr G^2 = 4D + 8z over the 105 sedenion pairs and of the 861 projector overlaps, and record whether the joint-herald contrast survives the instrument's acceptance before proposing hardware."
+}

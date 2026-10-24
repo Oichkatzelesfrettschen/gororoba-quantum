@@ -1869,6 +1869,55 @@
       "run": "results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation",
       "family": "IQM kernel cancellation probe",
       "question": "Does Garnet read the zero-divisor sign of the certified sedenion kernel, cos(2 theta) changing sign at the balanced selector, while the bright vector reads flat?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-drift-series-t1",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+      "family": "BDSC drift series on qpu:belenos",
+      "question": "slot t1 of the approved drift series, the frozen request of the stationarity case's first block and job (`b1-j1`, 24 iterations of 100000 samples) resubmitted unchanged every two hours by the scheduled workflow: does the superposition class's excess spread carry memory from run to run, or is it run-to-run jitter, under the mode-5 detector_absent veto?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-drift-series-t2",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
+      "family": "BDSC drift series on qpu:belenos",
+      "question": "slot t2 of the approved drift series, the frozen request of the stationarity case's first block and job (`b1-j1`, 24 iterations of 100000 samples) resubmitted unchanged every two hours by the scheduled workflow: does the superposition class's excess spread carry memory from run to run, or is it run-to-run jitter, under the mode-5 detector_absent veto?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-drift-series-t3",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T110005Z-qpu_belenos-bdsc_drift_series-t3",
+      "family": "BDSC drift series on qpu:belenos",
+      "question": "slot t3 of the approved drift series, the frozen request of the stationarity case's first block and job (`b1-j1`, 24 iterations of 100000 samples) resubmitted unchanged every two hours by the scheduled workflow: does the superposition class's excess spread carry memory from run to run, or is it run-to-run jitter, under the mode-5 detector_absent veto?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-drift-series-t4",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
+      "family": "BDSC drift series on qpu:belenos",
+      "question": "slot t4 of the approved drift series, the frozen request of the stationarity case's first block and job (`b1-j1`, 24 iterations of 100000 samples) resubmitted unchanged every two hours by the scheduled workflow: does the superposition class's excess spread carry memory from run to run, or is it run-to-run jitter, under the mode-5 detector_absent veto?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-drift-series-t5",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T150006Z-qpu_belenos-bdsc_drift_series-t5",
+      "family": "BDSC drift series on qpu:belenos",
+      "question": "slot t5 of the approved drift series, the frozen request of the stationarity case's first block and job (`b1-j1`, 24 iterations of 100000 samples) resubmitted unchanged every two hours by the scheduled workflow: does the superposition class's excess spread carry memory from run to run, or is it run-to-run jitter, under the mode-5 detector_absent veto?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-drift-series-t6",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6",
+      "family": "BDSC drift series on qpu:belenos",
+      "question": "slot t6 of the approved drift series, the frozen request of the stationarity case's first block and job (`b1-j1`, 24 iterations of 100000 samples) resubmitted unchanged every two hours by the scheduled workflow: does the superposition class's excess spread carry memory from run to run, or is it run-to-run jitter, under the mode-5 detector_absent veto?"
+    },
+    {
+      "id": "qd-qpu-belenos-bdsc-drift-series-t7",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7",
+      "family": "BDSC drift series on qpu:belenos",
+      "question": "slot t7 of the approved drift series, the frozen request of the stationarity case's first block and job (`b1-j1`, 24 iterations of 100000 samples) resubmitted unchanged every two hours by the scheduled workflow: does the superposition class's excess spread carry memory from run to run, or is it run-to-run jitter, under the mode-5 detector_absent veto?"
     }
   ],
   "claims": [
@@ -9253,6 +9302,82 @@
       "gates": {
         "core-671": "admission"
       }
+    },
+    {
+      "id": "qd-belenos-bdsc-drift-series-readout",
+      "statement": "The preregistered drift series on qpu:belenos, seven unchanged resubmissions of the stationarity case's b1-j1 request two hours apart from 07:00Z to 19:00Z on 2026-10-24 (165 to 176 s each, every returned circuit equal to its retained counterpart), reads its primary consistent under the mode-5 detector_absent veto: the mean von Neumann ratio of the 16 class-centered superposition settings is 1.674 against 2 for exchangeable runs, exact permutation p 0.056 over all 5040 orderings (the independent-setting normal reference reads z -2.02, p 0.022, reported only). The superposition class mean shows no ordered common drift (ratio 2.02); qd-belenos-bdsc-drift-series-diagnostic records its unordered run-to-run jumps. Reported only: the class-centered excess square change of the superposition settings rises with lag, 7.1e-6 at 2 h to 2.1e-5 at 8 to 10 h and 2.2e-5 at 12 h, and the plan-time dark-count figure changes between every pair of runs (mode 5 from 7326.8 to 18616.3 counts/s), so no two runs share a calibration epoch and the within-epoch contrast is undefined.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One device, one request set of 24 compilations, seven runs in one day; the primary's sensitivity is 0.71 for a random walk of step SD 0.0021 per two hours and 0.43 at 0.0015, so a consistent reading at p 0.056 leaves a walk of that size undecided rather than excluded. The lag profile of the excess is reported only: its points share runs and carry no independent error. The epoch rule assumed the platform refreshes the dark-count figures only at calibration; they changed every two hours, so the epochs it assigns name figure refreshes, not calibrations. Standard errors stay reference values under independent Bernoulli trials. The series certifies nothing about the case's other 72 settings.",
+      "evidence": [
+        {
+          "path": "results/quandela/bdsc_drift_series_readout_pinned.json",
+          "sha256": "b132e49cedced5160a6d046726a61f2c09176b6112559ce77efd79bf2f7ea4c0"
+        }
+      ],
+      "documents": [
+        "docs/design/bdsc-qualification.md",
+        "docs/runbooks/quandela-scheduled-runs.md",
+        "scripts/bdsc_drift_series.py"
+      ],
+      "gates": {
+        "core-679": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-drift-series-t1",
+        "qd-qpu-belenos-bdsc-drift-series-t2",
+        "qd-qpu-belenos-bdsc-drift-series-t3",
+        "qd-qpu-belenos-bdsc-drift-series-t4",
+        "qd-qpu-belenos-bdsc-drift-series-t5",
+        "qd-qpu-belenos-bdsc-drift-series-t6",
+        "qd-qpu-belenos-bdsc-drift-series-t7"
+      ],
+      "assumptions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qd-belenos-bdsc-stationarity-readout"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "qd-belenos-bdsc-drift-series-diagnostic",
+      "statement": "Exploratory readings of the seven drift-series runs on qpu:belenos, chosen after the preregistered readout. The unweighted superposition class mean jumps between runs, 0.3928 to 0.4042 with sample SD 0.0038 against a counting error near 0.0004 per run, while its order carries no memory (von Neumann ratio 2.02). The class-centered pair excess, with the counting variance of the centered change subtracted, rises from 7.45e-6 at 2 h to 2.27e-5 at 12 h, and its Spearman correlation with lag over the 21 series pairs is 0.65, exact p 0.006 over all 5040 relabelings of the run times. All 56 six-state sum-rule contrasts (four template-and-seed groups, two sums, seven runs) are negative, -0.251 to -0.140 with mean -0.199, where every fixed linear effect gives zero. The mean mode-5 share does not follow the plan-time mode-5 dark rate (Spearman 0.15, two-sided p 0.71 over nine runs; -0.11, p 0.84 over the seven series runs).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Every reading here was chosen after the preregistered readout and leaves its consistent primary unchanged; the lag-trend p is one of several statistics examined, so it names a candidate memory effect for a preregistered successor, not a resolved drift. Its relabeling null assumes exchangeable runs; the 21 pair excesses share runs. The centered counting variance assumes independent setting errors under the reference Bernoulli standard errors, while the four settings of one template and seed share a compilation. The sum-rule deficit extends the deficit the acceptance diagnostics already document on these banks; the banks are phase-blind, so the sums test intensity linearity of the conditioned response, not coherence.",
+      "evidence": [
+        {
+          "path": "results/quandela/bdsc_drift_series_diagnostic_pinned.json",
+          "sha256": "699685b4be3be1ed22868854beb7a7746c2c33f9e14a42cf96f41c85d3b2026a"
+        }
+      ],
+      "documents": [
+        "docs/design/bdsc-qualification.md",
+        "docs/notes/topics/relativistic-metrology-scale.md",
+        "scripts/bdsc_drift_series.py"
+      ],
+      "gates": {
+        "core-679": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-bdsc-drift-series-t1",
+        "qd-qpu-belenos-bdsc-drift-series-t2",
+        "qd-qpu-belenos-bdsc-drift-series-t3",
+        "qd-qpu-belenos-bdsc-drift-series-t4",
+        "qd-qpu-belenos-bdsc-drift-series-t5",
+        "qd-qpu-belenos-bdsc-drift-series-t6",
+        "qd-qpu-belenos-bdsc-drift-series-t7"
+      ],
+      "assumptions": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qd-belenos-bdsc-drift-series-readout"
+      ],
+      "depends_on": []
     }
   ]
 }

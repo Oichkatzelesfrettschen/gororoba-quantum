@@ -1,0 +1,896 @@
+{
+ "api_version": "v2.6.0-rc6",
+ "boundary": "schema traversal and operation classification; operation descriptions are not runtime evidence",
+ "local_references": [
+  "#/components/schemas/DefaultResponse",
+  "#/components/schemas/EnableMFARequest",
+  "#/components/schemas/EnableMFAResponse",
+  "#/components/schemas/FetchTokenInput",
+  "#/components/schemas/HTTPError",
+  "#/components/schemas/LoginOTPRequest",
+  "#/components/schemas/LoginProviderCodeRequest",
+  "#/components/schemas/LoginProviderRequest",
+  "#/components/schemas/LoginRequest",
+  "#/components/schemas/LoginResponse",
+  "#/components/schemas/None",
+  "#/components/schemas/TokenFetchResponse",
+  "#/components/schemas/ValidationError",
+  "#/components/schemas/VerifyMFARequest"
+ ],
+ "operations": [
+  {
+   "description": "",
+   "effect": "documented-read",
+   "executed": false,
+   "method": "GET",
+   "parameters": [],
+   "path": "/",
+   "requestBody": null,
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {}
+      }
+     },
+     "description": "Successful response"
+    }
+   },
+   "security": [],
+   "summary": "Home"
+  },
+  {
+   "description": "",
+   "effect": "external-mutation",
+   "executed": false,
+   "method": "POST",
+   "parameters": [],
+   "path": "/api/auth/mfa/disable",
+   "requestBody": {
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/VerifyMFARequest"
+      }
+     }
+    }
+   },
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DefaultResponse"
+       }
+      }
+     },
+     "description": "Successful response"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [],
+   "summary": "Disable Mfa"
+  },
+  {
+   "description": "",
+   "effect": "external-mutation",
+   "executed": false,
+   "method": "POST",
+   "parameters": [],
+   "path": "/api/auth/mfa/enable",
+   "requestBody": {
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/EnableMFARequest"
+      }
+     }
+    }
+   },
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EnableMFAResponse"
+       }
+      }
+     },
+     "description": "Successful response"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [],
+   "summary": "Enable Mfa"
+  },
+  {
+   "description": "",
+   "effect": "external-mutation",
+   "executed": false,
+   "method": "POST",
+   "parameters": [],
+   "path": "/api/auth/mfa/verify",
+   "requestBody": {
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/VerifyMFARequest"
+      }
+     }
+    }
+   },
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DefaultResponse"
+       }
+      }
+     },
+     "description": "Successful response"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [],
+   "summary": "Verify Mfa"
+  },
+  {
+   "description": "",
+   "effect": "external-mutation",
+   "executed": false,
+   "method": "POST",
+   "parameters": [],
+   "path": "/api/login",
+   "requestBody": {
+    "content": {
+     "application/x-www-form-urlencoded": {
+      "schema": {
+       "$ref": "#/components/schemas/LoginRequest"
+      }
+     }
+    }
+   },
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LoginResponse"
+       }
+      }
+     },
+     "description": "Success"
+    },
+    "400": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Missing email or password"
+    },
+    "401": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Authentication error"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [],
+   "summary": "Login"
+  },
+  {
+   "description": "",
+   "effect": "external-mutation",
+   "executed": false,
+   "method": "POST",
+   "parameters": [],
+   "path": "/api/login-otp",
+   "requestBody": {
+    "content": {
+     "application/json": {
+      "schema": {
+       "$ref": "#/components/schemas/LoginOTPRequest"
+      }
+     }
+    }
+   },
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LoginResponse"
+       }
+      }
+     },
+     "description": "Success"
+    },
+    "400": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Missing email or password"
+    },
+    "401": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Authentication error"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [],
+   "summary": "Login by otp (MFA)"
+  },
+  {
+   "description": "",
+   "effect": "external-mutation",
+   "executed": false,
+   "method": "POST",
+   "parameters": [],
+   "path": "/api/login-provider",
+   "requestBody": {
+    "content": {
+     "application/x-www-form-urlencoded": {
+      "schema": {
+       "$ref": "#/components/schemas/LoginProviderRequest"
+      }
+     }
+    }
+   },
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LoginResponse"
+       }
+      }
+     },
+     "description": "Success"
+    },
+    "400": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Bad request"
+    },
+    "401": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Authentication error"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [],
+   "summary": "Login Provider"
+  },
+  {
+   "description": "For providers driven by the generic OIDC flow, where the browser only ever holds\nan authorization code. The code is exchanged for an access token here, because\nthat exchange needs the client secret.",
+   "effect": "external-mutation",
+   "executed": false,
+   "method": "POST",
+   "parameters": [],
+   "path": "/api/login-provider/code",
+   "requestBody": {
+    "content": {
+     "application/x-www-form-urlencoded": {
+      "schema": {
+       "$ref": "#/components/schemas/LoginProviderCodeRequest"
+      }
+     }
+    }
+   },
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LoginResponse"
+       }
+      }
+     },
+     "description": "Success"
+    },
+    "400": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Bad request"
+    },
+    "401": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Authentication error"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [],
+   "summary": "Login Provider (authorization code)"
+  },
+  {
+   "description": "Authenticate by `Logged-in Token` of user",
+   "effect": "external-mutation",
+   "executed": false,
+   "method": "DELETE",
+   "parameters": [],
+   "path": "/api/logout",
+   "requestBody": null,
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DefaultResponse"
+       }
+      }
+     },
+     "description": "Success"
+    },
+    "401": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Authentication error"
+    }
+   },
+   "security": [
+    {
+     "BearerAuth": []
+    }
+   ],
+   "summary": "Logout"
+  },
+  {
+   "description": "Authenticate by `Logged-in Token` of user",
+   "effect": "documented-read",
+   "executed": false,
+   "method": "GET",
+   "parameters": [],
+   "path": "/api/logout",
+   "requestBody": null,
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DefaultResponse"
+       }
+      }
+     },
+     "description": "Success"
+    },
+    "401": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Authentication error"
+    }
+   },
+   "security": [
+    {
+     "BearerAuth": []
+    }
+   ],
+   "summary": "DEPRECATED: Logout"
+  },
+  {
+   "description": "",
+   "effect": "documented-read",
+   "executed": false,
+   "method": "GET",
+   "parameters": [
+    {
+     "description": "Set a limit on the response size",
+     "in": "query",
+     "name": "limit",
+     "required": false,
+     "schema": {
+      "example": 10,
+      "type": "integer"
+     }
+    }
+   ],
+   "path": "/api/rss-feed",
+   "requestBody": null,
+   "responses": {
+    "200": {
+     "content": {
+      "application/rss+xml": {
+       "example": "\n<?xml version=\"1.0\"?>\n<rss version=\"2.0\">\n    <channel>\n        <title>Latest News - Quandela RSS</title>\n        <link>http://example.com</link>\n        <description>Quandela RSS</description>\n        <generator>Quandela Account</generator>\n        <item>\n            <title>Sample Article</title>\n            <link>http://example.com/news/1</link>\n            <description>Sample article content</description>\n            <pubDate>Mon, 01 Jan 2024 12:00:00 +0000</pubDate>\n            </item>\n    </channel>\n</rss>",
+       "schema": {
+        "$ref": "#/components/schemas/None"
+       }
+      }
+     },
+     "description": "Returns the RSS feed in XML format (RSS 2.0 standard)"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [],
+   "summary": "Get rss feed"
+  },
+  {
+   "description": "",
+   "effect": "documented-read",
+   "executed": false,
+   "method": "GET",
+   "parameters": [],
+   "path": "/health",
+   "requestBody": null,
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {}
+      }
+     },
+     "description": "Successful response"
+    }
+   },
+   "security": [],
+   "summary": "Health Check"
+  },
+  {
+   "description": "",
+   "effect": "credential-read",
+   "executed": false,
+   "method": "GET",
+   "parameters": [
+    {
+     "description": "State",
+     "in": "query",
+     "name": "state",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "description": "Response type",
+     "in": "query",
+     "name": "response_type",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "description": "Client id",
+     "in": "query",
+     "name": "client_id",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    },
+    {
+     "description": "Redirect uri",
+     "in": "query",
+     "name": "redirect_uri",
+     "required": false,
+     "schema": {
+      "type": "string"
+     }
+    }
+   ],
+   "path": "/oauth/authorize",
+   "requestBody": null,
+   "responses": {
+    "302": {
+     "content": {
+      "application/json": {
+       "schema": {}
+      }
+     },
+     "description": "Redirect"
+    },
+    "401": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Unauthorized"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [],
+   "summary": "Oauth Authorize"
+  },
+  {
+   "description": "",
+   "effect": "external-mutation",
+   "executed": false,
+   "method": "POST",
+   "parameters": [],
+   "path": "/oauth/token",
+   "requestBody": {
+    "content": {
+     "application/x-www-form-urlencoded": {
+      "schema": {
+       "$ref": "#/components/schemas/FetchTokenInput"
+      }
+     }
+    }
+   },
+   "responses": {
+    "200": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TokenFetchResponse"
+       }
+      }
+     },
+     "description": "Successful operation"
+    },
+    "401": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/HTTPError"
+       }
+      }
+     },
+     "description": "Unauthorized"
+    },
+    "422": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ValidationError"
+       }
+      }
+     },
+     "description": "Validation error"
+    }
+   },
+   "security": [],
+   "summary": "Fetch token"
+  }
+ ],
+ "schema": "quandela-api-contract-inventory-v1",
+ "schemas": {
+  "DefaultResponse": {
+   "additionalProperties": true,
+   "properties": {
+    "message": {
+     "example": "ok",
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "EnableMFARequest": {
+   "additionalProperties": true,
+   "properties": {},
+   "required": [
+    "password"
+   ],
+   "type": "object"
+  },
+  "EnableMFAResponse": {
+   "additionalProperties": true,
+   "properties": {
+    "manual_key": {
+     "type": "string"
+    },
+    "qr_code": {
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "FetchTokenInput": {
+   "additionalProperties": true,
+   "properties": {
+    "code": {
+     "description": "Code",
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "HTTPError": {
+   "properties": {
+    "detail": {
+     "type": "object"
+    },
+    "error": {
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "LoginOTPRequest": {
+   "additionalProperties": true,
+   "properties": {
+    "otp": {
+     "type": "string"
+    },
+    "otp_token": {
+     "type": "string"
+    },
+    "time_zone": {
+     "description": "IANA timezone name detected from the browser. Stored on the user only if none was collected yet (e.g. SSO users, who never see the signup form).",
+     "example": "Europe/Paris",
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "LoginProviderCodeRequest": {
+   "additionalProperties": true,
+   "properties": {
+    "code": {
+     "description": "Authorization code from provider",
+     "type": "string"
+    },
+    "code_verifier": {
+     "description": "PKCE code verifier",
+     "type": "string"
+    },
+    "redirect_uri": {
+     "description": "Redirect URI used in the authorize request",
+     "type": "string"
+    },
+    "time_zone": {
+     "description": "IANA timezone name detected from the browser. Stored on the user only if none was collected yet (e.g. SSO users, who never see the signup form).",
+     "example": "Europe/Paris",
+     "type": "string"
+    },
+    "token_provider": {
+     "description": "Name of provider",
+     "example": "Okta",
+     "type": "string"
+    }
+   },
+   "required": [
+    "code",
+    "token_provider"
+   ],
+   "type": "object"
+  },
+  "LoginProviderRequest": {
+   "additionalProperties": true,
+   "properties": {
+    "time_zone": {
+     "description": "IANA timezone name detected from the browser. Stored on the user only if none was collected yet (e.g. SSO users, who never see the signup form).",
+     "example": "Europe/Paris",
+     "type": "string"
+    },
+    "token_provider": {
+     "description": "Name of provider",
+     "example": "Microsoft",
+     "type": "string"
+    }
+   },
+   "required": [
+    "token",
+    "token_provider"
+   ],
+   "type": "object"
+  },
+  "LoginRequest": {
+   "additionalProperties": true,
+   "properties": {
+    "time_zone": {
+     "description": "IANA timezone name detected from the browser. Stored on the user only if none was collected yet (e.g. SSO users, who never see the signup form).",
+     "example": "Europe/Paris",
+     "type": "string"
+    }
+   },
+   "required": [
+    "email",
+    "password"
+   ],
+   "type": "object"
+  },
+  "LoginResponse": {
+   "additionalProperties": true,
+   "properties": {
+    "duration": {
+     "description": "Duration of access token in seconds",
+     "example": 3600,
+     "type": "integer"
+    },
+    "is_first_login": {
+     "description": "True if the user is logging in for the first time, False otherwise",
+     "example": false,
+     "type": "boolean"
+    },
+    "otp_require": {
+     "description": "True if MFA is enabled and an OTP challenge is required; the client must then submit the OTP and otp_token to /login-otp",
+     "example": false,
+     "type": "boolean"
+    },
+    "otp_token": {
+     "description": "Short-lived token tying the OTP challenge to /login-otp (only set when otp_require is True)",
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "TokenFetchResponse": {
+   "additionalProperties": true,
+   "properties": {
+    "token_type": {
+     "description": "Token type",
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "ValidationError": {
+   "properties": {
+    "detail": {
+     "properties": {
+      "<location>": {
+       "properties": {
+        "<field_name>": {
+         "items": {
+          "type": "string"
+         },
+         "type": "array"
+        }
+       },
+       "type": "object"
+      }
+     },
+     "type": "object"
+    },
+    "message": {
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "VerifyMFARequest": {
+   "additionalProperties": true,
+   "properties": {
+    "otp": {
+     "type": "string"
+    }
+   },
+   "type": "object"
+  }
+ },
+ "security_schemes": {
+  "BearerAuth": {
+   "scheme": "bearer",
+   "type": "http"
+  }
+ },
+ "source_sha256": "eecb463e7e8c53dc2d39b1ce2f3c07a9684210b82757584d0e877f6b4baac65a",
+ "source_url": "https://api.account.quandela.com/openapi.json",
+ "unresolved_references": [
+  "#/components/schemas/None"
+ ]
+}

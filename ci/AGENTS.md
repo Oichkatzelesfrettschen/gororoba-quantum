@@ -13,20 +13,35 @@ lint and type-check configuration only.
 
 **Pull requests.** [.github/workflows/pr.yml](../.github/workflows/pr.yml)
 runs on every pull-request push and on `workflow_dispatch`, cancels the run a
-newer push replaces, and holds three jobs, each with an 8-minute timeout, that
-call [ci/pr_checks.sh](pr_checks.sh) with its environment (loader TLS, one
-thread per native library, `GOROROBA_PINS_REQUIRED=1`):
+newer push replaces, and holds four jobs that call
+[ci/pr_checks.sh](pr_checks.sh) with its environment (loader TLS, one thread
+per native library, `GOROROBA_PINS_REQUIRED=1`):
 - `lint` installs the Ruff pin of ci/requirements-ci.txt and runs `ruff check`
   and `ruff format --check` over ci/, tests/, gororoba_quantum/, scripts/ and
   kaggle_kernel/;
 - `types` runs mypy over the same directories from gororoba_quantum/;
 - `tests` runs `pytest -n auto --dist loadgroup -m "not audit"` over tests/
   under a 4-minute step timeout and writes the 25 slowest tests to the job
-  summary.
-`types` and `tests` restore the pinned venv through
+  summary;
+- `gates` diffs the head from its merge base with main and runs, through
+  `ci/run_gates.py --affected-by`, every gate of at most 15 measured seconds
+  (`GATES_MAX_SECONDS`) the diff reaches: every gate when the diff changes a
+  file the pinned or replay venv cache keys hash (`gate_inputs.RUNTIME_INPUTS`),
+  else a gate whose ci/gates.json entry is new or changed, or a changed path in
+  its import closure, at or under a path its command names, listed in a
+  checksum manifest its `sha256sum -c` checks, in a full-tier gate's
+  ci/full_gate_inputs.json scopes, or in the read set main's audit ledger
+  traced for it, where an added or removed non-Python file also reaches a
+  glob or existence probe over it and the directory entry it creates or
+  deletes reaches a listing of that entry's parent (`gate_inputs.affected`). It
+  restores the replay runtime and the gate ledger from ci.yml's caches
+  read-only and builds the runtime on a miss; slower gates stay with the
+  audit. Concurrent gates run mypy, so `ci/pinned_tool.py` gives each mypy
+  invocation its own `.mypy_cache/KEY` directory unless the caller names one.
+`lint`, `types` and `tests` time out at 8 minutes and `gates` at 30.
+`types`, `tests` and `gates` restore the pinned venv through
 .github/actions/pins-venv, under ci.yml's cache key, and build it with
-ci/install_pins.sh on a miss. The workflow reads no gate manifest, ledger or
-timing file. Branch protection on main requires `lint`, `types` and `tests`
+ci/install_pins.sh on a miss. Branch protection on main requires `lint`, `types` and `tests`
 green on the head, for administrators too, without requiring the branch to
 be current with main. A pull request that `GITHUB_TOKEN` opened starts no
 `pull_request` workflow, so its author dispatches pr.yml on the branch
@@ -182,6 +197,15 @@ Only an AVX-512 CPU exercises the dispatch cap, so `ci/avx512_replay.sh` runs
 every such replay gate on an `avx512f` CPU and reports not run, exit 0, on any
 other; each CI gate shard runs it, since GitHub assigns runner CPUs of both
 kinds.
+The library inventory `docs/state/hypercomplex-libraries` maps each import
+through the regenerating interpreter's installed distributions, so it is
+written under the system python3, which holds every optional package:
+`PYTHON=python3 python3 scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries`.
+A change that adds a tracked Python file or an import regenerates it in the
+same change. The unmarked tests `test_retained_inventory_*` compare its import
+roots and their projection with the tree, which needs no installed
+distribution, and fail the `tests` check until it does; core-630 resolves the
+distributions in the audit.
 `parallel.default_threads()` and `workers()`
 share the affinity/quota-bounded `GOROROBA_WORKERS` cap. Spawned pool children
 receive one slot through a child-only initializer, so nested maps and simulator

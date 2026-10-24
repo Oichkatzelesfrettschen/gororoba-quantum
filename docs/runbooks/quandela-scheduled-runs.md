@@ -105,7 +105,7 @@ every step:
 | submitted | `collect` until 10 minutes before the tick's deadline; an unfinished job waits for the next tick |
 | collected | run the matched check and the snapshot, write `KEY.receipt.json` |
 | passed | the next job |
-| every enabled schedule done or stopped | a full run tick (no schedule argument) whose schedules all end `done` or `stop`, or that finds no enabled schedule, disables `quandela-schedule.yml` through REST (`actions: write`); a disabled or cancelled schedule therefore stops the timer at the next tick |
+| every enabled schedule done or stopped | a full run tick (no schedule argument) whose schedules all end `done` or `stop`, or that finds no enabled schedule, disables `quandela-schedule.yml` through REST (`actions: write`) when its state reads `active`, so a tick queued behind the one that ended the series exits 0; a disabled or cancelled schedule therefore stops the timer at the next tick |
 
 Scheduler state lives in `results/quandela/schedules/NAME/`. A tick
 publishes a checkpoint even when its step fails, through the exit trap of

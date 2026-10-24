@@ -10,12 +10,16 @@ from __future__ import annotations
 
 import ast
 import fnmatch
+import itertools
 import json
 import os
+import re
 import shlex
 import subprocess
 from pathlib import Path
 from typing import Any
+
+from gate_ledger import MANIFEST_FIELDS
 
 GLOBAL_INPUTS = (
     "ci/**",
@@ -26,6 +30,21 @@ GLOBAL_INPUTS = (
     "**/AGENTS.md",
     "AGENTS.md",
 )
+
+
+# The files the pinned and replay venv cache keys hash (.github/workflows/ci.yml, pins-venv): a change
+# to one changes the interpreter every gate runs under.
+RUNTIME_INPUTS = (
+    "requirements.txt",
+    "ci/requirements-ci.txt",
+    "ci/requirements-replay.txt",
+    "ci/install_pins.sh",
+    "ci/patches/**",
+)
+
+
+# A sha256sum line: the digest, a space, a space or ``*`` (binary mode), then the path.
+CHECKSUM_LINE = re.compile(r"^(?:\\)?[0-9a-fA-F]{64} [ *](?P<path>.+)$")
 
 
 def matches(path: str, pattern: str) -> bool:
@@ -126,10 +145,10 @@ def dependencies(
     return found
 
 
-def affected_full(root: Path, gates: list[dict[str, Any]], changed: list[str]) -> set[str]:
+def full_gate_scopes(root: Path, gates: list[dict[str, Any]]) -> dict[str, list[str]]:
+    """The reviewed input globs of every full-tier gate, from ci/full_gate_inputs.json."""
     manifest: dict[str, list[str]] = json.loads((root / "ci/full_gate_inputs.json").read_text())["gates"]
-    full = [gate for gate in gates if gate.get("tier", "pr") == "full"]
-    expected = {gate["name"] for gate in full}
+    expected = {gate["name"] for gate in gates if gate.get("tier", "pr") == "full"}
     if set(manifest) != expected:
         raise ValueError(f"full gate input coverage differs: {sorted(set(manifest) ^ expected)}")
     for name, patterns in manifest.items():
@@ -138,6 +157,13 @@ def affected_full(root: Path, gates: list[dict[str, Any]], changed: list[str]) -
             for pattern in patterns
         ):
             raise ValueError(f"{name}: input scopes must be checkout-relative glob strings")
+    return manifest
+
+
+def affected_full(root: Path, gates: list[dict[str, Any]], changed: list[str]) -> set[str]:
+    manifest = full_gate_scopes(root, gates)
+    full = [gate for gate in gates if gate.get("tier", "pr") == "full"]
+    expected = {gate["name"] for gate in full}
     if any(matches(path, pattern) for path in changed for pattern in GLOBAL_INPUTS):
         return expected
     modules = module_index(root)
@@ -151,6 +177,146 @@ def affected_full(root: Path, gates: list[dict[str, Any]], changed: list[str]) -
         sources = dependencies(root, gate, modules, references)
         if any(path in sources or any(matches(path, pattern) for pattern in patterns) for path in changed):
             selected.add(gate["name"])
+    return selected
+
+
+def command_paths(root: Path, gate: dict[str, Any]) -> set[str]:
+    """The checkout paths a gate command names as operands, relative to the checkout root.
+
+    A gate checks the records and directories its command names, so a change at or under one of
+    them reaches the gate whether or not the gate's sources import anything changed.
+    """
+    try:
+        words = shlex.split(gate["cmd"])
+    except ValueError:
+        return set()
+    named = set()
+    for word in words:
+        if word.startswith("-") or "$" in word or "=" in word:
+            continue
+        candidate = (root / gate["cwd"] / word.split("::", 1)[0]).resolve()
+        if candidate != root.resolve() and candidate.is_relative_to(root.resolve()):
+            named.add(candidate.relative_to(root.resolve()).as_posix())
+    return named
+
+
+def checksum_paths(root: Path, gate: dict[str, Any]) -> set[str]:
+    """The files the checksum manifests of a gate's ``sha256sum -c`` commands bind.
+
+    ``sha256sum -c MANIFEST`` reads each ``DIGEST  PATH`` line and hashes PATH from the working
+    directory; the read tracer cannot follow it (gate_ledger.shell_untraceable), so each listed
+    file is a declared input of the gate.
+    """
+    try:
+        words = shlex.split(gate["cmd"])
+    except ValueError:
+        return set()
+    base = (root / gate["cwd"]).resolve()
+    bound: set[str] = set()
+    for index, word in enumerate(words):
+        if word != "sha256sum":
+            continue
+        operands = list(itertools.takewhile(lambda token: token not in ("&&", "||", ";", "|"), words[index + 1 :]))
+        if "-c" not in operands and "--check" not in operands:
+            continue
+        for operand in operands:
+            manifest = base / operand
+            if operand.startswith("-") or not manifest.is_file():
+                continue
+            for line in manifest.read_text(encoding="utf-8", errors="replace").splitlines():
+                match = CHECKSUM_LINE.match(line)
+                if match is None:
+                    continue
+                candidate = base.joinpath(match["path"]).resolve()
+                if candidate.is_relative_to(root.resolve()):
+                    bound.add(candidate.relative_to(root.resolve()).as_posix())
+    return bound
+
+
+def listing_entries(root: Path, listed: set[str], before: set[str] | None) -> set[str]:
+    """The directory entries an addition or removal creates or deletes.
+
+    Git reports the files of an added or removed directory, never the directory, so the entry whose
+    existence changed is the topmost prefix of each path that existed in ``before`` (every file path of
+    the merge base) and is gone now, or the reverse; its parent's listing is the one that changed. With
+    no base, each path is its own entry.
+    """
+    if before is None:
+        return set(listed)
+    existed = before | {parent.as_posix() for path in before for parent in Path(path).parents}
+    entries = set()
+    for path in listed:
+        parts = path.split("/")
+        for depth in range(1, len(parts) + 1):
+            entry = "/".join(parts[:depth])
+            if (entry in existed) != (root / entry).exists():
+                entries.add(entry)
+                break
+    return entries
+
+
+def ledger_reaches(reads: dict[str, list[Any]], changed: set[str], listed: set[str], entries: set[str]) -> bool:
+    """Whether a traced read set (ci/gate_ledger.py) reads a changed path or lists an added or removed one.
+
+    An edited file reaches a gate that read it; an added or removed file also reaches a gate that
+    probed its existence or matched it with a glob, and a created or deleted directory entry
+    (listing_entries) reaches a gate that listed its parent. Python files are left to the import
+    closure, since every gate that imports a sibling lists the module directory.
+    """
+    probed = set(reads.get("files", [])) | set(reads.get("links", [])) | {path for _, path in reads.get("stats", [])}
+    if changed & probed or entries & probed:
+        return True
+    directories = set(reads.get("dirs", []))
+    patterns = [pattern for _, pattern in reads.get("globs", [])]
+    if any(not entry.endswith(".py") and (os.path.dirname(entry) or ".") in directories for entry in entries):
+        return True
+    return any(not path.endswith(".py") and any(matches(path, pattern) for pattern in patterns) for path in listed)
+
+
+def affected(
+    root: Path,
+    gates: list[dict[str, Any]],
+    changed: list[str],
+    listed: list[str],
+    traced: dict[str, dict[str, Any]] | None = None,
+    base: list[dict[str, Any]] | None = None,
+    base_paths: set[str] | None = None,
+) -> set[str]:
+    """The gates a change reaches: every gate when it changes the pinned runtime, else each gate whose
+    manifest entry differs from ``base`` (the merge base's ci/gates.json gates), and each gate reached
+    through its import closure, the paths its command names, the reviewed scopes of a full-tier gate, or
+    the read set a traced run recorded (``traced`` maps a gate or case name to its ledger entry).
+    ``changed`` holds every changed path, ``listed`` the added and removed ones, and ``base_paths`` the
+    merge base's file paths that locate the directory entries those create or delete.
+    """
+    if any(matches(path, pattern) for path in changed for pattern in RUNTIME_INPUTS):
+        return {gate["name"] for gate in gates}
+    before = {gate["name"]: {field: gate.get(field) for field in MANIFEST_FIELDS} for gate in base or []}
+    scopes = full_gate_scopes(root, gates)
+    modules = module_index(root)
+    for path in changed:
+        if path.endswith(".py"):
+            modules.setdefault(Path(path).stem, set()).add(root / path)
+    references: dict[Path, tuple[tuple[str, ...], tuple[str, ...]]] = {}
+    edited, created = set(changed), set(listed)
+    # Each changed path with every directory above it, so a command operand naming a directory matches.
+    ancestry = {ancestor for path in edited for ancestor in [path, *(p.as_posix() for p in Path(path).parents)]}
+    created_entries = listing_entries(root, created, base_paths)
+    entries = traced or {}
+    selected = set()
+    for gate in gates:
+        name = gate["name"]
+        sources = dependencies(root, gate, modules, references) | command_paths(root, gate)
+        sources |= checksum_paths(root, gate)
+        patterns = scopes.get(name, [])
+        reads = [entry["reads"] for key, entry in entries.items() if key == name or key.startswith(f"{name}--")]
+        if (
+            (base is not None and before.get(name) != {field: gate.get(field) for field in MANIFEST_FIELDS})
+            or not ancestry.isdisjoint(sources)
+            or any(matches(path, pattern) for path in edited for pattern in patterns)
+            or any(ledger_reaches(read, edited, created, created_entries) for read in reads)
+        ):
+            selected.add(name)
     return selected
 
 

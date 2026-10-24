@@ -34,6 +34,7 @@ from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, ReadoutError, depolarizing_error
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "gororoba_quantum"))
+import qrng_seeds  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -235,12 +236,20 @@ def main() -> int:
     run = sub.add_parser("run")
     run.add_argument("case_dir", type=Path)
     run.add_argument("--qc", default="garnet")
-    run.add_argument("--seed", type=int, default=20261022)
+    qrng_seeds.add_seed_argument(run, "--seed", default=20261022)
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
     elif args.command == "run":
-        print(json.dumps(run_case(args.case_dir, args.qc, args.seed), indent=1))
+        results: Any = run_case(args.case_dir, args.qc, args.seed)
+        if args.seed_source != "default":
+            results = {
+                "seed_source": qrng_seeds.seed_record(
+                    "scripts/iqm_sim.py", "--seed", qrng_seeds.repo_relative(args.case_dir), args.seed_source
+                ),
+                "circuits": results,
+            }
+        print(json.dumps(results, indent=1))
     else:
         parser.error("choose run or --self-test")
     return 0

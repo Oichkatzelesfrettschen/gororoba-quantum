@@ -27,6 +27,7 @@ from typing import Any
 from qiskit import QuantumCircuit
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
+import qrng_seeds
 from affine_residual import affine_residual_synthesis, minimum_cnot_count, network_cx_surrogate, verification_record
 from compile_evidence import (
     BASE,
@@ -187,7 +188,9 @@ def _admission(
     }
 
 
-def capture(seeds: tuple[int, ...], output_path: Path | None) -> dict[str, Any]:
+def capture(
+    seeds: tuple[int, ...], output_path: Path | None, seed_spellings: list[str] | None = None
+) -> dict[str, Any]:
     """Run the checks, compile both candidates, and evaluate the admission rule."""
     synthesis = verification_record(MODULUS, (2, 4, 16))
     checks_pass = all(
@@ -204,7 +207,7 @@ def capture(seeds: tuple[int, ...], output_path: Path | None) -> dict[str, Any]:
     )
     arguments = ['"$PYTHON"', "gororoba_quantum/affine_residual_challenger.py"]
     if seeds != DEFAULT_SEEDS:
-        arguments.extend(("--seeds", *(str(seed) for seed in seeds)))
+        arguments.extend(("--seeds", *(seed_spellings if seed_spellings is not None else map(str, seeds))))
     portable_output = _portable_output_path(output_path)
     if portable_output is not None:
         arguments.extend(("--out", portable_output))
@@ -236,7 +239,7 @@ def capture(seeds: tuple[int, ...], output_path: Path | None) -> dict[str, Any]:
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--seeds", nargs="+", type=int, default=list(DEFAULT_SEEDS))
+    qrng_seeds.add_seed_argument(parser, "--seeds", nargs="+", default=list(DEFAULT_SEEDS))
     parser.add_argument("--out", type=Path, default=DEFAULT_OUTPUT)
     return parser
 
@@ -246,7 +249,15 @@ def main() -> int:
     seeds = tuple(args.seeds)
     if not seeds or len(set(seeds)) != len(seeds):
         raise ValueError("transpiler seeds must form a nonempty set")
-    record = capture(seeds, args.out)
+    non_default = any(source != "default" for source in args.seeds_source)
+    record = capture(seeds, args.out, qrng_seeds.spellings(seeds, args.seeds_source) if non_default else None)
+    if non_default:
+        record["seed_source"] = qrng_seeds.seed_record(
+            "gororoba_quantum/affine_residual_challenger.py",
+            "--seeds",
+            qrng_seeds.repo_relative(args.out),
+            args.seeds_source,
+        )
     _write_atomic(args.out, json.dumps(record, indent=2, sort_keys=True) + "\n")
     for candidate in record["candidates"]:
         medians = candidate["medians"]
