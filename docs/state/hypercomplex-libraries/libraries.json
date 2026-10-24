@@ -2324,6 +2324,7 @@
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_request.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/associator_walsh_classes.py",
@@ -2497,6 +2498,7 @@
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_request.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/associator_walsh_classes.py",
@@ -8799,6 +8801,13 @@
    "sys",
    "typing",
    "urllib"
+  ],
+  "scripts/ascella_coherence_analysis.py": [
+   "__future__",
+   "collections",
+   "math",
+   "numpy",
+   "typing"
   ],
   "scripts/ascella_coherence_request.py": [
    "__future__",
