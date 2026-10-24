@@ -157,9 +157,13 @@ stay at one inside each slot. `OPENBLAS_CORETYPE` defaults to Haswell and
 `NPY_DISABLE_CPU_FEATURES` caps numpy's dispatch at x86-64-v3, the kernel sets
 every runner and build host executes, so a fitted value rounds one way on all
 of them given one libm and Python build. A record a gate byte-replays is
-written in the runner's userland through `ci/runner_image.sh` (podman), which
-supplies both, and `ci/runner_image_records.json` binds it to that image and
-its pins (`ci/runner_image_records.py add`; gate core-635 checks the ledger).
+written in the runner's userland, which supplies both, through
+`"$PYTHON" ci/runner_image_records.py write sh -c '"$PYTHON" PRODUCER ...'`:
+it runs `ci/runner_image.sh` (podman) over a snapshot of the tree, which no
+host process writes, then copies back and receipts each file the command
+wrote there. `ci/runner_image_records.json` binds the record to that
+image and its pins through `ci/runner_image_records.py add`, which refuses
+bytes without a receipt, and gate core-635 checks the ledger.
 `ci/replay_check.py` compares such a record with a fresh run bit for bit,
 skipping only the paths that name the analyzer (core-613, core-617).
 Only an AVX-512 CPU exercises the dispatch cap, so `ci/avx512_replay.sh` runs

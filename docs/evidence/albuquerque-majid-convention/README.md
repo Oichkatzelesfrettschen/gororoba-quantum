@@ -41,4 +41,6 @@ Corollary 4.3 exponent, built by a Fixpoint from the trivial group, satisfies
 (-1)^f(a, b) = sigma_k(b, a) for every k, with sigma_k the transcription of
 cd_sign that the
 [basis-sign bundle](../cd-tower-basis-sign/README.md#bridge-to-cd_sign)
-ties to cd_core.
+ties to cd_core through dimension 64 and the
+[cd_sign Python-semantics bundle](../cd-sign-python-semantics/README.md)
+proves equal to cd_core.cd_sign for every k.

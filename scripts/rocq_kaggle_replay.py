@@ -15,7 +15,8 @@ The ci.yml job rocq-replay supplies the toolchain and the checkout itself:
 equal ``--gororoba-commit``, and ``--only NAME...`` selects replays by name
 (formal_certificates, c881_exhaustive, stiefel_witness, folding_proofs,
 TargetFlipN21, cd-imaginary-sum-conference, cd-tower-basis-sign, cd-sign-row-anf,
-cd-associator-anf; the default is the Kaggle set).
+cd-associator-anf, cd-associator-census, cd-sign-python-semantics; the default is the
+Kaggle set).
 
 Independent replays run through parallel.ordered_map with the detected CPU
 allowance capped by GOROROBA_WORKERS. Each replay uses separate temporary
@@ -23,8 +24,9 @@ proof storage and returns its record in the requested order. Each replay runs
 unchanged, with ROCQ pointing at the built executable:
 
 - formal_certificates/replay_rocq.sh, cd-imaginary-sum-conference/replay_rocq.sh,
-  cd-tower-basis-sign/replay_rocq.sh, cd-sign-row-anf/replay_rocq.sh and
-  cd-associator-anf/replay_rocq.sh (repository proofs and receipts),
+  cd-tower-basis-sign/replay_rocq.sh, cd-sign-row-anf/replay_rocq.sh,
+  cd-associator-anf/replay_rocq.sh, cd-associator-census/replay_rocq.sh and
+  cd-sign-python-semantics/replay_rocq.sh (repository proofs and receipts),
 - c881_exhaustive/replay_rocq.sh and stiefel_witness/replay_rocq.sh
   (GOROROBA_ROOT set to the clone),
 - folding_proofs/replay_rocq.sh when ``--folding`` is given, whose complete
@@ -73,6 +75,8 @@ SELECTABLE = (
     "cd-tower-basis-sign",
     "cd-sign-row-anf",
     "cd-associator-anf",
+    "cd-associator-census",
+    "cd-sign-python-semantics",
 )
 
 

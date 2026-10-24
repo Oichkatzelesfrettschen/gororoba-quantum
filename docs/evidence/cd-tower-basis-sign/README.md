@@ -81,9 +81,13 @@ assumption queries prints `Closed under the global context`, meaning the
 proof term reaches the kernel through those definitions alone, with every
 classical, extensionality or choice principle absent. The integer
 coefficients are what make that possible, since the real-number Stdlib
-carries axioms. The remaining trust is in the transcriptions: `sigma` and
-`cd_sign_loop` against the Python loop of cd_core.cd_sign, which the bridge
-below checks through n = 64, the tower doubling against the algebra, and
+carries axioms. The
+[cd_sign Python-semantics bundle](../cd-sign-python-semantics/README.md)
+proves for every k that the syntax tree of cd_core.cd_sign, run under a
+Rocq semantics of the Python subset it uses, returns `sigma`, with its own
+trust points (the extractor's node map, the guard clauses and the
+evaluator's reading of the Language Reference). The remaining trust here is
+in two transcriptions: the tower doubling against the algebra, and
 `am_exponent` against the printed Corollary 4.3.
 
 ## Bridge to cd_sign
@@ -95,7 +99,11 @@ transcription to the Python source: it mirrors `sigma` branch for branch and
 requires sigma_k(a, b) = cd_sign(2^k, a, b) on all 5,460 pairs at n = 2 to 64,
 with a negative control that negates each of the four branches in turn and
 requires a disagreement at every n >= 4. The bridge is exact finite
-computation; the Rocq side holds for every k.
+computation; the Rocq side holds for every k. The
+[cd_sign Python-semantics bundle](../cd-sign-python-semantics/README.md)
+proves the same agreement for every k, by running the syntax tree of
+cd_core.cd_sign under a Rocq semantics of the Python subset it uses, and
+the bridge stays as an independent cross-check.
 
 ## Replay
 

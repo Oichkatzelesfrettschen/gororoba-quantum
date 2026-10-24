@@ -2,6 +2,13 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-signed-coherence-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01",
+      "family": "photonic signed-coherence permuted repeat",
+      "question": "Do job-00's outside-block clicks and analyzer residuals follow the setting, the execution order or the sample budget when the same 64 circuits run in a QRNG-drawn order at twice the samples?"
+    },
+    {
       "id": "qd-ascella-signed-coherence",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
@@ -1865,6 +1872,97 @@
     }
   ],
   "claims": [
+    {
+      "id": "ascella-signed-coherence-permuted-repeat",
+      "statement": "The approved permuted repeat on qpu:ascella (job 6ef8e8db) ran job-00's 64 circuits, all 64 compiled circuits equal to job-00's, in ANU QRNG order at 16384 samples per iteration: 1048576 samples in 186 s, job-00's duration, for 1.032768 free credits, and all 27 endpoints qualify again. Under the preregistered comparison the outside-block clicks follow the execution sequence, not the setting: per-setting Spearman against job-00 -0.075 (p 0.56), lag-1 autocorrelation -0.653 in the new order (p below 1e-4), compiled-phase change Spearman 0.12 (p 0.35), and the median count grows with the budget (log2 ratio 0.83). The per-setting analyzer residuals reproduce, Pearson 0.974 on X and 0.802 on Y (p below 1e-4), at contrast 0.9719 against 0.9699 on X and 0.9669 against 0.9702 on Y.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two jobs six hours apart on one device; the alternation's physical mechanism (which acquisition stage alternates) and the configuration error behind the reproducing residuals stay unidentified. Permutation p-values assume exchangeable positions under the null; the budget reading compares medians of two jobs. Equal total durations of jobs six hours apart in different orders assign no marginal time to the further samples, because no record separates acquisition from overhead.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+          "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/analysis.json",
+          "sha256": "a0548293da65ffdb603799be6ab71fb94d008bbbaee164e7dcfe6f1645478121"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/submission.json",
+          "sha256": "d97a53fec4d7ef036b75052ac83764c64c13798b6c8c62088fa38e88f566f17f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/raw/result.json",
+          "sha256": "d87a4e6318b94a3e19f79654f3393ade73483e7f9974c3ecc6cfb3f2ab53c0a8"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/repeat-comparison.json",
+          "sha256": "922c442a075680199c592a4f8c7132d266162aa893d417c57f9c1fb9e33162aa"
+        }
+      ],
+      "documents": [
+        "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/README.md",
+        "docs/design/ascella-signed-coherence-conformance.md",
+        "scripts/ascella_coherence_repeat.py"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-repeat-replay": "replay",
+        "core-ascella-signed-coherence-comparison-replay": "replay",
+        "core-ascella-signed-coherence-comparison-self-test": "admission"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-conformance"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-device-diagnostics",
+      "statement": "In both Ascella signed-coherence runs the returned compiled circuits reproduce every registered statistic within 2.2e-4, while the block-conditioned X and Y statistics read 0.967 to 0.972 times their ideals and the direct readout 1.004 times; X residuals exceed multinomial noise (chi-square 230 and 493 on 18 degrees of freedom) more than Y (45 and 114). Outside-block clicks concentrate on modes 8 to 10, the detectors with the largest plan-time dark rates, with an excess on modes 4 and 6 (composition chi-square 110 and 211 on 7 degrees of freedom), and physical_perf reads 0.0209 in every iteration of different outside-block counts.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive fits without preregistered thresholds; the binomial errors ignore drift within an iteration. The dark-rate expectation uses plan-time rates, not acquisition-time ones, and a coincidence-window or gating model of the clicks is not established.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+          "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/job-00-diagnostics.json",
+          "sha256": "0a0268ecf76c1f3be1e41f2ba0f32827502ce651240f825b1246297c79e1eda4"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/job-01-diagnostics.json",
+          "sha256": "58a421f875883a897a28e02cde56e1cfac79deb1d1e586bb3fbbc87cccf2856b"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md",
+        "docs/notes/quandela/literature.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-diagnostics-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "ascella-signed-coherence-conformance",
       "statement": "The approved 64-setting signed-coherence request on qpu:ascella (job 739a5271) completed 524288 detected samples in 186 execution seconds for a token-reported debit of 1.016384 free credits, and all 27 preregistered endpoints qualify under the 0.05 coefficient tolerance: the 15 sign-odd and dark coefficients deviate from their ideals by at most 0.0303, the 10 sign-even coefficients stay within 0.0116 of zero, and the mutation difference reads 0.1646 against its ideal 0.1727. The X sign-odd constant (0.4697) and the Y sign-odd sin(2 theta) coefficient (0.4777) exclude their ideal 0.5 while conforming. 6659 of 524288 events (1.27 percent) fall outside the logical block, between 4 and 586 per setting.",
@@ -4254,7 +4352,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The rows are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64; claim cd-associator-anf-rocq proves the associator-phase degree on the same tower.",
+      "boundary": "The rows are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k; claim cd-associator-anf-rocq proves the associator-phase degree on the same tower.",
       "evidence": [
         {
           "path": "proofs/CdSignRowAnf.v",
@@ -4282,7 +4380,9 @@
       },
       "acquisitions": [],
       "assumptions": [],
-      "depends_on": [],
+      "depends_on": [
+        "cd-sign-python-semantics-rocq"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "kernel_receipt": "docs/evidence/cd-sign-row-anf/kernel.txt"
@@ -4293,7 +4393,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64; the census of pairs by degree is counted by scripts/cd_phase_degree.py, not in Rocq.",
+      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k; claim cd-associator-census-rocq counts the pairs by degree in Rocq.",
       "evidence": [
         {
           "path": "proofs/CdAssociatorAnf.v",
@@ -4329,9 +4429,93 @@
       "kernel_receipt": "docs/evidence/cd-associator-anf/kernel.txt"
     },
     {
+      "id": "cd-associator-census-rocq",
+      "statement": "For every Cayley-Dickson level k >= 3, kernel-checked by Rocq 9.3.0 with ten closed assumption queries: counting the unordered pairs 0 < p < q < 2^k by the ANF degree of their associator phase, read as the largest monomial weight with a nonzero ANF coefficient, gives 21 pairs of degree 1, 3 2^d (2^(d+1) - 1) pairs of degree d for 2 <= d <= k - 2 and none of any other degree, so the counts are independent of k and sum to C(2^k - 1, 2); at k = 8 they are 21, 84, 360, 1488, 6048 and 24384.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k.",
+      "evidence": [
+        {
+          "path": "proofs/CdAssociatorCensus.v",
+          "sha256": "bbd2562527a32c820259181a336db5b89bea03a85ea81caacb79b0452392591b"
+        },
+        {
+          "path": "docs/evidence/cd-associator-census/assumptions.v",
+          "sha256": "068a368e51506d6ff569c8b97378dd5f15184fd8fc9bd84afa1e9957d492b12f"
+        },
+        {
+          "path": "docs/evidence/cd-associator-census/assumptions.txt",
+          "sha256": "f990327820c7e0de2c2185fa0c21ec662d961c689506a2b21b1afe9a2f285d04"
+        },
+        {
+          "path": "docs/evidence/cd-associator-census/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-associator-census/README.md",
+        "docs/notes/cd_phase_degree.md"
+      ],
+      "gates": {
+        "sources-403": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "cd-associator-anf-rocq"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-associator-census/kernel.txt"
+    },
+    {
+      "id": "cd-sign-python-semantics-rocq",
+      "statement": "For every Cayley-Dickson level k, kernel-checked by Rocq 9.3.0 with six closed assumption queries: a big-step semantics of the Python int subset, run on the syntax tree of cd_core.cd_sign that scripts/cd_sign_rocq_ast.py extracts with ast.parse, returns the tower sign sigma_k(p, q) of CdTowerBasisSign.v for cd_sign(2^k, p, q) with p, q < 2^k, and raises whenever a guard fails on int arguments other than bool; the guard _dimension admits exactly the powers of two, and the term with the high-low q != 0 guard removed returns -1 at e_1 e_0 where sigma_1(1, 0) = 1.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "Three readings stay outside the proof, each with a failing check: the extractor's one-to-one node map, which tests/scripts/test_cd_sign_rocq_ast.py and gate sources-406 compare with the embedded term; the int behavior of the guards _dimension and _index, whose ast.dump digests and clauses on every int from -3 to 70 the same contract pins; and the evaluator's reading of the cited Python Language Reference sections. Bool arguments, which both guards reject, are outside the int model; tower_bridge.py remains as an independent finite cross-check through dimension 64.",
+      "evidence": [
+        {
+          "path": "proofs/CdSignPythonSemantics.v",
+          "sha256": "539460c7b13b62b96782f5a331d358936c290851a3395c2f9d57b4d1e2252637"
+        },
+        {
+          "path": "scripts/cd_sign_rocq_ast.py",
+          "sha256": "377affd7ffcdf0064925cd03dca5afa515cf5a32fb5379662d016193bd84a6de"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-semantics/assumptions.v",
+          "sha256": "205f2a482526015f16ea01ec8379aa0fd6d9f2e0721b294641fe8d2ec7c048b9"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-semantics/assumptions.txt",
+          "sha256": "99a6704258822ca71cbc86001bd22c279bfa19b98dd2513510b2a59528c8e97f"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-semantics/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-sign-python-semantics/README.md",
+        "docs/evidence/cd-tower-basis-sign/README.md"
+      ],
+      "gates": {
+        "sources-405": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-sign-python-semantics/kernel.txt"
+    },
+    {
       "id": "cd-associator-phase-degree",
       "statement": "For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).",
-      "boundary": "Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and the machine-checked claim cd-associator-anf-rocq proves the statement in Rocq for every n. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.",
+      "boundary": "Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and the machine-checked claims cd-associator-anf-rocq and cd-associator-census-rocq prove the statement and the census in Rocq for every n. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.",
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
         "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
@@ -8950,8 +9134,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-3/result.json",
-          "sha256": "5decce616f924df3bd885fe0db8e11d71b9834f62dbc02f8e0b882fc66c8770f"
+          "path": "docs/evidence/algebra-device-conjectures-4/result.json",
+          "sha256": "17764301f093e48edcc91e040f5ed99e7573acf6221e099e9976b689b2e6a345"
         }
       ],
       "gates": {
