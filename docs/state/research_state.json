@@ -8745,11 +8745,11 @@
       "boundary": "One device and one calibration, two blocks about an hour apart; the case separates neither slow drift from a step change nor drift within a window. Standard errors and p-values are reference values under independent Bernoulli trials, uncalibrated while the provider contract leaves count provenance unresolved. The calibration hold and the post-calibration repeat of b1-j1 were amendments committed before the jobs they govern; the pre-calibration b1-j1 run enters no frozen test. The plan-time dark-count figure is a platform reading, not an acquisition-time measurement, so the mode-5 mechanism stays a candidate. An inconclusive primary decides neither branch; it makes no certification decision.",
       "evidence": [
         {
-          "path": "results/quandela/bdsc_stationarity_calibration_contrast.json",
+          "path": "results/quandela/bdsc_stationarity_calibration_contrast_pinned.json",
           "sha256": "b72b8b154e5eb88f89d7174d2fa65678aa6a231a5fcee2d4767bd69ec7c05418"
         },
         {
-          "path": "results/quandela/bdsc_stationarity_readout.json",
+          "path": "results/quandela/bdsc_stationarity_readout_pinned.json",
           "sha256": "fd95b1eb105d7818f2c2dc8561c55de0768668f2cd7a97ad30c8ecf5658d5ad1"
         }
       ],
