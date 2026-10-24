@@ -396,6 +396,62 @@ def read_aws() -> list[Row]:
     ]
 
 
+AZURE_WORKSPACE = ("gororoba-quantum", "gororoba-quantum")
+
+
+def az(*args: str) -> Any:
+    done = subprocess.run(
+        ["az", *args, "--only-show-errors", "--output", "json"],
+        capture_output=True,
+        text=True,
+        timeout=25,
+        check=False,
+    )
+    if done.returncode != 0:
+        first = (done.stderr.strip().splitlines() or ["az failed"])[-1]
+        raise RuntimeError(f"az {' '.join(args[:3])}: {first[:160]}")
+    return json.loads(done.stdout)
+
+
+def read_azure() -> list[Row]:
+    group, workspace = AZURE_WORKSPACE
+    now = dt.datetime.now(dt.UTC)
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        quotas_job = pool.submit(az, "quantum", "workspace", "quotas", "-g", group, "-w", workspace)
+        policy_job = pool.submit(az, "account", "show", "--query", "{id:id}")
+        quotas = quotas_job.result()
+        subscription = policy_job.result()["id"]
+    policies = az(
+        "rest",
+        "--method",
+        "get",
+        "--url",
+        f"https://management.azure.com/subscriptions/{subscription}?api-version=2022-12-01",
+        "--query",
+        "subscriptionPolicies",
+    )
+    plan = f"{policies.get('quotaId')} subscription, spending limit {policies.get('spendingLimit')}"
+    rows: list[Row] = []
+    for quota in quotas:
+        limit = number(quota.get("limit"))
+        used = number(quota.get("utilization"))
+        monthly = quota.get("period") == "Monthly"
+        rows.append(
+            row(
+                f"Azure Quantum {quota.get('providerId')} {quota.get('dimension')}",
+                "az quantum workspace quotas",
+                allotment=limit,
+                used=used,
+                remaining=None if limit is None or used is None else limit - used,
+                unit=str(quota.get("dimension")),
+                instant=stamp(next_month_start(now)) if monthly else None,
+                instant_kind="reset" if monthly else None,
+                note=f"{quota.get('period')} quota; {plan}",
+            )
+        )
+    return rows
+
+
 def read_anu() -> list[Row]:
     now = dt.datetime.now(dt.UTC)
     prefix = f"draw-{now:%Y-%m}-"
@@ -432,6 +488,7 @@ READERS: dict[str, Callable[[], list[Row]]] = {
     "qbraid": read_qbraid,
     "bluequbit": read_bluequbit,
     "aws": read_aws,
+    "azure": read_azure,
     "anu": read_anu,
 }
 
