@@ -40,6 +40,10 @@ def attributed(
     setting's statistic.
     """
     entries = results.get("iterations")
+    # collect writes no iterations field for a terminal result without counts
+    # (an absent /result or a worker error), which attributes no iteration.
+    if entries is None and results.get("partial"):
+        entries = []
     if not isinstance(entries, list) or len(entries) > analysis.ENTRIES:
         raise ValueError(f"results.json carries {type(entries).__name__} iterations, not up to {analysis.ENTRIES}")
     rows: list[list[int] | None] = [None] * analysis.ENTRIES

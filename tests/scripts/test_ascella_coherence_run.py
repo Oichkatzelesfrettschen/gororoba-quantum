@@ -61,6 +61,15 @@ def test_missing_and_errored_iterations_carry_no_decisions(manifest: dict[str, A
         raise AssertionError(record)
 
 
+def test_count_less_terminal_result_carries_no_decisions(manifest: dict[str, Any]) -> None:
+    # The shape collect writes for a worker error answered without counts.
+    results = {"job_id": "e", "status": {"status": "error"}, "partial": True, "counts": {}, "samples": 0}
+    rows, _ = run_analysis.attributed(manifest, results)
+    record = analysis.analyze(manifest, rows)
+    if record["complete"] or any(row is not None for row in rows):
+        raise AssertionError(record)
+
+
 def test_counts_at_another_settings_position_raise(manifest: dict[str, Any]) -> None:
     results = ideal_results(manifest)
     results["iterations"][16], results["iterations"][20] = results["iterations"][20], results["iterations"][16]
