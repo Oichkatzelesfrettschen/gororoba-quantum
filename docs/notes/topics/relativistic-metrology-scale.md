@@ -71,8 +71,10 @@ which the same record does not identify.
 
 ## What an astronomical coupling would have to show
 
-A coupling to the device's orientation in space repeats once per sidereal day
-(23 h 56 min 4 s). Laboratory temperature, maintenance and queue load repeat
+Earth's rotation itself gives an Earth-fixed device a static Sagnac phase,
+which only reorientation or area reversal exposes. A coupling to a direction
+fixed among the stars, such as a preferred-frame effect, repeats once per
+sidereal day (23 h 56 min 4 s). Laboratory temperature, maintenance and queue load repeat
 once per solar day. The two frequencies differ by one cycle per year, so their
 phases separate by 2 pi / 365.24 rad per day: 0.0086 rad over the 12 h drift
 series and 0.24 rad over 14 days. Telling them apart at one radian needs about
