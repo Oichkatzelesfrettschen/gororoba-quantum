@@ -12,17 +12,19 @@ lint and type-check configuration only. [ci/AGENTS.md](ci/AGENTS.md) holds the
 gate machinery: runner and shards, the gate ledger and premerge cache, the
 Python and Qiskit pins, replay runtimes, the Rocq replays and gate cost.
 
-**Pull requests and the audit.** The workflow `pr.yml` runs on every pull
-request push: job `lint` (Ruff over ci/, tests/, gororoba_quantum/, scripts/
-and kaggle_kernel/) and job `tests` (pytest over tests/ with
-`-m "not audit"`), each with an 8-minute timeout. Those two jobs green on the
-reviewed head and the Codex review loop admit a merge
-([Merging](#reviews-and-merges)); no local gate run or premerge replay is
-required. `ci.yml` is the audit: every gate, the retained-evidence replays, the
-Rocq replays and the ledger, nightly on main and on manual dispatch
-([ci/AGENTS.md](ci/AGENTS.md)). An audit failure qualifies the claims its
-evidence carries and gets an issue; it blocks no unrelated pull request.
-Locally, run the tests a change touches; pushing needs no exhaustive run.
+**Pull requests and the audit.** The workflow `pr.yml` runs
+`sh ci/pr_checks.sh lint|types|tests` on every pull request push: Ruff and
+mypy over ci/, tests/, gororoba_quantum/, scripts/ and kaggle_kernel/, and
+pytest over tests/ with `-m "not audit"`. Branch protection on main requires
+the three checks `lint`, `types` and `tests` green on the head; with the Codex
+review loop they admit a merge ([Merging](#reviews-and-merges)), and no local
+gate run or premerge replay is required. Locally, `sh ci/pr_checks.sh tests
+PATH` runs the touched tests under the hosted environment; pushing needs no
+exhaustive run. `ci.yml` is the audit: every gate, the retained-evidence
+replays, the Rocq replays and the ledger, nightly on main and on manual
+dispatch ([ci/AGENTS.md](ci/AGENTS.md)). A failing scheduled run updates the
+issue "Nightly audit failing" with each failing gate and the claims citing it;
+it blocks no unrelated pull request.
 
 **Code style.** Every Python file a change touches passes, before each push,
 through `"$PYTHON" ci/pinned_tool.py TOOL ARGS` (the versions of
@@ -57,6 +59,27 @@ experiments.py also gets a dry run, `"$PYTHON" live_run.py --out
 ../results/live`, whose audit record lands under results/live/. A change to
 `proofs/`, a replay bundle or its receipts follows the Rocq replay of
 [ci/AGENTS.md](ci/AGENTS.md#layout-and-gates).
+
+**Seeds.** Every new random seed, on any provider or simulator, comes from a
+quantum random number generator: a numpy or `random` generator seed,
+`seed_transpiler`, `seed_simulator`, a Perceval `compilation_seed`, a bootstrap
+or null-calibration seed. The ANU QRNG serves first (`"$PYTHON"
+scripts/anu_qrng.py draw --out docs/evidence/anu_qrng`, keyed then keyless, no
+approval needed); [docs/notes/qrng/README.md](docs/notes/qrng/README.md) holds
+the fallback order, quotas, key files and approval rule of every source. The
+code or case cites the draw file and the index of every value it takes, in
+index order, each value used once. A seed that reproduces a retained record,
+an approved plan or a known compiled mesh is an identifier and keeps its value,
+because the record's replay and the approved-record comparison depend on it.
+The seed follows the job's question, not the circuit: a job that reproduces an
+earlier result imports the earlier seed constant by name, and a new job on an
+earlier circuit that needs its own randomness (an independent replicate, a
+fresh layout or twirl, a new mesh) takes new values from a draw.
+`ci/seed_provenance.py`, run by the `tests` check, requires every integer seed
+literal in the code directories to be a row of ci/reproduction_seeds.json,
+which only shrinks against main, or an entry of
+docs/evidence/qrng_seeds/allocations.json naming a registered source's draw
+that no case manifest owns and the index holding that value.
 
 ## Work planning
 
@@ -250,8 +273,8 @@ checkout and never enter a commit, log or memory.
   interpreter `iqm-python` of the iqm-resonance-stack package; MCP `iqm`; token
   pair file named by `IQM_TOKENS_FILE`.
 
-Every job (QPU, emulator, simulator or mock), upload, QRNG read, timeslot
-booking and notebook session on any provider waits for the user's approval of a
+Every job (QPU, emulator, simulator or mock), upload, provider QRNG read,
+timeslot booking and notebook session on any provider waits for the user's approval of a
 written case: what it measures, why a simulation cannot answer it, the backend,
 shots, expected seconds and expected credits. A Quantum Inspire hardware batch
 also keeps its pause and queue limits, and Open Quantum Public Compute makes
@@ -380,8 +403,9 @@ code-review quota, the owner decides how the PR proceeds.
    what that review finds.
 3. Codex reviews the head once more; that round's threads are answered and
    resolved the same way.
-4. The `pr.yml` jobs `lint` and `tests` pass on the head. A push that changes
-   the head reruns them; a red job gets its fix commit on the branch.
+4. The `pr.yml` jobs `lint`, `types` and `tests` pass on the head. A push
+   that changes the head reruns them; a red job gets its fix commit on the
+   branch.
 5. GitHub reports mergeable_state clean.
 
 Then, bottom-up, for each PR:

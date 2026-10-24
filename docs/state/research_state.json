@@ -2,6 +2,20 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-signed-coherence-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01",
+      "family": "photonic signed-coherence permuted repeat",
+      "question": "Do job-00's outside-block clicks and analyzer residuals follow the setting, the execution order or the sample budget when the same 64 circuits run in a QRNG-drawn order at twice the samples?"
+    },
+    {
+      "id": "qd-ascella-signed-coherence",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+      "family": "photonic signed-coherence coefficient conformance",
+      "question": "Do the sign-odd and sign-even X/Y and sign-averaged dark coefficients of the frozen 64-setting Ascella request, at five angles plus a commuting mutation, conform to their ideals within the preregistered 0.05 tolerance?"
+    },
+    {
       "id": "qd-ascella-mosaiq-update-order-retry",
       "provider": "quandela",
       "run": "results/quandela/runs/ascella-mosaiq-update-order-retry",
@@ -1858,6 +1872,144 @@
     }
   ],
   "claims": [
+    {
+      "id": "ascella-signed-coherence-permuted-repeat",
+      "statement": "The approved permuted repeat on qpu:ascella (job 6ef8e8db) ran job-00's 64 circuits, all 64 compiled circuits equal to job-00's, in ANU QRNG order at 16384 samples per iteration: 1048576 samples in 186 s, job-00's duration, for 1.032768 free credits, and all 27 endpoints qualify again. Under the preregistered comparison the outside-block clicks follow the execution sequence, not the setting: per-setting Spearman against job-00 -0.075 (p 0.56), lag-1 autocorrelation -0.653 in the new order (p below 1e-4), compiled-phase change Spearman 0.12 (p 0.35), and the median count grows with the budget (log2 ratio 0.83). The per-setting analyzer residuals reproduce, Pearson 0.974 on X and 0.802 on Y (p below 1e-4), at contrast 0.9719 against 0.9699 on X and 0.9669 against 0.9702 on Y.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Two jobs six hours apart on one device; the alternation's physical mechanism (which acquisition stage alternates) and the configuration error behind the reproducing residuals stay unidentified. Permutation p-values assume exchangeable positions under the null; the budget reading compares medians of two jobs. Equal total durations of jobs six hours apart in different orders assign no marginal time to the further samples, because no record separates acquisition from overhead.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+          "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/analysis.json",
+          "sha256": "a0548293da65ffdb603799be6ab71fb94d008bbbaee164e7dcfe6f1645478121"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/submission.json",
+          "sha256": "d97a53fec4d7ef036b75052ac83764c64c13798b6c8c62088fa38e88f566f17f"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/raw/result.json",
+          "sha256": "d87a4e6318b94a3e19f79654f3393ade73483e7f9974c3ecc6cfb3f2ab53c0a8"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/repeat-comparison.json",
+          "sha256": "922c442a075680199c592a4f8c7132d266162aa893d417c57f9c1fb9e33162aa"
+        }
+      ],
+      "documents": [
+        "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/README.md",
+        "docs/design/ascella-signed-coherence-conformance.md",
+        "scripts/ascella_coherence_repeat.py"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-repeat-replay": "replay",
+        "core-ascella-signed-coherence-comparison-replay": "replay",
+        "core-ascella-signed-coherence-comparison-self-test": "admission"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-conformance"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-device-diagnostics",
+      "statement": "In both Ascella signed-coherence runs the statistics computed from the returned compiled circuits lie within 2.2e-4 of every registered ideal, while the block-conditioned X and Y statistics read 0.97 to 0.98 times their ideals and the direct readout 1.004 times; inverse-variance weighted gain-and-offset fits leave X chi-square 195 and 408 on 18 degrees of freedom and Y 44 and 110. Of the five linear relations a setting-independent complex gain imposes on the sign-odd coefficients, X0 + Xc2 = 0 fails in both runs on the projected simultaneous intervals (-0.028 and -0.030) and the rest hold except Xc2 + Ys2 in job-01. Pooled per returned compiled configuration, job-00's X and Y values predict job-01's within counting noise (chi-square 3.3 and 8.3 on 10) where job-00's gain-and-offset fit does not (402 and 106). Outside-block counts follow the catalogue dark profile only at high amplitude: quartile-pooled profiles differ (likelihood ratio 407 and 921 on 21), and a two-component Poisson fit places the alternation (lag-1 -0.65 to -0.71) in a catalogue-shaped component holding most of them, beside a component on modes 4 to 9 that alternates weakly. physical_perf reads 0.0209 in every iteration of different outside-block counts.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Exploratory fits without preregistered thresholds; the multinomial errors ignore drift within an iteration, and the configuration agreement sets no equivalence margin on drift. The dark profile uses plan-time catalogue rates, the two-component fit is descriptive (its deviance has no asymptotic reference, its fitted profile differs between the runs, and its job-00 catalogue share exceeds the bound the pooled composition sets), and no detector gating model converts a component's amplitude into acquisition time. The diagnostics records' residual_chi2 and block_less_dark_share verdicts carry no inferential reading; response-geometry.json holds the weighted fits.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+          "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/job-00-diagnostics.json",
+          "sha256": "0a0268ecf76c1f3be1e41f2ba0f32827502ce651240f825b1246297c79e1eda4"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/job-01-diagnostics.json",
+          "sha256": "58a421f875883a897a28e02cde56e1cfac79deb1d1e586bb3fbbc87cccf2856b"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/response-geometry.json",
+          "sha256": "25c6ecb5a31553ad6f5944cb64d9156ecde3152c6f7650024d3c8ed73d5027f3"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md",
+        "docs/notes/quandela/literature.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-diagnostics-replay": "replay",
+        "core-ascella-signed-coherence-response-geometry-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-conformance",
+      "statement": "The approved 64-setting signed-coherence request on qpu:ascella (job 739a5271) completed 524288 detected samples in 186 execution seconds for a token-reported debit of 1.016384 free credits, and all 27 preregistered endpoints qualify under the 0.05 coefficient tolerance: the 15 sign-odd and dark coefficients deviate from their ideals by at most 0.0303, the 10 sign-even coefficients stay within 0.0116 of zero, and the mutation difference reads 0.1646 against its ideal 0.1727. The X sign-odd constant (0.4697) and the Y sign-odd sin(2 theta) coefficient (0.4777) exclude their ideal 0.5 while conforming. 6659 of 524288 events (1.27 percent) fall outside the logical block, between 4 and 586 per setting.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job on one device and calibration; it decides the registered endpoints under their tolerance and certifies no exact ideal. The setting-dependent outside-block share exceeds the case's dark-count bound of about 0.91 percent, so the mechanism behind it, and whether it attenuates the two coefficients that exclude their ideal, is unidentified. Intervals assume independent sampling within each setting, and the job cannot separate drift within its 186 seconds.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis-runner-image.json",
+          "sha256": "0b8e6f53fb00c48ca8d3e858882f5223cd7674db3ef4598ff9e0bc8ae8945a90"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/submission.json",
+          "sha256": "9e1650b7f94f1099f81076d95541f0a2e37d34501ee0f10ffc5718364cce69d5"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/raw/result.json",
+          "sha256": "b2bef57a8bbf721ddcf4ffcf21ef0195b28ff1c7d223f8c033da206578cad1c3"
+        }
+      ],
+      "documents": [
+        "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/README.md",
+        "docs/design/ascella-signed-coherence-conformance.md",
+        "scripts/ascella_coherence_run.py"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-acquisition-replay": "replay",
+        "core-ascella-signed-coherence-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
     {
       "id": "ascella-order-sampling-recovery",
       "statement": "The explicitly authorized unchanged Ascella order pilot completed eight settings and returned 65536 detected samples in 25 execution seconds, with a token-reported debit of 1.016384 free credits. Conditional analysis accepts 65523 occupation-sum-one observations and retains 13 multiple-occupation exclusions. Measured-versus-requested total variation spans 0.00048828125 to 0.02796092796; returned compiled-versus-requested total variation stays below 0.000298160.",
@@ -4150,7 +4302,7 @@
     {
       "id": "cd-sign-row-degree",
       "statement": "For every n >= 2 and m != 0, the sign row f_m(x) = [cd_sign(2^n, m, x) = -1] of L_{e_m} has algebraic degree exactly n - 1, so octonion left multiplications are Clifford and every sedenion and higher one carries a sign of degree 3 or more.",
-      "boundary": "Written induction from the cd_sign recursion (R), the commutator lemma and the two-point lemma; scripts/cd_phase_degree.py checks every identity it uses and the statement on every row through n = 8, and no proof assistant has checked it.",
+      "boundary": "Written induction from the cd_sign recursion (R), the commutator lemma and the two-point lemma; scripts/cd_phase_degree.py checks every identity it uses and the statement on every row through n = 8. The machine-checked claim cd-sign-row-anf-rocq proves the statement in Rocq for every n against the tower sign sigma, which the tower basis-sign bridge ties to cd_sign.",
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
         "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
@@ -4173,9 +4325,202 @@
       "proof_origin": "repository-written"
     },
     {
+      "id": "cd-right-row-degree",
+      "statement": "For every n >= 1 and m != 0, the right sign row h_m(x) = [cd_sign(2^n, x, m) = -1] of R_{e_m} has algebraic degree 1 when m is a power of two and max(1, bitlen(m) - 2) otherwise, independent of n: the recursion (R) splits h_m into the slices h'_m(y) + xi for m in the low half, xi for m = 2^(n-1), and the left sign row f'_(m')(y) one level down for m = m' + 2^(n-1) with m' != 0.",
+      "boundary": "Written induction (Proposition 4 of docs/notes/cd_phase_degree.md) on the three right-row slices and the sign-row degree; scripts/cd_phase_degree.py checks the slices cell by cell and the degree on every m through n = 8, and the machine-checked claim cd-sign-row-anf-rocq proves the statement in Rocq for every n.",
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "recursion (R) and Lemma 0 of docs/notes/left_mult_sign_rank.md",
+        "the sign-row degree of claim cd-sign-row-degree one level down"
+      ],
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "evidence": [],
+      "documents": [
+        "docs/notes/cd_phase_degree.md"
+      ],
+      "gates": {
+        "core-320": "replay"
+      },
+      "acquisitions": [],
+      "depends_on": [
+        "cd-sign-row-degree"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "cd-sign-row-anf-rocq",
+      "statement": "For every Cayley-Dickson level k, kernel-checked by Rocq 9.3.0 with ten closed assumption queries: the Moebius transform anf_coef is the algebraic normal form of a 2^k-entry truth table (inversion and uniqueness); the left sign row of e_m has no degree-k term for k >= 2, its monomial omitting x_i carries bit i of m for k >= 3, and it has degree max(1, k - 1) for m != 0; the right sign row of e_m has degree 1 when m is a power of two and max(1, bitlen(m) - 2) otherwise.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "The rows are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k; claim cd-associator-anf-rocq proves the associator-phase degree on the same tower.",
+      "evidence": [
+        {
+          "path": "proofs/CdSignRowAnf.v",
+          "sha256": "bea8796c80b2b3ade99274d20156228a1ed5498f6139d0c957cc043880e760a0"
+        },
+        {
+          "path": "docs/evidence/cd-sign-row-anf/assumptions.v",
+          "sha256": "9ba56c603f9b7472f8ee447743b286415612eb744fae0e90b6a4c3b95aee92df"
+        },
+        {
+          "path": "docs/evidence/cd-sign-row-anf/assumptions.txt",
+          "sha256": "f990327820c7e0de2c2185fa0c21ec662d961c689506a2b21b1afe9a2f285d04"
+        },
+        {
+          "path": "docs/evidence/cd-sign-row-anf/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-sign-row-anf/README.md",
+        "docs/notes/cd_phase_degree.md"
+      ],
+      "gates": {
+        "sources-399": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "cd-sign-python-semantics-rocq"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-sign-row-anf/kernel.txt"
+    },
+    {
+      "id": "cd-associator-anf-rocq",
+      "statement": "For every Cayley-Dickson level k, kernel-checked by Rocq 9.3.0 with six closed assumption queries: the associator phase g of W = L_(e_p e_q)^dagger L_(e_p) L_(e_q) equals the four tower-sign factors of predict.associator_phase and satisfies e_p (e_q e_x) = (-1)^g(x) (e_p e_q) e_x; g vanishes for p = 0, q = 0, p = q and on the quaternions; and for k >= 3 and distinct nonzero p, q < 2^k, g has ANF degree exactly max(1, bitlen(max(p, q)) - 2).",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k; claim cd-associator-census-rocq counts the pairs by degree in Rocq.",
+      "evidence": [
+        {
+          "path": "proofs/CdAssociatorAnf.v",
+          "sha256": "5fbec4bf0a2160766ee7d7d74c5b5139d65b1c31ada7bbfe5e1dd65abc479d1b"
+        },
+        {
+          "path": "docs/evidence/cd-associator-anf/assumptions.v",
+          "sha256": "ac4b863b40163067cfa1a80935d7ed0826af8d0936f268d72865b5d0d33f56b8"
+        },
+        {
+          "path": "docs/evidence/cd-associator-anf/assumptions.txt",
+          "sha256": "99a6704258822ca71cbc86001bd22c279bfa19b98dd2513510b2a59528c8e97f"
+        },
+        {
+          "path": "docs/evidence/cd-associator-anf/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-associator-anf/README.md",
+        "docs/notes/cd_phase_degree.md"
+      ],
+      "gates": {
+        "sources-401": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "cd-sign-row-anf-rocq"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-associator-anf/kernel.txt"
+    },
+    {
+      "id": "cd-associator-census-rocq",
+      "statement": "For every Cayley-Dickson level k >= 3, kernel-checked by Rocq 9.3.0 with ten closed assumption queries: counting the unordered pairs 0 < p < q < 2^k by the ANF degree of their associator phase, read as the largest monomial weight with a nonzero ANF coefficient, gives 21 pairs of degree 1, 3 2^d (2^(d+1) - 1) pairs of degree d for 2 <= d <= k - 2 and none of any other degree, so the counts are independent of k and sum to C(2^k - 1, 2); at k = 8 they are 21, 84, 360, 1488, 6048 and 24384.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, which claim cd-sign-python-semantics-rocq proves equal to the return value of cd_core.cd_sign for every k.",
+      "evidence": [
+        {
+          "path": "proofs/CdAssociatorCensus.v",
+          "sha256": "bbd2562527a32c820259181a336db5b89bea03a85ea81caacb79b0452392591b"
+        },
+        {
+          "path": "docs/evidence/cd-associator-census/assumptions.v",
+          "sha256": "068a368e51506d6ff569c8b97378dd5f15184fd8fc9bd84afa1e9957d492b12f"
+        },
+        {
+          "path": "docs/evidence/cd-associator-census/assumptions.txt",
+          "sha256": "f990327820c7e0de2c2185fa0c21ec662d961c689506a2b21b1afe9a2f285d04"
+        },
+        {
+          "path": "docs/evidence/cd-associator-census/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-associator-census/README.md",
+        "docs/notes/cd_phase_degree.md"
+      ],
+      "gates": {
+        "sources-403": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "cd-associator-anf-rocq"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-associator-census/kernel.txt"
+    },
+    {
+      "id": "cd-sign-python-semantics-rocq",
+      "statement": "For every Cayley-Dickson level k, kernel-checked by Rocq 9.3.0 with six closed assumption queries: a big-step semantics of the Python int subset, run on the syntax tree of cd_core.cd_sign that scripts/cd_sign_rocq_ast.py extracts with ast.parse, returns the tower sign sigma_k(p, q) of CdTowerBasisSign.v for cd_sign(2^k, p, q) with p, q < 2^k, and raises whenever a guard fails on arguments of exact type int; the guard _dimension admits exactly the powers of two, and the term with the high-low q != 0 guard removed returns -1 at e_1 e_0 where sigma_1(1, 0) = 1.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "Three readings stay outside the proof, each with a failing check: the extractor's one-to-one node map, which tests/scripts/test_cd_sign_rocq_ast.py and gate sources-406 compare with the embedded term; the int behavior of the guards _dimension and _index, whose ast.dump digests and clauses on every int from -3 to 70 the same contract pins; and the evaluator's reading of the cited Python Language Reference sections. _dimension tests type(dim) is int before any operator runs, so bool and every int subclass, whose overridden operators need not compute as integers, are rejected, and _index reads each index through operator.index, which returns an exact int; tower_bridge.py remains as an independent finite cross-check through dimension 64.",
+      "evidence": [
+        {
+          "path": "proofs/CdSignPythonSemantics.v",
+          "sha256": "60ef84be2575d2ade2c925813310cd77d2fa64b347c258e6c2f0b69a64eb09d5"
+        },
+        {
+          "path": "scripts/cd_sign_rocq_ast.py",
+          "sha256": "377affd7ffcdf0064925cd03dca5afa515cf5a32fb5379662d016193bd84a6de"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-semantics/assumptions.v",
+          "sha256": "205f2a482526015f16ea01ec8379aa0fd6d9f2e0721b294641fe8d2ec7c048b9"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-semantics/assumptions.txt",
+          "sha256": "99a6704258822ca71cbc86001bd22c279bfa19b98dd2513510b2a59528c8e97f"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-semantics/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-sign-python-semantics/README.md",
+        "docs/evidence/cd-tower-basis-sign/README.md"
+      ],
+      "gates": {
+        "sources-405": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-sign-python-semantics/kernel.txt"
+    },
+    {
       "id": "cd-associator-phase-degree",
       "statement": "For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).",
-      "boundary": "Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and no proof assistant has checked it. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.",
+      "boundary": "Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and the machine-checked claims cd-associator-anf-rocq and cd-associator-census-rocq prove the statement and the census in Rocq for every n. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.",
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
         "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
@@ -4193,6 +4538,31 @@
       },
       "acquisitions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "cd-associator-point-indicator-pairs",
+      "statement": "For n >= 3, 0 <= m < 2^(n-2), i = 2^(n-1) + m and j = i + 2^(n-2), the associator phase is g_ij(x) = x_(n-1) + delta_m(z) for m != 0 and N(z) for m = 0, with z the low n - 2 bits of x, so W_ij is one multi-controlled Z on the low n - 2 qubits conjugated by X on the zero bits of m, times at most one Z and a global sign, while its positive-polarity ANF has 1 + 2^(n-2-popcount(m)) or 2^(n-2) - 1 monomials.",
+      "boundary": "Written proof (Proposition 5 of docs/notes/cd_phase_degree.md) from Lemma D's upper-pair closed form at levels n and n - 1; scripts/cd_phase_degree.py checks the formula and the monomial counts on every such pair through n = 8. The --sparsity table (282 of the 24384 top-degree pairs at n = 8 need one fixed-polarity multi-controlled Z, the rest at least two, up to 28 in the best fixed polarity) is a finite measurement without a proof, and the gate counts hold for circuits of X-conjugated multi-controlled Z, Z and X gates without ancillas.",
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "evidence": [],
+      "documents": [
+        "docs/notes/cd_phase_degree.md"
+      ],
+      "gates": {
+        "core-320": "replay"
+      },
+      "acquisitions": [],
+      "depends_on": [
+        "cd-associator-phase-degree"
+      ],
       "supersedes": [],
       "superseded_by": null,
       "proof_origin": "repository-written"
@@ -8745,12 +9115,12 @@
       "boundary": "One device and one calibration, two blocks about an hour apart; the case separates neither slow drift from a step change nor drift within a window. Standard errors and p-values are reference values under independent Bernoulli trials, uncalibrated while the provider contract leaves count provenance unresolved. The calibration hold and the post-calibration repeat of b1-j1 were amendments committed before the jobs they govern; the pre-calibration b1-j1 run enters no frozen test. The plan-time dark-count figure is a platform reading, not an acquisition-time measurement, so the mode-5 mechanism stays a candidate. An inconclusive primary decides neither branch; it makes no certification decision.",
       "evidence": [
         {
-          "path": "results/quandela/bdsc_stationarity_calibration_contrast.json",
-          "sha256": "8481d6563c530bc315c82bcd19c108eacedfc8acac0a943b395ff582b3d5433b"
+          "path": "results/quandela/bdsc_stationarity_calibration_contrast_pinned.json",
+          "sha256": "b72b8b154e5eb88f89d7174d2fa65678aa6a231a5fcee2d4767bd69ec7c05418"
         },
         {
-          "path": "results/quandela/bdsc_stationarity_readout.json",
-          "sha256": "48a477b28a1dd8ce10e8a119ed33741d85987aab764fc8f0202694a4888f5d1e"
+          "path": "results/quandela/bdsc_stationarity_readout_pinned.json",
+          "sha256": "fd95b1eb105d7818f2c2dc8561c55de0768668f2cd7a97ad30c8ecf5658d5ad1"
         }
       ],
       "documents": [
@@ -8794,8 +9164,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-2/result.json",
-          "sha256": "cc3b3c3bf970a66e64e6fc2042743b3802d3dddec6a974c3292569d1129d4996"
+          "path": "docs/evidence/algebra-device-conjectures-5/result.json",
+          "sha256": "3712748723939778d6fd1f6c695bb4901c4f2ded773f27471f2706f74b98ce29"
         }
       ],
       "gates": {

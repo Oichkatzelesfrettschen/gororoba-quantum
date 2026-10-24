@@ -34,6 +34,13 @@ sources-395 runs
 ```
 
 which recomputes the record and compares its bytes; the run takes about 1 s.
-The replay checks the convention on finite dimensions; the all-n statement
-rests on the recursion of Corollary 4.3 matching the cd_sign recursion, which
-the note argues and no proof assistant checks.
+The replay checks the convention on finite dimensions from the Python side.
+The all-n statement is the Rocq theorem `am_sign` of
+[CdTowerBasisSign.v](../../../proofs/CdTowerBasisSign.v): the
+Corollary 4.3 exponent, built by a Fixpoint from the trivial group, satisfies
+(-1)^f(a, b) = sigma_k(b, a) for every k, with sigma_k the transcription of
+cd_sign that the
+[basis-sign bundle](../cd-tower-basis-sign/README.md#bridge-to-cd_sign)
+ties to cd_core through dimension 64 and the
+[cd_sign Python-semantics bundle](../cd-sign-python-semantics/README.md)
+proves equal to cd_core.cd_sign for every k.

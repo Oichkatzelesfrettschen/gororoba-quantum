@@ -114,7 +114,10 @@ exchanges only near expiry and writes the rotated tokens back atomically. A
 long-lived process (an MCP server) started before that rule restarts before
 QI work resumes.
 An agent that finds no login prompts the user to run `qi login` and approve
-the code; tokens never enter a commit, a log or memory.
+the code; tokens never enter a commit, a log or memory. An invalid_grant
+needs `qi login --force`, since plain `qi login` cannot recover it;
+[setup.md](setup.md#login-failures) holds the triage table by error text,
+the paths that spend a login and the exchange log that tells them apart.
 
 **Backends.** `scripts/qi_platform.py snapshot --out docs/evidence/quantum_inspire`
 reads the account's catalogue and ledger; gate core-347 renders this table
@@ -131,6 +134,9 @@ from the retained catalogue and fails when either changes alone:
 
 Backend instances: QX emulator (Cloud), Spin-2+ (TU Delft), Starmon-7 (TU Delft), Tuna-5 (TU Delft), Ry emulator (TU/eindhoven), Tuna-9 (TU Delft), Tuna-17 (TU Delft).
 <!-- quantum-inspire-facts:end -->
+
+The last two columns are the API's mechanical ceilings, not an allowance:
+on hardware the FAQ's 3 queued jobs governs ([usage.md](usage.md#queue-rules-the-faq-governs)).
 
 Status, queue length and heartbeat change between reads and live only in the
 snapshot. Spin-2+ and Starmon-7 appear as backend instances without a backend
@@ -183,7 +189,8 @@ approval in submission.json and sends one batch; `collect CASE_DIR` writes
 the raw shots, job records and charged transactions. On hardware a batch
 holds at most three circuits and goes in only when none of the account's
 batches is queued, so at most three jobs are ever queued (the FAQ's limit
-under either reading of "job"); a series runs a QX dry run first, then
+under either reading of "job"; [usage.md](usage.md#queue-rules-the-faq-governs)
+holds the rule, and the FAQ governs over the API's 5 and 5); a series runs a QX dry run first, then
 submits each hardware batch only after the previous one is collected, passes
 its sanity checks and a pause. `submit` also refuses a hardware batch while
 any job of the account on a hardware backend type (`is_hardware`, whichever
@@ -191,7 +198,8 @@ session submitted it) is unfinished or finished less than
 `HARDWARE_PAUSE_SECONDS` ago, so sessions that share the account
 alternate. The pause is a repository rule: 30 s by default, raised to 60, 90
 and then 120 s after a platform failure ([usage.md](usage.md#pause-escalation));
-emulator batches skip the check. The case generators emit each experiment as
+QX emulator batches skip the check, while the Ry emulator, which the API flags
+`is_hardware`, takes it. The case generators emit each experiment as
 a series of `batch-NN/` cases within that limit, and
 `scripts/check_qi_platform_retention.py` passes every generated batch through
 submit's checks up to the first request. Runs live under

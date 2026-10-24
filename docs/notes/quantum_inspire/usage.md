@@ -55,6 +55,89 @@ that exceed the time limit are aborted (KB,
 user to 3 jobs queued per hardware backend and warns that abuse removes the
 account (<https://www.quantum-inspire.com/faq/>), stricter than the API's 5.
 
+### Queue rules: the FAQ governs
+
+The FAQ is the source of truth for how much this account may queue:
+
+> You are not allowed to have more than 3 jobs in the queue for a hardware
+> backend, in order to provide equal access opportunities for everybody.
+> (Attempts of) abuse will lead to removal of your account.
+
+(<https://www.quantum-inspire.com/faq/>, [capture](site/faq.md); the live
+page read on 2026-10-24 carries the same sentence.) The API's
+`max_jobs_per_batch_job` 5 and `batchjobs_per_queue_limit` 5 (per user and
+backend type, [OpenAPI](api/openapi.json) schema `BackendType`) describe what
+the service mechanically accepts, up to 25 queued circuits per backend type.
+They grant no permission: no plan, case or batch size is derived from them
+on hardware, and where the FAQ is silent they remain the ceiling the service
+enforces.
+
+The FAQ does not say whether a "job" is a batch or a circuit, so the runner
+satisfies both readings at once. On every backend type the catalogue flags
+`is_hardware`, `qi_platform.py submit`
+
+- holds a batch to `HARDWARE_BATCH_CIRCUITS` (3) circuits;
+- enqueues a batch only while the account has no batch queued on that type
+  (`HARDWARE_QUEUED_BATCHES`, 1);
+- refuses while any account job on a hardware type is unfinished or finished
+  less than `HARDWARE_PAUSE_SECONDS` ago ([pause escalation](#pause-escalation)),
+  whichever session submitted it.
+
+At most three circuits of the account therefore wait for a hardware
+backend, in one batch, and nothing else of the account is queued or running
+on hardware meanwhile. The constants are fixed in the source, and
+submission routes that bypass `submit` (`QIProvider` `backend.run`, which
+batches up to the API's 5; the `qi` CLI; the web editor) carry no FAQ guard
+and stay unused for runs.
+
+| Backend | Quantum Inspire's classification | FAQ queue rule | Rule the runner applies | Procedure |
+|---|---|---|---|---|
+| Tuna-17 (type 7); Tuna-5 and Tuna-9 when online | hardware ([KB hardware backends](site/kbase_hardware-backends.md)) | at most 3 jobs queued | the hardware rules above | [Run on Tuna-17](#run-on-tuna-17) |
+| Ry emulator (type 5) | emulator ([KB emulator backends](site/kbase_emulator-backends.md)); the API flags it `is_hardware` | none | the hardware rules above, a choice stricter than the FAQ, since the runner keys on the flag | [ry-emulator.md](ry-emulator.md#do-a-ry-emulator-run) |
+| QX emulator (type 1) | emulator | none | the service's own ceilings: 5 circuits per batch, 5 queued batches; terms item 9 asks for syntax checking first | [qx-runs.md](qx-runs.md#do-a-qx-dry-run-remote-emulator) |
+
+[Rules this repository adds](#rules-this-repository-adds) holds the evidence
+that the API's queue count is in batches.
+
+### Run on Tuna-17
+
+A Tuna-17 run answers a question about the device itself; a simulation of
+14 qubits or fewer runs on Kaggle (root AGENTS.md, "QPU time and
+calibration"). Every step below is a repository command; the approval steps
+follow root AGENTS.md "Hardware services".
+
+1. Generate the cases with the experiment's generator, which emits
+   `batch-NN/` directories of at most 3 circuits each, and run its `--check`
+   and `"$QI_PYTHON" scripts/qi_toolchain_check.py` (libqasm analysis and
+   compilation with the Tuna-17 compiler configuration).
+2. Run the QX dry run of the same cases ([qx-runs.md](qx-runs.md#do-a-qx-dry-run-remote-emulator))
+   and analyze it against the stated noiseless outcome.
+3. Write the case: the question, why Aer cannot answer it, the qubits and
+   couplers used (the excluded qubits of [experiments.md](experiments.md)
+   named), the batch list, shots per circuit (at most 131072; execution
+   about 2.6 s per job plus 0.53 ms per shot against the 300 s limit) and
+   the series duration including one pause per batch. Wait for the owner's
+   approval and quote it verbatim.
+4. Read the device and the account: MCP `qi_backend` for type 7,
+   `qi_hardware_status` and `qi_jobs` (or `qi_platform.py snapshot --out DIR`
+   with DIR outside `docs/`). Proceed only while Tuna-17 is online and none
+   of the account's hardware batches is queued or running.
+5. For each batch in order: copy it to
+   `results/quantum_inspire/runs/<UTC stamp>-<case>-batch-NN/`, then
+   `"$QI_PYTHON" scripts/qi_platform.py submit RUN_DIR --backend-type-id 7 --approval "QUOTE"`,
+   `"$QI_PYTHON" scripts/qi_platform.py collect RUN_DIR --poll 15 --timeout 3600`
+   and the generator's `--sanity RUN_DIR`. The next batch goes in only after
+   that collection, its sanity checks and the pause; `submit` refuses an
+   early one before any remote write and names the seconds left.
+6. Stop the series at the first platform failure, raise
+   `QI_HARDWARE_PAUSE_SECONDS` one step of the ladder, and never resubmit a
+   directory that holds `submission.json` or `submission-state.json`
+   (`qi_platform.py reconcile` recovers its receipt).
+7. Analyze with the generator's `--analyze`, then commit the run
+   directories, the analysis, its `--replay` gate, a refreshed `usage.json`
+   and the `docs/state/research_state.json` registration in one change
+   (root AGENTS.md, "Records").
+
 ## Measured time per job and per shot
 
 | Backend | Shots per job | Execution per job | Per shot | Source |

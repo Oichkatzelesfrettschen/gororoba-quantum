@@ -1,0 +1,20 @@
+Require CdTowerBasisSign.
+Print Assumptions CdTowerBasisSign.cd_sign_loop_sigma.
+Print Assumptions CdTowerBasisSign.basis_mul.
+Print Assumptions CdTowerBasisSign.basis_mul_coord.
+Print Assumptions CdTowerBasisSign.arc_entry.
+Print Assumptions CdTowerBasisSign.arc_diagonal.
+Print Assumptions CdTowerBasisSign.am_complex.
+Print Assumptions CdTowerBasisSign.am_sign.
+Print Assumptions CdTowerBasisSign.am_quaternion.
+Print Assumptions CdTowerBasisSign.am_octonion.
+Print Assumptions CdTowerBasisSign.am_octonion_printed_differs.
+Print Assumptions CdTowerBasisSign.am_altercommutative.
+Print Assumptions CdTowerBasisSign.sigma_diagonal.
+Print Assumptions CdTowerBasisSign.sigma_anticommute.
+Print Assumptions CdTowerBasisSign.am_left_involution.
+Print Assumptions CdTowerBasisSign.sigma_left_involution.
+Print Assumptions CdTowerBasisSign.sigma_right_involution.
+Print Assumptions CdTowerBasisSign.right_mul_entry.
+Print Assumptions CdTowerBasisSign.isum_scaled_isometry.
+Print Assumptions CdTowerBasisSign.convention_discriminator.

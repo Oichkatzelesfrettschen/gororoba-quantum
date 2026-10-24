@@ -28,7 +28,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from cd_core import cd_multiply_exact, cd_sign, left_mult_matrix_exact  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
-DEFAULT_MANIFEST = ROOT / "docs/evidence/algebra-device-conjectures-2/manifest.json"
+DEFAULT_MANIFEST = ROOT / "docs/evidence/algebra-device-conjectures-5/manifest.json"
 SCHEMA = "algebra-device-conjectures-v1"
 
 
@@ -167,6 +167,38 @@ def _verify_source(source: dict[str, str]) -> None:
     require(digest(path) == source["sha256"], f"source digest differs: {source['path']}")
 
 
+def prose_paths(manifest: dict[str, Any]) -> set[str]:
+    """The Markdown sources a manifest names only as claim documents or additional sources.
+
+    Synthesis opens the comparison records, the Target snapshot and the companion
+    pin, and the provider adapters open the run directories; none of them reads
+    a Markdown file outside a run directory. A drifted prose source therefore
+    leaves every derived byte fixed, so replay lists it and the next freeze
+    rebinds it, while every other source fails replay on any byte change.
+    """
+    named = set(manifest["additional_sources"]) | {path for claim in manifest["claims"] for path in claim["documents"]}
+    bound = {item["path"] for claim in manifest["claims"] for item in claim["evidence"]}
+    bound |= {comparison["path"] for comparison in manifest["comparisons"]}
+    runs = [Path(row["record"]["run"]) for row in manifest["acquisitions"] if row["included"]]
+    return {
+        path
+        for path in named - bound
+        if path.endswith(".md") and not any(Path(path).is_relative_to(run) for run in runs)
+    }
+
+
+def _source_drift(source: dict[str, str]) -> bool:
+    path = local_path(source["path"])
+    return not path.is_file() or digest(path) != source["sha256"]
+
+
+def drifted_prose(manifest: dict[str, Any]) -> list[str]:
+    """The prose sources whose bytes differ from the manifest's binding, or that no longer exist."""
+    prose = sorted(prose_paths(manifest))
+    rows = [source for source in manifest["sources"] if source["path"] in prose]
+    return [row["path"] for row, drift in zip(rows, ordered_map(_source_drift, rows), strict=True) if drift]
+
+
 def _hex(value: Any, length: int) -> bool:
     return isinstance(value, str) and len(value) == length and all(char in "0123456789abcdef" for char in value)
 
@@ -195,7 +227,8 @@ def validate_manifest(manifest: dict[str, Any]) -> None:
         )
         # The predecessor is retained evidence: its manifest keeps its path and bytes.
         _verify_source({"path": predecessor["path"], "sha256": predecessor["manifest_sha256"]})
-    ordered_map(_verify_source, manifest["sources"], min_items=1)
+    prose = prose_paths(manifest)
+    ordered_map(_verify_source, [row for row in manifest["sources"] if row["path"] not in prose], min_items=1)
     _verify_source(manifest["census"])
     census = json.loads(local_path(manifest["census"]["path"]).read_text())
     require(
@@ -761,6 +794,8 @@ def main() -> int:
         for name, content in outputs.items():
             (destination / name).write_text(content)
     print(f"{SCHEMA}: {len(result['proposals'])} proposals; {len(result['acquisitions'])} acquisitions accounted for")
+    for path in drifted_prose(load_manifest(args.manifest)):
+        print(f"prose source drifted since the freeze (the next --freeze rebinds it): {path}")
     return 0
 
 

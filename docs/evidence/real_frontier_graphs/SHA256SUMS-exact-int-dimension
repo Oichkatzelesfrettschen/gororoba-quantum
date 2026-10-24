@@ -1,0 +1,15 @@
+9b9f3cbb45a2ec78a5a77aa860eb8461c598a48a9a13e8c9ae46ca25cbc4b963  README.md
+23acb6b8525accd73d8341d6663380832812b6fac956b41f63c9cf7ab0a325eb  replay.py
+bc77cd4c70a27bc736cbcaafdc62d17324b6988ebd8ed552ffcd0aac4e40b543  result.json
+042f8fdce3b04dd780c33c7c8177e373615c81fce88c5509ac3798cb252bf8b8  proof_obligations.json
+6ef7d97e8187c3688161347b1fd9e7316841fefabf3990108e55420681007a88  ../../notes/real_circle_frontier_graphs.md
+0497c295581cda51f934dcf83b8cf3cc267aba4382c06cc24b3252f78f2ef166  ../../../gororoba_quantum/real_frontier_graphs.py
+cb8e267f8d067bf32b7d9a578201899df194c1d6d95ad345a8a9d767eb37baab  ../../../gororoba_quantum/real_frontier_contracts.py
+e6a7593b6d2ccb7e0bf4bab2ab19c96b7ec2244e0147f4b86106b14a88c3e7cd  ../../../gororoba_quantum/circle_kernel_attachments.py
+aa399e54d6e435a45c46e469977c20ee931e9a12cee116408bdbaa7c8a1f3d46  ../../../gororoba_quantum/projective_kernel_limits.py
+46591b43f37086bce51d6d600c0b0ae6e1d5055c0e0c475a5185d0c2d351e6a7  ../../../gororoba_quantum/kernel_limits.py
+a8daff05282a0affff406ed1fc067a340e9943816ed4145387c73fc4725763f0  ../../../gororoba_quantum/complex_skew.py
+408e311026adeceb5041a10d74438c0599c863746cf9304952e2278aac022629  ../../../gororoba_quantum/integral_homology.py
+f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c  ../../../gororoba_quantum/rank_charts.py
+3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0  ../../../gororoba_quantum/cd_core.py
+d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92  ../../../gororoba_quantum/parallel.py

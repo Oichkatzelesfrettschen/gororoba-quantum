@@ -2397,7 +2397,10 @@
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_coherence_analysis.py",
+    "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
+    "scripts/ascella_response_geometry.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/associator_walsh_classes.py",
     "scripts/atlas_coherent_families.py",
@@ -2570,6 +2573,10 @@
     "scripts/aer_gpu_probe.py",
     "scripts/algebra_circuit_fixtures.py",
     "scripts/algebra_conjecture_circuits.py",
+    "scripts/ascella_coherence_analysis.py",
+    "scripts/ascella_coherence_repeat.py",
+    "scripts/ascella_coherence_request.py",
+    "scripts/ascella_response_geometry.py",
     "scripts/associator_cubic_normal_form.py",
     "scripts/associator_walsh_classes.py",
     "scripts/atlas_coherent_families.py",
@@ -3399,6 +3406,7 @@
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/ascella_coherence_request.py",
     "scripts/bdsc_cases.py",
     "scripts/bdsc_forensics.py",
     "scripts/bdsc_packages.py",
@@ -5687,6 +5695,8 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/variance.py",
+    "scripts/ascella_coherence_repeat.py",
+    "scripts/ascella_response_geometry.py",
     "scripts/atlas_fringe_amplitudes.py",
     "scripts/axis_tilt_substrate_split.py",
     "scripts/bdsc_diagnostic.py",
@@ -5728,6 +5738,8 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/variance.py",
+    "scripts/ascella_coherence_repeat.py",
+    "scripts/ascella_response_geometry.py",
     "scripts/atlas_fringe_amplitudes.py",
     "scripts/axis_tilt_substrate_split.py",
     "scripts/bdsc_diagnostic.py",
@@ -6730,6 +6742,14 @@
    "statistics",
    "typing"
   ],
+  "ci/audit_report.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "ci/changed_paths.py": [
    "__future__",
    "os",
@@ -6819,9 +6839,11 @@
    "__future__",
    "collections",
    "json",
+   "os",
    "pathlib",
    "re",
-   "subprocess"
+   "subprocess",
+   "sys"
   ],
   "ci/premerge_gates.py": [
    "__future__",
@@ -6887,9 +6909,15 @@
    "__future__",
    "hashlib",
    "json",
+   "os",
    "pathlib",
    "run_gates",
+   "shlex",
+   "shutil",
+   "subprocess",
    "sys",
+   "tempfile",
+   "time",
    "typing",
    "unittest"
   ],
@@ -6903,6 +6931,23 @@
    "scipy",
    "sys",
    "threadpoolctl"
+  ],
+  "ci/seed_provenance.py": [
+   "__future__",
+   "anu_qrng",
+   "argparse",
+   "ast",
+   "collections",
+   "json",
+   "outshift_qrng",
+   "parallel",
+   "pathlib",
+   "quandela_qrng",
+   "re",
+   "subprocess",
+   "sys",
+   "typing",
+   "zlib"
   ],
   "gororoba_quantum/adjudicate.py": [
    "__future__",
@@ -8907,10 +8952,36 @@
    "typing",
    "urllib"
   ],
+  "scripts/ascella_coherence_analysis.py": [
+   "__future__",
+   "collections",
+   "math",
+   "numpy",
+   "typing"
+  ],
+  "scripts/ascella_coherence_repeat.py": [
+   "__future__",
+   "ascella_coherence_analysis",
+   "ascella_coherence_run",
+   "bdsc_certificate",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "photonic_compilation_audit",
+   "qd_belenos_mesh",
+   "re",
+   "scipy",
+   "sys",
+   "typing"
+  ],
   "scripts/ascella_coherence_request.py": [
    "__future__",
    "bdsc_certificate",
+   "collections",
    "copy",
+   "dataclasses",
    "datetime",
    "functools",
    "hypercomplex_cases",
@@ -8922,6 +8993,18 @@
    "pathlib",
    "perceval",
    "qd_platform",
+   "qd_schedule",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_coherence_run.py": [
+   "__future__",
+   "ascella_coherence_analysis",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
    "sys",
    "typing"
   ],
@@ -8933,6 +9016,19 @@
    "copy",
    "json",
    "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_response_geometry.py": [
+   "__future__",
+   "ascella_coherence_analysis",
+   "ascella_coherence_repeat",
+   "bdsc_certificate",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
    "sys",
    "typing"
   ],
@@ -9451,9 +9547,17 @@
    "cd_core",
    "collections",
    "numpy",
+   "parallel",
    "pathlib",
    "sys",
    "time"
+  ],
+  "scripts/cd_sign_rocq_ast.py": [
+   "__future__",
+   "argparse",
+   "ast",
+   "pathlib",
+   "sys"
   ],
   "scripts/cd_star_lattice.py": [
    "__future__",
@@ -10863,6 +10967,22 @@
    "tempfile",
    "typing"
   ],
+  "scripts/outshift_qrng.py": [
+   "__future__",
+   "anu_qrng",
+   "argparse",
+   "copy",
+   "datetime",
+   "functools",
+   "hashlib",
+   "json",
+   "os",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing",
+   "urllib"
+  ],
   "scripts/packed_pauli_analysis.py": [
    "__future__",
    "collections",
@@ -11586,6 +11706,21 @@
    "re",
    "typing",
    "urllib"
+  ],
+  "scripts/quandela_qrng.py": [
+   "__future__",
+   "argparse",
+   "copy",
+   "datetime",
+   "functools",
+   "hashlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "qd_platform",
+   "sys",
+   "typing"
   ],
   "scripts/qx_local_series.py": [
    "__future__",

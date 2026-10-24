@@ -4,7 +4,9 @@
 over the compute job manager REST API, run by the Quantum Inspire
 interpreter so it reads the tokens `qi login` stored. It reuses
 `scripts/qi_platform.py`'s `Client`, which renews the access token before
-its 3600 s lifetime ends, so a long-lived server keeps working.
+its 3600 s lifetime ends, so a long-lived server keeps working. A tool that
+fails on authentication returns the `Client` error text, which
+[setup.md](setup.md#login-failures) maps to its recovery.
 
 ## Tools
 
@@ -133,6 +135,18 @@ codex mcp add quantum_inspire -- "$QI_PY" -I "$SRV"
 
 User scope makes the server available in every project
 (`~/.claude.json` top level; `~/.codex/config.toml` `[mcp_servers.quantum_inspire]`).
+Each host registers it once, since every registration starts its own server
+per session: Codex under `quantum_inspire` alone. Antigravity runs without it
+by default; a session that needs it adds the entry to
+`~/.gemini/config/mcp_config.json` under `mcpServers`:
+
+```json
+"quantum-inspire": {
+  "command": "/home/USER/.local/share/quantuminspire/venv/bin/python",
+  "args": ["-I", "/home/USER/Projects/IBMQuantum/scripts/qi_mcp_server.py"],
+  "disabled": false
+}
+```
 The path names the primary checkout, so the server connects once the
 branch carrying it is merged there. `-I` isolates the interpreter from the
 working directory; the script adds its own directory to `sys.path` for

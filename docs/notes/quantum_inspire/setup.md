@@ -63,6 +63,83 @@ login` in the background, reads the URL and code from its output, and asks
 the user to approve them in the browser; the code expires within minutes.
 `qi logout` revokes the refresh token.
 
+## Login failures
+
+Every repository call, the MCP tools included, authenticates through
+`Client` in `scripts/qi_platform.py`, so the error text identifies the
+failure:
+
+| Error text | Meaning | Action |
+|---|---|---|
+| `403 {"detail":"Signature has expired"}` | the request carried an expired access token; the API answers it with 403, not 401 | `Client` refreshes once and retries; from any other caller (curl, an SDK object), repeat the read through `qi_platform.py` or an MCP tool |
+| `refresh token is no longer valid (invalid_grant)`, or the SDK's `403 {"error":"invalid_grant","error_description":"Unknown or invalid refresh token."}` | the login is dead for every process on the account | `"$QI_ENV/bin/qi" login --force`, approve the code, `chmod 600 ~/.quantuminspire/config.json` |
+| `no Quantum Inspire login` | no tokens are stored | `"$QI_ENV/bin/qi" login` |
+| an MCP tool outlives the client's wait | `qi_usage` pages every job of the account and takes minutes; authentication is fine | wait for the backgrounded result |
+
+Plain `qi login` never recovers an invalid_grant. With tokens stored,
+`Api.login` (quantuminspire/api.py) calls `AuthManager.refresh_tokens`,
+which presents the stored refresh token again and keeps any rotated token
+in memory without saving it. On a live login with an expired access token,
+that call spends the refresh token and leaves the spent one in the file for
+the next process. `--force` runs the device flow and writes fresh tokens.
+A running MCP server needs no restart afterwards: `Client.refresh` rereads
+the token file under the lock at every renewal, and `client()` in
+`scripts/qi_mcp_server.py` keeps no client until one constructs.
+
+**Renewal.** The access token lives 3600 s (`expires_in`), and without a
+renewal every process would need a new device login each hour. `Client`
+renews lazily: a request within `REFRESH_MARGIN` (120 s) of expiry calls
+`Client.refresh`, which exchanges only once the stored access token is
+within 5 s of expiry, so an idle process renews nothing. Every holder rereads
+the file under the lock first, so all processes on the host share one
+exchange per expiry, at most one an hour. Each exchange rotates the refresh
+token, and a holder that presents the predecessor of the current one
+presents a token the server has already retired. Through the lock one holder
+exchanges and every other adopts the result, so a loss by reuse needs one of
+the paths that skip the lock below; a short tenant lifetime would end the
+login whatever the renewal path, and the exchange log tells the two apart.
+
+**What spends a login.** The authorization server, auth.quantum-inspire.com
+(an Auth0 tenant by its OpenID configuration), rotates the refresh token at
+every exchange. `Client.refresh` holds `~/.quantuminspire/config.json.lock`,
+rereads the file and writes the rotated pair back. Three paths exchange
+outside that lock:
+
+- `qi login` without `--force`, which saves nothing (above);
+- qiskit-quantuminspire, `quantuminspire.api` and the `qi` remote commands,
+  which refresh through `qi2_shared.authentication.OauthDeviceSession` and
+  write the file in place (`ApiSettings.store_tokens`) without the lock or a
+  reread, so a long-lived SDK object can present a token another process
+  already spent;
+- a copy of the token file on another host, container or sandbox.
+
+The recorded deaths fall at 2026-10-17 04:50Z, near 2026-10-22 04:03Z,
+between 2026-10-22 14:16Z and 16:53Z, and between 2026-10-23 08:25Z and
+14:17Z, each 5 to 13 hours after the last successful use. Two mechanisms fit
+them, and the tenant's settings are not readable from the account: a spent
+token presented again, which Auth0 reuse detection answers by revoking the
+whole token family, or a short refresh-token lifetime.
+
+**Exchange log.** `Client.refresh` appends one JSON line per exchange to
+`~/.quantuminspire/refresh-log.jsonl` (mode 600, no token bytes): the UTC
+time, the outcome (`exchanged`, `exchanged-not-persisted`, or `rejected` with
+the error text), the pid, the parent process name and the script. At the
+next invalid_grant, read the last `exchanged` line before the first
+`rejected` one:
+
+- a rejection within one access-token lifetime (3600 s) of a logged
+  exchange names an exchange outside the log, the reuse mechanism;
+- a rejection after a quiet gap with no SDK-native process running bounds
+  the tenant's refresh-token idle lifetime by that gap;
+- an `exchanged-not-persisted` line names the process that spent the token
+  and lost its successor.
+
+Every session of a host that registers the server starts its own copy
+(`pgrep -af qi_mcp_server.py` lists them with their parents); each one is a
+`Client` and shares the lock. A server keeps the `qi_platform.py` it imported
+at start, so a server older than the exchange log writes no line until its
+session reconnects it (`/mcp` in Claude Code).
+
 Project-local settings (algorithm names, backend ids, shots) live in
 `PROJECT_ROOT/.quantuminspire/config.json`, found relative to the working
 directory; `qi files compile` and `qi algorithms init` create it.
@@ -116,7 +193,10 @@ serializes them.
 `QIProvider().backends()` builds a Qiskit Target from each backend type's
 gate set and topology; `backend.run(circuits, shots=N, memory=True)` submits
 up to `max_jobs_per_batch_job` circuits as one batch job, after checking the
-limit client-side. Its cQASM writer emits a multi-qubit barrier as per-qubit
+limit client-side. That is the API's ceiling of 5, not the FAQ's 3 queued
+jobs per hardware backend, and the route carries neither the hardware pause
+nor the token lock, so runs go through `qi_platform.py submit`
+([usage.md](usage.md#queue-rules-the-faq-governs)). Its cQASM writer emits a multi-qubit barrier as per-qubit
 barriers and accepts delays only in `dt`, so timing-sensitive cases here write
 cQASM directly.
 

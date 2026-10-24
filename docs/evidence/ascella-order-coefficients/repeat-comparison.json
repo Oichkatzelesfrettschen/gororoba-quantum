@@ -1,0 +1,55 @@
+{
+ "alpha": 0.01,
+ "budget": {
+  "log2_median_ratio": 0.8300749985576875,
+  "reading": "acquisition-proportional"
+ },
+ "contrast": {
+  "x": {
+   "difference": 0.0019924876839215733,
+   "se": 0.013197815724702312,
+   "visibility_a": 0.9699496018766932,
+   "visibility_b": 0.9719420895606148
+  },
+  "y": {
+   "difference": -0.0032734385460793103,
+   "se": 0.012972051675030623,
+   "visibility_a": 0.9701661455547338,
+   "visibility_b": 0.9668927070086545
+  }
+ },
+ "identity": {
+  "p": 0.5580220988950553,
+  "supported": false,
+  "value": -0.075452898368194
+ },
+ "null_draws": 20000,
+ "null_seed": 20261024,
+ "residuals": {
+  "x": {
+   "p": 4.999750012499375e-05,
+   "reproduces": true,
+   "value": 0.9744339470150674
+  },
+  "y": {
+   "p": 4.999750012499375e-05,
+   "reproduces": true,
+   "value": 0.8016181992374808
+  }
+ },
+ "runs": [
+  "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+  "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01"
+ ],
+ "schema": "ascella-signed-coherence-comparison-v1",
+ "sequence": {
+  "p": 4.999750012499375e-05,
+  "supported": true,
+  "value": -0.653137353893108
+ },
+ "transition": {
+  "p": 0.34598270086495675,
+  "supported": false,
+  "value": 0.12148130561257478
+ }
+}

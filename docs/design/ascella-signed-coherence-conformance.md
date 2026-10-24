@@ -6,11 +6,22 @@ finite angle family. The completed pilot observes intensities. The follow-up
 measures the coherence those intensities leave undetermined, extracts the
 predicted harmonic coefficients, and renders their measured geometry.
 
-The plan contains one proposed 64-setting order-family job, a 300-second cap
-and a 1.2-credit ceiling. The recorded tariff gives 1.016384 credits. The
-[frozen request](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json)
-and its serialized job body exist; the local replay, written case and
-submission remain prospective. Wave evolution
+The plan contains one 64-setting order-family job, a 300-second cap and a
+1.2-credit ceiling. The recorded tariff gives 1.016384 credits. The
+[frozen request](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json),
+its serialized job body and their
+[local replay](../../results/local-simulation/ascella-signed-coherence-replay/README.md)
+precede the [written acquisition case](#written-acquisition-case). Under the
+owner's approval of that case, job `739a5271` ran on 2026-10-24: all 27
+endpoints qualify, and 1.27 % of events fall outside the logical block, above
+the case's dark-count bound
+([retained run](../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/README.md)).
+The registry cites the runner image's
+[analysis](../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis-runner-image.json),
+which the replay gate reproduces; the run's
+[first analysis](../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis.json)
+keeps its bytes from a system-numpy build that differs in the last ulps, with the same 27 verdicts.
+Wave evolution
 and Fourier families retain separate cases. The science-led design replaces
 the fixed-angle reference-and-repeat design in this document's Git history;
 all settings now probe the order mathematics, its sign symmetry or its
@@ -495,13 +506,18 @@ entries carrying the manifest's `circuit_params`, 8,192 samples, 16,384 shots
 and seed 0, the twelve-entry input, the one-photon filter and the empty
 mitigation list, with each entry's bound unitary equal to the design operator
 within 1e-9. Preflight compares the fresh body with the retained one in every
-field except `process_id`. Local replay executes the serialized request
-through SLOS/Naive.
-Synthetic diagonal mixtures, conjugation, swapped readouts, aliasing and missing
-arms exercise the analysis. Fresh preflight and the applicable
+field except `process_id`. The
+[local replay](../../results/local-simulation/ascella-signed-coherence-replay/README.md)
+executes the serialized body through SLOS and Naive and runs the registered
+estimators of [`ascella_coherence_analysis.py`](../../scripts/ascella_coherence_analysis.py)
+on the ideal response, a seeded sample of the iterator, the equal-contrast and
+sign-even counterexamples, a diagonal mixture, conjugation, exchanged readouts
+and a missing iteration; every disposition this section registers holds.
+Aliasing is a property of the five-point transform, which the derivation
+records. Fresh preflight and the applicable
 [evidence-closure procedure](../runbooks/evidence-closure.md) precede submission.
 The retained deliverables are the scientific plan, the local derivation
-evidence and the frozen request.
+evidence, the frozen request and its local replay.
 
 A later axis-angle experiment can vary the generator from I toward J. For
 `B=cos(phi)+sin(phi)(cos(gamma)I+sin(gamma)J)`, the commutator norm predicts
@@ -510,3 +526,361 @@ then distinguish axes with the same norm. That richer scan becomes a separate
 case after the coefficient atlas establishes which measurement discrepancies
 require explanation. Wave evolution and Fourier mathematics remain separate
 scientific families rather than filler in this job.
+
+## Written acquisition case
+
+The case submits the frozen request once to qpu:ascella: one job of 64
+iterations, 8,192 samples and a 16,384-shot cap per iteration (aggregate caps
+524,288 and 1,048,576), seed 0, the explicit empty mitigation list, a
+twelve-entry input and twelve returned modes. It names `cases.json`
+`3c92af45df7502bab5c6f2d74779aa83b04f7af2094b62b499b6e29ca0e69520`, the
+retained `job-body.json`
+`7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8`, and that
+body's digest without `process_id`,
+`e323b1c6fd98747215a7c7a4574ab10a08f5392c1fc0b5edfafafcde09905c07`.
+
+The job measures the 27 primary endpoints of the preceding sections on the
+physical instrument. Local SLOS and Naive already return the ideal response to
+1e-12, so simulation answers only what the request asks for; the question is
+what Ascella's mesh, phase settings and detectors return. No repository model
+covers that response, as the descriptive pilot distances of 0.0005 to 0.028
+total variation show.
+
+**Seconds.** Expected 200 seconds against the 300-second `max_duration`. The
+eight-iteration pilot `889c0b21` completed 65,536 samples in 25 provider
+seconds. If every second scaled with iterations or samples, 64 iterations at
+the same budget would take 200 seconds; any fixed setup lowers that. The
+service's behavior at `max_duration` is unobserved, and the mutation block runs
+last, so a truncated job loses the mutation closure and the analysis returns
+`complete: false`.
+
+**Credits.** Ceiling and expectation 1.016384 credits: the 1.0 per-job price
+plus 16,384 billed shots at 1e-6 credits
+([billing runbook](../runbooks/quandela-credit-optimization.md)), inside the
+user's 1.2-credit limit. Pilot `889c0b21` debited exactly 1.016384 free
+credits. Six errored qpu:ascella jobs debited nothing: the token's qpu:ascella
+total reads 1.016384 free credits over seven jobs. The token's totals before
+the case are 57.24 free credits over 65 jobs, with zero paid credits. The
+account-wide remaining balance is unobserved.
+
+**Why not more shots per job.** The per-job price dominates, and shots cost
+1e-6 credits each, so a job's statistical yield is limited by its 300 seconds
+rather than by credits. One timing point cannot separate per-iteration setup
+from per-sample time. If all 25 pilot seconds were per-sample time, 64
+iterations would fit in 300 seconds only up to 12,288 samples each, which
+leaves no margin. That gain would shrink the radii by a factor of only 0.82,
+and it would invalidate the frozen digests, the replay receipts and the
+registered radii. The job therefore runs as frozen. Its measured duration
+supplies the second timing point that sizes any larger or repeated job. A
+repeat of the identical body costs 1.016384 credits; a between-job comparison
+needs its own analysis registered before its data, so it is a separate case.
+
+**Fresh read.** [`case-preflight/`](../evidence/ascella-order-coefficients/case-preflight/preflight.json)
+holds the read-only plan of 2026-10-24 07:04:46 UTC by
+`ascella_coherence_request.py --preflight`, together with its `catalogue.json`
+and `observation.json`:
+- qpu:ascella was available on its Explorer row and processor record, with
+  92.37% availability for 2026-10-24, a 300-second `max_duration` and no
+  booked maintenance. qpu:belenos carries weekly maintenance from 2026-10-29
+  08:30 to 12:00 UTC.
+- The price was 1e-6 credits per shot, and token occupancy was 0 running and
+  0 queued of 1 and 1.
+- HOM was 87.28%, g2 1.9% and the clock 13.33 MHz.
+- The processor advertised connected input modes 0, 2, 4, 6, 8 and 10. Mode
+  0 carries the request's photon.
+- The advertised software was mosaiq-arcturus 2.1.5.2.post4, hardware-core
+  3.9.3, pcvl-worker 2.1.1, universalchipworker 2.1.3, exqalibur 1.4.1 and
+  perceval-quandela 1.3.0, behind cloud API v2.10.1-rc1.
+- Perceval estimated 524,288 shots.
+- The planned body equaled the retained body in every field except
+  `process_id`.
+
+**Token sharing.** The job token admits one running and one queued job, and
+`plan` refuses while either is occupied. The armed
+[BDSC drift series](../../results/quandela/schedules/bdsc-drift-series.json)
+submits a 213.6-second qpu:belenos job at each odd UTC hour from 07:00 to
+19:00 on 2026-10-24, and a due drift job waits while the token is busy. The
+Ascella job therefore starts at least 10 minutes after a drift job's start
+and finishes before the next one. On the 200-second projection, a start
+between hh:10 and hh:50 past an odd hour leaves both jobs their windows.
+
+**Untested path.** No completed Ascella job has yet used a twelve-entry input,
+an explicit empty mitigation list or more than eight iterations. Pilot
+`889c0b21` sent four entries and no mitigation field. Every retained Ascella
+job that carried an explicit mitigation list ended in the
+`circuit_input_ports`/`set_pic_input` worker error, but all of those jobs
+predate the advertised mosaiq-arcturus 2.1.5.2.post4 update and the pilot's
+completion. An error is therefore a live outcome, and on the retained
+evidence it costs nothing.
+
+**Stopping rule.**
+- A terminal error with no counted iteration allows one resubmission of the
+  identical body under the same approval, from a fresh run directory, after
+  `--preflight` passes again.
+- A second such error stops the case and is reported.
+- A completed, partial or canceled job that returned counts is never
+  resubmitted under this approval. An incomplete analysis keeps its raw counts
+  as descriptive evidence.
+
+**Dark counts.**
+- At the fresh read the processor reports 12,159 dark detections per second
+  summed over twelve detectors: 9,908 on detectors 8 to 11 and 651 on
+  detectors 1 to 3.
+- Pilot setting `order-i1-j0-representative0` has its ideal support on mode 0
+  and returned 4 of 8,192 events on modes 1 to 3.
+- Scaling those 4 events by the ratio 12,159/651 bounds the dark share of
+  twelve-mode eligible events at about 75/8,192, or 0.91%.
+- The bound assumes the stray events are dark counts in proportion to each
+  detector's reported rate. Crosstalk would make the bound conservative, and
+  a rate-independent mechanism would break it; the uncertainty is medium.
+- A share of that size scales every statistic by about 0.99. Coefficients then
+  move by at most about 0.005, inside the 0.05 coefficient tolerance, though
+  the shift can exclude an exact ideal.
+- `outside_logical_block` in the analysis record reports the measured share.
+
+**Procedure after approval.** These commands contain no job-specific
+placeholder:
+
+```sh
+export PYTHON="${PYTHON:-python3}"
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export QUANDELA_TOKEN_FILE="$HOME/.config/quandela/cloud-token"
+RUN=results/quandela/runs/$(date -u +%Y-%m-%dT%H%M%SZ)-qpu_ascella-ascella_signed_coherence-job-00
+mkdir -p "$RUN"
+cp results/quandela/cases/ascella_signed_coherence/job-00/cases.json \
+   results/quandela/cases/ascella_signed_coherence/job-00/circuit.json "$RUN"/
+"$PYTHON" scripts/ascella_coherence_request.py --preflight "$RUN"
+"$PYTHON" scripts/ascella_coherence_request.py --submit "$RUN" "APPROVAL TEXT"
+"$PYTHON" scripts/qd_platform.py collect "$RUN" --timeout 3600
+"$PYTHON" scripts/qd_platform.py snapshot --out "$RUN/platform-after"
+"$PYTHON" scripts/qd_platform.py observe --out "$RUN/platform-after"
+"$PYTHON" scripts/ascella_coherence_run.py --run "$RUN"
+```
+
+`--preflight` also writes `platform-before/` through `qd_platform.snapshot`
+and `qd_platform.observe`, and the procedure writes `platform-after/` the same
+way after collection:
+- `catalogue.json` holds:
+  - the curated Explorer rows;
+  - every processor record: `perfs` (clock, per-detector dark counts, HOM,
+    g2), `specs.software_versions` (mosaiq-arcturus, hardware-core,
+    pcvl-worker, universalchipworker, exqalibur, perceval-quandela),
+    `connected_input_modes`, `constraints`, `known_mitigations`,
+    `default_mitigations`, the `architecture` blob and the server command set;
+  - the API version, token occupancy and usage, and local package versions.
+- `observation.json` holds the raw answer of every GET route in the retained
+  cloud and account OpenAPI documents (`docs/notes/quandela/api/`), plus the
+  public and Explorer platform lists and every platform's processor record.
+  It is scrubbed of `FORBIDDEN_KEYS`. The Explorer rows keep every field,
+  including the booked maintenance windows. The record also carries both
+  OpenAPI documents, health, availability, the usage report and the provider
+  RSS feed. Each answer is kept with its HTTP status, content type, retrieval
+  time and sha256, and a refused or unanswered route is recorded as such.
+- The observer omits three kinds of route. Token records are credentials,
+  each QRNG read is a billed request that needs its own case, and the session
+  routes (logout, oauth) perform account actions. `collect` reads and retains
+  the job's own status, data and result.
+
+The before and after pair brackets the job, because no job field names the
+executing worker or a hardware-configuration digest. The portal dashboard
+behind https://cloud.quandela.com/webide/ needs a browser session that the job
+token cannot open ([API audit](../evidence/quandela/input-port-api-audit/README.md#dashboard-queue-and-accounting-boundaries)),
+and neither the repository nor a web search finds a public Quandela telemetry
+or Grafana endpoint. The run therefore records no dashboard telemetry and no
+platform queue depth.
+
+`--submit` holds the token's submit lock and repeats the plan. It refuses a
+body that departs from the retained one before writing its checkpoint, and it
+refuses a run directory that holds anything but the two copied request files
+and `preflight.json`. Every directory under `results/quandela/runs/` reads as a sent job to
+`scripts/research_state.py`, so a run directory whose preflight refuses
+leaves the tree through `trash-put` before anything is committed. `collect`
+retains the raw result and the partial result
+of an error. `--run` attributes each counted iteration only at its own
+position, checks the echoed `circuit_params`, and writes `analysis.json`. The
+retained run then enters `docs/state/research_state.json`, the strategy run
+log and this plan's receipts in the change that retains it.
+
+
+## Open problems after job-00 and the permuted repeat
+
+Job `739a5271` (job-00) qualifies all 27 endpoints and leaves three device
+questions open. [`ascella_coherence_repeat.py --diagnose`](../../scripts/ascella_coherence_repeat.py)
+writes their exploratory reading,
+[`job-00-diagnostics.json`](../evidence/ascella-order-coefficients/job-00-diagnostics.json).
+
+**Analyzer contrast.**
+- The returned nominal compiled model matches the target: every statistic
+  computed from the returned `computed_circuit` and `computed_input` lies
+  within 2.2e-4 of its registered ideal, and none puts more than 6.2e-7 of the
+  photon outside modes 0 to 3. The check covers the circuit the provider
+  reports, not the applied voltages or the implemented unitary.
+- The block-conditioned X and Y statistics read z = V ideal + c with V 0.970
+  (standard error 0.009) on both readouts by ordinary least squares, 0.979 and
+  0.975 by inverse-variance weights, while the direct readout reads
+  slope 1.004. The deficit sits in the interference contrast of the hardware;
+  the reported compilation and the intensities lie close to ideal, and the
+  direct response carries small resolved departures of its own (job-01's dark
+  constant 0.2547, interval [0.2511, 0.2583]).
+- X residuals exceed multinomial noise: the inverse-variance weighted fit
+  leaves chi-square 195 on 18 degrees of freedom, against 44 on 18 for Y, and
+  the matched quadrature ideal explains little of it (coefficient -0.017,
+  chi-square 176 on 17) ([response geometry](#response-geometry-of-both-jobs)).
+  The X readout carries setting-specific errors. The diagnostics record's
+  `residual_chi2` standardizes ordinary-least-squares residuals by unequal
+  variances and has no chi-square reference.
+- A 3 % contrast deficit is the calibrated-chip scale Maring et al. report for
+  Ascella, total variation (3.0 +- 1.3) % over random phase settings
+  ([literature, source 1](../notes/quandela/literature.md#1-maring-et-al-ascella-platform)).
+- The X sign-odd constant (0.4697) and the Y sign-odd sin(2 theta)
+  coefficient (0.4777) exclude 0.5 for this reason. Block-conditioned
+  counts move them only to 0.4751 and 0.4851, so outside-block dilution
+  removes 18 % of the X shortfall and 33 % of the Y shortfall (14 % and 29 %
+  in job-01). The fractions describe a change of denominator, not a
+  decomposition into physical causes.
+
+**Outside-block clicks.**
+- 6,659 of 524,288 events land on modes 4 to 11, 4 to 586 per setting, with
+  1,424, 1,783 and 2,376 on modes 8, 9 and 10, the detectors with the largest
+  plan-time dark rates (3,275, 4,114 and 5,290 per second). The pooled
+  composition follows those rates except for an excess on modes 4 and 6
+  (chi-square 110 on 7 degrees of freedom): a dark-rate-shaped background
+  with further structure. The composition alone bounds the catalogue share
+  above by 0.90 and admits no positive lower bound; the
+  [two-component fit](#response-geometry-of-both-jobs) separates the parts.
+- The outside-block count alternates in execution order: log counts have
+  lag-1 autocorrelation -0.66 and lag-2 +0.73 (permutation p below 1e-4),
+  with six phase slips over 64 iterations, while the size of the
+  compiled-phase change from the predecessor predicts nothing (Spearman 0.22,
+  p 0.09). Because job-00 runs the four arms of each block consecutively, the
+  alternation is confounded with arm parity.
+- `physical_perf` reads 0.0209 in every iteration
+  ([literature, source 31](../notes/quandela/literature.md#31-perceval-performance-fields)),
+  so the provider reports no per-iteration acquisition time. Ascella's settling time
+  is unpublished; other thermo-optic devices settle in microseconds
+  ([source 30](../notes/quandela/literature.md#30-thermo-optic-switching-times)),
+  a comparison that leaves the settling share of the 2.5 to 3 s each iteration
+  costs unresolved.
+
+## Permuted repeat (job-01)
+
+The owner approved job-01 on 2026-10-24: job-00's 64 circuits (same
+`circuit_params`, seed 0, empty mitigation list and twelve-entry input) in the
+order that values 0 to 63 of the retained ANU QRNG draw
+[`draw-2026-10-18T083846Z.json`](../evidence/anu_qrng/draw-2026-10-18T083846Z.json)
+fix, at 16,384 samples and 32,768 shots per iteration. The order puts 17 of
+job-00's 32 high-outside settings at even positions and 15 at odd, so setting
+identity and execution parity separate. Its ceiling is 1.032768 credits and
+its expected duration under 240 s: job-00 took 186 s, and if acquisition time
+scales with samples at the rate the outside-block dark clicks imply (about
+34 s of job-00's 186), doubling the samples adds about 34 s; the per-sample
+rate is an inference of medium confidence. The stopping rule of job-00
+applies.
+
+`--compare A B OUT` applies the preregistered comparison, each test at
+alpha 0.01 against 20,000 seeded permutations:
+
+| Question | Statistic | Reading |
+|---|---|---|
+| Fixed per-setting cause | Spearman of per-setting log(count + 1/2) outside-block counts, job-00 against job-01 | supported when positive at p < 0.01 |
+| Alternation in execution order | lag-1 autocorrelation of job-01's log counts | supported when negative at p < 0.01 |
+| Reconfiguration size | Spearman of job-01's log counts against compiled-phase change | supported when positive at p < 0.01 |
+| Sample-budget scaling | log2 of the median outside-block count ratio, job-01 over job-00 | acquisition-proportional at 0.5 or more, per-iteration below |
+| Static X and Y errors | Pearson of per-setting contrast residuals across the jobs, per readout | reproduces when positive at p < 0.01 |
+| Contrast stability | V(job-01) - V(job-00) per readout with its standard error | reported |
+
+`--self-test` builds synthetic job-01 runs from job-00's counts under a fixed
+per-setting cause, an alternation, a reconfiguration-size law, a
+per-iteration burst, static residuals and drifting residuals, and requires
+each reading to come out as generated. job-01's own 27 endpoints come from
+`ascella_coherence_repeat.py --analyze RUN` with job-00's estimators.
+
+**Outcome.** Job `6ef8e8db` ran on 2026-10-24 at 15:31 UTC
+([retained run](../../results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/README.md),
+[comparison](../evidence/ascella-order-coefficients/repeat-comparison.json)):
+1,048,576 samples in 186 s for 1.032768 credits, all 27 endpoints qualifying.
+The outside-block clicks follow the execution sequence (lag-1 -0.653, setting
+Spearman -0.075) and grow with the samples (log2 ratio 0.83); the analyzer
+residuals reproduce (X 0.974, Y 0.802) at a stable contrast of 0.97. Both jobs
+report 186 s in total. No retained record separates acquisition time from
+reconfiguration or other overhead, and the jobs ran six hours apart in
+different orders, so the equal totals assign no marginal time to the further
+524,288 samples; the case's per-sample estimate (about 34 s) is neither
+confirmed nor bounded. A timing budget for larger sample counts needs
+component timing or controlled repeats that vary only the budget.
+
+## Response geometry of both jobs
+
+[`ascella_response_geometry.py`](../../scripts/ascella_response_geometry.py)
+writes one exploratory record over both runs,
+[`response-geometry.json`](../evidence/ascella-order-coefficients/response-geometry.json),
+with analytic references only. It settles which part of the analyzer deficit
+a uniform gain explains and how the outside-block background splits.
+
+**Gain relations.** A setting-independent complex gain g maps the ideal
+coherence C(theta) = (1 - exp(-2i theta))/2 to g C(theta), which fixes five
+linear relations among the sign-odd coefficients. Projecting each job's
+simultaneous registered intervals onto them keeps the family coverage:
+
+| Relation | job-00 | job-01 |
+|---|---|---|
+| X0 + Xc2 = 0 | -0.0276 [-0.0524, -0.0029] | -0.0303 [-0.0478, -0.0128] |
+| Y0 + Yc2 = 0 | -0.0029 [-0.0276, 0.0219] | -0.0073 [-0.0248, 0.0102] |
+| X0 - Ys2 = 0 | -0.0081 [-0.0328, 0.0167] | -0.0049 [-0.0224, 0.0126] |
+| Xs2 + Y0 = 0 | -0.0120 [-0.0367, 0.0128] | -0.0174 [-0.0349, 0.0001] |
+| Xc2 + Ys2 = 0 | -0.0196 [-0.0485, 0.0094] | -0.0254 [-0.0458, -0.0049] |
+
+X0 + Xc2 excludes zero in both jobs and keeps its value under the
+block-conditioned denominator (-0.0298, -0.0307), so dilution does not cause
+it; Xc2 + Ys2 excludes zero in job-01 alone. The Y relations and the X-to-Y
+relations hold. The X sign-odd response therefore departs from a scaled and
+rotated ideal circle along its constant-minus-cos(2 theta) direction, while
+the Y response and the X-Y phase relation stay within a common gain; job-01
+also resolves X cos(4 theta) at 0.0143 [0.0041, 0.0245].
+
+**Configuration response.** The 64 settings of each job compile to 30
+distinct returned configurations: each block's arms 0 and 3 share one, and
+arms 1 and 2 another. The theta-0 X and Y arms 0 and 3 compile to one
+configuration, and the mutation arms 0 and 3 compile to the theta-1 direct
+arms 0 and 3. The settings sharing a configuration agree within a job
+(analyzer chi-square 23.0 on 21 and 15.8 on 21; direct 16.8 on 13 and 6.5 on
+13). Pooled per configuration, the block-conditioned statistics agree between
+the jobs on X (3.3 on 10 degrees of freedom, p 0.97) and Y (8.3 on 10,
+p 0.59), with pooled residual correlations 0.997 and 0.965. The direct
+statistic differs between the jobs at 25.5 on 10 (p 0.0045, one of three
+readouts tested), carried by the dark constant moving from 0.2504 to 0.2547.
+
+**Held-out prediction.** Job-00's inverse-variance gain-and-offset fit
+predicts job-01's pooled configurations at chi-square 402 on 10 (X) and 106
+on 10 (Y), in the full residual covariance its two shared parameters give the
+predictions, against 3.3 and 8.3 for job-00's own configuration values. A uniform
+gain and offset fail on held-out data; a fixed per-configuration response
+predicts it within counting noise. These results support a reproducible
+configuration-dependent analyzer response over the two acquisitions; they
+name no calibration mechanism and set no equivalence margin on drift.
+
+**Outside-block background.** One profile with a per-iteration amplitude,
+n_jm = e_j d_m, fails: the pooled profiles of the four quartiles of
+per-iteration outside total differ (likelihood ratio 407 on 21 degrees of
+freedom in job-00, 921 on 21 in job-01). The lowest quartile (11 and 25
+events per iteration) spreads over modes 4 to 11 with mode 10 at 0.16 and
+0.11, and the highest quartile (325 and 656) follows the catalogue dark
+profile with mode 10 at 0.38 and 0.39. The even- and odd-position pooled
+profiles agree (9.3 and 8.1 on 7, p 0.23 and 0.32), but the phase slips mix
+high and low iterations within each parity, so that split is weak; the
+quartile split tracks the amplitude itself. The
+Poisson fit n_jm = a_j f_m + b_j d_m, with the catalogue profile d fixed and
+one profile f fitted, has a flat likelihood ridge; iterations whose
+catalogue-shaped amplitude fits to zero pin it, so the catalogue-shaped
+component carries 6,202 to 6,267 of 6,659 job-00 events and 12,289 of 13,268
+job-01 events at every admissible point. Its log amplitude alternates
+(lag-1 -0.65 to -0.71 in job-00, -0.71 in job-01), while the fitted
+component (weight on modes 4 to 9) alternates weakly (-0.10 and -0.26). Both
+components roughly double with the samples. The fit is descriptive and its
+shares are model values: job-00's 0.93 exceeds the 0.90 the pooled
+composition allows any exact catalogue share, because the catalogue
+overpredicts mode 11; quartile-pooled Pearson residuals of 58 and 97 on 32
+cells show structure the fit leaves; and the fitted profile f differs between
+the jobs on modes 10 and 11. The alternation sits in a catalogue-dark-shaped
+component; converting its amplitude into acquisition time needs a detector
+gating model the records lack.
