@@ -1,0 +1,122 @@
+{
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "circuits": [
+  {
+   "file": "readout-0.cq",
+   "kind": "readout-reference",
+   "prepared": 0,
+   "sha256": "9db3ee4380c8a07affab9fd91aa3634e2c54159340a5e1c2a7ec264d31eda384"
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout-reference",
+   "prepared": 1,
+   "sha256": "63867a3265fb0db6f6370dccbe104df6a49ecc1d0b80787aff9270a06b714d15"
+  },
+  {
+   "file": "order-i1-j0-representative1.cq",
+   "kind": "hypercomplex-operator",
+   "measurement_mapping": [
+    0,
+    1
+   ],
+   "native_operator": {
+    "imaginary": [
+     [
+      -1.1102230246251565e-16,
+      -0.7071067811865475,
+      0.0,
+      0.0
+     ],
+     [
+      -0.7071067811865475,
+      1.1102230246251565e-16,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      -0.7071067811865475,
+      -5.551115123125783e-17
+     ],
+     [
+      0.0,
+      0.0,
+      5.551115123125783e-17,
+      -0.7071067811865475
+     ]
+    ],
+    "real": [
+     [
+      5.551115123125783e-17,
+      0.7071067811865475,
+      0.0,
+      0.0
+     ],
+     [
+      -0.7071067811865475,
+      5.551115123125783e-17,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.7071067811865475,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      -0.7071067811865475
+     ]
+    ]
+   },
+   "native_probabilities": [
+    1.540743955509789e-32,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "nqubits": 2,
+   "observable_partition": [
+    [
+     0,
+     1
+    ],
+    [
+     2,
+     3
+    ]
+   ],
+   "operator_error": 5.755083976183638e-16,
+   "requested_probabilities": [
+    0.0,
+    0.9999999999999996,
+    0.0,
+    5.286997409534849e-34
+   ],
+   "setting": {
+    "name": "order-i1-j0-representative1",
+    "phi": 0.0,
+    "representative": 1,
+    "theta": 0.7853981633974483
+   },
+   "sha256": "1260b0787c25f63d78fab5e26b534eb91e985f12ec75492ef3dd64b5165334d7"
+  }
+ ],
+ "evidence_kind": "complex encoding and device conformance",
+ "hardware_pause_seconds": 120,
+ "job_execution_time_limit": 300,
+ "nqubits": 2,
+ "preregistered": {
+  "mitigation": "sensitivity only",
+  "primary": "raw grouped probabilities",
+  "shot_order": "retain; test temporal dependence before IID intervals"
+ },
+ "schema": "qi-hypercomplex-cases-v1",
+ "shots": 16384
+}

@@ -1,0 +1,49 @@
+PASS core-631     0.4s  "$PYTHON" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/seden
+PASS core-630     1.3s  "$PYTHON" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/
+PASS core-039    11.6s  "$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/ver
+FAIL core-615    72.5s  "$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests
+
+=== core-615 exit 1 in .
+"$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests
+
+tests/scripts/test_hypercomplex_cases.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+manifest = {'schema': 'qd-hypercomplex-cases-v1', 'family': 'transform', 'job': 'transform', 'platforms': ['qpu:ascella', 'qpu:belenos', 'sim:ascella', 'sim:belenos'], ...}
+circuit = {'schema': 'qd-template-circuit-v1', 'modes': 8, 'input_state': [1, 0, 0, 0, 0, 0, ...], 'parameters': 148, ...}
+
+    def template_experiment(manifest: dict[str, Any], circuit: dict[str, Any]) -> tuple[Any, list[dict[str, Any]]]:
+        """A fixed circuit of BS.Rx and PS components with one Perceval parameter per free angle, and its settings.
+    
+        circuit["ops"] lists ["BS", m, k] on modes (m, m + 1) with angle parameter xk (k null for a fixed pi), and
+        ["PS", m, k] on mode m. Every setting binds its circuit_params, and Perceval's unitary must carry the source
+        photon to the setting's column within 1e-9 before anything is sent.
+        """
+        import numpy
+>       import perceval as pcvl
+E       ModuleNotFoundError: No module named 'perceval'
+
+scripts/qd_platform.py:639: ModuleNotFoundError
+============================= slowest 15 durations =============================
+38.97s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.95]
+34.67s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.0]
+30.03s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_tls_plant_rejects_the_line_mixture[0.5]
+26.81s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.5]
+23.90s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_tls_plant_rejects_the_line_mixture[0.0]
+17.23s call     tests/ci/test_gate_inputs.py::SelectionTests::test_quandela_static_scopes_follow_named_fixtures
+14.60s call     tests/ci/test_gate_inputs.py::SelectionTests::test_slow_pr_gates_select_on_their_own_inputs
+12.64s call     tests/ci/test_premerge_gates.py::test_base_cache
+11.24s call     tests/ci/test_gate_inputs.py::SelectionTests::test_expensive_archive_replays_have_input_scopes
+10.80s call     tests/ci/test_gate_ledger.py::test_every_read_kind_reruns_exactly_its_gate
+8.89s call     tests/ci/test_gate_inputs.py::SelectionTests::test_synthetic_units_refuse_archive_access
+4.67s call     tests/scripts/test_hypercomplex_libraries.py::test_inventory_covers_locks_and_independent_roles
+4.20s call     tests/scripts/test_hypercomplex_libraries.py::test_documented_candidates_and_provider_adapters_have_roles
+3.08s call     tests/gororoba_quantum/test_live_run_wide_records.py::test_comparison_accepts_the_plan_and_refuses_an_edit
+2.79s call     tests/ci/test_gate_inputs.py::SelectionTests::test_repository_source_manifest_closure
+=========================== short test summary info ============================
+ERROR tests/test_qd_mcp_server.py - ImportError while importing test module '...
+FAILED tests/scripts/test_hypercomplex_cases.py::test_photonic_mesh_reconstructs_the_entire_operator
+FAILED tests/scripts/test_hypercomplex_cases.py::test_photonic_runner_checks_unprepared_columns
+============== 2 failed, 168 passed, 1 error in 72.07s (0:01:12) ===============
+
+3 passed, 1 failed of 4 gates in shard 0/1 on CPU

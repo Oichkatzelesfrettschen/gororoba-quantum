@@ -1,0 +1,63 @@
+{
+ "cpu_capacity": 12,
+ "gates": [
+  {
+   "estimated_seconds": 51.6,
+   "name": "core-039",
+   "resources": {
+    "max_rss_kib": 708480,
+    "system_seconds": 0.539328,
+    "user_seconds": 53.232285,
+    "workers": 1
+   },
+   "runtime": "current",
+   "seconds": 105.21179860501434,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 1.8,
+   "name": "core-270",
+   "resources": {
+    "max_rss_kib": 545248,
+    "system_seconds": 0.29869,
+    "user_seconds": 6.229168,
+    "workers": 1
+   },
+   "runtime": "current",
+   "seconds": 17.643418189982185,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 34.0,
+   "name": "core-271",
+   "resources": {
+    "max_rss_kib": 2843520,
+    "system_seconds": 1.6941959999999998,
+    "user_seconds": 68.285353,
+    "workers": 1
+   },
+   "runtime": "current",
+   "seconds": 131.21073878600146,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 10.1,
+   "name": "core-341",
+   "resources": {
+    "max_rss_kib": 116236,
+    "system_seconds": 0.526465,
+    "user_seconds": 5.873368,
+    "workers": 1
+   },
+   "runtime": "current",
+   "seconds": 23.112196097994456,
+   "status": 0
+  }
+ ],
+ "ledger_audit_misses": [],
+ "schema": "gororoba-gate-timings-v1",
+ "shard": "0/1",
+ "shard_cpus": 4,
+ "skipped": [],
+ "wall_seconds": 131.215321036987
+}

@@ -1,0 +1,25 @@
+import json
+import sys
+from pathlib import Path
+root = Path('${USER_HOME}/worktrees/IBMQuantum/hypercomplex-operator-evidence')
+sys.path.insert(0, str(root / 'ci'))
+import run_gates
+import gate_ledger
+import host_identity
+base = root / 'docs/local/hypercomplex-operator-evidence'
+plan = json.loads((base / 'final-gate-plan.json').read_text())
+stored = gate_ledger.load(base / 'frozen-qualified-gate-ledger.json')
+environment = run_gates.environment_for('CPU')
+replay = {variable: environment[variable] for variable in run_gates.REPLAY_INTERPRETERS.values() if environment.get(variable)}
+host = gate_ledger.host_digest(host_identity.identity(environment, environment['PYTHON'], replay))
+content = gate_ledger.Content(root)
+capacity = run_gates._cpus()
+matching = []
+missing = []
+for gate in plan['gates']:
+    entry = stored.get(gate['name'])
+    key = None if entry is None else gate_ledger.gate_key(gate, run_gates.allocated_workers(gate, capacity, environment.get('GOROROBA_WORKERS')), host, entry['reads'], content)
+    (matching if entry is not None and entry['key'] == key else missing).append(gate)
+output = {'schema': 'read-only-gate-ledger-match-probe-v1', 'host_digest': host, 'planned': len(plan['gates']), 'matching': len(matching), 'requires_execution': len(missing), 'matching_names': [g['name'] for g in matching], 'execution_candidates': missing}
+Path(__file__).with_name('final-ledger-match-probe.json').write_text(json.dumps(output, indent=2)+'\n')
+print(json.dumps(output, indent=2))

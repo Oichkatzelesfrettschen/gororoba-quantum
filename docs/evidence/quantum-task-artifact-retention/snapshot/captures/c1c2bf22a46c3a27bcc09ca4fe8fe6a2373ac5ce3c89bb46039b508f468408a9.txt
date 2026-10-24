@@ -1,0 +1,29 @@
+# Hypercomplex operator, measured-figure and deadline review
+
+Reviewed head: `f49af5a00a74ee7cabee443ebcff5d2d035868e4`.
+Compared main and merge base: `cceb8ca45e47eb513573f9e20bd0eb528ab11568`.
+Verdict: operator-clean within the reviewed scope.
+
+## Coverage
+
+The earlier whole-PR receipt covers the 22 Python files at 35fba21/6ca991a. This refresh inspected every newly changed PR hunk across all authors and rechecked the complete final scope: 24 changed Python files, comprising 13 runtime/checker/generator modules, nine test modules and two retained figure producers.
+
+Main integration adds BDSC control/diagnostic/forensics and provider infrastructure, but those sources match current origin/main and introduce no additional feature diff. Relevant merged Quandela template and execution context was inspected where the hypercomplex schema enters it. The final feature diff in qd_platform.py remains the schema admission and complete-operator check.
+
+New feature coverage includes both retained measured-plot producers, their immutable metadata/PNG lineage, active semantic summary-to-analysis/receipt admission, canonical eight-setting ordering and 80 individual mutations; campaign collection deadlines; each collection request/page; authentication-refresh deadline handling; the distinction between an undispatched first logical resource request and an uncertain dispatched request; durable zero-dispatch checkpoints; and refusal classification under the account lock.
+
+The refresh confirms that observed-minus-native comparisons remain descriptive, all displayed rows come from the frozen eight-setting pilot, and the plot withholds representative equivalence, scalar-field discrimination and calibrated confidence coverage. The newer plot producer is the active replay; the first producer remains an immutable historical artifact.
+
+## Findings
+
+No new actionable correctness, provenance, statistical-interpretation, approval or resource-policy blocker was found.
+
+The zero-dispatch checkpoint marks only a proven pre-transport refusal of the first logical resource request. Expiry after a dispatched request or a 401 retry retains ambiguous creation state instead. The refusal helper rejects extra remote identifiers, noninteger dispatch counts and conflicting receipts/results/raw data. Both direct submission and campaign classification use the same account lock.
+
+Collection uses the campaign's absolute monotonic deadline and checks initiation of each status/result/log/ledger request and each page after any token refresh. Expiry preserves the receipt for later read-only recovery rather than silently starting another batch. Server execution and already initiated network requests remain outside a claim of wall-clock cancellation.
+
+## Evidence and limits
+
+git diff --check against current origin/main passed. Earlier finite operator/proposal/raw-shot/QPY audits and qualified gate receipts remain the bounded evidence for large generated corpora; this review did not ingest hundreds of thousands of JSON lines or repeat broad CI. Independent targeted reviews of the 80 plot mutations and deadline/retention tests were used as verified review context. The root's merged gate run remained separate and in progress during review.
+
+This receipt is head-bound operator review, not a hosted Codex clean signal, a proof of general physics, or a declaration that every repository gate passes. Claude-owned broad numerical-report work remains outside this review. No provider requests or tracked-file edits were performed; only this ignored review receipt was written.

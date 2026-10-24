@@ -1,0 +1,53 @@
+"""Mock-only first-project 401 followed by deadline expiry during refresh."""
+import contextlib
+import json
+import sys
+from pathlib import Path
+from unittest.mock import Mock, patch
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "scripts"))
+import qi_platform as platform
+from check_qi_platform_retention import FakeClient, RetentionChecks
+
+fixture = RetentionChecks()
+fixture.setUp()
+client = FakeClient(fixture.case_dir)
+transport = platform.Client.__new__(platform.Client)
+transport.expires = 10000
+transport.session = Mock()
+transport.session.request.return_value.status_code = 401
+clock = [1.0]
+
+
+def refresh():
+    clock[0] = 11.0
+
+
+with (
+    patch.object(platform, "Client", return_value=client),
+    patch.object(platform.time, "time", return_value=100.0),
+    patch.object(platform.time, "monotonic", side_effect=lambda: clock[0]),
+    patch.object(transport, "refresh", side_effect=refresh),
+    patch.object(client, "post", side_effect=transport.post),
+    contextlib.redirect_stdout(fixture.output),
+):
+    try:
+        platform.submit(fixture.case_dir, 7, "fixture approval", execution_deadline=10.0)
+    except TimeoutError as error:
+        failure = {"type": type(error).__name__, "message": str(error)}
+state = json.loads((fixture.case_dir / "submission-state.json").read_text())
+result = {
+    "exception": failure,
+    "logical_resource_requests_dispatched": transport.session.request.call_count,
+    "first_response_status": 401,
+    "checkpoint": state,
+    "classified_pre_dispatch_refusal": platform.pre_dispatch_refused(fixture.case_dir, state["cases_sha256"]),
+}
+try:
+    platform.reconcile(fixture.case_dir)
+except platform.PlatformError as error:
+    result["reconcile_error"] = str(error)
+Path(__file__).with_name("reproduction.json").write_text(json.dumps(result, indent=1) + "\n")
+print(json.dumps({k:v for k,v in result.items() if k != "checkpoint"}, indent=1))
+fixture.doCleanups()

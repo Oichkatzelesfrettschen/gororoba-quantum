@@ -1,0 +1,9 @@
+{
+ "command": "qualified Python -B -m pytest -q",
+ "pid": 1127254,
+ "reason": "standalone run inherited native thread defaults; rerun core-615 through gate runner",
+ "session": 92145,
+ "signal": "SIGTERM",
+ "status": "interrupted by owner instruction; qualification unestablished",
+ "utc": "2026-10-22T07:36:03.629245+00:00"
+}

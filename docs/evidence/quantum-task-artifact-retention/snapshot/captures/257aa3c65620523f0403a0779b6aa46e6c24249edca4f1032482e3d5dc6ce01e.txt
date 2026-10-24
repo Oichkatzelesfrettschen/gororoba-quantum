@@ -1,0 +1,21 @@
+{
+ "current_user_queue": {
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "number_of_jobs_in_queue": 0
+ },
+ "hardware_pause_left_seconds": 0,
+ "observed_at_utc": "2026-10-22T04:54:15.366376+00:00",
+ "transaction_rows": 0,
+ "tuna17": {
+  "batchjobs_per_queue_limit": 5,
+  "id": 7,
+  "identifier": "tuna_17",
+  "job_execution_time_limit": 300.0,
+  "max_jobs_per_batch_job": 5,
+  "max_number_of_shots": 131072,
+  "nqubits": 17,
+  "status": "executing"
+ }
+}

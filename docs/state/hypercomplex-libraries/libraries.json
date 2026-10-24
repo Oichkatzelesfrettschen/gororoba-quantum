@@ -12012,6 +12012,20 @@
    "sys",
    "typing"
   ],
+  "scripts/quantum_artifact_retention.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "io",
+   "json",
+   "parallel",
+   "pathlib",
+   "re",
+   "subprocess",
+   "sys",
+   "tarfile",
+   "typing"
+  ],
   "scripts/qx_local_series.py": [
    "__future__",
    "importlib",

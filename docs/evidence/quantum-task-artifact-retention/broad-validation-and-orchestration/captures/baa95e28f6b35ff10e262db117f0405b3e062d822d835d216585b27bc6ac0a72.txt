@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "${USER_HOME}/worktrees/IBMQuantum/quandela-final-review"
+
+echo "start=$(date -Is)"
+echo "cwd=$(pwd)"
+echo "cmd=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/ci-py3.14.7/bin/python\ -B\ ${TEMP}/quandela-final-head-qualification.py"
+echo "log=${TEMP}/quandela-final-head-orchestration.log"
+
+(
+  bash -lc ${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/ci-py3.14.7/bin/python\ -B\ ${TEMP}/quandela-final-head-qualification.py
+  echo "exit=$?"
+) 2>&1 | tee -a "${TEMP}/quandela-final-head-orchestration.log"
+
+echo "done=$(date -Is)"

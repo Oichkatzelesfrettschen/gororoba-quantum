@@ -1,6 +1,11 @@
 {
   "schema": "gororoba-full-gate-inputs-v1",
   "gates": {
+    "core-654": [
+      "docs/evidence/**",
+      "docs/pdf/**",
+      "results/**"
+    ],
     "core-063": [],
     "core-662": [
       "docs/evidence/rank_locus_nullity12_refinement/**"

@@ -6,19 +6,62 @@
   "sources": [
     "docs/evidence/plan-reconciliation/sources/70a425132362aff0c42a1e630e55f24aa9610c29c4493e6d2e648d4ff30f3eaf.txt"
   ],
-  "state": "inbox",
+  "state": "closed",
   "scope": "Ascella approved order retry",
-  "next_action": "Reconcile the single approved retry against predecessor failure, queue state and a submission receipt.",
+  "next_action": "None; further Ascella execution follows docs/design/ascella-instrument-readiness-and-packed-tests.md.",
   "reconciliation": {
-    "status": "unresolved",
-    "note": "The retained branch contains preflight artifacts; execution needs the exact approved-case and actual submission identities."
+    "status": "verified",
+    "note": "Submission receipt, raw result and frozen inputs retained under results/quandela/runs/ascella-approved-order-pilot-retry/; the admission wait record sits beside the preflight evidence."
   },
   "steps": [
     {
       "id": "reconcile-obligation-1",
       "action": "Reconcile the single approved retry against predecessor failure, queue state and a submission receipt.",
       "acceptance": "The retained branch contains preflight artifacts; execution needs the exact approved-case and actual submission identities.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "The single approved retry ran as job 3f707140-4413-40ed-bc31-58e09238926f from manifest 1d1b9abf... and circuit f2e7ea11...; it ended in the repeated hardware_info.circuit_input_ports error with 0 samples and 0 credits debited, which consumed the authorization.",
+          "observed_at": "2026-10-24T20:38:37Z",
+          "revision": "fc7f21b9d1b130e9060b10d55914f13cff029d10",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/ascella-approved-order-pilot-retry/submission.json",
+              "sha256": "3c45f52cc3ecd4ad72b80c3dac7d5c35b6f6656ce385060170ebdbf738f32bad"
+            },
+            {
+              "ref": "results/quandela/runs/ascella-approved-order-pilot-retry/results.json",
+              "sha256": "de9fbceb6fd5b6bebccc9d623739c7e950eb23f3179d8e78c044ce3c5ffcbdc8"
+            },
+            {
+              "ref": "results/quandela/runs/ascella-approved-order-pilot-retry/cases.json",
+              "sha256": "1d1b9abfe727d92f6af1c81002b3e41e056b1b16330d3b8ae9746303bc3968fa"
+            },
+            {
+              "ref": "results/quandela/runs/ascella-approved-order-pilot-retry/README.md",
+              "sha256": "f50e82f663529813647fd6ee7d932bb4b28f902aad7702eca38ca4288429a47c"
+            }
+          ],
+          "scope_sha256": "245a5ce73c3b83cbf2df62fab28887a63d12eeb9c89b28c7890287017a3cc1e4"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "owner": "claude",
+  "resolution": "The approved retry ran once and repeated the instrument input-map error; the stopping rule ends the authorization. The instrument-readiness design owns any further Ascella execution.",
+  "receipts": [
+    {
+      "scope_sha256": "2d19271e2425e0b24bf05800e31a8b6308374420845b7cb88d981875132ed15a",
+      "result": "The one step is done; the retry's acquisition record is retained.",
+      "observed_at": "2026-10-24T20:38:37Z",
+      "revision": "fc7f21b9d1b130e9060b10d55914f13cff029d10",
+      "evidence": [
+        {
+          "ref": "results/quandela/runs/ascella-approved-order-pilot-retry/submission.json",
+          "sha256": "3c45f52cc3ecd4ad72b80c3dac7d5c35b6f6656ce385060170ebdbf738f32bad"
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "${USER_HOME}/worktrees/IBMQuantum/hypercomplex-affected-gates"
+
+echo "start=$(date -Is)"
+echo "cwd=$(pwd)"
+echo "cmd=bash\ ${USER_HOME}/worktrees/IBMQuantum/hypercomplex-operator-evidence/docs/local/hypercomplex-operator-evidence/run-frozen-affected-gates.sh"
+echo "log=${USER_HOME}/logs/tmux_hypercomplex-affected-gates.log"
+
+(
+  bash -lc bash\ ${USER_HOME}/worktrees/IBMQuantum/hypercomplex-operator-evidence/docs/local/hypercomplex-operator-evidence/run-frozen-affected-gates.sh
+  echo "exit=$?"
+) 2>&1 | tee -a "${USER_HOME}/logs/tmux_hypercomplex-affected-gates.log"
+
+echo "done=$(date -Is)"

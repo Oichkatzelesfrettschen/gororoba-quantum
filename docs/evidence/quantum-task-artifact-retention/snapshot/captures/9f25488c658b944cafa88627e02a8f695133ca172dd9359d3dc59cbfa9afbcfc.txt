@@ -1,0 +1,4 @@
+historical runtime qiskit-2.5: REPLAY_PYTHON=${USER_HOME}/.local/share/gororoba-quantum/validation/hypercomplex-operator-evidence/replay-py3.14.7/bin/python holds every pin of requirements-replay.txt
+PASS core-281     2.7s  "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_ci
+
+1 passed, 0 failed of 1 gates in shard 0/1 on CPU

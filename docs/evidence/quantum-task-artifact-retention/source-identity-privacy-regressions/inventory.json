@@ -1,0 +1,61 @@
+{
+ "artifacts": [
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "b7114c8f31928a43d1d135aaebd19bc78829535c",
+   "retained": "captures/7a4d8746cc97d707a89c30a15b46486752c73a0c720fde1ac139ee67345f0576.txt",
+   "retained_bytes": 3755,
+   "retained_sha256": "7a4d8746cc97d707a89c30a15b46486752c73a0c720fde1ac139ee67345f0576",
+   "source": "private-source-expanded-reproductions",
+   "source_bytes": 3761,
+   "source_sha256": "b12e1c108e6d10df3adbc90284095e113a39f910842a80b2bc4a401b504e3c57"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "cd6cac70eeb6156f869a6d2601fbea4e2831985b",
+   "retained": "captures/17231ae4d7a4f0e479ff2416136fd7e8cb2dee38bdec9b1a709f806f3e93da6a.txt",
+   "retained_bytes": 457,
+   "retained_sha256": "17231ae4d7a4f0e479ff2416136fd7e8cb2dee38bdec9b1a709f806f3e93da6a",
+   "source": "private-source-fixed-gate-timings",
+   "source_bytes": 507,
+   "source_sha256": "1e2e33cfbfb49065037bc4a6a79d878a9470ccee2c9db612c0d8ed2470777bd8"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "f3c82eb113a30c32672d25705c7db91b438e4a20",
+   "retained": "captures/1d797d8673b4d70d93851ae49a0bfce4f55f6179c018eb247a93c8d7d35f75ed.txt",
+   "retained_bytes": 99,
+   "retained_sha256": "1d797d8673b4d70d93851ae49a0bfce4f55f6179c018eb247a93c8d7d35f75ed",
+   "source": "private-source-fixed-tests",
+   "source_bytes": 99,
+   "source_sha256": "1d797d8673b4d70d93851ae49a0bfce4f55f6179c018eb247a93c8d7d35f75ed"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "a59fba75e4f3997e5ca8ec531a91ebac9c2ce829",
+   "retained": "captures/22e0bb677e037826fa9153442f6cb1d6604847288975e910fe00c5eeb3142036.txt",
+   "retained_bytes": 1281,
+   "retained_sha256": "22e0bb677e037826fa9153442f6cb1d6604847288975e910fe00c5eeb3142036",
+   "source": "private-source-initial-reproductions",
+   "source_bytes": 1283,
+   "source_sha256": "03685ef70d0b6ba261d00e2b93d0b6ca74225a33eb192127b935dffd40bbe4fe"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "61a3d37b15deb4a1d60a2d9acac397ba172b2b9a",
+   "retained": "captures/d514e3799f67e6f28ef20ef17b9c124d89807f03b8a872a1a62b415805462a68.txt",
+   "retained_bytes": 457,
+   "retained_sha256": "d514e3799f67e6f28ef20ef17b9c124d89807f03b8a872a1a62b415805462a68",
+   "source": "recovery-capture-gate-timings",
+   "source_bytes": 507,
+   "source_sha256": "40625e6a28f0f327b5aeffc35f572ece1d230601333e012c79587e693095bc24"
+  }
+ ],
+ "boundary": "Sanitized source snapshots and dispositions; original digests identify inputs, not preserved raw bytes or completed execution.",
+ "schema": "quantum-task-artifact-retention-v1"
+}

@@ -1,0 +1,3 @@
+historical runtime qiskit-2.5: REPLAY_PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/replay-py3.14.7/bin/python holds every pin of requirements-replay.txt
+PASS core-534   287.6s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --self-test-efficiency
+PASS core-447   188.8s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --check results/li
