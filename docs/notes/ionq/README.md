@@ -73,7 +73,8 @@ deletable (`DELETE /jobs/{id}`). Nothing confidential is submitted.
 ## Use in this repository
 
 The cloud simulator is a noise-model simulator; the repository's routing
-sends a simulation of 14 qubits or fewer to Kaggle or the build host (root
+sends a simulation of 14 qubits or fewer to Kaggle through
+`scripts/kaggle_run.py` (root
 AGENTS.md, "QPU time and calibration"). An IonQ simulator job is warranted
 when its question is IonQ's own noise model, and it waits for the owner's
 approval of a written case like every provider job (root AGENTS.md,

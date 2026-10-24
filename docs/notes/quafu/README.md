@@ -12,11 +12,13 @@ service stays the authority.
 ```sh
 QF_ENV=$HOME/.local/share/quafu/venv
 QF_PYTHON=${QF_PYTHON:-$QF_ENV/bin/python}
-uv venv --python 3.13 "$QF_ENV"
+uv venv --python 3.12 "$QF_ENV"
 VIRTUAL_ENV="$QF_ENV" uv pip install -r docs/notes/quafu/requirements-quafu.txt
 ```
 
-The lock pins `pyquafu` 0.4.5, which requires `numpy<2` (1.26.4 here). The
+The lock pins `pyquafu` 0.4.5, which requires `numpy<2` (1.26.4 here).
+NumPy 1.26.4 ships wheels for CPython 3.9 to 3.12 only, so the environment
+runs Python 3.12; on 3.13 the install falls back to a source build. The
 API token is one line in `~/.config/quafu/api-token` (directory 700, file
 600), read inside Python and sent as the header `api_token: <token>`.
 `User(api_token=...)` writes no token file when the token is passed in; the
