@@ -86,6 +86,19 @@ A running MCP server needs no restart afterwards: `Client.refresh` rereads
 the token file under the lock at every renewal, and `client()` in
 `scripts/qi_mcp_server.py` keeps no client until one constructs.
 
+**Renewal.** The access token lives 3600 s (`expires_in`), and without a
+renewal every process would need a new device login each hour. `Client`
+renews lazily: a request within `REFRESH_MARGIN` (120 s) of expiry calls
+`Client.refresh`, which exchanges only once the stored access token is
+within 5 s of expiry, so an idle process renews nothing. Every holder rereads
+the file under the lock first, so all processes on the host share one
+exchange per expiry, at most one an hour. Each exchange rotates the refresh
+token, and a holder that presents the predecessor of the current one
+presents a token the server has already retired. Through the lock one holder
+exchanges and every other adopts the result, so a loss by reuse needs one of
+the paths that skip the lock below; a short tenant lifetime would end the
+login whatever the renewal path, and the exchange log tells the two apart.
+
 **What spends a login.** The authorization server, auth.quantum-inspire.com
 (an Auth0 tenant by its OpenID configuration), rotates the refresh token at
 every exchange. `Client.refresh` holds `~/.quantuminspire/config.json.lock`,
@@ -121,9 +134,11 @@ next invalid_grant, read the last `exchanged` line before the first
 - an `exchanged-not-persisted` line names the process that spent the token
   and lost its successor.
 
-Every Claude Code, Codex and Antigravity session starts its own MCP server
-(`pgrep -af qi_mcp_server.py` lists them); each one is a `Client` and shares
-the lock.
+Every session of a host that registers the server starts its own copy
+(`pgrep -af qi_mcp_server.py` lists them with their parents); each one is a
+`Client` and shares the lock. A server keeps the `qi_platform.py` it imported
+at start, so a server older than the exchange log writes no line until its
+session reconnects it (`/mcp` in Claude Code).
 
 Project-local settings (algorithm names, backend ids, shots) live in
 `PROJECT_ROOT/.quantuminspire/config.json`, found relative to the working
@@ -178,7 +193,10 @@ serializes them.
 `QIProvider().backends()` builds a Qiskit Target from each backend type's
 gate set and topology; `backend.run(circuits, shots=N, memory=True)` submits
 up to `max_jobs_per_batch_job` circuits as one batch job, after checking the
-limit client-side. Its cQASM writer emits a multi-qubit barrier as per-qubit
+limit client-side. That is the API's ceiling of 5, not the FAQ's 3 queued
+jobs per hardware backend, and the route carries neither the hardware pause
+nor the token lock, so runs go through `qi_platform.py submit`
+([usage.md](usage.md#queue-rules-the-faq-governs)). Its cQASM writer emits a multi-qubit barrier as per-qubit
 barriers and accepts delays only in `dt`, so timing-sensitive cases here write
 cQASM directly.
 
