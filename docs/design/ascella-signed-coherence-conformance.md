@@ -7,8 +7,9 @@ measures the coherence those intensities leave undetermined, extracts the
 predicted harmonic coefficients, and renders their measured geometry.
 
 The plan contains one proposed 64-setting order-family job, a 300-second cap
-and a 1.2-credit ceiling. The recorded tariff gives 1.016384 credits. The plan
-contains neither a frozen native payload nor a new submission. Wave evolution
+and a 1.2-credit ceiling. The recorded tariff gives 1.016384 credits. The
+[frozen request](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json)
+exists; its local replay, written case and submission remain prospective. Wave evolution
 and Fourier families retain separate cases. The science-led design replaces
 the fixed-angle reference-and-repeat design in this document's Git history;
 all settings now probe the order mathematics, its sign symmetry or its
@@ -471,13 +472,26 @@ manifest identity, estimator and rendering code accompany the final artwork.
 
 ## Builder requirements and subsequent questions
 
-Implementation freezes the common twelve-mode circuit, exact entry sequence,
-full-unitary checks, analyzer conventions, commuting mutation and request
-hashes. Local replay executes the actual serialized request through SLOS/Naive.
+[`ascella_coherence_request.py`](../../scripts/ascella_coherence_request.py)
+freezes the common twelve-mode circuit, exact entry sequence, analyzer
+conventions and commuting mutation in
+[`results/quandela/cases/ascella_signed_coherence/job-00`](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json).
+Its `--check` mode, gate core-680, validates the retained bytes: every
+iteration's Perceval unitary matches the twelve-mode manifest operator, every
+operator matches the closed form `[[Q+,Q-],[Q-,Q+]]` under its analyzer, and
+every registered ideal equals the readout law of that form. The check also
+requires refusal of a perturbed unitary, exchanged X and Y analyzers and a
+four-entry input occupation. The `sample_count` command signature of the
+retained Ascella record takes `max_samples`, `max_shots` and
+`compilation_seed` only, so the request leaves `final_mode_number` at its
+input-width default of twelve. The job body that `qd_platform.py plan`
+serializes against the live command set becomes the sent bytes at preflight.
+Local replay executes the serialized request through SLOS/Naive.
 Synthetic diagonal mixtures, conjugation, swapped readouts, aliasing and missing
 arms exercise the analysis. Fresh preflight and the applicable
 [evidence-closure procedure](../runbooks/evidence-closure.md) precede submission.
-The current deliverable is the scientific plan and local derivation evidence.
+The retained deliverables are the scientific plan, the local derivation
+evidence and the frozen request.
 
 A later axis-angle experiment can vary the generator from I toward J. For
 `B=cos(phi)+sin(phi)(cos(gamma)I+sin(gamma)J)`, the commutator norm predicts
