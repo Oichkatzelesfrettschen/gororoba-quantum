@@ -229,6 +229,17 @@ def select(
     return gates
 
 
+def name_status(diff: bytes) -> tuple[list[str], list[str]]:
+    """Every path of ``git diff --no-renames --name-status -z`` output and the added or deleted ones."""
+    fields = [field for field in diff.decode("utf-8").split("\0") if field]
+    if len(fields) % 2:
+        raise SystemExit("--affected-by: expected status and path pairs")
+    pairs = list(zip(fields[::2], fields[1::2], strict=True))
+    if any(status[:1] not in "ACDMTU" for status, _ in pairs):
+        raise SystemExit("--affected-by: unexpected status; pass --no-renames")
+    return [path for _, path in pairs], [path for status, path in pairs if status[:1] in "AD"]
+
+
 def environment_for(device: str | None, requires: str | None = None) -> dict[str, str]:
     environment = dict(os.environ)
     if device:
@@ -407,6 +418,20 @@ def main(argv: list[str] | None = None) -> int:
         "--changed-files", type=Path, help="NUL-delimited git paths; fast gates plus affected full gates"
     )
     parser.add_argument(
+        "--affected-by",
+        type=Path,
+        help="git diff --no-renames --name-status -z output; only the gates the change reaches, either tier",
+    )
+    parser.add_argument(
+        "--affected-ledger",
+        type=Path,
+        help="a gate ledger whose traced read sets also decide which gates --affected-by reaches",
+    )
+    parser.add_argument(
+        "--affected-base",
+        help="the revision whose ci/gates.json entries --affected-by compares; a new or changed entry is reached",
+    )
+    parser.add_argument(
         "--gates",
         help="comma-separated gate names; a registered case gate matches by its own or its parent's name",
     )
@@ -436,9 +461,32 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.changed_files is not None:
         changed = arguments.changed_files.read_bytes().decode("utf-8").split("\0")
         changed = [path for path in changed if path]
-    candidates = gate_inputs.expand_cases(
-        ROOT, select(ROOT, arguments.tier, arguments.max_seconds, arguments.requires, changed)
-    )
+    if (arguments.affected_ledger is not None or arguments.affected_base is not None) and arguments.affected_by is None:
+        parser.error("--affected-ledger and --affected-base require --affected-by")
+    if arguments.affected_by is not None and changed is not None:
+        parser.error("--affected-by and --changed-files select differently; pass one")
+    tier = "full" if arguments.affected_by is not None else arguments.tier
+    gates = select(ROOT, tier, arguments.max_seconds, arguments.requires, changed)
+    if arguments.affected_by is not None:
+        edited, listed = name_status(arguments.affected_by.read_bytes())
+        traced = gate_ledger.load(arguments.affected_ledger) if arguments.affected_ledger is not None else None
+        base = base_paths = None
+        if arguments.affected_base is not None:
+            shown = subprocess.run(
+                ["git", "show", f"{arguments.affected_base}:ci/gates.json"], cwd=ROOT, capture_output=True, check=False
+            )
+            base = json.loads(shown.stdout)["gates"] if shown.returncode == 0 else []
+            tree = subprocess.run(
+                ["git", "ls-tree", "-r", "-z", "--name-only", arguments.affected_base],
+                cwd=ROOT,
+                capture_output=True,
+                check=True,
+            )
+            base_paths = {path for path in tree.stdout.decode("utf-8").split("\0") if path}
+        reached = gate_inputs.affected(ROOT, select(ROOT, "full"), edited, listed, traced, base, base_paths)
+        gates = [gate for gate in gates if gate["name"] in reached]
+        print(f"affected: {len(reached)} gates reached by {len(edited)} changed paths, {len(gates)} selected")
+    candidates = gate_inputs.expand_cases(ROOT, gates)
     if arguments.gates is not None:
         named = {name for name in arguments.gates.split(",") if name}
         candidates = [gate for gate in candidates if gate["name"] in named or gate.get("parent") in named]

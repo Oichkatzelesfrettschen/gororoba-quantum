@@ -7118,9 +7118,12 @@
    "__future__",
    "ast",
    "fnmatch",
+   "gate_ledger",
+   "itertools",
    "json",
    "os",
    "pathlib",
+   "re",
    "shlex",
    "subprocess",
    "typing"
@@ -7164,6 +7167,8 @@
   "ci/pinned_tool.py": [
    "__future__",
    "collections",
+   "hashlib",
+   "json",
    "os",
    "pathlib",
    "pins",
