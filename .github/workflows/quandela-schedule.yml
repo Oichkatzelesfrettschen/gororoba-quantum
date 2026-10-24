@@ -48,7 +48,9 @@ jobs:
     # A hosted job ends at 6 h; qd_schedule_tick.sh stops collecting before
     # DEADLINE, and the next tick resumes an uncollected job from its receipt.
     timeout-minutes: 350
+    # actions: write lets a tick disable this workflow once no schedule waits.
     permissions:
+      actions: write
       contents: write
       pull-requests: write
     env:
