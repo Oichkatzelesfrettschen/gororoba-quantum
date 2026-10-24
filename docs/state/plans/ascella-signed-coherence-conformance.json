@@ -11,10 +11,10 @@
   "state": "active",
   "scope": "One 64-setting Ascella order-family job measuring sign-odd and sign-even X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
   "owner": "Quandela experiment operator",
-  "next_action": "Obtain the user's approval of the written acquisition case in docs/design/ascella-signed-coherence-conformance.md#written-acquisition-case; then preflight, submit, collect and analyze per its procedure.",
+  "next_action": "Model the setting-dependent outside-block share of the retained run, and decide whether a repeat job with a preregistered between-job analysis follows.",
   "reconciliation": {
     "status": "unresolved",
-    "note": "The derivation, endpoints, theory atlas, frozen native request, its local replay and the written acquisition case with its preflight are retained; approval and any submission remain prospective."
+    "note": "The approved acquisition ran and is retained with its reproducing analysis; all 27 endpoints qualify. The outside-block share above the dark-count bound remains an open mechanism question."
   },
   "steps": [
     {
@@ -136,18 +136,62 @@
       "id": "written-case-and-approval",
       "action": "Write the acquisition case with fresh availability, tariff and expected credits, and wait for the user's approval.",
       "acceptance": "An approved case names the request digest, samples, cap and expected credits; without approval nothing is submitted.",
-      "state": "doing",
+      "state": "done",
       "depends_on": [
         "replay-request-locally"
+      ],
+      "receipts": [
+        {
+          "result": "The owner approved the written acquisition case on 2026-10-24; the submission record quotes the approval, the 1.016384-credit ceiling, 524288 samples and the 200-second expectation.",
+          "observed_at": "2026-10-24T09:28:11+00:00",
+          "revision": "98d2584aa9b6e2331b81b0ff3ad38aba3c46566e",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/submission.json",
+              "sha256": "9e1650b7f94f1099f81076d95541f0a2e37d34501ee0f10ffc5718364cce69d5"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/preflight.json",
+              "sha256": "84ccce20c5358d3b700307ac54a24968729acb0859a538f979c532d863fa3a4b"
+            }
+          ],
+          "scope_sha256": "14f88941b432d8c3eabec16a5adb7bc7cc24d9a1c84f7b57365934d79ae2892e"
+        }
       ]
     },
     {
       "id": "acquire-and-analyze",
       "action": "Under the approved case, preflight, submit the frozen body once, collect the raw result and run the registered analysis on the retained run.",
-      "acceptance": "A retained run directory under results/quandela/runs/ holds the receipt, raw result, results.json and analysis.json that ascella_coherence_analysis.py --run reproduces; the run enters research_state.json and the strategy run log.",
-      "state": "todo",
+      "acceptance": "A retained run directory under results/quandela/runs/ holds the receipt, raw result, results.json and analysis.json that ascella_coherence_run.py --run reproduces; the run enters research_state.json and the strategy run log.",
+      "state": "done",
       "depends_on": [
         "written-case-and-approval"
+      ],
+      "receipts": [
+        {
+          "result": "Job 739a5271 completed 524288 samples in 186 s for 1.016384 free credits; ascella_coherence_run.py --run reproduces analysis.json, in which all 27 endpoints qualify and 1.27 percent of events fall outside the logical block; claim ascella-signed-coherence-conformance and the strategy run log carry the run.",
+          "observed_at": "2026-10-24T09:28:11+00:00",
+          "revision": "98d2584aa9b6e2331b81b0ff3ad38aba3c46566e",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+              "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis.json",
+              "sha256": "1e36eff94b7939b4d87afb0cb9fcb22f1458f4e3d59377bf32ab212b7ac152da"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/raw/result.json",
+              "sha256": "b2bef57a8bbf721ddcf4ffcf21ef0195b28ff1c7d223f8c033da206578cad1c3"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "bb87c3279a37842f823c7326ee4aede5283cec21fbe4c5f06efec8dd591b5d83"
+            }
+          ],
+          "scope_sha256": "38576236e39d163b17c0b217dc2b2d05cf9b9a3aa0ce255ee85ebf5329598285"
+        }
       ]
     }
   ],
