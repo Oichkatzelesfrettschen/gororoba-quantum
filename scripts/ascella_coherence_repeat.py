@@ -8,7 +8,9 @@ the order an ANU QRNG draw fixes. Four subcommands serve it.
 other than job-00 (whose analysis ascella_coherence_run.py owns): its
 cases.json must equal the case directory's bytes, iterations are attributed
 through ascella_coherence_run.attributed, and ascella_coherence_analysis
-decides the 27 endpoints. A rerun reproduces the record.
+decides the 27 endpoints. A rerun reproduces the record; --check compares it
+within the certificate tolerance, less the digests that name the analyzing
+scripts.
 
 --diagnose RUN OUT writes the exploratory reading of one collected run:
 
@@ -63,7 +65,6 @@ Usage:
 
 from __future__ import annotations
 
-import copy
 import json
 import math
 import re
@@ -90,7 +91,11 @@ CASES = ROOT / "results/quandela/cases/ascella_signed_coherence"
 JOB_00 = ROOT / "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00"
 LOGICAL = 4
 NULL_DRAWS = 20000
+# The permutation-null seed of the preregistered comparison: repeat-comparison.json and both diagnostics records
+# replay from it, so it is an identifier of those records and keeps its value.
 NULL_SEED = 20261024
+# The synthetic runs of --self-test draw their seeds from values 0, 1 and 2 of this ANU QRNG draw, in index order.
+SELF_TEST_DRAW = "docs/evidence/anu_qrng/draw-2026-10-24T154953Z.json"
 ALPHA = 0.01
 LAGS = (1, 2, 3, 4)
 BUDGET_MIDPOINT = 0.5
@@ -186,7 +191,10 @@ def contrast_fit(settings: list[dict[str, Any]], counts: np.ndarray, readout: st
     }
     quadrature = np.array([ideals[partner[(settings[i]["theta_index"], settings[i]["arm"])]] for i in own])
     x, y = ideals[own], values[own]
-    se = np.sqrt(np.clip(1 - y * y, 1e-12, None) / total[own])
+    # z = (n0 - n3) / N takes the values +1, -1 and 0 (modes 1 and 2), so its multinomial variance is
+    # ((n0 + n3) / N - z^2) / N.
+    signed = (block[own, 0] + block[own, 3]) / total[own]
+    se = np.sqrt(np.clip(signed - y * y, 1e-12, None) / total[own])
     design = np.column_stack([x, np.ones_like(x)])
     coefficients, *_ = np.linalg.lstsq(design, y, rcond=None)
     residual = y - design @ coefficients
@@ -443,42 +451,63 @@ def synthetic_law(settings: list[dict[str, Any]], rng: np.random.Generator) -> n
     return laws
 
 
+def classify(item: tuple[dict[str, Any], str, str, int, str]) -> dict[str, Any]:
+    """The comparison readings of one synthetic job-01 run; mode "burst" halves its outside-block counts."""
+    a, outside, residual, seed, mode = item
+    b = synthetic(a, outside, residual, seed)
+    if mode == "burst":
+        b["counts"][:, LOGICAL:] = np.round(b["counts"][:, LOGICAL:] / 2)
+    result = compare_records(a, b)
+    return {
+        "identity": result["identity"]["supported"],
+        "sequence": result["sequence"]["supported"],
+        "transition": result["transition"]["supported"],
+        "reading": result["budget"]["reading"],
+        "reproduces": result["residuals"]["x"]["reproduces"],
+    }
+
+
 def self_test() -> int:
     """Synthetic job-01 runs under each hypothesis must be classified as the hypothesis that generated them."""
     a = run_record(JOB_00)
-    expectations: dict[tuple[str, str], dict[str, Any]] = {
-        ("identity", "static"): {"identity": True, "sequence": False, "reading": "acquisition-proportional"},
-        ("sequence", "drift"): {"identity": False, "sequence": True, "reading": "acquisition-proportional"},
-        ("transition", "static"): {"identity": False, "transition": True},
-    }
-    for (outside, residual), expected in expectations.items():
-        result = compare_records(a, synthetic(a, outside, residual, seed=7))
-        observed = {
-            "identity": result["identity"]["supported"],
-            "sequence": result["sequence"]["supported"],
-            "transition": result["transition"]["supported"],
-            "reading": result["budget"]["reading"],
-        }
-        for key, value in expected.items():
-            require(observed[key] == value, f"synthetic {outside}/{residual}: {key} reads {observed[key]}, not {value}")
-        reproduces = result["residuals"]["x"]["reproduces"]
-        require(reproduces == (residual == "static"), f"synthetic {outside}/{residual}: X residuals {reproduces}")
-    burst = synthetic(a, "identity", "static", seed=11)
-    burst["counts"][:, LOGICAL:] = np.round(burst["counts"][:, LOGICAL:] / 2)
-    require(compare_records(a, burst)["budget"]["reading"] == "per-iteration", "a per-iteration burst misreads")
-    shuffled = copy.deepcopy(a)
-    require(
-        not compare_records(a, synthetic(shuffled, "sequence", "drift", seed=13))["identity"]["supported"],
-        "an alternation reads as a per-setting cause",
-    )
+    first, second, third = load(ROOT / SELF_TEST_DRAW)["values"][:3]
+    cases: list[tuple[tuple[str, str, int, str], dict[str, Any]]] = [
+        (
+            ("identity", "static", first, "plain"),
+            {"identity": True, "sequence": False, "reproduces": True, "reading": "acquisition-proportional"},
+        ),
+        (
+            ("sequence", "drift", first, "plain"),
+            {"identity": False, "sequence": True, "reproduces": False, "reading": "acquisition-proportional"},
+        ),
+        (("transition", "static", first, "plain"), {"identity": False, "transition": True, "reproduces": True}),
+        (("identity", "static", second, "burst"), {"reading": "per-iteration"}),
+        (("sequence", "drift", third, "plain"), {"identity": False}),
+    ]
+    observed = ordered_map(classify, [(a, *key) for key, _ in cases], min_items=1)
+    for (key, expected), reading in zip(cases, observed, strict=True):
+        for name, value in expected.items():
+            require(reading[name] == value, f"synthetic {key}: {name} reads {reading[name]}, not {value}")
     print("ascella coherence repeat: every synthetic hypothesis classified as generated")
     return 0
+
+
+def without_analyzer(record: Any) -> Any:
+    """The record less the digests that name an analyzing script, which a replay by a later revision differs in."""
+    if not isinstance(record, dict):
+        return record
+    trimmed = {key: without_analyzer(value) for key, value in record.items()}
+    if isinstance(trimmed.get("source_sha256"), dict):
+        trimmed["source_sha256"] = {
+            name: digest for name, digest in trimmed["source_sha256"].items() if not name.startswith("scripts/")
+        }
+    return trimmed
 
 
 def emit(record: dict[str, Any], out: Path, check: bool) -> None:
     text = json.dumps(record, indent=1, sort_keys=True) + "\n"
     if check:
-        close(json.loads(text), load(out), out.relative_to(ROOT).as_posix())
+        close(without_analyzer(json.loads(text)), without_analyzer(load(out)), out.relative_to(ROOT).as_posix())
         return
     require(not out.exists() or out.read_text(encoding="utf-8") == text, f"{out} differs from the recomputed record")
     out.write_text(text, encoding="utf-8")

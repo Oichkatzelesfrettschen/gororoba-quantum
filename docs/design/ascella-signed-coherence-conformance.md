@@ -717,9 +717,9 @@ writes their exploratory reading,
   (standard error 0.009) on both readouts, while the direct readout reads
   slope 1.004. The deficit sits in the interference contrast of the hardware
   and not in compilation or intensities.
-- X residuals exceed binomial noise, chi-square 148 on 18 degrees of freedom,
-  against 30 on 18 for Y; the matched quadrature ideal explains almost none of
-  it (coefficient -0.023). The X readout carries setting-specific errors.
+- X residuals exceed multinomial noise, chi-square 230 on 18 degrees of
+  freedom, against 45 on 18 for Y; the matched quadrature ideal explains
+  little of it (coefficient -0.023, chi-square 210 on 17). The X readout carries setting-specific errors.
 - A 3 % contrast deficit is the calibrated-chip scale Maring et al. report for
   Ascella, total variation (3.0 +- 1.3) % over random phase settings
   ([literature, source 1](../notes/quandela/literature.md#1-maring-et-al-ascella-platform)).
@@ -743,9 +743,11 @@ writes their exploratory reading,
   alternation is confounded with arm parity.
 - `physical_perf` reads 0.0209 in every iteration
   ([literature, source 31](../notes/quandela/literature.md#31-perceval-performance-fields)),
-  so the provider reports no per-iteration exposure, and heater settling of
-  microseconds ([source 30](../notes/quandela/literature.md#30-thermo-optic-switching-times))
-  sets no visible share of the 2.5 to 3 s each iteration costs.
+  so the provider reports no per-iteration exposure. Ascella's settling time
+  is unpublished; other thermo-optic devices settle in microseconds
+  ([source 30](../notes/quandela/literature.md#30-thermo-optic-switching-times)),
+  a comparison that leaves the settling share of the 2.5 to 3 s each iteration
+  costs unresolved.
 
 ## Permuted repeat (job-01)
 

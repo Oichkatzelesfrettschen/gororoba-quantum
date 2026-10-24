@@ -1138,12 +1138,13 @@ and compiler publications.
   Bragg-grating shifter: V_pi = 1.1 V, P_pi = 3.63 mW and P_pi tau =
   5.1 mW us, so tau is about 1.4 us (derived here from the two abstract
   figures).
-- Use here: thermo-optic settling is microseconds to tens of microseconds,
-  five orders of magnitude below the 2.5 to 3 s each Ascella iteration costs
-  (job-00: 64 iterations in 186 s; pilot: 8 in 25 s). Heater settling therefore
-  sets no visible share of the per-iteration overhead, and a transient that
-  outlasts it needs another mechanism (derived here). This note's reading of
-  Maring et al. (source 1) records no reconfiguration time for Ascella.
+- Use here: a comparison only. These devices settle in microseconds to tens
+  of microseconds, against the 2.5 to 3 s each Ascella iteration costs
+  (job-00: 64 iterations in 186 s; pilot: 8 in 25 s), but neither measures
+  Ascella's phase shifters or its reconfiguration procedure, and this note's
+  reading of Maring et al. (source 1) records no reconfiguration time for
+  Ascella. Ascella's settling contribution to the per-iteration overhead stays
+  unresolved until a device source or measurement fixes it.
 
 ### 31. Perceval performance fields
 

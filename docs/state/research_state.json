@@ -1924,7 +1924,7 @@
     },
     {
       "id": "ascella-signed-coherence-device-diagnostics",
-      "statement": "In both Ascella signed-coherence runs the returned compiled circuits reproduce every registered statistic within 2.2e-4, while the block-conditioned X and Y statistics read 0.967 to 0.972 times their ideals and the direct readout 1.004 times; X residuals exceed binomial noise (chi-square 148 and 313 on 18 degrees of freedom) more than Y (30 and 75). Outside-block clicks concentrate on modes 8 to 10, the detectors with the largest plan-time dark rates, with an excess on modes 4 and 6 (composition chi-square 110 and 211 on 7 degrees of freedom), and physical_perf reads 0.0209 in every iteration of different outside-block counts.",
+      "statement": "In both Ascella signed-coherence runs the returned compiled circuits reproduce every registered statistic within 2.2e-4, while the block-conditioned X and Y statistics read 0.967 to 0.972 times their ideals and the direct readout 1.004 times; X residuals exceed multinomial noise (chi-square 230 and 493 on 18 degrees of freedom) more than Y (45 and 114). Outside-block clicks concentrate on modes 8 to 10, the detectors with the largest plan-time dark rates, with an excess on modes 4 and 6 (composition chi-square 110 and 211 on 7 degrees of freedom), and physical_perf reads 0.0209 in every iteration of different outside-block counts.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -1940,11 +1940,11 @@
         },
         {
           "path": "docs/evidence/ascella-order-coefficients/job-00-diagnostics.json",
-          "sha256": "cc7a2d23728e6487f50d33a698ed2b35dca2244d95ef5e7e9e9209c66dc523a4"
+          "sha256": "0a0268ecf76c1f3be1e41f2ba0f32827502ce651240f825b1246297c79e1eda4"
         },
         {
           "path": "docs/evidence/ascella-order-coefficients/job-01-diagnostics.json",
-          "sha256": "fda640b326dfba0c5bbc6d29d325aae28558a235395bf21c31ada9552ab6acc8"
+          "sha256": "58a421f875883a897a28e02cde56e1cfac79deb1d1e586bb3fbbc87cccf2856b"
         }
       ],
       "documents": [
