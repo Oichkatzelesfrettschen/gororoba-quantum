@@ -1,3 +1,4 @@
+import json
 import math
 import sys
 from pathlib import Path
@@ -50,7 +51,7 @@ def test_jitter_shared_within_each_group_of_four_settings_keeps_the_size() -> No
     for _ in range(200):
         shared = np.repeat(rng.standard_normal((4, 7)), ds.GROUP, axis=0) * 0.005
         own = rng.standard_normal((16, 7)) * 0.0005
-        resolved += ds._synthetic_p(0.5 + shared + own) < 0.01
+        resolved += float(ds._synthetic_p(0.5 + shared + own)) < 0.01
     if resolved > 6:
         raise AssertionError(f"{resolved} of 200 group-correlated white series read resolved")
 
@@ -62,7 +63,7 @@ def test_the_identity_ordering_is_the_observed_statistic_and_reversal_ties() -> 
     observed = np.mean([ds.von_neumann(list(row)) for row in x])
     if not math.isclose(stats[0], observed, rel_tol=1e-12) or len(stats) != 720:
         raise AssertionError((stats[0], observed))
-    if ds.permutation_p(x)[1] < 2 / 720:
+    if float(ds.permutation_p(x)[1]) < 2 / 720:
         raise AssertionError("an ordering and its reverse did not tie")
 
 
@@ -99,3 +100,49 @@ def test_the_anchors_read_across_one_calibration() -> None:
 def test_a_directory_outside_the_series_is_refused() -> None:
     with pytest.raises(ValueError, match="not a series run"):
         ds.readout([ROOT / "results/quandela/runs" / ds.ANCHORS[1]])
+
+
+@pytest.mark.parametrize("receipt", [None, {"run": "other", "outcome": "passed"}, {"outcome": "failed"}])
+def test_a_series_run_without_its_passed_receipt_is_refused(tmp_path: Path, monkeypatch, receipt) -> None:
+    run = tmp_path / "2026-10-24T120000Z-qpu_belenos-bdsc_drift_series-t1"
+    monkeypatch.setattr(ds, "STATE_DIR", tmp_path / "state")
+    if receipt is not None:
+        (tmp_path / "state").mkdir()
+        (tmp_path / "state/t1.receipt.json").write_text(json.dumps({"run": run.name, **receipt}))
+    with pytest.raises(ValueError, match="receipt"):
+        ds.require_passed_receipt(run)
+
+
+def test_a_common_drift_with_binomial_errors_does_not_read_as_instance_drift() -> None:
+    # Eight settings at 0.2 and eight at 0.6, all rising 0.005 per run, errors recomputed from each fraction.
+    runs = []
+    for t in range(7):
+        values = [0.2 + 0.005 * t] * 8 + [0.6 + 0.005 * t] * 8 + [0.001] * 4 + [0.99] * 4
+        record = run(values, 7200.0 * t)
+        for value in record["values"].values():
+            value["se"] = math.sqrt(value["p"] * (1 - value["p"]) / 100000)
+        runs.append(record)
+    jitter = np.random.default_rng(13).standard_normal((7, 16)) * 1e-4
+    for record, row in zip(runs, jitter, strict=True):
+        for i, value in enumerate(row):
+            record["values"][i]["p"] += value
+    if ds.primary(runs)["reading"] == "resolved":
+        raise AssertionError("a common drift read as instance-specific drift")
+
+
+def test_a_stack_of_series_returns_each_series_bit_for_bit() -> None:
+    rng = np.random.default_rng(17)
+    stack = [
+        rng.standard_normal((16, 7)) * 0.0018,
+        np.round(rng.standard_normal((16, 7)), 1),
+        rng.standard_normal((16, 7)) * 1e-9 + 0.5,
+        rng.standard_normal((16, 7)) * 1e3,
+        np.tile(rng.standard_normal(7), (16, 1)) + rng.standard_normal((16, 7)) * 1e-12,
+    ]
+    together = ds._synthetic_p(np.array(stack))
+    alone = np.array([ds._synthetic_p(x) for x in stack])
+    if together.tobytes() != alone.tobytes():
+        raise AssertionError((together, alone))
+    stats = ds.ordering_statistics(np.array(stack))
+    if any(ds.ordering_statistics(x).tobytes() != stats[k].tobytes() for k, x in enumerate(stack)):
+        raise AssertionError("the batched statistics differ from the single-series ones")

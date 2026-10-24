@@ -714,13 +714,17 @@ the series for an operator. A held or failed job is never resubmitted
 within the series.
 
 **Preregistered analysis** (`scripts/bdsc_drift_series.py --readout`,
-under detector_absent). The readout takes every series run whose receipt
-reads passed and whose status is completed, in start order.
+under detector_absent). The readout admits a series run only when its
+slot's scheduler receipt reads passed and names the run, and the job ended
+completed; it reads them in start order. A run whose after-job snapshot
+failed therefore stays out even when its counts are intact.
 
 - **Primary: instance-specific drift.** Each run's 16 superposition values
-  are centered on that run's inverse-variance class mean, which removes a
-  common class shift. Per setting, the von Neumann ratio eta = sum
-  (x[t+1] - x[t])^2 / sum (x[t] - mean)^2 runs over the n completed series
+  are centered on that run's unweighted class mean, which removes a
+  common class shift exactly; inverse-variance weights would move with
+  the shifted fractions and leave part of it. Per setting, the von
+  Neumann ratio eta = sum (x[t+1] - x[t])^2 / sum (x[t] - mean)^2 runs
+  over the n completed series
   runs in start order, and the statistic is the mean of the 16 ratios; a
   drift that persists between runs lowers it. The null is exact: the
   statistic is recomputed for all n! orderings of the runs, each ordering
@@ -792,7 +796,7 @@ levels and never share one "verified" label.
 | A label-independent randomized average is the right object | frozen randomization law and held-out epoch tests | label-dependent mixtures or unbounded drift void its interpretation |
 | Per-compilation transfer response carries the superposition scatter | matched seeds across blocks and four seeds per state (diagnostic case) | a matched seed whose response shifts beyond counting puts the scatter in time, not compilation |
 | Dark clicks in output mode 5 carry the instance-specific block change | heterogeneity of S1-to-S2 matched changes with detector 5 removed (stationarity case) | a resolved reading rejects it; a resolved coincidence test rejects the dark-click reading |
-| The residual superposition spread is drift that accumulates with elapsed time | pooled von Neumann ratio of class-centered residuals over seven spaced repeats (drift series) | a consistent reading names white run-to-run jitter; fewer than five completed runs leave it untested |
+| The residual superposition spread is drift that accumulates with elapsed time | pooled von Neumann ratio of class-centered residuals over seven spaced repeats (drift series) | a consistent reading names white run-to-run jitter; fewer than six completed runs leave it untested |
 
 Published subspace verification ([2410.12551](../notes/papers/2410.12551.md))
 exploits target structure for efficiency once the trusted objects and the

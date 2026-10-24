@@ -14,7 +14,7 @@ that accumulates with elapsed time both produce it at a single lag; the
 series separates them by the order of the residuals in time.
 
 - Primary (instance-specific drift). Each run's superposition values are
-  centered on that run's inverse-variance class mean, which removes a
+  centered on that run's unweighted class mean, which removes a
   common shift of the class. For each of the 16 superposition settings the
   von Neumann ratio eta = sum (x[t+1] - x[t])^2 / sum (x[t] - mean x)^2 runs
   over the completed series runs in start order, and the statistic is the
@@ -53,6 +53,7 @@ it.
 from __future__ import annotations
 
 import argparse
+import functools
 import itertools
 import json
 import math
@@ -88,6 +89,9 @@ SENSITIVITY_REPLICATES = 2000
 # results/quandela/bdsc_stationarity_calibration_contrast.json, median 0.0025 / sqrt 2).
 SENSITIVITY_SE = 0.0018
 GROUP = 4
+# Replicates per pooled block of --sensitivity: a block's (block, 16, 5040) work arrays stay near 16 MB.
+BLOCK = 25
+STATE_DIR = ROOT / "results/quandela/schedules/bdsc-drift-series"
 DARK_DIR = ROOT / "results/quandela/bdsc_drift_series_dark"
 CLASSES = tuple(diag.CLASSES)
 
@@ -108,10 +112,23 @@ def post_collection_stray(run: Path) -> float | None:
     return st.mode_rates(perfs.get(st.DARK), st.rel(path))[st.STRAY]
 
 
+def require_passed_receipt(run: Path) -> None:
+    """The series admits a run only with its slot's passed scheduler receipt naming this directory."""
+    match = SERIES_RUN.fullmatch(run.name)
+    require(match is not None, f"{run}: not a series run directory")
+    path = STATE_DIR / f"{match[1] if match else ''}.receipt.json"
+    require(path.is_file(), f"{run}: no scheduler receipt {st.rel(path)}")
+    receipt = json.loads(path.read_text(encoding="utf-8"))
+    require(receipt.get("run") == run.name, f"{run}: {st.rel(path)} names {receipt.get('run')!r}")
+    require(receipt.get("outcome") == "passed", f"{run}: {st.rel(path)} reads {receipt.get('outcome')!r}")
+
+
 def load_run(run: Path, frozen: dict[str, Any], validate: bool = True) -> dict[str, Any]:
     """One admitted b1-j1 run: start time, plan-time dark counts and the per-instance detector_absent fractions."""
     manifest, result, submission = st.admit(run, validate, frozen)
     require(manifest["job"] == JOB, f"{run}: job {manifest['job']!r}, the series reads {JOB} runs")
+    status = result.get("status", {}).get("status")
+    require(status == "completed", f"{run}: the job ended {status!r}")
     items = diag.observations(manifest, result, st.TRIALS)
     if validate:
         retained = st.retained_circuits(JOB)
@@ -156,30 +173,69 @@ def null_variance(n: int) -> float:
     return 4 * (n - 2) / ((n - 1) * (n + 1))
 
 
-def ordering_statistics(residuals: np.ndarray) -> np.ndarray:
-    """Mean von Neumann ratio over the rows of residuals (settings x runs) for every ordering of the runs.
+@functools.cache
+def adjacency(n: int) -> tuple[tuple[tuple[int, int], ...], np.ndarray]:
+    """The run pairs (i, j), i < j, and for every ordering of n runs (identity first) whether i and j are adjacent.
 
-    Row 0 of itertools.permutations is the identity, so element 0 is the observed statistic. The denominator of
-    each ratio does not depend on the order, so only the successive differences are permuted.
+    The successive-difference sum of an ordering is the sum of the squared differences of its adjacent pairs, so
+    every ordering reads from one table of pair differences, and a reversed ordering has the same row.
     """
-    n = residuals.shape[1]
-    orders = np.array(list(itertools.permutations(range(n))))
-    spread = ((residuals - residuals.mean(axis=1, keepdims=True)) ** 2).sum(axis=1)
+    pairs = tuple(itertools.combinations(range(n), 2))
+    index = {pair: k for k, pair in enumerate(pairs)}
+    table = np.zeros((math.factorial(n), len(pairs)))
+    for row, order in enumerate(itertools.permutations(range(n))):
+        for a, b in itertools.pairwise(order):
+            table[row, index[(min(a, b), max(a, b))]] = 1.0
+    return pairs, table
+
+
+def ordering_statistics(residuals: np.ndarray) -> np.ndarray:
+    """Mean von Neumann ratio over the settings of residuals (..., settings, runs) for every ordering of the runs.
+
+    Element 0 of the last axis is the identity ordering, the observed statistic. Every sum runs elementwise in a
+    fixed order over runs, pairs and settings, so a stack of series returns, bit for bit, what each series returns
+    alone.
+    """
+    n = residuals.shape[-1]
+    pairs, table = adjacency(n)
+    mean = residuals[..., 0].copy()
+    for t in range(1, n):
+        mean = mean + residuals[..., t]
+    mean = mean / n
+    spread = (residuals[..., 0] - mean) ** 2
+    for t in range(1, n):
+        spread = spread + (residuals[..., t] - mean) ** 2
     require(bool(np.all(spread > 0)), "a constant series has no von Neumann ratio")
-    permuted = residuals[:, orders]
-    steps = ((permuted[:, :, 1:] - permuted[:, :, :-1]) ** 2).sum(axis=2)
-    return np.asarray((steps / spread[:, None]).mean(axis=0))
+    steps = np.zeros((*residuals.shape[:-1], table.shape[0]))
+    for k, (i, j) in enumerate(pairs):
+        steps = steps + ((residuals[..., i] - residuals[..., j]) ** 2)[..., None] * table[:, k]
+    ratios = steps / spread[..., None]
+    total = ratios[..., 0, :].copy()
+    for row in range(1, ratios.shape[-2]):
+        total = total + ratios[..., row, :]
+    return np.asarray(total / ratios.shape[-2])
 
 
-def permutation_p(residuals: np.ndarray) -> tuple[float, float]:
-    """(observed statistic, exact one-sided p over all orderings of the runs)."""
+def permutation_p(residuals: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """(observed statistic, exact one-sided p over all orderings of the runs) of each series in the stack."""
     stats = ordering_statistics(residuals)
-    return float(stats[0]), float(np.mean(stats <= stats[0] * (1 + TIE)))
+    observed = stats[..., :1]
+    return stats[..., 0], (stats <= observed * (1 + TIE)).sum(axis=-1) / stats.shape[-1]
+
+
+def center(values: dict[int, dict[str, Any]]) -> float:
+    """Unweighted mean of one run's superposition values.
+
+    Equal weights subtract a shift common to every setting exactly; inverse-variance weights move with the shifted
+    fractions and would leave part of a common drift in every residual.
+    """
+    members = [v["p"] for v in values.values() if diag.class_of(v["label"]) == "superposition"]
+    return math.fsum(members) / len(members)
 
 
 def centered(series: list[dict[str, Any]]) -> tuple[list[int], np.ndarray]:
-    """The superposition settings and their residuals about each run's class mean (settings x runs)."""
-    centers = [class_mean(run["values"], "superposition")[0] for run in series]
+    """The superposition settings and their residuals about each run's unweighted class mean (settings x runs)."""
+    centers = [center(run["values"]) for run in series]
     indices = sorted(i for i, v in series[0]["values"].items() if diag.class_of(v["label"]) == "superposition")
     rows = [[run["values"][i]["p"] - c for run, c in zip(series, centers, strict=True)] for i in indices]
     return indices, np.array(rows)
@@ -191,7 +247,8 @@ def primary(series: list[dict[str, Any]]) -> dict[str, Any]:
     if n < MIN_POINTS:
         return {"reading": "not run", "reason": f"{n} completed series runs, the primary needs {MIN_POINTS}", "n": n}
     indices, residuals = centered(series)
-    statistic, p_value = permutation_p(residuals)
+    observed, p = permutation_p(residuals)
+    statistic, p_value = float(observed), float(p)
     reference = null_variance(n) / len(indices)
     z = (statistic - 2) / math.sqrt(reference)
     return {
@@ -211,9 +268,13 @@ def primary(series: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def _synthetic_p(draw: np.ndarray) -> float:
-    """The primary's p for one synthetic series (settings x runs), centered on each run's mean as the readout is."""
-    return permutation_p(draw - draw.mean(axis=0, keepdims=True))[1]
+def _synthetic_p(draws: np.ndarray) -> np.ndarray:
+    """The primary's p for a stack of synthetic series (..., settings, runs), each centered on its runs' means."""
+    settings = draws.shape[-2]
+    center = draws[..., 0, :].copy()
+    for row in range(1, settings):
+        center = center + draws[..., row, :]
+    return permutation_p(draws - (center / settings)[..., None, :])[1]
 
 
 def sensitivity(
@@ -242,7 +303,9 @@ def sensitivity(
             jitter = rng.standard_normal((settings, runs)) * own
             walk = np.cumsum(rng.standard_normal((settings, runs)) * step, axis=1)
             draws.append(noise + group + jitter + walk)
-    ps = parallel.ordered_map(_synthetic_p, draws)
+    stacked = np.array(draws)
+    blocks = [stacked[k : k + BLOCK] for k in range(0, len(stacked), BLOCK)]
+    ps = [float(p) for block in parallel.ordered_map(_synthetic_p, blocks) for p in block]
     out = {}
     for k, name in enumerate(scenarios):
         chosen = ps[k * replicates : (k + 1) * replicates]
@@ -252,7 +315,7 @@ def sensitivity(
 
 def pair_excess(first: dict[str, Any], second: dict[str, Any]) -> float:
     """Mean over the superposition settings of the class-centered squared change less its counting variance."""
-    shift = class_mean(second["values"], "superposition")[0] - class_mean(first["values"], "superposition")[0]
+    shift = center(second["values"]) - center(first["values"])
     terms = [
         (second["values"][i]["p"] - v["p"] - shift) ** 2 - v["se"] ** 2 - second["values"][i]["se"] ** 2
         for i, v in first["values"].items()
@@ -273,7 +336,7 @@ def readout(series_dirs: list[Path], validate: bool = True) -> dict[str, Any]:
     """The preregistered readout of the completed series runs beside the two anchors."""
     frozen = st.documents()
     for run in series_dirs:
-        require(SERIES_RUN.fullmatch(run.name) is not None, f"{run}: not a series run directory")
+        require_passed_receipt(run)
     anchors = [load_run(st.RUNS_DIR / name, frozen, validate) for name in ANCHORS]
     series = [load_run(run, frozen, validate) for run in series_dirs]
     every = anchors + series
@@ -296,7 +359,7 @@ def readout(series_dirs: list[Path], validate: bool = True) -> dict[str, Any]:
         chosen = [p["excess_mean_square"] for p in pairs if p["same_epoch"] is same]
         return math.fsum(chosen) / len(chosen) if chosen else None
 
-    supers = [class_mean(run["values"], "superposition")[0] for run in series]
+    supers = [center(run["values"]) for run in series]
     return {
         "schema": "bdsc-drift-series-readout-v1",
         "primary": primary(series),
