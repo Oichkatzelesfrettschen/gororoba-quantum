@@ -66,7 +66,7 @@ proposed work, in dependency order:
 | exact finite certificate | established | 22 |
 | exploratory reanalysis | exploratory | 62 |
 | exploratory reanalysis | superseded | 2 |
-| machine-checked proof | established | 6 |
+| machine-checked proof | established | 7 |
 | mathematical claim | established | 20 |
 | mathematical claim | open | 3 |
 | numerical or stochastic simulation | established | 8 |

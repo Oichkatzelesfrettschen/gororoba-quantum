@@ -1,0 +1,11 @@
+Require CdAssociatorCensus.
+Print Assumptions CdAssociatorCensus.degree_is_anf.
+Print Assumptions CdAssociatorCensus.degree_is_unique.
+Print Assumptions CdAssociatorCensus.assoc_anf_degree.
+Print Assumptions CdAssociatorCensus.census_degree_one.
+Print Assumptions CdAssociatorCensus.census_degree.
+Print Assumptions CdAssociatorCensus.census_degree_none.
+Print Assumptions CdAssociatorCensus.census_new_level.
+Print Assumptions CdAssociatorCensus.census_stable.
+Print Assumptions CdAssociatorCensus.census_total.
+Print Assumptions CdAssociatorCensus.census_dim256.

@@ -192,6 +192,39 @@ def test_frozen_census_rejects_omissions_and_fabricated_provider_facts(mutation:
         module.validate_manifest(manifest)
 
 
+def test_prose_drift_is_listed_while_a_read_source_still_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    module = implementation()
+    manifest = module.load_manifest(module.DEFAULT_MANIFEST)
+    note = "docs/notes/topics/cd-star-lattice-tower.md"
+    prose = module.prose_paths(manifest)
+    if note not in prose:
+        raise AssertionError("an unread note stayed digest-strict")
+    read = {comparison["path"] for comparison in manifest["comparisons"]}
+    read |= {"docs/evidence/heron_platform/targets.json", "ci/open_gororoba.pin", "gororoba_quantum/cd_core.py"}
+    runs = [row["record"]["run"] for row in manifest["acquisitions"] if row["included"]]
+    if prose & read or any(path.startswith(f"{run}/") for path in prose for run in runs):
+        raise AssertionError(f"a source synthesis reads is drift-tolerant: {sorted(prose & read)}")
+    run_file = next(
+        row["path"] for row in manifest["sources"] if any(row["path"].startswith(f"{run}/") for run in runs)
+    )
+    original = module.digest
+    # A prose edit after the freeze is listed, so the baseline need not be empty.
+    baseline = module.drifted_prose(manifest)
+    # conftest.py runs ordered_map serially, so the edited digest reaches every source check.
+    for edited in (note, run_file):
+        changed = module.ROOT / edited
+        monkeypatch.setattr(
+            module, "digest", lambda path, changed=changed: "0" * 64 if path == changed else original(path)
+        )
+        if edited == note:
+            module.validate_manifest(manifest)
+            if module.drifted_prose(manifest) != sorted({*baseline, note}):
+                raise AssertionError("prose drift was not listed exactly")
+        else:
+            with pytest.raises(ValueError, match="source digest differs"):
+                module.validate_manifest(manifest)
+
+
 @pytest.mark.parametrize("mutation", ["comparison_claim", "companion_pin"])
 def test_comparison_attribution_and_companion_pin_follow_their_bound_sources(mutation: str) -> None:
     module = implementation()

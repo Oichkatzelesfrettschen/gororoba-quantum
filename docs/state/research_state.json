@@ -4391,7 +4391,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64; the census of pairs by degree is counted by scripts/cd_phase_degree.py, not in Rocq.",
+      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64; claim cd-associator-census-rocq counts the pairs by degree in Rocq.",
       "evidence": [
         {
           "path": "proofs/CdAssociatorAnf.v",
@@ -4427,9 +4427,50 @@
       "kernel_receipt": "docs/evidence/cd-associator-anf/kernel.txt"
     },
     {
+      "id": "cd-associator-census-rocq",
+      "statement": "For every Cayley-Dickson level k >= 3, kernel-checked by Rocq 9.3.0 with ten closed assumption queries: counting the unordered pairs 0 < p < q < 2^k by the ANF degree of their associator phase, read as the largest monomial weight with a nonzero ANF coefficient, gives 21 pairs of degree 1, 3 2^d (2^(d+1) - 1) pairs of degree d for 2 <= d <= k - 2 and none of any other degree, so the counts are independent of k and sum to C(2^k - 1, 2); at k = 8 they are 21, 84, 360, 1488, 6048 and 24384.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "The phases are read through the tower sign sigma of CdTowerBasisSign.v, whose agreement with cd_core.cd_sign rests on the finite bridge of the tower basis-sign bundle through n = 64.",
+      "evidence": [
+        {
+          "path": "proofs/CdAssociatorCensus.v",
+          "sha256": "bbd2562527a32c820259181a336db5b89bea03a85ea81caacb79b0452392591b"
+        },
+        {
+          "path": "docs/evidence/cd-associator-census/assumptions.v",
+          "sha256": "068a368e51506d6ff569c8b97378dd5f15184fd8fc9bd84afa1e9957d492b12f"
+        },
+        {
+          "path": "docs/evidence/cd-associator-census/assumptions.txt",
+          "sha256": "f990327820c7e0de2c2185fa0c21ec662d961c689506a2b21b1afe9a2f285d04"
+        },
+        {
+          "path": "docs/evidence/cd-associator-census/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-associator-census/README.md",
+        "docs/notes/cd_phase_degree.md"
+      ],
+      "gates": {
+        "sources-403": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "cd-associator-anf-rocq"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-associator-census/kernel.txt"
+    },
+    {
       "id": "cd-associator-phase-degree",
       "statement": "For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).",
-      "boundary": "Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and the machine-checked claim cd-associator-anf-rocq proves the statement in Rocq for every n. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.",
+      "boundary": "Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and the machine-checked claims cd-associator-anf-rocq and cd-associator-census-rocq prove the statement and the census in Rocq for every n. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.",
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
         "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
@@ -9048,8 +9089,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-3/result.json",
-          "sha256": "5decce616f924df3bd885fe0db8e11d71b9834f62dbc02f8e0b882fc66c8770f"
+          "path": "docs/evidence/algebra-device-conjectures-4/result.json",
+          "sha256": "17764301f093e48edcc91e040f5ed99e7573acf6221e099e9976b689b2e6a345"
         }
       ],
       "gates": {
