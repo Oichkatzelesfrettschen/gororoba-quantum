@@ -6912,6 +6912,7 @@
    "os",
    "pathlib",
    "run_gates",
+   "shlex",
    "shutil",
    "subprocess",
    "sys",
@@ -9546,6 +9547,7 @@
    "cd_core",
    "collections",
    "numpy",
+   "parallel",
    "pathlib",
    "sys",
    "time"
