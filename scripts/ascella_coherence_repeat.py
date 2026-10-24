@@ -153,6 +153,22 @@ def autocorrelation_test(series: np.ndarray, lag: int) -> dict[str, float]:
     return {"value": value, "p": float((1 + np.sum(np.abs(null) >= abs(value) - 1e-12)) / (1 + NULL_DRAWS))}
 
 
+def null_test(item: tuple[str, np.ndarray, Any]) -> dict[str, float]:
+    """One permutation test: ("lag", series, lag), ("spearman", a, b) or ("pearson", a, b)."""
+    kind, first, second = item
+    if kind == "lag":
+        return autocorrelation_test(first, second)
+    return permutation_test(first, second, rank=kind == "spearman")
+
+
+def contrast_item(item: tuple[list[dict[str, Any]], np.ndarray, str]) -> dict[str, Any]:
+    return contrast_fit(*item)
+
+
+def variant_item(item: tuple[dict[str, Any], np.ndarray]) -> dict[str, Any]:
+    return endpoint_variant(*item)
+
+
 def compiled(entry: dict[str, Any]) -> tuple[list[float], list[float]]:
     """(twelve output probabilities, compiled phases) of one returned iteration's computed circuit and input."""
     fields = entry["result_fields"]
@@ -263,6 +279,15 @@ def diagnose(directory: Path) -> dict[str, Any]:
     subtracted = block.copy()
     share = dark[:LOGICAL] / dark[LOGICAL:].sum()
     subtracted[:, :LOGICAL] = np.clip(block[:, :LOGICAL] - np.outer(outside, share), 0, None)
+    tests = ordered_map(
+        null_test, [("lag", logs, lag) for lag in LAGS] + [("spearman", change[1:], logs[1:])], min_items=1
+    )
+    readouts = ("x", "y")
+    fits = ordered_map(contrast_item, [(settings, counts, readout) for readout in readouts], min_items=1)
+    variants = ("registered", "block_conditioned", "block_less_dark_share")
+    variant_rows = ordered_map(
+        variant_item, [(manifest, counts), (manifest, block), (manifest, subtracted)], min_items=1
+    )
     return {
         "schema": "ascella-signed-coherence-diagnostics-v1",
         "run": directory.relative_to(ROOT).as_posix(),
@@ -277,20 +302,16 @@ def diagnose(directory: Path) -> dict[str, Any]:
             "dof": analysis.MODES - LOGICAL - 1,
         },
         "serial": {
-            "autocorrelation": {str(lag): autocorrelation_test(logs, lag) for lag in LAGS},
-            "transition_spearman": permutation_test(change[1:], logs[1:], rank=True),
+            "autocorrelation": {str(lag): test for lag, test in zip(LAGS, tests, strict=False)},
+            "transition_spearman": tests[-1],
         },
         "compiled": {
             "max_statistic_deviation": float(np.max(np.abs(ideal_values - analysis.registered_ideals(settings)))),
             "max_outside_probability": float(record["probabilities"][:, LOGICAL:].sum(axis=1).max()),
         },
-        "contrast": {readout: contrast_fit(settings, counts, readout) for readout in ("x", "y")},
+        "contrast": dict(zip(readouts, fits, strict=True)),
         "direct_fit": direct_fit(settings, counts),
-        "endpoint_variants": {
-            "registered": endpoint_variant(manifest, counts),
-            "block_conditioned": endpoint_variant(manifest, block),
-            "block_less_dark_share": endpoint_variant(manifest, subtracted),
-        },
+        "endpoint_variants": dict(zip(variants, variant_rows, strict=True)),
     }
 
 
@@ -319,9 +340,11 @@ def compare_records(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
     log_a = log_counts(np.array([outside_a[n] for n in names]))
     log_b = log_counts(np.array([outside_b[n] for n in names]))
     b_series = log_counts(b["counts"][:, LOGICAL:].sum(axis=1))
-    identity = permutation_test(log_a, log_b, rank=True)
-    sequence = autocorrelation_test(b_series, 1)
-    transition = permutation_test(phase_change(b["phases"])[1:], b_series[1:], rank=True)
+    identity, sequence, transition = ordered_map(
+        null_test,
+        [("spearman", log_a, log_b), ("lag", b_series, 1), ("spearman", phase_change(b["phases"])[1:], b_series[1:])],
+        min_items=1,
+    )
     budget = math.log2(float(np.median(list(outside_b.values()))) / float(np.median(list(outside_a.values()))))
     readouts = ("x", "y")
     compared = ordered_map(
