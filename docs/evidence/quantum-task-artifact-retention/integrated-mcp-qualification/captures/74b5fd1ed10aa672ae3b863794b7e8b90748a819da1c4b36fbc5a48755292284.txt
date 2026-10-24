@@ -1,0 +1,41 @@
+"""Wait for frozen-source qualification, then qualify the exact final PR head."""
+
+import os
+from pathlib import Path
+import re
+import subprocess
+import time
+
+runner_pid = 2021133
+environment = dict(
+    entry.split("=", 1)
+    for entry in Path(f"/proc/{runner_pid}/environ").read_bytes().decode().split("\0")
+    if "=" in entry
+)
+checkout = Path("${USER_HOME}/worktrees/IBMQuantum/quandela-final-review")
+broad_log = Path("${TEMP}/quandela-merge-46b50f4-validation.log")
+print("Waiting for frozen-source gate runner", runner_pid, flush=True)
+while Path(f"/proc/{runner_pid}").exists():
+    time.sleep(30)
+summary = re.findall(r"(\d+) passed, (\d+) failed of (\d+) gates", broad_log.read_text())
+if not summary:
+    raise SystemExit("Frozen-source gate run lacks a completion summary")
+print("Frozen-source completion:", summary[-1], "; final head reruns failed or changed gates", flush=True)
+head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=checkout, text=True).strip()
+dirty = subprocess.check_output(["git", "status", "--porcelain"], cwd=checkout, text=True)
+if head != "278d41587c4e78a6406023536b5b4b5d77bca0aa" or dirty:
+    raise SystemExit("Final checkout changed; qualify its new state explicitly")
+ledger = Path("${TEMP}/quandela-merge-46b50f4-ledger.json")
+if not ledger.is_file():
+    raise SystemExit("Frozen-source gate ledger is missing")
+command = [
+    environment["PYTHON"], "-B", "-W", "error", "ci/run_gates.py",
+    "--ledger", str(ledger),
+    "--ledger-out", "${TEMP}/quandela-final-278d415-ledger.json",
+    "--timings", "${TEMP}/quandela-final-278d415-timings.json",
+]
+print("Starting exact final-head qualification", head, flush=True)
+with Path("${TEMP}/quandela-final-278d415-validation.log").open("x") as output:
+    result = subprocess.run(command, cwd=checkout, env=environment, stdout=output, stderr=subprocess.STDOUT)
+print("Final-head gate runner exit", result.returncode, flush=True)
+raise SystemExit(result.returncode)

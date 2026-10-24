@@ -1,0 +1,59 @@
+"""Qualify the retained-artifact PR after its base has qualified."""
+
+import os
+from pathlib import Path
+import re
+import subprocess
+import sys
+import time
+
+environment = dict(os.environ) if "--inherited-environment" in sys.argv else dict(
+    entry.split("=", 1)
+    for entry in Path("/proc/2021133/environ").read_bytes().decode().split("\0")
+    if "=" in entry
+)
+checkout = Path("${USER_HOME}/worktrees/IBMQuantum/quandela-validation-evidence-retention")
+base_log = Path("${TEMP}/quandela-final-278d415-validation.log")
+base_ledger = Path("${TEMP}/quandela-final-278d415-ledger.json")
+print("Waiting for exact PR352 head qualification", flush=True)
+while True:
+    summaries = re.findall(r"(\d+) passed, (\d+) failed(?:, (\d+) skipped)? of (\d+) gates", base_log.read_text()) if base_log.exists() else []
+    if summaries:
+        if summaries[-1][1] != "0":
+            raise SystemExit("Base qualification has failures; retained-artifact qualification awaits triage")
+        if base_ledger.is_file():
+            break
+    time.sleep(30)
+ready_file = Path("${TEMP}/quantum-artifact-retention-ready-head.txt")
+completed_heads = set()
+last_wait = None
+print("Base qualified; waiting for explicit parent readiness head", flush=True)
+while True:
+    requested = ready_file.read_text().strip() if ready_file.is_file() else ""
+    if not re.fullmatch("[0-9a-f]{40}", requested) or requested in completed_heads:
+        time.sleep(30)
+        continue
+    head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=checkout, text=True).strip()
+    dirty = subprocess.check_output(["git", "status", "--porcelain"], cwd=checkout, text=True)
+    if head != requested or dirty:
+        wait = (requested, head, bool(dirty))
+        if wait != last_wait:
+            print("Readiness request held until exact clean checkout:", wait, flush=True)
+            last_wait = wait
+        time.sleep(30)
+        continue
+    prefix = f"${TEMP}/quantum-artifact-retention-{head[:7]}"
+    command = [
+        environment["PYTHON"], "-B", "-W", "error", "ci/run_gates.py",
+        "--ledger", str(base_ledger),
+        "--ledger-out", prefix + "-ledger.json",
+        "--timings", prefix + "-timings.json",
+    ]
+    print("Starting artifact-retention qualification", head, flush=True)
+    try:
+        with Path(prefix + "-validation.log").open("x") as output:
+            result = subprocess.run(command, cwd=checkout, env=environment, stdout=output, stderr=subprocess.STDOUT)
+        print("Artifact-retention gate runner exit", head, result.returncode, flush=True)
+    except FileExistsError:
+        print("Existing validation output retained; request a distinct committed head:", head, flush=True)
+    completed_heads.add(head)

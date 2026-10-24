@@ -1,0 +1,6 @@
+{
+ "continuation": "active software regression checks move to pytest with synthetic fixtures",
+ "process_group": 1294870,
+ "scope": "historical numerical report regeneration",
+ "status": "stopped_at_user_direction"
+}

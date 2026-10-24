@@ -32,6 +32,10 @@ Placement, naming, linking and immutability rules for every new or moved documen
 
 ## Start here by task
 
+The [quantum task artifact inventory](evidence/quantum-task-artifact-retention/README.md)
+retains sanitized operator analyses and explicit scratch/build dispositions for
+the Quandela repair and local photonic/compiler validation.
+
 Selected zero-divisor hardware witnesses have retained acquisitions on
 [IBM Kingston](../results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md) and
 [Tuna-17](notes/quantum_inspire/experiments.md). The

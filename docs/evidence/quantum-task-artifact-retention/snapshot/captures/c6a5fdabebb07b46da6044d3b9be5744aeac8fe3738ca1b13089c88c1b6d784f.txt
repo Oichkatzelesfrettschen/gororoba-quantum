@@ -1,0 +1,21 @@
+{
+ "checkpoint": {
+  "approval": "fixture approval",
+  "backend": "tuna_17",
+  "backend_type_id": 7,
+  "cases_sha256": "17e666659495d7f813c36d8bd25a2caa62a0b99bd02b7111403d91e2599853e6",
+  "jobs": [],
+  "phase": "creating",
+  "schema": "qi-submission-state-v1",
+  "shots": 4,
+  "started_utc": "2026-10-22T10:09:44+00:00"
+ },
+ "classified_pre_dispatch_refusal": false,
+ "exception": {
+  "message": "execution deadline expired before resource-request initiation",
+  "type": "TimeoutError"
+ },
+ "first_response_status": 401,
+ "logical_resource_requests_dispatched": 1,
+ "reconcile_error": "no batch id was retained; the remote creation outcome is unknown; submit remains blocked"
+}

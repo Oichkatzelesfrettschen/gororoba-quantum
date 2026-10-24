@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "${USER_HOME}/worktrees/IBMQuantum/quandela-validation-evidence-retention"
+
+echo "start=$(date -Is)"
+echo "cwd=$(pwd)"
+echo "cmd=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/ci-py3.14.7/bin/python\ -B\ ${TEMP}/quantum-artifact-retention-qualification.py"
+echo "log=${TEMP}/quantum-artifact-retention-orchestration.log"
+
+(
+  bash -lc ${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/ci-py3.14.7/bin/python\ -B\ ${TEMP}/quantum-artifact-retention-qualification.py
+  echo "exit=$?"
+) 2>&1 | tee -a "${TEMP}/quantum-artifact-retention-orchestration.log"
+
+echo "done=$(date -Is)"

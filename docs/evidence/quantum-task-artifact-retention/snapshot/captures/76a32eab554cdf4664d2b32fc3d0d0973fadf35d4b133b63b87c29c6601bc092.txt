@@ -1,0 +1,25 @@
+{
+ "account_queue": {
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "number_of_jobs_in_queue": 0
+ },
+ "admitted": true,
+ "checks": {
+  "account_queue_empty": true,
+  "availability": true,
+  "batch_capacity": true,
+  "coupling_0_1": true,
+  "frozen_plan": true,
+  "hardware_pause_elapsed": true,
+  "shared_account_deferral_elapsed": true,
+  "shots_capacity": true
+ },
+ "observed_at": "2026-10-22T06:26:28.131684+00:00",
+ "observed_compute_debits": 0,
+ "pause_seconds": 0,
+ "scope": "approved order pilot only; current-head review and canonical-stack validation separately retained",
+ "status": "executing",
+ "usage_jobs": 292
+}

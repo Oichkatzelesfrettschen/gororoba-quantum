@@ -1,0 +1,1 @@
+PASS core-619  1335.1s  "$PYTHON" -B -W error scripts/n21_q143_segmented_sweep.py results/live/2026-10-21T064222.721454Z --c

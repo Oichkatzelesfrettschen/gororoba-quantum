@@ -1,0 +1,94 @@
+{
+ "artifacts": [
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "14eee81f6c6ce0211a37cde230222186a0dd6cf9",
+   "retained": "captures/1d63c72891a10dc5fe15a8cbaad9545891698fe1c3b9c44eef55d7797573fc62.txt",
+   "retained_bytes": 2725,
+   "retained_sha256": "1d63c72891a10dc5fe15a8cbaad9545891698fe1c3b9c44eef55d7797573fc62",
+   "source": "corrected-retention-qualification-launcher",
+   "source_bytes": 2713,
+   "source_sha256": "465d9ad70a29ab890028e24383391fc660520a4feb1daa0780ad1ad7ba61588e"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "44f2fecc5909ac6f82eee4743162889a689e6cb5",
+   "retained": "captures/7985385ce15e2815ce5dc6440e0fa217690ef5df638c63f731b9d5f7437c8d6e.txt",
+   "retained_bytes": 2295,
+   "retained_sha256": "7985385ce15e2815ce5dc6440e0fa217690ef5df638c63f731b9d5f7437c8d6e",
+   "source": "corrected-simulation-qualification-launcher",
+   "source_bytes": 2274,
+   "source_sha256": "a858a4158383641bb13212b2857ed4140046757fd7a311f5ee0fa5d936898426"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "443cb49fd7ea09dc51a34e2c78f7bcb55e620e14",
+   "retained": "captures/323a284c656095ad53d8ff0efb0861610e55337d8c2ea6080087cc133b75b8d5.txt",
+   "retained_bytes": 1416,
+   "retained_sha256": "323a284c656095ad53d8ff0efb0861610e55337d8c2ea6080087cc133b75b8d5",
+   "source": "environment-recovery-launcher",
+   "source_bytes": 1401,
+   "source_sha256": "74d87395cad5092a68c0ab71e361e313852679da33c7b3d5899ddb4c75786257"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "924d4f5ab31f8526d9485f53ed8782ae5669acab",
+   "retained": "captures/8517d4fc945ce3af9dfa5de92602952a1324c5795288aba9aeca47f737b9ad63.txt",
+   "retained_bytes": 356,
+   "retained_sha256": "8517d4fc945ce3af9dfa5de92602952a1324c5795288aba9aeca47f737b9ad63",
+   "source": "environment-recovery-receipt",
+   "source_bytes": 360,
+   "source_sha256": "fd372b5a91d31215ce83f351d3b163d0f15165ad9c9c6996aceb70711ed0c56a"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "c92b3326ae9c6964b3dfa87909d02d0f62c980ef",
+   "retained": "captures/d5d2a4f64adf2eaa0d84130fa067a9ad802c45aabe204533fe46c3707cf8ac0f.txt",
+   "retained_bytes": 1092,
+   "retained_sha256": "d5d2a4f64adf2eaa0d84130fa067a9ad802c45aabe204533fe46c3707cf8ac0f",
+   "source": "retention-original-orchestration",
+   "source_bytes": 1077,
+   "source_sha256": "d9f1f4596b478bbf688028abf38f6469429dfbbb18070b282802f1d534ac3d87"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "73121f21c69c56e6e16bd855f500544cf351a85e",
+   "retained": "captures/330b617761d688526d4998fc6a86c7e1b79f31eedeade169a2dd85f6114f6139.txt",
+   "retained_bytes": 102,
+   "retained_sha256": "330b617761d688526d4998fc6a86c7e1b79f31eedeade169a2dd85f6114f6139",
+   "source": "retention-recovered-launch-observation",
+   "source_bytes": 102,
+   "source_sha256": "330b617761d688526d4998fc6a86c7e1b79f31eedeade169a2dd85f6114f6139"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "f7fedba4bbcf48216816fa99cd2a1783b3e10ea3",
+   "retained": "captures/3c5b9051fa9cea32747089497e6856311c820f0d72c732159ceb53f6280131f9.txt",
+   "retained_bytes": 95,
+   "retained_sha256": "3c5b9051fa9cea32747089497e6856311c820f0d72c732159ceb53f6280131f9",
+   "source": "simulation-original-qualification-launch",
+   "source_bytes": 95,
+   "source_sha256": "3c5b9051fa9cea32747089497e6856311c820f0d72c732159ceb53f6280131f9"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "9f151ba35c4e920c29d5bd1f4023dd7899df43fd",
+   "retained": "captures/8846d128245ffdb40d4128fc2ece2f014aa95b0f9b43cf5bfe76cb66715f037d.txt",
+   "retained_bytes": 92,
+   "retained_sha256": "8846d128245ffdb40d4128fc2ece2f014aa95b0f9b43cf5bfe76cb66715f037d",
+   "source": "simulation-recovered-launch-observation",
+   "source_bytes": 92,
+   "source_sha256": "8846d128245ffdb40d4128fc2ece2f014aa95b0f9b43cf5bfe76cb66715f037d"
+  }
+ ],
+ "boundary": "Sanitized source snapshots and dispositions; original digests identify inputs, not preserved raw bytes or completed execution.",
+ "schema": "quantum-task-artifact-retention-v1"
+}

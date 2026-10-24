@@ -1,0 +1,6 @@
+{
+ "interpretation": "raw measured frequencies and ideal predictions; confidence coverage unestablished",
+ "png_sha256": "b9ec07e47f24149f37f2040e5b765d28c38806fe00e606c5c88b57fa4996dda1",
+ "producer_sha256": "e1d730d8b9df561dc4096b18a2fde32f98fe7593b45cdb2199e575a58314eb2b",
+ "summary_sha256": "ab1dfe679f1577c63f587db4241d65b86ac061dafa9d6eeb00a588ac06661bad"
+}

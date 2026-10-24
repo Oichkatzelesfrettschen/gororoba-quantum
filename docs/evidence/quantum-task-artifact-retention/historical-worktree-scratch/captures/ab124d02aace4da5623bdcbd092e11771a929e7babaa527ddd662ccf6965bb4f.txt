@@ -1,0 +1,3 @@
+PASS core-615    69.0s  "$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests
+
+1 passed, 0 failed of 1 gates in shard 0/1 on CPU

@@ -1,0 +1,28 @@
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/ci/main-gate-baseline/scripts/bdsc_certificate.py", line 1976, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ci/main-gate-baseline/scripts/bdsc_certificate.py", line 1971, in main
+    check(args.check)
+    ~~~~~^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ci/main-gate-baseline/scripts/bdsc_certificate.py", line 1682, in check
+    close(json.loads(fresh[name]), json.loads((directory / name).read_text(encoding="utf-8")), name)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ci/main-gate-baseline/scripts/bdsc_certificate.py", line 1661, in close
+    close(a[key], b[key], f"{path}.{key}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ci/main-gate-baseline/scripts/bdsc_certificate.py", line 1665, in close
+    close(x, y, f"{path}[{i}]")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ci/main-gate-baseline/scripts/bdsc_certificate.py", line 1661, in close
+    close(a[key], b[key], f"{path}.{key}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ci/main-gate-baseline/scripts/bdsc_certificate.py", line 1661, in close
+    close(a[key], b[key], f"{path}.{key}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ci/main-gate-baseline/scripts/bdsc_certificate.py", line 1657, in close
+    require(abs(a - b) <= CHECK_TOLERANCE * max(1.0, abs(a), abs(b)), f"{path}: {a} against {b}")
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ci/main-gate-baseline/scripts/bdsc_certificate.py", line 141, in require
+    raise ValueError(message)
+ValueError: controls.json.controls[5].truth.theta: 1.430542e-06 against 1.599798e-06

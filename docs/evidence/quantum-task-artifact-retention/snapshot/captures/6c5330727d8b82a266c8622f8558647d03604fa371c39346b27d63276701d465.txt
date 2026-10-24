@@ -1,0 +1,23 @@
+historical runtime qiskit-2.5: historical runtime qiskit-2.5 requires REPLAY_PYTHON; the running interpreter differs from requirements-replay.txt: qiskit 2.6.0 (pin 2.5.2), pydantic 2.14.1 (pin 2.13.5), ibm-quantum-schemas 0.13.20261016 (pin 0.12.20260921)
+FAIL core-379     0.0s  "$PYTHON" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/nois
+
+=== core-379 exit 127 in .
+"$PYTHON" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json --all-seeds
+historical runtime qiskit-2.5 requires REPLAY_PYTHON
+PASS core-311    83.9s  "$PYTHON" -B -W error scripts/walk_scaffold_channels.py --check docs/evidence/walk_scaffold_channels
+PASS core-499    90.8s  "$PYTHON" -B -W error scripts/n21_qx_conformance.py --check docs/evidence/n21_qx_conformance/result.
+PASS core-423   107.2s  cmp docs/evidence/box_kite_qx_sweep/family-a.json results/kaggle/2026-10-17T131115Z-box-kite-qx-swee
+PASS core-487    44.8s  "$PYTHON" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crossche
+PASS core-508   141.2s  "$PYTHON" -B -W error scripts/qd_box_kite_analysis.py --check $(for d in results/quandela/runs/*/; d
+PASS core-432    15.1s  "$PYTHON" -B -W error scripts/qi_walsh_exemplar_cases.py --check-conformance results/quantum_inspire
+PASS core-630     3.9s  "$PYTHON" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/
+PASS core-527     1.5s  "$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --replay docs/evidence/box_kite_qx_sweep/family-a
+PASS core-631     0.5s  "$PYTHON" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/seden
+PASS core-594     1.2s  "$PYTHON" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-campa
+PASS core-602     6.2s  "$PYTHON" -B -W error qpu_planning_contracts.py --ground-ramsey-sweep
+PASS core-526    64.7s  "$PYTHON" -B -W error scripts/n21_exact_crosscheck.py --check docs/evidence/n21_exact_model/crossche
+PASS core-536    51.7s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-followup results/quandela/sessions/2026-10-
+PASS core-562   168.1s  "$PYTHON" -B -W error scripts/ghost_error_scale.py --self-test-cz-free
+PASS core-211   206.5s  PYTHONWARNINGS=error "$PYTHON" scripts/patch_window_analysis.py --self-check
+
+15 passed, 1 failed of 16 gates in shard 0/1 on CPU

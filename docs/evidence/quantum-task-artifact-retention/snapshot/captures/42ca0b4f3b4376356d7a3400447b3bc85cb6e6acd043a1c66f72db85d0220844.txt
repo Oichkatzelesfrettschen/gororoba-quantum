@@ -1,0 +1,5 @@
+PASS core-630    10.9s  "$PYTHON" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/
+PASS core-650    20.8s  "$PYTHON" -B -W error scripts/hypercomplex_photonic_cases.py --out results/hypercomplex/photonic-suc
+PASS core-368   167.4s  "$PYTHON" -B -W error scripts/qi_toolchain_check.py --check
+
+3 passed, 0 failed of 3 gates in shard 0/1 on CPU

@@ -1,0 +1,191 @@
+historical runtime qiskit-2.5: REPLAY_PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/replay-py3.14.7/bin/python holds every pin of requirements-replay.txt
+PASS core-211    39.0s  PYTHONWARNINGS=error "$PYTHON" scripts/patch_window_analysis.py --self-check
+PASS core-313    20.8s  "$PYTHON" -B -W error scripts/echo_dilation_noise.py --check docs/evidence/echo_dilation_noise/resul
+PASS core-302    24.0s  "$PYTHON" -B -W error snapshot_laws.py
+PASS core-480    26.8s  "$PYTHON" -B -W error dynamic_density.py --self-test
+PASS core-288    30.4s  "$PYTHON" -B -W error scripts/census_frequency_design.py --check docs/evidence/census_frequency_desi
+PASS core-039    31.4s  "$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/ver
+PASS core-222    39.0s  "$PYTHON" -W error maximal_contracts.py
+PASS core-028    39.2s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_extract_measured_ripple.py
+PASS core-190    43.3s  "$PYTHON" -W error real_frontier_contracts.py >/dev/null
+PASS core-424    47.0s  "$PYTHON" -B -W error scripts/box_kite_analysis.py --analyze-self-test
+PASS core-436    48.4s  cmp results/quantum_inspire/readout_ringdown_tuna_17_null_calibration.json results/kaggle/2026-10-17
+PASS core-100    24.7s  "$PYTHON" ripple_contracts.py
+PASS core-429    20.6s  "$PYTHON" -B -W error scripts/qi_walsh_exemplar_cases.py --self-test
+PASS core-091     8.6s  PYTHONOPTIMIZE=1 "$PYTHON" correction_case_contracts.py
+PASS core-005    31.2s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/check_verify_evidence
+PASS core-312    18.5s  ruff check scripts/echo_dilation_noise.py && ruff format --target-version py313 --check scripts/echo
+PASS core-552    24.9s  "$PYTHON" -B -W error scripts/rank_locus_gap_directions.py --self-test
+PASS core-303     2.0s  ruff check scripts/signed_kernel_noise.py && ruff format --target-version py313 --check scripts/sign
+PASS core-095    70.4s  "$PYTHON" algebra_planning_contracts.py
+PASS core-195     3.1s  ruff check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/revie
+PASS core-285    53.4s  "$PYTHON" -B -W error ../scripts/atlas_detuning_map.py --check ../docs/evidence/atlas_detuning_map/r
+PASS core-426    24.0s  "$PYTHON" -B -W error scripts/qi_shot_record_line.py --check results/quantum_inspire/tuna_17_shot_re
+PASS core-524    41.7s  "$PYTHON" -B -W error diagnostic_experiments.py --self-test && "$PYTHON" -B -W error qpu_planning_co
+PASS sources-134    24.5s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_geometry/replay.py --check
+PASS core-328    55.8s  "$PYTHON" -B -W error scripts/rank_locus_local_dimension.py --check docs/evidence/rank_locus_local_d
+PASS core-344     3.8s  ruff check scripts/ghost_event_scale.py && ruff format --target-version py313 --check scripts/ghost_
+PASS sources-210    44.1s  "$PYTHON" -B -W error docs/evidence/kernel_determinant/replay.py --check
+PASS core-022    24.1s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_review_folded_jobs.py
+PASS core-335    26.0s  "$PYTHON" -B -W error scripts/linear_conjugation_search.py --check docs/evidence/linear_conjugation/
+PASS core-090    17.1s  PYTHONOPTIMIZE=1 "$PYTHON" correction_collection_contracts.py
+PASS core-633    34.8s  "$PYTHON" -B -W error scripts/photonic_repeat_readout.py results/quandela/runs/belenos-order-repeat-
+PASS sources-122    10.2s  MYPYPATH=docs mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs
+PASS core-276    38.1s  "$PYTHON" -B -W error scripts/scaffolding_exposure.py --check
+PASS core-267    33.7s  "$PYTHON" -B -W error scripts/moreno_stiefel_nullity.py --check docs/evidence/moreno_stiefel/nullity
+PASS core-179    60.2s  "$PYTHON" -W error projective_kernel_contracts.py >/dev/null
+PASS core-459    41.3s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --self-test-herald
+PASS core-061    25.9s  "$PYTHON" -W error circle_kernel_attachments.py >/dev/null
+PASS core-088     5.7s  PYTHONOPTIMIZE=1 "$PYTHON" correction_preparation_contracts.py
+PASS core-484    60.3s  "$PYTHON" -B -W error scripts/n21_usage_budget.py --self-test && "$PYTHON" -B -W error scripts/n21_u
+PASS core-208    57.8s  "$PYTHON" -B -W error kernel_determinant_contracts.py
+PASS core-601   129.0s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_spectator_ramsey.py --self-chec
+PASS core-428    26.7s  "$PYTHON" -B -W error scripts/qi_walsh_exemplar_cases.py --check results/quantum_inspire/cases
+PASS core-630    16.6s  "$PYTHON" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/
+PASS core-101    19.5s  "$PYTHON" rank_sector_contracts.py
+PASS core-264    17.8s  "$PYTHON" -B -W error scripts/inventory_retained_runs.py
+PASS core-425    22.4s  "$PYTHON" -B -W error scripts/box_kite_analysis.py --replay results/quantum_inspire/box_kite_tuna_17
+PASS core-279    43.2s  "$PYTHON" -B -W error gororoba_quantum/calibration_snapshot.py --check docs/evidence/calibration/ibm
+PASS sources-249    28.3s  "$PYTHON" -B -W error ../docs/notes/packages/manual/checks/albert_algebra.py --check >/dev/null
+PASS core-481    30.4s  "$PYTHON" -B -W error scripts/n21_exact_model_validation.py --self-test
+PASS core-586    26.2s  "$PYTHON" -B -W error scripts/rank_locus_rotation_composite.py --audit-check docs/evidence/rank_locu
+PASS core-024    21.7s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_rank_sector_norms.py
+PASS core-212    35.3s  "$PYTHON" -W error ../scripts/cd_associator_defect_census.py >/dev/null
+PASS core-408    14.7s  "$PYTHON" -B -W error scripts/local_member_cz_conformance.py --cross-check-n21
+PASS core-498    19.9s  "$PYTHON" -B -W error gaussian_wheel.py --self-test
+PASS core-072    15.6s  "$PYTHON" ../scripts/mod15_signed_multiplier_census.py
+PASS core-373    18.6s  "$PYTHON" -B -W error scripts/box_kite_census.py --self-test
+PASS core-272    20.2s  "$PYTHON" -B -W error conditional_ramsey.py
+PASS core-589    21.6s  "$PYTHON" -B -W error scripts/capture_iqm_docs.py --self-test
+FAIL core-632     2.1s  "$PYTHON" -B -W error scripts/hypercomplex_photonic_cases.py --out results/hypercomplex/photonic-suc
+
+=== core-632 exit 1 in .
+"$PYTHON" -B -W error scripts/hypercomplex_photonic_cases.py --out results/hypercomplex/photonic-successors --native-catalogue results/hypercomplex/photonic-successors/native-target-catalogue.json --check && "$PYTHON" -B -W error scripts/quandela_api_inventory.py docs/evidence/quandela/input-port-api-audit
+Traceback (most recent call last):
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/scripts/hypercomplex_photonic_cases.py", line 310, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/scripts/hypercomplex_photonic_cases.py", line 292, in main
+    publish(arguments.out / "belenos", campaign_cases("belenos", repeats=3))
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/scripts/hypercomplex_photonic_cases.py", line 35, in check_files
+    ordered_map(_check_file, [(str(directory), name, value) for name, value in files.items()], min_items=1)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/gororoba_quantum/parallel.py", line 237, in ordered_map
+    return [function(item) for item in items]
+            ~~~~~~~~^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/scripts/hypercomplex_photonic_cases.py", line 30, in _check_file
+    close(json.loads(actual), json.loads(expected), name)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/scripts/bdsc_certificate.py", line 1668, in close
+    close(a[key], b[key], f"{path}.{key}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/scripts/bdsc_certificate.py", line 1672, in close
+    close(x, y, f"{path}[{i}]")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/scripts/bdsc_certificate.py", line 1668, in close
+    close(a[key], b[key], f"{path}.{key}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/scripts/bdsc_certificate.py", line 1668, in close
+    close(a[key], b[key], f"{path}.{key}")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/scripts/bdsc_certificate.py", line 1664, in close
+    require(abs(a - b) <= CHECK_TOLERANCE * max(1.0, abs(a), abs(b)), f"{path}: {a} against {b}")
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "${USER_HOME}/worktrees/IBMQuantum/ascella-input-routing-pilot/scripts/bdsc_certificate.py", line 141, in require
+    raise ValueError(message)
+ValueError: wave-repeat-block-0/cases.json.settings[1].circuit_params.x38: 2.9515224758394814 against -0.19007017775031199
+PASS core-205    15.6s  "$PYTHON" -B -W error scripts/extract_measured_ripple.py --run results/live/2026-10-13T025444.603480
+PASS core-617     7.9s  "$PYTHON" -B -W error scripts/n21_q143_line_switching.py results/live/2026-10-21T064222.721454Z resu
+PASS core-345    11.5s  "$PYTHON" -B -W error scripts/ghost_event_scale.py --self-test
+PASS core-490    46.4s  "$PYTHON" -B -W error scripts/gl52_split_conjugators.py --self-test docs/evidence/gl52_split_conjuga
+PASS core-324    46.6s  "$PYTHON" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json
+PASS core-482    16.1s  "$PYTHON" -B -W error n21_exact_planning.py
+PASS core-361    47.5s  "$PYTHON" -B -W error star_ramsey.py
+PASS core-097     2.1s  PYTHONOPTIMIZE=1 "$PYTHON" pub_shot_allocation_contracts.py
+PASS core-343    17.2s  "$PYTHON" -B -W error scripts/ghost_idle_budget.py --check docs/evidence/ghost_error_scale/idle_budg
+PASS core-011    10.7s  PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/n21_
+PASS core-372    15.1s  "$PYTHON" -B -W error scripts/box_kite_census.py --check docs/evidence/box_kite_census/census.json
+PASS core-551    17.9s  "$PYTHON" -B -W error scripts/rank_locus_gap_directions.py --check docs/evidence/rank_locus_gap_dire
+PASS core-624    19.8s  "$PYTHON" -B -W error scripts/bdsc_diagnostic.py --self-test
+PASS core-042    28.4s  "$PYTHON" sedenion_bundle.py >/dev/null
+PASS core-081    16.8s  "$PYTHON" correction_collection_contracts.py
+PASS sources-131    17.1s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_rank/replay.py --check
+PASS sources-251    18.1s  "$PYTHON" -B -W error scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit
+PASS core-341    35.3s  "$PYTHON" -B -W error scripts/check_qi_platform_retention.py
+PASS core-300     2.6s  ruff check scripts/conditional_ramsey_power.py && ruff format --target-version py313 --check scripts
+PASS core-496    14.6s  "$PYTHON" -B -W error qpu_planning_contracts.py --static-group-admission
+PASS core-546    15.1s  "$PYTHON" -B -W error scripts/qd_belenos_cone.py --check docs/evidence/quandela/belenos_light_cone.j
+PASS core-192    70.6s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/n21_orbit_rca.py --self-check
+PASS core-338    11.7s  t=$(mktemp -d) && "$PYTHON" -B -W error scripts/linear_conjugation_search.py --merge results/kaggle/
+PASS sources-247    43.8s  "$PYTHON" -B -W error ../docs/notes/packages/manual/checks/algebra_interplay.py --check >/dev/null
+PASS core-362   115.8s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --check results/quantum_inspire/cases && 
+PASS core-486    30.6s  "$PYTHON" -B -W error replica_covariance_contracts.py
+PASS core-108     8.9s  "$PYTHON" local_compute.py
+PASS core-422    12.4s  "$PYTHON" -B -W error scripts/box_kite_qx_sweep.py --self-test
+PASS core-433    19.3s  "$PYTHON" -B -W error scripts/qi_ladder_line_bins.py --check results/quantum_inspire/box_kite_tuna_1
+PASS core-194     3.5s  PYTHONOPTIMIZE=1 PYTHONWARNINGS=error "$PYTHON" patch_characterization.py
+PASS core-219    13.6s  "$PYTHON" -W error ../scripts/n21_orbit_context_refit.py --self-check
+PASS core-330    10.3s  "$PYTHON" -B -W error scripts/qi_zero_divisor_cases.py --replay results/quantum_inspire/runs/2026-10
+PASS core-003    13.3s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
+PASS core-085     8.2s  PYTHONOPTIMIZE=1 "$PYTHON" correction_circuits_contracts.py
+PASS core-326    10.1s  "$PYTHON" -B -W error scripts/calibration_median_drift.py --check docs/evidence/calibration_median_d
+PASS core-450     6.8s  "$PYTHON" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-17T212551Z-gororoba-ae
+PASS core-348     8.9s  "$PYTHON" -B -W error scripts/qi_zero_divisor_cases.py --check results/quantum_inspire/cases && "$PY
+PASS core-052    12.8s  PYTHONWARNINGS=error MPLCONFIGDIR="${MPLCONFIGDIR:-${TEMP}/rank-sector-mplconfig}" "$PYTHON" ../scripts
+PASS core-421     9.1s  "$PYTHON" -B -W error scripts/box_kite_cases.py --self-test
+PASS core-497    15.3s  "$PYTHON" -B -W error scripts/wheel_zero_divisors.py --self-test
+PASS core-364     9.9s  "$PYTHON" -B -W error scripts/ghost_error_scale_branching.py --replay docs/evidence/ghost_error_scal
+PASS core-native-predicate-current    11.7s  "$PYTHON" -B -W error results/local_compute/n21_shared_predicate/check_probe.py --current-sdk
+PASS core-333     9.0s  "$PYTHON" -B -W error scripts/qi_coupler_zz_map.py --analyze results/quantum_inspire/coupler_zz_tuna
+PASS core-102     9.9s  "$PYTHON" native_preflight_contracts.py
+PASS core-367     9.6s  "$PYTHON" -B -W error scripts/aer_gpu_probe.py --check docs/evidence/aer_gpu_configuration/result.js
+PASS core-walk-extract    10.0s  "$PYTHON" -B -W error scripts/walk_scaffold_channels.py --check-extract
+PASS core-539    12.2s  "$PYTHON" -B -W error scripts/state_prep_excess.py --check
+PASS core-374    10.8s  "$PYTHON" -B -W error scripts/qi_zero_divisor_cases.py --select-regions
+PASS core-437    26.9s  "$PYTHON" -B -W error scripts/qi_readout_ringdown_cases.py --null-self-test
+PASS sources-389   218.2s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c5_zero_divisor_code/replay-exact.py --ch
+PASS core-010     8.2s  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/n21_shared_predicate/
+PASS core-228    12.5s  "$PYTHON" -W error ../scripts/octonion_structure_checks.py
+PASS core-485    30.8s  "$PYTHON" -B -W error scripts/n21_exact_model_validation.py --check docs/evidence/n21_exact_model/va
+PASS core-442     8.9s  "$PYTHON" -B -W error scripts/aer_gpu_probe.py --check results/kaggle/2026-10-18T072718Z-gororoba-ae
+PASS core-627    24.5s  "$PYTHON" -B -W error scripts/qi_bdsc_pauli_cases.py --self-test
+PASS core-511     9.4s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check-rca docs/evidence/quandela/belenos_leakage_
+PASS core-507     7.5s  "$PYTHON" -B -W error scripts/cd_two_blade_blocks.py --self-test
+PASS core-431    17.6s  "$PYTHON" -B -W error scripts/qi_walsh_exemplar_analysis.py --self-test
+PASS core-510    10.6s  "$PYTHON" -B -W error scripts/qd_belenos_mesh.py --check results/quandela/cases
+PASS sources-137    20.0s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_doubling/replay.py --check
+PASS core-545     9.4s  "$PYTHON" -B -W error scripts/qd_belenos_cone.py --self-test
+PASS core-593     6.8s  "$PYTHON" -B -W error qpu_planning_contracts.py --overlap-split
+PASS core-606    60.0s  "$PYTHON" -B -W error scripts/bdsc_certificate.py --check docs/evidence/bdsc-principal-angle-svd
+PASS core-000    25.1s  "$PYTHON" ci/pinned_tool.py ruff check ci tests && "$PYTHON" ci/pinned_tool.py ruff format --target-
+PASS core-270    18.1s  "$PYTHON" -B -W error scripts/research_state.py --check
+PASS core-453     5.6s  "$PYTHON" -B -W error scripts/ghost_error_scale_branching.py --compare-parts docs/evidence/ghost_err
+PASS core-071    16.4s  "$PYTHON" compile_evidence.py --seeds 20261010 --candidate one_clean_cycle >/dev/null
+PASS core-068     8.2s  "$PYTHON" affine_residual.py
+PASS core-592     6.7s  "$PYTHON" -B -W error qpu_planning_contracts.py --pin-layout
+PASS core-050    17.2s  "$PYTHON" ripple_dynamics.py --check ../results/ripple/evidence.json
+PASS sources-127     6.3s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/local_schur/probe.py --check
+PASS core-505     6.5s  "$PYTHON" -B -W error scripts/qd_box_kite_cases.py --self-test
+PASS core-529     7.3s  "$PYTHON" -B -W error empirical_bernstein_contracts.py --coverage
+PASS core-269     6.9s  "$PYTHON" -B -W error scripts/rank_sector_endpoint_decomposition.py --check results/live/rank-sector
+PASS core-045     6.0s  "$PYTHON" rank_charts.py >/dev/null
+PASS core-323     6.2s  "$PYTHON" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json -
+PASS core-591     5.7s  "$PYTHON" -B -W error scripts/iqm_platform.py --self-test
+PASS core-104     3.4s  PYTHONOPTIMIZE=1 "$PYTHON" placement_feasibility_contracts.py
+PASS core-079     6.1s  "$PYTHON" correction_preparation_contracts.py
+PASS core-273     5.8s  "$PYTHON" -B -W error signed_kernel_probe.py --check ../docs/evidence/signed_kernel_probe/result.jso
+PASS core-522     8.9s  "$PYTHON" -B -W error scripts/state_prep_excess.py --self-test
+PASS core-406     5.9s  "$PYTHON" -B -W error scripts/local_member_cz_conformance.py --self-test
+PASS core-420     9.8s  "$PYTHON" -B -W error scripts/box_kite_cases.py --check results/quantum_inspire/cases
+PASS core-531     5.9s  "$PYTHON" -B -W error empirical_bernstein_contracts.py --planner
+PASS core-033     6.2s  PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error MPLCONFIGDIR="${MPLCONFIGDIR:-${TEMP}/folded-review-mplc
+PASS core-240    19.0s  "$PYTHON" -W error ../scripts/singular_sector_dynamics.py
+PASS core-043    12.3s  "$PYTHON" annihilator_strata.py --max-dimension 256 >/dev/null
+PASS core-565     5.2s  "$PYTHON" -B -W error scripts/state_prep_control_parameters.py --self-test
+PASS core-048     4.1s  "$PYTHON" rank_path_topology.py >/dev/null
+PASS sources-123     2.6s  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/verify_sources.py
+PASS core-340     7.2s  "$PYTHON" -B -W error scripts/qi_ibm_noise_replay.py --check
+PASS core-206     8.3s  "$PYTHON" -B -W error scripts/extract_measured_ripple.py --run results/live/2026-10-13T032011.664435
+PASS core-087     5.1s  PYTHONOPTIMIZE=1 "$PYTHON" correction_schedule_contracts.py
+PASS core-563     5.3s  "$PYTHON" -B -W error scripts/qd_belenos_cone.py --check-readout-series docs/evidence/quandela/belen
