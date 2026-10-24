@@ -1,0 +1,4 @@
+PASS core-654    14.7s  "$PYTHON" -B -W error scripts/quantum_artifact_retention.py docs/evidence/quantum-task-artifact-rete
+  untraceable core-654: child environment drops the trace; program git
+
+1 passed, 0 failed of 1 gates in shard 0/1 on CPU

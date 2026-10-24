@@ -1,0 +1,21 @@
+PASS core-039     6.5s  "$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/ver
+  untraceable core-039: writes gororoba_quantum/.mypy_cache/.gitignore; writes gororoba_quantum/.mypy_cache/CACHEDIR.TAG
+PASS core-630     7.8s  "$PYTHON" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/
+  untraceable core-630: program git
+PASS core-341    17.0s  "$PYTHON" -B -W error scripts/check_qi_platform_retention.py
+PASS core-270    11.4s  "$PYTHON" -B -W error scripts/research_state.py --check
+PASS core-600     1.7s  "$PYTHON" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_spectator_coher
+PASS core-603     1.6s  "$PYTHON" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_ramsey_quadratu
+PASS core-605     1.9s  "$PYTHON" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_beat_kernel_and
+PASS core-612     1.7s  "$PYTHON" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_contrast_magnit
+PASS core-616     3.1s  "$PYTHON" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_segment_design_
+PASS core-619     1.8s  "$PYTHON" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_segment_alias_r
+PASS core-620     2.0s  "$PYTHON" -B -W error -m pytest -q tests/scripts/test_n21_model_regressions.py::test_segment_model_c
+PASS core-596     0.9s  "$PYTHON" -B -W error scripts/qi_zz_map_qx.py --check results/quantum_inspire/cases/zz-map-qx-reject
+PASS core-631     0.5s  "$PYTHON" -B -W error gororoba_quantum/hypercomplex_clifford_envelope.py --check docs/evidence/seden
+PASS core-594     1.2s  "$PYTHON" -B -W error scripts/qi_zz_map.py --check results/quantum_inspire/cases/zz-map-tuna17-rejec
+PASS core-271   101.5s  "$PYTHON" -B -W error scripts/research_state.py --self-test
+PASS core-615   135.2s  "$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests
+  untraceable core-615: child environment drops the trace; program git; program python
+
+16 passed, 0 failed of 16 gates in shard 0/1 on CPU

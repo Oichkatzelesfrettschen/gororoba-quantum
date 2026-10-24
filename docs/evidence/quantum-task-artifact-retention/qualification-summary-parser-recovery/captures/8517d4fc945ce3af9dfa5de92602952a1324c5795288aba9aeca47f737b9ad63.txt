@@ -1,0 +1,12 @@
+{
+ "artifact_retention": {
+  "log": "${TEMP}/quantum-artifact-retention-recovered-launch.log",
+  "pid": 2387913,
+  "script": "${TEMP}/quantum-artifact-retention-qualification.py"
+ },
+ "local_simulation": {
+  "log": "${TEMP}/local-simulation-qualified-base-launch.log",
+  "pid": 2387914,
+  "script": "${TEMP}/local-simulation-qualified-base-runner.py"
+ }
+}

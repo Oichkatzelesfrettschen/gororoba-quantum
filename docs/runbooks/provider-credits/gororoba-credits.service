@@ -1,0 +1,12 @@
+[Unit]
+Description=Read-only snapshot of free quantum and compute allotments, then alert check
+
+[Service]
+Type=oneshot
+# PYTHON is the interpreter that holds qiskit-ibm-runtime for the IBM readers; the Quantum Inspire
+# and Open Quantum readers start their own virtual-environment interpreters. REPO is replaced by the
+# absolute checkout path when the unit is installed (docs/runbooks/provider-credits.md).
+Environment=PYTHON=/usr/bin/python3
+Environment=GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+ExecStart=/bin/sh REPO/docs/runbooks/provider-credits/credits-run.sh

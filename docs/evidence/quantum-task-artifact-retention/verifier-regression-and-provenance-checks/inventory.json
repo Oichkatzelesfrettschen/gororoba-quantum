@@ -1,0 +1,50 @@
+{
+ "artifacts": [
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "f88ec582b4340de009628bebd79a216152e62599",
+   "retained": "captures/75251161864b9a7669b6a4e2d68eac23727419818fc7e374c50ba901045ecfe0.txt",
+   "retained_bytes": 2584,
+   "retained_sha256": "75251161864b9a7669b6a4e2d68eac23727419818fc7e374c50ba901045ecfe0",
+   "source": "escaped-credential-regressions",
+   "source_bytes": 2570,
+   "source_sha256": "d4e0fcafce93dfc692b0940a70fb48d5cb51956cc0f7587e375186ae7c6a35b3"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "e4584323b5fe92c346f086a97157a96ed66f89e3",
+   "retained": "captures/74ce016f7ffb31493a2c57f350db4a0dc779350f04bb3064139f926352e16cce.txt",
+   "retained_bytes": 468,
+   "retained_sha256": "74ce016f7ffb31493a2c57f350db4a0dc779350f04bb3064139f926352e16cce",
+   "source": "escaped-value-fix-gate-timings",
+   "source_bytes": 518,
+   "source_sha256": "ca21fff40e3d05fbccd0ffebf4297751b708e6f7f8374a791dde400c140e6301"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": false,
+   "git_blob_oid": "ab104d60bb9851288ed91444985fad6a74e3e803",
+   "retained": "captures/f22c3d2eddb00433feb5fbc5d6731866b38186353316373878427458cf8d7fce.txt",
+   "retained_bytes": 99,
+   "retained_sha256": "f22c3d2eddb00433feb5fbc5d6731866b38186353316373878427458cf8d7fce",
+   "source": "escaped-value-fix-tests",
+   "source_bytes": 99,
+   "source_sha256": "f22c3d2eddb00433feb5fbc5d6731866b38186353316373878427458cf8d7fce"
+  },
+  {
+   "classification": "retained-sanitized",
+   "content_changed": true,
+   "git_blob_oid": "8ba003e3332a92e457b408f9a8d7cf484e6cf9da",
+   "retained": "captures/e7e84250e32b33af3b21fd9a56622c290b578f988f9e99f9e4830670dabc255d.txt",
+   "retained_bytes": 1842,
+   "retained_sha256": "e7e84250e32b33af3b21fd9a56622c290b578f988f9e99f9e4830670dabc255d",
+   "source": "local-simulation-provenance-fix-timings",
+   "source_bytes": 2097,
+   "source_sha256": "2a290b5556c4cce1a640920dc7acf550c3cd4cdfa89446a3f0b83e24f4d393d9"
+  }
+ ],
+ "boundary": "Sanitized source snapshots and dispositions; original digests identify inputs, not preserved raw bytes or completed execution.",
+ "schema": "quantum-task-artifact-retention-v1"
+}

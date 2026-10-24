@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily read-only snapshot of free quantum and compute allotments
+
+[Timer]
+OnCalendar=*-*-* 14:00:00 UTC
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target

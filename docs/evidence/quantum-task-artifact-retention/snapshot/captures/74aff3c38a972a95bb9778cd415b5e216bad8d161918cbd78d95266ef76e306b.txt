@@ -1,0 +1,46 @@
+FAIL core-615    39.7s  "$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests
+
+=== core-615 exit 1 in .
+"$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests
+Traceback:
+tests/scripts/test_hypercomplex_evidence.py:6: in <module>
+    from hypercomplex_evidence import render, replay_matches, validate
+scripts/hypercomplex_evidence.py:24: in <module>
+    from hypercomplex_operators import algebra_certificate, grouped_probabilities, periodic_generator  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+gororoba_quantum/hypercomplex_operators.py:15: in <module>
+    import sympy as sp
+../../../.cache/gororoba-quantum/ci-py3.14.7/lib/python3.14/site-packages/sympy/__init__.py:55: in <module>
+    from .core import (sympify, SympifyError, cacheit, Basic, Atom,
+../../../.cache/gororoba-quantum/ci-py3.14.7/lib/python3.14/site-packages/sympy/core/__init__.py:9: in <module>
+    from .expr import Expr, AtomicExpr, UnevaluatedExpr
+../../../.cache/gororoba-quantum/ci-py3.14.7/lib/python3.14/site-packages/sympy/core/expr.py:11: in <module>
+    from .evalf import EvalfMixin, pure_complex, DEFAULT_MAXPREC
+../../../.cache/gororoba-quantum/ci-py3.14.7/lib/python3.14/site-packages/sympy/core/evalf.py:14: in <module>
+    from mpmath.libmp import (from_int, from_man_exp, from_rational, fhalf,
+E   ImportError: cannot import name 'mpf_ln' from 'mpmath.libmp' (${USER_HOME}/.cache/gororoba-quantum/ci-py3.14.7/lib/python3.14/site-packages/mpmath/libmp/__init__.py)
+============================= slowest 15 durations =============================
+20.62s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.95]
+17.84s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.0]
+15.72s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_tls_plant_rejects_the_line_mixture[0.5]
+14.25s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_static_plant_rejects_tls[0.5]
+13.25s call     tests/scripts/test_n21_q143_segmented_sweep.py::test_tls_plant_rejects_the_line_mixture[0.0]
+12.05s call     tests/ci/test_gate_inputs.py::SelectionTests::test_quandela_static_scopes_follow_named_fixtures
+11.81s call     tests/ci/test_gate_inputs.py::SelectionTests::test_slow_pr_gates_select_on_their_own_inputs
+9.25s call     tests/ci/test_gate_inputs.py::SelectionTests::test_expensive_archive_replays_have_input_scopes
+5.29s call     tests/ci/test_premerge_gates.py::test_base_cache
+4.73s call     tests/ci/test_gate_ledger.py::test_every_read_kind_reruns_exactly_its_gate
+4.08s call     tests/scripts/test_hypercomplex_libraries.py::test_inventory_covers_locks_and_independent_roles
+3.38s call     tests/scripts/test_hypercomplex_libraries.py::test_documented_candidates_and_provider_adapters_have_roles
+3.11s call     tests/ci/test_gate_inputs.py::SelectionTests::test_synthetic_units_refuse_archive_access
+3.06s call     tests/gororoba_quantum/test_live_run_wide_records.py::test_comparison_accepts_the_plan_and_refuses_an_edit
+2.28s call     tests/ci/test_gate_inputs.py::SelectionTests::test_repository_source_manifest_closure
+=========================== short test summary info ============================
+ERROR tests/gororoba_quantum/test_hypercomplex_dynamics.py - ImportError whil...
+ERROR tests/gororoba_quantum/test_hypercomplex_operators.py - ImportError whi...
+ERROR tests/scripts/test_hypercomplex_campaign.py - ImportError while importi...
+ERROR tests/scripts/test_hypercomplex_cases.py - ImportError while importing ...
+ERROR tests/scripts/test_hypercomplex_evidence.py - ImportError while importi...
+======================== 155 passed, 5 errors in 39.55s ========================
+
+0 passed, 1 failed of 1 gates in shard 0/1 on CPU

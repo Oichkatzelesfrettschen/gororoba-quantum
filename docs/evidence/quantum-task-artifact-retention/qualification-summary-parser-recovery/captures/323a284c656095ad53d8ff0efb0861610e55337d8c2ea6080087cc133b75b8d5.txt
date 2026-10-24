@@ -1,0 +1,40 @@
+"""Launch corrected qualification helpers with the original holder's environment."""
+
+def recover_qualification_helpers():
+    import __main__
+    import json
+    from pathlib import Path
+    import subprocess
+
+    retained_environment = __main__.environment
+    jobs = [
+        (
+            "artifact_retention",
+            "${TEMP}/quantum-artifact-retention-qualification.py",
+            ["--inherited-environment"],
+            "${TEMP}/quantum-artifact-retention-recovered-launch.log",
+        ),
+        (
+            "local_simulation",
+            "${TEMP}/local-simulation-qualified-base-runner.py",
+            [],
+            "${TEMP}/local-simulation-qualified-base-launch.log",
+        ),
+    ]
+    receipt = {}
+    for name, script, arguments, log in jobs:
+        with Path(log).open("x") as output:
+            child = subprocess.Popen(
+                [retained_environment["PYTHON"], "-B", script, *arguments],
+                env=retained_environment,
+                stdin=subprocess.DEVNULL,
+                stdout=output,
+                stderr=subprocess.STDOUT,
+                start_new_session=True,
+            )
+        receipt[name] = {"pid": child.pid, "script": script, "log": log}
+    with Path("${TEMP}/quantum-qualification-environment-recovery.json").open("x") as output:
+        json.dump(receipt, output, indent=2)
+        output.write("\n")
+
+recover_qualification_helpers()

@@ -1,0 +1,15 @@
+historical runtime qiskit-2.5: historical runtime qiskit-2.5 requires REPLAY_PYTHON; the running interpreter differs from requirements-replay.txt: pydantic 2.14.1 (pin 2.13.5)
+PASS core-211    48.2s  PYTHONWARNINGS=error "$PYTHON" scripts/patch_window_analysis.py --self-check
+FAIL core-313     0.0s  "$PYTHON" -B -W error scripts/echo_dilation_noise.py --check docs/evidence/echo_dilation_noise/resul
+
+=== core-313 exit 127 in .
+"$PYTHON" -B -W error scripts/echo_dilation_noise.py --check docs/evidence/echo_dilation_noise/result.json --arms docs/evidence/echo_dilation_noise/arms.qpy --run results/kaggle/2026-10-16T182806Z-gororoba-echo-dilation-noise
+historical runtime qiskit-2.5 requires REPLAY_PYTHON
+FAIL core-288     0.0s  "$PYTHON" -B -W error scripts/census_frequency_design.py --check docs/evidence/census_frequency_desi
+
+=== core-288 exit 127 in .
+"$PYTHON" -B -W error scripts/census_frequency_design.py --check docs/evidence/census_frequency_design/result.json --pairs "1,2;2,1"
+historical runtime qiskit-2.5 requires REPLAY_PYTHON
+PASS core-480    28.7s  "$PYTHON" -B -W error dynamic_density.py --self-test
+PASS core-100    31.7s  "$PYTHON" ripple_contracts.py
+PASS core-302    32.9s  "$PYTHON" -B -W error snapshot_laws.py

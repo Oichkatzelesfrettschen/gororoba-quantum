@@ -1,0 +1,13 @@
+PASS core-630     2.0s  "$PYTHON" -B -W error scripts/hypercomplex_evidence.py --check docs/evidence/hypercomplex-operators/
+FAIL core-039    36.7s  "$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/ver
+
+=== core-039 exit 1 in gororoba_quantum
+"$PYTHON" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py
+../tests/gororoba_quantum/test_hypercomplex_dynamics.py:63: error: Argument 1 to "dephase_evolve" has incompatible type "ndarray[tuple[Any, ...], dtype[float64]]"; expected "ndarray[tuple[Any, ...], dtype[complex128]]"  [arg-type]
+../tests/gororoba_quantum/test_hypercomplex_dynamics.py:63: error: Argument 2 to "dephase_evolve" has incompatible type "ndarray[tuple[Any, ...], dtype[float64]]"; expected "ndarray[tuple[Any, ...], dtype[complex128]]"  [arg-type]
+../tests/gororoba_quantum/test_hypercomplex_dynamics.py:70: error: Argument 1 to "dephase_evolve" has incompatible type "ndarray[tuple[Any, ...], dtype[float64]]"; expected "ndarray[tuple[Any, ...], dtype[complex128]]"  [arg-type]
+../tests/gororoba_quantum/test_hypercomplex_dynamics.py:70: error: Argument 2 to "dephase_evolve" has incompatible type "ndarray[tuple[Any, ...], dtype[float64]]"; expected "ndarray[tuple[Any, ...], dtype[complex128]]"  [arg-type]
+Found 4 errors in 1 file (checked 334 source files)
+PASS core-615    95.5s  "$PYTHON" -B -W error -m pytest -n auto --dist loadgroup --durations=15 tests
+
+2 passed, 1 failed of 3 gates in shard 0/1 on CPU

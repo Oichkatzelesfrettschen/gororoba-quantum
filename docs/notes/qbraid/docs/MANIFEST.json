@@ -1,0 +1,833 @@
+{
+ "schema": "qbraid-docs-capture-v1",
+ "kind": "docs",
+ "retrieved_utc": "2026-10-24T20:47Z",
+ "files": [
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/api-keys.md",
+   "source": "https://docs.qbraid.com/v2/account/api-keys.md",
+   "sha256": "2bdfd226f526b05d3c777b48cf229353255bd84ef976a92427929c8d793eedcc"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/chat.md",
+   "source": "https://docs.qbraid.com/v2/account/chat.md",
+   "sha256": "98616162080b44ccebdff85ed5b9e4a07df9211af09cb4572558302dd787ff30"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/composer.md",
+   "source": "https://docs.qbraid.com/v2/account/composer.md",
+   "sha256": "26d77357b962fea4010bb663dfe8fdf2c42cdb438a52bbe43e6332089204bffc"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/dashboard.md",
+   "source": "https://docs.qbraid.com/v2/account/dashboard.md",
+   "sha256": "7219af8559518edeef5f95939b97863fe340964d9cfb86dad3d6e4b1c8fd7f8c"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/explore.md",
+   "source": "https://docs.qbraid.com/v2/account/explore.md",
+   "sha256": "7d3aabcaad8f9869be1ac2ddf188bff8cf8b32be9852a9a8f1b2521d387b9644"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/explore-catalog.md",
+   "source": "https://docs.qbraid.com/v2/account/explore-catalog.md",
+   "sha256": "be1e4f197fe8808f1abf8f90f24f65ac601a72447adf136121b3dc0eaac871b3"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/integrations/openquantum.md",
+   "source": "https://docs.qbraid.com/v2/account/integrations/openquantum.md",
+   "sha256": "0b7ca284b6cb25f03d4cb335fe79f9ae473e6842e9953ecdde417536b01958ed"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/models.md",
+   "source": "https://docs.qbraid.com/v2/account/models.md",
+   "sha256": "92be0e5916d4950ecbe39ecf1fad35afd0211a2a6d60fcb9b3393b96df1498ce"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/audit-logs.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/audit-logs.md",
+   "sha256": "7e79bff41138d5a92cb9f43e9adc3c6614425c42e57a7e86916d9b6f35eb8b92"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/creating-an-organization.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/creating-an-organization.md",
+   "sha256": "48d8ba71a95483b79bdc0a029684a621f90ab4b320d158fbd86259175a7f0284"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/credit-requests.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/credit-requests.md",
+   "sha256": "7c7e277aa6ac661ec8110051831f3387d7cc7be547df6dd1a2be14c6562ef0e5"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/credits.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/credits.md",
+   "sha256": "583473e99a37b5912094d21f478675e65db189e6f654db4915d9c35abb10840d"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/invitations.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/invitations.md",
+   "sha256": "67cef2aafaec92f7235c5c1e14ca9a220470820a744db375ae90dd0dc3a2edf9"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/invite-codes.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/invite-codes.md",
+   "sha256": "abeae39a984a1b56ae1be7efc6f1ba8acb4771fa9040be673be238ae856d3fcc"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/members.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/members.md",
+   "sha256": "47cbd98c7d468d07c0c2308ca8af6770c221bfbea4341638c7018ac540e5d0a0"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/overview.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/overview.md",
+   "sha256": "7d60da020dc0eadc0d98305c2eefb1c2a5d5a5276eedca217d0539d10eb28686"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/seats.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/seats.md",
+   "sha256": "aec28da68b4220a03b3aa8543ed12b1e568f0dd30809df123fc3d6fb60d34b69"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/settings.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/settings.md",
+   "sha256": "b6c77ca5f41f438aafebd772c543ea3a1641c052fe30e6913a237a7af2d537d9"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/subscriptions.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/subscriptions.md",
+   "sha256": "3d8503b04c4f12bb93c3131368a30103f8041d6b792bedb000934f4d93d2dc10"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/transactions.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/transactions.md",
+   "sha256": "e9c5eba48bae93484036253d562c7767df9e34a16c0f6499b92e871aa5ff4359"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/organizations/usage.md",
+   "source": "https://docs.qbraid.com/v2/account/organizations/usage.md",
+   "sha256": "5e4756c070e3b7cac5e4c55537bd84d55f96268de8da22c37413a8b239db16ce"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/overview.md",
+   "source": "https://docs.qbraid.com/v2/account/overview.md",
+   "sha256": "3f00c4b7abdade41ff0b425567e8b026794840b1bda804dd4269e84ebd5b4f14"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/profile.md",
+   "source": "https://docs.qbraid.com/v2/account/profile.md",
+   "sha256": "d17ca1bb39e4d0985a48c0c52ab14bf9970ed837254819f4ebb63ced764e88e5"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/quantum-jobs.md",
+   "source": "https://docs.qbraid.com/v2/account/quantum-jobs.md",
+   "sha256": "98f7f396a7f76242b5cea3fc063f555b9e4cf3ec54916f366b7bb83a667a0f84"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/refresh.md",
+   "source": "https://docs.qbraid.com/v2/account/refresh.md",
+   "sha256": "86af57463a4714e2f1dd139eac00e495a09d5c41b7f00319467c3fd9de9afd20"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/sign-in.md",
+   "source": "https://docs.qbraid.com/v2/account/sign-in.md",
+   "sha256": "64e2b2e36bf8f6058857ed2c5f1661d11979389e646eb402f8e9c8bf115ddaa9"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/support.md",
+   "source": "https://docs.qbraid.com/v2/account/support.md",
+   "sha256": "62fd5d1c69529d347556657545f49dd45c65f1648ee85ff7e2ae3f46a658d8e7"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/usage.md",
+   "source": "https://docs.qbraid.com/v2/account/usage.md",
+   "sha256": "fcc693a83aa755d97f2572ab6ea0c62ecb7e4c60392efa01cb3af7b8d6772ae7"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/wallet/buy-credits.md",
+   "source": "https://docs.qbraid.com/v2/account/wallet/buy-credits.md",
+   "sha256": "0f1091b7f09e9da55a218e0b060d6f150da76982d43792c996924d85ba3ceb30"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/wallet/overview.md",
+   "source": "https://docs.qbraid.com/v2/account/wallet/overview.md",
+   "sha256": "80b2470f39bf379c53a53a47b5b5e25dc0bd65fefaa7107136bd5b68ba014136"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/wallet/payment-history.md",
+   "source": "https://docs.qbraid.com/v2/account/wallet/payment-history.md",
+   "sha256": "ab5a795ac7d52a51c2d82fb655c1c4b4b984f807a10f5458a96f08761bd34d68"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/account/wallet/subscriptions.md",
+   "source": "https://docs.qbraid.com/v2/account/wallet/subscriptions.md",
+   "sha256": "ae73aa3be5b83921901a945066473ffc2c40649aa4dd842f5b72ba3a1ca64949"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/ai/integrations/ai-gateway.md",
+   "source": "https://docs.qbraid.com/v2/ai/integrations/ai-gateway.md",
+   "sha256": "0f3e1697ab8f6c128f27b861f90a136b70e55c3760968743f1dad84afbdbb5fb"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/ai/integrations/mcp-server.md",
+   "source": "https://docs.qbraid.com/v2/ai/integrations/mcp-server.md",
+   "sha256": "cce3098fed3fa1601e6c7c9a449eccc95180a2a8779ee1ea4537b7e502ec1e23"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/ai/user-guide/agent-mode.md",
+   "source": "https://docs.qbraid.com/v2/ai/user-guide/agent-mode.md",
+   "sha256": "6d83306098be7ddcd3f361c3b4aaa015f8b4b19be445d4a38649d259f394412d"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/ai/user-guide/ai-chat.md",
+   "source": "https://docs.qbraid.com/v2/ai/user-guide/ai-chat.md",
+   "sha256": "aa1b60c29123be53e7ded8ab585dba6a0352e893c8b52df86ae9a18512f77927"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/ai/user-guide/overview.md",
+   "source": "https://docs.qbraid.com/v2/ai/user-guide/overview.md",
+   "sha256": "732af6477664508a3b84108c45bf2adbe145caf9fc225f26826778cde79406b0"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/ai/user-guide/usage-quotas.md",
+   "source": "https://docs.qbraid.com/v2/ai/user-guide/usage-quotas.md",
+   "sha256": "af5da8cb92185e2606fce9ea21d796d31d20661cc559e02f35ceb3013633e477"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/algorithms/user-guide/cli.md",
+   "source": "https://docs.qbraid.com/v2/algorithms/user-guide/cli.md",
+   "sha256": "56f165e9fe21ac9f3eb303641bb2a13d2cc343f0e4a8d91b8e29b7ffe8de5ddc"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/algorithms/user-guide/examples.md",
+   "source": "https://docs.qbraid.com/v2/algorithms/user-guide/examples.md",
+   "sha256": "be18412321a93bcfb416051ca170d9e3a8efaab393ca0cd50bbc354482a9ac19"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/algorithms/user-guide/overview.md",
+   "source": "https://docs.qbraid.com/v2/algorithms/user-guide/overview.md",
+   "sha256": "ec6048d9572ff76af5aea2fb45ff35e29c1bc8dfaea70be07b30e2002cf4d1d1"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/cancel-job-group.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/cancel-job-group.md",
+   "sha256": "1b7f772506d59f40f15782ac0f989405ee0e639655e3984cc6ead0301f92dcaf"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/cancel-quantum-job.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/cancel-quantum-job.md",
+   "sha256": "936c4f4bca260b5be2ae5638a0aeb35e44017fc6f96988bd682c5be1c7f4f34c"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/close-job-group.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/close-job-group.md",
+   "sha256": "80bae142aeb43b2e3fc7e0298147c533e7a7e0acd0d0eafc4bbb747e3136e97d"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/create-job-group.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/create-job-group.md",
+   "sha256": "a892ee379a73940ca1e77c2b737718819a10e54908666e219ed3f5e3c3cdb768"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/delete-quantum-job.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/delete-quantum-job.md",
+   "sha256": "f666ff7dd326ba20dcbc0a7467b8f89e123e0c8c2e0dbd08895c80cc6d46a99c"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/delete-quantum-jobs.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/delete-quantum-jobs.md",
+   "sha256": "bd8a7c2b97676c116178b08c3458e08eddcb848376ef64485d4c40729d6faec5"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-credit-balance.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-credit-balance.md",
+   "sha256": "9f5f9780dff861a234cd38f0d2a89fa3c738be0c81868d8bb667d33d7786398b"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-credit-pricing.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-credit-pricing.md",
+   "sha256": "975c856f17c7a6ea6e95f80ca9f2ebd0a87f6f29da32f5048831f8ccb70a7d0a"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-device.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-device.md",
+   "sha256": "6300047dd6345e0813e5e09c6bedfb97adeb141dbf2d9a8eb0dad386565960d4"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-device-calibrations.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-device-calibrations.md",
+   "sha256": "b2f8a19610872f1bb9a868547286063beb21161398f55779c043ab9f16c88597"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-job-compiled-program.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-job-compiled-program.md",
+   "sha256": "1c6f36483d4a2934da27392e636af908c6eb465c835e0e5df1a3f2e9ad3f2546"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-job-group.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-job-group.md",
+   "sha256": "ba91f3e1149b8073961850fb6734f25b3d3fd21b34592c875a55a04339713b9b"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-job-group-jobs.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-job-group-jobs.md",
+   "sha256": "5b870ec5dd9e961f862a96b44000fd8ddb3300298768277a001b3902a4ed1a0e"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-job-program.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-job-program.md",
+   "sha256": "46ab5719bea40c034f918d57f5bb4a62e8621b4aa4cbeaf4bac62e3f3dd90da5"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-job-program-ascii.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-job-program-ascii.md",
+   "sha256": "11e5f53df1ce3ce680c000ff0485078676ad5656194a5b8e6b4a743c12cae235"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-jobs-statuses.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-jobs-statuses.md",
+   "sha256": "767fa2cd7e136e54c3c81f676ff23591b91f2c20c9451c50324d16b46761e880"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-jobs-summary.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-jobs-summary.md",
+   "sha256": "b73b6474316d5a42dab8906ef2c5c6eb00699abd9a18511f28eb4e0fe8575c3a"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-quantum-devices.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-quantum-devices.md",
+   "sha256": "d06fd9dfaef629623d7036348283d89977f8faac8de8b310d68c0c0832003da3"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-quantum-jobs.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-quantum-jobs.md",
+   "sha256": "877233ba53104f8bf6c85e643b9d0a58e5adcc86a68574c3a11743d7cc8078b5"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-quantum-jobs-cost-estimate.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-quantum-jobs-cost-estimate.md",
+   "sha256": "678003587dda2a657967418b38af29306c91035c285dbdf54fc6e44455a12046"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-quantum-jobs-list.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-quantum-jobs-list.md",
+   "sha256": "51ea0be718775400a74c87b5b52834777027928c135c23e94183daea545bc76f"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-quantum-jobs-result.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-quantum-jobs-result.md",
+   "sha256": "f77e26f46a2a544fa598b085201d402895c2f453ccaf4a1b0d5fb98671625192"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-simulator-usage.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-simulator-usage.md",
+   "sha256": "aaeb3a8b8326ce60e6b80374cfb3b0bee90a1bd113e2cd1abee4b75fd76fc814"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/get-simulator-usage-series.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/get-simulator-usage-series.md",
+   "sha256": "bbd190ac86c8b04fbef3833cf5eec55c992807aa26cb96c6098ac9d0b0e0405e"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/list-job-groups.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/list-job-groups.md",
+   "sha256": "72d2d2a451d5852a96cd07f64af767af51cf94413039b328f5a48d14a3495912"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/migration.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/migration.md",
+   "sha256": "3710375d5c5ab26e0c35633aa57b12b3b9699b5413d7bd4cdf6ffd9a3680e988"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/post-quantum-jobs.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/post-quantum-jobs.md",
+   "sha256": "9022b5a30829b5c71bb1a4e755e55a157c08b7d47a33919e45ff56e80c0624a8"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/rest/update-simulator-usage-settings.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/rest/update-simulator-usage-settings.md",
+   "sha256": "206c37e9ca052105f3ee1f04f7a3ef9f42cf2a9ff6ee6a11fdca8c8d79d96b53"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/api-reference/user-guide/overview.md",
+   "source": "https://docs.qbraid.com/v2/api-reference/user-guide/overview.md",
+   "sha256": "1e91e96251b50ea6cb89fe9afc6f8fbcba0034d8ff9b6473237a1affd4772bca"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid.md",
+   "sha256": "b65b13472bd12bf19d35c83a149d41207301accefa21eef5b746884fa52598ca"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_account.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_account.md",
+   "sha256": "db7f9a38175c3a28314d1c426b0d118c482cfe63d9277feacbd583463136a4d9"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_admin.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_admin.md",
+   "sha256": "fc8f64414b820bf73ee9df4cc18f3ee2f421492104c21dfbad3e4d019d10219e"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_agents.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_agents.md",
+   "sha256": "25a938e7117b80eeaf17a165508bda78d7bc44216a4b254b4d764ac95765ab23"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_compute.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_compute.md",
+   "sha256": "a9b8cd86388cba4e6944561615586d917a514403b2c1ef982a23694bfa9e4d77"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_configure.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_configure.md",
+   "sha256": "eea65232a9a9aaa75d9de913508106e3f22ec23b816875d49077b68e98b1dd7b"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_devices.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_devices.md",
+   "sha256": "0b8a2c55bd8fdfdab611d14764c1a2aa7a0c437955d5fe512e0d0baa388bc391"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_envs.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_envs.md",
+   "sha256": "42fdb833bbd027a0e24e00903aafacfec90d6ff911d977b6ae444f466b63e13c"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_jobs.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_jobs.md",
+   "sha256": "c104cb6159340ea6ce8d0be59c97c893e8e78d1b78167de918b534362260856d"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_kernels.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_kernels.md",
+   "sha256": "aaff238163ad5e92deec7541fcadc3ba775b66ad74748c26cbc70ec212bcec4c"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_lab.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_lab.md",
+   "sha256": "3bc1f443df469a60f54b01ea1f0c95433c3be64228cc63618acfcd2c46330251"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_pip.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_pip.md",
+   "sha256": "46b2ee92d8f4b301f01a31acc1f53fa757ca2bbced9809e88ea33101bb8bfa15"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_projects.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_projects.md",
+   "sha256": "3eb2d5fd33bb5d52b63d1921ea818abd161f5eea61ffac770f2bd97ce476ed60"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_skills.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_skills.md",
+   "sha256": "ae977ee19ecb1e68c725efdd9f3dd0a0620af44efaafb7b0dd796df1301d8568"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/api-reference/qbraid_troubleshoot.md",
+   "source": "https://docs.qbraid.com/v2/cli/api-reference/qbraid_troubleshoot.md",
+   "sha256": "3096ae6ceb1f7f251d4c00627f306e722d47bc11429282fe0c1879ab51444677"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/user-guide/config-files.md",
+   "source": "https://docs.qbraid.com/v2/cli/user-guide/config-files.md",
+   "sha256": "29d79196d5fb5a09bf56e65a3ed792d62ac9f654a9403de71d54840447c12f7e"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/user-guide/environments.md",
+   "source": "https://docs.qbraid.com/v2/cli/user-guide/environments.md",
+   "sha256": "a46e518f239aa6a4f2ef34dce2c35cc2c79c510dedcf1fb741c96474b6e8b132"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/user-guide/magic-commands.md",
+   "source": "https://docs.qbraid.com/v2/cli/user-guide/magic-commands.md",
+   "sha256": "88782eac2d63c78db6fea67b530e3d70c4100b9b1ce3c19183e4ff609b90cac6"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/cli/user-guide/overview.md",
+   "source": "https://docs.qbraid.com/v2/cli/user-guide/overview.md",
+   "sha256": "6c8812bcd4bc2b04b11c3a55da25017ead8951c6ef81181e6dc977bd2adb86f5"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/core/user-guide/overview.md",
+   "source": "https://docs.qbraid.com/v2/core/user-guide/overview.md",
+   "sha256": "bd1f5215d41b52ea03d85a156b13012997ee6cd326b2b477b121b30c1a6aad9b"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/home/faq.md",
+   "source": "https://docs.qbraid.com/v2/home/faq.md",
+   "sha256": "e716b5f6cbaddd499abb00ff217e3c059e123b1abdd08d4b7c85a2e437ddd49e"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/home/introduction.md",
+   "source": "https://docs.qbraid.com/v2/home/introduction.md",
+   "sha256": "3cf15ac955e7b912ccd7340967cdf3233c1bbd3accae61934e716e2726c361bc"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/home/learning.md",
+   "source": "https://docs.qbraid.com/v2/home/learning.md",
+   "sha256": "072d8fd41f2f6bb883b27c37a0c48091b8ba4f7460d16bc7cd1a57f4e6886623"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/home/legacy-jobs.md",
+   "source": "https://docs.qbraid.com/v2/home/legacy-jobs.md",
+   "sha256": "280baee69ccf67533c37f96c737d2783508ee177fd711fe5a791f78d93e72c9d"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/home/migration.md",
+   "source": "https://docs.qbraid.com/v2/home/migration.md",
+   "sha256": "dc0b1c1e6e981f352dae654ab1ef77b4baea804e4634e7921eca80f5e158546b"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/home/pricing.md",
+   "source": "https://docs.qbraid.com/v2/home/pricing.md",
+   "sha256": "f1e77c10850b3cc140a70c5cbba773cce23d65dfeedd939a99ebc1b5c66691ed"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/environments.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/environments.md",
+   "sha256": "58b1cb334ad2582b5d6d22b3bfb7a52e0bc6791bc885997943cd0248fe3ffbdd"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/featured-environments/intel-quantum-sdk.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/featured-environments/intel-quantum-sdk.md",
+   "sha256": "68bbbdc0308308d5b2bf53f2097494bf7983448e031027219fd9fdeda1ad2cd3"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/files.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/files.md",
+   "sha256": "7fa983c393ee2e7ea11da5f908d0df9a026eab13b362c3c3c5c6152d7a198700"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/getting-started.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/getting-started.md",
+   "sha256": "54eab1b0180e07579ba54da7da5f11f009c6472f197ed81dd9807e8e3c560073"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/gpus.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/gpus.md",
+   "sha256": "d446727352a3a387da1f59a94a5d8fc8fbdcffbe13bd3932a28f3cb27cb639e4"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/guidelines.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/guidelines.md",
+   "sha256": "9680311af9c3d4f242531d9b1f490750c85a2c3d1270c7160a385256a978c7a2"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/kernels.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/kernels.md",
+   "sha256": "29a6b0a23710e0b7695c2071f0d0a73d5d63afe98d56318210020b6306f688a1"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/notebooks.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/notebooks.md",
+   "sha256": "7718d027d609edcbc357266e18696971213dd470ec2ef1ea443d40668701e94c"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/on-demand-instances.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/on-demand-instances.md",
+   "sha256": "832cffcb602972552aa361dcbcb8a66252339163615c7d734a9ba70b5d27bbaf"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/overview.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/overview.md",
+   "sha256": "d3f1653a92cb2003b88b57ca3f9755baeb202a757a425ce71fdc40d0fdc3a0ee"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/quantum-devices.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/quantum-devices.md",
+   "sha256": "09a6bd3f98005d2def1fe95d40346ef27d8e82690b8ad01cb4fa89601850a0d3"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/quantum-jobs.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/quantum-jobs.md",
+   "sha256": "21f7a3b673c56b53ea0d1d5b99f2362c01ab0ad8331666ae894547376c434e11"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/settings.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/settings.md",
+   "sha256": "6d1e2c5716ecaf5b01042d4d59b8cd34aebfcd2e6a0fcacb4a49604b4663aabe"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/troubleshooting.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/troubleshooting.md",
+   "sha256": "d4b7e3da326eab683cd37b3fe74d4e68a1b3adb47bd3af30f2c6b48317427cf4"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/lab/user-guide/usage-limits.md",
+   "source": "https://docs.qbraid.com/v2/lab/user-guide/usage-limits.md",
+   "sha256": "6057de45857f14efb9555a1c86fd7f1188559c07f481835adfba6863c5305232"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/pyqasm/user-guide/advanced-features.md",
+   "source": "https://docs.qbraid.com/v2/pyqasm/user-guide/advanced-features.md",
+   "sha256": "a7f5d386b1b4ed31eb7591aa8f82d30c01a851b25e0487aad10212a3b791d615"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/pyqasm/user-guide/circuit-drawer.md",
+   "source": "https://docs.qbraid.com/v2/pyqasm/user-guide/circuit-drawer.md",
+   "sha256": "8ea3b36734e3d6a19c26e149606a8c884244f1a8b6530172a19ba7f4add5ba30"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/pyqasm/user-guide/cli.md",
+   "source": "https://docs.qbraid.com/v2/pyqasm/user-guide/cli.md",
+   "sha256": "428449562459eb0ee0d01a7dddd1509519e14ab619ed0d622683ca1b091093dc"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/pyqasm/user-guide/examples.md",
+   "source": "https://docs.qbraid.com/v2/pyqasm/user-guide/examples.md",
+   "sha256": "c52b7864e983bf6cf35d074faf125062b8c205802a0a59faae5595e69e78f228"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/pyqasm/user-guide/openpulse.md",
+   "source": "https://docs.qbraid.com/v2/pyqasm/user-guide/openpulse.md",
+   "sha256": "6063ce515657ef5733e8fada0e47acfcba46b234b8d7be7dbf5a1d6fb9a01e68"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/pyqasm/user-guide/overview.md",
+   "source": "https://docs.qbraid.com/v2/pyqasm/user-guide/overview.md",
+   "sha256": "6aff79ba8ccb42a4961d13bfb9566d336f0994cd1c4a2b641b4fb36e0a5b39a5"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/qir/user-guide/cirq-qir.md",
+   "source": "https://docs.qbraid.com/v2/qir/user-guide/cirq-qir.md",
+   "sha256": "01842556291a3b8f5e267270fa51426af2b719053ea3f15126941c29630c0d40"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/qir/user-guide/overview.md",
+   "source": "https://docs.qbraid.com/v2/qir/user-guide/overview.md",
+   "sha256": "e5887bbd9674e07aa97041befc0de101db17e554b871af5cb0c0d86dbf22f407"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/qir/user-guide/profiles.md",
+   "source": "https://docs.qbraid.com/v2/qir/user-guide/profiles.md",
+   "sha256": "17520a019b0657814664d3a84440ba4402af1d1bc180aa9e6dcaa5828e15d49f"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/qir/user-guide/qasm3-qir.md",
+   "source": "https://docs.qbraid.com/v2/qir/user-guide/qasm3-qir.md",
+   "sha256": "8e91a57391c9a552fa7860fec529a870e0ecf86dbb2aca64fc4d4244ee33b3f8"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/qir/user-guide/qir-squin.md",
+   "source": "https://docs.qbraid.com/v2/qir/user-guide/qir-squin.md",
+   "sha256": "fcc83e3ba432114704181465c23a2f3f14d8e5d67cbb0f8cbdab3d5c08534121"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/qir/user-guide/qiskit-qir.md",
+   "source": "https://docs.qbraid.com/v2/qir/user-guide/qiskit-qir.md",
+   "sha256": "eba166475236d6cf679cc54337bb78d27e028b849e8b58e59144bdfeb62d92a0"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/interface.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/interface.md",
+   "sha256": "6dc66233a9b227976f6948a1104c2b7f5dcffcb82030232fc484280bdd2e79ee"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/overview.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/overview.md",
+   "sha256": "5b305c8064bc0a1a5f8e0866875a35defe4abbcf02b186bb738005b7397b7137"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/programs.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/programs.md",
+   "sha256": "0a95f47705cbcf86bd5f63ae0aa1893fa9dbb510b31ab7ef2b282ad9b86f2296"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/aqt.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/aqt.md",
+   "sha256": "840bbbdcfe7c74c429e4ec4e76f8fa6ecede5912b0db531f547b13713d504f70"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/aws.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/aws.md",
+   "sha256": "d08e054298aef112ea095fe42bae77d97616e7c968ad9105f79a02d80ed7a493"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/calibrations.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/calibrations.md",
+   "sha256": "df1a4f9b7950d7cc5b939ef9ad40303972b012d1bd4661e419d9a3c5fcfcfac2"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/getting-started.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/getting-started.md",
+   "sha256": "0e50d1eb74a411cb66fe3ede09a1848d4c37ffef8112a4cf3c25826d2eda1a36"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/gpu-simulators.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/gpu-simulators.md",
+   "sha256": "7dc54ecb9a0eb87696c01299f72910f7fb28e692af416bd2ec49570128dc1d03"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/ionq.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/ionq.md",
+   "sha256": "0ed45add365d1a9cf536f1c4c53ad6f12a5c0f7128ef827684a0969375ec964a"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/iqm.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/iqm.md",
+   "sha256": "8c424ebbdda9b4ac5e75ea071e115eb5c5a7402591b883e796d964660b361738"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/jobs.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/jobs.md",
+   "sha256": "036f859e50a20b5e3f31f336ea9c70caa34033913b4e107e432cc14691e6ae8f"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/managing-jobs.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/managing-jobs.md",
+   "sha256": "b4e47c9451748da2267e243dc6d95ca5f3c5c3c00f422c0dfd59f3affa68300e"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/open-quantum.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/open-quantum.md",
+   "sha256": "5b80557128e1e4474eb8ded2adf9ecd622780d6ee5c16c7e63ae2acd96e309a4"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/quera.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/quera.md",
+   "sha256": "651e6011f41558d1d86248777e9ec17ae18f86a1ef7420ae9d174e36c6ac8f39"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/quobly.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/quobly.md",
+   "sha256": "c3b7488adef235a3e1ca4a7921e8e833b1c6c7c350de8a45d7ebaf6caec203f8"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/rigetti.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/rigetti.md",
+   "sha256": "15d8072590b07316ded8a11e2046f177e8a7203c257d5a97e32e034efe9cb90b"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed.md",
+   "sha256": "55fc3ed4479a73772012956407c373260271d1616122e0a60c40691e7ba73c6f"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/aqt.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/aqt.md",
+   "sha256": "b8dfc903bd0c3caaef784e2c255730e42a75ad305012485356f4ac69286a1596"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/aws.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/aws.md",
+   "sha256": "a3731df0ce09b5e647d60618f86f79488a0df7ee604742b80f6e9007a1307202"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/azure.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/azure.md",
+   "sha256": "20428858212da2bfb5546c87d9e286f362997874037270c10791b6f537dc1248"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/ibm.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/ibm.md",
+   "sha256": "dfeb83d786b283b8b7397a4a030e2ccf41f4efc56236d960dc5e0451cafa5a47"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/ionq.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/ionq.md",
+   "sha256": "87e909c50dbc2dfcd6352b9cd55f5adadb21504a82bf724a325aeb223973f0c1"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/openquantum.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/openquantum.md",
+   "sha256": "0768fd891f250dfabfe84dc53ad22137d592f7855bec46fc33d056e986c0c7db"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/oqc.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/oqc.md",
+   "sha256": "37e5b0c72cb4e5b3f5a3fc9c4537164e795a9215879b865d350184ed3b28472b"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/origin.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/origin.md",
+   "sha256": "e49d6267c5d89f60bed3a5cd64cf321339f6e7914bcd91cf644bf34d29a7f066"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/pasqal.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/pasqal.md",
+   "sha256": "ff004672b6d180c3356c927c904fbb26a72567f9a01276054fc9509d541661c0"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/qperfect.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/qperfect.md",
+   "sha256": "880e6d61edc6f68bc51700cd7a6fda54cd7cbe30eedc4b4cd0ea0bc3c4d6da4d"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/quantinuum.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/quantinuum.md",
+   "sha256": "966e71e97066555f000bdbcd25177d65005064485337bb5afb1f800a83156312"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/qudora.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/qudora.md",
+   "sha256": "ccf0d8438741f9a72132713114710ef758cf917a3cd1b0985a3995610002f995"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/providers/self-managed/rigetti.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/providers/self-managed/rigetti.md",
+   "sha256": "62a3af3b4bee590cd9a6c6212d00e01eba034051a3736d48a71c0a60e3139f10"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/runtime/components.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/runtime/components.md",
+   "sha256": "c787d2633e7474edf6af3419aa1beafe66f1cfa61d659c61db6e3321db99eab6"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/runtime/new-provider.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/runtime/new-provider.md",
+   "sha256": "ff0b55b490a38619f5372a51a0863d7ebdb5bfb4234037c349dc76a321bd8f13"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/runtime/options.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/runtime/options.md",
+   "sha256": "ccf8a411afb0d46fd2c9ee99a0d418330e9fb83090c3763e5ffafd88805b9d65"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/transforms.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/transforms.md",
+   "sha256": "f37ea4466c75d027384badb3fab48fcdca3694626603a9eda50f8bb3eddd111f"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/transpiler.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/transpiler.md",
+   "sha256": "f33c27be1d204a43536da3a9a98ea47f83d703d56b2ace5541623f7b406d5bb8"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/sdk/user-guide/visualization.md",
+   "source": "https://docs.qbraid.com/v2/sdk/user-guide/visualization.md",
+   "sha256": "29972076eaed984024be2af5c0f3a1c431b4217ed439b98b8fc1d21083177883"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/vscode/user-guide/code-editor.md",
+   "source": "https://docs.qbraid.com/v2/vscode/user-guide/code-editor.md",
+   "sha256": "dcef9075a9e517174809aed3802062f0feba082159714449a2f5316fdbb459e9"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/vscode/user-guide/environment-manager.md",
+   "source": "https://docs.qbraid.com/v2/vscode/user-guide/environment-manager.md",
+   "sha256": "cb592df1cf47abf1a9244fcc10ac9d57dfc7fd6b667b14c49e992722825f0c4a"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/vscode/user-guide/overview.md",
+   "source": "https://docs.qbraid.com/v2/vscode/user-guide/overview.md",
+   "sha256": "4066c9243812ae16968afd0e0ee9c16b78a10bb1c823533e740f0b125bd0f594"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/v2/vscode/user-guide/quantum-console.md",
+   "source": "https://docs.qbraid.com/v2/vscode/user-guide/quantum-console.md",
+   "sha256": "4a5e740e4bcea4264f8bf6126b5cec334657348e1ed876a9529623a66b2fa08d"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/llms.txt",
+   "source": "https://docs.qbraid.com/llms.txt",
+   "sha256": "905c49b7021344cd4d6533a2de1a512c2ef13e59df1a1dbe0c973b662e4c8f80"
+  },
+  {
+   "path": "docs/notes/qbraid/docs/llms-full.txt",
+   "source": "https://docs.qbraid.com/llms-full.txt",
+   "sha256": "62c53773d87a418b52dc96f050f82f1ad0574217fa7017c8b00c485e90316068"
+  }
+ ],
+ "unreachable": []
+}

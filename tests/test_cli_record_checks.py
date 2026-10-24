@@ -85,6 +85,7 @@ RECORD_CHECKS = (
     ("scripts/qi_crosstalk_teleport_cases.py", ".", "--check results/quantum_inspire/cases", 5),
     ("scripts/validate_measured_explorer.py", ".", "--check", 5),
     ("scripts/capture_oq_docs.py", ".", "--check", 5),
+    ("scripts/capture_qbraid_docs.py", ".", "--check", 5),
     ("scripts/capture_kaggle_docs.py", ".", "--check", 5),
 )
 
