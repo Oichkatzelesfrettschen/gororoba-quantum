@@ -67,10 +67,15 @@ seed. `"$PYTHON" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng` retains
 the response bytes and their sha256 (`--source legacy` is the keyless JSON API,
 one request per minute; the default `aqn` service is keyed, 100 requests a
 month), and the code or case cites the draw file and the index of every value
-it takes, in index order, each value used once. The draw needs no approval. A
-seed that reproduces a retained record, an approved plan or a known compiled
+it takes, in index order, each value used once. The draw needs no approval.
+A seed that reproduces a retained record, an approved plan or a known compiled
 mesh is an identifier and keeps its value, because the record's replay and the
-approved-record comparison depend on it.
+approved-record comparison depend on it; a rerun of an earlier circuit imports
+its seed constant by name. `ci/seed_provenance.py --check`, run by the `tests`
+check, requires every integer seed literal in the code directories to be a row
+of ci/reproduction_seeds.json, which only shrinks, or an entry of
+docs/evidence/anu_qrng/allocations.json naming a draw no case manifest owns and
+the index holding that value.
 
 ## Work planning
 
