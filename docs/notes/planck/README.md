@@ -29,8 +29,9 @@ sent as `X-API-Key`. The SDK and server allow one request every 3 s.
   `/api/quantum/digital-twin` answer "Invalid API key". The health ping
   answers `authenticated: true` for any well-formed key without a lookup,
   so it proves nothing. The stored key is 67 characters, while the README
-  documents a 64-character key; regenerating it at
-  `https://www.plancktechnologies.xyz/qsaas/settings` is the next step.
+  documents a 64-character key. A regenerated key, also 67 characters,
+  is rejected the same way, so the fault lies in the service's key store
+  rather than in one key; the platform's support is the next step.
 - **The simulator ignores the circuit.** In the platform source at commit
   `d57e32e7`, `simulateQuantumCircuit()` in
   `app/api/quantum/simulate/route.ts` draws every bit with
@@ -38,6 +39,9 @@ sent as `X-API-Key`. The SDK and server allow one request every 3 s.
   `quantum_qpu` backend name, and never reads the gates. Every backend name
   (`auto`, `quantum_inspired_gpu`, `hpc_gpu`, `quantum_qpu`) goes through
   that function. This is read from the source, not from a deployed call.
+- **Announced plan.** The owner reports a forthcoming plan of 49 USD or EUR
+  a month with 36 qubits; no page read here states it, and the simulator
+  finding below decides its value until a re-audit.
 - **Pricing disagrees with itself.** The landing page lists Starter at EUR 0
   with up to 20 qubits; the in-app billing page lists Starter at $29 a month
   with 1,000 runs and up to 8 qubits. No balance or quota endpoint exists.

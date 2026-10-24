@@ -16,9 +16,27 @@ authority.
 | Spending limit | On | same, `spendingLimit` |
 | Registered providers | `Microsoft.Quantum`, `Microsoft.Solutions` (the provider plans deploy through it), `Microsoft.Storage`, `Microsoft.Compute` | `az provider show` |
 
-With the spending limit on, Azure stops paid services at the trial credit
-instead of billing beyond it, and the subscription changes to pay-as-you-go
-only through an explicit upgrade, which is the owner's decision alone. The
+The trial carries 200 USD of credit for 30 days, and its spending limit
+equals that credit and cannot be raised, only removed
+([spending limit](https://learn.microsoft.com/azure/cost-management-billing/manage/spending-limit),
+updated 2026-04-30). When the credit is spent, Azure removes the deployed
+resources from production, stops and deallocates virtual machines, and
+leaves storage readable only; nothing is billed. Within 30 days of sign-up
+or when the credit is exhausted, the subscription must be upgraded to
+pay-as-you-go to keep running
+([free account offer](https://azure.microsoft.com/pricing/offers/ms-azr-0044p)).
+The upgrade removes the spending limit and starts billing for usage beyond
+the 12-month free services, so it is the owner's decision alone. Without an
+upgrade the subscription stays disabled; neither page states when its data
+is deleted, so anything worth keeping leaves it before the trial ends.
+
+The spending limit does not stop every charge: "some external services
+published in the Azure Marketplace can't be used with your subscription
+credits, and can incur separate charges even when your spending limit is
+set" (same page). Azure Quantum provider plans are Marketplace offers (each
+names a publisher), so a paid plan would bill the card even under the
+limit. The workspace therefore holds only the free plans, and adding any
+other plan is the owner's decision. The
 trial credit balance is shown in the portal (Cost Management) and has no
 reliable CLI read for this offer: the consumption API refuses the trial's
 billing-period query. The subscription id, tenant id and account email stay
