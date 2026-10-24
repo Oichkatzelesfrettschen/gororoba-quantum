@@ -40,6 +40,10 @@ aws ce get-cost-and-usage --profile gororoba --region us-east-1 \
     --granularity MONTHLY --metrics UnblendedCost
 ```
 
+The [provider credits monitor](../../runbooks/provider-credits.md) runs both
+reads daily with every other provider's allotment and alerts within 7 days
+of the plan's expiry.
+
 ## CLI and sign-in
 
 `aws-cli-v2` comes from the Arch `extra` repository (2.37.9). The profile
