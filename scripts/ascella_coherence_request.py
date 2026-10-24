@@ -39,7 +39,9 @@ design document. RUN holds copies of the frozen cases.json and circuit.json
 case's credit ceiling, expected seconds and per-job price, validate the fresh
 body against the design and require its digest without process_id, the one
 field Perceval draws afresh per job, to equal the retained job-body.json's.
---preflight writes RUN/preflight.json and sends nothing; --submit passes the
+--preflight writes RUN/preflight.json, the platform catalogue
+RUN/platform-before/catalogue.json and the raw answers of every readable
+route, RUN/platform-before/observation.json, and sends nothing; --submit passes the
 same binding to qd_platform.submit as its verify step, so a request that
 departs from the frozen body is refused before its checkpoint is written.
 
@@ -73,9 +75,11 @@ from qd_platform import (  # noqa: E402
     body_mitigations,
     iteration_form,
     load_case,
+    observe,
     payload,
     plan,
     sha256_bytes,
+    snapshot,
     submit,
     template_experiment,
     write_json,
@@ -110,6 +114,9 @@ CREDIT_CEILING = 1.016384
 EXPECTED_SECONDS = 200.0
 PER_JOB_CREDITS = 1.0
 STAGED = ("cases.json", "circuit.json")
+# qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers
+# taken at preflight; the design's procedure writes platform-after/ at collection.
+BEFORE = "platform-before"
 
 UNIT_I = quaternion_matrix([0, 1, 0, 0])
 UNIT_J = quaternion_matrix([0, 0, 1, 0])
@@ -497,7 +504,7 @@ def staged(run: Path) -> None:
     """Require RUN to hold the frozen request bytes and nothing a submission writes."""
     for name in STAGED:
         require((run / name).read_bytes() == (OUT / name).read_bytes(), f"{run / name} is not the frozen {name}")
-    extra = sorted(path.name for path in run.iterdir() if path.name not in (*STAGED, "preflight.json"))
+    extra = sorted(path.name for path in run.iterdir() if path.name not in (*STAGED, "preflight.json", BEFORE))
     require(not extra, f"{run} holds {extra}; a run directory starts from the frozen request alone")
 
 
@@ -515,6 +522,8 @@ def preflight(run: Path) -> int:
     staged(run)
     checked = plan(run, PLATFORM, CREDIT_CEILING, EXPECTED_SECONDS, PER_JOB_CREDITS)
     bound(checked)
+    snapshot(run / BEFORE)
+    observe(run / BEFORE)
     record = {key: value for key, value in checked.items() if key != "body"}
     record["body_sha256_without_process_id"] = body_digest(checked["body"])
     record["planned_utc"] = datetime.now(UTC).isoformat(timespec="seconds")

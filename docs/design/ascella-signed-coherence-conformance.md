@@ -566,17 +566,34 @@ supplies the second timing point that sizes any larger or repeated job. A
 repeat of the identical body costs 1.016384 credits; a between-job comparison
 needs its own analysis registered before its data, so it is a separate case.
 
-**Fresh read.** [`case-preflight.json`](../evidence/ascella-order-coefficients/case-preflight.json),
-planned at 2026-10-24 06:49:40 UTC by
-`ascella_coherence_request.py --preflight`:
+**Fresh read.** [`case-preflight/`](../evidence/ascella-order-coefficients/case-preflight/preflight.json)
+holds the read-only plan of 2026-10-24 07:04:46 UTC by
+`ascella_coherence_request.py --preflight`, together with its `catalogue.json`
+and `observation.json`:
 - qpu:ascella was available on its Explorer row and processor record, with
-  93.31% availability for 2026-10-24 and a 300-second `max_duration`.
+  92.37% availability for 2026-10-24, a 300-second `max_duration` and no
+  booked maintenance. qpu:belenos carries weekly maintenance from 2026-10-29
+  08:30 to 12:00 UTC.
 - The price was 1e-6 credits per shot, and token occupancy was 0 running and
   0 queued of 1 and 1.
-- HOM was 86.52%, g2 2.0% and the clock 13.33 MHz.
+- HOM was 87.28%, g2 1.9% and the clock 13.33 MHz.
+- The processor advertised connected input modes 0, 2, 4, 6, 8 and 10. Mode
+  0 carries the request's photon.
+- The advertised software was mosaiq-arcturus 2.1.5.2.post4, hardware-core
+  3.9.3, pcvl-worker 2.1.1, universalchipworker 2.1.3, exqalibur 1.4.1 and
+  perceval-quandela 1.3.0, behind cloud API v2.10.1-rc1.
 - Perceval estimated 524,288 shots.
 - The planned body equaled the retained body in every field except
   `process_id`.
+
+**Token sharing.** The job token admits one running and one queued job, and
+`plan` refuses while either is occupied. The armed
+[BDSC drift series](../../results/quandela/schedules/bdsc-drift-series.json)
+submits a 213.6-second qpu:belenos job at each odd UTC hour from 07:00 to
+19:00 on 2026-10-24, and a due drift job waits while the token is busy. The
+Ascella job therefore starts at least 10 minutes after a drift job's start
+and finishes before the next one. On the 200-second projection, a start
+between hh:10 and hh:50 past an odd hour leaves both jobs their windows.
 
 **Untested path.** No completed Ascella job has yet used a twelve-entry input,
 an explicit empty mitigation list or more than eight iterations. Pilot
@@ -597,12 +614,13 @@ evidence it costs nothing.
   as descriptive evidence.
 
 **Dark counts.**
-- The processor reports 15,986 dark detections per second summed over twelve
-  detectors: 13,353 on detectors 8 to 11 and 744 on detectors 1 to 3.
+- At the fresh read the processor reports 12,159 dark detections per second
+  summed over twelve detectors: 9,908 on detectors 8 to 11 and 651 on
+  detectors 1 to 3.
 - Pilot setting `order-i1-j0-representative0` has its ideal support on mode 0
   and returned 4 of 8,192 events on modes 1 to 3.
-- Scaling those 4 events by the ratio 15,986/744 bounds the dark share of
-  twelve-mode eligible events at about 86/8,192, or 1.05%.
+- Scaling those 4 events by the ratio 12,159/651 bounds the dark share of
+  twelve-mode eligible events at about 75/8,192, or 0.91%.
 - The bound assumes the stray events are dark counts in proportion to each
   detector's reported rate. Crosstalk would make the bound conservative, and
   a rate-independent mechanism would break it; the uncertainty is medium.
@@ -625,8 +643,42 @@ cp results/quandela/cases/ascella_signed_coherence/job-00/cases.json \
 "$PYTHON" scripts/ascella_coherence_request.py --preflight "$RUN"
 "$PYTHON" scripts/ascella_coherence_request.py --submit "$RUN" "APPROVAL TEXT"
 "$PYTHON" scripts/qd_platform.py collect "$RUN" --timeout 3600
+"$PYTHON" scripts/qd_platform.py snapshot --out "$RUN/platform-after"
+"$PYTHON" scripts/qd_platform.py observe --out "$RUN/platform-after"
 "$PYTHON" scripts/ascella_coherence_run.py --run "$RUN"
 ```
+
+`--preflight` also writes `platform-before/` through `qd_platform.snapshot`
+and `qd_platform.observe`, and the procedure writes `platform-after/` the same
+way after collection:
+- `catalogue.json` holds:
+  - the curated Explorer rows;
+  - every processor record: `perfs` (clock, per-detector dark counts, HOM,
+    g2), `specs.software_versions` (mosaiq-arcturus, hardware-core,
+    pcvl-worker, universalchipworker, exqalibur, perceval-quandela),
+    `connected_input_modes`, `constraints`, `known_mitigations`,
+    `default_mitigations`, the `architecture` blob and the server command set;
+  - the API version, token occupancy and usage, and local package versions.
+- `observation.json` holds the raw answer of every GET route in the retained
+  cloud and account OpenAPI documents (`docs/notes/quandela/api/`), plus the
+  public and Explorer platform lists and every platform's processor record.
+  It is scrubbed of `FORBIDDEN_KEYS`. The Explorer rows keep every field,
+  including the booked maintenance windows. The record also carries both
+  OpenAPI documents, health, availability, the usage report and the provider
+  RSS feed. Each answer is kept with its HTTP status, content type, retrieval
+  time and sha256, and a refused or unanswered route is recorded as such.
+- The observer omits three kinds of route. Token records are credentials,
+  each QRNG read is a billed request that needs its own case, and the session
+  routes (logout, oauth) perform account actions. `collect` reads and retains
+  the job's own status, data and result.
+
+The before and after pair brackets the job, because no job field names the
+executing worker or a hardware-configuration digest. The portal dashboard
+behind https://cloud.quandela.com/webide/ needs a browser session that the job
+token cannot open ([API audit](../evidence/quandela/input-port-api-audit/README.md#dashboard-queue-and-accounting-boundaries)),
+and neither the repository nor a web search finds a public Quandela telemetry
+or Grafana endpoint. The run therefore records no dashboard telemetry and no
+platform queue depth.
 
 `--submit` holds the token's submit lock and repeats the plan. It refuses a
 body that departs from the retained one before writing its checkpoint, and it
