@@ -26,6 +26,7 @@ import os
 import re
 import subprocess
 import sys
+import urllib.parse
 import urllib.request
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
@@ -42,6 +43,7 @@ Row = dict[str, Any]
 IQM_GRANT = 30.0
 # scripts/anu_qrng.py: the ANU QRNG key allows 100 requests per calendar month.
 ANU_MONTHLY_REQUESTS = 100
+ANU_KEYED_HOST = "api.quantumnumbers.anu.edu.au"
 # docs/notes/quandela/README.md: the Explorer offer grants 200 free credits a month.
 QUANDELA_MONTHLY_CREDITS = 200.0
 IBM_WINDOW_DAYS = 28
@@ -213,7 +215,7 @@ def read_openquantum() -> list[Row]:
     os.environ["OPENQUANTUM_SDK_KEY"] = str(key)
     auth = importlib.import_module("openquantum_mcp.auth")
     management = auth.build_clients().management
-    organizations = management.list_user_organizations().organizations
+    organizations = sibling("oq_platform").pages(management.list_user_organizations, "organizations")
     configured = os.environ.get("OPENQUANTUM_ORGANIZATION_ID")
     chosen = [o for o in organizations if o.id == configured] if configured else organizations[:1]
     if not chosen:
@@ -397,11 +399,18 @@ def read_aws() -> list[Row]:
 def read_anu() -> list[Row]:
     now = dt.datetime.now(dt.UTC)
     prefix = f"draw-{now:%Y-%m}-"
-    count = len(list((ROOT / "docs/evidence/anu_qrng").glob(f"{prefix}*.json")))
+    # The keyed aqn service holds the 100-request month; the keyless legacy endpoint has its own
+    # per-minute limit, so only draws whose recorded source is the keyed host count.
+    count = sum(
+        1
+        for path in (ROOT / "docs/evidence/anu_qrng").glob(f"{prefix}*.json")
+        if urllib.parse.urlsplit(json.loads(path.read_text(encoding="utf-8")).get("source", "")).hostname
+        == ANU_KEYED_HOST
+    )
     return [
         row(
             "ANU QRNG",
-            "docs/evidence/anu_qrng/draw-*.json this UTC month",
+            "docs/evidence/anu_qrng/draw-*.json from the keyed host this UTC month",
             allotment=float(ANU_MONTHLY_REQUESTS),
             used=float(count),
             remaining=float(ANU_MONTHLY_REQUESTS - count),
