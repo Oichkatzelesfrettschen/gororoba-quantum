@@ -23,6 +23,8 @@ from hypercomplex_libraries import (
     tracked_sources,
 )
 
+from parallel import ordered_map
+
 
 @pytest.mark.audit
 def test_inventory_covers_locks_and_independent_roles() -> None:
@@ -248,9 +250,8 @@ def retained_inventory() -> dict[str, Any]:
 def test_retained_inventory_records_each_tracked_file_imports(shard: int) -> None:
     retained = retained_inventory()["tracked_import_roots"]
     runtime_files, _ = tracked_sources(ROOT)
-    differing = [
-        name for name in runtime_files[shard::SHARDS] if retained.get(name) != _file_imports((str(ROOT), name))[1]
-    ]
+    scanned = ordered_map(_file_imports, [(str(ROOT), name) for name in runtime_files[shard::SHARDS]])
+    differing = [name for name, roots in scanned if retained.get(name) != roots]
     if differing:
         raise ValueError(f"inventory import roots differ for {', '.join(differing)}; regenerate with {REGENERATE}")
 
