@@ -1,0 +1,11 @@
+{
+  "number": 209,
+  "title": "qi_readout_ringdown: calibration-sensitivity records with analytic and bootstrap errors",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T17:27:25Z",
+  "closed_at": "2026-10-17T17:27:25Z",
+  "merge_commit_sha": "442db538e8d9fc29f279e98f914e99e8595335a0",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/209",
+  "merge_ancestor_of_canonical_head": true
+}

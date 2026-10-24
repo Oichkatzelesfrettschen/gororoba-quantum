@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "n21-window-sweep",
+  "kind": "implementation",
+  "summary": "n21-orbit-rca: delay sweep and qubit-143 window Ramsey",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/ec8aff527a579550b12e45334a967243a0b086d360b39b2b78c4b7477bff5905.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-307.json"
+  ],
+  "state": "inbox",
+  "scope": "n21-orbit-rca: delay sweep and qubit-143 window Ramsey",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #307 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-307-integration",
+      "action": "Verify the recorded integration state of PR #307.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "4c3acaf542954090c64d0b7b62d1623035b04ec8f6b16b8cdd73c1e21d2d853b",
+          "result": "PR #307 merged as e9e4152079ab90d031fa6abf7f766c09f6a06215; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-307.json",
+              "sha256": "12fd70c6eb74c31fc3efea3a539c914a5a20f0bd8de3d436d10ecbcc6930885f"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- Existing n21_orbit_rca and qpu_planning gates in ci/gates.json must pass; add the new self-tests to an existing or new gate (declare full-gate inputs in ci/full_gate_inputs.json by hand if full tier). - `python3 ci/pinned_tool.py ruff check gororoba_quantum scripts ci` and `ruff format --check`, and `python3 ci/pinned_tool.py mypy` clean. - Retained 083417/201757 replays (`--check`) must still regenerate byte for byte. - Run with GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096. Use `GOROROBA_WORKERS=4` for local runs.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-076.md
+
+# #76: live_run: dry run admits a static group the submit revalidation rejects as mixed
+
+Owner session: ibmquantum-12. Branch (planned): live-run/static-group-dynamic-member-admission.
+
+## Finding
+
+Observed: three patch-window submit attempts at 4aaea17
+(`results/live/2026-10-13T201059.920197Z`, `...201314.868415Z`,
+`...201529.748272Z`) wrote `approval_required` with
+`reselected_groups.patch_static.reasons = ["one result group mixes static
+and dynamic circuits"]`. That string comes from `capability_violations`
+(`live_run.py:546-547`), which reads `group_requirements` counts over the
+source members (`live_run.py:445-458`, `_is_dynamic(member.circuit)`).
+The dry run that the approval named admitted the same group. Classification
+sites that exist on main: `group_requirements` (source circuits),
+`_choice_execution_kind` (routed ISAs or packed entries, `live_run.py:1395`),
+placement admission over packed entries (`live_run.py:1944`), and the
+collector (`live_run.py:4283`); `local_compute.is_dynamic` duplicates
+`_is_dynamic`. Inferred, to confirm by reproduction: the dry-run path
+admitted `patch_static` through a path that did not apply
+`capability_violations` to the group (or applied it before a rebuild that
+changed a member), while the submit path's reselection did; a static member
+with a gate after a measurement (the issue's falsifier) is classified
+dynamic by `_is_dynamic` wherever it is evaluated.
+
+## Reachability
+
+Documented flow: dry run, written case, approved `--submit`. The failure
+costs an approval round and sends nothing (the comparison refuses), so it
+spends no QPU time; it is reachable with a default family invocation.
+
+## Design
+
+1. Reproduce offline: check out 4aaea17 in a scratch worktree, build the
+   patch-window family against FakeFez (or the retained Fez calibration of
+   2026-10-13T13:41:52) and record which planning path admitted
+   `patch_static` and which member is dynamic. Then repeat on main.
+2. If main still admits it: run `capability_violations(group_requirements)`
+   (the same function the reselection uses) on every group before a planned
+   record is written, so dry run and submit share one predicate; drop the
+   duplicate `local_compute.is_dynamic` in favor of one shared function, or
+   keep both under a contract asserting equality on every family's members.
+3. Contract in `qpu_planning_contracts.py`: a family whose static group
+   holds a measure-then-gate member produces no planned dry-run record and
+   names the member; gate core-496 (normal and -O).
+4. A live_run change gets a dry run under results/live/ (AGENTS.md), and
+   `/migrate-qiskit-ibm-runtime` only if runtime usage changes (not
+   expected).
+
+## Acceptance and falsifier
+
+- Reproduction at 4aaea17 shows the admitting path; prediction: the planned
+  record lists `patch_static` as static while one member has an operation
+  after a measure.
+- On the fixed branch the new contract passes and the falsifier (a
+  measure-then-gate member in a static group yields a planned record) fails
+  to occur. If main already refuses, the change is the contract alone, and
+  the issue closes citing the commit that fixed it.
+- A submit-free `live_run.py` dry run of the patch-window family writes a
+  record; `core-094` and the live_run gates pass.
+
+## Shared files and dependencies
+
+gororoba_quantum/live_run.py and qpu_planning_contracts.py (this session's
+n21/usage-time-minimization agent edits qpu_planning.py and possibly
+live_run.py for the n21-feedback-encoded family; this fix lands after that
+branch or rebases onto it), ci/gates.json (core-496), results/live/ dry-run
+record. Calibration reads only; no submission.
+
+## Effort and agents
+
+One day; one opus agent once a slot frees (the session runs two).
+
+## Out of scope
+
+Merging the many classification sites into one module beyond what the
+contract requires; that is a refactor with no observed defect.

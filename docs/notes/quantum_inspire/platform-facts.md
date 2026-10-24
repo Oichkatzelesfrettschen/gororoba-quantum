@@ -19,7 +19,7 @@ pages stay the authority, since they change without notice;
 | Topology | 90 directed pairs (all-to-all on 10) | Tuna-5 star (center Q2, 4 couplers), Tuna-9 diamond (center Q4, 12 couplers), Tuna-17 ninja star (24 couplers); 8, 24, 48 directed pairs | 72 directed pairs (all-to-all on 9); atom positions set by `INIT` | catalogue `topology`; [Tuna page](site/kbase_tuna-operational-specifics.md) ([live](https://www.quantum-inspire.com/kbase/tuna-operational-specifics/)) |
 | Shots max (default) | 2048 (1024) | 131072 (8192) | 1024 (1024) | catalogue |
 | Job execution time limit | 3600 s | 300 s | 3600 s | catalogue `job_execution_time_limit`; terms: over-limit runs are aborted |
-| Batch jobs queued per user and backend type | 5 | 5 | 5 | catalogue `batchjobs_per_queue_limit`, OpenAPI definition (C1) |
+| Batch jobs queued per user and backend type | 5 | 5 | 5 | catalogue `batchjobs_per_queue_limit`, OpenAPI definition (C1); a mechanical ceiling, which the FAQ's 3 queued jobs per hardware backend overrides ([usage.md](usage.md#queue-rules-the-faq-governs)) |
 | Jobs per batch job | 5 | 5 | 5 | catalogue `max_jobs_per_batch_job`; on hardware the repository submits at most 3 per batch, one queued batch at a time (C1) |
 | Raw (per-shot) data | yes | yes | yes | catalogue `supports_raw_data` |
 | Default compiler passes | none | SWAP2CZDecomposer, CZDecomposer | CNOTDecomposer, XZXDecomposer | catalogue `default_compiler_config` |
@@ -139,7 +139,7 @@ https://www.datocms-assets.com/119587/1740490348-2025-02-06-terms-and-conditions
 ## Gate list entries
 
 `ci/gates.json` runs `scripts/capture_qi_docs.py` under core-001 (ruff
-check), core-002 (ruff format), core-039 (mypy) and core-346
+check), core-002 (ruff format), core-039 (mypy) and `core-record-check-05` (`tests/test_cli_record_checks.py`)
 (`"$PYTHON" -B -W error scripts/capture_qi_docs.py --check`, every captured
 byte offline); `docs/verify_sources.py` checks the links in normal and `-O`
 modes.

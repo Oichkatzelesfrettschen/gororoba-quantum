@@ -1,0 +1,66 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/tuna-pre-t0.md
+
+# tuna-pre-t0: Tuna-17 readout refresh and Q0/Q6 double-X discriminator, one batch
+
+Owner session: boxkite-quantum-main. Branch (planned): in
+research/box-kite-case-generator as results/quantum_inspire/cases/box_kite_tuna_pre/.
+Device: Tuna-17, 1 batch of 3 circuits. Approval: not requested.
+
+## Finding
+
+- The exclusion set {0, 5, 6, 7, 9} and the readout factors behind the
+  box-kite separation model come from batches of 04:18-04:36Z
+  (experiment-program.md 4(g)); they are hours old, and q13 (0.808) and
+  q14 (0.800) sit on the program's readout-1 >= 0.80 stop rule.
+- PR #192 (ibmquantum-e5) leaves one Q0/Q6 question open: under-rotated X
+  versus |1> misassignment. Ramsey data cannot separate them; a double X
+  can. Claim proposed-tuna17-q0-q6-double-x-discriminator predicts P1 after
+  X X of 0.98 (Q0) and 0.52 (Q6) under under-rotation against 0.038 and
+  0.013 under misassignment, from the 05:26-05:33Z state. #192 (316dc27)
+  adds that X and X90 are separate native operations: the retained Ramsey
+  already excludes a fault confined to native X on Q6 (raw quadrature mean
+  0.064 against a floor of 0.148) but not on Q0 (0.287 against 0.175).
+  X X separates either kind of X under-rotation from misassignment, so the
+  batch design holds; the Q6 reading mainly tests misassignment against an
+  X90-coupled rotation error.
+
+## Reachability
+
+A device question (named qubits' readout and drive), which AGENTS.md routes
+to hardware; noise simulation cannot answer it.
+
+## Design
+
+One batch, 3 circuits, qubit[17], q0 rightmost: readout-0 (all 17 idle,
+measure), readout-1 (X on all 17, measure), double-X (X X on all 17, then
+measure). Shots 4096 per circuit (P1 standard error below 0.008 at
+p = 0.5). QX twin of the double-X circuit only. Analysis in the generator's
+analyze: per-qubit P(1|0), P(1|1), P(1|XX), the re-admission of q5/q6/q7/q9
+by readout, and the discriminator verdict.
+
+## Acceptance and falsifier
+
+Precondition (from #192): the batch's own readout pair still shows the
+fault, Q0 P(1|1) < 0.7 and Q6 P(1|1) < 0.3; otherwise the double-X result
+is reported as fault-recovered and not read against the predictions.
+Decision fixed now: Q0 P(1|XX) above 0.5 and Q6 above 0.25 favor
+under-rotation; both below 0.1 favor misassignment; anything else is
+unresolved. Stop rule for T0: any qubit of M or of the walk star with
+readout-1 below 0.80 or readout-0 above 0.10 re-plans the layout first.
+
+## Shared files and dependencies
+
+Blocks tuna-boxkite-stages (T0 reads its readout factors). #192's claim id
+and numbers stay fixed (ibmquantum-e5 confirmed). research_state claim and
+acquisitions; toolchain record.
+
+## Effort and agents
+
+Small; built by the boxkite-generator agent or the orchestrator after it.
+
+## Out of scope
+
+Any recalibration of X amplitude (platform's).
+
+State: scoping; needs the owner's approval line in this session.

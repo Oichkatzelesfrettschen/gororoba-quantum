@@ -294,7 +294,7 @@ CI has no Rust. The sources-251 gate runs
 `"$PYTHON" scripts/wheel_rust_audit.py --check docs/evidence/wheel_rust_audit`.
 It requires the digests of the harness
 sources and outputs, regenerates the corpus and triples, and recomputes every
-class into `classification.json` byte for byte. The sources-252 gate runs
+class into `classification.json` byte for byte. Gate `core-self-test-09` (`tests/test_cli_self_tests.py`) runs
 `--self-test`, which checks `round_binary64` and requires the comparison to
 reject a flipped class, a corrupted operation pattern and a corrupted law
 side.

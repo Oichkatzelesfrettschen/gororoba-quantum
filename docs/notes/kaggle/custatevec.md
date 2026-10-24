@@ -142,7 +142,7 @@ quota and exited 0. Its `gpu_env.json` lists no failure, nvidia-smi listed
 both T4s, and both Bell runs report device GPU, the cuStateVec run with
 `cuStateVec_enable` true. All 35 rows ran uncontended, every GPU row reports
 device GPU, and every cuStateVec row reports `cuStateVec_enable` true; gate
-core-450 rechecks the record. The timings and the two-GPU metadata are in
+`core-record-check-04` (`tests/test_cli_record_checks.py`) rechecks the record. The timings and the two-GPU metadata are in
 `docs/evidence/aer_gpu_configuration/README.md`.
 
 ## Reading the result
@@ -232,7 +232,7 @@ core-450 rechecks the record. The timings and the two-GPU metadata are in
     the sm_75 code runs under driver 580.178.04. Every one of the 35 rows of
     `aer_gpu_probe.py --workloads toy,width --widths 7,10` ran.
 - **Against the cu11 wheel** (the same probe and seed,
-  `results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config`; gate core-442,
+  `results/kaggle/2026-10-17T212551Z-gororoba-aer-gpu-config`; gate `core-record-check-04`,
   `aer_gpu_probe.py --check --compare-counts`):
   - All 15 GPU density-matrix rows draw the cu11 wheel's seeded counts, and
     run 1 to 14 percent faster per shot.

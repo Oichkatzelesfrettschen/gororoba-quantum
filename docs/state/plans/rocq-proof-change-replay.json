@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "rocq-proof-change-replay",
+  "kind": "implementation",
+  "summary": "ISSUE 64: path-filtered CI job that replays the pinned Rocq 9.2 proofs",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/f66e337264a991ac6728300698fd1aa58dde8557133eacf949193e19a1feb374.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-201.json"
+  ],
+  "state": "inbox",
+  "scope": "ISSUE 64: path-filtered CI job that replays the pinned Rocq 9.2 proofs",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #201 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-201-integration",
+      "action": "Verify the recorded integration state of PR #201.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "84c78fe8df1e9bf9e0665fc9949130b79e7cca135dec784aad4afb04a1b951e3",
+          "result": "PR #201 merged as fd6b2e6921979f527cb4e3195cbae7fe5b93d3b1; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-201.json",
+              "sha256": "e7bb7fe14c69a1a64977b0ca8c0630e08b008c87f30a7d006364c7f7985e7e45"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "Local, before push: - `\"$PYTHON\" -B -W error ci/check_rocq_ci_pins.py` and `--self-test`: prediction exit 0. - `python3 scripts/rocq_kaggle_replay.py --rocq \"$ROCQ\" --gororoba-root \"$GOROROBA_ROOT\" --gororoba-commit 7d95d228db6be8a5b2f613430f04f2385d6ae48a --only c881_exhaustive --out \"$S/out.json\"` on the build host's pinned Rocq: prediction `{\"c881_exhaustive\": 0}`, about 35 s; `--only formal_certificates c881_exhaustive` about 155 s. - `shellcheck -S error` on any new shell, `ruff`, `mypy`: clean. - core-292 still passes (retained result*.json untouched). CI: first run on the PR (the workflow file itself is in the filter) is cold; prediction: green in 25-35 min, `rocq_replay.json` \"passed\": true, every returncode 0, no warning_lines. Second run (a trivial touch under proofs/): cache hit, 13-17 min. Falsifiers. (a) The first cold run fails the version check: the opam solver resolved a Rocq that prints a different banner; pin opam-repository at the commit the Kaggle result used and compare `opam list`. (b) A replay fails on GitHub's runner that passed on Kaggle: receipt bytes are host-dependent, which is a finding to record and not to paper over. (c) Cache restore exceeds 5 min or the switch exceeds the 10 GB cache budget: fall back to route 3. (d) Mutation check: append a Lemma with a `Admitted.` to proofs/FoldAverageDescent.v on a scratch branch; the job must go red at formal_certificates.",
+      "state": "todo"
+    }
+  ]
+}

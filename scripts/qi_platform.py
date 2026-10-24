@@ -119,6 +119,65 @@ TOKEN_FILE = Path.home() / ".quantuminspire" / "config.json"
 TOKEN_LOCK = TOKEN_FILE.with_name("config.json.lock")
 # Held from the hardware pause and queue checks until a batch is enqueued.
 SUBMIT_LOCK = TOKEN_FILE.with_name("submit.lock")
+# The API answers a request carrying an expired access token with HTTP 403 and
+# this detail, not with 401.
+EXPIRED_SIGNATURE = "Signature has expired"
+# The two received rejections of the first resource request that prove it was not applied.
+REJECTED_PROJECT_RECEIPTS = (
+    {"method": "POST", "path": "/projects", "status_code": 401},
+    {"method": "POST", "path": "/projects", "status_code": 403, "detail": EXPIRED_SIGNATURE},
+)
+# Plain `qi login` on an existing login calls AuthManager.refresh_tokens, which
+# presents the same dead refresh token and keeps any rotated one in memory only.
+LOGIN_DEAD = (
+    "the Quantum Inspire refresh token is no longer valid (invalid_grant); run "
+    '`"$QI_ENV/bin/qi" login --force`, approve the device code, then '
+    "`chmod 600 ~/.quantuminspire/config.json`; plain `qi login` cannot recover it "
+    "(docs/notes/quantum_inspire/setup.md#login-failures)"
+)
+
+
+def refresh_log() -> Path:
+    """The local exchange log beside the token file; it carries no token bytes."""
+    return TOKEN_FILE.with_name("refresh-log.jsonl")
+
+
+def _parent_name() -> str | None:
+    try:
+        return Path(f"/proc/{os.getppid()}/comm").read_text(encoding="utf-8").strip()
+    except OSError:
+        return None
+
+
+def _log_refresh(outcome: str, error: str | None = None) -> None:
+    """Append one exchange record; a log failure never blocks authentication."""
+    record = {
+        "utc": datetime.datetime.now(datetime.UTC).isoformat(timespec="milliseconds"),
+        "outcome": outcome,
+        "pid": os.getpid(),
+        "parent": _parent_name(),
+        "script": Path(sys.argv[0]).name if sys.argv and sys.argv[0] else None,
+        "error": None if error is None else error[:300],
+    }
+    try:
+        descriptor = os.open(refresh_log(), os.O_WRONLY | os.O_APPEND | os.O_CREAT, 0o600)
+        try:
+            os.write(descriptor, (json.dumps(record) + "\n").encode())
+        finally:
+            os.close(descriptor)
+    except OSError:
+        pass
+
+
+def _expired_signature(response: Any) -> bool:
+    """True for the API's HTTP 403 on an expired access token; any other 403 is a refusal."""
+    if response.status_code != 403:
+        return False
+    try:
+        body = response.json()
+    except ValueError:
+        return False
+    return isinstance(body, dict) and body.get("detail") == EXPIRED_SIGNATURE
 
 
 @contextlib.contextmanager
@@ -233,12 +292,20 @@ class RequestNotDispatched(TimeoutError):
 
 
 class RequestRejectedBeforeRetry(TimeoutError):
-    """One dispatched request received HTTP 401; its replacement was refused locally."""
+    """One dispatched request received HTTP 401 or the expired-signature 403; its replacement was refused locally."""
 
-    def __init__(self, method: str, path: str) -> None:
-        super().__init__("execution deadline expired before retry of the HTTP 401 rejected request")
+    def __init__(self, method: str, path: str, status_code: int = 401) -> None:
+        super().__init__(f"execution deadline expired before retry of the HTTP {status_code} rejected request")
         self.method = method
         self.path = path
+        self.status_code = status_code
+
+    def receipt(self) -> dict[str, Any]:
+        """The received rejection as a receipt records it; a 403 carries the expired-signature detail."""
+        rejected: dict[str, Any] = {"method": self.method, "path": self.path, "status_code": self.status_code}
+        if self.status_code == 403:
+            rejected["detail"] = EXPIRED_SIGNATURE
+        return rejected
 
 
 class Client:
@@ -288,12 +355,26 @@ class Client:
             self._load()
             settings = self.config.user_settings
             spent = settings.auths[self.host].tokens.refresh_token
-            self.auth.refresh_tokens(self.host)
+            try:
+                self.auth.refresh_tokens(self.host)
+            except Exception as error:
+                # The SDK's AuthorisationError derives from Exception alone, so
+                # callers that catch RuntimeError (the MCP tools) see it only as
+                # this PlatformError.
+                _log_refresh("rejected", str(error))
+                if "invalid_grant" in str(error):
+                    raise PlatformError(LOGIN_DEAD) from error
+                raise
             if settings.auths[self.host].tokens.refresh_token != spent:
                 # AuthManager.refresh_tokens keeps the rotated tokens in memory
                 # only; the next process would otherwise read the spent refresh
                 # token from disk and present it.
-                _publish_text(Path(type(settings).json_file()), settings.model_dump_json(indent=4), mode=0o600)
+                try:
+                    _publish_text(Path(type(settings).json_file()), settings.model_dump_json(indent=4), mode=0o600)
+                except OSError as error:
+                    _log_refresh("exchanged-not-persisted", str(error))
+                    raise
+                _log_refresh("exchanged")
         tokens = self.config.user_settings.auths[self.host].tokens
         self.expires = tokens.generated_at + tokens.expires_in
         self.session.headers["Authorization"] = f"Bearer {tokens.access_token}"
@@ -306,12 +387,12 @@ class Client:
         except TimeoutError as error:
             raise RequestNotDispatched(str(error)) from error
         response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
-        if response.status_code == 401:
+        if response.status_code == 401 or _expired_signature(response):
             self.refresh()
             try:
                 _check_execution_deadline(execution_deadline)
             except TimeoutError as error:
-                raise RequestRejectedBeforeRetry(method, path) from error
+                raise RequestRejectedBeforeRetry(method, path, response.status_code) from error
             response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
         if response.status_code >= 400:
             raise PlatformError(f"{method} {path}: {response.status_code} {response.text[:500]}")
@@ -717,7 +798,11 @@ def pre_dispatch_refused(case_dir: Path, cases_sha256: str) -> bool:
 
 
 def creation_refused(case_dir: Path, cases_sha256: str) -> bool:
-    """Accept zero-dispatch proof or one received 401 rejection, keeping the distinction."""
+    """Accept zero-dispatch proof or one received authentication rejection, keeping the distinction.
+
+    The rejection is an HTTP 401 or the API's expired-signature 403; the
+    service checks the bearer token before applying the request in both.
+    """
     if pre_dispatch_refused(case_dir, cases_sha256):
         return True
     state_path = case_dir / "submission-state.json"
@@ -733,7 +818,7 @@ def creation_refused(case_dir: Path, cases_sha256: str) -> bool:
         and state["resource_requests_dispatched"] == 1
         and type(state.get("resource_requests_applied")) is int
         and state["resource_requests_applied"] == 0
-        and state.get("rejected_request") == {"method": "POST", "path": "/projects", "status_code": 401}
+        and state.get("rejected_request") in REJECTED_PROJECT_RECEIPTS
         and type(state["rejected_request"]["status_code"]) is int
         and state.get("cases_sha256") == cases_sha256
         and state.get("jobs") == []
@@ -884,13 +969,14 @@ def _submit(
         raise
     except RequestRejectedBeforeRetry as error:
         if error.method == "POST" and error.path == "/projects":
-            # RFC 9110 section 15.5.2: a received 401 means the request was not applied.
+            # RFC 9110 section 15.5.2: a received 401 means the request was not
+            # applied; the expired-signature 403 fails the same bearer check.
             state.update(
                 phase="resource-request-rejected",
                 resource_request_attempted=True,
                 resource_requests_dispatched=1,
                 resource_requests_applied=0,
-                rejected_request={"method": error.method, "path": error.path, "status_code": 401},
+                rejected_request=error.receipt(),
             )
             _write_json(state_path, state)
         raise
@@ -976,8 +1062,9 @@ def reconcile(case_dir: Path) -> None:
             "preserve it and prepare a separately approved case"
         )
     if creation_refused(case_dir, state["cases_sha256"]):
+        received = state["rejected_request"]["status_code"]
         raise PlatformError(
-            "the first resource request received HTTP 401 and was not applied; "
+            f"the first resource request received HTTP {received} and was not applied; "
             "preserve its attempted-request receipt and prepare a separately approved case"
         )
     batch_id = state.get("batch_job")

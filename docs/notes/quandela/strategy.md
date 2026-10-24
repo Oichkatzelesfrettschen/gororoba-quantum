@@ -425,7 +425,7 @@ sixteen settings whose returned meshes respond differently to each class.
 4. The first decision rule crowned the best of twelve fixed models, so a
    data set no model explains still named a class. Resolved: magnitude
    scans, an absolute fit criterion and the preregistered "no class fits"
-   outcome, held by core-512 on three synthetic truths (phase noise 0.6 off
+   outcome, held by the `qd_belenos_mesh.py --self-test` of gate `core-self-test-08` (`tests/test_cli_self_tests.py`) on three synthetic truths (phase noise 0.6 off
    the fixed grid, misroute 0.3 plus noise 0.3, and an out-of-family
    distribution) and by core-513 on the static class.
 
@@ -1068,6 +1068,8 @@ Not yet used:
 | 2026-10-21 16:51 | 6d2dac12 | qpu:belenos | bdsc_qualification mm-none-e1, epoch 1 | 1.60 | 115 s; epoch 1 sum rules: 9 violated, 4 inconclusive, 3 compatible of 16 at margin 0.02 |
 | 2026-10-21 20:34 | c2edef5d | qpu:ascella | bdsc_ascella_control job-00, 12-mode union circuit | 0 | RUNTIME ERROR after 1 s, circuit_input_ports undefined; one results_list entry, no counts |
 | 2026-10-22 02:17 | ee6fc975 | qpu:belenos | bdsc_qualification tc-def-e2, repeat under the default policy with new seeds | 1.60 | 42 min queue, 92 s; f and g within 0.0033, superpositions -0.071 to +0.041 against epoch 1 |
+| 2026-10-24 09:18 | 739a5271 | qpu:ascella | ascella_signed_coherence job-00, 64 settings at 8192 samples | 1.016384 | 186 s; 27 of 27 endpoints qualify; 1.27 % of events outside the logical block, 4 to 586 per setting |
+| 2026-10-24 15:31 | 6ef8e8db | qpu:ascella | ascella_signed_coherence job-01, job-00's 64 circuits in ANU QRNG order at 16384 samples | 1.032768 | 186 s at twice the samples; 27 of 27 qualify; outside-block clicks follow execution order (lag-1 -0.65), not the setting (Spearman -0.08); X and Y analyzer residuals reproduce (r 0.97, 0.80) |
 
 A QPU approval quotes the expected credits, the expected seconds and why a
 local Perceval simulation cannot answer the question. Job 4e208d22's quotes

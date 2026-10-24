@@ -1,0 +1,43 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/TEMPLATE.md
+
+# ITEM: TITLE
+
+Owner session: NAME. Branch (planned): target/mechanism-outcome.
+
+## Finding
+
+What is wrong or missing, stated from the code and the issue, with the
+function, file:line or record that shows it. Mark what was observed
+(a command run, a value read) and what is inferred.
+
+## Reachability
+
+Which documented interface reaches it (CLI, default flow, a record the
+program writes, a CI lane) and with what input; or the boundary that puts
+it outside the documented domain.
+
+## Design
+
+The change against the architecture: which functions change, which records
+regenerate, which gates are added (names from the session's range) or
+changed. Parallel loops go through parallel.py.
+
+## Acceptance and falsifier
+
+The commands that must pass, the prediction stated before running them,
+and the result that would show the design wrong.
+
+## Shared files and dependencies
+
+Files other items also touch, items this one waits for or blocks, and
+hardware or Kaggle use (with the approval it needs).
+
+## Effort and agents
+
+Expected size, and which subagent (model) if any, within the session's two
+concurrent agents.
+
+## Out of scope
+
+What this plan leaves for a follow-up, and why.

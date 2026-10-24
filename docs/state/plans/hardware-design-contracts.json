@@ -1,0 +1,25 @@
+{
+  "schema": "work-plan-v1",
+  "id": "hardware-design-contracts",
+  "kind": "coordination",
+  "summary": "Hardware plan",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/3dddb9c67efd0c13d5308a059d61f73d062e367ecd715ccfc5dc1c13a1a758be.txt",
+    "gororoba_quantum/HARDWARE_PLAN.md"
+  ],
+  "state": "inbox",
+  "scope": "Hardware plan",
+  "next_action": "Match the old folded-mechanism ladder, N21 and static-witness cases to retained acquisitions.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Separate implemented runner contracts, completed acquisitions and genuinely prospective device questions."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Match the old folded-mechanism ladder, N21 and static-witness cases to retained acquisitions.",
+      "acceptance": "Separate implemented runner contracts, completed acquisitions and genuinely prospective device questions.",
+      "state": "todo"
+    }
+  ]
+}

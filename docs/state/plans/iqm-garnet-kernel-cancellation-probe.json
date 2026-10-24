@@ -1,0 +1,55 @@
+{
+  "schema": "work-plan-v1",
+  "id": "iqm-garnet-kernel-cancellation-probe",
+  "kind": "implementation",
+  "summary": "Kernel cancellation probe on IQM Garnet",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/4b1fd70bd550c034c62685e92b4e705fa9995ee40e3a12d744c287c29678be6c.txt",
+    "docs/design/iqm-garnet-kernel-cancellation-probe.md"
+  ],
+  "state": "inbox",
+  "scope": "Kernel cancellation probe on IQM Garnet",
+  "next_action": "Resolve the ASAP-versus-ALAP scheduling model follow-up in issue386.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Compare matched schedules and preserve the completed acquisition and registered kernel-cancellation boundary."
+  },
+  "steps": [
+    {
+      "id": "verify-retained-acquisition-outcome",
+      "action": "Verify retained acquisition and analysis outcome identities.",
+      "acceptance": "The registered evidence exists with its recorded SHA-256; the outcome retains the stated scientific boundary.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "54530ed18d33d3c084d39fd5ba2cbe93cd30ed7511414b904ad1f0d63dbd1d9f",
+          "result": "Retained kernel-cancellation acquisition completed; scheduling-model follow-up remains open.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "results/iqm/kernel_cancellation_probe_analysis.json",
+              "sha256": "945eda504ac3df592c37aeb8e5aa58da0f587efa511789de4a5f2f4c69527517"
+            },
+            {
+              "ref": "results/iqm/cases/kernel-cancellation-probe/prediction.json",
+              "sha256": "6744df0803abe8b443d705e8a23d4213607d880ecdc682973c13f8618a6b8b2b"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Resolve the ASAP-versus-ALAP scheduling model follow-up in issue386.",
+      "acceptance": "Compare matched schedules and preserve the completed acquisition and registered kernel-cancellation boundary.",
+      "state": "todo"
+    }
+  ],
+  "claims": [
+    "iqm-garnet-kernel-cancellation"
+  ],
+  "acquisitions": [
+    "iqm-garnet-kernel-cancellation"
+  ]
+}

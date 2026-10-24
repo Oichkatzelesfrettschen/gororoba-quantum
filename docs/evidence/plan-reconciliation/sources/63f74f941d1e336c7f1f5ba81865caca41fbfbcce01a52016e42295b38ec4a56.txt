@@ -1,0 +1,170 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: docs/local/plans/issue-062.md
+
+# ISSUE 62: verify.py in CI over a pinned open_gororoba checkout
+
+Owner session: ibmquantum-e5. Branch (planned): ci/open-gororoba-pinned-checkout-verify.
+
+## Finding
+
+Observed. gororoba_quantum/verify.py:58-61 sets GOROROBA_ROOT (default
+~/Github/open_gororoba) and REGISTRY = GOROROBA_ROOT/registry/data/project_csv.
+_pinned_csv (verify.py:109-118) reads data/csv/multiplication_table_{8,16}D.csv
+(line 138) and data/csv/reggiani_standard_zero_divisor_pairs.csv (line 174)
+only after their sha256 equals every registry record that names them
+(_registry_pins, verify.py:100-107, parses all 320 TOML records, 43 MB).
+_pinned_source (line 297) reads proofs/verified/C881_GF2CubicMinDegree.v and
+checks C881_SOURCE_SHA256. ci/gates.json:2893-2898 lists
+`"$PYTHON" verify.py` under "excluded" with reason "needs the git-ignored
+open_gororoba data/csv build". .github/workflows/ci.yml has one job (gates) and
+no open_gororoba checkout.
+
+Observed in the local checkout (HEAD f5406104, branch main): open_gororoba's
+.gitignore:134 ignores data/csv/ (0 tracked files there), while
+registry/data/project_csv (320 tracked TOML records, 44 MB) is tracked and each
+record carries `source_csv`, `source_sha256`, `original_header` and `rows`.
+
+Observed by probe (scratch tree, no tracked file touched). A 15-line stdlib
+script (tomllib + csv.writer, lineterminator "\n", header = original_header,
+then rows) rewrites all three CSVs from their registry records. Every output
+matches its record's source_sha256 (9 of 9 records, 4 for 8D, 4 for 16D, 1 for
+the zero-divisor pairs; CRLF fails, LF passes). With a `git archive` of
+registry/data/project_csv and proofs/ at open_gororoba 7d95d228db6be8a5b2f613430f04f2385d6ae48a
+plus those CSVs, `GOROROBA_ROOT=<tree> python3 verify.py` exits 0 in 21 s on
+this host (12 s user). Without the CSVs it exits 1 with "data/csv/multiplication_table_8D.csv missing".
+
+Observed pin facts. The C881 source sha256 (e72a6a1a...) and GF2Algebra.v hold at
+both b977e43f (docs/evidence/c881_exhaustive/provenance.json) and 7d95d228;
+7d95d228 is the descendant and the commit docs/evidence/folding_proofs
+pins, so a single commit, 7d95d228, satisfies verify.py and all four Rocq
+bundles (see issue-064.md). open_gororoba is public (gh api repos/.../open_gororoba:
+visibility public, 2026-10-17), so CI needs no credential.
+
+Inferred. The registry is the byte authority for the CSVs because its records
+pin them; rewriting from `rows` is the same content open_gororoba's own
+scroll pipeline stores, and the sha comparison in verify.py makes any
+rewriting error fail closed.
+
+## Reachability
+
+Reached through a CI lane, the only documented interface that runs gates: a
+fresh clone of this repository has no open_gororoba, so verify.py is the one
+ground-truth check against the kernel orientation (cd_sign vs the kernel's
+multiplication tables) that no CI run executes. Local runs on the build host
+reach it with the default GOROROBA_ROOT. The defect is a missing gate, not a
+wrong result: no retained number depends on CI skipping it, and a regression in
+cd_core.cd_sign that changes orientation is caught only on a developer
+machine. Severity: medium-low, reachable on every change to cd_core.py,
+boolean_anf.py or predict.py.
+
+## Design
+
+Decision: generate the CSVs from the registry at a pinned open_gororoba
+commit in a separate CI job. Rejected: deriving the CSV from cd_core.py. The
+check compares cd_sign against the kernel's table; a table derived from
+cd_core.py makes the comparison tautological and deletes the only external
+orientation evidence (DESIGN_NOTES.md:30-35 states that this check fixes
+orientation). Rejected: vendoring the three CSVs and nine records into this
+repository; it freezes the bytes without the registry cross-check
+(_registry_pins) that verify.py documents, and adds a second copy to drift.
+
+Cost and network. One sparse clone, `--filter=blob:none`, cone paths
+registry/data/project_csv and proofs (about 46 MB checked out; the Kaggle
+replay's full clone with checkout took 23.6 s); one network dependency on
+github.com, retried three times. The pin is one line in `ci/open_gororoba.pin`
+(40 hex), read by every CI consumer; a bump is a reviewed commit.
+
+Changes:
+1. `ci/open_gororoba.pin`: `7d95d228db6be8a5b2f613430f04f2385d6ae48a`. Shared
+   with issue-064 (whichever lands first creates it, the other rebases on it).
+2. `ci/fetch_open_gororoba.sh` (POSIX sh, set -eu, quoted, idempotent, writes
+   only under its DEST argument, retry x3): clone, sparse-checkout the path
+   list given as arguments, `git checkout --detach "$(cat ci/open_gororoba.pin)"`,
+   require `git rev-parse HEAD` to equal the pin.
+3. `scripts/materialize_gororoba_csv.py` (stdlib; module docstring states the
+   contract): `ROOT` argument; for every TOML under registry/data/project_csv
+   whose `source_csv` starts with `data/csv/`, write the CSV with csv.writer,
+   lineterminator "\n", header `original_header`, rows `rows`; require the
+   sha256 to equal `source_sha256` and the byte count to equal
+   `source_size_bytes`; two records naming one CSV must produce identical
+   bytes; write nothing on any mismatch (stage in a temp dir, rename). Default
+   scope is all records with `rows` present, bounded by `--only NAME...` (CI
+   passes the three CSVs verify.py reads, which keeps the job at 9 records).
+   `--self-test` builds a synthetic registry in a temp dir and checks
+   byte-exact output, sha mismatch rejection, missing `rows` rejection and
+   duplicate-record disagreement. Runs through no process pool: nine small
+   independent writes are below parallel.ordered_map's min_items use and the
+   script sits outside gororoba_quantum/ (AGENTS.md pool rule targets
+   CPU-bound loops; this one is I/O of 6 KB).
+4. `.github/workflows/ci.yml`: new job `external-ground-truth` (name
+   "verify.py against open_gororoba"), runs on pull_request, push to main,
+   schedule and dispatch like `gates`, no path filter (cost about 2 min). Steps:
+   checkout; setup-python 3.14.7 with the same pip cache keys; `PYTHON=python sh
+   ci/install_pins.sh`; `sh ci/fetch_open_gororoba.sh "$RUNNER_TEMP/open_gororoba" registry/data/project_csv proofs`;
+   `python scripts/materialize_gororoba_csv.py --only multiplication_table_8D multiplication_table_16D reggiani_standard_zero_divisor_pairs "$RUNNER_TEMP/open_gororoba"`;
+   `GOROROBA_ROOT="$RUNNER_TEMP/open_gororoba" PYTHONHASHSEED=0 python verify.py` from gororoba_quantum/.
+   Runs with `GOROROBA_WORKERS=2`-equivalent default (runner CPUs).
+5. `ci/gates.json`: new gates `core-401` = `"$PYTHON" -B -W error scripts/materialize_gororoba_csv.py --self-test` (and the -O twin in one command, the
+   repository's pattern, core-290) and `core-402` = `shellcheck -S error ci/fetch_open_gororoba.sh`, both tier pr, seconds measured on first CI run.
+   The "excluded" entry for verify.py keeps its place but its reason changes to
+   "runs in the ci.yml job external-ground-truth over the pinned checkout";
+   the Rocq entries are issue-064's.
+6. Docs: AGENTS.md "Layout and gates" gets two sentences naming the job and
+   the pin file; docs/notes/reviews/open-issue-triage.md #62 row updated.
+   The lint gates (core-000/001/002/039) cover scripts/ and ci/ whole, so the
+   new Python needs no list edit; the new .sh joins via core-402.
+
+Branch protection note: main is unprotected (gh api .../branches/main/protection
+returned 404, observed), so no required-check list changes. AGENTS.md says a
+PR merges when every shard is green; the plan adds the job to that sentence.
+
+## Acceptance and falsifier
+
+Local, before push (the Python 3.14 pins from the build host):
+- `"$PYTHON" -B -W error scripts/materialize_gororoba_csv.py --self-test`: prediction exit 0.
+- scratch replica: `sh ci/fetch_open_gororoba.sh "$S/og" registry/data/project_csv proofs`
+  then the materializer then `GOROROBA_ROOT="$S/og" "$PYTHON" gororoba_quantum/verify.py`:
+  prediction exit 0, last line "<L_e_m> order log2 per dim: {4: 3, 8: 7, 16: 12, 32: 21, 64: 38}; exponent 4 (enumerated through dim 16)", wall under 60 s excluding clone.
+- `shellcheck -S error ci/fetch_open_gororoba.sh`, `ruff check scripts ci`, `ruff format --check`, `mypy scripts/materialize_gororoba_csv.py`: prediction clean.
+- `"$PYTHON" ci/run_gates.py --tier pr --shard 0/1 --only core-401 core-402` (or the repository's single-gate form): prediction pass.
+CI: the new job green on the PR; a deliberate mutation test on a scratch
+branch (flip one sign in cd_core.cd_sign for e1*e2) turns it red with
+"FAIL: ... disagrees" or a cell mismatch.
+
+Falsifier of the design: (a) any of the 9 records yields bytes whose sha256 differs from
+`source_sha256` under csv.writer (observed none at 7d95d228; a record added
+later with quoting or CRLF would fail, and the materializer reports it); (b)
+verify.py fails at the pin for a reason other than a missing file, which shows
+a pin or registry drift; (c) the job exceeds 5 minutes, which shows the sparse
+clone is not sparse. Any of these sends the design to the vendored-fixture
+alternative.
+
+## Shared files and dependencies
+
+- .github/workflows/ci.yml: also issue-064 (second new job). Merge the two
+  job blocks by hand; no shared job.
+- ci/gates.json: the "excluded" array (lines 2893-2909) and the gate list
+  tail; issue-064 changes the other two excluded entries and takes
+  core-403..core-405.
+- ci/open_gororoba.pin and ci/fetch_open_gororoba.sh: created here, consumed
+  by issue-064 (its Rocq job). Land #62 first or move both files into the first
+  PR.
+- AGENTS.md ("Layout and gates"): both plans edit the same paragraph region.
+- No hardware, no Kaggle, no QPU time. Network: github.com clone from CI
+  runners only.
+
+## Effort and agents
+
+Small-to-medium: about 150 lines (script 90, shell 30, workflow 35, gates 20).
+One session, no subagent; a sonnet agent could write the materializer
+self-test if parallel capacity is free. The orchestrator reviews the diff and
+runs the scratch replica.
+
+## Out of scope
+
+- Tracking open_gororoba HEAD (a nightly job against HEAD with a `gororoba_commit`
+  dispatch input); the pin keeps CI deterministic and a bump is a reviewed PR.
+- Replacing verify.py's registry parse with a smaller record set; the full
+  parse costs about 10 s and is the documented cross-check.
+- Building data/csv with open_gororoba's Rust pipeline (cargo, hours of
+  compile); the registry records carry the same bytes.

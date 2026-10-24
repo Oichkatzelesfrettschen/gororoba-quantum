@@ -1,0 +1,45 @@
+{
+  "schema": "work-plan-v1",
+  "id": "n21-pub-manifest-binding",
+  "kind": "implementation",
+  "summary": "72: n21_orbit_rca binds raw PUBs to the submission manifest and searches static-only basins",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/eae34cad1fee2b9df342d367b0a397c3111b1e055b81a63ae19d28be1999c01e.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-208.json"
+  ],
+  "state": "inbox",
+  "scope": "72: n21_orbit_rca binds raw PUBs to the submission manifest and searches static-only basins",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #208 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-208-integration",
+      "action": "Verify the recorded integration state of PR #208.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "efddc39723ad96f7fced43fd4fc68cf48084bf0606827d5e71d30245dafbc170",
+          "result": "PR #208 merged as ec403fc5b943bdf69439d88c0e96c445a28552d8; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-208.json",
+              "sha256": "13141fd08787e9bb2d1024cd1e47d89f9d50c3ff59c6cc8d86943f9eb97e753d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- **Prediction:** both retained rca-mechanism-fit.json files regenerate byte-identically. Neither run reaches the joint fit, and both bind to their manifests. - **Falsifiers:** - the job-id-swapped synthetic run is accepted; - the grid-seeded static-only refit on the synthetic two-basin case returns a deviance higher than the best seed's; - a retained run fails manifest binding, which would mean the retained archive itself is inconsistent and needs its own RCA. - **Commands:** - `\"$PYTHON\" -W error scripts/n21_orbit_rca.py --self-check` - the core-443 commands - ruff, format and mypy, through core-001, core-002 and core-039.",
+      "state": "todo"
+    }
+  ]
+}

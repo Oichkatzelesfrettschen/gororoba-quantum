@@ -100,6 +100,12 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | 1602.02843 | Bales, Periodicity of the Cayley-Dickson twists (2016) | none | high | none |
 | 1602.02317 | Bales, An alternate Cayley-Dickson product (2016) | none | medium | none |
 | math-9802116 | Albuquerque and Majid, Quasialgebra structure of the octonions (1998) | none | high | none |
+| mckay-hadamard-matrices | McKay, Hadamard matrices: equivalence-class representatives (combinatorial data page) | none | medium | none |
+| schafer-1954-cayley-dickson-flexible | Schafer, On the algebras formed by the Cayley-Dickson process (1954) | none | medium | none |
+| [2205.07986](../notes/papers/2205.07986.md) | Ren and Zhao, The explicit twisted group algebra structure of the Cayley-Dickson algebra (2023) | none | high | none |
+| [1003.0429](../notes/papers/1003.0429.md) | Morier-Genoud and Ovsienko, A series of algebras generalizing the octonions and Hurwitz-Radon identity (2011) | none | medium | none |
+| [1107.1375](../notes/papers/1107.1375.md) | Bales, Cayley-Dickson and Clifford algebras as twisted group algebras (2003; arXiv 2011) | none | medium | none |
+| [2103.12805](../notes/papers/2103.12805.md) | Flaut and Boboescu, A twisted group algebra structure for an algebra obtained by the Cayley-Dickson process (2021) | none | medium | none |
 | 0811.3208 | Roetteler, Quantum algorithms for highly non-linear Boolean functions (2008) | none | medium | none |
 | 0911.4724 | Roetteler, Hidden shift for quadratics and functions of large Gowers norm (2009) | none | medium | none |
 | 1103.3017 | Gavinsky, Roetteler, Roland, Quantum algorithm for the Boolean hidden shift problem (2011) | none | medium | none |

@@ -1,0 +1,7 @@
+Require CdSignPythonSemantics.
+Print Assumptions CdSignPythonSemantics.cd_sign_returns_sigma.
+Print Assumptions CdSignPythonSemantics.cd_sign_raises_dimension.
+Print Assumptions CdSignPythonSemantics.cd_sign_raises_index.
+Print Assumptions CdSignPythonSemantics.dimension_guard_pow.
+Print Assumptions CdSignPythonSemantics.cd_sign_spec.
+Print Assumptions CdSignPythonSemantics.cd_sign_mutant_differs.

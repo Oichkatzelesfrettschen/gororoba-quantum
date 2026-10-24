@@ -1,0 +1,96 @@
+{
+  "schema": "work-plan-v1",
+  "id": "algebra-device-conjecture-implementation",
+  "kind": "implementation",
+  "summary": "Implement the source-bound conjecture screen and offline instrument falsifiers.",
+  "sources": [
+    "docs/design/hypercomplex-operator-evidence.md",
+    "docs/evidence/algebra-device-conjectures/README.md"
+  ],
+  "state": "closed",
+  "scope": "Source-bound proposal dispositions, exact finite falsifiers, logical circuit controls and focused offline validation. Hosted integration and provider acquisition have separate authorities.",
+  "owner": "algebra-device conjecture implementation",
+  "next_action": "Use PR 391 checks for hosted integration; prepare separately approved cases for any future acquisition.",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The user requested implementation. Retained-data outcomes preserve their original evidence classes; provider acquisitions remain approval-gated."
+  },
+  "steps": [
+    {
+      "id": "bind-corpus",
+      "action": "Bind the proposal screen and acquisition census to retained source bytes.",
+      "acceptance": "All 22 proposals and the 259-acquisition frozen scope replay with explicit selected/excluded records.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "8b88315c1ecb9e8eb374760fab780ecae311d490034e648dbb037e85eaaa3c1b",
+          "result": "The scoped obligation revalidated after split-gate reconciliation; all four focused gates passed.",
+          "observed_at": "2026-10-23T20:49:34.676726+00:00",
+          "revision": "721d918cd3e1be0d8abfeb392a3c4ef0cad54657",
+          "evidence": [
+            {
+              "ref": "docs/evidence/algebra-device-conjectures/manifest.json",
+              "sha256": "8892a94a820bb2a14a506154a4e5ac3588a7b05854496ea8e7183b0431a2672a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "implement-falsifiers",
+      "action": "Implement exact algebra/instrument controls and complete logical circuits.",
+      "acceptance": "Exact certificates and seventeen circuit cases have explicit observables, mutations and boundaries.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "8f4a834faafee4995f1373d76e397dc5da7e63db42a6b4fbe3dfacb4764c4fa8",
+          "result": "The scoped obligation revalidated after split-gate reconciliation; all four focused gates passed.",
+          "observed_at": "2026-10-23T20:49:34.676726+00:00",
+          "revision": "721d918cd3e1be0d8abfeb392a3c4ef0cad54657",
+          "evidence": [
+            {
+              "ref": "docs/evidence/algebra-device-conjectures/result.json",
+              "sha256": "a7575c1822ec7b7ec8c60cf7c81c9e604a01ae7e1960baa066d5bae1cb1a1b0d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-reconciled-tree",
+      "action": "Verify focused synthesis, circuits, registry, planning and provenance after main reconciliation.",
+      "acceptance": "Focused gates pass and retained receipts identify their revision and input hashes.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "d712384cc0c45f263f37649a2d3b1d9f7bcf9c9856d531e7299d6b9f017a0d70",
+          "result": "Six focused gates passed after the p-adic main reconciliation.",
+          "observed_at": "2026-10-23T21:23:49.669976+00:00",
+          "revision": "ba8bcc7e3dd1b068298cb435d03e173c42147e66",
+          "evidence": [
+            {
+              "ref": "docs/evidence/algebra-device-conjectures/focused-validation-padic-reconciliation.json",
+              "sha256": "b7fcb216b085ef8f0305299269cbf918fdc357800cddc10e2f777dc3e9dfe238"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The offline implementation and focused validation are complete. PR 391 hosted checks and repository integration remain separate; provider acquisition requires separate approval.",
+  "receipts": [
+    {
+      "scope_sha256": "a98da229385dfa7ca2169712767eea3ea385a2662d7b66b0d6aa945f0a731c69",
+      "result": "The bounded offline implementation revalidated on the combined tree; hosted integration remains separate.",
+      "observed_at": "2026-10-23T21:23:49.669976+00:00",
+      "revision": "ba8bcc7e3dd1b068298cb435d03e173c42147e66",
+      "evidence": [
+        {
+          "ref": "docs/evidence/algebra-device-conjectures/focused-validation-padic-reconciliation.json",
+          "sha256": "b7fcb216b085ef8f0305299269cbf918fdc357800cddc10e2f777dc3e9dfe238"
+        }
+      ]
+    }
+  ]
+}

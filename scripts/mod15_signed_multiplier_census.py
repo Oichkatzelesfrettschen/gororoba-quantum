@@ -32,6 +32,7 @@ import numpy as np
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPOSITORY_ROOT / "gororoba_quantum"))
+import qrng_seeds  # noqa: E402
 
 MODULUS = 15
 WIDTH = 4
@@ -347,16 +348,20 @@ def _summary_line(record: dict[str, Any]) -> str:
     )
 
 
-def _replay_command(seeds: tuple[int, ...], portable_output: str | None) -> str:
+def _replay_command(
+    seeds: tuple[int, ...], portable_output: str | None, seed_spellings: list[str] | None = None
+) -> str:
     arguments = ['"$PYTHON"', "scripts/mod15_signed_multiplier_census.py"]
     if seeds != DEFAULT_SEEDS:
-        arguments.extend(("--seeds", *(str(seed) for seed in seeds)))
+        arguments.extend(("--seeds", *(seed_spellings if seed_spellings is not None else map(str, seeds))))
     if portable_output is not None:
         arguments.extend(("--out", portable_output))
     return " ".join(arguments)
 
 
-def build_census(seeds: tuple[int, ...], output_path: Path | None) -> dict[str, Any]:
+def build_census(
+    seeds: tuple[int, ...], output_path: Path | None, seed_spellings: list[str] | None = None
+) -> dict[str, Any]:
     from qiskit_ibm_runtime.fake_provider import FakeFez
 
     from compile_evidence import OPTIMIZATION_LEVEL, _portable_output_path, _sha256, _versions
@@ -381,7 +386,7 @@ def build_census(seeds: tuple[int, ...], output_path: Path | None) -> dict[str, 
         "schema_version": 1,
         "capture": "mod15-signed-multiplier-census",
         "qpu_executed": False,
-        "replay_command": _replay_command(seeds, _portable_output_path(output_path)),
+        "replay_command": _replay_command(seeds, _portable_output_path(output_path), seed_spellings),
         "problem": {
             "modulus": MODULUS,
             "work_qubits": WIDTH,
@@ -411,7 +416,7 @@ def build_census(seeds: tuple[int, ...], output_path: Path | None) -> dict[str, 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--seeds", nargs="+", type=int, default=list(DEFAULT_SEEDS))
+    qrng_seeds.add_seed_argument(parser, "--seeds", nargs="+", default=list(DEFAULT_SEEDS))
     parser.add_argument("--out", type=Path, help="write the census record as JSON")
     args = parser.parse_args()
     seeds = tuple(args.seeds)
@@ -419,7 +424,15 @@ def main() -> int:
         parser.error("transpiler seeds must form a nonempty set")
     started = time.perf_counter()
     try:
-        record = build_census(seeds, args.out)
+        non_default = any(source != "default" for source in args.seeds_source)
+        record = build_census(seeds, args.out, qrng_seeds.spellings(seeds, args.seeds_source) if non_default else None)
+        if non_default:
+            record["seed_source"] = qrng_seeds.seed_record(
+                "scripts/mod15_signed_multiplier_census.py",
+                "--seeds",
+                qrng_seeds.repo_relative(args.out) if args.out is not None else "mod15-signed-multiplier-census",
+                args.seeds_source,
+            )
     except (CensusError, RuntimeError, ValueError) as error:
         print(f"census failure: {error}", file=sys.stderr)
         return 1

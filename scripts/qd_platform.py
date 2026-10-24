@@ -427,6 +427,77 @@ def snapshot(out: Path) -> None:
     print(f"{len(explorer)} Explorer platforms, {len(public)} public platforms")
 
 
+OBSERVATION_SCHEMA = "qd-observation-v1"
+ACCOUNT_API = "https://api.account.quandela.com"
+# Every GET route of the retained cloud and account OpenAPI documents
+# (docs/notes/quandela/api/) plus the platform routes Perceval reads, except
+# routes that return token records (credentials), the QRNG routes (each read
+# is a billed provider request that needs an approved case) and the session
+# routes (logout, oauth). Job routes belong to collect.
+OBSERVED_ROUTES = (
+    ("cloud", "/", False),
+    ("cloud", "/health", False),
+    ("cloud", "/openapi.json", False),
+    ("cloud", "/qt-openapi.json", False),
+    ("cloud", "/api/platforms/public", False),
+    ("cloud", "/api/platforms/public/explorer", False),
+    ("cloud", "/api/jobs/availability", True),
+    ("cloud", "/api/tokens/usage/report", True),
+    ("account", "/", False),
+    ("account", "/health", False),
+    ("account", "/api/rss-feed", False),
+)
+
+
+def observed(host: str, route: str, auth: bool) -> dict[str, Any]:
+    """One route's answer, scrubbed of FORBIDDEN_KEYS when it is JSON, or the refusal that answered it."""
+    base = {"cloud": API, "account": ACCOUNT_API}[host]
+    headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
+    if auth:
+        headers["Authorization"] = f"Bearer {token()}"
+    entry: dict[str, Any] = {"host": base, "route": route, "auth": auth, "retrieved_utc": now()}
+    try:
+        with OPENER.open(urllib.request.Request(base + route, headers=headers), timeout=60) as response:
+            answer = response.read(RESULT_LIMIT + 1)
+            entry["http_status"] = response.status
+            entry["content_type"] = response.headers.get("Content-Type")
+    except urllib.error.HTTPError as error:
+        error.close()
+        return {**entry, "http_status": error.code, "refused": True}
+    except (urllib.error.URLError, TimeoutError, ConnectionError, http.client.HTTPException, ssl.SSLEOFError) as error:
+        return {**entry, "unanswered": repr(error)}
+    if len(answer) > RESULT_LIMIT:
+        return {**entry, "unanswered": f"answer exceeds {RESULT_LIMIT} bytes"}
+    try:
+        value = json.loads(answer)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        # A non-JSON answer (the RSS feed, an HTML home page) is kept as text with its digest.
+        return {**entry, "sha256": sha256_bytes(answer), "text": answer.decode("utf-8", errors="replace")}
+    cleaned = scrub(value)
+    return {**entry, "sha256": sha256_bytes(json.dumps(cleaned, sort_keys=True).encode()), "json": cleaned}
+
+
+def observe(out: Path) -> None:
+    """Write out/observation.json: every observed route, then every platform's processor record, all raw."""
+    token()
+    routes = [observed(*route) for route in OBSERVED_ROUTES]
+    explorer = next(entry for entry in routes if entry["route"] == "/api/platforms/public/explorer")
+    names = sorted(row["name"] for row in explorer.get("json") or [] if isinstance(row, dict) and "name" in row)
+    for name in names:
+        routes.append(observed("cloud", platform_route(name), True))
+    record = {
+        "schema": OBSERVATION_SCHEMA,
+        "retrieved_utc": now(),
+        "versions": versions(),
+        "excluded": "token records, QRNG reads (billed), session routes; job routes are collect's",
+        "routes": routes,
+    }
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "observation.json").write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    failed = [entry["route"] for entry in routes if "json" not in entry and "text" not in entry]
+    print(f"{len(routes)} routes observed; unanswered or refused: {failed or 'none'}")
+
+
 def span(low: int | None, high: int | None) -> str:
     if low is None and high is None:
         return "-"
@@ -1266,8 +1337,14 @@ def submit(
     expected_seconds: float,
     per_job_credits: float,
     admit_statuses: tuple[str, ...] = (),
+    verify: Callable[[dict[str, Any]], None] | None = None,
 ) -> dict[str, Any]:
-    """Send one approved case as one job while holding the token's submit lock beside the token file."""
+    """Send one approved case as one job while holding the token's submit lock beside the token file.
+
+    verify receives the plan whose body is posted, before the checkpoint is
+    written, so a caller's own stop conditions bind the request actually sent;
+    a PlatformError from it refuses the submission with nothing written.
+    """
     if not approval.strip():
         raise PlatformError("a nonempty approval is required")
     if load_case(case_dir)[0].get("draft"):
@@ -1279,6 +1356,8 @@ def submit(
         if any((case_dir / name).exists() for name in ("submission.json", "submission-state.json", "job-body.json")):
             raise PlatformError(f"{case_dir} was submitted or holds an interrupted submission; never resubmit it")
         checked = plan(case_dir, platform, max_credits, expected_seconds, per_job_credits, admit_statuses)
+        if verify is not None:
+            verify(checked)
         usage_before = usage_rows(get("/api/tokens/usage/report"))
         receipt = {
             "schema": SUBMISSION_SCHEMA,
@@ -1796,6 +1875,20 @@ def charged(
     one_job = jobs_before is not None and jobs_after == jobs_before + 1
     if before is not None and after is not None and same_month and after >= before and one_job:
         return round(after - before, 6)
+    # A job canceled before its start time ran nothing and is charged nothing (bdsc-acceptance-diagnostics.md).
+    # Shots read from a returned result (shots), and a start time or duration in the job data, count as
+    # execution even when the status omits them.
+    status = collected.get("status") or {}
+    data = collected.get("data") or {}
+    if (
+        status.get("status") == "canceled"
+        and status.get("start_time") is None
+        and not status.get("shots")
+        and not shots
+        and data.get("start_time") is None
+        and data.get("duration") is None
+    ):
+        return 0.0
     price = submission["platform_at_plan"]["price_per_shot"]
     billed = shots
     if manifest is not None and iteration_form(manifest) != "single":
@@ -1841,6 +1934,25 @@ def charge_self_test() -> None:
     got = charged(submission, {"collected_utc": cases[1][0], "usage_after": cases[1][1]}, 3600000, iterated)
     if got != 1.6:
         raise SystemExit(f"self-test: charged() read {got} for an iterated job across a reset, not 1.6")
+    # A job canceled before it started costs nothing even when another job shares its usage window; one
+    # canceled after its start keeps the billing rule.
+    for start, want in ((None, 0.0), (1792667218.0, 1.01)):
+        status = {"status": "canceled", "start_time": start, "shots": 0}
+        collected = {"collected_utc": cases[3][0], "usage_after": cases[3][1], "status": status}
+        got = charged(submission, collected, 0 if start is None else 10000)
+        if got != want:
+            raise SystemExit(f"self-test: charged() read {got} for a job canceled with start {start}, not {want}")
+    # A canceled job whose status omits start and shots but whose result returned shots keeps the billing rule.
+    status = {"status": "canceled", "start_time": None}
+    got = charged(submission, {"collected_utc": cases[3][0], "usage_after": cases[3][1], "status": status}, 10000)
+    if got != 1.01:
+        raise SystemExit(f"self-test: charged() read {got} for a canceled job that returned 10000 shots, not 1.01")
+    # A canceled status without a start time keeps the billing rule when the job data records one.
+    started = {"start_time": "2026-10-22T17:10:00+00:00", "duration": 4.0}
+    collected = {"collected_utc": cases[3][0], "usage_after": cases[3][1], "status": status, "data": started}
+    got = charged(submission, collected, 0)
+    if got != 1.0:
+        raise SystemExit(f"self-test: charged() read {got} for a canceled job whose data records a start, not 1.0")
 
 
 def seed_self_test() -> None:
@@ -2644,6 +2756,8 @@ def main() -> int:
     sub = parser.add_subparsers(dest="command")
     p = sub.add_parser("snapshot")
     p.add_argument("--out", type=Path, required=True)
+    p = sub.add_parser("observe")
+    p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser("check")
     p.add_argument("directory", type=Path)
     p.add_argument("--agents", type=Path, nargs="+", help="files carrying the quandela-facts section")
@@ -2678,6 +2792,11 @@ def main() -> int:
     elif args.command == "snapshot":
         try:
             snapshot(args.out)
+        except PlatformError as error:
+            raise SystemExit(str(error)) from None
+    elif args.command == "observe":
+        try:
+            observe(args.out)
         except PlatformError as error:
             raise SystemExit(str(error)) from None
     elif args.command == "check":

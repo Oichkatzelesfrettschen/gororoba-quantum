@@ -1,0 +1,103 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: plans/reviews/coherence-case-science-review.md
+
+# Coherence-window case: science review
+
+Scope. Review only. No live_run.py run with --submit, --collect, --approved-record, or --preserve-raw; no file under results/live/2026-10-14T060826.976518Z/ changed; no tracked file edited; no subagent used. Tree: HEAD 10bb9ee2887b8ac7402663a49e34e62649793816, clean apart from the untracked case directory. Python 3.14.7, numpy 2.5.4, qiskit 2.5.2, PYTHONDONTWRITEBYTECODE=1 for every run.
+
+Field and artifact. Quantum information (branch-signed work coherence on a dynamic circuit) and finite-shot statistics (Hoeffding precision endpoints). The artifacts are gororoba_quantum/coherence_window.py, scripts/coherence_window_analysis.py, the coherence section of gororoba_quantum/QPU_OPTIMIZATION.md, and the unapproved case results/live/2026-10-14T060826.976518Z/UNAPPROVED_CASE.md, read against record.json and isa.qpy in that directory.
+
+## Check 1: self-commands
+
+- `python3 coherence_window.py` (from gororoba_quantum/): `coherence window: 15 circuits; branch-signed C = rho_01,10 with |C| = 1/2, signed rotations, zero unsigned`. Exit 0.
+- `python3 ../scripts/coherence_window_analysis.py --self-check`: `coherence window analysis: dephasing shrinks, a window phase rotates, the unsigned control vanishes`. Exit 0.
+
+Both pass. The self-check compares the rotation with abs() (scripts/coherence_window_analysis.py:295), so it cannot detect a sign error (F4).
+
+## Check 2: independent Statevector check
+
+Scratch script check2_statevector.py (session scratchpad, not in the repo). Laws come from qiskit Statevector amplitudes with explicit little-endian indexing, not from partial_trace or kron. C comes from amplitudes as sum over b0 of (-1)^b0 times sum over spectator s of psi[b0, wa=0, s, wb=1] * conj(psi[b0, wa=1, s, wb=0]), which is rho_{01,10} in |work_a work_b> order.
+
+- immediate, settings xx/xy/yx/yy, window 836: C = 0.5 + 0j, |C| = 0.500000000000, arg = 0. Difference from the amplitude value: 1.1e-16.
+- matched_idle: |C| = 0.5, difference 1.1e-16. measure_reset: |C| = 0.5, difference 2.2e-16.
+- All 15 independent laws agree with coherence_window._expected_law to 1.1e-16, and with the 15 table rows of UNAPPROVED_CASE.md:48-62 to 2.2e-16.
+- RZ(+0.3) on work_b: arg(C'/C) = +0.300000. On work_a: -0.300000. |C'|/|C| = 1. The +delta on work_b, -delta on work_a convention holds.
+
+Analytic cross-check. After the prefix, the state is (|0>_c (|10> + |01>) + |1>_c (|10> - |01>)) / 2 up to the control's Hadamard, so branch b0 carries (|10> + (-1)^b0 |01>)/sqrt(2) with weight 1/2. Then S_XX = S_YY = 1, S_XY = S_YX = 0, and C = 1/2. The circuit has no phase gate, so the ideal phi is 0. The case's phi is a hardware quantity that the code never parameterizes.
+
+Round-1 prefix. It matches qpe_diagnostics.n21_orbit_diagnostic gate for gate (qpe_diagnostics.py:193-197: x(one), h(0), cswap(0, one, four), cswap(0, four, sixteen), h(0)). The mapping one=WORK_A, four=SPECTATOR, sixteen=WORK_B follows the compose map in patch_characterization.orbit.
+
+## Check 3: Hoeffding radius
+
+- 4 * 2 * sqrt(ln(2/(0.05/5/4)) / (2*2048)) = 0.3231827010296, which is <= 0.33, margin 0.0068. The module's own check at coherence_window.py:258-262 passes.
+- The optimizer computes the same number. experiment_optimizer._radius (lines 575-590) uses tail = probability/len(active) with two-sided Hoeffding, and span = max - min of the signed score (line 540, span 2). The record stores alpha 0.01 per endpoint. Reproduced: 0.32318270103 (case lines 134, 147, 160, 173).
+- Two-term re_immediate: 2*2*sqrt(ln(2/0.005)/4096) = 0.152984176918 (case line 121). Reproduced.
+- 0.32318270103 / 0.33 = 0.979341518 (case line 181). Reproduced.
+- Rotation resolution at half-width 0.33: 0.165 rad at |C| = 1/2 and 0.192 rad at |C| = 0.43. The case rounds to 0.17 and 0.19 (F6).
+- Simulation allowance (experiment_optimizer.py:553, span 2, 262144 model shots, tail 0.01/18): 4-stream 0.0316163856313 (case line 171), 2-stream 0.0158081928156 (case line 119). Reproduced to 13 digits.
+
+Assumptions, not failures: each term's 2048 shots are independent (the terms come from different circuits); the +-1 scores have span 2; the re_immediate endpoint uses two terms, so its 0.33 target is loose (achieved 0.153).
+
+## Check 4: case statements against code and record
+
+Contradicted:
+
+C1. UNAPPROVED_CASE.md:36 says a static detuning above 150 kHz aliases. The window is 836 dt x 4 ns = 3.344 us, and aliasing begins at 1/(2T) = 149.52 kHz. A 149.8 kHz detuning aliases, but the sentence's rule ("converts ... only below that bound") would admit it. Correct value: about 149.5 kHz. SLOPPY.
+
+C2. QPU_OPTIMIZATION.md:158 says qpe_diagnostics.py "derives both families' laws independently of Qiskit using exact integer branch amplitudes and rational probabilities". For the coherence family, the law path is coherence_window._expected_law (coherence_window.py:125-128), which calls qpe_diagnostics.ideal_branch_probabilities (qpe_diagnostics.py:315-327). That function builds qiskit.quantum_info.Statevector float states (import at qpe_diagnostics.py:21; IdealBranch = tuple[float, Statevector, int] at :32). The claim does not hold for the coherence family. Confidence about 80 percent that "both families" includes it; the doc does not name the families.
+
+Consistent, but scope omitted:
+
+O1. UNAPPROVED_CASE.md:36 says that in the immediate and matched-idle contexts "correlated readout crosstalk enters C as a context-independent scale". That holds for those two contexts: all four measurements sit in one final layer (coherence_window.py:93-96), and the static ISA circuits show it. The sentence is silent on measure_reset, where b0 is measured mid-circuit before the window (coherence_window.py:84-87) and read in a different layer from the work pair. The measure_reset comparison carries the rotation and shrink test, so its readout scale is uncharacterized. SERIOUS for interpretation.
+
+O2. UNAPPROVED_CASE.md:34 and QPU_OPTIMIZATION.md:145-147 say rotation and shrinkage "separate the explanations". A coherent control-work interaction during the window is not on the list. A branch-dependent phase exp(-i theta Z_c Z_wb) during the matched idle gives C'/C = cos(2 theta), which is real: a pure shrink with no rotation. Verified numerically (scratch zz_probe.py): theta = 0.1 gives 0.980066578 = cos(0.2); theta = 0.3 gives 0.825335615 = cos(0.6). Under the case's classification this is indistinguishable from dephasing. The ISA prefix has cz pairs (142,143), (136,143), (143,144) and no control-work cz, so a direct control-work edge is not evidenced; the coupling map is not in the record, so its absence is not established. measure_reset has no superposed control during its window, so the effect enters the matched-idle comparison and propagates to the measure_reset comparison. SERIOUS for interpretation; not a code defect.
+
+O3. UNAPPROVED_CASE.md:192 says every PUB cost includes "declared reset/classical-latency additions". That is literally true. The classical-latency term is sequential_stage_count x --classical-latency-us (qpu_planning.py:614-618), and all 15 PUBs in record.json have sequential_stage_count 0, so the 20 us controller latency adds 0 s. The case's table shows 0, but the text should state why, since the flag appears in the command. SLOPPY.
+
+Consistent, checked:
+
+- Digests: record.json sha256 fdef1edf..., isa.qpy b128a630..., experiment digest e62dc0e6..., code_commit.head 10bb9ee2887b..., sources_modified false, simulator seed 20261011 (case lines 5-14, sha256sum).
+- Dependency versions (case lines 16-26) match record.json and requirements.txt pins.
+- Readout map and routing (case line 32): all 15 ISA circuits measure clbit 0..3 on physical 142, 144, 136, 143. No two-qubit op follows the last barrier. Matched-idle circuits carry 836 dt delays on the four window qubits.
+- Window (case line 34): control_measure_dt 415 + control_reset_dt 421 = 836 dt.
+- Ideal laws (case lines 46-62): equal the independent Statevector laws (C2 above; 2.2e-16).
+- Score vectors (case lines 116-173): equal signed_parity(). Member names and signs for all five endpoints equal coherence_contracts() and the record.
+- Predicted values (case lines 119, 132, 145, 158, 171): literal in record.json for 1.76419830322, 0.135772705078, 0.00672912597656, -0.00147247314453, 0.0158081928156. The value -0.131561279297 is stored as -0.131561279296875 (same number).
+- Noise model: readout flips are added explicitly after NoiseModel.from_backend(view, readout_error=False) (live_run.py `_noise_model`, near line 2009), so the predictions include assignment error.
+- Budget (case lines 183-217): PUB counts 5 and 10, shots 2048, estimated charges 4.934579968 and 7.534917376 (recomputed from scheduled_seconds, repetition delay and 2.3 s overhead), sum 12.469497344. Ceilings 9 + 9 = 18 s, cap 18 s, reserve 60 s, remaining 390 s (record budget_plan). Static PUB durations for matched idle exceed immediate by 836 dt (3.344 us).
+- Dry-run command (case lines 227-263): all 34 flags exist in live_run.py. --no-isolated-reference is generated by BooleanOptionalAction for --isolated-reference (live_run.py:4759). Not run.
+- Approval template (case lines 266-308): --submit appears only inside the template. record.json state is planned, and the case directory has no approval-consumed.json and no raw/ directory.
+- Precision default (QPU_OPTIMIZATION.md coherence section): live_run.py:4884 sets COHERENCE_PRECISION for coherence-window. Consistent.
+- Identity: record.json contains no "crn:" string; instance_sha256_12 is 12 hex; no /home absolute paths in record or case. (A 32-hex regex matched digest substrings and is not evidence.)
+- Gates: ci/gates.json lines 1871, 1879, 1887, 1895 run coherence_window.py and the self-check in normal and optimized modes; ruff and mypy cover both files.
+
+## Further findings
+
+F4 (SLOPPY). coherence_window_analysis.py:295 asserts abs(rotation). A sign flip in compare() (line 110) passes the self-check. The case's direction claims depend on the sign. Remedy: assert the signed rotation +0.25 for RZ on WORK_B and -0.25 on WORK_A.
+
+F5 (SERIOUS before the first analysis). from_run (coherence_window_analysis.py:202-257) has no test. The only exercised path is analyze() on synthetic data. The keys match the writer: record["submission"]["jobs"] is written at live_run.py:3525, PUB components carry "member", and the positional ObservableContract mapping matches the dataclass order (experiment_optimizer.py:38-56). The dry-run record has no "submission" key, so from_run has never run on any record. Remedy: a fixture run directory with a submission block and raw index, tested before the first collection.
+
+F6 (COSMETIC). The "0.17 rad" and "0.19 rad" figures (case line 40; coherence_window.py:151-157) round up from 0.165 and 0.192. The achieved difference-endpoint half-width is 0.3232, which gives 0.162 rad. The round-up is documented.
+
+F7 (SOUND). The reference and estimator are correct. The partial_trace index mapping (coherence_window.py:208-210) holds because WORK_A (1) < WORK_B (3). The kron projector (line 205) acts on qubit 0 = CONTROL. The unsigned coherence vanishes (line 217). First-bit flip scales C by (1 - 2 eps) (lines 246-254). Control or work amplitude damping shrinks C by a real factor without rotating it (analytic). The variance formulas (analysis lines 85, 98) and excess-rotation algebra (lines 139-148) check out.
+
+## Not run
+
+- live_run.py dry run: not run. It writes new records under results/live and needs live IBM calibration. Flags checked statically only.
+- Noise-model predictions: not recomputed (needs the calibration Target). Their presence in record.json is verified.
+- Native timing, calibration reads, submit, collect, approval, preserve: not run, per instructions.
+- ZZ magnitude on ibm_fez: not measurable offline (coupling map not in the record).
+- Measurement-induced dephasing: absent from the noise construction, so the case's statement that it is omitted holds. Not quantified.
+
+## Verdict
+
+Remedies for APPROVE AFTER FIXES:
+
+1. UNAPPROVED_CASE.md:36: alias bound 149.5 kHz (1/(2 x 836 dt x 4 ns)).
+2. UNAPPROVED_CASE.md:36: scope the readout-crosstalk claim to immediate and matched_idle; state that measure_reset reads b0 in its own layer, so its readout scale is an open residual.
+3. UNAPPROVED_CASE.md:34 and QPU_OPTIMIZATION.md:145-147: add coherent control-work ZZ during the window as an alternative to pure shrinkage (C'/C = cos(2 theta)), with the falsifier that separates it, or list it as an open residual.
+4. QPU_OPTIMIZATION.md:158: correct "independently of Qiskit" for the coherence family (float Statevector laws).
+5. UNAPPROVED_CASE.md:192: state that the classical-latency addition is zero, because sequential_stage_count is 0 for every PUB.
+Before the first analysis (not blocking the submit text): 6. signed rotation assertion in self_check (F4); 7. fixture test for from_run (F5).
+
+VERDICT: APPROVE AFTER FIXES (items 1-5 in the case text; items 6-7 before the first analysis).

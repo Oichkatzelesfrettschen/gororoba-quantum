@@ -1,0 +1,196 @@
+{
+ "admitted_statuses": [
+  "available",
+  "running"
+ ],
+ "approval": "User, 2026-10-24: \"I approve but get me those questions, maybe 7 jobs?\"; answers: design \"elucidate the optimal jobs, runs, etc.\", spacing \"Every 2 h, ~12 h span (Recommended)\", on failure \"Skip it, continue (Recommended)\", timing \"Ticks + wait-until-due (Recommended)\". Written case: docs/design/bdsc-qualification.md#drift-series-of-one-frozen-request, 7 jobs of 1.12 credits, 7.84 credits.",
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "f43932092da278e80c34eb351d7207c3398a9289e17ea153834232eb9d8cbd3e",
+ "case": "2026-10-24T130006Z-qpu_belenos-bdsc_drift_series-t4",
+ "cases_sha256": "528934f57cd4f63089e4e08041639be57259e481d4eaeb93e7cc4835ed333344",
+ "credit_ceiling": 1.12,
+ "estimated_credits": 1.12,
+ "estimated_shots": 2400000,
+ "expected_seconds": 213.6,
+ "job_id": "ffc0ba1d-5e74-447f-966d-79f22ce38604",
+ "max_credits": 1.12,
+ "max_samples": 2400000,
+ "max_shots": 2880000,
+ "payload_version_basis": "declared",
+ "per_job_credits": 1.0,
+ "perfs_at_plan": {
+  "Clock (MHz)": 4.94,
+  "Dark counts (detection/s)": [
+   21.4,
+   7.1,
+   0.2,
+   0.8,
+   0.2,
+   12434.1,
+   0.1,
+   0.1,
+   0.2,
+   8.0,
+   0.1,
+   0.0,
+   0.1,
+   0.0,
+   0.0,
+   3.0,
+   0.0,
+   0.0,
+   0.0,
+   0.1,
+   0.0,
+   0.0,
+   0.0,
+   0.0
+  ],
+  "HOM (%)": 88.9,
+  "Transmission per mode (%)": {
+   "t_in": [
+    5.92,
+    0.0,
+    5.06,
+    0.0,
+    4.58,
+    0.0,
+    6.23,
+    0.0,
+    4.48,
+    5.89,
+    0.0,
+    0.0,
+    5.67,
+    4.42,
+    0.0,
+    0.0,
+    4.68,
+    0.0,
+    4.23,
+    0.0,
+    3.96,
+    0.0,
+    2.61,
+    0.0
+   ],
+   "t_out": [
+    111.1,
+    94.17,
+    88.55,
+    86.89,
+    120.02,
+    62.05,
+    101.65,
+    92.25,
+    109.38,
+    96.08,
+    118.64,
+    98.92,
+    87.11,
+    90.36,
+    74.9,
+    114.91,
+    100.11,
+    135.2,
+    125.18,
+    119.23,
+    64.84,
+    123.77,
+    116.34,
+    99.89
+   ]
+  },
+  "Transmittance (%)": 5.45,
+  "g2 (%)": 1.2
+ },
+ "platform": "qpu:belenos",
+ "platform_at_plan": {
+  "bookable": true,
+  "description": "Belenos QPU",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": {
+   "end_time": "2026-10-29T12:00:00Z",
+   "maintenance_title": "Weekly maintenance",
+   "start_time": "2026-10-29T08:30:00Z",
+   "time_zone": "Europe/Paris"
+  },
+  "max_duration": 300,
+  "name": "qpu:belenos",
+  "price_per_shot": 1e-06,
+  "statistic": {
+   "2026-10-17": {
+    "availability": 86.72999999999999
+   },
+   "2026-10-18": {
+    "availability": 89.42
+   },
+   "2026-10-19": {
+    "availability": 74.5
+   },
+   "2026-10-20": {
+    "availability": 81.96000000000001
+   },
+   "2026-10-21": {
+    "availability": 82.28
+   },
+   "2026-10-22": {
+    "availability": 81.74
+   },
+   "2026-10-23": {
+    "availability": 80.98
+   },
+   "2026-10-24": {
+    "availability": 83.84
+   }
+  },
+  "status": "available",
+  "type": "qpu"
+ },
+ "schema": "qd-submission-v1",
+ "status_at_plan": {
+  "explorer": "available",
+  "processor": "available"
+ },
+ "submitted_utc": "2026-10-24T13:00:37+00:00",
+ "usage_before": [
+  {
+   "total_jobs": 69,
+   "usage": [
+    {
+     "credits": 0.0,
+     "duration_seconds": 217,
+     "free_credits": 2.032768,
+     "nb_jobs": 8,
+     "platform_name": "qpu:ascella"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 1128,
+     "free_credits": 16.0,
+     "nb_jobs": 17,
+     "platform_name": "sim:belenos"
+    },
+    {
+     "credits": 0.0,
+     "duration_seconds": 4595,
+     "free_credits": 43.58742000000001,
+     "nb_jobs": 44,
+     "platform_name": "qpu:belenos"
+    }
+   ]
+  }
+ ],
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}

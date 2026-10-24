@@ -1,0 +1,66 @@
+{
+  "schema": "work-plan-v1",
+  "id": "n21-state-preparation-delay",
+  "kind": "implementation",
+  "summary": "n21-rep-delay: state-preparation control and a shorter repetition delay for the n21-feedback-encoded run",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/5c5427f3584ba9e230d6c272cd989858a9905a1640894ba6b230d92c1c42f9b6.txt",
+    "docs/evidence/plan-reconciliation/observations/pr-229.json",
+    "docs/evidence/plan-reconciliation/observations/pr-258.json"
+  ],
+  "state": "inbox",
+  "scope": "n21-rep-delay: state-preparation control and a shorter repetition delay for the n21-feedback-encoded run",
+  "next_action": "Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "PR #258 integration observed through GitHub and canonical ancestry. Original testing and scientific claims retain their separate acceptance obligations."
+  },
+  "steps": [
+    {
+      "id": "verify-pr-229-integration",
+      "action": "Verify the recorded integration state of PR #229.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "9687656277eb853f8a9980d0f274c9c80e9053fe5b598f7d421fbfdcfe63be35",
+          "result": "PR #229 merged as ff5c6fd1ab9719fd463a7fe575ee76366e7a93ca; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-229.json",
+              "sha256": "c85feef4405e56a071696f553d5542415c35ab084468620e9fbf7f36f1e8e285"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify-pr-258-integration",
+      "action": "Verify the recorded integration state of PR #258.",
+      "acceptance": "The retained GitHub response reports a merged PR and its merge commit is an ancestor of the observed canonical HEAD.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "a981980259a5a5018e7c614bc3eab5d10b41ff49804f7b8f787fc1607ccba77b",
+          "result": "PR #258 merged as 2c94fbcb964596c130de9f94c3c8f583fd592c82; ancestor of canonical 986d6812a6ac6345ce76a9ad524eac0626732fa5.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "docs/evidence/plan-reconciliation/observations/pr-258.json",
+              "sha256": "435ad8c61a7f5a26e3de7e424805eda38cff117f52299281c6c16da0cbdafb67"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-original-acceptance",
+      "action": "Reconcile the original acceptance obligations and retain missing or superseding evidence.",
+      "acceptance": "- Contracts (qpu_planning_contracts): `--rep-delay` outside the range refuses; the policy and approval comparison bind it; the charge model uses it. - `dynamic_density` with epsilon equals Aer with an initial `x` error of the same probability (cross-check oracle). - Submit-free dry runs of `state-prep-control` and of n21 at 100 and 50 us with an epsilon placeholder; the cases stay held for owner approval. - Falsifier: Kingston's excess epsilon at 50 us large enough that no delay below 250 us keeps n21 within its ceiling, in which case the plan keeps 250 us and the control cost (about 12 s) is the price of knowing.",
+      "state": "todo"
+    }
+  ]
+}

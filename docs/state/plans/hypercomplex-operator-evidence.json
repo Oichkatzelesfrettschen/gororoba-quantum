@@ -1,0 +1,97 @@
+{
+  "schema": "work-plan-v1",
+  "id": "hypercomplex-operator-evidence",
+  "kind": "experiment",
+  "summary": "Hypercomplex operators, falsifiers and device evidence",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/ff01741780cbdd783060a45e5b051a0b04f2aa5a32f2761f1e0dd1dd2a26abfe.txt",
+    "docs/design/hypercomplex-operator-evidence.md",
+    "docs/evidence/plan-reconciliation/sources/377508629fcd1d2bbbd3a842302240dd12549841a1e179171d5a4d6741570309.txt"
+  ],
+  "state": "inbox",
+  "scope": "Hypercomplex operators, falsifiers and device evidence",
+  "next_action": "Design independently counterbalanced replication and equivalence margins.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The descriptive Tuna order pilot is retained; a confirmatory replication and the wave/transform families need distinct written cases."
+  },
+  "steps": [
+    {
+      "id": "verify-retained-acquisition-outcome",
+      "action": "Verify retained acquisition and analysis outcome identities.",
+      "acceptance": "The registered evidence exists with its recorded SHA-256; the outcome retains the stated scientific boundary.",
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "0f9824dca419223b5d1f20ad150d182f6434f1f9eff3b6d60fcb6960812638f6",
+          "result": "Retained descriptive order pilot completed; counterbalanced confirmatory inference remains separate.",
+          "observed_at": "2026-10-23T18:03:36.732812+00:00",
+          "revision": "986d6812a6ac6345ce76a9ad524eac0626732fa5",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/pilot-summary.json",
+              "sha256": "ab1dfe679f1577c63f587db4241d65b86ac061dafa9d6eeb00a588ac06661bad"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00/hypercomplex-analysis.json",
+              "sha256": "0bc4057667e29a90eb8011b3b07653693292f84cd94a087c0aa3f4a858bcc1ae"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-01/hypercomplex-analysis.json",
+              "sha256": "83889e52ddb342591251c52398fc68588a5f515c268932a9edb61186ddffbca2"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-02/hypercomplex-analysis.json",
+              "sha256": "864422ca90b971e2174a0f24838772a32c1c6acd93601d27df2372ab0e94eb0f"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-03/hypercomplex-analysis.json",
+              "sha256": "ad791fbe36bd5220cbbeb3dc8b65f39f69122fe974ac987b9d1968d6b6fef25b"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-04/hypercomplex-analysis.json",
+              "sha256": "34dc1530c70289e9509defb51f06775c9c9d3ba27040d04d40fa2897ccf7dfa0"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-05/hypercomplex-analysis.json",
+              "sha256": "f374fd93f4ae949f756508ea5639a53f8c01ecd55f81d0ac654764e62ec59c0a"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-06/hypercomplex-analysis.json",
+              "sha256": "0e76fb592e1a09c0f65857eba9c5c785dbec6e57729af27f0ae88e37c80e234d"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-07/hypercomplex-analysis.json",
+              "sha256": "5504e32ee3e76cd3ae8500434e5787dc00808879f3ed46b941f1423ab3082c4a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Design independently counterbalanced replication and equivalence margins.",
+      "acceptance": "The descriptive Tuna order pilot is retained; a confirmatory replication and the wave/transform families need distinct written cases.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Qualify disjoint-pair packing covariance.",
+      "acceptance": "The descriptive Tuna order pilot is retained; a confirmatory replication and the wave/transform families need distinct written cases.",
+      "state": "todo"
+    }
+  ],
+  "claims": [
+    "hw-quaternion-encoded-order-pilot"
+  ],
+  "acquisitions": [
+    "qi-tuna17-quaternion-order-00",
+    "qi-tuna17-quaternion-order-01",
+    "qi-tuna17-quaternion-order-02",
+    "qi-tuna17-quaternion-order-03",
+    "qi-tuna17-quaternion-order-04",
+    "qi-tuna17-quaternion-order-05",
+    "qi-tuna17-quaternion-order-06",
+    "qi-tuna17-quaternion-order-07"
+  ]
+}

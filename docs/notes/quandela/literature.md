@@ -64,6 +64,9 @@ and compiler publications.
 | 27 | 2103.03183v1 | Kumar, port allocation | c | sections |
 | 28 | 1912.08789v1 | Dhand, defective components | c | abstract only |
 | 29 | peripheral set | thermal crosstalk, drift and calibration, 2022-2026 | a, b, c | mixed |
+| 30 | 2408.15139v1, 2405.11044v1 | thermo-optic switching times | b | abstract only |
+| 31 | perceval-quandela 1.3.1 source | Perceval performance fields | d | sections |
+| 32 | 2601.10289v1 | Sanz, QFT multiphoton indistinguishability benchmark | d | abstract only |
 
 ## Conventions used in this note
 
@@ -1119,6 +1122,67 @@ and compiler publications.
   tomography with a coherent laser), 2507.08570 (a classical-light processor
   benchmark whose thermal-noise conclusion concerns its own device).
 
+### 30. Thermo-optic switching times
+
+- Pradip, Varri, McRae, Bruckerhoff-Pluckelmann, Wendland, Ovvyan,
+  Taheriniya, Pernice, Ferrari. "Fast thermo-optic switching on silicon
+  nitride platform through parity-time symmetry breaking." arXiv:2408.15139v1
+  (27 Aug 2024). https://arxiv.org/abs/2408.15139. Retrieved 2026-10-24.
+  Depth: abstract only. A pi phase shift rises in 8.5 us on silicon nitride,
+  with 0.39 dB insertion loss for a 100 um heater section; thermal crosstalk is
+  studied without an abstract value.
+- Chen, Zhang, Crowley, Gangi, Begovic, Huang. "Silicon Photonics Foundry
+  Fabricated, Slow-Light Enhanced, Low Power Thermal Phase Shifter."
+  arXiv:2405.11044v1 (17 May 2024). https://arxiv.org/abs/2405.11044.
+  Retrieved 2026-10-24. Depth: abstract only. A silicon (not silicon nitride)
+  Bragg-grating shifter: V_pi = 1.1 V, P_pi = 3.63 mW and P_pi tau =
+  5.1 mW us, so tau is about 1.4 us (derived here from the two abstract
+  figures).
+- Use here: a comparison only. These devices settle in microseconds to tens
+  of microseconds, against the 2.5 to 3 s each Ascella iteration costs
+  (job-00: 64 iterations in 186 s; pilot: 8 in 25 s), but neither measures
+  Ascella's phase shifters or its reconfiguration procedure, and this note's
+  reading of Maring et al. (source 1) records no reconfiguration time for
+  Ascella. Ascella's settling contribution to the per-iteration overhead stays
+  unresolved until a device source or measurement fixes it.
+
+### 31. Perceval performance fields
+
+- Quandela, perceval-quandela 1.3.1, the client version that built the
+  Ascella job bodies. Source read from the installed package:
+  `perceval/simulators/simulator_interface.py` (`format_results`,
+  `_postprocess_bsd`) and `perceval/runtime/simulated_computer.py`. Retrieved
+  2026-10-24. Depth: sections.
+- `physical_perf` is the probability share that survives the
+  min-detected-photons filter (`filter_distribution_photon_count`),
+  `logical_perf` the share that survives post-selection and heralds, and
+  `global_perf` their product. The computer docstrings define a shot as any
+  event with at least one detected photon and a sample as one with at least
+  `min_photons`.
+- Use here: (U4) every iteration of the Ascella signed-coherence job-00
+  reports `physical_perf` 0.020914 to 0.020925, the same to 1e-5 across
+  settings whose outside-block counts span 4 to 586, so the field is a model
+  value, not a per-iteration acquisition measurement, and it times no
+  iteration (observed in the retained raw result).
+
+### 32. Sanz et al., QFT benchmark of multiphoton indistinguishability
+
+- R. M. Sanz, E. Annoni, S. C. Wein, C. G. Almudever, S. Mansfield, E.
+  Derbyshire, R. Mezher. "Exponential improvement in benchmarking multiphoton
+  interference." arXiv:2601.10289v1 (15 Jan 2026).
+  https://arxiv.org/abs/2601.10289. Retrieved 2026-10-24. Depth: abstract
+  only.
+- Summary. Theorems tie distinguishability to the suppression laws of a
+  quantum Fourier transform interferometer; the resulting protocol needs a
+  constant sample count for prime photon numbers and validates on "Quandela's
+  reconfigurable photonic quantum processor" (the abstract names no chip).
+- Use here: the multiphoton benchmarks bound interphoton
+  indistinguishability, a quantity the one-photon contrast of Ascella's X and
+  Y analyzers does not measure. A one-photon contrast deficit can still carry
+  an internal-state effect: a photon in a|0>|alpha> + b|3>|beta>, with an
+  internal state correlated to its path, gives path coherence proportional to
+  <beta|alpha>. The Ascella records do not test that mechanism.
+
 ---
 
 ## Not found
@@ -1135,6 +1199,13 @@ and compiler publications.
   Circuit.decomposition, the cloud compile guide, and the user-side reports in
   sources 7 and 8. The statement that the cloud compiler "ignores photon-free
   input modes" has no published source here.
+- A Quandela statement of how dark clicks enter a cloud `sample_count`
+  result: the coincidence window, whether detection is gated on the pump
+  clock, and how long an iteration acquires. The job schema returns no
+  per-iteration time, so a dark-count exposure per iteration is inferred
+  from outside-block clicks, not read.
+- A Quandela figure for Ascella's per-iteration reconfiguration and settling
+  overhead.
 - A peer-reviewed in-situ calibration method that uses single-photon counts
   alone and fits a shared offset vector across compiled settings. The nearest
   methods are source 16 (photon or laser counts, needs voltage control) and

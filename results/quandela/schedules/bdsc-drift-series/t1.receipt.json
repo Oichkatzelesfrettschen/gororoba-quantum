@@ -1,0 +1,12 @@
+{
+ "key": "t1",
+ "matched_check_code": 0,
+ "matched_check_output": "bdsc stationarity matched check: 2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1 returned every retained diagnostic circuit\n",
+ "outcome": "passed",
+ "received_utc": "2026-10-24T07:04:10+00:00",
+ "run": "2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
+ "run_id": "40070623295.1",
+ "schedule": "bdsc-drift-series",
+ "schema": "qd-schedule-receipt-v1",
+ "snapshot": "results/quandela/bdsc_drift_series_dark/after-t1"
+}

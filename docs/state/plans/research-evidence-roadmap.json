@@ -1,0 +1,32 @@
+{
+  "schema": "work-plan-v1",
+  "id": "research-evidence-roadmap",
+  "kind": "coordination",
+  "summary": "Coordinated mathematical research and QPU optimization",
+  "sources": [
+    "docs/evidence/plan-reconciliation/sources/357b967ef841e86c0d94e6d781a22ce12ef6289f03fc256d0eb1540edcf719bd.txt",
+    "docs/RESEARCH_ROADMAP.md",
+    "docs/evidence/plan-reconciliation/sources/da54048c2a2503f86ad376a413f26b4ce07f8cc1871c1c75075f17667d41eb71.txt"
+  ],
+  "state": "inbox",
+  "scope": "Coordinated mathematical research and QPU optimization",
+  "next_action": "Reconcile existing-data coherence analysis and sensitivity admission.",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Use research_state claim and acquisition identities; global topology and formalization retain separate workstreams."
+  },
+  "steps": [
+    {
+      "id": "reconcile-obligation-1",
+      "action": "Reconcile existing-data coherence analysis and sensitivity admission.",
+      "acceptance": "Use research_state claim and acquisition identities; global topology and formalization retain separate workstreams.",
+      "state": "todo"
+    },
+    {
+      "id": "reconcile-obligation-2",
+      "action": "Route native challenger qualification and justified tomography to their owned plans.",
+      "acceptance": "Use research_state claim and acquisition identities; global topology and formalization retain separate workstreams.",
+      "state": "todo"
+    }
+  ]
+}

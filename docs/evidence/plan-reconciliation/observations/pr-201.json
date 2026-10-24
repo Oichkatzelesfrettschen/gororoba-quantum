@@ -1,0 +1,11 @@
+{
+  "number": 201,
+  "title": "ci: replay the Rocq certificates in a path-filtered job over a cached opam toolchain",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-17T13:50:47Z",
+  "closed_at": "2026-10-17T13:50:47Z",
+  "merge_commit_sha": "fd6b2e6921979f527cb4e3195cbae7fe5b93d3b1",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/201",
+  "merge_ancestor_of_canonical_head": true
+}

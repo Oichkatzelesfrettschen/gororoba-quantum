@@ -1,0 +1,51 @@
+{
+ "schema": "qi-kernel-cancellation-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 16384,
+ "region": [
+  4,
+  8,
+  11,
+  12,
+  14
+ ],
+ "seed": 0,
+ "cz": 45,
+ "control": 8,
+ "phi": {
+  "pi/36": 0.08726646259971647,
+  "pi/12": 0.2617993877991494
+ },
+ "preregistered": {
+  "odd_part": "(Z(+phi) - Z(-phi))/2 of the control, pooled over the contrast's two batches",
+  "h1": "kernel odd part below -3.0 se resolves the sign, above +3.0 se falsifies",
+  "h2": "bright odd part beyond 3.0 se from zero marks an artifact",
+  "h3": "odd(pi/12) - (sin(pi/6)/sin(pi/18)) odd(pi/36) beyond 3.0 se from zero"
+ },
+ "batch": "batch-04",
+ "circuits": [
+  {
+   "file": "b+pi_36-040.cq",
+   "kind": "arm",
+   "contrast": "bright pi/36",
+   "phi": 0.08726646259971647,
+   "ideal_z": 1.0,
+   "sha256": "986788f1773dade29803f43b80c08bed5e34d49531f1ed8ee63fe9eb344f99bb"
+  },
+  {
+   "file": "b-pi_36-041.cq",
+   "kind": "arm",
+   "contrast": "bright pi/36",
+   "phi": -0.08726646259971647,
+   "ideal_z": 1.0,
+   "sha256": "6d9335c4eeeb0ff5447539b83e96f643e7794b67ec5b2e2b05e280d1c8109174"
+  },
+  {
+   "file": "readout-0.cq",
+   "kind": "readout",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  }
+ ]
+}

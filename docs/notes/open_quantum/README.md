@@ -297,7 +297,7 @@ completed job on a backend that tags one.
 
 ## Gates
 
-Gates core-380 (`capture_oq_docs.py --check`), core-381 (its `--self-test`),
-core-382 (`oq_platform.py check docs/evidence/open_quantum --agents
-docs/notes/open_quantum/README.md`) and core-383 (its `--self-test`) hold the
+Gates `core-record-check-05` (`tests/test_cli_record_checks.py`) (`capture_oq_docs.py --check`) and core-382 (`oq_platform.py
+check docs/evidence/open_quantum --agents docs/notes/open_quantum/README.md`),
+with the `--self-test` of both scripts in gates `core-self-test-04` and `core-self-test-09` (`tests/test_cli_self_tests.py`), hold the
 captures, the facts table and the credit rule.

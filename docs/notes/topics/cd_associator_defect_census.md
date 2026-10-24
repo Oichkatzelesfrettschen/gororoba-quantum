@@ -20,7 +20,7 @@ statement, [E] finite evidence, [T] proved below, [I] interpretation.
 | An independent pair has 0 associating completions when D/2 lies in span{a, b}, and D/2 - 4 otherwise; 3(D-2) and (D-2)(D-4) pairs of each kind | [T] Theorem 2 (D >= 16 for the "exactly when" reading; at D = 8 both counts are 0); [E] 16 to 256 |
 | Each 3-dimensional index plane W carries a linear functional l_W with omega(a, b, c) = -(-1)^l_W(a xor c) on its ordered bases; 168 non-associating triples when l_W = 0 and 72 otherwise; O(D) = (D-2)(D-4)(D+48)/1344 and Q(D) = (D-2)(D-4)(D-8)/192 planes of each type | [T] Theorem 3; [E] the 168/72 counts on every plane through 128; counts agree with [Wilmot](../papers/2505.11747.md) Table 5 (prior tabulation) |
 | omega(1, 6, k) = (-1)^popcount((D-2) & k) | [T] Theorem 4 |
-| The pair (D/2+1, D/4+3): omega = -(-1)^(q.k + [k in E_D]) with q = D - 4 and E_D = {0, 2, 3, D/4+2} + {0, D/2}; algebraic degree n - 2; Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 | [E] eight-point formula and degree 16 to 4096, support, amplitude and nonlinearity laws 32 to 4096 (at D = 16 support 4, amplitude 1/2, nonlinearity 4); no proof yet |
+| The pair (D/2+1, D/4+3): omega = -(-1)^(q.k + [k in E_D]) with q = D - 4 and E_D = {0, 2, 3, D/4+2} + {0, D/2}; algebraic degree n - 2; Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 | [T] Theorem 5 for every D >= 16 (at D = 16 support 4, amplitude 1/2, nonlinearity 4); [E] every law 16 to 4096 and the two lifting steps of the proof 16 to 4096 |
 | With indices 0 to 23 as one block: ordered complement pairs landing in the block 24D - 704 (23D - 680 off-diagonal), block pairs landing in the complement 128 | [T] i >= 24 meets k < 8 inside the complement always and k in [8, 24) only for i >= 32 |
 
 ## Proofs
@@ -98,6 +98,51 @@ omega_2d(a, b, c + w d) = (-1)^w omega_d(a, b, c). The D = 8 signs of (1, 6)
 are the parity character with mask 6, and each doubling adds the new top bit
 to the mask, giving mask D - 2.
 
+**Theorem 5 (moving pair).** For D = 2^n >= 16 write D = 2d = 4e and
+k = x + w' e + w d with x < e. Then
+omega_D(d + 1, e + 3, k) = -(-1)^(q.k + [k in E_D]) with q = D - 4 and
+E_D = {0, 2, 3, e + 2} + {0, d}. Three applications of Lemma 3, top bit
+first:
+
+1. Top level: d + 1 has lower part 1 and top bit 1, e + 3 < d has top bit 0,
+   and c' = k mod d. The lower pair (1, e + 3) is independent with xor
+   e + 2. The relation sets give (A, C) = (0, 1) for c' = 0 (relation
+   c = 0) and c' = e + 3 (b + c = 0), and A = C = 1 for c' = 1 (a + c = 0),
+   c' = e + 2 (a + b + c = 0) and every independent c'. So
+   omega_D = omega_d(1, e + 3, c') (-1)^(w + 1 + [c' in {0, e + 3}]).
+2. Level d: e + 3 has lower part 3 and top bit 1, and 1 and x have top
+   bits 0 and w'. For the lower pair (1, 3), B = 1 exactly when x is 3
+   (b + c = 0) or 2 (a + b + c = 0), and C = 1 for every x. So
+   omega_d(1, e + 3, c') = omega_e(1, 3, x) (-1)^(w' + [x in {2, 3}]).
+3. Below e: Theorem 4's argument applies to the distinct nonzero pair
+   (1, 3) from the associative quaternions upward, so
+   omega_e(1, 3, x) = (-1)^((e - 4).x).
+
+The masks e - 4, then w' and w, assemble q.k, since q sets bits 2 to n - 1.
+The indicators [x in {2, 3}] and [c' in {0, e + 3}] add modulo 2 to the
+indicator of {2, 3, e + 2, e + 3} xor {0, e + 3} = {0, 2, 3, e + 2} in c',
+with w free, which is E_D.
+
+**Corollary (moving-pair spectrum).** Let f = q.k + [k in E_D] + 1, so
+omega = (-1)^f, and W(t xor q) = sum_k (-1)^(f(k) + (t xor q).k)
+= -D [t = 0] + 2 S(t) with S(t) = sum over E_D of (-1)^(t.k). The points of
+E_D use only bits 0, 1, n - 2 (e + 2 sets bits 1 and n - 2) and n - 1 (d),
+distinct for n >= 4, so
+S(t) = (1 + (-1)^(t_(n-1))) T with T = 1 + x (1 + y + z), where
+x = (-1)^(t_1), y = (-1)^(t_0) and z = (-1)^(t_(n-2)). T is 4 at
+(x, y, z) = (1, 1, 1), 2 at (1, 1, -1), (1, -1, 1) and (-1, -1, -1), -2 at
+(-1, 1, 1) and 0 at the other three, so S is nonzero on 5 of the 16
+settings of these four bits with the other n - 4 bits free: 5D/16 points,
+where |2 S| is 16 or 8. At t = 0, W(q) = 16 - D. For D >= 32 this gives
+support 5D/16, largest amplitude D - 16, normalized 1 - 16/D, and
+nonlinearity (D - (D - 16))/2 = 8. At D = 16 the coefficient W(q) vanishes,
+leaving support 4, largest amplitude 8 (normalized 1/2) and nonlinearity 4.
+The indicator of E_D is [k_2 = ... = k_(n-3) = 0] g(k_0, k_1, k_(n-2)) with
+g the indicator of {000, 010, 110, 011} in that order. g has even weight 4
+and is not affine (000, 010 and 110 force 100), so g has degree 2. The
+product over disjoint variables then has degree (n - 4) + 2 = n - 2, and the
+affine part q.k + 1 leaves that degree unchanged.
+
 ## Relation to known results
 
 - [P] Wilmot ([2505.11747v3](../papers/2505.11747.md), Table 5 and Theorem 8)
@@ -123,7 +168,7 @@ to the mask, giving mask D - 2.
 - [I] The lifting identity, the plane functional and the pair-law proof
   arrived as derivations in external reviews of this repository; each step
   above is checked against `cd_core` here, and no literature priority is
-  claimed. A Rocq formalization of Lemmas 2 and 3 and Theorems 1 to 4 is
+  claimed. A Rocq formalization of Lemmas 2 and 3 and Theorems 1 to 5 is
   open.
 - [I] omega is the coboundary of the sign cochain s on (Z_2)^n, so its
   cocycle identity holds by construction and defines no nontrivial

@@ -1,0 +1,130 @@
+Historical planning-source snapshot. Instructions and status describe the captured source, not current authority.
+Original path: plans/QUANTUM_DISPATCH.md
+
+# Quantum dispatch
+
+Coordinate quantum research and run (01a130eb-8212-77e3-9f4b-cfc273001a21)
+owns dispatch and state transitions. Design a single-run reality ripple
+(01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f) remains the sole QPU executor.
+Milestones, blockers, scope/resource changes and final handbacks route centrally;
+technical exchanges remain auxiliary.
+
+[quantum_dispatch.json](quantum_dispatch.json) retains the supplied UTC snapshot
+plus central updates. The documents record human-supplied gates and grant zero
+independent submission authority. Central continues until bounded goals close or explicit
+external/user gates receive disposition.
+
+Admission is false. Existing authority caps new acquisition at 180 seconds,
+reserves 60 seconds and orders correction first. Vacuum proposals receive zero
+submission authority from coordination.
+
+The queue closes reviewed merges, canonical containment and retention before
+final handbacks. Canonical sync and geometry/source cleanup are verified complete.
+Correction admission requires all three fresh coherent refreshes and an
+eligible winner; successfully refreshed maintenance rows remain explicit
+exclusions. Missing or incoherent refreshes hold correction admission. Missing
+raw/schedule/calibration withholds correction decision and holds static.
+Keyed ripple/rank states retain exact cases and independent admission/acquisition
+gates, so one family can remain held. Collection, measured classification,
+charge settlement, reviewed publication, final sync and retention close the
+campaign. OG206/207 independently close review/merge/sync/cleanup.
+
+Partition by execution class, then rank priority, unfinished prerequisites,
+authorization, dependents, downstream height and ID. Complete/deferred rows
+remain history; readiness requires all gates. JSON preserves original PDFs,
+dirty ledger, ten audit hashes and nine intentional old directories.
+
+Completion requires canonical/replayable artifacts, mutation checks, bounded
+evidence, prerequisites/authorization, evidence-matched narrative and explicit
+falsifiers. Central validates unique IDs, owners, prerequisite IDs, acyclicity
+and complete prerequisites. Verified/reported/pending separate receipts,
+owner reports and future observations.
+
+Send a UTF-8 handback of at most 2500 bytes; use exact IDs, relative artifacts
+and semicolon-delimited sets:
+
+    owner_id: <UUID>
+    task_ids: <IDs>
+    status_delta: <old -> requested>
+    verified_refs: <receipts and measured scope>
+    reported_refs: <owner reports>
+    blockers: <gate and affected IDs>
+    next_action: <actor, operation, boundary, result>
+    completion_gate: <observation>
+    falsifier: <rejecting observation>
+    scope_or_resource_change: <change or retained scope>
+    retention: <artifacts and measured preservation>
+    handback_to_orchestrator: 01a130eb-8212-77e3-9f4b-cfc273001a21
+
+Report blockers promptly; final handbacks follow lane gates. Snapshot references
+retain identities without claiming fresh inspection. Normalization reads the
+supplied snapshot and 2632-byte contracts source; raw/evidence stays excluded.
+
+More shots can lower whole-job charge through scheduling/bundling fixed costs;
+compare measured charges and PUB maps. Observable-specific reduction preserves
+maps without proving algebra preservation. Inverse-calibration identifiability
+precedes Fisher allocation; constrain SPAM and physical populations independently.
+JSON preserves finite scientific residuals and external research gates.
+Prospective endpoint mathematics carries zero QPU authority.
+
+The reviewed finite endpoint audit compares 288000 total shots per design.
+Nine-setting over four-setting real-coherence variance ratios are 2.215418
+at r=0.2 and 2.160225 at r=0.4 for the specified uniform estimators.
+Physical imaginary-coherence states are invisible to all four settings;
+adding XY alone still leaves YX invisible. Occupation probabilities and both
+pair quadratures require the unique seven-setting product-Pauli cover
+ZZ, ZX, XX, YY, XY, YX, ZY. Nine settings provide full state tomography.
+Finite ideal-readout results establish neither hardware optimality nor charge
+savings; controls, bias, calibration and cross-arm covariance remain gates.
+
+The execution owner reported three maintenance holds before the caller-boundary
+diagnosis; the correction-only repair and final human gates remain pending.
+Central dispatch remains active for port repairs, independent case audit and
+the human-resumed geometry lane. PR206's proposed 13 internally replayed v2
+receipts would change total events from 26 to 39; that mutation awaits
+determinism/review. Existing v1 bytes and the other denominators stay distinct.
+Geometry now investigates actual kernel-limit attachments and the subsequent
+neighborhood/global/all-stage obligations. New Rocq implementation remains
+deferred under the human's run-result boundary; measurements do not prove the
+mathematical claims.
+
+The correction hold now has a scoped caller-consistency investigation. The
+planner and validator require all three fresh coherent backend snapshots while
+retaining explicit ineligible rows; the generic caller filters those rows first.
+A correction-only retention repair must preserve exclusion and missing-refresh
+failures, pass source review, and renew every digest-bound case. Existing cases
+and launchers cannot confer authority on the changed source. Execution remains
+unreleased while those gates are pending.
+
+The direct human message in the execution chat now requires every participating
+specialist owner and child to complete authorized pre-run scope and become
+idle, and every relevant PR to receive current-head Copilot review, resolved
+findings, passing checks and verified merge. Central records the finite roster
+and receipts, then performs only bounded receipt/handoff work and sends the sole executor
+the accepted final handoff. The
+executor checks coordinator and participant idle states again before physical
+admission. Any resumed work or source/case/calibration/quota drift holds
+execution. Post-run-only proof and measured-evidence tasks remain named future
+dependencies. Unfinished promised geometry deliverables hold the gate. The finite pre-run
+roster covers polynomial projectors, the named cone/attachment/incidence,
+ordinary all-stage embeddings and reviewed integration. Complete ambient rank
+loci, pair topology and all-dimensional classification remain explicit open
+mathematical questions; the finite slice certificate cannot settle them.
+
+The geometry owner reports exact rank partitions and a continuous attachment
+image on the dimension-32 affine slice e1+e18+A e3+B e8+C e27. The reported
+join S3*(S1 x S3), integral homology and cup products await exact-domain and
+independent review. Central publishes the separately reviewed finite endpoint
+measurement replay through the normal source and Copilot integration gates.
+
+Central expanded the combined coordination-file ceiling from 40000 to 100000
+bytes to retain the resumed scope and final execution receipts. Handbacks
+retain their 2500-byte ceiling.
+
+The single geometry PR includes kernel limits, full real slice coverage,
+attachment-image topology, full slice pair-incidence topology and ordinary
+all-stage embedding induction. Its integration waits for every finite review
+before containment or cleanup. Later Rocq workflow release waits for the
+explicit preregistered adjudication receipt as well as lossless collection.
+Central production/review/integration and child work complete before the final
+receipt; the executor observes central idle after the bounded final handoff.

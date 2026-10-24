@@ -1,0 +1,11 @@
+{
+  "number": 260,
+  "title": "ci: index gate-selection modules from git's file list; build the cu13 wheel outside the checkout",
+  "state": "closed",
+  "merged": true,
+  "merged_at": "2026-10-18T11:19:13Z",
+  "closed_at": "2026-10-18T11:19:13Z",
+  "merge_commit_sha": "04f707d149f5de4a19ca98d120ee8a4ef50f3631",
+  "html_url": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/260",
+  "merge_ancestor_of_canonical_head": true
+}
