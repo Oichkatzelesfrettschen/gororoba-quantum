@@ -55,6 +55,29 @@ that exceed the time limit are aborted (KB,
 user to 3 jobs queued per hardware backend and warns that abuse removes the
 account (<https://www.quantum-inspire.com/faq/>), stricter than the API's 5.
 
+### Three queue limits, one binding
+
+Three limits govern the queue from two layers, and the smallest binds:
+
+| Source | Limit | Scope | Enforced by |
+|---|---|---|---|
+| API `max_jobs_per_batch_job` | 5 circuits (jobs) per batch job | each backend type | the API, at batch creation |
+| API `batchjobs_per_queue_limit` | 5 batch jobs in the queue | one user on one backend type ([OpenAPI](api/openapi.json) schema `BackendType`) | the API, at enqueue |
+| FAQ | 3 jobs in the queue | one user on one hardware backend | operator policy; abuse removes the account |
+
+The API accepts up to 25 queued circuits per backend type, five batches of
+five, and the FAQ forbids that on hardware: the API states what the service
+admits, the FAQ what the operator permits, and the FAQ governs. Its "job" can
+mean a batch or a circuit, so `qi_platform.py submit` bounds both readings on
+every backend type the catalogue flags `is_hardware`: a batch holds at most
+`HARDWARE_BATCH_CIRCUITS` (3) circuits and enters only while the account has
+no batch queued on that type (`HARDWARE_QUEUED_BATCHES`, 1), so at most three
+circuits in one batch wait. The API flags the Ry emulator `is_hardware`, so
+it takes the hardware rules and the pause ([ry-emulator.md](ry-emulator.md));
+the QX emulator takes the API limits alone. [Rules this repository
+adds](#rules-this-repository-adds) holds the evidence that the queue counts
+batches.
+
 ## Measured time per job and per shot
 
 | Backend | Shots per job | Execution per job | Per shot | Source |
