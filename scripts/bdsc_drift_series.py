@@ -44,10 +44,20 @@ Usage:
   "$PYTHON" scripts/bdsc_drift_series.py --sensitivity
   "$PYTHON" scripts/bdsc_drift_series.py --write
   "$PYTHON" scripts/bdsc_drift_series.py --check
+  "$PYTHON" scripts/bdsc_drift_series.py --write-diagnostic
+  "$PYTHON" scripts/bdsc_drift_series.py --check-diagnostic
 
 --write writes the readout of the seven retained series runs (READOUT_RUNS)
 to READOUT, a runner-image record (ci/runner_image_records.json); --check
 proves READOUT equals a fresh readout of those runs byte for byte.
+--write-diagnostic and --check-diagnostic do the same for DIAGNOSTIC, the
+exploratory readings chosen after the readout: the unweighted superposition
+class means with their counting errors; the pair excess with the counting
+variance of the centered change subtracted (centered_counting_variances; the
+readout's excess subtracts the uncentered variance and reads low by mean
+var / 16); the Spearman correlation of that excess with lag against every
+relabeling of the run times; the six-state sum rules of every template and
+seed group; and the mode-5 share against the plan-time mode-5 dark rate.
 --sensitivity prints the share of seeded synthetic series (SENSITIVITY_SEED,
 SENSITIVITY_REPLICATES per scenario) that the primary reads resolved, at the
 retained reference error, for white jitter shared within each group of four
@@ -68,7 +78,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from scipy.stats import norm
+from scipy.stats import norm, rankdata
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
@@ -99,6 +109,7 @@ BLOCK = 25
 STATE_DIR = ROOT / "results/quandela/schedules/bdsc-drift-series"
 DARK_DIR = ROOT / "results/quandela/bdsc_drift_series_dark"
 READOUT = ROOT / "results/quandela/bdsc_drift_series_readout_pinned.json"
+DIAGNOSTIC = ROOT / "results/quandela/bdsc_drift_series_diagnostic_pinned.json"
 READOUT_RUNS = (
     "2026-10-24T070006Z-qpu_belenos-bdsc_drift_series-t1",
     "2026-10-24T090005Z-qpu_belenos-bdsc_drift_series-t2",
@@ -339,6 +350,139 @@ def pair_excess(first: dict[str, Any], second: dict[str, Any]) -> float:
     return math.fsum(terms) / len(terms)
 
 
+def centered_counting_variances(first: dict[str, Any], second: dict[str, Any]) -> dict[int, float]:
+    """Each superposition setting's counting variance of its class-centered change, for independent setting errors.
+
+    Centering subtracts the mean change of the n settings, so setting s keeps var_s (1 - 2 / n) + sum_j var_j / n^2
+    of the pair's counting variance var_s = se1^2 + se2^2; pair_excess subtracts var_s itself, and its mean over the
+    settings is low by mean var / n.
+    """
+    variances = {
+        i: v["se"] ** 2 + second["values"][i]["se"] ** 2
+        for i, v in first["values"].items()
+        if diag.class_of(v["label"]) == "superposition"
+    }
+    n = len(variances)
+    total = math.fsum(variances.values())
+    return {i: var * (1 - 2 / n) + total / n**2 for i, var in variances.items()}
+
+
+def pair_excess_centered(first: dict[str, Any], second: dict[str, Any]) -> float:
+    """pair_excess with the counting variance of the centered change (centered_counting_variances) subtracted."""
+    shift = center(second["values"]) - center(first["values"])
+    variances = centered_counting_variances(first, second)
+    terms = [(second["values"][i]["p"] - first["values"][i]["p"] - shift) ** 2 - var for i, var in variances.items()]
+    return math.fsum(terms) / len(terms)
+
+
+def spearman_over(x: list[float], ys: np.ndarray) -> np.ndarray:
+    """Spearman correlation of x with each row of ys, average ranks for ties."""
+    rx = rankdata(x)
+    rx = rx - rx.mean()
+    ry = rankdata(ys, axis=1)
+    ry = ry - ry.mean(axis=1, keepdims=True)
+    return np.asarray((ry @ rx) / np.sqrt((ry**2).sum(axis=1) * float(rx @ rx)))
+
+
+def lag_trend(series: list[dict[str, Any]]) -> dict[str, Any]:
+    """Spearman correlation of each series pair's centered excess with its lag, against every relabeling of run times.
+
+    Memory makes the excess grow with lag; exchangeable runs leave the pairing of excesses to lags arbitrary, so the
+    share of the n! relabelings whose correlation reaches the observed one is an exact upper-tail p (row 0 of the
+    relabelings is the identity).
+    """
+    pairs = list(itertools.combinations(range(len(series)), 2))
+    excess = [pair_excess_centered(series[i], series[j]) for i, j in pairs]
+    starts = np.array([run["start"] for run in series])
+    orderings = np.array(list(itertools.permutations(range(len(series)))))
+    first, second = (np.array(side) for side in zip(*pairs, strict=True))
+    rho = spearman_over(excess, np.abs(starts[orderings[:, second]] - starts[orderings[:, first]]))
+    return {
+        "pairs": len(pairs),
+        "orderings": len(orderings),
+        "spearman": float(rho[0]),
+        "p_value": float((rho >= rho[0] - TIE).mean()),
+    }
+
+
+def stray_rate_correlation(runs: list[dict[str, Any]]) -> dict[str, Any]:
+    """Spearman correlation of each run's mean mode-5 share with its plan-time mode-5 dark rate, exact two-sided p."""
+    share = [run["stray_share"]["mean"] for run in runs]
+    rate = np.array([run["stray_rate_at_plan"] for run in runs])
+    orderings = np.array(list(itertools.permutations(range(len(runs)))))
+    rho = spearman_over(share, rate[orderings])
+    return {
+        "runs": len(runs),
+        "spearman": float(rho[0]),
+        "p_value_two_sided": float((np.abs(rho) >= abs(rho[0]) - TIE).mean()),
+    }
+
+
+def sum_rules(values: dict[int, dict[str, Any]]) -> list[dict[str, Any]]:
+    """Delta_R = p_+ + p_- - p_f - p_g and Delta_I = p_+i + p_-i - p_f - p_g of each template-and-seed group.
+
+    A group is the six consecutive instances index // 6 of diag.instances(), one per state of the bank; every fixed
+    linear effect gives both sums zero (docs/design/bdsc-qualification.md, First qualification case).
+    """
+    groups: dict[int, dict[str, float]] = {}
+    for index, v in values.items():
+        groups.setdefault(index // 6, {})[v["label"]] = v["p"]
+    out = []
+    for group, p in sorted(groups.items()):
+        require(sorted(p) == sorted(("f", "g", "+", "-", "+i", "-i")), f"group {group} is not one six-state bank")
+        base = p["f"] + p["g"]
+        out.append({"group": group, "delta_r": p["+"] + p["-"] - base, "delta_i": p["+i"] + p["-i"] - base})
+    return out
+
+
+def diagnostic(series_dirs: list[Path], validate: bool = True) -> dict[str, Any]:
+    """Exploratory readings of the series, chosen after the preregistered readout and reported beside it."""
+    frozen = st.documents()
+    for run in series_dirs:
+        require_passed_receipt(run)
+    anchors = [load_run(st.RUNS_DIR / name, frozen, validate) for name in ANCHORS]
+    series = [load_run(run, frozen, validate) for run in series_dirs]
+    means = []
+    for record in series:
+        members = [v for v in record["values"].values() if diag.class_of(v["label"]) == "superposition"]
+        se = math.sqrt(math.fsum(v["se"] ** 2 for v in members)) / len(members)
+        means.append({"run": record["run"], "mean": center(record["values"]), "se": se})
+    centers = [m["mean"] for m in means]
+    average = math.fsum(centers) / len(centers)
+    by_lag: dict[int, list[float]] = {}
+    for a, b in itertools.combinations(series, 2):
+        by_lag.setdefault(round((b["start"] - a["start"]) / 3600), []).append(pair_excess_centered(a, b))
+    rules = [{"run": record["run"], "groups": sum_rules(record["values"])} for record in series]
+    deltas = [g[key] for r in rules for g in r["groups"] for key in ("delta_r", "delta_i")]
+    return {
+        "schema": "bdsc-drift-series-diagnostic-v1",
+        "standing": "exploratory: chosen after the preregistered readout, which no reading here revises",
+        "superposition_unweighted_means": {
+            "runs": means,
+            "sample_sd": math.sqrt(math.fsum((c - average) ** 2 for c in centers) / (len(centers) - 1)),
+            "range": max(centers) - min(centers),
+            "von_neumann": von_neumann(centers),
+        },
+        "lag_profile_centered": [
+            {"lag_hours": lag, "pairs": len(v), "mean_excess": math.fsum(v) / len(v)}
+            for lag, v in sorted(by_lag.items())
+        ],
+        "lag_trend": lag_trend(series),
+        "sum_rules": {
+            "runs": rules,
+            "contrasts": len(deltas),
+            "negative": sum(d < 0 for d in deltas),
+            "min": min(deltas),
+            "max": max(deltas),
+            "mean": math.fsum(deltas) / len(deltas),
+        },
+        "stray_share_against_plan_rate": {
+            "all_runs": stray_rate_correlation(anchors + series),
+            "series_runs": stray_rate_correlation(series),
+        },
+    }
+
+
 def epochs(runs: list[dict[str, Any]]) -> list[int]:
     """Calibration epoch of each run in start order: a new epoch begins wherever the plan-time dark vector changes."""
     out = [0]
@@ -406,21 +550,21 @@ def main() -> int:
     group.add_argument("--sensitivity", action="store_true")
     group.add_argument("--write", action="store_true")
     group.add_argument("--check", action="store_true")
+    group.add_argument("--write-diagnostic", action="store_true")
+    group.add_argument("--check-diagnostic", action="store_true")
     args = parser.parse_args()
     if args.sensitivity:
         print(json.dumps(sensitivity(), indent=1, sort_keys=True))
-    elif args.write or args.check:
-        text = json.dumps(readout([st.RUNS_DIR / run for run in READOUT_RUNS]), indent=1, sort_keys=True) + "\n"
-        name = READOUT.relative_to(ROOT).as_posix()
-        if args.write:
-            READOUT.write_text(text, encoding="utf-8")
+    elif args.write or args.check or args.write_diagnostic or args.check_diagnostic:
+        build, path = (readout, READOUT) if args.write or args.check else (diagnostic, DIAGNOSTIC)
+        text = json.dumps(build([st.RUNS_DIR / run for run in READOUT_RUNS]), indent=1, sort_keys=True) + "\n"
+        name = path.relative_to(ROOT).as_posix()
+        if args.write or args.write_diagnostic:
+            path.write_text(text, encoding="utf-8")
             print(f"bdsc drift series: wrote {name}")
         else:
-            require(
-                READOUT.is_file() and READOUT.read_text(encoding="utf-8") == text,
-                f"{name} differs from a fresh readout",
-            )
-            print(f"bdsc drift series: {name} matches a fresh readout of its retained runs")
+            require(path.is_file() and path.read_text(encoding="utf-8") == text, f"{name} differs from a fresh build")
+            print(f"bdsc drift series: {name} matches a fresh build from its retained runs")
     else:
         print(json.dumps(readout([run.resolve() for run in args.readout]), indent=1, sort_keys=True))
     return 0

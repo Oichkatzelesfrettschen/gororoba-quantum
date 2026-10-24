@@ -1,0 +1,16 @@
+{
+  "schema": "work-plan-v1",
+  "id": "tuna17-bell-witness-storage-delay",
+  "kind": "experiment",
+  "summary": "Fixed-pair Bell-state witness F = (1 + <XX> - <YY> + <ZZ>)/4 on Tuna-17 with interleaved bases, context-matched readout and swept storage delay; a lower bound above 1/2 witnesses entanglement on that pair.",
+  "sources": [
+    "docs/notes/quantum_inspire/experiments.md",
+    "https://journals.aps.org/pra/abstract/10.1103/PhysRevA.72.022340"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Pick the pair from the retained context-controlled readout calibrations, simulate the witness and its bound under the snapshot noise for three delays, and write the dry run; the teleportation rows of 2026-10-16 use a different path per input and do not count."
+}
