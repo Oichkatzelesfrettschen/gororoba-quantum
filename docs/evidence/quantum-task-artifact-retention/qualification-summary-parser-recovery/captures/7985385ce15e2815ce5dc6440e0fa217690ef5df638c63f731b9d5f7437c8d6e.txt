@@ -1,0 +1,42 @@
+"""Qualify the frozen simulation head under the inherited base-runner environment."""
+
+import json
+import os
+from pathlib import Path
+import re
+import subprocess
+
+checkout = Path("${USER_HOME}/worktrees/IBMQuantum/local-photonic-compiler-crosscheck")
+expected_head = "59998bfde17110f4ac03838b6c422a7ee7e120c7"
+dependency_ledger = Path("${TEMP}/quandela-final-278d415-ledger.json")
+summary = re.findall(
+    r"(\d+) passed, (\d+) failed(?:, (\d+) skipped)? of (\d+) gates",
+    Path("${TEMP}/quandela-final-278d415-validation.log").read_text(),
+)
+if not dependency_ledger.is_file() or not summary or summary[-1][1] != "0":
+    raise SystemExit("Dependency qualification requires a completed successful ledger")
+head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=checkout, text=True).strip()
+dirty = subprocess.check_output(["git", "status", "--porcelain"], cwd=checkout, text=True)
+if head != expected_head or dirty:
+    raise SystemExit("Simulation qualification requires the frozen clean head")
+changed = Path("${TEMP}/local-simulation-qualification-changed.z")
+with changed.open("xb") as output:
+    output.write(subprocess.check_output(
+        ["git", "diff", "--no-renames", "--name-only", "-z", "origin/main", "HEAD"], cwd=checkout
+    ))
+environment = dict(os.environ)
+command = [
+    environment["PYTHON"], "-B", "-W", "error", "ci/run_gates.py",
+    "--changed-files", str(changed), "--ledger", str(dependency_ledger),
+    "--ledger-out", "${TEMP}/local-simulation-head-ledger.json",
+    "--timings", "${TEMP}/local-simulation-head-timings.json",
+]
+print("Qualifying frozen simulation head", head, "launcher", os.getpid(), flush=True)
+with Path("${TEMP}/local-simulation-head-validation.log").open("x") as output:
+    result = subprocess.run(command, cwd=checkout, env=environment, stdout=output, stderr=subprocess.STDOUT)
+end_head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=checkout, text=True).strip()
+record = {"head": head, "end_head": end_head, "exit_code": result.returncode}
+with Path("${TEMP}/local-simulation-head-qualification-result.json").open("x") as output:
+    output.write(json.dumps(record, indent=2) + "\n")
+print("Simulation qualification", json.dumps(record), flush=True)
+raise SystemExit(result.returncode if head == end_head else 1)

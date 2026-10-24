@@ -1,0 +1,64 @@
+F.FF                                                                     [100%]
+=================================== FAILURES ===================================
+_________ test_capture_rejects_private_source_names_before_publication _________
+
+tmp_path = PosixPath('${TEMP}/pytest-of-eirikr/pytest-303/test_capture_rejects_private_s0')
+
+    def test_capture_rejects_private_source_names_before_publication(tmp_path: Path) -> None:
+        source = tmp_path / "research"
+        source.mkdir()
+        (source / "[REDACTED-EMAIL]").write_text("bounded result")
+        output = tmp_path / "retained"
+>       with pytest.raises(ValueError, match="source identity contains a private identifier"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/scripts/test_quantum_artifact_retention.py:250: Failed
+----------------------------- Captured stdout call -----------------------------
+artifact retention: 1 source identities, 1 unique retained captures
+______________ test_capture_rejects_private_archive_member_names _______________
+
+tmp_path = PosixPath('${TEMP}/pytest-of-eirikr/pytest-303/test_capture_rejects_private_a0')
+
+    def test_capture_rejects_private_archive_member_names(tmp_path: Path) -> None:
+        source = tmp_path / "research.tar"
+        with tarfile.open(source, "w") as stream:
+            member = tarfile.TarInfo("[REDACTED-EMAIL]")
+            member.size = 0
+            stream.addfile(member, io.BytesIO())
+        output = tmp_path / "retained"
+>       with pytest.raises(ValueError, match="source identity contains a private identifier"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/scripts/test_quantum_artifact_retention.py:273: Failed
+----------------------------- Captured stdout call -----------------------------
+artifact retention: 2 source identities, 1 unique retained captures
+__ test_verifier_rejects_private_source_metadata_with_matching_inventory_hash __
+
+tmp_path = PosixPath('${TEMP}/pytest-of-eirikr/pytest-303/test_verifier_rejects_private_0')
+
+    def test_verifier_rejects_private_source_metadata_with_matching_inventory_hash(tmp_path: Path) -> None:
+        source = tmp_path / "result.txt"
+        source.write_text("bounded result")
+        output = tmp_path / "retained"
+        capture({"logical-source": source}, output)
+        inventory = output / "inventory.json"
+        record = json.loads(inventory.read_bytes())
+        record["artifacts"][0]["source"] = "[REDACTED-EMAIL]"
+        data = json.dumps(record).encode()
+        inventory.write_bytes(data)
+        (output / "inventory.sha256").write_text(digest(data))
+>       with pytest.raises(ValueError, match="source identity contains a private identifier"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+tests/scripts/test_quantum_artifact_retention.py:290: Failed
+----------------------------- Captured stdout call -----------------------------
+artifact retention: 1 source identities, 1 unique retained captures
+artifact retention: 1 source identities, 1 unique retained captures
+=========================== short test summary info ============================
+FAILED tests/scripts/test_quantum_artifact_retention.py::test_capture_rejects_private_source_names_before_publication
+FAILED tests/scripts/test_quantum_artifact_retention.py::test_capture_rejects_private_archive_member_names
+FAILED tests/scripts/test_quantum_artifact_retention.py::test_verifier_rejects_private_source_metadata_with_matching_inventory_hash
+3 failed, 1 passed, 53 deselected in 0.06s

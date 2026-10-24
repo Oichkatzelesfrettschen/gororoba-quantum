@@ -182,6 +182,15 @@ Only an AVX-512 CPU exercises the dispatch cap, so `ci/avx512_replay.sh` runs
 every such replay gate on an `avx512f` CPU and reports not run, exit 0, on any
 other; each CI gate shard runs it, since GitHub assigns runner CPUs of both
 kinds.
+The library inventory `docs/state/hypercomplex-libraries` maps each import
+through the regenerating interpreter's installed distributions, so it is
+written under the system python3, which holds every optional package:
+`PYTHON=python3 python3 scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries`.
+A change that adds a tracked Python file or an import regenerates it in the
+same change. The unmarked tests `test_retained_inventory_*` compare its import
+roots and their projection with the tree, which needs no installed
+distribution, and fail the `tests` check until it does; core-630 resolves the
+distributions in the audit.
 `parallel.default_threads()` and `workers()`
 share the affinity/quota-bounded `GOROROBA_WORKERS` cap. Spawned pool children
 receive one slot through a child-only initializer, so nested maps and simulator

@@ -1,0 +1,8 @@
+historical runtime qiskit-2.5: historical runtime qiskit-2.5 requires REPLAY_PYTHON; the running interpreter differs from requirements-replay.txt: qiskit 2.6.0 (pin 2.5.2), pydantic 2.14.1 (pin 2.13.5), ibm-quantum-schemas 0.13.20261016 (pin 0.12.20260921)
+FAIL core-011     0.0s  PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/n21_
+
+=== core-011 exit 127 in .
+PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
+historical runtime qiskit-2.5 requires REPLAY_PYTHON
+
+0 passed, 1 failed of 1 gates in shard 0/1 on CPU

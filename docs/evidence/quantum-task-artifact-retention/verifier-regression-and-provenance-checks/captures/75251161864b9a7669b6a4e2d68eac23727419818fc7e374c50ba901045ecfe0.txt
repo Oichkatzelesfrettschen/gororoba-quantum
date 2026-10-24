@@ -1,0 +1,49 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+________________ test_escaped_private_values_are_fully_redacted ________________
+
+    def test_escaped_private_values_are_fully_redacted() -> None:
+        for original in (
+            "[REDACTED-CREDENTIAL-FIELD]SENSITIVE'\nmeasurement=7\n",
+            '[REDACTED-CREDENTIAL-FIELD]SENSITIVE"\nmeasurement=7\n',
+        ):
+            result = sanitize(original.encode())
+            if b"SENSITIVE" in result or b"measurement=7" not in result:
+>               raise AssertionError("escaped quotes truncated private-value redaction")
+E               AssertionError: escaped quotes truncated private-value redaction
+
+tests/scripts/test_quantum_artifact_retention.py:219: AssertionError
+______________ test_check_rejects_capture_only_repository_option _______________
+
+tmp_path = PosixPath('${TEMP}/pytest-of-eirikr/pytest-290/test_check_rejects_capture_onl0')
+
+    def test_check_rejects_capture_only_repository_option(tmp_path: Path) -> None:
+        source = tmp_path / "source.txt"
+        source.write_text("bounded result")
+        output = tmp_path / "retained"
+        capture({"analysis": source}, output)
+        completed = subprocess.run(
+            [
+                sys.executable,
+                "-B",
+                str(ROOT / "scripts/quantum_artifact_retention.py"),
+                str(output),
+                "--check",
+                "--tracked-root",
+                str(tmp_path),
+            ],
+            env={**os.environ, "PYTHONDONTWRITEBYTECODE": "1", "GOROROBA_WORKERS": "1"},
+            capture_output=True,
+            check=False,
+        )
+        if completed.returncode != 2 or b"--check reads retained evidence alone" not in completed.stderr:
+>           raise AssertionError("verification silently accepted a capture-only repository option")
+E           AssertionError: verification silently accepted a capture-only repository option
+
+tests/scripts/test_quantum_artifact_retention.py:242: AssertionError
+----------------------------- Captured stdout call -----------------------------
+artifact retention: 1 source identities, 1 unique retained captures
+=========================== short test summary info ============================
+FAILED tests/scripts/test_quantum_artifact_retention.py::test_escaped_private_values_are_fully_redacted
+FAILED tests/scripts/test_quantum_artifact_retention.py::test_check_rejects_capture_only_repository_option
+2 failed, 51 deselected in 0.10s

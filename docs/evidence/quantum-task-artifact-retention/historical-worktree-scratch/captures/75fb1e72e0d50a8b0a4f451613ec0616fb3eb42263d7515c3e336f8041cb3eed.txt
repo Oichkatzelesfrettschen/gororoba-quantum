@@ -1,0 +1,8 @@
+{
+ "added_rows": 832,
+ "failures": 0,
+ "predecessor_sha256": "8aefcf8d6235fdada7a8cca102762dbabe232d09a381252297881a47027a2c23",
+ "preserved_predecessor_rows": 2779,
+ "successor_rows": 3611,
+ "successor_sha256": "a881e6200a8700c948742a348394a3c77aa7276a4614500cbbb925b25fee8bf5"
+}
