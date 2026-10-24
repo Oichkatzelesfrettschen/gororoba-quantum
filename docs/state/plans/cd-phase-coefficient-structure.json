@@ -62,12 +62,12 @@
       "receipts": [
         {
           "result": "cd_phase_degree.py --max-n 8 exits 0; dropping the power-of-two case, shifting the leading-bit target or taking i < j in the bilinear layer each makes it exit 1; both recorded mutations are caught.",
-          "observed_at": "2026-10-24T07:11:04Z",
-          "revision": "9947dcc69286e31018ed48c97ce9f139ce2c71e1",
+          "observed_at": "2026-10-24T07:11:53Z",
+          "revision": "503f1dc9f303a12f43bdc5ebbfe4e7ffe392d47c",
           "evidence": [
             {
               "ref": "scripts/cd_phase_degree.py",
-              "sha256": "ef002580338a2876cd8af6e284fe1eef23e6b328e87644979f45fd04088c3df8"
+              "sha256": "5d627e268be915cffb867421d63d3589c08a309df87fa2ee58fd00d9ffa5b97d"
             },
             {
               "ref": "docs/notes/cd_phase_degree.md",
