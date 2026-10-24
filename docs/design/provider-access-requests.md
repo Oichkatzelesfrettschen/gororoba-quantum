@@ -102,10 +102,14 @@ Each provider draft fills these fields:
 
 ## Quantinuum (H-series or Helios)
 
-- **Access route.** Direct access is institutional; Azure Quantum grants new
-  workspaces a provider credit (survey row in
-  [n21_feedforward_backends.md](../notes/topics/n21_feedforward_backends.md)).
-  The draft asks for research access or an academic credit allocation.
+- **Access route.** Direct access is institutional. A per-provider Azure
+  Quantum workspace credit is unverified: the survey row in
+  [n21_feedforward_backends.md](../notes/topics/n21_feedforward_backends.md)
+  found it on no fetched page, and the Azure pricing page
+  (<https://learn.microsoft.com/azure/quantum/pricing>, updated 2026-04-23)
+  states none, listing Quantinuum hardware only under paid subscriptions and
+  pay-as-you-go. The draft asks for research access or an academic credit
+  allocation.
 - **Research question.** Whether the encoded N = 21 order-finding contrast,
   null on heavy-hex hardware (`hw-n21-feedback-null-kingston`), appears when
   all-to-all connectivity removes the SWAP routing and native mid-circuit
