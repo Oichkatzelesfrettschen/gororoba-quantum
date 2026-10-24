@@ -56,3 +56,16 @@ ceiling, Perceval's shot estimate and the planned body's digest without
 `process_id`. `catalogue.json` is `qd_platform.snapshot`'s catalogue, and
 `observation.json` holds `qd_platform.observe`'s raw answers of every
 readable provider route. None of these files grants approval.
+
+The device readings of the two acquisitions come from
+[`scripts/ascella_coherence_repeat.py`](../../../scripts/ascella_coherence_repeat.py).
+[`job-00-diagnostics.json`](job-00-diagnostics.json) and
+[`job-01-diagnostics.json`](job-01-diagnostics.json) hold each run's
+exploratory reading (`--diagnose`): outside-block counts and their mode
+composition against the plan-time dark rates, their serial structure, the
+compiled-circuit check, the analyzer contrast fits with per-setting residuals,
+and the endpoints under block-conditioned denominators.
+[`repeat-comparison.json`](repeat-comparison.json) holds the preregistered
+comparison of the permuted repeat with job-00 (`--compare`). The
+`core-ascella-signed-coherence-*` gates replay all three within the
+certificate tolerance.
