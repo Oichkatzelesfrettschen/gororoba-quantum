@@ -17,6 +17,10 @@ evaluates from the integer pair tower of
 | [gresnigt_table5_printed.json](gresnigt_table5_printed.json) | the 11 printed cells and their exchanged partners, transcribed from page 54 of arXiv 2609.10569v1 (PDF SHA-256 in the record) |
 | [upstream/gresnigt-table5-erratum.md](upstream/gresnigt-table5-erratum.md) | the erratum report for the author |
 
+The `rocq-replay` job of ci.yml replays only the bundles that carry a `replay_rocq.sh`, so CI never recompiles
+`TowerTable.v`; the test binds `cd_core` to the retained `tower_table.txt`. A change to
+`CdImaginarySumConference.v` or `CdTowerBasisSign.v` reruns the script below by hand.
+
 Replay: `ROCQ=<rocq 9.3.0 of ci/rocq_toolchain.pin> sh docs/evidence/sedenion-automorphisms/rocq_tower_table.sh`
 prints `tower_table_pass TowerTable`. `sh ci/pr_checks.sh tests
 tests/gororoba_quantum/test_sedenion_automorphism_group.py` runs the certificate.
@@ -69,15 +73,18 @@ group. Each of them fails a named check of the test. A flipped sign in the table
 [Wilmot](../../notes/papers/2512.07210.md) (arXiv 2512.07210v3) states two incompatible results for `Aut(S)`.
 For linear bijections `T` with `T(xy) = T(x) T(y)`, the computation decides each of them:
 
-| Statement | Where | Result |
+| Statement | Where | Result for algebra automorphisms |
 | --- | --- | --- |
 | `G2 x S3` is contained in `Aut(S)` | abstract, introduction, Section 5 | holds: the diagonal `G2` and the `S3` above |
 | "the full automorphism group is much more complicated", against Brown's `Aut(A_4) = Aut(A_3) x S3` | abstract, introduction, p. 24 | refuted: `Aut(S) = G2 x S3`, Brown's value |
 | `Aut(S) = Phi_O^(C(1))`, a group of type `G2`, with "the same structure as for O" | Theorem 7, pp. 24-25 | refuted: `Aut(S)` has six components and `Aut(O)` one |
+| `psi^2 = 1` beside `epsilon psi = psi^2 epsilon`, "which defines the S3 group" | Section 5, p. 23 | inconsistent as printed: with `psi^2 = 1` the relations give `epsilon psi = epsilon`, so `psi = 1`; Gresnigt's `psi` has order 3 |
 
-Theorem 7 defines its strong and weak automorphisms through invariance of a calibration under Clifford
-conjugation, a different notion from algebra automorphism. Under those definitions the theorem is not
-evaluated. The computation covers the sedenions only, so Brown's statements for the doublings beyond `S`
+The paper defines its strong and weak automorphisms through invariance of a calibration under Clifford
+conjugation, a different notion from algebra automorphism, and its larger group rests on the Sharp
+automorphisms of `Phi_P` under those definitions. Neither the second nor the third row is evaluated under
+them. Wilmot's `psi`, built from `beta = sqrt(3) e_(1..F)`, is not compared with Gresnigt's here. The
+computation covers the sedenions only, so Brown's statements for the doublings beyond `S`
 (`N = 5, 6`) stay open.
 
 ## The Gresnigt Table 5 cells
