@@ -1,0 +1,1266 @@
+{
+ "schema": "reproduction-seeds-v1",
+ "description": "Seed literals that reproduce retained records, approved plans and known meshes; ci/seed_provenance.py checks the tree against them. Rows only shrink: a new seed takes an ANU QRNG value through docs/evidence/anu_qrng/allocations.json.",
+ "seeds": [
+  {
+   "path": "gororoba_quantum/adjudicate.py",
+   "name": "ANALYSIS_SEED",
+   "value": 20261011,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/aer_delay_sentinels.py",
+   "name": "seed_simulator",
+   "value": 739,
+   "count": 2
+  },
+  {
+   "path": "gororoba_quantum/calibration_snapshot.py",
+   "name": "PROBE_SEED",
+   "value": 20261015,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/check_et_runtime.py",
+   "name": "seed",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/check_et_runtime.py",
+   "name": "seed",
+   "value": 2,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/check_et_runtime.py",
+   "name": "seed",
+   "value": 230,
+   "count": 4
+  },
+  {
+   "path": "gororoba_quantum/conditional_ramsey.py",
+   "name": "default_rng",
+   "value": 20261015,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/correction_case_contracts.py",
+   "name": "seed_transpiler",
+   "value": 20261010,
+   "count": 2
+  },
+  {
+   "path": "gororoba_quantum/correction_circuits_contracts.py",
+   "name": "seed_transpiler",
+   "value": 20261010,
+   "count": 2
+  },
+  {
+   "path": "gororoba_quantum/correction_collection_contracts.py",
+   "name": "seed_simulator",
+   "value": 20261011,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/correction_collection_contracts.py",
+   "name": "seed_transpiler",
+   "value": 20261010,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/correction_preparation.py",
+   "name": "--seed",
+   "value": 20261010,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/correction_preparation.py",
+   "name": "seed",
+   "value": 20261010,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/correction_schedule_contracts.py",
+   "name": "seed_transpiler",
+   "value": 20261010,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/designs.py",
+   "name": "seed_transpiler",
+   "value": 20261010,
+   "count": 3
+  },
+  {
+   "path": "gororoba_quantum/dynamic_density.py",
+   "name": "seed",
+   "value": 20261017,
+   "count": 2
+  },
+  {
+   "path": "gororoba_quantum/empirical_bernstein_contracts.py",
+   "name": "default_rng",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/empirical_bernstein_contracts.py",
+   "name": "default_rng",
+   "value": 20261018,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/empirical_bernstein_contracts.py",
+   "name": "default_rng",
+   "value": 20261019,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/empirical_bernstein_contracts.py",
+   "name": "default_rng",
+   "value": 20261020,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/et_campaign.py",
+   "name": "Random",
+   "value": 230,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/et_campaign.py",
+   "name": "randomization_seed",
+   "value": 230,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/gaussian_wheel.py",
+   "name": "SELF_TEST_SEED",
+   "value": 20041028,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/heron_multiprogramming.py",
+   "name": "ROUTING_SEED",
+   "value": 20261015,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/heron_multiprogramming.py",
+   "name": "seed_transpiler",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/hybrid_shor.py",
+   "name": "--seed",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/linear_conjugation_challenger.py",
+   "name": "SAMPLED_SEED",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/live_run.py",
+   "name": "SEED_SIMULATOR",
+   "value": 20261011,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/live_run.py",
+   "name": "SEED_TRANSPILER",
+   "value": 20261010,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/maximal_contracts.py",
+   "name": "seed_simulator",
+   "value": 20261011,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/n21_exact_planning.py",
+   "name": "seed_simulator",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/order_finding.py",
+   "name": "seed_simulator",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/order_finding.py",
+   "name": "seed_simulator",
+   "value": 7,
+   "count": 5
+  },
+  {
+   "path": "gororoba_quantum/order_finding.py",
+   "name": "seed_simulator",
+   "value": 11,
+   "count": 3
+  },
+  {
+   "path": "gororoba_quantum/order_finding.py",
+   "name": "seed_simulator",
+   "value": 12,
+   "count": 3
+  },
+  {
+   "path": "gororoba_quantum/parameter_binding_contracts.py",
+   "name": "seed_transpiler",
+   "value": 20261010,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/placement_feasibility_contracts.py",
+   "name": "Random",
+   "value": 20261012,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/pub_shot_allocation_contracts.py",
+   "name": "seed",
+   "value": 6,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/pub_shot_runtime_contracts.py",
+   "name": "seed_simulator",
+   "value": 20261012,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/qpe_diagnostics.py",
+   "name": "seed_simulator",
+   "value": 20261011,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/qpu_cases.py",
+   "name": "seed_simulator",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/qpu_cases.py",
+   "name": "seed_transpiler",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/qpu_planning_contracts.py",
+   "name": "seed",
+   "value": 20261010,
+   "count": 2
+  },
+  {
+   "path": "gororoba_quantum/qpu_planning_contracts.py",
+   "name": "seed",
+   "value": 20261011,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/rank_polynomials.py",
+   "name": "DENSE_SEED",
+   "value": 20261011,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/replica_covariance_contracts.py",
+   "name": "default_rng",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/replica_covariance_contracts.py",
+   "name": "default_rng",
+   "value": 20261018,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/ripple_contracts.py",
+   "name": "default_rng",
+   "value": 20261012,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/ripple_experiments.py",
+   "name": "SCHEDULE_SEED",
+   "value": 20261012,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/runtime_contracts.py",
+   "name": "seed",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/runtime_contracts.py",
+   "name": "seed_transpiler",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/sedenion_bundle.py",
+   "name": "DENSE_SEED",
+   "value": 20261011,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/signed_kernel_probe.py",
+   "name": "SEED",
+   "value": 20261015,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/snapshot_laws.py",
+   "name": "seed_transpiler",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/star_ramsey.py",
+   "name": "default_rng",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/star_ramsey.py",
+   "name": "seed_transpiler",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/target_flip.py",
+   "name": "Random",
+   "value": 20261010,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/test_heron_multiprogramming.py",
+   "name": "seed_simulator",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/test_heron_multiprogramming.py",
+   "name": "seed_simulator",
+   "value": 3,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/test_heron_multiprogramming.py",
+   "name": "seed_simulator",
+   "value": 5,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/test_heron_multiprogramming.py",
+   "name": "seed_simulator",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/test_heron_multiprogramming.py",
+   "name": "seed_simulator",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/test_heron_multiprogramming.py",
+   "name": "seed_simulator",
+   "value": 42,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/variance.py",
+   "name": "default_rng",
+   "value": 20261011,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/verify.py",
+   "name": "Random",
+   "value": 20261010,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/verify.py",
+   "name": "Random",
+   "value": 20261011,
+   "count": 1
+  },
+  {
+   "path": "gororoba_quantum/wheel_algebra.py",
+   "name": "SELF_TEST_SEED",
+   "value": 20041027,
+   "count": 1
+  },
+  {
+   "path": "kaggle_kernel/gpu_env_report.py",
+   "name": "seed_simulator",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "kaggle_kernel/kernel_main.py",
+   "name": "seed_simulator",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/aer_blocking_probe.py",
+   "name": "SEED",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/aer_gpu_probe.py",
+   "name": "SEED",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "scripts/aer_gpu_probe.py",
+   "name": "seed_transpiler",
+   "value": 0,
+   "count": 2
+  },
+  {
+   "path": "scripts/algebra_conjecture_circuits.py",
+   "name": "seed_transpiler",
+   "value": 0,
+   "count": 1
+  },
+  {
+   "path": "scripts/ascella_coherence_repeat.py",
+   "name": "NULL_SEED",
+   "value": 20261024,
+   "count": 1
+  },
+  {
+   "path": "scripts/ascella_coherence_request.py",
+   "name": "compilation_seed",
+   "value": 0,
+   "count": 2
+  },
+  {
+   "path": "scripts/associator_cubic_normal_form.py",
+   "name": "SEED",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "scripts/atlas_coherent_families.py",
+   "name": "LSQ_PROBE_SEED",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/atlas_fringe_amplitudes.py",
+   "name": "BOOTSTRAP_SEED",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "scripts/atlas_fringe_amplitudes.py",
+   "name": "seed",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/bdsc_ascella_control.py",
+   "name": "SEED",
+   "value": 20261021,
+   "count": 1
+  },
+  {
+   "path": "scripts/bdsc_cases.py",
+   "name": "default_rng",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "scripts/bdsc_certificate.py",
+   "name": "CASE_POWER_SEED",
+   "value": 20261021,
+   "count": 1
+  },
+  {
+   "path": "scripts/bdsc_certificate.py",
+   "name": "default_rng",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/bdsc_certificate.py",
+   "name": "default_rng",
+   "value": 12,
+   "count": 1
+  },
+  {
+   "path": "scripts/bdsc_drift_series.py",
+   "name": "SENSITIVITY_SEED",
+   "value": 20261024,
+   "count": 1
+  },
+  {
+   "path": "scripts/bdsc_forensics.py",
+   "name": "FIT_SEED",
+   "value": 20261022,
+   "count": 1
+  },
+  {
+   "path": "scripts/bdsc_packages.py",
+   "name": "CONVERSION_SEED",
+   "value": 20261020,
+   "count": 1
+  },
+  {
+   "path": "scripts/bdsc_stationarity.py",
+   "name": "PROJECTION_SEED",
+   "value": 20261023,
+   "count": 1
+  },
+  {
+   "path": "scripts/bdsc_stray_mode_veto.py",
+   "name": "COINCIDENCE_SEED",
+   "value": 20261023,
+   "count": 1
+  },
+  {
+   "path": "scripts/box_kite_analysis.py",
+   "name": "LADDER_LINE_SEED",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "scripts/box_kite_cases.py",
+   "name": "BOOTSTRAP_SEED",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/box_kite_qx_sweep.py",
+   "name": "BASE_SEED",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/cd_associator_defect_census.py",
+   "name": "SEED",
+   "value": 20261013,
+   "count": 1
+  },
+  {
+   "path": "scripts/census_frequency_design.py",
+   "name": "SEED",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "scripts/coherence_window_analysis.py",
+   "name": "default_rng",
+   "value": 20261014,
+   "count": 1
+  },
+  {
+   "path": "scripts/conditional_ramsey_power.py",
+   "name": "SEED_SAMPLES",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "scripts/conditional_ramsey_power.py",
+   "name": "SEED_TRANSPILER",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "scripts/d_locus_nullity.py",
+   "name": "SEED",
+   "value": 702075,
+   "count": 1
+  },
+  {
+   "path": "scripts/design_c_cubic_noise.py",
+   "name": "SEED",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "scripts/design_c_hardware_verdict.py",
+   "name": "SEED",
+   "value": 20261013,
+   "count": 1
+  },
+  {
+   "path": "scripts/echo_dilation_noise.py",
+   "name": "SEED",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/exact_rank.py",
+   "name": "SELF_TEST_SEED",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/ghost_run.py",
+   "name": "SEED",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "scripts/gl52_split_conjugators.py",
+   "name": "SAMPLE_SEED",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/heron_target_snapshot.py",
+   "name": "seed_transpiler",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/hypercomplex_cases.py",
+   "name": "compilation_seed",
+   "value": 0,
+   "count": 1
+  },
+  {
+   "path": "scripts/hypercomplex_cases.py",
+   "name": "seed",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/hypercomplex_cases.py",
+   "name": "seed_transpiler",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/hypercomplex_photonic_cases.py",
+   "name": "compilation_seed",
+   "value": 0,
+   "count": 3
+  },
+  {
+   "path": "scripts/ibm_runtime_options_inventory.py",
+   "name": "seed_transpiler",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "scripts/ibm_runtime_options_inventory.py",
+   "name": "seed_transpiler",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/iqm_probe_audit.py",
+   "name": "default_rng",
+   "value": 20261023,
+   "count": 1
+  },
+  {
+   "path": "scripts/iqm_signed_probe.py",
+   "name": "PREDICTION_SEED",
+   "value": 20261022,
+   "count": 1
+  },
+  {
+   "path": "scripts/iqm_signed_probe.py",
+   "name": "seed_simulator",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "scripts/iqm_signed_probe.py",
+   "name": "seed_transpiler",
+   "value": 0,
+   "count": 1
+  },
+  {
+   "path": "scripts/iqm_signed_resolve.py",
+   "name": "SEED",
+   "value": 2,
+   "count": 1
+  },
+  {
+   "path": "scripts/iqm_sim.py",
+   "name": "--seed",
+   "value": 20261022,
+   "count": 1
+  },
+  {
+   "path": "scripts/iqm_sim.py",
+   "name": "seed_simulator",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/linear_conjugation_search.py",
+   "name": "--seed",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "scripts/local_member_cz_conformance.py",
+   "name": "SEED",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "scripts/local_photonic_compiler_crosscheck.py",
+   "name": "SEED",
+   "value": 20261022,
+   "count": 1
+  },
+  {
+   "path": "scripts/local_simulation_replay.py",
+   "name": "seed",
+   "value": 20261022,
+   "count": 2
+  },
+  {
+   "path": "scripts/lsq_conditioning_study.py",
+   "name": "SEED",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/moreno_stiefel_nullity.py",
+   "name": "Random",
+   "value": 0,
+   "count": 1
+  },
+  {
+   "path": "scripts/moreno_stiefel_nullity.py",
+   "name": "seed",
+   "value": 0,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_conjugation_noise.py",
+   "name": "SIMULATOR_SEED",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_exact_crosscheck.py",
+   "name": "SEED",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_exact_model_validation.py",
+   "name": "default_rng",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_orbit_context_refit.py",
+   "name": "default_rng",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_orbit_context_refit.py",
+   "name": "seed",
+   "value": 20261014,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_orbit_rca.py",
+   "name": "HERALD_OC_SEED",
+   "value": 20261018,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_q143_beat_model.py",
+   "name": "BOOTSTRAP_SEED",
+   "value": 20261020,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_q143_beat_model.py",
+   "name": "default_rng",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_q143_line_switching.py",
+   "name": "SEED",
+   "value": 20261021,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_qx_conformance.py",
+   "name": "BASE_SEED",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/n21_replica_covariance.py",
+   "name": "default_rng",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/octonion_structure_checks.py",
+   "name": "Random",
+   "value": 20261014,
+   "count": 1
+  },
+  {
+   "path": "scripts/packed_pauli_probe.py",
+   "name": "SEED",
+   "value": 20261022,
+   "count": 1
+  },
+  {
+   "path": "scripts/patch_window_analysis.py",
+   "name": "default_rng",
+   "value": 20261013,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_belenos_cone.py",
+   "name": "Random",
+   "value": 20261018,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_belenos_cone.py",
+   "name": "default_rng",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_belenos_mesh.py",
+   "name": "BRIDGE_SEEDS",
+   "value": 0,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_belenos_mesh.py",
+   "name": "BRIDGE_SEEDS",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_belenos_mesh.py",
+   "name": "DWELL_Q1_SEED",
+   "value": 20,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_belenos_mesh.py",
+   "name": "ENSEMBLE_SEEDS",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_belenos_mesh.py",
+   "name": "ENSEMBLE_SEEDS",
+   "value": 2,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_belenos_mesh.py",
+   "name": "FORM_SEED",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_belenos_mesh.py",
+   "name": "SEED",
+   "value": 20261017,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_box_kite_analysis.py",
+   "name": "compilation_seed",
+   "value": 0,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_box_kite_analysis.py",
+   "name": "compilation_seed",
+   "value": 1,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_box_kite_analysis.py",
+   "name": "compilation_seed",
+   "value": 20,
+   "count": 2
+  },
+  {
+   "path": "scripts/qd_platform.py",
+   "name": "compilation_seed",
+   "value": -1,
+   "count": 2
+  },
+  {
+   "path": "scripts/qd_platform.py",
+   "name": "compilation_seed",
+   "value": 0,
+   "count": 3
+  },
+  {
+   "path": "scripts/qd_platform.py",
+   "name": "compilation_seed",
+   "value": 1,
+   "count": 3
+  },
+  {
+   "path": "scripts/qd_platform.py",
+   "name": "compilation_seed",
+   "value": 2,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_platform.py",
+   "name": "compilation_seed",
+   "value": 3,
+   "count": 3
+  },
+  {
+   "path": "scripts/qd_platform.py",
+   "name": "compilation_seed",
+   "value": 4,
+   "count": 4
+  },
+  {
+   "path": "scripts/qd_platform.py",
+   "name": "compilation_seed",
+   "value": 5,
+   "count": 1
+  },
+  {
+   "path": "scripts/qd_platform.py",
+   "name": "compilation_seed",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_bdsc_pauli_cases.py",
+   "name": "BOOTSTRAP_SEED",
+   "value": 20261022,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_bdsc_pauli_cases.py",
+   "name": "default_rng",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_cancellation_cases.py",
+   "name": "default_rng",
+   "value": 20261023,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_coupler_zz_map.py",
+   "name": "Random",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_ibm_noise_replay.py",
+   "name": "SEED",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_ladder_line_bins.py",
+   "name": "LINE_BINS_SEED",
+   "value": 2,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_ladder_line_bins.py",
+   "name": "MAX_RULE_SEED",
+   "value": 3,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_ladder_line_bins.py",
+   "name": "default_rng",
+   "value": 5101,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_ladder_line_bins.py",
+   "name": "default_rng",
+   "value": 5102,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_matched_zero_divisor.py",
+   "name": "seed_transpiler",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_readout_ringdown_cases.py",
+   "name": "CALIBRATION_SEED",
+   "value": 182,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_readout_ringdown_cases.py",
+   "name": "NULL_SEED",
+   "value": 183,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_readout_ringdown_cases.py",
+   "name": "Random",
+   "value": 23,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_walsh_exemplar_cases.py",
+   "name": "BOOTSTRAP_SEED",
+   "value": 20261018,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_walsh_exemplar_cases.py",
+   "name": "CONFORMANCE_SEED",
+   "value": 20261018,
+   "count": 1
+  },
+  {
+   "path": "scripts/qi_zero_divisor_cases.py",
+   "name": "BOOTSTRAP_SEED",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "scripts/rank_locus_local_dimension.py",
+   "name": "SEED",
+   "value": 5120032,
+   "count": 1
+  },
+  {
+   "path": "scripts/rank_locus_nullity12_refinement.py",
+   "name": "SEED",
+   "value": 20261023,
+   "count": 1
+  },
+  {
+   "path": "scripts/rank_locus_padic_lift.py",
+   "name": "SEED",
+   "value": 20261024,
+   "count": 1
+  },
+  {
+   "path": "scripts/rank_locus_tangent_linearity.py",
+   "name": "SEED",
+   "value": 20261023,
+   "count": 1
+  },
+  {
+   "path": "scripts/singular_sector_dynamics.py",
+   "name": "default_rng",
+   "value": 3,
+   "count": 1
+  },
+  {
+   "path": "scripts/singular_sector_dynamics.py",
+   "name": "default_rng",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "scripts/singular_sector_dynamics.py",
+   "name": "default_rng",
+   "value": 20261013,
+   "count": 1
+  },
+  {
+   "path": "scripts/singular_sector_dynamics.py",
+   "name": "default_rng",
+   "value": 20261014,
+   "count": 1
+  },
+  {
+   "path": "scripts/state_prep_control_parameters.py",
+   "name": "default_rng",
+   "value": 20261018,
+   "count": 1
+  },
+  {
+   "path": "scripts/stiefel_pfaffian_identity.py",
+   "name": "SEED",
+   "value": 20261022,
+   "count": 1
+  },
+  {
+   "path": "scripts/substrate_crossover.py",
+   "name": "SEED",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "scripts/walk_scaffold_channels.py",
+   "name": "seed",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "scripts/wheel_rust_audit.py",
+   "name": "SEED",
+   "value": 20241022,
+   "count": 1
+  },
+  {
+   "path": "scripts/wheel_zero_divisors.py",
+   "name": "SEED",
+   "value": 20041029,
+   "count": 1
+  },
+  {
+   "path": "tests/gororoba_quantum/test_bdsc_principal_angles.py",
+   "name": "default_rng",
+   "value": 29,
+   "count": 1
+  },
+  {
+   "path": "tests/gororoba_quantum/test_bdsc_principal_angles.py",
+   "name": "default_rng",
+   "value": 72,
+   "count": 1
+  },
+  {
+   "path": "tests/gororoba_quantum/test_law_encoding.py",
+   "name": "default_rng",
+   "value": 5,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_bdsc_drift_series.py",
+   "name": "default_rng",
+   "value": 3,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_bdsc_drift_series.py",
+   "name": "default_rng",
+   "value": 5,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_bdsc_drift_series.py",
+   "name": "default_rng",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_bdsc_drift_series.py",
+   "name": "default_rng",
+   "value": 9,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_bdsc_drift_series.py",
+   "name": "default_rng",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_bdsc_drift_series.py",
+   "name": "default_rng",
+   "value": 13,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_bdsc_drift_series.py",
+   "name": "default_rng",
+   "value": 17,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_bdsc_drift_series.py",
+   "name": "default_rng",
+   "value": 20261024,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_bdsc_stationarity.py",
+   "name": "default_rng",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_bdsc_stationarity.py",
+   "name": "default_rng",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_n21_q143_line_switching.py",
+   "name": "default_rng",
+   "value": 3,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_n21_q143_line_switching.py",
+   "name": "default_rng",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_n21_q143_line_switching.py",
+   "name": "default_rng",
+   "value": 17,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_n21_q143_line_switching.py",
+   "name": "default_rng",
+   "value": 23,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_n21_q143_segmented_sweep.py",
+   "name": "default_rng",
+   "value": 7,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_n21_q143_segmented_sweep.py",
+   "name": "default_rng",
+   "value": 11,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_n21_q143_segmented_sweep.py",
+   "name": "default_rng",
+   "value": 29,
+   "count": 1
+  },
+  {
+   "path": "tests/scripts/test_n21_q143_segmented_sweep.py",
+   "name": "default_rng",
+   "value": 20261021,
+   "count": 1
+  }
+ ]
+}
