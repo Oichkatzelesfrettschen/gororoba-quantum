@@ -3860,7 +3860,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_coherence_run.py --run results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_coherence_run.py --run results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 --out results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis-runner-image.json",
    "name": "core-ascella-signed-coherence-acquisition-replay",
    "seconds": 1.0,
    "tier": "pr"

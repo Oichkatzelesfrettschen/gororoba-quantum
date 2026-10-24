@@ -1878,8 +1878,8 @@
           "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
         },
         {
-          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis.json",
-          "sha256": "1e36eff94b7939b4d87afb0cb9fcb22f1458f4e3d59377bf32ab212b7ac152da"
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis-runner-image.json",
+          "sha256": "0b8e6f53fb00c48ca8d3e858882f5223cd7674db3ef4598ff9e0bc8ae8945a90"
         },
         {
           "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/submission.json",

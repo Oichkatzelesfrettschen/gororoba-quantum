@@ -6,11 +6,13 @@ setting at its position only when it carries counts and echoes that setting's
 circuit_params. Every returned state must span twelve modes; occupation-sum-one
 states are eligible and vacuum and multiple-occupation states are tallied as
 exclusions. ascella_coherence_analysis.analyze decides the 27 endpoints, and
-the record lands in DIR/analysis.json, which a rerun must reproduce byte for
-byte.
+the record lands in DIR/analysis.json, or in the file --out names, which a
+rerun must reproduce byte for byte. A gate-replayed record is written through
+ci/runner_image.sh and bound in ci/runner_image_records.json, because another
+libm or numpy build can differ in the last ulp of a bound.
 
 Usage:
-  "$PYTHON" scripts/ascella_coherence_run.py --run DIR
+  "$PYTHON" scripts/ascella_coherence_run.py --run DIR [--out FILE]
 """
 
 from __future__ import annotations
@@ -127,12 +129,12 @@ def analyze_run(directory: Path) -> dict[str, Any]:
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) != 2 or argv[0] != "--run":
-        raise SystemExit(f"usage: ascella_coherence_run.py --run DIR, not {argv}")
+    if len(argv) not in (2, 4) or argv[0] != "--run" or (len(argv) == 4 and argv[2] != "--out"):
+        raise SystemExit(f"usage: ascella_coherence_run.py --run DIR [--out FILE], not {argv}")
     directory = Path(argv[1])
     record = analyze_run(directory)
     text = json.dumps(record, indent=1, sort_keys=True) + "\n"
-    out = directory / "analysis.json"
+    out = Path(argv[3]) if len(argv) == 4 else directory / "analysis.json"
     # A retained analysis is evidence: a rerun reproduces it and never rewrites it.
     if out.exists() and out.read_text(encoding="utf-8") != text:
         raise SystemExit(f"{out} differs from the recomputed analysis")

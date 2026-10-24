@@ -84,8 +84,8 @@ PROJECTION_SEED = 20261023
 PROJECTION_REPLICATES = 10000
 # The retained readout of the four post-calibration runs, in job order, and the calibration contrast of the b1-j1
 # requests read before and after the Belenos calibration (docs/runbooks/bdsc-qualification-case.md).
-# Both are the pinned interpreter's bytes; the unsuffixed predecessors keep the registered bytes of a system-numpy
-# build that differs in the last ulps.
+# Both are runner-image records (ci/runner_image_records.json); the unsuffixed predecessors keep the registered
+# bytes of a system-numpy build that differs in the last ulps.
 RUNS_DIR = ROOT / "results/quandela/runs"
 READOUT = ROOT / "results/quandela/bdsc_stationarity_readout_pinned.json"
 READOUT_RUNS = (

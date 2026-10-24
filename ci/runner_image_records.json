@@ -10,6 +10,10 @@
   "results/live/2026-10-21T064222.721454Z/segmented-sweep-759d82d74c57.json": "7eab64e4a10dfe16f4261cbab15a5138a14f1d7afd1faf9a3d5f842eac9a94e2",
   "results/live/n21-q143-segmented-design-759d82d74c57.json": "bb961e42227bf741be8e3736755654e045f656de13723f593de06257f66a6e5e",
   "results/quandela/bdsc_diagnostic_readout-runner-image.json": "b4f9881dbd24053938322dffb6db646ad57295846b27cf9b08ed5de19815f4dc",
-  "results/quandela/bdsc_stray_mode_veto-runner-image.json": "71ffdf79b0abc071ef1b99218133d16ef72e54e0b8de20aa2ac3e2700db8cefd"
+  "results/quandela/bdsc_stationarity_calibration_contrast_pinned.json": "b72b8b154e5eb88f89d7174d2fa65678aa6a231a5fcee2d4767bd69ec7c05418",
+  "results/quandela/bdsc_stationarity_readout_pinned.json": "fd95b1eb105d7818f2c2dc8561c55de0768668f2cd7a97ad30c8ecf5658d5ad1",
+  "results/quandela/bdsc_stationarity_retained.json": "3bdf15594bfbf63f70bbdf5637b2c3219875cdc82bf13b2c807570f65dc54f19",
+  "results/quandela/bdsc_stray_mode_veto-runner-image.json": "71ffdf79b0abc071ef1b99218133d16ef72e54e0b8de20aa2ac3e2700db8cefd",
+  "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis-runner-image.json": "0b8e6f53fb00c48ca8d3e858882f5223cd7674db3ef4598ff9e0bc8ae8945a90"
  }
 }

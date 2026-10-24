@@ -108,6 +108,11 @@ def test_run_directory_requires_the_frozen_request_and_reproduces(manifest: dict
             raise AssertionError("a rerun must reproduce analysis.json")
         if not json.loads((run / "analysis.json").read_text(encoding="utf-8"))["analysis"]["complete"]:
             raise AssertionError("the ideal run is incomplete")
+        successor = run / "analysis-runner-image.json"
+        if run_analysis.main(["--run", str(run), "--out", str(successor)]) != 0:
+            raise AssertionError("--out writes the named analysis")
+        if successor.read_bytes() != (run / "analysis.json").read_bytes():
+            raise AssertionError("--out changes the analysis bytes")
         altered = copy.deepcopy(manifest)
         altered["settings"][0]["name"] = "altered"
         (run / "cases.json").write_text(json.dumps(altered), encoding="utf-8")
