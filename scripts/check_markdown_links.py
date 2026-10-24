@@ -16,6 +16,7 @@ keep the links of their source):
   docs/notes/kaggle/{cli,site}/             captured Kaggle documentation
   docs/notes/open_quantum/{docs,site}/      captured Open Quantum pages
   docs/notes/packages/manual/               captured package manuals
+  docs/notes/qbraid/docs/                   captured qBraid documentation
   docs/notes/quandela/{guide,legal,perceval}/  captured Quandela pages
   docs/notes/quantum_inspire/{cqasm-spec,releases,sdk,site}/  captured QI pages
   docs/notes/ibm_quantum/{processor-types,qpu-information,transpile,transpile-with-pass-managers,
@@ -49,6 +50,7 @@ EXCLUDED_PREFIXES = (
     "docs/notes/open_quantum/docs/",
     "docs/notes/open_quantum/site/",
     "docs/notes/packages/manual/",
+    "docs/notes/qbraid/docs/",
     "docs/notes/quandela/guide/",
     "docs/notes/quandela/legal/",
     "docs/notes/quandela/perceval/",

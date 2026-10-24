@@ -1,0 +1,14 @@
+{
+ "after_sha256": "99b73b73d900b9b8214aa25c37559979ec55c2c568f1e1ff9f3d146ababca035",
+ "before_sha256": "99b73b73d900b9b8214aa25c37559979ec55c2c568f1e1ff9f3d146ababca035",
+ "digest_command": "find scripts gororoba_quantum tests -type f -name '*.pyc' -print0 | sort -z | xargs -0 -r sha256sum | sha256sum",
+ "environment_boundary": "PYTHONPATH removed; four workers; native BLAS/OpenMP threads capped at one",
+ "gate": "core-654",
+ "gate_result": "pass",
+ "gate_seconds": 22.0,
+ "head": "4f44edcdb6bb5632f2e4a23fab6100106d158f4c",
+ "measured_surface": "Sorted path and per-file SHA-256 records for existing *.pyc files under scripts, gororoba_quantum and tests",
+ "schema": "quantum-artifact-retention-bytecode-observation-v1",
+ "scope": "The observations establish the enumerated bytecode surface and Git status only; other filesystem surfaces remain unmeasured.",
+ "status_porcelain_after": ""
+}

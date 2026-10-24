@@ -1,7 +1,7 @@
 {
  "schema": "hypercomplex-library-inventory-v1",
  "coverage_counts": {
-  "distributions": 347,
+  "distributions": 362,
   "execution_pin_distributions": 39,
   "execution_pin_declarations": 51,
   "execution_source_files": 2
@@ -116,6 +116,7 @@
    "distribution": "annotated-types",
    "declared_versions": {
     "docs/notes/open_quantum/requirements-oq.txt": "0.8.0",
+    "docs/notes/qbraid/requirements-qbraid.txt": "0.8.0",
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.8.0",
     "IQM retained environment": "0.8.0"
    },
@@ -132,6 +133,7 @@
   {
    "distribution": "antlr4-python3-runtime",
    "declared_versions": {
+    "docs/notes/qbraid/requirements-qbraid.txt": "4.13.2",
     "scripts/kaggle_run.py:168:PIN_GROUPS": "4.13.2"
    },
    "observed_host_version": "4.13.2",
@@ -167,6 +169,21 @@
    ]
   },
   {
+   "distribution": "ast-serialize",
+   "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "0.13.1"
+   },
+   "observed_host_version": "0.12.1",
+   "role": "SDK/environment infrastructure: Python bindings for mypy AST serialization",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
    "distribution": "asteval",
    "declared_versions": {
     "IQM retained environment": "1.0.10"
@@ -184,6 +201,7 @@
   {
    "distribution": "asttokens",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "3.0.2",
     "IQM retained environment": "3.0.2"
    },
    "observed_host_version": "3.0.2",
@@ -205,6 +223,21 @@
    },
    "observed_host_version": "26.1.0",
    "role": "SDK/environment infrastructure: Classes Without Boilerplate",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
+   "distribution": "autograd",
+   "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "1.9.1"
+   },
+   "observed_host_version": null,
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -252,6 +285,21 @@
    "declared_versions": {},
    "observed_host_version": null,
    "role": "Documented compiler benchmark alternative; qualification needs the same full-operator oracle.",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
+   "distribution": "bluequbit",
+   "declared_versions": {
+    "docs/notes/bluequbit/requirements-bluequbit.txt": "0.19.0b1"
+   },
+   "observed_host_version": null,
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -316,7 +364,11 @@
   {
    "distribution": "certifi",
    "declared_versions": {
+    "docs/notes/bluequbit/requirements-bluequbit.txt": "2026.10.23",
+    "docs/notes/ionq/requirements-ionq.txt": "2026.10.23",
     "docs/notes/open_quantum/requirements-oq.txt": "2026.7.22",
+    "docs/notes/qbraid/requirements-qbraid.txt": "2026.10.23",
+    "docs/notes/quafu/requirements-quafu.txt": "2026.10.23",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2026.7.22",
     "IQM retained environment": "2026.10.18"
    },
@@ -350,7 +402,11 @@
   {
    "distribution": "charset-normalizer",
    "declared_versions": {
+    "docs/notes/bluequbit/requirements-bluequbit.txt": "3.5.2",
+    "docs/notes/ionq/requirements-ionq.txt": "3.5.2",
     "docs/notes/open_quantum/requirements-oq.txt": "3.5.2",
+    "docs/notes/qbraid/requirements-qbraid.txt": "3.5.2",
+    "docs/notes/quafu/requirements-quafu.txt": "3.5.2",
     "docs/notes/quantum_inspire/requirements-qi.txt": "3.5.2",
     "IQM retained environment": "3.5.2"
    },
@@ -509,6 +565,8 @@
   {
    "distribution": "contourpy",
    "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "1.4.0",
+    "docs/notes/quafu/requirements-quafu.txt": "1.3.3",
     "IQM retained environment": "1.4.0"
    },
    "observed_host_version": "1.4.0",
@@ -678,6 +736,8 @@
   {
    "distribution": "cycler",
    "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "0.12.1",
+    "docs/notes/quafu/requirements-quafu.txt": "0.12.1",
     "IQM retained environment": "0.12.1"
    },
    "observed_host_version": "0.12.1",
@@ -693,6 +753,7 @@
   {
    "distribution": "cython",
    "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "3.3.0",
     "IQM retained environment": "3.3.0"
    },
    "observed_host_version": "3.3.0",
@@ -736,8 +797,24 @@
    "historical_imported_by": []
   },
   {
+   "distribution": "decorator",
+   "declared_versions": {
+    "docs/notes/ionq/requirements-ionq.txt": "5.3.1"
+   },
+   "observed_host_version": "5.3.1",
+   "role": "SDK/environment infrastructure: Decorators for Humans",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
    "distribution": "dill",
    "declared_versions": {
+    "docs/notes/ionq/requirements-ionq.txt": "0.4.1",
     "docs/notes/open_quantum/requirements-oq.txt": "0.4.1",
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.4.1",
     "IQM retained environment": "0.4.1"
@@ -845,6 +922,7 @@
   {
    "distribution": "executing",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "2.3.0",
     "IQM retained environment": "2.3.0"
    },
    "observed_host_version": "2.2.1",
@@ -896,6 +974,8 @@
   {
    "distribution": "fonttools",
    "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "4.67.0",
+    "docs/notes/quafu/requirements-quafu.txt": "4.67.0",
     "IQM retained environment": "4.67.0"
    },
    "observed_host_version": "4.67.0",
@@ -995,6 +1075,22 @@
    },
    "observed_host_version": null,
    "role": "SDK/environment infrastructure: Common protobufs used in Google APIs",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
+   "distribution": "graphviz",
+   "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "0.21",
+    "docs/notes/quafu/requirements-quafu.txt": "0.21"
+   },
+   "observed_host_version": "0.21",
+   "role": "SDK/environment infrastructure: Simple Python interface for Graphviz",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -1305,7 +1401,11 @@
   {
    "distribution": "idna",
    "declared_versions": {
+    "docs/notes/bluequbit/requirements-bluequbit.txt": "3.20",
+    "docs/notes/ionq/requirements-ionq.txt": "3.20",
     "docs/notes/open_quantum/requirements-oq.txt": "3.20",
+    "docs/notes/qbraid/requirements-qbraid.txt": "3.20",
+    "docs/notes/quafu/requirements-quafu.txt": "3.20",
     "docs/notes/quantum_inspire/requirements-qi.txt": "3.20",
     "IQM retained environment": "3.20"
    },
@@ -1337,6 +1437,7 @@
   {
    "distribution": "importlib-metadata",
    "declared_versions": {
+    "docs/notes/ionq/requirements-ionq.txt": "10.1.0",
     "IQM retained environment": "9.0.1"
    },
    "observed_host_version": "9.0.1",
@@ -1382,6 +1483,7 @@
   {
    "distribution": "ipython",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "9.17.1",
     "IQM retained environment": "9.17.1"
    },
    "observed_host_version": "9.17.1",
@@ -1397,6 +1499,7 @@
   {
    "distribution": "ipython-pygments-lexers",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "1.1.1",
     "IQM retained environment": "1.1.1"
    },
    "observed_host_version": "1.1.1",
@@ -1637,6 +1740,7 @@
   {
    "distribution": "jedi",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.20.1",
     "IQM retained environment": "0.20.1"
    },
    "observed_host_version": "0.20.1",
@@ -1812,6 +1916,8 @@
   {
    "distribution": "kiwisolver",
    "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "1.5.1",
+    "docs/notes/quafu/requirements-quafu.txt": "1.5.1",
     "IQM retained environment": "1.5.1"
    },
    "observed_host_version": "1.5.1",
@@ -1848,8 +1954,24 @@
    ]
   },
   {
+   "distribution": "librt",
+   "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "0.16.0"
+   },
+   "observed_host_version": "0.16.0",
+   "role": "SDK/environment infrastructure: Mypyc runtime library",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
    "distribution": "llvmlite",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.50.0",
     "IQM retained environment": "0.46.0"
    },
    "observed_host_version": "0.50.0",
@@ -1957,6 +2079,8 @@
    "distribution": "matplotlib",
    "declared_versions": {
     "ci/requirements-ci.txt": "3.11.2",
+    "docs/notes/originquantum/requirements-originquantum.txt": "3.11.2",
+    "docs/notes/quafu/requirements-quafu.txt": "3.11.2",
     "IQM retained environment": "3.11.2"
    },
    "observed_host_version": "3.11.2",
@@ -1978,6 +2102,7 @@
   {
    "distribution": "matplotlib-inline",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.2.2",
     "IQM retained environment": "0.2.2"
    },
    "observed_host_version": "0.2.2",
@@ -2167,10 +2292,26 @@
   {
    "distribution": "mypy",
    "declared_versions": {
-    "ci/requirements-ci.txt": "2.4.0"
+    "ci/requirements-ci.txt": "2.4.0",
+    "docs/notes/originquantum/requirements-originquantum.txt": "2.4.0"
    },
    "observed_host_version": "2.4.0",
    "role": "Pinned static type gate.",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
+   "distribution": "mypy-extensions",
+   "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "1.1.0"
+   },
+   "observed_host_version": "1.1.0",
+   "role": "SDK/environment infrastructure: Type system extensions for programs checked with the mypy type checker.",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -2257,6 +2398,8 @@
   {
    "distribution": "networkx",
    "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "3.7",
+    "docs/notes/quafu/requirements-quafu.txt": "3.7",
     "docs/notes/quantum_inspire/requirements-qi.txt": "3.7",
     "IQM retained environment": "3.7"
    },
@@ -2277,6 +2420,7 @@
   {
    "distribution": "numba",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.68.0",
     "scripts/kaggle_run.py:177:PIN_GROUPS": "0.68.0",
     "IQM retained environment": "0.63.1"
    },
@@ -2312,7 +2456,12 @@
    "distribution": "numpy",
    "declared_versions": {
     "ci/requirements-replay.txt": "2.5.4",
+    "docs/notes/bluequbit/requirements-bluequbit.txt": "2.5.4",
+    "docs/notes/ionq/requirements-ionq.txt": "2.5.4",
     "docs/notes/open_quantum/requirements-oq.txt": "2.5.4",
+    "docs/notes/originquantum/requirements-originquantum.txt": "2.5.4",
+    "docs/notes/qbraid/requirements-qbraid.txt": "2.5.4",
+    "docs/notes/quafu/requirements-quafu.txt": "1.26.4",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.5.4",
     "requirements.txt": "2.5.4",
     "IQM retained environment": "2.3.5"
@@ -2877,6 +3026,7 @@
   {
    "distribution": "openqasm3",
    "declared_versions": {
+    "docs/notes/qbraid/requirements-qbraid.txt": "1.0.1",
     "scripts/kaggle_run.py:167:PIN_GROUPS": "1.0.1"
    },
    "observed_host_version": "1.0.1",
@@ -3266,6 +3416,10 @@
   {
    "distribution": "packaging",
    "declared_versions": {
+    "docs/notes/bluequbit/requirements-bluequbit.txt": "26.3",
+    "docs/notes/originquantum/requirements-originquantum.txt": "26.3",
+    "docs/notes/qbraid/requirements-qbraid.txt": "26.3",
+    "docs/notes/quafu/requirements-quafu.txt": "26.3",
     "packaging/qiskit-aer-cuda/build-requirements.txt": "26.3",
     "IQM retained environment": "24.2"
    },
@@ -3312,10 +3466,26 @@
   {
    "distribution": "parso",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.8.7",
     "IQM retained environment": "0.8.7"
    },
    "observed_host_version": "0.8.7",
    "role": "SDK/environment infrastructure: A Python Parser",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
+   "distribution": "pathspec",
+   "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "1.1.1"
+   },
+   "observed_host_version": "1.1.1",
+   "role": "SDK/environment infrastructure: Utility library for gitignore style pattern matching of file paths.",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -3419,6 +3589,7 @@
   {
    "distribution": "pexpect",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "4.9.0",
     "IQM retained environment": "4.9.0"
    },
    "observed_host_version": "4.9.0",
@@ -3434,6 +3605,8 @@
   {
    "distribution": "pillow",
    "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "13.0.0",
+    "docs/notes/quafu/requirements-quafu.txt": "13.0.0",
     "IQM retained environment": "13.0.0"
    },
    "observed_host_version": "13.0.0",
@@ -3513,6 +3686,7 @@
   {
    "distribution": "ply",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "3.11",
     "IQM retained environment": "3.11"
    },
    "observed_host_version": "3.11",
@@ -3528,6 +3702,7 @@
   {
    "distribution": "prompt-toolkit",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "3.0.53",
     "IQM retained environment": "3.0.53"
    },
    "observed_host_version": "3.0.53",
@@ -3573,6 +3748,8 @@
   {
    "distribution": "psutil",
    "declared_versions": {
+    "docs/notes/qbraid/requirements-qbraid.txt": "7.2.2",
+    "docs/notes/quafu/requirements-quafu.txt": "7.2.2",
     "IQM retained environment": "7.2.2"
    },
    "observed_host_version": "7.2.2",
@@ -3588,6 +3765,7 @@
   {
    "distribution": "ptyprocess",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.7.0",
     "IQM retained environment": "0.7.0"
    },
    "observed_host_version": "0.7.0",
@@ -3603,6 +3781,7 @@
   {
    "distribution": "pure-eval",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.2.4",
     "IQM retained environment": "0.2.4"
    },
    "observed_host_version": "0.2.3",
@@ -3643,6 +3822,7 @@
   {
    "distribution": "pybind11",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "3.1.0",
     "packaging/qiskit-aer-cuda/build-requirements.txt": "3.1.0"
    },
    "observed_host_version": "3.1.0",
@@ -3692,6 +3872,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "2.13.5",
     "docs/notes/open_quantum/requirements-oq.txt": "2.14.1",
+    "docs/notes/qbraid/requirements-qbraid.txt": "2.14.1",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.13.4",
     "requirements.txt": "2.14.1",
     "IQM retained environment": "2.12.5"
@@ -3716,6 +3897,7 @@
    "distribution": "pydantic-core",
    "declared_versions": {
     "docs/notes/open_quantum/requirements-oq.txt": "2.50.1",
+    "docs/notes/qbraid/requirements-qbraid.txt": "2.50.1",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.46.4",
     "IQM retained environment": "2.41.5"
    },
@@ -3748,6 +3930,7 @@
   {
    "distribution": "pygments",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "2.21.0",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.21.0",
     "IQM retained environment": "2.21.0"
    },
@@ -3848,6 +4031,8 @@
   {
    "distribution": "pyparsing",
    "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "3.3.3",
+    "docs/notes/quafu/requirements-quafu.txt": "3.3.3",
     "IQM retained environment": "3.3.3"
    },
    "observed_host_version": "3.3.3",
@@ -3867,6 +4052,50 @@
    },
    "observed_host_version": "1.3.3",
    "role": "SDK/environment infrastructure: Wrappers to call pyproject.toml-based build backend hooks.",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
+   "distribution": "pyqasm",
+   "declared_versions": {
+    "docs/notes/qbraid/requirements-qbraid.txt": "1.3.0"
+   },
+   "observed_host_version": null,
+   "role": "SDK/environment infrastructure: Environment support dependency",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
+  },
+  {
+   "distribution": "pyqpanda3",
+   "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "0.5.0"
+   },
+   "observed_host_version": null,
+   "role": "SDK/environment infrastructure: Environment support dependency",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
+   "distribution": "pyquafu",
+   "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.4.5"
+   },
+   "observed_host_version": null,
+   "role": "SDK/environment infrastructure: Environment support dependency",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -3941,6 +4170,9 @@
   {
    "distribution": "python-dateutil",
    "declared_versions": {
+    "docs/notes/bluequbit/requirements-bluequbit.txt": "2.9.0.post0",
+    "docs/notes/originquantum/requirements-originquantum.txt": "3.0.0",
+    "docs/notes/quafu/requirements-quafu.txt": "3.0.0",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.9.0.post0",
     "IQM retained environment": "2.9.0.post0"
    },
@@ -3957,6 +4189,7 @@
   {
    "distribution": "python-dotenv",
    "declared_versions": {
+    "docs/notes/ionq/requirements-ionq.txt": "1.2.4",
     "docs/notes/open_quantum/requirements-oq.txt": "1.2.4",
     "docs/notes/quantum_inspire/requirements-qi.txt": "1.2.4",
     "IQM retained environment": "1.2.4"
@@ -4089,16 +4322,36 @@
   },
   {
    "distribution": "qbraid",
-   "declared_versions": {},
+   "declared_versions": {
+    "docs/notes/qbraid/requirements-qbraid.txt": "0.13.0"
+   },
    "observed_host_version": null,
    "role": "Documented multi-provider SDK alternative; current cases use the repository's guarded clients.",
-   "documentation_mentions": [],
+   "documentation_mentions": [
+    "docs/notes/qbraid/pypi/qbraid.json"
+   ],
    "role_sources": [],
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": []
+  },
+  {
+   "distribution": "qbraid-core",
+   "declared_versions": {
+    "docs/notes/qbraid/requirements-qbraid.txt": "0.6.36"
+   },
+   "observed_host_version": null,
+   "role": "Python library with core abstractions for software development in the qBraid ecosystem.",
+   "documentation_mentions": [
+    "docs/notes/qbraid/pypi/qbraid-core.json"
+   ],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run"
   },
   {
    "distribution": "qdldl",
@@ -4134,6 +4387,7 @@
    "distribution": "qiskit",
    "declared_versions": {
     "ci/requirements-replay.txt": "2.5.2",
+    "docs/notes/ionq/requirements-ionq.txt": "2.6.1",
     "docs/notes/open_quantum/requirements-oq.txt": "2.5.2",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.1",
     "requirements.txt": "2.6.0",
@@ -5132,6 +5386,21 @@
    "historical_imported_by": []
   },
   {
+   "distribution": "qiskit-ionq",
+   "declared_versions": {
+    "docs/notes/ionq/requirements-ionq.txt": "1.1.1"
+   },
+   "observed_host_version": null,
+   "role": "SDK/environment infrastructure: Environment support dependency",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
    "distribution": "qiskit-machine-learning",
    "declared_versions": {},
    "observed_host_version": null,
@@ -5445,7 +5714,11 @@
   {
    "distribution": "requests",
    "declared_versions": {
+    "docs/notes/bluequbit/requirements-bluequbit.txt": "2.34.2",
+    "docs/notes/ionq/requirements-ionq.txt": "2.34.2",
     "docs/notes/open_quantum/requirements-oq.txt": "2.34.2",
+    "docs/notes/qbraid/requirements-qbraid.txt": "2.34.2",
+    "docs/notes/quafu/requirements-quafu.txt": "2.34.2",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.34.2",
     "IQM retained environment": "2.34.2"
    },
@@ -5580,7 +5853,9 @@
    "distribution": "rustworkx",
    "declared_versions": {
     "ci/requirements-replay.txt": "0.18.1",
+    "docs/notes/ionq/requirements-ionq.txt": "0.18.1",
     "docs/notes/open_quantum/requirements-oq.txt": "0.18.1",
+    "docs/notes/qbraid/requirements-qbraid.txt": "0.18.1",
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.18.1",
     "requirements.txt": "0.18.1",
     "IQM retained environment": "0.17.1"
@@ -5672,7 +5947,10 @@
    "distribution": "scipy",
    "declared_versions": {
     "ci/requirements-replay.txt": "1.18.1",
+    "docs/notes/ionq/requirements-ionq.txt": "1.18.1",
     "docs/notes/open_quantum/requirements-oq.txt": "1.18.1",
+    "docs/notes/originquantum/requirements-originquantum.txt": "1.18.1",
+    "docs/notes/quafu/requirements-quafu.txt": "1.17.1",
     "docs/notes/quantum_inspire/requirements-qi.txt": "1.18.1",
     "requirements.txt": "1.18.1",
     "IQM retained environment": "1.18.1"
@@ -5852,6 +6130,7 @@
   {
    "distribution": "setuptools",
    "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "84.2.1",
     "packaging/qiskit-aer-cuda/build-requirements.txt": "84.0.0",
     "IQM retained environment": "84.0.0"
    },
@@ -5899,6 +6178,9 @@
   {
    "distribution": "six",
    "declared_versions": {
+    "docs/notes/bluequbit/requirements-bluequbit.txt": "1.17.0",
+    "docs/notes/originquantum/requirements-originquantum.txt": "1.17.0",
+    "docs/notes/quafu/requirements-quafu.txt": "1.17.0",
     "docs/notes/quantum_inspire/requirements-qi.txt": "1.17.0",
     "IQM retained environment": "1.17.0"
    },
@@ -5919,6 +6201,21 @@
    },
    "observed_host_version": "3.1.1",
    "role": "SDK/environment infrastructure: This package provides 36 stemmers for 34 languages generated from Snowball algorithms.",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
+   "distribution": "sparse",
+   "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.19.2"
+   },
+   "observed_host_version": "0.17.0",
+   "role": "SDK/environment infrastructure: Sparse n-dimensional arrays for the PyData ecosystem",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6100,6 +6397,7 @@
   {
    "distribution": "stack-data",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.6.3",
     "IQM retained environment": "0.6.3"
    },
    "observed_host_version": "0.6.4.dev0+g53501eb8b.d20251216",
@@ -6131,6 +6429,7 @@
   {
    "distribution": "stevedore",
    "declared_versions": {
+    "docs/notes/ionq/requirements-ionq.txt": "5.9.1",
     "docs/notes/open_quantum/requirements-oq.txt": "5.9.1",
     "docs/notes/quantum_inspire/requirements-qi.txt": "5.9.1",
     "IQM retained environment": "5.9.1"
@@ -6366,6 +6665,7 @@
   {
    "distribution": "tornado",
    "declared_versions": {
+    "docs/notes/qbraid/requirements-qbraid.txt": "6.6",
     "IQM retained environment": "6.5.10"
    },
    "observed_host_version": "6.5.10",
@@ -6396,6 +6696,7 @@
   {
    "distribution": "traitlets",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "5.16.1",
     "IQM retained environment": "5.16.1"
    },
    "observed_host_version": "5.16.1",
@@ -6516,7 +6817,10 @@
   {
    "distribution": "typing-extensions",
    "declared_versions": {
+    "docs/notes/ionq/requirements-ionq.txt": "4.16.0",
     "docs/notes/open_quantum/requirements-oq.txt": "4.16.0",
+    "docs/notes/originquantum/requirements-originquantum.txt": "4.16.0",
+    "docs/notes/qbraid/requirements-qbraid.txt": "4.16.0",
     "docs/notes/quantum_inspire/requirements-qi.txt": "4.16.0",
     "IQM retained environment": "4.16.0"
    },
@@ -6534,11 +6838,28 @@
    "distribution": "typing-inspection",
    "declared_versions": {
     "docs/notes/open_quantum/requirements-oq.txt": "0.4.4",
+    "docs/notes/qbraid/requirements-qbraid.txt": "0.4.4",
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.4.4",
     "IQM retained environment": "0.4.4"
    },
    "observed_host_version": "0.4.4",
    "role": "SDK/environment infrastructure: Runtime typing introspection tools",
+   "documentation_mentions": [],
+   "role_sources": [],
+   "independent_algebra_witness": false,
+   "hardware_execution": false,
+   "imported_by": [],
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": []
+  },
+  {
+   "distribution": "tzdata",
+   "declared_versions": {
+    "docs/notes/originquantum/requirements-originquantum.txt": "2026.5",
+    "docs/notes/quafu/requirements-quafu.txt": "2026.5"
+   },
+   "observed_host_version": "2026.5",
+   "role": "SDK/environment infrastructure: Provider of IANA time zone data",
    "documentation_mentions": [],
    "role_sources": [],
    "independent_algebra_witness": false,
@@ -6565,7 +6886,11 @@
   {
    "distribution": "urllib3",
    "declared_versions": {
+    "docs/notes/bluequbit/requirements-bluequbit.txt": "2.8.0",
+    "docs/notes/ionq/requirements-ionq.txt": "2.8.0",
     "docs/notes/open_quantum/requirements-oq.txt": "2.8.0",
+    "docs/notes/qbraid/requirements-qbraid.txt": "2.8.0",
+    "docs/notes/quafu/requirements-quafu.txt": "2.8.0",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.7.0",
     "IQM retained environment": "2.8.0"
    },
@@ -6613,6 +6938,7 @@
   {
    "distribution": "wcwidth",
    "declared_versions": {
+    "docs/notes/quafu/requirements-quafu.txt": "0.9.4",
     "IQM retained environment": "0.9.2"
    },
    "observed_host_version": "0.9.2",
@@ -6673,6 +6999,7 @@
   {
    "distribution": "zipp",
    "declared_versions": {
+    "docs/notes/ionq/requirements-ionq.txt": "4.1.2",
     "IQM retained environment": "4.1.1"
    },
    "observed_host_version": "3.21.0",
@@ -6708,6 +7035,8 @@
   "docs/notes/open_quantum/pypi/openquantum-sdk-qiskit.json": "76e2c7f85518102b2375eff46085ace4b503602dc86393bd1a653f0df63c1243",
   "docs/notes/open_quantum/pypi/openquantum-sdk-qrisp.json": "4a690429f43ede522e8f1e6af1a3f030d85b31084a52b7137000c375d5154ab7",
   "docs/notes/open_quantum/pypi/openquantum-sdk.json": "5ad203ad5e758e24f0934fde9cf2e98337ffd263c34745c1bec0027bf05f62ce",
+  "docs/notes/qbraid/pypi/qbraid-core.json": "fee64b3bf5e39868d8a5425bfdbc54592dfdf2f81c510af79b1a3d97a33dc2d3",
+  "docs/notes/qbraid/pypi/qbraid.json": "ebf1ea1d2d965ce58592857d528798644a7522b95a8bd9bbc66e53ef74f2882f",
   "docs/notes/quandela/pypi/exqalibur.json": "1b500908d11a19d33fd96c2e97d92a996143ebb098b9234731b0c19171aec1d7",
   "docs/notes/quandela/pypi/perceval-interop.json": "ed2babca56a9e95c47e4971053da3181e464d393b8eeac8d0104d3a4f9a67bdb",
   "docs/notes/quandela/pypi/perceval-quandela.json": "c8ed2fcbdd475a830b066ec7121fdff96e35850f98ecc4b3be945346aa2d49ea",
@@ -6717,7 +7046,13 @@
   "ci/requirements-browser.txt": "6f9875723235ece07415e7d19103f2ec61ec35e1392d23fbd1c1290e043eaeb8",
   "ci/requirements-ci.txt": "77f9f2981d01ae43f7026db295a35bdb93cf04f6733ec0797f02fc354de913a7",
   "ci/requirements-replay.txt": "e5e98e830c7d6f06cca129bc4a9cd4bda6cc44cde0fc0b0d8d427e0ab0801496",
+  "docs/notes/bluequbit/requirements-bluequbit.txt": "9e2df74f3a0f821bdb8093a61944e284ed6f5bb93c4b6dd9092ea612f048c422",
+  "docs/notes/ionq/requirements-ionq.txt": "f3c90a4ec3ed32cf753c37bc2c9c4ff97fd348d646f3769c18e28d3e915202ff",
   "docs/notes/open_quantum/requirements-oq.txt": "b3acd33c1610642fe5b5374f624f9879f2a1271847293e74c1df762df2dfa058",
+  "docs/notes/originquantum/requirements-originquantum.txt": "89bc3d0228c556da50519c3b323a03337bcfc5741286e4160eb003b6d1bb8702",
+  "docs/notes/planck/requirements-planck.txt": "ed7311fc6f1ae49a90a2c671732efa965cea7ba2e8b2fe3be1d0d14b8ba8ba8c",
+  "docs/notes/qbraid/requirements-qbraid.txt": "196b9b03a069cb6f461cd515569697c60b074e1bb11add9aad6ea0c877251363",
+  "docs/notes/quafu/requirements-quafu.txt": "0792aae81e6f09210b366b8a4db405e74c35435207f1e67ddc3b61707db9e61f",
   "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88",
   "packaging/qiskit-aer-cuda/build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
   "requirements.txt": "c83769287c82d8b2616f254226db544ed0c323756f648a813290d36aa1f59816",
@@ -9515,6 +9850,22 @@
    "typing",
    "urllib"
   ],
+  "scripts/capture_qbraid_docs.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "datetime",
+   "functools",
+   "hashlib",
+   "json",
+   "pathlib",
+   "re",
+   "shutil",
+   "sys",
+   "tempfile",
+   "typing",
+   "urllib"
+  ],
   "scripts/capture_qd_docs.py": [
    "__future__",
    "argparse",
@@ -11745,6 +12096,20 @@
    "pathlib",
    "qd_platform",
    "sys",
+   "typing"
+  ],
+  "scripts/quantum_artifact_retention.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "io",
+   "json",
+   "parallel",
+   "pathlib",
+   "re",
+   "subprocess",
+   "sys",
+   "tarfile",
    "typing"
   ],
   "scripts/qx_local_series.py": [

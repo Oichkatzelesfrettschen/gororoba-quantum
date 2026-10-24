@@ -36,6 +36,7 @@ SELF_TESTS = (
     ("scripts/local_member_cz_conformance.py", ".", 8),
     ("scripts/capture_qi_docs.py", ".", 9),
     ("scripts/capture_oq_docs.py", ".", 4),
+    ("scripts/capture_qbraid_docs.py", ".", 4),
     ("scripts/oq_platform.py", ".", 9),
     ("scripts/capture_qd_docs.py", ".", 9),
     ("scripts/qd_platform.py", ".", 7),

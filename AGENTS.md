@@ -279,6 +279,10 @@ checkout and never enter a commit, log or memory.
 - IQM Resonance: [docs/notes/iqm/README.md](docs/notes/iqm/README.md);
   interpreter `iqm-python` of the iqm-resonance-stack package; MCP `iqm`; token
   pair file named by `IQM_TOKENS_FILE`.
+- IonQ, BlueQubit, Quafu, Origin Quantum and Planck: one guide each under
+  `docs/notes/<provider>/` (`ionq`, `bluequbit`, `quafu`, `originquantum`,
+  `planck`), each with a pinned venv under `~/.local/share/<provider>/venv`
+  and a one-line key file under `~/.config/<provider>/`; no MCP server.
 
 Every job (QPU, emulator, simulator or mock), upload, provider QRNG read,
 timeslot booking and notebook session on any provider waits for the user's approval of a

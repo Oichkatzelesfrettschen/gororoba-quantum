@@ -1,0 +1,9 @@
+Merge made by the 'ort' strategy.
+ ci/gates.json                                      |   4 +-
+ docs/state/hypercomplex-libraries/libraries.json   | 675 ++++++++++++++++++++-
+ docs/state/hypercomplex-libraries/libraries.md     |  35 +-
+ .../solver-role-grounding.json                     | 207 +++++++
+ scripts/hypercomplex_libraries.py                  | 275 ++++++++-
+ tests/scripts/test_hypercomplex_libraries.py       | 117 +++-
+ 6 files changed, 1277 insertions(+), 36 deletions(-)
+ create mode 100644 docs/state/hypercomplex-libraries/solver-role-grounding.json

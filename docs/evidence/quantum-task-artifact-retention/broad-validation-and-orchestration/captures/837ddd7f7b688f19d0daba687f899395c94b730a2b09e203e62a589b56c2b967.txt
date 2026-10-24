@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cd "${USER_HOME}/worktrees/IBMQuantum/quandela-mcp-contract-repairs"
+
+echo "start=$(date -Is)"
+echo "cwd=$(pwd)"
+echo "cmd=export\ PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/ci-py3.14.7/bin/python\;\ export\ REPLAY_PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/replay-py3.14.7/bin/python\;\ export\ GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096\;\ export\ GOROROBA_WORKERS=1\;\ export\ OPENBLAS_NUM_THREADS=1\;\ export\ OMP_NUM_THREADS=1\;\ \"\$PYTHON\"\ -B\ -W\ error\ -m\ pytest\ -n\ 2\ --dist\ loadgroup\ --durations=15\ tests"
+echo "log=${TEMP}/quandela-mcp-behavioral-validation.log"
+
+(
+  bash -lc export\ PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/ci-py3.14.7/bin/python\;\ export\ REPLAY_PYTHON=${TEMP}/gororoba-hypercomplex-9sn5hyoj/validation/replay-py3.14.7/bin/python\;\ export\ GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096\;\ export\ GOROROBA_WORKERS=1\;\ export\ OPENBLAS_NUM_THREADS=1\;\ export\ OMP_NUM_THREADS=1\;\ \"\$PYTHON\"\ -B\ -W\ error\ -m\ pytest\ -n\ 2\ --dist\ loadgroup\ --durations=15\ tests
+  echo "exit=$?"
+) 2>&1 | tee -a "${TEMP}/quandela-mcp-behavioral-validation.log"
+
+echo "done=$(date -Is)"

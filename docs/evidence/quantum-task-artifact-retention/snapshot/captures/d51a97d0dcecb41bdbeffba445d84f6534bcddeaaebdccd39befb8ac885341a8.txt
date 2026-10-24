@@ -1,0 +1,76 @@
+{
+ "cpu_capacity": 12,
+ "gates": [
+  {
+   "estimated_seconds": 0.6,
+   "name": "core-001",
+   "resources": {
+    "max_rss_kib": 36120,
+    "system_seconds": 0.021086,
+    "user_seconds": 0.36105499999999996,
+    "workers": 1
+   },
+   "runtime": "current",
+   "seconds": 0.4217567799933022,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 0.6,
+   "name": "core-002",
+   "resources": {
+    "max_rss_kib": 35980,
+    "system_seconds": 0.023544,
+    "user_seconds": 0.390252,
+    "workers": 1
+   },
+   "runtime": "current",
+   "seconds": 0.4567568890051916,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 51.6,
+   "name": "core-039",
+   "resources": {
+    "max_rss_kib": 1667428,
+    "system_seconds": 0.9405519999999999,
+    "user_seconds": 212.139672,
+    "workers": 1
+   },
+   "runtime": "current",
+   "seconds": 212.68473706299847,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 15.1,
+   "name": "core-615",
+   "resources": {
+    "max_rss_kib": 776640,
+    "system_seconds": 9.411995,
+    "user_seconds": 229.662239,
+    "workers": 12
+   },
+   "runtime": "current",
+   "seconds": 40.57306096301181,
+   "status": 0
+  },
+  {
+   "estimated_seconds": 10.0,
+   "name": "core-630",
+   "resources": {
+    "max_rss_kib": 110300,
+    "system_seconds": 0.054867,
+    "user_seconds": 0.690106,
+    "workers": 1
+   },
+   "runtime": "current",
+   "seconds": 0.7820241939916741,
+   "status": 0
+  }
+ ],
+ "ledger_audit_misses": [],
+ "schema": "gororoba-gate-timings-v1",
+ "shard": "0/1",
+ "shard_cpus": 4,
+ "skipped": [],
+ "wall_seconds": 253.25856749799277
+}

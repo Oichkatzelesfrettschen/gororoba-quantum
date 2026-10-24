@@ -1,0 +1,7 @@
+{
+ "additional_admission": "all account hardware jobs terminal,120 seconds from latest finish,queue rules,current availability,adversarial review closure and validation",
+ "minimum_deferral_seconds": 980,
+ "observed_at_utc": "2026-10-22T05:16:32.443652+00:00",
+ "reason": "user requested Claude acquisition priority on the shared QI account",
+ "submit_not_before_utc": "2026-10-22T05:32:52.443652+00:00"
+}
