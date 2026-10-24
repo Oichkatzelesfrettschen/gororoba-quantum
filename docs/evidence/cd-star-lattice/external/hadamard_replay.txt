@@ -1,0 +1,14 @@
+sage 10.10
+mckay_had16.txt sha256 67fb6f1a36f6893fca541a85754329812b9b8b454b3438ec9b6fd00005c2f170
+line 1: hadamard True, |Aut| 10321920, transpose in line [1]
+line 2: hadamard True, |Aut| 294912, transpose in line [2]
+line 3: hadamard True, |Aut| 49152, transpose in line [3]
+line 4: hadamard True, |Aut| 86016, transpose in line [5]
+line 5: hadamard True, |Aut| 86016, transpose in line [4]
+I + W_16: line [4]; transpose: line [5]
+sedenion sign table: line [5]; transpose: line [4]
+n = 4: I + W_n hadamard True, |Aut| 192, |G_n| 24, index 8
+n = 8: I + W_n hadamard True, |Aut| 21504, |G_n| 336, index 64
+n = 16: I + W_n hadamard True, |Aut| 86016, |G_n| 672, index 128
+n = 32: I + W_n hadamard True, |Aut| 2688, |G_n| 672, index 4
+n = 64: I + W_n hadamard True, |Aut| 2688, |G_n| 672, index 4

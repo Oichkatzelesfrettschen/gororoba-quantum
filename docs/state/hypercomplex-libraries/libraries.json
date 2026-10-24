@@ -11108,6 +11108,24 @@
    "urllib",
    "zlib"
   ],
+  "scripts/qd_schedule.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "contextlib",
+   "datetime",
+   "hashlib",
+   "json",
+   "math",
+   "pathlib",
+   "qd_platform",
+   "re",
+   "shutil",
+   "subprocess",
+   "sys",
+   "time",
+   "typing"
+  ],
   "scripts/qet_two_qubit_reference.py": [
    "__future__",
    "argparse",

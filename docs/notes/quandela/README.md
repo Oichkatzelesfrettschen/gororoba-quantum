@@ -385,6 +385,10 @@ error or canceled job (or records its absence), requires the result's job id
 and shots to match the receipt and status, and parses the BSCount string itself: a result is service data,
 and `perceval.serialization.deserialize` evaluates parameter expressions.
 
+Spaced jobs of an approved case run unattended from a committed schedule
+through GitHub Actions, which calls the same plan, submit and collect
+([quandela-scheduled-runs.md](../../runbooks/quandela-scheduled-runs.md)).
+
 ## Strategy guide
 
 [strategy.md](strategy.md) is the living guide to cost, platform behavior,

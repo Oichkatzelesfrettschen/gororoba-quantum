@@ -1,0 +1,12 @@
+sage 10.10 gap 4.16dev
+graph S_2: vertices 17 order 4 smallgroup [4, 1] orbits [1, 4, 4, 4, 4]
+graph S_4: vertices 65 order 24 smallgroup [24, 3] orbits [1, 8, 8, 24, 24]
+graph S_8: vertices 257 order 336 smallgroup [336, 114] orbits [1, 16, 16, 112, 112]
+graph S_16: vertices 1025 order 672 smallgroup [672, 1045] orbits [1, 32, 32, 32, 32, 224, 224, 224, 224]
+signed centralizer W_4: order 24 smallgroup [24, 3] orbits [8] isomorphic_to_dimension_16 False
+signed centralizer W_8: order 336 smallgroup [336, 114] orbits [16] isomorphic_to_dimension_16 False
+signed centralizer W_16: order 672 smallgroup [672, 1045] orbits [32] isomorphic_to_dimension_16 True
+signed centralizer W_32: order 672 smallgroup [672, 1045] orbits [32, 32] isomorphic_to_dimension_16 True
+signed centralizer W_64: order 672 smallgroup [672, 1045] orbits [32, 32, 32, 32] isomorphic_to_dimension_16 True
+signed centralizer W_128: order 672 smallgroup [672, 1045] orbits [32, 32, 32, 32, 32, 32, 32, 32] isomorphic_to_dimension_16 True
+dimension 16: sylow-2 Q32 center order 2 involutions 1 quotient by center [ 336, 208 ]
