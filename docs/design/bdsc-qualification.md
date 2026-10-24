@@ -778,6 +778,32 @@ under independent Bernoulli trials. The series reads one request set, so a
 drift it finds is a property of these 24 compilations on Belenos and
 certifies nothing about the other 72 settings of the case.
 
+**Readout.** All seven slots ran on 2026-10-24 from 07:00Z to 19:00Z, two
+hours apart, each in 165 to 176 s with every returned circuit equal to its
+retained counterpart. [bdsc_drift_series_readout_pinned.json](../../results/quandela/bdsc_drift_series_readout_pinned.json)
+(`scripts/bdsc_drift_series.py --check`, gate core-679) holds the readout.
+The primary reads consistent: the mean von Neumann ratio of the 16
+class-centered superposition settings is 1.674, exact p 0.056 over all 5040
+orderings, so the preregistered rule names run-to-run jitter without
+memory. The p sits 0.006 above the consistent boundary, and the sensitivity
+of 0.71 for a walk of step SD 0.0021 per two hours (0.43 at 0.0015) leaves
+a walk of the retained tau's size undecided rather than excluded. The
+independent-setting reference reads z -2.02 (p 0.022), and the superposition
+class mean reads no common drift (ratio 2.02). Reported only, deciding
+nothing:
+
+- The class-centered excess square change of the superposition settings
+  rises with lag: 7.1e-6 at 2 h, 1.06e-5 at 4 h, 1.60e-5 at 6 h, 2.08e-5 at
+  8 h, 2.09e-5 at 10 h and 2.24e-5 at 12 h. White jitter of the retained
+  tau 0.0021 gives about 8.8e-6 at every lag. The lag points share runs and
+  carry no independent error, so the profile is a lead for a longer series,
+  not a test.
+- The plan-time dark-count vector changed between every pair of runs
+  (mode 5 from 7326.8 to 18616.3 counts/s), so each run sits in its own
+  epoch and the within-epoch contrast is undefined. The epoch rule's
+  premise, that the platform refreshes those figures only at calibration,
+  fails on this window: the epochs name figure refreshes, not calibrations.
+
 ## Conjecture ledger
 
 Each conjecture names the observable that tests it and what a result can and
@@ -798,7 +824,7 @@ levels and never share one "verified" label.
 | A label-independent randomized average is the right object | frozen randomization law and held-out epoch tests | label-dependent mixtures or unbounded drift void its interpretation |
 | Per-compilation transfer response carries the superposition scatter | matched seeds across blocks and four seeds per state (diagnostic case) | a matched seed whose response shifts beyond counting puts the scatter in time, not compilation |
 | Dark clicks in output mode 5 carry the instance-specific block change | heterogeneity of S1-to-S2 matched changes with detector 5 removed (stationarity case) | a resolved reading rejects it; a resolved coincidence test rejects the dark-click reading |
-| The residual superposition spread is drift that accumulates with elapsed time | pooled von Neumann ratio of class-centered residuals over seven spaced repeats (drift series) | a consistent reading names white run-to-run jitter; fewer than six completed runs leave it untested |
+| The residual superposition spread is drift that accumulates with elapsed time | pooled von Neumann ratio of class-centered residuals over seven spaced repeats (drift series) | a consistent reading names white run-to-run jitter; fewer than six completed runs leave it untested. Read consistent (p 0.056, seven runs); the reported-only excess rises with lag, so a walk of step SD 0.0021 stays undecided |
 
 Published subspace verification ([2410.12551](../notes/papers/2410.12551.md))
 exploits target structure for efficiency once the trusted objects and the

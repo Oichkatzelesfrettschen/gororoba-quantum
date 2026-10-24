@@ -19,6 +19,7 @@
   "results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json": "d49cedd47f6b8423580de053e8768f80016c246ab47a080ca88ffad42a180b0c",
   "results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json": "66f4ab5295eba9c6304a9efb797caf66d902f8f49459ac9e675ee195f0ade9f7",
   "results/quandela/bdsc_diagnostic_readout-runner-image.json": "b4f9881dbd24053938322dffb6db646ad57295846b27cf9b08ed5de19815f4dc",
+  "results/quandela/bdsc_drift_series_readout_pinned.json": "b132e49cedced5160a6d046726a61f2c09176b6112559ce77efd79bf2f7ea4c0",
   "results/quandela/bdsc_stationarity_calibration_contrast_pinned.json": "b72b8b154e5eb88f89d7174d2fa65678aa6a231a5fcee2d4767bd69ec7c05418",
   "results/quandela/bdsc_stationarity_readout_pinned.json": "fd95b1eb105d7818f2c2dc8561c55de0768668f2cd7a97ad30c8ecf5658d5ad1",
   "results/quandela/bdsc_stationarity_retained.json": "3bdf15594bfbf63f70bbdf5637b2c3219875cdc82bf13b2c807570f65dc54f19",
