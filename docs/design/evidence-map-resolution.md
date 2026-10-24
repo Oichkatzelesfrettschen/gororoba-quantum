@@ -68,7 +68,7 @@ that distinction does not need to be invented again.
 | EM-11 | 24 ledger jobs described as unretained | Join provider IDs across pinned branches; do not recount them | Equality of the 24-ID sets and integrated retention coverage |
 | EM-12 | Registry branches and evidence classes | Reconcile schema-aware records through reviewed PRs | No lost claims/acquisitions, semantic conflicts explicit, fresh render on integrated tree |
 | EM-13 | Denominator and support-concentration gaps | Add derived corpus reports using existing adapters and dependency fields | Unique executions; planned/returned/eligible units separate; shared support roots and coverage stated |
-| EM-14 | Current CI/numerical replay failures | Use the active PR #358 repair rather than duplicate it | Reviewed head, required gates and native-environment qualification; not a PR-body assertion alone |
+| EM-14 | Current CI/numerical replay failures | Rely on the #358 repair, merged into main, rather than duplicate it | Reviewed head, required gates and native-environment qualification; not a PR-body assertion alone |
 | EM-15 | Provider-dependent capability and hardware certificate | Keep M2-M4 unresolved until supported | Bound provider evidence and a frozen qualified experiment; no source-code patch alone suffices |
 | EM-16 | Mathematical frontier and future hardware spending | Keep frontier papers and proposals separate from physical validation | Explicit hypothesis, observation model, budget, and closure rule before execution |
 
@@ -157,11 +157,15 @@ https://github.com/Oichkatzelesfrettschen/gororoba-quantum/blob/bba9586549c9e179
 
 ## Integration ownership
 
-The following are observed open PRs, not merged results or a fresh review receipt:
+The resolution pass read three pull requests open at the time; each has
+since merged into main under its own review and gates:
 
-- #349 at `2f9168052148f1dce851dabbffbe41bc277ba025`: Tuna Pauli evidence and controls;
-- #352 at `27e31f46554b99086cc8b0f235e7ce9d27967f0d`: photonic conformance records;
-- #358 at `d4a95cc3ee87512e42a1e97db86cf26c8291d523`: numerical fitting,
+- #349 at `2f9168052148f1dce851dabbffbe41bc277ba025`, merged as
+  `af209218e09d86710396e00f879d401827f2201a`: Tuna Pauli evidence and controls;
+- #352 at `27e31f46554b99086cc8b0f235e7ce9d27967f0d`, merged as
+  `b2eb6a6f36e8b6f7418c8d9615a239cb9ea645dd`: photonic conformance records;
+- #358 at `d4a95cc3ee87512e42a1e97db86cf26c8291d523`, merged as
+  `4250b062fc3f09870dd8c602a2658ed61e12658b`: numerical fitting,
   runner-image replay, case-schema selection, toolchain coverage and gate repairs.
 
 Read every active review thread and the full diff before merging. Do not use a

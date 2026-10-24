@@ -53,10 +53,10 @@ No production Python changes are pushed. No repository-wide link checker,
 source gate, scientific gate, or complete PR tier runs in this pass. Opening a
 PR requests review; it does not establish a clean review or a merge approval.
 
-Validate the new relative links and the affected documentation under the
-repository's current checks before merging. Existing PR #358 owns the separate
-CI/fitter repairs and its required environment validation. This change does
-not duplicate or certify them.
+On the pull-request head, scripts/check_markdown_links.py resolves every new
+relative link and anchor, and the pr.yml checks lint, types and tests run over
+the merged tree. The #358 CI and fitter repairs merged into main under their own
+review; this change does not duplicate or certify them.
 
 No provider account read, QRNG request, circuit upload, simulator/QPU job,
 maintenance action, or extra spending is authorized or performed.
