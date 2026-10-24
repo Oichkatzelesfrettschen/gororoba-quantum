@@ -39,12 +39,17 @@ from __future__ import annotations
 import argparse
 import copy
 import datetime
+import functools
 import hashlib
 import json
 import math
 import sys
 from pathlib import Path
 from typing import Any
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+
+import parallel  # noqa: E402
 
 SCHEMA = "quandela-qrng-draw-v1"
 ROUTE = "/qt/qrng/ints"
@@ -73,6 +78,22 @@ def record_from(route: str, utc: str, case: dict[str, str], kind: str, raw: str)
     return record
 
 
+def job_values(job: dict[str, Any], kind: str) -> list[int]:
+    """One generating job's integers, after its Bell violation, min-entropy and value range hold."""
+    chsh, entropy = job.get("chsh"), job.get("min_entropy")
+    if not isinstance(chsh, int | float) or not 2 < chsh <= TSIRELSON:
+        raise DrawError(f"job {job.get('id')}: CHSH {chsh!r} does not violate the local bound")
+    if not isinstance(entropy, int | float) or not 0 < entropy <= 1:
+        raise DrawError(f"job {job.get('id')}: min-entropy {entropy!r} outside (0, 1]")
+    ints = job.get("ints")
+    if not isinstance(ints, list):
+        raise DrawError(f"job {job.get('id')}: no ints")
+    for value in ints:
+        if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= RANGES[kind]:
+            raise DrawError(f"value {value!r} outside {kind}")
+    return ints
+
+
 def admit(record: dict[str, Any]) -> None:
     """A record whose bytes, Bell violation, min-entropy, value range and order all hold."""
     if record.get("schema") != SCHEMA:
@@ -80,8 +101,7 @@ def admit(record: dict[str, Any]) -> None:
     raw = record["raw"]
     if hashlib.sha256(raw.encode()).hexdigest() != record["raw_sha256"]:
         raise DrawError("raw bytes differ from their sha256")
-    top = RANGES.get(record["type"])
-    if top is None:
+    if record["type"] not in RANGES:
         raise DrawError(f"type {record['type']!r}")
     case = record.get("approved_case")
     if not isinstance(case, dict) or not case.get("path") or len(str(case.get("sha256", ""))) != 64:
@@ -89,20 +109,8 @@ def admit(record: dict[str, Any]) -> None:
     jobs = json.loads(raw).get("jobs")
     if not isinstance(jobs, list) or not jobs:
         raise DrawError("the response carries no jobs")
-    values: list[int] = []
-    for job in jobs:
-        chsh, entropy = job.get("chsh"), job.get("min_entropy")
-        if not isinstance(chsh, int | float) or not 2 < chsh <= TSIRELSON:
-            raise DrawError(f"job {job.get('id')}: CHSH {chsh!r} does not violate the local bound")
-        if not isinstance(entropy, int | float) or not 0 < entropy <= 1:
-            raise DrawError(f"job {job.get('id')}: min-entropy {entropy!r} outside (0, 1]")
-        ints = job.get("ints")
-        if not isinstance(ints, list):
-            raise DrawError(f"job {job.get('id')}: no ints")
-        values += ints
-    for value in values:
-        if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= top:
-            raise DrawError(f"value {value!r} outside {record['type']}")
+    checked = parallel.ordered_map(functools.partial(job_values, kind=record["type"]), jobs)
+    values = [value for ints in checked for value in ints]
     if values != record["values"]:
         raise DrawError("parsed values differ from the raw response")
 
