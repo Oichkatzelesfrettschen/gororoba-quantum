@@ -29,9 +29,10 @@ of one photon's amplitude in mode space, and an off-cone click flags a count
 that the mesh's routing cannot produce. The sedenion content of the box-kite
 circuits it reads sits in which 4 x 4 case unitary the mesh realizes
 (`qd_belenos_mesh.source_target`). That content has no bearing on the cone's
-geometry. The photon itself crosses the 134 mm chip in about 0.7 to 0.9 ns
-(group index 1.5 to 2, a glass value the notes do not record), inside the
-ordinary spacetime light cone like any signal.
+geometry. The photon itself travels through the chip at its group velocity,
+inside the ordinary spacetime light cone like any signal; the notes record
+neither the waveguide group index nor the optical path length, so the transit
+time tau stays a parameter below.
 
 ## Scale of each coupling
 
@@ -45,7 +46,7 @@ qubit frequency.
 | Coupling | Device | Size | Basis |
 |---|---|---|---|
 | Earth-rotation Sagnac phase, single-pass interferometer enclosing the whole chip footprint | Belenos | at most 6.6e-9 rad | 4 pi Omega_E A / (lambda c), Omega_E = 7.292e-5 rad/s, A = 2.01e-3 m^2; real interferometer loops enclose far less |
-| Gravitational redshift between paths 15 mm apart in height, over one chip transit | Belenos | 2.2e-12 to 3.0e-12 rad | 2 pi nu tau g dh / c^2 |
+| Gravitational redshift between paths 15 mm apart in height, over a chip transit time tau | Belenos | 3.3e-12 rad per ns of tau | 2 pi nu tau g dh / c^2; tau is unrecorded |
 | Gravitational redshift across 1 mm of a chip, over 152.3 us | Heron r2 | 6.9e-16 rad per GHz of qubit frequency per us per mm, 1.0e-13 rad per GHz here | the fitted component envelope of the October 20 Ramsey beat model |
 | Height of the room-temperature reference oscillator above the chip, taken as 2 m | Heron r2 | fractional 2.2e-16, about 2e-7 Hz per GHz, static | absorbed into the calibrated qubit frequency like any static offset |
 | Motion relative to the CMB, 369.82 km/s (Planck 2018) | all | gamma - 1 = 7.6e-7, common to qubit, reference and detector | local Lorentz invariance makes a common velocity unobservable in a co-moving experiment |
