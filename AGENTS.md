@@ -15,8 +15,9 @@ Python and Qiskit pins, replay runtimes, the Rocq replays and gate cost.
 **CI runs nightly.** The GitHub Actions workflow `ci.yml` runs every gate on
 main each night and on manual dispatch. A pull request's gates (the pr tier
 and its affected full gates, [ci/AGENTS.md](ci/AGENTS.md)) run by hand on the PR
-head before merge, never per commit or push, and the Codex review loop of
-[Reviews and merges](#reviews-and-merges) is the merge gate.
+head before merge, never per commit or push. Admission takes both the Codex
+review loop and those gates passing under the pinned runtime, in the order of
+[Merging](#reviews-and-merges).
 
 **Code style.** Every Python file a change touches passes, before each push,
 through `"$PYTHON" ci/pinned_tool.py TOOL ARGS` (the versions of
@@ -372,11 +373,13 @@ code-review quota, the owner decides how the PR proceeds.
 3. Codex reviews the head once more; that round's threads are answered and
    resolved the same way.
 4. The pr tier and the affected full gates pass on the head under the pinned
-   runtime (`ci/run_gates.py --changed-files`, which refuses a `$PYTHON` that
-   differs from the pins). A gate that also fails on main still blocks the
-   merge: only an owner's exception naming that gate and that PR, quoted in
-   the PR body, admits it. `ci/premerge_gates.py` separates introduced from
-   shared failures and exits nonzero for both.
+   runtime: `ci/run_gates.py --changed-files` with `PYTHON` naming the
+   `ci-py3.14.7` host environment of `sh ci/build_host_envs.sh` (or another
+   interpreter holding every pin; the run refuses one that differs). A gate
+   that also fails on main still blocks the merge: only an owner's exception
+   naming that gate and that PR, quoted in the PR body, admits it.
+   `ci/premerge_gates.py` separates introduced failures (exit 1) from shared
+   ones (exit 3). A fix commit for a failing gate returns the PR to step 1.
 5. GitHub reports mergeable_state clean.
 
 Then, bottom-up, for each PR:

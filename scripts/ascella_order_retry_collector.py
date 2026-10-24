@@ -4,8 +4,9 @@ results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.json is
 retained evidence: a research-state claim binds its sha256, and its
 ``source_sha256`` names the bytes of every file the producing analysis read,
 the collector modules included. The run's own ``analysis.py --check`` is the
-historical replay: it requires those exact bytes, so it passes on the tree
-that wrote the record (commit 1677696) and on no tree whose collector moved.
+historical replay: it requires those exact bytes, so it passes on a tree
+whose collector modules hold the recorded bytes and on no tree whose
+collector moved.
 
 This check validates the current collector against that record instead. It
 recomputes the analysis with the modules the tree holds now and requires:
@@ -53,7 +54,9 @@ def compare(retained: dict[str, Any], fresh: dict[str, Any]) -> list[str]:
     return sorted(path for path in current.keys() - inputs if recorded[path] != current[path])
 
 
-def self_test(retained: dict[str, Any], fresh: dict[str, Any]) -> None:
+def self_test(retained: dict[str, Any], fresh: dict[str, Any]) -> int:
+    """Reject each mutation of the retained record that compare must catch; return how many were rejected."""
+
     def rejects(mutate: Any, fragment: str) -> None:
         mutated = copy.deepcopy(retained)
         mutate(mutated)
@@ -80,15 +83,20 @@ def self_test(retained: dict[str, Any], fresh: dict[str, Any]) -> None:
     def integer_type(record: dict[str, Any]) -> None:
         record["observations"][0]["accepted_samples"] = float(record["observations"][0]["accepted_samples"])
 
-    rejects(count, "counts")
-    rejects(probability, "measured_conditional_probabilities")
-    rejects(input_digest, "acquisition or analysis bytes differ")
-    rejects(extra_path, "object keys")
-    rejects(integer_type, "value type")
+    mutations = (
+        (count, "counts"),
+        (probability, "measured_conditional_probabilities"),
+        (input_digest, "acquisition or analysis bytes differ"),
+        (extra_path, "object keys"),
+        (integer_type, "value type"),
+    )
+    for mutate, fragment in mutations:
+        rejects(mutate, fragment)
     moved = copy.deepcopy(retained)
     moved["source_sha256"]["gororoba_quantum/parallel.py"] = "0" * 64
     if "gororoba_quantum/parallel.py" not in compare(moved, fresh):
         raise ValueError("a moved collector module is not named")
+    return len(mutations)
 
 
 def main() -> None:
@@ -98,8 +106,8 @@ def main() -> None:
     retained = json.loads((RUN / "analysis.json").read_text())
     fresh = analysis.analyze(RUN)
     if arguments.self_test:
-        self_test(retained, fresh)
-        print("5 retained-record mutations rejected; a moved collector module is named")
+        rejected = self_test(retained, fresh)
+        print(f"{rejected} retained-record mutations rejected; a moved collector module is named")
         return
     moved = compare(retained, fresh)
     print(

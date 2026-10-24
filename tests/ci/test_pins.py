@@ -221,10 +221,17 @@ def test_gate_lint_tools_are_pinned() -> None:
     # A bare ruff or mypy resolves through PATH, where a host install of
     # another release reports its own defects as gate failures.
     gates = json.loads((pins.ROOT / "ci/gates.json").read_text(encoding="utf-8"))["gates"]
-    bare = re.compile(r"(?:^|&&|;|\|)\s*(?:\w+=\S+\s+)*(?:ruff|mypy)\s")
+    bare = re.compile(r"(?:(?:^|&&|\|\||;|\||\$\(|\bthen|\bxargs)\s*(?:\w+=\S+\s+)*|-m\s+)(?:ruff|mypy)\b")
     unpinned = [gate["name"] for gate in gates if bare.search(gate["cmd"])]
     if unpinned:
         raise AssertionError(f"gates run ruff or mypy outside ci/pinned_tool.py: {', '.join(unpinned)}")
-    planted = 'MYPYPATH=docs mypy docs && "$PYTHON" ci/pinned_tool.py ruff check ci'
-    if not bare.search(planted) or bare.search('MYPYPATH=docs "$PYTHON" ci/pinned_tool.py mypy docs'):
+    planted = (
+        "MYPYPATH=docs mypy docs",
+        '"$PYTHON" -m mypy scripts',
+        "true && ruff check ci",
+        "git ls-files | xargs ruff check",
+        "test -d ci && $(ruff check ci)",
+    )
+    pinned = ('MYPYPATH=docs "$PYTHON" ci/pinned_tool.py mypy docs', '"$PYTHON" ../ci/pinned_tool.py ruff check .')
+    if not all(bare.search(command) for command in planted) or any(bare.search(command) for command in pinned):
         raise AssertionError("the bare-tool pattern misreads a planted command")

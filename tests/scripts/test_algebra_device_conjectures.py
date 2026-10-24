@@ -6,6 +6,7 @@ import copy
 import importlib
 import importlib.util
 import subprocess
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -220,20 +221,38 @@ def test_predecessor_record_requires_digest_commit_and_reason(mutation: str) -> 
         module.validate_manifest(manifest)
 
 
-def test_freeze_binds_only_bytes_head_holds(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_freeze_runs_only_on_a_checkout_identical_to_head(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = implementation()
 
     def git(*arguments: str) -> None:
         subprocess.run(["git", *arguments], cwd=tmp_path, check=True, capture_output=True)
 
     git("init", "-q")
-    for name in ("kept", "edited"):
+    for name in ("kept", "edited", "moved", "with space"):
         (tmp_path / name).write_text(f"{name}\n")
-    git("add", "kept", "edited")
+    git("add", ".")
     git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit", "-q", "-m", "base")
-    (tmp_path / "edited").write_text("changed\n")
-    (tmp_path / "untracked").write_text("new\n")
     monkeypatch.setattr(module, "ROOT", tmp_path)
-    found = module._uncommitted(["edited", "kept", "untracked"])
-    if found != ["edited", "untracked"]:
-        raise AssertionError(f"uncommitted bytes reported as {found}")
+    manifest = {"base_commit": "0" * 40, "selected_claim_ids": []}
+    if module._uncommitted():
+        raise AssertionError("a clean checkout reported changes")
+    with pytest.raises(ValueError, match="reason"):
+        module.freeze_manifest(manifest, tmp_path / "census.json", " ")
+    (tmp_path / "edited").write_text("changed\n")
+    (tmp_path / "with space").write_text("changed\n")
+    (tmp_path / "untracked").write_text("new\n")
+    git("mv", "moved", "renamed")
+    found = sorted(module._uncommitted())
+    if found != ["edited", "renamed", "untracked", "with space"]:
+        raise AssertionError(f"uncommitted state reported as {found}")
+    with pytest.raises(ValueError, match="identical to HEAD"):
+        module.freeze_manifest(manifest, tmp_path / "census.json", "a reason")
+
+
+def test_freeze_requires_a_reason(monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]) -> None:
+    module = implementation()
+    monkeypatch.setattr(sys, "argv", ["algebra_device_conjectures.py", "--freeze"])
+    with pytest.raises(SystemExit) as stopped:
+        module.main()
+    if stopped.value.code != 2 or "--freeze requires --reason" not in capsys.readouterr().err:
+        raise AssertionError("--freeze without --reason was accepted")

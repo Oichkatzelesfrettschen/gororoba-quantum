@@ -69,7 +69,7 @@ import sys
 import tempfile
 from collections.abc import Iterator
 from pathlib import Path
-from typing import Any
+from typing import Any, NoReturn
 
 import pins
 from host_identity import identity
@@ -109,6 +109,12 @@ def worktree(repo: Path, path: Path, commit: str) -> Iterator[Path]:
         git(repo, "worktree", "prune", check=False)
 
 
+def refuse(message: str) -> NoReturn:
+    """Stop with exit status 2: a runtime neither tree can run decides nothing about the merge."""
+    print(message, file=sys.stderr, flush=True)
+    raise SystemExit(2)
+
+
 @functools.cache
 def interpreter(root: Path) -> str:
     """The current-runtime interpreter pins.resolve_current chooses against root's own pins, as an absolute path.
@@ -124,10 +130,10 @@ def interpreter(root: Path) -> str:
     chosen, reason = pins.resolve_current(os.environ, sys.executable, root, admission=True)
     print(f"premerge: {root.name} current runtime: {reason}", flush=True)
     if chosen is None:
-        raise SystemExit(f"premerge: the current runtime cannot run: {reason}")
+        refuse(f"premerge: the current runtime cannot run: {reason}")
     found = shutil.which(chosen)
     if found is None:
-        raise SystemExit(f"PYTHON={chosen} names no executable")
+        refuse(f"PYTHON={chosen} names no executable")
     return os.path.abspath(found)
 
 
@@ -299,12 +305,12 @@ def premerge(
             # interpreter must satisfy the merge, the tree under test.
             merge_replay, refused = replay_interpreters(replay_python, merge_tree, "merge")
             if refused:
-                raise SystemExit(f"premerge: the merge's historical runtimes cannot run: {'; '.join(refused)}")
+                refuse(f"premerge: the merge's historical runtimes cannot run: {'; '.join(refused)}")
             base_replay, base_refused = replay_interpreters(replay_python, base_tree, "base")
             if replay_python and base_refused:
                 base_replay, base_refused = replay_interpreters(None, base_tree, "base")
             if base_refused:
-                raise SystemExit(f"premerge: the base's historical runtimes cannot run: {'; '.join(base_refused)}")
+                refuse(f"premerge: the base's historical runtimes cannot run: {'; '.join(base_refused)}")
             base_results, passes = base_gates(base_tree, base_commit, max_seconds, base_replay, cache)
             merge_results = results(merge_tree, max_seconds, merge_replay)
             if passes is not None:

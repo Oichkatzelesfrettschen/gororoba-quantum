@@ -116,14 +116,31 @@ def test_strict_run_needs_a_replay_interpreter(repo: Path, tmp_path: Path) -> No
     worktrees = tmp_path / "worktrees"
     strict = {key: value for key, value in os.environ.items() if key not in pins.REPLAY_VARIABLES}
     with mock.patch.dict(os.environ, {**strict, pins.PINS_REQUIRED: "1"}, clear=True):
+        errors = io.StringIO()
         try:
-            with contextlib.redirect_stdout(io.StringIO()):
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(errors):
                 premerge(repo, "consistent", "main", DEFAULT_MAX_SECONDS, worktrees)
         except SystemExit as error:
-            if "historical runtimes cannot run" not in str(error) or worktrees.exists():
+            if error.code != 2 or "historical runtimes cannot run" not in errors.getvalue() or worktrees.exists():
                 raise AssertionError(f"a strict run without a replay interpreter stopped with {error}") from error
         else:
             raise AssertionError("a strict run without a replay interpreter compared its gates")
+
+
+def test_admission_refuses_an_interpreter_off_the_pins() -> None:
+    # A premerge verdict decides admission, so an explicit $PYTHON that
+    # differs from the pins stops the run with status 2.
+    errors = io.StringIO()
+    with (
+        mock.patch.dict(os.environ, {"PYTHON": "/named/python"}),
+        mock.patch.object(pins, "mismatches", lambda _python, _pins, _patches=None: ["qiskit 2.5.2 (pin 2.6.0)"]),
+        contextlib.redirect_stdout(io.StringIO()),
+        contextlib.redirect_stderr(errors),
+        pytest.raises(SystemExit) as stopped,
+    ):
+        premerge_gates.interpreter.__wrapped__(ROOT)
+    if stopped.value.code != 2 or "cannot decide admission" not in errors.getvalue():
+        raise AssertionError(f"an off-pin interpreter stopped with {stopped.value.code}: {errors.getvalue()}")
 
 
 def test_run_gates_variables_fall_under_the_cache_key() -> None:

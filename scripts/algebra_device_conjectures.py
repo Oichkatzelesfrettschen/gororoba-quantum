@@ -69,35 +69,36 @@ def _source_record(path: str) -> dict[str, str]:
     return {"path": path, "sha256": digest(local_path(path))}
 
 
-def _uncommitted(paths: list[str]) -> list[str]:
-    """The paths whose checkout bytes differ from HEAD's, so a freeze's base_commit names every bound byte."""
+def _uncommitted() -> list[str]:
+    """Every tracked or untracked path whose checkout state differs from HEAD's, ignored files excepted."""
     listed = subprocess.run(
-        ["git", "ls-tree", "-z", "HEAD", "--", *paths], cwd=ROOT, capture_output=True, check=True
+        ["git", "status", "--porcelain=v1", "-z", "--untracked-files=all"], cwd=ROOT, capture_output=True, check=True
     ).stdout.decode()
-    committed = {}
-    for entry in filter(None, listed.split("\0")):
-        meta, path = entry.split("\t", 1)
-        committed[path] = meta.split()[2]
-    hashed = subprocess.run(
-        ["git", "hash-object", "--no-filters", "--stdin-paths"],
-        cwd=ROOT,
-        input="\n".join(paths) + "\n",
-        capture_output=True,
-        text=True,
-        check=True,
-    ).stdout.split()
-    return [path for path, blob in zip(paths, hashed, strict=True) if committed.get(path) != blob]
+    entries = iter(listed.split("\0"))
+    paths = []
+    for entry in entries:
+        if not entry:
+            continue
+        paths.append(entry[3:])
+        # A rename or copy entry is followed by its source path.
+        if "R" in entry[:2] or "C" in entry[:2]:
+            next(entries, None)
+    return paths
 
 
 def freeze_manifest(manifest: dict[str, Any], census_path: Path, reason: str) -> dict[str, Any]:
     """Explicitly refresh the frozen inventory through the existing offline provider adapters.
 
     The successor names its predecessor's digest and base commit and the
-    reason for the refresh, and freezes only bytes HEAD holds.
+    reason for the refresh. A freeze reads the registry, every retained run
+    and this producer, so it runs only on a checkout identical to HEAD and
+    base_commit names every byte it read.
     """
     import research_state
 
     require(bool(reason.strip()), "a refresh needs a reason")
+    uncommitted = _uncommitted()
+    require(not uncommitted, f"freeze needs a checkout identical to HEAD: {', '.join(uncommitted[:5])}")
     predecessor = {
         "manifest_sha256": hashlib.sha256(encode(manifest).encode()).hexdigest(),
         "base_commit": manifest["base_commit"],
@@ -132,8 +133,6 @@ def freeze_manifest(manifest: dict[str, Any], census_path: Path, reason: str) ->
             paths.update(
                 path.relative_to(ROOT).as_posix() for path in local_path(row["run"]).rglob("*") if path.is_file()
             )
-    uncommitted = _uncommitted(sorted(paths))
-    require(not uncommitted, f"freeze binds bytes HEAD lacks: {', '.join(uncommitted[:5])}")
     manifest = {
         **manifest,
         "supersedes": predecessor,
