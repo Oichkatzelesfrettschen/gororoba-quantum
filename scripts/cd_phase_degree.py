@@ -25,6 +25,13 @@ cell by cell against tables built from cd_sign, and the statements:
   closed form A = g' + delta_u + delta_v + const with u != v for an upper pair
   degree      deg g_ij = max(1, bitlen(max(i, j)) - 2) on every ordered pair (n >= 3)
   census      unordered pairs of degree n - 2 added at level n: 3 2^(n-2) (2^(n-1) - 1)
+  leading     for n >= 3 and m != 0, the degree-(n-1) ANF layer of f_m is
+              sum_j m_j prod_(l != j) x_l and f_m has no degree-n term
+  right rows  deg phi_n(., m) = 1 when m is a power of two, else max(1, bitlen(m) - 2)
+  right inv   phi_n(a, m) + phi_n(a^m, m) = 1 for m != 0, so the Walsh coefficients of
+              (-1)^phi_n(., m) vanish at every z with popcount(m & z) even
+  bilinear    the degree-2 ANF layer of f_AM(x, y) = phi_n(y, x) on the 2n variables of
+              (x, y) is sum_(i <= j) x_i y_j, with no constant or linear term
 
 Stdout is byte-deterministic; --timing adds per-level seconds on stderr.
 --mutate replaces one branch of cd_sign by a wrong one and inverts the
@@ -88,17 +95,62 @@ def phi_table(n: int, sign: Callable[[int, int, int], int]) -> Table:
     return np.array([[sign(dim, a, x) < 0 for x in range(dim)] for a in range(dim)], dtype=np.uint8)
 
 
-def anf_degrees(rows: Table) -> npt.NDArray[np.int64]:
-    """ANF degree of each row of a 0/1 truth-table matrix (Moebius transform over F_2)."""
+def anf(rows: Table) -> Table:
+    """ANF coefficients of each row of a 0/1 truth-table matrix (Moebius transform over F_2), monomial m at
+    column m."""
     a = rows.astype(np.uint8, copy=True)
     count, size = a.shape
-    k = size.bit_length() - 1
-    for b in range(k):
+    for b in range(size.bit_length() - 1):
         a = a.reshape(count, -1, 2, 1 << b)
         a[:, :, 1, :] ^= a[:, :, 0, :]
         a = a.reshape(count, size)
-    weight = np.array([m.bit_count() for m in range(size)], dtype=np.int64)
+    return a
+
+
+def anf_degrees(rows: Table) -> npt.NDArray[np.int64]:
+    """ANF degree of each row of a 0/1 truth-table matrix."""
+    a = anf(rows)
+    weight = np.bitwise_count(np.arange(a.shape[1])).astype(np.int64)
     return np.where(a.any(axis=1), (a * weight).max(axis=1), 0)
+
+
+def check_coefficients(n: int, phi: Table) -> None:
+    """Leading layer of the left sign rows, degree of the right sign rows, right involution with its Walsh
+    parity, and the bilinear layer of the paper's cochain."""
+    dim = 1 << n
+    m = np.arange(1, dim)
+    if n >= 3:
+        coeff = anf(phi[1:])
+        full = dim - 1
+        _require(not coeff[:, full].any(), f"leading: degree-n term at n = {n}")
+        for j in range(n):
+            want = ((m >> j) & 1).astype(np.uint8)
+            _require(bool((coeff[:, full ^ (1 << j)] == want).all()), f"leading: bit {j} at n = {n}")
+        weight = np.bitwise_count(np.arange(dim))
+        top = coeff[:, weight == n - 1]
+        _require(int(top.sum()) == int(np.bitwise_count(m).sum()), f"leading: extra terms at n = {n}")
+    bitlen = np.floor(np.log2(m)).astype(np.int64) + 1
+    power = (m & (m - 1)) == 0
+    want_deg = np.where(power, 1, np.maximum(1, bitlen - 2))
+    right = np.ascontiguousarray(phi.T[1:])
+    _require(bool((anf_degrees(right) == want_deg).all()), f"right rows: n = {n}")
+    a = np.arange(dim)
+    _require(
+        bool((phi[a[:, None], m[None, :]] ^ phi[a[:, None] ^ m[None, :], m[None, :]]).all()), f"right inv: n = {n}"
+    )
+    signs = 1 - 2 * right.astype(np.int64)
+    overlap = np.bitwise_count(a[:, None] & a[None, :]) % 2
+    hadamard = (1 - 2 * overlap).astype(np.int64)
+    walsh = signs @ hadamard
+    even = overlap[1:] == 0
+    _require(not walsh[even].any(), f"right inv: Walsh coefficient at an even z, n = {n}")
+    joint = anf(phi.reshape(1, -1))[0]
+    pairs = 1 << (2 * n)
+    weight2 = np.bitwise_count(np.arange(pairs))
+    quadratic = set(np.flatnonzero(joint & (weight2 == 2)).tolist())
+    want_quad = {(1 << i) | (1 << (n + jj)) for i in range(n) for jj in range(n) if i <= jj}
+    _require(quadratic == want_quad, f"bilinear: degree-2 layer at n = {n}")
+    _require(not joint[weight2 <= 1].any(), f"bilinear: constant or linear term at n = {n}")
 
 
 def check_two_point(k: int) -> None:
@@ -232,6 +284,7 @@ def main() -> int:
             phi = phi_table(n, sign)
             check_two_point(n)
             new, degree = check_level(n, phi, low)
+            check_coefficients(n, phi)
             if n >= 3:
                 print(f"{n} {1 << n} {n - 1} {new} {degree}")
             if args.timing:

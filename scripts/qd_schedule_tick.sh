@@ -105,6 +105,16 @@ for schedule in $schedules; do
 				--jq .html_url ||
 				echo "::warning::opening the pull request of $branch failed; open it by hand" >&2
 		fi
+		# A pull_request event from GITHUB_TOKEN starts no workflow, so the checks
+		# main requires run through workflow_dispatch on the finished branch head.
+		case $outcome in
+		done | stop)
+			if [ "$ahead" -gt 0 ]; then
+				gh api -X POST "repos/$GITHUB_REPOSITORY/actions/workflows/pr.yml/dispatches" -f ref="$branch" ||
+					echo "::warning::dispatching pr.yml on $branch failed (a branch cut before pr.yml accepted workflow_dispatch); merge main into $branch and push" >&2
+			fi
+			;;
+		esac
 	fi
 	git worktree remove "$res"
 	res=

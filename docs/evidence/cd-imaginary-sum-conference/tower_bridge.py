@@ -6,6 +6,11 @@ coordinate lists and requires e_a e_b = cd_sign(n, a, b) e_(a XOR b) for every a
 imaginary sum (s, 1 + s) to equal e_1 + ... + e_(n-1). The Rocq theorems hold for the tower; this finite check
 carries them to the sign table the census reads.
 
+It also mirrors the Fixpoint sigma of proofs/CdTowerBasisSign.v, whose theorem basis_mul gives
+e_a e_b = sigma_k(a, b) e_(a XOR b) for every k, and requires sigma_k(a, b) = cd_sign(2^k, a, b) on every pair
+through n = 64. As a negative control, negating any one of sigma's four branches must disagree with cd_sign on some
+pair at every n >= 4.
+
 Usage: "$PYTHON" docs/evidence/cd-imaginary-sum-conference/tower_bridge.py
 """
 
@@ -45,6 +50,28 @@ def imaginary_sum(n: int) -> Vector:
     return lower + [lower[0] + 1, *lower[1:]]
 
 
+def sigma(k: int, p: int, q: int, flip: int | None = None) -> int:
+    """The Rocq Fixpoint sigma branch for branch; flip negates one branch, numbered in source order."""
+    if k == 0:
+        return 1
+    half = 1 << (k - 1)
+    if p < half and q < half:
+        branch, value = 0, sigma(k - 1, p, q, flip)
+    elif p < half:
+        branch, value = 1, sigma(k - 1, q - half, p, flip)
+    elif q < half:
+        branch, value = 2, (1 if q == 0 else -1) * sigma(k - 1, p - half, q, flip)
+    else:
+        branch, value = 3, -1 if q - half == 0 else sigma(k - 1, q - half, p - half, flip)
+    return -value if branch == flip else value
+
+
+def sigma_disagreements(task: tuple[int, int, int | None]) -> int:
+    n, a, flip = task
+    k = n.bit_length() - 1
+    return sum(sigma(k, a, b, flip) != cd_sign(n, a, b) for b in range(n))
+
+
 def row_matches(task: tuple[int, int]) -> bool:
     n, a = task
     unit_a = [int(i == a) for i in range(n)]
@@ -64,6 +91,14 @@ def main() -> int:
         rows = ordered_map(row_matches, [(n, a) for a in range(n)], min_items=1)
         failures += [f"row {a} at n = {n}" for a, ok in enumerate(rows) if not ok]
         print(f"n = {n}: tower products match cd_sign on {sum(rows)} of {n} rows")
+        for flip in (None, 0, 1, 2, 3):
+            count = sum(ordered_map(sigma_disagreements, [(n, a, flip) for a in range(n)], min_items=1))
+            if flip is None and count:
+                failures.append(f"sigma differs from cd_sign on {count} pairs at n = {n}")
+            elif flip is not None and n >= 4 and not count:
+                failures.append(f"sigma with branch {flip} negated still matches cd_sign at n = {n}")
+            if flip is None:
+                print(f"n = {n}: sigma matches cd_sign on {n * n - count} of {n * n} pairs")
     if failures:
         raise SystemExit("tower and cd_sign differ: " + ", ".join(failures))
     return 0

@@ -1,0 +1,5 @@
+a64c5ab797b4f84d358e5f674627000fa65649ab8e66ff84ad18927a9cbb4c82  proofs/CdImaginarySumConference.v
+eca061c1bb96cfc4c11fe76c9098448a35be271aeece219196b8181f865b2d07  proofs/CdTowerBasisSign.v
+f4f8bd183d9cd133ccd5e33e3ebbcfe04eb59a4408cf1c5b975c6941bf5f1c64  docs/evidence/cd-tower-basis-sign/assumptions.v
+81f586bfbd3f35f05ac2932a6cd4ef157b02ce0c30264f58f2f74067791cf9bf  docs/evidence/cd-tower-basis-sign/assumptions.txt
+1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f  docs/evidence/cd-tower-basis-sign/kernel.txt
