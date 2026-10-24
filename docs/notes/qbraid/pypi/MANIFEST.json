@@ -1,0 +1,18 @@
+{
+ "schema": "qbraid-docs-capture-v1",
+ "kind": "pypi",
+ "retrieved_utc": "2026-10-24T20:47Z",
+ "files": [
+  {
+   "path": "docs/notes/qbraid/pypi/qbraid.json",
+   "source": "https://pypi.org/pypi/qbraid/0.13.0/json",
+   "sha256": "ebf1ea1d2d965ce58592857d528798644a7522b95a8bd9bbc66e53ef74f2882f"
+  },
+  {
+   "path": "docs/notes/qbraid/pypi/qbraid-core.json",
+   "source": "https://pypi.org/pypi/qbraid-core/0.6.36/json",
+   "sha256": "fee64b3bf5e39868d8a5425bfdbc54592dfdf2f81c510af79b1a3d97a33dc2d3"
+  }
+ ],
+ "unreachable": []
+}
