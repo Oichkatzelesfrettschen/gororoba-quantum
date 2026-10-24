@@ -211,7 +211,11 @@ def claimed_records(manifest_root: Path) -> set[str]:
     whole draw, while a qrng:<draw>#<index> reference consumes that one index."""
     claimed: set[str] = set()
     for path in sorted(manifest_root.rglob("*.json")) if manifest_root.is_dir() else []:
-        claimed.update(DRAW_NAME.findall(qrng_seeds.REF.sub("", path.read_text(encoding="utf-8"))))
+        text = path.read_text(encoding="utf-8")
+        # A file that references a draw by index (a run record, or a scripts/kaggle_run.py manifest whose bundle
+        # inventory also names the draw file) consumes indices, not the whole draw.
+        indexed = {Path(match.group(1)).name for match in qrng_seeds.REF.finditer(text)}
+        claimed.update(set(DRAW_NAME.findall(qrng_seeds.REF.sub("", text))) - indexed)
     return claimed
 
 
