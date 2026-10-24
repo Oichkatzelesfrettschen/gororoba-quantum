@@ -87,6 +87,7 @@ import aer_resources  # noqa: E402
 import calibration_snapshot  # noqa: E402
 import jax_bridge  # noqa: E402
 import parallel  # noqa: E402
+import qrng_seeds  # noqa: E402
 
 SCHEMA = "jax-bridge-sweep-v2"
 PARITY_SAMPLE = 2
@@ -821,7 +822,7 @@ def main() -> int:
     parser.add_argument("--device", choices=("cpu", "gpu", "tpu"))
     parser.add_argument("--out", type=Path)
     parser.add_argument("--parity-sample", type=parity_count, default=PARITY_SAMPLE, help="a count, or all")
-    parser.add_argument("--parity-seed", type=int, default=PARITY_SEED)
+    qrng_seeds.add_seed_argument(parser, "--parity-seed", default=PARITY_SEED)
     parser.add_argument("--batch-bytes", type=int, default=BATCH_BYTES)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--unit-test", action="store_true", help="check synthetic templates, channels and chunks")
@@ -850,6 +851,10 @@ def main() -> int:
         "versions": versions(),
         "runs": [],
     }
+    if args.parity_seed_source != "default":
+        out["seed_source"] = qrng_seeds.seed_record(
+            "scripts/jax_bridge_sweep.py", "--parity-seed", qrng_seeds.repo_relative(args.out), args.parity_seed_source
+        )
     args.out.parent.mkdir(parents=True, exist_ok=True)
     replay = jax_replay(device, args.batch_bytes)
     states: dict[str, SnapshotState] = {}

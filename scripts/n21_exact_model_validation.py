@@ -57,6 +57,7 @@ import dynamic_density  # noqa: E402
 import law_encoding  # noqa: E402
 import n21_exact_planning  # noqa: E402
 import parallel  # noqa: E402
+import qrng_seeds  # noqa: E402
 import snapshot_laws  # noqa: E402
 from experiment_optimizer import ObservableContract, ObservableTerm  # noqa: E402
 
@@ -302,7 +303,7 @@ def main() -> int:
     parser.add_argument("--snapshot", type=Path)
     parser.add_argument("--isa", type=Path)
     parser.add_argument("--shots", type=int)
-    parser.add_argument("--seed", type=int)
+    qrng_seeds.add_seed_argument(parser, "--seed")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
     if args.self_test:
@@ -318,6 +319,12 @@ def main() -> int:
         if None in (args.snapshot, args.isa, args.shots, args.seed):
             raise SystemExit("--sample needs --snapshot, --isa, --shots and --seed")
         record = sample(args.snapshot, args.isa, args.shots, args.seed)
+        record["seed_source"] = qrng_seeds.seed_record(
+            "scripts/n21_exact_model_validation.py",
+            "--seed",
+            f"{qrng_seeds.repo_relative(args.snapshot)} {qrng_seeds.repo_relative(args.isa)}",
+            args.seed_source,
+        )
     else:
         record = merge([json.loads(path.read_text()) for path in args.merge])
     args.out.parent.mkdir(parents=True, exist_ok=True)

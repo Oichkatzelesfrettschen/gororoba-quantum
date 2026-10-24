@@ -16,7 +16,7 @@ Each literal is keyed by (file, seed name, value). ci/reproduction_seeds.json
 lists the keys that reproduce retained records, approved plans and known
 meshes, with their counts; --shrink refuses a row it adds or raises over the
 baseline origin/main holds. docs/evidence/qrng_seeds/allocations.json
-lists each key a new seed took from a retained ANU draw, with the draw record
+lists each key a new seed took from a retained QRNG draw, with the draw record
 and the value's index. The check requires, per key, the tree's count to equal
 the baseline count plus the allocation count; each allocation's record to pass
 its source's admit function (SOURCES: the ANU, Outshift and Quandela adapters
@@ -54,12 +54,14 @@ BASELINE = ROOT / "ci" / "reproduction_seeds.json"
 ALLOCATIONS = ROOT / "docs" / "evidence" / "qrng_seeds" / "allocations.json"
 MANIFEST_ROOT = ROOT / "results"
 SOURCES = qrng_seeds.SOURCES
-# Flags that carry "seed" yet set no seed value: counts of transpiler or QX seeds and a recompile switch.
+# Flags that carry "seed" yet set no seed value: counts of transpiler or QX seeds, a recompile switch and the
+# retained comparison whose job rows a rewrite reuses.
 PLAIN_SEED_FLAGS = frozenset(
     {
         ("gororoba_quantum/live_run.py", "--seeds"),
         ("scripts/n21_qx_conformance.py", "--seeds"),
         ("scripts/n21_conjugation_noise.py", "--all-seeds"),
+        ("scripts/compare_submitted_circuits.py", "--seed"),
     }
 )
 # The shrink-only comparison reads the baseline main holds; pr.yml fetches this ref before the tests.

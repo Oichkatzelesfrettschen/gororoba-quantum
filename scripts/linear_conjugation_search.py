@@ -50,6 +50,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import parallel  # noqa: E402
+import qrng_seeds  # noqa: E402
 from modular_arithmetic import modular_permutation  # noqa: E402
 from target_flip import CONTROLLED_CX_COST, target_flip_network  # noqa: E402
 
@@ -352,7 +353,7 @@ def main() -> int:
     mode.add_argument("--merge", type=Path, nargs="+")
     mode.add_argument("--check", type=Path)
     parser.add_argument("--stop", type=int)
-    parser.add_argument("--seed", type=int, default=20261016)
+    qrng_seeds.add_seed_argument(parser, "--seed", default=20261016)
     parser.add_argument("--limit", type=int, default=DEFAULT_CHECK_LIMIT)
     parser.add_argument("--out", type=Path)
     args = parser.parse_args()
@@ -362,6 +363,10 @@ def main() -> int:
     _require(args.out is not None, "--out is required")
     if args.sample is not None:
         record = run_sample(args.sample, args.seed)
+        if args.seed_source != "default":
+            record["seed_source"] = qrng_seeds.seed_record(
+                "scripts/linear_conjugation_search.py", "--seed", qrng_seeds.repo_relative(args.out), args.seed_source
+            )
         print(json.dumps({key: record[key] for key in ("seconds", "seconds_per_synthesis_cpu", "checks", "best")}))
     elif args.merge:
         record = merge([json.loads(path.read_text(encoding="utf-8")) for path in args.merge])

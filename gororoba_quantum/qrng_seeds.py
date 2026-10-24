@@ -146,6 +146,21 @@ def seed_record(script: str, flag: str, experiment: str, source: str | list[str]
     return {"script": script, "flag": flag, "experiment": experiment, "sources": sources}
 
 
+def spellings(seeds: Sequence[int], sources: Sequence[str]) -> list[str]:
+    """Command-line spellings of parsed seeds: a default value as its integer, any other as the spelling given."""
+    return [str(seed) if source == "default" else source for seed, source in zip(seeds, sources, strict=True)]
+
+
+def repo_relative(path: Path | str) -> str:
+    """The repository-relative POSIX spelling of a path; outside the tree, its file name alone, since a record
+    carries no local absolute path."""
+    resolved = Path(path).resolve()
+    try:
+        return resolved.relative_to(ROOT).as_posix()
+    except ValueError:
+        return resolved.name
+
+
 def self_test() -> int:
     draw = sorted((ROOT / "docs/evidence/anu_qrng").glob("draw-*.json"))[-1]
     record_path = draw.relative_to(ROOT).as_posix()
@@ -178,6 +193,11 @@ def self_test() -> int:
         except SeedSourceError:
             continue
         raise SystemExit(f"self-test: {name} was admitted")
+    if (
+        repo_relative(ROOT / "results" / "x") != "results/x"
+        or repo_relative(ROOT.parent / "elsewhere.json") != "elsewhere.json"
+    ):
+        raise SystemExit("self-test: repo_relative leaked a path outside the tree")
     record = seed_record("scripts/x.py", "--seed", "case-a", ref)
     if record["sources"] != [ref]:
         raise SystemExit(f"self-test: seed_record wrote {record}")
