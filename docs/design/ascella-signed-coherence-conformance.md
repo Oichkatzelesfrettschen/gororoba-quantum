@@ -9,7 +9,8 @@ predicted harmonic coefficients, and renders their measured geometry.
 The plan contains one proposed 64-setting order-family job, a 300-second cap
 and a 1.2-credit ceiling. The recorded tariff gives 1.016384 credits. The
 [frozen request](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json)
-exists; its local replay, written case and submission remain prospective. Wave evolution
+and its serialized job body exist; the local replay, written case and
+submission remain prospective. Wave evolution
 and Fourier families retain separate cases. The science-led design replaces
 the fixed-angle reference-and-repeat design in this document's Git history;
 all settings now probe the order mathematics, its sign symmetry or its
@@ -484,9 +485,18 @@ requires refusal of a perturbed unitary, exchanged X and Y analyzers and a
 four-entry input occupation. The `sample_count` command signature of the
 retained Ascella record takes `max_samples`, `max_shots` and
 `compilation_seed` only, so the request leaves `final_mode_number` at its
-input-width default of twelve. The job body that `qd_platform.py plan`
-serializes against the live command set becomes the sent bytes at preflight.
-Local replay executes the serialized request through SLOS/Naive.
+input-width default of twelve. `--body` builds the job body through
+`qd_platform.payload`, which reads the live qpu:ascella record and records the
+body instead of sending it, and retains
+[`job-body.json`](../../results/quandela/cases/ascella_signed_coherence/job-00/job-body.json)
+with its build record; Perceval's per-setting estimate is 524,288 shots
+against the 1,048,576 cap. `--check` deserializes that body and requires 64
+entries carrying the manifest's `circuit_params`, 8,192 samples, 16,384 shots
+and seed 0, the twelve-entry input, the one-photon filter and the empty
+mitigation list, with each entry's bound unitary equal to the design operator
+within 1e-9. Preflight compares the fresh body with the retained one in every
+field except `process_id`. Local replay executes the serialized request
+through SLOS/Naive.
 Synthetic diagonal mixtures, conjugation, swapped readouts, aliasing and missing
 arms exercise the analysis. Fresh preflight and the applicable
 [evidence-closure procedure](../runbooks/evidence-closure.md) precede submission.

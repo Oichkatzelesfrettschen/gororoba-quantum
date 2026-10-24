@@ -2425,7 +2425,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ascella_coherence_request.py --check",
    "name": "core-680",
-   "seconds": 2.7,
+   "seconds": 5.6,
    "tier": "pr"
   },
   {

@@ -23,17 +23,28 @@ Q- = 0 for the commuting mutation) and the readout law that form implies. The
 check also requires the rejection of a perturbed unitary, an exchanged
 analyzer and a four-mode output width.
 
+--body builds the job body through qd_platform.payload, which reads the live
+qpu:ascella processor record with the job token and records the body that
+RemoteComputer would send instead of sending it, and retains job-body.json and
+body-build.json beside the case; the frozen body is never rewritten. --check
+reads only retained files: it also deserializes the body's computation and
+requires 64 entries carrying the manifest's circuit_params, 8,192 samples,
+16,384 shots and seed 0, the twelve-entry input, the one-photon filter, the
+empty mitigation list, and each entry's bound unitary equal to the design
+operator.
+
 Usage:
-  "$PYTHON" scripts/ascella_coherence_request.py [--check]
+  "$PYTHON" scripts/ascella_coherence_request.py [--check | --body]
 """
 
 from __future__ import annotations
 
 import copy
-import hashlib
 import json
 import math
 import sys
+from datetime import UTC, datetime
+from functools import cache
 from pathlib import Path
 from typing import Any
 
@@ -45,9 +56,18 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from bdsc_certificate import close  # noqa: E402
 from hypercomplex_cases import encoded, photonic_template  # noqa: E402
-from qd_platform import PlatformError, iteration_form, template_experiment  # noqa: E402
+from qd_platform import (  # noqa: E402
+    PlatformError,
+    body_mitigations,
+    iteration_form,
+    load_case,
+    payload,
+    sha256_bytes,
+    template_experiment,
+)
 
 from hypercomplex_operators import ComplexMatrix, order_interferometer, quaternion_matrix  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 MODES = 12
 LOGICAL = 4
@@ -62,6 +82,9 @@ SAMPLES = 8192
 SHOTS = 16384
 MAX_DURATION = 300
 TOLERANCE = 1e-12
+# Perceval's BS.Rx and PS products carry the template angles to the design operator within this bound.
+BODY_TOLERANCE = 1e-9
+PLATFORM = "qpu:ascella"
 OUT = ROOT / "results/quandela/cases/ascella_signed_coherence/job-00"
 DESIGN = "docs/design/ascella-signed-coherence-conformance.md"
 
@@ -169,32 +192,32 @@ def ideal(row: dict[str, Any]) -> dict[str, float]:
     return {"z": 0.5 * math.sin(2 * theta) * math.sin(2 * phi) + 0.0}
 
 
+def build_setting(item: tuple[int, dict[str, Any]]) -> tuple[dict[str, Any], dict[str, Any]]:
+    """The template mesh and the manifest setting of one iteration."""
+    index, row = item
+    logical = analyzer(row["readout"]) @ order_operator(row["theta"], row["phi"], row["generator"])
+    mesh, parameters = photonic_template(logical)
+    full = embed(logical)
+    return mesh, {
+        "name": f"{row['block']}-arm{row['arm']}" + ("-ii" if row["generator"] == "i" else ""),
+        "observation_index": index,
+        **row,
+        "ideal": ideal(row),
+        "circuit_params": parameters,
+        "column": [[float(value.real), float(value.imag)] for value in full[:, SOURCE]],
+        "operator": encoded(full),
+        "compilation_seed": 0,
+    }
+
+
 def documents() -> dict[str, bytes]:
     """{"cases.json": bytes, "circuit.json": bytes} of the request."""
-    rows = entries()
-    template: dict[str, Any] | None = None
-    settings: list[dict[str, Any]] = []
-    for index, row in enumerate(rows):
-        logical = analyzer(row["readout"]) @ order_operator(row["theta"], row["phi"], row["generator"])
-        mesh, parameters = photonic_template(logical)
-        require(template is None or mesh == template, f"iteration {index} needs another mesh than iteration 0")
-        template = mesh
-        full = embed(logical)
-        name = f"{row['block']}-arm{row['arm']}" + ("-ii" if row["generator"] == "i" else "")
-        settings.append(
-            {
-                "name": name,
-                "observation_index": index,
-                **row,
-                "ideal": ideal(row),
-                "circuit_params": parameters,
-                "column": [[float(value.real), float(value.imag)] for value in full[:, SOURCE]],
-                "operator": encoded(full),
-                "compilation_seed": 0,
-            }
-        )
-    if template is None or len(settings) != 64:
-        raise ValueError(f"the request holds {len(settings)} iterations, not 64")
+    built = ordered_map(build_setting, list(enumerate(entries())), min_items=1)
+    template = built[0][0]
+    for index, (mesh, _) in enumerate(built):
+        require(mesh == template, f"iteration {index} needs another mesh than iteration 0")
+    settings = [setting for _, setting in built]
+    require(len(settings) == 64, f"the request holds {len(settings)} iterations, not 64")
     input_state = [0] * MODES
     input_state[SOURCE] = 1
     circuit = {**template, "modes": MODES, "input_state": input_state}
@@ -217,7 +240,7 @@ def documents() -> dict[str, bytes]:
         "eligibility": "occupation sum one across all twelve returned modes",
         "design": DESIGN,
         "settings": settings,
-        "circuit": {"file": "circuit.json", "sha256": hashlib.sha256(circuit_bytes).hexdigest()},
+        "circuit": {"file": "circuit.json", "sha256": sha256_bytes(circuit_bytes)},
         "preregistered": {
             "primary_endpoints": 27,
             "family_alpha": 0.01,
@@ -263,32 +286,106 @@ def validate(manifest: dict[str, Any], circuit: dict[str, Any]) -> None:
     settings = manifest["settings"]
     require(len(settings) == len(rows), f"{owner}: {len(settings)} settings, not {len(rows)}")
     template_experiment(manifest, circuit)
-    for index, (setting, row) in enumerate(zip(settings, rows, strict=True)):
-        label = f"{owner}/{setting.get('name')}"
-        for key, value in row.items():
-            require(setting.get(key) == value, f"{label}: {key} is {setting.get(key)!r}, not {value!r} at {index}")
-        require(setting.get("compilation_seed") == 0, f"{label}: compilation_seed is not 0")
-        require(setting.get("observation_index") == index, f"{label}: observation_index is not {index}")
-        full = operator_of(setting)
-        require(full.shape == (MODES, MODES), f"{label}: the operator is {full.shape}, not twelve-mode")
-        expected = embed(analyzer(row["readout"]) @ closed_form(row["theta"], row["phi"], row["generator"]))
-        deviation = float(np.max(np.abs(full - expected)))
-        require(deviation <= TOLERANCE, f"{label}: the operator departs from the closed form by {deviation:.2e}")
-        probabilities = np.abs(full[:, SOURCE]) ** 2
-        require(float(probabilities[LOGICAL:].sum()) <= TOLERANCE, f"{label}: the source leaves the logical block")
-        registered = setting.get("ideal")
-        observed = (
-            {"dark": float(probabilities[2] + probabilities[3])}
-            if row["readout"] == "direct"
-            else {"z": float(probabilities[0] - probabilities[3])}
-        )
+    ordered_map(
+        check_setting,
+        [(owner, index, setting, row) for index, (setting, row) in enumerate(zip(settings, rows, strict=True))],
+    )
+
+
+def check_setting(item: tuple[str, int, dict[str, Any], dict[str, Any]]) -> None:
+    """One iteration's position, seed, closed-form twelve-mode operator and registered ideal readout."""
+    owner, index, setting, row = item
+    label = f"{owner}/{setting.get('name')}"
+    for key, value in row.items():
+        require(setting.get(key) == value, f"{label}: {key} is {setting.get(key)!r}, not {value!r} at {index}")
+    require(setting.get("compilation_seed") == 0, f"{label}: compilation_seed is not 0")
+    require(setting.get("observation_index") == index, f"{label}: observation_index is not {index}")
+    full = operator_of(setting)
+    require(full.shape == (MODES, MODES), f"{label}: the operator is {full.shape}, not twelve-mode")
+    deviation = float(np.max(np.abs(full - expected_operator(row))))
+    require(deviation <= TOLERANCE, f"{label}: the operator departs from the closed form by {deviation:.2e}")
+    probabilities = np.abs(full[:, SOURCE]) ** 2
+    require(float(probabilities[LOGICAL:].sum()) <= TOLERANCE, f"{label}: the source leaves the logical block")
+    registered = setting.get("ideal")
+    observed = (
+        {"dark": float(probabilities[2] + probabilities[3])}
+        if row["readout"] == "direct"
+        else {"z": float(probabilities[0] - probabilities[3])}
+    )
+    require(
+        isinstance(registered, dict)
+        and registered.keys() == observed.keys()
+        and all(abs(registered[key] - observed[key]) <= TOLERANCE for key in observed),
+        f"{label}: ideal {registered} differs from the operator's readout {observed}",
+    )
+    require(ideal(row) == registered, f"{label}: ideal {registered} differs from the closed-form readout")
+
+
+def expected_operator(row: dict[str, Any]) -> ComplexMatrix:
+    """The twelve-mode operator the design assigns to an entry: its analyzer times the closed form, embedded."""
+    return embed(analyzer(row["readout"]) @ closed_form(row["theta"], row["phi"], row["generator"]))
+
+
+@cache
+def serialized_computation(text: str) -> Any:
+    """The ComputationIterator of a job body's text, decoded once per pool worker."""
+    from perceval.serialization import deserialize
+
+    return deserialize(json.loads(text)["payload"]["computation"])
+
+
+def body_entry(item: tuple[str, int]) -> None:
+    """Require entry index of the serialized body to carry its budgets, seed, input, filter and design unitary."""
+    text, index = item
+    computation = serialized_computation(text)
+    entry = computation.iterations[index]
+    label = f"job-body.json entry {index}"
+    budgets = {"max_samples": SAMPLES, "max_shots": SHOTS, "compilation_seed": 0}
+    # An entry that names only circuit_params and budgets inherits the base experiment's input state and filter.
+    require(sorted(entry) == sorted([*budgets, "circuit_params"]), f"{label}: entry keys {sorted(entry)}")
+    require({key: entry[key] for key in budgets} == budgets, f"{label}: budgets {entry} differ from {budgets}")
+    experiment = computation.experiment
+    occupation = list(experiment.input_state)
+    require(occupation == [1 if mode == SOURCE else 0 for mode in range(MODES)], f"{label}: input {occupation}")
+    require(experiment.m == MODES, f"{label}: the experiment spans {experiment.m} modes")
+    require(experiment.min_photons_filter == 1, f"{label}: min_detected_photons is {experiment.min_photons_filter}")
+    circuit = experiment.unitary_circuit()
+    parameters = circuit.get_parameters()
+    require(
+        sorted(parameter.name for parameter in parameters) == sorted(entry["circuit_params"]),
+        f"{label}: circuit_params do not name the serialized circuit's parameters",
+    )
+    for parameter in parameters:
+        parameter.set_value(entry["circuit_params"][parameter.name])
+    unitary = np.asarray(circuit.compute_unitary(), dtype=np.complex128)
+    deviation = float(np.max(np.abs(unitary - expected_operator(entries()[index]))))
+    require(deviation <= BODY_TOLERANCE, f"{label}: the serialized unitary departs from the design by {deviation:.2e}")
+
+
+def validate_body(body: dict[str, Any], manifest: dict[str, Any]) -> None:
+    """Require the retained job body to carry the frozen request: name, platform, policy, budgets and 64 entries."""
+    from perceval.serialization import deserialize
+
+    for key, value in (
+        ("job_name", f"{manifest['family']}/{manifest['job']}"),
+        ("platform_name", "qpu:ascella"),
+        ("max_duration", MAX_DURATION),
+    ):
+        require(body.get(key) == value, f"job-body.json: {key} is {body.get(key)!r}, not {value!r}")
+    content = body["payload"]
+    for key, value in (("command", "sample_count"), ("max_samples", SAMPLES), ("max_shots", SHOTS)):
+        require(content.get(key) == value, f"job-body.json: payload {key} is {content.get(key)!r}, not {value!r}")
+    require(body_mitigations(body) == [], "job-body.json: the payload does not carry the empty mitigation list")
+    computation = deserialize(content["computation"])
+    iterations = computation.iterations
+    require(len(iterations) == 64, f"job-body.json: {len(iterations)} entries, not 64")
+    for index, (entry, setting) in enumerate(zip(iterations, manifest["settings"], strict=True)):
         require(
-            isinstance(registered, dict)
-            and registered.keys() == observed.keys()
-            and all(abs(registered[key] - observed[key]) <= TOLERANCE for key in observed),
-            f"{label}: ideal {registered} differs from the operator's readout {observed}",
+            entry.get("circuit_params") == setting["circuit_params"],
+            f"job-body.json entry {index}: circuit_params differ from {setting['name']}",
         )
-        require(ideal(row) == registered, f"{label}: ideal {registered} differs from the closed-form readout")
+    text = json.dumps(body)
+    ordered_map(body_entry, [(text, index) for index in range(len(iterations))])
 
 
 def rejections(manifest: dict[str, Any], circuit: dict[str, Any]) -> list[str]:
@@ -329,15 +426,51 @@ def check() -> int:
     manifest, circuit = json.loads(retained["cases.json"]), json.loads(retained["circuit.json"])
     validate(manifest, circuit)
     refused = rejections(manifest, circuit)
-    digest = hashlib.sha256(retained["cases.json"]).hexdigest()
-    print(f"ascella signed coherence: 64 iterations validated, cases.json {digest}; refused {', '.join(refused)}")
+    body_bytes = (OUT / "job-body.json").read_bytes()
+    record = json.loads((OUT / "body-build.json").read_text(encoding="utf-8"))
+    body = json.loads(body_bytes)
+    require(record["cases_sha256"] == sha256_bytes(retained["cases.json"]), "body-build.json names other case bytes")
+    require(record["job_body_sha256"] == sha256_bytes(body_bytes), "body-build.json names other body bytes")
+    validate_body(body, manifest)
+    digest = sha256_bytes(retained["cases.json"])
+    print(
+        f"ascella signed coherence: 64 iterations and job-body.json validated, cases.json {digest}, "
+        f"job-body.json {record['job_body_sha256']}; refused {', '.join(refused)}"
+    )
+    return 0
+
+
+def freeze_body() -> int:
+    """Build the job body against the live qpu:ascella command set, without sending it, and retain it."""
+    manifest, circuit, cases_sha256 = load_case(OUT)
+    validate(manifest, circuit)
+    built = payload(OUT, manifest, circuit, PLATFORM)
+    validate_body(built["body"], manifest)
+    body_bytes = (json.dumps(built["body"], indent=1, sort_keys=True) + "\n").encode()
+    record = {
+        "platform": PLATFORM,
+        "cases_sha256": cases_sha256,
+        "job_body_sha256": sha256_bytes(body_bytes),
+        "estimated_shots": built["estimated_shots"],
+        "payload_version_basis": built["payload_version_basis"],
+        "versions": built["versions"],
+        "built_utc": datetime.now(UTC).isoformat(timespec="seconds"),
+        "sent": False,
+    }
+    for name in ("job-body.json", "body-build.json"):
+        require(not (OUT / name).exists(), f"{(OUT / name).relative_to(ROOT)} exists; the retained body is frozen")
+    (OUT / "job-body.json").write_bytes(body_bytes)
+    (OUT / "body-build.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    print(f"ascella signed coherence: job-body.json {record['job_body_sha256']}, {built['estimated_shots']} shots")
     return 0
 
 
 def main(argv: list[str]) -> int:
     if argv == ["--check"]:
         return check()
-    require(not argv, f"usage: ascella_coherence_request.py [--check], not {argv}")
+    if argv == ["--body"]:
+        return freeze_body()
+    require(not argv, f"usage: ascella_coherence_request.py [--check | --body], not {argv}")
     built = documents()
     validate(json.loads(built["cases.json"]), json.loads(built["circuit.json"]))
     OUT.mkdir(parents=True, exist_ok=True)
@@ -347,7 +480,7 @@ def main(argv: list[str]) -> int:
         require(not path.exists() or path.read_bytes() == content, f"{path.relative_to(ROOT)} differs from the rebuild")
         if not path.exists():
             path.write_bytes(content)
-    digest = hashlib.sha256(built["cases.json"]).hexdigest()
+    digest = sha256_bytes(built["cases.json"])
     print(f"ascella signed coherence: {OUT.relative_to(ROOT)} cases.json {digest}")
     return 0
 
