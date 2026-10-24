@@ -1,0 +1,2364 @@
+{
+  "boundary": "Ideal local Perceval simulation of the retained job body and registered estimators on expected and sampled counts; hardware instruments and their configuration are absent.",
+  "cases": {
+    "conjugation": {
+      "complete": true,
+      "endpoints": [
+        {
+          "ideal": 0.5,
+          "interval": [
+            0.489757485207036,
+            0.510242514792964
+          ],
+          "name": "X_odd constant",
+          "radius": 0.010242514792964015,
+          "value": 0.5,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.5,
+          "interval": [
+            -0.5144851033330168,
+            -0.4855148966669832
+          ],
+          "name": "X_odd cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": -0.5,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -1.3448460171782856e-16,
+          "interval": [
+            -0.014485103333016731,
+            0.01448510333301679
+          ],
+          "name": "X_odd sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": 2.93319428502206e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.502979773279184e-18,
+          "interval": [
+            -0.01448510333301674,
+            0.014485103333016778
+          ],
+          "name": "X_odd cos(4 theta)",
+          "radius": 0.01448510333301676,
+          "value": 1.8717974977148404e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.296346186739874e-17,
+          "interval": [
+            -0.014485103333016688,
+            0.014485103333016837
+          ],
+          "name": "X_odd sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 7.395873447546587e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.5239460318685394e-17,
+          "interval": [
+            -0.010242514792963956,
+            0.01024251479296407
+          ],
+          "name": "Y_odd constant",
+          "radius": 0.010242514792964013,
+          "value": 5.801501788024828e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 4.2468933088260354e-17,
+          "interval": [
+            -0.014485103333016778,
+            0.01448510333301674
+          ],
+          "name": "Y_odd cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": -1.8298811815780028e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.5,
+          "interval": [
+            -0.5144851033330168,
+            -0.4855148966669832
+          ],
+          "name": "Y_odd sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": -0.5,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": -7.676469366738756e-19,
+          "interval": [
+            -0.014485103333016811,
+            0.014485103333016704
+          ],
+          "name": "Y_odd cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": -5.393360751299826e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.1509544664622335e-17,
+          "interval": [
+            -0.014485103333016685,
+            0.01448510333301684
+          ],
+          "name": "Y_odd sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 7.744351427697385e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.24999999999999994,
+          "interval": [
+            0.24487874260351797,
+            0.255121257396482
+          ],
+          "name": "dark constant",
+          "radius": 0.005121257396482007,
+          "value": 0.24999999999999997,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.24999999999999997,
+          "interval": [
+            -0.25724255166650833,
+            -0.24275744833349155
+          ],
+          "name": "dark cos(2 theta)",
+          "radius": 0.007242551666508379,
+          "value": -0.24999999999999994,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.491240593257508e-18,
+          "interval": [
+            -0.00724255166650843,
+            0.007242551666508329
+          ],
+          "name": "dark sin(2 theta)",
+          "radius": 0.00724255166650838,
+          "value": -5.0045573664392066e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.540299839627177e-18,
+          "interval": [
+            -0.007242551666508404,
+            0.007242551666508354
+          ],
+          "name": "dark cos(4 theta)",
+          "radius": 0.007242551666508379,
+          "value": -2.5547084769763165e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 1.9838715826767425e-17,
+          "interval": [
+            -0.00724255166650836,
+            0.007242551666508401
+          ],
+          "name": "dark sin(4 theta)",
+          "radius": 0.0072425516665083805,
+          "value": 2.1078215919582808e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964015,
+            0.010242514792964015
+          ],
+          "name": "X_even constant",
+          "radius": 0.010242514792964015,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016731,
+            0.014485103333016787
+          ],
+          "name": "X_even cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": 2.7755575615628914e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016778,
+            0.014485103333016744
+          ],
+          "name": "X_even sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": -1.7196727194522213e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016757,
+            0.014485103333016761
+          ],
+          "name": "X_even cos(4 theta)",
+          "radius": 0.01448510333301676,
+          "value": 2.042999040773844e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016756,
+            0.01448510333301677
+          ],
+          "name": "X_even sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 6.5257272063021025e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964019,
+            0.010242514792964008
+          ],
+          "name": "Y_even constant",
+          "radius": 0.010242514792964013,
+          "value": -5.5511151231257815e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016763,
+            0.014485103333016756
+          ],
+          "name": "Y_even cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": -3.4307778215552893e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016761,
+            0.014485103333016761
+          ],
+          "name": "Y_even sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016749,
+            0.014485103333016766
+          ],
+          "name": "Y_even cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 8.981892944681072e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016756,
+            0.01448510333301677
+          ],
+          "name": "Y_even sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 6.5257272063021025e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.17274575140626314,
+          "interval": [
+            0.14984279206864842,
+            0.19564871074387785
+          ],
+          "name": "mutation difference",
+          "radius": 0.02290295933761471,
+          "value": 0.17274575140626314,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            0.0,
+            0.01619483785686712
+          ],
+          "name": "mutation dark",
+          "radius": 0.01619483785686712,
+          "value": 4.829485638091153e-35,
+          "verdict": "qualifies"
+        }
+      ],
+      "ideal_excluded": [
+        "Y_odd sin(2 theta)"
+      ],
+      "verdicts": {
+        "falsified": 1,
+        "inconclusive": 0,
+        "qualifies": 26
+      }
+    },
+    "diagonal mixture": {
+      "complete": true,
+      "endpoints": [
+        {
+          "ideal": 0.5,
+          "interval": [
+            -0.010242514792964025,
+            0.010242514792964005
+          ],
+          "name": "X_odd constant",
+          "radius": 0.010242514792964015,
+          "value": -1.1102230246251572e-17,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": -0.5,
+          "interval": [
+            -0.014485103333016716,
+            0.014485103333016803
+          ],
+          "name": "X_odd cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": 4.278912742183494e-17,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": -1.3448460171782856e-16,
+          "interval": [
+            -0.014485103333016782,
+            0.01448510333301674
+          ],
+          "name": "X_odd sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": -2.1117696842213437e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.502979773279184e-18,
+          "interval": [
+            -0.014485103333016789,
+            0.014485103333016726
+          ],
+          "name": "X_odd cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": -3.168689717558336e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.296346186739874e-17,
+          "interval": [
+            -0.014485103333016777,
+            0.014485103333016749
+          ],
+          "name": "X_odd sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": -1.3051454412604227e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.5239460318685394e-17,
+          "interval": [
+            -0.010242514792964015,
+            0.010242514792964015
+          ],
+          "name": "Y_odd constant",
+          "radius": 0.010242514792964015,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 4.2468933088260354e-17,
+          "interval": [
+            -0.01448510333301676,
+            0.01448510333301676
+          ],
+          "name": "Y_odd cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.5,
+          "interval": [
+            -0.014485103333016761,
+            0.014485103333016761
+          ],
+          "name": "Y_odd sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": 0.0,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": -7.676469366738756e-19,
+          "interval": [
+            -0.014485103333016757,
+            0.014485103333016757
+          ],
+          "name": "Y_odd cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.1509544664622335e-17,
+          "interval": [
+            -0.014485103333016763,
+            0.014485103333016763
+          ],
+          "name": "Y_odd sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.24999999999999994,
+          "interval": [
+            0.24487874260351797,
+            0.255121257396482
+          ],
+          "name": "dark constant",
+          "radius": 0.005121257396482007,
+          "value": 0.24999999999999997,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.24999999999999997,
+          "interval": [
+            -0.25724255166650833,
+            -0.24275744833349155
+          ],
+          "name": "dark cos(2 theta)",
+          "radius": 0.007242551666508379,
+          "value": -0.24999999999999994,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.491240593257508e-18,
+          "interval": [
+            -0.0072425516665084715,
+            0.007242551666508288
+          ],
+          "name": "dark sin(2 theta)",
+          "radius": 0.00724255166650838,
+          "value": -9.167893708783544e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.540299839627177e-18,
+          "interval": [
+            -0.007242551666508376,
+            0.007242551666508381
+          ],
+          "name": "dark cos(4 theta)",
+          "radius": 0.007242551666508379,
+          "value": 2.208490845865748e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 1.9838715826767425e-17,
+          "interval": [
+            -0.007242551666508367,
+            0.007242551666508394
+          ],
+          "name": "dark sin(4 theta)",
+          "radius": 0.0072425516665083805,
+          "value": 1.413932201567558e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964015,
+            0.010242514792964015
+          ],
+          "name": "X_even constant",
+          "radius": 0.010242514792964015,
+          "value": -1.5407439555097887e-33,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.01448510333301676,
+            0.01448510333301676
+          ],
+          "name": "X_even cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": 3.0814879110195774e-33,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016761,
+            0.014485103333016761
+          ],
+          "name": "X_even sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": -1.5407439555097887e-33,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016757,
+            0.014485103333016757
+          ],
+          "name": "X_even cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016763,
+            0.014485103333016763
+          ],
+          "name": "X_even sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 1.5407439555097887e-33,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964015,
+            0.010242514792964015
+          ],
+          "name": "Y_even constant",
+          "radius": 0.010242514792964015,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.01448510333301676,
+            0.01448510333301676
+          ],
+          "name": "Y_even cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016761,
+            0.014485103333016761
+          ],
+          "name": "Y_even sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016757,
+            0.014485103333016757
+          ],
+          "name": "Y_even cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016763,
+            0.014485103333016763
+          ],
+          "name": "Y_even sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.17274575140626314,
+          "interval": [
+            0.14984279206864837,
+            0.1956487107438778
+          ],
+          "name": "mutation difference",
+          "radius": 0.02290295933761471,
+          "value": 0.17274575140626308,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            0.0,
+            0.01619483785686712
+          ],
+          "name": "mutation dark",
+          "radius": 0.01619483785686712,
+          "value": 2.750364930346307e-35,
+          "verdict": "qualifies"
+        }
+      ],
+      "ideal_excluded": [
+        "X_odd constant",
+        "X_odd cos(2 theta)",
+        "Y_odd sin(2 theta)"
+      ],
+      "verdicts": {
+        "falsified": 3,
+        "inconclusive": 0,
+        "qualifies": 24
+      }
+    },
+    "equal contrast": {
+      "complete": true,
+      "endpoints": [
+        {
+          "ideal": 0.5,
+          "interval": [
+            0.489757485207036,
+            0.510242514792964
+          ],
+          "name": "X_odd constant",
+          "radius": 0.010242514792964015,
+          "value": 0.5,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.5,
+          "interval": [
+            -0.5144851033330168,
+            -0.4855148966669832
+          ],
+          "name": "X_odd cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": -0.5,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -1.3448460171782856e-16,
+          "interval": [
+            -0.014485103333016907,
+            0.014485103333016615
+          ],
+          "name": "X_odd sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": -1.4504345013893527e-16,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.502979773279184e-18,
+          "interval": [
+            -0.014485103333016709,
+            0.014485103333016806
+          ],
+          "name": "X_odd cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 4.809334415594871e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.296346186739874e-17,
+          "interval": [
+            -0.014485103333016811,
+            0.014485103333016714
+          ],
+          "name": "X_odd sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": -4.846235560923348e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.5239460318685394e-17,
+          "interval": [
+            -0.01024251479296396,
+            0.010242514792964067
+          ],
+          "name": "Y_odd constant",
+          "radius": 0.010242514792964013,
+          "value": 5.3007284582267366e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 4.2468933088260354e-17,
+          "interval": [
+            -0.014485103333016851,
+            0.014485103333016667
+          ],
+          "name": "Y_odd cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": -9.272349064673563e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.5,
+          "interval": [
+            0.4855148966669832,
+            0.5144851033330168
+          ],
+          "name": "Y_odd sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": 0.5,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -7.676469366738756e-19,
+          "interval": [
+            -0.014485103333016731,
+            0.014485103333016783
+          ],
+          "name": "Y_odd cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 2.617803189736934e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.1509544664622335e-17,
+          "interval": [
+            -0.014485103333016674,
+            0.014485103333016851
+          ],
+          "name": "Y_odd sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 8.908993941679963e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.24999999999999994,
+          "interval": [
+            0.24487874260351797,
+            0.255121257396482
+          ],
+          "name": "dark constant",
+          "radius": 0.005121257396482007,
+          "value": 0.24999999999999997,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.24999999999999997,
+          "interval": [
+            -0.25724255166650833,
+            -0.24275744833349155
+          ],
+          "name": "dark cos(2 theta)",
+          "radius": 0.007242551666508379,
+          "value": -0.24999999999999994,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.491240593257508e-18,
+          "interval": [
+            -0.00724255166650843,
+            0.007242551666508329
+          ],
+          "name": "dark sin(2 theta)",
+          "radius": 0.00724255166650838,
+          "value": -5.0045573664392066e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.540299839627177e-18,
+          "interval": [
+            -0.007242551666508404,
+            0.007242551666508354
+          ],
+          "name": "dark cos(4 theta)",
+          "radius": 0.007242551666508379,
+          "value": -2.5547084769763165e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 1.9838715826767425e-17,
+          "interval": [
+            -0.00724255166650836,
+            0.007242551666508401
+          ],
+          "name": "dark sin(4 theta)",
+          "radius": 0.0072425516665083805,
+          "value": 2.1078215919582808e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964043,
+            0.010242514792963987
+          ],
+          "name": "X_even constant",
+          "radius": 0.010242514792964015,
+          "value": -2.7755575615628914e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.01448510333301676,
+            0.01448510333301676
+          ],
+          "name": "X_even cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016778,
+            0.014485103333016744
+          ],
+          "name": "X_even sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": -1.7196727194522216e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016756,
+            0.01448510333301676
+          ],
+          "name": "X_even cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 2.042999040773844e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016728,
+            0.014485103333016797
+          ],
+          "name": "X_even sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 3.4281302821931016e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964019,
+            0.010242514792964008
+          ],
+          "name": "Y_even constant",
+          "radius": 0.010242514792964013,
+          "value": -5.5511151231257846e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016763,
+            0.014485103333016756
+          ],
+          "name": "Y_even cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": -3.430777821555294e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016761,
+            0.014485103333016761
+          ],
+          "name": "Y_even sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016749,
+            0.014485103333016766
+          ],
+          "name": "Y_even cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 8.981892944681072e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016756,
+            0.01448510333301677
+          ],
+          "name": "Y_even sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 6.5257272063021025e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.17274575140626314,
+          "interval": [
+            0.14984279206864842,
+            0.19564871074387785
+          ],
+          "name": "mutation difference",
+          "radius": 0.02290295933761471,
+          "value": 0.17274575140626314,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            0.06380516214313289,
+            0.09619483785686714
+          ],
+          "name": "mutation dark",
+          "radius": 0.01619483785686712,
+          "value": 0.08000000000000002,
+          "verdict": "falsified"
+        }
+      ],
+      "ideal_excluded": [
+        "mutation dark"
+      ],
+      "verdicts": {
+        "falsified": 1,
+        "inconclusive": 0,
+        "qualifies": 26
+      }
+    },
+    "exchanged readouts": {
+      "complete": true,
+      "endpoints": [
+        {
+          "ideal": 0.5,
+          "interval": [
+            -0.01024251479296396,
+            0.010242514792964067
+          ],
+          "name": "X_odd constant",
+          "radius": 0.010242514792964013,
+          "value": 5.3007284582267366e-17,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": -0.5,
+          "interval": [
+            -0.014485103333016851,
+            0.014485103333016667
+          ],
+          "name": "X_odd cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": -9.272349064673563e-17,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": -1.3448460171782856e-16,
+          "interval": [
+            0.4855148966669832,
+            0.5144851033330168
+          ],
+          "name": "X_odd sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": 0.5,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": 8.502979773279184e-18,
+          "interval": [
+            -0.014485103333016731,
+            0.014485103333016783
+          ],
+          "name": "X_odd cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 2.617803189736934e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.296346186739874e-17,
+          "interval": [
+            -0.014485103333016674,
+            0.014485103333016851
+          ],
+          "name": "X_odd sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 8.908993941679963e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.5239460318685394e-17,
+          "interval": [
+            0.489757485207036,
+            0.510242514792964
+          ],
+          "name": "Y_odd constant",
+          "radius": 0.010242514792964015,
+          "value": 0.5,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": 4.2468933088260354e-17,
+          "interval": [
+            -0.5144851033330168,
+            -0.4855148966669832
+          ],
+          "name": "Y_odd cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": -0.5,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": 0.5,
+          "interval": [
+            -0.014485103333016907,
+            0.014485103333016615
+          ],
+          "name": "Y_odd sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": -1.4504345013893527e-16,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": -7.676469366738756e-19,
+          "interval": [
+            -0.014485103333016709,
+            0.014485103333016806
+          ],
+          "name": "Y_odd cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 4.809334415594871e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.1509544664622335e-17,
+          "interval": [
+            -0.014485103333016811,
+            0.014485103333016714
+          ],
+          "name": "Y_odd sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": -4.846235560923348e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.24999999999999994,
+          "interval": [
+            0.24487874260351797,
+            0.255121257396482
+          ],
+          "name": "dark constant",
+          "radius": 0.005121257396482007,
+          "value": 0.24999999999999997,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.24999999999999997,
+          "interval": [
+            -0.25724255166650833,
+            -0.24275744833349155
+          ],
+          "name": "dark cos(2 theta)",
+          "radius": 0.007242551666508379,
+          "value": -0.24999999999999994,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.491240593257508e-18,
+          "interval": [
+            -0.00724255166650843,
+            0.007242551666508329
+          ],
+          "name": "dark sin(2 theta)",
+          "radius": 0.00724255166650838,
+          "value": -5.0045573664392066e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.540299839627177e-18,
+          "interval": [
+            -0.007242551666508404,
+            0.007242551666508354
+          ],
+          "name": "dark cos(4 theta)",
+          "radius": 0.007242551666508379,
+          "value": -2.5547084769763165e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 1.9838715826767425e-17,
+          "interval": [
+            -0.00724255166650836,
+            0.007242551666508401
+          ],
+          "name": "dark sin(4 theta)",
+          "radius": 0.0072425516665083805,
+          "value": 2.1078215919582808e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964019,
+            0.010242514792964008
+          ],
+          "name": "X_even constant",
+          "radius": 0.010242514792964013,
+          "value": -5.5511151231257846e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016763,
+            0.014485103333016756
+          ],
+          "name": "X_even cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": -3.430777821555294e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016761,
+            0.014485103333016761
+          ],
+          "name": "X_even sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016749,
+            0.014485103333016766
+          ],
+          "name": "X_even cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 8.981892944681072e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016756,
+            0.01448510333301677
+          ],
+          "name": "X_even sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 6.5257272063021025e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964043,
+            0.010242514792963987
+          ],
+          "name": "Y_even constant",
+          "radius": 0.010242514792964015,
+          "value": -2.7755575615628914e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.01448510333301676,
+            0.01448510333301676
+          ],
+          "name": "Y_even cos(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016778,
+            0.014485103333016744
+          ],
+          "name": "Y_even sin(2 theta)",
+          "radius": 0.014485103333016761,
+          "value": -1.7196727194522216e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016756,
+            0.01448510333301676
+          ],
+          "name": "Y_even cos(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": 2.042999040773844e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016728,
+            0.014485103333016797
+          ],
+          "name": "Y_even sin(4 theta)",
+          "radius": 0.014485103333016763,
+          "value": 3.4281302821931016e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.17274575140626314,
+          "interval": [
+            0.14984279206864842,
+            0.19564871074387785
+          ],
+          "name": "mutation difference",
+          "radius": 0.02290295933761471,
+          "value": 0.17274575140626314,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            0.0,
+            0.01619483785686712
+          ],
+          "name": "mutation dark",
+          "radius": 0.01619483785686712,
+          "value": 4.829485638091153e-35,
+          "verdict": "qualifies"
+        }
+      ],
+      "ideal_excluded": [
+        "X_odd constant",
+        "X_odd cos(2 theta)",
+        "X_odd sin(2 theta)",
+        "Y_odd constant",
+        "Y_odd cos(2 theta)",
+        "Y_odd sin(2 theta)"
+      ],
+      "verdicts": {
+        "falsified": 6,
+        "inconclusive": 0,
+        "qualifies": 21
+      }
+    },
+    "ideal": {
+      "complete": true,
+      "endpoints": [
+        {
+          "ideal": 0.5,
+          "interval": [
+            0.48975748520703594,
+            0.5102425147929639
+          ],
+          "name": "X_odd constant",
+          "radius": 0.010242514792964008,
+          "value": 0.49999999999999994,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.5,
+          "interval": [
+            -0.5144851033330168,
+            -0.4855148966669832
+          ],
+          "name": "X_odd cos(2 theta)",
+          "radius": 0.014485103333016752,
+          "value": -0.5,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -1.3448460171782856e-16,
+          "interval": [
+            -0.014485103333016905,
+            0.014485103333016596
+          ],
+          "name": "X_odd sin(2 theta)",
+          "radius": 0.01448510333301675,
+          "value": -1.5500026829905852e-16,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.502979773279184e-18,
+          "interval": [
+            -0.01448510333301666,
+            0.014485103333016837
+          ],
+          "name": "X_odd cos(4 theta)",
+          "radius": 0.014485103333016749,
+          "value": 8.891681079780638e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.296346186739874e-17,
+          "interval": [
+            -0.014485103333016789,
+            0.014485103333016716
+          ],
+          "name": "X_odd sin(4 theta)",
+          "radius": 0.014485103333016752,
+          "value": -3.582406789423441e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.5239460318685394e-17,
+          "interval": [
+            -0.01024251479296414,
+            0.010242514792963876
+          ],
+          "name": "Y_odd constant",
+          "radius": 0.010242514792964008,
+          "value": -1.315672932616649e-16,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 4.2468933088260354e-17,
+          "interval": [
+            -0.014485103333016704,
+            0.014485103333016797
+          ],
+          "name": "Y_odd cos(2 theta)",
+          "radius": 0.01448510333301675,
+          "value": 4.6131725692205594e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.5,
+          "interval": [
+            0.4855148966669833,
+            0.5144851033330168
+          ],
+          "name": "Y_odd sin(2 theta)",
+          "radius": 0.01448510333301675,
+          "value": 0.5,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -7.676469366738756e-19,
+          "interval": [
+            -0.014485103333016705,
+            0.014485103333016792
+          ],
+          "name": "Y_odd cos(4 theta)",
+          "radius": 0.014485103333016749,
+          "value": 4.414181778673148e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.1509544664622335e-17,
+          "interval": [
+            -0.014485103333016705,
+            0.014485103333016799
+          ],
+          "name": "Y_odd sin(4 theta)",
+          "radius": 0.014485103333016752,
+          "value": 4.6630242598146005e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.24999999999999994,
+          "interval": [
+            0.2448787426035179,
+            0.25512125739648195
+          ],
+          "name": "dark constant",
+          "radius": 0.005121257396482004,
+          "value": 0.24999999999999992,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.24999999999999997,
+          "interval": [
+            -0.2572425516665083,
+            -0.24275744833349155
+          ],
+          "name": "dark cos(2 theta)",
+          "radius": 0.007242551666508376,
+          "value": -0.24999999999999992,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.491240593257508e-18,
+          "interval": [
+            -0.007242551666508354,
+            0.007242551666508397
+          ],
+          "name": "dark sin(2 theta)",
+          "radius": 0.007242551666508375,
+          "value": 2.1604865329017528e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.540299839627177e-18,
+          "interval": [
+            -0.007242551666508386,
+            0.007242551666508363
+          ],
+          "name": "dark cos(4 theta)",
+          "radius": 0.007242551666508374,
+          "value": -1.1457694223147483e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 1.9838715826767425e-17,
+          "interval": [
+            -0.007242551666508419,
+            0.007242551666508334
+          ],
+          "name": "dark sin(4 theta)",
+          "radius": 0.007242551666508376,
+          "value": -4.2817912657200194e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964008,
+            0.010242514792964008
+          ],
+          "name": "X_even constant",
+          "radius": 0.010242514792964008,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016697,
+            0.014485103333016808
+          ],
+          "name": "X_even cos(2 theta)",
+          "radius": 0.014485103333016752,
+          "value": 5.551115123125783e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016737,
+            0.014485103333016764
+          ],
+          "name": "X_even sin(2 theta)",
+          "radius": 0.01448510333301675,
+          "value": 1.3877787807814457e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016728,
+            0.01448510333301677
+          ],
+          "name": "X_even cos(4 theta)",
+          "radius": 0.014485103333016749,
+          "value": 2.0816681711721685e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016773,
+            0.014485103333016731
+          ],
+          "name": "X_even sin(4 theta)",
+          "radius": 0.014485103333016752,
+          "value": -2.0816681711721688e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964051,
+            0.010242514792963965
+          ],
+          "name": "Y_even constant",
+          "radius": 0.010242514792964008,
+          "value": -4.302114220422481e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016643,
+            0.014485103333016858
+          ],
+          "name": "Y_even cos(2 theta)",
+          "radius": 0.01448510333301675,
+          "value": 1.0751418638016372e-16,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016723,
+            0.014485103333016778
+          ],
+          "name": "Y_even sin(2 theta)",
+          "radius": 0.01448510333301675,
+          "value": 2.7755575615628914e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016757,
+            0.01448510333301674
+          ],
+          "name": "Y_even cos(4 theta)",
+          "radius": 0.014485103333016749,
+          "value": -8.981892944681072e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016856,
+            0.014485103333016648
+          ],
+          "name": "Y_even sin(4 theta)",
+          "radius": 0.014485103333016752,
+          "value": -1.036702418610033e-16,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.17274575140626314,
+          "interval": [
+            0.14984279206864842,
+            0.19564871074387785
+          ],
+          "name": "mutation difference",
+          "radius": 0.022902959337614704,
+          "value": 0.17274575140626314,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            0.0,
+            0.016194837856867116
+          ],
+          "name": "mutation dark",
+          "radius": 0.016194837856867116,
+          "value": 0.0,
+          "verdict": "qualifies"
+        }
+      ],
+      "ideal_excluded": [],
+      "verdicts": {
+        "falsified": 0,
+        "inconclusive": 0,
+        "qualifies": 27
+      }
+    },
+    "missing iteration": {
+      "complete": false,
+      "reason": "63 of 64 iterations attributable"
+    },
+    "sampled SLOS": {
+      "complete": true,
+      "ideal_excluded": [],
+      "verdicts": {
+        "falsified": 0,
+        "inconclusive": 0,
+        "qualifies": 27
+      }
+    },
+    "sign-even 0.05": {
+      "complete": true,
+      "endpoints": [
+        {
+          "ideal": 0.5,
+          "interval": [
+            0.48975748520703577,
+            0.5102425147929638
+          ],
+          "name": "X_odd constant",
+          "radius": 0.010242514792964013,
+          "value": 0.4999999999999998,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.5,
+          "interval": [
+            -0.5144851033330166,
+            -0.485514896666983
+          ],
+          "name": "X_odd cos(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": -0.4999999999999998,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -1.3448460171782856e-16,
+          "interval": [
+            -0.014485103333016836,
+            0.01448510333301668
+          ],
+          "name": "X_odd sin(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": -7.806255641895632e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.502979773279184e-18,
+          "interval": [
+            -0.014485103333016766,
+            0.014485103333016745
+          ],
+          "name": "X_odd cos(4 theta)",
+          "radius": 0.014485103333016756,
+          "value": -1.1080599679254354e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.296346186739874e-17,
+          "interval": [
+            -0.014485103333016777,
+            0.014485103333016745
+          ],
+          "name": "X_odd sin(4 theta)",
+          "radius": 0.014485103333016761,
+          "value": -1.5833719577722972e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.5239460318685394e-17,
+          "interval": [
+            -0.010242514792964062,
+            0.010242514792963965
+          ],
+          "name": "Y_odd constant",
+          "radius": 0.010242514792964013,
+          "value": -4.85722573273506e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 4.2468933088260354e-17,
+          "interval": [
+            -0.01448510333301671,
+            0.0144851033330168
+          ],
+          "name": "Y_odd cos(2 theta)",
+          "radius": 0.014485103333016756,
+          "value": 4.5102810375396984e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.5,
+          "interval": [
+            0.485514896666983,
+            0.5144851033330166
+          ],
+          "name": "Y_odd sin(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": 0.4999999999999998,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -7.676469366738756e-19,
+          "interval": [
+            -0.014485103333016744,
+            0.014485103333016764
+          ],
+          "name": "Y_odd cos(4 theta)",
+          "radius": 0.014485103333016754,
+          "value": 9.83403957117859e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.1509544664622335e-17,
+          "interval": [
+            -0.014485103333016839,
+            0.014485103333016676
+          ],
+          "name": "Y_odd sin(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": -8.107707460004006e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.24999999999999994,
+          "interval": [
+            0.24487874260351777,
+            0.2551212573964818
+          ],
+          "name": "dark constant",
+          "radius": 0.005121257396482007,
+          "value": 0.24999999999999978,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.24999999999999997,
+          "interval": [
+            -0.2572425516665081,
+            -0.24275744833349136
+          ],
+          "name": "dark cos(2 theta)",
+          "radius": 0.007242551666508378,
+          "value": -0.24999999999999975,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.491240593257508e-18,
+          "interval": [
+            -0.00724255166650839,
+            0.0072425516665083674
+          ],
+          "name": "dark sin(2 theta)",
+          "radius": 0.007242551666508379,
+          "value": -1.1129119366673022e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.540299839627177e-18,
+          "interval": [
+            -0.007242551666508389,
+            0.007242551666508365
+          ],
+          "name": "dark cos(4 theta)",
+          "radius": 0.007242551666508377,
+          "value": -1.1862642613940332e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 1.9838715826767425e-17,
+          "interval": [
+            -0.007242551666508415,
+            0.007242551666508342
+          ],
+          "name": "dark sin(4 theta)",
+          "radius": 0.007242551666508379,
+          "value": -3.6498768799700654e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792963958,
+            0.010242514792964069
+          ],
+          "name": "X_even constant",
+          "radius": 0.010242514792964013,
+          "value": 5.551115123125783e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016757,
+            0.014485103333016757
+          ],
+          "name": "X_even cos(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.039485103333016705,
+            -0.010514896666983188
+          ],
+          "name": "X_even sin(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": -0.024999999999999946,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.01448510333301678,
+            0.014485103333016731
+          ],
+          "name": "X_even cos(4 theta)",
+          "radius": 0.014485103333016756,
+          "value": -2.3800477378288512e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016822,
+            0.0144851033330167
+          ],
+          "name": "X_even sin(4 theta)",
+          "radius": 0.014485103333016761,
+          "value": -6.073792393424057e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            0.014757485207036012,
+            0.03524251479296404
+          ],
+          "name": "Y_even constant",
+          "radius": 0.010242514792964013,
+          "value": 0.025000000000000026,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.039485103333016774,
+            -0.010514896666983266
+          ],
+          "name": "Y_even cos(2 theta)",
+          "radius": 0.014485103333016756,
+          "value": -0.025000000000000022,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.01448510333301673,
+            0.014485103333016785
+          ],
+          "name": "Y_even sin(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": 2.7755575615628914e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.01448510333301676,
+            0.014485103333016749
+          ],
+          "name": "Y_even cos(4 theta)",
+          "radius": 0.014485103333016754,
+          "value": -5.044976456303254e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016757,
+            0.014485103333016757
+          ],
+          "name": "Y_even sin(4 theta)",
+          "radius": 0.014485103333016757,
+          "value": -5.851026300835835e-19,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.17274575140626314,
+          "interval": [
+            0.14984279206864842,
+            0.19564871074387785
+          ],
+          "name": "mutation difference",
+          "radius": 0.02290295933761471,
+          "value": 0.17274575140626314,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            0.0,
+            0.01619483785686712
+          ],
+          "name": "mutation dark",
+          "radius": 0.01619483785686712,
+          "value": 4.829485638091153e-35,
+          "verdict": "qualifies"
+        }
+      ],
+      "ideal_excluded": [
+        "X_even sin(2 theta)",
+        "Y_even constant",
+        "Y_even cos(2 theta)"
+      ],
+      "verdicts": {
+        "falsified": 0,
+        "inconclusive": 0,
+        "qualifies": 27
+      }
+    },
+    "sign-even 0.2": {
+      "complete": true,
+      "endpoints": [
+        {
+          "ideal": 0.5,
+          "interval": [
+            0.4897574852070359,
+            0.5102425147929639
+          ],
+          "name": "X_odd constant",
+          "radius": 0.010242514792964013,
+          "value": 0.4999999999999999,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.5,
+          "interval": [
+            -0.5144851033330167,
+            -0.48551489666698316
+          ],
+          "name": "X_odd cos(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": -0.49999999999999994,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -1.3448460171782856e-16,
+          "interval": [
+            -0.014485103333016806,
+            0.014485103333016709
+          ],
+          "name": "X_odd sin(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": -4.85722573273506e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.502979773279184e-18,
+          "interval": [
+            -0.014485103333016718,
+            0.014485103333016794
+          ],
+          "name": "X_odd cos(4 theta)",
+          "radius": 0.014485103333016756,
+          "value": 3.7491657648096245e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 8.296346186739874e-17,
+          "interval": [
+            -0.0144851033330168,
+            0.014485103333016721
+          ],
+          "name": "X_odd sin(4 theta)",
+          "radius": 0.014485103333016761,
+          "value": -4.011984824139828e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.5239460318685394e-17,
+          "interval": [
+            -0.010242514792964097,
+            0.01024251479296393
+          ],
+          "name": "Y_odd constant",
+          "radius": 0.010242514792964013,
+          "value": -8.326672684688674e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 4.2468933088260354e-17,
+          "interval": [
+            -0.014485103333016674,
+            0.01448510333301684
+          ],
+          "name": "Y_odd cos(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": 8.326672684688674e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.5,
+          "interval": [
+            0.48551489666698305,
+            0.5144851033330166
+          ],
+          "name": "Y_odd sin(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": 0.49999999999999983,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -7.676469366738756e-19,
+          "interval": [
+            -0.014485103333016773,
+            0.014485103333016738
+          ],
+          "name": "Y_odd cos(4 theta)",
+          "radius": 0.014485103333016756,
+          "value": -1.7921536044450324e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.1509544664622335e-17,
+          "interval": [
+            -0.0144851033330168,
+            0.014485103333016721
+          ],
+          "name": "Y_odd sin(4 theta)",
+          "radius": 0.014485103333016761,
+          "value": -3.94437111765967e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.24999999999999994,
+          "interval": [
+            0.2448787426035178,
+            0.25512125739648184
+          ],
+          "name": "dark constant",
+          "radius": 0.005121257396482007,
+          "value": 0.2499999999999998,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -0.24999999999999997,
+          "interval": [
+            -0.2572425516665082,
+            -0.24275744833349144
+          ],
+          "name": "dark cos(2 theta)",
+          "radius": 0.007242551666508378,
+          "value": -0.24999999999999983,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -4.491240593257508e-18,
+          "interval": [
+            -0.0072425516665084195,
+            0.007242551666508338
+          ],
+          "name": "dark sin(2 theta)",
+          "radius": 0.007242551666508379,
+          "value": -4.054416467565581e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": -5.540299839627177e-18,
+          "interval": [
+            -0.0072425516665083674,
+            0.007242551666508388
+          ],
+          "name": "dark cos(4 theta)",
+          "radius": 0.007242551666508378,
+          "value": 9.975538618168275e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 1.9838715826767425e-17,
+          "interval": [
+            -0.0072425516665083605,
+            0.007242551666508399
+          ],
+          "name": "dark sin(4 theta)",
+          "radius": 0.00724255166650838,
+          "value": 1.8805799082754607e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.010242514792964069,
+            0.010242514792963958
+          ],
+          "name": "X_even constant",
+          "radius": 0.010242514792964013,
+          "value": -5.551115123125783e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016757,
+            0.014485103333016757
+          ],
+          "name": "X_even cos(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.11448510333301667,
+            -0.08551489666698317
+          ],
+          "name": "X_even sin(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": -0.09999999999999992,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016744,
+            0.014485103333016768
+          ],
+          "name": "X_even cos(4 theta)",
+          "radius": 0.014485103333016756,
+          "value": 1.1347703563830672e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016747,
+            0.014485103333016775
+          ],
+          "name": "X_even sin(4 theta)",
+          "radius": 0.014485103333016761,
+          "value": 1.3951492078717807e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            0.089757485207036,
+            0.11024251479296401
+          ],
+          "name": "Y_even constant",
+          "radius": 0.010242514792964013,
+          "value": 0.1,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.11448510333301676,
+            -0.08551489666698325
+          ],
+          "name": "Y_even cos(2 theta)",
+          "radius": 0.014485103333016757,
+          "value": -0.1,
+          "verdict": "falsified"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.01448510333301676,
+            0.01448510333301676
+          ],
+          "name": "Y_even sin(2 theta)",
+          "radius": 0.01448510333301676,
+          "value": 0.0,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016757,
+            0.014485103333016754
+          ],
+          "name": "Y_even cos(4 theta)",
+          "radius": 0.014485103333016756,
+          "value": -1.4062231542651741e-18,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            -0.014485103333016832,
+            0.01448510333301669
+          ],
+          "name": "Y_even sin(4 theta)",
+          "radius": 0.014485103333016761,
+          "value": -7.13161828618015e-17,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.17274575140626314,
+          "interval": [
+            0.14984279206864842,
+            0.19564871074387785
+          ],
+          "name": "mutation difference",
+          "radius": 0.02290295933761471,
+          "value": 0.17274575140626314,
+          "verdict": "qualifies"
+        },
+        {
+          "ideal": 0.0,
+          "interval": [
+            0.0,
+            0.01619483785686712
+          ],
+          "name": "mutation dark",
+          "radius": 0.01619483785686712,
+          "value": 4.829485638091153e-35,
+          "verdict": "qualifies"
+        }
+      ],
+      "ideal_excluded": [
+        "X_even sin(2 theta)",
+        "Y_even constant",
+        "Y_even cos(2 theta)"
+      ],
+      "verdicts": {
+        "falsified": 3,
+        "inconclusive": 0,
+        "qualifies": 24
+      }
+    }
+  },
+  "iterator_checks": [
+    {
+      "backend": "SLOS",
+      "samples_per_entry": [
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0
+      ],
+      "samples_total": 524288.0
+    },
+    {
+      "backend": "Naive",
+      "samples_per_entry": [
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0
+      ],
+      "samples_total": 524288.0
+    }
+  ],
+  "probability_checks": {
+    "backends": [
+      "SLOS",
+      "Naive"
+    ],
+    "entries": 64,
+    "output_modes": 12,
+    "slos_naive_max_difference": 1.1102230246251565e-16
+  },
+  "schema": "ascella-signed-coherence-replay-v1",
+  "seed": 20261024,
+  "source_sha256": {
+    "docs/evidence/ascella-order-coefficients/derivation.json": "4aebeeae2a05969611e9de7e2bb904b55064ae82c3de78893426cd401bd196b0",
+    "gororoba_quantum/parallel.py": "d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92",
+    "results/local-simulation/ascella-signed-coherence-replay/producer.py": "3163d7e37ac0bb9c553f2c079a3778ca9a0ba3ea0f4764e731863701c7ce236b",
+    "results/quandela/cases/ascella_signed_coherence/job-00/cases.json": "3c92af45df7502bab5c6f2d74779aa83b04f7af2094b62b499b6e29ca0e69520",
+    "results/quandela/cases/ascella_signed_coherence/job-00/job-body.json": "7931578af1d340d0a6b51a82cca8dfc0a5b2b6f21e47cee334b5d032a473c7e8",
+    "scripts/ascella_coherence_analysis.py": "d3ea8599f7132dac12c1d2df9fce1af87c00d4a5c39647861457c4efb8e0df63",
+    "scripts/bdsc_certificate.py": "5dbcd027eb24a303ba5757e00b0123e846bc3c86dab70a24dc1ae1f98b197753"
+  },
+  "versions": {
+    "exqalibur": "1.4.2",
+    "numpy": "2.5.4",
+    "perceval-quandela": "1.3.1"
+  }
+}
