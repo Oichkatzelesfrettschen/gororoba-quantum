@@ -13,6 +13,7 @@ while IFS= read -r path; do
     docs/evidence/cd-tower-basis-sign/* | \
     docs/evidence/cd-sign-row-anf/* | \
     docs/evidence/cd-associator-anf/* | \
+    docs/evidence/cd-associator-census/* | \
     docs/evidence/folding_proofs/* | \
     docs/evidence/formal_certificates/* | \
     docs/evidence/stiefel_witness/* | \
