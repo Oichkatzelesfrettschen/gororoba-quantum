@@ -274,9 +274,12 @@ procedure in `docs/evidence/c881_exhaustive/README.md`. The CI receipt
 check verifies retained hashes. The ci.yml job `rocq-replay` replays the
 formal_certificates, c881_exhaustive, folding_proofs and TargetFlipN21
 bundles under the opam switch of `ci/rocq_toolchain.pin` (Rocq 9.3.0 on OCaml
-5.5.1 with Stdlib 9.2.0) on a pull request that touches `proofs/`, a replay bundle, the replay
-driver, a pin or the workflow (`ci/rocq_changed.sh` holds the path list), and
-adds the stiefel_witness bundle on pushes to main and the nightly schedule.
+5.5.1 with Stdlib 9.2.0) on the nightly schedule and on manual dispatch, the
+only triggers ci.yml declares; both replay every bundle, stiefel_witness
+included. The path selector of `ci/rocq_changed.sh` (`proofs/`, a replay
+bundle, the replay driver, a pin or the workflow) applies to pull-request and
+push events, which ci.yml declares no trigger for, so a pull request's Rocq
+replay runs by hand and is recorded against the reviewed PR head.
 tests/ci/test_rocq_ci_pins.py holds the pin, the toolchain.txt banners, the
 path list and the open_gororoba fetch in agreement and rejects each mutation
 of them. The manual procedure remains the local replay.

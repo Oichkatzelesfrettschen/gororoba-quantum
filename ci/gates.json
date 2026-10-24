@@ -12,7 +12,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py",
    "name": "core-001",
    "seconds": 0.6,
    "tier": "pr"
@@ -20,7 +20,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py",
    "name": "core-002",
    "seconds": 0.6,
    "tier": "pr"
@@ -238,7 +238,7 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py ../results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py ../results/local-simulation/ascella-serialized-order-replay/producer.py ../docs/evidence/cd-imaginary-sum-conference/tower_bridge.py ../docs/evidence/ascella-order-coefficients/replay.py",
+   "cmd": "\"$PYTHON\" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py ../results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py ../results/local-simulation/ascella-serialized-order-replay/producer.py ../docs/evidence/cd-imaginary-sum-conference/tower_bridge.py ../docs/evidence/ascella-order-coefficients/replay.py ../docs/evidence/albuquerque-majid-convention/am_convention_replay.py",
    "name": "core-039",
    "seconds": 51.6,
    "tier": "pr"
@@ -882,7 +882,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
    "name": "sources-120",
    "seconds": 0.1,
    "tier": "pr"
@@ -890,7 +890,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "ruff format --target-version py313 --check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
    "name": "sources-121",
    "seconds": 0.1,
    "tier": "pr"
@@ -898,7 +898,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "MYPYPATH=docs mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
+   "cmd": "MYPYPATH=docs \"$PYTHON\" ci/pinned_tool.py mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
    "name": "sources-122",
    "seconds": 11.5,
    "tier": "pr"
@@ -996,6 +996,14 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error docs/evidence/ascella-order-coefficients/replay.py --check",
    "name": "sources-394",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/albuquerque-majid-convention/am_convention_replay.py --check",
+   "name": "sources-395",
    "seconds": 1.0,
    "tier": "pr"
   },
@@ -1330,7 +1338,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py && ruff format --target-version py313 --check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py && mypy scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py && \"$PYTHON\" ci/pinned_tool.py mypy scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py",
    "seconds": 0.8,
    "tier": "pr",
    "name": "core-195"
@@ -2283,7 +2291,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check scripts/conditional_ramsey_power.py && ruff format --target-version py313 --check scripts/conditional_ramsey_power.py && MYPYPATH=gororoba_quantum mypy scripts/conditional_ramsey_power.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check scripts/conditional_ramsey_power.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check scripts/conditional_ramsey_power.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy scripts/conditional_ramsey_power.py",
    "name": "core-300",
    "seconds": 13.5,
    "tier": "pr"
@@ -2308,7 +2316,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check scripts/signed_kernel_noise.py && ruff format --target-version py313 --check scripts/signed_kernel_noise.py && MYPYPATH=gororoba_quantum mypy scripts/signed_kernel_noise.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check scripts/signed_kernel_noise.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check scripts/signed_kernel_noise.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy scripts/signed_kernel_noise.py",
    "name": "core-303",
    "seconds": 14.7,
    "tier": "pr"
@@ -2325,7 +2333,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check scripts/walk_scaffold_channels.py && ruff format --target-version py313 --check scripts/walk_scaffold_channels.py && MYPYPATH=gororoba_quantum mypy scripts/walk_scaffold_channels.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check scripts/walk_scaffold_channels.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check scripts/walk_scaffold_channels.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy scripts/walk_scaffold_channels.py",
    "name": "core-310",
    "seconds": 0.8,
    "tier": "pr"
@@ -2342,7 +2350,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check scripts/echo_dilation_noise.py && ruff format --target-version py313 --check scripts/echo_dilation_noise.py && MYPYPATH=gororoba_quantum mypy scripts/echo_dilation_noise.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check scripts/echo_dilation_noise.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check scripts/echo_dilation_noise.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy scripts/echo_dilation_noise.py",
    "name": "core-312",
    "seconds": 16.2,
    "tier": "pr"
@@ -2889,7 +2897,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check scripts/ghost_idle_budget.py && ruff format --target-version py313 --check scripts/ghost_idle_budget.py && MYPYPATH=gororoba_quantum mypy scripts/ghost_idle_budget.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check scripts/ghost_idle_budget.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check scripts/ghost_idle_budget.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy scripts/ghost_idle_budget.py",
    "name": "core-342",
    "seconds": 0.4,
    "tier": "pr"
@@ -2897,7 +2905,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check scripts/ghost_event_scale.py && ruff format --target-version py313 --check scripts/ghost_event_scale.py && MYPYPATH=gororoba_quantum mypy scripts/ghost_event_scale.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check scripts/ghost_event_scale.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check scripts/ghost_event_scale.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy scripts/ghost_event_scale.py",
    "name": "core-344",
    "seconds": 1.6,
    "tier": "pr"
@@ -2929,7 +2937,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py && ruff format --target-version py313 --check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py && MYPYPATH=gororoba_quantum mypy docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py",
    "name": "core-350",
    "seconds": 0.7,
    "tier": "pr"
