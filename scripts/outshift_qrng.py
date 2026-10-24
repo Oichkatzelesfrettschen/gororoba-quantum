@@ -8,7 +8,8 @@ raw and format all it answers {"encoding": "raw", "random_numbers": [{"binary",
 "octal", "decimal", "hexadecimal"}, ...]}, one entry per block. The key lives
 in the file OUTSHIFT_QRNG_KEY_FILE names (default
 ~/.config/outshift-qrng/api-key, mode 600) and never enters a record, a URL or
-a log.
+a log; the request refuses redirects, so the key reaches the endpoint's
+origin alone.
 
 A draw is used once: a case cites the record and the index of every value it
 took, so no value seeds two cases.
@@ -32,6 +33,7 @@ from __future__ import annotations
 import argparse
 import copy
 import datetime
+import functools
 import hashlib
 import json
 import os
@@ -39,6 +41,12 @@ import sys
 import urllib.request
 from pathlib import Path
 from typing import Any
+
+from anu_qrng import OPENER
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+
+import parallel  # noqa: E402
 
 SCHEMA = "outshift-qrng-draw-v1"
 ENDPOINT = "https://api.qrng.outshift.com/api/v1/random_numbers"
@@ -78,6 +86,11 @@ def block_value(block: dict[str, Any], bits: int) -> int:
     return value
 
 
+def block_values(blocks: list[Any], bits: int) -> list[int]:
+    """Each block's value in response order, through the order-preserving pool."""
+    return parallel.ordered_map(functools.partial(block_value, bits=bits), blocks)
+
+
 def record_from(utc: str, body: dict[str, Any], raw: str) -> dict[str, Any]:
     answer = json.loads(raw)
     record = {
@@ -88,7 +101,7 @@ def record_from(utc: str, body: dict[str, Any], raw: str) -> dict[str, Any]:
         "raw": raw,
         "raw_sha256": hashlib.sha256(raw.encode()).hexdigest(),
         "bits": body["bits_per_block"],
-        "values": [block_value(block, body["bits_per_block"]) for block in answer.get("random_numbers", [])],
+        "values": block_values(answer.get("random_numbers", []), body["bits_per_block"]),
     }
     admit(record)
     return record
@@ -112,7 +125,7 @@ def admit(record: dict[str, Any]) -> None:
     blocks = answer["random_numbers"]
     if len(blocks) != body["number_of_blocks"]:
         raise DrawError(f"{len(blocks)} blocks answered, {body['number_of_blocks']} requested")
-    if [block_value(block, record["bits"]) for block in blocks] != record["values"]:
+    if block_values(blocks, record["bits"]) != record["values"]:
         raise DrawError("parsed values differ from the raw response")
 
 
@@ -131,7 +144,7 @@ def draw(out: Path, bits: int, blocks: int) -> Path:
     headers = {"Content-Type": "application/json", "x-id-api-key": api_key()}
     utc = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H%M%SZ")
     request = urllib.request.Request(ENDPOINT, data=json.dumps(body).encode(), headers=headers, method="POST")
-    with urllib.request.urlopen(request, timeout=30) as response:
+    with OPENER.open(request, timeout=30) as response:
         raw = response.read().decode()
     record = record_from(utc, body, raw)
     out.mkdir(parents=True, exist_ok=True)

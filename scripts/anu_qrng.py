@@ -56,6 +56,16 @@ class DrawError(ValueError):
     pass
 
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    """Refuses every redirect, so an API key header reaches the service's own origin alone."""
+
+    def redirect_request(self, *args: Any, **kwargs: Any) -> None:
+        return None
+
+
+OPENER = urllib.request.build_opener(NoRedirect)
+
+
 def record_from(url: str, utc: str, raw: str) -> dict[str, Any]:
     answer = json.loads(raw)
     record = {
@@ -110,7 +120,7 @@ def draw(out: Path, length: int, kind: str, source: str) -> Path:
     url = f"{ENDPOINTS[source]}?length={length}&type={kind}"
     headers = {"x-api-key": api_key()} if source == "aqn" else {}
     utc = datetime.datetime.now(datetime.UTC).strftime("%Y-%m-%dT%H%M%SZ")
-    with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30) as response:
+    with OPENER.open(urllib.request.Request(url, headers=headers), timeout=30) as response:
         raw = response.read().decode()
     record = record_from(url, utc, raw)
     out.mkdir(parents=True, exist_ok=True)
