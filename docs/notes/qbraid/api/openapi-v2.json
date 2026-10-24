@@ -1,0 +1,3479 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "qBraid Runtime API",
+    "description": "Public REST API for qBraid's quantum platform. Submit and manage quantum jobs, organize them into batch groups, and browse available devices and their calibration data. Authenticate every request with an API key (`X-API-KEY`).",
+    "version": "2"
+  },
+  "servers": [
+    {
+      "url": "https://api-v2.qbraid.com/api/v1",
+      "description": "Live Server"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "paths": {
+    "/jobs": {
+      "post": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "createJob",
+        "summary": "Submit a job",
+        "description": "Submit a quantum job (or a batch of circuits) to a device. `data` is the created job.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Job created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateJobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No execution access to the device.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "listJobs",
+        "summary": "List jobs",
+        "description": "List the caller's jobs with filtering, sorting, and pagination. Soft-deleted jobs are excluded.",
+        "parameters": [
+          {
+            "name": "vendor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "aws",
+                "azure",
+                "ibm",
+                "ionq",
+                "qbraid",
+                "all"
+              ],
+              "description": "Filter jobs by vendor",
+              "title": "Vendor"
+            },
+            "description": "Filter jobs by vendor"
+          },
+          {
+            "name": "provider",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Filter jobs by provider name",
+              "title": "Provider"
+            },
+            "description": "Filter jobs by provider name"
+          },
+          {
+            "name": "statusGroup",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "pending",
+                "returned"
+              ],
+              "description": "Filter by status group",
+              "title": "Status Group"
+            },
+            "description": "Filter by status group — `pending` (active/in-progress), `returned` (completed/failed/cancelled), or `all`"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "INITIALIZING",
+                "QUEUED",
+                "VALIDATING",
+                "RUNNING",
+                "CANCELLING",
+                "CANCELLED",
+                "COMPLETED",
+                "FAILED",
+                "UNKNOWN",
+                "HOLD"
+              ],
+              "description": "Filter by individual job status",
+              "title": "Status"
+            },
+            "description": "Filter by individual job status. Takes priority over `statusGroup` when both are provided"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "description": "Search keyword",
+              "title": "Search"
+            },
+            "description": "Search jobs by keyword (1–255 characters)"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "JSON object of tag key-value pairs to filter by",
+              "title": "Tags",
+              "example": "{\"experiment\":\"bell-state\"}"
+            },
+            "description": "Filter by tags as a JSON object (e.g., `{\"experiment\":\"bell-state\"}`)"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "description": "Page number (1-indexed)",
+              "title": "Page"
+            },
+            "description": "Page number (1-indexed, default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50,
+              "description": "Number of items per page",
+              "title": "Limit"
+            },
+            "description": "Number of items per page (1–100, default: 50)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated jobs.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListJobsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "deleteMultipleJobs",
+        "summary": "Soft-delete multiple jobs",
+        "description": "Soft-delete several jobs by QRN. Non-terminal jobs keep running and are still billed (see `stillRunning`).",
+        "parameters": [
+          {
+            "name": "qrns",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "JSON array of job QRNs to delete",
+              "title": "Job QRNs"
+            },
+            "description": "JSON array of job QRNs to delete (e.g., [\"qbraid:job:abc123\", \"qbraid:job:xyz789\"])"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteMultipleJobsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/summary": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "getJobsSummary",
+        "summary": "Get job summary stats",
+        "description": "Aggregated statistics across the caller's jobs (counts, per-status/type breakdowns, cost/shots totals and averages).",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobsSummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/statuses": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "getJobsStatuses",
+        "summary": "Get job counts by status",
+        "description": "A map of every job status to the number of the caller's jobs in that status.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobsStatusesResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/cost-estimate": {
+      "get": {
+        "tags": [
+          "jobs"
+        ],
+        "summary": "Estimate Job Cost",
+        "description": "Estimate the cost, in qBraid credits, of running a job on a device before submitting it.\n\nThe quote is a guide, not a cap. When you submit a job, its estimated cost is held from your credit balance; when the job finishes, you are charged its actual cost and the difference is refunded or debited. A job that runs longer than quoted is billed for what it used. A QPU is quoted from that device's execution history. A simulator is quoted from a fixed conservative duration, so its quote does not change with the shot count.\n\nA device whose pricing cannot be quoted is a state, not an error: the response has `pricingAvailable: false` and a `reason`.\n\n**Args:**\n- **deviceQrn** (string): Device QRN (qBraid Resource Name)\n- **shots** (integer, optional): Shot count to quote for. Defaults to 1000.\n\n**Returns:**\n- A quote with `estimatedCost` when `pricingAvailable` is true, or a `reason` when it is false\n\n**Raises:**\n- **400**: `deviceQrn` is missing or `shots` is outside 1 to 100000\n- **403**: You do not have device execution permission for this device\n- **404**: Device is not found\n- **410**: Device is retired",
+        "operationId": "getJobCostEstimate",
+        "parameters": [
+          {
+            "name": "deviceQrn",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Device QRN (qBraid Resource Name)",
+              "title": "Device Qrn"
+            },
+            "description": "Device to quote",
+            "example": "aws:aqt:qpu:ibex-q1"
+          },
+          {
+            "name": "shots",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100000,
+              "default": 1000,
+              "description": "Shot count to quote for",
+              "title": "Shots"
+            },
+            "description": "Shot count to quote for. Defaults to 1000."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostEstimateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Query validation failed: shots: shots must be at least 1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Missing device execution permission for: aws:aqt:qpu:ibex-q1"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Device Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Device not found: does:not:exist:nope"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Device Retired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Device is retired and no longer available: aws:aws:sim:tn1"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{job_qrn}": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "getJob",
+        "summary": "Get a job",
+        "description": "Retrieve a single job by its QRN.",
+        "parameters": [
+          {
+            "name": "job_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The job qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "aws:aws:sim:dm1-a1b2-qjob-1234567890abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJobResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "deleteJob",
+        "summary": "Soft-delete a job",
+        "description": "Soft-delete a job. A non-terminal job keeps running and is still billed (see `stillRunning`); it is not cancelled.",
+        "parameters": [
+          {
+            "name": "job_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The job qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "aws:aws:sim:dm1-a1b2-qjob-1234567890abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteJobResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{job_qrn}/cancel": {
+      "post": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "cancelJob",
+        "summary": "Cancel a job",
+        "description": "Request cancellation of a job. Cancellation is asynchronous (HTTP 202).",
+        "parameters": [
+          {
+            "name": "job_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The job qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "aws:aws:sim:dm1-a1b2-qjob-1234567890abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Cancellation initiated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CancelJobResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{job_qrn}/result": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "getJobResult",
+        "summary": "Get job result",
+        "description": "Retrieve the result(s) of a completed job (a single result, or an array for batch jobs).",
+        "parameters": [
+          {
+            "name": "job_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The job qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "aws:aws:sim:dm1-a1b2-qjob-1234567890abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJobResultResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job or result not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{job_qrn}/program": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "getJobProgram",
+        "summary": "Get job program",
+        "description": "Retrieve the submitted program(s) for a job.",
+        "parameters": [
+          {
+            "name": "job_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The job qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "aws:aws:sim:dm1-a1b2-qjob-1234567890abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetJobProgramResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{job_qrn}/compiled-program": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "getJobCompiledProgram",
+        "summary": "Get compiled program",
+        "description": "Retrieve the vendor-compiled program for a job (stored `{format, data}` artifact). 404 when none is available.",
+        "parameters": [
+          {
+            "name": "job_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The job qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "aws:aws:sim:dm1-a1b2-qjob-1234567890abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompiledProgramResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found, or no compiled program available.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{job_qrn}/program/ascii": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "getJobProgramAscii",
+        "summary": "Get ASCII circuit diagram",
+        "description": "Retrieve an ASCII-art rendering of the job's circuit(s).",
+        "parameters": [
+          {
+            "name": "job_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The job qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "aws:aws:sim:dm1-a1b2-qjob-1234567890abcdef"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobProgramAsciiResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Program format not supported for ASCII rendering.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/group": {
+      "post": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "createJobGroup",
+        "summary": "Create a job group",
+        "description": "Create a batch group. Groups start OPEN and accept child jobs until closed, cancelled, or their maxTTL elapses.",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateJobGroupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Group created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobGroupResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "listJobGroups",
+        "summary": "List job groups",
+        "description": "List the caller's job groups, newest first. Expired OPEN groups are lazily auto-closed during listing.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/JobGroupStatus"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListJobGroupsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/group/{group_qrn}": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "getJobGroup",
+        "summary": "Get a job group",
+        "description": "Retrieve a single job group by QRN. A fully-terminal group is lazily resolved before it is returned.",
+        "parameters": [
+          {
+            "name": "group_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The group qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "group:a1b2-664f0c1e2a3b4c5d6e7f8090"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobGroupResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Group not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/group/{group_qrn}/jobs": {
+      "get": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "getJobGroupJobs",
+        "summary": "List jobs in a group",
+        "description": "Retrieve all (non-deleted) jobs in the group.",
+        "parameters": [
+          {
+            "name": "group_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The group qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "group:a1b2-664f0c1e2a3b4c5d6e7f8090"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListJobGroupJobsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Group not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/group/{group_qrn}/close": {
+      "post": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "closeJobGroup",
+        "summary": "Close a job group",
+        "description": "Close an OPEN group so it accepts no new jobs; existing jobs continue running.",
+        "parameters": [
+          {
+            "name": "group_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The group qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "group:a1b2-664f0c1e2a3b4c5d6e7f8090"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobGroupResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Group not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Group is already in a terminal status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/group/{group_qrn}/cancel": {
+      "post": {
+        "tags": [
+          "Jobs"
+        ],
+        "operationId": "cancelJobGroup",
+        "summary": "Cancel a job group",
+        "description": "Cancel a group and all of its non-terminal child jobs. A CLOSED group can still be cancelled.",
+        "parameters": [
+          {
+            "name": "group_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The group qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "group:a1b2-664f0c1e2a3b4c5d6e7f8090"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobGroupResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Group not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Group is already COMPLETED, FAILED, or CANCELLED.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devices": {
+      "get": {
+        "tags": [
+          "Devices"
+        ],
+        "operationId": "listDevices",
+        "summary": "List devices",
+        "description": "List quantum devices (simulators and QPUs) visible to the caller, with filtering, search, sorting, and pagination.",
+        "parameters": [
+          {
+            "name": "qrn",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Device QRN (qBraid Resource Name)",
+              "title": "Qrn"
+            },
+            "description": "Filter devices by QRN"
+          },
+          {
+            "name": "vendor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "aws",
+                "azure",
+                "ibm",
+                "ionq",
+                "qbraid"
+              ],
+              "description": "Filter devices by vendor",
+              "title": "Vendor"
+            },
+            "description": "Filter devices by vendor"
+          },
+          {
+            "name": "providerId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Provider ID to filter by",
+              "title": "Provider Id"
+            },
+            "description": "Filter devices by provider ID"
+          },
+          {
+            "name": "deviceType",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "QPU",
+                "SIMULATOR"
+              ],
+              "description": "Filter by hardware type",
+              "title": "Device Type"
+            },
+            "description": "Filter devices by hardware type"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/DeviceStatus"
+            },
+            "description": "Filter devices by operational status"
+          },
+          {
+            "name": "retired",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Include or exclude retired devices",
+              "title": "Retired"
+            },
+            "description": "Include (`true`) or exclude (`false`) retired devices"
+          },
+          {
+            "name": "private",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Filter by device visibility",
+              "title": "Private"
+            },
+            "description": "Filter by visibility — `true` for private, `false` for public"
+          },
+          {
+            "name": "verified",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Filter by device verification status",
+              "title": "Verified"
+            },
+            "description": "Filter by device verification status"
+          },
+          {
+            "name": "directAccess",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Filter by direct access availability",
+              "title": "Direct Access"
+            },
+            "description": "Filter devices by direct access availability"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255,
+              "description": "Search keyword",
+              "title": "Search"
+            },
+            "description": "Search devices by name, description, or about (1–255 characters)"
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "name",
+                "vendor",
+                "deviceType",
+                "status",
+                "numberQubits",
+                "createdAt",
+                "updatedAt"
+              ],
+              "description": "Field to sort by",
+              "title": "Sort By"
+            },
+            "description": "Field to sort devices by"
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc",
+              "description": "Sort order direction",
+              "title": "Sort Order"
+            },
+            "description": "Sort order direction (default: `asc`)"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "description": "Page number (1-indexed)",
+              "title": "Page"
+            },
+            "description": "Page number (1-indexed, default: 1)"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "description": "Number of items per page",
+              "title": "Limit"
+            },
+            "description": "Number of items per page (1–100, default: 20)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListDevicesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devices/{device_qrn}": {
+      "get": {
+        "tags": [
+          "Devices"
+        ],
+        "operationId": "getDevice",
+        "summary": "Get a device",
+        "description": "Retrieve a single device by its QRN.",
+        "parameters": [
+          {
+            "name": "device_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The device qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "aws:tn1:qpu:device-name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDeviceResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Device not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/devices/{device_qrn}/calibrations": {
+      "get": {
+        "tags": [
+          "Devices"
+        ],
+        "operationId": "getDeviceCalibrations",
+        "summary": "Get device calibration data",
+        "description": "Retrieve the latest calibration snapshot for a device: qubit-level (T1, T2, frequency, readout/gate errors) and edge-level (two-qubit gate errors, gate lengths).",
+        "parameters": [
+          {
+            "name": "device_qrn",
+            "in": "path",
+            "required": true,
+            "description": "The device qrn (qBraid Resource Name).",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "example": "aws:tn1:qpu:device-name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDeviceCalibrationsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing QRN.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Calibration data not found for this device.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/credits/balance": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "getCreditBalance",
+        "summary": "Get credit balance",
+        "description": "Return the caller's qBraid and AWS credit balances. The organization is taken from the API key, which is bound to a single organization.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreditBalanceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Organization context required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User is not a member of this organization.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/billing/credits/pricing": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "getCreditPricing",
+        "summary": "Get credit-pack pricing",
+        "description": "Return the credit conversion rate, minimum purchase amount, currency, and example credit packs. Public — no authentication required.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreditPricingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usage/simulator": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "getSimulatorUsage",
+        "summary": "Get simulator daily usage and quota",
+        "description": "Return the daily per-simulator job quota and current usage for the tier of the caller. Usage resets at 00:00 UTC. The organization is taken from the API key, which is bound to a single organization.",
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulatorUsageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication / org context required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organization user not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usage/simulator/settings": {
+      "patch": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "updateSimulatorUsageSettings",
+        "summary": "Update simulator usage settings",
+        "description": "Turn usage-based billing for simulators on or off for the caller. With `autoSwitchToCredits` true, once a GPU simulator's free daily allowance is used, further jobs on it run and are charged from credits at the device's per-minute price. With it false (the default), those jobs are refused until the allowance resets at 00:00 UTC. The organization is taken from the API key, which is bound to a single organization.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulatorUsageSettings"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulatorUsageSettingsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication / org context required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organization user not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/usage/simulator/series": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "getSimulatorUsageSeries",
+        "summary": "Get simulator usage time series",
+        "description": "Return per-day counts of COMPLETED jobs for a single simulator (usage-over-time), scoped to the caller.",
+        "parameters": [
+          {
+            "name": "deviceQrn",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "description": "Simulator device QRN."
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 365,
+              "default": 30
+            },
+            "description": "Look-back window in days; 0 = all time."
+          },
+          {
+            "name": "timezone",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 50
+            },
+            "description": "IANA timezone for day bucketing (default UTC)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulatorUsageSeriesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query params.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication / org context required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organization user not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-KEY",
+        "description": "Authenticate requests using an API key linked to your qBraid account. Obtain your key by registering or logging in at [account.qbraid.com](https://account.qbraid.com)."
+      }
+    },
+    "schemas": {
+      "DevicePricing": {
+        "properties": {
+          "perTask": {
+            "type": "number",
+            "title": "Credits",
+            "description": "A monetary amount where 1 Credit = $0.01 USD.",
+            "examples": [
+              10,
+              0.05,
+              1.5
+            ]
+          },
+          "perShot": {
+            "type": "number",
+            "title": "Credits",
+            "description": "A monetary amount where 1 Credit = $0.01 USD.",
+            "examples": [
+              10,
+              0.05,
+              1.5
+            ]
+          },
+          "perMinute": {
+            "type": "number",
+            "title": "Credits",
+            "description": "A monetary amount where 1 Credit = $0.01 USD.",
+            "examples": [
+              10,
+              0.05,
+              1.5
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "perTask",
+          "perShot",
+          "perMinute"
+        ],
+        "title": "DevicePricing",
+        "description": "Represents pricing information for a quantum device."
+      },
+      "DeviceStatus": {
+        "type": "string",
+        "enum": [
+          "ONLINE",
+          "UNAVAILABLE",
+          "OFFLINE",
+          "RETIRED"
+        ],
+        "title": "DeviceStatus",
+        "description": "Enumeration for representing various operational statuses of devices.\n\nAttributes:\n    ONLINE (str): Device is online and accepting jobs.\n    UNAVAILABLE (str): Device is online but not accepting jobs.\n    OFFLINE (str): Device is offline.\n    RETIRED (str): Device has been retired and is no longer operational."
+      },
+      "GetDeviceResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RuntimeDevice"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "title": "GetDeviceResponse",
+        "description": "Response schema for retrieving a single device"
+      },
+      "ListDevicesResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RuntimeDevice"
+            },
+            "description": "Array of devices matching the query filters"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "title": "ListDevicesResponse",
+        "description": "Response schema for listing devices"
+      },
+      "ListJobsResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RuntimeJob"
+            },
+            "description": "Array of jobs matching the query filters"
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer",
+                "description": "Current page number"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Number of items per page"
+              },
+              "total": {
+                "type": "integer",
+                "description": "Total number of jobs"
+              },
+              "totalPages": {
+                "type": "integer",
+                "description": "Total number of pages"
+              },
+              "hasNext": {
+                "type": "boolean",
+                "description": "Whether a next page exists"
+              },
+              "hasPrev": {
+                "type": "boolean",
+                "description": "Whether a previous page exists"
+              }
+            },
+            "required": [
+              "page",
+              "limit",
+              "total",
+              "totalPages",
+              "hasNext",
+              "hasPrev"
+            ]
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Response timestamp"
+              }
+            },
+            "required": [
+              "timestamp"
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data",
+          "pagination",
+          "meta"
+        ],
+        "title": "ListJobsResponse",
+        "description": "Paginated response for listing user jobs"
+      },
+      "GetJobResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/RuntimeJob"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "title": "GetJobResponse",
+        "description": "Response schema for retrieving a single job"
+      },
+      "GetJobResultResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Result"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "title": "GetJobResultResponse",
+        "description": "Response schema for retrieving job results"
+      },
+      "GetJobProgramResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Program"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "title": "GetJobProgramResponse",
+        "description": "Response schema for retrieving a job program"
+      },
+      "CreateJobResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/RuntimeJob"
+          }
+        },
+        "title": "CreateJobResponse",
+        "description": "Response for job creation. `data` is the newly created job."
+      },
+      "CancelJobResponse": {
+        "title": "CancelJobResponse",
+        "description": "Response for job cancellation (HTTP 202 — cancellation is asynchronous).",
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "message",
+              "jobQrn",
+              "status"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Job cancellation initiated successfully"
+              },
+              "jobQrn": {
+                "type": "string"
+              },
+              "status": {
+                "$ref": "#/components/schemas/JobStatus"
+              }
+            }
+          }
+        }
+      },
+      "DeleteJobResponse": {
+        "title": "DeleteJobResponse",
+        "description": "Response for soft-deleting a single job. `stillRunning` is true when the job had not reached a terminal status — it is NOT cancelled, keeps running, and is still billed; a client may offer a follow-up cancel.",
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "message",
+              "jobQrn",
+              "stillRunning"
+            ],
+            "properties": {
+              "message": {
+                "type": "string",
+                "example": "Job deleted successfully"
+              },
+              "jobQrn": {
+                "type": "string"
+              },
+              "deletedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "stillRunning": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "DeleteMultipleJobsResponse": {
+        "title": "DeleteMultipleJobsResponse",
+        "description": "Response for bulk soft-delete.",
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "successfulIds",
+              "failedIds",
+              "stillRunning"
+            ],
+            "properties": {
+              "successfulIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "QRNs successfully soft-deleted."
+              },
+              "failedIds": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Map of QRN -> failure reason."
+              },
+              "stillRunning": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "QRNs that were deleted while not yet terminal (still running, still billed)."
+              }
+            }
+          }
+        }
+      },
+      "ExperimentType": {
+        "type": "string",
+        "enum": [
+          "gate_model",
+          "analog",
+          "annealing",
+          "other"
+        ],
+        "title": "ExperimentType",
+        "description": "Enumeration for quantum experiment types.\n\nAttributes:\n    GATE_MODEL (str): Gate-based quantum computing (e.g., OpenQASM).\n    ANALOG (str): Analog quantum computing\n    ANNEALING (str): Quantum annealing for optimization problems.\n    OTHER (str): Placeholder for other or unspecified quantum computing models."
+      },
+      "JobRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "Job name"
+          },
+          "shots": {
+            "type": "integer",
+            "minimum": 0,
+            "title": "Shots",
+            "description": "Number of shots to execute"
+          },
+          "deviceQrn": {
+            "type": "string",
+            "title": "Deviceqrn",
+            "description": "qBraid device resource name"
+          },
+          "tags": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Tags",
+            "description": "Job tags"
+          },
+          "runtimeOptions": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Runtimeoptions",
+            "description": "Runtime options"
+          },
+          "program": {
+            "description": "A single program, or an array of programs for a batch submission (1-2000).",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Program"
+              },
+              {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 2000,
+                "items": {
+                  "$ref": "#/components/schemas/Program"
+                }
+              }
+            ]
+          },
+          "groupJobQrn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "QRN of a job group to attach this job to."
+          }
+        },
+        "type": "object",
+        "required": [
+          "shots",
+          "deviceQrn",
+          "program"
+        ],
+        "title": "JobRequest",
+        "description": "Schema for job submission request body"
+      },
+      "JobStatus": {
+        "type": "string",
+        "enum": [
+          "INITIALIZING",
+          "QUEUED",
+          "VALIDATING",
+          "RUNNING",
+          "CANCELLING",
+          "CANCELLED",
+          "COMPLETED",
+          "FAILED",
+          "UNKNOWN",
+          "HOLD"
+        ],
+        "title": "JobStatus",
+        "description": "Enum for the status of processes (i.e. quantum jobs / tasks) resulting\nfrom any `qbraid.runtime.QuantumDevice.run` method.\n\nDisplayed status text values may differ from those listed below to provide\nadditional visibility into tracebacks, particularly for failed jobs."
+      },
+      "Program": {
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": [
+              "qasm2",
+              "qasm3",
+              "qir.bc",
+              "qir.ll",
+              "analog",
+              "pulser.sequence",
+              "quil",
+              "ionq.circuit.v0",
+              "problem"
+            ],
+            "title": "Format",
+            "description": "Program format"
+          },
+          "data": {
+            "title": "Data",
+            "description": "Program data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "format",
+          "data"
+        ],
+        "title": "Program",
+        "description": "Schema for quantum program"
+      },
+      "Result": {
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/JobStatus"
+          },
+          "cost": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "type": "number",
+            "title": "Credits",
+            "description": "A monetary amount where 1 Credit = $0.01 USD.",
+            "examples": [
+              10,
+              0.05,
+              1.5
+            ]
+          },
+          "timeStamps": {
+            "$ref": "#/components/schemas/TimeStamps"
+          },
+          "resultData": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Resultdata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "cost",
+          "timeStamps",
+          "resultData"
+        ],
+        "title": "Result",
+        "description": "Schema for job result"
+      },
+      "RuntimeDevice": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "qrn": {
+            "type": "string",
+            "title": "Qrn"
+          },
+          "vendor": {
+            "type": "string",
+            "enum": [
+              "aws",
+              "azure",
+              "ibm",
+              "ionq",
+              "qbraid"
+            ],
+            "title": "Vendor"
+          },
+          "deviceType": {
+            "type": "string",
+            "enum": [
+              "SIMULATOR",
+              "QPU"
+            ],
+            "title": "Devicetype"
+          },
+          "runInputTypes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Runinputtypes"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DeviceStatus"
+          },
+          "statusMsg": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Statusmsg"
+          },
+          "nextAvailable": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nextavailable"
+          },
+          "queueDepth": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Queuedepth"
+          },
+          "avgQueueTime": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avgqueuetime"
+          },
+          "numberQubits": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Numberqubits"
+          },
+          "paradigm": {
+            "$ref": "#/components/schemas/ExperimentType"
+          },
+          "modality": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Modality"
+          },
+          "noiseModels": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Noisemodels"
+          },
+          "pricingModel": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "fixed",
+                  "dynamic"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pricingmodel"
+          },
+          "pricing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DevicePricing"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "directAccess": {
+            "type": "boolean",
+            "title": "Directaccess",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "qrn",
+          "vendor",
+          "deviceType",
+          "runInputTypes",
+          "status",
+          "paradigm"
+        ],
+        "title": "RuntimeDevice",
+        "description": "Schema for device response"
+      },
+      "RuntimeJob": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name",
+            "description": "Job name"
+          },
+          "shots": {
+            "type": "integer",
+            "exclusiveMinimum": 0,
+            "title": "Shots",
+            "description": "Number of shots to execute"
+          },
+          "deviceQrn": {
+            "type": "string",
+            "title": "Deviceqrn",
+            "description": "qBraid device resource name"
+          },
+          "tags": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            },
+            "type": "object",
+            "title": "Tags",
+            "description": "Job tags"
+          },
+          "runtimeOptions": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Runtimeoptions",
+            "description": "Runtime options"
+          },
+          "jobQrn": {
+            "type": "string",
+            "title": "Jobqrn",
+            "description": "qBraid job resource name"
+          },
+          "batchJobQrn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batchjobqrn",
+            "description": "Batch job resource name"
+          },
+          "vendor": {
+            "type": "string",
+            "enum": [
+              "aws",
+              "azure",
+              "ibm",
+              "ionq",
+              "qbraid"
+            ],
+            "title": "Vendor",
+            "description": "Vendor name"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "aqt",
+              "aws",
+              "azure",
+              "equal1",
+              "ibm",
+              "iqm",
+              "ionq",
+              "nec",
+              "oqc",
+              "pasqal",
+              "quantinuum",
+              "quera",
+              "rigetti",
+              "qbraid"
+            ],
+            "title": "Provider",
+            "description": "Provider name"
+          },
+          "status": {
+            "type": "string",
+            "description": "Job status"
+          },
+          "statusMsg": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Statusmsg",
+            "description": "Job status message"
+          },
+          "experimentType": {
+            "type": "string",
+            "description": "Experiment type"
+          },
+          "queuePosition": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Queueposition",
+            "description": "Job queue position"
+          },
+          "timeStamps": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TimeStamps"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Job time stamps"
+          },
+          "cost": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cost",
+            "description": "Job cost in credits"
+          },
+          "estimatedCost": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimatedcost",
+            "description": "Job estimated cost in credits",
+            "ge": 0
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Metadata",
+            "description": "Job metadata"
+          }
+        },
+        "type": "object",
+        "required": [
+          "shots",
+          "deviceQrn",
+          "jobQrn",
+          "vendor",
+          "provider",
+          "status",
+          "experimentType",
+          "estimatedCost"
+        ],
+        "title": "RuntimeJob",
+        "description": "Schema for runtime job model"
+      },
+      "TimeStamps": {
+        "properties": {
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "endedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Endedat"
+          },
+          "executionDuration": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Executionduration",
+            "description": "Execution time in milliseconds"
+          }
+        },
+        "type": "object",
+        "required": [
+          "createdAt"
+        ],
+        "title": "TimeStamps",
+        "description": "Model for capturing time-related information in an experiment."
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "error"
+        ],
+        "description": "Standard error envelope returned for 4xx/5xx responses.",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message."
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "message",
+              "code"
+            ],
+            "properties": {
+              "message": {
+                "type": "string"
+              },
+              "code": {
+                "description": "Machine-readable error code (string) or HTTP status (integer).",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ]
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "CostEstimateResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "data": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CostEstimateAvailable"
+              },
+              {
+                "$ref": "#/components/schemas/CostEstimateUnavailable"
+              }
+            ],
+            "title": "Data"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "title": "CostEstimateResponse",
+        "description": "Response schema for a job cost estimate"
+      },
+      "CompiledProgramResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/Program"
+          }
+        },
+        "title": "CompiledProgramResponse",
+        "description": "The vendor-compiled program (`{format, data}`) stored for the job."
+      },
+      "JobProgramAsciiResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "ascii"
+            ],
+            "properties": {
+              "ascii": {
+                "description": "ASCII circuit rendering: a string for single-circuit jobs, or an array of strings for batch jobs (a null element means that circuit failed to render).",
+                "oneOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "title": "JobProgramAsciiResponse"
+      },
+      "JobsSummaryResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "totalJobs",
+              "statusCounts",
+              "avgExecutionTime",
+              "totalCost",
+              "avgCost",
+              "totalShots",
+              "avgShots",
+              "experimentTypeCounts"
+            ],
+            "properties": {
+              "totalJobs": {
+                "type": "integer"
+              },
+              "statusCounts": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "integer"
+                },
+                "description": "Count per job status (every status present, 0 when none).",
+                "example": {
+                  "INITIALIZING": 0,
+                  "QUEUED": 2,
+                  "VALIDATING": 0,
+                  "RUNNING": 1,
+                  "CANCELLING": 0,
+                  "CANCELLED": 0,
+                  "COMPLETED": 12,
+                  "FAILED": 1,
+                  "UNKNOWN": 0,
+                  "HOLD": 0
+                }
+              },
+              "avgExecutionTime": {
+                "type": "number",
+                "description": "Average execution duration (ms) over completed jobs."
+              },
+              "totalCost": {
+                "type": "number"
+              },
+              "avgCost": {
+                "type": "number"
+              },
+              "totalShots": {
+                "type": "number"
+              },
+              "avgShots": {
+                "type": "number"
+              },
+              "experimentTypeCounts": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "integer"
+                },
+                "example": {
+                  "gate_model": 14,
+                  "analog": 1
+                }
+              }
+            }
+          }
+        },
+        "title": "JobsSummaryResponse",
+        "description": "Aggregated statistics across the caller's jobs."
+      },
+      "JobsStatusesResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "example": {
+              "INITIALIZING": 0,
+              "QUEUED": 2,
+              "VALIDATING": 0,
+              "RUNNING": 1,
+              "CANCELLING": 0,
+              "CANCELLED": 0,
+              "COMPLETED": 12,
+              "FAILED": 1,
+              "UNKNOWN": 0,
+              "HOLD": 0
+            }
+          }
+        },
+        "title": "JobsStatusesResponse",
+        "description": "Map of every job status to a job count."
+      },
+      "JobGroupStatus": {
+        "type": "string",
+        "enum": [
+          "OPEN",
+          "CLOSED",
+          "COMPLETED",
+          "FAILED",
+          "CANCELLED"
+        ]
+      },
+      "CreateJobGroupRequest": {
+        "type": "object",
+        "description": "All fields optional. An empty body creates an OPEN group with maxTTL 3600s.",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "maxTTL": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 86400,
+            "default": 3600,
+            "description": "Group TTL in seconds (1-86400). After it elapses an OPEN group is lazily auto-closed."
+          }
+        }
+      },
+      "JobGroup": {
+        "type": "object",
+        "required": [
+          "_id",
+          "groupJobQrn",
+          "status",
+          "organizationUserId",
+          "jobCount",
+          "completedCount",
+          "failedCount",
+          "cancelledCount"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "groupJobQrn": {
+            "type": "string",
+            "example": "group:a1b2-664f0c1e2a3b4c5d6e7f8090"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobGroupStatus"
+          },
+          "organizationUserId": {
+            "type": "string"
+          },
+          "jobCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "completedCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "failedCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "cancelledCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "totalEstimatedCost": {
+            "type": "number",
+            "minimum": 0
+          },
+          "totalCost": {
+            "type": "number",
+            "minimum": 0
+          },
+          "maxTTL": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 86400
+          },
+          "timeStamps": {
+            "type": "object",
+            "required": [
+              "createdAt"
+            ],
+            "properties": {
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "endedAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "executionDuration": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          },
+          "tags": {
+            "type": "object",
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "JobGroupResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/JobGroup"
+          }
+        },
+        "title": "JobGroupResponse"
+      },
+      "ListJobGroupsResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/JobGroup"
+            }
+          }
+        },
+        "title": "ListJobGroupsResponse"
+      },
+      "ListJobGroupJobsResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RuntimeJob"
+            }
+          }
+        },
+        "title": "ListJobGroupJobsResponse"
+      },
+      "EdgeEntry": {
+        "type": "object",
+        "required": [
+          "source",
+          "target",
+          "value"
+        ],
+        "properties": {
+          "source": {
+            "type": "integer"
+          },
+          "target": {
+            "type": "integer"
+          },
+          "value": {
+            "type": "number"
+          }
+        }
+      },
+      "QubitCalibration": {
+        "type": "object",
+        "description": "Qubit-level properties; presence depends on the provider.",
+        "properties": {
+          "t1": {
+            "type": "number"
+          },
+          "t2": {
+            "type": "number"
+          },
+          "frequency": {
+            "type": "number"
+          },
+          "readoutError": {
+            "type": "number"
+          },
+          "gateError": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number"
+            },
+            "description": "Per-single-qubit-gate error, keyed by gate name."
+          }
+        }
+      },
+      "DeviceCalibration": {
+        "type": "object",
+        "required": [
+          "deviceQRNs",
+          "provider",
+          "lastCalibrated",
+          "fetchedAt",
+          "qubits",
+          "edges"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "deviceQRNs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "provider": {
+            "type": "string"
+          },
+          "lastCalibrated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fetchedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "qubits": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/QubitCalibration"
+            },
+            "description": "Qubit-level properties keyed by qubit index (string)."
+          },
+          "edges": {
+            "type": "object",
+            "description": "Edge-level properties keyed by metric name, then by source-qubit key, to a list of edge entries.",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/EdgeEntry"
+                }
+              }
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GetDeviceCalibrationsResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/DeviceCalibration"
+          }
+        },
+        "title": "GetDeviceCalibrationsResponse"
+      },
+      "CreditBalanceResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "description": "Credit balances for an organization.",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "qbraidCredits",
+              "awsCredits",
+              "autoRecharge",
+              "organizationId",
+              "userId"
+            ],
+            "properties": {
+              "qbraidCredits": {
+                "type": "number"
+              },
+              "awsCredits": {
+                "type": "number"
+              },
+              "autoRecharge": {
+                "type": "string",
+                "enum": [
+                  "enabled",
+                  "disabled"
+                ]
+              },
+              "organizationId": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "CreditPricingResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "creditRate",
+              "minPurchaseUSD",
+              "currency",
+              "examples"
+            ],
+            "properties": {
+              "creditRate": {
+                "type": "integer",
+                "description": "Credits per 1 USD.",
+                "example": 100
+              },
+              "minPurchaseUSD": {
+                "type": "integer",
+                "example": 5
+              },
+              "currency": {
+                "type": "string",
+                "example": "USD"
+              },
+              "examples": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "usd",
+                    "credits"
+                  ],
+                  "properties": {
+                    "usd": {
+                      "type": "integer"
+                    },
+                    "credits": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SimulatorUsageItem": {
+        "type": "object",
+        "required": [
+          "deviceQrn",
+          "deviceName",
+          "usage",
+          "quota",
+          "remaining",
+          "unlimited",
+          "percentageUsed",
+          "resetsAt",
+          "creditFallover",
+          "autoSwitchToCredits"
+        ],
+        "properties": {
+          "deviceQrn": {
+            "type": "string"
+          },
+          "deviceName": {
+            "type": "string"
+          },
+          "usage": {
+            "type": "integer"
+          },
+          "quota": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Daily cap; null = unlimited."
+          },
+          "remaining": {
+            "type": "integer",
+            "nullable": true
+          },
+          "unlimited": {
+            "type": "boolean"
+          },
+          "percentageUsed": {
+            "type": "integer",
+            "description": "0-100; 0 when unlimited."
+          },
+          "resetsAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Next 00:00 UTC reset."
+          },
+          "creditFallover": {
+            "type": "boolean",
+            "description": "True for a simulator whose daily quota is a free allowance that can fall over to credits (the GPU simulators). Once the allowance is used, further jobs run charged from credits at the device's per-minute price when `autoSwitchToCredits` is true, and are refused when it is false."
+          },
+          "autoSwitchToCredits": {
+            "type": "boolean",
+            "description": "The caller's usage-based billing setting for simulators; the same on every entry. Only affects entries with `creditFallover`."
+          }
+        }
+      },
+      "SimulatorUsageResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SimulatorUsageItem"
+            }
+          }
+        }
+      },
+      "SimulatorUsageSettings": {
+        "type": "object",
+        "required": [
+          "autoSwitchToCredits"
+        ],
+        "properties": {
+          "autoSwitchToCredits": {
+            "type": "boolean",
+            "description": "Run jobs past a GPU simulator's free daily allowance, charged from credits (true), or refuse them (false)."
+          }
+        }
+      },
+      "SimulatorUsageSettingsResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/SimulatorUsageSettings"
+          }
+        }
+      },
+      "SimulatorUsageSeriesResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "date",
+                "jobs"
+              ],
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "description": "YYYY-MM-DD."
+                },
+                "jobs": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CostEstimateAvailable": {
+        "properties": {
+          "pricingAvailable": {
+            "type": "boolean",
+            "enum": [
+              true
+            ],
+            "title": "Pricing Available",
+            "description": "Always true for this shape"
+          },
+          "estimatedCost": {
+            "type": "number",
+            "minimum": 0,
+            "title": "Estimated Cost",
+            "description": "Estimated cost in qBraid credits"
+          },
+          "deviceQrn": {
+            "type": "string",
+            "title": "Device Qrn",
+            "description": "Device the quote is for"
+          },
+          "shots": {
+            "type": "integer",
+            "title": "Shots",
+            "description": "Shot count the quote assumes. Only present when `shots` was passed in the request."
+          }
+        },
+        "type": "object",
+        "required": [
+          "pricingAvailable",
+          "estimatedCost",
+          "deviceQrn"
+        ],
+        "title": "CostEstimateAvailable",
+        "description": "A quote for a device with usable pricing"
+      },
+      "CostEstimateUnavailable": {
+        "properties": {
+          "pricingAvailable": {
+            "type": "boolean",
+            "enum": [
+              false
+            ],
+            "title": "Pricing Available",
+            "description": "Always false for this shape"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "no_pricing_configured",
+              "dynamic_pricing_unavailable"
+            ],
+            "title": "Reason",
+            "description": "Why no cost could be quoted. `no_pricing_configured`: the device has no price data. `dynamic_pricing_unavailable`: the price depends on the submitted program and cannot be quoted up front."
+          },
+          "deviceQrn": {
+            "type": "string",
+            "title": "Device Qrn",
+            "description": "Device the quote is for"
+          },
+          "pricingModel": {
+            "type": "string",
+            "enum": [
+              "fixed",
+              "dynamic"
+            ],
+            "nullable": true,
+            "title": "Pricing Model",
+            "description": "The device's pricing model, or null if none is configured"
+          }
+        },
+        "type": "object",
+        "required": [
+          "pricingAvailable",
+          "reason",
+          "deviceQrn",
+          "pricingModel"
+        ],
+        "title": "CostEstimateUnavailable",
+        "description": "The device's pricing cannot be quoted"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Jobs",
+      "description": "Submit, monitor, and manage quantum jobs and batch groups."
+    },
+    {
+      "name": "Devices",
+      "description": "Browse quantum devices and their calibration data."
+    },
+    {
+      "name": "Account",
+      "description": "Credits, identity, and usage for the authenticated account."
+    }
+  ]
+}
