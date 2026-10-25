@@ -235,13 +235,37 @@ def test_planted_drive_response_is_recovered() -> None:
         raise AssertionError(np.abs(fitted - light).max())
 
 
-def test_fold_score_adds_the_parameter_variance() -> None:
-    rows = [("x", 1.0, 0.0, 0.5, 0.5), ("x", 0.0, 0.0, 1.0, 0.0), ("y", 2.0, 1.0, 1.0, 1.0)]
-    score = drive.fold_score(rows)
-    if score["x"]["multinomial"]["statistic"] != 2.0 or score["x"]["predictive"]["statistic"] != 1.0:
-        raise AssertionError(score["x"])
-    if score["y"]["multinomial"]["dof"] != 1 or score["y"]["predictive"]["statistic"] != 0.5:
-        raise AssertionError(score["y"])
+def test_reading_applies_the_training_only_thresholds() -> None:
+    summary = {
+        "x": {"standardized_sum": 30.0, "median_variance_ratio": 5.0},
+        "y": {"standardized_sum": 19.9, "median_variance_ratio": 1.5},
+    }
+    if drive.reading(summary) != {"x": "shortfall", "y": "weakly identified"}:
+        raise AssertionError(drive.reading(summary))
+    summary = {
+        "x": {"standardized_sum": 19.9, "median_variance_ratio": 1.0},
+        "y": {"standardized_sum": 25.0, "median_variance_ratio": 3.0},
+    }
+    if drive.reading(summary) != {"x": "within prediction variance", "y": "between the thresholds"}:
+        raise AssertionError(drive.reading(summary))
+
+
+def test_drive_fold_is_the_training_only_fold_on_the_basis(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: list[Any] = []
+
+    def record(item: Any) -> dict[str, Any]:
+        seen.append(item)
+        return {"rows": []}
+
+    monkeypatch.setattr(holdout, "configuration_fold", record)
+    d = data()
+    drive.drive_fold(("drive_harmonic_1", "harmonic", 1, 0.3, d, 2))
+    family, heater_tau, coupler_tau, passed, left_out = seen[0]
+    expected = drive.heater_basis(d["phases"], "harmonic", 1)
+    if (family, heater_tau, coupler_tau, left_out) != ("drive_harmonic_1", 0.3, None, 2):
+        raise AssertionError(seen[0][:3])
+    if not np.array_equal(passed["heater_basis"], expected) or passed["phases"] is not d["phases"]:
+        raise AssertionError("the fold does not carry the family's basis over the run's own phases")
 
 
 @pytest.mark.parametrize(("kind", "order"), [("harmonic", 2), ("polynomial", 1)])

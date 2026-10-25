@@ -2550,6 +2550,7 @@
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
     "scripts/ascella_configuration_holdout.py",
+    "scripts/ascella_drive_response.py",
     "scripts/ascella_physical_models.py",
     "scripts/ascella_response_geometry.py",
     "scripts/associator_cubic_normal_form.py",
@@ -8502,6 +8503,8 @@
    "os",
    "pathlib",
    "pickle",
+   "tempfile",
+   "time",
    "typing"
   ],
   "gororoba_quantum/parameter_binding_contracts.py": [
@@ -9397,6 +9400,19 @@
    "numpy",
    "parallel",
    "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_drive_response.py": [
+   "__future__",
+   "ascella_configuration_holdout",
+   "ascella_physical_models",
+   "math",
+   "numpy",
+   "os",
+   "parallel",
+   "pathlib",
+   "platform",
    "sys",
    "typing"
   ],

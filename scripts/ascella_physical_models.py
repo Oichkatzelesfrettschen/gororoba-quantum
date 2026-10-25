@@ -108,7 +108,7 @@ PROBABILITY_FLOOR = 1e-9
 FIT_TOLERANCE = 1e-12
 FIT_ITERATIONS = 20000
 STATIC_GRADIENT_TOLERANCE = 1e-8
-REFINE_STEPS = 100
+REFINE_STEPS = 200
 REFINE_TOLERANCE = 1e-8
 REFINE_DAMPING = 1e-6
 HESSIAN_STEP = 1e-6
@@ -481,13 +481,11 @@ def static_objective(
     return value, grad
 
 
-def static_mode(
-    data: dict[str, Any], tau: np.ndarray, free: np.ndarray, start: np.ndarray | None = None
-) -> tuple[np.ndarray, np.ndarray]:
-    """Maximum a posteriori static offsets from start (zero by default), and the posterior Hessian there."""
+def static_mode(data: dict[str, Any], tau: np.ndarray, free: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Maximum a posteriori static offsets from zero, and the posterior Hessian there."""
     result = minimize(
         lambda offsets: static_objective(data, tau, free, offsets),
-        np.zeros(int(free.sum())) if start is None else start,
+        np.zeros(int(free.sum())),
         jac=True,
         method="L-BFGS-B",
         options={"ftol": FIT_TOLERANCE, "gtol": STATIC_GRADIENT_TOLERANCE, "maxiter": FIT_ITERATIONS},

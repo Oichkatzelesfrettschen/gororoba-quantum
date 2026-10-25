@@ -2075,15 +2075,15 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Static families of the provider's returned mesh model only, with pure-state propagation; the prediction variance is the local quadratic approximation at each fold mode, the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference, and the reading criterion (30 or more on 10 keeps the shortfall) was fixed in plan ascella-configuration-holdout-training-only before the run. The analysis was added after the preregistered table and decides nothing; it does not show that the underlying errors are independent between configurations or exclude a correlated or drive-dependent shared error. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
+      "boundary": "Static families of the provider's returned mesh model only, with pure-state propagation and the block light unclipped (configuration-holdout.json, built with the light clipped at 1e-9, holds one combined-family fold in a local mode 4.36 higher in negative log posterior); the prediction variance is the local quadratic approximation at each fold mode, the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference, and the reading criterion (30 or more on 10 keeps the shortfall) was fixed in plan ascella-configuration-holdout-training-only before the run. The analysis was added after the preregistered table and decides nothing; it does not show that the underlying errors are independent between configurations or exclude a correlated or drive-dependent shared error. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
           "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
         },
         {
-          "path": "docs/evidence/ascella-order-coefficients/configuration-holdout.json",
-          "sha256": "c38ad052a38eab81e8c2f17f8a7d0d4bb2a3698d8c484250d1cf903bac443268"
+          "path": "docs/evidence/ascella-order-coefficients/configuration-holdout-unclipped-light.json",
+          "sha256": "4c16311629a1b9de032139db4c014c0f6c04d101ec7620572feeaba937ff078f"
         }
       ],
       "documents": [
@@ -2098,6 +2098,44 @@
       "assumptions": [],
       "depends_on": [
         "ascella-signed-coherence-physical-models"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-drive-response",
+      "statement": "A per-heater drive-dependent phase error of the returned 12-mode Ascella meshes (shifted Legendre polynomials of the drive to order 1 or 2, or 1, cos and sin of the returned phase to order 1 or 2; 252 to 630 coefficients under N(0, tau^2) priors) reproduces job-00 and job-01 (job-01 held-out X 4.0 to 5.4 and Y 6.7 to 12.6 on 10, X0 + Xc2 -0.026 to -0.028) but predicts no left-out configuration it can be judged on. Refitted from the zero start on the training configurations alone, the order-1 polynomial keeps the shortfall on X (standardized sum 32 on 10, Y 28), and the four richer families predict with a median prediction variance 6.5 to 485 times the counting variance and sums of 1 to 15, so these data leave them undetermined; in counting variance alone every family does worse than the returned mesh (X 386 to 564 against 343, Y 94 to 225 against 75).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Families of the provider's returned mesh model only, with the background, multinomial and pure-state propagation of the static fits; the training-only folds, the prediction variance as the local quadratic approximation at each fold mode and the reading criterion (30 or more on 10 keeps the shortfall, below 20 with a median variance ratio above 1 reads as weakly identified) are those of plan ascella-configuration-holdout-training-only, fixed before this run. The folds share their training data, so the sums are descriptive and carry no chi-square reference. The families were added after the preregistered table and decide nothing. The posteriors hold several modes and the one an L-BFGS path reaches follows BLAS and SIMD rounding, so the script fixes the OpenBLAS Haswell kernel and numpy's x86-64-v3 dispatch before numpy loads, and the record replays within 1e-3 relative plus 1e-8 absolute under those kernels.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+          "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/drive-response.json",
+          "sha256": "cceba0b5229f239585472c69fadbf6201d5e318f00b5b5e858faa3d8b2fb66c8"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-drive-response-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-configuration-holdout"
       ],
       "supersedes": [],
       "superseded_by": null

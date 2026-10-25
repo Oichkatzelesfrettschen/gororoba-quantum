@@ -87,13 +87,24 @@ returned 12-mode meshes fitted on job-00 and scored on job-01's pooled
 configurations, with supplementary families and a leave-one-configuration-out
 refit of the static ones
 ([design](../../design/ascella-signed-coherence-conformance.md#restricted-physical-models-of-the-analyzer-response)).
-[`configuration-holdout.json`](configuration-holdout.json), from
+[`configuration-holdout-unclipped-light.json`](configuration-holdout-unclipped-light.json), from
 [`scripts/ascella_configuration_holdout.py`](../../../scripts/ascella_configuration_holdout.py),
 holds the leave-one-configuration-out refit of the static families from the
 training configurations alone, scored in counting plus fitted-prediction
 variance; it supersedes the left-out column of `physical-models.json`
 ([design](../../design/ascella-signed-coherence-conformance.md#leave-one-configuration-out-from-training-data)).
+[`configuration-holdout.json`](configuration-holdout.json) is the same refit
+built while the static fit clipped the block light, with one combined-family
+fold in a higher local mode; its bytes stay for the receipt that binds them.
+[`drive-response.json`](drive-response.json), from
+[`scripts/ascella_drive_response.py`](../../../scripts/ascella_drive_response.py),
+holds the drive-dependent heater families: per-heater polynomial and harmonic
+responses to the returned phase, fitted on job-00, scored on job-01 and on the
+same training-only folds
+([design](../../design/ascella-signed-coherence-conformance.md#drive-dependent-heater-response)).
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance, and the last two replay their nominal family there and
+certificate tolerance, and the last three replay their nominal family there and
 their fitted families within 1e-3 relative plus 1e-8 absolute, the rounding of
-optimizer endpoints under another BLAS build.
+optimizer endpoints under another BLAS build. The drive record replays under
+the OpenBLAS kernel and numpy SIMD dispatch its script fixes, because which
+posterior mode a drive fit reaches follows that rounding.
