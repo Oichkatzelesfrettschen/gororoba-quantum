@@ -6,14 +6,14 @@
   "sources": [
     "docs/design/heron-latency-logical-recovery.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "unresolved",
     "note": "Captured context; triage and evidence review pending."
   },
   "scope": "Family latency-recovery in live_run: 34 dynamic members on ibm_kingston, dry run, Aer prediction under the live Target, analysis and a written case. No submission without the user's approval of that case.",
   "owner": "claude",
-  "next_action": "Merge the latency-recovery PR after the Codex review loop.",
+  "next_action": "None; a multi-point delay ladder that decides the decay law is a separate experiment.",
   "steps": [
     {
       "id": "family",
@@ -84,6 +84,26 @@
             }
           ],
           "scope_sha256": "8adb5268a1b931e801d3e23ba8ddb71cd452b6051237abd24b20f609efa08042"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Job dbf5kdom94ac738ssug0 ran on ibm_kingston and merged in PR #510: feed-forward recovery holds, the controller latency costs no resolved fidelity beyond its idle, and a 10 us window costs 2.7 times the T1/T2 prediction.",
+  "receipts": [
+    {
+      "scope_sha256": "f380dc36dc6388b57a664f912f2f0ea2130fe9e1b1f20e2b829fac56286f8044",
+      "result": "All three steps are done; the run, its claim and the findings are on main.",
+      "observed_at": "2026-10-25T22:45:00Z",
+      "revision": "ea1d0e4aba2ba228ea2585a7f6377d263311fe73",
+      "evidence": [
+        {
+          "ref": "results/live/LATENCY_RECOVERY_FINDINGS.md",
+          "sha256": "482fb75bb052d5607e73b5a228dde15bf0ed95856a3c8a12f673605c361c1173"
+        },
+        {
+          "ref": "results/live/2026-10-25T193443.839527Z/collect.json",
+          "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
         }
       ]
     }

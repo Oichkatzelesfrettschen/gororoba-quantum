@@ -66,5 +66,22 @@
    "index": 5
   }
  ],
- "runtime": []
+ "runtime": [
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T223842Z.json",
+   "index": 0,
+   "value": 22267,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-25T223857.467590Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T223842Z.json",
+   "index": 1,
+   "value": 44016,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-25T223857.467590Z"
+  }
+ ]
 }

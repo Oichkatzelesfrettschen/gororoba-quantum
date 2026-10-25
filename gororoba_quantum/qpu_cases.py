@@ -296,6 +296,16 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if "rep_delay_seconds" in policy:
         _require(_number(policy["rep_delay_seconds"], "rep_delay_seconds") >= 0, "rep_delay must be nonnegative")
         arguments.extend(["--rep-delay", str(policy["rep_delay_seconds"])])
+    # A non-default seed spelling binds the approval and reproduces the plan's
+    # layouts and model samples, so the replay passes it unchanged.
+    for name in ("seed_transpiler", "seed_simulator"):
+        if name in policy:
+            spelling = policy[name]
+            _require(
+                isinstance(spelling, str) and spelling.startswith(("qrng:", "repro:")),
+                f"{name} must be a qrng: reference or a repro: integer",
+            )
+            arguments.extend(["--" + name.replace("_", "-"), spelling])
     for name in ("replica_floor", "max_replicas"):
         if policy[name] is not None:
             _number(policy[name], name, positive=True)

@@ -156,11 +156,11 @@ measurement is identical, so readout error biases each F alike, and
 differences between arms cancel it to first order.
 
 The family draws no randomness of its own: its circuits, frame rule and
-contracts are deterministic. `live_run.py` takes no seed at run time, so layout
-search and the planner's model sampling ran with the runner's fixed
-`SEED_TRANSPILER` range and `SEED_SIMULATOR` (transpiler seed 20261013,
-simulator seed 20261011 in the retained run). A new acquisition's seeds belong
-to a QRNG draw; issue #514 carries the runner flags that take one.
+contracts are deterministic. The retained run planned with the runner's
+reproduction seeds (transpiler seed 20261013, simulator seed 20261011), since
+`live_run.py` then took no seed at run time. A new acquisition passes
+`--seed-transpiler` and `--seed-simulator` as `qrng:<draw>#<index>`
+([qpu-submission.md](../notes/ibm_quantum/qpu-submission.md)).
 
 ## Implementation
 
