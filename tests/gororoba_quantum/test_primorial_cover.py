@@ -1,6 +1,6 @@
 """gororoba_quantum/primorial_cover.py and scripts/primorial_cover_noise.py: the retained certificates reproduce, the
 exhaustive search finds covers where gaps exist, the eight-CNOT block implements exp(-i gamma H), and the gap-86
-repair leaves every compiled circuit unchanged.
+repair leaves every compiled circuit unchanged, and the shot prices carry the variance of each phase correction.
 """
 
 from __future__ import annotations
@@ -75,3 +75,38 @@ def test_gap86_repair_changes_no_circuit() -> None:
         for basis in ("X", "Y"):
             if noise.gradient_arm(plain, j, x, basis) != noise.gradient_arm(fixed, j, x, basis):
                 raise AssertionError(f"gap86 repair changes the edge ({j}, {x}) {basis} arm")
+
+
+def test_phase_variance_follows_the_corrections() -> None:
+    """Assignment inversion scales each mean's binomial variance by 1 / (1 - a - b)^2, and null subtraction adds
+    the null arm's phase variance; a finite-difference Jacobian of atan2 of the corrected means is the reference."""
+    noise = _noise_module()
+    x_obs, y_obs = np.asarray([0.61, -0.2]), np.asarray([-0.52, 0.83])
+    a, b = np.asarray([0.01, 0.03]), np.asarray([0.04, 0.02])
+
+    def phase(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        return np.asarray(np.arctan2(noise.corrected(y, a, b), noise.corrected(x, a, b)))
+
+    step = 1e-7
+    dx = (phase(x_obs + step, y_obs) - phase(x_obs - step, y_obs)) / (2 * step)
+    dy = (phase(x_obs, y_obs + step) - phase(x_obs, y_obs - step)) / (2 * step)
+    reference = dx**2 * (1 - x_obs**2) + dy**2 * (1 - y_obs**2)
+    got = noise.corrected_phase_variance(x_obs, y_obs, a, b)
+    if not np.allclose(got, reference, rtol=1e-6):
+        raise AssertionError(f"corrected phase variance {got} against the Jacobian reference {reference}")
+    zero = np.zeros(2)
+    if not np.allclose(
+        noise.corrected_phase_variance(x_obs, y_obs, zero, zero), noise.raw_phase_variance(x_obs, y_obs)
+    ):
+        raise AssertionError("with no assignment error the corrected variance departs from the raw one")
+
+    table = noise.cost_table("gap88")
+    reads = [np.cos(np.arange(12) / 7.0) * 0.9, -np.sin(np.arange(12) / 7.0) * 0.9]
+    null = (np.full(12, 0.95), np.full(12, 0.05))
+    v_cost, v_null = noise.raw_phase_variance(*reads), noise.raw_phase_variance(*null)
+    fit = noise.null_subtracted(table, *reads, null, v_cost, v_null)
+    keys, w = noise.walsh_matrix()
+    projector = w @ np.linalg.pinv(noise.incidence())
+    expected = (projector**2) @ ((v_cost + v_null) / noise.GRADIENT_GAMMA**2)
+    if not np.allclose([fit["per_shot_coefficient_variance"][k] for k in keys], expected):
+        raise AssertionError("null subtraction does not add the null arm's phase variance")

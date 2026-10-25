@@ -29,13 +29,17 @@ snapshot_laws.outcome_law (live_run's gate, idle and assignment noise):
    after repair, whose ideal laws differ in total variation by 0.132128193.
 
 Every compile runs at optimization level 0 with the initial layout given, so
-the cost block of every arm is the same instruction sequence; the compiled CZ
-count must equal the logical CX and CZ count, which excludes inserted SWAPs.
-The noiseless law of each compiled arm must equal its ideal law to 1e-9.
-Layouts: the path minimizing summed CZ error plus mean assignment error, and
-the path at the median of that cost, so the prediction spans a good and a
-typical patch. Shot prices use the delta method for the phase of (<X>, <Y>)
-and resolve each contrast at z = Z_SCORE.
+the cost block of every arm is the same instruction sequence, and is ALAP
+scheduled against the snapshot Target, so the delays of each spectator
+interval carry the model's idle relaxation; the compiled CZ count must equal
+the logical CX and CZ count, which excludes inserted SWAPs. The noiseless law
+of each compiled arm must equal its ideal law to 1e-9. Layouts: the path
+minimizing summed CZ error plus mean assignment error, and the path at the
+median of that cost, so the prediction spans a good and a typical patch. Shot
+prices use the delta method for the phase of (<X>, <Y>) with each mean's
+variance carried through the assignment inversion and, for null subtraction,
+the null arm's own phase variance added, and resolve each contrast at
+z = Z_SCORE.
 
 ``--out FILE`` writes the record; ``--check FILE --run DIR`` requires FILE to
 be byte-identical to the collected output of Kaggle run DIR, recomputes the
@@ -76,8 +80,9 @@ Z_SCORE = 3.0
 IDENTIFY_RADIUS = 1.0 / 16.0
 # Two-sided z for all seven coefficients of one cost at family-wise level 0.01 (Bonferroni).
 SIMULTANEOUS_Z = statistics.NormalDist().inv_cdf(1.0 - 0.01 / (2 * 7))
-# Coherent sensitivity scenarios: a conditional phase (rad) after every CZ, and a fractional
-# amplitude error eta on every sx, RX(pi/2 (1 + eta)), spanning the retained atlas scales.
+# Coherent sensitivity scenarios: a conditional phase (rad) after every CZ, a fractional amplitude error eta
+# on every sx, RX(pi/2 (1 + eta)), and a static detuning (kHz) of one path qubit, spanning the retained atlas
+# scales (the Fez lane fits of docs/evidence/atlas_detuning_map run from 5 to 30 kHz).
 COHERENT_SCENARIOS = (
     ("cz_phase", 0.02),
     ("cz_phase", 0.05),
@@ -85,6 +90,12 @@ COHERENT_SCENARIOS = (
     ("sx_amplitude", 0.002),
     ("sx_amplitude", 0.004),
     ("sx_amplitude", 0.01),
+    ("detuning_q0", 10.0),
+    ("detuning_q1", 10.0),
+    ("detuning_q2", 10.0),
+    ("detuning_q0", 30.0),
+    ("detuning_q1", 30.0),
+    ("detuning_q2", 30.0),
 )
 # "null" is the zero table: the same eight-CNOT block with every RZ at angle zero, ideally the identity.
 GRADIENT_COSTS = ("null", "gap86", "gap86_repaired", "gap88", "gap88_repaired")
@@ -260,7 +271,17 @@ def logical_entanglers(circuit: QuantumCircuit) -> int:
 
 
 def compile_arm(view: Any, circuit: QuantumCircuit, layout: list[int]) -> QuantumCircuit:
-    compiled = transpile(circuit, view, initial_layout=layout, optimization_level=0)
+    """ALAP-scheduled compile whose delays carry the spectator idle intervals of the path.
+
+    Scheduling pads every device qubit; delays off the layout are dropped so the law's register stays the path.
+    """
+    scheduled = transpile(circuit, view, initial_layout=layout, optimization_level=0, scheduling_method="alap")
+    compiled = scheduled.copy_empty_like()
+    on_path = set(layout)
+    for instruction in scheduled.data:
+        if instruction.operation.name == "delay" and scheduled.find_bit(instruction.qubits[0]).index not in on_path:
+            continue
+        compiled.append(instruction)
     cz = sum(1 for instruction in compiled.data if instruction.operation.name == "cz")
     if cz != logical_entanglers(circuit):
         raise SystemExit(f"compile on {layout} has {cz} CZ against {logical_entanglers(circuit)} logical entanglers")
@@ -295,19 +316,51 @@ class CoherentLaw:
 
     ``cz_phase`` follows every CZ by CPhase(value) on its pair; ``sx_amplitude`` replaces every sx by
     RX(pi/2 (1 + value)). The first is diagonal; the second acts inside every Hadamard of the network.
+    ``detuning_qk`` detunes path qubit k by ``value`` kHz: its frame drifts by RZ(2 pi delta t) over every
+    scheduled interval t (gate or delay), applied after that instruction. The drift is the toggling-frame
+    integral over the compiled schedule, so it reaches whichever parities the wire carries and the X frame of
+    every target inside a compiled CX; the placement after each gate is exact for CZ, RZ and delays and first
+    order in delta t for sx and x.
     """
 
-    def __init__(self, snapshot: dict[str, Any], device: str, family: str, value: float) -> None:
+    def __init__(
+        self,
+        snapshot: dict[str, Any],
+        device: str,
+        family: str,
+        value: float,
+        layout: list[int],
+        durations: dict[tuple[str, tuple[int, ...]], float],
+        dt: float,
+    ) -> None:
         self.snapshot = snapshot
         self.device = device
         self.family = family
         self.value = value
+        self.detuned = layout[int(family.removeprefix("detuning_q"))] if family.startswith("detuning_q") else None
+        self.durations = durations
+        self.dt = dt
+
+    def _seconds(self, operation: Any, qubits: list[int]) -> float:
+        if operation.name == "delay":
+            return float(operation.duration) * (self.dt if operation.unit == "dt" else 1.0)
+        return self.durations.get((operation.name, tuple(qubits)), 0.0)
 
     def replace(self, operation: Any, qubits: list[int]) -> Any:
         from qiskit.circuit.library import RXGate, UnitaryGate
+        from qiskit.quantum_info import Operator
 
         if operation.name == "barrier":
             return None
+        if self.detuned is not None and self.detuned in qubits:
+            seconds = self._seconds(operation, qubits)
+            if seconds == 0.0:
+                return operation
+            drifted = QuantumCircuit(len(qubits))
+            if operation.name != "delay":
+                drifted.append(operation, range(len(qubits)))
+            drifted.rz(2.0 * math.pi * self.value * 1e3 * seconds, qubits.index(self.detuned))
+            return UnitaryGate(Operator(drifted).data, label="detuned")
         if self.family == "cz_phase" and operation.name == "cz":
             return UnitaryGate(np.diag([1.0, 1.0, 1.0, -np.exp(1j * self.value)]), label="cz_cphase")
         if self.family == "sx_amplitude" and operation.name == "sx":
@@ -321,18 +374,30 @@ class CoherentLaw:
 
 
 def coherent_sensitivity(
-    snapshot: dict[str, Any], device: str, compiled: list[tuple[dict[str, Any], QuantumCircuit]]
+    snapshot: dict[str, Any],
+    device: str,
+    compiled: list[tuple[dict[str, Any], QuantumCircuit]],
+    view: Any,
+    layout: list[int],
 ) -> list[dict[str, Any]]:
     """Coefficient shifts each COHERENT_SCENARIOS error produces on the gap88 gradient arms, noise-free."""
     arms_88 = [(m, c) for m, c in compiled if m["family"] == "gradient" and m["cost"] in ("gap88", "null")]
     table = cost_table("gap88")
     exact = coefficients(table)
+    durations = {
+        (name, tuple(qargs)): float(props.duration)
+        for name in view.target.operation_names
+        for qargs, props in view.target[name].items()
+        if qargs is not None and props is not None and props.duration and set(qargs) <= set(layout)
+    }
     out = []
     for family, value in COHERENT_SCENARIOS:
-        rows = parallel.ordered_map(CoherentLaw(snapshot, device, family, value), arms_88, min_items=1)
+        worker = CoherentLaw(snapshot, device, family, value, layout, durations, float(view.target.dt))
+        rows = parallel.ordered_map(worker, arms_88, min_items=1)
         readings = gradient_readings(rows, "gap88")
-        fit = phase_fit(table, *readings)
-        subtracted = null_subtracted(table, *readings, gradient_readings(rows, "null"))
+        null = gradient_readings(rows, "null")
+        fit = phase_fit(table, *readings, raw_phase_variance(*readings))
+        subtracted = null_subtracted(table, *readings, null, raw_phase_variance(*readings), raw_phase_variance(*null))
         out.append(
             {
                 "family": family,
@@ -394,8 +459,30 @@ def corrected(z_obs: np.ndarray, a: np.ndarray, b: np.ndarray) -> np.ndarray:
     return out
 
 
-def phase_fit(table: list[int], x_read: np.ndarray, y_read: np.ndarray) -> dict[str, Any]:
-    """Least-squares cube potential from edge readings, recovered c_S, cycle residual and shot price."""
+def phase_variance(x_mean: np.ndarray, y_mean: np.ndarray, x_var: np.ndarray, y_var: np.ndarray) -> np.ndarray:
+    """Delta-method per-shot variance of atan2(y, x) from independent X and Y arms of N shots each."""
+    out: np.ndarray = (y_mean**2 * x_var + x_mean**2 * y_var) / np.hypot(x_mean, y_mean) ** 4
+    return out
+
+
+def raw_phase_variance(x_read: np.ndarray, y_read: np.ndarray) -> np.ndarray:
+    return phase_variance(x_read, y_read, 1.0 - x_read**2, 1.0 - y_read**2)
+
+
+def corrected_phase_variance(x_obs: np.ndarray, y_obs: np.ndarray, a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    """Phase variance after assignment inversion: each corrected mean has variance (1 - z_obs^2) / (1 - a - b)^2."""
+    scale = (1.0 - a - b) ** 2
+    return phase_variance(
+        corrected(x_obs, a, b), corrected(y_obs, a, b), (1.0 - x_obs**2) / scale, (1.0 - y_obs**2) / scale
+    )
+
+
+def phase_fit(table: list[int], x_read: np.ndarray, y_read: np.ndarray, phase_var: np.ndarray) -> dict[str, Any]:
+    """Least-squares cube potential from edge readings, recovered c_S, cycle residual and shot price.
+
+    ``phase_var`` is each edge phase's per-shot variance, X and Y arms each taking N shots; the analysis that
+    produced the readings (assignment inversion, null subtraction) determines it.
+    """
     exact = coefficients(table)
     visibility = np.hypot(x_read, y_read)
     d_hat = -np.arctan2(y_read, x_read) / GRADIENT_GAMMA
@@ -406,8 +493,6 @@ def phase_fit(table: list[int], x_read: np.ndarray, y_read: np.ndarray) -> dict[
     projector = w @ np.linalg.pinv(b)
     recovered = dict(zip(keys, (projector @ d_hat).tolist(), strict=True))
     bias = max(abs(recovered[k] - exact[k]) for k in keys)
-    # Delta-method per-shot variance of each edge's d estimate, X and Y arms each taking N shots.
-    phase_var = (y_read**2 * (1.0 - x_read**2) + x_read**2 * (1.0 - y_read**2)) / visibility**4
     coeff_var = (projector**2) @ (phase_var / GRADIENT_GAMMA**2)
     margin = IDENTIFY_RADIUS - bias
     return {
@@ -434,12 +519,20 @@ def gradient_readings(rows: list[dict[str, Any]], name: str) -> tuple[np.ndarray
 
 
 def null_subtracted(
-    table: list[int], x_read: np.ndarray, y_read: np.ndarray, null: tuple[np.ndarray, np.ndarray]
+    table: list[int],
+    x_read: np.ndarray,
+    y_read: np.ndarray,
+    null: tuple[np.ndarray, np.ndarray],
+    phase_var: np.ndarray,
+    null_phase_var: np.ndarray,
 ) -> dict[str, Any]:
-    """Phase fit after rotating each edge reading by minus the null arm's phase on the same edge."""
+    """Phase fit after rotating each edge reading by minus the null arm's phase on the same edge.
+
+    The null arm takes N shots per setting of its own, so the subtracted phase's variance is the sum of both.
+    """
     rotation = np.exp(-1j * np.arctan2(null[1], null[0]))
     turned = (x_read + 1j * y_read) * rotation
-    return phase_fit(table, turned.real, turned.imag)
+    return phase_fit(table, turned.real, turned.imag, phase_var + null_phase_var)
 
 
 def gradient_analysis(rows: list[dict[str, Any]], name: str) -> dict[str, Any]:
@@ -454,16 +547,19 @@ def gradient_analysis(rows: list[dict[str, Any]], name: str) -> dict[str, Any]:
     a = np.asarray([flips[j][0] for j, _ in edges()])
     b = np.asarray([flips[j][1] for j, _ in edges()])
     null_x, null_y = gradient_readings(rows, "null")
+    corrected_var = corrected_phase_variance(x_read, y_read, a, b)
     return {
         "exact_coefficients": coefficients(table),
         "d_true": (incidence() @ np.asarray(table, dtype=float)).tolist(),
-        "raw": phase_fit(table, x_read, y_read),
-        "assignment_corrected": phase_fit(table, corrected(x_read, a, b), corrected(y_read, a, b)),
+        "raw": phase_fit(table, x_read, y_read, raw_phase_variance(x_read, y_read)),
+        "assignment_corrected": phase_fit(table, corrected(x_read, a, b), corrected(y_read, a, b), corrected_var),
         "null_subtracted": null_subtracted(
             table,
             corrected(x_read, a, b),
             corrected(y_read, a, b),
             (corrected(null_x, a, b), corrected(null_y, a, b)),
+            corrected_var,
+            corrected_phase_variance(null_x, null_y, a, b),
         ),
     }
 
@@ -541,17 +637,14 @@ def evaluate(snapshot: dict[str, Any], device: str) -> dict[str, Any]:
     duration = transpile(block, view, initial_layout=paths[3]["best"], optimization_level=0).estimate_duration(
         view.target, unit="s"
     )
-    # A static detuning delta on qubit j turns its edge phase by 2 pi delta T over the block, a shift of
-    # 2 pi delta T / gamma in every d_j(x) and so of half that in c_j; the null arm carries the same shift.
     out["cost_block_seconds"] = float(duration)
-    out["single_body_shift_per_khz"] = math.pi * 1e3 * float(duration) / GRADIENT_GAMMA
     for patch in ("best", "median"):
         items = [(meta, c, compile_arm(view, c, paths[c.num_qubits][patch])) for meta, c in logical]
         rows = parallel.ordered_map(ArmLaw(snapshot, device), items, min_items=1)
         out["patches"][patch] = {"rows": rows, "summary": summarize(rows)}
         if patch == "best":
             compiled = [(meta, c) for meta, _, c in items]
-            out["coherent_sensitivity"] = coherent_sensitivity(snapshot, device, compiled)
+            out["coherent_sensitivity"] = coherent_sensitivity(snapshot, device, compiled, view, paths[3]["best"])
     return out
 
 
