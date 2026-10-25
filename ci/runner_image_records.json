@@ -1,6 +1,6 @@
 {
  "schema": "runner-image-records-v1",
- "image": "b11de12d61ed284654c49a15fda3edd7c5c7fb1c26ea68dd3f620f32143089f3",
+ "image": "5502a86066ce9119ffdbcecb876982758522d508de84edc0ab0ac18864abe22b",
  "records": {
   "docs/evidence/ghost_runs/report.json": "e91742aafef2659491267a9967a837748777e1903e600b776ab7376da8db5869",
   "docs/evidence/linear_conjugation/noise.json": "dcc1a50436339a5edf980b7df3f01fb45d0c8f01c18d9fa24f321cec746feada",
@@ -28,8 +28,6 @@
   "results/quandela/bdsc_stationarity_retained.json": "3bdf15594bfbf63f70bbdf5637b2c3219875cdc82bf13b2c807570f65dc54f19",
   "results/quandela/bdsc_stray_mode_veto-runner-image.json": "71ffdf79b0abc071ef1b99218133d16ef72e54e0b8de20aa2ac3e2700db8cefd",
   "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/analysis-runner-image.json": "0b8e6f53fb00c48ca8d3e858882f5223cd7674db3ef4598ff9e0bc8ae8945a90",
-  "results/quantum_inspire/bdsc_pauli_qx_analysis.json": "e42fbbf88430ba13928a7509e0ae4437dcfe44471054deb5f6008c7c3af60151",
-  "results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json": "66f97da8b77d5753fb0883b183c10b38c5d283bc6aae8133a79325d639ea28cc",
   "results/quantum_inspire/kernel_cancellation_qx_analysis.json": "ec7c460bc5f7c0a4f97a5e4c9f07a6ed458b6b5b153b4e8287bab9764a62ccc1",
   "results/quantum_inspire/kernel_cancellation_tuna_17_analysis.json": "5fccd3912e3ac895510dea9cd8588528656137c5638f10b6eae840f0f531dad4",
   "results/ripple/cayley-dickson-ripples.html": "d1c50c172351cdc5cd3a616e64b92319650262aec726b72a5d0d80f16d16c96f",
@@ -37,12 +35,14 @@
  },
  "exempt": {
   "docs/state/hypercomplex-libraries": "scripts/hypercomplex_libraries.py resolves each import through the regenerating interpreter's installed distributions, so the inventory is written by the system python3 that holds every optional package, never in the runner image",
-  "results/live/2026-10-19T170620.832658Z/between-arm.json": "core-613: the gate compares every value bit for bit with the producer-identity fields skipped, and the retained bytes carry the identity of the commit that wrote them, so a runner-image rewrite reproduces the values but not the file (.analyzer_sha256)",
-  "results/ripple/measured-ripple.json": "core-205: the gate compares every value bit for bit with the producer-identity fields skipped, and the retained bytes carry the identity of the commit that wrote them, so a runner-image rewrite reproduces the values but not the file (extractor_sha256, runtime_experiment_digest)",
-  "results/ripple/measured-rank-sector.json": "core-206: the gate compares every value bit for bit with the producer-identity fields skipped, and the retained bytes carry the identity of the commit that wrote them, so a runner-image rewrite reproduces the values but not the file (extractor_sha256, runtime_experiment_digest)",
   "results/hypercomplex/photonic-successors/ascella": "check_campaign_files reads the frozen campaign operators without resynthesizing them, and frozen-file-sha256.json binds their bytes",
   "results/hypercomplex/photonic-successors/belenos": "check_campaign_files reads the frozen campaign operators without resynthesizing them, and frozen-file-sha256.json binds their bytes; a resynthesis in the runner image differs in the last bits of wave-repeat-block-0 to 2",
   "results/hypercomplex/photonic-successors/native-target-catalogue.json": "an input the check reads through --native-catalogue; scripts/hypercomplex_photonic_cases.py never rewrites it",
-  "results/quantum_inspire/proposals/zz-map-tuna17-pause-ladder-floor": "core-683 regenerates the bundle from qi_zz_map.build, whose angles and timing floats are the ones core-594 regenerates byte for byte for the v1 sibling on every hosted runner and build host; v2 changes only integer pause fields, schema strings and digests, so its floats inherit that cross-host identity"
+  "results/live/2026-10-19T170620.832658Z/between-arm.json": "core-613: the gate compares every value bit for bit with the producer-identity fields skipped, and the retained bytes carry the identity of the commit that wrote them, so a runner-image rewrite reproduces the values but not the file (.analyzer_sha256)",
+  "results/quantum_inspire/bdsc_pauli_qx_analysis.json": "core-634: the gate replays the retained qi-bdsc-pauli-analysis-v3 record through upgrade_v3 and accepts floats within REPLAY_RTOL (1e-12) rather than comparing bytes, and the producer writes schema v4, so no runner-image rewrite reproduces the v3 bytes that series-gate.json control digests and research_state.json bind",
+  "results/quantum_inspire/bdsc_pauli_tuna_17_analysis.json": "core-634: the gate replays the retained qi-bdsc-pauli-analysis-v3 record through upgrade_v3 and accepts floats within REPLAY_RTOL (1e-12) rather than comparing bytes, and the producer writes schema v4, so no runner-image rewrite reproduces the v3 bytes that series-gate.json control digests and research_state.json bind",
+  "results/quantum_inspire/proposals/zz-map-tuna17-pause-ladder-floor": "core-683 regenerates the bundle from qi_zz_map.build, whose angles and timing floats are the ones core-594 regenerates byte for byte for the v1 sibling on every hosted runner and build host; v2 changes only integer pause fields, schema strings and digests, so its floats inherit that cross-host identity",
+  "results/ripple/measured-rank-sector.json": "core-206: the gate compares every value bit for bit with the producer-identity fields skipped, and the retained bytes carry the identity of the commit that wrote them, so a runner-image rewrite reproduces the values but not the file (extractor_sha256, runtime_experiment_digest)",
+  "results/ripple/measured-ripple.json": "core-205: the gate compares every value bit for bit with the producer-identity fields skipped, and the retained bytes carry the identity of the commit that wrote them, so a runner-image rewrite reproduces the values but not the file (extractor_sha256, runtime_experiment_digest)"
  }
 }
