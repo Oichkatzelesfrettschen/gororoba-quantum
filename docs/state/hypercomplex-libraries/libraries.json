@@ -10479,6 +10479,19 @@
    "tempfile",
    "typing"
   ],
+  "scripts/fetch_source_cache.py": [
+   "__future__",
+   "argparse",
+   "capture_oq_docs",
+   "collections",
+   "hashlib",
+   "json",
+   "os",
+   "pathlib",
+   "sys",
+   "tempfile",
+   "typing"
+  ],
   "scripts/ghost_branching_benchmark.py": [
    "__future__",
    "aer_resources",
