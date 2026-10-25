@@ -11,5 +11,5 @@
     "status": "unresolved",
     "note": "Captured context; triage and evidence review pending."
   },
-  "next_action": "Falsifier, fixed before the run: a static family whose standardized left-out sum stays at 3 or more times its scored configuration count (30 or more on 10) for X or Y keeps the shared-offset shortfall with prediction uncertainty included; a sum below twice the count with a median prediction-to-counting variance ratio above 1 reads as weakly identified predictions, not a rejection; the docs and claim follow the outcome."
+  "next_action": "Outcome against the preset falsifier: every static family stays at 30 or more on 10 for X or Y with the prediction variance (configuration-holdout.json), so the shortfall stands; the combined family's X is weakly identified (median variance ratio 12.7). Next test: a drive-dependent heater-response family under the same training-only folds."
 }

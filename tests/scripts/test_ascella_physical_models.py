@@ -183,15 +183,14 @@ def test_posterior_hessian_is_the_symmetrized_column_loop() -> None:
     if not np.array_equal(hessian, (loop + loop.T) / 2) or not np.array_equal(hessian, hessian.T):
         raise AssertionError("the pooled Hessian differs from the column loop")
 
+
 def scored(counts_from: dict[str, Any] | None = None) -> dict[str, Any]:
     """The synthetic run with settings that serve X then Y in every configuration."""
     d = data(counts_from)
     settings = len(d["configuration"])
     d["record"] = {
         "manifest": {
-            "settings": [
-                {"readout": "x" if s < CONFIGURATIONS else "y", "block": "analyzer"} for s in range(settings)
-            ]
+            "settings": [{"readout": "x" if s < CONFIGURATIONS else "y", "block": "analyzer"} for s in range(settings)]
         }
     }
     return d

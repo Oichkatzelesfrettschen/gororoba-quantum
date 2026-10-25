@@ -1,0 +1,2074 @@
+{
+ "configurations": 30,
+ "families": [
+  {
+   "family": "nominal",
+   "folds": [],
+   "summary": {
+    "x": {
+     "configurations": 10,
+     "counting_sum": 343.25058701444516,
+     "median_variance_ratio": 0.0,
+     "standardized_sum": 343.25058701444516
+    },
+    "y": {
+     "configurations": 10,
+     "counting_sum": 74.63413928205959,
+     "median_variance_ratio": 0.0,
+     "standardized_sum": 74.63413928205959
+    }
+   }
+  },
+  {
+   "family": "static_heater_offsets_tau_0.1",
+   "folds": [
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 0,
+     "lowest_hessian_eigenvalue": 80.20831435287809,
+     "rows": [],
+     "training_objective": 421151.57820655266
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 1,
+     "lowest_hessian_eigenvalue": 72.61811718574725,
+     "rows": [],
+     "training_objective": 421335.13085404603
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 2,
+     "lowest_hessian_eigenvalue": 91.30143394212061,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -1.820857599096599,
+       "counting_variance": 3.300039936984179e-05,
+       "observed": -0.03607758893030896,
+       "predicted": -0.025617495087811505,
+       "prediction_variance": 0.00023650834696539263,
+       "readout": "x",
+       "standardized_residual": -0.637160946713452
+      },
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": 0.05363409848352861,
+       "counting_variance": 3.229994873094155e-05,
+       "observed": -0.025610667996011964,
+       "predicted": -0.025915486903101286,
+       "prediction_variance": 0.00023703861327244145,
+       "readout": "y",
+       "standardized_residual": 0.01857345222638215
+      }
+     ],
+     "training_objective": 398926.943791695
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 3,
+     "lowest_hessian_eigenvalue": 86.25446372982124,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm1",
+        "theta0-x-arm2"
+       ],
+       "counting_residual": -1.0195050979116582,
+       "counting_variance": 3.169202250181551e-05,
+       "observed": -0.003946232581082748,
+       "predicted": 0.0017931394837855281,
+       "prediction_variance": 1.6389927892996774e-05,
+       "readout": "x",
+       "standardized_residual": -0.8277007362921097
+      }
+     ],
+     "training_objective": 415546.1841841823
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 4,
+     "lowest_hessian_eigenvalue": 84.34206260122083,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-y-arm1",
+        "theta0-y-arm2"
+       ],
+       "counting_residual": -2.560848081692296,
+       "counting_variance": 3.203260878548573e-05,
+       "observed": -0.009611156479678373,
+       "predicted": 0.004882566964399069,
+       "prediction_variance": 1.5926564148692106e-05,
+       "readout": "y",
+       "standardized_residual": -2.092879035991557
+      }
+     ],
+     "training_objective": 415867.86815229384
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 5,
+     "lowest_hessian_eigenvalue": 89.3384175151971,
+     "rows": [],
+     "training_objective": 399619.2813444781
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 6,
+     "lowest_hessian_eigenvalue": 78.94342273830645,
+     "rows": [],
+     "training_objective": 415729.78270747093
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 7,
+     "lowest_hessian_eigenvalue": 94.57898618629791,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm0",
+        "theta1-x-arm3"
+       ],
+       "counting_residual": -12.156144816547283,
+       "counting_variance": 3.580850611620879e-05,
+       "observed": 0.27968596663395484,
+       "predicted": 0.35242859126392995,
+       "prediction_variance": 2.2729488794127005e-05,
+       "readout": "x",
+       "standardized_residual": -9.507581250542131
+      }
+     ],
+     "training_objective": 415498.56981931115
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 8,
+     "lowest_hessian_eigenvalue": 68.35786247703201,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm1",
+        "theta1-x-arm2"
+       ],
+       "counting_residual": 3.236529149445545,
+       "counting_variance": 3.5177258325205945e-05,
+       "observed": -0.3095208845208845,
+       "predicted": -0.32871687460021304,
+       "prediction_variance": 1.4580929552569489e-05,
+       "readout": "x",
+       "standardized_residual": 2.7213113876286714
+      }
+     ],
+     "training_objective": 415963.01064695866
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 9,
+     "lowest_hessian_eigenvalue": 89.95306019996337,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm0",
+        "theta1-y-arm3"
+       ],
+       "counting_residual": 0.9502065379725699,
+       "counting_variance": 2.7034332571041716e-05,
+       "observed": 0.4676428615747347,
+       "predicted": 0.4627023054148021,
+       "prediction_variance": 6.5988819171809525e-06,
+       "readout": "y",
+       "standardized_residual": 0.8519059507225182
+      }
+     ],
+     "training_objective": 417844.0263786703
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 10,
+     "lowest_hessian_eigenvalue": 68.04901491480176,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm1",
+        "theta1-y-arm2"
+       ],
+       "counting_residual": 4.062102155862555,
+       "counting_variance": 2.8199647665366832e-05,
+       "observed": -0.4650021471075394,
+       "predicted": -0.48657326647850874,
+       "prediction_variance": 2.4857392705990833e-05,
+       "readout": "y",
+       "standardized_residual": 2.9614279564684463
+      }
+     ],
+     "training_objective": 417551.37798479287
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 11,
+     "lowest_hessian_eigenvalue": 90.01632643044006,
+     "rows": [],
+     "training_objective": 418433.6448419143
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 12,
+     "lowest_hessian_eigenvalue": 90.17649096318816,
+     "rows": [],
+     "training_objective": 418521.67694677203
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 13,
+     "lowest_hessian_eigenvalue": 61.63033685892384,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm0",
+        "theta2-x-arm3"
+       ],
+       "counting_residual": -12.464658887386442,
+       "counting_variance": 1.0221002138701084e-05,
+       "observed": 0.8812511706312044,
+       "predicted": 0.921101061602883,
+       "prediction_variance": 6.3642490135156345e-06,
+       "readout": "x",
+       "standardized_residual": -9.785118992259822
+      }
+     ],
+     "training_objective": 426837.7431989093
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 14,
+     "lowest_hessian_eigenvalue": 91.83752405438624,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm1",
+        "theta2-x-arm2"
+       ],
+       "counting_residual": -3.788708475964416,
+       "counting_variance": 9.562411856591194e-06,
+       "observed": -0.8886978942844864,
+       "predicted": -0.8769820143577681,
+       "prediction_variance": 2.232949481521549e-05,
+       "readout": "x",
+       "standardized_residual": -2.0746014151106515
+      }
+     ],
+     "training_objective": 427076.8136235472
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 15,
+     "lowest_hessian_eigenvalue": 89.34482517450809,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm0",
+        "theta2-y-arm3"
+       ],
+       "counting_residual": -2.6222436133454905,
+       "counting_variance": 5.298874774917014e-05,
+       "observed": 0.27213174972450105,
+       "predicted": 0.2912199447883369,
+       "prediction_variance": 9.122419207699053e-06,
+       "readout": "y",
+       "standardized_residual": -2.422032798671339
+      }
+     ],
+     "training_objective": 418938.7106694859
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 16,
+     "lowest_hessian_eigenvalue": 91.35695667876439,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm1",
+        "theta2-y-arm2"
+       ],
+       "counting_residual": 3.6797058755585055,
+       "counting_variance": 5.328475779541799e-05,
+       "observed": -0.276798825256975,
+       "predicted": -0.3036593568988662,
+       "prediction_variance": 9.156044212572035e-05,
+       "readout": "y",
+       "standardized_residual": 2.231837397479675
+      }
+     ],
+     "training_objective": 418992.11976605596
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 17,
+     "lowest_hessian_eigenvalue": 92.72060994854851,
+     "rows": [],
+     "training_objective": 418852.0845768033
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 18,
+     "lowest_hessian_eigenvalue": 88.11714617019048,
+     "rows": [],
+     "training_objective": 418775.9987869543
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 19,
+     "lowest_hessian_eigenvalue": 97.8207124281014,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm0",
+        "theta3-x-arm3"
+       ],
+       "counting_residual": 0.4666999054469797,
+       "counting_variance": 8.534897542606267e-06,
+       "observed": 0.8948014484748051,
+       "predicted": 0.8934380058442685,
+       "prediction_variance": 1.3766299257663624e-05,
+       "readout": "x",
+       "standardized_residual": 0.288717284115799
+      }
+     ],
+     "training_objective": 427193.10758086847
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 20,
+     "lowest_hessian_eigenvalue": 91.52884398218242,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm1",
+        "theta3-x-arm2"
+       ],
+       "counting_residual": 2.276703067539315,
+       "counting_variance": 9.674448652864511e-06,
+       "observed": -0.8862290380898946,
+       "predicted": -0.8933104442538341,
+       "prediction_variance": 6.832816680680754e-06,
+       "readout": "x",
+       "standardized_residual": 1.7429380000727366
+      }
+     ],
+     "training_objective": 427012.35077335
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 21,
+     "lowest_hessian_eigenvalue": 90.91720180781527,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm0",
+        "theta3-y-arm3"
+       ],
+       "counting_residual": 0.11354721546913361,
+       "counting_variance": 5.462350823638745e-05,
+       "observed": -0.3016324981017464,
+       "predicted": -0.3024716996631589,
+       "prediction_variance": 1.1917969730591515e-05,
+       "readout": "y",
+       "standardized_residual": 0.10287741940712648
+      }
+     ],
+     "training_objective": 420001.58931512706
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 22,
+     "lowest_hessian_eigenvalue": 83.72300083415172,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm1",
+        "theta3-y-arm2"
+       ],
+       "counting_residual": -1.601428549561536,
+       "counting_variance": 5.470782767265712e-05,
+       "observed": 0.2593071992110454,
+       "predicted": 0.2711521238450632,
+       "prediction_variance": 2.457718685659693e-05,
+       "readout": "y",
+       "standardized_residual": -1.3302606566295192
+      }
+     ],
+     "training_objective": 419418.7627872319
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 23,
+     "lowest_hessian_eigenvalue": 48.54187007579471,
+     "rows": [],
+     "training_objective": 415707.2424485428
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 24,
+     "lowest_hessian_eigenvalue": 87.35766378315577,
+     "rows": [],
+     "training_objective": 416204.5158446237
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 25,
+     "lowest_hessian_eigenvalue": 88.58728317732887,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm0",
+        "theta4-x-arm3"
+       ],
+       "counting_residual": -1.2941889310192691,
+       "counting_variance": 3.381557350147348e-05,
+       "observed": 0.32277433980760983,
+       "predicted": 0.33030019850152825,
+       "prediction_variance": 1.3137318291231977e-05,
+       "readout": "x",
+       "standardized_residual": -1.098309871639363
+      }
+     ],
+     "training_objective": 416074.0460708786
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 26,
+     "lowest_hessian_eigenvalue": 87.2582552959031,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm1",
+        "theta4-x-arm2"
+       ],
+       "counting_residual": -1.4921505125645478,
+       "counting_variance": 3.433337541148196e-05,
+       "observed": -0.3195666892349357,
+       "predicted": -0.3108234797606492,
+       "prediction_variance": 1.5390674042449287e-05,
+       "readout": "x",
+       "standardized_residual": -1.239902794173586
+      }
+     ],
+     "training_objective": 416084.4660304152
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 27,
+     "lowest_hessian_eigenvalue": 69.33928939538097,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm0",
+        "theta4-y-arm3"
+       ],
+       "counting_residual": 9.998885013303452,
+       "counting_variance": 2.7805272129422883e-05,
+       "observed": -0.4689157518194153,
+       "predicted": -0.521640577066535,
+       "prediction_variance": 3.072588984782598e-05,
+       "readout": "y",
+       "standardized_residual": 6.891624019814463
+      }
+     ],
+     "training_objective": 417730.2743501218
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 28,
+     "lowest_hessian_eigenvalue": 89.54659166655014,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm1",
+        "theta4-y-arm2"
+       ],
+       "counting_residual": -4.934680793123955,
+       "counting_variance": 2.8159182412948332e-05,
+       "observed": 0.4628600303183426,
+       "predicted": 0.48904602561434607,
+       "prediction_variance": 2.0700800961109773e-05,
+       "readout": "y",
+       "standardized_residual": -3.746212667841143
+      }
+     ],
+     "training_objective": 418025.16236967046
+    },
+    {
+     "family": "static_heater_offsets_tau_0.1",
+     "left_out": 29,
+     "lowest_hessian_eigenvalue": 86.88531886676886,
+     "rows": [],
+     "training_objective": 432494.88986909477
+    }
+   ],
+   "summary": {
+    "x": {
+     "configurations": 10,
+     "counting_sum": 341.62654767248875,
+     "median_variance_ratio": 0.6287075000991718,
+     "standardized_sum": 204.8080582646207
+    },
+    "y": {
+     "configurations": 10,
+     "counting_sum": 171.28702521062968,
+     "median_variance_ratio": 0.6161667431658858,
+     "standardized_sum": 88.03239613045582
+    }
+   }
+  },
+  {
+   "family": "static_heater_offsets_tau_0.3",
+   "folds": [
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 0,
+     "lowest_hessian_eigenvalue": 10.362889179838053,
+     "rows": [],
+     "training_objective": 421108.6148222674
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 1,
+     "lowest_hessian_eigenvalue": 9.930240965554352,
+     "rows": [],
+     "training_objective": 421295.42606638145
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 2,
+     "lowest_hessian_eigenvalue": 10.222236809928075,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -8.282521869003402,
+       "counting_variance": 3.300039936984179e-05,
+       "observed": -0.03607758893030896,
+       "predicted": 0.011502164722748055,
+       "prediction_variance": 0.00039945907179146824,
+       "readout": "x",
+       "standardized_residual": -2.2879655589282617
+      },
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -6.485035358529851,
+       "counting_variance": 3.229994873094155e-05,
+       "observed": -0.025610667996011964,
+       "predicted": 0.011245761893077279,
+       "prediction_variance": 0.0004003546836780417,
+       "readout": "y",
+       "standardized_residual": -1.7719137807856522
+      }
+     ],
+     "training_objective": 398890.3418365587
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 3,
+     "lowest_hessian_eigenvalue": 11.111111061910838,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm1",
+        "theta0-x-arm2"
+       ],
+       "counting_residual": -1.7631497155401445,
+       "counting_variance": 3.169202250181551e-05,
+       "observed": -0.003946232581082748,
+       "predicted": 0.0059795365438386995,
+       "prediction_variance": 1.7389513389319144e-05,
+       "readout": "x",
+       "standardized_residual": -1.416788741145872
+      }
+     ],
+     "training_objective": 415502.332251557
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 4,
+     "lowest_hessian_eigenvalue": 10.666783314754943,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-y-arm1",
+        "theta0-y-arm2"
+       ],
+       "counting_residual": -3.341911102835851,
+       "counting_variance": 3.203260878548573e-05,
+       "observed": -0.009611156479678373,
+       "predicted": 0.009303177269938673,
+       "prediction_variance": 1.8485027160039724e-05,
+       "readout": "y",
+       "standardized_residual": -2.6611511254114433
+      }
+     ],
+     "training_objective": 415823.2704611257
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 5,
+     "lowest_hessian_eigenvalue": 11.11111061866714,
+     "rows": [],
+     "training_objective": 399576.38844981015
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 6,
+     "lowest_hessian_eigenvalue": 6.20750300976132,
+     "rows": [],
+     "training_objective": 415692.3269654383
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 7,
+     "lowest_hessian_eigenvalue": 5.37866881851325,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm0",
+        "theta1-x-arm3"
+       ],
+       "counting_residual": -10.149797076228545,
+       "counting_variance": 3.580850611620879e-05,
+       "observed": 0.27968596663395484,
+       "predicted": 0.34042256445578123,
+       "prediction_variance": 2.9625864352136728e-05,
+       "readout": "x",
+       "standardized_residual": -7.508401657208287
+      }
+     ],
+     "training_objective": 415467.81995018316
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 8,
+     "lowest_hessian_eigenvalue": 11.11111046681118,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm1",
+        "theta1-x-arm2"
+       ],
+       "counting_residual": 2.8879833229868663,
+       "counting_variance": 3.5177258325205945e-05,
+       "observed": -0.3095208845208845,
+       "predicted": -0.3266496346904355,
+       "prediction_variance": 1.6331925307192453e-05,
+       "readout": "x",
+       "standardized_residual": 2.386620362218832
+      }
+     ],
+     "training_objective": 415926.701306146
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 9,
+     "lowest_hessian_eigenvalue": 11.111110761183564,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm0",
+        "theta1-y-arm3"
+       ],
+       "counting_residual": 0.5692530297221596,
+       "counting_variance": 2.7034332571041716e-05,
+       "observed": 0.4676428615747347,
+       "predicted": 0.4646830560480806,
+       "prediction_variance": 6.745936099220463e-06,
+       "readout": "y",
+       "standardized_residual": 0.5092506911336139
+      }
+     ],
+     "training_objective": 417801.07366494794
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 10,
+     "lowest_hessian_eigenvalue": 11.111110150567349,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm1",
+        "theta1-y-arm2"
+       ],
+       "counting_residual": 4.161377368040676,
+       "counting_variance": 2.8199647665366832e-05,
+       "observed": -0.4650021471075394,
+       "predicted": -0.4871004510175243,
+       "prediction_variance": 2.958615205980957e-05,
+       "readout": "y",
+       "standardized_residual": 2.9070223980789023
+      }
+     ],
+     "training_objective": 417511.85479457566
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 11,
+     "lowest_hessian_eigenvalue": 11.00229952734282,
+     "rows": [],
+     "training_objective": 418391.831480852
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 12,
+     "lowest_hessian_eigenvalue": 11.111110699753525,
+     "rows": [],
+     "training_objective": 418479.1098029759
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 13,
+     "lowest_hessian_eigenvalue": 7.776594375145623,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm0",
+        "theta2-x-arm3"
+       ],
+       "counting_residual": -16.37904876961348,
+       "counting_variance": 1.0221002138701084e-05,
+       "observed": 0.8812511706312044,
+       "predicted": 0.933615484294806,
+       "prediction_variance": 2.066136849054184e-05,
+       "readout": "x",
+       "standardized_residual": -9.42280275503549
+      }
+     ],
+     "training_objective": 426822.0984179203
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 14,
+     "lowest_hessian_eigenvalue": 7.246646142843891,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm1",
+        "theta2-x-arm2"
+       ],
+       "counting_residual": -3.617075894047278,
+       "counting_variance": 9.562411856591194e-06,
+       "observed": -0.8886978942844864,
+       "predicted": -0.8775127563596958,
+       "prediction_variance": 4.595377281198544e-05,
+       "readout": "x",
+       "standardized_residual": -1.5011757421106373
+      }
+     ],
+     "training_objective": 427033.7735283266
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 15,
+     "lowest_hessian_eigenvalue": 11.11110983848235,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm0",
+        "theta2-y-arm3"
+       ],
+       "counting_residual": -1.5466288246080393,
+       "counting_variance": 5.298874774917014e-05,
+       "observed": 0.27213174972450105,
+       "predicted": 0.28339018221537265,
+       "prediction_variance": 8.31284076556879e-06,
+       "readout": "y",
+       "standardized_residual": -1.4379443003305983
+      }
+     ],
+     "training_objective": 418896.94894632837
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 16,
+     "lowest_hessian_eigenvalue": 11.08722451558812,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm1",
+        "theta2-y-arm2"
+       ],
+       "counting_residual": 2.16319383162048,
+       "counting_variance": 5.328475779541799e-05,
+       "observed": -0.276798825256975,
+       "predicted": -0.2925893635029066,
+       "prediction_variance": 0.0002712741083833469,
+       "readout": "y",
+       "standardized_residual": 0.87649651796977
+      }
+     ],
+     "training_objective": 418954.88193153735
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 17,
+     "lowest_hessian_eigenvalue": 11.111110953382886,
+     "rows": [],
+     "training_objective": 418815.8484848326
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 18,
+     "lowest_hessian_eigenvalue": 11.111110869809316,
+     "rows": [],
+     "training_objective": 418734.20436465205
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 19,
+     "lowest_hessian_eigenvalue": 10.201783872066406,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm0",
+        "theta3-x-arm3"
+       ],
+       "counting_residual": 1.0258387132194662,
+       "counting_variance": 8.534897542606267e-06,
+       "observed": 0.8948014484748051,
+       "predicted": 0.891804507148411,
+       "prediction_variance": 1.57753297628066e-05,
+       "readout": "x",
+       "standardized_residual": 0.6078322385134283
+      }
+     ],
+     "training_objective": 427157.68739621533
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 20,
+     "lowest_hessian_eigenvalue": 11.111111034356695,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm1",
+        "theta3-x-arm2"
+       ],
+       "counting_residual": 2.5593626734704107,
+       "counting_variance": 9.674448652864511e-06,
+       "observed": -0.8862290380898946,
+       "predicted": -0.8941896223531989,
+       "prediction_variance": 7.874525258235657e-06,
+       "readout": "x",
+       "standardized_residual": 1.90028648479282
+      }
+     ],
+     "training_objective": 426969.1098652032
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 21,
+     "lowest_hessian_eigenvalue": 11.111110730096941,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm0",
+        "theta3-y-arm3"
+       ],
+       "counting_residual": 0.7048512885643413,
+       "counting_variance": 5.462350823638745e-05,
+       "observed": -0.3016324981017464,
+       "predicted": -0.30684189314928584,
+       "prediction_variance": 1.2955860896384483e-05,
+       "readout": "y",
+       "standardized_residual": 0.6336949208499332
+      }
+     ],
+     "training_objective": 419959.9213304208
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 22,
+     "lowest_hessian_eigenvalue": 11.111111099722752,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm1",
+        "theta3-y-arm2"
+       ],
+       "counting_residual": -0.7719270138097136,
+       "counting_variance": 5.470782767265712e-05,
+       "observed": 0.2593071992110454,
+       "predicted": 0.2650167373006729,
+       "prediction_variance": 2.8598520563685663e-05,
+       "readout": "y",
+       "standardized_residual": -0.6255498522661344
+      }
+     ],
+     "training_objective": 419389.5502967446
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 23,
+     "lowest_hessian_eigenvalue": 9.518917366631925,
+     "rows": [],
+     "training_objective": 415654.04540781083
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 24,
+     "lowest_hessian_eigenvalue": 8.203735108926638,
+     "rows": [],
+     "training_objective": 416160.10226611316
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 25,
+     "lowest_hessian_eigenvalue": 10.636776061265127,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm0",
+        "theta4-x-arm3"
+       ],
+       "counting_residual": -0.16839744432264503,
+       "counting_variance": 3.381557350147348e-05,
+       "observed": 0.32277433980760983,
+       "predicted": 0.32375359047187807,
+       "prediction_variance": 1.9119099567081245e-05,
+       "readout": "x",
+       "standardized_residual": -0.13459339787537786
+      }
+     ],
+     "training_objective": 416030.54047623015
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 26,
+     "lowest_hessian_eigenvalue": 11.111111096150829,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm1",
+        "theta4-x-arm2"
+       ],
+       "counting_residual": -1.9002928446577665,
+       "counting_variance": 3.433337541148196e-05,
+       "observed": -0.3195666892349357,
+       "predicted": -0.30843198247216075,
+       "prediction_variance": 2.468767319386021e-05,
+       "readout": "x",
+       "standardized_residual": -1.4493568372003176
+      }
+     ],
+     "training_objective": 416044.8225907746
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 27,
+     "lowest_hessian_eigenvalue": 11.111111111013637,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm0",
+        "theta4-y-arm3"
+       ],
+       "counting_residual": 5.6048960612265075,
+       "counting_variance": 2.7805272129422883e-05,
+       "observed": -0.4689157518194153,
+       "predicted": -0.4984707636995653,
+       "prediction_variance": 3.3611474855562844e-05,
+       "readout": "y",
+       "standardized_residual": 3.7712709292582813
+      }
+     ],
+     "training_objective": 417660.5227934006
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 28,
+     "lowest_hessian_eigenvalue": 11.111110963124057,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm1",
+        "theta4-y-arm2"
+       ],
+       "counting_residual": -3.5762968814468756,
+       "counting_variance": 2.8159182412948332e-05,
+       "observed": 0.4628600303183426,
+       "predicted": 0.48183773064805213,
+       "prediction_variance": 1.8063667390416314e-05,
+       "readout": "y",
+       "standardized_residual": -2.791355982133957
+      }
+     ],
+     "training_objective": 417985.5901588644
+    },
+    {
+     "family": "static_heater_offsets_tau_0.3",
+     "left_out": 29,
+     "lowest_hessian_eigenvalue": 9.990113008115758,
+     "rows": [],
+     "training_objective": 432451.60036925966
+    }
+   ],
+   "summary": {
+    "x": {
+     "configurations": 10,
+     "counting_sum": 475.66632336767674,
+     "median_variance_ratio": 0.8206461685521778,
+     "standardized_sum": 166.4561686829646
+    },
+    "y": {
+     "configurations": 10,
+     "counting_sum": 123.23407820103732,
+     "median_variance_ratio": 0.6092765685713813,
+     "standardized_sum": 44.57448371628039
+    }
+   }
+  },
+  {
+   "family": "static_coupler_offsets_tau_0.1",
+   "folds": [
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 0,
+     "lowest_hessian_eigenvalue": 88.22265948496077,
+     "rows": [],
+     "training_objective": 421082.39694855834
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 1,
+     "lowest_hessian_eigenvalue": 69.05755552798415,
+     "rows": [],
+     "training_objective": 421282.88305981015
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 2,
+     "lowest_hessian_eigenvalue": 40.14660159632797,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -9.987393499669409,
+       "counting_variance": 3.300039936984179e-05,
+       "observed": -0.03607758893030896,
+       "predicted": 0.021295965871737307,
+       "prediction_variance": 0.0001929462226891268,
+       "readout": "x",
+       "standardized_residual": -3.8168828686283756
+      },
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -8.210224349155816,
+       "counting_variance": 3.229994873094155e-05,
+       "observed": -0.025610667996011964,
+       "predicted": 0.021050536048209872,
+       "prediction_variance": 0.00019337882002565693,
+       "readout": "y",
+       "standardized_residual": -3.10606535304174
+      }
+     ],
+     "training_objective": 398862.14543768944
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 3,
+     "lowest_hessian_eigenvalue": 82.59302065189154,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm1",
+        "theta0-x-arm2"
+       ],
+       "counting_residual": -1.7063903234387239,
+       "counting_variance": 3.169202250181551e-05,
+       "observed": -0.003946232581082748,
+       "predicted": 0.0056600057537395726,
+       "prediction_variance": 1.8865534097981e-05,
+       "readout": "x",
+       "standardized_residual": -1.3510154609739808
+      }
+     ],
+     "training_objective": 415481.56403512735
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 4,
+     "lowest_hessian_eigenvalue": 80.03792317785292,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-y-arm1",
+        "theta0-y-arm2"
+       ],
+       "counting_residual": -3.3167470598939666,
+       "counting_variance": 3.203260878548573e-05,
+       "observed": -0.009611156479678373,
+       "predicted": 0.009160755436428919,
+       "prediction_variance": 1.8958349247380643e-05,
+       "readout": "y",
+       "standardized_residual": -2.6288264867443556
+      }
+     ],
+     "training_objective": 415801.75913154735
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 5,
+     "lowest_hessian_eigenvalue": 71.88289581401696,
+     "rows": [],
+     "training_objective": 399550.060060481
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 6,
+     "lowest_hessian_eigenvalue": 81.4688930374975,
+     "rows": [],
+     "training_objective": 415672.5764158859
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 7,
+     "lowest_hessian_eigenvalue": 84.1732702473725,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm0",
+        "theta1-x-arm3"
+       ],
+       "counting_residual": -6.631052839485816,
+       "counting_variance": 3.580850611620879e-05,
+       "observed": 0.27968596663395484,
+       "predicted": 0.3193663254058942,
+       "prediction_variance": 7.058412074771131e-05,
+       "readout": "x",
+       "standardized_residual": -3.8469790769156673
+      }
+     ],
+     "training_objective": 415473.0452563923
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 8,
+     "lowest_hessian_eigenvalue": 70.37757351189452,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm1",
+        "theta1-x-arm2"
+       ],
+       "counting_residual": 6.07048175064934,
+       "counting_variance": 3.5177258325205945e-05,
+       "observed": -0.3095208845208845,
+       "predicted": -0.3455251662935892,
+       "prediction_variance": 2.2227775614919878e-05,
+       "readout": "x",
+       "standardized_residual": 4.752029880960432
+      }
+     ],
+     "training_objective": 415895.03201772633
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 9,
+     "lowest_hessian_eigenvalue": 80.59548954137625,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm0",
+        "theta1-y-arm3"
+       ],
+       "counting_residual": 0.8126588049860911,
+       "counting_variance": 2.7034332571041716e-05,
+       "observed": 0.4676428615747347,
+       "predicted": 0.4634174786664418,
+       "prediction_variance": 5.7958030783985764e-06,
+       "readout": "y",
+       "standardized_residual": 0.7374451651986713
+      }
+     ],
+     "training_objective": 417779.54594690906
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 10,
+     "lowest_hessian_eigenvalue": 75.52288925896595,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm1",
+        "theta1-y-arm2"
+       ],
+       "counting_residual": 3.502286941639357,
+       "counting_variance": 2.8199647665366832e-05,
+       "observed": -0.4650021471075394,
+       "predicted": -0.48360046068772744,
+       "prediction_variance": 2.5456163212280315e-05,
+       "readout": "y",
+       "standardized_residual": 2.5390145208831165
+      }
+     ],
+     "training_objective": 417505.8454689005
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 11,
+     "lowest_hessian_eigenvalue": 78.21559131116014,
+     "rows": [],
+     "training_objective": 418372.6424170189
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 12,
+     "lowest_hessian_eigenvalue": 80.31757553506293,
+     "rows": [],
+     "training_objective": 418458.8063813128
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 13,
+     "lowest_hessian_eigenvalue": 76.31603580953251,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm0",
+        "theta2-x-arm3"
+       ],
+       "counting_residual": -7.500341835823186,
+       "counting_variance": 1.0221002138701084e-05,
+       "observed": 0.8812511706312044,
+       "predicted": 0.9052299900363894,
+       "prediction_variance": 1.4742339872795159e-05,
+       "readout": "x",
+       "standardized_residual": -4.799283813664204
+      }
+     ],
+     "training_objective": 426796.88552800275
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 14,
+     "lowest_hessian_eigenvalue": 85.67863236959002,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm1",
+        "theta2-x-arm2"
+       ],
+       "counting_residual": -1.0417317700184858,
+       "counting_variance": 9.562411856591194e-06,
+       "observed": -0.8886978942844864,
+       "predicted": -0.8854765315402131,
+       "prediction_variance": 4.774427957155081e-05,
+       "readout": "x",
+       "standardized_residual": -0.42553664377685463
+      }
+     ],
+     "training_objective": 427014.7238083905
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 15,
+     "lowest_hessian_eigenvalue": 79.69875675233958,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm0",
+        "theta2-y-arm3"
+       ],
+       "counting_residual": -2.443315784799983,
+       "counting_variance": 5.298874774917014e-05,
+       "observed": 0.27213174972450105,
+       "predicted": 0.28991746881842967,
+       "prediction_variance": 8.320798668583224e-06,
+       "readout": "y",
+       "standardized_residual": -2.2714719453048478
+      }
+     ],
+     "training_objective": 418871.7674369283
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 16,
+     "lowest_hessian_eigenvalue": 70.0552574291758,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm1",
+        "theta2-y-arm2"
+       ],
+       "counting_residual": -0.6359778070374785,
+       "counting_variance": 5.328475779541799e-05,
+       "observed": -0.276798825256975,
+       "predicted": -0.2721564156222979,
+       "prediction_variance": 0.0005476336692948277,
+       "readout": "y",
+       "standardized_residual": -0.18938069149211392
+      }
+     ],
+     "training_objective": 418935.7414055671
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 17,
+     "lowest_hessian_eigenvalue": 76.76501084570147,
+     "rows": [],
+     "training_objective": 418805.77070883935
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 18,
+     "lowest_hessian_eigenvalue": 86.6296630795448,
+     "rows": [],
+     "training_objective": 418714.39920419786
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 19,
+     "lowest_hessian_eigenvalue": 87.91565491928664,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm0",
+        "theta3-x-arm3"
+       ],
+       "counting_residual": 0.6166243007167135,
+       "counting_variance": 8.534897542606267e-06,
+       "observed": 0.8948014484748051,
+       "predicted": 0.8930000085156159,
+       "prediction_variance": 7.522921077028735e-06,
+       "readout": "x",
+       "standardized_residual": 0.44954846379307994
+      }
+     ],
+     "training_objective": 427139.8988383364
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 20,
+     "lowest_hessian_eigenvalue": 63.94867756889791,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm1",
+        "theta3-x-arm2"
+       ],
+       "counting_residual": 3.2549655887340623,
+       "counting_variance": 9.674448652864511e-06,
+       "observed": -0.8862290380898946,
+       "predicted": -0.8963532100612465,
+       "prediction_variance": 6.143345781812619e-06,
+       "readout": "x",
+       "standardized_residual": 2.5455788264555594
+      }
+     ],
+     "training_objective": 426946.8738137166
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 21,
+     "lowest_hessian_eigenvalue": 77.00602660345098,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm0",
+        "theta3-y-arm3"
+       ],
+       "counting_residual": -1.5173988839671393,
+       "counting_variance": 5.462350823638745e-05,
+       "observed": -0.3016324981017464,
+       "predicted": -0.29041774917593993,
+       "prediction_variance": 9.991405571835667e-06,
+       "readout": "y",
+       "standardized_residual": -1.3951572826566612
+      }
+     ],
+     "training_objective": 419933.46294334915
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 22,
+     "lowest_hessian_eigenvalue": 81.73542148635417,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm1",
+        "theta3-y-arm2"
+       ],
+       "counting_residual": 1.8076302178498125,
+       "counting_variance": 5.470782767265712e-05,
+       "observed": 0.2593071992110454,
+       "predicted": 0.2459371092982194,
+       "prediction_variance": 3.0394939440394767e-05,
+       "readout": "y",
+       "standardized_residual": 1.449313999261121
+      }
+     ],
+     "training_objective": 419361.0491087228
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 23,
+     "lowest_hessian_eigenvalue": 86.43140018842892,
+     "rows": [],
+     "training_objective": 415641.38729278976
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 24,
+     "lowest_hessian_eigenvalue": 92.7419632359825,
+     "rows": [],
+     "training_objective": 416139.9558840041
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 25,
+     "lowest_hessian_eigenvalue": 84.98852345708235,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm0",
+        "theta4-x-arm3"
+       ],
+       "counting_residual": -2.294396804803785,
+       "counting_variance": 3.381557350147348e-05,
+       "observed": 0.32277433980760983,
+       "predicted": 0.33611652326078767,
+       "prediction_variance": 1.6933528636753562e-05,
+       "readout": "x",
+       "standardized_residual": -1.872891964407263
+      }
+     ],
+     "training_objective": 416007.39673229295
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 26,
+     "lowest_hessian_eigenvalue": 81.52797082598462,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm1",
+        "theta4-x-arm2"
+       ],
+       "counting_residual": 0.15876764317892217,
+       "counting_variance": 3.433337541148196e-05,
+       "observed": -0.3195666892349357,
+       "predicted": -0.32049698329733983,
+       "prediction_variance": 1.8446950126040455e-05,
+       "readout": "x",
+       "standardized_residual": 0.12805136632868758
+      }
+     ],
+     "training_objective": 416025.5287601913
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 27,
+     "lowest_hessian_eigenvalue": 84.6157565365495,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm0",
+        "theta4-y-arm3"
+       ],
+       "counting_residual": 1.4240079732255728,
+       "counting_variance": 2.7805272129422883e-05,
+       "observed": -0.4689157518194153,
+       "predicted": -0.4764246462050322,
+       "prediction_variance": 0.00011096308801175201,
+       "readout": "y",
+       "standardized_residual": 0.637427458745096
+      }
+     ],
+     "training_objective": 417649.2167738549
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 28,
+     "lowest_hessian_eigenvalue": 83.33152822604102,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm1",
+        "theta4-y-arm2"
+       ],
+       "counting_residual": -1.988986183226858,
+       "counting_variance": 2.8159182412948332e-05,
+       "observed": 0.4628600303183426,
+       "predicted": 0.4734146305085653,
+       "prediction_variance": 1.6877823546635697e-05,
+       "readout": "y",
+       "standardized_residual": -1.5727403577600656
+      }
+     ],
+     "training_objective": 417966.3756755944
+    },
+    {
+     "family": "static_coupler_offsets_tau_0.1",
+     "left_out": 29,
+     "lowest_hessian_eigenvalue": 89.86943056517117,
+     "rows": [],
+     "training_objective": 432429.65051910956
+    }
+   ],
+   "summary": {
+    "x": {
+     "configurations": 10,
+     "counting_sum": 257.0862304075407,
+     "median_variance_ratio": 0.7582190348170712,
+     "standardized_sum": 87.19526702144087
+    },
+    "y": {
+     "configurations": 10,
+     "counting_sum": 109.26317399540808,
+     "median_variance_ratio": 0.5956086201907521,
+     "standardized_sum": 35.671041538215896
+    }
+   }
+  },
+  {
+   "family": "static_heater_0.3_coupler_0.1_offsets",
+   "folds": [
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 0,
+     "lowest_hessian_eigenvalue": 5.050962171287513,
+     "rows": [],
+     "training_objective": 421027.73647783167
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 1,
+     "lowest_hessian_eigenvalue": 9.931102751383508,
+     "rows": [],
+     "training_objective": 421221.51629255695
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 2,
+     "lowest_hessian_eigenvalue": 6.590513361906978,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -5.429187923680772,
+       "counting_variance": 3.300039936984179e-05,
+       "observed": -0.03607758893030896,
+       "predicted": -0.004889090061187886,
+       "prediction_variance": 0.0017457482813147936,
+       "readout": "x",
+       "standardized_residual": -0.7394982946044039
+      },
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -3.5976975551980073,
+       "counting_variance": 3.229994873094155e-05,
+       "observed": -0.025610667996011964,
+       "predicted": -0.005163857705163685,
+       "prediction_variance": 0.001749662356678507,
+       "readout": "y",
+       "standardized_residual": -0.48436896752528746
+      }
+     ],
+     "training_objective": 398814.4934757112
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 3,
+     "lowest_hessian_eigenvalue": 6.382964986147971,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm1",
+        "theta0-x-arm2"
+       ],
+       "counting_residual": 0.6972410184981978,
+       "counting_variance": 3.169202250181551e-05,
+       "observed": -0.003946232581082748,
+       "predicted": -0.007871397479469178,
+       "prediction_variance": 2.9950497626609444e-05,
+       "readout": "x",
+       "standardized_residual": 0.4999398016830587
+      }
+     ],
+     "training_objective": 415427.20936283935
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 4,
+     "lowest_hessian_eigenvalue": 2.9089692598608616,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-y-arm1",
+        "theta0-y-arm2"
+       ],
+       "counting_residual": -1.4401463901074116,
+       "counting_variance": 3.203260878548573e-05,
+       "observed": -0.009611156479678373,
+       "predicted": -0.0014603084670896515,
+       "prediction_variance": 2.9587827147437803e-05,
+       "readout": "y",
+       "standardized_residual": -1.0383419775494345
+      }
+     ],
+     "training_objective": 415750.22724215337
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 5,
+     "lowest_hessian_eigenvalue": 6.013102917820988,
+     "rows": [],
+     "training_objective": 399496.27911301306
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 6,
+     "lowest_hessian_eigenvalue": 8.825730695584136,
+     "rows": [],
+     "training_objective": 415615.0928231067
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 7,
+     "lowest_hessian_eigenvalue": 4.116014939411519,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm0",
+        "theta1-x-arm3"
+       ],
+       "counting_residual": -18.12541152891704,
+       "counting_variance": 3.580850611620879e-05,
+       "observed": 0.27968596663395484,
+       "predicted": 0.3881488080207299,
+       "prediction_variance": 0.0016256217671566852,
+       "readout": "x",
+       "standardized_residual": -2.6609696281511925
+      }
+     ],
+     "training_objective": 415411.70974191744
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 8,
+     "lowest_hessian_eigenvalue": 9.303477412102099,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm1",
+        "theta1-x-arm2"
+       ],
+       "counting_residual": 7.321636798045376,
+       "counting_variance": 3.5177258325205945e-05,
+       "observed": -0.3095208845208845,
+       "predicted": -0.3529458193353301,
+       "prediction_variance": 0.00023806422412501582,
+       "readout": "x",
+       "standardized_residual": 2.6270349988769413
+      }
+     ],
+     "training_objective": 415843.925566901
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 9,
+     "lowest_hessian_eigenvalue": 5.845515556066712,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm0",
+        "theta1-y-arm3"
+       ],
+       "counting_residual": 0.9262371324238853,
+       "counting_variance": 2.7034332571041716e-05,
+       "observed": 0.4676428615747347,
+       "predicted": 0.46282693326096086,
+       "prediction_variance": 1.3119025731104856e-05,
+       "readout": "y",
+       "standardized_residual": 0.7600095974863803
+      }
+     ],
+     "training_objective": 417721.5952187802
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 10,
+     "lowest_hessian_eigenvalue": 6.8489988147455305,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm1",
+        "theta1-y-arm2"
+       ],
+       "counting_residual": -0.2978484629145459,
+       "counting_variance": 2.8199647665366832e-05,
+       "observed": -0.4650021471075394,
+       "predicted": -0.4634204722747889,
+       "prediction_variance": 0.00026276319732994595,
+       "readout": "y",
+       "standardized_residual": -0.09272534054734553
+      }
+     ],
+     "training_objective": 417449.3345380455
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 11,
+     "lowest_hessian_eigenvalue": 2.353042271486423,
+     "rows": [],
+     "training_objective": 418317.0512358619
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 12,
+     "lowest_hessian_eigenvalue": 3.3368322773587002,
+     "rows": [],
+     "training_objective": 418403.2084030151
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 13,
+     "lowest_hessian_eigenvalue": 8.38216336570855,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm0",
+        "theta2-x-arm3"
+       ],
+       "counting_residual": -6.530034976912473,
+       "counting_variance": 1.0221002138701084e-05,
+       "observed": 0.8812511706312044,
+       "predicted": 0.902127889699268,
+       "prediction_variance": 0.00019072965632660626,
+       "readout": "x",
+       "standardized_residual": -1.472710998660031
+      }
+     ],
+     "training_objective": 426747.8150264957
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 14,
+     "lowest_hessian_eigenvalue": 4.778359577558105,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm1",
+        "theta2-x-arm2"
+       ],
+       "counting_residual": -5.686559026357239,
+       "counting_variance": 9.562411856591194e-06,
+       "observed": -0.8886978942844864,
+       "predicted": -0.8711132626952115,
+       "prediction_variance": 0.0005687729496004535,
+       "readout": "x",
+       "standardized_residual": -0.7312121519074436
+      }
+     ],
+     "training_objective": 426955.34529357776
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 15,
+     "lowest_hessian_eigenvalue": 7.715654498137795,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm0",
+        "theta2-y-arm3"
+       ],
+       "counting_residual": -3.413632915782875,
+       "counting_variance": 5.298874774917014e-05,
+       "observed": 0.27213174972450105,
+       "predicted": 0.29698073425102345,
+       "prediction_variance": 2.5493330010424452e-05,
+       "readout": "y",
+       "standardized_residual": -2.8049388618924445
+      }
+     ],
+     "training_objective": 418818.62282304384
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 16,
+     "lowest_hessian_eigenvalue": 9.208726598452545,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm1",
+        "theta2-y-arm2"
+       ],
+       "counting_residual": 21.96771880616214,
+       "counting_variance": 5.328475779541799e-05,
+       "observed": -0.276798825256975,
+       "predicted": -0.437155284726314,
+       "prediction_variance": 0.004649376308349011,
+       "readout": "y",
+       "standardized_residual": 2.3383774770951966
+      }
+     ],
+     "training_objective": 418878.929718727
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 17,
+     "lowest_hessian_eigenvalue": 5.445991922458934,
+     "rows": [],
+     "training_objective": 418748.24561210064
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 18,
+     "lowest_hessian_eigenvalue": 6.625901899423641,
+     "rows": [],
+     "training_objective": 418654.8243931931
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 19,
+     "lowest_hessian_eigenvalue": 6.262219423338109,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm0",
+        "theta3-x-arm3"
+       ],
+       "counting_residual": 2.841501782921463,
+       "counting_variance": 8.534897542606267e-06,
+       "observed": 0.8948014484748051,
+       "predicted": 0.8865001297465089,
+       "prediction_variance": 0.00021776560651960223,
+       "readout": "x",
+       "standardized_residual": 0.5518287563087896
+      }
+     ],
+     "training_objective": 427081.0689381023
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 20,
+     "lowest_hessian_eigenvalue": 9.425259074281369,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm1",
+        "theta3-x-arm2"
+       ],
+       "counting_residual": 4.832119349637494,
+       "counting_variance": 9.674448652864511e-06,
+       "observed": -0.8862290380898946,
+       "predicted": -0.9012587537499159,
+       "prediction_variance": 3.3880465435466936e-05,
+       "readout": "x",
+       "standardized_residual": 2.2773625977432554
+      }
+     ],
+     "training_objective": 426888.2588462758
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 21,
+     "lowest_hessian_eigenvalue": 5.534947022258105,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm0",
+        "theta3-y-arm3"
+       ],
+       "counting_residual": -0.6128453001604109,
+       "counting_variance": 5.462350823638745e-05,
+       "observed": -0.3016324981017464,
+       "predicted": -0.29710309832145215,
+       "prediction_variance": 5.811371042842233e-05,
+       "readout": "y",
+       "standardized_residual": -0.4265863911779201
+      }
+     ],
+     "training_objective": 419877.353189655
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 22,
+     "lowest_hessian_eigenvalue": 7.3903663522045155,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm1",
+        "theta3-y-arm2"
+       ],
+       "counting_residual": 3.0744934638480386,
+       "counting_variance": 5.470782767265712e-05,
+       "observed": 0.2593071992110454,
+       "predicted": 0.23656678823421395,
+       "prediction_variance": 0.00012381758271959073,
+       "readout": "y",
+       "standardized_residual": 1.701955846870493
+      }
+     ],
+     "training_objective": 419302.3377468991
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 23,
+     "lowest_hessian_eigenvalue": 8.800771418862633,
+     "rows": [],
+     "training_objective": 415586.0670472469
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 24,
+     "lowest_hessian_eigenvalue": 6.807163435176223,
+     "rows": [],
+     "training_objective": 416077.71801066026
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 25,
+     "lowest_hessian_eigenvalue": 4.976182279473058,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm0",
+        "theta4-x-arm3"
+       ],
+       "counting_residual": -3.4326779521981674,
+       "counting_variance": 3.381557350147348e-05,
+       "observed": 0.32277433980760983,
+       "predicted": 0.34273576011556023,
+       "prediction_variance": 7.993745077909461e-05,
+       "readout": "x",
+       "standardized_residual": -1.8715867561841033
+      }
+     ],
+     "training_objective": 415951.2190312743
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 26,
+     "lowest_hessian_eigenvalue": 7.099223714960973,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm1",
+        "theta4-x-arm2"
+       ],
+       "counting_residual": -2.0684346594391387,
+       "counting_variance": 3.433337541148196e-05,
+       "observed": -0.3195666892349357,
+       "predicted": -0.30744676074309163,
+       "prediction_variance": 0.00017439642274112021,
+       "readout": "x",
+       "standardized_residual": -0.8388954346139764
+      }
+     ],
+     "training_objective": 415966.0889603728
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 27,
+     "lowest_hessian_eigenvalue": 1.836819691067655,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm0",
+        "theta4-y-arm3"
+       ],
+       "counting_residual": 23.990669587053674,
+       "counting_variance": 2.7805272129422883e-05,
+       "observed": -0.4689157518194153,
+       "predicted": -0.5954202430557729,
+       "prediction_variance": 0.0005407359367551815,
+       "readout": "y",
+       "standardized_residual": 5.305483522451449
+      }
+     ],
+     "training_objective": 417588.56456885446
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 28,
+     "lowest_hessian_eigenvalue": 8.80546876782455,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm1",
+        "theta4-y-arm2"
+       ],
+       "counting_residual": -4.261336216501022,
+       "counting_variance": 2.8159182412948332e-05,
+       "observed": 0.4628600303183426,
+       "predicted": 0.48547290738132753,
+       "prediction_variance": 6.139337786790937e-05,
+       "readout": "y",
+       "standardized_residual": -2.389553829394799
+      }
+     ],
+     "training_objective": 417906.12759854237
+    },
+    {
+     "family": "static_heater_0.3_coupler_0.1_offsets",
+     "left_out": 29,
+     "lowest_hessian_eigenvalue": 6.066312490236407,
+     "rows": [],
+     "training_objective": 432372.47969810385
+    }
+   ],
+   "summary": {
+    "x": {
+     "configurations": 10,
+     "counting_sum": 534.5626550589172,
+     "median_variance_ratio": 12.714061850186322,
+     "standardized_sum": 27.179896590997647
+    },
+    "y": {
+     "configurations": 10,
+     "counting_sum": 1113.7369404927028,
+     "median_variance_ratio": 2.221738771551782,
+     "standardized_sum": 52.17142374484843
+    }
+   }
+  }
+ ],
+ "run": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+ "schema": "ascella-configuration-holdout-v1",
+ "start": "zero, training configurations only"
+}
