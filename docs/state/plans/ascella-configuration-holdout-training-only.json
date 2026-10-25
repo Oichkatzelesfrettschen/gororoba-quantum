@@ -6,12 +6,12 @@
   "sources": [
     "scripts/ascella_physical_models.py"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
     "note": "The owner asked for the narrowing and the training-only folds; the falsifier was fixed in this record before the run."
   },
-  "next_action": "Design the drive-dependent heater-response family (step drive-dependent-heater-family); the training-only readout keeps the shortfall for every static family.",
+  "next_action": "None; a drive model with per-heater wrap points, a quadratic drive term or phase-voltage crosstalk is a new plan.",
   "scope": "Training-only leave-one-configuration-out folds of the four Ascella static offset families on job-00, scored in counting plus fitted-prediction variance, and the narrowed physical-model wording; a drive-dependent heater-response family under the same folds remains.",
   "owner": "ascella signed-coherence analysis",
   "steps": [
@@ -37,11 +37,45 @@
     },
     {
       "id": "drive-dependent-heater-family",
-      "action": "Add a drive-dependent heater-response family and score it under the same training-only folds.",
-      "acceptance": "Its standardized left-out sums are recorded against the same 30-on-10 criterion.",
-      "state": "todo",
+      "action": "Fit one drive-dependent heater family, realized phase phi + a_h + k_h phi with phi the returned phase in [0, 2 pi) (heater power linear in phase under phi = A V^2 + b), heater offsets a_h under N(0, 0.3^2) and per-heater slope errors k_h under N(0, 0.1^2), and score it under the same training-only folds and g C g^T variance. The width 0.1 gives a phase spread of 0.31 rad at the mid drive pi, matching the offset prior, and no other width is fitted.",
+      "acceptance": "Its standardized left-out X and Y sums are recorded against the 30-on-10 criterion, read as fixed here: a sum of 30 or more for X or Y keeps the shortfall and raises confidence that no shared static or drive-linear error of the returned mesh predicts left-out configurations; both sums below 20 with a median prediction-to-counting variance ratio above 1 for that readout reads as weakly identified and leaves confidence unchanged; both sums below 20 with both median ratios at most 1 reads as predicting left-out configurations and lowers it; any other outcome is inconclusive and leaves confidence unchanged.",
+      "state": "done",
       "depends_on": [
         "training-only-holdout"
+      ],
+      "receipts": [
+        {
+          "result": "The drive-dependent heater family (offsets tau 0.3, per-heater drive slopes tau 0.1) leaves the left-out X sum at 36.1 and Y at 24.8 on 10 with the prediction variance (median variance ratio 10.4 and 2.1; counting only 474 and 186), so X keeps the shortfall under the preset criterion. The record replays within the fit bounds.",
+          "observed_at": "2026-10-25T02:30:39+00:00",
+          "revision": "a21a1f22d6a2a527ec3f36e63aa083bfe35b3a7c",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/heater-drive-holdout.json",
+              "sha256": "426c7402c38afd4ffbd30aa3af26d4078d17bcbb579c82c17450f3b5adc4cde0"
+            }
+          ],
+          "scope_sha256": "73efeb5665070a4505df6d49c4473b215276b4f0dc210f4861e62ecae9ef6425"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Training-only folds keep the left-out shortfall for every static family and for the drive-linear heater family (X 36.1 on 10); the physical cause of the configuration response stays unidentified.",
+  "receipts": [
+    {
+      "scope_sha256": "7ddbc7efdfda8cc0dd933469ec9c6d8ed5c4b36925110f2a9d7721b5184a507b",
+      "result": "Both steps are done; configuration-holdout.json and heater-drive-holdout.json are retained with replay gates.",
+      "observed_at": "2026-10-25T02:30:56+00:00",
+      "revision": "a21a1f22d6a2a527ec3f36e63aa083bfe35b3a7c",
+      "evidence": [
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/heater-drive-holdout.json",
+          "sha256": "426c7402c38afd4ffbd30aa3af26d4078d17bcbb579c82c17450f3b5adc4cde0"
+        },
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/configuration-holdout.json",
+          "sha256": "c38ad052a38eab81e8c2f17f8a7d0d4bb2a3698d8c484250d1cf903bac443268"
+        }
       ]
     }
   ]

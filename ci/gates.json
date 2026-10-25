@@ -3400,7 +3400,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
+   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
    "name": "sources-410",
    "seconds": 0.1,
    "tier": "pr"
@@ -4036,6 +4036,14 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/configuration-holdout.json --check",
    "name": "core-ascella-signed-coherence-configuration-holdout-replay",
+   "seconds": 600.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/heater-drive-holdout.json --drive --check",
+   "name": "core-ascella-signed-coherence-heater-drive-holdout-replay",
    "seconds": 600.0,
    "tier": "full"
   },
