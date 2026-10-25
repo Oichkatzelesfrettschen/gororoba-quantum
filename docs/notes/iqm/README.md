@@ -485,6 +485,13 @@ Facts a Garnet case design starts from, each with the record that carries it:
 - **Readout.** `measure_012` (three-state readout) is offered on QB1, QB3,
   QB7, QB9 and QB14; the Qiskit Target omits it, so a leakage readout goes
   through the circuit JSON directly.
+  The garnet:mock circuit API accepts `measure_012` but returns no outcome
+  for it: job `01a17474-d704-754e-9f02-88a9801da412` failed validation with
+  "Circuit 45: Circuit contains no measurements" for a circuit whose only
+  readout was `measure_012`, and probe job `01a17476-59e7-7133-b4ac-05f867b44ea9`
+  returned only the key of its plain `measure`
+  ([findings](../../design/iqm-garnet-measurement-sequence-pinching.md#leakage-readout)).
+  The QPU path is untested.
 
 ## Gates and snapshot state
 

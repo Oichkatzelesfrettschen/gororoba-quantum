@@ -1,6 +1,8 @@
 {
+ "acquisition_window_seconds": 1.024e-06,
  "active_reset_excited": 0.068,
  "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
+ "estimator_per_shot_seconds_all_circuits": 0.0011301439999999998,
  "ideal": {
   "contrast_n16": 0.8612215512138341,
   "delay_and_unitary": 0.03015368960704584,
@@ -12,186 +14,204 @@
    "8": 0.8039880670646521
   }
  },
- "model": "Bloch iteration from |0>: a rotation of THETA/N per step, then an ideal pinch (measure arm; T2 does not enter because the state is diagonal) or coherent evolution (delay and unitary arms), then T1 and Ramsey T2 relaxation over the rotation and, for measure and delay, one trigger; readout through the calibrated errors and an initialization excitation. The measure arm's N = 16 P0 is the departure prediction. decisions_on_the_model_device applies the run's estimator to the model's expected counts, so the mutation margin and the standard errors are those the analysis reports at the case's shots",
- "per_shot_seconds_all_circuits": 0.0023510479999999997,
+ "measure_window_seconds": 1.772e-06,
+ "model": "Bloch iteration from |0>: a rotation of THETA/N per step, then an ideal pinch (measure arm; T2 does not enter because the state is diagonal) or coherent evolution (delay and unitary arms), then T1 and Ramsey T2 relaxation over the rotation layer and, for measure and delay, one measure window; readout through the calibrated errors and an initialization excitation. The measure arm's N = 16 P0 is the departure prediction. decisions_on_the_model_device applies the run's estimator to the model's expected counts, so the mutation margin and the standard errors are those the analysis reports at the case's shots",
+ "per_shot_seconds_all_circuits": 0.002570944,
  "probe_duration_seconds": 5.56e-07,
+ "prx_layer_seconds": 4e-08,
  "qubits": {
   "QB1": {
-   "contrast_n16": 0.8797718297498903,
-   "contrast_se": 0.009335975217716435,
+   "contrast_n16": 0.8800592300098716,
+   "contrast_se": 0.009904117887566972,
    "decisions_on_the_model_device": {
     "departs_from_ideal_pinching": {
      "departs": false,
-     "z": -0.031834140118069974
+     "z": -0.026084230664347317
     },
     "mutation_test": {
      "passes": true,
-     "z": 40.67832453423992
+     "z": 38.37385967376003
     }
    },
    "departure_inputs": {
     "e01": 0.0076,
     "e10": 0.0154,
-    "measure_window_s": 1.024e-06,
+    "measure_window_s": 1.772e-06,
     "p_init": 0.068,
-    "prx_s": 1.6e-08,
+    "prx_layer_s": 4e-08,
+    "settle_idle_s": 2e-06,
     "t1_s": 2.751128847820201e-05,
     "t2_s_delay_and_unitary_only": 9.910996801720528e-06
    },
-   "departure_se": 0.006809123227096806,
-   "dephasing_zeno_n16": 0.4206735242185139,
+   "departure_se": 0.007204223123592983,
+   "dephasing_zeno_n16": 0.5747139610727767,
    "p0": {
     "delay": {
-     "1": 0.06613213892781034,
-     "16": 0.460370651847401,
-     "2": 0.11520910576244636,
-     "4": 0.18110499344636966,
-     "8": 0.2923693381298681
+     "1": 0.09197333634586713,
+     "16": 0.6284972520781179,
+     "2": 0.1721152733310387,
+     "4": 0.27389871583290526,
+     "8": 0.42962161939322996
     },
     "measure": {
-     "1": 0.06613213892781034,
-     "16": 0.919046071993676,
-     "2": 0.5356289434821371,
-     "4": 0.6977852282751267,
-     "8": 0.8319872035083827
+     "1": 0.09197333634586713,
+     "16": 0.9336719056922571,
+     "2": 0.5502684497394104,
+     "4": 0.7151843277958645,
+     "8": 0.8494448938881549
+    },
+    "settle": {
+     "16": 0.957583200116872
     },
     "unitary": {
-     "16": 0.03969712762888711
+     "16": 0.05378329100534118
     }
    }
   },
   "QB14": {
-   "contrast_n16": 0.8685136323658751,
-   "contrast_se": 0.009364479728875613,
+   "contrast_n16": 0.8625123639960435,
+   "contrast_se": 0.009911778671023599,
    "decisions_on_the_model_device": {
     "departs_from_ideal_pinching": {
      "departs": false,
-     "z": -0.034306156895507096
+     "z": 0.025321342868349913
     },
     "mutation_test": {
      "passes": true,
-     "z": 39.3522804293712
+     "z": 36.57389617222017
     }
    },
    "departure_inputs": {
     "e01": 0.0124,
     "e10": 0.0124,
-    "measure_window_s": 1.024e-06,
+    "measure_window_s": 1.772e-06,
     "p_init": 0.068,
-    "prx_s": 1.6e-08,
+    "prx_layer_s": 4e-08,
+    "settle_idle_s": 2e-06,
     "t1_s": 4.488061124827712e-05,
     "t2_s_delay_and_unitary_only": 7.0063340552353605e-06
    },
-   "departure_se": 0.006994096238240037,
-   "dephasing_zeno_n16": 0.4470647049809592,
+   "departure_se": 0.00740143594139809,
+   "dephasing_zeno_n16": 0.5864032395239539,
    "p0": {
     "delay": {
-     "1": 0.052369151477755116,
-     "16": 0.4884977735502124,
-     "2": 0.11933580009618527,
-     "4": 0.19578427553957944,
-     "8": 0.31774324994540215
+     "1": 0.06853013881618697,
+     "16": 0.6443867782452328,
+     "2": 0.17739130057879215,
+     "4": 0.2920991265047772,
+     "8": 0.4543260150712277
     },
     "measure": {
-     "1": 0.052369151477755116,
-     "16": 0.9096105431662204,
-     "2": 0.5277903848751628,
-     "4": 0.6881840686489022,
-     "8": 0.8218150684386417
+     "1": 0.06853013881618697,
+     "16": 0.9205632797769132,
+     "2": 0.5369917419455503,
+     "4": 0.6994340439725242,
+     "8": 0.8336951731255167
+    },
+    "settle": {
+     "16": 0.9415592074427687
     },
     "unitary": {
-     "16": 0.04143306856925322
+     "16": 0.05798353872127893
     }
    }
   },
   "QB3": {
-   "contrast_n16": 0.8794765840220384,
-   "contrast_se": 0.021592578906989134,
+   "contrast_n16": 0.8767441860465115,
+   "contrast_se": 0.02285408319485441,
    "decisions_on_the_model_device": {
     "departs_from_ideal_pinching": {
      "departs": false,
-     "z": -0.019452914242180885
+     "z": 0.0171622906739352
     },
     "mutation_test": {
      "passes": true,
-     "z": 17.574398391996084
+     "z": 16.484764793861228
     }
    },
    "departure_inputs": {
     "e01": 0.124,
     "e10": 0.2538,
-    "measure_window_s": 1.024e-06,
+    "measure_window_s": 1.772e-06,
     "p_init": 0.068,
-    "prx_s": 1.6e-08,
+    "prx_layer_s": 4e-08,
+    "settle_idle_s": 2e-06,
     "t1_s": 2.3685352416411237e-05,
     "t2_s_delay_and_unitary_only": 7.01743955846726e-06
    },
-   "departure_se": 0.014342100459764555,
-   "dephasing_zeno_n16": 0.499195607833704,
+   "departure_se": 0.01532598928130815,
+   "dephasing_zeno_n16": 0.645950986418783,
    "p0": {
     "delay": {
-     "1": 0.07181726888679696,
-     "16": 0.5421094566931186,
-     "2": 0.13869250221861162,
-     "4": 0.2225265243913741,
-     "8": 0.35658741392951354
+     "1": 0.10158271964178767,
+     "16": 0.7075818611393685,
+     "2": 0.2087041068801666,
+     "4": 0.33316041899033266,
+     "8": 0.5085879998143963
     },
     "measure": {
-     "1": 0.07181726888679696,
-     "16": 0.922586018123808,
-     "2": 0.5388584132348795,
-     "4": 0.7016827200594001,
-     "8": 0.8360062878132006
+     "1": 0.10158271964178767,
+     "16": 0.9382475252069424,
+     "2": 0.555686354645665,
+     "4": 0.7214503375276959,
+     "8": 0.855430048840454
+    },
+    "settle": {
+     "16": 0.9623658402783032
     },
     "unitary": {
-     "16": 0.04291384885941463
+     "16": 0.06163087472058548
     }
    }
   },
   "QB7": {
-   "contrast_n16": 0.8698599186624492,
-   "contrast_se": 0.010119173053142149,
+   "contrast_n16": 0.8662938485002543,
+   "contrast_se": 0.010721974317245291,
    "decisions_on_the_model_device": {
     "departs_from_ideal_pinching": {
      "departs": false,
-     "z": 0.0374315289617934
+     "z": 0.008682850473579123
     },
     "mutation_test": {
      "passes": true,
-     "z": 36.55040947714619
+     "z": 34.16291045494344
     }
    },
    "departure_inputs": {
     "e01": 0.0122,
     "e10": 0.0392,
-    "measure_window_s": 1.024e-06,
+    "measure_window_s": 1.772e-06,
     "p_init": 0.068,
-    "prx_s": 1.6e-08,
+    "prx_layer_s": 4e-08,
+    "settle_idle_s": 2e-06,
     "t1_s": 4.178067451526524e-05,
     "t2_s_delay_and_unitary_only": 7.76256408852692e-06
    },
-   "departure_se": 0.007104070019904672,
-   "dephasing_zeno_n16": 0.43141417246943947,
+   "departure_se": 0.007521856648881985,
+   "dephasing_zeno_n16": 0.5745298758510947,
    "p0": {
     "delay": {
-     "1": 0.05399701451282557,
-     "16": 0.4720445562328748,
-     "2": 0.1150268332671357,
-     "4": 0.18696757348502968,
-     "8": 0.3038890047767364
+     "1": 0.07131622988111275,
+     "16": 0.6305655594378918,
+     "2": 0.17090131636274886,
+     "4": 0.2801172712178541,
+     "8": 0.4387173141208712
     },
     "measure": {
-     "1": 0.05399701451282557,
-     "16": 0.9107946102831305,
-     "2": 0.5287190232395252,
-     "4": 0.6893320207219058,
-     "8": 0.8230517567380562
+     "1": 0.07131622988111275,
+     "16": 0.922281884618691,
+     "2": 0.5385739933626775,
+     "4": 0.7013408227723803,
+     "8": 0.8356562507828524
+    },
+    "settle": {
+     "16": 0.9438684251672681
     },
     "unitary": {
-     "16": 0.04063038376343531
+     "16": 0.056035683586797114
     }
    }
   }
  },
- "trigger_seconds": 1.024e-06
+ "timing_source": "garnet:mock compiler estimates, calibration set f04fe114: ro0 8.684 us, unitary-n16 9.324 us, measure-n16 37.676 us, measure-n1 10.496 us and delay-n16 25.708 us per shot (jobs 01a1747a-dd17, 01a1747a-74f4, 01a1747a-9d43, 01a1747a-d133, 01a1747a-ab9e)"
 }

@@ -1,14 +1,6 @@
 {
  "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
  "couplers_among_qubits": [],
- "measure_012_loci": [
-  "QB1",
-  "QB14",
-  "QB2",
-  "QB3",
-  "QB7",
-  "QB9"
- ],
  "qubits": {
   "QB1": {
    "acquisition_delay_s": 4.6550000000000003e-07,

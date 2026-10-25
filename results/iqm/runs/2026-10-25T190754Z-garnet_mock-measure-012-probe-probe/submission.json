@@ -1,0 +1,17 @@
+{
+ "approval": "Probe measure_012 first",
+ "body_sha256": "b960401fabd54901a0917c07419a772af3b8c2bc966f2904e59ccc0cd00b2379",
+ "cases_sha256": "4a14c9968224bf474a0e9798175433803a3a36e84b4862e865de9c1d386c262f",
+ "credit_before": {
+  "currentBalance": "16.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 0.01,
+ "job": "probe",
+ "job_id": "01a17476-59e7-7133-b4ac-05f867b44ea9",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T19:07:55Z"
+}

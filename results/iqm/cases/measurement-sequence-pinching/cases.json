@@ -21,19 +21,19 @@
     },
     {
      "file": "circuits/delay-n1-s0p.json",
-     "sha256": "2bafa44b6643e5a3bf456171c97821b31b9e321803ae71d0ad7f860efceffe16"
+     "sha256": "778cb6eec3e18b7afe28599d07f750cb15dade599fc63431067de35267bcde6e"
     },
     {
      "file": "circuits/delay-n1-s1m.json",
-     "sha256": "a094f224b3c4d536c2365a3471dbd2a004301789f4ced26ecf7346762123e31b"
+     "sha256": "81950c60361feb2ae6c5ed0a6cb72e935a62632298ce747520d561961bfa4910"
     },
     {
      "file": "circuits/delay-n1-s2m.json",
-     "sha256": "2fc6891f4e1f429929f9f6c274aac05b0bfe7a86687f13c600fea824f4a82328"
+     "sha256": "aa62738611322cb7a628cb499d899ea51f530433a84912e4ab31a3a758cd184f"
     },
     {
      "file": "circuits/delay-n1-s3p.json",
-     "sha256": "fa208946326491ae64a4b38ce16afc774ff5dc20713d5e8bc05a47997d66fe21"
+     "sha256": "b745385ff7772f30aa4a62d8d481a3b24ee963c3cc545c4493ccea308a3cb8f5"
     },
     {
      "file": "circuits/measure-n2-s0p.json",
@@ -53,19 +53,19 @@
     },
     {
      "file": "circuits/delay-n2-s0p.json",
-     "sha256": "4085a8a9f43ef058be9ef29d1b839321e8c906faf39875947a3b24c53dbb631e"
+     "sha256": "929ba0c6ffe65ce0b6cbe01faaf5df0b30d583804b6351388e8882390d20d01f"
     },
     {
      "file": "circuits/delay-n2-s1m.json",
-     "sha256": "dd8b095d3df875005646e64a67f3367b13138b1c5f40a88b63ab8556089f26c0"
+     "sha256": "e0c69bf9f8c257eb99bc331aece1d6c9e20ac9fc28e12296b9f7c51aea196478"
     },
     {
      "file": "circuits/delay-n2-s2m.json",
-     "sha256": "e53ba4607de8770b81e7d2c9d8254841d15c3c4e64d6710fb018e995a5aa42f3"
+     "sha256": "9eb329b8c000561927d58a1b87b04e2c8f828cbe3a510cbbf622658b0d42f741"
     },
     {
      "file": "circuits/delay-n2-s3p.json",
-     "sha256": "8afa439c57873f08289fbf8774c78e5f755a87e9d6b87247a2c4abb661cba345"
+     "sha256": "7037760f0287106fe1d0cb55e0e9810001b7cec1b27fd89366663c52301c94ef"
     },
     {
      "file": "circuits/measure-n4-s0p.json",
@@ -85,19 +85,19 @@
     },
     {
      "file": "circuits/delay-n4-s0p.json",
-     "sha256": "2022c6aba5d2c8e3cc986a8931cd62642359e8a2557a2e24481a2f89f896f419"
+     "sha256": "31b97b3597f32d86d5a1c26d7aeb98d54c1d4a609e8564870392645d71a28a41"
     },
     {
      "file": "circuits/delay-n4-s1m.json",
-     "sha256": "c5045d2c2056e5e0e4c12460ecf3ea2bb62ee0efac520927731bbdcedf4f63c2"
+     "sha256": "6eb3d69a65220688a3132a43af712936c8915df535edfa1fd5f2de2dc6305e69"
     },
     {
      "file": "circuits/delay-n4-s2m.json",
-     "sha256": "b2bd722ccdd8f5003bf1d520297f1cdd9ea0885af2a4f679c411700242802f5d"
+     "sha256": "91ffa4ed6d05b294e37db0cc03ec273655bad554769e16f6fe447b6a77274530"
     },
     {
      "file": "circuits/delay-n4-s3p.json",
-     "sha256": "78007922b4dc75b8255ea6ed4280c2b211cb3762e7011d8317e9aedcdb4ef421"
+     "sha256": "4581dc936435ad4ebf7879e419f5a85972a3365703b540bb22f3e6c28f3cd073"
     },
     {
      "file": "circuits/measure-n8-s0p.json",
@@ -117,19 +117,19 @@
     },
     {
      "file": "circuits/delay-n8-s0p.json",
-     "sha256": "6122a9920fdbec6fda1d5ae17fb5ebb813052f7201ea030742a3437a5a90de3c"
+     "sha256": "576906d6747170fd1d16a0de3f3e59903e58e9492f5510a887553a04297cd9eb"
     },
     {
      "file": "circuits/delay-n8-s1m.json",
-     "sha256": "ecd9b0bf5ac9cd8f90b136eadfe2ae73888f0bbd1062c943450c49c4ef1b2394"
+     "sha256": "920896913abcf7ef43a22189c473101d36974b05b325e5676cb77cbc11db71fd"
     },
     {
      "file": "circuits/delay-n8-s2m.json",
-     "sha256": "3f6d09a96f209b2894ab357170d43fb0bf3d91d9ddf62bc0ad749fd94c39b720"
+     "sha256": "637db6236225ff9a2372e33c67277a8f73846a1b4175445ce3cfd1acc03085c9"
     },
     {
      "file": "circuits/delay-n8-s3p.json",
-     "sha256": "30b147cad6fbc9c326a8763746f9cfb19bd495cd29a3b8b52c3d9e5557246dd0"
+     "sha256": "a2451ffd2d1b73eceec0d8ba85a9af6783fef190d116d77fe865a2606a3c079b"
     },
     {
      "file": "circuits/measure-n16-s0p.json",
@@ -149,19 +149,19 @@
     },
     {
      "file": "circuits/delay-n16-s0p.json",
-     "sha256": "96f97e0a19801d892ee6a21db2253dec673b301a41b0d90a90c339f2a59b880e"
+     "sha256": "a265bb0255c9dfc1bb38a5193c20acc269f8059da2655086db4e26522054d245"
     },
     {
      "file": "circuits/delay-n16-s1m.json",
-     "sha256": "02c64ba092744f8e382507dab0131254e6d7f6361bea8fef66475e43de462385"
+     "sha256": "c23a42896739c1226eef37cc5018ac11a36a9d236d4bf33e0a1878ddb2f6fd3e"
     },
     {
      "file": "circuits/delay-n16-s2m.json",
-     "sha256": "ef1ca8708232cf71369df9f8d3d4aba08ac531c22e21f3ef6742cfcc6507df47"
+     "sha256": "e539ddca7cc2b8d383f1de2247908a857950c76e7b00f0f5cbc84583111af736"
     },
     {
      "file": "circuits/delay-n16-s3p.json",
-     "sha256": "a595f1669af0cbed5b7c66f449320c394a35f08efb548268ae52368aa12a1f64"
+     "sha256": "e62f265662acc4d2f5cf0f6bd902bc08db9865343fcf23f3bdfdf71ad0a1ce49"
     },
     {
      "file": "circuits/unitary-n16-s0p.json",
@@ -180,28 +180,20 @@
      "sha256": "ed83e37c0333c9c06360deede960682a3c54c68f297d02c8f8629c23d657d426"
     },
     {
-     "file": "circuits/measure-n16-012-p.json",
-     "sha256": "0061a8a905af78337a0d2193c491c5ffa9032aea15d68f45fdb70b5627968657"
+     "file": "circuits/settle-n16-s0p.json",
+     "sha256": "6b7a1fa05fe845dc8ac34c1876224e56a42bc4621bb1b4a31fe19f4e128e73c5"
     },
     {
-     "file": "circuits/delay-n16-012-p.json",
-     "sha256": "904ef77bbbdc517d6f4e7e0c6a0db924b4e313b7fe114276868d0d6b598d3196"
+     "file": "circuits/settle-n16-s1m.json",
+     "sha256": "c8d97da3d6d5c679d0e724a497ca5107f8d9a376f6c4ab4934cc937496ec42e0"
     },
     {
-     "file": "circuits/unitary-n16-012-p.json",
-     "sha256": "668cc4e1a78e1ba26298d305b1b7597779f94e4dd176f7c65be1622317a2d774"
+     "file": "circuits/settle-n16-s2m.json",
+     "sha256": "73cddd05a7c7586c9a7bed2a60e7b62c04c19978a80673ca1fabeb1e0d71ca51"
     },
     {
-     "file": "circuits/unitary-n16-012-m.json",
-     "sha256": "d089d53db229e5ba28e6b9910d666a0ffa9216a08fb24043739d58235fa228b5"
-    },
-    {
-     "file": "circuits/delay-n16-012-m.json",
-     "sha256": "34352a451ad0425a2f0975abb9424029e288c9e39434e09fad10c19d4513d382"
-    },
-    {
-     "file": "circuits/measure-n16-012-m.json",
-     "sha256": "c2ce41ae1c40463cb150eaee9be922c337d98be8c8318b14696663f4802d695e"
+     "file": "circuits/settle-n16-s3p.json",
+     "sha256": "8a8d2956cec0d2b21f5d715964f4c35ea33f70848776e6ddb688a4531093bdca"
     },
     {
      "file": "circuits/ro0.json",
@@ -210,17 +202,9 @@
     {
      "file": "circuits/ro1.json",
      "sha256": "9f542932135a7a500a2447e109f96dfd68dc7b5f0182ca356a3200cc296b32a6"
-    },
-    {
-     "file": "circuits/ro0-012.json",
-     "sha256": "b27022a514d23a26e5ef493d4626b60fe6e4e9b43e30604f27bb1b19bbee5b8e"
-    },
-    {
-     "file": "circuits/ro1-012.json",
-     "sha256": "52de40aab3634d2fb09cfa24ad9a1343b0c93f2b9e78fc46aa06d0ebb3708645"
     }
    ],
-   "expected_seconds": 6.348,
+   "expected_seconds": 6.17,
    "job": "pinching",
    "max_credits": {
     "garnet": 5.0,
@@ -233,14 +217,14 @@
     },
     "heralding_mode": "none"
    },
-   "shots": 2700
+   "shots": 2400
   }
  ],
- "prediction_sha256": "99b23f5b67831e25333f43ef088fd278d66489b024454f1b0906b78e153a1c13",
+ "prediction_sha256": "b54734bf3894581d82c62137de51e6694ce02154fbe69a3b48ec9a338d87f56f",
  "qcs": [
   "garnet:mock",
   "garnet"
  ],
- "question": "Does a Garnet mid-circuit measurement act as ideal pinching, a nonselective projective measurement in Z, on QB1, QB3, QB7 and QB14, read by the Zeno build-up of N rotations of 8 pi/9 over N against a delay of the measure operation's duration, and does it leak to state 2?",
+ "question": "Does a Garnet mid-circuit measurement act as ideal pinching, a nonselective projective measurement in Z, on QB1, QB3, QB7 and QB14, read by the Zeno build-up of N rotations of 8 pi/9 over N against the same rotations with no measurement, with a delay of the measure duration as the elapsed-time control?",
  "schema": "iqm-circuit-case-v1"
 }

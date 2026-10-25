@@ -1878,6 +1878,55 @@
       "question": "Does Garnet schedule a circuit job's gates as soon or as late as possible, and what over-rotation does each qubit's prx carry when fitted with its own readout?"
     },
     {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 54-circuit measurement-sequence case, whose leakage circuits read only measure_012? It fails validation: circuit 45 contains no measurements."
+    },
+    {
+      "id": "iqm-garnet-mock-measure-012-probe",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock circuit API return outcomes for a four-qubit measure_012 beside a plain measure?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-unitary-n16",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191223Z-garnet_mock-measurement-timing-probe-unitary-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the unitary-n16 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-measure-n16",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191233Z-garnet_mock-measurement-timing-probe-measure-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the measure-n16 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-delay-n16",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191238Z-garnet_mock-measurement-timing-probe-delay-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the delay-n16 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-measure-n1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191247Z-garnet_mock-measurement-timing-probe-measure-n1-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the measure-n1 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-ro0",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191250Z-garnet_mock-measurement-timing-probe-ro0",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the ro0 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
       "id": "iqm-garnet-kernel-cancellation",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation",
@@ -9236,6 +9285,81 @@
       "gates": {},
       "acquisitions": [
         "iqm-garnet-mock-idle-schedule"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-measure-012",
+      "statement": "garnet:mock rejected the 54-circuit measurement-sequence case (cases.json 4e319aed, job 01a17474) at validation with 'Circuit 45: Circuit contains no measurements', because that circuit's only readout is measure_012, and completed a probe (cases.json 4a14c996, job 01a17476) in which a four-qubit measure_012 beside a plain measure returned only the plain measure's key; the mock's circuit API accepts measure_012 and returns no outcome for it. Both jobs charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock only; a QPU run of measure_012 through the circuit API is untested.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "60954db3af5eb6499e0597f8ded2d7c352af525825b1340d728e232ae20f84b0"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe/results.json",
+          "sha256": "a177ea17ae42bc19c8d09a2fe86bdfb679ce544c3b1e091665828df219914865"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching",
+        "iqm-garnet-mock-measure-012-probe"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-timing",
+      "statement": "garnet:mock (calibration set f04fe114) compiled five single-circuit probes on QB1, QB3, QB7 and QB14 at 100 shots to per-shot qpu_execution estimates of 8.684 us (ro0), 9.324 us (unitary, N = 16), 37.676 us (measure, N = 16), 10.496 us (measure, N = 1) and 25.708 us (delay of 1.024 us, N = 16): 40 ns per prx layer and 1.772 us per mid-circuit measure, 0.75 us longer than the calibration's acquisition_delay plus integration_length. All five charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Compiler estimates of the mock, not measured durations; the QPU job's own estimate is compared in the analysis.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T191223Z-garnet_mock-measurement-timing-probe-unitary-n16-s0p/results.json",
+          "sha256": "0beabc7c6f9fe8e61fae0e5da675d545f4c1bad9028838e3bd9fcd266bd60f13"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191233Z-garnet_mock-measurement-timing-probe-measure-n16-s0p/results.json",
+          "sha256": "30b8b30dbcc3adbb1bbc9f11f630335884325eb24ec147d928b07f31696458f6"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191238Z-garnet_mock-measurement-timing-probe-delay-n16-s0p/results.json",
+          "sha256": "80df61a9751f9d719e616be389ad7f8d3677da95f98f59c8c966ddc31ed10a97"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191247Z-garnet_mock-measurement-timing-probe-measure-n1-s0p/results.json",
+          "sha256": "5846e3b991b9483020d023fd4bc53cabe498aef8e18815a79545aa681463d1be"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191250Z-garnet_mock-measurement-timing-probe-ro0/results.json",
+          "sha256": "68756dd8f0d72e61b596a1bbaf477203943524461f2ef8bb26becab266d230fd"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-timing-unitary-n16",
+        "iqm-garnet-mock-timing-measure-n16",
+        "iqm-garnet-mock-timing-delay-n16",
+        "iqm-garnet-mock-timing-measure-n1",
+        "iqm-garnet-mock-timing-ro0"
       ],
       "assumptions": [],
       "depends_on": [],

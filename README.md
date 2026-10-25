@@ -32,7 +32,7 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 23 |
-| exploratory reanalysis | exploratory | 67 |
+| exploratory reanalysis | exploratory | 69 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 21 |
@@ -329,6 +329,13 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7](results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7) | Quandela Cloud | BDSC drift series on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
 | [2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe](results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet:mock | 1 | 24 | completed | 0.0 credits |
 | [2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe](results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet | 1 | 24 | completed | 1.0 credits |
+| [2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 54 | failed | 0.0 credits |
+| [2026-10-25T190754Z-garnet_mock-measure-012-probe-probe](results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 1 | completed | 0.0 credits |
+| [2026-10-25T191223Z-garnet_mock-measurement-timing-probe-unitary-n16-s0p](results/iqm/runs/2026-10-25T191223Z-garnet_mock-measurement-timing-probe-unitary-n16-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 1 | completed | 0.0 credits |
+| [2026-10-25T191233Z-garnet_mock-measurement-timing-probe-measure-n16-s0p](results/iqm/runs/2026-10-25T191233Z-garnet_mock-measurement-timing-probe-measure-n16-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 1 | completed | 0.0 credits |
+| [2026-10-25T191238Z-garnet_mock-measurement-timing-probe-delay-n16-s0p](results/iqm/runs/2026-10-25T191238Z-garnet_mock-measurement-timing-probe-delay-n16-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 1 | completed | 0.0 credits |
+| [2026-10-25T191247Z-garnet_mock-measurement-timing-probe-measure-n1-s0p](results/iqm/runs/2026-10-25T191247Z-garnet_mock-measurement-timing-probe-measure-n1-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 1 | completed | 0.0 credits |
+| [2026-10-25T191250Z-garnet_mock-measurement-timing-probe-ro0](results/iqm/runs/2026-10-25T191250Z-garnet_mock-measurement-timing-probe-ro0) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 1 | completed | 0.0 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
@@ -336,7 +343,7 @@ The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 74 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 26 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 33 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
 
 ## Contents

@@ -1,0 +1,225 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m0"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m1"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m2"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.6981317007977318,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m3"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "key": "f"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "measure-n4-s0p"
+}
