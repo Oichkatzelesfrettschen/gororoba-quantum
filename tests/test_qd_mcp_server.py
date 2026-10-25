@@ -186,3 +186,20 @@ def test_qd_job_billing_reads_data_and_price(monkeypatch: object) -> None:
     out = asyncio.run(qd_mcp_server.qd_job_billing("abcdef12"))
     check(out["charge_used"] == 1.0 and "creator_id" not in out, f"{out}")
     check(all("/cancel" not in r for r in routes), f"{routes}")
+
+
+def test_a_failed_job_without_shots_reports_an_unknown_charge() -> None:
+    """The retained qpu:ascella failure 6fa19f42 billed zero credits; the job data alone cannot tell that apart."""
+    import json
+    from pathlib import Path
+
+    import qd_platform
+
+    run = Path(qd_platform.ROOT) / "results/quandela/runs/ascella-native-input-map-recheck/results.json"
+    data = json.loads(run.read_text())["data"]
+    billed = qd_platform.job_billing(data, {"price_per_shot": 0.000001}, 1.0)
+    if billed["charge_used"] is not None or "does not say which" not in billed["basis"]:
+        raise AssertionError(f"a failed zero-shot job reads {billed}")
+    completed = {**data, "status": "completed", "shots": 10000}
+    if qd_platform.job_billing(completed, {"price_per_shot": 0.000001}, 1.0)["charge_used"] != 1.01:
+        raise AssertionError("a completed job no longer prices its shots")

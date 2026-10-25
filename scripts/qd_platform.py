@@ -1374,6 +1374,10 @@ def job_billing(data: dict[str, Any], row: dict[str, Any], per_job_credits: floa
         and not shots
         and data.get("duration") is None
     )
+    # A failed job that ran no shots may bill nothing (qpu:ascella job 6fa19f42, results/quandela/runs/
+    # ascella-native-input-map-recheck: one job, zero credits) or the per-job price (retained simulator
+    # failures), and its job data does not say which, so its used charge is unknown.
+    unknown = ran and data.get("status") in ("error", "failed") and not shots
     out: dict[str, Any] = {
         "job_id": data.get("job_id"),
         "platform": data.get("platform_name"),
@@ -1383,8 +1387,12 @@ def job_billing(data: dict[str, Any], row: dict[str, Any], per_job_credits: floa
         "duration": data.get("duration"),
         "price_per_shot": price,
         "per_job_credits": per_job_credits,
-        "basis": "billing rule applied to job data; the cloud reports no per-job charge",
-        "charge_used": round(per_job_credits + price * shots, 6) if ran else 0.0,
+        "basis": (
+            "a failed job without shots bills either nothing or the per-job price; the job data does not say which"
+            if unknown
+            else "billing rule applied to job data; the cloud reports no per-job charge"
+        ),
+        "charge_used": (round(per_job_credits + price * shots, 6) if ran else 0.0) if not unknown else None,
         "charge_ceiling": round(per_job_credits + price * cap, 6) if ran and isinstance(cap, int) else None,
     }
     return out
