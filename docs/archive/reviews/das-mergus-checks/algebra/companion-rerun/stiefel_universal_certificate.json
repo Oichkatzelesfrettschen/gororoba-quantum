@@ -1,0 +1,144 @@
+{
+  "cd_core_sha256": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+  "definitions": {
+    "Delta": "(u.u)(v.v)-(u.v)^2",
+    "F": "Q*(Q^2-4*Delta)",
+    "Pj": "(-1)^(j-1) Pf(C_z with row and column j removed), j=1..15",
+    "Q": "u.u+mu^2+v.v",
+    "k1": "((u.v)u-(u.u)v,0,-(v.v)u+(u.v)v-mu w)",
+    "k2": "(-(v.v)u+(u.v)v+mu w,0,(u.u)v-(u.v)u)",
+    "r1": "(w,0,0)",
+    "r2": "(0,0,w)",
+    "w": "u cross v in the repository octonion convention",
+    "z": "(u,mu,v), u=z1..z7, mu=z8, v=z9..z15"
+  },
+  "exact_gaussian_witness": {
+    "Delta": "144",
+    "Q": "0",
+    "cross_rank": 12,
+    "kernel_columns": "[z,k1,k2]",
+    "kernel_minor": "10800",
+    "kernel_minor_rows": [
+      8,
+      2,
+      3
+    ],
+    "mu": "5i",
+    "physical_y": "3e1+4e10+5e24",
+    "real_left_rank": 28,
+    "real_nullity": 4,
+    "u": "3e1",
+    "v": "4e2"
+  },
+  "identities": {
+    "C_skew": true,
+    "C_z_k1": "-Q*r1",
+    "C_z_k2": "-Q*r2",
+    "C_z_z": "0",
+    "P": "1*F*z",
+    "bordered_pfaffian": "Pf([[0,-t^T],[t,C_z]])=-(z.t)*Q*(Q^2-4*Delta)",
+    "bordered_pfaffian_derivation": "Expansion in the first row is -sum_j t_j P_j",
+    "cached_subpfaffians": 1596,
+    "cofactors": [
+      {
+        "coordinate": 1,
+        "sha256": "9d6a4ed0fd4872744e989d384f8e72be2b6e88806a80a4c654d5b24d5efbb450",
+        "terms": 995
+      },
+      {
+        "coordinate": 2,
+        "sha256": "18cb8e76571c0e2419481bb0b16489b865ee98c08c2d75ee211c3a59d3c0e1d6",
+        "terms": 995
+      },
+      {
+        "coordinate": 3,
+        "sha256": "bcd340e210d0e149267c7854068a6e3c3bac4c32bb78e8818d417e4618768b76",
+        "terms": 995
+      },
+      {
+        "coordinate": 4,
+        "sha256": "468c17485b2fc822343d2ed34e5ff08184cc1fb5733f57cbeacf35f18eb779f1",
+        "terms": 995
+      },
+      {
+        "coordinate": 5,
+        "sha256": "2a2fbe603de923cb7fa1e73f1cc7d1aa74e9ba6ed9a99cfdb1587f8df693ef6b",
+        "terms": 995
+      },
+      {
+        "coordinate": 6,
+        "sha256": "09dc7da8b014c76d80080ae7b3ef1f2cbc56a56ef551652f92e9536b08f74b01",
+        "terms": 995
+      },
+      {
+        "coordinate": 7,
+        "sha256": "9bdddcab551f1babc9488308930c2d6d2126e7c04fb4a2098707c43afe9dd344",
+        "terms": 995
+      },
+      {
+        "coordinate": 8,
+        "sha256": "a724d0595c094cb904913e2205d24781c1b2521cd714ec85a375682ad65f0b08",
+        "terms": 995
+      },
+      {
+        "coordinate": 9,
+        "sha256": "de545d586ab46ca1a079c5771e9e18ac3a28c87d086ccafad876362365e31926",
+        "terms": 995
+      },
+      {
+        "coordinate": 10,
+        "sha256": "41ec05beb5e4635fc4bff60f462358d1ffb8a85a3bf3118fe7057bbbe2ba2846",
+        "terms": 995
+      },
+      {
+        "coordinate": 11,
+        "sha256": "e059ba9c3d7b4b4afe69856c0201fbb76a91f4d51220d2e3fe2383f6e69c043e",
+        "terms": 995
+      },
+      {
+        "coordinate": 12,
+        "sha256": "032093528ec271032e63a633beb1c64f5cd41965fa7fcf46fb3d35bf55fe0ca4",
+        "terms": 995
+      },
+      {
+        "coordinate": 13,
+        "sha256": "2a9166f008bc149dd842dc0185098926663af64c6e36b3a7c649f3a7b47f0691",
+        "terms": 995
+      },
+      {
+        "coordinate": 14,
+        "sha256": "27b3e8df62e85fccc028a10d88de4077ef5537c26d6b4046fe9a16a10bd0dcc2",
+        "terms": 995
+      },
+      {
+        "coordinate": 15,
+        "sha256": "f24dde216f84485d9c01d5090fddefdaf5ce66922163ebe20336e32d0249f926",
+        "terms": 995
+      }
+    ],
+    "e16_anticommutator_basis_cases": 30,
+    "e16_square": "-I32",
+    "pfaffian_cofactors_checked": 15,
+    "transport_basis_cases": 30,
+    "z_dot_k1": "0",
+    "z_dot_k2": "0"
+  },
+  "producer_sha256": "66b7fdc1ae64d158a6292ba049eb3a4d571a3695555a2e447ca5763ff313bc19",
+  "python_flint_version": "0.9.0",
+  "python_version": "3.14.7",
+  "real_determinant_normalization": {
+    "Delta": "0",
+    "F": "-27",
+    "N": 5,
+    "Q": "-3",
+    "bordered_pfaffian": "135",
+    "det_real_L": "332150625",
+    "formula": "det_R L_y=N^4*abs(Q*(Q^2-4*Delta))^4 on the doubly pure subspace",
+    "y": "e1+2e24"
+  },
+  "repository_commit": "ec75554a1af800496d99c80ab23022e83c5e20ea",
+  "ring": "Z[z1,...,z15]",
+  "schema": "das-mergus-stiefel-pfaffian-polynomial-certificate-v1",
+  "scope": "All displayed polynomial identities are coefficientwise identities over Z. Universal rank implications and real-locus component conclusions require the written arguments; these checks are not Rocq formalization.",
+  "sympy_version": "1.14.0"
+}

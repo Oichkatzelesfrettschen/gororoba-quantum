@@ -1,0 +1,8 @@
+top keys ['schema', 'acquisitions', 'claims']
+claims 233 acq 276
+status Counter({'established': 134, 'exploratory': 67, 'proposed': 11, 'withdrawn': 11, 'superseded': 7, 'open': 3})
+prov Counter({'quantum_inspire': 144, 'quandela': 74, 'ibm': 32, 'iqm': 26})
+bindings 439 unique 354
+hash mismatch 0 missing 0
+gates 491
+plans 86 Counter({'inbox': 67, 'closed': 16, 'paused': 1, 'active': 1, 'planned': 1})

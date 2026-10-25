@@ -1,0 +1,91 @@
+{
+  "cd_core_sha256": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+  "cocycle": {
+    "dimension": 16,
+    "gauge_cells": 4096,
+    "pentagon_cells": 65536
+  },
+  "construction_a": {
+    "exact_root_reflections": 57600,
+    "roots": 240,
+    "weight_enumerator": {
+      "0": 1,
+      "4": 14,
+      "8": 1
+    }
+  },
+  "levels": [
+    {
+      "conference_checked": true,
+      "dimension": 8,
+      "each_noncentral_walsh_probability": "1",
+      "n": 3,
+      "pairs": 2,
+      "phase_cells": 16,
+      "trace_distance_squared_to_affine_baseline": "1",
+      "uniform_reference_overlap": "0",
+      "uniform_walsh_central_probability": "0"
+    },
+    {
+      "conference_checked": true,
+      "dimension": 16,
+      "each_noncentral_walsh_probability": "1/4",
+      "n": 4,
+      "pairs": 4,
+      "phase_cells": 64,
+      "trace_distance_squared_to_affine_baseline": "3/4",
+      "uniform_reference_overlap": "1/2",
+      "uniform_walsh_central_probability": "1/4"
+    },
+    {
+      "conference_checked": true,
+      "dimension": 32,
+      "each_noncentral_walsh_probability": "1/16",
+      "n": 5,
+      "pairs": 8,
+      "phase_cells": 256,
+      "trace_distance_squared_to_affine_baseline": "7/16",
+      "uniform_reference_overlap": "3/4",
+      "uniform_walsh_central_probability": "9/16"
+    },
+    {
+      "conference_checked": true,
+      "dimension": 64,
+      "each_noncentral_walsh_probability": "1/64",
+      "n": 6,
+      "pairs": 16,
+      "phase_cells": 1024,
+      "trace_distance_squared_to_affine_baseline": "15/64",
+      "uniform_reference_overlap": "7/8",
+      "uniform_walsh_central_probability": "49/64"
+    },
+    {
+      "conference_checked": false,
+      "dimension": 128,
+      "each_noncentral_walsh_probability": "1/256",
+      "n": 7,
+      "pairs": 32,
+      "phase_cells": 4096,
+      "trace_distance_squared_to_affine_baseline": "31/256",
+      "uniform_reference_overlap": "15/16",
+      "uniform_walsh_central_probability": "225/256"
+    },
+    {
+      "conference_checked": false,
+      "dimension": 256,
+      "each_noncentral_walsh_probability": "1/1024",
+      "n": 8,
+      "pairs": 64,
+      "phase_cells": 16384,
+      "trace_distance_squared_to_affine_baseline": "63/1024",
+      "uniform_reference_overlap": "31/32",
+      "uniform_walsh_central_probability": "961/1024"
+    }
+  ],
+  "method": "deterministic exact integer and rational checks; no stochastic sampling",
+  "parallel_sha256": "d1e886998cab944943ae50babb8e9be7eb2977bbb2d48daf196e171ae9007e92",
+  "producer_sha256": "5cb9b264b95431d236b397beb8ef36ecc2b6c1297ae5f79ba4d1d4b5741a59b9",
+  "python_version": "3.14.7",
+  "repository_commit": "ec75554a1af800496d99c80ab23022e83c5e20ea",
+  "schema": "das-mergus-algebra-v1"
+}

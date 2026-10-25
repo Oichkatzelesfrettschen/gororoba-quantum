@@ -25,6 +25,8 @@ qiskit-ibm.json
 !docs/evidence/folding_proofs/rocq_replay.log
 !docs/evidence/simulation-notebook-audit/kaggle_logs/*.log
 !results/kaggle/*/output/*.log
+!docs/archive/reviews/*-checks/**/*.out
+!docs/archive/reviews/*-checks/**/*.log
 
 # Personal reading copies with external-only redistribution status.
 /docs/local_source_cache/

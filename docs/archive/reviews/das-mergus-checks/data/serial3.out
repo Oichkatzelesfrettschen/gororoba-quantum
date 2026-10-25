@@ -1,0 +1,4 @@
+job-00 exec [-0.65634, 0.733694, -0.560875, 0.377756] design lag1 -0.65634
+  perm p two-sided |null|>=|v| 4.999750012499375e-05 design lag1 perm p 4.999750012499375e-05
+job-01 exec [-0.653137, 0.631036, -0.48047, 0.190776] design lag1 0.280039
+  perm p two-sided |null|>=|v| 4.999750012499375e-05 design lag1 perm p 0.021398930053497325

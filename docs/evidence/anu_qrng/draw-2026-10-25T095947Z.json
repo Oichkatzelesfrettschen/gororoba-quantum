@@ -1,0 +1,17 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=7&type=uint16",
+ "retrieved_utc": "2026-10-25T095947Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"7\", \"data\": [39076, 9845, 13924, 55842, 20108, 22315, 7190]}",
+ "raw_sha256": "1693f4818ff312c3e9cd7c711b101464bbfd69918297d5eed4362a4712bc0db3",
+ "type": "uint16",
+ "values": [
+  39076,
+  9845,
+  13924,
+  55842,
+  20108,
+  22315,
+  7190
+ ]
+}
