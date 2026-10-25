@@ -99,7 +99,7 @@
       "evidence": [
         {
           "ref": "results/live/LATENCY_RECOVERY_FINDINGS.md",
-          "sha256": "482fb75bb052d5607e73b5a228dde15bf0ed95856a3c8a12f673605c361c1173"
+          "sha256": "2f0bdead6ed454f62c546878821526a2aa5cd9eeaa33c6bf21af3b4cffbb050b"
         },
         {
           "ref": "results/live/2026-10-25T193443.839527Z/collect.json",
