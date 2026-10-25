@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/runtime/error_mitigation/index.html](https://perceval.quandela.net/docs/v1.3/reference/runtime/error_mitigation/index.html)
-> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 bc2f81689086c6122921851e7a5799e925203cc191a17108997f242808427d9a.
+> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 bc2f81689086c6122921851e7a5799e925203cc191a17108997f242808427d9a.
 
 # Error mitigation
 

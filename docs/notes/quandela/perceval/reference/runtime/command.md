@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/runtime/command.html](https://perceval.quandela.net/docs/v1.3/reference/runtime/command.html)
-> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 7c1fb4e946f3a74c6f20e44a3f548b28622f9889786b6bf03739810b22a108fd.
+> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 7c1fb4e946f3a74c6f20e44a3f548b28622f9889786b6bf03739810b22a108fd.
 
 # Command
 

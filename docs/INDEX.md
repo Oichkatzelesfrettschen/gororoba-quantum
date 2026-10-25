@@ -12,8 +12,8 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 30 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 114 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/pdf/` | 36 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 150 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -239,6 +239,14 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [O Cathain 2012 -- Difference sets and doubly transitive actions on Hadamard matrices (J. Combin. Theory Ser. A 119, 1235)](notes/papers/ocathain-2012-nonaffine-hadamard.md) | [PDF](https://doras.dcu.ie/29113/1/NonaffineHadamard.pdf) | `ocathain-2012-nonaffine-hadamard.pdf` | [Rehosting permission unestablished](https://doras.dcu.ie/29113/) |
 | [Kivunge 2013 -- Sign Matrices for Frames of 2^n-ons under Smith Conway and Cayley Dickson Multiplications (Mile High Conference slides)](notes/papers/kivunge-2013-sign-matrices-2n-ons.md) | [PDF](https://cs.du.edu/~petr/milehigh/2013/Kivunge.pdf) | `kivunge-2013-sign-matrices.pdf` | [No redistribution grant stated](https://cs.du.edu/~petr/milehigh/2013/) |
 | [Luhn, Nasri and Ramond 2007 -- Simple Finite Non-Abelian Flavor Groups (arXiv 0709.1447)](notes/papers/0709.1447.md) | [PDF](https://arxiv.org/pdf/0709.1447v2) | `0709.1447v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/0709.1447v2) |
+| [Horodecki, Shor and Ruskai 2003 -- Entanglement breaking channels (arXiv quant-ph/0302031)](notes/papers/quant-ph-0302031.md) | [PDF](https://arxiv.org/pdf/quant-ph/0302031v2) | `quant-ph-0302031v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/quant-ph/0302031v2) |
+| [Horodecki, Horodecki and Horodecki 1999 -- General teleportation channel, singlet fraction and quasi-distillation (arXiv quant-ph/9807091)](notes/papers/quant-ph-9807091.md) | [PDF](https://arxiv.org/pdf/quant-ph/9807091v2) | `quant-ph-9807091v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/quant-ph/9807091v2) |
+| [Chitambar et al. 2014 -- Everything you always wanted to know about LOCC (arXiv 1210.4583)](notes/papers/1210.4583.md) | [PDF](https://arxiv.org/pdf/1210.4583v2) | `1210.4583v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1210.4583v2) |
+| [Calsamiglia and Lutkenhaus 2001 -- Maximum efficiency of a linear-optical Bell-state analyzer (arXiv quant-ph/0007058)](notes/papers/quant-ph-0007058.md) | [PDF](https://arxiv.org/pdf/quant-ph/0007058v1) | `quant-ph-0007058v1.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/quant-ph/0007058v1) |
+| [Horodecki, Horodecki and Horodecki 1996 -- Separability of mixed states: necessary and sufficient conditions (arXiv quant-ph/9605038)](notes/papers/quant-ph-9605038.md) | [PDF](https://arxiv.org/pdf/quant-ph/9605038v2) | `quant-ph-9605038v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/quant-ph/9605038v2) |
+| [Laneve et al. 2024 -- Quantum teleportation with dissimilar quantum dots over a hybrid quantum network (arXiv 2411.12387)](notes/papers/2411.12387.md) | [PDF](https://arxiv.org/pdf/2411.12387v1) | `2411.12387v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2411.12387v1) |
+| [van Enk and Blume-Kohout 2013 -- When quantum tomography goes wrong: drift of quantum sources and other errors (arXiv 1302.0932)](notes/papers/1302.0932.md) | [PDF](https://arxiv.org/pdf/1302.0932v2) | `1302.0932v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1302.0932v2) |
+| [Quandela 2026 -- Roadmap 2026-2033 (March 2026) and the Quandela-Welinq interconnect announcement](notes/quandela/roadmap-2026-03.md) | [PDF](https://www.quandela.com/wp-content/uploads/2026/03/Quandela-Roadmap-190326-web.pdf) | `quandela-roadmap-2026-03.pdf` | [Rehosting permission unestablished](https://www.quandela.com/legal-terms/) |
 
 ## Licensed software source snapshots
 The [Nebe--Sloane lattice catalogue note](notes/papers/nebe-lattices-d14-a13.md)

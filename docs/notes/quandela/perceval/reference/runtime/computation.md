@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/runtime/computation.html](https://perceval.quandela.net/docs/v1.3/reference/runtime/computation.html)
-> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 360db1ef0857052fdfb0302966be626ed5d19e5db0df3c301f62a45b277b2433.
+> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 360db1ef0857052fdfb0302966be626ed5d19e5db0df3c301f62a45b277b2433.
 
 # Computation
 

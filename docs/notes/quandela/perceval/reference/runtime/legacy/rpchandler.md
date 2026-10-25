@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/runtime/legacy/rpchandler.html](https://perceval.quandela.net/docs/v1.3/reference/runtime/legacy/rpchandler.html)
-> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 bd07bee35ce3a15119f191c1a9bab27010f028e834383f31d826f34f080ebd9b.
+> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 bd07bee35ce3a15119f191c1a9bab27010f028e834383f31d826f34f080ebd9b.
 
 # RPCHandler
 

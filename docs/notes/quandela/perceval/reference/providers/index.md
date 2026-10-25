@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/providers/index.html](https://perceval.quandela.net/docs/v1.3/reference/providers/index.html)
-> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 6a6b8f0366e0352779dce0f2b21d21c48efa0e6c5aa9d28c0a94fb61531322cc.
+> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 6a6b8f0366e0352779dce0f2b21d21c48efa0e6c5aa9d28c0a94fb61531322cc.
 
 # providers
 

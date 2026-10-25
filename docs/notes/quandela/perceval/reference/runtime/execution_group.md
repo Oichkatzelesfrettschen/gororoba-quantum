@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/runtime/execution_group.html](https://perceval.quandela.net/docs/v1.3/reference/runtime/execution_group.html)
-> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 b84535b7cf4c3e82ed0fb07f2124f476f9b36325b3d3ee7abde895209ca0d73b.
+> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 b84535b7cf4c3e82ed0fb07f2124f476f9b36325b3d3ee7abde895209ca0d73b.
 
 # ExecutionGroup
 

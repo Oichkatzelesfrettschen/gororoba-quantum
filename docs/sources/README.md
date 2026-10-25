@@ -14,8 +14,8 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 26 licensed PDFs and two aliases;
-101 external sources retain citations and optional ignored local reading copies.
+license evidence. The library publishes 36 licensed PDFs and two aliases;
+150 external sources retain citations and optional ignored local reading copies.
 Five licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
@@ -198,6 +198,14 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [ashby-2018-null-test-lpi](../notes/papers/ashby-2018-null-test-lpi.md) | Ashby, Parker and Patla, A null test of general relativity based on a long-term comparison of atomic transition frequencies, Nat. Phys. 14, 822 (2018) | none | none | none |
 | [2001.09190](../notes/papers/2001.09190.md) | Vepsäläinen et al., Impact of ionizing radiation on superconducting qubit coherence, Nature 584, 551 (2020) | low | none | low |
 | [2402.03208](../notes/papers/2402.03208.md) | Harrington et al., Synchronous detection of cosmic rays and correlated errors in superconducting qubit arrays, Nat. Commun. 16, 6428 (2025) | low | none | low |
+| [quant-ph-0302031](../notes/papers/quant-ph-0302031.md) | Horodecki, Shor and Ruskai, Entanglement breaking channels, Rev. Math. Phys. 15, 629 (2003) | none | none | none |
+| [quant-ph-9807091](../notes/papers/quant-ph-9807091.md) | Horodecki, Horodecki and Horodecki, General teleportation channel, singlet fraction and quasidistillation, Phys. Rev. A 60, 1888 (1999) | none | none | none |
+| [1210.4583](../notes/papers/1210.4583.md) | Chitambar, Leung, Mancinska, Ozols and Winter, Everything you always wanted to know about LOCC, Commun. Math. Phys. 328, 303 (2014) | none | none | none |
+| [quant-ph-0007058](../notes/papers/quant-ph-0007058.md) | Calsamiglia and Lutkenhaus, Maximum efficiency of a linear-optical Bell-state analyzer, Appl. Phys. B 72, 67 (2001) | none | none | none |
+| [quant-ph-9605038](../notes/papers/quant-ph-9605038.md) | Horodecki, Horodecki and Horodecki, Separability of mixed states: necessary and sufficient conditions, Phys. Lett. A 223, 1 (1996) | none | none | none |
+| [2411.12387](../notes/papers/2411.12387.md) | Laneve et al., Quantum teleportation with dissimilar quantum dots over a hybrid quantum network (2024 preprint) | none | none | none |
+| [1302.0932](../notes/papers/1302.0932.md) | van Enk and Blume-Kohout, When quantum tomography goes wrong: drift of quantum sources and other errors, New J. Phys. 15, 025024 (2013) | low | none | none |
+| [roadmap-2026-03](../notes/quandela/roadmap-2026-03.md) | Quandela, Roadmap 2026-2033 (March 2026) and the Quandela-Welinq interconnect announcement (provider documents) | none | none | none |
 | [2104.05219](../notes/papers/2104.05219.md) | McEwen et al., Resolving catastrophic error bursts from cosmic rays in large arrays of superconducting qubits, Nat. Phys. 18, 107 (2022) | low | none | low |
 
 The [parallel-experiment synthesis](../notes/quantum_experiment_parallelism.md)

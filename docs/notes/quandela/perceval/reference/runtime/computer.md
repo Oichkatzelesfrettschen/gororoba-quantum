@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/runtime/computer.html](https://perceval.quandela.net/docs/v1.3/reference/runtime/computer.html)
-> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 47cf561b54733d69ad27553354018e9b0496f7f9fe26ff99753e0986ccdd9017.
+> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 47cf561b54733d69ad27553354018e9b0496f7f9fe26ff99753e0986ccdd9017.
 
 # Computer
 

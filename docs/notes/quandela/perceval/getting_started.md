@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/getting_started.html](https://perceval.quandela.net/docs/v1.3/getting_started.html)
-> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 e29377aa1cd2eec8906dc4fcef5886e0a9b282ca89503518e3f51610fda495f1.
+> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 e29377aa1cd2eec8906dc4fcef5886e0a9b282ca89503518e3f51610fda495f1.
 
 # Getting started
 
