@@ -13,7 +13,6 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-import shutil
 from pathlib import Path
 
 import pytest
@@ -92,6 +91,7 @@ def mismatches(cwd: Path, ledger: str) -> list[str]:
 
 
 @pytest.mark.parametrize("entry", LEDGERS, ids=ledger_id)
+@pytest.mark.audit
 def test_ledger_binds_its_bytes(entry: tuple[str, str]) -> None:
     cwd, ledger = entry
     found = mismatches(ROOT / cwd, ledger)
@@ -99,6 +99,7 @@ def test_ledger_binds_its_bytes(entry: tuple[str, str]) -> None:
         raise AssertionError(f"{ledger_id(entry)}: " + "; ".join(found))
 
 
+@pytest.mark.audit
 def test_every_sha256sum_gate_ledger_is_listed() -> None:
     gates = json.loads((ROOT / "ci/gates.json").read_text(encoding="utf-8"))["gates"]
     listed = {(cwd, name) for cwd, name in LEDGERS}
@@ -112,20 +113,23 @@ def test_every_sha256sum_gate_ledger_is_listed() -> None:
 
 
 def test_a_changed_or_missing_byte_fails(tmp_path: Path) -> None:
-    source = ROOT / "docs/evidence/four_support_rank"
-    shutil.copytree(source, tmp_path / "run")
-    cwd = tmp_path / "run"
+    """The ledger rule on files built here: a two-space row, a binary-marker row, a flipped byte, a deletion."""
+    cwd = tmp_path / "bundle"
+    (cwd / "sub").mkdir(parents=True)
+    files = {"a.json": b'{"value": 1.25}\n', "sub/b.txt": b"retained bytes\n"}
+    for name, data in files.items():
+        (cwd / name).write_bytes(data)
+    rows = [f"{hashlib.sha256(files['a.json']).hexdigest()}  a.json"]
+    rows.append(f"{hashlib.sha256(files['sub/b.txt']).hexdigest()} *sub/b.txt")
+    (cwd / "SHA256SUMS").write_text("\n".join(rows) + "\n", encoding="utf-8")
     if mismatches(cwd, "SHA256SUMS"):
-        raise AssertionError(f"the copy of {source} fails before any edit")
-    name = ROW.fullmatch((cwd / "SHA256SUMS").read_text(encoding="utf-8").split("\n")[0])
-    if name is None:
-        raise AssertionError("the first ledger row does not parse")
-    target = cwd / name[2]
-    data = bytearray(target.read_bytes())
-    data[len(data) // 2] ^= 1
-    target.write_bytes(bytes(data))
-    if mismatches(cwd, "SHA256SUMS") != [f"{name[2]}: bytes differ from the ledger"]:
-        raise AssertionError(f"a flipped bit in {name[2]} passes the ledger")
+        raise AssertionError("an intact bundle fails its ledger")
+    target = cwd / "sub/b.txt"
+    flipped = bytearray(target.read_bytes())
+    flipped[3] ^= 1
+    target.write_bytes(bytes(flipped))
+    if mismatches(cwd, "SHA256SUMS") != ["sub/b.txt: bytes differ from the ledger"]:
+        raise AssertionError("a flipped bit passes the ledger")
     target.unlink()
-    if mismatches(cwd, "SHA256SUMS") != [f"{name[2]}: missing"]:
-        raise AssertionError(f"a deleted {name[2]} passes the ledger")
+    if mismatches(cwd, "SHA256SUMS") != ["sub/b.txt: missing"]:
+        raise AssertionError("a deleted file passes the ledger")
