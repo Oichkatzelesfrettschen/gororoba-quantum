@@ -160,8 +160,12 @@ def _free_names(node: ast.AST, local: frozenset[str] = frozenset()) -> set[str]:
         outer: list[ast.AST] = [*getattr(node, "decorator_list", []), *arguments.defaults]
         outer += [item for item in arguments.kw_defaults if item is not None]
         found = set().union(*(_free_names(item, local) for item in outer))
-        inner = local | _locals(node)
         body = node.body if isinstance(node.body, list) else [node.body]
+        # A global declaration in this scope reaches module scope even where an enclosing function binds the name.
+        declared = {
+            name for item in body for sub in _module_scope(item) if isinstance(sub, ast.Global) for name in sub.names
+        }
+        inner = (local - declared) | _locals(node)
         return found.union(*(_free_names(item, inner) for item in body))
     if isinstance(node, ast.Name):
         return {node.id} if isinstance(node.ctx, ast.Load) and node.id not in local else set()
