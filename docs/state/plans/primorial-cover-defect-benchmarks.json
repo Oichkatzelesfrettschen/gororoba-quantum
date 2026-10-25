@@ -1,0 +1,34 @@
+{
+ "schema": "work-plan-v1",
+ "id": "primorial-cover-defect-benchmarks",
+ "kind": "experiment",
+ "summary": "Certified missing primorial gaps 20, 32, 86 and 88 as two- and three-qubit cost circuits: decide whether any device question survives the noise-model prediction, and reproduce Ziller's table of missing differences.",
+ "sources": [
+  "docs/notes/topics/primorial-cover-defects.md",
+  "docs/design/primorial-cover-defect-probes.md",
+  "docs/evidence/primorial_cover/README.md",
+  "docs/notes/papers/2007.01808.md"
+ ],
+ "state": "planned",
+ "scope": "Exact certificates, the Kingston noise prediction and the hardware decision for the primorial quotient, phase-gradient and QAOA circuits; a reproduction of Ziller Table 1 by the exhaustive search. Provider acquisitions need their own approved cases.",
+ "owner": "primorial cover-defect benchmarks",
+ "next_action": "Hold hardware: the null-subtracted prediction leaves no primorial-specific device question. A case opens only when it names a platform, path and coherent family the null arm answers better than the retained atlas.",
+ "reconciliation": {
+  "status": "verified",
+  "note": "The user asked for the verified mathematics and a simulator run whose analysis decides on hardware; the certificates and the Kaggle CPU prediction are retained, and no provider job was sent."
+ },
+ "steps": [
+  {
+   "id": "device-question",
+   "action": "Decide whether a phase-gradient or null-arm run on a named platform answers a device question the Fez and Kingston atlas does not.",
+   "acceptance": "Either an approved written case naming platform, path, coherent family, shots and seconds or credits, or a closure stating that no such question exists.",
+   "state": "todo"
+  },
+  {
+   "id": "ziller-table-reproduction",
+   "action": "Run primorial_cover's exhaustive search over every even difference up to the largest difference Table 1 lists for k up to 20 and compare the missing set with Ziller Table 1, p. 12.",
+   "acceptance": "A retained record and gate listing every missing difference per k; any disagreement with Table 1 is a finding with its exclusion or cover witness. Stop at k = 20 or when one k exceeds one hour on the build host.",
+   "state": "todo"
+  }
+ ]
+}

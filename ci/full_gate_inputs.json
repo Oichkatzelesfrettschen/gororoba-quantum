@@ -525,6 +525,11 @@
     "core-ascella-signed-coherence-heater-drive-holdout-replay": [
       "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
       "docs/evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json"
+    ],
+    "core-689": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/primorial_cover/**",
+      "results/kaggle/2026-10-25T075839Z-gororoba-primorial-cover-noise/**"
     ]
   }
 }

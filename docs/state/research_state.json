@@ -9662,6 +9662,64 @@
         "qd-belenos-bdsc-drift-series-readout"
       ],
       "depends_on": []
+    },
+    {
+      "id": "primorial-cover-defect-certificates",
+      "statement": "The even gaps 20 (k = 6), 32 (k = 8), 86 and 88 (k = 14) are absent between consecutive integers coprime to the k-th primorial, each with defect exactly one: an allowed residue assignment leaves one uncovered point (wheel gaps 6 + 14, 6 + 26, 44 + 42, 58 + 30), exhaustive search over 4, 15, 1485 and 150 branch assignments finds no cover, and the next prime 17, 23, 47, 47 closes each gap. At k = 14 the fractional relaxation has optimum 0 with an exactly verified rational cover. Fixing the k = 14 witnesses except p = 5, 7, 11 gives cost tables with Walsh coefficients in (1/8)Z; the gap-86 repair by 22 mod 47 shifts its Hamiltonian by -I and the gap-88 repair by 29 mod 47 by -(I + Z1)/2.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Four finite instances, matching Ziller's Table 1 (arXiv 2007.01808, p. 12); no bound on branching depth or gap growth as k increases and no bearing on Ziller's Conjecture 4.1.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/certificates.json",
+          "sha256": "38a788afce71f51ee8058dd52ed0d2ea723c4cdf145d1222818c328c279a6270"
+        }
+      ],
+      "documents": [
+        "docs/notes/topics/primorial-cover-defects.md",
+        "docs/evidence/primorial_cover/README.md"
+      ],
+      "gates": {
+        "core-688": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "primorial-cover-noise-null-subtraction",
+      "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00 on its best and median three-qubit paths, with every arm ALAP scheduled, null-subtracted phase-gradient tomography of the eight-CNOT gap-88 cost recovers every coefficient within 0.0032 of its exact value (identification radius 1/16) at 2,803 and 3,169 shots per setting, the budget carrying each mean's variance through the assignment inversion and the null arm's phase variance; the gap-88 repair contrast reads -0.499 against -0.5, the gap-20 Grover quotient reads its marked label at 0.963 to 0.984, and the gap-86 repair leaves every compiled law unchanged. A noise-free CZ conditional phase of 0.02 to 0.1 rad per CZ biases the coefficients by 0.057 to 0.287 with cycle residuals at most 0.0103, and subtracting the zero-angle null arm reduces the bias to 0.0005 to 0.0128; a 10 to 30 kHz detuning of one path qubit biases them by 0.015 to 0.233, reaching multi-body coefficients through the parities its wire carries, and null subtraction leaves at most 0.0022; an sx amplitude error of 0.002 to 0.01 biases them by at most 0.0007.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshot) plus noise-free CZ-phase, sx-amplitude and single-qubit detuning scenarios; static ZZ and axis tilt are unsimulated, crosstalk and leakage are outside it, and no hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/noise.json",
+          "sha256": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527"
+        },
+        {
+          "path": "docs/evidence/calibration/ibm_kingston.json",
+          "sha256": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/README.md",
+        "docs/design/primorial-cover-defect-probes.md"
+      ],
+      "gates": {
+        "core-689": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "primorial-cover-defect-certificates"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }
