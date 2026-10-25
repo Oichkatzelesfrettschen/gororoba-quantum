@@ -76,8 +76,8 @@ qd_mcp_server.serve()
             async with ClientSession(reader, writer, read_timeout_seconds=timedelta(seconds=30)) as session:
                 await session.initialize()
                 tools = (await session.list_tools()).tools
-                if len(tools) != 8:
-                    raise AssertionError(f"expected eight tools, received {[tool.name for tool in tools]}")
+                if len(tools) != 10:
+                    raise AssertionError(f"expected ten tools, received {[tool.name for tool in tools]}")
                 failures = []
                 for arguments in (
                     {"real": "[[1.0]]", "input_photons": [1]},

@@ -54,11 +54,16 @@ from pydantic import Field  # noqa: E402
 from qd_platform import (  # noqa: E402
     PlatformError,
     availability,
+    case_path,
     get,
+    job_billing,
     job_route,
+    plan,
+    plan_summary,
     platform_route,
     platform_row,
     request,
+    scrub,
     usage_rows,
 )
 
@@ -74,6 +79,9 @@ MUTATE = ToolAnnotations(readOnlyHint=False, destructiveHint=True, idempotentHin
 # Processor fields too large for a routine read: the serialized chip circuit
 # and the platform's HTML documentation.
 BULK_SPECS = ("architecture", "documentation")
+# Fields of the processor record that change Perceval 1.3.1's behavior when absent
+# (docs/notes/quandela/calibration.md, "Record fields Perceval reads"); the first five sit in specs.
+PERCEVAL_SPECS = ("commands", "available_commands", "default_mitigations", "known_mitigations", "architecture", "type")
 
 JobId = Annotated[str, Field(description="Job id as the cloud reports it (a UUID)", pattern=r"^[0-9a-fA-F-]{8,64}$")]
 PlatformName = Annotated[
@@ -137,20 +145,34 @@ async def qd_platforms() -> dict[str, Any]:
     return await threaded(read)
 
 
+def presence(container: Any, names: tuple[str, ...]) -> dict[str, str]:
+    """Each name's state in a mapping: "absent" (no key), "empty" (null or an empty value) or "present"."""
+    sent = container if isinstance(container, dict) else {}
+    return {name: "absent" if name not in sent else "present" if sent[name] else "empty" for name in names}
+
+
 def with_bulk_presence(record: dict[str, Any], include_bulk: bool) -> dict[str, Any]:
     """The record plus a bulk_fields presence map; a default read shrinks each present BULK_SPECS value."""
     specs = record.get("specs")
     sent = specs if isinstance(specs, dict) else {}
     out = dict(record)
     # "empty" matches qd_platform.chip_architecture, which treats a null or empty value as no architecture.
-    out["bulk_fields"] = {
-        name: "absent" if name not in sent else "present" if sent[name] else "empty" for name in BULK_SPECS
-    }
+    out["bulk_fields"] = presence(sent, BULK_SPECS)
     if not include_bulk and isinstance(specs, dict):
         out["specs"] = {
             key: {"stripped": True, "chars": len(json.dumps(value))} if key in BULK_SPECS and value else value
             for key, value in specs.items()
         }
+    return out
+
+
+def with_record_fields(record: dict[str, Any]) -> dict[str, Any]:
+    """The record plus record_fields: presence of each PERCEVAL_SPECS field in specs and of the top-level type."""
+    out = dict(record)
+    out["record_fields"] = {
+        **presence(record.get("specs"), PERCEVAL_SPECS),
+        "record_type": presence(record, ("type",))["type"],
+    }
     return out
 
 
@@ -162,9 +184,13 @@ async def qd_platform(name: PlatformName, include_bulk: bool = False) -> dict[st
     bulk_fields reports "present", "empty" (sent as null or empty) or "absent" for the serialized
     chip architecture and the HTML documentation, as the server sent them. include_bulk keeps their
     values; otherwise a present field is replaced by {"stripped": true, "chars": N}.
+    record_fields reports the same three states for the specs fields Perceval 1.3.1 reads (commands,
+    available_commands, default_mitigations, known_mitigations, architecture, type) and for the top-level
+    type, so an omitted field reads as absent and a null or empty one as empty. Keys named in
+    qd_platform.FORBIDDEN_KEYS are removed from the record at any depth.
     """
     record: dict[str, Any] = await threaded(lambda: get(platform_route(name)))
-    return with_bulk_presence(record, include_bulk)
+    return with_record_fields(with_bulk_presence(scrub(record), include_bulk))
 
 
 @server.tool(annotations=READ)
@@ -199,6 +225,56 @@ async def qd_availability() -> dict[str, Any]:
 async def qd_usage() -> list[dict[str, Any]]:
     """The token usage report (jobs and usage per token, token ids removed)."""
     return await threaded(lambda: usage_rows(get("/api/tokens/usage/report")))
+
+
+@server.tool(annotations=READ)
+@reported
+async def qd_plan(
+    case_dir: Annotated[
+        str, Field(description="Case directory under results/quandela/, e.g. results/quandela/cases/bdsc_qualification")
+    ],
+    platform: PlatformName,
+    max_credits: Annotated[float, Field(description="Credit ceiling the plan checks", ge=0)] = 10.0,
+    expected_seconds: Annotated[float, Field(description="Expected seconds, checked against max_duration", ge=0)] = 0.0,
+    per_job_credits: Annotated[float, Field(description="Per-job price the plan adds to the ceiling", ge=0)] = 1.0,
+) -> dict[str, Any]:
+    """Read-only plan of one case: the job body's payload version, mitigations key, shot and credit estimates.
+
+    Runs qd_platform.plan, which checks the case's digests, the platform's status and limits and the token's
+    occupancy, and builds the job body without sending it; the body itself is left out, its sha256 stays. Submits,
+    reserves and uploads nothing. The case directory must lie under results/quandela/. payload_version is 2 when the
+    body carries a computation and 1 when it carries a command; payload_version_basis is "declared", "restored from
+    RECORD" or "absent" for the processor's command set.
+    """
+    path = case_path(case_dir)
+    planned = await threaded(lambda: plan(path, platform, max_credits, expected_seconds, per_job_credits))
+    return plan_summary(planned)
+
+
+@server.tool(annotations=READ)
+@reported
+async def qd_job_billing(
+    job_id: JobId,
+    per_job_credits: Annotated[float, Field(description="Per-job price in credits (1.0 measured)", ge=0)] = 1.0,
+) -> dict[str, Any]:
+    """Credits one job bills under the measured rule (per-job price plus price per shot times shots), from its job data.
+
+    The cloud reports no per-job charge, so this applies the rule to the job's shots and the platform's Explorer
+    price: charge_used prices the reported shots, charge_ceiling the payload's max_shots. Reads only.
+    """
+
+    def read() -> dict[str, Any]:
+        data: dict[str, Any] = scrub(get(job_route(job_id, "data")))
+        rows = [
+            row
+            for row in get("/api/platforms/public/explorer", auth=False)
+            if row.get("name") == data.get("platform_name")
+        ]
+        if len(rows) != 1:
+            raise PlatformError(f"{data.get('platform_name')} is not one Explorer platform")
+        return job_billing(data, platform_row(rows[0]), per_job_credits)
+
+    return await threaded(read)
 
 
 @server.tool(annotations=READ)

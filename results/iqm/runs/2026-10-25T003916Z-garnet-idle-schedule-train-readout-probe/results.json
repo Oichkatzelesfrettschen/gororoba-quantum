@@ -1,0 +1,54 @@
+{
+ "billed_credits": 1.0,
+ "compilation": {
+  "calibration_set_id": "a18a947f-0408-4628-81ea-1715637e434f",
+  "execution_runtime_estimate_ms": 2521,
+  "execution_runtime_estimate_seconds": 2.52142
+ },
+ "credit_after": {
+  "currentBalance": "16.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "credits_charged": 1.0,
+ "errors": null,
+ "job_id": "01a1707f-6157-75dc-aca8-6f30e5f0280b",
+ "metrics": {
+  "billed_seconds": 2.0,
+  "compilation_seconds": 0.152965,
+  "execution_seconds": 1.764711,
+  "runtime_seconds": 1.917676
+ },
+ "raw_sha256": {
+  "job.json": "845d0952a53c038b532a192449e3120ee8b21f55a5c00ff25c921721879aa492",
+  "measurement_counts.json": "b9311f3eab7cc3e9180a7231d28e64c69aaf406f4b6e2acdc6a56a227c17c231",
+  "measurements.json": "0e5e55cc3b9b43f3990a5e3940fdbe86b7a1b8164e02d7e440e12bf7f9275f5c"
+ },
+ "schema": "iqm-results-v1",
+ "shots_per_circuit": [
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500,
+  4500
+ ],
+ "status": "completed"
+}
