@@ -196,3 +196,41 @@ def test_idle_sweep_recovers_a_planted_detuning_slope() -> None:
     slope_read, intercept = summary["idle_phase_slope_rad_per_dt"], summary["idle_phase_intercept_fit"]
     if abs(slope_read - slope) > 1e-9 or abs(intercept) > 1e-9:
         raise AssertionError(f"slope {slope_read}, intercept {intercept}")
+
+
+def compensated_laws(window_phase: float) -> dict[str, np.ndarray]:
+    return {
+        f"qet_compensated_ladder_{name}": ladder.compensated_ideal(
+            prep, alice, rule, basis, alpha, window_phase if prep == "ground" else 0.0
+        )
+        for name, prep, alice, rule, basis, alpha in ladder.compensated_arms()
+    }
+
+
+def test_compensated_ideal_matches_the_circuits_and_scores_e_b() -> None:
+    circuits = {name: law for name, _, law in ladder.compensated_circuits()}
+    for name, law in compensated_laws(0.0).items():
+        if np.abs(circuits[name] - law).max() > 1e-12:
+            raise AssertionError(f"{name}: compensated ideal departs from the circuit's law")
+    summary = ladder.summarize_compensated(compensated_laws(0.0))
+    if summary["selected_alpha"] != 0.0 or abs(summary["selected_margin"] - ladder.E_B) > 1e-9:
+        raise AssertionError(f"ideal selects {summary['selected_alpha']} with margin {summary['selected_margin']}")
+
+
+def test_compensation_undoes_a_planted_window_phase() -> None:
+    summary = ladder.summarize_compensated(compensated_laws(-0.6))
+    if abs(summary["reference_phase"] + 0.6) > 1e-9 or summary["selected_alpha"] != 0.6:
+        raise AssertionError(f"phase {summary['reference_phase']} selects {summary['selected_alpha']}")
+    if abs(summary["selected_margin"] - ladder.E_B) > 1e-9 or summary["uncompensated_margin"] > 0:
+        raise AssertionError(
+            f"compensated {summary['selected_margin']}, uncompensated {summary['uncompensated_margin']}"
+        )
+
+
+def test_compensated_arms_route_with_equal_branches_on_kingston() -> None:
+    backend = _backend("kingston")
+    edge = next(iter(backend.target["cz"]))  # type: ignore[attr-defined]
+    isas = ordered_map(_route, [("kingston", c) for _, c, _ in ladder.compensated_circuits()])
+    if ladder.branch_duration_violations(isas, backend.target):  # type: ignore[attr-defined]
+        raise AssertionError("compensated branches differ in duration on Kingston")
+    del edge

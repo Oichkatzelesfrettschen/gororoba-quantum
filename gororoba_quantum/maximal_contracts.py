@@ -269,6 +269,7 @@ def _verify_isolation_contract() -> None:
             "readout_delay",
             "qet_ladder",
             "qet_frame_diagnostic",
+            "qet_compensated_ladder",
         }
         and not default_names & standalone_names,
         "the opt-in campaigns must stay outside the default suite",

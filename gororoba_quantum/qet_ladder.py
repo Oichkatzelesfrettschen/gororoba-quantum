@@ -506,3 +506,147 @@ def summarize_frame(dist: Mapping[str, np.ndarray]) -> dict[str, float]:
 def qet_frame_diagnostic_group() -> Group:
     members = tuple(Member(name, circuit, ideal) for name, circuit, ideal in frame_circuits())
     return Group(FRAME_GROUP_NAME, members, summarize_frame, routed_violations=branch_duration_violations)
+
+
+# Phase-compensated ladder. The frame diagnostic of results/live/2026-10-25T225332.266272Z reads the
+# completed-frame coherence phase at -1.06 to +0.21 rad across the packed pairs (correction -0.21 to +1.06).
+# Packed replicas share one circuit, so Bob's record-independent correction rz(alpha) sweeps a grid inside
+# both branch bodies, and each pair scores the grid point nearest the phase its own reference arms measure.
+COMPENSATION_ALPHAS = (-0.3, 0.0, 0.3, 0.6, 0.9, 1.2)
+COMPENSATED_GROUP_NAME = "qet_compensated_ladder"
+
+
+def _alpha_label(alpha: float) -> str:
+    return f"{'m' if alpha < 0 else 'p'}{abs(alpha):.1f}".replace(".", "")
+
+
+def compensated_arms() -> tuple[tuple[str, str, str, str, str, float], ...]:
+    """(name, preparation, Alice basis, Bob rule, Bob basis, alpha), all in the completed frame."""
+    references = [
+        ("ref_x", "ground", "x", "idle", "x", 0.0),
+        ("ref_y", "ground", "x", "idle", "y", 0.0),
+        ("ref_z", "ground", "x", "idle", "z", 0.0),
+        ("za", "ground", "z", "idle", "z", 0.0),
+    ]
+    feedback = [
+        (f"fb_{_alpha_label(alpha)}_{basis}", "ground", "x", "feedback", basis, alpha)
+        for alpha in COMPENSATION_ALPHAS
+        for basis in "xz"
+    ]
+    calibrations = [("cal_00", "product", "z", "idle", "z", 0.0), ("cal_11", "ones", "z", "idle", "z", 0.0)]
+    return tuple(references + feedback + calibrations)
+
+
+def compensated_circuit(name: str, prep: str, alice: str, rule: str, basis: str, alpha: float) -> QuantumCircuit:
+    """Completed-frame ladder arm whose branch bodies open with rz(alpha) on B before Bob's rotation."""
+    qubits = QuantumRegister(2, "q")
+    record, final, bob = ClassicalRegister(1, "alice"), ClassicalRegister(1, "a_final"), ClassicalRegister(1, "bob")
+    circuit = QuantumCircuit(qubits, record, final, bob, name=f"{COMPENSATED_GROUP_NAME}_{name}")
+    if prep == "ground":
+        circuit.ry(2 * THETA, 0)
+        circuit.cx(0, 1)
+        circuit.z(0)
+    elif prep == "ones":
+        circuit.x([0, 1])
+    circuit.barrier()
+    if alice == "x":
+        circuit.h(0)
+    circuit.measure(0, record[0])
+    zero, one = bob_angle(rule, 0), bob_angle(rule, 1)
+    with circuit.if_test((record[0], 1)) as otherwise:
+        if alpha:
+            circuit.rz(alpha, 1)
+        _branch(circuit, one)
+    with otherwise:
+        if alpha:
+            circuit.rz(alpha, 1)
+        _branch(circuit, zero)
+    circuit.measure(0, final[0])
+    _bob_basis(circuit, basis)
+    circuit.measure(1, bob[0])
+    return circuit
+
+
+def compensated_ideal(
+    prep: str, alice: str, rule: str, basis: str, alpha: float, window_phase: float = 0.0
+) -> np.ndarray:
+    """Exact law over r + 2a + 4b with a phase rz(window_phase) on B after the CX and rz(alpha) before Bob's turn."""
+    psi = np.zeros(4, dtype=complex)
+    if prep == "product":
+        psi[0] = 1.0
+    elif prep == "ones":
+        psi[3] = 1.0
+    else:
+        psi[0], psi[3] = math.cos(THETA), -math.sin(THETA)
+
+    def rz(angle: float) -> np.ndarray:
+        return np.diag([np.exp(-0.5j * angle), np.exp(0.5j * angle)])
+
+    psi = np.kron(np.eye(2), rz(window_phase)) @ psi
+    hadamard = np.array([[1, 1], [1, -1]]) / math.sqrt(2)
+    if alice == "x":
+        psi = np.kron(hadamard, np.eye(2)) @ psi
+    change = {"x": hadamard, "y": hadamard @ np.diag([1, -1j]), "z": np.eye(2)}[basis]
+    law = np.zeros(8)
+    for record in (0, 1):
+        branch = psi.reshape(2, 2)[record]
+        angle = bob_angle(rule, record)
+        if angle is not None:
+            branch = _ry(angle) @ (rz(alpha) @ branch)
+        amplitudes = change @ branch
+        for b in (0, 1):
+            law[3 * record + 4 * b] = abs(amplitudes[b]) ** 2
+    return law
+
+
+def _compensated_arm(arm: tuple[str, str, str, str, str, float]) -> tuple[str, QuantumCircuit, np.ndarray]:
+    name, prep, alice, rule, basis, alpha = arm
+    return (
+        f"{COMPENSATED_GROUP_NAME}_{name}",
+        compensated_circuit(name, prep, alice, rule, basis, alpha),
+        compensated_ideal(prep, alice, rule, basis, alpha),
+    )
+
+
+def compensated_circuits() -> tuple[tuple[str, QuantumCircuit, np.ndarray], ...]:
+    return tuple(ordered_map(_compensated_arm, list(compensated_arms())))
+
+
+def summarize_compensated(dist: Mapping[str, np.ndarray]) -> dict[str, float]:
+    """Reference coherence phase, the alpha it selects, and the channel floor margin at every alpha.
+
+    The reference arms give c = (<X_A X_B>, <X_A Y_B>); a phase rz(phi) on B after the CX rotates the ideal
+    (-1/sqrt2, 0) to -(cos phi, sin phi)/sqrt2, so phi = atan2(-<X_A Y_B>, -<X_A X_B>) and rz(-phi) undoes it.
+    The scored alpha is the grid point nearest -phi; margins at every alpha are reported for the device map.
+    """
+
+    def law(arm: str) -> np.ndarray:
+        return np.asarray(dist[f"{COMPENSATED_GROUP_NAME}_{arm}"], dtype=float)
+
+    xx, xy = _moments(law("ref_x"))[2], _moments(law("ref_y"))[2]
+    phase = math.atan2(-xy, -xx)
+    floor = H_FIELD * _moments(law("za"))[3] - H_FIELD**2 / RADIUS
+    s = np.array([_moments(law(f"ref_{b}"))[1] for b in "xyz"])
+    c = np.array([_moments(law(f"ref_{b}"))[2] for b in "xyz"])
+    out: dict[str, float] = {"reference_phase": phase, "channel_floor": floor, "unitary_floor": kabsch_floor(s, c)}
+    for alpha in COMPENSATION_ALPHAS:
+        label = _alpha_label(alpha)
+        feedback = local_energy(law(f"fb_{label}_z"), law(f"fb_{label}_x"))
+        out[f"margin_{label}"] = floor - feedback
+        out[f"excess_{label}"] = out["unitary_floor"] - feedback
+    selected = min(COMPENSATION_ALPHAS, key=lambda alpha: abs(alpha + phase))
+    out["selected_alpha"] = selected
+    out["selected_margin"] = out[f"margin_{_alpha_label(selected)}"]
+    out["selected_excess"] = out[f"excess_{_alpha_label(selected)}"]
+    out["uncompensated_margin"] = out[f"margin_{_alpha_label(0.0)}"]
+    zeros, ones = law("cal_00") / law("cal_00").sum(), law("cal_11") / law("cal_11").sum()
+    for bit, label in enumerate(("r", "a", "b")):
+        mask = [index for index in range(8) if (index >> bit) & 1]
+        out[f"assignment_{label}_p1_given_0"] = float(zeros[mask].sum())
+        out[f"assignment_{label}_p0_given_1"] = float(1 - ones[mask].sum())
+    return out
+
+
+def qet_compensated_ladder_group() -> Group:
+    members = tuple(Member(name, circuit, ideal) for name, circuit, ideal in compensated_circuits())
+    return Group(COMPENSATED_GROUP_NAME, members, summarize_compensated, routed_violations=branch_duration_violations)
