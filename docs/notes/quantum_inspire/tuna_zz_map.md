@@ -67,6 +67,18 @@ the plan schema, the pause fields and the case hashes that bind them differ.
 Gate `core-683` replays this successor, and `core-594` keeps replaying the
 token-recovery set.
 
+Both readers take this schema. `scripts/qi_zz_map_analysis.py` accepts v1 and
+v2 plans, and requires each batch manifest's `plan_schema` (absent in v1
+manifests) to equal its plan's. `scripts/qi_zz_map_qx.py` reads v1 alone,
+because every retained QX twin binds its bytes as `qx_builder_sha256`.
+`scripts/qi_zz_map_qx_plans.py` builds the QX preflight twin of either schema
+from that builder's compaction. A v2 source passes the floor builder's pause
+validation first. The twin keeps plan schema `qi-zz-map-qx-plan-v1`, so
+`qi_zz_map_qx.py --analyze` reads it, and it records
+`source_tuna_plan_schema` and `qx_plan_reader_sha256`. The v2 twin's 416
+compact circuits equal those of the retained v1 twin. A twin set is retained
+when the v2 proposal becomes an approved case.
+
 The active successor replays against the exact
 [proposal catalogue](../../evidence/quantum_inspire/catalogue-submission-deadline-proposal.json)
 whose SHA-256 appears in its source digests. The frozen catalogue separates

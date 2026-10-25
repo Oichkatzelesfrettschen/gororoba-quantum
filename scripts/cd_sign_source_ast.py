@@ -81,26 +81,49 @@ def _module_scope(node: ast.AST) -> list[ast.AST]:
     """node and every descendant that executes in module scope: a def or class binds its name there, its body runs
     in its own scope."""
     found = [node]
+    if isinstance(node, COMPREHENSIONS):
+        # A comprehension's targets are its own; its first iterable and any := target act in the enclosing scope.
+        found.extend(_module_scope(node.generators[0].iter))
+        found.extend(_assignment_targets(node))
+        return found
     if isinstance(node, SCOPES):
-        # Decorators, defaults, base classes and keywords evaluate where the definition runs, not in its body.
-        outer: list[ast.AST] = list(getattr(node, "decorator_list", []))
-        if isinstance(node, ast.ClassDef):
-            outer += [*node.bases, *(keyword.value for keyword in node.keywords)]
-        else:
-            outer += [*node.args.defaults, *(item for item in node.args.kw_defaults if item is not None)]
-        for item in outer:
+        for item in _definition_time(node):
             found.extend(_module_scope(item))
         return found
     for child in ast.iter_child_nodes(node):
-        if isinstance(child, SCOPES):
-            found.extend(_module_scope(child))
-        elif isinstance(child, COMPREHENSIONS):
-            # A comprehension's targets are its own; its first iterable and any := target act in the enclosing scope.
-            found.extend(_module_scope(child.generators[0].iter))
-            found.extend(item.target for item in ast.walk(child) if isinstance(item, ast.NamedExpr))
-        else:
-            found.extend(_module_scope(child))
+        found.extend(_module_scope(child))
     return found
+
+
+def _definition_time(node: ast.AST) -> list[ast.AST]:
+    """Decorators, defaults, base classes and keywords of a def, class or lambda: they evaluate where the definition
+    runs, not in its body."""
+    outer: list[ast.AST] = list(getattr(node, "decorator_list", []))
+    if isinstance(node, ast.ClassDef):
+        outer += [*node.bases, *(keyword.value for keyword in node.keywords)]
+    elif isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda):
+        outer += [*node.args.defaults, *(item for item in node.args.kw_defaults if item is not None)]
+    return outer
+
+
+def _assignment_targets(node: ast.AST) -> list[ast.AST]:
+    """:= targets inside a comprehension, which bind in its enclosing scope; a nested def, class or lambda body keeps
+    its own, while its definition-time expressions run in the comprehension."""
+    found: list[ast.AST] = []
+    children = _definition_time(node) if isinstance(node, SCOPES) else list(ast.iter_child_nodes(node))
+    for child in children:
+        if isinstance(child, ast.NamedExpr):
+            found.append(child.target)
+        found.extend(_assignment_targets(child))
+    return found
+
+
+def _type_parameter_values(node: ast.AST) -> list[ast.AST]:
+    """Bounds, constraints and defaults of a def's or class's type parameters, which load from the enclosing scope."""
+    values: list[ast.AST] = []
+    for parameter in getattr(node, "type_params", []):
+        values += [item for item in (getattr(parameter, "bound", None), parameter.default_value) if item is not None]
+    return values
 
 
 def _bound_names(node: ast.stmt) -> set[str]:
@@ -157,7 +180,11 @@ def _free_names(node: ast.AST, local: frozenset[str] = frozenset()) -> set[str]:
     """Names node loads that its own function scopes do not bind, so module scope resolves them."""
     if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda):
         arguments = node.args
-        outer: list[ast.AST] = [*getattr(node, "decorator_list", []), *arguments.defaults]
+        outer: list[ast.AST] = [
+            *getattr(node, "decorator_list", []),
+            *arguments.defaults,
+            *_type_parameter_values(node),
+        ]
         outer += [item for item in arguments.kw_defaults if item is not None]
         found = set().union(*(_free_names(item, local) for item in outer))
         body = node.body if isinstance(node.body, list) else [node.body]
@@ -167,6 +194,20 @@ def _free_names(node: ast.AST, local: frozenset[str] = frozenset()) -> set[str]:
         }
         inner = (local - declared) | _locals(node)
         return found.union(*(_free_names(item, inner) for item in body))
+    if isinstance(node, ast.ClassDef):
+        outer = [*node.decorator_list, *node.bases, *(keyword.value for keyword in node.keywords)]
+        outer += _type_parameter_values(node)
+        found = set().union(*(_free_names(item, local) for item in outer))
+        # A global declaration in a class body reaches module scope even where an enclosing function binds the name.
+        # Class-body bindings stay free, which can only add statements to the closure.
+        declared = {
+            name
+            for item in node.body
+            for sub in _module_scope(item)
+            if isinstance(sub, ast.Global)
+            for name in sub.names
+        }
+        return found.union(*(_free_names(item, local - declared) for item in node.body))
     if isinstance(node, ast.Name):
         return {node.id} if isinstance(node.ctx, ast.Load) and node.id not in local else set()
     return set().union(*(_free_names(child, local) for child in ast.iter_child_nodes(node)))

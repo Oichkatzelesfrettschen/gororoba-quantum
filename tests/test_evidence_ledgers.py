@@ -61,7 +61,7 @@ LEDGERS = [
     (".", "docs/evidence/stiefel_witness/repo_sources.sha256"),
     ("docs/evidence/simulation-notebook-audit", "SHA256SUMS"),
     (".", "docs/evidence/cd-associator-point-indicators/source_hashes.sha256"),
-    (".", "docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256"),
+    (".", "docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256"),
 ]
 
 
