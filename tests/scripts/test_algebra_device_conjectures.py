@@ -208,6 +208,12 @@ def test_prose_drift_is_listed_while_a_read_source_still_fails(monkeypatch: pyte
         row["path"] for row in manifest["sources"] if any(row["path"].startswith(f"{run}/") for run in runs)
     )
     original = module.digest
+    # test_manifest_covers_every_proposal_and_rejects_corruption re-derives the provider facts from the retained
+    # runs; here the frozen facts stand in for them, so the validation exercises only the source checks.
+    frozen: dict[str, dict[str, Any]] = {}
+    for row in manifest["acquisitions"]:
+        frozen.setdefault(row["record"]["provider"], {})[row["record"]["run"]] = row["facts"]
+    monkeypatch.setattr(module, "_provider_facts", lambda name: (name, frozen.get(name, {})))
     # A prose edit after the freeze is listed, so the baseline need not be empty.
     baseline = module.drifted_prose(manifest)
     # conftest.py runs ordered_map serially, so the edited digest reaches every source check.
