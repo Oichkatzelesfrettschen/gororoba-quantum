@@ -534,6 +534,16 @@
     "core-primorial-ziller-table-replay": [
       "docs/evidence/primorial_cover/ziller_table.json"
     ],
+    "core-ascella-signed-coherence-compilation-design-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "docs/evidence/ascella-order-coefficients/compilation-design-anchor-ratio.json"
+    ],
+    "core-ascella-signed-coherence-compilation-reading-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/anu_qrng/draw-2026-10-25T182813Z.json",
+      "docs/evidence/ascella-order-coefficients/compilation-reading.json"
+    ],
     "core-primorial-null-residuals-replay": [
       "docs/evidence/calibration/**",
       "docs/evidence/primorial_cover/**",
