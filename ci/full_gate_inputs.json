@@ -506,6 +506,10 @@
       "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
       "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/**",
       "docs/evidence/ascella-order-coefficients/physical-models.json"
+    ],
+    "core-ascella-signed-coherence-configuration-holdout-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "docs/evidence/ascella-order-coefficients/configuration-holdout.json"
     ]
   }
 }
