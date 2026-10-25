@@ -44,12 +44,12 @@ residual. Three corrections apply, in order:
    before the phase is taken. Uncorrected, readout asymmetry bends `atan2`
    and biases `c_Z2` by up to 0.021, a third of the identification radius.
 2. **Null subtraction.** The zero-angle block is the identity map with the
-   same CZ count and duration. Each cost edge reading is rotated by minus the
-   null arm's phase on the same edge. A static detuning or a static ZZ
-   coupling adds a diagonal term independent of the programmed angles (the
-   network's parity maps do not depend on them), so by that argument it
-   cancels exactly; this is derived, not simulated. A CZ conditional phase
-   cancels to first order in the simulated scenario.
+   same CZ count, schedule and duration. Each cost edge reading is rotated by
+   minus the null arm's phase on the same edge, and the null arm's own shots
+   add its phase variance to every subtracted edge, which roughly doubles the
+   shot budget. A static detuning of one path qubit and a CZ conditional phase
+   both cancel to the levels of the coherent table below; static ZZ is not
+   simulated.
 3. **Decision.** A coefficient is identified when its estimate lies within
    1/16 of its exact value, half the 1/8 grid; the seven coefficients of one
    cost are decided together at family-wise level 0.01 (Bonferroni, z 3.19).
@@ -57,24 +57,29 @@ residual. Three corrections apply, in order:
 ## Prediction under the Kingston model
 
 Patches: the best three-qubit path by summed CZ error plus mean assignment
-error (45-46-47) and the path at the median of that cost (117-125-126).
+error (45-46-47) and the path at the median of that cost (117-125-126). Every
+arm is ALAP scheduled, so the spectator intervals of the outer qubits relax.
+Shot budgets carry each mean's variance through the assignment inversion
+(scaled by `1/(1 - a - b)^2`) and, after null subtraction, add the null arm's
+phase variance.
 
 | Quantity | best | median |
 | --- | ---: | ---: |
 | Quotient: marked label read | 0.979 to 0.984 | 0.963 to 0.973 |
 | Quotient: complement-marked arm reads the label | 0.002 to 0.003 | 0.001 to 0.002 |
-| Gradient visibility, gap88 | 0.961 to 0.986 | 0.923 to 0.976 |
-| gap88 largest coefficient bias, raw / corrected / null-subtracted | 0.017 / 0.0019 / 0.0024 | 0.013 / 0.0027 / 0.0031 |
-| Cycle residual RMS (corrected) | 0.0013 | 0.0023 |
-| Shots per setting to identify all seven, null-subtracted | 1,236 | 1,269 |
-| gap88 repair `c_Z1` shift recovered (exact -0.5) | -0.4991 | -0.4996 |
-| Shots per setting resolving that shift at z 3 | 31 | 32 |
+| Gradient visibility, gap88, raw | 0.960 to 0.985 | 0.922 to 0.975 |
+| gap88 largest coefficient bias, raw / corrected / null-subtracted | 0.017 / 0.0020 / 0.0025 | 0.013 / 0.0028 / 0.0032 |
+| Cycle residual RMS (corrected) | 0.0014 | 0.0024 |
+| Shots per setting to identify all seven, corrected / null-subtracted | 1,242 / 2,803 | 1,405 / 3,169 |
+| gap88 repair `c_Z1` shift recovered (exact -0.5) | -0.4987 | -0.4992 |
+| Shots per setting resolving that shift at z 3 | 33 | 36 |
 | QAOA TV, gap88 against repaired (ideal 0.132128) | 0.126 | 0.120 |
 
 Coherent sensitivity (noise-free, best patch): every CZ followed by a
-conditional phase on its pair, or every sx replaced by RX(pi/2 (1 + eta)).
-The per-coefficient standard deviation at 1,270 shots per setting is 0.011 to
-0.019.
+conditional phase on its pair, every sx replaced by RX(pi/2 (1 + eta)), or one
+path qubit detuned, its frame drifting by RZ(2 pi delta t) over every
+scheduled interval. The per-coefficient standard deviation at the
+null-subtracted budget of 2,803 shots per setting is 0.011 to 0.019.
 
 | Error | largest bias, uncorrected | null-subtracted | cycle residual |
 | --- | ---: | ---: | ---: |
@@ -84,16 +89,20 @@ The per-coefficient standard deviation at 1,270 shots per setting is 0.011 to
 | sx amplitude 0.002 | 0.00003 | 0.00001 | 0.00003 |
 | sx amplitude 0.004 | 0.0001 | 0.00006 | 0.0001 |
 | sx amplitude 0.01 | 0.0007 | 0.0004 | 0.0008 |
+| detuning 10 kHz, q0 / q1 / q2 | 0.078 / 0.024 / 0.015 | 0.0000 / 0.0001 / 0.0003 | 0.0000 / 0.0000 / 0.0001 |
+| detuning 30 kHz, q0 / q1 / q2 | 0.233 / 0.072 / 0.046 | 0.0000 / 0.0006 / 0.0022 | 0.0000 / 0.0003 / 0.0006 |
 
-The uncorrected shift falls on `c_Z0`, `c_Z0Z1` and `c_Z1` and leaves the
-cycle residual near zero, so a CZ phase error reads as a different but
+The uncorrected CZ-phase shift falls on `c_Z0`, `c_Z0Z1` and `c_Z1` and leaves
+the cycle residual near zero, so a CZ phase error reads as a different but
 self-consistent Hamiltonian; only an absolute comparison or the null arm
-exposes it. The cost block lasts 0.832 us, so a static detuning shifts the
-single-body coefficient of its qubit by 0.0075 per kHz: the 5 to 30 kHz
-detunings fitted on Fez lanes
-([atlas_detuning_map](../evidence/atlas_detuning_map/README.md)) move a
-`c_Zj` by 0.04 to 0.22, beyond the identification radius, while leaving every
-multi-body coefficient unchanged; the null arm removes the shift.
+exposes it. Detuning behaves the same way. Wire 0 is never a CNOT target, so
+its drift lands on `c_Z0` alone; wire 1 carries the parities `x0 + x1` and
+`x0 + x1 + x2` for part of the block, so a q1 detuning moves `c_Z0Z1` by 0.75
+of its `c_Z1` shift; a q2 detuning reaches `c_Z0Z2`, `c_Z1Z2` and `c_Z0Z1Z2`
+at a fifth of its `c_Z2` shift. The 5 to 30 kHz detunings fitted on Fez lanes
+([atlas_detuning_map](../evidence/atlas_detuning_map/README.md)) put these
+shifts beyond the identification radius, and the null arm removes them to
+0.0022 or less.
 
 ## Decision on hardware
 
@@ -101,13 +110,14 @@ The prediction answers the design question and leaves no primorial question
 for a device. Under the incoherent model every family passes with a wide
 margin. Of the coherent families fitted to the Fez and Kingston fringes
 ([coherent-error-families-report.md](../notes/topics/coherent-error-families-report.md)),
-static detuning and ZZ are diagonal and angle-independent, so the null arm
-removes them; the CZ conditional phase is removed to first order; the sx
-amplitude error, the one family that acts inside the network's Hadamards,
-biases no coefficient by more than 0.0007 at eta = 0.01, far below the shot
-noise. Axis tilt was not simulated. RZ is virtual on Heron r2 (zero duration
-and error in the snapshot). The null-subtracted coefficients are therefore
-predicted to recover the integer table on any healthy path. A hardware run would then report two
+the null arm removes a static detuning of up to 30 kHz to 0.0022 and the CZ
+conditional phase to first order; the sx amplitude error, the one family that
+acts only inside the network's Hadamards, biases no coefficient by more than
+0.0007 at eta = 0.01, far below the shot noise. Static ZZ and axis tilt were
+not simulated. RZ is virtual on Heron r2 (zero duration and error in the
+snapshot). The null-subtracted coefficients are therefore predicted to
+recover the integer table on any healthy path at about 2,800 to 3,200 shots
+per setting. A hardware run would then report two
 things: the null arm's edge phases, which measure the path's detuning and CZ
 phase, a characterization the atlas performs with more edges per shot; and a
 null-subtracted pass that the model already predicts. Neither depends on the

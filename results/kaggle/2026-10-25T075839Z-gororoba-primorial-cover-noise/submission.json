@@ -8,7 +8,7 @@
   "results/kaggle_out/primorial_cover_noise.json"
  ],
  "smoke": false,
- "git_commit": "3ae33c293d9ff0a8473eb7adb32e9fdbd47f5547",
+ "git_commit": "171231db1a2d131d6c8d5681fcf0d02f49b12731-dirty",
  "untracked_inputs": [],
  "pins": [
   "qiskit==2.6.0",
@@ -188,14 +188,14 @@
   "scripts/anu_qrng.py": "6dfb9876bd02df4656114a6c660956d584974ecbb1d7250e1bf40885aafcfaae",
   "scripts/oq_platform.py": "7a109e1419d81ed6558f18f551805a20c3b4a134c63f2078b710dc03955b8316",
   "scripts/outshift_qrng.py": "5948f33187b91ee0b18b4492c55692994b83018b5154b53c5439c902b112dc62",
-  "scripts/primorial_cover_noise.py": "361dc92ab60bbcda70a242484048e476e2e567a148cf1e4cfea56edffe8e0c41",
+  "scripts/primorial_cover_noise.py": "c12c8e604e7139efee4e97966eee7be0adb7fcd8e3007a1472764f6541ede408",
   "scripts/qd_belenos_mesh.py": "225e5070a17f2d1114c3c0ef9a23422485da2bc184efd8cbe6e6b181c262392b",
   "scripts/qd_box_kite_analysis.py": "0fdad3599b3112da9920e6c64339e1c5620c7262c8ef07abef37113d72fa0d3e",
   "scripts/qd_platform.py": "d694e0356504eebde58ab4e80c99d8cc78d4b7460c71bfff0862825384248162",
   "scripts/quandela_qrng.py": "ce4fa7008da3523fcf73eeaa23ff90a4710221dd1fbda55651361c887fd63149"
  },
  "datasets": {},
- "run_py_sha256": "e5947d4082fe331625b2797b4f4a1afee655e9ea8eb4f27c662294b452b91512",
- "pushed_utc": "2026-10-25T005647Z",
- "kernel_version": 3
+ "run_py_sha256": "e1a1beede594f0668690e38d6a29fdecf4ac4d8cc9282b9a1f70159ca2f57716",
+ "pushed_utc": "2026-10-25T075839Z",
+ "kernel_version": 5
 }
