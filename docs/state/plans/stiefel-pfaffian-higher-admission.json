@@ -1,0 +1,31 @@
+{
+  "schema": "work-plan-v1",
+  "id": "stiefel-pfaffian-higher-admission",
+  "kind": "implementation",
+  "summary": "Admit the all-n Pfaffian transport, the A_6-A_8 Stiefel zero-divisor cone and the A_7/A_8 witnesses after independent verification; keep f_n modulo Q open.",
+  "sources": [
+    "docs/evidence/stiefel-pfaffian-higher/README.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "claims": [
+    "stiefel-pfaffian-transport-all-n",
+    "a6-a8-stiefel-zero-divisor-cone",
+    "a7-a8-stiefel-witness",
+    "stiefel-pfaffian-f-modulo-q"
+  ],
+  "scope": "Bundle docs/evidence/stiefel-pfaffian-higher with gates core-692 and core-693, four registry claims (three established, one open), the sharpened boundary of a6-stiefel-generic-invertibility and the living notes.",
+  "owner": "repository maintainer",
+  "next_action": "Merge the admission PR after Codex review and green checks.",
+  "steps": [
+    {
+      "id": "admission",
+      "state": "doing",
+      "action": "Register the verified statements with the verification wording and gates.",
+      "acceptance": "research_state.py --check passes on main with the three claims established and the open claim recorded."
+    }
+  ]
+}

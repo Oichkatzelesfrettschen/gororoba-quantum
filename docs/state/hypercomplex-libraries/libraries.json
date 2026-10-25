@@ -2660,6 +2660,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/stiefel_pfaffian_higher.py",
     "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
     "scripts/tpu_probe.py",
@@ -2824,6 +2825,7 @@
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py",
     "scripts/qet_passivity_controls.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
@@ -3613,7 +3615,8 @@
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
-    "scripts/qd_platform.py"
+    "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py"
    ]
   },
   {
@@ -4259,7 +4262,8 @@
     "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/rank_locus_second_order.py",
-    "scripts/rank_locus_tangent_linearity.py"
+    "scripts/rank_locus_tangent_linearity.py",
+    "scripts/stiefel_pfaffian_higher.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
@@ -12958,6 +12962,24 @@
    "scipy",
    "sys",
    "tempfile",
+   "typing"
+  ],
+  "scripts/stiefel_pfaffian_higher.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "flint",
+   "functools",
+   "hashlib",
+   "importlib",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "sys",
    "typing"
   ],
   "scripts/stiefel_pfaffian_identity.py": [

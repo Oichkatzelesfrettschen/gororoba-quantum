@@ -63,12 +63,12 @@ proposed work, in dependency order:
 | Evidence class | Status | Claim records |
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
-| exact finite certificate | established | 24 |
+| exact finite certificate | established | 25 |
 | exploratory reanalysis | exploratory | 68 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
-| mathematical claim | established | 23 |
-| mathematical claim | open | 1 |
+| mathematical claim | established | 25 |
+| mathematical claim | open | 2 |
 | numerical or stochastic simulation | established | 10 |
 | preregistered emulator control | established | 10 |
 | preregistered hardware inference | established | 53 |
@@ -92,6 +92,7 @@ Independent hardware replication requires an adjudicated replication design, not
 - **proposed-tuna17-q0-q6-double-x-discriminator** (proposed, proposed experiment). P1 after X X with no wait, beside a readout-0 and readout-1 pair in one Tuna-17 batch, separates an under-rotated X from |1> misassignment on Q0 and Q6: under-rotation by the angle their zero-wait P(1|1) implies predicts 0.98 and 0.52, misassignment 0.038 and 0.013. Ramsey inverted with the matched calibration cannot separate them when X and X90 share the under-rotation, because the raw quadratures then take the readout-scale form sin^2(beta) (1 + cos phi) / 2; a fault confined to native X keeps the X90 Ramsey at the earlier scale, which Q6's raw quadrature mean (0.064 against a floor of 0.148) excludes and Q0's (0.287 against 0.175) does not. Depends on qi-tuna17-q0-q6-loss-not-readout-relaxation.
 - **qi-tuna17-effective-idle-zz-map** (proposed, proposed experiment). A proposed confirmatory cross-check of the retained exploratory coupler map uses a gate-level conditional-Ramsey case covering all 24 edges of the retained Tuna-17 coupling graph in eight induced matchings, with both probe directions, static neighbor states 0 and 1, X/Y quadratures, six identical physical delay values including zero, and full four-state joint readout calibration. The 384 Ramsey and 32 calibration circuits form 139 batches at 8192 shots each (3407872 job shots), with no CZ gates. A source-bound analyzer reconstructs omega_A, omega_B and J, checks signal quality and reciprocal-J agreement, and uses Holm correction over 24 edge tests. A separately budgeted compact QX preflight contains the same 416 circuits and 139 batches on 2 to 8 qubits at 1024 shots each (425984 emulator job shots), with fixed ideal-output criteria. Neither case has been submitted. The hardware pause ladder puts its interbatch pauses between 4140 seconds at the 30-second first step and 16560 seconds at the 120-second ceiling. It is retained as a complete offline design reference and needs a revised delay/calibration acquisition plan before submission. Depends on qi-tuna17-zero-divisor-common-response, hw-idle-detuning-scale, qi-tuna17-coupler-zz-map.
 - **proposed-algebra-device-controlled-extensions** (proposed, proposed experiment). Operational case contracts pair algebra-specific response, singular-sector dynamics, coherent selection, sequential measurement and effective nonunitarity with property-removing mutations, unconditional accounting and prospective calibration controls. Depends on algebra-device-operational-falsifiers, algebra-device-logical-instrument-bank.
+- **stiefel-pfaffian-f-modulo-q** (open, mathematical claim). Open: the form of f_n modulo Q for n >= 6, whether f_n lies in (Q, z_s^2) with s = 2^(n-2), and whether f_n is absolutely irreducible. Depends on stiefel-pfaffian-transport-all-n.
 <!-- research-state:end -->
 
 The correction pilot, coherence window, ripple and rank-sector transfers,
