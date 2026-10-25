@@ -174,11 +174,7 @@ def test_frame_diagnostic_recovers_a_planted_mid_cx_phase() -> None:
 
 def test_frame_arms_route_with_equal_branches_on_kingston() -> None:
     backend = _backend("kingston")
-    edge = next(iter(backend.target["cz"]))  # type: ignore[attr-defined]
-    isas = [
-        transpile(c, backend=backend, initial_layout=list(edge), optimization_level=1)
-        for _, c, _ in ladder.frame_circuits()
-    ]
+    isas = ordered_map(_route, [("kingston", c) for _, c, _ in ladder.frame_circuits()])
     if ladder.branch_duration_violations(isas, backend.target):  # type: ignore[attr-defined]
         raise AssertionError("frame-diagnostic branches differ in duration on Kingston")
     echo = next(isa for isa in isas if isa.name.endswith("echo_za"))
@@ -229,8 +225,6 @@ def test_compensation_undoes_a_planted_window_phase() -> None:
 
 def test_compensated_arms_route_with_equal_branches_on_kingston() -> None:
     backend = _backend("kingston")
-    edge = next(iter(backend.target["cz"]))  # type: ignore[attr-defined]
     isas = ordered_map(_route, [("kingston", c) for _, c, _ in ladder.compensated_circuits()])
     if ladder.branch_duration_violations(isas, backend.target):  # type: ignore[attr-defined]
         raise AssertionError("compensated branches differ in duration on Kingston")
-    del edge
