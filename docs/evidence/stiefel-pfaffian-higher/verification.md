@@ -55,11 +55,22 @@ structure of the components.
 
 ## Replay data of the independent computations
 
-- Exact line of row 3: for n = 6, 7, 8 and t = 0, `r = random.Random(1000 n + t)`; a and b are h - 1 values
-  `r.randint(-9, 9)` each (a drawn first, then b), after which a[0] = `r.randint(1, 9)` and b[0] = `r.randint(1, 9)`
-  replace the first entries (z_1 > 0 on every node); nodes s = 0 .. 2d + 2; the dropped row and column is j = 1.
-  Every line succeeded at t = 0.
-- The Monte Carlo draws of rows 2, 4, 5 and 7 (random F_p points, isotropic points and lines) use seeded
-  pseudorandom values, not QRNG draws. They corroborate and decide nothing; the decisions of rows 1, 3 and 6 and
-  the exact nullities rest on exact integer computations, and the non-membership of row 7b rests on an exact F_p
-  computation at an explicit line.
+The independent checker is [verify_independent.py](verify_independent.py), built from
+`cd_core.cd_multiply_exact` alone with its own prime p = 4611686018427386981 (1 mod 4); it borrows only the
+`disjoint_stiefel` constructor of the producer. Every seed it takes is a value of the ANU QRNG draw
+`docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json`, cited by index at its use: index 0 seeds the shared
+generator of rows 2, 5 and 6; indices 1, 2 and 3 seed one exact-line stream for each of n = 6, 7, 8 (row 3, one
+stream advancing across tries); indices 4 to 9 seed the slice, BCDI, six-slice, small, three-slice and isotropic-line
+sections. `ci/seed_provenance.py` registers only seeds in the code directories and in retained run records
+(issue #499), so these citations are the record. Run it from the repository root:
+
+```sh
+"$PYTHON" -B docs/evidence/stiefel-pfaffian-higher/verify_independent.py table transport degree irred witness pairs slices bcdi six small three mult
+```
+
+The QRNG-seeded run reproduced every verdict above: transport failures 0 of 62, 126 and 254; the determinant
+identity at 6, 3 and 2 random points of A_6, A_7 and A_8; an irreducible exact Q-line on the first try at
+n = 6, 7, 8; witness ranks 64, 128 and 256; no support-3 or support-4 slice with a non-zero-divisor Stiefel point;
+z_s-root multiplicity exactly 2 on three isotropic lines at each of n = 6, 7. The random F_p points of rows 2, 4,
+5 and 7 corroborate and decide nothing; the decisions of rows 1, 3 and 6 and the exact nullities rest on exact
+integer computations, and the non-membership of row 7b rests on an exact F_p computation at an explicit line.

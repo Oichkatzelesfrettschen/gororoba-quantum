@@ -574,19 +574,6 @@ def irreducible_line(n: int) -> dict[str, Any]:
     return {"dimension": 1 << n, "line": first, "degree": 2 ** (n - 2) - 2, "prime": PRIME}
 
 
-def known_lines() -> dict[str, Any]:
-    return {
-        f"A_{n}": {
-            "dimension": 1 << n,
-            "line": t,
-            "irreducible": line_is_irreducible(n, t),
-            "degree": 2 ** (n - 2) - 2,
-            "prime": PRIME,
-        }
-        for n, t in KNOWN_LINES.items()
-    }
-
-
 # ---- witnesses and families ----------------------------------------------------------------------------------------
 
 
@@ -661,18 +648,29 @@ def avoid_table(n: int, coordinates: Sequence[int] | None = None) -> dict[str, A
     }
 
 
-def point_records() -> list[dict[str, Any]]:
+def point_cases() -> list[tuple[str, list[int]]]:
     dim = 64
-    cases = [
+    return [
         ("six-term Stiefel", six_term(dim)),
         ("disjoint-support Stiefel", disjoint_stiefel(dim)),
         ("disjoint-support Stiefel avoiding z_16", disjoint_stiefel(dim, avoid=16)),
         ("pair e_1 + i e_2", element(dim, {1: 1}, {2: 1})),
         ("non-Stiefel e_1 + e_2 + i e_3", element(dim, {1: 1, 2: 1}, {3: 1})),
     ]
-    return [
-        {"point": label, "stiefel_defect": list(stiefel_defect(dim, y))} | degree_identity(dim, y) for label, y in cases
-    ]
+
+
+def point_record(label: str, y: list[int]) -> dict[str, Any]:
+    return {"point": label, "stiefel_defect": list(stiefel_defect(64, y))} | degree_identity(64, y)
+
+
+def known_line(n: int, t: int) -> dict[str, Any]:
+    return {
+        "dimension": 1 << n,
+        "line": t,
+        "irreducible": line_is_irreducible(n, t),
+        "degree": 2 ** (n - 2) - 2,
+        "prime": PRIME,
+    }
 
 
 def admit_witness(w: dict[str, Any], zero_divisor: bool) -> None:
@@ -707,35 +705,94 @@ def admit_avoid(record: dict[str, Any]) -> None:
         _require(value == (4 if k == special else 0), f"avoid table off at coordinate {k}")
 
 
+def _task(item: tuple[str, tuple[Any, ...]]) -> Any:
+    """One independent certificate computation of measure(), by name, for parallel.ordered_map."""
+    name, arguments = item
+    functions: dict[str, Callable[..., Any]] = {
+        "cross": cross_identities,
+        "rank": cofactor_rank,
+        "left": left_matrix_cross_check,
+        "small": cofactor_polynomials_small,
+        "point": point_record,
+        "squares": f_squared_crosschecks,
+        "degree": degree_identity,
+        "slice": slice_record,
+        "closed": six_slice_closed_form,
+        "line": known_line,
+        "witness": witness_record,
+    }
+    return functions[name](*arguments)
+
+
+WITNESS_CASES: tuple[tuple[int, str, str], ...] = (
+    (64, "five-term", "five"),
+    (64, "six-term", "six"),
+    (64, "disjoint support", "disjoint"),
+    (128, "disjoint support", "disjoint"),
+    (256, "disjoint support", "disjoint"),
+    (128, "five-term indices", "five"),
+    (256, "five-term indices", "five"),
+    (128, "six-term indices", "six"),
+    (256, "six-term indices", "six"),
+)
+
+
 def measure() -> dict[str, Any]:
-    cross = {f"A_{n}": cross_identities(n) for n in GATE_COFACTOR}
+    builders = {"five": five_term, "six": six_term, "disjoint": disjoint_stiefel}
+    witness_inputs = [(dim, label, builders[kind](dim)) for dim, label, kind in WITNESS_CASES] + [
+        (64, "Moreno 4.3 e1 + e2, e3 + e4", element(64, {1: 1, 2: 1}, {3: 1, 4: 1})),
+        (64, "Moreno 4.3 e1 + e2, e17 + e18", element(64, {1: 1, 2: 1}, {17: 1, 18: 1})),
+    ]
+    three_ns = (4, 5, 6, 7, 8)
+    groups: list[tuple[str, list[tuple[str, tuple[Any, ...]]]]] = [
+        ("cross", [("cross", (n,)) for n in GATE_COFACTOR]),
+        ("rank", [("rank", (n,)) for n in GATE_COFACTOR]),
+        ("left", [("left", (1 << n,)) for n in (6, 7, 8)]),
+        ("small", [("small", ())]),
+        ("points", [("point", case) for case in point_cases()]),
+        ("squares", [("squares", ())]),
+        ("higher", [("degree", (1 << n, disjoint_stiefel(1 << n))) for n in (7, 8)]),
+        ("three", [("slice", (n, SLICE_THREE)) for n in three_ns]),
+        ("slices", [("slice", (6, SLICE_SIX)), ("slice", (6, SLICE_SEVEN)), ("slice", (6, SLICE_NO_SIXTEEN))]),
+        ("closed", [("closed", ())]),
+        ("lines", [("line", (n, t)) for n, t in KNOWN_LINES.items()]),
+        ("witnesses", [("witness", case) for case in witness_inputs]),
+    ]
+    flat = [task for _, tasks in groups for task in tasks]
+    values = parallel.ordered_map(_task, flat, min_items=2)
+    results: dict[str, list[Any]] = {}
+    position = 0
+    for key, tasks in groups:
+        results[key] = values[position : position + len(tasks)]
+        position += len(tasks)
+    cross = {f"A_{n}": r for n, r in zip(GATE_COFACTOR, results["cross"], strict=True)}
     _require(
         all(r["cross_matrix_skew"] and r["cross_matrix_annihilates_z"] for r in cross.values()), "C_z identity fails"
     )
-    ranks = {f"A_{n}": cofactor_rank(n) for n in GATE_COFACTOR}
+    ranks = {f"A_{n}": r for n, r in zip(GATE_COFACTOR, results["rank"], strict=True)}
     _require(all(r["point_rank_cross"] == r["full_rank"] for r in ranks.values()), "C_z lacks the full rank h - 2")
     moved = {f"A_{n}": transport(n) for n in GATE_TRANSPORT}
     _require(
         all(r["agreeing"] == r["imaginary_basis_elements"] for r in moved.values()), "the transport identity fails"
     )
-    cross_checks = {f"A_{n}": left_matrix_cross_check(1 << n) for n in (6, 7, 8)}
-    small = cofactor_polynomials_small()
+    cross_checks = {f"A_{n}": r for n, r in zip((6, 7, 8), results["left"], strict=True)}
+    (small,) = results["small"]
     _require(small["f4_equals_q"] and small["f5_equals_q_g"], "f_4 = Q or f_5 = Q G fails")
     _require(
         small["g_factor_term_counts"] == [[141, 1]] and small["q_factor_term_counts"] == [[15, 1]],
         "G or Q is reducible",
     )
-    points = point_records()
-    squares = f_squared_crosschecks()
+    points = results["points"]
+    (squares,) = results["squares"]
     _require(all(squares["a5_q_g_squared"]) and squares["a6_slice_polynomial_squared"], "the f^2 route disagrees")
-    higher = {f"A_{n}": degree_identity(1 << n, disjoint_stiefel(1 << n)) for n in (7, 8)}
+    higher = {f"A_{n}": r for n, r in zip((7, 8), results["higher"], strict=True)}
     _require(all(all(r["identity_holds"]) and not r["det_L_zero"] for r in higher.values()), "det L = N^4 |f|^4 fails")
     _require(all(all(p["identity_holds"]) for p in points), "det L = N^4 |f|^4 fails at a point")
-    three = {f"A_{n}": slice_record(n, SLICE_THREE) for n in (4, 5, 6, 7, 8)}
-    for n, record in zip((4, 5, 6, 7, 8), three.values(), strict=True):
+    three = {f"A_{n}": r for n, r in zip(three_ns, results["three"], strict=True)}
+    for n, record in zip(three_ns, three.values(), strict=True):
         _require(record["f_is_q_power"], f"f is not a power of Q on three coordinates at n = {n}")
-    six = slice_record(6, SLICE_SIX)
-    closed = six_slice_closed_form()
+    six, seven, no_sixteen = results["slices"]
+    (closed,) = results["closed"]
     _require(
         not six["q_divides_f"]
         and closed["remainder_is_closed_form"]
@@ -743,26 +800,12 @@ def measure() -> dict[str, Any]:
         "the six-coordinate remainder is not the closed form",
     )
     _require(closed["f_irreducible"], "f is reducible on the six-coordinate slice")
-    seven = slice_record(6, SLICE_SEVEN)
     for label, record in (("six", six), ("seven", seven)):
         admit_valuation(record, label)
-    no_sixteen = slice_record(6, SLICE_NO_SIXTEEN)
     _require(no_sixteen["q_divides_f"], "Q does not divide f on a slice without z_16")
-    lines = known_lines()
+    lines = {f"A_{n}": r for n, r in zip(KNOWN_LINES, results["lines"], strict=True)}
     _require(all(r["irreducible"] for r in lines.values()), "a recorded line is not irreducible")
-    witnesses = [
-        witness_record(64, "five-term", five_term(64)),
-        witness_record(64, "six-term", six_term(64)),
-        witness_record(64, "disjoint support", disjoint_stiefel(64)),
-        witness_record(128, "disjoint support", disjoint_stiefel(128)),
-        witness_record(256, "disjoint support", disjoint_stiefel(256)),
-        witness_record(128, "five-term indices", five_term(128)),
-        witness_record(256, "five-term indices", five_term(256)),
-        witness_record(128, "six-term indices", six_term(128)),
-        witness_record(256, "six-term indices", six_term(256)),
-        witness_record(64, "Moreno 4.3 e1 + e2, e3 + e4", element(64, {1: 1, 2: 1}, {3: 1, 4: 1})),
-        witness_record(64, "Moreno 4.3 e1 + e2, e17 + e18", element(64, {1: 1, 2: 1}, {17: 1, 18: 1})),
-    ]
+    witnesses = results["witnesses"]
     for w in witnesses:
         admit_witness(w, zero_divisor=w["label"].endswith("indices") or w["label"].startswith("Moreno"))
     pairs = {f"A_{n}": pair_table(n) for n in (5, 6, 7)}
