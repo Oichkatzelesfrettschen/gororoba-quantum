@@ -2714,6 +2714,7 @@
     "gororoba_quantum/predict.py",
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
+    "gororoba_quantum/qet_ladder.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
@@ -4617,6 +4618,7 @@
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/patch_characterization.py",
     "gororoba_quantum/pub_shot_runtime_contracts.py",
+    "gororoba_quantum/qet_ladder.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_case_allocation_contracts.py",
     "gororoba_quantum/qpu_cases.py",
@@ -8702,7 +8704,9 @@
    "experiments",
    "math",
    "numpy",
-   "qiskit"
+   "parallel",
+   "qiskit",
+   "typing"
   ],
   "gororoba_quantum/qi_stack.py": [
    "__future__",

@@ -263,6 +263,7 @@ approval; each needs the dry run, analysis and case of
    | fixed plus, fixed minus | `-phi*`, `+phi*` in both branches | X, Z | 4 |
    | Z_A reference | no Alice measurement; A read in Z | Z | 1 |
    | product-state mutation | reference, feedback and Z_A reference on \|00> | X, Y, Z; X, Z; Z | 6 |
+   | readout calibration | \|11> through the floor arm's measure, idle branch and readouts | Z | 1 |
 
    Endpoints: the channel floor margin (preregistered positive on the ground
    state, negative on the product state), the information excess, the binned
@@ -272,7 +273,11 @@ approval; each needs the dry run, analysis and case of
    Binning both sides by the same record cancels readout and preparation
    error to first order, so q_eff measures whether the branch executes the
    rotation the bit selects. [E] A 5-sigma detection of the ideal excess needs
-   7785 shots per setting and arm; the 18 circuits take about 140000 shots.
+   7785 shots per setting and arm; the 19 circuits take about 148000 shots, and
+   every disjoint pair the placer packs into the same shots adds a replica at no
+   extra charge. The product-state floor arm doubles as the \|00> readout
+   calibration, so the summary also reports a readout-corrected margin; readout
+   error lowers the raw margin, which stays the conservative primary.
    The device question that justifies hardware under the routing rule is
    q_eff: it measures measure-and-feed-forward fidelity on the stack whose
    N = 21 feedback contrast read +0.0027 against a predicted +0.0344

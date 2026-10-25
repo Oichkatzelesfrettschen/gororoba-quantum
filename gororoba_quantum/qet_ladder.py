@@ -12,7 +12,10 @@ Every circuit is dynamic. Alice measures A mid-circuit (X_A through H, or
 Z_A in the floor arm) into clbit 0, and B branches on that bit with an
 if_else whose bodies are Bob's rotation RY(-b phi*), phi* =
 atan2(hk, h^2 + 2k^2), or an idle of BRANCH_IDLE_DT, so every arm carries
-the same broadcast and measure-to-branch wait. A is then read again in the
+the same broadcast and measure-to-branch wait. The idle equals two sx on
+ibm_kingston; routed_violations rejects a candidate whose Target gives the
+if_else bodies of the members unequal durations, which refuses ibm_fez
+(12 dt) and ibm_marrakesh (18 dt) for this constant. A is then read again in the
 same frame into clbit 1, which gives the physical X_A the estimator uses:
 substituting Alice's reported bit for X_A turns a readout error into an
 apparent excess (scripts/qet_passivity_controls.py). B is read into clbit 2
@@ -22,7 +25,9 @@ Arms, on the ground state and on the product state |00> (same angle and
 Hamiltonian): reference (idle branch, B in X, Y, Z), feedback (b = mu),
 and the floor arm (Alice reads Z_A, idle branch, B in Z); on the ground
 state also reversed (b = -mu) and fixed plus and minus (one rotation in
-both branches), each with B in X and Z. Eighteen circuits.
+both branches), each with B in X and Z; and a readout calibration with A and
+B in |11> through the same mid-circuit measure, idle branch and readouts,
+whose |00> partner is the product-state floor arm. Nineteen circuits.
 
 Endpoints (summarize):
 - channel floor margin -<H_A> - L_fb, sound against every record-independent
@@ -33,7 +38,13 @@ Endpoints (summarize):
 - the record-binned fixed arms (+, -, -, + ideal) and the feed-forward
   flip q_eff = (L_fb - L_match) / (L_mismatch - L_match), which cancels
   preparation and readout error to first order because both sides bin on
-  the same recorded bit.
+  the same recorded bit;
+- the readout-corrected margin, which inverts each terminal bit's measured
+  assignment (from the |00> and |11> calibrations) before forming the
+  moments; Alice's mid-circuit bit enters only the floor arm, whose idle
+  branch makes it a terminal observable there.
+Readout error shrinks <Z_A>, <Z_B> and <X_A X_B> toward zero, which lowers
+the raw ground-state margin, so the raw margin is the conservative primary.
 The values are expectation values of an encoded spin Hamiltonian, not field
 stress-energy.
 """
@@ -42,11 +53,13 @@ from __future__ import annotations
 
 import math
 from collections.abc import Mapping
+from typing import Any
 
 import numpy as np
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
 from experiments import Group, Member
+from parallel import ordered_map
 
 H_FIELD = 1.0
 COUPLING = 1.0
@@ -60,17 +73,18 @@ E_B = math.hypot(H_FIELD, 2 * COUPLING) - (H_FIELD**2 + 2 * COUPLING**2) / RADIU
 BRANCH_IDLE_DT = 16
 GROUP_NAME = "qet_ladder"
 
-# (name, product state, Alice basis, Bob rule, Bob basis)
-ARMS: tuple[tuple[str, bool, str, str, str], ...] = (
-    *((f"ref_{basis}", False, "x", "idle", basis) for basis in "xyz"),
-    *((f"fb_{basis}", False, "x", "feedback", basis) for basis in "xz"),
-    *((f"rev_{basis}", False, "x", "reversed", basis) for basis in "xz"),
-    *((f"plus_{basis}", False, "x", "plus", basis) for basis in "xz"),
-    *((f"minus_{basis}", False, "x", "minus", basis) for basis in "xz"),
-    ("za", False, "z", "idle", "z"),
-    *((f"prod_ref_{basis}", True, "x", "idle", basis) for basis in "xyz"),
-    *((f"prod_fb_{basis}", True, "x", "feedback", basis) for basis in "xz"),
-    ("prod_za", True, "z", "idle", "z"),
+# (name, preparation, Alice basis, Bob rule, Bob basis); preparations ground, product (|00>) and ones (|11>)
+ARMS: tuple[tuple[str, str, str, str, str], ...] = (
+    *((f"ref_{basis}", "ground", "x", "idle", basis) for basis in "xyz"),
+    *((f"fb_{basis}", "ground", "x", "feedback", basis) for basis in "xz"),
+    *((f"rev_{basis}", "ground", "x", "reversed", basis) for basis in "xz"),
+    *((f"plus_{basis}", "ground", "x", "plus", basis) for basis in "xz"),
+    *((f"minus_{basis}", "ground", "x", "minus", basis) for basis in "xz"),
+    ("za", "ground", "z", "idle", "z"),
+    *((f"prod_ref_{basis}", "product", "x", "idle", basis) for basis in "xyz"),
+    *((f"prod_fb_{basis}", "product", "x", "feedback", basis) for basis in "xz"),
+    ("prod_za", "product", "z", "idle", "z"),
+    ("cal_11", "ones", "z", "idle", "z"),
 )
 
 
@@ -95,15 +109,17 @@ def _bob_basis(circuit: QuantumCircuit, basis: str) -> None:
         circuit.h(1)
 
 
-def arm_circuit(name: str, product: bool, alice: str, rule: str, basis: str, deferred: bool = False) -> QuantumCircuit:
+def arm_circuit(name: str, prep: str, alice: str, rule: str, basis: str, deferred: bool = False) -> QuantumCircuit:
     """The arm's dynamic circuit; deferred replaces the branch by controlled rotations for exact checks."""
     qubits = QuantumRegister(2, "q")
     record, final, bob = ClassicalRegister(1, "alice"), ClassicalRegister(1, "a_final"), ClassicalRegister(1, "bob")
     circuit = QuantumCircuit(qubits, record, final, bob, name=f"{GROUP_NAME}_{name}")
-    if not product:
+    if prep == "ground":
         circuit.ry(2 * THETA, 0)
         circuit.cx(0, 1)
         circuit.z(0)
+    elif prep == "ones":
+        circuit.x([0, 1])
     if alice == "x":
         circuit.h(0)
     zero, one = bob_angle(rule, 0), bob_angle(rule, 1)
@@ -128,11 +144,13 @@ def _ry(angle: float) -> np.ndarray:
     return np.array([[math.cos(angle / 2), -math.sin(angle / 2)], [math.sin(angle / 2), math.cos(angle / 2)]])
 
 
-def ideal_distribution(product: bool, alice: str, rule: str, basis: str) -> np.ndarray:
+def ideal_distribution(prep: str, alice: str, rule: str, basis: str) -> np.ndarray:
     """Exact law over r + 2a + 4b; the state vector is ordered A then B."""
     psi = np.zeros(4, dtype=complex)
-    if product:
+    if prep == "product":
         psi[0] = 1.0
+    elif prep == "ones":
+        psi[3] = 1.0
     else:
         psi[0], psi[3] = math.cos(THETA), -math.sin(THETA)
     hadamard = np.array([[1, 1], [1, -1]]) / math.sqrt(2)
@@ -152,15 +170,17 @@ def ideal_distribution(product: bool, alice: str, rule: str, basis: str) -> np.n
     return law
 
 
-def circuits(deferred: bool = False) -> tuple[tuple[str, QuantumCircuit, np.ndarray], ...]:
-    return tuple(
-        (
-            f"{GROUP_NAME}_{name}",
-            arm_circuit(name, product, alice, rule, basis, deferred=deferred),
-            ideal_distribution(product, alice, rule, basis),
-        )
-        for name, product, alice, rule, basis in ARMS
+def _arm(item: tuple[tuple[str, str, str, str, str], bool]) -> tuple[str, QuantumCircuit, np.ndarray]:
+    (name, prep, alice, rule, basis), deferred = item
+    return (
+        f"{GROUP_NAME}_{name}",
+        arm_circuit(name, prep, alice, rule, basis, deferred=deferred),
+        ideal_distribution(prep, alice, rule, basis),
     )
+
+
+def circuits(deferred: bool = False) -> tuple[tuple[str, QuantumCircuit, np.ndarray], ...]:
+    return tuple(ordered_map(_arm, [(arm, deferred) for arm in ARMS]))
 
 
 def _moments(law: np.ndarray, record: int | None = None) -> tuple[float, float, float, float]:
@@ -217,6 +237,48 @@ def _state_endpoints(dist: Mapping[str, np.ndarray], prefix: str) -> dict[str, f
     }
 
 
+def _assignment(dist: Mapping[str, np.ndarray]) -> list[tuple[float, float]]:
+    """(P(1 | prepared 0), P(0 | prepared 1)) for bits r, a and b from the |00> floor arm and the |11> calibration."""
+    zeros = np.asarray(dist[f"{GROUP_NAME}_prod_za"], dtype=float)
+    ones = np.asarray(dist[f"{GROUP_NAME}_cal_11"], dtype=float)
+    out = []
+    for bit in range(3):
+        mask = [index for index in range(8) if (index >> bit) & 1]
+        out.append((float(zeros[mask].sum() / zeros.sum()), float(1 - ones[mask].sum() / ones.sum())))
+    return out
+
+
+def _corrected(law: np.ndarray, channels: list[tuple[float, float]]) -> tuple[float, float, float]:
+    """True <r>, <b> and <a b> (values 1 - 2 bit) after inverting independent per-bit assignment channels.
+
+    A bit read through P(1 | 0) = e0, P(0 | 1) = e1 has measured mean
+    delta + lambda <true> with lambda = 1 - e0 - e1, delta = e1 - e0, and two
+    independently read bits have measured product mean
+    delta_a delta_b + delta_a lambda_b <b> + lambda_a delta_b <a> + lambda_a lambda_b <a b>.
+    """
+    law = np.asarray(law, dtype=float) / float(np.sum(law))
+    value = {bit: np.array([1 - 2 * ((index >> bit) & 1) for index in range(8)]) for bit in range(3)}
+    lam = [1 - e0 - e1 for e0, e1 in channels]
+    delta = [e1 - e0 for e0, e1 in channels]
+    true = {bit: (float(law @ value[bit]) - delta[bit]) / lam[bit] for bit in range(3)}
+    product = float(law @ (value[1] * value[2]))
+    true_ab = (product - delta[1] * delta[2] - delta[1] * lam[2] * true[2] - lam[1] * delta[2] * true[1]) / (
+        lam[1] * lam[2]
+    )
+    return true[0], true[2], true_ab
+
+
+def _corrected_margin(dist: Mapping[str, np.ndarray], prefix: str, channels: list[tuple[float, float]]) -> float:
+    def law(arm: str) -> np.ndarray:
+        return np.asarray(dist[f"{GROUP_NAME}_{prefix}{arm}"], dtype=float)
+
+    feedback = (
+        CONST - H_FIELD * _corrected(law("fb_z"), channels)[1] + 2 * COUPLING * _corrected(law("fb_x"), channels)[2]
+    )
+    floor = H_FIELD * _corrected(law("za"), channels)[0] - H_FIELD**2 / RADIUS
+    return floor - feedback
+
+
 def summarize(dist: Mapping[str, np.ndarray]) -> dict[str, float]:
     def law(arm: str) -> np.ndarray:
         return np.asarray(dist[f"{GROUP_NAME}_{arm}"], dtype=float)
@@ -243,9 +305,44 @@ def summarize(dist: Mapping[str, np.ndarray]) -> dict[str, float]:
     out["match_local"], out["mismatch_local"] = match, mismatch
     out["q_eff"] = (out["feedback_local"] - match) / (mismatch - match) if mismatch != match else float("nan")
     out["record_p1"] = weights[1]
+    channels = _assignment(dist)
+    for bit, (e0, e1) in zip(("r", "a", "b"), channels, strict=True):
+        out[f"assignment_{bit}_p1_given_0"], out[f"assignment_{bit}_p0_given_1"] = e0, e1
+    out["readout_corrected_channel_floor_margin"] = _corrected_margin(dist, "", channels)
+    out["prod_readout_corrected_channel_floor_margin"] = _corrected_margin(dist, "prod_", channels)
     return out
+
+
+def _duration_dt(operation: Any, physical: int, target: Any) -> float:
+    if operation.name == "delay":
+        if operation.unit != "dt":
+            raise ValueError(f"branch delay in {operation.unit}, expected dt")
+        return float(operation.duration)
+    if operation.name in ("rz", "barrier"):
+        return 0.0
+    return float(target[operation.name][(physical,)].duration) / float(target.dt)
+
+
+def branch_duration_violations(isas: list[QuantumCircuit], target: Any) -> list[str]:
+    """Reasons a candidate's if_else bodies differ in duration on target, across every member and branch."""
+    durations: dict[float, list[str]] = {}
+    for isa in isas:
+        for instruction in isa.data:
+            if instruction.operation.name != "if_else":
+                continue
+            for index, block in enumerate(instruction.operation.blocks):
+                total = 0.0
+                for inner in block.data:
+                    for qubit in inner.qubits:
+                        physical = isa.find_bit(instruction.qubits[block.find_bit(qubit).index]).index
+                        total += _duration_dt(inner.operation, physical, target)
+                durations.setdefault(round(total, 6), []).append(f"{isa.name}[{index}]")
+    if len(durations) > 1:
+        summary = ", ".join(f"{value} dt in {len(names)} bodies" for value, names in sorted(durations.items()))
+        return [f"if_else bodies differ in duration ({summary}); BRANCH_IDLE_DT = {BRANCH_IDLE_DT}"]
+    return []
 
 
 def qet_ladder_group() -> Group:
     members = tuple(Member(name, circuit, ideal) for name, circuit, ideal in circuits())
-    return Group(GROUP_NAME, members, summarize)
+    return Group(GROUP_NAME, members, summarize, routed_violations=branch_duration_violations)
