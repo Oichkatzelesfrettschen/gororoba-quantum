@@ -8,7 +8,11 @@
   the submission reused its predictions under unchanged calibration values.
 - Calibration: 2026-10-25T12:18:10-07:00, with medians T1 258 us and
   T2 163 us.
-- Layout: [150, 151, 138, 152, 149, 153] for r, d0, d1, d2, a0, a1.
+- Executed layout: physical qubits [106, 105, 104, 117, 107, 125] for r, d0,
+  d1, d2, a0, a1 (`groups[0].replicas[0].initial_layout` of record.json; the
+  scheduler tables touch only these qubits). The console's
+  [150, 151, 138, 152, 149, 153] is the routing template the replica was
+  placed from, and no measurement ran there.
 - Execution: 34 dynamic PUBs at 16384 shots, 50 us repetition delay; 40 s
   charged against 40.44 s predicted.
 - L = 215 dt (0.86 us). W = 2500 dt (10 us).

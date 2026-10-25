@@ -124,7 +124,8 @@ def report(run: Path) -> dict[str, Any]:
         "summary"
     ]
     arms = arm_exposures(member_exposures(run))
-    return {"run": str(run.relative_to(ROOT)), "exposure_cycles": arms, "windows": rates(summary, arms, dt_seconds)}
+    name = str(run.relative_to(ROOT)) if run.is_relative_to(ROOT) else str(run)
+    return {"run": name, "exposure_cycles": arms, "windows": rates(summary, arms, dt_seconds)}
 
 
 SYNTHETIC = "\n".join(
