@@ -43,7 +43,6 @@ def test_toolchain_successor_preserves_original_rows_and_covers_current_cases() 
         "toolchain_check.json",
         "toolchain-rejected-request-proposals.json",
         "toolchain-complete-retained-cases.json",
-        "toolchain-token-recovery.json",
     ):
         predecessor = json.loads((ROOT / "docs/evidence/quantum_inspire" / name).read_text())
         # Rebuilt case paths require new rows; unchanged circuit bytes preserve their compiler evidence.

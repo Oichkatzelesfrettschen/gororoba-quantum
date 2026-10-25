@@ -56,7 +56,7 @@ All 416 cQASM payloads and scientific settings match the retained proposals.
 Gate `core-594` replays the active successor. Each predecessor retains its bytes.
 
 The ladder-floor successor
-[`zz-map-tuna17-pause-ladder-floor/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-pause-ladder-floor/plan.json)
+[`zz-map-tuna17-pause-ladder-floor/plan.json`](../../../results/quantum_inspire/proposals/zz-map-tuna17-pause-ladder-floor/plan.json)
 carries plan schema `qi-zz-map-plan-v2`, written by `scripts/qi_zz_map_floor.py`.
 `minimum_interbatch_pause_seconds` is 138 x 30 = 4,140 s (the ladder's first
 step times the batch intervals) and `ceiling_interbatch_pause_seconds` is
