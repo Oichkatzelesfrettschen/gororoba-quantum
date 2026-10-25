@@ -39,6 +39,7 @@ FAMILIES = {
     "ripple",
     "rank-sector",
     "state-prep-control",
+    "measurement-sequence",
 }
 # Families that run on one pinned patch and carry its six physical qubits.
 PATCH_FAMILIES = ("patch-window", "coherence-window")
@@ -250,11 +251,13 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         arguments.append("--optimize")
     arguments.extend(_patch_arguments(record))
     configuration = record["family_configuration"]
-    if family == "state-prep-control" and configuration.get("layout_source") == "declared":
+    if family == "measurement-sequence" or (
+        family == "state-prep-control" and configuration.get("layout_source") == "declared"
+    ):
         qubits = configuration["qubits"]
         _require(
             isinstance(qubits, list) and bool(qubits) and all(type(q) is int and q >= 0 for q in qubits),
-            "state-prep-control names nonnegative qubits",
+            f"{family} names nonnegative qubits",
         )
         arguments.extend(["--layout", ",".join(str(qubit) for qubit in qubits)])
     if "state_prep_arms" in design:
@@ -1674,6 +1677,42 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             f"{precision / 1.72:.2f} rad at |C| = 0.43. They price resolution, not an effect; an "
             "unresolved rotation or a context-independent C remains an allowed outcome, and a phase is "
             "reported only where |C| supports it.",
+            "",
+        ]
+    if family == "measurement-sequence":
+        configuration = record["family_configuration"]
+        qubits = configuration["qubits"]
+        steps = ", ".join(str(n) for n in configuration["steps"])
+        backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
+        delay = record["policy"].get("rep_delay_seconds")
+        delay_text = (
+            f"a requested repetition delay of {_format_number(delay * 1e6)} us (`--rep-delay {delay}`)"
+            if delay is not None
+            else "the backend's default repetition delay"
+        )
+        return [
+            "## Scientific question and interpretation",
+            "",
+            f"The measurement-sequence family asks, on {len(qubits)} qubits of {backends} (the declared layout: "
+            f"{', '.join(str(q) for q in qubits)}) at {delay_text}, whether a mid-circuit measurement acts as an "
+            "ideal pinching, a nonselective projective measurement in Z. Each qubit starts in |0> and receives N "
+            f"rotations RX(sign * THETA / N) with THETA = 8 pi / 9 and N in {steps}. The measure arm follows each "
+            "rotation with a mid-circuit measurement whose outcome the program never reads, then reads the qubit "
+            "into the final register; the delay arm replaces each measurement with an idle of that qubit's "
+            "calibrated measure duration, which keeps the elapsed time and drops the projection. The signed arms "
+            "run in the order +, -, -, + and share their ideal law because cosine is even.",
+            "",
+            "The measure arm's ideal final P0 is (1 + cos(THETA / N) ** N) / 2 and the delay arm's is "
+            "cos(THETA / 2) ** 2 at every N. The state after each measurement is diagonal in Z, so a shift of the "
+            "qubit frequency after readout leaves the measure arm's P0 unchanged; a deficit of the measured P0 "
+            "below the ideal, which grows with N, measures transitions the measurement induces. The calibration "
+            "noise model treats a mid-circuit measurement as projective, so it prices the measure arm at readout "
+            "and decoherence alone.",
+            "",
+            "Per qubit, eleven two-sided precision contracts split the family-wise alpha evenly and admit the "
+            "design: the final P0 pooled over the four signed members of each arm at each N (half-width 0.03), "
+            "and the measure minus delay contrast at N = 16 (half-width 0.055), the mutation-test endpoint. They "
+            "price resolution, not an effect; the Hoeffding radii hold under arbitrary dependence between PUBs.",
             "",
         ]
     if family == "state-prep-control":

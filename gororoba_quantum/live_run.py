@@ -6028,8 +6028,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--layout",
         type=lambda value: [int(item) for item in value.split(",")],
-        help="physical qubits state-prep-control characterizes; omitted, the replica qubits of "
-        "diagnostic_experiments.STATE_PREP_SOURCE_RECORD on its backend",
+        help="physical qubits state-prep-control or measurement-sequence characterizes; for state-prep-control, "
+        "omitted, the replica qubits of diagnostic_experiments.STATE_PREP_SOURCE_RECORD on its backend; "
+        "measurement-sequence requires it",
     )
     parser.add_argument(
         "--state-prep-arms",
@@ -6319,8 +6320,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--patch-qubits applies to the pinned-patch families only")
     if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):
         parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
-    if args.layout is not None and args.family != "state-prep-control":
-        parser.error("--layout applies to the state-prep-control family only")
+    if args.layout is not None and args.family not in ("state-prep-control", "measurement-sequence"):
+        parser.error("--layout applies to the state-prep-control and measurement-sequence families only")
+    if args.family == "measurement-sequence" and args.layout is None:
+        parser.error("measurement-sequence requires --layout: the physical qubits whose measurement it characterizes")
     if args.state_prep_arms is not None:
         if args.family != "state-prep-control":
             parser.error("--state-prep-arms applies to the state-prep-control family only")
@@ -6375,8 +6378,8 @@ def main(argv: list[str] | None = None) -> int:
             "--ground-control-split requires --init-herald: idle_ground's contracts read only shots whose "
             "herald reads the control 0"
         )
-    if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
-        parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
+    if args.family in ("state-prep-control", "measurement-sequence") and args.max_replicas not in (None, 1):
+        parser.error(f"{args.family} pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:
             parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")

@@ -27,6 +27,11 @@ import local_compute
 import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
+    MSQ_ARM_STEPS,
+    MSQ_DYNAMIC_STEPS,
+    MSQ_FAMILY,
+    MSQ_STEPS,
+    MSQ_THETA,
     N21_FAMILIES,
     N21_OVERLAP_ARM,
     PATCH_FAMILIES,
@@ -37,6 +42,7 @@ from diagnostic_experiments import (
     STATE_PREP_SOURCE_RECORD,
     family_contracts,
     folded_group,
+    measurement_sequence_groups,
     n21_group,
     n21_orbit_rca_group,
     state_prep_arms,
@@ -146,11 +152,11 @@ def analyzer_closure(entry: Path, directories: tuple[Path, ...]) -> dict[str, An
 def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[str, Any]:
     """family_contracts' configuration keyword for a family whose contracts read its candidate's configuration.
 
-    state-prep-control reads its named qubits and n21-orbit-rca its herald
-    outcome width there; prepare and live_run.approved_family_design both
+    state-prep-control and measurement-sequence read their named qubits and
+    n21-orbit-rca its herald outcome width there; prepare and live_run.approved_family_design both
     pass this, so a reused approved design rebuilds the approved contracts.
     """
-    return {"configuration": configuration} if family in (STATE_PREP_FAMILY, "n21-orbit-rca") else {}
+    return {"configuration": configuration} if family in (STATE_PREP_FAMILY, MSQ_FAMILY, "n21-orbit-rca") else {}
 
 
 def settings(args: Any) -> dict[str, Any]:
@@ -947,6 +953,103 @@ def measurement_delay(runtime: Any, snapshot: Any, physical_qubit: int) -> int:
     return granularity * math.ceil(float(duration) / float(target.dt) / granularity)
 
 
+def measurement_sequence_candidates(
+    runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
+) -> list[tuple[list[Any], dict[str, Any]]]:
+    """Compile every member on its named qubit of each eligible snapshot, or record why the snapshot is refused.
+
+    --layout names the qubits, one pinned placement each. The delay arm idles
+    each step for the qubit's calibrated measure duration (measurement_delay),
+    so groups are built per snapshot and the configuration records the
+    durations that record_groups rebuilds them from. A calibration that
+    excludes a named qubit refuses the snapshot.
+    """
+    declared = getattr(args, "layout", None)
+    if declared is None:
+        raise runtime.LiveRunError("measurement-sequence needs --layout: it has no retained default qubits")
+    qubits = [int(qubit) for qubit in declared]
+    expected_kinds = sorted(["static"] * (4 + 4 * len(MSQ_STEPS)) + ["dynamic"] * (4 * len(MSQ_DYNAMIC_STEPS)))
+    candidates = []
+    for snapshot in snapshots:
+        try:
+            outside = [qubit for qubit in qubits if qubit < 0 or qubit >= snapshot.backend.target.num_qubits]
+            excluded = sorted(set(qubits) & set(snapshot.excluded_qubits))
+            if outside or excluded:
+                raise runtime.LiveRunError(f"qubits {outside} lie outside the device; calibration excludes {excluded}")
+            delays = {qubit: measurement_delay(runtime, snapshot, qubit) for qubit in qubits}
+            groups = measurement_sequence_groups(qubits, delays)
+            choices = []
+            for group in groups:
+                qubit = int(group.name.rsplit("_q", 1)[1])
+                isas = [
+                    runtime._compile(member.circuit, snapshot, runtime.SEED_TRANSPILER, [qubit])
+                    for member in group.members
+                ]
+                for member, isa in zip(group.members, isas, strict=True):
+                    if runtime._physical(isa) != [qubit]:
+                        raise runtime.LiveRunError(f"{group.name}: compiled onto {runtime._physical(isa)}")
+                    violations = runtime.compiled_violations(isa, snapshot)
+                    if violations:
+                        raise runtime.LiveRunError(f"{group.name}: {violations}")
+                    operations = isa.count_ops()
+                    steps = int(member.name.split("_n")[1].split("_")[0])
+                    delayed = "_delay_" in member.name
+                    if operations.get("measure", 0) != (1 if delayed else steps + 1) or operations.get("delay", 0) != (
+                        steps if delayed else 0
+                    ):
+                        raise runtime.LiveRunError(
+                            f"{member.name}: the compiled circuit changed its measures or delays"
+                        )
+                scores = [runtime.layout_score(isa, snapshot.backend.target) for isa in isas]
+                if any(score <= 0 for score in scores):
+                    raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero")
+                choice = runtime.Choice(
+                    group,
+                    snapshot,
+                    runtime.SEED_TRANSPILER,
+                    [qubit],
+                    isas,
+                    scores,
+                    math.exp(sum(math.log(score) for score in scores) / len(scores)),
+                )
+                runtime._set_entries(
+                    choice,
+                    [Replica(0, {qubit: qubit}, min(scores))],
+                    runtime.ReplicaPolicy(args.replica_floor, 1, False, True),
+                )
+                choices.append(choice)
+            pubs = runtime.execution_pubs(choices)
+            kinds = sorted(pub.kind for pub in pubs)
+            if kinds != expected_kinds:
+                raise runtime.LiveRunError(f"the members fused into PUB kinds {kinds}, not {expected_kinds}")
+        except (runtime.LiveRunError, QiskitError, ValueError) as error:
+            trace.setdefault("family_rejections", []).append(
+                {"backend": snapshot.name, "qubits": qubits, "reason": str(error)}
+            )
+            continue
+        candidates.append(
+            (
+                choices,
+                {
+                    "name": MSQ_FAMILY,
+                    "qubits": qubits,
+                    "layout_source": "declared",
+                    "arms": dict(MSQ_ARM_STEPS),
+                    "total_rotation_rad": MSQ_THETA,
+                    "steps": list(MSQ_STEPS),
+                    "measurement_delay_dt": {str(qubit): dt for qubit, dt in delays.items()},
+                    "placement_contract": (
+                        "one pinned single-qubit placement per named qubit; every qubit runs each member in the "
+                        "same shots; static PUBs hold the one-step measure and every delay member, dynamic PUBs "
+                        "the measure members with two or more steps"
+                    ),
+                    "dt_seconds": snapshot.backend.target.dt,
+                },
+            )
+        )
+    return candidates[: args.optimizer_candidates]
+
+
 def family_candidates(
     runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
 ) -> list[tuple[list[Any], dict[str, Any]]]:
@@ -1102,6 +1205,8 @@ def family_candidates(
         return patch_candidates(runtime, snapshots, args, trace)
     if args.family == STATE_PREP_FAMILY:
         return state_prep_candidates(runtime, snapshots, args, trace)
+    if args.family == MSQ_FAMILY:
+        return measurement_sequence_candidates(runtime, snapshots, args, trace)
     if args.family != "folded-qpe":
         raise runtime.LiveRunError(f"unknown family {args.family}")
     coherent = runtime.select_candidates(folded_group(("coherent",)), snapshots, args.seeds, trace)
