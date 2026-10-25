@@ -22,16 +22,21 @@ docs/evidence/primorial_cover/noise.json):
    RZZ(pi zeta t).
 3. **Axis tilt.** Every sx and x pulse R on the tilted qubit becomes
    RY(-beta) R RY(beta), a drive axis cos(beta) X + sin(beta) Z, on one path
-   qubit at a time and on all three at once.
+   qubit at a time and on all three at once, and at each path qubit's
+   gate-error bound: the largest coherent tilt its snapshot sx error r allows,
+   acos(2 sqrt(1 - 1.5 r) - 1) (``atlas_coherent_families.gate_bounds``), on
+   all three qubits at once in each of the eight sign patterns.
 
 Pulse starts come from the compiled ALAP schedule: each path qubit's timeline
 is padded with delays, so a per-qubit cursor over instruction durations gives
 every start. Laws are noise-free statevector laws of the three path qubits.
 Each scenario reports the raw and the null-subtracted largest coefficient bias
-of the phase fit of primorial_cover_noise. Falsifier, fixed before the run: a
-scenario leaves a device question when its null-subtracted bias reaches one
-standard deviation of the noisy null-subtracted estimate at the shot budget
-noise.json retains for that path (``shots_identify_all``). The record also
+of the phase fit of primorial_cover_noise. Falsifier: a scenario leaves a
+device question when its null-subtracted bias reaches one standard deviation
+of the noisy null-subtracted estimate at the shot budget noise.json retains
+for that path (``shots_identify_all``). An exploratory build-host run of the
+fixed-value scenarios preceded this criterion; the gate-bound scenarios and
+the retained Kaggle run followed it. The record also
 gives the shots per setting at which a hardware run would resolve the residual
 at three standard deviations.
 
@@ -45,6 +50,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import itertools
 import json
 import math
 import sys
@@ -66,9 +72,10 @@ import parallel  # noqa: E402
 NOISE_RECORD = ROOT / "docs/evidence/primorial_cover/noise.json"
 OUTPUT = "results/kaggle_out/primorial_null_residuals.json"
 KHZ = 1e3
-# ZZ rates span the 1 to 2.5 kHz values the atlas self-test recovers and a tenfold margin; tilts span the
-# 0.002 to 0.005 rad atlas self-test range and four times its top.
-SCENARIOS: tuple[tuple[str, tuple[int, ...], float], ...] = (
+# ZZ rates span the 1 to 2.5 kHz values the atlas self-test recovers and a tenfold margin; fixed tilts span
+# the 0.002 to 0.005 rad atlas self-test range and four times its top, and each path adds its gate-error bound.
+Scenario = tuple[str, tuple[int, ...], float | tuple[float, ...]]
+SCENARIOS: tuple[Scenario, ...] = (
     *(("zz", (0, 1, 2), zeta) for zeta in (2.0, 5.0, 20.0)),
     *(("zz_symmetric", (0, 1, 2), zeta) for zeta in (2.0, 5.0, 20.0)),
     *(("axis_tilt", (q,), beta) for q in range(3) for beta in (0.005, 0.02)),
@@ -113,8 +120,11 @@ def pulses(arm: Timed) -> list[tuple[str, tuple[int, ...], float]]:
 class ScenarioLaw:
     """Picklable worker: one (scenario, timed arm) -> the arm's noise-free law on the path."""
 
-    def __call__(self, item: tuple[tuple[str, tuple[int, ...], float], dict[str, Any], Timed]) -> dict[str, Any]:
+    def __call__(self, item: tuple[Scenario, dict[str, Any], Timed]) -> dict[str, Any]:
         (family, qubits, value), meta, arm = item
+        # A per-wire tuple gives each wire its own tilt; a float is one rate or tilt for every wire in ``qubits``.
+        tilt = dict(enumerate(value)) if isinstance(value, tuple) else dict.fromkeys(qubits, value)
+        rate = 0.0 if isinstance(value, tuple) else value
         out = QuantumCircuit(3)
         last: dict[tuple[int, int], float] = {}
         for operation, local, start in arm:
@@ -126,18 +136,24 @@ class ScenarioLaw:
                         if pair in last:
                             interval = start - last[pair]
                             if family == "zz":
-                                out.cp(-2.0 * math.pi * value * KHZ * interval, *pair)
+                                out.cp(-2.0 * math.pi * rate * KHZ * interval, *pair)
                             else:
-                                out.rzz(math.pi * value * KHZ * interval, *pair)
+                                out.rzz(math.pi * rate * KHZ * interval, *pair)
                         last[pair] = start
-            tilted = family == "axis_tilt" and operation.name in DRIVEN and local[0] in qubits
-            if tilted:
-                out.ry(value, local[0])
+            beta = tilt.get(local[0], 0.0) if family.startswith("axis_tilt") and operation.name in DRIVEN else 0.0
+            if beta:
+                out.ry(beta, local[0])
             out.append(operation, local)
-            if tilted:
-                out.ry(-value, local[0])
+            if beta:
+                out.ry(-beta, local[0])
         law = Statevector(out).probabilities()
         return {**meta, "law": [float(v) for v in law]}
+
+
+def tilt_bounds(snapshot: dict[str, Any], layout: list[int]) -> list[float]:
+    """Largest coherent axis tilt each path qubit's snapshot sx error allows (atlas_coherent_families.gate_bounds)."""
+    error = {tuple(row["qargs"]): row["error"] for row in snapshot["instructions"]["sx"]}
+    return [math.acos(2.0 * math.sqrt(1.0 - 1.5 * error[(q,)]) - 1.0) for q in layout]
 
 
 def budget(record: dict[str, Any], patch: str) -> tuple[int, float]:
@@ -171,10 +187,20 @@ def evaluate(snapshot: dict[str, Any], record: dict[str, Any]) -> dict[str, Any]
         identical = all(streams["gap88", j, x, b] == streams["null", j, x, b] for _, j, x, b in streams)
         shots, variance = budget(record, patch)
         sigma = math.sqrt(variance / shots)
-        items = [(scenario, meta, arm) for scenario in (("none", (), 0.0), *SCENARIOS) for meta, arm in arms]
+        bound = tilt_bounds(snapshot, layout)
+        signs = list(itertools.product((1.0, -1.0), repeat=3))
+        scenarios: list[Scenario] = [
+            ("none", (), 0.0),
+            *SCENARIOS,
+            *(
+                ("axis_tilt_gate_bound", (0, 1, 2), tuple(s * b for s, b in zip(sign, bound, strict=True)))
+                for sign in signs
+            ),
+        ]
+        items = [(scenario, meta, arm) for scenario in scenarios for meta, arm in arms]
         laws = parallel.ordered_map(ScenarioLaw(), items, min_items=1)
         rows = []
-        for k, scenario in enumerate((("none", (), 0.0), *SCENARIOS)):
+        for k, scenario in enumerate(scenarios):
             chunk = laws[k * len(arms) : (k + 1) * len(arms)]
             readings = noise.gradient_readings(chunk, "gap88")
             null = noise.gradient_readings(chunk, "null")
@@ -187,7 +213,7 @@ def evaluate(snapshot: dict[str, Any], record: dict[str, Any]) -> dict[str, Any]
                 {
                     "family": scenario[0],
                     "qubits": list(scenario[1]),
-                    "value": scenario[2],
+                    "value": list(scenario[2]) if isinstance(scenario[2], tuple) else scenario[2],
                     "max_coefficient_bias": raw["max_coefficient_bias"],
                     "cycle_residual_rms": raw["cycle_residual_rms"],
                     "min_visibility": min(raw["visibility"]),
@@ -202,6 +228,7 @@ def evaluate(snapshot: dict[str, Any], record: dict[str, Any]) -> dict[str, Any]
             )
         out["patches"][patch] = {
             "signal_and_null_pulses_identical": identical,
+            "tilt_gate_bounds": bound,
             "budget_shots_per_setting": shots,
             "budget_coefficient_sd": sigma,
             "scenarios": rows[1:],
