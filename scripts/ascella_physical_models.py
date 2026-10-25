@@ -403,20 +403,36 @@ def pure_jacobians(
     return np.abs(psi) ** 2, 2 * np.real(np.conj(psi)[:, :, None] * d)
 
 
-def prior_widths(data: dict[str, Any], heater_tau: float | None, coupler_tau: float | None) -> np.ndarray:
-    """Per-parameter prior widths over (heaters, couplers); a family without one kind gives it width zero."""
+def prior_widths(
+    data: dict[str, Any], heater_tau: float | None, coupler_tau: float | None, slope_tau: float | None = None
+) -> np.ndarray:
+    """Per-parameter prior widths over (heaters, couplers) and, when slope_tau is given, per-heater drive slopes;
+    a family without one kind gives it width zero."""
     heaters, couplers = data["phases"].shape[1], len(data["couplers"])
-    return np.concatenate([np.full(heaters, heater_tau or 0.0), np.full(couplers, coupler_tau or 0.0)])
+    blocks = [np.full(heaters, heater_tau or 0.0), np.full(couplers, coupler_tau or 0.0)]
+    if slope_tau is not None:
+        blocks.append(np.full(heaters, slope_tau))
+    return np.concatenate(blocks)
 
 
 def static_light(data: dict[str, Any], offsets: np.ndarray, free: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """Pure-state block-conditioned light and its Jacobian over the free offsets (configurations x 4 x free)."""
-    heaters = data["phases"].shape[1]
+    """Pure-state block-conditioned light and its Jacobian over the free offsets (configurations x 4 x free).
+
+    A parameter vector longer than heaters plus couplers carries one drive slope k_h per heater after them: the
+    heater realizes phi + a_h + k_h phi, with phi the returned phase in [0, 2 pi). Under the phase-voltage map
+    phi = A V^2 + b the heater power V^2 is linear in phi, so k_h is a per-heater error of the fitted slope, and
+    its Jacobian column is the heater's column times phi."""
+    heaters, couplers = data["phases"].shape[1], len(data["couplers"])
     full = np.zeros(len(free))
     full[free] = offsets
-    p, dp = pure_jacobians(
-        data["couplers"] + full[heaters:], data["arch"], data["phases"] + full[None, :heaters], data["sources"]
-    )
+    phases = data["phases"] + full[None, :heaters]
+    drive = data["phases"] % (2 * math.pi)
+    sloped = len(free) > heaters + couplers
+    if sloped:
+        phases = phases + full[None, heaters + couplers :] * drive
+    p, dp = pure_jacobians(data["couplers"] + full[heaters : heaters + couplers], data["arch"], phases, data["sources"])
+    if sloped:
+        dp = np.concatenate([dp, dp[:, :, :heaters] * drive[:, None, :]], axis=2)
     raw = np.clip(p[:, :LOGICAL], PROBABILITY_FLOOR, None)
     total = raw.sum(axis=1)
     light = raw / total[:, None]

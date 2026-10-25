@@ -119,6 +119,50 @@ def test_static_gradient_matches_finite_differences() -> None:
             raise AssertionError((h, grad[h], numeric))
 
 
+def test_static_light_without_slopes_is_the_offset_mesh() -> None:
+    d = data()
+    heaters = d["phases"].shape[1]
+    widths = models.prior_widths(d, 0.3, 0.1)
+    free = widths > 0
+    offsets = np.array([0.01 * math.cos(h) for h in range(int(free.sum()))])
+    light, dlight = models.static_light(d, offsets, free)
+    p, dp = models.pure_jacobians(
+        d["couplers"] + offsets[heaters:], d["arch"], d["phases"] + offsets[None, :heaters], d["sources"]
+    )
+    raw = np.clip(p[:, : models.LOGICAL], models.PROBABILITY_FLOOR, None)
+    if not np.array_equal(light, raw / raw.sum(axis=1, keepdims=True)):
+        raise AssertionError("the offset-only light differs from the offset mesh")
+    if dlight.shape[2] != heaters + len(d["couplers"]):
+        raise AssertionError(dlight.shape)
+
+
+def test_drive_slope_jacobian_matches_finite_differences() -> None:
+    d = data()
+    heaters, couplers = d["phases"].shape[1], len(d["couplers"])
+    widths = models.prior_widths(d, 0.3, None, 0.1)
+    free = widths > 0
+    if int(free.sum()) != 2 * heaters or len(widths) != 2 * heaters + couplers:
+        raise AssertionError((int(free.sum()), len(widths)))
+    params = np.array([0.02 * math.sin(i) for i in range(int(free.sum()))])
+    light, dlight = models.static_light(d, params, free)
+    # A slope k_h moves heater h by k_h phi, so it equals an offset of k_h phi on each configuration's heater.
+    full = np.zeros(len(free))
+    full[free] = params
+    shifted = d["phases"] + full[None, :heaters] + full[None, heaters + couplers :] * d["phases"]
+    p, _ = models.pure_jacobians(d["couplers"], d["arch"], shifted, d["sources"])
+    raw = np.clip(p[:, : models.LOGICAL], models.PROBABILITY_FLOOR, None)
+    if not np.allclose(light, raw / raw.sum(axis=1, keepdims=True), atol=1e-14):
+        raise AssertionError("the sloped light differs from the shifted mesh")
+    step = 1e-6
+    for index in (heaters, heaters + 7, 2 * heaters - 1, 3):
+        up, down = params.copy(), params.copy()
+        up[index] += step
+        down[index] -= step
+        numeric = (models.static_light(d, up, free)[0] - models.static_light(d, down, free)[0]) / (2 * step)
+        if not np.allclose(dlight[:, :, index], numeric, rtol=1e-5, atol=1e-8):
+            raise AssertionError((index, np.abs(dlight[:, :, index] - numeric).max()))
+
+
 def test_static_gradient_matches_finite_differences_where_cells_sit_on_the_floor(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -223,7 +267,7 @@ def test_fold_fit_receives_the_training_configurations_alone(monkeypatch: pytest
         return np.zeros(int(free.sum())), np.eye(int(free.sum()))
 
     monkeypatch.setattr(models, "static_mode", mode)
-    fold = holdout.configuration_fold(("coupler", None, 0.1, d, 2))
+    fold = holdout.configuration_fold(("coupler", (None, 0.1), d, 2))
     (training,) = seen
     expected = models.without_configuration(d, 2)
     if training["keys"] != expected["keys"] or not np.array_equal(training["block"], expected["block"]):
@@ -238,8 +282,7 @@ def test_left_out_counts_never_reach_the_fold_fit() -> None:
     changed = scored({"family": "heater_gain", "values": [0.0, 0.03]})
     rows = changed["configuration"] == 2
     changed["block"][rows] = changed["block"][rows][:, ::-1]
-    item = ("coupler", None, 0.1)
-    fold, moved = (holdout.configuration_fold((*item, run, 2)) for run in (d, changed))
+    fold, moved = (holdout.configuration_fold(("coupler", (None, 0.1), run, 2)) for run in (d, changed))
     if fold["training_objective"] != moved["training_objective"]:
         raise AssertionError("the left-out configuration's counts changed the training fit")
     for a, b in zip(fold["rows"], moved["rows"], strict=True):
