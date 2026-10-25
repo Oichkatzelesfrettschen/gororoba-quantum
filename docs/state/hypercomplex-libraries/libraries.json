@@ -735,7 +735,9 @@
     "scripts/qd_classical_benchmark.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/qd_classical_benchmark.py"
+   ]
   },
   {
    "distribution": "cycler",
@@ -2814,6 +2816,7 @@
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qd_classical_benchmark.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
