@@ -1584,12 +1584,23 @@ def _fsync_dir(path: Path) -> None:
         os.close(fd)
 
 
+RECEIPT_STAGING = ".collect.json.tmp"
+
+
 def _publish_new(path: Path, record: dict[str, Any]) -> None:
-    """Write RECORD to PATH by exclusive creation, then flush the file and its directory entry to disk."""
-    with path.open("xb") as handle:
+    """Publish RECORD at PATH whole or not at all, and never over an existing receipt.
+
+    The bytes reach disk in a staging file first; link(2) then creates PATH
+    atomically and fails when PATH exists, so a killed writer leaves at most
+    a staging file, which recovery removes.
+    """
+    staging = path.parent / RECEIPT_STAGING
+    with staging.open("xb") as handle:
         handle.write((json.dumps(record, indent=1) + "\n").encode("utf-8"))
         handle.flush()
         os.fsync(handle.fileno())
+    os.link(staging, path)
+    staging.unlink()
     _fsync_dir(path.parent)
 
 
@@ -1651,11 +1662,14 @@ def _preserve_unreceipted(run_dir: Path, kernel: str) -> None:
     Such a tree is an output/ refused before captures existed, an output/
     promoted by an attempt killed before it wrote collect.json, or a capture
     killed before it wrote its receipt. The tree moves to a new capture id,
-    so the chain stays in write order; a capture directory holding no file
-    carries no bytes and is removed.
+    so the chain stays in write order. A tree or capture directory holding
+    no file carries no bytes and is removed, as is a staging receipt that a
+    killed _publish_new left unlinked.
     """
     import shutil
 
+    for staging in [run_dir / RECEIPT_STAGING, *sorted((run_dir / "captures").glob(f"*/{RECEIPT_STAGING}"))]:
+        staging.unlink(missing_ok=True)
     sources = [d / "output" for d in sorted((run_dir / "captures").glob("*")) if not (d / "collect.json").exists()]
     if not (run_dir / "collect.json").exists():
         sources.append(run_dir / "output")
@@ -1667,6 +1681,8 @@ def _preserve_unreceipted(run_dir: Path, kernel: str) -> None:
             _fsync_dir(directory)
             record = _capture_record(run_dir, capture_id, kernel, "UNRECEIPTED", directory / "output")
             _publish_new(directory / "collect.json", record)
+        elif out.exists():
+            shutil.rmtree(out)
         if out.parent != run_dir and out.parent.exists():
             require(
                 not any(p.is_file() for p in out.parent.rglob("*")),

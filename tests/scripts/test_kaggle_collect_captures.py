@@ -145,6 +145,7 @@ def test_killed_attempts_are_adopted_in_chain_order(tmp_path: Path, monkeypatch:
     (run_dir / "captures/2000-01-01T000000.000000Z").mkdir(parents=True)
     (run_dir / "captures/2000-01-02T000000.000000Z/output").mkdir(parents=True)
     (run_dir / "captures/2000-01-02T000000.000000Z/output/slug.log").write_bytes(b"cut")
+    (run_dir / "captures/2000-01-02T000000.000000Z" / kaggle_run.RECEIPT_STAGING).write_bytes(b'{"sch')
 
     _collect(run_dir)
     states = [_receipt(path)["state"] for path in kaggle_run.receipt_chain(run_dir)]
@@ -181,3 +182,19 @@ def test_verify_rejects_broken_chain_and_orphan_capture(tmp_path: Path, monkeypa
 
     (run_dir / "captures/2099-01-01T000000.000000Z").mkdir()
     _expect_exit(lambda: kaggle_run.verify(argparse.Namespace()), "has no receipt")
+
+
+def test_empty_unreceipted_output_yields_to_the_next_complete_capture(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    results = tmp_path / "results"
+    run_dir = _run_dir(results)
+    (run_dir / "output/output").mkdir(parents=True)
+    (run_dir / kaggle_run.RECEIPT_STAGING).write_bytes(b"")
+    _serve(monkeypatch, results, [_complete(b"done")])
+    _collect(run_dir)
+    if _receipt(run_dir / "collect.json")["state"] != "COMPLETE":
+        raise RuntimeError("an empty output/ must not block promotion")
+    if (run_dir / "captures").exists() or (run_dir / kaggle_run.RECEIPT_STAGING).exists():
+        raise RuntimeError("an empty tree and a staging receipt carry no bytes and leave no capture")
+    kaggle_run.verify(argparse.Namespace())
