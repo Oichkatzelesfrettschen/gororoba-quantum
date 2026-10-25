@@ -8395,6 +8395,7 @@
    "qiskit_ibm_runtime",
    "qpu_cases",
    "qpu_planning",
+   "qrng_seeds",
    "rustworkx",
    "subprocess",
    "sys",
