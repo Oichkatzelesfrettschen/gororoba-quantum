@@ -28,6 +28,8 @@ and neither establishes a theorem or authorizes a QPU run.
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
+The IBM service inventory observed at 2026-10-25T19:43:33.493131+00:00 holds 1 physical jobs with 40 settled seconds; the account then reported 40 of 600 s consumed in the rolling window ending 2026-10-25T19:43:33.435Z. That is an observation, not a current balance or an authorization.
+
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 74 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
@@ -315,6 +317,7 @@ circuit and charges the account ledger's change.
 | [2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7](../../results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7) | Quandela Cloud | BDSC drift series on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits | qd-belenos-bdsc-drift-series-readout, qd-belenos-bdsc-drift-series-diagnostic |
 | [2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe](../../results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet:mock | 1 | 24 | completed | 0.0 credits | iqm-garnet-mock-idle-schedule |
 | [2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe](../../results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet | 1 | 24 | completed | 1.0 credits | iqm-garnet-idle-schedule |
+| [2026-10-25T193443.839527Z](../../results/live/2026-10-25T193443.839527Z) | IBM Quantum | latency-recovery | ibm_kingston | 1 | 34 | DONE | 40 s | kingston-latency-recovery-window-cost |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -592,6 +595,7 @@ circuit and charges the account ledger's change.
 - **qd-qpu-belenos-bdsc-drift-series-t7** (2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7, job 35fe62ba-3e1d-4da6-8762-5c437135f988, 2400000 samples, 2400000 shots): slot t7 of the approved drift series, the frozen request of the stationarity case's first block and job (`b1-j1`, 24 iterations of 100000 samples) resubmitted unchanged every two hours by the scheduled workflow: does the superposition class's excess spread carry memory from run to run, or is it run-to-run jitter, under the mode-5 detector_absent veto?
 - **iqm-garnet-mock-idle-schedule** (2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe, 1 billed seconds): Does the garnet:mock pipeline accept the 24-circuit idle schedule and train readout case unheralded with one active-reset cycle, and what does it estimate?
 - **iqm-garnet-idle-schedule** (2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe, 2 billed seconds): Does Garnet schedule a circuit job's gates as soon or as late as possible, and what over-rotation does each qubit's prx carry when fitted with its own readout?
+- **kingston-latency-recovery** (2026-10-25T193443.839527Z): How much logical entanglement fidelity does a feed-forward correction of a bit-flip-coded Bell pair lose to the controller latency and to a 10 us idle, against a Pauli-frame correction at matched idles?
 
 ## Established claims
 
@@ -1351,6 +1355,10 @@ circuit and charges the account ledger's change.
   Gates: replayed by core-679.
   Acquisitions: qd-qpu-belenos-bdsc-drift-series-t1, qd-qpu-belenos-bdsc-drift-series-t2, qd-qpu-belenos-bdsc-drift-series-t3, qd-qpu-belenos-bdsc-drift-series-t4, qd-qpu-belenos-bdsc-drift-series-t5, qd-qpu-belenos-bdsc-drift-series-t6, qd-qpu-belenos-bdsc-drift-series-t7.
   Related claims: qd-belenos-bdsc-stationarity-readout.
+- **kingston-latency-recovery-window-cost** (preregistered hardware inference, hardware). On ibm_kingston (calibration 2026-10-25T12:18:10-07:00, executed on physical qubits 106, 105, 104, 117, 107, 125 for r, d0, d1, d2, a0, a1; one job of 34 dynamic PUBs at 16384 shots) a single conditional X recovers an injected X error on a bit-flip-coded Bell pair: F(ff_0) - null is 0.745 [0.699, 0.790] and F(ff_0) - F(unencoded) is 0.553 [0.507, 0.598]. The controller latency and the conditional cost no resolved fidelity beyond their idle: frame_0 - ff_0 reads 0.010 [-0.035, 0.055] and frame_l - ff_0 reads -0.004 [-0.049, 0.041]. A requested 10 us idle, executed as 9.748 us on the feed-forward path (the broadcast overlaps the delay) and 10.000 us on the frame path per the returned scheduler_timing, costs 0.217 [0.172, 0.262] and 0.223 [0.178, 0.268], against 0.082 and 0.079 predicted from the calibrated T1 and T2: a finite-window slope of 0.022 per us on both paths, and -ln(F(W)/F(0)) of 0.033 to 0.034 per us. Descriptively, about 0.12 of that loss is a -0.81 rad rotation of the four-qubit block (near -13 kHz) and the rest a coherence decay with time constant 38 to 40 us against 65 to 67 us predicted.
+  Boundary: One layout, one calibration and one job; Hoeffding intervals at alpha 0.05/7 per endpoint. The +-0.01 equivalence margins of latency_is_idle and window_slope are not reached, so equal cost is bounded, not shown. The phase and the decay time constants come from the summary expectations and were not preregistered beyond decay_not_phase; the detuning's source is undecided. A bit-flip code protects no phase. Layout search and model sampling used the runner's fixed seeds, not a QRNG draw (issue #514). Two exposures cannot decide whether the fidelity decays exponentially, so -ln(F(W)/F(0)) is a rate of an exponential law only under that assumption.
+  Evidence: [collect.json](../../results/live/2026-10-25T193443.839527Z/collect.json), [record.json](../../results/live/2026-10-25T193443.839527Z/record.json), [LATENCY_RECOVERY_FINDINGS.md](../../results/live/LATENCY_RECOVERY_FINDINGS.md), [heron-latency-logical-recovery.md](../design/heron-latency-logical-recovery.md), [latency_recovery_exposure.py](../../scripts/latency_recovery_exposure.py).
+  Acquisitions: kingston-latency-recovery.
 
 ## Exploratory claims
 

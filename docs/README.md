@@ -121,6 +121,27 @@ differs from it only in the `cd_core.py` digest.
 | [cawagas-2004-sedenion-structure.md](notes/papers/cawagas-2004-sedenion-structure.md) | Cawagas 2004 sedenion subalgebras and zero divisors, bibliographic identity only (journal host unreachable) |
 | [2512.07210.md](notes/papers/2512.07210.md) | Wilmot 2026 sedenion automorphisms: the graded sedenion table and 35-term calibration (both agree with `cd_core`), and the Schafer and Brown discrepancy for `Aut(S)` |
 | [2609.10569.md](notes/papers/2609.10569.md) | Gresnigt 2026 review of the sedenion `S3` family symmetry: Table 5 (11 printed defects against `cd_core`) and the `S3` maps `epsilon` and `psi`, certified on basis pairs |
+| [sources/cayley-dickson-2n-ion-survey.md](sources/cayley-dickson-2n-ion-survey.md) | survey of Cayley-Dickson sources at dimension 16 and above: candidate table, dispositions, convention map and mismatches |
+| [0804.3416.md](notes/papers/0804.3416.md) | de Marrais 2008 box-kite emanation tables: rules 0 to 2 and the CPO trip counts to 256 dimensions replayed, Brocade Table 1 (42 of 42 cells), and the emanation-table formula |
+| [0907.2047.md](notes/papers/0907.2047.md) | Cawagas et al. 2009 the 373 subloops of the 32-dimensional Cayley-Dickson loop, the Moufang counts per order-16 subloop and their tie to the associator census |
+| [math-0404395.md](notes/papers/math-0404395.md) | Moreno 2004 alternative elements: the two-term alternative elements equal the nullity-0 two-term elements (126 at 16, 342 at 32) |
+| [math-0512516.md](notes/papers/math-0512516.md) | Moreno 2005 monomorphisms between Cayley-Dickson algebras and the Theorem 2.5 dichotomy |
+| [math-0405424.md](notes/papers/math-0405424.md) | Moreno 2004 the exponential map on the Cayley-Dickson algebras and the centralizer identity of Remark 2 |
+| [math-0404172.md](notes/papers/math-0404172.md) | Moreno 2004 Hopf construction in higher dimensions and the associator identity of Lemma 4.4 |
+| [1102.5151.md](notes/papers/1102.5151.md) | Kirshtein 2011 automorphism groups of Cayley-Dickson loops: orders 2, 24, 1344, 2688 and the unsound third claim of Lemma 36 |
+| [1405.6888.md](notes/papers/1405.6888.md) | Saniga et al. 2014 finite geometry of the Cayley-Dickson tower: Tables 1 to 3 against `cd_core` (opposite algebra on the basis) and the line counts for 8 to 64 dimensions |
+| [2606.27798.md](notes/papers/2606.27798.md) | Aryapoor, Back and Pautrel 2026 involutions in the Cayley-Dickson construction: alpha and beta involutions, nuclei and commuter of dimension 1 at 8, 16 and 32 |
+| [2609.11588.md](notes/papers/2609.11588.md) | Lemley 2026 quasilinear multiplication: Algorithm 3.5 replayed for 2 to 256 dimensions and the multiplication-count bound (hosted, CC BY 4.0) |
+| [2603.20495.md](notes/papers/2603.20495.md) | Chapman and Levin 2026 central products of Cayley-Dickson loops: associativity degree for 4 to 64 dimensions (hosted, CC BY 4.0) |
+| [2501.00123.md](notes/papers/2501.00123.md) | Chapman, Levin, Vishne and Zaninelli 2024 loops with involution: the automorphism-group statement of the abstract against exact counts |
+| [1707.07318.md](notes/papers/1707.07318.md) | Bales 2017 the eight doubling products: `P3T` equals `cd_core`, four of the eight are not octonionic, and the twist rules reproduce to 64 dimensions |
+| [1107.1301.md](notes/papers/1107.1301.md) | Bales 2011 catalog of 32 Cayley-Dickson-like products: the eight quaternion-property products, the label map to 1707.07318 and the Table 7 title |
+| [hep-th-0601033.md](notes/papers/hep-th-0601033.md) | Kuwata, Fujii and Nakashima 2006 alternativity and reciprocity: the Gram operator spectrum of alternative pairs (4/8/4 sectors at 16, five clusters at 32) |
+| [2505.06011.md](notes/papers/2505.06011.md) | Wilmot 2025 G2 and the 30 primary 3-forms: Table 1 classes, the 12 zero divisors of the pseudo-octonion algebras, the 15-dimensional counts and the unsupported isomorphism claim |
+| [2205.05605.md](notes/papers/2205.05605.md) | Chapman, Guterman, Vishkautsan and Zhilina 2022 roots and critical points of polynomials: the sedenion counterexamples of Example 2.6 and spherical roots |
+| [2512.22134.md](notes/papers/2512.22134.md) | Gazeau 2026 the (R+L) mnemonic matrix rule for octonions and the Cayley-Dickson tower, the opposite algebra of `cd_core` (hosted, CC BY 4.0) |
+| [brown-1967-generalized-cayley-dickson.md](notes/papers/brown-1967-generalized-cayley-dickson.md) | R. B. Brown 1967 generalized Cayley-Dickson algebras: Aut(A_t) = Aut(A_(t-1)) x S3 for t = 4 to 6 and the order-3 map psi |
+| [chan-dokovic-2006-sedenion-subalgebras.md](notes/papers/chan-dokovic-2006-sedenion-subalgebras.md) | Chan and Dokovic 2006 conjugacy classes of subalgebras of the real sedenions: the subalgebra census and the 6-dimensional zero-divisor subspace |
 | [1907.07024.md](notes/papers/1907.07024.md) | Heikoop et al. 2020 morphisms of skew Hadamard matrices: the field-isomorphism map from quaternary unit Hadamard matrices to real Hadamard matrices |
 | [ocathain-2012-nonaffine-hadamard.md](notes/papers/ocathain-2012-nonaffine-hadamard.md) | O Cathain 2012 doubly transitive automorphism groups of Hadamard matrices: Ito's classification, Paley matrices and `PSL_2(q)`, skew difference sets (deposited text) |
 | [kivunge-2013-sign-matrices-2n-ons.md](notes/papers/kivunge-2013-sign-matrices-2n-ons.md) | Kivunge 2013 conference slides on sign matrices of the `2^n`-ons: Hadamard and skew Hadamard claims, Smith-Conway sign matrices equal to the `cd_core` transpose |
@@ -212,6 +233,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
 | [design/bdsc-tuna17-pauli-pilot.md](design/bdsc-tuna17-pauli-pilot.md) | Tuna-17 pilot of the BDSC target as a four-qubit local Pauli readout: bank, placement, analysis |
 | [design/iqm-garnet-timing-pilot.md](design/iqm-garnet-timing-pilot.md) | IQM Garnet billing pilot: per-job, per-shot, per-circuit and active-reset cost |
+| [design/heron-latency-logical-recovery.md](design/heron-latency-logical-recovery.md) | Heron r2 feed-forward against Pauli-frame recovery of a bit-flip-coded Bell pair: latency and window cost of logical fidelity, arms, contracts, power |
 | [design/iqm-garnet-signed-kernel-probe.md](design/iqm-garnet-signed-kernel-probe.md) | signed sedenion kernel probe on IQM Garnet: odd dilation overlap, heralded active reset, prediction |
 | [design/iqm-garnet-kernel-cancellation-probe.md](design/iqm-garnet-kernel-cancellation-probe.md) | kernel cancellation probe on IQM Garnet: zero-divisor sign at 37 CZ, bright control, over-rotation trains, H1-H5 |
 | [design/iqm-garnet-idle-schedule-train-readout.md](design/iqm-garnet-idle-schedule-train-readout.md) | IQM Garnet idle schedule (ASAP or ALAP, from a pulsed qubit's relaxation beside an uncoupled identity train) and QB6/QB11 train over-rotation fitted with each qubit's own readout, H1-H2 |
