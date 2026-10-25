@@ -358,11 +358,18 @@ FRAME_WINDOW_DT = 722
 ECHO_QUARTER_DT = 177
 FRAME_GROUP_NAME = "qet_frame_diagnostic"
 FRAME_VARIANTS = ("asrun", "idle", "completed", "echo")
+# Mid-CX waits of the idle sweep in dt: half, equal to and twice the as-run window, for a phase slope.
+IDLE_SWEEP_DT = {"idle_short": FRAME_WINDOW_DT // 2, "idle": FRAME_WINDOW_DT, "idle_long": 2 * FRAME_WINDOW_DT}
 # (name, variant, preparation, Alice basis, Bob rule, Bob basis)
 FRAME_ARMS: tuple[tuple[str, str, str, str, str, str], ...] = (
     *(
         (f"{variant}_{arm}", variant, "ground", alice, "idle", basis)
         for variant in ("asrun", "idle")
+        for arm, alice, basis in (("za", "z", "z"), ("ref_y", "x", "y"), ("ref_x", "x", "x"))
+    ),
+    *(
+        (f"{variant}_{arm}", variant, "ground", alice, "idle", basis)
+        for variant in ("idle_short", "idle_long")
         for arm, alice, basis in (("za", "z", "z"), ("ref_y", "x", "y"))
     ),
     *(
@@ -385,21 +392,22 @@ FRAME_ARMS: tuple[tuple[str, str, str, str, str, str], ...] = (
 def frame_circuit(name: str, variant: str, prep: str, alice: str, rule: str, basis: str) -> QuantumCircuit:
     """A ladder arm whose preparation frame and window follow variant.
 
-    asrun leaves placement to the scheduler, as the ladder does; idle writes the CX as H CZ H on B with a
-    FRAME_WINDOW_DT delay before the closing H and a barrier after the preparation, so B waits mid-CX with
-    no readout of A; completed puts a barrier after the preparation; echo adds, after that barrier, the
-    sequence delay x delay x delay on B (quarter, half, quarter of the window) beside Alice's measurement.
+    asrun leaves placement to the scheduler, as the ladder does; idle (and idle_short, idle_long) writes the
+    CX as H CZ H on B with an IDLE_SWEEP_DT delay before the closing H and a barrier after the preparation,
+    so B waits mid-CX with no readout of A; completed puts a barrier after the preparation; echo adds, after
+    that barrier, the sequence delay x delay x delay on B (quarter, half, quarter of the window) beside
+    Alice's measurement.
     """
     qubits = QuantumRegister(2, "q")
     record, final, bob = ClassicalRegister(1, "alice"), ClassicalRegister(1, "a_final"), ClassicalRegister(1, "bob")
     circuit = QuantumCircuit(qubits, record, final, bob, name=f"{FRAME_GROUP_NAME}_{name}")
     if prep == "ground":
         circuit.ry(2 * THETA, 0)
-        if variant == "idle":
+        if variant in IDLE_SWEEP_DT:
             circuit.h(1)
             circuit.cz(0, 1)
             circuit.barrier()
-            circuit.delay(FRAME_WINDOW_DT, 1, unit="dt")
+            circuit.delay(IDLE_SWEEP_DT[variant], 1, unit="dt")
             circuit.h(1)
         else:
             circuit.cx(0, 1)
@@ -458,7 +466,7 @@ def summarize_frame(dist: Mapping[str, np.ndarray]) -> dict[str, float]:
         mask = [index for index in range(8) if (index >> bit) & 1]
         channels.append((float(zeros[mask].sum()), float(1 - ones[mask].sum())))
     out: dict[str, float] = {}
-    for variant in FRAME_VARIANTS:
+    for variant in (*FRAME_VARIANTS, "idle_short", "idle_long"):
         za, ref_y = law(f"{variant}_za"), law(f"{variant}_ref_y")
         total = float(za.sum())
         parity = sum(p * (1 - 2 * (i & 1)) * (1 - 2 * ((i >> 2) & 1)) for i, p in enumerate(za)) / total
@@ -467,6 +475,8 @@ def summarize_frame(dist: Mapping[str, np.ndarray]) -> dict[str, float]:
         out[f"{variant}_z_b"] = z_b
         out[f"{variant}_y_b"] = y_b
         out[f"{variant}_window_phase"] = math.atan2(abs(y_b), z_b)
+        if variant in ("asrun", "idle"):
+            out[f"{variant}_xx"] = _moments(law(f"{variant}_ref_x"))[2]
         if variant in ("completed", "echo"):
             feedback = local_energy(law(f"{variant}_fb_z"), law(f"{variant}_fb_x"))
             floor = H_FIELD * _moments(za)[3] - H_FIELD**2 / RADIUS
@@ -483,6 +493,12 @@ def summarize_frame(dist: Mapping[str, np.ndarray]) -> dict[str, float]:
                 CONST - H_FIELD * fb_z[1] + 2 * COUPLING * fb_x[2]
             )
     out["readout_induced_parity_loss"] = out["idle_parity"] - out["asrun_parity"]
+    # Least-squares slope of the idle sweep's window phase through the origin, radians per dt; a static
+    # detuning delta (Hz) gives 2 pi delta dt, and a readout-driven phase leaves the sweep flat.
+    waits = np.array([IDLE_SWEEP_DT[v] for v in ("idle_short", "idle", "idle_long")], dtype=float)
+    phases = np.array([out[f"{v}_window_phase"] for v in ("idle_short", "idle", "idle_long")])
+    out["idle_phase_slope_rad_per_dt"] = float(waits @ phases / (waits @ waits))
+    out["idle_phase_intercept_fit"] = float(np.polyfit(waits, phases, 1)[1])
     out["echo_margin_gain"] = out["echo_channel_floor_margin"] - out["completed_channel_floor_margin"]
     return out
 

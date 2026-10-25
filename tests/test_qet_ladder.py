@@ -153,7 +153,7 @@ def frame_ideal() -> dict[str, np.ndarray]:
 
 def test_frame_diagnostic_ideal_reads_full_parity_and_e_b() -> None:
     summary = ladder.summarize_frame(frame_ideal())
-    for variant in ladder.FRAME_VARIANTS:
+    for variant in (*ladder.FRAME_VARIANTS, "idle_short", "idle_long"):
         if abs(summary[f"{variant}_parity"] - 1) > 1e-12 or abs(summary[f"{variant}_window_phase"]) > 1e-9:
             raise AssertionError(f"{variant}: ideal parity or phase off")
     for variant in ("completed", "echo"):
@@ -184,3 +184,15 @@ def test_frame_arms_route_with_equal_branches_on_kingston() -> None:
     echo = next(isa for isa in isas if isa.name.endswith("echo_za"))
     if sum(1 for instruction in echo.data if instruction.operation.name == "x") < 2:
         raise AssertionError("transpilation cancelled the echo pulses")
+
+
+def test_idle_sweep_recovers_a_planted_detuning_slope() -> None:
+    laws = frame_ideal()
+    slope = 0.001  # radians per dt
+    for variant, wait in ladder.IDLE_SWEEP_DT.items():
+        for arm, alice, basis in (("za", "z", "z"), ("ref_y", "x", "y")):
+            laws[f"qet_frame_diagnostic_{variant}_{arm}"] = phased_law(slope * wait, 0.0, alice, basis)
+    summary = ladder.summarize_frame(laws)
+    slope_read, intercept = summary["idle_phase_slope_rad_per_dt"], summary["idle_phase_intercept_fit"]
+    if abs(slope_read - slope) > 1e-9 or abs(intercept) > 1e-9:
+        raise AssertionError(f"slope {slope_read}, intercept {intercept}")
