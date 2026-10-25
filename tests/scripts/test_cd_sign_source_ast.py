@@ -53,6 +53,12 @@ def test_digest_covers_the_helper_closure_and_nothing_else() -> None:
     default = "\n\ndef unrelated(value=(_index := lambda dim, index: 0)):\n    return value\n"
     if source_ast.generated(source + default) == term:
         raise AssertionError("a helper rebound by a default expression left the source digest unchanged")
+    nested = "\n\nif True:\n    def unrelated(value=(_index := lambda dim, index: 0)):\n        pass\n"
+    if source_ast.generated(source + nested) == term:
+        raise AssertionError("a default expression under a module-level conditional left the source digest unchanged")
+    rest = "\n\nmatch {}:\n    case {**_index}:\n        pass\n"
+    if source_ast.generated(source + rest) == term:
+        raise AssertionError("a mapping-rest capture rebinding a helper left the source digest unchanged")
     if source_ast.generated(source + "\n\nindices = [_index for _index in range(3)]\n") != term:
         raise AssertionError("a comprehension target named after a helper changed the certificate block")
     if source_ast.generated(source + "\n\nvalues = [(_index := 0) for item in range(3)]\n") == term:

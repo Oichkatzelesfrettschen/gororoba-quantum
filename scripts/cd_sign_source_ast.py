@@ -93,7 +93,7 @@ def _module_scope(node: ast.AST) -> list[ast.AST]:
         return found
     for child in ast.iter_child_nodes(node):
         if isinstance(child, SCOPES):
-            found.append(child)
+            found.extend(_module_scope(child))
         elif isinstance(child, COMPREHENSIONS):
             # A comprehension's targets are its own; its first iterable and any := target act in the enclosing scope.
             found.extend(_module_scope(child.generators[0].iter))
@@ -121,6 +121,8 @@ def _bound_names(node: ast.stmt) -> set[str]:
             bound.add(item.name)
         elif isinstance(item, ast.MatchAs | ast.MatchStar) and item.name:
             bound.add(item.name)
+        elif isinstance(item, ast.MatchMapping) and item.rest:
+            bound.add(item.rest)
     for item in ast.walk(node):
         if isinstance(item, ast.Global):
             bound.update(item.names)
