@@ -3625,6 +3625,9 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                 # Every ladder circuit carries feed-forward, and the Sampler rejects
                 # dynamical decoupling on dynamic circuits.
                 raise LiveRunError("qet_ladder runs without dynamical decoupling; omit --dd")
+            if "qet_frame_diagnostic" in campaigns and args.dd:
+                # The diagnostic compares explicit echoes against free evolution; runtime echoes would mix them.
+                raise LiveRunError("qet_frame_diagnostic runs without dynamical decoupling; omit --dd")
             if "crossed_tile_template" in campaigns:
                 # Each PUB row runs one member on both tiles in the same shots, which
                 # needs exactly two replicas, and the crossing matches the rank-sector

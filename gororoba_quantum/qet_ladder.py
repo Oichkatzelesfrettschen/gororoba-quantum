@@ -346,3 +346,147 @@ def branch_duration_violations(isas: list[QuantumCircuit], target: Any) -> list[
 def qet_ladder_group() -> Group:
     members = tuple(Member(name, circuit, ideal) for name, circuit, ideal in circuits())
     return Group(GROUP_NAME, members, summarize, routed_violations=branch_duration_violations)
+
+
+# Frame diagnostic. In the ladder as compiled for ibm_kingston, the closing sx of the preparation CX on B
+# is scheduled after Alice's readout window (CZ end at cycle 1172, closing sx at 1894 in
+# results/live/2026-10-25T203822.040562Z), so B waits that window inside the CX, where its share of the
+# entanglement lies on the equator: a phase phi accumulated there becomes a rotation that lowers <Z_A Z_B>
+# and <Z_B> by cos(phi) and opens <Y_B>. Completing the CX first moves the same phase onto <X_A X_B>; an
+# X echo on B across the window refocuses a static phase in either frame.
+FRAME_WINDOW_DT = 722
+ECHO_QUARTER_DT = 177
+FRAME_GROUP_NAME = "qet_frame_diagnostic"
+FRAME_VARIANTS = ("asrun", "idle", "completed", "echo")
+# (name, variant, preparation, Alice basis, Bob rule, Bob basis)
+FRAME_ARMS: tuple[tuple[str, str, str, str, str, str], ...] = (
+    *(
+        (f"{variant}_{arm}", variant, "ground", alice, "idle", basis)
+        for variant in ("asrun", "idle")
+        for arm, alice, basis in (("za", "z", "z"), ("ref_y", "x", "y"))
+    ),
+    *(
+        (f"{variant}_{arm}", variant, "ground", alice, rule, basis)
+        for variant in ("completed", "echo")
+        for arm, alice, rule, basis in (
+            ("za", "z", "idle", "z"),
+            ("ref_x", "x", "idle", "x"),
+            ("ref_y", "x", "idle", "y"),
+            ("ref_z", "x", "idle", "z"),
+            ("fb_x", "x", "feedback", "x"),
+            ("fb_z", "x", "feedback", "z"),
+        )
+    ),
+    ("cal_00", "completed", "product", "z", "idle", "z"),
+    ("cal_11", "completed", "ones", "z", "idle", "z"),
+)
+
+
+def frame_circuit(name: str, variant: str, prep: str, alice: str, rule: str, basis: str) -> QuantumCircuit:
+    """A ladder arm whose preparation frame and window follow variant.
+
+    asrun leaves placement to the scheduler, as the ladder does; idle writes the CX as H CZ H on B with a
+    FRAME_WINDOW_DT delay before the closing H and a barrier after the preparation, so B waits mid-CX with
+    no readout of A; completed puts a barrier after the preparation; echo adds, after that barrier, the
+    sequence delay x delay x delay on B (quarter, half, quarter of the window) beside Alice's measurement.
+    """
+    qubits = QuantumRegister(2, "q")
+    record, final, bob = ClassicalRegister(1, "alice"), ClassicalRegister(1, "a_final"), ClassicalRegister(1, "bob")
+    circuit = QuantumCircuit(qubits, record, final, bob, name=f"{FRAME_GROUP_NAME}_{name}")
+    if prep == "ground":
+        circuit.ry(2 * THETA, 0)
+        if variant == "idle":
+            circuit.h(1)
+            circuit.cz(0, 1)
+            circuit.barrier()
+            circuit.delay(FRAME_WINDOW_DT, 1, unit="dt")
+            circuit.h(1)
+        else:
+            circuit.cx(0, 1)
+        circuit.z(0)
+    elif prep == "ones":
+        circuit.x([0, 1])
+    if variant != "asrun":
+        circuit.barrier()
+    if variant == "echo":
+        circuit.delay(ECHO_QUARTER_DT, 1, unit="dt")
+        circuit.x(1)
+        circuit.delay(2 * ECHO_QUARTER_DT, 1, unit="dt")
+        circuit.x(1)
+        circuit.delay(ECHO_QUARTER_DT, 1, unit="dt")
+    if alice == "x":
+        circuit.h(0)
+    circuit.measure(0, record[0])
+    zero, one = bob_angle(rule, 0), bob_angle(rule, 1)
+    with circuit.if_test((record[0], 1)) as otherwise:
+        _branch(circuit, one)
+    with otherwise:
+        _branch(circuit, zero)
+    circuit.measure(0, final[0])
+    _bob_basis(circuit, basis)
+    circuit.measure(1, bob[0])
+    return circuit
+
+
+def _frame_arm(arm: tuple[str, str, str, str, str, str]) -> tuple[str, QuantumCircuit, np.ndarray]:
+    name, variant, prep, alice, rule, basis = arm
+    return (
+        f"{FRAME_GROUP_NAME}_{name}",
+        frame_circuit(name, variant, prep, alice, rule, basis),
+        ideal_distribution(prep, alice, rule, basis),
+    )
+
+
+def frame_circuits() -> tuple[tuple[str, QuantumCircuit, np.ndarray], ...]:
+    return tuple(ordered_map(_frame_arm, list(FRAME_ARMS)))
+
+
+def summarize_frame(dist: Mapping[str, np.ndarray]) -> dict[str, float]:
+    """Per variant: parity, <Z_B>, <Y_B> and the implied window phase; margins where the arms exist.
+
+    The phase reads phi = atan2(|<Y_B>|, <Z_B>) in the deferred frames, where an equatorial rotation of B
+    after a perfect CX takes (<Z_B>, <Y_B>) along a circle of radius 1/sqrt2. The completed and echo
+    variants carry the full margin set, raw and corrected through the |00> and |11> calibrations.
+    """
+
+    def law(arm: str) -> np.ndarray:
+        return np.asarray(dist[f"{FRAME_GROUP_NAME}_{arm}"], dtype=float)
+
+    channels = []
+    zeros, ones = law("cal_00") / law("cal_00").sum(), law("cal_11") / law("cal_11").sum()
+    for bit in range(3):
+        mask = [index for index in range(8) if (index >> bit) & 1]
+        channels.append((float(zeros[mask].sum()), float(1 - ones[mask].sum())))
+    out: dict[str, float] = {}
+    for variant in FRAME_VARIANTS:
+        za, ref_y = law(f"{variant}_za"), law(f"{variant}_ref_y")
+        total = float(za.sum())
+        parity = sum(p * (1 - 2 * (i & 1)) * (1 - 2 * ((i >> 2) & 1)) for i, p in enumerate(za)) / total
+        z_b, y_b = _moments(za)[1], _moments(ref_y)[1]
+        out[f"{variant}_parity"] = float(parity)
+        out[f"{variant}_z_b"] = z_b
+        out[f"{variant}_y_b"] = y_b
+        out[f"{variant}_window_phase"] = math.atan2(abs(y_b), z_b)
+        if variant in ("completed", "echo"):
+            feedback = local_energy(law(f"{variant}_fb_z"), law(f"{variant}_fb_x"))
+            floor = H_FIELD * _moments(za)[3] - H_FIELD**2 / RADIUS
+            s = np.array([_moments(law(f"{variant}_ref_{b}"))[1] for b in "xyz"])
+            c = np.array([_moments(law(f"{variant}_ref_{b}"))[2] for b in "xyz"])
+            out[f"{variant}_xx"] = _moments(law(f"{variant}_ref_x"))[2]
+            out[f"{variant}_xy"] = _moments(ref_y)[2]
+            out[f"{variant}_coherence_phase"] = math.atan2(abs(out[f"{variant}_xy"]), -out[f"{variant}_xx"])
+            out[f"{variant}_channel_floor_margin"] = floor - feedback
+            out[f"{variant}_information_excess"] = kabsch_floor(s, c) - feedback
+            fb_z, fb_x = _corrected(law(f"{variant}_fb_z"), channels), _corrected(law(f"{variant}_fb_x"), channels)
+            corrected_floor = H_FIELD * _corrected(za, channels)[0] - H_FIELD**2 / RADIUS
+            out[f"{variant}_readout_corrected_margin"] = corrected_floor - (
+                CONST - H_FIELD * fb_z[1] + 2 * COUPLING * fb_x[2]
+            )
+    out["readout_induced_parity_loss"] = out["idle_parity"] - out["asrun_parity"]
+    out["echo_margin_gain"] = out["echo_channel_floor_margin"] - out["completed_channel_floor_margin"]
+    return out
+
+
+def qet_frame_diagnostic_group() -> Group:
+    members = tuple(Member(name, circuit, ideal) for name, circuit, ideal in frame_circuits())
+    return Group(FRAME_GROUP_NAME, members, summarize_frame, routed_violations=branch_duration_violations)

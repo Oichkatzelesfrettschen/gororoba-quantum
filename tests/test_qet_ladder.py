@@ -121,3 +121,66 @@ def test_branch_durations_match_on_kingston_and_are_refused_on_fez() -> None:
         raise AssertionError("Kingston branches should share one duration")
     if not ladder.branch_duration_violations(routed("fez"), fez.target):  # type: ignore[attr-defined]
         raise AssertionError("Fez's 6 dt sx makes the rotation branches shorter than the 16 dt idle")
+
+
+def phased_law(prep_phase: float, post_phase: float, alice: str, basis: str) -> np.ndarray:
+    """Ladder idle-arm law with a B phase inside the CX (prep_phase) or after it (post_phase)."""
+    eye, hadamard = np.eye(2), np.array([[1, 1], [1, -1]]) / math.sqrt(2)
+
+    def rz(angle: float) -> np.ndarray:
+        return np.diag([np.exp(-0.5j * angle), np.exp(0.5j * angle)])
+
+    psi = np.zeros(4, dtype=complex)
+    psi[0] = 1.0
+    psi = np.kron(ladder._ry(2 * ladder.THETA), eye) @ psi
+    psi = np.diag([1, 1, 1, -1]) @ (np.kron(eye, hadamard) @ psi)
+    psi = np.kron(eye, hadamard @ rz(prep_phase)) @ psi
+    psi = np.kron(np.diag([1, -1]), rz(post_phase)) @ psi
+    if alice == "x":
+        psi = np.kron(hadamard, eye) @ psi
+    change = {"x": hadamard, "y": hadamard @ np.diag([1, -1j]), "z": eye}[basis]
+    law = np.zeros(8)
+    for record in (0, 1):
+        amplitudes = change @ psi.reshape(2, 2)[record]
+        for b in (0, 1):
+            law[3 * record + 4 * b] = abs(amplitudes[b]) ** 2
+    return law
+
+
+def frame_ideal() -> dict[str, np.ndarray]:
+    return {name: law for name, _, law in ladder.frame_circuits()}
+
+
+def test_frame_diagnostic_ideal_reads_full_parity_and_e_b() -> None:
+    summary = ladder.summarize_frame(frame_ideal())
+    for variant in ladder.FRAME_VARIANTS:
+        if abs(summary[f"{variant}_parity"] - 1) > 1e-12 or abs(summary[f"{variant}_window_phase"]) > 1e-9:
+            raise AssertionError(f"{variant}: ideal parity or phase off")
+    for variant in ("completed", "echo"):
+        if abs(summary[f"{variant}_channel_floor_margin"] - ladder.E_B) > 1e-9:
+            raise AssertionError(f"{variant}: ideal margin {summary[f'{variant}_channel_floor_margin']}")
+
+
+def test_frame_diagnostic_recovers_a_planted_mid_cx_phase() -> None:
+    laws = frame_ideal()
+    for arm, alice, basis in (("za", "z", "z"), ("ref_y", "x", "y")):
+        laws[f"qet_frame_diagnostic_asrun_{arm}"] = phased_law(0.92, 0.0, alice, basis)
+    summary = ladder.summarize_frame(laws)
+    if abs(summary["asrun_window_phase"] - 0.92) > 1e-9 or abs(summary["asrun_parity"] - math.cos(0.92)) > 1e-9:
+        raise AssertionError(f"planted phase read as {summary['asrun_window_phase']}")
+    if abs(summary["readout_induced_parity_loss"] - (1 - math.cos(0.92))) > 1e-9:
+        raise AssertionError("idle-minus-asrun parity does not isolate the planted window phase")
+
+
+def test_frame_arms_route_with_equal_branches_on_kingston() -> None:
+    backend = _backend("kingston")
+    edge = next(iter(backend.target["cz"]))  # type: ignore[attr-defined]
+    isas = [
+        transpile(c, backend=backend, initial_layout=list(edge), optimization_level=1)
+        for _, c, _ in ladder.frame_circuits()
+    ]
+    if ladder.branch_duration_violations(isas, backend.target):  # type: ignore[attr-defined]
+        raise AssertionError("frame-diagnostic branches differ in duration on Kingston")
+    echo = next(isa for isa in isas if isa.name.endswith("echo_za"))
+    if sum(1 for instruction in echo.data if instruction.operation.name == "x") < 2:
+        raise AssertionError("transpilation cancelled the echo pulses")
