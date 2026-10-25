@@ -168,7 +168,7 @@ Common to all three (KB, [tuna-operational-specifics](site/kbase_tuna-operationa
   preserves unchanged-circuit compilation rows and includes 68 BDSC Pauli circuits (27 Tuna-17,
   41 QX twin) and the 832 pause-ladder ZZ-map successor circuits, for 4,511 current
   cases. The active
-  [token-recovery toolchain successor](../../evidence/quantum_inspire/toolchain-token-recovery.json)
+  [token-recovery toolchain successor](../../evidence/quantum_inspire/toolchain-token-recovery.json) and its [pause-ladder-floor successor](../../evidence/quantum_inspire/toolchain-pause-ladder-floor.json)
   adds the 416 circuits of the token-recovery ZZ-map successor
   ([tuna_zz_map.md](tuna_zz_map.md)), byte-identical payloads under a new
   source binding. Rebuilt paths receive rows bound to their new circuit bytes; the
