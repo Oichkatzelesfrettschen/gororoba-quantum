@@ -1,0 +1,48 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-configuration-holdout-training-only",
+  "kind": "investigation",
+  "summary": "Refit the Ascella static-offset folds from the training configurations alone and score each left-out configuration in counting plus fitted-prediction variance, replacing the full-data start and the counting-only chi-square of the leave-one-configuration-out readout.",
+  "sources": [
+    "scripts/ascella_physical_models.py"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The owner asked for the narrowing and the training-only folds; the falsifier was fixed in this record before the run."
+  },
+  "next_action": "Design the drive-dependent heater-response family (step drive-dependent-heater-family); the training-only readout keeps the shortfall for every static family.",
+  "scope": "Training-only leave-one-configuration-out folds of the four Ascella static offset families on job-00, scored in counting plus fitted-prediction variance, and the narrowed physical-model wording; a drive-dependent heater-response family under the same folds remains.",
+  "owner": "ascella signed-coherence analysis",
+  "steps": [
+    {
+      "id": "training-only-holdout",
+      "action": "Refit every static family per left-out configuration from the zero start on the training configurations and score it with g C g^T.",
+      "acceptance": "configuration-holdout.json replays within the fit bounds and the preset criterion is applied to every family.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Every static family stays at 30 or more on 10 for X or Y with the prediction variance (X 205, 167, 87, 27; Y 88, 45, 36, 52); the combined family's X is weakly identified (median variance ratio 12.7). Host and runner-image records agree within the fit replay bounds.",
+          "observed_at": "2026-10-25T01:08:48+00:00",
+          "revision": "7b5df5357b7918bfec9e96123f47d16bbd70055d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/configuration-holdout.json",
+              "sha256": "c38ad052a38eab81e8c2f17f8a7d0d4bb2a3698d8c484250d1cf903bac443268"
+            }
+          ],
+          "scope_sha256": "8d89159b3e8a6ee7db45f483812840e0c539852f5ce90fd997b70e1d86d4098d"
+        }
+      ]
+    },
+    {
+      "id": "drive-dependent-heater-family",
+      "action": "Add a drive-dependent heater-response family and score it under the same training-only folds.",
+      "acceptance": "Its standardized left-out sums are recorded against the same 30-on-10 criterion.",
+      "state": "todo",
+      "depends_on": [
+        "training-only-holdout"
+      ]
+    }
+  ]
+}

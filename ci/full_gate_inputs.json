@@ -512,6 +512,10 @@
     ],
     "core-682": [
       "results/iqm/cases/idle-schedule-train-readout/**"
+    ],
+    "core-ascella-signed-coherence-configuration-holdout-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "docs/evidence/ascella-order-coefficients/configuration-holdout.json"
     ]
   }
 }

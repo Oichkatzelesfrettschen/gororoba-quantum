@@ -13,6 +13,14 @@ set -eu
 cd "$(dirname "$0")/.."
 python_version=3.14.7
 cache=${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum
+# Gate runs hold host-envs.lock shared (pins.hold_host_envs, ci/pr_checks.sh); the exclusive hold waits for
+# them, so no admitted interpreter loses its packages mid-run, and runs that start meanwhile wait for the rebuild.
+mkdir -p "$cache"
+exec 9>"$cache/host-envs.lock"
+if ! flock -n -x 9; then
+    echo "waiting for running gate checks to release $cache/host-envs.lock" >&2
+    flock -x 9
+fi
 for spec in "ci-py$python_version:requirements.txt" "replay-py$python_version:ci/requirements-replay.txt"; do
     venv=$cache/${spec%%:*}
     inputs=$(cat "${spec#*:}" ci/requirements-ci.txt ci/install_pins.sh ci/patches/* | sha256sum | cut -c1-64)

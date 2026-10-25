@@ -295,3 +295,38 @@ def test_gate_lint_tools_are_pinned() -> None:
     pinned = ('MYPYPATH=docs "$PYTHON" ci/pinned_tool.py mypy docs', '"$PYTHON" ../ci/pinned_tool.py ruff check .')
     if not all(bare.search(command) for command in planted) or any(bare.search(command) for command in pinned):
         raise AssertionError("the bare-tool pattern misreads a planted command")
+
+
+def test_a_held_host_environment_holds_off_its_rebuild() -> None:
+    """The falsifier of #411: sh ci/build_host_envs.sh waits while a gate run holds the host-environment lock."""
+    import os
+    import subprocess
+    import time
+
+    with TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        stub = root / "bin"
+        stub.mkdir()
+        marker = root / "uv-ran"
+        # The stub uv records that the builder reached it, then fails, so no environment is built.
+        (stub / "uv").write_text(f'#!/bin/sh\ntouch "{marker}"\nexit 3\n')
+        (stub / "uv").chmod(0o755)
+        environment = {**os.environ, "XDG_CACHE_HOME": str(root / "cache"), "PATH": f"{stub}:{os.environ['PATH']}"}
+        held = pins.hold_host_envs(environment)
+        try:
+            again = pins.hold_host_envs(environment)
+            os.close(again)
+            builder = subprocess.Popen(
+                ["sh", str(pins.ROOT / "ci/build_host_envs.sh")],
+                env=environment,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.PIPE,
+            )
+            time.sleep(1.0)
+            if marker.exists() or builder.poll() is not None:
+                raise AssertionError("the rebuild started while a gate run held the host environments")
+        finally:
+            os.close(held)
+        _, waited = builder.communicate(timeout=30)
+        if not marker.exists() or b"waiting for running gate checks" not in waited:
+            raise AssertionError(f"the rebuild did not wait for the lock and then proceed: {waited!r}")

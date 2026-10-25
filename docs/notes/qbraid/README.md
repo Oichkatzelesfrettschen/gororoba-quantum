@@ -29,6 +29,13 @@ uv venv --python 3.13 "$QB_ENV"
 VIRTUAL_ENV="$QB_ENV" uv pip install -r docs/notes/qbraid/requirements-qbraid.txt
 ```
 
+On the build host the Arch package `qbraid-stack` from the local PKGBUILD tree
+(`~/Github/PKGBUILDs/qbraid-stack`) installs the same SDK as a hash-locked Python
+3.13 environment under `/opt/qbraid-stack` and the interpreter `/usr/bin/qbraid-python`
+(qbraid 0.13.0 and qbraid-core 0.6.36); its `check()` runs an offline test, kept at
+`/usr/share/qbraid-stack/test_qbraid_stack.py`. A case sets `QB_PYTHON=/usr/bin/qbraid-python`; the venv
+above serves a machine without the package. The qbraid-core wheel carries the "qBraid Commercial Software License" (all rights reserved, authorized licensees only), so the built package stays on this machine and is not redistributed.
+
 The key is one line in `~/.config/qbraid/api-key` (directory 700, file 600),
 read inside Python and sent as the `X-API-KEY` header, or passed as
 `QbraidProvider(api_key=key)`; the SDK's own `~/.qbraid/qbraidrc` stays
