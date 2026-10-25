@@ -1,0 +1,108 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-belenos-entanglement-teleportation",
+  "kind": "investigation",
+  "summary": "Ascella-Belenos shared entanglement, teleportation, reference preservation and sequential teleportation: claim levels, gates, ideal instrument and decision statistics; cross-device work holds on a provider-bound physical route.",
+  "sources": [
+    "docs/design/ascella-belenos-entanglement-teleportation.md",
+    "scripts/qd_network_protocol.py",
+    "tests/scripts/test_qd_network_protocol.py",
+    "docs/notes/quandela/calibration.md",
+    "docs/evidence/bdsc/provider_contract.json"
+  ],
+  "state": "paused",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Premises checked against main: Ascella outside-block decomposition, permuted repeat and Belenos drift series already retained; the 2026-10-24 catalogues carry the Belenos fields again; the protocol tables follow from the bosonic transform."
+  },
+  "scope": "Claim levels C0 to C6 for Ascella-Belenos shared entanglement, terminal teleportation, reference preservation, surviving output and Ascella-Belenos-Ascella sequential teleportation; the ideal dual-rail instrument and decision statistics; acquisition only through separately admitted written cases after a provider-bound physical route exists.",
+  "owner": "Quandela experiment operator",
+  "next_action": "Owner decides whether to send the provider request in docs/design/ascella-belenos-entanglement-teleportation.md.",
+  "related": [
+    "ascella-signed-coherence-conformance",
+    "ascella-instrument-readiness-and-packed-tests"
+  ],
+  "steps": [
+    {
+      "id": "protocol-model",
+      "action": "Derive the partial Bell analyzer, frames, decoder, reference preservation, sequential composition and decision statistics from the bosonic transform.",
+      "acceptance": "tests/scripts/test_qd_network_protocol.py passes, cross-checked against dense permanents and Perceval SLOS, and its refusal fixtures fire.",
+      "state": "todo"
+    },
+    {
+      "id": "provider-capability-response",
+      "action": "After the owner approves the outward message, send the design's provider request and retain the dated answer.",
+      "acceptance": "Each request item reads supported, unsupported or unresolved with platform, access route, date and software version; a roadmap answer is recorded as development evidence.",
+      "state": "todo"
+    },
+    {
+      "id": "observation-contract",
+      "action": "Resolve the provider_contract rows the witness and benchmark depend on from the provider answer or a qualification run.",
+      "acceptance": "Event provenance, setting identity and preparation/analyzer scope read supported, or the narrower composite-family limitation is recorded (G1).",
+      "state": "todo",
+      "depends_on": [
+        "provider-capability-response"
+      ]
+    },
+    {
+      "id": "local-path-qualification",
+      "action": "Calibrate the selected sources, analyzer paths and detectors of the protocol under an admitted case.",
+      "acceptance": "Transfer, phase, detector, acceptance and context errors fit the registered budget (local G3).",
+      "state": "todo",
+      "depends_on": [
+        "observation-contract"
+      ]
+    },
+    {
+      "id": "cross-device-witness",
+      "action": "Acquire the Phi+ witness across the partitions under an admitted case.",
+      "acceptance": "The registered lower bound exceeds 1/2 with valid selection (G4), or the inconclusive result is recorded.",
+      "state": "todo",
+      "depends_on": [
+        "local-path-qualification"
+      ]
+    },
+    {
+      "id": "teleportation-benchmark",
+      "action": "Acquire the 18-cell six-state teleportation instrument on joint records.",
+      "acceptance": "The registered lower fidelity bound exceeds the applicable classical bound (G5), or the result is recorded as inconclusive or invalid.",
+      "state": "todo",
+      "depends_on": [
+        "cross-device-witness"
+      ]
+    },
+    {
+      "id": "reference-preservation",
+      "action": "Transfer one half of an R-q entangled input and measure the R-b witness.",
+      "acceptance": "The reference-output lower bound exceeds its separable limit (G6).",
+      "state": "todo",
+      "depends_on": [
+        "teleportation-benchmark"
+      ]
+    },
+    {
+      "id": "surviving-output",
+      "action": "Route the receiver output into a downstream quantum operation.",
+      "acceptance": "A timing receipt and downstream test show output level O1 or higher (G7).",
+      "state": "todo",
+      "depends_on": [
+        "teleportation-benchmark"
+      ]
+    },
+    {
+      "id": "sequential-teleportation",
+      "action": "Run Ascella-Belenos-Ascella with two resources and two physical Bell measurements.",
+      "acceptance": "The composite benchmark passes on one coherent intermediate state (G8).",
+      "state": "todo",
+      "depends_on": [
+        "reference-preservation",
+        "surviving-output"
+      ]
+    }
+  ],
+  "pause": {
+    "last_result": "Design, reconciliation and the ideal protocol model are written; no cross-device route exists in the inspected access.",
+    "next_action": "Owner decides whether to send the provider request in docs/design/ascella-belenos-entanglement-teleportation.md.",
+    "resume_when": "A dated provider answer names an accessible joint apparatus or research configuration, or the owner sends the request"
+  }
+}
