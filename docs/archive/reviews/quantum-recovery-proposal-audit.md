@@ -133,11 +133,21 @@ run, written case and approval before any submission.
      `RX(+2/N)` and `RX(-2/N)` share the same ideal value because cosine is even, so they run in
      the order +, -, -, + to balance drift and carry no signed contrast.
    - **What it isolates.** After each measurement the state is diagonal, so a post-readout
-     frequency shift has no effect. The sequence therefore measures measurement-induced
-     transitions, which the calibration noise model omits because it treats a mid-circuit
-     measurement as projective. The retained post-readout frequency-tail runs on Tuna-17 and
-     the single extra-readout arm on ibm_fez measure phase after one readout, not this
-     quantity.
+     frequency shift acts only while the next rotation pulse is on. A shift delta over a pulse
+     of length tau changes that pulse's flip probability at second order in delta tau. With
+     tau at most 100 ns and delta at most 2 pi x 100 kHz, delta tau is at most 0.063. The
+     exact detuned-rotation flip probability at N = 16 (ideal sin(1/16)^2 = 0.0039) then
+     moves by -1.3e-6 per step, or -2.1e-5 summed over the sixteen steps. The retained Tuna-17 tails stay within about 33 kHz
+     ([ringdown claims](../../state/RESEARCH_STATE.md)). The sequence therefore reads
+     measurement-induced transitions, which the calibration noise model omits because it
+     treats a mid-circuit measurement as projective, up to that bound. A departure larger
+     than the bound still needs a settle-gap control before it is read as
+     measurement-induced: the N = 16 measure arm repeated with an idle longer than the
+     resonator ring-down after each measurement. A departure that survives the settle gap
+     unchanged excludes a readout tail. The duration-matched delay arm cannot serve as this
+     control, because it never drives the resonator. The retained post-readout frequency-tail
+     runs on Tuna-17 and the single extra-readout arm on ibm_fez measure phase after one
+     readout, not this quantity.
    - **Placement.** This is the `measurement-sequence` row's question, with the
      elapsed-time-matched control that row requires. It needs no feed-forward. Tuna-17 has run
      one mid-circuit readout followed by gates on the same qubit (`readout_ringdown_tuna_17`
