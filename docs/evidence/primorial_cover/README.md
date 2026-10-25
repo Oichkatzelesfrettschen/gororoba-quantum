@@ -1,6 +1,6 @@
 # Primorial cover defects: certificates and the Kingston noise prediction
 
-Three records live here.
+Four records live here.
 
 - `certificates.json` is the output of `gororoba_quantum/primorial_cover.py
   --out`, recomputed byte for byte by gate `core-688` (about 5 s). It holds the
@@ -39,6 +39,15 @@ Three records live here.
   record keeps 84 witnesses (one per half-length, at the level first
   covered), the branch count of each of the 9 exclusions, and per row the
   missing set, N_min(k) and the membership of h(k) in D(k).
+- `null_residuals.json` is the output of `scripts/primorial_null_residuals.py`,
+  run as Kaggle CPU kernel version 1 of `gororoba-primorial-null-residuals`
+  under `push --ci-env` and retained under
+  `results/kaggle/2026-10-25T183728Z-gororoba-primorial-null-residuals/`,
+  whose `collect.json` binds the file's bytes. It reads `noise.json` for the
+  paths and shot budgets and records that file's sha256. Gate
+  `core-primorial-null-residuals-replay` requires the file to equal the
+  collected output, recomputes it, and requires the pulse identity, budgets
+  and verdicts to match exactly and every bias to 1e-8.
 
 ## Ziller Table 1 through k = 20
 
@@ -132,3 +141,35 @@ gate or delay of duration t.
 The incoherent model holds no coherent error, crosstalk or leakage, so its
 pass on (a) to (c) is a design check, not a hardware prediction of those
 terms; static ZZ and axis tilt are not simulated.
+
+## Static ZZ and axis tilt
+
+`noise.json` leaves two coherent families out. `null_residuals.json` adds
+them on the gap-88 and zero-angle gradient arms of both paths, compiled as in
+the noise record, with noise-free laws and every error at its pulse start in
+the ALAP schedule, in the forms of `scripts/atlas_coherent_families.py`:
+static ZZ on both couplers in the partner-in-0 frame (`zz`,
+CPhase(-2 pi zeta t)) and the symmetric frame (`zz_symmetric`,
+RZZ(pi zeta t)), and drive-axis tilt RY(-beta) R RY(beta) of every sx and x
+pulse R. Stated before the run: a scenario leaves a device question when its
+null-subtracted bias reaches one standard deviation of the noisy
+null-subtracted estimate at the budget `noise.json` retains for its path.
+
+| | best (45-46-47) | median (117-125-126) |
+| --- | ---: | ---: |
+| signal and null pulse streams identical | yes | yes |
+| budget, shots per setting / coefficient SD | 2,803 / 0.0188 | 3,169 / 0.0186 |
+| `zz` 2 / 5 / 20 kHz, raw bias | 0.0078 / 0.019 / 0.078 | same |
+| `zz` 20 kHz, null-subtracted | 0.00034 | 0.00034 |
+| `zz_symmetric` 20 kHz, raw / null-subtracted | 0.024 / 0.00016 | same |
+| tilt 0.02 rad on q0 / q1 / q2, null-subtracted | 0.00022 / 0.0030 / 0.0045 | same |
+| tilt 0.02 rad on all three, raw / null-subtracted | 0.174 / 0.0055 | same |
+| shots per setting to resolve that residual at 3 SD | 290,836 | 320,842 |
+
+No scenario reaches its threshold. The two paths give the same biases
+because every path qubit and coupler of both has the same sx, x and cz
+durations in the snapshot, so the schedules coincide; only the budgets
+differ. ZZ enters the null-subtracted fit at second order (the residual
+grows about sixteenfold from 5 to 20 kHz), and so does tilt. The record
+covers the gap-88 cost on Heron r2 timing; crosstalk and leakage remain
+outside it.

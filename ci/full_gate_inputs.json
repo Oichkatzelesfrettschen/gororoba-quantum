@@ -533,6 +533,11 @@
     ],
     "core-primorial-ziller-table-replay": [
       "docs/evidence/primorial_cover/ziller_table.json"
+    ],
+    "core-primorial-null-residuals-replay": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/primorial_cover/**",
+      "results/kaggle/2026-10-25T183728Z-gororoba-primorial-null-residuals/**"
     ]
   }
 }
