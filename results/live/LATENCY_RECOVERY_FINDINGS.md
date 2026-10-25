@@ -82,6 +82,19 @@ coherence decays at four single-qubit rates combined.
   decay of the encoded block, which here exceeds the T1/T2 prediction by 1.6
   to 1.75 times plus a 13 kHz frame rotation, rather than a controller term.
 
+## Relation to the proposal audit
+
+The [proposal audit](../../docs/archive/reviews/quantum-recovery-proposal-audit.md)
+listed two items as unrecorded:
+- Whether Heron r2 feed-forward time scales with the measured outcomes.
+  [feedforward-latency.json](../../docs/evidence/heron_platform/feedforward-latency.json)
+  records it: 201 cycles from capture end for one capture, rising to 305 for
+  28 captures in one broadcast.
+- A fidelity-versus-delay law on an encoded state. This run measures one: a
+  decay with a 38 to 41 us coherence time constant plus a -13 kHz frame
+  rotation of the four-qubit block, with no resolved controller term. The
+  qubit-143 beat the audit cites remains a property of that qubit.
+
 ## Boundary
 
 - One layout, one calibration, one job. The Hoeffding intervals hold under
