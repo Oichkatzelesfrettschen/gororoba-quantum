@@ -34,6 +34,7 @@ from parallel import ordered_map  # noqa: E402
 TAU = 2 * math.pi
 Z95 = 1.959963984540054
 RATE_ORDER = ("a_given_b0", "a_given_b1", "b_given_a0", "b_given_a1")
+PLAN_SCHEMAS = ("qi-zz-map-plan-v1", "qi-zz-map-plan-v2")
 GUARDS = {
     "assignment_condition_number_max": 100.0,
     "retained_fraction_lower_3sigma_min": 0.10,
@@ -80,6 +81,8 @@ def read_batch(task: dict[str, Any]) -> dict[str, Any]:
     cases = json.loads(case_bytes)
     for key in ("backend", "backend_type_id", "shots", "nqubits"):
         require(cases.get(key) == task[key], f"cases.json {key} differs from plan")
+    # A v1 manifest predates the plan_schema field; a v2 manifest names its plan's schema.
+    require(cases.get("plan_schema", PLAN_SCHEMAS[0]) == task["plan_schema"], "cases.json plan schema differs")
     submission = json.loads(read("submission.json"))
     results = json.loads(read("results.json"))
     submission_schema = submission.get("schema")
@@ -150,7 +153,8 @@ def read_batch(task: dict[str, Any]) -> dict[str, Any]:
 def read_complete_plan(plan_path: Path, runs_root: Path) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, str]]:
     payload = plan_path.read_bytes()
     plan = json.loads(payload)
-    require(plan.get("schema") == "qi-zz-map-plan-v1", "unrecognized map plan")
+    # v2 changes only the interbatch pause budget, which the analysis does not read.
+    require(plan.get("schema") in PLAN_SCHEMAS, "unrecognized map plan")
     require(plan["measurement"]["bit_order"] == "qubit_0_rightmost", "unrecognized bit order")
     require(
         "2*bit_a+bit_b" in plan["measurement"]["assignment_convention"].replace(" ", ""),
@@ -216,6 +220,7 @@ def read_complete_plan(plan_path: Path, runs_root: Path) -> tuple[dict[str, Any]
             "backend_type_id": plan["backend_type_id"],
             "shots": plan["shots"],
             "nqubits": plan["nqubits"],
+            "plan_schema": plan["schema"],
         }
         for batch in plan["batches"]
     ]
@@ -771,8 +776,15 @@ def provenance_self_test() -> None:
             "backend_type_id": 7,
             "shots": 2,
             "nqubits": 2,
+            "plan_schema": "qi-zz-map-plan-v1",
         }
         require(read_batch(task)["observations"][0]["counts"] == [1, 0, 1, 0], "canonical pair bit order failed")
+        try:
+            read_batch({**task, "plan_schema": "qi-zz-map-plan-v2"})
+        except ValueError as error:
+            require(str(error) == "cases.json plan schema differs", "plan-schema fixture failed for another reason")
+        else:
+            raise AssertionError("a v1 manifest was read under a v2 plan")
         v2_submission = {
             **submission,
             "schema": "qi-submission-v2",
