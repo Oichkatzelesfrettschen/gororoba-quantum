@@ -191,6 +191,27 @@ the Choi state `J = (I (x) E)(|Phi+><Phi+|)` with `J >= 0`, `J^T_in >= 0` and
 `tr_out J <= I/2`; PPT characterizes separability in this 2x2 case
 ([quant-ph/9605038](../notes/papers/quant-ph-9605038.md)).
 
+**Benchmark solver.** [`scripts/qd_classical_benchmark.py`](../../scripts/qd_classical_benchmark.py)
+solves that program for any pure-state ensemble and priors, in the Choi
+normalization `J = sum_ij |i><j| (x) E(|i><j|)` (so `tr_out J <= I`), for
+three figures: the pooled conditional fidelity under free post-selection, the
+pooled figure under a fixed success profile, and the mean of per-input
+conditional fidelities under a fixed profile. A qubit map's success is affine
+in the Bloch vector, so a profile enters as independent constraints on the
+acceptance operator `tr_out J`, and a measured profile is first fitted to that
+form (`realizable_profile`). Each bound comes from the dual program, with the
+dual variables projected onto the PSD cone and the residual's least
+eigenvalue charged against a bound on `tr J`, so it holds for every classical
+strategy whatever the solver's accuracy; the primal optimum supplies the
+achieving Choi operator. The uniform six-state ensemble returns 2/3, and the
+tested tilted profiles keep both figures at 2/3. Unequal priors raise the
+bound: Z eigenstates at weight 1/4 each give 3/4 (measure Z), and `+Z` at
+1/2 with the other five at 1/10 gives 6/7, reached by keeping only the `+Z`
+outcome of a Z measurement. The pooled figure of `joint_teleportation_scores`
+weights each input by its matching-basis attempts, so `attempts_benchmark`
+supplies the benchmark for an unequal allocation, and the four BB84 states
+give 3/4 ([its test](../../tests/scripts/test_qd_classical_benchmark.py)).
+
 **Counts and composition.** A one-sided Bernoulli decision at type-I error
 alpha and power `1 - beta` needs
 `N >= (sqrt(ln 1/alpha) + sqrt(ln 1/beta))^2 / (2 (F* - B - eps_sys)^2)`;
@@ -252,14 +273,14 @@ synchronization and terminal detection, with no stationary memory
 | WP05 observation contract | Blocked on provider answers | [provider_contract.json](../evidence/bdsc/provider_contract.json) rows and the request below. |
 | WP06 physical access | Blocked on provider answers | Request below; sending it is the owner's decision. |
 | WP07 protocol model | Done | `scripts/qd_network_protocol.py` and its test. |
-| WP08 records and analysis | Partly done | Witness, benchmark and joint-histogram scoring exist; a provider record parser waits on WP05. |
+| WP08 records and analysis | Partly done | Witness, certified classical benchmark and joint-histogram scoring exist; a provider record parser waits on WP05. |
 | WP09 to WP16 | Blocked on G1 and G2 | Every step needs a physical joint apparatus and admitted cases. |
 
 The parent plan's scope excludes, until G2 holds, a case generator for
-network acquisitions, a live joint-execution adapter and a Choi-PPT benchmark
-solver. No admissible case or documented interface exists for the first two,
-and the third answers only once an actual instrument and its information
-restrictions are fixed.
+network acquisitions and a live joint-execution adapter: no admissible
+network case exists for the first, and Perceval 1.3.1's
+`RemoteProcessor.__init__` takes one platform `name`, so a joint job has no
+client interface for the second.
 
 ## Provider request (unsent)
 
