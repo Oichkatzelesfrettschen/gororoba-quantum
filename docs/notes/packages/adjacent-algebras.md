@@ -122,9 +122,9 @@ constants (unknown d as a D x D matrix, D^3 equations in D^2 unknowns, rank by
 SVD) gives derivation spaces of dimension 3, 14 and 14 at D = 4, 8, 16. This
 reproduces `Der(H) = so(3)`, `Der(O) = g2` and the reported
 `Der(S) = g2` (sedenion derivations collapse to the octonion ones); the
-sedenion automorphism group is G2 x S3 in the literature, so this is a
-consistent dimension count and no new claim. python-flint would turn the rank
-into an exact certificate.
+sedenion automorphism group is G2 x S3 in the literature. The exact
+certificate over Q, with the commutant of `Der(S)` and its six automorphisms,
+is in [sedenion-automorphisms](../../evidence/sedenion-automorphisms/README.md).
 
 ### Albert algebra and exceptional structures
 
