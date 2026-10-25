@@ -29,6 +29,16 @@ The newest retained catalogue is the after-job read of the Ascella signed-cohere
 
 `t_out` above 100 % shows a relative normalization, not an absolute detector efficiency. Ascella's record has carried no transmittance field since the plan read of 2026-10-23 17:11 UTC (`ascella-mosaiq-update-order-retry`), after 5.12 % at 06:56 UTC that day (`ascella-approved-order-pilot-retry`); the earlier Ascella values below keep their dates. The before-job read of the same run (15:30:55 UTC) and both reads of job-00 (09:17:08 and 09:21:58 UTC) sit beside it in their run directories.
 
+### Belenos read of 2026-10-25 19:04 UTC
+
+The plan read of the single-chip teleportation rehearsal, retained as
+[platform-read/catalogue.json](../../../results/quandela/cases/teleportation_rehearsal/job-00/platform-read/catalogue.json),
+reports `qpu:belenos` `available` with HOM 83.8 %, g2 16.7 %, Transmittance 0.05 % and 21187.1 /s dark counts on
+mode 5, at the 2026-10-24 schema and clock. Every source-connected mode's `t_in` reads 0.01 % to 0.02 %, against
+2.43 % to 6.31 % at 2026-10-24 15:35:30 UTC, so the source-side transmission fell about 250-fold while `t_out`
+stays between 15.88 % (mode 5) and 164.32 %. Perceval's `estimate_required_shots` answers None for the rehearsal
+under these figures. Cause not identified; `qpu:ascella` in the same read reports HOM 86.8 % and g2 1.9 %.
+
 ### Live reads of 2026-10-20 (historical)
 
 The table below is the state as of the live processor reads of 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). The maintenance window is the snapshot's Explorer row, which read it on 2026-10-17.

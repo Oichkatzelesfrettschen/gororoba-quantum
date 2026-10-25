@@ -39,6 +39,7 @@ FAMILIES = {
     "ripple",
     "rank-sector",
     "state-prep-control",
+    "latency-recovery",
 }
 # Families that run on one pinned patch and carry its six physical qubits.
 PATCH_FAMILIES = ("patch-window", "coherence-window")
@@ -71,6 +72,10 @@ _MAPPING_FIELDS = (
     "echo_half_dt",
     "measure_dt",
     "window_dt",
+    "latency_dt",
+    "requested_latency_dt",
+    "requested_window_dt",
+    "granularity_dt",
     "readout_qubits",
     "qubits",
     "source_replicas",
@@ -268,6 +273,13 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             "state_prep_arms names distinct state-prep-control arms, prep0 among them, or x_history alone",
         )
         arguments.extend(["--state-prep-arms", ",".join(arms)])
+    for name in ("latency_dt", "window_dt"):
+        if name in design:
+            _require(
+                family == "latency-recovery" and type(design[name]) is int and design[name] > 0,
+                f"{name} is a positive integer dt recorded only for latency-recovery",
+            )
+            arguments.extend(["--" + name.replace("_", "-"), str(design[name])])
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
     for backend_name, qubits in sorted(policy.get("operator_excluded_qubits", {}).items()):
         _require(
@@ -1784,6 +1796,67 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             f"half-width {'0.025 on A and on C, 0.05 on A - B' if count == 3 else ', '.join(endpoints)}, Hoeffding "
             "radii valid under arbitrary dependence between the qubits of one shot. They price resolution, "
             f"not an effect. {comparison_text}",
+            "",
+        ]
+    if family == "latency-recovery":
+        configuration = record["family_configuration"]
+        backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
+        latency = _count(configuration["latency_dt"], "latency_dt")
+        window = _count(configuration["window_dt"], "window_dt")
+        granularity = _count(configuration["granularity_dt"], "granularity_dt")
+        requested = (
+            _count(configuration["requested_latency_dt"], "requested_latency_dt"),
+            _count(configuration["requested_window_dt"], "requested_window_dt"),
+        )
+        rounding = (
+            ""
+            if requested == (latency, window)
+            else f" The requested L = {requested[0]} dt and W = {requested[1]} dt round up to the timing "
+            f"granularity of {granularity} dt."
+        )
+        return [
+            "## Scientific question and interpretation",
+            "",
+            f"The latency-recovery family measures on {backends} how much entanglement fidelity a feed-forward "
+            "bit-flip recovery loses to the controller's latency, against a Pauli-frame correction that applies "
+            "the same syndrome in post-processing. A reference qubit holds a Bell pair with a three-qubit "
+            "repetition code d0 d1 d2; two ancillas read the syndrome into a 2-bit register, and one conditional "
+            "X on d0 corrects an X error on d0 when the syndrome is 0b01. Barriers bracket the two ancilla "
+            "measurements in every member, so the data and reference qubits idle through the readout in every "
+            "arm. The calibration noise model applies a conditional instantly and dephases an idle qubit at "
+            "the calibrated T1 and T2 only, so it omits the controller window and any readout-induced "
+            "dephasing; only the device measures them.",
+            "",
+            f"The arms are ff_0 (conditional correction), ff_w (an added idle of W = {window} dt on the "
+            f"reference and data qubits before it), frame_0, frame_l and frame_lw (a Pauli frame after "
+            f"idles of 0, L = {latency} dt and L + W), and ff_0_unencoded (the same circuit without the "
+            f"code).{rounding} The frame arms flip the d0 outcome of the Z and Y bases when the syndrome is "
+            "0b01, and the no-correction null reads the same frame members without the flip. The 34 members "
+            "are dynamic and run in one job. Readout correction is skipped, so each fidelity carries the same "
+            "readout bias and arm differences cancel it to first order.",
+            "",
+            "Seven contracts on differences of F = (1 + XX - YY + ZZ)/4 split the family alpha equally. "
+            "recovery (ff_0 minus the null above 0.5) and code_property (ff_0 minus ff_0_unencoded above 0.25) "
+            "are one-sided. The calibration model applies the conditional instantly and predicts no latency "
+            "cost, so latency_cost (frame_0 minus ff_0), latency_is_idle (frame_l minus ff_0), the window costs "
+            "window_cost_ff (ff_0 minus ff_w) and window_cost_frame (frame_l minus frame_lw), and window_slope "
+            "(their difference) are two-sided precision endpoints of half-width 0.05, except 0.1 for "
+            "window_slope; they price resolution, not an effect. The analysis then reads the retained intervals: "
+            "latency_cost and each window cost resolve where the lower bound exceeds 0, and latency_is_idle and "
+            "window_slope hold where their intervals lie inside +-0.01, a margin the Hoeffding radii at these shot "
+            "tiers do not reach, so an unresolved equivalence remains an allowed outcome. The controller overlaps a "
+            "requested delay with the broadcast, so the analysis reads each arm's executed exposure from the "
+            "returned scheduler_timing (scripts/latency_recovery_exposure.py): a window cost over its executed "
+            "increment is a finite-window fidelity-loss slope, and -ln(F(W)/F(0)) over that increment equals an "
+            "exponential law's rate only if the decay is exponential. decay_not_phase is descriptive: it compares "
+            "the coherence C and phase phi of ff_0 and frame_0 from the XY and YX members. A lower bound of "
+            "latency_is_idle (frame_l minus ff_0) above 0 names a feed-forward cost beyond the idle itself, the "
+            "device-specific part; an interval that includes 0 leaves that cost unresolved.",
+            "",
+            "The run measures the fidelity cost of whatever the controller executes, not the latency's jitter. "
+            "A bit-flip code protects no phase, so the run measures the idle cost of coherence, the quantity "
+            "the latency-constrained recovery model needs, and says nothing about a code that also corrects "
+            "phase. One layout and one calibration give one device's number.",
             "",
         ]
     if family == "patch-window":

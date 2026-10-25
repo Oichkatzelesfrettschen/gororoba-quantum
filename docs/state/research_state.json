@@ -9,6 +9,13 @@
       "question": "Do job-00's outside-block clicks and analyzer residuals follow the setting, the execution order or the sample budget when the same 64 circuits run in a QRNG-drawn order at twice the samples?"
     },
     {
+      "id": "qd-ascella-signed-coherence-compilations",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02",
+      "family": "photonic signed-coherence perturbed compilations",
+      "question": "Does one logical setting's analyzer statistic move with the served mesh when the same unitary runs at 56 QRNG-drawn compilation seeds beside 8 seed-0 anchors, and do the per-heater error families fitted on job-00 predict or, refitted with it, explain the configuration response?"
+    },
+    {
       "id": "qd-ascella-signed-coherence",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
@@ -1241,6 +1248,13 @@
       "question": "Are qubit 143's two Ramsey lines a classical mixture fixed within a shot or an exchange-coupled two-level system, which alias cell holds their splitting, and does the herald perturb them?"
     },
     {
+      "id": "kingston-latency-recovery",
+      "provider": "ibm",
+      "run": "results/live/2026-10-25T193443.839527Z",
+      "family": "latency-recovery",
+      "question": "How much logical entanglement fidelity does a feed-forward correction of a bit-flip-coded Bell pair lose to the controller latency and to a 10 us idle, against a Pauli-frame correction at matched idles?"
+    },
+    {
       "id": "qi-tuna17-quaternion-order-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00",
@@ -2173,6 +2187,52 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-compilation-dependence",
+      "statement": "Theta2-x-arm0 run 64 times on qpu:ascella (job 788097fb), at 56 QRNG-drawn compilation seeds that served 56 distinct meshes (heaters a median 1.58 rad from job-00's) and 8 seed-0 anchors that served job-00's mesh, reads a block-conditioned X statistic that moves with the served mesh: the perturbed dispersion per degree of freedom is 7.08 times the anchors' (label-permutation p 0.0049, alpha 0.01), the perturbed statistics span 0.865 to 0.915 around a mean of 0.888 against the ideal 0.9045 and the anchors' 0.883. Every family fitted on job-00 misses the 56 meshes: the residuals' joint quadratic forms in counting plus shared fitted-prediction covariance read 1150 (static heater offsets), 649 (drive-linear), 771 (order-1 polynomial) and 201 (order-1 harmonic) against the chi-square 0.999 quantile 94.5. Refitted on job-00 plus the perturbed iterations, every family is identified on the 19 training-only folds (median variance ratios 0.22 to 0.86) and keeps the left-out X shortfall (sums 85 to 377 on 10), three of four also on Y.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, one job and the four heater families of the sizing record (static offsets, drive-linear, order-1 shifted Legendre and order-1 harmonic responses of the returned phase); the setting, perturbation and readings R1 to R3 were fixed in plan ascella-perturbed-compilation-case before the acquisition. R2's thresholds count distinct perturbed meshes; its first implementation summed individually standardized squares, which drop the shared covariance and read 1035, 223, 235 and 13.9, and the joint form replaced it after review. The sizing the owner approved overstated R1's sensitivity (it treated the anchor ratio as a chi-square); its successor puts R1's detectable compilation-induced X standard deviation at 0.013 for power 0.9; and R3 uses the training-only folds and the 30-on-10 and below-20 rule of plan ascella-configuration-holdout-training-only, whose folds share training data, so its sums are descriptive. The result refutes these families as the explanation of the configuration response; it names no mechanism, and couplings across heaters (thermal crosstalk, coupler error, mesh-dependent loss) remain untested. The fits follow the OpenBLAS Haswell kernel and numpy's x86-64-v3 dispatch that ci/run_gates.py sets and replay within 1e-3 relative plus 1e-8 absolute.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+          "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/compilation-design.json",
+          "sha256": "4b8a14088b4ef83a6fe23b2ad4fa97f4f40b530077b505e7b85863471d3f656d"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/compilation-design-anchor-ratio.json",
+          "sha256": "87549b2d2924ac8666474e157e872fd58359f68c01c476322ef589c052b64e41"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/compilation-reading.json",
+          "sha256": "6aa696088fedcd9b43358151c1a661ef5faa718825d04bd8e0a528780a0cb3cc"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-compilation-reading-replay": "replay",
+        "core-ascella-signed-coherence-compilation-design-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-compilations"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-conformance"
+      ],
+      "supersedes": []
     },
     {
       "id": "ascella-signed-coherence-conformance",
@@ -9837,6 +9897,38 @@
       "supersedes": [
         "primorial-null-residuals-zz-tilt"
       ],
+      "superseded_by": null
+    }
+,
+    {
+      "id": "kingston-latency-recovery-window-cost",
+      "statement": "On ibm_kingston (calibration 2026-10-25T12:18:10-07:00, executed on physical qubits 106, 105, 104, 117, 107, 125 for r, d0, d1, d2, a0, a1; one job of 34 dynamic PUBs at 16384 shots) a single conditional X recovers an injected X error on a bit-flip-coded Bell pair: F(ff_0) - null is 0.745 [0.699, 0.790] and F(ff_0) - F(unencoded) is 0.553 [0.507, 0.598]. The controller latency and the conditional cost no resolved fidelity beyond their idle: frame_0 - ff_0 reads 0.010 [-0.035, 0.055] and frame_l - ff_0 reads -0.004 [-0.049, 0.041]. A requested 10 us idle, executed as 9.748 us on the feed-forward path (the broadcast overlaps the delay) and 10.000 us on the frame path per the returned scheduler_timing, costs 0.217 [0.172, 0.262] and 0.223 [0.178, 0.268], against 0.082 and 0.079 predicted from the calibrated T1 and T2: a finite-window slope of 0.022 per us on both paths, and -ln(F(W)/F(0)) of 0.033 to 0.034 per us. Descriptively, about 0.12 of that loss is a -0.81 rad rotation of the four-qubit block (near -13 kHz) and the rest a coherence decay with time constant 38 to 40 us against 65 to 67 us predicted.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One layout, one calibration and one job; Hoeffding intervals at alpha 0.05/7 per endpoint. The +-0.01 equivalence margins of latency_is_idle and window_slope are not reached, so equal cost is bounded, not shown. The phase and the decay time constants come from the summary expectations and were not preregistered beyond decay_not_phase; the detuning's source is undecided. A bit-flip code protects no phase. Layout search and model sampling used the runner's fixed seeds, not a QRNG draw (issue #514). Two exposures cannot decide whether the fidelity decays exponentially, so -ln(F(W)/F(0)) is a rate of an exponential law only under that assumption.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T193443.839527Z/collect.json",
+          "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
+        },
+        {
+          "path": "results/live/2026-10-25T193443.839527Z/record.json",
+          "sha256": "8ae42c7cdd1f5d339b144b1e0b42f1b9471ba31b3b947c26d3fb5b2add58efe9"
+        }
+      ],
+      "documents": [
+        "results/live/LATENCY_RECOVERY_FINDINGS.md",
+        "docs/design/heron-latency-logical-recovery.md",
+        "scripts/latency_recovery_exposure.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "kingston-latency-recovery"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
       "superseded_by": null
     }
   ]

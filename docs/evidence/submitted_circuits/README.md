@@ -18,7 +18,11 @@ comparison's, and only that dependency digest and the offline validation time di
 
 The [experiment-manifest successor](comparison-qrng-seeds-manifest.json) rebinds the retained-audit comparison
 offline after `live_run.EXPERIMENT_SOURCE_MANIFEST` began listing `qrng_seeds.py`; it differs from the
-ordered-map successor only in the `live_run.py` digest and the offline validation time. Gate `core-281` checks it.
+ordered-map successor only in the `live_run.py` digest and the offline validation time.
+
+The [latency-recovery successor](comparison-latency-recovery-family.json) rebinds the retained-audit comparison
+offline after `live_run.py` gained the latency-recovery family's flags; it differs from the experiment-manifest
+successor only in the `live_run.py` digest and the offline validation time. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
@@ -32,7 +36,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-qrng-seeds-manifest.json
+  --out docs/evidence/submitted_circuits/comparison-latency-recovery-family.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0
