@@ -299,26 +299,38 @@ def square_zero_vectors(z: Sequence[Any], zero: Any, one: Any) -> list[list[Any]
     return [h + [zero] * OCTONION for h in generators] + [[zero] * OCTONION + h for h in generators]
 
 
-def square_zero_route() -> dict[str, Any]:
-    """z (z x) + Q x = 0 over Z[z] on the eight vectors, its failure on basis vectors, their rank where Q = 0."""
+@functools.cache
+def _square_zero_ring() -> tuple[list[Any], Any, Any, Any]:
+    """Generators z_1..z_15 of Z[z], zero, one and Q, built once per process."""
     ring = flint.fmpz_mpoly_ctx.get([f"z{k}" for k in range(1, HALF)], "lex")
     z = list(ring.gens())
     zero, one = ring.from_dict({}), ring.from_dict({(0,) * IMAGINARY: 1})
-    q = invariants(z, zero)["Q"]
+    return z, zero, one, invariants(z, zero)["Q"]
+
+
+def square_zero_residual(item: tuple[str, int]) -> bool:
+    """z (z x) + Q x = 0 over Z[z] for x the item's square-zero vector ("vector", k) or basis vector ("basis", m)."""
+    z, zero, one, q = _square_zero_ring()
+    kind, index = item
+    if kind == "vector":
+        x = square_zero_vectors(z, zero, one)[index]
+    else:
+        x = [one if i == index else zero for i in range(HALF)]
     sedenion_z = [zero, *z]
+    twice = multiply(sedenion_z, multiply(sedenion_z, x, SIGNS16, zero), SIGNS16, zero)
+    return all(a + q * b == 0 for a, b in zip(twice, x, strict=True))
 
-    def residual_vanishes(x: list[Any]) -> bool:
-        twice = multiply(sedenion_z, multiply(sedenion_z, x, SIGNS16, zero), SIGNS16, zero)
-        return all(a + q * b == 0 for a, b in zip(twice, x, strict=True))
 
-    vectors = square_zero_vectors(z, zero, one)
-    basis_failures = [m for m in range(HALF) if not residual_vanishes([one if i == m else zero for i in range(HALF)])]
+def square_zero_route() -> dict[str, Any]:
+    """z (z x) + Q x = 0 over Z[z] on the eight vectors, its failure on basis vectors, their rank where Q = 0."""
+    items = [("vector", k) for k in range(OCTONION)] + [("basis", m) for m in range(HALF)]
+    vanishes = parallel.ordered_map(square_zero_residual, items, min_items=2)
     # u = e1, v = 2 e1 + 2 e2, mu = 3i: Q = 1 - 9 + 8 = 0 and Delta = 8 - 4 = 4.
     point = [ZERO] * IMAGINARY
     point[0], point[MU], point[OCTONION], point[OCTONION + 1] = ONE, I_UNIT * 3, gq(2), gq(2)
     return {
-        "identity_on_square_zero_vectors": [residual_vanishes(x) for x in vectors],
-        "basis_vectors_failing_identity": basis_failures,
+        "identity_on_square_zero_vectors": vanishes[:OCTONION],
+        "basis_vectors_failing_identity": [m for m in range(HALF) if not vanishes[OCTONION + m]],
         "example_point": [value.pair() for value in point],
         "example_q": invariants(point, ZERO)["Q"].pair(),
         "example_rank": complex_rank(square_zero_vectors(point, ZERO, ONE)),

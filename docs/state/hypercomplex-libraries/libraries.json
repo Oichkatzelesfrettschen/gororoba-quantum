@@ -4249,6 +4249,7 @@
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/a5_stiefel_pfaffian_germs.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
