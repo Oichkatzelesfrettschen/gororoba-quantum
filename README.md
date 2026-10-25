@@ -31,7 +31,7 @@ acquisition of every provider:
 | Evidence class | Status | Claim records |
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
-| exact finite certificate | established | 23 |
+| exact finite certificate | established | 24 |
 | exploratory reanalysis | exploratory | 67 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |

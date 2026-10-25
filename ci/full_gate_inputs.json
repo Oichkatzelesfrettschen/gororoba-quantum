@@ -525,6 +525,9 @@
       "docs/evidence/calibration/**",
       "docs/evidence/primorial_cover/**",
       "results/kaggle/2026-10-25T075839Z-gororoba-primorial-cover-noise/**"
+    ],
+    "core-primorial-ziller-table-replay": [
+      "docs/evidence/primorial_cover/ziller_table.json"
     ]
   }
 }

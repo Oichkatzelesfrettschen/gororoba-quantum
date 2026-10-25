@@ -731,6 +731,11 @@ circuit and charges the account ledger's change.
   Boundary: Four finite instances, matching Ziller's Table 1 (arXiv 2007.01808, p. 12); no bound on branching depth or gap growth as k increases and no bearing on Ziller's Conjecture 4.1.
   Evidence: [certificates.json](../evidence/primorial_cover/certificates.json), [primorial-cover-defects.md](../notes/topics/primorial-cover-defects.md), [README.md](../evidence/primorial_cover/README.md).
   Gates: replayed by core-688.
+- **primorial-ziller-table-reproduction** (exact finite certificate, algebra). Exhaustive restricted-cover search over every even difference from 2 to h(k) for k = 1..20 reproduces the missing differences and N_min(k) of every row of Ziller's Table 1 (arXiv 2007.01808v1, p. 12): the only missing differences are 20 (k = 6), 32 (k = 8), 86 and 88 (k = 14), 98 (k = 15), 146 (k = 19) and 166, 170 and 172 (k = 20), each excluded over 135 to 180 branch assignments of 3, 5, 7 and 11, and each of the other 628 cells has a verified cover; h(k) is in D(k) in every row.
+  Boundary: Rows k = 1..20 only, with Ziller's h(k) taken as the range bound: the search shows h(k) in D(k) but not that it is the largest difference. Exclusions rest on the depth-first search and its capacity pruning, not on a separately checkable certificate; no bearing on rows k > 20 or Conjecture 4.1.
+  Evidence: [ziller_table.json](../evidence/primorial_cover/ziller_table.json), [primorial-cover-defects.md](../notes/topics/primorial-cover-defects.md), [README.md](../evidence/primorial_cover/README.md), [2007.01808.md](../notes/papers/2007.01808.md).
+  Gates: replayed by core-primorial-ziller-table-replay.
+  Depends on: primorial-cover-defect-certificates.
 - **four-support-topology** (mathematical claim, geometry). On support {1, 10, 18, 25} exact sector identities classify every real tuple; the unit base has 96 connected smooth strata; a 1,200-cell CW model with explicit attaching maps gives torsion-free integral homology and a square-zero positive-degree cohomology ideal, and ordinary doubling preserves the five-factor model for every n >= 5.
   Boundary: The first operand stays on the four-coordinate support; other supports, a wedge decomposition, homotopy type and unrestricted topology remain open.
   Proof origin: repository-written.

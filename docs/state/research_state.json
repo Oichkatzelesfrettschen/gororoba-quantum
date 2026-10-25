@@ -9651,6 +9651,35 @@
       "superseded_by": null
     },
     {
+      "id": "primorial-ziller-table-reproduction",
+      "statement": "Exhaustive restricted-cover search over every even difference from 2 to h(k) for k = 1..20 reproduces the missing differences and N_min(k) of every row of Ziller's Table 1 (arXiv 2007.01808v1, p. 12): the only missing differences are 20 (k = 6), 32 (k = 8), 86 and 88 (k = 14), 98 (k = 15), 146 (k = 19) and 166, 170 and 172 (k = 20), each excluded over 135 to 180 branch assignments of 3, 5, 7 and 11, and each of the other 628 cells has a verified cover; h(k) is in D(k) in every row.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Rows k = 1..20 only, with Ziller's h(k) taken as the range bound: the search shows h(k) in D(k) but not that it is the largest difference. Exclusions rest on the depth-first search and its capacity pruning, not on a separately checkable certificate; no bearing on rows k > 20 or Conjecture 4.1.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/ziller_table.json",
+          "sha256": "a96fb0f2450978ea4f0716ab57116e7456a0c6fd88cc0c7f001e75624bb81e38"
+        }
+      ],
+      "documents": [
+        "docs/notes/topics/primorial-cover-defects.md",
+        "docs/evidence/primorial_cover/README.md",
+        "docs/notes/papers/2007.01808.md"
+      ],
+      "gates": {
+        "core-primorial-ziller-table-replay": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "primorial-cover-defect-certificates"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "primorial-cover-noise-null-subtraction",
       "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00 on its best and median three-qubit paths, with every arm ALAP scheduled, null-subtracted phase-gradient tomography of the eight-CNOT gap-88 cost recovers every coefficient within 0.0032 of its exact value (identification radius 1/16) at 2,803 and 3,169 shots per setting, the budget carrying each mean's variance through the assignment inversion and the null arm's phase variance; the gap-88 repair contrast reads -0.499 against -0.5, the gap-20 Grover quotient reads its marked label at 0.963 to 0.984, and the gap-86 repair leaves every compiled law unchanged. A noise-free CZ conditional phase of 0.02 to 0.1 rad per CZ biases the coefficients by 0.057 to 0.287 with cycle residuals at most 0.0103, and subtracting the zero-angle null arm reduces the bias to 0.0005 to 0.0128; a 10 to 30 kHz detuning of one path qubit biases them by 0.015 to 0.233, reaching multi-body coefficients through the parities its wire carries, and null subtraction leaves at most 0.0022; an sx amplitude error of 0.002 to 0.01 biases them by at most 0.0007.",
       "domain": "implementation",
