@@ -407,9 +407,17 @@ Facts a Garnet case design starts from, each with the record that carries it:
   within -0.63 s to +1.50 s on the retained jobs, so a ceiling adds 1.60 s to
   a case's shot schedule ([timing pilot](../../design/iqm-garnet-timing-pilot.md)).
   The job body carries no runtime or credit cap, which IQM does not offer, so
-  `max_credits` bounds the predicted bill; a runtime beyond the expected
-  schedule plus 1.60 s bills more, and a case sizes its shot schedule from an
-  upper per-shot time and the free mock twin's estimate.
+  `collect` holds `max_credits` on the server side of the job: it cancels a
+  priced job whose compiled estimate less 1.50 s already exceeds the billed
+  seconds the ceiling buys, and a running job once its compilation plus
+  execution time comes within 1.0 s of them, polling every 0.25 s while it
+  executes and recording the cancellation in `ceiling-cancel.json` and
+  `results.json`. `collect` therefore starts right after `submit`. Across
+  the retained Garnet jobs runtime minus estimate ran from -1.50 s to
+  +1.39 s, and the smallest runtime headroom under an approved ceiling was
+  1.69 s, so none of them would have been cancelled. A case still sizes its
+  shot schedule from an upper per-shot time and the free mock twin's
+  estimate, so the cap stops a fault rather than a planned job.
   Extra circuits cost no time beyond their shots, so replicas, randomized
   compilations and readout calibrations belong in the same job.
 - **Reset.** One active-reset cycle shortens a shot from 316 us to 37.5 us

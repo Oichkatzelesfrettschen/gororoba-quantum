@@ -23,7 +23,9 @@ Subcommands:
   before the POST, reads the account credit, posts the job and writes submission.json with the job
   id and the quoted approval. --dry runs every refusal and prints the job without copying or sending.
 - collect RUN_DIR [--poll S] [--timeout S] (network) holds an exclusive lock on RUN_DIR, waits for a
-  terminal status, keeps the job
+  terminal status while holding the approved max_credits (a priced job whose compiled estimate cannot
+  finish within it, or whose runtime nears it, is cancelled and ceiling-cancel.json records why), so it
+  starts right after submit; it keeps the job
   record and, for a completed job, the measurements and measurement_counts artifacts byte for byte
   under raw/, reads the credit again and writes results.json: status, metrics, credits charged and
   per-circuit shot counts.
@@ -64,6 +66,16 @@ RESULTS_SCHEMA = "iqm-results-v1"
 TERMINAL = ("completed", "failed", "cancelled")
 ARTIFACTS = ("measurements", "measurement_counts")
 CREDIT_QUERY = "query($a: UUID!){ credit(accountId: $a) { currentBalance expiresAt } }"
+# IQM Server takes no runtime limit with a job, so collect holds the approved ceiling itself. Billing is
+# ceil(compilation + execution seconds) times the price. The compiler's estimate ran up to
+# ESTIMATE_ABOVE_RUNTIME seconds above the runtime of the retained Garnet jobs (results/iqm/runs/*-garnet-*),
+# so a priced job whose estimate, less that amount, still exceeds the whole seconds max_credits buys cannot
+# finish within them and is cancelled before it executes; a job whose runtime comes within CANCEL_MARGIN of
+# them is cancelled while it runs. Polling runs every EXECUTION_POLL seconds once a priced job executes,
+# inside that margin.
+ESTIMATE_ABOVE_RUNTIME = 1.50
+CANCEL_MARGIN = 1.0
+EXECUTION_POLL = 0.25
 
 # Timing pilot. One X on QB1 and its readout; the four jobs separate a per-job overhead (j1 against
 # j2), a per-shot cost (j2 - j1 over 3000 shots), a per-circuit cost (j3 against j2 at equal total
@@ -427,7 +439,45 @@ def post_job(
     return run_dir
 
 
-def collect(run_dir: Path, client: Client, poll: float = 5.0, timeout: float = 3600.0) -> dict[str, Any]:
+def stamp_of(record: dict[str, Any], status: str) -> dt.datetime | None:
+    for event in record.get("timeline") or []:
+        if event.get("status") == status:
+            return dt.datetime.fromisoformat(str(event["timestamp"]).replace("Z", "+00:00"))
+    return None
+
+
+def ceiling_breach(record: dict[str, Any], max_credits: float, price: float, now: dt.datetime) -> str | None:
+    """Why a nonterminal priced job must be cancelled to stay within max_credits, or None."""
+    if price <= 0:
+        return None
+    seconds = math.floor(max_credits / price + 1e-9)
+    executing = stamp_of(record, "execution_started")
+    estimate = (record.get("compilation") or {}).get("execution_runtime_estimate_seconds")
+    if executing is None:
+        if estimate is not None and float(estimate) - ESTIMATE_ABOVE_RUNTIME > seconds:
+            return (
+                f"the compiled estimate {float(estimate):.3f} s less {ESTIMATE_ABOVE_RUNTIME} s exceeds the "
+                f"{seconds} billed seconds that {max_credits} credits buy at {price} per second"
+            )
+        return None
+    started, ended = stamp_of(record, "compilation_started"), stamp_of(record, "compilation_ended")
+    compiling = (ended - started).total_seconds() if started and ended else 0.0
+    runtime = compiling + (now - executing).total_seconds()
+    if runtime + CANCEL_MARGIN >= seconds:
+        return (
+            f"the runtime {runtime:.2f} s comes within {CANCEL_MARGIN} s of the {seconds} billed seconds that "
+            f"{max_credits} credits buy at {price} per second"
+        )
+    return None
+
+
+def utc_now() -> dt.datetime:
+    return dt.datetime.now(dt.UTC)
+
+
+def collect(
+    run_dir: Path, client: Client, poll: float = 5.0, timeout: float = 3600.0, clock: Any = utc_now
+) -> dict[str, Any]:
     """Collect a terminal job once; a run already collected keeps its first results.json, whose credit
     delta a later collection would mix with every job charged since."""
     import fcntl
@@ -439,12 +489,12 @@ def collect(run_dir: Path, client: Client, poll: float = 5.0, timeout: float = 3
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
             raise PlatformError(f"another collection holds {run_dir}") from None
-        return collect_locked(run_dir, client, poll, timeout)
+        return collect_locked(run_dir, client, poll, timeout, clock)
     finally:
         os.close(fd)
 
 
-def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float) -> dict[str, Any]:
+def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float, clock: Any = utc_now) -> dict[str, Any]:
     retained = run_dir / "results.json"
     if retained.exists():
         results: dict[str, Any] = json.loads(retained.read_text(encoding="utf-8"))
@@ -454,6 +504,9 @@ def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float) -
         return results
     submission = json.loads((run_dir / "submission.json").read_text(encoding="utf-8"))
     job_id = submission["job_id"]
+    price = float(submission.get("price_per_second") or 0.0)
+    max_credits = float(submission.get("max_credits") or 0.0)
+    cancelled: dict[str, Any] | None = None
     deadline = time.monotonic() + timeout
     while True:
         status, body = client.get(f"{API}/jobs/{job_id}")
@@ -462,9 +515,19 @@ def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float) -
         record = json.loads(body)
         if record["status"] in TERMINAL:
             break
+        breach = None if cancelled else ceiling_breach(record, max_credits, price, clock())
+        if breach:
+            answer, reply = client.post(f"{API}/jobs/{job_id}/cancel", {})
+            attempt = {"reason": breach, "status": answer, "reply": reply, "at": iqm_platform.now()}
+            # A refused cancel leaves the job running, so the next poll asks again.
+            if answer in (200, 202, 204):
+                cancelled = attempt
+                write_atomic(run_dir / "ceiling-cancel.json", dump(attempt).encode())
+            print(f"{run_dir.name}: cancel {job_id} answered {answer}: {breach}", file=sys.stderr)
         if time.monotonic() > deadline:
             raise PlatformError(f"job {job_id} is still {record['status']}")
-        time.sleep(poll)
+        executing = price > 0 and stamp_of(record, "execution_started") is not None
+        time.sleep(min(poll, EXECUTION_POLL) if executing else poll)
     raw = run_dir / "raw"
     raw.mkdir(exist_ok=True)
     kept: dict[str, str] = {}
@@ -507,6 +570,8 @@ def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float) -
         ),
         "raw_sha256": kept,
     }
+    if cancelled:
+        results["ceiling_cancel"] = cancelled
     write_atomic(run_dir / "results.json", dump(results).encode())
     return results
 
@@ -703,6 +768,8 @@ def self_test() -> str:
     jobs: dict[str, dict[str, Any]] = {}
     state = {"balance": 30.0, "healthy": True, "posts": 0}
     shots_back: dict[str, int | None] = {"value": None}
+    scripted: dict[str, list[dict[str, Any]]] = {}
+    cancels: list[str] = []
 
     def transport(
         method: str, url: str, body: bytes | None, headers: dict[str, str]
@@ -725,6 +792,9 @@ def self_test() -> str:
                     }
                 ).encode(),
             )
+        if method == "POST" and path.endswith("/cancel"):
+            cancels.append(path.split("/")[3])
+            return 202, {}, b"{}"
         if method == "POST" and path.endswith("/circuit"):
             if state.get("refuse"):
                 return 400, {}, json.dumps({"error_code": "invalid_input", "message": "stub"}).encode()
@@ -735,6 +805,9 @@ def self_test() -> str:
             return 202, {}, json.dumps({"id": job_id}).encode()
         job_id = path.split("/")[3]
         sent = jobs[job_id]
+        if job_id in scripted and path == f"{API}/jobs/{job_id}":
+            queue = scripted[job_id]
+            return 200, {}, json.dumps(queue.pop(0) if len(queue) > 1 else queue[0]).encode()
         if path.endswith("measurements"):
             n = shots_back["value"] or sent["shots"]
             return 200, {}, json.dumps([{"m": [[1]] * n} for _ in sent["circuits"]]).encode()
@@ -953,7 +1026,46 @@ def self_test() -> str:
             raise RuntimeError("shots_ok misreads an unheralded job")
         if not shots_ok([61, 100], heralded) or shots_ok([0, 100], heralded) or shots_ok([101, 100], heralded):
             raise RuntimeError("shots_ok misreads a heralded job")
-    return "iqm jobs: build, check, approval, digest, ceiling, health, checkpoint and collection refusals pass"
+        # The ceiling holds while the job is on the server: max_credits 5 at 0.50 per second buys 10 billed seconds.
+        t0 = dt.datetime(2026, 1, 1, tzinfo=dt.UTC)
+
+        def at(seconds: float) -> str:
+            return (t0 + dt.timedelta(seconds=seconds)).isoformat()
+
+        compiled: list[dict[str, Any]] = [
+            {"status": "compilation_started", "timestamp": at(0.0)},
+            {"status": "compilation_ended", "timestamp": at(0.5)},
+        ]
+        running: dict[str, Any] = {"status": "processing", "compilation": {"execution_runtime_estimate_seconds": 5.0}}
+        running["timeline"] = [*compiled, {"status": "execution_started", "timestamp": at(30.0)}]
+        breaches: list[tuple[dict[str, Any], float, bool]] = [
+            ({"status": "pending_execution", "compilation": {"execution_runtime_estimate_seconds": 11.5}}, 0.0, False),
+            ({"status": "pending_execution", "compilation": {"execution_runtime_estimate_seconds": 11.6}}, 0.0, True),
+            ({"status": "pending_compilation", "timeline": []}, 0.0, False),
+            (running, 38.0, False),
+            (running, 38.6, True),
+        ]
+        for record, now, cancel in breaches:
+            breach = ceiling_breach({"timeline": compiled, **record}, 5.0, 0.5, t0 + dt.timedelta(seconds=now))
+            if bool(breach) != cancel:
+                raise RuntimeError(f"ceiling_breach reads {record['status']} at {now} s as {breach}")
+        if ceiling_breach({**running, "compilation": {"execution_runtime_estimate_seconds": 99.0}}, 5.0, 0.0, t0):
+            raise RuntimeError("an unpriced job breaches a credit ceiling")
+        over = submit(case, "j4-1x4000-active1", "garnet:mock", "approved", approved, 5, client, runs, "s6")
+        job_id = json.loads((over / "submission.json").read_text())["job_id"]
+        pending = {"id": job_id, "status": "pending_execution", "timeline": compiled}
+        pending["compilation"] = {"execution_runtime_estimate_seconds": 12.0}
+        scripted[job_id] = [pending, {**pending, "status": "cancelled", "metrics": {"billed_seconds": 0.0}}]
+        results = collect(over, client, poll=0, clock=lambda: t0)
+        if (
+            cancels != [job_id]
+            or results["status"] != "cancelled"
+            or "estimate" not in results["ceiling_cancel"]["reason"]
+        ):
+            raise RuntimeError(f"an over-ceiling estimate collected as {results} after cancels {cancels}")
+        if not (over / "ceiling-cancel.json").exists():
+            raise RuntimeError("the ceiling cancellation left no record")
+    return "iqm jobs: build, check, approval, digest, ceiling, health, checkpoint, cancel and collection refusals pass"
 
 
 def main() -> int:
