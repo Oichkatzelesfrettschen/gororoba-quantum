@@ -13,7 +13,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 | Location | Contents | Git treatment |
 | --- | --- | --- |
 | `docs/pdf/` | 36 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 150 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/local_source_cache/` | 151 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -137,6 +137,7 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Zhilina: doubly alternative zero divisors and anisotropic annihilators](notes/2608.26893.md) | [PDF](https://arxiv.org/pdf/2608.26893v1) | `2608.26893v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2608.26893v1) |
 | [Zhilina: orthogonality graphs, Part II](notes/papers/2608.28163.md) | [PDF](https://arxiv.org/pdf/2608.28163v1) | `2608.28163v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2608.28163v1) |
 | [Zhilina: orthogonality graphs, Part I](notes/papers/2608.28176.md) | [PDF](https://arxiv.org/pdf/2608.28176v1) | `2608.28176v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2608.28176v1) |
+| [Zhilina: diameter of the commutativity graph of the real sedenions](notes/papers/2608.26890.md) | [PDF](https://arxiv.org/pdf/2608.26890v1) | `2608.26890v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2608.26890v1) |
 | [Coste: semialgebraic triangulation and triviality](notes/coste-semialgebraic-geometry.md) | [PDF](http://nicolas.patrois.free.fr/maths/agr%C3%A9gation/documents/semialgebraic-geometry-Coste.pdf) | `coste-semialgebraic-geometry-2002.pdf` | [Rehosting permission unestablished](https://perso.univ-rennes1.fr/michel.coste/polyens/SAG.pdf) |
 | [Das et al. 2019 -- A Case for Multi-Programming Quantum Computers](notes/papers/das-2019-multiprogramming.md) | [PDF](https://fast.cc.gatech.edu/papers/MICRO_2019_4.pdf) | `das-2019-multiprogramming.pdf` | [Server redistribution requires permission](https://fast.cc.gatech.edu/papers/MICRO_2019_4.pdf) |
 | [Hatcher: attachment and quotient topology](notes/hatcher-algebraic-topology.md) | [PDF](https://pi.math.cornell.edu/~hatcher/AT/ATch0.pdf) | `Hatcher-ATch0.pdf` | [Personal-copy permission](https://pi.math.cornell.edu/~hatcher/AT/ATcopyright.html) |

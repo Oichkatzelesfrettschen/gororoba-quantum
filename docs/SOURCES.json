@@ -1535,6 +1535,24 @@
       "doi": "10.1088/1367-2630/15/2/025024",
       "venue": "New Journal of Physics 15, 025024 (2013)",
       "receipt_url": "https://api.crossref.org/works/10.1088/1367-2630/15/2/025024"
+    },
+    "docs/notes/papers/2608.26890.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/s10958-024-07097-x",
+      "venue": "Journal of Mathematical Sciences 281(2), 246-259 (2024)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/s10958-024-07097-x"
+    },
+    "docs/notes/papers/guterman-zhilina-2023-split-algebras.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/s10958-023-06285-5",
+      "venue": "Journal of Mathematical Sciences 269(3), 331-355 (2023)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/s10958-023-06285-5"
+    },
+    "docs/notes/papers/cawagas-2004-sedenion-structure.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.7151/dmgaa.1088",
+      "venue": "Discussiones Mathematicae - General Algebra and Applications 24(2), 251-265 (2004)",
+      "receipt_url": "https://api.crossref.org/works/10.7151/dmgaa.1088"
     }
   },
   "web_sources": [
@@ -2952,6 +2970,195 @@
       "retrieved_at_utc": "2026-10-25T09:04:56+00:00",
       "reading_scope": "Perceval 1.3.1 constraint checker at commit 64ed82f9: license header, class constants and method inventory; byte-identical to the file installed by python-perceval-quandela 1.3.1; verification logic not read line by line",
       "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1007/s10958-024-07097-x",
+      "note": "docs/notes/papers/2608.26890.md",
+      "sha256": "12128deca3054395e2c395584adc1198bfd23730801fa0cad6668170f67746a4",
+      "bytes": 8720,
+      "retrieved_at_utc": "2026-10-25T19:42:34Z",
+      "reading_scope": "Crossref DOI metadata: title, author, journal, volume, issue, pages, publication date",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1007/s10958-023-06285-5",
+      "note": "docs/notes/papers/guterman-zhilina-2023-split-algebras.md",
+      "sha256": "c083c3a094226455d762fea608bbe9fd460e21d274a8522ef9a505a9506b7877",
+      "bytes": 11317,
+      "retrieved_at_utc": "2026-10-25T19:42:35Z",
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, issue, pages, publication date; reference list not read",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://link.springer.com/article/10.1007/s10958-023-06285-5",
+      "note": "docs/notes/papers/guterman-zhilina-2023-split-algebras.md",
+      "sha256": "7ecc1f9ed1e4f8f20de388bee784cfa85076a794a68ad223a0eceb55d0c74afa",
+      "bytes": 303887,
+      "retrieved_at_utc": "2026-10-25T19:42:35Z",
+      "reading_scope": "Landing page: abstract, citation metadata and the subscription-preview notice; article body unread",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://patents.google.com/patent/US10135366B2/en",
+      "retrieved_at_utc": "2026-10-25T19:37:58Z",
+      "sha256": "d7fdcac7148ba243533fd1d8c7af7319dfcf9eb785da7083d1dfd55d75c9bea8",
+      "bytes": 187713,
+      "reading_scope": "Patent page: bibliographic data, description, equations and claims",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://patents.google.com/patent/US10144532B2/en",
+      "retrieved_at_utc": "2026-10-25T19:37:59Z",
+      "sha256": "20c7860d853c2fbffd72032195f45fcacbf7a576e23c52058b6aeed7b7abf6b2",
+      "bytes": 169482,
+      "reading_scope": "Patent page: bibliographic data, description, equations and claims",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://patents.google.com/patent/US10322827B2/en",
+      "retrieved_at_utc": "2026-10-25T19:37:59Z",
+      "sha256": "63e81f89fe47d53c96969983104cc6f759f7214f8f84467d1966dc38fc439e3e",
+      "bytes": 174685,
+      "reading_scope": "Patent page: bibliographic data, description, equations and claims",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://patents.google.com/patent/US20190058105A1/en",
+      "retrieved_at_utc": "2026-10-25T19:38:00Z",
+      "sha256": "28841f1bfa844e7b7899facc7e2e003132dcb2f727983ab77cc1b3b7cc0a9468",
+      "bytes": 143607,
+      "reading_scope": "Patent page: bibliographic data, description, equations and claims",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://patents.google.com/patent/US20190295733A1/en",
+      "retrieved_at_utc": "2026-10-25T19:38:00Z",
+      "sha256": "3a940962f6040f0278b51fadc3598024fdf0be5c3f1d4d0187c819463cb20aa2",
+      "bytes": 173664,
+      "reading_scope": "Patent page: bibliographic data, description, equations and claims",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://api.crossref.org/works/10.1109/TPS.2019.2942997",
+      "retrieved_at_utc": "2026-10-25T19:38:01Z",
+      "sha256": "24ccfe31bd1c5d44b1e7460bc35fae1bf969c1cdbde6da0a0e142c88d724a9f5",
+      "bytes": 3943,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://api.crossref.org/works/10.2514/6.2019-0869",
+      "retrieved_at_utc": "2026-10-25T19:38:01Z",
+      "sha256": "d88e07eb51121c2f32239daea712998526383e678512eee79151b7644e80df4c",
+      "bytes": 3763,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://api.crossref.org/works/10.1504/IJSPACESE.2015.075910",
+      "retrieved_at_utc": "2026-10-25T19:38:01Z",
+      "sha256": "3ec53d3444be652559e9f8e97f692f07a8abf5478e0c65403b2a0e49ee01b3a2",
+      "bytes": 1614,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://api.crossref.org/works/10.1103/PhysRevLett.63.2701",
+      "retrieved_at_utc": "2026-10-25T19:38:02Z",
+      "sha256": "818affd7be7c5d685d659b10daacff674f856298c3ad87546de6fcdac1fbf38d",
+      "bytes": 3065,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://api.crossref.org/works/10.1103/PhysRevLett.64.825",
+      "retrieved_at_utc": "2026-10-25T19:38:02Z",
+      "sha256": "e6e79cb2653f5195a7004a4fff1598e5769776181fa9e8e3ecd7049628b63a2c",
+      "bytes": 2722,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://api.crossref.org/works/10.1038/343732a0",
+      "retrieved_at_utc": "2026-10-25T19:38:02Z",
+      "sha256": "c628ea89b0edc0d8da20772216baa5aa87ba93c8f235e6fde99385bca13924e0",
+      "bytes": 3859,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://api.crossref.org/works/10.1103/PhysRevLett.64.2115",
+      "retrieved_at_utc": "2026-10-25T19:38:03Z",
+      "sha256": "bcdb40ff510cbbe76dba6dfc1467cb3040515b850ff1e9046c9ea4bb905ed684",
+      "bytes": 2888,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://api.crossref.org/works/10.1103/PhysRevD.65.042005",
+      "retrieved_at_utc": "2026-10-25T19:38:03Z",
+      "sha256": "6b1a0d45d3093e7c83782233fe930f14f1969f72962e00849f6f8eaa5ef113dd",
+      "bytes": 12635,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://www.twz.com/39012/the-navy-finally-speaks-up-about-its-bizarre-ufo-patent-experiments",
+      "retrieved_at_utc": "2026-10-25T19:38:03Z",
+      "sha256": "f03fb4fd8b135ff6bef08da5f254f1ce44183220063c279e71f167b4a56d3d6e",
+      "bytes": 160357,
+      "reading_scope": "News article text: the Navy's statements and patent prosecution reporting",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://www.twz.com/28729/docs-show-navy-got-ufo-patent-granted-by-warning-of-similar-chinese-tech-advances",
+      "retrieved_at_utc": "2026-10-25T19:38:04Z",
+      "sha256": "7d42bfd54f3c62a5b58aef689760f674220a55f3d7ba71559cd7aa4e58c61779",
+      "bytes": 205912,
+      "reading_scope": "News article text: the Navy's statements and patent prosecution reporting",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://www.twz.com/37134/emails-show-navys-ufo-patents-went-through-significant-internal-review-resulted-in-a-demo",
+      "retrieved_at_utc": "2026-10-25T19:38:04Z",
+      "sha256": "ba2060237e3f264827a27dec4acd2783fd66291b2bef621721ba28ed29285654",
+      "bytes": 215895,
+      "reading_scope": "News article text: the Navy's statements and patent prosecution reporting",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://arxiv.org/pdf/1908.00232v2",
+      "retrieved_at_utc": "2026-10-25T19:47:39Z",
+      "sha256": "bd42095d6ee01002f082b290490f9f38b6e2a091d784beb80e0952702ad0f8cb",
+      "bytes": 1595078,
+      "reading_scope": "Version-pinned PDF: abstract, Section 2 and Appendix A graviton-photon mixing",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/pais-patent-web-sources.md",
+      "url": "https://api.crossref.org/works/10.1103/PhysRev.82.664",
+      "retrieved_at_utc": "2026-10-25T19:47:39Z",
+      "sha256": "1d42d0f4d7075e68dcd7b1b8a9452511ac76899730b621d8452d95143a141214",
+      "bytes": 3669,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -8425,6 +8632,36 @@
       "redistribution": "excluded_without_permission",
       "rights_locator": "Quandela website legal terms, section 7 (Intellectual Property)",
       "rights_reason": "The PDF prints no license. The site terms of the serving website (section 7, Intellectual Property) prohibit reproduction, extraction or reuse of its contents without prior written authorization from Quandela, so no redistribution grant is established."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/2608.26890v1",
+      "note": "docs/notes/papers/2608.26890.md",
+      "audited_at_utc": "2026-10-25T19:45:00+00:00",
+      "status": "external_only",
+      "sha256": "116b6c3bb4f67e840cf11d12845a630ab58b1d51079b5729bcb1af7723c98913",
+      "bytes": 288397,
+      "pages": 17,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "116b6c3bb4f67e840cf11d12845a630ab58b1d51079b5729bcb1af7723c98913",
+        "verified_at_utc": "2026-10-25T19:36:34+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/2608.26890v1",
+        "evidence_sha256": "aa447365a510d8c0a40502b8e272b085a92f788a70f24f714534ccecf1d4e50d",
+        "evidence_retrieved_at_utc": "2026-10-25T19:36:34+00:00",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2608.26890v1.html",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      },
+      "excluded_published_path": "docs/pdf/2608.26890v1.pdf",
+      "local_cache_path": "docs/local_source_cache/2608.26890v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",
