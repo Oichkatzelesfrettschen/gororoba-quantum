@@ -2677,16 +2677,26 @@
     },
     {
       "id": "a5-stiefel-universal",
-      "statement": "Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.",
+      "statement": "Every nonzero A_5 Stiefel element (a, b), with a, b pure, orthogonal and of equal norm in A_4, is a zero divisor with nullity at least 4, answering Moreno's Section 5 question affirmatively under the cd_core convention: for doubly pure y and z = p + i q, the bordered matrix A(z, t) = [[0, -t^T], [t, C_z]] has Pf A = -(z.t) Q(z) G(z) over Z[z, t], rank_R L_y = 2 rank_C A(z, conj z), and Q(z) = 0 on the Stiefel set, so Pf(L_a + i R_b) vanishes on the whole Stiefel set.",
       "domain": "algebra",
       "evidence_class": "mathematical claim",
-      "status": "open",
-      "boundary": "The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction any point where Pf(L_a + i R_b) is nonzero refutes it and entails an open dense set of such points, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.",
-      "evidence": [],
-      "documents": [
-        "docs/notes/math-0512517.md"
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md. The gate checks over Z[z, t] every coefficient of the 15 cofactor identities P_j = Q G z_j and of Pf A(z, t) = -(z.t) Q G, and the transport on all 30 imaginary basis elements against all 32 basis vectors; no density, genericity or random-point step enters. An independent route checks z (z x) = -Q x on the eight vectors (h, 0), (0, h), h in {1, u, v, uv}, which with irreducibility of the quadric Q = 0 gives the same bound. The statement is under the cd_core doubling convention and is not formalized in Rocq. Literature: on the slice H_5^perp (y_0 = y_8 = y_16 = y_24 = 0) the Stiefel conditions equal C-orthogonality of the pair {a, b} of Biss, Christensen, Dugger and Isaksen (math/0702075, Theorem 1.5), which already makes every Stiefel element there a zero divisor for every n; a search of arXiv, the citations of math/0512517 and zbMATH Open on 2026-10-25 found no answer for the full A_5 Stiefel set, whose e_8 and e_24 directions that theorem leaves out. Koebisu's criterion D_14 = 0 (arXiv 2608.08232) decides zero divisors in A_5 without evaluating D_14 on the Stiefel set; the factorization here gives D_14 = N |Q G|^2 on doubly pure elements.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+          "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+        }
       ],
-      "gates": {},
+      "documents": [
+        "docs/evidence/a5-stiefel-pfaffian-germs/README.md",
+        "docs/notes/math-0512517.md",
+        "docs/evidence/moreno_stiefel/README.md"
+      ],
+      "gates": {
+        "core-690": "replay",
+        "core-691": "admission"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
@@ -2698,7 +2708,7 @@
       ],
       "supersedes": [],
       "superseded_by": null,
-      "proof_origin": "unproved-open"
+      "proof_origin": "repository-written"
     },
     {
       "id": "a6-stiefel-witness",
@@ -5749,8 +5759,8 @@
       "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
       "domain": "geometry",
       "evidence_class": "mathematical claim",
-      "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby. Claim a5-tangent-bound-not-linear shows exactly that T(x) is never inside the closed rank cone R_k, so the cone over a piece of the tangent-bound dimension through a witness would be curved. Claim a5-schur-germ-unobstructed finds the excess Schur-complement equations vanishing through order 63 on the smooth germ of the tangent-bound dimension at all 12 witnesses, so the statement there is equivalent to their exact vanishing on that germ, which an ideal-membership certificate or an explicit parameterization of the germ would establish. Claim a5-nullity12-quadric-germ establishes the statement for the {a, 0} family at its three nonzd-axis witnesses: the germ of R_12 there is the quadric cone V, of local dimension 15 on the unit sphere with e_8 and e_24 tangent, so the nullity-8 and nullity-4 families carry the open part.",
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md, local to the twelve recorded witnesses 1, 4, 5, 6, 8, 11, 12, 13, 15, 18, 19 and 20 of rank_locus_local_dimension. At each, exact integer kernels give the family nullity, the Schur tangent cone dimension 16, 22 or 28, e_8 and e_24 in T(x) and dim T(x) cap H_5^perp = dim T(x) - 2, and a smooth piece of that dimension through x lies in R_k: the quadric cone V at 1, 8, 15 (a5-nullity12-quadric-germ); the Stiefel cone Q = 0 at 6, 13, 20 and the quartic G = 0 at 5, 12, 19, each with real Jacobian rank 4 and inside R_4 by Pf A = -(z.t) Q G; at 4, 11, 18 the image of s exp(D_X) z(k) for the 14 octonion derivations D_X on both halves and a degree-2 curve z(k) through x whose rank C_z <= 10 holds identically by 13 exact points against degree 12, with complex orbit rank 11. The Schur sandwich makes each piece the germ of S_k. The family dimensions are imported from the local-dimension record; the result covers no point off these witnesses, no covering of D_(5,4), D_(5,8) or D_(5,12), and is not formalized in Rocq.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
@@ -5763,19 +5773,26 @@
         {
           "path": "docs/evidence/rank_locus_rotation_composite/audit.json",
           "sha256": "e5bb1f6f9084990c9cb97b15b5edee86ac97980b79a95e35014e1fb1f303c30d"
+        },
+        {
+          "path": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+          "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
         }
       ],
       "documents": [
         "docs/notes/rank_locus_two_dimension_gap.md",
         "docs/evidence/rank_locus_local_dimension/README.md",
         "docs/evidence/rank_locus_second_order/README.md",
-        "docs/evidence/rank_locus_rotation_composite/README.md"
+        "docs/evidence/rank_locus_rotation_composite/README.md",
+        "docs/evidence/a5-stiefel-pfaffian-germs/README.md"
       ],
       "gates": {
         "core-553": "replay",
         "core-554": "admission",
         "core-585": "replay",
-        "core-586": "replay"
+        "core-586": "replay",
+        "core-690": "replay",
+        "core-691": "admission"
       },
       "acquisitions": [],
       "assumptions": [
@@ -5783,11 +5800,13 @@
       ],
       "depends_on": [
         "a5-rank-locus-local-dimension",
-        "nullity-twelve-cone"
+        "nullity-twelve-cone",
+        "a5-nullity12-quadric-germ",
+        "a5-stiefel-universal"
       ],
       "supersedes": [],
       "superseded_by": null,
-      "proof_origin": "unproved-open"
+      "proof_origin": "repository-written"
     },
     {
       "id": "qi-tuna17-zero-divisor-common-response",
@@ -9588,8 +9607,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-6/result.json",
-          "sha256": "875b57ae59419494e3dfd12e7db2c88913d51da96f4ede20c1d4f3a0fb14a398"
+          "path": "docs/evidence/algebra-device-conjectures-7/result.json",
+          "sha256": "7fa63ce87a541b1ad61143f6e42e847eec35355c77b894e45ca0638beaec068f"
         }
       ],
       "gates": {

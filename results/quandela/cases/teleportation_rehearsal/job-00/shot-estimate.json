@@ -1,0 +1,15 @@
+{
+ "basis": "estimate_required_shots under the perfs of results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/platform-after/catalogue.json",
+ "inputs": {
+  "+X": 895686,
+  "+Y": 895686,
+  "+Z": 856264,
+  "-X": 895686,
+  "-Y": 895686,
+  "-Z": 938915
+ },
+ "largest": 938915,
+ "samples": 900,
+ "schema": "qd-teleportation-shot-estimate-v1",
+ "shots_per_iteration": 1200000
+}

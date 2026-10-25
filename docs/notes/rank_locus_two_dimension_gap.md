@@ -305,17 +305,20 @@ and is never evidence of the gap.
    - The record also places the A15 family of x0 inside V, and joins x0 to
      e1 + e25 by an exact path of constant nullity 12.
    - V passes through none of the nullity-8 and nullity-4 witnesses, where
-     u ^ v is nonzero. Those families stay open.
+     u ^ v is nonzero; the Pfaffian germs evidence covers those families.
 
 Every computation is a loop over independent witnesses or sample points
 and runs through `parallel.py`. Each joins `ci/gates.json` with `--check`
 regenerating its retained result; computations 1, 2, 3, 5, 6 and 7 also run
 `--self-test`, which rejects a corrupted nullity, frame, coefficient or
 rank in normal and `-O` modes. The registry
-carries the question as the open claim `a5-nonzero-divisor-two-dimension-gap`
-and promotes it only through a retained certificate. Claim
-`a5-nullity12-quadric-germ` admits the {a, 0} row at its witnesses, and the
-nullity-8 and nullity-4 rows stay open.
+carries the question as claim `a5-nonzero-divisor-two-dimension-gap`.
+Claim `a5-nullity12-quadric-germ` admits the {a, 0} row at its witnesses,
+and [the Pfaffian germs evidence](../evidence/a5-stiefel-pfaffian-germs/README.md)
+(gates core-690, core-691) establishes the nullity-8 and nullity-4 rows at
+their witnesses: the Stiefel cone Q = 0 and the quartic G = 0 lie in R_4 by
+Pf A = -(z.t) Q G, and an octonion-derivation orbit of a degree-2 curve
+gives the nullity-8 piece. The claim covers the twelve witnesses only.
 
 ## Route to the global classification (roadmap items 3-8)
 
