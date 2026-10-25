@@ -22,10 +22,12 @@ the only path from the repository to Kaggle:
   to the machine's device and returns every file the entry created or
   changed under the repository root.
 - ``status RUN_DIR`` reports the kernel state.
-- ``collect RUN_DIR`` downloads the run's kernel version into RUN_DIR/output
-  and writes collect.json with the sha256 of every file.
-- ``verify`` checks every retained collect.json against the files under its
-  output/ directory, offline.
+- ``collect RUN_DIR`` downloads the run's kernel version into a new capture
+  and writes its receipt with the sha256 of every file. The first capture
+  carrying exit.json becomes RUN_DIR/output with RUN_DIR/collect.json; every
+  other attempt, partial or repeated, stays under RUN_DIR/captures/<id>/.
+- ``verify`` checks every retained receipt against the files under its
+  output/ directory and the receipt chain of each run, offline.
 - ``dataset --slug SLUG --include PATH`` uploads tracked repository files as
   one archive a kernel unpacks; ``artifact --slug SLUG --file PATH --sha256
   HEX`` uploads one verified file (a built wheel) that a kernel reads in
@@ -57,6 +59,7 @@ import hashlib
 import io
 import json
 import lzma
+import os
 import re
 import subprocess
 import sys
@@ -1570,14 +1573,122 @@ def download_version(owner: str, slug: str, version: int, target: Path) -> list[
     return written
 
 
+CAPTURE_SCHEMA = "kaggle-aer-collect-v2"
+
+
+def _fsync_dir(path: Path) -> None:
+    fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def _publish_new(path: Path, record: dict[str, Any]) -> None:
+    """Write RECORD to PATH by exclusive creation, then flush the file and its directory entry to disk."""
+    with path.open("xb") as handle:
+        handle.write((json.dumps(record, indent=1) + "\n").encode("utf-8"))
+        handle.flush()
+        os.fsync(handle.fileno())
+    _fsync_dir(path.parent)
+
+
+def _manifest(out: Path) -> dict[str, str]:
+    return {p.relative_to(out).as_posix(): sha256(p.read_bytes()) for p in sorted(out.rglob("*")) if p.is_file()}
+
+
+def receipt_chain(run_dir: Path) -> list[Path]:
+    """Every receipt of RUN_DIR in write order.
+
+    A v1 collect.json predates captures and comes first; every v2 receipt,
+    the primary collect.json included, carries its capture id, a UTC stamp
+    that sorts in write order.
+    """
+    primary = run_dir / "collect.json"
+    legacy: list[Path] = []
+    stamped: list[tuple[str, Path]] = []
+    candidates = sorted((run_dir / "captures").glob("*/collect.json")) + ([primary] if primary.is_file() else [])
+    for path in candidates:
+        record = json.loads(path.read_text(encoding="utf-8"))
+        if record["schema"] == CAPTURE_SCHEMA:
+            stamped.append((record["capture"], path))
+        else:
+            legacy.append(path)
+    return legacy + [path for _, path in sorted(stamped)]
+
+
+def _new_capture(run_dir: Path) -> tuple[str, Path]:
+    """A capture id later than every receipt of RUN_DIR and its directory, created exclusively."""
+    chain = receipt_chain(run_dir)
+    last = json.loads(chain[-1].read_text(encoding="utf-8")).get("capture", "") if chain else ""
+    while True:
+        capture_id = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%S.%fZ")
+        if capture_id > last:
+            break
+    directory = run_dir / "captures" / capture_id
+    directory.parent.mkdir(exist_ok=True)
+    directory.mkdir()
+    return capture_id, directory
+
+
+def _capture_record(run_dir: Path, capture_id: str, kernel: str, state: str, out: Path) -> dict[str, Any]:
+    chain = receipt_chain(run_dir)
+    return {
+        "schema": CAPTURE_SCHEMA,
+        "kernel": kernel,
+        "capture": capture_id,
+        "state": state,
+        "collected_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ"),
+        "submission_sha256": sha256((run_dir / "submission.json").read_bytes()),
+        "predecessor_sha256": sha256(chain[-1].read_bytes()) if chain else None,
+        "files": _manifest(out),
+    }
+
+
+def _preserve_unreceipted(run_dir: Path, kernel: str) -> None:
+    """Give every tree no receipt describes its own capture with an UNRECEIPTED receipt.
+
+    Such a tree is an output/ refused before captures existed, an output/
+    promoted by an attempt killed before it wrote collect.json, or a capture
+    killed before it wrote its receipt. The tree moves to a new capture id,
+    so the chain stays in write order; a capture directory holding no file
+    carries no bytes and is removed.
+    """
+    import shutil
+
+    sources = [d / "output" for d in sorted((run_dir / "captures").glob("*")) if not (d / "collect.json").exists()]
+    if not (run_dir / "collect.json").exists():
+        sources.append(run_dir / "output")
+    for out in sources:
+        if out.exists() and any(p.is_file() for p in out.rglob("*")):
+            capture_id, directory = _new_capture(run_dir)
+            os.rename(out, directory / "output")
+            _fsync_dir(out.parent)
+            _fsync_dir(directory)
+            record = _capture_record(run_dir, capture_id, kernel, "UNRECEIPTED", directory / "output")
+            _publish_new(directory / "collect.json", record)
+        if out.parent != run_dir and out.parent.exists():
+            require(
+                not any(p.is_file() for p in out.parent.rglob("*")),
+                f"{out.parent} holds files outside output/ and no receipt",
+            )
+            shutil.rmtree(out.parent)
+
+
 def collect(args: argparse.Namespace) -> int:
-    """Download the run's own kernel version and record the sha256 of every returned file.
+    """Download the run's own kernel version into a new capture and record the sha256 of every returned file.
 
     `kernels status` reports the slug's latest version whatever version it
     names, so a later push would hide this run's state. The versioned output
     carries kaggle_kernel/kernel_main.py's exit.json, written on every exit
-    path, and that file alone decides completion.
+    path, and that file alone decides completion. No attempt rewrites or
+    removes an earlier one: the first capture carrying exit.json is promoted
+    by rename to RUN_DIR/output with RUN_DIR/collect.json, and every other
+    capture keeps its bytes and receipt under RUN_DIR/captures/<id>/. Each
+    receipt binds submission.json and its predecessor receipt by sha256. An
+    exclusive lock on RUN_DIR serializes concurrent collections of one run.
     """
+    import fcntl
     import shutil
 
     run_dir = Path(args.run_dir).resolve()
@@ -1585,58 +1696,86 @@ def collect(args: argparse.Namespace) -> int:
     require("kernel_version" in submission, f"{run_dir} records no kernel version to collect")
     versioned = kernel_ref(submission)
     reported = kaggle("kernels", "status", versioned).strip()
-    out = run_dir / "output"
-    # A refused earlier attempt leaves its partial download here; the ledger
-    # describes one complete download, so every retry starts empty.
-    if out.exists():
-        shutil.rmtree(out)
-    out.mkdir()
-    owner, slug = submission["kernel"].split("/")
-    download_version(owner, slug, int(submission["kernel_version"]), out)
-    for stray in out.iterdir():
-        # The kernel's results live in output/ and its log beside it; anything
-        # else under /kaggle/working is scratch that Kaggle also returns.
-        if stray.is_dir() and stray.name != "output":
-            shutil.rmtree(stray)
-    exit_file = out / "output" / "exit.json"
+    lock = os.open(run_dir, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        _preserve_unreceipted(run_dir, versioned)
+        capture_id, directory = _new_capture(run_dir)
+        out = directory / "output"
+        out.mkdir()
+        owner, slug = submission["kernel"].split("/")
+        try:
+            download_version(owner, slug, int(submission["kernel_version"]), out)
+        except BaseException as reason:
+            record = _capture_record(run_dir, capture_id, versioned, "FAILED", out)
+            record["error"] = f"{type(reason).__name__}: {reason}"
+            _publish_new(directory / "collect.json", record)
+            raise
+        discarded: dict[str, str] = {}
+        for stray in sorted(out.iterdir()):
+            # Kaggle returns all of /kaggle/working: the kernel's results in
+            # output/, its log beside it, and the repository bundle the push
+            # uploaded. The receipt keeps each discarded file's digest.
+            if stray.is_dir() and stray.name != "output":
+                discarded |= {f"{stray.name}/{rel}": digest for rel, digest in _manifest(stray).items()}
+                shutil.rmtree(stray)
+        exit_file = out / "output" / "exit.json"
+        if exit_file.is_file():
+            returncode = json.loads(exit_file.read_text(encoding="utf-8"))["returncode"]
+            state = "COMPLETE" if returncode == 0 else "ERROR"
+        else:
+            state = "PARTIAL"
+        record = _capture_record(run_dir, capture_id, versioned, state, out)
+        record["reported_status"] = reported
+        record["discarded"] = discarded
+        primary = run_dir / "collect.json"
+        if state != "PARTIAL" and not primary.exists() and not (run_dir / "output").exists():
+            os.rename(out, run_dir / "output")
+            _fsync_dir(run_dir)
+            _publish_new(primary, record)
+            directory.rmdir()
+            if not any(directory.parent.iterdir()):
+                directory.parent.rmdir()
+            _fsync_dir(run_dir)
+            receipt = primary
+        else:
+            receipt = directory / "collect.json"
+            _publish_new(receipt, record)
+    finally:
+        os.close(lock)
     # The reported status names the slug's latest version, so it cannot stand
     # in for a missing exit.json: such a version is unfinished or died before
-    # kernel_main ran, and its downloaded files stay for inspection unledgered.
+    # kernel_main ran, and its capture keeps what it returned.
     require(
-        exit_file.is_file(),
+        state != "PARTIAL",
         f"{versioned} returned no exit.json (status of the latest version: {reported}); "
-        f"{out.relative_to(ROOT)} holds what it returned and no collect.json was written",
+        f"{receipt.relative_to(ROOT)} records what it returned",
     )
-    returncode = json.loads(exit_file.read_text(encoding="utf-8"))["returncode"]
-    state = "COMPLETE" if returncode == 0 else "ERROR"
-    files = {p.relative_to(out).as_posix(): sha256(p.read_bytes()) for p in sorted(out.rglob("*")) if p.is_file()}
-    record = {
-        "schema": "kaggle-aer-collect-v1",
-        "kernel": versioned,
-        "state": state,
-        "collected_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ"),
-        "files": files,
-    }
-    (run_dir / "collect.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(record, indent=1))
     return 0
 
 
-def verify(args: argparse.Namespace) -> int:
-    """Every retained collect.json names exactly the files under its output/ with their sha256.
+def _verify_tree(name: str, record: dict[str, Any], out: Path) -> None:
+    present = {p.relative_to(out).as_posix() for p in out.rglob("*") if p.is_file()}
+    require(present == set(record["files"]), f"{name}: output files differ from its receipt")
+    for rel, digest in record["files"].items():
+        require(sha256((out / rel).read_bytes()) == digest, f"{name}: {rel} differs from its sha256")
 
-    A versioned run's ledger must include the exit.json collection required;
-    an earlier, unversioned run keeps the status Kaggle reported then.
+
+def verify(args: argparse.Namespace) -> int:
+    """Every retained receipt names exactly the files under its output/ with their sha256.
+
+    A versioned run's primary collect.json must include the exit.json
+    collection required; an earlier, unversioned run keeps the status Kaggle
+    reported then. Each v2 receipt binds the run's submission.json and the
+    receipt written before it, so the chain of a run holds every attempt.
     """
     runs = sorted(RESULTS.glob("*/collect.json"))
+    captured = 0
     for path in runs:
         run_dir = path.parent
         record = json.loads(path.read_text(encoding="utf-8"))
-        out = run_dir / "output"
-        present = {p.relative_to(out).as_posix() for p in out.rglob("*") if p.is_file()}
-        require(present == set(record["files"]), f"{run_dir.name}: output files differ from collect.json")
-        for rel, digest in record["files"].items():
-            require(sha256((out / rel).read_bytes()) == digest, f"{run_dir.name}: {rel} differs from its sha256")
+        _verify_tree(run_dir.name, record, run_dir / "output")
         submission = submission_of(run_dir)
         require(record["kernel"] == kernel_ref(submission), f"{run_dir.name}: kernel differs")
         # Runs pushed before push recorded kernel versions also predate
@@ -1648,8 +1787,36 @@ def verify(args: argparse.Namespace) -> int:
         )
         for ref, digest in submission.get("datasets", {}).items():
             require_dataset_version(run_dir.name, ref, digest, dataset_record(ref.split("/")[1]))
+    for captures in sorted(RESULTS.glob("*/captures")):
+        run_dir = captures.parent
+        submission = submission_of(run_dir)
+        for directory in sorted(captures.iterdir()):
+            name = f"{run_dir.name}/captures/{directory.name}"
+            require((directory / "collect.json").is_file(), f"{name} has no receipt")
+            record = json.loads((directory / "collect.json").read_text(encoding="utf-8"))
+            require(record["capture"] == directory.name, f"{name}: receipt names capture {record['capture']}")
+            require(record["kernel"] == kernel_ref(submission), f"{name}: kernel differs")
+            if record["state"] in ("COMPLETE", "ERROR"):
+                require("output/exit.json" in record["files"], f"{name}: a {record['state']} capture lacks exit.json")
+            _verify_tree(name, record, directory / "output")
+            captured += 1
+    for run_dir in sorted({p.parent for p in runs} | {c.parent for c in RESULTS.glob("*/captures")}):
+        submission_digest = sha256((run_dir / "submission.json").read_bytes())
+        previous: str | None = None
+        for path in receipt_chain(run_dir):
+            record = json.loads(path.read_text(encoding="utf-8"))
+            if record["schema"] == CAPTURE_SCHEMA:
+                name = path.relative_to(RESULTS).as_posix()
+                require(record["submission_sha256"] == submission_digest, f"{name}: submission.json differs")
+                require(
+                    record["predecessor_sha256"] == previous, f"{name}: predecessor differs from the receipt before it"
+                )
+            previous = sha256(path.read_bytes())
     require(bool(runs), f"no collect.json under {RESULTS.relative_to(ROOT)}")
-    print(f"kaggle runs: {len(runs)} collected outputs match their sha256 ledgers and recorded dataset versions")
+    print(
+        f"kaggle runs: {len(runs)} collected outputs and {captured} further captures match their sha256 ledgers, "
+        "receipt chains and recorded dataset versions"
+    )
     return 0
 
 

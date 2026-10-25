@@ -134,7 +134,7 @@
    "distribution": "antlr4-python3-runtime",
    "declared_versions": {
     "docs/notes/qbraid/requirements-qbraid.txt": "4.13.2",
-    "scripts/kaggle_run.py:168:PIN_GROUPS": "4.13.2"
+    "scripts/kaggle_run.py:171:PIN_GROUPS": "4.13.2"
    },
    "observed_host_version": "4.13.2",
    "role": "Parser runtime for OpenQASM import.",
@@ -249,7 +249,7 @@
   {
    "distribution": "autoray",
    "declared_versions": {
-    "scripts/kaggle_run.py:174:PIN_GROUPS": "0.11.0",
+    "scripts/kaggle_run.py:177:PIN_GROUPS": "0.11.0",
     "IQM retained environment": "0.11.0"
    },
    "observed_host_version": "0.11.0",
@@ -582,7 +582,7 @@
   {
    "distribution": "cotengra",
    "declared_versions": {
-    "scripts/kaggle_run.py:173:PIN_GROUPS": "0.8.2",
+    "scripts/kaggle_run.py:176:PIN_GROUPS": "0.8.2",
     "IQM retained environment": "0.8.2"
    },
    "observed_host_version": "0.8.2",
@@ -631,7 +631,7 @@
   {
    "distribution": "cuquantum-cu11",
    "declared_versions": {
-    "scripts/kaggle_run.py:83:KERNEL_PINS": "24.8.0"
+    "scripts/kaggle_run.py:86:KERNEL_PINS": "24.8.0"
    },
    "observed_host_version": null,
    "role": "CUDA 11 cuQuantum dependency bundle for the isolated Aer GPU wheel; shared simulator engine infrastructure.",
@@ -647,7 +647,7 @@
    "distribution": "custatevec-cu13",
    "declared_versions": {
     "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:13": "1.15.0",
-    "scripts/kaggle_run.py:100:CU13_RUNTIME_PINS": "1.15.0"
+    "scripts/kaggle_run.py:103:CU13_RUNTIME_PINS": "1.15.0"
    },
    "observed_host_version": null,
    "role": "CUDA 13 cuQuantum statevector primitives loaded by the qualified Aer cuStateVec path; shared simulator infrastructure, not an independent algebra witness.",
@@ -665,7 +665,7 @@
   {
    "distribution": "cutensor-cu11",
    "declared_versions": {
-    "scripts/kaggle_run.py:84:KERNEL_PINS": "2.2.0"
+    "scripts/kaggle_run.py:87:KERNEL_PINS": "2.2.0"
    },
    "observed_host_version": null,
    "role": "CUDA 11 tensor contraction library beneath cuTensorNet in the qualified Aer GPU runtime.",
@@ -681,7 +681,7 @@
    "distribution": "cutensor-cu13",
    "declared_versions": {
     "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:15": "2.8.1",
-    "scripts/kaggle_run.py:102:CU13_RUNTIME_PINS": "2.8.1"
+    "scripts/kaggle_run.py:105:CU13_RUNTIME_PINS": "2.8.1"
    },
    "observed_host_version": null,
    "role": "CUDA 13 tensor contraction support beneath cuTensorNet; qualify ABI, device and actual method separately.",
@@ -700,7 +700,7 @@
    "distribution": "cutensornet-cu13",
    "declared_versions": {
     "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:14": "2.14.0",
-    "scripts/kaggle_run.py:101:CU13_RUNTIME_PINS": "2.14.0"
+    "scripts/kaggle_run.py:104:CU13_RUNTIME_PINS": "2.14.0"
    },
    "observed_host_version": null,
    "role": "CUDA 13 cuQuantum tensor-network contraction library linked by the Aer GPU wheel; linking does not establish a selected simulation method or speedup.",
@@ -1023,7 +1023,7 @@
   {
    "distribution": "galois",
    "declared_versions": {
-    "scripts/kaggle_run.py:176:PIN_GROUPS": "0.4.11"
+    "scripts/kaggle_run.py:179:PIN_GROUPS": "0.4.11"
    },
    "observed_host_version": "0.4.11",
    "role": "Finite-field Fano incidence and binary algebra certificates.",
@@ -1383,7 +1383,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.12.20260921",
     "requirements.txt": "0.13.20261016",
-    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.13.20261016"
+    "scripts/kaggle_run.py:166:PIN_GROUPS": "0.13.20261016"
    },
    "observed_host_version": "0.12.20260921",
    "role": "Runtime task and option schema conformance.",
@@ -1987,7 +1987,7 @@
   {
    "distribution": "lmfit",
    "declared_versions": {
-    "scripts/kaggle_run.py:171:PIN_GROUPS": "1.3.4",
+    "scripts/kaggle_run.py:174:PIN_GROUPS": "1.3.4",
     "IQM retained environment": "1.3.4"
    },
    "observed_host_version": "1.3.4",
@@ -2242,7 +2242,7 @@
   {
    "distribution": "mthree",
    "declared_versions": {
-    "scripts/kaggle_run.py:158:PIN_GROUPS": "3.0.0",
+    "scripts/kaggle_run.py:161:PIN_GROUPS": "3.0.0",
     "IQM retained environment": "3.0.0"
    },
    "observed_host_version": "3.0.0",
@@ -2421,7 +2421,7 @@
    "distribution": "numba",
    "declared_versions": {
     "docs/notes/quafu/requirements-quafu.txt": "0.68.0",
-    "scripts/kaggle_run.py:177:PIN_GROUPS": "0.68.0",
+    "scripts/kaggle_run.py:180:PIN_GROUPS": "0.68.0",
     "IQM retained environment": "0.63.1"
    },
    "observed_host_version": "0.68.0",
@@ -2868,7 +2868,7 @@
    "distribution": "nvidia-cublas",
    "declared_versions": {
     "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:8": "13.1.1.3",
-    "scripts/kaggle_run.py:95:CU13_RUNTIME_PINS": "13.1.1.3"
+    "scripts/kaggle_run.py:98:CU13_RUNTIME_PINS": "13.1.1.3"
    },
    "observed_host_version": null,
    "role": "Pinned CUDA 13 dense GPU linear algebra used by the simulator runtime stack; shared infrastructure.",
@@ -2887,7 +2887,7 @@
    "distribution": "nvidia-cuda-nvrtc",
    "declared_versions": {
     "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:9": "13.0.88",
-    "scripts/kaggle_run.py:96:CU13_RUNTIME_PINS": "13.0.88"
+    "scripts/kaggle_run.py:99:CU13_RUNTIME_PINS": "13.0.88"
    },
    "observed_host_version": null,
    "role": "Pinned CUDA 13 runtime compilation support in the GPU simulator environment.",
@@ -2906,7 +2906,7 @@
    "distribution": "nvidia-cuda-runtime",
    "declared_versions": {
     "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:7": "13.0.96",
-    "scripts/kaggle_run.py:94:CU13_RUNTIME_PINS": "13.0.96"
+    "scripts/kaggle_run.py:97:CU13_RUNTIME_PINS": "13.0.96"
    },
    "observed_host_version": null,
    "role": "Pinned CUDA 13 runtime loaded by the repository GPU Aer wheel; verify the driver and device in each execution environment.",
@@ -2925,7 +2925,7 @@
    "distribution": "nvidia-cusolver",
    "declared_versions": {
     "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:10": "12.0.4.66",
-    "scripts/kaggle_run.py:97:CU13_RUNTIME_PINS": "12.0.4.66"
+    "scripts/kaggle_run.py:100:CU13_RUNTIME_PINS": "12.0.4.66"
    },
    "observed_host_version": null,
    "role": "Pinned CUDA 13 GPU solver library for simulator numerical linear algebra; not a tomography SDP modeling layer.",
@@ -2944,7 +2944,7 @@
    "distribution": "nvidia-cusparse",
    "declared_versions": {
     "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:11": "12.6.3.3",
-    "scripts/kaggle_run.py:98:CU13_RUNTIME_PINS": "12.6.3.3"
+    "scripts/kaggle_run.py:101:CU13_RUNTIME_PINS": "12.6.3.3"
    },
    "observed_host_version": null,
    "role": "Pinned CUDA 13 sparse GPU linear algebra support in the simulator environment.",
@@ -2963,7 +2963,7 @@
    "distribution": "nvidia-nvjitlink",
    "declared_versions": {
     "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt:12": "13.0.88",
-    "scripts/kaggle_run.py:99:CU13_RUNTIME_PINS": "13.0.88"
+    "scripts/kaggle_run.py:102:CU13_RUNTIME_PINS": "13.0.88"
    },
    "observed_host_version": null,
    "role": "Pinned CUDA 13 device-code JIT linking support; installation establishes neither GPU execution nor a numerical result.",
@@ -3035,7 +3035,7 @@
    "distribution": "openqasm3",
    "declared_versions": {
     "docs/notes/qbraid/requirements-qbraid.txt": "1.0.1",
-    "scripts/kaggle_run.py:167:PIN_GROUPS": "1.0.1"
+    "scripts/kaggle_run.py:170:PIN_GROUPS": "1.0.1"
    },
    "observed_host_version": "1.0.1",
    "role": "OpenQASM syntax and AST support.",
@@ -3805,7 +3805,7 @@
   {
    "distribution": "pyadic",
    "declared_versions": {
-    "scripts/kaggle_run.py:182:PIN_GROUPS": "0.3.0"
+    "scripts/kaggle_run.py:185:PIN_GROUPS": "0.3.0"
    },
    "observed_host_version": "0.3.0",
    "role": "Finite-field and finite-precision p-adic coefficients; a separate arithmetic experiment.",
@@ -4218,7 +4218,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.9.0",
     "requirements.txt": "0.9.0",
-    "scripts/kaggle_run.py:182:PIN_GROUPS": "0.9.0"
+    "scripts/kaggle_run.py:185:PIN_GROUPS": "0.9.0"
    },
    "observed_host_version": "0.9.0",
    "role": "Exact rational/modular matrix rank and kernel certificates; defines no CD table.",
@@ -4314,7 +4314,7 @@
   {
    "distribution": "pyzx",
    "declared_versions": {
-    "scripts/kaggle_run.py:175:PIN_GROUPS": "0.10.7"
+    "scripts/kaggle_run.py:178:PIN_GROUPS": "0.10.7"
    },
    "observed_host_version": "0.10.7",
    "role": "ZX circuit simplification followed by exact operator-equivalence checks.",
@@ -4401,8 +4401,8 @@
     "docs/notes/open_quantum/requirements-oq.txt": "2.5.2",
     "docs/notes/quantum_inspire/requirements-qi.txt": "2.3.1",
     "requirements.txt": "2.6.0",
-    "scripts/kaggle_run.py:81:KERNEL_PINS": "2.6.0",
-    "scripts/kaggle_run.py:135:CPU_KERNEL_PINS": "2.6.0",
+    "scripts/kaggle_run.py:84:KERNEL_PINS": "2.6.0",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "2.6.0",
     "IQM retained environment": "2.1.2"
    },
    "observed_host_version": "2.5.2",
@@ -4845,7 +4845,7 @@
   {
    "distribution": "qiskit-addon-utils",
    "declared_versions": {
-    "scripts/kaggle_run.py:169:PIN_GROUPS": "0.4.0"
+    "scripts/kaggle_run.py:172:PIN_GROUPS": "0.4.0"
    },
    "observed_host_version": "0.4.0",
    "role": "Supported circuit interchange and utility operations.",
@@ -4865,7 +4865,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.17.2",
     "requirements.txt": "0.17.2",
-    "scripts/kaggle_run.py:135:CPU_KERNEL_PINS": "0.17.2",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.17.2",
     "IQM retained environment": "0.17.2"
    },
    "observed_host_version": "0.17.2",
@@ -4996,7 +4996,7 @@
   {
    "distribution": "qiskit-aer-gpu-cu11",
    "declared_versions": {
-    "scripts/kaggle_run.py:82:KERNEL_PINS": "0.17.2"
+    "scripts/kaggle_run.py:85:KERNEL_PINS": "0.17.2"
    },
    "observed_host_version": null,
    "role": "CUDA 11 Aer wheel for the isolated Kaggle GPU path; exclusively owns qiskit_aer and shares the CPU/CUDA 13 Aer engine.",
@@ -5014,7 +5014,7 @@
   {
    "distribution": "qiskit-aer-gpu-cu13",
    "declared_versions": {
-    "scripts/kaggle_run.py:110:GPU_AER_PINS": "0.17.2"
+    "scripts/kaggle_run.py:113:GPU_AER_PINS": "0.17.2"
    },
    "observed_host_version": null,
    "role": "Repository-built CUDA 13 Aer wheel for qualified Kaggle GPU simulation; exclusively owns qiskit_aer in that environment and shares the Aer engine, not an independent witness.",
@@ -5110,7 +5110,7 @@
   {
    "distribution": "qiskit-experiments",
    "declared_versions": {
-    "scripts/kaggle_run.py:170:PIN_GROUPS": "0.14.2"
+    "scripts/kaggle_run.py:173:PIN_GROUPS": "0.14.2"
    },
    "observed_host_version": "0.14.2",
    "role": "Device-characterization circuits and analyses; calibration jobs require approval.",
@@ -5257,9 +5257,9 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.50.0",
     "requirements.txt": "0.50.0",
-    "scripts/kaggle_run.py:85:KERNEL_PINS": "0.50.0",
-    "scripts/kaggle_run.py:135:CPU_KERNEL_PINS": "0.50.0",
-    "scripts/kaggle_run.py:160:PIN_GROUPS": "0.50.0",
+    "scripts/kaggle_run.py:88:KERNEL_PINS": "0.50.0",
+    "scripts/kaggle_run.py:138:CPU_KERNEL_PINS": "0.50.0",
+    "scripts/kaggle_run.py:163:PIN_GROUPS": "0.50.0",
     "IQM retained environment": "0.43.1"
    },
    "observed_host_version": "0.50.0",
@@ -5450,7 +5450,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.1.1",
     "requirements.txt": "0.1.1",
-    "scripts/kaggle_run.py:164:PIN_GROUPS": "0.1.1"
+    "scripts/kaggle_run.py:167:PIN_GROUPS": "0.1.1"
    },
    "observed_host_version": "0.1.1",
    "role": "Hardware mitigation tasks; invocation can submit and needs the written case.",
@@ -5532,7 +5532,7 @@
   {
    "distribution": "qiskit-qasm3-import",
    "declared_versions": {
-    "scripts/kaggle_run.py:166:PIN_GROUPS": "0.6.0"
+    "scripts/kaggle_run.py:169:PIN_GROUPS": "0.6.0"
    },
    "observed_host_version": "0.6.0",
    "role": "Validated OpenQASM interchange between isolated SDK environments.",
@@ -5649,7 +5649,7 @@
   {
    "distribution": "quimb",
    "declared_versions": {
-    "scripts/kaggle_run.py:172:PIN_GROUPS": "1.15.0",
+    "scripts/kaggle_run.py:175:PIN_GROUPS": "1.15.0",
     "IQM retained environment": "1.15.0"
    },
    "observed_host_version": "1.15.0",
@@ -5682,7 +5682,7 @@
    "distribution": "qxelarator",
    "declared_versions": {
     "docs/notes/quantum_inspire/requirements-qi.txt": "0.10.0",
-    "scripts/kaggle_run.py:187:PIN_GROUPS": "0.10.0"
+    "scripts/kaggle_run.py:190:PIN_GROUPS": "0.10.0"
    },
    "observed_host_version": null,
    "role": "Local QX execution; measurement-register semantics differ from Tuna classical bits.",
@@ -5847,7 +5847,7 @@
   {
    "distribution": "runningman",
    "declared_versions": {
-    "scripts/kaggle_run.py:159:PIN_GROUPS": "2.3.0",
+    "scripts/kaggle_run.py:162:PIN_GROUPS": "2.3.0",
     "IQM retained environment": "2.3.0"
    },
    "observed_host_version": "2.3.0",
@@ -5927,7 +5927,7 @@
    "declared_versions": {
     "ci/requirements-replay.txt": "0.21.0",
     "requirements.txt": "0.21.0",
-    "scripts/kaggle_run.py:162:PIN_GROUPS": "0.21.0"
+    "scripts/kaggle_run.py:165:PIN_GROUPS": "0.21.0"
    },
    "observed_host_version": "0.21.0",
    "role": "Runtime circuit preparation; dynamic-circuit restrictions remain binding.",
@@ -6465,7 +6465,7 @@
   {
    "distribution": "stim",
    "declared_versions": {
-    "scripts/kaggle_run.py:157:PIN_GROUPS": "1.16.0",
+    "scripts/kaggle_run.py:160:PIN_GROUPS": "1.16.0",
     "IQM retained environment": "1.16.0"
    },
    "observed_host_version": "1.16.0",
@@ -6649,7 +6649,7 @@
   {
    "distribution": "torch",
    "declared_versions": {
-    "scripts/kaggle_run.py:129:GPU_ENV_GROUPS": "2.14.1"
+    "scripts/kaggle_run.py:132:GPU_ENV_GROUPS": "2.14.1"
    },
    "observed_host_version": "2.14.1",
    "role": "Qualified GPU tensor arithmetic and the octonion package backend.",
@@ -6925,7 +6925,7 @@
   {
    "distribution": "uv",
    "declared_versions": {
-    "scripts/kaggle_run.py:204:UV_PIN": "0.13.0"
+    "scripts/kaggle_run.py:207:UV_PIN": "0.13.0"
    },
    "observed_host_version": null,
    "role": "Pinned environment installer used by Kaggle kernel bootstrap; records package resolution rather than quantum evidence.",
@@ -7074,7 +7074,7 @@
   "docs/notes/quantum_inspire/requirements-qi.txt": "95deb5311e97df0c191622f407f6f4ab747459c1e97e5d2cbf4d36b959654d88",
   "packaging/qiskit-aer-cuda/build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
   "requirements.txt": "c83769287c82d8b2616f254226db544ed0c323756f648a813290d36aa1f59816",
-  "scripts/kaggle_run.py": "04e69833aefcd34311c033747cf73e9bf207bf56684a877f16d0f966ae634114",
+  "scripts/kaggle_run.py": "edc316bc177dd59cc59079866ddfaf1459cc86cb637557227881224399497abd",
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
   "scripts/hypercomplex_libraries.py": "de1125f46866b0df683500c9a992bd08f38e0d25b6559c14e98114f0151a31f1",
@@ -10940,6 +10940,7 @@
    "base64",
    "collections",
    "datetime",
+   "fcntl",
    "hashlib",
    "io",
    "json",
