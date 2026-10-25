@@ -70,9 +70,9 @@ CREDIT_QUERY = "query($a: UUID!){ credit(accountId: $a) { currentBalance expires
 # ceil(compilation + execution seconds) times the price. The compiler's estimate ran up to
 # ESTIMATE_ABOVE_RUNTIME seconds above the runtime of the retained Garnet jobs (results/iqm/runs/*-garnet-*),
 # so a priced job whose estimate, less that amount, still exceeds the whole seconds max_credits buys cannot
-# finish within them and is cancelled before it executes; a job whose runtime comes within CANCEL_MARGIN of
-# them is cancelled while it runs. Polling runs every EXECUTION_POLL seconds once a priced job executes,
-# inside that margin.
+# finish within them and is cancelled before it executes; a job whose compilation plus execution so far comes
+# within CANCEL_MARGIN of them is cancelled while it compiles or runs. A priced job is polled every
+# EXECUTION_POLL seconds from submission, inside that margin.
 ESTIMATE_ABOVE_RUNTIME = 1.50
 CANCEL_MARGIN = 1.0
 EXECUTION_POLL = 0.25
@@ -451,18 +451,22 @@ def ceiling_breach(record: dict[str, Any], max_credits: float, price: float, now
     if price <= 0:
         return None
     seconds = math.floor(max_credits / price + 1e-9)
+    # The billed runtime is compilation plus execution seconds: the wait between them, post-processing and the
+    # terminal notification after execution_ended are not counted, so an ended execution has nothing left to stop.
+    if stamp_of(record, "execution_ended") is not None:
+        return None
+    started, compiled = stamp_of(record, "compilation_started"), stamp_of(record, "compilation_ended")
     executing = stamp_of(record, "execution_started")
     estimate = (record.get("compilation") or {}).get("execution_runtime_estimate_seconds")
-    if executing is None:
-        if estimate is not None and float(estimate) - ESTIMATE_ABOVE_RUNTIME > seconds:
-            return (
-                f"the compiled estimate {float(estimate):.3f} s less {ESTIMATE_ABOVE_RUNTIME} s exceeds the "
-                f"{seconds} billed seconds that {max_credits} credits buy at {price} per second"
-            )
+    if executing is None and estimate is not None and float(estimate) - ESTIMATE_ABOVE_RUNTIME > seconds:
+        return (
+            f"the compiled estimate {float(estimate):.3f} s less {ESTIMATE_ABOVE_RUNTIME} s exceeds the "
+            f"{seconds} billed seconds that {max_credits} credits buy at {price} per second"
+        )
+    if started is None:
         return None
-    started, ended = stamp_of(record, "compilation_started"), stamp_of(record, "compilation_ended")
-    compiling = (ended - started).total_seconds() if started and ended else 0.0
-    runtime = compiling + (now - executing).total_seconds()
+    compiling = ((compiled or now) - started).total_seconds()
+    runtime = compiling + ((now - executing).total_seconds() if compiled and executing else 0.0)
     if runtime + CANCEL_MARGIN >= seconds:
         return (
             f"the runtime {runtime:.2f} s comes within {CANCEL_MARGIN} s of the {seconds} billed seconds that "
@@ -506,7 +510,9 @@ def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float, c
     job_id = submission["job_id"]
     price = float(submission.get("price_per_second") or 0.0)
     max_credits = float(submission.get("max_credits") or 0.0)
-    cancelled: dict[str, Any] | None = None
+    receipt = run_dir / "ceiling-cancel.json"
+    # A collection resumed after its cancel succeeded keeps that cancel's reason for results.json.
+    cancelled: dict[str, Any] | None = json.loads(receipt.read_text(encoding="utf-8")) if receipt.exists() else None
     deadline = time.monotonic() + timeout
     while True:
         status, body = client.get(f"{API}/jobs/{job_id}")
@@ -522,12 +528,11 @@ def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float, c
             # A refused cancel leaves the job running, so the next poll asks again.
             if answer in (200, 202, 204):
                 cancelled = attempt
-                write_atomic(run_dir / "ceiling-cancel.json", dump(attempt).encode())
+                write_atomic(receipt, dump(attempt).encode())
             print(f"{run_dir.name}: cancel {job_id} answered {answer}: {breach}", file=sys.stderr)
         if time.monotonic() > deadline:
             raise PlatformError(f"job {job_id} is still {record['status']}")
-        executing = price > 0 and stamp_of(record, "execution_started") is not None
-        time.sleep(min(poll, EXECUTION_POLL) if executing else poll)
+        time.sleep(min(poll, EXECUTION_POLL) if price > 0 else poll)
     raw = run_dir / "raw"
     raw.mkdir(exist_ok=True)
     kept: dict[str, str] = {}
@@ -1065,6 +1070,33 @@ def self_test() -> str:
             raise RuntimeError(f"an over-ceiling estimate collected as {results} after cancels {cancels}")
         if not (over / "ceiling-cancel.json").exists():
             raise RuntimeError("the ceiling cancellation left no record")
+        # Billing stops at execution_ended, and compilation counts while it runs.
+        ended = {**running, "timeline": [*running["timeline"], {"status": "execution_ended", "timestamp": at(36.0)}]}
+        if ceiling_breach(ended, 5.0, 0.5, t0 + dt.timedelta(seconds=99.0)):
+            raise RuntimeError("a job whose execution ended still breaches its ceiling while it post-processes")
+        compiling = {"status": "processing", "timeline": [{"status": "compilation_started", "timestamp": at(0.0)}]}
+        if ceiling_breach(compiling, 5.0, 0.5, t0 + dt.timedelta(seconds=8.5)) is not None:
+            raise RuntimeError("a compilation 1.5 s short of the ceiling breached it")
+        if ceiling_breach(compiling, 5.0, 0.5, t0 + dt.timedelta(seconds=9.0)) is None:
+            raise RuntimeError("a compilation within the cancel margin of the ceiling left it unbreached")
+        # A collection resumed after a successful cancel keeps that cancel's receipt.
+        resumed = submit(
+            rebuilt,
+            "j1-1x1000-passive",
+            "garnet",
+            "approved",
+            sha256((rebuilt / "cases.json").read_bytes()),
+            5,
+            client,
+            runs,
+            "s7",
+        )
+        resumed_id = json.loads((resumed / "submission.json").read_text())["job_id"]
+        receipt = {"reason": "kept", "status": 202, "reply": {}, "at": "earlier"}
+        (resumed / "ceiling-cancel.json").write_text(dump(receipt))
+        scripted[resumed_id] = [{"id": resumed_id, "status": "cancelled", "metrics": {"billed_seconds": 1.0}}]
+        if collect(resumed, client, poll=0, clock=lambda: t0).get("ceiling_cancel") != receipt:
+            raise RuntimeError("a resumed collection dropped the persisted cancel receipt")
     return "iqm jobs: build, check, approval, digest, ceiling, health, checkpoint, cancel and collection refusals pass"
 
 

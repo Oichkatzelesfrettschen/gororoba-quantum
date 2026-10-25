@@ -409,10 +409,12 @@ Facts a Garnet case design starts from, each with the record that carries it:
   The job body carries no runtime or credit cap, which IQM does not offer, so
   `collect` holds `max_credits` on the server side of the job: it cancels a
   priced job whose compiled estimate less 1.50 s already exceeds the billed
-  seconds the ceiling buys, and a running job once its compilation plus
-  execution time comes within 1.0 s of them, polling every 0.25 s while it
-  executes and recording the cancellation in `ceiling-cancel.json` and
-  `results.json`. `collect` therefore starts right after `submit`. Across
+  seconds the ceiling buys, and a job once its compilation plus execution
+  time so far comes within 1.0 s of them, polling a priced job every 0.25 s
+  from submission. The wait between compilation and execution, post-processing
+  and the terminal notification after `execution_ended` are not billed, so an
+  ended execution is never cancelled. `ceiling-cancel.json` and `results.json`
+  record a cancellation, and a resumed `collect` keeps its receipt. `collect` therefore starts right after `submit`. Across
   the retained Garnet jobs runtime minus estimate ran from -1.50 s to
   +1.39 s, and the smallest runtime headroom under an approved ceiling was
   1.69 s, so none of them would have been cancelled. A case still sizes its
