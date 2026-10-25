@@ -8,7 +8,7 @@
   "results/kaggle_out/primorial_bound_residuals.json"
  ],
  "smoke": false,
- "git_commit": "666036ccb900d8b1c6395ed070d514553b02a7b3-dirty",
+ "git_commit": "7564a8eee3faebdb757e93e7c2b6191923e769fc",
  "untracked_inputs": [],
  "pins": [
   "qiskit==2.6.0",
@@ -191,7 +191,7 @@
   "scripts/anu_qrng.py": "6dfb9876bd02df4656114a6c660956d584974ecbb1d7250e1bf40885aafcfaae",
   "scripts/oq_platform.py": "7a109e1419d81ed6558f18f551805a20c3b4a134c63f2078b710dc03955b8316",
   "scripts/outshift_qrng.py": "5948f33187b91ee0b18b4492c55692994b83018b5154b53c5439c902b112dc62",
-  "scripts/primorial_bound_residuals.py": "9f8c5b21a2ff3bf0710e5cdefa9f9739113729d3a5276e193615591b3ff2d5af",
+  "scripts/primorial_bound_residuals.py": "86634f0167cbaaaf3b1a787ed38b470ef168aa17df09ba245bf05ed3a3968ae0",
   "scripts/primorial_cover_noise.py": "4d1a2731a14e57e1949280ba9d23f9237ac89fa28c9090b139c7c842f3659671",
   "scripts/primorial_null_residuals.py": "7f2e084c267cd38f70ca77a4c7673357849c83f1512f0d71b9527fa13238f0d0",
   "scripts/qd_belenos_mesh.py": "225e5070a17f2d1114c3c0ef9a23422485da2bc184efd8cbe6e6b181c262392b",
@@ -200,7 +200,7 @@
   "scripts/quandela_qrng.py": "ce4fa7008da3523fcf73eeaa23ff90a4710221dd1fbda55651361c887fd63149"
  },
  "datasets": {},
- "run_py_sha256": "a3c39f23002fe1dc0c053c22cf4c793e828dde476597421718906cf8f31cd3c1",
- "pushed_utc": "2026-10-25T214037Z",
- "kernel_version": 3
+ "run_py_sha256": "c545a4dc969a12a6188858622b18236d6d5aa9a58df2a274d8baa9db801fb603",
+ "pushed_utc": "2026-10-25T221805Z",
+ "kernel_version": 4
 }

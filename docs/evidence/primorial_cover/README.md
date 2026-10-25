@@ -49,9 +49,9 @@ Five records live here.
   collected output, recomputes it, and requires the pulse identity, budgets
   and verdicts to match exactly and every bias to 1e-8.
 - `bound_residuals.json` is the output of
-  `scripts/primorial_bound_residuals.py`, run as Kaggle CPU kernel version 3
+  `scripts/primorial_bound_residuals.py`, run as Kaggle CPU kernel version 4
   of `gororoba-primorial-bound-residuals` under `push --ci-env` and retained
-  under `results/kaggle/2026-10-25T214037Z-gororoba-primorial-bound-residuals/`,
+  under `results/kaggle/2026-10-25T221805Z-gororoba-primorial-bound-residuals/`,
   whose `collect.json` binds the file's bytes. It reads `noise.json`,
   `null_residuals.json` and the snapshot and records their sha256s. Gate
   `core-primorial-bound-residuals-replay` requires the file to equal the
@@ -224,6 +224,9 @@ pulse's tilt infidelity is (2/3) sin^2(beta)), the CZ conditional phase at
 acos(1 - 10 r / 3), all 8^3 qubit directions jointly with the 4 coupler
 signs, a 5^5 interior grid over tilt and CZ phase with a coordinate-ascent
 refinement, and the CZ phase replaced by its Pauli twirl with ideal frames.
+Static detuning on all three qubits (5 and 30 kHz) and static ZZ in both
+frames (2 and 20 kHz), which no gate error bounds, enter alone and in pairs
+with the bounded families, every sign pattern.
 The record adds the signal-arm-only mismatch at which max_z crosses 1, a
 coherent-fraction scan (worst of 32 sign patterns per cell), and every
 three-qubit path of the snapshot at its own bounds.
@@ -239,6 +242,9 @@ three-qubit path of the snapshot at its own bounds.
 | twirled CZ phase alone / with tilt, max_z | 0.27 / 1.07 | 0.29 / 1.20 |
 | fraction scan, tilt 0.1 of bound and CZ phase at bound, max_z | 0.84 | 0.90 |
 | fraction scan, tilt 0.2 of bound and CZ phase at bound, max_z | 0.98 | 1.04 |
+| detuning 30 kHz alone / with CZ phase 0.04 rad, max_z | 0.13 / 0.43 | 0.14 / 0.45 |
+| detuning 30 kHz with the CZ-phase / tilt bound, max_z | 1.32 / 1.59 | 1.40 / 1.75 |
+| partner-in-0 ZZ 20 kHz with the tilt / CZ-phase bound, max_z | 1.03 / 0.98 | 1.15 / 1.04 |
 | q0 detuning mismatch reaching max_z 1 (kHz) | 2.4 | 2.2 |
 
 All 226 working paths reach max_z 1 at their own bounds and 82 exceed the
@@ -248,4 +254,5 @@ gate streams, and reads every path against the best path's standard
 deviations. The twirled rows idealize the twirl as ideal Pauli frames around
 the CZ, leaving the sx and x stream unchanged. An exploratory build-host run
 preceded the per-coefficient reading and every row after the joint
-families; the record's docstring lists the order.
+families, and the detuning and ZZ pairs followed a review of the first
+retained run; the record's docstring lists the order.

@@ -70,23 +70,50 @@ and 146, whose sx and x errors read 1.0, are dropped.
 The gate-error bounds charge the whole reported error of each gate to one
 coherent family, while the reported errors also carry relaxation and
 dephasing during the gate, so the bounds are upper limits on the coherent
-part.
-The scan over coherent fractions (f of each qubit's tilt bound, g of each
-coupler's CZ-phase bound, worst of 32 sign patterns at every cell) gives the
-boundary:
+part. Infidelity grows as the square of the error angle, so a tilt at
+fraction f of its bound is a coherent share f^2 of the sx error, and a CZ
+phase at fraction g of its bound a share g^2 of the CZ error. The scan
+scales all three tilts by f and both CZ phases by g and takes the worst of
+the 32 sign patterns at every cell; the refined worst point leaves q0
+untilted, so each cell is a lower bound on its box:
 
-| tilt fraction f | max_z at g = 0.5 (best / median) | max_z at g = 1 (best / median) |
+| tilt fraction f (sx share f^2) | max_z at g = 0.5, share 0.25 (best / median) | max_z at g = 1, share 1 (best / median) |
 | ---: | ---: | ---: |
-| 0.1 | 0.25 / 0.26 | 0.84 / 0.90 |
-| 0.2 | 0.33 / 0.35 | 0.98 / 1.04 |
-| 0.3 | 0.42 / 0.46 | 1.13 / 1.21 |
-| 0.5 | 0.66 / 0.72 | 1.48 / 1.59 |
-| 1.0 | 1.53 / 1.70 | 2.61 / 2.84 |
+| 0.1 (0.01) | 0.25 / 0.26 | 0.84 / 0.90 |
+| 0.2 (0.04) | 0.33 / 0.35 | 0.98 / 1.04 |
+| 0.3 (0.09) | 0.42 / 0.46 | 1.13 / 1.21 |
+| 0.5 (0.25) | 0.66 / 0.72 | 1.48 / 1.59 |
+| 1.0 (1) | 1.53 / 1.70 | 2.61 / 2.84 |
 
-A device question exists on these paths when the coherent tilt exceeds
-about 0.2 of its bound (about 0.006 rad) while the CZ conditional phase sits
-near its bound (about 0.1 rad), or when both exceed about 0.5 and 0.7. Below
-f = 0.1 no CZ phase within its bound reaches max_z 1.
+Tilt and CZ phase alone reach max_z 1 only when the CZ error is almost
+wholly a coherent conditional phase (g near 1) and at least 4 percent of
+the sx error is coherent tilt (f = 0.2), or when about a quarter of the sx
+error and half of the CZ error are coherent (f = 0.5, g = 0.7). At f = 0.1
+the worst scanned pattern gives 0.84 and 0.90 even with g = 1.
+
+Static detuning and ZZ, which the gate errors do not bound, enter the same
+way: each cancels to first order in the null arm, and its product with
+another family survives. The record pairs them with the bounded families:
+
+| pair, every sign pattern | max_z best / median |
+| --- | --- |
+| detuning 30 kHz on all three qubits, alone | 0.13 / 0.14 |
+| detuning 30 kHz with the atlas-fitted CZ phase 0.04 rad | 0.43 / 0.45 |
+| detuning 30 kHz with the CZ-phase bound | 1.32 / 1.40 |
+| detuning 30 kHz with the tilt bound | 1.59 / 1.75 |
+| detuning 5 kHz with the CZ-phase bound / with the tilt bound | 0.81 / 0.85; 0.90 / 1.02 |
+| partner-in-0 ZZ 20 kHz with the tilt bound / with the CZ-phase bound | 1.03 / 1.15; 0.98 / 1.04 |
+| symmetric-frame ZZ 20 kHz with the tilt bound / with the CZ-phase bound | 0.81 / 0.92; 0.81 / 0.86 |
+| ZZ 2 kHz, either frame, with either bound | at most 0.81 / 0.91 |
+
+So the question rests on three coherent quantities of the chosen path, not
+two: the tilt and CZ-phase fractions and the static detuning of each qubit.
+At the magnitudes the repository has measured, the atlas's 5 to 30 kHz
+detunings and its 0.04 rad CZ phase, the pair stays at 0.43 and 0.45.
+Detuning of 30 kHz crosses 1 with a CZ phase or a tilt at its bound, 5 kHz
+crosses it with the tilt bound on the median path, and partner-in-0 ZZ of
+20 kHz crosses it with either bound on the median path and with the tilt
+bound on the best.
 
 Two estimates place f and g, neither measured on these paths. A drive-axis
 tilt from a detuning Delta during a pulse of mean Rabi rate Omega is about
@@ -94,15 +121,15 @@ Delta / Omega; the 32 ns sx pulse has Omega near 2 pi times 7.8 MHz, so
 f = 0.2 corresponds to an in-pulse detuning near 47 kHz, against the 5 to
 30 kHz static detunings the Fez atlas fits
 ([atlas_detuning_map](../evidence/atlas_detuning_map/README.md)). That
-estimate gives f of about 0.02 to 0.13, inside the region with no question;
-a DRAG-shaped pulse and AC Stark shift make it an order-of-magnitude
-estimate. The only calibration-consistent CZ-phase fit in the atlas is
--0.04 rad on two Fez couplers, g near 0.3 to 0.4
+estimate gives f of about 0.02 to 0.13; a DRAG-shaped pulse and AC Stark
+shift make it an order-of-magnitude estimate. The only
+calibration-consistent CZ-phase fit in the atlas is -0.04 rad on two Fez
+couplers, g near 0.3 to 0.4
 ([coherent-error-families-report.md](../notes/topics/coherent-error-families-report.md)),
 and Kingston identified no CZ phase. Confidence that a real Kingston path
-sits below max_z 1 is moderate: a measured tilt above 0.006 rad or a CZ
-phase above 0.07 rad on the chosen path lowers it, and measured values a
-factor of three below those raise it to high.
+sits below max_z 1 is moderate: a measured tilt above 0.006 rad, a CZ phase
+above 0.07 rad or a static detuning above 30 kHz on the chosen path lowers
+it, and measured values a factor of three below those raise it to high.
 
 ## Arm mismatch
 
@@ -128,8 +155,9 @@ Each item names its falsifier. None sends a provider job; a step that would
 gets its own approved case under AGENTS.md.
 
 1. **Direct coherent-fraction probes, designed in simulation.** The deciding
-   quantities are the coherent tilt of each path qubit and the conditional
-   phase of each coupler. A CZ-phase probe repeats CZ pairs between a
+   quantities are the coherent tilt and static detuning of each path qubit
+   and the conditional phase of each coupler; a Ramsey on each qubit reads
+   its detuning. A CZ-phase probe repeats CZ pairs between a
    control prepared in 0 and 1 and a Ramsey target, so the error phase grows
    as 2 n phi; a tilt probe repeats an sx train whose ideal product is the
    identity between Ramsey analysis pulses. The design step simulates each

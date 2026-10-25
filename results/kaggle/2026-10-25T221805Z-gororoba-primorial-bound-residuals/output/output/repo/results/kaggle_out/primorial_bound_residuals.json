@@ -562,6 +562,314 @@
       }
      }
     },
+    "detuning_30": {
+     "reaching_max_z_1": 0,
+     "scenarios": 8,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.233280008144074,
+      "max_z": 0.13190059086381573,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.0024665198885253092,
+      "shots_identify_all": 2803,
+      "spec": {
+       "detuning": [
+        30.0,
+        -30.0,
+        30.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.233280008144074,
+      "max_z": 0.13190059086381573,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.0024665198885253092,
+      "shots_identify_all": 2803,
+      "spec": {
+       "detuning": [
+        30.0,
+        -30.0,
+        30.0
+       ]
+      }
+     }
+    },
+    "detuning_30_cz_bound": {
+     "reaching_max_z_1": 16,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.5113932274169488,
+      "max_z": 1.31983103458334,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.0246806286080542,
+      "shots_identify_all": 7062,
+      "spec": {
+       "cz_phase": [
+        0.097057947059,
+        0.104084494232
+       ],
+       "detuning": [
+        30.0,
+        30.0,
+        30.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.5113932274169488,
+      "max_z": 1.31983103458334,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.0246806286080542,
+      "shots_identify_all": 7062,
+      "spec": {
+       "cz_phase": [
+        0.097057947059,
+        0.104084494232
+       ],
+       "detuning": [
+        30.0,
+        30.0,
+        30.0
+       ]
+      }
+     }
+    },
+    "detuning_30_cz_measured": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.3478828191101857,
+      "max_z": 0.4256814159226101,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.007960174186276259,
+      "shots_identify_all": 3396,
+      "spec": {
+       "cz_phase": [
+        0.04,
+        0.04
+       ],
+       "detuning": [
+        30.0,
+        30.0,
+        30.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.3478828191101857,
+      "max_z": 0.4256814159226101,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.007960174186276259,
+      "shots_identify_all": 3396,
+      "spec": {
+       "cz_phase": [
+        0.04,
+        0.04
+       ],
+       "detuning": [
+        30.0,
+        30.0,
+        30.0
+       ]
+      }
+     }
+    },
+    "detuning_30_tilt_sx": {
+     "reaching_max_z_1": 32,
+     "scenarios": 64,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.3168636785432679,
+      "max_z": 1.5897783673951669,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.029728600424360818,
+      "shots_identify_all": 9405,
+      "spec": {
+       "detuning": [
+        30.0,
+        -30.0,
+        30.0
+       ],
+       "tilt": [
+        0.029100439979,
+        -0.027503979897,
+        0.033451235844
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.3168636785432679,
+      "max_z": 1.5897783673951669,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.029728600424360818,
+      "shots_identify_all": 9405,
+      "spec": {
+       "detuning": [
+        30.0,
+        -30.0,
+        30.0
+       ],
+       "tilt": [
+        0.029100439979,
+        -0.027503979897,
+        0.033451235844
+       ]
+      }
+     }
+    },
+    "detuning_5": {
+     "reaching_max_z_1": 0,
+     "scenarios": 8,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.03888000000644243,
+      "max_z": 0.0036001561726194072,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 6.732234285994343e-05,
+      "shots_identify_all": 2592,
+      "spec": {
+       "detuning": [
+        5.0,
+        -5.0,
+        5.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.0388800000060916,
+      "max_z": 0.003600103524560725,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 6.732135834969233e-05,
+      "shots_identify_all": 2592,
+      "spec": {
+       "detuning": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     }
+    },
+    "detuning_5_cz_bound": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.3169542263577232,
+      "max_z": 0.8051173250531651,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.015055564814643319,
+      "shots_identify_all": 4487,
+      "spec": {
+       "cz_phase": [
+        0.097057947059,
+        0.104084494232
+       ],
+       "detuning": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.3169542263577232,
+      "max_z": 0.8051173250531651,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.015055564814643319,
+      "shots_identify_all": 4487,
+      "spec": {
+       "cz_phase": [
+        0.097057947059,
+        0.104084494232
+       ],
+       "detuning": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     }
+    },
+    "detuning_5_cz_measured": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.15347390509311643,
+      "max_z": 0.14488125162082258,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.002709256162212015,
+      "shots_identify_all": 2826,
+      "spec": {
+       "cz_phase": [
+        0.04,
+        0.04
+       ],
+       "detuning": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.15347390509311643,
+      "max_z": 0.14488125162082258,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.002709256162212015,
+      "shots_identify_all": 2826,
+      "spec": {
+       "cz_phase": [
+        0.04,
+        0.04
+       ],
+       "detuning": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     }
+    },
+    "detuning_5_tilt_sx": {
+     "reaching_max_z_1": 0,
+     "scenarios": 64,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.2431943652158136,
+      "max_z": 0.9017866144897658,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.016863265018588314,
+      "shots_identify_all": 4850,
+      "spec": {
+       "detuning": [
+        5.0,
+        -5.0,
+        5.0
+       ],
+       "tilt": [
+        0.029100439979,
+        -0.027503979897,
+        0.033451235844
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.2431943652158136,
+      "max_z": 0.9017866144897658,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.016863265018588314,
+      "shots_identify_all": 4850,
+      "spec": {
+       "detuning": [
+        5.0,
+        -5.0,
+        5.0
+       ],
+       "tilt": [
+        0.029100439979,
+        -0.027503979897,
+        0.033451235844
+       ]
+      }
+     }
+    },
     "grid_tilt_cz_sx": {
      "reaching_max_z_1": 766,
      "scenarios": 3125,
@@ -804,6 +1112,318 @@
         0.020576755401,
         -0.019447944185,
         0.02365304426
+       ]
+      }
+     }
+    },
+    "zz_20_cz_bound": {
+     "reaching_max_z_1": 0,
+     "scenarios": 16,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.3558475913375334,
+      "max_z": 0.9771434035570942,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.01827242488476266,
+      "shots_identify_all": 5164,
+      "spec": {
+       "cz_phase": [
+        0.097057947059,
+        0.104084494232
+       ],
+       "zz": [
+        -20.0,
+        -20.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.3558475913375334,
+      "max_z": 0.9771434035570942,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.01827242488476266,
+      "shots_identify_all": 5164,
+      "spec": {
+       "cz_phase": [
+        0.097057947059,
+        0.104084494232
+       ],
+       "zz": [
+        -20.0,
+        -20.0
+       ]
+      }
+     }
+    },
+    "zz_20_tilt_sx": {
+     "reaching_max_z_1": 2,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.2712208709947504,
+      "max_z": 1.0256768988714393,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.01917999346097987,
+      "shots_identify_all": 5382,
+      "spec": {
+       "tilt": [
+        0.029100439979,
+        0.027503979897,
+        0.033451235844
+       ],
+       "zz": [
+        -20.0,
+        -20.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.2712208709947504,
+      "max_z": 1.0256768988714393,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.01917999346097987,
+      "shots_identify_all": 5382,
+      "spec": {
+       "tilt": [
+        0.029100439979,
+        0.027503979897,
+        0.033451235844
+       ],
+       "zz": [
+        -20.0,
+        -20.0
+       ]
+      }
+     }
+    },
+    "zz_2_cz_bound": {
+     "reaching_max_z_1": 0,
+     "scenarios": 16,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.2858453827442822,
+      "max_z": 0.7471994887169269,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.013972510566833463,
+      "shots_identify_all": 4289,
+      "spec": {
+       "cz_phase": [
+        0.097057947059,
+        0.104084494232
+       ],
+       "zz": [
+        -2.0,
+        -2.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.2858453827442822,
+      "max_z": 0.7471994887169269,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.013972510566833463,
+      "shots_identify_all": 4289,
+      "spec": {
+       "cz_phase": [
+        0.097057947059,
+        0.104084494232
+       ],
+       "zz": [
+        -2.0,
+        -2.0
+       ]
+      }
+     }
+    },
+    "zz_2_tilt_sx": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.2300839537959123,
+      "max_z": 0.8056370912726927,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.015065284359563114,
+      "shots_identify_all": 4489,
+      "spec": {
+       "tilt": [
+        0.029100439979,
+        -0.027503979897,
+        0.033451235844
+       ],
+       "zz": [
+        2.0,
+        -2.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.2300839537959123,
+      "max_z": 0.8056370912726927,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.015065284359563114,
+      "shots_identify_all": 4489,
+      "spec": {
+       "tilt": [
+        0.029100439979,
+        -0.027503979897,
+        0.033451235844
+       ],
+       "zz": [
+        2.0,
+        -2.0
+       ]
+      }
+     }
+    },
+    "zz_symmetric_20_cz_bound": {
+     "reaching_max_z_1": 0,
+     "scenarios": 16,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.278042130312661,
+      "max_z": 0.8072374343930635,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.01509521051917323,
+      "shots_identify_all": 4495,
+      "spec": {
+       "cz_phase": [
+        -0.097057947059,
+        0.104084494232
+       ],
+       "zz_symmetric": [
+        20.0,
+        -20.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.278042130312661,
+      "max_z": 0.8072374343930635,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.01509521051917323,
+      "shots_identify_all": 4495,
+      "spec": {
+       "cz_phase": [
+        -0.097057947059,
+        0.104084494232
+       ],
+       "zz_symmetric": [
+        20.0,
+        -20.0
+       ]
+      }
+     }
+    },
+    "zz_symmetric_20_tilt_sx": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.26073826413982765,
+      "max_z": 0.811564447282999,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.015176124966038373,
+      "shots_identify_all": 4510,
+      "spec": {
+       "tilt": [
+        0.029100439979,
+        0.027503979897,
+        0.033451235844
+       ],
+       "zz_symmetric": [
+        20.0,
+        20.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.26073826413982765,
+      "max_z": 0.811564447282999,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.015176124966038373,
+      "shots_identify_all": 4510,
+      "spec": {
+       "tilt": [
+        0.029100439979,
+        0.027503979897,
+        0.033451235844
+       ],
+       "zz_symmetric": [
+        20.0,
+        20.0
+       ]
+      }
+     }
+    },
+    "zz_symmetric_2_cz_bound": {
+     "reaching_max_z_1": 0,
+     "scenarios": 16,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.27803405340792,
+      "max_z": 0.7315046561099301,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.013679019714982754,
+      "shots_identify_all": 4238,
+      "spec": {
+       "cz_phase": [
+        -0.097057947059,
+        0.104084494232
+       ],
+       "zz_symmetric": [
+        2.0,
+        -2.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.27803405340792,
+      "max_z": 0.7315046561099301,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.013679019714982754,
+      "shots_identify_all": 4238,
+      "spec": {
+       "cz_phase": [
+        -0.097057947059,
+        0.104084494232
+       ],
+       "zz_symmetric": [
+        2.0,
+        -2.0
+       ]
+      }
+     }
+    },
+    "zz_symmetric_2_tilt_sx": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.2336194595495441,
+      "max_z": 0.787380445851968,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.014723888019083753,
+      "shots_identify_all": 4425,
+      "spec": {
+       "tilt": [
+        0.029100439979,
+        -0.027503979897,
+        0.033451235844
+       ],
+       "zz_symmetric": [
+        -2.0,
+        -2.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.2336194595495441,
+      "max_z": 0.787380445851968,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.014723888019083753,
+      "shots_identify_all": 4425,
+      "spec": {
+       "tilt": [
+        0.029100439979,
+        -0.027503979897,
+        0.033451235844
+       ],
+       "zz_symmetric": [
+        -2.0,
+        -2.0
        ]
       }
      }
@@ -1417,6 +2037,314 @@
       }
      }
     },
+    "detuning_30": {
+     "reaching_max_z_1": 0,
+     "scenarios": 8,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.233280008144074,
+      "max_z": 0.13903902881190927,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.0024665198885253092,
+      "shots_identify_all": 3092,
+      "spec": {
+       "detuning": [
+        30.0,
+        -30.0,
+        30.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.233280008144074,
+      "max_z": 0.13903902881190927,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.0024665198885253092,
+      "shots_identify_all": 3092,
+      "spec": {
+       "detuning": [
+        30.0,
+        -30.0,
+        30.0
+       ]
+      }
+     }
+    },
+    "detuning_30_cz_bound": {
+     "reaching_max_z_1": 16,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.5257355271568619,
+      "max_z": 1.3951732637011345,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.024750047754669435,
+      "shots_identify_all": 7819,
+      "spec": {
+       "cz_phase": [
+        0.102062411138,
+        0.103247805868
+       ],
+       "detuning": [
+        30.0,
+        30.0,
+        30.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.5257355271568619,
+      "max_z": 1.3951732637011345,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.024750047754669435,
+      "shots_identify_all": 7819,
+      "spec": {
+       "cz_phase": [
+        0.102062411138,
+        0.103247805868
+       ],
+       "detuning": [
+        30.0,
+        30.0,
+        30.0
+       ]
+      }
+     }
+    },
+    "detuning_30_cz_measured": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.3478828191101857,
+      "max_z": 0.4487192230569052,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.007960174186276259,
+      "shots_identify_all": 3746,
+      "spec": {
+       "cz_phase": [
+        0.04,
+        0.04
+       ],
+       "detuning": [
+        30.0,
+        30.0,
+        30.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.3478828191101857,
+      "max_z": 0.4487192230569052,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.007960174186276259,
+      "shots_identify_all": 3746,
+      "spec": {
+       "cz_phase": [
+        0.04,
+        0.04
+       ],
+       "detuning": [
+        30.0,
+        30.0,
+        30.0
+       ]
+      }
+     }
+    },
+    "detuning_30_tilt_sx": {
+     "reaching_max_z_1": 32,
+     "scenarios": 64,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.36761130502806005,
+      "max_z": 1.7518847690711772,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.031078026524222313,
+      "shots_identify_all": 11285,
+      "spec": {
+       "detuning": [
+        30.0,
+        -30.0,
+        30.0
+       ],
+       "tilt": [
+        0.02103786662,
+        -0.035914884532,
+        0.032540588749
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.36761130502806005,
+      "max_z": 1.7518847690711772,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.031078026524222313,
+      "shots_identify_all": 11285,
+      "spec": {
+       "detuning": [
+        30.0,
+        -30.0,
+        30.0
+       ],
+       "tilt": [
+        0.02103786662,
+        -0.035914884532,
+        0.032540588749
+       ]
+      }
+     }
+    },
+    "detuning_5": {
+     "reaching_max_z_1": 0,
+     "scenarios": 8,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.03888000000644243,
+      "max_z": 0.003794996023399331,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 6.732234285994343e-05,
+      "shots_identify_all": 2859,
+      "spec": {
+       "detuning": [
+        5.0,
+        -5.0,
+        5.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.0388800000060916,
+      "max_z": 0.003794940526036506,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 6.732135834969233e-05,
+      "shots_identify_all": 2859,
+      "spec": {
+       "detuning": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     }
+    },
+    "detuning_5_cz_bound": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.33129324588637465,
+      "max_z": 0.8536111171500619,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.01514286179577079,
+      "shots_identify_all": 4968,
+      "spec": {
+       "cz_phase": [
+        0.102062411138,
+        0.103247805868
+       ],
+       "detuning": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.33129324588637465,
+      "max_z": 0.8536111171500619,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.01514286179577079,
+      "shots_identify_all": 4968,
+      "spec": {
+       "cz_phase": [
+        0.102062411138,
+        0.103247805868
+       ],
+       "detuning": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     }
+    },
+    "detuning_5_cz_measured": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.15347390509311643,
+      "max_z": 0.1527222007611125,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.002709256162212015,
+      "shots_identify_all": 3117,
+      "spec": {
+       "cz_phase": [
+        0.04,
+        0.04
+       ],
+       "detuning": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.15347390509311643,
+      "max_z": 0.1527222007611125,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.002709256162212015,
+      "shots_identify_all": 3117,
+      "spec": {
+       "cz_phase": [
+        0.04,
+        0.04
+       ],
+       "detuning": [
+        5.0,
+        5.0,
+        5.0
+       ]
+      }
+     }
+    },
+    "detuning_5_tilt_sx": {
+     "reaching_max_z_1": 8,
+     "scenarios": 64,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.3117212051746312,
+      "max_z": 1.0175875972909814,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.018051766244931544,
+      "shots_identify_all": 5640,
+      "spec": {
+       "detuning": [
+        5.0,
+        -5.0,
+        5.0
+       ],
+       "tilt": [
+        0.02103786662,
+        -0.035914884532,
+        0.032540588749
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.3117212051746312,
+      "max_z": 1.0175875972909814,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.018051766244931544,
+      "shots_identify_all": 5640,
+      "spec": {
+       "detuning": [
+        5.0,
+        -5.0,
+        5.0
+       ],
+       "tilt": [
+        0.02103786662,
+        -0.035914884532,
+        0.032540588749
+       ]
+      }
+     }
+    },
     "grid_tilt_cz_sx": {
      "reaching_max_z_1": 887,
      "scenarios": 3125,
@@ -1659,6 +2587,318 @@
         0.014875880979,
         -0.025394975915,
         0.023009163346
+       ]
+      }
+     }
+    },
+    "zz_20_cz_bound": {
+     "reaching_max_z_1": 4,
+     "scenarios": 16,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.3701872127000376,
+      "max_z": 1.0357210777407293,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.01837344995172724,
+      "shots_identify_all": 5722,
+      "spec": {
+       "cz_phase": [
+        0.102062411138,
+        0.103247805868
+       ],
+       "zz": [
+        -20.0,
+        -20.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.3701872127000376,
+      "max_z": 1.0357210777407293,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.01837344995172724,
+      "shots_identify_all": 5722,
+      "spec": {
+       "cz_phase": [
+        0.102062411138,
+        0.103247805868
+       ],
+       "zz": [
+        -20.0,
+        -20.0
+       ]
+      }
+     }
+    },
+    "zz_20_tilt_sx": {
+     "reaching_max_z_1": 8,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.34718264605591614,
+      "max_z": 1.1476290841446677,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.02035867184114315,
+      "shots_identify_all": 6274,
+      "spec": {
+       "tilt": [
+        0.02103786662,
+        0.035914884532,
+        0.032540588749
+       ],
+       "zz": [
+        -20.0,
+        -20.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.34718264605591614,
+      "max_z": 1.1476290841446677,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.02035867184114315,
+      "shots_identify_all": 6274,
+      "spec": {
+       "tilt": [
+        0.02103786662,
+        0.035914884532,
+        0.032540588749
+       ],
+       "zz": [
+        -20.0,
+        -20.0
+       ]
+      }
+     }
+    },
+    "zz_2_cz_bound": {
+     "reaching_max_z_1": 0,
+     "scenarios": 16,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.30018391875046335,
+      "max_z": 0.7927946568678003,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.014063991998436165,
+      "shots_identify_all": 4750,
+      "spec": {
+       "cz_phase": [
+        0.102062411138,
+        0.103247805868
+       ],
+       "zz": [
+        -2.0,
+        -2.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.30018391875046335,
+      "max_z": 0.7927946568678003,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.014063991998436165,
+      "shots_identify_all": 4750,
+      "spec": {
+       "cz_phase": [
+        0.102062411138,
+        0.103247805868
+       ],
+       "zz": [
+        -2.0,
+        -2.0
+       ]
+      }
+     }
+    },
+    "zz_2_tilt_sx": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.2987106954034534,
+      "max_z": 0.9139489254927855,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.016213240419521713,
+      "shots_identify_all": 5201,
+      "spec": {
+       "tilt": [
+        0.02103786662,
+        -0.035914884532,
+        0.032540588749
+       ],
+       "zz": [
+        2.0,
+        -2.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.2987106954034534,
+      "max_z": 0.9139489254927855,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.016213240419521713,
+      "shots_identify_all": 5201,
+      "spec": {
+       "tilt": [
+        0.02103786662,
+        -0.035914884532,
+        0.032540588749
+       ],
+       "zz": [
+        2.0,
+        -2.0
+       ]
+      }
+     }
+    },
+    "zz_symmetric_20_cz_bound": {
+     "reaching_max_z_1": 0,
+     "scenarios": 16,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.29237771674489066,
+      "max_z": 0.856988579685479,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.015202777192099004,
+      "shots_identify_all": 4981,
+      "spec": {
+       "cz_phase": [
+        -0.102062411138,
+        0.103247805868
+       ],
+       "zz_symmetric": [
+        20.0,
+        -20.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.29237771674489066,
+      "max_z": 0.856988579685479,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.015202777192099004,
+      "shots_identify_all": 4981,
+      "spec": {
+       "cz_phase": [
+        -0.102062411138,
+        0.103247805868
+       ],
+       "zz_symmetric": [
+        20.0,
+        -20.0
+       ]
+      }
+     }
+    },
+    "zz_symmetric_20_tilt_sx": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.33665840591006524,
+      "max_z": 0.9179443547225026,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.016284118400636094,
+      "shots_identify_all": 5217,
+      "spec": {
+       "tilt": [
+        0.02103786662,
+        0.035914884532,
+        0.032540588749
+       ],
+       "zz_symmetric": [
+        20.0,
+        20.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.33665840591006524,
+      "max_z": 0.9179443547225026,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.016284118400636094,
+      "shots_identify_all": 5217,
+      "spec": {
+       "tilt": [
+        0.02103786662,
+        0.035914884532,
+        0.032540588749
+       ],
+       "zz_symmetric": [
+        20.0,
+        20.0
+       ]
+      }
+     }
+    },
+    "zz_symmetric_2_cz_bound": {
+     "reaching_max_z_1": 0,
+     "scenarios": 16,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.2923691438368836,
+      "max_z": 0.7762846497339495,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.013771108328985149,
+      "shots_identify_all": 4693,
+      "spec": {
+       "cz_phase": [
+        -0.102062411138,
+        0.103247805868
+       ],
+       "zz_symmetric": [
+        2.0,
+        -2.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.2923691438368836,
+      "max_z": 0.7762846497339495,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.013771108328985149,
+      "shots_identify_all": 4693,
+      "spec": {
+       "cz_phase": [
+        -0.102062411138,
+        0.103247805868
+       ],
+       "zz_symmetric": [
+        2.0,
+        -2.0
+       ]
+      }
+     }
+    },
+    "zz_symmetric_2_tilt_sx": {
+     "reaching_max_z_1": 0,
+     "scenarios": 32,
+     "worst_max_z": {
+      "max_coefficient_bias": 0.30224745679484255,
+      "max_z": 0.8956994414109191,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.015889498835393256,
+      "shots_identify_all": 5129,
+      "spec": {
+       "tilt": [
+        0.02103786662,
+        -0.035914884532,
+        0.032540588749
+       ],
+       "zz_symmetric": [
+        -2.0,
+        -2.0
+       ]
+      }
+     },
+     "worst_null_subtracted_bias": {
+      "max_coefficient_bias": 0.30224745679484255,
+      "max_z": 0.8956994414109191,
+      "max_z_coefficient": "2",
+      "null_subtracted_max_bias": 0.015889498835393256,
+      "shots_identify_all": 5129,
+      "spec": {
+       "tilt": [
+        0.02103786662,
+        -0.035914884532,
+        0.032540588749
+       ],
+       "zz_symmetric": [
+        -2.0,
+        -2.0
        ]
       }
      }
@@ -6717,7 +7957,7 @@
   "unidentifiable": 82
  },
  "schema": "gororoba-primorial-bound-residuals-v1",
- "seconds": 1217.2,
+ "seconds": 1294.1,
  "snapshot": "docs/evidence/calibration/ibm_kingston.json",
  "snapshot_sha256": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346"
 }
