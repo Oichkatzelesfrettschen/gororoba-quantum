@@ -27,7 +27,9 @@ Readout history. Every circuit, ro0 and ro1 included, waits PRE_READOUT_SECONDS 
 the rule of the SETTLE_CYCLES comment in scripts/qi_readout_ringdown_cases.py: photons left in the resonator by a
 preceding readout would otherwise bias the final assignment in the measure arm only, which ro0 and ro1 cannot
 correct. The N = 1 measure arm against the N = 1 delay arm is the in-job diagnostic of residual readout-history
-bias: both ideals are 0.0302, the models agree, and only the measure arm has a measurement before the final one.
+bias: both ideals are 0.0302, the models agree, and only the measure arm has a measurement before the final one. A
+measurement-induced transition at N = 1 also separates the two arms (by about 0.94 eps), so a difference at or above
+Z_DECIDE standard errors reads as one or the other, and the eps fit over N tells them apart.
 
 Idle. The circuit-job body takes a native `delay` operation with a duration in seconds, at least that long and
 rounded up to hardware granularity (docs/notes/iqm/docs/iqm-client/api/iqm.iqm_client.models.md, operation table and
@@ -37,16 +39,18 @@ measure on garnet:mock (calibration set f04fe114), fixed by five single-circuit 
 QPU job's own estimate is checked against the case's predicted schedule in `analyze`, and a difference above
 SCHEDULE_TOLERANCE solves the window from the QPU total before any decision.
 
-Initialization and T1, measured in the job. One active-reset cycle without heralding initializes the qubits.
-The ro0 circuit and the T1 series ro1 (t = 0) and t1-004 to t1-060 (prx(pi), `delay` t, the pre-readout delay,
-measure) fix, per qubit and jointly, the readout offset o and scale s, the initialization excitation p and T1:
-the excited state's survival through t + PRE_READOUT_SECONDS reads Zobs = o + s (1 - 2 (1 - p) exp(-tau/T1)) and
-ro0 reads Zobs = o + s (1 - 2 p exp(-PRE_READOUT_SECONDS/T1)). Corrected Z = (Zobs - o)/s is then the true Bloch z,
-initialization excitation included, and every prediction (the departure prediction, the settle prediction, the
-delay-arm model) is recomputed at the fitted T1 and p, so the calibrated T1 enters only the planning values in
-prediction.json. A calibrated T1 would put a lift above the ideal of about 5 to 6 departure standard errors at
-N = 16, and p moves the N = 16 prediction by many standard errors across 0 to 0.2 (prediction.json,
-p_init_sensitivity), so neither can rest on the calibration.
+Initialization and T1, measured in the job. One active-reset cycle without heralding initializes the qubits. ro0 and
+ro1 (prx(pi)) wait as long as every other circuit and read z = +-(1 - 2 p) through the assignment channel and the
+wait, with p the initialization excitation after reset; the correction (Zobs - o)/s with o and s from the pair
+returns the true z before the wait divided by (1 - 2 p). The T1 series ro1 (t = 0) and t1-004 to t1-150 (prx(pi),
+`delay` t, the pre-readout delay, measure) then reads y_t = (z_eq - (z_eq + 1 - 2 p) exp(-t/T1))/(1 - 2 p) =
+q (1 - exp(-t/T1)) - exp(-t/T1) with q = z_eq/(1 - 2 p), z_eq the equilibrium z, 1 - 2 times the thermal excitation of
+an idle qubit. The series fixes T1 and the single combination q, so the fit assumes no thermal excitation and p enters
+only through q. The model predicts the corrected z of an arm as a + b q, with a the chain's response to the initial z
+and b its response to the relaxation source (corrected_z); both are recomputed at the fitted T1 and q, so the
+calibrated T1 enters only the planning values in prediction.json. A calibrated T1 would put a lift above the ideal of
+several departure standard errors at N = 16, and q moves the N = 16 prediction by b/(1 - 2 p), many standard
+errors across p = 0 to 0.2 (prediction.json, p_init_sensitivity), so neither can rest on the calibration.
 
 Preregistered decisions, per qubit, from the readout-corrected final P0 pooled over the four signed circuits, with
 standard errors that propagate the binomial variances of every circuit group through the joint fit and correction
@@ -55,11 +59,24 @@ by the delta method:
 - the mutation test passes when the N = 16 contrast measure minus unitary exceeds CONTRAST_MIN = 0.5 by at least
   Z_DECIDE = 3 standard errors;
 - the departure test compares the measured N = 16 measure-arm P0 with the ideal-projective prediction at the
-  fitted T1 and p (a rotation, an ideal pinch, then T1 relaxation toward |0> over the rotation layer, the measure
-  window and the pre-readout delay; T2 does not enter, because the state is diagonal after every measurement) and
-  names one outcome from z = (measured - predicted)/SE, the SE including the T1 and p fit: `departs_below`
-  (z <= -Z_DECIDE), `exceeds_prediction` (z >= Z_DECIDE) or `consistent`;
-- a qubit whose fitted readout scale lies below READOUT_CONTRAST_FLOOR makes no decision.
+  fitted T1 and q (a rotation with the prx depolarizing error, an ideal pinch, then T1 relaxation toward |0> over the
+  rotation layer and the measure window; T2 does not enter, because the state is diagonal after every measurement)
+  and names one outcome from z = (measured - predicted)/SE, the SE including the T1 and q fit and a systematic of
+  PRX_SYSTEMATIC times the calibrated prx error (a randomized-benchmarking average over other sequences):
+  `departs_below` (z <= -Z_DECIDE), `exceeds_prediction` (z >= Z_DECIDE) or `consistent`;
+- a qubit whose fitted readout scale lies below READOUT_CONTRAST_FLOOR makes no decision;
+- the device verdicts (device_verdict) are the decisions: six qubits times about four 3-SE tests give about a 6 %
+  chance of one false flag, so a device departs only when at least DEVICE_QUBITS usable qubits return `departs_below`
+  or the inverse-variance pooled departure z over the usable qubits is at or below -Z_DECIDE; `exceeds_prediction`
+  and the settle `tail_attributed` follow the same rule. The per-qubit verdicts stay descriptive.
+
+Known limit: ro1 puts every qubit in |1> at once, while the measure arm's neighbor states vary from shot to shot, so
+state-dependent simultaneous-readout crosstalk is not calibrated. `analyze` reports the largest correlation of each
+qubit's final outcome with another's (readout_crosstalk) as a descriptive check; the case adds no circuits for it.
+
+The sweep subcommand (and the self-test at a reduced grid) runs the real analysis over synthetic raw measurements of
+model devices off the planning point and requires every qubit to read |departure z| < 1, settle `match` and a passing
+mutation test.
 
 Descriptive outputs, deciding nothing: the settle gap, the readout-history diagnostic, the delay arm's measured and
 modeled (T1 and T2) P0 per N, the delay minus unitary difference at N = 16, the per-N measure-arm deficit against
@@ -70,7 +87,7 @@ outcomes against sin(THETA/(2N))^2.
 The case draws no random number; it holds no seed.
 
 Usage: "$PYTHON" scripts/iqm_measurement_sequence.py (build DIR [--calibration-dir DIR] | check DIR
-       | analyze RUN_DIR --out FILE [--replay] [--mock] | --self-test)
+       | analyze RUN_DIR --out FILE [--replay] [--mock] | sweep [--reduced] | --self-test)
 """
 
 from __future__ import annotations
@@ -166,7 +183,16 @@ READOUT_CONTRAST_FLOOR = 0.5
 CONTRAST_MIN = 0.5
 # README, "Reset": one active-reset cycle leaves a qubit about 6.8 % excited; only the planning values assume it.
 ACTIVE_RESET_EXCITED = 0.068
+PLANNING_Q = 1 / (1 - 2 * ACTIVE_RESET_EXCITED)
 P_INIT_SENSITIVITY = (0.0, 0.05, 0.1, 0.15, 0.2)
+# The prx error enters every prediction and the RB value is an average over other sequences, so its relative one-sigma
+# uncertainty is carried as a systematic in every standard error.
+PRX_SYSTEMATIC = 1.0
+# A device departs when this many usable qubits return the same per-qubit verdict (or the pooled z does).
+DEVICE_QUBITS = 2
+# Deterministic stand-ins for independent shot orderings of the six qubits in a synthetic run (coprime to 3000).
+SHOT_PERMUTATIONS = (7, 11, 13, 17, 19, 23)
+WINDOW_GRID = (1.0e-6, 1.2e-6, 1.4e-6, 1.6e-6, MEASURE_WINDOW_SECONDS, 2.0e-6)
 FIT_GRID = [-0.05 + 0.0005 * i for i in range(1001)]
 T1_BOUNDS = (1e-6, 1e-3)
 
@@ -413,7 +439,15 @@ def tau_of(arm: str, window: float, idle: float = DELAY_SECONDS) -> float:
 
 
 def bloch_z(
-    arm: str, n: int, t1: float, t2: float, tau: float, eps: float = 0.0, z0: float = 1.0, gate_p: float = 0.0
+    arm: str,
+    n: int,
+    t1: float,
+    t2: float,
+    tau: float,
+    eps: float = 0.0,
+    z0: float = 1.0,
+    gate_p: float = 0.0,
+    z_eq: float = 1.0,
 ) -> float:
     """Bloch z of the chain from z0 with T1 and Ramsey T2 relaxation over tau per step, just before the pre-readout
     delay.
@@ -422,7 +456,8 @@ def bloch_z(
     fraction eps of z to transitions) or leaves the state coherent (delay and unitary arms), then relaxes for tau.
     A pinched arm's state is diagonal, so t2 never reaches its result. The pre-readout delay is not iterated here:
     relaxation over it is affine in z, so ro0 and ro1, which wait as long, calibrate it away exactly (the composite
-    of relaxation and assignment is one affine map of the z before the wait).
+    of relaxation and assignment is one affine map of the z before the wait). z_eq is the equilibrium z the
+    relaxation approaches, 1 - 2 times the thermal excitation of an idle qubit.
     """
     y, z = 0.0, z0
     c, s = math.cos(THETA / n), math.sin(THETA / n)
@@ -432,38 +467,44 @@ def bloch_z(
             y = 0.0
             z *= 1 - 2 * eps
         y *= math.exp(-tau / t2)
-        z = 1 - (1 - z) * math.exp(-tau / t1)
+        z = z_eq - (z_eq - z) * math.exp(-tau / t1)
     return z
 
 
-def model_tables(
-    t1: float, t2: float, p_init: float, window: float, gate_p: float, idle: float = DELAY_SECONDS
-) -> dict[str, Any]:
-    """P0 per arm and N the readout correction recovers on the ideal-projective, relaxing model from an
-    initialization excitation p_init.
+def corrected_z(arm: str, n: int, t1: float, t2: float, tau: float, eps: float, gate_p: float, q: float) -> float:
+    """The z that ro0/ro1 correction recovers on the relaxing model: a + b q, with a the chain's response to the
+    initial z and b its response to the relaxation source, both at unit strength.
 
-    ro0 and ro1 read z = +-(1 - 2 p), so the corrected value is the true z before the wait divided by (1 - 2 p).
+    A true z of z0 = 1 - 2 p before the wait is divided by the scale (1 - 2 p) that ro0 and ro1 measure, so the
+    initial state enters through q alone, and q = z_eq/(1 - 2 p) is the single combination the T1 series fixes:
+    its asymptote is z_eq/(1 - 2 p), whatever the thermal excitation of an idle qubit.
     """
+    b = bloch_z(arm, n, t1, t2, tau, eps, 0.0, gate_p)
+    return bloch_z(arm, n, t1, t2, tau, eps, 1.0, gate_p) - b + b * q
+
+
+def model_tables(
+    t1: float, t2: float, q: float, window: float, gate_p: float, idle: float = DELAY_SECONDS
+) -> dict[str, Any]:
+    """P0 per arm and N the readout correction recovers on the ideal-projective, relaxing model, for the series
+    parameter q (1/(1 - 2 p) for an initialization excitation p and a cold idle qubit)."""
     t2 = min(t2, 2 * t1)
-    p = min(max(p_init, 0.0), 0.45)
-    z0 = 1 - 2 * p
     return {
         arm: {
-            str(n): (1 + bloch_z(arm, n, t1, t2, tau_of(arm, window, idle), 0.0, z0, gate_p) / z0) / 2
+            str(n): (1 + corrected_z(arm, n, t1, t2, tau_of(arm, window, idle), 0.0, gate_p, q)) / 2
             for n in ARM_STEPS[arm]
         }
         for arm in ARMS
     }
 
 
-def implied_loss(z_corrected: float, t1: float, t2: float, window: float, p_init: float, gate_p: float) -> float:
+def implied_loss(z_corrected: float, t1: float, t2: float, window: float, q: float, gate_p: float) -> float:
     """The per-step z loss eps at which the measure arm's modeled corrected z equals z_corrected (bisection)."""
     low, high = -0.05, 0.5
     tau = tau_of("measure", window)
-    z0 = 1 - 2 * min(max(p_init, 0.0), 0.45)
     for _ in range(50):
         middle = (low + high) / 2
-        if bloch_z("measure", TOP_STEPS, t1, t2, tau, middle, z0, gate_p) / z0 > z_corrected:
+        if corrected_z("measure", TOP_STEPS, t1, t2, tau, middle, gate_p, q) > z_corrected:
             low = middle
         else:
             high = middle
@@ -611,9 +652,10 @@ def quantities(p: dict[str, float], ctx: dict[str, Any]) -> dict[str, float]:
     t1, q = fit_t1([corrected(name) for name in T1_NAMES], ctx["weights"])
     p_init = (1 - 1 / q) / 2
     window = ctx["window_s"]
+    gate_p = p["prx_p"]
     t2 = min(ctx["t2_s"], 2 * t1)
-    tables = model_tables(t1, ctx["t2_s"], p_init, window, ctx["prx_p"])
-    out: dict[str, float] = {"t1_s": t1, "p_init": p_init, "scale": scale, "offset": offset}
+    tables = model_tables(t1, ctx["t2_s"], q, window, gate_p)
+    out: dict[str, float] = {"t1_s": t1, "q": q, "p_init": p_init, "scale": scale, "offset": offset}
     for arm, n in group_keys():
         key = f"{arm}-{n}"
         out[f"p0:{key}"] = (1 + corrected(key)) / 2
@@ -625,9 +667,8 @@ def quantities(p: dict[str, float], ctx: dict[str, Any]) -> dict[str, float]:
     out["dephasing_modeled"] = out[f"model:delay-{top}"] - out[f"model:unitary-{top}"]
     out["history"] = out["p0:measure-1"] - out["p0:delay-1"]
     out["history_modeled"] = out["model:measure-1"] - out["model:delay-1"]
-    loss = implied_loss(2 * out[f"p0:measure-{top}"] - 1, t1, t2, window, p_init, ctx["prx_p"])
-    z0 = 1 - 2 * min(max(p_init, 0.0), 0.45)
-    settle = bloch_z("settle", TOP_STEPS, t1, t2, tau_of("settle", window), loss, z0, ctx["prx_p"]) / z0
+    loss = implied_loss(2 * out[f"p0:measure-{top}"] - 1, t1, t2, window, q, gate_p)
+    settle = corrected_z("settle", TOP_STEPS, t1, t2, tau_of("settle", window), loss, gate_p, q)
     out["implied_loss"] = loss
     out["tail_gap"] = out[f"p0:settle-{top}"] - (1 + settle) / 2
     return out
@@ -638,9 +679,9 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
     calibrated T2 (for the delay and unitary models), the measure window and the planning P0 tables."""
     qubit, counts, ctx = item
     obs = observations(counts, qubit)
-    keys = list(obs)
-    x = [k / n for k, n in obs.values()]
-    variances = [var(k, n) for k, n in obs.values()]
+    keys = [*obs, "prx_p"]
+    x = [*(k / n for k, n in obs.values()), ctx["prx_p"]]
+    variances = [*(var(k, n) for k, n in obs.values()), (PRX_SYSTEMATIC * ctx["prx_p"]) ** 2]
     index = {key: i for i, key in enumerate(keys)}
     scale = x[index["ro1"]] - x[index["ro0"]]
     ctx = {**ctx, "weights": [scale**2 / (4 * variances[index[name]]) for name in T1_NAMES]}
@@ -669,13 +710,12 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
     decisions = decide(value["contrast"], se["contrast"], value[f"diff:{key}"], se[f"diff:{key}"])
     gap_z = value["tail_gap"] / se["tail_gap"]
     history_z = value["history"] / se["history"]
-    t1, p_init = value["t1_s"], value["p_init"]
-    z0 = 1 - 2 * min(max(p_init, 0.0), 0.45)
+    t1, p_init, q = value["t1_s"], value["p_init"], value["q"]
     t2 = min(ctx["t2_s"], 2 * t1)
     tau = tau_of("measure", ctx["window_s"])
     relaxed = fit_eps(
         [(n, value[f"p0:measure-{n}"], se[f"p0:measure-{n}"]) for n in STEPS],
-        lambda n, eps: (1 + bloch_z("measure", n, t1, t2, tau, eps, z0, ctx["prx_p"]) / z0) / 2,
+        lambda n, eps: (1 + corrected_z("measure", n, t1, t2, tau, eps, ctx["prx_p"], q)) / 2,
     )
     transitions: dict[str, Any] = {}
     for n in STEPS[1:]:
@@ -688,6 +728,7 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
         "fitted": {
             "t1_s": t1,
             "t1_se": se["t1_s"],
+            "q": q,
             "p_init": p_init,
             "p_init_se": se["p_init"],
             "scale": value["scale"],
@@ -787,7 +828,8 @@ def tally(circuits: list[dict[str, Any]], results: list[dict[str, Any]]) -> dict
 
 def device_model(cal: dict[str, Any], **over: Any) -> dict[str, Any]:
     """A model device from one qubit's calibration, with fields overridden: t1_s, t2_s, p_init, eps (z lost per step
-    to measurement transitions), eps_settle (None follows eps), e01, e10 and window_s."""
+    to measurement transitions), eps_settle (None follows eps), p_thermal (the idle qubit's thermal excitation), prx_p,
+    e01, e10 and window_s."""
     model = {
         "t1_s": cal["t1_s"],
         "t2_s": cal["t2_s"],
@@ -795,12 +837,18 @@ def device_model(cal: dict[str, Any], **over: Any) -> dict[str, Any]:
         "e01": cal["e01"],
         "e10": cal["e10"],
         "p_init": ACTIVE_RESET_EXCITED,
+        "p_thermal": 0.0,
         "eps": 0.0,
         "eps_settle": None,
         "window_s": MEASURE_WINDOW_SECONDS,
     }
     model.update(over)
     return model
+
+
+def z_eq(model: dict[str, Any]) -> float:
+    """The equilibrium z of a model device's relaxation."""
+    return 1 - 2 * model["p_thermal"]
 
 
 def device_counts(models: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict[str, Any]:
@@ -812,7 +860,7 @@ def device_counts(models: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict
     def put(name: str, z: dict[str, float], flips: dict[str, float] | None = None, n: int = 0) -> None:
         row: dict[str, Any] = {"shots": shots, "final": {}}
         for q, m in models.items():
-            waited = 1 - (1 - z[q]) * math.exp(-PRE_READOUT_SECONDS / m["t1_s"])
+            waited = z_eq(m) - (z_eq(m) - z[q]) * math.exp(-PRE_READOUT_SECONDS / m["t1_s"])
             observed = (1 - m["e01"] - m["e10"]) * waited + m["e10"] - m["e01"]
             k0 = round(shots * (1 + observed) / 2)
             row["final"][q] = [k0, shots - k0]
@@ -833,19 +881,23 @@ def device_counts(models: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict
                 eps,
                 1 - 2 * m["p_init"],
                 m["prx_p"],
+                z_eq(m),
             )
             flips[q] = max(0.0, (1 - (1 - 2 * eps) * math.cos(THETA / n)) / 2)
         for name in group_names(arm, n):
-            put(name, z, flips if arm == "measure" and n > 1 else None, n)
+            put(name, z, flips if arm in PINCHED_ARMS and n > 1 else None, n)
     put("ro0", {q: 1 - 2 * m["p_init"] for q, m in models.items()})
     for name, delay in zip(SERIES_NAMES, SERIES_DELAYS, strict=True):
-        put(name, {q: 1 - 2 * (1 - m["p_init"]) * math.exp(-delay / m["t1_s"]) for q, m in models.items()})
+        put(
+            name,
+            {q: z_eq(m) - (z_eq(m) + 1 - 2 * m["p_init"]) * math.exp(-delay / m["t1_s"]) for q, m in models.items()},
+        )
     return counts
 
 
 def planning_tables(excerpt: dict[str, Any]) -> dict[str, Any]:
     return {
-        q: model_tables(cal["t1_s"], cal["t2_s"], ACTIVE_RESET_EXCITED, MEASURE_WINDOW_SECONDS, cal["prx_p"])
+        q: model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"])
         for q, cal in excerpt["qubits"].items()
     }
 
@@ -864,12 +916,32 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str
     for q, cal in excerpt["qubits"].items():
         row = expected[q]
         sensitivity = {
-            str(p): model_tables(cal["t1_s"], cal["t2_s"], p, MEASURE_WINDOW_SECONDS, cal["prx_p"])["measure"][
-                str(TOP_STEPS)
-            ]
+            str(p): model_tables(cal["t1_s"], cal["t2_s"], 1 / (1 - 2 * p), MEASURE_WINDOW_SECONDS, cal["prx_p"])[
+                "measure"
+            ][str(TOP_STEPS)]
             for p in P_INIT_SENSITIVITY
         }
         spread = max(sensitivity.values()) - min(sensitivity.values())
+        windows = {
+            f"{w * 1e6:.3f}": {
+                arm: model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, w, cal["prx_p"])[arm][str(TOP_STEPS)]
+                for arm in PINCHED_ARMS
+            }
+            for w in WINDOW_GRID
+        }
+        step = 1e-8
+        derivative = {
+            arm: (
+                model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS + step, cal["prx_p"])[arm][
+                    str(TOP_STEPS)
+                ]
+                - model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS - step, cal["prx_p"])[arm][
+                    str(TOP_STEPS)
+                ]
+            )
+            / (2 * step)
+            for arm in PINCHED_ARMS
+        }
         qubits[q] = {
             "inputs": {
                 "t1_s": cal["t1_s"],
@@ -886,6 +958,18 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str
                 "p_init_assumed": ACTIVE_RESET_EXCITED,
             },
             "p0": tables[q],
+            "window_sensitivity": {
+                "p0_n16_by_window_us": windows,
+                "derivative_per_second_at_planned": derivative,
+                "shift_1p0_to_planned": {
+                    arm: windows[f"{MEASURE_WINDOW_SECONDS * 1e6:.3f}"][arm] - windows["1.000"][arm]
+                    for arm in PINCHED_ARMS
+                },
+                "measure_shift_over_departure_se": (
+                    windows[f"{MEASURE_WINDOW_SECONDS * 1e6:.3f}"]["measure"] - windows["1.000"]["measure"]
+                )
+                / row["departure_n16"]["se"],
+            },
             "p_init_sensitivity": {
                 "measure_n16_p0": sensitivity,
                 "spread": spread,
@@ -1027,6 +1111,94 @@ def check(directory: Path) -> None:
     print(f"{directory}: matches the build from its retained calibration excerpt")
 
 
+def compiled_schedule(
+    prediction: dict[str, Any], circuits: list[dict[str, Any]], shots: int, estimate_seconds: float
+) -> tuple[dict[str, Any], float]:
+    """The preregistered check of a job's compiled schedule against the case's prediction, and the measure window the
+    decisions use: the planned one, or the one solved from the job's total when they differ by more than
+    SCHEDULE_TOLERANCE and the solution lies within a factor of four of the plan."""
+    predicted = prediction["estimator_per_shot_seconds_all_circuits"] * shots
+    estimated = estimate_seconds - JOB_SECONDS
+    schedule: dict[str, Any] = {
+        "predicted_qpu_execution_seconds": predicted,
+        "estimated_qpu_execution_seconds": estimated,
+        "ratio": estimated / predicted,
+        "tolerance": SCHEDULE_TOLERANCE,
+        "window_recomputed": False,
+    }
+    window = prediction["measure_window_seconds"]
+    if abs(estimated / predicted - 1) > SCHEDULE_TOLERANCE:
+        # The QPU compiled a different schedule than the mock's: solve the measure window from its total and
+        # recompute every prediction at that window and the fitted T1 before any decision.
+        solved = solve_window(circuits, shots, estimated)
+        planned = prediction["measure_window_seconds"]
+        schedule["planned_window_seconds"] = planned
+        schedule["solved_window_seconds"] = solved
+        # The solve assumes the mock's per-circuit base and layer time; a window outside a factor of four of the
+        # planned one means that assumption fails (the idle-schedule QPU job's estimate was 0.62 of the mock
+        # model's), so the planned window stays and the per-circuit runtime_estimates artifact must settle it.
+        if planned / 4 <= solved <= 4 * planned:
+            window = solved
+            schedule["window_recomputed"] = True
+        else:
+            schedule["window_rejected"] = True
+    schedule["measure_window_seconds_used"] = window
+    return schedule, window
+
+
+def pooled_z(estimates: list[tuple[float, float]]) -> float | None:
+    """The inverse-variance pooled estimate over its standard error, from (estimate, se) pairs."""
+    weights = [1 / se**2 for _, se in estimates]
+    if not weights:
+        return None
+    return sum(w * e for w, (e, _) in zip(weights, estimates, strict=True)) / math.sqrt(sum(weights))
+
+
+def device_verdict(qubits: dict[str, Any]) -> dict[str, Any]:
+    """The preregistered device-level verdicts. A device departs when at least DEVICE_QUBITS of the usable qubits
+    return `departs_below`, or the inverse-variance pooled departure z over the usable qubits is at or below
+    -Z_DECIDE; `exceeds_prediction` and the settle `tail_attributed` follow the same rule with the signs of their
+    own z. Six qubits times about four 3-SE tests give about a 6 % chance of one false flag, so the per-qubit
+    verdicts stay descriptive. The pooling treats the qubits as independent."""
+    usable = {q: r for q, r in qubits.items() if r["usable"]}
+    departure = [(r["departure_n16"]["difference"], r["departure_n16"]["se"]) for r in usable.values()]
+    tail = [(r["settle_n16"]["tail_gap"], r["settle_n16"]["se"]) for r in usable.values()]
+    z_departure, z_tail = pooled_z(departure), pooled_z(tail)
+    below = sorted(q for q, r in usable.items() if r["decisions"]["departure"]["outcome"] == "departs_below")
+    above = sorted(q for q, r in usable.items() if r["decisions"]["departure"]["outcome"] == "exceeds_prediction")
+    tailed = sorted(q for q, r in usable.items() if r["settle_n16"]["verdict"] == "tail_attributed")
+
+    def verdict(named: list[str], z: float | None, sign: int) -> dict[str, Any]:
+        flagged = len(named) >= DEVICE_QUBITS or (z is not None and sign * z >= Z_DECIDE)
+        return {"qubits": named, "pooled_z": z, "device": flagged}
+
+    return {
+        "usable_qubits": sorted(usable),
+        "departs_below": verdict(below, z_departure, -1),
+        "exceeds_prediction": verdict(above, z_departure, 1),
+        "settle_tail_attributed": verdict(tailed, z_tail, 1),
+    }
+
+
+def readout_crosstalk(circuits: list[dict[str, Any]], measurements: list[dict[str, Any]]) -> dict[str, Any]:
+    """Descriptive: the largest absolute correlation of each qubit's final outcome with another qubit's, in ro0,
+    ro1 and the N = 16 measure arm. ro1 puts every qubit in |1> at once, while the measure arm's neighbor states vary
+    from shot to shot, so state-dependent simultaneous-readout crosstalk is not calibrated; independent qubits read
+    out independently, so a correlation beyond the shot noise (about 0.02 at 3000 shots) points at it."""
+    wanted = {"ro0", "ro1", *group_names("measure", TOP_STEPS)}
+    out: dict[str, float] = {}
+    for c, entry in zip(circuits, measurements, strict=True):
+        if c["name"] not in wanted:
+            continue
+        bits = np.array(entry[FINAL_KEY], dtype=float)
+        with np.errstate(invalid="ignore", divide="ignore"):
+            phi = np.nan_to_num(np.corrcoef(bits, rowvar=False))
+        np.fill_diagonal(phi, 0.0)
+        for position, qubit in enumerate(qubits_of(c)):
+            out[qubit] = max(out.get(qubit, 0.0), float(np.max(np.abs(phi[position]))))
+    return {"max_abs_correlation": out, "shot_noise": 1 / math.sqrt(SHOTS)}
+
+
 def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
     """The preregistered decisions of a garnet run, or with mock the same pipeline over a garnet:mock run.
 
@@ -1051,38 +1223,17 @@ def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
         raise ValueError(f"{run_dir}: compiled against another calibration set than the case's")
     row = next(r for r in case["jobs"] if r["job"] == submission["job"])
     circuits = [load_json(run_dir / entry["file"]) for entry in row["circuits"]]
-    counts = tally(circuits, json.loads((run_dir / "raw/measurements.json").read_bytes()))
-    predicted = prediction["estimator_per_shot_seconds_all_circuits"] * row["shots"]
-    estimated = record["compilation"]["execution_runtime_estimate_seconds"] - JOB_SECONDS
-    schedule: dict[str, Any] = {
-        "predicted_qpu_execution_seconds": predicted,
-        "estimated_qpu_execution_seconds": estimated,
-        "ratio": estimated / predicted,
-        "tolerance": SCHEDULE_TOLERANCE,
-        "window_recomputed": False,
-    }
-    window = prediction["measure_window_seconds"]
-    if abs(estimated / predicted - 1) > SCHEDULE_TOLERANCE:
-        # The QPU compiled a different schedule than the mock's: solve the measure window from its total and
-        # recompute every prediction at that window and the fitted T1 before any decision.
-        solved = solve_window(circuits, row["shots"], estimated)
-        planned = prediction["measure_window_seconds"]
-        schedule["planned_window_seconds"] = planned
-        schedule["solved_window_seconds"] = solved
-        # The solve assumes the mock's per-circuit base and layer time; a window outside a factor of four of the
-        # planned one means that assumption fails (the idle-schedule QPU job's estimate was 0.62 of the mock
-        # model's), so the planned window stays and the per-circuit runtime_estimates artifact must settle it.
-        if planned / 4 <= solved <= 4 * planned:
-            window = solved
-            schedule["window_recomputed"] = True
-        else:
-            schedule["window_rejected"] = True
-    schedule["measure_window_seconds_used"] = window
+    measurements = json.loads((run_dir / "raw/measurements.json").read_bytes())
+    counts = tally(circuits, measurements)
+    schedule, window = compiled_schedule(
+        prediction, circuits, row["shots"], record["compilation"]["execution_runtime_estimate_seconds"]
+    )
     artifact = run_dir / "raw/runtime_estimates.json"
     if artifact.exists():
         schedule["runtime_estimates_sha256"] = sha256(artifact.read_bytes())
     metrics = record["metrics"]
     predicted_execution = billing(circuits, row["shots"])
+    qubits = evaluate(counts, contexts_of(prediction, window))
     return {
         "schema": "iqm-measurement-sequence-analysis-v2",
         "run": run_dir.name,
@@ -1098,7 +1249,9 @@ def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
             "execution_seconds": metrics.get("execution_seconds"),
             "predicted_worst_case_runtime_seconds": predicted_execution["worst_case_runtime_seconds"],
         },
-        "qubits": evaluate(counts, contexts_of(prediction, window)),
+        "readout_crosstalk": readout_crosstalk(circuits, measurements),
+        "device": device_verdict(qubits),
+        "qubits": qubits,
     }
 
 
@@ -1227,29 +1380,81 @@ def check_selection(values: dict[str, float], architecture: dict[str, Any], coun
         expect(bool(blockers), f"{q} outranks a chosen qubit and no better chosen qubit is coupled to it")
 
 
-def check_analyze(files: dict[str, str], counts: dict[str, Any], contexts: dict[str, Any]) -> None:
-    """analyze over a synthetic run directory: the compiled-schedule check at the predicted and at a 5 % longer
-    schedule, the billing comparison and the per-qubit results."""
-    global run_facts
-    case = json.loads(files["cases.json"])
-    job = case["jobs"][0]
-    circuits = [json.loads(files[entry["file"]]) for entry in job["circuits"]]
-    measurements = []
+def synthetic_measurements(circuits: list[dict[str, Any]], counts: dict[str, Any], shots: int) -> list[dict[str, Any]]:
+    """The raw measurements.json a job would return for expected counts, with no random draw.
+
+    Each key holds `shots` rows of one 0/1 outcome per qubit in locus order. Qubit j reads 1 in the shots whose index i
+    satisfies (i * SHOT_PERMUTATIONS[j]) mod shots < ones, so the marginals are exact and the qubits' orderings differ.
+    The mid-circuit keys are per-qubit paths that flip between consecutive keys by the Bresenham pattern of the
+    expected flip count, so the pair counts are exact and each qubit's path is independent of the others' by
+    construction; a feature that reads correlations across qubits sees only the permutations' residue.
+    """
+    out = []
+    index = np.arange(shots)
     for c in circuits:
         qubits = qubits_of(c)
-        shots = job["shots"]
-        keys = {o["args"]["key"] for o in c["instructions"] if o["name"] == "measure"}
-        entry = {key: [[0] * len(qubits) for _ in range(shots)] for key in keys}
-        for position, qubit in enumerate(qubits):
-            zeros = counts[c["name"]]["final"][qubit][0]
-            for i in range(zeros, shots):
-                entry[FINAL_KEY][i][position] = 1
-        measurements.append(entry)
+        row = counts[c["name"]]
+        mids = [o["args"]["key"] for o in c["instructions"] if o["name"] == "measure" and o["args"]["key"] != FINAL_KEY]
+        final = np.zeros((shots, len(qubits)), dtype=int)
+        for j, q in enumerate(qubits):
+            final[:, j] = ((index * SHOT_PERMUTATIONS[j]) % shots) < row["final"][q][1]
+        entry: dict[str, Any] = {FINAL_KEY: final.tolist()}
+        if mids:
+            paths = np.zeros((shots, len(mids), len(qubits)), dtype=int)
+            pairs = shots * (len(mids) - 1)
+            for j, q in enumerate(qubits):
+                if len(mids) > 1 and "flips" in row:
+                    total = row["flips"][q][0]
+                    position = np.arange(pairs)
+                    flip = ((position + 1) * total) // pairs - (position * total) // pairs
+                    paths[:, 1:, j] = np.cumsum(flip.reshape(shots, len(mids) - 1), axis=1) % 2
+            for k, key in enumerate(mids):
+                entry[key] = paths[:, k, :].tolist()
+        out.append(entry)
+    return out
+
+
+def sweep_cases(reduced: bool) -> list[dict[str, Any]]:
+    """True devices off the planning point: one axis at a time, then a corner with all four moved. The reduced grid
+    keeps the planning point and the corner."""
+    base = {"label": "planning", "p_init": ACTIVE_RESET_EXCITED, "p_thermal": 0.0, "t1_scale": 1.0, "prx_scale": 1.0}
+    corner = {**base, "label": "corner", "p_init": 0.15, "p_thermal": 0.02, "t1_scale": 0.8, "prx_scale": 2.0}
+    if reduced:
+        return [base, corner]
+    axes = [
+        {**base, "label": "p=0", "p_init": 0.0},
+        {**base, "label": "p=0.15", "p_init": 0.15},
+        {**base, "label": "thermal 0.02", "p_thermal": 0.02},
+        {**base, "label": "T1 x0.8", "t1_scale": 0.8},
+        {**base, "label": "T1 x1.2", "t1_scale": 1.2},
+        {**base, "label": "prx x2", "prx_scale": 2.0},
+    ]
+    return [base, *axes, corner]
+
+
+def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The real analyze path over a synthetic run directory per true device: readout correction, T1 and p fit,
+    prediction recompute and decisions. Each row summarizes one device over its qubits."""
+    global run_facts
+    job = json.loads(files["cases.json"])["jobs"][0]
+    circuits = [json.loads(files[entry["file"]]) for entry in job["circuits"]]
     prediction = json.loads(files["prediction.json"])
     original = run_facts
     run_facts = lambda run_dir: {"statuses": {"completed": 1}, "charge": 0.0}  # noqa: E731
+    rows = []
     try:
-        for factor in (1.0, 1.05, 0.6):
+        for spec in cases:
+            models = {
+                q: device_model(
+                    cal,
+                    t1_s=spec["t1_scale"] * cal["t1_s"],
+                    p_init=spec["p_init"],
+                    p_thermal=spec["p_thermal"],
+                    prx_p=spec["prx_scale"] * cal["prx_p"],
+                )
+                for q, cal in excerpt["qubits"].items()
+            }
+            measurements = synthetic_measurements(circuits, device_counts(models), job["shots"])
             with tempfile.TemporaryDirectory() as scratch:
                 run = Path(scratch)
                 (run / "raw").mkdir()
@@ -1257,7 +1462,7 @@ def check_analyze(files: dict[str, str], counts: dict[str, Any], contexts: dict[
                     (run / rel).parent.mkdir(parents=True, exist_ok=True)
                     (run / rel).write_text(text, encoding="utf-8")
                 (run / "submission.json").write_text(dump({"qc": QC, "job": JOB}), encoding="utf-8")
-                schedule = prediction["estimator_per_shot_seconds_all_circuits"] * job["shots"] * factor
+                schedule = prediction["estimator_per_shot_seconds_all_circuits"] * job["shots"]
                 record = {
                     "compilation": {
                         "calibration_set_id": prediction["calibration_set"],
@@ -1268,21 +1473,57 @@ def check_analyze(files: dict[str, str], counts: dict[str, Any], contexts: dict[
                 (run / "raw/job.json").write_text(json.dumps(record), encoding="utf-8")
                 (run / "raw/measurements.json").write_text(json.dumps(measurements), encoding="utf-8")
                 result = analyze(run)
-            check = result["compiled_schedule"]
-            expect(abs(check["ratio"] - factor) < 1e-9, f"ratio {check['ratio']}")
-            expect(check["window_recomputed"] == (factor == 1.05), f"window recomputed: {check}")
-            expect(check.get("window_rejected", False) == (factor == 0.6), f"window rejected: {check}")
-            expect(result["billing_check"]["predicted_execution_seconds"] > 0, "no billing comparison")
-            expect(set(result["qubits"]) == set(prediction["qubits"]), "qubits missing from the analysis")
-            if factor == 1.05:
-                expect(check["measure_window_seconds_used"] > prediction["measure_window_seconds"], "window not solved")
-            if factor == 0.6:
-                expect(check["measure_window_seconds_used"] == prediction["measure_window_seconds"], "window not kept")
+            usable = {q: r for q, r in result["qubits"].items() if r["usable"]}
+            rows.append(
+                {
+                    **spec,
+                    "usable": len(usable),
+                    "departure_z": {q: r["decisions"]["departure"]["z"] for q, r in usable.items()},
+                    "settle": {q: r["settle_n16"]["verdict"] for q, r in usable.items()},
+                    "mutation_z": {q: r["decisions"]["mutation_test"]["z"] for q, r in usable.items()},
+                    "mutation_passes": all(r["decisions"]["mutation_test"]["passes"] for r in usable.values()),
+                    "t1_error": {q: r["fitted"]["t1_s"] / models[q]["t1_s"] - 1 for q, r in usable.items()},
+                    "device": {
+                        k: v["device"] for k, v in result["device"].items() if isinstance(v, dict) and "device" in v
+                    },
+                    "schedule_ratio": result["compiled_schedule"]["ratio"],
+                }
+            )
     finally:
         run_facts = original
+    return rows
 
 
-def self_test() -> str:
+def sweep_failures(rows: list[dict[str, Any]], qubits: int = QUBIT_COUNT) -> list[str]:
+    """The pass rule: every qubit of every device reads |departure z| < 1, settle `match`, a passing mutation test."""
+    failures = []
+    for row in rows:
+        if row["usable"] != qubits:
+            failures.append(f"{row['label']}: {row['usable']} usable qubits")
+        for q, z in row["departure_z"].items():
+            if abs(z) >= 1:
+                failures.append(f"{row['label']} {q}: departure z {z:.2f}")
+        for q, verdict in row["settle"].items():
+            if verdict != "match":
+                failures.append(f"{row['label']} {q}: settle {verdict}")
+        if not row["mutation_passes"]:
+            failures.append(f"{row['label']}: the mutation test fails")
+        if any(row["device"].values()):
+            failures.append(f"{row['label']}: a device-level flag {row['device']}")
+    return failures
+
+
+def sweep(reduced: bool = False) -> list[dict[str, Any]]:
+    """The estimator sweep over the retained case; raises on any failure of the pass rule."""
+    excerpt = load_json(ROOT / "results/iqm/cases" / CASE / EXCERPT)
+    rows = run_sweep(build_files(excerpt), excerpt, sweep_cases(reduced))
+    failures = sweep_failures(rows)
+    if failures:
+        raise RuntimeError("estimator sweep: " + "; ".join(failures))
+    return rows
+
+
+def self_test(with_sweep: bool = True) -> str:
     excerpt = load_json(ROOT / "results/iqm/cases" / CASE / EXCERPT)
     files = build_files(excerpt)
     expect(files == build_files(excerpt), "the build is not deterministic")
@@ -1356,7 +1597,7 @@ def self_test() -> str:
     )
     # Planted devices: T1 and p differ from the planning values, eps takes both signs.
     contexts = contexts_of(prediction)
-    planted = dict(zip(qubits, (0.0, 0.004, 0.02, 0.0, -0.01, 0.0), strict=True))
+    planted = dict(zip(qubits, (0.0, 0.0, 0.015, 0.01, -0.01, 0.0), strict=True))
     models = {
         q: device_model(cal, t1_s=0.8 * cal["t1_s"], p_init=0.12, eps=planted[q], eps_settle=planted[q])
         for q, cal in excerpt["qubits"].items()
@@ -1421,7 +1662,48 @@ def self_test() -> str:
     for row in evaluate(flat, contexts).values():
         expect(not row["decisions"]["mutation_test"]["passes"], "the mutation test passes without pinching")
         expect(row["decisions"]["departure"]["outcome"] == "departs_below", "no departure without pinching")
-    check_analyze(files, counts, contexts)
+    # The compiled-schedule check: exact, a longer schedule (window solved) and a far shorter one (window kept).
+    for factor, solved, rejected in ((1.0, False, False), (1.05, True, False), (0.6, False, True)):
+        check, window = compiled_schedule(
+            prediction,
+            circuits,
+            SHOTS,
+            JOB_SECONDS + prediction["estimator_per_shot_seconds_all_circuits"] * SHOTS * factor,
+        )
+        expect(abs(check["ratio"] - factor) < 1e-9, f"ratio {check['ratio']}")
+        expect(check["window_recomputed"] == solved and check.get("window_rejected", False) == rejected, f"{check}")
+        expect((window > MEASURE_WINDOW_SECONDS) == solved, f"window {window}")
+
+    # The device rule: two qubits, or a pooled z, flags the device; one qubit does not.
+    def usable(outcome: str, difference: float, tail: str = "match") -> dict[str, Any]:
+        return {
+            "usable": True,
+            "departure_n16": {"difference": difference, "se": 0.01},
+            "decisions": {"departure": {"outcome": outcome}},
+            "settle_n16": {"tail_gap": 0.0, "se": 0.01, "verdict": tail},
+        }
+
+    quiet = {f"QB{n}": usable("consistent", 0.0) for n in range(6)}
+    expect(
+        not any(v["device"] for v in device_verdict(quiet).values() if isinstance(v, dict) and "device" in v), "quiet"
+    )
+    one = {**quiet, "QB0": usable("departs_below", -0.031, "tail_attributed")}
+    verdict = device_verdict(one)
+    expect(not verdict["departs_below"]["device"] and not verdict["settle_tail_attributed"]["device"], f"{verdict}")
+    two = {**one, "QB1": usable("departs_below", -0.031, "tail_attributed")}
+    verdict = device_verdict(two)
+    expect(verdict["departs_below"]["device"] and verdict["settle_tail_attributed"]["device"], f"{verdict}")
+    expect(not verdict["exceeds_prediction"]["device"], "exceeds_prediction follows departs_below")
+    drift = {f"QB{n}": usable("consistent", -0.015) for n in range(6)}
+    expect(device_verdict(drift)["departs_below"]["device"], "a pooled departure at -3.7 sigma is not a flag")
+    expect(
+        device_verdict({**quiet, "QB0": {"usable": False}})["usable_qubits"] == [f"QB{n}" for n in range(1, 6)],
+        "usable",
+    )
+    if with_sweep:
+        rows = run_sweep(files, excerpt, sweep_cases(True))
+        failures = sweep_failures(rows)
+        expect(not failures, "; ".join(failures))
     # The decision rules at their thresholds.
     expect(decide(0.5301, 0.01, 0.0, 0.01)["mutation_test"]["passes"], "3.01 standard errors above 0.5 fails")
     expect(not decide(0.5299, 0.01, 0.0, 0.01)["mutation_test"]["passes"], "2.99 standard errors above 0.5 passes")
@@ -1457,6 +1739,8 @@ def main() -> int:
     bd.add_argument("directory", type=Path)
     bd.add_argument("--calibration-dir", type=Path, default=CALIBRATION_DIR)
     sub.add_parser("check").add_argument("directory", type=Path)
+    sw = sub.add_parser("sweep", help="the estimator sweep over true devices off the planning point")
+    sw.add_argument("--reduced", action="store_true", help="the planning point and the corner only")
     an = sub.add_parser("analyze")
     an.add_argument("run_dir", type=Path)
     an.add_argument("--out", type=Path, required=True)
@@ -1469,6 +1753,8 @@ def main() -> int:
         write(args.directory, args.calibration_dir)
     elif args.command == "check":
         check(args.directory)
+    elif args.command == "sweep":
+        print(dump(sweep(args.reduced)), end="")
     elif args.command == "analyze":
         text = dump(analyze(args.run_dir, args.mock))
         if args.replay:

@@ -6,8 +6,14 @@ import iqm_measurement_sequence as case
 
 
 def test_self_test_holds() -> None:
-    if "measurement sequence pinching" not in case.self_test():
+    if "measurement sequence pinching" not in case.self_test(with_sweep=False):
         raise AssertionError("the self-test summary changed")
+
+
+def test_estimator_sweep_passes_at_the_reduced_grid() -> None:
+    rows = case.sweep(reduced=True)
+    if [row["label"] for row in rows] != ["planning", "corner"]:
+        raise AssertionError(f"the reduced grid ran {[row['label'] for row in rows]}")
 
 
 def test_case_bytes_are_reproducible_and_retained_case_checks(tmp_path: Path) -> None:

@@ -116,17 +116,25 @@ every circuit's shots to the all-zeros fraction, and passive reset takes 316 us 
 ([timing pilot](iqm-garnet-timing-pilot.md)).
 
 `ro0` and `ro1` read z = +-(1 - 2 p) through the assignment channel and the wait, with p the initialization excitation
-after reset, so the correction (Zobs - o)/s with o and s from the pair returns the true z divided by (1 - 2 p). The
-T1 series then reads the corrected value (1 - 2 (1 - p) exp(-t/T1))/(1 - 2 p) at each delay t, which fixes T1 and p
-jointly (closed form in p at a given T1, a bounded search over T1). The analysis recomputes every prediction (the
-departure prediction, the settle prediction, the delay-arm model) at the fitted T1 and p. `prediction.json` keeps the
-planning values at the calibrated T1 and T2 and an assumed p of 0.068 (README, "Reset"), and says so.
+after reset, so the correction (Zobs - o)/s with o and s from the pair returns the true z before the wait divided by
+(1 - 2 p). The T1 series then reads y_t = (z_eq - (z_eq + 1 - 2 p) exp(-t/T1))/(1 - 2 p) = q (1 - exp(-t/T1)) -
+exp(-t/T1) with q = z_eq/(1 - 2 p), where z_eq is the equilibrium z, 1 - 2 times the thermal excitation of an idle qubit.
+The series fixes T1 and the one combination q, so the fit does not assume the idle qubit is cold, and p enters the
+predictions only through q. The model predicts the corrected z of an arm as a + b q, with a the chain's response to
+the initial z and b its response to the relaxation source; the analysis recomputes every prediction (the departure
+prediction, the settle prediction, the delay-arm model) at the fitted T1 and q. `prediction.json` keeps the planning
+values at the calibrated T1 and T2 and an assumed p of 0.068 (README, "Reset"), and says so.
 
 **p_init sensitivity.** The planning prediction for the N = 16 measure arm moves from 0.898 to 1.056 across p = 0,
-0.05, 0.10, 0.15 and 0.20 (per qubit in `prediction.json`), a spread of 0.116 to 0.146, or 17 to 28 departure standard
-errors, because the corrected z carries the T1 lift divided by (1 - 2 p). That exceeds the 0.3 standard error bound, so
-p is measured in the job; the T1 series does it without a heralded circuit, and its uncertainty (0.007 to 0.012 on p)
-propagates into the departure standard error.
+0.05, 0.10, 0.15 and 0.20 (per qubit in `prediction.json`), a spread of 0.116 to 0.146 in P0, or 17 to 28 departure
+standard errors. The prediction and the corrected estimate live in the same space, the ro0/ro1-normalized z, and the
+ro0/ro1 normalization cancels the p dependence of a's term: a z0 / z0 = a. What remains is the relaxation offset
+divided by the initial z, b/(1 - 2 p). That offset is not small here: the measure arm spends 16 x 1.81 us = 29 us
+relaxing toward |0> at a T1 of 40 to 60 us, so for QB5 a = 0.409 and b = 0.422, and b/(1 - 2 p) grows from 0.422 to
+0.703 across the range, 0.28 in z and 0.14 in P0. A corrected value above 1 at p = 0.15 and 0.20 is the quotient by
+(1 - 2 p), not a probability. The sensitivity therefore requires measuring q in the job; the T1 series does it without a
+heralded circuit, and its uncertainty (0.007 to 0.012 on the equivalent p) propagates into the departure standard
+error.
 
 ## Shots, billing and max_credits
 
@@ -153,15 +161,24 @@ circuit group propagated through the joint correction and T1 fit by the delta me
 - the mutation test passes when the N = 16 contrast (measure minus unitary) exceeds 0.5 by at least 3 standard
   errors;
 - the departure test compares the measured N = 16 measure-arm P0 with the ideal-projective prediction at the fitted T1
-  and p (a rotation with the prx depolarizing error, an ideal pinch, then T1 relaxation toward |0> over the rotation
+  and q (a rotation with the prx depolarizing error, an ideal pinch, then T1 relaxation toward |0> over the rotation
   layer and the measure window; T2 does not enter, because the state is diagonal after every measurement) and names
-  one outcome from z = (measured - predicted)/SE, the SE including the T1 and p fit: `departs_below` (z <= -3),
-  `exceeds_prediction` (z >= +3) or `consistent`;
+  one outcome from z = (measured - predicted)/SE, the SE including the T1 and q fit and a systematic of 100 % of the
+  calibrated prx error (a randomized-benchmarking average over other sequences, which the job cannot measure):
+  `departs_below` (z <= -3), `exceeds_prediction` (z >= +3) or `consistent`;
 - a qubit whose ro0/ro1 readout scale lies below 0.5 makes no decision.
+
+**Device verdict.** Six qubits times about four 3-SE tests give about a 6 % chance of at least one false flag, so the
+per-qubit verdicts stay descriptive and the device-level verdict is the decision. The device departs below the
+prediction when at least 2 of the usable qubits return `departs_below`, or the inverse-variance pooled departure z over
+the usable qubits is at or below -3 (the pooling treats the qubits as independent). The device exceeds the prediction by
+the same rule with `exceeds_prediction` and z >= +3, and the settle arm attributes a readout tail to the device by the
+same rule with `tail_attributed` and the pooled settle gap z >= +3.
 
 Reported without a decision: the settle gap; the readout-history diagnostic (the N = 1 measure arm against the N = 1
 delay arm, both ideally 0.0302 with equal models, where only the measure arm has a measurement before the final one,
-so a difference of 3 standard errors or more reads as residual readout-history bias); the delay arm's measured and
+so a difference of 3 standard errors or more reads as residual readout-history bias, or as a measurement-induced
+transition at N = 1, about 0.94 eps in P0, which the eps fit over N tells apart); the delay arm's measured and
 modeled (T1 and T2) P0 per N with their difference and the measured delay minus unitary difference at N = 16 against
 the model's; the per-N measure-arm deficit against the ideal; the fit of P0(N) = (1 + ((1 - 2 eps) cos(THETA/N))^N)/2 for
 eps per qubit and the same fit against the relaxed model; the transition rate between consecutive mid-circuit outcomes
@@ -201,30 +218,88 @@ analysis) then settles the base, layer and window separately.
 ## Predicted outcome
 
 Planning values from the live set `be070414` at the calibrated T1 and T2 and p = 0.068 (`prediction.json`). The
-standard errors apply the run's estimator, the T1 and p fit included, to the model's expected counts at 3000 shots.
+standard errors apply the run's estimator, the T1 and q fit and the prx systematic included, to the model's expected counts at 3000 shots.
 
 | qubit | measure P0 at N = 1, 2, 4, 8, 16 (the N = 16 value is the planning departure prediction) | delay P0 at N = 1, 2, 4, 8, 16 | unitary N = 16 | settle N = 16 | contrast | contrast SE | mutation z | departure SE |
 |---|---|---|---|---|---|---|---|---|
-| QB5 | 0.0713, 0.5401, 0.7064, 0.8486, 0.9486 | 0.0713, 0.1571, 0.2561, 0.4076, 0.6059 | 0.0596 | 0.9902 | 0.8891 | 0.0104 | 37.5 | 0.0051 |
-| QB7 | 0.0771, 0.5423, 0.7067, 0.8433, 0.9328 | 0.0771, 0.1786, 0.2913, 0.4545, 0.6509 | 0.0936 | 0.9802 | 0.8392 | 0.0106 | 32.0 | 0.0052 |
-| QB11 | 0.0697, 0.5391, 0.7050, 0.8466, 0.9460 | 0.0697, 0.1376, 0.2214, 0.3563, 0.5465 | 0.0562 | 0.9872 | 0.8900 | 0.0104 | 37.6 | 0.0054 |
-| QB14 | 0.0719, 0.5406, 0.7073, 0.8502, 0.9513 | 0.0719, 0.1815, 0.2981, 0.4653, 0.6661 | 0.0629 | 0.9927 | 0.8883 | 0.0101 | 38.5 | 0.0051 |
-| QB17 | 0.0708, 0.5398, 0.7061, 0.8483, 0.9484 | 0.0708, 0.1304, 0.2073, 0.3343, 0.5201 | 0.0531 | 0.9899 | 0.8954 | 0.0101 | 39.1 | 0.0052 |
-| QB19 | 0.0622, 0.5346, 0.6990, 0.8391, 0.9374 | 0.0622, 0.1610, 0.2665, 0.4216, 0.6153 | 0.0610 | 0.9754 | 0.8765 | 0.0112 | 33.7 | 0.0069 |
+| QB5 | 0.0713, 0.5401, 0.7064, 0.8486, 0.9486 | 0.0713, 0.1571, 0.2561, 0.4076, 0.6059 | 0.0596 | 0.9902 | 0.8891 | 0.0104 | 37.5 | 0.0071 |
+| QB7 | 0.0771, 0.5423, 0.7067, 0.8433, 0.9328 | 0.0771, 0.1786, 0.2913, 0.4545, 0.6509 | 0.0936 | 0.9802 | 0.8392 | 0.0106 | 32.0 | 0.0248 |
+| QB11 | 0.0697, 0.5391, 0.7050, 0.8466, 0.9460 | 0.0697, 0.1376, 0.2214, 0.3563, 0.5465 | 0.0562 | 0.9872 | 0.8900 | 0.0104 | 37.6 | 0.0077 |
+| QB14 | 0.0719, 0.5406, 0.7073, 0.8502, 0.9513 | 0.0719, 0.1815, 0.2981, 0.4653, 0.6661 | 0.0629 | 0.9927 | 0.8883 | 0.0101 | 38.5 | 0.0060 |
+| QB17 | 0.0708, 0.5398, 0.7061, 0.8483, 0.9484 | 0.0708, 0.1304, 0.2073, 0.3343, 0.5201 | 0.0531 | 0.9899 | 0.8954 | 0.0101 | 39.1 | 0.0069 |
+| QB19 | 0.0622, 0.5346, 0.6990, 0.8391, 0.9374 | 0.0622, 0.1610, 0.2665, 0.4216, 0.6153 | 0.0610 | 0.9754 | 0.8765 | 0.0112 | 33.7 | 0.0083 |
 
 The model device passes the mutation test by 32 to 39 standard errors. The fitted T1 carries 1.1 to 2.3 us of
 standard error (2 to 4 %) and p 0.007 to 0.012. T1 and the divided-by-(1 - 2 p) correction lift the measure arm 0.04 to
-0.06 above its ideal 0.8914, so the departure test needs the fitted values; a calibrated T1 alone would put the
-lift at 5 to 6 departure standard errors. Dephasing over 16 steps of 1.81 us against T2 of 7.0 to 14.1 us lifts the
+0.06 above its ideal 0.8914, so the departure test needs the fitted values; the lift is 6 to 9 departure standard errors on
+the five qubits other than QB7 and 1.7 on QB7. Dephasing over 16 steps of 1.81 us against T2 of 7.0 to 14.1 us lifts the
 delay arm to 0.52 to 0.67: idle dephasing alone produces 0.47 to 0.60 of the 0.86 Zeno rise, which is why the delay arm
 is a control and the unitary arm the null.
 
-**Cross-check.** Every arm and N of every qubit was run through an independent Aer density-matrix simulation built on
-`scripts/iqm_sim.py`'s calibration noise model (prx depolarizing error per qubit) with thermal relaxation on every
-wait (`iqm_signed_probe.relaxation`), the pinch as a Kraus channel and the live set's T1 and T2. Against the Bloch model
-with the prx error, the largest gap is 1e-12 in P0. Against the model without it, as first written, the gap reached
-0.024 in P0 on QB7's measure arm (4.6 departure standard errors) and 0.037 on its unitary arm (7 standard errors): the
-Bloch model omitted the per-prx depolarizing error, which is now an input (`prx_p`) of every table.
+**Estimator sweep.** `scripts/iqm_measurement_sequence.py sweep` (the self-test runs its reduced grid) builds raw
+`measurements.json` files in the format the mock returned (per circuit and key, 3000 rows of six 0/1 outcomes in locus
+order) from a model device's expected per-qubit probabilities, with no random draw: qubit j reads 1 in the shots whose
+index i satisfies (i x a_j) mod 3000 < ones, with a_j coprime to 3000, and each mid-circuit key is a per-qubit
+Bresenham path whose consecutive-outcome flips match the expected pair count. Each qubit's paths are independent of the
+others' by construction, so the construction says nothing about cross-qubit correlation. The real `analyze` path then
+runs on each device: readout correction, T1 and q fit, prediction recompute, decisions. One axis moves at a time from
+the planning point, then a corner moves all four; the pass rule is |departure z| < 1, settle `match` and a passing
+mutation test on every qubit, and no device-level flag.
+
+| device | p | thermal | T1 / calibrated | prx / calibrated | departure z over the six qubits | settle | mutation z (min) | fitted T1 error (max) |
+|---|---|---|---|---|---|---|---|---|
+| planning | 0.068 | 0 | 1.0 | 1 | -0.01 to +0.02 | match | 32.0 | 8e-4 |
+| p = 0 | 0 | 0 | 1.0 | 1 | -0.03 to +0.03 | match | 44.3 | 6e-4 |
+| p = 0.15 | 0.15 | 0 | 1.0 | 1 | -0.00 to +0.04 | match | 24.3 | 6e-4 |
+| thermal 0.02 | 0.068 | 0.02 | 1.0 | 1 | -0.01 to +0.03 | match | 31.2 | 8e-4 |
+| T1 x 0.8 | 0.068 | 0 | 0.8 | 1 | +0.00 to +0.03 | match | 32.1 | 4e-4 |
+| T1 x 1.2 | 0.068 | 0 | 1.2 | 1 | -0.03 to +0.02 | match | 31.8 | 8e-4 |
+| prx x 2 | 0.068 | 0 | 1.0 | 2 | -0.94 to -0.55 | match | 27.3 | 8e-4 |
+| corner | 0.15 | 0.02 | 0.8 | 2 | -0.94 to -0.44 | match | 21.6 | 5e-4 |
+
+The thermal row passes because the model takes q = z_eq/(1 - 2 p) from the T1 series rather than a p with a cold idle
+qubit. The prx rows pass because the standard errors carry the prx systematic: without it QB7 reads -4.4 at prx x 2 and
+-3.4 at the corner, since its calibrated prx error is 0.0054 against 0.0007 to 0.0011 elsewhere. QB7's departure
+standard error is 0.025 where the others' is 0.006 to 0.008, so the departure test is weakest on QB7. A prx error twice
+the calibrated one on every qubit pools to a device z of about -1.5, below the device rule's threshold.
+
+**Cross-check.** `scripts/iqm_measurement_sequence_aer_check.py run CASE_DIR --calibration-dir DIR` runs every arm and N
+of every qubit through an independent Aer density-matrix simulation built on `scripts/iqm_sim.py`'s calibration noise
+model (prx depolarizing error per qubit) with thermal relaxation on every wait (`iqm_signed_probe.relaxation`), the
+pinch as a Kraus channel and the live set's T1 and T2, from |0>. Against the Bloch model with the prx error the largest
+gap over the 72 points is 6e-15 in P0. Against the model without it, as first written, the gap reached 0.024 in P0 on
+QB7's measure arm (4.6 departure standard errors) and 0.037 on its unitary arm: the Bloch model omitted the per-prx
+depolarizing error, which is now an input (`prx_p`) of every table. The check verifies the model's algebra and time
+accounting, not the estimator, which the sweep covers.
+
+## Window sensitivity
+
+The planned measure window of 1.772 us is a garnet:mock compiler estimate and need not hold on the QPU. The planning
+prediction at the N = 16 measure arm and the settle arm over the window, per qubit (`prediction.json`,
+`window_sensitivity`):
+
+| qubit | measure P0 at 1.0 / 1.4 / 1.772 / 2.0 us | settle P0 at 1.0 / 1.772 / 2.0 us | dP0/dw measure, settle (per us) | shift 1.0 to 1.772 us, measure (departure SE) |
+|---|---|---|---|---|
+| QB5 | 0.9254 / 0.9380 / 0.9486 / 0.9545 | 0.9767 / 0.9902 / 0.9937 | 0.0269, 0.0158 | 0.0232 (3.3) |
+| QB7 | 0.9060 / 0.9207 / 0.9328 / 0.9397 | 0.9649 / 0.9802 / 0.9841 | 0.0310, 0.0178 | 0.0268 (1.1) |
+| QB11 | 0.9233 / 0.9356 / 0.9460 / 0.9518 | 0.9737 / 0.9872 / 0.9907 | 0.0264, 0.0159 | 0.0226 (2.9) |
+| QB14 | 0.9280 / 0.9407 / 0.9513 / 0.9572 | 0.9793 / 0.9927 / 0.9962 | 0.0270, 0.0157 | 0.0233 (3.8) |
+| QB17 | 0.9254 / 0.9380 / 0.9484 / 0.9543 | 0.9764 / 0.9899 / 0.9934 | 0.0267, 0.0158 | 0.0230 (3.3) |
+| QB19 | 0.9179 / 0.9284 / 0.9374 / 0.9426 | 0.9626 / 0.9754 / 0.9788 | 0.0233, 0.0153 | 0.0196 (2.3) |
+
+A window 0.77 us shorter than planned lowers the measure-arm prediction by 2.3 to 3.8 departure standard errors on five
+qubits (1.1 on QB7); the shift reaches 3 standard errors on three qubits and 2.9 on a fourth, so a wrong window reads as
+a departure.
+The compiled-window check below detects a window error only through the job's total, and the rejection branch leaves
+the planned window in place; two single-circuit QPU window probes would fix it directly.
+
+## Readout crosstalk
+
+`ro1` puts all six qubits in |1> at once, while the measure arm's neighbor states vary from shot to shot, so
+state-dependent simultaneous-readout crosstalk is not calibrated and enters the corrected P0 as an unmodeled systematic.
+The case adds no circuit for it. `analyze` reports descriptively, per qubit, the largest absolute correlation of its
+final outcome with another qubit's in `ro0`, `ro1` and the N = 16 measure arm (`readout_crosstalk`), against the 0.018
+shot noise of 3000 shots.
 
 ## Leakage readout
 
@@ -245,6 +320,8 @@ this case carries no leakage circuits and no P(2) readout.
   [run](../../results/iqm/runs/2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching/results.json) and
   [its analysis](../../results/iqm/measurement_sequence_pinching_mock_analysis.json), produced by an earlier revision of
   the script; the circuits it ran differ from this case's, so the current script cannot replay it.
+- Mock run of the hardened 57-circuit form (job 01a174a7), compiled schedule ratio 1.0000:
+  [run](../../results/iqm/runs/2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching/results.json).
 - Timing probe case and its five mock runs:
   [case](../../results/iqm/cases/measurement-timing-probe/cases.json), runs
   `results/iqm/runs/2026-10-25T1912*Z-garnet_mock-measurement-timing-probe-*`.

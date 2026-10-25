@@ -9402,7 +9402,31 @@
       ],
       "gates": {},
       "acquisitions": [
-        "iqm-garnet-mock-measurement-sequence-pinching-50",
+        "iqm-garnet-mock-measurement-sequence-pinching-50"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-57",
+      "statement": "garnet:mock (calibration set f04fe114) completed the hardened 57-circuit measurement-sequence case (cases.json 84fd16f8, job 01a174a7) at 3000 shots: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order QB5, QB7, QB11, QB14, QB17, QB19, and the compiled qpu_execution estimate of 5.067636 s equals the case's predicted 5.067636 s (ratio 1.0000). The mock executed in 4.041 s and billed 5 s at 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies the format and the schedule model, not any device property, and its execution time does not carry to the QPU.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "d90e20f8a88a49a69e3e9cf14fe79359317e018794cb7ee732a5c33c548e93fe"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
         "iqm-garnet-mock-measurement-sequence-pinching-57"
       ],
       "assumptions": [],
