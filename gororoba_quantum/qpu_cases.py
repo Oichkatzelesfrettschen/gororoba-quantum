@@ -62,6 +62,7 @@ _DESIGN_OPTIONS = (
 _MAPPING_FIELDS = (
     "replica_cap",
     "measurement_delay_dt",
+    "settle_delay_dt",
     "replaced_measurement_qubits",
     "shared_initial_layout",
     "extra_control",
@@ -1698,20 +1699,28 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "ideal pinching, a nonselective projective measurement in Z. Each qubit starts in |0> and receives N "
             f"rotations RX(sign * THETA / N) with THETA = 8 pi / 9 and N in {steps}. The measure arm follows each "
             "rotation with a mid-circuit measurement whose outcome the program never reads, then reads the qubit "
-            "into the final register; the delay arm replaces each measurement with an idle of that qubit's "
-            "calibrated measure duration, which keeps the elapsed time and drops the projection. The signed arms "
-            "run in the order +, -, -, + and share their ideal law because cosine is even.",
+            "into the final register. The delay arm replaces each measurement with an idle of that qubit's "
+            "calibrated measure duration, which keeps the elapsed time and drops the projection; idle dephasing "
+            "pinches the qubit too, so it is the elapsed-time control that quantifies dephasing's share of the rise. "
+            "The unitary arm, at N = 16 only, plays the 16 rotations back to back with a barrier between them so "
+            "the transpiler cannot merge them; it is the mutation null. The settle arm, also at N = 16 only, is the "
+            "measure arm with a 2 us idle after each measurement: a readout-induced frequency shift acts during the "
+            "next pulse at second order, about -2.5e-6 per step in the flip probability, and a departure that "
+            "survives the settle gap unchanged excludes a readout tail. The signed arms run in the order +, -, -, + "
+            "and share their ideal law because cosine is even.",
             "",
-            "The measure arm's ideal final P0 is (1 + cos(THETA / N) ** N) / 2 and the delay arm's is "
-            "cos(THETA / 2) ** 2 at every N. The state after each measurement is diagonal in Z, so a shift of the "
-            "qubit frequency after readout leaves the measure arm's P0 unchanged; a deficit of the measured P0 "
-            "below the ideal, which grows with N, measures transitions the measurement induces. The calibration "
-            "noise model treats a mid-circuit measurement as projective, so it prices the measure arm at readout "
+            "The measure arm's ideal final P0 is (1 + cos(THETA / N) ** N) / 2 and the delay and unitary arms' is "
+            "cos(THETA / 2) ** 2; the settle arm's is the measure arm's. The state after each measurement is "
+            "diagonal in Z, so a shift of the qubit frequency after readout moves the flip probability only at "
+            "second order; a deficit of the measured P0 below the ideal, which grows with N, measures transitions "
+            "the measurement induces once the unitary, delay and settle controls separate it from rotation error, "
+            "idle dephasing and a readout tail. The calibration noise model treats a mid-circuit measurement as "
+            "projective, so it prices the measure arm at readout "
             "and decoherence alone.",
             "",
-            "Per qubit, eleven two-sided precision contracts split the family-wise alpha evenly and admit the "
+            "Per qubit, thirteen two-sided precision contracts split the family-wise alpha evenly and admit the "
             "design: the final P0 pooled over the four signed members of each arm at each N (half-width 0.03), "
-            "and the measure minus delay contrast at N = 16 (half-width 0.055), the mutation-test endpoint. They "
+            "and the measure minus unitary contrast at N = 16 (half-width 0.055), the mutation-test endpoint. They "
             "price resolution, not an effect; the Hoeffding radii hold under arbitrary dependence between PUBs.",
             "",
         ]

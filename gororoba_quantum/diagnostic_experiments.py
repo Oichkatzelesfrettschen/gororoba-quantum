@@ -378,13 +378,23 @@ def state_prep_excitation(excited: float, prob_meas1_prep0: float, prob_meas0_pr
 # measurement-sequence: does a mid-circuit measurement act as ideal pinching,
 # a nonselective projective measurement in Z, on a named qubit? A measure arm
 # applies N rotations RX(sign * THETA / N), each followed by a measurement
-# whose outcome the program never reads; a delay arm replaces each such
-# measurement with an idle of the backend's measure duration on that qubit, so
-# it keeps the elapsed time and drops the projection. Both read the qubit in
-# Z at the end. The state after each measurement is diagonal in Z, so the
-# measure arm's final P0 follows the Markov law of MSQ_THETA / N rotations
-# and a shift of the qubit frequency after readout has no effect on it; the
-# delay arm's coherent rotations compose to RX(sign * THETA).
+# whose outcome the program never reads. A delay arm replaces each such
+# measurement with an idle of the backend's measure duration on that qubit: it
+# keeps the elapsed time and drops the projection, but idle dephasing pinches
+# the qubit too, so it is the elapsed-time control and quantifies dephasing's
+# share of the rise. A unitary arm (N = 16 only) plays the rotations back to
+# back with a barrier between them, which stops the transpiler from merging
+# them into one gate; it keeps neither the measurements nor the idle, and is
+# the mutation null. A settle arm (N = 16 only) is the measure arm with an
+# idle of MSQ_SETTLE_SECONDS after each mid-circuit measurement, before the
+# next rotation: a readout-induced frequency shift that outlasts the readout
+# acts during the next pulse at second order in delta * tau (about -2.5e-6 per
+# step in the flip probability at N = 16 for tau <= 100 ns and
+# delta <= 2 pi * 100 kHz), and a departure that survives the settle gap
+# unchanged excludes a readout tail. All four read the qubit in Z at the end. The state
+# after each measurement is diagonal in Z, so the measure arm's final P0
+# follows the Markov law of MSQ_THETA / N rotations; the delay and unitary
+# arms' coherent rotations compose to RX(sign * THETA) in the ideal.
 #
 # Register layout, clbit 0 first: "final" (1 bit) holds the last read and
 # every distribution and summary reads it; the measure arm's "mcm" register
@@ -395,7 +405,21 @@ def state_prep_excitation(excited: float, prob_meas1_prep0: float, prob_meas0_pr
 MSQ_FAMILY = "measurement-sequence"
 MSQ_THETA = 8.0 * math.pi / 9.0
 MSQ_STEPS = (1, 2, 4, 8, 16)
-MSQ_ARMS = ("measure", "delay")
+MSQ_ARMS = ("measure", "delay", "unitary", "settle")
+# The step counts each arm runs.
+MSQ_UNITARY_STEPS = 16
+MSQ_SETTLE_STEPS = 16
+# The idle after each mid-circuit measurement of the settle arm, rounded up to
+# the Target's timing granularity (qpu_planning.settle_delay).
+MSQ_SETTLE_SECONDS = 2.0e-6
+MSQ_ARM_COUNTS = {
+    "measure": MSQ_STEPS,
+    "delay": MSQ_STEPS,
+    "unitary": (MSQ_UNITARY_STEPS,),
+    "settle": (MSQ_SETTLE_STEPS,),
+}
+# Arms that measure into the mid-circuit register mcm.
+MSQ_MEASURING_ARMS = ("measure", "settle")
 # The four signed members of one (arm, N), in execution order +, -, -, +: the
 # sign of the rotation and the repeat letter that names the member.
 MSQ_SIGNED = (("p", "a", 1), ("m", "a", -1), ("m", "b", -1), ("p", "b", 1))
@@ -406,19 +430,21 @@ MSQ_DYNAMIC_STEPS = tuple(n for n in MSQ_STEPS if n >= 2)
 MSQ_ARM_STEPS = {
     "measure": "rx(sign * THETA / N), measure into mcm, repeated N times; measure into final",
     "delay": "rx(sign * THETA / N), delay of one measure duration, repeated N times; measure into final",
+    "unitary": "rx(sign * THETA / 16), barrier, repeated 16 times; measure into final",
+    "settle": "rx(sign * THETA / 16), measure into mcm, delay of 2 us, repeated 16 times; measure into final",
 }
 # Two-sided half-widths every endpoint must reach at the family-wise alpha
-# split over 11 endpoints per qubit (5 measure P0, 5 delay P0 and the N = 16
-# contrast). The optimizer takes each endpoint's PUBs as streams of span
+# split over 13 endpoints per qubit (5 measure P0, 5 delay P0, the unitary P0,
+# the settle P0 and the N = 16 contrast). The optimizer takes each endpoint's PUBs as streams of span
 # 0.25 (a pooled member weighs 1/4) and gives each stream the tail
 # alpha_endpoint / streams, so a pooled P0 over 4 PUBs has radius
 # sqrt(ln(8 / alpha_endpoint) / (2 shots)) and the contrast over 8 PUBs
 # 2 * sqrt(ln(16 / alpha_endpoint) / (2 shots)). With alpha 0.05 and 14 qubits
-# (alpha_endpoint 3.25e-4) a P0 reaches 0.0248 at 8192 shots and 0.0351 at
-# 4096, and the contrast 0.0514 and 0.0727, so 8192 shots is the smallest
+# (alpha_endpoint 2.75e-4) a P0 reaches 0.0251 at 8192 shots and 0.0354 at
+# 4096, and the contrast 0.0518 and 0.0732, so 8192 shots is the smallest
 # admitted power-of-two tier from 1 to 14 qubits.
 MSQ_PRECISION = {"p0": 0.03, "contrast": 0.055}
-MSQ_ENDPOINTS_PER_QUBIT = 2 * len(MSQ_STEPS) + 1
+MSQ_ENDPOINTS_PER_QUBIT = sum(len(counts) for counts in MSQ_ARM_COUNTS.values()) + 1
 
 
 def msq_member(arm: str, steps: int, signed: tuple[str, str, int], qubit: int) -> str:
@@ -426,25 +452,34 @@ def msq_member(arm: str, steps: int, signed: tuple[str, str, int], qubit: int) -
     return f"msq_{arm}_n{steps}_{signed[0]}{signed[1]}_q{qubit}"
 
 
-def msq_circuit(arm: str, steps: int, sign: int, qubit: int, name: str, delay_dt: int) -> QuantumCircuit:
-    """One signed member: steps rotations, each followed by a measure (mcm) or by a delay, then the final read."""
-    if arm not in MSQ_ARMS or steps not in MSQ_STEPS or sign not in (1, -1):
+def msq_circuit(
+    arm: str, steps: int, sign: int, qubit: int, name: str, delay_dt: int, settle_dt: int = 1
+) -> QuantumCircuit:
+    """One signed member: steps rotations, each followed by a measure (mcm), a delay, a measure and a settle
+    delay, or nothing but a barrier, then the final read."""
+    if arm not in MSQ_ARMS or steps not in MSQ_ARM_COUNTS.get(arm, ()) or sign not in (1, -1):
         raise ValueError(f"unknown measurement-sequence member {arm!r} n{steps} sign {sign!r}")
     if type(delay_dt) is not int or delay_dt <= 0:
         raise ValueError(f"the delay of {name} must be a positive integer number of dt, got {delay_dt!r}")
+    if type(settle_dt) is not int or settle_dt <= 0:
+        raise ValueError(f"the settle delay of {name} must be a positive integer number of dt, got {settle_dt!r}")
     wire = QuantumRegister(1, "q")
     final = ClassicalRegister(1, "final")
-    if arm == "measure":
+    if arm in MSQ_MEASURING_ARMS:
         mcm = ClassicalRegister(steps, "mcm")
         circuit = QuantumCircuit(wire, final, mcm, name=name)
     else:
         circuit = QuantumCircuit(wire, final, name=name)
     for step in range(steps):
         circuit.rx(sign * MSQ_THETA / steps, 0)
-        if arm == "measure":
+        if arm in MSQ_MEASURING_ARMS:
             circuit.measure(0, circuit.clbits[1 + step])
-        else:
+            if arm == "settle":
+                circuit.delay(settle_dt, 0, unit="dt")
+        elif arm == "delay":
             circuit.delay(delay_dt, 0, unit="dt")
+        elif step < steps - 1:
+            circuit.barrier(0)
     circuit.measure(0, final[0])
     return circuit
 
@@ -455,7 +490,7 @@ def msq_pinched_p0(steps: int) -> float:
 
 
 def msq_delay_p0() -> float:
-    """Ideal final P0 of the delay arm at every N: cos(THETA / 2) ** 2."""
+    """Ideal final P0 of the delay and unitary arms: cos(THETA / 2) ** 2."""
     return math.cos(MSQ_THETA / 2.0) ** 2
 
 
@@ -481,44 +516,55 @@ def msq_measure_law(steps: int) -> np.ndarray:
 
 def msq_weights(steps: int, arm: str) -> np.ndarray:
     """1 on every outcome whose final bit (clbit 0) reads 0, over the member's outcome space."""
-    width = 2 if arm == "delay" else 2 ** (steps + 1)
+    width = 2 ** (steps + 1) if arm in MSQ_MEASURING_ARMS else 2
     return np.asarray([1.0 - (index & 1) for index in range(width)])
 
 
-def msq_delays(qubits: list[int], measurement_delay_dt: Any) -> dict[int, int]:
-    """The per-qubit measure duration in dt, one positive integer for each named qubit."""
+def msq_delays(qubits: list[int], measurement_delay_dt: Any, label: str = "measure") -> dict[int, int]:
+    """The per-qubit duration in dt (the measure duration, or the settle idle), one positive integer per qubit."""
     if not qubits or len(set(qubits)) != len(qubits) or any(type(q) is not int or q < 0 for q in qubits):
         raise ValueError(f"measurement-sequence needs distinct nonnegative qubits, got {qubits}")
     if not isinstance(measurement_delay_dt, dict):
-        raise ValueError("measurement-sequence needs a measure duration in dt for each qubit")
+        raise ValueError(f"measurement-sequence needs a {label} duration in dt for each qubit")
     delays = {int(qubit): duration for qubit, duration in measurement_delay_dt.items()}
     if set(delays) != set(qubits) or any(type(d) is not int or d <= 0 for d in delays.values()):
-        raise ValueError(f"measurement-sequence needs one positive dt duration per qubit, got {measurement_delay_dt}")
+        raise ValueError(
+            f"measurement-sequence needs one positive {label} dt duration per qubit, got {measurement_delay_dt}"
+        )
     return delays
 
 
-def msq_members(qubit: int, delay_dt: int) -> tuple[tuple[Member, ...], tuple[Member, ...]]:
+def msq_members(qubit: int, delay_dt: int, settle_dt: int) -> tuple[tuple[Member, ...], tuple[Member, ...]]:
     """(static members, dynamic members) of one qubit, in execution order.
 
-    Static: the one-step measure arm, then the delay arm at each N. Dynamic:
-    the measure arm at N >= 2. Within an (arm, N) the order is +, -, -, +.
+    Static: the one-step measure arm, the delay arm at each N, then the unitary arm. Dynamic:
+    the measure arm at N >= 2, then the settle arm. Within an (arm, N) the order is +, -, -, +.
     """
 
     def build(arm: str, steps: int) -> list[Member]:
-        ideal = msq_measure_law(steps) if arm == "measure" else np.asarray([msq_delay_p0(), 1.0 - msq_delay_p0()])
+        ideal = (
+            msq_measure_law(steps) if arm in MSQ_MEASURING_ARMS else np.asarray([msq_delay_p0(), 1.0 - msq_delay_p0()])
+        )
         weights = msq_weights(steps, arm)
         return [
             Member(
                 msq_member(arm, steps, signed, qubit),
-                msq_circuit(arm, steps, signed[2], qubit, msq_member(arm, steps, signed, qubit), delay_dt),
+                msq_circuit(arm, steps, signed[2], qubit, msq_member(arm, steps, signed, qubit), delay_dt, settle_dt),
                 ideal,
                 weights=weights,
             )
             for signed in MSQ_SIGNED
         ]
 
-    static = [*build("measure", 1), *(m for steps in MSQ_STEPS for m in build("delay", steps))]
-    dynamic = [m for steps in MSQ_DYNAMIC_STEPS for m in build("measure", steps)]
+    static = [
+        *build("measure", 1),
+        *(m for steps in MSQ_STEPS for m in build("delay", steps)),
+        *build("unitary", MSQ_UNITARY_STEPS),
+    ]
+    dynamic = [
+        *(m for steps in MSQ_DYNAMIC_STEPS for m in build("measure", steps)),
+        *build("settle", MSQ_SETTLE_STEPS),
+    ]
     return tuple(static), tuple(dynamic)
 
 
@@ -530,14 +576,15 @@ def _msq_summary(distributions: dict[str, np.ndarray], qubit: int) -> dict[str, 
     """Pooled final P0 per (arm, N) whose four signed members are present, and the measure arm's deficit."""
     result: dict[str, float] = {}
     for arm in MSQ_ARMS:
-        for steps in MSQ_STEPS:
+        for steps in MSQ_ARM_COUNTS[arm]:
             names = [msq_member(arm, steps, signed, qubit) for signed in MSQ_SIGNED]
             if not all(name in distributions for name in names):
                 continue
             pooled = math.fsum(_msq_final_p0(distributions[name]) for name in names) / len(names)
             result[f"q{qubit}_msq_p0_{arm}_n{steps}"] = pooled
-            if arm == "measure":
-                result[f"q{qubit}_msq_deficit_n{steps}"] = msq_pinched_p0(steps) - pooled
+            if arm in MSQ_MEASURING_ARMS:
+                prefix = "" if arm == "measure" else f"{arm}_"
+                result[f"q{qubit}_msq_{prefix}deficit_n{steps}"] = msq_pinched_p0(steps) - pooled
     return result
 
 
@@ -548,29 +595,32 @@ def _msq_summarizer(qubit: int) -> Summary:
     return summarize
 
 
-def measurement_sequence_groups(qubits: list[int], measurement_delay_dt: Any) -> list[Group]:
+def measurement_sequence_groups(qubits: list[int], measurement_delay_dt: Any, settle_delay_dt: Any) -> list[Group]:
     """Per qubit, a static group and a dynamic group; row r of each kind fuses across the qubits into one PUB.
 
     measurement_delay_dt maps each qubit to its measure duration in dt, which
-    the delay arm idles per step. Each group's summary reports, per N, the
+    the delay arm idles per step; settle_delay_dt maps each qubit to the idle
+    after each mid-circuit measurement of the settle arm. Each group's summary reports, per N, the
     final P0 pooled over the four signed members and, for the measure arm,
     the deficit ideal - measured.
     """
     delays = msq_delays(qubits, measurement_delay_dt)
+    settles = msq_delays(qubits, settle_delay_dt, "settle")
     groups = []
     for qubit in qubits:
-        static, dynamic = msq_members(qubit, delays[qubit])
+        static, dynamic = msq_members(qubit, delays[qubit], settles[qubit])
         groups.append(Group(f"msq_static_q{qubit}", static, _msq_summarizer(qubit)))
         groups.append(Group(f"msq_dynamic_q{qubit}", dynamic, _msq_summarizer(qubit)))
     return groups
 
 
 def measurement_sequence_contracts(qubits: list[int], alpha: float, power: float) -> tuple[ObservableContract, ...]:
-    """Eleven two-sided precision endpoints per qubit at the family-wise alpha split over all.
+    """Thirteen two-sided precision endpoints per qubit at the family-wise alpha split over all.
 
-    msq_p0_measure_nN_qQ and msq_p0_delay_nN_qQ read the final P0 pooled over
-    the four signed members of the arm at N; msq_zeno_contrast_n16_qQ reads the
-    measure arm minus the delay arm at N = 16, the mutation-test endpoint. A
+    msq_p0_{measure,delay}_nN_qQ, msq_p0_unitary_n16_qQ and msq_p0_settle_n16_qQ read the final P0
+    pooled over the four signed members of the arm at N;
+    msq_zeno_contrast_n16_qQ reads the measure arm minus the unitary arm at
+    N = 16, the mutation-test endpoint. A
     pooled member carries score values at weight 1/4, so the endpoint's
     estimate is the pooled mean.
     """
@@ -593,13 +643,13 @@ def measurement_sequence_contracts(qubits: list[int], alpha: float, power: float
                     power=power,
                     precision_half_width=MSQ_PRECISION["p0"],
                 )
-                for steps in MSQ_STEPS
+                for steps in MSQ_ARM_COUNTS[arm]
             )
-        top = MSQ_STEPS[-1]
+        top = MSQ_UNITARY_STEPS
         contracts.append(
             ObservableContract(
                 f"msq_zeno_contrast_n{top}_q{qubit}",
-                (*terms("measure", top, qubit), *terms("delay", top, qubit, sign=-1)),
+                (*terms("measure", top, qubit), *terms("unitary", top, qubit, sign=-1)),
                 alpha=share,
                 power=power,
                 precision_half_width=MSQ_PRECISION["contrast"],
@@ -1147,7 +1197,11 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
     if family.get("name") == STATE_PREP_FAMILY:
         return state_prep_groups([int(qubit) for qubit in family["qubits"]], family.get("arms"))
     if family.get("name") == MSQ_FAMILY:
-        return measurement_sequence_groups([int(qubit) for qubit in family["qubits"]], family["measurement_delay_dt"])
+        return measurement_sequence_groups(
+            [int(qubit) for qubit in family["qubits"]],
+            family["measurement_delay_dt"],
+            family["settle_delay_dt"],
+        )
     return []
 
 
@@ -1255,7 +1309,7 @@ def _msq_density_p0(steps: int, sign: int) -> float:
 
 
 def _msq_unitary_p0(steps: int, sign: int) -> float:
-    """Final P0 of the delay arm by unitary evolution of the N rotations."""
+    """Final P0 of the delay and unitary arms by unitary evolution of the N rotations."""
     phi = sign * MSQ_THETA / steps
     rotation = np.array([[math.cos(phi / 2), -1j * math.sin(phi / 2)], [-1j * math.sin(phi / 2), math.cos(phi / 2)]])
     state = np.array([1.0, 0.0], dtype=complex)
@@ -1287,6 +1341,33 @@ def _measurement_sequence_self_test() -> None:
         delay_law = np.asarray(ideal_branch_probabilities(msq_circuit("delay", steps, -1, 0, "check", 1)))
         if not np.allclose(delay_law, [msq_delay_p0(), 1.0 - msq_delay_p0()], rtol=0, atol=1e-12):
             raise AssertionError(f"n{steps}: the delay arm branch law differs from cos(THETA / 2) ** 2")
+    unitary = msq_circuit("unitary", MSQ_UNITARY_STEPS, -1, 0, "check", 1)
+    unitary_ops = unitary.count_ops()
+    if (
+        unitary_ops.get("rx") != MSQ_UNITARY_STEPS
+        or unitary_ops.get("barrier") != MSQ_UNITARY_STEPS - 1
+        or unitary_ops.get("measure") != 1
+        or "delay" in unitary_ops
+    ):
+        raise AssertionError(f"unitary arm operations {dict(unitary_ops)}")
+    if not np.allclose(
+        np.asarray(ideal_branch_probabilities(unitary)), [msq_delay_p0(), 1.0 - msq_delay_p0()], rtol=0, atol=1e-12
+    ):
+        raise AssertionError("the unitary arm branch law differs from cos(THETA / 2) ** 2")
+    settle = msq_circuit("settle", MSQ_SETTLE_STEPS, 1, 0, "check", 1, 3)
+    settle_ops = settle.count_ops()
+    if (
+        settle_ops.get("rx") != MSQ_SETTLE_STEPS
+        or settle_ops.get("measure") != MSQ_SETTLE_STEPS + 1
+        or settle_ops.get("delay") != MSQ_SETTLE_STEPS
+        or not is_dynamic(settle)
+    ):
+        raise AssertionError(f"settle arm operations {dict(settle_ops)}")
+    short_settle = msq_circuit("settle", MSQ_SETTLE_STEPS, -1, 0, "check", 1, 3)
+    if not np.allclose(
+        np.asarray(ideal_branch_probabilities(short_settle)), msq_measure_law(MSQ_SETTLE_STEPS), rtol=0, atol=1e-12
+    ):
+        raise AssertionError("the settle arm law differs from the measure arm's joint law")
     table = [round(msq_pinched_p0(steps), 4) for steps in MSQ_STEPS]
     if table != [0.0302, 0.5151, 0.6722, 0.8040, 0.8914] or round(msq_delay_p0(), 4) != 0.0302:
         raise AssertionError(f"the ideal table moved: {table}, delay {msq_delay_p0():.4f}")
@@ -1295,7 +1376,8 @@ def _measurement_sequence_self_test() -> None:
 
     qubits = [57, 65, 66, 104]
     delays = {qubit: 1000 + qubit for qubit in qubits}
-    groups = measurement_sequence_groups(qubits, delays)
+    settles = {qubit: 100 + qubit for qubit in qubits}
+    groups = measurement_sequence_groups(qubits, delays, settles)
     if len(groups) != 2 * len(qubits):
         raise AssertionError("each qubit needs one static and one dynamic group")
     for group in groups:
@@ -1310,23 +1392,23 @@ def _measurement_sequence_self_test() -> None:
             ):
                 raise AssertionError(f"{member.name}: ideal and weights do not span the clbits")
             branch = member.circuit.count_ops()
-            if "delay" in member.name:
+            if "_delay_" in member.name:
                 steps = int(member.name.split("_n")[1].split("_")[0])
                 if branch.get("measure") != 1 or branch.get("delay") != steps or branch.get("rx") != steps:
                     raise AssertionError(f"{member.name}: delay arm operations {dict(branch)}")
-    static_members, dynamic_members = msq_members(57, delays[57])
+    static_members, dynamic_members = msq_members(57, delays[57], settles[57])
     expected = [signed[0] + signed[1] for signed in MSQ_SIGNED]
     if (
         expected != ["pa", "ma", "mb", "pb"]
-        or len(static_members) != 4 + 4 * len(MSQ_STEPS)
-        or len(dynamic_members) != 16
+        or len(static_members) != 4 + 4 * len(MSQ_STEPS) + 4
+        or len(dynamic_members) != 20
     ):
         raise AssertionError("the member order or counts moved")
     contracts = measurement_sequence_contracts(qubits, 0.05, 0.8)
     if len(contracts) != MSQ_ENDPOINTS_PER_QUBIT * len(qubits) or not math.isclose(
         math.fsum(c.alpha for c in contracts), 0.05
     ):
-        raise AssertionError("the endpoints do not split the family-wise alpha over eleven per qubit")
+        raise AssertionError("the endpoints do not split the family-wise alpha over thirteen per qubit")
     for count in (1, 4, 14):
         share = 0.05 / (MSQ_ENDPOINTS_PER_QUBIT * count)
         for shots, admitted in ((4096, False), (8192, True)):
@@ -1337,7 +1419,8 @@ def _measurement_sequence_self_test() -> None:
                 raise AssertionError(f"{count} qubits, {shots} shots: radii {single:.4f}, {contrast:.4f}")
     print(
         f"measurement-sequence: ideal P0 {table} for N = {list(MSQ_STEPS)} match exact density-matrix evolution to "
-        "1e-12, the delay arm matches unitary evolution at cos(THETA / 2) ** 2, the N = 16 contrast is 0.8612; "
+        "1e-12, the delay and unitary arms match unitary evolution at cos(THETA / 2) ** 2, "
+        "the N = 16 measure-minus-unitary contrast is 0.8612; "
         f"{len(contracts)} endpoints on {len(qubits)} qubits, 8192 shots the smallest admitted tier from 1 to 14 qubits"
     )
 

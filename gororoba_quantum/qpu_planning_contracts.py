@@ -2129,7 +2129,7 @@ def _verify_state_prep_only() -> None:
 
 
 def _verify_measurement_sequence_family() -> None:
-    """measurement-sequence pins each member to its qubit, fuses 24 static and 16 dynamic PUBs, admits 8192 shots."""
+    """measurement-sequence pins each member to its qubit, fuses 28 static and 20 dynamic PUBs, admits 8192 shots."""
     backend = _ProbeBackend("measurement_sequence_fixture", FakeFez())
     service = _ProbeService([backend])
     with redirect_stdout(io.StringIO()):
@@ -2140,8 +2140,8 @@ def _verify_measurement_sequence_family() -> None:
         "optimize": True,
         "shot_tiers": [4096, 8192, 16384],
         "optimizer_candidates": 1,
-        "max_execution_seconds": 60,
-        "max_total_execution_seconds": 120.0,
+        "max_execution_seconds": 90,
+        "max_total_execution_seconds": 200.0,
         "reserve_seconds": 0.0,
     }
     trace: dict[str, Any] = {}
@@ -2152,13 +2152,24 @@ def _verify_measurement_sequence_family() -> None:
     choices, configuration = candidates[0]
     _require(configuration["qubits"] == qubits and configuration["layout_source"] == "declared", "layout lost")
     _require(set(configuration["measurement_delay_dt"]) == {str(q) for q in qubits}, "measure durations lost")
+    _require(set(configuration["settle_delay_dt"]) == {str(q) for q in qubits}, "settle durations lost")
+    target = snapshot.backend.target
+    granularity = max(1, int(target.granularity))
+    for qubit in qubits:
+        settle_dt = configuration["settle_delay_dt"][str(qubit)]
+        _require(
+            settle_dt % granularity == 0
+            and settle_dt * target.dt >= 2.0e-6
+            and (settle_dt - granularity) * target.dt < 2.0e-6,
+            f"settle delay {settle_dt} dt is not 2 us rounded up to the granularity",
+        )
     _require(len(choices) == 2 * len(qubits), "each qubit needs one static and one dynamic group")
     for choice in choices:
         qubit = int(choice.group.name.rsplit("_q", 1)[1])
         _require([r.qubits for r in choice.replicas] == [[qubit]], f"{choice.group.name}: moved off qubit {qubit}")
     pubs = live_run.execution_pubs(choices)
     _require(
-        sorted(pub.kind for pub in pubs) == ["dynamic"] * 16 + ["static"] * 24, "the members fused into other PUBs"
+        sorted(pub.kind for pub in pubs) == ["dynamic"] * 20 + ["static"] * 28, "the members fused into other PUBs"
     )
     for pub in pubs:
         covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
@@ -2181,9 +2192,9 @@ def _verify_measurement_sequence_family() -> None:
     rejected = {
         int(row["proxy_metadata"]["shots"]) for row in metadata["optimization"]["candidates"] if not row["feasible"]
     }
-    # 16384 shots exceed the fixture's 120 s combined ceiling over the 40 PUBs.
+    # 16384 shots exceed the fixture's 90 s per-job ceiling over the 48 PUBs; 8192 shots fit (about 99 s of charge).
     _require(rejected == {4096, 16384}, f"the optimizer rejected tiers {rejected}, not 4096 and 16384")
-    _require(len(metadata["observable_contracts"]) == 11, "the plan lost a per-qubit endpoint")
+    _require(len(metadata["observable_contracts"]) == 13, "the plan lost a per-qubit endpoint")
 
 
 def _verify_measurement_sequence_only() -> None:
@@ -2194,7 +2205,7 @@ def _verify_measurement_sequence_only() -> None:
         _verify_measurement_sequence_family()
     print(
         "QPU planning: measurement-sequence pins each member to its named qubit with the qubit's calibrated "
-        "measure duration, fuses 24 static and 16 dynamic PUBs over every qubit, plans nothing without --layout and "
+        "measure duration, fuses 28 static and 20 dynamic PUBs over every qubit, plans nothing without --layout and "
         "admits 8192 shots"
     )
 

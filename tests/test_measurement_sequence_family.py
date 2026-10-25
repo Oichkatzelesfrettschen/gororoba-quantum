@@ -22,6 +22,7 @@ def check(condition: bool) -> None:
 
 QUBITS = [57, 65, 104]
 DELAYS = {57: 1664, 65: 1696, 104: 1632}
+SETTLES = {57: 500, 65: 500, 104: 500}
 
 
 def _member(groups: list[Any], name: str) -> Any:
@@ -34,7 +35,7 @@ def _member(groups: list[Any], name: str) -> Any:
 
 @pytest.fixture(scope="module")
 def groups() -> list[Any]:
-    return de.measurement_sequence_groups(QUBITS, DELAYS)
+    return de.measurement_sequence_groups(QUBITS, DELAYS, SETTLES)
 
 
 @pytest.mark.parametrize("steps", de.MSQ_STEPS)
@@ -65,6 +66,48 @@ def test_delay_arm_structure(steps: int) -> None:
     check(not is_dynamic(circuit))
 
 
+@pytest.mark.parametrize("sign", (1, -1))
+def test_unitary_arm_structure(sign: int) -> None:
+    circuit = de.msq_circuit("unitary", 16, sign, 5, "check", 1664)
+    operations = circuit.count_ops()
+    check(operations["rx"] == 16)
+    check(operations["barrier"] == 15)
+    check(operations["measure"] == 1)
+    check("delay" not in operations)
+    check([(register.name, register.size) for register in circuit.cregs] == [("final", 1)])
+    names = [inst.operation.name for inst in circuit.data]
+    check(names == ["rx", "barrier"] * 15 + ["rx", "measure"])
+    check(not is_dynamic(circuit))
+    with pytest.raises(ValueError):
+        de.msq_circuit("unitary", 8, sign, 5, "check", 1664)
+
+
+@pytest.mark.parametrize("sign", (1, -1))
+def test_settle_arm_structure(sign: int) -> None:
+    circuit = de.msq_circuit("settle", 16, sign, 5, "check", 1664, 500)
+    operations = circuit.count_ops()
+    check(operations["rx"] == 16)
+    check(operations["measure"] == 17)
+    check(operations["delay"] == 16)
+    check([(register.name, register.size) for register in circuit.cregs] == [("final", 1), ("mcm", 16)])
+    names = [inst.operation.name for inst in circuit.data]
+    check(names == ["rx", "measure", "delay"] * 16 + ["measure"])
+    check({inst.operation.duration for inst in circuit.data if inst.operation.name == "delay"} == {500})
+    check(is_dynamic(circuit))
+    with pytest.raises(ValueError):
+        de.msq_circuit("settle", 8, sign, 5, "check", 1664, 500)
+    with pytest.raises(ValueError):
+        de.msq_circuit("settle", 16, sign, 5, "check", 1664, 0)
+
+
+def test_settle_ideal_is_the_measure_law(groups: list[Any]) -> None:
+    settle = _member(groups, "msq_settle_n16_ma_q65")
+    measure = _member(groups, "msq_measure_n16_ma_q65")
+    check(np.array_equal(settle.ideal, measure.ideal))
+    check(math.isclose(float(settle.ideal @ settle.weights), de.msq_pinched_p0(16), abs_tol=1e-12))
+    check(round(de.msq_pinched_p0(16), 4) == 0.8914)
+
+
 def test_group_split_by_job_kind(groups: list[Any]) -> None:
     check(
         [group.name for group in groups]
@@ -73,7 +116,7 @@ def test_group_split_by_job_kind(groups: list[Any]) -> None:
     for group in groups:
         dynamic = group.name.startswith("msq_dynamic_")
         check({is_dynamic(member.circuit) for member in group.members} == {dynamic})
-        check(len(group.members) == (16 if dynamic else 24))
+        check(len(group.members) == (20 if dynamic else 28))
 
 
 def test_member_order_signs_and_names(groups: list[Any]) -> None:
@@ -81,10 +124,12 @@ def test_member_order_signs_and_names(groups: list[Any]) -> None:
     names = [member.name for member in static.members]
     check(names[:4] == [f"msq_measure_n1_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
     check(names[4:8] == [f"msq_delay_n1_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
-    check(names[-4:] == [f"msq_delay_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
+    check(names[-8:-4] == [f"msq_delay_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
+    check(names[-4:] == [f"msq_unitary_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
     dynamic_names = [member.name for member in groups[1].members]
     check(dynamic_names[:4] == [f"msq_measure_n2_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
-    check(dynamic_names[-1] == "msq_measure_n16_pb_q57")
+    check(dynamic_names[-8:-4] == [f"msq_measure_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
+    check(dynamic_names[-4:] == [f"msq_settle_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
     for group in groups:
         for start in range(0, len(group.members), 4):
             quad = group.members[start : start + 4]
@@ -110,10 +155,17 @@ def test_ideal_laws(groups: list[Any], steps: int) -> None:
     check(np.allclose(np.asarray(ideal_branch_probabilities(delay.circuit)), delay.ideal, rtol=0, atol=1e-12))
 
 
+def test_unitary_ideal(groups: list[Any]) -> None:
+    unitary = _member(groups, "msq_unitary_n16_mb_q104")
+    check(np.allclose(unitary.ideal, [de.msq_delay_p0(), 1.0 - de.msq_delay_p0()], atol=1e-15))
+    check(np.allclose(np.asarray(ideal_branch_probabilities(unitary.circuit)), unitary.ideal, rtol=0, atol=1e-12))
+
+
 def test_ideal_table_and_contrast() -> None:
     check([round(de.msq_pinched_p0(steps), 4) for steps in de.MSQ_STEPS] == [0.0302, 0.5151, 0.6722, 0.8040, 0.8914])
     check(round(de.msq_delay_p0(), 4) == 0.0302)
     check(round(de.msq_pinched_p0(16) - de.msq_delay_p0(), 4) == 0.8612)
+    check(de.MSQ_ENDPOINTS_PER_QUBIT == 13)
 
 
 def test_summary_pools_signed_members_and_reports_deficit(groups: list[Any]) -> None:
@@ -134,12 +186,13 @@ def test_summary_pools_signed_members_and_reports_deficit(groups: list[Any]) -> 
 def test_contracts() -> None:
     contracts = de.measurement_sequence_contracts(QUBITS, 0.05, 0.8)
     names = [contract.name for contract in contracts]
-    check(len(contracts) == 11 * len(QUBITS) == len(set(names)))
+    check(len(contracts) == 13 * len(QUBITS) == len(set(names)))
     check(math.isclose(math.fsum(contract.alpha for contract in contracts), 0.05))
     for qubit in QUBITS:
         for arm in de.MSQ_ARMS:
-            for steps in de.MSQ_STEPS:
+            for steps in de.MSQ_ARM_COUNTS[arm]:
                 check(f"msq_p0_{arm}_n{steps}_q{qubit}" in names)
+        check(f"msq_p0_unitary_n8_q{qubit}" not in names)
         check(f"msq_zeno_contrast_n16_q{qubit}" in names)
     by_name = {contract.name: contract for contract in contracts}
     pooled = by_name["msq_p0_measure_n4_q65"]
@@ -147,9 +200,12 @@ def test_contracts() -> None:
     check(pooled.precision_half_width == de.MSQ_PRECISION["p0"])
     contrast = by_name["msq_zeno_contrast_n16_q65"]
     check([term.sign for term in contrast.terms] == [1] * 4 + [-1] * 4)
+    check(
+        [term.member for term in contrast.terms[4:]] == [f"msq_unitary_n16_{t}_q65" for t in ("pa", "ma", "mb", "pb")]
+    )
     check(contrast.precision_half_width == de.MSQ_PRECISION["contrast"])
-    # The score values at weight 1/4 per member make the endpoint the pooled mean: ideal measure minus delay.
-    groups = de.measurement_sequence_groups([65], {65: 1696})
+    # The score values at weight 1/4 per member make the endpoint the pooled mean: ideal measure minus unitary.
+    groups = de.measurement_sequence_groups([65], {65: 1696}, {65: 500})
     ideals = {member.name: member for group in groups for member in group.members}
     estimate = math.fsum(
         term.sign * float(np.dot(ideals[term.member].ideal, np.asarray(term.values))) for term in contrast.terms
@@ -162,9 +218,10 @@ def test_family_contracts_and_record_groups_round_trip() -> None:
         "name": de.MSQ_FAMILY,
         "qubits": QUBITS,
         "measurement_delay_dt": {str(qubit): dt for qubit, dt in DELAYS.items()},
+        "settle_delay_dt": {str(qubit): dt for qubit, dt in SETTLES.items()},
     }
     contracts = de.family_contracts(de.MSQ_FAMILY, 0.08, 0.05, 0.8, configuration)
-    check(len(contracts) == 33)
+    check(len(contracts) == 39)
     rebuilt = de.record_groups({"family_configuration": configuration})
     check([group.name for group in rebuilt][:2] == ["msq_static_q57", "msq_dynamic_q57"])
     with pytest.raises(ValueError, match="named qubits"):
@@ -177,7 +234,7 @@ def test_family_contracts_and_record_groups_round_trip() -> None:
 )
 def test_group_inputs_are_validated(qubits: list[int], delays: Any) -> None:
     with pytest.raises(ValueError):
-        de.measurement_sequence_groups(qubits, delays)
+        de.measurement_sequence_groups(qubits, delays, {q: 500 for q in qubits})
 
 
 def _cli(*arguments: str) -> list[str]:

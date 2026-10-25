@@ -30,6 +30,7 @@ from diagnostic_experiments import (
     MSQ_ARM_STEPS,
     MSQ_DYNAMIC_STEPS,
     MSQ_FAMILY,
+    MSQ_SETTLE_SECONDS,
     MSQ_STEPS,
     MSQ_THETA,
     N21_FAMILIES,
@@ -953,6 +954,15 @@ def measurement_delay(runtime: Any, snapshot: Any, physical_qubit: int) -> int:
     return granularity * math.ceil(float(duration) / float(target.dt) / granularity)
 
 
+def settle_delay(runtime: Any, snapshot: Any) -> int:
+    """MSQ_SETTLE_SECONDS in dt, rounded up to the Target's timing granularity."""
+    target = snapshot.backend.target
+    if target.dt is None or target.dt <= 0:
+        raise runtime.LiveRunError("the settle arm needs a positive Target dt")
+    granularity = max(1, int(target.granularity))
+    return granularity * math.ceil(MSQ_SETTLE_SECONDS / float(target.dt) / granularity)
+
+
 def measurement_sequence_candidates(
     runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
 ) -> list[tuple[list[Any], dict[str, Any]]]:
@@ -968,7 +978,7 @@ def measurement_sequence_candidates(
     if declared is None:
         raise runtime.LiveRunError("measurement-sequence needs --layout: it has no retained default qubits")
     qubits = [int(qubit) for qubit in declared]
-    expected_kinds = sorted(["static"] * (4 + 4 * len(MSQ_STEPS)) + ["dynamic"] * (4 * len(MSQ_DYNAMIC_STEPS)))
+    expected_kinds = sorted(["static"] * (4 + 4 * len(MSQ_STEPS) + 4) + ["dynamic"] * (4 * len(MSQ_DYNAMIC_STEPS) + 4))
     candidates = []
     for snapshot in snapshots:
         try:
@@ -977,7 +987,8 @@ def measurement_sequence_candidates(
             if outside or excluded:
                 raise runtime.LiveRunError(f"qubits {outside} lie outside the device; calibration excludes {excluded}")
             delays = {qubit: measurement_delay(runtime, snapshot, qubit) for qubit in qubits}
-            groups = measurement_sequence_groups(qubits, delays)
+            settles = {qubit: settle_delay(runtime, snapshot) for qubit in qubits}
+            groups = measurement_sequence_groups(qubits, delays, settles)
             choices = []
             for group in groups:
                 qubit = int(group.name.rsplit("_q", 1)[1])
@@ -993,13 +1004,20 @@ def measurement_sequence_candidates(
                         raise runtime.LiveRunError(f"{group.name}: {violations}")
                     operations = isa.count_ops()
                     steps = int(member.name.split("_n")[1].split("_")[0])
-                    delayed = "_delay_" in member.name
-                    if operations.get("measure", 0) != (1 if delayed else steps + 1) or operations.get("delay", 0) != (
-                        steps if delayed else 0
+                    arm = member.name.split("_")[1]
+                    expected = {"measure": steps + 1, "delay": 1, "unitary": 1, "settle": steps + 1}[arm]
+                    if operations.get("measure", 0) != expected or operations.get("delay", 0) != (
+                        steps if arm in ("delay", "settle") else 0
                     ):
                         raise runtime.LiveRunError(
                             f"{member.name}: the compiled circuit changed its measures or delays"
                         )
+                    # A generic rx compiles to two sx; the barriers keep the unitary arm's rotations unmerged,
+                    # where without them the run of rx gates fuses into one rotation of two sx in all.
+                    if arm == "unitary" and (
+                        operations.get("sx", 0) != 2 * steps or operations.get("barrier", 0) != steps - 1
+                    ):
+                        raise runtime.LiveRunError(f"{member.name}: the compiled rotations merged: {dict(operations)}")
                 scores = [runtime.layout_score(isa, snapshot.backend.target) for isa in isas]
                 if any(score <= 0 for score in scores):
                     raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero")
@@ -1038,6 +1056,7 @@ def measurement_sequence_candidates(
                     "total_rotation_rad": MSQ_THETA,
                     "steps": list(MSQ_STEPS),
                     "measurement_delay_dt": {str(qubit): dt for qubit, dt in delays.items()},
+                    "settle_delay_dt": {str(qubit): dt for qubit, dt in settles.items()},
                     "placement_contract": (
                         "one pinned single-qubit placement per named qubit; every qubit runs each member in the "
                         "same shots; static PUBs hold the one-step measure and every delay member, dynamic PUBs "

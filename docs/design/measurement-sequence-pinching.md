@@ -18,13 +18,30 @@ rotation THETA = 8 pi / 9 (160 degrees), N in (1, 2, 4, 8, 16) and sign + or -.
   `mcm` (N bits). The program never reads or conditions on those bits, and the raw shots keep them. After
   the N steps a final measurement writes the 1-bit register `final`, the only register an endpoint reads.
   The circuit holds no reset, no feed-forward and no settling delay.
-- **Delay arm, the mutation null.** The circuit is identical except that each mid-circuit measurement is
-  replaced by a `delay` of the qubit's measure duration in dt, taken from the fresh Target
+- **Delay arm, the elapsed-time control.** The circuit is identical except that each mid-circuit measurement
+  is replaced by a `delay` of the qubit's measure duration in dt, taken from the fresh Target
   (`qpu_planning.measurement_delay`, the rule `folded_group` uses). The only measurement is the final one.
+  The delay keeps the elapsed time and drops the projection, but idle dephasing pinches the qubit as well, so
+  the delay arm's P0 rises above its ideal. Its gap to the unitary arm is the share of the Zeno rise that idle
+  dephasing explains; the kingston dry run models the delay arm at N = 16 as 0.09 to 0.17 against the ideal
+  0.030, and Garnet near 0.46.
+- **Unitary arm, the mutation null (N = 16 only).** Sixteen `RX(sign * THETA / 16)` rotations run back to
+  back with a `barrier` on the qubit between consecutive rotations, then the final measurement. The barriers
+  stop the transpiler from merging the rotations into one gate (without them the run compiles to two `sx`
+  in all; with them 32 `sx` and 15 barriers survive), so the circuit applies the full rotation count in the
+  shortest time and holds neither a measurement nor an idle. Its ideal P0 is cos(THETA / 2)^2.
+- **Settle arm, the readout-tail control (N = 16 only).** The measure arm with a `delay` of 2.0 us after each
+  mid-circuit measurement, before the next rotation, rounded up to the Target's timing granularity
+  (`qpu_planning.settle_delay`). It is dynamic, like the measure arm, and its ideal law is the measure arm's
+  joint law (final P0 0.8914).
+
+The four arms carry four roles: the measure arm is the object of the test, the unitary arm is the mutation
+null that removes the property under test, the delay arm is the elapsed-time control, and the settle arm is
+the readout-tail control.
 
 Register order is `final` (clbit 0), then `mcm`. A measure member's ideal law and score weights span all
 N + 1 clbits, the convention of the N=21 segmented family (`qpe_diagnostics.n21_segmented_law`), and the
-weights select final = 0. The delay arm has one clbit.
+weights select final = 0. The delay and unitary arms have one clbit.
 
 ## Ideal law
 
@@ -34,17 +51,19 @@ measure arm's final P0 is
 
     P0_measure(N) = (1 + cos(THETA / N)^N) / 2
 
-and the delay arm composes its rotations coherently into `RX(sign * THETA)`, so at every N
+and the delay and unitary arms compose their rotations coherently into `RX(sign * THETA)`, so in the ideal
 
-    P0_delay = cos(THETA / 2)^2 = 0.0302.
+    P0_delay = P0_unitary = cos(THETA / 2)^2 = 0.0302.
 
-| N | P0 measure | P0 delay | measure - delay |
-|---|------------|----------|-----------------|
+| N | P0 measure | P0 delay and unitary | measure - unitary |
+|---|------------|----------------------|-------------------|
 | 1 | 0.0302 | 0.0302 | 0.0000 |
 | 2 | 0.5151 | 0.0302 | 0.4849 |
 | 4 | 0.6722 | 0.0302 | 0.6420 |
 | 8 | 0.8040 | 0.0302 | 0.7738 |
 | 16 | 0.8914 | 0.0302 | 0.8612 |
+
+The unitary arm runs at N = 16 only; the delay arm runs at every N.
 
 The values come from `msq_pinched_p0` and `msq_delay_p0`; `diagnostic_experiments.py --self-test` checks
 them against exact density-matrix evolution (rotate, keep the diagonal, N times) and unitary evolution to
@@ -58,38 +77,46 @@ Each (arm, N) holds four signed members named `msq_{arm}_n{N}_{s}{r}_q{qubit}`, 
 share one ideal law because cosine is even, so the signed difference carries no contrast.
 
 `local_compute.is_dynamic` classifies a circuit with a gate after a measurement as dynamic. The measure arm
-at N >= 2 is dynamic; the N = 1 measure arm and the delay arm are static. One group holds one job kind, so
-each qubit owns a static group `msq_static_q{qubit}` (24 members: the N = 1 measure arm, then the delay arm
-at each N) and a dynamic group `msq_dynamic_q{qubit}` (16 members: the measure arm at N = 2, 4, 8, 16).
+at N >= 2 and the settle arm are dynamic; the N = 1 measure arm, the delay arm and the unitary arm are static. One group holds one job kind, so
+each qubit owns a static group `msq_static_q{qubit}` (28 members: the N = 1 measure arm, the delay arm
+at each N, then the unitary arm) and a dynamic group `msq_dynamic_q{qubit}` (20 members: the measure arm at N = 2, 4, 8, 16, then the settle arm).
 Row r of each kind fuses across the named qubits into one PUB, so every qubit runs the same member in the
-same shots, 24 static and 16 dynamic PUBs in all. The dynamic job runs with twirling and dynamical
+same shots, 28 static and 20 dynamic PUBs in all. The dynamic job runs with twirling and dynamical
 decoupling off.
 
 ## What the family isolates
 
-The state after each measurement is diagonal in Z, so a frequency shift of the qubit after readout rotates a
-diagonal state into itself and leaves the measure arm's P0 unchanged. A measured P0 below the ideal (a
-positive deficit, `q{Q}_msq_deficit_n{N}` in the summaries) therefore measures transitions that the
-measurement induces. The calibration noise model treats a mid-circuit measurement as projective, so it prices
-the measure arm at readout error and decoherence alone, and only the device answers this. The delay arm
-holds the elapsed time fixed and removes the projection: its P0 stays at cos(THETA / 2)^2 up to
-decoherence, and the N = 16 contrast of the two arms is the mutation-test endpoint. The family fits no
+The state after each measurement is diagonal in Z, so a readout-induced frequency shift delta that
+persists into the next rotation acts only during the pulse of duration tau, at second order in delta * tau.
+For tau <= 100 ns and delta <= 2 pi * 100 kHz the flip probability at N = 16 moves by about -2.5e-6 per step.
+Interpreting a departure still needs a control: the settle arm inserts a 2 us gap after each measurement, and
+a departure that survives the gap unchanged excludes a readout tail. A measured P0 below the ideal (a
+positive deficit, `q{Q}_msq_deficit_n{N}` in the summaries) measures transitions that the
+measurement induces once the unitary, delay and settle controls separate it from rotation error, idle
+dephasing and a readout tail. The calibration noise model treats a mid-circuit measurement as projective, so it prices
+the measure arm at readout error and decoherence alone, and only the device answers this. The unitary
+arm removes the projection and the idle: its P0 stays at cos(THETA / 2)^2 up to gate and readout error,
+and the N = 16 contrast of the measure and unitary arms is the mutation-test endpoint. The delay arm holds
+the elapsed time fixed and removes the projection, so measure minus delay at N = 16 isolates what the
+measurement adds beyond the idle dephasing of the same duration. The family fits no
 per-measurement transition parameter; that is post hoc analysis of the retained shots.
 
 ## Endpoints
 
-Per qubit, eleven two-sided precision endpoints split the family-wise alpha evenly:
+Per qubit, thirteen two-sided precision endpoints split the family-wise alpha evenly:
 
 - `msq_p0_measure_n{N}_q{Q}` for N in (1, 2, 4, 8, 16): the final P0 pooled over the four signed members of
   the measure arm, half-width 0.03.
 - `msq_p0_delay_n{N}_q{Q}`: the same for the delay arm, half-width 0.03.
-- `msq_zeno_contrast_n16_q{Q}`: measure minus delay at N = 16, ideal 0.8612, half-width 0.055.
+- `msq_p0_unitary_n16_q{Q}`: the same for the unitary arm, half-width 0.03.
+- `msq_p0_settle_n16_q{Q}`: the same for the settle arm, half-width 0.03.
+- `msq_zeno_contrast_n16_q{Q}`: measure minus unitary at N = 16, ideal 0.8612, half-width 0.055.
 
 A pooled member carries score values at weight 1/4. The optimizer treats each PUB as a stream of span 0.25
 with the tail alpha_endpoint divided by the stream count, so a pooled P0 over 4 PUBs has the radius
 sqrt(ln(8 / alpha_endpoint) / (2 shots)) and the contrast over 8 PUBs has 2 * sqrt(ln(16 / alpha_endpoint) /
-(2 shots)). At alpha 0.05 and 14 qubits (alpha_endpoint 3.25e-4) a P0 reaches 0.0248 at 8192 shots and
-0.0351 at 4096, and the contrast 0.0514 and 0.0727. The 0.05 starting half-width for the contrast fails at
+(2 shots)). At alpha 0.05 and 14 qubits (alpha_endpoint 2.75e-4) a P0 reaches 0.0251 at 8192 shots and
+0.0354 at 4096, and the contrast 0.0518 and 0.0732. The 0.05 starting half-width for the contrast fails at
 8192 shots with 14 qubits, so the contrast half-width is 0.055. The smallest admitted power-of-two tier is
 8192 shots from 1 to 14 qubits (`diagnostic_experiments.py --self-test` checks 1, 4 and 14).
 
