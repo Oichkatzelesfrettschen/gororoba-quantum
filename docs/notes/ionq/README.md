@@ -17,6 +17,13 @@ uv venv --python 3.13 "$IONQ_ENV"
 VIRTUAL_ENV="$IONQ_ENV" uv pip install -r docs/notes/ionq/requirements-ionq.txt
 ```
 
+On the build host the Arch package `ionq-stack` from the local PKGBUILD tree
+(`~/Github/PKGBUILDs/ionq-stack`) installs the same SDK as a hash-locked Python
+3.13 environment under `/opt/ionq-stack` and the interpreter `/usr/bin/ionq-python`
+(qiskit-ionq 1.1.1 with Qiskit 2.6.1); its `check()` runs an offline test, kept at
+`/usr/share/ionq-stack/test_ionq_stack.py`. A case sets `IONQ_PYTHON=/usr/bin/ionq-python`; the venv
+above serves a machine without the package.
+
 The lock pins `qiskit-ionq` 1.1.1 with Qiskit 2.6.1. The key is one line in
 `~/.config/ionq/api-key` (directory 700, file 600), read inside Python and
 sent as `Authorization: apiKey <key>`; it never enters a command line, a
