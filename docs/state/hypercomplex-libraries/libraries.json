@@ -10695,6 +10695,17 @@
    "sys",
    "typing"
   ],
+  "scripts/heron_feedforward_latency.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "hashlib",
+   "json",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "scripts/heron_spatial_multiprogramming.py": [
    "__future__",
    "argparse",
