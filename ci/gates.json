@@ -1286,7 +1286,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_determinant",
-   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
+   "cmd": "sha256sum -c SHA256SUMS-ordered-map-cancel",
    "name": "sources-183",
    "seconds": 0.1,
    "tier": "pr"
@@ -1302,7 +1302,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/projective_kernel_limits",
-   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
+   "cmd": "sha256sum -c SHA256SUMS-ordered-map-cancel",
    "name": "sources-186",
    "seconds": 0.1,
    "tier": "pr"
@@ -1342,7 +1342,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/real_frontier_graphs",
-   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
+   "cmd": "sha256sum -c SHA256SUMS-ordered-map-cancel",
    "seconds": 0.1,
    "tier": "pr",
    "name": "sources-194"
@@ -2281,13 +2281,13 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-pooled-validation.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-ordered-map-cancel.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-pooled-validation.json"
+    "docs/evidence/submitted_circuits/comparison-ordered-map-cancel.json"
    ]
   },
   {
@@ -3912,7 +3912,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel",
    "name": "core-632",
    "seconds": 3.0,
    "tier": "pr",
@@ -3921,7 +3921,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel",
    "name": "core-633",
    "seconds": 2.0,
    "tier": "pr",
@@ -4098,7 +4098,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-5",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-6",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
