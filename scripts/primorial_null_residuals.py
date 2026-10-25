@@ -91,7 +91,12 @@ Timed = list[tuple[Any, list[int], float]]
 def timed(
     compiled: QuantumCircuit, layout: list[int], durations: dict[tuple[str, tuple[int, ...]], float], dt: float
 ) -> Timed:
-    """(operation, path wires, start in s) for every instruction of the compiled arm before its measurements."""
+    """(operation, path wires, start in s) for every instruction of the compiled arm before its measurements.
+
+    Circuit order need not be chronological across wires, so the events are sorted by (start, circuit
+    position). Starts never decrease along one wire, so the sort keeps every wire's own order, zero-duration
+    rz included, and the ZZ intervals between pulses on a coupler are never negative.
+    """
     wire = {q: k for k, q in enumerate(layout)}
     cursor = [0.0, 0.0, 0.0]
     out: Timed = []
@@ -109,7 +114,8 @@ def timed(
         for k in local:
             cursor[k] = start + seconds
         out.append((operation, local, start))
-    return out
+    order = sorted(range(len(out)), key=lambda k: (out[k][2], k))
+    return [out[k] for k in order]
 
 
 def pulses(arm: Timed) -> list[tuple[str, tuple[int, ...], float]]:
