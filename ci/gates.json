@@ -1286,7 +1286,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_determinant",
-   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
+   "cmd": "sha256sum -c SHA256SUMS-ordered-map-cancel",
    "name": "sources-183",
    "seconds": 0.1,
    "tier": "pr"
@@ -1302,7 +1302,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/projective_kernel_limits",
-   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
+   "cmd": "sha256sum -c SHA256SUMS-ordered-map-cancel",
    "name": "sources-186",
    "seconds": 0.1,
    "tier": "pr"
@@ -1342,7 +1342,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/real_frontier_graphs",
-   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
+   "cmd": "sha256sum -c SHA256SUMS-ordered-map-cancel",
    "seconds": 0.1,
    "tier": "pr",
    "name": "sources-194"
