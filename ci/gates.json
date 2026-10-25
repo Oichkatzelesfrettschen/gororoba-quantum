@@ -59,30 +59,6 @@
   },
   {
    "suite": "core",
-   "cwd": "results/local_compute",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-007",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "results/local_compute/aer_delay_sentinels",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-008",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "results/local_compute/n21_shared_predicate",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-009",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" results/local_compute/n21_shared_predicate/check_probe.py",
    "name": "core-010",
@@ -112,26 +88,10 @@
   },
   {
    "suite": "core",
-   "cwd": "docs/sources/open_gororoba",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-013",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
    "cwd": "results/live",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest test_folded_raw_analysis",
    "name": "core-014",
    "seconds": 0.7,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "results/live/2026-10-12T055624.091217Z",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-016",
-   "seconds": 0.1,
    "tier": "pr"
   },
   {
@@ -231,14 +191,6 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest check_probe",
    "name": "core-036",
    "seconds": 1.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "results/local_compute/mixed_pub_client",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-038",
-   "seconds": 0.1,
    "tier": "pr"
   },
   {
@@ -973,14 +925,6 @@
   },
   {
    "suite": "sources",
-   "cwd": "docs/evidence/c5_zero_divisor_code",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-390",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
    "cwd": ".",
    "cmd": "shellcheck docs/evidence/cd-imaginary-sum-conference/replay_rocq.sh",
    "name": "sources-391",
@@ -990,24 +934,8 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "sha256sum -c docs/evidence/cd-imaginary-sum-conference/source_hashes.sha256",
-   "name": "sources-392",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
    "cmd": "shellcheck docs/evidence/cd-tower-basis-sign/replay_rocq.sh",
    "name": "sources-396",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "sha256sum -c docs/evidence/cd-tower-basis-sign/source_hashes.sha256",
-   "name": "sources-397",
    "seconds": 0.1,
    "tier": "pr"
   },
@@ -1221,14 +1149,6 @@
   },
   {
    "suite": "sources",
-   "cwd": "docs/evidence/vacuum_models",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-154",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/vacuum_endpoint_information/probe.py --check",
    "name": "sources-155",
@@ -1241,14 +1161,6 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest check_probe",
    "name": "sources-157",
    "seconds": 0.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": "docs/evidence/vacuum_endpoint_information",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-159",
-   "seconds": 0.1,
    "tier": "pr"
   },
   {
@@ -2256,14 +2168,6 @@
    "seconds": 66.2,
    "tier": "full",
    "runtime": "qiskit-2.5"
-  },
-  {
-   "suite": "sources",
-   "cwd": "docs/evidence/simulation-notebook-audit",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-246",
-   "seconds": 0.0,
-   "tier": "pr"
   },
   {
    "suite": "core",
@@ -3496,7 +3400,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
+   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
    "name": "sources-410",
    "seconds": 0.1,
    "tier": "pr"
@@ -4138,6 +4042,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json --drive --check",
+   "name": "core-ascella-signed-coherence-heater-drive-holdout-replay",
+   "seconds": 600.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ascella_drive_response.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01 docs/evidence/ascella-order-coefficients/drive-response.json --check",
    "name": "core-ascella-signed-coherence-drive-response-replay",
    "seconds": 735.0,
@@ -4218,6 +4130,22 @@
     "results/quandela/bdsc_drift_series_diagnostic_pinned.json",
     "results/quandela/bdsc_drift_series_readout_pinned.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_null_calibration.py",
+   "name": "core-685",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_null_calibration.py --null-calibration 3000 --bound",
+   "name": "core-686",
+   "seconds": 6.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

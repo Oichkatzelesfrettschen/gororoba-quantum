@@ -521,6 +521,10 @@
       "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
       "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/**",
       "docs/evidence/ascella-order-coefficients/drive-response.json"
+    ],
+    "core-ascella-signed-coherence-heater-drive-holdout-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "docs/evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json"
     ]
   }
 }

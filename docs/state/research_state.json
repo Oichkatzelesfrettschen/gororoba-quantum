@@ -2103,6 +2103,39 @@
       "superseded_by": null
     },
     {
+      "id": "ascella-signed-coherence-heater-drive-holdout",
+      "statement": "Refitted on job-00 without one configuration from the zero start under the training-only folds, a drive-dependent heater family of the returned Ascella meshes (tau-0.3 heater offsets plus one slope per heater on the returned phase as drive, prior width 0.1) leaves the left-out X statistics at a standardized sum of 36.1 and Y at 24.8 over 10 configurations each, against the returned mesh's 343 and 75, so the X sum keeps the shortfall under the 30-on-10 criterion fixed before the run. Its X predictions carry a median prediction variance 10.4 times the counting variance (Y 2.1), and in counting variance alone it gives X 474 and Y 186.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One drive-linear heater family of the provider's returned mesh model, with pure-state propagation; the drive is the returned phase in [0, 2 pi) with its zero at 0, because the passive phase that sets each heater's wrap point is absent from the returned circuit, and per-heater wrap points, quadratic drive terms and crosstalk through the phase-voltage matrix lie outside the family. The prediction variance is the local quadratic approximation at each fold mode and the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference. The family, its prior width and the reading were fixed in plan ascella-configuration-holdout-training-only before the run; the analysis was added after the preregistered table and decides nothing. The fitted family replays within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json",
+          "sha256": "fcf6a9dd7c628707f28d6c7059e9beabd83a51917e9f05f88806167854d1dfed"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-heater-drive-holdout-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-configuration-holdout"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "ascella-signed-coherence-drive-response",
       "statement": "A per-heater drive-dependent phase error of the returned 12-mode Ascella meshes (shifted Legendre polynomials of the drive to order 1 or 2, or 1, cos and sin of the returned phase to order 1 or 2; 252 to 630 coefficients under N(0, tau^2) priors) reproduces job-00 and job-01 (job-01 held-out X 4.0 to 5.4 and Y 6.7 to 12.6 on 10, X0 + Xc2 -0.026 to -0.028) but predicts no left-out configuration it can be judged on. Refitted from the zero start on the training configurations alone, the order-1 polynomial keeps the shortfall on X (standardized sum 32 on 10, Y 28), and the four richer families predict with a median prediction variance 6.5 to 485 times the counting variance and sums of 1 to 15, so these data leave them undetermined; in counting variance alone every family does worse than the returned mesh (X 386 to 564 against 343, Y 94 to 225 against 75).",
       "domain": "hardware",
@@ -2135,7 +2168,8 @@
       ],
       "assumptions": [],
       "depends_on": [
-        "ascella-signed-coherence-configuration-holdout"
+        "ascella-signed-coherence-configuration-holdout",
+        "ascella-signed-coherence-heater-drive-holdout"
       ],
       "supersedes": [],
       "superseded_by": null
@@ -4707,7 +4741,7 @@
         },
         {
           "path": "scripts/cd_sign_source_ast.py",
-          "sha256": "3107a7af599a3a9c421641694bccbd763f6e37357bcf20e370c0021516053659"
+          "sha256": "d7e1231563718aec1f2546a0c4b97f0c58bba29f9d402a0707304b4143009c4c"
         },
         {
           "path": "docs/evidence/cd-sign-python-translation/assumptions.v",
@@ -4722,8 +4756,8 @@
           "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
         },
         {
-          "path": "docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
-          "sha256": "afd4e70c72839686fc93d584f8c13aba17933f2abe5a6e6105df812a6ddbd66f"
+          "path": "docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
+          "sha256": "1d907280b5343a449963c177db4e0a7cc168d477c639985cbe954c335fb4bf6b"
         }
       ],
       "documents": [

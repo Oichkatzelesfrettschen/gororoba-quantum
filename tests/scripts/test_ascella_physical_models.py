@@ -121,6 +121,34 @@ def test_static_gradient_matches_finite_differences() -> None:
             raise AssertionError((h, grad[h], numeric))
 
 
+def test_drive_slope_basis_is_the_shifted_mesh() -> None:
+    d = data()
+    heaters = d["phases"].shape[1]
+    turns = d["phases"] % (2 * math.pi)
+    d["heater_basis"] = np.stack([np.ones_like(turns), turns], axis=-1)
+    widths = models.prior_widths(d, (0.3, 0.1), None)
+    free = widths > 0
+    if int(free.sum()) != 2 * heaters or not np.array_equal(widths[:4], [0.3, 0.1, 0.3, 0.1]):
+        raise AssertionError((int(free.sum()), widths[:4]))
+    params = np.array([0.02 * math.sin(i) for i in range(int(free.sum()))])
+    light, dlight = models.static_light(d, params, free)
+    # Heater h realizes phi + a_h + k_h phi with (a_h, k_h) its heater-major coefficients.
+    offset, slope = params[0::2], params[1::2]
+    shifted = d["phases"] + offset[None, :] + slope[None, :] * turns
+    p, _ = models.pure_jacobians(d["couplers"], d["arch"], shifted, d["sources"])
+    raw = p[:, : models.LOGICAL]
+    if not np.allclose(light, raw / raw.sum(axis=1, keepdims=True), atol=1e-14):
+        raise AssertionError("the sloped light differs from the shifted mesh")
+    step = 1e-6
+    for index in (1, 15, 2 * heaters - 1, 6):
+        up, down = params.copy(), params.copy()
+        up[index] += step
+        down[index] -= step
+        numeric = (models.static_light(d, up, free)[0] - models.static_light(d, down, free)[0]) / (2 * step)
+        if not np.allclose(dlight[:, :, index], numeric, rtol=1e-5, atol=1e-8):
+            raise AssertionError((index, np.abs(dlight[:, :, index] - numeric).max()))
+
+
 def test_static_light_ignores_the_floor(monkeypatch: pytest.MonkeyPatch) -> None:
     d = data({"family": "heater_gain", "values": [0.0, 0.03]})
     widths = models.prior_widths(d, 0.3, None)
@@ -260,10 +288,10 @@ def test_drive_fold_is_the_training_only_fold_on_the_basis(monkeypatch: pytest.M
     monkeypatch.setattr(holdout, "configuration_fold", record)
     d = data()
     drive.drive_fold(("drive_harmonic_1", "harmonic", 1, 0.3, d, 2))
-    family, heater_tau, coupler_tau, passed, left_out = seen[0]
+    family, taus, passed, left_out = seen[0]
     expected = drive.heater_basis(d["phases"], "harmonic", 1)
-    if (family, heater_tau, coupler_tau, left_out) != ("drive_harmonic_1", 0.3, None, 2):
-        raise AssertionError(seen[0][:3])
+    if (family, taus, left_out) != ("drive_harmonic_1", (0.3, None), 2):
+        raise AssertionError(seen[0][:2])
     if not np.array_equal(passed["heater_basis"], expected) or passed["phases"] is not d["phases"]:
         raise AssertionError("the fold does not carry the family's basis over the run's own phases")
 
@@ -331,7 +359,7 @@ def test_fold_fit_receives_the_training_configurations_alone(monkeypatch: pytest
         return np.zeros(int(free.sum())), np.eye(int(free.sum()))
 
     monkeypatch.setattr(models, "static_mode", mode)
-    fold = holdout.configuration_fold(("coupler", None, 0.1, d, 2))
+    fold = holdout.configuration_fold(("coupler", (None, 0.1), d, 2))
     (training,) = seen
     expected = models.without_configuration(d, 2)
     if training["keys"] != expected["keys"] or not np.array_equal(training["block"], expected["block"]):
@@ -346,8 +374,7 @@ def test_left_out_counts_never_reach_the_fold_fit() -> None:
     changed = scored({"family": "heater_gain", "values": [0.0, 0.03]})
     rows = changed["configuration"] == 2
     changed["block"][rows] = changed["block"][rows][:, ::-1]
-    item = ("coupler", None, 0.1)
-    fold, moved = (holdout.configuration_fold((*item, run, 2)) for run in (d, changed))
+    fold, moved = (holdout.configuration_fold(("coupler", (None, 0.1), run, 2)) for run in (d, changed))
     if fold["training_objective"] != moved["training_objective"]:
         raise AssertionError("the left-out configuration's counts changed the training fit")
     for a, b in zip(fold["rows"], moved["rows"], strict=True):

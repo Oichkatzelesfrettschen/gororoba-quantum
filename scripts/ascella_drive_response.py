@@ -1,7 +1,7 @@
 """Drive-dependent heater response of the Ascella analyzer: fitted on job-00, scored on job-01 and on configurations
 left out of training.
 
-docs/design/ascella-signed-coherence-conformance.md#drive-dependent-heater-response states the families and the
+docs/design/ascella-signed-coherence-conformance.md#polynomial-and-harmonic-drive-responses states the families and the
 reading. The Ascella phase shifters follow phi = A V^2 + b (arXiv:2306.00874, SI S-IV), so a heater's drive is
 fixed by its returned phase, and an error in that heater's phase-voltage map is a function of the returned phase
 rather than one offset shared by every configuration. Each family shifts heater h of configuration c by
@@ -97,7 +97,7 @@ def fit_drive(item: tuple[str, str, int, float, dict[str, Any], dict[str, Any]])
 def drive_fold(item: tuple[str, str, int, float, dict[str, Any], int]) -> dict[str, Any]:
     """The training-only fold of scripts/ascella_configuration_holdout.py on the family's basis."""
     family, kind, order, tau, data, left_out = item
-    return holdout.configuration_fold((family, tau, None, with_basis(data, kind, order), left_out))
+    return holdout.configuration_fold((family, (tau, None), with_basis(data, kind, order), left_out))
 
 
 def reading(summary: dict[str, Any]) -> dict[str, str]:

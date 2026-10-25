@@ -96,15 +96,24 @@ variance; it supersedes the left-out column of `physical-models.json`
 [`configuration-holdout.json`](configuration-holdout.json) is the same refit
 built while the static fit clipped the block light, with one combined-family
 fold in a higher local mode; its bytes stay for the receipt that binds them.
+[`heater-drive-holdout-heater-basis.json`](heater-drive-holdout-heater-basis.json), from
+[`scripts/ascella_configuration_holdout.py`](../../../scripts/ascella_configuration_holdout.py)
+with `--drive`, holds the preregistered drive-linear heater family (heater
+offsets and per-heater drive slopes) under those folds
+([design](../../design/ascella-signed-coherence-conformance.md#drive-dependent-heater-response-under-the-same-folds)).
+[`heater-drive-holdout.json`](heater-drive-holdout.json) is the same refit
+with the offsets and slopes in two coefficient blocks, which reaches other
+modes on left-out configurations 20 and 23; its bytes stay.
 [`drive-response.json`](drive-response.json), from
 [`scripts/ascella_drive_response.py`](../../../scripts/ascella_drive_response.py),
-holds the drive-dependent heater families: per-heater polynomial and harmonic
-responses to the returned phase, fitted on job-00, scored on job-01 and on the
-same training-only folds
-([design](../../design/ascella-signed-coherence-conformance.md#drive-dependent-heater-response)).
+holds the polynomial and harmonic heater responses to the returned phase,
+fitted on job-00, scored on job-01 and on the same training-only folds
+([design](../../design/ascella-signed-coherence-conformance.md#polynomial-and-harmonic-drive-responses)).
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance, and the last three replay their nominal family there and
-their fitted families within 1e-3 relative plus 1e-8 absolute, the rounding of
-optimizer endpoints under another BLAS build. The drive record replays under
-the OpenBLAS kernel and numpy SIMD dispatch its script fixes, because which
-posterior mode a drive fit reaches follows that rounding.
+certificate tolerance, and the physical-model, holdout, drive-linear and
+drive-response records their nominal family there and their fitted families
+within 1e-3 relative plus 1e-8 absolute, the rounding of optimizer endpoints
+under another BLAS build. Which posterior mode a fit reaches follows the
+kernels' rounding, so every record is written and replayed under the OpenBLAS
+kernel and numpy SIMD dispatch that `ci/run_gates.py` and `ci/pr_checks.sh`
+set.

@@ -412,10 +412,20 @@ def heater_parameters(data: dict[str, Any]) -> int:
     return int(data["phases"].shape[1] if basis is None else basis.shape[1] * basis.shape[2])
 
 
-def prior_widths(data: dict[str, Any], heater_tau: float | None, coupler_tau: float | None) -> np.ndarray:
-    """Per-parameter prior widths over (heaters, couplers); a family without one kind gives it width zero."""
+def prior_widths(
+    data: dict[str, Any], heater_tau: float | tuple[float, ...] | None, coupler_tau: float | None
+) -> np.ndarray:
+    """Per-parameter prior widths over (heaters, couplers); a family without one kind gives it width zero. A tuple
+    heater_tau gives each heater basis function its own width, repeated over the heater-major coefficients."""
     heaters, couplers = heater_parameters(data), len(data["couplers"])
-    return np.concatenate([np.full(heaters, heater_tau or 0.0), np.full(couplers, coupler_tau or 0.0)])
+    if isinstance(heater_tau, tuple):
+        basis = data.get("heater_basis")
+        if basis is None or basis.shape[2] != len(heater_tau):
+            raise ValueError("one heater width per basis function")
+        heater = np.tile(np.array(heater_tau, dtype=float), basis.shape[1])
+    else:
+        heater = np.full(heaters, heater_tau or 0.0)
+    return np.concatenate([heater, np.full(couplers, coupler_tau or 0.0)])
 
 
 def static_light(data: dict[str, Any], offsets: np.ndarray, free: np.ndarray) -> tuple[np.ndarray, np.ndarray]:

@@ -1048,19 +1048,71 @@ predictions rather than a rejection.
 - The prediction variance is the local quadratic approximation at each fold
   mode; a posterior with distant modes can carry more uncertainty than it
   shows. Confidence that no static error of the returned mesh model predicts
-  left-out configurations is medium. It would fall if a shared family's
-  standardized sums came within twice the configuration count; the
-  [drive-dependent heater response](#drive-dependent-heater-response) below
-  is the shared family this test left open.
+  left-out configurations is medium. It would rise if a mesh model with a
+  drive-dependent heater response also failed this test, and fall if a
+  shared family's standardized sums came within twice the configuration
+  count.
 
-### Drive-dependent heater response
+### Drive-dependent heater response under the same folds
 
-The Ascella phase shifters follow phi = A V^2 + b, with b the passive offsets
-of (0.1 +- 1.2) rad ([2306.00874](../notes/papers/2306.00874.md), SI S-IV). A
-heater's drive is fixed by its returned phase, so an error in its
-phase-voltage map shifts it by a function of that phase rather than by one
-offset every configuration shares, and such a family can follow the
-configuration dependence that the static offsets miss.
+Ascella's control path maps voltages to phases by phi = A V^2 + b
+([literature](../notes/quandela/literature.md), 2306.00874 SI S-IV), so a
+heater's power is linear in its commanded phase and an error of its fitted
+slope shifts the realized phase in proportion to the drive. The family adds
+one slope k_h per heater to the tau-0.3 heater offsets: heater h realizes
+phi + a_h + k_h phi, with phi the returned phase in [0, 2 pi) as the drive,
+a_h under N(0, 0.3^2) and k_h under N(0, 0.1^2), whose spread at the mid
+drive pi (0.31 rad) matches the offset prior (252 parameters).
+[`ascella_configuration_holdout.py --drive`](../../scripts/ascella_configuration_holdout.py)
+fits it under the folds and score of the section above and writes
+[`heater-drive-holdout-heater-basis.json`](../evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json).
+The family runs as the heater basis (1, phi) of the next section, with each
+heater's offset and slope adjacent among the coefficients;
+[`heater-drive-holdout.json`](../evidence/ascella-order-coefficients/heater-drive-holdout.json),
+written while the offsets and slopes formed two blocks, keeps its bytes.
+The reordered L-BFGS path from zero reaches another mode in two folds, 0.13
+lower in negative log posterior on left-out configuration 20 and 0.39 higher
+on 23, which serves no readout; the X sum moves from 36.05 to 36.09 and every
+figure below is unchanged at its quoted precision.
+The family, its single prior width and the reading of each outcome were fixed
+in step `drive-dependent-heater-family` of plan
+`ascella-configuration-holdout-training-only` before the run: a sum of 30 or
+more for X or Y keeps the shortfall; both sums below 20 read as weak
+identification when a median variance ratio exceeds 1 and as prediction of
+left-out configurations otherwise; any other outcome is inconclusive.
+
+| Family | Left-out X / Y, counting only | Left-out X / Y, with prediction variance | Median prediction / counting variance, X / Y |
+|---|---|---|---|
+| nominal | 343 / 75 | 343 / 75 | 0 / 0 |
+| static heater offsets, tau 0.3 | 476 / 123 | 167 / 45 | 0.82 / 0.61 |
+| heater offsets 0.3 and drive slopes 0.1 | 474 / 186 | 36.1 / 24.8 | 10.4 / 2.1 |
+
+- The X sum of 36.1 keeps the shortfall under the preset criterion: with its
+  prediction variance included, the drive-linear family still misses the
+  left-out X statistics, and every fold mode is positive definite (lowest
+  Hessian eigenvalue 0.86).
+- The X predictions carry a median prediction variance 10.4 times the
+  counting variance, so most of the drop from 167 to 36 comes from wider
+  predictions rather than closer ones; the counting-only sums (474 and 186)
+  match or exceed the offset family's. The Y sum of 24.8 sits in the
+  inconclusive band.
+- Confidence that no shared static or drive-linear heater error of the
+  returned mesh model predicts left-out configurations rises from medium to
+  medium-high. The drive is the returned phase with its zero at 0: the
+  passive phase b, which sets where the provider wraps a heater's drive, is
+  absent from the returned circuit, and a per-heater wrap point, a quadratic
+  term in the drive and crosstalk through A stay outside the family. A family
+  with those terms whose standardized sums fall below 20 with variance ratios
+  at most 1 would lower it.
+
+### Polynomial and harmonic drive responses
+
+The drive-linear family above is one member of a wider class: a heater's
+drive is fixed by its returned phase, so an error in its phase-voltage map
+shifts it by some function of that phase. The passive offsets b of
+(0.1 +- 1.2) rad ([2306.00874](../notes/papers/2306.00874.md), SI S-IV) set
+where each heater wraps, and a quadratic drive term bends the response; both
+lie outside the drive-linear family.
 [`ascella_drive_response.py`](../../scripts/ascella_drive_response.py) shifts
 heater h of configuration c by sum_k b_k(phi_ch) w_hk under independent
 N(0, tau^2) priors on the coefficients, in two bases:
@@ -1072,7 +1124,9 @@ N(0, tau^2) priors on the coefficients, in two bases:
   2 pi-periodic function of the returned phase whatever the wrap, which the
   harmonics expand without one.
 
-Order 0 is the static heater-offset family. Each family is fitted on all of
+Order 0 is the static heater-offset family, and the drive-linear family is
+the basis (1, phi) with its own widths for the two functions
+(`static_light` evaluates both through one heater basis). Each family is fitted on all of
 job-00 and scored on job-01 as in the physical-model table, and runs the
 training-only folds of the section above on the 19 configurations that serve
 the X or Y readout, from the zero start. The reading is that section's,
@@ -1093,8 +1147,10 @@ holds the outcome:
 - Every family fits job-00 within its counting noise and passes job-01 with
   X0 + Xc2 at -0.026 to -0.028, inside the interval. That tests
   reproducibility, which job-00's raw configuration values already give.
-- The order-1 polynomial keeps the shortfall on X (32) under the preset
-  criterion, and its Y sum of 28 lies between the thresholds.
+- The order-1 polynomial spans the drive-linear family's functions under one
+  prior width for both, and it keeps the shortfall on X (32) under the preset
+  criterion, as the drive-linear family does (36.1); its Y sum of 28 lies
+  between the thresholds.
 - The other four predict left-out configurations with a median prediction
   variance 6.5 to 485 times the counting variance, and their sums fall below
   20: the 29 training configurations do not determine their left-out
@@ -1102,14 +1158,15 @@ holds the outcome:
   predictions do worse than the returned mesh on every readout (X 386 to 564
   against 343, Y 94 to 133 against 75).
 
-The one drive family the training configurations identify fails to predict
-left-out configurations, and the richer ones are not identified by these
-data. Confidence that no shared error of the returned mesh model predicts
-left-out configurations therefore stays medium. It would rise if a hardware
-case that repeats one configuration under many perturbed compilations
-constrained the drive coefficients and the shortfall remained; it would fall
-if such coefficients predicted left-out configurations within the preset
-criterion.
+The harmonic families carry each heater's wrap point and the order-2
+families a quadratic drive term, the terms the drive-linear section left
+outside its family, and 29 training configurations do not identify them.
+They neither meet that section's lowering condition (sums below 20 with
+variance ratios at most 1) nor sharpen the shortfall, so its medium-high
+confidence stands. A hardware case that repeats one configuration under many
+perturbed compilations would constrain these coefficients: confidence would
+rise if the shortfall remained under them and fall if they predicted
+left-out configurations within the preset criterion.
 
 The posteriors of these 252 to 630 coefficients hold several modes, and which
 one an L-BFGS path from zero reaches follows the rounding of the BLAS kernel
