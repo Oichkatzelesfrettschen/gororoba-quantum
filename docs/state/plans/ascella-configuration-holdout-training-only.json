@@ -1,0 +1,15 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-configuration-holdout-training-only",
+  "kind": "investigation",
+  "summary": "Refit the Ascella static-offset folds from the training configurations alone and score each left-out configuration in counting plus fitted-prediction variance, replacing the full-data start and the counting-only chi-square of the leave-one-configuration-out readout.",
+  "sources": [
+    "scripts/ascella_physical_models.py"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Falsifier, fixed before the run: a static family whose standardized left-out sum stays at 3 or more times its scored configuration count (30 or more on 10) for X or Y keeps the shared-offset shortfall with prediction uncertainty included; a sum below twice the count with a median prediction-to-counting variance ratio above 1 reads as weakly identified predictions, not a rejection; the docs and claim follow the outcome."
+}

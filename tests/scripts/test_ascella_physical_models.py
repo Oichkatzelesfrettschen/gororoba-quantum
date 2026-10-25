@@ -1,10 +1,12 @@
-"""Contracts of the Ascella physical-model fits: the batched channel, planted recovery and the static gradient."""
+"""Contracts of the Ascella physical-model fits: the batched channel, planted recovery, the static gradient, and the
+training-only leave-one-configuration-out folds of scripts/ascella_configuration_holdout.py."""
 
 from __future__ import annotations
 
 import math
 from typing import Any
 
+import ascella_configuration_holdout as holdout
 import ascella_physical_models as models
 import numpy as np
 import pytest
@@ -180,3 +182,50 @@ def test_posterior_hessian_is_the_symmetrized_column_loop() -> None:
     hessian = models.posterior_hessian(d, widths[free], free, offsets)
     if not np.array_equal(hessian, (loop + loop.T) / 2) or not np.array_equal(hessian, hessian.T):
         raise AssertionError("the pooled Hessian differs from the column loop")
+
+def scored(counts_from: dict[str, Any] | None = None) -> dict[str, Any]:
+    """The synthetic run with settings that serve X then Y in every configuration."""
+    d = data(counts_from)
+    settings = len(d["configuration"])
+    d["record"] = {
+        "manifest": {
+            "settings": [
+                {"readout": "x" if s < CONFIGURATIONS else "y", "block": "analyzer"} for s in range(settings)
+            ]
+        }
+    }
+    return d
+
+
+def test_prediction_gradient_matches_finite_differences() -> None:
+    d = scored({"family": "heater_gain", "values": [0.0, 0.03]})
+    widths = models.prior_widths(d, None, 0.1)
+    free = widths > 0
+    offsets = np.array([0.02 * math.sin(k) for k in range(int(free.sum()))])
+    light, dlight = models.static_light(d, offsets, free)
+    step = 1e-6
+    for (readout, _, model, _, gradient), column in zip(
+        holdout.left_out_rows(d, light, dlight, 2), (0, 5), strict=False
+    ):
+        shifted = offsets.copy()
+        shifted[column] += step
+        moved = holdout.left_out_rows(d, models.static_light(d, shifted, free)[0], dlight, 2)
+        numeric = (next(row[2] for row in moved if row[0] == readout) - model) / step
+        if not math.isclose(gradient[column], numeric, rel_tol=1e-3, abs_tol=1e-7):
+            raise AssertionError((readout, column, gradient[column], numeric))
+
+
+def test_left_out_counts_never_reach_the_fold_fit() -> None:
+    d = scored({"family": "heater_gain", "values": [0.0, 0.03]})
+    changed = scored({"family": "heater_gain", "values": [0.0, 0.03]})
+    rows = changed["configuration"] == 2
+    changed["block"][rows] = changed["block"][rows][:, ::-1]
+    item = ("coupler", None, 0.1)
+    fold, moved = (holdout.configuration_fold((*item, run, 2)) for run in (d, changed))
+    if fold["training_objective"] != moved["training_objective"]:
+        raise AssertionError("the left-out configuration's counts changed the training fit")
+    for a, b in zip(fold["rows"], moved["rows"], strict=True):
+        if a["predicted"] != b["predicted"] or a["prediction_variance"] != b["prediction_variance"]:
+            raise AssertionError((a, b))
+        if a["observed"] == b["observed"]:
+            raise AssertionError("the mutation left the observed statistic unchanged")
