@@ -60,6 +60,22 @@
             }
           ],
           "scope_sha256": "899921ad2cd606a821221a9fbbf24b5f458533f4773ea3cb5650a7b9d4957e8d"
+        },
+        {
+          "result": "tests/scripts/test_qd_network_protocol.py: 28 passed under ci/pr_checks.sh tests; analyzer, frames, decoder, reference preservation and two-hop XOR derived from the bosonic transform and cross-checked against dense permanents and Perceval SLOS; every refusal fixture raises.",
+          "observed_at": "2026-10-25T10:46:51+00:00",
+          "revision": "1ed2bd5ca32cf4ef0e688bc73a3a637c88c2dadb",
+          "evidence": [
+            {
+              "ref": "scripts/qd_network_protocol.py",
+              "sha256": "e2d1d13c178f24030b72949adb832be14bf4e4086c13427a928e1bcae2ee809a"
+            },
+            {
+              "ref": "tests/scripts/test_qd_network_protocol.py",
+              "sha256": "ce2f10d731a2e0b05e2c226696c7db6e59f72fe3ed6298ea5eb3ea7e08a97959"
+            }
+          ],
+          "scope_sha256": "899921ad2cd606a821221a9fbbf24b5f458533f4773ea3cb5650a7b9d4957e8d"
         }
       ]
     },
