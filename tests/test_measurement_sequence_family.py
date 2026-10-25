@@ -396,3 +396,18 @@ def test_member_compilations_match_the_serial_compile(monkeypatch: pytest.Monkey
     check([dict(c.count_ops()) for c in pooled] == [dict(c.count_ops()) for c in serial])
     check(all(a == b for a, b in zip(pooled, serial, strict=True)))
 
+
+def test_case_text_states_the_settle_gap_as_a_hypothesis() -> None:
+    import qpu_cases
+
+    record = {
+        "family_configuration": {"qubits": [57, 65], "steps": list(de.MSQ_STEPS)},
+        "groups": [{"backend": "ibm_kingston"}],
+        "policy": {},
+    }
+    text = " ".join(qpu_cases._scientific_case("measurement-sequence", record))
+    check("experimental hypothesis, not a validated bound" in text)
+    check("from zero to 2 us changes the deficit" in text)
+    check("a tail slower than 2 us stays unexcluded" in text)
+    check("excludes a readout tail" not in text)
+    check("do not bias the read" not in text)

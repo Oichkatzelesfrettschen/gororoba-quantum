@@ -30,10 +30,13 @@ rotation THETA = 8 pi / 9 (160 degrees), N in (1, 2, 4, 8, 16) and sign + or -.
   stop the transpiler from merging the rotations into one gate (without them the run compiles to two `sx`
   in all; with them 32 `sx` and 15 barriers survive), so the circuit applies the full rotation count in the
   shortest time and holds neither a measurement nor an idle. Its ideal P0 is cos(THETA / 2)^2.
-- **Settle arm, the readout-tail control (N = 16 only).** The measure arm with a `delay` of 2.0 us after each
+- **Settle arm, the gap-lengthening control (N = 16 only).** The measure arm with a `delay` of 2.0 us after each
   mid-circuit measurement, before the next rotation, rounded up to the Target's timing granularity
   (`qpu_planning.settle_delay`). It is dynamic, like the measure arm, and its ideal law is the measure arm's
-  joint law (final P0 0.8914).
+  joint law (final P0 0.8914). The 2 us gap is an experimental hypothesis: the repository's Heron r2 sources
+  ([readout resonator note](../notes/ibm_quantum/heron-r2-readout-resonator.md)) state no device-matched
+  ring-down or residual-photon decay time, so the gap is not a validated bound. The arm tests whether
+  lengthening the gap after each measurement from zero (the measure arm) to 2 us changes the deficit.
 - **T1 arm (static, per qubit).** `x`, a `delay` of t, the pre-readout delay, then the final measurement, for t
   in (0, 20, 50, 100, 200) us converted to dt like the other idles (a zero t omits the idle). One member per t,
   `msq_t1_d{k}_q{Q}`, k = 0..4. Each is a single circuit, not a signed quartet. The ideal law is the noise-free
@@ -41,12 +44,14 @@ rotation THETA = 8 pi / 9 (160 degrees), N in (1, 2, 4, 8, 16) and sign + or -.
 - **Pre-readout delay (every member).** A `delay` of 2.0 us, rounded up to the Target's timing granularity
   (`qpu_planning.prereadout_delay`), precedes the final measurement of every member of every arm and is
   recorded per qubit as `prereadout_delay_dt`. Residual readout photons of the last mid-circuit measurement
-  would otherwise bias the final assignment of the measure and settle arms, and the unitary and delay arms
-  carry no such history to cancel it. The 2 us pre-readout delay in every member removes the readout-history bias of the final assignment.
+  may bias the final assignment of the measure and settle arms, and the unitary and delay arms carry no
+  such history to cancel it. The 2 us pre-readout delay in every member is a hypothesized allowance for that
+  history, subject to the same missing decay-time figure as the settle gap; it equalizes the wait across
+  members and removes no bias that a measurement has shown.
 
 The four arms carry four roles: the measure arm is the object of the test, the unitary arm is the mutation
 null that removes the property under test, the delay arm is the elapsed-time control, and the settle arm is
-the readout-tail control. The t1 arm measures the qubit's relaxation in the job. The case analysis fits T1
+the gap-lengthening control. The t1 arm measures the qubit's relaxation in the job. The case analysis fits T1
 from the t1 members and uses that fit, not the Target's T1, for the measure-arm and settle predictions, because
 the T1 lift at N = 16 is decision-sized.
 
@@ -103,8 +108,10 @@ decoupling off.
 The state after each measurement is diagonal in Z, so a readout-induced frequency shift delta that
 persists into the next rotation acts only during the pulse of duration tau, at second order in delta * tau.
 For tau <= 100 ns and delta <= 2 pi * 100 kHz the flip probability at N = 16 moves by about -2.5e-6 per step.
-Interpreting a departure still needs a control: the settle arm inserts a 2 us gap after each measurement, and
-a departure that survives the gap unchanged excludes a readout tail. A measured P0 below the ideal (a
+Interpreting a departure still needs a control: the settle arm inserts a 2 us gap after each measurement. A
+deficit that stays unchanged when the gap grows from zero to 2 us bounds only the tail component that decays
+within 2 us; a tail slower than 2 us stays unexcluded. A deficit that shrinks with the gap attributes that part
+to a tail. A measured P0 below the ideal (a
 positive deficit, `q{Q}_msq_deficit_n{N}` in the summaries) measures transitions that the
 measurement induces once the unitary, delay and settle controls separate it from rotation error, idle
 dephasing and a readout tail. The calibration noise model treats a mid-circuit measurement as projective, so it prices
@@ -140,8 +147,8 @@ contrast 0.0524 and 0.0741. The 0.05 starting half-width for the contrast fails 
 In the FakeFez planning fixture with one qubit, 8192 shots plan 29 static PUBs at about 67.2 s of charge (64.9 s
 of execution plus 2.3 s overhead) and 20 dynamic PUBs at about 47.3 s, 114.5 s in all, against 59.6 s at 4096.
 
-The 2 us pre-readout delay in every member removes the readout-history bias of the final assignment. An
-in-job N = 1 measure-versus-delay diagnostic cannot run in this family, because the measure arm's N = 1 member
+The 2 us pre-readout delay in every member is a hypothesized allowance for readout history and carries no
+in-job validation. An in-job N = 1 measure-versus-delay diagnostic cannot run in this family, because the measure arm's N = 1 member
 would fuse as a dynamic PUB among static components; the IQM Garnet case keeps that N = 1 diagnostic because its
 circuits do not fuse.
 

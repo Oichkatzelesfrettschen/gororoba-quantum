@@ -390,8 +390,10 @@ def state_prep_excitation(excited: float, prob_meas1_prep0: float, prob_meas0_pr
 # next rotation: a readout-induced frequency shift that outlasts the readout
 # acts during the next pulse at second order in delta * tau (about -2.5e-6 per
 # step in the flip probability at N = 16 for tau <= 100 ns and
-# delta <= 2 pi * 100 kHz), and a departure that survives the settle gap
-# unchanged excludes a readout tail. All four read the qubit in Z at the end. The state
+# delta <= 2 pi * 100 kHz). The 2 us gap is a hypothesis: the Heron r2
+# sources give no ring-down time. The arm tests whether lengthening the gap
+# from zero to 2 us changes the deficit; an unchanged deficit bounds only a
+# tail that decays within 2 us. All four read the qubit in Z at the end. The state
 # after each measurement is diagonal in Z, so the measure arm's final P0
 # follows the Markov law of MSQ_THETA / N rotations; the delay and unitary
 # arms' coherent rotations compose to RX(sign * THETA) in the ideal.
