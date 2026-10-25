@@ -11,7 +11,7 @@
     "status": "verified",
     "note": "The owner asked for the narrowing and the training-only folds; the falsifier was fixed in this record before the run."
   },
-  "next_action": "Design the drive-dependent heater-response family (step drive-dependent-heater-family); the training-only readout keeps the shortfall for every static family.",
+  "next_action": "Run the preregistered drive-dependent heater family (step drive-dependent-heater-family) under the training-only folds and record its reading.",
   "scope": "Training-only leave-one-configuration-out folds of the four Ascella static offset families on job-00, scored in counting plus fitted-prediction variance, and the narrowed physical-model wording; a drive-dependent heater-response family under the same folds remains.",
   "owner": "ascella signed-coherence analysis",
   "steps": [
@@ -37,9 +37,9 @@
     },
     {
       "id": "drive-dependent-heater-family",
-      "action": "Add a drive-dependent heater-response family and score it under the same training-only folds.",
-      "acceptance": "Its standardized left-out sums are recorded against the same 30-on-10 criterion.",
-      "state": "todo",
+      "action": "Fit one drive-dependent heater family, realized phase phi + a_h + k_h phi with phi the returned phase in [0, 2 pi) (heater power linear in phase under phi = A V^2 + b), heater offsets a_h under N(0, 0.3^2) and per-heater slope errors k_h under N(0, 0.1^2), and score it under the same training-only folds and g C g^T variance. The width 0.1 gives a phase spread of 0.31 rad at the mid drive pi, matching the offset prior, and no other width is fitted.",
+      "acceptance": "Its standardized left-out X and Y sums are recorded against the 30-on-10 criterion, read as fixed here: a sum of 30 or more for X or Y keeps the shortfall and raises confidence that no shared static or drive-linear error of the returned mesh predicts left-out configurations; both sums below 20 with a median prediction-to-counting variance ratio above 1 for that readout reads as weakly identified and leaves confidence unchanged; both sums below 20 with both median ratios at most 1 reads as predicting left-out configurations and lowers it; any other outcome is inconclusive and leaves confidence unchanged.",
+      "state": "doing",
       "depends_on": [
         "training-only-holdout"
       ]
