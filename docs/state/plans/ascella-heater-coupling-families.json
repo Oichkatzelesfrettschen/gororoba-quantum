@@ -1,0 +1,51 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-heater-coupling-families",
+  "kind": "investigation",
+  "summary": "Fit heater-coupling error families (neighbor crosstalk, coupler-angle error, power-dependent loss) on Ascella job-00 alone and score each on job-02's 56 served meshes of one setting, under readings fixed before any job-02 score.",
+  "sources": [
+    "docs/design/ascella-signed-coherence-conformance.md",
+    "docs/state/plans/ascella-perturbed-compilation-case.json",
+    "scripts/ascella_compilation_reading.py",
+    "scripts/ascella_physical_models.py",
+    "docs/evidence/ascella-order-coefficients/compilation-reading.json"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The families, priors, training set and reading below are fixed in this record before any coupling family is scored on job-02. job-02's 56 per-mesh X statistics were already read by the compilation reading, so only a fit that never sees them and is scored on them is confirmatory; the joint job-00 plus job-02 fits are identification only. A nuisance screen of job-02 (execution index, its parity, lag-1 and the outside-block count against the X statistic, no mesh feature) found no association, every p above 0.19, so the reading carries no sequence term."
+  },
+  "scope": "Training set: job-00 alone, as in the compilation reading's R2. Test set: the 56 perturbed iterations of job-02, one distinct mesh each. Families, each fitted from the zero start: (C1) the uniform thermal_crosstalk family of scripts/ascella_physical_models.py, one coefficient on the sum of mesh.neighbours phases, with dephasing; (C2) its uniform coupler_offset family with dephasing; (C3) static per-coupler offsets, tau 0.1; (C4) static heater offsets tau 0.3 with coupler offsets tau 0.1; (C5) a crosstalk kernel of three shared coefficients, each heater's phase gaining c_d times the sum of the returned phases in [0, 2 pi) of the heaters d modes away (d = 0, 1, 2, self excluded) within two layout columns, prior N(0, 0.01^2) per coefficient; (C6) C5 with C4's offsets; (C7) power-dependent loss, the heater's mode transmitting intensity exp(-gamma phi) with one shared gamma under N(0, 0.05^2), block renormalized; (C8) C7 with C4's offsets. Assumptions stated: heater power is linear in the returned phase in [0, 2 pi) (the passive offset is absent from the returned circuit), and logical layout distance stands in for physical distance. Reading per family at alpha 0.01: the joint quadratic form of job-02's residuals in diag(v) + G C G^T, C the job-00 fit covariance; at or above 94.46 (chi-square 0.999 on 56) reads shortfall; below 77.52 (0.97) with median prediction-to-counting variance ratio at most 1 reads predicted; otherwise between the thresholds. A predicted family names the coupling candidate; a shortfall for all eight moves the question to provider applied-voltage data or a new written hardware case. The R3 form (fit on job-00 plus job-02, leave each of the 19 scored job-00 configurations out) is reported for C5 to C8 as identification and decides nothing.",
+  "owner": "ascella signed-coherence analysis",
+  "next_action": "Score C1 to C4 on job-02 from their job-00 fits, X readout only.",
+  "related": [
+    "ascella-signed-coherence-conformance",
+    "ascella-perturbed-compilation-case"
+  ],
+  "steps": [
+    {
+      "id": "existing-families-on-job-02",
+      "action": "Fit C1 to C4 on job-00 and score each on job-02's 56 meshes under the joint quadratic form, restricting the low-dimensional path to the X readout job-02 carries.",
+      "acceptance": "A retained record with each family's quadratic form, diagonal sum, median variance ratio and reading, replayed by a gate within the fit bounds.",
+      "state": "todo"
+    },
+    {
+      "id": "kernel-and-loss-families",
+      "action": "Implement C5 to C8 with analytic Jacobians, fit each on job-00 and score it on job-02 under the same reading; report the R3-form identification folds descriptively.",
+      "acceptance": "The same record carries C5 to C8 with their readings and fitted coefficients; a test checks each new Jacobian against central differences.",
+      "state": "todo",
+      "depends_on": [
+        "existing-families-on-job-02"
+      ]
+    },
+    {
+      "id": "reading-and-design-section",
+      "action": "Write the design-document section, the research-registry claim and the conformance plan's next action from the record.",
+      "acceptance": "The section states each family's reading and the confidence it moves; scripts/plan_tracker.py check and the link checker pass.",
+      "state": "todo",
+      "depends_on": [
+        "kernel-and-loss-families"
+      ]
+    }
+  ]
+}
