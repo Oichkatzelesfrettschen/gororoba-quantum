@@ -1,0 +1,236 @@
+{
+ "derived": {
+  "classical_bound": 0.693668048,
+  "decision_count": 314,
+  "least_accepted_share": 0.07991133537097217,
+  "mean_score": 0.86,
+  "sample_probability": {
+   "+X": 4.147820598722431e-05,
+   "+Y": 4.205844243517787e-05,
+   "+Z": 4.9719529977830653e-05,
+   "-X": 4.145517245975127e-05,
+   "-Y": 4.20595116451668e-05,
+   "-Z": 3.302725402965297e-05
+  },
+  "samples_per_iteration": 900,
+  "systematic_allowance": 0.02
+ },
+ "schema": "qd-teleportation-noise-model-v1",
+ "variants": {
+  "anchor per-mode transmission": {
+   "g2": 0.011000000000000001,
+   "hom": 0.888,
+   "inputs": {
+    "+X": {
+     "accepted_probability": 3.4943687788625595e-06,
+     "accepted_share": 0.08424589964037642,
+     "conditional_fidelity": 0.8515890627138459,
+     "sample_probability": 4.147820598722431e-05
+    },
+    "+Y": {
+     "accepted_probability": 3.522316948971682e-06,
+     "accepted_share": 0.08374815483004193,
+     "conditional_fidelity": 0.8490638620526438,
+     "sample_probability": 4.205844243517787e-05
+    },
+    "+Z": {
+     "accepted_probability": 3.97315403454553e-06,
+     "accepted_share": 0.07991133537097217,
+     "conditional_fidelity": 0.8077365949117179,
+     "sample_probability": 4.9719529977830653e-05
+    },
+    "-X": {
+     "accepted_probability": 3.492157850645697e-06,
+     "accepted_share": 0.08423937577478963,
+     "conditional_fidelity": 0.8520040407852033,
+     "sample_probability": 4.145517245975127e-05
+    },
+    "-Y": {
+     "accepted_probability": 3.523386532969636e-06,
+     "accepted_share": 0.08377145609046843,
+     "conditional_fidelity": 0.8491753422824425,
+     "sample_probability": 4.20595116451668e-05
+    },
+    "-Z": {
+     "accepted_probability": 2.8365139538039765e-06,
+     "accepted_share": 0.08588403841437316,
+     "conditional_fidelity": 0.9921636945515562,
+     "sample_probability": 3.302725402965297e-05
+    }
+   },
+   "pooled": 0.8679104642613192
+  },
+  "fresh per-mode transmission": {
+   "g2": 0.011000000000000001,
+   "hom": 0.888,
+   "inputs": {
+    "+X": {
+     "accepted_probability": 3.4168080959962927e-06,
+     "accepted_share": 0.08253477541464509,
+     "conditional_fidelity": 0.8478899145570141,
+     "sample_probability": 4.1398405445833556e-05
+    },
+    "+Y": {
+     "accepted_probability": 3.4204969757035924e-06,
+     "accepted_share": 0.08240433998379923,
+     "conditional_fidelity": 0.8491357958514146,
+     "sample_probability": 4.150869937646567e-05
+    },
+    "+Z": {
+     "accepted_probability": 3.7318938070540596e-06,
+     "accepted_share": 0.08085684845174829,
+     "conditional_fidelity": 0.7885954798975047,
+     "sample_probability": 4.61543317419932e-05
+    },
+    "-X": {
+     "accepted_probability": 3.4178946145724232e-06,
+     "accepted_share": 0.08252133557025387,
+     "conditional_fidelity": 0.8474442512930108,
+     "sample_probability": 4.141831431778787e-05
+    },
+    "-Y": {
+     "accepted_probability": 3.4203865658508266e-06,
+     "accepted_share": 0.08240189916817735,
+     "conditional_fidelity": 0.8491239442242672,
+     "sample_probability": 4.1508589005576466e-05
+    },
+    "-Z": {
+     "accepted_probability": 2.9265198978832583e-06,
+     "accepted_share": 0.08014765144362446,
+     "conditional_fidelity": 0.9930548034182834,
+     "sample_probability": 3.651410671642401e-05
+    }
+   },
+   "pooled": 0.8621663715692643
+  },
+  "fresh source figures": {
+   "g2": 0.16699999999999998,
+   "hom": 0.838,
+   "inputs": {
+    "+X": {
+     "accepted_probability": 0.06975949403599563,
+     "accepted_share": 0.10213618624608627,
+     "conditional_fidelity": 0.7423352873666161,
+     "sample_probability": 0.6830046881515387
+    },
+    "+Y": {
+     "accepted_probability": 0.06950865907643566,
+     "accepted_share": 0.10154351352475292,
+     "conditional_fidelity": 0.7532655011982253,
+     "sample_probability": 0.6845209178180719
+    },
+    "+Z": {
+     "accepted_probability": 0.07307642245154308,
+     "accepted_share": 0.09712488623006425,
+     "conditional_fidelity": 0.6368040098441086,
+     "sample_probability": 0.7523964792961872
+    },
+    "-X": {
+     "accepted_probability": 0.06975949403599566,
+     "accepted_share": 0.10213618624608631,
+     "conditional_fidelity": 0.7423352873666162,
+     "sample_probability": 0.6830046881515387
+    },
+    "-Y": {
+     "accepted_probability": 0.06950865907643566,
+     "accepted_share": 0.10154351352475292,
+     "conditional_fidelity": 0.7532655011982254,
+     "sample_probability": 0.6845209178180719
+    },
+    "-Z": {
+     "accepted_probability": 0.05225538197663999,
+     "accepted_share": 0.08697827416391359,
+     "conditional_fidelity": 0.9713373290403974,
+     "sample_probability": 0.6007866042290388
+    }
+   },
+   "pooled": 0.762435078087235
+  },
+  "source and uniform loss": {
+   "g2": 0.011000000000000001,
+   "hom": 0.888,
+   "inputs": {
+    "+X": {
+     "accepted_probability": 1.1064490295605168e-05,
+     "accepted_share": 0.10534996636310626,
+     "conditional_fidelity": 0.8473900019904392,
+     "sample_probability": 0.00010502604488234532
+    },
+    "+Y": {
+     "accepted_probability": 1.1063057053538938e-05,
+     "accepted_share": 0.10527394982759278,
+     "conditional_fidelity": 0.8494061397093369,
+     "sample_probability": 0.00010508826800606337
+    },
+    "+Z": {
+     "accepted_probability": 1.2015051455659238e-05,
+     "accepted_share": 0.10091969000093336,
+     "conditional_fidelity": 0.7861599732671114,
+     "sample_probability": 0.00011905557236202486
+    },
+    "-X": {
+     "accepted_probability": 1.1064490295605168e-05,
+     "accepted_share": 0.10534996636310627,
+     "conditional_fidelity": 0.8473900019904395,
+     "sample_probability": 0.00010502604488234531
+    },
+    "-Y": {
+     "accepted_probability": 1.1063057053538938e-05,
+     "accepted_share": 0.10527394982759279,
+     "conditional_fidelity": 0.8494061397093369,
+     "sample_probability": 0.00010508826800606335
+    },
+    "-Z": {
+     "accepted_probability": 9.54631991429974e-06,
+     "accepted_share": 0.1055046133160963,
+     "conditional_fidelity": 0.9932305695863386,
+     "sample_probability": 9.048248805669341e-05
+    }
+   },
+   "pooled": 0.862735642153214
+  },
+  "source only": {
+   "g2": 0.011000000000000001,
+   "hom": 0.888,
+   "inputs": {
+    "+X": {
+     "accepted_probability": 0.06217657893174893,
+     "accepted_share": 0.10253514376675193,
+     "conditional_fidelity": 0.8693763042646305,
+     "sample_probability": 0.6063928585616352
+    },
+    "+Y": {
+     "accepted_probability": 0.062169892422629575,
+     "accepted_share": 0.10250786885950361,
+     "conditional_fidelity": 0.870149295770567,
+     "sample_probability": 0.6064889760593802
+    },
+    "+Z": {
+     "accepted_probability": 0.0680887828139363,
+     "accepted_share": 0.09884444669746767,
+     "conditional_fidelity": 0.8083376037054347,
+     "sample_probability": 0.6888478320115953
+    },
+    "-X": {
+     "accepted_probability": 0.06217657893174894,
+     "accepted_share": 0.10253514376675198,
+     "conditional_fidelity": 0.8693763042646306,
+     "sample_probability": 0.6063928585616349
+    },
+    "-Y": {
+     "accepted_probability": 0.06216989242262956,
+     "accepted_share": 0.10250786885950361,
+     "conditional_fidelity": 0.8701492957705671,
+     "sample_probability": 0.6064889760593801
+    },
+    "-Z": {
+     "accepted_probability": 0.055388243534712,
+     "accepted_share": 0.10586902580970432,
+     "conditional_fidelity": 0.9982729077813175,
+     "sample_probability": 0.5231770398479941
+    }
+   },
+   "pooled": 0.8820166800501408
+  }
+ }
+}

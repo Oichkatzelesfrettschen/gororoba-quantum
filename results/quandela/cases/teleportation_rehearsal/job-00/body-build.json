@@ -1,0 +1,14 @@
+{
+ "platform": "qpu:belenos",
+ "cases_sha256": "0d4b1a469ea82ca0ac6498a6dc38fcbbdcee793f52cfffee297a8fd6c038b4d6",
+ "job_body_sha256": "7da600158d0e6208e080b7c7ee0eda10cae65e14516ea0eec0c04904fb1dc99f",
+ "estimated_shots": 5377923,
+ "payload_version_basis": "declared",
+ "versions": {
+  "perceval-quandela": "1.3.1",
+  "exqalibur": "1.4.2"
+ },
+ "perfs_basis": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/platform-after/catalogue.json",
+ "built_utc": "2026-10-25T19:28:03+00:00",
+ "sent": false
+}

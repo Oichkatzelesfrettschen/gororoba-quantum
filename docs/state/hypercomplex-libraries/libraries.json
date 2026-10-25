@@ -735,7 +735,9 @@
     "scripts/qd_classical_benchmark.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/qd_classical_benchmark.py"
+   ]
   },
   {
    "distribution": "cycler",
@@ -2633,6 +2635,7 @@
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_cancellation_cases.py",
@@ -2814,6 +2817,7 @@
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qd_classical_benchmark.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
@@ -3593,7 +3597,8 @@
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
-    "scripts/qd_platform.py"
+    "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
@@ -11918,6 +11923,30 @@
    "subprocess",
    "sys",
    "time",
+   "typing"
+  ],
+  "scripts/qd_teleportation_rehearsal.py": [
+   "__future__",
+   "bdsc_certificate",
+   "collections",
+   "contextlib",
+   "copy",
+   "dataclasses",
+   "datetime",
+   "functools",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_classical_benchmark",
+   "qd_network_protocol",
+   "qd_platform",
+   "qd_schedule",
+   "sys",
    "typing"
   ],
   "scripts/qet_two_qubit_reference.py": [

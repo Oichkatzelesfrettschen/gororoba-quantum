@@ -282,6 +282,94 @@ network case exists for the first, and Perceval 1.3.1's
 `RemoteProcessor.__init__` takes one platform `name`, so a joint job has no
 client interface for the second.
 
+## Single-chip rehearsal (job-00)
+
+**Request.** One `qpu:belenos` job, `teleportation_rehearsal/job-00`, confirms that the teleportation circuit works
+on one chip. It teleports the six Pauli eigenstates of one dual-rail qubit q through a Bell pair that a
+postselected Ralph CNOT (`pcvl.catalog['postprocessed cnot']`, six modes with two vacuum heralds) builds from a in
+`|+>` and b in `|0>`. Balanced beam splitters between `q_j` and `a_j` form the partial Bell analyzer
+(`analyzer_unitary`), and the receiver b is read in the basis of the input's axis. The Pauli frame of the analyzer
+pattern comes from the frame table (patterns 1100 and 0011 give (x, z) = (1, 0); 1001 and 0110 give (1, 1)) and
+`decode_bit` applies it in analysis. An event is accepted when it carries exactly three threshold clicks across the
+24 returned modes: two on the analyzer in a frame-table pattern, one on b, none on a herald or outside the eight
+logical modes. The ideal instrument accepts each input with probability 1/18 (CNOT 1/9 times analyzer 1/2) at
+conditional fidelity 1. Generator, analysis and tests live in
+[`scripts/qd_teleportation_rehearsal.py`](../../scripts/qd_teleportation_rehearsal.py) and
+[its test](../../tests/scripts/test_qd_teleportation_rehearsal.py); the case files are under
+[`results/quandela/cases/teleportation_rehearsal/job-00`](../../results/quandela/cases/teleportation_rehearsal/job-00/).
+
+**What it measures, and why simulation cannot answer it.** It measures the pooled conditional fidelity of the
+frame-corrected receiver over six inputs on three photons in eight logical modes of the 24-mode chip. The local
+Perceval simulation (`NoiseModel` with HOM and g2, plus transmission) fixes the ideal tables and the noise the
+budget assumes. It carries neither the chip's multi-photon interference (the HOM figure is a pairwise visibility,
+and the three photons of one job come from separate source pulses), nor the service's compilation (the cloud
+re-transpiles every iteration and fixes only the occupied columns, [strategy.md](../notes/quandela/strategy.md)
+section 2), nor the threshold detectors' per-mode efficiency and dark response. The chip is the question.
+
+**Backend and settings.** `qpu:belenos`, one job of six template iterations in the order +Z, -Z, +X, -X, +Y, -Y.
+Every iteration runs the same 24-mode Rx/phase mesh; only the 148 circuit parameters differ. The source photons
+enter chip modes 8, 9 and 13 (q0, a0, b0), all in the platform's `connected_input_modes`. The layout is chip modes
+(8, 14, 9, 12, 13, 11, 10, 15) for (q0, q1, a0, a1, b0, b1, h0, h1) inside the window 8 to 15, which excludes
+mode 5 (21187 /s on the fresh read) and every mode above 100 dark counts per second, and which gives the
+closest `t_out` over the three rails among the windows that satisfy those rules. The request is `min_detected_photons`
+3, `mitigations: []`, `max_duration` 300 s, `sample_count`, and carries no `compilation_seed`, so
+`qd_platform.payload` sends its fixed 0 and the case draws no random seed. The input state holds one photon on each
+of the three source modes.
+
+**Budget.** The decision count follows `bernoulli_decision_count(alpha 0.01, beta 0.10, F*, B, eps_sys)` with
+F* = 0.86, B = 0.6937 and eps_sys = 0.02: 314 accepted outcomes. F* is the lowest pooled conditional fidelity of
+three noise variants at the 2026-10-24 15:35 UTC read (HOM 88.8 %, g2 1.1 %, Transmittance 5.5 %): source only
+0.882, plus uniform loss 0.863, plus that read's per-mode transmission 0.868 (the per-input fidelities run from
+0.79 to 0.99). The fresh read's per-mode transmission changes the pooled value by 0.006. The 0.02 allowance covers
+dark clicks (at most 2e-5 per pulse per mode inside the window) and compilation phase error, which no variant
+models; the result is its own check of it. The service reports shots equal to samples and no optical trials, so the
+classical bound is the larger of `attempts_benchmark` at the reported shots (2/3) and at the modeled attempts, each
+input's samples over its modeled three-click probability (0.6937): the retained record has no `N_attempt`, and
+this case does not substitute samples for it. At the least accepted share, 0.0799 of the three-click samples,
+900 samples per iteration (5400 in all) give 431 expected accepted outcomes, 1.37 times the decision count.
+`estimate_required_shots` under the anchor read gives 856,264 to 938,915 shots per iteration, so `max_shots` is
+1,200,000 per iteration (7,200,000 in all). The record
+[`noise-model.json`](../../results/quandela/cases/teleportation_rehearsal/job-00/noise-model.json) and
+[`shot-estimate.json`](../../results/quandela/cases/teleportation_rehearsal/job-00/shot-estimate.json) retain both
+derivations, and `--check` re-derives the first.
+
+**Seconds and credits.** The server compiles each iteration for about 10 s (6 iterations, 60 s), and acquiring 5400
+samples at the 4.94 MHz clock and the modeled three-click probabilities of 3.3e-5 to 5.0e-5 takes about 30 s, so
+the job runs under 100 s; the written case states 120 s against the 300 s limit. Credits follow the measured rule,
+1 credit per job plus 1e-06 per billed shot, with the largest iteration's `max_shots` billed
+([quandela-credit-optimization.md](../runbooks/quandela-credit-optimization.md)): 1 + 1.2 = 2.2 credits at most
+and about 1.005 if the job bills the 5400 samples it returns. The primary 200-credit monthly pool covers it.
+
+**Decision rule and falsifier.** With `F_hat` the pooled conditional fidelity over `n` accepted outcomes and
+`r = sqrt(ln(1/0.01)/(2n))`, the analysis (`--analyze RUN`) returns `beats-classical` when
+`F_hat - r - 0.02` exceeds the classical bound, `at-or-below-classical` when `F_hat + r` falls below it, and
+`inconclusive` otherwise. The falsifier is `F_hat + r < B`: the chip then teleports no better than a
+measure-and-prepare strategy at this conformance level. A `beats-classical` verdict establishes C1 for the
+family. A fidelity below F* with a margin under the allowance, or a rejected-event mix far from the model (many
+herald, outside or pattern rejections), names the model term to revise before any further acquisition. The run also stops before submission unless
+a fresh `--plan` admits the request and its model pooled fidelity at the live figures is at least F* = 0.86.
+
+**Claim level.** C1 only: local conformance of the teleportation circuit family on one chip. The case supports no
+cross-device claim and no C2 or C3.
+
+**Dry run.** The model fidelity at the live figures decides whether the platform admits the case now. The live read
+of 2026-10-25 19:04:53 UTC, retained in `platform-read/catalogue.json`, reports `available`, HOM 83.8 %, g2 16.7 %,
+Transmittance 0.05 % and 21187 /s on mode 5. At 19:28:31 UTC the live `--plan` refused ("Perceval estimates None
+shots for 5400 samples") with a model pooled fidelity of 0.635, below the classical bound; the record is
+`plan-refused.json`
+(sha256 `54bd50961680aca11aacf6646f53675ac2cfb68511764300d90b5be53ff6ec86`). The same request under the
+2026-10-24 15:35:30 UTC performance figures (`plan-anchor.json`, 19:28:17 UTC, sha256
+`8481d156bb70f417bb77219e17e2095061f8763a45df641138e5390043fbbf74`) is admitted: estimated 5,377,923 shots, credit
+ceiling 2.2, model pooled fidelity 0.868. Its job body, `job-body.json` (sha256
+`7da600158d0e6208e080b7c7ee0eda10cae65e14516ea0eec0c04904fb1dc99f`, `cases.json` sha256
+`0d4b1a469ea82ca0ac6498a6dc38fcbbdcee793f52cfffee297a8fd6c038b4d6`), has the digest without `process_id`
+`ab33a8c2264e476d895acb4287bf7158bb3da9c82714a837b16883a8b2e6b633`. The body does not depend on the performance
+figures, so a later live plan must reproduce that digest. The plan warns that three photons share one block at HOM
+88.8 %, below the 90 % rule of [strategy.md](../notes/quandela/strategy.md); the warning does not hold the case.
+Nothing was sent.
+
+Awaits the owner's written approval
+
 ## Provider request (unsent)
 
 Identify whether the physical installations exposed as `qpu:ascella` and
