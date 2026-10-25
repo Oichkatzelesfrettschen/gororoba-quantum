@@ -1338,3 +1338,65 @@ returned phase cannot carry it. The untested candidates couple heaters:
 thermal crosstalk between neighbors, coupler-angle error and mesh-dependent
 loss. The 56 served meshes of one logical setting are the test set any such
 model must predict.
+
+## Heater-coupling families on the served meshes
+
+Plan
+[`ascella-heater-coupling-families`](../state/plans/ascella-heater-coupling-families.json)
+fixed eight families, their priors, the training set and the reading before
+any of them met job-02. Each family is fitted on job-00 alone, from the zero
+start, and predicts the pooled X statistic of every one of job-02's 56 served
+meshes. The meshes share the fitted parameters, so the score is R2's joint
+quadratic form in counting plus shared prediction covariance: 94.46 or more
+(chi-square 0.999 on 56) reads shortfall, and below 77.52 (0.97) with a
+median prediction-to-counting variance ratio at most 1 reads predicted.
+Two assumptions stand in for missing provider data. The returned phase in
+[0, 2 pi) stands for the heater's drive power, because the passive offset is
+absent from the returned circuit. The layout's (mode, column) distance
+stands for physical distance. A screen that reads no mesh feature found no
+association of the X statistic with execution index, its parity, its lag-1
+neighbor or the outside-block count (every p above 0.19), so the reading
+carries no sequence term.
+
+[`heater-coupling.json`](../evidence/ascella-order-coefficients/heater-coupling.json),
+written by
+[`scripts/ascella_heater_coupling.py`](../../scripts/ascella_heater_coupling.py):
+
+| Family | Fitted coupling (job-00) | Quadratic form | Median variance ratio | Predicted X SD over meshes | Reading |
+|---|---|---|---|---|---|
+| uniform crosstalk on mesh neighbors, with dephasing | c -0.00065 (SE 0.00026) | 937 | 0.003 | 0.0017 | shortfall |
+| uniform coupler offset, with dephasing | delta 0.0021 (SE 0.0006) | 952 | 0.002 | 0.0018 | shortfall |
+| static coupler offsets, tau 0.1 | RMS 0.039 rad | 762 | 1.19 | 0.0141 | shortfall |
+| heater (tau 0.3) and coupler (tau 0.1) offsets | RMS 0.061 / 0.026 rad | 327 | 66 | 0.0282 | shortfall |
+| crosstalk kernel, c_d for d = 0, 1, 2 modes within two columns | -0.0006, 0.0007, -0.0020 | 1107 | 0.009 | 0.0054 | shortfall |
+| kernel with heater and coupler offsets | 0.0046, 0.0006, 0.0006 | 359 | 32 | 0.0272 | shortfall |
+| drive loss, intensity e^{-gamma phi} | gamma -0.0049 (SE 0.0002) | 785 | 0.003 | 0.0059 | shortfall |
+| drive loss with heater and coupler offsets | gamma -0.0083 (SE 0.0018) | 348 | 27 | 0.0284 | shortfall |
+
+The 56 meshes read an X standard deviation of 0.0113 around 0.887. The
+families fall into two groups. The coupling-only families fit job-00 to a
+small coupling and predict too little spread. The families that carry
+per-element offsets predict spread of the right size, but at mesh-by-mesh
+positions that the observations do not follow. Across the 56 meshes, the
+correlation between predicted and observed X lies between -0.04 and 0.19 for
+every family; that is a description, not a preregistered statistic. Both
+drive-loss fits put gamma below zero, a gain with drive power, which no
+heater loss produces. The identification folds, refitted on job-00 plus
+job-02's meshes and read under the training-only rule, keep the left-out X
+shortfall for all four kernel and loss families: sums 180 to 347 on 10, with
+median variance ratios 0.01 to 0.60, so the shortfall comes with identified
+coefficients. They decide nothing under the plan.
+
+Under the preset reading, no heater-coupling family of the plan predicts the
+served meshes, and none of the twelve families scored on job-02 (the four
+per-heater families of R2 and these eight) explains the configuration
+response. Confidence that the mechanism lies outside the 126 heaters' and
+132 couplers' static and drive-linear parametrizations: medium-high. Two
+things would lower it: a family outside the plan that predicts job-02 from
+job-00 under the same reading, or the layout distance proving a poor stand-in
+for physical distance once the provider's heater geometry or applied-voltage
+calibration is known. The candidates the plan leaves untested are
+crosstalk that is nonlinear in drive power, crosstalk over the physical
+rather than the logical layout, and an error outside the mesh that the
+compilation still reaches, such as the source's spectral overlap with
+mesh-dependent paths.
