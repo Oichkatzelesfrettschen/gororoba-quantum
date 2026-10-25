@@ -316,9 +316,13 @@ enter chip modes 8, 9 and 13 (q0, a0, b0), all in the platform's `connected_inpu
 (8, 14, 9, 12, 13, 11, 10, 15) for (q0, q1, a0, a1, b0, b1, h0, h1) inside the window 8 to 15, which excludes
 mode 5 (21187 /s on the fresh read) and every mode above 100 dark counts per second, and which gives the
 closest `t_out` over the three rails among the windows that satisfy those rules. The request is `min_detected_photons`
-3, `mitigations: []`, `max_duration` 300 s, `sample_count`, and carries no `compilation_seed`, so
-`qd_platform.payload` sends its fixed 0 and the case draws no random seed. The input state holds one photon on each
-of the three source modes.
+3, `mitigations: []`, `max_duration` 300 s, `sample_count`. Each iteration carries its own `compilation_seed`, which
+`qd_platform.payload` sends per iteration: the six values are indices 0 to 5, in index order, of the ANU QRNG draw
+[`draw-2026-10-25T204252Z.json`](../evidence/anu_qrng/draw-2026-10-25T204252Z.json) (42862, 37522, 45230, 47441,
+29246, 17743 for +Z, -Z, +X, -X, +Y, -Y), registered in
+[`allocations.json`](../evidence/qrng_seeds/allocations.json) as `COMPILATION_SEEDS` of
+`scripts/qd_teleportation_rehearsal.py`. The meshes are new, so no reproduction seed applies, and validation requires
+exactly those six seeds. The input state holds one photon on each of the three source modes.
 
 **Budget.** The decision count follows `bernoulli_decision_count(alpha 0.01, beta 0.10, F*, B, eps_sys)` with
 F* = 0.86, B = 0.6937 and eps_sys = 0.02: 314 accepted outcomes. F* is the lowest pooled conditional fidelity of
@@ -347,8 +351,10 @@ and about 1.005 if the job bills the 5400 samples it returns. The primary 200-cr
 **Decision rule and falsifier.** With `F_hat` the pooled conditional fidelity over `n` accepted outcomes and
 `r = sqrt(ln(1/0.01)/(2n))`, the analysis (`--analyze RUN`) returns `beats-classical` when
 `F_hat - r - 0.02` exceeds the classical bound, `at-or-below-classical` when `F_hat + r` falls below it, and
-`inconclusive` otherwise. The falsifier is `F_hat + r < B`: the chip then teleports no better than a
-measure-and-prepare strategy at this conformance level. A `beats-classical` verdict establishes C1 for the
+`inconclusive` otherwise. An input whose samples all fail the acceptance rule keeps its rejection counts and reports
+no conditional fidelity; the pooled statistic covers the inputs with accepted events, and the verdict is
+`inconclusive`, because the rule pools all six inputs. The falsifier is `F_hat + r < B`: the chip then teleports no
+better than a measure-and-prepare strategy at this conformance level. A `beats-classical` verdict establishes C1 for the
 family. A fidelity below F* with a margin under the allowance, or a rejected-event mix far from the model (many
 herald, outside or pattern rejections), names the model term to revise before any further acquisition. The run also stops before submission unless
 a fresh `--plan` admits the request and its model pooled fidelity at the live figures is at least F* = 0.86.
@@ -358,16 +364,17 @@ cross-device claim and no C2 or C3.
 
 **Dry run.** The model fidelity at the live figures decides whether the platform admits the case now. The live read
 of 2026-10-25 19:04:53 UTC, retained in `platform-read/catalogue.json`, reports `available`, HOM 83.8 %, g2 16.7 %,
-Transmittance 0.05 % and 21187 /s on mode 5. At 19:28:31 UTC the live `--plan` refused ("Perceval estimates None
-shots for 5400 samples") with a model pooled fidelity of 0.635, below the classical bound; the record is
-`plan-refused.json`
-(sha256 `54bd50961680aca11aacf6646f53675ac2cfb68511764300d90b5be53ff6ec86`). The same request under the
-2026-10-24 15:35:30 UTC performance figures (`plan-anchor.json`, 19:28:17 UTC, sha256
-`8481d156bb70f417bb77219e17e2095061f8763a45df641138e5390043fbbf74`) is admitted: estimated 5,377,923 shots, credit
-ceiling 2.2, model pooled fidelity 0.868. Its job body, `job-body.json` (sha256
-`7da600158d0e6208e080b7c7ee0eda10cae65e14516ea0eec0c04904fb1dc99f`, `cases.json` sha256
-`0d4b1a469ea82ca0ac6498a6dc38fcbbdcee793f52cfffee297a8fd6c038b4d6`), has the digest without `process_id`
-`ab33a8c2264e476d895acb4287bf7158bb3da9c82714a837b16883a8b2e6b633`. The body does not depend on the performance
+Transmittance 0.05 % and 21187 /s on mode 5; a second read at 20:45:52 UTC returned the same performance figures and
+selects the same layout. At 20:47:10 UTC the live `--plan` refused ("Perceval estimates None shots for 5400
+samples") with a model pooled fidelity of 0.635, below the classical bound; the record is `plan-refused.json`
+(sha256 `c5fbd99089323d84a3a5fdf57145456a05c1c86edb743e02619783fdd5856f01`). `--plan` also retains a refusal and exits
+1, without writing `plan.json`, whenever the model pooled fidelity at the live figures falls below F*, even when the
+platform admits the request. The same request under the 2026-10-24 15:35:30 UTC performance figures
+(`plan-anchor.json`, 20:46:51 UTC, sha256 `95d5043b8a0a422beeb3902413fca593a8fdf27ab6031b5aede459bf1ca98c85`) is
+admitted: estimated 5,377,923 shots, credit ceiling 2.2, model pooled fidelity 0.868. Its job body, `job-body.json`
+(sha256 `aa3102c6cebb0580d4493c39c568797fccc18333e2f3832d5e5207450fe665f0`, `cases.json` sha256
+`ab75a32b06dee0073f476da4b42cc01ce62cbb098e156b35d5a8f33472f5a3e3`), has the digest without `process_id`
+`3db7e1a0d519732d03e174b7ff4e14b836f2b8e318274c9dd3ce71a324cc50f7`. The body does not depend on the performance
 figures, so a later live plan must reproduce that digest. The plan warns that three photons share one block at HOM
 88.8 %, below the 90 % rule of [strategy.md](../notes/quandela/strategy.md); the warning does not hold the case.
 Nothing was sent.

@@ -10,10 +10,10 @@
   "num_jobs_in_queue": 0,
   "num_running_qt_jobs": 0
  },
- "body_sha256": "0d92bdb4e0834192f3881c584e466e529648e5a2c42d2e33091f2c2cc9551bd4",
- "body_sha256_without_process_id": "ab33a8c2264e476d895acb4287bf7158bb3da9c82714a837b16883a8b2e6b633",
+ "body_sha256": "f0c4f5f4772317fc6f503b1a7216d672fdd1f2c5b158281aaccd5f92a4ae62d0",
+ "body_sha256_without_process_id": "3db7e1a0d519732d03e174b7ff4e14b836f2b8e318274c9dd3ce71a324cc50f7",
  "case": "job-00",
- "cases_sha256": "0d4b1a469ea82ca0ac6498a6dc38fcbbdcee793f52cfffee297a8fd6c038b4d6",
+ "cases_sha256": "ab75a32b06dee0073f476da4b42cc01ce62cbb098e156b35d5a8f33472f5a3e3",
  "credit_ceiling": 2.2,
  "estimated_credits": 2.2,
  "estimated_shots": 5377923,
@@ -120,7 +120,7 @@
   "g2 (%)": 1.1
  },
  "perfs_basis": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/platform-after/catalogue.json",
- "planned_utc": "2026-10-25T19:28:17+00:00",
+ "planned_utc": "2026-10-25T20:46:51+00:00",
  "platform": "qpu:belenos",
  "platform_at_plan": {
   "bookable": true,
@@ -159,7 +159,7 @@
     "availability": 83.07
    },
    "2026-10-25": {
-    "availability": 88.63
+    "availability": 88.44
    }
   },
   "status": "available",

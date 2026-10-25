@@ -22,6 +22,48 @@
    "value": 28807,
    "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
    "index": 0
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 42862,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 37522,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 45230,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 47441,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 29246,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "COMPILATION_SEEDS",
+   "value": 17743,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json",
+   "index": 5
   }
  ],
  "runtime": []

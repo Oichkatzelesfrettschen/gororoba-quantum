@@ -136,12 +136,57 @@ def test_request_is_byte_stable_and_validates() -> None:
     rehearsal.validate(manifest, circuit)
     if manifest["circuit"]["sha256"] != rehearsal.sha256_bytes((CASE / "circuit.json").read_bytes()):
         raise AssertionError("cases.json names another circuit.json")
-    if any("compilation_seed" in setting for setting in manifest["settings"]):
-        raise AssertionError("a setting names a compilation seed")
+    if [setting.get("compilation_seed") for setting in manifest["settings"]] != list(rehearsal.COMPILATION_SEEDS):
+        raise AssertionError("the settings do not carry exactly the registered compilation seeds")
     if manifest["min_detected_photons"] != 3 or manifest["mitigations"] != [] or manifest["max_duration"] != 300:
         raise AssertionError("the request departs from the design's fields")
-    if sorted(rehearsal.rejections(manifest, circuit)) != ["herald photon", "perturbed unitary", "shifted source"]:
+    expected = ["herald photon", "perturbed unitary", "shifted source", "unregistered compilation seed"]
+    if sorted(rehearsal.rejections(manifest, circuit)) != expected:
         raise AssertionError("a mutated request validates")
+
+
+def test_compilation_seeds_are_the_registered_draw_values_in_index_order() -> None:
+    rows = [
+        row
+        for row in json.loads((ROOT / "docs/evidence/qrng_seeds/allocations.json").read_text(encoding="utf-8"))[
+            "allocations"
+        ]
+        if row["path"] == "scripts/qd_teleportation_rehearsal.py" and row["name"] == "COMPILATION_SEEDS"
+    ]
+    if len(rows) != 6 or len({row["record"] for row in rows}) != 1:
+        raise AssertionError(rows)
+    values = json.loads((ROOT / rows[0]["record"]).read_text(encoding="utf-8"))["values"]
+    if [row["index"] for row in rows] != list(range(6)) or [row["value"] for row in rows] != list(
+        rehearsal.COMPILATION_SEEDS
+    ):
+        raise AssertionError("the allocation rows differ from COMPILATION_SEEDS in index order")
+    if [values[row["index"]] for row in rows] != list(rehearsal.COMPILATION_SEEDS):
+        raise AssertionError("the draw record holds other values at those indices")
+    body = load("job-body.json")
+    manifest = load("cases.json")
+    for index, seed in enumerate(rehearsal.COMPILATION_SEEDS):
+        mutated = copy.deepcopy(manifest)
+        mutated["settings"][index]["compilation_seed"] = seed + 1
+        with pytest.raises(ValueError, match="compilation_seed"):
+            rehearsal.validate(mutated, load("circuit.json"))
+    rehearsal.validate_body(body, manifest)
+
+
+def test_layout_search_over_windows_equals_the_serial_search(monkeypatch: pytest.MonkeyPatch) -> None:
+    t_out, dark, _ = rehearsal.read_perfs(load("platform-read/catalogue.json"))
+    windows = [
+        rehearsal.window_layout((start, t_out, dark, rehearsal.CONNECTED))
+        for start in range(rehearsal.MODES - rehearsal.LOGICAL + 1)
+    ]
+    found = [key for key in windows if key is not None]
+    if not found or tuple(min(found)[3]) != rehearsal.LAYOUT:
+        raise AssertionError("the serial window search selects another layout")
+    if rehearsal.choose_layout(t_out, dark) != rehearsal.LAYOUT:
+        raise AssertionError("the pooled window search selects another layout")
+    monkeypatch.setattr(rehearsal, "window_layout", lambda item: None)
+    monkeypatch.setattr(rehearsal, "ordered_map", lambda function, items, min_items=1: [function(i) for i in items])
+    with pytest.raises(rehearsal.PlatformError, match="no window"):
+        rehearsal.choose_layout(t_out, dark)
 
 
 def test_budget_follows_the_retained_derivation() -> None:
@@ -319,3 +364,77 @@ def test_classification_reasons() -> None:
 def test_check_rederives_the_noise_model_and_accepts_the_retained_case() -> None:
     if rehearsal.check() != 0:
         raise AssertionError("check failed")
+
+
+def planned_model(pooled_fidelity: float) -> dict[str, Any]:
+    mean_score = rehearsal.retained_derivation()["mean_score"]
+    return {
+        "figures": {"hom": 0.8, "g2": 0.1, "transmittance": 0.001},
+        "pooled_fidelity": pooled_fidelity,
+        "mean_score": mean_score,
+        "inside_justified_range": pooled_fidelity >= mean_score,
+    }
+
+
+def test_plan_outside_the_justified_range_retains_a_refusal_and_writes_no_plan(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    admitted = {
+        "body": load("job-body.json"),
+        "platform_at_plan": {"status": "available"},
+        "credit_ceiling": 2.2,
+        "estimated_shots": 1,
+    }
+    monkeypatch.setattr(rehearsal, "plan", lambda *args, **kwargs: admitted)
+    (tmp_path / "cases.json").write_bytes((CASE / "cases.json").read_bytes())
+    job = rehearsal.JOBS["job-00"]
+    status = rehearsal.planned(job, tmp_path, "", planned_model(0.635))
+    refusal = json.loads((tmp_path / "plan-refused.json").read_text(encoding="utf-8"))
+    if status != 1 or (tmp_path / "plan.json").exists() or refusal["sent"] or "0.6350" not in refusal["refusal"]:
+        raise AssertionError((status, sorted(path.name for path in tmp_path.iterdir()), refusal))
+    if refusal["model"]["inside_justified_range"]:
+        raise AssertionError(refusal["model"])
+    status = rehearsal.planned(job, tmp_path, "", planned_model(0.868))
+    if status != 0 or not (tmp_path / "plan.json").is_file():
+        raise AssertionError("a plan inside the justified range is retained")
+
+
+@pytest.mark.parametrize("held", ["cases.json", "circuit.json", "results.json", "submission.json", "raw"])
+def test_simulate_refuses_a_directory_that_holds_a_request_or_result(tmp_path: Path, held: str) -> None:
+    if held == "raw":
+        (tmp_path / held).mkdir()
+        (tmp_path / held / "kept.json").write_text("{}", encoding="utf-8")
+    else:
+        (tmp_path / held).write_text("kept", encoding="utf-8")
+    with pytest.raises(ValueError, match=held):
+        rehearsal.simulate(tmp_path)
+    if sorted(path.name for path in tmp_path.iterdir()) != [held]:
+        raise AssertionError(sorted(path.name for path in tmp_path.iterdir()))
+
+
+def test_analysis_of_an_input_without_an_accepted_event_is_inconclusive() -> None:
+    cells = {label: {event("1100", correct_raw(label, "1100")): 300} for label in LABELS}
+    cells["+Z"] = {event("1010", 0): 900}
+    manifest, results = manifest_and_results(cells)
+    record = rehearsal.analyze_results(manifest, results, manifest["frames"])
+    silent = record["inputs"]["+Z"]
+    if silent["accepted"] != 0 or silent["rejected"]["pattern"] != 900 or silent["conditional_fidelity"] is not None:
+        raise AssertionError(silent)
+    if "no accepted event" not in silent["conditional_fidelity_reason"] or record["inputs_without_accepted"] != ["+Z"]:
+        raise AssertionError(record["inputs_without_accepted"])
+    pooled = record["pooled"]
+    radius = math.sqrt(math.log(100) / (2 * 1500))
+    if pooled["accepted"] != 1500 or pooled["inputs_pooled"] != 5 or abs(pooled["fidelity"] - 1.0) > 1e-12:
+        raise AssertionError(pooled)
+    if abs(pooled["radius"] - radius) > 1e-12 or record["verdict"] != "inconclusive":
+        raise AssertionError((pooled, record["verdict"]))
+    if record["success_rate_per_reported_shot"]["+Z"] != 0.0 or record["inputs"]["-Z"]["conditional_fidelity"] != 1.0:
+        raise AssertionError(record["success_rate_per_reported_shot"])
+    empty = {label: {event("1010", 0): 900} for label in LABELS}
+    manifest, results = manifest_and_results(empty)
+    record = rehearsal.analyze_results(manifest, results, manifest["frames"])
+    pooled = record["pooled"]
+    if pooled["fidelity"] is not None or pooled["lower_bound"] is not None or record["margin"] is not None:
+        raise AssertionError(pooled)
+    if record["verdict"] != "inconclusive" or len(record["inputs_without_accepted"]) != 6:
+        raise AssertionError(record["verdict"])

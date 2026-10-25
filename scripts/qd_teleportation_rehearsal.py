@@ -19,8 +19,10 @@ eight-mode unitary of every setting into the same nearest-neighbor Rx/phase mesh
 modes on chip modes: the three photons enter source-connected inputs, no mode of the window has a dark count above
 DARK_LIMIT, and the two rails of each qubit have the closest output transmissions the platform read offers.
 
-The case needs no random seed: the template iterations carry no compilation_seed, so qd_platform.payload sends its
-fixed default of 0, and the analysis draws nothing.
+Each template iteration carries its own compilation_seed, the service's per-iteration compilation randomness
+(qd_platform.payload sends settings[k]["compilation_seed"]). COMPILATION_SEEDS holds the six values, one ANU QRNG
+draw value per input in the order of the iterations, and validation requires exactly those seeds. The analysis draws
+nothing.
 
 --check rebuilds the case in memory, requires the retained bytes (cases.json within the shared check tolerance,
 circuit.json exactly), validates them through qd_platform.template_experiment and the closed form of every setting,
@@ -109,6 +111,9 @@ DARK_LIMIT = 100.0
 # Chip mode of each logical mode q0 q1 a0 a1 b0 b1 h0 h1, chosen by choose_layout from the retained platform read.
 WINDOW = 8
 LAYOUT = (8, 14, 9, 12, 13, 11, 10, 15)
+# The compilation_seed of each iteration (+Z, -Z, +X, -X, +Y, -Y): indices 0 to 5, in index order, of the ANU QRNG
+# draw docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json, registered in docs/evidence/qrng_seeds/allocations.json.
+COMPILATION_SEEDS = (42862, 37522, 45230, 47441, 29246, 17743)
 ANALYZER_MODES = (Q0, Q1, A0, A1)
 RECEIVER_MODES = (B0, B1)
 HERALD_MODES = (H0, H1)
@@ -334,6 +339,7 @@ def build_setting(item: tuple[int, dict[str, Any]]) -> tuple[dict[str, Any], dic
         **row,
         "ideal": ideal(row["label"]),
         "circuit_params": parameters,
+        "compilation_seed": COMPILATION_SEEDS[index],
         "column": [[float(value.real), float(value.imag)] for value in full[:, source]],
         "operator": encoded(full),
         "window_start": start,
@@ -440,6 +446,7 @@ def validate(manifest: dict[str, Any], circuit: dict[str, Any]) -> None:
         f"{owner}: a template op leaves the window {start}..{start + LOGICAL - 1}",
     )
     require(iteration_form(manifest) == "template", f"{owner}: the iterations do not form a template job")
+    require("compilation_seed" not in manifest, f"{owner}: the manifest names one compilation_seed for all iterations")
     rows = inputs()
     settings = manifest["settings"]
     require(len(settings) == len(rows), f"{owner}: {len(settings)} settings, not {len(rows)}")
@@ -458,7 +465,11 @@ def check_setting(item: tuple[str, int, dict[str, Any], dict[str, Any]]) -> None
     for key, value in row.items():
         require(setting.get(key) == value, f"{label}: {key} is {setting.get(key)!r}, not {value!r} at {index}")
     require(setting.get("observation_index") == index, f"{label}: observation_index is not {index}")
-    require("compilation_seed" not in setting, f"{label}: a setting names a compilation seed")
+    seed = setting.get("compilation_seed")
+    require(
+        seed == COMPILATION_SEEDS[index] and type(seed) is int,
+        f"{label}: compilation_seed is {seed!r}, not the registered {COMPILATION_SEEDS[index]} at {index}",
+    )
     full = operator_of(setting)
     require(full.shape == (MODES, MODES), f"{label}: the operator is {full.shape}, not {MODES}-mode")
     deviation = float(np.max(np.abs(full - chip_operator(logical_unitary(row["label"])))))
@@ -469,7 +480,10 @@ def check_setting(item: tuple[str, int, dict[str, Any], dict[str, Any]]) -> None
 
 
 def rejections(manifest: dict[str, Any], circuit: dict[str, Any]) -> list[str]:
-    """Mutated requests that validate must refuse: a perturbed unitary, an unconnected source, a photon on a herald."""
+    """Mutated requests that validate must refuse: a perturbed unitary, an unconnected source, a photon on a herald,
+    an unregistered compilation seed."""
+    reseeded = copy.deepcopy(manifest)
+    reseeded["settings"][2]["compilation_seed"] = 0
     perturbed = copy.deepcopy(manifest)
     parameter = sorted(perturbed["settings"][3]["circuit_params"])[0]
     perturbed["settings"][3]["circuit_params"][parameter] += 1e-3
@@ -485,6 +499,7 @@ def rejections(manifest: dict[str, Any], circuit: dict[str, Any]) -> list[str]:
             ("perturbed unitary", perturbed, circuit),
             ("shifted source", manifest, moved),
             ("herald photon", manifest, herald),
+            ("unregistered compilation seed", reseeded, circuit),
         ],
         min_items=1,
     )
@@ -515,6 +530,25 @@ def read_perfs(catalogue: Mapping[str, Any]) -> tuple[list[float], list[float], 
     return list(perfs["Transmission per mode (%)"]["t_out"]), list(perfs["Dark counts (detection/s)"]), figures
 
 
+def window_layout(item: tuple[int, Sequence[float], Sequence[float], Sequence[int]]) -> tuple[Any, ...] | None:
+    """The best (imbalance, inversions, start, order) key of the window starting at `start`, or None when a mode of
+    the window exceeds DARK_LIMIT or no assignment places the three sources on connected modes."""
+    start, t_out, dark, connected = item
+    slots = range(start, start + LOGICAL)
+    if any(dark[mode] > DARK_LIMIT for mode in slots):
+        return None
+    best: tuple[Any, ...] | None = None
+    for order in itertools.permutations(slots):
+        if not all(order[logical] in connected for logical in SOURCES):
+            continue
+        imbalance = sum(abs(math.log(t_out[order[rail]] / t_out[order[rail + 1]])) for rail in (Q0, A0, B0))
+        inversions = sum(order[i] > order[j] for i in range(LOGICAL) for j in range(i + 1, LOGICAL))
+        key = (round(imbalance, 2), inversions, start, order)
+        if best is None or key < best:
+            best = key
+    return best
+
+
 def choose_layout(
     t_out: Sequence[float], dark: Sequence[float], connected: Sequence[int] = CONNECTED
 ) -> tuple[int, ...]:
@@ -523,23 +557,17 @@ def choose_layout(
     The three source photons need connected inputs and every window mode a dark rate at or below DARK_LIMIT. The
     layout minimizes the summed log ratio of t_out over the rails (q0, q1), (a0, a1), (b0, b1), rounded to two
     decimals; fewer inversions of the logical order, then the lower window and the lexicographically smaller
-    assignment break ties."""
-    best: tuple[Any, ...] | None = None
-    for start in range(MODES - LOGICAL + 1):
-        slots = range(start, start + LOGICAL)
-        if any(dark[mode] > DARK_LIMIT for mode in slots):
-            continue
-        for order in itertools.permutations(slots):
-            if not all(order[logical] in connected for logical in SOURCES):
-                continue
-            imbalance = sum(abs(math.log(t_out[order[rail]] / t_out[order[rail + 1]])) for rail in (Q0, A0, B0))
-            inversions = sum(order[i] > order[j] for i in range(LOGICAL) for j in range(i + 1, LOGICAL))
-            key = (round(imbalance, 2), inversions, start, order)
-            if best is None or key < best:
-                best = key
-    if best is None:
+    assignment break ties. Each window is searched in its own process (window_layout) and the keys, which differ in
+    their start, reduce by minimum."""
+    keys = ordered_map(
+        window_layout,
+        [(start, list(t_out), list(dark), list(connected)) for start in range(MODES - LOGICAL + 1)],
+        min_items=1,
+    )
+    found = [key for key in keys if key is not None]
+    if not found:
         raise PlatformError("no window of eight modes meets the source and dark-count constraints")
-    return tuple(best[3])
+    return tuple(min(found)[3])
 
 
 # ---------------------------------------------------------------- noise simulation
@@ -825,9 +853,13 @@ def analyze_results(
     """Score a collected results.json against its manifest.
 
     Each result iteration binds to the setting whose circuit_params it carries. The joint histogram keyed (input,
-    basis, pattern, raw bit) goes through joint_teleportation_scores with the frozen frame table, which `table` must
-    equal when given. The service counts shots as samples and reports no optical trials, so the classical bound is the
-    larger of attempts_benchmark at the reported shots (result_fields.nb_shots_used) and at the modeled attempts."""
+    basis, pattern, raw bit) scores per input and pooled; joint_teleportation_scores, which needs a matching-basis
+    trial for each input, cross-checks the pooled value when every input has an accepted event. An input without one
+    keeps its rejection counts, reports a null conditional fidelity with a reason, and drops out of the pooled
+    statistic; the verdict is then inconclusive, because the preregistered rule pools all six inputs. The frame table
+    `table` must equal the propagated one when given. The service counts shots as samples and reports no optical
+    trials, so the classical bound is the larger of attempts_benchmark at the reported shots
+    (result_fields.nb_shots_used) and at the modeled attempts."""
     frame_table = frames()
     if table is not None and {k: tuple(v) for k, v in table.items()} != frame_table:
         raise ProtocolError(f"the frame table {dict(table)} differs from the propagated {frame_table}")
@@ -866,38 +898,52 @@ def analyze_results(
             "accepted_per_shot": total / shots,
             "rejected": rejected,
         }
-    scores = joint_teleportation_scores(histogram, frame_table, attempts)
-    conditional = scores["conditional_fidelity"]
     successes = dict.fromkeys(rows, 0)
     for (label, basis, pattern, raw), count in histogram.items():
         x, z = frame_table[pattern]
         successes[label] += count if decode_bit(basis, raw, x, z) == expected_bit(label) else 0
+    silent = [label for label, row in rows.items() if row["accepted"] == 0]
     total_accepted = sum(row["accepted"] for row in rows.values())
-    pooled_fidelity = float(scores["pooled_conditional_fidelity"])  # type: ignore[arg-type]
+    pooled_fidelity = sum(successes.values()) / total_accepted if total_accepted else None
+    if not silent:
+        scores = joint_teleportation_scores(histogram, frame_table, attempts)
+        shared = float(scores["pooled_conditional_fidelity"])  # type: ignore[arg-type]
+        require(
+            pooled_fidelity is not None and math.isclose(shared, pooled_fidelity, abs_tol=1e-12),
+            "the pooled fidelity differs from joint_teleportation_scores",
+        )
     preregistered = manifest["preregistered"]
-    radius = hoeffding_radius(preregistered["alpha"], total_accepted)
+    radius = hoeffding_radius(preregistered["alpha"], total_accepted) if total_accepted else None
     sample_counts = {label: row["samples"] for label, row in rows.items()}
     bound_reported = attempts_benchmark(attempts).certified
     bound_modeled = model_benchmark(preregistered["sample_probability"], sample_counts)
     bound = max(bound_reported, bound_modeled)
     allowance = preregistered["systematic_allowance"]
-    lower = pooled_fidelity - radius
-    if lower - allowance > bound:
+    lower = None if pooled_fidelity is None or radius is None else pooled_fidelity - radius
+    if silent or pooled_fidelity is None or radius is None or lower is None:
+        verdict = "inconclusive"
+    elif lower - allowance > bound:
         verdict = "beats-classical"
     elif pooled_fidelity + radius < bound:
         verdict = "at-or-below-classical"
     else:
         verdict = "inconclusive"
     for label, row in rows.items():
-        row["conditional_fidelity"] = conditional[label]  # type: ignore[index]
         row["correct"] = successes[label]
+        if row["accepted"]:
+            row["conditional_fidelity"] = successes[label] / row["accepted"]
+        else:
+            row["conditional_fidelity"] = None
+            row["conditional_fidelity_reason"] = "no accepted event among the input's samples"
     return {
         "schema": "qd-teleportation-analysis-v1",
         "claim_level": preregistered["claim_level"],
         "inputs": rows,
-        "success_rate_per_reported_shot": scores["success_rate"],
+        "inputs_without_accepted": silent,
+        "success_rate_per_reported_shot": {label: row["accepted_per_shot"] for label, row in rows.items()},
         "pooled": {
             "accepted": total_accepted,
+            "inputs_pooled": len(rows) - len(silent),
             "fidelity": pooled_fidelity,
             "alpha": preregistered["alpha"],
             "radius": radius,
@@ -911,8 +957,13 @@ def analyze_results(
             "classical_bound": bound,
         },
         "systematic_allowance": allowance,
-        "margin": lower - allowance - bound,
+        "margin": None if lower is None else lower - allowance - bound,
         "verdict": verdict,
+        "verdict_reason": (
+            "the preregistered rule pools all six inputs, and these have no accepted event: " + ", ".join(silent)
+            if silent
+            else "the preregistered decision rule over all six inputs"
+        ),
         "histogram": [[*key, count] for key, count in sorted(histogram.items())],
     }
 
@@ -1026,7 +1077,11 @@ def validate_body(body: dict[str, Any], manifest: dict[str, Any]) -> None:
     parameters = circuit.get_parameters()
     for index, (entry, setting) in enumerate(zip(iterations, manifest["settings"], strict=True)):
         require(entry.get("circuit_params") == setting["circuit_params"], f"job body entry {index}: params differ")
-        require(entry.get("compilation_seed") == 0, f"job body entry {index}: compilation_seed is not 0")
+        require(
+            entry.get("compilation_seed") == COMPILATION_SEEDS[index],
+            f"job body entry {index}: compilation_seed is {entry.get('compilation_seed')!r}, "
+            f"not {COMPILATION_SEEDS[index]}",
+        )
         require(
             entry.get("max_samples") == job.samples and entry.get("max_shots") == job.shots, f"entry {index} budgets"
         )
@@ -1100,7 +1155,8 @@ def dry_run(job: Job, anchor: bool) -> int:
     """Plan the written case read-only against the live platform and retain the plan without its body.
 
     The record carries the noise model's pooled fidelity at the live figures. A refusal by plan (the platform
-    status, the shot estimate above max_shots) is retained as plan-refused.json and exits 1. With `anchor` the plan
+    status, the shot estimate above max_shots) or a model pooled fidelity outside the justified range is retained as
+    plan-refused.json and exits 1. With `anchor` the plan
     runs under the anchor read's performance figures and lands in plan-anchor.json."""
     out = CASES / job.name
     suffix = "-anchor" if anchor else ""
@@ -1109,22 +1165,41 @@ def dry_run(job: Job, anchor: bool) -> int:
         return planned(job, out, suffix, model)
 
 
+def retain_refusal(job: Job, out: Path, suffix: str, model: dict[str, Any], reason: str) -> int:
+    """Retain plan<suffix>-refused.json, which carries the model and the reason, and return the exit status 1."""
+    write_json(
+        out / f"plan{suffix}-refused.json",
+        {
+            "refusal": reason,
+            "model": model,
+            "perfs_basis": ANCHOR_READ if suffix else "live processor record",
+            "planned_utc": datetime.now(UTC).isoformat(timespec="seconds"),
+            "sent": False,
+        },
+    )
+    print(f"{job.name}: plan refused: {reason}", file=sys.stderr)
+    return 1
+
+
 def planned(job: Job, out: Path, suffix: str, model: dict[str, Any]) -> int:
+    """Plan the case and retain plan<suffix>.json, or retain a refusal and return 1.
+
+    The platform's refusal (status, shot estimate above max_shots) and a model pooled fidelity below the justified
+    mean score both refuse: the preregistered budget assumes the pooled fidelity of the noise model, so a plan
+    at figures below it is no admission."""
     try:
         checked = plan(out, PLATFORM, job.credit_ceiling, job.expected_seconds, PER_JOB_CREDITS)
     except PlatformError as error:
-        write_json(
-            out / f"plan{suffix}-refused.json",
-            {
-                "refusal": str(error),
-                "model": model,
-                "perfs_basis": ANCHOR_READ if suffix else "live processor record",
-                "planned_utc": datetime.now(UTC).isoformat(timespec="seconds"),
-                "sent": False,
-            },
+        return retain_refusal(job, out, suffix, model, str(error))
+    if not model["inside_justified_range"]:
+        return retain_refusal(
+            job,
+            out,
+            suffix,
+            model,
+            f"model pooled fidelity {model['pooled_fidelity']:.4f} is below the justified mean score "
+            f"{model['mean_score']}",
         )
-        print(f"{job.name}: plan refused: {error}", file=sys.stderr)
-        return 1
     manifest = json.loads((out / "cases.json").read_text(encoding="utf-8"))
     validate_body(checked["body"], manifest)
     record = {key: value for key, value in checked.items() if key != "body"}
@@ -1164,8 +1239,14 @@ def write_justification() -> int:
 
 
 def simulate(out: Path) -> int:
-    """Stage the frozen request into OUT and write the local simulation's results.json beside it."""
+    """Stage the frozen request into OUT and write the local simulation's results.json beside it.
+
+    OUT holds no request or result file beforehand: a run directory that carries cases.json, circuit.json,
+    results.json, submission.json or raw/ belongs to a staged or collected run, and the simulation never overwrites
+    it."""
     job = JOBS["job-00"]
+    held = [name for name in (*STAGED, "results.json", "submission.json", "raw") if (out / name).exists()]
+    require(not held, f"{out} already holds {', '.join(held)}; --simulate writes into a directory without a run")
     manifest, circuit, _ = load_case(CASES / job.name)
     out.mkdir(parents=True, exist_ok=True)
     for name in STAGED:
@@ -1182,11 +1263,16 @@ def analyze(run: Path) -> int:
     record = analyze_results(manifest, results, manifest.get("frames"))
     write_json(run / "analysis.json", record)
     pooled_row = record["pooled"]
-    print(
-        f"pooled conditional fidelity {pooled_row['fidelity']:.4f} over {pooled_row['accepted']} accepted, lower bound "
-        f"{pooled_row['lower_bound']:.4f}, classical bound {record['benchmark']['classical_bound']:.4f}: "
-        f"{record['verdict']}"
-    )
+    if pooled_row["fidelity"] is None:
+        figures = "pooled conditional fidelity unavailable (no accepted event)"
+    else:
+        figures = (
+            f"pooled conditional fidelity {pooled_row['fidelity']:.4f} over {pooled_row['accepted']} accepted, lower "
+            f"bound {pooled_row['lower_bound']:.4f}"
+        )
+    print(f"{figures}, classical bound {record['benchmark']['classical_bound']:.4f}: {record['verdict']}")
+    if record["inputs_without_accepted"]:
+        print(f"inputs without an accepted event: {', '.join(record['inputs_without_accepted'])}", file=sys.stderr)
     return 0
 
 
