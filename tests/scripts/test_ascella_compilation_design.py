@@ -17,6 +17,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import ascella_coherence_request as request  # noqa: E402
 import ascella_compilation_design as design  # noqa: E402
+import ascella_compilation_reading as reading  # noqa: E402
 
 
 def test_compilation_job_anchors_seed_zero_and_draws_distinct_seeds() -> None:
@@ -83,3 +84,41 @@ def test_chosen_design_is_the_cheapest_that_meets_both_readings() -> None:
         raise AssertionError(f"chose {chosen}")
     with pytest.raises(ValueError, match="no design"):
         design.chosen_design([{**r, "r1_power": 0.0} for r in rows])
+
+
+def test_dispersion_ratio_compares_perturbed_and_anchor_scatter() -> None:
+    z = np.array([0.0, 0.0, 0.0, 0.0, 1.0, -1.0, 1.0, -1.0])
+    v = np.ones(8)
+    anchor = np.array([[True, True, True, False, False, False, False, False]])
+    # The anchors hold 0, 0, 0 and the perturbed rows 0, 1, -1, 1, -1, so the anchors' dispersion is zero.
+    with np.errstate(divide="ignore"):
+        if not np.isinf(reading.dispersion_ratio(z, v, anchor)[0]):
+            raise AssertionError("a constant anchor set must give an unbounded ratio")
+    swapped = np.array([[False, False, False, True, True, True, True, True]])
+    if reading.dispersion_ratio(z, v, swapped)[0] != 0.0:
+        raise AssertionError("constant perturbed rows must give a zero ratio")
+
+
+def test_subset_and_combined_keep_settings_and_configurations_aligned() -> None:
+    def run(job: str, configurations: list[int]) -> dict[str, Any]:
+        count = len(configurations)
+        kept = sorted(set(configurations))
+        return {
+            "record": {"manifest": {"job": job, "settings": [{"index": i} for i in range(count)]}},
+            "keys": [(f"{job}-{c}",) for c in kept],
+            "phases": np.arange(len(kept), dtype=float)[:, None] * np.ones((1, 3)),
+            "sources": np.zeros(len(kept), dtype=int),
+            "configuration": np.array(configurations),
+            "block": np.arange(count, dtype=float)[:, None] * np.ones((1, 4)),
+            "background": np.zeros((count, 4)),
+        }
+
+    a, c = run("job-00", [0, 0, 1]), run("job-02", [0, 1, 1, 2])
+    part = reading.subset(c, np.array([1, 3]))
+    if list(part["configuration"]) != [0, 1] or part["keys"] != [("job-02-1",), ("job-02-2",)]:
+        raise AssertionError("subset renumbers its configurations in first-appearance order")
+    both = reading.combined(a, part)
+    if list(both["configuration"]) != [0, 0, 1, 2, 3] or len(both["record"]["manifest"]["settings"]) != 5:
+        raise AssertionError("combined appends the second run's configurations after the first's")
+    if both["block"][3, 0] != 1.0 or both["block"][4, 0] != 3.0:
+        raise AssertionError("combined keeps each setting's counts at its position")

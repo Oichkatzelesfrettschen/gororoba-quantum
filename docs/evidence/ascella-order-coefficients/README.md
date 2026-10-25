@@ -115,8 +115,13 @@ sizes the perturbed-compilation case before acquisition: R1 power and the R3
 variance ratios of each planted family over the candidate designs, and the
 chosen design
 ([design](../../design/ascella-signed-coherence-conformance.md#perturbed-compilation-case-job-02)).
+[`compilation-reading.json`](compilation-reading.json), from
+[`scripts/ascella_compilation_reading.py`](../../../scripts/ascella_compilation_reading.py),
+holds that case's preregistered reading of job-02: the served-mesh count, R1's
+permutation test, R2's predictions of the 56 meshes by the job-00 fits and
+R3's refits on job-00 plus job-02 under the training-only folds.
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance, the compilation design within the fit replay bounds,
+certificate tolerance, the compilation design and reading within the fit replay bounds,
 and the physical-model, holdout, drive-linear and
 drive-response records their nominal family there and their fitted families
 within 1e-3 relative plus 1e-8 absolute, the rounding of optimizer endpoints

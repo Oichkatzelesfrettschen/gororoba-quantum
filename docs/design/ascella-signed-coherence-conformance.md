@@ -1286,3 +1286,34 @@ the closed-form operator and the body entries. It also refuses a perturbed
 unitary, a moved seed and a four-mode output width. The procedure is that of
 job-00: `--preflight RUN`, then the owner's approval of this case, then
 `--submit RUN APPROVAL`, then collection.
+
+**Outcome.** The owner approved the case on 2026-10-25, and job `788097fb`
+ran at 18:47 UTC
+([retained run](../../results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/README.md),
+[reading](../evidence/ascella-order-coefficients/compilation-reading.json)).
+It returned 524,288 samples in 186 s for 1.016384 credits. Ascella honors the
+seed: the 56 seeds served 56 distinct meshes, with heaters a median 1.58 rad
+from job-00's, and the 8 anchors served job-00's mesh.
+
+- **R1.** The X statistic moves with the served mesh. The perturbed iterations'
+  dispersion is 7.08 times the anchors' (permutation p 0.0049). The 56 meshes
+  read 0.865 to 0.915, a mean of 0.888 against the ideal 0.9045. The anchors
+  read a mean of 0.883, as job-00 read 0.881.
+- **R2.** The job-00 fits of the static, drive-linear and order-1 polynomial
+  families miss the new meshes: sums 1035, 223 and 235 against 94.5. The
+  order-1 harmonic family's sum of 13.9 carries a median prediction variance
+  254 times the counting variance, so it predicts nothing.
+- **R3.** Refitted with job-02, every family is identified on the training-only
+  folds (median variance ratios 0.23 to 0.86 on X) and keeps the left-out X
+  shortfall (sums 85 to 377 on 10). Three of four keep it on Y; the harmonic
+  family reads 20.9 there.
+
+Under the preset reading, R1's dependence with R3's identified shortfall
+raises the confidence that no per-heater error family of this document
+explains the configuration response: high, and a family that predicted the
+left-out configurations within the criterion would lower it. The heaters'
+state matters, but static offsets and responses to each heater's own
+returned phase cannot carry it. The untested candidates couple heaters:
+thermal crosstalk between neighbors, coupler-angle error and mesh-dependent
+loss. The 56 served meshes of one logical setting are the test set any such
+model must predict.
