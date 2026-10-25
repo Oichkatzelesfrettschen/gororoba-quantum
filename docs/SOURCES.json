@@ -1498,7 +1498,8 @@
       "doi": "10.1063/1.2823978",
       "venue": "Journal of Mathematical Physics 48(12), 123519 (2007)",
       "receipt_url": "https://api.crossref.org/works/10.1063/1.2823978"
-    }
+    },
+    "docs/notes/papers/2007.01808.md": {"status": "journal-venue-unverified"}
   },
   "web_sources": [
     {
@@ -2735,6 +2736,24 @@
       "retrieved_at_utc": "2026-10-24T21:35:57+00:00",
       "reading_scope": "Luhn, Nasri and Ramond 2007, Journal of Mathematical Physics 48(12), 123519: bibliographic identity",
       "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://www.erdosproblems.com/854",
+      "note": "docs/notes/papers/erdos-854-consecutive-coprime-gaps.md",
+      "sha256": "d540c46bff536508f0749281302183c4227bec975cf692f36f00a8600c77d940",
+      "bytes": 32706,
+      "retrieved_at_utc": "2026-10-25T00:07:02+00:00",
+      "reading_scope": "Bloom, Erdos Problem 854 page: problem statement, origin, open status as shown (last edited 04 November 2025), cited literature [Er85c,p.80], [Ob1], OEIS A389839 and A048670; the cited sources were not retrieved",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://www.erdosproblems.com/forum/thread/854",
+      "note": "docs/notes/papers/erdos-854-consecutive-coprime-gaps.md",
+      "sha256": "da865477ee8e922cf2790a05216cc8d3513eb06962f7ea502e6eab7134a9d591",
+      "bytes": 50337,
+      "retrieved_at_utc": "2026-10-25T00:07:02+00:00",
+      "reading_scope": "Erdos Problem 854 discussion thread: the problem statement and the visible comments of 13 Aug to 21 Nov 2025, read for status and literature remarks only",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -7948,6 +7967,41 @@
         "evidence_locator": "Conference talks page entry for Kivunge and the PDF title frame",
         "reading_scope": "Talks list entry and the absence of any license or copyright statement on the page and in the PDF text layer.",
         "evidence_summary": "The conference page lists the slides and states no license; the PDF carries no notice; no redistribution grant is stated."
+      }
+    },
+    {
+      "title": "On differences between consecutive numbers coprime to primorials",
+      "authors": [
+        "Ziller, Mario"
+      ],
+      "version": "v1, 2020-07-03",
+      "source_url": "https://arxiv.org/pdf/2007.01808v1",
+      "note": "docs/notes/papers/2007.01808.md",
+      "audited_at_utc": "2026-10-25T00:20:00+00:00",
+      "sha256": "99ef4a080645f90c494f7dcf7da22346bd4d4834f4a2e93391e69565f84bdba0",
+      "bytes": 149602,
+      "pages": 14,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/2007.01808v1.pdf",
+      "local_cache_path": "docs/local_source_cache/2007.01808v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "99ef4a080645f90c494f7dcf7da22346bd4d4834f4a2e93391e69565f84bdba0",
+        "verified_at_utc": "2026-10-25T00:20:00+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "evidence_url": "https://arxiv.org/abs/2007.01808v1",
+        "evidence_sha256": "1eafa8cdd218766baeb2567fc3b3b5171aebb1ed9b7c287b5efe216b6f82cb6b",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2007.01808v1.html",
+        "evidence_retrieved_at_utc": "2026-10-25T00:07:01+00:00",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "decision": "external_only",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
       }
     }
   ],

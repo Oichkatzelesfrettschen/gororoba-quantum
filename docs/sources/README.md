@@ -110,6 +110,8 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [ocathain-2012-nonaffine-hadamard](../notes/papers/ocathain-2012-nonaffine-hadamard.md) | O Cathain, Difference sets and doubly transitive actions on Hadamard matrices, J. Combin. Theory Ser. A 119, 1235 (2012) | none | medium | none |
 | [kivunge-2013-sign-matrices-2n-ons](../notes/papers/kivunge-2013-sign-matrices-2n-ons.md) | Kivunge, Sign matrices for frames of 2^n-ons under Smith-Conway and Cayley-Dickson multiplications (conference slides, 2013) | none | high | none |
 | [0709.1447](../notes/papers/0709.1447.md) | Luhn, Nasri and Ramond, Simple finite non-abelian flavor groups, J. Math. Phys. 48, 123519 (2007) | none | low | none |
+| [2007.01808](../notes/papers/2007.01808.md) | Ziller, On differences between consecutive numbers coprime to primorials (2020) | none | none | none |
+| [erdos-854-consecutive-coprime-gaps](../notes/papers/erdos-854-consecutive-coprime-gaps.md) | Bloom, Erdos Problem 854: missing even gaps between consecutive integers coprime to a primorial (web record) | none | none | none |
 | [1107.1375](../notes/papers/1107.1375.md) | Bales, Cayley-Dickson and Clifford algebras as twisted group algebras (2003; arXiv 2011) | none | medium | none |
 | [2103.12805](../notes/papers/2103.12805.md) | Flaut and Boboescu, A twisted group algebra structure for an algebra obtained by the Cayley-Dickson process (2021) | none | medium | none |
 | 0811.3208 | Roetteler, Quantum algorithms for highly non-linear Boolean functions (2008) | none | medium | none |

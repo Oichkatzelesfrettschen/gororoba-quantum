@@ -119,6 +119,8 @@ differs from it only in the `cd_core.py` digest.
 | [ocathain-2012-nonaffine-hadamard.md](notes/papers/ocathain-2012-nonaffine-hadamard.md) | O Cathain 2012 doubly transitive automorphism groups of Hadamard matrices: Ito's classification, Paley matrices and `PSL_2(q)`, skew difference sets (deposited text) |
 | [kivunge-2013-sign-matrices-2n-ons.md](notes/papers/kivunge-2013-sign-matrices-2n-ons.md) | Kivunge 2013 conference slides on sign matrices of the `2^n`-ons: Hadamard and skew Hadamard claims, Smith-Conway sign matrices equal to the `cd_core` transpose |
 | [0709.1447.md](notes/papers/0709.1447.md) | Luhn, Nasri and Ramond 2007 `PSL_2(7)`: presentation, classes, character table, subgroups and the Klein quartic |
+| [2007.01808.md](notes/papers/2007.01808.md) | Ziller 2020 differences between consecutive numbers coprime to primorials: the restricted-covering reduction, the table of missing differences for `k <= 44` and the Jacobsthal-function conjecture |
+| [erdos-854-consecutive-coprime-gaps.md](notes/papers/erdos-854-consecutive-coprime-gaps.md) | Erdos Problem 854 (Bloom's database): the smallest even integer missing from the gaps between consecutive integers coprime to a primorial, status at retrieval and cited literature |
 | [pmc-4957665-nonlinearity-measures.md](notes/papers/pmc-4957665-nonlinearity-measures.md) | nonlinearity measures for Boolean functions |
 | [2306.00874.md](notes/papers/2306.00874.md) | Maring et al. 2024 Quandela Ascella platform: source, chip, phase-voltage model and gate benchmarks |
 | [2310.15349.md](notes/papers/2310.15349.md) | Fyrillas et al. 2024 clear-box machine-learning characterization of a 12-mode photonic chip: imperfection model and amplitude fidelities (hosted, CC BY 4.0) |
@@ -152,6 +154,7 @@ differs from it only in the `cd_core.py` digest.
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
 | [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
+| [primorial-cover-defects.md](notes/topics/primorial-cover-defects.md) | missing primorial-wheel gaps 20, 32, 86, 88 as restricted covers: exhaustive defect certificates, capacity and LP bounds, singleton repair, slice Walsh Hamiltonians and the eight-CNOT parity network |
 | [c5-zero-divisor-code-falsification.md](notes/topics/c5-zero-divisor-code-falsification.md) | zero-divisor code, falsified thought experiment |
 | [cd-star-lattice-tower.md](notes/topics/cd-star-lattice-tower.md) | Tuna-17 as the Gaussian-integer star lattice; lifts to dimensions 3, 4, 8, 16, the Paley identification of their symmetry groups and the sedenion zero divisors |
 | [evidence/cd-star-lattice/README.md](evidence/cd-star-lattice/README.md) | exact star-lattice census bound to the Tuna-17 catalogue topology, with SL(2, q) and PGL(2, 7) certificates and a nauty replay |
@@ -196,6 +199,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/iqm-garnet-signed-kernel-probe.md](design/iqm-garnet-signed-kernel-probe.md) | signed sedenion kernel probe on IQM Garnet: odd dilation overlap, heralded active reset, prediction |
 | [design/iqm-garnet-kernel-cancellation-probe.md](design/iqm-garnet-kernel-cancellation-probe.md) | kernel cancellation probe on IQM Garnet: zero-divisor sign at 37 CZ, bright control, over-rotation trains, H1-H5 |
 | [design/iqm-garnet-idle-schedule-train-readout.md](design/iqm-garnet-idle-schedule-train-readout.md) | IQM Garnet idle schedule (ASAP or ALAP, from a pulsed qubit's relaxation beside an uncoupled identity train) and QB6/QB11 train over-rotation fitted with each qubit's own readout, H1-H2 |
+| [design/primorial-cover-defect-probes.md](design/primorial-cover-defect-probes.md) | primorial cover-defect circuits: Grover quotient, phase-gradient tomography with a zero-angle null arm, the gap-86 and gap-88 repair contrasts against the mutation test, the Kingston noise prediction and the hardware decision |
 | [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements; [principal-angle replay](notes/quandela/bdsc.md) |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
