@@ -360,7 +360,9 @@ def reference(h: float = 1.0, k: float = 1.0) -> dict[str, object]:
     grid = [
         {"delta": d, "gamma": g, "phase": p} for d in (0.0, 0.05, 0.15) for g in (0.0, 0.05) for p in (0.0, 0.2, 0.5)
     ]
-    confounds = ordered_map(confound_case, [(h, k, case["delta"], case["gamma"], case["phase"]) for case in grid])
+    cases = [(h, k, case["delta"], case["gamma"], case["phase"]) for case in grid]
+    # Each case runs five Nelder-Mead searches, so even an 18-case grid fills the pool.
+    confounds = ordered_map(confound_case, cases, min_items=1)
     if not any(row["uninformed_below_ground"] > 1e-3 for row in confounds):
         raise RuntimeError("no preparation error put L below L_g without information; the confound model is inert")
     if not any(row["uninformed_drop"] > 1e-3 and row["uninformed_below_ground"] < 1e-9 for row in confounds):
