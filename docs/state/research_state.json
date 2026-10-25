@@ -1241,6 +1241,13 @@
       "question": "Are qubit 143's two Ramsey lines a classical mixture fixed within a shot or an exchange-coupled two-level system, which alias cell holds their splitting, and does the herald perturb them?"
     },
     {
+      "id": "kingston-latency-recovery",
+      "provider": "ibm",
+      "run": "results/live/2026-10-25T193443.839527Z",
+      "family": "latency-recovery",
+      "question": "How much logical entanglement fidelity does a feed-forward correction of a bit-flip-coded Bell pair lose to the controller latency and to a 10 us idle, against a Pauli-frame correction at matched idles?"
+    },
+    {
       "id": "qi-tuna17-quaternion-order-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00",
@@ -9747,6 +9754,37 @@
       "depends_on": [
         "primorial-cover-defect-certificates"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    }
+,
+    {
+      "id": "kingston-latency-recovery-window-cost",
+      "statement": "On ibm_kingston (calibration 2026-10-25T12:18:10-07:00, layout 150, 151, 138, 152, 149, 153; one job of 34 dynamic PUBs at 16384 shots) a single conditional X recovers an injected X error on a bit-flip-coded Bell pair: F(ff_0) - null is 0.745 [0.699, 0.790] and F(ff_0) - F(unencoded) is 0.553 [0.507, 0.598]. The controller latency and the conditional cost no resolved fidelity beyond their idle: frame_0 - ff_0 reads 0.010 [-0.035, 0.055] and frame_l - ff_0 reads -0.004 [-0.049, 0.041]. A 10 us idle costs 0.217 [0.172, 0.262] with feed-forward and 0.223 [0.178, 0.268] with the frame, against 0.082 and 0.079 predicted from the calibrated T1 and T2; the two paths agree within -0.006 [-0.101, 0.088]. Descriptively, about 0.12 of that loss is a -0.81 rad rotation of the four-qubit block (near -13 kHz) and the rest a coherence decay with time constant 38 to 41 us against 65 to 67 us predicted.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One layout, one calibration and one job; Hoeffding intervals at alpha 0.05/7 per endpoint. The +-0.01 equivalence margins of latency_is_idle and window_slope are not reached, so equal cost is bounded, not shown. The phase and the decay time constants come from the summary expectations and were not preregistered beyond decay_not_phase; the detuning's source is undecided. A bit-flip code protects no phase.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T193443.839527Z/collect.json",
+          "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
+        },
+        {
+          "path": "results/live/2026-10-25T193443.839527Z/record.json",
+          "sha256": "8ae42c7cdd1f5d339b144b1e0b42f1b9471ba31b3b947c26d3fb5b2add58efe9"
+        }
+      ],
+      "documents": [
+        "results/live/LATENCY_RECOVERY_FINDINGS.md",
+        "docs/design/heron-latency-logical-recovery.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "kingston-latency-recovery"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     }

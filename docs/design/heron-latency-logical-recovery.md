@@ -6,7 +6,8 @@ Pauli-frame correction that applies the same syndrome in post-processing with
 no latency. It supplies the decay rate delta that the latency-constrained
 recovery model needs. That model rewards an intervention by exp(-delta T) for
 sojourn time T, and nothing in the repository measures delta on an encoded
-qubit. The design is a prospective case and authorizes no submission.
+qubit. The approved run ran on ibm_kingston on 2026-10-25; its result is in
+[LATENCY_RECOVERY_FINDINGS.md](../../results/live/LATENCY_RECOVERY_FINDINGS.md).
 
 ## Question and why hardware answers it
 
