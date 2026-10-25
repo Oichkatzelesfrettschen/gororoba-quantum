@@ -1,17 +1,17 @@
 # IQM Garnet measurement-sequence pinching
 
 This case tests whether a Garnet mid-circuit measurement acts as ideal pinching, the nonselective projective
-measurement in Z, on QB1, QB3, QB7 and QB14. The case directory is
+measurement in Z, on six pairwise uncoupled qubits. The case directory is
 [results/iqm/cases/measurement-sequence-pinching](../../results/iqm/cases/measurement-sequence-pinching/cases.json),
 built by `scripts/iqm_measurement_sequence.py build DIR [--calibration-dir DIR]`. The script's docstring states the
-preregistered decisions, and `prediction.json`, bound by digest into `cases.json`, holds the model the margins below
-come from.
+preregistered decisions, and `prediction.json`, bound by digest into `cases.json`, holds the planning values and the
+standard errors the margins below come from.
 
-calibration set: `be070414-7624-4943-ac7e-1e2678f05684` (created 2026-10-25T16:45:12Z, read 2026-10-25); QB3 reads e01 0.124 and e10 0.254 under it, so its readout-corrected endpoints carry about twice the standard error of the other three qubits
+calibration set: `be070414-7624-4943-ac7e-1e2678f05684` (created 2026-10-25T16:45:12Z, read 2026-10-25)
 
-The built case pins the set in `calibration/excerpt.json`, built from that live set. Garnet refuses a job pinned to a
-retired set, so the orchestrator rebuilds the case with `--calibration-dir` pointing at a directory holding the then
-live `set.json`, `metrics.json` and `dynamic-quantum-architecture.json` before submission.
+The built case pins that set in `calibration/excerpt.json`. Garnet refuses a job pinned to a retired set, so the
+orchestrator rebuilds the case with `--calibration-dir` pointing at a directory holding the then live `set.json`,
+`metrics.json` and `dynamic-quantum-architecture.json` before submission; the qubit selection reruns on that set.
 
 ## What it measures
 
@@ -28,10 +28,11 @@ N = 1, 2, 4, 8 and 16. Four arms run:
 | settle | 16 | `measure`, then `delay` of 2.0 us | 0.8914 | readout-tail control for the departure decision |
 
 The unitary rotations compose to one rotation of THETA, so the N = 16 contrast measure minus unitary is the
-measurement's own action, ideally 0.8612. The delay arm holds the elapsed time of the measure arm but dephases: idle
+measurement's own action, ideally 0.8612. The timing probe's 16 x 40 ns increment per layer
+(see "Circuits") shows Garnet's compiler kept the sixteen unitary-arm prx pulses separate rather than merging them,
+so the null still applies sixteen pulses. The delay arm holds the elapsed time of the measure arm but dephases: idle
 time acts as a partial Z measurement, so its P0 rises with N without any measurement. It therefore cannot serve as the
-null, and it quantifies how much of the measure arm's Zeno effect idle dephasing alone produces. Measurement-induced
-transitions lower the measure arm below its ideal-projective prediction.
+null; it quantifies how much of the measure arm's Zeno effect idle dephasing alone produces.
 
 ## Why a noise simulation cannot answer it
 
@@ -41,37 +42,56 @@ mock twin returns random bits. The question concerns the device's readout, so on
 
 ## Qubits
 
-QB1, QB3, QB7 and QB14 run the same arm in parallel in every circuit. The retained architecture lists no CZ locus
-among them (QB1: QB2, QB4; QB3: QB4, QB8; QB7: QB6, QB12; QB14: QB13, QB15, QB18, QB9), and the build refuses a
-calibration that lists one.
+The six qubits come from the live calibration set by one rule: the six of smallest e01 + e10 among those whose T1 is at
+least the set's median (37.96 us), taken in that order, skipping any that shares a cz coupler with one already taken.
+No qubit pair of the choice shares a coupler, and the build refuses a calibration that says otherwise. Each qubit
+runs the same arm in parallel in every circuit.
+
+| qubit | T1 (us) | T2 Ramsey (us) | e01 | e10 | e01 + e10 | prx error |
+|---|---|---|---|---|---|---|
+| QB5 | 45.8 | 9.3 | 0.0058 | 0.0306 | 0.0364 | 0.00102 |
+| QB7 | 41.8 | 7.8 | 0.0122 | 0.0392 | 0.0514 | 0.00545 |
+| QB11 | 47.8 | 12.2 | 0.0130 | 0.0252 | 0.0382 | 0.00113 |
+| QB14 | 44.9 | 7.0 | 0.0124 | 0.0124 | 0.0248 | 0.00066 |
+| QB17 | 46.3 | 14.1 | 0.0096 | 0.0162 | 0.0258 | 0.00094 |
+| QB19 | 59.1 | 7.9 | 0.0376 | 0.0380 | 0.0756 | 0.00092 |
+
+An earlier choice of QB1, QB3, QB7 and QB14 followed from `measure_012`, which the circuit API returns no outcomes
+for (see "Leakage readout"); QB3 reads e01 0.124 and e10 0.254 and would misfire active reset.
 
 ## Circuits
 
-The job holds 50 circuits.
+The job holds 57 circuits. Every circuit, `ro0` and `ro1` included, waits 2.0 us (a `delay`) before its final
+`measure`, the rule of the `SETTLE_CYCLES` comment in `scripts/qi_readout_ringdown_cases.py`: photons a preceding
+readout leaves in the resonator would otherwise bias the final assignment in the measure arm only, and `ro0` and
+`ro1` could not correct that. Relaxation over the wait is affine in z, so `ro0` and `ro1`, which wait as long, absorb it
+exactly.
 
 - **Zeno chains, 48.** For each N in (1, 2, 4, 8, 16) the measure group beside the delay group, and at N = 16 the
-  unitary and settle groups; each group is four signed circuits in the order +, -, -, +. Each step is `prx(sign*THETA/N, 0)` on
-  every qubit, then one joint `measure` with its own key (`m0`, `m1`, ...) in the measure arm, one joint `delay` in
-  the delay arm, or nothing in the unitary arm, and a final `measure` with key `f`. Outcomes are recorded and never
-  condition a gate.
-- **Readout calibration, 2.** `ro0` and `ro1` (a pi pulse) with `measure` on all four qubits. The pi pulse of `ro1`
-  carries its own over-rotation, which the correction absorbs into the readout scale.
+  unitary and settle groups; each group is four signed circuits in the order +, -, -, +. Each step is
+  `prx(sign*THETA/N, 0)` on every qubit, then one joint `measure` with its own key (`m0`, `m1`, ...) in the measure
+  and settle arms, one joint `delay` in the delay arm, or nothing in the unitary arm; the settle arm adds a 2.0 us
+  `delay` after its measure. Outcomes are recorded and never condition a gate.
+- **Readout and T1 series, 9.** `ro0` (the initialized state), `ro1` (`prx(pi)`, the t = 0 point of the series) and
+  seven T1 circuits `t1-004` to `t1-150`: `prx(pi)`, a `delay` of 4, 10, 20, 40, 60, 100 or 150 us, the pre-readout
+  delay, `measure`. The 100 and 150 us points extend the 0 to 60 us series of the request: with a T1 of 40 to 60 us the
+  asymptote is out of reach below 60 us, and the departure standard error is then 3 to 4 times larger (0.02 against
+  0.005 in `prediction.json`'s model) at a cost of 0.75 s of execution.
 
-**Idle operation.** The circuit-job body takes a native `delay` operation whose `duration` is in seconds, at least
-that long and rounded up to hardware granularity
+**Idle operation.** The circuit-job body takes a native `delay` operation whose `duration` is in seconds, at least that
+long and rounded up to hardware granularity
 ([operations table and Delay](../notes/iqm/docs/iqm-client/api/iqm.iqm_client.models.md); every Target lists `delay`,
-[os-4.7.md](../notes/iqm/os-4.7.md)). Garnet's dynamic quantum architecture lists no `delay` gate and the OpenAPI
-operation name is a free string, so acceptance on the QPU is unverified; the garnet:mock run settles it, and a
-rejection removes the delay arm and leaves the unitary null and the departure test unchanged.
+[os-4.7.md](../notes/iqm/os-4.7.md)). Garnet's dynamic quantum architecture lists no `delay` gate; garnet:mock
+accepted it, and a rejection by the QPU removes the delay arm and leaves the unitary null and the departure test
+unchanged.
 
-**Measure window.** The calibration's probe pulse lasts 364, 444, 556 and 420 ns on QB1, QB3, QB7 and QB14
-(`gates.measure.constant.QBn.duration`, set `9069c4ef`), and `acquisition_delay + integration_length` gives 1.024 us
-(465.5 ns + 556 ns on QB7, rounded up to the 4 ns granularity). Neither is the compiled window: a measure runs as a
+**Measure window and prx layer.** The calibration's probe pulse lasts 364 to 556 ns and `acquisition_delay +
+integration_length` 1.0 us on the earlier qubits; neither is the compiled window, because a measure runs as a
 ReadoutTrigger whose duration follows the acquisition
-([Measure_CustomWaveforms](../notes/iqm/docs/iqm-pulse/api/iqm.pulse.gates.measure.Measure_CustomWaveforms.md)).
-Five single-circuit mock jobs of 100 shots on the four qubits
-([case](../../results/iqm/cases/measurement-timing-probe/cases.json)) fix the compiled schedule. The compiler's
-estimate per shot, the job's `execution_runtime_estimate_seconds` less the fixed 1.6 s over 100 shots, was:
+([Measure_CustomWaveforms](../notes/iqm/docs/iqm-pulse/api/iqm.pulse.gates.measure.Measure_CustomWaveforms.md)). Five
+single-circuit mock jobs of 100 shots ([case](../../results/iqm/cases/measurement-timing-probe/cases.json)) fix the
+compiled schedule. The compiler's estimate per shot, the job's `execution_runtime_estimate_seconds` less the fixed 1.6 s
+over 100 shots, was:
 
 | circuit | job | qpu_execution per shot |
 |---|---|---|
@@ -82,54 +102,70 @@ estimate per shot, the job's `execution_runtime_estimate_seconds` less the fixed
 | delay of 1.024 us, N = 16 | `01a1747a-ab9e-77d1-bc48-4f93ad45b5a8` | 25.708 us |
 
 So a prx layer lasts (9.324 - 8.684)/16 = 40 ns, a mid-circuit measure (37.676 - 9.324)/16 = 1.772 us (N = 1 agrees:
-10.496 - 8.684 - 0.040 = 1.772), and the delay probe's 1.024 us comes back exactly. The delay arm therefore idles for
-1.772 us, which the compiled measure window equals, and the departure prediction and the delay model use 1.772 us and
-40 ns. These are compiler estimates of garnet:mock under its calibration set `f04fe114`, not measured durations; the
-analysis compares the QPU job's own estimate with the case's predicted schedule.
+10.496 - 8.684 - 0.040 = 1.772), and the delay probe's 1.024 us comes back exactly. The delay arm idles for 1.772 us
+and the models use 1.772 us and 40 ns. These are compiler estimates of garnet:mock under its calibration set
+`f04fe114`, not measured durations, and they need not carry to the QPU: its retained idle-schedule job
+(`01a1707f-6157-75dc-aca8-6f30e5f0280b`, 24 circuits, 3089 prx layers) estimated 204.76 us per shot against 332 us
+from the mock's numbers, a ratio of 0.62. The analysis therefore checks the QPU job's own estimate (see
+"Compiled-window check").
 
-**Elapsed time.** The delay arm matches the measure arm's elapsed time to the precision of the mock's compiler
-estimate.
+## Readout, T1 and initialization, measured in the job
 
-## Initialization
+One active-reset cycle without heralding initializes the qubits. Heralding is a job-level option, so it would cut
+every circuit's shots to the all-zeros fraction, and passive reset takes 316 us per shot against 37.5 us
+([timing pilot](iqm-garnet-timing-pilot.md)).
 
-The job runs one active-reset cycle without heralding. All-zeros heralding over four qubits discards about a
-quarter of the shots, and passive reset takes 316 us per shot against 37.5 us ([timing pilot](iqm-garnet-timing-pilot.md)).
-Rotations and pinching act linearly on the Bloch z, so an initialization excitation p scales the final z by
-(1 - 2p), the factor `ro0` and `ro1` measure; the readout correction removes it exactly. T1 relaxation toward |0> is
-the non-unital residue and enters at second order.
+`ro0` and `ro1` read z = +-(1 - 2 p) through the assignment channel and the wait, with p the initialization excitation
+after reset, so the correction (Zobs - o)/s with o and s from the pair returns the true z divided by (1 - 2 p). The
+T1 series then reads the corrected value (1 - 2 (1 - p) exp(-t/T1))/(1 - 2 p) at each delay t, which fixes T1 and p
+jointly (closed form in p at a given T1, a bounded search over T1). The analysis recomputes every prediction (the
+departure prediction, the settle prediction, the delay-arm model) at the fitted T1 and p. `prediction.json` keeps the
+planning values at the calibrated T1 and T2 and an assumed p of 0.068 (README, "Reset"), and says so.
+
+**p_init sensitivity.** The planning prediction for the N = 16 measure arm moves from 0.898 to 1.056 across p = 0,
+0.05, 0.10, 0.15 and 0.20 (per qubit in `prediction.json`), a spread of 0.116 to 0.146, or 17 to 28 departure standard
+errors, because the corrected z carries the T1 lift divided by (1 - 2 p). That exceeds the 0.3 standard error bound, so
+p is measured in the job; the T1 series does it without a heralded circuit, and its uncertainty (0.007 to 0.012 on p)
+propagates into the departure standard error.
 
 ## Shots, billing and max_credits
 
-- **Shots:** 2400 per circuit, one job (2700 would exceed the 2 s headroom below the ceiling once the settle arm is added).
-- **Per-shot schedule assumed:** 2.5709 ms summed over the 50 circuits. Each circuit costs the 37.5 us of an
-  unheralded active-reset shot, measured on QB1 by the reset and billing pilot ([timing pilot](iqm-garnet-timing-pilot.md)),
-  plus 40 ns per rotation layer and 1.772 us per mid-circuit measure or delay.
-- **Expected execution:** 6.170 s of shots plus the fixed 1.6 s per job gives 7.770 s, billed as 8 s, or 4.00
-  credits at 0.50 credits/s.
-- **max_credits:** 5.00 on `garnet` (10 billed seconds) and 0.00 on `garnet:mock`. The build refuses a plan that
-  leaves less than 2 s below the ceiling, because `collect` cancels a run within 1.0 s of it and runtimes ran up to
-  1.39 s above their estimates ([README, Cost](../notes/iqm/README.md#what-the-garnet-runs-measured)).
+- **Shots:** 3000 per circuit, one job. Raising them to 3380 would lower the standard errors by 6 % and leave 1.0 s
+  below the cancel threshold instead of 1.8 s, so they stay at 3000.
+- **Execution model:** over the seven retained active-reset Garnet QPU jobs (`01a16583-43fc-75e5-82b0-5b192921a4c5`,
+  `01a16630-b928-72d1-b66e-b7779c623df5`, `01a16631-2b7c-7668-a276-3341e9d17bdd`,
+  `01a167ac-58d4-74f0-96fe-9af62e1f1dfe`, `01a167ac-e6f3-711a-a9be-86bb8bfe89f9`,
+  `01a167ac-ec22-7645-b50d-74b793ed808d`, `01a1707f-6157-75dc-aca8-6f30e5f0280b`), execution seconds = compiled
+  schedule (the record's estimate less 1.6 s) + 0.141 s + 7.967 us per circuit-shot, with residuals of at most 0.162 s;
+  runtime exceeded execution by 0.04 to 0.411 s, and billing is `ceil(runtime)` with no fixed 1.6 s term.
+- **Prediction:** compiled schedule 5.068 s (the mock's numbers, 1.689 ms per shot over the 57 circuits), plus
+  0.141 s plus 57 x 3000 x 7.967 us = 1.362 s gives 6.571 s of execution; the worst-case runtime adds 0.17 s of fit
+  residual and 0.42 s of runtime over execution, 7.161 s, billed as 8 s, or 4.00 credits at 0.50 credits/s.
+- **max_credits:** 5.00 on `garnet` (10 billed seconds) and 0.00 on `garnet:mock`. `collect` cancels a run within 1.0 s
+  of that, at 9.0 s of runtime, so the worst case sits 1.84 s below the cancel threshold. The build refuses less than
+  1.0 s.
 
 ## Decision rule
 
-Per qubit, from the readout-corrected P0 pooled over the four signed circuits, with binomial standard errors
-propagated through the correction by the delta method:
+Per qubit, from the readout-corrected P0 pooled over the four signed circuits, with binomial standard errors of every
+circuit group propagated through the joint correction and T1 fit by the delta method:
 
 - the mutation test passes when the N = 16 contrast (measure minus unitary) exceeds 0.5 by at least 3 standard
   errors;
-- the device departs from ideal pinching when the measured N = 16 measure-arm P0 lies below the prediction of an ideal
-  projective measurement by at least 3 standard errors. The prediction (`prediction.json`) iterates the Bloch vector:
-  a rotation, an ideal pinch, then T1 relaxation toward |0> over the 40 ns rotation layer and the 1.772 us measure window, and
-  readout through the calibrated errors. T2 does not enter it, because the state is diagonal after every measurement.
-  Its inputs are each qubit's calibrated T1, the window, the rotation time, e01 and e10, and the assumed 6.8 %
-  initialization excitation.
+- the departure test compares the measured N = 16 measure-arm P0 with the ideal-projective prediction at the fitted T1
+  and p (a rotation with the prx depolarizing error, an ideal pinch, then T1 relaxation toward |0> over the rotation
+  layer and the measure window; T2 does not enter, because the state is diagonal after every measurement) and names
+  one outcome from z = (measured - predicted)/SE, the SE including the T1 and p fit: `departs_below` (z <= -3),
+  `exceeds_prediction` (z >= +3) or `consistent`;
+- a qubit whose ro0/ro1 readout scale lies below 0.5 makes no decision.
 
-Reported without a decision, as support for the departure decision: the settle arm's readout tail check (next
-section). Also reported without a decision: the delay arm's measured and modeled (T1 and T2) P0 per N with their difference, and the
-measured delay minus unitary difference at N = 16 against the model's; the per-N measure-arm deficit against the
-ideal; the fit of P0(N) = (1 + ((1 - 2 eps) cos(THETA/N))^N)/2 for eps per qubit (it ignores relaxation, so it
-absorbs T1 into eps); the transition rate between consecutive mid-circuit outcomes against sin(THETA/(2N))^2 (about
-0.008 at N = 16, below the 1 to 2 % readout error, so reported raw).
+Reported without a decision: the settle gap; the readout-history diagnostic (the N = 1 measure arm against the N = 1
+delay arm, both ideally 0.0302 with equal models, where only the measure arm has a measurement before the final one,
+so a difference of 3 standard errors or more reads as residual readout-history bias); the delay arm's measured and
+modeled (T1 and T2) P0 per N with their difference and the measured delay minus unitary difference at N = 16 against
+the model's; the per-N measure-arm deficit against the ideal; the fit of P0(N) = (1 + ((1 - 2 eps) cos(THETA/N))^N)/2 for
+eps per qubit and the same fit against the relaxed model; the transition rate between consecutive mid-circuit outcomes
+against sin(THETA/(2N))^2 (about 0.008 at N = 16, below the 1 to 4 % readout error, so reported raw).
 
 ## Readout tail control
 
@@ -145,33 +181,50 @@ repository's ring-down design). Its ideal P0 equals the measure arm's 0.8914.
 
 The settle arm relaxes for 16 x 2.0 us longer, which raises its P0 above the measure arm's on any device, so the
 comparison is model-adjusted. The analysis solves, per qubit, for the per-step z loss at which the Bloch model
-reproduces the measure arm's readout-corrected N = 16 P0, predicts the settle arm's P0 at that loss, and reports the
-settle arm's measured P0 minus that prediction with its standard error (`settle_n16.tail_gap`). When a qubit departs,
-a gap within 3 standard errors of zero is a match that excludes a readout tail as the cause; a gap at least 3
-standard errors above zero attributes part of the departure to the tail. The raw settle minus measure difference is
-reported beside it. The arm decides nothing.
+reproduces the measure arm's readout-corrected N = 16 P0, predicts the settle arm's P0 at that loss and the fitted
+T1 and p, and reports the settle arm's measured P0 minus that prediction with its standard error
+(`settle_n16.tail_gap`). When a qubit departs, a gap within 3 standard errors of zero is a match that excludes a
+readout tail as the cause; a gap at least 3 standard errors above zero attributes part of the departure to the tail.
+The raw settle minus measure difference is reported beside it. The arm decides nothing.
+
+## Compiled-window check
+
+The analysis compares the QPU job's compiled schedule (its `execution_runtime_estimate_seconds` less 1.6 s) with the
+case's predicted 1.689 ms per shot summed over the circuits, times 3000 shots (5.068 s), and reports the ratio. When
+they differ by more than 1 %, it solves the measure window from the QPU total, assuming the mock's per-circuit base and
+layer time, and recomputes every prediction at that window and the fitted T1 before any decision, reporting the
+planned and the recomputed values. A solved window outside a factor of four of 1.772 us means the assumption fails
+(the idle-schedule job above ran at 0.62 of the mock's model), and the planned window stays with the rejection
+reported; the per-circuit `runtime_estimates` artifact (`iqm_jobs.py collect` keeps it, with its sha256 in the
+analysis) then settles the base, layer and window separately.
 
 ## Predicted outcome
 
-Model values from the live set `be070414` (`prediction.json`). Measure-arm P0 at N = 1, 2, 4, 8, 16 is the departure
-prediction at N = 16; the delay arm uses T1 and T2; the unitary arm is the N = 16 mutation null.
+Planning values from the live set `be070414` at the calibrated T1 and T2 and p = 0.068 (`prediction.json`). The
+standard errors apply the run's estimator, the T1 and p fit included, to the model's expected counts at 3000 shots.
 
-| qubit | measure P0 (N = 1, 2, 4, 8, 16) | delay P0 (N = 1, 2, 4, 8, 16) | unitary P0 (N = 16) | settle P0 (N = 16) | contrast | contrast SE | departure SE | delay minus unitary |
+| qubit | measure P0 at N = 1, 2, 4, 8, 16 (the N = 16 value is the planning departure prediction) | delay P0 at N = 1, 2, 4, 8, 16 | unitary N = 16 | settle N = 16 | contrast | contrast SE | mutation z | departure SE |
 |---|---|---|---|---|---|---|---|---|
-| QB1 | 0.0920, 0.5503, 0.7152, 0.8494, 0.9337 | 0.0920, 0.1721, 0.2739, 0.4296, 0.6285 | 0.0538 | 0.9576 | 0.8801 | 0.0099 | 0.0072 | 0.5747 |
-| QB3 | 0.1016, 0.5557, 0.7215, 0.8554, 0.9382 | 0.1016, 0.2087, 0.3332, 0.5086, 0.7076 | 0.0616 | 0.9624 | 0.8767 | 0.0229 | 0.0153 | 0.6460 |
-| QB7 | 0.0713, 0.5386, 0.7013, 0.8357, 0.9223 | 0.0713, 0.1709, 0.2801, 0.4387, 0.6306 | 0.0560 | 0.9439 | 0.8663 | 0.0107 | 0.0075 | 0.5745 |
-| QB14 | 0.0685, 0.5370, 0.6994, 0.8337, 0.9206 | 0.0685, 0.1774, 0.2921, 0.4543, 0.6444 | 0.0580 | 0.9416 | 0.8625 | 0.0099 | 0.0074 | 0.5864 |
+| QB5 | 0.0713, 0.5401, 0.7064, 0.8486, 0.9486 | 0.0713, 0.1571, 0.2561, 0.4076, 0.6059 | 0.0596 | 0.9902 | 0.8891 | 0.0104 | 37.5 | 0.0051 |
+| QB7 | 0.0771, 0.5423, 0.7067, 0.8433, 0.9328 | 0.0771, 0.1786, 0.2913, 0.4545, 0.6509 | 0.0936 | 0.9802 | 0.8392 | 0.0106 | 32.0 | 0.0052 |
+| QB11 | 0.0697, 0.5391, 0.7050, 0.8466, 0.9460 | 0.0697, 0.1376, 0.2214, 0.3563, 0.5465 | 0.0562 | 0.9872 | 0.8900 | 0.0104 | 37.6 | 0.0054 |
+| QB14 | 0.0719, 0.5406, 0.7073, 0.8502, 0.9513 | 0.0719, 0.1815, 0.2981, 0.4653, 0.6661 | 0.0629 | 0.9927 | 0.8883 | 0.0101 | 38.5 | 0.0051 |
+| QB17 | 0.0708, 0.5398, 0.7061, 0.8483, 0.9484 | 0.0708, 0.1304, 0.2073, 0.3343, 0.5201 | 0.0531 | 0.9899 | 0.8954 | 0.0101 | 39.1 | 0.0052 |
+| QB19 | 0.0622, 0.5346, 0.6990, 0.8391, 0.9374 | 0.0622, 0.1610, 0.2665, 0.4216, 0.6153 | 0.0610 | 0.9754 | 0.8765 | 0.0112 | 33.7 | 0.0069 |
 
-The model device passes the mutation test by 16.5 (QB3, whose readout errors double its standard errors) to 40.7
-standard errors. Dephasing over 16 steps of 1.81 us against T2 of 7.0 to 9.9 us lifts the delay arm to 0.63 to 0.71:
-idle dephasing alone produces about 0.57 to 0.65 of the 0.86 Zeno rise, which is why the delay arm is a control and
-the unitary arm the null. T1 lifts the measure arm 0.029 to 0.047 above its ideal 0.8914, and the departure test
-compares the run with that raised prediction, so a real transition rate is not hidden by relaxation.
+The model device passes the mutation test by 32 to 39 standard errors. The fitted T1 carries 1.1 to 2.3 us of
+standard error (2 to 4 %) and p 0.007 to 0.012. T1 and the divided-by-(1 - 2 p) correction lift the measure arm 0.04 to
+0.06 above its ideal 0.8914, so the departure test needs the fitted values; a calibrated T1 alone would put the
+lift at 5 to 6 departure standard errors. Dephasing over 16 steps of 1.81 us against T2 of 7.0 to 14.1 us lifts the
+delay arm to 0.52 to 0.67: idle dephasing alone produces 0.47 to 0.60 of the 0.86 Zeno rise, which is why the delay arm
+is a control and the unitary arm the null.
 
-The QPU job's `analyze` output carries the compiled-schedule check: the job's estimated qpu_execution (estimate less
-1.6 s) against the case's predicted 1.1301 ms per shot summed over the circuits, times 2400 shots (2.712 s), and their
-ratio.
+**Cross-check.** Every arm and N of every qubit was run through an independent Aer density-matrix simulation built on
+`scripts/iqm_sim.py`'s calibration noise model (prx depolarizing error per qubit) with thermal relaxation on every
+wait (`iqm_signed_probe.relaxation`), the pinch as a Kraus channel and the live set's T1 and T2. Against the Bloch model
+with the prx error, the largest gap is 1e-12 in P0. Against the model without it, as first written, the gap reached
+0.024 in P0 on QB7's measure arm (4.6 departure standard errors) and 0.037 on its unitary arm (7 standard errors): the
+Bloch model omitted the per-prx depolarizing error, which is now an input (`prx_p`) of every table.
 
 ## Leakage readout
 
@@ -186,8 +239,12 @@ this case carries no leakage circuits and no P(2) readout.
 
 ## Evidence
 
-- Failed mock job of the earlier 54-circuit form of this case:
+- Failed mock job of the first, 54-circuit form of this case:
   [run](../../results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching/results.json).
+- Mock run of the second, 50-circuit form (job 01a17484):
+  [run](../../results/iqm/runs/2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching/results.json) and
+  [its analysis](../../results/iqm/measurement_sequence_pinching_mock_analysis.json), produced by an earlier revision of
+  the script; the circuits it ran differ from this case's, so the current script cannot replay it.
 - Timing probe case and its five mock runs:
   [case](../../results/iqm/cases/measurement-timing-probe/cases.json), runs
   `results/iqm/runs/2026-10-25T1912*Z-garnet_mock-measurement-timing-probe-*`.
@@ -198,10 +255,9 @@ this case carries no leakage circuits and no P(2) readout.
 ## Sequence
 
 1. Rebuild the case against the live calibration set and run `check`.
-2. Run the job on `garnet:mock` at 0.00 credits: it settles whether the mock accepts `delay` and
-   returns the runtime estimate. Mock outcomes never enter the analysis.
-3. The five timing-probe mock jobs above are retained; rebuilt jobs of the case keep the compiler's
-   `runtime_estimates` artifact (`iqm_jobs.py collect`) for the comparison.
-4. Approval of this written case, then `submit` on `garnet` with `--approved-cases-sha256` and `--max-credits 5.0`,
+2. Run the job on `garnet:mock` at 0.00 credits: it settles whether the mock accepts the circuits and returns the
+   runtime estimate and, through `collect`, the `runtime_estimates` artifact. Mock outcomes never enter the decisions;
+   `analyze --mock` exercises the pipeline on them.
+3. Approval of this written case, then `submit` on `garnet` with `--approved-cases-sha256` and `--max-credits 5.0`,
    and `collect` right after.
-5. `analyze RUN_DIR --out FILE` writes the decisions.
+4. `analyze RUN_DIR --out FILE` writes the decisions.

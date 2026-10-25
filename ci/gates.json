@@ -3774,7 +3774,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py --self-test",
    "name": "core-690",
-   "seconds": 1.0,
+   "seconds": 7.0,
    "tier": "pr"
   },
   {
@@ -3782,7 +3782,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py check results/iqm/cases/measurement-sequence-pinching",
    "name": "core-691",
-   "seconds": 1.0,
+   "seconds": 2.0,
    "tier": "pr"
   },
   {

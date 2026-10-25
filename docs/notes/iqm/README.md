@@ -265,6 +265,15 @@ Emerald 0.75, Garnet 0.50, Sirius 0.30 credits/s. A one-hour timeslot costs
 credits of this account buy 40 s on Emerald, 60 s on Garnet or 100 s on
 Sirius, and expire 2026-11-01.
 
+Execution time of an active-reset Garnet job follows the compiled schedule. Over the seven retained active-reset
+QPU jobs (`01a16583-43fc-75e5-82b0-5b192921a4c5`, `01a16630-b928-72d1-b66e-b7779c623df5`,
+`01a16631-2b7c-7668-a276-3341e9d17bdd`, `01a167ac-58d4-74f0-96fe-9af62e1f1dfe`,
+`01a167ac-e6f3-711a-a9be-86bb8bfe89f9`, `01a167ac-ec22-7645-b50d-74b793ed808d` and
+`01a1707f-6157-75dc-aca8-6f30e5f0280b`), `execution_seconds` = the record's `execution_runtime_estimate_seconds`
+less 1.6 s + 0.141 s + 7.967 us per circuit-shot, with residuals of at most 0.162 s; `runtime_seconds` exceeded
+`execution_seconds` by 0.04 to 0.411 s, and `billed_seconds` is `ceil(runtime_seconds)` with no fixed 1.6 s term
+(`scripts/iqm_measurement_sequence.py`, `EXECUTION_*`, checks the fit against the retained records).
+
 The [read-only API audit](../../evidence/provider-api-audit/README.md) refreshes those rates and balances
 on 22 October 2026. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
 sum upward separately for each job. The balance therefore buys billed runtime, not pure pulse execution.
@@ -438,6 +447,13 @@ Facts a Garnet case design starts from, each with the record that carries it:
   and the calibrated T1 (apparent T1 a median 0.53 of calibrated), so a
   prediction that depends on idle length carries that gap as a stated
   uncertainty. A retained case keeps the ALAP prediction its approval covered.
+  The 16 ns per prx behind that apparent-T1 ratio of 0.53 conflicts with the
+  mock estimator's 40 ns per layer (the
+  [timing probe](../../design/iqm-garnet-measurement-sequence-pinching.md#circuits))
+  and with a back-solve of the retained idle-schedule QPU job, whose estimate
+  of 204.76 us per shot fits 32.5 ns per layer at a 4.34 us per-circuit base,
+  so the ratio is unreliable; the claim `iqm-garnet-idle-schedule` itself is
+  unchanged.
 - **Per-qubit over-rotation.** Fitted with its own readout pair, QB11's prx
   over-rotates by -0.30 +- 0.06 % and QB6's by -0.18 +- 0.07 %; the +2.7 %
   QB11 attribution of the signed null re-test is excluded. Driving all 20
