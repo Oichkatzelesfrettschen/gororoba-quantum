@@ -22,7 +22,8 @@ docs/design/ascella-signed-coherence-conformance.md#perturbed-compilation-case-j
 The served meshes come from each iteration's computed_circuit; iterations that return one mesh form one
 configuration, and the record states how many distinct new meshes the 56 seeds realized. R2 and R3 read only
 those (new_meshes): a seed that repeats an anchor's or a job-00 configuration's mesh adds no compilation. A
-single distinct mesh reads as "seed ignored" and R1 to R3 decide nothing.
+run whose nonzero seeds served no new mesh reads as "seed ignored" and R1 to R3 decide nothing; one new mesh is
+a collapsed compilation that the readings still compare with the anchors.
 
 Usage:
   "$PYTHON" scripts/ascella_compilation_reading.py JOB_00 JOB_02 OUT [--check]
@@ -116,6 +117,13 @@ def new_meshes(a: dict[str, Any], c: dict[str, Any], anchor: np.ndarray) -> set[
         for m in {int(m) for m in c["configuration"][~anchor]} - anchor_meshes
         if not any(np.array_equal(c["phases"][m], phases) for phases in a["phases"])
     }
+
+
+def served_reading(count: int) -> str:
+    """What the nonzero seeds did to the compilation, from the number of new meshes they served."""
+    if count == 0:
+        return "seed ignored"
+    return "seeds served one new mesh" if count == 1 else "seeds served distinct meshes"
 
 
 def with_family_basis(data: dict[str, Any], kind: str | None, order: int) -> dict[str, Any]:
@@ -238,10 +246,9 @@ def build(a_dir: Path, c_dir: Path) -> dict[str, Any]:
         },
         "alpha": ALPHA,
     }
-    if len(perturbed_meshes) <= 1:
-        record["reading"] = "seed ignored"
+    record["reading"] = served_reading(len(perturbed_meshes))
+    if not perturbed_meshes:
         return record
-    record["reading"] = "seeds served distinct meshes"
     record["r1"] = r1(c)
     planted = ordered_map(design.fit, [(*family, a) for family in design.FAMILIES], min_items=1)
     perturbed = subset(c, np.flatnonzero([int(m) in perturbed_meshes for m in c["configuration"]]))

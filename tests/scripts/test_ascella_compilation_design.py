@@ -136,3 +136,9 @@ def test_new_meshes_drop_seeds_that_repeat_an_anchor_or_job_00_mesh() -> None:
     anchor = np.array([True, True, False, False, False, False, False])
     if reading.new_meshes(a, c, anchor) != {3, 4}:
         raise AssertionError("a seed repeating an anchor or job-00 mesh entered R2 and R3")
+
+
+def test_one_new_mesh_is_a_collapsed_compilation_not_an_ignored_seed() -> None:
+    readings = [reading.served_reading(count) for count in (0, 1, 56)]
+    if readings != ["seed ignored", "seeds served one new mesh", "seeds served distinct meshes"]:
+        raise AssertionError(f"served readings {readings}")
