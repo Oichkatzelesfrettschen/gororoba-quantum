@@ -397,6 +397,8 @@ bytes stay as approved, so a charged resubmission of them refuses and a rerun
 goes through a new case. The first case is the
 [Garnet timing pilot](../../design/iqm-garnet-timing-pilot.md), which prices
 later cases from measured billing.
+The [measurement-sequence pinching case](../../design/iqm-garnet-measurement-sequence-pinching.md)
+tests mid-circuit measurement against ideal pinching on four uncoupled qubits.
 
 ## What the Garnet runs measured
 
