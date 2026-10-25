@@ -110,6 +110,37 @@ def test_a_nested_global_declaration_reaches_module_scope() -> None:
         raise AssertionError("replacing the module-level integer_index left the closure unchanged")
 
 
+def test_a_lambda_rooted_comprehension_loads_its_first_iterable_from_module_scope() -> None:
+    # The comprehension target is the comprehension's own name, so the first iterable still loads the module name.
+    lambda_root = (
+        FIXTURE.replace(
+            "        value = integer_index(index)\n",
+            "        value = (lambda: [convert(index) for convert in convert])()[0]\n",
+            1,
+        )
+        + "\n\nconvert = [integer_index]\n"
+    )
+    if "convert = [integer_index]" not in closure(lambda_root):
+        raise AssertionError("a lambda-rooted comprehension hid the module-level convert from the closure")
+    replaced = lambda_root.replace("convert = [integer_index]", "convert = [lambda value: 0]", 1)
+    if closure(replaced) == closure(lambda_root):
+        raise AssertionError("replacing the module-level convert left the closure unchanged")
+
+
+def test_a_global_declaration_in_a_function_nested_class_reaches_module_scope() -> None:
+    nested = FIXTURE.replace(
+        "    try:\n        value = integer_index(index)\n",
+        "    integer_index = None\n\n    class Convert:\n        global integer_index\n"
+        "        value = integer_index(index)\n\n    try:\n        value = Convert.value\n",
+        1,
+    )
+    if nested == FIXTURE or "import index as integer_index" not in closure(nested):
+        raise AssertionError("a class-scope global declaration hid the module-level integer_index from the closure")
+    replaced = nested.replace("from operator import index as integer_index", "integer_index = lambda value: 0", 1)
+    if closure(replaced) == closure(nested):
+        raise AssertionError("replacing the module-level integer_index left the closure unchanged")
+
+
 def test_semantic_mutations_change_raw_tree_without_target_translation() -> None:
     source = source_ast.SOURCE.read_text(encoding="utf-8")
     original = source_ast.raw_term(source_ast.function_node(source))

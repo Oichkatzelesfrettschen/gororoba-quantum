@@ -3400,7 +3400,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
+   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
    "name": "sources-410",
    "seconds": 0.1,
    "tier": "pr"

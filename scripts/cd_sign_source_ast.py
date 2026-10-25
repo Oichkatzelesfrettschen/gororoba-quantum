@@ -81,6 +81,11 @@ def _module_scope(node: ast.AST) -> list[ast.AST]:
     """node and every descendant that executes in module scope: a def or class binds its name there, its body runs
     in its own scope."""
     found = [node]
+    if isinstance(node, COMPREHENSIONS):
+        # A comprehension's targets are its own; its first iterable and any := target act in the enclosing scope.
+        found.extend(_module_scope(node.generators[0].iter))
+        found.extend(item.target for item in ast.walk(node) if isinstance(item, ast.NamedExpr))
+        return found
     if isinstance(node, SCOPES):
         # Decorators, defaults, base classes and keywords evaluate where the definition runs, not in its body.
         outer: list[ast.AST] = list(getattr(node, "decorator_list", []))
@@ -92,14 +97,7 @@ def _module_scope(node: ast.AST) -> list[ast.AST]:
             found.extend(_module_scope(item))
         return found
     for child in ast.iter_child_nodes(node):
-        if isinstance(child, SCOPES):
-            found.extend(_module_scope(child))
-        elif isinstance(child, COMPREHENSIONS):
-            # A comprehension's targets are its own; its first iterable and any := target act in the enclosing scope.
-            found.extend(_module_scope(child.generators[0].iter))
-            found.extend(item.target for item in ast.walk(child) if isinstance(item, ast.NamedExpr))
-        else:
-            found.extend(_module_scope(child))
+        found.extend(_module_scope(child))
     return found
 
 
@@ -167,6 +165,19 @@ def _free_names(node: ast.AST, local: frozenset[str] = frozenset()) -> set[str]:
         }
         inner = (local - declared) | _locals(node)
         return found.union(*(_free_names(item, inner) for item in body))
+    if isinstance(node, ast.ClassDef):
+        outer = [*node.decorator_list, *node.bases, *(keyword.value for keyword in node.keywords)]
+        found = set().union(*(_free_names(item, local) for item in outer))
+        # A global declaration in a class body reaches module scope even where an enclosing function binds the name.
+        # Class-body bindings stay free, which can only add statements to the closure.
+        declared = {
+            name
+            for item in node.body
+            for sub in _module_scope(item)
+            if isinstance(sub, ast.Global)
+            for name in sub.names
+        }
+        return found.union(*(_free_names(item, local - declared) for item in node.body))
     if isinstance(node, ast.Name):
         return {node.id} if isinstance(node.ctx, ast.Load) and node.id not in local else set()
     return set().union(*(_free_names(child, local) for child in ast.iter_child_nodes(node)))
