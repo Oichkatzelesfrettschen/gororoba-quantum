@@ -6,6 +6,12 @@ SDK (<https://github.com/HectorNaaa/Planck-QSaaS>, SDK under `sdk/python`).
 The read-only probe of 2026-10-24 found two facts that bound its use: the
 stored key is rejected, and the platform's simulator returns random bits.
 
+The owner's account was deleted on 2026-10-25 through the settings page's
+Delete Account action (`deleteUserAccount` in `app/qsaas/settings/actions.ts`).
+The key file under `~/.config/planck/` is removed and the `planck-stack`
+package is uninstalled; the PKGBUILD and the lock below remain so a
+re-audit can rebuild the environment.
+
 ## Environment and credential
 
 `planck-sdk` is not on PyPI (404), contrary to its README, so the lock
@@ -81,7 +87,7 @@ sent as `X-API-Key`. The SDK and server allow one request every 3 s.
 ## Use in this repository
 
 No Planck result enters analysis: a backend that ignores the submitted gates
-measures nothing about the circuit. The account stays configured so a later
-source revision can be re-audited against this one; a re-audit that finds a
-real simulator or device path, and a key the API accepts, is the condition
-for any case.
+measures nothing about the circuit. A later source revision can be re-audited
+against this one from the public repository; a re-audit that finds a real
+simulator or device path and a durable key store is the condition for a new
+account and any case.
