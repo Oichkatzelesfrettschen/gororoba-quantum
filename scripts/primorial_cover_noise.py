@@ -76,8 +76,16 @@ Z_SCORE = 3.0
 IDENTIFY_RADIUS = 1.0 / 16.0
 # Two-sided z for all seven coefficients of one cost at family-wise level 0.01 (Bonferroni).
 SIMULTANEOUS_Z = statistics.NormalDist().inv_cdf(1.0 - 0.01 / (2 * 7))
-# Conditional phases per CZ for the coherent sensitivity scenario, in rad.
-CZ_PHASES = (0.02, 0.05, 0.1)
+# Coherent sensitivity scenarios: a conditional phase (rad) after every CZ, and a fractional
+# amplitude error eta on every sx, RX(pi/2 (1 + eta)), spanning the retained atlas scales.
+COHERENT_SCENARIOS = (
+    ("cz_phase", 0.02),
+    ("cz_phase", 0.05),
+    ("cz_phase", 0.1),
+    ("sx_amplitude", 0.002),
+    ("sx_amplitude", 0.004),
+    ("sx_amplitude", 0.01),
+)
 # "null" is the zero table: the same eight-CNOT block with every RZ at angle zero, ideally the identity.
 GRADIENT_COSTS = ("null", "gap86", "gap86_repaired", "gap88", "gap88_repaired")
 
@@ -283,21 +291,28 @@ class ArmLaw:
 
 
 class CoherentLaw:
-    """Picklable worker: a compiled arm's noiseless law with every CZ followed by CPhase(phase) on its pair."""
+    """Picklable worker: a compiled arm's noiseless law under one coherent error family.
 
-    def __init__(self, snapshot: dict[str, Any], device: str, phase: float) -> None:
+    ``cz_phase`` follows every CZ by CPhase(value) on its pair; ``sx_amplitude`` replaces every sx by
+    RX(pi/2 (1 + value)). The first is diagonal; the second acts inside every Hadamard of the network.
+    """
+
+    def __init__(self, snapshot: dict[str, Any], device: str, family: str, value: float) -> None:
         self.snapshot = snapshot
         self.device = device
-        self.phase = phase
+        self.family = family
+        self.value = value
 
     def replace(self, operation: Any, qubits: list[int]) -> Any:
+        from qiskit.circuit.library import RXGate, UnitaryGate
+
         if operation.name == "barrier":
             return None
-        if operation.name != "cz":
-            return operation
-        from qiskit.circuit.library import UnitaryGate
-
-        return UnitaryGate(np.diag([1.0, 1.0, 1.0, -np.exp(1j * self.phase)]), label="cz_cphase")
+        if self.family == "cz_phase" and operation.name == "cz":
+            return UnitaryGate(np.diag([1.0, 1.0, 1.0, -np.exp(1j * self.value)]), label="cz_cphase")
+        if self.family == "sx_amplitude" and operation.name == "sx":
+            return RXGate(math.pi / 2 * (1.0 + self.value))
+        return operation
 
     def __call__(self, item: tuple[dict[str, Any], QuantumCircuit]) -> dict[str, Any]:
         meta, compiled = item
@@ -308,19 +323,20 @@ class CoherentLaw:
 def coherent_sensitivity(
     snapshot: dict[str, Any], device: str, compiled: list[tuple[dict[str, Any], QuantumCircuit]]
 ) -> list[dict[str, Any]]:
-    """Coefficient shifts a uniform CZ conditional-phase error produces on the gap88 gradient arms, noise-free."""
+    """Coefficient shifts each COHERENT_SCENARIOS error produces on the gap88 gradient arms, noise-free."""
     arms_88 = [(m, c) for m, c in compiled if m["family"] == "gradient" and m["cost"] in ("gap88", "null")]
     table = cost_table("gap88")
     exact = coefficients(table)
     out = []
-    for phase in CZ_PHASES:
-        rows = parallel.ordered_map(CoherentLaw(snapshot, device, phase), arms_88, min_items=1)
+    for family, value in COHERENT_SCENARIOS:
+        rows = parallel.ordered_map(CoherentLaw(snapshot, device, family, value), arms_88, min_items=1)
         readings = gradient_readings(rows, "gap88")
         fit = phase_fit(table, *readings)
         subtracted = null_subtracted(table, *readings, gradient_readings(rows, "null"))
         out.append(
             {
-                "cz_conditional_phase": phase,
+                "family": family,
+                "value": value,
                 "coefficient_shift": {k: v - exact[k] for k, v in fit["recovered_coefficients"].items()},
                 "max_coefficient_bias": fit["max_coefficient_bias"],
                 "cycle_residual_rms": fit["cycle_residual_rms"],
@@ -587,7 +603,7 @@ def check(path: Path, run_dir: Path) -> int:
                 failures.append(f"{patch} {_key(row)}: cz {row['cz']} law {row['law']} against {old['law']}")
     for fresh, old in zip(replay["coherent_sensitivity"], retained["coherent_sensitivity"], strict=True):
         if not math.isclose(fresh["max_coefficient_bias"], old["max_coefficient_bias"], rel_tol=1e-8, abs_tol=1e-10):
-            failures.append(f"coherent sensitivity at {fresh['cz_conditional_phase']} rad departs from {path}")
+            failures.append(f"coherent {fresh['family']} {fresh['value']} departs from {path}")
     for failure in failures:
         print(failure)
     print(f"primorial cover noise replay: {len(failures)} departures")
