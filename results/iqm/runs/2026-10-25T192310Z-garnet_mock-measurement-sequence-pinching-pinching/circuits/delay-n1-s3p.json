@@ -1,0 +1,69 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 2.792526803190927,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 2.792526803190927,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 2.792526803190927,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 2.792526803190927,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "duration": 1.772e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "key": "f"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "delay-n1-s3p"
+}

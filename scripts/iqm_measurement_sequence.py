@@ -130,6 +130,10 @@ GARNET_MAX_CIRCUITS = 100
 GARNET_MAX_INSTRUCTIONS = 10000
 
 Z_DECIDE = 3.0
+# A qubit whose ro0/ro1 pair reads a readout contrast (z0 - z1)/2 below this floor makes no decision: correction
+# divides by the contrast, so its corrected P0 and standard errors diverge as the contrast approaches zero. The
+# live set's weakest qubit, QB3 at e01 0.124 and e10 0.254, sits at 0.62.
+READOUT_CONTRAST_FLOOR = 0.5
 CONTRAST_MIN = 0.5
 # README, "Reset": one active-reset cycle leaves a qubit about 6.8 % excited; the prediction assumes it.
 ACTIVE_RESET_EXCITED = 0.068
@@ -412,6 +416,13 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
     k1, n1 = pooled_two_state(counts, qubit, ["ro1"])
     r0, r1 = k0 / n0, k1 / n1
     z0, z1 = 1 - 2 * r0, 1 - 2 * r1
+    readout = {"z0": z0, "z1": z1, "scale": (z0 - z1) / 2, "offset": (z0 + z1) / 2}
+    if readout["scale"] < READOUT_CONTRAST_FLOOR:
+        return {
+            "readout": readout,
+            "usable": False,
+            "reason": f"readout contrast {readout['scale']:.4f} lies below the {READOUT_CONTRAST_FLOOR} floor",
+        }
     p0: dict[str, dict[str, Any]] = {arm: {} for arm in ARMS}
     for arm in ARMS:
         for n in ARM_STEPS[arm]:
@@ -474,7 +485,8 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
         transitions[str(n)] = {"rate": flips / pairs, "se": math.sqrt(var(flips, pairs)), "ideal": ideal_flip(n)}
     points = [(n, p0["measure"][str(n)]["p0"], p0["measure"][str(n)]["se"]) for n in STEPS]
     return {
-        "readout": {"z0": z0, "z1": z1, "scale": (z0 - z1) / 2, "offset": (z0 + z1) / 2},
+        "readout": readout,
+        "usable": True,
         "p0": p0,
         "contrast_n16": {
             "contrast": contrast,
@@ -748,7 +760,12 @@ def check(directory: Path) -> None:
     print(f"{directory}: matches the build from its retained calibration excerpt")
 
 
-def analyze(run_dir: Path) -> dict[str, Any]:
+def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
+    """The preregistered decisions of a garnet run, or with mock the same pipeline over a garnet:mock run.
+
+    Mock outcomes are random bits, so a mock analysis exercises the format, the tally and every guard; its
+    numbers decide nothing, and it skips the calibration-set match because the mock compiles against its own set.
+    """
     facts = run_facts(run_dir)
     submission = load_json(run_dir / "submission.json")
     record = json.loads((run_dir / "raw/job.json").read_bytes())
@@ -758,11 +775,12 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         raise ValueError(f"{run_dir}/prediction.json is not the prediction cases.json binds")
     if facts["statuses"] != {"completed": 1}:
         raise ValueError(f"{run_dir}: the job is {sorted(facts['statuses'])}; the analysis reads completed jobs")
-    # Mock outcomes are random bits and never enter the analysis.
-    if submission["qc"] != QC or case.get("case") != CASE:
-        raise ValueError(f"{run_dir}: a {case.get('case')} run on {submission['qc']}, not a {CASE} run on {QC}")
+    # Mock outcomes are random bits and enter only a mock analysis, which decides nothing.
+    qc = f"{QC}:mock" if mock else QC
+    if submission["qc"] != qc or case.get("case") != CASE:
+        raise ValueError(f"{run_dir}: a {case.get('case')} run on {submission['qc']}, not a {CASE} run on {qc}")
     prediction = json.loads(prediction_bytes)
-    if record["compilation"]["calibration_set_id"] != prediction["calibration_set"]:
+    if not mock and record["compilation"]["calibration_set_id"] != prediction["calibration_set"]:
         raise ValueError(f"{run_dir}: compiled against another calibration set than the case's")
     row = next(r for r in case["jobs"] if r["job"] == submission["job"])
     circuits = [load_json(run_dir / entry["file"]) for entry in row["circuits"]]
@@ -781,6 +799,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     return {
         "schema": "iqm-measurement-sequence-analysis-v1",
         "run": run_dir.name,
+        "mock": mock,
         "calibration_set": record["compilation"]["calibration_set_id"],
         "estimate_seconds": record["compilation"]["execution_runtime_estimate_seconds"],
         "runtime_seconds": record["metrics"]["runtime_seconds"],
@@ -934,6 +953,13 @@ def self_test() -> str:
     expect(not decide(0.5299, 0.01, 0.0, 0.01)["mutation_test"]["passes"], "2.99 standard errors above 0.5 passes")
     expect(decide(0.9, 0.01, 0.0301, 0.01)["departs_from_ideal_pinching"]["departs"], "a 3.01 shortfall is missed")
     expect(not decide(0.9, 0.01, 0.0299, 0.01)["departs_from_ideal_pinching"]["departs"], "a 2.99 shortfall departs")
+    # Random readout, as a mock returns: every circuit reads each qubit half 0 and half 1, so the ro0/ro1 contrast
+    # is zero and no qubit decides.
+    uniform = device_counts(modeled(excerpt))
+    for row in uniform.values():
+        row["final"] = {q: [row["shots"] // 2, row["shots"] - row["shots"] // 2] for q in row["final"]}
+    for row in evaluate(uniform, tables).values():
+        expect(not row["usable"] and "decisions" not in row, "a zero readout contrast reaches a decision")
     predicted = json.loads(files["prediction.json"])["qubits"]
     margin = min(v["decisions_on_the_model_device"]["mutation_test"]["z"] for v in predicted.values())
     return (
@@ -955,6 +981,7 @@ def main() -> int:
     an.add_argument("run_dir", type=Path)
     an.add_argument("--out", type=Path, required=True)
     an.add_argument("--replay", action="store_true")
+    an.add_argument("--mock", action="store_true", help="analyze a garnet:mock run; its numbers decide nothing")
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
@@ -963,7 +990,7 @@ def main() -> int:
     elif args.command == "check":
         check(args.directory)
     elif args.command == "analyze":
-        text = dump(analyze(args.run_dir))
+        text = dump(analyze(args.run_dir, args.mock))
         if args.replay:
             if args.out.read_text(encoding="utf-8") != text:
                 raise ValueError(f"{args.out} differs from the recomputation")

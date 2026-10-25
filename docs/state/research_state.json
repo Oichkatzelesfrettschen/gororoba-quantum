@@ -1885,6 +1885,13 @@
       "question": "Does the garnet:mock pipeline accept the 54-circuit measurement-sequence case, whose leakage circuits read only measure_012? It fails validation: circuit 45 contains no measurements."
     },
     {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-50",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 50-circuit measurement-sequence case (cases.json a1ab2596), return every key in the documented format, and compile to the schedule the case predicts?"
+    },
+    {
       "id": "iqm-garnet-mock-measure-012-probe",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe",
@@ -9360,6 +9367,35 @@
         "iqm-garnet-mock-timing-delay-n16",
         "iqm-garnet-mock-timing-measure-n1",
         "iqm-garnet-mock-timing-ro0"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-pipeline",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 50-circuit measurement-sequence case (cases.json a1ab2596, job 01a17484) at 2400 shots: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 2400 shots of four 0/1 outcomes in the locus order QB1, QB3, QB7, QB14, and the compiled qpu_execution estimate of 2.71235 s equals the case's predicted 2.71235 s (ratio 1.0000). The mock's outcomes are uniform random bits (ro0 and ro1 contrasts -0.013 to 0.014), so the mock analysis marks every qubit unusable under the 0.5 readout-contrast floor and decides nothing. The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies the format, the schedule model and the analysis guards, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "79a447ce8e18c6d7698a2728a558b6617559e3adaad6d07ca7b7b86a6be813ef"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_mock_analysis.json",
+          "sha256": "7b14108858d4574bd3b2bfd915dc4418295a119b8414e39610fecc3676fa1498"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-50"
       ],
       "assumptions": [],
       "depends_on": [],
