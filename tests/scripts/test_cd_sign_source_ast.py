@@ -29,9 +29,21 @@ def test_digest_covers_the_helper_closure_and_nothing_else() -> None:
     )
     if helper == source or source_ast.generated(helper) == term:
         raise AssertionError("an edit to a helper cd_sign calls left the source digest unchanged")
-    rebound = source + "\n\n_dimension = None\n"
-    if source_ast.generated(rebound) == term:
-        raise AssertionError("a later rebinding of a helper name left the source digest unchanged")
+    rebindings = {
+        "a later helper rebinding": "\n\n_dimension = None\n",
+        "a rebinding of cd_sign itself": "\n\ncd_sign = lambda *args: 0\n",
+        "a helper rebound inside a module-level conditional": "\n\nif True:\n    _index = lambda dim, index: 0\n",
+        "a helper rebound through a global declaration": (
+            "\n\ndef patch():\n    global _dimension\n    _dimension = None\n"
+        ),
+    }
+    for label, suffix in rebindings.items():
+        if source_ast.generated(source + suffix) == term:
+            raise AssertionError(f"{label} left the source digest unchanged")
+    if source_ast.generated(source + "\n\nsign = 123\nhalf = 4\n") != term:
+        raise AssertionError("a module-level name shadowed by a cd_sign local changed the certificate block")
+    with pytest.raises(source_ast.UnsupportedValue):
+        source_ast.closure_source(source + "\n\nfrom math import *\n")
     closure = source_ast.closure_source(source)
     for name in ["def cd_sign(", "def _dimension(", "def _index(", "import index as integer_index"]:
         if name not in closure:
