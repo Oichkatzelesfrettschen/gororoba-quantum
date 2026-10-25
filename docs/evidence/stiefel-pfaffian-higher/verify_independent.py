@@ -98,8 +98,10 @@ def fsq_mod(half, z):
 def sec_table():
     for dim in (64, 128, 256):
         t = table(dim)
-        out(f"table {dim}: built; e_p e_q index is p^q on all pairs:",
-            all(t[p_][q_][0] == p_ ^ q_ for p_ in range(dim) for q_ in range(dim)))
+        out(
+            f"table {dim}: built; e_p e_q index is p^q on all pairs:",
+            all(t[p_][q_][0] == p_ ^ q_ for p_ in range(dim) for q_ in range(dim)),
+        )
         # L_y against cd_multiply_exact on random dense vectors
         y = [RNG.randint(-3, 3) for _ in range(dim)]
         x = [RNG.randint(-3, 3) for _ in range(dim)]
@@ -158,7 +160,7 @@ def sec_transport():
 
 
 def to_fp(re, im, sign=1):
-    return [(a + sign * IOTA * b) % P for a, b in zip(re, im)]
+    return [(a + sign * IOTA * b) % P for a, b in zip(re, im, strict=True)]
 
 
 def sec_degree():
@@ -177,7 +179,7 @@ def sec_degree():
         y[h + 2] = 1
         pts.append(("pair e1+ie2", y))
         for label, y in pts:
-            pr, qi = y[1:h], y[h + 1:]
+            pr, qi = y[1:h], y[h + 1 :]
             nn = sum(v * v for v in y)
             det = int(flint.nmod_mat(left(dim, y), P).det())
             a = fsq_mod(h, to_fp(pr, qi, 1))
@@ -206,7 +208,7 @@ def exact_fsq_line(n, a, b, j):
     xs = list(range(0, 2 * d + 3))
     ys = []
     for s in xs:
-        z = [u + s * v for u, v in zip(a, b)]
+        z = [u + s * v for u, v in zip(a, b, strict=True)]
         if z[j] == 0:
             raise RuntimeError("z_j vanishes on a node")
         c = cross(h, z)
@@ -217,7 +219,7 @@ def exact_fsq_line(n, a, b, j):
             raise RuntimeError("det not divisible by z_j^2")
         ys.append(q)
     poly = newton_interp(xs[: 2 * d + 1], ys[: 2 * d + 1])
-    for s, v in zip(xs[2 * d + 1:], ys[2 * d + 1:]):
+    for s, v in zip(xs[2 * d + 1 :], ys[2 * d + 1 :], strict=True):
         if poly(s) != v:
             raise RuntimeError("degree above 2d")
     return poly
@@ -234,8 +236,11 @@ def sec_irred(ns=(6, 7, 8), tries=6):
             b = [r.randint(-9, 9) for _ in range(h - 1)]
             a[0], b[0] = r.randint(1, 9), r.randint(1, 9)  # z_1 > 0 on every node s >= 0
             poly = exact_fsq_line(n, a, b, 0)
-            num = flint.fmpz_poly([int(c * poly.denom()) for c in poly.coeffs()]) if poly.denom() != 1 else \
-                flint.fmpz_poly([int(c) for c in poly.coeffs()])
+            num = (
+                flint.fmpz_poly([int(c * poly.denom()) for c in poly.coeffs()])
+                if poly.denom() != 1
+                else flint.fmpz_poly([int(c) for c in poly.coeffs()])
+            )
             if poly.denom() != 1:
                 out("  WARNING: f^2 line polynomial not integral")
             content, facs = num.factor()
@@ -254,35 +259,58 @@ def sec_witness():
     def stiefel(dim, y):
         h = dim // 2
         p_, q_ = y[:h], y[h:]
-        return (p_[0] == 0 and q_[0] == 0, sum(v * v for v in p_) - sum(v * v for v in q_),
-                sum(u * v for u, v in zip(p_, q_)))
+        return (
+            p_[0] == 0 and q_[0] == 0,
+            sum(v * v for v in p_) - sum(v * v for v in q_),
+            sum(u * v for u, v in zip(p_, q_, strict=True)),
+        )
 
     y = [0] * 64
     for k in (12, 15, 16, 23):
         y[k] = 1
     y[34] = 2
-    out("five-term A_6: doubly pure, |p|^2-|q|^2, <p,q> =", stiefel(64, y),
-        "|p|^2 =", sum(v * v for v in y[:32]), "rank =", flint.fmpz_mat(left(64, y)).rank(),
-        "det mod p nonzero:", int(flint.nmod_mat(left(64, y), P).det()) != 0)
+    out(
+        "five-term A_6: doubly pure, |p|^2-|q|^2, <p,q> =",
+        stiefel(64, y),
+        "|p|^2 =",
+        sum(v * v for v in y[:32]),
+        "rank =",
+        flint.fmpz_mat(left(64, y)).rank(),
+        "det mod p nonzero:",
+        int(flint.nmod_mat(left(64, y), P).det()) != 0,
+    )
     y6 = [0] * 64
     for k in (2, 5, 20, 46, 48, 54):
         y6[k] = 1
     out("six-term A_6:", stiefel(64, y6), "rank =", flint.fmpz_mat(left(64, y6)).rank())
     for dim in (64, 128, 256):
         y = disjoint_stiefel(dim)
-        out(f"disjoint A_{dim.bit_length() - 1}: stiefel", stiefel(dim, y), "nonzeros", sum(1 for v in y if v),
-            "rank", flint.fmpz_mat(left(dim, y)).rank(),
-            "det mod p nonzero:", int(flint.nmod_mat(left(dim, y), P).det()) != 0)
+        out(
+            f"disjoint A_{dim.bit_length() - 1}: stiefel",
+            stiefel(dim, y),
+            "nonzeros",
+            sum(1 for v in y if v),
+            "rank",
+            flint.fmpz_mat(left(dim, y)).rank(),
+            "det mod p nonzero:",
+            int(flint.nmod_mat(left(dim, y), P).det()) != 0,
+        )
         # cross-check L_y against cd_multiply_exact for this witness
         x = [RNG.randint(-2, 2) for _ in range(dim)]
         lm = left(dim, y)
-        out("   L_y x == cd_multiply_exact:",
+        out(
+            "   L_y x == cd_multiply_exact:",
             tuple(Fraction(sum(lm[r][c] * x[c] for c in range(dim))) for r in range(dim))
-            == cd_multiply_exact(dim, y, x))
+            == cd_multiply_exact(dim, y, x),
+        )
     for dim, k in ((64, 16), (128, 32), (256, 64)):
         y = disjoint_stiefel(dim, avoid=k)
-        out(f"disjoint avoiding z_{k} at {dim}: stiefel", stiefel(dim, y), "nullity",
-            dim - flint.fmpz_mat(left(dim, y)).rank())
+        out(
+            f"disjoint avoiding z_{k} at {dim}: stiefel",
+            stiefel(dim, y),
+            "nullity",
+            dim - flint.fmpz_mat(left(dim, y)).rank(),
+        )
 
 
 def sec_pairs():
@@ -315,7 +343,7 @@ def isotropic_point(support, h, rng):
         if last == 0:
             continue
         z = [0] * (h - 1)
-        for k, v in zip(support, vals + [last]):
+        for k, v in zip(support, vals + [last], strict=True):
             z[k - 1] = v
         return z
 
@@ -387,7 +415,7 @@ def sec_small():
         u, mu, v = z[:7], z[7], z[8:]
         uu = sum(a * a for a in u)
         vv = sum(a * a for a in v)
-        uv = sum(a * b for a, b in zip(u, v))
+        uv = sum(a * b for a, b in zip(u, v, strict=True))
         q = (uu + mu * mu + vv) % P
         g = (q * q - 4 * (uu * vv - uv * uv)) % P
         good5 &= fsq_mod(16, z) == (q * g) ** 2 % P
@@ -411,7 +439,7 @@ def sec_three():
 
 def fsq_line_mod(h, a, b, d):
     xs = list(range(1, 2 * d + 4))
-    ys = [fsq_mod(h, [(u + s * v) % P for u, v in zip(a, b)]) for s in xs]
+    ys = [fsq_mod(h, [(u + s * v) % P for u, v in zip(a, b, strict=True)]) for s in xs]
     poly = flint.nmod_poly([0], P)
     for i in range(2 * d + 1):
         num = flint.nmod_poly([1], P)
@@ -421,8 +449,9 @@ def fsq_line_mod(h, a, b, d):
                 num *= flint.nmod_poly([-xs[jj] % P, 1], P)
                 den = den * (xs[i] - xs[jj]) % P
         poly += num * (ys[i] * pow(den, -1, P) % P)
-    for s, v in zip(xs[2 * d + 1:], ys[2 * d + 1:]):
-        assert int(poly(s)) == v
+    for s, v in zip(xs[2 * d + 1 :], ys[2 * d + 1 :], strict=True):
+        if int(poly(s)) != v:
+            raise RuntimeError("interpolated polynomial disagrees at a check node")
     return poly
 
 
@@ -442,7 +471,7 @@ def sec_mult():
                 # force a.b = 0 and b.b = 0 by adjusting b along two coordinates (last two): b' = b + x e_m + y a
                 # b+y a: (b+ya).(b+ya) = b.b + 2y a.b; a.(b+ya) = a.b. So first fix a.b = 0 via coordinate m.
                 m = h - 2
-                ab = sum(x * y for x, y in zip(a, b)) % P
+                ab = sum(x * y for x, y in zip(a, b, strict=True)) % P
                 b[m] = (b[m] - ab * pow(a[m], -1, P)) % P
                 bb = sum(x * x for x in b) % P
                 # now a.b = 0; add y a cannot change b.b. Instead add y c with c isotropic? Use scaling trick:
@@ -452,15 +481,19 @@ def sec_mult():
                 v[0] = 1
                 v[m] = (-a[0] * pow(a[m], -1, P)) % P
                 vv = sum(x * x for x in v) % P
-                bv = sum(x * y for x, y in zip(b, v)) % P
+                bv = sum(x * y for x, y in zip(b, v, strict=True)) % P
                 disc = (bv * bv - vv * bb) % P
                 try:
                     r = int(flint.nmod(disc, P).sqrt())
                 except Exception:
                     continue
                 t = (-bv + r) * pow(vv, -1, P) % P
-                b = [(x + t * y) % P for x, y in zip(b, v)]
-                if sum(x * x for x in b) % P == 0 and sum(x * y for x, y in zip(a, b)) % P == 0 and b[sidx]:
+                b = [(x + t * y) % P for x, y in zip(b, v, strict=True)]
+                if (
+                    sum(x * x for x in b) % P == 0
+                    and sum(x * y for x, y in zip(a, b, strict=True)) % P == 0
+                    and b[sidx]
+                ):
                     break
             poly = fsq_line_mod(h, a, b, d)
             root = (-a[sidx] * pow(b[sidx], -1, P)) % P
@@ -477,9 +510,18 @@ def sec_mult():
 
 
 SECTIONS = {
-    "table": sec_table, "transport": sec_transport, "degree": sec_degree, "irred": sec_irred,
-    "witness": sec_witness, "pairs": sec_pairs, "slices": sec_slices, "bcdi": sec_bcdi, "six": sec_six,
-    "small": sec_small, "three": sec_three, "mult": sec_mult,
+    "table": sec_table,
+    "transport": sec_transport,
+    "degree": sec_degree,
+    "irred": sec_irred,
+    "witness": sec_witness,
+    "pairs": sec_pairs,
+    "slices": sec_slices,
+    "bcdi": sec_bcdi,
+    "six": sec_six,
+    "small": sec_small,
+    "three": sec_three,
+    "mult": sec_mult,
 }
 
 if __name__ == "__main__":
