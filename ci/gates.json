@@ -4171,8 +4171,9 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error primorial_table.py --check ../docs/evidence/primorial_cover/ziller_table.json",
    "name": "core-primorial-ziller-table-replay",
-   "seconds": 190.0,
+   "seconds": 180.0,
    "tier": "full",
+   "workers": "all",
    "replays": [
     "docs/evidence/primorial_cover/ziller_table.json"
    ]

@@ -26,7 +26,9 @@ Three records live here.
   A build-host CPU run of the same commit gives identical laws.
 - `ziller_table.json` is the output of `gororoba_quantum/primorial_table.py
   --out`, recomputed byte for byte by gate `core-primorial-ziller-table-replay`
-  (full tier; about 190 s wall and 450 CPU-s on the 12-thread build host). It
+  (full tier, every worker; 176 s wall and 348 CPU-s on four workers, 218 s
+  and 441 CPU-s on twelve under a load average near 20, the second round's
+  single cell at k = 20, L = 73 taking about 90 s alone). It
   decides every even difference from 2 to h(k) for k = 1..20, 637 cells,
   where h(k) is the largest difference Ziller's Table 1 (arXiv:2007.01808v1,
   p. 12) prints. Each search walks the allowed residues of 3, 5, 7 and 11 in
