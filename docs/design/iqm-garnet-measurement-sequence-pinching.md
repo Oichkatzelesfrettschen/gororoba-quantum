@@ -105,6 +105,9 @@ active-reset pilot job (`2026-10-22T212742Z`, two circuits summing to 8.688 us) 
 (5.032 - 4.344)/16 = 43 ns per layer, consistent with the 40 ns that garnet:mock compiles and used in the models; the 16
 x 40 ns increment also shows the compiler kept the sixteen unitary-arm prx pulses separate. The predicted compiled
 schedule is therefore 4.344 us per circuit + 40 ns per layer + 1.096 us per mid-circuit measure + the explicit delays.
+The 40 ns layer underpredicts both single-circuit probes by 48 ns per shot (16 x 3 ns), 0.7 % of the unitary probe's
+7.032 us; on the full case it dilutes to about 0.1 % (384 layers x 3 ns against the 1.231 ms per-shot schedule, which the
+explicit delays dominate), so it cannot trip the 1 % re-solve, and the constant stays at 40 ns.
 
 History: garnet:mock compiles a different schedule, 8.684 us per circuit and 1.772 us per measure (five probes,
 [case](../../results/iqm/cases/measurement-timing-probe/cases.json): `ro0` 8.684, unitary 9.324, measure N = 16 37.676,
@@ -178,6 +181,16 @@ prediction when at least 2 of the usable qubits return `departs_below`, or the i
 the usable qubits is at or below -3 (the pooling treats the qubits as independent). The device exceeds the prediction by
 the same rule with `exceeds_prediction` and z >= +3, and the settle arm attributes a readout tail to the device by the
 same rule with `tail_attributed` and the pooled settle gap z >= +3.
+
+**Gate-error guard.** A randomized-benchmarking underestimate of the prx error is shared across qubits, so the
+independent prx systematic does not cover it, and the README records coherent error dominating first-order
+observables. Pooling then accumulates it: a prx error twice the calibrated one on every qubit pools to a departure z of
+-1.5, and about three times crosses -3. A device `departs_below` or `exceeds_prediction` is therefore attributed to the
+measurement only if, on every qubit that contributes to it (the named qubits, or all usable qubits when the pooled z
+fired), the unitary arm's N = 16 measured-minus-modeled difference lies within 3 statistical standard errors; sixteen
+unmeasured pulses shift the unitary P0 by about 7.5 x the prx error, so the unitary arm is the in-job check. The
+statistical standard error excludes the prx systematic, which would hide the error the check asks about. Otherwise the
+device status reads `gate_model_inconsistent`, the device verdict is not set and the departure is not attributed.
 
 Reported without a decision: the settle gap; the readout-history diagnostic (the N = 1 measure arm against the N = 1
 delay arm, both ideally 0.0302 with equal models, where only the measure arm has a measurement before the final one,
@@ -260,13 +273,16 @@ mutation test on every qubit, and no device-level flag.
 | T1 x 0.8 | 0.068 | 0 | 0.8 | 1 | -0.04 to +0.05 | match | 30.1 | 4e-4 |
 | T1 x 1.2 | 0.068 | 0 | 1.2 | 1 | -0.02 to +0.01 | match | 30.1 | 8e-4 |
 | prx x 2 | 0.068 | 0 | 1.0 | 2 | -0.95 to -0.54 | match | 25.1 | 8e-4 |
+| prx x 3 | 0.068 | 0 | 1.0 | 3 | -1.82 to -1.11 | match | 20.2 | 8e-4 |
 | corner | 0.15 | 0.02 | 0.8 | 2 | -0.93 to -0.41 | match | 19.4 | 5e-4 |
 
 The thermal row passes because the model takes q = z_eq/(1 - 2 p) from the T1 series rather than a p with a cold idle
 qubit. The prx rows pass because the standard errors carry the prx systematic: without it QB7 reads -4.4 at prx x 2 and
 -3.4 at the corner, since its calibrated prx error is 0.0054 against 0.0007 to 0.0011 elsewhere. QB7's departure
 standard error is 0.025 where the others' is 0.006 to 0.008, so the departure test is weakest on QB7. A prx error twice
-the calibrated one on every qubit pools to a device z of about -1.5, below the device rule's threshold.
+the calibrated one on every qubit pools to a device z of -1.5, below the device rule's threshold; three times pools to
+-3.04, where the gate-error guard reads `gate_model_inconsistent` (unitary-arm z of +1.1 to +7.6 over the qubits, QB7
+largest) instead of attributing the departure, which is the pass rule of the prx x 3 row.
 
 **Cross-check.** `scripts/iqm_measurement_sequence_aer_check.py run CASE_DIR --calibration-dir DIR` runs every arm and N
 of every qubit through an independent Aer density-matrix simulation built on `scripts/iqm_sim.py`'s calibration noise
@@ -276,6 +292,14 @@ gap over the 72 points is 6e-15 in P0. Against the model without it, as first wr
 QB7's measure arm (4.6 departure standard errors) and 0.037 on its unitary arm: the Bloch model omitted the per-prx
 depolarizing error, which is now an input (`prx_p`) of every table. The check verifies the model's algebra and time
 accounting, not the estimator, which the sweep covers.
+
+## Pre-flight stop rule
+
+Before the main QPU job, the two retained QPU window-probe runs (100 shots each of measure-n16 and unitary-n16 on the
+six qubits, jobs `01a174be-e68b-776e-8241-8bb3d259ae57` and `01a174be-d1f7-75fc-b324-d27d7133409b`) are read for the raw
+P(0) of the final key `f` per qubit. The orchestrator proceeds only if every qubit reads 0.80 to 0.98 on measure-n16 and
+0.00 to 0.20 on unitary-n16, and every key (`f` and `m0` to `m15` on measure-n16, `f` on unitary-n16) is present in
+both. The check gates the submission only and never enters the analysis.
 
 ## Window sensitivity
 

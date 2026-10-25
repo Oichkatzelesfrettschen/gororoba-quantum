@@ -69,7 +69,11 @@ by the delta method:
 - the device verdicts (device_verdict) are the decisions: six qubits times about four 3-SE tests give about a 6 %
   chance of one false flag, so a device departs only when at least DEVICE_QUBITS usable qubits return `departs_below`
   or the inverse-variance pooled departure z over the usable qubits is at or below -Z_DECIDE; `exceeds_prediction`
-  and the settle `tail_attributed` follow the same rule. The per-qubit verdicts stay descriptive.
+  and the settle `tail_attributed` follow the same rule. The per-qubit verdicts stay descriptive. A shared prx
+  underestimate pools coherently across qubits, so a device `departs_below` or `exceeds_prediction` counts as
+  attributed to the measurement only if, on every contributing qubit, the unitary arm's N = 16 measured-minus-modeled
+  difference lies within Z_DECIDE statistical standard errors (sixteen unmeasured pulses shift the unitary P0 by about
+  7.5 times the prx error); otherwise its status is `gate_model_inconsistent`.
 
 Known limit: ro1 puts every qubit in |1> at once, while the measure arm's neighbor states vary from shot to shot, so
 state-dependent simultaneous-readout crosstalk is not calibrated. `analyze` reports the largest correlation of each
@@ -710,6 +714,25 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
             "measured_minus_modeled_se": se[f"diff:{key}"],
             "planning": ctx["planning"][arm][str(n)],
         }
+    # In-job check of the gate model: sixteen unmeasured pulses shift the unitary arm's P0 by about 7.5 times the prx
+    # error, and a shared randomized-benchmarking underestimate moves every qubit the same way. The check uses the
+    # statistical standard error alone, since the prx systematic would hide the very error it asks about.
+    unitary_key = f"unitary-{top}"
+    shifted = list(x)
+    shifted[index["prx_p"]] += 1e-5
+    lowered = list(x)
+    lowered[index["prx_p"]] -= 1e-5
+    slope = (
+        quantities(dict(zip(keys, shifted, strict=True)), ctx)[f"diff:{unitary_key}"]
+        - quantities(dict(zip(keys, lowered, strict=True)), ctx)[f"diff:{unitary_key}"]
+    ) / 2e-5
+    statistical = math.sqrt(max(se[f"diff:{unitary_key}"] ** 2 - (slope * PRX_SYSTEMATIC * ctx["prx_p"]) ** 2, 0.0))
+    gate_check = {
+        "difference": value[f"diff:{unitary_key}"],
+        "se": se[f"diff:{unitary_key}"],
+        "statistical_se": statistical,
+        "z": value[f"diff:{unitary_key}"] / statistical if statistical > 0 else math.inf,
+    }
     key = f"measure-{top}"
     decisions = decide(value["contrast"], se["contrast"], value[f"diff:{key}"], se[f"diff:{key}"])
     gap_z = value["tail_gap"] / se["tail_gap"]
@@ -752,6 +775,7 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
             "se": se[f"diff:{key}"],
         },
         "decisions": decisions,
+        "gate_check_n16": gate_check,
         "settle_n16": {
             "raw_difference": value[f"p0:settle-{top}"] - value[f"p0:measure-{top}"],
             "measure_implied_loss": value["implied_loss"],
@@ -1175,7 +1199,14 @@ def device_verdict(qubits: dict[str, Any]) -> dict[str, Any]:
     return `departs_below`, or the inverse-variance pooled departure z over the usable qubits is at or below
     -Z_DECIDE; `exceeds_prediction` and the settle `tail_attributed` follow the same rule with the signs of their
     own z. Six qubits times about four 3-SE tests give about a 6 % chance of one false flag, so the per-qubit
-    verdicts stay descriptive. The pooling treats the qubits as independent."""
+    verdicts stay descriptive. The pooling treats the qubits as independent.
+
+    A randomized-benchmarking underestimate of the prx error is shared across qubits and pools coherently, so a device
+    departure (either sign) is attributed to the measurement only if, on every qubit that contributes to it (the named
+    qubits, or all usable qubits when the pooled z fired), the unitary arm's N = 16 measured-minus-modeled difference
+    lies within Z_DECIDE statistical standard errors. Otherwise the status reads `gate_model_inconsistent`, `device`
+    stays false and the departure is not attributed.
+    """
     usable = {q: r for q, r in qubits.items() if r["usable"]}
     departure = [(r["departure_n16"]["difference"], r["departure_n16"]["se"]) for r in usable.values()]
     tail = [(r["settle_n16"]["tail_gap"], r["settle_n16"]["se"]) for r in usable.values()]
@@ -1184,15 +1215,19 @@ def device_verdict(qubits: dict[str, Any]) -> dict[str, Any]:
     above = sorted(q for q, r in usable.items() if r["decisions"]["departure"]["outcome"] == "exceeds_prediction")
     tailed = sorted(q for q, r in usable.items() if r["settle_n16"]["verdict"] == "tail_attributed")
 
-    def verdict(named: list[str], z: float | None, sign: int) -> dict[str, Any]:
-        flagged = len(named) >= DEVICE_QUBITS or (z is not None and sign * z >= Z_DECIDE)
-        return {"qubits": named, "pooled_z": z, "device": flagged}
+    def verdict(named: list[str], z: float | None, sign: int, gate: bool = True) -> dict[str, Any]:
+        pooled_fired = z is not None and sign * z >= Z_DECIDE
+        fired = len(named) >= DEVICE_QUBITS or pooled_fired
+        contributors = sorted(usable) if pooled_fired else named
+        inconsistent = gate and any(abs(usable[q]["gate_check_n16"]["z"]) >= Z_DECIDE for q in contributors)
+        status = "none" if not fired else "gate_model_inconsistent" if inconsistent else "attributed"
+        return {"qubits": named, "pooled_z": z, "status": status, "device": status == "attributed"}
 
     return {
         "usable_qubits": sorted(usable),
         "departs_below": verdict(below, z_departure, -1),
         "exceeds_prediction": verdict(above, z_departure, 1),
-        "settle_tail_attributed": verdict(tailed, z_tail, 1),
+        "settle_tail_attributed": verdict(tailed, z_tail, 1, gate=False),
     }
 
 
@@ -1444,6 +1479,7 @@ def sweep_cases(reduced: bool) -> list[dict[str, Any]]:
         {**base, "label": "T1 x0.8", "t1_scale": 0.8},
         {**base, "label": "T1 x1.2", "t1_scale": 1.2},
         {**base, "label": "prx x2", "prx_scale": 2.0},
+        {**base, "label": "prx x3", "prx_scale": 3.0, "gate_stress": True},
     ]
     return [base, *axes, corner]
 
@@ -1502,6 +1538,11 @@ def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[s
                     "device": {
                         k: v["device"] for k, v in result["device"].items() if isinstance(v, dict) and "device" in v
                     },
+                    "device_status": {
+                        k: v["status"] for k, v in result["device"].items() if isinstance(v, dict) and "status" in v
+                    },
+                    "pooled_departure_z": result["device"]["departs_below"]["pooled_z"],
+                    "gate_check_z": {q: r["gate_check_n16"]["z"] for q, r in usable.items()},
                     "schedule_ratio": result["compiled_schedule"]["ratio"],
                 }
             )
@@ -1511,17 +1552,20 @@ def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[s
 
 
 def sweep_failures(rows: list[dict[str, Any]], qubits: int = QUBIT_COUNT) -> list[str]:
-    """The pass rule: every qubit of every device reads |departure z| < 1, settle `match`, a passing mutation test."""
+    """The pass rule: every qubit of every device reads |departure z| < 1, settle `match`, a passing mutation test and
+    no device flag. A gate-stress row (a prx error well beyond the systematic) instead needs the device verdict to
+    report no attributed departure."""
     failures = []
     for row in rows:
         if row["usable"] != qubits:
             failures.append(f"{row['label']}: {row['usable']} usable qubits")
-        for q, z in row["departure_z"].items():
-            if abs(z) >= 1:
-                failures.append(f"{row['label']} {q}: departure z {z:.2f}")
-        for q, verdict in row["settle"].items():
-            if verdict != "match":
-                failures.append(f"{row['label']} {q}: settle {verdict}")
+        if not row.get("gate_stress"):
+            for q, z in row["departure_z"].items():
+                if abs(z) >= 1:
+                    failures.append(f"{row['label']} {q}: departure z {z:.2f}")
+            for q, verdict in row["settle"].items():
+                if verdict != "match":
+                    failures.append(f"{row['label']} {q}: settle {verdict}")
         if not row["mutation_passes"]:
             failures.append(f"{row['label']}: the mutation test fails")
         if any(row["device"].values()):
@@ -1700,9 +1744,10 @@ def self_test(with_sweep: bool = True) -> str:
     )
 
     # The device rule: two qubits, or a pooled z, flags the device; one qubit does not.
-    def usable(outcome: str, difference: float, tail: str = "match") -> dict[str, Any]:
+    def usable(outcome: str, difference: float, tail: str = "match", gate_z: float = 0.0) -> dict[str, Any]:
         return {
             "usable": True,
+            "gate_check_n16": {"z": gate_z},
             "departure_n16": {"difference": difference, "se": 0.01},
             "decisions": {"departure": {"outcome": outcome}},
             "settle_n16": {"tail_gap": 0.0, "se": 0.01, "verdict": tail},
@@ -1724,6 +1769,27 @@ def self_test(with_sweep: bool = True) -> str:
     expect(
         device_verdict({**quiet, "QB0": {"usable": False}})["usable_qubits"] == [f"QB{n}" for n in range(1, 6)],
         "usable",
+    )
+    # The gate guard: a unitary-arm difference beyond 3 SE on a contributing qubit withholds the attribution.
+    inconsistent = device_verdict({**two, "QB1": usable("departs_below", -0.031, "match", gate_z=-3.5)})
+    expect(
+        inconsistent["departs_below"]["status"] == "gate_model_inconsistent"
+        and not inconsistent["departs_below"]["device"],
+        f"{inconsistent['departs_below']}",
+    )
+    expect(
+        device_verdict({**two, "QB5": usable("consistent", 0.0, "match", gate_z=4.0)})["departs_below"]["status"]
+        == "attributed",
+        "a gate difference on a non-contributing qubit blocks a count-rule departure",
+    )
+    pooled_blocked = device_verdict({**drift, "QB2": usable("consistent", -0.015, "match", gate_z=3.1)})
+    expect(pooled_blocked["departs_below"]["status"] == "gate_model_inconsistent", f"{pooled_blocked['departs_below']}")
+    expect(
+        device_verdict({f"QB{n}": usable("consistent", 0.015, "match", gate_z=3.1) for n in range(6)})[
+            "exceeds_prediction"
+        ]["status"]
+        == "gate_model_inconsistent",
+        "exceeds_prediction escapes the gate guard",
     )
     if with_sweep:
         rows = run_sweep(files, excerpt, sweep_cases(True))
