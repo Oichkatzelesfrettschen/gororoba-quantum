@@ -39,9 +39,10 @@ max_z >= 1. Order of analysis: an exploratory build-host run of the single-famil
 and showed joint tilt and CZ phase above max_z = 1; the per-coefficient reading, the sx-and-x budget, the twirled
 rows, the coherent-fraction scan, the refinement and the identification-shot endpoint were added after it, and
 the retained Kaggle run followed. The detuning and ZZ pairs were added after a review of that retained run
-asked which other pairs each cancelled to first order survive subtraction together. Each scenario also reports ``shots_identify_all``, the budget rule of
-primorial_cover_noise.phase_fit (simultaneous z for seven coefficients, worst variance, margin 1/16 minus the
-largest bias) with the scenario's bias in place of the incoherent one; None means the bias leaves no margin.
+asked which other pairs each cancelled to first order survive subtraction together. Each scenario also
+reports ``shots_identify_all``, the budget rule of primorial_cover_noise.phase_fit (simultaneous z for seven
+coefficients, worst variance, margin 1/16 minus the largest bias) with the scenario's bias in place of the
+incoherent one; None means the bias leaves no margin.
 
 ``--out FILE`` writes the record; ``--check FILE --run DIR`` requires FILE to be byte-identical to the collected
 output of Kaggle run DIR, recomputes the record and requires every verdict to match and every bias to 1e-8.
