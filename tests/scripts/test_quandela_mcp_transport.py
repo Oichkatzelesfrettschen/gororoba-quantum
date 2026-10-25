@@ -81,6 +81,8 @@ app.serve()
                     "qd_platform",
                     "qd_availability",
                     "qd_usage",
+                    "qd_plan",
+                    "qd_job_billing",
                     "qd_job_status",
                     "qd_job_result",
                     "qd_cancel_job",

@@ -173,8 +173,10 @@ PACKAGES = ("perceval-quandela", "exqalibur")
 MCP_TOOLS = (
     "qd_availability",
     "qd_cancel_job",
+    "qd_job_billing",
     "qd_job_result",
     "qd_job_status",
+    "qd_plan",
     "qd_platform",
     "qd_platforms",
     "qd_simulate_local",
@@ -1311,6 +1313,81 @@ def plan(
         "versions": built["versions"],
         "payload_version_basis": built["payload_version_basis"],
     }
+
+
+def case_path(text: str) -> Path:
+    """The case directory a repository-relative or absolute path names, which must lie under results/quandela/.
+
+    The path resolves symbolic links before the check, so a link out of the
+    tree is refused with the same message as a path outside it.
+    """
+    allowed = (ROOT / "results/quandela").resolve()
+    path = (ROOT / text).resolve()
+    if path == allowed or allowed not in path.parents:
+        raise PlatformError(f"{text!r} is outside results/quandela/")
+    if not (path / "cases.json").is_file():
+        raise PlatformError(f"{text!r} holds no cases.json")
+    return path
+
+
+def plan_summary(planned: dict[str, Any]) -> dict[str, Any]:
+    """The facts of a plan result that decide a submission, without the job body.
+
+    The body's payload carries a "computation" entry only in payload version 2
+    (RPCBasedCommunicationLayer.send); version 1 keeps "command". The
+    "mitigations" key is the policy the body requests (body_mitigations).
+    """
+    body = planned["body"]
+    payload_part = body.get("payload") if isinstance(body, dict) else None
+    if not isinstance(payload_part, dict):
+        raise PlatformError("the planned job body carries no payload")
+    return {
+        **{key: value for key, value in planned.items() if key != "body"},
+        "payload_version": 2 if "computation" in payload_part else 1,
+        "mitigations_key": "mitigations" in payload_part,
+        "mitigations": body_mitigations(body),
+        "submitted": False,
+    }
+
+
+def job_billing(data: dict[str, Any], row: dict[str, Any], per_job_credits: float) -> dict[str, Any]:
+    """The credits one job's data bills under the measured rule; the cloud reports no per-job charge.
+
+    The rule (docs/runbooks/quandela-credit-optimization.md) is the per-job
+    price plus the platform's price per shot times the billed shots: the
+    shots used by a one-computation job, the largest iteration's max_shots by
+    an iterated one, which the job data does not split out. charge_used
+    prices the shots the job data reports and charge_ceiling prices the
+    payload's total max_shots; the charge lies between them for an iterated
+    job and equals charge_used for a single one. A job canceled before its
+    start time ran nothing and bills nothing.
+    """
+    if not math.isfinite(per_job_credits) or per_job_credits < 0:
+        raise PlatformError(f"per_job_credits {per_job_credits} is not a finite, non-negative number")
+    price = row["price_per_shot"]
+    shots = int(data.get("shots") or 0)
+    payload_part = data.get("payload")
+    cap = payload_part.get("max_shots") if isinstance(payload_part, dict) else None
+    ran = not (
+        data.get("status") == "canceled"
+        and data.get("start_time") is None
+        and not shots
+        and data.get("duration") is None
+    )
+    out: dict[str, Any] = {
+        "job_id": data.get("job_id"),
+        "platform": data.get("platform_name"),
+        "status": data.get("status"),
+        "shots": shots,
+        "max_shots": cap,
+        "duration": data.get("duration"),
+        "price_per_shot": price,
+        "per_job_credits": per_job_credits,
+        "basis": "billing rule applied to job data; the cloud reports no per-job charge",
+        "charge_used": round(per_job_credits + price * shots, 6) if ran else 0.0,
+        "charge_ceiling": round(per_job_credits + price * cap, 6) if ran and isinstance(cap, int) else None,
+    }
+    return out
 
 
 def write_json(path: Path, value: object, exclusive: bool = False) -> None:
