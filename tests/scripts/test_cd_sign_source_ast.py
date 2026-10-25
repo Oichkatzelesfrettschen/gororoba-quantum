@@ -48,6 +48,10 @@ def test_digest_covers_the_helper_closure_and_nothing_else() -> None:
     )
     if source_ast.generated(source + local) != term:
         raise AssertionError("names local to an unrelated function changed the certificate block")
+    if source_ast.generated(source + "\n\nindices = [_index for _index in range(3)]\n") != term:
+        raise AssertionError("a comprehension target named after a helper changed the certificate block")
+    if source_ast.generated(source + "\n\nvalues = [(_index := 0) for item in range(3)]\n") == term:
+        raise AssertionError("an assignment expression rebinding a helper left the source digest unchanged")
     with pytest.raises(source_ast.UnsupportedValue):
         source_ast.closure_source(source + "\n\nfrom math import *\n")
     closure = source_ast.closure_source(source)

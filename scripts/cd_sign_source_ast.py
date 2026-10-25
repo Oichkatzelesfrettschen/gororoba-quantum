@@ -74,6 +74,7 @@ def function_node(source: str, name: str = "cd_sign") -> ast.FunctionDef:
 
 
 SCOPES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)
+COMPREHENSIONS = (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)
 
 
 def _module_scope(node: ast.AST) -> list[ast.AST]:
@@ -83,7 +84,14 @@ def _module_scope(node: ast.AST) -> list[ast.AST]:
     if isinstance(node, SCOPES):
         return found
     for child in ast.iter_child_nodes(node):
-        found.extend([child] if isinstance(child, SCOPES) else _module_scope(child))
+        if isinstance(child, SCOPES):
+            found.append(child)
+        elif isinstance(child, COMPREHENSIONS):
+            # A comprehension's targets are its own; its first iterable and any := target act in the enclosing scope.
+            found.extend(_module_scope(child.generators[0].iter))
+            found.extend(item.target for item in ast.walk(child) if isinstance(item, ast.NamedExpr))
+        else:
+            found.extend(_module_scope(child))
     return found
 
 
