@@ -101,7 +101,10 @@ The [operator procedure](docs/runbooks/plan-tracker.md) documents commands and s
 
 `docs/` owns source notes, retained PDFs, retrieval identities and research
 replays, and [docs/README.md](docs/README.md) is the map of every document.
-`literature -> docs` preserves recorded paths; new Markdown links use `docs/`. Immutable source ledgers retain their recorded bytes. The
+`literature -> docs` preserves recorded paths; new Markdown links use `docs/`. Immutable source ledgers retain their recorded bytes. External-only sources (`redistribution: excluded_without_permission`) keep their reading copies and Markdown transcriptions in the owner's private repository
+[gororoba-quantum-documents](https://github.com/Oichkatzelesfrettschen/gororoba-quantum-documents), cloned beside this checkout; `"$PYTHON" scripts/fetch_source_cache.py --missing --from-documents DIR` restores the
+ignored `docs/local_source_cache/` from it, and the same command without `--from-documents` fetches the registered URLs.
+Only that repository receives those files. The
 `sources` suite in ci/gates.json covers the source registry, the evidence
 replays and their checksum ledgers.
 
