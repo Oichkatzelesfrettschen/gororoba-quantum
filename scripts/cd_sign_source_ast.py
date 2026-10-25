@@ -80,6 +80,8 @@ def _module_scope(node: ast.AST) -> list[ast.AST]:
     """node and every descendant that executes in module scope: a def or class binds its name there, its body runs
     in its own scope."""
     found = [node]
+    if isinstance(node, SCOPES):
+        return found
     for child in ast.iter_child_nodes(node):
         found.extend([child] if isinstance(child, SCOPES) else _module_scope(child))
     return found

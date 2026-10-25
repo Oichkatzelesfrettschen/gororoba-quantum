@@ -42,6 +42,12 @@ def test_digest_covers_the_helper_closure_and_nothing_else() -> None:
             raise AssertionError(f"{label} left the source digest unchanged")
     if source_ast.generated(source + "\n\nsign = 123\nhalf = 4\n") != term:
         raise AssertionError("a module-level name shadowed by a cd_sign local changed the certificate block")
+    local = (
+        "\n\ndef unrelated() -> int:\n    from operator import index as integer_index\n"
+        "    _index = 1\n    return _index\n"
+    )
+    if source_ast.generated(source + local) != term:
+        raise AssertionError("names local to an unrelated function changed the certificate block")
     with pytest.raises(source_ast.UnsupportedValue):
         source_ast.closure_source(source + "\n\nfrom math import *\n")
     closure = source_ast.closure_source(source)
