@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/runtime/legacy/job.html](https://perceval.quandela.net/docs/v1.3/reference/runtime/legacy/job.html)
-> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 3f09aaeaa2eea8e6d0c3502a4aa6b7c99267ccab8048b494337c9f71a75f4921.
+> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 3f09aaeaa2eea8e6d0c3502a4aa6b7c99267ccab8048b494337c9f71a75f4921.
 
 # Job
 

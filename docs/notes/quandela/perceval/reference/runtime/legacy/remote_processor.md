@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/runtime/legacy/remote_processor.html](https://perceval.quandela.net/docs/v1.3/reference/runtime/legacy/remote_processor.html)
-> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 d14a53666d71b4ea08300e19f774dff40fe754035f3d31875fc8b518bc931978.
+> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 d14a53666d71b4ea08300e19f774dff40fe754035f3d31875fc8b518bc931978.
 
 # RemoteProcessor
 
