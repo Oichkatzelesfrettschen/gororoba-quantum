@@ -1,0 +1,713 @@
+{
+ "avoid_nullities": {
+  "A_6": {
+   "dimension": 64,
+   "nullity_by_coordinate": {
+    "1": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0,
+    "13": 0,
+    "14": 0,
+    "15": 0,
+    "16": 4,
+    "17": 0,
+    "18": 0,
+    "19": 0,
+    "2": 0,
+    "20": 0,
+    "21": 0,
+    "22": 0,
+    "23": 0,
+    "24": 0,
+    "25": 0,
+    "26": 0,
+    "27": 0,
+    "28": 0,
+    "29": 0,
+    "3": 0,
+    "30": 0,
+    "31": 0,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+    "7": 0,
+    "8": 0,
+    "9": 0
+   },
+   "special_coordinate": 16
+  },
+  "A_7": {
+   "dimension": 128,
+   "nullity_by_coordinate": {
+    "1": 0,
+    "10": 0,
+    "11": 0,
+    "12": 0,
+    "13": 0,
+    "14": 0,
+    "15": 0,
+    "16": 0,
+    "17": 0,
+    "18": 0,
+    "19": 0,
+    "2": 0,
+    "20": 0,
+    "21": 0,
+    "22": 0,
+    "23": 0,
+    "24": 0,
+    "25": 0,
+    "26": 0,
+    "27": 0,
+    "28": 0,
+    "29": 0,
+    "3": 0,
+    "30": 0,
+    "31": 0,
+    "32": 4,
+    "33": 0,
+    "34": 0,
+    "35": 0,
+    "36": 0,
+    "37": 0,
+    "38": 0,
+    "39": 0,
+    "4": 0,
+    "40": 0,
+    "41": 0,
+    "42": 0,
+    "43": 0,
+    "44": 0,
+    "45": 0,
+    "46": 0,
+    "47": 0,
+    "48": 0,
+    "49": 0,
+    "5": 0,
+    "50": 0,
+    "51": 0,
+    "52": 0,
+    "53": 0,
+    "54": 0,
+    "55": 0,
+    "56": 0,
+    "57": 0,
+    "58": 0,
+    "59": 0,
+    "6": 0,
+    "60": 0,
+    "61": 0,
+    "62": 0,
+    "63": 0,
+    "7": 0,
+    "8": 0,
+    "9": 0
+   },
+   "special_coordinate": 32
+  },
+  "A_8": {
+   "dimension": 256,
+   "nullity_by_coordinate": {
+    "1": 0,
+    "127": 0,
+    "2": 0,
+    "64": 4
+   },
+   "special_coordinate": 64
+  }
+ },
+ "cross_matrix": {
+  "A_6": {
+   "cross_matrix_annihilates_z": true,
+   "cross_matrix_skew": true
+  },
+  "A_7": {
+   "cross_matrix_annihilates_z": true,
+   "cross_matrix_skew": true
+  },
+  "A_8": {
+   "cross_matrix_annihilates_z": true,
+   "cross_matrix_skew": true
+  }
+ },
+ "cross_matrix_rank": {
+  "A_6": {
+   "dimension": 64,
+   "full_rank": 30,
+   "point_rank_cross": 30,
+   "z_nonzero": true
+  },
+  "A_7": {
+   "dimension": 128,
+   "full_rank": 62,
+   "point_rank_cross": 62,
+   "z_nonzero": true
+  },
+  "A_8": {
+   "dimension": 256,
+   "full_rank": 126,
+   "point_rank_cross": 126,
+   "z_nonzero": true
+  }
+ },
+ "degree_identity_higher": {
+  "A_7": {
+   "coordinates": [
+    1,
+    2
+   ],
+   "det_L_zero": false,
+   "identity_holds": [
+    true,
+    true
+   ],
+   "norm": 236
+  },
+  "A_8": {
+   "coordinates": [
+    1,
+    2
+   ],
+   "det_L_zero": false,
+   "identity_holds": [
+    true,
+    true
+   ],
+   "norm": 490
+  }
+ },
+ "degree_identity_points": [
+  {
+   "coordinates": [
+    2,
+    5
+   ],
+   "det_L_zero": false,
+   "identity_holds": [
+    true,
+    true
+   ],
+   "norm": 6,
+   "point": "six-term Stiefel",
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "coordinates": [
+    1,
+    2
+   ],
+   "det_L_zero": false,
+   "identity_holds": [
+    true,
+    true
+   ],
+   "norm": 114,
+   "point": "disjoint-support Stiefel",
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "coordinates": [
+    1,
+    2
+   ],
+   "det_L_zero": true,
+   "identity_holds": [
+    true,
+    true
+   ],
+   "norm": 114,
+   "point": "disjoint-support Stiefel avoiding z_16",
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "coordinates": [
+    1,
+    2
+   ],
+   "det_L_zero": true,
+   "identity_holds": [
+    true,
+    true
+   ],
+   "norm": 2,
+   "point": "pair e_1 + i e_2",
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "coordinates": [
+    1,
+    2
+   ],
+   "det_L_zero": false,
+   "identity_holds": [
+    true,
+    true
+   ],
+   "norm": 3,
+   "point": "non-Stiefel e_1 + e_2 + i e_3",
+   "stiefel_defect": [
+    1,
+    0
+   ]
+  }
+ ],
+ "f_squared_crosschecks": {
+  "a5_q_g_squared": [
+   true,
+   true
+  ],
+  "a6_slice_polynomial_squared": true
+ },
+ "irreducible_lines": {
+  "A_6": {
+   "degree": 14,
+   "dimension": 64,
+   "irreducible": true,
+   "line": 30,
+   "prime": 2305843009213693951
+  },
+  "A_7": {
+   "degree": 30,
+   "dimension": 128,
+   "irreducible": true,
+   "line": 52,
+   "prime": 2305843009213693951
+  },
+  "A_8": {
+   "degree": 62,
+   "dimension": 256,
+   "irreducible": true,
+   "line": 112,
+   "prime": 2305843009213693951
+  }
+ },
+ "left_matrix_cross_checks": {
+  "A_6": 4,
+  "A_7": 4,
+  "A_8": 4
+ },
+ "pair_nullities": {
+  "A_5": {
+   "dimension": 32,
+   "nullity_counts": {
+    "12": 126,
+    "4": 84
+   },
+   "off_hyperplane_nullity_counts": {
+    "12": 28
+   },
+   "off_hyperplane_pairs": 28,
+   "pairs": 210
+  },
+  "A_6": {
+   "dimension": 64,
+   "nullity_counts": {
+    "12": 168,
+    "20": 168,
+    "28": 342,
+    "4": 252
+   },
+   "off_hyperplane_nullity_counts": {
+    "28": 60
+   },
+   "off_hyperplane_pairs": 60,
+   "pairs": 930
+  },
+  "A_7": {
+   "dimension": 128,
+   "nullity_counts": {
+    "12": 504,
+    "20": 336,
+    "28": 336,
+    "36": 336,
+    "4": 684,
+    "44": 336,
+    "52": 504,
+    "60": 870
+   },
+   "off_hyperplane_nullity_counts": {
+    "60": 124
+   },
+   "off_hyperplane_pairs": 124,
+   "pairs": 3906
+  }
+ },
+ "schema": "stiefel-pfaffian-higher-v1",
+ "seven_coordinate_slice": {
+  "degree": 14,
+  "dimension": 64,
+  "f_is_q_power": false,
+  "factor_term_counts": [
+   [
+    1716,
+    1
+   ]
+  ],
+  "min_special_exponent": 2,
+  "q_divides_f": false,
+  "remainder": "256*x4^2*x13^4*x14^2*x16^2*x22^4 + 256*x4^2*x13^4*x14^2*x16^2*x22^2*x26^2 + 256*x4^2*x13^2*x14^4*x16^2*x22^4 + 256*x4^2*x13^2*x14^4*x16^2*x22^2*x26^2 + 256*x4^2*x13^2*x14^2*x16^4*x22^4 + 256*x4^2*x13^2*x14^2*x16^4*x22^2*x26^2 + 256*x4^2*x13^2*x14^2*x16^2*x22^6 + 256*x4^2*x13^2*x14^2*x16^2*x22^4*x26^2 + 256*x4^2*x14^4*x16^2*x22^4*x26^2 + 256*x13^4*x14^2*x16^2*x22^4*x26^2 + 512*x13^2*x14^4*x16^2*x22^4*x26^2 + 256*x13^2*x14^2*x16^4*x22^4*x26^2 + 256*x13^2*x14^2*x16^2*x22^6*x26^2 + 256*x14^6*x16^2*x22^4*x26^2 + 256*x14^4*x16^4*x22^4*x26^2 + 256*x14^4*x16^2*x22^6*x26^2 + 256*x14^4*x16^2*x22^4*x26^4",
+  "remainder_terms": 17,
+  "support": [
+   3,
+   4,
+   13,
+   14,
+   16,
+   22,
+   26
+  ],
+  "terms": 1716
+ },
+ "six_coordinate_closed_form": {
+  "closed_form_equals_minus_x2_x5_form_mod_q": true,
+  "f_irreducible": true,
+  "f_terms": 792,
+  "remainder_is_closed_form": true
+ },
+ "six_coordinate_slice": {
+  "degree": 14,
+  "dimension": 64,
+  "f_is_q_power": false,
+  "factor_term_counts": [
+   [
+    792,
+    1
+   ]
+  ],
+  "min_special_exponent": 2,
+  "q_divides_f": false,
+  "remainder": "256*x5^2*x14^6*x16^2*x20^2*x22^2 + 256*x5^2*x14^4*x16^4*x20^2*x22^2 + 256*x5^2*x14^4*x16^2*x20^4*x22^2 + 256*x5^2*x14^4*x16^2*x20^2*x22^4",
+  "remainder_terms": 4,
+  "support": [
+   2,
+   5,
+   14,
+   16,
+   20,
+   22
+  ],
+  "terms": 792
+ },
+ "slice_without_z16": {
+  "degree": 14,
+  "dimension": 64,
+  "f_is_q_power": false,
+  "factor_term_counts": [
+   [
+    6,
+    1
+   ],
+   [
+    7,
+    2
+   ],
+   [
+    7,
+    2
+   ],
+   [
+    6,
+    2
+   ]
+  ],
+  "min_special_exponent": null,
+  "q_divides_f": true,
+  "remainder": "0",
+  "remainder_terms": 0,
+  "support": [
+   2,
+   5,
+   14,
+   20,
+   22,
+   3
+  ],
+  "terms": 792
+ },
+ "small_cofactors": {
+  "f4_equals_q": true,
+  "f5_equals_q_g": true,
+  "g_factor_term_counts": [
+   [
+    141,
+    1
+   ]
+  ],
+  "q_factor_term_counts": [
+   [
+    15,
+    1
+   ]
+  ]
+ },
+ "stiefel_witnesses": [
+  {
+   "dimension": 64,
+   "element_sha256": "e7c913a26d6de02c6f56b24ba1f573910a5b8697739408661330f2507654af72",
+   "label": "five-term",
+   "nonzero_coordinates": 5,
+   "nullity": 0,
+   "rank": 64,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "dimension": 64,
+   "element_sha256": "64feac208cd7f5b1ce7c7c92e6090bedfc49858041f0cbc533d83673c7fd9469",
+   "label": "six-term",
+   "nonzero_coordinates": 6,
+   "nullity": 0,
+   "rank": 64,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "dimension": 64,
+   "element_sha256": "9f913acc8c70f058a6f4c335c08cd3ef17b0c28a93fef38cfa3ccfb5f21ce764",
+   "label": "disjoint support",
+   "nonzero_coordinates": 30,
+   "nullity": 0,
+   "rank": 64,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "dimension": 128,
+   "element_sha256": "fa3e27f07fb12914061ebc9b3e85f17fd471e6a95644ac74b12adf76fefe0283",
+   "label": "disjoint support",
+   "nonzero_coordinates": 62,
+   "nullity": 0,
+   "rank": 128,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "dimension": 256,
+   "element_sha256": "7c8fcaaf099104110132ce9d956dec064fab886d061fb44ebc5c1240cd98eb17",
+   "label": "disjoint support",
+   "nonzero_coordinates": 126,
+   "nullity": 0,
+   "rank": 256,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "dimension": 128,
+   "element_sha256": "2c1eca4720c5ec9ef134b27db4dd80319ff6ca8191b410e963e612d26fb70d32",
+   "label": "five-term indices",
+   "nonzero_coordinates": 5,
+   "nullity": 4,
+   "rank": 124,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "dimension": 256,
+   "element_sha256": "efbbcb454e3f3402c22358f37979a6d988488be5d651769d6b153c0e097bdeeb",
+   "label": "five-term indices",
+   "nonzero_coordinates": 5,
+   "nullity": 12,
+   "rank": 244,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "dimension": 128,
+   "element_sha256": "dfd5664c75ef4a65bacfa2e47209bef3788ab87bbd6dac835c216311fad8c1b7",
+   "label": "six-term indices",
+   "nonzero_coordinates": 6,
+   "nullity": 4,
+   "rank": 124,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "dimension": 256,
+   "element_sha256": "c69ad94c4e22edbe59662cc489146edb5aaa71d1507f8cd9ac016d4409bcea1d",
+   "label": "six-term indices",
+   "nonzero_coordinates": 6,
+   "nullity": 12,
+   "rank": 244,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "dimension": 64,
+   "element_sha256": "2c5fb8fe66461adc036e1ee48b0e2d8c78cb02a6325fd427ccaafc53787101b2",
+   "label": "Moreno 4.3 e1 + e2, e3 + e4",
+   "nonzero_coordinates": 4,
+   "nullity": 28,
+   "rank": 36,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  },
+  {
+   "dimension": 64,
+   "element_sha256": "53252e720d24ca13554c37efb087b1db2788254a7b4c8e639a72b1f27ed5ac29",
+   "label": "Moreno 4.3 e1 + e2, e17 + e18",
+   "nonzero_coordinates": 4,
+   "nullity": 28,
+   "rank": 36,
+   "stiefel_defect": [
+    0,
+    0
+   ]
+  }
+ ],
+ "three_coordinate_slices": {
+  "A_4": {
+   "degree": 2,
+   "dimension": 16,
+   "f_is_q_power": true,
+   "factor_term_counts": [
+    [
+     3,
+     1
+    ]
+   ],
+   "min_special_exponent": null,
+   "q_divides_f": true,
+   "remainder": "0",
+   "remainder_terms": 0,
+   "support": [
+    1,
+    2,
+    3
+   ],
+   "terms": 3
+  },
+  "A_5": {
+   "degree": 6,
+   "dimension": 32,
+   "f_is_q_power": true,
+   "factor_term_counts": [
+    [
+     3,
+     3
+    ]
+   ],
+   "min_special_exponent": null,
+   "q_divides_f": true,
+   "remainder": "0",
+   "remainder_terms": 0,
+   "support": [
+    1,
+    2,
+    3
+   ],
+   "terms": 10
+  },
+  "A_6": {
+   "degree": 14,
+   "dimension": 64,
+   "f_is_q_power": true,
+   "factor_term_counts": [
+    [
+     3,
+     7
+    ]
+   ],
+   "min_special_exponent": null,
+   "q_divides_f": true,
+   "remainder": "0",
+   "remainder_terms": 0,
+   "support": [
+    1,
+    2,
+    3
+   ],
+   "terms": 36
+  },
+  "A_7": {
+   "degree": 30,
+   "dimension": 128,
+   "f_is_q_power": true,
+   "factor_term_counts": [
+    [
+     3,
+     15
+    ]
+   ],
+   "min_special_exponent": null,
+   "q_divides_f": true,
+   "remainder": "0",
+   "remainder_terms": 0,
+   "support": [
+    1,
+    2,
+    3
+   ],
+   "terms": 136
+  },
+  "A_8": {
+   "degree": 62,
+   "dimension": 256,
+   "f_is_q_power": true,
+   "factor_term_counts": [
+    [
+     3,
+     31
+    ]
+   ],
+   "min_special_exponent": null,
+   "q_divides_f": true,
+   "remainder": "0",
+   "remainder_terms": 0,
+   "support": [
+    1,
+    2,
+    3
+   ],
+   "terms": 528
+  }
+ },
+ "transport": {
+  "A_6": {
+   "agreeing": 62,
+   "dimension": 64,
+   "imaginary_basis_elements": 62
+  },
+  "A_7": {
+   "agreeing": 126,
+   "dimension": 128,
+   "imaginary_basis_elements": 126
+  }
+ },
+ "versions": {
+  "numpy": "2.5.4",
+  "python-flint": "0.9.0"
+ }
+}

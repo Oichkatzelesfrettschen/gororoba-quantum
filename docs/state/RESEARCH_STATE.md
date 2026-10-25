@@ -669,7 +669,7 @@ circuit and charges the account ledger's change.
   Evidence: [nullity.json](../evidence/moreno_stiefel/nullity.json), [README.md](../evidence/moreno_stiefel/README.md).
   Gates: replayed by core-267.
 - **a6-stiefel-generic-invertibility** (mathematical claim, algebra). On V = V_2(R^31), the unit orthogonal pure pairs (a, b) in (Im A_5)^2, L_(a,b) is invertible on an open, dense, full-measure subset; the zero-divisor Stiefel elements form a closed measure-zero semialgebraic subset of dimension at most 58.
-  Boundary: Written proof, not machine-checked; the exceptional subset's exact dimension, components and geometry, and the A_5 question, remain open.
+  Boundary: Written proof, not machine-checked. Claim a6-a8-stiefel-zero-divisor-cone sharpens the bound: the exceptional subset has dimension exactly 57; its components and real geometry remain open.
   Proof origin: repository-written.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); V_2(R^31) is a connected real-analytic manifold of dimension 59; a real-analytic function not identically zero on a connected real-analytic manifold vanishes on a closed set with empty interior and measure zero (arXiv:1512.07276); det L_(a,b) is a polynomial in the coordinates and is nonzero at the normalized integer witness.
   Evidence: [math-0512517.md](../notes/math-0512517.md), [stiefel_generic_invertibility.md](../notes/stiefel_generic_invertibility.md).
@@ -749,6 +749,25 @@ circuit and charges the account ledger's change.
   Evidence: [ziller_table.json](../evidence/primorial_cover/ziller_table.json), [primorial-cover-defects.md](../notes/topics/primorial-cover-defects.md), [README.md](../evidence/primorial_cover/README.md), [2007.01808.md](../notes/papers/2007.01808.md).
   Gates: replayed by core-primorial-ziller-table-replay.
   Depends on: primorial-cover-defect-certificates.
+- **stiefel-pfaffian-transport-all-n** (mathematical claim, algebra). For doubly pure y = (p, q) in A_n and z = p + i q, phi(y x) = A(z, conj z) conj(phi(x)) with A(z, t) = [[0, -t^T], [t, C_z]], so rank_R L_y = 2 rank_C A(z, conj z); the cofactors of C_z satisfy P_j = f_n z_j for a homogeneous f_n in Z[z] of degree 2^(n-2) - 2, and det L_y = N^4 |f_n(z)|^4, with f_4 = Q and f_5 = Q G.
+  Boundary: Written proof for every n in docs/evidence/stiefel-pfaffian-higher/README.md; gate core-692 checks the transport on every basis pair at n = 6 and 7 and the cofactor identities at n = 6, 7, 8, and the independent verification (verification.md) re-derived the proof and checked n = 8 with its own code. The degree-(2^(n-2) - 2) form of f_n beyond n = 8 rests on the written argument only; not formalized in Rocq.
+  Proof origin: repository-written.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
+  Evidence: [result.json](../evidence/stiefel-pfaffian-higher/result.json), [README.md](../evidence/stiefel-pfaffian-higher/README.md), [verification.md](../evidence/stiefel-pfaffian-higher/verification.md).
+  Gates: replayed by core-692; replay failure paths checked by core-693.
+  Depends on: a5-stiefel-universal.
+- **a6-a8-stiefel-zero-divisor-cone** (mathematical claim, algebra). For n = 6, 7, 8, f_n is irreducible over Q and not divisible by Q = z.z, so the zero-divisor Stiefel elements of A_n form the complex points of V(Q, f_n), a cone of pure real dimension 2^n - 6, codimension 2 in the Stiefel cone; on unit pairs the dimension is 57, 121 and 249. The five-term element e_12 + e_15 + e_16 + e_23 + 2 e_34 is an invertible Stiefel element of A_6.
+  Boundary: Irreducibility by a mod-p line argument in gate core-692 and, independently, by an exact factorization over Z on an integer line (verification.md); the dimension follows from Krull's principal ideal theorem on the irreducible quadric cone V(Q) because z = p + i q covers all of C^(2^(n-1) - 1). Given Biss-Christensen-Dugger-Isaksen Theorem 1.5, V(Q, f_6) contains the component {Q = z_16 = 0} and at least one other, through e_16 + i e_1 (nullity 28). Every Stiefel element of A_6 supported on at most four coordinates is a zero divisor by an exact slice computation in the ungated --explore record, not by a gate. Open: f_n modulo Q, absolute irreducibility, the number and real structure of components, and least supports at A_7 and A_8.
+  Proof origin: repository-written.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); Biss, Christensen, Dugger and Isaksen, math/0702075, Theorem 1.5, for the component statement only.
+  Evidence: [result.json](../evidence/stiefel-pfaffian-higher/result.json), [README.md](../evidence/stiefel-pfaffian-higher/README.md), [verification.md](../evidence/stiefel-pfaffian-higher/verification.md).
+  Gates: replayed by core-692; replay failure paths checked by core-693.
+  Depends on: stiefel-pfaffian-transport-all-n, a6-stiefel-generic-invertibility.
+- **a7-a8-stiefel-witness** (exact finite certificate, algebra). Moreno's question has a negative answer at A_7 and A_8: an explicit disjoint-support integer Stiefel element has left multiplication of exact rank 128 and 256, so it is not a zero divisor.
+  Boundary: Exact integer ranks of the two retained witnesses, re-derived by gate core-692 and independently by the verification; nothing beyond the two elements.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
+  Evidence: [result.json](../evidence/stiefel-pfaffian-higher/result.json), [README.md](../evidence/stiefel-pfaffian-higher/README.md), [verification.md](../evidence/stiefel-pfaffian-higher/verification.md).
+  Gates: replayed by core-692.
 - **four-support-topology** (mathematical claim, geometry). On support {1, 10, 18, 25} exact sector identities classify every real tuple; the unit base has 96 connected smooth strata; a 1,200-cell CW model with explicit attaching maps gives torsion-free integral homology and a square-zero positive-degree cohomology ideal, and ordinary doubling preserves the five-factor model for every n >= 5.
   Boundary: The first operand stays on the four-coordinate support; other supports, a wedge decomposition, homotopy type and unrestricted topology remain open.
   Proof origin: repository-written.
@@ -1703,6 +1722,12 @@ circuit and charges the account ledger's change.
 
 ## Open claims
 
+- **stiefel-pfaffian-f-modulo-q** (mathematical claim, algebra). Open: the form of f_n modulo Q for n >= 6, whether f_n lies in (Q, z_s^2) with s = 2^(n-2), and whether f_n is absolutely irreducible.
+  Boundary: f_n does not lie in (Q, z_s^3) for n = 6, 7 (isotropic lines over F_p, verification row 7b); membership in (Q, z_s^2) holds on two coordinate slices and on every tested line, which proves nothing beyond them.
+  Proof origin: unproved-open.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
+  Evidence: [README.md](../evidence/stiefel-pfaffian-higher/README.md), [verification.md](../evidence/stiefel-pfaffian-higher/verification.md).
+  Depends on: stiefel-pfaffian-transport-all-n.
 - **dimension32-global-topology** (mathematical claim, geometry). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.
   Boundary: Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.
   Proof origin: unproved-open.
