@@ -25,17 +25,17 @@
       "state": "done",
       "receipts": [
         {
-          "result": "No device question survives: on both Kingston paths the gap-88 and null arms drive identical pulses, and static ZZ (2 to 20 kHz) and axis tilt (0.005 to 0.02 rad) leave null-subtracted biases of at most 0.00034 and 0.0055, below the 0.0188 and 0.0186 coefficient SDs at the retained budgets; IQM and Tuna-17 rotations carrying the gradient angles are frame changes or exact grid angles.",
-          "observed_at": "2026-10-25T19:05:00+00:00",
-          "revision": "29cc8549ca1b4beace337baf8126f9903e2f2d18",
+          "result": "No device question survives: on both Kingston paths the gap-88 and null arms drive identical pulses; static ZZ (2 to 20 kHz) leaves null-subtracted biases of at most 0.00038, fixed tilts (0.005 to 0.02 rad) at most 0.0055, and tilt at each qubit's sx gate-error bound at most 0.0159, below the 0.0188 and 0.0186 coefficient SDs at the retained budgets; IQM and Tuna-17 carry the gradient angles as frame changes or exact grid angles.",
+          "observed_at": "2026-10-25T19:03:45+00:00",
+          "revision": "7f67b3f10b71d6d54b6622bf7bdb5c8f2d336145",
           "evidence": [
             {
               "ref": "docs/evidence/primorial_cover/null_residuals.json",
-              "sha256": "0b1c5ff178130121188c02c4fac4b7f6d60c652405a11fe1625481d16bfa8fec"
+              "sha256": "fdda4701dc8b33fb1122c53658f12a4b4b3870d05cba8e491f684bc722ffabbe"
             },
             {
               "ref": "docs/design/primorial-cover-defect-probes.md",
-              "sha256": "e04397a1fe9c1c7952d47634b227a207a0428709f61d804fea803c5ce583ff05"
+              "sha256": "8ef54a12c9861447feadf3956af2bf8bcf2614862c12f80850266e53ec8e6a1e"
             }
           ],
           "scope_sha256": "9b4974d3809a27b057126a00230ebc90894f87174821604f6516abba7a1918f2"
@@ -69,8 +69,8 @@
     {
       "scope_sha256": "5f2b6d48b8ca6ba2e34d3b6e1052a7c2b897869fea54192eec259bfb67359881",
       "result": "Every step is done with its receipt: the Table 1 reproduction record and the null-residual record that closes the device question.",
-      "observed_at": "2026-10-25T19:10:00+00:00",
-      "revision": "29cc8549ca1b4beace337baf8126f9903e2f2d18",
+      "observed_at": "2026-10-25T19:03:45+00:00",
+      "revision": "7f67b3f10b71d6d54b6622bf7bdb5c8f2d336145",
       "evidence": [
         {
           "ref": "docs/evidence/primorial_cover/ziller_table.json",
@@ -78,7 +78,7 @@
         },
         {
           "ref": "docs/evidence/primorial_cover/null_residuals.json",
-          "sha256": "0b1c5ff178130121188c02c4fac4b7f6d60c652405a11fe1625481d16bfa8fec"
+          "sha256": "fdda4701dc8b33fb1122c53658f12a4b4b3870d05cba8e491f684bc722ffabbe"
         }
       ]
     }
