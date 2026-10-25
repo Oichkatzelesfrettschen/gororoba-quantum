@@ -943,12 +943,13 @@ covariance C of the low-dimensional families is the inverse expected (Fisher)
 information, in place of the observed information the paragraph above names;
 the static families use the observed information, the exact Hessian of the
 posterior at its mode, which Newton steps from the L-BFGS endpoint reach.
-Each left-out fit starts from the full-data mode. That selects one basin of
-a posterior that can hold several. The start leans toward the left-out
-configuration, so it can only lower the left-out statistic. No preregistered
-family passes, so the record names no mechanism.
+Each left-out fit of that record starts from the full-data mode, so the
+omitted configuration's counts choose the basin of a posterior that can hold
+several; the [training-only refit](#leave-one-configuration-out-from-training-data)
+replaces that column. No preregistered family passes, so the record names no
+mechanism.
 
-| Family | Job-00 X / Y | Job-01 held-out X / Y | Left-out configuration X / Y | Predicted X0 + Xc2, job-01 |
+| Family | Job-00 X / Y | Job-01 held-out X / Y | Left-out X / Y, full-data start, counting only | Predicted X0 + Xc2, job-01 |
 |---|---|---|---|---|
 | nominal | 343 / 75 | 663 / 238 | 343 / 75 | 0.000 |
 | dephasing (sigma 0.022 rad) | 320 / 73 | 618 / 236 | | 0.000 |
@@ -966,11 +967,14 @@ Each entry sums ten configurations of one readout. The job-00 column is
 descriptive, because the fit used those counts. Job-01's block-conditioned
 X0 + Xc2 reads -0.0307 [-0.0483, -0.0131].
 - The one- and two-parameter families fail in and out of sample and leave
-  X0 + Xc2 at -0.005 or above. Heater phase noise, a uniform heater gain,
-  nearest-neighbor thermal crosstalk, a uniform coupler offset, coupler
-  noise and per-mode detection efficiency are each rejected as the source of
-  the analyzer response. Efficiency acts through cos^2 phi at theta = 0,
-  which is sign-even, and its mode-2 term runs to the -0.5 bound.
+  X0 + Xc2 at -0.005 or above. Each family is rejected as the source of the
+  analyzer response in the form fitted: homogeneous independent Gaussian
+  heater phase noise, a uniform heater gain, nearest-neighbor thermal
+  crosstalk, a uniform coupler offset, homogeneous coupler noise and per-mode
+  detection efficiency. Correlated or drive-dependent phase noise lies
+  outside these families. The efficiency fit's mode-2 term runs to its -0.5
+  bound; the rejection is that fit's, and a symmetry argument at theta = 0
+  constrains only X0 + Xc2 + Xc4, so it does not exclude efficiency by itself.
 - Shared static heater offsets (rms 0.060 and 0.137 rad) or coupler offsets
   (rms 0.039 rad) reproduce X0 + Xc2 and correlate with job-01's
   configuration residuals at 0.96 to 0.98 on X. Each kind alone fails
@@ -985,22 +989,61 @@ X0 + Xc2 reads -0.0307 [-0.0483, -0.0131].
   offsets lower Y (64 against 75), and the combined family raises it to 800.
   The offsets reproduce each configuration they were fitted on far better
   than one they were not.
-- Each left-out fit starts from the full-data mode, which can only lower the
-  left-out statistic. The statistic ignores the fitted parameters'
-  covariance, which raises it. Neither changes a reading at these
-  magnitudes.
+- That column starts each left-out fit from the full-data mode and scores it
+  in counting variance alone. The training-only refit below, scored with the
+  fitted-prediction variance, supersedes it.
 
 The X0 + Xc2 departure and the X residual pattern are therefore
-per-configuration properties of the compiled circuits that reproduce across
-the jobs. No mesh error tested here, incoherent, uniform or static per
-element, predicts them from a configuration's phases within counting noise;
-static per-element offsets capture a part of the X response that transfers
-between configurations. The supplementary
+configuration-dependent responses of the compiled circuits that reproduce
+across the jobs. The tested low-dimensional families fail; the static
+families reproduce the fitted configurations and predict left-out ones
+poorly (next section). The physical cause stays unidentified: these fits
+neither show that the underlying errors are independent between
+configurations nor exclude every shared error of the chip. The supplementary
 families and the leave-one-configuration-out test were added after the
-preregistered table and decide nothing. Confidence that no static error of
-the returned mesh model explains the response is medium. It would rise if a
-mesh model with a drive-dependent heater response also failed to predict
-left-out configurations. It would fall if any shared family predicted them
-within counting noise. The fitted families replay within 1e-3 relative plus
-1e-8 absolute across BLAS builds, the unfitted nominal family at the
-certificate tolerance.
+preregistered table and decide nothing. The fitted families replay within
+1e-3 relative plus 1e-8 absolute across BLAS builds, the unfitted nominal
+family at the certificate tolerance.
+
+### Leave-one-configuration-out from training data
+
+[`ascella_configuration_holdout.py`](../../scripts/ascella_configuration_holdout.py)
+writes [`configuration-holdout.json`](../evidence/ascella-order-coefficients/configuration-holdout.json).
+For each static family and each of job-00's 30 configurations, the fold fit
+removes the configuration's settings and reaches the posterior mode from the
+zero start, so neither the start nor the mode selection reads the left-out
+counts. The left-out X and Y statistics are scored in their counting variance
+v plus the local prediction variance g C g^T, with C the inverse posterior
+Hessian of the fold fit and g the statistic's analytic gradient over the
+offsets. The folds share 28 or 29 training configurations, so the sums below
+are descriptive and carry no chi-square reference. The criterion was fixed
+before the run (plan `ascella-configuration-holdout-training-only`): a sum of
+30 or more on 10 configurations for X or Y keeps the shortfall with the
+prediction uncertainty included; a sum below 20 with a median
+prediction-to-counting variance ratio above 1 reads as weakly identified
+predictions rather than a rejection.
+
+| Family | Left-out X / Y, counting only | Left-out X / Y, with prediction variance | Median prediction / counting variance, X / Y |
+|---|---|---|---|
+| nominal | 343 / 75 | 343 / 75 | 0 / 0 |
+| static heater offsets, tau 0.1 | 342 / 171 | 205 / 88 | 0.63 / 0.62 |
+| static heater offsets, tau 0.3 | 476 / 123 | 167 / 45 | 0.82 / 0.61 |
+| static coupler offsets, tau 0.1 | 257 / 109 | 87 / 36 | 0.76 / 0.60 |
+| static heater 0.3 and coupler 0.1 offsets | 535 / 1114 | 27 / 52 | 12.7 / 2.2 |
+
+- From training data alone, every static family predicts left-out
+  configurations worse in counting variance than the full-data start did
+  (X 257 to 535 against 196 to 300), and all four do worse than the returned
+  mesh on Y (109 to 1114 against 75).
+- With the prediction variance, every family stays at 30 or more on 10 for
+  X or Y, so the shortfall stands under the preset criterion. The combined
+  family's X sum of 27 comes with a median prediction variance 12.7 times
+  the counting variance: its X predictions are weakly identified rather than
+  confidently wrong, and its Y sum of 52 carries the shortfall.
+- The prediction variance is the local quadratic approximation at each fold
+  mode; a posterior with distant modes can carry more uncertainty than it
+  shows. Confidence that no static error of the returned mesh model predicts
+  left-out configurations is medium. It would rise if a mesh model with a
+  drive-dependent heater response also failed this test, and fall if a
+  shared family's standardized sums came within twice the configuration
+  count.

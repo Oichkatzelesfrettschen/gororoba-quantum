@@ -3496,7 +3496,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
    "name": "sources-410",
    "seconds": 0.1,
    "tier": "pr"
@@ -3841,6 +3841,33 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py --self-test",
+   "name": "core-681",
+   "seconds": 62.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py check results/iqm/cases/idle-schedule-train-readout",
+   "name": "core-682",
+   "seconds": 35.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py analyze results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe --out results/iqm/idle_schedule_probe_analysis-runner-image.json --replay",
+   "name": "core-684",
+   "seconds": 2.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/idle_schedule_probe_analysis-runner-image.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py analyze results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0 results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate --out results/iqm/signed_kernel_null_retest_analysis.json --replay",
    "name": "core-643",
    "seconds": 20.0,
@@ -4098,6 +4125,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ascella_physical_models.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01 docs/evidence/ascella-order-coefficients/physical-models.json --check",
    "name": "core-ascella-signed-coherence-physical-models-replay",
    "seconds": 360.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/configuration-holdout.json --check",
+   "name": "core-ascella-signed-coherence-configuration-holdout-replay",
+   "seconds": 600.0,
    "tier": "full"
   },
   {

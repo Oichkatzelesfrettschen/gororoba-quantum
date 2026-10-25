@@ -54,7 +54,9 @@ false where its configuration enables it, or fails outside KNOWN_GPU_ABORTS.
 The record keeps every row up to that one and carries ``require_gpu``,
 which ``--check`` enforces again on the retained rows.
 
-``--check FILE`` recomputes every derived value of a retained record (ms
+``--check FILE`` requires the record's sha256 to equal a retained record's (gororoba_quantum/record_digest.py),
+because raw timings, samples and counts have no offline recomputation. It
+recomputes every derived value of a retained record (ms
 per shot, the per-row fit, utilization summaries, counts identity, speedups
 the two-round total variation against cpu_statevector, and each readout-toy
 row's z scores and verdict) from its raw timings, samples and counts, and
@@ -1118,8 +1120,11 @@ def seeded_counts(row: dict[str, Any]) -> Any:
 
 def compare_counts(path: Path, other: Path) -> None:
     """Every GPU density-matrix row of PATH draws OTHER's seeded counts; statevector matches are listed."""
+    import record_digest
+
     keyed: list[dict[tuple[Any, ...], dict[str, Any]]] = []
     for record in (path, other):
+        record_digest.require_retained(record)
         rows: dict[tuple[Any, ...], dict[str, Any]] = {}
         seen: dict[tuple[Any, ...], int] = {}
         for row in json.loads(record.read_text(encoding="utf-8"))["rows"]:
@@ -1142,6 +1147,11 @@ def compare_counts(path: Path, other: Path) -> None:
 
 
 def check(path: Path, requested: list[tuple[str, ...]]) -> int:
+    # Raw timings, samples, counts and environment readings have no offline recomputation; the digest binds them.
+    # The import is local because Kaggle bundles carry this script without record_digest.
+    import record_digest
+
+    record_digest.require_retained(path)
     record = json.loads(path.read_text(encoding="utf-8"))
     if record.get("schema") != SCHEMA:
         raise SystemExit(f"aer_gpu_probe: {path} schema is not {SCHEMA}")

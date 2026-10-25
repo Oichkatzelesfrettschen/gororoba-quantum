@@ -1864,6 +1864,20 @@
       "question": "What are QB7's readout errors and QB6's and QB11's prx over-rotations alongside the null re-test?"
     },
     {
+      "id": "iqm-garnet-mock-idle-schedule",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does the garnet:mock pipeline accept the 24-circuit idle schedule and train readout case unheralded with one active-reset cycle, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-idle-schedule",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does Garnet schedule a circuit job's gates as soon or as late as possible, and what over-rotation does each qubit's prx carry when fitted with its own readout?"
+    },
+    {
       "id": "iqm-garnet-kernel-cancellation",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation",
@@ -2019,11 +2033,11 @@
     },
     {
       "id": "ascella-signed-coherence-physical-models",
-      "statement": "Fitted on job-00 and scored on job-01's pooled configuration statistics, no preregistered shared error family of the returned 12-mode Ascella meshes passes (X and Y p > 0.01 on 10 degrees of freedom with predicted X0 + Xc2 inside job-01's interval). Heater phase noise (sigma 0.022 rad), a uniform heater gain, nearest-neighbor thermal crosstalk, a uniform coupler offset and coupler noise leave held-out X 527 to 663 and Y 167 to 241 and predict X0 + Xc2 of -0.005 or above against job-01's -0.031 [-0.048, -0.013]. Shared static heater offsets reproduce X0 + Xc2 (-0.022, -0.025) but leave held-out X 53 and 39. Supplementary static heater and coupler offsets together pass job-01 (X 7.0, Y 12.6 on 10), but refitted without one configuration no static family predicts the left-out configurations within counting noise: left-out X falls from the nominal mesh's 343 only to 196 to 300 on 10, and the combined family's Y rises from 75 to 800, so the offsets reproduce each fitted configuration far better than a new one.",
+      "statement": "Fitted on job-00 and scored on job-01's pooled configuration statistics, no preregistered shared error family of the returned 12-mode Ascella meshes passes (X and Y p > 0.01 on 10 degrees of freedom with predicted X0 + Xc2 inside job-01's interval). Homogeneous independent Gaussian heater phase noise (sigma 0.022 rad), a uniform heater gain, nearest-neighbor thermal crosstalk, a uniform coupler offset and homogeneous coupler noise leave held-out X 527 to 663 and Y 167 to 241 and predict X0 + Xc2 of -0.005 or above against job-01's -0.031 [-0.048, -0.013]. Shared static heater offsets reproduce X0 + Xc2 (-0.022, -0.025) but leave held-out X 53 and 39. Supplementary static heater and coupler offsets together pass job-01 (X 7.0, Y 12.6 on 10), a test of reproducibility across acquisitions; prediction of left-out configurations is claim ascella-signed-coherence-configuration-holdout.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Shared families of the provider's returned mesh model only; the multinomial ignores drift within an iteration, the in-block background uses plan-time catalogue dark rates and each job's own outside-block counts (about 2e-4 on the predicted statistics), and the covariance is the inverse expected information for the low-dimensional families and the observed information at the posterior mode for the static ones. Static offsets come from pure-state propagation. The job-00 in-sample statistics are descriptive. The detector-efficiency and coupler-offset families and the leave-one-configuration-out test were added after the preregistered table and decide nothing; the left-out statistic ignores the fitted parameters' covariance, and each left-out fit starts from the full-data mode, which can only lower it. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
+      "boundary": "Shared families of the provider's returned mesh model only; the multinomial ignores drift within an iteration, the in-block background uses plan-time catalogue dark rates and each job's own outside-block counts (about 2e-4 on the predicted statistics), and the covariance is the inverse expected information for the low-dimensional families and the observed information at the posterior mode for the static ones. Static offsets come from pure-state propagation. The job-00 in-sample statistics are descriptive. The detector-efficiency and coupler-offset families and the leave-one-configuration-out test were added after the preregistered table and decide nothing; the record's left-out statistic starts each fold from the full-data mode and scores it in counting variance only, and ascella-signed-coherence-configuration-holdout supersedes it. The rejections hold for each family in the form fitted and exclude no correlated or drive-dependent error. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
@@ -2051,6 +2065,39 @@
       "assumptions": [],
       "depends_on": [
         "ascella-signed-coherence-device-diagnostics"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-configuration-holdout",
+      "statement": "Refitted on job-00 without one configuration from the zero start, so that neither the start nor the mode selection reads the left-out counts, no static offset family of the returned Ascella meshes predicts the left-out configurations' X and Y statistics within counting plus fitted-prediction variance: the standardized sums over the 10 scored configurations of each readout read X 205, 167, 87 and 27 and Y 88, 45, 36 and 52 for heater offsets (tau 0.1, 0.3), coupler offsets (tau 0.1) and both together, each family at 30 or more on X or Y, against the returned mesh's 343 and 75. The combined family's X predictions carry a median prediction variance 12.7 times the counting variance, so its X sum reflects weak identification and its Y sum the shortfall. In counting variance alone the training-only folds give X 257 to 535 and Y 109 to 1114.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Static families of the provider's returned mesh model only, with pure-state propagation; the prediction variance is the local quadratic approximation at each fold mode, the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference, and the reading criterion (30 or more on 10 keeps the shortfall) was fixed in plan ascella-configuration-holdout-training-only before the run. The analysis was added after the preregistered table and decides nothing; it does not show that the underlying errors are independent between configurations or exclude a correlated or drive-dependent shared error. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/configuration-holdout.json",
+          "sha256": "c38ad052a38eab81e8c2f17f8a7d0d4bb2a3698d8c484250d1cf903bac443268"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-configuration-holdout-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-physical-models"
       ],
       "supersedes": [],
       "superseded_by": null
@@ -4618,15 +4665,11 @@
         },
         {
           "path": "proofs/CdSignSourceCertificate.v",
-          "sha256": "37f2109eacff0065a03ec01d80fb27e70c036cfafc3a46fae1cd5f49770d56ef"
-        },
-        {
-          "path": "gororoba_quantum/cd_core.py",
-          "sha256": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+          "sha256": "6c83e82d0708f93e3e294f0302b62f7f2609a1aa8827f0381423f480c3b6f510"
         },
         {
           "path": "scripts/cd_sign_source_ast.py",
-          "sha256": "3187bcf30f2ee7ea43fe55697d251c1338245da6d7161a65004e088d8dce0a58"
+          "sha256": "3107a7af599a3a9c421641694bccbd763f6e37357bcf20e370c0021516053659"
         },
         {
           "path": "docs/evidence/cd-sign-python-translation/assumptions.v",
@@ -4641,8 +4684,8 @@
           "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
         },
         {
-          "path": "docs/evidence/cd-sign-python-translation/source_hashes.sha256",
-          "sha256": "3241e2d39a2a6719782568ee0b42c96f3d634bf2e40bd3b5f976390aa4d9fc42"
+          "path": "docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
+          "sha256": "afd4e70c72839686fc93d584f8c13aba17933f2abe5a6e6105df812a6ddbd66f"
         }
       ],
       "documents": [
@@ -9139,6 +9182,72 @@
         "proposed-signed-null-retest",
         "iqm-garnet-signed-kernel-probe"
       ],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-idle-schedule",
+      "statement": "garnet:mock accepted the idle schedule and train readout case (cases.json 3932d467, 24 circuits x 4500 shots, no heralding, one active-reset cycle, up to 1017 prx pulses per circuit), compiled it against its own calibration set f04fe114, estimated 3.09 s and charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock's bits are random, so the run tests acceptance and the runtime estimate, not the schedule or the over-rotations.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe/results.json",
+          "sha256": "a3a90bc5833f5b59534da4237edae7e26774c065ff1faa754a5ec1ebc6d0dffa"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-idle-schedule-train-readout.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-idle-schedule"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-idle-schedule",
+      "statement": "On IQM Garnet (calibration set a18a947f, 24 circuits x 4500 shots, one active-reset cycle, no heralding), a circuit job runs its gates as soon as possible: in both idle layouts every qubit uncoupled to the train qubit (QB1, then QB20), pulsed once beside 500 or 1000 identity pi pulses and read in one joint measure, relaxed toward |0>, and all 68 pulsed-qubit arms resolved ASAP against the ALAP prediction of no change, at 13.3 to 58.7 standard errors from the midpoint of the two predictions (H1). Fitted with its own readout pair, QB11's isolated prx train reads a relative over-rotation of -0.30 +- 0.06 %, which excludes the +2.7 % the null-controlled signed probe's prediction attributes to it at 47 standard errors, and QB6's reads -0.18 +- 0.07 % (H2; chi-square 8.1 and 1.2 on three degrees of freedom). The job ran 1.92 s, billed 2 s and charged 1.00 credit.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration set and one job. The decay is larger than the ASAP model predicts (observed over predicted contrast 0.86 to 2.39, median 1.63; apparent T1 at 1000 pulses 0.40 to 1.27 of the calibrated value, median 0.53), so the model's 16 ns per prx, the calibrated T1, or both understate the wait; that is unresolved here and decides nothing. The parallel block's fits are descriptive: 13 of 20 qubits fit the linear train model, and QB2, QB5, QB7, QB11, QB15, QB16 and QB17 do not when all qubits are driven at once; QB6 reads -0.22 +- 0.10 % parallel minus isolated. Retained predictions keep the ALAP schedule their approvals covered.",
+      "evidence": [
+        {
+          "path": "results/iqm/idle_schedule_probe_analysis.json",
+          "sha256": "dc81ac1b23bf42050bb97644411703fedcec957579254cfe3eb944b735604480"
+        },
+        {
+          "path": "results/iqm/idle_schedule_probe_analysis-runner-image.json",
+          "sha256": "dc81ac1b23bf42050bb97644411703fedcec957579254cfe3eb944b735604480"
+        },
+        {
+          "path": "results/iqm/cases/idle-schedule-train-readout/prediction.json",
+          "sha256": "e3549eb8c74781b8c712286ae15ce664c9c4f340078207404343424c6b0f40b1"
+        },
+        {
+          "path": "results/iqm/cases/idle-schedule-train-readout/cases.json",
+          "sha256": "3932d4675e081ac0672d3df3b20e658841997dbc86a1fa50c1b38255e6586dc9"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe/results.json",
+          "sha256": "7216ed0f8606f1be368e69950d8b535740a8197b70cc9e8c6706a04fc823fbd1"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-idle-schedule-train-readout.md"
+      ],
+      "gates": {"core-684": "replay"},
+      "acquisitions": [
+        "iqm-garnet-idle-schedule"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
       "superseded_by": null
     },
     {

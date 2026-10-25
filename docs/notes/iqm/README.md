@@ -407,9 +407,19 @@ Facts a Garnet case design starts from, each with the record that carries it:
   within -0.63 s to +1.50 s on the retained jobs, so a ceiling adds 1.60 s to
   a case's shot schedule ([timing pilot](../../design/iqm-garnet-timing-pilot.md)).
   The job body carries no runtime or credit cap, which IQM does not offer, so
-  `max_credits` bounds the predicted bill; a runtime beyond the expected
-  schedule plus 1.60 s bills more, and a case sizes its shot schedule from an
-  upper per-shot time and the free mock twin's estimate.
+  `collect` holds `max_credits` on the server side of the job: it cancels a
+  priced job whose compiled estimate less 1.50 s already exceeds the billed
+  seconds the ceiling buys, and a job once its compilation plus execution
+  time so far comes within 1.0 s of them, polling a priced job every 0.25 s
+  from submission. The wait between compilation and execution, post-processing
+  and the terminal notification after `execution_ended` are not billed, so an
+  ended execution is never cancelled. `ceiling-cancel.json` and `results.json`
+  record a cancellation, and a resumed `collect` keeps its receipt. `collect` therefore starts right after `submit`. Across
+  the retained Garnet jobs runtime minus estimate ran from -1.50 s to
+  +1.39 s, and the smallest runtime headroom under an approved ceiling was
+  1.69 s, so none of them would have been cancelled. A case still sizes its
+  shot schedule from an upper per-shot time and the free mock twin's
+  estimate, so the cap stops a fault rather than a planned job.
   Extra circuits cost no time beyond their shots, so replicas, randomized
   compilations and readout calibrations belong in the same job.
 - **Reset.** One active-reset cycle shortens a shot from 316 us to 37.5 us
@@ -417,6 +427,19 @@ Facts a Garnet case design starts from, each with the record that carries it:
   removes that excitation and returns only kept shots, 55.9 % on the
   seven-qubit probe, with no top-up. A heralded job's runtime exceeded its
   estimate by 0.63 s.
+- **Schedule.** A circuit job runs its gates as soon as possible: every one of
+  34 qubits pulsed beside an uncoupled 500- or 1000-pulse identity train
+  relaxed before the joint measure, and all 68 arms resolved ASAP at 13 to 59
+  standard errors ([idle schedule case](../../design/iqm-garnet-idle-schedule-train-readout.md),
+  claim `iqm-garnet-idle-schedule`). A new case predicts idle relaxation over
+  an ASAP schedule; the decay ran faster than that model with 16 ns per prx
+  and the calibrated T1 (apparent T1 a median 0.53 of calibrated), so a
+  prediction that depends on idle length carries that gap as a stated
+  uncertainty. A retained case keeps the ALAP prediction its approval covered.
+- **Per-qubit over-rotation.** Fitted with its own readout pair, QB11's prx
+  over-rotates by -0.30 +- 0.06 % and QB6's by -0.18 +- 0.07 %; the +2.7 %
+  QB11 attribution of the signed null re-test is excluded. Driving all 20
+  qubits at once, 13 fit the linear train model and 7 do not.
 - **Coherent error dominates first-order observables.** An observable read
   near the equator of the measured qubit (an interference or Hadamard-test
   readout) moves at first order with gate over-rotation, axis error,
