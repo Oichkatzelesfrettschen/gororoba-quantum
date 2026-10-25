@@ -1115,10 +1115,10 @@ The posteriors of these 252 to 630 coefficients hold several modes, and which
 one an L-BFGS path from zero reaches follows the rounding of the BLAS kernel
 and of numpy's SIMD loops: under a forced SSE-only OpenBLAS kernel one
 order-1 harmonic family reaches a mode 0.009 lower in negative log posterior
-than under the host kernel. The script fixes both before numpy loads, to the
-OpenBLAS Haswell kernel and numpy's x86-64-v3 loops with AVX-512 dispatch off,
-which every x86-64-v3 runner shares, and its replay under a caller's
-`OPENBLAS_CORETYPE=Nehalem` matches the record. The static fit's block light
+than under the host kernel. The record is written and replayed under the
+kernel pair every gate path sets (`ci/run_gates.py`, `ci/pr_checks.sh` and the
+audit workflow): the OpenBLAS Haswell kernel and numpy's x86-64-v3 loops with
+AVX-512 dispatch off, which every x86-64-v3 runner shares. The static fit's block light
 is the normalized |psi|^2 without a clip: the order-2 harmonic family puts a
 fold's cell below 1e-9, where a clipped light zeroed its derivative and the
 Hessian difference read the kink as eigenvalues near -7e5, so Newton steps

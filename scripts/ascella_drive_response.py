@@ -28,22 +28,11 @@ Usage:
 from __future__ import annotations
 
 import math
-import os
-import platform
 import sys
 from pathlib import Path
 from typing import Any
 
-# The drive-family posteriors hold several modes, and which one a fit reaches follows the rounding of the BLAS
-# kernel and of numpy's SIMD loops. Both read these variables when they load, so the script fixes them first: the
-# OpenBLAS Haswell kernel and numpy's x86-64-v3 (AVX2, FMA3) loops, which every x86-64-v3 runner shares, with the
-# AVX-512 dispatch that only some runners would take switched off. Spawned pool workers inherit them from the entry
-# process, and a module that imports this one keeps its own environment.
-if __name__ == "__main__" and platform.machine() in ("x86_64", "AMD64"):
-    os.environ["OPENBLAS_CORETYPE"] = "Haswell"
-    os.environ["NPY_DISABLE_CPU_FEATURES"] = "X86_V4 AVX512_ICL AVX512_SPR"
-
-import numpy as np  # noqa: E402
+import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
