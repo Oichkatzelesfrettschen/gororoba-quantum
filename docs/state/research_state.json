@@ -9226,6 +9226,10 @@
           "sha256": "dc81ac1b23bf42050bb97644411703fedcec957579254cfe3eb944b735604480"
         },
         {
+          "path": "results/iqm/idle_schedule_probe_analysis-runner-image.json",
+          "sha256": "dc81ac1b23bf42050bb97644411703fedcec957579254cfe3eb944b735604480"
+        },
+        {
           "path": "results/iqm/cases/idle-schedule-train-readout/prediction.json",
           "sha256": "e3549eb8c74781b8c712286ae15ce664c9c4f340078207404343424c6b0f40b1"
         },
@@ -9241,7 +9245,7 @@
       "documents": [
         "docs/design/iqm-garnet-idle-schedule-train-readout.md"
       ],
-      "gates": {},
+      "gates": {"core-684": "replay"},
       "acquisitions": [
         "iqm-garnet-idle-schedule"
       ],
