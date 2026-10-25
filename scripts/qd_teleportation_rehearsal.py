@@ -32,10 +32,18 @@ noise simulation into OUT beside the staged request. --analyze RUN parses RUN/re
 of qd_network_protocol.joint_teleportation_scores. --body JOB and --plan JOB read the live platform record and send
 no job; with --anchor they evaluate the request under the anchor read's performance figures.
 
+--submit RUN APPROVAL sends the written case once. RUN holds copies of the frozen cases.json and circuit.json and
+nothing a submission writes; the platform catalogue and raw route answers land in RUN/platform-before first.
+qd_platform.submit plans afresh under the token's submit lock and calls binding as its verify step, which refuses
+the request unless the fresh body equals the retained job-body.json in every field but process_id and the noise
+model's pooled fidelity at the live performance figures reaches the justified mean score F*. A refusal writes no
+checkpoint and sends nothing; an accepted request leaves RUN/submit-model.json with the model it was admitted under.
+
 Usage:
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--check | --justify | --estimate | JOB]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--body JOB | --plan JOB] [--anchor]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--simulate OUT | --analyze RUN]
+  "$PYTHON" scripts/qd_teleportation_rehearsal.py --submit RUN APPROVAL
 """
 
 from __future__ import annotations
@@ -45,7 +53,7 @@ import itertools
 import json
 import math
 import sys
-from collections.abc import Iterator, Mapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
 from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -79,9 +87,12 @@ from qd_platform import (  # noqa: E402
     body_mitigations,
     iteration_form,
     load_case,
+    observe,
     payload,
     plan,
     sha256_bytes,
+    snapshot,
+    submit,
     template_experiment,
     write_json,
 )
@@ -155,6 +166,9 @@ class Job:
 
 JOBS = {"job-00": Job("job-00", 900, 1_200_000, 2.2, 120.0)}
 STAGED = ("cases.json", "circuit.json")
+# qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers, read before the submission.
+BEFORE = "platform-before"
+SUBMIT_MODEL = "submit-model.json"
 
 
 def require(condition: bool, message: str) -> None:
@@ -1240,6 +1254,62 @@ def planned(job: Job, out: Path, suffix: str, model: dict[str, Any]) -> int:
     return 0
 
 
+def staged(run: Path) -> Job:
+    """The job whose frozen request bytes RUN holds; RUN may hold nothing beyond them and the platform-before read."""
+    name = json.loads((run / "cases.json").read_text(encoding="utf-8")).get("job")
+    require(name in JOBS, f"{run / 'cases.json'} names job {name!r}, not one of {sorted(JOBS)}")
+    job = JOBS[name]
+    out = CASES / job.name
+    for name in STAGED:
+        require((run / name).read_bytes() == (out / name).read_bytes(), f"{run / name} is not the frozen {name}")
+    extra = sorted(path.name for path in run.iterdir() if path.name not in (*STAGED, BEFORE))
+    require(not extra, f"{run} holds {extra}; a run directory starts from the frozen request alone")
+    return job
+
+
+def binding(job: Job, admitted: dict[str, Any]) -> Callable[[dict[str, Any]], None]:
+    """The verify step: the planned body is the retained body beyond process_id, and the noise model's pooled fidelity
+    at the live figures reaches F*. The model of an admitted request lands in `admitted`."""
+    out = CASES / job.name
+
+    def bound(checked: dict[str, Any]) -> None:
+        manifest = json.loads((out / "cases.json").read_text(encoding="utf-8"))
+        validate_body(checked["body"], manifest)
+        retained = json.loads((out / "job-body.json").read_text(encoding="utf-8"))
+        fresh, frozen = body_digest(checked["body"]), body_digest(retained)
+        if fresh != frozen:
+            raise PlatformError(f"the planned body {fresh} differs from the retained body {frozen} beyond process_id")
+        model = live_model()
+        if not model["inside_justified_range"]:
+            raise PlatformError(
+                f"model pooled fidelity {model['pooled_fidelity']:.4f} at the live figures is below the justified "
+                f"mean score {model['mean_score']}"
+            )
+        admitted.update(model)
+
+    return bound
+
+
+def send(run: Path, approval: str) -> int:
+    """Read the platform into RUN/platform-before and submit the approved case once under the binding."""
+    job = staged(run)
+    snapshot(run / BEFORE)
+    observe(run / BEFORE)
+    admitted: dict[str, Any] = {}
+    record = submit(
+        run,
+        PLATFORM,
+        approval,
+        job.credit_ceiling,
+        job.expected_seconds,
+        PER_JOB_CREDITS,
+        verify=binding(job, admitted),
+    )
+    write_json(run / SUBMIT_MODEL, {"job_id": record["job_id"], "model": admitted}, exclusive=True)
+    print(f"job {record['job_id']} on {record['platform']}, model pooled fidelity {admitted['pooled_fidelity']:.4f}")
+    return 0
+
+
 def write_estimate() -> int:
     """Retain the anchor-state shot estimate beside the case; a retained file is never rewritten."""
     path = CASES / "job-00" / ESTIMATE
@@ -1316,12 +1386,14 @@ def main(argv: list[str]) -> int:
         return simulate(Path(argv[1]))
     if len(argv) == 2 and argv[0] == "--analyze":
         return analyze(Path(argv[1]))
+    if len(argv) == 3 and argv[0] == "--submit":
+        return send(Path(argv[1]), argv[2])
     if len(argv) == 1 and argv[0] in JOBS:
         return build(JOBS[argv[0]])
     raise ValueError(
         "usage: qd_teleportation_rehearsal.py [--check | --justify | --estimate | JOB | --body JOB [--anchor] | "
         "--plan JOB [--anchor] | "
-        f"--simulate OUT | --analyze RUN], JOB in {sorted(JOBS)}, not {argv}"
+        f"--simulate OUT | --analyze RUN | --submit RUN APPROVAL], JOB in {sorted(JOBS)}, not {argv}"
     )
 
 
