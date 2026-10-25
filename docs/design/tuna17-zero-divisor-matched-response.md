@@ -61,11 +61,12 @@ moved to the token-recovery toolchain record; the nine circuits are byte-identic
 export PYTHON="${PYTHON:-python3}"
 export QI_PYTHON
 "$PYTHON" scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery
-"$PYTHON" scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery
+"$PYTHON" scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery \
+  --toolchain-record docs/evidence/quantum_inspire/matched-zero-divisor-toolchain-ordered-map-cancel.json
 ```
 
 The first command uses the pinned Qiskit replay runtime. The second checks the
-[current compiler receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-token-recovery.json)
+[current compiler receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-ordered-map-cancel.json)
 against the producer and its compiler/admission/adapter/pool sources, catalogue, locked toolchain
 and all nine circuit hashes. The [first receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain.json)
 retains its original bytes and top-level-only source binding. The
@@ -74,8 +75,10 @@ preserves the compiler closure before the backend batch-admission source was inc
 [admission-closed receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-admission-closure.json)
 the closure before `scripts/qi_platform.py` gained the hardware pause ladder, and the
 [pause-ladder receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-pause-ladder.json)
-the closure before it gained the expired-signature retry and the token-exchange log; every compiled
-row is identical across the last three. With `QI_PYTHON`
+the closure before it gained the expired-signature retry and the token-exchange log, and the
+[token-recovery receipt](../evidence/quantum_inspire/matched-zero-divisor-toolchain-token-recovery.json)
+the closure before `parallel.py` cancelled queued chunks after a failing item; every compiled row is
+identical across the last four. With `QI_PYTHON`
 set, the second command also repeats local parsing and compilation through the repository's
 `qi_stack` adapter and compares every receipt field. Gate `core-633` requires that live path
 in the Quantum Inspire CI stack; the ordinary stack checks the retained receipt explicitly.
