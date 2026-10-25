@@ -9,7 +9,9 @@
     "tests/scripts/test_qd_network_protocol.py",
     "docs/notes/quandela/calibration.md",
     "docs/evidence/bdsc/provider_contract.json",
-    "scripts/qd_classical_benchmark.py"
+    "scripts/qd_classical_benchmark.py",
+    "scripts/qd_teleportation_rehearsal.py",
+    "tests/scripts/test_qd_teleportation_rehearsal.py"
   ],
   "state": "paused",
   "reconciliation": {
@@ -189,6 +191,12 @@
         "reference-preservation",
         "surviving-output"
       ]
+    },
+    {
+      "id": "single-chip-rehearsal",
+      "state": "todo",
+      "action": "Acquire the single-chip teleportation rehearsal on qpu:belenos: six Pauli eigenstates, each read in its matching basis, from one 3-photon job of 6 template iterations (scripts/qd_teleportation_rehearsal.py, results/quandela/cases/teleportation_rehearsal/job-00).",
+      "acceptance": "After the owner's written approval of the section 'Single-chip rehearsal (job-00)', a fresh plan admits the request inside the justified range, the job is collected, and 'qd_teleportation_rehearsal.py --analyze' returns beats-classical (C1 local conformance only, no C2 or C3), at-or-below-classical, or inconclusive; the verdict is recorded without a cross-device claim."
     }
   ],
   "pause": {

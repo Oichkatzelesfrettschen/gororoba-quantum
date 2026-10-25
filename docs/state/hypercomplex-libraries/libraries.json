@@ -2636,6 +2636,7 @@
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py",
     "scripts/qet_passivity_controls.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
@@ -3600,7 +3601,8 @@
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
-    "scripts/qd_platform.py"
+    "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
@@ -12001,6 +12003,30 @@
    "subprocess",
    "sys",
    "time",
+   "typing"
+  ],
+  "scripts/qd_teleportation_rehearsal.py": [
+   "__future__",
+   "bdsc_certificate",
+   "collections",
+   "contextlib",
+   "copy",
+   "dataclasses",
+   "datetime",
+   "functools",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_classical_benchmark",
+   "qd_network_protocol",
+   "qd_platform",
+   "qd_schedule",
+   "sys",
    "typing"
   ],
   "scripts/qet_passivity_controls.py": [
