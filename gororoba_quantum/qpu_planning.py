@@ -20,7 +20,9 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from qiskit import QuantumCircuit, transpile
 from qiskit.exceptions import QiskitError
+from qiskit.transpiler import Target
 
 import law_encoding
 import local_compute
@@ -975,6 +977,38 @@ def prereadout_delay(runtime: Any, snapshot: Any) -> int:
     return rounded_delay(runtime, snapshot, MSQ_PREREADOUT_SECONDS)
 
 
+class MemberCompiler:
+    """Transpile one (circuit, physical qubit) onto the admission Target, as live_run._compile does for a pinned qubit.
+
+    The worker receives the Target, the seed and the backend's default translation stage plugin
+    rather than the backend: a runtime backend holds its service session, which stays in the
+    parent. transpile reads the backend for nothing else once a Target is given.
+    """
+
+    def __init__(self, target: Target, seed: int, translation_method: str | None) -> None:
+        self.target = target
+        self.seed = seed
+        self.translation_method = translation_method
+
+    def __call__(self, item: tuple[QuantumCircuit, int]) -> QuantumCircuit:
+        import live_run
+
+        circuit, qubit = item
+        try:
+            return transpile(
+                circuit,
+                target=self.target,
+                optimization_level=live_run.OPT_LEVEL,
+                seed_transpiler=self.seed,
+                initial_layout=[qubit],
+                translation_method=self.translation_method,
+            )
+        except BaseException as error:
+            if type(error).__name__ != "PanicException":
+                raise
+            raise live_run.CompilePanic(f"{circuit.name}: transpiler panic ({error})") from None
+
+
 def measurement_sequence_candidates(
     runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
 ) -> list[tuple[list[Any], dict[str, Any]]]:
@@ -1006,13 +1040,21 @@ def measurement_sequence_candidates(
             prereadouts = {qubit: prereadout_delay(runtime, snapshot) for qubit in qubits}
             t1_delays = [rounded_delay(runtime, snapshot, microseconds * 1e-6) for microseconds in MSQ_T1_MICROSECONDS]
             groups = measurement_sequence_groups(qubits, delays, settles, prereadouts, t1_delays)
+            if snapshot.admission_target is None:
+                snapshot.admission_target = runtime.build_admission_target(snapshot)
+            get_plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
+            compiler = MemberCompiler(
+                snapshot.admission_target, runtime.SEED_TRANSPILER, get_plugin() if get_plugin else None
+            )
+            # The members are independent compilations; ordered_map returns them in member order.
+            work = [
+                (member.circuit, int(group.name.rsplit("_q", 1)[1])) for group in groups for member in group.members
+            ]
+            compiled = iter(parallel.ordered_map(compiler, work, min_items=2))
             choices = []
             for group in groups:
                 qubit = int(group.name.rsplit("_q", 1)[1])
-                isas = [
-                    runtime._compile(member.circuit, snapshot, runtime.SEED_TRANSPILER, [qubit])
-                    for member in group.members
-                ]
+                isas = [next(compiled) for _ in group.members]
                 for member, isa in zip(group.members, isas, strict=True):
                     if runtime._physical(isa) != [qubit]:
                         raise runtime.LiveRunError(f"{group.name}: compiled onto {runtime._physical(isa)}")

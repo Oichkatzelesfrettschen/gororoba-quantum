@@ -353,3 +353,46 @@ def test_ideal_decimals_match_the_recorder() -> None:
 
     source = inspect.getsource(live_run._member_fields)
     check(f'"ideal": law_encoding.encode([round(float(p), {qpu_cases.IDEAL_DECIMALS}) for p in entry.ideal])' in source)
+
+
+def _fixture_snapshot() -> Any:
+    import io
+    from contextlib import redirect_stdout
+
+    from qiskit_ibm_runtime.fake_provider import FakeFez
+
+    import qpu_planning_contracts as contracts
+
+    backend = contracts._ProbeBackend("measurement_sequence_fixture", FakeFez())
+    service = contracts._ProbeService([backend])
+    with redirect_stdout(io.StringIO()):
+        return live_run.take_snapshot(service, backend.name)
+
+
+@pytest.mark.parametrize("workers", ("1", "4"))
+def test_member_compilations_match_the_serial_compile(monkeypatch: pytest.MonkeyPatch, workers: str) -> None:
+    """The pooled compiler returns the member order, pinned qubits and operation counts of live_run._compile."""
+    import parallel
+    import qpu_planning
+
+    snapshot = _fixture_snapshot()
+    qubits = [qubit for qubit in (45, 59, 73, 87) if qubit not in snapshot.excluded_qubits][:2]
+    check(len(qubits) == 2)
+    delays = {q: 1664 for q in qubits}
+    settles = {q: 500 for q in qubits}
+    prereadouts = {q: 480 for q in qubits}
+    built = de.measurement_sequence_groups(qubits, delays, settles, prereadouts, T1_IDLES)
+    work = [(m.circuit, int(g.name.rsplit("_q", 1)[1])) for g in built for m in g.members]
+    check(len(work) == 49 * len(qubits))
+    serial = [live_run._compile(c, snapshot, live_run.SEED_TRANSPILER, [q]) for c, q in work]
+    monkeypatch.setenv("GOROROBA_WORKERS", workers)
+    plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
+    compiler = qpu_planning.MemberCompiler(
+        snapshot.admission_target, live_run.SEED_TRANSPILER, plugin() if plugin else None
+    )
+    pooled = parallel.ordered_map(compiler, work, min_items=2)
+    check([c.name for c in pooled] == [c.name for c, _ in work])
+    check([live_run._physical(c) for c in pooled] == [[q] for _, q in work])
+    check([dict(c.count_ops()) for c in pooled] == [dict(c.count_ops()) for c in serial])
+    check(all(a == b for a, b in zip(pooled, serial, strict=True)))
+
