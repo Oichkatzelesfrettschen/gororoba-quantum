@@ -11977,6 +11977,7 @@
    "json",
    "math",
    "numpy",
+   "parallel",
    "pathlib",
    "qet_two_qubit_reference",
    "scipy",
