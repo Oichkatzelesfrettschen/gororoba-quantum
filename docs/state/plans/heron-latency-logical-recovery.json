@@ -1,0 +1,37 @@
+{
+  "schema": "work-plan-v1",
+  "id": "heron-latency-logical-recovery",
+  "kind": "experiment",
+  "summary": "Measure the Heron r2 feed-forward latency cost of logical entanglement fidelity for a bit-flip-coded Bell pair against Pauli-frame recovery, supplying delta for the latency-constrained recovery model.",
+  "sources": [
+    "docs/design/heron-latency-logical-recovery.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "scope": "Family latency-recovery in live_run: 34 dynamic members on ibm_kingston, dry run, Aer prediction under the live Target, analysis and a written case. No submission without the user's approval of that case.",
+  "owner": "claude",
+  "next_action": "Implement the latency-recovery family per docs/design/heron-latency-logical-recovery.md and run its submit-free dry run.",
+  "steps": [
+    {
+      "id": "family",
+      "action": "Implement the latency-recovery family: circuits, ideal laws, frame summary, contracts, planning, case text, CLI validation and contract tests.",
+      "acceptance": "Contract tests pass; ideal F is 1 for encoded arms, 0 for the null and 1/4 for the unencoded arm; ruff and mypy clean.",
+      "state": "doing"
+    },
+    {
+      "id": "dry-run",
+      "action": "Run the submit-free dry run on ibm_kingston with ANU-drawn seeds and read the Aer prediction for every contract.",
+      "acceptance": "A record under results/live/ with predicted F per arm and the detection radius at the planned shots.",
+      "state": "todo"
+    },
+    {
+      "id": "case",
+      "action": "Write the case: what it measures, why Aer cannot answer it, backend, shots and expected seconds against live usage.",
+      "acceptance": "A written case beside the dry-run record, awaiting the user's approval.",
+      "state": "todo"
+    }
+  ]
+}
