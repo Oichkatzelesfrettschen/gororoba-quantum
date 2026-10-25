@@ -78,10 +78,13 @@ IDENTIFY_RADIUS = 1.0 / 16.0
 SIMULTANEOUS_Z = statistics.NormalDist().inv_cdf(1.0 - 0.01 / (2 * 7))
 # Conditional phases per CZ for the coherent sensitivity scenario, in rad.
 CZ_PHASES = (0.02, 0.05, 0.1)
-GRADIENT_COSTS = ("gap86", "gap86_repaired", "gap88", "gap88_repaired")
+# "null" is the zero table: the same eight-CNOT block with every RZ at angle zero, ideally the identity.
+GRADIENT_COSTS = ("null", "gap86", "gap86_repaired", "gap88", "gap88_repaired")
 
 
 def cost_table(name: str) -> list[int]:
+    if name == "null":
+        return [0] * 8
     case, _, repaired = name.partition("_")
     return pc.slice_table(case, repaired=bool(repaired))
 
@@ -306,13 +309,15 @@ def coherent_sensitivity(
     snapshot: dict[str, Any], device: str, compiled: list[tuple[dict[str, Any], QuantumCircuit]]
 ) -> list[dict[str, Any]]:
     """Coefficient shifts a uniform CZ conditional-phase error produces on the gap88 gradient arms, noise-free."""
-    arms_88 = [(m, c) for m, c in compiled if m["family"] == "gradient" and m["cost"] == "gap88"]
+    arms_88 = [(m, c) for m, c in compiled if m["family"] == "gradient" and m["cost"] in ("gap88", "null")]
     table = cost_table("gap88")
     exact = coefficients(table)
     out = []
     for phase in CZ_PHASES:
         rows = parallel.ordered_map(CoherentLaw(snapshot, device, phase), arms_88, min_items=1)
-        fit = phase_fit(table, *gradient_readings(rows, "gap88"))
+        readings = gradient_readings(rows, "gap88")
+        fit = phase_fit(table, *readings)
+        subtracted = null_subtracted(table, *readings, gradient_readings(rows, "null"))
         out.append(
             {
                 "cz_conditional_phase": phase,
@@ -320,6 +325,10 @@ def coherent_sensitivity(
                 "max_coefficient_bias": fit["max_coefficient_bias"],
                 "cycle_residual_rms": fit["cycle_residual_rms"],
                 "min_visibility": min(fit["visibility"]),
+                "null_subtracted_coefficient_shift": {
+                    k: v - exact[k] for k, v in subtracted["recovered_coefficients"].items()
+                },
+                "null_subtracted_max_bias": subtracted["max_coefficient_bias"],
             }
         )
     return out
@@ -408,18 +417,38 @@ def gradient_readings(rows: list[dict[str, Any]], name: str) -> tuple[np.ndarray
     )
 
 
+def null_subtracted(
+    table: list[int], x_read: np.ndarray, y_read: np.ndarray, null: tuple[np.ndarray, np.ndarray]
+) -> dict[str, Any]:
+    """Phase fit after rotating each edge reading by minus the null arm's phase on the same edge."""
+    rotation = np.exp(-1j * np.arctan2(null[1], null[0]))
+    turned = (x_read + 1j * y_read) * rotation
+    return phase_fit(table, turned.real, turned.imag)
+
+
 def gradient_analysis(rows: list[dict[str, Any]], name: str) -> dict[str, Any]:
-    """Raw and assignment-corrected phase fits; the corrected bias is the model floor a device result must beat."""
+    """Raw, assignment-corrected and null-subtracted phase fits.
+
+    The corrected bias is the incoherent model's floor; the null-subtracted fit removes every diagonal error the
+    zero-angle block shares with the cost block.
+    """
     table = cost_table(name)
     x_read, y_read = gradient_readings(rows, name)
     flips = assignment(rows)
     a = np.asarray([flips[j][0] for j, _ in edges()])
     b = np.asarray([flips[j][1] for j, _ in edges()])
+    null_x, null_y = gradient_readings(rows, "null")
     return {
         "exact_coefficients": coefficients(table),
         "d_true": (incidence() @ np.asarray(table, dtype=float)).tolist(),
         "raw": phase_fit(table, x_read, y_read),
         "assignment_corrected": phase_fit(table, corrected(x_read, a, b), corrected(y_read, a, b)),
+        "null_subtracted": null_subtracted(
+            table,
+            corrected(x_read, a, b),
+            corrected(y_read, a, b),
+            (corrected(null_x, a, b), corrected(null_y, a, b)),
+        ),
     }
 
 
@@ -491,6 +520,15 @@ def evaluate(snapshot: dict[str, Any], device: str) -> dict[str, Any]:
     paths = {2: layouts(snapshot, 2), 3: layouts(snapshot, 3)}
     logical = arms()
     out: dict[str, Any] = {"layouts": {str(n): paths[n] for n in paths}, "patches": {}}
+    block = QuantumCircuit(3)
+    cost_block(block, cost_table("gap88"), GRADIENT_GAMMA)
+    duration = transpile(block, view, initial_layout=paths[3]["best"], optimization_level=0).estimate_duration(
+        view.target, unit="s"
+    )
+    # A static detuning delta on qubit j turns its edge phase by 2 pi delta T over the block, a shift of
+    # 2 pi delta T / gamma in every d_j(x) and so of half that in c_j; the null arm carries the same shift.
+    out["cost_block_seconds"] = float(duration)
+    out["single_body_shift_per_khz"] = math.pi * 1e3 * float(duration) / GRADIENT_GAMMA
     for patch in ("best", "median"):
         items = [(meta, c, compile_arm(view, c, paths[c.num_qubits][patch])) for meta, c in logical]
         rows = parallel.ordered_map(ArmLaw(snapshot, device), items, min_items=1)
