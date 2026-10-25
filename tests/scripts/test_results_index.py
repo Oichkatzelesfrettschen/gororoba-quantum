@@ -66,7 +66,16 @@ def index(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> results_index.Inde
             {"id": "acq-ibm", "provider": "ibm", "run": IBM_RUN, "family": "f", "question": "q"},
             {"id": "acq-qd", "provider": "quandela", "run": QD_RUN, "family": "f", "question": "q"},
         ],
-        "claims": [claim],
+        "claims": [
+            claim,
+            {
+                "id": "claim-bare",
+                "status": "proposed",
+                "evidence_class": "mathematical claim",
+                "domain": "algebra",
+                "statement": "s",
+            },
+        ],
     }
     _write(root / "docs/state/research_state.json", registry)
     kaggle = root / "results/kaggle"
@@ -96,6 +105,9 @@ def test_joins_runs_jobs_acquisitions_and_claims(index: results_index.Index) -> 
         raise RuntimeError("a Kaggle kernel reference resolves to every run that pushed it")
     if sorted(row["path"] for row in index.claim("claim-a")["runs"]) != sorted([IBM_RUN, QD_RUN]):
         raise RuntimeError("a claim resolves to the runs of its acquisitions")
+    bare = index.claim("claim-bare")
+    if bare["runs"] or bare["evidence"] or bare["gates"] or bare["depends_on"] or bare["documents"]:
+        raise RuntimeError(f"a claim omitting its optional fields reads them empty: {bare}")
     with pytest.raises(SystemExit, match="no claim"):
         index.claim("absent")
 

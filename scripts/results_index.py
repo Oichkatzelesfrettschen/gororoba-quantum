@@ -70,6 +70,12 @@ class Run:
         }
 
 
+def _claim_defaults() -> dict[str, Any]:
+    """The empty values research_state.validate gives a claim's omitted optional fields."""
+    fields = ("documents", "acquisitions", "assumptions", "depends_on", "supersedes", "related_claims", "evidence")
+    return {**{name: [] for name in fields}, "gates": {}}
+
+
 def _json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
@@ -124,7 +130,9 @@ class Index:
                 )
         for run in _kaggle_runs():
             self.runs[run.path] = run
-        self.claims: dict[str, dict[str, Any]] = {claim["id"]: claim for claim in self.registry["claims"]}
+        self.claims: dict[str, dict[str, Any]] = {
+            claim["id"]: {**_claim_defaults(), **claim} for claim in self.registry["claims"]
+        }
         self.acquisitions: dict[str, dict[str, Any]] = {a["id"]: a for a in self.registry["acquisitions"]}
         self.unheld: list[str] = []
         for acquisition in self.acquisitions.values():

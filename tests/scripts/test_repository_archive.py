@@ -58,3 +58,20 @@ def test_bundle_restores_and_rejects_every_defect(tmp_path: Path, monkeypatch: p
     _fails(lambda: repository_archive.verify(path), "restored refs differ")
     manifest_path.write_text(saved)
     repository_archive.verify(path)
+
+
+def test_bundle_of_a_detached_historical_head_restores(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    repo = _repo(tmp_path)
+    first = subprocess.run(["git", "rev-parse", "HEAD"], cwd=repo, capture_output=True, text=True, check=True).stdout
+    (repo / "a.txt").write_text("two\n")
+    subprocess.run(["git", "commit", "-q", "-am", "two"], cwd=repo, check=True)
+    subprocess.run(["git", "checkout", "-q", "--detach", first.strip()], cwd=repo, check=True)
+    monkeypatch.setattr(repository_archive, "ROOT", repo)
+    manifest = repository_archive.bundle(tmp_path / "copies")
+    path = tmp_path / "copies" / manifest["bundle"]
+    if manifest["head"] != first.strip():
+        raise RuntimeError("the manifest records the detached head")
+    repository_archive.verify(path)
+    edited = dict(manifest, head="0" * 40)
+    path.with_suffix(".json").write_text(json.dumps(edited))
+    _fails(lambda: repository_archive.verify(path), "lacks head commit")

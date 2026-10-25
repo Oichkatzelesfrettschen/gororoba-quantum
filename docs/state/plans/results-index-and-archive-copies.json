@@ -11,9 +11,9 @@
     "status": "unresolved",
     "note": "Captured context; triage and evidence review pending."
   },
-  "scope": "scripts/results_index.py and scripts/repository_archive.py with tests and runbooks; one Software Heritage visit; one verified bundle on a device other than the home disk.",
+  "scope": "scripts/results_index.py and scripts/repository_archive.py with tests and runbooks; one completed Software Heritage visit.",
   "owner": "repository maintainer",
-  "next_action": "Record the completed Software Heritage visit and write the first bundle to the destination the owner names.",
+  "next_action": "Record the completed Software Heritage visit and merge the PR.",
   "steps": [
     {
       "id": "query-command",
@@ -29,9 +29,10 @@
     },
     {
       "id": "bundle-copy",
-      "state": "todo",
+      "state": "cancelled",
       "action": "Write and verify a git bundle on a device other than the home disk.",
-      "acceptance": "repository_archive.py verify passes on the bundle at the owner-named destination."
+      "acceptance": "repository_archive.py verify passes on the bundle at the owner-named destination.",
+      "reason": "The owner chose Software Heritage and GitHub as the copies and declined a bundle destination on 2026-10-25; repository_archive.py bundle and verify stay available."
     }
   ]
 }

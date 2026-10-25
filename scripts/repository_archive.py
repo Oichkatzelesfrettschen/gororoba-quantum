@@ -106,7 +106,8 @@ def verify(path: Path) -> dict[str, Any]:
         subprocess.run(["git", "clone", "--quiet", "--mirror", str(path), str(clone)], check=True)
         subprocess.run(["git", "fsck", "--full", "--no-progress"], cwd=clone, check=True, capture_output=True)
         restored = sorted(f"{sha} {ref}" for ref, sha in _refs(clone))
-        if manifest["head"] not in {line.split()[0] for line in restored}:
+        present = subprocess.run(["git", "cat-file", "-e", f"{manifest['head']}^{{commit}}"], cwd=clone, check=False)
+        if present.returncode != 0:
             raise SystemExit(f"restored clone lacks head commit {manifest['head']}")
         if restored != sorted(manifest["refs"]):
             raise SystemExit("restored refs differ from the manifest")
