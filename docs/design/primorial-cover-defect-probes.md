@@ -119,10 +119,12 @@ acts only inside the network's Hadamards, biases no coefficient by more than
 `scripts/primorial_null_residuals.py` adds the two families the noise record
 left out, on the same compiled arms of both paths
 ([evidence README](../evidence/primorial_cover/README.md#static-zz-and-axis-tilt),
-gate `core-primorial-null-residuals-replay`). Its falsifier: a family leaves a
-device question when its null-subtracted bias reaches one standard deviation
-of the noisy estimate at the retained budget (0.0188 at 2,803 shots per
-setting on the best path, 0.0186 at 3,169 on the median).
+gate `core-primorial-null-residuals-replay`). Its criterion: a family leaves
+a device question when its null-subtracted bias reaches one standard
+deviation of the noisy estimate at the retained budget (0.0188 at 2,803 shots
+per setting on the best path, 0.0186 at 3,169 on the median). An exploratory
+build-host run of the fixed-value scenarios preceded the criterion; the
+gate-bound scenarios and the retained run followed it.
 
 - On every edge setting the compiled gap-88 arm and the zero-angle null arm
   carry the same sx, x, cz and delay stream on the same qubits at the same
@@ -130,12 +132,18 @@ setting on the best path, 0.0186 at 3,169 on the median).
   and error. The two arms drive identical pulses on Heron r2.
 - Static ZZ of 2, 5 and 20 kHz on both couplers biases the raw fit by up to
   0.078 (partner-in-0 frame) and 0.024 (symmetric frame); null subtraction
-  leaves at most 0.00034.
+  leaves at most 0.00038.
 - A drive-axis tilt of 0.005 or 0.02 rad on one path qubit or on all three
   biases the raw fit by up to 0.174; null subtraction leaves at most 0.0055,
   at 0.02 rad on every qubit, four times the largest tilt the atlas self-test
   injects. Resolving that residual at three standard deviations would take
   about 290,000 shots per setting.
+- At each path qubit's gate-error bound, the largest coherent tilt its
+  snapshot sx error allows (0.021 to 0.036 rad), the worst of the eight sign
+  patterns leaves 0.0147 on the best path and 0.0159 on the median: 0.78 and
+  0.85 of the standard deviation, the narrowest margin of the record, and far
+  inside the identification radius 1/16. The bound charges the whole sx error
+  to tilt, so a real path sits at or below it.
 
 No scenario reaches its threshold on either path, so a hardware run of these
 circuits would report the null arm's edge phases, a characterization of the
@@ -149,7 +157,7 @@ reaches with a CZ gate model:
 
 | Platform | Rotation carrying the gradient angles | Signal against null |
 | --- | --- | --- |
-| IBM Heron r2 (ibm_fez, ibm_kingston, ibm_marrakesh) | virtual rz, zero duration in the Target | identical pulse streams, computed above |
+| IBM Heron r2 | virtual rz, zero duration in the Target | identical pulse streams, computed on the ibm_kingston snapshot; ibm_fez and ibm_marrakesh share the virtual-rz Target structure and were not compiled |
 | IQM Garnet, Emerald, Sirius | virtual RZ, a frame change beside the native `prx(angle, phase)` ([iqm/README.md](../notes/iqm/README.md)) | the gradient angles enter as frame changes only, so both arms play the same `prx` angles and timing; not compiled here |
 | Quantum Inspire Tuna-17 | native `Rz`, angles quantized to multiples of pi/36 ([quantum_inspire/README.md](../notes/quantum_inspire/README.md)) | every angle 2 gamma c_S = n pi/36 with integer n (gamma = pi/9, c_S in Z/8), so quantization adds no offset |
 
@@ -159,7 +167,10 @@ it more directly than an eight-CNOT network, so it is no primorial case
 either. A hardware case for these circuits reopens only on a platform whose
 compiled signal and null arms differ in physical pulses, or on a coherent
 family whose null-subtracted residual reaches the budget's standard
-deviation. Such a case states the platform, the path, the family and its
+deviation. Tilt at the gate-error bound is the nearest such family: its
+residual grows as the square of the tilt and so in proportion to the sx
+error, and reaches the threshold on a path whose sx errors exceed these by
+17 percent (median path) to 28 percent (best path). Such a case states the platform, the path, the family and its
 expected seconds or credits and follows the approval flow of AGENTS.md (QPU
 time and calibration, Hardware services). The Quantum Inspire QX and Ry
 emulators would add an interface check only: both are provider jobs that

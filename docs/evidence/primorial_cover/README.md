@@ -40,9 +40,9 @@ Four records live here.
   covered), the branch count of each of the 9 exclusions, and per row the
   missing set, N_min(k) and the membership of h(k) in D(k).
 - `null_residuals.json` is the output of `scripts/primorial_null_residuals.py`,
-  run as Kaggle CPU kernel version 1 of `gororoba-primorial-null-residuals`
+  run as Kaggle CPU kernel version 3 of `gororoba-primorial-null-residuals`
   under `push --ci-env` and retained under
-  `results/kaggle/2026-10-25T183728Z-gororoba-primorial-null-residuals/`,
+  `results/kaggle/2026-10-25T185707Z-gororoba-primorial-null-residuals/`,
   whose `collect.json` binds the file's bytes. It reads `noise.json` for the
   paths and shot budgets and records that file's sha256. Gate
   `core-primorial-null-residuals-replay` requires the file to equal the
@@ -151,24 +151,37 @@ the ALAP schedule, in the forms of `scripts/atlas_coherent_families.py`:
 static ZZ on both couplers in the partner-in-0 frame (`zz`,
 CPhase(-2 pi zeta t)) and the symmetric frame (`zz_symmetric`,
 RZZ(pi zeta t)), and drive-axis tilt RY(-beta) R RY(beta) of every sx and x
-pulse R. Stated before the run: a scenario leaves a device question when its
-null-subtracted bias reaches one standard deviation of the noisy
-null-subtracted estimate at the budget `noise.json` retains for its path.
+pulse R, at fixed values and at each path qubit's gate-error bound: the
+largest coherent tilt its snapshot sx error r allows,
+acos(2 sqrt(1 - 1.5 r) - 1) (`atlas_coherent_families.gate_bounds`), on all
+three qubits in each of the eight sign patterns. The criterion: a scenario
+leaves a device question when its null-subtracted bias reaches one standard
+deviation of the noisy null-subtracted estimate at the budget `noise.json`
+retains for its path. An exploratory build-host run of the fixed-value
+scenarios preceded the criterion; the gate-bound scenarios and the retained
+run followed it.
 
 | | best (45-46-47) | median (117-125-126) |
 | --- | ---: | ---: |
 | signal and null pulse streams identical | yes | yes |
 | budget, shots per setting / coefficient SD | 2,803 / 0.0188 | 3,169 / 0.0186 |
 | `zz` 2 / 5 / 20 kHz, raw bias | 0.0078 / 0.019 / 0.078 | same |
-| `zz` 20 kHz, null-subtracted | 0.00034 | 0.00034 |
-| `zz_symmetric` 20 kHz, raw / null-subtracted | 0.024 / 0.00016 | same |
+| `zz` 20 kHz, null-subtracted | 0.00038 | 0.00038 |
+| `zz_symmetric` 20 kHz, raw / null-subtracted | 0.024 / 0.00013 | same |
 | tilt 0.02 rad on q0 / q1 / q2, null-subtracted | 0.00022 / 0.0030 / 0.0045 | same |
 | tilt 0.02 rad on all three, raw / null-subtracted | 0.174 / 0.0055 | same |
 | shots per setting to resolve that residual at 3 SD | 290,836 | 320,842 |
+| tilt gate-error bounds, q0 / q1 / q2 (rad) | 0.029 / 0.028 / 0.034 | 0.021 / 0.036 / 0.033 |
+| tilt at the bounds, worst sign pattern, raw / null-subtracted | 0.233 / 0.0147 | 0.302 / 0.0159 |
+| shots per setting to resolve that residual at 3 SD | 41,323 | 39,194 |
 
-No scenario reaches its threshold. The two paths give the same biases
-because every path qubit and coupler of both has the same sx, x and cz
-durations in the snapshot, so the schedules coincide; only the budgets
+No scenario reaches its threshold, but tilt at the gate-error bound comes
+closest: 0.78 and 0.85 of the budget's standard deviation. The bound charges
+the whole reported sx error to coherent tilt, so it is an upper limit, and the
+residual stays far inside the identification radius 1/16. The fixed-value
+scenarios give the same biases on both paths because every path qubit and
+coupler of both has the same sx, x and cz durations in the snapshot (32, 32
+and 68 ns), so the schedules coincide; only the budgets and the tilt bounds
 differ. ZZ enters the null-subtracted fit at second order (the residual
 grows about sixteenfold from 5 to 20 kHz), and so does tilt. The record
 covers the gap-88 cost on Heron r2 timing; crosstalk and leakage remain

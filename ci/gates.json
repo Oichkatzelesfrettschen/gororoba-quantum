@@ -4188,7 +4188,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_null_residuals.py --check docs/evidence/primorial_cover/null_residuals.json --run results/kaggle/2026-10-25T183728Z-gororoba-primorial-null-residuals",
+   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_null_residuals.py --check docs/evidence/primorial_cover/null_residuals.json --run results/kaggle/2026-10-25T185707Z-gororoba-primorial-null-residuals",
    "name": "core-primorial-null-residuals-replay",
    "seconds": 14.0,
    "tier": "full",

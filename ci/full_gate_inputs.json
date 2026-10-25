@@ -537,7 +537,7 @@
     "core-primorial-null-residuals-replay": [
       "docs/evidence/calibration/**",
       "docs/evidence/primorial_cover/**",
-      "results/kaggle/2026-10-25T183728Z-gororoba-primorial-null-residuals/**"
+      "results/kaggle/2026-10-25T185707Z-gororoba-primorial-null-residuals/**"
     ]
   }
 }
