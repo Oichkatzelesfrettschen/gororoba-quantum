@@ -214,6 +214,25 @@ def test_prediction_gradient_matches_finite_differences() -> None:
             raise AssertionError((readout, column, gradient[column], numeric))
 
 
+def test_fold_fit_receives_the_training_configurations_alone(monkeypatch: pytest.MonkeyPatch) -> None:
+    d = scored({"family": "heater_gain", "values": [0.0, 0.03]})
+    seen = []
+
+    def mode(data: dict[str, Any], tau: np.ndarray, free: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        seen.append(data)
+        return np.zeros(int(free.sum())), np.eye(int(free.sum()))
+
+    monkeypatch.setattr(models, "static_mode", mode)
+    fold = holdout.configuration_fold(("coupler", None, 0.1, d, 2))
+    (training,) = seen
+    expected = models.without_configuration(d, 2)
+    if training["keys"] != expected["keys"] or not np.array_equal(training["block"], expected["block"]):
+        raise AssertionError("the fold fit saw more than the training configurations")
+    if not fold["rows"]:
+        raise AssertionError("the left-out configuration scored no readout")
+
+
+@pytest.mark.audit
 def test_left_out_counts_never_reach_the_fold_fit() -> None:
     d = scored({"family": "heater_gain", "values": [0.0, 0.03]})
     changed = scored({"family": "heater_gain", "values": [0.0, 0.03]})
