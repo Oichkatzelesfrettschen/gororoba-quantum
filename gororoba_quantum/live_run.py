@@ -6039,6 +6039,22 @@ def main(argv: list[str] | None = None) -> int:
         "omitted, prep0, reset and x; the policy binds a selection",
     )
     parser.add_argument(
+        "--latency-dt",
+        type=int,
+        metavar="DT",
+        help="latency-recovery: the frame_l idle L in dt (the controller latency to idle through); omitted, "
+        "latency_recovery.DEFAULT_LATENCY_DT for ibm_kingston; rounded up to the backend's timing granularity; "
+        "the policy binds a given value",
+    )
+    parser.add_argument(
+        "--window-dt",
+        type=int,
+        metavar="DT",
+        help="latency-recovery: the ff_w and frame_lw extra idle W in dt; omitted, "
+        "latency_recovery.DEFAULT_WINDOW_DT for ibm_kingston; rounded up to the backend's timing granularity; "
+        "the policy binds a given value",
+    )
+    parser.add_argument(
         "--pin-layout",
         type=_pinned_layout,
         metavar="BACKEND:Q,Q,...",
@@ -6328,6 +6344,12 @@ def main(argv: list[str] | None = None) -> int:
             args.state_prep_arms = list(state_prep_arms(args.state_prep_arms))
         except ValueError as error:
             parser.error(f"--state-prep-arms: {error}")
+    for flag, value in (("--latency-dt", args.latency_dt), ("--window-dt", args.window_dt)):
+        if value is not None:
+            if args.family != "latency-recovery":
+                parser.error(f"{flag} applies to the latency-recovery family only")
+            if value <= 0:
+                parser.error(f"{flag} must be a positive integer dt")
     if args.pin_layout is not None and args.family != "n21-orbit-rca":
         parser.error("--pin-layout applies to the n21-orbit-rca family only")
     if args.init_herald and args.family != "n21-orbit-rca":
@@ -6377,6 +6399,8 @@ def main(argv: list[str] | None = None) -> int:
         )
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
+    if args.family == "latency-recovery" and args.max_replicas not in (None, 1):
+        parser.error("latency-recovery reads one placement's schedule; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:
             parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")

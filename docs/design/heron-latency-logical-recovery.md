@@ -63,8 +63,9 @@ a frame error that a virtual Z removes. A drop in C is a decay.
 ## Arms
 
 `L` is the scheduled feed-forward overhead for the backend: 215 cycles on
-ibm_kingston (208 to `Receive` plus its 7). `W` is one more Kingston broadcast
-window, 526 cycles.
+ibm_kingston (208 to `Receive` plus its 7). `W` is a 10 us idle, 2500 cycles,
+long enough that its T1/T2 cost exceeds the detection radius (Power below),
+so the window cost resolves delta.
 
 | Arm | Window after the syndrome barrier | Correction |
 |---|---|---|
@@ -96,16 +97,22 @@ against F = 0.
 
 ## Contracts
 
-Preregistered, one-sided where stated, family alpha 0.05 split equally:
+Preregistered, family alpha 0.05 split equally over the seven inferential
+tests. Aer applies a conditional instantly, so the latency endpoints have no
+modeled effect to plan a directional test against. They, and the window costs,
+are precision endpoints: the planner prices the interval half-width, and the
+analysis applies the rule in the last column to the retained interval.
 
-| Contract | Statistic | Passes when |
-|---|---|---|
-| `recovery` | F(`ff_0`) - F(null) | lower bound above 0.5 |
-| `code_property` | F(`ff_0`) - F(`ff_0_unencoded`) | lower bound above 0.25 |
-| `latency_cost` | F(`frame_0`) - F(`ff_0`) | lower bound above 0 (cost resolved) |
-| `latency_is_idle` | F(`frame_l`) - F(`ff_0`) | two one-sided tests inside +-0.01 (feed-forward costs what its idle costs) |
-| `window_slope` | [F(`ff_0`) - F(`ff_w`)] and [F(`frame_l`) - F(`frame_lw`)] | both reported with intervals; their difference inside +-0.01 |
-| `decay_not_phase` | C(`frame_0`) - C(`ff_0`) beside phi(`ff_0`) - phi(`frame_0`) | descriptive: names the loss decay or frame |
+| Contract | Statistic | Planned as | Decision |
+|---|---|---|---|
+| `recovery` | F(`ff_0`) - F(null) | one-sided | lower bound above 0.5 |
+| `code_property` | F(`ff_0`) - F(`ff_0_unencoded`) | one-sided | lower bound above 0.25 |
+| `latency_cost` | F(`frame_0`) - F(`ff_0`) | half-width 0.05 | resolved when the lower bound exceeds 0 |
+| `latency_is_idle` | F(`frame_l`) - F(`ff_0`) | half-width 0.05 | holds when the interval lies inside +-0.01; a wider interval is reported as unresolved |
+| `window_cost_ff` | F(`ff_0`) - F(`ff_w`) | half-width 0.05 | resolved when the lower bound exceeds 0; divided by W, the decay rate delta |
+| `window_cost_frame` | F(`frame_l`) - F(`frame_lw`) | half-width 0.05 | as `window_cost_ff`, through idle alone |
+| `window_slope` | `window_cost_ff` - `window_cost_frame` | half-width 0.1 | holds when the interval lies inside +-0.01 |
+| `decay_not_phase` | C(`frame_0`) - C(`ff_0`) beside phi(`ff_0`) - phi(`frame_0`) | descriptive | names the loss decay or frame |
 
 A failed `latency_is_idle` with a passing `latency_cost` names a
 feed-forward cost beyond the idle. That excess is the device-specific part:
@@ -113,21 +120,20 @@ readout-induced dephasing or controller behavior that Aer does not model.
 
 ## Power
 
-At n shots per member, the standard error of one F is at most
-`sqrt(3/n)/4`. A difference of two arms then carries about
-`sqrt(6/n)/4`, and its one-sided 0.05 radius is 1.645 times that:
+The planner bounds each endpoint with Hoeffding intervals that hold under
+arbitrary dependence within a shot, at alpha/7. At 16384 shots per member a
+difference of two arms reaches a half-width near 0.046 and `window_slope`
+near 0.095; 8192 shots miss both targets. Normal-theory standard errors,
+near 0.005 for a difference at 16384 shots, are reported beside the
+preregistered intervals as description.
 
-| n | SE of one F | radius of a difference |
-|---|---|---|
-| 8192 | 0.0048 | 0.0112 |
-| 16384 | 0.0034 | 0.0079 |
-
-As a planning value, a Kingston T2 near 150 us puts the T1/T2 loss of the
-four-qubit block over `L` near 0.011 and over `W` near 0.028. The dry run's
-Aer prediction under the live Target replaces both numbers. If the predicted
-`latency_cost` falls below the radius, the run resolves only excess loss
-beyond T1 and T2, and the case states it that way. The shot count follows
-from the dry run's predicted effect against these radii.
+A submit-free exploration on ibm_kingston (calibration 2026-10-25T12:03:28-07:00,
+medians T1 258 us, T2 163 us) predicted under Aer F(`ff_0`) = 0.915, the null
+0.014 and the unencoded arm 0.251. It put the T1/T2 cost of the 215-dt idle
+`L` at 0.006, below any reachable radius, so `latency_cost` and
+`latency_is_idle` resolve only a feed-forward cost well beyond T1 and T2. It
+put the window cost at 0.017 for a 526-dt window and 0.081 for 2500 dt; the
+second exceeds the 0.046 half-width, which sets `W`.
 
 ## Placement and seeds
 
@@ -140,8 +146,11 @@ Readout correction is skipped for feed-forward circuits. Every arm's final
 measurement is identical, so readout error biases each F alike, and
 differences between arms cancel it to first order.
 
-`seed_transpiler`, `seed_simulator` and any bootstrap seed come from a fresh
-ANU draw cited as `qrng:<draw>#<index>`.
+The family draws no randomness of its own: its circuits, frame rule and
+contracts are deterministic. Layout search and the planner's model sampling use
+the runner's `SEED_TRANSPILER` range and `SEED_SIMULATOR`, the reproduction
+identifiers of ci/reproduction_seeds.json that every live_run family plans
+with.
 
 ## Implementation
 
