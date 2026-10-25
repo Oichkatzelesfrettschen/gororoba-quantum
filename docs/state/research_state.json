@@ -1927,6 +1927,13 @@
       "question": "Does the garnet:mock pipeline accept the eight-circuit unitary-arm diagnostic (cases.json 47a3675d), with pi/2-pair steps and a circuit without the pre-readout delay, and return the final key of every circuit?"
     },
     {
+      "id": "iqm-garnet-qpu-measurement-diagnostic",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Is the N = 16 unitary excess of the window probes an axis phase per small-angle prx pulse or |1> loss before the readout, read from eight circuits with in-situ readout on QB5, QB7, QB11, QB14, QB17 and QB19?"
+    },
+    {
       "id": "iqm-garnet-mock-measure-012-probe",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe",
@@ -9512,6 +9519,35 @@
       "gates": {},
       "acquisitions": [
         "iqm-garnet-mock-measurement-diagnostic"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-qpu-measurement-diagnostic",
+      "statement": "On IQM Garnet (calibration set be070414, job 01a1753f-3b98-7437-9433-83d0b4b87721, eight circuits x 1000 shots, 0.50 credits) the preregistered diagnosis of the unitary-arm excess reads no_excess: no usable qubit's raw N = 16 unitary reading exceeds its raw model by 3 standard errors (QB17 +1.1, QB19 +1.1, QB14 -3.2, QB5 -3.5, QB7 -1.4), and the corrected pi/2-pair circuit lies within 3 standard errors of its model on all five usable qubits (-2.64 to +2.71), so the rebuild criterion holds. QB11 is unusable: its readout scale is 0.384, with |1> reading P(0) = 0.172 at once and 0.522 after the 2 us idle. The compiled schedule was 1.0076 times the QPU-calibrated prediction.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One job at 1000 shots on six qubits; the models use the calibration and an assumed initialization excitation, and the readings below 3 standard errors are descriptive.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic/results.json",
+          "sha256": "af099e10887456bc197dc1280e7877a6bd745e9a50b9678985cf53c747e2802c"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_diagnostic_analysis.json",
+          "sha256": "9d14bb8508834cc06cc6570b4ebb809b389aec6f6a46f618d1ad67ceb7976459"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-diagnostic.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-qpu-measurement-diagnostic"
       ],
       "assumptions": [],
       "depends_on": [],

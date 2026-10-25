@@ -328,7 +328,11 @@ peak. The trajectory disfavors a shared under-rotation. Two causes remain, and t
 different spaces. Against the raw model of the same circuit (0.182, 0.218, 0.172, 0.169, 0.164, 0.177 at p = 0.068) the
 probe readings sit at +0.2, -0.2, +2.1, -0.8, +1.5 and +5.3 standard errors; only QB19 is far from its model, and the
 0.00 to 0.20 band sits below the raw model of four of the six qubits. The [diagnostic
-case](iqm-garnet-measurement-sequence-diagnostic.md) reads the readout in situ before it chooses a cause.
+case](iqm-garnet-measurement-sequence-diagnostic.md) read the readout in situ on the QPU and returned `no_excess`: the
+raw N = 16 unitary reading matched its model on five usable qubits and QB19's 0.38 did not reproduce (0.191 at 1000
+shots), so the stop rule fired on a comparison across spaces and one noisy reading; the
+[results](iqm-garnet-measurement-sequence-diagnostic.md#results) also found QB11's T1 collapsed and recommend pi/2-pair
+steps.
 
 ## Window sensitivity
 

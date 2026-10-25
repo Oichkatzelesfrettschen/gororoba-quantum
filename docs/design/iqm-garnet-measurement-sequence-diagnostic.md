@@ -99,6 +99,59 @@ The model compared against uses the calibration and the assumed excitation, so a
 (the in-situ readout) is reported (`raw` z per circuit) and enters the verdict only through the rules above. Mock
 outcomes are random and never enter the analysis.
 
+## Results
+
+The preregistered diagnosis reads **`no_excess`**, and the rebuild criterion holds. Job `01a1753f-3b98-7437-9433-83d0b4b87721`
+(set `be070414`, eight circuits at 1000 shots, 0.50 credits;
+[run](../../results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic/results.json),
+[analysis](../../results/iqm/measurement_sequence_diagnostic_analysis.json)) returned L empty: no usable qubit's raw
+D4 reading exceeds its raw model by 3 standard errors (z = -3.5, -1.4, -3.2, +1.1 and +1.1 on QB5, QB7, QB14, QB17 and
+QB19). QB11 is unusable, with a readout scale of 0.384 under the 0.5 floor. The corrected D6 lies within 3 standard
+errors of its model on all five usable qubits (z = -1.63, -1.96, -2.64, +2.71 and +0.80 on QB5, QB7, QB14, QB17 and
+QB19), so the main case is rebuilt with pi/2-pair steps. The compiled schedule was 1.0076 times the QPU-calibrated
+prediction, inside the 1 % tolerance.
+
+Raw P(0) of the final key:
+
+| qubit | D1 | D2 | D3 | D4 | D5 | D6 | D7 | D8 |
+|---|---|---|---|---|---|---|---|---|
+| QB5 | 0.958 | 0.080 | 0.042 | 0.139 | 0.141 | 0.135 | 0.148 | 0.153 |
+| QB7 | 0.922 | 0.104 | 0.092 | 0.176 | 0.149 | 0.132 | 0.139 | 0.146 |
+| QB11 | 0.906 | 0.522 | 0.172 | 0.579 | 0.548 | 0.586 | 0.582 | 0.563 |
+| QB14 | 0.971 | 0.058 | 0.027 | 0.133 | 0.093 | 0.116 | 0.098 | 0.095 |
+| QB17 | 0.967 | 0.051 | 0.041 | 0.178 | 0.085 | 0.172 | 0.124 | 0.107 |
+| QB19 | 0.919 | 0.102 | 0.071 | 0.191 | 0.118 | 0.199 | 0.163 | 0.133 |
+
+Corrected excess of D4 to D8 over the model (z, with the in-situ correction):
+
+| qubit | D4 | D5 | D6 | D7 | D8 |
+|---|---|---|---|---|---|
+| QB5 | +0.44 | +2.44 | -1.63 | +1.99 | +2.84 |
+| QB7 | -0.14 | +1.19 | -1.96 | -0.78 | +0.21 |
+| QB14 | +1.31 | +0.54 | -2.64 | -0.24 | +0.14 |
+| QB17 | +5.25 | +0.46 | +2.71 | +2.72 | +1.91 |
+| QB19 | +2.44 | -0.69 | +0.80 | +1.57 | -0.02 |
+
+The readings below are descriptive, outside the preregistered verdict:
+
+- **QB11.** Its |1> reads P(0) = 0.172 immediately after the pulse (D3) and 0.522 after the 2 us idle (D2). That relaxation
+  of 0.35 in 2 us implies a T1 of about 4 us against 47.8 us in the set, a likely two-level-system event; every QB11
+  circuit that ends near |1> reads 0.55 to 0.59 for the same reason.
+- **Starting excitation.** D1 (ro0) reads 0.958, 0.922, 0.906, 0.971, 0.967 and 0.919, above the p = 0.068 raw model
+  (0.931, 0.926, 0.924, 0.924, 0.927, 0.902) on QB5 (+4.1 SE), QB14 (+8.7), QB17 (+7.0) and QB19 (+2.0). The starting
+  excited population is below 0.068, about 0.02 to 0.05 on those four from the readout errors, which raised the raw
+  models; QB5 and QB14 read below their D4 models (-3.5, -3.2) for that reason.
+- **QB17.** Its corrected unitary excess falls with the pulse count: D4 +5.25, D7 +2.72, D8 +1.91 and D5 (one pulse)
+  +0.46 standard errors, and its pi/2-pair D6 reads +2.71. That is consistent with a per-pulse coherent error on QB17.
+  It is descriptive, because the raw D4 screen (+1.1) did not select QB17.
+- **QB19.** The 100-shot probe excess (0.38) did not reproduce: D4 raw is 0.191 against 0.177 at 1000 shots.
+- **D3 and D2.** The idle relaxation D2 - D3 reads 0.038, 0.012, 0.031, 0.010 and 0.031 on QB5, QB7, QB14, QB17 and
+  QB19 against model values of 0.038, 0.041, 0.040, 0.038 and 0.029.
+
+The pinching case's unitary-arm guard therefore stays in place. QB11 (T1 collapse) and QB17 (a d6 excess of +2.71
+standard errors at 1000 shots, which would project to about 4.7 at the main case's 3000 shots and fire the guard) are
+excluded from the rebuilt selection.
+
 ## Sequence
 
 1. `check` the case, run the self-test, and run the job on `garnet:mock` at 0.00 credits: it settles that the circuits are
