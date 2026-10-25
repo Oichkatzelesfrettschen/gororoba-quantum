@@ -40,6 +40,7 @@
   "results/ripple/measured-rank-sector.json": "core-206: the gate compares every value bit for bit with the producer-identity fields skipped, and the retained bytes carry the identity of the commit that wrote them, so a runner-image rewrite reproduces the values but not the file (extractor_sha256, runtime_experiment_digest)",
   "results/hypercomplex/photonic-successors/ascella": "check_campaign_files reads the frozen campaign operators without resynthesizing them, and frozen-file-sha256.json binds their bytes",
   "results/hypercomplex/photonic-successors/belenos": "check_campaign_files reads the frozen campaign operators without resynthesizing them, and frozen-file-sha256.json binds their bytes; a resynthesis in the runner image differs in the last bits of wave-repeat-block-0 to 2",
-  "results/hypercomplex/photonic-successors/native-target-catalogue.json": "an input the check reads through --native-catalogue; scripts/hypercomplex_photonic_cases.py never rewrites it"
+  "results/hypercomplex/photonic-successors/native-target-catalogue.json": "an input the check reads through --native-catalogue; scripts/hypercomplex_photonic_cases.py never rewrites it",
+  "results/quantum_inspire/proposals/zz-map-tuna17-pause-ladder-floor": "core-683 regenerates the bundle from qi_zz_map.build, whose angles and timing floats are the ones core-594 regenerates byte for byte for the v1 sibling on every hosted runner and build host; v2 changes only integer pause fields, schema strings and digests, so its floats inherit that cross-host identity"
  }
 }
