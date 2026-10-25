@@ -69,7 +69,7 @@ proposed work, in dependency order:
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 21 |
 | mathematical claim | open | 3 |
-| numerical or stochastic simulation | established | 9 |
+| numerical or stochastic simulation | established | 10 |
 | preregistered emulator control | established | 10 |
 | preregistered hardware inference | established | 54 |
 | preregistered hardware inference | superseded | 1 |
