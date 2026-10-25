@@ -14,10 +14,10 @@ Two records live here.
   quotient and the parity network. The mathematics is in
   [primorial-cover-defects.md](../../notes/topics/primorial-cover-defects.md).
 - `noise.json` is the output of `scripts/primorial_cover_noise.py`, run as
-  Kaggle CPU kernel version 2 of `gororoba-primorial-cover-noise` under
+  Kaggle CPU kernel version 3 of `gororoba-primorial-cover-noise` under
   `push --ci-env` (Python 3.14.7, qiskit 2.6.0, qiskit-aer 0.17.2, numpy 2.5.4,
   four workers; `kaggle_environment.json`). The run is retained under
-  `results/kaggle/2026-10-25T002903Z-gororoba-primorial-cover-noise/`, whose
+  `results/kaggle/2026-10-25T005647Z-gororoba-primorial-cover-noise/`, whose
   `collect.json` binds the file's bytes. The kernel built the hypercomplex
   stack and regenerated the retained tables before its entry ran
   (`kaggle_hypercomplex.json`). Gate `core-683` (about 90 s) requires
@@ -56,8 +56,9 @@ each exact law. The arms are the quotient's four marked, four
 complement-marked, one no-oracle and four basis arms; twelve edges in X and Y
 for the zero-angle null block, gap86, gap86 repaired, gap88 and gap88
 repaired; the gap88 QAOA pair; and eight three-qubit basis arms, which give
-the per-qubit assignment matrix. A noise-free scenario follows every CZ by a
-conditional phase of 0.02, 0.05 or 0.1 rad on the best path.
+the per-qubit assignment matrix. Noise-free scenarios on the best path follow
+every CZ by a conditional phase of 0.02, 0.05 or 0.1 rad, or replace every sx
+by RX(pi/2 (1 + eta)) at eta = 0.002, 0.004 or 0.01.
 
 ## Result
 
@@ -80,7 +81,10 @@ conditional phase of 0.02, 0.05 or 0.1 rad on the best path.
    0.287 uncorrected and 0.0005, 0.0032 and 0.0128 after null subtraction, with
    cycle residuals 0.0004, 0.0025 and 0.0103: the error reads as a
    self-consistent Hamiltonian on `c_Z0`, `c_Z0Z1` and `c_Z1`, and the null
-   arm removes it to first order.
+   arm removes it to first order. The sx amplitude error enters at second
+   order: largest biases 0.00003, 0.0001 and 0.0007 uncorrected and at most
+   0.0004 after null subtraction, against a per-coefficient standard
+   deviation of about 0.018 at 1,270 shots per setting.
 4. The cost block lasts 0.832 us, so a static detuning shifts its qubit's
    single-body coefficient by 0.0075 per kHz; the null arm carries the same
    shift.

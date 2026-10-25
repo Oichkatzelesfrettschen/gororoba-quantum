@@ -9510,15 +9510,15 @@
     },
     {
       "id": "primorial-cover-noise-null-subtraction",
-      "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00 on its best and median three-qubit paths, assignment-corrected phase-gradient tomography of the eight-CNOT gap-88 cost recovers every coefficient within 0.0031 of its exact value (identification radius 1/16) at about 1,270 shots per setting, the gap-88 repair contrast reads -0.499 against -0.5, the gap-20 Grover quotient reads its marked label at 0.963 to 0.984, and the gap-86 repair leaves every compiled law unchanged. A noise-free CZ conditional phase of 0.02 to 0.1 rad per CZ biases the coefficients by 0.057 to 0.287 with cycle residuals at most 0.0103, and subtracting the zero-angle null arm reduces the bias to 0.0005 to 0.0128.",
+      "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00 on its best and median three-qubit paths, assignment-corrected phase-gradient tomography of the eight-CNOT gap-88 cost recovers every coefficient within 0.0031 of its exact value (identification radius 1/16) at about 1,270 shots per setting, the gap-88 repair contrast reads -0.499 against -0.5, the gap-20 Grover quotient reads its marked label at 0.963 to 0.984, and the gap-86 repair leaves every compiled law unchanged. A noise-free CZ conditional phase of 0.02 to 0.1 rad per CZ biases the coefficients by 0.057 to 0.287 with cycle residuals at most 0.0103, and subtracting the zero-angle null arm reduces the bias to 0.0005 to 0.0128; an sx amplitude error of 0.002 to 0.01 biases them by at most 0.0007.",
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
       "status": "established",
-      "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshot) plus one noise-free coherent scenario; detuning enters only as the analytic per-kHz shift, crosstalk and leakage are outside it, and no hardware run exists.",
+      "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshot) plus noise-free CZ-phase and sx-amplitude scenarios; detuning and ZZ enter only through the derived null-arm cancellation and the analytic per-kHz shift, axis tilt is unsimulated, crosstalk and leakage are outside it, and no hardware run exists.",
       "evidence": [
         {
           "path": "docs/evidence/primorial_cover/noise.json",
-          "sha256": "b73afb9958cdd52743efc6e11088cdbf3fceeb85c4cbfe22b4b03ae8ec5dee4c"
+          "sha256": "600a4ab713234426a4025c23b5e63d3c043eafabcfa813dfebc2e816d0153551"
         },
         {
           "path": "docs/evidence/calibration/ibm_kingston.json",

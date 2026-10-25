@@ -4184,7 +4184,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_cover_noise.py --check docs/evidence/primorial_cover/noise.json --run results/kaggle/2026-10-25T002903Z-gororoba-primorial-cover-noise",
+   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_cover_noise.py --check docs/evidence/primorial_cover/noise.json --run results/kaggle/2026-10-25T005647Z-gororoba-primorial-cover-noise",
    "name": "core-683",
    "seconds": 91.0,
    "tier": "full"
