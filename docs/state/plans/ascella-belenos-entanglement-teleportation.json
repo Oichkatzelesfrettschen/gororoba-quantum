@@ -27,7 +27,25 @@
       "id": "protocol-model",
       "action": "Derive the partial Bell analyzer, frames, decoder, reference preservation, sequential composition and decision statistics from the bosonic transform.",
       "acceptance": "tests/scripts/test_qd_network_protocol.py passes, cross-checked against dense permanents and Perceval SLOS, and its refusal fixtures fire.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "tests/scripts/test_qd_network_protocol.py: 28 passed under ci/pr_checks.sh tests; analyzer, frames, decoder, reference preservation and two-hop XOR derived from the bosonic transform and cross-checked against dense permanents and Perceval SLOS; every refusal fixture raises.",
+          "observed_at": "2026-10-25T09:50:19+00:00",
+          "revision": "6daf861d0877a702f40a998e51fd74722cc7f393",
+          "evidence": [
+            {
+              "ref": "scripts/qd_network_protocol.py",
+              "sha256": "575324d22cd699486174dc4230ccdca4a5d8d33435d7bbedc3d9d73eac82f94e"
+            },
+            {
+              "ref": "tests/scripts/test_qd_network_protocol.py",
+              "sha256": "8da0678c1f2a6e2285273ab1c3593b1c6c0c3ea34f115da6276b3113053430f1"
+            }
+          ],
+          "scope_sha256": "899921ad2cd606a821221a9fbbf24b5f458533f4773ea3cb5650a7b9d4957e8d"
+        }
+      ]
     },
     {
       "id": "provider-capability-response",
