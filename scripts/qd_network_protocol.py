@@ -321,13 +321,23 @@ def receiver_states(resource: str = "phi+") -> dict[str, dict[str, tuple[float, 
     """Per six-state input and accepted pattern: probability and receiver state; modes (q0, q1, a0, a1, b0, b1)."""
     table = bell_pattern_table()
     accepted = {pattern for pattern, row in table.items() if row["accepted"]}
-    unitary = embed([(analyzer_unitary(), (0, 1, 2, 3))], 6)
-    result = {}
-    for label, (alpha, beta), _, _ in SIX_STATES:
-        output = propagate(unitary, tensor(dual_rail_qubit(alpha, beta), dual_rail_pair(resource)))
-        conditional = _conditional_receiver(output, (0, 1, 2, 3), (4, 5))
-        result[label] = {pattern: conditional[pattern] for pattern in sorted(accepted) if pattern in conditional}
-    return result
+    per_input = ordered_map(_SingleHop(resource), [(alpha, beta) for _, (alpha, beta), _, _ in SIX_STATES])
+    return {
+        label: {pattern: conditional[pattern] for pattern in sorted(accepted) if pattern in conditional}
+        for (label, _, _, _), conditional in zip(SIX_STATES, per_input, strict=True)
+    }
+
+
+@dataclass(frozen=True)
+class _SingleHop:
+    """Conditional receiver states of one input through modes (q0, q1, a0, a1, b0, b1); pickled by ordered_map."""
+
+    resource: str
+
+    def __call__(self, amplitudes: tuple[complex, complex]) -> dict[str, tuple[float, np.ndarray]]:
+        unitary = embed([(analyzer_unitary(), (0, 1, 2, 3))], 6)
+        output = propagate(unitary, tensor(dual_rail_qubit(*amplitudes), dual_rail_pair(self.resource)))
+        return _conditional_receiver(output, (0, 1, 2, 3), (4, 5))
 
 
 def teleportation_frames(resource: str = "phi+") -> Teleportation:
@@ -390,21 +400,32 @@ def sequential_frames() -> dict[tuple[str, str], tuple[int, int]]:
     receiver) with b2, and a2 carries the output.
     """
     frames = teleportation_frames().frames
-    unitary = embed([(analyzer_unitary(), (0, 1, 2, 3)), (analyzer_unitary(), (4, 5, 6, 7))], 10)
+    per_input = ordered_map(_TwoHop(tuple(sorted(frames))), [(alpha, beta) for _, (alpha, beta), _, _ in SIX_STATES])
     receivers: dict[tuple[str, str], dict[str, np.ndarray]] = {}
-    for label, (alpha, beta), _, _ in SIX_STATES:
-        state = tensor(dual_rail_qubit(alpha, beta), dual_rail_pair("phi+"), dual_rail_pair("phi+"))
+    for (label, _, _, _), grouped in zip(SIX_STATES, per_input, strict=True):
+        for key, vector in grouped.items():
+            receivers.setdefault(key, {})[label] = vector / np.linalg.norm(vector)
+    return {key: _match_byproduct(states) for key, states in sorted(receivers.items())}
+
+
+@dataclass(frozen=True)
+class _TwoHop:
+    """Unnormalized a2 states of one input per accepted pattern pair; pickled by ordered_map."""
+
+    accepted: tuple[str, ...]
+
+    def __call__(self, amplitudes: tuple[complex, complex]) -> dict[tuple[str, str], np.ndarray]:
+        unitary = embed([(analyzer_unitary(), (0, 1, 2, 3)), (analyzer_unitary(), (4, 5, 6, 7))], 10)
+        state = tensor(dual_rail_qubit(*amplitudes), dual_rail_pair("phi+"), dual_rail_pair("phi+"))
         grouped: dict[tuple[str, str], np.ndarray] = {}
         for occupation, amplitude in propagate(unitary, state).items():
             key = (click(occupation[0:4]), click(occupation[4:8]))
-            if key[0] not in frames or key[1] not in frames:
+            if key[0] not in self.accepted or key[1] not in self.accepted:
                 continue
             if any(count > 1 for count in occupation[0:8]):
                 continue
             grouped.setdefault(key, np.zeros(2, dtype=complex))[0 if occupation[8:10] == (1, 0) else 1] += amplitude
-        for key, vector in grouped.items():
-            receivers.setdefault(key, {})[label] = vector / np.linalg.norm(vector)
-    return {key: _match_byproduct(states) for key, states in sorted(receivers.items())}
+        return grouped
 
 
 def bell_fidelity(c_xx: float, c_yy: float, c_zz: float) -> float:
@@ -503,6 +524,48 @@ def success_weighted_fidelity(instrument: Iterable[tuple[np.ndarray, np.ndarray]
     if success <= 0.0:
         raise ProtocolError("the instrument never succeeds on the ensemble")
     return numerator / success, success
+
+
+BLOCH_GRID: tuple[tuple[int, int, int], ...] = tuple(
+    (x, y, z) for x, y, z in itertools.product((-1, 0, 1), repeat=3) if (x, y, z) != (0, 0, 0)
+)
+KEEP_MINUS_WEIGHTS = (0.0, 0.5, 1.0)
+
+
+def bloch_projector(direction: Sequence[float] | np.ndarray) -> np.ndarray:
+    """Pure-state projector along a nonzero Bloch direction."""
+    unit = np.array(direction, dtype=float)
+    unit = unit / np.linalg.norm(unit)
+    return (I2 + sum(unit[k] * PAULI[axis] for k, axis in enumerate("XYZ"))) / 2.0
+
+
+def _measure_and_prepare_point(point: tuple[tuple[int, int, int], tuple[int, int, int], float]) -> tuple[float, float]:
+    """F_succ and success of: measure along m, prepare p on +m, and keep -m with weight w preparing -p."""
+    measured, prepared, keep_minus = point
+    minus_measured = tuple(-value for value in measured)
+    minus_prepared = tuple(-value for value in prepared)
+    instrument = [
+        (bloch_projector(measured), bloch_projector(prepared)),
+        (keep_minus * bloch_projector(minus_measured), bloch_projector(minus_prepared)),
+    ]
+    return success_weighted_fidelity(instrument)
+
+
+def measure_and_prepare_grid() -> list[tuple[float, float]]:
+    """(F_succ, success) of every grid instrument: 26 measured directions, 26 prepared directions, 3 weights."""
+    points = [(m, p, w) for m in BLOCH_GRID for p in BLOCH_GRID for w in KEEP_MINUS_WEIGHTS]
+    return ordered_map(_measure_and_prepare_point, points)
+
+
+def _product_witness(pair: tuple[tuple[int, int, int], tuple[int, int, int]]) -> float:
+    state = np.kron(bloch_projector(pair[0]), bloch_projector(pair[1]))
+    correlators = [float(np.trace(state @ np.kron(PAULI[axis], PAULI[axis])).real) for axis in "XYZ"]
+    return bell_fidelity(*correlators)
+
+
+def product_witness_grid() -> list[float]:
+    """Phi+ witness fidelity of every product of two grid pure states (26 x 26)."""
+    return ordered_map(_product_witness, [(left, right) for left in BLOCH_GRID for right in BLOCH_GRID])
 
 
 def joint_teleportation_scores(

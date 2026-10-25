@@ -135,27 +135,15 @@ def test_design_counts_follow_their_formulas() -> None:
         protocol.bernoulli_decision_count(0.01, 0.10, 0.68, 2.0 / 3.0, 0.02)
 
 
-def bloch_projector(direction: np.ndarray) -> np.ndarray:
-    unit = direction / np.linalg.norm(direction)
-    return (protocol.I2 + sum(unit[k] * protocol.PAULI[axis] for k, axis in enumerate("XYZ"))) / 2.0
-
-
 def test_measure_and_prepare_instruments_stay_at_or_below_two_thirds() -> None:
-    directions = [np.array(vector, dtype=float) for vector in itertools.product((-1, 0, 1), repeat=3) if any(vector)]
-    best = 0.0
-    for direction in directions:
-        plus, minus = bloch_projector(direction), bloch_projector(-direction)
-        for prepare_direction in directions:
-            prepared = bloch_projector(prepare_direction)
-            opposite = bloch_projector(-prepare_direction)
-            for keep_minus in (0.0, 0.5, 1.0):
-                instrument = [(plus, prepared), (keep_minus * minus, opposite)]
-                fidelity, success = protocol.success_weighted_fidelity(instrument)
-                if success <= 0.0 or fidelity > 2.0 / 3.0 + 1e-12:
-                    raise AssertionError((direction, prepare_direction, keep_minus, fidelity))
-                best = max(best, fidelity)
-    if abs(best - 2.0 / 3.0) > 1e-12:
-        raise AssertionError(best)
+    results = protocol.measure_and_prepare_grid()
+    if len(results) != 26 * 26 * 3:
+        raise AssertionError(len(results))
+    for fidelity, success in results:
+        if success <= 0.0 or fidelity > 2.0 / 3.0 + 1e-12:
+            raise AssertionError((fidelity, success))
+    if abs(max(fidelity for fidelity, _ in results) - 2.0 / 3.0) > 1e-12:
+        raise AssertionError("the grid does not reach the 2/3 bound")
 
 
 def ideal_histogram(resource: str, trials_per_cell: int) -> dict[tuple[str, str, str, int], int]:
@@ -163,7 +151,7 @@ def ideal_histogram(resource: str, trials_per_cell: int) -> dict[tuple[str, str,
     histogram = {}
     for label, per_pattern in protocol.receiver_states(resource).items():
         for basis in ("X", "Y", "Z"):
-            projector = bloch_projector(np.array([basis == axis for axis in "XYZ"], dtype=float))
+            projector = protocol.bloch_projector(np.array([basis == axis for axis in "XYZ"], dtype=float))
             for pattern, (probability, vector) in per_pattern.items():
                 plus = float(np.vdot(vector, projector @ vector).real)
                 for raw, weight in ((0, plus), (1, 1.0 - plus)):
@@ -209,17 +197,20 @@ def correlator(state: np.ndarray, axis: str) -> float:
 
 
 def test_separable_resources_do_not_pass_the_witness() -> None:
-    # Product pure states on a grid of Bloch directions, and their equal mixtures, stay at or below 1/2.
-    directions = [np.array(vector, dtype=float) for vector in itertools.product((-1, 0, 1), repeat=3) if any(vector)]
-    products = [np.kron(bloch_projector(left), bloch_projector(right)) for left in directions for right in directions]
-    best = 0.0
-    for state in products + [(products[0] + products[-1]) / 2.0]:
-        fidelity = protocol.bell_fidelity(correlator(state, "X"), correlator(state, "Y"), correlator(state, "Z"))
-        if fidelity > 0.5 + 1e-12:
-            raise AssertionError(fidelity)
-        best = max(best, fidelity)
-    if abs(best - 0.5) > 1e-12:
-        raise AssertionError(best)
+    # Product pure states on a grid of Bloch directions stay at or below 1/2, and an equal mixture of two does too.
+    fidelities = protocol.product_witness_grid()
+    if len(fidelities) != 26 * 26 or abs(max(fidelities) - 0.5) > 1e-12:
+        raise AssertionError(max(fidelities))
+    first, last = protocol.BLOCH_GRID[0], protocol.BLOCH_GRID[-1]
+    mixture = (
+        np.kron(protocol.bloch_projector(first), protocol.bloch_projector(first))
+        + np.kron(protocol.bloch_projector(last), protocol.bloch_projector(last))
+    ) / 2.0
+    if (
+        protocol.bell_fidelity(correlator(mixture, "X"), correlator(mixture, "Y"), correlator(mixture, "Z"))
+        > 0.5 + 1e-12
+    ):
+        raise AssertionError("mixture")
     if protocol.bell_fidelity(0.0, 0.0, 1.0) != 0.5 or protocol.bell_fidelity(1.0, -1.0, 1.0) != 1.0:
         raise AssertionError("classically correlated mixture or Phi+")
     radius = math.sqrt(math.log(1.0 / 0.002) / 8.0 * 3.0 / 2590)
@@ -240,10 +231,14 @@ def test_separable_resources_do_not_pass_the_witness() -> None:
         lambda: protocol.pairs_per_axis(2.0, 0.03),
         lambda: protocol.bernoulli_decision_count(0.01, 1.0, 0.8, 2.0 / 3.0, 0.0),
         lambda: protocol.bernoulli_decision_count(0.01, 0.1, 0.8, 2.0 / 3.0, -0.5),
-        lambda: protocol.success_weighted_fidelity([(1.2 * protocol.I2, bloch_projector(np.array([0.0, 0.0, 1.0])))]),
-        lambda: protocol.success_weighted_fidelity([(-0.4 * protocol.I2, bloch_projector(np.array([0.0, 0.0, 1.0])))]),
         lambda: protocol.success_weighted_fidelity(
-            [(0.5 * protocol.I2, 1.5 * bloch_projector(np.array([0.0, 0.0, 1.0])))]
+            [(1.2 * protocol.I2, protocol.bloch_projector(np.array([0.0, 0.0, 1.0])))]
+        ),
+        lambda: protocol.success_weighted_fidelity(
+            [(-0.4 * protocol.I2, protocol.bloch_projector(np.array([0.0, 0.0, 1.0])))]
+        ),
+        lambda: protocol.success_weighted_fidelity(
+            [(0.5 * protocol.I2, 1.5 * protocol.bloch_projector(np.array([0.0, 0.0, 1.0])))]
         ),
         lambda: protocol.success_weighted_fidelity([(np.zeros((2, 2), dtype=complex), protocol.I2 / 2.0)]),
         lambda: protocol.propagate(np.eye(2, dtype=complex), {(1, 0): 1.0, (1, 1): 1.0}),
