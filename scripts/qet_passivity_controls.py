@@ -66,8 +66,11 @@ import numpy as np
 from scipy.optimize import minimize
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
 
 from qet_two_qubit_reference import I2, X, Y, Z, hamiltonians  # noqa: E402
+
+from parallel import ordered_map  # noqa: E402
 
 TOLERANCE = 1e-10
 DRIVE_ANGLES = (math.pi / 4, math.pi / 2, math.pi)
@@ -299,6 +302,26 @@ def shots_per_setting(h: float, k: float, sigmas: float = 5.0) -> int:
     return math.ceil(variance * (sigmas / e_b) ** 2)
 
 
+def confound_case(case: tuple[float, float, float, float, float]) -> dict[str, float]:
+    """Summary row of one preparation error (h, k, delta, gamma, phase), after its soundness checks.
+
+    The checks: the Kabsch minimum equals the Euler-angle search, and neither
+    the model's q = 1/2 feedback nor the remeasured hardware estimator with a
+    q = 1/2 record shows an information excess.
+    """
+    h, k, delta, gamma, phase = case
+    rho = prepare(h, k, delta, gamma, phase)
+    label = f"delta {delta}, gamma {gamma}, phase {phase}"
+    measured = averaged(rho)
+    if abs(kabsch_min_local(measured, h, k) - search_min_local(measured, h, k)) > 1e-8:
+        raise RuntimeError(f"{label}: Kabsch minimum differs from the Euler-angle search")
+    if summary(h, k, delta, gamma, flip=0.5, phase=phase)["information_excess"] > TOLERANCE:
+        raise RuntimeError(f"{label}: an uninformed q = 1/2 record shows an information excess")
+    if hardware_excess(rho, h, k, 0.5, 0.03, "remeasured") > TOLERANCE:
+        raise RuntimeError(f"{label}: the remeasured estimator shows an excess with an uninformed record")
+    return summary(h, k, delta, gamma, phase=phase)
+
+
 def reference(h: float = 1.0, k: float = 1.0) -> dict[str, object]:
     ideal = summary(h, k)
     r = math.hypot(h, k)
@@ -337,15 +360,7 @@ def reference(h: float = 1.0, k: float = 1.0) -> dict[str, object]:
     grid = [
         {"delta": d, "gamma": g, "phase": p} for d in (0.0, 0.05, 0.15) for g in (0.0, 0.05) for p in (0.0, 0.2, 0.5)
     ]
-    confounds = []
-    for case in grid:
-        row = summary(h, k, **case)
-        rho = averaged(prepare(h, k, **case))
-        if abs(kabsch_min_local(rho, h, k) - search_min_local(rho, h, k)) > 1e-8:
-            raise RuntimeError(f"{case}: Kabsch minimum differs from the Euler-angle search")
-        if summary(h, k, flip=0.5, **case)["information_excess"] > TOLERANCE:
-            raise RuntimeError(f"{case}: an uninformed q = 1/2 record shows an information excess")
-        confounds.append(row)
+    confounds = ordered_map(confound_case, [(h, k, case["delta"], case["gamma"], case["phase"]) for case in grid])
     if not any(row["uninformed_below_ground"] > 1e-3 for row in confounds):
         raise RuntimeError("no preparation error put L below L_g without information; the confound model is inert")
     if not any(row["uninformed_drop"] > 1e-3 and row["uninformed_below_ground"] < 1e-9 for row in confounds):
@@ -358,9 +373,6 @@ def reference(h: float = 1.0, k: float = 1.0) -> dict[str, object]:
         raise RuntimeError("the reported-bit estimator differs from E_B with a perfect readout")
     if readout["0.5"]["reported"] < 0.1:
         raise RuntimeError("the reported-bit estimator no longer shows its q = 1/2 false excess")
-    for case in grid:
-        if hardware_excess(prepare(h, k, **case), h, k, 0.5, 0.03, "remeasured") > TOLERANCE:
-            raise RuntimeError(f"{case}: the remeasured estimator shows an excess with an uninformed record")
     return {
         "h": h,
         "k": k,
