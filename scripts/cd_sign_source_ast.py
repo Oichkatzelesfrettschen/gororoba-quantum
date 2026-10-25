@@ -2,8 +2,12 @@
 
 The exporter records ast.iter_fields generically. It does not map Python operations to target-language
 constructors: the Rocq certificate checker and independent raw-tree semantics own that interpretation.
-The source digest binds the exact UTF-8 source bytes, including text outside the selected function.
-CPython parsing, function selection, serialization and source-byte binding remain external trust boundaries.
+The source digest binds the exact UTF-8 bytes of every top-level statement that binds cd_sign, or a module-level name
+those statements load outside their own function scopes, transitively, in source order. A binding inside a module-level
+conditional, loop, try or with block, or through a function's global declaration, counts; a star import is refused.
+Edits elsewhere in cd_core.py leave the digest unchanged, while a changed or rebound cd_sign or helper changes it.
+CPython parsing, function selection, name-closure selection, serialization and source-byte binding remain external
+trust boundaries.
 
 Usage: "$PYTHON" scripts/cd_sign_source_ast.py [--check | --write]
 """
@@ -69,6 +73,134 @@ def function_node(source: str, name: str = "cd_sign") -> ast.FunctionDef:
     return matches[0]
 
 
+SCOPES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef, ast.Lambda)
+COMPREHENSIONS = (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)
+
+
+def _module_scope(node: ast.AST) -> list[ast.AST]:
+    """node and every descendant that executes in module scope: a def or class binds its name there, its body runs
+    in its own scope."""
+    found = [node]
+    if isinstance(node, SCOPES):
+        # Decorators, defaults, base classes and keywords evaluate where the definition runs, not in its body.
+        outer: list[ast.AST] = list(getattr(node, "decorator_list", []))
+        if isinstance(node, ast.ClassDef):
+            outer += [*node.bases, *(keyword.value for keyword in node.keywords)]
+        else:
+            outer += [*node.args.defaults, *(item for item in node.args.kw_defaults if item is not None)]
+        for item in outer:
+            found.extend(_module_scope(item))
+        return found
+    for child in ast.iter_child_nodes(node):
+        if isinstance(child, SCOPES):
+            found.extend(_module_scope(child))
+        elif isinstance(child, COMPREHENSIONS):
+            # A comprehension's targets are its own; its first iterable and any := target act in the enclosing scope.
+            found.extend(_module_scope(child.generators[0].iter))
+            found.extend(item.target for item in ast.walk(child) if isinstance(item, ast.NamedExpr))
+        else:
+            found.extend(_module_scope(child))
+    return found
+
+
+def _bound_names(node: ast.stmt) -> set[str]:
+    """Module-level names one top-level statement can bind, including inside a conditional, loop, try or with
+    block and through a global declaration of a function it defines."""
+    bound: set[str] = set()
+    for item in _module_scope(node):
+        if isinstance(item, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef):
+            bound.add(item.name)
+        elif isinstance(item, ast.Import | ast.ImportFrom):
+            for alias in item.names:
+                if alias.name == "*":
+                    raise UnsupportedValue(f"a star import at line {item.lineno} binds names the closure cannot list")
+                bound.add((alias.asname or alias.name).split(".")[0])
+        elif isinstance(item, ast.Name) and isinstance(item.ctx, ast.Store | ast.Del):
+            bound.add(item.id)
+        elif isinstance(item, ast.ExceptHandler) and item.name:
+            bound.add(item.name)
+        elif isinstance(item, ast.MatchAs | ast.MatchStar) and item.name:
+            bound.add(item.name)
+        elif isinstance(item, ast.MatchMapping) and item.rest:
+            bound.add(item.rest)
+    for item in ast.walk(node):
+        if isinstance(item, ast.Global):
+            bound.update(item.names)
+    return bound
+
+
+def _locals(function: ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda) -> set[str]:
+    arguments = function.args
+    names = {
+        item.arg
+        for item in [*arguments.posonlyargs, *arguments.args, *arguments.kwonlyargs, arguments.vararg, arguments.kwarg]
+        if item is not None
+    }
+    body = function.body if isinstance(function.body, list) else [function.body]
+    declared: set[str] = set()
+    for statement in body:
+        for item in _module_scope(statement):
+            if isinstance(item, ast.Name) and isinstance(item.ctx, ast.Store | ast.Del):
+                names.add(item.id)
+            elif isinstance(item, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef):
+                names.add(item.name)
+            elif isinstance(item, ast.Import | ast.ImportFrom):
+                names.update((alias.asname or alias.name).split(".")[0] for alias in item.names)
+            elif isinstance(item, ast.ExceptHandler) and item.name:
+                names.add(item.name)
+            elif isinstance(item, ast.Global | ast.Nonlocal):
+                declared.update(item.names)
+    return names - declared
+
+
+def _free_names(node: ast.AST, local: frozenset[str] = frozenset()) -> set[str]:
+    """Names node loads that its own function scopes do not bind, so module scope resolves them."""
+    if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda):
+        arguments = node.args
+        outer: list[ast.AST] = [*getattr(node, "decorator_list", []), *arguments.defaults]
+        outer += [item for item in arguments.kw_defaults if item is not None]
+        found = set().union(*(_free_names(item, local) for item in outer))
+        body = node.body if isinstance(node.body, list) else [node.body]
+        # A global declaration in this scope reaches module scope even where an enclosing function binds the name.
+        declared = {
+            name for item in body for sub in _module_scope(item) if isinstance(sub, ast.Global) for name in sub.names
+        }
+        inner = (local - declared) | _locals(node)
+        return found.union(*(_free_names(item, inner) for item in body))
+    if isinstance(node, ast.Name):
+        return {node.id} if isinstance(node.ctx, ast.Load) and node.id not in local else set()
+    return set().union(*(_free_names(child, local) for child in ast.iter_child_nodes(node)))
+
+
+def closure_source(source: str, name: str = "cd_sign") -> str:
+    """Source text of every top-level statement that binds name or a module-level name the selected statements
+    load, transitively, in source order."""
+    module = ast.parse(source)
+    function_node(source, name)
+    binders: dict[str, list[ast.stmt]] = {}
+    for node in module.body:
+        for bound in _bound_names(node):
+            binders.setdefault(bound, []).append(node)
+    selected: dict[int, ast.stmt] = {}
+    pending: list[ast.stmt] = list(binders[name])
+    while pending:
+        node = pending.pop()
+        if id(node) in selected:
+            continue
+        selected[id(node)] = node
+        for free in sorted(_free_names(node)):
+            pending.extend(binders.get(free, []))
+    lines = source.splitlines(keepends=True)
+    blocks = []
+    for node in sorted(selected.values(), key=lambda item: item.lineno):
+        decorators = getattr(node, "decorator_list", [])
+        start = min([node.lineno] + [item.lineno for item in decorators])
+        if node.end_lineno is None:
+            raise UnsupportedValue(f"statement at line {node.lineno} has no end line")
+        blocks.append("".join(lines[start - 1 : node.end_lineno]))
+    return "\n".join(blocks)
+
+
 def definition(item: tuple[str, str]) -> str:
     name, text = item
     return f"Definition {name} : py :=\n  {raw_term(function_node(text), '  ')}.\n"
@@ -79,7 +211,7 @@ def generated(source: str) -> str:
         raise UnsupportedValue("the high-low guard of cd_sign is not unique in the source")
     if source.count("half >>= 1") != 1:
         raise UnsupportedValue("the loop shift of cd_sign is not unique in the source")
-    digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    digest = hashlib.sha256(closure_source(source).encode("utf-8")).hexdigest()
     items = [
         ("cd_sign_source", source),
         ("cd_sign_mutant_source", source.replace(MUTANT_OLD, MUTANT_NEW)),

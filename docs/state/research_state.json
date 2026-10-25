@@ -4651,15 +4651,11 @@
         },
         {
           "path": "proofs/CdSignSourceCertificate.v",
-          "sha256": "37f2109eacff0065a03ec01d80fb27e70c036cfafc3a46fae1cd5f49770d56ef"
-        },
-        {
-          "path": "gororoba_quantum/cd_core.py",
-          "sha256": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+          "sha256": "6c83e82d0708f93e3e294f0302b62f7f2609a1aa8827f0381423f480c3b6f510"
         },
         {
           "path": "scripts/cd_sign_source_ast.py",
-          "sha256": "3187bcf30f2ee7ea43fe55697d251c1338245da6d7161a65004e088d8dce0a58"
+          "sha256": "3107a7af599a3a9c421641694bccbd763f6e37357bcf20e370c0021516053659"
         },
         {
           "path": "docs/evidence/cd-sign-python-translation/assumptions.v",
@@ -4674,8 +4670,8 @@
           "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
         },
         {
-          "path": "docs/evidence/cd-sign-python-translation/source_hashes.sha256",
-          "sha256": "3241e2d39a2a6719782568ee0b42c96f3d634bf2e40bd3b5f976390aa4d9fc42"
+          "path": "docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
+          "sha256": "afd4e70c72839686fc93d584f8c13aba17933f2abe5a6e6105df812a6ddbd66f"
         }
       ],
       "documents": [
