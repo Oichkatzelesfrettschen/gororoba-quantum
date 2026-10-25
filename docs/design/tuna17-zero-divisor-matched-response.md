@@ -44,7 +44,7 @@ also leaves region-dependent visibility and time-dependent region offsets unreso
 
 ## Budget, replay and admission
 
-The [proposal](../../results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery/proposal.json)
+The [proposal](../../results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel/proposal.json)
 contains nine unsubmitted jobs on `tuna_17`: three witness jobs and six readout-control jobs,
 each with 16384 shots, totaling 147456 shots. The provisional budget is 101.55168 device seconds,
 using the [retained timing model](../notes/quantum_inspire/README.md) of 2.6 seconds fixed overhead
@@ -55,14 +55,16 @@ Refresh availability, terms, queue limits and duration before presenting an exec
 The generator binds the retained catalogue digest and its own source digest, so a change to
 `scripts/qi_matched_zero_divisor.py` retains a separately named proposal. The
 [first proposal](../../results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response/proposal.json) binds the generator before its compiler receipt
-moved to the token-recovery toolchain record; the nine circuits are byte-identical. Replay locally:
+moved to the token-recovery toolchain record, and the
+[token-recovery proposal](../../results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery/proposal.json)
+binds it before the record moved to the receipt over the cancelling `parallel.py`; the nine circuits are
+byte-identical across all three. Replay locally:
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
 export QI_PYTHON
-"$PYTHON" scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery
-"$PYTHON" scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery \
-  --toolchain-record docs/evidence/quantum_inspire/matched-zero-divisor-toolchain-ordered-map-cancel.json
+"$PYTHON" scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel
+"$PYTHON" scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel
 ```
 
 The first command uses the pinned Qiskit replay runtime. The second checks the

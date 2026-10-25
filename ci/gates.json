@@ -3912,7 +3912,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel",
    "name": "core-632",
    "seconds": 3.0,
    "tier": "pr",
@@ -3921,7 +3921,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery --toolchain-record docs/evidence/quantum_inspire/matched-zero-divisor-toolchain-ordered-map-cancel.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel",
    "name": "core-633",
    "seconds": 2.0,
    "tier": "pr",
