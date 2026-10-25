@@ -1,0 +1,63 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-drive-response-families",
+  "kind": "investigation",
+  "summary": "Score per-heater drive responses beyond the drive-linear family (polynomial order 1 and 2, harmonic order 1 and 2 of the returned phase) on job-00, job-01 and the training-only Ascella folds.",
+  "sources": [
+    "scripts/ascella_drive_response.py",
+    "docs/design/ascella-signed-coherence-conformance.md"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The families and widths were chosen without a preregistered record; the reading criterion is the one plan ascella-configuration-holdout-training-only fixed before its runs."
+  },
+  "next_action": "None; constraining these coefficients needs a hardware case that repeats one configuration under perturbed compilations, tracked by plan ascella-signed-coherence-conformance.",
+  "scope": "Five drive families of the returned 12-mode meshes (shifted Legendre order 1 and 2, harmonic order 1 at tau 0.3 and 0.1, harmonic order 2), each fitted on job-00 from the zero start, scored on job-01 and on the 19 training-only folds that serve the X or Y readout, under the 30-on-10 and below-20 reading.",
+  "owner": "ascella signed-coherence analysis",
+  "related": [
+    "ascella-configuration-holdout-training-only",
+    "ascella-signed-coherence-conformance"
+  ],
+  "claims": [
+    "ascella-signed-coherence-drive-response"
+  ],
+  "steps": [
+    {
+      "id": "polynomial-and-harmonic-families",
+      "action": "Fit the five families with scripts/ascella_drive_response.py and score every scored configuration's training-only fold with counting plus g C g^T variance.",
+      "acceptance": "drive-response.json replays within the fit bounds under the gate runner's kernel pair, and each family's X and Y sums carry the reading: 30 or more keeps the shortfall, below 20 with a median variance ratio above 1 is weakly identified.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Polynomial order 1 keeps the X shortfall (32 on 10, variance ratio 10); polynomial order 2 and the three harmonic families fall below 20 with median variance ratios 6.5 to 485 and read as weakly identified. Every family passes job-01 held-out (X 4.0 to 5.4, Y 6.7 to 12.6). The record replays on the merged tree.",
+          "observed_at": "2026-10-25T09:29:34+00:00",
+          "revision": "c10c3ce6de6b54f0828df1ef0b7011b72949f27a",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/drive-response.json",
+              "sha256": "cceba0b5229f239585472c69fadbf6201d5e318f00b5b5e858faa3d8b2fb66c8"
+            }
+          ],
+          "scope_sha256": "3ee67250135b6796780a273b31e094c7308a0be6ed4ee74e1d8cd942a4b20e1a"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The polynomial order-1 family keeps the left-out X shortfall; the richer families are not identified by 29 training configurations, so the drive-linear section's medium-high confidence stands.",
+  "receipts": [
+    {
+      "scope_sha256": "c4ffbf2c7c6054cf2dc384ac7a68c8496ac986678e09d34f1467cda41d7824ad",
+      "result": "The one step is done; drive-response.json is retained with its replay gate.",
+      "observed_at": "2026-10-25T09:29:34+00:00",
+      "revision": "c10c3ce6de6b54f0828df1ef0b7011b72949f27a",
+      "evidence": [
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/drive-response.json",
+          "sha256": "cceba0b5229f239585472c69fadbf6201d5e318f00b5b5e858faa3d8b2fb66c8"
+        }
+      ]
+    }
+  ]
+}
