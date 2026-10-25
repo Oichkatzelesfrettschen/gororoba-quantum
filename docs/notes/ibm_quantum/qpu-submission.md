@@ -62,8 +62,15 @@ and the Kaggle noise-snapshot rule.
   `--max-execution-seconds` (the Sampler's max_execution_time, which the
   service enforces; the dry run is made with the same value, since the
   policy carries it). `--max-total-execution-seconds` caps the sum of all
-  job ceilings, and `--reserve-seconds` names the retained quota. The fresh
-  plan must match the record in experiment
+  job ceilings, and `--reserve-seconds` names the retained quota.
+  `--seed-transpiler` (the first of the `--seeds` consecutive transpiler
+  seeds) and `--seed-simulator` take a new acquisition's seeds as
+  `qrng:<draw>#<index>` through `qrng_seeds.add_seed_argument`; their
+  defaults reproduce earlier runs. A non-default spelling joins the record's
+  policy and its `seed_source`, whose experiment is the originating dry run,
+  so the submission repeats the dry run's spellings; the change that retains
+  the dry run adds the ledger rows with `ci/seed_provenance.py
+  --add-runtime`. The fresh plan must match the record in experiment
   digest, shots, policy (twirling, DD, budget floor, execution ceiling),
   dependency versions, IBM Cloud instance, groups, backends, seeds, layouts,
   replica qubits, fused PUB manifests, calibration values at the refresh and

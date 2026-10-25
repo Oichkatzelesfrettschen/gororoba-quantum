@@ -52,6 +52,13 @@ samples per iteration; each of its settings names its design_index, and its
 manifest names the draw and the indices it consumes. A run directory's
 cases.json names its job, so --preflight and --submit plan against that job's
 budgets, credit ceiling and expected seconds and bind its own retained body.
+job-02, the perturbed-compilation case of plan ascella-perturbed-compilation-case,
+submits the one setting COMPILATION_SETTING 64 times at 8,192 samples: every
+ANCHOR_STRIDE-th position at compilation seed 0, job-00's served mesh, and each
+other position at its own seed, the nonzero values of the ANU QRNG draw
+SEED_DRAW taken in index order with repeats skipped. Its manifest names the
+draw, the indices it consumes and the sizing record
+COMPILATION_DESIGN.
 
 Usage:
   "$PYTHON" scripts/ascella_coherence_request.py [--check | JOB | --body JOB]
@@ -119,6 +126,11 @@ PER_JOB_CREDITS = 1.0
 # The ANU QRNG draw whose values 0..63 order the permuted repeat: position p
 # submits the design entry of the p-th smallest value, ties broken by index.
 ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-10-18T083846Z.json"
+COMPILATION_SETTING = ("theta2-x", 0)
+ANCHOR_STRIDE = 8
+SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-25T182813Z.json"
+COMPILATION_PLAN = "docs/state/plans/ascella-perturbed-compilation-case.json"
+COMPILATION_DESIGN = "docs/evidence/ascella-order-coefficients/compilation-design.json"
 
 
 @dataclass(frozen=True)
@@ -134,11 +146,13 @@ class Job:
     credit_ceiling: float
     expected_seconds: float
     permuted: bool
+    compilations: bool = False
 
 
 JOBS = {
     "job-00": Job("job-00", 8192, 16384, 1.016384, 200.0, False),
     "job-01": Job("job-01", 16384, 32768, 1.032768, 240.0, True),
+    "job-02": Job("job-02", 8192, 16384, 1.016384, 200.0, False, True),
 }
 STAGED = ("cases.json", "circuit.json")
 # qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers
@@ -230,9 +244,37 @@ def permutation() -> list[int]:
     return sorted(range(64), key=lambda index: (values[index], index))
 
 
+def compilation_seeds() -> tuple[list[int], list[int]]:
+    """The perturbed positions' seeds and the SEED_DRAW indices they consume: nonzero values in index order, each
+    value once."""
+    values = json.loads((ROOT / SEED_DRAW).read_text(encoding="utf-8"))["values"]
+    needed = 64 - 64 // ANCHOR_STRIDE
+    seeds: list[int] = []
+    indices: list[int] = []
+    for index, value in enumerate(values):
+        if value != 0 and value not in seeds:
+            seeds.append(int(value))
+            indices.append(index)
+        if len(seeds) == needed:
+            return seeds, indices
+    raise ValueError(f"{SEED_DRAW} holds {len(seeds)} distinct nonzero values, not {needed}")
+
+
 def entries(job: Job) -> list[dict[str, Any]]:
-    """The job's iterations in submission order; a permuted job's rows also name their design position."""
+    """The job's iterations in submission order; a permuted job's rows also name their design position, and a
+    compilation job's rows their position and compilation seed."""
     rows = design_order()
+    if job.compilations:
+        block, arm = COMPILATION_SETTING
+        base = next(row for row in rows if row["block"] == block and row["arm"] == arm)
+        seeds = iter(compilation_seeds()[0])
+        # An anchor row names no seed and takes job-00's from build_setting.
+        return [
+            {**base, "compilation_position": p}
+            if p % ANCHOR_STRIDE == 0
+            else {**base, "compilation_position": p, "compilation_seed": next(seeds)}
+            for p in range(64)
+        ]
     if not job.permuted:
         return rows
     return [{**rows[position], "design_index": position} for position in permutation()]
@@ -270,8 +312,10 @@ def build_setting(item: tuple[int, dict[str, Any]]) -> tuple[dict[str, Any], dic
     logical = analyzer(row["readout"]) @ order_operator(row["theta"], row["phi"], row["generator"])
     mesh, parameters = photonic_template(logical)
     full = embed(logical)
-    return mesh, {
-        "name": f"{row['block']}-arm{row['arm']}" + ("-ii" if row["generator"] == "i" else ""),
+    setting = {
+        "name": f"{row['block']}-arm{row['arm']}"
+        + ("-ii" if row["generator"] == "i" else "")
+        + (f"-c{row['compilation_position']:02d}" if "compilation_position" in row else ""),
         "observation_index": index,
         **row,
         "ideal": ideal(row),
@@ -280,6 +324,8 @@ def build_setting(item: tuple[int, dict[str, Any]]) -> tuple[dict[str, Any], dic
         "operator": encoded(full),
         "compilation_seed": 0,
     }
+    setting.update({key: row[key] for key in ("compilation_seed",) if key in row})
+    return mesh, setting
 
 
 def job_of(manifest: dict[str, Any]) -> Job:
@@ -330,6 +376,20 @@ def documents(job: Job) -> dict[str, bytes]:
             "interpretation": "complex-encoding conformance of the compiled circuit family",
         },
     }
+    if job.compilations:
+        seeds, indices = compilation_seeds()
+        manifest["compilation_seeds"] = {
+            "draw": SEED_DRAW,
+            "indices": indices,
+            "anchor_stride": ANCHOR_STRIDE,
+            "rule": "nonzero draw values in index order, repeats skipped, at the positions off the stride",
+        }
+        manifest["preregistered"] = {
+            "plan": COMPILATION_PLAN,
+            "design_record": COMPILATION_DESIGN,
+            "family_alpha": 0.01,
+            "interpretation": "compilation dependence of one logical setting's analyzer response",
+        }
     if job.permuted:
         manifest["order"] = {
             "draw": ORDER_DRAW,
@@ -385,7 +445,8 @@ def check_setting(item: tuple[str, int, dict[str, Any], dict[str, Any]]) -> None
     label = f"{owner}/{setting.get('name')}"
     for key, value in row.items():
         require(setting.get(key) == value, f"{label}: {key} is {setting.get(key)!r}, not {value!r} at {index}")
-    require(setting.get("compilation_seed") == 0, f"{label}: compilation_seed is not 0")
+    if "compilation_seed" not in row:
+        require(setting.get("compilation_seed") == 0, f"{label}: compilation_seed is not 0")
     require(setting.get("observation_index") == index, f"{label}: observation_index is not {index}")
     full = operator_of(setting)
     require(full.shape == (MODES, MODES), f"{label}: the operator is {full.shape}, not twelve-mode")
@@ -429,6 +490,7 @@ def body_entry(item: tuple[str, str, int]) -> None:
     entry = computation.iterations[index]
     label = f"job-body.json entry {index}"
     budgets = {"max_samples": job.samples, "max_shots": job.shots, "compilation_seed": 0}
+    budgets.update({key: value for key, value in entries(job)[index].items() if key == "compilation_seed"})
     # An entry that names only circuit_params and budgets inherits the base experiment's input state and filter.
     require(sorted(entry) == sorted([*budgets, "circuit_params"]), f"{label}: entry keys {sorted(entry)}")
     require({key: entry[key] for key in budgets} == budgets, f"{label}: budgets {entry} differ from {budgets}")
@@ -478,7 +540,23 @@ def validate_body(body: dict[str, Any], manifest: dict[str, Any]) -> None:
 
 
 def rejections(manifest: dict[str, Any], circuit: dict[str, Any]) -> list[str]:
-    """Mutated requests that validate must refuse: a perturbed unitary, an exchanged analyzer, four output modes."""
+    """Mutated requests that validate must refuse: a perturbed unitary, an exchanged analyzer (a moved compilation
+    seed in a compilation job, whose settings share one analyzer), four output modes."""
+    narrow = {**circuit, "input_state": circuit["input_state"][:LOGICAL]}
+    if job_of(manifest).compilations:
+        perturbed = copy.deepcopy(manifest)
+        parameter = sorted(perturbed["settings"][1]["circuit_params"])[0]
+        perturbed["settings"][1]["circuit_params"][parameter] += 1e-3
+        reseeded = copy.deepcopy(manifest)
+        reseeded["settings"][1]["compilation_seed"] += 1
+        return ordered_map(
+            refusal,
+            [
+                ("perturbed unitary", perturbed, circuit),
+                ("moved compilation seed", reseeded, circuit),
+                ("four-mode output width", manifest, narrow),
+            ],
+        )
     position = {setting["name"]: index for index, setting in enumerate(manifest["settings"])}
     x_index, y_index = position["theta1-x-arm0"], position["theta1-y-arm0"]
     perturbed = copy.deepcopy(manifest)
@@ -488,7 +566,6 @@ def rejections(manifest: dict[str, Any], circuit: dict[str, Any]) -> list[str]:
     x_setting, y_setting = exchanged["settings"][x_index], exchanged["settings"][y_index]
     for key in ("circuit_params", "column", "operator", "ideal"):
         x_setting[key], y_setting[key] = y_setting[key], x_setting[key]
-    narrow = {**circuit, "input_state": circuit["input_state"][:LOGICAL]}
     return ordered_map(
         refusal,
         [

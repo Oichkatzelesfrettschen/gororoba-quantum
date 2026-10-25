@@ -2292,13 +2292,13 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-latency-recovery-family.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-live-run-seed-flags.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-latency-recovery-family.json"
+    "docs/evidence/submitted_circuits/comparison-live-run-seed-flags.json"
    ]
   },
   {
@@ -4063,6 +4063,22 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ascella_drive_response.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01 docs/evidence/ascella-order-coefficients/drive-response.json --check",
    "name": "core-ascella-signed-coherence-drive-response-replay",
    "seconds": 735.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_compilation_design.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/compilation-design-anchor-ratio.json --check",
+   "name": "core-ascella-signed-coherence-compilation-design-replay",
+   "seconds": 105.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_compilation_reading.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/compilation-reading.json --check",
+   "name": "core-ascella-signed-coherence-compilation-reading-replay",
+   "seconds": 505.0,
    "tier": "full"
   },
   {
