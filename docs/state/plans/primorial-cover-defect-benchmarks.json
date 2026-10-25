@@ -9,10 +9,10 @@
     "docs/evidence/primorial_cover/README.md",
     "docs/notes/papers/2007.01808.md"
   ],
-  "state": "planned",
+  "state": "closed",
   "scope": "Exact certificates, the Kingston noise prediction and the hardware decision for the primorial quotient, phase-gradient and QAOA circuits; a reproduction of Ziller Table 1 by the exhaustive search. Provider acquisitions need their own approved cases.",
   "owner": "primorial cover-defect benchmarks",
-  "next_action": "Hold hardware: the null-subtracted prediction leaves no primorial-specific device question. A case opens only when it names a platform, path and coherent family the null arm answers better than the retained atlas.",
+  "next_action": "None. A hardware case reopens only on a platform whose compiled signal and null arms differ in physical pulses, or on a coherent family whose null-subtracted residual reaches the budget's standard deviation.",
   "reconciliation": {
     "status": "verified",
     "note": "The user asked for the verified mathematics and a simulator run whose analysis decides on hardware; the certificates and the Kaggle CPU prediction are retained, and no provider job was sent."
@@ -22,7 +22,25 @@
       "id": "device-question",
       "action": "Decide whether a phase-gradient or null-arm run on a named platform answers a device question the Fez and Kingston atlas does not.",
       "acceptance": "Either an approved written case naming platform, path, coherent family, shots and seconds or credits, or a closure stating that no such question exists.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "No device question survives: on both Kingston paths the gap-88 and null arms drive identical pulses, and static ZZ (2 to 20 kHz) and axis tilt (0.005 to 0.02 rad) leave null-subtracted biases of at most 0.00034 and 0.0055, below the 0.0188 and 0.0186 coefficient SDs at the retained budgets; IQM and Tuna-17 rotations carrying the gradient angles are frame changes or exact grid angles.",
+          "observed_at": "2026-10-25T19:05:00+00:00",
+          "revision": "29cc8549ca1b4beace337baf8126f9903e2f2d18",
+          "evidence": [
+            {
+              "ref": "docs/evidence/primorial_cover/null_residuals.json",
+              "sha256": "0b1c5ff178130121188c02c4fac4b7f6d60c652405a11fe1625481d16bfa8fec"
+            },
+            {
+              "ref": "docs/design/primorial-cover-defect-probes.md",
+              "sha256": "e04397a1fe9c1c7952d47634b227a207a0428709f61d804fea803c5ce583ff05"
+            }
+          ],
+          "scope_sha256": "9b4974d3809a27b057126a00230ebc90894f87174821604f6516abba7a1918f2"
+        }
+      ]
     },
     {
       "id": "ziller-table-reproduction",
@@ -41,6 +59,26 @@
             }
           ],
           "scope_sha256": "8199744cc862fd1dc1cf78d69406edac8ed6306d1531808047e01b5bb35f5656"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Both obligations closed: Ziller Table 1 reproduces for k = 1..20, and no primorial-specific device question survives the null-subtracted prediction with static ZZ and axis tilt added; no provider job was sent.",
+  "receipts": [
+    {
+      "scope_sha256": "5f2b6d48b8ca6ba2e34d3b6e1052a7c2b897869fea54192eec259bfb67359881",
+      "result": "Every step is done with its receipt: the Table 1 reproduction record and the null-residual record that closes the device question.",
+      "observed_at": "2026-10-25T19:10:00+00:00",
+      "revision": "29cc8549ca1b4beace337baf8126f9903e2f2d18",
+      "evidence": [
+        {
+          "ref": "docs/evidence/primorial_cover/ziller_table.json",
+          "sha256": "a96fb0f2450978ea4f0716ab57116e7456a0c6fd88cc0c7f001e75624bb81e38"
+        },
+        {
+          "ref": "docs/evidence/primorial_cover/null_residuals.json",
+          "sha256": "0b1c5ff178130121188c02c4fac4b7f6d60c652405a11fe1625481d16bfa8fec"
         }
       ]
     }
