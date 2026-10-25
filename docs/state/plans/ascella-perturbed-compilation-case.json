@@ -9,12 +9,12 @@
     "scripts/ascella_drive_response.py",
     "scripts/ascella_physical_models.py"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
-    "status": "unresolved",
-    "note": "The setting and the three readings are fixed in this record before any simulation result or acquisition. The perturbation is the per-iteration compilation_seed: the service fits only the occupied input column from seeded random starts (docs/notes/quandela/form-dwell-decomposition.md), so a unitary on the unoccupied inputs would not reach the fit. The iteration count and samples follow the identifiability step."
+    "status": "verified",
+    "note": "The setting and the three readings are fixed in this record before any simulation result or acquisition. The perturbation is the per-iteration compilation_seed: the service fits only the occupied input column from seeded random starts (docs/notes/quandela/form-dwell-decomposition.md), so a unitary on the unoccupied inputs would not reach the fit. The iteration count and samples follow the identifiability step. The acquisition ran under the owner's approval and the reading applies R1 to R3 as fixed."
   },
-  "next_action": "The owner approves or declines the written job-02 case in docs/design/ascella-signed-coherence-conformance.md#perturbed-compilation-case-job-02; on approval run --preflight on a fresh run directory and --submit.",
+  "next_action": "None; a model coupling heaters (thermal crosstalk, coupler error, mesh-dependent loss) is a new plan.",
   "scope": "Logical setting theta2-x-arm0 (configuration 13 of job-00, theta 2 pi/5, phi +pi/4, X readout), the largest X residual of the drive-linear training-only folds (observed 0.8813, predicted 0.9309, standardized -4.21 in heater-drive-holdout-heater-basis.json). Each perturbed iteration submits the setting's unitary at its own compilation_seed from a registered QRNG draw, distinct seeds; anchors at seed 0, job-00's compilation, interleave to separate drift from compilation. Readings at alpha 0.01: (R1) compilation dependence, the dispersion of the block-conditioned X statistic over distinct compilations against the anchors' dispersion by label permutation; (R2) prediction, each heater family fitted on job-00 scored on the perturbed iterations in counting plus fitted-prediction variance, keeping the shortfall at or above the chi-square 0.999 quantile on the iteration count and predicting below its 0.97 quantile with median variance ratio at most 1; (R3) identification, each family refitted on job-00 plus the perturbed iterations and rescored on the 19 training-only folds under the 30-on-10 and below-20 rule. A null R1 at simulated power 0.9 or more refutes every per-heater error family (static offsets included) as the cause of the configuration response. If the returned computed circuits realize fewer distinct heater-phase vectors than submitted, R1 to R3 read the distinct set and the record states the collapse.",
   "owner": "ascella signed-coherence analysis",
   "related": [
@@ -99,13 +99,68 @@
       "id": "written-case",
       "action": "Write the case in the design document: what it measures, why simulation cannot answer it, seconds, credits.",
       "acceptance": "The owner approves the written case, or declines it.",
-      "state": "doing"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "The owner approved the written job-02 case on 2026-10-25; preflight found qpu:ascella available and the planned body equal to the frozen one beyond process_id, and job 788097fb was submitted at 18:47 UTC.",
+          "observed_at": "2026-10-25T19:08:54+00:00",
+          "revision": "a9c864d796bb7d573988c369347467c689e0bb35",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/submission.json",
+              "sha256": "f76fd8b2f385cc6cafb1f6e3bd99f29f9d4d26e549275538902e548bc11e53b6"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/preflight.json",
+              "sha256": "abf01d265642689cfa113f1533da15ce11462f2d5401e9014810dc6a24434024"
+            }
+          ],
+          "scope_sha256": "da37151e96bcfc7162459c082f58de85740479f0871fe2fff82c828f4f4f2cc0"
+        }
+      ]
     },
     {
       "id": "acquisition-and-reading",
       "action": "Submit on approval, collect, retain and apply R1 to R3 as fixed in this record.",
       "acceptance": "A retained run and a reading record with R1 to R3 and the distinct-compilation count.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Job 788097fb completed 524,288 samples in 186 s for 1.016384 credits; 56 seeds served 56 distinct meshes and the anchors job-00's. R1: dispersion ratio 7.08, p 0.0049, compilation dependent. R2: static, drive-linear and polynomial-1 fits miss the meshes (1035, 223, 235 against 94.5); harmonic-1 between the thresholds with variance ratio 254. R3: every family identified (ratios 0.23 to 0.86) and short on X (85 to 377 on 10).",
+          "observed_at": "2026-10-25T19:08:54+00:00",
+          "revision": "a9c864d796bb7d573988c369347467c689e0bb35",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+              "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/compilation-reading.json",
+              "sha256": "902b3cc12773daa51c13c80a9919b7a56d1254000e1447268953b3326b98bdb7"
+            }
+          ],
+          "scope_sha256": "ba55147d088a3465a73f174c06822d843d3bfc1668e3c14f3f82767e2d9d342d"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "claims": [
+    "ascella-signed-coherence-compilation-dependence"
+  ],
+  "resolution": "The served mesh moves the X statistic (R1 p 0.0049), and every per-heater error family, identified once job-02 joins the fit, keeps the left-out X shortfall; per-heater offsets and own-phase drive responses do not explain the configuration response.",
+  "receipts": [
+    {
+      "result": "All five steps are done; the run, the sizing and reading records and their replay gates are retained.",
+      "observed_at": "2026-10-25T19:08:54+00:00",
+      "revision": "a9c864d796bb7d573988c369347467c689e0bb35",
+      "evidence": [
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/compilation-reading.json",
+          "sha256": "902b3cc12773daa51c13c80a9919b7a56d1254000e1447268953b3326b98bdb7"
+        }
+      ],
+      "scope_sha256": "4381421b2ffe152c7c3b033939eaf7f8547196ccd415893c117a9dd821a09940"
     }
   ]
 }
