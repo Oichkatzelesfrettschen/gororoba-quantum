@@ -57,7 +57,10 @@ against the coupling graph.
 and DIR/bdsc_pauli_qx/ (batch-NN/ cases and a series cases.json); --check DIR regenerates both and
 compares bytes and file sets. --analyze RUN_DIR... [--out FILE] writes the preregistered analysis
 of the raw shots of every batch of one series; --replay compares FILE with the recomputation
-instead of writing it. --references RUN_DIR... reports the assignment
+instead of writing it. A written analysis carries schema qi-bdsc-pauli-analysis-v4: strict JSON in which a
+chi-square that is infinite (a zero-variance channel with a nonzero amplitude, the exact-information case)
+is null beside a true `amplitude_exact` or `chi2_exact` flag. --replay reads a retained v3 analysis, whose
+bare token Infinity is not RFC 8259 JSON, as that v4 form. --references RUN_DIR... reports the assignment
 references, the batch-00 stop test, the bracket drift and the neighbor-conditioned assignment of the
 batches loaded so far, and exits 1 when a stop fired. --submit-next SERIES_DIR copies the next batch
 of a case series into its run directory and submits it through qi_platform.submit only after every
@@ -1304,6 +1307,67 @@ def analyze(run_dirs: list[Path]) -> dict[str, Any]:
     return analyze_series(*load_series(run_dirs))
 
 
+ANALYSIS_SCHEMA = "qi-bdsc-pauli-analysis-v4"
+RETAINED_SCHEMA_V3 = "qi-bdsc-pauli-analysis-v3"
+
+
+def exact_or_none(chi2: float) -> float | None:
+    """The chi-square a record stores: None where a zero-variance channel with a nonzero amplitude carries
+    exact information (the statistic is infinite), accompanied by a True `amplitude_exact` or `chi2_exact`
+    flag. json.dumps(allow_nan=False) then yields RFC 8259 text; v3 wrote the bare token Infinity."""
+    return None if math.isinf(chi2) else chi2
+
+
+def _strict_constant(token: str) -> float:
+    raise ValueError(f"{token} is not RFC 8259 JSON")
+
+
+def loads_strict(text: str) -> Any:
+    """json.loads that rejects Infinity, -Infinity and NaN."""
+    return json.loads(text, parse_constant=_strict_constant)
+
+
+def dumps_analysis(record: Any) -> str:
+    """The text of an analysis record: strict RFC 8259 JSON, one-space indent, trailing newline."""
+    return json.dumps(record, indent=1, allow_nan=False) + "\n"
+
+
+def upgrade_v3(record: Any) -> Any:
+    """A retained v3 analysis (which may carry the bare token Infinity) read as its v4 form: each infinite
+    chi-square becomes None with the exact flag True, each finite one gains the flag False, and the schema
+    names v4. The retained bytes stay as written; only the comparison in a replay uses this view."""
+
+    def convert(node: Any) -> Any:
+        if isinstance(node, list):
+            return [convert(item) for item in node]
+        if not isinstance(node, dict):
+            return node
+        out: dict[str, Any] = {}
+        for key, value in node.items():
+            if key == "schema" and value == RETAINED_SCHEMA_V3:
+                out[key] = ANALYSIS_SCHEMA
+            elif (key == "amplitude_chi2" or (key == "chi2" and {"dof", "threshold"} <= node.keys())) and (
+                value is None or isinstance(value, float)
+            ):
+                flag = "amplitude_exact" if key == "amplitude_chi2" else "chi2_exact"
+                exact = value is not None and math.isinf(value)
+                out[key] = None if exact else value
+                out[flag] = exact
+            else:
+                out[key] = convert(value)
+        return out
+
+    return convert(record)
+
+
+def parse_analysis(text: str) -> Any:
+    """A retained analysis as a v4-form record; v3 text may hold Infinity, v4 text must be strict JSON."""
+    record = json.loads(text)
+    if isinstance(record, dict) and record.get("schema") == RETAINED_SCHEMA_V3:
+        return upgrade_v3(record)
+    return loads_strict(text)
+
+
 # A retained analysis keeps the bytes its writer's interpreter produced, because series-gate.json binds
 # the control analysis by sha256; numpy builds of one version differ across interpreters in the last
 # bits of a float, so a replay accepts equal structure, equal non-float values and floats within REPLAY_RTOL.
@@ -1345,7 +1409,7 @@ def analyze_series(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]],
     stopped = bool(references["stop_condition_batch_00"]) or bool(references["bracket_drift"]["flagged"])
     if stopped:
         return {
-            "schema": "qi-bdsc-pauli-analysis-v3",
+            "schema": ANALYSIS_SCHEMA,
             "claim_kind": STOPPED_CLAIM,
             "manifest_sha256": manifest_digest(cases),
             "references": references,
@@ -1459,7 +1523,7 @@ def analyze_series(cases: dict[str, Any], raw: dict[tuple[str, str], list[str]],
         for name, row in quadrature_out.items()
     ]
     out: dict[str, Any] = {
-        "schema": "qi-bdsc-pauli-analysis-v3",
+        "schema": ANALYSIS_SCHEMA,
         "claim_kind": claim,
         "manifest_sha256": manifest_digest(cases),
         "bootstrap": {"draws": BOOTSTRAP_DRAWS, "seed": BOOTSTRAP_SEED, "alpha": ALPHA, "prior": "Jeffreys"},
@@ -1665,7 +1729,13 @@ def contraction(
 
             total = sum(r["z"] ** 2 if r["z"] is not None else (math.inf if r["residual"] else 0.0) for r in pairs)
             threshold = float(chi2_law.isf(PRIMARY_P, len(pairs)))
-            pairs_chi2 = {"chi2": total, "dof": len(pairs), "threshold": threshold, "flag": total >= threshold}
+            pairs_chi2 = {
+                "chi2": exact_or_none(total),
+                "chi2_exact": math.isinf(total),
+                "dof": len(pairs),
+                "threshold": threshold,
+                "flag": total >= threshold,
+            }
         out[f"patch-{p}"] = {
             "pairs_kernel_plus_bright_minus_one": pairs,
             "pairs_chi2": pairs_chi2,
@@ -1695,6 +1765,10 @@ def quadrature(cells: list[dict[str, Any]], patches: list[int]) -> dict[str, Any
     standard error is the delta-method value, accurate once the amplitude is many standard errors from zero.
     The witnesses' own cosine amplitude, measured with other states on the neighboring patches, is compared
     with C as an exploratory check of how far neighbor context moves the visibility.
+
+    A channel of zero sample variance with a nonzero amplitude carries exact information: its chi-square is
+    infinite, the amplitude counts as supported, and the record stores amplitude_chi2 as null with
+    amplitude_exact true (strict JSON has no infinity). Every other cell stores the finite value and false.
     """
     out: dict[str, Any] = {}
     for p in patches:
@@ -1747,7 +1821,8 @@ def quadrature(cells: list[dict[str, Any]], patches: list[int]) -> dict[str, Any
             "sin_phi_times_v": s_amp,
             "cos_phi_times_v": c_amp,
             "v": math.hypot(s_amp, c_amp),
-            "amplitude_chi2": chi2,
+            "amplitude_chi2": exact_or_none(chi2),
+            "amplitude_exact": math.isinf(chi2),
             "visibility_supported": supported,
             "phi_rad": phi,
             "phi_se": phase["se"],
@@ -2107,7 +2182,7 @@ def series_gate_self_test(
             runs.mkdir()
             twin_shots = json.loads(twin["batch-00/cases.json"])["shots"]
             control = root / "control.json"
-            control.write_text(json.dumps(analyze_series(*synthetic(twin, ideal, (0.0, 0.0), 21, twin_shots))))
+            control.write_text(dumps_analysis(analyze_series(*synthetic(twin, ideal, (0.0, 0.0), 21, twin_shots))))
             refused(lambda: submit_next(series, runs, "", None, True), "needs --control")
             local = root / "local.json"
             local.write_text(json.dumps({**json.loads(control.read_text()), "claim_kind": "emulator control"}))
@@ -2482,6 +2557,26 @@ def self_test() -> None:
         raise AssertionError("the noiseless twin violates the contraction law or the nulls")
     if not twin_run["control_verdict"]["pass"]:
         raise AssertionError(f"the noiseless twin misses its control verdict: {twin_run['control_verdict']}")
+    twin_text = dumps_analysis(twin_run)  # allow_nan=False raises on any non-finite float
+    if twin_run["schema"] != ANALYSIS_SCHEMA or loads_strict(twin_text) != json.loads(twin_text):
+        raise AssertionError("the v4 analysis of the noiseless twin is not strict JSON")
+    exact = [r["amplitude_exact"] for r in twin_run["quadrature"].values()]
+    if not exact or not all(exact) or any(r["amplitude_chi2"] is not None for r in twin_run["quadrature"].values()):
+        raise AssertionError("a zero-variance quadrature channel is not stored as the exact form")
+    v3_text = twin_text.replace(ANALYSIS_SCHEMA, RETAINED_SCHEMA_V3).replace(
+        '"amplitude_chi2": null', '"amplitude_chi2": Infinity'
+    )
+    v3_text = "\n".join(line for line in v3_text.splitlines() if "amplitude_exact" not in line)
+    try:
+        loads_strict(v3_text)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError("a v3 record with Infinity passed the strict parser")
+    if replay_mismatch(parse_analysis(v3_text), loads_strict(twin_text), "$"):
+        raise AssertionError("a v3 record with Infinity does not read as the v4 exact form")
+    if dumps_analysis(parse_analysis(twin_text)) != twin_text:
+        raise AssertionError("a v4 record does not round-trip")
     off = run(depolarized, (0.0, 0.0), 12, series=twin)
     if off["control_verdict"]["pass"]:
         raise AssertionError("a depolarized twin passed the control verdict")
@@ -2648,14 +2743,14 @@ def main() -> int:
     if args.analyze:
         if len(args.analyze) > 1 and args.out is None:
             parser.error("--analyze over several batches needs --out")
-        text = json.dumps(analyze(args.analyze), indent=1) + "\n"
+        text = dumps_analysis(analyze(args.analyze))
         out = args.out or args.analyze[0] / "analysis.json"
         if args.replay:
             retained = out.read_text(encoding="utf-8")
             if retained == text:
                 print(f"{out} replays byte for byte")
                 return 0
-            mismatch = replay_mismatch(json.loads(retained), json.loads(text), "$")
+            mismatch = replay_mismatch(parse_analysis(retained), loads_strict(text), "$")
             if mismatch:
                 raise SystemExit(f"{out} differs from the recomputation of {len(args.analyze)} batches at {mismatch}")
             print(f"{out} replays within {REPLAY_RTOL:g} relative float rounding")
