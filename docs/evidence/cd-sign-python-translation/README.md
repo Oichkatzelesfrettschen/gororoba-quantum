@@ -73,7 +73,13 @@ either calculus. The remaining boundaries are:
   top-level definition, the generic serializer, file reading and SHA-256
   calculation remain externally checked. The `--check` mode compares the
   complete generated block and source digest; it is not a verified parser
-  or a proved hashing implementation.
+  or a proved hashing implementation. The digest covers the source text of
+  `cd_sign` and of every top-level statement binding a module-level name it
+  reaches, transitively, in source order: the `integer_index` import,
+  `_dimension`, `_index` and `cd_sign` itself. An edit to that closure, or a
+  later top-level rebinding of one of its names, changes the digest; an edit
+  elsewhere in `cd_core.py` does not. Selecting the closure by name is part
+  of this externally checked step.
 - **Primitive and helper contracts.** Both interpretations use mathematical
   integer arithmetic and the existing `_dimension` and `_index` contracts.
   The new proof does not formalize those helpers' Python implementations.
@@ -114,7 +120,7 @@ The toolchain is Rocq 9.3.0, OCaml 5.5.1 and Stdlib 9.2.0, as recorded by
 export PYTHON="${PYTHON:-python3}"
 "$PYTHON" scripts/cd_sign_source_ast.py --check
 ROCQ="${ROCQ:-rocq}" sh docs/evidence/cd-sign-python-translation/replay_rocq.sh
-sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes.sha256
+sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256
 ```
 
 The exporter runs on the repository's pinned Python interpreter. The
@@ -124,8 +130,15 @@ in [assumptions.v](assumptions.v), and independently kernel-checks the
 source certificate and its dependencies. Raw outputs are compared with
 [assumptions.txt](assumptions.txt) and [kernel.txt](kernel.txt).
 
-The source ledger includes the source Python file, both exporters, all
-proof dependencies, the replay script and the receipts. The old exporter
+The source ledger [source_hashes-helper-closure.sha256](source_hashes-helper-closure.sha256)
+includes both exporters, all proof dependencies, the replay script and the
+receipts. It leaves out `cd_core.py` itself, whose bound bytes are the
+helper closure that the certificate's `cd_sign_source_sha256` records and
+`sources-411` recomputes. The first ledger,
+[source_hashes.sha256](source_hashes.sha256), keeps the bytes it was
+admitted with: it pins the whole of `cd_core.py` and the certificate whose
+digest covered that whole file, so it records that earlier binding and no
+gate checks it against the current tree. The old exporter
 is included because the new one imports its mutation constants. Source
 gate `sources-411` checks the raw AST and source identity; gates
 `sources-409` and `sources-410` check the replay script and bound bytes.
