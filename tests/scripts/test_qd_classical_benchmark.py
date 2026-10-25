@@ -6,7 +6,6 @@ inputs outside the program's domain.
 from __future__ import annotations
 
 import io
-import itertools
 import json
 from collections.abc import Callable, Mapping, Sequence
 from contextlib import redirect_stdout
@@ -81,17 +80,12 @@ def test_post_selection_raises_the_unequal_prior_bound() -> None:
 
 def test_certified_bound_dominates_every_grid_instrument() -> None:
     bound = benchmark.six_state_benchmark(PLUS_Z_WEIGHTED).certified
-    directions = protocol.BLOCH_GRID
-    for measured, prepared, keep_minus in itertools.product(directions, directions, protocol.KEEP_MINUS_WEIGHTS):
-        instrument = [
-            (protocol.bloch_projector(measured), protocol.bloch_projector(prepared)),
-            (
-                keep_minus * protocol.bloch_projector([-v for v in measured]),
-                protocol.bloch_projector([-v for v in prepared]),
-            ),
-        ]
-        if pooled_fidelity(instrument, PLUS_Z_WEIGHTED) > bound + 1e-12:
-            raise AssertionError(f"grid instrument {measured}, {prepared}, {keep_minus} exceeds the bound")
+    grid = benchmark.measure_and_prepare_grid_fidelities(PLUS_Z_WEIGHTED)
+    if len(grid) != 26 * 26 * 3 or max(grid) > bound + 1e-12:
+        raise AssertionError(f"a grid instrument reaches {max(grid)} above the bound {bound}")
+    keep_plus = [(projector("+Z"), projector("+Z"))]
+    if abs(max(grid) - pooled_fidelity(keep_plus, PLUS_Z_WEIGHTED)) > 1e-12:
+        raise AssertionError("the grid misses the keep-only-+Z instrument")
 
 
 def test_achieving_choi_operator_is_separable_and_trace_bounded() -> None:
@@ -104,6 +98,8 @@ def test_achieving_choi_operator_is_separable_and_trace_bounded() -> None:
         for operator in (choi, benchmark.partial_transpose_input(choi)):
             if np.linalg.eigvalsh(operator).min() < -benchmark.FEASIBILITY_TOLERANCE:
                 raise AssertionError("the achieving Choi operator leaves the PPT cone")
+        if np.linalg.eigvalsh(benchmark.partial_trace_output(choi)).max() > 1.0 + benchmark.FEASIBILITY_TOLERANCE:
+            raise AssertionError("the achieving map accepts with probability above one")
     acceptance = benchmark.partial_trace_output(result.choi)
     for label, target in profile.items():
         if abs(float(np.trace(acceptance @ projector(label).T).real) - target) > benchmark.FEASIBILITY_TOLERANCE:
