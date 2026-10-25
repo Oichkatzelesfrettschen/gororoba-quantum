@@ -152,8 +152,8 @@ edges per shot, and a null-subtracted pass the model already predicts.
 Neither depends on the primorial instance.
 
 The design's other opening, a platform whose single-qubit rotations are
-physical rather than virtual, holds on none of the platforms the account
-reaches with a CZ gate model:
+physical rather than virtual, is established on none of the platforms the
+account reaches with a CZ gate model; on Tuna-17 the sources leave it open:
 
 | Platform | Rotation carrying the gradient angles | Signal against null |
 | --- | --- | --- |
@@ -170,8 +170,9 @@ family whose null-subtracted residual reaches the budget's standard
 deviation. Tilt at the gate-error bound is the nearest such family: its
 residual grows as the square of the tilt and so in proportion to the sx
 error, and reaches the threshold on a path whose sx errors exceed these by
-17 percent (median path) to 28 percent (best path). Such a case states the platform, the path, the family and its
-expected seconds or credits and follows the approval flow of AGENTS.md (QPU
+17 percent (median path) to 28 percent (best path). Such a case states the
+platform, the path, the family and its expected seconds or credits and
+follows the approval flow of AGENTS.md (QPU
 time and calibration, Hardware services). The Quantum Inspire QX and Ry
 emulators would add an interface check only: both are provider jobs that
 need an approved case, and Ry puts qubit 0 at the leftmost character of its

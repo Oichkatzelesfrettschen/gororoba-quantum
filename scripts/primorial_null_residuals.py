@@ -156,6 +156,36 @@ class ScenarioLaw:
         return {**meta, "law": [float(v) for v in law]}
 
 
+class ScenarioFit:
+    """Picklable worker: one scenario's arm laws -> its raw and null-subtracted phase fits against the budget."""
+
+    def __init__(self, table: list[int], sigma: float, variance: float) -> None:
+        self.table = table
+        self.sigma = sigma
+        self.variance = variance
+
+    def __call__(self, item: tuple[Scenario, list[dict[str, Any]]]) -> dict[str, Any]:
+        scenario, chunk = item
+        readings = noise.gradient_readings(chunk, "gap88")
+        null = noise.gradient_readings(chunk, "null")
+        raw = noise.phase_fit(self.table, *readings, noise.raw_phase_variance(*readings))
+        subtracted = noise.null_subtracted(
+            self.table, *readings, null, noise.raw_phase_variance(*readings), noise.raw_phase_variance(*null)
+        )
+        residual = subtracted["max_coefficient_bias"]
+        return {
+            "family": scenario[0],
+            "qubits": list(scenario[1]),
+            "value": list(scenario[2]) if isinstance(scenario[2], tuple) else scenario[2],
+            "max_coefficient_bias": raw["max_coefficient_bias"],
+            "cycle_residual_rms": raw["cycle_residual_rms"],
+            "min_visibility": min(raw["visibility"]),
+            "null_subtracted_max_bias": residual,
+            "detectable_at_budget": residual >= self.sigma,
+            "shots_to_resolve_at_3sd": math.ceil(9.0 * self.variance / residual**2) if residual > 1e-12 else None,
+        }
+
+
 def tilt_bounds(snapshot: dict[str, Any], layout: list[int]) -> list[float]:
     """Largest coherent axis tilt each path qubit's snapshot sx error allows (atlas_coherent_families.gate_bounds)."""
     error = {tuple(row["qargs"]): row["error"] for row in snapshot["instructions"]["sx"]}
@@ -205,29 +235,8 @@ def evaluate(snapshot: dict[str, Any], record: dict[str, Any]) -> dict[str, Any]
         ]
         items = [(scenario, meta, arm) for scenario in scenarios for meta, arm in arms]
         laws = parallel.ordered_map(ScenarioLaw(), items, min_items=1)
-        rows = []
-        for k, scenario in enumerate(scenarios):
-            chunk = laws[k * len(arms) : (k + 1) * len(arms)]
-            readings = noise.gradient_readings(chunk, "gap88")
-            null = noise.gradient_readings(chunk, "null")
-            raw = noise.phase_fit(table, *readings, noise.raw_phase_variance(*readings))
-            subtracted = noise.null_subtracted(
-                table, *readings, null, noise.raw_phase_variance(*readings), noise.raw_phase_variance(*null)
-            )
-            residual = subtracted["max_coefficient_bias"]
-            rows.append(
-                {
-                    "family": scenario[0],
-                    "qubits": list(scenario[1]),
-                    "value": list(scenario[2]) if isinstance(scenario[2], tuple) else scenario[2],
-                    "max_coefficient_bias": raw["max_coefficient_bias"],
-                    "cycle_residual_rms": raw["cycle_residual_rms"],
-                    "min_visibility": min(raw["visibility"]),
-                    "null_subtracted_max_bias": residual,
-                    "detectable_at_budget": residual >= sigma,
-                    "shots_to_resolve_at_3sd": math.ceil(9.0 * variance / residual**2) if residual > 1e-12 else None,
-                }
-            )
+        fits = [(scenario, laws[k * len(arms) : (k + 1) * len(arms)]) for k, scenario in enumerate(scenarios)]
+        rows = parallel.ordered_map(ScenarioFit(table, sigma, variance), fits, min_items=1)
         if rows[0]["max_coefficient_bias"] > 1e-9:
             raise SystemExit(
                 f"{patch}: noise-free arms miss the exact coefficients by {rows[0]['max_coefficient_bias']}"
