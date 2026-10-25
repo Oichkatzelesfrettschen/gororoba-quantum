@@ -16,7 +16,9 @@ scripts/aer_blocking_probe.py keeps its gates for the reason tests/test_cli_self
 
 Each row names a group, and gate ``core-record-check-NN`` of ci/gates.json runs group NN alone with
 ``-k groupNN`` in one process. Gate core-615 skips this module; the groups pack each check's measured
-gate time to at most 27 s, under the 30 s pr wall budget of ci/AGENTS.md.
+gate time to at most 27 s, under the 30 s pr wall budget of ci/AGENTS.md. Group 07 holds
+scripts/ascella_coherence_request.py alone, so its gate fits the 15 s that `ci/pr_checks.sh gates` selects and
+runs on every pull request whose diff reaches the request builder or its retained case.
 tests/ci/test_self_test_gates.py requires one gate per group and one group per gate.
 """
 
@@ -68,7 +70,7 @@ RECORD_CHECKS = (
     ("scripts/cd_two_blade_blocks.py", ".", "--check docs/evidence/box_kite_census/two_blade_blocks.json", 5),
     ("scripts/bdsc_diagnostic.py", ".", "--check", 5),
     ("scripts/cd_star_lattice.py", ".", "--check docs/evidence/cd-star-lattice/census.json", 6),
-    ("scripts/ascella_coherence_request.py", ".", "--check", 6),
+    ("scripts/ascella_coherence_request.py", ".", "--check", 7),
     ("scripts/box_kite_follow_design.py", ".", "--check docs/evidence/box_kite_follow_design/design.json", 5),
     ("scripts/bdsc_ascella_control.py", ".", "--check", 5),
     ("scripts/bdsc_pauli.py", ".", "--check docs/evidence/bdsc/pauli/pauli_form.json", 5),
