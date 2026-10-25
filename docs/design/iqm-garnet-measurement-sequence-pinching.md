@@ -307,10 +307,22 @@ to 0.094: 3.2 to 13.3 binomial standard errors above the model on every qubit. M
 errors below its planning values. The model's prx depolarizing error moves the unitary arm by about 0.008, so the gap
 is a coherent error of the sixteen pi/18 pulses. Two single-parameter models fit both probes per qubit, with the
 calibration readout errors and without relaxation, at equal likelihood: a rotation scale of 0.67 to 0.86 per pulse, or
-an axis phase advancing 0.068 to 0.130 rad per pulse. One hundred shots do not separate them. They differ for the
+an axis phase advancing 0.068 to 0.130 rad per pulse. The final keys alone do not separate them. They differ for the
 headline test: the measure arm's ideal P0 depends on the per-pulse angle (a scale of 0.8 moves it from 0.891 to 0.928,
-about 4.5 departure standard errors) and not on the axis phase. Under either model the unitary-arm guard of
-`device_verdict` withholds any device attribution, so the main job as built returns `gate_model_inconsistent`.
+about 4.5 departure standard errors) and not on the axis phase, which each mid-circuit measurement erases.
+
+The mid-circuit keys `m0` to `m15` measure the per-pulse flip rate directly. A two-state hidden Markov fit per qubit
+(free rotation scale, initial excited population and mid-circuit e01 and e10; calibration T1 over each window and the
+calibration readout errors on `f`) gives scale intervals of 0.68 to 1.5 per qubit, and the profile likelihood summed
+over the six qubits peaks at 1.1, with the nominal scale 3.3 and a scale of 0.8 12.9 log-likelihood units below the
+peak. The trajectory disfavors a shared under-rotation. Two causes remain, and the probes cannot separate them:
+
+- An axis phase per pi/18 pulse. Each mid-circuit measurement erases it, so the measure arm and the headline test are
+  unaffected. The unitary arm still misses its model, so the `device_verdict` guard withholds attribution.
+- Relaxation or readout loss of |1> during the 2 us pre-readout idle and the readout, which the unitary arm meets near
+  |1> and the measure arm near |0>. It needs an effective P(0|1) near 0.17 (0.36 on QB19) against 0.012 to 0.038 in
+  the calibration set. The main job's ro0 and ro1 members and its T1 series calibrate this loss in-job, so the guard
+  would not fire under this cause.
 
 ## Window sensitivity
 
