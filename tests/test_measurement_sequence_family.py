@@ -355,6 +355,20 @@ def test_ideal_decimals_match_the_recorder() -> None:
     check(f'"ideal": law_encoding.encode([round(float(p), {qpu_cases.IDEAL_DECIMALS}) for p in entry.ideal])' in source)
 
 
+class _PluginBackend:
+    """A backend that adds IBMBackend.get_translation_stage_plugin to a wrapped backend."""
+
+    def __init__(self, backend: Any, plugin: str) -> None:
+        self._backend = backend
+        self._plugin = plugin
+
+    def get_translation_stage_plugin(self) -> str:
+        return self._plugin
+
+    def __getattr__(self, name: str) -> Any:
+        return getattr(self._backend, name)
+
+
 def _fixture_snapshot() -> Any:
     import io
     from contextlib import redirect_stdout
@@ -369,13 +383,19 @@ def _fixture_snapshot() -> Any:
         return live_run.take_snapshot(service, backend.name)
 
 
+@pytest.mark.parametrize("plugin", (None, "ibm_dynamic_circuits"))
 @pytest.mark.parametrize("workers", ("1", "4"))
-def test_member_compilations_match_the_serial_compile(monkeypatch: pytest.MonkeyPatch, workers: str) -> None:
+def test_member_compilations_match_the_serial_compile(
+    monkeypatch: pytest.MonkeyPatch, workers: str, plugin: str | None
+) -> None:
     """The pooled compiler returns the member order, pinned qubits and operation counts of live_run._compile."""
     import parallel
     import qpu_planning
 
     snapshot = _fixture_snapshot()
+    if plugin is not None:
+        # An IBMBackend reports this translation plugin; transpile reads it from the backend in live_run._compile.
+        snapshot.backend = _PluginBackend(snapshot.backend, plugin)
     qubits = [qubit for qubit in (45, 59, 73, 87) if qubit not in snapshot.excluded_qubits][:2]
     check(len(qubits) == 2)
     delays = {q: 1664 for q in qubits}
@@ -386,10 +406,7 @@ def test_member_compilations_match_the_serial_compile(monkeypatch: pytest.Monkey
     check(len(work) == 49 * len(qubits))
     serial = [live_run._compile(c, snapshot, live_run.SEED_TRANSPILER, [q]) for c, q in work]
     monkeypatch.setenv("GOROROBA_WORKERS", workers)
-    plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
-    compiler = qpu_planning.MemberCompiler(
-        snapshot.admission_target, live_run.SEED_TRANSPILER, plugin() if plugin else None
-    )
+    compiler = qpu_planning.MemberCompiler(snapshot.admission_target, live_run.SEED_TRANSPILER, plugin)
     pooled = parallel.ordered_map(compiler, work, min_items=2)
     check([c.name for c in pooled] == [c.name for c, _ in work])
     check([live_run._physical(c) for c in pooled] == [[q] for _, q in work])
@@ -410,4 +427,6 @@ def test_case_text_states_the_settle_gap_as_a_hypothesis() -> None:
     check("from zero to 2 us changes the deficit" in text)
     check("a tail slower than 2 us stays unexcluded" in text)
     check("excludes a readout tail" not in text)
+    check("bounds a readout tail that decays within 2 us" in text)
+    check("and a readout tail. The calibration" not in text)
     check("do not bias the read" not in text)

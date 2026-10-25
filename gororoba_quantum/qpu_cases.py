@@ -1741,8 +1741,9 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "cos(THETA / 2) ** 2; the settle arm's is the measure arm's. The state after each measurement is "
             "diagonal in Z, so a shift of the qubit frequency after readout moves the flip probability only at "
             "second order; a deficit of the measured P0 below the ideal, which grows with N, measures transitions "
-            "the measurement induces once the unitary, delay and settle controls separate it from rotation error, "
-            "idle dephasing and a readout tail. The calibration noise model treats a mid-circuit measurement as "
+            "the measurement induces once the unitary and delay controls separate it from rotation error and idle "
+            "dephasing, and the settle arm bounds a readout tail that decays within 2 us. The calibration noise "
+            "model treats a mid-circuit measurement as "
             "projective, so it prices the measure arm at readout "
             "and decoherence alone.",
             "",

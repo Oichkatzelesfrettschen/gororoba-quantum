@@ -113,8 +113,8 @@ deficit that stays unchanged when the gap grows from zero to 2 us bounds only th
 within 2 us; a tail slower than 2 us stays unexcluded. A deficit that shrinks with the gap attributes that part
 to a tail. A measured P0 below the ideal (a
 positive deficit, `q{Q}_msq_deficit_n{N}` in the summaries) measures transitions that the
-measurement induces once the unitary, delay and settle controls separate it from rotation error, idle
-dephasing and a readout tail. The calibration noise model treats a mid-circuit measurement as projective, so it prices
+measurement induces once the unitary and delay controls separate it from rotation error and idle
+dephasing, and the settle arm bounds a readout tail that decays within 2 us. The calibration noise model treats a mid-circuit measurement as projective, so it prices
 the measure arm at readout error and decoherence alone, and only the device answers this. The unitary
 arm removes the projection and the idle: its P0 stays at cos(THETA / 2)^2 up to gate and readout error,
 and the N = 16 contrast of the measure and unitary arms is the mutation-test endpoint. The delay arm holds
