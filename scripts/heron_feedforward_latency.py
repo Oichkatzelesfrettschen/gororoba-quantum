@@ -10,8 +10,9 @@ the outcome from the capture start; the ``Receive`` instruction marks its arriva
 
 Every broadcast row of every retained ``results/live/*/raw/<job>/pub_NN.json`` yields, in cycles:
 the measure play start, the capture start and length, the broadcast length, the receive start and
-length, the latency from capture end to receive start, and the number of qubits the branch rows drive
-between this receive and the next one. The backend comes from the run's collect.json job table or, for
+length, the latency from capture end to receive start, and the number of captures the broadcast carries.
+The schedule names no branch condition, so no branch row is attributed to a broadcast.
+The backend comes from the run's collect.json job table or, for
 a retrospective retrieval, its retention.json; the backend version comes from record.json where the run
 recorded one. The cycle length is bound to the retained Target snapshot
 (docs/evidence/heron_platform/targets.json): its ``dt`` must be a whole number of nanoseconds and every
@@ -39,7 +40,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import parallel  # noqa: E402
 
-SCHEMA = "heron-feedforward-latency-v1"
+SCHEMA = "heron-feedforward-latency-v2"
 OUTPUT = Path("docs/evidence/heron_platform/feedforward-latency.json")
 TARGETS = Path("docs/evidence/heron_platform/targets.json")
 LIVE = Path("results/live")
@@ -60,13 +61,16 @@ def parse_rows(timing: str) -> list[tuple[str, str, str, int, int, str]]:
 
 
 def broadcasts(timing: str) -> list[dict[str, int]]:
-    """One entry per Hub broadcast, anchored on the capture that starts with it."""
+    """One entry per Hub broadcast, anchored on the captures that start with it.
+
+    A broadcast carries the outcome bits of every capture that starts at its own start; the schedule
+    names no condition, so the record counts those captures and attributes no branch row to a broadcast.
+    """
     rows = parse_rows(timing)
-    captures = {
-        row[3]: row
-        for row in rows
-        if row[5] == "capture" and not row[1].startswith(("INIT", "FINI")) and row[0] == "main"
-    }
+    captures: dict[int, list[tuple[str, str, str, int, int, str]]] = {}
+    for row in rows:
+        if row[5] == "capture" and row[0] == "main" and not row[1].startswith(("INIT", "FINI")):
+            captures.setdefault(row[3], []).append(row)
     receives = sorted(row[3] for row in rows if row[1] == "receive")
     out = []
     for row in rows:
@@ -74,7 +78,9 @@ def broadcasts(timing: str) -> list[dict[str, int]]:
             continue
         start = row[3]
         require(start in captures, f"broadcast at {start} has no capture starting with it")
-        capture = captures[start]
+        lengths = {capture[4] for capture in captures[start]}
+        require(len(lengths) == 1, f"captures starting at {start} differ in length: {sorted(lengths)}")
+        capture = min(captures[start], key=lambda c: c[1])
         # The measurement instance is the run of back-to-back plays ending with the last one that starts by the
         # capture; an earlier measurement of the same qubit is separated from it by a gap.
         plays = sorted(
@@ -95,23 +101,16 @@ def broadcasts(timing: str) -> list[dict[str, int]]:
         require(bool(later), f"broadcast at {start} has no receive")
         receive = later[0]
         receive_row = next(r for r in rows if r[1] == "receive" and r[3] == receive)
-        following = [t for t in receives if t > receive]
-        stop = following[0] if following else None
-        qubits = {
-            r[2]
-            for r in rows
-            if r[0] != "main" and r[2].startswith("Qubit") and r[3] >= receive and (stop is None or r[3] < stop)
-        }
         out.append(
             {
                 "measure_start": first,
                 "capture_start": start,
                 "capture_cycles": capture[4],
+                "captures": len(captures[start]),
                 "broadcast_cycles": row[4],
                 "receive_start": receive,
                 "receive_cycles": receive_row[4],
                 "post_capture_cycles": receive - start - capture[4],
-                "branch_qubits": len(qubits),
             }
         )
     return out
@@ -216,13 +215,13 @@ def build(files: Sequence[str] | None = None) -> dict[str, Any]:
     summary = {}
     for backend in sorted({row["backend"] for row in rows}):
         mine = [row for row in rows if row["backend"] == backend]
-        single = [row for row in mine if row["branch_qubits"] <= 1]
+        single = [row for row in mine if row["captures"] == 1]
         summary[backend] = {
             "target": cycles[backend],
             "broadcasts": len(mine),
             "runs": len({row["run"] for row in mine}),
             "backend_versions": sorted({row["backend_version"] for row in mine if row["backend_version"]}),
-            "single_qubit_branch": {
+            "single_capture": {
                 key: dict(sorted(Counter(row[key] for row in single).items()))
                 for key in (
                     "capture_cycles",
@@ -237,9 +236,9 @@ def build(files: Sequence[str] | None = None) -> dict[str, Any]:
                     sorted(Counter(r["capture_start"] - r["measure_start"] for r in single).items())
                 )
             },
-            "post_capture_cycles_by_branch_qubits": {
-                str(n): sorted({row["post_capture_cycles"] for row in mine if row["branch_qubits"] == n})
-                for n in sorted({row["branch_qubits"] for row in mine})
+            "post_capture_cycles_by_captures": {
+                str(n): sorted({row["post_capture_cycles"] for row in mine if row["captures"] == n})
+                for n in sorted({row["captures"] for row in mine})
             },
         }
     return {"schema": SCHEMA, "inputs": dict(sorted(inputs.items())), "broadcasts": rows, "summary": summary}
@@ -261,8 +260,10 @@ SYNTHETIC = "\n".join(
         "main,measure_4,Qubit 4,700,64,play",
         "main,measure_4,Qubit 4,764,57,play",
         "main,measure_4,AWGR1_4,821,325,capture",
-        "main,broadcast,Hub,821,540,broadcast",
-        "main,receive,Receive,1361,7,receive",
+        "main,measure_5,Qubit 5,700,121,play",
+        "main,measure_5,AWGR1_5,821,325,capture",
+        "main,broadcast,Hub,821,533,broadcast",
+        "main,receive,Receive,1354,7,receive",
         "then,x_4,Qubit 4,1370,8,play",
         "then,x_5,Qubit 5,1370,8,play",
         "else,x_6,Qubit 6,1370,8,play",
@@ -274,12 +275,19 @@ def self_test() -> str:
     got = broadcasts(SYNTHETIC)
     require(len(got) == 2, f"two broadcasts expected, got {len(got)}")
     first, second = got
-    require(first["post_capture_cycles"] == 201 and first["branch_qubits"] == 1, f"first broadcast {first}")
+    require(first["post_capture_cycles"] == 201 and first["captures"] == 1, f"first broadcast {first}")
     require(first["measure_start"] == 10 and first["receive_cycles"] == 7, f"first anchors {first}")
-    require(second["post_capture_cycles"] == 215 and second["branch_qubits"] == 3, f"second broadcast {second}")
+    require(second["post_capture_cycles"] == 208 and second["captures"] == 2, f"second broadcast {second}")
     require(second["measure_start"] == 700, f"an earlier measurement of qubit 4 moved the anchor: {second}")
     require(sx_cycles(SYNTHETIC) == {8}, "sx cycles")
-    orphan = SYNTHETIC.replace("main,measure_4,AWGR1_4,821,325,capture\n", "")
+    unequal = SYNTHETIC.replace("main,measure_5,AWGR1_5,821,325,capture", "main,measure_5,AWGR1_5,821,320,capture")
+    try:
+        broadcasts(unequal)
+    except ValueError:
+        pass
+    else:
+        raise ValueError("simultaneous captures of unequal length were accepted")
+    orphan = SYNTHETIC.replace("main,measure_3,AWGR1_3,131,325,capture\n", "")
     try:
         broadcasts(orphan)
     except ValueError:

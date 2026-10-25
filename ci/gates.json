@@ -1922,7 +1922,10 @@
    "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_record_checks.py -k group07",
    "name": "core-record-check-07",
    "seconds": 9.5,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/heron_platform/feedforward-latency.json"
+   ]
   },
   {
    "suite": "core",
