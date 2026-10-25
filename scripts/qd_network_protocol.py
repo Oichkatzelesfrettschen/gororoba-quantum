@@ -52,9 +52,13 @@ import math
 import sys
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
+from pathlib import Path
 from typing import TypedDict
 
 import numpy as np
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
 
 Occupation = tuple[int, ...]
 FockState = dict[Occupation, complex]
@@ -157,26 +161,40 @@ def propagate(unitary: np.ndarray, state: Mapping[Occupation, complex]) -> FockS
     return {occupation: amplitude for occupation, amplitude in output.items() if abs(amplitude) > TOLERANCE}
 
 
+@dataclass(frozen=True)
+class _PermanentAmplitude:
+    """Amplitude of one target occupation; module-level so parallel.ordered_map can pickle it."""
+
+    unitary: np.ndarray
+    sources: tuple[tuple[Occupation, complex], ...]
+
+    def __call__(self, target: Occupation) -> complex:
+        rows = _repeated(target)
+        norm_out = math.prod(math.factorial(count) for count in target)
+        amplitude = 0.0 + 0.0j
+        for source, coefficient in self.sources:
+            columns = _repeated(source)
+            norm_in = math.prod(math.factorial(count) for count in source)
+            sub = self.unitary[np.ix_(rows, columns)]
+            amplitude += coefficient * permanent(sub) / math.sqrt(norm_in * norm_out)
+        return amplitude
+
+
 def propagate_by_permanents(unitary: np.ndarray, state: Mapping[Occupation, complex]) -> FockState:
-    """Independent dense evaluation of propagate through ``perm(U[out, in]) / sqrt(prod n_i! prod m_j!)``."""
+    """Independent dense evaluation of propagate through ``perm(U[out, in]) / sqrt(prod n_i! prod m_j!)``.
+
+    Target occupations are independent, so their amplitudes run through
+    parallel.ordered_map; each keeps the serial summation order over sources.
+    """
     modes = unitary.shape[0]
     photon_numbers = {sum(occupation) for occupation in state}
     if len(photon_numbers) != 1:
         raise ProtocolError("propagate takes a fixed photon number")
-    photons = photon_numbers.pop()
-    output: FockState = {}
-    for target in occupations(modes, photons):
-        rows = _repeated(target)
-        norm_out = math.prod(math.factorial(count) for count in target)
-        amplitude = 0.0 + 0.0j
-        for source, coefficient in state.items():
-            columns = _repeated(source)
-            norm_in = math.prod(math.factorial(count) for count in source)
-            sub = unitary[np.ix_(rows, columns)]
-            amplitude += coefficient * permanent(sub) / math.sqrt(norm_in * norm_out)
-        if abs(amplitude) > TOLERANCE:
-            output[target] = amplitude
-    return output
+    targets = occupations(modes, photon_numbers.pop())
+    amplitudes = ordered_map(_PermanentAmplitude(unitary, tuple(state.items())), targets)
+    return {
+        target: amplitude for target, amplitude in zip(targets, amplitudes, strict=True) if abs(amplitude) > TOLERANCE
+    }
 
 
 def tensor(*states: Mapping[Occupation, complex]) -> FockState:
