@@ -63,6 +63,8 @@ _MAPPING_FIELDS = (
     "replica_cap",
     "measurement_delay_dt",
     "settle_delay_dt",
+    "prereadout_delay_dt",
+    "t1_delays_dt",
     "replaced_measurement_qubits",
     "shared_initial_layout",
     "extra_control",
@@ -1511,6 +1513,22 @@ def _gate_count_bias(counts: dict[str, dict[str, int]]) -> str:
     return "; both arms play the same CZ count, so the gate count biases window_overlap_loss in neither direction."
 
 
+# Decimals live_run._member_fields keeps of each recorded ideal probability
+# (round(float(p), 12)); tests/test_measurement_sequence_family.py binds the two.
+IDEAL_DECIMALS = 12
+
+
+def _ideal_law_valid(ideal: list[float]) -> bool:
+    """Whether a recorded ideal is a probability law within the recording's rounding bound.
+
+    live_run records each entry to IDEAL_DECIMALS decimals, so an entry lies within
+    0.5 * 10**-IDEAL_DECIMALS of its exact value and an n-outcome law sums to 1 within
+    n times that bound, on top of the 1e-9 float allowance.
+    """
+    tolerance = 1e-9 + len(ideal) * 0.5 * 10**-IDEAL_DECIMALS
+    return all(0 <= value <= 1 for value in ideal) and math.isclose(math.fsum(ideal), 1.0, rel_tol=0, abs_tol=tolerance)
+
+
 def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
     if family == "et-row":
         from et_campaign import configuration as et_configuration
@@ -1697,7 +1715,8 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             f"The measurement-sequence family asks, on {len(qubits)} qubits of {backends} (the declared layout: "
             f"{', '.join(str(q) for q in qubits)}) at {delay_text}, whether a mid-circuit measurement acts as an "
             "ideal pinching, a nonselective projective measurement in Z. Each qubit starts in |0> and receives N "
-            f"rotations RX(sign * THETA / N) with THETA = 8 pi / 9 and N in {steps}. The measure arm follows each "
+            f"rotations RX(sign * THETA / N) with THETA = 8 pi / 9 and N in {steps}. "
+            "The measure arm, at N >= 2, follows each "
             "rotation with a mid-circuit measurement whose outcome the program never reads, then reads the qubit "
             "into the final register. The delay arm replaces each measurement with an idle of that qubit's "
             "calibrated measure duration, which keeps the elapsed time and drops the projection; idle dephasing "
@@ -1706,7 +1725,12 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "the transpiler cannot merge them; it is the mutation null. The settle arm, also at N = 16 only, is the "
             "measure arm with a 2 us idle after each measurement: a readout-induced frequency shift acts during the "
             "next pulse at second order, about -2.5e-6 per step in the flip probability, and a departure that "
-            "survives the settle gap unchanged excludes a readout tail. The signed arms run in the order +, -, -, + "
+            "survives the settle gap unchanged excludes a readout tail. Every member idles 2 us before its final "
+            "measurement, so residual readout photons of the last mid-circuit measurement do not bias the read. "
+            "Five t1 "
+            "members (x, an idle of 0, 20, 50, 100 or 200 us, the pre-readout idle, a measurement) measure "
+            "the qubit's relaxation in the job; the case analysis fits T1 from them and uses it, not the Target's "
+            "T1, for the measure-arm and settle predictions. The signed arms run in the order +, -, -, + "
             "and share their ideal law because cosine is even.",
             "",
             "The measure arm's ideal final P0 is (1 + cos(THETA / N) ** N) / 2 and the delay and unitary arms' is "
@@ -1718,7 +1742,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "projective, so it prices the measure arm at readout "
             "and decoherence alone.",
             "",
-            "Per qubit, thirteen two-sided precision contracts split the family-wise alpha evenly and admit the "
+            "Per qubit, seventeen two-sided precision contracts split the family-wise alpha evenly and admit the "
             "design: the final P0 pooled over the four signed members of each arm at each N (half-width 0.03), "
             "and the measure minus unitary contrast at N = 16 (half-width 0.055), the mutation-test endpoint. They "
             "price resolution, not an effect; the Hoeffding radii hold under arbitrary dependence between PUBs.",
@@ -2176,10 +2200,7 @@ def _render(
         for member in group["members"]:
             name = _identifier(member["name"], "member")
             ideal = [_number(value, "ideal probability") for value in law_encoding.dense(member["ideal"])]
-            _require(
-                all(0 <= value <= 1 for value in ideal) and math.isclose(sum(ideal), 1.0, abs_tol=1e-9),
-                "invalid ideal law",
-            )
+            _require(_ideal_law_valid(ideal), "invalid ideal law")
             # A wide law prints in its stored form (law_encoding), which
             # expands to the same labeled array.
             shown = ideal if isinstance(member["ideal"], list) else member["ideal"]

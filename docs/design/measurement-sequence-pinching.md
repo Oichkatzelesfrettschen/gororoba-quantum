@@ -14,7 +14,7 @@ in `gororoba_quantum/diagnostic_experiments.py`, planned by `measurement_sequenc
 A named physical qubit starts in |0> and receives N steps of `RX(sign * THETA / N)`, with the total
 rotation THETA = 8 pi / 9 (160 degrees), N in (1, 2, 4, 8, 16) and sign + or -.
 
-- **Measure arm.** Each rotation is followed by a measurement into the next bit of a mid-circuit register
+- **Measure arm (N = 2, 4, 8, 16).** Each rotation is followed by a measurement into the next bit of a mid-circuit register
   `mcm` (N bits). The program never reads or conditions on those bits, and the raw shots keep them. After
   the N steps a final measurement writes the 1-bit register `final`, the only register an endpoint reads.
   The circuit holds no reset, no feed-forward and no settling delay.
@@ -34,10 +34,21 @@ rotation THETA = 8 pi / 9 (160 degrees), N in (1, 2, 4, 8, 16) and sign + or -.
   mid-circuit measurement, before the next rotation, rounded up to the Target's timing granularity
   (`qpu_planning.settle_delay`). It is dynamic, like the measure arm, and its ideal law is the measure arm's
   joint law (final P0 0.8914).
+- **T1 arm (static, per qubit).** `x`, a `delay` of t, the pre-readout delay, then the final measurement, for t
+  in (0, 20, 50, 100, 200) us converted to dt like the other idles (a zero t omits the idle). One member per t,
+  `msq_t1_d{k}_q{Q}`, k = 0..4. Each is a single circuit, not a signed quartet. The ideal law is the noise-free
+  P1 = 1; the noise model prices the decay from the Target's T1 when the planner simulates it.
+- **Pre-readout delay (every member).** A `delay` of 2.0 us, rounded up to the Target's timing granularity
+  (`qpu_planning.prereadout_delay`), precedes the final measurement of every member of every arm and is
+  recorded per qubit as `prereadout_delay_dt`. Residual readout photons of the last mid-circuit measurement
+  would otherwise bias the final assignment of the measure and settle arms, and the unitary and delay arms
+  carry no such history to cancel it. The 2 us pre-readout delay in every member removes the readout-history bias of the final assignment.
 
 The four arms carry four roles: the measure arm is the object of the test, the unitary arm is the mutation
 null that removes the property under test, the delay arm is the elapsed-time control, and the settle arm is
-the readout-tail control.
+the readout-tail control. The t1 arm measures the qubit's relaxation in the job. The case analysis fits T1
+from the t1 members and uses that fit, not the Target's T1, for the measure-arm and settle predictions, because
+the T1 lift at N = 16 is decision-sized.
 
 Register order is `final` (clbit 0), then `mcm`. A measure member's ideal law and score weights span all
 N + 1 clbits, the convention of the N=21 segmented family (`qpe_diagnostics.n21_segmented_law`), and the
@@ -63,7 +74,8 @@ and the delay and unitary arms compose their rotations coherently into `RX(sign 
 | 8 | 0.8040 | 0.0302 | 0.7738 |
 | 16 | 0.8914 | 0.0302 | 0.8612 |
 
-The unitary arm runs at N = 16 only; the delay arm runs at every N.
+The measure arm runs at N = 2, 4, 8, 16 (the N = 1 row is the reference value shared with the delay arm); the
+unitary arm runs at N = 16 only; the delay arm runs at every N.
 
 The values come from `msq_pinched_p0` and `msq_delay_p0`; `diagnostic_experiments.py --self-test` checks
 them against exact density-matrix evolution (rotate, keep the diagonal, N times) and unitary evolution to
@@ -77,11 +89,13 @@ Each (arm, N) holds four signed members named `msq_{arm}_n{N}_{s}{r}_q{qubit}`, 
 share one ideal law because cosine is even, so the signed difference carries no contrast.
 
 `local_compute.is_dynamic` classifies a circuit with a gate after a measurement as dynamic. The measure arm
-at N >= 2 and the settle arm are dynamic; the N = 1 measure arm, the delay arm and the unitary arm are static. One group holds one job kind, so
-each qubit owns a static group `msq_static_q{qubit}` (28 members: the N = 1 measure arm, the delay arm
-at each N, then the unitary arm) and a dynamic group `msq_dynamic_q{qubit}` (20 members: the measure arm at N = 2, 4, 8, 16, then the settle arm).
+and the settle arm are dynamic; the delay, unitary and t1 arms are static. The measure arm does not run at N = 1: its ideal 0.0302
+equals the delay arm's, so it carries no pinching information, and its measure, pre-readout delay, measure sequence would fuse
+into a dynamic PUB among static components. One group holds one job kind, so
+each qubit owns a static group `msq_static_q{qubit}` (29 members: the delay arm
+at each N, the unitary arm, then the five t1 members) and a dynamic group `msq_dynamic_q{qubit}` (20 members: the measure arm at N = 2, 4, 8, 16, then the settle arm).
 Row r of each kind fuses across the named qubits into one PUB, so every qubit runs the same member in the
-same shots, 28 static and 20 dynamic PUBs in all. The dynamic job runs with twirling and dynamical
+same shots, 29 static and 20 dynamic PUBs in all. The dynamic job runs with twirling and dynamical
 decoupling off.
 
 ## What the family isolates
@@ -103,22 +117,33 @@ per-measurement transition parameter; that is post hoc analysis of the retained 
 
 ## Endpoints
 
-Per qubit, thirteen two-sided precision endpoints split the family-wise alpha evenly:
+Per qubit, seventeen two-sided precision endpoints split the family-wise alpha evenly:
 
-- `msq_p0_measure_n{N}_q{Q}` for N in (1, 2, 4, 8, 16): the final P0 pooled over the four signed members of
+- `msq_p0_measure_n{N}_q{Q}` for N in (2, 4, 8, 16): the final P0 pooled over the four signed members of
   the measure arm, half-width 0.03.
 - `msq_p0_delay_n{N}_q{Q}`: the same for the delay arm, half-width 0.03.
 - `msq_p0_unitary_n16_q{Q}`: the same for the unitary arm, half-width 0.03.
 - `msq_p0_settle_n16_q{Q}`: the same for the settle arm, half-width 0.03.
+- `msq_p1_t1_d{k}_q{Q}` for k = 0..4: the t1 member's P1, half-width 0.03. T1 is a contract because the
+  predictions depend on its fitted value.
 - `msq_zeno_contrast_n16_q{Q}`: measure minus unitary at N = 16, ideal 0.8612, half-width 0.055.
 
 A pooled member carries score values at weight 1/4. The optimizer treats each PUB as a stream of span 0.25
 with the tail alpha_endpoint divided by the stream count, so a pooled P0 over 4 PUBs has the radius
 sqrt(ln(8 / alpha_endpoint) / (2 shots)) and the contrast over 8 PUBs has 2 * sqrt(ln(16 / alpha_endpoint) /
-(2 shots)). At alpha 0.05 and 14 qubits (alpha_endpoint 2.75e-4) a P0 reaches 0.0251 at 8192 shots and
-0.0354 at 4096, and the contrast 0.0518 and 0.0732. The 0.05 starting half-width for the contrast fails at
+(2 shots)). At alpha 0.05 and 14 qubits (alpha_endpoint 2.10e-4) a pooled P0 reaches 0.0254 at 8192 shots and
+0.0359 at 4096, a t1 P1 (one PUB, radius sqrt(ln(2 / alpha_endpoint) / (2 shots))) 0.0237 and 0.0334, and the
+contrast 0.0524 and 0.0741. The 0.05 starting half-width for the contrast fails at
 8192 shots with 14 qubits, so the contrast half-width is 0.055. The smallest admitted power-of-two tier is
 8192 shots from 1 to 14 qubits (`diagnostic_experiments.py --self-test` checks 1, 4 and 14).
+
+In the FakeFez planning fixture with one qubit, 8192 shots plan 29 static PUBs at about 67.2 s of charge (64.9 s
+of execution plus 2.3 s overhead) and 20 dynamic PUBs at about 47.3 s, 114.5 s in all, against 59.6 s at 4096.
+
+The 2 us pre-readout delay in every member removes the readout-history bias of the final assignment. An
+in-job N = 1 measure-versus-delay diagnostic cannot run in this family, because the measure arm's N = 1 member
+would fuse as a dynamic PUB among static components; the IQM Garnet case keeps that N = 1 diagnostic because its
+circuits do not fuse.
 
 The measure arm at N = 16 carries 17 clbits, so each ideal law, prediction and score vector holds 131072
 entries, and the exact-oracle comparison of every compiled replica (`qpe_diagnostics.ideal_compiled_probabilities`)

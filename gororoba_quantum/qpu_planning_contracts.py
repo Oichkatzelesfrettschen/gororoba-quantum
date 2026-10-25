@@ -2129,7 +2129,7 @@ def _verify_state_prep_only() -> None:
 
 
 def _verify_measurement_sequence_family() -> None:
-    """measurement-sequence pins each member to its qubit, fuses 28 static and 20 dynamic PUBs, admits 8192 shots."""
+    """measurement-sequence pins each member to its qubit, fuses 29 static and 20 dynamic PUBs, admits 8192 shots."""
     backend = _ProbeBackend("measurement_sequence_fixture", FakeFez())
     service = _ProbeService([backend])
     with redirect_stdout(io.StringIO()):
@@ -2155,13 +2155,24 @@ def _verify_measurement_sequence_family() -> None:
     _require(set(configuration["settle_delay_dt"]) == {str(q) for q in qubits}, "settle durations lost")
     target = snapshot.backend.target
     granularity = max(1, int(target.granularity))
-    for qubit in qubits:
-        settle_dt = configuration["settle_delay_dt"][str(qubit)]
+    for key in ("settle_delay_dt", "prereadout_delay_dt"):
+        _require(set(configuration[key]) == {str(q) for q in qubits}, f"{key} lost")
+        for qubit in qubits:
+            dt_count = configuration[key][str(qubit)]
+            _require(
+                dt_count % granularity == 0
+                and dt_count * target.dt >= 2.0e-6
+                and (dt_count - granularity) * target.dt < 2.0e-6,
+                f"{key} {dt_count} dt is not 2 us rounded up to the granularity",
+            )
+    t1_delays = configuration["t1_delays_dt"]
+    _require(len(t1_delays) == 5 and t1_delays[0] == 0, f"t1 idles {t1_delays}")
+    for microseconds, dt_count in zip((0, 20, 50, 100, 200), t1_delays, strict=True):
         _require(
-            settle_dt % granularity == 0
-            and settle_dt * target.dt >= 2.0e-6
-            and (settle_dt - granularity) * target.dt < 2.0e-6,
-            f"settle delay {settle_dt} dt is not 2 us rounded up to the granularity",
+            dt_count % granularity == 0
+            and dt_count * target.dt >= microseconds * 1e-6
+            and (dt_count == 0 or (dt_count - granularity) * target.dt < microseconds * 1e-6),
+            f"t1 idle {dt_count} dt is not {microseconds} us rounded up to the granularity",
         )
     _require(len(choices) == 2 * len(qubits), "each qubit needs one static and one dynamic group")
     for choice in choices:
@@ -2169,7 +2180,7 @@ def _verify_measurement_sequence_family() -> None:
         _require([r.qubits for r in choice.replicas] == [[qubit]], f"{choice.group.name}: moved off qubit {qubit}")
     pubs = live_run.execution_pubs(choices)
     _require(
-        sorted(pub.kind for pub in pubs) == ["dynamic"] * 20 + ["static"] * 28, "the members fused into other PUBs"
+        sorted(pub.kind for pub in pubs) == ["dynamic"] * 20 + ["static"] * 29, "the members fused into other PUBs"
     )
     for pub in pubs:
         covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
@@ -2192,9 +2203,9 @@ def _verify_measurement_sequence_family() -> None:
     rejected = {
         int(row["proxy_metadata"]["shots"]) for row in metadata["optimization"]["candidates"] if not row["feasible"]
     }
-    # 16384 shots exceed the fixture's 90 s per-job ceiling over the 48 PUBs; 8192 shots fit (about 99 s of charge).
+    # 16384 shots exceed the fixture's 90 s per-job ceiling over the 49 PUBs; 8192 shots fit (about 99 s of charge).
     _require(rejected == {4096, 16384}, f"the optimizer rejected tiers {rejected}, not 4096 and 16384")
-    _require(len(metadata["observable_contracts"]) == 13, "the plan lost a per-qubit endpoint")
+    _require(len(metadata["observable_contracts"]) == 17, "the plan lost a per-qubit endpoint")
 
 
 def _verify_measurement_sequence_only() -> None:
@@ -2205,7 +2216,7 @@ def _verify_measurement_sequence_only() -> None:
         _verify_measurement_sequence_family()
     print(
         "QPU planning: measurement-sequence pins each member to its named qubit with the qubit's calibrated "
-        "measure duration, fuses 28 static and 20 dynamic PUBs over every qubit, plans nothing without --layout and "
+        "measure duration, fuses 29 static and 20 dynamic PUBs over every qubit, plans nothing without --layout and "
         "admits 8192 shots"
     )
 
