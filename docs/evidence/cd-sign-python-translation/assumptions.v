@@ -1,0 +1,8 @@
+Require CdSignAstTranslation CdSignSourceCertificate.
+Print Assumptions CdSignAstTranslation.expression_semantic_preservation.
+Print Assumptions CdSignAstTranslation.block_semantic_preservation.
+Print Assumptions CdSignAstTranslation.function_certificate_sound.
+Print Assumptions CdSignAstTranslation.function_semantic_preservation.
+Print Assumptions CdSignSourceCertificate.cd_sign_source_returns_sigma.
+Print Assumptions CdSignSourceCertificate.cd_sign_source_spec.
+Print Assumptions CdSignSourceCertificate.cd_sign_source_mutant_differs.

@@ -1,0 +1,74 @@
+{
+ "schema": "gresnigt-table5-printed-cells-v1",
+ "source": "arXiv 2609.10569v1, Appendix A, Table 5, printed page 54",
+ "pdf_sha256": "fddbf1db928615cd29ef0db5b9052cd599d7b6461034b0bf6264b0e7d150bb43",
+ "reading": "the cell in row s_i and column s_j gives the product s_i s_j (p. 53)",
+ "cells": [
+  {
+   "row": 9,
+   "column": 6,
+   "printed": "-s15",
+   "printed_exchanged": "-s15"
+  },
+  {
+   "row": 9,
+   "column": 7,
+   "printed": "s14",
+   "printed_exchanged": "s14"
+  },
+  {
+   "row": 9,
+   "column": 8,
+   "printed": "s1",
+   "printed_exchanged": "s1"
+  },
+  {
+   "row": 9,
+   "column": 14,
+   "printed": "-s7",
+   "printed_exchanged": "-s7"
+  },
+  {
+   "row": 9,
+   "column": 15,
+   "printed": "s6",
+   "printed_exchanged": "s6"
+  },
+  {
+   "row": 10,
+   "column": 8,
+   "printed": "s2",
+   "printed_exchanged": "s2"
+  },
+  {
+   "row": 11,
+   "column": 8,
+   "printed": "s3",
+   "printed_exchanged": "s3"
+  },
+  {
+   "row": 12,
+   "column": 8,
+   "printed": "s4",
+   "printed_exchanged": "s4"
+  },
+  {
+   "row": 13,
+   "column": 8,
+   "printed": "s5",
+   "printed_exchanged": "s5"
+  },
+  {
+   "row": 14,
+   "column": 8,
+   "printed": "s6",
+   "printed_exchanged": "s6"
+  },
+  {
+   "row": 15,
+   "column": 8,
+   "printed": "s7",
+   "printed_exchanged": "s7"
+  }
+ ]
+}

@@ -3,7 +3,8 @@
 #   sh ci/pr_checks.sh lint            Ruff check and format over the code directories
 #   sh ci/pr_checks.sh types           mypy over the same directories
 #   sh ci/pr_checks.sh tests [ARG...]  pytest without the audit marker, over tests/ or the
-#                                      given paths; -m audit PATH selects the marked tests
+#                                      given paths; -m audit PATH selects the marked tests;
+#                                      TEST_REPORT names a JUnit XML file of every test's time
 #   sh ci/pr_checks.sh gates [ARG...]  the ci/gates.json gates the branch's diff from
 #                                      origin/main reaches, of at most GATES_MAX_SECONDS
 #                                      (default 15) measured seconds; GATES_LEDGER names an
@@ -14,6 +15,15 @@
 set -eu
 [ $# -ge 1 ] || { echo "usage: sh ci/pr_checks.sh lint|types|tests|gates [ARG...]" >&2; exit 2; }
 root=$(cd "$(dirname "$0")/.." && pwd)
+# The lane holds the host-environment lock shared until it exits, so sh ci/build_host_envs.sh, which takes it
+# exclusively, cannot rebuild the interpreter under a verdict, and a lane started during a rebuild waits for it.
+lock=${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/host-envs.lock
+mkdir -p "$(dirname "$lock")"
+exec 9>"$lock"
+if ! flock -n -s 9; then
+    echo "waiting for sh ci/build_host_envs.sh to release $lock" >&2
+    flock -s 9
+fi
 # ci/pins.py resolve_lane holds the lane to an interpreter carrying its pins:
 # an explicit PYTHON as named, else the host environment ci/build_host_envs.sh
 # builds, else python3. A drifted interpreter exits 2 naming the differing
@@ -64,7 +74,9 @@ tests)
 	# The output streams live, so a job killed at its timeout still shows the run.
 	{
 		status=0
-		"$PYTHON" -B -m pytest -n auto --dist loadgroup -m "not audit" --durations=25 "$@" 2>&1 || status=$?
+		# TEST_REPORT names a JUnit XML file that keeps every test's duration for the run.
+		"$PYTHON" -B -m pytest -n auto --dist loadgroup -m "not audit" --durations=25 \
+			${TEST_REPORT:+--junitxml="$TEST_REPORT"} "$@" 2>&1 || status=$?
 		echo "$status" >"$code"
 	} | tee "$log"
 	status=$(cat "$code")

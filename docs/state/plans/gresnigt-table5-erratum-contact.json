@@ -1,0 +1,15 @@
+{
+  "schema": "work-plan-v1",
+  "id": "gresnigt-table5-erratum-contact",
+  "kind": "coordination",
+  "summary": "Report the 11 sign misprints of Table 5 in arXiv 2609.10569v1 to its author with the corrected cells and their evidence, and record the reply.",
+  "sources": [
+    "docs/evidence/sedenion-automorphisms/upstream/gresnigt-table5-erratum.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "The repository owner sends docs/evidence/sedenion-automorphisms/upstream/gresnigt-table5-erratum.md to the author's listed contact address and records the date; a reply or a corrected arXiv version updates docs/notes/papers/2609.10569.md."
+}

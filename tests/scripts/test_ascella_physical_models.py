@@ -1,11 +1,13 @@
-"""Contracts of the Ascella physical-model fits: the batched channel, planted recovery, the static gradient and
-the drive-dependent heater basis."""
+"""Contracts of the Ascella physical-model fits: the batched channel, planted recovery, the static gradient, the
+drive-dependent heater basis and the training-only leave-one-configuration-out folds of
+scripts/ascella_configuration_holdout.py."""
 
 from __future__ import annotations
 
 import math
 from typing import Any
 
+import ascella_configuration_holdout as holdout
 import ascella_drive_response as drive
 import ascella_physical_models as models
 import numpy as np
@@ -264,3 +266,68 @@ def test_phase_gradients_sum_to_the_shared_offset_gradient() -> None:
     shared = models.static_objective(d, widths[free], free, np.zeros(int(free.sum())))[1]
     if not np.allclose(rows.sum(axis=0), shared, rtol=1e-12, atol=1e-9):
         raise AssertionError(np.abs(rows.sum(axis=0) - shared).max())
+
+
+def scored(counts_from: dict[str, Any] | None = None) -> dict[str, Any]:
+    """The synthetic run with settings that serve X then Y in every configuration."""
+    d = data(counts_from)
+    settings = len(d["configuration"])
+    d["record"] = {
+        "manifest": {
+            "settings": [{"readout": "x" if s < CONFIGURATIONS else "y", "block": "analyzer"} for s in range(settings)]
+        }
+    }
+    return d
+
+
+def test_prediction_gradient_matches_finite_differences() -> None:
+    d = scored({"family": "heater_gain", "values": [0.0, 0.03]})
+    widths = models.prior_widths(d, None, 0.1)
+    free = widths > 0
+    offsets = np.array([0.02 * math.sin(k) for k in range(int(free.sum()))])
+    light, dlight = models.static_light(d, offsets, free)
+    step = 1e-6
+    for (readout, _, model, _, gradient), column in zip(
+        holdout.left_out_rows(d, light, dlight, 2), (0, 5), strict=False
+    ):
+        shifted = offsets.copy()
+        shifted[column] += step
+        moved = holdout.left_out_rows(d, models.static_light(d, shifted, free)[0], dlight, 2)
+        numeric = (next(row[2] for row in moved if row[0] == readout) - model) / step
+        if not math.isclose(gradient[column], numeric, rel_tol=1e-3, abs_tol=1e-7):
+            raise AssertionError((readout, column, gradient[column], numeric))
+
+
+def test_fold_fit_receives_the_training_configurations_alone(monkeypatch: pytest.MonkeyPatch) -> None:
+    d = scored({"family": "heater_gain", "values": [0.0, 0.03]})
+    seen = []
+
+    def mode(data: dict[str, Any], tau: np.ndarray, free: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        seen.append(data)
+        return np.zeros(int(free.sum())), np.eye(int(free.sum()))
+
+    monkeypatch.setattr(models, "static_mode", mode)
+    fold = holdout.configuration_fold(("coupler", None, 0.1, d, 2))
+    (training,) = seen
+    expected = models.without_configuration(d, 2)
+    if training["keys"] != expected["keys"] or not np.array_equal(training["block"], expected["block"]):
+        raise AssertionError("the fold fit saw more than the training configurations")
+    if not fold["rows"]:
+        raise AssertionError("the left-out configuration scored no readout")
+
+
+@pytest.mark.audit
+def test_left_out_counts_never_reach_the_fold_fit() -> None:
+    d = scored({"family": "heater_gain", "values": [0.0, 0.03]})
+    changed = scored({"family": "heater_gain", "values": [0.0, 0.03]})
+    rows = changed["configuration"] == 2
+    changed["block"][rows] = changed["block"][rows][:, ::-1]
+    item = ("coupler", None, 0.1)
+    fold, moved = (holdout.configuration_fold((*item, run, 2)) for run in (d, changed))
+    if fold["training_objective"] != moved["training_objective"]:
+        raise AssertionError("the left-out configuration's counts changed the training fit")
+    for a, b in zip(fold["rows"], moved["rows"], strict=True):
+        if a["predicted"] != b["predicted"] or a["prediction_variance"] != b["prediction_variance"]:
+            raise AssertionError((a, b))
+        if a["observed"] == b["observed"]:
+            raise AssertionError("the mutation left the observed statistic unchanged")

@@ -87,7 +87,13 @@ returned 12-mode meshes fitted on job-00 and scored on job-01's pooled
 configurations, with supplementary families and a leave-one-configuration-out
 refit of the static ones
 ([design](../../design/ascella-signed-coherence-conformance.md#restricted-physical-models-of-the-analyzer-response)).
+[`configuration-holdout.json`](configuration-holdout.json), from
+[`scripts/ascella_configuration_holdout.py`](../../../scripts/ascella_configuration_holdout.py),
+holds the leave-one-configuration-out refit of the static families from the
+training configurations alone, scored in counting plus fitted-prediction
+variance; it supersedes the left-out column of `physical-models.json`
+([design](../../design/ascella-signed-coherence-conformance.md#leave-one-configuration-out-from-training-data)).
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance, and the fifth replays its nominal family there and its
-fitted families within 1e-3 relative plus 1e-8 absolute, the rounding of
+certificate tolerance, and the last two replay their nominal family there and
+their fitted families within 1e-3 relative plus 1e-8 absolute, the rounding of
 optimizer endpoints under another BLAS build.

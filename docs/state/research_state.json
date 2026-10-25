@@ -1864,6 +1864,20 @@
       "question": "What are QB7's readout errors and QB6's and QB11's prx over-rotations alongside the null re-test?"
     },
     {
+      "id": "iqm-garnet-mock-idle-schedule",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does the garnet:mock pipeline accept the 24-circuit idle schedule and train readout case unheralded with one active-reset cycle, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-idle-schedule",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does Garnet schedule a circuit job's gates as soon or as late as possible, and what over-rotation does each qubit's prx carry when fitted with its own readout?"
+    },
+    {
       "id": "iqm-garnet-kernel-cancellation",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation",
@@ -2019,11 +2033,11 @@
     },
     {
       "id": "ascella-signed-coherence-physical-models",
-      "statement": "Fitted on job-00 and scored on job-01's pooled configuration statistics, no preregistered shared error family of the returned 12-mode Ascella meshes passes (X and Y p > 0.01 on 10 degrees of freedom with predicted X0 + Xc2 inside job-01's interval). Heater phase noise (sigma 0.022 rad), a uniform heater gain, nearest-neighbor thermal crosstalk, a uniform coupler offset and coupler noise leave held-out X 527 to 663 and Y 167 to 241 and predict X0 + Xc2 of -0.005 or above against job-01's -0.031 [-0.048, -0.013]. Shared static heater offsets reproduce X0 + Xc2 (-0.022, -0.025) but leave held-out X 53 and 39. Supplementary static heater and coupler offsets together pass job-01 (X 7.0, Y 12.6 on 10), but refitted without one configuration no static family predicts the left-out configurations within counting noise: left-out X falls from the nominal mesh's 343 only to 196 to 300 on 10, and the combined family's Y rises from 75 to 800, so the offsets reproduce each fitted configuration far better than a new one.",
+      "statement": "Fitted on job-00 and scored on job-01's pooled configuration statistics, no preregistered shared error family of the returned 12-mode Ascella meshes passes (X and Y p > 0.01 on 10 degrees of freedom with predicted X0 + Xc2 inside job-01's interval). Homogeneous independent Gaussian heater phase noise (sigma 0.022 rad), a uniform heater gain, nearest-neighbor thermal crosstalk, a uniform coupler offset and homogeneous coupler noise leave held-out X 527 to 663 and Y 167 to 241 and predict X0 + Xc2 of -0.005 or above against job-01's -0.031 [-0.048, -0.013]. Shared static heater offsets reproduce X0 + Xc2 (-0.022, -0.025) but leave held-out X 53 and 39. Supplementary static heater and coupler offsets together pass job-01 (X 7.0, Y 12.6 on 10), a test of reproducibility across acquisitions; prediction of left-out configurations is claim ascella-signed-coherence-configuration-holdout.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Shared families of the provider's returned mesh model only; the multinomial ignores drift within an iteration, the in-block background uses plan-time catalogue dark rates and each job's own outside-block counts (about 2e-4 on the predicted statistics), and the covariance is the inverse expected information for the low-dimensional families and the observed information at the posterior mode for the static ones. Static offsets come from pure-state propagation. The job-00 in-sample statistics are descriptive. The detector-efficiency and coupler-offset families and the leave-one-configuration-out test were added after the preregistered table and decide nothing; the left-out statistic ignores the fitted parameters' covariance, and each left-out fit starts from the full-data mode, which can only lower it. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
+      "boundary": "Shared families of the provider's returned mesh model only; the multinomial ignores drift within an iteration, the in-block background uses plan-time catalogue dark rates and each job's own outside-block counts (about 2e-4 on the predicted statistics), and the covariance is the inverse expected information for the low-dimensional families and the observed information at the posterior mode for the static ones. Static offsets come from pure-state propagation. The job-00 in-sample statistics are descriptive. The detector-efficiency and coupler-offset families and the leave-one-configuration-out test were added after the preregistered table and decide nothing; the record's left-out statistic starts each fold from the full-data mode and scores it in counting variance only, and ascella-signed-coherence-configuration-holdout supersedes it. The rejections hold for each family in the form fitted and exclude no correlated or drive-dependent error. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
@@ -2051,6 +2065,39 @@
       "assumptions": [],
       "depends_on": [
         "ascella-signed-coherence-device-diagnostics"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-configuration-holdout",
+      "statement": "Refitted on job-00 without one configuration from the zero start, so that neither the start nor the mode selection reads the left-out counts, no static offset family of the returned Ascella meshes predicts the left-out configurations' X and Y statistics within counting plus fitted-prediction variance: the standardized sums over the 10 scored configurations of each readout read X 205, 167, 87 and 27 and Y 88, 45, 36 and 52 for heater offsets (tau 0.1, 0.3), coupler offsets (tau 0.1) and both together, each family at 30 or more on X or Y, against the returned mesh's 343 and 75. The combined family's X predictions carry a median prediction variance 12.7 times the counting variance, so its X sum reflects weak identification and its Y sum the shortfall. In counting variance alone the training-only folds give X 257 to 535 and Y 109 to 1114.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Static families of the provider's returned mesh model only, with pure-state propagation; the prediction variance is the local quadratic approximation at each fold mode, the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference, and the reading criterion (30 or more on 10 keeps the shortfall) was fixed in plan ascella-configuration-holdout-training-only before the run. The analysis was added after the preregistered table and decides nothing; it does not show that the underlying errors are independent between configurations or exclude a correlated or drive-dependent shared error. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/configuration-holdout.json",
+          "sha256": "c38ad052a38eab81e8c2f17f8a7d0d4bb2a3698d8c484250d1cf903bac443268"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-configuration-holdout-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-physical-models"
       ],
       "supersedes": [],
       "superseded_by": null
@@ -4567,7 +4614,7 @@
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
-      "boundary": "Three readings stay outside the proof, each with a failing check: the extractor's one-to-one node map, which tests/scripts/test_cd_sign_rocq_ast.py and gate sources-406 compare with the embedded term; the int behavior of the guards _dimension and _index, whose ast.dump digests and clauses on every int from -3 to 70 the same contract pins; and the evaluator's reading of the cited Python Language Reference sections. _dimension tests type(dim) is int before any operator runs, so bool and every int subclass, whose overridden operators need not compute as integers, are rejected, and _index reads each index through operator.index, which returns an exact int; tower_bridge.py remains as an independent finite cross-check through dimension 64.",
+      "boundary": "Claim cd-sign-python-translation-rocq closes the former extractor node-map gap with a kernel-checked translation certificate and independent raw-AST execution. Parsing, generic serialization and source-byte/hash binding remain external checks. The int behavior of the guards _dimension and _index, whose ast.dump digests and clauses on every int from -3 to 70 the existing contract pins, and the evaluator's reading of the cited Python Language Reference sections remain outside the proof. _dimension tests type(dim) is int before any operator runs, so bool and every int subclass, whose overridden operators need not compute as integers, are rejected, and _index reads each index through operator.index, which returns an exact int; tower_bridge.py remains as an independent finite cross-check through dimension 64.",
       "evidence": [
         {
           "path": "proofs/CdSignPythonSemantics.v",
@@ -4605,6 +4652,60 @@
       "kernel_receipt": "docs/evidence/cd-sign-python-semantics/kernel.txt"
     },
     {
+      "id": "cd-sign-python-translation-rocq",
+      "statement": "Kernel-checked by Rocq 9.3.0 with seven closed assumption queries: a sound translation-validation certificate connects a generic raw Python AST to the independently defined integer-subset target syntax, and accepted source and target functions have equal modeled execution outcomes for every integer argument list and evaluator fuel. For the retained cd_core.cd_sign source, every exact-integer triple satisfies the target specification with sufficient fuel: valid dimensions and indices return the tower sign, failed guards raise an abstract exception, and the high-low guard mutant differs on the retained e_1 e_0 witness.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "The source interpreter reads raw node tags directly; it does not translate before evaluating or invoke the target evaluator. The certificate checks positional parameter names and the executable body against the target quotation. CPython parsing, generic ast.iter_fields serialization, file reading and SHA-256 binding remain externally checked by sources-411. Both calculi use mathematical integer primitives and the existing _dimension and _index helper contracts. Function names, annotations and the leading docstring remain metadata; the view rejects unsupported parameter forms and decorators. Exceptions omit class, message and traceback, and fuel is not a Python resource bound. Module execution, arbitrary Python objects, helper rebinding and the CPython C implementation are outside this theorem.",
+      "evidence": [
+        {
+          "path": "proofs/CdSignAstTranslation.v",
+          "sha256": "25f7fe47ba1b26dc4a349779000d5adc48ef798308ddead3ef1eb892ee5ed6f6"
+        },
+        {
+          "path": "proofs/CdSignSourceCertificate.v",
+          "sha256": "6c83e82d0708f93e3e294f0302b62f7f2609a1aa8827f0381423f480c3b6f510"
+        },
+        {
+          "path": "scripts/cd_sign_source_ast.py",
+          "sha256": "3107a7af599a3a9c421641694bccbd763f6e37357bcf20e370c0021516053659"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-translation/assumptions.v",
+          "sha256": "9f31ad72afd3f7b177cb1617d28f51959d5c06d9e6c8e621c45a3f3b53f3c5b0"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-translation/assumptions.txt",
+          "sha256": "68842fc80f589bb583cf4916a7401c359d1e235988e35f686ccf4605c8211ae0"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-translation/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        },
+        {
+          "path": "docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
+          "sha256": "afd4e70c72839686fc93d584f8c13aba17933f2abe5a6e6105df812a6ddbd66f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-sign-python-translation/README.md",
+        "docs/evidence/cd-sign-python-semantics/README.md"
+      ],
+      "gates": {
+        "sources-410": "bytes",
+        "sources-411": "freshness"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "cd-sign-python-semantics-rocq"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-sign-python-translation/kernel.txt"
+    },
+    {
       "id": "cd-associator-phase-degree",
       "statement": "For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).",
       "boundary": "Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and the machine-checked claims cd-associator-anf-rocq and cd-associator-census-rocq prove the statement and the census in Rocq for every n. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.",
@@ -4632,7 +4733,7 @@
     {
       "id": "cd-associator-point-indicator-pairs",
       "statement": "For n >= 3, 0 <= m < 2^(n-2), i = 2^(n-1) + m and j = i + 2^(n-2), the associator phase is g_ij(x) = x_(n-1) + delta_m(z) for m != 0 and N(z) for m = 0, with z the low n - 2 bits of x, so W_ij is one multi-controlled Z on the low n - 2 qubits conjugated by X on the zero bits of m, times at most one Z and a global sign, while its positive-polarity ANF has 1 + 2^(n-2-popcount(m)) or 2^(n-2) - 1 monomials.",
-      "boundary": "Written proof (Proposition 5 of docs/notes/cd_phase_degree.md) from Lemma D's upper-pair closed form at levels n and n - 1; scripts/cd_phase_degree.py checks the formula and the monomial counts on every such pair through n = 8. The --sparsity table (282 of the 24384 top-degree pairs at n = 8 need one fixed-polarity multi-controlled Z, the rest at least two, up to 28 in the best fixed polarity) is a finite measurement without a proof, and the gate counts hold for circuits of X-conjugated multi-controlled Z, Z and X gates without ancillas.",
+      "boundary": "Written proof (Proposition 5 of docs/notes/cd_phase_degree.md) from Lemma D's upper-pair closed form at levels n and n - 1; claim cd-associator-point-indicators-rocq machine-checks the displayed phase formula and exact degree for every n >= 3. The positive-polarity monomial counts and gate realization remain written consequences, and scripts/cd_phase_degree.py checks the formula and monomial counts on every such pair through n = 8. The --sparsity table (282 of the 24384 top-degree pairs at n = 8 need one fixed-polarity multi-controlled Z, the rest at least two, up to 28 in the best fixed polarity) is a finite measurement without a proof, and the gate counts hold for circuits of X-conjugated multi-controlled Z, Z and X gates without ancillas.",
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
       ],
@@ -4653,6 +4754,51 @@
       "supersedes": [],
       "superseded_by": null,
       "proof_origin": "repository-written"
+    },
+    {
+      "id": "cd-associator-point-indicators-rocq",
+      "statement": "For every Cayley-Dickson level n >= 3, 0 <= m < 2^(n-2) and x < 2^n, kernel-checked by Rocq 9.3.0 with four closed assumption queries: for i = 2^(n-1) + m and j = i + 2^(n-2), the associator phase is g_ij(x) = x_(n-1) XOR [x mod 2^(n-2) = m] when m != 0 and [x mod 2^(n-2) != 0] when m = 0; the middle bit x_(n-2) is absent, and the phase has ANF degree exactly n - 2.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "This proves Proposition 5's displayed point-indicator identity and exact degree for the existing tower associator, including m = 0 and n = 3. The positive-polarity ANF monomial counts, the gate realization and its resource counts remain written consequences in claim cd-associator-point-indicator-pairs; this bundle does not formalize a circuit language or an optimality theorem. The connection to the retained Python source uses claims cd-sign-python-semantics-rocq and cd-sign-python-translation-rocq with their stated trust boundaries.",
+      "evidence": [
+        {
+          "path": "proofs/CdAssociatorPointIndicators.v",
+          "sha256": "f8107462007e7f99203c6eb8eb6ce1938f807593a1bdb0afb8eb9374d736434f"
+        },
+        {
+          "path": "docs/evidence/cd-associator-point-indicators/assumptions.v",
+          "sha256": "7b404b82de80fd0d4d8ab641910014b6436bbafed1ac041e291d30cebb787b4f"
+        },
+        {
+          "path": "docs/evidence/cd-associator-point-indicators/assumptions.txt",
+          "sha256": "f0532d0e8a885018e887fe9f2fc1415078fabe8f12825919a931ee3c625a3996"
+        },
+        {
+          "path": "docs/evidence/cd-associator-point-indicators/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        },
+        {
+          "path": "docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
+          "sha256": "cadae5083d705508393a0bec03e05b74df245471102060819378c851eac2d7ff"
+        }
+      ],
+      "documents": [
+        "docs/evidence/cd-associator-point-indicators/README.md",
+        "docs/notes/cd_phase_degree.md"
+      ],
+      "gates": {
+        "sources-408": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "cd-associator-anf-rocq"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/cd-associator-point-indicators/kernel.txt"
     },
     {
       "evidence": [
@@ -9036,6 +9182,72 @@
         "proposed-signed-null-retest",
         "iqm-garnet-signed-kernel-probe"
       ],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-idle-schedule",
+      "statement": "garnet:mock accepted the idle schedule and train readout case (cases.json 3932d467, 24 circuits x 4500 shots, no heralding, one active-reset cycle, up to 1017 prx pulses per circuit), compiled it against its own calibration set f04fe114, estimated 3.09 s and charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock's bits are random, so the run tests acceptance and the runtime estimate, not the schedule or the over-rotations.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe/results.json",
+          "sha256": "a3a90bc5833f5b59534da4237edae7e26774c065ff1faa754a5ec1ebc6d0dffa"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-idle-schedule-train-readout.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-idle-schedule"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-idle-schedule",
+      "statement": "On IQM Garnet (calibration set a18a947f, 24 circuits x 4500 shots, one active-reset cycle, no heralding), a circuit job runs its gates as soon as possible: in both idle layouts every qubit uncoupled to the train qubit (QB1, then QB20), pulsed once beside 500 or 1000 identity pi pulses and read in one joint measure, relaxed toward |0>, and all 68 pulsed-qubit arms resolved ASAP against the ALAP prediction of no change, at 13.3 to 58.7 standard errors from the midpoint of the two predictions (H1). Fitted with its own readout pair, QB11's isolated prx train reads a relative over-rotation of -0.30 +- 0.06 %, which excludes the +2.7 % the null-controlled signed probe's prediction attributes to it at 47 standard errors, and QB6's reads -0.18 +- 0.07 % (H2; chi-square 8.1 and 1.2 on three degrees of freedom). The job ran 1.92 s, billed 2 s and charged 1.00 credit.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration set and one job. The decay is larger than the ASAP model predicts (observed over predicted contrast 0.86 to 2.39, median 1.63; apparent T1 at 1000 pulses 0.40 to 1.27 of the calibrated value, median 0.53), so the model's 16 ns per prx, the calibrated T1, or both understate the wait; that is unresolved here and decides nothing. The parallel block's fits are descriptive: 13 of 20 qubits fit the linear train model, and QB2, QB5, QB7, QB11, QB15, QB16 and QB17 do not when all qubits are driven at once; QB6 reads -0.22 +- 0.10 % parallel minus isolated. Retained predictions keep the ALAP schedule their approvals covered.",
+      "evidence": [
+        {
+          "path": "results/iqm/idle_schedule_probe_analysis.json",
+          "sha256": "dc81ac1b23bf42050bb97644411703fedcec957579254cfe3eb944b735604480"
+        },
+        {
+          "path": "results/iqm/idle_schedule_probe_analysis-runner-image.json",
+          "sha256": "dc81ac1b23bf42050bb97644411703fedcec957579254cfe3eb944b735604480"
+        },
+        {
+          "path": "results/iqm/cases/idle-schedule-train-readout/prediction.json",
+          "sha256": "e3549eb8c74781b8c712286ae15ce664c9c4f340078207404343424c6b0f40b1"
+        },
+        {
+          "path": "results/iqm/cases/idle-schedule-train-readout/cases.json",
+          "sha256": "3932d4675e081ac0672d3df3b20e658841997dbc86a1fa50c1b38255e6586dc9"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe/results.json",
+          "sha256": "7216ed0f8606f1be368e69950d8b535740a8197b70cc9e8c6706a04fc823fbd1"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-idle-schedule-train-readout.md"
+      ],
+      "gates": {"core-684": "replay"},
+      "acquisitions": [
+        "iqm-garnet-idle-schedule"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
       "superseded_by": null
     },
     {

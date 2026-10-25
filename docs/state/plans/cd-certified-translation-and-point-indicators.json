@@ -1,0 +1,177 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-certified-translation-and-point-indicators",
+  "kind": "implementation",
+  "summary": "Certify translation of the cd_sign Python AST into the Rocq evaluator and formalize Proposition 5’s all-dimension point-indicator formula.",
+  "sources": [
+    "docs/evidence/cd-sign-python-semantics/README.md",
+    "docs/notes/cd_phase_degree.md",
+    "proofs/CdSignPythonSemantics.v",
+    "proofs/CdAssociatorAnf.v"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The user requested both formalization gaps on 2026-10-24; the existing semantics theorem and written Proposition 5 identify the boundaries."
+  },
+  "scope": "Prove source-AST translation and execution preservation for the exact integer subset used by cd_sign, relative to explicitly defined source semantics, and prove the point-indicator formula for every n >= 3. Preserve the independent trust boundaries of CPython parsing, raw serialization, guards and implementation conformance unless a theorem actually closes them. No hardware execution.",
+  "owner": "Repository Rocq maintainer",
+  "next_action": "Run the hosted review and required pull-request checks on the published proof branch before merge.",
+  "steps": [
+    {
+      "id": "formal-proofs",
+      "state": "done",
+      "action": "Add a certified Python-AST translation with semantic preservation and an all-dimension proof of Proposition 5 using the existing tower and associator lemmas.",
+      "acceptance": "The new theorem statements compile with no warnings or admitted obligations under Rocq 9.3.0, and every retained assumption query is closed under the global context.",
+      "receipts": [
+        {
+          "scope_sha256": "fbfb7ead9094a1a13f78344040868c50d6b9422cf0380c1806fd86ce6791305c",
+          "result": "Both pinned Rocq 9.3.0 / OCaml 5.5.1 replays passed with warnings treated as errors. All eleven retained assumption queries are closed under the global context, and both independent kernel receipts report no axioms or unsafe assumptions. The recovered proof and receipt bytes equal those checked; the generic exporter reproduces the retained raw AST exactly.",
+          "observed_at": "2026-10-24T23:20:04Z",
+          "evidence": [
+            {
+              "ref": "proofs/CdAssociatorPointIndicators.v",
+              "sha256": "f8107462007e7f99203c6eb8eb6ce1938f807593a1bdb0afb8eb9374d736434f"
+            },
+            {
+              "ref": "proofs/CdSignAstTranslation.v",
+              "sha256": "25f7fe47ba1b26dc4a349779000d5adc48ef798308ddead3ef1eb892ee5ed6f6"
+            },
+            {
+              "ref": "proofs/CdSignSourceCertificate.v",
+              "sha256": "37f2109eacff0065a03ec01d80fb27e70c036cfafc3a46fae1cd5f49770d56ef"
+            },
+            {
+              "ref": "docs/evidence/cd-associator-point-indicators/assumptions.txt",
+              "sha256": "f0532d0e8a885018e887fe9f2fc1415078fabe8f12825919a931ee3c625a3996"
+            },
+            {
+              "ref": "docs/evidence/cd-associator-point-indicators/kernel.txt",
+              "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-translation/assumptions.txt",
+              "sha256": "68842fc80f589bb583cf4916a7401c359d1e235988e35f686ccf4605c8211ae0"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-translation/kernel.txt",
+              "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+            }
+          ],
+          "revision": "7607d4e10b4fe5527686449f0f51be15d8f30b7d"
+        }
+      ]
+    },
+    {
+      "id": "integration",
+      "state": "done",
+      "depends_on": [
+        "formal-proofs"
+      ],
+      "action": "Retain exact replay bundles, register the proven statements and residual trust, wire the nightly replay and source checks, and update the generated views.",
+      "acceptance": "Both replay scripts reproduce their kernel and assumption receipts; touched Python checks, source hashes, CI pin checks, registry checks and plan checks pass under their declared runtimes.",
+      "receipts": [
+        {
+          "scope_sha256": "f017030a979720e82164de11f317102a69afc0ca532de847d0dc064b8b65872b",
+          "result": "Pinned canonical PR lint and types pass (478 formatted files, 457 type-checked source files); the full test lane passes 809 tests with two declared Quantum Inspire toolchain skips. Ten selected integration gates pass, including both ledgers, both AST bindings, registry, links, plan tracker and all four commands of core-630. Rocq CI pins agree across all twelve bundles. The new claim scopes retain parsing, helper-contract and CPython boundaries.",
+          "observed_at": "2026-10-24T23:20:04Z",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
+              "sha256": "cadae5083d705508393a0bec03e05b74df245471102060819378c851eac2d7ff"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+              "sha256": "c1b275cae243a69f5ab19dba29f8b7bb36525e83de6c1b97bac576d3f467bada"
+            },
+            {
+              "ref": "scripts/cd_sign_source_ast.py",
+              "sha256": "f4c4dd2cfd81a1a2b7a077ddea3d3b52a4695af2be213ede6c5cdb6eafa2f160"
+            },
+            {
+              "ref": "tests/scripts/test_cd_sign_source_ast.py",
+              "sha256": "88db6d78ff96d18e174017e96f7b87f036bb921d67dfd512c0249509456398d7"
+            },
+            {
+              "ref": "ci/check_rocq_ci_pins.py",
+              "sha256": "5f4ef4b8a96cc3c2aefdbba73ad43e53ebc3b4f6f812e2638ede7c52d10a5c49"
+            },
+            {
+              "ref": "tests/ci/test_rocq_ci_pins.py",
+              "sha256": "0e58e01e826ccf8abb476a10d44d6e16bbf59d6c5e37749a56dccca9b2d44ef3"
+            },
+            {
+              "ref": ".github/workflows/ci.yml",
+              "sha256": "01fb809603260edecec4dcf7ceefddf55cc0e1f7cfe5ca3fdb6065a9f1772aaa"
+            },
+            {
+              "ref": "ci/gates.json",
+              "sha256": "3cc2e5b3b3a45d856a3bda43f40aaa194d6c1f5452fb83960c0dacb4b9e8f7d0"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "a523e1f266ddfac8bec3d432d85cdb1cde856b4e9b7eb63805ba8ad4293af34b"
+            }
+          ],
+          "revision": "7607d4e10b4fe5527686449f0f51be15d8f30b7d"
+        }
+      ]
+    }
+  ],
+  "related": [
+    "cd-census-and-sign-semantics-rocq",
+    "cd-associator-degree-rocq"
+  ],
+  "disposition": "completed",
+  "resolution": "Both requested formalization gaps are closed at their stated scope: the raw-AST translation preserves the specified integer semantics, and Proposition 5’s identity and exact degree hold for every doubling level n >= 3. The implementation, kernel receipts, source binding, registry and replay wiring are retained; general CPython correctness and the note’s circuit-cost consequences remain outside these theorems.",
+  "claims": [
+    "cd-sign-python-translation-rocq",
+    "cd-associator-point-indicators-rocq"
+  ],
+  "receipts": [
+    {
+      "scope_sha256": "315c25dc9db9c7606d973d9768b184bfb84aa2d80edd84e54a4cc512ebc03d55",
+      "result": "Both implementation steps are complete with scope-bound receipts and published proof sources; hosted merge admission remains the repository review process.",
+      "observed_at": "2026-10-24T23:20:04Z",
+      "evidence": [
+        {
+          "ref": "proofs/CdAssociatorPointIndicators.v",
+          "sha256": "f8107462007e7f99203c6eb8eb6ce1938f807593a1bdb0afb8eb9374d736434f"
+        },
+        {
+          "ref": "proofs/CdSignAstTranslation.v",
+          "sha256": "25f7fe47ba1b26dc4a349779000d5adc48ef798308ddead3ef1eb892ee5ed6f6"
+        },
+        {
+          "ref": "proofs/CdSignSourceCertificate.v",
+          "sha256": "37f2109eacff0065a03ec01d80fb27e70c036cfafc3a46fae1cd5f49770d56ef"
+        },
+        {
+          "ref": "docs/evidence/cd-associator-point-indicators/assumptions.txt",
+          "sha256": "f0532d0e8a885018e887fe9f2fc1415078fabe8f12825919a931ee3c625a3996"
+        },
+        {
+          "ref": "docs/evidence/cd-associator-point-indicators/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        },
+        {
+          "ref": "docs/evidence/cd-sign-python-translation/assumptions.txt",
+          "sha256": "68842fc80f589bb583cf4916a7401c359d1e235988e35f686ccf4605c8211ae0"
+        },
+        {
+          "ref": "docs/evidence/cd-sign-python-translation/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        },
+        {
+          "ref": "docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
+          "sha256": "cadae5083d705508393a0bec03e05b74df245471102060819378c851eac2d7ff"
+        },
+        {
+          "ref": "docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+          "sha256": "c1b275cae243a69f5ab19dba29f8b7bb36525e83de6c1b97bac576d3f467bada"
+        }
+      ],
+      "revision": "7607d4e10b4fe5527686449f0f51be15d8f30b7d"
+    }
+  ]
+}

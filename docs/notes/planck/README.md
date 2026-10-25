@@ -17,6 +17,13 @@ uv venv --python 3.13 "$PL_ENV"
 VIRTUAL_ENV="$PL_ENV" uv pip install -r docs/notes/planck/requirements-planck.txt
 ```
 
+On the build host the Arch package `planck-stack` from the local PKGBUILD tree
+(`~/Github/PKGBUILDs/planck-stack`) installs the same SDK as a hash-locked Python
+3.13 environment under `/opt/planck-stack` and the interpreter `/usr/bin/planck-python`
+(planck_sdk 1.0.0 from the audited commit); its `check()` runs an offline test, kept at
+`/usr/share/planck-stack/test_planck_stack.py`. A case sets `PL_PYTHON=/usr/bin/planck-python`; the venv
+above serves a machine without the package. The package sources the GitHub archive of HectorNaaa/Planck-QSaaS at commit d57e32e7 under a b2sum and installs `sdk/python` from it, since PyPI carries no `planck-sdk`.
+
 The SDK (version 1.0.0, MIT) uses the standard library only and contacts
 only its configured base URL. Pass `base_url="https://www.plancktechnologies.xyz"`:
 the bare domain answers 308, which breaks the SDK's POST health check. The
@@ -29,8 +36,30 @@ sent as `X-API-Key`. The SDK and server allow one request every 3 s.
   `/api/quantum/digital-twin` answer "Invalid API key". The health ping
   answers `authenticated: true` for any well-formed key without a lookup,
   so it proves nothing. The stored key is 67 characters, while the README
-  documents a 64-character key; regenerating it at
-  `https://www.plancktechnologies.xyz/qsaas/settings` is the next step.
+  documents a 64-character key. A regenerated key, also 67 characters,
+  is rejected the same way through the SDK and through plain HTTP. The
+  source at `d57e32e7` names the cause: `vercel.json` sets `DB_DIR=/tmp`,
+  so API keys live in an SQLite file inside each serverless instance; a
+  request carrying only `x-api-key` looks the key up in that instance's
+  file (`ApiKeys.findByKey` in `lib/api-auth.ts`), and only a request with a
+  browser session cookie re-creates the key row from the session token's
+  `ak` claim (`ensureDbUser` in `lib/db/ensure-user.ts`). A key therefore
+  authenticates only on a warm instance that a dashboard session reached
+  first; the deployed code may differ, since the project's Vercel git
+  deployments are off. The durable remedy is server-side (a persistent key
+  store); until the vendor ships one, no client-side workaround makes
+  key-only authentication reliable.
+- **The mechanism, measured on 2026-10-25.** Every function request ran in
+  Vercel region `fra1`. Key-only `GET /api/quantum/executions` requests
+  answered 401 throughout; after the owner loaded the settings page (a
+  session request that runs `ensureDbUser`), 15 consecutive key-only
+  requests answered 200 for 51 s, and the next answered 401 again. A single
+  session-authenticated read of the same endpoint reproduces it: the key
+  failed, the session read succeeded, and the following key-only requests
+  succeeded. A key therefore works for about a minute after a request
+  carrying the `auth-token` session cookie reaches the same instance.
+  Automating that would mean handling the owner's session cookie, which the
+  repository does not do.
 - **The simulator ignores the circuit.** In the platform source at commit
   `d57e32e7`, `simulateQuantumCircuit()` in
   `app/api/quantum/simulate/route.ts` draws every bit with
@@ -38,6 +67,9 @@ sent as `X-API-Key`. The SDK and server allow one request every 3 s.
   `quantum_qpu` backend name, and never reads the gates. Every backend name
   (`auto`, `quantum_inspired_gpu`, `hpc_gpu`, `quantum_qpu`) goes through
   that function. This is read from the source, not from a deployed call.
+- **Announced plan.** The owner reports a forthcoming plan of 49 USD or EUR
+  a month with 36 qubits; no page read here states it, and the simulator
+  finding below decides its value until a re-audit.
 - **Pricing disagrees with itself.** The landing page lists Starter at EUR 0
   with up to 20 qubits; the in-app billing page lists Starter at $29 a month
   with 1,000 runs and up to 8 qubits. No balance or quota endpoint exists.

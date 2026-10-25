@@ -25,8 +25,9 @@ Leave-one-configuration-out, fitted after the preregistered table and deciding n
 family on job-00 without one configuration and scores that configuration's X and Y statistics against the
 prediction in their multinomial variances alone. Each of the 19 configurations that serve the X or Y readout (one
 serves both) is left out in turn and scored; a fold on any of the other 11 would add no row. The nominal mesh gives
-the reference. A shared mesh error predicts a configuration it was not fitted on, and a per-configuration lookup
-does not.
+the reference. Each fold starts from the full-data mode, so this score is descriptive;
+scripts/ascella_configuration_holdout.py refits the folds from the training configurations alone and scores them
+in the fitted-prediction variance.
 
 The held-out statistic of each readout is r^T (diag(v) + J C J^T)^{-1} r over job-01's pooled configuration
 statistics, with v job-01's multinomial variances, C the inverse Fisher information of the job-00 fit (plus the
@@ -666,9 +667,8 @@ def configuration_fold(
 ) -> list[Any]:
     """Static offsets fitted on job-00 without one configuration, scored on that configuration.
 
-    A fold's posterior can hold more than one mode, and an L-BFGS path from zero reaches one that follows the
-    BLAS build. Newton steps from the full-data mode reach the fold mode in that basin on every build; the
-    start leans the fold toward the left-out configuration, so it can only lower the left-out statistic."""
+    Newton steps from the full-data mode reach the fold mode in that basin, so the left-out configuration's
+    counts choose the basin; scripts/ascella_configuration_holdout.py fits the folds from the zero start."""
     _, heater_tau, coupler_tau, data, left_out, start = item
     widths = prior_widths(data, heater_tau, coupler_tau)
     free = widths > 0
