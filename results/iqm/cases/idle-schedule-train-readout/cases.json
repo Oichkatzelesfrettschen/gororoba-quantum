@@ -1,0 +1,126 @@
+{
+ "case": "idle-schedule-train-readout",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/idle-QB1-0.json",
+     "sha256": "336ef542546fd2961eb5c72bdc5450e05ec33391f9c57d5de1902932f914ba5d"
+    },
+    {
+     "file": "circuits/idle-QB1-500.json",
+     "sha256": "0455f57a04927b4f45278e9d99c9b54df758ee0aab8adae637243abe38917860"
+    },
+    {
+     "file": "circuits/idle-QB1-1000.json",
+     "sha256": "bcfef55402ce67774ba1fed882621847eb4a8a71a90c26ee6b859024797dd004"
+    },
+    {
+     "file": "circuits/idle-QB20-0.json",
+     "sha256": "99b2cea370d65e11421ba3a20efc8bff5b75f16fb88eaec710a4c62995200977"
+    },
+    {
+     "file": "circuits/idle-QB20-500.json",
+     "sha256": "b0849dbd1e75d337e7ea205a900e27a377926fdbab443b63ee82e90dbb46196c"
+    },
+    {
+     "file": "circuits/idle-QB20-1000.json",
+     "sha256": "f1ed84ebfeafed479b3f607892a3cc9423705ed52cb133344f6d16aa44ef6fd8"
+    },
+    {
+     "file": "circuits/par-ro0.json",
+     "sha256": "bca1858ed0913afb6f4801269136e1a1937f81c5dea21e137a257da3a9bd857f"
+    },
+    {
+     "file": "circuits/par-ro1.json",
+     "sha256": "89aca9d195e6faa564a3862302b96383cfe59c213c5edd26bac4c8430db3b9c4"
+    },
+    {
+     "file": "circuits/par-amp-0.json",
+     "sha256": "e7089303b7b910b27ce9b3e48bbac6e87f3792a09c7de90f14b82917cb7130f6"
+    },
+    {
+     "file": "circuits/par-amp-1.json",
+     "sha256": "20593d4dc3bf418f192b16bf953bc9c4cbbb3309e455291318d371493524df73"
+    },
+    {
+     "file": "circuits/par-amp-2.json",
+     "sha256": "09fd8516edeef8a4663c0b9871a7ea1a86bdb53c4a21d95f8e650a6302b4458f"
+    },
+    {
+     "file": "circuits/par-amp-3.json",
+     "sha256": "1b0bcaa10ed59ab909c634fd92df92f748d390ea70f725f6e0281a4dee9ef5ae"
+    },
+    {
+     "file": "circuits/ro0-QB6.json",
+     "sha256": "6fb2639735a336e32c72df9a0eaba1961c8723dc12f92b2dd3c62aff64d07019"
+    },
+    {
+     "file": "circuits/ro1-QB6.json",
+     "sha256": "b8bac56e3e80cd361b8a80d142fdd561346eb05561b83e50a2d11c664d172adf"
+    },
+    {
+     "file": "circuits/amp-QB6-0.json",
+     "sha256": "21f4a85b95f0c5ce61d9859e87320e267df8e4e7c2fde3ec61f1775cb22fe093"
+    },
+    {
+     "file": "circuits/amp-QB6-1.json",
+     "sha256": "364e795134ed43086404720b8ba423e0eede63312b0fed3000965bc9ec1df45b"
+    },
+    {
+     "file": "circuits/amp-QB6-2.json",
+     "sha256": "4eb095297aefd40798609e1e19e1fb5715882964171ef28f7e200fcd421e6872"
+    },
+    {
+     "file": "circuits/amp-QB6-3.json",
+     "sha256": "0a6b81f143612015e358e2469ce107674b83c51d2d4d77a01d38baccae8058ae"
+    },
+    {
+     "file": "circuits/ro0-QB11.json",
+     "sha256": "a0968edd2294a24a7abdc1bc5ba2012d74dfbbd04f4231f7fde410005ff2c9ec"
+    },
+    {
+     "file": "circuits/ro1-QB11.json",
+     "sha256": "df53fb76e68b6d2a98e00c9b309b38c088b9daf3407f24bd535e7e756aa1aaec"
+    },
+    {
+     "file": "circuits/amp-QB11-0.json",
+     "sha256": "268366a4880e8cc138da6125440b17a7c92e5ff564346445bbcda09796fdde25"
+    },
+    {
+     "file": "circuits/amp-QB11-1.json",
+     "sha256": "a37cda727854bab51f321e906c9f0988c878bd87c53df6a6567e8d0a0d34e30f"
+    },
+    {
+     "file": "circuits/amp-QB11-2.json",
+     "sha256": "51994bc74a782b1956cf9034b86433e5bb6287bbb022862f5b500b53b73aa3d3"
+    },
+    {
+     "file": "circuits/amp-QB11-3.json",
+     "sha256": "bf096f166f05e96bea7f9d9ad5370a17e52ea4fe584f281f707ae1deca54a373"
+    }
+   ],
+   "expected_seconds": 4.266,
+   "job": "probe",
+   "max_credits": {
+    "garnet": 4.0,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "a18a947f-0408-4628-81ea-1715637e434f"
+    },
+    "heralding_mode": "none"
+   },
+   "shots": 4500
+  }
+ ],
+ "prediction_sha256": "e3549eb8c74781b8c712286ae15ce664c9c4f340078207404343424c6b0f40b1",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "Does Garnet schedule a circuit job's gates as soon or as late as possible, read by whether pulsed qubits relax while an uncoupled qubit runs an identity train, and what over-rotation does every qubit's prx carry when fitted with its own readout, driven alone and all at once?",
+ "schema": "iqm-circuit-case-v1"
+}
