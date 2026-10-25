@@ -275,6 +275,11 @@ def derive(record: dict[str, Any]) -> dict[str, Any]:
 
 
 def check(path: Path) -> str:
+    # Wall seconds, load averages, GPU readings and best points are acquisition-time readings with no offline
+    # recomputation; the digest binds them. The import is local because Kaggle bundles omit record_digest.
+    import record_digest
+
+    record_digest.require_retained(path)
     record = json.loads(path.read_text(encoding="utf-8"))
     require(record.get("schema") == SCHEMA, f"{path}: schema {record.get('schema')!r}")
     if record.get("gpu_check") is not None:
