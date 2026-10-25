@@ -166,6 +166,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "pub_shot_allocation.py",
     "qpe_diagnostics.py",
     "patch_characterization.py",
+    "qet_ladder.py",
     "coherence_window.py",
     "conditional_ramsey.py",
     "crossed_tile_template.py",
@@ -3620,6 +3621,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                     raise LiveRunError(f"{campaigns[0]} runs without dynamical decoupling; omit --dd")
                 if args.max_replicas != 1:
                     raise LiveRunError(f"{campaigns[0]} runs one replica; pass --max-replicas 1")
+            if "qet_ladder" in campaigns and args.dd:
+                # Every ladder circuit carries feed-forward, and the Sampler rejects
+                # dynamical decoupling on dynamic circuits.
+                raise LiveRunError("qet_ladder runs without dynamical decoupling; omit --dd")
             if "crossed_tile_template" in campaigns:
                 # Each PUB row runs one member on both tiles in the same shots, which
                 # needs exactly two replicas, and the crossing matches the rank-sector
