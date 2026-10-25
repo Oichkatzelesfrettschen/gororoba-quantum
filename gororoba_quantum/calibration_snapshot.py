@@ -26,7 +26,8 @@ record that names the snapshot carries them through.
 
 The file is public device calibration and carries no account or instance
 identifier. ``--check FILE`` rebuilds the Target from a retained file,
-requires it to reproduce every instruction entry and T1/T2, and runs a
+requires its bytes to equal a retained record's (record_digest), requires it to
+reproduce every instruction entry, T1, T2 and frequency, and runs a
 seeded noisy probe; it needs no network.
 """
 
@@ -207,8 +208,8 @@ def round_trip(snapshot: dict[str, Any]) -> None:
             raise ValueError(f"rebuilt Target differs from the snapshot on {op}")
     for q, qubit in enumerate(snapshot["qubits"]):
         props = target.qubit_properties[q]
-        if (props.t1, props.t2) != (qubit["t1"], qubit["t2"]):
-            raise ValueError(f"rebuilt Target differs from the snapshot on qubit {q} T1/T2")
+        if (props.t1, props.t2, props.frequency) != (qubit["t1"], qubit["t2"], qubit["frequency"]):
+            raise ValueError(f"rebuilt Target differs from the snapshot on qubit {q} T1, T2 or frequency")
 
 
 def snapshot_backend(snapshot: dict[str, Any]) -> SnapshotBackend:
@@ -571,6 +572,11 @@ def main() -> int:
             parser.error("--export needs --out")
         export(args.export, args.out)
         return 0
+    # T1, T2, frequency, e10, e01 and every duration and error are readings with no offline recomputation.
+    # The import is local because Kaggle bundles carry this module without record_digest.
+    import record_digest
+
+    record_digest.require_retained(args.check)
     snapshot = json.loads(args.check.read_text(encoding="utf-8"))
     round_trip(snapshot)
     qubits = probe_qubits(snapshot)

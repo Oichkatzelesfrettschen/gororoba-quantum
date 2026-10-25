@@ -427,6 +427,19 @@ Facts a Garnet case design starts from, each with the record that carries it:
   removes that excitation and returns only kept shots, 55.9 % on the
   seven-qubit probe, with no top-up. A heralded job's runtime exceeded its
   estimate by 0.63 s.
+- **Schedule.** A circuit job runs its gates as soon as possible: every one of
+  34 qubits pulsed beside an uncoupled 500- or 1000-pulse identity train
+  relaxed before the joint measure, and all 68 arms resolved ASAP at 13 to 59
+  standard errors ([idle schedule case](../../design/iqm-garnet-idle-schedule-train-readout.md),
+  claim `iqm-garnet-idle-schedule`). A new case predicts idle relaxation over
+  an ASAP schedule; the decay ran faster than that model with 16 ns per prx
+  and the calibrated T1 (apparent T1 a median 0.53 of calibrated), so a
+  prediction that depends on idle length carries that gap as a stated
+  uncertainty. A retained case keeps the ALAP prediction its approval covered.
+- **Per-qubit over-rotation.** Fitted with its own readout pair, QB11's prx
+  over-rotates by -0.30 +- 0.06 % and QB6's by -0.18 +- 0.07 %; the +2.7 %
+  QB11 attribution of the signed null re-test is excluded. Driving all 20
+  qubits at once, 13 fit the linear train model and 7 do not.
 - **Coherent error dominates first-order observables.** An observable read
   near the equator of the measured qubit (an interference or Hadamard-test
   readout) moves at first order with gate over-rotation, axis error,
