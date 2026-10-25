@@ -686,11 +686,19 @@ def _branch_instructions(
             elif isinstance(operation, ControlFlowOp):
                 if operation.name != "if_else":
                     raise ValueError(f"unsupported exact-branch control flow {operation.name}")
-                condition_bit, condition_value = operation.condition
-                if not isinstance(condition_bit, Clbit):
-                    raise ValueError("exact branch check requires a single-bit condition")
-                condition_index = clbits[circuit.find_bit(condition_bit).index]
-                block_index = 0 if ((classical >> condition_index) & 1) == condition_value else 1
+                condition_target, condition_value = operation.condition
+                if isinstance(condition_target, Clbit):
+                    condition_bits = [condition_target]
+                elif isinstance(condition_target, ClassicalRegister):
+                    condition_bits = list(condition_target)
+                else:
+                    raise ValueError("exact branch check requires a bit or register condition")
+                # A register condition compares the register's integer value, bit 0 least significant.
+                observed = sum(
+                    ((classical >> clbits[circuit.find_bit(bit).index]) & 1) << position
+                    for position, bit in enumerate(condition_bits)
+                )
+                block_index = 0 if observed == condition_value else 1
                 if block_index < len(operation.blocks):
                     following.extend(
                         _branch_instructions(

@@ -39,7 +39,7 @@ acquisition of every provider:
 | mathematical claim | open | 1 |
 | numerical or stochastic simulation | established | 10 |
 | preregistered emulator control | established | 10 |
-| preregistered hardware inference | established | 53 |
+| preregistered hardware inference | established | 54 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -329,8 +329,11 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7](results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7) | Quandela Cloud | BDSC drift series on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
 | [2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe](results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet:mock | 1 | 24 | completed | 0.0 credits |
 | [2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe](results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet | 1 | 24 | completed | 1.0 credits |
+| [2026-10-25T193443.839527Z](results/live/2026-10-25T193443.839527Z) | IBM Quantum | latency-recovery | ibm_kingston | 1 | 34 | DONE | 40 s |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
+
+The IBM service inventory observed at 2026-10-25T19:43:33.493131+00:00 holds 1 physical jobs with 40 settled seconds; the account then reported 40 of 600 s consumed in the rolling window ending 2026-10-25T19:43:33.435Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
