@@ -399,9 +399,11 @@ def sec_slices(points=2):
         bad = [s for i, s in enumerate(subsets) if any(r > 28 for r in ranks[points * i : points * (i + 1)])]
         out(f"slices size {size}: subsets with a mod-p Stiefel point where f != 0: {len(bad)} {bad[:10]}")
     # controls: the six-slice and seven-slice must show f != 0 at Q_S = 0 points
-    for s in ((2, 5, 14, 16, 20, 22), (3, 4, 13, 14, 16, 22, 26), (2, 5, 14, 20, 22, 3)):
-        r = [rank_mod(cross(h, isotropic_point(list(s), h, rng), P)) for _ in range(3)]
-        out(f"slice control {s}: ranks at Q_S = 0 points {r}")
+    controls = ((2, 5, 14, 16, 20, 22), (3, 4, 13, 14, 16, 22, 26), (2, 5, 14, 20, 22, 3))
+    control_points = [(h, isotropic_point(list(s), h, rng)) for s in controls for _ in range(3)]
+    control_ranks = ordered_map(cross_rank, control_points, min_items=2)
+    for index, s in enumerate(controls):
+        out(f"slice control {s}: ranks at Q_S = 0 points {control_ranks[3 * index : 3 * index + 3]}")
     # 5-subsets of 1..16 containing 16
     subsets5 = [s for s in itertools.combinations(range(1, 17), 5) if 16 in s]
     zs5 = [isotropic_point(list(s), h, rng) for s in subsets5]
@@ -442,33 +444,41 @@ def sec_bcdi():
 
 
 def sec_six():
+    """f^2 against the closed form on the six-coordinate slice; points drawn first, f^2 pooled."""
     rng = random.Random(20003)  # index 6
     h = 32
     s = [2, 5, 14, 16, 20, 22]
+    zs = [isotropic_point(s, h, rng) for _ in range(10)]
+    values = ordered_map(fsq_item, [(h, z) for z in zs], min_items=2)
     ok = []
-    for _ in range(10):
-        z = isotropic_point(s, h, rng)
+    for z, value in zip(zs, values, strict=True):
         v = {k: z[k - 1] for k in s}
         closed = -256 * (v[5] * v[14] ** 2 * v[16] * v[20] * v[22]) ** 2 * (v[2] ** 2 + v[5] ** 2) % P
-        ok.append(fsq_mod(h, z) == closed * closed % P)
+        ok.append(value == closed * closed % P)
     out("six-slice on Q=0: f^2 == (closed form)^2 at 10 points:", all(ok))
 
 
 def sec_small():
+    """f_4^2 = Q^2 and f_5^2 = (Q G)^2 at points drawn first in generator order, f^2 pooled."""
     rng = random.Random(56778)  # index 7
-    good4 = good5 = True
+    items = []
     for _ in range(5):
-        z = [rng.randrange(P) for _ in range(7)]
-        q = sum(v * v for v in z) % P
-        good4 &= fsq_mod(8, z) == q * q % P
-        z = [rng.randrange(P) for _ in range(15)]
-        u, mu, v = z[:7], z[7], z[8:]
-        uu = sum(a * a for a in u)
-        vv = sum(a * a for a in v)
-        uv = sum(a * b for a, b in zip(u, v, strict=True))
-        q = (uu + mu * mu + vv) % P
-        g = (q * q - 4 * (uu * vv - uv * uv)) % P
-        good5 &= fsq_mod(16, z) == (q * g) ** 2 % P
+        items.append((8, [rng.randrange(P) for _ in range(7)]))
+        items.append((16, [rng.randrange(P) for _ in range(15)]))
+    values = ordered_map(fsq_item, items, min_items=2)
+    good4 = good5 = True
+    for (h, z), value in zip(items, values, strict=True):
+        if h == 8:
+            q = sum(v * v for v in z) % P
+            good4 &= value == q * q % P
+        else:
+            u, mu, v = z[:7], z[7], z[8:]
+            uu = sum(a * a for a in u)
+            vv = sum(a * a for a in v)
+            uv = sum(a * b for a, b in zip(u, v, strict=True))
+            q = (uu + mu * mu + vv) % P
+            g = (q * q - 4 * (uu * vv - uv * uv)) % P
+            good5 &= value == (q * g) ** 2 % P
     out("f_4^2 == Q^2:", good4, " f_5^2 == (QG)^2:", good5)
 
 
@@ -499,7 +509,7 @@ def sec_three():
 
 def fsq_line_mod(h, a, b, d):
     xs = list(range(1, 2 * d + 4))
-    ys = [fsq_mod(h, [(u + s * v) % P for u, v in zip(a, b, strict=True)]) for s in xs]
+    ys = ordered_map(fsq_item, [(h, [(u + s * v) % P for u, v in zip(a, b, strict=True)]) for s in xs], min_items=2)
     poly = flint.nmod_poly([0], P)
     for i in range(2 * d + 1):
         num = flint.nmod_poly([1], P)
