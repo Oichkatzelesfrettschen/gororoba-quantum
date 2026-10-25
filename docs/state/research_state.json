@@ -9868,7 +9868,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One layout, one calibration and one job; Hoeffding intervals at alpha 0.05/7 per endpoint. The +-0.01 equivalence margins of latency_is_idle and window_slope are not reached, so equal cost is bounded, not shown. The phase and the decay time constants come from the summary expectations and were not preregistered beyond decay_not_phase; the detuning's source is undecided. A bit-flip code protects no phase. Layout search and model sampling used the runner's fixed seeds, not a QRNG draw (issue #514). Two exposures cannot decide whether the fidelity decays exponentially, so -ln(F(W)/F(0)) is a rate of an exponential law only under that assumption.",
+      "boundary": "One layout, one calibration and one job; Hoeffding intervals at alpha 0.05/7 per endpoint. The +-0.01 equivalence margins of latency_is_idle and window_slope are not reached, so equal cost is bounded, not shown. The phase and the decay time constants come from the summary expectations and were not preregistered beyond decay_not_phase; the detuning's source is undecided. A bit-flip code protects no phase. Layout search and model sampling used the runner's reproduction seeds, not a QRNG draw; the runner took no seed at run time then (issue #514). Two exposures cannot decide whether the fidelity decays exponentially, so -ln(F(W)/F(0)) is a rate of an exponential law only under that assumption.",
       "evidence": [
         {
           "path": "results/live/2026-10-25T193443.839527Z/collect.json",
