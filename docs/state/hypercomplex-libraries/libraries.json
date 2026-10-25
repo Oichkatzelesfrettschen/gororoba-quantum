@@ -2627,6 +2627,7 @@
     "scripts/photonic_compilation_audit.py",
     "scripts/photonic_repeat_readout.py",
     "scripts/photonic_repeat_readout_pooled.py",
+    "scripts/primorial_bound_residuals.py",
     "scripts/primorial_cover_noise.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
@@ -11706,6 +11707,23 @@
    "subprocess",
    "sys",
    "tempfile",
+   "typing"
+  ],
+  "scripts/primorial_bound_residuals.py": [
+   "__future__",
+   "argparse",
+   "calibration_snapshot",
+   "hashlib",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "primorial_cover_noise",
+   "primorial_null_residuals",
+   "sys",
+   "time",
    "typing"
   ],
   "scripts/primorial_cover_noise.py": [
