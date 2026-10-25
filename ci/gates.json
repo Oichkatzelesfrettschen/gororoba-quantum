@@ -4114,6 +4114,22 @@
     "results/quandela/bdsc_drift_series_diagnostic_pinned.json",
     "results/quandela/bdsc_drift_series_readout_pinned.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_null_calibration.py",
+   "name": "core-685",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_null_calibration.py --null-calibration 3000 --bound",
+   "name": "core-686",
+   "seconds": 6.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

@@ -15,6 +15,13 @@
    "value": 40623,
    "record": "docs/evidence/anu_qrng/draw-2026-10-25T001615Z.json",
    "index": 1
+  },
+  {
+   "path": "scripts/bdsc_null_calibration.py",
+   "name": "NULL_SEED",
+   "value": 28807,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 0
   }
  ],
  "runtime": []
