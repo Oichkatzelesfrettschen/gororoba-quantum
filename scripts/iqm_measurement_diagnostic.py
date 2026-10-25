@@ -49,10 +49,12 @@ import json
 import math
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import numpy as np
+from scipy.linalg import expm
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
@@ -78,6 +80,19 @@ Z_DECIDE = seq.Z_DECIDE
 NAMES = ("d1-ro0", "d2-ro1", "d3-ro1-now", "d4-unitary-n16", "d5-single", "d6-pair-n16", "d7-n8", "d8-n4")
 CORRECTED = ("d4-unitary-n16", "d5-single", "d6-pair-n16", "d7-n8", "d8-n4")
 IDEAL = (1 + math.cos(8 * math.pi / 9)) / 2
+
+
+@dataclass(frozen=True)
+class Drive:
+    """Relaxation under the drive: the T2 and T1 rates over a layer scale by t2_scale and t1_scale; exact solves the
+    driven Bloch equation over the layer instead of rotating and then relaxing."""
+
+    t2_scale: float = 1.0
+    t1_scale: float = 1.0
+    exact: bool = False
+
+
+DEFAULT_DRIVE = Drive()
 
 
 def pair_phases(steps: int = 16, alpha: float = ALPHA) -> list[tuple[float, float]]:
@@ -141,17 +156,29 @@ def evolve(
     z0: float,
     z_eq: float = 1.0,
     advance: float = 0.0,
+    drive: Drive = DEFAULT_DRIVE,
 ) -> float:
     """The Bloch z after the pulses (before any wait): each prx a rotation about (cos phi, sin phi, 0) with the
     depolarizing error and T1/T2 relaxation over the compiled layer of seq.PRX_LAYER_SECONDS. `advance` adds that
-    many radians of axis phase per pulse (a model device)."""
+    many radians of axis phase per pulse (a model device). `drive` selects the relaxation under the drive: the layer's
+    relaxation applied after the rotation (the default), the same with the dephasing rate scaled, or the exact
+    solution of the driven Bloch equation over the layer."""
     t2 = min(t2, 2 * t1)
-    decay_t2 = math.exp(-seq.PRX_LAYER_SECONDS / t2)
-    decay_t1 = math.exp(-seq.PRX_LAYER_SECONDS / t1)
+    tau = seq.PRX_LAYER_SECONDS
+    decay_t2 = math.exp(-drive.t2_scale * tau / t2)
+    decay_t1 = math.exp(-drive.t1_scale * tau / t1)
     v = np.array([0.0, 0.0, z0])
     for k, (theta, phase) in enumerate(pulses):
         phi = phase + advance * k
         n = np.array([math.cos(phi), math.sin(phi), 0.0])
+        if drive.exact:
+            rates = np.diag([drive.t2_scale / t2, drive.t2_scale / t2, drive.t1_scale / t1])
+            cross = np.array([[0, -n[2], n[1]], [n[2], 0, -n[0]], [-n[1], n[0], 0]])
+            generator = np.zeros((4, 4))
+            generator[:3, :3] = theta / tau * cross - rates
+            generator[:3, 3] = rates @ np.array([0.0, 0.0, z_eq])
+            v = (expm(generator * tau) @ np.append(v, 1.0))[:3] * (1 - gate_p)
+            continue
         v = v * math.cos(theta) + np.cross(n, v) * math.sin(theta) + n * float(n @ v) * (1 - math.cos(theta))
         v = v * (1 - gate_p)
         v[0] *= decay_t2
@@ -160,12 +187,12 @@ def evolve(
     return float(v[2])
 
 
-def corrected_model(name: str, cal: dict[str, float], gate_p: float, q: float) -> float:
+def corrected_model(name: str, cal: dict[str, float], gate_p: float, q: float, drive: Drive = DEFAULT_DRIVE) -> float:
     """The corrected z the in-situ pair recovers: the response a to a unit initial z plus b q with b the response
     to the relaxation source."""
     pulses = pulses_of(name)
-    b = evolve(pulses, cal["t1_s"], cal["t2_s"], gate_p, 0.0)
-    return evolve(pulses, cal["t1_s"], cal["t2_s"], gate_p, 1.0) - b + b * q
+    b = evolve(pulses, cal["t1_s"], cal["t2_s"], gate_p, 0.0, drive=drive)
+    return evolve(pulses, cal["t1_s"], cal["t2_s"], gate_p, 1.0, drive=drive) - b + b * q
 
 
 def raw_p0(name: str, cal: dict[str, float], device: dict[str, Any]) -> float:
@@ -372,7 +399,7 @@ def quantities(p: dict[str, float], ctx: dict[str, Any]) -> dict[str, float]:
         out[f"raw_diff:{name}"] = raw - out[f"raw_model:{name}"]
     for name in CORRECTED:
         measured = (1 + ((1 - 2 * p[name]) - offset) / scale) / 2
-        model = (1 + corrected_model(name, cal, gate_p, q)) / 2
+        model = (1 + corrected_model(name, cal, gate_p, q, ctx.get("drive", DEFAULT_DRIVE))) / 2
         out[f"p0c:{name}"] = measured
         out[f"p0c_model:{name}"] = model
         out[f"diff:{name}"] = measured - model
@@ -521,6 +548,47 @@ def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
     }
 
 
+DRIVE_SCAN = {
+    "relax after rotation": DEFAULT_DRIVE,
+    "exact driven equation": Drive(exact=True),
+    "no dephasing under drive": Drive(t2_scale=0.0),
+    "no relaxation under drive": Drive(t2_scale=0.0, t1_scale=0.0),
+    "dephasing rate x0.5": Drive(t2_scale=0.5),
+    "dephasing rate x0.75": Drive(t2_scale=0.75),
+    "dephasing rate x1.5": Drive(t2_scale=1.5),
+    "dephasing rate x2": Drive(t2_scale=2.0),
+    "dephasing rate x3": Drive(t2_scale=3.0),
+}
+
+
+def scan_row(item: tuple[str, Drive, str, dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    label, drive, qubit, counts, cal = item
+    return evaluate_qubit((qubit, counts, {"cal": cal, "drive": drive}))
+
+
+def drive_scan(run_dir: Path, labels: tuple[str, ...] | None = None) -> dict[str, Any]:
+    """The corrected D4 to D8 residuals of a retained diagnostic run under each relaxation-under-drive model: per
+    model the D6 z of every usable qubit, the D6 difference over the main case's statistical standard error (the z the
+    unitary-arm guard would read) and the sum of squared z over all five corrected circuits and usable qubits."""
+    case = seq.load_json(run_dir / "cases.json")
+    circuits = [seq.load_json(run_dir / entry["file"]) for entry in case["jobs"][0]["circuits"]]
+    counts = seq.tally(circuits, json.loads((run_dir / "raw/measurements.json").read_bytes()))
+    cals = sorted(seq.load_json(run_dir / EXCERPT)["qubits"].items())
+    chosen = {k: v for k, v in DRIVE_SCAN.items() if labels is None or k in labels}
+    ses = {q: seq.unitary_statistical_se(cal) for q, cal in cals}
+    items = [(label, drive, q, counts, cal) for label, drive in chosen.items() for q, cal in cals]
+    rows = ordered_map(scan_row, items, min_items=2)
+    out: dict[str, Any] = {}
+    for label in chosen:
+        usable = {item[2]: row for item, row in zip(items, rows, strict=True) if item[0] == label and row["usable"]}
+        out[label] = {
+            "d6_z": {q: r["corrected"]["d6-pair-n16"]["z"] for q, r in usable.items()},
+            "d6_projected_z": {q: r["corrected"]["d6-pair-n16"]["difference"] / ses[q] for q, r in usable.items()},
+            "sum_squares": sum(r["corrected"][name]["z"] ** 2 for r in usable.values() for name in CORRECTED),
+        }
+    return out
+
+
 def synthetic_counts(excerpt: dict[str, Any], devices: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict[str, Any]:
     """Expected counts of model devices, rounded to whole shots, in the layout of seq.tally."""
     counts: dict[str, Any] = {}
@@ -610,6 +678,9 @@ def main() -> int:
     group.add_argument("--calibration-dir", type=Path)
     group.add_argument("--live", action="store_true", help="read Garnet's current calibration set (network)")
     sub.add_parser("check").add_argument("directory", type=Path)
+    sub.add_parser("scan", help="the D4 to D8 residuals under each relaxation-under-drive model").add_argument(
+        "run_dir", type=Path
+    )
     an = sub.add_parser("analyze")
     an.add_argument("run_dir", type=Path)
     an.add_argument("--out", type=Path, required=True)
@@ -627,6 +698,8 @@ def main() -> int:
             write(args.directory, args.calibration_dir)
     elif args.command == "check":
         check(args.directory)
+    elif args.command == "scan":
+        print(dump(drive_scan(args.run_dir)), end="")
     elif args.command == "analyze":
         text = dump(analyze(args.run_dir, args.mock))
         if args.replay:

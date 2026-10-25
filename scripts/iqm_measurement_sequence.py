@@ -10,10 +10,11 @@ signed circuits of each (arm, N) run in the order +, -, -, + (docs/notes/iqm/REA
 - unitary (N = 16 only): the same rotations back to back with no mid-circuit operation. They compose to one rotation
   of THETA, so the ideal P0 is cos(THETA/2)^2 = 0.030. This is the mutation null. Garnet's compiler keeps the prx
   pulses separate, 40 ns per layer (results/iqm/cases/measurement-timing-probe), so it stays as long as its pulses.
-  At N = 16 every pi/18 step of every arm is two prx(pi/2) pulses with the virtual Z frame folded into their phases
-  (step_pulses; the diagnostic job read this construction against its model on five of six qubits, docs/design/
-  iqm-garnet-measurement-sequence-diagnostic.md). QB11 and QB17 are excluded from the qubit selection on that job's
-  evidence (EXCLUDED_QUBITS).
+  Every step of every arm at every N is two prx(pi/2) pulses with the virtual Z frame folded into their phases
+  (step_pulses; the diagnostic job read this construction at N = 16 against its model, docs/design/
+  iqm-garnet-measurement-sequence-diagnostic.md). The qubit selection skips every qubit of EXCLUDED_QUBITS: the
+  qubits that diagnostic found unusable or whose pi/2-pair residual projects to the unitary-arm guard of
+  device_verdict at |z| >= Z_DECIDE on either sign (project_diagnostic), and one qubit with a large prx error.
 - delay (every N): each mid-circuit measure replaced by a `delay` of MEASURE_WINDOW_SECONDS. It is the elapsed-time
   control. Idle time dephases the qubit, which is a partial Z measurement of its own, so its P0 rises with N without
   any measurement; the arm quantifies how much of the measure arm's Zeno effect idle dephasing alone produces.
@@ -146,21 +147,44 @@ PRE_READOUT_SECONDS = 2.0e-6
 # points anchor the fit's asymptote, which 60 us does not reach for a T1 of 25 to 60 us.
 T1_DELAYS = (4e-6, 10e-6, 20e-6, 40e-6, 60e-6, 100e-6, 150e-6)
 QUBIT_COUNT = 6
-# Qubits the selection skips, with the evidence of the diagnostic job 01a1753f-3b98-7437-9433-83d0b4b87721 (set
-# be070414, 1000 shots, docs/design/iqm-garnet-measurement-sequence-diagnostic.md, "Results").
+# Qubits the selection skips. The diagnostic job 01a1753f-3b98-7437-9433-83d0b4b87721 (set be070414, 1000 shots,
+# docs/design/iqm-garnet-measurement-sequence-diagnostic.md, "Results") fixes the first five; project_diagnostic()
+# recomputes their figures, and a qubit whose projected |z| reaches Z_DECIDE is excluded on either sign, because the
+# unitary-arm guard of device_verdict is two-sided. QB12 is excluded on its calibrated prx error.
 EXCLUDED_QUBITS = {
+    "QB5": (
+        "the pi/2-pair circuit reads 0.0331 below its model at 1000 shots, which against the 0.0085 statistical "
+        "standard error of the case's unitary arm at 3000 shots is z = -3.91 and fires the unitary-arm guard"
+    ),
+    "QB7": (
+        "the pi/2-pair circuit reads 0.1233 below its model at 1000 shots (z = -14.23 against the case's statistical "
+        "standard error of 0.0087), and its calibrated prx error of 0.00545 is the largest of the usable qubits"
+    ),
     "QB11": (
         "T1 collapsed in situ: |1> reads P(0) = 0.172 at once and 0.522 after the 2 us idle, about 4 us against "
         "47.8 us in the set, and the readout scale is 0.384"
     ),
+    "QB12": (
+        "the calibrated prx error of 0.00436 is 2.6 to 6.6 times that of the other selected qubits (0.00066 to "
+        "0.00169), so its departure standard error of 0.041 adds little to the pooled test, and a randomized-"
+        "benchmarking underestimate on this qubit alone can move the device verdict"
+    ),
+    "QB14": (
+        "the pi/2-pair circuit reads 0.0420 below its model at 1000 shots, which against the 0.0080 statistical "
+        "standard error of the case's unitary arm at 3000 shots is z = -5.27 and fires the unitary-arm guard"
+    ),
     "QB17": (
-        "the pi/2-pair circuit reads +2.71 standard errors above its model at 1000 shots, which projects to about 4.7 "
-        "at 3000 shots and fires the unitary-arm guard"
+        "the pi/2-pair circuit reads 0.0527 above its model at 1000 shots, which against the 0.0081 statistical "
+        "standard error of the case's unitary arm at 3000 shots is z = +6.52 and fires the unitary-arm guard"
     ),
 }
-# The raw model's initialization excitation band for the pre-flight check: the diagnostic read the starting excitation
-# below the 0.068 of the README, about 0.02 to 0.05 on four qubits.
-RAW_EXCITATION_BAND = (0.02, 0.068)
+DIAGNOSTIC_ANALYSIS = ROOT / "results/iqm/measurement_sequence_diagnostic_analysis.json"
+DIAGNOSTIC_EXCERPT = (
+    ROOT / "results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic" / EXCERPT
+)
+# The raw model's initialization-excitation band for the pre-flight check: the diagnostic read ro0 above its p = 0.068
+# model on four qubits, so the band runs from no excitation to the README's 0.068.
+RAW_EXCITATION_BAND = (0.0, 0.068)
 FINAL_KEY = "f"
 # Compiled schedule of Garnet on calibration set be070414: the qpu_execution estimate per shot, the job's
 # execution_runtime_estimate_seconds less the fixed 1.6 s over 100 shots, of two single-circuit probe jobs of this
@@ -287,15 +311,15 @@ def finish(name: str, qubits: list[str], instructions: list[dict[str, Any]]) -> 
 def step_pulses(n: int, step: int, sign: int, paired: bool = True) -> list[tuple[float, float]]:
     """The (angle, phase) of the prx pulses of step `step` of an n-step arm.
 
-    Steps of THETA/n other than the N = 16 pi/18 are one prx(sign*THETA/n, 0). A pi/18 step is two prx(pi/2) pulses
-    whose phases carry the virtual Z rotations: with alpha = sign*THETA/16, step k plays phase a_k = pi/2 + k alpha
-    then a_k + pi + alpha. Each pair is RZ(g) RX(alpha) RZ(h), the frames cancel between steps, and Z rotations commute
-    with the pinch, the delays and the relaxation of the arms, so the chain is RX(THETA) up to a final Z rotation.
-    The diagnostic job found the single-pulse pi/18 circuit reading differently from its model on one qubit
-    (docs/design/iqm-garnet-measurement-sequence-diagnostic.md); `paired` False keeps that construction.
+    A step of alpha = sign*THETA/n is two prx(pi/2) pulses whose phases carry the virtual Z rotations: step k plays
+    phase a_k = pi/2 + k alpha, then a_k + pi + alpha. Each pair is RZ(g) RX(alpha) RZ(h) for any alpha, the frames
+    cancel between steps, and Z rotations commute with the pinch, the delays and the relaxation of the arms, so the
+    chain is RX(THETA) up to a final Z rotation. Every N of every arm uses the pair, so the N scaling compares one
+    construction. `paired` False plays one prx(alpha) per step, the construction of the diagnostic's D4, D5, D7 and D8
+    (docs/design/iqm-garnet-measurement-sequence-diagnostic.md).
     """
     alpha = sign * THETA / n
-    if n != TOP_STEPS or not paired:
+    if not paired:
         return [(alpha, 0.0)]
     first = math.pi / 2 + step * alpha
     return [(math.pi / 2, first), (math.pi / 2, first + math.pi + alpha)]
@@ -1038,12 +1062,49 @@ def raw_p0(name: str, cal: dict[str, float], p_init: float) -> float:
     return (1 + (1 - cal["e01"] - cal["e10"]) * waited + cal["e10"] - cal["e01"]) / 2
 
 
-def raw_band(cal: dict[str, float]) -> dict[str, list[float]]:
-    """The raw P(0) of the pre-flight circuits over RAW_EXCITATION_BAND, as [low, high]."""
+def raw_band(cal: dict[str, float], band: tuple[float, float] = RAW_EXCITATION_BAND) -> dict[str, list[float]]:
+    """The raw P(0) of the pre-flight circuits over an initialization-excitation band, as [low, high]."""
     out = {}
     for name in ("ro0", "ro1", "unitary-16", "measure-16"):
-        values = [raw_p0(name, cal, p) for p in RAW_EXCITATION_BAND]
+        values = [raw_p0(name, cal, p) for p in band]
         out[name] = [min(values), max(values)]
+    return out
+
+
+def unitary_statistical_se(cal: dict[str, float]) -> float:
+    """The statistical standard error of the case's unitary-arm N = 16 measured-minus-modeled difference at SHOTS,
+    the denominator of the gate guard, for a qubit of calibration `cal` on its planning device."""
+    model = device_model(cal)
+    tables = model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"])
+    context = {
+        "t2_s": cal["t2_s"],
+        "prx_p": cal["prx_p"],
+        "window_s": MEASURE_WINDOW_SECONDS,
+        "planning": tables,
+    }
+    return float(evaluate(device_counts({"Q": model}), {"Q": context})["Q"]["gate_check_n16"]["statistical_se"])
+
+
+def project_diagnostic(analysis: dict[str, Any], excerpt: dict[str, Any]) -> dict[str, Any]:
+    """Per diagnosed qubit, the diagnostic's pi/2-pair N = 16 corrected difference (measured minus modeled P0) divided
+    by the case's statistical standard error at SHOTS: the z that the unitary-arm guard of device_verdict would read
+    if the 1000-shot difference were the qubit's systematic. The guard is two-sided, so |z| at Z_DECIDE excludes."""
+    out: dict[str, Any] = {}
+    for q, row in analysis["qubits"].items():
+        if not row["usable"]:
+            out[q] = {"usable": False, "reason": row["reason"], "excluded": True}
+            continue
+        reading = row["corrected"]["d6-pair-n16"]
+        se = unitary_statistical_se(excerpt["qubits"][q])
+        z = reading["difference"] / se
+        out[q] = {
+            "usable": True,
+            "difference": reading["difference"],
+            "diagnostic_z": reading["z"],
+            "statistical_se": se,
+            "projected_z": z,
+            "excluded": abs(z) >= Z_DECIDE,
+        }
     return out
 
 
@@ -1571,20 +1632,20 @@ def check_pairs() -> None:
     def prx(theta: float, phase: float) -> Any:
         return math.cos(theta / 2) * np.eye(2) - 1j * math.sin(theta / 2) * (math.cos(phase) * x + math.sin(phase) * y)
 
-    for sign in (1, -1):
-        product = np.eye(2, dtype=complex)
-        for step in range(TOP_STEPS):
-            for angle, phase in step_pulses(TOP_STEPS, step, sign):
-                product = prx(angle, phase) @ product
-        target = prx(sign * THETA, 0.0)
-        leftover = product @ target.conj().T
-        expect(abs(leftover[0, 1]) < 1e-12 and abs(leftover[1, 0]) < 1e-12, f"sign {sign}: {leftover}")
+    for n in STEPS:
+        for sign in (1, -1):
+            product = np.eye(2, dtype=complex)
+            for step in range(n):
+                for angle, phase in step_pulses(n, step, sign):
+                    product = prx(angle, phase) @ product
+            target = prx(sign * THETA, 0.0)
+            leftover = product @ target.conj().T
+            expect(abs(leftover[0, 1]) < 1e-12 and abs(leftover[1, 0]) < 1e-12, f"n {n} sign {sign}: {leftover}")
     for arm in ARMS:
-        if TOP_STEPS in ARM_STEPS[arm]:
-            z = bloch_z(arm, TOP_STEPS, 1e9, 1e9, 0.0)
-            expect(abs((1 + z) / 2 - ideal_arm(arm, TOP_STEPS)) < 1e-9, f"{arm}: ideal {(1 + z) / 2}")
-            z = bloch_z(arm, TOP_STEPS, 1e9, 1e9, 0.0, paired=False)
-            expect(abs((1 + z) / 2 - ideal_arm(arm, TOP_STEPS)) < 1e-9, f"{arm}: single-pulse ideal")
+        for n in ARM_STEPS[arm]:
+            for paired in (True, False):
+                z = bloch_z(arm, n, 1e9, 1e9, 0.0, paired=paired)
+                expect(abs((1 + z) / 2 - ideal_arm(arm, n)) < 1e-9, f"{arm} n {n} paired {paired}: {(1 + z) / 2}")
 
 
 def check_exclusion_and_fallback(values: dict[str, float], architecture: dict[str, Any], count: int) -> None:
@@ -1650,6 +1711,7 @@ def sweep_cases(reduced: bool) -> list[dict[str, Any]]:
         {**base, "label": "thermal 0.02", "p_thermal": 0.02},
         {**base, "label": "T1 x0.8", "t1_scale": 0.8},
         {**base, "label": "T1 x1.2", "t1_scale": 1.2},
+        {**base, "label": "prx x0.5", "prx_scale": 0.5},
         {**base, "label": "prx x2", "prx_scale": 2.0},
         {**base, "label": "prx x3", "prx_scale": 3.0, "gate_stress": True},
     ]
@@ -2007,6 +2069,7 @@ def main() -> int:
     bd.add_argument("directory", type=Path)
     bd.add_argument("--calibration-dir", type=Path, default=CALIBRATION_DIR)
     sub.add_parser("check").add_argument("directory", type=Path)
+    sub.add_parser("project", help="the diagnostic's pi/2-pair residuals projected to the case's unitary-arm guard")
     sw = sub.add_parser("sweep", help="the estimator sweep over true devices off the planning point")
     sw.add_argument("--reduced", action="store_true", help="the planning point and the corner only")
     an = sub.add_parser("analyze")
@@ -2021,6 +2084,8 @@ def main() -> int:
         write(args.directory, args.calibration_dir)
     elif args.command == "check":
         check(args.directory)
+    elif args.command == "project":
+        print(dump(project_diagnostic(load_json(DIAGNOSTIC_ANALYSIS), load_json(DIAGNOSTIC_EXCERPT))), end="")
     elif args.command == "sweep":
         print(dump(sweep(args.reduced)), end="")
     elif args.command == "analyze":

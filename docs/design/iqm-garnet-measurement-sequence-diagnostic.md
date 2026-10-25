@@ -148,9 +148,53 @@ The readings below are descriptive, outside the preregistered verdict:
 - **D3 and D2.** The idle relaxation D2 - D3 reads 0.038, 0.012, 0.031, 0.010 and 0.031 on QB5, QB7, QB14, QB17 and
   QB19 against model values of 0.038, 0.041, 0.040, 0.038 and 0.029.
 
-The pinching case's unitary-arm guard therefore stays in place. QB11 (T1 collapse) and QB17 (a d6 excess of +2.71
-standard errors at 1000 shots, which would project to about 4.7 at the main case's 3000 shots and fire the guard) are
-excluded from the rebuilt selection.
+**Projection to the main case's guard.** The unitary-arm guard of the main case (`device_verdict`) reads the N = 16
+measured-minus-modeled difference of every contributing qubit against 3 statistical standard errors, on either sign.
+The D6 circuit is that arm's pi/2-pair circuit, so its corrected difference at 1000 shots is the qubit's systematic if
+it is a systematic, and the 3000-shot statistical standard error of the main case's unitary arm sets the z the guard
+would read (`scripts/iqm_measurement_sequence.py project`):
+
+| qubit | D6 corrected difference (measured minus model) | z at 1000 shots | statistical SE at 3000 shots | projected z | selection |
+|---|---|---|---|---|---|
+| QB5 | -0.0331 | -1.63 | 0.0085 | -3.91 | excluded |
+| QB7 | -0.1233 | -1.96 | 0.0087 | -14.23 | excluded |
+| QB14 | -0.0420 | -2.64 | 0.0080 | -5.27 | excluded |
+| QB17 | +0.0527 | +2.71 | 0.0081 | +6.52 | excluded |
+| QB19 | +0.0176 | +0.80 | 0.0086 | +2.05 | kept eligible |
+
+The 1000-shot differences carry standard errors of 0.016 to 0.063, 2 to 7 times the projected 3000-shot statistical one
+(the diagnostic's include the prx systematic), so a projected |z| near 4 is not a certain flag; the exclusion rule takes every qubit at |z| >= 3 on either sign,
+because a negative miss fires the two-sided guard as a positive one does. QB11 is unusable. The main case's selection
+excludes QB5, QB7, QB11, QB14 and QB17 on this table (`EXCLUDED_QUBITS`; a test recomputes it from the retained
+analysis).
+
+**Relaxation under the drive.** The negative misses fall on the shortest Ramsey T2 (QB14 7.0 us, QB7 7.8, QB5 9.3) and
+the positive one on the longest (QB17 14.1), which suggests that the model's dephasing during the 40 ns layers
+overpredicts the loss under drive. The scan (`scripts/iqm_measurement_diagnostic.py scan RUN_DIR`) replays the retained
+counts under each model of the layer's relaxation; z is the D6 residual and the last column the sum of squared z over
+the five corrected circuits and the five usable qubits:
+
+| model of the layer | QB5 | QB7 | QB14 | QB17 | QB19 | sum of squared z |
+|---|---|---|---|---|---|---|
+| layer relaxation after the rotation (retained model) | -1.63 | -1.96 | -2.64 | +2.71 | +0.80 | 91.5 |
+| exact driven Bloch equation over the layer | -1.62 | -1.96 | -2.64 | +2.71 | +0.80 | 92.4 |
+| no dephasing during the layer | +0.62 | -1.07 | +1.15 | +4.17 | +3.12 | 132.7 |
+| no relaxation during the layer | +0.81 | -1.00 | +1.41 | +4.37 | +3.26 | 147.4 |
+| dephasing rate x0.5 | -0.51 | -1.50 | -0.77 | +3.44 | +1.95 | 103.1 |
+| dephasing rate x0.75 | -1.07 | -1.73 | -1.71 | +3.07 | +1.37 | 95.1 |
+| dephasing rate x1.5 | -2.73 | -2.44 | -4.45 | +1.98 | -0.32 | 96.8 |
+| dephasing rate x2 | -3.83 | -2.95 | -6.19 | +1.25 | -1.41 | 118.1 |
+| dephasing rate x3 | -5.97 | -4.06 | -9.47 | -0.18 | -3.47 | 203.6 |
+
+The exact solution of the driven Bloch equation reproduces the retained model to 0.01 in z, so applying the layer's
+relaxation after the rotation costs nothing. Removing the dephasing brings QB5, QB7 and QB14 nearer zero and takes QB17 and QB19
+out of range (+4.17 and +3.12), and scaling the rate up does the reverse; no single rate reduces the D6 residual on all five
+qubits, and the calibrated rate minimizes both the largest |z| and the sum of squares over the grid. The model stays as
+it is. Projected to the main case's guard, the no-dephasing model would read QB5 +1.55, QB14 +2.40, QB7 -8.73, QB17
++10.38 and QB19 +8.34, which keeps QB5 and QB14 and excludes QB19; the retained model reads -3.91, -5.27, -14.23, +6.52
+and +2.05 (the scan's `d6_projected_z`), so the choice of model decides which qubits the rule excludes, and the scan
+finds the retained one the better fit. The residuals follow T2 only partly (QB19, T2 7.9 us, reads +0.80 against QB14's -2.64 at 7.0 us), and nothing
+in the retained counts separates a per-qubit miscalibrated T2 from a per-qubit coherent pulse error.
 
 ## Sequence
 

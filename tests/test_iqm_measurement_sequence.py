@@ -22,3 +22,14 @@ def test_retained_case_checks_and_holds_six_uncoupled_qubits() -> None:
         raise AssertionError("the retained case does not hold six uncoupled qubits")
     if set(case.EXCLUDED_QUBITS) & set(excerpt["qubits"]):
         raise AssertionError("the retained case holds an excluded qubit")
+
+
+def test_exclusions_cover_every_diagnosed_qubit_the_guard_would_fire_on() -> None:
+    projection = case.project_diagnostic(
+        case.load_json(case.DIAGNOSTIC_ANALYSIS), case.load_json(case.DIAGNOSTIC_EXCERPT)
+    )
+    flagged = {q for q, row in projection.items() if row["excluded"]}
+    if not flagged <= set(case.EXCLUDED_QUBITS):
+        raise AssertionError(f"{sorted(flagged - set(case.EXCLUDED_QUBITS))} fire the guard and are not excluded")
+    if "QB19" in flagged or abs(projection["QB19"]["projected_z"]) >= case.Z_DECIDE:
+        raise AssertionError("QB19 projects inside the guard")

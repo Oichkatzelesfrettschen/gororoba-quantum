@@ -28,8 +28,9 @@ N = 1, 2, 4, 8 and 16. Four arms run:
 | settle | 16 | `measure`, then `delay` of 2.0 us | 0.8914 | readout-tail control for the departure decision |
 
 The unitary rotations compose to one rotation of THETA, so the N = 16 contrast measure minus unitary is the
-measurement's own action, ideally 0.8612. At N = 16 every pi/18 step of every arm is built from two prx(pi/2) pulses
-(see "Circuits"), the construction the diagnostic's D6 circuit tested, so the null applies thirty-two pulses. The delay arm holds the elapsed time of the measure arm but dephases: idle
+measurement's own action, ideally 0.8612. Every step of every arm at every N is built from two prx(pi/2) pulses (see
+"Circuits"), the construction the diagnostic's D6 circuit tested at N = 16, so the N scaling compares one construction
+and the N = 16 null applies thirty-two pulses. The delay arm holds the elapsed time of the measure arm but dephases: idle
 time acts as a partial Z measurement, so its P0 rises with N without any measurement. It therefore cannot serve as the
 null; it quantifies how much of the measure arm's Zeno effect idle dephasing alone produces.
 
@@ -43,31 +44,46 @@ mock twin returns random bits. The question concerns the device's readout, so on
 
 The six qubits come from the live calibration set by one rule: the six of smallest e01 + e10 among those whose T1 is at
 least the set's median (37.96 us), taken in that order, skipping any that shares a cz coupler with one already taken
-and any in `EXCLUDED_QUBITS`. Only four uncoupled qubits clear the median once QB11 and QB17 are excluded (QB14, QB12,
-QB5 and QB19), so the choice extends by the uncoupled remainder in decreasing T1, QB8 (32.3 us) and QB1 (27.5 us),
-which lowers the T1 floor to 27.5 us. No qubit pair of the choice shares a coupler, and the build refuses a calibration
-that says otherwise. Each qubit runs the same arm in parallel in every circuit.
+and any in `EXCLUDED_QUBITS`; when fewer qualify, the choice extends by the uncoupled remainder in decreasing T1. Only
+3 uncoupled qubits clear the median once the exclusions below apply (QB6, QB13 and QB15), so the choice
+extends to QB20 (36.3 us), QB9 (34.8 us) and QB18 (33.4 us), which lowers the T1 floor to 33.4 us. No qubit pair of the
+choice shares a coupler, and the build refuses a calibration that says otherwise. Each qubit runs the same arm in
+parallel in every circuit.
 
 | qubit | T1 (us) | T2 Ramsey (us) | e01 | e10 | e01 + e10 | prx error |
 |---|---|---|---|---|---|---|
-| QB1 | 27.5 | 9.9 | 0.0076 | 0.0154 | 0.0230 | 0.00169 |
-| QB5 | 45.8 | 9.3 | 0.0058 | 0.0306 | 0.0364 | 0.00102 |
-| QB8 | 32.3 | 8.3 | 0.0060 | 0.0404 | 0.0464 | 0.00122 |
-| QB12 | 61.5 | 12.4 | 0.0132 | 0.0158 | 0.0290 | 0.00436 |
-| QB14 | 44.9 | 7.0 | 0.0124 | 0.0124 | 0.0248 | 0.00066 |
-| QB19 | 59.1 | 7.9 | 0.0376 | 0.0380 | 0.0756 | 0.00092 |
+| QB6 | 39.6 | 8.2 | 0.0152 | 0.0270 | 0.0422 | 0.00134 |
+| QB9 | 34.8 | 11.1 | 0.0146 | 0.0366 | 0.0512 | 0.00154 |
+| QB13 | 46.5 | 14.1 | 0.0274 | 0.0214 | 0.0488 | 0.00119 |
+| QB15 | 40.8 | 10.5 | 0.0130 | 0.0452 | 0.0582 | 0.00109 |
+| QB18 | 33.4 | 12.1 | 0.0056 | 0.0224 | 0.0280 | 0.00068 |
+| QB20 | 36.3 | 28.6 | 0.0238 | 0.0168 | 0.0406 | 0.00082 |
 
-Two qubits of the earlier choice are excluded, on the evidence of the [diagnostic job](iqm-garnet-measurement-sequence-diagnostic.md#results)
-(`01a1753f-3b98-7437-9433-83d0b4b87721`, set `be070414`, 1000 shots):
+**Exclusions.** `EXCLUDED_QUBITS` carries each reason with its numbers into the selection record of `prediction.json`.
+The [diagnostic job](iqm-garnet-measurement-sequence-diagnostic.md#results) (`01a1753f-3b98-7437-9433-83d0b4b87721`,
+set `be070414`, 1000 shots) fixes the first five; the unitary-arm guard is two-sided (|z| >= 3), so the rule excludes a
+qubit whose projected |z| reaches 3 on either sign. The projection divides the diagnostic's D6 corrected difference by
+the statistical standard error of the main case's unitary arm at 3000 shots
+([table and the check of the model](iqm-garnet-measurement-sequence-diagnostic.md#results)):
 
-- **QB11** (T1 47.8 us in the set): its |1> reads P(0) = 0.172 at once and 0.522 after the 2 us idle, a T1 of about 4 us,
-  and its readout scale is 0.384, under the 0.5 floor.
-- **QB17**: its pi/2-pair circuit reads +2.71 standard errors above its model at 1000 shots, which projects to about
-  4.7 at the main case's 3000 shots and would fire the unitary-arm guard.
+| qubit | projected z | reason |
+|---|---|---|
+| QB5 | -3.91 | the pair circuit reads 0.0331 below its model |
+| QB7 | -14.23 | 0.1233 below its model; prx error 0.00545 |
+| QB11 | unusable | T1 collapsed in situ (the prepared excited state reads P(0) = 0.172 at once and 0.522 after the 2 us idle, about 4 us against 47.8 us in the set); readout scale 0.384 under the 0.5 floor |
+| QB14 | -5.27 | 0.0420 below its model |
+| QB17 | +6.52 | 0.0527 above its model |
+| QB12 | not diagnosed | prx error 0.00436, 2.6 to 6.6 times the other five qubits of the previous selection (0.00066 to 0.00169): its departure standard error of 0.041 adds little to the pooled test, and when the pooled rule fires every usable qubit contributes, so a randomized-benchmarking underestimate on QB12 alone can move the device verdict |
 
-QB1, QB8 and QB12 were not in the diagnostic; the pre-flight check below reads all six. QB7 (T1 41.8 us, prx error
-0.0054) is blocked by QB12, which ranks first on readout error. QB12's prx error of 0.0044 widens its departure
-standard error to 0.04, so the departure test is weakest on QB12.
+QB19 (projected z +2.05) stays eligible and is not selected, because it shares couplers with QB15, QB18 and
+QB20. A model change was tested first and rejected: dropping or rescaling the dephasing during the drive does not
+reduce the D6 residuals on all five usable qubits
+([relaxation under the drive](iqm-garnet-measurement-sequence-diagnostic.md#results)).
+
+None of the six chosen qubits was in the diagnostic, so the unitary-arm guard is untested on them: four of the five
+diagnosed usable qubits project past 3, and the long-T2 qubits of this choice (QB13 14.1 us, QB20 28.6 us) are the kind
+whose residual read positive on QB17. The pre-flight probe below reads their raw unitary and measure circuits; at 100
+shots it resolves a 0.05 shift in P0 only at about 1.5 standard errors.
 
 ## Circuits
 
@@ -78,11 +94,11 @@ readout leaves in the resonator would otherwise bias the final assignment in the
 exactly.
 
 - **Zeno chains, 48.** For each N in (1, 2, 4, 8, 16) the measure group beside the delay group, and at N = 16 the
-  unitary and settle groups; each group is four signed circuits in the order +, -, -, +. Each step is
-  `prx(sign*THETA/N, 0)` on every qubit, except the pi/18 steps of the N = 16 groups, which are two `prx(pi/2)` pulses
-  with the virtual Z frame folded into their phases (step k plays phase a_k = pi/2 + k alpha, then a_k + pi + alpha,
-  alpha = sign x pi/18; the product is RX(alpha) up to Z rotations that commute with the pinch, the delays and the
-  relaxation, checked to 1e-12 for both signs by the self-test); then one joint `measure` with its own key (`m0`, `m1`, ...) in the measure
+  unitary and settle groups; each group is four signed circuits in the order +, -, -, +. Each step, at every N, is two
+  `prx(pi/2)` pulses on every qubit with the virtual Z frame folded into their phases (step k plays phase a_k = pi/2 +
+  k alpha, then a_k + pi + alpha, alpha = sign x THETA/N; the product is RX(alpha) up to Z rotations that commute with
+  the pinch, the delays and the relaxation, checked to 1e-12 for every N and both signs by the self-test, and valid at
+  any alpha, which the single small-angle `prx` at N = 2, 4 and 8 of the earlier form was not); then one joint `measure` with its own key (`m0`, `m1`, ...) in the measure
   and settle arms, one joint `delay` in the delay arm, or nothing in the unitary arm; the settle arm adds a 2.0 us
   `delay` after its measure. Outcomes are recorded and never condition a gate.
 - **Readout and T1 series, 9.** `ro0` (the initialized state), `ro1` (`prx(pi)`, the t = 0 point of the series) and
@@ -119,7 +135,7 @@ active-reset pilot job (`2026-10-22T212742Z`, two circuits summing to 8.688 us) 
 x 40 ns increment also shows the compiler kept the sixteen unitary-arm prx pulses separate. The predicted compiled
 schedule is therefore 4.344 us per circuit + 40 ns per layer + 1.096 us per mid-circuit measure + the explicit delays.
 The 40 ns layer underpredicts both single-circuit probes by 48 ns per shot (16 x 3 ns), 0.7 % of the unitary probe's
-7.032 us; on the full case it dilutes to about 0.15 % (640 layers x 3 ns against the 1.241 ms per-shot schedule, which the
+7.032 us; on the full case it dilutes to about 0.18 % (760 layers x 3 ns against the 1.246 ms per-shot schedule, which the
 explicit delays dominate), so it cannot trip the 1 % re-solve, and the constant stays at 40 ns.
 
 History: garnet:mock compiles a different schedule, 8.684 us per circuit and 1.772 us per measure (five probes,
@@ -146,33 +162,33 @@ the initial z and b its response to the relaxation source; the analysis recomput
 prediction, the settle prediction, the delay-arm model) at the fitted T1 and q. `prediction.json` keeps the planning
 values at the calibrated T1 and T2 and an assumed p of 0.068 (README, "Reset"), and says so.
 
-**p_init sensitivity.** The planning prediction for the N = 16 measure arm moves from 0.847 to 0.889 at p = 0 to 0.918 to 1.028 at p = 0.20 across p = 0, 0.05, 0.10, 0.15 and 0.20 (per qubit in
-`prediction.json`), a spread of 0.071 to 0.139 in P0, or 1.7 to 11.2 departure standard errors. The prediction and the corrected
+**p_init sensitivity.** The planning prediction for the N = 16 measure arm moves from 0.877 to 0.900 at p = 0 to 0.978 to 1.018 at p = 0.20 across p = 0, 0.05, 0.10, 0.15 and 0.20 (per qubit in
+`prediction.json`), a spread of 0.094 to 0.123 in P0, or 7.1 to 15.0 departure standard errors. The prediction and the corrected
 estimate live in the same space, the ro0/ro1-normalized z, and the ro0/ro1 normalization cancels the p dependence of
 a's term: a z0 / z0 = a. What remains is the relaxation offset divided by the initial z, b/(1 - 2 p). That offset is
-not small: the measure arm spends 16 x 1.14 us = 18 us relaxing toward |0> at a T1 of 28 to 62 us, so for QB5
-a = 0.476 and b = 0.283, and b/(1 - 2 p) grows from 0.283 to 0.472 across the range. The diagnostic read the starting excitation below
+not small: the measure arm spends 16 x 1.14 us = 18 us relaxing toward |0> at a T1 of 33 to 47 us, so for QB13
+a = 0.487 and b = 0.282, and b/(1 - 2 p) grows from 0.282 to 0.470 across the range. The diagnostic read the starting excitation below
 0.068 on four qubits (about 0.02 to 0.05); the in-job fit measures it. A corrected value above 1 at large p is the
 quotient by (1 - 2 p), not a probability. The sensitivity therefore requires measuring q in the job; the T1 series does
-it without a heralded circuit, and its uncertainty (0.005 to 0.012 on the equivalent p) propagates into the departure standard
+it without a heralded circuit, and its uncertainty (0.005 to 0.008 on the equivalent p) propagates into the departure standard
 error.
 
 ## Shots, billing and max_credits
 
-- **Shots:** 3000 per circuit, one job. The worst case leaves 3.2 s below the cancel threshold, and 4300 shots would
-  leave 1.0 s and lower the standard errors by 16 % at 4 credits instead of 3, so they stay at 3000.
+- **Shots:** 3000 per circuit, one job. The worst case leaves 3.2 s below the cancel threshold, and 4250 shots would
+  leave 1.04 s and lower the standard errors by 16 % at 4 credits instead of 3, so they stay at 3000.
 - **Execution model:** over the seven retained active-reset Garnet QPU jobs (`01a16583-43fc-75e5-82b0-5b192921a4c5`,
   `01a16630-b928-72d1-b66e-b7779c623df5`, `01a16631-2b7c-7668-a276-3341e9d17bdd`,
   `01a167ac-58d4-74f0-96fe-9af62e1f1dfe`, `01a167ac-e6f3-711a-a9be-86bb8bfe89f9`,
   `01a167ac-ec22-7645-b50d-74b793ed808d`, `01a1707f-6157-75dc-aca8-6f30e5f0280b`), execution seconds = compiled
   schedule (the record's estimate less 1.6 s) + 0.141 s + 7.967 us per circuit-shot, with residuals of at most 0.162 s;
   runtime exceeded execution by 0.04 to 0.411 s, and billing is `ceil(runtime)` with no fixed 1.6 s term.
-- **Prediction:** compiled schedule 3.723 s (the QPU-calibrated schedule, 1.241 ms per shot over the 57 circuits, the
-  pairs adding 256 layers of 40 ns, 10 us, to each shot), plus 0.141 s plus 57 x 3000 x 7.967 us = 1.362 s gives 5.227 s of
-  execution; the worst-case runtime adds 0.17 s of fit residual and 0.42 s of runtime over execution, 5.817 s, billed as
+- **Prediction:** compiled schedule 3.738 s (the QPU-calibrated schedule, 1.246 ms per shot over the 57 circuits, the
+  pairs adding 376 layers of 40 ns, 15 us, to each shot), plus 0.141 s plus 57 x 3000 x 7.967 us = 1.362 s gives 5.241 s of
+  execution; the worst-case runtime adds 0.17 s of fit residual and 0.42 s of runtime over execution, 5.831 s, billed as
   6 s, or 3.00 credits at 0.50 credits/s.
 - **max_credits:** 5.00 on `garnet` (10 billed seconds) and 0.00 on `garnet:mock`. `collect` cancels a run within 1.0 s
-  of that, at 9.0 s of runtime, so the worst case sits 3.18 s below the cancel threshold. The build refuses less than
+  of that, at 9.0 s of runtime, so the worst case sits 3.17 s below the cancel threshold. The build refuses less than
   1.0 s.
 
 ## Decision rule
@@ -200,7 +216,7 @@ same rule with `tail_attributed` and the pooled settle gap z >= +3.
 **Gate-error guard.** A randomized-benchmarking underestimate of the prx error is shared across qubits, so the
 independent prx systematic does not cover it, and the README records coherent error dominating first-order
 observables. Pooling then accumulates it: a prx error twice the calibrated one on every qubit pools to a departure z of
--1.94 and three times to -3.77, which crosses -3. A device `departs_below` or `exceeds_prediction` is therefore attributed to the
+-2.02 and three times to -3.97, which crosses -3. A device `departs_below` or `exceeds_prediction` is therefore attributed to the
 measurement only if, on every qubit that contributes to it (the named qubits, or all usable qubits when the pooled z
 fired), the unitary arm's N = 16 measured-minus-modeled difference lies within 3 statistical standard errors; sixteen
 unmeasured pulses shift the unitary P0 by about 7.5 x the prx error, so the unitary arm is the in-job check. The
@@ -239,7 +255,7 @@ The raw settle minus measure difference is reported beside it. The arm decides n
 ## Compiled-window check
 
 The analysis compares the QPU job's compiled schedule (its `execution_runtime_estimate_seconds` less 1.6 s) with the
-case's predicted 1.241 ms per shot summed over the circuits, times 3000 shots (3.723 s), and reports the ratio. When
+case's predicted 1.246 ms per shot summed over the circuits, times 3000 shots (3.738 s), and reports the ratio. When
 they differ by more than 1 %, it solves the measure window from the QPU total, assuming the QPU-calibrated per-circuit
 base and layer time, and recomputes every prediction at that window and the fitted T1 before any decision, reporting the
 planned and the recomputed values. A solved window outside a factor of four of 1.096 us means the assumption fails, and
@@ -255,19 +271,19 @@ counts at 3000 shots.
 
 | qubit | measure P0 at N = 1, 2, 4, 8, 16 (the N = 16 value is the planning departure prediction) | delay P0 at N = 1, 2, 4, 8, 16 | unitary N = 16 | settle N = 16 | contrast | contrast SE | mutation z | departure SE |
 |---|---|---|---|---|---|---|---|---|
-| QB1 | 0.0733, 0.5411, 0.7074, 0.8489, 0.9215 | 0.0733, 0.1276, 0.2007, 0.3231, 0.5146 | 0.1044 | 0.9893 | 0.8170 | 0.0104 | 30.6 | 0.0155 |
-| QB5 | 0.0563, 0.5309, 0.6939, 0.8323, 0.9017 | 0.0563, 0.1130, 0.1818, 0.2959, 0.4741 | 0.0957 | 0.9576 | 0.8063 | 0.0100 | 30.6 | 0.0114 |
-| QB8 | 0.0670, 0.5374, 0.7026, 0.8435, 0.9136 | 0.0670, 0.1299, 0.2083, 0.3363, 0.5280 | 0.1051 | 0.9787 | 0.8084 | 0.0106 | 29.0 | 0.0122 |
-| QB12 | 0.0513, 0.5268, 0.6860, 0.8173, 0.8635 | 0.0513, 0.0961, 0.1522, 0.2477, 0.4133 | 0.1260 | 0.9159 | 0.7374 | 0.0093 | 25.4 | 0.0412 |
-| QB14 | 0.0567, 0.5312, 0.6945, 0.8337, 0.8991 | 0.0567, 0.1297, 0.2129, 0.3444, 0.5311 | 0.1055 | 0.9563 | 0.7932 | 0.0097 | 30.2 | 0.0085 |
-| QB19 | 0.0505, 0.5274, 0.6890, 0.8260, 0.8893 | 0.0505, 0.1159, 0.1902, 0.3097, 0.4873 | 0.1011 | 0.9388 | 0.7884 | 0.0107 | 27.0 | 0.0115 |
+| QB6 | 0.0633, 0.5331, 0.6929, 0.8226, 0.9020 | 0.0633, 0.1293, 0.2093, 0.3368, 0.5128 | 0.1065 | 0.9630 | 0.7950 | 0.0102 | 28.8 | 0.0137 |
+| QB9 | 0.0668, 0.5356, 0.6969, 0.8289, 0.9122 | 0.0668, 0.1177, 0.1856, 0.2993, 0.4686 | 0.0968 | 0.9751 | 0.8157 | 0.0107 | 29.5 | 0.0153 |
+| QB13 | 0.0579, 0.5305, 0.6908, 0.8227, 0.9066 | 0.0579, 0.0984, 0.1530, 0.2476, 0.3966 | 0.0827 | 0.9610 | 0.8235 | 0.0104 | 31.1 | 0.0133 |
+| QB15 | 0.0617, 0.5327, 0.6932, 0.8249, 0.9081 | 0.0617, 0.1146, 0.1824, 0.2952, 0.4619 | 0.0923 | 0.9666 | 0.8163 | 0.0107 | 29.6 | 0.0119 |
+| QB18 | 0.0673, 0.5365, 0.6994, 0.8348, 0.9238 | 0.0673, 0.1138, 0.1777, 0.2866, 0.4534 | 0.0825 | 0.9849 | 0.8419 | 0.0103 | 33.1 | 0.0082 |
+| QB20 | 0.0638, 0.5349, 0.6981, 0.8352, 0.9277 | 0.0638, 0.0859, 0.1241, 0.1944, 0.3160 | 0.0634 | 0.9850 | 0.8644 | 0.0107 | 34.1 | 0.0098 |
 
-The model device passes the mutation test by 25 to 31 standard errors; the pairs lower the contrast to 0.74 to 0.82, from the 0.86 to
-0.88 of single pulses, since 32 pulses carry the depolarizing error and 32 layers of relaxation. The fitted T1 carries
-0.5 to 2.3 us of standard error and p 0.005 to 0.012. T1 and the divided-by-(1 - 2 p) correction move the measure arm -0.028 to
-+0.030 against its ideal 0.8914 (QB12's prx error of 0.0044 costs more than the lift), so the departure test needs the fitted values. Dephasing over 16 steps of
-1.14 us against T2 of 7.0 to 12.4 us lifts the delay arm to 0.41 to 0.53: idle dephasing alone produces most of the Zeno rise of the
-pinched arm, which is why the delay arm is a control and the unitary arm the null.
+The model device passes the mutation test by 29 to 34 standard errors, with a contrast of 0.80 to 0.86 against the ideal 0.861 (32 pulses
+carry the depolarizing error and 32 layers of relaxation). The fitted T1 carries 0.7 to 1.3 us of standard error and p
+0.005 to 0.008. T1 and the divided-by-(1 - 2 p) correction move the measure arm +0.011 to +0.036 against its ideal 0.8914, so the departure
+test needs the fitted values. Dephasing over 16 steps of 1.14 us against T2 of 8.2 to 28.6 us lifts the delay arm to 0.32 to
+0.51: idle dephasing alone produces part of the Zeno rise of the pinched arm on the short-T2 qubits (QB6 0.51), which is why
+the delay arm is a control and the unitary arm the null.
 
 **Estimator sweep.** `scripts/iqm_measurement_sequence.py sweep` (the self-test runs its reduced grid) builds raw
 `measurements.json` files in the format the mock returned (per circuit and key, 3000 rows of six 0/1 outcomes in locus
@@ -281,55 +297,90 @@ mutation test on every qubit, and no device-level flag.
 
 | device | p | thermal | T1 / calibrated | prx / calibrated | departure z over the six qubits | pooled z | settle | `departs_below` status | mutation z (min) |
 |---|---|---|---|---|---|---|---|---|---|
-| planning | 0.068 | 0 | 1.0 | 1 | -0.04 to +0.01 | -0.03 | match | none | 25.4 |
-| p=0 | 0.0 | 0.0 | 1.0 | 1 | -0.02 to +0.01 | -0.01 | match | none | 36.4 |
-| p=0.15 | 0.15 | 0.0 | 1.0 | 1 | -0.03 to +0.01 | -0.02 | match | none | 18.8 |
-| thermal 0.02 | 0.068 | 0.02 | 1.0 | 1 | -0.01 to +0.01 | -0.01 | match | none | 24.9 |
-| T1  x 0.8 | 0.068 | 0 | 0.8 | 1 | -0.03 to +0.01 | -0.01 | match | none | 25.7 |
-| T1  x 1.2 | 0.068 | 0 | 1.2 | 1 | -0.02 to +0.01 | -0.01 | match | none | 25.2 |
-| pr x   x 2 | 0.068 | 0 | 1.0 | 2 | -0.93 to -0.77 | -1.94 | match | none | 16.6 |
-| pr x   x 3 | 0.068 | 0 | 1.0 | 3 | -1.80 to -1.49 | -3.77 | match | gate_model_inconsistent | 8.3 |
-| corner | 0.15 | 0.02 | 0.8 | 2 | -0.93 to -0.65 | -1.78 | match | none | 13.7 |
+| planning | 0.068 | 0 | 1.0 | 1 | -0.02 to +0.02 | +0.01 | match | none | 28.8 |
+| p=0 | 0.0 | 0.0 | 1.0 | 1 | -0.01 to +0.01 | -0.00 | match | none | 40.1 |
+| p=0.15 | 0.15 | 0.0 | 1.0 | 1 | -0.02 to +0.02 | +0.01 | match | none | 21.7 |
+| thermal 0.02 | 0.068 | 0.02 | 1.0 | 1 | -0.03 to +0.02 | -0.01 | match | none | 28.2 |
+| T1  x 0.8 | 0.068 | 0 | 0.8 | 1 | -0.01 to +0.03 | +0.01 | match | none | 28.9 |
+| T1  x 1.2 | 0.068 | 0 | 1.2 | 1 | -0.02 to +0.01 | -0.01 | match | none | 28.7 |
+| pr x   x 0.5 | 0.068 | 0 | 1.0 | 0.5 | +0.39 to +0.47 | +1.03 | match | none | 30.1 |
+| pr x   x 2 | 0.068 | 0 | 1.0 | 2 | -0.91 to -0.75 | -2.02 | match | none | 26.3 |
+| pr x   x 3 | 0.068 | 0 | 1.0 | 3 | -1.78 to -1.52 | -3.97 | match | gate_model_inconsistent | 23.9 |
+| corner | 0.15 | 0.02 | 0.8 | 2 | -0.87 to -0.64 | -1.82 | match | none | 20.3 |
 
 The thermal row passes because the model takes q = z_eq/(1 - 2 p) from the T1 series rather than a p with a cold idle
 qubit. The prx rows pass because the standard errors carry the prx systematic. A prx error twice the calibrated one on
-every qubit pools to a device z of -1.94, below the device rule's threshold; three times pools to -3.77, where the
-gate-error guard reads `gate_model_inconsistent` (unitary-arm z of +2.1 to +12.2 over the qubits, QB12 largest)
-instead of attributing the departure, which is the pass rule of the prx x 3 row. The pairs double the prx count, so the
+every qubit pools to a device z of -2.02, below the device rule's threshold; three times pools to -3.97, where the
+gate-error guard reads `gate_model_inconsistent` (unitary-arm z of +2.1 to +4.3 over the qubits, QB9 largest)
+instead of attributing the departure, which is the pass rule of the prx x 3 row. The two-sided row runs the other way: a
+prx error half the calibrated one lifts the measure arm over its prediction by 0.39 to 0.47 standard errors per qubit
+(pooled +1.03), the guard's unitary-arm z is -1.1 to -0.6, and the device status stays none. A row that
+drops the dephasing during the drive is absent: the [scan of the diagnostic](iqm-garnet-measurement-sequence-diagnostic.md#results)
+does not support that model. The pairs double the prx count, so the
 same prx error moves the unitary arm twice as far as with single pulses.
 
 **Cross-check.** `scripts/iqm_measurement_sequence_aer_check.py run CASE_DIR --calibration-dir DIR` runs every arm and N
 of every qubit through an independent Aer density-matrix simulation built on `scripts/iqm_sim.py`'s calibration noise
 model (prx depolarizing error per qubit) with thermal relaxation on every wait (`iqm_signed_probe.relaxation`), the
 pinch as a Kraus channel, the case's own pulses (the pi/2 pairs with their phases) and the live set's T1 and T2, from
-|0>. Against the Bloch model with the prx error the largest gap over the 72 points is 4e-15 in P0. The check
+|0>. Against the Bloch model with the prx error the largest gap over the 72 points is 3e-15 in P0. The check
 verifies the model's algebra and time accounting, not the estimator, which the sweep covers.
 
 ## Pre-flight stop rule
 
 The first form of this check read the two window probes against corrected planning values and stopped the main job on a
 comparison across spaces (below). The restated rule compares raw readings with the raw model of the same circuit, and
-it reads the rebuilt case's own circuits, because the pi/2-pair steps are new and QB1, QB8 and QB12 were never read.
+it reads the rebuilt case's own circuits, because the pi/2-pair steps are new and the diagnostic read none of the six
+chosen qubits.
 
-Before the main QPU job, a probe job runs the main case's `ro0`, `ro1`, `unitary-n16-s0p` and `measure-n16-s0p`
-circuits (copied from `circuits/`, so the bytes match) at 100 shots on the six qubits, about 0.5 credits. The raw P(0)
-of the final key `f` per qubit is compared with the band of `prediction.json` (`raw_band`), the raw model over the
-starting excitation p = 0.02 to 0.068, which the diagnostic read below the README's 0.068:
+The probe case [results/iqm/cases/measurement-sequence-pinching-probe](../../results/iqm/cases/measurement-sequence-pinching-probe/cases.json)
+holds the main case's `ro0`, `ro1`, `unitary-n16-s0p` and `measure-n16-s0p` circuits byte for byte, 100 shots, one job
+(`probe`), `max_credits` 1.0 on `garnet` and 0.0 on `garnet:mock`, a predicted worst-case runtime of 0.74 s and 0.5
+credits. `scripts/iqm_measurement_preflight.py build DIR` copies the circuits and its `check` and self-test compare them
+with the main case; `prediction.json` binds the main case's `cases.json` digest. The raw P(0) of the final key `f` per
+qubit is compared with the band of `prediction.json` (`raw_band`), the raw model over the starting excitation p = 0 to
+0.068:
 
 | qubit | ro0 | ro1 | unitary-16 | measure-16 |
 |---|---|---|---|---|
-| QB1 | 0.931 to 0.974 | 0.102 to 0.146 | 0.193 to 0.228 | 0.869 to 0.885 |
-| QB5 | 0.931 to 0.976 | 0.090 to 0.135 | 0.175 to 0.211 | 0.853 to 0.874 |
-| QB8 | 0.933 to 0.976 | 0.116 to 0.159 | 0.206 to 0.240 | 0.866 to 0.883 |
-| QB12 | 0.923 to 0.968 | 0.066 to 0.111 | 0.179 to 0.213 | 0.812 to 0.834 |
-| QB14 | 0.924 to 0.969 | 0.074 to 0.118 | 0.168 to 0.203 | 0.843 to 0.864 |
-| QB19 | 0.902 to 0.945 | 0.087 to 0.130 | 0.173 to 0.208 | 0.816 to 0.838 |
+| QB6 | 0.923 to 0.985 | 0.074 to 0.136 | 0.171 to 0.220 | 0.846 to 0.873 |
+| QB9 | 0.924 to 0.985 | 0.090 to 0.150 | 0.176 to 0.225 | 0.857 to 0.882 |
+| QB13 | 0.911 to 0.973 | 0.061 to 0.123 | 0.137 to 0.189 | 0.837 to 0.867 |
+| QB15 | 0.926 to 0.987 | 0.090 to 0.151 | 0.173 to 0.223 | 0.855 to 0.883 |
+| QB18 | 0.932 to 0.994 | 0.079 to 0.141 | 0.154 to 0.206 | 0.872 to 0.898 |
+| QB20 | 0.914 to 0.976 | 0.068 to 0.130 | 0.126 to 0.180 | 0.858 to 0.886 |
 
-The orchestrator proceeds only if, on every qubit, each of the four readings lies within 3 binomial standard errors
-(100 shots, about 0.03 to 0.045) of its band, the ro0 minus ro1 contrast is at least 0.6, and every key (`f` in the
-first three circuits, `f` and `m0` to `m15` in measure-16) is present. A collapse like QB11's (ro1 at 0.52 against a band
-of 0.07 to 0.16) or a reading like the first form's QB19 (0.38 against 0.17 to 0.21) fails it. The check gates the
-submission only and never enters the analysis.
+**Stop rule.** The orchestrator submits the main case only if, on every qubit, each of the four readings lies within 3
+binomial standard errors of its band (the standard error taken at the nearest band edge and the probe's 100 shots, 0.03
+to 0.045), the ro0 minus ro1 contrast is at least 0.6, and every key (`f` in the first three circuits, `f` and `m0` to
+`m15` in measure-16) returns one outcome per shot. `analyze RUN_DIR --out FILE` prints PASS or FAIL per qubit with the
+four readings, the contrast and the largest |z|, and ends with `proceed` or `stop`. A collapse like QB11's (ro1 at 0.52
+against a band of 0.07 to 0.15) or a reading like the first form's QB19 (0.38 against 0.13 to 0.22) fails it. The check
+gates the submission only and never enters the analysis.
+
+**Replay on the diagnostic's readings.** The rule applied to the proportions the diagnostic measured at 1000 shots on
+three qubits that were read, with the standard error of a 100-shot probe (D1 is `ro0`, D2 is `ro1`, D6 is the
+pi/2-pair circuit, which is `unitary-16` with the sign +). The raw model at the README's p = 0.068 alone put `ro0` near
+0.927, below the readings of 0.958 (QB5) and 0.971 (QB14); the earlier band, p = 0.02 to 0.068, reached 0.969 on QB14 and
+left that reading outside its upper edge by 0.12 standard errors. The widening to p = 0 was elective: no replayed
+reading came near 3 under the old band (largest |z| 1.39), and the wider band loosens the rule by the distance
+between the two lower edges.
+
+| qubit | ro0 (D1) | ro1 (D2) | unitary-16 (D6) | contrast | unitary-16 z at 1000 shots |
+|---|---|---|---|---|---|
+| QB5 | 0.958 in [0.931, 0.994], z +0.00 (old band +0.00) | 0.080 in [0.072, 0.135], z +0.00 (old band -0.36) | 0.135 in [0.160, 0.211], z -0.68 (old band -1.05) | 0.878 | -2.15 |
+| QB14 | 0.971 in [0.924, 0.988], z +0.00 (old band +0.12) | 0.058 in [0.055, 0.118], z +0.00 (old band -0.60) | 0.116 in [0.153, 0.203], z -1.03 (old band -1.39) | 0.913 | -3.26 |
+| QB19 | 0.919 in [0.902, 0.962], z +0.00 (old band +0.00) | 0.102 in [0.069, 0.130], z +0.00 (old band +0.00) | 0.199 in [0.159, 0.208], z +0.00 (old band +0.00) | 0.817 | +0.00 |
+
+The largest |z| is 1.03 against the new band, so the known-good readings pass with margin. These qubits are not in
+the rebuilt case; the replay tests the rule's calibration, not the new qubits. It also shows the rule's reach: QB14
+passes at 100 shots (z -1.03) although the guard's projection for it is -5.27, and the same reading at 1000 shots reads
+-3.26 and stops.
+
+**Power.** One standard error of a 100-shot reading is 0.03 to 0.04 in P(0), so the probe stops a collapse or a gross
+shift and cannot resolve the 0.03 to 0.06 systematic that the unitary-arm guard reads at 3000 shots (statistical
+standard error 0.008). The same four circuits at 1000 shots (`build DIR --shots 1000`) are predicted to bill the same 1
+s and 0.5 credits (worst-case runtime 0.81 s, 0.19 s below the cancel threshold) and cut the standard error by 3.2.
 
 **Earlier form and its record.** The first form read the two retained window probes (100 shots each of measure-n16 and
 unitary-n16 with single pi/18 pulses; jobs `01a174be-e68b-776e-8241-8bb3d259ae57` and
@@ -357,14 +408,14 @@ garnet:mock compiles, in departure standard errors:
 
 | qubit | measure P0 at 0.6 / 0.8 / 1.096 / 1.4 / 1.772 us | settle P0 at 0.6 / 1.096 / 1.772 us | dP0/dw measure, settle (per us) | shift 1.096 to 1.772 us, measure |
 |---|---|---|---|---|
-| QB1 | 0.8938 / 0.9057 / 0.9215 / 0.9357 / 0.9508 | 0.9772 / 0.9893 / 1.0025 | 0.0500, 0.0221 | 0.0293 (1.9) |
-| QB5 | 0.8825 / 0.8905 / 0.9017 / 0.9122 / 0.9239 | 0.9463 / 0.9576 / 0.9709 | 0.0360, 0.0214 | 0.0223 (2.0) |
-| QB8 | 0.8887 / 0.8993 / 0.9136 / 0.9268 / 0.9410 | 0.9665 / 0.9787 / 0.9923 | 0.0457, 0.0225 | 0.0274 (2.2) |
-| QB12 | 0.8470 / 0.8539 / 0.8635 / 0.8728 / 0.8835 | 0.9047 / 0.9159 / 0.9296 | 0.0316, 0.0215 | 0.0200 (0.5) |
-| QB14 | 0.8794 / 0.8877 / 0.8991 / 0.9098 / 0.9219 | 0.9448 / 0.9563 / 0.9698 | 0.0370, 0.0218 | 0.0228 (2.7) |
-| QB19 | 0.8735 / 0.8801 / 0.8893 / 0.8982 / 0.9083 | 0.9283 / 0.9388 / 0.9514 | 0.0302, 0.0200 | 0.0190 (1.7) |
+| QB6 | 0.8803 / 0.8895 / 0.9020 / 0.9138 / 0.9268 | 0.9511 / 0.9630 / 0.9769 | 0.0406, 0.0225 | 0.0248 (1.8) |
+| QB9 | 0.8888 / 0.8987 / 0.9122 / 0.9247 / 0.9383 | 0.9631 / 0.9751 / 0.9886 | 0.0433, 0.0222 | 0.0261 (1.7) |
+| QB13 | 0.8880 / 0.8958 / 0.9066 / 0.9168 / 0.9282 | 0.9500 / 0.9610 / 0.9739 | 0.0349, 0.0208 | 0.0216 (1.6) |
+| QB15 | 0.8874 / 0.8961 / 0.9081 / 0.9194 / 0.9318 | 0.9551 / 0.9666 / 0.9800 | 0.0387, 0.0217 | 0.0237 (2.0) |
+| QB18 | 0.9005 / 0.9104 / 0.9238 / 0.9361 / 0.9494 | 0.9734 / 0.9849 / 0.9977 | 0.0428, 0.0212 | 0.0256 (3.1) |
+| QB20 | 0.9064 / 0.9154 / 0.9277 / 0.9390 / 0.9514 | 0.9741 / 0.9850 / 0.9974 | 0.0394, 0.0203 | 0.0238 (2.4) |
 
-A window error of 0.1 us moves the measure-arm prediction by 0.003 to 0.005, 0.1 to 0.4 departure standard errors.
+A window error of 0.1 us moves the measure-arm prediction by 0.003 to 0.004, 0.3 to 0.5 departure standard errors.
 
 ## Readout crosstalk
 
@@ -391,9 +442,15 @@ this case carries no leakage circuits and no P(2) readout.
   [run](../../results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic/results.json),
   [analysis](../../results/iqm/measurement_sequence_diagnostic_analysis.json), and its
   [design](iqm-garnet-measurement-sequence-diagnostic.md).
-- Mock run of this case rebuilt with pi/2-pair steps (job 01a17548-7e68-72ab-8a27-38f1b6f3d94f; every key returned;
-  compiled schedule 1.30 times the QPU-calibrated prediction, the mock's own base and window):
+- Mock run of this case (pi/2 pairs at every N, the symmetric exclusion; job 01a1755f-4e86-77ee-81be-7b1de90a3c0a; all 57
+  circuits returned every key; compiled schedule 1.30 times the QPU-calibrated prediction, the mock's own base and
+  window):
+  [run](../../results/iqm/runs/2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching/results.json).
+- Mock run of the earlier pair form (pairs at N = 16 only, on QB1, QB5, QB8, QB12, QB14 and QB19; job
+  01a17548-7e68-72ab-8a27-38f1b6f3d94f), superseded and not replayable by the current script:
   [run](../../results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching/results.json).
+- Pre-flight probe case: [case](../../results/iqm/cases/measurement-sequence-pinching-probe/cases.json), built by
+  `scripts/iqm_measurement_preflight.py`; not yet run on the QPU.
 - Failed mock job of the first, 54-circuit form of this case:
   [run](../../results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching/results.json).
 - Mock run of the second, 50-circuit form (job 01a17484):
@@ -414,8 +471,10 @@ this case carries no leakage circuits and no P(2) readout.
 
 ## Sequence
 
-1. Rebuild the case against the live calibration set and run `check`.
-2. Run the pre-flight probe on the QPU (above) and apply its stop rule.
+1. Rebuild the case against the live calibration set and run `check`; a rebuilt case changes its digest, so rebuild the
+   probe with `scripts/iqm_measurement_preflight.py build` and run its `check`.
+2. Run the pre-flight probe on the QPU after the owner approves its 0.5 credits (`iqm_jobs.py submit` of the probe case,
+   `collect`, then `iqm_measurement_preflight.py analyze RUN_DIR --out FILE`) and apply its stop rule.
 3. Approval of this written case, then `submit` on `garnet` with `--approved-cases-sha256` and `--max-credits 5.0`,
    and `collect` right after.
 4. `analyze RUN_DIR --out FILE` writes the decisions.

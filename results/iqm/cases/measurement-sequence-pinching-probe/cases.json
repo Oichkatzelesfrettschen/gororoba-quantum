@@ -1,0 +1,46 @@
+{
+ "case": "measurement-sequence-pinching-probe",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/ro0.json",
+     "sha256": "3ac811e1a1945029256f660b504db5d983e68465fba01a34bca918bdf19255f0"
+    },
+    {
+     "file": "circuits/ro1.json",
+     "sha256": "7508504d3fe9d2257efa0654f778e8e4896f0bae1b9e14a7c7271cff2ecba179"
+    },
+    {
+     "file": "circuits/unitary-n16-s0p.json",
+     "sha256": "d80f5954b6fc5d3faa050507c6a550f7dbbec54aeeff015ea23d9e0f6f95b161"
+    },
+    {
+     "file": "circuits/measure-n16-s0p.json",
+     "sha256": "7d91fef8bf6bd9d74fe9d57ffee1f6c018e8ab24997a2fe2dfbce40746a2af40"
+    }
+   ],
+   "expected_seconds": 0.149,
+   "job": "probe",
+   "max_credits": {
+    "garnet": 1.0,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "be070414-7624-4943-ac7e-1e2678f05684"
+    },
+    "heralding_mode": "none"
+   },
+   "shots": 100
+  }
+ ],
+ "prediction_sha256": "94824fa6555922dd92b7af7c4857d45de7822c3d146193cd232f70fb3f65aa11",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "Do the ro0, ro1, N = 16 unitary and N = 16 measure circuits of the rebuilt pinching case read on QB13, QB15, QB18, QB20, QB6, QB9 within their raw model bands, with every key returned?",
+ "schema": "iqm-circuit-case-v1"
+}
