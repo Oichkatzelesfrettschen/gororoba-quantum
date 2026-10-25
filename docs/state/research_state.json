@@ -2103,6 +2103,39 @@
       "superseded_by": null
     },
     {
+      "id": "ascella-signed-coherence-heater-drive-holdout",
+      "statement": "Refitted on job-00 without one configuration from the zero start under the training-only folds, a drive-dependent heater family of the returned Ascella meshes (tau-0.3 heater offsets plus one slope per heater on the returned phase as drive, prior width 0.1) leaves the left-out X statistics at a standardized sum of 36.1 and Y at 24.8 over 10 configurations each, against the returned mesh's 343 and 75, so the X sum keeps the shortfall under the 30-on-10 criterion fixed before the run. Its X predictions carry a median prediction variance 10.4 times the counting variance (Y 2.1), and in counting variance alone it gives X 474 and Y 186.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One drive-linear heater family of the provider's returned mesh model, with pure-state propagation; the drive is the returned phase in [0, 2 pi) with its zero at 0, because the passive phase that sets each heater's wrap point is absent from the returned circuit, and per-heater wrap points, quadratic drive terms and crosstalk through the phase-voltage matrix lie outside the family. The prediction variance is the local quadratic approximation at each fold mode and the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference. The family, its prior width and the reading were fixed in plan ascella-configuration-holdout-training-only before the run; the analysis was added after the preregistered table and decides nothing. The fitted family replays within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/heater-drive-holdout.json",
+          "sha256": "426c7402c38afd4ffbd30aa3af26d4078d17bcbb579c82c17450f3b5adc4cde0"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-heater-drive-holdout-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-configuration-holdout"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "ascella-signed-coherence-conformance",
       "statement": "The approved 64-setting signed-coherence request on qpu:ascella (job 739a5271) completed 524288 detected samples in 186 execution seconds for a token-reported debit of 1.016384 free credits, and all 27 preregistered endpoints qualify under the 0.05 coefficient tolerance: the 15 sign-odd and dark coefficients deviate from their ideals by at most 0.0303, the 10 sign-even coefficients stay within 0.0116 of zero, and the mutation difference reads 0.1646 against its ideal 0.1727. The X sign-odd constant (0.4697) and the Y sign-odd sin(2 theta) coefficient (0.4777) exclude their ideal 0.5 while conforming. 6659 of 524288 events (1.27 percent) fall outside the logical block, between 4 and 586 per setting.",
       "domain": "hardware",

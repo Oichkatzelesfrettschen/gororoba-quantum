@@ -93,7 +93,11 @@ holds the leave-one-configuration-out refit of the static families from the
 training configurations alone, scored in counting plus fitted-prediction
 variance; it supersedes the left-out column of `physical-models.json`
 ([design](../../design/ascella-signed-coherence-conformance.md#leave-one-configuration-out-from-training-data)).
+[`heater-drive-holdout.json`](heater-drive-holdout.json), from the same
+script with `--drive`, holds the preregistered drive-dependent heater family
+(heater offsets and per-heater drive slopes) under those folds
+([design](../../design/ascella-signed-coherence-conformance.md#drive-dependent-heater-response-under-the-same-folds)).
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance, and the last two replay their nominal family there and
+certificate tolerance, and the last three replay their nominal family there and
 their fitted families within 1e-3 relative plus 1e-8 absolute, the rounding of
 optimizer endpoints under another BLAS build.

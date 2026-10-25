@@ -1047,3 +1047,47 @@ predictions rather than a rejection.
   drive-dependent heater response also failed this test, and fall if a
   shared family's standardized sums came within twice the configuration
   count.
+
+### Drive-dependent heater response under the same folds
+
+Ascella's control path maps voltages to phases by phi = A V^2 + b
+([literature](../notes/quandela/literature.md), 2306.00874 SI S-IV), so a
+heater's power is linear in its commanded phase and an error of its fitted
+slope shifts the realized phase in proportion to the drive. The family adds
+one slope k_h per heater to the tau-0.3 heater offsets: heater h realizes
+phi + a_h + k_h phi, with phi the returned phase in [0, 2 pi) as the drive,
+a_h under N(0, 0.3^2) and k_h under N(0, 0.1^2), whose spread at the mid
+drive pi (0.31 rad) matches the offset prior (252 parameters).
+[`ascella_configuration_holdout.py --drive`](../../scripts/ascella_configuration_holdout.py)
+fits it under the folds and score of the section above and writes
+[`heater-drive-holdout.json`](../evidence/ascella-order-coefficients/heater-drive-holdout.json).
+The family, its single prior width and the reading of each outcome were fixed
+in step `drive-dependent-heater-family` of plan
+`ascella-configuration-holdout-training-only` before the run: a sum of 30 or
+more for X or Y keeps the shortfall; both sums below 20 read as weak
+identification when a median variance ratio exceeds 1 and as prediction of
+left-out configurations otherwise; any other outcome is inconclusive.
+
+| Family | Left-out X / Y, counting only | Left-out X / Y, with prediction variance | Median prediction / counting variance, X / Y |
+|---|---|---|---|
+| nominal | 343 / 75 | 343 / 75 | 0 / 0 |
+| static heater offsets, tau 0.3 | 476 / 123 | 167 / 45 | 0.82 / 0.61 |
+| heater offsets 0.3 and drive slopes 0.1 | 474 / 186 | 36.1 / 24.8 | 10.4 / 2.1 |
+
+- The X sum of 36.1 keeps the shortfall under the preset criterion: with its
+  prediction variance included, the drive-linear family still misses the
+  left-out X statistics, and every fold mode is positive definite (lowest
+  Hessian eigenvalue 0.86).
+- The X predictions carry a median prediction variance 10.4 times the
+  counting variance, so most of the drop from 167 to 36 comes from wider
+  predictions rather than closer ones; the counting-only sums (474 and 186)
+  match or exceed the offset family's. The Y sum of 24.8 sits in the
+  inconclusive band.
+- Confidence that no shared static or drive-linear heater error of the
+  returned mesh model predicts left-out configurations rises from medium to
+  medium-high. The drive is the returned phase with its zero at 0: the
+  passive phase b, which sets where the provider wraps a heater's drive, is
+  absent from the returned circuit, and a per-heater wrap point, a quadratic
+  term in the drive and crosstalk through A stay outside the family. A family
+  with those terms whose standardized sums fall below 20 with variance ratios
+  at most 1 would lower it.
