@@ -4153,7 +4153,10 @@
    "cmd": "\"$PYTHON\" -B -W error primorial_cover.py --check ../docs/evidence/primorial_cover/certificates.json",
    "name": "core-688",
    "seconds": 2.0,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/primorial_cover/certificates.json"
+   ]
   },
   {
    "suite": "core",
