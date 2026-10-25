@@ -17,6 +17,13 @@ uv venv --python 3.13 "$PL_ENV"
 VIRTUAL_ENV="$PL_ENV" uv pip install -r docs/notes/planck/requirements-planck.txt
 ```
 
+On the build host the Arch package `planck-stack` from the local PKGBUILD tree
+(`~/Github/PKGBUILDs/planck-stack`) installs the same SDK as a hash-locked Python
+3.13 environment under `/opt/planck-stack` and the interpreter `/usr/bin/planck-python`
+(planck_sdk 1.0.0 from the audited commit); its `check()` runs an offline test, kept at
+`/usr/share/planck-stack/test_planck_stack.py`. A case sets `PL_PYTHON=/usr/bin/planck-python`; the venv
+above serves a machine without the package. The package sources the GitHub archive of HectorNaaa/Planck-QSaaS at commit d57e32e7 under a b2sum and installs `sdk/python` from it, since PyPI carries no `planck-sdk`.
+
 The SDK (version 1.0.0, MIT) uses the standard library only and contacts
 only its configured base URL. Pass `base_url="https://www.plancktechnologies.xyz"`:
 the bare domain answers 308, which breaks the SDK's POST health check. The
@@ -30,8 +37,18 @@ sent as `X-API-Key`. The SDK and server allow one request every 3 s.
   answers `authenticated: true` for any well-formed key without a lookup,
   so it proves nothing. The stored key is 67 characters, while the README
   documents a 64-character key. A regenerated key, also 67 characters,
-  is rejected the same way, so the fault lies in the service's key store
-  rather than in one key; the platform's support is the next step.
+  is rejected the same way through the SDK and through plain HTTP. The
+  source at `d57e32e7` names the cause: `vercel.json` sets `DB_DIR=/tmp`,
+  so API keys live in an SQLite file inside each serverless instance; a
+  request carrying only `x-api-key` looks the key up in that instance's
+  file (`ApiKeys.findByKey` in `lib/api-auth.ts`), and only a request with a
+  browser session cookie re-creates the key row from the session token's
+  `ak` claim (`ensureDbUser` in `lib/db/ensure-user.ts`). A key therefore
+  authenticates only on a warm instance that a dashboard session reached
+  first; the deployed code may differ, since the project's Vercel git
+  deployments are off. The durable remedy is server-side (a persistent key
+  store); until the vendor ships one, no client-side workaround makes
+  key-only authentication reliable.
 - **The simulator ignores the circuit.** In the platform source at commit
   `d57e32e7`, `simulateQuantumCircuit()` in
   `app/api/quantum/simulate/route.ts` draws every bit with

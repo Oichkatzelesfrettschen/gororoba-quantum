@@ -18,6 +18,13 @@ uv venv --python 3.13 "$OG_ENV"
 VIRTUAL_ENV="$OG_ENV" uv pip install -r docs/notes/originquantum/requirements-originquantum.txt
 ```
 
+On the build host the Arch package `originquantum-stack` from the local PKGBUILD tree
+(`~/Github/PKGBUILDs/originquantum-stack`) installs the same SDK as a hash-locked Python
+3.13 environment under `/opt/originquantum-stack` and the interpreter `/usr/bin/originquantum-python`
+(pyqpanda3 0.5.0); its `check()` runs an offline test, kept at
+`/usr/share/originquantum-stack/test_originquantum_stack.py`. A case sets `OG_PYTHON=/usr/bin/originquantum-python`; the venv
+above serves a machine without the package. pyqpanda3 0.5.0 also publishes cp314 wheels; its runtime dependencies (matplotlib, scipy, mypy, Cython, networkx) make the environment large. OriginQ publishes an agent skill (OriginQ/pyqpanda3-skill, 5.9 MB) whose installer writes rule files into the working directory and global commands; it stays uninstalled until reviewed in full.
+
 The lock pins `pyqpanda3` 0.5.0, a compiled wheel. The API key is one line
 in `~/.config/originquantum/api-key` (directory 700, file 600), read inside
 Python. `QCloudService` defaults to the cleartext

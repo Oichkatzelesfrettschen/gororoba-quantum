@@ -16,6 +16,13 @@ uv venv --python 3.12 "$QF_ENV"
 VIRTUAL_ENV="$QF_ENV" uv pip install -r docs/notes/quafu/requirements-quafu.txt
 ```
 
+On the build host the Arch package `quafu-stack` from the local PKGBUILD tree
+(`~/Github/PKGBUILDs/quafu-stack`) installs the same SDK as a hash-locked Python
+3.11 environment under `/opt/quafu-stack` and the interpreter `/usr/bin/quafu-python`
+(pyquafu 0.4.5 with numpy 1.26.4); its `check()` runs an offline test, kept at
+`/usr/share/quafu-stack/test_quafu_stack.py`. A case sets `QF_PYTHON=/usr/bin/quafu-python`; the venv
+above serves a machine without the package. pyquafu still pins `numpy<2` on its master branch, and upstream issue ScQ-Cloud/pyquafu#179 records the import failure under numpy 2, so the package runs Python 3.11, where every pin installs from a published wheel.
+
 The lock pins `pyquafu` 0.4.5, which requires `numpy<2` (1.26.4 here).
 NumPy 1.26.4 ships wheels for CPython 3.9 to 3.12 only, so the environment
 runs Python 3.12; on 3.13 the install falls back to a source build. The
