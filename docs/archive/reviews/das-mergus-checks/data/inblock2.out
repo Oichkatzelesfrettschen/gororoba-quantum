@@ -1,0 +1,2 @@
+job-00 {'direct': (np.float64(8.37), 9, np.float64(0.4972)), 'x': (np.float64(10.58), 10, np.float64(0.3912)), 'y': (np.float64(10.4), 9, np.float64(0.3194)), 'mutation': (np.float64(3.65), 2, np.float64(0.1612))} all 33.0 30 0.3227 min expected cell (4-cell test) 0.5
+job-01 {'y': (np.float64(7.53), 9, np.float64(0.5826)), 'x': (np.float64(6.3), 10, np.float64(0.7891)), 'mutation': (np.float64(3.21), 2, np.float64(0.2011)), 'direct': (np.float64(2.58), 9, np.float64(0.9787))} all 19.62 30 0.9262 min expected cell (4-cell test) 0.998

@@ -1,0 +1,11 @@
+job-00 exec acf1 counts -0.35034552051724244 frac -0.3503424938829342 pearson-lag counts -0.35156740235040435 frac -0.3515640896376944
+   design-order acf1 counts -0.35034552051724244 frac -0.3503424938829342 pearson -0.35156740235040435 -0.3515640896376944
+   exec parity mean frac even/odd 0.009978012248078176 0.015430135875938875 MWU p 0.48922253169152785
+job-01 exec acf1 counts -0.3651670672484137 frac -0.36514312042986474 pearson-lag counts -0.3674859860987018 frac -0.3674617310596497
+   design-order acf1 counts 0.22997251525499002 frac 0.22996623600166255 pearson 0.23124878902094456 0.2312423608236603
+   exec parity mean frac even/odd 0.01363795082318477 0.011676707919725159 MWU p 0.49772158379363474
+identity spearman counts SignificanceResult(statistic=np.float64(-0.075452898368194), pvalue=np.float64(0.553467650106006))
+identity spearman frac SignificanceResult(statistic=np.float64(-0.07490297998601574), pvalue=np.float64(0.556370593600896))
+positional spearman counts SignificanceResult(statistic=np.float64(-0.39004049513338246), pvalue=np.float64(0.0014423831297500547))
+positional spearman frac SignificanceResult(statistic=np.float64(-0.3864549592492616), pvalue=np.float64(0.001609249373355654))
+identity spearman after removing exec parity (log frac): SignificanceResult(statistic=np.float64(-0.08853123319299339), pvalue=np.float64(0.4866426439062226))

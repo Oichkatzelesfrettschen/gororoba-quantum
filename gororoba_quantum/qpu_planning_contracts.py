@@ -16,6 +16,7 @@ import io
 import json
 import math
 import tempfile
+from collections.abc import Callable
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 from types import SimpleNamespace
@@ -1731,14 +1732,23 @@ class _SimulationForbidden(RuntimeError):
     """A reused submission reached a noise simulation."""
 
 
-def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
-    """One approved dry run, then reuse, full-path and refused submissions through live_run.main.
+SUBMIT_REUSE_PHASES = ("full", "moved", "device", "changed")
+
+
+def _submit_reuse_case(
+    name: str, argv: list[str], directory: Path, phases: tuple[str, ...] = SUBMIT_REUSE_PHASES
+) -> None:
+    """One approved dry run and its reuse submission, then the selected full-path and refused submissions through
+    live_run.main.
 
     Every discovery reads a newly republished calibration stamp, so the
     preflight accepts a timestamp-only change and the refresh before the
     first batch rebuilds the plan; a shifted readout value on a placed qubit
-    stands for a moved value.
+    stands for a moved value. Each phase reads only the approved record and
+    the reuse run's PUB bytes, so a subset of phases checks the same contracts
+    as the whole sequence.
     """
+    _require(set(phases) <= set(SUBMIT_REUSE_PHASES), f"{name}: unknown reuse phases {phases}")
     from runtime_contracts import _ShiftedReadout
 
     out = directory / name
@@ -1867,9 +1877,22 @@ def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
         f"{name}: reused groups keep a stale calibration identity",
     )
 
-    # The full path under the same republish sends the same PUB bytes and
-    # reaches the same verdict; its fresh simulation reproduces the reused
-    # predictions.
+    if "full" in phases:
+        _submit_full_path(name, submit, reused, reused_bytes)
+    if "moved" in phases:
+        _submit_moved_values(name, submit, approved, family, qubit)
+    if "device" in phases:
+        _submit_device_route(name, submit, family, reused_bytes)
+    if "changed" in phases:
+        _submit_changed_inputs(name, submit, family)
+
+
+SubmitReuse = Callable[..., tuple[int, dict[str, Any], list[bytes]]]
+
+
+def _submit_full_path(name: str, submit: SubmitReuse, reused: dict[str, Any], reused_bytes: list[bytes]) -> None:
+    """The full path under the same republish sends the reuse run's PUB bytes and reaches its verdict; its fresh
+    simulation reproduces the reused predictions."""
     code, full, full_bytes = submit("full", [], None, reuse=False, simulate=True)
     _require(code == 0 and full["state"] == "submitted", f"{name}: the full path left {full['state']}")
     _require(full["approved_record"]["mismatches"] == [], f"{name}: {full['approved_record']['mismatches']}")
@@ -1888,7 +1911,9 @@ def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
     for key in ("shots", "pub_shots", "execution_pubs", "execution_contract", "budget_plan"):
         _require(full.get(key) == reused.get(key), f"{name}: the full path's {key} differs from the reused one")
 
-    # A moved value refuses at the preflight, at the refresh and at the batch.
+
+def _submit_moved_values(name: str, submit: SubmitReuse, approved: Path, family: bool, qubit: int) -> None:
+    """A moved value refuses at the preflight, at the refresh and at the batch, and consumes no approval."""
     for shift_after, where in ((0, "preflight"), (1, "refresh"), (2, "batch")):
         code, moved, sent = submit(f"moved-{where}", [], shift_after, reuse=True, simulate=where != "preflight")
         _require(
@@ -1900,8 +1925,10 @@ def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
             blockers = moved["revalidation"][0]["prediction_reuse"]["design"]["blockers"]
             _require(any(f"e10:{qubit}" in b for b in blockers), f"{name}: the refresh reused moved values {blockers}")
 
-    # An approved batch whose device depended on the host's GPU re-plans
-    # through the full path and sends the same PUB bytes.
+
+def _submit_device_route(name: str, submit: SubmitReuse, family: bool, reused_bytes: list[bytes]) -> None:
+    """An approved batch whose device depended on the host's GPU re-plans through the full path and sends the
+    reuse run's PUB bytes, which the full-path phase equates with the full path's."""
     with patch.object(local_compute, "host_independent_route", lambda _batch: "routed by GPU availability"):
         code, routed, routed_bytes = submit("device", [], None, reuse=True, simulate=True)
     _require(code == 0 and routed["state"] == "submitted", f"{name}: the device fallback left {routed['state']}")
@@ -1910,10 +1937,11 @@ def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
         and (not family or not routed["prediction_reuse"]["design"]["reused"]),
         f"{name}: a host-dependent device route reused the approved predictions",
     )
-    _require(routed_bytes == full_bytes, f"{name}: the device fallback sent other PUB bytes than the full path")
+    _require(routed_bytes == reused_bytes, f"{name}: the device fallback sent other PUB bytes than the reuse run")
 
-    # A changed seed or source digest falls back to the full path, which
-    # refuses exactly as before.
+
+def _submit_changed_inputs(name: str, submit: SubmitReuse, family: bool) -> None:
+    """A changed seed or source digest falls back to the full path, which refuses exactly as before."""
     changes: tuple[tuple[str, list[str], str, Any], ...] = (
         ("seed", ["--seeds", "2"], "policy differs", None),
         ("digest", [], "experiment_digest differs", patch.object(live_run, "experiment_digest", lambda: "0" * 64)),
@@ -1943,7 +1971,17 @@ def _submit_reuse_case(name: str, argv: list[str], directory: Path) -> None:
         )
 
 
-def _verify_submit_reuse_herald() -> None:
+# Independent phase sets of the heralded reuse contract; ci/gates.json runs each as its own case of core-570, and
+# each case repeats the approved dry run and its reuse submission.
+SUBMIT_REUSE_HERALD_CASES: dict[str, tuple[str, ...]] = {
+    "reuse_and_full_path": ("full",),
+    "moved_value_refusals": ("moved",),
+    "device_route_fallback": ("device",),
+    "changed_input_refusals": ("changed",),
+}
+
+
+def _verify_submit_reuse_herald(cases: list[str] | None = None) -> None:
     """A heralded n21-orbit-rca submission reuses its approved design and predictions without simulating.
 
     approved_family_design rebuilds the family contracts with the herald
@@ -1989,7 +2027,13 @@ def _verify_submit_reuse_herald() -> None:
         patch.object(live_run, "QiskitRuntimeService", lambda: service),
         tempfile.TemporaryDirectory(prefix="gororoba-submit-reuse-herald-") as directory,
     ):
-        _submit_reuse_case("n21-orbit-rca-herald", family, Path(directory))
+        if cases is None:
+            _submit_reuse_case("n21-orbit-rca-herald", family, Path(directory))
+        for case in cases or []:
+            _submit_reuse_case(f"n21-orbit-rca-herald-{case}", family, Path(directory), SUBMIT_REUSE_HERALD_CASES[case])
+            print(f"QPU planning herald reuse case {case}: pass")
+    if cases is not None:
+        return
     print(
         "QPU planning: a heralded n21-orbit-rca submission whose inputs match the approved record reuses its "
         "lifted contracts, design and predictions without simulating, and a moved value refuses"
@@ -3395,6 +3439,12 @@ if __name__ == "__main__":
         help="run only the heralded n21-orbit-rca approved-design reuse submission contract",
     )
     parser.add_argument(
+        "--case",
+        action="append",
+        choices=tuple(SUBMIT_REUSE_HERALD_CASES),
+        help="with --submit-reuse-herald, run one named phase set after the shared dry run and reuse; repeatable",
+    )
+    parser.add_argument(
         "--serialized-noise",
         action="store_true",
         help="run only the retained noise-serialization equivalence contract",
@@ -3418,6 +3468,8 @@ if __name__ == "__main__":
         help="run only the n21-orbit-rca ground Ramsey sweep contract",
     )
     parsed = parser.parse_args()
+    if parsed.case and not parsed.submit_reuse_herald:
+        parser.error("--case selects a --submit-reuse-herald phase set")
     if parsed.ground_ramsey_sweep:
         _verify_ground_ramsey_sweep_only()
     elif parsed.ground_control_split:
@@ -3445,6 +3497,6 @@ if __name__ == "__main__":
     elif parsed.submit_reuse:
         _verify_submit_reuse()
     elif parsed.submit_reuse_herald:
-        _verify_submit_reuse_herald()
+        _verify_submit_reuse_herald(parsed.case)
     else:
         _verify()

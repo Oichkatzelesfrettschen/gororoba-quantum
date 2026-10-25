@@ -31,13 +31,13 @@ acquisition of every provider:
 | Evidence class | Status | Claim records |
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
-| exact finite certificate | established | 23 |
-| exploratory reanalysis | exploratory | 67 |
+| exact finite certificate | established | 24 |
+| exploratory reanalysis | exploratory | 68 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
-| mathematical claim | established | 21 |
-| mathematical claim | open | 3 |
-| numerical or stochastic simulation | established | 9 |
+| mathematical claim | established | 23 |
+| mathematical claim | open | 1 |
+| numerical or stochastic simulation | established | 10 |
 | preregistered emulator control | established | 10 |
 | preregistered hardware inference | established | 53 |
 | preregistered hardware inference | superseded | 1 |

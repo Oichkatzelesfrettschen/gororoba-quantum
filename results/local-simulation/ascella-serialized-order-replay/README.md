@@ -5,8 +5,10 @@ computation on local Perceval SLOS and Naive backends with network connections
 forbidden. Both backends complete eight settings with 65,536 simulated samples.
 Sixteen probability comparisons agree with the frozen manifest within 4.45e-16.
 
-The [retained report](replay.json) binds its producer, dependencies and both
-failed and successful request bodies by SHA-256. The producer compares the two
+The [retained report](replay-ordered-map-cancel.json) binds its producer, dependencies and both
+failed and successful request bodies by SHA-256; it differs from the
+[first report](replay.json) only in the digests of the producer and of `parallel.py`,
+whose `ordered_map` cancels its queued chunks once an item raises. The producer compares the two
 bodies after removing only the top-level `process_id`. Every other request
 field must match. The [hardware acquisition](../../quandela/runs/ascella-mosaiq-update-order-retry/README.md)
 separately establishes successful physical sampling. The local replay tests

@@ -115,9 +115,20 @@ reductions instead.
   `2 gamma c_S` and mixer angle `2 beta` is a multiple of pi/36, the Tuna
   rotation grid ([quantum_inspire/README.md](../quantum_inspire/README.md)).
 
+## Table 1 through k = 20
+
+The same search, run over every even difference from 2 to Ziller's `h(k)`
+for `k = 1..20`, reproduces the missing set and `N_min(k)` of every row of
+Table 1: 20, 32, 86, 88, 98, 146, 166, 170 and 172 are the only missing
+differences, each excluded exhaustively at the first level its range
+reaches, and every other difference has a verified cover
+([ziller_table.json](../../evidence/primorial_cover/ziller_table.json); method
+in the [evidence README](../../evidence/primorial_cover/README.md#ziller-table-1-through-k--20)).
+
 ## Limits
 
-The certificates settle four finite instances. They prove no bound on the
+The certificates settle four finite instances, and the table reproduction
+the rows `k <= 20` below Ziller's `h(k)`. They prove no bound on the
 branching depth needed as `k` grows, no growth law for the smallest missing
 gap or the count of distinct gaps, and nothing about Ziller's Conjecture 4.1
 (`h(k - 1) <= N_min(k)`). A counterexample to that conjecture needs only a

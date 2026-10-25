@@ -2075,15 +2075,15 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Static families of the provider's returned mesh model only, with pure-state propagation; the prediction variance is the local quadratic approximation at each fold mode, the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference, and the reading criterion (30 or more on 10 keeps the shortfall) was fixed in plan ascella-configuration-holdout-training-only before the run. The analysis was added after the preregistered table and decides nothing; it does not show that the underlying errors are independent between configurations or exclude a correlated or drive-dependent shared error. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
+      "boundary": "Static families of the provider's returned mesh model only, with pure-state propagation and the block light unclipped (configuration-holdout.json, built with the light clipped at 1e-9, holds one combined-family fold in a local mode 4.36 higher in negative log posterior); the prediction variance is the local quadratic approximation at each fold mode, the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference, and the reading criterion (30 or more on 10 keeps the shortfall) was fixed in plan ascella-configuration-holdout-training-only before the run. The analysis was added after the preregistered table and decides nothing; it does not show that the underlying errors are independent between configurations or exclude a correlated or drive-dependent shared error. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
           "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
         },
         {
-          "path": "docs/evidence/ascella-order-coefficients/configuration-holdout.json",
-          "sha256": "c38ad052a38eab81e8c2f17f8a7d0d4bb2a3698d8c484250d1cf903bac443268"
+          "path": "docs/evidence/ascella-order-coefficients/configuration-holdout-unclipped-light.json",
+          "sha256": "4c16311629a1b9de032139db4c014c0f6c04d101ec7620572feeaba937ff078f"
         }
       ],
       "documents": [
@@ -2115,8 +2115,8 @@
           "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
         },
         {
-          "path": "docs/evidence/ascella-order-coefficients/heater-drive-holdout.json",
-          "sha256": "426c7402c38afd4ffbd30aa3af26d4078d17bcbb579c82c17450f3b5adc4cde0"
+          "path": "docs/evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json",
+          "sha256": "fcf6a9dd7c628707f28d6c7059e9beabd83a51917e9f05f88806167854d1dfed"
         }
       ],
       "documents": [
@@ -2131,6 +2131,45 @@
       "assumptions": [],
       "depends_on": [
         "ascella-signed-coherence-configuration-holdout"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-drive-response",
+      "statement": "A per-heater drive-dependent phase error of the returned 12-mode Ascella meshes (shifted Legendre polynomials of the drive to order 1 or 2, or 1, cos and sin of the returned phase to order 1 or 2; 252 to 630 coefficients under N(0, tau^2) priors) reproduces job-00 and job-01 (job-01 held-out X 4.0 to 5.4 and Y 6.7 to 12.6 on 10, X0 + Xc2 -0.026 to -0.028) but predicts no left-out configuration it can be judged on. Refitted from the zero start on the training configurations alone, the order-1 polynomial keeps the shortfall on X (standardized sum 32 on 10, Y 28), and the four richer families predict with a median prediction variance 6.5 to 485 times the counting variance and sums of 1 to 15, so these data leave them undetermined; in counting variance alone every family does worse than the returned mesh (X 386 to 564 against 343, Y 94 to 225 against 75).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Families of the provider's returned mesh model only, with the background, multinomial and pure-state propagation of the static fits; the training-only folds, the prediction variance as the local quadratic approximation at each fold mode and the reading criterion (30 or more on 10 keeps the shortfall, below 20 with a median variance ratio above 1 reads as weakly identified) are those of plan ascella-configuration-holdout-training-only, fixed before this run. The folds share their training data, so the sums are descriptive and carry no chi-square reference. The families were added after the preregistered table and decide nothing. The posteriors hold several modes and the one an L-BFGS path reaches follows BLAS and SIMD rounding, so the record is written under the OpenBLAS Haswell kernel and numpy's x86-64-v3 dispatch that ci/run_gates.py and ci/pr_checks.sh set, and replays within 1e-3 relative plus 1e-8 absolute under those kernels.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+          "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/drive-response.json",
+          "sha256": "cceba0b5229f239585472c69fadbf6201d5e318f00b5b5e858faa3d8b2fb66c8"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-drive-response-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-configuration-holdout",
+        "ascella-signed-coherence-heater-drive-holdout"
       ],
       "supersedes": [],
       "superseded_by": null
@@ -2585,16 +2624,26 @@
     },
     {
       "id": "a5-stiefel-universal",
-      "statement": "Moreno Section 5 asks whether every A_5 Stiefel element (a, b), with pure orthogonal equal-norm entries in A_4, is a zero divisor; the universal A_5 question remains open.",
+      "statement": "Every nonzero A_5 Stiefel element (a, b), with a, b pure, orthogonal and of equal norm in A_4, is a zero divisor with nullity at least 4, answering Moreno's Section 5 question affirmatively under the cd_core convention: for doubly pure y and z = p + i q, the bordered matrix A(z, t) = [[0, -t^T], [t, C_z]] has Pf A = -(z.t) Q(z) G(z) over Z[z, t], rank_R L_y = 2 rank_C A(z, conj z), and Q(z) = 0 on the Stiefel set, so Pf(L_a + i R_b) vanishes on the whole Stiefel set.",
       "domain": "algebra",
       "evidence_class": "mathematical claim",
-      "status": "open",
-      "boundary": "The 32 exact rational points and the 96 modulo-p identity-test points support it and prove nothing beyond themselves; by the Pfaffian reduction any point where Pf(L_a + i R_b) is nonzero refutes it and entails an open dense set of such points, and a proof needs Pf(L_a + i R_b) to vanish on the whole Stiefel set.",
-      "evidence": [],
-      "documents": [
-        "docs/notes/math-0512517.md"
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md. The gate checks over Z[z, t] every coefficient of the 15 cofactor identities P_j = Q G z_j and of Pf A(z, t) = -(z.t) Q G, and the transport on all 30 imaginary basis elements against all 32 basis vectors; no density, genericity or random-point step enters. An independent route checks z (z x) = -Q x on the eight vectors (h, 0), (0, h), h in {1, u, v, uv}, which with irreducibility of the quadric Q = 0 gives the same bound. The statement is under the cd_core doubling convention and is not formalized in Rocq. Literature: on the slice H_5^perp (y_0 = y_8 = y_16 = y_24 = 0) the Stiefel conditions equal C-orthogonality of the pair {a, b} of Biss, Christensen, Dugger and Isaksen (math/0702075, Theorem 1.5), which already makes every Stiefel element there a zero divisor for every n; a search of arXiv, the citations of math/0512517 and zbMATH Open on 2026-10-25 found no answer for the full A_5 Stiefel set, whose e_8 and e_24 directions that theorem leaves out. Koebisu's criterion D_14 = 0 (arXiv 2608.08232) decides zero divisors in A_5 without evaluating D_14 on the Stiefel set; the factorization here gives D_14 = N |Q G|^2 on doubly pure elements.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+          "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+        }
       ],
-      "gates": {},
+      "documents": [
+        "docs/evidence/a5-stiefel-pfaffian-germs/README.md",
+        "docs/notes/math-0512517.md",
+        "docs/evidence/moreno_stiefel/README.md"
+      ],
+      "gates": {
+        "core-690": "replay",
+        "core-691": "admission"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
@@ -2606,7 +2655,7 @@
       ],
       "supersedes": [],
       "superseded_by": null,
-      "proof_origin": "unproved-open"
+      "proof_origin": "repository-written"
     },
     {
       "id": "a6-stiefel-witness",
@@ -5657,8 +5706,8 @@
       "statement": "At every certified witness of an A_5 rank-locus family with a non-zero-divisor entry ({a, 0} at nullity 12, b in W(a) at nullity 8, the two nullity-4 families), D_(5,k) has local dimension equal to its tangent bound, two above the family, with the extra directions leaving H_5^perp through e_8 and e_24.",
       "domain": "geometry",
       "evidence_class": "mathematical claim",
-      "status": "open",
-      "boundary": "The certificate bounds the local dimension between the family dimension and the tangent bound, and the tangent bound is 15 at three further {a, 0} points, two with non-parallel halves, as at the witnesses. The second- and third-order compatibility tests are vacuous at all 12 witnesses (every velocity in T_F + span{e_8, e_24} passes both), and exact half-rotation curves carry e_8 and e_24 at the nonzd-axis and nonzd-nonzd-locus witnesses only. At nullity 12 the composite of both half turns over the {a, 0} family leaves D_(5,12) (rank 32 at an exact rational point), and one turn drops to nullity 4 from generic family points, so that candidate piece fails while the local dimension stays undecided. Curves bound no local dimension from below, so a certified piece of the larger dimension through a witness would establish the statement and equations cutting out D_(5,k) below the tangent bound near a witness would refute it. At the nullity-12 witnesses, claim a5-nullity12-gap-extended-precision finds near-rank-20 points off the family that persist at 110 digits, which bound nothing because closeness to a rank-20 matrix places no exact locus point nearby. Claim a5-tangent-bound-not-linear shows exactly that T(x) is never inside the closed rank cone R_k, so the cone over a piece of the tangent-bound dimension through a witness would be curved. Claim a5-schur-germ-unobstructed finds the excess Schur-complement equations vanishing through order 63 on the smooth germ of the tangent-bound dimension at all 12 witnesses, so the statement there is equivalent to their exact vanishing on that germ, which an ideal-membership certificate or an explicit parameterization of the germ would establish. Claim a5-nullity12-quadric-germ establishes the statement for the {a, 0} family at its three nonzd-axis witnesses: the germ of R_12 there is the quadric cone V, of local dimension 15 on the unit sphere with e_8 and e_24 tangent, so the nullity-8 and nullity-4 families carry the open part.",
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md, local to the twelve recorded witnesses 1, 4, 5, 6, 8, 11, 12, 13, 15, 18, 19 and 20 of rank_locus_local_dimension. At each, exact integer kernels give the family nullity, the Schur tangent cone dimension 16, 22 or 28, e_8 and e_24 in T(x) and dim T(x) cap H_5^perp = dim T(x) - 2, and a smooth piece of that dimension through x lies in R_k: the quadric cone V at 1, 8, 15 (a5-nullity12-quadric-germ); the Stiefel cone Q = 0 at 6, 13, 20 and the quartic G = 0 at 5, 12, 19, each with real Jacobian rank 4 and inside R_4 by Pf A = -(z.t) Q G; at 4, 11, 18 the image of s exp(D_X) z(k) for the 14 octonion derivations D_X on both halves and a degree-2 curve z(k) through x whose rank C_z <= 10 holds identically by 13 exact points against degree 12, with complex orbit rank 11. The Schur sandwich makes each piece the germ of S_k. The family dimensions are imported from the local-dimension record; the result covers no point off these witnesses, no covering of D_(5,4), D_(5,8) or D_(5,12), and is not formalized in Rocq.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
@@ -5671,19 +5720,26 @@
         {
           "path": "docs/evidence/rank_locus_rotation_composite/audit.json",
           "sha256": "e5bb1f6f9084990c9cb97b15b5edee86ac97980b79a95e35014e1fb1f303c30d"
+        },
+        {
+          "path": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+          "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
         }
       ],
       "documents": [
         "docs/notes/rank_locus_two_dimension_gap.md",
         "docs/evidence/rank_locus_local_dimension/README.md",
         "docs/evidence/rank_locus_second_order/README.md",
-        "docs/evidence/rank_locus_rotation_composite/README.md"
+        "docs/evidence/rank_locus_rotation_composite/README.md",
+        "docs/evidence/a5-stiefel-pfaffian-germs/README.md"
       ],
       "gates": {
         "core-553": "replay",
         "core-554": "admission",
         "core-585": "replay",
-        "core-586": "replay"
+        "core-586": "replay",
+        "core-690": "replay",
+        "core-691": "admission"
       },
       "acquisitions": [],
       "assumptions": [
@@ -5691,11 +5747,13 @@
       ],
       "depends_on": [
         "a5-rank-locus-local-dimension",
-        "nullity-twelve-cone"
+        "nullity-twelve-cone",
+        "a5-nullity12-quadric-germ",
+        "a5-stiefel-universal"
       ],
       "supersedes": [],
       "superseded_by": null,
-      "proof_origin": "unproved-open"
+      "proof_origin": "repository-written"
     },
     {
       "id": "qi-tuna17-zero-divisor-common-response",
@@ -9496,8 +9554,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-5/result.json",
-          "sha256": "3712748723939778d6fd1f6c695bb4901c4f2ded773f27471f2706f74b98ce29"
+          "path": "docs/evidence/algebra-device-conjectures-7/result.json",
+          "sha256": "7fa63ce87a541b1ad61143f6e42e847eec35355c77b894e45ca0638beaec068f"
         }
       ],
       "gates": {
@@ -9651,12 +9709,41 @@
       "superseded_by": null
     },
     {
+      "id": "primorial-ziller-table-reproduction",
+      "statement": "Exhaustive restricted-cover search over every even difference from 2 to h(k) for k = 1..20 reproduces the missing differences and N_min(k) of every row of Ziller's Table 1 (arXiv 2007.01808v1, p. 12): the only missing differences are 20 (k = 6), 32 (k = 8), 86 and 88 (k = 14), 98 (k = 15), 146 (k = 19) and 166, 170 and 172 (k = 20), each excluded over 135 to 180 branch assignments of 3, 5, 7 and 11, and each of the other 628 cells has a verified cover; h(k) is in D(k) in every row.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Rows k = 1..20 only, with Ziller's h(k) taken as the range bound: the search shows h(k) in D(k) but not that it is the largest difference. Exclusions rest on the depth-first search and its capacity pruning, not on a separately checkable certificate; no bearing on rows k > 20 or Conjecture 4.1.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/ziller_table.json",
+          "sha256": "a96fb0f2450978ea4f0716ab57116e7456a0c6fd88cc0c7f001e75624bb81e38"
+        }
+      ],
+      "documents": [
+        "docs/notes/topics/primorial-cover-defects.md",
+        "docs/evidence/primorial_cover/README.md",
+        "docs/notes/papers/2007.01808.md"
+      ],
+      "gates": {
+        "core-primorial-ziller-table-replay": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "primorial-cover-defect-certificates"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "primorial-cover-noise-null-subtraction",
       "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00 on its best and median three-qubit paths, with every arm ALAP scheduled, null-subtracted phase-gradient tomography of the eight-CNOT gap-88 cost recovers every coefficient within 0.0032 of its exact value (identification radius 1/16) at 2,803 and 3,169 shots per setting, the budget carrying each mean's variance through the assignment inversion and the null arm's phase variance; the gap-88 repair contrast reads -0.499 against -0.5, the gap-20 Grover quotient reads its marked label at 0.963 to 0.984, and the gap-86 repair leaves every compiled law unchanged. A noise-free CZ conditional phase of 0.02 to 0.1 rad per CZ biases the coefficients by 0.057 to 0.287 with cycle residuals at most 0.0103, and subtracting the zero-angle null arm reduces the bias to 0.0005 to 0.0128; a 10 to 30 kHz detuning of one path qubit biases them by 0.015 to 0.233, reaching multi-body coefficients through the parities its wire carries, and null subtraction leaves at most 0.0022; an sx amplitude error of 0.002 to 0.01 biases them by at most 0.0007.",
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
       "status": "established",
-      "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshot) plus noise-free CZ-phase, sx-amplitude and single-qubit detuning scenarios; static ZZ and axis tilt are unsimulated, crosstalk and leakage are outside it, and no hardware run exists.",
+      "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshot) plus noise-free CZ-phase, sx-amplitude and single-qubit detuning scenarios; static ZZ and axis tilt are simulated noise-free in primorial-null-residuals-zz-tilt, crosstalk and leakage are outside it, and no hardware run exists.",
       "evidence": [
         {
           "path": "docs/evidence/primorial_cover/noise.json",
@@ -9678,6 +9765,38 @@
       "assumptions": [],
       "depends_on": [
         "primorial-cover-defect-certificates"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "primorial-null-residuals-zz-tilt",
+      "statement": "On the best and median three-qubit ibm_kingston paths of the primorial noise record, the compiled gap-88 phase-gradient arms and their zero-angle null arms carry identical sx, x, cz and delay streams, differing only in zero-duration rz. Noise-free static ZZ of 2 to 20 kHz on both couplers (partner-in-0 and symmetric frames) biases the raw coefficients by up to 0.078 and the null-subtracted ones by at most 0.00038; a drive-axis tilt of 0.005 or 0.02 rad on one or all path qubits biases them by up to 0.174 raw and at most 0.0055 null-subtracted, both entering at second order; tilt at each path qubit's sx gate-error bound (0.021 to 0.036 rad) in the worst of eight sign patterns leaves 0.0147 (best) and 0.0159 (median) null-subtracted. Every residual stays below one standard deviation of the noisy null-subtracted estimate at the retained budget (0.0188 at 2,803 and 0.0186 at 3,169 shots per setting), so the circuits pose no primorial-specific device question on Heron r2.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Noise-free statevector scenarios of the gap-88 cost on the snapshot's Heron r2 durations, one family at a time; the gate-error tilt bound charges the whole sx error to tilt and leaves a margin of 0.78 and 0.85 standard deviations; crosstalk, leakage and combined families are outside it. The IQM and Tuna-17 rows of the hardware decision rest on the provider guides, not on compiled circuits, and no hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/null_residuals.json",
+          "sha256": "fdda4701dc8b33fb1122c53658f12a4b4b3870d05cba8e491f684bc722ffabbe"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/noise.json",
+          "sha256": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/README.md",
+        "docs/design/primorial-cover-defect-probes.md"
+      ],
+      "gates": {
+        "core-primorial-null-residuals-replay": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "primorial-cover-noise-null-subtraction"
       ],
       "supersedes": [],
       "superseded_by": null

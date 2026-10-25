@@ -1,0 +1,6 @@
+twelve x configs 10 chi2 47.731 p 0.0 p if /1.43 0.0002
+twelve y configs 10 chi2 15.664 p 0.10966 p if /1.43 0.3611
+twelve direct configs 10 chi2 37.288 p 5e-05 p if /1.43 0.0036
+block x configs 10 chi2 3.329 p 0.97259 p if /1.43 0.9932
+block y configs 10 chi2 8.35 p 0.59474 p if /1.43 0.8286
+block direct configs 10 chi2 25.504 p 0.00447 p if /1.43 0.0578

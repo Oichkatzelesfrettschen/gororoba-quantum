@@ -1,0 +1,12 @@
+job-00 X0 0.475054 Ys2 0.485083
+  gain: chi2 152.406 df 8 p 6.17e-29  inflated by 1.44: chi2 105.8 p 2.7e-19
+  linear: chi2 138.859 df 6 p 1.74e-27  inflated by 1.44: chi2 96.4 p 1.4e-18
+  affine: chi2 44.450 df 4 p 5.17e-09  inflated by 1.44: chi2 30.9 p 3.3e-06
+  affine restricted to six non-fourth-harmonic coefficients chi2 0.0
+  fourth-harmonic coefficients alone chi2(4) 44.45 p 5.173764508556764e-09
+job-01 X0 0.475745 Ys2 0.483446
+  gain: chi2 355.051 df 8 p 7.56e-72  inflated by 1.44: chi2 246.6 p 9.2e-49
+  linear: chi2 316.065 df 6 p 2.95e-65  inflated by 1.44: chi2 219.5 p 1.3e-44
+  affine: chi2 97.225 df 4 p 3.83e-20  inflated by 1.44: chi2 67.5 p 7.6e-14
+  affine restricted to six non-fourth-harmonic coefficients chi2 0.0
+  fourth-harmonic coefficients alone chi2(4) 97.225 p 3.8326711148349526e-20

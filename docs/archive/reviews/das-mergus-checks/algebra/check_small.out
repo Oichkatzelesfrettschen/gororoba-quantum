@@ -1,0 +1,113 @@
+{
+ "assoc_witness": {
+  "ab": {
+   "5": "2",
+   "14": "-2"
+  },
+  "bc": {
+   "6": "-2",
+   "13": "-2"
+  },
+  "assoc": {
+   "7": "-8",
+   "12": "8"
+  },
+  "ratio_squared": "16"
+ },
+ "assoc_witness_mutation_c=e2+e9_ratio_squared": "0",
+ "assoc_max_over_two_term_units_spectral": 4.000000000000001,
+ "assoc_random_ascent_max": 3.9260774351341206,
+ "kappa4_at_e1+e10_squared": 2.0000000000000004,
+ "octonion_assoc_random_max": 1.9392624507818785,
+ "m2_equals_opposite_product_all_64": true,
+ "m2_assoc_1_2_4": {
+  "7": "2"
+ },
+ "T3_210_triples": {
+  "scalar": 42,
+  "imaginary": 168,
+  "not_single_coeff_2": 0
+ },
+ "assoc_decomposition_512": {
+  "holds": 512,
+  "mutation_drop_p_assoc_holds": 176
+ },
+ "coefficient_extension_zd": true,
+ "thm4.2_degree_n2..6": true,
+ "thm4.2_leading_layer_n3..6": true,
+ "prop4.5_right_degree_n2..6": true,
+ "eq4.16_fourier_zero_n2..6": true,
+ "thm4.3_assoc_degree_n3..6": true,
+ "census_n6": {
+  "1": 21,
+  "2": 84,
+  "3": 360,
+  "4": 1488
+ },
+ "census_formula": {
+  "N_d(d=2..4)": [
+   84,
+   360,
+   1488
+  ],
+  "top_n8": 24384,
+  "fraction_D256": "64/85"
+ },
+ "prop5_formula_n3..8": true,
+ "eq5.2_monomial_counts": true,
+ "prop6.1_walsh_n3..8": true,
+ "n8_overlap_tracedist2_central": [
+  "31/32",
+  "63/1024",
+  "961/1024"
+ ],
+ "group_order_n2_n3_n4": [
+  8,
+  128,
+  4096
+ ],
+ "group_order_formula_n3_n4": [
+  128,
+  4096
+ ],
+ "conference_D2..64": true,
+ "dim16_anticommuting_pairs": [
+  63,
+  42
+ ],
+ "gram_e1+e10": [
+  0.0,
+  2.0,
+  4.0
+ ],
+ "Delta_e1+e10": 0.5,
+ "pure_embedding_spectrum_doubles": true,
+ "discriminator_out3_right_left": [
+  0.12499999999999997,
+  0.0
+ ],
+ "E0_pauli_identity": true,
+ "kernel_projector_identity": true,
+ "D14": {
+  "roots": 364,
+  "distinct_proj": 19,
+  "origin": 220,
+  "axial": [
+   22
+  ],
+  "outer": [
+   1
+  ],
+  "same_pairs": 25476,
+  "fraction": "386/1001",
+  "second_moment_52I": true
+ },
+ "hilbert_coeffs": [
+  1,
+  15,
+  98,
+  420,
+  1386,
+  3822
+ ]
+}

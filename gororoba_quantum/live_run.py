@@ -172,6 +172,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "diagnostic_controls.py",
     "qpu_cases.py",
     "qpu_planning.py",
+    "qrng_seeds.py",
     "qubit_baseline.py",
     "rank_attachments.py",
     "rank_charts.py",

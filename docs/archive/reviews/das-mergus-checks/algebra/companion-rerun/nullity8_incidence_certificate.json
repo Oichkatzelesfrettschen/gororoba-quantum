@@ -1,0 +1,42 @@
+{
+  "all_order_twelve_principal_pfaffians": 455,
+  "cached_subpfaffians": 3218,
+  "canonical_z": "(a e1, d, b e1+c(e2+i e3))",
+  "cd_core_sha256": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+  "every_pfaffian_is_exactly_Q_times_recorded_quotient": true,
+  "gaussian_relation": "i^2+1",
+  "isotropy_relation": "d^2+a^2+b^2",
+  "nonzero_before_isotropy_reduction": 175,
+  "ordered_quotient_coefficients_sha256": "ae70aafa845f50b17e9c9d1abe58dc7da64317840dc670c93b267ea741f0d8c1",
+  "producer_sha256": "c1b3beb5d562720c18325f4c814baefa2c157fee6296ac067fdf5a200e0049c9",
+  "python_flint_version": "0.9.0",
+  "python_version": "3.14.7",
+  "rank_ten_anchor": {
+    "a": "1",
+    "b": "0",
+    "c": "1",
+    "cross_rank": 10,
+    "d": "i",
+    "nonzero_order_ten_pfaffian": {
+      "indices_1_based": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        12,
+        14
+      ],
+      "pfaffian": "2*I"
+    }
+  },
+  "reduction_justification": "The monic relations have relatively prime leading monomials i^2 and d^2; their reduction computes the stated quotient ring exactly.",
+  "repository_commit": "ec75554a1af800496d99c80ab23022e83c5e20ea",
+  "ring": "Z[i,d,a,b,c] with lex order i>d>a>b>c",
+  "schema": "das-mergus-nullity8-incidence-pfaffian-certificate-v1",
+  "scope": "Coefficientwise canonical rank bound. Extending to the eigenbundle incidence family uses the written G2(C) equivariance and SL3 transitivity argument. This is not Rocq formalization.",
+  "sympy_version": "1.14.0"
+}

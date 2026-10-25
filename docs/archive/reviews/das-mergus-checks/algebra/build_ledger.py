@@ -1,0 +1,195 @@
+"""Build the delivery-claim-ledger-v1 JSON for the DAS MERGUS algebra/geometry review."""
+
+import json
+import sys
+
+REG = "90339b6 (registry, current main); cd_core byte-identical at ec75554 and main"
+EC = "ec75554 (cd_core, witness records)"
+S = "das-mergus-checks/algebra/"
+claims = []
+
+
+def add(id_, loc, st, kind, meth, fals, indep, verdict, ev, opp, action="none", at=EC):
+    claims.append({"id": id_, "locator": loc, "statement": st, "kind": kind, "checked_at": at, "method": meth,
+                   "falsifier": fals, "independent": indep, "verdict": verdict, "evidence": ev,
+                   "opposition": opp, "action": action})
+
+
+# ---------------- README / abstract principal results ----------------
+add("P1-membership-QG", "README.md Principal results para 1; chapters/00-abstract.md para 2; 03-rank-geometry.md Theorem G12 (lines 847-922)",
+    "Every real zero divisor of A_5 is doubly pure, and for doubly pure y, det_R L_y = N^4 |Q(z) G(z)|^4 with z=p+iq, Q=z^Tz, G=Q^2-4Delta; real zero-divisor set = {Q=0} u {G=0}.",
+    "theorem", "Randomized exact polynomial identity test: det L_y from cd_core signs (flint) vs N^4|QG|^4 at 30 random integer points in [-1e6,1e6] and 200 points in [-1,1]; three mutations (one flipped structure constant, swapped coordinate pairing, mu^2 -> -mu^2); purity reduction via L_e16 anticommutation on 30 units and 30 invertible non-pure points; companion C_z/transport/Pfaffian code not used.",
+    "Any doubly pure point where det L_y != N^4|QG|^4, or a zero divisor with y0 or y16 nonzero.", True, "confirmed",
+    S + "check_det_membership.py -> check_det_membership.out: 30/30 and 200/200 agree; each mutation disagrees 10/10; 30/30 anticommute; 20/20 and 10/10 non-pure points invertible. Schwartz-Zippel bound per large-range point < 1.6e-5.",
+    "Membership itself is published: Koebisu 2608.08232 Theorem 5.3/Cor. 7.1 (det L_x = N^2 E7^2, E7=0 iff zero divisor) and BDI Cor. 9.3 (doubly pure), both already in docs/notes. The new content is the closed form E7|doubly-pure = N|Q|^2|G|^2, i.e. the complexified sedenion factors D1, D2 (Koebisu Thm 3.7/3.9) evaluated at z=p+iq. 'Central new exact result' over-states novelty; 'explicit two-component factorization of the known 32D determinant factor' is the supported reading.",
+    "new-evidence-candidate", REG)
+add("P2-stiefel-universal", "README.md Principal results; 00-abstract.md; 03-rank-geometry.md Theorem G10 (lines 708-795)",
+    "Every A_5 Stiefel element (pure halves, equal norm, orthogonal) has nullity >= 4.", "theorem",
+    "Step-by-step audit of the G10 written proof (Artin, quaternion doubling over C, z^2=-Q, alternativity, zw+wz=-2z.w, density on the irreducible quadric, repo-certified transport); 40 random Gaussian-rational points of Q=0 by stereographic projection with exact nullity; decisive chain: the large-range determinant identity (P1) with the registry identity |det L_(a,b)| = |Pf(L_a + i R_b)|^4 (a5-stiefel-pfaffian-reduction) gives |Pf| = N|QG|, which vanishes on Q=0; corroboration: det_C(L_a + i R_b) = (N conj(QG))^2 at 8 small-range exact points (weak Schwartz-Zippel bound); A_6 random Stiefel points invertible, consistent with a6-stiefel-generic-invertibility.",
+    "A Stiefel point with nullity 0 (equivalently Pf(L_a + i R_b) != 0).", True, "confirmed",
+    S + "check_det_membership.py: stiefel_random_nullities {4: 40}; a6_random_stiefel_nullities [0,0,0]; " + S + "check_pf_crosslink.py: ratio to (N conj(QG))^2 = 1 at 8/8 points.",
+    "Registry a5-stiefel-universal is open and states that a proof needs Pf(L_a+iR_b) to vanish on the Stiefel set; the cross-link shows exactly that. Literature priority (Moreno's question) is unchecked; the proof imports standard alternativity facts and is not formalized.",
+    "registry-correction", REG)
+add("P3-twelve-germs", "README.md Principal results; 00-abstract.md; 03-rank-geometry.md table after G.I11 (lines 1124-1133)",
+    "At all twelve non-zero-divisor gap witnesses the rank locus germ has the tangent-bound dimension (unit 15, 21, 27, 27).", "theorem",
+    "At rows 1,8,15 (V), 4,11,18 (incidence), 5,12,19 (G=0), 6,13,20 (Q=0) of rank_locus_local_dimension/result.json: exact membership in the companion's equations, own exact Jacobian rank of the defining equations, own exact Schur tangent dimension {h: N_l^T L_h N_r = 0}, exact nullity; global inclusion from P1 (nullity 4), random-point checks (nullity 8), and repo claim a5-nullity12-quadric-germ (nullity 12).",
+    "A witness where Jacobian rank and Schur tangent dimension differ, or where the smooth piece is not in the rank locus.", True, "confirmed",
+    S + "check_witnesses.py -> check_witnesses.out: Jacobian ranks 16/10/4/4 and Schur tangent cone dims 16/22/28/28 at every witness; nullities 12/8/4/4. Nullity-8 lower bound: " + S + "check_chart_dim.py: holomorphic chart Jacobian has complex rank 11 (real 22) at rows 4, 11, 18, reproducing each witness to 4e-16. Rows 1, 8, 15 are e1+e25, e2+e26, e3+e27.",
+    "Rows 1,8,15 are already established by a5-nullity12-quadric-germ. The nullity-8 inclusion imports G2(C) transitivity and the companion's 455-Pfaffian certificate (reproduced, not independently re-derived); random exact chart points support it. Registry a5-nonzero-divisor-two-dimension-gap (open) would close at its twelve witnesses; it stays a finite-witness statement.",
+    "registry-correction", REG)
+add("P4-nullity8-construction", "00-abstract.md para 2; 03-rank-geometry.md Lemma G15/Theorem G16 (lines 1013-1096)",
+    "The octonion eigenvector incidence family {Q=0, u^v^(u x v)=0} (U != 0) lies in R_8 and is a smooth 22-dimensional chart at witnesses 4,11,18.", "theorem",
+    "15 exact Gaussian-rational chart points (U=-1, n = a + i w x a eigenvector, rational lambda, random complex scaling) and 5 float points at generic complex u: nullity 8 every time; chart immersion rank 11 (complex) at rows 4, 11, 18 by central differences; witness rows checked as in P3.",
+    "A chart point of nullity 4 or 0.", True, "confirmed",
+    S + "check_strata.py: incidence_chart_nullities {8: 15}; " + S + "check_cz_ranks.py: incidence (nu, rank C_z) = (8, 10) x5.",
+    "Universal inclusion proof = imported transitivity (MacDonald; Asok-Hoyois-Wendt) + companion certificate; my evidence is randomized. 'One quadric and 35 quartics' is correct only on the open chart U != 0, n != 0, as the chapter states.")
+add("P5-singular-locus", "README.md para 2; 00-abstract.md para 3; 03-rank-geometry.md Theorem G6 (lines 394-431), (G.37) line 518",
+    "Sing(V) = S+ u S-, S+- = {(w,0,+-iw): w^Tw=0}; nullity 16 on Sing V minus 0 and 12 on V_reg.", "theorem",
+    "Hand re-derivation of the chart gradient; exact nullity at 10 random isotropic points of S+- and 15 rational-chart points of V; control lambda=2i at isotropic w (regular, expect 12).",
+    "A point of S+- with nullity 12 or a regular point with nullity 16.", True, "confirmed",
+    S + "check_strata.py: S_pm_nullities {16: 10}; V_rational_chart_nullities {12: 15}; control [12,12,12].",
+    "The nullity-16 identification uses BDI Prop. 12.1/Cor. 14.7; the repository already lists e1-e10+e18+e25 as a nullity-16 singular point of V. New relative to the repo: the full singular locus and the A1 transverse type.",
+    "new-evidence-candidate", REG)
+add("P6-double-cover", "README.md para 2; 00-abstract.md para 3; 03-rank-geometry.md Theorem G7 (lines 433-482)",
+    "P(V) is a double cover of P1 x P6 branched over D+ u D- u P1 x Q5, degree 14, omega_X = pi^*O(-1,-6), Gorenstein Fano; the affine cone is not Gorenstein.", "theorem",
+    "Argument audit: projection formula 2*binom(7,1)=14; K_X = pi^*(K_B + L) = O(-2,-7)+O(1,1); Stanley palindromicity for the h-vector 1+7t+6t^2.",
+    "A different degree from the Hilbert series, or a palindromic h-vector.", True, "confirmed",
+    "Hand derivation; Hilbert coefficients 1,15,98,420,1386,3822 recomputed in " + S + "check_small.py.",
+    "Degree 14 and the Hilbert series are already in a5-nullity12-quadric-germ; the double-cover and canonical-class statements are new but are standard consequences.")
+add("P7-regular-kernel", "README.md para 2; 03-rank-geometry.md Corollary G9 (lines 540-610)",
+    "On V_reg the cubic matrix B has complex rank 6 and generates the 12-dimensional kernel; rank 4 on the nonzero singular set; C_z ~ J3 + 6 J2.", "theorem",
+    "Float SVD of C_z and B at 5 random points of V_reg and S+- built from cd_core signs.", "rank B != rank C_z - 2 on V.", True, "confirmed",
+    S + "check_cz_ranks.py: V_reg (12, 8, 6); S_pm (16, 6, 4).", "Float ranks, not exact; the Gram-matrix argument (G.39) is short and checks by hand.")
+add("P8-paths", "README.md para 2; 00-abstract.md para 3; 03-rank-geometry.md (G.I10)-(G.I11) lines 1105-1123, (G.50)-(G.50a) lines 1192-1220",
+    "y(t)=e1+e25+t(e10+e27) has nullity 12 at t=0 and 8 otherwise; y(eps)=e1-e10+e18+e25+eps(e9+e26) has nullity 16 at 0 and 12 otherwise, with the displayed characteristic polynomials.", "computation",
+    "Exact flint characteristic polynomials at 40 rational parameter values each (entries linear in the parameter, coefficient degree <= 32, so 40 agreements prove the identity); mutated factor control.",
+    "Disagreement at any parameter value.", True, "confirmed",
+    S + "check_strata.py: charpoly_G.I11_agree_of_40 = 40, charpoly_G.50a_agree_of_40 = 40, mutated 0/5; nullities [12,8] and [16,12].",
+    "Exact paths are new; they are explicit rank transitions, not a stratification.", "new-evidence-candidate", REG)
+add("P9-associator-4", "README.md para 4; 00-abstract.md para 5; 02-algebra-formalization.md Prop 1.4 (lines 111-147); 05-unified-mathematics.md Theorem 5.3 (lines 67-91)",
+    "The sharp sedenion associator constant sup ||[a,b,c]||/(|a||b||c|) is 4; this repairs an earlier universal constant-2 claim.", "theorem",
+    "Upper bound: audit of Lemma 5.1 (kappa_{n+1} <= sqrt2 kappa_n) and Cor. 5.2. Lower bound: exact cd_core arithmetic on a=e1+e10, b=e4+e15, c=e2-e9; mutation c=e2+e9; exhaustive two-term search; random ascent; octonion control.",
+    "A witness above 4, or the stated witness below 4.", True, "confirmed",
+    "Searched for a constant-2 associator claim: research_state.json, docs/notes (md, tex), docs/evidence, proofs, gororoba_quantum, scripts, docs/sources/open_gororoba/cayley_dickson_evidence_contracts.txt, docs/notes/topics/algebra_measurement_synthesis.tex: none found. " + S + "check_small.py: ab=2e5-2e14, bc=-2e6-2e13, [a,b,c]=-8e7+8e12, ratio^2=16; mutation ratio 0; two-term max 4.000; ascent max 3.926; octonion max 1.939; kappa4^2 at e1+e10 = 2.",
+    "The 'earlier constant-2 claim' is absent from the registry, docs/notes, docs/evidence and proofs (grep); its source is an unretained session document. The theorem is correct but corrects nothing the repository asserts, and the sqrt2 sedenion norm bound is elementary.", "none", REG)
+add("P10-fold-average", "README.md para 4; 00-abstract.md para 5; 06-historical-reconstruction.md (lines 39-122)",
+    "The fold/average construction does not satisfy the hypotheses of homotopy transfer; no minimal uncurved A-infinity structure keeps the nonassociative product.", "theorem",
+    "Repository grep; exhaustive basis checks of the supporting identities (P10a-P10c).", "A differential and degree +1 homotopy satisfying I - ip = dh + hd.", True, "already-in-repo",
+    "docs/notes/open_gororoba_folding_proofs.md lines 44-57 (fold-average lacks differential, grading and chain contraction; MinimalUncurvedObstruction.v forces associativity when m1=0).",
+    "The repository already states both halves; 'repaired explicitly' re-states an existing audit. The new contribution is the closed form m2(x,y)=yx and the associator decomposition (P10a, P10c).", "none", REG)
+add("P10a-m2-opposite", "06-historical-reconstruction.md 'The binary product can be derived completely' (lines 49-79)",
+    "p mu(ix, iy) = yx (the folded product is the opposite octonion product); m2(m2(e1,e2),e4) - m2(e1,m2(e2,e4)) = 2e7.", "theorem",
+    "Exhaustive on all 64 octonion basis pairs (bilinear, so a proof) with cd_core signs.", "Any basis pair with m2 != yx.", True, "confirmed",
+    S + "check_small.py: m2_equals_opposite_product_all_64 true; m2_assoc_1_2_4 {7: 2}.", "Elementary but not stated in the repository.", "new-evidence-candidate", REG)
+add("P10b-T3-counts", "06-historical-reconstruction.md lines 81-89", "On the 210 ordered distinct imaginary triples T_3 gives 42 scalar and 168 imaginary outputs, each a single coefficient of magnitude 2.",
+    "computation", "Exhaustive exact evaluation.", "Different counts.", True, "confirmed", S + "check_small.py: T3_210_triples {scalar 42, imaginary 168, bad 0}.",
+    "The repository note already records a 210-triple classification test in open_gororoba; counts reproduce it.")
+add("P10c-assoc-decomposition", "06-historical-reconstruction.md boxed identity (lines 91-100)", "[x,y,z]_{m2} = p[ix,iy,iz]_mu - T_3(x,y,z).", "theorem",
+    "Exhaustive on 512 octonion basis triples (trilinear); mutation dropping the p[...] term.", "Any basis triple violating it.", True, "confirmed",
+    S + "check_small.py: holds 512/512; mutation holds 176/512.", "A two-line algebraic identity from ip = I - r.")
+add("P11-doubly-pure", "00-abstract.md para 2 'Every real zero divisor has two vanishing scalar coordinates'; 03-rank-geometry.md (G.P7) lines 900-912",
+    "Every real zero divisor of A_5 has y0 = y16 = 0.", "theorem", "L_e16 anticommutes with all 30 doubly-pure units; invertibility at 30 non-pure points including Stiefel+e16.",
+    "A singular L_y with y0 or y16 nonzero.", True, "already-in-repo", S + "check_det_membership.py: 30/30 anticommute; 30/30 invertible.",
+    "BDI math/0511691 Cor. 9.3, cited in docs/notes/koebisu_rank_stratum_research.md; the companion supplies a short self-contained proof.", "none", REG)
+add("P12-nullity12-quadric-germs", "00-abstract.md para 2 'established dimension-16 quadric germs at the three nullity-twelve gap witnesses'; 03-rank-geometry.md 3.2-3.4 (G1-G5, lines 67-392)",
+    "Cross-product identity (168 coefficients), transport, V in R_12, cubic kernel, germ equality at ten points, Hilbert series, degrees 14/196, A15 germ and path (G.43).", "repo-fact",
+    "Registry read of a5-nullity12-quadric-germ; Hilbert coefficients recomputed; witness rows 1,8,15 Jacobian 16 = tangent 16.", "Registry text disagreeing with the chapter.", True, "already-in-repo",
+    "docs/state/research_state.json a5-nullity12-quadric-germ (established); " + S + "check_witnesses.out rows 1,8,15.",
+    "The chapter's 3.2-3.4 and 3.6 re-present this established claim.", "none", REG)
+
+# ---------------- chapter 3 remaining ----------------
+add("G-P2-cofactors", "03-rank-geometry.md (G.P2)-(G.P3) lines 857-868", "The 15 signed order-14 principal Pfaffians of C_z equal Q G z_j; Pf A(z,t) = -(z^T t) Q G.", "theorem",
+    "Float Pfaffians (pivoted skew elimination) at 10 random complex z, C_z from cd_core; mutation 4Delta -> 3Delta.", "Relative error above rounding.", True, "confirmed",
+    S + "check_pf_cofactors.py: max rel err 1.2e-14 (cofactors), 5.1e-15 (bordered); mutated min rel err 0.042.",
+    "Float evidence; the coefficient-exact certificate is the companion's (reproduced byte-identically).")
+add("G-P6-rank", "03-rank-geometry.md (G.P6) line 891", "nu(y) = 28 - 2 rank_C C_z for nonzero doubly pure y.", "theorem",
+    "Float ranks at 5 random points in each of V_reg, S+-, Z, incidence chart, Q=0, G=0.", "Any stratum violating it.", True, "confirmed",
+    S + "check_cz_ranks.py: (nu, rank C) = (12,8),(16,6),(8,10),(8,10),(4,12),(4,12).", "Follows from the repo-certified transport plus the border argument.")
+add("G13-quartic", "03-rank-geometry.md Theorem G13 (lines 924-971)", "Sing{G=0} = V u Z; G irreducible; {G=0} normal; two real irreducible 28-dimensional components.", "theorem",
+    "Argument audit of the gradient case split (independent u,v force Q=2U=2V0, W=0, mu=0; dependent u,v force Q=0); component separation points checked.", "A singular point of T outside V u Z.", True, "confirmed",
+    "Hand derivation; G=0 exact point u=(3,4,0..), v=2iu+n, mu=6 has nullity 4 (" + S + "check_det_membership.out).",
+    "Sound; irreducibility follows from the codimension-two singular locus. Unformalized and not computed by Groebner methods here.")
+add("G-48h-values", "03-rank-geometry.md (G.48h) line 826 and text after G13 (line 965)", "Witnesses 5,12,19 satisfy G=0 with Q = 32/39+128i/117, -48/53-592i/1325, 96/241-3424i/1687; witnesses 6,13,20 lie on Q=0.", "computation",
+    "Exact sympy evaluation on the retained rows.", "Different values.", True, "confirmed", S + "check_witnesses.out rows 5,12,19,6,13,20.", "Pure computation.")
+add("G14-Z", "03-rank-geometry.md Theorem G14 (lines 973-988)", "Every real point of Z = {mu=0, U=V0, W=0} has nullity >= 8; at controls 3,10,17 the R_8 germ is Z (cone dimension 24).", "theorem",
+    "15 random exact Gaussian-rational points of Z; Jacobian rank 8 and Schur tangent 24 at rows 3,10,17.", "A Z point of nullity 4.", True, "confirmed",
+    S + "check_strata.py: Z_random_nullities {8: 15}; check_witnesses.out rows 3,10,17.", "Rows 3,10,17 are controls whose dimension the repository already certifies (a5-rank-locus-local-dimension); new is the global inclusion of Z.")
+add("G-I8-rho", "03-rank-geometry.md (G.I8) line 1091", "At witnesses 4,11,18 lambda = -i, mu = 0, rho = 1828/1053-572i/1185, 1883/530+619i/54, 11518/5061+1263i/386 with rho^2+U=0.", "computation",
+    "Exact sympy recomputation of lambda, n, rho and the eigenvector equation.", "Different values.", True, "confirmed", S + "check_witnesses.out rows 4,11,18.", "Pure computation.")
+add("G-I9-counterexample", "03-rank-geometry.md (G.I9) lines 1097-1103", "y8=e1+e10+e25+e27 and y4=e1+e10+e25+e28 both have Q=G=Delta=0, with nullity 8 and 4.", "computation",
+    "Exact invariants and flint rank.", "Different nullities.", True, "confirmed", S + "check_strata.py: G.I9.", "Serves as the eigenspace-mixing control for P4.")
+add("G8-component", "03-rank-geometry.md Theorem G8 (lines 523-538)", "The real presentation of V is an irreducible algebraic component of reduced R_12.", "theorem",
+    "Argument audit (complexified product V(z) x V(t) inside the rank locus; smooth 16-dimensional complex germ at a certified point).", "A larger irreducible component through a certified point.", True, "confirmed",
+    "Argument only; no computation run.", "Rests on the complex Schur differential having rank 16, inferred from the real one; sound but unformalized.")
+add("G-minors-4096", "03-rank-geometry.md Lemma G4 end (line 219)", "12x12 minor of the kernel generator has determinant -4096 at e1+e25; 20x20 pivot minor of L_y has determinant 16.", "computation",
+    "Rerun of the companion geometry audit only.", "Different determinants.", False, "confirmed",
+    "companion-rerun/geometry_audit.json byte-identical to delivered analysis/geometry/geometry-audit.json.", "Reproduction only; repository record certifies rank 12 at the designated points.")
+add("G-sector", "03-rank-geometry.md (G.50b)-(G.57) lines 1222-1300; 05-unified-mathematics.md lines 334-370", "Sector identities L_x b = L_x c = 0, L_d b = 2c, L_d c = -2b, dark control d0, R b = c, P_mult = 4eps^2/(4+2|eps|)^2, P+ - P- = 2eps/alpha, operator norm 2 sqrt(eps^2+4).", "computation",
+    "Exact flint matrix identities; probabilities and singular values derived from the verified charpoly.", "Any identity failing.", True, "confirmed",
+    S + "check_strata.py: G.52 all true; 1/81, 1/25, 1/9 by hand.", "A design, not a measurement; LCU scale alpha is a sufficient bound only.", "new-evidence-candidate", REG)
+add("G-3.7-composition", "03-rank-geometry.md 3.7 (lines 650-694)", "Naive composition of two admissible rotations has Q = 2i sin(alpha) sin(beta); the mixed term -st e9 is forced.", "computation",
+    "Hand evaluation of Q at the composed point.", "Q = 0 for generic alpha, beta.", True, "confirmed", "Hand derivation.", "Explains the repo's failed half-turn composite (already recorded in the registry boundary).")
+add("G-3.11-21pow17", "03-rank-geometry.md 3.11 line 1169", "21^17 = 30,041,942,495,081,690,076,421.", "computation",
+    "Exact integer arithmetic (python, bc).", "Any other value.", True, "refuted",
+    "python3 and bc: 21^17 = 30041942495081691894741; float(21^17) = 30041942495081690824704. The printed digits match neither.",
+    "Cosmetic: the bound's role (order-of-magnitude per-curve multiplicity) is unaffected; 29^5 = 20511149 and 25^11 = 2384185791015625 are correct. The repository states only 'about 3.0e22'.", "reject")
+add("G-3.11-BM", "03-rank-geometry.md 3.11 lines 1180-1182", "Berlekamp-Massey length 32 on 63 terms excludes rational functions with max(deg P, deg Q) <= 31 under the stated hypotheses.", "repo-fact",
+    "Comparison with docs/notes/rank_locus_two_dimension_gap.md lines 267-280 and the shifted-sequence recurrence argument.", "A P/Q with both degrees <= 31 of linear complexity 32 in the shifted sequence.", True, "already-in-repo",
+    "docs/notes/rank_locus_two_dimension_gap.md lines 274-276.", "Restates the repository's corrected statement.", "none", REG)
+
+# ---------------- chapter 2 ----------------
+add("C2-lemma1.3", "02-algebra-formalization.md Lemma 1.3 (lines 86-109)", "Normalization, anticommutation and basis involution of phi_n at every level.", "repo-fact",
+    "Registry/proof read (CdTowerBasisSign.v); exhaustive recomputation implicit in ANF checks n<=6.", "A basis pair violating (1.5)/(1.6).", True, "already-in-repo", "proofs/CdTowerBasisSign.v; docs/evidence/cd-tower-basis-sign.", "Formal theorem in the repository.", "none", REG)
+add("C2-prop1.4", "02-algebra-formalization.md Prop 1.4 (lines 111-147); 05-unified-mathematics.md Lemma 5.1/Cor 5.2", "c_{n+1} <= sqrt2 c_n, ||ab|| <= sqrt(D/8)||a||||b||, ||[a,b,c]|| <= (D/4)||a||||b||||c|| for n>=3.", "theorem",
+    "Argument audit; numerical consistency at D=16 (two-term maximum 4).", "A violating triple.", True, "confirmed", S + "check_small.py.", "Valid but not optimal above D=16, as stated.")
+add("C2-MMdagger", "02-algebra-formalization.md Section 2 (lines 213-223)", "M|p,q> = sigma(p,q)|p xor q> satisfies M M^dagger = D I.", "theorem", "Argument audit: disjoint preimages of size D.", "A label with a different preimage count.", True, "confirmed", "Hand derivation.", "Elementary.")
+add("C2-lemma3", "02-algebra-formalization.md Lemmas 3.1-3.2 (lines 238-266)", "Pentagon identity for a coboundary; associator sign is gauge invariant.", "theorem", "Argument audit (each phi term appears twice).", "Failure on a quadruple.", True, "confirmed", "Hand derivation.", "Textbook group-cohomology fact; companion's 65,536-quadruple check is redundant with the argument.")
+add("C2-thm4.2-4.3", "02-algebra-formalization.md Theorems 4.2-4.3 (lines 303-367)", "deg f_m = n-1 with leading layer (4.6); deg g_ij = max(1, bitlen(max(i,j))-2).", "repo-fact",
+    "Möbius-transform recomputation for n=2..6 (rows) and n=3..6 (associator), independent of companion code.", "A row or pair with another degree.", True, "already-in-repo",
+    S + "check_small.py: thm4.2 degree/leading layer true; thm4.3 true; registry cd-associator-anf-rocq.", "Rocq-checked in the repository.", "none", REG)
+add("C2-cor4.4", "02-algebra-formalization.md Corollary 4.4 (lines 369-393)", "Census N_d = 3*2^d(2^{d+1}-1), 21 degree-one pairs, top-degree fraction 3D/(4(D-1)) = 64/85 at D=256, 24,384 new pairs at n=8.", "repo-fact",
+    "Direct census at n=6 (21, 84, 360, 1488) and formula arithmetic.", "Different counts.", True, "already-in-repo", S + "check_small.py: census_n6 and census_formula.", "Rocq census CdAssociatorCensus.v.", "none", REG)
+add("C2-prop4.5", "02-algebra-formalization.md Prop 4.5 and (4.16) (lines 395-415)", "Right-row degree rule and vanishing of Walsh coefficients with z.m even.", "theorem",
+    "Exhaustive for n=2..6.", "A violating row.", True, "confirmed", S + "check_small.py: prop4.5 true, eq4.16 true.", "The degree rule is the repo's right_row_degree; the Fourier constraint is a short new corollary.")
+add("C2-clifford", "02-algebra-formalization.md after (4.16) (line 417)", "Octonion left multiplication is Clifford, sedenion left multiplication has a cubic phase, sedenion associator defect has degree <= 2, first non-Clifford defects at dimension 32.", "interpretation",
+    "Follows from the verified degree rules.", "A sedenion pair of degree 3.", True, "confirmed", "Theorem 4.3 check.", "Holds within the stated diagonal +-1 phase family only.")
+add("C2-prop5", "02-algebra-formalization.md Section 5 (lines 418-473)", "g_ij = t + delta_m(z) (m != 0) or N(z); ANF counts (5.2); 126 pairs and 21,840 phase values for n=3..8.", "repo-fact",
+    "Exhaustive recomputation n=3..8; arithmetic of 126 and 21,840.", "A mismatching phase.", True, "already-in-repo", S + "check_small.py: prop5 true, eq5.2 true.", "Rocq point-indicator formalization in the repo.", "none", REG)
+add("C2-282", "02-algebra-formalization.md line 473", "282 one-cube pairs among the 24,384 top-degree pairs at n=8.", "repo-fact", "Read of docs/notes/cd_phase_degree.md.", "Different count in the note.", True, "already-in-repo", "docs/notes/cd_phase_degree.md lines 366-368.", "Repository census.", "none", REG)
+add("C2-prop6", "02-algebra-formalization.md Props 6.1-6.3 (lines 479-556)", "Walsh amplitudes (6.1), probabilities (6.2), overlap 1-2^{1-k}, trace distance 2 sqrt(p(1-p)), n=8 values 31/32, 63/1024, 961/1024, two-point input gives orthogonal outputs.", "theorem",
+    "Exhaustive exact Walsh amplitudes n=3..8; arithmetic; 6.3 by argument.", "Any amplitude mismatch.", True, "confirmed", S + "check_small.py: prop6.1 true; n8 values.", "Discrimination statements cover only the stated input and independent repetitions, as the text says.", "new-evidence-candidate", REG)
+add("C2-signgroup", "02-algebra-formalization.md (7.1)-(7.2) (lines 558-594)", "|G_n| = 2^{n+2^{n-1}} for n>=3, G_2 = Q8.", "repo-fact", "BFS group generation from cd_core signed permutations for n=2,3,4.", "Different group order.", True, "already-in-repo",
+    S + "check_small.py: orders 8, 128, 4096.", "Kirshtein 1207.4230 and docs/notes/left_mult_sign_rank.md.", "none", REG)
+add("C2-E8", "02-algebra-formalization.md Construction A (lines 595-615)", "RM(1,3) Construction A gives E8 with 240 roots.", "repo-fact", "Arithmetic 16 + 14*16 = 240; repo structure checks.", "Different root count.", True, "already-in-repo", "docs/notes/topics/octonion_structure_checks.md.", "Classical.", "none", REG)
+add("C2-conference", "02-algebra-formalization.md Section 8 (lines 617-680)", "W = R_s skew with W^2 = -(D-1)I; H = I+W skew-Hadamard; J = W/sqrt(D-1) gives e^{alpha J}.", "repo-fact", "Exact check D = 2..64.", "Failure at some D.", True, "already-in-repo", S + "check_small.py: conference_D2..64 true; proofs/CdImaginarySumConference.v.", "Rocq theorem in the repo.", "none", REG)
+add("C2-63-42", "02-algebra-formalization.md line 690", "Dimension 16 has 63 anticommuting and 42 non-anticommuting imaginary unit pairs.", "repo-fact", "Exhaustive matrix check.", "Different counts.", True, "already-in-repo", S + "check_small.py: [63, 42].", "Repo structure replay.", "none", REG)
+add("C2-discriminator", "02-algebra-formalization.md line 703", "Input (|0>+|1>)/sqrt2: output 3 has probability 2/D for the right-action transform and 0 for left.", "repo-fact", "Exact check at D=16.", "Different probabilities.", True, "already-in-repo", S + "check_small.py: [0.125, 0.0].", "Repo formal convention discriminator.", "none", REG)
+add("C2-spectral", "02-algebra-formalization.md Section 9 (lines 705-747)", "Normalized Gram spectrum of e1+e10 is 0^4 1^8 2^4, Delta = 1/2, r >= 32/3; pure embedding (a,0) doubles the spectrum.", "computation",
+    "Exact/float spectra; 5 random integer a for the embedding.", "Different spectrum.", True, "confirmed", S + "check_small.py: gram {0,2,4}, Delta 0.5, embedding true.", "Embedding statement already in docs/notes/topics/octonion_structure_checks.md.")
+add("C2-section10", "02-algebra-formalization.md Section 10 (lines 749-786)", "Translation bundle has seven closed assumption queries; theorem holds for every argument list and fuel value.", "repo-fact", "Read of docs/evidence/cd-sign-python-translation/README.md.", "README disagreeing.", True, "already-in-repo", "README lines 41-46, 122-125.", "Repository formal evidence.", "none", REG)
+add("C2-stale-star", "02-algebra-formalization.md line 640 and Section 11 item 4", "The star-lattice note keeps a stale open-question bullet about the basis-sign bridge.", "repo-fact", "Read of docs/notes/topics/cd-star-lattice-tower.md at current main.", "The bullet absent.", True, "confirmed",
+    "docs/notes/topics/cd-star-lattice-tower.md lines 212-216 still list the Rocq bridge as open while claim cd-sign-python-semantics-rocq proves it.", "Documentation drift, not mathematics; fix the note.", "none", REG)
+
+# ---------------- chapter 5 ----------------
+add("C5-lower-bound-higher", "05-unified-mathematics.md after Theorem 5.3 (line 91)", "The canonical embedding gives associator lower bound 4 at every higher level.", "theorem", "Argument: (a,0)(c,0) = (ac,0) is a subalgebra embedding.", "An embedding failure.", True, "confirmed", "Hand derivation from (1.1).", "Elementary.")
+add("C5-charpoly", "05-unified-mathematics.md 'The spectral bridge' (lines 93-139)", "chi_{L_z} = (r^2+Q)^4((r^2+Q)^2-4Delta)^2 and chi_{C_z} = r(r^2+Q)^3((r^2+Q)^2-4Delta)^2 for complexified sedenions; Gram spectrum Q^(8), (Q+-2sqrtDelta)^(4); kappa_4 = sqrt2 attained at e1+e10.", "theorem",
+    "Exact flint characteristic polynomials at 20 random real integer sedenions (range 1000; polynomial identity of degree 16, so complex extension follows); spectral norm at e1+e10.", "Any point disagreeing.", True, "confirmed",
+    S + "check_strata.py: ch5_charpoly_L 20/20, ch5_charpoly_C 20/20; check_small.py kappa4^2 = 2.", "This is Koebisu's sedenion factorization (registry sedenion-determinant-membership) refined to the characteristic polynomial; the Gram part is known (BCDI eigentheory).")
+add("C5-E0", "05-unified-mathematics.md 'Dark subspaces' (lines 216-245)", "E0 = L_a^T L_a/4 for a=e1+e10 equals I/2 - (I-Z2)T/4 with T=Y3X1Y0 (little-endian); P_ker = (I-Z2)(I+T)/4.", "computation",
+    "Exact 16x16 matrix comparison.", "Mismatch.", True, "confirmed", S + "check_small.py: E0_pauli_identity true, kernel_projector_identity true.", "Repo bdsc-pauli-readout note holds the bank identities.")
+add("C5-13-bases", "05-unified-mathematics.md line 241", "13 full-support words need their own product bases and these 13 read all 28 words.", "repo-fact", "Read of docs/notes/topics/bdsc-pauli-readout.md.", "Note disagreeing.", True, "already-in-repo", "bdsc-pauli-readout.md lines 53-59.", "Lower bound within local product bases only, as stated.", "none", REG)
+add("C5-standard", "05-unified-mathematics.md dilation, Schur expansion, signed response, Fisher information, Sherman-Morrison, TV contraction (lines 168-330, 386-424)", "Standard linear-algebra and statistics identities as displayed.", "theorem",
+    "Argument audit of each displayed formula.", "An algebra error.", True, "confirmed", "Hand derivation.", "Textbook; no novelty claimed.")
+add("C5-identifiability", "05-unified-mathematics.md lines 380-384", "30 configurations x 3 = 90 coordinates; 258 offsets leave >= 168 null directions; numerical rank 87 and 171 null directions.", "repo-fact",
+    "Arithmetic only; the rank-87 diagnostic was not run (optics scope).", "Rank recomputation differing.", False, "unproven", "258 - 90 = 168 by hand; rank not run.", "Belongs to the optics reviewer's scope.")
+
+# ---------------- chapter 6 ----------------
+add("C6-coeff-ext", "06-historical-reconstruction.md lines 5-35", "(e3+e10)(e6-e15) = 0 in the current convention; scalar rescaling preserves kernels; coefficient extension preserves zero divisors.", "theorem",
+    "Exact product; argument.", "Nonzero product.", True, "confirmed", S + "check_small.py: coefficient_extension_zd true.", "The zero product is already a repo fixture (folding counterexample).")
+add("C6-D14", "06-historical-reconstruction.md lines 137-170", "D14 roots: 364, second moment 52 I, 19 projected sites (220, 6x22, 12x1), 25,476 coincident pairs = 386/1001, one covariance eigenvalue exactly 52/363.", "computation",
+    "Exact enumeration; eigenvalue by the rank-two argument.", "Different counts.", True, "confirmed", S + "check_small.py: D14 block.", "Reproduces the repository synthesis note.")
+
+ledger = {"schema": "delivery-claim-ledger-v1", "delivery": "das-mergus companion", "reviewed_utc": sys.argv[1], "claims": claims}
+json.dump(ledger, open(sys.argv[2], "w"), indent=1)
+from collections import Counter
+print(Counter(c["verdict"] for c in claims), Counter(c["action"] for c in claims), len(claims))

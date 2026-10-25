@@ -1,0 +1,2 @@
+job-00 endpoints compared 25 max |value diff| 1.1102230246251565e-16 max |radius diff| 5.204170427930421e-18 retained endpoint count 27 verdicts {'qualifies': 27}
+job-01 endpoints compared 25 max |value diff| 7.979727989493313e-17 max |radius diff| 3.469446951953614e-18 retained endpoint count 27 verdicts {'qualifies': 27}

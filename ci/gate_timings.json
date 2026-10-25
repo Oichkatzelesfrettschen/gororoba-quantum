@@ -1701,11 +1701,6 @@
    "cpu_seconds": 7.58,
    "workers": 1
   },
-  "core-570": {
-   "wall_seconds": 470.02,
-   "cpu_seconds": 468.12,
-   "workers": 1
-  },
   "core-571": {
    "wall_seconds": 0.7,
    "cpu_seconds": 0.65,

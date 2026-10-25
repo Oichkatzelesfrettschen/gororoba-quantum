@@ -393,7 +393,7 @@ def report() -> dict[str, Any]:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Replay the frozen Ascella signed-coherence body locally.")
-    parser.add_argument("--out", type=Path, default=Path(__file__).with_name("replay.json"))
+    parser.add_argument("--out", type=Path, default=Path(__file__).with_name("replay-ordered-map-cancel.json"))
     parser.add_argument("--check", action="store_true")
     arguments = parser.parse_args()
     evidence = report()

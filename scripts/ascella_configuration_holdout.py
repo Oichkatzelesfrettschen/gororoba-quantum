@@ -9,8 +9,11 @@ g C g^T, with C the inverse posterior Hessian of the fold fit and g the statisti
 so each scored row carries its standardized residual r / sqrt(v + g C g^T) beside the counting-only one r / sqrt(v).
 
 With --drive the script fits, in place of the static families, the drive-dependent heater family
-preregistered in docs/state/plans/ascella-configuration-holdout-training-only.json: heater offsets under
-N(0, 0.3^2) and one drive slope per heater under N(0, 0.1^2) (`static_light`), under the same folds and score.
+preregistered in docs/state/plans/ascella-configuration-holdout-training-only.json: each heater realizes
+phi + a_h + k_h phi, phi the returned phase in [0, 2 pi), with the offset a_h under N(0, 0.3^2) and the drive
+slope k_h under N(0, 0.1^2), as the heater basis (1, phi) of `static_light`, under the same folds and score.
+Under the phase-voltage map phi = A V^2 + b the heater power V^2 is linear in phi, so k_h is a per-heater error
+of the fitted slope.
 
 The folds share 28 or 29 of their training configurations, so their residuals are dependent and a sum over folds
 has no chi-square reference: the record reports the sums and per-row residuals descriptively and no p-value.
@@ -41,11 +44,9 @@ from bdsc_certificate import close  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
 
-# (name, (heater offset, coupler offset, heater drive slope) prior widths) of the drive-dependent family; the
-# slope width 0.1 spreads the realized phase by 0.31 rad at the mid drive pi, the offset prior's width.
-DRIVE_FAMILIES: tuple[tuple[str, tuple[float | None, ...]], ...] = (
-    ("static_heater_0.3_drive_slope_0.1", (0.3, None, 0.1)),
-)
+# (name, (heater widths per basis function (offset, drive slope), coupler width)) of the drive-dependent family;
+# the slope width 0.1 spreads the realized phase by 0.31 rad at the mid drive pi, the offset prior's width.
+DRIVE_FAMILIES: tuple[tuple[str, tuple[Any, ...]], ...] = (("static_heater_0.3_drive_slope_0.1", ((0.3, 0.1), None)),)
 
 
 def require(condition: bool, message: str) -> None:
@@ -82,7 +83,7 @@ def left_out_rows(
     return out
 
 
-def configuration_fold(item: tuple[str, tuple[float | None, ...], dict[str, Any], int]) -> dict[str, Any]:
+def configuration_fold(item: tuple[str, tuple[Any, ...], dict[str, Any], int]) -> dict[str, Any]:
     """One family's fit on job-00 without one configuration, from the zero start, scored on that configuration."""
     family, taus, data, left_out = item
     widths = models.prior_widths(data, *taus)
@@ -155,6 +156,8 @@ def build(a_dir: Path, drive: bool) -> dict[str, Any]:
     a = models.job_data(a_dir)
     require(a["record"]["manifest"]["job"] == "job-00", "the fit run is not job-00")
     count = len(a["keys"])
+    if drive:
+        a = {**a, "heater_basis": np.stack([np.ones_like(a["phases"]), a["phases"] % (2 * np.pi)], axis=-1)}
     specs = DRIVE_FAMILIES if drive else tuple((name, tuple(taus)) for name, *taus in models.STATIC_FAMILIES)
     folds = ordered_map(
         configuration_fold,
