@@ -8590,6 +8590,17 @@
    "sys",
    "typing"
   ],
+  "gororoba_quantum/primorial_table.py": [
+   "__future__",
+   "argparse",
+   "itertools",
+   "json",
+   "parallel",
+   "pathlib",
+   "primorial_cover",
+   "sys",
+   "typing"
+  ],
   "gororoba_quantum/principal_skew_atlas.py": [
    "__future__",
    "cd_core",
