@@ -422,6 +422,12 @@ tests/test_unittest_suites.py, which runs it in place with its own directory
 on sys.path, and its single-script gate leaves ci/gates.json unless a claim in
 docs/state/research_state.json cites that gate. The suite starts git
 and child interpreters, so the gate ledger never skips it.
+tests/test_evidence_ledgers.py checks each retained `SHA256SUMS`-style ledger a `sha256sum -c` gate once
+checked, one test id per ledger, resolving names against the gate's working directory as sha256sum does; a
+ledger whose gate a research-state claim cites keeps that gate and is also a row of the test, and
+the test requires every remaining single-ledger `sha256sum -c` gate to be a row. Those
+repository-backed tests carry `audit`, so the nightly audit runs them; an unmarked counterpart checks the
+ledger rule on a bundle it builds.
 
 **Gate cost.**
 - Measure a gate's cost in CPU seconds. The runner records user and system

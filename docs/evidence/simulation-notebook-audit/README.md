@@ -4,8 +4,8 @@ The notebooks under `docs/evidence/{cd_census,ccz-reduction,simulation,falsifica
 and the newer ones under `docs/evidence/ghost-frequency` ran as Kaggle
 kernels and were committed with their outputs stripped. `retrieval.json`
 names each kernel, and `kaggle_logs/` retains its output log as Kaggle
-returned it (`kaggle kernels output`); `SHA256SUMS` binds the bytes (gate
-sources-246). For the eight newest kernels, `kaggle kernels pull` returned
+returned it (`kaggle kernels output`); `SHA256SUMS` binds the bytes
+(`tests/test_evidence_ledgers.py`). For the eight newest kernels, `kaggle kernels pull` returned
 code cells identical to the notebooks at commit 900461a, so each log is the
 output of the committed code.
 
