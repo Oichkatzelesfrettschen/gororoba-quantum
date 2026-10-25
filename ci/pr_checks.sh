@@ -3,7 +3,8 @@
 #   sh ci/pr_checks.sh lint            Ruff check and format over the code directories
 #   sh ci/pr_checks.sh types           mypy over the same directories
 #   sh ci/pr_checks.sh tests [ARG...]  pytest without the audit marker, over tests/ or the
-#                                      given paths; -m audit PATH selects the marked tests
+#                                      given paths; -m audit PATH selects the marked tests;
+#                                      TEST_REPORT names a JUnit XML file of every test's time
 #   sh ci/pr_checks.sh gates [ARG...]  the ci/gates.json gates the branch's diff from
 #                                      origin/main reaches, of at most GATES_MAX_SECONDS
 #                                      (default 15) measured seconds; GATES_LEDGER names an
@@ -73,7 +74,9 @@ tests)
 	# The output streams live, so a job killed at its timeout still shows the run.
 	{
 		status=0
-		"$PYTHON" -B -m pytest -n auto --dist loadgroup -m "not audit" --durations=25 "$@" 2>&1 || status=$?
+		# TEST_REPORT names a JUnit XML file that keeps every test's duration for the run.
+		"$PYTHON" -B -m pytest -n auto --dist loadgroup -m "not audit" --durations=25 \
+			${TEST_REPORT:+--junitxml="$TEST_REPORT"} "$@" 2>&1 || status=$?
 		echo "$status" >"$code"
 	} | tee "$log"
 	status=$(cat "$code")

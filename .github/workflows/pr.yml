@@ -59,7 +59,16 @@ jobs:
       # ci/AGENTS.md (Behavioral suite) sits well inside it.
       - name: pytest
         timeout-minutes: 4
+        env:
+          TEST_REPORT: ${{ runner.temp }}/pytest-report.xml
         run: sh ci/pr_checks.sh tests
+      # Every test's duration, kept per run so the budget of ci/AGENTS.md (Behavioral suite) reads from data.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2, Node 24
+        if: always()
+        with:
+          name: pytest-durations
+          path: ${{ runner.temp }}/pytest-report.xml
+          if-no-files-found: ignore
 
   gates:
     name: gates
