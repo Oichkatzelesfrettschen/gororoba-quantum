@@ -7,7 +7,7 @@ rules of [algebra_circuit_rules.md](../notes/algebra_circuit_rules.md#hardware-p
 to it, and records the noise-model prediction that decides whether any of it
 goes to hardware. The prediction is the ibm_kingston snapshot of
 2026-10-15T19:42:21-07:00 run by `scripts/primorial_cover_noise.py`
-([evidence README](../evidence/primorial_cover/README.md), gate `core-683`).
+([evidence README](../evidence/primorial_cover/README.md), gate `core-689`).
 No hardware case exists, and no submission is planned by this document.
 
 ## What a device can and cannot test here

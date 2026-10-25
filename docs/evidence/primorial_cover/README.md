@@ -3,7 +3,7 @@
 Two records live here.
 
 - `certificates.json` is the output of `gororoba_quantum/primorial_cover.py
-  --out`, recomputed byte for byte by gate `core-682` (about 5 s). It holds the
+  --out`, recomputed byte for byte by gate `core-688` (about 5 s). It holds the
   four defect-one instances (k, gap) = (6, 20), (8, 32), (14, 86) and
   (14, 88) with their witnesses, CRT starts, wheel gaps, exhaustive branch
   counts (4, 15, 1485 and 150, none coverable), the 20 branches at each k = 14
@@ -20,7 +20,7 @@ Two records live here.
   `results/kaggle/2026-10-25T075839Z-gororoba-primorial-cover-noise/`, whose
   `collect.json` binds the file's bytes. The kernel built the hypercomplex
   stack and regenerated the retained tables before its entry ran
-  (`kaggle_hypercomplex.json`). Gate `core-683` (about 90 s) requires
+  (`kaggle_hypercomplex.json`). Gate `core-689` (about 90 s) requires
   `noise.json` to equal the collected output, recompiles every arm and
   requires layouts and CZ counts to match exactly and every law to 1e-8.
   A build-host CPU run of the same commit gives identical laws.

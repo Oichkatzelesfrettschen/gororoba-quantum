@@ -32,14 +32,14 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 23 |
-| exploratory reanalysis | exploratory | 64 |
+| exploratory reanalysis | exploratory | 66 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 21 |
 | mathematical claim | open | 3 |
 | numerical or stochastic simulation | established | 9 |
 | preregistered emulator control | established | 10 |
-| preregistered hardware inference | established | 52 |
+| preregistered hardware inference | established | 53 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -327,6 +327,8 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01](results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01) | Quandela Cloud | photonic signed-coherence permuted repeat | qpu:ascella | 1 | 64 | completed | 1.032768 credits |
 | [2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6](results/quandela/runs/2026-10-24T170006Z-qpu_belenos-bdsc_drift_series-t6) | Quandela Cloud | BDSC drift series on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
 | [2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7](results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7) | Quandela Cloud | BDSC drift series on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
+| [2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe](results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet:mock | 1 | 24 | completed | 0.0 credits |
+| [2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe](results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet | 1 | 24 | completed | 1.0 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
@@ -334,7 +336,7 @@ The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 74 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 24 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 26 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
 
 ## Contents

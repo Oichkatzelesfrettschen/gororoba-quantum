@@ -4,7 +4,7 @@ This note holds the mathematics behind the missing gaps 20, 32, 86 and 88 of
 the primorial wheels, every statement checked by
 `gororoba_quantum/primorial_cover.py` and retained in
 [certificates.json](../../evidence/primorial_cover/certificates.json) (gate
-`core-682`). The literature baseline is Ziller's restricted-covering reduction
+`core-688`). The literature baseline is Ziller's restricted-covering reduction
 and his Table 1 of missing differences for `k <= 44`
 ([2007.01808.md](../papers/2007.01808.md)); the problem is Erdos Problem 854,
 open at retrieval ([erdos-854-consecutive-coprime-gaps.md](../papers/erdos-854-consecutive-coprime-gaps.md)).

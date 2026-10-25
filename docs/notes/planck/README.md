@@ -6,6 +6,12 @@ SDK (<https://github.com/HectorNaaa/Planck-QSaaS>, SDK under `sdk/python`).
 The read-only probe of 2026-10-24 found two facts that bound its use: the
 stored key is rejected, and the platform's simulator returns random bits.
 
+The owner's account was deleted on 2026-10-25 through the settings page's
+Delete Account action (`deleteUserAccount` in `app/qsaas/settings/actions.ts`).
+The key file under `~/.config/planck/` is removed and the `planck-stack`
+package is uninstalled; the PKGBUILD and the lock below remain so a
+re-audit can rebuild the environment.
+
 ## Environment and credential
 
 `planck-sdk` is not on PyPI (404), contrary to its README, so the lock
@@ -16,6 +22,13 @@ PL_ENV=$HOME/.local/share/planck/venv
 uv venv --python 3.13 "$PL_ENV"
 VIRTUAL_ENV="$PL_ENV" uv pip install -r docs/notes/planck/requirements-planck.txt
 ```
+
+On the build host the Arch package `planck-stack` from the local PKGBUILD tree
+(`~/Github/PKGBUILDs/planck-stack`) installs the same SDK as a hash-locked Python
+3.13 environment under `/opt/planck-stack` and the interpreter `/usr/bin/planck-python`
+(planck_sdk 1.0.0 from the audited commit); its `check()` runs an offline test, kept at
+`/usr/share/planck-stack/test_planck_stack.py`. A case sets `PL_PYTHON=/usr/bin/planck-python`; the venv
+above serves a machine without the package. The package sources the GitHub archive of HectorNaaa/Planck-QSaaS at commit d57e32e7 under a b2sum and installs `sdk/python` from it, since PyPI carries no `planck-sdk`.
 
 The SDK (version 1.0.0, MIT) uses the standard library only and contacts
 only its configured base URL. Pass `base_url="https://www.plancktechnologies.xyz"`:
@@ -30,8 +43,29 @@ sent as `X-API-Key`. The SDK and server allow one request every 3 s.
   answers `authenticated: true` for any well-formed key without a lookup,
   so it proves nothing. The stored key is 67 characters, while the README
   documents a 64-character key. A regenerated key, also 67 characters,
-  is rejected the same way, so the fault lies in the service's key store
-  rather than in one key; the platform's support is the next step.
+  is rejected the same way through the SDK and through plain HTTP. The
+  source at `d57e32e7` names the cause: `vercel.json` sets `DB_DIR=/tmp`,
+  so API keys live in an SQLite file inside each serverless instance; a
+  request carrying only `x-api-key` looks the key up in that instance's
+  file (`ApiKeys.findByKey` in `lib/api-auth.ts`), and only a request with a
+  browser session cookie re-creates the key row from the session token's
+  `ak` claim (`ensureDbUser` in `lib/db/ensure-user.ts`). A key therefore
+  authenticates only on a warm instance that a dashboard session reached
+  first; the deployed code may differ, since the project's Vercel git
+  deployments are off. The durable remedy is server-side (a persistent key
+  store); until the vendor ships one, no client-side workaround makes
+  key-only authentication reliable.
+- **The mechanism, measured on 2026-10-25.** Every function request ran in
+  Vercel region `fra1`. Key-only `GET /api/quantum/executions` requests
+  answered 401 throughout; after the owner loaded the settings page (a
+  session request that runs `ensureDbUser`), 15 consecutive key-only
+  requests answered 200 for 51 s, and the next answered 401 again. A single
+  session-authenticated read of the same endpoint reproduces it: the key
+  failed, the session read succeeded, and the following key-only requests
+  succeeded. A key therefore works for about a minute after a request
+  carrying the `auth-token` session cookie reaches the same instance.
+  Automating that would mean handling the owner's session cookie, which the
+  repository does not do.
 - **The simulator ignores the circuit.** In the platform source at commit
   `d57e32e7`, `simulateQuantumCircuit()` in
   `app/api/quantum/simulate/route.ts` draws every bit with
@@ -53,7 +87,7 @@ sent as `X-API-Key`. The SDK and server allow one request every 3 s.
 ## Use in this repository
 
 No Planck result enters analysis: a backend that ignores the submitted gates
-measures nothing about the circuit. The account stays configured so a later
-source revision can be re-audited against this one; a re-audit that finds a
-real simulator or device path, and a key the API accepts, is the condition
-for any case.
+measures nothing about the circuit. A later source revision can be re-audited
+against this one from the public repository; a re-audit that finds a real
+simulator or device path and a durable key store is the condition for a new
+account and any case.

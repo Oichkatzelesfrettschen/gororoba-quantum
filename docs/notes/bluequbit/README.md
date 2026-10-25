@@ -16,6 +16,13 @@ uv venv --python 3.13 "$BQ_ENV"
 VIRTUAL_ENV="$BQ_ENV" uv pip install -r docs/notes/bluequbit/requirements-bluequbit.txt
 ```
 
+On the build host the Arch package `bluequbit-stack` from the local PKGBUILD tree
+(`~/Github/PKGBUILDs/bluequbit-stack`) installs the same SDK as a hash-locked Python
+3.13 environment under `/opt/bluequbit-stack` and the interpreter `/usr/bin/bluequbit-python`
+(bluequbit 0.19.0b1); its `check()` runs an offline test, kept at
+`/usr/share/bluequbit-stack/test_bluequbit_stack.py`. A case sets `BQ_PYTHON=/usr/bin/bluequbit-python`; the venv
+above serves a machine without the package. Its isolation exists for the pinned pre-release alone; the SDK's requests and python-dateutil caps are satisfied by the system packages. `bq.search()` raises `TypeError` on an account with no jobs, because `/jobs` returns `data: null`; read `/jobs` directly until a job exists.
+
 The lock pins `bluequbit` 0.19.0b1; every release on PyPI is a beta, and the
 SDK prints a beta warning and checks PyPI for a newer version at import. The
 key is one line in `~/.config/bluequbit/api-key` (directory 700, file 600),

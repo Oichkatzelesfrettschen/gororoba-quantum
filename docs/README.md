@@ -24,7 +24,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | BlueQubit | free CPU statevector, MPS and Pauli-path simulators; credit-only GPU and QPU | [bluequbit/README.md](notes/bluequbit/README.md) |
 | Quafu | BAQIS ScQ superconducting QPUs and a 10-qubit simulator | [quafu/README.md](notes/quafu/README.md) |
 | Origin Quantum | Wukong 180 QPU and four simulators; 60 s registration grant | [originquantum/README.md](notes/originquantum/README.md) |
-| Planck Technologies | audited SDK; key rejected and simulator returns random bits | [planck/README.md](notes/planck/README.md) |
+| Planck Technologies | account closed; audited SDK, key rejected and simulator returns random bits | [planck/README.md](notes/planck/README.md) |
 | AWS | free-plan project account; Braket unavailable; CLI, Agent Toolkit and pinned AWS MCP server | [aws/README.md](notes/aws/README.md) |
 | Azure | free-trial subscription; Quantum workspace with free Quantinuum, Pasqal and Rigetti emulator plans; 4-vCPU trial compute | [azure/README.md](notes/azure/README.md) |
 | QRNG seed sources | ANU, Outshift and Quandela draws for every new seed | [qrng/README.md](notes/qrng/README.md) |
@@ -198,6 +198,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/iqm-garnet-timing-pilot.md](design/iqm-garnet-timing-pilot.md) | IQM Garnet billing pilot: per-job, per-shot, per-circuit and active-reset cost |
 | [design/iqm-garnet-signed-kernel-probe.md](design/iqm-garnet-signed-kernel-probe.md) | signed sedenion kernel probe on IQM Garnet: odd dilation overlap, heralded active reset, prediction |
 | [design/iqm-garnet-kernel-cancellation-probe.md](design/iqm-garnet-kernel-cancellation-probe.md) | kernel cancellation probe on IQM Garnet: zero-divisor sign at 37 CZ, bright control, over-rotation trains, H1-H5 |
+| [design/iqm-garnet-idle-schedule-train-readout.md](design/iqm-garnet-idle-schedule-train-readout.md) | IQM Garnet idle schedule (ASAP or ALAP, from a pulsed qubit's relaxation beside an uncoupled identity train) and QB6/QB11 train over-rotation fitted with each qubit's own readout, H1-H2 |
 | [design/primorial-cover-defect-probes.md](design/primorial-cover-defect-probes.md) | primorial cover-defect circuits: Grover quotient, phase-gradient tomography with a zero-angle null arm, the gap-86 and gap-88 repair contrasts against the mutation test, the Kingston noise prediction and the hardware decision |
 | [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements; [principal-angle replay](notes/quandela/bdsc.md) |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |

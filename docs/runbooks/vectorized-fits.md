@@ -153,3 +153,30 @@ difference: the arm errors, and therefore the weights, change with every
 resampled table, so `sw`, `sf`, `sff` and the determinant become
 `replicates x 401` arrays instead of T-only numbers. The batched path is not
 implemented for it.
+
+## Batched null calibration of the diagnostic case's tests
+
+`scripts/bdsc_null_calibration.py` batches the statistics of `bdsc_diagnostic.analyse` (the nine
+chi-square tests, the three class calibration shifts and the count of residuals beyond `MARGIN`) across
+replicates of pure binomial counting at `TRIALS` = 40000 with equal f and g performance, and reports each
+test's false-resolution rate (p-value below `ALPHA` = 0.01) with its binomial error. The same rules apply
+with these sites:
+
+- `se ** 2`, `(change - mean) ** 2`, `(v - mean) ** 2` and `(effect / se) ** 2` go through `math.pow`;
+  the `sum()` calls over a group go through `fsum_rows`, while the running totals that `analyse` builds
+  with `+=` stay plain additions;
+- `math.hypot` of the block-change error is CPython's own algorithm, so it maps through the math module
+  and `np.hypot` is refused;
+- the template effect is `np.mean` of four slot differences, repeated with `np.mean(axis=1)` on a
+  C-contiguous array;
+- the weighted least-squares terms of `seed_split` run the scalar function per replicate on the batched
+  floats, since LAPACK `dgelsd`, the BLAS product and numpy's pairwise `np.sum` fix bits that no
+  reformulation reproduces.
+
+All replicates' counts come from one `rng.binomial` call seeded with `NULL_SEED` (ANU draw
+`docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json`, index 0), so serial, pooled and differently blocked runs
+write the same bytes. Gate core-685 compares ten replicates with the scalar `analyse` by `float.hex` and runs
+three mutants (naive sum, numpy square, `np.hypot`), each of which must differ; two of the ten draw
+indices (81 and 349) are the ones whose block-change statistic differs between `pow(x, 2)` and `x * x`.
+Gate core-686 runs 3000 replicates (about 6 s serial) and requires every rate within `ALPHA` plus or minus
+three nominal binomial errors (0.0018 each) and no more than the upper bound for a residual beyond the margin.

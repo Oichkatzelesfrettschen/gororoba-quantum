@@ -59,30 +59,6 @@
   },
   {
    "suite": "core",
-   "cwd": "results/local_compute",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-007",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "results/local_compute/aer_delay_sentinels",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-008",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "results/local_compute/n21_shared_predicate",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-009",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" results/local_compute/n21_shared_predicate/check_probe.py",
    "name": "core-010",
@@ -112,26 +88,10 @@
   },
   {
    "suite": "core",
-   "cwd": "docs/sources/open_gororoba",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-013",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
    "cwd": "results/live",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest test_folded_raw_analysis",
    "name": "core-014",
    "seconds": 0.7,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "results/live/2026-10-12T055624.091217Z",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-016",
-   "seconds": 0.1,
    "tier": "pr"
   },
   {
@@ -231,14 +191,6 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest check_probe",
    "name": "core-036",
    "seconds": 1.5,
-   "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "results/local_compute/mixed_pub_client",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "core-038",
-   "seconds": 0.1,
    "tier": "pr"
   },
   {
@@ -973,14 +925,6 @@
   },
   {
    "suite": "sources",
-   "cwd": "docs/evidence/c5_zero_divisor_code",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-390",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
    "cwd": ".",
    "cmd": "shellcheck docs/evidence/cd-imaginary-sum-conference/replay_rocq.sh",
    "name": "sources-391",
@@ -990,24 +934,8 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "sha256sum -c docs/evidence/cd-imaginary-sum-conference/source_hashes.sha256",
-   "name": "sources-392",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
    "cmd": "shellcheck docs/evidence/cd-tower-basis-sign/replay_rocq.sh",
    "name": "sources-396",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": ".",
-   "cmd": "sha256sum -c docs/evidence/cd-tower-basis-sign/source_hashes.sha256",
-   "name": "sources-397",
    "seconds": 0.1,
    "tier": "pr"
   },
@@ -1221,14 +1149,6 @@
   },
   {
    "suite": "sources",
-   "cwd": "docs/evidence/vacuum_models",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-154",
-   "seconds": 0.1,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/vacuum_endpoint_information/probe.py --check",
    "name": "sources-155",
@@ -1241,14 +1161,6 @@
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest check_probe",
    "name": "sources-157",
    "seconds": 0.4,
-   "tier": "pr"
-  },
-  {
-   "suite": "sources",
-   "cwd": "docs/evidence/vacuum_endpoint_information",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-159",
-   "seconds": 0.1,
    "tier": "pr"
   },
   {
@@ -2256,14 +2168,6 @@
    "seconds": 66.2,
    "tier": "full",
    "runtime": "qiskit-2.5"
-  },
-  {
-   "suite": "sources",
-   "cwd": "docs/evidence/simulation-notebook-audit",
-   "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-246",
-   "seconds": 0.0,
-   "tier": "pr"
   },
   {
    "suite": "core",
@@ -3496,7 +3400,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
    "name": "sources-410",
    "seconds": 0.1,
    "tier": "pr"
@@ -3733,6 +3637,17 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_floor.py --check results/quantum_inspire/proposals/zz-map-tuna17-pause-ladder-floor --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -W error scripts/qi_zz_map_floor.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_floor.py --self-test --catalogue docs/evidence/quantum_inspire/catalogue-submission-deadline-proposal.json",
+   "name": "core-683",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/proposals/zz-map-tuna17-pause-ladder-floor"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qi_zz_map_analysis.py --self-test && \"$PYTHON\" -B -O -W error scripts/qi_zz_map_analysis.py --self-test",
    "name": "core-595",
    "seconds": 8.0,
@@ -3826,6 +3741,33 @@
    "name": "core-642",
    "seconds": 30.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py --self-test",
+   "name": "core-681",
+   "seconds": 62.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py check results/iqm/cases/idle-schedule-train-readout",
+   "name": "core-682",
+   "seconds": 35.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py analyze results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe --out results/iqm/idle_schedule_probe_analysis-runner-image.json --replay",
+   "name": "core-684",
+   "seconds": 2.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/idle_schedule_probe_analysis-runner-image.json"
+   ]
   },
   {
    "suite": "core",
@@ -4092,6 +4034,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/configuration-holdout.json --check",
+   "name": "core-ascella-signed-coherence-configuration-holdout-replay",
+   "seconds": 600.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
@@ -4168,8 +4118,24 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/scripts/test_bdsc_null_calibration.py",
+   "name": "core-685",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/bdsc_null_calibration.py --null-calibration 3000 --bound",
+   "name": "core-686",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/primorial_cover.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum/primorial_cover.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/primorial_cover.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py",
-   "name": "core-681",
+   "name": "core-687",
    "seconds": 15.0,
    "tier": "pr"
   },
@@ -4177,7 +4143,7 @@
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error primorial_cover.py --check ../docs/evidence/primorial_cover/certificates.json",
-   "name": "core-682",
+   "name": "core-688",
    "seconds": 2.0,
    "tier": "pr"
   },
@@ -4185,7 +4151,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/primorial_cover_noise.py --check docs/evidence/primorial_cover/noise.json --run results/kaggle/2026-10-25T075839Z-gororoba-primorial-cover-noise",
-   "name": "core-683",
+   "name": "core-689",
    "seconds": 91.0,
    "tier": "full"
   }

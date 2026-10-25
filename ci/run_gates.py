@@ -518,6 +518,9 @@ def main(argv: list[str] | None = None) -> int:
     # _run gives each historical gate its runtime's interpreter as $PYTHON, so the current runtime
     # resolves only when a selected gate runs under it.
     primary = sys.executable
+    # The shared host-environment lock spans interpreter resolution and every gate, so a rebuild of the host
+    # environments cannot swap packages under the verdict; the descriptor stays open until the process exits.
+    pins.hold_host_envs(os.environ)
     if any(not gate.get("runtime") for gate in selected):
         resolved, reason = pins.resolve_current(os.environ, sys.executable, ROOT, admission=changed is not None)
         print(f"current runtime: {reason}", flush=True)
