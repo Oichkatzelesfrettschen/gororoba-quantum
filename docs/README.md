@@ -36,6 +36,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Planning | work records, next actions, blockers and completion receipts | [planning entrance](state/plans.md), [commands](runbooks/plan-tracker.md), [migration evidence](evidence/plan-reconciliation/README.md) |
 | State and records | claim registry, run census, roadmap | [RESEARCH_STATE.md](state/RESEARCH_STATE.md) |
 | Evidence closure | source-relative job identities, denominators, dependencies and acquisition decisions | [derived view](evidence/evidence-closure/README.md), [operator procedure](runbooks/evidence-closure.md), [derivation-led synthesis source](notes/topics/algebra_measurement_synthesis.tex) |
+| Results index and archive copies | run, job, acquisition and claim lookups; Software Heritage and git bundle copies | [results index](runbooks/results-index.md), [archive copies](runbooks/repository-archive.md), [archive observations](evidence/repository-archive/README.md) |
 | Archive | handoffs, handbacks, review reports | [archive/reviews/README.md](archive/reviews/README.md) |
 
 ## Start here by task
@@ -177,6 +178,7 @@ differs from it only in the `cd_core.py` digest.
 | [evidence/cd-sign-python-translation/README.md](evidence/cd-sign-python-translation/README.md) | Certified raw-AST translation, an independent source interpreter and all-integer execution preservation for cd_sign, with explicit parsing and helper trust boundaries |
 | [evidence/cd-associator-point-indicators/README.md](evidence/cd-associator-point-indicators/README.md) | All-dimension Rocq proof of Proposition 5's point-indicator phase formula and exact degree, with kernel receipts |
 | [evidence/cd-associator-census/README.md](evidence/cd-associator-census/README.md) | Rocq proof, for every Cayley-Dickson dimension, of the census of unordered basis pairs by associator-phase ANF degree (21, then 3 2^d (2^(d+1) - 1) at degree d), with its kernel receipts |
+| [evidence/a5-stiefel-pfaffian-germs/README.md](evidence/a5-stiefel-pfaffian-germs/README.md) | exact Pfaffian factorization Pf A = -(z.t) Q G proving every A_5 Stiefel element a zero divisor, and the tangent-bound germs at the twelve non-zero-divisor gap witnesses |
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
 | [relativistic-metrology-scale.md](notes/topics/relativistic-metrology-scale.md) | the Belenos light cone as a mode-reachability set; relativistic and astronomical phases against the measured device instabilities, with the falsifiers of an astronomical coupling |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the open_gororoba Rocq corpus |
