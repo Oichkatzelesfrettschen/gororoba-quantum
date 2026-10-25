@@ -301,6 +301,17 @@ P(0) of the final key `f` per qubit. The orchestrator proceeds only if every qub
 0.00 to 0.20 on unitary-n16, and every key (`f` and `m0` to `m15` on measure-n16, `f` on unitary-n16) is present in
 both. The check gates the submission only and never enters the analysis.
 
+The rule stops the main job. All keys are present and every qubit reads 0.87 to 0.91 on measure-n16, but unitary-n16
+reads 0.19, 0.21, 0.25, 0.14, 0.22 and 0.38 on QB5, QB7, QB11, QB14, QB17 and QB19, against planning values of 0.053
+to 0.094: 3.2 to 13.3 binomial standard errors above the model on every qubit. Measure-n16 sits 0.3 to 1.9 standard
+errors below its planning values. The model's prx depolarizing error moves the unitary arm by about 0.008, so the gap
+is a coherent error of the sixteen pi/18 pulses. Two single-parameter models fit both probes per qubit, with the
+calibration readout errors and without relaxation, at equal likelihood: a rotation scale of 0.67 to 0.86 per pulse, or
+an axis phase advancing 0.068 to 0.130 rad per pulse. One hundred shots do not separate them. They differ for the
+headline test: the measure arm's ideal P0 depends on the per-pulse angle (a scale of 0.8 moves it from 0.891 to 0.928,
+about 4.5 departure standard errors) and not on the axis phase. Under either model the unitary-arm guard of
+`device_verdict` withholds any device attribution, so the main job as built returns `gate_model_inconsistent`.
+
 ## Window sensitivity
 
 The planned measure window of 1.096 us comes from two QPU probes on this set and carries their rounding (a layer of 43
