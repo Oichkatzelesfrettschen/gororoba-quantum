@@ -310,7 +310,9 @@ def tally(circuits: list[dict[str, Any]], results: list[dict[str, Any]]) -> dict
     return out
 
 
-def fit(counts: dict[str, tuple[int, int]], amp: str, ro: str, qubit: str) -> dict[str, Any]:
+def fit(item: tuple[dict[str, tuple[int, int]], str, str, str]) -> dict[str, Any]:
+    """The joint train fit of one qubit, from (counts, train prefix, readout prefix, qubit)."""
+    counts, amp, ro, qubit = item
     eps, se, chi2, e01, e10 = fit_train(
         [train_pulses(k) for k in AMPLIFY_K],
         [z_of(counts, f"{amp}-{k}@{qubit}") for k in AMPLIFY_K],
@@ -324,7 +326,11 @@ def fit(counts: dict[str, tuple[int, int]], amp: str, ro: str, qubit: str) -> di
 def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> dict[str, Any]:
     """The preregistered decisions H1 and H2 and the descriptive outputs from per name@qubit (ones, shots)."""
     qubits = ordered({key.split("@")[1] for key in counts if key.startswith("par-ro0@")})
-    parallel = {q: fit(counts, "par-amp", "par-ro", q) for q in qubits}
+    items = [(counts, "par-amp", "par-ro", q) for q in qubits]
+    items += [(counts, "amp-" + q, "ro", q) for q in TRAIN_QUBITS]
+    fits = ordered_map(fit, items)
+    parallel = dict(zip(qubits, fits[: len(qubits)], strict=True))
+    isolated_fits = dict(zip(TRAIN_QUBITS, fits[len(qubits) :], strict=True))
     arms: dict[str, dict[str, list[dict[str, Any]]]] = {}
     for b, rows in prediction["idle"].items():
         arms[b] = {}
@@ -349,7 +355,7 @@ def evaluate(counts: dict[str, tuple[int, int]], prediction: dict[str, Any]) -> 
     schedule = "mixed" if len(resolved) > 1 else readings_.pop() if len(readings_) == 1 else "unresolved"
     isolated: dict[str, Any] = {}
     for qubit in TRAIN_QUBITS:
-        row = fit(counts, "amp-" + qubit, "ro", qubit)
+        row = isolated_fits[qubit]
         attributed = prediction["coherent_attribution"].get(qubit)
         if attributed is not None and row["linear"]:
             distance = abs(row["eps"] - attributed) / row["eps_se"]
