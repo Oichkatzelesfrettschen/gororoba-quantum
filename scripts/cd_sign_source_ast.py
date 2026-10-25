@@ -82,6 +82,14 @@ def _module_scope(node: ast.AST) -> list[ast.AST]:
     in its own scope."""
     found = [node]
     if isinstance(node, SCOPES):
+        # Decorators, defaults, base classes and keywords evaluate where the definition runs, not in its body.
+        outer: list[ast.AST] = list(getattr(node, "decorator_list", []))
+        if isinstance(node, ast.ClassDef):
+            outer += [*node.bases, *(keyword.value for keyword in node.keywords)]
+        else:
+            outer += [*node.args.defaults, *(item for item in node.args.kw_defaults if item is not None)]
+        for item in outer:
+            found.extend(_module_scope(item))
         return found
     for child in ast.iter_child_nodes(node):
         if isinstance(child, SCOPES):
@@ -136,6 +144,8 @@ def _locals(function: ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda) -> se
                 names.add(item.name)
             elif isinstance(item, ast.Import | ast.ImportFrom):
                 names.update((alias.asname or alias.name).split(".")[0] for alias in item.names)
+            elif isinstance(item, ast.ExceptHandler) and item.name:
+                names.add(item.name)
             elif isinstance(item, ast.Global | ast.Nonlocal):
                 declared.update(item.names)
     return names - declared
