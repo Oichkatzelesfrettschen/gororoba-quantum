@@ -136,6 +136,7 @@ PERCEVAL_PAGES = (
     "reference/runtime/legacy/remote_processor.html",
     "reference/runtime/legacy/rpchandler.html",
     "reference/runtime/platform_specs.html",
+    "reference/utils/noise_model.html",
 )
 
 API_DOCUMENTS = (

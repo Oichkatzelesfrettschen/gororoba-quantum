@@ -129,6 +129,13 @@ differs from it only in the `cd_core.py` digest.
 | [2506.05988.md](notes/papers/2506.05988.md) | Fyrillas et al. 2025 induced phase shifters and the acyclic-pruned-graph crosstalk-robustness criterion (hosted, CC BY 4.0) |
 | [2606.18408.md](notes/papers/2606.18408.md) | Tully et al. 2026 Walsh parity-check filters on Belenos: fixed-pattern bias, compilation-dependent leakage and a calibration-linked HOM episode (unrefereed) |
 | [2005.01743.md](notes/papers/2005.01743.md) | Ollivier et al. 2021 Hong-Ou-Mandel visibility with multi-photon noise: separation of g2 and indistinguishability |
+| [quant-ph-0302031.md](notes/papers/quant-ph-0302031.md) | Horodecki, Shor and Ruskai 2003 entanglement-breaking channels: measure-and-prepare form and the Choi-state separability test |
+| [quant-ph-9807091.md](notes/papers/quant-ph-9807091.md) | Horodecki et al. 1999 teleportation channel: average fidelity from singlet fraction, `f = (F d + 1)/(d + 1)`, and the classical bound `2/(d + 1)` |
+| [1210.4583.md](notes/papers/1210.4583.md) | Chitambar et al. 2014 LOCC survey: the inclusion of LOCC in separable operations |
+| [quant-ph-0007058.md](notes/papers/quant-ph-0007058.md) | Calsamiglia and Lutkenhaus 2001 linear-optical Bell-state analyzer: the 50 percent bound and its assumptions |
+| [quant-ph-9605038.md](notes/papers/quant-ph-9605038.md) | Horodecki et al. 1996 separability criterion: positive partial transpose is exact for 2x2 and 2x3 |
+| [2411.12387.md](notes/papers/2411.12387.md) | Laneve et al. 2024 teleportation between two dissimilar quantum dots over fiber and a 270 m free-space link: sources, tuning, measured fidelities |
+| [1302.0932.md](notes/papers/1302.0932.md) | van Enk and Blume-Kohout 2013 common-state assumption of tomography and the Akaike test for source drift |
 | [2004.14018.md](notes/papers/2004.14018.md) | White et al. 2020 process-tensor characterization and the intervention-based memory lower bound on IBM devices |
 | [riley-2008-nist-sp-1065.md](notes/papers/riley-2008-nist-sp-1065.md) | Riley 2008 NIST SP 1065: Allan, overlapping Allan and modified Allan variances and the noise types they separate |
 | [quant-ph-0501020.md](notes/papers/quant-ph-0501020.md) | Toth and Guhne 2005 stabilizer entanglement witnesses and the two-qubit Bell-fidelity form F > 1/2 |
@@ -219,6 +226,7 @@ differs from it only in the `cd_core.py` digest.
 |---|---|
 | [ibm_heron_platform.md](notes/ibm_heron_platform.md) | measured Targets and current documentation |
 | [hardware-controls.md](notes/ibm_quantum/hardware-controls.md) | every control reachable through qiskit-ibm-runtime |
+| [learning-quantum-teleportation.md](notes/ibm_quantum/learning-quantum-teleportation.md) | IBM Quantum Learning teleportation lesson: outcome-to-correction table |
 | [qiskit-ecosystem.md](notes/qiskit-ecosystem.md) | Qiskit ecosystem audit |
 | [qiskit-ecosystem-install-plan.md](notes/qiskit-ecosystem-install-plan.md) | Qiskit ecosystem install plan |
 
@@ -229,6 +237,7 @@ differs from it only in the `cd_core.py` digest.
 | [tuna17-bipartite-designs.md](notes/quantum_inspire/tuna17-bipartite-designs.md) | Tuna-17 cubic Walsh classes and box-kite packing |
 | [quandela/literature.md](notes/quandela/literature.md) | published methods for characterizing a Belenos-class mesh |
 | [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |
+| [quandela/roadmap-2026-03.md](notes/quandela/roadmap-2026-03.md) | Quandela March 2026 roadmap and the Welinq interconnect announcement: networking and modular-system statements with page and target year |
 | [iqm/python-stack.md](notes/iqm/python-stack.md) | Python stack for IQM Resonance |
 
 ### Simulation

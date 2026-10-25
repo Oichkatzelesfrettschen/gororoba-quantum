@@ -85,3 +85,80 @@ Each is reported as the record states it. None is resolved here.
 Belenos moved most. Transmittance rose from 2.89 % to 6.06 % in the 04:09 UTC live read of 2026-10-20, and HOM fell from 94.2 % to 88.5 %. The 08:51 UTC catalogue of the same day reads `calibration`, with transmittance 5.97 %, HOM 82.5 %, g2 0.9 % and a maximum dark count of 298.5 /s on mode 5. Its architecture is absent from the live record, so the carried 2026-10-17 copy stands. The QPU run records hold the states between those reads, and [calibration.md](calibration.md) gives them.
 
 Ascella moved little: transmittance 5.14 % to 5.25 % by the 04:09 UTC read, HOM 87.74 % to 87.48 %, g2 1.8 % to 1.9 %. Its maximum dark count rose from 1428 to 1885 /s on mode 10. At 08:51 UTC on 2026-10-20 the catalogue reads transmittance 5.23 %, HOM 87.28 %, g2 2.0 % and a maximum dark count of 2169 /s on mode 10.
+
+## Vendor product pages and the Perceval constraint checker
+
+[P] marks a statement on a vendor page or in the file; [I] marks a repository
+reading. The product pages state vendor claims; the Target and processor
+records above remain the authority for measured values.
+
+### Product pages
+
+Both pages were retrieved on 25 October 2026 (09:04 UTC) and are registered in
+[SOURCES.json](../../SOURCES.json) with the response hash as an external
+reference; the served page changes with site updates.
+
+| Page | URL | Bytes | SHA-256 |
+|---|---|---|---|
+| Ascella | https://www.quandela.com/products-and-services/ascella/ | 148,088 | `d17ff012117d63d071e985c6f0274ff44e9e1686ae6a744b618d9f1d19e34a2d` |
+| Belenos | https://www.quandela.com/products-and-services/belenos/ | 149,112 | `e2c9f071fdf62e5e01b14d82268c0406a047d32e08dd957760e834ad86cb100c` |
+
+Reading scope: the whole page text of each, including the technical
+specification block; the navigation menu, newsletter form and footer were not
+recorded.
+
+| Field on the page | Ascella | Belenos |
+|---|---|---|
+| Product line / QPU | MOSAIQ-6 | MOSAIQ-12 |
+| Modality, topology | Photonic, all-to-all connectivity | Photonic, all-to-all connectivity |
+| `#modes` | 12 | 24 |
+| QOPS | 144 | 576 |
+| Photonic chip design | Universal | Universal |
+| 1-qubit gate fidelity | (99.6 +- 0.1) % | (99.6 +- 0.1) % |
+| 2-qubit gate fidelity | (99.0 +- 0.8) % | (99.0 +- 0.8) % |
+| Read-out fidelity | 99 % | 99 % |
+| Entanglement capability | 6 fully entangled qubits | 12 fully entangled qubits |
+| Power consumption (main system) | 3 kW | 8 kW |
+| Cooling | Air-cooled | Air-cooled |
+| Client software | Perceval, Qiskit, myQLM, Quandela Quantum Toolbox SDK | the same |
+
+- [P] Ascella page text: "The first functional Photonic Quantum computer,
+  delivered in 2022", with "First deployment 2022", and "So it feeds the chip
+  6 photons that arrive at the same time." "Ascella is available directly in
+  the cloud."
+- [P] Belenos page text: "Quandela announces the launch of Belenos, the
+  world’s most powerful photonic quantum computer." "Belenos offers 4,000
+  times more computing power than the previous generation". "The first fully
+  integrated version will be delivered in a supercomputer at the end of
+  2025." "Belenos is now available in the cloud."
+- [I] Photon counts. The Ascella page states 6 photons in prose and 6 fully
+  entangled qubits, matching the 6 source inputs and the 6-photon job limit
+  in the specification table above. The Belenos page states no photon count;
+  its "12 fully entangled qubits" agrees with the 12 source inputs and the
+  12-photon job limit of the platform record, and this note takes the
+  platform record, not the page, as the source of the Belenos photon count.
+- [I] Interconnection. Neither page contains a statement about interconnecting
+  the processor with another processor, a network link, or a modular
+  expansion. The only networking language on the vendor side is in the
+  [roadmap and Welinq note](roadmap-2026-03.md).
+
+### Perceval 1.3.1 constraint checker
+
+The file `perceval/runtime/contraint_checker.py` (the misspelling is the
+upstream file name) at the Perceval 1.3.1 commit
+`64ed82f9c5e65f43d5092c92a8e218b255cde41d`
+(https://github.com/Quandela/Perceval/blob/64ed82f9c5e65f43d5092c92a8e218b255cde41d/perceval/runtime/contraint_checker.py)
+was fetched from `raw.githubusercontent.com` at the same commit on 25 October
+2026 (09:04 UTC): 11,960 bytes, SHA-256
+`6efae4f72cb01ce898c706a8fe4b831d9e942dbfd9b5d37490aea2dc3d03b8b7`. The copy
+that the installed `python-perceval-quandela` 1.3.1 package places under
+`perceval/runtime/` in the site-packages tree has the same size and SHA-256,
+so the installed file is byte-identical to the file at the pinned commit.
+
+[P] The file defines `ConstraintChecker`, whose recognized constraints are
+`max_mode_count`, `min_mode_count`, `max_photon_count`, `min_photon_count`,
+`accepted_state_kinds`, `support_multi_photon` and `max_sample_count`, and
+which verifies an `Experiment`'s input states and circuit against them. The
+file carries an MIT license header with an exqalibur linking exception.
+Reading scope: the header, the class constants and the method inventory; the
+verification logic was not read line by line.
