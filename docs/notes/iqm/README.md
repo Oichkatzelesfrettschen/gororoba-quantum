@@ -454,6 +454,10 @@ Facts a Garnet case design starts from, each with the record that carries it:
   of 204.76 us per shot fits 32.5 ns per layer at a 4.34 us per-circuit base,
   so the ratio is unreliable; the claim `iqm-garnet-idle-schedule` itself is
   unchanged.
+  On set `be070414` the QPU compiles a mid-circuit measure to 1.096 us and a
+  circuit to a 4.344 us base, where garnet:mock compiles 1.772 us and 8.684 us
+  (claim `iqm-garnet-qpu-measure-window`, two single-circuit probes), so a timing
+  taken from the mock needs a QPU check.
 - **Per-qubit over-rotation.** Fitted with its own readout pair, QB11's prx
   over-rotates by -0.30 +- 0.06 % and QB6's by -0.18 +- 0.07 %; the +2.7 %
   QB11 attribution of the signed null re-test is excluded. Driving all 20

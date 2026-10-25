@@ -35,9 +35,10 @@ Idle. The circuit-job body takes a native `delay` operation with a duration in s
 rounded up to hardware granularity (docs/notes/iqm/docs/iqm-client/api/iqm.iqm_client.models.md, operation table and
 "Delay"; docs/notes/iqm/os-4.7.md, "Client", lists `delay` in every Target). Garnet's dynamic quantum architecture
 lists no `delay` gate; garnet:mock accepted it. MEASURE_WINDOW_SECONDS is the compiled duration of a mid-circuit
-measure on garnet:mock (calibration set f04fe114), fixed by five single-circuit probe jobs (see the constant); the
-QPU job's own estimate is checked against the case's predicted schedule in `analyze`, and a difference above
-SCHEDULE_TOLERANCE solves the window from the QPU total before any decision.
+measure on Garnet (calibration set be070414), 1.096 us, fixed by two single-circuit QPU probe jobs (see the constant);
+garnet:mock compiles 1.772 us. The QPU job's own estimate is checked against the case's predicted schedule in
+`analyze`, and a difference above SCHEDULE_TOLERANCE solves the window from the QPU total before any decision (a
+garnet:mock analysis reports the ratio and keeps the plan).
 
 Initialization and T1, measured in the job. One active-reset cycle without heralding initializes the qubits. ro0 and
 ro1 (prx(pi)) wait as long as every other circuit and read z = +-(1 - 2 p) through the assignment channel and the
@@ -137,19 +138,22 @@ PRE_READOUT_SECONDS = 2.0e-6
 T1_DELAYS = (4e-6, 10e-6, 20e-6, 40e-6, 60e-6, 100e-6, 150e-6)
 QUBIT_COUNT = 6
 FINAL_KEY = "f"
-# Compiled schedule of garnet:mock (calibration set f04fe114): the qpu_execution estimate per shot, the job's
-# execution_runtime_estimate_seconds less the fixed 1.6 s over 100 shots, of five single-circuit probe jobs on QB1,
-# QB3, QB7 and QB14 (results/iqm/cases/measurement-timing-probe):
-#   ro0 01a1747a-dd17-76ae-abf5-cb2840e5bdbd       8.684 us
-#   unitary-n16 01a1747a-74f4-7343-90cf-309ff22ec8aa  9.324 us -> (9.324 - 8.684)/16 = 40 ns per prx layer
-#   measure-n16 01a1747a-9d43-72dd-8656-a44458628ca9 37.676 us -> (37.676 - 9.324)/16 = 1.772 us per measure
-#   measure-n1  01a1747a-d133-7756-8fae-5bcfde902635 10.496 us -> 10.496 - 8.684 - 0.040 = 1.772 us
-#   delay-n16   01a1747a-ab9e-77d1-bc48-4f93ad45b5a8 25.708 us -> (25.708 - 9.324)/16 = 1.024 us per delay,
-#                                                                 the duration that probe's circuit carried
-# The 40 ns increment per layer shows the compiler kept the sixteen unitary-arm prx pulses separate.
-ESTIMATOR_BASE_SECONDS = 8.684e-6
+# Compiled schedule of Garnet on calibration set be070414: the qpu_execution estimate per shot, the job's
+# execution_runtime_estimate_seconds less the fixed 1.6 s over 100 shots, of two single-circuit probe jobs of this
+# case's own circuits on QB5, QB7, QB11, QB14, QB17 and QB19, each with the 2 us pre-readout delay
+# (results/iqm/cases/measurement-window-qpu-probe):
+#   unitary-n16 01a174be-d1f7-75fc-b324-d27d7133409b   7.032 us -> 7.032 - 2.0 = 5.032 us of base and layers
+#   measure-n16 01a174be-e68b-776e-8241-8bb3d259ae57  24.568 us -> (24.568 - 7.032)/16 = 1.096 us per measure
+# The per-circuit base is the 4.344 us of the retained active-reset pilot job (2026-10-22T212742Z, two circuits
+# summing to 8.688 us), which leaves (5.032 - 4.344)/16 = 43 ns per prx layer, consistent with the 40 ns that
+# garnet:mock compiles. The mock compiles a different measure window (1.772 us) and base (8.684 us per circuit):
+# five mock probes (results/iqm/cases/measurement-timing-probe, jobs 01a1747a-dd17-76ae-abf5-cb2840e5bdbd, -74f4-,
+# -9d43-, -d133-, -ab9e-) gave 8.684, 9.324, 37.676, 10.496 and 25.708 us per shot. A timing taken from the mock
+# needs a QPU check.
+ESTIMATOR_BASE_SECONDS = 4.344e-6
 PRX_LAYER_SECONDS = 40e-9
-MEASURE_WINDOW_SECONDS = 1.772e-6
+MEASURE_WINDOW_SECONDS = 1.096e-6
+MOCK_MEASURE_WINDOW_SECONDS = 1.772e-6
 DELAY_SECONDS = MEASURE_WINDOW_SECONDS
 # A QPU job whose compiled schedule differs from the predicted one by more than this fraction solves the measure
 # window from its own total before any decision.
@@ -192,7 +196,7 @@ PRX_SYSTEMATIC = 1.0
 DEVICE_QUBITS = 2
 # Deterministic stand-ins for independent shot orderings of the six qubits in a synthetic run (coprime to 3000).
 SHOT_PERMUTATIONS = (7, 11, 13, 17, 19, 23)
-WINDOW_GRID = (1.0e-6, 1.2e-6, 1.4e-6, 1.6e-6, MEASURE_WINDOW_SECONDS, 2.0e-6)
+WINDOW_GRID = (0.6e-6, 0.8e-6, MEASURE_WINDOW_SECONDS, 1.4e-6, MOCK_MEASURE_WINDOW_SECONDS)
 FIT_GRID = [-0.05 + 0.0005 * i for i in range(1001)]
 T1_BOUNDS = (1e-6, 1e-3)
 
@@ -961,12 +965,14 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str
             "window_sensitivity": {
                 "p0_n16_by_window_us": windows,
                 "derivative_per_second_at_planned": derivative,
-                "shift_1p0_to_planned": {
-                    arm: windows[f"{MEASURE_WINDOW_SECONDS * 1e6:.3f}"][arm] - windows["1.000"][arm]
+                "shift_planned_to_mock_window": {
+                    arm: windows[f"{MOCK_MEASURE_WINDOW_SECONDS * 1e6:.3f}"][arm]
+                    - windows[f"{MEASURE_WINDOW_SECONDS * 1e6:.3f}"][arm]
                     for arm in PINCHED_ARMS
                 },
                 "measure_shift_over_departure_se": (
-                    windows[f"{MEASURE_WINDOW_SECONDS * 1e6:.3f}"]["measure"] - windows["1.000"]["measure"]
+                    windows[f"{MOCK_MEASURE_WINDOW_SECONDS * 1e6:.3f}"]["measure"]
+                    - windows[f"{MEASURE_WINDOW_SECONDS * 1e6:.3f}"]["measure"]
                 )
                 / row["departure_n16"]["se"],
             },
@@ -1004,9 +1010,11 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str
         "prx_layer_seconds": PRX_LAYER_SECONDS,
         "acquisition_window_seconds": acquisition_ps(excerpt) / 1e12,
         "timing_source": (
-            "garnet:mock compiler estimates, calibration set f04fe114: ro0 8.684 us, unitary-n16 9.324 us, "
-            "measure-n16 37.676 us, measure-n1 10.496 us and delay-n16 25.708 us per shot (jobs 01a1747a-dd17, "
-            "01a1747a-74f4, 01a1747a-9d43, 01a1747a-d133, 01a1747a-ab9e)"
+            "Garnet QPU compiler estimates, calibration set be070414, 100 shots, the case's own circuits with the 2 us "
+            "pre-readout delay: unitary-n16 7.032 us (job 01a174be-d1f7) and measure-n16 24.568 us (job 01a174be-e68b) "
+            "per shot give a measure window of (24.568 - 7.032)/16 = 1.096 us; with the retained pilot job's 4.344 us "
+            "per-circuit base the prx layer is (7.032 - 2.0 - 4.344)/16 = 43 ns, taken as the mock's 40 ns. "
+            "garnet:mock compiles 1.772 us and 8.684 us per circuit"
         ),
         "estimator_per_shot_seconds_all_circuits": sum(estimator_shot_seconds(c) for c in circuits),
         "billing": bill,
@@ -1112,11 +1120,16 @@ def check(directory: Path) -> None:
 
 
 def compiled_schedule(
-    prediction: dict[str, Any], circuits: list[dict[str, Any]], shots: int, estimate_seconds: float
+    prediction: dict[str, Any],
+    circuits: list[dict[str, Any]],
+    shots: int,
+    estimate_seconds: float,
+    resolve: bool = True,
 ) -> tuple[dict[str, Any], float]:
     """The preregistered check of a job's compiled schedule against the case's prediction, and the measure window the
     decisions use: the planned one, or the one solved from the job's total when they differ by more than
-    SCHEDULE_TOLERANCE and the solution lies within a factor of four of the plan."""
+    SCHEDULE_TOLERANCE and the solution lies within a factor of four of the plan. A garnet:mock job compiles its own
+    window, so its analysis (resolve False) reports the ratio and the window it would solve and keeps the plan."""
     predicted = prediction["estimator_per_shot_seconds_all_circuits"] * shots
     estimated = estimate_seconds - JOB_SECONDS
     schedule: dict[str, Any] = {
@@ -1127,7 +1140,10 @@ def compiled_schedule(
         "window_recomputed": False,
     }
     window = prediction["measure_window_seconds"]
-    if abs(estimated / predicted - 1) > SCHEDULE_TOLERANCE:
+    if abs(estimated / predicted - 1) > SCHEDULE_TOLERANCE and not resolve:
+        schedule["solved_window_seconds"] = solve_window(circuits, shots, estimated)
+        schedule["window_kept_for_mock"] = True
+    elif abs(estimated / predicted - 1) > SCHEDULE_TOLERANCE:
         # The QPU compiled a different schedule than the mock's: solve the measure window from its total and
         # recompute every prediction at that window and the fitted T1 before any decision.
         solved = solve_window(circuits, shots, estimated)
@@ -1226,7 +1242,7 @@ def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
     measurements = json.loads((run_dir / "raw/measurements.json").read_bytes())
     counts = tally(circuits, measurements)
     schedule, window = compiled_schedule(
-        prediction, circuits, row["shots"], record["compilation"]["execution_runtime_estimate_seconds"]
+        prediction, circuits, row["shots"], record["compilation"]["execution_runtime_estimate_seconds"], not mock
     )
     artifact = run_dir / "raw/runtime_estimates.json"
     if artifact.exists():
@@ -1573,26 +1589,23 @@ def self_test(with_sweep: bool = True) -> str:
         abs(job["expected_seconds"] - bill["execution_seconds"]) < 5e-4,
         "expected_seconds is not the predicted execution",
     )
-    # The compiled-schedule model reproduces the five probe estimates (microseconds per shot, less the 2 us delay
-    # the probes lacked) and its window solves back.
+    # The compiled-schedule model reproduces the two QPU probe estimates (microseconds per shot, 100 shots, 2 us
+    # pre-readout delay included) to the 0.7 % that the 43 ns against 40 ns layer leaves.
     probes = {
-        "ro0": (ro_circuit("ro0", qubits), 8.684),
-        "unitary-n16": (circuit("u", qubits, "unitary", 16, 1), 9.324),
-        "measure-n16": (circuit("m", qubits, "measure", 16, 1), 37.676),
-        "measure-n1": (circuit("m", qubits, "measure", 1, 1), 10.496),
-        "delay-n16": (circuit("d", qubits, "delay", 16, 1, 1.024e-6), 25.708),
+        "unitary-n16": (circuit("u", qubits, "unitary", 16, 1), 7.032),
+        "measure-n16": (circuit("m", qubits, "measure", 16, 1), 24.568),
     }
     for label, (probe, microseconds) in probes.items():
-        got = (estimator_shot_seconds(probe) - PRE_READOUT_SECONDS) * 1e6
-        expect(abs(got - microseconds) < 1e-6, f"{label}: {got}")
+        got = estimator_shot_seconds(probe) * 1e6
+        expect(abs(got / microseconds - 1) < 0.01, f"{label}: {got}")
+    expect(abs((24.568 - 7.032) / 16 - MEASURE_WINDOW_SECONDS * 1e6) < 1e-9, "the window is not the probes' difference")
     total = SHOTS * sum(estimator_shot_seconds(c) for c in circuits)
     expect(abs(solve_window(circuits, SHOTS, total) - MEASURE_WINDOW_SECONDS) < 1e-12, "the window does not solve back")
     expect(
         solve_window(circuits, SHOTS, 1.05 * total) > 1.05 * MEASURE_WINDOW_SECONDS, "a longer schedule solves shorter"
     )
     expect(
-        abs(acquisition_ps(excerpt) / 1e12 - MEASURE_WINDOW_SECONDS) > 1e-9
-        and MEASURE_WINDOW_SECONDS > acquisition_ps(excerpt) / 1e12,
+        MEASURE_WINDOW_SECONDS > acquisition_ps(excerpt) / 1e12,
         "the measure window is not above the acquisition window",
     )
     # Planted devices: T1 and p differ from the planning values, eps takes both signs.
@@ -1673,6 +1686,18 @@ def self_test(with_sweep: bool = True) -> str:
         expect(abs(check["ratio"] - factor) < 1e-9, f"ratio {check['ratio']}")
         expect(check["window_recomputed"] == solved and check.get("window_rejected", False) == rejected, f"{check}")
         expect((window > MEASURE_WINDOW_SECONDS) == solved, f"window {window}")
+
+    mock_check, mock_window = compiled_schedule(
+        prediction,
+        circuits,
+        SHOTS,
+        JOB_SECONDS + prediction["estimator_per_shot_seconds_all_circuits"] * SHOTS * 1.4,
+        False,
+    )
+    expect(
+        mock_window == prediction["measure_window_seconds"] and bool(mock_check.get("window_kept_for_mock")),
+        f"a mock job re-solved the window: {mock_check}",
+    )
 
     # The device rule: two qubits, or a pooled z, flags the device; one qubit does not.
     def usable(outcome: str, difference: float, tail: str = "match") -> dict[str, Any]:

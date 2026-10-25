@@ -1,0 +1,17 @@
+{
+ "approval": "Run the 2 QPU probes (Recommended)",
+ "body_sha256": "b926a0c6533dcc8b99cfa95036738370bba8d38dc66690dd34a1ef98b6cee00c",
+ "cases_sha256": "89ce0e51f91ccd208094effb083c4ba21bec77161ca60d21dd3e28eb25336bf2",
+ "credit_before": {
+  "currentBalance": "15.50",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 0.01,
+ "job": "measure-n16-s0p",
+ "job_id": "01a174be-e68b-776e-8241-8bb3d259ae57",
+ "max_credits": 1.0,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T20:27:10Z"
+}
