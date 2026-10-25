@@ -105,7 +105,7 @@ def pulses_of(name: str) -> list[tuple[float, float]]:
 def circuit_of(name: str, qubits: list[str]) -> dict[str, Any]:
     if name == "d4-unitary-n16":
         # Instruction for instruction the probe circuit.
-        return {**seq.circuit(name, qubits, "unitary", 16, 1), "name": name}
+        return {**seq.circuit(name, qubits, "unitary", 16, 1, paired=False), "name": name}
     instructions: list[dict[str, Any]] = []
     for angle, phase in pulses_of(name):
         instructions += [seq.op("prx", [q], angle=angle, phase=phase) for q in qubits]
@@ -560,7 +560,9 @@ def self_test() -> str:
     expect(circuits["d4-unitary-n16"]["instructions"] == probe["instructions"], "D4 is not the probe circuit")
     # The model: D4 is the main case's unitary arm; every circuit's ideal P(0) is cos(4 pi/9)^2.
     cal = excerpt["qubits"][qubits[0]]
-    unitary = seq.bloch_z("unitary", 16, cal["t1_s"], cal["t2_s"], seq.PRX_LAYER_SECONDS, 0.0, 1.0, cal["prx_p"])
+    unitary = seq.bloch_z(
+        "unitary", 16, cal["t1_s"], cal["t2_s"], seq.PRX_LAYER_SECONDS, 0.0, 1.0, cal["prx_p"], paired=False
+    )
     got = evolve(pulses_of("d4-unitary-n16"), cal["t1_s"], cal["t2_s"], cal["prx_p"], 1.0)
     expect(abs(got - unitary) < 1e-12, f"D4 model {got} against the unitary arm {unitary}")
     for name in CORRECTED:

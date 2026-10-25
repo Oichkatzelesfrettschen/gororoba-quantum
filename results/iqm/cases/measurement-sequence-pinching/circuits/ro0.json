@@ -5,11 +5,11 @@
     "duration": 2e-06
    },
    "locus": [
+    "QB1",
     "QB5",
-    "QB7",
-    "QB11",
+    "QB8",
+    "QB12",
     "QB14",
-    "QB17",
     "QB19"
    ],
    "name": "delay"
@@ -19,11 +19,11 @@
     "key": "f"
    },
    "locus": [
+    "QB1",
     "QB5",
-    "QB7",
-    "QB11",
+    "QB8",
+    "QB12",
     "QB14",
-    "QB17",
     "QB19"
    ],
    "name": "measure"

@@ -6,6 +6,16 @@
     "phase": 0.0
    },
    "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 1.3962634015954636,
+    "phase": 0.0
+   },
+   "locus": [
     "QB5"
    ],
    "name": "prx"
@@ -16,7 +26,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB7"
+    "QB8"
    ],
    "name": "prx"
   },
@@ -26,7 +36,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB11"
+    "QB12"
    ],
    "name": "prx"
   },
@@ -37,16 +47,6 @@
    },
    "locus": [
     "QB14"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 1.3962634015954636,
-    "phase": 0.0
-   },
-   "locus": [
-    "QB17"
    ],
    "name": "prx"
   },
@@ -65,14 +65,24 @@
     "key": "m0"
    },
    "locus": [
+    "QB1",
     "QB5",
-    "QB7",
-    "QB11",
+    "QB8",
+    "QB12",
     "QB14",
-    "QB17",
     "QB19"
    ],
    "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 1.3962634015954636,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
   },
   {
    "args": {
@@ -90,7 +100,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB7"
+    "QB8"
    ],
    "name": "prx"
   },
@@ -100,7 +110,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB11"
+    "QB12"
    ],
    "name": "prx"
   },
@@ -120,16 +130,6 @@
     "phase": 0.0
    },
    "locus": [
-    "QB17"
-   ],
-   "name": "prx"
-  },
-  {
-   "args": {
-    "angle": 1.3962634015954636,
-    "phase": 0.0
-   },
-   "locus": [
     "QB19"
    ],
    "name": "prx"
@@ -139,11 +139,11 @@
     "key": "m1"
    },
    "locus": [
+    "QB1",
     "QB5",
-    "QB7",
-    "QB11",
+    "QB8",
+    "QB12",
     "QB14",
-    "QB17",
     "QB19"
    ],
    "name": "measure"
@@ -153,11 +153,11 @@
     "duration": 2e-06
    },
    "locus": [
+    "QB1",
     "QB5",
-    "QB7",
-    "QB11",
+    "QB8",
+    "QB12",
     "QB14",
-    "QB17",
     "QB19"
    ],
    "name": "delay"
@@ -167,11 +167,11 @@
     "key": "f"
    },
    "locus": [
+    "QB1",
     "QB5",
-    "QB7",
-    "QB11",
+    "QB8",
+    "QB12",
     "QB14",
-    "QB17",
     "QB19"
    ],
    "name": "measure"

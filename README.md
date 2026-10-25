@@ -32,7 +32,7 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 23 |
-| exploratory reanalysis | exploratory | 74 |
+| exploratory reanalysis | exploratory | 75 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 21 |
@@ -343,6 +343,7 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits |
 | [2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic](results/iqm/runs/2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 8 | completed | 0.0 credits |
 | [2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic](results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 8 | completed | 0.5 credits |
+| [2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
@@ -350,7 +351,7 @@ The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 74 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 40 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 41 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->
 
 ## Contents

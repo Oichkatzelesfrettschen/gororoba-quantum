@@ -8,8 +8,12 @@ signed circuits of each (arm, N) run in the order +, -, -, + (docs/notes/iqm/REA
 - measure: a Z measurement after each rotation, outcomes recorded and never conditioning anything. A pinched qubit's
   Bloch z multiplies by cos(THETA/N) per step, so P0 = (1 + cos(THETA/N)^N)/2: 0.030 at N = 1 and 0.891 at N = 16.
 - unitary (N = 16 only): the same rotations back to back with no mid-circuit operation. They compose to one rotation
-  of THETA, so the ideal P0 is cos(THETA/2)^2 = 0.030. This is the mutation null. Garnet's compiler keeps the sixteen
-  prx pulses separate, 40 ns per layer (results/iqm/cases/measurement-timing-probe), so it stays 16 pulses long.
+  of THETA, so the ideal P0 is cos(THETA/2)^2 = 0.030. This is the mutation null. Garnet's compiler keeps the prx
+  pulses separate, 40 ns per layer (results/iqm/cases/measurement-timing-probe), so it stays as long as its pulses.
+  At N = 16 every pi/18 step of every arm is two prx(pi/2) pulses with the virtual Z frame folded into their phases
+  (step_pulses; the diagnostic job read this construction against its model on five of six qubits, docs/design/
+  iqm-garnet-measurement-sequence-diagnostic.md). QB11 and QB17 are excluded from the qubit selection on that job's
+  evidence (EXCLUDED_QUBITS).
 - delay (every N): each mid-circuit measure replaced by a `delay` of MEASURE_WINDOW_SECONDS. It is the elapsed-time
   control. Idle time dephases the qubit, which is a partial Z measurement of its own, so its P0 rises with N without
   any measurement; the arm quantifies how much of the measure arm's Zeno effect idle dephasing alone produces.
@@ -98,6 +102,7 @@ Usage: "$PYTHON" scripts/iqm_measurement_sequence.py (build DIR [--calibration-d
 from __future__ import annotations
 
 import argparse
+import functools
 import itertools
 import json
 import math
@@ -141,6 +146,21 @@ PRE_READOUT_SECONDS = 2.0e-6
 # points anchor the fit's asymptote, which 60 us does not reach for a T1 of 25 to 60 us.
 T1_DELAYS = (4e-6, 10e-6, 20e-6, 40e-6, 60e-6, 100e-6, 150e-6)
 QUBIT_COUNT = 6
+# Qubits the selection skips, with the evidence of the diagnostic job 01a1753f-3b98-7437-9433-83d0b4b87721 (set
+# be070414, 1000 shots, docs/design/iqm-garnet-measurement-sequence-diagnostic.md, "Results").
+EXCLUDED_QUBITS = {
+    "QB11": (
+        "T1 collapsed in situ: |1> reads P(0) = 0.172 at once and 0.522 after the 2 us idle, about 4 us against "
+        "47.8 us in the set, and the readout scale is 0.384"
+    ),
+    "QB17": (
+        "the pi/2-pair circuit reads +2.71 standard errors above its model at 1000 shots, which projects to about 4.7 "
+        "at 3000 shots and fires the unitary-arm guard"
+    ),
+}
+# The raw model's initialization excitation band for the pre-flight check: the diagnostic read the starting excitation
+# below the 0.068 of the README, about 0.02 to 0.05 on four qubits.
+RAW_EXCITATION_BAND = (0.02, 0.068)
 FINAL_KEY = "f"
 # Compiled schedule of Garnet on calibration set be070414: the qpu_execution estimate per shot, the job's
 # execution_runtime_estimate_seconds less the fixed 1.6 s over 100 shots, of two single-circuit probe jobs of this
@@ -264,12 +284,32 @@ def finish(name: str, qubits: list[str], instructions: list[dict[str, Any]]) -> 
     return {"name": name, "instructions": instructions}
 
 
-def circuit(name: str, qubits: list[str], arm: str, n: int, sign: int, idle: float = DELAY_SECONDS) -> dict[str, Any]:
-    """n rotations of sign*THETA/n on every qubit, each followed by a keyed measure (measure, settle arms), a delay
-    (delay arm) or nothing (unitary arm); the settle arm adds its idle after the measure."""
+def step_pulses(n: int, step: int, sign: int, paired: bool = True) -> list[tuple[float, float]]:
+    """The (angle, phase) of the prx pulses of step `step` of an n-step arm.
+
+    Steps of THETA/n other than the N = 16 pi/18 are one prx(sign*THETA/n, 0). A pi/18 step is two prx(pi/2) pulses
+    whose phases carry the virtual Z rotations: with alpha = sign*THETA/16, step k plays phase a_k = pi/2 + k alpha
+    then a_k + pi + alpha. Each pair is RZ(g) RX(alpha) RZ(h), the frames cancel between steps, and Z rotations commute
+    with the pinch, the delays and the relaxation of the arms, so the chain is RX(THETA) up to a final Z rotation.
+    The diagnostic job found the single-pulse pi/18 circuit reading differently from its model on one qubit
+    (docs/design/iqm-garnet-measurement-sequence-diagnostic.md); `paired` False keeps that construction.
+    """
+    alpha = sign * THETA / n
+    if n != TOP_STEPS or not paired:
+        return [(alpha, 0.0)]
+    first = math.pi / 2 + step * alpha
+    return [(math.pi / 2, first), (math.pi / 2, first + math.pi + alpha)]
+
+
+def circuit(
+    name: str, qubits: list[str], arm: str, n: int, sign: int, idle: float = DELAY_SECONDS, paired: bool = True
+) -> dict[str, Any]:
+    """n steps of sign*THETA/n on every qubit (see step_pulses), each followed by a keyed measure (measure, settle
+    arms), a delay (delay arm) or nothing (unitary arm); the settle arm adds its idle after the measure."""
     instructions: list[dict[str, Any]] = []
     for step in range(n):
-        instructions += prx_layer(qubits, sign * THETA / n)
+        for angle, phase in step_pulses(n, step, sign, paired):
+            instructions += [op("prx", [q], angle=angle, phase=phase) for q in qubits]
         if arm in PINCHED_ARMS:
             instructions.append(op("measure", qubits, key=f"m{step}"))
         if arm == "settle":
@@ -363,10 +403,16 @@ def load_json(path: Path) -> Any:
 
 
 def select_qubits(
-    characterization: dict[str, float], architecture: dict[str, Any], count: int = QUBIT_COUNT
+    characterization: dict[str, float],
+    architecture: dict[str, Any],
+    count: int = QUBIT_COUNT,
+    excluded: dict[str, str] | None = None,
 ) -> tuple[list[str], dict[str, Any]]:
     """Greedy choice by smallest e01 + e10 among the qubits whose T1 is at least the set's median, skipping any qubit
-    that shares a cz coupler with one already chosen."""
+    that shares a cz coupler with one already chosen and any qubit in `excluded`. When fewer than `count` qubits
+    qualify, the choice extends by the remaining uncoupled qubits in decreasing T1, which lowers the T1 floor to the
+    last one added."""
+    skipped = EXCLUDED_QUBITS if excluded is None else excluded
     names = list(architecture["qubits"])
     t1 = {q: characterization[f"characterization.model.{q}.t1_time"] for q in names}
     error = {
@@ -378,19 +424,37 @@ def select_qubits(
     coupled = {
         frozenset(locus) for impl in architecture["gates"]["cz"]["implementations"].values() for locus in impl["loci"]
     }
+    eligible = [q for q in names if q not in skipped]
+
+    def free(q: str, chosen: list[str]) -> bool:
+        return all(frozenset((q, c)) not in coupled for c in chosen)
+
     chosen: list[str] = []
-    for q in sorted((q for q in names if t1[q] >= median), key=lambda q: (error[q], int(q[2:]))):
-        if all(frozenset((q, c)) not in coupled for c in chosen):
+    for q in sorted((q for q in eligible if t1[q] >= median), key=lambda q: (error[q], int(q[2:]))):
+        if free(q, chosen):
             chosen.append(q)
         if len(chosen) == count:
             break
+    at_median = len(chosen)
+    for q in sorted((q for q in eligible if q not in chosen and t1[q] < median), key=lambda q: (-t1[q], int(q[2:]))):
+        if len(chosen) == count:
+            break
+        if free(q, chosen):
+            chosen.append(q)
     if len(chosen) < count:
-        raise ValueError(f"only {len(chosen)} uncoupled qubits with T1 at least the median {median}")
+        raise ValueError(f"only {len(chosen)} uncoupled qubits remain after the exclusions")
     rule = (
         f"the {count} qubits of smallest e01 + e10 among those with T1 at least the set's median, taken in that order "
-        "and skipping any that shares a cz coupler with one already taken"
+        "and skipping any that shares a cz coupler with one already taken or is excluded; when fewer qualify, the "
+        "uncoupled remainder in decreasing T1"
     )
-    return sorted(chosen, key=lambda q: int(q[2:])), {"rule": rule, "median_t1_s": median}
+    return sorted(chosen, key=lambda q: int(q[2:])), {
+        "rule": rule,
+        "median_t1_s": median,
+        "qualified_at_median": at_median,
+        "t1_floor_s": min(t1[q] for q in chosen),
+        "excluded": {q: reason for q, reason in skipped.items() if q in names},
+    }
 
 
 def excerpt_of(calibration_dir: Path) -> dict[str, Any]:
@@ -446,6 +510,15 @@ def tau_of(arm: str, window: float, idle: float = DELAY_SECONDS) -> float:
     return PRX_LAYER_SECONDS + extra
 
 
+@functools.cache
+def pulse_trig(n: int, paired: bool) -> tuple[tuple[tuple[float, float, float, float], ...], ...]:
+    """Per step of an n-step arm, the (cos angle, sin angle, cos phase, sin phase) of each prx pulse."""
+    return tuple(
+        tuple((math.cos(a), math.sin(a), math.cos(f), math.sin(f)) for a, f in step_pulses(n, step, 1, paired))
+        for step in range(n)
+    )
+
+
 def bloch_z(
     arm: str,
     n: int,
@@ -456,30 +529,43 @@ def bloch_z(
     z0: float = 1.0,
     gate_p: float = 0.0,
     z_eq: float = 1.0,
+    paired: bool = True,
 ) -> float:
-    """Bloch z of the chain from z0 with T1 and Ramsey T2 relaxation over tau per step, just before the pre-readout
-    delay.
+    """Bloch z of the chain from z0 with T1 and Ramsey T2 relaxation, just before the pre-readout delay.
 
-    Each step rotates by THETA/n about X, then pinches (the pinched arms zero the transverse part and lose a
-    fraction eps of z to transitions) or leaves the state coherent (delay and unitary arms), then relaxes for tau.
-    A pinched arm's state is diagonal, so t2 never reaches its result. The pre-readout delay is not iterated here:
-    relaxation over it is affine in z, so ro0 and ro1, which wait as long, calibrate it away exactly (the composite
-    of relaxation and assignment is one affine map of the z before the wait). z_eq is the equilibrium z the
-    relaxation approaches, 1 - 2 times the thermal excitation of an idle qubit.
+    Each step plays its prx pulses (step_pulses): a rotation about (cos phase, sin phase, 0) by the pulse angle, the
+    depolarizing error gate_p, and, between the two pulses of a pair, relaxation over one compiled layer. The step
+    then pinches (the pinched arms zero the transverse part and lose a fraction eps of z to transitions) or leaves
+    the state coherent (delay and unitary arms) and relaxes for tau (the last pulse's layer and the measure window,
+    delay or settle idle). A pinched arm's state is diagonal after each step, so t2 never reaches its result. The
+    pre-readout delay is not iterated here: relaxation over it is affine in z, so ro0 and ro1, which wait as long,
+    calibrate it away exactly. z_eq is the equilibrium z the relaxation approaches, 1 - 2 times the thermal
+    excitation of an idle qubit.
     """
-    y, z = 0.0, z0
-    c, s = math.cos(THETA / n), math.sin(THETA / n)
-    for _ in range(n):
-        y, z = (y * c - z * s) * (1 - gate_p), (y * s + z * c) * (1 - gate_p)
+    x = y = 0.0
+    z = z0
+    layer_t2, layer_t1 = math.exp(-PRX_LAYER_SECONDS / t2), math.exp(-PRX_LAYER_SECONDS / t1)
+    step_t2, step_t1 = math.exp(-tau / t2), math.exp(-tau / t1)
+    for pulses in pulse_trig(n, paired):
+        for index, (c, s_, cp, sp) in enumerate(pulses):
+            dot = (cp * x + sp * y) * (1 - c)
+            x, y, z = (
+                (x * c + sp * z * s_ + cp * dot) * (1 - gate_p),
+                (y * c - cp * z * s_ + sp * dot) * (1 - gate_p),
+                (z * c + (cp * y - sp * x) * s_) * (1 - gate_p),
+            )
+            if index < len(pulses) - 1:
+                x, y, z = x * layer_t2, y * layer_t2, z_eq - (z_eq - z) * layer_t1
         if arm in PINCHED_ARMS:
-            y = 0.0
+            x = y = 0.0
             z *= 1 - 2 * eps
-        y *= math.exp(-tau / t2)
-        z = z_eq - (z_eq - z) * math.exp(-tau / t1)
+        x, y, z = x * step_t2, y * step_t2, z_eq - (z_eq - z) * step_t1
     return z
 
 
-def corrected_z(arm: str, n: int, t1: float, t2: float, tau: float, eps: float, gate_p: float, q: float) -> float:
+def corrected_z(
+    arm: str, n: int, t1: float, t2: float, tau: float, eps: float, gate_p: float, q: float, paired: bool = True
+) -> float:
     """The z that ro0/ro1 correction recovers on the relaxing model: a + b q, with a the chain's response to the
     initial z and b its response to the relaxation source, both at unit strength.
 
@@ -487,8 +573,8 @@ def corrected_z(arm: str, n: int, t1: float, t2: float, tau: float, eps: float, 
     initial state enters through q alone, and q = z_eq/(1 - 2 p) is the single combination the T1 series fixes:
     its asymptote is z_eq/(1 - 2 p), whatever the thermal excitation of an idle qubit.
     """
-    b = bloch_z(arm, n, t1, t2, tau, eps, 0.0, gate_p)
-    return bloch_z(arm, n, t1, t2, tau, eps, 1.0, gate_p) - b + b * q
+    b = bloch_z(arm, n, t1, t2, tau, eps, 0.0, gate_p, paired=paired)
+    return bloch_z(arm, n, t1, t2, tau, eps, 1.0, gate_p, paired=paired) - b + b * q
 
 
 def model_tables(
@@ -510,7 +596,7 @@ def implied_loss(z_corrected: float, t1: float, t2: float, window: float, q: flo
     """The per-step z loss eps at which the measure arm's modeled corrected z equals z_corrected (bisection)."""
     low, high = -0.05, 0.5
     tau = tau_of("measure", window)
-    for _ in range(50):
+    for _ in range(36):
         middle = (low + high) / 2
         if corrected_z("measure", TOP_STEPS, t1, t2, tau, middle, gate_p, q) > z_corrected:
             low = middle
@@ -571,18 +657,30 @@ def finite(x: float) -> float | None:
     return x if math.isfinite(x) else None
 
 
-def fit_eps(points: list[tuple[int, float, float]], law: Callable[[int, float], float] = model_p0) -> dict[str, Any]:
-    """Weighted least squares of P0(N) = law(N, eps) over (N, P0, se): grid, golden section, curvature."""
+def fit_eps(
+    points: list[tuple[int, float, float]], law: Callable[[int, float], float] = model_p0, stride: int = 1
+) -> dict[str, Any]:
+    """Weighted least squares of P0(N) = law(N, eps) over (N, P0, se): a grid (every `stride`-th point of FIT_GRID),
+    golden section within the best cell, and the curvature."""
 
     def chi2(eps: float) -> float:
         return sum(((p - law(n, eps)) / se) ** 2 for n, p, se in points)
 
-    best = min(range(len(FIT_GRID)), key=lambda i: chi2(FIT_GRID[i]))
-    low, high = FIT_GRID[max(best - 1, 0)], FIT_GRID[min(best + 1, len(FIT_GRID) - 1)]
+    grid = FIT_GRID[::stride]
+    best = min(range(len(grid)), key=lambda i: chi2(grid[i]))
+    low, high = grid[max(best - 1, 0)], grid[min(best + 1, len(grid) - 1)]
     ratio = (math.sqrt(5) - 1) / 2
-    for _ in range(100):
-        a, b = high - ratio * (high - low), low + ratio * (high - low)
-        low, high = (low, b) if chi2(a) < chi2(b) else (a, high)
+    a, b = high - ratio * (high - low), low + ratio * (high - low)
+    fa, fb = chi2(a), chi2(b)
+    for _ in range(60):
+        if fa < fb:
+            high, b, fb = b, a, fa
+            a = high - ratio * (high - low)
+            fa = chi2(a)
+        else:
+            low, a, fa = a, b, fb
+            b = low + ratio * (high - low)
+            fb = chi2(b)
     eps = (low + high) / 2
     h = 1e-4
     curvature = (chi2(eps + h) - 2 * chi2(eps) + chi2(eps - h)) / h**2
@@ -591,7 +689,7 @@ def fit_eps(points: list[tuple[int, float, float]], law: Callable[[int, float], 
         "eps_se": finite(math.sqrt(2 / curvature)) if curvature > 0 else None,
         "chi2": chi2(eps),
         "dof": len(points) - 1,
-        "at_grid_edge": best in (0, len(FIT_GRID) - 1),
+        "at_grid_edge": best in (0, len(grid) - 1),
     }
 
 
@@ -743,6 +841,7 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
     relaxed = fit_eps(
         [(n, value[f"p0:measure-{n}"], se[f"p0:measure-{n}"]) for n in STEPS],
         lambda n, eps: (1 + corrected_z("measure", n, t1, t2, tau, eps, ctx["prx_p"], q)) / 2,
+        stride=10,
     )
     transitions: dict[str, Any] = {}
     for n in STEPS[1:]:
@@ -923,6 +1022,31 @@ def device_counts(models: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict
     return counts
 
 
+def raw_p0(name: str, cal: dict[str, float], p_init: float) -> float:
+    """P(read 0) of ro0, ro1 or the N = 16 unitary or measure circuit with the pre-readout wait, from the calibration
+    and an initialization excitation: the raw reading the pre-flight check compares."""
+    t1, t2 = cal["t1_s"], min(cal["t2_s"], 2 * cal["t1_s"])
+    z0 = 1 - 2 * p_init
+    if name == "ro0":
+        z = z0
+    elif name == "ro1":
+        z = -z0
+    else:
+        arm = "unitary" if name == "unitary-16" else "measure"
+        z = bloch_z(arm, TOP_STEPS, t1, t2, tau_of(arm, MEASURE_WINDOW_SECONDS), 0.0, z0, cal["prx_p"])
+    waited = 1 - (1 - z) * math.exp(-PRE_READOUT_SECONDS / t1)
+    return (1 + (1 - cal["e01"] - cal["e10"]) * waited + cal["e10"] - cal["e01"]) / 2
+
+
+def raw_band(cal: dict[str, float]) -> dict[str, list[float]]:
+    """The raw P(0) of the pre-flight circuits over RAW_EXCITATION_BAND, as [low, high]."""
+    out = {}
+    for name in ("ro0", "ro1", "unitary-16", "measure-16"):
+        values = [raw_p0(name, cal, p) for p in RAW_EXCITATION_BAND]
+        out[name] = [min(values), max(values)]
+    return out
+
+
 def planning_tables(excerpt: dict[str, Any]) -> dict[str, Any]:
     return {
         q: model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"])
@@ -1000,6 +1124,7 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str
                 )
                 / row["departure_n16"]["se"],
             },
+            "raw_band": raw_band(cal),
             "p_init_sensitivity": {
                 "measure_n16_p0": sensitivity,
                 "spread": spread,
@@ -1322,12 +1447,20 @@ def check_structure(circuits: list[dict[str, Any]], qubits: list[str]) -> None:
         expect(ops[-2] == op("delay", qubits, duration=PRE_READOUT_SECONDS), f"{c['name']}: no pre-readout delay")
     for arm, n in group_keys():
         signs = []
+        pulses = len(step_pulses(n, 0, 1))
         for name in group_names(arm, n):
             ops = by_name[name]["instructions"]
             prx = [o for o in ops if o["name"] == "prx"]
-            expect(len(prx) == len(qubits) * n, f"{name}: {len(prx)} prx")
-            signs.append(1 if prx[0]["args"]["angle"] > 0 else -1)
-            expect(all(abs(o["args"]["angle"] - signs[-1] * THETA / n) < 1e-15 for o in prx), f"{name}: angles")
+            expect(len(prx) == len(qubits) * n * pulses, f"{name}: {len(prx)} prx")
+            sign = 1 if name.endswith("p") else -1
+            signs.append(sign)
+            expected = [
+                op("prx", [q], angle=angle, phase=phase)
+                for step in range(n)
+                for angle, phase in step_pulses(n, step, sign)
+                for q in qubits
+            ]
+            expect(prx == expected, f"{name}: pulses")
             measures = [o for o in ops if o["name"] == "measure"]
             delays = [o for o in ops if o["name"] == "delay"]
             keys = [o["args"]["key"] for o in measures]
@@ -1338,11 +1471,9 @@ def check_structure(circuits: list[dict[str, Any]], qubits: list[str]) -> None:
             elif arm == "settle":
                 expect(len(measures) == n + 1 and len(mid) == n, f"{name}: {len(measures)} measures")
                 expect(all(d["args"]["duration"] == SETTLE_SECONDS for d in mid), f"{name}: settle duration")
-                width = len(qubits) + 1
-                expect(
-                    [o["name"] for o in ops[len(qubits) : len(qubits) + 2]] == ["measure", "delay"], f"{name}: order"
-                )
-                expect(len(ops) == n * (width + 1) + 2, f"{name}: {len(ops)} operations")
+                first = len(qubits) * pulses
+                expect([o["name"] for o in ops[first : first + 2]] == ["measure", "delay"], f"{name}: order")
+                expect(len(ops) == n * (first + 2) + 2, f"{name}: {len(ops)} operations")
             elif arm == "delay":
                 expect(len(measures) == 1 and len(mid) == n, f"{name}: {len(mid)} delays")
                 expect(all(d["args"]["duration"] == DELAY_SECONDS for d in mid), f"{name}: delay duration")
@@ -1406,7 +1537,7 @@ def check_billing_fit() -> str:
 def check_selection(values: dict[str, float], architecture: dict[str, Any], count: int) -> None:
     """select_qubits returns count qubits that are uncoupled, at or above the median T1 and not outranked by any
     qubit that no chosen, better-ranked qubit blocks."""
-    chosen, info = select_qubits(values, architecture, count)
+    chosen, info = select_qubits(values, architecture, count, {})
     coupled = {
         frozenset(locus) for impl in architecture["gates"]["cz"]["implementations"].values() for locus in impl["loci"]
     }
@@ -1417,7 +1548,7 @@ def check_selection(values: dict[str, float], architecture: dict[str, Any], coun
             + values[f"metrics.ssro.measure.constant.{q}.error_1_to_0"]
         )
 
-    expect(len(chosen) == count, f"{len(chosen)} qubits chosen")
+    expect(len(chosen) == count and info["qualified_at_median"] == count, f"{len(chosen)} qubits chosen")
     expect(all(frozenset(pair) not in coupled for pair in itertools.combinations(chosen, 2)), "a coupled pair")
     expect(
         all(values[f"characterization.model.{q}.t1_time"] >= info["median_t1_s"] for q in chosen),
@@ -1429,6 +1560,47 @@ def check_selection(values: dict[str, float], architecture: dict[str, Any], coun
             continue
         blockers = [c for c in chosen if frozenset((q, c)) in coupled and error(c) <= error(q)]
         expect(bool(blockers), f"{q} outranks a chosen qubit and no better chosen qubit is coupled to it")
+
+
+def check_pairs() -> None:
+    """The pi/2 pairs compose to the rotation they replace, up to a global phase and a final Z rotation, for both signs,
+    and the model reaches each arm's ideal law with the pairs in the relaxation-free limit."""
+    x = np.array([[0, 1], [1, 0]], dtype=complex)
+    y = np.array([[0, -1j], [1j, 0]])
+
+    def prx(theta: float, phase: float) -> Any:
+        return math.cos(theta / 2) * np.eye(2) - 1j * math.sin(theta / 2) * (math.cos(phase) * x + math.sin(phase) * y)
+
+    for sign in (1, -1):
+        product = np.eye(2, dtype=complex)
+        for step in range(TOP_STEPS):
+            for angle, phase in step_pulses(TOP_STEPS, step, sign):
+                product = prx(angle, phase) @ product
+        target = prx(sign * THETA, 0.0)
+        leftover = product @ target.conj().T
+        expect(abs(leftover[0, 1]) < 1e-12 and abs(leftover[1, 0]) < 1e-12, f"sign {sign}: {leftover}")
+    for arm in ARMS:
+        if TOP_STEPS in ARM_STEPS[arm]:
+            z = bloch_z(arm, TOP_STEPS, 1e9, 1e9, 0.0)
+            expect(abs((1 + z) / 2 - ideal_arm(arm, TOP_STEPS)) < 1e-9, f"{arm}: ideal {(1 + z) / 2}")
+            z = bloch_z(arm, TOP_STEPS, 1e9, 1e9, 0.0, paired=False)
+            expect(abs((1 + z) / 2 - ideal_arm(arm, TOP_STEPS)) < 1e-9, f"{arm}: single-pulse ideal")
+
+
+def check_exclusion_and_fallback(values: dict[str, float], architecture: dict[str, Any], count: int) -> None:
+    """An excluded qubit is never chosen and is recorded; a count beyond the qubits at the median T1 extends the choice
+    by decreasing T1 and lowers the floor."""
+    first, _ = select_qubits(values, architecture, count, {})
+    skipped = {first[0]: "test"}
+    chosen, info = select_qubits(values, architecture, count, skipped)
+    expect(first[0] not in chosen and info["excluded"] == skipped, f"exclusion {chosen} {info['excluded']}")
+    coupled = {
+        frozenset(locus) for impl in architecture["gates"]["cz"]["implementations"].values() for locus in impl["loci"]
+    }
+    wide, info = select_qubits(values, architecture, count + 3, {})
+    expect(len(wide) == count + 3, f"{len(wide)} qubits")
+    expect(all(frozenset(pair) not in coupled for pair in itertools.combinations(wide, 2)), "a coupled pair")
+    expect(info["qualified_at_median"] < count + 3 and info["t1_floor_s"] < info["median_t1_s"], f"{info}")
 
 
 def synthetic_measurements(circuits: list[dict[str, Any]], counts: dict[str, Any], shots: int) -> list[dict[str, Any]]:
@@ -1604,7 +1776,9 @@ def self_test(with_sweep: bool = True) -> str:
     metrics = load_json(CALIBRATION_DIR / "metrics.json")
     architecture = load_json(CALIBRATION_DIR / "dynamic-quantum-architecture.json")
     values = {o["dut_field"]: o["value"] for o in metrics["observations"] if not o.get("invalid")}
+    check_pairs()
     check_selection(values, architecture, 3)
+    check_exclusion_and_fallback(values, architecture, 2)
     ring = [f"QB{n}" for n in range(1, 21)]
     synthetic: dict[str, float] = {}
     for n, q in enumerate(ring):
@@ -1636,8 +1810,8 @@ def self_test(with_sweep: bool = True) -> str:
     # The compiled-schedule model reproduces the two QPU probe estimates (microseconds per shot, 100 shots, 2 us
     # pre-readout delay included) to the 0.7 % that the 43 ns against 40 ns layer leaves.
     probes = {
-        "unitary-n16": (circuit("u", qubits, "unitary", 16, 1), 7.032),
-        "measure-n16": (circuit("m", qubits, "measure", 16, 1), 24.568),
+        "unitary-n16": (circuit("u", qubits, "unitary", 16, 1, paired=False), 7.032),
+        "measure-n16": (circuit("m", qubits, "measure", 16, 1, paired=False), 24.568),
     }
     for label, (probe, microseconds) in probes.items():
         got = estimator_shot_seconds(probe) * 1e6
@@ -1654,7 +1828,10 @@ def self_test(with_sweep: bool = True) -> str:
     )
     # Planted devices: T1 and p differ from the planning values, eps takes both signs.
     contexts = contexts_of(prediction)
-    planted = dict(zip(qubits, (0.0, 0.0, 0.015, 0.01, -0.01, 0.0), strict=True))
+    # The qubits with the smallest prx errors carry the planted losses, since a large prx error widens a qubit's
+    # departure standard error (the prx systematic) beyond a loss this size.
+    by_gate = sorted(qubits, key=lambda q: excerpt["qubits"][q]["prx_p"])
+    planted = {q: (0.015, 0.01, -0.01)[rank] if rank < 3 else 0.0 for rank, q in enumerate(by_gate)}
     models = {
         q: device_model(cal, t1_s=0.8 * cal["t1_s"], p_init=0.12, eps=planted[q], eps_settle=planted[q])
         for q, cal in excerpt["qubits"].items()

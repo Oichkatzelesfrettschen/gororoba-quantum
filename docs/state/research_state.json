@@ -1934,6 +1934,13 @@
       "question": "Is the N = 16 unitary excess of the window probes an axis phase per small-angle prx pulse or |1> loss before the readout, read from eight circuits with in-situ readout on QB5, QB7, QB11, QB14, QB17 and QB19?"
     },
     {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-pairs",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit pinching case rebuilt with pi/2-pair steps on QB1, QB5, QB8, QB12, QB14 and QB19 (cases.json 6b94d0db), and return every key?"
+    },
+    {
       "id": "iqm-garnet-mock-measure-012-probe",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe",
@@ -9548,6 +9555,31 @@
       "gates": {},
       "acquisitions": [
         "iqm-garnet-qpu-measurement-diagnostic"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-pairs",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 57-circuit pinching case rebuilt with pi/2-pair steps (cases.json 6b94d0db, job 01a17548-7e68-72ab-8a27-38f1b6f3d94f) at 3000 shots on QB1, QB5, QB8, QB12, QB14 and QB19: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order. The compiled qpu_execution estimate of 4.847 s is 1.30 times the case's QPU-calibrated 3.723 s, the 57 x (8.684 - 4.344) us per-circuit base and the 188 x (1.772 - 1.096) us measure-window differences between the mock and the QPU (1.12 s). The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "f128552db62aab4548ca7a46253679028e722d80caab729a94683dc33d55edac"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-pairs"
       ],
       "assumptions": [],
       "depends_on": [],
