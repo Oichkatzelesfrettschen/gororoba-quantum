@@ -28,17 +28,17 @@
       "acceptance": "A retained Kaggle record and replay gate whose simulator reproduces every earlier single-family scenario to 1e-9, and a design document stating whether the bounds close the device question.",
       "receipts": [
         {
-          "result": "The bounds do not close the device question: tilt and CZ phase jointly at their gate-error bounds reach max_z 2.61 (best) and 2.84 (median) per coefficient, needing 53,363 and 76,596 shots per setting to identify against 2,803 and 3,169; each family alone stays below 1, tilt at 0.1 of its bound keeps every bounded CZ phase below 1, and all 226 working paths exceed 1 at their bounds.",
-          "observed_at": "2026-10-25T22:14:13+00:00",
-          "revision": "cad3fc30db660030d423542643f820b4db58a793",
+          "result": "The bounds do not close the device question: tilt and CZ phase jointly at their gate-error bounds reach max_z 2.61 (best) and 2.84 (median) per coefficient, needing 53,363 and 76,596 shots per setting to identify against 2,803 and 3,169; each family alone stays below 1; static detuning of 30 kHz on all three qubits crosses 1 with the CZ-phase or tilt bound but stays at 0.43 and 0.45 with the atlas-fitted 0.04 rad CZ phase; all 226 working paths exceed 1 at their bounds.",
+          "observed_at": "2026-10-25T22:45:40+00:00",
+          "revision": "a2cc0c4b70123fb8d38cff73802897c9802e1789",
           "evidence": [
             {
               "ref": "docs/evidence/primorial_cover/bound_residuals.json",
-              "sha256": "ff6239c4026980205cf629a466f6c4c709264d978aafe872b8da6ddec25b7ef6"
+              "sha256": "491226721d81588a2d9914fc9880c19ea11d013e40b4663c72405293900b836e"
             },
             {
               "ref": "docs/design/primorial-cover-joint-coherent-bounds.md",
-              "sha256": "8a2b7afac609db95df486833665b5754aac934381ed1f4571b42309a5b8ee048"
+              "sha256": "b75b4463c256e10270ac9c06b630b0306ac4a99b89a0716c74335ff257aaa8de"
             }
           ],
           "scope_sha256": "de64e87c35b2f13f7d12c211bff13cb7105fe43753b837bf27965cb7e48925cb"
