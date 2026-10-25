@@ -4,6 +4,7 @@ instructions under every error family at once, and the gate-error budgets match 
 
 from __future__ import annotations
 
+import itertools
 import math
 import sys
 from pathlib import Path
@@ -104,3 +105,40 @@ def test_x_gate_tilt_infidelity_is_two_thirds_sine_squared() -> None:
     tilt, _ = br.scale_to_budget((1, 0), {"sx": 4e-4, "x": 4e-4})
     if abs(tilt - math.asin(math.sqrt(1.5 * 4e-4))) > 1e-12:
         raise AssertionError(tilt)
+
+
+def test_twirled_law_is_the_pauli_trajectory_average() -> None:
+    ops = [op for op in OPS if op[0] != "delay"]
+    spec = {"tilt": SPEC["tilt"], "amplitude": SPEC["amplitude"], "cz_phase": SPEC["cz_phase"]}
+    cz_steps = [k for k, op in enumerate(ops) if op[0] == "cz"]
+    want = np.zeros(8)
+    for choice in itertools.product(range(4), repeat=len(cz_steps)):
+        weight = 1.0
+        trajectory: list[br.Op] = []
+        inserted: dict[int, tuple[int, int]] = {}
+        for step, pauli in zip(cz_steps, choice, strict=True):
+            z_lo, z_hi = pauli & 1, pauli >> 1
+            pair = (min(ops[step][1]), max(ops[step][1]))
+            phi = spec["cz_phase"][0 if pair == (0, 1) else 1]
+            d = (1.0, 1.0, 1.0, complex(math.cos(phi), math.sin(phi)))
+            c = sum((-1) ** (z_lo * (b & 1) + z_hi * (b >> 1)) * d[b] for b in range(4)) / 4
+            weight *= abs(c) ** 2
+            inserted[step] = (z_lo, z_hi)
+        for k, op in enumerate(ops):
+            trajectory.append(op)
+            if k in inserted:
+                pair = (min(op[1]), max(op[1]))
+                for wire, flag in zip(pair, inserted[k], strict=True):
+                    if flag:
+                        trajectory.append(("rz", (wire,), math.pi, 0.0))
+        want += weight * np.asarray(br.law(trajectory, {"tilt": spec["tilt"], "amplitude": spec["amplitude"]}))
+    got = np.asarray(br.twirled_law(ops, spec))
+    if not np.allclose(got, want, atol=1e-12):
+        raise AssertionError(f"{got} against {want}")
+
+
+def test_twirled_law_without_phase_is_the_coherent_law() -> None:
+    ops = [op for op in OPS if op[0] != "delay"]
+    spec = {"tilt": SPEC["tilt"], "amplitude": SPEC["amplitude"]}
+    if not np.allclose(br.twirled_law(ops, spec), br.law(ops, spec), atol=1e-12):
+        raise AssertionError("twirled law departs at zero CZ phase")

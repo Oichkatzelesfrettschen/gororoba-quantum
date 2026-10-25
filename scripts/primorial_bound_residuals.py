@@ -20,6 +20,8 @@ phase-gradient and zero-angle null arms of the ibm_kingston snapshot:
    error bounds a conditional phase phi, CPhase(phi) after the CZ, at acos(1 - 10 r / 3). Every combination of
    the 8^3 qubit directions and the 4 coupler signs is evaluated; a 5^5 grid over the tilt and CZ-phase
    magnitudes (-1, -1/2, 0, 1/2, 1 of each bound) tests interior points of the box.
+   The same tilt and CZ-phase vertices are repeated with each CZ's conditional phase replaced by its Pauli
+   twirl (``twirled_law``), the channel gate twirling turns a coherent CZ error into.
 4. **Arm mismatch.** Null subtraction cancels a coherent error only when the signal and null arms see the same
    error. Each family applied to the signal arm alone (tilt and amplitude per qubit, CZ phase per coupler, static
    detuning per qubit, static ZZ per coupler) gives the mismatch at which max_z crosses 1 (``Mismatch``).
@@ -29,8 +31,13 @@ phase-gradient and zero-angle null arms of the ibm_kingston snapshot:
    patterns, reported against the best path's per-coefficient standard deviations. A path's own budget scales
    them by (1/16 - b) / (1/16 - b_best) for its incoherent bias b, which this sweep does not simulate.
 
-Falsifier, fixed before the retained run: the gap88 cost leaves a device question when any bounded scenario
-of a retained path reaches max_z >= 1.
+Falsifier: the gap88 cost leaves a device question when any bounded scenario of a retained path reaches
+max_z >= 1. Order of analysis: an exploratory build-host run of the single-family and joint scenarios came first
+and showed joint tilt and CZ phase above max_z = 1; the per-coefficient reading, the sx-and-x budget, the twirled
+rows, the coherent-fraction scan, the refinement and the identification-shot endpoint were added after it, and
+the retained Kaggle run followed. Each scenario also reports ``shots_identify_all``, the budget rule of
+primorial_cover_noise.phase_fit (simultaneous z for seven coefficients, worst variance, margin 1/16 minus the
+largest bias) with the scenario's bias in place of the incoherent one; None means the bias leaves no margin.
 
 ``--out FILE`` writes the record; ``--check FILE --run DIR`` requires FILE to be byte-identical to the collected
 output of Kaggle run DIR, recomputes the record and requires every verdict to match and every bias to 1e-8.
@@ -193,8 +200,11 @@ def law(ops: list[Op], spec: dict[str, Any]) -> list[float]:
     wire, RZ(2 pi delta t) after every instruction of duration t on the wire, as in
     primorial_cover_noise.CoherentLaw), ``zz`` and ``zz_symmetric`` (kHz per coupler, CPhase(-2 pi zeta t) and
     RZZ(pi zeta t) before every non-rz instruction on either qubit over the interval since the previous one, as
-    in primorial_null_residuals.ScenarioLaw).
+    in primorial_null_residuals.ScenarioLaw). ``cz_twirl`` true replaces the coherent CZ phase by its Pauli twirl
+    (``twirled_law``).
     """
+    if spec.get("cz_twirl"):
+        return twirled_law(ops, spec)
     tilt, amplitude = spec.get("tilt", (0.0,) * 3), spec.get("amplitude", (0.0,) * 3)
     amplitude_gates = spec.get("amplitude_gates", ("sx", "x"))
     cz_phase, detuning = spec.get("cz_phase", (0.0, 0.0)), spec.get("detuning", (0.0,) * 3)
@@ -234,6 +244,59 @@ def law(ops: list[Op], spec: dict[str, Any]) -> list[float]:
     return [float(v) for v in np.abs(state.reshape(8)) ** 2]
 
 
+def lift1(gate: np.ndarray, wire: int) -> np.ndarray:
+    """8 x 8 operator of a single-qubit gate on ``wire``; the basis index is 4 q2 + 2 q1 + q0."""
+    factors = [np.eye(2, dtype=complex)] * 3
+    factors[2 - wire] = gate
+    out: np.ndarray = np.kron(np.kron(factors[0], factors[1]), factors[2])
+    return out
+
+
+def pair_diagonal(pair: tuple[int, int], phases: tuple[complex, ...]) -> np.ndarray:
+    """Diagonal of the 8 x 8 operator multiplying |b_hi b_lo> of ``pair`` = (lo, hi) by phases[2 b_hi + b_lo]."""
+    return np.asarray([phases[2 * (k >> pair[1] & 1) + (k >> pair[0] & 1)] for k in range(8)])
+
+
+def twirled_law(ops: list[Op], spec: dict[str, Any]) -> list[float]:
+    """Outcome law with coherent sx and x errors and the Pauli twirl of each CZ's conditional phase.
+
+    Pauli twirling the CZ maps its error D = CPhase(phi) to the channel rho -> sum_P |c_P|^2 P rho P over
+    P in {II, Z_lo, Z_hi, Z_lo Z_hi}, with c_P = Tr(P D) / 4: the diagonal of the error's chi matrix. The
+    twirl Paulis are taken as ideal and the sx and x errors stay coherent, so the model isolates what the
+    twirl removes from the CZ error alone.
+    """
+    if any(spec.get(k) for k in ("detuning", "zz", "zz_symmetric")):
+        raise SystemExit("twirled_law models tilt, amplitude and CZ phase only")
+    tilt, amplitude = spec.get("tilt", (0.0,) * 3), spec.get("amplitude", (0.0,) * 3)
+    amplitude_gates = spec.get("amplitude_gates", ("sx", "x"))
+    cz_phase = spec.get("cz_phase", (0.0, 0.0))
+    rho = np.zeros((8, 8), dtype=complex)
+    rho[0, 0] = 1.0
+    for name, wires, angle, _seconds in ops:
+        if name == "delay":
+            continue
+        if name == "rz":
+            u = lift1(rz(angle), wires[0])
+            rho = u @ rho @ u.conj().T
+        elif name in DRIVEN:
+            eta = amplitude[wires[0]] if name in amplitude_gates else 0.0
+            u = lift1(driven(name, tilt[wires[0]], eta), wires[0])
+            rho = u @ rho @ u.conj().T
+        else:
+            pair = (min(wires), max(wires))
+            cz = pair_diagonal(pair, (1.0, 1.0, 1.0, -1.0))
+            rho = rho * np.outer(cz, cz.conj())
+            d = (1.0, 1.0, 1.0, np.exp(1j * cz_phase[nr.COUPLERS.index(pair)]))
+            mixed = np.zeros_like(rho)
+            for z_lo, z_hi in ((0, 0), (1, 0), (0, 1), (1, 1)):
+                signs = [(-1) ** (z_lo * (b & 1) + z_hi * (b >> 1)) for b in range(4)]
+                weight = abs(sum(s * v for s, v in zip(signs, d, strict=True)) / 4.0) ** 2
+                pauli = pair_diagonal(pair, tuple(complex(s) for s in signs))
+                mixed += weight * rho * np.outer(pauli, pauli)
+            rho = mixed
+    return [float(v) for v in np.real(np.diag(rho))]
+
+
 # --------------------------------------------------------------- analysis
 
 Arm = tuple[dict[str, Any], list[Op]]
@@ -246,9 +309,10 @@ class Fit:
     both arms share, a null spec of {} an error the signal arm alone sees.
     """
 
-    def __init__(self, arms: list[Arm], sd: dict[str, float]) -> None:
+    def __init__(self, arms: list[Arm], variance: dict[str, float], shots: int) -> None:
         self.arms = arms
-        self.sd = sd
+        self.variance = variance
+        self.sd = {k: math.sqrt(v / shots) for k, v in variance.items()}
         self.table = noise.cost_table("gap88")
         self.exact = noise.coefficients(self.table)
 
@@ -264,12 +328,16 @@ class Fit:
         shift = {k: v - self.exact[k] for k, v in sub["recovered_coefficients"].items()}
         z = {k: abs(v) / self.sd[k] for k, v in shift.items()}
         worst = max(sorted(z), key=lambda k: z[k])
+        # primorial_cover_noise.phase_fit's budget rule with this bias in place of the incoherent one.
+        margin = noise.IDENTIFY_RADIUS - max(abs(v) for v in shift.values())
+        identify = math.ceil(noise.SIMULTANEOUS_Z**2 * max(self.variance.values()) / margin**2) if margin > 0 else None
         return {
             "max_coefficient_bias": raw["max_coefficient_bias"],
             "null_subtracted_max_bias": sub["max_coefficient_bias"],
             "null_subtracted_shift": shift,
             "max_z": z[worst],
             "max_z_coefficient": worst,
+            "shots_identify_all": identify,
         }
 
 
@@ -305,10 +373,10 @@ def cz_bound(r: float) -> float:
     return math.acos(1.0 - 10.0 * r / 3.0)
 
 
-def per_coefficient_sd(record: dict[str, Any], patch: str) -> tuple[int, dict[str, float]]:
+def budget(record: dict[str, Any], patch: str) -> tuple[int, dict[str, float]]:
+    """noise.json's null-subtracted gap88 shots per setting and per-shot variance of every coefficient."""
     fit = record["patches"][patch]["summary"]["gradient"]["gap88"]["null_subtracted"]
-    shots = int(fit["shots_identify_all"])
-    return shots, {k: math.sqrt(v / shots) for k, v in fit["per_shot_coefficient_variance"].items()}
+    return int(fit["shots_identify_all"]), {k: float(v) for k, v in fit["per_shot_coefficient_variance"].items()}
 
 
 def validate(patch: str, fit: Fit, null_record: dict[str, Any], noise_record: dict[str, Any]) -> dict[str, Any]:
@@ -374,7 +442,10 @@ def bounded(gates: list[dict[str, float]], cz: list[float]) -> dict[str, Any]:
 
 
 def round_spec(spec: dict[str, Any]) -> dict[str, Any]:
-    return {k: [round(float(x), 12) for x in v] if isinstance(v, tuple) else v for k, v in spec.items()}
+    return {
+        k: [round(float(x), 12) for x in v] if isinstance(v, tuple) and k != "amplitude_gates" else v
+        for k, v in spec.items()
+    }
 
 
 def patch_record(fit: Fit, gates: list[dict[str, float]], cz: list[float]) -> dict[str, Any]:
@@ -405,6 +476,15 @@ def patch_record(fit: Fit, gates: list[dict[str, float]], cz: list[float]) -> di
                 )
         families[f"joint_{budget}"] = joint
     tilt = [b[0][0] for b in bounds["sx"]]
+    families["cz_phase_twirled"] = [{**spec, "cz_twirl": True} for spec in families["cz_phase"]]
+    families["joint_tilt_sx_cz_twirled"] = [
+        {
+            "tilt": tuple(s * t for s, t in zip(p[:3], tilt, strict=True)),
+            "cz_phase": tuple(s * f for s, f in zip(p[3:], phi, strict=True)),
+            "cz_twirl": True,
+        }
+        for p in itertools.product((1.0, -1.0), repeat=5)
+    ]
     families["grid_tilt_cz_sx"] = [
         {"tilt": tuple(g * t for g, t in zip(v[:3], tilt, strict=True)), "cz_phase": (v[3] * phi[0], v[4] * phi[1])}
         for v in itertools.product(GRID, repeat=5)
@@ -430,21 +510,80 @@ def patch_record(fit: Fit, gates: list[dict[str, float]], cz: list[float]) -> di
         out["families"][name] = summary(chunk, [round_spec(s) for s in families[name]])
         start += count
     out["arm_mismatch"] = parallel.ordered_map(Mismatch(fit), list(MISMATCH), min_items=1)
-    worst = out["families"]["joint_sx"]["worst_max_z"]["spec"]
+    signs5 = list(itertools.product((1.0, -1.0), repeat=5))
     fractions = [
-        {"tilt": tuple(f * t for t in worst["tilt"]), "cz_phase": tuple(g * c for c in worst["cz_phase"])}
+        tilt_cz(tilt, phi, tuple(f * x for x in p[:3]) + tuple(g * x for x in p[3:]))
         for f in FRACTIONS
         for g in FRACTIONS
+        for p in signs5
     ]
     scan = parallel.ordered_map(fit, [(spec, spec) for spec in fractions], min_items=1)
+    cells = [scan[k : k + len(signs5)] for k in range(0, len(scan), len(signs5))]
     out["coherent_fraction_scan"] = {
-        "sign_pattern": "joint_sx worst_max_z",
+        "rows": "tilt fraction f of each qubit's sx-budget tilt bound",
+        "columns": "CZ-phase fraction g of each coupler's bound",
         "fractions": list(FRACTIONS),
         "max_z": [
-            [scan[a * len(FRACTIONS) + b]["max_z"] for b in range(len(FRACTIONS))] for a in range(len(FRACTIONS))
+            [max(r["max_z"] for r in cells[a * len(FRACTIONS) + b]) for b in range(len(FRACTIONS))]
+            for a in range(len(FRACTIONS))
+        ],
+        "shots_identify_all": [
+            [worst_shots(cells[a * len(FRACTIONS) + b]) for b in range(len(FRACTIONS))] for a in range(len(FRACTIONS))
         ],
     }
+    out["refined_tilt_cz_sx"] = refine(fit, tilt, phi, out["families"]["grid_tilt_cz_sx"]["worst_max_z"]["spec"])
     return out
+
+
+def tilt_cz(tilt: list[float], phi: list[float], scale: tuple[float, ...]) -> dict[str, Any]:
+    """Tilt and CZ phase at ``scale`` (five signed fractions) of the path's sx-budget tilt and CZ-phase bounds."""
+    return {
+        "tilt": tuple(x * t for x, t in zip(scale[:3], tilt, strict=True)),
+        "cz_phase": tuple(x * f for x, f in zip(scale[3:], phi, strict=True)),
+    }
+
+
+def worst_shots(rows: list[dict[str, Any]]) -> int | None:
+    """The largest shots_identify_all over rows; None when any bias leaves no identification margin."""
+    values = [r["shots_identify_all"] for r in rows]
+    return None if any(v is None for v in values) else max(values)
+
+
+def refine(fit: Fit, tilt: list[float], phi: list[float], start: dict[str, Any]) -> dict[str, Any]:
+    """Coordinate ascent of max_z inside the tilt and CZ-phase box from the best grid point.
+
+    Each round evaluates every single-coordinate move of the current step, clipped to [-1, 1], and takes the best
+    improvement; the step halves from 1/4 to 1/32 when no move improves. The result is a local maximum, a lower
+    bound on the box's worst case.
+    """
+    point = [a / t for a, t in zip(start["tilt"], tilt, strict=True)] + [
+        a / f for a, f in zip(start["cz_phase"], phi, strict=True)
+    ]
+    best = fit((tilt_cz(tilt, phi, tuple(point)), tilt_cz(tilt, phi, tuple(point))))
+    step = 0.25
+    evaluations = 1
+    while step >= 1 / 32:
+        moves = []
+        for k in range(5):
+            for sign in (1.0, -1.0):
+                moved = list(point)
+                moved[k] = min(1.0, max(-1.0, moved[k] + sign * step))
+                if moved != point:
+                    moves.append(moved)
+        specs = [tilt_cz(tilt, phi, tuple(m)) for m in moves]
+        rows = parallel.ordered_map(fit, [(spec, spec) for spec in specs], min_items=1)
+        evaluations += len(rows)
+        k = max(range(len(rows)), key=lambda i: (rows[i]["max_z"], -i))
+        if rows[k]["max_z"] > best["max_z"]:
+            point, best = moves[k], rows[k]
+        else:
+            step /= 2
+    return {
+        "fractions": [round(x, 12) for x in point],
+        "spec": round_spec(tilt_cz(tilt, phi, tuple(point))),
+        "evaluations": evaluations,
+        **{k: v for k, v in best.items() if k != "null_subtracted_shift"},
+    }
 
 
 class Mismatch:
@@ -483,13 +622,21 @@ class Mismatch:
         }
 
 
-def sweep(snapshot: dict[str, Any], view: Any, logical: list[Any], sd: dict[str, float]) -> dict[str, Any]:
-    """Worst joint tilt and CZ-phase residual over the 32 sign patterns on every three-qubit path."""
-    ranked = noise.path_costs(snapshot, 3)
+def sweep(
+    snapshot: dict[str, Any], view: Any, logical: list[Any], variance: dict[str, float], shots: int
+) -> dict[str, Any]:
+    """Worst joint tilt and CZ-phase residual over the 32 sign patterns on every three-qubit path.
+
+    A gate error of 1.0 marks a non-working gate in the snapshot; primorial_cover_noise.path_costs drops such CZ
+    edges, and the sweep also drops every path holding a qubit whose sx or x error is 1.0.
+    """
+    broken = {row["qargs"][0] for op in ("sx", "x") for row in snapshot["instructions"][op] if row["error"] >= 1.0}
+    every = noise.path_costs(snapshot, 3)
+    ranked = [(rank, cost, layout) for rank, (cost, layout) in enumerate(every) if not broken & set(layout)]
     signs = list(itertools.product((1.0, -1.0), repeat=5))
     paths = []
     streams: set[str] = set()
-    for rank, (cost, layout) in enumerate(ranked):
+    for rank, cost, layout in ranked:
         arms = path_arms(snapshot, view, layout, logical)
         stream = json.dumps(
             [
@@ -508,7 +655,7 @@ def sweep(snapshot: dict[str, Any], view: Any, logical: list[Any], sd: dict[str,
             }
             for p in signs
         ]
-        rows = parallel.ordered_map(Fit(arms, sd), [(s, s) for s in specs], min_items=1)
+        rows = parallel.ordered_map(Fit(arms, variance, shots), [(s, s) for s in specs], min_items=1)
         worst = max(range(len(rows)), key=lambda k: (rows[k]["max_z"], -k))
         paths.append(
             {
@@ -520,13 +667,18 @@ def sweep(snapshot: dict[str, Any], view: Any, logical: list[Any], sd: dict[str,
                 "worst_max_z": rows[worst]["max_z"],
                 "worst_max_z_coefficient": rows[worst]["max_z_coefficient"],
                 "worst_null_subtracted_bias": max(r["null_subtracted_max_bias"] for r in rows),
+                "worst_shots_identify_all": worst_shots(rows),
             }
         )
     values = sorted(p["worst_max_z"] for p in paths)
     return {
         "paths": len(paths),
+        "rank": "position in primorial_cover_noise.path_costs, whose index 0 is the best path",
+        "paths_dropped_for_non_working_qubits": len(every) - len(ranked),
+        "non_working_qubits": sorted(broken),
         "distinct_gate_streams": len(streams),
         "reaching_max_z_1": sum(1 for v in values if v >= 1.0),
+        "unidentifiable": sum(1 for p in paths if p["worst_shots_identify_all"] is None),
         "max_z_quantiles": {q: values[min(len(values) - 1, int(q * len(values)))] for q in (0.1, 0.25, 0.5, 0.75, 0.9)},
         "max_z_max": values[-1],
         "rows": paths,
@@ -543,23 +695,23 @@ def evaluate(
         layout = noise_record["layouts"]["3"][patch]
         if null_record["layouts"][patch] != layout:
             raise SystemExit(f"{patch}: null_residuals layout {null_record['layouts'][patch]} against {layout}")
-        shots, sd = per_coefficient_sd(noise_record, patch)
-        if abs(max(sd.values()) - null_record["patches"][patch]["budget_coefficient_sd"]) > 1e-15:
+        shots, variance = budget(noise_record, patch)
+        fit = Fit(path_arms(snapshot, view, layout, logical), variance, shots)
+        if abs(max(fit.sd.values()) - null_record["patches"][patch]["budget_coefficient_sd"]) > 1e-15:
             raise SystemExit(f"{patch}: worst-variance SD differs from null_residuals.json")
-        fit = Fit(path_arms(snapshot, view, layout, logical), sd)
         gates, cz = gate_errors(snapshot, layout)
         record = {
             "layout": layout,
             "budget_shots_per_setting": shots,
-            "coefficient_sd": sd,
+            "coefficient_sd": fit.sd,
             "simulator_replay": validate(patch, fit, null_record, noise_record),
             **patch_record(fit, gates, cz),
         }
         record["device_question"] = any(f["reaching_max_z_1"] > 0 for name, f in record["families"].items())
         out["patches"][patch] = record
     if with_sweep:
-        _, sd = per_coefficient_sd(noise_record, "best")
-        out["path_sweep"] = sweep(snapshot, view, logical, sd)
+        shots, variance = budget(noise_record, "best")
+        out["path_sweep"] = sweep(snapshot, view, logical, variance, shots)
     return out
 
 
