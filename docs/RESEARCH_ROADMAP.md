@@ -70,6 +70,7 @@ proposed work, in dependency order:
 | mathematical claim | established | 23 |
 | mathematical claim | open | 1 |
 | numerical or stochastic simulation | established | 10 |
+| numerical or stochastic simulation | superseded | 1 |
 | preregistered emulator control | established | 10 |
 | preregistered hardware inference | established | 53 |
 | preregistered hardware inference | superseded | 1 |

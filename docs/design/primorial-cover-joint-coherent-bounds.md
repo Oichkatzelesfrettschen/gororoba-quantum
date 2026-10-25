@@ -56,7 +56,7 @@ first-order term; the product of tilt and CZ phase depends on the arm's rz
 angles, so the null arm does not share it. The worst vertex sets the two
 couplers' phases opposite, and the interior refinement finds the maximum
 with q0 untilted. At the sx-budget worst point the amplitude error is zero. Both simulators agree: the numpy statevector
-replays every retained single-family scenario to 2.7e-15, and an independent
+replays every retained single-family scenario to 1.6e-15, and an independent
 qiskit circuit of the worst joint point matches it to 1e-12.
 
 Every one of the 226 working three-qubit paths of the snapshot reaches max_z

@@ -1,0 +1,26 @@
+{
+ "schema": "kaggle-aer-collect-v2",
+ "kernel": "probablyeric/gororoba-primorial-bound-residuals/3",
+ "capture": "2026-10-25T220626.544279Z",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-25T220629Z",
+ "submission_sha256": "e123ed8fee5155a8b5fdf050344667efcd91f1cded21e8d38bb93793ea8edc1b",
+ "predecessor_sha256": null,
+ "files": {
+  "gororoba-primorial-bound-residuals.log": "0d0c4bd5978a9b30f9bc8e301c11f7c6be8832d58728e4e4794121d4cd871cdd",
+  "output/ci-freeze.txt": "e6deca874e22914f10ebabe0bc6d6910db6e0659017e9b4068a2aa0b1ee9f6c7",
+  "output/environment.json": "46e6915dd97026031bf5c5ed39580da0e77a6d4527b2f5ebf353e05d1780cbcc",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "29569d834fd74ad129e918c46b172990daeff9832a8868f8eff4b029410ad0a4",
+  "output/install-pins.txt": "509d4e7ee688fb4c58e6c9e599677889068fcb9d9fe682161eea07cc92d0c51f",
+  "output/pip.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/python-install.txt": "3d987875f284a6da63e8d0c767b5e68d03012e4ebb92bde13dc9785abe508164",
+  "output/repo/results/kaggle_out/primorial_bound_residuals.json": "ff6239c4026980205cf629a466f6c4c709264d978aafe872b8da6ddec25b7ef6",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "321b9736d61ee43196e17304b433b221ec6e129cd41a12e6e69cb3f331c7b312",
+  "output/uv-install.txt": "0e29aea00cf5ce05a687c37898da5af4ff00d4cc1e84348f50885e37e1ff370b",
+  "output/venv.txt": "c48758d995a48623a551e0e9f985c932e5fed775b217d7ed00f929890de3f00b"
+ },
+ "reported_status": "Warning: Looks like you're using an outdated `kaggle` version (installed: 2.2.4), please consider upgrading to the latest version (2.2.5)\nprobablyeric/gororoba-primorial-bound-residuals/3 has status \"KernelWorkerStatus.COMPLETE\"",
+ "discarded": {}
+}

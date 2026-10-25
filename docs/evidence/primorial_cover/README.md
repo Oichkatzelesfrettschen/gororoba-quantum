@@ -1,6 +1,6 @@
 # Primorial cover defects: certificates and the Kingston noise prediction
 
-Four records live here.
+Five records live here.
 
 - `certificates.json` is the output of `gororoba_quantum/primorial_cover.py
   --out`, recomputed byte for byte by gate `core-688` (about 5 s). It holds the
@@ -48,6 +48,17 @@ Four records live here.
   `core-primorial-null-residuals-replay` requires the file to equal the
   collected output, recomputes it, and requires the pulse identity, budgets
   and verdicts to match exactly and every bias to 1e-8.
+- `bound_residuals.json` is the output of
+  `scripts/primorial_bound_residuals.py`, run as Kaggle CPU kernel version 3
+  of `gororoba-primorial-bound-residuals` under `push --ci-env` and retained
+  under `results/kaggle/2026-10-25T214037Z-gororoba-primorial-bound-residuals/`,
+  whose `collect.json` binds the file's bytes. It reads `noise.json`,
+  `null_residuals.json` and the snapshot and records their sha256s. Gate
+  `core-primorial-bound-residuals-replay` requires the file to equal the
+  collected output, recomputes it, and requires every boolean, count and
+  string to match exactly and every float to 1e-8 (376 s wall and 3,326
+  CPU-s on the build host). The Kaggle record and a build-host run of the same commit agree
+  with no departure at that tolerance.
 
 ## Ziller Table 1 through k = 20
 
@@ -186,3 +197,55 @@ differ. ZZ enters the null-subtracted fit at second order (the residual
 grows about sixteenfold from 5 to 20 kHz), and so does tilt. The record
 covers the gap-88 cost on Heron r2 timing; crosstalk and leakage remain
 outside it.
+That verdict holds one family at a time; tilt and CZ phase jointly at their
+bounds exceed it, as [Joint coherent bounds](#joint-coherent-bounds) records.
+
+## Joint coherent bounds
+
+`bound_residuals.json` tests the gap-88 null-subtracted fit against coherent
+errors jointly and per coefficient, on the arms and paths above; the design
+reading is
+[primorial-cover-joint-coherent-bounds.md](../../design/primorial-cover-joint-coherent-bounds.md).
+A numpy statevector of the three path qubits replays the timed compiled arms
+and must reproduce every scenario of `null_residuals.json` and every
+coherent sensitivity of `noise.json` to 1e-9 before any new scenario is read
+(departure at most 1.6e-15). Each scenario reports:
+
+- `max_z`, the largest null-subtracted coefficient bias divided by that
+  coefficient's own standard deviation at the retained budget (0.0103 to
+  0.0188);
+- `shots_identify_all`, the budget rule of `primorial_cover_noise.phase_fit`
+  with the scenario's bias in place of the incoherent one, None when the bias
+  reaches 1/16.
+
+Families at the gate-error bounds: drive-axis tilt and sx/x amplitude
+error under the sx budget and under the tighter sx-and-x budget (the x
+pulse's tilt infidelity is (2/3) sin^2(beta)), the CZ conditional phase at
+acos(1 - 10 r / 3), all 8^3 qubit directions jointly with the 4 coupler
+signs, a 5^5 interior grid over tilt and CZ phase with a coordinate-ascent
+refinement, and the CZ phase replaced by its Pauli twirl with ideal frames.
+The record adds the signal-arm-only mismatch at which max_z crosses 1, a
+coherent-fraction scan (worst of 32 sign patterns per cell), and every
+three-qubit path of the snapshot at its own bounds.
+
+| | best (45-46-47) | median (117-125-126) |
+| --- | ---: | ---: |
+| tilt alone, sx bound, max_z | 0.79 | 0.89 |
+| CZ phase alone at its bound, max_z | 0.72 | 0.77 |
+| tilt and CZ phase jointly, max_z / bias | 2.61 / 0.049 | 2.84 / 0.050 |
+| refined interior maximum, max_z | 2.62 | 2.85 |
+| shots to identify at that bias (retained) | 53,363 (2,803) | 76,596 (3,169) |
+| joint under the sx-and-x budget, max_z | 1.90 | 2.06 |
+| twirled CZ phase alone / with tilt, max_z | 0.27 / 1.07 | 0.29 / 1.20 |
+| fraction scan, tilt 0.1 of bound and CZ phase at bound, max_z | 0.84 | 0.90 |
+| fraction scan, tilt 0.2 of bound and CZ phase at bound, max_z | 0.98 | 1.04 |
+| q0 detuning mismatch reaching max_z 1 (kHz) | 2.4 | 2.2 |
+
+All 226 working paths reach max_z 1 at their own bounds and 82 exceed the
+identification radius; eight paths through qubits 113, 121 and 146 (sx and x
+error 1.0) are dropped. The path sweep compiles every path, finds 9 distinct
+gate streams, and reads every path against the best path's standard
+deviations. The twirled rows idealize the twirl as ideal Pauli frames around
+the CZ, leaving the sx and x stream unchanged. An exploratory build-host run
+preceded the per-coefficient reading and every row after the joint
+families; the record's docstring lists the order.

@@ -4227,9 +4227,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_bound_residuals.py --check docs/evidence/primorial_cover/bound_residuals.json --run results/kaggle/2026-10-25T204610Z-gororoba-primorial-bound-residuals",
+   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_bound_residuals.py --check docs/evidence/primorial_cover/bound_residuals.json --run results/kaggle/2026-10-25T214037Z-gororoba-primorial-bound-residuals",
    "name": "core-primorial-bound-residuals-replay",
-   "seconds": 300.0,
+   "seconds": 376.0,
    "tier": "full",
    "workers": "all"
   }
