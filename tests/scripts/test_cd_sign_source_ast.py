@@ -141,6 +141,29 @@ def test_a_global_declaration_in_a_function_nested_class_reaches_module_scope() 
         raise AssertionError("replacing the module-level integer_index left the closure unchanged")
 
 
+def test_a_nested_lambda_assignment_expression_stays_out_of_the_comprehension_scope() -> None:
+    walrus = FIXTURE.replace(
+        "        value = integer_index(index)\n",
+        "        value = (lambda: [(lambda: (integer_index := None))() or integer_index(index) for _ in [0]])()[0]\n",
+        1,
+    )
+    if walrus == FIXTURE or "import index as integer_index" not in closure(walrus):
+        raise AssertionError("a nested lambda's := target hid the module-level integer_index from the closure")
+
+
+def test_type_parameter_bounds_and_defaults_load_from_module_scope() -> None:
+    for header in (
+        "class Convert[T: integer_index]:\n        pass\n",
+        "def convert[T = integer_index]():\n        pass\n",
+    ):
+        generic = FIXTURE.replace("    try:\n", "    " + header + "\n    try:\n", 1)
+        bare = FIXTURE.replace("from operator import index as integer_index", "integer_index = lambda value: 0", 1)
+        bare = bare.replace("        value = integer_index(index)\n", "        value = index\n", 1)
+        bare_generic = bare.replace("    try:\n", "    " + header + "\n    try:\n", 1)
+        if generic == FIXTURE or "integer_index = lambda value: 0" not in closure(bare_generic):
+            raise AssertionError(f"a type parameter of {header.split()[0]} hid the module-level integer_index")
+
+
 def test_semantic_mutations_change_raw_tree_without_target_translation() -> None:
     source = source_ast.SOURCE.read_text(encoding="utf-8")
     original = source_ast.raw_term(source_ast.function_node(source))

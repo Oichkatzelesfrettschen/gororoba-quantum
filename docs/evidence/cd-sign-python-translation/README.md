@@ -137,7 +137,9 @@ helper closure that the certificate's `cd_sign_source_sha256` records and
 `sources-411` recomputes. Its exporter resolves two further scope forms: a
 comprehension that is a lambda body or a first iterable keeps its targets
 out of the enclosing scope's bindings, and a `global` declaration in a class
-body nested in a function reaches module scope. The closure of the retained
+body nested in a function reaches module scope. Type-parameter bounds and
+defaults of a def or class load from the enclosing scope, and an `:=` target
+inside a nested lambda stays out of the comprehension's enclosing scope. The closure of the retained
 `cd_core.py` and the certificate digest are unchanged by those forms. The
 predecessor ledger
 [source_hashes-helper-closure.sha256](source_hashes-helper-closure.sha256)
