@@ -515,16 +515,24 @@
     ],
     "core-ascella-signed-coherence-configuration-holdout-replay": [
       "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
-      "docs/evidence/ascella-order-coefficients/configuration-holdout.json"
+      "docs/evidence/ascella-order-coefficients/configuration-holdout-unclipped-light.json"
+    ],
+    "core-ascella-signed-coherence-drive-response-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/**",
+      "docs/evidence/ascella-order-coefficients/drive-response.json"
     ],
     "core-ascella-signed-coherence-heater-drive-holdout-replay": [
       "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
-      "docs/evidence/ascella-order-coefficients/heater-drive-holdout.json"
+      "docs/evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json"
     ],
     "core-689": [
       "docs/evidence/calibration/**",
       "docs/evidence/primorial_cover/**",
       "results/kaggle/2026-10-25T075839Z-gororoba-primorial-cover-noise/**"
+    ],
+    "core-primorial-ziller-table-replay": [
+      "docs/evidence/primorial_cover/ziller_table.json"
     ]
   }
 }

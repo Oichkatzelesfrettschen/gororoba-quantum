@@ -61,11 +61,13 @@ the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_re
 The active [C5 exact replay](evidence/c5_zero_divisor_code/replay-exact.py) uses rational products
 and matrices for certificates, retaining numerical noisy decoding and the original result bytes.
 The checksum-bound historical README and replay keep their bytes. The active source ledgers
-for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-int-dimension),
-[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-int-dimension) and
-[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-int-dimension) bind the
-`cd_core.py` whose dimension guard admits only exact int, and preserve every other identity of
-their `SHA256SUMS-exact-contracts` predecessors and historical `SHA256SUMS` files.
+for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-ordered-map-cancel),
+[projective limits](evidence/projective_kernel_limits/SHA256SUMS-ordered-map-cancel) and
+[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-ordered-map-cancel) bind the
+`parallel.py` whose `ordered_map` cancels its queued chunks once an item raises, and preserve every
+other identity of their `SHA256SUMS-exact-int-dimension` predecessors, which bind the `cd_core.py`
+whose dimension guard admits only exact int, and of the earlier `SHA256SUMS-exact-contracts` and
+historical `SHA256SUMS` files.
 
 The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
 retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
@@ -161,7 +163,7 @@ differs from it only in the `cd_core.py` digest.
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
 | [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
-| [primorial-cover-defects.md](notes/topics/primorial-cover-defects.md) | missing primorial-wheel gaps 20, 32, 86, 88 as restricted covers: exhaustive defect certificates, capacity and LP bounds, singleton repair, slice Walsh Hamiltonians and the eight-CNOT parity network |
+| [primorial-cover-defects.md](notes/topics/primorial-cover-defects.md) | missing primorial-wheel gaps 20, 32, 86, 88 as restricted covers: exhaustive defect certificates, capacity and LP bounds, singleton repair, slice Walsh Hamiltonians, the eight-CNOT parity network and the reproduction of Ziller Table 1 for `k <= 20` |
 | [c5-zero-divisor-code-falsification.md](notes/topics/c5-zero-divisor-code-falsification.md) | zero-divisor code, falsified thought experiment |
 | [cd-star-lattice-tower.md](notes/topics/cd-star-lattice-tower.md) | Tuna-17 as the Gaussian-integer star lattice; lifts to dimensions 3, 4, 8, 16, the Paley identification of their symmetry groups and the sedenion zero divisors |
 | [evidence/cd-star-lattice/README.md](evidence/cd-star-lattice/README.md) | exact star-lattice census bound to the Tuna-17 catalogue topology, with SL(2, q) and PGL(2, 7) certificates and a nauty replay |

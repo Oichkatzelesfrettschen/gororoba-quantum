@@ -12,11 +12,15 @@ retrieved job IDs. The pooled-validation successor preserves those fields and al
 offline validation time. The [historical collector text](collector-retained-audit.py.txt) retains the exact source
 that produced the service-retrieval comparison; the snapshot is data rather than an active Python module.
 
+The [ordered-map successor](comparison-ordered-map-cancel.json) rebinds the retained-audit comparison offline
+after `parallel.py` began cancelling queued chunks once an item raises; its 40 rows equal the pooled-validation
+comparison's, and only that dependency digest and the offline validation time differ. Gate `core-281` checks it.
+
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
 named files and the pinned Qiskit/runtime versions bound the replay; the provenance does not claim a complete
-transitive import closure. Both earlier comparisons retain their recorded bytes. Gate `core-281` checks the
-complete successor and its predecessor chain on the historical `qiskit-2.5` replay runtime.
+transitive import closure. Every earlier comparison retains its recorded bytes. Gate `core-281` checks the
+active successor and its predecessor chain on the historical `qiskit-2.5` replay runtime.
 
 Replay from the repository root with the interpreter qualified against `ci/requirements-replay.txt`:
 
@@ -24,7 +28,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-pooled-validation.json
+  --out docs/evidence/submitted_circuits/comparison-ordered-map-cancel.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0

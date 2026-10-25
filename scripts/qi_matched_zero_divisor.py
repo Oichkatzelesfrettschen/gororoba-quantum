@@ -49,7 +49,7 @@ PROPOSAL = ROOT / "results/quantum_inspire/proposals/tuna17-zero-divisor-matched
 ANGLES = {"dark": math.pi / 2, "bright": -math.pi / 2, "fixture": math.pi}
 IDEALS = {"dark": 0.0, "bright": 1.0, "fixture": 0.5}
 SHOTS = 16384
-TOOLCHAIN_RECORD = ROOT / "docs/evidence/quantum_inspire/matched-zero-divisor-toolchain-token-recovery.json"
+TOOLCHAIN_RECORD = ROOT / "docs/evidence/quantum_inspire/matched-zero-divisor-toolchain-ordered-map-cancel.json"
 COMPILER_SOURCES = (
     "scripts/qi_matched_zero_divisor.py",
     "scripts/qi_toolchain_check.py",
