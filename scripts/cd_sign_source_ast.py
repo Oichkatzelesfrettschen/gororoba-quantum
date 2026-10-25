@@ -2,8 +2,10 @@
 
 The exporter records ast.iter_fields generically. It does not map Python operations to target-language
 constructors: the Rocq certificate checker and independent raw-tree semantics own that interpretation.
-The source digest binds the exact UTF-8 source bytes, including text outside the selected function.
-CPython parsing, function selection, serialization and source-byte binding remain external trust boundaries.
+The source digest binds the exact UTF-8 bytes of cd_sign and of every top-level definition, assignment or import it
+reaches through module-level names, transitively, in source order; edits elsewhere in cd_core.py leave it unchanged,
+while a changed or rebound helper changes it. CPython parsing, function selection, name-closure selection,
+serialization and source-byte binding remain external trust boundaries.
 
 Usage: "$PYTHON" scripts/cd_sign_source_ast.py [--check | --write]
 """
@@ -69,6 +71,46 @@ def function_node(source: str, name: str = "cd_sign") -> ast.FunctionDef:
     return matches[0]
 
 
+def _bound_names(node: ast.stmt) -> list[str]:
+    if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef):
+        return [node.name]
+    if isinstance(node, ast.Import | ast.ImportFrom):
+        return [(alias.asname or alias.name).split(".")[0] for alias in node.names]
+    if isinstance(node, ast.Assign | ast.AnnAssign | ast.AugAssign):
+        targets = node.targets if isinstance(node, ast.Assign) else [node.target]
+        return [leaf.id for target in targets for leaf in ast.walk(target) if isinstance(leaf, ast.Name)]
+    return []
+
+
+def closure_source(source: str, name: str = "cd_sign") -> str:
+    """Source text of name and of every top-level statement binding a module-level name it reaches, in source order."""
+    module = ast.parse(source)
+    binders: dict[str, list[ast.stmt]] = {}
+    for node in module.body:
+        for bound in _bound_names(node):
+            binders.setdefault(bound, []).append(node)
+    root = function_node(source, name)
+    selected: dict[int, ast.stmt] = {}
+    pending: list[ast.stmt] = [root]
+    while pending:
+        node = pending.pop()
+        if id(node) in selected:
+            continue
+        selected[id(node)] = node
+        for leaf in ast.walk(node):
+            if isinstance(leaf, ast.Name):
+                pending.extend(binders.get(leaf.id, []))
+    lines = source.splitlines(keepends=True)
+    blocks = []
+    for node in sorted(selected.values(), key=lambda item: item.lineno):
+        decorators = getattr(node, "decorator_list", [])
+        start = min([node.lineno] + [item.lineno for item in decorators])
+        if node.end_lineno is None:
+            raise UnsupportedValue(f"statement at line {node.lineno} has no end line")
+        blocks.append("".join(lines[start - 1 : node.end_lineno]))
+    return "\n".join(blocks)
+
+
 def definition(item: tuple[str, str]) -> str:
     name, text = item
     return f"Definition {name} : py :=\n  {raw_term(function_node(text), '  ')}.\n"
@@ -79,7 +121,7 @@ def generated(source: str) -> str:
         raise UnsupportedValue("the high-low guard of cd_sign is not unique in the source")
     if source.count("half >>= 1") != 1:
         raise UnsupportedValue("the loop shift of cd_sign is not unique in the source")
-    digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+    digest = hashlib.sha256(closure_source(source).encode("utf-8")).hexdigest()
     items = [
         ("cd_sign_source", source),
         ("cd_sign_mutant_source", source.replace(MUTANT_OLD, MUTANT_NEW)),

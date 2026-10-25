@@ -14,8 +14,28 @@ def test_complete_source_export_and_digest_match_the_certificate() -> None:
     proof = source_ast.PROOF.read_text(encoding="utf-8")
     start, stop = source_ast.span(proof)
     term = source_ast.generated(source.decode("utf-8"))
-    if proof[start:stop] != term or hashlib.sha256(source).hexdigest() not in term:
+    closure = source_ast.closure_source(source.decode("utf-8")).encode("utf-8")
+    if proof[start:stop] != term or hashlib.sha256(closure).hexdigest() not in term:
         raise AssertionError("the complete raw source AST or its exact source-byte digest differs")
+
+
+def test_digest_covers_the_helper_closure_and_nothing_else() -> None:
+    source = source_ast.SOURCE.read_text(encoding="utf-8")
+    term = source_ast.generated(source)
+    if source_ast.generated(source + "\n\ndef unrelated() -> int:\n    return 1\n") != term:
+        raise AssertionError("a definition cd_sign never reaches changed the certificate block")
+    helper = source.replace(
+        "def _index(dim: int, index: int) -> int:\n", "def _index(dim: int, index: int) -> int:\n    pass\n", 1
+    )
+    if helper == source or source_ast.generated(helper) == term:
+        raise AssertionError("an edit to a helper cd_sign calls left the source digest unchanged")
+    rebound = source + "\n\n_dimension = None\n"
+    if source_ast.generated(rebound) == term:
+        raise AssertionError("a later rebinding of a helper name left the source digest unchanged")
+    closure = source_ast.closure_source(source)
+    for name in ["def cd_sign(", "def _dimension(", "def _index(", "import index as integer_index"]:
+        if name not in closure:
+            raise AssertionError(f"the helper closure omits {name}")
 
 
 def test_semantic_mutations_change_raw_tree_without_target_translation() -> None:
