@@ -3830,6 +3830,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py --self-test",
+   "name": "core-681",
+   "seconds": 13.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py check results/iqm/cases/idle-schedule-train-readout",
+   "name": "core-682",
+   "seconds": 10.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py analyze results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0 results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate --out results/iqm/signed_kernel_null_retest_analysis.json --replay",
    "name": "core-643",
    "seconds": 20.0,

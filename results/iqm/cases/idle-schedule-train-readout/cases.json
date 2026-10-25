@@ -1,0 +1,102 @@
+{
+ "case": "idle-schedule-train-readout",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/idle-QB1-0.json",
+     "sha256": "b4ff1611091fdb3bef5ec74c93fdddaf3a093e27b77098259087233d35166d9c"
+    },
+    {
+     "file": "circuits/idle-QB1-500.json",
+     "sha256": "861a068535fa3e66b61e314dbbbbe4fd66f55d219796ed29ea923c4ea58fd0d3"
+    },
+    {
+     "file": "circuits/idle-QB1-1000.json",
+     "sha256": "18282b7fc5436cc3d971b1c648a225e3008b56f4a1819b2a1fa8c7ae134a62e3"
+    },
+    {
+     "file": "circuits/idle-QB7-0.json",
+     "sha256": "0abc6aca354860a817ec35347090b01f2a60a6838ffbfc3a0381aebf0a1bd326"
+    },
+    {
+     "file": "circuits/idle-QB7-500.json",
+     "sha256": "05f5493b907455f58ed840078ff4b6fc2bcc4593ce99f421b6f4a33914081c58"
+    },
+    {
+     "file": "circuits/idle-QB7-1000.json",
+     "sha256": "aad7a82d1fb8190c9c94c6948fe9d5ab97bfe0621ef57d95d70e2a042a57955b"
+    },
+    {
+     "file": "circuits/ro0-QB6.json",
+     "sha256": "6fb2639735a336e32c72df9a0eaba1961c8723dc12f92b2dd3c62aff64d07019"
+    },
+    {
+     "file": "circuits/ro1-QB6.json",
+     "sha256": "b8bac56e3e80cd361b8a80d142fdd561346eb05561b83e50a2d11c664d172adf"
+    },
+    {
+     "file": "circuits/amp-QB6-0.json",
+     "sha256": "21f4a85b95f0c5ce61d9859e87320e267df8e4e7c2fde3ec61f1775cb22fe093"
+    },
+    {
+     "file": "circuits/amp-QB6-1.json",
+     "sha256": "364e795134ed43086404720b8ba423e0eede63312b0fed3000965bc9ec1df45b"
+    },
+    {
+     "file": "circuits/amp-QB6-2.json",
+     "sha256": "4eb095297aefd40798609e1e19e1fb5715882964171ef28f7e200fcd421e6872"
+    },
+    {
+     "file": "circuits/amp-QB6-3.json",
+     "sha256": "0a6b81f143612015e358e2469ce107674b83c51d2d4d77a01d38baccae8058ae"
+    },
+    {
+     "file": "circuits/ro0-QB11.json",
+     "sha256": "a0968edd2294a24a7abdc1bc5ba2012d74dfbbd04f4231f7fde410005ff2c9ec"
+    },
+    {
+     "file": "circuits/ro1-QB11.json",
+     "sha256": "df53fb76e68b6d2a98e00c9b309b38c088b9daf3407f24bd535e7e756aa1aaec"
+    },
+    {
+     "file": "circuits/amp-QB11-0.json",
+     "sha256": "268366a4880e8cc138da6125440b17a7c92e5ff564346445bbcda09796fdde25"
+    },
+    {
+     "file": "circuits/amp-QB11-1.json",
+     "sha256": "a37cda727854bab51f321e906c9f0988c878bd87c53df6a6567e8d0a0d34e30f"
+    },
+    {
+     "file": "circuits/amp-QB11-2.json",
+     "sha256": "51994bc74a782b1956cf9034b86433e5bb6287bbb022862f5b500b53b73aa3d3"
+    },
+    {
+     "file": "circuits/amp-QB11-3.json",
+     "sha256": "bf096f166f05e96bea7f9d9ad5370a17e52ea4fe584f281f707ae1deca54a373"
+    }
+   ],
+   "expected_seconds": 6.06,
+   "job": "probe",
+   "max_credits": {
+    "garnet": 4.0,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "a18a947f-0408-4628-81ea-1715637e434f"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 10000
+  }
+ ],
+ "prediction_sha256": "e5b1f0c9e092a0736fa96bc4c097a081ccc014e8cf36e94daf56ae62b81195d1",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "Does Garnet schedule a circuit job's gates as soon or as late as possible, read by whether a pulsed qubit relaxes while an uncoupled qubit runs an identity train, and what over-rotation does each signed-probe train qubit carry when fitted with its own readout?",
+ "schema": "iqm-circuit-case-v1"
+}
