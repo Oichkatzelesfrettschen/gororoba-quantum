@@ -3334,8 +3334,15 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error qpu_planning_contracts.py --submit-reuse-herald",
    "name": "core-570",
-   "seconds": 246.3,
-   "tier": "full"
+   "seconds": 401.5,
+   "tier": "full",
+   "case_registry": "SUBMIT_REUSE_HERALD_CASES",
+   "case_seconds": {
+    "reuse_and_full_path": 93.9,
+    "moved_value_refusals": 85.0,
+    "device_route_fallback": 102.0,
+    "changed_input_refusals": 120.6
+   }
   },
   {
    "suite": "core",
