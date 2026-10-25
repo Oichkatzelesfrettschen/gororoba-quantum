@@ -87,13 +87,7 @@ def _module_scope(node: ast.AST) -> list[ast.AST]:
         found.extend(_assignment_targets(node))
         return found
     if isinstance(node, SCOPES):
-        # Decorators, defaults, base classes and keywords evaluate where the definition runs, not in its body.
-        outer: list[ast.AST] = list(getattr(node, "decorator_list", []))
-        if isinstance(node, ast.ClassDef):
-            outer += [*node.bases, *(keyword.value for keyword in node.keywords)]
-        else:
-            outer += [*node.args.defaults, *(item for item in node.args.kw_defaults if item is not None)]
-        for item in outer:
+        for item in _definition_time(node):
             found.extend(_module_scope(item))
         return found
     for child in ast.iter_child_nodes(node):
@@ -101,15 +95,26 @@ def _module_scope(node: ast.AST) -> list[ast.AST]:
     return found
 
 
+def _definition_time(node: ast.AST) -> list[ast.AST]:
+    """Decorators, defaults, base classes and keywords of a def, class or lambda: they evaluate where the definition
+    runs, not in its body."""
+    outer: list[ast.AST] = list(getattr(node, "decorator_list", []))
+    if isinstance(node, ast.ClassDef):
+        outer += [*node.bases, *(keyword.value for keyword in node.keywords)]
+    elif isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef | ast.Lambda):
+        outer += [*node.args.defaults, *(item for item in node.args.kw_defaults if item is not None)]
+    return outer
+
+
 def _assignment_targets(node: ast.AST) -> list[ast.AST]:
-    """:= targets inside a comprehension, which bind in its enclosing scope; a nested def, class or lambda keeps its
-    own."""
+    """:= targets inside a comprehension, which bind in its enclosing scope; a nested def, class or lambda body keeps
+    its own, while its definition-time expressions run in the comprehension."""
     found: list[ast.AST] = []
-    for child in ast.iter_child_nodes(node):
+    children = _definition_time(node) if isinstance(node, SCOPES) else list(ast.iter_child_nodes(node))
+    for child in children:
         if isinstance(child, ast.NamedExpr):
             found.append(child.target)
-        if not isinstance(child, SCOPES):
-            found.extend(_assignment_targets(child))
+        found.extend(_assignment_targets(child))
     return found
 
 

@@ -88,6 +88,9 @@ def test_every_module_scope_rebinding_enters_the_closure() -> None:
         ),
         "a mapping-rest capture": FIXTURE + "\n\nmatch {}:\n    case {**_index}:\n        pass\n",
         "an assignment expression in a comprehension": FIXTURE + "\n\nvalues = [(_index := 0) for item in range(3)]\n",
+        "an assignment expression in a nested lambda's default": (
+            FIXTURE + "\n\nvalues = [(lambda value=(_index := lambda d, i: 0): value)() for _ in [0]]\n"
+        ),
     }
     for label, text in rebindings.items():
         if text == FIXTURE or closure(text) == selected:
