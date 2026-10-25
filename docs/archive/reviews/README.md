@@ -18,3 +18,7 @@ repository-relative; a branch name stands for its worktree.
 | [docs-audit.md](docs-audit.md) | documentation inventory, bindings and restructure options |
 | [tuna17-bdsc-pauli-pilot-review.md](tuna17-bdsc-pauli-pilot-review.md) | adversarial, stability and literature review of the Tuna-17 BDSC Pauli pilot (PR #349) |
 | [docs-move-plan.json](docs-move-plan.json) | per-file move plan with bindings and reference-edit counts, companion of docs-audit.md |
+| [2026-10-25-das-mergus-algebra-review.md](2026-10-25-das-mergus-algebra-review.md) | adversarial claim review of the DAS MERGUS monograph, algebra and geometry chapters, with its [claim ledger](2026-10-25-das-mergus-algebra-claims.json) |
+| [2026-10-25-das-mergus-data-review.md](2026-10-25-das-mergus-data-review.md) | adversarial claim review of the DAS MERGUS monograph, data and statistics chapters and the pasted Ascella claims, with its [claim ledger](2026-10-25-das-mergus-data-claims.json) |
+| [das-mergus-checks/README.md](das-mergus-checks/README.md) | the independent probes and reruns both DAS MERGUS ledgers cite |
+| [2026-10-25-results-catalog-opposition.md](2026-10-25-results-catalog-opposition.md) | opposition review of the results catalog and storage proposals, with ranked alternatives |
