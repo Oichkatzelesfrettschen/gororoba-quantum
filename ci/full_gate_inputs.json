@@ -543,6 +543,11 @@
       "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
       "docs/evidence/anu_qrng/draw-2026-10-25T182813Z.json",
       "docs/evidence/ascella-order-coefficients/compilation-reading.json"
+    ],
+    "core-primorial-null-residuals-replay": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/primorial_cover/**",
+      "results/kaggle/2026-10-25T185707Z-gororoba-primorial-null-residuals/**"
     ]
   }
 }
