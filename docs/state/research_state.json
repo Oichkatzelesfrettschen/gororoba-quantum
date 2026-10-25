@@ -1899,6 +1899,13 @@
       "question": "Does the garnet:mock pipeline accept the hardened 57-circuit measurement-sequence case (cases.json 84fd16f8), with pre-readout delays and the in-job T1 series, and compile it to the predicted schedule?"
     },
     {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-57-qpu-window",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit case rebuilt at the QPU-measured 1.096 us window (cases.json 2a49b954), and does analyze --mock keep the planned window when the mock's own compiler (1.772 us window) puts the schedule ratio at 1.304?"
+    },
+    {
       "id": "iqm-garnet-qpu-window-probe-unitary",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p",
@@ -9441,7 +9448,8 @@
       ],
       "gates": {},
       "acquisitions": [
-        "iqm-garnet-mock-measurement-sequence-pinching-57"
+        "iqm-garnet-mock-measurement-sequence-pinching-57",
+        "iqm-garnet-mock-measurement-sequence-pinching-57-qpu-window"
       ],
       "assumptions": [],
       "depends_on": [],

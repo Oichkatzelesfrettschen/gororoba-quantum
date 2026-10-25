@@ -32,7 +32,7 @@ The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 74 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 37 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 38 IQM run directories are retained. That is an observation, not an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -326,6 +326,7 @@ circuit and charges the account ledger's change.
 | [2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching](../../results/iqm/runs/2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits | iqm-garnet-mock-pinching-57 |
 | [2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p](../../results/iqm/runs/2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 1 | completed | 0.5 credits | iqm-garnet-qpu-measure-window |
 | [2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p](../../results/iqm/runs/2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 1 | completed | 0.5 credits | iqm-garnet-qpu-measure-window |
+| [2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching](../../results/iqm/runs/2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits | iqm-garnet-mock-pinching-57 |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -614,6 +615,7 @@ circuit and charges the account ledger's change.
 - **iqm-garnet-mock-measurement-sequence-pinching-57** (2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching, 5 billed seconds): Does the garnet:mock pipeline accept the hardened 57-circuit measurement-sequence case (cases.json 84fd16f8), with pre-readout delays and the in-job T1 series, and compile it to the predicted schedule?
 - **iqm-garnet-qpu-window-probe-unitary** (2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p, 1 billed seconds): What does Garnet's compiler estimate per shot for the N = 16 unitary-arm circuit of the pinching case on QB5, QB7, QB11, QB14, QB17 and QB19, with its 2 us pre-readout delay?
 - **iqm-garnet-qpu-window-probe-measure** (2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p, 1 billed seconds): What does Garnet's compiler estimate per shot for the N = 16 measure-arm circuit of the pinching case on the same six qubits, and so what mid-circuit measure window does it compile?
+- **iqm-garnet-mock-measurement-sequence-pinching-57-qpu-window** (2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching, 4 billed seconds): Does the garnet:mock pipeline accept the 57-circuit case rebuilt at the QPU-measured 1.096 us window (cases.json 2a49b954), and does analyze --mock keep the planned window when the mock's own compiler (1.772 us window) puts the schedule ratio at 1.304?
 
 ## Established claims
 
@@ -1678,7 +1680,7 @@ circuit and charges the account ledger's change.
 - **iqm-garnet-mock-pinching-57** (exploratory reanalysis, hardware). garnet:mock (calibration set f04fe114) completed the hardened 57-circuit measurement-sequence case (cases.json 84fd16f8, job 01a174a7) at 3000 shots: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order QB5, QB7, QB11, QB14, QB17, QB19, and the compiled qpu_execution estimate of 5.067636 s equals the case's predicted 5.067636 s (ratio 1.0000). The mock executed in 4.041 s and billed 5 s at 0.00 credits.
   Boundary: The mock compiles against its own calibration set and returns random outcomes; it verifies the format and the schedule model, not any device property, and its execution time does not carry to the QPU.
   Evidence: [results.json](../../results/iqm/runs/2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching/results.json), [iqm-garnet-measurement-sequence-pinching.md](../design/iqm-garnet-measurement-sequence-pinching.md).
-  Acquisitions: iqm-garnet-mock-measurement-sequence-pinching-57.
+  Acquisitions: iqm-garnet-mock-measurement-sequence-pinching-57, iqm-garnet-mock-measurement-sequence-pinching-57-qpu-window.
 - **iqm-garnet-qpu-measure-window** (exploratory reanalysis, hardware). On IQM Garnet under calibration set be070414, two single-circuit probes of 100 shots on QB5, QB7, QB11, QB14, QB17 and QB19 (the pinching case's own circuits with a 2 us pre-readout delay) compiled to 7.032 us per shot for the N = 16 unitary circuit (job 01a174be-d1f7-75fc-b324-d27d7133409b) and 24.568 us for the N = 16 measure circuit (job 01a174be-e68b-776e-8241-8bb3d259ae57), so the compiled mid-circuit measure window is (24.568 - 7.032)/16 = 1.096 us, against the 1.772 us that garnet:mock compiles. With the 4.344 us per-circuit base of the retained active-reset pilot job (2026-10-22T212742Z) the unitary circuit's remaining 5.032 - 4.344 = 0.688 us over 16 layers gives 43 ns per prx layer, consistent with the mock's 40 ns. Both jobs billed 1 s and charged 0.50 credits, 1.00 credit in all.
   Boundary: Compiler estimates of one calibration set, not measured durations; the per-circuit base is taken from a different job and circuit family, so the layer time carries that assumption.
   Evidence: [results.json](../../results/iqm/runs/2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p/results.json), [results.json](../../results/iqm/runs/2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p/results.json), [iqm-garnet-measurement-sequence-pinching.md](../design/iqm-garnet-measurement-sequence-pinching.md).
