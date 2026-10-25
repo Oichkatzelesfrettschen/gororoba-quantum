@@ -27,12 +27,19 @@ reach.
   audited URL and hash; the inspected PDF remains in the ignored local cache.
   The registry record in [SOURCES.json](../../SOURCES.json) uses
   `NOASSERTION` for the license.
-- Reading scope: all 9 pages, read as extracted text (`pdftotext -layout`),
-  with pages 5 and 6 (the two timeline tables) also rendered to images to
-  attribute each cell to its year column. Page 7 (publication list) and page
-  9 (closing slogan) carry no networking statement beyond the citations
-  listed below. Page 8 contact names, e-mail addresses and a telephone number
-  are not recorded.
+- Local reading transcription: `docs/local_source_cache/quandela-roadmap-2026-03.md`
+  (ignored, never committed; restore the PDF with
+  `scripts/fetch_source_cache.py`). It carries every page, the three timeline
+  grids cell by cell with row and column labels, and the publication list.
+- Reading scope: all 9 pages, read as page images and compared with the
+  `pdftotext -layout` text. The three grids (pages 4, 5 and 6) were read cell
+  by cell against the image to attribute each cell, band label and rule to
+  its year column. Page 7 (publication list) and page 9 (back cover) carry no
+  networking statement beyond the citations listed below. The closing
+  statement quoted below sits on page 8 together with the contact blocks, whose
+  names, e-mail addresses and telephone number are not recorded. The
+  brochure's own figures were not measured; no value was read from a graphic
+  that the text layer does not also state.
 
 ### Statements on networking, interconnects and modular systems
 
@@ -135,39 +142,111 @@ Quantum 8, 1423 (2024), and reference 12, Pont et al., "Indistinguishability
 of remote quantum dot-cavity single-photon sources" (arXiv:2412.15762). The
 roadmap prints these as a list and carries no statement about their results.
 
+### Page-by-page reading of the roadmap PDF
+
+| Page | Content | Repository relevance |
+| --- | --- | --- |
+| 1 | Cover, "ROADMAP 2026-2033". | None. |
+| 2 | Introduction by the Chief Research Officer: three phases (Utility, Quantum Advantage, Large-Scale Fault-Tolerant Architecture), the 2027 and 2028-2029 statements quoted above, an energy-use estimate. | [I] The only prose that dates networking (2028-2029). |
+| 3 | "Leading the way towards the fault tolerant era": a 2016 / 2023 / 2030 arrow and three themes of the strategy, with "modular, interconnected" and "deterministic entanglement links between qubits as they are created" as statements about spin-mediated devices. | [I] Describes the product architecture; no cloud interconnect. |
+| 4 | History grid, columns 2017-2018 to 2023, six rows (quantum systems, applications and use cases, error correction and logical qubits, developer platform, software and algorithms, manufacturing and industrialization). Ascella appears in the 2023 quantum-systems cell. | [I] Dates Ascella. |
+| 5 | Forward grid, columns 2024-25 to 2032-33, with stage bands. | [I] Dates Belenos, Diadem and the NETWORKING band. |
+| 6 | Second forward grid with columns 2024, 2025, 2026, 2027, 2028-29, 2030-31 and 2032-33, a hardware-development row and a performance-threshold arrow (photon loss, distinguishability, spin coherence). | [I] Carries the "quantum networking" column header and the cabinet-interconnect cell. |
+| 7 | Twenty-six references, including remote-source indistinguishability (reference 12) and the spin-optical architecture (reference 13). | [I] Citations only. |
+| 8 | Contact blocks (not recorded) and the closing statement quoted above. | [I] Marketing statement. |
+| 9 | Back cover. | None. |
+
 ### Does the PDF support "modular optical networking development in 2028-2029"?
 
-[I] Verdict: partly. The PDF supports a 2028-2029 target for scaling through
-"modular, high-speed optical networking" and for a "Modular, networked
-photonic system" product (Diadem). It does not describe networking
-development in that period, and it names no networking hardware step in the
-2028-29 hardware-development cell.
+[I] Verdict: partly, with a year conflict inside the PDF. Pages 2 and 6 target
+2028-2029 for networking; page 5 opens a NETWORKING band in the 2027 column.
+The PDF supports a 2028-2029 target for scaling through "modular,
+high-speed optical networking" and for a "Modular, networked photonic
+system" product (Diadem). It does not describe networking development in that
+period, and it names no networking hardware step in the 2028-29
+hardware-development cell.
 
-- Supported (page 2): "2028–2029 will see ... scaling via modular,
-  high-speed optical networking."
-- Supported (page 6): the 2028–29 column header reads "QC scaling via quantum
-  networking", and the 2027 header reads "QC scaling via modularity".
-- Supported (page 5): the 2028-29 quantum system, Diadem, is "Modular,
-  networked photonic system" with "~100 physical qubits".
-- Not supported as "development": the 2028-29 hardware-development cell
-  (page 6) lists "High fidelity cluster qubits fusion operations" and "Photon
-  loss beyond threshold", and the hardware row's only interconnection item,
-  "Modular scaling via interconnected cabinets", starts in the 2030-31
-  column. The 2027 column lists "Spin-spin entang. mediated by photons" as
-  the hardware step that precedes networking.
+Each timeline claim, with its page, row label, column header and cell text
+(the grids' own words):
+
+| Claim | Page | Row label | Column header | Cell text |
+| --- | --- | --- | --- | --- |
+| Scaling via modular, high-speed optical networking in 2028-2029 | 2 | introduction prose, paragraph "2028-2029 will see performance metrics..." | not a grid | "scaling via modular, high-speed optical networking" |
+| Networking is the 2028-29 theme | 6 | column headers | "2028-29" | "QC scaling via quantum networking" |
+| Modularity is the 2027 theme | 6 | column headers | "2027" | "QC scaling via modularity" |
+| Modularity is the 2027 theme | 5 | column headers | "2027" | "Quantum Computing Scaling via Modularity" |
+| The 2028-29 column theme on page 5 is fault tolerance, not networking | 5 | column headers | "2028-29" | "Crossing Fault-Tolerance Thresholds" |
+| NETWORKING stage band starts in 2027 (conflicts with pages 2 and 6) | 5 | band beneath ERROR CORRECTION & LOGICAL QUBITS | text starts in the "2027" column | "NETWORKING" |
+| Networked product | 5 | QUANTUM SYSTEMS | "2028-29" | "Diadem QOPS >9500 ~100 physical qubits Modular, networked photonic system" |
+| Same system, page 6 | 6 | QUANTUM PROCESSORS | "2028-29" | "Diadem: 100 phys. qubits. QOPS=9768" and "Andromeda: 50 Logical qubits. QOPS= 10^6" |
+| Modular architecture at 2027 | 5 | QUANTUM SYSTEMS | "2027" | "Deneb QOPS >5000 48 physical qubits Modular, energy-efficient photonic architecture" |
+| Distributed error correction | 5 | ERROR CORRECTION & LOGICAL QUBITS | "2028-29" | "Andromeda prototype QOPS >10^6 Logical qubits: ~50 Operation below error-correction thresholds Distributed quantum error correction" |
+| Distributed error correction band | 5 and 6 | band beneath ERROR CORRECTION (page 5) and beneath QUANTUM PROCESSORS (page 6) | text starts in "2028-29" | "DISTRIBUTED ERROR CORRECTIONS" |
+| Distributed software | 5 | SOFTWARE & ALGORITHMS | "2028-29"; "2030-31" | "Distributed compilation and scheduling"; "Distributed resource management" |
+| Quantum-centric data center | 5 | band beneath MANUFACTURING & INDUSTRIALIZATION | text starts in "2028-29" | "QUANTUM-CENTRIC DATA CENTER" |
+| Hardware step before networking | 6 | HARDWARE DEVELOPMENT | "2027" | "Spin-spin entang. mediated by photons"; "feedforward on PICs"; "cryogenic packaging" |
+| No networking hardware item in 2028-29 | 6 | HARDWARE DEVELOPMENT | "2028-29" | "High fidelity cluster qubits fusion operations"; "Photon loss beyond threshold" |
+| Only interconnect hardware item | 6 | HARDWARE DEVELOPMENT | text starts in "2030-31", rule runs to the end of "2032-33" | "Modular scaling via interconnected cabinets" |
+
+- The design's wording "targets scaling through modular, high-speed optical
+  networking in 2028-2029" is supported by page 2 and by the page-6 column
+  header; the page-5 NETWORKING band starts one column earlier, in 2027, and
+  the page-5 header of 2028-29 names fault tolerance. State the 2028-2029
+  target with its two supporting pages and keep the page-5 band as a
+  year conflict.
+- Not supported as "development": the hardware row names no networking step
+  in 2028-29, and its only interconnection item starts in the 2030-31
+  column.
 - Stage of work: the roadmap states a target year for a capability. It does
   not say whether 2028-29 means laboratory demonstration, first system
   delivery, or availability to cloud users.
 - Wording to use in the design: "the March 2026 Quandela roadmap targets
-  scaling through modular, high-speed optical networking in 2028-2029,
-  with the Diadem system (about 100 physical qubits) as the networked
-  product"; avoid "development", and avoid a delivery date for cloud users.
+  scaling through modular, high-speed optical networking in 2028-2029
+  (pages 2 and 6), with the Diadem system (about 100 physical qubits) as the
+  networked product and a NETWORKING stage band that begins in the 2027
+  column (page 5)"; avoid "development", and avoid a delivery date for cloud
+  users.
 
-[I] The roadmap places Ascella (2023) and Belenos (2025) in the single-photon
-phase. Page 5 labels their column band "SINGLE PHOTONS" for 2024-25; neither
-processor appears in any networking or modular statement above. The roadmap
-names no mechanism that would link a cloud-accessible Ascella or Belenos to
-another processor.
+[I] Ascella and Belenos in the grids. Ascella appears once, on page 4, in the
+2023 quantum-systems cell ("Ascella QPU 6 qubits >140 QOPS"), under the
+"SINGLE PHOTONS" band that starts in the 2023 column. Belenos appears on page
+5 in the 2024-25 quantum-systems cell ("Belenos -- QOPS >550 (CNOT), 12
+physical qubits", with "Fidelity gains via error mitigation") under the
+"SINGLE PHOTONS" band, and on page 6 in the 2025 quantum-processors cell
+("Belenos: 12 phys. qubits. QOPS=576", "Logical qubits at fidelity threshold")
+under the "CLUSTER PHOTONS" band that starts in the 2025 column. The two pages
+therefore place Belenos in different photon phases; the earlier statement that
+the roadmap places Belenos in the single-photon phase held for page 5 only.
+Neither processor appears in any cell, header, band or prose passage that
+contains "networking", "modular", "interconnected" or "distributed": those
+words occur on pages 2 to 6 and 8 in the cells (page 4 only as the 2020 "Modular integration" column and its "MODULE INTEGRATION" band) and passages listed above,
+none of which names Ascella or Belenos. The roadmap names no mechanism that
+would link a cloud-accessible Ascella or Belenos to another processor.
+
+### Corrections to the earlier reading
+
+Two statements changed. The earlier text placed Belenos in the single-photon
+phase on the strength of page 5; page 6 puts the 2025 Belenos cell under
+"CLUSTER PHOTONS". The earlier reading scope called page 9 "the closing
+slogan"; the slogan "Our modular and interconnected approach ..." is on page
+8, and page 9 is a back cover. No quoted statement of the earlier note differs
+from the PDF.
+
+### Repository use
+
+The repository uses this source in
+[the Ascella-Belenos design](../../design/ascella-belenos-entanglement-teleportation.md)
+(sections "The partition constraint", "Gates" row G2 and "Provider request"),
+which reads the roadmap as development context.
+
+[I] The roadmap supplies no access route, port map or interconnect for the
+installations behind `qpu:ascella` and `qpu:belenos`, so it does not
+satisfy gate G2 (physical access) and supports none of the claim levels C2 to
+C6, which each need a shared entangled resource across the Ascella|Belenos
+cut. It states targets, not measurements; the Hoeffding radius, the separable
+witness bound and the `2/3` benchmark of the design's decision statistics have
+no content on these pages. A provider answer that names an accessible
+apparatus, route and data contract would enter G2; a roadmap row does not.
 
 ## Source 2: Quandela and Welinq announcement
 

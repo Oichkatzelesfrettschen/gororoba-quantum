@@ -4549,6 +4549,7 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/packed_pauli_probe.py",
     "scripts/primorial_cover_noise.py",
+    "scripts/primorial_null_residuals.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_cancellation_cases.py",
     "scripts/qi_ibm_noise_replay.py",
@@ -4682,6 +4683,7 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/packed_pauli_probe.py",
     "scripts/primorial_cover_noise.py",
+    "scripts/primorial_null_residuals.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_cancellation_cases.py",
     "scripts/qi_ibm_noise_replay.py",
@@ -10485,6 +10487,19 @@
    "tempfile",
    "typing"
   ],
+  "scripts/fetch_source_cache.py": [
+   "__future__",
+   "argparse",
+   "capture_oq_docs",
+   "collections",
+   "hashlib",
+   "json",
+   "os",
+   "pathlib",
+   "sys",
+   "tempfile",
+   "typing"
+  ],
   "scripts/ghost_branching_benchmark.py": [
    "__future__",
    "aer_resources",
@@ -11687,6 +11702,22 @@
    "qiskit_aer",
    "snapshot_laws",
    "statistics",
+   "sys",
+   "time",
+   "typing"
+  ],
+  "scripts/primorial_null_residuals.py": [
+   "__future__",
+   "argparse",
+   "calibration_snapshot",
+   "hashlib",
+   "itertools",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "primorial_cover_noise",
+   "qiskit",
    "sys",
    "time",
    "typing"

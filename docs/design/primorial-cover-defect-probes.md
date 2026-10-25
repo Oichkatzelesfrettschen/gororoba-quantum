@@ -8,7 +8,7 @@ to it, and records the noise-model prediction that decides whether any of it
 goes to hardware. The prediction is the ibm_kingston snapshot of
 2026-10-15T19:42:21-07:00 run by `scripts/primorial_cover_noise.py`
 ([evidence README](../evidence/primorial_cover/README.md), gate `core-689`).
-No hardware case exists, and no submission is planned by this document.
+No hardware case exists: the decision below closes the device question.
 
 ## What a device can and cannot test here
 
@@ -107,30 +107,73 @@ shifts beyond the identification radius, and the null arm removes them to
 ## Decision on hardware
 
 The prediction answers the design question and leaves no primorial question
-for a device. Under the incoherent model every family passes with a wide
-margin. Of the coherent families fitted to the Fez and Kingston fringes
+for a device; the plan step `device-question` closes on this section. Under
+the incoherent model every family passes with a wide margin. Of the coherent
+families fitted to the Fez and Kingston fringes
 ([coherent-error-families-report.md](../notes/topics/coherent-error-families-report.md)),
 the null arm removes a static detuning of up to 30 kHz to 0.0022 and the CZ
 conditional phase to first order; the sx amplitude error, the one family that
 acts only inside the network's Hadamards, biases no coefficient by more than
-0.0007 at eta = 0.01, far below the shot noise. Static ZZ and axis tilt were
-not simulated. RZ is virtual on Heron r2 (zero duration and error in the
-snapshot). The null-subtracted coefficients are therefore predicted to
-recover the integer table on any healthy path at about 2,800 to 3,200 shots
-per setting. A hardware run would then report two
-things: the null arm's edge phases, which measure the path's detuning and CZ
-phase, a characterization the atlas performs with more edges per shot; and a
-null-subtracted pass that the model already predicts. Neither depends on the
-primorial instance.
+0.0007 at eta = 0.01, far below the shot noise.
 
-A case would earn hardware time only by naming a device question the null arm
-answers better than the atlas: for example, the conditional-phase error of a
-specific coupler inside a dense CZ network, or a platform whose single-qubit
-rotations are physical rather than virtual, so that angle-dependent errors
-survive null subtraction. Such a case states the platform, the path, the
-coherent family it targets and its expected seconds or credits, and follows
-the approval flow of AGENTS.md (QPU time and calibration, Hardware services).
-The Quantum Inspire QX and Ry emulators would add an interface check only:
-both are provider jobs that need an approved case, and Ry puts qubit 0 at the
-leftmost character of its result strings
-([quantum_inspire/README.md](../notes/quantum_inspire/README.md)).
+`scripts/primorial_null_residuals.py` adds the two families the noise record
+left out, on the same compiled arms of both paths
+([evidence README](../evidence/primorial_cover/README.md#static-zz-and-axis-tilt),
+gate `core-primorial-null-residuals-replay`). Its criterion: a family leaves
+a device question when its null-subtracted bias reaches one standard
+deviation of the noisy estimate at the retained budget (0.0188 at 2,803 shots
+per setting on the best path, 0.0186 at 3,169 on the median). An exploratory
+build-host run of the fixed-value scenarios preceded the criterion; the
+gate-bound scenarios and the retained run followed it.
+
+- On every edge setting the compiled gap-88 arm and the zero-angle null arm
+  carry the same sx, x, cz and delay stream on the same qubits at the same
+  starts, differing only in rz, which the snapshot Target gives zero duration
+  and error. The two arms drive identical pulses on Heron r2.
+- Static ZZ of 2, 5 and 20 kHz on both couplers biases the raw fit by up to
+  0.078 (partner-in-0 frame) and 0.024 (symmetric frame); null subtraction
+  leaves at most 0.00038.
+- A drive-axis tilt of 0.005 or 0.02 rad on one path qubit or on all three
+  biases the raw fit by up to 0.174; null subtraction leaves at most 0.0055,
+  at 0.02 rad on every qubit, four times the largest tilt the atlas self-test
+  injects. Resolving that residual at three standard deviations would take
+  about 290,000 shots per setting.
+- At each path qubit's gate-error bound, the largest coherent tilt its
+  snapshot sx error allows (0.021 to 0.036 rad), the worst of the eight sign
+  patterns leaves 0.0147 on the best path and 0.0159 on the median: 0.78 and
+  0.85 of the standard deviation, the narrowest margin of the record, and far
+  inside the identification radius 1/16. The bound charges the whole sx error
+  to tilt, so a real path sits at or below it.
+
+No scenario reaches its threshold on either path, so a hardware run of these
+circuits would report the null arm's edge phases, a characterization of the
+path's detuning, CZ phase, ZZ and tilt that the atlas performs with more
+edges per shot, and a null-subtracted pass the model already predicts.
+Neither depends on the primorial instance.
+
+The design's other opening, a platform whose single-qubit rotations are
+physical rather than virtual, is established on none of the platforms the
+account reaches with a CZ gate model; on Tuna-17 the sources leave it open:
+
+| Platform | Rotation carrying the gradient angles | Signal against null |
+| --- | --- | --- |
+| IBM Heron r2 | virtual rz, zero duration in the Target | identical pulse streams, computed on the ibm_kingston snapshot; ibm_fez and ibm_marrakesh share the virtual-rz Target structure and were not compiled |
+| IQM Garnet, Emerald, Sirius | virtual RZ, a frame change beside the native `prx(angle, phase)` ([iqm/README.md](../notes/iqm/README.md)) | the gradient angles enter as frame changes only, so both arms play the same `prx` angles and timing; not compiled here |
+| Quantum Inspire Tuna-17 | native `Rz`, angles quantized to multiples of pi/36 ([quantum_inspire/README.md](../notes/quantum_inspire/README.md)) | every angle 2 gamma c_S = n pi/36 with integer n (gamma = pi/9, c_S in Z/8), so quantization adds no offset |
+
+The Tuna guide does not state whether `Rz` is a frame change or a pulse. A
+question about that is a single-qubit Ramsey with a swept `Rz`, which answers
+it more directly than an eight-CNOT network, so it is no primorial case
+either. A hardware case for these circuits reopens only on a platform whose
+compiled signal and null arms differ in physical pulses, or on a coherent
+family whose null-subtracted residual reaches the budget's standard
+deviation. Tilt at the gate-error bound is the nearest such family: its
+residual grows as the square of the tilt and so in proportion to the sx
+error, and reaches the threshold on a path whose sx errors exceed these by
+17 percent (median path) to 28 percent (best path). Such a case states the
+platform, the path, the family and its expected seconds or credits and
+follows the approval flow of AGENTS.md (QPU
+time and calibration, Hardware services). The Quantum Inspire QX and Ry
+emulators would add an interface check only: both are provider jobs that
+need an approved case, and Ry puts qubit 0 at the leftmost character of its
+result strings ([quantum_inspire/README.md](../notes/quantum_inspire/README.md)).

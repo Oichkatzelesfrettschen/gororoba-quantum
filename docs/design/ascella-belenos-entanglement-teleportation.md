@@ -40,10 +40,13 @@ their counts: pairing two output files by row is classical data association.
 Every cross-device level needs a shared entangled resource or a physical
 quantum path that creates one, which only the provider can supply. The
 inspected access exposes two one-platform QPUs and no joint platform, port
-map or interconnect; the March 2026 roadmap targets scaling through modular,
-high-speed optical networking in 2028-2029 and names no Ascella or Belenos
-link ([roadmap note](../notes/quandela/roadmap-2026-03.md)), which makes it
-development context, not access.
+map or interconnect. The March 2026 roadmap dates quantum-networking scaling
+to 2028-2029 (pp. 2 and 6), opens a networking band in its 2027 column
+(p. 5), places its one interconnect hardware cell, modular scaling via
+interconnected cabinets, in 2030-31 (p. 6), and names Ascella and Belenos only
+in single-photon and cluster-state product cells (pp. 4-6)
+([roadmap note](../notes/quandela/roadmap-2026-03.md)); it is development
+context, and access needs a provider record.
 
 ## Evidence baseline
 
@@ -258,8 +261,9 @@ A fixed Clifford operation may act before the frame bits arrive when the
 frame propagates through it; only a branch-dependent operation needs fast
 feed-forward. A published all-photonic teleportation between two dissimilar quantum-dot
 sources used fiber and free-space links, strain and magnetic-field tuning,
-synchronization and terminal detection, with no stationary memory
-([2411.12387](../notes/papers/2411.12387.md)).
+synchronization and terminal detection, so its demonstrated output level is
+O0 ([2411.12387](../notes/papers/2411.12387.md); the memoryless reading is
+inferred from the apparatus the paper describes).
 
 ## Work packages
 
@@ -270,8 +274,8 @@ synchronization and terminal detection, with no stationary memory
 | WP02 replay decisions | Covered by gates | The nightly audit replays the retained Ascella and Belenos records against their pinned runtimes. |
 | WP03 Ascella outside-block decomposition | Done before this design | [Conformance design](ascella-signed-coherence-conformance.md) and the job-00 README. |
 | WP04 Belenos diagnostics | Done for the drift series; predecessor intervention drafted | [bdsc-qualification.md](bdsc-qualification.md), [evidence-closure.md](../runbooks/evidence-closure.md). |
-| WP05 observation contract | Blocked on provider answers | [provider_contract.json](../evidence/bdsc/provider_contract.json) rows and the request below. |
-| WP06 physical access | Blocked on provider answers | Request below; sending it is the owner's decision. |
+| WP05 observation contract | Waits on the provider answer | [provider_contract.json](../evidence/bdsc/provider_contract.json) rows; request items 2 and 3 are [Perceval issue 798](https://github.com/Quandela/Perceval/issues/798). |
+| WP06 physical access | Waits on the provider answer | Request items 1 and 4, through the Quandela contact form. |
 | WP07 protocol model | Done | `scripts/qd_network_protocol.py` and its test. |
 | WP08 records and analysis | Partly done | Witness, certified classical benchmark and joint-histogram scoring exist; a provider record parser waits on WP05. |
 | WP09 to WP16 | Blocked on G1 and G2 | Every step needs a physical joint apparatus and admitted cases. |
@@ -282,7 +286,17 @@ network case exists for the first, and Perceval 1.3.1's
 `RemoteProcessor.__init__` takes one platform `name`, so a joint job has no
 client interface for the second.
 
-## Provider request (unsent)
+## Provider request
+
+The request splits by channel. Items 2 and 3 concern the open-source client's
+result contract and went to Quandela on 2026-10-25 at 18:33 UTC as
+[Quandela/Perceval issue 798](https://github.com/Quandela/Perceval/issues/798),
+with the papers, Perceval sources and retained measurements behind each
+question cited inline. Items 1 and 4 concern the installations and go through
+the Quandela contact form under the Research Collaboration subject, which the
+owner submits under their own name; the plan record dates that submission.
+Each answer enters this design dated, with the platform and version it
+covers.
 
 Identify whether the physical installations exposed as `qpu:ascella` and
 `qpu:belenos` support one coordinated experiment with coherent optical routing
