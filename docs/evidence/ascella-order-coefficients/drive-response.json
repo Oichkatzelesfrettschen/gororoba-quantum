@@ -1,0 +1,2543 @@
+{
+ "configurations": 30,
+ "families": [
+  {
+   "basis": {
+    "kind": "polynomial",
+    "order": 1,
+    "parameters": 252,
+    "tau": 0.3
+   },
+   "coefficient_rms": [
+    0.0965074517705358,
+    0.05623398548235794
+   ],
+   "explains_analyzer_response": true,
+   "family": "drive_polynomial_1_tau_0.3",
+   "folds": [
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 2,
+     "lowest_hessian_eigenvalue": 6.611627332354784,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -5.9079299669264,
+       "counting_variance": 3.300039936984179e-05,
+       "observed": -0.03607758893030896,
+       "predicted": -0.0021389097608817214,
+       "prediction_variance": 0.008035049116461164,
+       "readout": "x",
+       "standardized_residual": -0.3778423719453318
+      },
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -4.082144881026578,
+       "counting_variance": 3.229994873094155e-05,
+       "observed": -0.025610667996011964,
+       "predicted": -0.0024105960940496293,
+       "prediction_variance": 0.008053064192362758,
+       "readout": "y",
+       "standardized_residual": -0.2580117823302225
+      }
+     ],
+     "training_objective": 398811.8347750339
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 3,
+     "lowest_hessian_eigenvalue": 4.108675225145517,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm1",
+        "theta0-x-arm2"
+       ],
+       "counting_residual": 0.37346757384562757,
+       "counting_variance": 3.169202250181551e-05,
+       "observed": -0.003946232581082748,
+       "predicted": -0.006048693240528573,
+       "prediction_variance": 2.87797448953685e-05,
+       "readout": "x",
+       "standardized_residual": 0.27036567095624175
+      }
+     ],
+     "training_objective": 415423.38892416714
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 4,
+     "lowest_hessian_eigenvalue": 6.778378124841458,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-y-arm1",
+        "theta0-y-arm2"
+       ],
+       "counting_residual": -1.8086433898603436,
+       "counting_variance": 3.203260878548573e-05,
+       "observed": -0.009611156479678373,
+       "predicted": 0.0006252871770150253,
+       "prediction_variance": 2.6938650354022052e-05,
+       "readout": "y",
+       "standardized_residual": -1.3329961648937179
+      }
+     ],
+     "training_objective": 415745.8091713235
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 7,
+     "lowest_hessian_eigenvalue": 4.1366262032782055,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm0",
+        "theta1-x-arm3"
+       ],
+       "counting_residual": -16.332728426065724,
+       "counting_variance": 3.580850611620879e-05,
+       "observed": 0.27968596663395484,
+       "predicted": 0.3774213548685017,
+       "prediction_variance": 0.000514466565643301,
+       "readout": "x",
+       "standardized_residual": -4.166409213112692
+      }
+     ],
+     "training_objective": 415409.51302200515
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 8,
+     "lowest_hessian_eigenvalue": 8.174614426467862,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm1",
+        "theta1-x-arm2"
+       ],
+       "counting_residual": 2.7431866184980858,
+       "counting_variance": 3.5177258325205945e-05,
+       "observed": -0.3095208845208845,
+       "predicted": -0.32579083936539965,
+       "prediction_variance": 9.935191533074623e-05,
+       "readout": "x",
+       "standardized_residual": 1.4027430005496646
+      }
+     ],
+     "training_objective": 415848.0539041933
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 9,
+     "lowest_hessian_eigenvalue": 3.7165574135644683,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm0",
+        "theta1-y-arm3"
+       ],
+       "counting_residual": 0.7009551206205605,
+       "counting_variance": 2.7034332571041716e-05,
+       "observed": 0.4676428615747347,
+       "predicted": 0.463998276949578,
+       "prediction_variance": 1.731029890112006e-05,
+       "readout": "y",
+       "standardized_residual": 0.5473026030770889
+      }
+     ],
+     "training_objective": 417721.35647029546
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 10,
+     "lowest_hessian_eigenvalue": 6.289032903747949,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm1",
+        "theta1-y-arm2"
+       ],
+       "counting_residual": 5.188783430339472,
+       "counting_variance": 2.8199647665366832e-05,
+       "observed": -0.4650021471075394,
+       "predicted": -0.4925563204077905,
+       "prediction_variance": 0.00036920932650427816,
+       "readout": "y",
+       "standardized_residual": 1.3821925587651713
+      }
+     ],
+     "training_objective": 417447.2135067128
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 13,
+     "lowest_hessian_eigenvalue": 4.716032116129336,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm0",
+        "theta2-x-arm3"
+       ],
+       "counting_residual": -7.439141033798378,
+       "counting_variance": 1.0221002138701084e-05,
+       "observed": 0.8812511706312044,
+       "predicted": 0.9050343292236787,
+       "prediction_variance": 0.0001276885033266061,
+       "readout": "x",
+       "standardized_residual": -2.025221043229219
+      }
+     ],
+     "training_objective": 426744.215043347
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 14,
+     "lowest_hessian_eigenvalue": 5.053394373929465,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm1",
+        "theta2-x-arm2"
+       ],
+       "counting_residual": -7.873514697110887,
+       "counting_variance": 9.562411856591194e-06,
+       "observed": -0.8886978942844864,
+       "predicted": -0.8643505069418586,
+       "prediction_variance": 0.0005483415179548745,
+       "readout": "x",
+       "standardized_residual": -1.030795834137735
+      }
+     ],
+     "training_objective": 426954.79553916067
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 15,
+     "lowest_hessian_eigenvalue": 8.046978301484007,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm0",
+        "theta2-y-arm3"
+       ],
+       "counting_residual": -1.6953492546227145,
+       "counting_variance": 5.298874774917014e-05,
+       "observed": 0.27213174972450105,
+       "predicted": 0.2844727683502573,
+       "prediction_variance": 6.357849936962697e-05,
+       "readout": "y",
+       "standardized_residual": -1.14304344560987
+      }
+     ],
+     "training_objective": 418814.20547063637
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 16,
+     "lowest_hessian_eigenvalue": 7.315758851671144,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm1",
+        "theta2-y-arm2"
+       ],
+       "counting_residual": 6.809476270575043,
+       "counting_variance": 5.328475779541799e-05,
+       "observed": -0.276798825256975,
+       "predicted": -0.3265055569948008,
+       "prediction_variance": 0.004360074316006275,
+       "readout": "y",
+       "standardized_residual": 0.7482221783388121
+      }
+     ],
+     "training_objective": 418882.1580720189
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 19,
+     "lowest_hessian_eigenvalue": 5.310257296511708,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm0",
+        "theta3-x-arm3"
+       ],
+       "counting_residual": -8.743604012276348,
+       "counting_variance": 8.534897542606267e-06,
+       "observed": 0.8948014484748051,
+       "predicted": 0.9203454914791666,
+       "prediction_variance": 0.0001940098149816565,
+       "readout": "x",
+       "standardized_residual": -1.7948542243311054
+      }
+     ],
+     "training_objective": 427081.6294855823
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 20,
+     "lowest_hessian_eigenvalue": 6.234432698303014,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm1",
+        "theta3-x-arm2"
+       ],
+       "counting_residual": -0.8991384229192763,
+       "counting_variance": 9.674448652864511e-06,
+       "observed": -0.8862290380898946,
+       "predicted": -0.8834323781033215,
+       "prediction_variance": 5.2091289200424404e-05,
+       "readout": "x",
+       "standardized_residual": -0.35584908366088974
+      }
+     ],
+     "training_objective": 426888.7517008385
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 21,
+     "lowest_hessian_eigenvalue": 3.938837040868893,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm0",
+        "theta3-y-arm3"
+       ],
+       "counting_residual": 0.20580371877273618,
+       "counting_variance": 5.462350823638745e-05,
+       "observed": -0.3016324981017464,
+       "predicted": -0.30315354642886744,
+       "prediction_variance": 4.858816225181006e-05,
+       "readout": "y",
+       "standardized_residual": 0.14971958311775524
+      }
+     ],
+     "training_objective": 419880.20567660255
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 22,
+     "lowest_hessian_eigenvalue": 5.421174566153776,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm1",
+        "theta3-y-arm2"
+       ],
+       "counting_residual": 0.6741405001130742,
+       "counting_variance": 5.470782767265712e-05,
+       "observed": 0.2593071992110454,
+       "predicted": 0.25432093652779003,
+       "prediction_variance": 9.178525570607665e-05,
+       "readout": "y",
+       "standardized_residual": 0.41197095092786307
+      }
+     ],
+     "training_objective": 419304.266335859
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 25,
+     "lowest_hessian_eigenvalue": 2.474023793748057,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm0",
+        "theta4-x-arm3"
+       ],
+       "counting_residual": -5.784710611515505,
+       "counting_variance": 3.381557350147348e-05,
+       "observed": 0.32277433980760983,
+       "predicted": 0.3564131027455598,
+       "prediction_variance": 0.0002642463713112521,
+       "readout": "x",
+       "standardized_residual": -1.948438717493179
+      }
+     ],
+     "training_objective": 415950.75404716673
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 26,
+     "lowest_hessian_eigenvalue": 6.493121417174226,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm1",
+        "theta4-x-arm2"
+       ],
+       "counting_residual": 1.2641548573921229,
+       "counting_variance": 3.433337541148196e-05,
+       "observed": -0.3195666892349357,
+       "predicted": -0.3269739652657697,
+       "prediction_variance": 0.00021193087763953961,
+       "readout": "x",
+       "standardized_residual": 0.4720172181905347
+      }
+     ],
+     "training_objective": 415965.6042557602
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 27,
+     "lowest_hessian_eigenvalue": 5.357153932226267,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm0",
+        "theta4-y-arm3"
+       ],
+       "counting_residual": 5.72494449031512,
+       "counting_variance": 2.7805272129422883e-05,
+       "observed": -0.4689157518194153,
+       "predicted": -0.49910378752536855,
+       "prediction_variance": 0.00036542668876312273,
+       "readout": "y",
+       "standardized_residual": 1.5223357647428497
+      }
+     ],
+     "training_objective": 417589.3419032256
+    },
+    {
+     "family": "drive_polynomial_1_tau_0.3",
+     "left_out": 28,
+     "lowest_hessian_eigenvalue": 5.842074831422083,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm1",
+        "theta4-y-arm2"
+       ],
+       "counting_residual": -9.756878613534793,
+       "counting_variance": 2.8159182412948332e-05,
+       "observed": 0.4628600303183426,
+       "predicted": 0.5146351274702611,
+       "prediction_variance": 0.00010958879480847921,
+       "readout": "y",
+       "standardized_residual": -4.411418980332754
+      }
+     ],
+     "training_objective": 417900.7156738213
+    }
+   ],
+   "held_out": {
+    "direct": {
+     "dof": 10,
+     "p": 0.01749577147991016,
+     "residual_correlation": 0.935815182107743,
+     "statistic": 21.56242137868403
+    },
+    "x": {
+     "dof": 10,
+     "p": 0.8641782594215079,
+     "residual_correlation": 0.9941351668566056,
+     "statistic": 5.382891275539205
+    },
+    "y": {
+     "dof": 10,
+     "p": 0.3767509924294933,
+     "residual_correlation": 0.9639101641645843,
+     "statistic": 10.757121478071136
+    }
+   },
+   "job_00_gain_over_nominal": 1169.2948714790982,
+   "job_00_in_sample": {
+    "direct": {
+     "configurations": 10,
+     "statistic": 5.61643985334307
+    },
+    "x": {
+     "configurations": 10,
+     "statistic": 3.660001923669623
+    },
+    "y": {
+     "configurations": 10,
+     "statistic": 5.687038398793341
+    }
+   },
+   "job_00_log_likelihood": -432541.51696011657,
+   "job_00_relation": -0.025604319810709375,
+   "job_01_relation": -0.025791810807946125,
+   "preregistered": false,
+   "reading": {
+    "x": "shortfall",
+    "y": "between the thresholds"
+   },
+   "summary": {
+    "x": {
+     "configurations": 10,
+     "counting_sum": 538.9792835822204,
+     "median_variance_ratio": 10.153548601504353,
+     "standardized_sum": 32.07392038342075
+    },
+    "y": {
+     "configurations": 10,
+     "counting_sum": 225.06157576513652,
+     "median_variance_ratio": 2.784747936010871,
+     "standardized_sum": 27.89008962962574
+    }
+   }
+  },
+  {
+   "basis": {
+    "kind": "polynomial",
+    "order": 2,
+    "parameters": 378,
+    "tau": 0.3
+   },
+   "coefficient_rms": [
+    0.030245392767754613,
+    0.031916096090897114,
+    0.043526941371815134
+   ],
+   "explains_analyzer_response": true,
+   "family": "drive_polynomial_2_tau_0.3",
+   "folds": [
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 2,
+     "lowest_hessian_eigenvalue": 4.633750684053851,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -1.2086802741223068,
+       "counting_variance": 3.300039936984179e-05,
+       "observed": -0.03607758893030896,
+       "predicted": -0.02913420736155392,
+       "prediction_variance": 0.012721024797209131,
+       "readout": "x",
+       "standardized_residual": -0.06148191652603848
+      },
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": 0.6731068859706982,
+       "counting_variance": 3.229994873094155e-05,
+       "observed": -0.025610667996011964,
+       "predicted": -0.029436139312527074,
+       "prediction_variance": 0.012749546119723301,
+       "readout": "y",
+       "standardized_residual": 0.033836712274976824
+      }
+     ],
+     "training_objective": 398799.5044197385
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 3,
+     "lowest_hessian_eigenvalue": 3.8008034639380366,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm1",
+        "theta0-x-arm2"
+       ],
+       "counting_residual": 1.0219495805993666,
+       "counting_variance": 3.169202250181551e-05,
+       "observed": -0.003946232581082748,
+       "predicted": -0.009699366024564653,
+       "prediction_variance": 3.1639019254221156e-05,
+       "readout": "x",
+       "standardized_residual": 0.7229298072482317
+      }
+     ],
+     "training_objective": 415407.80521691975
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 4,
+     "lowest_hessian_eigenvalue": 3.349839015478298,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-y-arm1",
+        "theta0-y-arm2"
+       ],
+       "counting_residual": -1.0964875789463406,
+       "counting_variance": 3.203260878548573e-05,
+       "observed": -0.009611156479678373,
+       "predicted": -0.003405326527199431,
+       "prediction_variance": 3.111567109675633e-05,
+       "readout": "y",
+       "standardized_residual": -0.7809425903150556
+      }
+     ],
+     "training_objective": 415730.85634281713
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 7,
+     "lowest_hessian_eigenvalue": 1.997044227887822,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm0",
+        "theta1-x-arm3"
+       ],
+       "counting_residual": -9.200583073909012,
+       "counting_variance": 3.580850611620879e-05,
+       "observed": 0.27968596663395484,
+       "predicted": 0.33474244802855213,
+       "prediction_variance": 0.003951955342863659,
+       "readout": "x",
+       "standardized_residual": -0.8718539442568184
+      }
+     ],
+     "training_objective": 415399.4607126214
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 8,
+     "lowest_hessian_eigenvalue": 4.201779167606249,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm1",
+        "theta1-x-arm2"
+       ],
+       "counting_residual": 3.2443893273092708,
+       "counting_variance": 3.5177258325205945e-05,
+       "observed": -0.3095208845208845,
+       "predicted": -0.3287634936446668,
+       "prediction_variance": 0.0004769931218605032,
+       "readout": "x",
+       "standardized_residual": 0.8502697504664831
+      }
+     ],
+     "training_objective": 415835.58485028025
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 9,
+     "lowest_hessian_eigenvalue": 6.422560505537717,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm0",
+        "theta1-y-arm3"
+       ],
+       "counting_residual": 0.5057842349514858,
+       "counting_variance": 2.7034332571041716e-05,
+       "observed": 0.4676428615747347,
+       "predicted": 0.46501305919206737,
+       "prediction_variance": 4.294952102337258e-05,
+       "readout": "y",
+       "standardized_residual": 0.31435776189921466
+      }
+     ],
+     "training_objective": 417706.3353774783
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 10,
+     "lowest_hessian_eigenvalue": 6.06734034765691,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm1",
+        "theta1-y-arm2"
+       ],
+       "counting_residual": 0.03468247470634309,
+       "counting_variance": 2.8199647665366832e-05,
+       "observed": -0.4650021471075394,
+       "predicted": -0.4651863226337239,
+       "prediction_variance": 0.002190752212205808,
+       "readout": "y",
+       "standardized_residual": 0.003909830940953767
+      }
+     ],
+     "training_objective": 417435.0698429372
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 13,
+     "lowest_hessian_eigenvalue": 2.5623699157999504,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm0",
+        "theta2-x-arm3"
+       ],
+       "counting_residual": -9.451620965452614,
+       "counting_variance": 1.0221002138701084e-05,
+       "observed": 0.8812511706312044,
+       "predicted": 0.9114682883543427,
+       "prediction_variance": 0.0007142979721979975,
+       "readout": "x",
+       "standardized_residual": -1.1226080567189824
+      }
+     ],
+     "training_objective": 426734.28155071917
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 14,
+     "lowest_hessian_eigenvalue": 4.69175952021569,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm1",
+        "theta2-x-arm2"
+       ],
+       "counting_residual": 13.528359033427643,
+       "counting_variance": 9.562411856591194e-06,
+       "observed": -0.8886978942844864,
+       "predicted": -0.9305318414056958,
+       "prediction_variance": 0.00177057301960315,
+       "readout": "x",
+       "standardized_residual": 0.9915219226025744
+      }
+     ],
+     "training_objective": 426940.1627118874
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 15,
+     "lowest_hessian_eigenvalue": 4.321295833377082,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm0",
+        "theta2-y-arm3"
+       ],
+       "counting_residual": -2.52462571763698,
+       "counting_variance": 5.298874774917014e-05,
+       "observed": 0.27213174972450105,
+       "predicted": 0.29050935122429045,
+       "prediction_variance": 0.00012283483847877564,
+       "readout": "y",
+       "standardized_residual": -1.3859586172140457
+      }
+     ],
+     "training_objective": 418801.5898833629
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 16,
+     "lowest_hessian_eigenvalue": 1.8839532406237869,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm1",
+        "theta2-y-arm2"
+       ],
+       "counting_residual": 3.6120546508515967,
+       "counting_variance": 5.328475779541799e-05,
+       "observed": -0.276798825256975,
+       "predicted": -0.303165527249621,
+       "prediction_variance": 0.0170907123489692,
+       "readout": "y",
+       "standardized_residual": 0.20137231753980206
+      }
+     ],
+     "training_objective": 418869.5471858388
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 19,
+     "lowest_hessian_eigenvalue": 2.694689988643574,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm0",
+        "theta3-x-arm3"
+       ],
+       "counting_residual": -3.680727140828863,
+       "counting_variance": 8.534897542606267e-06,
+       "observed": 0.8948014484748051,
+       "predicted": 0.9055545260662244,
+       "prediction_variance": 0.00022137709557856536,
+       "readout": "x",
+       "standardized_residual": -0.7091726306631569
+      }
+     ],
+     "training_objective": 427069.00910921575
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 20,
+     "lowest_hessian_eigenvalue": 1.2542459689374115,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm1",
+        "theta3-x-arm2"
+       ],
+       "counting_residual": 5.987069347991034,
+       "counting_variance": 9.674448652864511e-06,
+       "observed": -0.8862290380898946,
+       "predicted": -0.9048510843238903,
+       "prediction_variance": 0.0001274745638728937,
+       "readout": "x",
+       "standardized_residual": 1.5901242399701556
+      }
+     ],
+     "training_objective": 426875.43453559733
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 21,
+     "lowest_hessian_eigenvalue": 1.2953989916263264,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm0",
+        "theta3-y-arm3"
+       ],
+       "counting_residual": 0.03218748388540418,
+       "counting_variance": 5.462350823638745e-05,
+       "observed": -0.3016324981017464,
+       "predicted": -0.3018703884509106,
+       "prediction_variance": 0.00025719225852376056,
+       "readout": "y",
+       "standardized_residual": 0.013471867046660535
+      }
+     ],
+     "training_objective": 419863.742159055
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 22,
+     "lowest_hessian_eigenvalue": 3.5469322060247657,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm1",
+        "theta3-y-arm2"
+       ],
+       "counting_residual": -1.3515697285731005,
+       "counting_variance": 5.470782767265712e-05,
+       "observed": 0.2593071992110454,
+       "predicted": 0.2693040495712763,
+       "prediction_variance": 0.0004024547779014232,
+       "readout": "y",
+       "standardized_residual": -0.46754976354126837
+      }
+     ],
+     "training_objective": 419288.92016505636
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 25,
+     "lowest_hessian_eigenvalue": 2.855707720482832,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm0",
+        "theta4-x-arm3"
+       ],
+       "counting_residual": 1.3258341545591807,
+       "counting_variance": 3.381557350147348e-05,
+       "observed": 0.32277433980760983,
+       "predicted": 0.31506446046957165,
+       "prediction_variance": 0.00024543324335127314,
+       "readout": "x",
+       "standardized_residual": 0.4613727182718987
+      }
+     ],
+     "training_objective": 415936.0291472494
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 26,
+     "lowest_hessian_eigenvalue": 7.366539213753324,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm1",
+        "theta4-x-arm2"
+       ],
+       "counting_residual": -2.1960719067115155,
+       "counting_variance": 3.433337541148196e-05,
+       "observed": -0.3195666892349357,
+       "predicted": -0.3066988742663409,
+       "prediction_variance": 0.001305098018230876,
+       "readout": "x",
+       "standardized_residual": -0.35159652211717046
+      }
+     ],
+     "training_objective": 415951.2229144852
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 27,
+     "lowest_hessian_eigenvalue": 2.898796408890849,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm0",
+        "theta4-y-arm3"
+       ],
+       "counting_residual": 8.208971396010146,
+       "counting_variance": 2.7805272129422883e-05,
+       "observed": -0.4689157518194153,
+       "predicted": -0.512202236436188,
+       "prediction_variance": 0.002114491295803978,
+       "readout": "y",
+       "standardized_residual": 0.9352172770069157
+      }
+     ],
+     "training_objective": 417576.7676708201
+    },
+    {
+     "family": "drive_polynomial_2_tau_0.3",
+     "left_out": 28,
+     "lowest_hessian_eigenvalue": 3.598789236992529,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm1",
+        "theta4-y-arm2"
+       ],
+       "counting_residual": -1.864568753824069,
+       "counting_variance": 2.8159182412948332e-05,
+       "observed": 0.4628600303183426,
+       "predicted": 0.4727544066039873,
+       "prediction_variance": 0.0010399412803245066,
+       "readout": "y",
+       "standardized_residual": -0.30274875862669337
+      }
+     ],
+     "training_objective": 417893.8837281851
+    }
+   ],
+   "held_out": {
+    "direct": {
+     "dof": 10,
+     "p": 0.009222180395574516,
+     "residual_correlation": 0.9254811751651408,
+     "statistic": 23.443686136678718
+    },
+    "x": {
+     "dof": 10,
+     "p": 0.9470462448264176,
+     "residual_correlation": 0.9942865930671306,
+     "statistic": 4.006655432403066
+    },
+    "y": {
+     "dof": 10,
+     "p": 0.5286417779423093,
+     "residual_correlation": 0.9632420398560956,
+     "statistic": 9.036514327478418
+    }
+   },
+   "job_00_gain_over_nominal": 1179.0357813318842,
+   "job_00_in_sample": {
+    "direct": {
+     "configurations": 10,
+     "statistic": 1.694867914609679
+    },
+    "x": {
+     "configurations": 10,
+     "statistic": 1.2367406512618917
+    },
+    "y": {
+     "configurations": 10,
+     "statistic": 1.9389593132461482
+    }
+   },
+   "job_00_log_likelihood": -432531.7760502638,
+   "job_00_relation": -0.02704569710610316,
+   "job_01_relation": -0.027232572079509465,
+   "preregistered": false,
+   "reading": {
+    "x": "weakly identified",
+    "y": "weakly identified"
+   },
+   "summary": {
+    "x": {
+     "configurations": 10,
+     "counting_sum": 426.00503665703684,
+     "median_variance_ratio": 31.975195438295735,
+     "standardized_sum": 7.62076587110692
+    },
+    "y": {
+     "configurations": 10,
+     "counting_sum": 94.0246570555585,
+     "median_variance_ratio": 22.143621925289864,
+     "standardized_sum": 3.856356879262512
+    }
+   }
+  },
+  {
+   "basis": {
+    "kind": "harmonic",
+    "order": 1,
+    "parameters": 378,
+    "tau": 0.3
+   },
+   "coefficient_rms": [
+    0.024680262400645865,
+    0.031440113308009325,
+    0.02643220057108148
+   ],
+   "explains_analyzer_response": true,
+   "family": "drive_harmonic_1_tau_0.3",
+   "folds": [
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 2,
+     "lowest_hessian_eigenvalue": 4.679097768605287,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -2.021504901283353,
+       "counting_variance": 3.300039936984179e-05,
+       "observed": -0.03607758893030896,
+       "predicted": -0.024464857115924693,
+       "prediction_variance": 0.01626482780293182,
+       "readout": "x",
+       "standardized_residual": -0.0909639956485951
+      },
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -0.14940436523716158,
+       "counting_variance": 3.229994873094155e-05,
+       "observed": -0.025610667996011964,
+       "predicted": -0.024761557511942738,
+       "prediction_variance": 0.01630129455044628,
+       "readout": "y",
+       "standardized_residual": -0.006643903539318052
+      }
+     ],
+     "training_objective": 398797.27976509
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 3,
+     "lowest_hessian_eigenvalue": 5.013160583559212,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm1",
+        "theta0-x-arm2"
+       ],
+       "counting_residual": 1.0849764912871194,
+       "counting_variance": 3.169202250181551e-05,
+       "observed": -0.003946232581082748,
+       "predicted": -0.010054180229297136,
+       "prediction_variance": 3.186836752088021e-05,
+       "readout": "x",
+       "standardized_residual": 0.7661292248125455
+      }
+     ],
+     "training_objective": 415405.3559422281
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 4,
+     "lowest_hessian_eigenvalue": 4.413128944075271,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-y-arm1",
+        "theta0-y-arm2"
+       ],
+       "counting_residual": -1.044899386940762,
+       "counting_variance": 3.203260878548573e-05,
+       "observed": -0.009611156479678373,
+       "predicted": -0.0036973020618882024,
+       "prediction_variance": 3.1407129035425465e-05,
+       "readout": "y",
+       "standardized_residual": -0.7424888555964075
+      }
+     ],
+     "training_objective": 415728.44279471773
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 7,
+     "lowest_hessian_eigenvalue": 1.8545650227633634,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm0",
+        "theta1-x-arm3"
+       ],
+       "counting_residual": -10.008973480218007,
+       "counting_variance": 3.580850611620879e-05,
+       "observed": 0.27968596663395484,
+       "predicted": 0.33957987311422255,
+       "prediction_variance": 0.005306611450725419,
+       "readout": "x",
+       "standardized_residual": -0.8194333365225115
+      }
+     ],
+     "training_objective": 415397.8595622173
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 8,
+     "lowest_hessian_eigenvalue": 5.0294697125356205,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm1",
+        "theta1-x-arm2"
+       ],
+       "counting_residual": 2.979276293614883,
+       "counting_variance": 3.5177258325205945e-05,
+       "observed": -0.3095208845208845,
+       "predicted": -0.3271910971267581,
+       "prediction_variance": 0.0010083240134324538,
+       "readout": "x",
+       "standardized_residual": 0.5470100223431333
+      }
+     ],
+     "training_objective": 415833.37558071624
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 9,
+     "lowest_hessian_eigenvalue": 3.1475222177555437,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm0",
+        "theta1-y-arm3"
+       ],
+       "counting_residual": 0.5985567905056344,
+       "counting_variance": 2.7034332571041716e-05,
+       "observed": 0.4676428615747347,
+       "predicted": 0.46453069246178397,
+       "prediction_variance": 6.384566390149412e-05,
+       "readout": "y",
+       "standardized_residual": 0.3264592942675589
+      }
+     ],
+     "training_objective": 417704.62810708245
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 10,
+     "lowest_hessian_eigenvalue": 4.018263881394248,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm1",
+        "theta1-y-arm2"
+       ],
+       "counting_residual": -3.821586500564715,
+       "counting_variance": 2.8199647665366832e-05,
+       "observed": -0.4650021471075394,
+       "predicted": -0.4447082462091604,
+       "prediction_variance": 0.002460946226157713,
+       "readout": "y",
+       "standardized_residual": -0.40676198767077026
+      }
+     ],
+     "training_objective": 417432.7904660666
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 13,
+     "lowest_hessian_eigenvalue": 3.6483242344448517,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm0",
+        "theta2-x-arm3"
+       ],
+       "counting_residual": -11.738527317037915,
+       "counting_variance": 1.0221002138701084e-05,
+       "observed": 0.8812511706312044,
+       "predicted": 0.9187795970388776,
+       "prediction_variance": 0.001979021871245756,
+       "readout": "x",
+       "standardized_residual": -0.841427010493525
+      }
+     ],
+     "training_objective": 426732.3008650084
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 14,
+     "lowest_hessian_eigenvalue": 2.4882414361659997,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm1",
+        "theta2-x-arm2"
+       ],
+       "counting_residual": 8.979872747157955,
+       "counting_variance": 9.562411856591194e-06,
+       "observed": -0.8886978942844864,
+       "predicted": -0.9164664891843968,
+       "prediction_variance": 0.0032590270536883717,
+       "readout": "x",
+       "standardized_residual": 0.485706277486932
+      }
+     ],
+     "training_objective": 426938.01460118906
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 15,
+     "lowest_hessian_eigenvalue": 7.509143768064002,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm0",
+        "theta2-y-arm3"
+       ],
+       "counting_residual": -2.5812579725240354,
+       "counting_variance": 5.298874774917014e-05,
+       "observed": 0.27213174972450105,
+       "predicted": 0.29092159649497673,
+       "prediction_variance": 0.0001196622867466562,
+       "readout": "y",
+       "standardized_residual": -1.430008589225727
+      }
+     ],
+     "training_objective": 418799.66372600826
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 16,
+     "lowest_hessian_eigenvalue": 4.402936220389104,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm1",
+        "theta2-y-arm2"
+       ],
+       "counting_residual": 2.61795898800303,
+       "counting_variance": 5.328475779541799e-05,
+       "observed": -0.276798825256975,
+       "predicted": -0.29590898585473085,
+       "prediction_variance": 0.029343205267711437,
+       "readout": "y",
+       "standardized_residual": 0.1114593735142054
+      }
+     ],
+     "training_objective": 418867.57587706565
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 19,
+     "lowest_hessian_eigenvalue": 4.4535982680806825,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm0",
+        "theta3-x-arm3"
+       ],
+       "counting_residual": 2.1071421849776915,
+       "counting_variance": 8.534897542606267e-06,
+       "observed": 0.8948014484748051,
+       "predicted": 0.8886455280427039,
+       "prediction_variance": 0.0035463603711081847,
+       "readout": "x",
+       "standardized_residual": 0.10324751139733382
+      }
+     ],
+     "training_objective": 427067.41155161493
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 20,
+     "lowest_hessian_eigenvalue": 1.59191438336092,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm1",
+        "theta3-x-arm2"
+       ],
+       "counting_residual": 4.559519514531167,
+       "counting_variance": 9.674448652864511e-06,
+       "observed": -0.8862290380898946,
+       "predicted": -0.9004108653361241,
+       "prediction_variance": 0.0004521655266243343,
+       "readout": "x",
+       "standardized_residual": 0.6599126144985012
+      }
+     ],
+     "training_objective": 426874.06220095383
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 21,
+     "lowest_hessian_eigenvalue": 6.836668598789411,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm0",
+        "theta3-y-arm3"
+       ],
+       "counting_residual": 0.3243218786415898,
+       "counting_variance": 5.462350823638745e-05,
+       "observed": -0.3016324981017464,
+       "predicted": -0.3040294871061156,
+       "prediction_variance": 0.0006481476659845241,
+       "readout": "y",
+       "standardized_residual": 0.09041886933983335
+      }
+     ],
+     "training_objective": 419862.40465551167
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 22,
+     "lowest_hessian_eigenvalue": 2.971108694974042,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm1",
+        "theta3-y-arm2"
+       ],
+       "counting_residual": -1.4327858101094368,
+       "counting_variance": 5.470782767265712e-05,
+       "observed": 0.2593071992110454,
+       "predicted": 0.2699047622069612,
+       "prediction_variance": 0.00047790205057451446,
+       "readout": "y",
+       "standardized_residual": -0.4591994913925772
+      }
+     ],
+     "training_objective": 419288.2150589887
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 25,
+     "lowest_hessian_eigenvalue": 6.025729516664728,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm0",
+        "theta4-x-arm3"
+       ],
+       "counting_residual": 1.0406146105346927,
+       "counting_variance": 3.381557350147348e-05,
+       "observed": 0.32277433980760983,
+       "predicted": 0.3167230451890234,
+       "prediction_variance": 0.0005007798269956297,
+       "readout": "x",
+       "standardized_residual": 0.26171926316971716
+      }
+     ],
+     "training_objective": 415933.55815526465
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 26,
+     "lowest_hessian_eigenvalue": 3.7730663250756677,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm1",
+        "theta4-x-arm2"
+       ],
+       "counting_residual": -5.178856228844213,
+       "counting_variance": 3.433337541148196e-05,
+       "observed": -0.3195666892349357,
+       "predicted": -0.2892213423917569,
+       "prediction_variance": 0.002069333582920783,
+       "readout": "x",
+       "standardized_residual": -0.6616123645649502
+      }
+     ],
+     "training_objective": 415949.5529877794
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 27,
+     "lowest_hessian_eigenvalue": 2.2004199400033966,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm0",
+        "theta4-y-arm3"
+       ],
+       "counting_residual": 8.397781620433317,
+       "counting_variance": 2.7805272129422883e-05,
+       "observed": -0.4689157518194153,
+       "predicted": -0.513197846054094,
+       "prediction_variance": 0.009327236729852492,
+       "readout": "y",
+       "standardized_residual": 0.45783108989409294
+      }
+     ],
+     "training_objective": 417574.49733787606
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.3",
+     "left_out": 28,
+     "lowest_hessian_eigenvalue": 6.39687005962436,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm1",
+        "theta4-y-arm2"
+       ],
+       "counting_residual": -0.5946969387384007,
+       "counting_variance": 2.8159182412948332e-05,
+       "observed": 0.4628600303183426,
+       "predicted": 0.4660158030812031,
+       "prediction_variance": 0.0007842250326312827,
+       "readout": "y",
+       "standardized_residual": -0.11071972166483778
+      }
+     ],
+     "training_objective": 417891.31861655053
+    }
+   ],
+   "held_out": {
+    "direct": {
+     "dof": 10,
+     "p": 0.005474230483795336,
+     "residual_correlation": 0.9191358020654333,
+     "statistic": 24.932860078791816
+    },
+    "x": {
+     "dof": 10,
+     "p": 0.9452145253136421,
+     "residual_correlation": 0.9941589365310798,
+     "statistic": 4.046724764658301
+    },
+    "y": {
+     "dof": 10,
+     "p": 0.4943255189769761,
+     "residual_correlation": 0.965874197011279,
+     "statistic": 9.40306393532852
+    }
+   },
+   "job_00_gain_over_nominal": 1180.1763838268234,
+   "job_00_in_sample": {
+    "direct": {
+     "configurations": 10,
+     "statistic": 1.4592223779931168
+    },
+    "x": {
+     "configurations": 10,
+     "statistic": 1.2551678475355061
+    },
+    "y": {
+     "configurations": 10,
+     "statistic": 1.7310090832297118
+    }
+   },
+   "job_00_log_likelihood": -432530.63544776884,
+   "job_00_relation": -0.02731526719839772,
+   "job_01_relation": -0.027502204173333378,
+   "preregistered": false,
+   "reading": {
+    "x": "weakly identified",
+    "y": "weakly identified"
+   },
+   "summary": {
+    "x": {
+     "configurations": 10,
+     "counting_sum": 385.8831285397567,
+     "median_variance_ratio": 104.23296855596811,
+     "standardized_sum": 3.462201998186078
+    },
+    "y": {
+     "configurations": 10,
+     "counting_sum": 102.62799244157374,
+     "median_variance_ratio": 19.857718212090493,
+     "standardized_sum": 3.3216204932372317
+    }
+   }
+  },
+  {
+   "basis": {
+    "kind": "harmonic",
+    "order": 1,
+    "parameters": 378,
+    "tau": 0.1
+   },
+   "coefficient_rms": [
+    0.015273182033302987,
+    0.019464928630319196,
+    0.015626188834771997
+   ],
+   "explains_analyzer_response": true,
+   "family": "drive_harmonic_1_tau_0.1",
+   "folds": [
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 2,
+     "lowest_hessian_eigenvalue": 44.770403938697136,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -6.042956008315957,
+       "counting_variance": 3.300039936984179e-05,
+       "observed": -0.03607758893030896,
+       "predicted": -0.001363239513622155,
+       "prediction_variance": 0.0028454066836170007,
+       "readout": "x",
+       "standardized_residual": -0.6470426722528005
+      },
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": -4.218780059806619,
+       "counting_variance": 3.229994873094155e-05,
+       "observed": -0.025610667996011964,
+       "predicted": -0.0016340567833632237,
+       "prediction_variance": 0.0028517862609703294,
+       "readout": "y",
+       "standardized_residual": -0.4464611588055241
+      }
+     ],
+     "training_objective": 398804.33108632034
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 3,
+     "lowest_hessian_eigenvalue": 69.23868013973427,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm1",
+        "theta0-x-arm2"
+       ],
+       "counting_residual": 0.8862378866469856,
+       "counting_variance": 3.169202250181551e-05,
+       "observed": -0.003946232581082748,
+       "predicted": -0.008935367976156914,
+       "prediction_variance": 2.996184480161843e-05,
+       "readout": "x",
+       "standardized_residual": 0.6353969536230378
+      }
+     ],
+     "training_objective": 415412.23716660717
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 4,
+     "lowest_hessian_eigenvalue": 72.24908845007528,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-y-arm1",
+        "theta0-y-arm2"
+       ],
+       "counting_residual": -1.1816308991957665,
+       "counting_variance": 3.203260878548573e-05,
+       "observed": -0.009611156479678373,
+       "predicted": -0.0029234378335170627,
+       "prediction_variance": 2.9445964828175392e-05,
+       "readout": "y",
+       "standardized_residual": -0.8529353272582056
+      }
+     ],
+     "training_objective": 415735.1441136268
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 7,
+     "lowest_hessian_eigenvalue": 25.219763037969713,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm0",
+        "theta1-x-arm3"
+       ],
+       "counting_residual": -10.632182852854331,
+       "counting_variance": 3.580850611620879e-05,
+       "observed": 0.27968596663395484,
+       "predicted": 0.3433091710243508,
+       "prediction_variance": 0.0013759058590668836,
+       "readout": "x",
+       "standardized_residual": -1.6933320234843177
+      }
+     ],
+     "training_objective": 415404.07906984503
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 8,
+     "lowest_hessian_eigenvalue": 61.993919641823446,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm1",
+        "theta1-x-arm2"
+       ],
+       "counting_residual": 3.5147763606505293,
+       "counting_variance": 3.5177258325205945e-05,
+       "observed": -0.3095208845208845,
+       "predicted": -0.33036717047559755,
+       "prediction_variance": 0.0001931507971370424,
+       "readout": "x",
+       "standardized_residual": 1.3795868681287486
+      }
+     ],
+     "training_objective": 415838.79988031863
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 9,
+     "lowest_hessian_eigenvalue": 68.09425518700996,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm0",
+        "theta1-y-arm3"
+       ],
+       "counting_residual": 0.6373173346682041,
+       "counting_variance": 2.7034332571041716e-05,
+       "observed": 0.4676428615747347,
+       "predicted": 0.4643291587556138,
+       "prediction_variance": 1.739981156481211e-05,
+       "readout": "y",
+       "standardized_residual": 0.49711303090435155
+      }
+     ],
+     "training_objective": 417711.23282855516
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 10,
+     "lowest_hessian_eigenvalue": 68.73201696850684,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm1",
+        "theta1-y-arm2"
+       ],
+       "counting_residual": 0.15696384338653435,
+       "counting_variance": 2.8199647665366832e-05,
+       "observed": -0.4650021471075394,
+       "predicted": -0.4658356775488481,
+       "prediction_variance": 0.00040206136019810463,
+       "readout": "y",
+       "standardized_residual": 0.04018421327940298
+      }
+     ],
+     "training_objective": 417439.3116339877
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 13,
+     "lowest_hessian_eigenvalue": 35.371019561991666,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm0",
+        "theta2-x-arm3"
+       ],
+       "counting_residual": -8.907537345024252,
+       "counting_variance": 1.0221002138701084e-05,
+       "observed": 0.8812511706312044,
+       "predicted": 0.9097288365851902,
+       "prediction_variance": 0.0003598299818399815,
+       "readout": "x",
+       "standardized_residual": -1.480381365510371
+      }
+     ],
+     "training_objective": 426738.07636680576
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 14,
+     "lowest_hessian_eigenvalue": 49.919564368858275,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm1",
+        "theta2-x-arm2"
+       ],
+       "counting_residual": 9.406299807433086,
+       "counting_variance": 9.562411856591194e-06,
+       "observed": -0.8886978942844864,
+       "predicted": -0.91778513596532,
+       "prediction_variance": 0.0004441274136378139,
+       "readout": "x",
+       "standardized_residual": 1.3655984636074237
+      }
+     ],
+     "training_objective": 426944.7369538978
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 15,
+     "lowest_hessian_eigenvalue": 43.41768379043064,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm0",
+        "theta2-y-arm3"
+       ],
+       "counting_residual": -2.1326048212066246,
+       "counting_variance": 5.298874774917014e-05,
+       "observed": 0.27213174972450105,
+       "predicted": 0.2876556989922556,
+       "prediction_variance": 3.985981774642612e-05,
+       "readout": "y",
+       "standardized_residual": -1.6110707604236023
+      }
+     ],
+     "training_objective": 418805.57538397337
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 16,
+     "lowest_hessian_eigenvalue": 72.9428164529433,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm1",
+        "theta2-y-arm2"
+       ],
+       "counting_residual": 8.005240836497068,
+       "counting_variance": 5.328475779541799e-05,
+       "observed": -0.276798825256975,
+       "predicted": -0.3352342089700965,
+       "prediction_variance": 0.004379965951441793,
+       "readout": "y",
+       "standardized_residual": 0.8776366561012202
+      }
+     ],
+     "training_objective": 418873.6186884805
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 19,
+     "lowest_hessian_eigenvalue": 54.426583037208665,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm0",
+        "theta3-x-arm3"
+       ],
+       "counting_residual": -1.1935282188376728,
+       "counting_variance": 8.534897542606267e-06,
+       "observed": 0.8948014484748051,
+       "predicted": 0.8982882870949099,
+       "prediction_variance": 0.0002666990164183547,
+       "readout": "x",
+       "standardized_residual": -0.21017491214159448
+      }
+     ],
+     "training_objective": 427073.77284914354
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 20,
+     "lowest_hessian_eigenvalue": 42.35085591932237,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm1",
+        "theta3-x-arm2"
+       ],
+       "counting_residual": 4.13800369093207,
+       "counting_variance": 9.674448652864511e-06,
+       "observed": -0.8862290380898946,
+       "predicted": -0.8990997919713138,
+       "prediction_variance": 7.289328543094209e-05,
+       "readout": "x",
+       "standardized_residual": 1.4164420215832727
+      }
+     ],
+     "training_objective": 426879.12113331346
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 21,
+     "lowest_hessian_eigenvalue": 46.308714208216585,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm0",
+        "theta3-y-arm3"
+       ],
+       "counting_residual": 0.0011349597852208357,
+       "counting_variance": 5.462350823638745e-05,
+       "observed": -0.3016324981017464,
+       "predicted": -0.3016408863305547,
+       "prediction_variance": 0.00013137402352946952,
+       "readout": "y",
+       "standardized_residual": 0.0006150588583887838
+      }
+     ],
+     "training_objective": 419869.54484960344
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 22,
+     "lowest_hessian_eigenvalue": 72.91578176018008,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm1",
+        "theta3-y-arm2"
+       ],
+       "counting_residual": -0.7181715066399673,
+       "counting_variance": 5.470782767265712e-05,
+       "observed": 0.2593071992110454,
+       "predicted": 0.26461913608938975,
+       "prediction_variance": 0.0001501165467874195,
+       "readout": "y",
+       "standardized_residual": -0.3711607871413585
+      }
+     ],
+     "training_objective": 419294.89153138484
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 25,
+     "lowest_hessian_eigenvalue": 53.82879476792867,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm0",
+        "theta4-x-arm3"
+       ],
+       "counting_residual": -0.6186682573007611,
+       "counting_variance": 3.381557350147348e-05,
+       "observed": 0.32277433980760983,
+       "predicted": 0.3263719674578412,
+       "prediction_variance": 0.00011767836265241424,
+       "readout": "x",
+       "standardized_residual": -0.29229311632037536
+      }
+     ],
+     "training_objective": 415939.5558732523
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 26,
+     "lowest_hessian_eigenvalue": 52.464189025097085,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm1",
+        "theta4-x-arm2"
+       ],
+       "counting_residual": -6.115812346331832,
+       "counting_variance": 3.433337541148196e-05,
+       "observed": -0.3195666892349357,
+       "predicted": -0.2837312771909422,
+       "prediction_variance": 0.0003966798174733607,
+       "readout": "x",
+       "standardized_residual": -1.7261046424353128
+      }
+     ],
+     "training_objective": 415955.19364840357
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 27,
+     "lowest_hessian_eigenvalue": 52.25979772689474,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm0",
+        "theta4-y-arm3"
+       ],
+       "counting_residual": 4.627053151175412,
+       "counting_variance": 2.7805272129422883e-05,
+       "observed": -0.4689157518194153,
+       "predicted": -0.49331452913111257,
+       "prediction_variance": 0.0014704781653007693,
+       "readout": "y",
+       "standardized_residual": 0.630334494084234
+      }
+     ],
+     "training_objective": 417581.1448517943
+    },
+    {
+     "family": "drive_harmonic_1_tau_0.1",
+     "left_out": 28,
+     "lowest_hessian_eigenvalue": 41.60503659423493,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm1",
+        "theta4-y-arm2"
+       ],
+       "counting_residual": -4.758177489115602,
+       "counting_variance": 2.8159182412948332e-05,
+       "observed": 0.4628600303183426,
+       "predicted": 0.4881094068375182,
+       "prediction_variance": 0.00029095472273564375,
+       "readout": "y",
+       "standardized_residual": -1.4134413561109325
+      }
+     ],
+     "training_objective": 417897.99105645507
+    }
+   ],
+   "held_out": {
+    "direct": {
+     "dof": 10,
+     "p": 0.004712946823398985,
+     "residual_correlation": 0.9154713838148719,
+     "statistic": 25.354268184340217
+    },
+    "x": {
+     "dof": 10,
+     "p": 0.945573465398717,
+     "residual_correlation": 0.9942155840936914,
+     "statistic": 4.038934886131718
+    },
+    "y": {
+     "dof": 10,
+     "p": 0.24581963493799228,
+     "residual_correlation": 0.9542338318752244,
+     "statistic": 12.618018451136926
+    }
+   },
+   "job_00_gain_over_nominal": 1177.390253167192,
+   "job_00_in_sample": {
+    "direct": {
+     "configurations": 10,
+     "statistic": 2.5557649721695905
+    },
+    "x": {
+     "configurations": 10,
+     "statistic": 1.9400182696886596
+    },
+    "y": {
+     "configurations": 10,
+     "statistic": 3.087558702653195
+    }
+   },
+   "job_00_log_likelihood": -432533.4215784285,
+   "job_00_relation": -0.02697346203790507,
+   "job_01_relation": -0.02716115071763281,
+   "preregistered": false,
+   "reading": {
+    "x": "weakly identified",
+    "y": "weakly identified"
+   },
+   "summary": {
+    "x": {
+     "configurations": 10,
+     "counting_sum": 386.855892835871,
+     "median_variance_ratio": 21.400914983782076,
+     "standardized_sum": 14.764768924703223
+    },
+    "y": {
+     "configurations": 10,
+     "counting_sum": 132.8226974647214,
+     "median_variance_ratio": 6.5382336426627194,
+     "standardized_sum": 7.074256220329176
+    }
+   }
+  },
+  {
+   "basis": {
+    "kind": "harmonic",
+    "order": 2,
+    "parameters": 630,
+    "tau": 0.3
+   },
+   "coefficient_rms": [
+    0.011944133652495718,
+    0.011367269100853393,
+    0.009256841556090203,
+    0.011574160238151051,
+    0.011529155996075095
+   ],
+   "explains_analyzer_response": true,
+   "family": "drive_harmonic_2_tau_0.3",
+   "folds": [
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 2,
+     "lowest_hessian_eigenvalue": 2.0453588897404824,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": 3.790044129499115,
+       "counting_variance": 3.300039936984179e-05,
+       "observed": -0.03607758893030896,
+       "predicted": -0.05784986660948411,
+       "prediction_variance": 0.06851230901967137,
+       "readout": "x",
+       "standardized_residual": 0.08316009829190989
+      },
+      {
+       "configuration": [
+        "theta0-x-arm0",
+        "theta0-x-arm3",
+        "theta0-y-arm0",
+        "theta0-y-arm3"
+       ],
+       "counting_residual": 5.731402275009572,
+       "counting_variance": 3.229994873094155e-05,
+       "observed": -0.025610667996011964,
+       "predicted": -0.05818397167695665,
+       "prediction_variance": 0.06866591784387308,
+       "readout": "y",
+       "standardized_residual": 0.1242765169596274
+      }
+     ],
+     "training_objective": 398795.3455134426
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 3,
+     "lowest_hessian_eigenvalue": 1.417518110940371,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-x-arm1",
+        "theta0-x-arm2"
+       ],
+       "counting_residual": 1.0686886872337202,
+       "counting_variance": 3.169202250181551e-05,
+       "observed": -0.003946232581082748,
+       "predicted": -0.009962486948141785,
+       "prediction_variance": 3.208554947169756e-05,
+       "readout": "x",
+       "standardized_residual": 0.7533420320143867
+      }
+     ],
+     "training_objective": 415403.60997745197
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 4,
+     "lowest_hessian_eigenvalue": 1.1395370318751583,
+     "rows": [
+      {
+       "configuration": [
+        "theta0-y-arm1",
+        "theta0-y-arm2"
+       ],
+       "counting_residual": -1.0692410577981275,
+       "counting_variance": 3.203260878548573e-05,
+       "observed": -0.009611156479678373,
+       "predicted": -0.0035595346370668633,
+       "prediction_variance": 3.158407556872291e-05,
+       "readout": "y",
+       "standardized_residual": -0.758728270930303
+      }
+     ],
+     "training_objective": 415726.6929277062
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 7,
+     "lowest_hessian_eigenvalue": 3.464034796389783,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm0",
+        "theta1-x-arm3"
+       ],
+       "counting_residual": -16.114032068206367,
+       "counting_variance": 3.580850611620879e-05,
+       "observed": 0.27968596663395484,
+       "predicted": 0.37611267129259934,
+       "prediction_variance": 0.07992065069797077,
+       "readout": "x",
+       "standardized_residual": -0.3410126961645341
+      }
+     ],
+     "training_objective": 415396.52751050517
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 8,
+     "lowest_hessian_eigenvalue": 5.675626434314388,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-x-arm1",
+        "theta1-x-arm2"
+       ],
+       "counting_residual": 5.122269348772679,
+       "counting_variance": 3.5177258325205945e-05,
+       "observed": -0.3095208845208845,
+       "predicted": -0.3399012787835265,
+       "prediction_variance": 0.004555725314696358,
+       "readout": "x",
+       "standardized_residual": 0.4483780743178622
+      }
+     ],
+     "training_objective": 415831.83966258576
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 9,
+     "lowest_hessian_eigenvalue": 4.484598232477831,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm0",
+        "theta1-y-arm3"
+       ],
+       "counting_residual": 0.6421366628679441,
+       "counting_variance": 2.7034332571041716e-05,
+       "observed": 0.4676428615747347,
+       "predicted": 0.46430410087538204,
+       "prediction_variance": 0.0003265833528340408,
+       "readout": "y",
+       "standardized_residual": 0.17754903008765024
+      }
+     ],
+     "training_objective": 417702.8599129103
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 10,
+     "lowest_hessian_eigenvalue": 3.5398854349983666,
+     "rows": [
+      {
+       "configuration": [
+        "theta1-y-arm1",
+        "theta1-y-arm2"
+       ],
+       "counting_residual": 3.0871096045994344,
+       "counting_variance": 2.8199647665366832e-05,
+       "observed": -0.4650021471075394,
+       "predicted": -0.4813957303402929,
+       "prediction_variance": 0.016260369859807625,
+       "readout": "y",
+       "standardized_residual": 0.1284494997655345
+      }
+     ],
+     "training_objective": 417431.00216491125
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 13,
+     "lowest_hessian_eigenvalue": 3.7925680440693816,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm0",
+        "theta2-x-arm3"
+       ],
+       "counting_residual": -10.079921024203921,
+       "counting_variance": 1.0221002138701084e-05,
+       "observed": 0.8812511706312044,
+       "predicted": 0.9134769826206636,
+       "prediction_variance": 0.007675510842064309,
+       "readout": "x",
+       "standardized_residual": -0.36758794059540323
+      }
+     ],
+     "training_objective": 426730.7293890629
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 14,
+     "lowest_hessian_eigenvalue": 5.532260682790085,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-x-arm1",
+        "theta2-x-arm2"
+       ],
+       "counting_residual": 7.184282541390846,
+       "counting_variance": 9.562411856591194e-06,
+       "observed": -0.8886978942844864,
+       "predicted": -0.9109139587160809,
+       "prediction_variance": 0.024582531852023,
+       "readout": "x",
+       "standardized_residual": 0.14166721909955166
+      }
+     ],
+     "training_objective": 426936.3622408094
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 15,
+     "lowest_hessian_eigenvalue": 2.6899600258381007,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm0",
+        "theta2-y-arm3"
+       ],
+       "counting_residual": -1.6601127434478626,
+       "counting_variance": 5.298874774917014e-05,
+       "observed": 0.27213174972450105,
+       "predicted": 0.2842162699092843,
+       "prediction_variance": 0.0014386267619132171,
+       "readout": "y",
+       "standardized_residual": -0.31289668802677845
+      }
+     ],
+     "training_objective": 418798.7084724869
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 16,
+     "lowest_hessian_eigenvalue": 1.243311935680184,
+     "rows": [
+      {
+       "configuration": [
+        "theta2-y-arm1",
+        "theta2-y-arm2"
+       ],
+       "counting_residual": 6.6132420196144786,
+       "counting_variance": 5.328475779541799e-05,
+       "observed": -0.276798825256975,
+       "predicted": -0.3250731174234318,
+       "prediction_variance": 0.15256921047552013,
+       "readout": "y",
+       "standardized_residual": 0.12356817705069541
+      }
+     ],
+     "training_objective": 418865.4785749496
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 19,
+     "lowest_hessian_eigenvalue": 3.5244493432841417,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm0",
+        "theta3-x-arm3"
+       ],
+       "counting_residual": -2.0114593061737582,
+       "counting_variance": 8.534897542606267e-06,
+       "observed": 0.8948014484748051,
+       "predicted": 0.9006778357112679,
+       "prediction_variance": 0.005861761701157903,
+       "readout": "x",
+       "standardized_residual": -0.07669735454026078
+      }
+     ],
+     "training_objective": 427065.21528212656
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 20,
+     "lowest_hessian_eigenvalue": 3.667152395047889,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-x-arm1",
+        "theta3-x-arm2"
+       ],
+       "counting_residual": 5.507796534071227,
+       "counting_variance": 9.674448652864511e-06,
+       "observed": -0.8862290380898946,
+       "predicted": -0.9033603649116445,
+       "prediction_variance": 0.0014362174366270913,
+       "readout": "x",
+       "standardized_residual": 0.4505293516628899
+      }
+     ],
+     "training_objective": 426872.2562941008
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 21,
+     "lowest_hessian_eigenvalue": 4.840438716146956,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm0",
+        "theta3-y-arm3"
+       ],
+       "counting_residual": 0.16770504808868733,
+       "counting_variance": 5.462350823638745e-05,
+       "observed": -0.3016324981017464,
+       "predicted": -0.3028719678468327,
+       "prediction_variance": 0.003834929020323665,
+       "readout": "y",
+       "standardized_residual": 0.01987403772114943
+      }
+     ],
+     "training_objective": 419860.67882836424
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 22,
+     "lowest_hessian_eigenvalue": 5.313498782276817,
+     "rows": [
+      {
+       "configuration": [
+        "theta3-y-arm1",
+        "theta3-y-arm2"
+       ],
+       "counting_residual": -2.4739813678276534,
+       "counting_variance": 5.470782767265712e-05,
+       "observed": 0.2593071992110454,
+       "predicted": 0.27760593808135353,
+       "prediction_variance": 0.0031192217384290824,
+       "readout": "y",
+       "standardized_residual": -0.32480485872068726
+      }
+     ],
+     "training_objective": 419286.52424080065
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 25,
+     "lowest_hessian_eigenvalue": 4.087937658251727,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm0",
+        "theta4-x-arm3"
+       ],
+       "counting_residual": 1.8551803570876522,
+       "counting_variance": 3.381557350147348e-05,
+       "observed": 0.32277433980760983,
+       "predicted": 0.311986250924653,
+       "prediction_variance": 0.0030780903050339264,
+       "readout": "x",
+       "standardized_residual": 0.1933887870292782
+      }
+     ],
+     "training_objective": 415931.86848254513
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 26,
+     "lowest_hessian_eigenvalue": 3.9082608458975847,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-x-arm1",
+        "theta4-x-arm2"
+       ],
+       "counting_residual": -8.457768159697183,
+       "counting_variance": 3.433337541148196e-05,
+       "observed": -0.3195666892349357,
+       "predicted": -0.2700086600130116,
+       "prediction_variance": 0.00969410354707413,
+       "readout": "x",
+       "standardized_residual": -0.5024495871909954
+      }
+     ],
+     "training_objective": 415947.63654785044
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 27,
+     "lowest_hessian_eigenvalue": 2.387330693030073,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm0",
+        "theta4-y-arm3"
+       ],
+       "counting_residual": 0.7901850532201034,
+       "counting_variance": 2.7805272129422883e-05,
+       "observed": -0.4689157518194153,
+       "predicted": -0.4730824532854772,
+       "prediction_variance": 0.03051137612329914,
+       "readout": "y",
+       "standardized_residual": 0.023843153220373167
+      }
+     ],
+     "training_objective": 417572.8110074502
+    },
+    {
+     "family": "drive_harmonic_2_tau_0.3",
+     "left_out": 28,
+     "lowest_hessian_eigenvalue": 5.6303890560980365,
+     "rows": [
+      {
+       "configuration": [
+        "theta4-y-arm1",
+        "theta4-y-arm2"
+       ],
+       "counting_residual": -5.474453083251227,
+       "counting_variance": 2.8159182412948332e-05,
+       "observed": 0.4628600303183426,
+       "predicted": 0.4919103394864573,
+       "prediction_variance": 0.008250538030589576,
+       "readout": "y",
+       "standardized_residual": -0.3192785623861482
+      }
+     ],
+     "training_objective": 417890.01147334813
+    }
+   ],
+   "held_out": {
+    "direct": {
+     "dof": 10,
+     "p": 0.007664384999939435,
+     "residual_correlation": 0.9221898689462418,
+     "statistic": 23.975986666901957
+    },
+    "x": {
+     "dof": 10,
+     "p": 0.934746889023749,
+     "residual_correlation": 0.9938983364642079,
+     "statistic": 4.262151765053653
+    },
+    "y": {
+     "dof": 10,
+     "p": 0.7490610878935451,
+     "residual_correlation": 0.9754992047750091,
+     "statistic": 6.747359203767459
+    }
+   },
+   "job_00_gain_over_nominal": 1180.9687620380428,
+   "job_00_in_sample": {
+    "direct": {
+     "configurations": 10,
+     "statistic": 1.3438501300215882
+    },
+    "x": {
+     "configurations": 10,
+     "statistic": 1.1686061938482686
+    },
+    "y": {
+     "configurations": 10,
+     "statistic": 1.1972316402948833
+    }
+   },
+   "job_00_log_likelihood": -432529.8430695576,
+   "job_00_relation": -0.027324098715879708,
+   "job_01_relation": -0.027510789161464155,
+   "preregistered": false,
+   "reading": {
+    "x": "weakly identified",
+    "y": "weakly identified"
+   },
+   "summary": {
+    "x": {
+     "configurations": 10,
+     "counting_sum": 563.9822538806842,
+     "median_variance_ratio": 484.57574476452237,
+     "standardized_sum": 1.5456768621807702
+    },
+    "y": {
+     "configurations": 10,
+     "counting_sum": 127.16851578379213,
+     "median_variance_ratio": 181.60146524460828,
+     "standardized_sum": 0.9607100755881074
+    }
+   }
+  }
+ ],
+ "heaters": 126,
+ "runs": [
+  "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+  "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01"
+ ],
+ "schema": "ascella-signed-coherence-drive-response-v1",
+ "scored_configurations": [
+  [
+   "theta0-x-arm0",
+   "theta0-x-arm3",
+   "theta0-y-arm0",
+   "theta0-y-arm3"
+  ],
+  [
+   "theta0-x-arm1",
+   "theta0-x-arm2"
+  ],
+  [
+   "theta0-y-arm1",
+   "theta0-y-arm2"
+  ],
+  [
+   "theta1-x-arm0",
+   "theta1-x-arm3"
+  ],
+  [
+   "theta1-x-arm1",
+   "theta1-x-arm2"
+  ],
+  [
+   "theta1-y-arm0",
+   "theta1-y-arm3"
+  ],
+  [
+   "theta1-y-arm1",
+   "theta1-y-arm2"
+  ],
+  [
+   "theta2-x-arm0",
+   "theta2-x-arm3"
+  ],
+  [
+   "theta2-x-arm1",
+   "theta2-x-arm2"
+  ],
+  [
+   "theta2-y-arm0",
+   "theta2-y-arm3"
+  ],
+  [
+   "theta2-y-arm1",
+   "theta2-y-arm2"
+  ],
+  [
+   "theta3-x-arm0",
+   "theta3-x-arm3"
+  ],
+  [
+   "theta3-x-arm1",
+   "theta3-x-arm2"
+  ],
+  [
+   "theta3-y-arm0",
+   "theta3-y-arm3"
+  ],
+  [
+   "theta3-y-arm1",
+   "theta3-y-arm2"
+  ],
+  [
+   "theta4-x-arm0",
+   "theta4-x-arm3"
+  ],
+  [
+   "theta4-x-arm1",
+   "theta4-x-arm2"
+  ],
+  [
+   "theta4-y-arm0",
+   "theta4-y-arm3"
+  ],
+  [
+   "theta4-y-arm1",
+   "theta4-y-arm2"
+  ]
+ ],
+ "start": "zero, training configurations only"
+}
