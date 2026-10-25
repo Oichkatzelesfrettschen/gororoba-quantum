@@ -14,6 +14,15 @@
 set -eu
 [ $# -ge 1 ] || { echo "usage: sh ci/pr_checks.sh lint|types|tests|gates [ARG...]" >&2; exit 2; }
 root=$(cd "$(dirname "$0")/.." && pwd)
+# The lane holds the host-environment lock shared until it exits, so sh ci/build_host_envs.sh, which takes it
+# exclusively, cannot rebuild the interpreter under a verdict, and a lane started during a rebuild waits for it.
+lock=${XDG_CACHE_HOME:-$HOME/.cache}/gororoba-quantum/host-envs.lock
+mkdir -p "$(dirname "$lock")"
+exec 9>"$lock"
+if ! flock -n -s 9; then
+    echo "waiting for sh ci/build_host_envs.sh to release $lock" >&2
+    flock -s 9
+fi
 # ci/pins.py resolve_lane holds the lane to an interpreter carrying its pins:
 # an explicit PYTHON as named, else the host environment ci/build_host_envs.sh
 # builds, else python3. A drifted interpreter exits 2 naming the differing

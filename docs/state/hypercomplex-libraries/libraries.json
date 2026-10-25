@@ -7185,6 +7185,7 @@
   "ci/pins.py": [
    "__future__",
    "collections",
+   "fcntl",
    "json",
    "os",
    "pathlib",

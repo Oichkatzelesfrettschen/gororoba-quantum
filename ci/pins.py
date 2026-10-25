@@ -182,6 +182,31 @@ def host_env(runtime: str, environment: Mapping[str, str]) -> Path:
     return Path(cache) / "gororoba-quantum" / HOST_ENVS[runtime] / "bin" / "python3"
 
 
+def host_lock(environment: Mapping[str, str]) -> Path:
+    """The lock ci/build_host_envs.sh holds exclusively while it rebuilds the host environments."""
+    cache = environment.get("XDG_CACHE_HOME") or str(Path.home() / ".cache")
+    return Path(cache) / "gororoba-quantum" / "host-envs.lock"
+
+
+def hold_host_envs(environment: Mapping[str, str]) -> int:
+    """Hold the host-environment lock shared for this process's lifetime and return its descriptor.
+
+    ci/build_host_envs.sh takes the lock exclusively, so a rebuild waits for every gate run that holds it, and a
+    run that starts during a rebuild waits for the rebuilt environment before resolving its interpreter.
+    """
+    import fcntl
+
+    path = host_lock(environment)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd = os.open(path, os.O_RDWR | os.O_CREAT, 0o644)
+    try:
+        fcntl.flock(fd, fcntl.LOCK_SH | fcntl.LOCK_NB)
+    except BlockingIOError:
+        print(f"waiting for {BUILD_COMMAND} to release {path}", file=sys.stderr, flush=True)
+        fcntl.flock(fd, fcntl.LOCK_SH)
+    return fd
+
+
 def current_pins(root: Path = ROOT) -> dict[str, str]:
     """The current runtime's pins from root's requirements.txt and ci/requirements-ci.txt, later files winning."""
     merged: dict[str, str] = {}
