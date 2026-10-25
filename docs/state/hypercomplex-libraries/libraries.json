@@ -2727,6 +2727,7 @@
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
+    "scripts/ascella_configuration_holdout.py",
     "scripts/ascella_physical_models.py",
     "scripts/ascella_response_geometry.py",
     "scripts/associator_cubic_normal_form.py",
@@ -7483,6 +7484,7 @@
    "qiskit",
    "qiskit_aer",
    "qiskit_ibm_runtime",
+   "record_digest",
    "shutil",
    "subprocess",
    "sys",
@@ -8878,6 +8880,11 @@
    "sympy",
    "typing"
   ],
+  "gororoba_quantum/record_digest.py": [
+   "__future__",
+   "hashlib",
+   "pathlib"
+  ],
   "gororoba_quantum/replica_covariance_contracts.py": [
    "__future__",
    "contextlib",
@@ -9211,6 +9218,7 @@
    "qiskit",
    "qiskit_aer",
    "re",
+   "record_digest",
    "resource",
    "shutil",
    "signal",
@@ -10402,6 +10410,7 @@
    "parallel",
    "pathlib",
    "platform",
+   "record_digest",
    "subprocess",
    "sys",
    "tempfile",
