@@ -119,6 +119,8 @@ differs from it only in the `cd_core.py` digest.
 | [ocathain-2012-nonaffine-hadamard.md](notes/papers/ocathain-2012-nonaffine-hadamard.md) | O Cathain 2012 doubly transitive automorphism groups of Hadamard matrices: Ito's classification, Paley matrices and `PSL_2(q)`, skew difference sets (deposited text) |
 | [kivunge-2013-sign-matrices-2n-ons.md](notes/papers/kivunge-2013-sign-matrices-2n-ons.md) | Kivunge 2013 conference slides on sign matrices of the `2^n`-ons: Hadamard and skew Hadamard claims, Smith-Conway sign matrices equal to the `cd_core` transpose |
 | [0709.1447.md](notes/papers/0709.1447.md) | Luhn, Nasri and Ramond 2007 `PSL_2(7)`: presentation, classes, character table, subgroups and the Klein quartic |
+| [2007.01808.md](notes/papers/2007.01808.md) | Ziller 2020 differences between consecutive numbers coprime to primorials: the restricted-covering reduction, the table of missing differences for `k <= 44` and the Jacobsthal-function conjecture |
+| [erdos-854-consecutive-coprime-gaps.md](notes/papers/erdos-854-consecutive-coprime-gaps.md) | Erdos Problem 854 (Bloom's database): the smallest even integer missing from the gaps between consecutive integers coprime to a primorial, status at retrieval and cited literature |
 | [pmc-4957665-nonlinearity-measures.md](notes/papers/pmc-4957665-nonlinearity-measures.md) | nonlinearity measures for Boolean functions |
 | [2306.00874.md](notes/papers/2306.00874.md) | Maring et al. 2024 Quandela Ascella platform: source, chip, phase-voltage model and gate benchmarks |
 | [2310.15349.md](notes/papers/2310.15349.md) | Fyrillas et al. 2024 clear-box machine-learning characterization of a 12-mode photonic chip: imperfection model and amplitude fidelities (hosted, CC BY 4.0) |
