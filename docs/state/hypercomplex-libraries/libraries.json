@@ -2810,6 +2810,7 @@
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
+    "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
@@ -4236,6 +4237,7 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/a5_stiefel_pfaffian_germs.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
@@ -9221,6 +9223,25 @@
    "sys",
    "tarfile",
    "time",
+   "typing"
+  ],
+  "scripts/a5_stiefel_pfaffian_germs.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "copy",
+   "dataclasses",
+   "flint",
+   "fractions",
+   "functools",
+   "importlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "rank_locus_local_dimension",
+   "sys",
    "typing"
   ],
   "scripts/acquisition_decisions.py": [
