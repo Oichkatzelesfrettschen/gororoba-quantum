@@ -2821,6 +2821,7 @@
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_cancellation_cases.py",
@@ -3609,7 +3610,8 @@
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
-    "scripts/qd_platform.py"
+    "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py"
    ]
   },
   {
