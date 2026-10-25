@@ -126,9 +126,9 @@
       "state": "done",
       "receipts": [
         {
-          "result": "Job 788097fb completed 524,288 samples in 186 s for 1.016384 credits; 56 seeds served 56 distinct meshes and the anchors job-00's. R1: dispersion ratio 7.08, p 0.0049, compilation dependent. R2: static, drive-linear and polynomial-1 fits miss the meshes (1035, 223, 235 against 94.5); harmonic-1 between the thresholds with variance ratio 254. R3: every family identified (ratios 0.23 to 0.86) and short on X (85 to 377 on 10).",
-          "observed_at": "2026-10-25T19:08:54+00:00",
-          "revision": "a9c864d796bb7d573988c369347467c689e0bb35",
+          "result": "Job 788097fb completed 524,288 samples in 186 s for 1.016384 credits; 56 seeds served 56 distinct meshes and the anchors job-00's. R1: dispersion ratio 7.08, p 0.0049, compilation dependent. R2: every job-00 fit misses the meshes (joint quadratic forms 1150, 649, 771, 201 against 94.5). R3: every family identified (ratios 0.23 to 0.86) and short on X (85 to 377 on 10). The corrected sizing puts R1's detectable X SD at 0.013.",
+          "observed_at": "2026-10-25T19:37:12+00:00",
+          "revision": "30432c79cfec5b8e82792ab0220a31e2b2973bcf",
           "evidence": [
             {
               "ref": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
@@ -136,7 +136,11 @@
             },
             {
               "ref": "docs/evidence/ascella-order-coefficients/compilation-reading.json",
-              "sha256": "902b3cc12773daa51c13c80a9919b7a56d1254000e1447268953b3326b98bdb7"
+              "sha256": "6aa696088fedcd9b43358151c1a661ef5faa718825d04bd8e0a528780a0cb3cc"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/compilation-design-anchor-ratio.json",
+              "sha256": "87549b2d2924ac8666474e157e872fd58359f68c01c476322ef589c052b64e41"
             }
           ],
           "scope_sha256": "ba55147d088a3465a73f174c06822d843d3bfc1668e3c14f3f82767e2d9d342d"
@@ -152,12 +156,12 @@
   "receipts": [
     {
       "result": "All five steps are done; the run, the sizing and reading records and their replay gates are retained.",
-      "observed_at": "2026-10-25T19:08:54+00:00",
-      "revision": "a9c864d796bb7d573988c369347467c689e0bb35",
+      "observed_at": "2026-10-25T19:37:12+00:00",
+      "revision": "30432c79cfec5b8e82792ab0220a31e2b2973bcf",
       "evidence": [
         {
           "ref": "docs/evidence/ascella-order-coefficients/compilation-reading.json",
-          "sha256": "902b3cc12773daa51c13c80a9919b7a56d1254000e1447268953b3326b98bdb7"
+          "sha256": "6aa696088fedcd9b43358151c1a661ef5faa718825d04bd8e0a528780a0cb3cc"
         }
       ],
       "scope_sha256": "4381421b2ffe152c7c3b033939eaf7f8547196ccd415893c117a9dd821a09940"
