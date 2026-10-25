@@ -4669,7 +4669,7 @@
         },
         {
           "path": "scripts/cd_sign_source_ast.py",
-          "sha256": "3107a7af599a3a9c421641694bccbd763f6e37357bcf20e370c0021516053659"
+          "sha256": "d7e1231563718aec1f2546a0c4b97f0c58bba29f9d402a0707304b4143009c4c"
         },
         {
           "path": "docs/evidence/cd-sign-python-translation/assumptions.v",
@@ -4684,8 +4684,8 @@
           "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
         },
         {
-          "path": "docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
-          "sha256": "afd4e70c72839686fc93d584f8c13aba17933f2abe5a6e6105df812a6ddbd66f"
+          "path": "docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
+          "sha256": "1d907280b5343a449963c177db4e0a7cc168d477c639985cbe954c335fb4bf6b"
         }
       ],
       "documents": [
