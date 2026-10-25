@@ -35,8 +35,8 @@ acquisition of every provider:
 | exploratory reanalysis | exploratory | 68 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
-| mathematical claim | established | 21 |
-| mathematical claim | open | 3 |
+| mathematical claim | established | 23 |
+| mathematical claim | open | 1 |
 | numerical or stochastic simulation | established | 10 |
 | preregistered emulator control | established | 10 |
 | preregistered hardware inference | established | 53 |

@@ -1,0 +1,1132 @@
+{
+ "controls": [
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "bordered_complex_rank": 10,
+   "cross_rank": 8,
+   "nullity": 12,
+   "point": "stiefel e1+e18"
+  },
+  {
+   "G": [
+    "1",
+    "0"
+   ],
+   "Q": [
+    "1",
+    "0"
+   ],
+   "bordered_complex_rank": 16,
+   "cross_rank": 14,
+   "nullity": 0,
+   "point": "unit e1"
+  },
+  {
+   "G": [
+    "-3",
+    "4"
+   ],
+   "Q": [
+    "1",
+    "2"
+   ],
+   "bordered_complex_rank": 16,
+   "cross_rank": 14,
+   "nullity": 0,
+   "point": "non-isotropic e1+e2+e18"
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "-2",
+    "0"
+   ],
+   "bordered_complex_rank": 14,
+   "cross_rank": 12,
+   "nullity": 4,
+   "point": "moreno e1+e10+2e24"
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "bordered_complex_rank": 12,
+   "cross_rank": 10,
+   "curve_cross_ranks": [
+    10,
+    10,
+    10
+   ],
+   "nullity": 8,
+   "point": "incidence e1+e10+e25+e27"
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "bordered_complex_rank": 14,
+   "cross_rank": 12,
+   "curve_cross_ranks": [
+    12,
+    12,
+    12
+   ],
+   "nullity": 4,
+   "point": "mixed e1+e10+e25+e28"
+  }
+ ],
+ "derivations": {
+  "count": 14,
+  "kill_units": true,
+  "sedenion_derivations": true,
+  "skew": true
+ },
+ "factorization": {
+  "bordered_pfaffian_equals_minus_zt_qg": true,
+  "cofactor_equals_g_z": [
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false
+  ],
+  "cofactor_equals_q_z": [
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false,
+   false
+  ],
+  "cofactor_equals_qg_z": [
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "cofactor_terms": [
+   995,
+   995,
+   995,
+   995,
+   995,
+   995,
+   995,
+   995,
+   995,
+   995,
+   995,
+   995,
+   995,
+   995,
+   995
+  ],
+  "cross_matrix_annihilates_z": true,
+  "cross_matrix_skew": true,
+  "g_terms": 141,
+  "q_terms": 15
+ },
+ "pfaffian_self_test": {
+  "orders": [
+   2,
+   4,
+   6,
+   8,
+   10
+  ],
+  "pf_squared_equals_det": [
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "standard_pfaffian": 1
+ },
+ "schema": "a5-stiefel-pfaffian-germs-v1",
+ "square_zero_route": {
+  "basis_vectors_failing_identity": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "example_point": [
+   [
+    "1",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ],
+   [
+    "0",
+    "3"
+   ],
+   [
+    "2",
+    "0"
+   ],
+   [
+    "2",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ],
+   [
+    "0",
+    "0"
+   ]
+  ],
+  "example_q": [
+   "0",
+   "0"
+  ],
+  "example_rank": 8,
+  "identity_on_square_zero_vectors": [
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true
+  ]
+ },
+ "transport": {
+  "agreeing": 30,
+  "imaginary_basis_elements": 30
+ },
+ "versions": {
+  "python-flint": "0.9.0"
+ },
+ "witnesses": [
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 12,
+   "family": "nonzd-axis",
+   "family_unit_dimension": 13,
+   "in_h5_perp": true,
+   "nullity": 12,
+   "on_quadric_cone": true,
+   "piece": "quadric",
+   "piece_cone_dimension": 16,
+   "rank": 20,
+   "tangent_cap_h5_perp_dimension": 14,
+   "tangent_cone_dimension": 16,
+   "witness": 1,
+   "x": [
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 8,
+   "family": "zd-nonzd-locus",
+   "family_unit_dimension": 19,
+   "in_h5_perp": true,
+   "nullity": 8,
+   "orbit": {
+    "U": [
+     "-481061247616/173001924225",
+     "160864/95985"
+    ],
+    "curve_cross_ranks": [
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10
+    ],
+    "curve_on_quadric": true,
+    "curve_starts_at_witness": true,
+    "lambda": [
+     "0",
+     "-1"
+    ],
+    "lambda_squared_is_minus_one": true,
+    "mu": [
+     "0",
+     "0"
+    ],
+    "n_eigenvector": true,
+    "n_isotropic": true,
+    "n_orthogonal_to_u": true,
+    "orbit_complex_rank": 11,
+    "rho": [
+     "1828/1053",
+     "-572/1185"
+    ],
+    "rho_squared_plus_u": [
+     "0",
+     "0"
+    ]
+   },
+   "piece": "orbit",
+   "piece_cone_dimension": 22,
+   "rank": 24,
+   "tangent_cap_h5_perp_dimension": 20,
+   "tangent_cone_dimension": 22,
+   "witness": 4,
+   "x": [
+    "0",
+    "1847/92430",
+    "105296/415935",
+    "-331811/831870",
+    "399589/831870",
+    "-15658/83187",
+    "802649/831870",
+    "-125/117",
+    "0",
+    "68/351",
+    "-487/702",
+    "-1751/702",
+    "85/117",
+    "-293/702",
+    "257/702",
+    "-280/351",
+    "0",
+    "-68/351",
+    "19/702",
+    "-1057/702",
+    "149/117",
+    "-175/702",
+    "-725/702",
+    "-188/351",
+    "0",
+    "-16883/10270",
+    "-20132/31995",
+    "3647/63990",
+    "-58309/831870",
+    "-63974/83187",
+    "-774209/831870",
+    "109/117"
+   ]
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "32/39",
+    "128/117"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 4,
+   "family": "zd-nonzd-generic",
+   "family_unit_dimension": 25,
+   "in_h5_perp": true,
+   "nullity": 4,
+   "piece": "quartic",
+   "piece_cone_dimension": 28,
+   "piece_equation_vanishes": true,
+   "piece_jacobian_rank": 4,
+   "rank": 28,
+   "tangent_cap_h5_perp_dimension": 26,
+   "tangent_cone_dimension": 28,
+   "witness": 5,
+   "x": [
+    "0",
+    "-95/117",
+    "-22/117",
+    "-20/117",
+    "47/39",
+    "-56/117",
+    "2/117",
+    "-8/117",
+    "0",
+    "68/351",
+    "-253/702",
+    "-347/702",
+    "-32/117",
+    "-59/702",
+    "491/702",
+    "-46/351",
+    "0",
+    "-68/351",
+    "253/702",
+    "347/702",
+    "32/117",
+    "59/702",
+    "-491/702",
+    "46/351",
+    "0",
+    "-95/117",
+    "-22/117",
+    "-20/117",
+    "-31/39",
+    "-56/117",
+    "2/117",
+    "-8/117"
+   ]
+  },
+  {
+   "G": [
+    "16",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 4,
+   "family": "nonzd-nonzd-locus",
+   "family_unit_dimension": 25,
+   "in_h5_perp": true,
+   "nullity": 4,
+   "piece": "stiefel",
+   "piece_cone_dimension": 28,
+   "piece_equation_vanishes": true,
+   "piece_jacobian_rank": 4,
+   "rank": 28,
+   "tangent_cap_h5_perp_dimension": 26,
+   "tangent_cone_dimension": 28,
+   "witness": 6,
+   "x": [
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "-1",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 12,
+   "family": "nonzd-axis",
+   "family_unit_dimension": 13,
+   "in_h5_perp": true,
+   "nullity": 12,
+   "on_quadric_cone": true,
+   "piece": "quadric",
+   "piece_cone_dimension": 16,
+   "rank": 20,
+   "tangent_cap_h5_perp_dimension": 14,
+   "tangent_cone_dimension": 16,
+   "witness": 8,
+   "x": [
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 8,
+   "family": "zd-nonzd-locus",
+   "family_unit_dimension": 19,
+   "in_h5_perp": true,
+   "nullity": 8,
+   "orbit": {
+    "U": [
+     "6080668486/51194025",
+     "-1165577/14310"
+    ],
+    "curve_cross_ranks": [
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10
+    ],
+    "curve_on_quadric": true,
+    "curve_starts_at_witness": true,
+    "lambda": [
+     "0",
+     "-1"
+    ],
+    "lambda_squared_is_minus_one": true,
+    "mu": [
+     "0",
+     "0"
+    ],
+    "n_eigenvector": true,
+    "n_isotropic": true,
+    "n_orthogonal_to_u": true,
+    "orbit_complex_rank": 11,
+    "rho": [
+     "1883/530",
+     "619/54"
+    ],
+    "rho_squared_plus_u": [
+     "0",
+     "0"
+    ]
+   },
+   "piece": "orbit",
+   "piece_cone_dimension": 22,
+   "rank": 24,
+   "tangent_cap_h5_perp_dimension": 20,
+   "tangent_cone_dimension": 22,
+   "witness": 11,
+   "x": [
+    "0",
+    "26587/7155",
+    "-51016/7155",
+    "-15947/7950",
+    "98767/35775",
+    "171998/35775",
+    "7117/1325",
+    "118/53",
+    "0",
+    "-3864/1325",
+    "91/53",
+    "-1973/2650",
+    "-1437/1325",
+    "-2502/1325",
+    "-1329/1325",
+    "-5426/3975",
+    "0",
+    "-1436/1325",
+    "121/53",
+    "-677/2650",
+    "-1213/1325",
+    "-2798/1325",
+    "-1321/1325",
+    "-5174/3975",
+    "0",
+    "-29017/7155",
+    "47236/7155",
+    "25547/7950",
+    "-55567/35775",
+    "-188198/35775",
+    "-7817/1325",
+    "-94/53"
+   ]
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "-48/53",
+    "-592/1325"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 4,
+   "family": "zd-nonzd-generic",
+   "family_unit_dimension": 25,
+   "in_h5_perp": true,
+   "nullity": 4,
+   "piece": "quartic",
+   "piece_cone_dimension": 28,
+   "piece_equation_vanishes": true,
+   "piece_jacobian_rank": 4,
+   "rank": 28,
+   "tangent_cap_h5_perp_dimension": 26,
+   "tangent_cone_dimension": 28,
+   "witness": 12,
+   "x": [
+    "0",
+    "-9/53",
+    "-14/53",
+    "32/53",
+    "32/53",
+    "41/53",
+    "-14/53",
+    "12/53",
+    "0",
+    "-1214/1325",
+    "-15/53",
+    "-324/1325",
+    "-112/1325",
+    "148/1325",
+    "-4/1325",
+    "-42/1325",
+    "0",
+    "1214/1325",
+    "15/53",
+    "324/1325",
+    "112/1325",
+    "-148/1325",
+    "4/1325",
+    "42/1325",
+    "0",
+    "-9/53",
+    "-14/53",
+    "32/53",
+    "32/53",
+    "-65/53",
+    "-14/53",
+    "12/53"
+   ]
+  },
+  {
+   "G": [
+    "16",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 4,
+   "family": "nonzd-nonzd-locus",
+   "family_unit_dimension": 25,
+   "in_h5_perp": true,
+   "nullity": 4,
+   "piece": "stiefel",
+   "piece_cone_dimension": 28,
+   "piece_equation_vanishes": true,
+   "piece_jacobian_rank": 4,
+   "rank": 28,
+   "tangent_cap_h5_perp_dimension": 26,
+   "tangent_cone_dimension": 28,
+   "witness": 13,
+   "x": [
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "-1",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 12,
+   "family": "nonzd-axis",
+   "family_unit_dimension": 13,
+   "in_h5_perp": true,
+   "nullity": 12,
+   "on_quadric_cone": true,
+   "piece": "quadric",
+   "piece_cone_dimension": 16,
+   "rank": 20,
+   "tangent_cap_h5_perp_dimension": 14,
+   "tangent_cone_dimension": 16,
+   "witness": 15,
+   "x": [
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 8,
+   "family": "zd-nonzd-locus",
+   "family_unit_dimension": 19,
+   "in_h5_perp": true,
+   "nullity": 8,
+   "orbit": {
+    "U": [
+     "21091760095145/3816341974116",
+     "-4849078/325591"
+    ],
+    "curve_cross_ranks": [
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10,
+     10
+    ],
+    "curve_on_quadric": true,
+    "curve_starts_at_witness": true,
+    "lambda": [
+     "0",
+     "-1"
+    ],
+    "lambda_squared_is_minus_one": true,
+    "mu": [
+     "0",
+     "0"
+    ],
+    "n_eigenvector": true,
+    "n_isotropic": true,
+    "n_orthogonal_to_u": true,
+    "orbit_complex_rank": 11,
+    "rho": [
+     "11518/5061",
+     "1263/386"
+    ],
+    "rho_squared_plus_u": [
+     "0",
+     "0"
+    ]
+   },
+   "piece": "orbit",
+   "piece_cone_dimension": 22,
+   "rank": 24,
+   "tangent_cap_h5_perp_dimension": 20,
+   "tangent_cone_dimension": 22,
+   "witness": 18,
+   "x": [
+    "0",
+    "348466/139539",
+    "-2211035/976773",
+    "421587/651182",
+    "2316362/976773",
+    "-568649/325591",
+    "73578/325591",
+    "512/241",
+    "0",
+    "1863/1687",
+    "-1780/1687",
+    "3698/5061",
+    "-4723/1687",
+    "390/1687",
+    "-831/1687",
+    "-6401/1687",
+    "0",
+    "1511/1687",
+    "-1594/1687",
+    "3050/5061",
+    "-5399/1687",
+    "-390/1687",
+    "-2543/1687",
+    "-3721/1687",
+    "0",
+    "-548800/139539",
+    "1076195/976773",
+    "-551283/651182",
+    "-2056970/976773",
+    "768597/325591",
+    "-8730/325591",
+    "-452/241"
+   ]
+  },
+  {
+   "G": [
+    "0",
+    "0"
+   ],
+   "Q": [
+    "96/241",
+    "-3424/1687"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 4,
+   "family": "zd-nonzd-generic",
+   "family_unit_dimension": 25,
+   "in_h5_perp": true,
+   "nullity": 4,
+   "piece": "quartic",
+   "piece_cone_dimension": 28,
+   "piece_equation_vanishes": true,
+   "piece_jacobian_rank": 4,
+   "rank": 28,
+   "tangent_cap_h5_perp_dimension": 26,
+   "tangent_cone_dimension": 28,
+   "witness": 19,
+   "x": [
+    "0",
+    "-173/241",
+    "-140/241",
+    "-24/241",
+    "32/241",
+    "74/241",
+    "265/241",
+    "30/241",
+    "0",
+    "176/1687",
+    "-93/1687",
+    "108/1687",
+    "338/1687",
+    "390/1687",
+    "856/1687",
+    "-1340/1687",
+    "0",
+    "-176/1687",
+    "93/1687",
+    "-108/1687",
+    "-338/1687",
+    "-390/1687",
+    "-856/1687",
+    "1340/1687",
+    "0",
+    "-173/241",
+    "-140/241",
+    "-24/241",
+    "32/241",
+    "74/241",
+    "-217/241",
+    "30/241"
+   ]
+  },
+  {
+   "G": [
+    "16",
+    "0"
+   ],
+   "Q": [
+    "0",
+    "0"
+   ],
+   "e24_in_tangent": true,
+   "e8_in_tangent": true,
+   "expected_nullity": 4,
+   "family": "nonzd-nonzd-locus",
+   "family_unit_dimension": 25,
+   "in_h5_perp": true,
+   "nullity": 4,
+   "piece": "stiefel",
+   "piece_cone_dimension": 28,
+   "piece_equation_vanishes": true,
+   "piece_jacobian_rank": 4,
+   "rank": 28,
+   "tangent_cap_h5_perp_dimension": 26,
+   "tangent_cone_dimension": 28,
+   "witness": 20,
+   "x": [
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "0",
+    "-1",
+    "0"
+   ]
+  }
+ ]
+}
