@@ -1,0 +1,6 @@
+job-00 radii [0.004615 0.00653  0.006524 0.006515 0.006539] theta-shift chi2 45.239 eps -0.0206 phi-offset chi2 89.217
+job-01 radii [0.003259 0.004606 0.004612 0.004614 0.004604] theta-shift chi2 39.564 eps -0.0219 phi-offset chi2 146.767
+x residual correlation 0.9966
+y residual correlation 0.9649
+direct residual correlation 0.894
+r=2 coefficients [ 0.4494382  -0.49438202 -0.          0.04494382  0.        ]

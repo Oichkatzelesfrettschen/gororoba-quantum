@@ -61,11 +61,13 @@ the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_re
 The active [C5 exact replay](evidence/c5_zero_divisor_code/replay-exact.py) uses rational products
 and matrices for certificates, retaining numerical noisy decoding and the original result bytes.
 The checksum-bound historical README and replay keep their bytes. The active source ledgers
-for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-int-dimension),
-[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-int-dimension) and
-[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-int-dimension) bind the
-`cd_core.py` whose dimension guard admits only exact int, and preserve every other identity of
-their `SHA256SUMS-exact-contracts` predecessors and historical `SHA256SUMS` files.
+for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-ordered-map-cancel),
+[projective limits](evidence/projective_kernel_limits/SHA256SUMS-ordered-map-cancel) and
+[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-ordered-map-cancel) bind the
+`parallel.py` whose `ordered_map` cancels its queued chunks once an item raises, and preserve every
+other identity of their `SHA256SUMS-exact-int-dimension` predecessors, which bind the `cd_core.py`
+whose dimension guard admits only exact int, and of the earlier `SHA256SUMS-exact-contracts` and
+historical `SHA256SUMS` files.
 
 The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
 retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
@@ -127,6 +129,13 @@ differs from it only in the `cd_core.py` digest.
 | [2506.05988.md](notes/papers/2506.05988.md) | Fyrillas et al. 2025 induced phase shifters and the acyclic-pruned-graph crosstalk-robustness criterion (hosted, CC BY 4.0) |
 | [2606.18408.md](notes/papers/2606.18408.md) | Tully et al. 2026 Walsh parity-check filters on Belenos: fixed-pattern bias, compilation-dependent leakage and a calibration-linked HOM episode (unrefereed) |
 | [2005.01743.md](notes/papers/2005.01743.md) | Ollivier et al. 2021 Hong-Ou-Mandel visibility with multi-photon noise: separation of g2 and indistinguishability |
+| [quant-ph-0302031.md](notes/papers/quant-ph-0302031.md) | Horodecki, Shor and Ruskai 2003 entanglement-breaking channels: measure-and-prepare form and the Choi-state separability test |
+| [quant-ph-9807091.md](notes/papers/quant-ph-9807091.md) | Horodecki et al. 1999 teleportation channel: average fidelity from singlet fraction, `f = (F d + 1)/(d + 1)`, and the classical bound `2/(d + 1)` |
+| [1210.4583.md](notes/papers/1210.4583.md) | Chitambar et al. 2014 LOCC survey: the inclusion of LOCC in separable operations |
+| [quant-ph-0007058.md](notes/papers/quant-ph-0007058.md) | Calsamiglia and Lutkenhaus 2001 linear-optical Bell-state analyzer: the 50 percent bound and its assumptions |
+| [quant-ph-9605038.md](notes/papers/quant-ph-9605038.md) | Horodecki et al. 1996 separability criterion: positive partial transpose is exact for 2x2 and 2x3 |
+| [2411.12387.md](notes/papers/2411.12387.md) | Laneve et al. 2024 teleportation between two dissimilar quantum dots over fiber and a 270 m free-space link: sources, tuning, measured fidelities |
+| [1302.0932.md](notes/papers/1302.0932.md) | van Enk and Blume-Kohout 2013 common-state assumption of tomography and the Akaike test for source drift |
 | [2004.14018.md](notes/papers/2004.14018.md) | White et al. 2020 process-tensor characterization and the intervention-based memory lower bound on IBM devices |
 | [riley-2008-nist-sp-1065.md](notes/papers/riley-2008-nist-sp-1065.md) | Riley 2008 NIST SP 1065: Allan, overlapping Allan and modified Allan variances and the noise types they separate |
 | [quant-ph-0501020.md](notes/papers/quant-ph-0501020.md) | Toth and Guhne 2005 stabilizer entanglement witnesses and the two-qubit Bell-fidelity form F > 1/2 |
@@ -154,7 +163,7 @@ differs from it only in the `cd_core.py` digest.
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
 | [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
-| [primorial-cover-defects.md](notes/topics/primorial-cover-defects.md) | missing primorial-wheel gaps 20, 32, 86, 88 as restricted covers: exhaustive defect certificates, capacity and LP bounds, singleton repair, slice Walsh Hamiltonians and the eight-CNOT parity network |
+| [primorial-cover-defects.md](notes/topics/primorial-cover-defects.md) | missing primorial-wheel gaps 20, 32, 86, 88 as restricted covers: exhaustive defect certificates, capacity and LP bounds, singleton repair, slice Walsh Hamiltonians, the eight-CNOT parity network and the reproduction of Ziller Table 1 for `k <= 20` |
 | [c5-zero-divisor-code-falsification.md](notes/topics/c5-zero-divisor-code-falsification.md) | zero-divisor code, falsified thought experiment |
 | [cd-star-lattice-tower.md](notes/topics/cd-star-lattice-tower.md) | Tuna-17 as the Gaussian-integer star lattice; lifts to dimensions 3, 4, 8, 16, the Paley identification of their symmetry groups and the sedenion zero divisors |
 | [evidence/cd-star-lattice/README.md](evidence/cd-star-lattice/README.md) | exact star-lattice census bound to the Tuna-17 catalogue topology, with SL(2, q) and PGL(2, 7) certificates and a nauty replay |
@@ -201,6 +210,7 @@ differs from it only in the `cd_core.py` digest.
 | [design/iqm-garnet-idle-schedule-train-readout.md](design/iqm-garnet-idle-schedule-train-readout.md) | IQM Garnet idle schedule (ASAP or ALAP, from a pulsed qubit's relaxation beside an uncoupled identity train) and QB6/QB11 train over-rotation fitted with each qubit's own readout, H1-H2 |
 | [design/primorial-cover-defect-probes.md](design/primorial-cover-defect-probes.md) | primorial cover-defect circuits: Grover quotient, phase-gradient tomography with a zero-angle null arm, the gap-86 and gap-88 repair contrasts against the mutation test, the Kingston noise prediction and the hardware decision |
 | [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements; [principal-angle replay](notes/quandela/bdsc.md) |
+| [design/ascella-belenos-entanglement-teleportation.md](design/ascella-belenos-entanglement-teleportation.md) | Ascella-Belenos entanglement and teleportation: claim levels, gates, ideal dual-rail instrument ([qd_network_protocol.py](../scripts/qd_network_protocol.py)), decision statistics and the unsent provider request |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
@@ -217,6 +227,7 @@ differs from it only in the `cd_core.py` digest.
 |---|---|
 | [ibm_heron_platform.md](notes/ibm_heron_platform.md) | measured Targets and current documentation |
 | [hardware-controls.md](notes/ibm_quantum/hardware-controls.md) | every control reachable through qiskit-ibm-runtime |
+| [learning-quantum-teleportation.md](notes/ibm_quantum/learning-quantum-teleportation.md) | IBM Quantum Learning teleportation lesson: outcome-to-correction table |
 | [qiskit-ecosystem.md](notes/qiskit-ecosystem.md) | Qiskit ecosystem audit |
 | [qiskit-ecosystem-install-plan.md](notes/qiskit-ecosystem-install-plan.md) | Qiskit ecosystem install plan |
 
@@ -227,6 +238,7 @@ differs from it only in the `cd_core.py` digest.
 | [tuna17-bipartite-designs.md](notes/quantum_inspire/tuna17-bipartite-designs.md) | Tuna-17 cubic Walsh classes and box-kite packing |
 | [quandela/literature.md](notes/quandela/literature.md) | published methods for characterizing a Belenos-class mesh |
 | [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |
+| [quandela/roadmap-2026-03.md](notes/quandela/roadmap-2026-03.md) | Quandela March 2026 roadmap and the Welinq interconnect announcement: networking and modular-system statements with page and target year |
 | [iqm/python-stack.md](notes/iqm/python-stack.md) | Python stack for IQM Resonance |
 
 ### Simulation

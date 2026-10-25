@@ -1,0 +1,75 @@
+{
+ "schema": "qi-matched-zero-divisor-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "shots": 16384,
+ "batch": "batch-01",
+ "circuits": [
+  {
+   "file": "witness.cq",
+   "sha256": "ff3ea089f0b1178843ddae88c7a2e822a5d272d12ddbef4953212c3224b46e4f"
+  },
+  {
+   "file": "readout-0.cq",
+   "sha256": "7d2ee15155f14726fc71a235da3df2fada6f12d458a5095f023c31e8206efdc3"
+  },
+  {
+   "file": "readout-1.cq",
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  }
+ ],
+ "replicas": [
+  {
+   "case": "bright",
+   "qubits": [
+    1,
+    2,
+    4,
+    8,
+    12
+   ],
+   "roles": {
+    "d0": 8,
+    "d1": 2,
+    "d2": 12,
+    "d3": 1,
+    "selector": 4
+   },
+   "case_shapes_equal": true,
+   "ideal_probabilities": {
+    "dark": 0.0,
+    "bright": 1.0,
+    "fixture": 0.5
+   },
+   "cz": 81,
+   "t": 28
+  },
+  {
+   "case": "fixture",
+   "qubits": [
+    10,
+    11,
+    13,
+    14,
+    16
+   ],
+   "roles": {
+    "d0": 14,
+    "d1": 11,
+    "d2": 16,
+    "d3": 10,
+    "selector": 13
+   },
+   "case_shapes_equal": true,
+   "ideal_probabilities": {
+    "dark": 0.0,
+    "bright": 1.0,
+    "fixture": 0.5
+   },
+   "cz": 105,
+   "t": 28
+  }
+ ],
+ "catalogue_sha256": "1b978cf3518149cd72886865bffb971ab0c359ae5a7a993cb5f51b230159cd78",
+ "provider_execution_authorized": false
+}

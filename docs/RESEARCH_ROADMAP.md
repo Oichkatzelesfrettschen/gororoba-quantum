@@ -63,8 +63,8 @@ proposed work, in dependency order:
 | Evidence class | Status | Claim records |
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
-| exact finite certificate | established | 23 |
-| exploratory reanalysis | exploratory | 67 |
+| exact finite certificate | established | 24 |
+| exploratory reanalysis | exploratory | 68 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 21 |

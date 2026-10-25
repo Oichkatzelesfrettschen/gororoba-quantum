@@ -33,6 +33,8 @@ import math
 import multiprocessing
 import os
 import pickle
+import tempfile
+import time
 from collections.abc import Callable, Iterator, Sequence
 from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
@@ -242,7 +244,14 @@ def ordered_map(function: Callable[[Any], Any], items: Sequence[Any], min_items:
     with _worker_environment():
         pool = _executor(count)
         futures = [pool.submit(_run_chunk, key, payload, chunk) for chunk in chunks]
-    return [result for future in futures for result in future.result()]
+    try:
+        return [result for future in futures for result in future.result()]
+    except BaseException:
+        # The executor outlives the call and joins at exit, so a chunk left queued would still run after the
+        # failure propagates; cancelling drops every chunk no worker has taken.
+        for future in futures:
+            future.cancel()
+        raise
 
 
 def _thread_settings(_item: int) -> dict[str, str | None]:
@@ -259,6 +268,15 @@ def _nested_budget(item: int) -> tuple[int, list[tuple[int, int, int, int]]]:
 
 def _square(item: int) -> int:
     return item * item
+
+
+def _fail_first(item: tuple[int, str]) -> int:
+    index, directory = item
+    if index == 0:
+        raise ValueError("parallel: the first item fails")
+    time.sleep(0.02)
+    Path(directory, str(index)).touch()
+    return index
 
 
 def self_test() -> str:
@@ -288,6 +306,19 @@ def self_test() -> str:
         items = list(range(257))
         if ordered_map(_square, items, min_items=1) != [_square(item) for item in items]:
             raise SystemExit("parallel: the pooled map differs from the serial loop")
+        with tempfile.TemporaryDirectory() as directory:
+            failing = [(index, directory) for index in range(32 * CHUNKS_PER_WORKER * count)]
+            try:
+                ordered_map(_fail_first, failing, min_items=1)
+            except ValueError:
+                pass
+            else:
+                raise SystemExit("parallel: a failing item did not raise")
+            _shutdown()
+            # The failing chunk stops at its first item, so a drained queue runs every item outside it.
+            behind = len(failing) - -(-len(failing) // (CHUNKS_PER_WORKER * count))
+            if count > 1 and len(os.listdir(directory)) >= behind:
+                raise SystemExit("parallel: the chunks queued behind a failure still ran")
     finally:
         _shutdown()
         for name, value in saved.items():

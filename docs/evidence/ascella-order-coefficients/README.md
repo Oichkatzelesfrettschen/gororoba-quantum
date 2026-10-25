@@ -87,17 +87,33 @@ returned 12-mode meshes fitted on job-00 and scored on job-01's pooled
 configurations, with supplementary families and a leave-one-configuration-out
 refit of the static ones
 ([design](../../design/ascella-signed-coherence-conformance.md#restricted-physical-models-of-the-analyzer-response)).
-[`configuration-holdout.json`](configuration-holdout.json), from
+[`configuration-holdout-unclipped-light.json`](configuration-holdout-unclipped-light.json), from
 [`scripts/ascella_configuration_holdout.py`](../../../scripts/ascella_configuration_holdout.py),
 holds the leave-one-configuration-out refit of the static families from the
 training configurations alone, scored in counting plus fitted-prediction
 variance; it supersedes the left-out column of `physical-models.json`
 ([design](../../design/ascella-signed-coherence-conformance.md#leave-one-configuration-out-from-training-data)).
-[`heater-drive-holdout.json`](heater-drive-holdout.json), from the same
-script with `--drive`, holds the preregistered drive-dependent heater family
-(heater offsets and per-heater drive slopes) under those folds
+[`configuration-holdout.json`](configuration-holdout.json) is the same refit
+built while the static fit clipped the block light, with one combined-family
+fold in a higher local mode; its bytes stay for the receipt that binds them.
+[`heater-drive-holdout-heater-basis.json`](heater-drive-holdout-heater-basis.json), from
+[`scripts/ascella_configuration_holdout.py`](../../../scripts/ascella_configuration_holdout.py)
+with `--drive`, holds the preregistered drive-linear heater family (heater
+offsets and per-heater drive slopes) under those folds
 ([design](../../design/ascella-signed-coherence-conformance.md#drive-dependent-heater-response-under-the-same-folds)).
+[`heater-drive-holdout.json`](heater-drive-holdout.json) is the same refit
+with the offsets and slopes in two coefficient blocks, which reaches other
+modes on left-out configurations 20 and 23; its bytes stay.
+[`drive-response.json`](drive-response.json), from
+[`scripts/ascella_drive_response.py`](../../../scripts/ascella_drive_response.py),
+holds the polynomial and harmonic heater responses to the returned phase,
+fitted on job-00, scored on job-01 and on the same training-only folds
+([design](../../design/ascella-signed-coherence-conformance.md#polynomial-and-harmonic-drive-responses)).
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance, and the last three replay their nominal family there and
-their fitted families within 1e-3 relative plus 1e-8 absolute, the rounding of
-optimizer endpoints under another BLAS build.
+certificate tolerance, and the physical-model, holdout, drive-linear and
+drive-response records their nominal family there and their fitted families
+within 1e-3 relative plus 1e-8 absolute, the rounding of optimizer endpoints
+under another BLAS build. Which posterior mode a fit reaches follows the
+kernels' rounding, so every record is written and replayed under the OpenBLAS
+kernel and numpy SIMD dispatch that `ci/run_gates.py` and `ci/pr_checks.sh`
+set.

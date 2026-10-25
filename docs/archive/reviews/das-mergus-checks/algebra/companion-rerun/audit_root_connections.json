@@ -1,0 +1,73 @@
+{
+  "bdsc": {
+    "kernel_projector": "(I-Z2)(I+Y3X1Y0)/4",
+    "kernel_rank": 4,
+    "logical_compression_square_equals_kernel_projector": true,
+    "logical_compression_trace": 0,
+    "pauli_gram": "2I-YIXY+YZXY",
+    "weight_one_nontrivial_logical": "X1"
+  },
+  "cd_core_sha256": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+  "incidence_rank_path": {
+    "characteristic_polynomial_factored": "lambda**8*(lambda**2 + 4*t**2)**2*(lambda**2 + 2*t**2 + 2)**4*(lambda**2 + 4*t**2 + 4)**2*(lambda**4 + 4*lambda**2*t**2 + 8*lambda**2 + 16)**2",
+    "complex_coordinates": "u=e1, mu=0, v=i e1+t(e2+i e3)",
+    "expanded_coefficient_equality": true,
+    "nullity_justification": "Real skewness equates algebraic and geometric zero multiplicity; all displayed remaining factors have nonzero lambda=0 constant terms for real t nonzero.",
+    "nullity_real_t_nonzero": 8,
+    "nullity_t_zero": 12,
+    "skew_identity": true,
+    "y": "e1+e25+t(e10+e27)"
+  },
+  "producer_sha256": "bf93015df68b372cee6e0dd1d82069ac687798f514190a5b23ceecd85e7c3f17",
+  "python_version": "3.14.7",
+  "rank_path": {
+    "characteristic_polynomial_factored": "lambda**12*(lambda**2 + 4*t**2)**2*(lambda**2 + 2*t**2 + 4)**4*(lambda**2 + 4*t**2 + 8)**2*(lambda**2 + 4*t**2 + 16)**2",
+    "coherent_reference": "X on algebra bit 1 maps b to c",
+    "expanded_coefficient_equality": true,
+    "nullity_justification": "real skew matrices are normal; all nonzero constant quadratic factors are strictly positive at lambda=0 for real t",
+    "nullity_real_t_nonzero": 12,
+    "nullity_t_zero": 16,
+    "sector_action": "M(t)b=2t c; M(t)c=-2t b",
+    "sector_basis_b": {
+      "12": "-1/2",
+      "20": "-1/2",
+      "31": "-1/2",
+      "7": "1/2"
+    },
+    "sector_basis_c": {
+      "14": "-1/2",
+      "22": "-1/2",
+      "29": "-1/2",
+      "5": "1/2"
+    },
+    "skew_identity": true
+  },
+  "repository_commit": "ec75554a1af800496d99c80ab23022e83c5e20ea",
+  "schema": "das-mergus-independent-connections-v1",
+  "sharp_associator_witness": {
+    "a_bc": {
+      "12": "-4",
+      "7": "4"
+    },
+    "ab": {
+      "14": "-2",
+      "5": "2"
+    },
+    "ab_c": {
+      "12": "4",
+      "7": "-4"
+    },
+    "associator": {
+      "12": "8",
+      "7": "-8"
+    },
+    "bc": {
+      "13": "-2",
+      "6": "-2"
+    },
+    "normalized_ratio": "4",
+    "normalized_squared_ratio": "16",
+    "scope": "exact lower-bound witness; all-input upper bound is the chapter's written doubling proof"
+  },
+  "sympy_version": "1.14.0"
+}

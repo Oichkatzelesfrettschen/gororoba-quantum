@@ -48,4 +48,7 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 ```
 
 `--check` recomputes the report and compares it with the retained
-[`replay.json`](replay.json), floats within 1e-9 and tool versions aside.
+[`replay-ordered-map-cancel.json`](replay-ordered-map-cancel.json), floats within 1e-9 and tool
+versions aside. It differs from the [first report](replay.json), which a plan receipt binds, in the
+digests of the producer and of `parallel.py`, whose `ordered_map` cancels its queued chunks once an
+item raises, and in float fields by at most 1.2e-16.

@@ -488,7 +488,7 @@ manifest identity, estimator and rendering code accompany the final artwork.
 freezes the common twelve-mode circuit, exact entry sequence, analyzer
 conventions and commuting mutation in
 [`results/quandela/cases/ascella_signed_coherence/job-00`](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json).
-Its `--check` mode, gate core-680, validates the retained bytes: every
+Its `--check` mode, run by gate core-record-check-07 (tests/test_cli_record_checks.py), validates the retained bytes: every
 iteration's Perceval unitary matches the twelve-mode manifest operator, every
 operator matches the closed form `[[Q+,Q-],[Q-,Q+]]` under its analyzer, and
 every registered ideal equals the readout law of that form. The check also
@@ -1008,7 +1008,12 @@ family at the certificate tolerance.
 ### Leave-one-configuration-out from training data
 
 [`ascella_configuration_holdout.py`](../../scripts/ascella_configuration_holdout.py)
-writes [`configuration-holdout.json`](../evidence/ascella-order-coefficients/configuration-holdout.json).
+writes [`configuration-holdout-unclipped-light.json`](../evidence/ascella-order-coefficients/configuration-holdout-unclipped-light.json).
+It supersedes [`configuration-holdout.json`](../evidence/ascella-order-coefficients/configuration-holdout.json),
+built while the static fit clipped the block light at 1e-9: an L-BFGS path from
+zero that crosses a clipped cell takes another branch, and the combined
+family's fold 3 there sits in a local mode 4.36 higher in negative log
+posterior. The sums below are unchanged at the precision shown.
 For each static family and each of job-00's 30 configurations, the fold fit
 removes the configuration's settings and reaches the posterior mode from the
 zero start, so neither the start nor the mode selection reads the left-out
@@ -1060,7 +1065,15 @@ a_h under N(0, 0.3^2) and k_h under N(0, 0.1^2), whose spread at the mid
 drive pi (0.31 rad) matches the offset prior (252 parameters).
 [`ascella_configuration_holdout.py --drive`](../../scripts/ascella_configuration_holdout.py)
 fits it under the folds and score of the section above and writes
-[`heater-drive-holdout.json`](../evidence/ascella-order-coefficients/heater-drive-holdout.json).
+[`heater-drive-holdout-heater-basis.json`](../evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json).
+The family runs as the heater basis (1, phi) of the next section, with each
+heater's offset and slope adjacent among the coefficients;
+[`heater-drive-holdout.json`](../evidence/ascella-order-coefficients/heater-drive-holdout.json),
+written while the offsets and slopes formed two blocks, keeps its bytes.
+The reordered L-BFGS path from zero reaches another mode in two folds, 0.13
+lower in negative log posterior on left-out configuration 20 and 0.39 higher
+on 23, which serves no readout; the X sum moves from 36.05 to 36.09 and every
+figure below is unchanged at its quoted precision.
 The family, its single prior width and the reading of each outcome were fixed
 in step `drive-dependent-heater-family` of plan
 `ascella-configuration-holdout-training-only` before the run: a sum of 30 or
@@ -1091,3 +1104,81 @@ left-out configurations otherwise; any other outcome is inconclusive.
   term in the drive and crosstalk through A stay outside the family. A family
   with those terms whose standardized sums fall below 20 with variance ratios
   at most 1 would lower it.
+
+### Polynomial and harmonic drive responses
+
+The drive-linear family above is one member of a wider class: a heater's
+drive is fixed by its returned phase, so an error in its phase-voltage map
+shifts it by some function of that phase. The passive offsets b of
+(0.1 +- 1.2) rad ([2306.00874](../notes/papers/2306.00874.md), SI S-IV) set
+where each heater wraps, and a quadratic drive term bends the response; both
+lie outside the drive-linear family.
+[`ascella_drive_response.py`](../../scripts/ascella_drive_response.py) shifts
+heater h of configuration c by sum_k b_k(phi_ch) w_hk under independent
+N(0, tau^2) priors on the coefficients, in two bases:
+
+- polynomial: shifted Legendre polynomials of the drive (phi mod 2 pi) / 2 pi
+  to order 1 or 2, which place every heater's wrap at phi = 0;
+- harmonic: 1, cos(j phi) and sin(j phi) to order 1 or 2. Each heater wraps at
+  its own unreported offset b_h, and a per-heater response to the drive is a
+  2 pi-periodic function of the returned phase whatever the wrap, which the
+  harmonics expand without one.
+
+Order 0 is the static heater-offset family, and the drive-linear family is
+the basis (1, phi) with its own widths for the two functions
+(`static_light` evaluates both through one heater basis). Each family is fitted on all of
+job-00 and scored on job-01 as in the physical-model table, and runs the
+training-only folds of the section above on the 19 configurations that serve
+the X or Y readout, from the zero start. The reading is that section's,
+fixed before this run: a standardized sum of 30 or more on 10 for X or Y keeps
+the shortfall, and a sum below 20 with a median prediction-to-counting
+variance ratio above 1 reads as weakly identified predictions.
+[`drive-response.json`](../evidence/ascella-order-coefficients/drive-response.json)
+holds the outcome:
+
+| Family | Coefficients | Job-00 X / Y | Job-01 held-out X / Y | Left-out X / Y, counting only | Left-out X / Y, with prediction variance | Median prediction / counting variance, X / Y |
+|---|---|---|---|---|---|---|
+| polynomial, order 1, tau 0.3 | 252 | 3.7 / 5.7 | 5.4 / 10.8 | 539 / 225 | 32 / 28 | 10 / 2.8 |
+| polynomial, order 2, tau 0.3 | 378 | 1.2 / 1.9 | 4.0 / 9.0 | 426 / 94 | 7.6 / 3.9 | 32 / 22 |
+| harmonic, order 1, tau 0.3 | 378 | 1.3 / 1.7 | 4.0 / 9.4 | 386 / 103 | 3.5 / 3.3 | 104 / 20 |
+| harmonic, order 1, tau 0.1 | 378 | 1.9 / 3.1 | 4.0 / 12.6 | 387 / 133 | 14.8 / 7.1 | 21 / 6.5 |
+| harmonic, order 2, tau 0.3 | 630 | 1.2 / 1.2 | 4.3 / 6.7 | 564 / 127 | 1.5 / 1.0 | 485 / 182 |
+
+- Every family fits job-00 within its counting noise and passes job-01 with
+  X0 + Xc2 at -0.026 to -0.028, inside the interval. That tests
+  reproducibility, which job-00's raw configuration values already give.
+- The order-1 polynomial spans the drive-linear family's functions under one
+  prior width for both, and it keeps the shortfall on X (32) under the preset
+  criterion, as the drive-linear family does (36.1); its Y sum of 28 lies
+  between the thresholds.
+- The other four predict left-out configurations with a median prediction
+  variance 6.5 to 485 times the counting variance, and their sums fall below
+  20: the 29 training configurations do not determine their left-out
+  predictions, so the test neither rejects nor supports them. Their point
+  predictions do worse than the returned mesh on every readout (X 386 to 564
+  against 343, Y 94 to 133 against 75).
+
+The harmonic families carry each heater's wrap point and the order-2
+families a quadratic drive term, the terms the drive-linear section left
+outside its family, and 29 training configurations do not identify them.
+They neither meet that section's lowering condition (sums below 20 with
+variance ratios at most 1) nor sharpen the shortfall, so its medium-high
+confidence stands. A hardware case that repeats one configuration under many
+perturbed compilations would constrain these coefficients: confidence would
+rise if the shortfall remained under them and fall if they predicted
+left-out configurations within the preset criterion.
+
+The posteriors of these 252 to 630 coefficients hold several modes, and which
+one an L-BFGS path from zero reaches follows the rounding of the BLAS kernel
+and of numpy's SIMD loops: under a forced SSE-only OpenBLAS kernel one
+order-1 harmonic family reaches a mode 0.009 lower in negative log posterior
+than under the host kernel. The record is written and replayed under the
+kernel pair every gate path sets (`ci/run_gates.py`, `ci/pr_checks.sh` and the
+audit workflow): the OpenBLAS Haswell kernel and numpy's x86-64-v3 loops with
+AVX-512 dispatch off, which every x86-64-v3 runner shares. The static fit's block light
+is the normalized |psi|^2 without a clip: the order-2 harmonic family puts a
+fold's cell below 1e-9, where a clipped light zeroed its derivative and the
+Hessian difference read the kink as eigenvalues near -7e5, so Newton steps
+could not certify the mode. The floor now guards only the setting
+probabilities, which the in-block background keeps above it on every setting
+of these runs; `physical-models.json` replays unchanged under that path.
