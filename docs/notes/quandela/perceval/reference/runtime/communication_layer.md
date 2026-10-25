@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/runtime/communication_layer.html](https://perceval.quandela.net/docs/v1.3/reference/runtime/communication_layer.html)
-> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 08d90a0bebf3719d05a9f94ec6de6700bbcee23e48d929c73f707c92442abb66.
+> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 08d90a0bebf3719d05a9f94ec6de6700bbcee23e48d929c73f707c92442abb66.
 
 # CommunicationLayer
 

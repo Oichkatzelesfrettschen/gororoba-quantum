@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/runtime/platform_specs.html](https://perceval.quandela.net/docs/v1.3/reference/runtime/platform_specs.html)
-> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 8a719abcdf81cae0455984abf8c5f21f5f4d7c47b70636d3bca945a29d215e81.
+> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 8a719abcdf81cae0455984abf8c5f21f5f4d7c47b70636d3bca945a29d215e81.
 
 # PlatformSpecs
 

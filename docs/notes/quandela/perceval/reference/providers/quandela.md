@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html](https://perceval.quandela.net/docs/v1.3/reference/providers/quandela.html)
-> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 622d97c6cb79f54b0cb2a0475e98b634d393907c2cdb886171017c692d09c692.
+> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 622d97c6cb79f54b0cb2a0475e98b634d393907c2cdb886171017c692d09c692.
 
 # Quandela
 

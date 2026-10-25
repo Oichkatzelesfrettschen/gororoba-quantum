@@ -1,5 +1,5 @@
 > Full piece: [https://perceval.quandela.net/docs/v1.3/notebooks/Remote_Computation_Tutorial.html](https://perceval.quandela.net/docs/v1.3/notebooks/Remote_Computation_Tutorial.html)
-> Retrieved 2026-10-25T09:12Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 7620330d92d010c642be6c7a52b3ef15235943e2abee2d0fdaf04b1e93671f37.
+> Retrieved 2026-10-17T17:29Z by scripts/capture_qd_docs.py --perceval (urllib, pandoc); fetched HTML sha256 7620330d92d010c642be6c7a52b3ef15235943e2abee2d0fdaf04b1e93671f37.
 
 # Remote Computing
 
