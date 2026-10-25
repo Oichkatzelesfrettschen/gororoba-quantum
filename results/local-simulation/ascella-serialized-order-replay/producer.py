@@ -120,7 +120,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Replay the retained Ascella request locally with network connections forbidden."
     )
-    parser.add_argument("--out", type=Path, default=Path(__file__).with_name("replay.json"))
+    parser.add_argument("--out", type=Path, default=Path(__file__).with_name("replay-ordered-map-cancel.json"))
     parser.add_argument("--check", action="store_true")
     arguments = parser.parse_args()
     report = analyze()

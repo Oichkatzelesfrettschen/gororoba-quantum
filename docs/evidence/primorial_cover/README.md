@@ -1,6 +1,6 @@
 # Primorial cover defects: certificates and the Kingston noise prediction
 
-Two records live here.
+Three records live here.
 
 - `certificates.json` is the output of `gororoba_quantum/primorial_cover.py
   --out`, recomputed byte for byte by gate `core-688` (about 5 s). It holds the
@@ -24,6 +24,37 @@ Two records live here.
   `noise.json` to equal the collected output, recompiles every arm and
   requires layouts and CZ counts to match exactly and every law to 1e-8.
   A build-host CPU run of the same commit gives identical laws.
+- `ziller_table.json` is the output of `gororoba_quantum/primorial_table.py
+  --out`, recomputed byte for byte by gate `core-primorial-ziller-table-replay`
+  (full tier, every worker; 176 s wall and 348 CPU-s on four workers, 218 s
+  and 441 CPU-s on twelve under a load average near 20, the second round's
+  single cell at k = 20, L = 73 taking about 90 s alone). It
+  decides every even difference from 2 to h(k) for k = 1..20, 637 cells,
+  where h(k) is the largest difference Ziller's Table 1 (arXiv:2007.01808v1,
+  p. 12) prints. Each search walks the allowed residues of 3, 5, 7 and 11 in
+  lexicographic order and runs the pruned depth-first search of
+  `primorial_cover` over the remaining primes; a cover found at level k is
+  carried to later levels with the smallest allowed residue of each new prime
+  and rechecked there, so L is searched again only where it is excluded. The
+  record keeps 84 witnesses (one per half-length, at the level first
+  covered), the branch count of each of the 9 exclusions, and per row the
+  missing set, N_min(k) and the membership of h(k) in D(k).
+
+## Ziller Table 1 through k = 20
+
+The search agrees with Table 1 in every row k = 1..20: the missing
+differences are 20 (k = 6), 32 (k = 8), 86 and 88 (k = 14), 98 (k = 15), 146
+(k = 19) and 166, 170 and 172 (k = 20), no other k up to 20 misses one, every
+N_min(k) matches, and h(k) lies in D(k) in every row. Each missing difference
+first enters range at the level where it is excluded, and each one below
+k = 20 is covered one level later: 20 at k = 7, 32 at k = 9, 86 and 88 at
+k = 15, 98 at k = 16 and 146 at k = 20. The h(k)
+column enters as the range bound only: D(k) is not downward closed, so the
+search reproduces h(k) in D(k) and leaves its maximality to Ziller and to the
+Jacobsthal values of his reference [10]. The exclusion counts (135 to 180
+branches) are exhaustive over the branch primes; their correctness rests on
+the pruning bound shared with `primorial_cover._coverable`; at k = 6, 8 and 14
+they agree with `certificates.json`, which branches over different primes.
 
 ## Question and falsifiers
 

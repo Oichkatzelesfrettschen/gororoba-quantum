@@ -1286,7 +1286,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_determinant",
-   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
+   "cmd": "sha256sum -c SHA256SUMS-ordered-map-cancel",
    "name": "sources-183",
    "seconds": 0.1,
    "tier": "pr"
@@ -1302,7 +1302,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/projective_kernel_limits",
-   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
+   "cmd": "sha256sum -c SHA256SUMS-ordered-map-cancel",
    "name": "sources-186",
    "seconds": 0.1,
    "tier": "pr"
@@ -1342,7 +1342,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/real_frontier_graphs",
-   "cmd": "sha256sum -c SHA256SUMS-exact-int-dimension",
+   "cmd": "sha256sum -c SHA256SUMS-ordered-map-cancel",
    "seconds": 0.1,
    "tier": "pr",
    "name": "sources-194"
@@ -2281,13 +2281,13 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-pooled-validation.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-ordered-map-cancel.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-pooled-validation.json"
+    "docs/evidence/submitted_circuits/comparison-ordered-map-cancel.json"
    ]
   },
   {
@@ -3912,7 +3912,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel",
    "name": "core-632",
    "seconds": 3.0,
    "tier": "pr",
@@ -3921,7 +3921,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-token-recovery",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qi_matched_zero_divisor.py --check-toolchain results/quantum_inspire/proposals/tuna17-zero-divisor-matched-response-ordered-map-cancel",
    "name": "core-633",
    "seconds": 2.0,
    "tier": "pr",
@@ -4034,7 +4034,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/configuration-holdout.json --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/configuration-holdout-unclipped-light.json --check",
    "name": "core-ascella-signed-coherence-configuration-holdout-replay",
    "seconds": 600.0,
    "tier": "full"
@@ -4042,9 +4042,17 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/heater-drive-holdout.json --drive --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json --drive --check",
    "name": "core-ascella-signed-coherence-heater-drive-holdout-replay",
    "seconds": 600.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_drive_response.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01 docs/evidence/ascella-order-coefficients/drive-response.json --check",
+   "name": "core-ascella-signed-coherence-drive-response-replay",
+   "seconds": 735.0,
    "tier": "full"
   },
   {
@@ -4090,7 +4098,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-5",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-6",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
@@ -4142,7 +4150,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/primorial_cover.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum/primorial_cover.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/primorial_cover.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py",
    "name": "core-687",
    "seconds": 15.0,
    "tier": "pr"
@@ -4165,6 +4173,18 @@
    "name": "core-689",
    "seconds": 91.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error primorial_table.py --check ../docs/evidence/primorial_cover/ziller_table.json",
+   "name": "core-primorial-ziller-table-replay",
+   "seconds": 180.0,
+   "tier": "full",
+   "workers": "all",
+   "replays": [
+    "docs/evidence/primorial_cover/ziller_table.json"
+   ]
   }
  ],
  "excluded": [

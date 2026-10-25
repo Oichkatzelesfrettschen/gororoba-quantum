@@ -23,10 +23,11 @@ decides nothing between them.
 
 Leave-one-configuration-out, fitted after the preregistered table and deciding nothing, refits each static
 family on job-00 without one configuration and scores that configuration's X and Y statistics against the
-prediction in their multinomial variances alone. Each of the 30 configurations is left out in turn; the 19 that
-serve the X or Y readout (one serves both) are scored, and the nominal mesh gives the reference. Each fold starts
-from the full-data mode, so this score is descriptive; scripts/ascella_configuration_holdout.py refits the folds
-from the training configurations alone and scores them in the fitted-prediction variance.
+prediction in their multinomial variances alone. Each of the 19 configurations that serve the X or Y readout (one
+serves both) is left out in turn and scored; a fold on any of the other 11 would add no row. The nominal mesh gives
+the reference. Each fold starts from the full-data mode, so this score is descriptive;
+scripts/ascella_configuration_holdout.py refits the folds from the training configurations alone and scores them
+in the fitted-prediction variance.
 
 The held-out statistic of each readout is r^T (diag(v) + J C J^T)^{-1} r over job-01's pooled configuration
 statistics, with v job-01's multinomial variances, C the inverse Fisher information of the job-00 fit (plus the
@@ -100,12 +101,14 @@ STEP = 1e-5
 # counts and verdicts replay at the certificate tolerance.
 FIT_REPLAY_RELATIVE = 1e-3
 FIT_REPLAY_ABSOLUTE = 1e-8
-# A model probability never falls below this floor, so a count in a cell the mesh leaves dark stays finite.
+# The low-dimensional families clip their light at this floor and the static fits hold every setting probability
+# above it, so a count in a cell the mesh leaves dark stays finite. The static light itself, |psi|^2 over the block,
+# is smooth through an interference null, and a clip there would put a kink at a posterior mode that reaches it.
 PROBABILITY_FLOOR = 1e-9
 FIT_TOLERANCE = 1e-12
 FIT_ITERATIONS = 20000
 STATIC_GRADIENT_TOLERANCE = 1e-8
-REFINE_STEPS = 50
+REFINE_STEPS = 200
 REFINE_TOLERANCE = 1e-8
 REFINE_DAMPING = 1e-6
 HESSIAN_STEP = 1e-6
@@ -403,43 +406,74 @@ def pure_jacobians(
     return np.abs(psi) ** 2, 2 * np.real(np.conj(psi)[:, :, None] * d)
 
 
+def heater_parameters(data: dict[str, Any]) -> int:
+    """Heater parameter count: one offset per heater, or one coefficient per heater and basis function."""
+    basis = data.get("heater_basis")
+    return int(data["phases"].shape[1] if basis is None else basis.shape[1] * basis.shape[2])
+
+
 def prior_widths(
-    data: dict[str, Any], heater_tau: float | None, coupler_tau: float | None, slope_tau: float | None = None
+    data: dict[str, Any], heater_tau: float | tuple[float, ...] | None, coupler_tau: float | None
 ) -> np.ndarray:
-    """Per-parameter prior widths over (heaters, couplers) and, when slope_tau is given, per-heater drive slopes;
-    a family without one kind gives it width zero."""
-    heaters, couplers = data["phases"].shape[1], len(data["couplers"])
-    blocks = [np.full(heaters, heater_tau or 0.0), np.full(couplers, coupler_tau or 0.0)]
-    if slope_tau is not None:
-        blocks.append(np.full(heaters, slope_tau))
-    return np.concatenate(blocks)
+    """Per-parameter prior widths over (heaters, couplers); a family without one kind gives it width zero. A tuple
+    heater_tau gives each heater basis function its own width, repeated over the heater-major coefficients."""
+    heaters, couplers = heater_parameters(data), len(data["couplers"])
+    if isinstance(heater_tau, tuple):
+        basis = data.get("heater_basis")
+        if basis is None or basis.shape[2] != len(heater_tau):
+            raise ValueError("one heater width per basis function")
+        heater = np.tile(np.array(heater_tau, dtype=float), basis.shape[1])
+    else:
+        heater = np.full(heaters, heater_tau or 0.0)
+    return np.concatenate([heater, np.full(couplers, coupler_tau or 0.0)])
 
 
 def static_light(data: dict[str, Any], offsets: np.ndarray, free: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Pure-state block-conditioned light and its Jacobian over the free offsets (configurations x 4 x free).
 
-    A parameter vector longer than heaters plus couplers carries one drive slope k_h per heater after them: the
-    heater realizes phi + a_h + k_h phi, with phi the returned phase in [0, 2 pi). Under the phase-voltage map
-    phi = A V^2 + b the heater power V^2 is linear in phi, so k_h is a per-heater error of the fitted slope, and
-    its Jacobian column is the heater's column times phi."""
-    heaters, couplers = data["phases"].shape[1], len(data["couplers"])
+    A run that carries a heater basis b (configurations x heaters x K) shifts heater h of configuration c by
+    sum_k b[c, h, k] w[h, k], coefficients heater-major, and its Jacobian follows by the chain rule; without one,
+    every heater carries one offset shared by all configurations."""
+    heaters = heater_parameters(data)
     full = np.zeros(len(free))
     full[free] = offsets
-    phases = data["phases"] + full[None, :heaters]
-    drive = data["phases"] % (2 * math.pi)
-    sloped = len(free) > heaters + couplers
-    if sloped:
-        phases = phases + full[None, heaters + couplers :] * drive
-    p, dp = pure_jacobians(data["couplers"] + full[heaters : heaters + couplers], data["arch"], phases, data["sources"])
-    if sloped:
-        dp = np.concatenate([dp, dp[:, :, :heaters] * drive[:, None, :]], axis=2)
-    raw = np.clip(p[:, :LOGICAL], PROBABILITY_FLOOR, None)
+    basis = data.get("heater_basis")
+    if basis is None:
+        shift = full[None, :heaters]
+    else:
+        shift = np.einsum("chk,hk->ch", basis, full[:heaters].reshape(basis.shape[1], basis.shape[2]))
+    p, dp = pure_jacobians(data["couplers"] + full[heaters:], data["arch"], data["phases"] + shift, data["sources"])
+    if basis is not None:
+        phase_part = np.einsum("cmh,chk->cmhk", dp[:, :, : basis.shape[1]], basis).reshape(len(p), MODES, heaters)
+        dp = np.concatenate([phase_part, dp[:, :, basis.shape[1] :]], axis=2)
+    return block_light(p, dp[:, :, free])
+
+
+def block_light(p: np.ndarray, dp: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Block-conditioned light (configurations x 4) from detection probabilities, and its derivative along the
+    columns of dp (configurations x modes x columns)."""
+    raw = p[:, :LOGICAL]
     total = raw.sum(axis=1)
+    require(bool((total > 0).all()), "a configuration sends no light into the block")
     light = raw / total[:, None]
-    # A cell held at the floor does not move with the offsets, so its derivative is zero.
-    block = dp[:, :LOGICAL, :][:, :, free] * (p[:, :LOGICAL] > PROBABILITY_FLOOR)[:, :, None]
+    block = dp[:, :LOGICAL, :]
     dlight = (block - light[:, :, None] * block.sum(axis=1)[:, None, :]) / total[:, None, None]
     return light, dlight
+
+
+def phase_gradients(data: dict[str, Any], phases: np.ndarray) -> np.ndarray:
+    """Per-configuration gradient (configurations x heaters) of the negative log-likelihood over each
+    configuration's own heater phases, couplers at their returned angles; the rows sum to the shared-offset
+    gradient of static_objective without its prior."""
+    p, dp = pure_jacobians(data["couplers"], data["arch"], phases, data["sources"])
+    light, dlight = block_light(p, dp[:, :, : phases.shape[1]])
+    total = data["block"].sum(axis=1)
+    light_share = (total - data["background"].sum(axis=1)) / total
+    weight = data["block"] / np.maximum(setting_probabilities(data, light), PROBABILITY_FLOOR) * light_share[:, None]
+    per_setting = -np.einsum("sm,smh->sh", weight, dlight[data["configuration"]])
+    out = np.zeros(phases.shape)
+    np.add.at(out, data["configuration"], per_setting)
+    return out
 
 
 def static_objective(
@@ -449,7 +483,7 @@ def static_objective(
     total = data["block"].sum(axis=1)
     light_share = (total - data["background"].sum(axis=1)) / total
     light, dlight = static_light(data, offsets, free)
-    pi = setting_probabilities(data, light)
+    pi = np.maximum(setting_probabilities(data, light), PROBABILITY_FLOOR)
     dpi = light_share[:, None, None] * dlight[data["configuration"]]
     precision = 1 / (tau * tau)
     value = -float((data["block"] * np.log(pi)).sum()) + float((precision * offsets * offsets).sum()) / 2
@@ -486,10 +520,48 @@ class HessianColumn:
         return column
 
 
+class PhaseColumn:
+    """Column j of every configuration's phase-space Hessian: the central difference of phase_gradients when
+    heater j moves in every configuration at once."""
+
+    def __init__(self, data: dict[str, Any], phases: np.ndarray) -> None:
+        self.data, self.phases = data, phases
+
+    def __call__(self, index: int) -> np.ndarray:
+        up, down = self.phases.copy(), self.phases.copy()
+        up[:, index] += HESSIAN_STEP
+        down[:, index] -= HESSIAN_STEP
+        column: np.ndarray = (phase_gradients(self.data, up) - phase_gradients(self.data, down)) / (2 * HESSIAN_STEP)
+        return column
+
+
+def basis_hessian(data: dict[str, Any], tau: np.ndarray, free: np.ndarray, offsets: np.ndarray) -> np.ndarray:
+    """Posterior Hessian of heater-basis coefficients, couplers fixed: sum_c B_c^T H_c B_c plus the prior precision.
+
+    Configuration c's light depends only on its own phases, which move linearly with the coefficients through
+    B_c, so the log-likelihood Hessian is the basis-weighted sum of the per-configuration phase Hessians H_c, and
+    its cost is one central difference per heater whatever the basis order."""
+    basis = data["heater_basis"]
+    heaters = heater_parameters(data)
+    full = np.zeros(len(free))
+    full[free] = offsets
+    weights = full[:heaters].reshape(basis.shape[1], basis.shape[2])
+    phases = data["phases"] + np.einsum("chk,hk->ch", basis, weights)
+    columns = ordered_map(PhaseColumn(data, phases), list(range(phases.shape[1])))
+    # columns[j][c, i] is H_c[i, j].
+    per_configuration = np.stack(columns, axis=2)
+    hessian = np.einsum("cik,cij,cjl->ikjl", basis, per_configuration, basis).reshape(heaters, heaters)
+    hessian = hessian[np.ix_(free[:heaters], free[:heaters])] + np.diag(1 / (tau * tau))
+    return (hessian + hessian.T) / 2
+
+
 def posterior_hessian(data: dict[str, Any], tau: np.ndarray, free: np.ndarray, offsets: np.ndarray) -> np.ndarray:
     """Exact Hessian of the negative log posterior (observed information plus prior precision), by central
     differences of the analytic gradient, symmetrized. The columns are independent and go through the pool,
-    which runs them serially inside a worker that already holds one slot."""
+    which runs them serially inside a worker that already holds one slot. A heater basis with every coupler
+    fixed takes the per-configuration form of basis_hessian."""
+    if "heater_basis" in data and not free[heater_parameters(data) :].any():
+        return basis_hessian(data, tau, free, offsets)
     columns = ordered_map(HessianColumn(data, tau, free, offsets), list(range(len(offsets))))
     hessian = np.stack(columns, axis=1)
     return (hessian + hessian.T) / 2
@@ -573,6 +645,8 @@ def without_configuration(data: dict[str, Any], left_out: int) -> dict[str, Any]
     out["keys"] = [data["keys"][c] for c in kept]
     out["configuration"] = np.array([renumber[int(c)] for c in data["configuration"][rows]])
     out["block"], out["background"] = data["block"][rows], data["background"][rows]
+    if "heater_basis" in data:
+        out["heater_basis"] = data["heater_basis"][kept]
     return out
 
 
@@ -608,6 +682,12 @@ def configuration_fold(
     free = widths > 0
     offsets = refine(without_configuration(data, left_out), widths[free], free, start)[0]
     return left_out_statistics(data, static_light(data, offsets, free)[0], left_out)
+
+
+def scored_configurations(data: dict[str, Any]) -> list[int]:
+    """Configurations that serve an X or Y readout outside the mutation block; a fold on any other adds no row."""
+    light = np.full((len(data["keys"]), LOGICAL), 1 / LOGICAL)
+    return [k for k in range(len(data["keys"])) if left_out_statistics(data, light, k)]
 
 
 def configuration_score(rows: list[tuple[str, float, float, float]]) -> dict[str, Any]:
@@ -661,19 +741,20 @@ def build(a_dir: Path, b_dir: Path) -> dict[str, Any]:
     low = ordered_map(fit_family, [(family, a, b) for family in FAMILIES], min_items=1)
     static = ordered_map(fit_static, [(*spec, a, b) for spec in STATIC_FAMILIES], min_items=1)
     modes = [row.pop("mode") for row in static]
+    scored = scored_configurations(a)
     folds = ordered_map(
         configuration_fold,
-        [(*spec, a, k, mode) for spec, mode in zip(STATIC_FAMILIES, modes, strict=True) for k in range(len(a["keys"]))],
+        [(*spec, a, k, mode) for spec, mode in zip(STATIC_FAMILIES, modes, strict=True) for k in scored],
         min_items=1,
     )
-    count = len(a["keys"])
+    count = len(scored)
     for index, row in enumerate(static):
         row["leave_configuration_out"] = configuration_score(
             [entry for fold in folds[index * count : (index + 1) * count] for entry in fold]
         )
     nominal_light = family_probabilities(a, "nominal", np.zeros(0))
     low[0]["leave_configuration_out"] = configuration_score(
-        [entry for k in range(count) for entry in left_out_statistics(a, nominal_light, k)]
+        [entry for k in scored for entry in left_out_statistics(a, nominal_light, k)]
     )
     nominal = low[0]["job_00_log_likelihood"]
     rows = []
