@@ -20,8 +20,9 @@ docs/design/ascella-signed-coherence-conformance.md#perturbed-compilation-case-j
   repeat configuration 13's mesh and stay out of R3, so a fold on configuration 13 trains without it.
 
 The served meshes come from each iteration's computed_circuit; iterations that return one mesh form one
-configuration, and the record states how many distinct perturbed meshes the 56 seeds realized. A single distinct
-mesh reads as "seed ignored" and R1 to R3 decide nothing.
+configuration, and the record states how many distinct new meshes the 56 seeds realized. R2 and R3 read only
+those (new_meshes): a seed that repeats an anchor's or a job-00 configuration's mesh adds no compilation. A
+single distinct mesh reads as "seed ignored" and R1 to R3 decide nothing.
 
 Usage:
   "$PYTHON" scripts/ascella_compilation_reading.py JOB_00 JOB_02 OUT [--check]
@@ -101,6 +102,19 @@ def r1(data: dict[str, Any]) -> dict[str, Any]:
         "perturbed_mean": float((z[~anchor] / v[~anchor]).sum() / (1 / v[~anchor]).sum()),
         "anchor_mean": float((z[anchor] / v[anchor]).sum() / (1 / v[anchor]).sum()),
         "perturbed_range": [float(z[~anchor].min()), float(z[~anchor].max())],
+    }
+
+
+def new_meshes(a: dict[str, Any], c: dict[str, Any], anchor: np.ndarray) -> set[int]:
+    """job-02 configurations a nonzero seed served that neither an anchor nor any job-00 configuration shares.
+
+    A seed that repeats an anchor's or a job-00 configuration's mesh adds no compilation, and in R3 it would put a
+    held-out job-00 configuration's mesh back into its own training set under another configuration index."""
+    anchor_meshes = {int(m) for m in c["configuration"][anchor]}
+    return {
+        m
+        for m in {int(m) for m in c["configuration"][~anchor]} - anchor_meshes
+        if not any(np.array_equal(c["phases"][m], phases) for phases in a["phases"])
     }
 
 
@@ -206,7 +220,7 @@ def build(a_dir: Path, c_dir: Path) -> dict[str, Any]:
     models.require(layout and np.array_equal(a["couplers"], c["couplers"]), "the mesh layouts or couplers differ")
     anchor = anchors_of(c)
     anchor_meshes = {int(m) for m in c["configuration"][anchor]}
-    perturbed_meshes = {int(m) for m in c["configuration"][~anchor]} - anchor_meshes
+    perturbed_meshes = new_meshes(a, c, anchor)
     k = next(i for i, key in enumerate(a["keys"]) if design.SETTING in key)
     anchor_phases = c["phases"][sorted(anchor_meshes)]
     anchor_matches = bool(len(anchor_meshes) == 1 and np.array_equal(anchor_phases[0], a["phases"][k]))
@@ -230,7 +244,7 @@ def build(a_dir: Path, c_dir: Path) -> dict[str, Any]:
     record["reading"] = "seeds served distinct meshes"
     record["r1"] = r1(c)
     planted = ordered_map(design.fit, [(*family, a) for family in design.FAMILIES], min_items=1)
-    perturbed = subset(c, np.flatnonzero(~anchor))
+    perturbed = subset(c, np.flatnonzero([int(m) in perturbed_meshes for m in c["configuration"]]))
     record["r2"] = ordered_map(r2, [(p, a, perturbed) for p in planted], min_items=1)
     both = combined(a, perturbed)
     scored = models.scored_configurations(a)

@@ -123,3 +123,16 @@ def test_subset_and_combined_keep_settings_and_configurations_aligned() -> None:
         raise AssertionError("combined appends the second run's configurations after the first's")
     if both["block"][3, 0] != 1.0 or both["block"][4, 0] != 3.0:
         raise AssertionError("combined keeps each setting's counts at its position")
+
+
+def test_new_meshes_drop_seeds_that_repeat_an_anchor_or_job_00_mesh() -> None:
+    a = {"phases": np.array([[0.0, 0.0], [1.0, 1.0]])}
+    # Configurations of job-02: 0 the anchors' mesh (job-00's first), 1 a nonzero seed back on the anchor mesh's
+    # phases under another index, 2 a seed on job-00's second mesh, 3 and 4 new meshes.
+    c = {
+        "phases": np.array([[0.0, 0.0], [0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [3.0, 3.0]]),
+        "configuration": np.array([0, 0, 1, 2, 3, 4, 4]),
+    }
+    anchor = np.array([True, True, False, False, False, False, False])
+    if reading.new_meshes(a, c, anchor) != {3, 4}:
+        raise AssertionError("a seed repeating an anchor or job-00 mesh entered R2 and R3")
