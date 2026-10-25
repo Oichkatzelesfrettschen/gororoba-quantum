@@ -14,9 +14,13 @@ From the collect.json summary it then reports, for each window pair
 - the finite-window fidelity-loss slope (F(0) - F(W)) / dt;
 - the rate -ln(F(W) / F(0)) / dt, which equals an exponential law's
   parameter only if F decays exponentially;
-- the coherence rate -ln(C(W) / C(0)) / dt and the phase frequency
-  (phi(W) - phi(0)) / (2 pi dt);
+- the coherence rate -ln(C(W) / C(0)) / dt, and the phase frequency from the
+  phase change wrapped into [-pi, pi), the principal branch, since two
+  exposures cannot count full turns;
 - the slope of the phase-removed fidelity (1 + 2C + ZZ) / 4.
+
+A logarithmic rate is null where either value is not positive, and a time
+constant is null where its rate is not positive.
 
 The output is printed JSON and is descriptive; the preregistered contracts
 stay in collect.json's family_analysis. ``--self-test`` exercises the
@@ -84,6 +88,18 @@ def arm_exposures(members: dict[str, int | None]) -> dict[str, int | None]:
     return {stem: next(iter(values)) for stem, values in sorted(arms.items())}
 
 
+def log_rate(first: float, second: float, microseconds: float) -> float | None:
+    """-ln(second / first) per us; None when either value is not positive, since the logarithm is undefined."""
+    if first <= 0 or second <= 0:
+        return None
+    return -math.log(second / first) / microseconds
+
+
+def principal_phase_change(start: float, end: float) -> float:
+    """end - start wrapped into [-pi, pi): two exposures cannot count the full turns between them."""
+    return (end - start + math.pi) % (2 * math.pi) - math.pi
+
+
 def rates(summary: dict[str, float], arms: dict[str, int | None], dt_seconds: float) -> dict[str, Any]:
     out: dict[str, Any] = {}
     for start, end in PAIRS:
@@ -99,15 +115,22 @@ def rates(summary: dict[str, float], arms: dict[str, int | None], dt_seconds: fl
         f0, f1 = value(start, "F"), value(end, "F")
         c0, c1 = value(start, "C"), value(end, "C")
         removed = [(1 + 2 * value(arm, "C") + value(arm, "ZZ_expectation")) / 4 for arm in (start, end)]
+        coherence_rate = log_rate(c0, c1, microseconds)
+        phase_change = principal_phase_change(value(start, "phi"), value(end, "phi"))
         out[f"{start}_to_{end}"] = {
             "exposure_increment_cycles": cycles,
             "exposure_increment_us": microseconds,
             "fidelity_loss": f0 - f1,
             "fidelity_slope_per_us": (f0 - f1) / microseconds,
-            "fidelity_log_rate_per_us": -math.log(f1 / f0) / microseconds,
-            "coherence_rate_per_us": -math.log(c1 / c0) / microseconds,
-            "coherence_time_constant_us": microseconds / -math.log(c1 / c0),
-            "phase_frequency_khz": (value(end, "phi") - value(start, "phi")) / (2 * math.pi * microseconds) * 1e3,
+            "fidelity_log_rate_per_us": log_rate(f0, f1, microseconds),
+            "coherence_rate_per_us": coherence_rate,
+            # A time constant exists only for a positive decay rate.
+            "coherence_time_constant_us": 1 / coherence_rate
+            if coherence_rate is not None and coherence_rate > 0
+            else None,
+            "phase_change_rad": phase_change,
+            "phase_frequency_khz": phase_change / (2 * math.pi * microseconds) * 1e3,
+            "phase_frequency_alias": "principal branch: the phase change is wrapped into [-pi, pi)",
             "phase_removed_slope_per_us": (removed[0] - removed[1]) / microseconds,
         }
     for first, second in LATENCY_PAIRS:
@@ -171,6 +194,12 @@ def self_test() -> str:
     require(math.isclose(got["fidelity_slope_per_us"], 0.02), str(got))
     require(math.isclose(got["fidelity_log_rate_per_us"], -math.log(0.6 / 0.8) / 10), str(got))
     require(math.isclose(got["phase_frequency_khz"], -0.5 / (2 * math.pi * 10) * 1e3), str(got))
+    wrapped = principal_phase_change(3.1, -3.1)
+    require(math.isclose(wrapped, 2 * math.pi - 6.2), f"principal phase change {wrapped}")
+    require(log_rate(0.7, 0.0, 10.0) is None and log_rate(0.0, 0.5, 10.0) is None, "undefined log rate")
+    flat = dict(summary, frame_lw_err_C=0.7)
+    frame = rates(flat, arms, 4e-9)["frame_l_to_frame_lw"]
+    require(frame["coherence_rate_per_us"] == 0.0 and frame["coherence_time_constant_us"] is None, str(frame))
     return "latency_recovery_exposure self-test passed"
 
 

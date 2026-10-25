@@ -144,6 +144,10 @@ listed two items as unrecorded:
 - The phase and the decay rates are descriptive: no contract preregistered
   them beyond `decay_not_phase`, which compares only `ff_0` and `frame_0`
   (C loss 0.011, phase shift -0.09 rad).
+- The -13 kHz is the principal-branch frequency of a phase change wrapped into
+  [-pi, pi). Two exposures cannot count full turns, so -13 kHz plus any
+  multiple of 1/dt (about 103 kHz on the feed-forward path, 100 kHz on the
+  frame path) fits the same data.
 - The detuning's source (ZZ to the measured ancillas, a static frame offset
   of each qubit, or residual photons after readout) is undecided.
 - A bit-flip code protects no phase, so the run says nothing about a code
