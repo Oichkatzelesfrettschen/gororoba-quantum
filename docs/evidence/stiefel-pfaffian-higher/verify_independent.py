@@ -16,6 +16,7 @@ import flint
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from cd_core import cd_multiply_exact  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 # A prime p = 1 mod 4 (so sqrt(-1) exists), distinct from the script's 2^61 - 1.
 P = next(q for q in range((1 << 62) - 1000, (1 << 62)) if q % 4 == 1 and flint.fmpz(q).is_prime())
@@ -31,24 +32,27 @@ def out(*a):
     print(*a, flush=True)
 
 
+def table_row(item):
+    """Row p of the basis table: (r, s) with e_p e_q = s e_r for every q, read off cd_multiply_exact."""
+    dim, p_ = item
+    row = []
+    ep = [0] * dim
+    ep[p_] = 1
+    for q_ in range(dim):
+        eq = [0] * dim
+        eq[q_] = 1
+        prod = cd_multiply_exact(dim, ep, eq)
+        nz = [(i, v) for i, v in enumerate(prod) if v]
+        if len(nz) != 1 or abs(nz[0][1]) != 1:
+            raise RuntimeError("basis product not a signed basis vector")
+        row.append((nz[0][0], int(nz[0][1])))
+    return row
+
+
 @cache
 def table(dim):
-    """T[p][q] = (r, s): e_p e_q = s e_r, read off cd_multiply_exact."""
-    t = []
-    for p_ in range(dim):
-        row = []
-        ep = [0] * dim
-        ep[p_] = 1
-        for q_ in range(dim):
-            eq = [0] * dim
-            eq[q_] = 1
-            prod = cd_multiply_exact(dim, ep, eq)
-            nz = [(i, v) for i, v in enumerate(prod) if v]
-            if len(nz) != 1 or abs(nz[0][1]) != 1:
-                raise RuntimeError("basis product not a signed basis vector")
-            row.append((nz[0][0], int(nz[0][1])))
-        t.append(row)
-    return t
+    """T[p][q] = (r, s): e_p e_q = s e_r, one independent row per basis element."""
+    return ordered_map(table_row, [(dim, p_) for p_ in range(dim)], min_items=64)
 
 
 def left(dim, y):
@@ -114,78 +118,87 @@ def conj_vec(s):
     return [s[0]] + [-v for v in s[1:]]
 
 
+def transport_case(item):
+    """phi(e_k x) = A(z, conj z) conj(phi(x)) for every basis x, at one imaginary basis element y = e_k of A_n."""
+    n, k = item
+    dim = 1 << n
+    h = dim // 2
+    zr = [0] * h
+    zi = [0] * h
+    if k < h:
+        zr[k] = 1
+    else:
+        zi[k - h] = 1
+    cr = cross(h, zr[1:])
+    ci = cross(h, zi[1:])
+    ar = [[0] * h for _ in range(h)]
+    ai = [[0] * h for _ in range(h)]
+    for a in range(1, h):
+        # t = conj z = zr - i zi
+        ar[a][0], ai[a][0] = zr[a], -zi[a]
+        ar[0][a], ai[0][a] = -zr[a], zi[a]
+        for b in range(1, h):
+            ar[a][b], ai[a][b] = cr[a - 1][b - 1], ci[a - 1][b - 1]
+    y = [0] * dim
+    y[k] = 1
+    lm = left(dim, y)
+    for c in range(dim):
+        col = [lm[r][c] for r in range(dim)]
+        r_, s_ = col[:h], col[h:]
+        lhs_re, lhs_im = r_, conj_vec(s_)
+        x = [0] * dim
+        x[c] = 1
+        xr, xs = x[:h], x[h:]
+        w_re, w_im = xr, [-v for v in conj_vec(xs)]  # conj(phi(x)) = r - i conj(s)
+        rhs_re = [sum(ar[a][b] * w_re[b] - ai[a][b] * w_im[b] for b in range(h)) for a in range(h)]
+        rhs_im = [sum(ar[a][b] * w_im[b] + ai[a][b] * w_re[b] for b in range(h)) for a in range(h)]
+        if rhs_re != lhs_re or rhs_im != lhs_im:
+            return False
+    return True
+
+
 def sec_transport():
+    cases = [(n, k) for n in (6, 7, 8) for k in range(1 << n) if k not in (0, 1 << (n - 1))]
+    agree = ordered_map(transport_case, cases, min_items=2)
     for n in (6, 7, 8):
-        dim = 1 << n
-        h = dim // 2
-        bad = 0
-        for k in range(dim):
-            if k in (0, h):
-                continue
-            # y = e_k ; z = e_k (k<h) or i e_(k-h)
-            zr = [0] * h
-            zi = [0] * h
-            if k < h:
-                zr[k] = 1
-            else:
-                zi[k - h] = 1
-            # A(z, conj z) as complex (re, im) h x h
-            cr = cross(h, zr[1:])
-            ci = cross(h, zi[1:])
-            ar = [[0] * h for _ in range(h)]
-            ai = [[0] * h for _ in range(h)]
-            for a in range(1, h):
-                # t = conj z = zr - i zi
-                ar[a][0], ai[a][0] = zr[a], -zi[a]
-                ar[0][a], ai[0][a] = -zr[a], zi[a]
-                for b in range(1, h):
-                    ar[a][b], ai[a][b] = cr[a - 1][b - 1], ci[a - 1][b - 1]
-            y = [0] * dim
-            y[k] = 1
-            lm = left(dim, y)
-            for c in range(dim):
-                col = [lm[r][c] for r in range(dim)]
-                r_, s_ = col[:h], col[h:]
-                lhs_re, lhs_im = r_, conj_vec(s_)
-                x = [0] * dim
-                x[c] = 1
-                xr, xs = x[:h], x[h:]
-                w_re, w_im = xr, [-v for v in conj_vec(xs)]  # conj(phi(x)) = r - i conj(s)
-                rhs_re = [sum(ar[a][b] * w_re[b] - ai[a][b] * w_im[b] for b in range(h)) for a in range(h)]
-                rhs_im = [sum(ar[a][b] * w_im[b] + ai[a][b] * w_re[b] for b in range(h)) for a in range(h)]
-                if rhs_re != lhs_re or rhs_im != lhs_im:
-                    bad += 1
-                    break
-        out(f"transport A_{n}: basis y failing = {bad} of {dim - 2}")
+        bad = sum(1 for (m, _), ok in zip(cases, agree, strict=True) if m == n and not ok)
+        out(f"transport A_{n}: basis y failing = {bad} of {(1 << n) - 2}")
 
 
 def to_fp(re, im, sign=1):
     return [(a + sign * IOTA * b) % P for a, b in zip(re, im, strict=True)]
 
 
+def degree_case(item):
+    """(det L_y == N^4 f(z)^2 f(conj z)^2 mod P, det L_y == 0) at one doubly pure y."""
+    dim, y = item
+    h = dim // 2
+    pr, qi = y[1:h], y[h + 1 :]
+    nn = sum(v * v for v in y)
+    det = int(flint.nmod_mat(left(dim, y), P).det())
+    a = fsq_mod(h, to_fp(pr, qi, 1))
+    b = fsq_mod(h, to_fp(pr, qi, -1))
+    return det == pow(nn, 4, P) * a % P * b % P, det == 0
+
+
 def sec_degree():
-    """det L_y = N^4 f(z)^2 f(conj z)^2 mod P at random and structured doubly pure y."""
+    """det L_y = N^4 f(z)^2 f(conj z)^2 mod P at random and structured doubly pure y; points drawn first."""
+    cases = []
     for n, count in ((6, 6), (7, 3), (8, 2)):
         dim = 1 << n
         h = dim // 2
-        pts = []
         for _ in range(count):
             y = [RNG.randint(-4, 4) for _ in range(dim)]
             y[0] = y[h] = 0
-            pts.append(("random", y))
-        # a pair e_1 + i e_2 (zero divisor) and a non-Stiefel
+            cases.append((n, "random", dim, y))
+        # a pair e_1 + i e_2 (zero divisor)
         y = [0] * dim
         y[1] = 1
         y[h + 2] = 1
-        pts.append(("pair e1+ie2", y))
-        for label, y in pts:
-            pr, qi = y[1:h], y[h + 1 :]
-            nn = sum(v * v for v in y)
-            det = int(flint.nmod_mat(left(dim, y), P).det())
-            a = fsq_mod(h, to_fp(pr, qi, 1))
-            b = fsq_mod(h, to_fp(pr, qi, -1))
-            ok = det == pow(nn, 4, P) * a % P * b % P
-            out(f"degree A_{n} {label}: det==N^4|f|^4 mod p: {ok}; det==0: {det == 0}")
+        cases.append((n, "pair e1+ie2", dim, y))
+    results = ordered_map(degree_case, [(dim, y) for _, _, dim, y in cases], min_items=2)
+    for (n, label, _, _), (ok, zero) in zip(cases, results, strict=True):
+        out(f"degree A_{n} {label}: det==N^4|f|^4 mod p: {ok}; det==0: {zero}")
 
 
 def newton_interp(xs, ys):
@@ -252,65 +265,76 @@ def sec_irred(ns=(6, 7, 8), tries=6):
         out(f"irred A_{n}: irreducible exact Q-line found: {found}")
 
 
+def witness_rank(item):
+    """(exact integer rank of L_y, det L_y != 0 mod P or None) for one witness y."""
+    dim, y, with_det = item
+    lm = left(dim, y)
+    return flint.fmpz_mat(lm).rank(), (int(flint.nmod_mat(lm, P).det()) != 0) if with_det else None
+
+
+def witness_stiefel(dim, y):
+    h = dim // 2
+    p_, q_ = y[:h], y[h:]
+    return (
+        p_[0] == 0 and q_[0] == 0,
+        sum(v * v for v in p_) - sum(v * v for v in q_),
+        sum(u * v for u, v in zip(p_, q_, strict=True)),
+    )
+
+
 def sec_witness():
     sys.path.insert(0, str(ROOT / "scripts"))
     from stiefel_pfaffian_higher import disjoint_stiefel  # witness construction only
 
-    def stiefel(dim, y):
-        h = dim // 2
-        p_, q_ = y[:h], y[h:]
-        return (
-            p_[0] == 0 and q_[0] == 0,
-            sum(v * v for v in p_) - sum(v * v for v in q_),
-            sum(u * v for u, v in zip(p_, q_, strict=True)),
-        )
-
-    y = [0] * 64
+    five = [0] * 64
     for k in (12, 15, 16, 23):
-        y[k] = 1
-    y[34] = 2
+        five[k] = 1
+    five[34] = 2
+    six = [0] * 64
+    for k in (2, 5, 20, 46, 48, 54):
+        six[k] = 1
+    disjoint = {dim: disjoint_stiefel(dim) for dim in (64, 128, 256)}
+    avoiding = {dim: disjoint_stiefel(dim, avoid=k) for dim, k in ((64, 16), (128, 32), (256, 64))}
+    xs = {dim: [RNG.randint(-2, 2) for _ in range(dim)] for dim in (64, 128, 256)}
+    items = [(64, five, True), (64, six, False)]
+    items += [(dim, disjoint[dim], True) for dim in (64, 128, 256)]
+    items += [(dim, avoiding[dim], False) for dim in (64, 128, 256)]
+    ranks = ordered_map(witness_rank, items, min_items=2)
+    rank5, det5 = ranks[0]
     out(
         "five-term A_6: doubly pure, |p|^2-|q|^2, <p,q> =",
-        stiefel(64, y),
+        witness_stiefel(64, five),
         "|p|^2 =",
-        sum(v * v for v in y[:32]),
+        sum(v * v for v in five[:32]),
         "rank =",
-        flint.fmpz_mat(left(64, y)).rank(),
+        rank5,
         "det mod p nonzero:",
-        int(flint.nmod_mat(left(64, y), P).det()) != 0,
+        det5,
     )
-    y6 = [0] * 64
-    for k in (2, 5, 20, 46, 48, 54):
-        y6[k] = 1
-    out("six-term A_6:", stiefel(64, y6), "rank =", flint.fmpz_mat(left(64, y6)).rank())
-    for dim in (64, 128, 256):
-        y = disjoint_stiefel(dim)
+    out("six-term A_6:", witness_stiefel(64, six), "rank =", ranks[1][0])
+    for (dim, y), (rank, det) in zip(disjoint.items(), ranks[2:5], strict=True):
         out(
             f"disjoint A_{dim.bit_length() - 1}: stiefel",
-            stiefel(dim, y),
+            witness_stiefel(dim, y),
             "nonzeros",
             sum(1 for v in y if v),
             "rank",
-            flint.fmpz_mat(left(dim, y)).rank(),
+            rank,
             "det mod p nonzero:",
-            int(flint.nmod_mat(left(dim, y), P).det()) != 0,
+            det,
         )
         # cross-check L_y against cd_multiply_exact for this witness
-        x = [RNG.randint(-2, 2) for _ in range(dim)]
+        x = xs[dim]
         lm = left(dim, y)
         out(
             "   L_y x == cd_multiply_exact:",
             tuple(Fraction(sum(lm[r][c] * x[c] for c in range(dim))) for r in range(dim))
             == cd_multiply_exact(dim, y, x),
         )
-    for dim, k in ((64, 16), (128, 32), (256, 64)):
-        y = disjoint_stiefel(dim, avoid=k)
-        out(
-            f"disjoint avoiding z_{k} at {dim}: stiefel",
-            stiefel(dim, y),
-            "nullity",
-            dim - flint.fmpz_mat(left(dim, y)).rank(),
-        )
+    for ((dim, k), y), (rank, _) in zip(
+        zip(((64, 16), (128, 32), (256, 64)), avoiding.values(), strict=True), ranks[5:8], strict=True
+    ):
+        out(f"disjoint avoiding z_{k} at {dim}: stiefel", witness_stiefel(dim, y), "nullity", dim - rank)
 
 
 def sec_pairs():
@@ -348,31 +372,34 @@ def isotropic_point(support, h, rng):
         return z
 
 
+def slice_rank(z):
+    """rank of C_z over F_P at one point of A_6 (h = 32), the independent item of sec_slices."""
+    return rank_mod(cross(32, z, P))
+
+
 def sec_slices(points=2):
+    """Every support-3 and support-4 slice, and the support-5 slices through z_16, at isotropic F_P points.
+
+    All points are drawn first, in generator order (two per subset, whether or not the first already shows
+    f != 0), and the ranks are then mapped through parallel.ordered_map.
+    """
     rng = random.Random(12958)  # index 4
     h = 32
-    summary = {}
     for size in (3, 4):
-        bad = []
-        for s in itertools.combinations(range(1, 32), size):
-            for _ in range(points):
-                z = isotropic_point(list(s), h, rng)
-                if rank_mod(cross(h, z, P)) > 28:
-                    bad.append(s)
-                    break
-        summary[size] = bad
+        subsets = list(itertools.combinations(range(1, 32), size))
+        zs = [isotropic_point(list(s), h, rng) for s in subsets for _ in range(points)]
+        ranks = ordered_map(slice_rank, zs, min_items=64)
+        bad = [s for i, s in enumerate(subsets) if any(r > 28 for r in ranks[points * i : points * (i + 1)])]
         out(f"slices size {size}: subsets with a mod-p Stiefel point where f != 0: {len(bad)} {bad[:10]}")
     # controls: the six-slice and seven-slice must show f != 0 at Q_S = 0 points
     for s in ((2, 5, 14, 16, 20, 22), (3, 4, 13, 14, 16, 22, 26), (2, 5, 14, 20, 22, 3)):
         r = [rank_mod(cross(h, isotropic_point(list(s), h, rng), P)) for _ in range(3)]
         out(f"slice control {s}: ranks at Q_S = 0 points {r}")
     # 5-subsets of 1..16 containing 16
-    bad5 = []
-    for s in itertools.combinations(range(1, 17), 5):
-        if 16 in s:
-            z = isotropic_point(list(s), h, rng)
-            if rank_mod(cross(h, z, P)) > 28:
-                bad5.append(s)
+    subsets5 = [s for s in itertools.combinations(range(1, 17), 5) if 16 in s]
+    zs5 = [isotropic_point(list(s), h, rng) for s in subsets5]
+    ranks5 = ordered_map(slice_rank, zs5, min_items=64)
+    bad5 = [s for s, r in zip(subsets5, ranks5, strict=True) if r > 28]
     out("5-subsets of 1..16 containing 16 with f != 0 point:", len(bad5), bad5[:10])
 
 
