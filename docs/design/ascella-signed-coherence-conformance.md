@@ -1182,3 +1182,107 @@ Hessian difference read the kink as eigenvalues near -7e5, so Newton steps
 could not certify the mode. The floor now guards only the setting
 probabilities, which the in-block background keeps above it on every setting
 of these runs; `physical-models.json` replays unchanged under that path.
+
+## Perturbed-compilation case (job-02)
+
+Plan
+[`ascella-perturbed-compilation-case`](../state/plans/ascella-perturbed-compilation-case.json)
+fixes the setting, the perturbation and the readings below before any
+acquisition. Job-00 and job-01, both at compilation seed 0, return identical
+heater phases and couplers for all 30 configurations, so the service compiles
+a submitted unitary deterministically and every configuration answers with
+one mesh. Every heater family above therefore predicts each configuration's
+error from that one mesh, and 29 training configurations leave the drive
+coefficients unidentified. On Belenos the service fits the occupied input
+column from random starts that `compilation_seed` selects, and distinct seeds
+serve distinct meshes of the same target
+([form-dwell findings](../notes/quandela/form-dwell-decomposition.md)).
+Repeating one logical setting at many seeds holds its ideal output fixed
+while the heaters move.
+
+**What it measures.** Job-02 submits theta2-x-arm0 (configuration 13 of
+job-00, theta 2 pi/5, phi +pi/4, X readout) 64 times at 8,192 samples per
+iteration. Every eighth position, starting at position 0, runs at seed 0,
+job-00's mesh. The other 56 positions run at the nonzero values of the ANU
+QRNG draw
+[`draw-2026-10-25T182813Z.json`](../evidence/anu_qrng/draw-2026-10-25T182813Z.json),
+taken in index order (indices 0 to 55, with no repeat or zero among them).
+The setting carries the largest X residual of the drive-linear training-only
+folds: observed 0.8813 against 0.9309 predicted, standardized -4.21. Its
+prediction variance is small, so the residual reflects the model rather than
+an unidentified fit. Readings, each at alpha 0.01:
+
+| Reading | Statistic | Reading rule |
+|---|---|---|
+| R1, compilation dependence | dispersion of the block-conditioned X statistic over the distinct served meshes against the anchors' dispersion, by label permutation | dependent when the perturbed dispersion exceeds the anchors' |
+| R2, prediction | each heater family fitted on job-00 scored on the perturbed iterations in counting plus fitted-prediction variance | shortfall at or above the chi-square 0.999 quantile on the iteration count; predicted below its 0.97 quantile with median variance ratio at most 1 |
+| R3, identification | each family refitted on job-00 plus job-02 and rescored on the 19 training-only folds | the 30-on-10 and below-20 rule of the training-only folds |
+
+Every per-heater family, static offsets included, predicts that the served
+mesh moves the X statistic. A null R1 at the design's power therefore refutes
+per-heater phase error as the cause of the configuration response and moves
+the search to compile-independent elements: the source, the detectors and the
+couplers' fixed angles. A dependent R1 with an R3 shortfall under identified
+coefficients raises the confidence that no heater family explains the
+response. R3 sums below 20 with variance ratios at most 1 lower it. The
+service's behavior at nonzero seeds on Ascella is known only once the job
+returns. If the returned `computed_circuit` values realize fewer distinct
+heater-phase vectors than seeds, R1 to R3 read the distinct set and the
+record states the collapse. A single distinct mesh reads as "seed ignored"
+and decides nothing about the heaters.
+
+**Why simulation cannot answer it.** Local SLOS returns the ideal statistic
+for every seed. The question is how Ascella's heaters err when the same
+target is compiled onto other phases, and the served meshes are unknown
+until the job returns: Perceval does not pass `compilation_seed` to the local
+optimizer.
+
+**Sizing.**
+[`compilation-design.json`](../evidence/ascella-order-coefficients/compilation-design.json),
+written by
+[`scripts/ascella_compilation_design.py`](../../scripts/ascella_compilation_design.py),
+sizes the case before acquisition. It stands in for the served meshes with
+248 phase vectors of the returned layout that reproduce the setting's
+twelve output intensities to 1e-6, found from deterministic starts spread
+over the torus. Their heaters sit a median 1.57 rad from job-00's, and 84 %
+move by more than 0.5 rad. It plants each family's job-00 posterior mode as
+the device response. At 56 perturbed and 8 anchor iterations of 8,192
+samples:
+
+| Planted family | Planted X spread | R1 power | Detectable X SD at power 0.9 | R3 median ratio X / Y, without job-02 | with job-02 |
+|---|---|---|---|---|---|
+| static heater offsets | 0.115 | 1.000 | 0.0039 | 0.96 / 0.61 | 0.25 / 0.25 |
+| drive-linear | 0.174 | 1.000 | 0.0041 | 6.86 / 2.28 | 0.54 / 0.52 |
+| polynomial order 1 | 0.141 | 1.000 | 0.0041 | 4.85 / 4.65 | 0.55 / 0.55 |
+| harmonic order 1 | 0.140 | 1.000 | 0.0041 | 135 / 38 | 0.90 / 0.76 |
+
+R1 detects a compilation-induced standard deviation of 0.004 in the X
+statistic, a twelfth of the setting's 0.05 residual. Twenty-four perturbed
+iterations would leave the harmonic family at a median ratio of 3.15 on X.
+The R3 ratios use the leave-one-out approximation of each fold, the full-data
+posterior Hessian less the left-out configuration's information. Without
+job-02 the approximation gives the training-only folds' recorded ratios to
+within a factor of 2.2 (drive-linear X 6.86 against 10.4, polynomial order 1
+X 4.85 against 10.2).
+
+**Seconds.** Expected 186 s against the 300-second `max_duration`. Job-00 and
+job-01 each took 186 s for 64 iterations, at 8,192 and 16,384 samples, so
+the 64-iteration job takes job-00's time unless a nonzero seed costs the
+service compilation time that seed 0 does not. Whether the service recompiles
+per seed is unobserved, and the expectation carries that uncertainty.
+
+**Credits.** Ceiling and expectation 1.016384 credits: 1.0 per job plus
+16,384 billed shots of one iteration at 1e-6, the tariff that billed job-00
+exactly. The account's usage report reads 3.07 free credits spent on
+qpu:ascella over 9 jobs, and 67.1 across all platforms.
+
+**Request.**
+[`scripts/ascella_coherence_request.py job-02`](../../scripts/ascella_coherence_request.py)
+writes
+[`job-02/cases.json`](../../results/quandela/cases/ascella_signed_coherence/job-02/cases.json),
+and `--body job-02` freezes the body against the live processor record without
+sending it. `--check` rebuilds the request and requires each iteration's seed,
+the closed-form operator and the body entries. It also refuses a perturbed
+unitary, a moved seed and a four-mode output width. The procedure is that of
+job-00: `--preflight RUN`, then the owner's approval of this case, then
+`--submit RUN APPROVAL`, then collection.

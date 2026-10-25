@@ -2810,6 +2810,7 @@
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
+    "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",

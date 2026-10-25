@@ -533,6 +533,10 @@
     ],
     "core-primorial-ziller-table-replay": [
       "docs/evidence/primorial_cover/ziller_table.json"
+    ],
+    "core-ascella-signed-coherence-compilation-design-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "docs/evidence/ascella-order-coefficients/compilation-design.json"
     ]
   }
 }

@@ -109,8 +109,15 @@ modes on left-out configurations 20 and 23; its bytes stay.
 holds the polynomial and harmonic heater responses to the returned phase,
 fitted on job-00, scored on job-01 and on the same training-only folds
 ([design](../../design/ascella-signed-coherence-conformance.md#polynomial-and-harmonic-drive-responses)).
+[`compilation-design.json`](compilation-design.json), from
+[`scripts/ascella_compilation_design.py`](../../../scripts/ascella_compilation_design.py),
+sizes the perturbed-compilation case before acquisition: R1 power and the R3
+variance ratios of each planted family over the candidate designs, and the
+chosen design
+([design](../../design/ascella-signed-coherence-conformance.md#perturbed-compilation-case-job-02)).
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance, and the physical-model, holdout, drive-linear and
+certificate tolerance, the compilation design within the fit replay bounds,
+and the physical-model, holdout, drive-linear and
 drive-response records their nominal family there and their fitted families
 within 1e-3 relative plus 1e-8 absolute, the rounding of optimizer endpoints
 under another BLAS build. Which posterior mode a fit reaches follows the

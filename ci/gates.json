@@ -4057,6 +4057,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_compilation_design.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/compilation-design.json --check",
+   "name": "core-ascella-signed-coherence-compilation-design-replay",
+   "seconds": 105.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
