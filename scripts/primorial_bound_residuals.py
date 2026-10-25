@@ -22,6 +22,9 @@ phase-gradient and zero-angle null arms of the ibm_kingston snapshot:
    magnitudes (-1, -1/2, 0, 1/2, 1 of each bound) tests interior points of the box.
    The same tilt and CZ-phase vertices are repeated with each CZ's conditional phase replaced by its Pauli
    twirl (``twirled_law``), the channel gate twirling turns a coherent CZ error into.
+   Pairs with the unbounded families: static detuning on all three path qubits (DETUNING_KHZ, every sign) alone,
+   with the atlas-fitted CZ phase, with the CZ-phase bound and with the sx-budget tilt bound; static ZZ in both
+   frames (ZZ_KHZ) with the tilt bound and with the CZ-phase bound.
 4. **Arm mismatch.** Null subtraction cancels a coherent error only when the signal and null arms see the same
    error. Each family applied to the signal arm alone (tilt and amplitude per qubit, CZ phase per coupler, static
    detuning per qubit, static ZZ per coupler) gives the mismatch at which max_z crosses 1 (``Mismatch``).
@@ -35,7 +38,8 @@ Falsifier: the gap88 cost leaves a device question when any bounded scenario of 
 max_z >= 1. Order of analysis: an exploratory build-host run of the single-family and joint scenarios came first
 and showed joint tilt and CZ phase above max_z = 1; the per-coefficient reading, the sx-and-x budget, the twirled
 rows, the coherent-fraction scan, the refinement and the identification-shot endpoint were added after it, and
-the retained Kaggle run followed. Each scenario also reports ``shots_identify_all``, the budget rule of
+the retained Kaggle run followed. The detuning and ZZ pairs were added after a review of that retained run
+asked which other pairs each cancelled to first order survive subtraction together. Each scenario also reports ``shots_identify_all``, the budget rule of
 primorial_cover_noise.phase_fit (simultaneous z for seven coefficients, worst variance, margin 1/16 minus the
 largest bias) with the scenario's bias in place of the incoherent one; None means the bias leaves no margin.
 
@@ -90,6 +94,12 @@ MISMATCH = (
 )
 # Fractions of the worst joint tilt and CZ-phase vertex; the coherent share of a gate's infidelity is the square.
 FRACTIONS = (0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+# Static detuning on every path qubit at the low and high ends of the Fez atlas lane fits
+# (docs/evidence/atlas_detuning_map), static ZZ at the atlas self-test scale and ten times it (kHz), and the
+# calibration-consistent CZ phase the atlas fits on Fez couplers (rad, coherent-error-families-report.md).
+DETUNING_KHZ = (5.0, 30.0)
+ZZ_KHZ = (2.0, 20.0)
+MEASURED_CZ_PHASE = 0.04
 
 Op = tuple[str, tuple[int, ...], float, float]
 
@@ -496,6 +506,28 @@ def patch_record(fit: Fit, gates: list[dict[str, float]], cz: list[float]) -> di
         }
         for p in itertools.product((1.0, -1.0), repeat=5)
     ]
+    s2 = signs2
+    for det in DETUNING_KHZ:
+        detuned = [tuple(det * a for a in p) for p in signs3]
+        families[f"detuning_{det:g}"] = [{"detuning": d} for d in detuned]
+        families[f"detuning_{det:g}_cz_measured"] = [
+            {"detuning": d, "cz_phase": tuple(MEASURED_CZ_PHASE * a for a in p)} for d in detuned for p in s2
+        ]
+        families[f"detuning_{det:g}_cz_bound"] = [
+            {"detuning": d, "cz_phase": tuple(a * f for a, f in zip(p, phi, strict=True))} for d in detuned for p in s2
+        ]
+        families[f"detuning_{det:g}_tilt_sx"] = [
+            {"detuning": d, "tilt": tuple(a * t for a, t in zip(p, tilt, strict=True))} for d in detuned for p in signs3
+        ]
+    for rate in ZZ_KHZ:
+        for frame in ("zz", "zz_symmetric"):
+            coupled = [tuple(rate * a for a in p) for p in s2]
+            families[f"{frame}_{rate:g}_tilt_sx"] = [
+                {frame: c, "tilt": tuple(a * t for a, t in zip(p, tilt, strict=True))} for c in coupled for p in signs3
+            ]
+            families[f"{frame}_{rate:g}_cz_bound"] = [
+                {frame: c, "cz_phase": tuple(a * f for a, f in zip(p, phi, strict=True))} for c in coupled for p in s2
+            ]
     families["grid_tilt_cz_sx"] = [
         {"tilt": tuple(g * t for g, t in zip(v[:3], tilt, strict=True)), "cz_phase": (v[3] * phi[0], v[4] * phi[1])}
         for v in itertools.product(GRID, repeat=5)
