@@ -12160,6 +12160,16 @@
    "tempfile",
    "typing"
   ],
+  "scripts/qi_zz_map_floor.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "pathlib",
+   "qi_platform",
+   "qi_zz_map",
+   "sys",
+   "typing"
+  ],
   "scripts/qi_zz_map_qx.py": [
    "__future__",
    "argparse",
