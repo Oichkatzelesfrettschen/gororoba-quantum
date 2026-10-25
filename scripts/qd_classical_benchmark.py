@@ -62,7 +62,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from qd_network_protocol import SIX_STATES, ProtocolError  # noqa: E402
+from qd_network_protocol import BLOCH_GRID, KEEP_MINUS_WEIGHTS, SIX_STATES, ProtocolError, bloch_projector  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
 
@@ -291,6 +291,9 @@ def classical_benchmark(
         if _least_eigenvalue(accepted) <= 1e-9:
             raise ProtocolError("the prior-weighted input state is singular; free post-selection is unbounded on it")
         achieved, choi = _primal(objective, [(accepted, 1.0)], trace_bounded=False)
+        # The pooled ratio is invariant under scaling J; dividing by the largest eigenvalue of tr_out J returns a
+        # trace-non-increasing map.
+        choi = choi / max(1.0, float(np.linalg.eigvalsh(partial_trace_output(choi)).max()))
         certified = _free_postselection_bound(objective, accepted)
     else:
         profile = _require_profile(success, len(projectors))
@@ -352,6 +355,40 @@ def realizable_profile(success: Mapping[str, float]) -> tuple[dict[str, float], 
         fitted[f"-{axis}"] = offset - tilt
     residual = max(abs(fitted[label] - success[label]) for label in SIX_LABELS)
     return fitted, residual
+
+
+@dataclass(frozen=True)
+class _GridInstrument:
+    """Pooled conditional fidelity, under fixed six-state priors, of one measure-and-prepare grid instrument."""
+
+    priors: tuple[tuple[str, float], ...]
+
+    def __call__(self, point: tuple[tuple[int, int, int], tuple[int, int, int], float]) -> float:
+        measured, prepared, keep_minus = point
+        instrument = [
+            (bloch_projector(measured), bloch_projector(prepared)),
+            (keep_minus * bloch_projector([-v for v in measured]), bloch_projector([-v for v in prepared])),
+        ]
+        numerator = accepted = 0.0
+        for label, weight in self.priors:
+            vector = np.array(SIX_AMPLITUDES[label], dtype=complex)
+            rho = np.outer(vector, vector.conj())
+            for effect, state in instrument:
+                success = float(np.trace(effect @ rho).real)
+                accepted += weight * success
+                numerator += weight * success * float(np.trace(rho @ state).real)
+        return numerator / accepted
+
+
+def measure_and_prepare_grid_fidelities(priors: Mapping[str, float]) -> list[float]:
+    """Pooled fidelity of every grid instrument of qd_network_protocol (26 x 26 directions, 3 keep weights).
+
+    The instruments are evaluated directly from their effects and prepared states, independent of the Choi program.
+    """
+    if set(priors) != set(SIX_LABELS):
+        raise ProtocolError(f"priors need exactly the labels {SIX_LABELS}")
+    points = [(m, p, w) for m in BLOCH_GRID for p in BLOCH_GRID for w in KEEP_MINUS_WEIGHTS]
+    return ordered_map(_GridInstrument(tuple((label, priors[label]) for label in SIX_LABELS)), points)
 
 
 def _table_row(case: tuple[str, tuple[float, ...], tuple[float, ...] | None, str]) -> tuple[str, float]:

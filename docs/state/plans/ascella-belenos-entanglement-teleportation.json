@@ -103,6 +103,22 @@
             }
           ],
           "scope_sha256": "b156e7c6e1c89dc9ff806ea54f02e5f62a654684ad7e8c981d794f14cae1c470"
+        },
+        {
+          "result": "tests/scripts/test_qd_classical_benchmark.py: 27 passed under ci/pr_checks.sh tests; uniform six states 2/3, BB84 and Z-weighted priors 3/4, the post-selected optimum 6/7, tilted realizable profiles at 2/3 in both figures, every achieving map separable and trace-non-increasing, dual certificates within GAP_LIMIT, every refusal fixture raises.",
+          "observed_at": "2026-10-25T19:55:03+00:00",
+          "revision": "de102d027e8a347ae1903afb5d0409e364a9786c",
+          "evidence": [
+            {
+              "ref": "scripts/qd_classical_benchmark.py",
+              "sha256": "8a159ed0505dbf3b1aa4acd377b5fdb77cf01a24d51a1f5f807293c029fe7ca5"
+            },
+            {
+              "ref": "tests/scripts/test_qd_classical_benchmark.py",
+              "sha256": "7a751c9b3037ce76ee80291ff7c577bbcd044ff15e289c6afd3cc617b232bd8c"
+            }
+          ],
+          "scope_sha256": "b156e7c6e1c89dc9ff806ea54f02e5f62a654684ad7e8c981d794f14cae1c470"
         }
       ]
     },
