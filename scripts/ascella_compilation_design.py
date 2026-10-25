@@ -126,15 +126,6 @@ def realize(data: dict[str, Any], k: int, count: int) -> tuple[np.ndarray, int]:
     return phases[reached[:count]], tried
 
 
-def design_data(data: dict[str, Any], phases: np.ndarray, k: int) -> dict[str, Any]:
-    return {
-        "couplers": data["couplers"],
-        "arch": data["arch"],
-        "phases": phases,
-        "sources": np.full(len(phases), data["sources"][k]),
-    }
-
-
 def fit(item: tuple[str, str | None, int, Any, dict[str, Any]]) -> dict[str, Any]:
     """The family's full-data posterior mode on job-00 and the posterior Hessian there."""
     name, kind, order, tau, data = item
@@ -193,74 +184,93 @@ def chosen_design(rows: list[dict[str, Any]]) -> dict[str, Any]:
     raise ValueError("no design meets the acceptance")
 
 
-def design_rows(item: tuple[dict[str, Any], dict[str, Any], dict[str, Any], int, int]) -> list[dict[str, Any]]:
-    """R1 power and R3 median variance ratios of one family over every design."""
-    planted, data, perturbed, k, job_samples = item
-    family = next(f for f in FAMILIES if f[0] == planted["family"])
-    _, kind, order, _ = family
-    free = planted["free"]
+def family_context(item: tuple[dict[str, Any], dict[str, Any], int, int]) -> dict[str, Any]:
+    """The design-independent part of one family's sizing: each scored fold's reduced Hessian with its inverse and
+    statistic gradients, and configuration k's per-sample block and background rates."""
+    planted, data, k, job_samples = item
+    _, kind, order, _ = next(f for f in FAMILIES if f[0] == planted["family"])
     b = basis(data["phases"], kind, order)
     job = data if b is None else {**data, "heater_basis": b}
-    light, dlight = models.static_light(job, planted["offsets"], free)
-    scored = models.scored_configurations(job)
+    light, dlight = models.static_light(job, planted["offsets"], planted["free"])
     folds = []
-    for c in scored:
+    for c in models.scored_configurations(job):
         members = [int(s) for s in np.flatnonzero(job["configuration"] == c)]
         reduced = planted["hessian"] - setting_information(job, light, dlight, members)
-        folds.append((c, reduced, holdout.left_out_rows(job, light, dlight, c)))
+        rows = [
+            (readout, counting, gradient)
+            for readout, _, _, counting, gradient in holdout.left_out_rows(job, light, dlight, c)
+        ]
+        folds.append((reduced, np.linalg.inv(reduced), rows))
     block_rate, background_rate = rates(job, k, job_samples)
-    out = []
-    for count in PERTURBED:
-        phases = np.concatenate([perturbed["phases"][:count], np.repeat(job["phases"][k : k + 1], ANCHORS, axis=0)])
-        design = design_data(job, phases, k)
-        b_design = basis(phases, kind, order)
-        if b_design is not None:
-            design["heater_basis"] = b_design
-        d_light, d_dlight = models.static_light(design, planted["offsets"], free)
-        for samples in SAMPLES:
-            total = block_rate * samples
-            background = background_rate * samples
-            share = (total - background.sum()) / total
-            expected = (total - background.sum()) * d_light + background[None, :]
-            mean, variance = geometry.statistic(expected, "x")
-            mu, v = mean[:count], variance[:count]
-            centre = float((mu / v).sum() / (1 / v).sum())
-            noncentrality = float(((mu - centre) ** 2 / v).sum())
-            critical = float(stats.f.ppf(1 - ALPHA, count - 1, ANCHORS - 1))
-            power = float(stats.ncf.sf(critical, count - 1, ANCHORS - 1, noncentrality))
-            detectable = detectable_noncentrality(count - 1, ANCHORS - 1, critical)
-            pi = expected / total
-            dpi = share * d_dlight
-            # R3 trains on the perturbed iterations alone; the anchors repeat a job-00 mesh and stay out.
-            information = np.einsum("nmi,nmj->ij", dpi[:count] / pi[:count, :, None], dpi[:count]) * total
-            ratios: dict[str, list[float]] = {"x": [], "y": []}
-            baseline: dict[str, list[float]] = {"x": [], "y": []}
-            for _, reduced, scored_rows in folds:
-                with_design = np.linalg.inv(reduced + information)
-                without = np.linalg.inv(reduced)
-                for readout, _, _, counting, gradient in scored_rows:
-                    ratios[readout].append(float(gradient @ with_design @ gradient) / counting)
-                    baseline[readout].append(float(gradient @ without @ gradient) / counting)
-            iterations = count + ANCHORS
-            jobs = math.ceil(iterations * SECONDS_PER_ITERATION / JOB_SECONDS)
-            out.append(
-                {
-                    "family": planted["family"],
-                    "perturbed": count,
-                    "anchors": ANCHORS,
-                    "samples_per_iteration": samples,
-                    "noncentrality": noncentrality,
-                    "r1_power": power,
-                    "planted_x_spread": float(mu.max() - mu.min()),
-                    "detectable_x_sd": math.sqrt(detectable * float(np.mean(v)) / count),
-                    "r3_median_variance_ratio": {r: float(np.median(v)) for r, v in ratios.items()},
-                    "r3_median_variance_ratio_without_design": {r: float(np.median(v)) for r, v in baseline.items()},
-                    "jobs": jobs,
-                    "expected_seconds": iterations * SECONDS_PER_ITERATION,
-                    "credits": jobs * (JOB_PRICE + SHOTS_PER_SAMPLE * samples * SHOT_PRICE),
-                }
-            )
-    return out
+    return {
+        "kind": kind,
+        "order": order,
+        "mesh": {
+            "couplers": job["couplers"],
+            "arch": job["arch"],
+            "phases": job["phases"][k : k + 1],
+            "sources": job["sources"][k : k + 1],
+        },
+        "folds": folds,
+        "block_rate": block_rate,
+        "background_rate": background_rate,
+    }
+
+
+def design_row(item: tuple[dict[str, Any], dict[str, Any], np.ndarray, int, int]) -> dict[str, Any]:
+    """R1 power and R3 median variance ratios of one family at one design (perturbed count, samples)."""
+    planted, context, perturbed, count, samples = item
+    mesh = context["mesh"]
+    phases = np.concatenate([perturbed[:count], np.repeat(mesh["phases"], ANCHORS, axis=0)])
+    design = {
+        "couplers": mesh["couplers"],
+        "arch": mesh["arch"],
+        "phases": phases,
+        "sources": np.full(len(phases), mesh["sources"][0]),
+    }
+    b_design = basis(phases, context["kind"], context["order"])
+    if b_design is not None:
+        design["heater_basis"] = b_design
+    d_light, d_dlight = models.static_light(design, planted["offsets"], planted["free"])
+    total = context["block_rate"] * samples
+    background = context["background_rate"] * samples
+    share = (total - background.sum()) / total
+    expected = (total - background.sum()) * d_light + background[None, :]
+    mean, variance = geometry.statistic(expected, "x")
+    mu, v = mean[:count], variance[:count]
+    centre = float((mu / v).sum() / (1 / v).sum())
+    noncentrality = float(((mu - centre) ** 2 / v).sum())
+    critical = float(stats.f.ppf(1 - ALPHA, count - 1, ANCHORS - 1))
+    power = float(stats.ncf.sf(critical, count - 1, ANCHORS - 1, noncentrality))
+    detectable = detectable_noncentrality(count - 1, ANCHORS - 1, critical)
+    pi = expected / total
+    dpi = share * d_dlight
+    # R3 trains on the perturbed iterations alone; the anchors repeat a job-00 mesh and stay out.
+    information = np.einsum("nmi,nmj->ij", dpi[:count] / pi[:count, :, None], dpi[:count]) * total
+    ratios: dict[str, list[float]] = {"x": [], "y": []}
+    baseline: dict[str, list[float]] = {"x": [], "y": []}
+    for reduced, without, rows in context["folds"]:
+        with_design = np.linalg.inv(reduced + information)
+        for readout, counting, gradient in rows:
+            ratios[readout].append(float(gradient @ with_design @ gradient) / counting)
+            baseline[readout].append(float(gradient @ without @ gradient) / counting)
+    iterations = count + ANCHORS
+    jobs = math.ceil(iterations * SECONDS_PER_ITERATION / JOB_SECONDS)
+    return {
+        "family": planted["family"],
+        "perturbed": count,
+        "anchors": ANCHORS,
+        "samples_per_iteration": samples,
+        "noncentrality": noncentrality,
+        "r1_power": power,
+        "planted_x_spread": float(mu.max() - mu.min()),
+        "detectable_x_sd": math.sqrt(detectable * float(np.mean(v)) / count),
+        "r3_median_variance_ratio": {r: float(np.median(values)) for r, values in ratios.items()},
+        "r3_median_variance_ratio_without_design": {r: float(np.median(values)) for r, values in baseline.items()},
+        "jobs": jobs,
+        "expected_seconds": iterations * SECONDS_PER_ITERATION,
+        "credits": jobs * (JOB_PRICE + SHOTS_PER_SAMPLE * samples * SHOT_PRICE),
+    }
 
 
 def build(a_dir: Path) -> dict[str, Any]:
@@ -272,8 +282,17 @@ def build(a_dir: Path) -> dict[str, Any]:
     phases, tried = realize(data, k, max(PERTURBED))
     distance = np.abs(np.angle(np.exp(1j * (phases - data["phases"][k][None, :]))))
     planted = ordered_map(fit, [(*family, data) for family in FAMILIES], min_items=1)
-    rows = ordered_map(design_rows, [(p, data, {"phases": phases}, k, job_samples) for p in planted], min_items=1)
-    designs = [row for family in rows for row in family]
+    contexts = ordered_map(family_context, [(p, data, k, job_samples) for p in planted], min_items=1)
+    designs = ordered_map(
+        design_row,
+        [
+            (p, context, phases, count, samples)
+            for p, context in zip(planted, contexts, strict=True)
+            for count in PERTURBED
+            for samples in SAMPLES
+        ],
+        min_items=1,
+    )
     return {
         "schema": "ascella-perturbed-compilation-design-v1",
         "run": a_dir.relative_to(ROOT).as_posix(),
