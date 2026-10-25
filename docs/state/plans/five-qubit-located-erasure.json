@@ -1,0 +1,15 @@
+{
+  "schema": "work-plan-v1",
+  "id": "five-qubit-located-erasure",
+  "kind": "investigation",
+  "summary": "Simulate [[5,1,3]] located-erasure reconstruction against a Heron r2 snapshot: reset two located qubits and read logical X, Y, Z from weight-3 representatives on the survivors, with a three-erasure null arm.",
+  "sources": [
+    "docs/archive/reviews/quantum-recovery-proposal-audit.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Derive weight-3 logical representatives on qubits {0,1,2} with the replay isometry, build the encoder for a heavy-hex placement, and run the noise simulation through scripts/kaggle_run.py."
+}

@@ -4199,6 +4199,25 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/a5_stiefel_pfaffian_germs.py --check docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+   "name": "core-690",
+   "seconds": 1.9,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-stiefel-pfaffian-germs/result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/a5_stiefel_pfaffian_germs.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_stiefel_pfaffian_germs.py --self-test",
+   "name": "core-691",
+   "seconds": 2.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/primorial_null_residuals.py --check docs/evidence/primorial_cover/null_residuals.json --run results/kaggle/2026-10-25T185707Z-gororoba-primorial-null-residuals",
    "name": "core-primorial-null-residuals-replay",
    "seconds": 14.0,
