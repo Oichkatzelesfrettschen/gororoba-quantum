@@ -32,7 +32,7 @@ The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 74 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 38 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 39 IQM run directories are retained. That is an observation, not an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -327,6 +327,7 @@ circuit and charges the account ledger's change.
 | [2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p](../../results/iqm/runs/2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 1 | completed | 0.5 credits | iqm-garnet-qpu-measure-window |
 | [2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p](../../results/iqm/runs/2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 1 | completed | 0.5 credits | iqm-garnet-qpu-measure-window |
 | [2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching](../../results/iqm/runs/2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits | iqm-garnet-mock-pinching-57 |
+| [2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic](../../results/iqm/runs/2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 8 | completed | 0.0 credits | iqm-garnet-mock-measurement-diagnostic |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -616,6 +617,7 @@ circuit and charges the account ledger's change.
 - **iqm-garnet-qpu-window-probe-unitary** (2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p, 1 billed seconds): What does Garnet's compiler estimate per shot for the N = 16 unitary-arm circuit of the pinching case on QB5, QB7, QB11, QB14, QB17 and QB19, with its 2 us pre-readout delay?
 - **iqm-garnet-qpu-window-probe-measure** (2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p, 1 billed seconds): What does Garnet's compiler estimate per shot for the N = 16 measure-arm circuit of the pinching case on the same six qubits, and so what mid-circuit measure window does it compile?
 - **iqm-garnet-mock-measurement-sequence-pinching-57-qpu-window** (2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching, 4 billed seconds): Does the garnet:mock pipeline accept the 57-circuit case rebuilt at the QPU-measured 1.096 us window (cases.json 2a49b954), and does analyze --mock keep the planned window when the mock's own compiler (1.772 us window) puts the schedule ratio at 1.304?
+- **iqm-garnet-mock-measurement-diagnostic** (2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic, 1 billed seconds): Does the garnet:mock pipeline accept the eight-circuit unitary-arm diagnostic (cases.json 47a3675d), with pi/2-pair steps and a circuit without the pre-readout delay, and return the final key of every circuit?
 
 ## Established claims
 
@@ -1685,6 +1687,10 @@ circuit and charges the account ledger's change.
   Boundary: Compiler estimates of one calibration set, not measured durations; the per-circuit base is taken from a different job and circuit family, so the layer time carries that assumption.
   Evidence: [results.json](../../results/iqm/runs/2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p/results.json), [results.json](../../results/iqm/runs/2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p/results.json), [iqm-garnet-measurement-sequence-pinching.md](../design/iqm-garnet-measurement-sequence-pinching.md).
   Acquisitions: iqm-garnet-qpu-window-probe-unitary, iqm-garnet-qpu-window-probe-measure.
+- **iqm-garnet-mock-measurement-diagnostic** (exploratory reanalysis, hardware). garnet:mock (calibration set f04fe114) completed the eight-circuit unitary-arm diagnostic (cases.json 47a3675d, job 01a17539-b5b7-75f7-9654-8751db6609cd) at 1000 shots: every circuit returned its final key f as 1000 shots of six 0/1 outcomes in the locus order QB5, QB7, QB11, QB14, QB17, QB19, including the 32-pulse pi/2-pair circuit and the circuit without a pre-readout delay. The compiled qpu_execution estimate of 0.086 s is 1.68 times the case's QPU-calibrated 0.0513 s, the 8 x (8.684 - 4.344) us per-circuit base difference between the mock and the QPU. The job charged 0.00 credits.
+  Boundary: The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.
+  Evidence: [results.json](../../results/iqm/runs/2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic/results.json), [iqm-garnet-measurement-sequence-diagnostic.md](../design/iqm-garnet-measurement-sequence-diagnostic.md).
+  Acquisitions: iqm-garnet-mock-measurement-diagnostic.
 - **qi-tuna17-kernel-cancellation-matched-post-hoc** (exploratory reanalysis, hardware). A post hoc adjudication of the Tuna-17 kernel cancellation series, chosen after the bright control falsified H2: the readout-corrected kernel-minus-bright difference at phi = pi/36 reads -0.0056 +- 0.0058 (z -0.97), so the zero-divisor sign stays unresolved on this device once the kernel-independent signed response is subtracted.
   Boundary: Selected after viewing the bright control, against the manifests' preregistered H1 of the kernel against zero; it holds under the main claim's position and readout assumptions, and a matched decision needs a case that preregisters it.
   Assumptions: the two batches of a contrast carry the same within-batch position effect, so the +, -, -, + balance across them cancels it; a batch's readout assignment factor equals its batch pair's, whose two references sit in different batches; the spread of the series' readout references enters the corrected errors.

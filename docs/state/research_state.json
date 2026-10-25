@@ -1920,6 +1920,13 @@
       "question": "What does Garnet's compiler estimate per shot for the N = 16 measure-arm circuit of the pinching case on the same six qubits, and so what mid-circuit measure window does it compile?"
     },
     {
+      "id": "iqm-garnet-mock-measurement-diagnostic",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the eight-circuit unitary-arm diagnostic (cases.json 47a3675d), with pi/2-pair steps and a circuit without the pre-readout delay, and return the final key of every circuit?"
+    },
+    {
       "id": "iqm-garnet-mock-measure-012-probe",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe",
@@ -9480,6 +9487,31 @@
       "acquisitions": [
         "iqm-garnet-qpu-window-probe-unitary",
         "iqm-garnet-qpu-window-probe-measure"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-diagnostic",
+      "statement": "garnet:mock (calibration set f04fe114) completed the eight-circuit unitary-arm diagnostic (cases.json 47a3675d, job 01a17539-b5b7-75f7-9654-8751db6609cd) at 1000 shots: every circuit returned its final key f as 1000 shots of six 0/1 outcomes in the locus order QB5, QB7, QB11, QB14, QB17, QB19, including the 32-pulse pi/2-pair circuit and the circuit without a pre-readout delay. The compiled qpu_execution estimate of 0.086 s is 1.68 times the case's QPU-calibrated 0.0513 s, the 8 x (8.684 - 4.344) us per-circuit base difference between the mock and the QPU. The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic/results.json",
+          "sha256": "fc5eb10b4bcd81dffdf7d2645319942e719b1171433210a37c8e686729c973d8"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-diagnostic.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-diagnostic"
       ],
       "assumptions": [],
       "depends_on": [],

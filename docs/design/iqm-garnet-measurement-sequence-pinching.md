@@ -324,6 +324,12 @@ peak. The trajectory disfavors a shared under-rotation. Two causes remain, and t
   the calibration set. The main job's ro0 and ro1 members and its T1 series calibrate this loss in-job, so the guard
   would not fire under this cause.
 
+**Correction.** The standard errors above compare the raw readings with the corrected planning values, which live in
+different spaces. Against the raw model of the same circuit (0.182, 0.218, 0.172, 0.169, 0.164, 0.177 at p = 0.068) the
+probe readings sit at +0.2, -0.2, +2.1, -0.8, +1.5 and +5.3 standard errors; only QB19 is far from its model, and the
+0.00 to 0.20 band sits below the raw model of four of the six qubits. The [diagnostic
+case](iqm-garnet-measurement-sequence-diagnostic.md) reads the readout in situ before it chooses a cause.
+
 ## Window sensitivity
 
 The planned measure window of 1.096 us comes from two QPU probes on this set and carries their rounding (a layer of 43

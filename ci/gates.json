@@ -3796,6 +3796,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py --self-test",
+   "name": "core-693",
+   "seconds": 5.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py check results/iqm/cases/measurement-sequence-diagnostic",
+   "name": "core-694",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py analyze results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0 results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate --out results/iqm/signed_kernel_null_retest_analysis.json --replay",
    "name": "core-643",
    "seconds": 20.0,
