@@ -14,7 +14,11 @@ that produced the service-retrieval comparison; the snapshot is data rather than
 
 The [ordered-map successor](comparison-ordered-map-cancel.json) rebinds the retained-audit comparison offline
 after `parallel.py` began cancelling queued chunks once an item raises; its 40 rows equal the pooled-validation
-comparison's, and only that dependency digest and the offline validation time differ. Gate `core-281` checks it.
+comparison's, and only that dependency digest and the offline validation time differ.
+
+The [experiment-manifest successor](comparison-qrng-seeds-manifest.json) rebinds the retained-audit comparison
+offline after `live_run.EXPERIMENT_SOURCE_MANIFEST` began listing `qrng_seeds.py`; it differs from the
+ordered-map successor only in the `live_run.py` digest and the offline validation time. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
@@ -28,7 +32,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-ordered-map-cancel.json
+  --out docs/evidence/submitted_circuits/comparison-qrng-seeds-manifest.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0
