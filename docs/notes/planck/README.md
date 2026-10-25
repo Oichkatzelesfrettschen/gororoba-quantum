@@ -49,6 +49,17 @@ sent as `X-API-Key`. The SDK and server allow one request every 3 s.
   deployments are off. The durable remedy is server-side (a persistent key
   store); until the vendor ships one, no client-side workaround makes
   key-only authentication reliable.
+- **The mechanism, measured on 2026-10-25.** Every function request ran in
+  Vercel region `fra1`. Key-only `GET /api/quantum/executions` requests
+  answered 401 throughout; after the owner loaded the settings page (a
+  session request that runs `ensureDbUser`), 15 consecutive key-only
+  requests answered 200 for 51 s, and the next answered 401 again. A single
+  session-authenticated read of the same endpoint reproduces it: the key
+  failed, the session read succeeded, and the following key-only requests
+  succeeded. A key therefore works for about a minute after a request
+  carrying the `auth-token` session cookie reaches the same instance.
+  Automating that would mean handling the owner's session cookie, which the
+  repository does not do.
 - **The simulator ignores the circuit.** In the platform source at commit
   `d57e32e7`, `simulateQuantumCircuit()` in
   `app/api/quantum/simulate/route.ts` draws every bit with
