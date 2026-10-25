@@ -1937,7 +1937,7 @@
    "docs/evidence/submitted_circuits/collector-retained-audit.py.txt": "8ee66460b4c882e2d002835172dcc3d406de528e6b18b8104913a302f48e87a2",
    "gororoba_quantum/ibm_account.py": "950cb1b250f92b914acf448fa0088cb1a7bd03214b3aaa9c525102567effb977",
    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-   "gororoba_quantum/live_run.py": "03973ac85d0b829f116194487529534f22a46c9550918e53c5666183859d62ea"
+   "gororoba_quantum/live_run.py": "71fd52853c0ede76fbd550918f6af4a89b2b56e63f42e2b446d2be80da71debd"
   },
   "seed_file": "docs/evidence/submitted_circuits/comparison.json",
   "retrieved_job_ids": [
@@ -1960,7 +1960,7 @@
   },
   "offline_rebind": {
    "operation": "offline validation and collector-source rebinding; provider reads excluded",
-   "validated_utc": "2026-10-25T19:49:43.204467+00:00",
+   "validated_utc": "2026-10-25T20:24:36.757031+00:00",
    "predecessor_file": "docs/evidence/submitted_circuits/comparison-retained-audit.json",
    "collector_snapshot_file": "docs/evidence/submitted_circuits/collector-retained-audit.py.txt"
   }

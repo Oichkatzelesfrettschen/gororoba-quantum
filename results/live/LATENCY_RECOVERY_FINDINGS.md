@@ -94,3 +94,10 @@ coherence decays at four single-qubit rates combined.
   of each qubit, or residual photons after readout) is undecided.
 - A bit-flip code protects no phase, so the run says nothing about a code
   that corrects phase.
+- Layout search and model sampling used the runner's fixed seeds
+  (transpiler 20261013, simulator 20261011) rather than a QRNG draw, because
+  `live_run.py` takes no seed at run time (issue #514).
+- The run's `experiment_digest` covers the runner's source manifest, which
+  did not yet list `latency_recovery.py`. The record pins source commit
+  `2f5c673` with `sources_modified` false, and that commit fixes the module's
+  bytes.

@@ -39,8 +39,8 @@ it rests on. `UNAPPROVED_CASE.md` keeps its generated text.
 
 ## Account
 
-- The primary account held 117 s of 600 s at 2026-10-25T18:4x UTC. Less the
-  60 s reserve, that falls below the 90 s ceiling.
+- The primary account held 117 s of 600 s at the exploration's budget read
+  (2026-10-25T19:22Z). Less the 60 s reserve, that falls below the 90 s ceiling.
 - The backup account (`backup-ibm-quantum-platform`, 600 s free) runs the
   dry run, the submission and the collection.
 

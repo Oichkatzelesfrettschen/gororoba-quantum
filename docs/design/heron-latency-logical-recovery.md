@@ -134,7 +134,8 @@ medians T1 258 us, T2 163 us) predicted under Aer F(`ff_0`) = 0.915, the null
 `L` at 0.006, below any reachable radius, so `latency_cost` and
 `latency_is_idle` resolve only a feed-forward cost well beyond T1 and T2. It
 put the window cost at 0.017 for a 526-dt window and 0.081 for 2500 dt; the
-second exceeds the 0.046 half-width, which sets `W`.
+second exceeds the 0.046 half-width, which sets `W`. Both exploration logs are
+retained under [unretained-dry-run-logs](../../results/live/unretained-dry-run-logs/README.md).
 
 ## Placement and seeds
 
@@ -148,10 +149,11 @@ measurement is identical, so readout error biases each F alike, and
 differences between arms cancel it to first order.
 
 The family draws no randomness of its own: its circuits, frame rule and
-contracts are deterministic. Layout search and the planner's model sampling use
-the runner's `SEED_TRANSPILER` range and `SEED_SIMULATOR`, the reproduction
-identifiers of ci/reproduction_seeds.json that every live_run family plans
-with.
+contracts are deterministic. `live_run.py` takes no seed at run time, so layout
+search and the planner's model sampling ran with the runner's fixed
+`SEED_TRANSPILER` range and `SEED_SIMULATOR` (transpiler seed 20261013,
+simulator seed 20261011 in the retained run). A new acquisition's seeds belong
+to a QRNG draw; issue #514 carries the runner flags that take one.
 
 ## Implementation
 

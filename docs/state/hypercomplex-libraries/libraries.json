@@ -8290,6 +8290,7 @@
    "experiment_optimizer",
    "experiments",
    "numpy",
+   "parallel",
    "qiskit",
    "qiskit_aer"
   ],

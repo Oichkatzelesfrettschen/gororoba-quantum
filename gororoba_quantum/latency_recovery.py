@@ -17,6 +17,7 @@ from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 from qiskit_aer.noise import NoiseModel
 
 import dynamic_density
+import parallel
 from experiment_optimizer import ObservableContract, ObservableTerm
 from experiments import Group, Member
 
@@ -209,6 +210,11 @@ def ideal_law(circuit: QuantumCircuit) -> np.ndarray:
     return dynamic_density.probabilities(stripped, NoiseModel())
 
 
+def _member_law(spec: tuple[str, bool, str, int, int]) -> np.ndarray:
+    """The ideal law of one member, rebuilt from its specification in a pool worker."""
+    return ideal_law(latency_recovery_circuit(*spec))
+
+
 def latency_recovery_group(latency_dt: int, window_dt: int) -> Group:
     """The 34 members as one dynamic group, with F, C and phi per arm and the uncorrected frame arms.
 
@@ -217,18 +223,14 @@ def latency_recovery_group(latency_dt: int, window_dt: int) -> Group:
     frame_0 uncorrected fidelity is the no-correction null.
     """
     latency_dt, window_dt = check_window_dt(latency_dt, window_dt)
+    specs = [(arm, error, basis, latency_dt, window_dt) for arm, error, basis in member_arms()]
+    # Each member's exact law is an independent density-matrix evolution.
+    laws = parallel.ordered_map(_member_law, specs)
     members = []
-    for arm, error, basis in member_arms():
+    for (arm, error, basis, _, _), law in zip(specs, laws, strict=True):
         circuit = latency_recovery_circuit(arm, error, basis, latency_dt, window_dt)
         scores = outcome_scores(basis, arm in FRAME_ARMS)
-        members.append(
-            Member(
-                circuit.name,
-                circuit,
-                ideal_law(circuit),
-                weights=(1.0 + scores) / 2.0,
-            )
-        )
+        members.append(Member(circuit.name, circuit, law, weights=(1.0 + scores) / 2.0))
 
     def arm_values(
         distributions: dict[str, np.ndarray], arm: str, error: bool, framed: bool

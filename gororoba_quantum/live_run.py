@@ -151,6 +151,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "ibm_account.py",
     "integral_homology.py",
     "jax_bridge.py",
+    "latency_recovery.py",
     "law_encoding.py",
     "live_run.py",
     "local_compute.py",
