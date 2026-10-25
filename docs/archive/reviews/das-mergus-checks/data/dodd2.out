@@ -1,0 +1,8 @@
+job-00 direct D-ideal vs outside frac: spearman SignificanceResult(statistic=np.float64(0.09928545267758496), pvalue=np.float64(0.6770737039981949))
+   sign-odd transform of outside fraction: [ 0.00018 -0.00224 -0.00222  0.00435  0.0067 ]
+   sign-odd transform of mode 2 share: [ 3.0e-05  1.7e-04 -6.0e-04  4.8e-04 -1.3e-04]
+   sign-odd transform of mode 3 share: [-0.0028   0.00196 -0.00901  0.00121 -0.00298]
+job-01 direct D-ideal vs outside frac: spearman SignificanceResult(statistic=np.float64(0.16842105263157892), pvalue=np.float64(0.47782867579643046))
+   sign-odd transform of outside fraction: [ 0.00356  0.00486  0.00504 -0.00211  0.00385]
+   sign-odd transform of mode 2 share: [ 9.0e-05  3.0e-05 -2.0e-04  2.1e-04 -2.0e-05]
+   sign-odd transform of mode 3 share: [-0.00187  0.00349 -0.01062 -0.00122 -0.00056]

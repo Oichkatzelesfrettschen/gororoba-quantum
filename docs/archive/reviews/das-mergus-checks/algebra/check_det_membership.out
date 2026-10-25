@@ -1,0 +1,57 @@
+{
+ "det_identity_random_doubly_pure": {
+  "trials": 30,
+  "agree": 30,
+  "coord_range": "[-1e6,1e6]",
+  "schwartz_zippel_per_point": "deg 32 / 2000001 < 1.6e-5"
+ },
+ "det_identity_small_range": {
+  "trials": 200,
+  "agree": 200
+ },
+ "det_identity_mutations": {
+  "flip_sign_e3e5": {
+   "trials": 10,
+   "disagree": 10
+  },
+  "swap_pairing_k1_k2": {
+   "trials": 10,
+   "disagree": 10
+  },
+  "Q_with_minus_mu2": {
+   "trials": 10,
+   "disagree": 10
+  }
+ },
+ "e16_anticommutes_with_30_units": 30,
+ "nonpure_points_invertible": {
+  "trials": 20,
+  "invertible": 20
+ },
+ "stiefel_plus_e16_invertible": {
+  "trials": 10,
+  "invertible": 10
+ },
+ "stiefel_random_nullities": {
+  "4": 40
+ },
+ "stiefel_mutated_table_nullities": {
+  "3": 10
+ },
+ "a6_random_stiefel_nullities": [
+  0,
+  0,
+  0
+ ],
+ "G_zero_exact_point": {
+  "Q": [
+   "130",
+   "0"
+  ],
+  "G": [
+   "0",
+   "0"
+  ],
+  "nullity": 4
+ }
+}

@@ -129,7 +129,7 @@ L.append(c("C10","ch04 8.2-8.3; ch07 experiment table","A crossed design with ex
 L.append(c("Pa1","pasted (a)","Ascella holds 128 compressed iteration records over two jobs","repo-fact",EC,"Own decoder.","Different count",True,"confirmed","64 results_list entries per job, each with ':PCVL:zip:' BSCount, computed_circuit and computed_experiment.","None.","none"))
 L.append(c("Pa2","pasted (a)","Job-01 lag-one statistic -0.653137 in execution order","statistic",EC,"Lag-1 autocorrelation of log(count+1/2) outside-block counts.","Mismatch",True,"already-in-repo","-0.653137; retained in job-01-diagnostics.json serial and repeat-comparison.json sequence (preregistered, supported).","None.","none"))
 L.append(c("Pa3","pasted (a)","Job-01 lag-one statistic +0.280039 in design order","statistic",EC,"Same statistic with job-01 reordered by design_index.","Mismatch",True,"confirmed",
-  "+0.280039. Its asymptotic two-sided p under exchangeability (sd 1/8) is 0.025, so it is itself not null at 0.05, uncorrected.",
+  "+0.280039. Its asymptotic two-sided p under exchangeability (sd 1/8) is 0.025, and the 20,000-draw permutation p in das-mergus-checks/data/serial3.out is 0.021, so it is itself not null at 0.05, uncorrected.",
   "Weak residual structure among design neighbors in job-01 (28 of 63 design-adjacent pairs share execution parity, so it is not a parity artifact); one uncorrected exploratory statistic.","none"))
 L.append(c("Pa4","pasted (a)","Cross-job Spearman -0.075453 by setting identity","statistic",EC,"Spearman of outside counts matched by setting name.","Mismatch",True,"already-in-repo","-0.075453 (asymptotic p 0.55); retained as repeat-comparison.json identity (preregistered, not supported). Removing each job's parity mean leaves -0.089.","None.","none"))
 L.append(c("Pa5","pasted (a)","Cross-job Spearman -0.390040 by positional join","statistic",EC,"Spearman of outside counts matched by execution position.","Mismatch",True,"confirmed",
@@ -148,6 +148,6 @@ for id,st,v in [("Pc1","638 retained IBM PUBs","638 pub_*.json files under resul
                 ("Pc3","31,145,280 stored register entries","31,145,280 bitstrings summed over registers (36,226,688 bits)"),
                 ("Pc4","2,116,928 aligned PUB positions","2,116,928 = sum of per-PUB num_shots; every register in every PUB has len(bitstrings) == num_shots")]:
     L.append(c(id,"pasted (c)",st,"repo-fact",f"{PIN} and {MAIN}","Independent walk of results/live/**/raw/*/pub_*.json.","Different count",True,"confirmed",v+"; identical at 41d5ef0 and main.","None.","none"))
-doc=dict(schema="delivery-claim-ledger-v1",delivery="DAS MERGUS companion package (chapters 01, 04, 07, 08, 09; analysis/statistics; analysis/audit_corpus.py) and the pasted review summary claims (a)-(c)",reviewed_utc="2026-10-25T10:00:00Z",claims=L)
+doc=dict(schema="delivery-claim-ledger-v1",delivery="DAS MERGUS companion package (chapters 01, 04, 07, 08, 09; analysis/statistics; analysis/audit_corpus.py) and the pasted review summary claims (a)-(c)",reviewed_utc="2026-10-25T09:44:35Z",claims=L)
 json.dump(doc,open(OUT,"w"),indent=1,ensure_ascii=False); open(OUT,"a").write("\n")
 import collections; print(len(L),collections.Counter(x["verdict"] for x in L),collections.Counter(x["action"] for x in L))

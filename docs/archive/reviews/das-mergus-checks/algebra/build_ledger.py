@@ -5,7 +5,7 @@ import sys
 
 REG = "90339b6 (registry, current main); cd_core byte-identical at ec75554 and main"
 EC = "ec75554 (cd_core, witness records)"
-S = "review-algebra/"
+S = "das-mergus-checks/algebra/"
 claims = []
 
 
@@ -70,7 +70,7 @@ add("P9-associator-4", "README.md para 4; 00-abstract.md para 5; 02-algebra-form
     "The sharp sedenion associator constant sup ||[a,b,c]||/(|a||b||c|) is 4; this repairs an earlier universal constant-2 claim.", "theorem",
     "Upper bound: audit of Lemma 5.1 (kappa_{n+1} <= sqrt2 kappa_n) and Cor. 5.2. Lower bound: exact cd_core arithmetic on a=e1+e10, b=e4+e15, c=e2-e9; mutation c=e2+e9; exhaustive two-term search; random ascent; octonion control.",
     "A witness above 4, or the stated witness below 4.", True, "confirmed",
-    "Searched for a constant-2 associator claim: research_state.json, docs/notes (md, tex), docs/evidence, proofs, gororoba_quantum, scripts, docs/sources/open_gororoba/cayley_dickson_evidence_contracts.txt, docs/notes/topics/algebra_measurement_synthesis.tex: none found. " + S + "check_small.py: ab=2e5-2e14, bc=-2e6-2e13, [a,b,c]=-8e7+8e12, ratio^2=16; mutation ratio 0; two-term max 4.000; ascent max 3.946; octonion max 1.943; kappa4^2 at e1+e10 = 2.",
+    "Searched for a constant-2 associator claim: research_state.json, docs/notes (md, tex), docs/evidence, proofs, gororoba_quantum, scripts, docs/sources/open_gororoba/cayley_dickson_evidence_contracts.txt, docs/notes/topics/algebra_measurement_synthesis.tex: none found. " + S + "check_small.py: ab=2e5-2e14, bc=-2e6-2e13, [a,b,c]=-8e7+8e12, ratio^2=16; mutation ratio 0; two-term max 4.000; ascent max 3.926; octonion max 1.939; kappa4^2 at e1+e10 = 2.",
     "The 'earlier constant-2 claim' is absent from the registry, docs/notes, docs/evidence and proofs (grep); its source is an unretained session document. The theorem is correct but corrects nothing the repository asserts, and the sqrt2 sedenion norm bound is elementary.", "none", REG)
 add("P10-fold-average", "README.md para 4; 00-abstract.md para 5; 06-historical-reconstruction.md (lines 39-122)",
     "The fold/average construction does not satisfy the hypotheses of homotopy transfer; no minimal uncurved A-infinity structure keeps the nonassociative product.", "theorem",

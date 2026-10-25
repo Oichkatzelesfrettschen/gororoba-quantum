@@ -1,0 +1,6 @@
+job-00 block-conditioned 4-cell homogeneity over 30 config pairs: chi2 126.0 df 89 p 0.006033894470444866 dispersion 1.416
+   smallest pair p [(np.float64(0.004841218091579918), 'theta0-x-arm1', 'theta0-x-arm2'), (np.float64(0.015195654097806776), 'theta1-direct-arm1', 'theta1-direct-arm2'), (np.float64(0.025036481091135807), 'theta0-direct-arm0', 'theta0-direct-arm3')]
+   all members chi2 146.67 df 101 p 0.0020386732666737312
+job-01 block-conditioned 4-cell homogeneity over 30 config pairs: chi2 128.55 df 89 p 0.0038954803408325542 dispersion 1.444
+   smallest pair p [(np.float64(0.0004184390319034427), 'mutation-arm2-ii', 'mutation-arm1-ii'), (np.float64(0.005731952721895929), 'theta2-x-arm2', 'theta2-x-arm1'), (np.float64(0.007822457139017249), 'theta1-x-arm1', 'theta1-x-arm2')]
+   all members chi2 156.66 df 101 p 0.00032411744781612003

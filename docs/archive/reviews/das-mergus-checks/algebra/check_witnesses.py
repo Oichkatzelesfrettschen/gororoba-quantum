@@ -8,7 +8,13 @@ from fractions import Fraction
 
 import flint
 import sympy as sp
+import sys
+from pathlib import Path
+
 from common import REPO, lmat, nullity, sign
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[5] / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
 
 rows = json.load(open(os.path.join(REPO, "docs/evidence/rank_locus_local_dimension/result.json")))["rows"]
 F = flint.fmpq
@@ -103,11 +109,10 @@ EQ_V = [x for i in range(7) for j in range(i + 1, 7) for x in reim(u[i] * v[j] -
 fam_eq = {"nonzd-axis": ("V", purity + EQ_V), "zd-nonzd-locus": ("Q + 35 quartics", purity + EQ_Q + EQ_W),
           "zd-nonzd-generic": ("G", purity + EQ_G), "nonzd-nonzd-locus": ("Q (Stiefel)", purity + EQ_Q),
           "zd-zd-generic": ("Z", purity + EQ_Z)}
-report = []
-for idx, row in enumerate(rows):
+def witness(item):
+    """Membership, Jacobian rank and Schur tangent dimension at one retained witness row."""
+    idx, row = item
     fam = row["family"]
-    if fam not in fam_eq:
-        continue
     x = [Fraction(s) for s in row["x"]]
     xs = [sp.Rational(q.numerator, q.denominator) for q in x]
     pt = dict(zip(Y, xs))
@@ -128,8 +133,16 @@ for idx, row in enumerate(rows):
     name, eqs = fam_eq[fam]
     jr = jac_rank(eqs, xs)
     tdim, k = schur_tangent([F(q.numerator, q.denominator) for q in x])
-    report.append({"row": idx, "family": fam, "nullity": k, "record_unit_bound": row.get("dimension_upper_bound"),
+    return {"row": idx, "family": fam, "nullity": k, "record_unit_bound": row.get("dimension_upper_bound"),
                    "Q": str(vals["Q"]), "G": str(vals["G"]), "Delta": str(vals["Delta"]), "mu": str(vals["mu"]),
                    "wedge_zero": wedge_zero, "equations": name, "jacobian_rank": jr, "equation_cone_dim_upper": 32 - jr,
-                   "schur_tangent_cone_dim": tdim, **extra})
-print(json.dumps(report, indent=1))
+                   "schur_tangent_cone_dim": tdim, **extra}
+
+
+def main() -> None:
+    items = [(idx, row) for idx, row in enumerate(rows) if row["family"] in fam_eq]
+    print(json.dumps(ordered_map(witness, items), indent=1))
+
+
+if __name__ == "__main__":
+    main()

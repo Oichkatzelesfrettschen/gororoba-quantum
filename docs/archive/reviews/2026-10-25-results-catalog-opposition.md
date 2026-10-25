@@ -15,8 +15,14 @@ results:
 Both proposals are brainstorms rather than plans. They name formats before
 they name a query a maintainer runs today. This review argues against each
 layer from measured properties of the tree, and then ranks the alternatives.
-Every measurement below was taken on `d53a2fe` with the commands recorded
-in the PR that adds this file.
+Every measurement below was taken on `d53a2fe`. The numeric-fidelity scan
+is [results-catalog-checks/lexeme_scan.py](results-catalog-checks/lexeme_scan.py)
+(run from any directory; it reads `git ls-files '*.json'` at the repository
+root). The other rows come from `scripts/research_state.py --check`,
+`git ls-files | wc -l` (whole tree, and restricted to `results docs/evidence`
+and `'*.json'`), `du -sh --apparent-size results docs/evidence`, a count of
+tracked file extensions, and `git ls-files -z results docs/evidence | xargs
+-0 du -b | sort -rn` for the largest files.
 
 ## Measured facts that decide the argument
 

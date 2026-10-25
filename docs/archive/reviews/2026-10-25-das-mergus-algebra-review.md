@@ -90,7 +90,7 @@ The README's two "historical repairs" correct nothing the repository asserts.
   - Exact cd_core arithmetic on a = e1+e10, b = e4+e15, c = e2-e9 gives
     [a,b,c] = -8e7 + 8e12 and a squared ratio of 16.
   - The sign mutation c = e2+e9 gives 0.
-  - The two-term maximum is 4.000, and a random ascent reaches 3.938.
+  - The two-term maximum is 4.000, and a random ascent reaches 3.926.
   - The upper bound follows from kappa_4 <= sqrt2, attained at e1+e10.
 - **Fold/average is not a homotopy transfer.** This is already stated in
   `docs/notes/open_gororoba_folding_proofs.md` lines 44-57, with

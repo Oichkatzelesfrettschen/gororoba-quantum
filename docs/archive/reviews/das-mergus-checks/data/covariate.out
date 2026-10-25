@@ -1,0 +1,10 @@
+job-00 var log-rate 1.7254 var residual after lag-2 neighbor predictor 0.4035 R2 0.766
+  quasi-Poisson dispersion phi vs neighbor prediction 71.0
+  config-mate residual Spearman SignificanceResult(statistic=np.float64(0.10745272525027807), pvalue=np.float64(0.5719545687436388))
+  config-mate raw log-rate Spearman SignificanceResult(statistic=np.float64(-0.6142889090497804), pvalue=np.float64(0.00030487469666294343))
+  overdispersed log-Wald first-vs-last Holm(30) rejections 0
+job-01 var log-rate 1.6385 var residual after lag-2 neighbor predictor 0.5668 R2 0.654
+  quasi-Poisson dispersion phi vs neighbor prediction 247.5
+  config-mate residual Spearman SignificanceResult(statistic=np.float64(0.2560622914349277), pvalue=np.float64(0.17199733110615528))
+  config-mate raw log-rate Spearman SignificanceResult(statistic=np.float64(0.02736373748609566), pvalue=np.float64(0.8858673112521352))
+  overdispersed log-Wald first-vs-last Holm(30) rejections 0

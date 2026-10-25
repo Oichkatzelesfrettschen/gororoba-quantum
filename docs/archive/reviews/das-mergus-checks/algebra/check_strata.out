@@ -1,0 +1,117 @@
+{
+ "V_rational_chart_nullities": {
+  "12": 15
+ },
+ "S_pm_nullities": {
+  "16": 10
+ },
+ "V_isotropic_w_lambda_2i_control": [
+  12,
+  12,
+  12
+ ],
+ "Z_random_nullities": {
+  "8": 15
+ },
+ "incidence_chart_points_valid": 15,
+ "incidence_chart_nullities": {
+  "8": 15
+ },
+ "eigenspace_mixed_control_(Q==0,nullity)": [
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ],
+  [
+   false,
+   0
+  ]
+ ],
+ "G.I9": {
+  "y8": {
+   "Q": "(0, 0)",
+   "G": "(0, 0)",
+   "Delta": "(0, 0)",
+   "nullity": 8
+  },
+  "y4": {
+   "Q": "(0, 0)",
+   "G": "(0, 0)",
+   "Delta": "(0, 0)",
+   "nullity": 4
+  }
+ },
+ "charpoly_G.I11_agree_of_40": 40,
+ "charpoly_G.50a_agree_of_40": 40,
+ "charpoly_G.I11_mutated_agree_of_40": 0,
+ "path_I10_nullity_t0_t1": [
+  12,
+  8
+ ],
+ "path_50_nullity_e0_e1": [
+  16,
+  12
+ ],
+ "G.52": {
+  "Lx b = 0": true,
+  "Lx c = 0": true,
+  "Ld b = 2c": true,
+  "Ld c = -2b": true,
+  "Lx d0 = Ld d0 = 0": true,
+  "R b = c (index ^ 2)": true
+ },
+ "ch5_charpoly_L_agree_of_20": 20,
+ "ch5_charpoly_C_agree_of_20": 20
+}

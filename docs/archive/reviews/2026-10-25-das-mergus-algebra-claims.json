@@ -125,7 +125,7 @@
    "falsifier": "A witness above 4, or the stated witness below 4.",
    "independent": true,
    "verdict": "confirmed",
-   "evidence": "Searched for a constant-2 associator claim: research_state.json, docs/notes (md, tex), docs/evidence, proofs, gororoba_quantum, scripts, docs/sources/open_gororoba/cayley_dickson_evidence_contracts.txt, docs/notes/topics/algebra_measurement_synthesis.tex: none found. das-mergus-checks/algebra/check_small.py: ab=2e5-2e14, bc=-2e6-2e13, [a,b,c]=-8e7+8e12, ratio^2=16; mutation ratio 0; two-term max 4.000; ascent max 3.938; octonion max 1.935; kappa4^2 at e1+e10 = 2.",
+   "evidence": "Searched for a constant-2 associator claim: research_state.json, docs/notes (md, tex), docs/evidence, proofs, gororoba_quantum, scripts, docs/sources/open_gororoba/cayley_dickson_evidence_contracts.txt, docs/notes/topics/algebra_measurement_synthesis.tex: none found. das-mergus-checks/algebra/check_small.py: ab=2e5-2e14, bc=-2e6-2e13, [a,b,c]=-8e7+8e12, ratio^2=16; mutation ratio 0; two-term max 4.000; ascent max 3.926; octonion max 1.939; kappa4^2 at e1+e10 = 2.",
    "opposition": "The 'earlier constant-2 claim' is absent from the registry, docs/notes, docs/evidence and proofs (grep); its source is an unretained session document. The theorem is correct but corrects nothing the repository asserts, and the sqrt2 sedenion norm bound is elementary.",
    "action": "none"
   },
