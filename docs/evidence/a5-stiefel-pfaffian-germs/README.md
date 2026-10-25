@@ -237,6 +237,31 @@ The [earlier review](../../archive/reviews/2026-10-25-das-mergus-algebra-review.
 supported Theorem 1 by randomized identity tests and left the nullity-8 inclusion resting
 on imported transitivity. The present computations replace both with exact identities.
 
+## Literature
+
+Moreno asks (math/0512517, Section 5) whether every Stiefel element of A_(n+1) is a zero divisor;
+[the A_6 witness](../moreno_stiefel/README.md) answers no at A_6. A search on 2026-10-25 of arXiv, the
+twelve citations of math/0512517 that Semantic Scholar lists, and zbMATH Open found no answer for A_5. Two
+registered sources bear on it:
+
+- [Biss, Christensen, Dugger and Isaksen](../../notes/math-0702075.md), Theorem 1.5, settles a
+  codimension-2 slice for every n. Their element {a, b} = (a + b, i (b - a)) / sqrt 2, with a, b in
+  C_n^perp and i = i_n, parametrizes H_(n+1)^perp, the complement of the span of (1, 0), (0, 1), (i, 0)
+  and (0, i). With p = a + b and q = i (b - a), L_i is an isometry and skew, so
+  |p|^2 - |q|^2 = 4 <a, b> and <p, q> = 2 <a, i b>: the Stiefel conditions on (p, q) are exactly
+  C-orthogonality of a and b, and the paper's summary of Theorem 1.5 reads "if a and b are C-orthogonal,
+  then {a, b} is always a zero-divisor". A scratch exact computation with `cd_core` confirmed both
+  relations, signs included, on 400 integer pairs. The A_6 witness has coefficient 1 on e_48 = (0, i_5),
+  so it lies off that slice. Theorem 1 here adds the e_8 and e_24 directions at n + 1 = 5, which the
+  paper's introduction leaves for future work.
+- [Koebisu](../../notes/2608.08232.md) proves det L_x = N(x)^2 D_14(x)^2 in A_5, so x is a zero
+  divisor exactly when D_14(x) = 0, and asks whether D_14 has an expression in simple geometric invariants.
+  On doubly pure elements Theorem 1 gives D_14 = N |Q G|^2, which the paper does not state; its explicit
+  factorization covers only the embedded sedenions (a, 0).
+
+The search used no MathSciNet or Google Scholar access, and it screened the Zhilina and Guterman
+zero-divisor-graph papers among the citations by title and abstract only.
+
 ## Replay
 
 ```sh
