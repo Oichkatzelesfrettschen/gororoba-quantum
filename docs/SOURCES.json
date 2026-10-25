@@ -1276,6 +1276,96 @@
         "conditions": "Preserve author attribution, original notices, source and license links; identify changes. Repository licensing leaves original source licensing intact."
       },
       "redistribution": "explicit_license_verified"
+    },
+    {
+      "path": "docs/pdf/2609.11588v1.pdf",
+      "source_url": "https://arxiv.org/pdf/2609.11588v1",
+      "note": "docs/notes/papers/2609.11588.md",
+      "audited_at_utc": "2026-10-25T20:34:21+00:00",
+      "status": "retained",
+      "sha256": "000e36cfece2af5c5f977fe6c19e487ad76a4739c6f26fe900c3036239109f6b",
+      "bytes": 438933,
+      "pages": 20,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "000e36cfece2af5c5f977fe6c19e487ad76a4739c6f26fe900c3036239109f6b",
+        "verified_at_utc": "2026-10-25T20:34:21+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2609.11588v1",
+        "evidence_sha256": "e4184881f5c6a54697b2f689e3d9e5dd5607c6ad42981feefeebdf82f02995b3",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and the equations and numbers transcribed in the note.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2609.11588v1.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:34:21+00:00",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify changes. Repository licensing leaves original source licensing intact."
+      },
+      "redistribution": "explicit_license_verified"
+    },
+    {
+      "path": "docs/pdf/2603.20495v3.pdf",
+      "source_url": "https://arxiv.org/pdf/2603.20495v3",
+      "note": "docs/notes/papers/2603.20495.md",
+      "audited_at_utc": "2026-10-25T20:34:35+00:00",
+      "status": "retained",
+      "sha256": "3af912b1f23e33653ae954ec73c050e749424b9995a0d876342c47b1a911f1a7",
+      "bytes": 153035,
+      "pages": 7,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "3af912b1f23e33653ae954ec73c050e749424b9995a0d876342c47b1a911f1a7",
+        "verified_at_utc": "2026-10-25T20:34:35+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2603.20495v3",
+        "evidence_sha256": "32e46176020d0fe2c2142682206484ba12fbad775eb31dab480c8f852fdadd43",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and the equations and numbers transcribed in the note.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2603.20495v3.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:34:35+00:00",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify changes. Repository licensing leaves original source licensing intact."
+      },
+      "redistribution": "explicit_license_verified"
+    },
+    {
+      "path": "docs/pdf/2512.22134v3.pdf",
+      "source_url": "https://arxiv.org/pdf/2512.22134v3",
+      "note": "docs/notes/papers/2512.22134.md",
+      "audited_at_utc": "2026-10-25T20:35:27+00:00",
+      "status": "retained",
+      "sha256": "5e2e39feff3716ece2116071dcc6139bb2835478805e22ec9a69af7a43834281",
+      "bytes": 368706,
+      "pages": 5,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "5e2e39feff3716ece2116071dcc6139bb2835478805e22ec9a69af7a43834281",
+        "verified_at_utc": "2026-10-25T20:35:27+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2512.22134v3",
+        "evidence_sha256": "a0fd0059b6e6705c461d236fa7797e51f4e0d8bc70fda9a777724437cfa7136d",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version abstract metadata, first-page author/title and abstract, and the equations and numbers transcribed in the note.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Exact-version arXiv license metadata controls this admission route; preserve original notices.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2512.22134v3.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:35:27+00:00",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify changes. Repository licensing leaves original source licensing intact."
+      },
+      "redistribution": "explicit_license_verified"
     }
   ],
   "aliases": [
@@ -1535,6 +1625,102 @@
       "doi": "10.1088/1367-2630/15/2/025024",
       "venue": "New Journal of Physics 15, 025024 (2013)",
       "receipt_url": "https://api.crossref.org/works/10.1088/1367-2630/15/2/025024"
+    },
+    "docs/notes/papers/0804.3416.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/0907.2047.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/math-0404395.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1142/9789812772732_0028",
+      "venue": "Topics in Mathematical Physics, General Relativity and Cosmology in Honor of Jerzy Plebanski, 333-346 (2006)",
+      "receipt_url": "https://api.crossref.org/works/10.1142/9789812772732_0028"
+    },
+    "docs/notes/papers/math-0512516.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1201/9781420003451.ch22",
+      "venue": "Clifford Algebras and their Applications in Mathematical Physics volume chapter, 281-289 (2006)",
+      "receipt_url": "https://api.crossref.org/works/10.1201/9781420003451.ch22"
+    },
+    "docs/notes/papers/math-0405424.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/math-0404172.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/1102.5151.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.4303/jglta/g110901",
+      "venue": "Journal of Generalized Lie Theory and Applications 6, 1-10 (2012)",
+      "receipt_url": "https://api.crossref.org/works/10.4303/jglta/g110901"
+    },
+    "docs/notes/papers/1405.6888.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.3390/math3041192",
+      "venue": "Mathematics 3(4), 1192-1221 (2015)",
+      "receipt_url": "https://api.crossref.org/works/10.3390/math3041192"
+    },
+    "docs/notes/papers/2606.27798.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/2609.11588.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/2603.20495.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.46298/jonas.17802",
+      "venue": "Journal of Nonassociative Algebras 1(1), paper 7 (2026)",
+      "receipt_url": "https://api.crossref.org/works/10.46298/jonas.17802"
+    },
+    "docs/notes/papers/2501.00123.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/1707.07318.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/s00006-015-0638-6",
+      "venue": "Advances in Applied Clifford Algebras 26(2), 529-551 (2016)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/s00006-015-0638-6"
+    },
+    "docs/notes/papers/1107.1301.md": {
+      "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/hep-th-0601033.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1088/0305-4470/39/7/008",
+      "venue": "Journal of Physics A 39(7), 1633-1644 (2006)",
+      "receipt_url": "https://api.crossref.org/works/10.1088/0305-4470/39/7/008"
+    },
+    "docs/notes/papers/2505.06011.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/s00006-025-01423-5",
+      "venue": "Advances in Applied Clifford Algebras 36(2), article 24 (2026)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/s00006-025-01423-5"
+    },
+    "docs/notes/papers/2205.05605.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1080/00927872.2022.2134885",
+      "venue": "Communications in Algebra 51(4), 1355-1369 (2023)",
+      "receipt_url": "https://api.crossref.org/works/10.1080/00927872.2022.2134885"
+    },
+    "docs/notes/papers/2512.22134.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1007/s00006-026-01452-8",
+      "venue": "Advances in Applied Clifford Algebras 36(3), article 34 (2026)",
+      "receipt_url": "https://api.crossref.org/works/10.1007/s00006-026-01452-8"
+    },
+    "docs/notes/papers/brown-1967-generalized-cayley-dickson.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.2140/pjm.1967.20.415",
+      "venue": "Pacific Journal of Mathematics 20(3), 415-422 (1967)",
+      "receipt_url": "https://api.crossref.org/works/10.2140/pjm.1967.20.415"
+    },
+    "docs/notes/papers/chan-dokovic-2006-sedenion-subalgebras.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.4153/cmb-2006-048-6",
+      "venue": "Canadian Mathematical Bulletin 49(4), 492-507 (2006)",
+      "receipt_url": "https://api.crossref.org/works/10.4153/cmb-2006-048-6"
     },
     "docs/notes/papers/2608.26890.md": {
       "status": "journal-identity-verified",
@@ -2970,6 +3156,114 @@
       "retrieved_at_utc": "2026-10-25T09:04:56+00:00",
       "reading_scope": "Perceval 1.3.1 constraint checker at commit 64ed82f9: license header, class constants and method inventory; byte-identical to the file installed by python-perceval-quandela 1.3.1; verification logic not read line by line",
       "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1142/9789812772732_0028",
+      "note": "docs/notes/papers/math-0404395.md",
+      "sha256": "db6e2a8c8825d452b601a4b8bdc11bd52e4d83ec4a17103ac2f68dc22b6f6a2a",
+      "bytes": 1757,
+      "retrieved_at_utc": "2026-10-25T21:09:15+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for math-0404395; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1201/9781420003451.ch22",
+      "note": "docs/notes/papers/math-0512516.md",
+      "sha256": "3652801377524435807bc18edd246ea03c03f08b5775d72ab0070745be7ad5fb",
+      "bytes": 1750,
+      "retrieved_at_utc": "2026-10-25T21:09:16+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for math-0512516; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.4303/jglta/g110901",
+      "note": "docs/notes/papers/1102.5151.md",
+      "sha256": "e781fe9213f5e9a99828b9429166611980ed5fb85575521ed8f2fb6473611d05",
+      "bytes": 1832,
+      "retrieved_at_utc": "2026-10-25T21:09:19+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for 1102.5151; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.3390/math3041192",
+      "note": "docs/notes/papers/1405.6888.md",
+      "sha256": "57806b84f1bbdb4372a942675897b661f8a2f1a836c86b4755c880f17f9dbbda",
+      "bytes": 11860,
+      "retrieved_at_utc": "2026-10-25T21:09:06+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for 1405.6888; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.46298/jonas.17802",
+      "note": "docs/notes/papers/2603.20495.md",
+      "sha256": "1d65878ae6abd445cc1a6fb2ca68d5e77cbee06c83b29b10491683017b25110a",
+      "bytes": 2694,
+      "retrieved_at_utc": "2026-10-25T21:09:11+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for 2603.20495; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1007/s00006-015-0638-6",
+      "note": "docs/notes/papers/1707.07318.md",
+      "sha256": "347c04156265725b576d07cd5d342fcffbc1da3946c6c823858a9fe9a51ec3a2",
+      "bytes": 6300,
+      "retrieved_at_utc": "2026-10-25T21:09:08+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for 1707.07318; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1088/0305-4470/39/7/008",
+      "note": "docs/notes/papers/hep-th-0601033.md",
+      "sha256": "ac87ecf0c9076419c3224d54f5c18de393c4712b17d6d311dfdf03b2169a80ba",
+      "bytes": 4709,
+      "retrieved_at_utc": "2026-10-25T21:09:09+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for hep-th-0601033; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1007/s00006-025-01423-5",
+      "note": "docs/notes/papers/2505.06011.md",
+      "sha256": "ecde3009138134190c4d5ecbb73065a0b5dc5bf947c5067bf61ef06b6cf91e53",
+      "bytes": 13035,
+      "retrieved_at_utc": "2026-10-25T21:09:10+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for 2505.06011; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1080/00927872.2022.2134885",
+      "note": "docs/notes/papers/2205.05605.md",
+      "sha256": "3a0da95cff5fc7d70a12b65f5baba6251b126658ff8859da74fc7dff3813aa85",
+      "bytes": 6531,
+      "retrieved_at_utc": "2026-10-25T21:09:18+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for 2205.05605; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.1007/s00006-026-01452-8",
+      "note": "docs/notes/papers/2512.22134.md",
+      "sha256": "6f77a2b1ddf7b32793ed521f75bdc29ef9f13cc77dcc3b2a26058415c4036975",
+      "bytes": 6750,
+      "retrieved_at_utc": "2026-10-25T21:09:05+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for 2512.22134; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.2140/pjm.1967.20.415",
+      "note": "docs/notes/papers/brown-1967-generalized-cayley-dickson.md",
+      "sha256": "d1a690bfda9ab3502d3ce4d9327db2733602e071f12e465b9b331805fb0c2cb9",
+      "bytes": 1740,
+      "retrieved_at_utc": "2026-10-25T21:09:13+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for brown-1967-generalized-cayley-dickson; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
+    },
+    {
+      "url": "https://api.crossref.org/works/10.4153/cmb-2006-048-6",
+      "note": "docs/notes/papers/chan-dokovic-2006-sedenion-subalgebras.md",
+      "sha256": "b1afb9d8970a12ad210d6e889e52fe723fcf1d26972c2f4e71d6a732d1651c40",
+      "bytes": 5303,
+      "retrieved_at_utc": "2026-10-25T21:09:14+00:00",
+      "reading_scope": "Journal title, DOI, volume, issue, pages and publication date for chan-dokovic-2006-sedenion-subalgebras; metadata only",
+      "retention": "retrieval_receipt; response bytes are unretained"
     },
     {
       "url": "https://api.crossref.org/works/10.1007/s10958-024-07097-x",
@@ -8632,6 +8926,600 @@
       "redistribution": "excluded_without_permission",
       "rights_locator": "Quandela website legal terms, section 7 (Intellectual Property)",
       "rights_reason": "The PDF prints no license. The site terms of the serving website (section 7, Intellectual Property) prohibit reproduction, extraction or reuse of its contents without prior written authorization from Quandela, so no redistribution grant is established."
+    },
+    {
+      "title": "Voyage by Catamaran: Effecting Semantic Network \"Bricolage\" via Infinite-Dimensional Zero-Divisor Ensembles",
+      "authors": [
+        "de Marrais, Robert P. C."
+      ],
+      "source_url": "https://arxiv.org/pdf/0804.3416v2",
+      "note": "docs/notes/papers/0804.3416.md",
+      "audited_at_utc": "2026-10-25T20:33:14+00:00",
+      "status": "external_only",
+      "sha256": "7e7ecd97f7fa1b770bbdedd7bab97f35fca92313a69f1c73f57c97b31b0cadd4",
+      "bytes": 382389,
+      "pages": 30,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/0804.3416v2.pdf",
+      "local_cache_path": "docs/local_source_cache/0804.3416v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "7e7ecd97f7fa1b770bbdedd7bab97f35fca92313a69f1c73f57c97b31b0cadd4",
+        "verified_at_utc": "2026-10-25T20:33:14+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/0804.3416v2",
+        "evidence_sha256": "6b467ef5ebf3337156fd18a861074b094b853914a62a5354b2e6bf611ef2e656",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-0804.3416v2.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:33:14+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "The Subalgebra Structure of the Cayley-Dickson Algebra of Dimension 32 (trigintaduonion)",
+      "authors": [
+        "Cawagas, Raoul E.",
+        "Carrascal, Alexander S.",
+        "Bautista, Lincoln A.",
+        "Maria, John P. Sta.",
+        "Urrutia, Jackie D.",
+        "Nobles, Bernadeth"
+      ],
+      "source_url": "https://arxiv.org/pdf/0907.2047v3",
+      "note": "docs/notes/papers/0907.2047.md",
+      "audited_at_utc": "2026-10-25T20:33:21+00:00",
+      "status": "external_only",
+      "sha256": "202833bbbf36b0c8bb6ca0c448c98df3f21e2f072a82e3b30c0b029f19cb8ce1",
+      "bytes": 245005,
+      "pages": 9,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/0907.2047v3.pdf",
+      "local_cache_path": "docs/local_source_cache/0907.2047v3.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "202833bbbf36b0c8bb6ca0c448c98df3f21e2f072a82e3b30c0b029f19cb8ce1",
+        "verified_at_utc": "2026-10-25T20:33:21+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/0907.2047v3",
+        "evidence_sha256": "89dab0b3b331a3a39360f014fb11d708cd86dbf084f7737eed47eb934796841f",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-0907.2047v3.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:33:21+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "Alternative elements in the Cayley-Dickson algebras",
+      "authors": [
+        "Moreno, Guillermo"
+      ],
+      "source_url": "https://arxiv.org/pdf/math/0404395v1",
+      "note": "docs/notes/papers/math-0404395.md",
+      "audited_at_utc": "2026-10-25T20:33:29+00:00",
+      "status": "external_only",
+      "sha256": "3db9cab9ddfc5fb8eeca767b25b1842d7604c76d7eb0c98b65619fb6f1cd9781",
+      "bytes": 136721,
+      "pages": 19,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/math-0404395v1.pdf",
+      "local_cache_path": "docs/local_source_cache/math-0404395v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "3db9cab9ddfc5fb8eeca767b25b1842d7604c76d7eb0c98b65619fb6f1cd9781",
+        "verified_at_utc": "2026-10-25T20:33:29+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "license_url": "http://arxiv.org/licenses/assumed-1991-2003/",
+        "evidence_url": "https://arxiv.org/abs/math/0404395v1",
+        "evidence_sha256": "8d820ddcd1867e40a39ad4fab7457e41ea21b81b45170618444673d4599eb4d2",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-math-0404395v1.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:33:29+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "Monomorphisms between Cayley-Dickson Algebras",
+      "authors": [
+        "Moreno, Guillermo"
+      ],
+      "source_url": "https://arxiv.org/pdf/math/0512516v1",
+      "note": "docs/notes/papers/math-0512516.md",
+      "audited_at_utc": "2026-10-25T20:33:36+00:00",
+      "status": "external_only",
+      "sha256": "03e277ad675158c7f6ee32d3710a84d522c0bb3836a17d00fb92383ffa8e86a4",
+      "bytes": 98925,
+      "pages": 12,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/math-0512516v1.pdf",
+      "local_cache_path": "docs/local_source_cache/math-0512516v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "03e277ad675158c7f6ee32d3710a84d522c0bb3836a17d00fb92383ffa8e86a4",
+        "verified_at_utc": "2026-10-25T20:33:36+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "license_url": "http://arxiv.org/licenses/assumed-1991-2003/",
+        "evidence_url": "https://arxiv.org/abs/math/0512516v1",
+        "evidence_sha256": "5ed96e6ad0ef901a82c2cecad46c0082935e7df50ed4a2295da5853a2de337e9",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-math-0512516v1.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:33:36+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "The Exponential Map on the Cayley-Dickson algebras",
+      "authors": [
+        "Moreno, Guillermo"
+      ],
+      "source_url": "https://arxiv.org/pdf/math/0405424v1",
+      "note": "docs/notes/papers/math-0405424.md",
+      "audited_at_utc": "2026-10-25T20:33:43+00:00",
+      "status": "external_only",
+      "sha256": "2f7095b586930e5946a7db19757622bd31dfe9e157c17f19ac32db8b305c3079",
+      "bytes": 116449,
+      "pages": 17,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/math-0405424v1.pdf",
+      "local_cache_path": "docs/local_source_cache/math-0405424v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "2f7095b586930e5946a7db19757622bd31dfe9e157c17f19ac32db8b305c3079",
+        "verified_at_utc": "2026-10-25T20:33:43+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "license_url": "http://arxiv.org/licenses/assumed-1991-2003/",
+        "evidence_url": "https://arxiv.org/abs/math/0405424v1",
+        "evidence_sha256": "062eddd4dad0588d4c98319fa7637aba751c60bbe640b20c36b2feb9e32b38f4",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-math-0405424v1.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:33:43+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "Hopf construction map in higher dimensions",
+      "authors": [
+        "Moreno, Guillermo"
+      ],
+      "source_url": "https://arxiv.org/pdf/math/0404172v1",
+      "note": "docs/notes/papers/math-0404172.md",
+      "audited_at_utc": "2026-10-25T20:33:51+00:00",
+      "status": "external_only",
+      "sha256": "6d34b0ae4e0a44d793b6543a2ab57d7878c1c0be051acc0d2cdf89a4260db1d8",
+      "bytes": 165334,
+      "pages": 22,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/math-0404172v1.pdf",
+      "local_cache_path": "docs/local_source_cache/math-0404172v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "6d34b0ae4e0a44d793b6543a2ab57d7878c1c0be051acc0d2cdf89a4260db1d8",
+        "verified_at_utc": "2026-10-25T20:33:51+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "license_url": "http://arxiv.org/licenses/assumed-1991-2003/",
+        "evidence_url": "https://arxiv.org/abs/math/0404172v1",
+        "evidence_sha256": "255f6224384ca07181c806fae643cc23e28af53747f7d68f02139c6fe4a182ea",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-math-0404172v1.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:33:51+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "Automorphism groups of Cayley-Dickson loops",
+      "authors": [
+        "Kirshtein, Jenya"
+      ],
+      "source_url": "https://arxiv.org/pdf/1102.5151v2",
+      "note": "docs/notes/papers/1102.5151.md",
+      "audited_at_utc": "2026-10-25T20:33:58+00:00",
+      "status": "external_only",
+      "sha256": "757573d77524457234c8694b9801af5aef7bf8b671c8acedad0ac90e12c9d1fd",
+      "bytes": 663591,
+      "pages": 15,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/1102.5151v2.pdf",
+      "local_cache_path": "docs/local_source_cache/1102.5151v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "757573d77524457234c8694b9801af5aef7bf8b671c8acedad0ac90e12c9d1fd",
+        "verified_at_utc": "2026-10-25T20:33:58+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1102.5151v2",
+        "evidence_sha256": "c73920f47c6b9b2c1a1219ad02214b02992aadf4718cbd83ff1ffeef66e917ee",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1102.5151v2.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:33:58+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "Cayley-Dickson Algebras and Finite Geometry",
+      "authors": [
+        "Saniga, Metod",
+        "Holweck, Frederic",
+        "Pracna, Petr"
+      ],
+      "source_url": "https://arxiv.org/pdf/1405.6888v2",
+      "note": "docs/notes/papers/1405.6888.md",
+      "audited_at_utc": "2026-10-25T20:34:06+00:00",
+      "status": "external_only",
+      "sha256": "d7e6f0dbd044b904e3e52849edac92a6a45cccf97815d6d82014f87bc2a62636",
+      "bytes": 434317,
+      "pages": 26,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/1405.6888v2.pdf",
+      "local_cache_path": "docs/local_source_cache/1405.6888v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "d7e6f0dbd044b904e3e52849edac92a6a45cccf97815d6d82014f87bc2a62636",
+        "verified_at_utc": "2026-10-25T20:34:06+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1405.6888v2",
+        "evidence_sha256": "f7c6fede021104a164fa7339ce984b20f22499cdf53692c7ebc65d894cc1a088",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1405.6888v2.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:34:06+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "Involutions in the Cayley-Dickson construction",
+      "authors": [
+        "Aryapoor, Masood",
+        "B\u00e4ck, Per",
+        "Pautrel, Sophie"
+      ],
+      "source_url": "https://arxiv.org/pdf/2606.27798v2",
+      "note": "docs/notes/papers/2606.27798.md",
+      "audited_at_utc": "2026-10-25T20:34:13+00:00",
+      "status": "external_only",
+      "sha256": "03209884f1fc22bfd7c08122a6b03b77d2f8f65eece4135c03362f6bbb2694fc",
+      "bytes": 358203,
+      "pages": 18,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/2606.27798v2.pdf",
+      "local_cache_path": "docs/local_source_cache/2606.27798v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "03209884f1fc22bfd7c08122a6b03b77d2f8f65eece4135c03362f6bbb2694fc",
+        "verified_at_utc": "2026-10-25T20:34:13+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/2606.27798v2",
+        "evidence_sha256": "1ab9d8f57139cd49fe7cb1e46be63d246a608d8fb64ab96f3e8caa46c178dfc1",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2606.27798v2.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:34:13+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "Loops with involution and the Cayley-Dickson doubling process",
+      "authors": [
+        "Chapman, Adam",
+        "Levin, Ilan",
+        "Vishne, Uzi",
+        "Zaninelli, Marco"
+      ],
+      "source_url": "https://arxiv.org/pdf/2501.00123v1",
+      "note": "docs/notes/papers/2501.00123.md",
+      "audited_at_utc": "2026-10-25T20:34:43+00:00",
+      "status": "external_only",
+      "sha256": "3e129840c3a51881c8668f2403934c282378633fd6680ceaa14accadd5bd8ffb",
+      "bytes": 432779,
+      "pages": 39,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/2501.00123v1.pdf",
+      "local_cache_path": "docs/local_source_cache/2501.00123v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "3e129840c3a51881c8668f2403934c282378633fd6680ceaa14accadd5bd8ffb",
+        "verified_at_utc": "2026-10-25T20:34:43+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/2501.00123v1",
+        "evidence_sha256": "e17ad77fd71200d3df3fe3d57c77510da16751a278208e08c6e9f79128cb24ce",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2501.00123v1.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:34:43+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "The Cayley-Dickson doubling products",
+      "authors": [
+        "Bales, John W."
+      ],
+      "source_url": "https://arxiv.org/pdf/1707.07318v4",
+      "note": "docs/notes/papers/1707.07318.md",
+      "audited_at_utc": "2026-10-25T20:34:50+00:00",
+      "status": "external_only",
+      "sha256": "c6d8b6d37f474aa0dcef33397ecb12068302b6101566dd0b6c4ffa800a094fd0",
+      "bytes": 358610,
+      "pages": 24,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/1707.07318v4.pdf",
+      "local_cache_path": "docs/local_source_cache/1707.07318v4.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "c6d8b6d37f474aa0dcef33397ecb12068302b6101566dd0b6c4ffa800a094fd0",
+        "verified_at_utc": "2026-10-25T20:34:50+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1707.07318v4",
+        "evidence_sha256": "5a883e5a66702059b0c37b8328ff262e0ca17e591ec45b973c8d1c71453e6e6c",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1707.07318v4.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:34:50+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "A catalog of Cayley-Dickson-like products",
+      "authors": [
+        "Bales, John W."
+      ],
+      "source_url": "https://arxiv.org/pdf/1107.1301v5",
+      "note": "docs/notes/papers/1107.1301.md",
+      "audited_at_utc": "2026-10-25T20:34:57+00:00",
+      "status": "external_only",
+      "sha256": "5139c19a99555f8b390c0bd8097243bdad946742324c14ad4da5760f3308d30c",
+      "bytes": 294587,
+      "pages": 60,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/1107.1301v5.pdf",
+      "local_cache_path": "docs/local_source_cache/1107.1301v5.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "5139c19a99555f8b390c0bd8097243bdad946742324c14ad4da5760f3308d30c",
+        "verified_at_utc": "2026-10-25T20:34:57+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1107.1301v5",
+        "evidence_sha256": "6ada4fce4977c5fa11a8194407ae4ae19f7cf543ba416ed75cfa60ad9af8c5f4",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1107.1301v5.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:34:57+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "Alternativity and reciprocity in the Cayley-Dickson algebra",
+      "authors": [
+        "Kuwata, S.",
+        "Fujii, H.",
+        "Nakashima, A."
+      ],
+      "source_url": "https://arxiv.org/pdf/hep-th/0601033v1",
+      "note": "docs/notes/papers/hep-th-0601033.md",
+      "audited_at_utc": "2026-10-25T20:35:05+00:00",
+      "status": "external_only",
+      "sha256": "8f0ab9c1136506769cefe95b62aca0563b83946dfe37c8affe4d81641e2ae93c",
+      "bytes": 214243,
+      "pages": 16,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/hep-th-0601033v1.pdf",
+      "local_cache_path": "docs/local_source_cache/hep-th-0601033v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "8f0ab9c1136506769cefe95b62aca0563b83946dfe37c8affe4d81641e2ae93c",
+        "verified_at_utc": "2026-10-25T20:35:05+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "license_url": "http://arxiv.org/licenses/assumed-1991-2003/",
+        "evidence_url": "https://arxiv.org/abs/hep-th/0601033v1",
+        "evidence_sha256": "a184eeab2fade7ce0787f4939ffa9d1e7830de3bf39d9c7a8509b914073a37cf",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-hep-th-0601033v1.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:35:05+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "Construction of exceptional Lie algebra G2 and non-associative algebras using Clifford algebra",
+      "authors": [
+        "Wilmot, G. P."
+      ],
+      "source_url": "https://arxiv.org/pdf/2505.06011v1",
+      "note": "docs/notes/papers/2505.06011.md",
+      "audited_at_utc": "2026-10-25T20:35:12+00:00",
+      "status": "external_only",
+      "sha256": "323d74c03dde7565f8b088aae488e60b30160d02f77c97edc8042d2f3eacc78c",
+      "bytes": 490680,
+      "pages": 20,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/2505.06011v1.pdf",
+      "local_cache_path": "docs/local_source_cache/2505.06011v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "323d74c03dde7565f8b088aae488e60b30160d02f77c97edc8042d2f3eacc78c",
+        "verified_at_utc": "2026-10-25T20:35:12+00:00",
+        "decision": "external_only",
+        "license_identifier": "CC-BY-NC-SA-4.0",
+        "license_url": "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2505.06011v1",
+        "evidence_sha256": "61f1885d9debb52a920062acdf193dce02fe6bec4a8fbc0665b4444aa512e3c6",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2505.06011v1.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:35:12+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "Roots and Critical Points of Polynomials over Cayley--Dickson Algebras",
+      "authors": [
+        "Chapman, Adam",
+        "Guterman, Alexander",
+        "Vishkautsan, Solomon",
+        "Zhilina, Svetlana"
+      ],
+      "source_url": "https://arxiv.org/pdf/2205.05605v1",
+      "note": "docs/notes/papers/2205.05605.md",
+      "audited_at_utc": "2026-10-25T20:35:19+00:00",
+      "status": "external_only",
+      "sha256": "9460c306707b947b91ac73343ba17a0d310b76c0f29a1429481c1fa2250fd0b6",
+      "bytes": 191320,
+      "pages": 21,
+      "acquisition": "download",
+      "excluded_published_path": "docs/pdf/2205.05605v1.pdf",
+      "local_cache_path": "docs/local_source_cache/2205.05605v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "9460c306707b947b91ac73343ba17a0d310b76c0f29a1429481c1fa2250fd0b6",
+        "verified_at_utc": "2026-10-25T20:35:19+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/2205.05605v1",
+        "evidence_sha256": "5dc547dbb9b4c80ae21eb9219c2af7ea006247235c5ee417b62254c4ca5aed85",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2205.05605v1.html",
+        "evidence_retrieved_at_utc": "2026-10-25T20:35:19+00:00",
+        "reading_scope": "Exact-version abstract license link, when present; original PDF rights-term snippets with page locators. These checks establish the recorded license evidence, not a new full mathematical review.",
+        "evidence_summary": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      }
+    },
+    {
+      "title": "On generalized Cayley-Dickson algebras",
+      "authors": [
+        "Brown, Robert Bruce"
+      ],
+      "version": "Pacific Journal of Mathematics 20(3), 415-422 (1967), publisher PDF",
+      "source_url": "http://msp.org/pjm/1967/20-3/pjm-v20-n3-p03-s.pdf",
+      "note": "docs/notes/papers/brown-1967-generalized-cayley-dickson.md",
+      "audited_at_utc": "2026-10-25T20:36:00+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "03ffabb6b1f05282fe6c2d65ced324741108e07f717e1228a69432e3d7d4ee0d",
+      "bytes": 1008368,
+      "pages": 11,
+      "excluded_published_path": "docs/pdf/brown-1967-generalized-cayley-dickson.pdf",
+      "local_cache_path": "docs/local_source_cache/brown-1967-generalized-cayley-dickson.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Article landing page (copyright line) and the PDF title page and volume front matter",
+      "rights_reason": "The landing page prints a Pacific Journal of Mathematics copyright line for 1967 and names no open license; the PDF repeats the journal notices. No redistribution grant is established, so the repository retains its citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "03ffabb6b1f05282fe6c2d65ced324741108e07f717e1228a69432e3d7d4ee0d",
+        "verified_at_utc": "2026-10-25T20:36:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://msp.org/pjm/1967/20-3/p03.xhtml",
+        "evidence_sha256": "f753f8f054b27d32ad78c332a03f74c792653933b76243eb79cdc46bc2f16357",
+        "evidence_locator": "Article landing page (copyright line) and the PDF title page and volume front matter",
+        "reading_scope": "Landing-page copyright line and the absence of any open-license statement on the page and in the PDF text layer.",
+        "evidence_summary": "The landing page prints a Pacific Journal of Mathematics copyright line for 1967 and names no open license; the PDF repeats the journal notices. No redistribution grant is established, so the repository retains its citation and digest and excludes the PDF from the published library."
+      }
+    },
+    {
+      "title": "Conjugacy classes of subalgebras of the real sedenions",
+      "authors": [
+        "Chan, Kai-Cheong",
+        "Dokovic, Dragomir Z."
+      ],
+      "version": "Canadian Mathematical Bulletin 49(4), 492-507 (2006), publisher PDF",
+      "source_url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/E3602D99D8C6C96F78EADAD2EDC1BC27/S0008439500006020a.pdf/div-class-title-conjugacy-classes-of-subalgebras-of-the-real-sedenions-div.pdf",
+      "note": "docs/notes/papers/chan-dokovic-2006-sedenion-subalgebras.md",
+      "audited_at_utc": "2026-10-25T20:36:00+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "c4379e7222df2bc86f14602fdfd09327317aa9fd874a6b30562c868a0dc95838",
+      "bytes": 221728,
+      "pages": 16,
+      "excluded_published_path": "docs/pdf/chan-dokovic-2006-sedenion-subalgebras.pdf",
+      "local_cache_path": "docs/local_source_cache/chan-dokovic-2006-sedenion-subalgebras.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Article landing page (copyright line) and the PDF footer",
+      "rights_reason": "The landing page prints a Canadian Mathematical Society copyright line for 2006 and states no open license; the PDF footer reads Published online by Cambridge University Press. No redistribution grant is established, so the repository retains its citation and digest and excludes the PDF from the published library.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "c4379e7222df2bc86f14602fdfd09327317aa9fd874a6b30562c868a0dc95838",
+        "verified_at_utc": "2026-10-25T20:36:00+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://www.cambridge.org/core/journals/canadian-mathematical-bulletin/article/conjugacy-classes-of-subalgebras-of-the-real-sedenions/E3602D99D8C6C96F78EADAD2EDC1BC27",
+        "evidence_sha256": "ef16ea56908e54e798eacd0405f5ac661d63f5bf855eeb431e9b11af4a1938ba",
+        "evidence_locator": "Article landing page (copyright line) and the PDF footer",
+        "reading_scope": "Landing-page copyright line and the absence of any open-license statement on the page and in the PDF footer.",
+        "evidence_summary": "The landing page prints a Canadian Mathematical Society copyright line for 2006 and states no open license; the PDF footer reads Published online by Cambridge University Press. No redistribution grant is established, so the repository retains its citation and digest and excludes the PDF from the published library."
+      }
     },
     {
       "source_url": "https://arxiv.org/pdf/2608.26890v1",
