@@ -71,6 +71,9 @@ NULL_RECORD = ROOT / "docs/evidence/primorial_cover/null_residuals.json"
 OUTPUT = "results/kaggle_out/primorial_bound_residuals.json"
 KHZ = 1e3
 TOLERANCE = 1e-9
+# Sign-mirror scenarios give equal residuals up to rounding that differs between hosts; values within TIE of the
+# maximum count as tied, and the first of them is the worst case.
+TIE = 1e-9
 DRIVEN = {"sx": math.pi / 2, "x": math.pi}
 # Per-qubit coherent sx/x error directions (tilt sign, amplitude sign) before scaling to the gate-error budget.
 DIRECTIONS = ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1))
@@ -299,6 +302,13 @@ def twirled_law(ops: list[Op], spec: dict[str, Any]) -> list[float]:
 
 # --------------------------------------------------------------- analysis
 
+
+def first_max(values: list[float]) -> int:
+    """Index of the first value within TIE of the maximum."""
+    top = max(values)
+    return next(k for k, v in enumerate(values) if v >= top - TIE)
+
+
 Arm = tuple[dict[str, Any], list[Op]]
 
 
@@ -327,7 +337,8 @@ class Fit:
         )
         shift = {k: v - self.exact[k] for k, v in sub["recovered_coefficients"].items()}
         z = {k: abs(v) / self.sd[k] for k, v in shift.items()}
-        worst = max(sorted(z), key=lambda k: z[k])
+        keys = sorted(z)
+        worst = keys[first_max([z[k] for k in keys])]
         # primorial_cover_noise.phase_fit's budget rule with this bias in place of the incoherent one.
         margin = noise.IDENTIFY_RADIUS - max(abs(v) for v in shift.values())
         identify = math.ceil(noise.SIMULTANEOUS_Z**2 * max(self.variance.values()) / margin**2) if margin > 0 else None
@@ -413,8 +424,8 @@ def validate(patch: str, fit: Fit, null_record: dict[str, Any], noise_record: di
 
 def summary(rows: list[dict[str, Any]], specs: list[dict[str, Any]]) -> dict[str, Any]:
     """Worst scenario by max_z and by the worst-variance reading, with the count reaching max_z >= 1."""
-    by_z = max(range(len(rows)), key=lambda k: (rows[k]["max_z"], -k))
-    by_bias = max(range(len(rows)), key=lambda k: (rows[k]["null_subtracted_max_bias"], -k))
+    by_z = first_max([r["max_z"] for r in rows])
+    by_bias = first_max([r["null_subtracted_max_bias"] for r in rows])
     return {
         "scenarios": len(rows),
         "reaching_max_z_1": sum(1 for r in rows if r["max_z"] >= 1.0),
@@ -573,8 +584,8 @@ def refine(fit: Fit, tilt: list[float], phi: list[float], start: dict[str, Any])
         specs = [tilt_cz(tilt, phi, tuple(m)) for m in moves]
         rows = parallel.ordered_map(fit, [(spec, spec) for spec in specs], min_items=1)
         evaluations += len(rows)
-        k = max(range(len(rows)), key=lambda i: (rows[i]["max_z"], -i))
-        if rows[k]["max_z"] > best["max_z"]:
+        k = first_max([r["max_z"] for r in rows])
+        if rows[k]["max_z"] > best["max_z"] + TIE:
             point, best = moves[k], rows[k]
         else:
             step /= 2
@@ -656,7 +667,7 @@ def sweep(
             for p in signs
         ]
         rows = parallel.ordered_map(Fit(arms, variance, shots), [(s, s) for s in specs], min_items=1)
-        worst = max(range(len(rows)), key=lambda k: (rows[k]["max_z"], -k))
+        worst = first_max([r["max_z"] for r in rows])
         paths.append(
             {
                 "rank": rank,
