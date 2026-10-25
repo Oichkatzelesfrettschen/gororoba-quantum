@@ -13,7 +13,7 @@
   },
   "scope": "scripts/results_index.py and scripts/repository_archive.py with tests and runbooks; one completed Software Heritage visit.",
   "owner": "repository maintainer",
-  "next_action": "Record the completed Software Heritage visit and merge the PR.",
+  "next_action": "Merge the PR after Codex review and green checks.",
   "steps": [
     {
       "id": "query-command",
@@ -23,9 +23,27 @@
     },
     {
       "id": "swh-visit",
-      "state": "todo",
+      "state": "done",
       "action": "Request a Software Heritage save of the public origin and record its completed visit.",
-      "acceptance": "A retained swh-status record reports visit_status full with a snapshot SWHID."
+      "acceptance": "A retained swh-status record reports visit_status full with a snapshot SWHID.",
+      "receipts": [
+        {
+          "result": "Software Heritage save request 2576155 succeeded: visit_status full at 2026-10-25T19:19:56Z, snapshot swh:1:snp:28882c1bdf53ccc0f4e1aef527e4e5ecaef8226d.",
+          "observed_at": "2026-10-25T20:09:12.003059+00:00",
+          "revision": "57fbceb7474d8b79fcfc6d4faa4a10d9afd51f5b",
+          "evidence": [
+            {
+              "ref": "docs/evidence/repository-archive/swh-save-2026-10-25T182205Z.json",
+              "sha256": "e867656bdd5ec46c01f044a6a025aedf6c24e855990afc9f773109d3fb21f9ff"
+            },
+            {
+              "ref": "docs/evidence/repository-archive/swh-status-2026-10-25T194835Z.json",
+              "sha256": "2049f25db41c8c85ca1f95b36262e7a22d645c5d8c3ee43658b8c00a60a5a842"
+            }
+          ],
+          "scope_sha256": "984f607d6f09ba0cf736250a5fa7c3aa52e73d1ea9257b00b4f9283f78a26e11"
+        }
+      ]
     },
     {
       "id": "bundle-copy",

@@ -1,0 +1,9 @@
+{
+ "schema": "software-heritage-observation-v1",
+ "method": "GET",
+ "url": "https://archive.softwareheritage.org/api/1/origin/save/git/url/https://github.com/Oichkatzelesfrettschen/gororoba-quantum/",
+ "observed_utc": "2026-10-25T194836Z",
+ "status": 200,
+ "body": "[{\"id\":2576155,\"origin_url\":\"https://github.com/Oichkatzelesfrettschen/gororoba-quantum\",\"visit_type\":\"git\",\"save_request_date\":\"2026-10-25T18:22:05.938219+00:00\",\"save_request_status\":\"accepted\",\"save_task_status\":\"succeeded\",\"visit_status\":\"full\",\"visit_date\":\"2026-10-25T19:19:56.434000+00:00\",\"loading_task_id\":422147107,\"note\":\"\",\"from_webhook\":false,\"webhook_origin\":\"\",\"snapshot_swhid\":\"swh:1:snp:28882c1bdf53ccc0f4e1aef527e4e5ecaef8226d\",\"next_run\":\"2026-10-25T18:22:05.905494Z\",\"metadata\":{\"worker\":\"loader@loader-save-code-now-git-8c684744-rcmlx\"},\"snapshot_url\":\"https://archive.softwareheritage.org/api/1/snapshot/28882c1bdf53ccc0f4e1aef527e4e5ecaef8226d/\",\"request_url\":\"https://archive.softwareheritage.org/api/1/origin/save/2576155/\"}]",
+ "body_sha256": "d1f155437245c25a56628069ce3ca4b54e90f5a3e54a0b4212172059a454c89d"
+}
