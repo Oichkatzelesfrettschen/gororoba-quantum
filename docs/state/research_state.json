@@ -1892,6 +1892,13 @@
       "question": "Does the garnet:mock pipeline accept the 50-circuit measurement-sequence case (cases.json a1ab2596), return every key in the documented format, and compile to the schedule the case predicts?"
     },
     {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-57",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the hardened 57-circuit measurement-sequence case (cases.json 84fd16f8), with pre-readout delays and the in-job T1 series, and compile it to the predicted schedule?"
+    },
+    {
       "id": "iqm-garnet-mock-measure-012-probe",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe",
@@ -9395,7 +9402,8 @@
       ],
       "gates": {},
       "acquisitions": [
-        "iqm-garnet-mock-measurement-sequence-pinching-50"
+        "iqm-garnet-mock-measurement-sequence-pinching-50",
+        "iqm-garnet-mock-measurement-sequence-pinching-57"
       ],
       "assumptions": [],
       "depends_on": [],
