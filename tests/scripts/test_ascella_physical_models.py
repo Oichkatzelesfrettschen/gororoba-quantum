@@ -1,10 +1,12 @@
-"""Contracts of the Ascella physical-model fits: the batched channel, planted recovery and the static gradient."""
+"""Contracts of the Ascella physical-model fits: the batched channel, planted recovery, the static gradient and
+the drive-dependent heater basis."""
 
 from __future__ import annotations
 
 import math
 from typing import Any
 
+import ascella_drive_response as drive
 import ascella_physical_models as models
 import numpy as np
 import pytest
@@ -117,32 +119,24 @@ def test_static_gradient_matches_finite_differences() -> None:
             raise AssertionError((h, grad[h], numeric))
 
 
-def test_static_gradient_matches_finite_differences_where_cells_sit_on_the_floor(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
+def test_static_light_ignores_the_floor(monkeypatch: pytest.MonkeyPatch) -> None:
     d = data({"family": "heater_gain", "values": [0.0, 0.03]})
     widths = models.prior_widths(d, 0.3, None)
     free = widths > 0
     offsets = np.array([0.01 * math.cos(h) for h in range(int(free.sum()))])
-    raw = models.pure_jacobians(d["couplers"], d["arch"], d["phases"], d["sources"])[0][:, : models.LOGICAL]
-    # A floor between the smallest and largest block probabilities holds some cells and leaves the rest free.
-    floor = float(np.quantile(raw, 0.25))
+    reference_light, reference_dlight = models.static_light(d, offsets, free)
+    p = models.pure_jacobians(d["couplers"], d["arch"], d["phases"], d["sources"])[0][:, : models.LOGICAL]
+    # A floor between the smallest and largest block probabilities would hold some cells if the light were clipped.
+    floor = float(np.quantile(p, 0.25))
+    if not (p < floor).any() or (p < floor).all():
+        raise AssertionError("the floor sits below or above every cell")
     monkeypatch.setattr(models, "PROBABILITY_FLOOR", floor)
-    if not (raw < floor).any() or (raw < floor).all():
-        raise AssertionError("the floor holds no cell or every cell")
-    _, grad = models.static_objective(d, widths[free], free, offsets)
-    step = 1e-7
-    for h in range(int(free.sum())):
-        up, down = offsets.copy(), offsets.copy()
-        up[h] += step
-        down[h] -= step
-        numeric = (
-            models.static_objective(d, widths[free], free, up)[0]
-            - models.static_objective(d, widths[free], free, down)[0]
-        ) / (2 * step)
-        # The difference straddles the floor's kink for a heater that moves a cell across it.
-        if abs(grad[h] - numeric) > 0.05 * max(1.0, abs(numeric)):
-            raise AssertionError((h, grad[h], numeric))
+    light, dlight = models.static_light(d, offsets, free)
+    if not np.array_equal(light, reference_light) or not np.array_equal(dlight, reference_dlight):
+        raise AssertionError("the floor moves the static light or its derivative")
+    zero = models.static_light(d, np.zeros(int(free.sum())), free)[0]
+    if not np.array_equal(zero, p / p.sum(axis=1, keepdims=True)):
+        raise AssertionError("the static light is not the block-normalized detection probability")
 
 
 def test_background_is_added_to_the_configuration_light() -> None:
@@ -180,3 +174,93 @@ def test_posterior_hessian_is_the_symmetrized_column_loop() -> None:
     hessian = models.posterior_hessian(d, widths[free], free, offsets)
     if not np.array_equal(hessian, (loop + loop.T) / 2) or not np.array_equal(hessian, hessian.T):
         raise AssertionError("the pooled Hessian differs from the column loop")
+
+
+def test_constant_basis_is_the_static_offset_path() -> None:
+    d = data({"family": "heater_gain", "values": [0.0, 0.03]})
+    widths = models.prior_widths(d, 0.3, 0.1)
+    free = widths > 0
+    offsets = np.array([0.02 * math.sin(3 * h) for h in range(int(free.sum()))])
+    constant = {**d, "heater_basis": np.ones((*d["phases"].shape, 1))}
+    value, grad = models.static_objective(constant, widths[free], free, offsets)
+    reference_value, reference_grad = models.static_objective(d, widths[free], free, offsets)
+    if value != reference_value or not np.array_equal(grad, reference_grad):
+        raise AssertionError("a basis of ones moves the static objective")
+
+
+@pytest.mark.parametrize(("kind", "order"), [("polynomial", 2), ("harmonic", 2)])
+def test_basis_gradient_matches_finite_differences(kind: str, order: int) -> None:
+    d = drive.with_basis(data({"family": "heater_gain", "values": [0.0, 0.03]}), kind, order)
+    widths = models.prior_widths(d, 0.3, 0.1)
+    free = widths > 0
+    offsets = np.array([0.01 * math.cos(h) for h in range(int(free.sum()))])
+    _, grad = models.static_objective(d, widths[free], free, offsets)
+    step = 1e-6
+    for h in (0, 1, 2, 40, models.heater_parameters(d) - 1, int(free.sum()) - 1):
+        up, down = offsets.copy(), offsets.copy()
+        up[h] += step
+        down[h] -= step
+        numeric = (
+            models.static_objective(d, widths[free], free, up)[0]
+            - models.static_objective(d, widths[free], free, down)[0]
+        ) / (2 * step)
+        if not math.isclose(grad[h], numeric, rel_tol=1e-4, abs_tol=1e-3):
+            raise AssertionError((h, grad[h], numeric))
+
+
+def test_harmonic_basis_is_periodic_and_polynomial_basis_wraps_at_zero() -> None:
+    phases = np.array([[0.3, 2.0], [0.3 + 2 * math.pi, 2.0 - 2 * math.pi]])
+    harmonic = drive.heater_basis(phases, "harmonic", 2)
+    if harmonic.shape != (2, 2, 5) or not np.allclose(harmonic[0], harmonic[1]):
+        raise AssertionError(harmonic)
+    polynomial = drive.heater_basis(np.array([[0.0, math.pi]]), "polynomial", 2)
+    if not np.allclose(polynomial[0], np.array([[1, -1, 1], [1, 0, -0.5]])):
+        raise AssertionError(polynomial)
+
+
+def test_planted_drive_response_is_recovered() -> None:
+    d = drive.with_basis(data(), "harmonic", 1)
+    heaters = d["phases"].shape[1]
+    planted = np.array([[0.05 * math.sin(h), 0.04 * math.cos(2 * h), 0.03 * math.sin(3 * h)] for h in range(heaters)])
+    widths = models.prior_widths(d, 0.3, None)
+    free = widths > 0
+    light, _ = models.static_light(d, planted.ravel(), free)
+    d["block"] = models.setting_probabilities(d, light) * d["block"].sum(axis=1)[:, None]
+    offsets, hessian = models.static_mode(d, widths[free], free)
+    fitted, _ = models.static_light(d, offsets, free)
+    # Six configurations cannot fix every coefficient, so the check is the light the coefficients produce.
+    if not np.allclose(fitted, light, atol=1e-5) or np.linalg.eigvalsh(hessian).min() <= 0:
+        raise AssertionError(np.abs(fitted - light).max())
+
+
+def test_fold_score_adds_the_parameter_variance() -> None:
+    rows = [("x", 1.0, 0.0, 0.5, 0.5), ("x", 0.0, 0.0, 1.0, 0.0), ("y", 2.0, 1.0, 1.0, 1.0)]
+    score = drive.fold_score(rows)
+    if score["x"]["multinomial"]["statistic"] != 2.0 or score["x"]["predictive"]["statistic"] != 1.0:
+        raise AssertionError(score["x"])
+    if score["y"]["multinomial"]["dof"] != 1 or score["y"]["predictive"]["statistic"] != 0.5:
+        raise AssertionError(score["y"])
+
+
+@pytest.mark.parametrize(("kind", "order"), [("harmonic", 2), ("polynomial", 1)])
+def test_basis_hessian_matches_the_column_loop(kind: str, order: int) -> None:
+    d = drive.with_basis(data({"family": "heater_gain", "values": [0.0, 0.03]}), kind, order)
+    widths = models.prior_widths(d, 0.3, None)
+    free = widths > 0
+    offsets = np.array([0.01 * math.sin(h) for h in range(int(free.sum()))])
+    column = models.HessianColumn(d, widths[free], free, offsets)
+    loop = np.stack([column(index) for index in range(len(offsets))], axis=1)
+    hessian = models.posterior_hessian(d, widths[free], free, offsets)
+    scale = float(np.abs(loop).max())
+    if not np.allclose(hessian, (loop + loop.T) / 2, rtol=0, atol=1e-6 * scale):
+        raise AssertionError(np.abs(hessian - (loop + loop.T) / 2).max() / scale)
+
+
+def test_phase_gradients_sum_to_the_shared_offset_gradient() -> None:
+    d = data({"family": "heater_gain", "values": [0.0, 0.03]})
+    widths = models.prior_widths(d, 0.3, None)
+    free = widths > 0
+    rows = models.phase_gradients(d, d["phases"])
+    shared = models.static_objective(d, widths[free], free, np.zeros(int(free.sum())))[1]
+    if not np.allclose(rows.sum(axis=0), shared, rtol=1e-12, atol=1e-9):
+        raise AssertionError(np.abs(rows.sum(axis=0) - shared).max())
