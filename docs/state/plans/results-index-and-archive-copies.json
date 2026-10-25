@@ -1,0 +1,37 @@
+{
+  "schema": "work-plan-v1",
+  "id": "results-index-and-archive-copies",
+  "kind": "implementation",
+  "summary": "Read-only results index over registry, provider adapters and Kaggle receipts, plus Software Heritage and git bundle archive copies; ranked first by the catalog opposition review.",
+  "sources": [
+    "docs/archive/reviews/2026-10-25-results-catalog-opposition.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "scope": "scripts/results_index.py and scripts/repository_archive.py with tests and runbooks; one Software Heritage visit; one verified bundle on a device other than the home disk.",
+  "owner": "repository maintainer",
+  "next_action": "Record the completed Software Heritage visit and write the first bundle to the destination the owner names.",
+  "steps": [
+    {
+      "id": "query-command",
+      "state": "doing",
+      "action": "Build the read-only results index command with contract tests.",
+      "acceptance": "tests/scripts/test_results_index.py passes and a build leaves git status unchanged."
+    },
+    {
+      "id": "swh-visit",
+      "state": "todo",
+      "action": "Request a Software Heritage save of the public origin and record its completed visit.",
+      "acceptance": "A retained swh-status record reports visit_status full with a snapshot SWHID."
+    },
+    {
+      "id": "bundle-copy",
+      "state": "todo",
+      "action": "Write and verify a git bundle on a device other than the home disk.",
+      "acceptance": "repository_archive.py verify passes on the bundle at the owner-named destination."
+    }
+  ]
+}

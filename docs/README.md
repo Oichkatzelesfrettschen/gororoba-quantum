@@ -36,6 +36,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Planning | work records, next actions, blockers and completion receipts | [planning entrance](state/plans.md), [commands](runbooks/plan-tracker.md), [migration evidence](evidence/plan-reconciliation/README.md) |
 | State and records | claim registry, run census, roadmap | [RESEARCH_STATE.md](state/RESEARCH_STATE.md) |
 | Evidence closure | source-relative job identities, denominators, dependencies and acquisition decisions | [derived view](evidence/evidence-closure/README.md), [operator procedure](runbooks/evidence-closure.md), [derivation-led synthesis source](notes/topics/algebra_measurement_synthesis.tex) |
+| Results index and archive copies | run, job, acquisition and claim lookups; Software Heritage and git bundle copies | [results index](runbooks/results-index.md), [archive copies](runbooks/repository-archive.md), [archive observations](evidence/repository-archive/README.md) |
 | Archive | handoffs, handbacks, review reports | [archive/reviews/README.md](archive/reviews/README.md) |
 
 ## Start here by task

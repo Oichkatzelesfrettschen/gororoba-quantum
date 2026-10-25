@@ -2810,6 +2810,7 @@
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
+    "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
@@ -12641,6 +12642,19 @@
    "tempfile",
    "zipfile"
   ],
+  "scripts/repository_archive.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "hashlib",
+   "json",
+   "pathlib",
+   "subprocess",
+   "sys",
+   "tempfile",
+   "typing",
+   "urllib"
+  ],
   "scripts/research_state.py": [
    "__future__",
    "argparse",
@@ -12656,6 +12670,21 @@
    "qd_platform",
    "qi_platform",
    "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/results_index.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "contextlib",
+   "dataclasses",
+   "json",
+   "kaggle_run",
+   "os",
+   "pathlib",
+   "research_state",
+   "sqlite3",
    "sys",
    "typing"
   ],
