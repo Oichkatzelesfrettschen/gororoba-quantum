@@ -1,6 +1,6 @@
 """Recompute the computational claims of the quantum recovery proposal.
 
-Usage: replay.py POCKELS_CSV > result.json
+Usage: recovery_proposal_replay.py POCKELS_CSV > result.json
 
 gororoba_quantum/cd_core.py of the enclosing checkout is the sedenion
 specification, and parallel.ordered_map pools the independent fits and

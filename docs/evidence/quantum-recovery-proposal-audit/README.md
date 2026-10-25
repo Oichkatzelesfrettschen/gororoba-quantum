@@ -1,6 +1,6 @@
 # Quantum recovery proposal replay
 
-`replay.py` recomputes the computational claims of the nonlocal-transport and
+`recovery_proposal_replay.py` recomputes the computational claims of the nonlocal-transport and
 quantum-recovery proposal, and `result.json` holds its output.
 [The audit report](../../archive/reviews/quantum-recovery-proposal-audit.md) reads the result.
 The replay covers the [[5,1,3]] erasure and region checks, the M/G/1 optimum, the pinching
@@ -15,7 +15,7 @@ replay refuses any copy whose MD5 differs from the record's checksum.
 export PYTHON="${PYTHON:-python3}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 curl -sSL -o Fig4a_pockels.csv 'https://zenodo.org/records/15653571/files/Fig4a_pockels.csv?download=1'
-"$PYTHON" -I docs/evidence/quantum-recovery-proposal-audit/replay.py Fig4a_pockels.csv \
+"$PYTHON" -I docs/evidence/quantum-recovery-proposal-audit/recovery_proposal_replay.py Fig4a_pockels.csv \
   > docs/evidence/quantum-recovery-proposal-audit/result.json
 ```
 

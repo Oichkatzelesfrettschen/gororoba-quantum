@@ -11,7 +11,7 @@ origin/main at `d53a2fe` on 2026-10-25 and checked the proposal's computational 
 The proposal's Python scripts (`resolution_tests.py`, `additional_tests.py`) ran in an
 external sandbox. A search of `/home` and `/tmp` and of the local open_gororoba checkout finds
 neither file, so every number below comes from an independent implementation:
-[replay.py](../../evidence/quantum-recovery-proposal-audit/replay.py), output
+[replay.py](../../evidence/quantum-recovery-proposal-audit/recovery_proposal_replay.py), output
 [result.json](../../evidence/quantum-recovery-proposal-audit/result.json).
 
 ## Computational claims
