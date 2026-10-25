@@ -2730,6 +2730,7 @@
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
     "scripts/ascella_configuration_holdout.py",
+    "scripts/ascella_drive_response.py",
     "scripts/ascella_physical_models.py",
     "scripts/ascella_response_geometry.py",
     "scripts/associator_cubic_normal_form.py",
@@ -9409,10 +9410,8 @@
    "ascella_physical_models",
    "math",
    "numpy",
-   "os",
    "parallel",
    "pathlib",
-   "platform",
    "sys",
    "typing"
   ],
