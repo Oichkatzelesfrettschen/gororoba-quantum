@@ -5,11 +5,12 @@ from __future__ import annotations
 import math
 
 import numpy as np
-from qiskit import transpile
+from qiskit import QuantumCircuit, transpile
 from qiskit.quantum_info import Statevector
 from qiskit_ibm_runtime.fake_provider import FakeFez, FakeKingston
 
 import qet_ladder as ladder
+from parallel import ordered_map
 
 
 def ideal() -> dict[str, np.ndarray]:
@@ -93,18 +94,30 @@ def test_readout_correction_recovers_the_ideal_margin_and_raw_is_conservative() 
             raise AssertionError(f"assignment of bit {bit} not recovered")
 
 
-def routed(backend: object) -> list:
-    target = backend.target  # type: ignore[attr-defined]
-    edge = next(iter(target["cz"]))
-    return [
-        transpile(circuit, backend=backend, initial_layout=list(edge), optimization_level=1)
-        for _, circuit, _ in ladder.circuits()
-    ]
+BACKENDS = {"kingston": FakeKingston, "fez": FakeFez}
+_CACHE: dict[str, object] = {}
+
+
+def _backend(name: str) -> object:
+    if name not in _CACHE:
+        _CACHE[name] = BACKENDS[name]()
+    return _CACHE[name]
+
+
+def _route(item: tuple[str, QuantumCircuit]) -> QuantumCircuit:
+    name, circuit = item
+    backend = _backend(name)
+    edge = next(iter(backend.target["cz"]))  # type: ignore[attr-defined]
+    return transpile(circuit, backend=backend, initial_layout=list(edge), optimization_level=1)
+
+
+def routed(name: str) -> list[QuantumCircuit]:
+    return ordered_map(_route, [(name, circuit) for _, circuit, _ in ladder.circuits()])
 
 
 def test_branch_durations_match_on_kingston_and_are_refused_on_fez() -> None:
-    kingston, fez = FakeKingston(), FakeFez()
-    if ladder.branch_duration_violations(routed(kingston), kingston.target):
+    kingston, fez = _backend("kingston"), _backend("fez")
+    if ladder.branch_duration_violations(routed("kingston"), kingston.target):  # type: ignore[attr-defined]
         raise AssertionError("Kingston branches should share one duration")
-    if not ladder.branch_duration_violations(routed(fez), fez.target):
+    if not ladder.branch_duration_violations(routed("fez"), fez.target):  # type: ignore[attr-defined]
         raise AssertionError("Fez's 6 dt sx makes the rotation branches shorter than the 16 dt idle")
