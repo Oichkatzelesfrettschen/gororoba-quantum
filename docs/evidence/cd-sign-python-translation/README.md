@@ -120,7 +120,7 @@ The toolchain is Rocq 9.3.0, OCaml 5.5.1 and Stdlib 9.2.0, as recorded by
 export PYTHON="${PYTHON:-python3}"
 "$PYTHON" scripts/cd_sign_source_ast.py --check
 ROCQ="${ROCQ:-rocq}" sh docs/evidence/cd-sign-python-translation/replay_rocq.sh
-sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256
+sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256
 ```
 
 The exporter runs on the repository's pinned Python interpreter. The
@@ -130,11 +130,21 @@ in [assumptions.v](assumptions.v), and independently kernel-checks the
 source certificate and its dependencies. Raw outputs are compared with
 [assumptions.txt](assumptions.txt) and [kernel.txt](kernel.txt).
 
-The source ledger [source_hashes-helper-closure.sha256](source_hashes-helper-closure.sha256)
+The source ledger [source_hashes-closure-scopes.sha256](source_hashes-closure-scopes.sha256)
 includes both exporters, all proof dependencies, the replay script and the
 receipts. It leaves out `cd_core.py` itself, whose bound bytes are the
 helper closure that the certificate's `cd_sign_source_sha256` records and
-`sources-411` recomputes. The first ledger,
+`sources-411` recomputes. Its exporter resolves two further scope forms: a
+comprehension that is a lambda body or a first iterable keeps its targets
+out of the enclosing scope's bindings, and a `global` declaration in a class
+body nested in a function reaches module scope. Type-parameter bounds and
+defaults of a def or class load from the enclosing scope, and an `:=` target
+inside a nested lambda stays out of the comprehension's enclosing scope. The closure of the retained
+`cd_core.py` and the certificate digest are unchanged by those forms. The
+predecessor ledger
+[source_hashes-helper-closure.sha256](source_hashes-helper-closure.sha256)
+keeps the bytes of the exporter without them, and no gate checks it against
+the current tree. The first ledger,
 [source_hashes.sha256](source_hashes.sha256), keeps the bytes it was
 admitted with: it pins the whole of `cd_core.py` and the certificate whose
 digest covered that whole file, so it records that earlier binding and no

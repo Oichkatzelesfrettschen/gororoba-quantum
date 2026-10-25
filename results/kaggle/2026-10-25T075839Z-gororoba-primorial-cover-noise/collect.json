@@ -1,0 +1,21 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-primorial-cover-noise/5",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-25T080429Z",
+ "files": {
+  "gororoba-primorial-cover-noise.log": "02d257e8f68ea5742fa38fefc1cd9d2c9317f9ec6d195a18f03b16d7cb3a34f2",
+  "output/ci-freeze.txt": "6d60023c97e07e825f9d6289aea377ea4ce41dbfb788a03c1530f6d4fa19639f",
+  "output/environment.json": "ba3fa99814d280cecf46fe28dc8d485ccc2dbd6229cc6d23e85603fc56a15f11",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "29569d834fd74ad129e918c46b172990daeff9832a8868f8eff4b029410ad0a4",
+  "output/install-pins.txt": "99b0d981705c146f2f83de693d7cf158c37940cf6c4a810f507a331aeedcf05d",
+  "output/pip.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/python-install.txt": "f9feb64bdb262dd871eb3c69018e6222eeeabe41e8cee208dec66f133b295bda",
+  "output/repo/results/kaggle_out/primorial_cover_noise.json": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "d432d350d69abf89f878d9184679af40d33003a496d5e8714e1a2253d3bf8fe0",
+  "output/uv-install.txt": "0e29aea00cf5ce05a687c37898da5af4ff00d4cc1e84348f50885e37e1ff370b",
+  "output/venv.txt": "c48758d995a48623a551e0e9f985c932e5fed775b217d7ed00f929890de3f00b"
+ }
+}

@@ -1,0 +1,392 @@
+{
+ "hall_subsets": {
+  "6,10": {
+   "capacities": [
+    0,
+    2,
+    1,
+    1,
+    1
+   ],
+   "deficiency": 1
+  },
+  "8,16": {
+   "capacities": [
+    0,
+    2,
+    2,
+    2,
+    1,
+    1,
+    1
+   ],
+   "deficiency": 1
+  }
+ },
+ "instances": [
+  {
+   "assignments": 1980,
+   "binary_bits": 13,
+   "crt_start": 18797,
+   "exhaustion": {
+    "branch_primes": [
+     3,
+     5
+    ],
+    "branches": 4,
+    "coverable_branches": 0,
+    "whole_interval_bound_nonpositive": 0
+   },
+   "gap": 20,
+   "half_length": 10,
+   "k": 6,
+   "modulus": 30030,
+   "one_hot_variables": 30,
+   "repair_covers": true,
+   "repair_prime": 17,
+   "wheel_gaps": [
+    6,
+    14
+   ],
+   "witness_residues": [
+    2,
+    4,
+    6,
+    1,
+    7
+   ],
+   "witness_uncovered": [
+    3
+   ]
+  },
+  {
+   "assignments": 378675,
+   "binary_bits": 22,
+   "crt_start": 2109347,
+   "exhaustion": {
+    "branch_primes": [
+     3,
+     5,
+     7
+    ],
+    "branches": 15,
+    "coverable_branches": 0,
+    "whole_interval_bound_nonpositive": 0
+   },
+   "gap": 32,
+   "half_length": 16,
+   "k": 8,
+   "modulus": 9699690,
+   "one_hot_variables": 61,
+   "repair_covers": true,
+   "repair_prime": 23,
+   "wheel_gaps": [
+    6,
+    26
+   ],
+   "witness_residues": [
+    2,
+    4,
+    6,
+    1,
+    10,
+    15,
+    7
+   ],
+   "witness_uncovered": [
+    3
+   ]
+  },
+  {
+   "assignments": 356968284923250,
+   "binary_bits": 55,
+   "crt_start": 1521251317636007,
+   "exhaustion": {
+    "branch_primes": [
+     3,
+     5,
+     7,
+     11,
+     13
+    ],
+    "branches": 1485,
+    "coverable_branches": 0,
+    "whole_interval_bound_nonpositive": 20
+   },
+   "gap": 86,
+   "half_length": 43,
+   "k": 14,
+   "linear_relaxation": {
+    "highs_optimum": 0.0,
+    "rational_fractional_cover": true
+   },
+   "modulus": 13082761331670030,
+   "one_hot_variables": 254,
+   "repair_covers": true,
+   "repair_prime": 47,
+   "wheel_gaps": [
+    44,
+    42
+   ],
+   "witness_residues": [
+    2,
+    4,
+    4,
+    5,
+    2,
+    13,
+    12,
+    10,
+    7,
+    6,
+    3,
+    1,
+    21
+   ],
+   "witness_uncovered": [
+    22
+   ]
+  },
+  {
+   "assignments": 387187822271250,
+   "binary_bits": 55,
+   "crt_start": 11092219445984539,
+   "exhaustion": {
+    "branch_primes": [
+     3,
+     5,
+     7,
+     11
+    ],
+    "branches": 150,
+    "coverable_branches": 0,
+    "whole_interval_bound_nonpositive": 20
+   },
+   "gap": 88,
+   "half_length": 44,
+   "k": 14,
+   "linear_relaxation": {
+    "highs_optimum": 0.0,
+    "rational_fractional_cover": true
+   },
+   "modulus": 13082761331670030,
+   "one_hot_variables": 254,
+   "repair_covers": true,
+   "repair_prime": 47,
+   "wheel_gaps": [
+    58,
+    30
+   ],
+   "witness_residues": [
+    1,
+    3,
+    6,
+    3,
+    4,
+    9,
+    5,
+    12,
+    3,
+    11,
+    2,
+    21,
+    15
+   ],
+   "witness_uncovered": [
+    29
+   ]
+  }
+ ],
+ "parity_network": {
+  "bfs_minimum_cnots": 8,
+  "final_masks": [
+   1,
+   2,
+   4
+  ],
+  "written_masks": [
+   3,
+   7,
+   2,
+   5,
+   3,
+   6,
+   2,
+   4
+  ]
+ },
+ "positive_controls": [
+  {
+   "covers": true,
+   "half_length": 9,
+   "k": 6
+  },
+  {
+   "covers": true,
+   "half_length": 11,
+   "k": 6
+  },
+  {
+   "covers": true,
+   "half_length": 15,
+   "k": 8
+  },
+  {
+   "covers": true,
+   "half_length": 17,
+   "k": 8
+  },
+  {
+   "covers": true,
+   "half_length": 42,
+   "k": 14
+  },
+  {
+   "covers": true,
+   "half_length": 45,
+   "k": 14
+  }
+ ],
+ "quotient": {
+  "coefficients": {
+   "": "7/4",
+   "01": "-1/4",
+   "023": "1/4",
+   "123": "1/4"
+  },
+  "table": [
+   2,
+   2,
+   2,
+   1,
+   1,
+   2,
+   2,
+   2,
+   1,
+   2,
+   2,
+   2,
+   2,
+   2,
+   2,
+   1
+  ]
+ },
+ "schema": "gororoba-primorial-cover-certificates-v1",
+ "slices": {
+  "gap86": {
+   "coefficients": {
+    "": "37/8",
+    "0": "-15/8",
+    "01": "3/8",
+    "012": "-1/8",
+    "02": "-3/8",
+    "1": "-9/8",
+    "12": "-1/8",
+    "2": "-3/8"
+   },
+   "qaoa_beta_over_pi": "55/72",
+   "qaoa_gamma_over_pi": "1/9",
+   "qaoa_ground_probability": [
+    0.504416598,
+    0.504416598
+   ],
+   "qaoa_mean_cost": [
+    2.190706412,
+    1.190706412
+   ],
+   "qaoa_total_variation": 0.0,
+   "repair_shift": {
+    "": "-1"
+   },
+   "repaired_coefficients": {
+    "": "29/8",
+    "0": "-15/8",
+    "01": "3/8",
+    "012": "-1/8",
+    "02": "-3/8",
+    "1": "-9/8",
+    "12": "-1/8",
+    "2": "-3/8"
+   },
+   "repaired_table": [
+    0,
+    4,
+    2,
+    7,
+    2,
+    4,
+    3,
+    7
+   ],
+   "table": [
+    1,
+    5,
+    3,
+    8,
+    3,
+    5,
+    4,
+    8
+   ]
+  },
+  "gap88": {
+   "coefficients": {
+    "": "37/8",
+    "0": "-11/8",
+    "01": "-5/8",
+    "012": "-1/8",
+    "02": "-3/8",
+    "1": "-5/8",
+    "12": "-1/8",
+    "2": "-3/8"
+   },
+   "qaoa_beta_over_pi": "55/72",
+   "qaoa_gamma_over_pi": "2/9",
+   "qaoa_ground_probability": [
+    0.515026437,
+    0.542148067
+   ],
+   "qaoa_mean_cost": [
+    2.861923614,
+    1.862662008
+   ],
+   "qaoa_total_variation": 0.132128193,
+   "repair_shift": {
+    "": "-1/2",
+    "1": "-1/2"
+   },
+   "repaired_coefficients": {
+    "": "33/8",
+    "0": "-11/8",
+    "01": "-5/8",
+    "012": "-1/8",
+    "02": "-3/8",
+    "1": "-9/8",
+    "12": "-1/8",
+    "2": "-3/8"
+   },
+   "repaired_table": [
+    0,
+    5,
+    4,
+    6,
+    2,
+    5,
+    5,
+    6
+   ],
+   "table": [
+    1,
+    6,
+    4,
+    6,
+    3,
+    6,
+    5,
+    6
+   ]
+  }
+ }
+}

@@ -92,10 +92,21 @@ GPU matters for sweeps and batched trials, not for single circuits.
   because the CLI's `kernels output OWNER/SLUG/N` returns the latest
   version. `kernels status` reports the
   slug's latest version whatever version it names, so `collect` decides
-  completion from the `exit.json` the kernel writes on every exit path; a
-  version that returns none is not collected.
-- `verify` checks every retained collect.json against its output files
-  offline (gate core-290). Runs pushed before kernel versions were recorded
+  completion from the `exit.json` the kernel writes on every exit path.
+  Collection appends and never rewrites: each attempt downloads into a new
+  `captures/<UTC id>/` with its own receipt (`kaggle-aer-collect-v2`), whose
+  state is COMPLETE, ERROR, PARTIAL (no `exit.json`), FAILED (the download
+  raised) or UNRECEIPTED (an `output/` an earlier revision left without a
+  collect.json). The first COMPLETE or ERROR capture is renamed to the run's
+  `output/` with its receipt as `collect.json`, the path every reader uses;
+  a later recollection stays in its capture beside it, so a provider job,
+  each retrieval of it and the bytes each retrieval returned remain
+  distinct records. Every v2 receipt binds `submission.json` and the receipt
+  written before it by sha256, and records the digest of each discarded
+  file of the repository bundle that Kaggle echoes back from
+  `/kaggle/working`.
+- `verify` checks every retained receipt, primary and capture, against its
+  output files and each run's receipt chain offline (gate core-290). Runs pushed before kernel versions were recorded
   also predate exit.json and keep the status Kaggle reported; the substrate
   probes of 2026-10-16T025230Z and T025231Z ended in ERROR because a
   capacity trial killed the kernel, which led to one process per trial,
@@ -144,7 +155,8 @@ method and MCP tool onto the operations they share.
 Each run directory under results/kaggle/ keeps submission.json (entry,
 arguments, git commit, bundle digests, pins, the entry's Aer device and the
 backend identity of every bundled calibration snapshot), the generated kernel, and
-after collection the output with collect.json. Retaining it registers no
+after collection the output with collect.json, plus captures/ when an
+attempt was partial or repeated. Retaining it registers no
 claim. A `numerical or stochastic simulation` claim in the research state
 needs a replay gate that re-derives it in CI, so a Kaggle result becomes a
 claim only once a reduced case reproduces it on the CPU under a gate. Until

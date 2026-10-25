@@ -3400,7 +3400,7 @@
   {
    "suite": "sources",
    "cwd": ".",
-   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
+   "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
    "name": "sources-410",
    "seconds": 0.1,
    "tier": "pr"
@@ -4034,9 +4034,25 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/configuration-holdout.json --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/configuration-holdout-unclipped-light.json --check",
    "name": "core-ascella-signed-coherence-configuration-holdout-replay",
    "seconds": 600.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_configuration_holdout.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json --drive --check",
+   "name": "core-ascella-signed-coherence-heater-drive-holdout-replay",
+   "seconds": 600.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_drive_response.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01 docs/evidence/ascella-order-coefficients/drive-response.json --check",
+   "name": "core-ascella-signed-coherence-drive-response-replay",
+   "seconds": 735.0,
    "tier": "full"
   },
   {
@@ -4130,6 +4146,33 @@
    "name": "core-686",
    "seconds": 6.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/primorial_cover.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum/primorial_cover.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/primorial_cover.py scripts/primorial_cover_noise.py tests/gororoba_quantum/test_primorial_cover.py",
+   "name": "core-687",
+   "seconds": 15.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error primorial_cover.py --check ../docs/evidence/primorial_cover/certificates.json",
+   "name": "core-688",
+   "seconds": 2.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/primorial_cover/certificates.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_cover_noise.py --check docs/evidence/primorial_cover/noise.json --run results/kaggle/2026-10-25T075839Z-gororoba-primorial-cover-noise",
+   "name": "core-689",
+   "seconds": 91.0,
+   "tier": "full"
   }
  ],
  "excluded": [

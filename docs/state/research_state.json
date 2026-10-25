@@ -2075,15 +2075,15 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Static families of the provider's returned mesh model only, with pure-state propagation; the prediction variance is the local quadratic approximation at each fold mode, the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference, and the reading criterion (30 or more on 10 keeps the shortfall) was fixed in plan ascella-configuration-holdout-training-only before the run. The analysis was added after the preregistered table and decides nothing; it does not show that the underlying errors are independent between configurations or exclude a correlated or drive-dependent shared error. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
+      "boundary": "Static families of the provider's returned mesh model only, with pure-state propagation and the block light unclipped (configuration-holdout.json, built with the light clipped at 1e-9, holds one combined-family fold in a local mode 4.36 higher in negative log posterior); the prediction variance is the local quadratic approximation at each fold mode, the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference, and the reading criterion (30 or more on 10 keeps the shortfall) was fixed in plan ascella-configuration-holdout-training-only before the run. The analysis was added after the preregistered table and decides nothing; it does not show that the underlying errors are independent between configurations or exclude a correlated or drive-dependent shared error. The fitted families replay within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
           "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
         },
         {
-          "path": "docs/evidence/ascella-order-coefficients/configuration-holdout.json",
-          "sha256": "c38ad052a38eab81e8c2f17f8a7d0d4bb2a3698d8c484250d1cf903bac443268"
+          "path": "docs/evidence/ascella-order-coefficients/configuration-holdout-unclipped-light.json",
+          "sha256": "4c16311629a1b9de032139db4c014c0f6c04d101ec7620572feeaba937ff078f"
         }
       ],
       "documents": [
@@ -2098,6 +2098,78 @@
       "assumptions": [],
       "depends_on": [
         "ascella-signed-coherence-physical-models"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-heater-drive-holdout",
+      "statement": "Refitted on job-00 without one configuration from the zero start under the training-only folds, a drive-dependent heater family of the returned Ascella meshes (tau-0.3 heater offsets plus one slope per heater on the returned phase as drive, prior width 0.1) leaves the left-out X statistics at a standardized sum of 36.1 and Y at 24.8 over 10 configurations each, against the returned mesh's 343 and 75, so the X sum keeps the shortfall under the 30-on-10 criterion fixed before the run. Its X predictions carry a median prediction variance 10.4 times the counting variance (Y 2.1), and in counting variance alone it gives X 474 and Y 186.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One drive-linear heater family of the provider's returned mesh model, with pure-state propagation; the drive is the returned phase in [0, 2 pi) with its zero at 0, because the passive phase that sets each heater's wrap point is absent from the returned circuit, and per-heater wrap points, quadratic drive terms and crosstalk through the phase-voltage matrix lie outside the family. The prediction variance is the local quadratic approximation at each fold mode and the folds share 28 or 29 training configurations, so the sums are descriptive and carry no chi-square reference. The family, its prior width and the reading were fixed in plan ascella-configuration-holdout-training-only before the run; the analysis was added after the preregistered table and decides nothing. The fitted family replays within 1e-3 relative plus 1e-8 absolute across BLAS builds.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json",
+          "sha256": "fcf6a9dd7c628707f28d6c7059e9beabd83a51917e9f05f88806167854d1dfed"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-heater-drive-holdout-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-configuration-holdout"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-drive-response",
+      "statement": "A per-heater drive-dependent phase error of the returned 12-mode Ascella meshes (shifted Legendre polynomials of the drive to order 1 or 2, or 1, cos and sin of the returned phase to order 1 or 2; 252 to 630 coefficients under N(0, tau^2) priors) reproduces job-00 and job-01 (job-01 held-out X 4.0 to 5.4 and Y 6.7 to 12.6 on 10, X0 + Xc2 -0.026 to -0.028) but predicts no left-out configuration it can be judged on. Refitted from the zero start on the training configurations alone, the order-1 polynomial keeps the shortfall on X (standardized sum 32 on 10, Y 28), and the four richer families predict with a median prediction variance 6.5 to 485 times the counting variance and sums of 1 to 15, so these data leave them undetermined; in counting variance alone every family does worse than the returned mesh (X 386 to 564 against 343, Y 94 to 225 against 75).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Families of the provider's returned mesh model only, with the background, multinomial and pure-state propagation of the static fits; the training-only folds, the prediction variance as the local quadratic approximation at each fold mode and the reading criterion (30 or more on 10 keeps the shortfall, below 20 with a median variance ratio above 1 reads as weakly identified) are those of plan ascella-configuration-holdout-training-only, fixed before this run. The folds share their training data, so the sums are descriptive and carry no chi-square reference. The families were added after the preregistered table and decide nothing. The posteriors hold several modes and the one an L-BFGS path reaches follows BLAS and SIMD rounding, so the record is written under the OpenBLAS Haswell kernel and numpy's x86-64-v3 dispatch that ci/run_gates.py and ci/pr_checks.sh set, and replays within 1e-3 relative plus 1e-8 absolute under those kernels.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+          "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/drive-response.json",
+          "sha256": "cceba0b5229f239585472c69fadbf6201d5e318f00b5b5e858faa3d8b2fb66c8"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-drive-response-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-configuration-holdout",
+        "ascella-signed-coherence-heater-drive-holdout"
       ],
       "supersedes": [],
       "superseded_by": null
@@ -4669,7 +4741,7 @@
         },
         {
           "path": "scripts/cd_sign_source_ast.py",
-          "sha256": "3107a7af599a3a9c421641694bccbd763f6e37357bcf20e370c0021516053659"
+          "sha256": "d7e1231563718aec1f2546a0c4b97f0c58bba29f9d402a0707304b4143009c4c"
         },
         {
           "path": "docs/evidence/cd-sign-python-translation/assumptions.v",
@@ -4684,8 +4756,8 @@
           "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
         },
         {
-          "path": "docs/evidence/cd-sign-python-translation/source_hashes-helper-closure.sha256",
-          "sha256": "afd4e70c72839686fc93d584f8c13aba17933f2abe5a6e6105df812a6ddbd66f"
+          "path": "docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
+          "sha256": "1d907280b5343a449963c177db4e0a7cc168d477c639985cbe954c335fb4bf6b"
         }
       ],
       "documents": [
@@ -9590,6 +9662,64 @@
         "qd-belenos-bdsc-drift-series-readout"
       ],
       "depends_on": []
+    },
+    {
+      "id": "primorial-cover-defect-certificates",
+      "statement": "The even gaps 20 (k = 6), 32 (k = 8), 86 and 88 (k = 14) are absent between consecutive integers coprime to the k-th primorial, each with defect exactly one: an allowed residue assignment leaves one uncovered point (wheel gaps 6 + 14, 6 + 26, 44 + 42, 58 + 30), exhaustive search over 4, 15, 1485 and 150 branch assignments finds no cover, and the next prime 17, 23, 47, 47 closes each gap. At k = 14 the fractional relaxation has optimum 0 with an exactly verified rational cover. Fixing the k = 14 witnesses except p = 5, 7, 11 gives cost tables with Walsh coefficients in (1/8)Z; the gap-86 repair by 22 mod 47 shifts its Hamiltonian by -I and the gap-88 repair by 29 mod 47 by -(I + Z1)/2.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Four finite instances, matching Ziller's Table 1 (arXiv 2007.01808, p. 12); no bound on branching depth or gap growth as k increases and no bearing on Ziller's Conjecture 4.1.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/certificates.json",
+          "sha256": "38a788afce71f51ee8058dd52ed0d2ea723c4cdf145d1222818c328c279a6270"
+        }
+      ],
+      "documents": [
+        "docs/notes/topics/primorial-cover-defects.md",
+        "docs/evidence/primorial_cover/README.md"
+      ],
+      "gates": {
+        "core-688": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "primorial-cover-noise-null-subtraction",
+      "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00 on its best and median three-qubit paths, with every arm ALAP scheduled, null-subtracted phase-gradient tomography of the eight-CNOT gap-88 cost recovers every coefficient within 0.0032 of its exact value (identification radius 1/16) at 2,803 and 3,169 shots per setting, the budget carrying each mean's variance through the assignment inversion and the null arm's phase variance; the gap-88 repair contrast reads -0.499 against -0.5, the gap-20 Grover quotient reads its marked label at 0.963 to 0.984, and the gap-86 repair leaves every compiled law unchanged. A noise-free CZ conditional phase of 0.02 to 0.1 rad per CZ biases the coefficients by 0.057 to 0.287 with cycle residuals at most 0.0103, and subtracting the zero-angle null arm reduces the bias to 0.0005 to 0.0128; a 10 to 30 kHz detuning of one path qubit biases them by 0.015 to 0.233, reaching multi-body coefficients through the parities its wire carries, and null subtraction leaves at most 0.0022; an sx amplitude error of 0.002 to 0.01 biases them by at most 0.0007.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshot) plus noise-free CZ-phase, sx-amplitude and single-qubit detuning scenarios; static ZZ and axis tilt are unsimulated, crosstalk and leakage are outside it, and no hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/noise.json",
+          "sha256": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527"
+        },
+        {
+          "path": "docs/evidence/calibration/ibm_kingston.json",
+          "sha256": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/README.md",
+        "docs/design/primorial-cover-defect-probes.md"
+      ],
+      "gates": {
+        "core-689": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "primorial-cover-defect-certificates"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }
