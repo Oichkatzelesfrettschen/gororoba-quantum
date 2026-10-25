@@ -51,9 +51,10 @@ calibration's.
 - **Expected time:** 4.27 s of shots, 24 circuits x 4500 shots x 37.5 us (the unheralded active-reset shot of
   the reset pilot) plus the idle trains. Garnet adds about 1.6 s per job.
 - **Ceiling:** the approved 4.00 credits (8 billed seconds at Garnet's 0.50 credits/s), recorded as
-  `max_credits`. The build refuses a plan that leaves less than 2 s below those seconds, because
-  `iqm_jobs.py collect` cancels a run within 1.0 s of them (#376) and runtimes ran up to 1.39 s above their
-  estimates.
+  `max_credits`. IQM Server takes no runtime cap with a job, so on its own `max_credits` bounds only the
+  predicted bill. This job was collected by the `iqm_jobs.py collect` of #469, which cancels a priced run whose
+  billed runtime comes within 1.0 s of the ceiling. The build refuses a plan that leaves less than 2 s below
+  the ceiling, because runtimes ran up to 1.39 s above their estimates.
 - **Mock run:** the free `garnet:mock` twin, at 0.00 credits/s, first returns the runtime estimate. Its outcomes
   never enter the analysis.
 - **Balance:** the account holds 17.00 credits that expire at 2026-11-01 00:00 UTC.
