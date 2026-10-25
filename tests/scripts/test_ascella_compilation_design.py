@@ -1,0 +1,144 @@
+"""The perturbed-compilation request's seed rule and the sizing helpers of its design record."""
+
+from __future__ import annotations
+
+import math
+import sys
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+import pytest
+from scipy import stats
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import ascella_coherence_request as request  # noqa: E402
+import ascella_compilation_design as design  # noqa: E402
+import ascella_compilation_reading as reading  # noqa: E402
+
+
+def test_compilation_job_anchors_seed_zero_and_draws_distinct_seeds() -> None:
+    rows = request.entries(request.JOBS["job-02"])
+    seeds, indices = request.compilation_seeds()
+    if len(rows) != 64 or {row["block"] for row in rows} != {"theta2-x"} or {row["arm"] for row in rows} != {0}:
+        raise AssertionError("job-02 is not 64 iterations of theta2-x-arm0")
+    settings = [request.build_setting((index, row))[1] for index, row in enumerate(rows)]
+    anchors = [s["compilation_seed"] for s, r in zip(settings, rows, strict=True) if "compilation_seed" not in r]
+    perturbed = [r["compilation_seed"] for r in rows if "compilation_seed" in r]
+    if anchors != [0] * 8 or perturbed != seeds or len(set(seeds)) != 56 or 0 in seeds:
+        raise AssertionError("anchors must sit at seed 0 and the 56 perturbed seeds be distinct and nonzero")
+    if [r["compilation_position"] for r in rows if "compilation_seed" not in r] != list(range(0, 64, 8)):
+        raise AssertionError("the anchors leave the stride positions")
+    if indices != sorted(indices):
+        raise AssertionError("the draw's values are consumed in index order")
+
+
+def test_retained_designs_keep_seed_zero() -> None:
+    for name in ("job-00", "job-01"):
+        if any("compilation_seed" in row for row in request.entries(request.JOBS[name])):
+            raise AssertionError(f"{name} rows carry a compilation seed")
+
+
+def test_starts_are_deterministic_points_of_the_torus() -> None:
+    phases = np.zeros(126)
+    first, second = design.starts(phases, 16), design.starts(phases, 16)
+    if not np.array_equal(first, second) or first.min() < 0 or first.max() >= 2 * math.pi:
+        raise AssertionError("starts must repeat and lie in [0, 2 pi)")
+    if len({tuple(np.round(row, 9)) for row in first}) != 16:
+        raise AssertionError("starts repeat a point")
+
+
+@pytest.mark.parametrize("dof", [23, 55])
+def test_detectable_noncentrality_reaches_the_power(dof: int) -> None:
+    anchor_dof = design.ANCHORS - 1
+    critical = float(stats.f.ppf(1 - design.ALPHA, dof, anchor_dof))
+    value = design.detectable_noncentrality(dof, anchor_dof, critical)
+    if abs(float(stats.ncf.sf(critical, dof, anchor_dof, value)) - design.POWER) > 1e-9:
+        raise AssertionError("the bisection misses the power")
+
+
+def row(family: str, perturbed: int, samples: int, power: float, ratio: float, credits: float) -> dict[str, Any]:
+    return {
+        "family": family,
+        "perturbed": perturbed,
+        "samples_per_iteration": samples,
+        "r1_power": power,
+        "r3_median_variance_ratio": {"x": ratio, "y": ratio},
+        "credits": credits,
+    }
+
+
+def test_chosen_design_is_the_cheapest_that_meets_both_readings() -> None:
+    rows = []
+    for family in design.ORDER_ONE:
+        rows.append(row(family, 24, 8192, 1.0, 2.0 if family.startswith("drive_harmonic") else 0.5, 1.016384))
+        rows.append(row(family, 56, 8192, 1.0, 0.9, 1.016384))
+        rows.append(row(family, 56, 16384, 1.0, 0.5, 1.032768))
+    rows.append(row("static_heater_0.3", 24, 8192, 1.0, 5.0, 1.016384))
+    rows.append(row("static_heater_0.3", 56, 8192, 1.0, 5.0, 1.016384))
+    rows.append(row("static_heater_0.3", 56, 16384, 0.5, 5.0, 1.032768))
+    chosen = design.chosen_design(rows)
+    if (chosen["perturbed"], chosen["samples_per_iteration"]) != (56, 8192):
+        raise AssertionError(f"chose {chosen}")
+    with pytest.raises(ValueError, match="no design"):
+        design.chosen_design([{**r, "r1_power": 0.0} for r in rows])
+
+
+def test_dispersion_ratio_compares_perturbed_and_anchor_scatter() -> None:
+    z = np.array([0.0, 0.0, 0.0, 0.0, 1.0, -1.0, 1.0, -1.0])
+    v = np.ones(8)
+    anchor = np.array([[True, True, True, False, False, False, False, False]])
+    # The anchors hold 0, 0, 0 and the perturbed rows 0, 1, -1, 1, -1, so the anchors' dispersion is zero.
+    with np.errstate(divide="ignore"):
+        if not np.isinf(reading.dispersion_ratio(z, v, anchor)[0]):
+            raise AssertionError("a constant anchor set must give an unbounded ratio")
+    swapped = np.array([[False, False, False, True, True, True, True, True]])
+    if reading.dispersion_ratio(z, v, swapped)[0] != 0.0:
+        raise AssertionError("constant perturbed rows must give a zero ratio")
+
+
+def test_subset_and_combined_keep_settings_and_configurations_aligned() -> None:
+    def run(job: str, configurations: list[int]) -> dict[str, Any]:
+        count = len(configurations)
+        kept = sorted(set(configurations))
+        return {
+            "record": {"manifest": {"job": job, "settings": [{"index": i} for i in range(count)]}},
+            "keys": [(f"{job}-{c}",) for c in kept],
+            "phases": np.arange(len(kept), dtype=float)[:, None] * np.ones((1, 3)),
+            "sources": np.zeros(len(kept), dtype=int),
+            "configuration": np.array(configurations),
+            "block": np.arange(count, dtype=float)[:, None] * np.ones((1, 4)),
+            "background": np.zeros((count, 4)),
+        }
+
+    a, c = run("job-00", [0, 0, 1]), run("job-02", [0, 1, 1, 2])
+    part = reading.subset(c, np.array([1, 3]))
+    if list(part["configuration"]) != [0, 1] or part["keys"] != [("job-02-1",), ("job-02-2",)]:
+        raise AssertionError("subset renumbers its configurations in first-appearance order")
+    both = reading.combined(a, part)
+    if list(both["configuration"]) != [0, 0, 1, 2, 3] or len(both["record"]["manifest"]["settings"]) != 5:
+        raise AssertionError("combined appends the second run's configurations after the first's")
+    if both["block"][3, 0] != 1.0 or both["block"][4, 0] != 3.0:
+        raise AssertionError("combined keeps each setting's counts at its position")
+
+
+def test_new_meshes_drop_seeds_that_repeat_an_anchor_or_job_00_mesh() -> None:
+    a = {"phases": np.array([[0.0, 0.0], [1.0, 1.0]])}
+    # Configurations of job-02: 0 the anchors' mesh (job-00's first), 1 a nonzero seed back on the anchor mesh's
+    # phases under another index, 2 a seed on job-00's second mesh, 3 and 4 new meshes.
+    c = {
+        "phases": np.array([[0.0, 0.0], [0.0, 0.0], [1.0, 1.0], [2.0, 2.0], [3.0, 3.0]]),
+        "configuration": np.array([0, 0, 1, 2, 3, 4, 4]),
+    }
+    anchor = np.array([True, True, False, False, False, False, False])
+    if reading.new_meshes(a, c, anchor) != {3, 4}:
+        raise AssertionError("a seed repeating an anchor or job-00 mesh entered R2 and R3")
+
+
+def test_one_new_mesh_is_a_collapsed_compilation_not_an_ignored_seed() -> None:
+    readings = [reading.served_reading(count) for count in (0, 1, 56)]
+    if readings != ["seed ignored", "seeds served one new mesh", "seeds served distinct meshes"]:
+        raise AssertionError(f"served readings {readings}")

@@ -8,7 +8,10 @@
     "scripts/qd_network_protocol.py",
     "tests/scripts/test_qd_network_protocol.py",
     "docs/notes/quandela/calibration.md",
-    "docs/evidence/bdsc/provider_contract.json"
+    "docs/evidence/bdsc/provider_contract.json",
+    "scripts/qd_classical_benchmark.py",
+    "scripts/qd_teleportation_rehearsal.py",
+    "tests/scripts/test_qd_teleportation_rehearsal.py"
   ],
   "state": "paused",
   "reconciliation": {
@@ -76,6 +79,46 @@
             }
           ],
           "scope_sha256": "899921ad2cd606a821221a9fbbf24b5f458533f4773ea3cb5650a7b9d4957e8d"
+        }
+      ]
+    },
+    {
+      "id": "classical-benchmark",
+      "action": "Solve and certify the classical teleportation benchmark over the PPT Choi cone for any qubit ensemble, prior and realizable success profile.",
+      "acceptance": "tests/scripts/test_qd_classical_benchmark.py passes: 2/3 for the uniform six states, 3/4 for BB84 and Z-weighted priors, the 6/7 post-selected optimum, dual certificates within GAP_LIMIT of the achieving Choi operator, and every refusal fixture raises.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "tests/scripts/test_qd_classical_benchmark.py: 27 passed under ci/pr_checks.sh tests; uniform six states 2/3, BB84 and Z-weighted priors 3/4, the post-selected optimum 6/7, tilted realizable profiles at 2/3 in both figures, dual certificates within GAP_LIMIT, every refusal fixture raises.",
+          "observed_at": "2026-10-25T18:56:44+00:00",
+          "revision": "d35c73228f11d45371c228d98b6e6be97ac59234",
+          "evidence": [
+            {
+              "ref": "scripts/qd_classical_benchmark.py",
+              "sha256": "63a2f13ea3b1fc797e87e1577751a35b4852c30c74d5780f13da2289b9c73348"
+            },
+            {
+              "ref": "tests/scripts/test_qd_classical_benchmark.py",
+              "sha256": "8752789466b80458d9499fcc6de161ffd73af6f15129f5527b7dcd0ad4561bc4"
+            }
+          ],
+          "scope_sha256": "b156e7c6e1c89dc9ff806ea54f02e5f62a654684ad7e8c981d794f14cae1c470"
+        },
+        {
+          "result": "tests/scripts/test_qd_classical_benchmark.py: 27 passed under ci/pr_checks.sh tests; uniform six states 2/3, BB84 and Z-weighted priors 3/4, the post-selected optimum 6/7, tilted realizable profiles at 2/3 in both figures, every achieving map separable and trace-non-increasing, dual certificates within GAP_LIMIT, every refusal fixture raises.",
+          "observed_at": "2026-10-25T19:55:03+00:00",
+          "revision": "de102d027e8a347ae1903afb5d0409e364a9786c",
+          "evidence": [
+            {
+              "ref": "scripts/qd_classical_benchmark.py",
+              "sha256": "8a159ed0505dbf3b1aa4acd377b5fdb77cf01a24d51a1f5f807293c029fe7ca5"
+            },
+            {
+              "ref": "tests/scripts/test_qd_classical_benchmark.py",
+              "sha256": "7a751c9b3037ce76ee80291ff7c577bbcd044ff15e289c6afd3cc617b232bd8c"
+            }
+          ],
+          "scope_sha256": "b156e7c6e1c89dc9ff806ea54f02e5f62a654684ad7e8c981d794f14cae1c470"
         }
       ]
     },
@@ -148,6 +191,12 @@
         "reference-preservation",
         "surviving-output"
       ]
+    },
+    {
+      "id": "single-chip-rehearsal",
+      "state": "todo",
+      "action": "Acquire the single-chip teleportation rehearsal on qpu:belenos: six Pauli eigenstates, each read in its matching basis, from one 3-photon job of 6 template iterations (scripts/qd_teleportation_rehearsal.py, results/quandela/cases/teleportation_rehearsal/job-00).",
+      "acceptance": "The owner approved the section 'Single-chip rehearsal (job-00)' in writing on 2026-10-25; 'qd_teleportation_rehearsal.py --submit RUN APPROVAL' sends the job once a fresh plan admits the request and the model pooled fidelity at the live figures reaches F* = 0.86, the job is collected, and 'qd_teleportation_rehearsal.py --analyze' returns beats-classical (C1 local conformance only, no C2 or C3), at-or-below-classical, or inconclusive; the verdict is recorded without a cross-device claim."
     }
   ],
   "pause": {

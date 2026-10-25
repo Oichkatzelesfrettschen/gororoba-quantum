@@ -14,8 +14,8 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 36 licensed PDFs and two aliases;
-150 external sources retain citations and optional ignored local reading copies.
+license evidence. The library publishes 39 licensed PDFs and two aliases;
+168 external sources retain citations and optional ignored local reading copies.
 Five licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
@@ -47,6 +47,8 @@ those copies from the registered URLs or from a checkout of the owner's private
 gororoba-quantum-documents repository, which also holds their Markdown
 transcriptions, and admits a file only when its size and SHA-256 match the
 registry.
+
+The [Cayley-Dickson survey at dimension 16 and above](cayley-dickson-2n-ion-survey.md) records every candidate source and its disposition.
 
 The [coordinated research roadmap](../RESEARCH_ROADMAP.md) consolidates the
 cumulative objectives, verified results, ownership, ordering, and remaining
@@ -119,6 +121,26 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [erdos-854-consecutive-coprime-gaps](../notes/papers/erdos-854-consecutive-coprime-gaps.md) | Bloom, Erdos Problem 854: missing even gaps between consecutive integers coprime to a primorial (web record) | none | none | none |
 | [1107.1375](../notes/papers/1107.1375.md) | Bales, Cayley-Dickson and Clifford algebras as twisted group algebras (2003; arXiv 2011) | none | medium | none |
 | [2103.12805](../notes/papers/2103.12805.md) | Flaut and Boboescu, A twisted group algebra structure for an algebra obtained by the Cayley-Dickson process (2021) | none | medium | none |
+| [0804.3416](../notes/papers/0804.3416.md) | de Marrais 2008: Voyage by Catamaran, zero-divisor ensembles of the 2^N-ions | none | high | none |
+| [0907.2047](../notes/papers/0907.2047.md) | Cawagas et al. 2009: subalgebra structure of the 32-dimensional Cayley-Dickson algebra | none | high | none |
+| [math-0404395](../notes/papers/math-0404395.md) | Moreno 2004: alternative elements in the Cayley-Dickson algebras (arXiv math/0404395) | none | high | none |
+| [math-0512516](../notes/papers/math-0512516.md) | Moreno 2005: monomorphisms between Cayley-Dickson algebras (arXiv math/0512516) | none | medium | none |
+| [math-0405424](../notes/papers/math-0405424.md) | Moreno 2004: the exponential map on the Cayley-Dickson algebras (arXiv math/0405424) | none | medium | none |
+| [math-0404172](../notes/papers/math-0404172.md) | Moreno 2004: the Hopf construction map in higher dimensions (arXiv math/0404172) | none | medium | none |
+| [1102.5151](../notes/papers/1102.5151.md) | Kirshtein 2012: automorphism groups of Cayley-Dickson loops | none | high | none |
+| [1405.6888](../notes/papers/1405.6888.md) | Saniga, Holweck and Pracna 2014: Cayley-Dickson algebras and finite geometry | none | medium | none |
+| [2606.27798](../notes/papers/2606.27798.md) | Aryapoor, Back and Pautrel 2026: involutions in the Cayley-Dickson construction | none | medium | none |
+| [2609.11588](../notes/papers/2609.11588.md) | Lemley 2026: quasilinear multiplication in the real Cayley-Dickson tower (arXiv 2609.11588) | none | high | none |
+| [2603.20495](../notes/papers/2603.20495.md) | Chapman and Levin 2026: central products of Cayley-Dickson loops (arXiv 2603.20495) | none | high | none |
+| [2501.00123](../notes/papers/2501.00123.md) | Chapman, Levin, Vishne and Zaninelli 2024: loops with involution and the Cayley-Dickson doubling process | none | high | none |
+| [1707.07318](../notes/papers/1707.07318.md) | Bales: the Cayley-Dickson doubling products (arXiv 1707.07318) | none | high | none |
+| [1107.1301](../notes/papers/1107.1301.md) | Bales 2011: a catalog of Cayley-Dickson-like products (arXiv 1107.1301) | none | high | none |
+| [hep-th-0601033](../notes/papers/hep-th-0601033.md) | Kuwata, Fujii and Nakashima 2006: alternativity and reciprocity in the Cayley-Dickson algebra (arXiv hep-th/0601033) | none | medium | none |
+| [2505.06011](../notes/papers/2505.06011.md) | Wilmot 2025: exceptional Lie algebra G2 and non-associative algebras from Clifford algebra (arXiv 2505.06011) | none | medium | none |
+| [2205.05605](../notes/papers/2205.05605.md) | Chapman, Guterman, Vishkautsan and Zhilina 2022: roots and critical points of polynomials over Cayley-Dickson algebras (arXiv 2205.05605) | none | medium | none |
+| [2512.22134](../notes/papers/2512.22134.md) | Gazeau 2026: a mnemonic matrix rule for octonionic multiplication and its extension to the Cayley-Dickson tower (arXiv 2512.22134) | none | medium | none |
+| [brown-1967-generalized-cayley-dickson](../notes/papers/brown-1967-generalized-cayley-dickson.md) | R. B. Brown 1967: on generalized Cayley-Dickson algebras (Pacific J. Math. 20) | none | high | none |
+| [chan-dokovic-2006-sedenion-subalgebras](../notes/papers/chan-dokovic-2006-sedenion-subalgebras.md) | Chan and Dokovic 2006: conjugacy classes of subalgebras of the real sedenions | none | high | none |
 | 0811.3208 | Roetteler, Quantum algorithms for highly non-linear Boolean functions (2008) | none | medium | none |
 | 0911.4724 | Roetteler, Hidden shift for quadratics and functions of large Gowers norm (2009) | none | medium | none |
 | 1103.3017 | Gavinsky, Roetteler, Roland, Quantum algorithm for the Boolean hidden shift problem (2011) | none | medium | none |
@@ -150,6 +172,9 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [2608.26893](../notes/2608.26893.md) | Zhilina, Doubly alternative zero divisors (2023 journal; 2026 arXiv posting) | none | high | none |
 | [2608.28176](../notes/papers/2608.28176.md) | Zhilina, Orthogonality graphs Part I (2021 journal; 2026 arXiv posting) | none | high | none |
 | [2608.28163](../notes/papers/2608.28163.md) | Zhilina, Orthogonality graphs Part II (2021 journal; 2026 arXiv posting) | none | high | none |
+| [2608.26890](../notes/papers/2608.26890.md) | Zhilina, Diameter of the commutativity graph of the real sedenions (2024 journal; 2026 arXiv posting) | none | high | none |
+| [guterman-zhilina-2023-split-algebras](../notes/papers/guterman-zhilina-2023-split-algebras.md) | Guterman and Zhilina, Cayley-Dickson split-algebras: doubly alternative zero divisors and relation graphs (J. Math. Sci. 2023; abstract only, no open copy) | none | low | none |
+| [cawagas-2004-sedenion-structure](../notes/papers/cawagas-2004-sedenion-structure.md) | Cawagas, On the structure and zero divisors of the Cayley-Dickson sedenion algebra (DMGAA 2004; journal host unreachable, metadata only) | none | medium | none |
 | [2103.03008](../notes/papers/2103.03008.md) | Rudinger et al., Quantum-instrument GST (2021 preprint, 2022 journal) | high | none | none |
 | [2602.03938](../notes/papers/2602.03938.md) | Wysocki et al., Interpretable mid-circuit measurement errors (2026 preprint) | high | none | none |
 | [Coste](../notes/coste-semialgebraic-geometry.md) | Semialgebraic geometry: compatible triangulation, Hardt triviality and local conic structure (2002) | none | method | none |

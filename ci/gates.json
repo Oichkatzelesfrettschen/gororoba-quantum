@@ -2292,13 +2292,13 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-qet-ladder-manifest.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-live-run-seed-flags.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-qet-ladder-manifest.json"
+    "docs/evidence/submitted_circuits/comparison-live-run-seed-flags.json"
    ]
   },
   {
@@ -4068,6 +4068,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_compilation_design.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 docs/evidence/ascella-order-coefficients/compilation-design-anchor-ratio.json --check",
+   "name": "core-ascella-signed-coherence-compilation-design-replay",
+   "seconds": 105.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_compilation_reading.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/compilation-reading.json --check",
+   "name": "core-ascella-signed-coherence-compilation-reading-replay",
+   "seconds": 505.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
@@ -4108,7 +4124,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-6",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-7",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
@@ -4195,6 +4211,25 @@
    "replays": [
     "docs/evidence/primorial_cover/ziller_table.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/a5_stiefel_pfaffian_germs.py --check docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+   "name": "core-690",
+   "seconds": 1.9,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-stiefel-pfaffian-germs/result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/a5_stiefel_pfaffian_germs.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_stiefel_pfaffian_germs.py --self-test",
+   "name": "core-691",
+   "seconds": 2.6,
+   "tier": "pr"
   },
   {
    "suite": "core",

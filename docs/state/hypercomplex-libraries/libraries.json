@@ -440,6 +440,7 @@
   {
    "distribution": "clarabel",
    "declared_versions": {
+    "ci/requirements-ci.txt": "0.11.1",
     "IQM retained environment": "0.11.1"
    },
    "observed_host_version": "0.11.1",
@@ -718,6 +719,7 @@
   {
    "distribution": "cvxpy",
    "declared_versions": {
+    "ci/requirements-ci.txt": "1.9.3",
     "IQM retained environment": "1.9.3"
    },
    "observed_host_version": "1.9.3",
@@ -729,9 +731,13 @@
    ],
    "independent_algebra_witness": false,
    "hardware_execution": false,
-   "imported_by": [],
+   "imported_by": [
+    "scripts/qd_classical_benchmark.py"
+   ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/qd_classical_benchmark.py"
+   ]
   },
   {
    "distribution": "cycler",
@@ -2511,6 +2517,7 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/hypercomplex_operators.py",
     "gororoba_quantum/jax_bridge.py",
+    "gororoba_quantum/latency_recovery.py",
     "gororoba_quantum/law_encoding.py",
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
@@ -2551,6 +2558,8 @@
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
+    "scripts/ascella_compilation_design.py",
+    "scripts/ascella_compilation_reading.py",
     "scripts/ascella_configuration_holdout.py",
     "scripts/ascella_drive_response.py",
     "scripts/ascella_physical_models.py",
@@ -2627,9 +2636,11 @@
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qd_classical_benchmark.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py",
     "scripts/qet_passivity_controls.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
@@ -2698,6 +2709,7 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/hypercomplex_operators.py",
     "gororoba_quantum/jax_bridge.py",
+    "gororoba_quantum/latency_recovery.py",
     "gororoba_quantum/law_encoding.py",
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
@@ -2738,6 +2750,8 @@
     "scripts/ascella_coherence_analysis.py",
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_coherence_request.py",
+    "scripts/ascella_compilation_design.py",
+    "scripts/ascella_compilation_reading.py",
     "scripts/ascella_configuration_holdout.py",
     "scripts/ascella_drive_response.py",
     "scripts/ascella_physical_models.py",
@@ -2814,9 +2828,11 @@
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qd_classical_benchmark.py",
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py",
     "scripts/qet_passivity_controls.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
@@ -3594,7 +3610,8 @@
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
-    "scripts/qd_platform.py"
+    "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
@@ -3605,7 +3622,8 @@
     "scripts/local_photonic_compiler_crosscheck.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qd_mcp_server.py",
-    "scripts/qd_platform.py"
+    "scripts/qd_platform.py",
+    "scripts/qd_teleportation_rehearsal.py"
    ]
   },
   {
@@ -4243,6 +4261,7 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/a5_stiefel_pfaffian_germs.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
@@ -4254,6 +4273,7 @@
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/a5_stiefel_pfaffian_germs.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
@@ -4469,6 +4489,7 @@
     "gororoba_quantum/hybrid_shor.py",
     "gororoba_quantum/jax_bridge.py",
     "gororoba_quantum/kernel_cancellation.py",
+    "gororoba_quantum/latency_recovery.py",
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
     "gororoba_quantum/local_compute.py",
@@ -4604,6 +4625,7 @@
     "gororoba_quantum/hybrid_shor.py",
     "gororoba_quantum/jax_bridge.py",
     "gororoba_quantum/kernel_cancellation.py",
+    "gororoba_quantum/latency_recovery.py",
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
     "gororoba_quantum/local_compute.py",
@@ -4907,6 +4929,7 @@
     "gororoba_quantum/dynamic_density.py",
     "gororoba_quantum/hybrid_shor.py",
     "gororoba_quantum/jax_bridge.py",
+    "gororoba_quantum/latency_recovery.py",
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
     "gororoba_quantum/local_compute.py",
@@ -4958,6 +4981,7 @@
     "gororoba_quantum/dynamic_density.py",
     "gororoba_quantum/hybrid_shor.py",
     "gororoba_quantum/jax_bridge.py",
+    "gororoba_quantum/latency_recovery.py",
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
     "gororoba_quantum/local_compute.py",
@@ -6011,6 +6035,8 @@
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/variance.py",
     "scripts/ascella_coherence_repeat.py",
+    "scripts/ascella_compilation_design.py",
+    "scripts/ascella_compilation_reading.py",
     "scripts/ascella_physical_models.py",
     "scripts/ascella_response_geometry.py",
     "scripts/atlas_fringe_amplitudes.py",
@@ -6059,6 +6085,8 @@
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/variance.py",
     "scripts/ascella_coherence_repeat.py",
+    "scripts/ascella_compilation_design.py",
+    "scripts/ascella_compilation_reading.py",
     "scripts/ascella_physical_models.py",
     "scripts/ascella_response_geometry.py",
     "scripts/atlas_fringe_amplitudes.py",
@@ -7090,7 +7118,7 @@
   "docs/notes/qiskit-ecosystem.md": "cef7080dc6240810c48915ad4355914ec924040d19c7620cbc4f427610d9b962",
   "docs/notes/packages/candidates.md": "9686e4e3cabe939651db5bf5b64b46fcd5a361e8f5d23fa430de6627dcd9d11b",
   "ci/requirements-browser.txt": "6f9875723235ece07415e7d19103f2ec61ec35e1392d23fbd1c1290e043eaeb8",
-  "ci/requirements-ci.txt": "77f9f2981d01ae43f7026db295a35bdb93cf04f6733ec0797f02fc354de913a7",
+  "ci/requirements-ci.txt": "a83d9288a87525f62db022ca032a876a2f0d5f5a93f21bf4fce19fd35d72f7d3",
   "ci/requirements-replay.txt": "e5e98e830c7d6f06cca129bc4a9cd4bda6cc44cde0fc0b0d8d427e0ab0801496",
   "docs/notes/bluequbit/requirements-bluequbit.txt": "9e2df74f3a0f821bdb8093a61944e284ed6f5bb93c4b6dd9092ea612f048c422",
   "docs/notes/ionq/requirements-ionq.txt": "f3c90a4ec3ed32cf753c37bc2c9c4ff97fd348d646f3769c18e28d3e915202ff",
@@ -7106,7 +7134,7 @@
   "docs/notes/kaggle/recipes/aer-gpu-cu13-runtime-pins.txt": "b0b9e3b345886f2acee26395802129d8ad1c5dc5618533c77653a88d939bd6ba",
   "docs/state/hypercomplex-libraries/solver-role-grounding.json": "391c884cce2ee0ce4f468aa3739a233f1ee7cc8642fcc1207aa8fc2bbcd7aeed",
   "scripts/hypercomplex_libraries.py": "de1125f46866b0df683500c9a992bd08f38e0d25b6559c14e98114f0151a31f1",
-  "docs/notes/quandela/python-stack.md": "2f4be7a75a82b1c94a11e6bd45b7ff9d415c10c9a02953a9768100c03fac856e",
+  "docs/notes/quandela/python-stack.md": "e9ccf726ac8f136c9be0fb570fc4442846d50809620eb91726543d2ea43d4571",
   "docs/notes/kaggle/recipes/build_aer_gpu_cu13_wheel.sh": "8a7d8de6918424b5d187b85671827cdcbfe0d33421eae5b30ed6c837ff952c67",
   "docs/notes/iqm/python-stack-versions.json": "295941539dd0065d5ece5eb164df8131d38157e2e1ba8d9f5d95a7db5ef74062"
  },
@@ -7946,6 +7974,7 @@
    "et_campaign",
    "experiment_optimizer",
    "experiments",
+   "latency_recovery",
    "local_compute",
    "math",
    "numpy",
@@ -8293,6 +8322,16 @@
    "fractions",
    "sympy"
   ],
+  "gororoba_quantum/latency_recovery.py": [
+   "__future__",
+   "dynamic_density",
+   "experiment_optimizer",
+   "experiments",
+   "numpy",
+   "parallel",
+   "qiskit",
+   "qiskit_aer"
+  ],
   "gororoba_quantum/law_encoding.py": [
    "__future__",
    "collections",
@@ -8361,6 +8400,7 @@
    "qiskit_ibm_runtime",
    "qpu_cases",
    "qpu_planning",
+   "qrng_seeds",
    "rustworkx",
    "subprocess",
    "sys",
@@ -8785,6 +8825,7 @@
    "experiment_optimizer",
    "hashlib",
    "json",
+   "latency_recovery",
    "law_encoding",
    "local_compute",
    "math",
@@ -9249,6 +9290,25 @@
    "time",
    "typing"
   ],
+  "scripts/a5_stiefel_pfaffian_germs.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "copy",
+   "dataclasses",
+   "flint",
+   "fractions",
+   "functools",
+   "importlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "rank_locus_local_dimension",
+   "sys",
+   "typing"
+  ],
   "scripts/acquisition_decisions.py": [
    "__future__",
    "argparse",
@@ -9456,6 +9516,36 @@
    "math",
    "parallel",
    "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_compilation_design.py": [
+   "__future__",
+   "ascella_configuration_holdout",
+   "ascella_drive_response",
+   "ascella_physical_models",
+   "ascella_response_geometry",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_compilation_reading.py": [
+   "__future__",
+   "ascella_compilation_design",
+   "ascella_configuration_holdout",
+   "ascella_drive_response",
+   "ascella_physical_models",
+   "ascella_response_geometry",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
    "sys",
    "typing"
   ],
@@ -11085,6 +11175,14 @@
    "typing",
    "urllib"
   ],
+  "scripts/latency_recovery_exposure.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "math",
+   "pathlib",
+   "typing"
+  ],
   "scripts/left_mult_sign_rank.py": [
    "__future__",
    "argparse",
@@ -11890,6 +11988,20 @@
    "sys",
    "typing"
   ],
+  "scripts/qd_classical_benchmark.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "cvxpy",
+   "dataclasses",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qd_network_protocol",
+   "sys"
+  ],
   "scripts/qd_mcp_server.py": [
    "__future__",
    "anyio",
@@ -11973,6 +12085,30 @@
    "subprocess",
    "sys",
    "time",
+   "typing"
+  ],
+  "scripts/qd_teleportation_rehearsal.py": [
+   "__future__",
+   "bdsc_certificate",
+   "collections",
+   "contextlib",
+   "copy",
+   "dataclasses",
+   "datetime",
+   "functools",
+   "hypercomplex_cases",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "perceval",
+   "qd_classical_benchmark",
+   "qd_network_protocol",
+   "qd_platform",
+   "qd_schedule",
+   "sys",
    "typing"
   ],
   "scripts/qet_passivity_controls.py": [
@@ -12728,6 +12864,19 @@
    "tempfile",
    "zipfile"
   ],
+  "scripts/repository_archive.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "hashlib",
+   "json",
+   "pathlib",
+   "subprocess",
+   "sys",
+   "tempfile",
+   "typing",
+   "urllib"
+  ],
   "scripts/research_state.py": [
    "__future__",
    "argparse",
@@ -12743,6 +12892,21 @@
    "qd_platform",
    "qi_platform",
    "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/results_index.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "contextlib",
+   "dataclasses",
+   "json",
+   "kaggle_run",
+   "os",
+   "pathlib",
+   "research_state",
+   "sqlite3",
    "sys",
    "typing"
   ],
@@ -13035,6 +13199,9 @@
   ],
   "cqasm": [
    "libqasm"
+  ],
+  "cvxpy": [
+   "cvxpy"
   ],
   "exqalibur": [
    "exqalibur"
