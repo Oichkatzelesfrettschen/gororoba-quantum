@@ -58,6 +58,24 @@ calibration's.
   never enter the analysis.
 - **Balance:** the account holds 17.00 credits that expire at 2026-11-01 00:00 UTC.
 
+## Result
+
+The job ran on 2026-10-25 as `01a1707f-6157-75dc-aca8-6f30e5f0280b`, under calibration set `a18a947f`, after the
+`garnet:mock` run `01a1707e` estimated 3.09 s. It ran 1.92 s, billed 2 s and charged 1.00 credit. The analysis is
+[idle_schedule_probe_analysis.json](../../results/iqm/idle_schedule_probe_analysis.json), and the claims are
+`iqm-garnet-idle-schedule` and `iqm-garnet-mock-idle-schedule`.
+
+- **H1, schedule: ASAP.** All 68 pulsed-qubit arms resolve ASAP, at 13.3 to 58.7 standard errors from the midpoint
+  of the two predictions. The decay exceeds the ASAP model's: the observed contrast runs 0.86 to 2.39 times the
+  prediction (median 1.63), and the apparent T1 at 1000 pulses is a median 0.53 of the calibrated value. The
+  modeled 16 ns per prx, the calibrated T1, or both understate the wait. That is unresolved here and decides
+  nothing.
+- **H2, train readout.** QB11's isolated train reads -0.30 +- 0.06 %, which excludes the 2.7 % attribution at 47
+  standard errors. QB6's reads -0.18 +- 0.07 %. Both fits are linear (chi-square 8.1 and 1.2 on three degrees of
+  freedom).
+- **Parallel map, descriptive.** 13 of 20 qubits fit the linear train model when all are driven at once; QB2,
+  QB5, QB7, QB11, QB15, QB16 and QB17 do not. QB6 reads -0.22 +- 0.10 % parallel minus isolated.
+
 ## Procedure
 
 ```sh

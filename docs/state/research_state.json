@@ -1864,6 +1864,20 @@
       "question": "What are QB7's readout errors and QB6's and QB11's prx over-rotations alongside the null re-test?"
     },
     {
+      "id": "iqm-garnet-mock-idle-schedule",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does the garnet:mock pipeline accept the 24-circuit idle schedule and train readout case unheralded with one active-reset cycle, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-idle-schedule",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe",
+      "family": "IQM idle schedule and train readout probe",
+      "question": "Does Garnet schedule a circuit job's gates as soon or as late as possible, and what over-rotation does each qubit's prx carry when fitted with its own readout?"
+    },
+    {
       "id": "iqm-garnet-kernel-cancellation",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation",
@@ -9139,6 +9153,68 @@
         "proposed-signed-null-retest",
         "iqm-garnet-signed-kernel-probe"
       ],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-idle-schedule",
+      "statement": "garnet:mock accepted the idle schedule and train readout case (cases.json 3932d467, 24 circuits x 4500 shots, no heralding, one active-reset cycle, up to 1017 prx pulses per circuit), compiled it against its own calibration set f04fe114, estimated 3.09 s and charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock's bits are random, so the run tests acceptance and the runtime estimate, not the schedule or the over-rotations.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe/results.json",
+          "sha256": "a3a90bc5833f5b59534da4237edae7e26774c065ff1faa754a5ec1ebc6d0dffa"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-idle-schedule-train-readout.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-idle-schedule"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-idle-schedule",
+      "statement": "On IQM Garnet (calibration set a18a947f, 24 circuits x 4500 shots, one active-reset cycle, no heralding), a circuit job runs its gates as soon as possible: in both idle layouts every qubit uncoupled to the train qubit (QB1, then QB20), pulsed once beside 500 or 1000 identity pi pulses and read in one joint measure, relaxed toward |0>, and all 68 pulsed-qubit arms resolved ASAP against the ALAP prediction of no change, at 13.3 to 58.7 standard errors from the midpoint of the two predictions (H1). Fitted with its own readout pair, QB11's isolated prx train reads a relative over-rotation of -0.30 +- 0.06 %, which excludes the +2.7 % the null-controlled signed probe's prediction attributes to it at 47 standard errors, and QB6's reads -0.18 +- 0.07 % (H2; chi-square 8.1 and 1.2 on three degrees of freedom). The job ran 1.92 s, billed 2 s and charged 1.00 credit.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration set and one job. The decay is larger than the ASAP model predicts (observed over predicted contrast 0.86 to 2.39, median 1.63; apparent T1 at 1000 pulses 0.40 to 1.27 of the calibrated value, median 0.53), so the model's 16 ns per prx, the calibrated T1, or both understate the wait; that is unresolved here and decides nothing. The parallel block's fits are descriptive: 13 of 20 qubits fit the linear train model, and QB2, QB5, QB7, QB11, QB15, QB16 and QB17 do not when all qubits are driven at once; QB6 reads -0.22 +- 0.10 % parallel minus isolated. Retained predictions keep the ALAP schedule their approvals covered.",
+      "evidence": [
+        {
+          "path": "results/iqm/idle_schedule_probe_analysis.json",
+          "sha256": "dc81ac1b23bf42050bb97644411703fedcec957579254cfe3eb944b735604480"
+        },
+        {
+          "path": "results/iqm/cases/idle-schedule-train-readout/prediction.json",
+          "sha256": "e3549eb8c74781b8c712286ae15ce664c9c4f340078207404343424c6b0f40b1"
+        },
+        {
+          "path": "results/iqm/cases/idle-schedule-train-readout/cases.json",
+          "sha256": "3932d4675e081ac0672d3df3b20e658841997dbc86a1fa50c1b38255e6586dc9"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe/results.json",
+          "sha256": "7216ed0f8606f1be368e69950d8b535740a8197b70cc9e8c6706a04fc823fbd1"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-idle-schedule-train-readout.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-idle-schedule"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
       "superseded_by": null
     },
     {

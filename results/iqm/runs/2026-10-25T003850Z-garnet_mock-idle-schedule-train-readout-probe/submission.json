@@ -1,0 +1,17 @@
+{
+ "approval": "Mock; then garnet. Decompose the specifications and job/run/shots/cost/qubits and maximal qubits and science and shots per run/job/batch optimized for the Mock first (0.00 credits) to read the runtime estimate, then the Garnet job at once if the estimate fits the 4.00-credit ceiling.",
+ "body_sha256": "677665a2f9cbd713367b0ee51897977182a142fff6ab910b995d8fefaab64e70",
+ "cases_sha256": "3932d4675e081ac0672d3df3b20e658841997dbc86a1fa50c1b38255e6586dc9",
+ "credit_before": {
+  "currentBalance": "17.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 4.266,
+ "job": "probe",
+ "job_id": "01a1707e-fe50-7543-93c6-7549a951217e",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T00:38:53Z"
+}
