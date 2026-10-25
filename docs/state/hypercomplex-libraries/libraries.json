@@ -4237,6 +4237,7 @@
    "independent_algebra_witness": false,
    "hardware_execution": false,
    "imported_by": [
+    "scripts/a5_stiefel_pfaffian_germs.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
@@ -4248,6 +4249,7 @@
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
+    "scripts/a5_stiefel_pfaffian_germs.py",
     "scripts/bdsc_packages.py",
     "scripts/exact_rank.py",
     "scripts/rank_locus_gap_directions.py",
@@ -9226,6 +9228,25 @@
    "time",
    "typing"
   ],
+  "scripts/a5_stiefel_pfaffian_germs.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "copy",
+   "dataclasses",
+   "flint",
+   "fractions",
+   "functools",
+   "importlib",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "rank_locus_local_dimension",
+   "sys",
+   "typing"
+  ],
   "scripts/acquisition_decisions.py": [
    "__future__",
    "argparse",
@@ -10475,6 +10496,19 @@
    "qpu_planning",
    "rank_sector_experiments",
    "re",
+   "sys",
+   "tempfile",
+   "typing"
+  ],
+  "scripts/fetch_source_cache.py": [
+   "__future__",
+   "argparse",
+   "capture_oq_docs",
+   "collections",
+   "hashlib",
+   "json",
+   "os",
+   "pathlib",
    "sys",
    "tempfile",
    "typing"
