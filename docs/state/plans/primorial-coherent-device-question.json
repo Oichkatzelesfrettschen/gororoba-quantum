@@ -23,9 +23,27 @@
   "steps": [
     {
       "id": "joint-bounds",
-      "state": "todo",
+      "state": "done",
       "action": "Evaluate tilt, sx/x amplitude and CZ phase jointly at their gate-error bounds on the compiled gap-88 and null arms, per coefficient, with the identification-shot endpoint, arm mismatch, coherent-fraction scan and every-path sweep.",
-      "acceptance": "A retained Kaggle record and replay gate whose simulator reproduces every earlier single-family scenario to 1e-9, and a design document stating whether the bounds close the device question."
+      "acceptance": "A retained Kaggle record and replay gate whose simulator reproduces every earlier single-family scenario to 1e-9, and a design document stating whether the bounds close the device question.",
+      "receipts": [
+        {
+          "result": "The bounds do not close the device question: tilt and CZ phase jointly at their gate-error bounds reach max_z 2.61 (best) and 2.84 (median) per coefficient, needing 53,363 and 76,596 shots per setting to identify against 2,803 and 3,169; each family alone stays below 1, tilt at 0.1 of its bound keeps every bounded CZ phase below 1, and all 226 working paths exceed 1 at their bounds.",
+          "observed_at": "2026-10-25T22:14:13+00:00",
+          "revision": "cad3fc30db660030d423542643f820b4db58a793",
+          "evidence": [
+            {
+              "ref": "docs/evidence/primorial_cover/bound_residuals.json",
+              "sha256": "ff6239c4026980205cf629a466f6c4c709264d978aafe872b8da6ddec25b7ef6"
+            },
+            {
+              "ref": "docs/design/primorial-cover-joint-coherent-bounds.md",
+              "sha256": "8a2b7afac609db95df486833665b5754aac934381ed1f4571b42309a5b8ee048"
+            }
+          ],
+          "scope_sha256": "de64e87c35b2f13f7d12c211bff13cb7105fe43753b837bf27965cb7e48925cb"
+        }
+      ]
     },
     {
       "id": "coherent-fraction-probes",
@@ -45,5 +63,8 @@
       "action": "Set the signal and null interleave period from the arm-mismatch tolerances and the atlas drift rates.",
       "acceptance": "A stated interleave period whose expected q0 frequency drift stays below 2.2 kHz, citing the drift source; a measured drift above that per period rejects the schedule."
     }
+  ],
+  "claims": [
+    "primorial-bound-residuals-joint"
   ]
 }
