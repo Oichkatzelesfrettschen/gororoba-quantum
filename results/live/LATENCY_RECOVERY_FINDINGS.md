@@ -32,15 +32,55 @@ All intervals are Hoeffding intervals at alpha 0.05/7 per endpoint, from
 
 The feed-forward correction recovers the injected error. F(`ff_0`) is 0.780
 against the no-correction null of 0.035, and the unencoded arm reads 0.227,
-near its ideal 1/4. Neither the controller latency nor the conditional costs
-a resolved amount of fidelity beyond its idle. The difference is bounded to
--0.035..0.055 against no latency at all, and to -0.049..0.041 against an
-equal idle; the T1/T2 model puts the idle cost at 0.006.
+near its ideal 1/4.
 
-Both paths lose the same fidelity over the 10 us window: 0.217 with
-feed-forward and 0.223 with the frame. The Aer prediction under the same
-calibration was 0.082 and 0.079, so the device loses 2.7 times what its
-calibrated T1 and T2 predict.
+## Executed exposures
+
+The controller overlaps a requested delay with the feed-forward broadcast, so
+each arm's exposure comes from the returned schedule.
+`scripts/latency_recovery_exposure.py --run results/live/2026-10-25T193443.839527Z`
+reads it as the cycles (4 ns) from the end of the syndrome captures to the
+first decode CZ:
+
+| Arm | Exposure (cycles) | Exposure (us) |
+|---|---:|---:|
+| `frame_0` | 107 | 0.428 |
+| `ff_0` | 317 | 1.268 |
+| `frame_l` | 322 | 1.288 |
+| `ff_w` | 2754 | 11.016 |
+| `frame_lw` | 2822 | 11.288 |
+
+Every basis of an arm shares its exposure.
+
+Feed-forward exposes the block for 210 cycles (840 ns) more than `frame_0`.
+`frame_l` matches `ff_0` to within 5 cycles, so `latency_is_idle` compares
+equal exposures. Its interval, -0.049..0.041, includes 0. The controller
+latency and the conditional therefore cost no resolved fidelity beyond the
+idle they impose; the T1/T2 model puts that idle at 0.006.
+
+The requested 2500-cycle window adds 2437 cycles (9.748 us) on the
+feed-forward path, because the broadcast overlaps the start of the delay, and
+2500 cycles (10.000 us) on the frame path. `window_slope` therefore compares
+increments 63 cycles apart. At the measured slope, that difference accounts
+for about 0.006 of fidelity, inside its +-0.094 interval.
+
+## Window rates
+
+Both paths lose fidelity at the same rate over their executed increments:
+
+| Quantity over the executed increment | Feed-forward (9.748 us) | Frame (10.000 us) |
+|---|---:|---:|
+| fidelity loss (preregistered contract) | 0.217 | 0.223 |
+| finite-window slope (F(0) - F(W))/dt | 0.0222 per us | 0.0223 per us |
+| -ln(F(W)/F(0))/dt | 0.0334 per us | 0.0339 per us |
+| coherence rate -ln(C(W)/C(0))/dt | 0.0248 per us | 0.0263 per us |
+| coherence time constant | 40.3 us | 38.1 us |
+| phase frequency | -13.3 kHz | -12.9 kHz |
+| slope of the phase-removed fidelity | 0.0101 per us | 0.0105 per us |
+
+The Aer prediction under the same calibration put the window loss at 0.082
+and 0.079 and the coherence time constant at 65 to 67 us. The device loses
+2.7 times the predicted fidelity.
 
 ## Composition of the window cost (descriptive)
 
@@ -55,32 +95,29 @@ virtual Z by -phi would give.
 | `frame_l` | 0.776 | 0.715 | -0.175 | 0.695 | 0.781 |
 | `frame_lw` | 0.553 | 0.550 | -0.988 | 0.604 | 0.676 |
 
-Over W the phase of the four-qubit block turns by -0.81 rad on both paths:
-a summed detuning near -13 kHz. That coherent rotation accounts for about
-0.12 of the 0.22 fidelity loss, and a frame correction removes it.
+Over the window the phase of the four-qubit block turns by -0.81 rad on both
+paths, a summed detuning near -13 kHz. That coherent rotation accounts for
+about 0.12 of the 0.22 fidelity loss, and a frame correction removes it.
 
-The remainder is decay:
-
-| Path | Coherence ratio over W | Time constant | ZZ ratio |
-|---|---:|---:|---:|
-| feed-forward | 0.785 | 41 us | 0.88 |
-| frame | 0.769 | 38 us | 0.87 |
-| Aer (both paths) | 0.86 | 65 to 67 us | 0.92 |
-
-The block decays 1.6 to 1.75 times faster than its calibrated T1 and T2
-predict. The block is the parity coherence of r, d0, d1 and d2, and its
-coherence decays at four single-qubit rates combined.
+The remainder is decay at 1.6 to 1.75 times the calibrated T1/T2 rate. ZZ
+survives 0.88 and 0.87 of the window against 0.92 predicted. The block is the
+parity coherence of r, d0, d1 and d2, so its coherence decays at four
+single-qubit rates combined.
 
 ## Reading for the latency-constrained recovery model
 
-- On this device the reward's decay parameter is set by idle coherence, not by
-  the controller. Over 10 us the coded Bell pair loses F at 0.022 per us with
-  no frame correction, and 0.010 per us after one.
-- Its coherence decays at 0.024 to 0.026 per us.
-- The 832 ns controller latency adds no resolved cost beyond that idle.
-- A queue model's service-time penalty therefore needs the measured idle
-  decay of the encoded block, which here exceeds the T1/T2 prediction by 1.6
-  to 1.75 times plus a 13 kHz frame rotation, rather than a controller term.
+- On this device the cost of waiting comes from idle coherence, not from the
+  controller. The controller's 840 ns adds no resolved cost beyond the idle it
+  imposes.
+- The coded Bell pair's fidelity falls at a finite-window slope of 0.022 per
+  us over 10 us without a frame correction, and 0.010 per us with one. The
+  proposal's `exp(-delta T)` reward needs a rate, and -ln(F(W)/F(0))/dt gives
+  0.033 to 0.034 per us.
+- That number is the reward's delta only if the fidelity decays exponentially.
+  Two exposures cannot test that, and the 13 kHz rotation is not exponential.
+  A multi-point delay ladder decides the law.
+- The coherence decays at 0.025 to 0.026 per us, 1.6 to 1.75 times the
+  calibrated T1/T2 rate.
 
 ## Relation to the proposal audit
 
@@ -91,7 +128,7 @@ listed two items as unrecorded:
   records it: 201 cycles from capture end for one capture, rising to 305 for
   28 captures in one broadcast.
 - A fidelity-versus-delay law on an encoded state. This run measures one: a
-  decay with a 38 to 41 us coherence time constant plus a -13 kHz frame
+  decay with a 38 to 40 us coherence time constant plus a -13 kHz frame
   rotation of the four-qubit block, with no resolved controller term. The
   qubit-143 beat the audit cites remains a property of that qubit.
 

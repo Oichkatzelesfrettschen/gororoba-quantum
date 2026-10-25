@@ -1842,13 +1842,16 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "window_cost_ff (ff_0 minus ff_w) and window_cost_frame (frame_l minus frame_lw), and window_slope "
             "(their difference) are two-sided precision endpoints of half-width 0.05, except 0.1 for "
             "window_slope; they price resolution, not an effect. The analysis then reads the retained intervals: "
-            "latency_cost and each window cost resolve where the lower bound exceeds 0, a window cost divided by "
-            "W giving the decay rate delta per unit idle, and latency_is_idle and window_slope hold "
-            "where their intervals lie inside +-0.01, a margin the Hoeffding radii at these shot tiers do not "
-            "reach, so an unresolved equivalence remains an allowed outcome. decay_not_phase is descriptive: it "
-            "compares the coherence C and phase phi of ff_0 and frame_0 from the XY and YX members. A failed "
-            "latency_is_idle with a resolved latency_cost names a feed-forward cost beyond the idle itself, the "
-            "device-specific part.",
+            "latency_cost and each window cost resolve where the lower bound exceeds 0, and latency_is_idle and "
+            "window_slope hold where their intervals lie inside +-0.01, a margin the Hoeffding radii at these shot "
+            "tiers do not reach, so an unresolved equivalence remains an allowed outcome. The controller overlaps a "
+            "requested delay with the broadcast, so the analysis reads each arm's executed exposure from the "
+            "returned scheduler_timing (scripts/latency_recovery_exposure.py): a window cost over its executed "
+            "increment is a finite-window fidelity-loss slope, and -ln(F(W)/F(0)) over that increment equals an "
+            "exponential law's rate only if the decay is exponential. decay_not_phase is descriptive: it compares "
+            "the coherence C and phase phi of ff_0 and frame_0 from the XY and YX members. A lower bound of "
+            "latency_is_idle (frame_l minus ff_0) above 0 names a feed-forward cost beyond the idle itself, the "
+            "device-specific part; an interval that includes 0 leaves that cost unresolved.",
             "",
             "The run measures the fidelity cost of whatever the controller executes, not the latency's jitter. "
             "A bit-flip code protects no phase, so the run measures the idle cost of coherence, the quantity "

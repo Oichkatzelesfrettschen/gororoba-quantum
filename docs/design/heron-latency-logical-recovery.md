@@ -109,11 +109,18 @@ analysis applies the rule in the last column to the retained interval.
 | `recovery` | F(`ff_0`) - F(null) | one-sided | lower bound above 0.5 |
 | `code_property` | F(`ff_0`) - F(`ff_0_unencoded`) | one-sided | lower bound above 0.25 |
 | `latency_cost` | F(`frame_0`) - F(`ff_0`) | half-width 0.05 | resolved when the lower bound exceeds 0 |
-| `latency_is_idle` | F(`frame_l`) - F(`ff_0`) | half-width 0.05 | holds when the interval lies inside +-0.01; a wider interval is reported as unresolved |
-| `window_cost_ff` | F(`ff_0`) - F(`ff_w`) | half-width 0.05 | resolved when the lower bound exceeds 0; divided by W, the decay rate delta |
+| `latency_is_idle` | F(`frame_l`) - F(`ff_0`) | half-width 0.05 | a lower bound above 0 names a feed-forward cost beyond the idle; equal cost holds when the interval lies inside +-0.01; otherwise unresolved |
+| `window_cost_ff` | F(`ff_0`) - F(`ff_w`) | half-width 0.05 | resolved when the lower bound exceeds 0; over the executed exposure increment, a finite-window fidelity-loss slope |
 | `window_cost_frame` | F(`frame_l`) - F(`frame_lw`) | half-width 0.05 | as `window_cost_ff`, through idle alone |
 | `window_slope` | `window_cost_ff` - `window_cost_frame` | half-width 0.1 | holds when the interval lies inside +-0.01 |
 | `decay_not_phase` | C(`frame_0`) - C(`ff_0`) beside phi(`ff_0`) - phi(`frame_0`) | descriptive | names the loss decay or frame |
+
+The controller overlaps a requested delay with the feed-forward broadcast, so `W`
+sets the requested window and the returned `scheduler_timing` sets the executed one;
+`scripts/latency_recovery_exposure.py` reads each arm's exposure from it. A window
+cost over its executed increment is a finite-window slope; it identifies the
+rate delta of an `exp(-delta T)` reward only through `-ln(F(W)/F(0))` and only
+if the decay is exponential.
 
 A failed `latency_is_idle` with a passing `latency_cost` names a
 feed-forward cost beyond the idle. That excess is the device-specific part:
