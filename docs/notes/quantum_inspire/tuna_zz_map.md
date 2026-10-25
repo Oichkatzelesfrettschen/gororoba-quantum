@@ -55,6 +55,18 @@ pause-ladder plan.
 All 416 cQASM payloads and scientific settings match the retained proposals.
 Gate `core-594` replays the active successor. Each predecessor retains its bytes.
 
+The ladder-floor successor
+[`zz-map-tuna17-pause-ladder-floor/plan.json`](../../../results/quantum_inspire/cases/zz-map-tuna17-pause-ladder-floor/plan.json)
+carries plan schema `qi-zz-map-plan-v2`, written by `scripts/qi_zz_map_floor.py`.
+`minimum_interbatch_pause_seconds` is 138 x 30 = 4,140 s (the ladder's first
+step times the batch intervals) and `ceiling_interbatch_pause_seconds` is
+138 x 120 = 16,560 s (its top step). The plan schema `qi-zz-map-plan-v1` of
+every earlier set binds the ceiling as its minimum and keeps that value. The
+416 cQASM payloads and scientific settings match the token-recovery set; only
+the plan schema, the pause fields and the case hashes that bind them differ.
+Gate `core-683` replays this successor, and `core-594` keeps replaying the
+token-recovery set.
+
 The active successor replays against the exact
 [proposal catalogue](../../evidence/quantum_inspire/catalogue-submission-deadline-proposal.json)
 whose SHA-256 appears in its source digests. The frozen catalogue separates

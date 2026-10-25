@@ -1,0 +1,183 @@
+{
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "batch_index": 19,
+ "circuits": [
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 0,
+   "delay_seconds": 0.0,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-01-a_probe-n1-x-t0000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.0,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 1,
+   "packing_id": "pack-01",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      1
+     ],
+     "neighbor": 1,
+     "neighbor_state": 1,
+     "probe": 0
+    },
+    {
+     "edge": [
+      5,
+      8
+     ],
+     "neighbor": 8,
+     "neighbor_state": 1,
+     "probe": 5
+    },
+    {
+     "edge": [
+      7,
+      10
+     ],
+     "neighbor": 10,
+     "neighbor_state": 1,
+     "probe": 7
+    },
+    {
+     "edge": [
+      15,
+      16
+     ],
+     "neighbor": 16,
+     "neighbor_state": 1,
+     "probe": 15
+    }
+   ],
+   "quadrature": "x",
+   "sha256": "a561278fd5400fffd82e984191a0858ffed16866417241bca400b5087061364d"
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 0,
+   "delay_seconds": 0.0,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-01-a_probe-n0-y-t0000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.5,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 0,
+   "packing_id": "pack-01",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      1
+     ],
+     "neighbor": 1,
+     "neighbor_state": 0,
+     "probe": 0
+    },
+    {
+     "edge": [
+      5,
+      8
+     ],
+     "neighbor": 8,
+     "neighbor_state": 0,
+     "probe": 5
+    },
+    {
+     "edge": [
+      7,
+      10
+     ],
+     "neighbor": 10,
+     "neighbor_state": 0,
+     "probe": 7
+    },
+    {
+     "edge": [
+      15,
+      16
+     ],
+     "neighbor": 16,
+     "neighbor_state": 0,
+     "probe": 15
+    }
+   ],
+   "quadrature": "y",
+   "sha256": "a6a636ff687d6cace4e66cc02e4f8143d9407252fa4c791503b3218804ea6f0f"
+  },
+  {
+   "all_qubits_initialized": true,
+   "bit_order": "qubit_0_rightmost",
+   "cz_count": 0,
+   "delay_cycles": 0,
+   "delay_seconds": 0.0,
+   "direction": "a_probe",
+   "documented_fixed_primitive_ns_excluding_init_measure": 80,
+   "file": "pack-01-a_probe-n1-y-t0000.cq",
+   "ideal_probe_p1_at_zero_detuning": 0.5,
+   "kind": "conditional_ramsey",
+   "neighbor_state": 1,
+   "packing_id": "pack-01",
+   "pairs": [
+    {
+     "edge": [
+      0,
+      1
+     ],
+     "neighbor": 1,
+     "neighbor_state": 1,
+     "probe": 0
+    },
+    {
+     "edge": [
+      5,
+      8
+     ],
+     "neighbor": 8,
+     "neighbor_state": 1,
+     "probe": 5
+    },
+    {
+     "edge": [
+      7,
+      10
+     ],
+     "neighbor": 10,
+     "neighbor_state": 1,
+     "probe": 7
+    },
+    {
+     "edge": [
+      15,
+      16
+     ],
+     "neighbor": 16,
+     "neighbor_state": 1,
+     "probe": 15
+    }
+   ],
+   "quadrature": "y",
+   "sha256": "3cb82e67e2daf10f76edc7b71497de9bec7e01718f40b3a4bc488a1e307f9635"
+  }
+ ],
+ "nqubits": 17,
+ "plan_schema": "qi-zz-map-plan-v2",
+ "schema": "qi-zz-map-cases-v1",
+ "shots": 8192,
+ "source_digests": {
+  "catalogue_sha256": "09757a70b274484fb0508bd3db58375fc90afca8fd4767803e13ee24e77e9a3b",
+  "conditional_ramsey_note_sha256": "ddac02db9715550afcd22d19d312dc668d2558adb42ff7476c4c75b7940cb087",
+  "conditional_ramsey_source_sha256": "2ba6de1ce013c5c22adffc934ceefbbc7aaa7794f3f93a4b73c417f47317055f",
+  "pause_floor_builder_sha256": "31e84cd2def5ce54ed77fa1805ab3da9c7b679f87f230bab70012c69510a666d",
+  "proposal_builder_sha256": "b2cd54495e728b666f15444105367853229ad7cc603ee3503692f3ed8fdd84a7",
+  "qi_platform_source_sha256": "d53b201e9a1268a5c7a4ab5af36807e90573e38c6842eae85dff9b6fb010669b",
+  "tuna_operations_sha256": "f6f0e603b73b1693c7fce17d85f9388067d914485d85e957b633ed585ef2f8ca"
+ },
+ "status": "proposed_not_submitted"
+}
