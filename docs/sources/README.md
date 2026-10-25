@@ -15,7 +15,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
 license evidence. The library publishes 36 licensed PDFs and two aliases;
-150 external sources retain citations and optional ignored local reading copies.
+151 external sources retain citations and optional ignored local reading copies.
 Five licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
@@ -150,6 +150,9 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [2608.26893](../notes/2608.26893.md) | Zhilina, Doubly alternative zero divisors (2023 journal; 2026 arXiv posting) | none | high | none |
 | [2608.28176](../notes/papers/2608.28176.md) | Zhilina, Orthogonality graphs Part I (2021 journal; 2026 arXiv posting) | none | high | none |
 | [2608.28163](../notes/papers/2608.28163.md) | Zhilina, Orthogonality graphs Part II (2021 journal; 2026 arXiv posting) | none | high | none |
+| [2608.26890](../notes/papers/2608.26890.md) | Zhilina, Diameter of the commutativity graph of the real sedenions (2024 journal; 2026 arXiv posting) | none | high | none |
+| [guterman-zhilina-2023-split-algebras](../notes/papers/guterman-zhilina-2023-split-algebras.md) | Guterman and Zhilina, Cayley-Dickson split-algebras: doubly alternative zero divisors and relation graphs (J. Math. Sci. 2023; abstract only, no open copy) | none | low | none |
+| [cawagas-2004-sedenion-structure](../notes/papers/cawagas-2004-sedenion-structure.md) | Cawagas, On the structure and zero divisors of the Cayley-Dickson sedenion algebra (DMGAA 2004; journal host unreachable, metadata only) | none | medium | none |
 | [2103.03008](../notes/papers/2103.03008.md) | Rudinger et al., Quantum-instrument GST (2021 preprint, 2022 journal) | high | none | none |
 | [2602.03938](../notes/papers/2602.03938.md) | Wysocki et al., Interpretable mid-circuit measurement errors (2026 preprint) | high | none | none |
 | [Coste](../notes/coste-semialgebraic-geometry.md) | Semialgebraic geometry: compatible triangulation, Hardt triviality and local conic structure (2002) | none | method | none |

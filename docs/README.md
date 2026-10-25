@@ -116,6 +116,9 @@ differs from it only in the `cd_core.py` digest.
 | [1107.1375.md](notes/papers/1107.1375.md) | Bales 2003 twisted group algebras and the recursive Cayley-Dickson twist, with its index and product convention |
 | [2103.12805.md](notes/papers/2103.12805.md) | Flaut and Boboescu 2021 twist-tree recursion and the twisted-group-algebra theorem for the Cayley-Dickson process (hosted, CC BY 4.0) |
 | [1003.0429.md](notes/papers/1003.0429.md) | Morier-Genoud and Ovsienko 2011 cubic twisted group algebras; the octonion cochain and the Cayley-Dickson algebras outside the cubic class |
+| [2608.26890.md](notes/papers/2608.26890.md) | Zhilina 2024 diameter 3 of the commutativity graph of the real sedenion zero divisors (arXiv 2026 posting, external-only) |
+| [guterman-zhilina-2023-split-algebras.md](notes/papers/guterman-zhilina-2023-split-algebras.md) | Guterman and Zhilina 2023 split-algebra zero divisors and relation graphs, abstract only (no open copy) |
+| [cawagas-2004-sedenion-structure.md](notes/papers/cawagas-2004-sedenion-structure.md) | Cawagas 2004 sedenion subalgebras and zero divisors, bibliographic identity only (journal host unreachable) |
 | [2512.07210.md](notes/papers/2512.07210.md) | Wilmot 2026 sedenion automorphisms: the graded sedenion table and 35-term calibration (both agree with `cd_core`), and the Schafer and Brown discrepancy for `Aut(S)` |
 | [2609.10569.md](notes/papers/2609.10569.md) | Gresnigt 2026 review of the sedenion `S3` family symmetry: Table 5 (11 printed defects against `cd_core`) and the `S3` maps `epsilon` and `psi`, certified on basis pairs |
 | [1907.07024.md](notes/papers/1907.07024.md) | Heikoop et al. 2020 morphisms of skew Hadamard matrices: the field-isomorphism map from quaternary unit Hadamard matrices to real Hadamard matrices |
