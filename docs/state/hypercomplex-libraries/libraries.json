@@ -12705,6 +12705,19 @@
    "tempfile",
    "zipfile"
   ],
+  "scripts/repository_archive.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "hashlib",
+   "json",
+   "pathlib",
+   "subprocess",
+   "sys",
+   "tempfile",
+   "typing",
+   "urllib"
+  ],
   "scripts/research_state.py": [
    "__future__",
    "argparse",
@@ -12720,6 +12733,21 @@
    "qd_platform",
    "qi_platform",
    "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/results_index.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "contextlib",
+   "dataclasses",
+   "json",
+   "kaggle_run",
+   "os",
+   "pathlib",
+   "research_state",
+   "sqlite3",
    "sys",
    "typing"
   ],
