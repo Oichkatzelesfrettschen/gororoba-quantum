@@ -215,22 +215,26 @@ def newton_interp(xs, ys):
     return poly
 
 
-def exact_fsq_line(n, a, b, j):
+def fsq_node(item):
+    """det of C_z without row and column j, divided by z_j^2, at one interpolation node z = a + s b."""
+    n, a, b, j, s = item
     h = 1 << (n - 1)
+    z = [u + s * v for u, v in zip(a, b, strict=True)]
+    if z[j] == 0:
+        raise RuntimeError("z_j vanishes on a node")
+    c = cross(h, z)
+    keep = [k for k in range(h - 1) if k != j]
+    det = int(flint.fmpz_mat([[c[r][cc] for cc in keep] for r in keep]).det())
+    q, rem = divmod(det, z[j] * z[j])
+    if rem:
+        raise RuntimeError("det not divisible by z_j^2")
+    return q
+
+
+def exact_fsq_line(n, a, b, j):
     d = 2 ** (n - 2) - 2
     xs = list(range(0, 2 * d + 3))
-    ys = []
-    for s in xs:
-        z = [u + s * v for u, v in zip(a, b, strict=True)]
-        if z[j] == 0:
-            raise RuntimeError("z_j vanishes on a node")
-        c = cross(h, z)
-        keep = [k for k in range(h - 1) if k != j]
-        det = int(flint.fmpz_mat([[c[r][cc] for cc in keep] for r in keep]).det())
-        q, rem = divmod(det, z[j] * z[j])
-        if rem:
-            raise RuntimeError("det not divisible by z_j^2")
-        ys.append(q)
+    ys = ordered_map(fsq_node, [(n, a, b, j, s) for s in xs], min_items=2)
     poly = newton_interp(xs[: 2 * d + 1], ys[: 2 * d + 1])
     for s, v in zip(xs[2 * d + 1 :], ys[2 * d + 1 :], strict=True):
         if poly(s) != v:
@@ -337,21 +341,24 @@ def sec_witness():
         out(f"disjoint avoiding z_{k} at {dim}: stiefel", witness_stiefel(dim, y), "nullity", dim - rank)
 
 
+def pair_nullity(item):
+    """Nullity of L_y for y = e_i + i e_j in A_6."""
+    i, j = item
+    y = [0] * 64
+    y[i] = 1
+    y[32 + j] = 1
+    return 64 - flint.fmpz_mat(left(64, y)).rank()
+
+
 def sec_pairs():
-    h = 32
+    pairs = [(i, j) for i in range(1, 32) for j in range(1, 32) if i != j]
+    nullities = ordered_map(pair_nullity, pairs, min_items=64)
     counts = {}
     special = {}
-    for i in range(1, h):
-        for j in range(1, h):
-            if i == j:
-                continue
-            y = [0] * 64
-            y[i] = 1
-            y[h + j] = 1
-            nul = 64 - flint.fmpz_mat(left(64, y)).rank()
-            counts[nul] = counts.get(nul, 0) + 1
-            if 16 in (i, j):
-                special[nul] = special.get(nul, 0) + 1
+    for (i, j), nul in zip(pairs, nullities, strict=True):
+        counts[nul] = counts.get(nul, 0) + 1
+        if 16 in (i, j):
+            special[nul] = special.get(nul, 0) + 1
     out("pairs A_6 nullity counts:", dict(sorted(counts.items())), "through z_16:", special)
 
 
@@ -403,19 +410,35 @@ def sec_slices(points=2):
     out("5-subsets of 1..16 containing 16 with f != 0 point:", len(bad5), bad5[:10])
 
 
+def cross_rank(item):
+    """rank of C_z over F_P at one point z of (A_(n-1))_C, h = 2^(n-1)."""
+    h, z = item
+    return rank_mod(cross(h, z, P))
+
+
 def sec_bcdi():
+    """Isotropic points on and off the BCDI hyperplane z_s = 0, drawn first in generator order, ranks pooled."""
     rng = random.Random(34530)  # index 5
+    groups = []
     h = 32
-    on = [rank_mod(cross(h, isotropic_point([k for k in range(1, 32) if k != 16], h, rng), P)) for _ in range(20)]
-    off = [rank_mod(cross(h, isotropic_point(list(range(1, 32)), h, rng), P)) for _ in range(20)]
-    out("BCDI {Q=0, z16=0} ranks of C_z (28 means f=0):", sorted(set(on)))
-    out("generic Stiefel z16 != 0 ranks:", sorted(set(off)))
+    groups.append([(h, isotropic_point([k for k in range(1, 32) if k != 16], h, rng)) for _ in range(20)])
+    groups.append([(h, isotropic_point(list(range(1, 32)), h, rng)) for _ in range(20)])
     for n in (7, 8):
         h2 = 1 << (n - 1)
         s = h2 // 2
-        on = [rank_mod(cross(h2, isotropic_point([k for k in range(1, h2) if k != s], h2, rng), P)) for _ in range(4)]
-        off = [rank_mod(cross(h2, isotropic_point(list(range(1, h2)), h2, rng), P)) for _ in range(4)]
-        out(f"A_{n}: BCDI ranks {sorted(set(on))}, generic Stiefel ranks {sorted(set(off))} (full {h2 - 2})")
+        groups.append([(h2, isotropic_point([k for k in range(1, h2) if k != s], h2, rng)) for _ in range(4)])
+        groups.append([(h2, isotropic_point(list(range(1, h2)), h2, rng)) for _ in range(4)])
+    flat = [item for group in groups for item in group]
+    ranks = ordered_map(cross_rank, flat, min_items=2)
+    sets, position = [], 0
+    for group in groups:
+        sets.append(sorted(set(ranks[position : position + len(group)])))
+        position += len(group)
+    out("BCDI {Q=0, z16=0} ranks of C_z (28 means f=0):", sets[0])
+    out("generic Stiefel z16 != 0 ranks:", sets[1])
+    for index, n in enumerate((7, 8)):
+        h2 = 1 << (n - 1)
+        out(f"A_{n}: BCDI ranks {sets[2 + 2 * index]}, generic Stiefel ranks {sets[3 + 2 * index]} (full {h2 - 2})")
 
 
 def sec_six():
@@ -449,18 +472,28 @@ def sec_small():
     out("f_4^2 == Q^2:", good4, " f_5^2 == (QG)^2:", good5)
 
 
+def fsq_item(item):
+    h, z = item
+    return fsq_mod(h, z)
+
+
 def sec_three():
+    """f^2 = Q^(2 e) on the three-coordinate slice; points drawn first in generator order, f^2 pooled."""
     rng = random.Random(26843)  # index 8
+    cases = []
     for n in (4, 5, 6, 7, 8):
         h = 1 << (n - 1)
-        e = 2 ** (n - 3) - 1
-        ok = True
         for _ in range(3):
             z = [0] * (h - 1)
             for k in (1, 2, 3):
                 z[k - 1] = rng.randrange(1, P)
-            q = sum(v * v for v in z) % P
-            ok &= fsq_mod(h, z) == pow(q, 2 * e, P)
+            cases.append((n, h, z))
+    values = ordered_map(fsq_item, [(h, z) for _, h, z in cases], min_items=2)
+    for n in (4, 5, 6, 7, 8):
+        e = 2 ** (n - 3) - 1
+        ok = all(
+            v == pow(sum(x * x for x in z) % P, 2 * e, P) for (m, _, z), v in zip(cases, values, strict=True) if m == n
+        )
         out(f"three-slice A_{n}: f^2 == Q^(2*{e}):", ok)
 
 
@@ -482,14 +515,31 @@ def fsq_line_mod(h, a, b, d):
     return poly
 
 
+def line_multiplicity(item):
+    """(degree of f on the line, multiplicity of the z_s root) for one isotropic line over F_P."""
+    h, a, b, d, sidx = item
+    poly = fsq_line_mod(h, a, b, d)
+    root = (-a[sidx] * pow(b[sidx], -1, P)) % P
+    mlt = 0
+    q = poly
+    lin = flint.nmod_poly([-root % P, 1], P)
+    while q.degree() >= 1:
+        dq, rr = divmod(q, lin)
+        if rr != 0:
+            break
+        q, mlt = dq, mlt + 1
+    return poly.degree() // 2, mlt // 2
+
+
 def sec_mult():
     """Multiplicity of the z_s root on random isotropic lines over F_P (own construction)."""
     rng = random.Random(46053)  # index 9
+    found = {}
     for n in (6, 7):
         h = 1 << (n - 1)
         d = 2 ** (n - 2) - 2
         sidx = h // 2 - 1
-        res = []
+        lines = []
         for _ in range(3):
             # isotropic plane: a isotropic, b isotropic with a.b = 0. Use b = a' with a' built by solving.
             while True:
@@ -522,17 +572,10 @@ def sec_mult():
                     and b[sidx]
                 ):
                     break
-            poly = fsq_line_mod(h, a, b, d)
-            root = (-a[sidx] * pow(b[sidx], -1, P)) % P
-            mlt = 0
-            q = poly
-            lin = flint.nmod_poly([-root % P, 1], P)
-            while q.degree() >= 1:
-                dq, rr = divmod(q, lin)
-                if rr != 0:
-                    break
-                q, mlt = dq, mlt + 1
-            res.append((poly.degree() // 2, mlt // 2))
+            lines.append((h, a, b, d, sidx))
+        found[n] = lines
+    for n in (6, 7):
+        res = ordered_map(line_multiplicity, found[n], min_items=2)
         out(f"isotropic lines A_{n}: (deg f on line, multiplicity of z_s root) = {res}")
 
 
