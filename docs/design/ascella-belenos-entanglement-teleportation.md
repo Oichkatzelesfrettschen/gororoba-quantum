@@ -375,7 +375,7 @@ admitted: estimated 5,377,923 shots, credit ceiling 2.2, model pooled fidelity 0
 (sha256 `aa3102c6cebb0580d4493c39c568797fccc18333e2f3832d5e5207450fe665f0`, `cases.json` sha256
 `ab75a32b06dee0073f476da4b42cc01ce62cbb098e156b35d5a8f33472f5a3e3`), has the digest without `process_id`
 `3db7e1a0d519732d03e174b7ff4e14b836f2b8e318274c9dd3ce71a324cc50f7`. The body does not depend on the performance
-figures, so a later live plan must reproduce that digest. The plan warns that three photons share one block at HOM
+figures, so a later live plan must reproduce that digest; each later attempt writes `plan-<UTC>.json` or `plan-refused-<UTC>.json` beside the retained records, which keep their bytes. The plan warns that three photons share one block at HOM
 88.8 %, below the 90 % rule of [strategy.md](../notes/quandela/strategy.md); the warning does not hold the case.
 Nothing was sent.
 

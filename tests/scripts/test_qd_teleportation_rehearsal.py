@@ -438,3 +438,43 @@ def test_analysis_of_an_input_without_an_accepted_event_is_inconclusive() -> Non
         raise AssertionError(pooled)
     if record["verdict"] != "inconclusive" or len(record["inputs_without_accepted"]) != 6:
         raise AssertionError(record["verdict"])
+
+
+def test_later_plan_attempts_write_beside_the_retained_records(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    admitted = {
+        "body": load("job-body.json"),
+        "platform_at_plan": {"status": "available"},
+        "credit_ceiling": 2.2,
+        "estimated_shots": 1,
+    }
+    monkeypatch.setattr(rehearsal, "plan", lambda *args, **kwargs: admitted)
+    (tmp_path / "cases.json").write_bytes((CASE / "cases.json").read_bytes())
+    job = rehearsal.JOBS["job-00"]
+    for fidelity in (0.635, 0.868, 0.635, 0.868):
+        rehearsal.planned(job, tmp_path, "", planned_model(fidelity))
+    retained = {name: (tmp_path / name).read_bytes() for name in ("plan.json", "plan-refused.json")}
+    rehearsal.planned(job, tmp_path, "", planned_model(0.868))
+    if any((tmp_path / name).read_bytes() != data for name, data in retained.items()):
+        raise AssertionError("a later attempt rewrote a retained plan record")
+    names = sorted(path.name for path in tmp_path.iterdir() if path.name != "cases.json")
+    refused = [name for name in names if name.startswith("plan-refused-")]
+    admitted_later = [name for name in names if name.startswith("plan-") and not name.startswith("plan-refused")]
+    if len(refused) != 1 or len(admitted_later) != 2:
+        raise AssertionError(names)
+
+
+def test_analysis_of_a_zero_shot_iteration_is_inconclusive_without_a_bound() -> None:
+    cells = {label: {event("1100", correct_raw(label, "1100")): 300} for label in LABELS}
+    cells["-X"] = {}
+    manifest, results = manifest_and_results(cells)
+    for entry in results["iterations"]:
+        if not entry["counts"]:
+            entry["result_fields"]["nb_shots_used"] = 0
+    record = rehearsal.analyze_results(manifest, results, manifest["frames"])
+    if record["inputs"]["-X"]["accepted_per_shot"] is not None or record["inputs"]["-X"]["shots"] != 0:
+        raise AssertionError(record["inputs"]["-X"])
+    benchmark = record["benchmark"]
+    if benchmark["classical_bound"] is not None or benchmark["bound_at_reported_attempts"] is not None:
+        raise AssertionError(benchmark)
+    if record["verdict"] != "inconclusive" or "no shot" not in record["verdict_reason"] or record["margin"] is not None:
+        raise AssertionError((record["verdict"], record["verdict_reason"]))

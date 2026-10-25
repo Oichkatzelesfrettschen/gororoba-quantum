@@ -895,7 +895,7 @@ def analyze_results(
             "samples": samples,
             "accepted": total,
             "accepted_per_sample": total / samples if samples else None,
-            "accepted_per_shot": total / shots,
+            "accepted_per_shot": total / shots if shots else None,
             "rejected": rejected,
         }
     successes = dict.fromkeys(rows, 0)
@@ -915,12 +915,15 @@ def analyze_results(
     preregistered = manifest["preregistered"]
     radius = hoeffding_radius(preregistered["alpha"], total_accepted) if total_accepted else None
     sample_counts = {label: row["samples"] for label, row in rows.items()}
-    bound_reported = attempts_benchmark(attempts).certified
-    bound_modeled = model_benchmark(preregistered["sample_probability"], sample_counts)
-    bound = max(bound_reported, bound_modeled)
+    # attempts_benchmark needs a positive attempt count for every input, so an iteration that returned no shot
+    # leaves the classical bound, and with it the verdict, unavailable.
+    empty = sorted(label for label, row in rows.items() if row["shots"] == 0 or row["samples"] == 0)
+    bound_reported = None if empty else attempts_benchmark(attempts).certified
+    bound_modeled = None if empty else model_benchmark(preregistered["sample_probability"], sample_counts)
+    bound = None if bound_reported is None or bound_modeled is None else max(bound_reported, bound_modeled)
     allowance = preregistered["systematic_allowance"]
     lower = None if pooled_fidelity is None or radius is None else pooled_fidelity - radius
-    if silent or pooled_fidelity is None or radius is None or lower is None:
+    if silent or bound is None or pooled_fidelity is None or radius is None or lower is None:
         verdict = "inconclusive"
     elif lower - allowance > bound:
         verdict = "beats-classical"
@@ -957,10 +960,12 @@ def analyze_results(
             "classical_bound": bound,
         },
         "systematic_allowance": allowance,
-        "margin": None if lower is None else lower - allowance - bound,
+        "margin": None if lower is None or bound is None else lower - allowance - bound,
         "verdict": verdict,
         "verdict_reason": (
-            "the preregistered rule pools all six inputs, and these have no accepted event: " + ", ".join(silent)
+            "these iterations returned no shot, so no classical bound is defined: " + ", ".join(empty)
+            if empty
+            else "the preregistered rule pools all six inputs, and these have no accepted event: " + ", ".join(silent)
             if silent
             else "the preregistered decision rule over all six inputs"
         ),
@@ -972,30 +977,33 @@ def parameters_equal(left: Mapping[str, float], right: Mapping[str, float]) -> b
     return sorted(left) == sorted(right) and all(math.isclose(left[k], right[k], abs_tol=1e-12) for k in left)
 
 
+def simulated_iteration(item: tuple[dict[str, Any], dict[str, Any], Variant, int]) -> dict[str, Any]:
+    """One results.json iteration: the setting's expected counts under the variant, by largest remainder."""
+    setting, circuit, variant, samples = item
+    clicks = detected_clicks(photon_distribution(setting, circuit, variant.hom, variant.g2), variant.transmission)
+    sampled = {vector: p for vector, p in clicks.items() if sum(vector) >= MIN_CLICKS}
+    total = sum(sampled.values())
+    exact = {vector: samples * p / total for vector, p in sampled.items()}
+    counts = {vector: math.floor(value) for vector, value in exact.items()}
+    shortfall = samples - sum(counts.values())
+    for vector in sorted(exact, key=lambda v: (counts[v] - exact[v], v))[:shortfall]:
+        counts[vector] += 1
+    return {
+        "iteration": {"circuit_params": setting["circuit_params"]},
+        "counts": {",".join(str(c) for c in vector): n for vector, n in sorted(counts.items()) if n},
+        "samples": samples,
+        "result_fields": {"nb_shots_used": samples},
+    }
+
+
 def simulated_results(manifest: Mapping[str, Any], circuit: Mapping[str, Any], variant: Variant) -> dict[str, Any]:
     """A results.json of the expected counts of a noise variant, in the form qd_platform.collect retains.
 
     Each iteration holds its max_samples as expected counts by largest remainder, so the file is deterministic;
     nb_shots_used equals the samples, as in every retained qpu:belenos result."""
-    iterations = []
-    for setting in manifest["settings"]:
-        clicks = detected_clicks(photon_distribution(setting, circuit, variant.hom, variant.g2), variant.transmission)
-        sampled = {vector: p for vector, p in clicks.items() if sum(vector) >= MIN_CLICKS}
-        total = sum(sampled.values())
-        samples = manifest["max_samples"] // manifest["iterations"]
-        exact = {vector: samples * p / total for vector, p in sampled.items()}
-        counts = {vector: math.floor(value) for vector, value in exact.items()}
-        shortfall = samples - sum(counts.values())
-        for vector in sorted(exact, key=lambda v: (counts[v] - exact[v], v))[:shortfall]:
-            counts[vector] += 1
-        iterations.append(
-            {
-                "iteration": {"circuit_params": setting["circuit_params"]},
-                "counts": {",".join(str(c) for c in vector): n for vector, n in sorted(counts.items()) if n},
-                "samples": samples,
-                "result_fields": {"nb_shots_used": samples},
-            }
-        )
+    samples = manifest["max_samples"] // manifest["iterations"]
+    items = [(dict(setting), dict(circuit), variant, samples) for setting in manifest["settings"]]
+    iterations = ordered_map(simulated_iteration, items)
     return {"schema": "qd-collection-v1", "partial": False, "iterations": iterations}
 
 
@@ -1165,10 +1173,23 @@ def dry_run(job: Job, anchor: bool) -> int:
         return planned(job, out, suffix, model)
 
 
+def attempt_path(out: Path, stem: str) -> Path:
+    """``stem.json`` for the first planning attempt, else a new ``stem-<UTC>.json``; retained records keep their bytes.
+
+    The retained plan records carry the digests the written case quotes, so a later attempt writes beside them.
+    """
+    first = out / f"{stem}.json"
+    if not first.exists():
+        return first
+    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S%fZ")
+    return out / f"{stem}-{stamp}.json"
+
+
 def retain_refusal(job: Job, out: Path, suffix: str, model: dict[str, Any], reason: str) -> int:
-    """Retain plan<suffix>-refused.json, which carries the model and the reason, and return the exit status 1."""
+    """Retain a plan<suffix>-refused record (attempt_path), which carries the model and the reason, and return 1."""
+    path = attempt_path(out, f"plan{suffix}-refused")
     write_json(
-        out / f"plan{suffix}-refused.json",
+        path,
         {
             "refusal": reason,
             "model": model,
@@ -1176,8 +1197,9 @@ def retain_refusal(job: Job, out: Path, suffix: str, model: dict[str, Any], reas
             "planned_utc": datetime.now(UTC).isoformat(timespec="seconds"),
             "sent": False,
         },
+        exclusive=True,
     )
-    print(f"{job.name}: plan refused: {reason}", file=sys.stderr)
+    print(f"{job.name}: plan refused: {reason} ({path.name})", file=sys.stderr)
     return 1
 
 
@@ -1208,7 +1230,8 @@ def planned(job: Job, out: Path, suffix: str, model: dict[str, Any]) -> int:
     record["perfs_basis"] = ANCHOR_READ if suffix else "live processor record"
     record["planned_utc"] = datetime.now(UTC).isoformat(timespec="seconds")
     record["sent"] = False
-    write_json(out / f"plan{suffix}.json", record)
+    path = attempt_path(out, f"plan{suffix}")
+    write_json(path, record, exclusive=True)
     print(
         f"{job.name}: {PLATFORM} {checked['platform_at_plan']['status']}, ceiling {checked['credit_ceiling']:g} "
         f"credits, estimated {checked['estimated_shots']} shots, body {record['body_sha256_without_process_id']}, "
@@ -1270,7 +1293,8 @@ def analyze(run: Path) -> int:
             f"pooled conditional fidelity {pooled_row['fidelity']:.4f} over {pooled_row['accepted']} accepted, lower "
             f"bound {pooled_row['lower_bound']:.4f}"
         )
-    print(f"{figures}, classical bound {record['benchmark']['classical_bound']:.4f}: {record['verdict']}")
+    bound = record["benchmark"]["classical_bound"]
+    print(f"{figures}, classical bound {'unavailable' if bound is None else f'{bound:.4f}'}: {record['verdict']}")
     if record["inputs_without_accepted"]:
         print(f"inputs without an accepted event: {', '.join(record['inputs_without_accepted'])}", file=sys.stderr)
     return 0
