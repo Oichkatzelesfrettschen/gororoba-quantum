@@ -13,18 +13,20 @@ family, fitted on all of job-00, is planted as the device's response, and two qu
 form for each design (perturbed compilations N, anchors at the returned compilation, samples M per iteration):
 
 - R1 power: the block-conditioned X statistic of each perturbed compilation has the planted mean mu_n and the
-  multinomial variance v_n; the dispersion sum_n (z_n - zbar)^2 / v_n is noncentral chi-square on N - 1 degrees
-  of freedom with noncentrality sum_n (mu_n - mubar)^2 / v_n, and the power is its tail beyond the central
-  0.99 quantile;
+  multinomial variance v_n. R1 divides the perturbed dispersion sum_n (z_n - zbar)^2 / v_n per degree of freedom
+  by the anchors' and refers the ratio to its label permutations; the ratio of a noncentral chi-square on N - 1
+  degrees of freedom (noncentrality sum_n (mu_n - mubar)^2 / v_n) to a central one on ANCHORS - 1, each over its
+  degrees of freedom, is noncentral F, and the power is its tail beyond the central F 0.99 quantile, the normal
+  approximation of the permutation threshold;
 - R3 variance ratio: the posterior Hessian H of the full-data fit, less the expected information F_k of
   configuration k's settings at the mode (the leave-one-out approximation of the training-only fold), plus the
-  expected information of the design, gives the fold covariance; g C g^T over the counting variance of each of
-  the 19 scored configurations, and its median per readout. The design-free value approximates the recorded
-  median ratio of the training-only folds, and the record carries both.
+  expected information of the design's perturbed iterations, gives the fold covariance; g C g^T over the
+  counting variance of each of the 19 scored configurations, and its median per readout. The design-free value
+  approximates the recorded median ratio of the training-only folds, and the record carries both.
 
 The chosen design is the cheapest whose R1 power reaches POWER under every planted family and whose R3 median
 ratio is at most 1 on both readouts for the order-1 families; detectable_x_sd is the standard deviation of the
-compilation-induced X means that the dispersion test detects at POWER. --check replays the record within the fit
+compilation-induced X means that the anchor-ratio test detects at POWER. --check replays the record within the fit
 replay bounds of scripts/ascella_physical_models.py, under the kernel pair the gate runner sets.
 
 Usage:
@@ -164,14 +166,14 @@ def rates(data: dict[str, Any], k: int, samples: int) -> tuple[float, np.ndarray
     return block, data["background"][chosen].sum(axis=0) / (len(chosen) * samples)
 
 
-def detectable_noncentrality(dof: int, critical: float) -> float:
-    """The noncentrality at which the dispersion test reaches POWER, by bisection."""
+def detectable_noncentrality(dof: int, anchor_dof: int, critical: float) -> float:
+    """The noncentrality at which the anchor-ratio test reaches POWER, by bisection."""
     low, high = 0.0, 1.0
-    while stats.ncx2.sf(critical, dof, high) < POWER:
+    while stats.ncf.sf(critical, dof, anchor_dof, high) < POWER:
         high *= 2
     for _ in range(100):
         middle = (low + high) / 2
-        low, high = (middle, high) if stats.ncx2.sf(critical, dof, middle) < POWER else (low, middle)
+        low, high = (middle, high) if stats.ncf.sf(critical, dof, anchor_dof, middle) < POWER else (low, middle)
     return high
 
 
@@ -224,12 +226,13 @@ def design_rows(item: tuple[dict[str, Any], dict[str, Any], dict[str, Any], int,
             mu, v = mean[:count], variance[:count]
             centre = float((mu / v).sum() / (1 / v).sum())
             noncentrality = float(((mu - centre) ** 2 / v).sum())
-            critical = float(stats.chi2.ppf(1 - ALPHA, count - 1))
-            power = float(stats.ncx2.sf(critical, count - 1, noncentrality))
-            detectable = detectable_noncentrality(count - 1, critical)
+            critical = float(stats.f.ppf(1 - ALPHA, count - 1, ANCHORS - 1))
+            power = float(stats.ncf.sf(critical, count - 1, ANCHORS - 1, noncentrality))
+            detectable = detectable_noncentrality(count - 1, ANCHORS - 1, critical)
             pi = expected / total
             dpi = share * d_dlight
-            information = np.einsum("nmi,nmj->ij", dpi / pi[:, :, None], dpi) * total
+            # R3 trains on the perturbed iterations alone; the anchors repeat a job-00 mesh and stay out.
+            information = np.einsum("nmi,nmj->ij", dpi[:count] / pi[:count, :, None], dpi[:count]) * total
             ratios: dict[str, list[float]] = {"x": [], "y": []}
             baseline: dict[str, list[float]] = {"x": [], "y": []}
             for _, reduced, scored_rows in folds:
@@ -299,7 +302,9 @@ def main(argv: list[str]) -> int:
     if check:
         models.replay(json.loads(json.dumps(record)), json.loads(out.read_text(encoding="utf-8")), out.name)
         return 0
-    out.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+    text = json.dumps(record, indent=1, sort_keys=True) + "\n"
+    models.require(not out.exists() or out.read_text(encoding="utf-8") == text, f"{out} differs from the recomputed")
+    out.write_text(text, encoding="utf-8")
     return 0
 
 

@@ -9,9 +9,11 @@ docs/design/ascella-signed-coherence-conformance.md#perturbed-compilation-case-j
   into 56 and 8 whose ratio reaches the observed one. The relabelings draw from a numpy generator seeded with value
   PERMUTATION_INDEX of the seed draw the run's cases.json names, the first value the request leaves unused;
 - R2, prediction: each family of scripts/ascella_compilation_design.py fitted on job-00 predicts every distinct
-  perturbed mesh's pooled statistic in counting plus fitted-prediction variance; the sum of squared standardized
-  residuals keeps the shortfall at or above the chi-square 0.999 quantile on the mesh count and predicts below its
-  0.97 quantile with median prediction-to-counting variance ratio at most 1;
+  perturbed mesh's pooled statistic in counting plus fitted-prediction variance. All meshes share the job-00
+  coefficients, so the residuals r carry the covariance diag(v) + G C G^T, G the statistic gradients and C the
+  fit covariance; r^T (diag(v) + G C G^T)^{-1} r keeps the shortfall at or above the chi-square 0.999 quantile on
+  the mesh count and predicts below its 0.97 quantile with median prediction-to-counting variance ratio at most
+  1. The sum of individually standardized squares, which drops the cross-mesh terms, stays as a description;
 - R3, identification: each family refitted from the zero start on job-00 plus the perturbed iterations, without
   each of the 19 scored job-00 configurations in turn, scores that configuration as the training-only folds of
   scripts/ascella_configuration_holdout.py do, under the reading of scripts/ascella_drive_response.py. The anchors
@@ -148,8 +150,10 @@ def r2(item: tuple[dict[str, Any], dict[str, Any], dict[str, Any]]) -> dict[str,
     covariance = np.linalg.inv(planted["hessian"])
     light, dlight = models.static_light(data, planted["offsets"], planted["free"])
     rows = []
+    gradients = []
     for k in range(len(data["keys"])):
         for readout, z, model, variance, gradient in holdout.left_out_rows(data, light, dlight, k):
+            gradients.append(gradient)
             prediction = float(gradient @ covariance @ gradient)
             rows.append(
                 {
@@ -161,7 +165,11 @@ def r2(item: tuple[dict[str, Any], dict[str, Any], dict[str, Any]]) -> dict[str,
                     "standardized_residual": (z - model) / (variance + prediction) ** 0.5,
                 }
             )
-    total = sum(row["standardized_residual"] ** 2 for row in rows)
+    diagonal = sum(row["standardized_residual"] ** 2 for row in rows)
+    residual = np.array([row["observed"] - row["predicted"] for row in rows])
+    g = np.array(gradients)
+    joint = np.diag([row["counting_variance"] for row in rows]) + g @ covariance @ g.T
+    total = float(residual @ np.linalg.solve(joint, residual))
     ratio = float(np.median([row["prediction_variance"] / row["counting_variance"] for row in rows]))
     meshes = len(rows)
     shortfall = float(stats.chi2.ppf(SHORTFALL_QUANTILE, meshes))
@@ -175,7 +183,8 @@ def r2(item: tuple[dict[str, Any], dict[str, Any], dict[str, Any]]) -> dict[str,
     return {
         "family": planted["family"],
         "meshes": meshes,
-        "standardized_sum": total,
+        "quadratic_form": total,
+        "diagonal_sum": diagonal,
         "median_variance_ratio": ratio,
         "shortfall_threshold": shortfall,
         "predicted_threshold": predicted,

@@ -53,9 +53,10 @@ def test_starts_are_deterministic_points_of_the_torus() -> None:
 
 @pytest.mark.parametrize("dof", [23, 55])
 def test_detectable_noncentrality_reaches_the_power(dof: int) -> None:
-    critical = float(stats.chi2.ppf(1 - design.ALPHA, dof))
-    value = design.detectable_noncentrality(dof, critical)
-    if abs(float(stats.ncx2.sf(critical, dof, value)) - design.POWER) > 1e-9:
+    anchor_dof = design.ANCHORS - 1
+    critical = float(stats.f.ppf(1 - design.ALPHA, dof, anchor_dof))
+    value = design.detectable_noncentrality(dof, anchor_dof, critical)
+    if abs(float(stats.ncf.sf(critical, dof, anchor_dof, value)) - design.POWER) > 1e-9:
         raise AssertionError("the bisection misses the power")
 
 

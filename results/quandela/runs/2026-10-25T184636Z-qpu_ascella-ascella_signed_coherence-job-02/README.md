@@ -35,5 +35,5 @@ applies the readings of plan
 | Reading | Result |
 |---|---|
 | R1, compilation dependence | perturbed over anchor dispersion 7.08 per degree of freedom, permutation p 0.0049: compilation dependent |
-| R2, prediction of the 56 meshes by the job-00 fits | static offsets 1035, drive-linear 223, polynomial order 1 235 against the 0.999 quantile 94.5 (shortfall); harmonic order 1 13.9 with median variance ratio 254 (between the thresholds) |
+| R2, prediction of the 56 meshes by the job-00 fits | joint quadratic forms: static offsets 1150, drive-linear 649, polynomial order 1 771, harmonic order 1 201 against the 0.999 quantile 94.5; every family short |
 | R3, refit with job-02 on the 19 training-only folds | X sums 377, 247, 245, 85 on 10 with median variance ratios 0.23 to 0.86: every family identified and short; Y short for three families, harmonic order 1 at 20.9 |

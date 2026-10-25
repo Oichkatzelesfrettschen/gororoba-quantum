@@ -24,10 +24,12 @@
  },
  "r2": [
   {
+   "diagonal_sum": 1034.6483514625934,
    "family": "static_heater_0.3",
    "median_variance_ratio": 1.7028611829012608,
    "meshes": 56,
    "predicted_threshold": 77.52391568148772,
+   "quadratic_form": 1150.4398110173024,
    "reading": "shortfall",
    "rows": [
     {
@@ -479,14 +481,15 @@
      "standardized_residual": -7.072578027307119
     }
    ],
-   "shortfall_threshold": 94.46054464187807,
-   "standardized_sum": 1034.6483514625934
+   "shortfall_threshold": 94.46054464187807
   },
   {
+   "diagonal_sum": 222.74188044657038,
    "family": "static_heater_0.3_drive_slope_0.1",
    "median_variance_ratio": 19.9486390741121,
    "meshes": 56,
    "predicted_threshold": 77.52391568148772,
+   "quadratic_form": 649.177793565124,
    "reading": "shortfall",
    "rows": [
     {
@@ -938,14 +941,15 @@
      "standardized_residual": -0.34498260685955384
     }
    ],
-   "shortfall_threshold": 94.46054464187807,
-   "standardized_sum": 222.74188044657038
+   "shortfall_threshold": 94.46054464187807
   },
   {
+   "diagonal_sum": 234.6256932210415,
    "family": "drive_polynomial_1_tau_0.3",
    "median_variance_ratio": 23.052280872450552,
    "meshes": 56,
    "predicted_threshold": 77.52391568148772,
+   "quadratic_form": 771.3988538168879,
    "reading": "shortfall",
    "rows": [
     {
@@ -1397,15 +1401,16 @@
      "standardized_residual": -0.5309041699269195
     }
    ],
-   "shortfall_threshold": 94.46054464187807,
-   "standardized_sum": 234.6256932210415
+   "shortfall_threshold": 94.46054464187807
   },
   {
+   "diagonal_sum": 13.906622397750462,
    "family": "drive_harmonic_1_tau_0.3",
    "median_variance_ratio": 253.49520985878937,
    "meshes": 56,
    "predicted_threshold": 77.52391568148772,
-   "reading": "between the thresholds",
+   "quadratic_form": 201.17119302535536,
+   "reading": "shortfall",
    "rows": [
     {
      "counting_variance": 1.5492420395261473e-05,
@@ -1856,8 +1861,7 @@
      "standardized_residual": -0.10270814244994937
     }
    ],
-   "shortfall_threshold": 94.46054464187807,
-   "standardized_sum": 13.906622397750462
+   "shortfall_threshold": 94.46054464187807
   }
  ],
  "r3": [

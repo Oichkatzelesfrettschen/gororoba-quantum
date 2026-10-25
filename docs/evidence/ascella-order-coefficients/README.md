@@ -111,9 +111,12 @@ fitted on job-00, scored on job-01 and on the same training-only folds
 ([design](../../design/ascella-signed-coherence-conformance.md#polynomial-and-harmonic-drive-responses)).
 [`compilation-design.json`](compilation-design.json), from
 [`scripts/ascella_compilation_design.py`](../../../scripts/ascella_compilation_design.py),
-sizes the perturbed-compilation case before acquisition: R1 power and the R3
-variance ratios of each planted family over the candidate designs, and the
-chosen design
+holds the sizing the perturbed-compilation case was approved on: R1 power and
+the R3 variance ratios of each planted family over the candidate designs, and
+the chosen design. Its bytes stay;
+[`compilation-design-anchor-ratio.json`](compilation-design-anchor-ratio.json)
+is its successor, sizing R1 as the anchor-ratio test it applies and R3 without
+the anchors
 ([design](../../design/ascella-signed-coherence-conformance.md#perturbed-compilation-case-job-02)).
 [`compilation-reading.json`](compilation-reading.json), from
 [`scripts/ascella_compilation_reading.py`](../../../scripts/ascella_compilation_reading.py),

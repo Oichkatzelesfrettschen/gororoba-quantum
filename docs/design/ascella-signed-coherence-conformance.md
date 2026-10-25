@@ -1265,6 +1265,23 @@ job-02 the approximation gives the training-only folds' recorded ratios to
 within a factor of 2.2 (drive-linear X 6.86 against 10.4, polynomial order 1
 X 4.85 against 10.2).
 
+**Sizing correction.** The approval rested on `compilation-design.json`,
+which keeps its bytes. That record sized R1 by the perturbed dispersion alone
+as a chi-square, while R1 divides it by the dispersion of eight anchors. It
+also credited R3 with the anchors' information, which R3 never trains on.
+Its successor,
+[`compilation-design-anchor-ratio.json`](../evidence/ascella-order-coefficients/compilation-design-anchor-ratio.json),
+sizes the anchor-ratio test as noncentral F on 55 and 7 degrees of freedom
+(critical ratio 5.84) and gives R3 only the perturbed iterations:
+- R1 detects a compilation-induced X standard deviation of 0.013 at power
+  0.9, not 0.004, and every planted family still gives power 1.000.
+- At 56 + 8 iterations of 8,192 samples, the order-1 harmonic family's R3
+  median ratio on X is 1.04. The corrected rule therefore chooses 16,384
+  samples (1.032768 credits).
+
+The run used the approved 8,192 samples. Its realized R3 ratios, 0.23 to
+0.86 on X, meet the criterion.
+
 **Seconds.** Expected 186 s against the 300-second `max_duration`. Job-00 and
 job-01 each took 186 s for 64 iterations, at 8,192 and 16,384 samples, so
 the 64-iteration job takes job-00's time unless a nonzero seed costs the
@@ -1299,10 +1316,14 @@ from job-00's, and the 8 anchors served job-00's mesh.
   dispersion is 7.08 times the anchors' (permutation p 0.0049). The 56 meshes
   read 0.865 to 0.915, a mean of 0.888 against the ideal 0.9045. The anchors
   read a mean of 0.883, as job-00 read 0.881.
-- **R2.** The job-00 fits of the static, drive-linear and order-1 polynomial
-  families miss the new meshes: sums 1035, 223 and 235 against 94.5. The
-  order-1 harmonic family's sum of 13.9 carries a median prediction variance
-  254 times the counting variance, so it predicts nothing.
+- **R2.** Every job-00 fit misses the new meshes. All meshes share one set of
+  fitted coefficients, so R2 takes the residuals' joint quadratic form in
+  diag(v) + G C G^T. That gives 1150 for the static offsets, 649 for the
+  drive-linear family, 771 for the order-1 polynomial and 201 for the order-1
+  harmonic, against 94.5. The sum of individually standardized squares,
+  which the first implementation scored until review noted the shared
+  covariance, reads 1035, 223, 235 and 13.9. It hid the harmonic family's
+  miss behind a median prediction variance 254 times the counting variance.
 - **R3.** Refitted with job-02, every family is identified on the training-only
   folds (median variance ratios 0.23 to 0.86 on X) and keeps the left-out X
   shortfall (sums 85 to 377 on 10). Three of four keep it on Y; the harmonic
