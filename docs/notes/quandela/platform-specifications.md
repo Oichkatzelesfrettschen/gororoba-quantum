@@ -71,7 +71,7 @@ Each is reported as the record states it. None is resolved here.
 
 1. **Detector.** The spec field is `threshold` for both QPUs. The Belenos documentation says some detectors are quasi number-resolving. The Ascella documentation says its detectors are not number-resolving.
 2. **Ascella commands.** The Ascella documentation says the QPU "supports sampling commands: samples and sample_count." Its `available_commands` field also lists `probs` and `entropy`. The Belenos documentation names no commands.
-3. **`support_multi_photon`.** It is `false` on both QPUs and on `sim:ascella` and `sim:belenos`, and `true` on `sim:gpu:small`, `sim:gpu:medium` (decommissioned), `sim:sampling` and `sim:slos`. The field is recorded as-is and not interpreted here.
+3. **`support_multi_photon`.** It is `false` on both QPUs and on `sim:ascella` and `sim:belenos`, and `true` on `sim:gpu:small`, `sim:gpu:medium` (decommissioned), `sim:sampling` and `sim:slos`. Perceval 1.3.1 reads it on the client: `ConstraintChecker` in `perceval/runtime/contraint_checker.py` (lines 180 to 191; file identity in [the constraint-checker section](#perceval-131-constraint-checker)) raises `RuntimeError` when the value is `false` and a declared input state, or any component of a superposed input, puts more than one photon in a mode. Several photons on distinct modes pass; the check covers the declared input only, so output bunching is outside it. The server's own contract for the field is unresolved.
 
 ## Limits and availability
 
@@ -160,5 +160,7 @@ so the installed file is byte-identical to the file at the pinned commit.
 `accepted_state_kinds`, `support_multi_photon` and `max_sample_count`, and
 which verifies an `Experiment`'s input states and circuit against them. The
 file carries an MIT license header with an exqalibur linking exception.
-Reading scope: the header, the class constants and the method inventory; the
-verification logic was not read line by line.
+Reading scope: the header, the class constants, the method inventory and the
+input-state checks of lines 170 to 191 (photon-count limits and
+`support_multi_photon`, item 3 above); the circuit checks were not read line
+by line.
