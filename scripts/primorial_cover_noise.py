@@ -288,6 +288,23 @@ def compile_arm(view: Any, circuit: QuantumCircuit, layout: list[int]) -> Quantu
     return compiled
 
 
+class ArmCompile:
+    """Picklable worker: one (logical, layout) arm -> its compile_arm circuit; each process rebuilds the view once."""
+
+    def __init__(self, snapshot: dict[str, Any]) -> None:
+        self.snapshot = snapshot
+        self._view: Any = None
+
+    def __getstate__(self) -> dict[str, Any]:
+        return {"snapshot": self.snapshot, "_view": None}
+
+    def __call__(self, item: tuple[QuantumCircuit, list[int]]) -> QuantumCircuit:
+        if self._view is None:
+            self._view = calibration_snapshot.snapshot_backend(self.snapshot)
+        circuit, layout = item
+        return compile_arm(self._view, circuit, layout)
+
+
 class ArmLaw:
     """Picklable worker: one (metadata, logical, compiled) arm -> its checked noisy law."""
 
@@ -639,7 +656,9 @@ def evaluate(snapshot: dict[str, Any], device: str) -> dict[str, Any]:
     )
     out["cost_block_seconds"] = float(duration)
     for patch in ("best", "median"):
-        items = [(meta, c, compile_arm(view, c, paths[c.num_qubits][patch])) for meta, c in logical]
+        jobs = [(c, paths[c.num_qubits][patch]) for _, c in logical]
+        circuits = parallel.ordered_map(ArmCompile(snapshot), jobs, min_items=1)
+        items = [(meta, c, compiled) for (meta, c), compiled in zip(logical, circuits, strict=True)]
         rows = parallel.ordered_map(ArmLaw(snapshot, device), items, min_items=1)
         out["patches"][patch] = {"rows": rows, "summary": summarize(rows)}
         if patch == "best":
