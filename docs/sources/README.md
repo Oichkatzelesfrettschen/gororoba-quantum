@@ -42,6 +42,11 @@ rehosting grant receive external records and ignored local copies under
 Downloaded documents retain their authors' notices and licenses; repository
 licensing does not relabel third-party papers. The source verifier checks local
 copies when present and permits a fresh checkout without those optional files.
+[`scripts/fetch_source_cache.py`](../../scripts/fetch_source_cache.py) restores
+those copies from the registered URLs or from a checkout of the owner's private
+gororoba-quantum-documents repository, which also holds their Markdown
+transcriptions, and admits a file only when its size and SHA-256 match the
+registry.
 
 The [coordinated research roadmap](../RESEARCH_ROADMAP.md) consolidates the
 cumulative objectives, verified results, ownership, ordering, and remaining

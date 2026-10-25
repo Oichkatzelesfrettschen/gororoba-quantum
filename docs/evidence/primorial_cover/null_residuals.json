@@ -1,0 +1,757 @@
+{
+ "calibration": "2026-10-15T19:42:21-07:00",
+ "environment": {
+  "numpy": "2.5.4",
+  "python": "3.14.7",
+  "qiskit": "2.6.0",
+  "qiskit_aer": "0.17.2",
+  "workers": 4
+ },
+ "gradient_gamma_over_pi": "1/9",
+ "layouts": {
+  "best": [
+   45,
+   46,
+   47
+  ],
+  "median": [
+   117,
+   125,
+   126
+  ]
+ },
+ "noise_record": "docs/evidence/primorial_cover/noise.json",
+ "noise_record_sha256": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527",
+ "patches": {
+  "best": {
+   "budget_coefficient_sd": 0.01882394867212687,
+   "budget_shots_per_setting": 2803,
+   "device_question": false,
+   "scenarios": [
+    {
+     "cycle_residual_rms": 3.4183305728692547e-06,
+     "detectable_at_budget": false,
+     "family": "zz",
+     "max_coefficient_bias": 0.0077760001396454115,
+     "min_visibility": 0.9999958263762481,
+     "null_subtracted_max_bias": 3.7731643602878506e-06,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 627878511287,
+     "value": 2.0
+    },
+    {
+     "cycle_residual_rms": 2.141559903760667e-05,
+     "detectable_at_budget": false,
+     "family": "zz",
+     "max_coefficient_bias": 0.01944000217483266,
+     "min_visibility": 0.9999739096845578,
+     "null_subtracted_max_bias": 2.3574406270598924e-05,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 16084424992,
+     "value": 5.0
+    },
+    {
+     "cycle_residual_rms": 0.0003467058018644748,
+     "detectable_at_budget": false,
+     "family": "zz",
+     "max_coefficient_bias": 0.07776013678008198,
+     "min_visibility": 0.9995821890646096,
+     "null_subtracted_max_bias": 0.0003765187119056379,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 63054189,
+     "value": 20.0
+    },
+    {
+     "cycle_residual_rms": 1.771541332869888e-06,
+     "detectable_at_budget": false,
+     "family": "zz_symmetric",
+     "max_coefficient_bias": 0.0023764089766113994,
+     "min_visibility": 0.9999946952371285,
+     "null_subtracted_max_bias": 1.2305923985378442e-06,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 5902807371342,
+     "value": 2.0
+    },
+    {
+     "cycle_residual_rms": 1.1061027749545947e-05,
+     "detectable_at_budget": false,
+     "family": "zz_symmetric",
+     "max_coefficient_bias": 0.0059425613943775435,
+     "min_visibility": 0.9999669085983853,
+     "null_subtracted_max_bias": 7.72581294627983e-06,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 149760985448,
+     "value": 5.0
+    },
+    {
+     "cycle_residual_rms": 0.00017608741225129485,
+     "detectable_at_budget": false,
+     "family": "zz_symmetric",
+     "max_coefficient_bias": 0.023801403355408146,
+     "min_visibility": 0.9994756864906182,
+     "null_subtracted_max_bias": 0.000126376950760565,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 559694865,
+     "value": 20.0
+    },
+    {
+     "cycle_residual_rms": 1.3378830485315654e-05,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.014323766923495906,
+     "min_visibility": 0.9999875003385394,
+     "null_subtracted_max_bias": 1.3507614527119571e-05,
+     "qubits": [
+      0
+     ],
+     "shots_to_resolve_at_3sd": 48992516794,
+     "value": 0.005
+    },
+    {
+     "cycle_residual_rms": 0.00021409036388118907,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.057284604237028525,
+     "min_visibility": 0.9998000866612413,
+     "null_subtracted_max_bias": 0.0002161261457120922,
+     "qubits": [
+      0
+     ],
+     "shots_to_resolve_at_3sd": 191369381,
+     "value": 0.02
+    },
+    {
+     "cycle_residual_rms": 8.318479305637168e-05,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.04313061448168953,
+     "min_visibility": 0.999784369567826,
+     "null_subtracted_max_bias": 0.0001664644071992516,
+     "qubits": [
+      1
+     ],
+     "shots_to_resolve_at_3sd": 322585090,
+     "value": 0.005
+    },
+    {
+     "cycle_residual_rms": 0.0014004275052104515,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.1743582842608516,
+     "min_visibility": 0.9969964897492943,
+     "null_subtracted_max_bias": 0.002956424024106008,
+     "qubits": [
+      1
+     ],
+     "shots_to_resolve_at_3sd": 1022713,
+     "value": 0.02
+    },
+    {
+     "cycle_residual_rms": 5.4959393531194285e-05,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.02890719871232661,
+     "min_visibility": 0.9998502858795124,
+     "null_subtracted_max_bias": 0.0002711055094761772,
+     "qubits": [
+      2
+     ],
+     "shots_to_resolve_at_3sd": 121621507,
+     "value": 0.005
+    },
+    {
+     "cycle_residual_rms": 0.0005406432359211317,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.11830969937452962,
+     "min_visibility": 0.9982953076624276,
+     "null_subtracted_max_bias": 0.004465053003362862,
+     "qubits": [
+      2
+     ],
+     "shots_to_resolve_at_3sd": 448368,
+     "value": 0.02
+    },
+    {
+     "cycle_residual_rms": 7.767581529209998e-05,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.043119100295236246,
+     "min_visibility": 0.9997332941068717,
+     "null_subtracted_max_bias": 0.0003372476507704225,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 78593966,
+     "value": 0.005
+    },
+    {
+     "cycle_residual_rms": 0.0012250373393900376,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.17429884411167612,
+     "min_visibility": 0.9968288259411754,
+     "null_subtracted_max_bias": 0.005543955378399912,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 290836,
+     "value": 0.02
+    },
+    {
+     "cycle_residual_rms": 0.0023980206298229167,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.24092217803910226,
+     "min_visibility": 0.9953025836665921,
+     "null_subtracted_max_bias": 0.014613309519475759,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 41860,
+     "value": [
+      0.029100439978885045,
+      0.027503979896989446,
+      0.033451235844180915
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.004395427748077581,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.2405825691679508,
+     "min_visibility": 0.9825484067377128,
+     "null_subtracted_max_bias": 0.011911090520492718,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 63007,
+     "value": [
+      0.029100439978885045,
+      0.027503979896989446,
+      -0.033451235844180915
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.0009253579177762284,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.2318524405437301,
+     "min_visibility": 0.9921587458282051,
+     "null_subtracted_max_bias": 0.014707839325563687,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 41323,
+     "value": [
+      0.029100439978885045,
+      -0.027503979896989446,
+      0.033451235844180915
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.004951738226764352,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.23300296613860239,
+     "min_visibility": 0.9825207908390543,
+     "null_subtracted_max_bias": 0.01200378393709528,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 62037,
+     "value": [
+      0.029100439978885045,
+      -0.027503979896989446,
+      -0.033451235844180915
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.0023980599639244335,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.24092217803910226,
+     "min_visibility": 0.9953025836665921,
+     "null_subtracted_max_bias": 0.014613309519475759,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 41860,
+     "value": [
+      -0.029100439978885045,
+      0.027503979896989446,
+      0.033451235844180915
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.00439543938739261,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.24058256916795084,
+     "min_visibility": 0.9825484067377128,
+     "null_subtracted_max_bias": 0.011911090520492718,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 63007,
+     "value": [
+      -0.029100439978885045,
+      0.027503979896989446,
+      -0.033451235844180915
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.0009254030056403216,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.23185244054373022,
+     "min_visibility": 0.9921587458282051,
+     "null_subtracted_max_bias": 0.014707839325563687,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 41323,
+     "value": [
+      -0.029100439978885045,
+      -0.027503979896989446,
+      0.033451235844180915
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.004951731059508709,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.2330029661386025,
+     "min_visibility": 0.9825207908390543,
+     "null_subtracted_max_bias": 0.01200378393709528,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 62037,
+     "value": [
+      -0.029100439978885045,
+      -0.027503979896989446,
+      -0.033451235844180915
+     ]
+    }
+   ],
+   "signal_and_null_pulses_identical": true,
+   "tilt_gate_bounds": [
+    0.029100439978885045,
+    0.027503979896989446,
+    0.033451235844180915
+   ]
+  },
+  "median": {
+   "budget_coefficient_sd": 0.018594428833877196,
+   "budget_shots_per_setting": 3169,
+   "device_question": false,
+   "scenarios": [
+    {
+     "cycle_residual_rms": 3.4183305728692547e-06,
+     "detectable_at_budget": false,
+     "family": "zz",
+     "max_coefficient_bias": 0.0077760001396454115,
+     "min_visibility": 0.9999958263762481,
+     "null_subtracted_max_bias": 3.7731643602878506e-06,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 692658210724,
+     "value": 2.0
+    },
+    {
+     "cycle_residual_rms": 2.141559903760667e-05,
+     "detectable_at_budget": false,
+     "family": "zz",
+     "max_coefficient_bias": 0.01944000217483266,
+     "min_visibility": 0.9999739096845578,
+     "null_subtracted_max_bias": 2.3574406270598924e-05,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 17743892863,
+     "value": 5.0
+    },
+    {
+     "cycle_residual_rms": 0.0003467058018644748,
+     "detectable_at_budget": false,
+     "family": "zz",
+     "max_coefficient_bias": 0.07776013678008198,
+     "min_visibility": 0.9995821890646096,
+     "null_subtracted_max_bias": 0.0003765187119056379,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 69559637,
+     "value": 20.0
+    },
+    {
+     "cycle_residual_rms": 1.771541332869888e-06,
+     "detectable_at_budget": false,
+     "family": "zz_symmetric",
+     "max_coefficient_bias": 0.0023764089766113994,
+     "min_visibility": 0.9999946952371285,
+     "null_subtracted_max_bias": 1.2305923985378442e-06,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 6511813859820,
+     "value": 2.0
+    },
+    {
+     "cycle_residual_rms": 1.1061027749545947e-05,
+     "detectable_at_budget": false,
+     "family": "zz_symmetric",
+     "max_coefficient_bias": 0.0059425613943775435,
+     "min_visibility": 0.9999669085983853,
+     "null_subtracted_max_bias": 7.72581294627983e-06,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 165212177758,
+     "value": 5.0
+    },
+    {
+     "cycle_residual_rms": 0.00017608741225129485,
+     "detectable_at_budget": false,
+     "family": "zz_symmetric",
+     "max_coefficient_bias": 0.023801403355408146,
+     "min_visibility": 0.9994756864906182,
+     "null_subtracted_max_bias": 0.000126376950760565,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 617439898,
+     "value": 20.0
+    },
+    {
+     "cycle_residual_rms": 1.3378830485315654e-05,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.014323766923495906,
+     "min_visibility": 0.9999875003385394,
+     "null_subtracted_max_bias": 1.3507614527119571e-05,
+     "qubits": [
+      0
+     ],
+     "shots_to_resolve_at_3sd": 54047189721,
+     "value": 0.005
+    },
+    {
+     "cycle_residual_rms": 0.00021409036388118907,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.057284604237028525,
+     "min_visibility": 0.9998000866612413,
+     "null_subtracted_max_bias": 0.0002161261457120922,
+     "qubits": [
+      0
+     ],
+     "shots_to_resolve_at_3sd": 211113409,
+     "value": 0.02
+    },
+    {
+     "cycle_residual_rms": 8.318479305637168e-05,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.04313061448168953,
+     "min_visibility": 0.999784369567826,
+     "null_subtracted_max_bias": 0.0001664644071992516,
+     "qubits": [
+      1
+     ],
+     "shots_to_resolve_at_3sd": 355866951,
+     "value": 0.005
+    },
+    {
+     "cycle_residual_rms": 0.0014004275052104515,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.1743582842608516,
+     "min_visibility": 0.9969964897492943,
+     "null_subtracted_max_bias": 0.002956424024106008,
+     "qubits": [
+      1
+     ],
+     "shots_to_resolve_at_3sd": 1128229,
+     "value": 0.02
+    },
+    {
+     "cycle_residual_rms": 5.4959393531194285e-05,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.02890719871232661,
+     "min_visibility": 0.9998502858795124,
+     "null_subtracted_max_bias": 0.0002711055094761772,
+     "qubits": [
+      2
+     ],
+     "shots_to_resolve_at_3sd": 134169484,
+     "value": 0.005
+    },
+    {
+     "cycle_residual_rms": 0.0005406432359211317,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.11830969937452962,
+     "min_visibility": 0.9982953076624276,
+     "null_subtracted_max_bias": 0.004465053003362862,
+     "qubits": [
+      2
+     ],
+     "shots_to_resolve_at_3sd": 494627,
+     "value": 0.02
+    },
+    {
+     "cycle_residual_rms": 7.767581529209998e-05,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.043119100295236246,
+     "min_visibility": 0.9997332941068717,
+     "null_subtracted_max_bias": 0.0003372476507704225,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 86702690,
+     "value": 0.005
+    },
+    {
+     "cycle_residual_rms": 0.0012250373393900376,
+     "detectable_at_budget": false,
+     "family": "axis_tilt",
+     "max_coefficient_bias": 0.17429884411167612,
+     "min_visibility": 0.9968288259411754,
+     "null_subtracted_max_bias": 0.005543955378399912,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 320842,
+     "value": 0.02
+    },
+    {
+     "cycle_residual_rms": 0.00392367865129756,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.3165738919414601,
+     "min_visibility": 0.9929394147723279,
+     "null_subtracted_max_bias": 0.01565339263704979,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 40246,
+     "value": [
+      0.021037866620015753,
+      0.03591488453186223,
+      0.03254058874875431
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.007099039668245899,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.3157400540395879,
+     "min_visibility": 0.9798916283933826,
+     "null_subtracted_max_bias": 0.012701878587155269,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 61122,
+     "value": [
+      0.021037866620015753,
+      0.03591488453186223,
+      -0.03254058874875431
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.0011249762980263922,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.3004984528793947,
+     "min_visibility": 0.9860401771492938,
+     "null_subtracted_max_bias": 0.015861959883640586,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 39194,
+     "value": [
+      0.021037866620015753,
+      -0.03591488453186223,
+      0.03254058874875431
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.0051174196826271725,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.3023439380563824,
+     "min_visibility": 0.9784927578331146,
+     "null_subtracted_max_bias": 0.012907224288522368,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 59193,
+     "value": [
+      0.021037866620015753,
+      -0.03591488453186223,
+      -0.03254058874875431
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.003923685816217566,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.3165738919414601,
+     "min_visibility": 0.9929394147723279,
+     "null_subtracted_max_bias": 0.01565339263704979,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 40246,
+     "value": [
+      -0.021037866620015753,
+      0.03591488453186223,
+      0.03254058874875431
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.0070990420557665085,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.3157400540395879,
+     "min_visibility": 0.9798916283933826,
+     "null_subtracted_max_bias": 0.012701878587155269,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 61122,
+     "value": [
+      -0.021037866620015753,
+      0.03591488453186223,
+      -0.03254058874875431
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.0011249757544124655,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.3004984528793947,
+     "min_visibility": 0.9860401771492938,
+     "null_subtracted_max_bias": 0.015861959883640586,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 39194,
+     "value": [
+      -0.021037866620015753,
+      -0.03591488453186223,
+      0.03254058874875431
+     ]
+    },
+    {
+     "cycle_residual_rms": 0.005117415756933637,
+     "detectable_at_budget": false,
+     "family": "axis_tilt_gate_bound",
+     "max_coefficient_bias": 0.3023439380563824,
+     "min_visibility": 0.9784927578331146,
+     "null_subtracted_max_bias": 0.012907224288522368,
+     "qubits": [
+      0,
+      1,
+      2
+     ],
+     "shots_to_resolve_at_3sd": 59193,
+     "value": [
+      -0.021037866620015753,
+      -0.03591488453186223,
+      -0.03254058874875431
+     ]
+    }
+   ],
+   "signal_and_null_pulses_identical": true,
+   "tilt_gate_bounds": [
+    0.021037866620015753,
+    0.03591488453186223,
+    0.03254058874875431
+   ]
+  }
+ },
+ "schema": "gororoba-primorial-null-residuals-v1",
+ "seconds": 11.1,
+ "snapshot": "docs/evidence/calibration/ibm_kingston.json",
+ "snapshot_sha256": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346"
+}

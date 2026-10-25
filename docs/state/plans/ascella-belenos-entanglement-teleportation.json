@@ -17,7 +17,7 @@
   },
   "scope": "Claim levels C0 to C6 for Ascella-Belenos shared entanglement, terminal teleportation, reference preservation, surviving output and Ascella-Belenos-Ascella sequential teleportation; the ideal dual-rail instrument and decision statistics; acquisition only through separately admitted written cases after a provider-bound physical route exists.",
   "owner": "Quandela experiment operator",
-  "next_action": "Owner decides whether to send the provider request in docs/design/ascella-belenos-entanglement-teleportation.md.",
+  "next_action": "Owner submits request items 1 and 4 through the Quandela contact form; the operator records the date and retains each answer in the design.",
   "related": [
     "ascella-signed-coherence-conformance",
     "ascella-instrument-readiness-and-packed-tests"
@@ -81,9 +81,9 @@
     },
     {
       "id": "provider-capability-response",
-      "action": "After the owner approves the outward message, send the design's provider request and retain the dated answer.",
+      "action": "Send the design's provider request and retain the dated answer: items 2 and 3 as Quandela/Perceval issue 798 (sent 2026-10-25T18:33Z), items 1 and 4 through the Quandela contact form, which the owner submits.",
       "acceptance": "Each request item reads supported, unsupported or unresolved with platform, access route, date and software version; a roadmap answer is recorded as development evidence.",
-      "state": "todo"
+      "state": "doing"
     },
     {
       "id": "observation-contract",
@@ -151,8 +151,8 @@
     }
   ],
   "pause": {
-    "last_result": "Design, reconciliation and the ideal protocol model are written; no cross-device route exists in the inspected access.",
-    "next_action": "Owner decides whether to send the provider request in docs/design/ascella-belenos-entanglement-teleportation.md.",
-    "resume_when": "A dated provider answer names an accessible joint apparatus or research configuration, or the owner sends the request"
+    "last_result": "Request items 2 and 3 are Quandela/Perceval issue 798, opened 2026-10-25T18:33Z; the contact-form text for items 1 and 4 is drafted for the owner.",
+    "next_action": "Owner submits request items 1 and 4 through the Quandela contact form; the operator records the date and retains each answer in the design.",
+    "resume_when": "A dated provider answer names an accessible joint apparatus or research configuration, or answers the result-contract questions of Perceval issue 798"
   }
 }

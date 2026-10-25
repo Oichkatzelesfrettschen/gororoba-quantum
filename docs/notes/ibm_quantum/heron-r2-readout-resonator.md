@@ -470,9 +470,29 @@ Evidence for what the account devices expose, from the live API read
 
 ## 6. Quantities and answers
 
-Feed-forward latency, for scheduling: the `measure_2` and `measure` durations
-above plus a latency that no public source states for the three account
-devices. Values nearby: roughly 0.7 us (ibm_sherbrooke / ibm_peekskill,
+Feed-forward latency, for scheduling: the retained compiled schedules state it
+for ibm_kingston and ibm_fez. [feedforward-latency.json](../../evidence/heron_platform/feedforward-latency.json),
+which `scripts/heron_feedforward_latency.py --check` recomputes, reads the
+`scheduler_timing` table that every dynamic PUB under `results/live/*/raw/`
+carries: 39 broadcasts over 11 runs from 2026-10-11 to 2026-10-19. One scheduling
+cycle is the Target `dt`, 4 ns; the scheduled `sx` lasts the Target `sx` duration
+(8 cycles on Kingston, 6 on Fez). For a broadcast that carries one capture:
+
+| Anchor (cycles of 4 ns) | ibm_kingston | ibm_fez |
+|---|---:|---:|
+| `measure` play start to capture start | 121 | 121 |
+| capture | 325 | 205 |
+| capture start to receive start (Hub broadcast) | 526 | 406 |
+| capture end to receive start | 201 (804 ns) | 201 (804 ns) |
+| `Receive` | 7 | 7 |
+| Target `measure` end to receive start | 102 (408 ns) | 112 (448 ns) |
+
+A Kingston broadcast that carries several simultaneous captures arrives
+later: 208, 215, 236, 252 and 305 cycles after capture end for 2, 3, 6, 9 and
+28 captures, 7 cycles per added capture through 6 and fewer beyond. These are the scheduler's plan for the device,
+DEVICE-MATCHED for the backend versions the runs recorded (Kingston 1.0.0, Fez
+1.3.37, earlier runs unversioned), not a timed measurement, and carry no
+jitter. The published figures below name other anchors and devices: roughly 0.7 us (ibm_sherbrooke / ibm_peekskill,
 revisions unstated, arXiv:2308.13065v2), approximately 600 ns ("IBM hardware",
 arXiv:2604.03360v2, device unstated), 500 ns (cited by MCMit; the source is arXiv:2402.17833v2 on Eagle QPUs,
 section 4h), and approximately 200 ns (arXiv:2406.07611v2, appendix C.3: "the
@@ -482,10 +502,7 @@ period of time (~200 ns) that the mid-circuit measurement outcomes are
 processed by classical control hardware"; OTHER-FAMILY, the Falcon devices
 ibm_algiers, ibmq_kolkata, ibm_mumbai and Eagle devices ibm_osaka, ibm_kyoto
 of section 4d, with no per-device split, and a rounded figure that cites
-reference [70] for the latency). These are context, not device values. A device-matched figure can be read from the
-circuit-timing output (`scheduler_timing`), which the repository already
-documents (docs/notes/ibm_quantum/qiskit-runtime-circuit-timing.md), but I
-did not run that probe because it needs a job submission.
+reference [70] for the latency). These are context, not device values.
 
 ## Summary table
 
@@ -500,6 +517,7 @@ did not run that probe because it needs a job submission.
 | `reset` / `measure_reset` | 1684 / 2212 / 2720 ns | each of the three | Heron r2 | same | stated, device-matched | no |
 | Heron readout length range | 1560-2584 ns | fleet, device-unstated | Heron (revision unstated) | arXiv:2604.25863v3 (7 Aug 2026), citing an IBM resources page (reference accessed 2025-08-20; the table is a fleet range of unknown date) | context | cannot tell |
 | ibm_kingston `measure_2` vs `measure` | 65 percent shorter; `measure` 34x a 2q gate | ibm_kingston | Heron r2 | arXiv:2604.03360v2 (15 Sep 2026) | stated, device-matched, disagrees with snapshot (37 percent) | cannot tell; no backend version given |
+| Feed-forward latency, capture end to receive (one capture per broadcast) | 201 cycles = 804 ns on both | ibm_kingston, ibm_fez | Heron r2; Kingston 1.0.0, Fez 1.3.37 where recorded | retained `scheduler_timing`, [feedforward-latency.json](../../evidence/heron_platform/feedforward-latency.json) | scheduled, device-matched | no |
 | Feed-forward latency | approx 600 ns | "IBM hardware", device unstated | unstated | arXiv:2604.03360v2 | not device-matched | n/a |
 | Feed-forward latency | approx 200 ns | ibm_algiers, ibmq_kolkata, ibm_mumbai, ibm_osaka, ibm_kyoto (no per-device split) | Falcon and Eagle, revisions unstated | arXiv:2406.07611v2, appendix C.3 | other-family | cannot tell |
 | Feed-forward latency | approx 500 ns | 127-qubit Eagle QPUs (ibm_kyiv named) | Eagle, revision unstated | arXiv:2402.17833v2, appendix B.1 (as cited by arXiv:2604.25863v3 [18]) | other-family | yes |
@@ -519,7 +537,7 @@ did not run that probe because it needs a job submission.
 
 No Heron r2 value was found in the sources read for: kappa, chi, resonator or qubit frequency
 and detuning, integration time apart from `readout_length`, ring-down or
-buffer time, device-matched feed-forward latency, residual-photon Stark shift
+buffer time, device-matched feed-forward latency on ibm_marrakesh, residual-photon Stark shift
 or dephasing with decay time, or any
 backend_version-to-calibration change history. The configuration fields
 `meas_lo_range`, `qubit_lo_range` and `rep_times` are absent from all three
