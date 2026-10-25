@@ -3832,16 +3832,16 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py --self-test",
    "name": "core-681",
-   "seconds": 13.5,
-   "tier": "pr"
+   "seconds": 62.0,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py check results/iqm/cases/idle-schedule-train-readout",
    "name": "core-682",
-   "seconds": 10.4,
-   "tier": "pr"
+   "seconds": 35.0,
+   "tier": "full"
   },
   {
    "suite": "core",

@@ -21,15 +21,22 @@ prediction attributes a 2.7 % over-rotation to QB11 (`iqm_signed_resolve.COHEREN
 
 ## Circuits
 
-The job runs 18 circuits at 10000 shots, with all-zeros heralding and one active-reset cycle:
+The job runs 24 circuits at 4500 shots, with one active-reset cycle and no heralding. All-zeros heralding over
+20 measured qubits would keep about a fifth of the shots, so each readout pair's bare measure carries the reset's
+initialization error in its e01 instead. One shot reads every qubit, so circuits that drive all qubits at once cost
+the shots of one.
 
-- **Idle arms, 6 circuits.** On QB1 (T1 23.7 us) and QB7 (T1 49.1 us), each arm is one pi pulse on the probe
-  qubit, then 0, 500 or 1000 pi pulses on an uncoupled partner (QB3 and QB2), then one joint measure of both.
-  Under ASAP the probe qubit idles 8 or 16 us in |1>. The predicted ASAP contrasts z(n) - z(0) are 0.559 and
-  0.958 on QB1 and 0.287 and 0.531 on QB7; ALAP predicts 0. At the design's 50 % kept-shot floor, the two
-  schedules separate by 36 to 176 standard errors.
-- **Train readout, 12 circuits.** For QB6 and QB11: ro0, ro1, and the amplitude trains of 1, 5, 9 and 13
-  pi/2 pulses. Each train is fitted jointly with its own readout pair (`iqm_cancellation_probe.fit_train`).
+- **Idle layouts, 6 circuits.** A train qubit runs 0, 500 or 1000 pi pulses while every qubit that shares no coupler
+  with it gets one pi pulse, and all 20 qubits are read in one joint measure. The train qubit is QB1 in one layout
+  and QB20 in the other, so every qubit is pulsed at least once (34 pulsed-qubit arms). Under ASAP each pulsed
+  qubit waits 8 or 16 us in |1> and relaxes; ALAP predicts no change. The weakest predicted separation of the two
+  schedules is 25.7 standard errors (QB12 at 500 pulses), and under an ASAP verdict each pulsed qubit's decay
+  also gives an apparent T1.
+- **Parallel trains, 6 circuits.** ro0 and ro1 on all qubits, and trains of 1, 5, 9 and 13 pi/2 pulses on all
+  qubits at once, fitted per qubit with its readout pair: an over-rotation map of the device.
+- **Isolated trains, 12 circuits.** QB6 and QB11 alone, as the signed probes drove them: ro0, ro1 and the four
+  trains, each fitted with its own readout pair (`iqm_cancellation_probe.fit_train`). The parallel minus isolated
+  eps of each measures drive crosstalk on these two qubits.
 
 ## Why a simulation cannot answer it
 
@@ -41,9 +48,12 @@ calibration's.
 
 ## Cost
 
-- **Expected time:** 6.06 s, which is 18 circuits x 10000 shots x 31 us plus the idle trains.
-- **Ceiling:** 8 billed seconds, 4.00 credits at Garnet's 0.50 credits/s. `cases.json` records it as
-  `max_credits`, and `iqm_jobs.py collect` cancels a job that would exceed it (#376).
+- **Expected time:** 4.27 s of shots, 24 circuits x 4500 shots x 37.5 us (the unheralded active-reset shot of
+  the reset pilot) plus the idle trains. Garnet adds about 1.6 s per job.
+- **Ceiling:** the approved 4.00 credits (8 billed seconds at Garnet's 0.50 credits/s), recorded as
+  `max_credits`. The build refuses a plan that leaves less than 2 s below those seconds, because
+  `iqm_jobs.py collect` cancels a run within 1.0 s of them (#376) and runtimes ran up to 1.39 s above their
+  estimates.
 - **Mock run:** the free `garnet:mock` twin, at 0.00 credits/s, first returns the runtime estimate. Its outcomes
   never enter the analysis.
 - **Balance:** the account holds 17.00 credits that expire at 2026-11-01 00:00 UTC.
@@ -62,4 +72,4 @@ D=$(sha256sum $C/cases.json | cut -d' ' -f1)
 ```
 
 Gates `core-681` (self-test) and `core-682` (case rebuild from its retained calibration) cover the script and the
-case bytes.
+case bytes in the nightly audit; at about 60 s and 35 s they exceed the pull-request gate bound.
