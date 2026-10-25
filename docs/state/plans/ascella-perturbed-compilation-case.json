@@ -1,0 +1,75 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-perturbed-compilation-case",
+  "kind": "investigation",
+  "summary": "Size, write and, on approval, run one qpu:ascella job repeating one logical setting under many compilations, each iteration at its own QRNG-drawn compilation_seed, which selects the served mesh.",
+  "sources": [
+    "docs/design/ascella-signed-coherence-conformance.md",
+    "scripts/ascella_coherence_request.py",
+    "scripts/ascella_drive_response.py",
+    "scripts/ascella_physical_models.py"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The setting and the three readings are fixed in this record before any simulation result or acquisition. The perturbation is the per-iteration compilation_seed: the service fits only the occupied input column from seeded random starts (docs/notes/quandela/form-dwell-decomposition.md), so a unitary on the unoccupied inputs would not reach the fit. The iteration count and samples follow the identifiability step."
+  },
+  "next_action": "Simulate the design's identifiability: plant heater offsets and drive coefficients at the scale the job-00 fits reach, simulate N compilations at M samples, and find the smallest design that reaches the power and variance-ratio acceptance of step identifiability-simulation.",
+  "scope": "Logical setting theta2-x-arm0 (configuration 13 of job-00, theta 2 pi/5, phi +pi/4, X readout), the largest X residual of the drive-linear training-only folds (observed 0.8813, predicted 0.9309, standardized -4.21 in heater-drive-holdout-heater-basis.json). Each perturbed iteration submits the setting's unitary at its own compilation_seed from a registered QRNG draw, distinct seeds; anchors at seed 0, job-00's compilation, interleave to separate drift from compilation. Readings at alpha 0.01: (R1) compilation dependence, the dispersion of the block-conditioned X statistic over distinct compilations against the anchors' dispersion by label permutation; (R2) prediction, each heater family fitted on job-00 scored on the perturbed iterations in counting plus fitted-prediction variance, keeping the shortfall at or above the chi-square 0.999 quantile on the iteration count and predicting below its 0.97 quantile with median variance ratio at most 1; (R3) identification, each family refitted on job-00 plus the perturbed iterations and rescored on the 19 training-only folds under the 30-on-10 and below-20 rule. A null R1 at simulated power 0.9 or more refutes every per-heater error family (static offsets included) as the cause of the configuration response. If the returned computed circuits realize fewer distinct heater-phase vectors than submitted, R1 to R3 read the distinct set and the record states the collapse.",
+  "owner": "ascella signed-coherence analysis",
+  "related": [
+    "ascella-signed-coherence-conformance",
+    "ascella-drive-response-families",
+    "ascella-configuration-holdout-training-only"
+  ],
+  "steps": [
+    {
+      "id": "compile-determinism",
+      "action": "Compare the returned computed_circuit heater phases and couplers of every configuration between job-00 and job-01 (ascella_physical_models.job_data).",
+      "acceptance": "Every matched configuration's phases agree to 1e-9 rad, or the differences are recorded and the design treats plain repeats as perturbations.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "All 30 configurations match by setting key; every heater phase agrees exactly (largest difference 0.0 rad) and the couplers are equal. The provider compiles a submitted unitary deterministically, so heater-phase variation at a fixed logical setting has to come from the submitted unitary. All 126 heaters already vary across job-00's 30 configurations.",
+          "observed_at": "2026-10-25T18:18:54+00:00",
+          "revision": "f8c6e3e71ce04411da85aa5756b3d8dc19d5eee4",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+              "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/results.json",
+              "sha256": "2ae95cc1e58e293b2d43c745668366a91b9d4497425f273294e3b1c581418f69"
+            }
+          ],
+          "scope_sha256": "0fc4da5dc2c542f48b081353fc9adcda34c751eb48957771ec5d9d3a77ac0635"
+        }
+      ]
+    },
+    {
+      "id": "identifiability-simulation",
+      "action": "Realize the setting on the returned mesh layout by local fits of its twelve output intensities from starts spread over the heater torus, as the service fits the occupied column from seeded starts; plant the job-00 posterior modes of the static and drive families, and evaluate R1 power and the R3 median variance ratio over N and M.",
+      "acceptance": "A retained record names the smallest design whose R1 power at the drive-linear posterior mean is at least 0.9 and whose R3 median variance ratio for the order-1 families is at most 1, with its credits and expected seconds.",
+      "state": "todo"
+    },
+    {
+      "id": "request-builder",
+      "action": "Register job-02 in ascella_coherence_request.py: the perturbed iterations at their QRNG-drawn compilation seeds and the seed-0 anchors, the draw and indices of every seed, the frozen body and a preflight that sends nothing.",
+      "acceptance": "--check reproduces the frozen case and body; every iteration carries the setting's circuit_params and its seed.",
+      "state": "todo"
+    },
+    {
+      "id": "written-case",
+      "action": "Write the case in the design document: what it measures, why simulation cannot answer it, seconds, credits.",
+      "acceptance": "The owner approves the written case, or declines it.",
+      "state": "todo"
+    },
+    {
+      "id": "acquisition-and-reading",
+      "action": "Submit on approval, collect, retain and apply R1 to R3 as fixed in this record.",
+      "acceptance": "A retained run and a reading record with R1 to R3 and the distinct-compilation count.",
+      "state": "todo"
+    }
+  ]
+}
