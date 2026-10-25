@@ -124,20 +124,27 @@ Two candidates connect the proposal to reachable hardware. Each needs the reposi
 run, written case and approval before any submission.
 
 1. **Nonselective measurement sequence: the proposal's pinching claim run on a device.**
-   - **Circuit.** Prepare `|0>`, apply N steps of `RX(2/N)`, each followed by a mid-circuit
-     measurement whose outcome is discarded, then read Z.
-   - **Ideal prediction.** Ideal pinching gives `P0 = (1 + cos(2/N)^N)/2`: 0.292, 0.646,
-     0.797, 0.888 and 0.941 for N = 1, 2, 4, 8 and 16.
-   - **Arms.** The mutation arm replaces each measurement with a delay of the same duration.
-     That removes the property and returns `cos(1)^2 = 0.292` at every N. Arms with
-     `RX(+2/N)` and `RX(-2/N)` share the same ideal value because cosine is even, so they run in
-     the order +, -, -, + to balance drift and carry no signed contrast.
+   - **Circuit.** Prepare `|0>`, apply N steps of `RX(THETA/N)` with THETA = 8 pi/9, each
+     followed by a mid-circuit measurement whose outcome is discarded, then read Z after a
+     fixed pre-readout idle. THETA/N is a multiple of pi/36 for every N up to 16, so the
+     sequence survives Tuna-17's angle grid, which quantizes each rotation to the nearest
+     multiple of pi/36
+     ([Tuna operational specifics](../../notes/quantum_inspire/site/kbase_tuna-operational-specifics.md)).
+     The proposal's 2 rad total fails that grid: RX(1/8) quantizes to pi/36 at N = 16.
+   - **Ideal prediction.** Ideal pinching gives `P0 = (1 + cos(THETA/N)^N)/2`: 0.0302,
+     0.5151, 0.6722, 0.8040 and 0.8914 for N = 1, 2, 4, 8 and 16.
+   - **Arms.** The mutation null is the unitary arm: the N = 16 rotations back to back with
+     no mid-circuit operation, ideal `cos(THETA/2)^2 = 0.0302`. A delay of the measurement's
+     duration is not an inert null, because idle dephasing during it pinches the qubit too;
+     it serves as the elapsed-time control. Arms with `RX(+THETA/N)` and `RX(-THETA/N)` share
+     the same ideal value because cosine is even, so they run in the order +, -, -, + to
+     balance drift and carry no signed contrast.
    - **What it isolates.** After each measurement the state is diagonal, so a post-readout
      frequency shift acts only while the next rotation pulse is on. A shift delta over a pulse
      of length tau changes that pulse's flip probability at second order in delta tau. With
      tau at most 100 ns and delta at most 2 pi x 100 kHz, delta tau is at most 0.063. The
-     exact detuned-rotation flip probability at N = 16 (ideal sin(1/16)^2 = 0.0039) then
-     moves by -1.3e-6 per step, or -2.1e-5 summed over the sixteen steps. The retained Tuna-17 tails stay within about 33 kHz
+     exact detuned-rotation flip probability at N = 16 (ideal sin(THETA/32)^2 = 0.0076) then
+     moves by -2.5e-6 per step, or -4e-5 summed over the sixteen steps. The retained Tuna-17 tails stay within about 33 kHz
      ([ringdown claims](../../state/RESEARCH_STATE.md)). The sequence therefore reads
      measurement-induced transitions, which the calibration noise model omits because it
      treats a mid-circuit measurement as projective, up to that bound. A departure larger
@@ -149,7 +156,7 @@ run, written case and approval before any submission.
      runs on Tuna-17 and the single extra-readout arm on ibm_fez measure phase after one
      readout, not this quantity.
    - **Placement.** This is the `measurement-sequence` row's question, with the
-     elapsed-time-matched control that row requires. It needs no feed-forward. Tuna-17 has run
+     elapsed-time-matched control that row requires (the delay arm). It needs no feed-forward. Tuna-17 has run
      one mid-circuit readout followed by gates on the same qubit (`readout_ringdown_tuna_17`
      runs). Up to 16 repeated readouts of one qubit there are unverified, so the dry run
      establishes them first.
