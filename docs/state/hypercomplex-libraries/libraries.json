@@ -2617,6 +2617,7 @@
     "scripts/n21_replica_covariance.py",
     "scripts/n21_spectator_ramsey.py",
     "scripts/packed_pauli_analysis.py",
+    "scripts/pais_claim_bounds.py",
     "scripts/patch_window_analysis.py",
     "scripts/photonic_compilation_audit.py",
     "scripts/photonic_repeat_readout.py",
@@ -2628,6 +2629,7 @@
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
+    "scripts/qet_passivity_controls.py",
     "scripts/qet_two_qubit_reference.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_cancellation_cases.py",
@@ -6022,9 +6024,11 @@
     "scripts/n21_q143_beat_model.py",
     "scripts/n21_q143_segmented_sweep.py",
     "scripts/n21_spectator_ramsey.py",
+    "scripts/pais_claim_bounds.py",
     "scripts/patch_window_analysis.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qet_passivity_controls.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
     "scripts/qi_shot_record_line.py",
@@ -11570,6 +11574,15 @@
    "tempfile",
    "typing"
   ],
+  "scripts/pais_claim_bounds.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "math",
+   "numpy",
+   "pathlib",
+   "scipy"
+  ],
   "scripts/patch_window_analysis.py": [
    "__future__",
    "argparse",
@@ -11942,6 +11955,17 @@
    "sys",
    "time",
    "typing"
+  ],
+  "scripts/qet_passivity_controls.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "math",
+   "numpy",
+   "pathlib",
+   "qet_two_qubit_reference",
+   "scipy",
+   "sys"
   ],
   "scripts/qet_two_qubit_reference.py": [
    "__future__",
