@@ -1,0 +1,15 @@
+{
+  "schema": "work-plan-v1",
+  "id": "measurement-sequence-pinching-device",
+  "kind": "investigation",
+  "summary": "Measure the per-measurement departure from ideal pinching: N steps of RX(2/N), each followed by a discarded mid-circuit measurement, against a duration-matched delay arm; ideal P0 = (1 + cos(2/N)^N)/2.",
+  "sources": [
+    "docs/archive/reviews/quantum-recovery-proposal-audit.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "next_action": "Write the circuit family and a submit-free dry run on Tuna-17 (mid-circuit measurement, no feed-forward) and on a Heron r2 Target, with N in {1,2,4,8,16}, signed arms +,-,-,+ and the duration-matched delay null; then a written case."
+}
