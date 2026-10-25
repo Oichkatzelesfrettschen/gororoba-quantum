@@ -488,7 +488,7 @@ manifest identity, estimator and rendering code accompany the final artwork.
 freezes the common twelve-mode circuit, exact entry sequence, analyzer
 conventions and commuting mutation in
 [`results/quandela/cases/ascella_signed_coherence/job-00`](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json).
-Its `--check` mode, gate core-680, validates the retained bytes: every
+Its `--check` mode, run by gate core-record-check-06 (tests/test_cli_record_checks.py), validates the retained bytes: every
 iteration's Perceval unitary matches the twelve-mode manifest operator, every
 operator matches the closed form `[[Q+,Q-],[Q-,Q+]]` under its analyzer, and
 every registered ideal equals the readout law of that form. The check also
