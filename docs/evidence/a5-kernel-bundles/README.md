@@ -10,7 +10,8 @@ the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and qu
 component census, the non-homogeneous pieces' reduced transitions, the remaining non-homogeneous unit-section
 topologies, and their characteristic classes remain open. The aligned nullity-twelve pieces now have an explicit
 one-dimensional compact-orbit quotient, a computed unit-section topology, and exact stabilizer representations on
-their principal and endpoint orbits.
+their principal and endpoint orbits. The open `V` orbit now has an explicit three-dimensional connected compact-orbit
+quotient and its recorded representative is identified as another collinear endpoint.
 
 Every computation uses rational or Gaussian-rational arithmetic. [`result.json`](result.json) is the output of
 [`kernel_symmetry.py`](kernel_symmetry.py) `--out`. [`frames-result.json`](frames-result.json) is the output of
@@ -18,7 +19,8 @@ Every computation uses rational or Gaussian-rational arithmetic. [`result.json`]
 `stabilizer_representation.py --out`. `nullity-sixteen-bundle-result.json` is the output of
 `nullity_sixteen_bundle.py --out`. `aligned-orbit-moduli-result.json` is the output of
 `aligned_orbit_moduli.py --out`. `aligned-stabilizer-result.json` is the output of
-`aligned_stabilizer_representation.py --out`. The focused contracts and mutation controls run without random input.
+`aligned_stabilizer_representation.py --out`. `v-orbit-moduli-result.json` is the output of
+`v_orbit_moduli.py --out`. The focused contracts and mutation controls run without random input.
 
 ## Conventions
 
@@ -318,6 +320,68 @@ dual rank-three summands; a boundary restriction different from the committed `N
 moving-generator or perturbed-fiber-action mutations. None occurred. The exact certificates and input digests are
 in `aligned-stabilizer-result.json`.
 
+## The open `V` orbit has a three-dimensional compact-orbit quotient
+
+The split-coordinate parameterization of the open `V` orbit is
+
+`(u',mu',v')=(alpha w,m,beta w)`,
+
+where `eta(w)!=0`, `m!=0`, and `(alpha^2-beta^2)eta(w)=m^2`. After the repository's diagonal coordinate change, put
+`a_j=i^popcount(j) w_j`. The original-coordinate blocks are
+
+`(u,mu,v)=(alpha a,i m,i beta a)`.
+
+On the chart `u!=0`, write `v=lambda u`, so `lambda=i beta/alpha`. The quadric equation becomes
+
+`mu^2=-(1+lambda^2)(u dot u)`.
+
+The open-orbit conditions `u dot u!=0` and `mu!=0` exclude `lambda=+i,-i`. The chart `u=0` supplies
+`lambda=infinity`. Thus the first connected compact-orbit invariant is
+
+`lambda in CP^1 minus {+i,-i}`.
+
+The second invariant is the normalized real Gram discriminant
+
+`rho=abs(u dot u)/(u^* dot u) in (0,1]`,
+
+computed from either nonzero vector block. Both invariants are fixed by `G_2 x U(1)`: the simultaneous real `G_2`
+action preserves the collinearity ratio and Gram matrix, while the global phase preserves the ratio and multiplies
+the bilinear square by a unit scalar. The replay differentiates both invariants along all fifteen compact generators
+at every fixture and obtains zero exactly.
+
+These invariants are complete. For finite `lambda`, the unit condition and the quadric give
+
+`u^* dot u = 1/(1+abs(lambda)^2+rho abs(1+lambda^2))`.
+
+The reciprocal chart gives the same formula at infinity. For two points with equal `(lambda,rho)`, a global phase
+first matches their nonzero `mu` coordinates. The quadric then makes their common-line bilinear squares agree, while
+the unit formula makes their Hermitian norms agree. Their real-imaginary Gram matrices are therefore identical.
+Transitivity of `G_2` on ordered orthonormal two-frames maps the common vectors when `rho<1`; transitivity on the unit
+six-sphere does the same at `rho=1`. Hence the connected compact-orbit space is
+
+`(CP^1 minus {+i,-i}) x (0,1]`,
+
+a three-real-dimensional space homotopy equivalent to `C^*`, with fundamental group `Z` and integral cohomology `Z`
+in degrees zero and one. These are invariants of the orbit space, not the topology of the full `V` unit section.
+
+Exact tangent and bracket calculations at three projective ratios, including the infinity chart, and three Gram
+types give:
+
+| Locus | Compact orbit dimension | Connected stabilizer | Left nullity |
+| --- | ---: | --- | ---: |
+| `0<rho<1` | 12 | `SU(2)` | 12 |
+| `rho=1` | 7 | `SU(3)` | 12 |
+
+The type is independent of `lambda`. The repository representative has `lambda=(5/3)i` and `rho=1`, so its
+seven-dimensional orbit is a collinear endpoint rather than a generic orbit. The classification uses the connected
+compact group `G_2 x U(1)`; the visible finite kernel symmetries may identify points of the displayed quotient and
+remain outside this claim.
+
+The falsifier was a point outside the stated parameter space, incomplete Gram data, nonstationary invariants, a
+generic tangent rank or stabilizer different from `12` and `su(2)`, an endpoint result different from `7` and
+`su(3)`, dependence on `lambda`, or survival of the phase-deletion or missing-`i` mutations. None occurred. The exact
+rows and input digests are in `v-orbit-moduli-result.json`.
+
 ## Principal-Pfaffian frames cover `N_+` and `N_-`
 
 Let `sigma` be `+1` or `-1`. The original and split coordinates obey
@@ -594,9 +658,10 @@ irreducible summands. The `SU(2)` reduction then classifies the ordinary real, c
 both `N_+` and `N_-`, including the order-two complex K-class that their zero Chern classes do not detect. The
 computation also decomposes the connected stabilizer representations on the principal and endpoint orbits of both
 aligned nullity-twelve pieces and identifies the extra doublet acquired at their nullity-sixteen boundaries. It has
-not proved that the visible components exhaust the group and has not classified an equivariant extension under the
-disconnected `N_+-` stabilizers, the actual real type of the individual four-plane `xi_R`, the other non-homogeneous
-pieces' K-orbit moduli and topology, or any non-homogeneous piece's reduced transition functions and bundle
+also classified the three-dimensional connected compact-orbit quotient of the open `V` orbit. It has not proved that
+the visible components exhaust the group and has not classified an equivariant extension under the disconnected
+`N_+-` stabilizers, the actual real type of the individual four-plane `xi_R`, the `B9` and `VB` compact-orbit moduli,
+the full unit-section topology of `V`, or any non-homogeneous piece's reduced transition functions and bundle
 invariants. The compact
 symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit
 labels do not make those kernel bundles homogeneous under the constant symmetry group.
@@ -637,4 +702,9 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py \
     --out docs/evidence/a5-kernel-bundles/aligned-stabilizer-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_v_orbit_moduli.py
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/v_orbit_moduli.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/v_orbit_moduli.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/v_orbit_moduli.py \
+    --out docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json
 ```

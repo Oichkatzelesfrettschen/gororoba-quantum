@@ -1,0 +1,378 @@
+{
+  "pass": true,
+  "schema": "a5-v-compact-orbit-moduli-v1",
+  "script_sha256": "f082f8c92c808945dfa4bb9f533c575487c09d168ee1ffff29d095885840344d",
+  "v_orbit_moduli": {
+    "collinear_endpoint_orbits": "rho=1, dimension 7, stabilizer Lie algebra su(3)",
+    "compact_orbit_space": "(CP^1 minus {+i,-i}) x (0,1]",
+    "compact_orbit_space_topology": {
+      "fundamental_group": "Z",
+      "homotopy_type": "C^*",
+      "integral_cohomology": {
+        "0": "Z",
+        "1": "Z"
+      }
+    },
+    "complete_compact_invariants": [
+      "lambda in CP^1 minus {+i,-i}",
+      "rho=abs(u dot u)/(u^* dot u) in (0,1]"
+    ],
+    "completeness_argument": "the unit norm and quadric determine the common-line Hermitian norm from (lambda,rho); after matching mu by the global phase, the common vectors have identical real Gram matrices and G_2 transitivity on ordered two-frames (or unit vectors at rho=1) maps one point to the other",
+    "input_digests": {
+      "aligned_orbit_moduli_result_sha256": "f3226abdddd2996e2b34398f4312a21ed86957f1dd2ce7b497721a3d1218c53b",
+      "aligned_orbit_moduli_script_sha256": "fea6c7522b991d58c2d4cec39665c4207168b53ae05879851f8d706352f4bb85",
+      "kernel_symmetry_result_sha256": "0e10a92b0a6aa185ffe78f74807167f5cdfd38bcad95c164daa90108438ab390",
+      "kernel_symmetry_script_sha256": "c7443882f68b3cb1be3808b3af70426c7c96ff4e96479287662bf80d0de5dd92"
+    },
+    "mutation": "",
+    "original_coordinate_parameterization": "v=lambda*u, mu^2=-(1+lambda^2)(u dot u), u dot u!=0, mu!=0",
+    "pass": true,
+    "principal_orbits": "0<rho<1, dimension 12, stabilizer SU(2)",
+    "recorded_representative_scope": "the repository V representative has lambda=(5/3)i and rho=1, so its rank-seven orbit is an endpoint",
+    "rows": [
+      {
+        "affine_chart": "v=lambda*u",
+        "canonical_common_vector": "(0)e_1+i*(1)e_2",
+        "collinear_blocks": true,
+        "common_bilinear_square": [
+          "-9",
+          "0"
+        ],
+        "common_hermitian_norm": "9",
+        "compact_generator_count": 15,
+        "compact_invariants_stationary": true,
+        "compact_tangent_rank": 7,
+        "derived_killing_negative_definite": true,
+        "inside_open_V": true,
+        "lambda_avoids_plus_minus_i": true,
+        "left_nullity": 12,
+        "mu_nonzero": true,
+        "mutation": "",
+        "orbit_type": "collinear_endpoint",
+        "original_lambda": "0+(5/3)i",
+        "pass": true,
+        "quadric_value": [
+          "0",
+          "0"
+        ],
+        "rho_squared": "1",
+        "split_mu": 4,
+        "split_projective_coefficients": [
+          3,
+          5
+        ],
+        "split_projective_ratio_beta_over_alpha": "5/3+(0)i",
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 8,
+        "stabilizer_dimension": 8,
+        "stabilizer_lie_algebra": "su(3)",
+        "unit_normalization_identity_before_rescaling": true
+      },
+      {
+        "affine_chart": "v=lambda*u",
+        "canonical_common_vector": "(3/4)e_1+i*(5/4)e_2",
+        "collinear_blocks": true,
+        "common_bilinear_square": [
+          "-9",
+          "0"
+        ],
+        "common_hermitian_norm": "153/8",
+        "compact_generator_count": 15,
+        "compact_invariants_stationary": true,
+        "compact_tangent_rank": 12,
+        "derived_killing_negative_definite": true,
+        "inside_open_V": true,
+        "lambda_avoids_plus_minus_i": true,
+        "left_nullity": 12,
+        "mu_nonzero": true,
+        "mutation": "",
+        "orbit_type": "principal",
+        "original_lambda": "0+(5/3)i",
+        "pass": true,
+        "quadric_value": [
+          "0",
+          "0"
+        ],
+        "rho_squared": "64/289",
+        "split_mu": 4,
+        "split_projective_coefficients": [
+          3,
+          5
+        ],
+        "split_projective_ratio_beta_over_alpha": "5/3+(0)i",
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)",
+        "unit_normalization_identity_before_rescaling": true
+      },
+      {
+        "affine_chart": "v=lambda*u",
+        "canonical_common_vector": "(4/3)e_1+i*(5/3)e_2",
+        "collinear_blocks": true,
+        "common_bilinear_square": [
+          "-9",
+          "0"
+        ],
+        "common_hermitian_norm": "41",
+        "compact_generator_count": 15,
+        "compact_invariants_stationary": true,
+        "compact_tangent_rank": 12,
+        "derived_killing_negative_definite": true,
+        "inside_open_V": true,
+        "lambda_avoids_plus_minus_i": true,
+        "left_nullity": 12,
+        "mu_nonzero": true,
+        "mutation": "",
+        "orbit_type": "principal",
+        "original_lambda": "0+(5/3)i",
+        "pass": true,
+        "quadric_value": [
+          "0",
+          "0"
+        ],
+        "rho_squared": "81/1681",
+        "split_mu": 4,
+        "split_projective_coefficients": [
+          3,
+          5
+        ],
+        "split_projective_ratio_beta_over_alpha": "5/3+(0)i",
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)",
+        "unit_normalization_identity_before_rescaling": true
+      },
+      {
+        "affine_chart": "v=lambda*u",
+        "canonical_common_vector": "(0)e_1+i*(1)e_2",
+        "collinear_blocks": true,
+        "common_bilinear_square": [
+          "-25",
+          "0"
+        ],
+        "common_hermitian_norm": "25",
+        "compact_generator_count": 15,
+        "compact_invariants_stationary": true,
+        "compact_tangent_rank": 7,
+        "derived_killing_negative_definite": true,
+        "inside_open_V": true,
+        "lambda_avoids_plus_minus_i": true,
+        "left_nullity": 12,
+        "mu_nonzero": true,
+        "mutation": "",
+        "orbit_type": "collinear_endpoint",
+        "original_lambda": "0+(13/5)i",
+        "pass": true,
+        "quadric_value": [
+          "0",
+          "0"
+        ],
+        "rho_squared": "1",
+        "split_mu": 12,
+        "split_projective_coefficients": [
+          5,
+          13
+        ],
+        "split_projective_ratio_beta_over_alpha": "13/5+(0)i",
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 8,
+        "stabilizer_dimension": 8,
+        "stabilizer_lie_algebra": "su(3)",
+        "unit_normalization_identity_before_rescaling": true
+      },
+      {
+        "affine_chart": "v=lambda*u",
+        "canonical_common_vector": "(3/4)e_1+i*(5/4)e_2",
+        "collinear_blocks": true,
+        "common_bilinear_square": [
+          "-25",
+          "0"
+        ],
+        "common_hermitian_norm": "425/8",
+        "compact_generator_count": 15,
+        "compact_invariants_stationary": true,
+        "compact_tangent_rank": 12,
+        "derived_killing_negative_definite": true,
+        "inside_open_V": true,
+        "lambda_avoids_plus_minus_i": true,
+        "left_nullity": 12,
+        "mu_nonzero": true,
+        "mutation": "",
+        "orbit_type": "principal",
+        "original_lambda": "0+(13/5)i",
+        "pass": true,
+        "quadric_value": [
+          "0",
+          "0"
+        ],
+        "rho_squared": "64/289",
+        "split_mu": 12,
+        "split_projective_coefficients": [
+          5,
+          13
+        ],
+        "split_projective_ratio_beta_over_alpha": "13/5+(0)i",
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)",
+        "unit_normalization_identity_before_rescaling": true
+      },
+      {
+        "affine_chart": "v=lambda*u",
+        "canonical_common_vector": "(4/3)e_1+i*(5/3)e_2",
+        "collinear_blocks": true,
+        "common_bilinear_square": [
+          "-25",
+          "0"
+        ],
+        "common_hermitian_norm": "1025/9",
+        "compact_generator_count": 15,
+        "compact_invariants_stationary": true,
+        "compact_tangent_rank": 12,
+        "derived_killing_negative_definite": true,
+        "inside_open_V": true,
+        "lambda_avoids_plus_minus_i": true,
+        "left_nullity": 12,
+        "mu_nonzero": true,
+        "mutation": "",
+        "orbit_type": "principal",
+        "original_lambda": "0+(13/5)i",
+        "pass": true,
+        "quadric_value": [
+          "0",
+          "0"
+        ],
+        "rho_squared": "81/1681",
+        "split_mu": 12,
+        "split_projective_coefficients": [
+          5,
+          13
+        ],
+        "split_projective_ratio_beta_over_alpha": "13/5+(0)i",
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)",
+        "unit_normalization_identity_before_rescaling": true
+      },
+      {
+        "affine_chart": "u=kappa*v at kappa=0",
+        "canonical_common_vector": "(0)e_1+i*(1)e_2",
+        "collinear_blocks": true,
+        "common_bilinear_square": [
+          "-1",
+          "0"
+        ],
+        "common_hermitian_norm": "1",
+        "compact_generator_count": 15,
+        "compact_invariants_stationary": true,
+        "compact_tangent_rank": 7,
+        "derived_killing_negative_definite": true,
+        "inside_open_V": true,
+        "lambda_avoids_plus_minus_i": true,
+        "left_nullity": 12,
+        "mu_nonzero": true,
+        "mutation": "",
+        "orbit_type": "collinear_endpoint",
+        "original_lambda": "infinity",
+        "pass": true,
+        "quadric_value": [
+          "0",
+          "0"
+        ],
+        "rho_squared": "1",
+        "split_mu": 1,
+        "split_projective_coefficients": [
+          0,
+          1
+        ],
+        "split_projective_ratio_beta_over_alpha": "infinity",
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 8,
+        "stabilizer_dimension": 8,
+        "stabilizer_lie_algebra": "su(3)",
+        "unit_normalization_identity_before_rescaling": true
+      },
+      {
+        "affine_chart": "u=kappa*v at kappa=0",
+        "canonical_common_vector": "(3/4)e_1+i*(5/4)e_2",
+        "collinear_blocks": true,
+        "common_bilinear_square": [
+          "-1",
+          "0"
+        ],
+        "common_hermitian_norm": "17/8",
+        "compact_generator_count": 15,
+        "compact_invariants_stationary": true,
+        "compact_tangent_rank": 12,
+        "derived_killing_negative_definite": true,
+        "inside_open_V": true,
+        "lambda_avoids_plus_minus_i": true,
+        "left_nullity": 12,
+        "mu_nonzero": true,
+        "mutation": "",
+        "orbit_type": "principal",
+        "original_lambda": "infinity",
+        "pass": true,
+        "quadric_value": [
+          "0",
+          "0"
+        ],
+        "rho_squared": "64/289",
+        "split_mu": 1,
+        "split_projective_coefficients": [
+          0,
+          1
+        ],
+        "split_projective_ratio_beta_over_alpha": "infinity",
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)",
+        "unit_normalization_identity_before_rescaling": true
+      },
+      {
+        "affine_chart": "u=kappa*v at kappa=0",
+        "canonical_common_vector": "(4/3)e_1+i*(5/3)e_2",
+        "collinear_blocks": true,
+        "common_bilinear_square": [
+          "-1",
+          "0"
+        ],
+        "common_hermitian_norm": "41/9",
+        "compact_generator_count": 15,
+        "compact_invariants_stationary": true,
+        "compact_tangent_rank": 12,
+        "derived_killing_negative_definite": true,
+        "inside_open_V": true,
+        "lambda_avoids_plus_minus_i": true,
+        "left_nullity": 12,
+        "mu_nonzero": true,
+        "mutation": "",
+        "orbit_type": "principal",
+        "original_lambda": "infinity",
+        "pass": true,
+        "quadric_value": [
+          "0",
+          "0"
+        ],
+        "rho_squared": "81/1681",
+        "split_mu": 1,
+        "split_projective_coefficients": [
+          0,
+          1
+        ],
+        "split_projective_ratio_beta_over_alpha": "infinity",
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)",
+        "unit_normalization_identity_before_rescaling": true
+      }
+    ],
+    "stabilizer_type_independent_of_lambda": true
+  }
+}
