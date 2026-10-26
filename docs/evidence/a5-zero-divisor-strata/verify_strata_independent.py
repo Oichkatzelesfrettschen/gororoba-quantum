@@ -702,6 +702,26 @@ def evaluate_family(item: tuple[int, list[list[tuple[int, int]]]]) -> dict[str, 
 # Structural and polynomial identity checks
 
 
+def lmat32(k: int) -> list[list[int]]:
+    """Left multiplication by e_k in A_5 from the cd_core sign table."""
+    return [[SIGN32[r ^ c][c] if (r ^ c) == k else 0 for c in range(32)] for r in range(32)]
+
+
+def mm32(a: list[list[int]], b: list[list[int]]) -> list[list[int]]:
+    return [[sum(a[i][t] * b[t][j] for t in range(32)) for j in range(32)] for i in range(32)]
+
+
+def element_checks(k: int) -> tuple[bool, bool]:
+    """L_k is skew, and for k != 16 it anticommutes with J = L_16."""
+    lk = lmat32(k)
+    skew = all(lk[r][c] == -lk[c][r] for r in range(32) for c in range(32))
+    if k == 16:
+        return skew, True
+    j = lmat32(16)
+    a, b = mm32(j, lk), mm32(lk, j)
+    return skew, all(a[r][c] + b[r][c] == 0 for r in range(32) for c in range(32))
+
+
 def table_checks() -> dict[str, Any]:
     """The tables agree with cd_multiply_exact; J = L_(e_16) and the L_(e_k) satisfy the doubly-pure identities."""
     oct_ok = all(
@@ -711,24 +731,13 @@ def table_checks() -> dict[str, Any]:
         cd_multiply_exact(16, _basis(16, p), _basis(16, q))[p ^ q] == SIGN16[p][q] for p in range(16) for q in range(16)
     )
 
-    def lmat(k: int) -> list[list[int]]:
-        return [[SIGN32[r ^ c][c] if (r ^ c) == k else 0 for c in range(32)] for r in range(32)]
-
-    def mm(a: list[list[int]], b: list[list[int]]) -> list[list[int]]:
-        return [[sum(a[i][t] * b[t][j] for t in range(32)) for j in range(32)] for i in range(32)]
-
-    j = lmat(16)
+    j = lmat32(16)
     ident = [[1 if r == c else 0 for c in range(32)] for r in range(32)]
-    j2 = mm(j, j)
+    j2 = mm32(j, j)
     j2_ok = all(j2[r][c] == -ident[r][c] for r in range(32) for c in range(32))
-    skew_ok = True
-    anti_ok = True
-    for k in range(1, 32):
-        lk = lmat(k)
-        skew_ok &= all(lk[r][c] == -lk[c][r] for r in range(32) for c in range(32))
-        if k != 16:
-            a, b = mm(j, lk), mm(lk, j)
-            anti_ok &= all(a[r][c] + b[r][c] == 0 for r in range(32) for c in range(32))
+    verdicts = parallel.ordered_map(element_checks, list(range(1, 32)))
+    skew_ok = all(skew for skew, _ in verdicts)
+    anti_ok = all(anti for _, anti in verdicts)
     # cross() against cd_multiply_exact on rational vectors built from QRNG-free fixed integers
     xa = [Fraction(v) for v in (0, 3, -1, 4, 1, -5, 9, 2)]
     xb = [Fraction(v) for v in (0, 6, 5, -3, 5, 8, -9, 7)]
