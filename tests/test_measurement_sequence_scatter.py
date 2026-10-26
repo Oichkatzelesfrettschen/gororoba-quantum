@@ -155,7 +155,8 @@ def test_floor_document_binds_a_run(tmp_path: Path) -> None:
         "t2_pattern": scatter.t2_pattern(rows),
     }
     (run / "record.json").write_text(json.dumps(record), encoding="utf-8")
-    (run / "collect.json").write_text(json.dumps({"family_analysis": {"scatter": scatter_analysis}}), encoding="utf-8")
+    header = {"submission_complete": True, "family_analysis": {"scatter": scatter_analysis}}
+    (run / "collect.json").write_text(json.dumps([header, {"group": "msqd_static_q91"}]), encoding="utf-8")
     document = scatter.floor_document(run)
     check(document["schema"] == msa.SCATTER_FLOOR_SCHEMA and isinstance(document["floor"], float))
     check(math.isclose(document["floor"], 0.01) and document["backend"] == "ibm_kingston")

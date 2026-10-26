@@ -333,10 +333,12 @@ def sha256_of(path: Path) -> str:
 
 
 def floor_document(run_dir: Path) -> dict[str, Any]:
-    """The scatter-floor.json document of a collected diagnostic run directory (record.json and collect.json)."""
+    """The scatter-floor.json document of a collected diagnostic run directory (record.json and collect.json, whose
+    first entry is the header live_run.py writes family_analysis into)."""
     record = json.loads((run_dir / "record.json").read_text(encoding="utf-8"))
     collect = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
-    scatter = collect["family_analysis"]["scatter"]
+    check(isinstance(collect, list) and bool(collect), "collect.json is not live_run.py's list of entries")
+    scatter = collect[0]["family_analysis"]["scatter"]
     check("withheld" not in scatter, f"the scatter analysis is withheld: {scatter.get('withheld')}")
     summary = scatter["floor"]
     check(summary.get("floor") is not None, f"no floor: {summary.get('withheld')}")
