@@ -10144,6 +10144,41 @@
         "hw-ghost-calibration-replay",
         "kingston-qet-window-phase-static"
       ]
+    },
+    {
+      "id": "kingston-qet-scheduled-idle-coherent-phase",
+      "statement": "Replaying the three ibm_kingston QET jobs exactly with the service-scheduled idle written in as delays under the execution Target, incoherent idle moves the ladder channel floor margin from +0.057 to +0.001 (measured -0.160), the frame diagnostic's as-run parity from 0.982 to 0.960 (measured 0.863) and the compensated selected margin from +0.057 to +0.028 (measured -0.073), and produces no window phase (0.010 rad padded against 0.267 measured). The phase that empties the uncompensated information excess (padded 0.099, measured 0.019) is therefore coherent and outside the Target's T1 and T2; once each pair's reference arms compensate it, the measured information excess 0.107 agrees with the padded exact 0.112.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Model comparison of retained data under one calibration per job; the residual margin shortfall of about 0.10 in the reference arm is attributed to preparation and assignment error without a separating test.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T203822.040562Z/idle-replay.json",
+          "sha256": "a89e49dbe82f47243334de86c6327e6a50166871e6780a0ec980b5d6209c15d3"
+        },
+        {
+          "path": "results/live/2026-10-25T225332.266272Z/idle-replay.json",
+          "sha256": "3845216e112321e8dd430594b5cfa0ee99b3b1602df5f5a46693e9c9f361c1a8"
+        },
+        {
+          "path": "results/live/2026-10-25T233207.284563Z/idle-replay.json",
+          "sha256": "2fba9b8f2edf7952b8e5211be68ad49fb29a5531889bf03d62c6368409daa6e9"
+        }
+      ],
+      "documents": [
+        "docs/notes/topics/pais-claims-falsification.md"
+      ],
+      "acquisitions": [
+        "kingston-qet-ladder",
+        "kingston-qet-frame-diagnostic",
+        "kingston-qet-compensated-ladder"
+      ],
+      "related_claims": [
+        "kingston-qet-window-phase-static",
+        "kingston-qet-compensated-information-excess",
+        "hw-n21-feedback-null-scheduled-idle"
+      ]
     }
   ]
 }

@@ -324,13 +324,35 @@ Three jobs on 14 calibration-qualified pairs (backup instance, 110 s in total; c
   record-independent unitary on the same state. The channel floor margin stays at -0.073 +- 0.015, because the
   prepared state's best uninformed local energy already sits 0.18 above the vacuum value. At a 50 us repetition
   delay the job charged 81 us per shot against 276 us at 250 us.
+- [O] **The scheduled-idle replay.** `scripts/scheduled_idle_replay.py` writes each run's service-scheduled idle
+  in as delays and computes the exact law under the execution Target (`idle-replay.json` in each run directory).
+  Unpadded and padded exact values, against the measurement:
+
+  | Endpoint | unpadded | padded | measured |
+  |---|---|---|---|
+  | ladder channel floor margin | +0.057 | +0.001 | -0.160 |
+  | ladder information excess | +0.105 | +0.099 | +0.019 |
+  | frame as-run parity `<Z_A Z_B>` | 0.982 | 0.960 | 0.863 |
+  | frame as-run window phase, rad | 0.010 | 0.010 | 0.267 |
+  | compensated selected information excess | +0.105 | +0.112 | +0.107 |
+  | compensated selected margin | +0.057 | +0.028 | -0.073 |
+
+  Incoherent idle closes about a quarter of each margin gap and creates no window phase. The phase that empties the
+  uncompensated information excess is coherent and lies outside the Target's T1 and T2. Once each pair's own
+  reference arms compensate it, the measured information excess agrees with the padded model within 0.005. The
+  remaining margin shortfall of 0.10 sits in the reference arm's uninformed energy, where preparation and the
+  measured assignment errors carry it (on the ladder, A's `p(0|1)` reads 0.030 against 0.014 in the padded model).
 
 [I] For the Pais question, no arm in any of the three jobs lowered Bob's energy below the floor that binds
 record-independent operations. The information-driven lowering appears at 93 percent of ideal, but always from a
-state that preparation and idle error left above the vacuum value. The same unmodeled idle leaves 27 to 61 us per
-qubit uncharged in the retained N = 21 Kingston feedback job (`exp(-idle/T2)` products near 0.21). That makes
-unmodeled idle the leading candidate for the vanished N = 21 contrast; an idle-padded replay of that job is the
-check.
+state that preparation and idle error left above the vacuum value.
+
+[O] The same replay settles the retained N = 21 Kingston feedback null
+([scheduled-idle findings](../../../results/live/2026-10-18T090603.530638Z/IDLE_REPLAY_FINDINGS.md)). The leaf
+qubits idle 57 to 62 us of a 70 us circuit, and the padded exact contrast is -0.0007 against the unpadded +0.0310,
+inside the measured [-0.0129, +0.0184]. The two cases split the idle error cleanly. On N = 21, a deep routed circuit,
+the incoherent part alone removes the contrast. On QET, a shallow two-qubit circuit with a 2.8 us window, the
+coherent phase dominates, and N = 21's residual law distance of 0.013 TV is the candidate for it.
 
 ## Uncertainty
 

@@ -319,9 +319,9 @@ circuit and charges the account ledger's change.
 | [2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe](../../results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet | 1 | 24 | completed | 1.0 credits | iqm-garnet-idle-schedule |
 | [2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02](../../results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02) | Quandela Cloud | photonic signed-coherence perturbed compilations | qpu:ascella | 1 | 64 | completed | 1.016384 credits | ascella-signed-coherence-compilation-dependence |
 | [2026-10-25T193443.839527Z](../../results/live/2026-10-25T193443.839527Z) | IBM Quantum | latency-recovery | ibm_kingston | 1 | 34 | DONE | 40 s | kingston-latency-recovery-window-cost |
-| [2026-10-25T203822.040562Z](../../results/live/2026-10-25T203822.040562Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 19 | DONE | 43 s | kingston-qet-ladder-margin-and-feedforward |
-| [2026-10-25T225332.266272Z](../../results/live/2026-10-25T225332.266272Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 24 | DONE | 55 s | kingston-qet-window-phase-static |
-| [2026-10-25T233207.284563Z](../../results/live/2026-10-25T233207.284563Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 18 | DONE | 12 s | kingston-qet-compensated-information-excess |
+| [2026-10-25T203822.040562Z](../../results/live/2026-10-25T203822.040562Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 19 | DONE | 43 s | kingston-qet-ladder-margin-and-feedforward, kingston-qet-scheduled-idle-coherent-phase |
+| [2026-10-25T225332.266272Z](../../results/live/2026-10-25T225332.266272Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 24 | DONE | 55 s | kingston-qet-window-phase-static, kingston-qet-scheduled-idle-coherent-phase |
+| [2026-10-25T233207.284563Z](../../results/live/2026-10-25T233207.284563Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 18 | DONE | 12 s | kingston-qet-compensated-information-excess, kingston-qet-scheduled-idle-coherent-phase |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -1744,6 +1744,11 @@ circuit and charges the account ledger's change.
   Evidence: [idle-replay.json](../../results/live/2026-10-18T090603.530638Z/idle-replay.json), [collect.json](../../results/live/2026-10-18T090603.530638Z/collect.json), [local-idle-schedule.json](../../results/live/2026-10-18T090603.530638Z/local-idle-schedule.json), [IDLE_REPLAY_FINDINGS.md](../../results/live/2026-10-18T090603.530638Z/IDLE_REPLAY_FINDINGS.md).
   Acquisitions: kingston-n21-feedback-encoded-50us.
   Related claims: hw-n21-feedback-null-kingston, hw-ghost-calibration-replay, kingston-qet-window-phase-static.
+- **kingston-qet-scheduled-idle-coherent-phase** (exploratory reanalysis, hardware). Replaying the three ibm_kingston QET jobs exactly with the service-scheduled idle written in as delays under the execution Target, incoherent idle moves the ladder channel floor margin from +0.057 to +0.001 (measured -0.160), the frame diagnostic's as-run parity from 0.982 to 0.960 (measured 0.863) and the compensated selected margin from +0.057 to +0.028 (measured -0.073), and produces no window phase (0.010 rad padded against 0.267 measured). The phase that empties the uncompensated information excess (padded 0.099, measured 0.019) is therefore coherent and outside the Target's T1 and T2; once each pair's reference arms compensate it, the measured information excess 0.107 agrees with the padded exact 0.112.
+  Boundary: Model comparison of retained data under one calibration per job; the residual margin shortfall of about 0.10 in the reference arm is attributed to preparation and assignment error without a separating test.
+  Evidence: [idle-replay.json](../../results/live/2026-10-25T203822.040562Z/idle-replay.json), [idle-replay.json](../../results/live/2026-10-25T225332.266272Z/idle-replay.json), [idle-replay.json](../../results/live/2026-10-25T233207.284563Z/idle-replay.json), [pais-claims-falsification.md](../notes/topics/pais-claims-falsification.md).
+  Acquisitions: kingston-qet-ladder, kingston-qet-frame-diagnostic, kingston-qet-compensated-ladder.
+  Related claims: kingston-qet-window-phase-static, kingston-qet-compensated-information-excess, hw-n21-feedback-null-scheduled-idle.
 
 ## Open claims
 
