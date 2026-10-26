@@ -159,8 +159,12 @@ gets its own approved case under AGENTS.md.
    and the conditional phase of each coupler; a Ramsey on each qubit reads
    its detuning. A CZ-phase probe repeats CZ pairs between a
    control prepared in 0 and 1 and a Ramsey target, so the error phase grows
-   as 2 n phi; a tilt probe repeats an sx train whose ideal product is the
-   identity between Ramsey analysis pulses. The design step simulates each
+   as 2 n phi. A tilt probe repeats an identity cell that turns the tilt
+   into a rotation about one axis: x, rz(pi), x, rz(pi) for the x pulse and
+   rz(pi), sx, sx, rz(pi), sx, sx for sx, each blind to amplitude error at
+   first order. A bare train of sx pulses cannot serve: four sx tilted by
+   the same beta make a 2 pi rotation about the tilted axis whatever beta
+   is, and the train answers amplitude error instead. The design step simulates each
    probe on the snapshot and states the shots that resolve f = 0.2 and
    g = 0.7 at three standard deviations. Falsifier: a probe whose simulated
    response is not first order in its family is rejected before any case.
