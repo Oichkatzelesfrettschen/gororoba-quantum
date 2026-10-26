@@ -2802,11 +2802,25 @@ def _verify_window_dose_sweep(snapshot: live_run.Snapshot) -> None:
                     )
         names_in_order = [inner.operation.name for inner in isa.data]
         # The barriers bracket the control's mid-circuit measure and reset;
-        # the dose delays and echo pulses sit between them, so instruction
+        # a nonzero dose opens with a full-width barrier after the reset, so
+        # its delays and echo pulses start once the reset ends. Instruction
         # order on one wire is the program order, and across wires is not.
         reset = names_in_order.index("reset")
         opened = reset - names_in_order[reset::-1].index("barrier")
-        closed = reset + names_in_order[reset:].index("barrier")
+        closed = reset + 1
+        while closed < len(names_in_order) and names_in_order[closed] in ("delay", "x", "barrier"):
+            closed += 1
+        tail = isa.data[reset + 1 : closed]
+        first_dose = next((k for k, inner in enumerate(tail) if inner.operation.name in ("delay", "x")), None)
+        if dose:
+            _require(
+                first_dose is not None
+                and any(
+                    inner.operation.name == "barrier" and len(inner.qubits) == len(PINNED_ORBIT_LAYOUT)
+                    for inner in tail[:first_dose]
+                ),
+                f"{name} starts its dose without a full-width barrier after the reset",
+            )
         window = [inner for inner in isa.data[opened + 1 : closed] if inner.operation.name in ("delay", "x")]
         programs = {
             wire: [

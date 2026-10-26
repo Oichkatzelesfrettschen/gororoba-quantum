@@ -28,3 +28,17 @@ def test_measured_contrast_and_sigma_follow_the_score_vector() -> None:
     expected = ((0.75 - 0.25**2) + (0.5 - 0.0)) / 100
     if abs(sigma**2 - expected) > 1e-12:
         raise AssertionError(f"variance {sigma**2} against {expected}")
+
+
+def test_withheld_comparisons_are_refused(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    import json
+
+    import pytest
+
+    (tmp_path / "record.json").write_text(json.dumps({"observable_contracts": [], "shots": 10}))
+    (tmp_path / "collect.json").write_text(
+        json.dumps([{"measured": {}, "comparisons_withheld": "the group's PUBs did not all run under one calibration"}])
+    )
+    (tmp_path / "idle-replay.json").write_text(json.dumps({"contracts": {"idle_padded_exact": {}}}))
+    with pytest.raises(ValueError, match="withheld"):
+        dose.analyze(tmp_path)

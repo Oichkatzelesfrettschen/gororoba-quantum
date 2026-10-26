@@ -472,6 +472,9 @@ def n21_orbit_diagnostic(
             raise AssertionError
         circuit.delay(_DELAY_MULTIPLES[variant] * window_delay_dt, 0, unit="dt")
     if dose_dt:
+        # Without a full-width barrier the work-wire delays share no dependency with the control's reset and an
+        # ASAP schedule starts them beside its readout; the barrier starts every dose after the reset ends.
+        circuit.barrier()
         if variant == "window_dose":
             circuit.delay(dose_dt, list(range(circuit.num_qubits)), unit="dt")
         else:

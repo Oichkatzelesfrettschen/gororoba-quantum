@@ -235,3 +235,36 @@ def test_echo_restores_the_contrast_that_static_detuning_removes() -> None:
     _require(all(abs(value - plain[0]) < 1e-9 for value in echo), (echo, plain))
     _require(all(abs(value - plain_value) < 1e-9 for value, plain_value in zip(unpulsed, plain[1:], strict=True)))
     _require(max(undetuned) - min(undetuned) < 1e-9, undetuned)
+
+
+def _asap_starts(circuit: QuantumCircuit, durations: dict[str, int]) -> list[tuple[str, list[int], int]]:
+    """(name, qubits, start) of every top-level instruction under an ASAP schedule whose barriers align their qubits."""
+    cursor = dict.fromkeys(range(circuit.num_qubits), 0)
+    out = []
+    for instruction in circuit.data:
+        name = instruction.operation.name
+        qubits = [circuit.find_bit(q).index for q in instruction.qubits]
+        start = max(cursor[q] for q in qubits)
+        span = int(instruction.operation.duration) if name == "delay" else durations.get(name, 1)
+        span = 0 if name == "barrier" else span
+        for q in qubits:
+            cursor[q] = start + span
+        out.append((name, qubits, start))
+    return out
+
+
+@pytest.mark.parametrize("variant", ["window_dose", "window_dose_echo"])
+def test_every_dose_delay_starts_after_the_control_reset_ends(variant: str) -> None:
+    """Under ASAP with a long readout and reset, no work-wire dose delay or echo pulse starts before the reset ends."""
+    circuit = qpe_diagnostics.n21_orbit_diagnostic(True, variant, window_delay_dt=416, echo_half_dt=512, dose_dt=3500)
+    durations = {"measure": 1000, "reset": 1000}
+    starts = _asap_starts(circuit, durations)
+    reset_index = next(i for i, (name, _, _) in enumerate(starts) if name == "reset")
+    reset_end = starts[reset_index][2] + durations["reset"]
+    closing = next(i for i in range(len(starts) - 1, reset_index, -1) if starts[i][0] == "barrier")
+    dose_ops = [entry for entry in starts[reset_index + 1 : closing] if entry[0] in ("delay", "x")]
+    if not dose_ops:
+        raise AssertionError("no dose instruction after the reset")
+    early = [entry for entry in dose_ops if entry[2] < reset_end]
+    if early:
+        raise AssertionError(f"dose instructions start before the reset ends at {reset_end}: {early}")

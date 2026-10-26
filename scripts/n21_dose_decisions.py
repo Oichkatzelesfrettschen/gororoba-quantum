@@ -6,7 +6,9 @@ scripts/scheduled_idle_replay.py: contracts.idle_padded_exact, the exact branch-
 and the service-scheduled idle charged under the execution Target). A contract's measured value is the signed sum of
 its members' scores; its shot variance is the sum over members of (E[w^2] - E[w]^2) / shots for score vector w.
 
-Decisions (results/live/2026-10-26T045050.789962Z/DOSE_CASE.md):
+A collection whose group carries comparisons_withheld (its PUBs did not all run under one calibration) is refused.
+
+Decisions (the run's DOSE_CASE.md):
 - D1: the plain contrast at the largest dose lies below the dose-0 contrast at one-sided 95 percent.
 - D2: every plain arm's z = (measured - model) / sigma lies within the Bonferroni two-sided 95 percent bound over
   the plain doses (z = 2.498 at four doses).
@@ -138,6 +140,10 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     replay = json.loads((run_dir / "idle-replay.json").read_text(encoding="utf-8"))
     groups = [g for g in collected if isinstance(g, dict) and "measured" in g]
     require(len(groups) == 1, f"{run_dir}: collect.json holds {len(groups)} measured groups, not one")
+    # The collector withholds comparisons across PUBs whose calibration differed or changed during their shots
+    # (live_run._comparisons_withheld); a dose response read across such PUBs would include the calibration change.
+    withheld = groups[0].get("comparisons_withheld")
+    require(withheld is None, f"{run_dir}: the collector withheld the sweep's comparisons: {withheld}")
     laws = {}
     for member, replicas in groups[0]["measured"].items():
         require(len(replicas) == 1, f"{member}: {len(replicas)} replicas, the sweep runs one")
