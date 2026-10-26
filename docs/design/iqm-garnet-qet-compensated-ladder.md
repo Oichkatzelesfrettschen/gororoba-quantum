@@ -108,19 +108,25 @@ no model value enters them.
   over `GARNET_ALPHAS`.
 - **Selected alpha.** The alpha nearest minus the pair's own reference phase. The reference arms are independent of
   the feedback arms they select, so selection adds no bias to the scored endpoint.
-- **Pooling.** Each hypothesis is its own one-sided t test at 95 percent across the pairs H3 scores: t(0.95, n - 1),
-  2.132 at five pairs. A verdict needs two scored pairs.
+- **Pooling.** Each hypothesis is its own one-sided t test at 95 percent across pairs: t(0.95, n - 1), 2.132 at five
+  pairs. A verdict needs two pairs.
+- **All pairs are primary.** H1, H2 and H4 pool every pair; the same tests over the pairs H3 scores are reported as
+  secondary. Excluding H3 failures would bias H1 upward: a `cc_prx` that never fires runs the fixed -phi* rotation,
+  a record-independent unitary, so its excess falls to zero or below. One that fires on the wrong bit runs the
+  reversed rule, and one that under-rotates gives less. A test checks that one never-firing pair lowers the
+  all-pairs excess.
 - **No family correction.** H1 is the primary test. H2 to H4 answer separate questions and are reported at their
   own level.
 
 The hypotheses:
-- **H3, non-pi conditional angle.** Bob's assignment errors come from the pair's own `cal_00` and `cal_11` arms in
-  the same job.
+- **H3, non-pi conditional angle.** Only the shots whose recorded Alice bit matches the prepared source enter, since
+  `cc_prx` reads that bit. Bob's assignment errors come from the pair's own `cal_00` and `cal_11` arms in the same
+  job.
   - Through them, the readout-corrected conditional angle 2 asin(sqrt p) from the |1> source must lie within
     2 phi* +- 0.15 rad (0.494 to 0.794 rad) across its Wilson 99 percent interval.
   - The readout-corrected P(1) from the |0> source must stay below 0.03 at its Wilson 99 percent upper bound.
-  - A pair that fails is unscored for H1, H2 and H4. The fitted angle and the pi-arm angle are reported for every
-    pair.
+  - A pair that fails is excluded from the secondary tests only. The fitted angle and the pi-arm angle are reported
+    for every pair.
   - The angle interval at 1600 shots is about +- 0.06 rad, so the band admits a calibration error of about 30
     percent of 2 phi* and no larger.
 - **H1, QET information signature.** It is reproduced on Garnet when the information excess has a lower bound above

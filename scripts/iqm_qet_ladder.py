@@ -1308,10 +1308,16 @@ def endpoints_of_run(case: Mapping[str, Any], measurements: Sequence[Mapping[str
         qualification = {}
         for name in QUAL_ARMS:
             target, source = shot_bits(by_name[name], f"bob{index}"), shot_bits(by_name[name], f"alice{index}")
+            # cc_prx reads Alice's recorded bit, so the conditional rotation is the target's response on the shots
+            # whose record matches the prepared source.
+            prepared = 1 if name.startswith("qual_src1") else 0
+            matched = source == prepared
             qualification[name] = {
                 "target_ones": int(target.sum()),
                 "source_ones": int(source.sum()),
                 "shots": int(len(target)),
+                "matched_target_ones": int(target[matched].sum()),
+                "matched_shots": int(matched.sum()),
             }
         per_pair.append(
             {
@@ -1381,15 +1387,16 @@ def angle_qualification(qualification: Mapping[str, Any], cal: Mapping[str, np.n
     """H3 for one pair: Bob's readout-corrected cc_prx angle from a |1> source and P(1) from a |0> source.
 
     The pair's own cal_00 and cal_11 arms give Bob's assignment errors in the same job (bit b, index >> 2), so a
-    |0>-source reading is compared with readout error rather than with zero.
+    |0>-source reading is compared with readout error rather than with zero. Both read only the shots whose
+    recorded Alice bit matches the prepared source, the bit cc_prx conditions on.
     """
     zeros, ones = cal["cal_00"] / cal["cal_00"].sum(), cal["cal_11"] / cal["cal_11"].sum()
     bob = [i for i in range(8) if (i >> 2) & 1]
     e0, e1 = float(zeros[bob].sum()), float(1 - ones[bob].sum())
     src1 = qualification["qual_src1_phi"]
-    fitted = corrected_angle(src1["target_ones"], src1["shots"], e0, e1, Z99)
+    fitted = corrected_angle(src1["matched_target_ones"], src1["matched_shots"], e0, e1, Z99)
     src0 = qualification["qual_src0_phi"]
-    _, src0_high = wilson(src0["target_ones"], src0["shots"], Z99)
+    _, src0_high = wilson(src0["matched_target_ones"], src0["matched_shots"], Z99)
     src0_corrected_high = (src0_high - e0) / (1 - e0 - e1)
     pi = qualification["qual_src1_pi"]
     target = 2 * ql.PHI_STAR
@@ -1403,7 +1410,7 @@ def angle_qualification(qualification: Mapping[str, Any], cal: Mapping[str, np.n
         "bob_p0_given_1": e1,
         "fitted_angle": fitted,
         "target_angle": target,
-        "pi_arm_angle": corrected_angle(pi["target_ones"], pi["shots"], e0, e1, Z99),
+        "pi_arm_angle": corrected_angle(pi["matched_target_ones"], pi["matched_shots"], e0, e1, Z99),
         "source0_corrected_p1_upper99": src0_corrected_high,
         "scored": passes,
     }
@@ -1421,10 +1428,14 @@ def one_sided(values: Sequence[float]) -> tuple[float, float, float]:
 
 
 def decisions(per_pair: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    """H1-H4 over the pairs H3 scores; each hypothesis is its own one-sided test at DECISION_LEVEL.
+    """H1, H2 and H4 over every pair (primary) and over the pairs H3 scores (secondary); each is its own one-sided
+    test at DECISION_LEVEL.
 
-    H1 (information excess) and H2 (channel floor margin) read the selected-alpha endpoints; H4 reads the mean
-    magnitude of the per-pair reference phase against H4_PHASE_SCALE. A verdict needs two scored pairs.
+    Every cc_prx failure (never firing, firing on the wrong bit, under-rotating) lowers a pair's excess toward or
+    below zero, since the unitary floor minimizes over every record-independent unitary on Bob, so the primary
+    tests keep every pair rather than drop the ones H3 flags. H1 (information excess) and H2 (channel floor margin)
+    read the selected-alpha endpoints; H4 reads the mean magnitude of the per-pair reference phase against
+    H4_PHASE_SCALE. A verdict needs two pairs.
     """
     scored = [r for r in per_pair if r["h3"]["scored"]]
     out: dict[str, Any] = {
@@ -1444,18 +1455,21 @@ def decisions(per_pair: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
             state = "unresolved"
         return {"mean": centre, "lower": low, "upper": high, "pairs": len(values), "verdict": state}
 
-    out["h1_information_excess"] = verdict(
-        [r["endpoints"]["selected_excess"] for r in scored], 0.0, "reproduced", "refuted"
-    )
-    out["h2_channel_floor_margin"] = verdict(
-        [r["endpoints"]["selected_margin"] for r in scored], 0.0, "passes", "fails"
-    )
-    out["h4_window_phase"] = verdict(
-        [abs(r["endpoints"]["reference_phase"]) for r in scored],
-        H4_PHASE_SCALE,
-        "coherent phase of Kingston's order",
-        "below Kingston's order",
-    )
+    for label, rows in (("all_pairs", per_pair), ("h3_scored", scored)):
+        out[label] = {
+            "h1_information_excess": verdict(
+                [r["endpoints"]["selected_excess"] for r in rows], 0.0, "reproduced", "refuted"
+            ),
+            "h2_channel_floor_margin": verdict(
+                [r["endpoints"]["selected_margin"] for r in rows], 0.0, "passes", "fails"
+            ),
+            "h4_window_phase": verdict(
+                [abs(r["endpoints"]["reference_phase"]) for r in rows],
+                H4_PHASE_SCALE,
+                "coherent phase of Kingston's order",
+                "below Kingston's order",
+            ),
+        }
     return out
 
 

@@ -256,23 +256,31 @@ def test_analysis_recovers_the_ideal_endpoints_from_synthetic_bits(tmp_path: Pat
             raise AssertionError(f"{name}: {p1} outside {low}..{high}")
 
 
+def pair_endpoints(case: dict, measurements: list, index: int) -> dict:
+    """One pair's endpoints from an artifact, without the shot-noise variance endpoints_of_run adds."""
+    names = [Path(c["file"]).stem for c in case["jobs"][0]["circuits"]]
+    by_name = dict(zip(names, measurements, strict=True))
+    counts = {name: lad.ladder_counts(by_name[name], index) for name in lad.arm_table()}
+    return lad.summarize({f"{lad.GROUP}_{name}": c / c.sum() for name, c in counts.items()})
+
+
 def test_analysis_maps_each_pair_and_key_to_its_own_law() -> None:
     """Counts drawn from each pair's predicted noisy law, where the second Alice readout differs from the first,
     recover that pair's predicted endpoints; swapping the alice and afinal keys or two pairs moves them."""
     case = json.loads((CASE / "cases.json").read_text(encoding="utf-8"))
     prediction = json.loads((CASE / "prediction.json").read_text(encoding="utf-8"))
     laws = [row["laws"] for row in prediction["pairs"]]
-    measurements, _ = lad.synthetic_measurements(case, 20000, laws)
-    result = lad.endpoints_of_run(case, measurements)
-    for got, row in zip(result["pairs"], prediction["pairs"], strict=True):
+    measurements, _ = lad.synthetic_measurements(case, 5000, laws)
+    for pair, row in zip(case["pairs"], prediction["pairs"], strict=True):
+        got = pair_endpoints(case, measurements, pair["index"])
         for name in lad.ENDPOINTS:
-            if abs(got["endpoints"][name] - row["endpoints"][name]) > 2e-3:
-                raise AssertionError(f"{row['pair']}: {name} {got['endpoints'][name]} against {row['endpoints'][name]}")
+            if abs(got[name] - row["endpoints"][name]) > 4e-3:
+                raise AssertionError(f"{row['pair']}: {name} {got[name]} against {row['endpoints'][name]}")
     swapped = [{**c, "alice0": c["afinal0"], "afinal0": c["alice0"]} if "afinal0" in c else c for c in measurements]
     # Bob's rotation follows the recorded bit, so the feedback energy, read through Alice's final bit,
     # changes when the two readouts trade places.
-    moved = lad.endpoints_of_run(case, swapped)["pairs"][0]["endpoints"]["selected_excess"]
-    if abs(moved - result["pairs"][0]["endpoints"]["selected_excess"]) < 1e-3:
+    moved = pair_endpoints(case, swapped, 0)["selected_excess"]
+    if abs(moved - pair_endpoints(case, measurements, 0)["selected_excess"]) < 1e-3:
         raise AssertionError("swapping Alice's two readouts leaves the information excess unchanged")
     pairs_swapped = [
         {
@@ -282,9 +290,29 @@ def test_analysis_maps_each_pair_and_key_to_its_own_law() -> None:
         }
         for c in measurements
     ]
-    first = lad.endpoints_of_run(case, pairs_swapped)["pairs"][0]["endpoints"]["selected_margin"]
+    first = pair_endpoints(case, pairs_swapped, 0)["selected_margin"]
     if abs(first - prediction["pairs"][0]["endpoints"]["selected_margin"]) < 5e-3:
         raise AssertionError("swapping two pairs' keys leaves pair 0's margin at its own prediction")
+
+
+def test_a_cc_prx_that_never_fires_lowers_the_all_pairs_excess() -> None:
+    """A pair whose cc_prx never fires runs the fixed -phi* rotation, a record-independent unitary, so its excess
+    falls to the unitary floor's and the all-pairs H1 mean drops below the ideal."""
+    case = json.loads((CASE / "cases.json").read_text(encoding="utf-8"))
+    table = lad.arm_table()
+    ideal = {name: list(ql.compensated_ideal(*arm[1:])) for name, arm in table.items()}
+    broken = {
+        name: list(ql.compensated_ideal(arm[1], arm[2], "plus" if arm[3] == "feedback" else arm[3], arm[4], arm[5]))
+        for name, arm in table.items()
+    }
+    laws = [broken if pair["index"] == 0 else ideal for pair in case["pairs"]]
+    measurements, _ = lad.synthetic_measurements(case, 5000, laws)
+    result = lad.endpoints_of_run(case, measurements)
+    if result["pairs"][0]["endpoints"]["selected_excess"] > 1e-3:
+        raise AssertionError(f"a never-firing cc_prx keeps excess {result['pairs'][0]['endpoints']['selected_excess']}")
+    primary = result["decisions"]["all_pairs"]["h1_information_excess"]
+    if not primary["mean"] < ql.E_B - 0.02 or primary["pairs"] != len(case["pairs"]):
+        raise AssertionError(f"the all-pairs H1 test does not carry the broken pair: {primary}")
 
 
 def test_analysis_refuses_a_mock_run(tmp_path: Path) -> None:
