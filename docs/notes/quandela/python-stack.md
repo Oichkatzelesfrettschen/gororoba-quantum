@@ -46,6 +46,7 @@ references it.
 |---|---|---|---|
 | numpy | `numpy` | 2.5.4 | array core; Perceval Matrix backend |
 | scipy | `scipy` | 1.18.1 | linear algebra, optimization, stats (binomial and hypergeometric tests, `scipy.stats.binomtest`) |
+| cvxpy, clarabel | `cvxpy`, `clarabel` | 1.9.3, 0.11.1 | semidefinite programs of the certified classical teleportation benchmark (`scripts/qd_classical_benchmark.py`) |
 | sympy | `sympy` | 1.14.0 | symbolic parameters in Perceval circuits |
 | python-flint | `flint` | 0.9.0 | exact rank and nullspace (`scripts/exact_rank.py`) |
 | mpmath | `mpmath` | 1.4.1 | arbitrary-precision floats |

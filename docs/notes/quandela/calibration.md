@@ -13,7 +13,35 @@ The records carry four things under that name or its effects:
 
 ## Current state
 
-Live processor reads of 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). The maintenance window is the snapshot's Explorer row, which read it on 2026-10-17.
+The newest retained catalogue is the after-job read of the Ascella signed-coherence permuted repeat, 2026-10-24 08:35 PDT (2026-10-24 15:35:30 UTC), retained as [platform-after/catalogue.json](../../../results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/platform-after/catalogue.json) and read through the Perceval 1.3.1 and exqalibur 1.4.2 clients; both QPU workers report perceval-quandela 1.3.0 in `specs.software_versions`. Both QPU records carry `specs.architecture`, `commands`, `default_mitigations`, `known_mitigations` and `specs.type`, and `architecture_carried` is empty, so no coupler set in it is carried from an earlier read.
+
+| | Ascella | Belenos |
+| --- | --- | --- |
+| Status | available | available |
+| HOM visibility | 87.46 % | 88.8 % |
+| g2 | 2.0 % | 1.1 % |
+| Transmittance | field absent | 5.5 % |
+| Maximum dark count | 5679 /s, mode 10 | 10365.3 /s, mode 5 |
+| Clock | 13.33 MHz | 4.94 MHz |
+| Source-connected input modes | 0, 2, 4, 6, 8, 10 | 0, 2, 4, 6, 8, 9, 12, 13, 16, 18, 20, 22 |
+| `t_out` per mode | field absent | 67.15 % to 133.81 % |
+| Next maintenance (Explorer row) | none listed | 2026-10-29 08:30 to 12:00 UTC |
+
+`t_out` above 100 % shows a relative normalization, not an absolute detector efficiency. Ascella's record has carried no transmittance field since the plan read of 2026-10-23 17:11 UTC (`ascella-mosaiq-update-order-retry`), after 5.12 % at 06:56 UTC that day (`ascella-approved-order-pilot-retry`); the earlier Ascella values below keep their dates. The before-job read of the same run (15:30:55 UTC) and both reads of job-00 (09:17:08 and 09:21:58 UTC) sit beside it in their run directories.
+
+### Belenos read of 2026-10-25 19:04 UTC
+
+The plan read of the single-chip teleportation rehearsal, retained as
+[platform-read/catalogue.json](../../../results/quandela/cases/teleportation_rehearsal/job-00/platform-read/catalogue.json),
+reports `qpu:belenos` `available` with HOM 83.8 %, g2 16.7 %, Transmittance 0.05 % and 21187.1 /s dark counts on
+mode 5, at the 2026-10-24 schema and clock. Every source-connected mode's `t_in` reads 0.01 % to 0.02 %, against
+2.43 % to 6.31 % at 2026-10-24 15:35:30 UTC, so the source-side transmission fell about 250-fold while `t_out`
+stays between 15.88 % (mode 5) and 164.32 %. Perceval's `estimate_required_shots` answers None for the rehearsal
+under these figures. Cause not identified; `qpu:ascella` in the same read reports HOM 86.8 % and g2 1.9 %.
+
+### Live reads of 2026-10-20 (historical)
+
+The table below is the state as of the live processor reads of 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). The maintenance window is the snapshot's Explorer row, which read it on 2026-10-17.
 
 | | Ascella | Belenos |
 | --- | --- | --- |
@@ -55,7 +83,7 @@ In one line: HOM read 94.2 % on 2026-10-17, then 92.6 % at the first QPU run. A 
 - **Snapshot**, 2026-10-17 17:53 UTC: available; HOM 87.74 %; transmittance 5.14 %; g2 1.8 %; maximum dark count 1428 /s on mode 10.
 - **Live read**, 2026-10-20 04:09 UTC: available; HOM 87.48 %; transmittance 5.25 %; g2 1.9 %; maximum dark count 1885 /s on mode 10.
 - **Architecture.** Identical between the two reads (same length and SHA-256 prefix). The coupler angles run from 1.4204 to 1.4739 rad, all below pi/2.
-- **History.** No Ascella QPU run is retained, so the Ascella record has two points, not a timeline.
+- **History.** Nine Ascella QPU jobs, from 2026-10-21 to 2026-10-24, are retained under `results/quandela/runs/`, and [research_state.json](../../state/research_state.json) registers each. The two signed-coherence jobs completed: job-00 with 524,288 samples, job-01 with 1,048,576 ([job-00](../../../results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/README.md), [job-01](../../../results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/README.md)). Each run's `submission.json` carries `perfs_at_plan`, and its `platform-before/` and `platform-after/` catalogues extend this two-point record.
 - **Correction.** The README said `qpu:ascella` "read `calibration`" at the snapshot. The retained snapshot does not support that. The same commit that added the sentence (`af0e57c`) retains an Ascella record with status `available`. The README now states the retained value.
 
 ## Gating rules: documented and enforced
@@ -119,15 +147,16 @@ key.
 
 ## Open items
 
-1. **Missing Belenos fields.** The live records of 2026-10-20 04:09 UTC and 08:51 UTC lack `specs.architecture`, `commands`, `default_mitigations`, `known_mitigations` and `specs.type`; `available_commands` is present. The 17:31 UTC record of 2026-10-17 was `running` and carried all five, so the status does not explain the omission. An `include_bulk` read through the MCP server on 2026-10-21 near 03:50 UTC (`running`, then `calibration`) still lacks all five while `documentation` arrives, so the default read's bulk filter does not cause it; the qpu:belenos software versions equal the 2026-10-17 ones, and qpu:ascella and sim:belenos carry all five in the same hour. The omission is on the provider side and has persisted across three days and both observed statuses; its cause is a question for Quandela (`docs/evidence/bdsc/provider_contract.json`, `processor_record_completeness`). Perceval 1.3.1 tolerates each absence and changes behavior on two: `PlatformSpecs.known_mitigations` reads `[]`, so `RemoteComputer._use_mitigations_remotely` treats any explicitly requested mitigation as unknown and corrects it locally; `default_mitigations` reads `[]`, so `estimate_required_shots` assumes no server default. `commands` falls back to `CommandFactory` built from `available_commands`, whose signatures lack `compilation_seed`, and `type` comes from the record's top level. A request with `mitigations = None` therefore runs under a server default the record no longer declares (DetectorBalancing on 2026-10-17 and on sim:belenos, none on qpu:ascella), and only an explicit empty list fixes the processing from the request. A non-mesh `unitary` case needs no architecture; a mesh or seeded case stays refused until the field returns.
+1. **Missing Belenos fields (historical; present again on 2026-10-24).** The 2026-10-24 catalogues of the Ascella signed-coherence runs carry all five fields for `qpu:belenos`, read through the Perceval 1.3.1 client (see [Current state](#current-state)). The `processor_record_completeness` row of `docs/evidence/bdsc/provider_contract.json` keeps its 2026-10-20 wording, because `scripts/bdsc_certificate.py` writes that file and retained replay records bind the script's digest; this item is its dated successor. The account below describes 2026-10-20 to 2026-10-21. The live records of 2026-10-20 04:09 UTC and 08:51 UTC lack `specs.architecture`, `commands`, `default_mitigations`, `known_mitigations` and `specs.type`; `available_commands` is present. The 17:31 UTC record of 2026-10-17 was `running` and carried all five, so the status does not explain the omission. An `include_bulk` read through the MCP server on 2026-10-21 near 03:50 UTC (`running`, then `calibration`) still lacks all five while `documentation` arrives, so the default read's bulk filter does not cause it; the qpu:belenos software versions equal the 2026-10-17 ones, and qpu:ascella and sim:belenos carry all five in the same hour. The omission is on the provider side and has persisted across three days and both observed statuses; its cause is a question for Quandela (`docs/evidence/bdsc/provider_contract.json`, `processor_record_completeness`). Perceval 1.3.1 tolerates each absence and changes behavior on two: `PlatformSpecs.known_mitigations` reads `[]`, so `RemoteComputer._use_mitigations_remotely` treats any explicitly requested mitigation as unknown and corrects it locally; `default_mitigations` reads `[]`, so `estimate_required_shots` assumes no server default. `commands` falls back to `CommandFactory` built from `available_commands`, whose signatures lack `compilation_seed`, and `type` comes from the record's top level. A request with `mitigations = None` therefore runs under a server default the record no longer declares (DetectorBalancing on 2026-10-17 and on sim:belenos, none on qpu:ascella), and only an explicit empty list fixes the processing from the request. A non-mesh `unitary` case needs no architecture; a mesh or seeded case stays refused until the field returns.
 2. **Snapshot refreshed, Belenos chip carried.** The catalogue was refreshed on 2026-10-20 at 08:51 UTC, and `qpu:belenos` reads `calibration` in it. Its live record had no architecture, so `snapshot()` in [`scripts/qd_platform.py`](../../../scripts/qd_platform.py) carries the 2026-10-17 copy: `architecture_carried` names `qpu:belenos`, and `architecture_observed_utc` stamps it 2026-10-17T17:53:31+00:00, so the carried couplers are not presented as a read of today's chip. The refresh ran from the primary checkout, whose code predates the carry. The branch's snapshot logic, given the same responses, wrote the committed file. The facts table is unchanged, so core-502 passes.
 3. **HOM rule is a warning.** `plan` warns on a two-photon case whose HOM is absent or at or below 90 %; it does not hold the case. Whether it should hold one is a decision for the user.
 4. **Failure mode in `plan`.** `architecture_blob` raises `PlatformError` on a missing `specs.architecture`, in place of the earlier `KeyError`. The self-test covers the helper; no live record has exercised the path.
-5. **Coupler state after 2026-10-18 19:36 UTC.** Unknown until the architecture returns.
-6. **Dark count on mode 5.** Rose from 31.1 /s to 412.7 /s between 2026-10-18 04:24 UTC and the live read. Cause not identified.
+5. **Coupler state from 2026-10-18 19:36 UTC to 2026-10-24.** Unknown for that interval; the 2026-10-24 catalogues carry the Belenos architecture again, and a comparison of their couplers with the 2026-10-17 snapshot is not recorded here.
+6. **Dark count on mode 5.** Rose from 31.1 /s at 2026-10-18 04:24 UTC to 412.7 /s at the 2026-10-20 live read, and reads 7326.8 /s at 09:21:58 UTC and 10365.3 /s at 15:35:30 UTC on 2026-10-24. Cause not identified.
 
 ## Sources
 
+- The 2026-10-24 catalogues under `results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/` and `results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/` (`platform-before/`, `platform-after/`).
 - [`catalogue.json`](../../evidence/quandela/catalogue.json), retrieved 2026-10-20T08:51:26+00:00. The 2026-10-17 copy is in commit `bfcfda2`.
 - Commit `af0e57c`: its catalogue was retrieved 2026-10-17T17:31:00+00:00, and it introduced the README sentence corrected above.
 - `results/quandela/runs/*/submission.json`: `perfs_at_plan` and `platform_at_plan` for the 17 QPU runs, and the computed circuits checked with `same_mesh`.

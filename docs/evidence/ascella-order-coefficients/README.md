@@ -87,17 +87,48 @@ returned 12-mode meshes fitted on job-00 and scored on job-01's pooled
 configurations, with supplementary families and a leave-one-configuration-out
 refit of the static ones
 ([design](../../design/ascella-signed-coherence-conformance.md#restricted-physical-models-of-the-analyzer-response)).
-[`configuration-holdout.json`](configuration-holdout.json), from
+[`configuration-holdout-unclipped-light.json`](configuration-holdout-unclipped-light.json), from
 [`scripts/ascella_configuration_holdout.py`](../../../scripts/ascella_configuration_holdout.py),
 holds the leave-one-configuration-out refit of the static families from the
 training configurations alone, scored in counting plus fitted-prediction
 variance; it supersedes the left-out column of `physical-models.json`
 ([design](../../design/ascella-signed-coherence-conformance.md#leave-one-configuration-out-from-training-data)).
-[`heater-drive-holdout.json`](heater-drive-holdout.json), from the same
-script with `--drive`, holds the preregistered drive-dependent heater family
-(heater offsets and per-heater drive slopes) under those folds
+[`configuration-holdout.json`](configuration-holdout.json) is the same refit
+built while the static fit clipped the block light, with one combined-family
+fold in a higher local mode; its bytes stay for the receipt that binds them.
+[`heater-drive-holdout-heater-basis.json`](heater-drive-holdout-heater-basis.json), from
+[`scripts/ascella_configuration_holdout.py`](../../../scripts/ascella_configuration_holdout.py)
+with `--drive`, holds the preregistered drive-linear heater family (heater
+offsets and per-heater drive slopes) under those folds
 ([design](../../design/ascella-signed-coherence-conformance.md#drive-dependent-heater-response-under-the-same-folds)).
+[`heater-drive-holdout.json`](heater-drive-holdout.json) is the same refit
+with the offsets and slopes in two coefficient blocks, which reaches other
+modes on left-out configurations 20 and 23; its bytes stay.
+[`drive-response.json`](drive-response.json), from
+[`scripts/ascella_drive_response.py`](../../../scripts/ascella_drive_response.py),
+holds the polynomial and harmonic heater responses to the returned phase,
+fitted on job-00, scored on job-01 and on the same training-only folds
+([design](../../design/ascella-signed-coherence-conformance.md#polynomial-and-harmonic-drive-responses)).
+[`compilation-design.json`](compilation-design.json), from
+[`scripts/ascella_compilation_design.py`](../../../scripts/ascella_compilation_design.py),
+holds the sizing the perturbed-compilation case was approved on: R1 power and
+the R3 variance ratios of each planted family over the candidate designs, and
+the chosen design. Its bytes stay;
+[`compilation-design-anchor-ratio.json`](compilation-design-anchor-ratio.json)
+is its successor, sizing R1 as the anchor-ratio test it applies and R3 without
+the anchors
+([design](../../design/ascella-signed-coherence-conformance.md#perturbed-compilation-case-job-02)).
+[`compilation-reading.json`](compilation-reading.json), from
+[`scripts/ascella_compilation_reading.py`](../../../scripts/ascella_compilation_reading.py),
+holds that case's preregistered reading of job-02: the served-mesh count, R1's
+permutation test, R2's predictions of the 56 meshes by the job-00 fits and
+R3's refits on job-00 plus job-02 under the training-only folds.
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance, and the last three replay their nominal family there and
-their fitted families within 1e-3 relative plus 1e-8 absolute, the rounding of
-optimizer endpoints under another BLAS build.
+certificate tolerance, the compilation design and reading within the fit replay bounds,
+and the physical-model, holdout, drive-linear and
+drive-response records their nominal family there and their fitted families
+within 1e-3 relative plus 1e-8 absolute, the rounding of optimizer endpoints
+under another BLAS build. Which posterior mode a fit reaches follows the
+kernels' rounding, so every record is written and replayed under the OpenBLAS
+kernel and numpy SIMD dispatch that `ci/run_gates.py` and `ci/pr_checks.sh`
+set.

@@ -76,6 +76,8 @@ SELF_TESTS = (
     ("scripts/iqm_platform.py", ".", 7),
     ("scripts/bdsc_diagnostic.py", ".", 8),
     ("scripts/bdsc_certificate.py", ".", 9),
+    ("scripts/heron_feedforward_latency.py", ".", 9),
+    ("scripts/latency_recovery_exposure.py", ".", 9),
     ("scripts/check_markdown_links.py", ".", 3),
 )
 

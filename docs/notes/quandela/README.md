@@ -16,12 +16,13 @@ change; the captures below record what they said when read.
 |---|---|
 | `guide/` | the 32 English guides the webide bundle embeds: user guide, entity management, Quantum Toolbox (`scripts/capture_qd_docs.py --guide`) |
 | `legal/` | the cloud terms of service and privacy policy from the portal bundle, the www.quandela.com privacy policy and legal terms (`--legal`) |
-| `perceval/` | the 17 Perceval 1.3 pages on remote computing, providers and the runtime (`--perceval`) |
+| `perceval/` | the 18 Perceval 1.3 pages on remote computing, providers, the runtime and the noise model (`--perceval`) |
 | `api/` | the OpenAPI descriptions of the cloud API, its QRNG API and the account API (`--api`) |
 | `offer/` | the portal and webide strings that define offers and credits, with the bundle each sits in (`--offer`) |
 | `pypi/` | release metadata and file sha256 of perceval-quandela, exqalibur, perceval-interop and scmver (`--pypi`) |
 | `../../evidence/quandela/catalogue.json` | the account snapshot: Explorer platforms, processor records, job limits, token usage (`scripts/qd_platform.py snapshot`) |
-| `platform-specifications.md` | each QPU and simulator: modes, photons, inputs, commands, performance figures at the snapshot and live, the chip architecture, the contradictions in the record |
+| `platform-specifications.md` | each QPU and simulator: modes, photons, inputs, commands, performance figures at the snapshot and live, the chip architecture, the contradictions in the record, the vendor product pages and the Perceval constraint checker |
+| [roadmap-2026-03.md](roadmap-2026-03.md) | the March 2026 Quandela roadmap and the Quandela-Welinq interconnect announcement: every networking, interconnect and modular-system statement with its page and target year |
 | `calibration.md` | each QPU's calibration state, the Belenos history from the QPU run records, the gating rules and their enforcement, open items |
 | `setup-verification.md` | installed versions, token and MCP configuration, the approval policy, the verification record and what was not run |
 

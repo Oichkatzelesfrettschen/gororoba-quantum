@@ -1,0 +1,207 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-belenos-entanglement-teleportation",
+  "kind": "investigation",
+  "summary": "Ascella-Belenos shared entanglement, teleportation, reference preservation and sequential teleportation: claim levels, gates, ideal instrument and decision statistics; cross-device work holds on a provider-bound physical route.",
+  "sources": [
+    "docs/design/ascella-belenos-entanglement-teleportation.md",
+    "scripts/qd_network_protocol.py",
+    "tests/scripts/test_qd_network_protocol.py",
+    "docs/notes/quandela/calibration.md",
+    "docs/evidence/bdsc/provider_contract.json",
+    "scripts/qd_classical_benchmark.py",
+    "scripts/qd_teleportation_rehearsal.py",
+    "tests/scripts/test_qd_teleportation_rehearsal.py"
+  ],
+  "state": "paused",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Premises checked against main: Ascella outside-block decomposition, permuted repeat and Belenos drift series already retained; the 2026-10-24 catalogues carry the Belenos fields again; the protocol tables follow from the bosonic transform."
+  },
+  "scope": "Claim levels C0 to C6 for Ascella-Belenos shared entanglement, terminal teleportation, reference preservation, surviving output and Ascella-Belenos-Ascella sequential teleportation; the ideal dual-rail instrument and decision statistics; acquisition only through separately admitted written cases after a provider-bound physical route exists.",
+  "owner": "Quandela experiment operator",
+  "next_action": "Owner submits request items 1 and 4 through the Quandela contact form; the operator records the date and retains each answer in the design.",
+  "related": [
+    "ascella-signed-coherence-conformance",
+    "ascella-instrument-readiness-and-packed-tests"
+  ],
+  "steps": [
+    {
+      "id": "protocol-model",
+      "action": "Derive the partial Bell analyzer, frames, decoder, reference preservation, sequential composition and decision statistics from the bosonic transform.",
+      "acceptance": "tests/scripts/test_qd_network_protocol.py passes, cross-checked against dense permanents and Perceval SLOS, and its refusal fixtures fire.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "tests/scripts/test_qd_network_protocol.py: 28 passed under ci/pr_checks.sh tests; analyzer, frames, decoder, reference preservation and two-hop XOR derived from the bosonic transform and cross-checked against dense permanents and Perceval SLOS; every refusal fixture raises.",
+          "observed_at": "2026-10-25T09:50:19+00:00",
+          "revision": "6daf861d0877a702f40a998e51fd74722cc7f393",
+          "evidence": [
+            {
+              "ref": "scripts/qd_network_protocol.py",
+              "sha256": "575324d22cd699486174dc4230ccdca4a5d8d33435d7bbedc3d9d73eac82f94e"
+            },
+            {
+              "ref": "tests/scripts/test_qd_network_protocol.py",
+              "sha256": "8da0678c1f2a6e2285273ab1c3593b1c6c0c3ea34f115da6276b3113053430f1"
+            }
+          ],
+          "scope_sha256": "899921ad2cd606a821221a9fbbf24b5f458533f4773ea3cb5650a7b9d4957e8d"
+        },
+        {
+          "result": "tests/scripts/test_qd_network_protocol.py: 28 passed under ci/pr_checks.sh tests; analyzer, frames, decoder, reference preservation and two-hop XOR derived from the bosonic transform and cross-checked against dense permanents and Perceval SLOS; every refusal fixture raises.",
+          "observed_at": "2026-10-25T10:17:58+00:00",
+          "revision": "acbd504b9bf46212dee337a98b611413bc2bd131",
+          "evidence": [
+            {
+              "ref": "scripts/qd_network_protocol.py",
+              "sha256": "7510963e313b44b1a234d73d091abe703cc2a7130c43e61a5629c2690a1c4635"
+            },
+            {
+              "ref": "tests/scripts/test_qd_network_protocol.py",
+              "sha256": "8da0678c1f2a6e2285273ab1c3593b1c6c0c3ea34f115da6276b3113053430f1"
+            }
+          ],
+          "scope_sha256": "899921ad2cd606a821221a9fbbf24b5f458533f4773ea3cb5650a7b9d4957e8d"
+        },
+        {
+          "result": "tests/scripts/test_qd_network_protocol.py: 28 passed under ci/pr_checks.sh tests; analyzer, frames, decoder, reference preservation and two-hop XOR derived from the bosonic transform and cross-checked against dense permanents and Perceval SLOS; every refusal fixture raises.",
+          "observed_at": "2026-10-25T10:46:51+00:00",
+          "revision": "1ed2bd5ca32cf4ef0e688bc73a3a637c88c2dadb",
+          "evidence": [
+            {
+              "ref": "scripts/qd_network_protocol.py",
+              "sha256": "e2d1d13c178f24030b72949adb832be14bf4e4086c13427a928e1bcae2ee809a"
+            },
+            {
+              "ref": "tests/scripts/test_qd_network_protocol.py",
+              "sha256": "ce2f10d731a2e0b05e2c226696c7db6e59f72fe3ed6298ea5eb3ea7e08a97959"
+            }
+          ],
+          "scope_sha256": "899921ad2cd606a821221a9fbbf24b5f458533f4773ea3cb5650a7b9d4957e8d"
+        }
+      ]
+    },
+    {
+      "id": "classical-benchmark",
+      "action": "Solve and certify the classical teleportation benchmark over the PPT Choi cone for any qubit ensemble, prior and realizable success profile.",
+      "acceptance": "tests/scripts/test_qd_classical_benchmark.py passes: 2/3 for the uniform six states, 3/4 for BB84 and Z-weighted priors, the 6/7 post-selected optimum, dual certificates within GAP_LIMIT of the achieving Choi operator, and every refusal fixture raises.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "tests/scripts/test_qd_classical_benchmark.py: 27 passed under ci/pr_checks.sh tests; uniform six states 2/3, BB84 and Z-weighted priors 3/4, the post-selected optimum 6/7, tilted realizable profiles at 2/3 in both figures, dual certificates within GAP_LIMIT, every refusal fixture raises.",
+          "observed_at": "2026-10-25T18:56:44+00:00",
+          "revision": "d35c73228f11d45371c228d98b6e6be97ac59234",
+          "evidence": [
+            {
+              "ref": "scripts/qd_classical_benchmark.py",
+              "sha256": "63a2f13ea3b1fc797e87e1577751a35b4852c30c74d5780f13da2289b9c73348"
+            },
+            {
+              "ref": "tests/scripts/test_qd_classical_benchmark.py",
+              "sha256": "8752789466b80458d9499fcc6de161ffd73af6f15129f5527b7dcd0ad4561bc4"
+            }
+          ],
+          "scope_sha256": "b156e7c6e1c89dc9ff806ea54f02e5f62a654684ad7e8c981d794f14cae1c470"
+        },
+        {
+          "result": "tests/scripts/test_qd_classical_benchmark.py: 27 passed under ci/pr_checks.sh tests; uniform six states 2/3, BB84 and Z-weighted priors 3/4, the post-selected optimum 6/7, tilted realizable profiles at 2/3 in both figures, every achieving map separable and trace-non-increasing, dual certificates within GAP_LIMIT, every refusal fixture raises.",
+          "observed_at": "2026-10-25T19:55:03+00:00",
+          "revision": "de102d027e8a347ae1903afb5d0409e364a9786c",
+          "evidence": [
+            {
+              "ref": "scripts/qd_classical_benchmark.py",
+              "sha256": "8a159ed0505dbf3b1aa4acd377b5fdb77cf01a24d51a1f5f807293c029fe7ca5"
+            },
+            {
+              "ref": "tests/scripts/test_qd_classical_benchmark.py",
+              "sha256": "7a751c9b3037ce76ee80291ff7c577bbcd044ff15e289c6afd3cc617b232bd8c"
+            }
+          ],
+          "scope_sha256": "b156e7c6e1c89dc9ff806ea54f02e5f62a654684ad7e8c981d794f14cae1c470"
+        }
+      ]
+    },
+    {
+      "id": "provider-capability-response",
+      "action": "Send the design's provider request and retain the dated answer: items 2 and 3 as Quandela/Perceval issue 798 (sent 2026-10-25T18:33Z), items 1 and 4 through the Quandela contact form, which the owner submits.",
+      "acceptance": "Each request item reads supported, unsupported or unresolved with platform, access route, date and software version; a roadmap answer is recorded as development evidence.",
+      "state": "doing"
+    },
+    {
+      "id": "observation-contract",
+      "action": "Resolve the provider_contract rows the witness and benchmark depend on from the provider answer or a qualification run.",
+      "acceptance": "Event provenance, setting identity and preparation/analyzer scope read supported, or the narrower composite-family limitation is recorded (G1).",
+      "state": "todo",
+      "depends_on": [
+        "provider-capability-response"
+      ]
+    },
+    {
+      "id": "local-path-qualification",
+      "action": "Calibrate the selected sources, analyzer paths and detectors of the protocol under an admitted case.",
+      "acceptance": "Transfer, phase, detector, acceptance and context errors fit the registered budget (local G3).",
+      "state": "todo",
+      "depends_on": [
+        "observation-contract"
+      ]
+    },
+    {
+      "id": "cross-device-witness",
+      "action": "Acquire the Phi+ witness across the partitions under an admitted case.",
+      "acceptance": "The registered lower bound exceeds 1/2 with valid selection (G4), or the inconclusive result is recorded.",
+      "state": "todo",
+      "depends_on": [
+        "local-path-qualification"
+      ]
+    },
+    {
+      "id": "teleportation-benchmark",
+      "action": "Acquire the 18-cell six-state teleportation instrument on joint records.",
+      "acceptance": "The registered lower fidelity bound exceeds the applicable classical bound (G5), or the result is recorded as inconclusive or invalid.",
+      "state": "todo",
+      "depends_on": [
+        "cross-device-witness"
+      ]
+    },
+    {
+      "id": "reference-preservation",
+      "action": "Transfer one half of an R-q entangled input and measure the R-b witness.",
+      "acceptance": "The reference-output lower bound exceeds its separable limit (G6).",
+      "state": "todo",
+      "depends_on": [
+        "teleportation-benchmark"
+      ]
+    },
+    {
+      "id": "surviving-output",
+      "action": "Route the receiver output into a downstream quantum operation.",
+      "acceptance": "A timing receipt and downstream test show output level O1 or higher (G7).",
+      "state": "todo",
+      "depends_on": [
+        "teleportation-benchmark"
+      ]
+    },
+    {
+      "id": "sequential-teleportation",
+      "action": "Run Ascella-Belenos-Ascella with two resources and two physical Bell measurements.",
+      "acceptance": "The composite benchmark passes on one coherent intermediate state (G8).",
+      "state": "todo",
+      "depends_on": [
+        "reference-preservation",
+        "surviving-output"
+      ]
+    },
+    {
+      "id": "single-chip-rehearsal",
+      "state": "todo",
+      "action": "Acquire the single-chip teleportation rehearsal on qpu:belenos: six Pauli eigenstates, each read in its matching basis, from one 3-photon job of 6 template iterations (scripts/qd_teleportation_rehearsal.py, results/quandela/cases/teleportation_rehearsal/job-00).",
+      "acceptance": "The owner approved the section 'Single-chip rehearsal (job-00)' in writing on 2026-10-25; 'qd_teleportation_rehearsal.py --submit RUN APPROVAL' sends the job once a fresh plan admits the request and the model pooled fidelity at the live figures reaches F* = 0.86, the job is collected, and 'qd_teleportation_rehearsal.py --analyze' returns beats-classical (C1 local conformance only, no C2 or C3), at-or-below-classical, or inconclusive; the verdict is recorded without a cross-device claim."
+    }
+  ],
+  "pause": {
+    "last_result": "Request items 2 and 3 are Quandela/Perceval issue 798, opened 2026-10-25T18:33Z; the contact-form text for items 1 and 4 is drafted for the owner.",
+    "next_action": "Owner submits request items 1 and 4 through the Quandela contact form; the operator records the date and retains each answer in the design.",
+    "resume_when": "A dated provider answer names an accessible joint apparatus or research configuration, or answers the result-contract questions of Perceval issue 798"
+  }
+}

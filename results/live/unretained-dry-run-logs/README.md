@@ -13,6 +13,8 @@ submits nothing, so no job id, charge or raw result belongs to any of them.
 | `2026-10-15T153810.457216Z-conditional-ramsey.log` | conditional Ramsey on ibm_kingston, layout `[105, 117]` | not recorded | lost |
 | `2026-10-15T154004.769702Z-conditional-ramsey.log` | conditional Ramsey on ibm_kingston, layout `[149, 148]` | not recorded | lost |
 | `2026-10-17T080522.648289Z-default-program.log` | the default seven-case program on fez, kingston and marrakesh | `8d5f038`, `sources_modified` false | lost |
+| `2026-10-25T192234.800525Z-latency-recovery-w526.log` | latency-recovery exploration on ibm_kingston, W = 526 dt | `373e7dc`, `sources_modified` true | session scratch, not retained |
+| `2026-10-25T192404.355979Z-latency-recovery-w2500.log` | latency-recovery exploration on ibm_kingston, W = 2500 dt | `373e7dc`, `sources_modified` true | session scratch, not retained |
 
 The conditional Ramsey program (backlog #87) is retired with its retained
 records kept; these two dry runs were never among them. The default-program
@@ -29,3 +31,5 @@ live Target and properties at the moment it runs.
 | `8029aa5e87c3c8a0a09db293413fb7f856407cc92103bb59af5382c509fd0b57` | `2026-10-15T153810.457216Z-conditional-ramsey.log` |
 | `8fe01125c7c3451d366f11fc4e7096fb07da0f2babbc9749ca1c06400f56d237` | `2026-10-15T154004.769702Z-conditional-ramsey.log` |
 | `ed50d737fd4abd4cceab5be171c039bf3965b7be4b79f03e9b34167f1a004176` | `2026-10-17T080522.648289Z-default-program.log` |
+
+The two latency-recovery explorations ran the family before its contracts were final, under one 60 s ceiling; their model summaries give the window costs 0.017 (W = 526 dt) and 0.081 (W = 2500 dt) that set the design's W ([heron-latency-logical-recovery.md](../../../docs/design/heron-latency-logical-recovery.md)).

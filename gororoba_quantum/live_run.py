@@ -68,6 +68,7 @@ import packing
 import parallel
 import placement_feasibility
 import qpu_planning
+import qrng_seeds
 import variance
 from coherence_window import COHERENCE_PRECISION
 from diagnostic_experiments import (
@@ -102,6 +103,12 @@ TWIRLING_MIN_SHOTS_PER_RANDOMIZATION = 64
 OPT_LEVEL = 3
 SEED_TRANSPILER = 20261010
 SEED_SIMULATOR = 20261011
+# The reproduction defaults of --seed-transpiler and --seed-simulator. main() rebinds
+# SEED_TRANSPILER and SEED_SIMULATOR from those flags on every invocation, so every
+# planner and simulator reading the module globals takes the run's seeds.
+REPRODUCTION_SEED_TRANSPILER = SEED_TRANSPILER
+REPRODUCTION_SEED_SIMULATOR = SEED_SIMULATOR
+SEED_FLAGS = (("seed_transpiler", "--seed-transpiler"), ("seed_simulator", "--seed-simulator"))
 JOINT_CANDIDATES = 3
 DEFAULT_SEEDS = 8
 DEFAULT_MAX_PENDING = 25
@@ -151,6 +158,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "ibm_account.py",
     "integral_homology.py",
     "jax_bridge.py",
+    "latency_recovery.py",
     "law_encoding.py",
     "live_run.py",
     "local_compute.py",
@@ -166,12 +174,14 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "pub_shot_allocation.py",
     "qpe_diagnostics.py",
     "patch_characterization.py",
+    "qet_ladder.py",
     "coherence_window.py",
     "conditional_ramsey.py",
     "crossed_tile_template.py",
     "diagnostic_controls.py",
     "qpu_cases.py",
     "qpu_planning.py",
+    "qrng_seeds.py",
     "qubit_baseline.py",
     "rank_attachments.py",
     "rank_charts.py",
@@ -3165,6 +3175,29 @@ def dependency_versions() -> dict[str, str]:
     }
 
 
+def seed_spellings(args: argparse.Namespace) -> dict[str, str]:
+    """Each seed flag's spelling: "default", a qrng:<draw>#<index> reference or repro:<integer>."""
+    return {dest: getattr(args, f"{dest}_source", None) or "default" for dest, _ in SEED_FLAGS}
+
+
+def seed_source_entries(args: argparse.Namespace) -> list[dict[str, Any]]:
+    """The run record's seed_source entries when a seed flag left its default, else none.
+
+    The experiment is the dry run that originates the plan, so the dry run and the
+    submission that names it as --approved-record consume one QRNG value.
+    """
+    spellings = seed_spellings(args)
+    if all(source == "default" for source in spellings.values()):
+        return []
+    experiment = getattr(args, "seed_experiment", None)
+    if not experiment:
+        raise LiveRunError("a non-default seed needs --out, so the record names its experiment")
+    return [
+        qrng_seeds.seed_record("gororoba_quantum/live_run.py", flag, experiment, spellings[dest])
+        for dest, flag in SEED_FLAGS
+    ]
+
+
 def record_policy(args: argparse.Namespace) -> dict[str, Any]:
     """The record's policy: the exclusion thresholds and every approval-bound planning and execution setting."""
     requested_delay = getattr(args, "rep_delay", None)
@@ -3186,6 +3219,8 @@ def record_policy(args: argparse.Namespace) -> dict[str, Any]:
         # charge, so the approved-record gate compares it; the backend
         # default leaves the key out.
         **({"rep_delay_seconds": requested_delay} if requested_delay is not None else {}),
+        # A seed other than the reproduction default binds the approval by its spelling.
+        **{dest: source for dest, source in seed_spellings(args).items() if source != "default"},
         "operator_excluded_qubits": {
             name: sorted(qubits) for name, qubits in sorted((getattr(args, "exclude_qubits", None) or {}).items())
         },
@@ -3619,6 +3654,16 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                     raise LiveRunError(f"{campaigns[0]} runs without dynamical decoupling; omit --dd")
                 if args.max_replicas != 1:
                     raise LiveRunError(f"{campaigns[0]} runs one replica; pass --max-replicas 1")
+            if "qet_ladder" in campaigns and args.dd:
+                # Every ladder circuit carries feed-forward, and the Sampler rejects
+                # dynamical decoupling on dynamic circuits.
+                raise LiveRunError("qet_ladder runs without dynamical decoupling; omit --dd")
+            if "qet_frame_diagnostic" in campaigns and args.dd:
+                # The diagnostic compares explicit echoes against free evolution; runtime echoes would mix them.
+                raise LiveRunError("qet_frame_diagnostic runs without dynamical decoupling; omit --dd")
+            if "qet_compensated_ladder" in campaigns and args.dd:
+                # Bob's compensation rotation replaces echoes the runtime would insert in the window.
+                raise LiveRunError("qet_compensated_ladder runs without dynamical decoupling; omit --dd")
             if "crossed_tile_template" in campaigns:
                 # Each PUB row runs one member on both tiles in the same shots, which
                 # needs exactly two replicas, and the crossing matches the rank-sector
@@ -3656,6 +3701,7 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         "shots": args.shots,
         "instance_sha256_12": _instance_hash(service),
         "seed_simulator": SEED_SIMULATOR,
+        **({"seed_source": entries} if (entries := seed_source_entries(args)) else {}),
         "experiment_digest": experiment_digest(),
         "code_commit": _code_commit(),
         "system_inventory": inventory,
@@ -6039,6 +6085,22 @@ def main(argv: list[str] | None = None) -> int:
         "omitted, prep0, reset and x; the policy binds a selection",
     )
     parser.add_argument(
+        "--latency-dt",
+        type=int,
+        metavar="DT",
+        help="latency-recovery: the frame_l idle L in dt (the controller latency to idle through); omitted, "
+        "latency_recovery.DEFAULT_LATENCY_DT for ibm_kingston; rounded up to the backend's timing granularity; "
+        "the policy binds a given value",
+    )
+    parser.add_argument(
+        "--window-dt",
+        type=int,
+        metavar="DT",
+        help="latency-recovery: the ff_w and frame_lw extra idle W in dt; omitted, "
+        "latency_recovery.DEFAULT_WINDOW_DT for ibm_kingston; rounded up to the backend's timing granularity; "
+        "the policy binds a given value",
+    )
+    parser.add_argument(
         "--pin-layout",
         type=_pinned_layout,
         metavar="BACKEND:Q,Q,...",
@@ -6175,6 +6237,18 @@ def main(argv: list[str] | None = None) -> int:
         help="combined ceiling across every backend and job; required for submission and diagnostic design",
     )
     parser.add_argument("--seeds", type=int, default=DEFAULT_SEEDS, help="transpiler seeds per group and backend")
+    qrng_seeds.add_seed_argument(
+        parser,
+        "--seed-transpiler",
+        default=REPRODUCTION_SEED_TRANSPILER,
+        help="first transpiler seed of the --seeds consecutive seeds; a new acquisition takes qrng:<draw>#<index>",
+    )
+    qrng_seeds.add_seed_argument(
+        parser,
+        "--seed-simulator",
+        default=REPRODUCTION_SEED_SIMULATOR,
+        help="planning and evaluation simulator seed; a new acquisition takes qrng:<draw>#<index>",
+    )
     parser.add_argument("--max-pending", type=int, default=DEFAULT_MAX_PENDING)
     parser.add_argument("--out", type=Path, help="directory under which the run's audit record is written")
     parser.add_argument("--submit", action="store_true", help="submit the chosen circuits (spends QPU time)")
@@ -6260,6 +6334,8 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     args = parser.parse_args(argv)
+    global SEED_TRANSPILER, SEED_SIMULATOR
+    SEED_TRANSPILER, SEED_SIMULATOR = args.seed_transpiler, args.seed_simulator
     exclusions: dict[str, set[int]] = {}
     for backend_name, qubits in args.exclude_qubits or []:
         exclusions.setdefault(backend_name, set()).update(qubits)
@@ -6328,6 +6404,12 @@ def main(argv: list[str] | None = None) -> int:
             args.state_prep_arms = list(state_prep_arms(args.state_prep_arms))
         except ValueError as error:
             parser.error(f"--state-prep-arms: {error}")
+    for flag, value in (("--latency-dt", args.latency_dt), ("--window-dt", args.window_dt)):
+        if value is not None:
+            if args.family != "latency-recovery":
+                parser.error(f"{flag} applies to the latency-recovery family only")
+            if value <= 0:
+                parser.error(f"{flag} must be a positive integer dt")
     if args.pin_layout is not None and args.family != "n21-orbit-rca":
         parser.error("--pin-layout applies to the n21-orbit-rca family only")
     if args.init_herald and args.family != "n21-orbit-rca":
@@ -6377,6 +6459,8 @@ def main(argv: list[str] | None = None) -> int:
         )
     if args.family == "state-prep-control" and args.max_replicas not in (None, 1):
         parser.error("state-prep-control pins one placement per named qubit; --max-replicas must be 1")
+    if args.family == "latency-recovery" and args.max_replicas not in (None, 1):
+        parser.error("latency-recovery reads one placement's schedule; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:
             parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")
@@ -6468,6 +6552,9 @@ def main(argv: list[str] | None = None) -> int:
         # Microsecond names and exclusive creation keep concurrent runs from
         # sharing a directory.
         run_dir = args.out / now.strftime("%Y-%m-%dT%H%M%S.%fZ") if args.out else None
+        args.seed_experiment = (
+            args.approved_record.name if args.approved_record else run_dir.name if run_dir is not None else None
+        )
         args.approved_scope = approved_backend_scope(args.approved_record) if args.submit else None
         choices, record = plan(service, args)
         if not reuse_approved_predictions(choices, record, args):

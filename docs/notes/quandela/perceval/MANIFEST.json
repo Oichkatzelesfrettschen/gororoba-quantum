@@ -87,6 +87,11 @@
    "path": "docs/notes/quandela/perceval/reference/runtime/platform_specs.md",
    "source": "https://perceval.quandela.net/docs/v1.3/reference/runtime/platform_specs.html",
    "sha256": "018203cf21d5783bb9b710a492125d92913e83ba10008f13299f7f78614c640b"
+  },
+  {
+   "path": "docs/notes/quandela/perceval/reference/utils/noise_model.md",
+   "source": "https://perceval.quandela.net/docs/v1.3/reference/utils/noise_model.html",
+   "sha256": "d22c7504899658600925a6b2b2ef9e7a083c11bc84c3e1dc6361e74d8eb30d5e"
   }
  ],
  "unreachable": []

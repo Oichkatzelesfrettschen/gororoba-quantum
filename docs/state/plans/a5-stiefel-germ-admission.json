@@ -1,0 +1,91 @@
+{
+  "schema": "work-plan-v1",
+  "id": "a5-stiefel-germ-admission",
+  "kind": "implementation",
+  "summary": "Admit a5-stiefel-universal and a5-nonzero-divisor-two-dimension-gap on the exact Pfaffian factorization Pf A = -(z.t) Q G and the twelve witness germs, after an independent opus re-check.",
+  "sources": [
+    "docs/evidence/a5-stiefel-pfaffian-germs/README.md"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "claims": [
+    "a5-stiefel-universal",
+    "a5-nonzero-divisor-two-dimension-gap"
+  ],
+  "scope": "Evidence bundle docs/evidence/a5-stiefel-pfaffian-germs with gates core-690 and core-691, the two registry status changes and the living notes that called the questions open.",
+  "owner": "repository maintainer",
+  "next_action": "Merge the admission PR after Codex review and green checks.",
+  "steps": [
+    {
+      "id": "admission",
+      "state": "done",
+      "action": "Change both registry statuses to established with the bundle as evidence.",
+      "acceptance": "research_state.py --check passes on main with both claims established.",
+      "receipts": [
+        {
+          "result": "PR 505 merged: research_state.json carries a5-stiefel-universal and a5-nonzero-divisor-two-dimension-gap as established with gates core-690 and core-691.",
+          "observed_at": "2026-10-26T00:00:12.190391+00:00",
+          "revision": "b798ddac929872aa1d2885bfc41cadcad132ba99",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "1d0439e8af4ba966643fe2bb26cf39afbe1ffcfa6acaaac3ff10d10ab7e25b9e"
+            },
+            {
+              "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+              "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+            }
+          ],
+          "scope_sha256": "4f9259c08349577a052aa3f1c3d4a338bdbc2f861ed9d5e0a0df570d891e69c0"
+        }
+      ]
+    },
+    {
+      "id": "independent-recheck",
+      "state": "done",
+      "action": "Re-derive both proofs independently from cd_core with exact computation and mutation controls.",
+      "acceptance": "core-690 regenerates result.json and core-691 rejects every identity mutation and corrupted row.",
+      "receipts": [
+        {
+          "result": "core-690 --check regenerated result.json and core-691 --self-test rejected 5 identity mutations, the G.I9 curve control and 8 corrupted rows; an orchestrator-side modular check from cd_core products confirmed det A = ((z.t)QG)^2 at 6 points, a sign-flip mutation failing, rank_R L_y = 2 rank_C A, and nullity 4 at 6 random Stiefel points.",
+          "observed_at": "2026-10-25T18:57:12.884887+00:00",
+          "revision": "f8c6e3e71ce04411da85aa5756b3d8dc19d5eee4",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+              "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+            },
+            {
+              "ref": "scripts/a5_stiefel_pfaffian_germs.py",
+              "sha256": "e71910649be3eeb3f3ef61270b0bd619a054308951b42fbd2416c74dceb199ce"
+            }
+          ],
+          "scope_sha256": "2f9d543ecae41587f9f9db6009842fc80aacb0b8c9b2a322c6a792e7a28e9437"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Both A_5 claims are established on main through PR 505 after an independent re-check, with the literature record crediting Biss-Christensen-Dugger-Isaksen for the H_5^perp slice.",
+  "receipts": [
+    {
+      "result": "PR 505 merged: research_state.json carries a5-stiefel-universal and a5-nonzero-divisor-two-dimension-gap as established with gates core-690 and core-691.",
+      "observed_at": "2026-10-26T00:00:12.190391+00:00",
+      "revision": "b798ddac929872aa1d2885bfc41cadcad132ba99",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "1d0439e8af4ba966643fe2bb26cf39afbe1ffcfa6acaaac3ff10d10ab7e25b9e"
+        },
+        {
+          "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+          "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+        }
+      ],
+      "scope_sha256": "19ad1a4f557be6f82416b29085d3be15c855f8e7c2cef946792409e0585dd8f7"
+    }
+  ]
+}

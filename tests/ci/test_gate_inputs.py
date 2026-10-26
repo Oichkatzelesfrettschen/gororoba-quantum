@@ -65,6 +65,7 @@ SLOW_FULL_GATES = (
     "core-behavior-03",
     "core-ascella-signed-coherence-physical-models-replay",
     "core-ascella-signed-coherence-configuration-holdout-replay",
+    "core-ascella-signed-coherence-drive-response-replay",
 )
 
 

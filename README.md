@@ -31,15 +31,15 @@ acquisition of every provider:
 | Evidence class | Status | Claim records |
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
-| exact finite certificate | established | 23 |
-| exploratory reanalysis | exploratory | 80 |
+| exact finite certificate | established | 25 |
+| exploratory reanalysis | exploratory | 81 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
-| mathematical claim | established | 21 |
-| mathematical claim | open | 3 |
-| numerical or stochastic simulation | established | 9 |
+| mathematical claim | established | 25 |
+| mathematical claim | open | 2 |
+| numerical or stochastic simulation | established | 10 |
 | preregistered emulator control | established | 10 |
-| preregistered hardware inference | established | 53 |
+| preregistered hardware inference | established | 58 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -329,6 +329,7 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7](results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7) | Quandela Cloud | BDSC drift series on qpu:belenos | qpu:belenos | 1 | 24 | completed | 1.12 credits |
 | [2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe](results/iqm/runs/2026-10-25T003850Z-garnet_mock-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet:mock | 1 | 24 | completed | 0.0 credits |
 | [2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe](results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet | 1 | 24 | completed | 1.0 credits |
+| [2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02](results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02) | Quandela Cloud | photonic signed-coherence perturbed compilations | qpu:ascella | 1 | 64 | completed | 1.016384 credits |
 | [2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 54 | failed | 0.0 credits |
 | [2026-10-25T190754Z-garnet_mock-measure-012-probe-probe](results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 1 | completed | 0.0 credits |
 | [2026-10-25T191223Z-garnet_mock-measurement-timing-probe-unitary-n16-s0p](results/iqm/runs/2026-10-25T191223Z-garnet_mock-measurement-timing-probe-unitary-n16-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 1 | completed | 0.0 credits |
@@ -337,23 +338,29 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-25T191247Z-garnet_mock-measurement-timing-probe-measure-n1-s0p](results/iqm/runs/2026-10-25T191247Z-garnet_mock-measurement-timing-probe-measure-n1-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 1 | completed | 0.0 credits |
 | [2026-10-25T191250Z-garnet_mock-measurement-timing-probe-ro0](results/iqm/runs/2026-10-25T191250Z-garnet_mock-measurement-timing-probe-ro0) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 1 | completed | 0.0 credits |
 | [2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 50 | completed | 0.0 credits |
+| [2026-10-25T193443.839527Z](results/live/2026-10-25T193443.839527Z) | IBM Quantum | latency-recovery | ibm_kingston | 1 | 34 | DONE | 40 s |
 | [2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits |
 | [2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p](results/iqm/runs/2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 1 | completed | 0.5 credits |
 | [2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p](results/iqm/runs/2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 1 | completed | 0.5 credits |
 | [2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits |
+| [2026-10-25T203822.040562Z](results/live/2026-10-25T203822.040562Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 19 | DONE | 43 s |
 | [2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic](results/iqm/runs/2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 8 | completed | 0.0 credits |
 | [2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic](results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 8 | completed | 0.5 credits |
+| [2026-10-25T225332.266272Z](results/live/2026-10-25T225332.266272Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 24 | DONE | 55 s |
 | [2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits |
 | [2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits |
+| [2026-10-25T233207.284563Z](results/live/2026-10-25T233207.284563Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 18 | DONE | 12 s |
 | [2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits |
 | [2026-10-26T004628Z-garnet-measurement-sequence-pinching-probe-probe](results/iqm/runs/2026-10-26T004628Z-garnet-measurement-sequence-pinching-probe-probe) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 4 | completed | 0.5 credits |
 | [2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 57 | completed | 5.0 credits |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
+The IBM service inventory observed at 2026-10-25T23:36:01.130164+00:00 holds 4 physical jobs with 150 settled seconds; the account then reported 150 of 600 s consumed in the rolling window ending 2026-10-25T23:36:01.079Z. That is an observation, not a current balance or an authorization.
+
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 74 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 75 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 45 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->

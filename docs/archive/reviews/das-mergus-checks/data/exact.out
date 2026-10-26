@@ -1,0 +1,16 @@
+pairs 60 occurrences 120 rejected 40 {'job-00': 24, 'job-01': 16}
+largest log change theta3-direct-arm0 4 8192 -> theta3-direct-arm3 586 8189
+diff params pairs [('job-00', 'theta0-x-arm0', 'theta0-y-arm3'), ('job-01', 'theta0-x-arm0', 'theta0-y-arm3')]
+job-01 same_parity= True rejected 8 of 14
+job-01 same_parity= False rejected 8 of 16
+job-00 per-job Holm 24
+job-01 per-job Holm 17
+realized Holm max rejected p 0.0007048346654295329
+job-00 non-config pairs at the same gaps: rejected at realized cutoff (116, 159)
+job-00 config pairs rejected 24 30
+job-00 all non-config pairs, gap parity 0 rejected (625, 988)
+job-00 all non-config pairs, gap parity 1 rejected (611, 988)
+job-01 non-config pairs at the same gaps: rejected at realized cutoff (452, 759)
+job-01 config pairs rejected 16 30
+job-01 all non-config pairs, gap parity 0 rejected (600, 974)
+job-01 all non-config pairs, gap parity 1 rejected (610, 1002)

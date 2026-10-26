@@ -1,0 +1,16 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=6&type=uint16",
+ "retrieved_utc": "2026-10-25T204252Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"6\", \"data\": [42862, 37522, 45230, 47441, 29246, 17743]}",
+ "raw_sha256": "6f74722bcd440d150060ceb1b72246a0d8f5befbd5b4b4d68620ea837aded1a3",
+ "type": "uint16",
+ "values": [
+  42862,
+  37522,
+  45230,
+  47441,
+  29246,
+  17743
+ ]
+}

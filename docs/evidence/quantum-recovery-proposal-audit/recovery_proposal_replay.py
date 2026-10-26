@@ -1,9 +1,10 @@
 """Recompute the computational claims of the quantum recovery proposal.
 
-Usage: replay.py REPO_ROOT POCKELS_CSV > result.json
+Usage: recovery_proposal_replay.py POCKELS_CSV > result.json
 
-REPO_ROOT supplies gororoba_quantum/cd_core.py, the sedenion specification.
-POCKELS_CSV is Fig4a_pockels.csv of Zenodo record 15653571; the replay
+gororoba_quantum/cd_core.py of the enclosing checkout is the sedenion
+specification, and parallel.ordered_map pools the independent fits and
+search rows. POCKELS_CSV is Fig4a_pockels.csv of Zenodo record 15653571; the replay
 refuses a file whose MD5 differs from the record's published checksum.
 """
 
@@ -18,6 +19,10 @@ from pathlib import Path
 
 import numpy as np
 from scipy.optimize import least_squares
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "gororoba_quantum"))
+from cd_core import cd_multiply_exact  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 POCKELS_MD5 = "9f29ac811cd48bd68556939497cb4dbe"
 
@@ -85,10 +90,7 @@ def queue_optimum(mean, delta, laplace):
     }
 
 
-def h3_jordan_witness(dim, limit):
-    """First Hermitian 3x3 pair over the dim-algebra, units descending, that breaks the Jordan identity."""
-    from cd_core import cd_multiply_exact
-
+def _h3_hermitian(dim, units):
     zero = [Fraction(0)] * dim
 
     def unit(index):
@@ -99,44 +101,57 @@ def h3_jordan_witness(dim, limit):
     def conj(a):
         return [a[0]] + [-v for v in a[1:]]
 
-    def herm(units):
-        a, b, c = (unit(u) for u in units)
-        return [[zero, a, b], [conj(a), zero, c], [conj(b), conj(c), zero]]
+    a, b, c = (unit(u) for u in units)
+    return [[zero, a, b], [conj(a), zero, c], [conj(b), conj(c), zero]]
 
-    def matmul(left, right):
+
+def _h3_jordan(dim, left, right):
+    def matmul(x, y):
         return [
             [
-                [sum(t) for t in zip(*[cd_multiply_exact(dim, left[i][k], right[k][j]) for k in range(3)], strict=True)]
+                [sum(t) for t in zip(*[cd_multiply_exact(dim, x[i][k], y[k][j]) for k in range(3)], strict=True)]
                 for j in range(3)
             ]
             for i in range(3)
         ]
 
-    def jordan(left, right):
-        lr, rl = matmul(left, right), matmul(right, left)
-        return [[[(x + y) / 2 for x, y in zip(lr[i][j], rl[i][j], strict=True)] for j in range(3)] for i in range(3)]
+    lr, rl = matmul(left, right), matmul(right, left)
+    return [[[(x + y) / 2 for x, y in zip(lr[i][j], rl[i][j], strict=True)] for j in range(3)] for i in range(3)]
 
-    tried = 0
-    descending = list(range(dim - 1, 0, -1))
-    for units_a in itertools.product(descending, repeat=3):
-        a = herm(units_a)
-        a2 = jordan(a, a)
-        for units_b in itertools.product(descending, repeat=3):
-            tried += 1
-            if tried > limit:
-                return {"found": False, "pairs_tried": limit}
-            b = herm(units_b)
-            lhs, rhs = jordan(jordan(a, b), a2), jordan(a, jordan(b, a2))
-            residual = [
-                [i, j, n, str(lhs[i][j][n] - rhs[i][j][n])]
-                for i in range(3)
-                for j in range(3)
-                for n in range(dim)
-                if lhs[i][j][n] != rhs[i][j][n]
-            ]
-            if residual:
-                return {"found": True, "a_offdiag_units": units_a, "b_offdiag_units": units_b, "residual": residual}
-    return {"found": False, "pairs_tried": tried}
+
+def _h3_row(item):
+    """(B position, residual) of the first B in descending unit order that breaks the identity with A, or None."""
+    dim, units_a = item
+    a = _h3_hermitian(dim, units_a)
+    a2 = _h3_jordan(dim, a, a)
+    for position, units_b in enumerate(itertools.product(range(dim - 1, 0, -1), repeat=3)):
+        b = _h3_hermitian(dim, units_b)
+        lhs, rhs = _h3_jordan(dim, _h3_jordan(dim, a, b), a2), _h3_jordan(dim, a, _h3_jordan(dim, b, a2))
+        residual = [
+            [i, j, n, str(lhs[i][j][n] - rhs[i][j][n])]
+            for i in range(3)
+            for j in range(3)
+            for n in range(dim)
+            if lhs[i][j][n] != rhs[i][j][n]
+        ]
+        if residual:
+            return position, list(units_b), residual
+    return None
+
+
+def h3_jordan_witness(dim, limit):
+    """First Hermitian 3x3 pair over the dim-algebra, units descending, that breaks the Jordan identity.
+
+    Rows of A run through the pool; the first failure in (A, B) order within
+    the first limit pairs is the witness, the order a serial scan reports.
+    """
+    per_row = (dim - 1) ** 3
+    rows = list(itertools.islice(itertools.product(range(dim - 1, 0, -1), repeat=3), -(-limit // per_row)))
+    found = ordered_map(_h3_row, [(dim, units_a) for units_a in rows], min_items=1)
+    for index, (units_a, hit) in enumerate(zip(rows, found, strict=True)):
+        if hit is not None and index * per_row + hit[0] < limit:
+            return {"found": True, "a_offdiag_units": list(units_a), "b_offdiag_units": hit[1], "residual": hit[2]}
+    return {"found": False, "pairs_tried": limit}
 
 
 def pockels_sweeps(path):
@@ -160,15 +175,25 @@ def landau_response(params, field):
     return amplitude * np.abs(z) / (1 + 3 * z**2)
 
 
+LANDAU_STARTS = tuple(
+    itertools.product((300.0, 1000.0, 2000.0, 4000.0, 8000.0), (0.003, 0.01, 0.03, 0.1, 0.3), (-0.01, 0.0, 0.01))
+)
+
+
+def _landau_start(item):
+    field, response, start = item
+    fit = least_squares(lambda p: landau_response(p, field) - response, start, x_scale=[1000, 0.1, 0.01])
+    return float(fit.cost), fit.x
+
+
 def landau_fit(field, response):
-    best = None
-    for a0, s0, o0 in itertools.product(
-        (300.0, 1000.0, 2000.0, 4000.0, 8000.0), (0.003, 0.01, 0.03, 0.1, 0.3), (-0.01, 0.0, 0.01)
-    ):
-        fit = least_squares(lambda p: landau_response(p, field) - response, (a0, s0, o0), x_scale=[1000, 0.1, 0.01])
-        if best is None or fit.cost < best.cost:
+    """Lowest-cost least-squares fit over LANDAU_STARTS; a tie keeps the earlier start."""
+    fits = ordered_map(_landau_start, [(field, response, start) for start in LANDAU_STARTS], min_items=1)
+    best = fits[0]
+    for fit in fits[1:]:
+        if fit[0] < best[0]:
             best = fit
-    params = best.x.copy()
+    params = best[1].copy()
     params[1] = abs(params[1])
     return params
 
@@ -187,10 +212,7 @@ def blocked_rmse(field, response, blocks=5):
 
 
 def main():
-    repo, csv_path = Path(sys.argv[1]), Path(sys.argv[2])
-    sys.path.insert(0, str(repo / "gororoba_quantum"))
-    from cd_core import cd_multiply_exact
-
+    csv_path = Path(sys.argv[1])
     digest = hashlib.md5(csv_path.read_bytes(), usedforsecurity=False).hexdigest()
     if digest != POCKELS_MD5:
         raise SystemExit(f"Fig4a_pockels.csv md5 {digest} differs from the record's {POCKELS_MD5}")

@@ -36,6 +36,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Planning | work records, next actions, blockers and completion receipts | [planning entrance](state/plans.md), [commands](runbooks/plan-tracker.md), [migration evidence](evidence/plan-reconciliation/README.md) |
 | State and records | claim registry, run census, roadmap | [RESEARCH_STATE.md](state/RESEARCH_STATE.md) |
 | Evidence closure | source-relative job identities, denominators, dependencies and acquisition decisions | [derived view](evidence/evidence-closure/README.md), [operator procedure](runbooks/evidence-closure.md), [derivation-led synthesis source](notes/topics/algebra_measurement_synthesis.tex) |
+| Results index and archive copies | run, job, acquisition and claim lookups; Software Heritage and git bundle copies | [results index](runbooks/results-index.md), [archive copies](runbooks/repository-archive.md), [archive observations](evidence/repository-archive/README.md) |
 | Archive | handoffs, handbacks, review reports | [archive/reviews/README.md](archive/reviews/README.md) |
 
 ## Start here by task
@@ -61,11 +62,13 @@ the [bibliographic reconciliation](notes/papers/hypercomplex_quantum_crossref_re
 The active [C5 exact replay](evidence/c5_zero_divisor_code/replay-exact.py) uses rational products
 and matrices for certificates, retaining numerical noisy decoding and the original result bytes.
 The checksum-bound historical README and replay keep their bytes. The active source ledgers
-for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-exact-int-dimension),
-[projective limits](evidence/projective_kernel_limits/SHA256SUMS-exact-int-dimension) and
-[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-exact-int-dimension) bind the
-`cd_core.py` whose dimension guard admits only exact int, and preserve every other identity of
-their `SHA256SUMS-exact-contracts` predecessors and historical `SHA256SUMS` files.
+for [kernel determinants](evidence/kernel_determinant/SHA256SUMS-ordered-map-cancel),
+[projective limits](evidence/projective_kernel_limits/SHA256SUMS-ordered-map-cancel) and
+[real frontiers](evidence/real_frontier_graphs/SHA256SUMS-ordered-map-cancel) bind the
+`parallel.py` whose `ordered_map` cancels its queued chunks once an item raises, and preserve every
+other identity of their `SHA256SUMS-exact-int-dimension` predecessors, which bind the `cd_core.py`
+whose dimension guard admits only exact int, and of the earlier `SHA256SUMS-exact-contracts` and
+historical `SHA256SUMS` files.
 
 The [rank-sector endpoint replay](../results/live/rank-sector-endpoint-decomposition-exact-contracts.json)
 retains the scientific fields of the [historical report](../results/live/rank-sector-endpoint-decomposition.json)
@@ -113,8 +116,32 @@ differs from it only in the `cd_core.py` digest.
 | [1107.1375.md](notes/papers/1107.1375.md) | Bales 2003 twisted group algebras and the recursive Cayley-Dickson twist, with its index and product convention |
 | [2103.12805.md](notes/papers/2103.12805.md) | Flaut and Boboescu 2021 twist-tree recursion and the twisted-group-algebra theorem for the Cayley-Dickson process (hosted, CC BY 4.0) |
 | [1003.0429.md](notes/papers/1003.0429.md) | Morier-Genoud and Ovsienko 2011 cubic twisted group algebras; the octonion cochain and the Cayley-Dickson algebras outside the cubic class |
+| [2608.26890.md](notes/papers/2608.26890.md) | Zhilina 2024 diameter 3 of the commutativity graph of the real sedenion zero divisors (arXiv 2026 posting, external-only) |
+| [guterman-zhilina-2023-split-algebras.md](notes/papers/guterman-zhilina-2023-split-algebras.md) | Guterman and Zhilina 2023 split-algebra zero divisors and relation graphs, abstract only (no open copy) |
+| [cawagas-2004-sedenion-structure.md](notes/papers/cawagas-2004-sedenion-structure.md) | Cawagas 2004 sedenion subalgebras and zero divisors, bibliographic identity only (journal host unreachable) |
 | [2512.07210.md](notes/papers/2512.07210.md) | Wilmot 2026 sedenion automorphisms: the graded sedenion table and 35-term calibration (both agree with `cd_core`), and the Schafer and Brown discrepancy for `Aut(S)` |
 | [2609.10569.md](notes/papers/2609.10569.md) | Gresnigt 2026 review of the sedenion `S3` family symmetry: Table 5 (11 printed defects against `cd_core`) and the `S3` maps `epsilon` and `psi`, certified on basis pairs |
+| [sources/cayley-dickson-2n-ion-survey.md](sources/cayley-dickson-2n-ion-survey.md) | survey of Cayley-Dickson sources at dimension 16 and above: candidate table, dispositions, convention map and mismatches |
+| [0804.3416.md](notes/papers/0804.3416.md) | de Marrais 2008 box-kite emanation tables: rules 0 to 2 and the CPO trip counts to 256 dimensions replayed, Brocade Table 1 (42 of 42 cells), and the emanation-table formula |
+| [0907.2047.md](notes/papers/0907.2047.md) | Cawagas et al. 2009 the 373 subloops of the 32-dimensional Cayley-Dickson loop, the Moufang counts per order-16 subloop and their tie to the associator census |
+| [math-0404395.md](notes/papers/math-0404395.md) | Moreno 2004 alternative elements: the two-term alternative elements equal the nullity-0 two-term elements (126 at 16, 342 at 32) |
+| [math-0512516.md](notes/papers/math-0512516.md) | Moreno 2005 monomorphisms between Cayley-Dickson algebras and the Theorem 2.5 dichotomy |
+| [math-0405424.md](notes/papers/math-0405424.md) | Moreno 2004 the exponential map on the Cayley-Dickson algebras and the centralizer identity of Remark 2 |
+| [math-0404172.md](notes/papers/math-0404172.md) | Moreno 2004 Hopf construction in higher dimensions and the associator identity of Lemma 4.4 |
+| [1102.5151.md](notes/papers/1102.5151.md) | Kirshtein 2011 automorphism groups of Cayley-Dickson loops: orders 2, 24, 1344, 2688 and the unsound third claim of Lemma 36 |
+| [1405.6888.md](notes/papers/1405.6888.md) | Saniga et al. 2014 finite geometry of the Cayley-Dickson tower: Tables 1 to 3 against `cd_core` (opposite algebra on the basis) and the line counts for 8 to 64 dimensions |
+| [2606.27798.md](notes/papers/2606.27798.md) | Aryapoor, Back and Pautrel 2026 involutions in the Cayley-Dickson construction: alpha and beta involutions, nuclei and commuter of dimension 1 at 8, 16 and 32 |
+| [2609.11588.md](notes/papers/2609.11588.md) | Lemley 2026 quasilinear multiplication: Algorithm 3.5 replayed for 2 to 256 dimensions and the multiplication-count bound (hosted, CC BY 4.0) |
+| [2603.20495.md](notes/papers/2603.20495.md) | Chapman and Levin 2026 central products of Cayley-Dickson loops: associativity degree for 4 to 64 dimensions (hosted, CC BY 4.0) |
+| [2501.00123.md](notes/papers/2501.00123.md) | Chapman, Levin, Vishne and Zaninelli 2024 loops with involution: the automorphism-group statement of the abstract against exact counts |
+| [1707.07318.md](notes/papers/1707.07318.md) | Bales 2017 the eight doubling products: `P3T` equals `cd_core`, four of the eight are not octonionic, and the twist rules reproduce to 64 dimensions |
+| [1107.1301.md](notes/papers/1107.1301.md) | Bales 2011 catalog of 32 Cayley-Dickson-like products: the eight quaternion-property products, the label map to 1707.07318 and the Table 7 title |
+| [hep-th-0601033.md](notes/papers/hep-th-0601033.md) | Kuwata, Fujii and Nakashima 2006 alternativity and reciprocity: the Gram operator spectrum of alternative pairs (4/8/4 sectors at 16, five clusters at 32) |
+| [2505.06011.md](notes/papers/2505.06011.md) | Wilmot 2025 G2 and the 30 primary 3-forms: Table 1 classes, the 12 zero divisors of the pseudo-octonion algebras, the 15-dimensional counts and the unsupported isomorphism claim |
+| [2205.05605.md](notes/papers/2205.05605.md) | Chapman, Guterman, Vishkautsan and Zhilina 2022 roots and critical points of polynomials: the sedenion counterexamples of Example 2.6 and spherical roots |
+| [2512.22134.md](notes/papers/2512.22134.md) | Gazeau 2026 the (R+L) mnemonic matrix rule for octonions and the Cayley-Dickson tower, the opposite algebra of `cd_core` (hosted, CC BY 4.0) |
+| [brown-1967-generalized-cayley-dickson.md](notes/papers/brown-1967-generalized-cayley-dickson.md) | R. B. Brown 1967 generalized Cayley-Dickson algebras: Aut(A_t) = Aut(A_(t-1)) x S3 for t = 4 to 6 and the order-3 map psi |
+| [chan-dokovic-2006-sedenion-subalgebras.md](notes/papers/chan-dokovic-2006-sedenion-subalgebras.md) | Chan and Dokovic 2006 conjugacy classes of subalgebras of the real sedenions: the subalgebra census and the 6-dimensional zero-divisor subspace |
 | [1907.07024.md](notes/papers/1907.07024.md) | Heikoop et al. 2020 morphisms of skew Hadamard matrices: the field-isomorphism map from quaternary unit Hadamard matrices to real Hadamard matrices |
 | [ocathain-2012-nonaffine-hadamard.md](notes/papers/ocathain-2012-nonaffine-hadamard.md) | O Cathain 2012 doubly transitive automorphism groups of Hadamard matrices: Ito's classification, Paley matrices and `PSL_2(q)`, skew difference sets (deposited text) |
 | [kivunge-2013-sign-matrices-2n-ons.md](notes/papers/kivunge-2013-sign-matrices-2n-ons.md) | Kivunge 2013 conference slides on sign matrices of the `2^n`-ons: Hadamard and skew Hadamard claims, Smith-Conway sign matrices equal to the `cd_core` transpose |
@@ -127,6 +154,13 @@ differs from it only in the `cd_core.py` digest.
 | [2506.05988.md](notes/papers/2506.05988.md) | Fyrillas et al. 2025 induced phase shifters and the acyclic-pruned-graph crosstalk-robustness criterion (hosted, CC BY 4.0) |
 | [2606.18408.md](notes/papers/2606.18408.md) | Tully et al. 2026 Walsh parity-check filters on Belenos: fixed-pattern bias, compilation-dependent leakage and a calibration-linked HOM episode (unrefereed) |
 | [2005.01743.md](notes/papers/2005.01743.md) | Ollivier et al. 2021 Hong-Ou-Mandel visibility with multi-photon noise: separation of g2 and indistinguishability |
+| [quant-ph-0302031.md](notes/papers/quant-ph-0302031.md) | Horodecki, Shor and Ruskai 2003 entanglement-breaking channels: measure-and-prepare form and the Choi-state separability test |
+| [quant-ph-9807091.md](notes/papers/quant-ph-9807091.md) | Horodecki et al. 1999 teleportation channel: average fidelity from singlet fraction, `f = (F d + 1)/(d + 1)`, and the classical bound `2/(d + 1)` |
+| [1210.4583.md](notes/papers/1210.4583.md) | Chitambar et al. 2014 LOCC survey: the inclusion of LOCC in separable operations |
+| [quant-ph-0007058.md](notes/papers/quant-ph-0007058.md) | Calsamiglia and Lutkenhaus 2001 linear-optical Bell-state analyzer: the 50 percent bound and its assumptions |
+| [quant-ph-9605038.md](notes/papers/quant-ph-9605038.md) | Horodecki et al. 1996 separability criterion: positive partial transpose is exact for 2x2 and 2x3 |
+| [2411.12387.md](notes/papers/2411.12387.md) | Laneve et al. 2024 teleportation between two dissimilar quantum dots over fiber and a 270 m free-space link: sources, tuning, measured fidelities |
+| [1302.0932.md](notes/papers/1302.0932.md) | van Enk and Blume-Kohout 2013 common-state assumption of tomography and the Akaike test for source drift |
 | [2004.14018.md](notes/papers/2004.14018.md) | White et al. 2020 process-tensor characterization and the intervention-based memory lower bound on IBM devices |
 | [riley-2008-nist-sp-1065.md](notes/papers/riley-2008-nist-sp-1065.md) | Riley 2008 NIST SP 1065: Allan, overlapping Allan and modified Allan variances and the noise types they separate |
 | [quant-ph-0501020.md](notes/papers/quant-ph-0501020.md) | Toth and Guhne 2005 stabilizer entanglement witnesses and the two-qubit Bell-fidelity form F > 1/2 |
@@ -154,7 +188,7 @@ differs from it only in the `cd_core.py` digest.
 | [topics/box-kites/README.md](notes/topics/box-kites/README.md) | box-kite experiment program index |
 | [bdsc-pauli-readout.md](notes/topics/bdsc-pauli-readout.md) | BDSC target and blade effects as three-term four-qubit Pauli sums; local readout and 13-basis cover |
 | [algebra-hardware-probe-principles.md](notes/topics/algebra-hardware-probe-principles.md) | first principles of algebra hardware probes: mutation test, eigen-observable, interleaving, null arm, noisy coherent response; findings ledger of the Garnet runs |
-| [primorial-cover-defects.md](notes/topics/primorial-cover-defects.md) | missing primorial-wheel gaps 20, 32, 86, 88 as restricted covers: exhaustive defect certificates, capacity and LP bounds, singleton repair, slice Walsh Hamiltonians and the eight-CNOT parity network |
+| [primorial-cover-defects.md](notes/topics/primorial-cover-defects.md) | missing primorial-wheel gaps 20, 32, 86, 88 as restricted covers: exhaustive defect certificates, capacity and LP bounds, singleton repair, slice Walsh Hamiltonians, the eight-CNOT parity network and the reproduction of Ziller Table 1 for `k <= 20` |
 | [c5-zero-divisor-code-falsification.md](notes/topics/c5-zero-divisor-code-falsification.md) | zero-divisor code, falsified thought experiment |
 | [cd-star-lattice-tower.md](notes/topics/cd-star-lattice-tower.md) | Tuna-17 as the Gaussian-integer star lattice; lifts to dimensions 3, 4, 8, 16, the Paley identification of their symmetry groups and the sedenion zero divisors |
 | [evidence/cd-star-lattice/README.md](evidence/cd-star-lattice/README.md) | exact star-lattice census bound to the Tuna-17 catalogue topology, with SL(2, q) and PGL(2, 7) certificates and a nauty replay |
@@ -168,8 +202,11 @@ differs from it only in the `cd_core.py` digest.
 | [evidence/cd-sign-python-translation/README.md](evidence/cd-sign-python-translation/README.md) | Certified raw-AST translation, an independent source interpreter and all-integer execution preservation for cd_sign, with explicit parsing and helper trust boundaries |
 | [evidence/cd-associator-point-indicators/README.md](evidence/cd-associator-point-indicators/README.md) | All-dimension Rocq proof of Proposition 5's point-indicator phase formula and exact degree, with kernel receipts |
 | [evidence/cd-associator-census/README.md](evidence/cd-associator-census/README.md) | Rocq proof, for every Cayley-Dickson dimension, of the census of unordered basis pairs by associator-phase ANF degree (21, then 3 2^d (2^(d+1) - 1) at degree d), with its kernel receipts |
+| [evidence/a5-stiefel-pfaffian-germs/README.md](evidence/a5-stiefel-pfaffian-germs/README.md) | exact Pfaffian factorization Pf A = -(z.t) Q G proving every A_5 Stiefel element a zero divisor, and the tangent-bound germs at the twelve non-zero-divisor gap witnesses |
+| [evidence/stiefel-pfaffian-higher/README.md](evidence/stiefel-pfaffian-higher/README.md) | exact Pfaffian transport and cofactor polynomial f_n for doubly pure elements of A_6 to A_8, the irreducibility of f_n, the failure of Pf A = 0 on the Stiefel set above A_5, Stiefel witnesses at A_7 and A_8, and the zero-divisor Stiefel locus |
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
 | [relativistic-metrology-scale.md](notes/topics/relativistic-metrology-scale.md) | the Belenos light cone as a mode-reachability set; relativistic and astronomical phases against the measured device instabilities, with the falsifiers of an astronomical coupling |
+| [pais-claims-falsification.md](notes/topics/pais-claims-falsification.md) | the Pais patent equations against Maxwell, QED and general-relativity bounds; the NAWCAD null; the QET passivity ladder and its information-excess endpoint as the QPU-testable mechanism |
 | [open_gororoba_survey_deep_notes.md](notes/topics/open_gororoba_survey_deep_notes.md) | deep notes on the open_gororoba Rocq corpus |
 | [prior_work_synthesis.md](notes/prior_work_synthesis.md) | what is known, what is new, labeled per claim |
 | [koebisu_rank_stratum_research.md](notes/koebisu_rank_stratum_research.md) | dimension-32 rank question |
@@ -196,13 +233,15 @@ differs from it only in the `cd_core.py` digest.
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
 | [design/bdsc-tuna17-pauli-pilot.md](design/bdsc-tuna17-pauli-pilot.md) | Tuna-17 pilot of the BDSC target as a four-qubit local Pauli readout: bank, placement, analysis |
 | [design/iqm-garnet-timing-pilot.md](design/iqm-garnet-timing-pilot.md) | IQM Garnet billing pilot: per-job, per-shot, per-circuit and active-reset cost |
+| [design/heron-latency-logical-recovery.md](design/heron-latency-logical-recovery.md) | Heron r2 feed-forward against Pauli-frame recovery of a bit-flip-coded Bell pair: latency and window cost of logical fidelity, arms, contracts, power |
 | [design/iqm-garnet-signed-kernel-probe.md](design/iqm-garnet-signed-kernel-probe.md) | signed sedenion kernel probe on IQM Garnet: odd dilation overlap, heralded active reset, prediction |
 | [design/iqm-garnet-kernel-cancellation-probe.md](design/iqm-garnet-kernel-cancellation-probe.md) | kernel cancellation probe on IQM Garnet: zero-divisor sign at 37 CZ, bright control, over-rotation trains, H1-H5 |
 | [design/iqm-garnet-idle-schedule-train-readout.md](design/iqm-garnet-idle-schedule-train-readout.md) | IQM Garnet idle schedule (ASAP or ALAP, from a pulsed qubit's relaxation beside an uncoupled identity train) and QB6/QB11 train over-rotation fitted with each qubit's own readout, H1-H2 |
 | [design/iqm-garnet-measurement-sequence-pinching.md](design/iqm-garnet-measurement-sequence-pinching.md) | IQM Garnet measurement-sequence pinching: Zeno build-up of recorded mid-circuit measurements against a unitary null, a delay control and a settled-readout control on six uncoupled qubits, with pi/2-pair steps, the diagnostic-based qubit exclusions and the pre-flight stop rule |
 | [design/iqm-garnet-measurement-sequence-diagnostic.md](design/iqm-garnet-measurement-sequence-diagnostic.md) | IQM Garnet diagnostic of the unitary-arm excess: axis phase per small-angle prx pulse against |1> loss before the readout, eight circuits on the pinching qubits, with a preregistered decision rule |
-| [design/primorial-cover-defect-probes.md](design/primorial-cover-defect-probes.md) | primorial cover-defect circuits: Grover quotient, phase-gradient tomography with a zero-angle null arm, the gap-86 and gap-88 repair contrasts against the mutation test, the Kingston noise prediction and the hardware decision |
+| [design/primorial-cover-defect-probes.md](design/primorial-cover-defect-probes.md) | primorial cover-defect circuits: Grover quotient, phase-gradient tomography with a zero-angle null arm, the gap-86 and gap-88 repair contrasts against the mutation test, the Kingston noise prediction, the static-ZZ and axis-tilt residuals and the closed hardware decision |
 | [design/bdsc-qualification.md](design/bdsc-qualification.md) | Belenos dark-subspace certificate: provider contracts and qualification measurements; [principal-angle replay](notes/quandela/bdsc.md) |
+| [design/ascella-belenos-entanglement-teleportation.md](design/ascella-belenos-entanglement-teleportation.md) | Ascella-Belenos entanglement and teleportation: claim levels, gates, ideal dual-rail instrument ([qd_network_protocol.py](../scripts/qd_network_protocol.py)), decision statistics, the single-chip Belenos rehearsal case ([qd_teleportation_rehearsal.py](../scripts/qd_teleportation_rehearsal.py)) and the unsent provider request |
 | [runbooks/bdsc-qualification-case.md](runbooks/bdsc-qualification-case.md) | order, prerequisites and stop conditions of the BDSC six-state consistency case |
 | [runbooks/bdsc-tuna17-pauli-pilot.md](runbooks/bdsc-tuna17-pauli-pilot.md) | build, dry run and submission order of the Tuna-17 four-qubit Pauli readout pilot |
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
@@ -219,6 +258,7 @@ differs from it only in the `cd_core.py` digest.
 |---|---|
 | [ibm_heron_platform.md](notes/ibm_heron_platform.md) | measured Targets and current documentation |
 | [hardware-controls.md](notes/ibm_quantum/hardware-controls.md) | every control reachable through qiskit-ibm-runtime |
+| [learning-quantum-teleportation.md](notes/ibm_quantum/learning-quantum-teleportation.md) | IBM Quantum Learning teleportation lesson: outcome-to-correction table |
 | [qiskit-ecosystem.md](notes/qiskit-ecosystem.md) | Qiskit ecosystem audit |
 | [qiskit-ecosystem-install-plan.md](notes/qiskit-ecosystem-install-plan.md) | Qiskit ecosystem install plan |
 
@@ -229,6 +269,7 @@ differs from it only in the `cd_core.py` digest.
 | [tuna17-bipartite-designs.md](notes/quantum_inspire/tuna17-bipartite-designs.md) | Tuna-17 cubic Walsh classes and box-kite packing |
 | [quandela/literature.md](notes/quandela/literature.md) | published methods for characterizing a Belenos-class mesh |
 | [quandela/quickstart.md](notes/quandela/quickstart.md) | Quandela Cloud quick start |
+| [quandela/roadmap-2026-03.md](notes/quandela/roadmap-2026-03.md) | Quandela March 2026 roadmap and the Welinq interconnect announcement: networking and modular-system statements with page and target year |
 | [iqm/python-stack.md](notes/iqm/python-stack.md) | Python stack for IQM Resonance |
 
 ### Simulation

@@ -488,7 +488,7 @@ manifest identity, estimator and rendering code accompany the final artwork.
 freezes the common twelve-mode circuit, exact entry sequence, analyzer
 conventions and commuting mutation in
 [`results/quandela/cases/ascella_signed_coherence/job-00`](../../results/quandela/cases/ascella_signed_coherence/job-00/cases.json).
-Its `--check` mode, gate core-680, validates the retained bytes: every
+Its `--check` mode, run by gate core-record-check-07 (tests/test_cli_record_checks.py), validates the retained bytes: every
 iteration's Perceval unitary matches the twelve-mode manifest operator, every
 operator matches the closed form `[[Q+,Q-],[Q-,Q+]]` under its analyzer, and
 every registered ideal equals the readout law of that form. The check also
@@ -1008,7 +1008,12 @@ family at the certificate tolerance.
 ### Leave-one-configuration-out from training data
 
 [`ascella_configuration_holdout.py`](../../scripts/ascella_configuration_holdout.py)
-writes [`configuration-holdout.json`](../evidence/ascella-order-coefficients/configuration-holdout.json).
+writes [`configuration-holdout-unclipped-light.json`](../evidence/ascella-order-coefficients/configuration-holdout-unclipped-light.json).
+It supersedes [`configuration-holdout.json`](../evidence/ascella-order-coefficients/configuration-holdout.json),
+built while the static fit clipped the block light at 1e-9: an L-BFGS path from
+zero that crosses a clipped cell takes another branch, and the combined
+family's fold 3 there sits in a local mode 4.36 higher in negative log
+posterior. The sums below are unchanged at the precision shown.
 For each static family and each of job-00's 30 configurations, the fold fit
 removes the configuration's settings and reaches the posterior mode from the
 zero start, so neither the start nor the mode selection reads the left-out
@@ -1060,7 +1065,15 @@ a_h under N(0, 0.3^2) and k_h under N(0, 0.1^2), whose spread at the mid
 drive pi (0.31 rad) matches the offset prior (252 parameters).
 [`ascella_configuration_holdout.py --drive`](../../scripts/ascella_configuration_holdout.py)
 fits it under the folds and score of the section above and writes
-[`heater-drive-holdout.json`](../evidence/ascella-order-coefficients/heater-drive-holdout.json).
+[`heater-drive-holdout-heater-basis.json`](../evidence/ascella-order-coefficients/heater-drive-holdout-heater-basis.json).
+The family runs as the heater basis (1, phi) of the next section, with each
+heater's offset and slope adjacent among the coefficients;
+[`heater-drive-holdout.json`](../evidence/ascella-order-coefficients/heater-drive-holdout.json),
+written while the offsets and slopes formed two blocks, keeps its bytes.
+The reordered L-BFGS path from zero reaches another mode in two folds, 0.13
+lower in negative log posterior on left-out configuration 20 and 0.39 higher
+on 23, which serves no readout; the X sum moves from 36.05 to 36.09 and every
+figure below is unchanged at its quoted precision.
 The family, its single prior width and the reading of each outcome were fixed
 in step `drive-dependent-heater-family` of plan
 `ascella-configuration-holdout-training-only` before the run: a sum of 30 or
@@ -1091,3 +1104,237 @@ left-out configurations otherwise; any other outcome is inconclusive.
   term in the drive and crosstalk through A stay outside the family. A family
   with those terms whose standardized sums fall below 20 with variance ratios
   at most 1 would lower it.
+
+### Polynomial and harmonic drive responses
+
+The drive-linear family above is one member of a wider class: a heater's
+drive is fixed by its returned phase, so an error in its phase-voltage map
+shifts it by some function of that phase. The passive offsets b of
+(0.1 +- 1.2) rad ([2306.00874](../notes/papers/2306.00874.md), SI S-IV) set
+where each heater wraps, and a quadratic drive term bends the response; both
+lie outside the drive-linear family.
+[`ascella_drive_response.py`](../../scripts/ascella_drive_response.py) shifts
+heater h of configuration c by sum_k b_k(phi_ch) w_hk under independent
+N(0, tau^2) priors on the coefficients, in two bases:
+
+- polynomial: shifted Legendre polynomials of the drive (phi mod 2 pi) / 2 pi
+  to order 1 or 2, which place every heater's wrap at phi = 0;
+- harmonic: 1, cos(j phi) and sin(j phi) to order 1 or 2. Each heater wraps at
+  its own unreported offset b_h, and a per-heater response to the drive is a
+  2 pi-periodic function of the returned phase whatever the wrap, which the
+  harmonics expand without one.
+
+Order 0 is the static heater-offset family, and the drive-linear family is
+the basis (1, phi) with its own widths for the two functions
+(`static_light` evaluates both through one heater basis). Each family is fitted on all of
+job-00 and scored on job-01 as in the physical-model table, and runs the
+training-only folds of the section above on the 19 configurations that serve
+the X or Y readout, from the zero start. The reading is that section's,
+fixed before this run: a standardized sum of 30 or more on 10 for X or Y keeps
+the shortfall, and a sum below 20 with a median prediction-to-counting
+variance ratio above 1 reads as weakly identified predictions.
+[`drive-response.json`](../evidence/ascella-order-coefficients/drive-response.json)
+holds the outcome:
+
+| Family | Coefficients | Job-00 X / Y | Job-01 held-out X / Y | Left-out X / Y, counting only | Left-out X / Y, with prediction variance | Median prediction / counting variance, X / Y |
+|---|---|---|---|---|---|---|
+| polynomial, order 1, tau 0.3 | 252 | 3.7 / 5.7 | 5.4 / 10.8 | 539 / 225 | 32 / 28 | 10 / 2.8 |
+| polynomial, order 2, tau 0.3 | 378 | 1.2 / 1.9 | 4.0 / 9.0 | 426 / 94 | 7.6 / 3.9 | 32 / 22 |
+| harmonic, order 1, tau 0.3 | 378 | 1.3 / 1.7 | 4.0 / 9.4 | 386 / 103 | 3.5 / 3.3 | 104 / 20 |
+| harmonic, order 1, tau 0.1 | 378 | 1.9 / 3.1 | 4.0 / 12.6 | 387 / 133 | 14.8 / 7.1 | 21 / 6.5 |
+| harmonic, order 2, tau 0.3 | 630 | 1.2 / 1.2 | 4.3 / 6.7 | 564 / 127 | 1.5 / 1.0 | 485 / 182 |
+
+- Every family fits job-00 within its counting noise and passes job-01 with
+  X0 + Xc2 at -0.026 to -0.028, inside the interval. That tests
+  reproducibility, which job-00's raw configuration values already give.
+- The order-1 polynomial spans the drive-linear family's functions under one
+  prior width for both, and it keeps the shortfall on X (32) under the preset
+  criterion, as the drive-linear family does (36.1); its Y sum of 28 lies
+  between the thresholds.
+- The other four predict left-out configurations with a median prediction
+  variance 6.5 to 485 times the counting variance, and their sums fall below
+  20: the 29 training configurations do not determine their left-out
+  predictions, so the test neither rejects nor supports them. Their point
+  predictions do worse than the returned mesh on every readout (X 386 to 564
+  against 343, Y 94 to 133 against 75).
+
+The harmonic families carry each heater's wrap point and the order-2
+families a quadratic drive term, the terms the drive-linear section left
+outside its family, and 29 training configurations do not identify them.
+They neither meet that section's lowering condition (sums below 20 with
+variance ratios at most 1) nor sharpen the shortfall, so its medium-high
+confidence stands. A hardware case that repeats one configuration under many
+perturbed compilations would constrain these coefficients: confidence would
+rise if the shortfall remained under them and fall if they predicted
+left-out configurations within the preset criterion.
+
+The posteriors of these 252 to 630 coefficients hold several modes, and which
+one an L-BFGS path from zero reaches follows the rounding of the BLAS kernel
+and of numpy's SIMD loops: under a forced SSE-only OpenBLAS kernel one
+order-1 harmonic family reaches a mode 0.009 lower in negative log posterior
+than under the host kernel. The record is written and replayed under the
+kernel pair every gate path sets (`ci/run_gates.py`, `ci/pr_checks.sh` and the
+audit workflow): the OpenBLAS Haswell kernel and numpy's x86-64-v3 loops with
+AVX-512 dispatch off, which every x86-64-v3 runner shares. The static fit's block light
+is the normalized |psi|^2 without a clip: the order-2 harmonic family puts a
+fold's cell below 1e-9, where a clipped light zeroed its derivative and the
+Hessian difference read the kink as eigenvalues near -7e5, so Newton steps
+could not certify the mode. The floor now guards only the setting
+probabilities, which the in-block background keeps above it on every setting
+of these runs; `physical-models.json` replays unchanged under that path.
+
+## Perturbed-compilation case (job-02)
+
+Plan
+[`ascella-perturbed-compilation-case`](../state/plans/ascella-perturbed-compilation-case.json)
+fixes the setting, the perturbation and the readings below before any
+acquisition. Job-00 and job-01, both at compilation seed 0, return identical
+heater phases and couplers for all 30 configurations, so the service compiles
+a submitted unitary deterministically and every configuration answers with
+one mesh. Every heater family above therefore predicts each configuration's
+error from that one mesh, and 29 training configurations leave the drive
+coefficients unidentified. On Belenos the service fits the occupied input
+column from random starts that `compilation_seed` selects, and distinct seeds
+serve distinct meshes of the same target
+([form-dwell findings](../notes/quandela/form-dwell-decomposition.md)).
+Repeating one logical setting at many seeds holds its ideal output fixed
+while the heaters move.
+
+**What it measures.** Job-02 submits theta2-x-arm0 (configuration 13 of
+job-00, theta 2 pi/5, phi +pi/4, X readout) 64 times at 8,192 samples per
+iteration. Every eighth position, starting at position 0, runs at seed 0,
+job-00's mesh. The other 56 positions run at the nonzero values of the ANU
+QRNG draw
+[`draw-2026-10-25T182813Z.json`](../evidence/anu_qrng/draw-2026-10-25T182813Z.json),
+taken in index order (indices 0 to 55, with no repeat or zero among them).
+The setting carries the largest X residual of the drive-linear training-only
+folds: observed 0.8813 against 0.9309 predicted, standardized -4.21. Its
+prediction variance is small, so the residual reflects the model rather than
+an unidentified fit. Readings, each at alpha 0.01:
+
+| Reading | Statistic | Reading rule |
+|---|---|---|
+| R1, compilation dependence | dispersion of the block-conditioned X statistic over the distinct served meshes against the anchors' dispersion, by label permutation | dependent when the perturbed dispersion exceeds the anchors' |
+| R2, prediction | each heater family fitted on job-00 scored on the perturbed iterations in counting plus fitted-prediction variance | shortfall at or above the chi-square 0.999 quantile on the iteration count; predicted below its 0.97 quantile with median variance ratio at most 1 |
+| R3, identification | each family refitted on job-00 plus job-02 and rescored on the 19 training-only folds | the 30-on-10 and below-20 rule of the training-only folds |
+
+Every per-heater family, static offsets included, predicts that the served
+mesh moves the X statistic. A null R1 at the design's power therefore refutes
+per-heater phase error as the cause of the configuration response and moves
+the search to compile-independent elements: the source, the detectors and the
+couplers' fixed angles. A dependent R1 with an R3 shortfall under identified
+coefficients raises the confidence that no heater family explains the
+response. R3 sums below 20 with variance ratios at most 1 lower it. The
+service's behavior at nonzero seeds on Ascella is known only once the job
+returns. If the returned `computed_circuit` values realize fewer distinct
+heater-phase vectors than seeds, R1 to R3 read the distinct set and the
+record states the collapse. A single distinct mesh reads as "seed ignored"
+and decides nothing about the heaters.
+
+**Why simulation cannot answer it.** Local SLOS returns the ideal statistic
+for every seed. The question is how Ascella's heaters err when the same
+target is compiled onto other phases, and the served meshes are unknown
+until the job returns: Perceval does not pass `compilation_seed` to the local
+optimizer.
+
+**Sizing.**
+[`compilation-design.json`](../evidence/ascella-order-coefficients/compilation-design.json),
+written by
+[`scripts/ascella_compilation_design.py`](../../scripts/ascella_compilation_design.py),
+sizes the case before acquisition. It stands in for the served meshes with
+248 phase vectors of the returned layout that reproduce the setting's
+twelve output intensities to 1e-6, found from deterministic starts spread
+over the torus. Their heaters sit a median 1.57 rad from job-00's, and 84 %
+move by more than 0.5 rad. It plants each family's job-00 posterior mode as
+the device response. At 56 perturbed and 8 anchor iterations of 8,192
+samples:
+
+| Planted family | Planted X spread | R1 power | Detectable X SD at power 0.9 | R3 median ratio X / Y, without job-02 | with job-02 |
+|---|---|---|---|---|---|
+| static heater offsets | 0.115 | 1.000 | 0.0039 | 0.96 / 0.61 | 0.25 / 0.25 |
+| drive-linear | 0.174 | 1.000 | 0.0041 | 6.86 / 2.28 | 0.54 / 0.52 |
+| polynomial order 1 | 0.141 | 1.000 | 0.0041 | 4.85 / 4.65 | 0.55 / 0.55 |
+| harmonic order 1 | 0.140 | 1.000 | 0.0041 | 135 / 38 | 0.90 / 0.76 |
+
+R1 detects a compilation-induced standard deviation of 0.004 in the X
+statistic, a twelfth of the setting's 0.05 residual. Twenty-four perturbed
+iterations would leave the harmonic family at a median ratio of 3.15 on X.
+The R3 ratios use the leave-one-out approximation of each fold, the full-data
+posterior Hessian less the left-out configuration's information. Without
+job-02 the approximation gives the training-only folds' recorded ratios to
+within a factor of 2.2 (drive-linear X 6.86 against 10.4, polynomial order 1
+X 4.85 against 10.2).
+
+**Sizing correction.** The approval rested on `compilation-design.json`,
+which keeps its bytes. That record sized R1 by the perturbed dispersion alone
+as a chi-square, while R1 divides it by the dispersion of eight anchors. It
+also credited R3 with the anchors' information, which R3 never trains on.
+Its successor,
+[`compilation-design-anchor-ratio.json`](../evidence/ascella-order-coefficients/compilation-design-anchor-ratio.json),
+sizes the anchor-ratio test as noncentral F on 55 and 7 degrees of freedom
+(critical ratio 5.84) and gives R3 only the perturbed iterations:
+- R1 detects a compilation-induced X standard deviation of 0.013 at power
+  0.9, not 0.004, and every planted family still gives power 1.000.
+- At 56 + 8 iterations of 8,192 samples, the order-1 harmonic family's R3
+  median ratio on X is 1.04. The corrected rule therefore chooses 16,384
+  samples (1.032768 credits).
+
+The run used the approved 8,192 samples. Its realized R3 ratios, 0.23 to
+0.86 on X, meet the criterion.
+
+**Seconds.** Expected 186 s against the 300-second `max_duration`. Job-00 and
+job-01 each took 186 s for 64 iterations, at 8,192 and 16,384 samples, so
+the 64-iteration job takes job-00's time unless a nonzero seed costs the
+service compilation time that seed 0 does not. Whether the service recompiles
+per seed is unobserved, and the expectation carries that uncertainty.
+
+**Credits.** Ceiling and expectation 1.016384 credits: 1.0 per job plus
+16,384 billed shots of one iteration at 1e-6, the tariff that billed job-00
+exactly. The account's usage report reads 3.07 free credits spent on
+qpu:ascella over 9 jobs, and 67.1 across all platforms.
+
+**Request.**
+[`scripts/ascella_coherence_request.py job-02`](../../scripts/ascella_coherence_request.py)
+writes
+[`job-02/cases.json`](../../results/quandela/cases/ascella_signed_coherence/job-02/cases.json),
+and `--body job-02` freezes the body against the live processor record without
+sending it. `--check` rebuilds the request and requires each iteration's seed,
+the closed-form operator and the body entries. It also refuses a perturbed
+unitary, a moved seed and a four-mode output width. The procedure is that of
+job-00: `--preflight RUN`, then the owner's approval of this case, then
+`--submit RUN APPROVAL`, then collection.
+
+**Outcome.** The owner approved the case on 2026-10-25, and job `788097fb`
+ran at 18:47 UTC
+([retained run](../../results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/README.md),
+[reading](../evidence/ascella-order-coefficients/compilation-reading.json)).
+It returned 524,288 samples in 186 s for 1.016384 credits. Ascella honors the
+seed: the 56 seeds served 56 distinct meshes, with heaters a median 1.58 rad
+from job-00's, and the 8 anchors served job-00's mesh.
+
+- **R1.** The X statistic moves with the served mesh. The perturbed iterations'
+  dispersion is 7.08 times the anchors' (permutation p 0.0049). The 56 meshes
+  read 0.865 to 0.915, a mean of 0.888 against the ideal 0.9045. The anchors
+  read a mean of 0.883, as job-00 read 0.881.
+- **R2.** Every job-00 fit misses the new meshes. All meshes share one set of
+  fitted coefficients, so R2 takes the residuals' joint quadratic form in
+  diag(v) + G C G^T. That gives 1150 for the static offsets, 649 for the
+  drive-linear family, 771 for the order-1 polynomial and 201 for the order-1
+  harmonic, against 94.5. The sum of individually standardized squares,
+  which the first implementation scored until review noted the shared
+  covariance, reads 1035, 223, 235 and 13.9. It hid the harmonic family's
+  miss behind a median prediction variance 254 times the counting variance.
+- **R3.** Refitted with job-02, every family is identified on the training-only
+  folds (median variance ratios 0.23 to 0.86 on X) and keeps the left-out X
+  shortfall (sums 85 to 377 on 10). Three of four keep it on Y; the harmonic
+  family reads 20.9 there.
+
+Under the preset reading, R1's dependence with R3's identified shortfall
+raises the confidence that no per-heater error family of this document
+explains the configuration response: high, and a family that predicted the
+left-out configurations within the criterion would lower it. The heaters'
+state matters, but static offsets and responses to each heater's own
+returned phase cannot carry it. The untested candidates couple heaters:
+thermal crosstalk between neighbors, coupler-angle error and mesh-dependent
+loss. The 56 served meshes of one logical setting are the test set any such
+model must predict.
