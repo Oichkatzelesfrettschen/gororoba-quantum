@@ -4188,7 +4188,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/plan_tracker.py check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/plan_tracker.py check --base origin/main docs/state/plans docs/state/plans.md docs/state/plan-catalogue.md",
    "name": "core-plan-tracker",
    "seconds": 1.0,
    "tier": "pr"
