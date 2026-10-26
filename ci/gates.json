@@ -4243,6 +4243,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_source_detector.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/source-detector.json --check",
+   "name": "core-ascella-signed-coherence-source-detector-replay",
+   "seconds": 35.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
