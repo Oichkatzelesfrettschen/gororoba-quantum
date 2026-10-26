@@ -142,3 +142,23 @@ def test_one_new_mesh_is_a_collapsed_compilation_not_an_ignored_seed() -> None:
     readings = [reading.served_reading(count) for count in (0, 1, 56)]
     if readings != ["seed ignored", "seeds served one new mesh", "seeds served distinct meshes"]:
         raise AssertionError(f"served readings {readings}")
+
+
+def test_new_seed_jobs_take_disjoint_runs_after_job_02s_seeds() -> None:
+    job_02 = set(request.compilation_seeds(request.JOBS["job-02"])[0])
+    first, first_indices = request.compilation_seeds(request.JOBS["job-04"])
+    rows = request.entries(request.JOBS["job-04"])
+    if [r["compilation_position"] for r in rows if "compilation_seed" not in r] != list(range(0, 80, 8)):
+        raise AssertionError("job-04's ten anchors leave the stride positions")
+    if len(first) != 70 or len(set(first)) != 70 or 0 in first or job_02 & set(first):
+        raise AssertionError("job-04 needs 70 distinct nonzero seeds outside job-02's")
+    for count in (80, 88, 96):
+        job = request.JOBS[f"job-05-i{count}"]
+        seeds, indices = request.compilation_seeds(job)
+        if len(seeds) != count - count // 8 or set(seeds) & (set(first) | job_02) or len(set(seeds)) != len(seeds):
+            raise AssertionError(f"job-05-i{count} must take fresh seeds after job-04's")
+        if indices[0] <= first_indices[-1] or indices != sorted(indices):
+            raise AssertionError(f"job-05-i{count} must consume the draw after job-04, in index order")
+    short = request.compilation_seeds(request.JOBS["job-05-i80"])[0]
+    if request.compilation_seeds(request.JOBS["job-05-i96"])[0][: len(short)] != short:
+        raise AssertionError("every job-05 variant extends one seed sequence")

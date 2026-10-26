@@ -1,13 +1,13 @@
 {
  "platform": "qpu:ascella",
- "cases_sha256": "da7ee78868216fde1a03469da91d995caa8138a6502f1638b13a6e77a0b4d78f",
- "job_body_sha256": "c8ca77a88d6f0f3baa74c147043cf5131a457a8ce365899367b06d595587bb1c",
- "estimated_shots": 1048576,
+ "cases_sha256": "abbe4e5a3bf69ae8fbceefe5607b862fed4a0afdf31276582cc587e8f85718be",
+ "job_body_sha256": "0f905efca9d80cae8933fe187005e18a855c809e1f6336763fbddb8dd9b464b2",
+ "estimated_shots": 2621440,
  "payload_version_basis": "declared",
  "versions": {
   "perceval-quandela": "1.3.1",
   "exqalibur": "1.4.2"
  },
- "built_utc": "2026-10-26T17:47:36+00:00",
+ "built_utc": "2026-10-26T20:28:05+00:00",
  "sent": false
 }

@@ -1,0 +1,171 @@
+{
+ "alpha_each": 0.005,
+ "branches": [
+  {
+   "anchors": [
+    10
+   ],
+   "branch": "job-04 alone",
+   "ceiling": 0.9830414730130768,
+   "credits": 1.032768,
+   "critical_r": 0.3059582611754914,
+   "degrees_of_freedom": 68,
+   "iterations": [
+    80
+   ],
+   "meshes": 70,
+   "null_bound_probability": 0.552799679889529,
+   "power": {
+    "0.25": 0.29600808151335534,
+    "0.318": 0.5286250726359196,
+    "0.437": 0.894476669972053
+   },
+   "worst_case_seconds": [
+    232.5
+   ]
+  },
+  {
+   "anchors": [
+    10,
+    10
+   ],
+   "branch": "job-04 + job-05-i80",
+   "ceiling": 0.9830414730130768,
+   "credits": 2.065536,
+   "critical_r": 0.21781615842867058,
+   "degrees_of_freedom": 137,
+   "iterations": [
+    80,
+    80
+   ],
+   "meshes": 140,
+   "null_bound_probability": 0.9002790287599022,
+   "power": {
+    "0.25": 0.6389951592304415,
+    "0.318": 0.8905375184639936,
+    "0.437": 0.9982740902019688
+   },
+   "worst_case_seconds": [
+    232.5,
+    232.5
+   ]
+  },
+  {
+   "anchors": [
+    10,
+    11
+   ],
+   "branch": "job-04 + job-05-i88",
+   "ceiling": 0.9830414730130768,
+   "credits": 2.065536,
+   "critical_r": 0.21256233000054212,
+   "degrees_of_freedom": 144,
+   "iterations": [
+    80,
+    88
+   ],
+   "meshes": 147,
+   "null_bound_probability": 0.9163926240000089,
+   "power": {
+    "0.25": 0.6669555460344168,
+    "0.318": 0.9078649639420883,
+    "0.437": 0.9989170961803046
+   },
+   "worst_case_seconds": [
+    232.5,
+    255.75
+   ]
+  },
+  {
+   "anchors": [
+    10,
+    12
+   ],
+   "branch": "job-04 + job-05-i96",
+   "ceiling": 0.9830414730130768,
+   "credits": 2.065536,
+   "critical_r": 0.2076711207740417,
+   "degrees_of_freedom": 151,
+   "iterations": [
+    80,
+    96
+   ],
+   "meshes": 154,
+   "null_bound_probability": 0.9301490937309127,
+   "power": {
+    "0.25": 0.6933644815456332,
+    "0.318": 0.9227241862781825,
+    "0.437": 0.9993250699359029
+   },
+   "worst_case_seconds": [
+    232.5,
+    279.0
+   ]
+  },
+  {
+   "anchors": [
+    12,
+    12
+   ],
+   "branch": "two fixed jobs of 96",
+   "ceiling": 0.9830414730130768,
+   "credits": 2.065536,
+   "critical_r": 0.1988229497349971,
+   "degrees_of_freedom": 165,
+   "iterations": [
+    96,
+    96
+   ],
+   "meshes": 168,
+   "null_bound_probability": 0.9517247142945426,
+   "power": {
+    "0.25": 0.741544180921315,
+    "0.318": 0.9461789126028431,
+    "0.437": 0.9997426295464503
+   },
+   "worst_case_seconds": [
+    279.0,
+    279.0
+   ]
+  },
+  {
+   "anchors": [
+    10,
+    10,
+    10
+   ],
+   "branch": "three jobs of 80",
+   "ceiling": 0.9830414730130768,
+   "credits": 3.098304,
+   "critical_r": 0.1782432506140426,
+   "degrees_of_freedom": 206,
+   "iterations": [
+    80,
+    80,
+    80
+   ],
+   "meshes": 210,
+   "null_bound_probability": 0.9846908028677481,
+   "power": {
+    "0.25": 0.8493710741645095,
+    "0.318": 0.9825476557705781,
+    "0.437": 0.9999864538590563
+   },
+   "worst_case_seconds": [
+    232.5,
+    232.5,
+    232.5
+   ]
+  }
+ ],
+ "compilation_variance": 0.00014114993759659365,
+ "counting_variance": 4.911983887307586e-06,
+ "inputs": [
+  "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+  "docs/evidence/ascella-order-coefficients/heater-coupling.json"
+ ],
+ "plan": "docs/state/plans/ascella-new-seed-meshes-case.json",
+ "reference_share": 0.10552219790109159,
+ "samples": 32768,
+ "schema": "ascella-new-seed-sizing-v1"
+}

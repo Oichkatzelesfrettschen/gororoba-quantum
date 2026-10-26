@@ -1,4 +1,4 @@
-"""Ascella signed-coherence order request: one qpu:ascella job of 64 template iterations on twelve modes.
+"""Ascella signed-coherence order request: one qpu:ascella job of template iterations on twelve modes.
 
 docs/design/ascella-signed-coherence-conformance.md fixes the request. For each
 theta_k = k pi/5, k = 0..4, a direct, an X and a Y readout block run in that
@@ -28,7 +28,7 @@ qpu:ascella processor record with the job token and records the body that
 RemoteComputer would send instead of sending it, and retains job-body.json and
 body-build.json beside the case; the frozen body is never rewritten. --check
 reads only retained files: it also deserializes the body's computation and
-requires 64 entries carrying the manifest's circuit_params, the job's
+requires the job's entries carrying the manifest's circuit_params, the job's
 per-iteration samples and shots and seed 0, the twelve-entry input, the one-photon filter, the
 empty mitigation list, and each entry's bound unitary equal to the design
 operator.
@@ -59,10 +59,12 @@ other position at its own seed, the nonzero values of the ANU QRNG draw
 SEED_DRAW taken in index order with repeats skipped. Its manifest names the
 draw, the indices it consumes and the sizing record
 COMPILATION_DESIGN. job-03 repeats job-02's seeds with the perturbed meshes
-moved by REPEAT_ORDER_DRAW. job-04 to job-06, the new-seed jobs of plan
-ascella-new-seed-meshes-case, take job-02's layout at 16,384 samples with each
-perturbed position at a seed of NEW_SEED_DRAW that job-02 did not use, one run
-of 56 per job.
+moved by REPEAT_ORDER_DRAW. job-04 and the job-05 variants, the new-seed jobs
+of plan ascella-new-seed-meshes-case, keep job-02's anchor stride over their
+own iteration counts at 32,768 samples, each perturbed position at a seed of
+NEW_SEED_DRAW that job-02 did not use: job-04 takes 80 iterations and the first
+70 such seeds, and the job-05 variant of 80, 88 or 96 iterations that job-04's
+duration selects takes the seeds after them.
 
 Usage:
   "$PYTHON" scripts/ascella_coherence_request.py [--check | JOB | --body JOB]
@@ -139,8 +141,8 @@ COMPILATION_DESIGN = "docs/evidence/ascella-order-coefficients/compilation-desig
 # positions: the k-th off-stride position takes the mesh of the k-th smallest value, ties by index.
 REPEAT_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T033936Z.json"
 REPEAT_PLAN = "docs/state/plans/ascella-seed-repeat-case.json"
-# The ANU QRNG draw whose nonzero values, job-02's seeds and repeats skipped, seed the new-seed jobs: the job of
-# draw_run b takes the b-th run of 56 such values in index order.
+# The ANU QRNG draw whose nonzero values, job-02's seeds and repeats skipped, seed the new-seed jobs: a job takes its
+# perturbed positions' seeds from such values in index order, starting at its draw_start.
 NEW_SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T174307Z.json"
 NEW_SEED_PLAN = "docs/state/plans/ascella-new-seed-meshes-case.json"
 NEW_SEED_OFFSETS = "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json"
@@ -162,7 +164,8 @@ class Job:
     compilations: bool = False
     order_draw: str = ORDER_DRAW
     seed_draw: str = SEED_DRAW
-    draw_run: int = 0
+    draw_start: int = 0
+    iterations: int = 64
 
 
 JOBS = {
@@ -170,11 +173,15 @@ JOBS = {
     "job-01": Job("job-01", 16384, 32768, 1.032768, 240.0, True),
     "job-02": Job("job-02", 8192, 16384, 1.016384, 200.0, False, True),
     "job-03": Job("job-03", 16384, 32768, 1.032768, 200.0, True, True, REPEAT_ORDER_DRAW),
+    # Job-04's 80 iterations take 2.90625 s each at most, the 186 s of 64 iterations with nonnegative fixed overhead.
+    # Job-05 runs the one variant that job-04's duration selects under the plan's rule; each variant's seeds start
+    # after job-04's 70.
+    "job-04": Job("job-04", 32768, 32768, 1.032768, 233.0, False, True, ORDER_DRAW, NEW_SEED_DRAW, 0, 80),
     **{
-        f"job-{4 + block:02d}": Job(
-            f"job-{4 + block:02d}", 16384, 32768, 1.032768, 200.0, False, True, ORDER_DRAW, NEW_SEED_DRAW, block
+        f"job-05-i{count}": Job(
+            f"job-05-i{count}", 32768, 32768, 1.032768, seconds, False, True, ORDER_DRAW, NEW_SEED_DRAW, 70, count
         )
-        for block in range(3)
+        for count, seconds in ((80, 233.0), (88, 256.0), (96, 279.0))
     },
 }
 STAGED = ("cases.json", "circuit.json")
@@ -269,10 +276,11 @@ def permutation(draw: str, count: int) -> list[int]:
 
 def compilation_seeds(job: Job) -> tuple[list[int], list[int]]:
     """The perturbed positions' seeds and the job.seed_draw indices they consume: nonzero values in index order, each
-    value once, the job's draw_run-th run of 56. A draw other than SEED_DRAW also skips job-02's seeds, so every
-    new-seed job serves meshes no earlier job served."""
+    value once, from the job's draw_start-th usable value. A draw other than SEED_DRAW also skips job-02's seeds, so
+    every new-seed job requests meshes no earlier job requested."""
     values = json.loads((ROOT / job.seed_draw).read_text(encoding="utf-8"))["values"]
-    needed = 64 - 64 // ANCHOR_STRIDE
+    require(job.iterations % ANCHOR_STRIDE == 0, f"{job.name}: {job.iterations} iterations break the anchor stride")
+    needed = job.iterations - job.iterations // ANCHOR_STRIDE
     excluded = set() if job.seed_draw == SEED_DRAW else set(compilation_seeds(JOBS["job-02"])[0])
     seeds: list[int] = []
     indices: list[int] = []
@@ -280,9 +288,9 @@ def compilation_seeds(job: Job) -> tuple[list[int], list[int]]:
         if value != 0 and value not in seeds and value not in excluded:
             seeds.append(int(value))
             indices.append(index)
-        if len(seeds) == needed * (job.draw_run + 1):
-            return seeds[needed * job.draw_run :], indices[needed * job.draw_run :]
-    raise ValueError(f"{job.seed_draw} holds {len(seeds)} usable values, not {needed * (job.draw_run + 1)}")
+        if len(seeds) == job.draw_start + needed:
+            return seeds[job.draw_start :], indices[job.draw_start :]
+    raise ValueError(f"{job.seed_draw} holds {len(seeds)} usable values, not {job.draw_start + needed}")
 
 
 def entries(job: Job) -> list[dict[str, Any]]:
@@ -298,7 +306,7 @@ def entries(job: Job) -> list[dict[str, Any]]:
             {**base, "compilation_position": p}
             if p % ANCHOR_STRIDE == 0
             else {**base, "compilation_position": p, "compilation_seed": next(seeds)}
-            for p in range(64)
+            for p in range(job.iterations)
         ]
         if not job.permuted:
             return compiled
@@ -374,7 +382,7 @@ def documents(job: Job) -> dict[str, bytes]:
     for index, (mesh, _) in enumerate(built):
         require(mesh == template, f"iteration {index} needs another mesh than iteration 0")
     settings = [setting for _, setting in built]
-    require(len(settings) == 64, f"the request holds {len(settings)} iterations, not 64")
+    require(len(settings) == job.iterations, f"the request holds {len(settings)} iterations, not {job.iterations}")
     input_state = [0] * MODES
     input_state[SOURCE] = 1
     circuit = {**template, "modes": MODES, "input_state": input_state}
@@ -423,8 +431,8 @@ def documents(job: Job) -> dict[str, bytes]:
             "interpretation": "compilation dependence of one logical setting's analyzer response",
         }
         if job.seed_draw != SEED_DRAW:
-            seed_record["rule"] += ", job-02's seeds skipped, run draw_run of 56"
-            seed_record["draw_run"] = job.draw_run
+            seed_record["rule"] += ", job-02's seeds skipped, from usable value draw_start"
+            seed_record["draw_start"] = job.draw_start
             manifest["preregistered"] = {
                 "plan": NEW_SEED_PLAN,
                 "frozen_offsets": NEW_SEED_OFFSETS,
@@ -434,7 +442,7 @@ def documents(job: Job) -> dict[str, bytes]:
     if job.compilations and job.permuted:
         manifest["compilation_order"] = {
             "draw": job.order_draw,
-            "indices": list(range(64 - 64 // ANCHOR_STRIDE)),
+            "indices": list(range(job.iterations - job.iterations // ANCHOR_STRIDE)),
             "rule": "anchors stay at every eighth position; the k-th off-stride position takes the perturbed mesh "
             "of the k-th smallest draw value, ties by index",
         }
@@ -465,10 +473,10 @@ def validate(manifest: dict[str, Any], circuit: dict[str, Any]) -> None:
     for key, value in (
         ("command", "sample_count"),
         ("gate_form", "template"),
-        ("iterations", 64),
+        ("iterations", job.iterations),
         ("min_detected_photons", 1),
-        ("max_samples", job.samples * 64),
-        ("max_shots", job.shots * 64),
+        ("max_samples", job.samples * job.iterations),
+        ("max_shots", job.shots * job.iterations),
         ("max_duration", MAX_DURATION),
         ("mitigations", []),
         ("output_modes", MODES),
@@ -567,7 +575,7 @@ def body_entry(item: tuple[str, str, int]) -> None:
 
 
 def validate_body(body: dict[str, Any], manifest: dict[str, Any]) -> None:
-    """Require the retained job body to carry the frozen request: name, platform, policy, budgets and 64 entries."""
+    """Require the retained job body to carry the frozen request: name, platform, policy, budgets and its entries."""
     from perceval.serialization import deserialize
 
     job = job_of(manifest)
@@ -583,7 +591,7 @@ def validate_body(body: dict[str, Any], manifest: dict[str, Any]) -> None:
     require(body_mitigations(body) == [], "job-body.json: the payload does not carry the empty mitigation list")
     computation = deserialize(content["computation"])
     iterations = computation.iterations
-    require(len(iterations) == 64, f"job-body.json: {len(iterations)} entries, not 64")
+    require(len(iterations) == job.iterations, f"job-body.json: {len(iterations)} entries, not {job.iterations}")
     for index, (entry, setting) in enumerate(zip(iterations, manifest["settings"], strict=True)):
         require(
             entry.get("circuit_params") == setting["circuit_params"],
@@ -661,7 +669,10 @@ def check() -> int:
         refused = rejections(manifest, circuit)
         digest = sha256_bytes(retained["cases.json"])
         if not (out / "job-body.json").is_file():
-            print(f"ascella signed coherence {job.name}: 64 iterations validated, cases.json {digest}, no body yet")
+            print(
+                f"ascella signed coherence {job.name}: {job.iterations} iterations validated, cases.json {digest}, "
+                "no body yet"
+            )
             continue
         body_bytes = (out / "job-body.json").read_bytes()
         record = json.loads((out / "body-build.json").read_text(encoding="utf-8"))
@@ -669,7 +680,8 @@ def check() -> int:
         require(record["job_body_sha256"] == sha256_bytes(body_bytes), f"{job.name}: body-build.json names other body")
         validate_body(json.loads(body_bytes), manifest)
         print(
-            f"ascella signed coherence {job.name}: 64 iterations and job-body.json validated, cases.json {digest}, "
+            f"ascella signed coherence {job.name}: {job.iterations} iterations and job-body.json validated, "
+            f"cases.json {digest}, "
             f"job-body.json {record['job_body_sha256']}; refused {', '.join(refused)}"
         )
     return 0

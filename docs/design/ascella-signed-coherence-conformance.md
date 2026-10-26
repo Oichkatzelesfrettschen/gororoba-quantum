@@ -1717,28 +1717,24 @@ reading, so a further offline family needs new served meshes.
 
 Plan
 [`ascella-new-seed-meshes-case`](../state/plans/ascella-new-seed-meshes-case.json)
-fixes the predictors and readings below before any new seed was drawn. The
-two plans above spent the held-out half on one reading, which left the heater
-and coupler offsets at r 0.318 (p 0.050), between no effect and a partial
-carrier of up to 46 % of the compilation-induced variance. Only meshes no fit
-has seen can separate the two. Job-03 showed each served mesh's X statistic
-fixed across a calibration with steady anchors, so meshes served by later
-jobs join the same test set.
+fixes the predictors, the score and the acquisition rule below before any
+new-seed job is submitted. The two plans above spent the held-out half on one
+reading, which left the heater and coupler offsets at r 0.318 (p 0.050).
+That reading sits between no effect and a partial carrier of up to 46 % of
+the compilation-induced variance, and only meshes no fit has seen can
+separate the two. Job-03 showed each served mesh's X statistic fixed across a
+recalibration, so meshes served by later jobs join one test set.
 
-**What it measures.** Each job submits theta2-x-arm0 (configuration 13 of
-job-00, theta 2 pi/5, phi +pi/4, X readout) 64 times at 16,384 samples per
-iteration: the seed-0 mesh of job-00 at every eighth position as the drift
-monitor, and 56 positions at new compilation seeds. The seeds are the
-nonzero values of
-[`draw-2026-10-26T174307Z.json`](../evidence/anu_qrng/draw-2026-10-26T174307Z.json)
-in index order, with repeats and job-02's 56 seeds skipped: job-04 takes the
-first 56, job-05 the next 56, job-06 the 56 after (indices 0 to 167 cover all
-three). The served mesh is known only from the returned `computed_circuit`,
-so the plan freezes each predictor's offsets rather than its predictions
+**Predictors.** The served mesh is known only from the returned
+`computed_circuit`, so the plan freezes each predictor's offsets rather than
+its predictions
 ([`new-mesh-offsets.json`](../evidence/ascella-order-coefficients/new-mesh-offsets.json),
-digest `f5887275…`, committed and pushed in 9e92be5 before the draw;
 [`scripts/ascella_new_mesh_offsets.py`](../../scripts/ascella_new_mesh_offsets.py)).
 A prediction is the static light of the returned mesh under those offsets.
+The offsets and free masks were committed and pushed in 9e92be5 before any
+seed was drawn. A later commit removed only an exact covariance digest,
+which a last-bit BLAS change would break, so the record now reads digest
+`bbf0ff94…` and replays within the fit bounds.
 
 - **P-A** is the heater and coupler offsets fitted on job-00 plus the 28
   exploration meshes, the fit plan `ascella-fixed-mesh-confirmation` scored.
@@ -1746,36 +1742,68 @@ A prediction is the static light of the returned mesh under those offsets.
 - **P-B** is the same family fitted on job-00 plus all 56 perturbed meshes of
   jobs 02 and 03, pooled by setting name.
 
-Readings, Bonferroni alpha 0.01 over the two predictors:
+**Score.**
+[`scripts/ascella_new_mesh_score.py`](../../scripts/ascella_new_mesh_score.py)
+holds the contract as code, and its tests run it on the retained job-02 and
+job-03 runs.
+- **Mesh identity.** A served mesh is its returned `computed_circuit` with
+  its `computed_input`.
+- **What enters the primary.**
+  - Anchors never enter it.
+  - A mesh that jobs 00, 02 or 03 served is excluded.
+  - A mesh served by both new jobs counts once, in job-04.
+  - A job with fewer than three meshes, or a partial job, stays descriptive.
+    Partial means a setting without counts or a status other than completed.
+- **Primary statistic.** For each predictor, the Pearson r of predicted with
+  observed block-conditioned X, both centered within each job. It is read
+  one-sided by the t distribution on n − 1 − J degrees of freedom at alpha
+  0.005 each, which is Bonferroni 0.01 over the two predictors.
+- **Bounds.** The one-sided 99.5 % Fisher-z bounds use standard error
+  1/√(n − J − 2). The share is r²/c² under the plug-in ceiling
+  c² = s_c²/(s_c² + mean counting variance), conditional on the retained
+  s_c² = 1.41e-4.
+- **Anchor control.** Each job's anchor mean X minus job-03's reads moved when
+  its magnitude exceeds s_c = 0.0119, which marks a gross calibration event.
+  Job-03 reproduced every per-mesh error at the ceiling across a
+  recalibration that moved the anchors by 0.00285. The control gates only the
+  bounded outcome: centering removes an additive shift, and a calibration
+  change cannot correlate frozen predictions with unseen meshes.
 
-| Reading | Statistic | Reading rule |
+| Outcome | Condition | Reading |
 |---|---|---|
-| M, mesh identity | distinct new served meshes, and any equal to a mesh of jobs 00 to 03 | P-A and P-B read the n new distinct meshes |
-| A, anchor control | each job's anchor mean X against job-03's 0.8858, in counting standard errors | descriptive |
-| P-A, P-B | Pearson r of predicted with observed block-conditioned X, both centered within each job, one-sided by the t distribution on n - 1 - jobs degrees of freedom | carried at p below 0.005 each |
+| both carried | P-A and P-B at p below 0.005 | the returned circuit with element offsets carries the fixed per-mesh error, for the share between the bounds |
+| P-A carried only | P-A alone | as above, for P-A's share |
+| P-B carried only | P-B alone | as above; the carrier lies in offsets that the 28 exploration meshes left underdetermined |
+| bounded | neither carried, every scored job steady, both upper shares below 10.6 % | the static element offsets carry less of the compilation-induced variance than the larger upper share |
+| inconclusive: anchors moved | neither carried, a scored job moved | no bound |
+| inconclusive | neither carried otherwise | no bound |
 
-Centering within each job keeps a calibration shift between the jobs out of
-the correlation, and r ignores the affine overshoot the exploration found.
-Secondary and descriptive: r² against the squared attenuation ceiling 0.967
-at 16,384 samples, as a point estimate and at the one-sided 99.5 % Fisher-z
-bounds; the Spearman correlation; the affine slope; job-02's R1 dispersion
-ratio on the new meshes. Pooling with the 28 spent held-out meshes is
-exploratory and decides nothing.
+10.6 % is the held-out point estimate of the confirmation plan. Secondary and
+descriptive: the Spearman correlation and the affine slope of the centered
+values, and each job's dispersion ratio. Pooling with the 28 spent held-out
+meshes is exploratory and decides nothing. The readings spend every new
+mesh, so a family proposed after scoring needs further seeds or the applied
+voltages that Perceval#799 requests.
 
-- **Either predictor carried** refutes the statement above that the returned
-  circuit with element offsets does not carry the fixed per-mesh error. The
-  carried share lies between the one-sided 99.5 % Fisher-z bounds.
-- **P-B carried, P-A not** places the carrier in offsets that the 28
-  exploration meshes left underdetermined.
-- **Neither carried, both upper share bounds below 10.6 %** (the held-out
-  point estimate) bounds the static element offsets' share of the
-  compilation-induced variance by the larger bound.
-- **Neither carried, an upper share bound at or above 10.6 %** reads
-  inconclusive.
-
-The readings spend every new mesh, so a family
-proposed after scoring needs further seeds or the applied voltages that
-Perceval#799 requests.
+**What it measures.** Job-04 submits theta2-x-arm0 (configuration 13 of
+job-00, theta 2 pi/5, phi +pi/4, X readout) 80 times at 32,768 samples and
+32,768 `max_shots` per iteration.
+- **Anchors.** The seed-0 mesh of job-00 sits at every eighth position: 10
+  anchors.
+- **New seeds.** The other 70 positions take the usable values 0 to 69 of
+  [`draw-2026-10-26T174307Z.json`](../evidence/anu_qrng/draw-2026-10-26T174307Z.json).
+  A value is usable when it is nonzero, not a repeat and not one of job-02's
+  56 seeds, taken in index order.
+- **Job-05.** Job-05 continues the same seed sequence from usable value 70 in
+  one of three frozen variants: `job-05-i80`, `job-05-i88` or `job-05-i96`.
+  Job-04's provider-reported duration d4 alone picks the variant:
+  - With job-04 complete and d4 at most 279 s, job-05 runs
+    8·floor(min(96, 279·80/d4)/8) iterations.
+  - A partial job-04, or d4 above 279 s, sends no job-05, and the reading
+    runs on job-04 alone.
+  - The score refuses a job-05 run of any other variant.
+  - The rule reads completion and duration only, never an X count, so it
+    selects nothing on the outcome.
 
 **Why simulation cannot answer it.** Local SLOS returns the ideal statistic
 for every seed, and Perceval's `SimulatedComputer` uses `compilation_seed`
@@ -1783,43 +1811,73 @@ for random phase noise rather than the remote compilation. Which mesh the
 service serves at a new seed, and what X that mesh emits under Ascella's
 calibration, exist only on the chip.
 
-**Sizing.** Each job serves 56 new meshes. Power of the primary at alpha
-0.005 on n - 1 - jobs degrees of freedom, with true correlations scaled to
-the 0.967 ceiling:
+**Sizing.** Every Ascella job so far ran 64 iterations in 186 s, at both
+8,192 and 16,384 samples. Fixed overhead per job cannot be negative, so
+2.90625 s per iteration is an upper bound on the per-iteration time under a
+linear duration model. 80 iterations then take at most 232.5 s, 67.5 s below
+the 300-second `max_duration` the platform admits. The retained sources do
+not say what happens when a job reaches that limit: truncation, error and
+partial results all remain possible. That uncertainty is why the first job
+runs 80 iterations, and why its measured duration sizes the second job
+within the same 21-second margin that 96 iterations hold at the bound.
 
-| Jobs | New meshes | Critical r | Power at r 0.25 | at 0.318 (held-out) | at 0.437 | Credits |
-|---|---|---|---|---|---|---|
-| job-04 | 56 | 0.341 | 0.23 | 0.41 | 0.78 | 1.032768 |
-| job-04, job-05 (recommended) | 112 | 0.244 | 0.52 | 0.79 | 0.99 | 2.065536 |
-| job-04 to job-06 | 168 | 0.199 | 0.74 | 0.94 | 1.00 | 3.098304 |
+Job-03 billed 32,768 shots per iteration and collected only 16,384, so 32,768
+samples per iteration double the observations at the credits already paid.
+Going higher would raise the ceiling from 0.983 to 0.991 for under one point
+of power. Ten anchors per job keep the stride-8 drift coverage.
 
-One job leaves the held-out point estimate below even odds of detection.
-Two reach 0.79 at that estimate for about two credits. Each job keeps 64
-iterations because 64 is the only count measured on Ascella: 186 s in all
-four jobs, against the 300-second `max_duration` the service enforces
-(`strategy.md`). A longer job would save a credit per 56 meshes at an
-untested duration.
+Noncentral-t power and the probability that a true r of 0 ends bounded
+(marginal, per predictor):
+
+| Branch | Meshes | Critical r | Power at r 0.25 / 0.318 / 0.437 | Bounded if null | Credits |
+|---|---|---|---|---|---|
+| job-04 alone (stop rule) | 70 | 0.306 | 0.30 / 0.53 / 0.89 | 0.55 | 1.032768 |
+| job-04 + job-05-i80 | 140 | 0.218 | 0.64 / 0.89 / 1.00 | 0.90 | 2.065536 |
+| job-04 + job-05-i88 | 147 | 0.213 | 0.67 / 0.91 / 1.00 | 0.92 | 2.065536 |
+| job-04 + job-05-i96 | 154 | 0.208 | 0.69 / 0.92 / 1.00 | 0.93 | 2.065536 |
+| three jobs of 80 (alternative) | 210 | 0.178 | 0.85 / 0.98 / 1.00 | 0.99 | 3.098304 |
+
+[`scripts/ascella_new_seed_sizing.py`](../../scripts/ascella_new_seed_sizing.py)
+writes the table to
+[`new-seed-sizing.json`](../evidence/ascella-order-coefficients/new-seed-sizing.json).
+Two fixed jobs of 96 iterations reach 0.95 at r 0.318, but they place the
+first job 21 s below an undocumented limit with no measurement behind it.
 
 **Backend and seconds.** `qpu:ascella`, available on 2026-10-26 at 17:42 UTC
-with HOM 87.46 % and g2 2.1 %, Perceval 1.3.0 on the worker. Expected 186 s
-per job, submitted one after another.
+with HOM 87.46 % and g2 2.1 %, Perceval 1.3.0 on the worker. Expected at most
+232.5 s for job-04 and at most 279 s for job-05, submitted one after the
+other.
 
-**Credits.** Each job's ceiling and expectation are 1.032768 free credits: 1.0 per job
-plus 32,768 billed shots of one iteration at 1e-6, the tariff that billed
-job-01 and job-03 exactly. The usage report reads 71.38 free credits spent
-this month across all platforms, 5.11 of them on `qpu:ascella` over 11 jobs,
-which leaves 128.62 of 200.
+**Credits.** 1.032768 free credits per job: 1.0 per job plus 32,768 billed
+shots of one iteration at 1e-6. Jobs 01 and 03 were billed exactly this
+tariff, and job-03 collected half the shots it paid for. Two jobs come to
+2.065536. The usage report reads 71.38 free credits spent this month across
+all platforms, 5.11 of them on `qpu:ascella` over 11 jobs, which leaves
+128.62 of 200.
 
 **Request.**
 [`scripts/ascella_coherence_request.py`](../../scripts/ascella_coherence_request.py)
-writes `job-04/cases.json` (digest `da7ee788…`), `job-05/cases.json`
-(`6993abae…`) and `job-06/cases.json` (`2f75bddf…`) under
-`results/quandela/cases/ascella_signed_coherence/`. `--body` froze each body
-against the live processor record without sending it (`c8ca77a8…`,
-`f8c757e0…`, `8b61692c…`). `--check` rebuilds jobs 00 to 06 and their bodies,
-with the retained bytes of jobs 00 to 03 unchanged. `--preflight` on staged
-run directories for job-04 and job-05 at 17:50 UTC found `qpu:ascella`
-available, accepted the 1.032768-credit ceiling and matched each planned body
-to its frozen body beyond `process_id` (`a2ec7819…` and `19c9ce0d…`), sending
-nothing. The procedure is that of job-03: `--preflight RUN`, the owner's approval of this case at a size,
-`--submit RUN APPROVAL`, collection.
+writes the case directories under
+`results/quandela/cases/ascella_signed_coherence/`:
+
+| Case | `cases.json` | `job-body.json` |
+|---|---|---|
+| `job-04` | `abbe4e5a…` | `0f905efc…` |
+| `job-05-i80` | `0f1f94e5…` | `134cb95d…` |
+| `job-05-i88` | `87a926b7…` | `839ceb3b…` |
+| `job-05-i96` | `c50b53d8…` | `5a5930ea…` |
+
+`--body` froze each body against the live processor record without sending
+it. `--check` rebuilds every job and its body, with the retained bytes of
+jobs 00 to 03 unchanged. `ascella_coherence_repeat.run_record` attributes the
+iterations of any count, and on the four retained runs it reproduces
+`ascella_coherence_run.attributed` exactly.
+
+The procedure:
+1. Run `--preflight` on job-04.
+2. Obtain the owner's approval of this case.
+3. Run `--submit` on job-04 and collect it.
+4. Apply the duration rule.
+5. Run `--preflight` and `--submit` on the admitted job-05 variant, and
+   collect it.
+6. Run the score.

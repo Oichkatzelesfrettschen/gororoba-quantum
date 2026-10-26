@@ -8,6 +8,12 @@ docs/evidence/ascella-order-coefficients/new-mesh-offsets.json (scripts/ascella_
   perturbed mesh equal to any mesh served by the reference runs (jobs 00, 02 and 03) is excluded, and a mesh served by
   two new jobs counts once, in the earlier job of the argument order. Settings that serve one mesh within a job pool
   their block counts. A job left with fewer than MIN_JOB_MESHES meshes leaves the primary; its meshes count nowhere.
+  A run whose results.json lacks counts for any manifest setting, or whose status is not completed, is partial: it
+  stays descriptive and enters no primary.
+- Job-05 iteration rule: job-04 runs 80 iterations; with its provider-reported status.duration d4 at most
+  DURATION_TARGET seconds, job-05 runs 8 floor(min(96, DURATION_TARGET * 80 / d4) / 8) iterations, and a partial
+  job-04 or a d4 above DURATION_TARGET admits no job-05. The rule reads completion and duration alone, never an X
+  count, and the score refuses a job-05 run of another variant.
 - Per mesh: the observed block-conditioned X statistic and its multinomial variance, and each predictor's X from
   static_light of the returned mesh under its frozen offsets (ascella_fixed_mesh_error.mesh_rows).
 - Primary, per predictor: Pearson r of predicted with observed X after centering both within each job, one-sided
@@ -19,9 +25,12 @@ docs/evidence/ascella-order-coefficients/new-mesh-offsets.json (scripts/ascella_
   c^2 = s_c^2 / (s_c^2 + mean counting variance of the scored meshes), s_c^2 the compilation variance of
   fixed-mesh-confirmation.json, conditional on that retained estimate; a negative bound maps to share 0 and a share
   above 1 clips to 1.
-- Anchor control, per job: the inverse-variance anchor mean X against job-03's, over its standard error; at or above
-  the two-sided ALPHA normal quantile the job reads "moved". It gates only the bounded negative outcome, because a
-  calibration change between jobs cannot correlate frozen predictions with unseen meshes.
+- Anchor control, per job: the inverse-variance anchor mean X less job-03's, the calibration the predictors were fitted
+  under. A shift whose magnitude exceeds s_c, the compilation-induced X standard deviation, reads "moved": a gross
+  calibration event, against which job-03 reproduced every per-mesh error at the attenuation ceiling across a
+  recalibration that moved the anchors by 0.00285 (seed-repeat-reading.json). The control gates only the bounded
+  negative outcome, because centering removes an additive shift and a calibration change between jobs cannot
+  correlate frozen predictions with unseen meshes.
 - Outcome, one of six disjoint branches: "both carried", "P-A carried only", "P-B carried only"; with neither carried,
   "bounded" when every scored job's anchors read steady and both upper shares lie below REFERENCE_SHARE (the held-out
   point estimate of fixed-mesh-confirmation.json), "inconclusive: anchors moved" when a scored job's anchors moved,
@@ -49,10 +58,13 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
+import ascella_coherence_repeat as repeat  # noqa: E402
 import ascella_compilation_reading as reading  # noqa: E402
 import ascella_fixed_mesh_error as fixed  # noqa: E402
 import ascella_physical_models as models  # noqa: E402
 import ascella_response_geometry as geometry  # noqa: E402
+
+from parallel import ordered_map  # noqa: E402
 
 ALPHA = 0.01
 ALPHA_EACH = ALPHA / 2
@@ -61,10 +73,44 @@ PREDICTORS = ("exploration", "all-meshes")
 LABELS = {"exploration": "P-A", "all-meshes": "P-B"}
 # The reference run whose anchors set the calibration baseline: the last acquisition before the new-seed jobs.
 BASELINE_JOB = "job-03"
+# The seconds job-05 may plan at job-04's realized seconds per iteration: 21 s below the 300 s max_duration, the
+# margin of 96 iterations at the 64-iteration bound of 2.90625 s each.
+DURATION_TARGET = 279.0
+FIRST_ITERATIONS = 80
 
 
 def mesh_keys(data: dict[str, Any]) -> list[str]:
     return list(geometry.configurations(data["record"]).keys())
+
+
+def job_05_iterations(first: dict[str, Any]) -> int | None:
+    """The job-05 iteration count job-04's summary admits, or None when it admits no job-05."""
+    duration = first["duration"]
+    if not first["complete"] or not isinstance(duration, int | float) or not 0 < duration <= DURATION_TARGET:
+        return None
+    return 8 * math.floor(min(96.0, DURATION_TARGET * FIRST_ITERATIONS / duration) / 8)
+
+
+def returned(path: Path) -> dict[str, Any]:
+    """Job name, manifest iteration count, provider status and duration, and whether every setting carries counts."""
+    manifest = json.loads((path / "cases.json").read_text(encoding="utf-8"))
+    results = json.loads((path / "results.json").read_text(encoding="utf-8"))
+    status = results.get("status") or {}
+    rows = repeat.attributed_rows(manifest, results)
+    return {
+        "job": manifest["job"],
+        "run": path.relative_to(ROOT).as_posix() if path.is_relative_to(ROOT) else path.name,
+        "requested_iterations": manifest["iterations"],
+        "returned_iterations": sum(row is not None for row in rows),
+        "status": status.get("status"),
+        "duration": status.get("duration"),
+        "complete": status.get("status") == "completed" and all(row is not None for row in rows),
+    }
+
+
+def loaded(item: tuple[Path, bool]) -> dict[str, Any] | None:
+    path, complete = item
+    return models.job_data(path) if complete else None
 
 
 def anchor_mean(data: dict[str, Any]) -> tuple[float, float]:
@@ -161,44 +207,57 @@ def score(offsets_path: Path, confirmation_path: Path, references: list[Path], r
     offsets = {entry["name"]: entry for entry in frozen["predictors"]}
     models.require(sorted(offsets) == sorted(PREDICTORS), f"{offsets_path.name} holds {sorted(offsets)}")
     confirmation = json.loads(confirmation_path.read_text(encoding="utf-8"))
-    reference_data = [models.job_data(path) for path in references]
+    reference_data = ordered_map(models.job_data, references)
     by_job = {d["record"]["manifest"]["job"]: d for d in reference_data}
     models.require(BASELINE_JOB in by_job, f"the reference runs omit {BASELINE_JOB}, the anchor baseline")
-    baseline, baseline_variance = anchor_mean(by_job[BASELINE_JOB])
+    baseline, _ = anchor_mean(by_job[BASELINE_JOB])
     seen = {key for d in reference_data for key in mesh_keys(d)}
-    critical = float(stats.norm.ppf(1 - ALPHA / 2))
+    margin = math.sqrt(confirmation["explained_share"]["compilation_variance"])
+    summaries = ordered_map(returned, runs)
+    names = [summary["job"] for summary in summaries]
+    if any(name.startswith("job-05") for name in names):
+        models.require(names[0] == "job-04", "a job-05 run needs job-04 first, whose duration sets its size")
+        admitted = job_05_iterations(summaries[0])
+        for summary in summaries[1:]:
+            models.require(
+                admitted is not None and summary["job"] == f"job-05-i{admitted}",
+                f"job-04's duration {summaries[0]['duration']} admits job-05 variant {admitted}, not {summary['job']}",
+            )
+    datasets = ordered_map(loaded, [(path, summary["complete"]) for path, summary in zip(runs, summaries, strict=True)])
     jobs: list[dict[str, Any]] = []
     rows: list[dict[str, Any]] = []
-    for path in runs:
-        data = models.job_data(path)
-        name = data["record"]["manifest"]["job"]
+    for summary, data in zip(summaries, datasets, strict=True):
+        if data is None:
+            jobs.append({**summary, "scored": False})
+            continue
+        name = summary["job"]
         keys = mesh_keys(data)
         anchor = reading.anchors_of(data)
         perturbed = sorted({int(c) for c in data["configuration"][~anchor]})
         old = [c for c in perturbed if keys[c] in seen]
         keep = [c for c in perturbed if keys[c] not in seen]
         seen.update(keys)
-        mean, variance = anchor_mean(data)
+        mean, _ = anchor_mean(data)
         z, v = reading.x_statistics(data)
-        shift = (mean - baseline) / math.sqrt(variance + baseline_variance)
-        summary: dict[str, Any] = {
-            "job": name,
-            "run": path.relative_to(ROOT).as_posix(),
-            "iterations": len(data["record"]["results"]["iterations"]),
-            "perturbed_settings": int((~anchor).sum()),
-            "distinct_perturbed_meshes": len(perturbed),
-            "previously_served": len(old),
-            "anchor_control": {
-                "mean": mean,
-                "baseline_mean": baseline,
-                "z": shift,
-                "reading": "moved" if abs(shift) >= critical else "steady",
-            },
-            "dispersion_ratio": float(reading.dispersion_ratio(z, v, anchor[None, :])[0]),
-        }
-        summary["scored"] = len(keep) >= MIN_JOB_MESHES
-        jobs.append(summary)
-        if summary["scored"]:
+        shift = mean - baseline
+        jobs.append(
+            {
+                **summary,
+                "perturbed_settings": int((~anchor).sum()),
+                "distinct_perturbed_meshes": len(perturbed),
+                "previously_served": len(old),
+                "anchor_control": {
+                    "mean": mean,
+                    "baseline_mean": baseline,
+                    "shift": shift,
+                    "margin": margin,
+                    "reading": "moved" if abs(shift) > margin else "steady",
+                },
+                "dispersion_ratio": float(reading.dispersion_ratio(z, v, anchor[None, :])[0]),
+                "scored": len(keep) >= MIN_JOB_MESHES,
+            }
+        )
+        if jobs[-1]["scored"]:
             rows.extend({"job": name, **row} for row in job_rows(data, keep, offsets))
     labels = np.array([row["job"] for row in rows])
     observed = np.array([row["observed"] for row in rows])

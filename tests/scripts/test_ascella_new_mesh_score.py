@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import math
 import sys
 from pathlib import Path
@@ -95,3 +96,27 @@ def test_an_upper_share_at_the_reference_reads_inconclusive() -> None:
     }
     if score.outcome(readings, True, 0.1055) != "inconclusive":
         raise AssertionError("a bound at the held-out point estimate excludes nothing")
+
+
+@pytest.mark.parametrize(
+    ("duration", "complete", "expected"),
+    [(186, True, 96), (232.5, True, 96), (240, True, 88), (253.6, True, 88), (260, True, 80), (279, True, 80)]
+    + [(279.5, True, None), (200, False, None), (None, True, None)],
+)
+def test_job_05_size_follows_job_04_duration_alone(
+    duration: float | None, complete: bool, expected: int | None
+) -> None:
+    if score.job_05_iterations({"duration": duration, "complete": complete}) != expected:
+        raise AssertionError(f"job-04 at {duration} s, complete {complete}, must admit {expected}")
+
+
+def test_a_truncated_run_is_partial(tmp_path: Path) -> None:
+    run = tmp_path / "truncated"
+    run.mkdir()
+    (run / "cases.json").write_bytes((JOB_02 / "cases.json").read_bytes())
+    results = json.loads((JOB_02 / "results.json").read_text(encoding="utf-8"))
+    results["iterations"] = results["iterations"][:40]
+    (run / "results.json").write_text(json.dumps(results), encoding="utf-8")
+    summary = score.returned(run)
+    if summary["complete"] or summary["returned_iterations"] != 40 or summary["requested_iterations"] != 64:
+        raise AssertionError(f"a run returning 40 of 64 iterations must read partial: {summary}")

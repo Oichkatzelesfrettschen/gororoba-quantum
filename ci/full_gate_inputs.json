@@ -610,6 +610,11 @@
       "docs/evidence/ascella-order-coefficients/mesh-split.json",
       "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json"
     ],
+    "core-ascella-signed-coherence-new-seed-sizing-replay": [
+      "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+      "docs/evidence/ascella-order-coefficients/heater-coupling.json",
+      "docs/evidence/ascella-order-coefficients/new-seed-sizing.json"
+    ],
     "core-primorial-null-residuals-replay": [
       "docs/evidence/calibration/**",
       "docs/evidence/primorial_cover/**",

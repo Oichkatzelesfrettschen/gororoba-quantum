@@ -246,11 +246,29 @@ def endpoint_variant(manifest: dict[str, Any], counts: np.ndarray) -> dict[str, 
     }
 
 
+def attributed_rows(manifest: dict[str, Any], results: dict[str, Any]) -> list[list[int] | None]:
+    """Each manifest setting's twelve-mode eligible counts, None where results.json returns none for it.
+
+    ascella_coherence_run.attribute attributes every entry, so a request of any iteration count reads as the
+    64-iteration design does."""
+    entries = results.get("iterations")
+    if entries is None and results.get("partial"):
+        entries = []
+    settings = manifest["settings"]
+    if not isinstance(entries, list) or len(entries) > len(settings):
+        raise ValueError(f"results.json carries {type(entries).__name__} iterations, not up to {len(settings)}")
+    items = [(position, entry, settings[position]) for position, entry in enumerate(entries)]
+    rows: list[list[int] | None] = [None] * len(settings)
+    for (position, _, _), (row, _, _) in zip(items, ordered_map(run_analysis.attribute, items), strict=True):
+        rows[position] = row
+    return rows
+
+
 def run_record(directory: Path) -> dict[str, Any]:
     """The collected counts, compiled circuits and plan-time dark rates of one run, in execution order."""
     manifest = load(directory / "cases.json")
     results = load(directory / "results.json")
-    rows, _ = run_analysis.attributed(manifest, results)
+    rows = attributed_rows(manifest, results)
     require(all(row is not None for row in rows), f"{directory}: not every iteration carries counts")
     decoded = ordered_map(compiled, results["iterations"])
     dark = load(directory / "submission.json")["perfs_at_plan"]["Dark counts (detection/s)"]
