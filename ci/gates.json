@@ -3782,6 +3782,125 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py --self-test",
+   "name": "core-700",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py check results/iqm/cases/measurement-sequence-pinching",
+   "name": "core-701",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence_aer_check.py --self-test",
+   "name": "core-702",
+   "seconds": 4.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py --self-test",
+   "name": "core-703",
+   "seconds": 5.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py check results/iqm/cases/measurement-sequence-diagnostic",
+   "name": "core-704",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_preflight.py --self-test",
+   "name": "core-705",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_preflight.py check results/iqm/cases/measurement-sequence-pinching-probe",
+   "name": "core-706",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py analyze results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic --out results/iqm/measurement_sequence_diagnostic_analysis.json --replay",
+   "name": "core-707",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_diagnostic_analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_preflight.py analyze results/iqm/runs/2026-10-26T004628Z-garnet-measurement-sequence-pinching-probe-probe --out results/iqm/measurement_sequence_pinching_preflight.json --replay",
+   "name": "core-708",
+   "seconds": 2.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_preflight.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py analyze results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching --out results/iqm/measurement_sequence_pinching_analysis.json --replay",
+   "name": "core-709",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py analyze results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching --gate-model sign-pooled --out results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json --replay",
+   "name": "core-710",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py check results/iqm/cases/measurement-sequence-pinching --calibration-dir results/iqm/calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684",
+   "name": "core-711",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence_aer_check.py run results/iqm/cases/measurement-sequence-pinching --calibration-dir results/iqm/calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684 | cmp - results/iqm/measurement_sequence_pinching_aer_check.json",
+   "name": "core-712",
+   "seconds": 8.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_aer_check.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py analyze results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0 results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate --out results/iqm/signed_kernel_null_retest_analysis.json --replay",
    "name": "core-643",
    "seconds": 20.0,
@@ -4079,6 +4198,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ascella_compilation_reading.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/compilation-reading.json --check",
    "name": "core-ascella-signed-coherence-compilation-reading-replay",
    "seconds": 505.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_seed_repeat_reading.py results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/seed-repeat-reading.json --check",
+   "name": "core-ascella-signed-coherence-seed-repeat-reading-replay",
+   "seconds": 10.0,
    "tier": "full"
   },
   {

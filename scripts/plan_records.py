@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import functools
 import hashlib
 import json
 import re
@@ -43,6 +44,10 @@ PLAN_KEYS = {
     "receipts",
 }
 STEP_KEYS = {"id", "action", "acceptance", "state", "depends_on", "receipts", "reason"}
+# A local evidence reference PATH#COLLECTION/FIELD=VALUE names the one object of the top-level JSON array
+# COLLECTION of PATH whose string FIELD equals VALUE, and binds the digest() of that object, so an edit to
+# another record of a shared registry leaves the receipt fresh.
+SELECTOR = re.compile(r"(?P<collection>[^/=]+)/(?P<field>[^/=]+)=(?P<value>.+)\Z")
 
 
 def require(condition: bool, message: str) -> None:
@@ -135,12 +140,51 @@ def check_receipts(root: Path, receipts: Any, scope: str) -> None:
         for evidence in receipt["evidence"]:
             require(isinstance(evidence, dict) and set(evidence) == {"ref", "sha256"}, "evidence needs ref and sha256")
             reference(root, evidence["ref"])
+            if not evidence["ref"].startswith("https://"):
+                selector(evidence["ref"])
             require(bool(HEX.fullmatch(evidence["sha256"])), "evidence digest needs SHA-256")
 
 
-def evidence_digest(root: Path, reference: str) -> str:
-    """The SHA-256 of the checkout bytes a local evidence reference names."""
-    return hashlib.sha256(local_path(root, reference).read_bytes()).hexdigest()
+def selector(reference: str) -> re.Match[str] | None:
+    """The record selector of a local evidence reference; None for a reference to a whole file."""
+    path, separator, fragment = reference.partition("#")
+    if not separator:
+        return None
+    match = SELECTOR.fullmatch(fragment)
+    require(
+        match is not None and path.endswith(".json"),
+        f"evidence selector needs FILE.json#COLLECTION/FIELD=VALUE: {reference}",
+    )
+    return match
+
+
+@functools.lru_cache(maxsize=16)
+def json_document(content: bytes) -> Any:
+    return loads(content.decode("utf-8"))
+
+
+def selected_record(root: Path, reference: str) -> dict[str, Any] | None:
+    """The one record a selector names; None when no record or several records match."""
+    match = selector(reference)
+    if match is None:
+        raise ValueError(f"evidence reference names no record: {reference}")
+    document = json_document(local_path(root, reference).read_bytes())
+    members = document.get(match["collection"]) if isinstance(document, dict) else None
+    found = [
+        member
+        for member in (members if isinstance(members, list) else [])
+        if isinstance(member, dict) and member.get(match["field"]) == match["value"]
+    ]
+    return found[0] if len(found) == 1 else None
+
+
+def evidence_digest(root: Path, reference: str) -> str | None:
+    """The SHA-256 a local evidence reference binds: the checkout bytes of a file, or the digest() of a selected
+    record. None when a selector matches no single record, which reads as changed evidence."""
+    if selector(reference) is None:
+        return hashlib.sha256(local_path(root, reference).read_bytes()).hexdigest()
+    record = selected_record(root, reference)
+    return None if record is None else digest(record)
 
 
 def newest_receipt(item: dict[str, Any]) -> dict[str, Any] | None:
