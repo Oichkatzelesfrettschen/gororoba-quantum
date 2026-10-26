@@ -119,6 +119,22 @@
             }
           ],
           "scope_sha256": "d41eaaeff24a0e52861bb81069cde59787a17a66a59826923c80ee4423510e0f"
+        },
+        {
+          "result": "Rerun with the per-pair Jacobian checks pooled: verify_regularity_independent.py pass=True, every statement and all 75 germ pairs confirmed, record identical to the previous run apart from timings and the script digest.",
+          "observed_at": "2026-10-26T21:01:32+00:00",
+          "revision": "2497f9f813dd9938d116d328b33c4bd0400bfddc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-strata-regularity/verification.json",
+              "sha256": "8a4ded5a7194dd961f5e7984e56c466d6bfe1735c1ff020ff5111c883eb1401a"
+            },
+            {
+              "ref": "docs/evidence/a5-strata-regularity/verify_regularity_independent.py",
+              "sha256": "cd0190244bcf3c632983573a17908e44b90ebeb9063837f08d62d88319d9f6ae"
+            }
+          ],
+          "scope_sha256": "d41eaaeff24a0e52861bb81069cde59787a17a66a59826923c80ee4423510e0f"
         }
       ]
     },
