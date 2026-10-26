@@ -109,8 +109,7 @@ MODEL_SCATTER_DIAGNOSTIC_SHA256: str | None = None
 MODEL_SCATTER_FLOOR_FILE = "docs/evidence/measurement_sequence/scatter-floor.json"
 SCATTER_FLOOR_SCHEMA = "measurement-sequence-scatter-floor-v1"
 # An illustrative floor for the sweeps and the Aer validation, which exercise the mechanism. It is not a measurement
-# of any device: the largest floor for which PLANNING_SE_FACTOR still leaves a qubit informative at the fixture is
-# about 0.0175, and 0.015 keeps an axis tilt of -0.016 rad against an sx error of three times the Target's unattributed.
+# of any device.
 DEMONSTRATION_SCATTER_FLOOR = 0.015
 # A qubit whose widened departure standard error exceeds this multiple of the planning standard error (the standard
 # error at the planning model including the scatter floor, when one is set) is uninformative.
@@ -260,8 +259,15 @@ def chain_matrix(
     eps: float,
     gate: Gate,
     z_eq: float = 1.0,
+    sign: int = 1,
 ) -> np.ndarray:
-    """The affine map on (x, y, z, 1) of the n steps of an arm, just before the pre-readout idle.
+    """The affine map on (x, y, z, 1) of the n steps of an arm, just before the pre-readout idle, for the circuit
+    that rotates by sign * THETA / n (sign +1 or -1, the two signs of the signed members).
+
+    The relative axis tilt of a pair is the one gate-model class that is odd under the sign: the reflection
+    x -> -x maps the sign -1 chain at tilt d onto the sign +1 chain at tilt -d. The other classes (depolarizing
+    error, drive dephasing, angle error) and T1 and T2 are reflection-invariant. The analysis pools the four signed
+    members (+, -, -, +), so every figure it compares with data is the equal-weight mean of the two signs (corrected_z).
 
     Each step plays the compiled form of RX(THETA / n), rz(pi/2) sx rz(THETA / n + pi) sx rz(pi/2), with T1 and T2
     acting during each sx and a depolarizing shrink 1 - lambda after it (gate = (lambda, duration)); the sx pair
@@ -276,7 +282,7 @@ def chain_matrix(
     # sx is a change of frame about Z and leaves each z population unchanged, so only the relative tilt acts.
     second = rz_map(axis_phase) @ sx @ rz_map(-axis_phase) if axis_phase else sx
     pair_rz = rz_map(math.pi / 2)
-    step = pair_rz @ second @ rz_map(THETA / n + math.pi) @ sx @ pair_rz
+    step = pair_rz @ second @ rz_map(sign * THETA / n + math.pi) @ sx @ pair_rz
     idle = np.diag([math.exp(-tau / t2), math.exp(-tau / t2), math.exp(-tau / t1), 1.0])
     idle[2, 3] = z_eq * (1 - math.exp(-tau / t1))
     cycle = idle @ step
@@ -295,21 +301,25 @@ def bloch_z(
     z0: float = 1.0,
     gate: Gate = (0.0, 32e-9, 1.0, 0.0, 0.0),
     z_eq: float = 1.0,
+    sign: int = 1,
 ) -> float:
-    """Bloch z after n steps of an arm from (0, 0, z0), just before the pre-readout idle (chain_matrix)."""
-    return float((chain_matrix(arm, n, t1, t2, tau, eps, gate, z_eq) @ np.array([0.0, 0.0, z0, 1.0]))[2])
+    """Bloch z after n steps of the sign member of an arm from (0, 0, z0), just before the pre-readout idle."""
+    return float((chain_matrix(arm, n, t1, t2, tau, eps, gate, z_eq, sign) @ np.array([0.0, 0.0, z0, 1.0]))[2])
 
 
 def corrected_z(arm: str, n: int, t1: float, t2: float, tau: float, eps: float, gate: Gate, q: float) -> float:
     """The z that ro0/ro1 correction recovers: a + b q, with a the chain's response to the initial z and b its
-    response to the relaxation source, both at unit strength.
+    response to the relaxation source, both at unit strength, averaged over the two rotation signs because the
+    observable pools the members +, -, -, + with equal weight (chain_matrix).
 
     A true z of 1 - 2 p before the wait is divided by the scale (1 - 2 p) that ro0 and ro1 measure, so the initial
     state enters through q = z_eq / (1 - 2 p) alone, the single combination the t1 series fixes.
     """
-    chain = chain_matrix(arm, n, t1, t2, tau, eps, gate)
-    b = chain[2, 3]
-    return float(chain[2, 2] + b * q)
+    total = 0.0
+    for sign in (1, -1):
+        chain = chain_matrix(arm, n, t1, t2, tau, eps, gate, 1.0, sign)
+        total += float(chain[2, 2] + chain[2, 3] * q)
+    return total / 2
 
 
 def model_tables(
@@ -410,8 +420,9 @@ def gate_propagation(curves: dict[str, list[dict[str, Any]]], residual: float) -
     not reach the residual, its nearest point. The side with the larger measure-arm shift stands. The ratio is the
     measure-arm shift over the unitary-arm shift there. At the fixture calibration it is about -0.8 for depolarizing
     error (more depolarization raises the unitary P0 and lowers the measure P0), about -0.5 for dephasing during the
-    drive, about +0.3 for a relative tilt between the two sx of a pair, and near 0 for an over-rotation of the
-    pi / 2 pulse.
+    drive, and near 0 for a relative tilt between the two sx of a pair and for an over-rotation of the pi / 2 pulse
+    (the tilt's first-order effect is odd under the rotation sign and cancels in the pool of the signed members, so
+    the curves are the pooled ones that corrected_z returns).
     """
     out: dict[str, dict[str, Any]] = {}
     for name, sides in curves.items():
@@ -957,7 +968,8 @@ def device_counts(
     """Expected final-bit counts of model devices, rounded to whole shots, per member.
 
     Each member's true Bloch z comes from the Bloch model (T1, T2, an initialization excitation p_init, the true
-    sx error and window), relaxes over the pre-readout idle and reads through the qubit's assignment errors.
+    sx error and window) of its own rotation sign, + for pa and pb and - for ma and mb, relaxes over the
+    pre-readout idle and reads through the qubit's assignment errors.
     """
     out: dict[int, dict[str, Any]] = {}
     for q, m in models.items():
@@ -970,27 +982,30 @@ def device_counts(
         z_eq = 1 - 2 * m["p_thermal"]
         wait = ctx["prereadout_s"]
         final: dict[str, tuple[int, int]] = {}
+        z_by_sign: dict[tuple[str, int, int], float] = {}
         for arm, n in group_keys():
             eps = m["eps_settle"] if arm == "settle" and m["eps_settle"] is not None else m["eps"]
-            z = bloch_z(
-                arm,
-                n,
-                m["t1_s"],
-                min(m["t2_s"], 2 * m["t1_s"]),
-                tau_of(arm, ctx),
-                eps,
-                1 - 2 * m["p_init"],
-                sx_gate(
-                    ctx,
-                    dephasing_scale=m["gate_dephasing"],
-                    axis_phase=m["axis_phase"],
-                    angle_error=m["angle_error"],
-                ),
-                z_eq,
-            )
+            for sign in (1, -1):
+                z_by_sign[(arm, n, sign)] = bloch_z(
+                    arm,
+                    n,
+                    m["t1_s"],
+                    min(m["t2_s"], 2 * m["t1_s"]),
+                    tau_of(arm, ctx),
+                    eps,
+                    1 - 2 * m["p_init"],
+                    sx_gate(
+                        ctx,
+                        dephasing_scale=m["gate_dephasing"],
+                        axis_phase=m["axis_phase"],
+                        angle_error=m["angle_error"],
+                    ),
+                    z_eq,
+                    sign,
+                )
             shift = m["readout_history"] if arm in PINCHED_ARMS else 0.0
-            for name in member_names(arm, n, q):
-                final[name] = expected_ones(z, shift, m, wait, shots)
+            for tag, name in zip(SIGNED, member_names(arm, n, q), strict=True):
+                final[name] = expected_ones(z_by_sign[(arm, n, 1 if tag[0] == "p" else -1)], shift, m, wait, shots)
         final[ro0_name(q)] = expected_ones(1 - 2 * m["p_init"], 0.0, m, wait, shots)
         for k, name in enumerate(t1_names(q)):
             decayed = z_eq - (z_eq + 1 - 2 * m["p_init"]) * math.exp(-ctx["t1_delays_s"][k] / m["t1_s"])
@@ -1041,13 +1056,16 @@ def with_planning(
 
 
 # Per-qubit gate-model error injected by a model-error row, cycled over the qubits. "specified" is a factor of 0.5 and
-# 1.5 on the transverse decay rate during the drive. "large" reaches a unitary-arm residual of about +-0.03 at the
-# fixture calibration: a factor of 12 on that rate (+0.033) and a relative axis tilt of +-0.0085 rad between the two sx
-# of a pair (+-0.030, +-0.009 in the measure arm).
+# 1.5 on the transverse decay rate during the drive. The unitary residual that a class produces is the pooled one of
+# the four signed members (corrected_z): drive dephasing and depolarizing error shift it one way each side of nominal,
+# and the relative axis tilt and the angle error only at second order and upward, because their first-order effect is
+# odd under the sign and cancels in the pool. "sx_factor" scales the true sx error. "medium" reaches +0.014 (a factor
+# of 5 on the decay rate) and -0.016 (no drive dephasing and no sx error); "large" reaches +0.033 (a factor of 12 on
+# the decay rate or a tilt of 0.02 rad) and the same -0.016. The residuals are those of the eight fixture qubits.
 MODEL_ERRORS = {
     "specified": ({"gate_dephasing": 0.5}, {"gate_dephasing": 1.5}),
-    "medium": ({"gate_dephasing": 5.0}, {"axis_phase": 0.0035}, {"axis_phase": -0.0035}),
-    "large": ({"gate_dephasing": 12.0}, {"axis_phase": 0.0085}, {"axis_phase": -0.0085}),
+    "medium": ({"gate_dephasing": 5.0}, {"gate_dephasing": 0.0, "sx_factor": 0.0}),
+    "large": ({"gate_dephasing": 12.0}, {"axis_phase": 0.02}, {"gate_dephasing": 0.0, "sx_factor": 0.0}),
 }
 
 
@@ -1100,35 +1118,35 @@ def sweep_cases(reduced: bool) -> list[dict[str, Any]]:
             "eps_settle": 0.02,
             "expect": "departure",
         },
-        {**medium, "label": "model error, residual about +-0.01", "expect": "none"},
-        {**medium, "label": "model error +-0.01 + sx x3", "sx_scale": 3.0, "expect": "not_attributed"},
+        {**medium, "label": "model error, residual -0.016 to +0.014", "expect": "none"},
+        {**medium, "label": "model error -0.016..+0.014 + sx x3", "sx_scale": 3.0, "expect": "not_attributed"},
         {
             **medium,
-            "label": "model error +-0.01 + measure eps 0.02",
+            "label": "model error -0.016..+0.014 + measure eps 0.02",
             "eps": 0.02,
             "eps_settle": 0.02,
             "expect": "departure",
         },
-        {**large, "label": "model error, residual about +-0.03", "expect": "none"},
-        {**large, "label": "model error +-0.03 + sx x3", "sx_scale": 3.0, "expect": "uninformative"},
+        {**large, "label": "model error, residual -0.016 to +0.033", "expect": "none"},
+        {**large, "label": "model error -0.016..+0.033 + sx x3", "sx_scale": 3.0, "expect": "uninformative"},
         {
             **large,
-            "label": "model error +-0.03 + measure eps 0.02",
+            "label": "model error -0.016..+0.033 + measure eps 0.02",
             "eps": 0.02,
             "eps_settle": 0.02,
             "expect": "departure",
         },
         {
             **base,
-            "label": "axis tilt -0.016 + sx x3",
-            "axis_phase": -0.016,
+            "label": "axis tilt 0.02 + sx x3",
+            "axis_phase": 0.02,
             "sx_scale": 3.0,
             "expect": "not_attributed",
         },
         {
             **base,
-            "label": "axis tilt -0.022 + sx x4",
-            "axis_phase": -0.022,
+            "label": "axis tilt 0.03 + sx x4",
+            "axis_phase": 0.03,
             "sx_scale": 4.0,
             "expect": "not_attributed",
         },
@@ -1143,26 +1161,27 @@ def device_informative(verdict: dict[str, Any]) -> list[Any]:
 def run_row(item: tuple[dict[str, Any], dict[int, dict[str, Any]], int]) -> dict[str, Any]:
     """One true device (a sweep spec) analyzed over its qubits through the same evaluate path as a run."""
     spec, contexts, shots = item
-    models = {
-        q: device_model(
+    models = {}
+    for position, (q, ctx) in enumerate(contexts.items()):
+        errors = dict(
+            MODEL_ERRORS[spec["model_error"]][position % len(MODEL_ERRORS[spec["model_error"]])]
+            if spec.get("model_error")
+            else {}
+        )
+        sx_factor = errors.pop("sx_factor", 1.0)
+        models[q] = device_model(
             ctx,
             t1_s=spec["t1_scale"] * ctx["t1_cal_s"],
             p_init=spec["p_init"],
             p_thermal=spec["p_thermal"],
-            sx_error=spec["sx_scale"] * ctx["sx_error"],
+            sx_error=sx_factor * spec["sx_scale"] * ctx["sx_error"],
             window_s=spec["window_scale"] * ctx["window_s"],
             window_fraction=spec.get("window_fraction", WINDOW_RELAX_FRACTION),
             eps=spec.get("eps", 0.0),
             eps_settle=spec.get("eps_settle"),
             **{key: spec[key] for key in ("gate_dephasing", "axis_phase", "angle_error") if key in spec},
-            **(
-                MODEL_ERRORS[spec["model_error"]][position % len(MODEL_ERRORS[spec["model_error"]])]
-                if spec.get("model_error")
-                else {}
-            ),
+            **errors,
         )
-        for position, (q, ctx) in enumerate(contexts.items())
-    }
     result = evaluate(device_counts(models, contexts, shots), contexts)
     verdict = device_verdict(result)
     usable = {q: r for q, r in result.items() if r["usable"]}
@@ -1573,7 +1592,7 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "detectable":
         contexts = fixture_contexts()
         specs = {case["label"]: case for case in sweep_cases(False)}
-        labels = ("planning", "model error, residual about +-0.01")
+        labels = ("planning", "model error, residual -0.016 to +0.014")
         print(json.dumps([minimum_detectable(contexts, specs[label], FIXTURE_SHOTS) for label in labels], indent=2))
     else:
         parser.error("choose a subcommand or --self-test")

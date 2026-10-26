@@ -253,7 +253,13 @@ that shift adds in quadrature to the departure standard error.
 Four error classes perturb the sx model (`GATE_CLASSES`): depolarizing error (an absolute shift of the
 depolarizing error per sx), a factor on the transverse decay rate during the drive, a tilt of the second sx's
 rotation axis from the first's, and an over-rotation of the pi / 2 pulse. A tilt common to every sx is a frame
-change about Z that leaves every z population unchanged, so only the relative tilt acts. The sx pair crosses the
+change about Z that leaves every z population unchanged, so only the relative tilt acts. The relative tilt is odd
+under the rotation sign: the reflection x -> -x maps the sign -1 chain at tilt d onto the sign +1 chain at -d, while
+depolarizing error, drive dephasing and the angle error are reflection-invariant. The experiment pools the four signed
+members (+, -, -, +) with equal weight, so the model compares the mean of the two signs (`chain_matrix(sign=...)`,
+`corrected_z`), and a tilt moves the pooled unitary and measure arms only at second order. A model that evaluated the
+sign +1 chain alone showed a first-order tilt effect (unitary P0 -0.011 and +0.016 at d = +-0.005 against +0.002 pooled)
+that the data cannot carry; `device_counts` likewise generates each signed member from its own sign. The sx pair crosses the
 equator, so these errors reach the measure arm; a mid-circuit measurement erases a phase error only for a single
 small-angle pulse, not for a composite step. For each class, `gate_propagation` finds the smallest magnitude, on
 each side of nominal and within the stretch where the unitary shift moves one way, that reproduces the observed
@@ -264,11 +270,13 @@ shift) at the fixture calibration, over the eight fixture qubits, for a residual
 |---|---|---|
 | depolarizing error | -0.82 to -0.80 | -0.82 to -0.80 |
 | dephasing during the drive | -0.52 to -0.51 | -0.52 to -0.51 |
-| relative axis tilt | +0.29 to +0.30 | +0.57 to +0.58 |
+| relative axis tilt | -0.02 | a negative residual lies outside the class (its pooled shift is second order and positive) |
 | pi / 2 over-rotation | +0.12 to +0.13 | a negative residual lies outside the class (its shift is second order and positive) |
 
-The largest shift over the classes is the qubit's propagated systematic. Classes of opposite unitary sign cancel in
-the unitary arm and add on the measure arm, so a qubit's own residual can sit at zero while its measure arm moves.
+The largest shift over the classes is the qubit's propagated systematic. Depolarizing error and drive dephasing
+shift the unitary arm one way on each side of nominal and the measure arm the other, so a model that overpredicts one
+and underpredicts the other can leave a qubit's own residual at zero while its measure arm moves by the difference of
+their ratios (-0.8 and -0.5).
 The systematic therefore also takes the shifts that a residual equal to the device scatter, plus and minus, would
 carry (`widen_for_device_scatter`); the device scatter is the root-mean-square of the usable qubits' residuals,
 floored at the model scatter when one is set.
@@ -396,11 +404,17 @@ statistical scatter (0.0020 against 0.0021) when the model is right, and the inj
 error of 0.02 comes back as a floor of 0.0210, with the sign pattern against T2 recovered (rank correlation +0.71)
 when the error is ordered by T2. The pattern test finds nothing in the alternating row (p 0.56), where no order exists.
 
+The diagnostic's model has no tilt, and each injected error is solved per signed member, so the floors above are the
+same to four digits before and after the analysis pooled the two rotation signs. A tilt common to all four members
+would show the sign dependence instead: the +THETA and -THETA members move in opposite directions and the pooled unitary
+P0 moves at second order only (`test_axis_tilt_is_odd_under_the_sign_and_the_pool_is_even`), so the floor measures the
+sign-even model error, which is the part the measure arm's pooled observable carries.
+
 #### What a floor value means for the main case
 
 The floor widens each qubit's departure standard error by about 0.8 of its value (the depolarizing class,
 `propagated_se`), so the smallest per-step transition rate the device rule detects at pooled z = -3 on the eight fixture
-qubits grows with it (`minimum_detectable`, 8192 shots): 0.0030 at a floor of 0.01, 0.0064 at 0.02 and 0.0097 at 0.04.
+qubits grows with it (`minimum_detectable`, 8192 shots): 0.0030 at a floor of 0.01, 0.0049 at 0.02 and 0.0097 at 0.04.
 The planning standard error includes the floor, so the informative-qubit rule does not remove qubits as the floor
 grows; the cost appears as detection power. The Garnet diagnostic measured about 0.04 on its pi / 2-pair arm. A
 Kingston floor near 0.04 would leave the main run able to attribute only a transition rate near 0.01 per step, and the
@@ -431,7 +445,7 @@ Minimum detectable departure, a per-step z loss eps injected in both pinched arm
 | Row | Pooled eps at pooled z = -3 | Mean N = 16 P0 shift there | Per-qubit eps at z = -3 | Mean departure SE |
 |---|---|---|---|---|
 | planning | 0.0039 | -0.044 | 0.0042 to 0.0054 (median 0.0044) | 0.0155 |
-| model error, residual about +-0.01 | 0.0038 | -0.044 | 0.0041 to 0.0052 (median 0.0043) | 0.0155 |
+| model error, residual -0.016 to +0.014 | 0.0039 | -0.043 | 0.0040 to 0.0060 (median 0.0044) | 0.0155 |
 
 ### Tables
 
@@ -444,9 +458,13 @@ verdict `unchanged_by_gap`, every device status `none`), `none` (every status `n
 `not_attributed` (no departure attributed; `uninformative` satisfies it), `departure` (`departs_below` attributed,
 gap verdict unchanged), `tail` (`settle_reduced_by_gap` attributed), `uninformative` and `either`. The model-error
 rows inject a gate-model error per qubit: dephasing during the drive x0.5 and x1.5 (residual about +-0.002), a
-moderate set (dephasing x5, tilt +-0.0035 rad; residual about +-0.01) and a large set (dephasing x12, tilt
-+-0.0085 rad; residual about +-0.03). The tilt rows pair a negative tilt with an sx error whose unitary sign is
-opposite, the cancellation case.
+moderate set (dephasing x5 and a device with no drive dephasing and no sx error; residuals +0.014 and -0.016) and a
+large set (dephasing x12, a tilt of 0.02 rad and the same -0.016 device; residuals up to +0.033). The unitary arm
+pools the four signed members, so a tilt moves it upward at second order only; the two tilt rows (0.02 and 0.03 rad)
+pair that second-order shift with an sx error of three and four times the Target's and read uninformative, with no
+departure attributed. An earlier version evaluated the sign +1 chain alone, which showed a first-order tilt shift that
+cancels in the pool and gave a pooled z of -2.12 and -2.88 on the cancelling tilt rows; that cancellation does not
+exist in the pooled observable.
 
 | Row | Informative qubits | Departure z, per qubit | Pooled departure z | Unitary residual | Propagated SE | Device status |
 |---|---|---|---|---|---|---|
@@ -460,20 +478,20 @@ opposite, the cancellation case.
 | no relaxation in the window | 8 of 8 | -0.40 to -0.24 | -0.32 | -0.000 to +0.000 | 0.0120 to 0.0122 | none |
 | full relaxation in the window | 8 of 8 | 0.24 to 0.38 | 0.30 | -0.000 to +0.000 | 0.0120 to 0.0122 | none |
 | sx x2 | 8 of 8 | -0.67 to -0.35 | -0.50 | +0.006 to +0.015 | 0.0120 to 0.0123 | none |
-| sx x3 | 8 of 8 | -0.87 to -0.53 | -0.71 | +0.013 to +0.030 | 0.0173 to 0.0242 | none |
+| sx x3 | 8 of 8 | -0.87 to -0.58 | -0.77 | +0.013 to +0.030 | 0.0156 to 0.0242 | none |
 | sx x4 | 7 of 8 | -0.93 to -0.61 | -0.80 | +0.019 to +0.044 | 0.0232 to 0.0357 | none |
 | measure eps 0.01 | 8 of 8 | -7.21 to -5.58 | -7.04 | -0.000 to +0.000 | 0.0120 to 0.0122 | attributed, none |
 | tail eps 0.01 (measure arm only) | 8 of 8 | -7.21 to -5.58 | -7.04 | -0.000 to +0.000 | 0.0120 to 0.0122 | attributed, none |
 | model error, drive dephasing x0.5 and x1.5 | 8 of 8 | -0.07 to 0.07 | 0.00 | -0.002 to +0.002 | 0.0120 to 0.0122 | none |
 | model error x0.5 and x1.5 + measure eps 0.02 | 8 of 8 | -12.47 to -9.72 | -12.24 | -0.002 to +0.002 | 0.0120 to 0.0122 | attributed, none |
-| model error, residual about +-0.01 | 8 of 8 | -0.45 to 0.25 | -0.12 | -0.008 to +0.012 | 0.0120 to 0.0122 | none |
-| model error +-0.01 + sx x3 | 8 of 8 | -1.10 to -0.34 | -0.68 | +0.004 to +0.033 | 0.0212 to 0.0263 | none |
-| model error +-0.01 + measure eps 0.02 | 8 of 8 | -12.63 to -9.79 | -12.30 | -0.008 to +0.012 | 0.0120 to 0.0122 | attributed, none |
-| model error, residual about +-0.03 | 8 of 8 | -0.62 to 0.36 | -0.19 | -0.017 to +0.033 | 0.0216 to 0.0271 | none |
-| model error +-0.03 + sx x3 | 1 of 8 | -0.92 to -0.08 | n/a | -0.004 to +0.050 | 0.0324 to 0.0402 | uninformative |
-| model error +-0.03 + measure eps 0.02 | 8 of 8 | -8.01 to -6.68 | -7.36 | -0.017 to +0.033 | 0.0216 to 0.0271 | attributed, none |
-| axis tilt -0.016 + sx x3 | 8 of 8 | -2.21 to -1.88 | -2.12 | -0.008 to +0.010 | 0.0120 to 0.0122 | none |
-| axis tilt -0.022 + sx x4 | 8 of 8 | -2.97 to -2.14 | -2.88 | +0.002 to +0.028 | 0.0121 to 0.0228 | none |
+| model error, residual -0.016 to +0.014 | 8 of 8 | -0.49 to 0.61 | 0.02 | -0.016 to +0.014 | 0.0120 to 0.0127 | none |
+| model error -0.016..+0.014 + sx x3 | 8 of 8 | -0.80 to 0.54 | -0.14 | -0.016 to +0.028 | 0.0161 to 0.0223 | none |
+| model error -0.016..+0.014 + measure eps 0.02 | 8 of 8 | -12.69 to -9.16 | -12.21 | -0.016 to +0.014 | 0.0120 to 0.0127 | attributed, none |
+| model error, residual -0.016 to +0.033 | 8 of 8 | -0.62 to 0.43 | -0.16 | -0.016 to +0.033 | 0.0224 to 0.0271 | none |
+| model error -0.016..+0.033 + sx x3 | 0 of 8 | -0.76 to 0.31 | n/a | -0.016 to +0.054 | 0.0338 to 0.0429 | uninformative |
+| model error -0.016..+0.033 + measure eps 0.02 | 8 of 8 | -7.76 to -6.32 | -6.98 | -0.016 to +0.033 | 0.0224 to 0.0271 | attributed, none |
+| axis tilt 0.02 + sx x3 | 0 of 8 | -0.49 to -0.26 | n/a | +0.044 to +0.060 | 0.0405 to 0.0484 | uninformative |
+| axis tilt 0.03 + sx x4 | 0 of 8 | -0.42 to -0.21 | n/a | +0.088 to +0.108 | 0.0773 to 0.0876 | uninformative |
 | corner | 8 of 8 | -0.64 to -0.34 | -0.47 | +0.006 to +0.015 | 0.0119 to 0.0122 | none |
 
 The Aer validation (`scripts/measurement_sequence_validation.py`; summaries in
@@ -485,7 +503,7 @@ demonstration floor. Shot-sampled rows use the 3-standard-error rule. The four s
 | Row | Informative qubits | Departure z, per qubit | Pooled departure z | Unitary residual | Propagated SE | Device status |
 |---|---|---|---|---|---|---|
 | planning (Target as reported) | 8 of 8 | -0.68 to -0.07 | -0.36 | -0.003 to +0.002 | 0.0119 to 0.0122 | none |
-| sx errors x4 | 8 of 8 | -1.37 to -1.01 | -1.19 | +0.012 to +0.029 | 0.0156 to 0.0226 | none |
+| sx errors x4 | 8 of 8 | -1.44 to -1.01 | -1.22 | +0.012 to +0.029 | 0.0153 to 0.0226 | none |
 | flip 0.01 after each measure-arm measurement | 8 of 8 | -8.56 to -7.63 | -8.32 | -0.002 to +0.001 | 0.0119 to 0.0121 | attributed |
 | flip 0.01 after each measure- and settle-arm measurement | 8 of 8 | -8.38 to -7.57 | -8.30 | -0.006 to +0.002 | 0.0119 to 0.0122 | attributed |
 
@@ -496,9 +514,10 @@ flip is absent from the settle arm.
 ### Limits
 
 - The scatter floor is unmeasured (see its section). Until its file is registered, the pinching analysis withholds.
-  Combinations of a relative tilt and an sx error that cancel in the unitary arm were scanned (tilt -0.006 to -0.03 rad
-  against sx errors x2 to x6, demonstration floor): the largest pooled z was -2.88, at a tilt of -0.022 rad with sx x4.
-  A larger cancelling error than the floor covers would attribute a departure that is a gate error.
+  Depolarizing error and drive dephasing are the classes that shift the unitary arm in one direction and the measure arm
+  in the other (ratios -0.8 and -0.5); a model that overpredicts one and underpredicts the other can hide a measure-arm
+  shift of the difference of the two ratios times the unitary shift, which the device-scatter widening covers up to
+  the floor. A larger offsetting error than the floor covers would attribute a departure that is a gate error.
 - The post-measurement relaxation fraction f and the compiled duration of a mid-circuit measure are not verified
   against the backend scheduler tables of a run; the analysis takes the Target's duration and carries f as a
   systematic.

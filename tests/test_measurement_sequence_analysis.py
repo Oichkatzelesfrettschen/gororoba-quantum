@@ -138,8 +138,9 @@ def test_device_verdict_has_no_veto() -> None:
 
 
 def test_propagation_ratios_at_the_fixture() -> None:
-    """Depolarizing error propagates at about -0.8, drive dephasing at about -0.5, a relative axis tilt at about
-    +0.3 and an over-rotation near 0; a zero residual propagates nothing."""
+    """Depolarizing error propagates at about -0.8, drive dephasing at about -0.5, a relative axis tilt near
+    0 (its first-order effect is odd under the sign and cancels in the pool) and an over-rotation near +0.1; a zero
+    residual propagates nothing."""
     ctx = msa.fixture_contexts((91,))[91]
     t1, q = ctx["t1_cal_s"], 1.03
     zero = msa.gate_propagation(msa.gate_curves(t1, q, ctx, msa.WINDOW_RELAX_FRACTION), 0.0)
@@ -148,7 +149,7 @@ def test_propagation_ratios_at_the_fixture() -> None:
     ratio = {name: c["ratio"] for name, c in shifts.items()}
     check(-0.9 < ratio["depolarizing"] < -0.7, f"{ratio}")
     check(-0.6 < ratio["drive_dephasing"] < -0.4, f"{ratio}")
-    check(0.2 < ratio["axis_phase"] < 0.5, f"{ratio}")
+    check(abs(ratio["axis_phase"]) < 0.1, f"{ratio}")
     check(abs(ratio["angle_error"] or 0.0) < 0.2, f"{ratio}")
     check(all(c["reaches_residual"] for name, c in shifts.items() if name != "angle_error"))
 
@@ -205,28 +206,28 @@ def test_gate_model_error_rows() -> None:
     rows = _rows(
         (
             "sx x3",
-            "model error, residual about +-0.01",
-            "model error +-0.01 + measure eps 0.02",
-            "model error, residual about +-0.03",
-            "model error +-0.03 + measure eps 0.02",
-            "axis tilt -0.016 + sx x3",
+            "model error, residual -0.016 to +0.014",
+            "model error -0.016..+0.014 + measure eps 0.02",
+            "model error, residual -0.016 to +0.033",
+            "model error -0.016..+0.033 + measure eps 0.02",
+            "axis tilt 0.02 + sx x3",
         )
     )
     stress = rows["sx x3"]
     check(not stress["device"]["departs_below"] and not stress["device"]["exceeds_prediction"], f"{stress['device']}")
     check(min(stress["unitary_residual"].values()) > 0.01)
-    check(set(rows["model error, residual about +-0.01"]["device_status"].values()) == {"none"})
-    check(rows["model error +-0.01 + measure eps 0.02"]["device"]["departs_below"])
-    check(set(rows["model error, residual about +-0.03"]["device_status"].values()) == {"none"})
-    check(rows["model error +-0.03 + measure eps 0.02"]["device"]["departs_below"])
-    check(not rows["axis tilt -0.016 + sx x3"]["device"]["departs_below"])
+    check(set(rows["model error, residual -0.016 to +0.014"]["device_status"].values()) == {"none"})
+    check(rows["model error -0.016..+0.014 + measure eps 0.02"]["device"]["departs_below"])
+    check(set(rows["model error, residual -0.016 to +0.033"]["device_status"].values()) == {"none"})
+    check(rows["model error -0.016..+0.033 + measure eps 0.02"]["device"]["departs_below"])
+    check(not rows["axis tilt 0.02 + sx x3"]["device"]["departs_below"])
 
 
 def test_large_model_error_reads_uninformative() -> None:
     """A gate-model error of about 0.03 on top of an sx error of three times the Target's widens the departure
     standard error past twice its planning value, so the device reads uninformative rather than none."""
-    rows = _rows(("model error +-0.03 + sx x3",))
-    row = rows["model error +-0.03 + sx x3"]
+    rows = _rows(("model error -0.016..+0.033 + sx x3",))
+    row = rows["model error -0.016..+0.033 + sx x3"]
     check(row["device_overall"] == "uninformative" and set(row["device_status"].values()) == {"uninformative"})
     check(not any(row["device"].values()))
 
@@ -428,3 +429,67 @@ def test_measured_family_attaches_the_pinching_analysis(monkeypatch: pytest.Monk
     check(withheld["observables"] == ["precision"])
     other = qpu_planning.measured_family({"family_configuration": {"name": "x"}}, distributions, {}, runtime)
     check(other == {"observables": ["precision"]})
+
+
+def _chain_z(arm: str, sign: int, **gate: float) -> float:
+    ctx = msa.fixture_contexts((91,))[91]
+    t1, q = ctx["t1_cal_s"], 1.03
+    chain = msa.chain_matrix(
+        arm, 16, t1, min(ctx["t2_s"], 2 * t1), msa.tau_of(arm, ctx, 0.5), 0.0, msa.sx_gate(ctx, **gate), 1.0, sign
+    )
+    return float(chain[2, 2] + chain[2, 3] * q)
+
+
+def test_axis_tilt_is_odd_under_the_sign_and_the_pool_is_even() -> None:
+    """The relative axis tilt maps the sign -1 chain at d onto the sign +1 chain at -d, so the equal-weight pool of the
+    members +, -, -, + has no first-order term; the other classes do not depend on the sign."""
+    ctx = msa.fixture_contexts((91,))[91]
+    t1, q = ctx["t1_cal_s"], 1.03
+    t2 = min(ctx["t2_s"], 2 * t1)
+    for arm in ("unitary", "measure"):
+        tau = msa.tau_of(arm, ctx, 0.5)
+        for d in (0.003, 0.02):
+            plus, minus = _chain_z(arm, 1, axis_phase=d), _chain_z(arm, -1, axis_phase=d)
+            check(math.isclose(minus, _chain_z(arm, 1, axis_phase=-d), abs_tol=1e-12), f"{arm} d={d}: not a reflection")
+            check(abs(plus - minus) > 1e-2 * d / 0.02, f"{arm} d={d}: the two signs agree: {plus} {minus}")
+            explicit = (plus + minus) / 2
+            gate = msa.sx_gate(ctx, axis_phase=d)
+            pooled = msa.corrected_z(arm, 16, t1, t2, tau, 0.0, gate, q)
+            check(math.isclose(pooled, explicit, abs_tol=1e-12), f"{arm} d={d}: {pooled} {explicit}")
+            even = msa.corrected_z(arm, 16, t1, t2, tau, 0.0, msa.sx_gate(ctx, axis_phase=-d), q)
+            check(math.isclose(pooled, even, abs_tol=1e-12), f"{arm} d={d}: the pool is not even")
+        for name, value in (("shift", 0.0005), ("dephasing_scale", 3.0), ("angle_error", 0.02)):
+            check(
+                math.isclose(_chain_z(arm, 1, **{name: value}), _chain_z(arm, -1, **{name: value}), abs_tol=1e-12),
+                f"{arm}: {name} depends on the sign",
+            )
+
+
+def test_injected_axis_tilt_generates_each_member_from_its_own_sign() -> None:
+    contexts = msa.fixture_contexts(FEW, floor=None)
+    ctx = contexts[FEW[0]]
+    model = msa.device_model(ctx, axis_phase=0.005)
+    final = msa.device_counts({FEW[0]: model}, contexts, msa.FIXTURE_SHOTS)[FEW[0]]["final"]
+    t2 = min(model["t2_s"], 2 * model["t1_s"])
+    for tag, sign in (("pa", 1), ("ma", -1), ("mb", -1), ("pb", 1)):
+        z = msa.bloch_z(
+            "unitary",
+            16,
+            model["t1_s"],
+            t2,
+            0.0,
+            0.0,
+            1 - 2 * model["p_init"],
+            msa.sx_gate(ctx, axis_phase=0.005),
+            1.0,
+            sign,
+        )
+        want = msa.expected_ones(z, 0.0, model, ctx["prereadout_s"], msa.FIXTURE_SHOTS)
+        check(final[f"msq_unitary_n16_{tag}_q{FEW[0]}"] == want, f"{tag}: copied from another sign")
+    check(final[f"msq_unitary_n16_pa_q{FEW[0]}"] != final[f"msq_unitary_n16_ma_q{FEW[0]}"])
+    # The analysis pools the four members: a common tilt moves the pooled unitary P0 only at second order, well below
+    # the first-order shift that the sign +1 chain alone shows.
+    row = msa.evaluate_qubit((FEW[0], {"final": final}, contexts[FEW[0]]))
+    residual = row["gate_systematic_n16"]["unitary_residual"]
+    one_sign = (_chain_z("unitary", 1, axis_phase=0.005) - _chain_z("unitary", 1)) / 2
+    check(abs(one_sign) > 0.01 and abs(residual) < 0.4 * abs(one_sign), f"pooled {residual}, one sign {one_sign}")

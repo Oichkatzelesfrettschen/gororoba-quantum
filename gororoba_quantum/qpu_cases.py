@@ -1738,7 +1738,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "tests the drive-dephasing lead seen on IQM Garnet. The result is a scatter-floor.json that "
             "the main analysis binds by digest; until it exists the main analysis withholds. "
             "A measured floor above about 0.02 raises the smallest per-step transition rate the main case can "
-            "detect from about 0.003 (floor 0.01) to 0.0064 (0.02) and 0.0097 (0.04), at the main design's "
+            "detect from about 0.003 (floor 0.01) to 0.0049 (0.02) and 0.0097 (0.04), at the main design's "
             "shots; the main design stays admissible at every floor, and the owner decides at the floor's value "
             "whether the main run is worth its quantum time.",
             "",
