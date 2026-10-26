@@ -62,10 +62,10 @@ from scipy.linalg import expm
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import iqm_measurement_sequence as seq  # noqa: E402
-from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, cancel_threshold_seconds, dump, run_facts  # noqa: E402
+from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, cancel_threshold_seconds, dump, replay_mismatch, run_facts  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
-from parallel import ordered_map  # noqa: E402
+from parallel import MIN_PARALLEL_ITEMS, ordered_map  # noqa: E402
 
 CASE = "measurement-sequence-diagnostic"
 QC = "garnet"
@@ -310,19 +310,30 @@ def billing(circuits: list[dict[str, Any]], shots: int) -> dict[str, Any]:
     }
 
 
-def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str, Any]:
-    """The planning table: raw and corrected P(0) per circuit and qubit at the calibration."""
-    q = seq.PLANNING_Q
-    table: dict[str, Any] = {}
-    for qubit, cal in excerpt["qubits"].items():
-        device = device_of(cal)
-        table[qubit] = {
-            name: {
-                "raw_p0": raw_p0(name, cal, device),
-                "corrected_p0": (1 + corrected_model(name, cal, cal["prx_p"], q)) / 2,
-            }
-            for name in NAMES
+def predict_qubit(cal: dict[str, float]) -> dict[str, Any]:
+    """The planning rows of one qubit: raw and corrected P(0) per circuit at its calibration."""
+    device = device_of(cal)
+    return {
+        name: {
+            "raw_p0": raw_p0(name, cal, device),
+            "corrected_p0": (1 + corrected_model(name, cal, cal["prx_p"], seq.PLANNING_Q)) / 2,
         }
+        for name in NAMES
+    }
+
+
+def predict(
+    excerpt: dict[str, Any], circuits: list[dict[str, Any]], min_items: int = MIN_PARALLEL_ITEMS
+) -> dict[str, Any]:
+    """The planning table: raw and corrected P(0) per circuit and qubit at the calibration. The qubits are
+    independent and map through ordered_map in table order."""
+    table = dict(
+        zip(
+            excerpt["qubits"],
+            ordered_map(predict_qubit, list(excerpt["qubits"].values()), min_items),
+            strict=True,
+        )
+    )
     return {
         "calibration_set": excerpt["calibration_set"],
         "ideal_p0": IDEAL,
@@ -337,7 +348,7 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str
     }
 
 
-def build_files(excerpt: dict[str, Any]) -> dict[str, str]:
+def build_files(excerpt: dict[str, Any], min_items: int = MIN_PARALLEL_ITEMS) -> dict[str, str]:
     if excerpt["couplers_among_qubits"]:
         raise ValueError(f"the qubits share couplers {excerpt['couplers_among_qubits']}")
     qubits = sorted(excerpt["qubits"], key=lambda q: int(q[2:]))
@@ -345,7 +356,7 @@ def build_files(excerpt: dict[str, Any]) -> dict[str, str]:
         raise ValueError(f"D4 repeats the window probe on {diagnosed_qubits()}, not on {qubits}")
     circuits = [circuit_of(name, qubits) for name in NAMES]
     files = {f"circuits/{c['name']}.json": dump(c) for c in circuits}
-    prediction = predict(excerpt, circuits)
+    prediction = predict(excerpt, circuits, min_items)
     job = {
         "job": JOB,
         "circuits": [{"file": rel, "sha256": sha256(text.encode())} for rel, text in files.items()],
@@ -724,8 +735,9 @@ def main() -> int:
     elif args.command == "analyze":
         text = dump(analyze(args.run_dir, args.mock))
         if args.replay:
-            if args.out.read_text(encoding="utf-8") != text:
-                raise ValueError(f"{args.out} differs from the recomputation")
+            retained = args.out.read_text(encoding="utf-8")
+            if retained != text:
+                raise ValueError(f"{args.out} differs from the recomputation: {replay_mismatch(retained, text)}")
             print(f"{args.out}: replays byte for byte")
         else:
             args.out.write_text(text, encoding="utf-8")

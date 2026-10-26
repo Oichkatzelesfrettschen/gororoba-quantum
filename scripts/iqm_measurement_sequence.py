@@ -140,7 +140,7 @@ from scipy.optimize import minimize_scalar
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
-from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, cancel_threshold_seconds, dump, run_facts  # noqa: E402
+from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, cancel_threshold_seconds, dump, replay_mismatch, run_facts  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
@@ -1211,36 +1211,30 @@ def contexts_of(
 def tally(circuits: list[dict[str, Any]], results: list[dict[str, Any]]) -> dict[str, Any]:
     """Per circuit name: shots, the final readout's counts of states 0 and 1 per qubit, and for circuits with
     mid-circuit measures the shots whose consecutive mid-circuit outcomes differ, summed over its consecutive pairs,
-    per qubit. The counts are numpy reductions over the shot-by-qubit outcome arrays, which give the integers of a
-    shot-by-shot loop."""
+    per qubit."""
     out: dict[str, Any] = {}
     for c, result in zip(circuits, results, strict=True):
         qubits = qubits_of(c)
         final = result[FINAL_KEY]
-        shots = len(final)
-        outcomes = np.asarray(final, dtype=np.int64).reshape(shots, len(qubits)) if shots else None
-        row: dict[str, Any] = {"shots": shots, "final": {}}
+        row: dict[str, Any] = {"shots": len(final), "final": {}}
         for position, qubit in enumerate(qubits):
-            if outcomes is None:
-                row["final"][qubit] = [0, 0]
-                continue
-            column = outcomes[:, position]
-            invalid = np.flatnonzero((column != 0) & (column != 1))
-            if invalid.size:
-                raise ValueError(f"{c['name']}: outcome {final[int(invalid[0])][position]} is not a state 0 or 1")
-            ones = int(column.sum())
-            row["final"][qubit] = [shots - ones, ones]
+            counts = [0, 0]
+            for shot in final:
+                if shot[position] not in (0, 1):
+                    raise ValueError(f"{c['name']}: outcome {shot[position]} is not a state 0 or 1")
+                counts[shot[position]] += 1
+            row["final"][qubit] = counts
         mids = [o["args"]["key"] for o in c["instructions"] if o["name"] == "measure" and o["args"]["key"] != FINAL_KEY]
         if len(mids) > 1:
-            if any(len(result[key]) != len(result[mids[0]]) for key in mids):
-                raise ValueError(f"{c['name']}: the mid-circuit keys return different shot counts")
-            arrays = [np.asarray(result[key], dtype=np.int64).reshape(len(result[key]), len(qubits)) for key in mids]
             row["flips"] = {}
             for position, qubit in enumerate(qubits):
                 flips = sum(
-                    int((a[:, position] != b[:, position]).sum()) for a, b in zip(arrays, arrays[1:], strict=False)
+                    1
+                    for a, b in zip(mids, mids[1:], strict=False)
+                    for x, y in zip(result[a], result[b], strict=True)
+                    if x[position] != y[position]
                 )
-                row["flips"][qubit] = [flips, shots * (len(mids) - 1)]
+                row["flips"][qubit] = [flips, len(final) * (len(mids) - 1)]
         out[c["name"]] = row
     return out
 
@@ -1362,9 +1356,9 @@ def raw_band(cal: dict[str, float], band: tuple[float, float] = RAW_EXCITATION_B
     return out
 
 
-def analyze_model(cal: dict[str, float], **over: Any) -> dict[str, Any]:
+def analyze_model(cal: dict[str, float], gate_model: str = "preregistered", **over: Any) -> dict[str, Any]:
     """The analysis of one qubit of calibration `cal` on a model device with the fields `over` (see device_model),
-    against the planning prediction of the nominal calibration."""
+    against the planning prediction of the nominal calibration, under the gate model `gate_model` (GATE_MODELS)."""
     model = device_model(cal, **over)
     tables = model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"])
     context = {
@@ -1372,6 +1366,7 @@ def analyze_model(cal: dict[str, float], **over: Any) -> dict[str, Any]:
         "prx_p": cal["prx_p"],
         "window_s": MEASURE_WINDOW_SECONDS,
         "planning": tables,
+        **({"gate_model": gate_model} if gate_model != "preregistered" else {}),
     }
     return dict(evaluate(device_counts({"Q": model}), {"Q": context})["Q"])
 
@@ -2096,7 +2091,7 @@ MODEL_ERRORS = {
 }
 # An axis phase of 0.1 rad per pulse turns the unitary arm to P0 near 0.5: the gate is broken, the mutation test fails
 # and no departure can be read.
-BROKEN_GATE = {"advance": 0.1}
+BROKEN_GATE: dict[str, Any] = {"advance": 0.1}
 INJECTED_SE = 4.0
 
 
@@ -2164,10 +2159,10 @@ def sweep_cases(reduced: bool) -> list[dict[str, Any]]:
     return [base, *axes, corner, *injected]
 
 
-def injected_model(cal: dict[str, float], spec: dict[str, Any]) -> dict[str, Any]:
+def injected_model(cal: dict[str, float], spec: dict[str, Any], gate_model: str = "preregistered") -> dict[str, Any]:
     """The true device of a sweep row for one qubit: its nuisances, its gate-model errors and, when the row injects a
     departure, the step loss that lowers the measure arm's P0 by shift_se times the departure standard error that the
-    analysis of the same device without the departure reports."""
+    analysis of the same device without the departure reports under `gate_model`."""
     over = {
         "t1_s": spec["t1_scale"] * cal["t1_s"],
         "p_init": spec["p_init"],
@@ -2176,16 +2171,17 @@ def injected_model(cal: dict[str, float], spec: dict[str, Any]) -> dict[str, Any
         **spec["errors"],
     }
     if spec["shift_se"] is not None:
-        se = analyze_model(cal, **over)["departure_n16"]["se"]
+        se = analyze_model(cal, gate_model, **over)["departure_n16"]["se"]
         eps = eps_for_shift(cal, spec["shift_se"] * se, **over)
         over["eps"] = 0.5 if eps is None else eps
     return device_model(cal, **over)
 
 
-def injected_model_item(item: tuple[dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
-    """injected_model for one (calibration, spec) item, so the qubits of every case map through ordered_map."""
-    cal, spec = item
-    return injected_model(cal, spec)
+def injected_model_item(item: tuple[dict[str, Any], dict[str, Any], str]) -> dict[str, Any]:
+    """injected_model for one (calibration, spec, gate model) item, so the qubits of every case map through
+    ordered_map."""
+    cal, spec, gate_model = item
+    return injected_model(cal, spec, gate_model)
 
 
 def sweep_case(
@@ -2257,7 +2253,7 @@ def run_sweep(
     draw no random number, so they map through parallel.ordered_map in order, in two stages: the true device of every
     (case, qubit) pair, then the cases; a case's own per-qubit analyses run serially inside its worker. `gate_model`
     selects the analysis of the gate-model error classes (GATE_MODELS)."""
-    pairs = [(cal, spec) for spec in cases for cal in excerpt["qubits"].values()]
+    pairs = [(cal, spec, gate_model) for spec in cases for cal in excerpt["qubits"].values()]
     built = iter(ordered_map(injected_model_item, pairs, min_items=2))
     items = [(files, excerpt, spec, {q: next(built) for q in excerpt["qubits"]}, gate_model) for spec in cases]
     return ordered_map(sweep_case, items, min_items=2)
@@ -2604,7 +2600,7 @@ def self_test(with_sweep: bool = True) -> str:
         and abs(null["departure_n16"]["se"] - analyze_model(cal)["departure_n16"]["se"]) < 1e-3,
         "a residual above the floor does not widen the departure standard error, or the floor is not the minimum",
     )
-    over = {"drive_t2_scale": 0.5}
+    over: dict[str, Any] = {"drive_t2_scale": 0.5}
     eps_hit = eps_for_shift(cal, 4 * null["departure_n16"]["se"], **over)
     expect(eps_hit is not None, "no step loss reaches the injected departure")
     hit = analyze_model(cal, eps=eps_hit, **over)
@@ -2684,8 +2680,9 @@ def main() -> int:
     elif args.command == "analyze":
         text = dump(analyze(args.run_dir, args.mock, args.gate_model))
         if args.replay:
-            if args.out.read_text(encoding="utf-8") != text:
-                raise ValueError(f"{args.out} differs from the recomputation")
+            retained = args.out.read_text(encoding="utf-8")
+            if retained != text:
+                raise ValueError(f"{args.out} differs from the recomputation: {replay_mismatch(retained, text)}")
             print(f"{args.out}: replays byte for byte")
         else:
             args.out.write_text(text, encoding="utf-8")

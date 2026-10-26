@@ -89,3 +89,13 @@ def test_build_refuses_qubits_other_than_the_window_probes() -> None:
         raise AssertionError("a build on other qubits was accepted")
     if "QB5, QB7, QB11, QB14, QB17 and QB19" not in case.build_files(retained)["cases.json"]:
         raise AssertionError("the question lost the diagnosed qubits")
+
+
+def test_predict_rows_follow_the_qubit_table_order() -> None:
+    cals = {
+        "QB2": {"t1_s": 4.0e-5, "t2_s": 9.0e-6, "prx_p": 1.0e-3, "e01": 0.01, "e10": 0.02},
+        "QB1": {"t1_s": 5.0e-5, "t2_s": 1.1e-5, "prx_p": 2.0e-3, "e01": 0.02, "e10": 0.03},
+    }
+    table = case.predict({"calibration_set": "x", "qubits": cals}, [])["qubits"]
+    if list(table) != ["QB2", "QB1"] or table["QB1"] != case.predict_qubit(cals["QB1"]):
+        raise AssertionError("the planning table lost its qubit order or rows")

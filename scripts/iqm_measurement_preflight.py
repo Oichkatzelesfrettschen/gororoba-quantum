@@ -30,7 +30,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import iqm_measurement_sequence as seq  # noqa: E402
-from iqm_jobs import CASE_SCHEMA, cancel_threshold_seconds, dump, run_facts  # noqa: E402
+from iqm_jobs import CASE_SCHEMA, cancel_threshold_seconds, dump, replay_mismatch, run_facts  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
 CASE = "measurement-sequence-pinching-probe"
@@ -361,8 +361,9 @@ def main() -> int:
         analysis = analyze(args.run_dir, args.mock)
         text = dump(analysis)
         if args.replay:
-            if args.out.read_text(encoding="utf-8") != text:
-                raise ValueError(f"{args.out} differs from the recomputation")
+            retained = args.out.read_text(encoding="utf-8")
+            if retained != text:
+                raise ValueError(f"{args.out} differs from the recomputation: {replay_mismatch(retained, text)}")
             print(f"{args.out}: replays byte for byte")
         else:
             args.out.write_text(text, encoding="utf-8")

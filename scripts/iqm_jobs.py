@@ -112,6 +112,38 @@ def dump(value: Any) -> str:
     return json.dumps(value, indent=1, sort_keys=True) + "\n"
 
 
+def first_difference(expected: Any, actual: Any, path: str = "$") -> str | None:
+    """The first JSON path, in sorted-key order, at which two parsed values differ, with both values; None if equal."""
+    if isinstance(expected, dict) and isinstance(actual, dict):
+        for key in sorted(set(expected) | set(actual)):
+            if key not in expected or key not in actual:
+                return f"{path}.{key}: {'absent' if key not in expected else 'present'} in the retained file"
+            found = first_difference(expected[key], actual[key], f"{path}.{key}")
+            if found:
+                return found
+        return None
+    if isinstance(expected, list) and isinstance(actual, list):
+        if len(expected) != len(actual):
+            return f"{path}: length {len(expected)} retained, {len(actual)} recomputed"
+        for index, (a, b) in enumerate(zip(expected, actual, strict=True)):
+            found = first_difference(a, b, f"{path}[{index}]")
+            if found:
+                return found
+        return None
+    if type(expected) is not type(actual) or expected != actual:
+        return f"{path}: {expected!r} retained, {actual!r} recomputed"
+    return None
+
+
+def replay_mismatch(retained: str, recomputed: str) -> str:
+    """The reason a retained JSON text differs from its recomputation: the first differing path, or the bytes."""
+    try:
+        found = first_difference(json.loads(retained), json.loads(recomputed))
+    except ValueError:
+        found = None
+    return found or "the parsed values agree and the text differs (key order, spacing or number formatting)"
+
+
 def now_stamp() -> str:
     return dt.datetime.now(dt.UTC).strftime("%Y-%m-%dT%H%M%SZ")
 

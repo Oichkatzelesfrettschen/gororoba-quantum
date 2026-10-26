@@ -335,15 +335,15 @@ last column: `nuisance` (every qubit |departure z| < 1, settle `match`, no flag)
 | prx x3 | 0.068 | 0 | 1 | 3 | none | none | +0.017 to +0.041 | 0.047 to 0.051 | -0.58 to -0.26 | -0.99 | 6 | none | 23.6 | -1.03 | none | never_attributed |
 | corner | 0.15 | 0.02 | 0.8 | 2 | none | none | +0.008 to +0.021 | 0.046 to 0.052 | -0.32 to -0.14 | -0.52 | 6 | none | 19.1 | -0.54 | none | nuisance |
 | drive x0.5 | 0.068 | 0 | 1 | 1 | drive_t2_scale 0.5 | none | -0.029 to -0.015 | 0.046 to 0.051 | +0.15 to +0.28 | +0.54 | 6 | none | 30.0 | +0.56 | none | none |
-| drive x0.5 + departure | 0.068 | 0 | 1 | 1 | drive_t2_scale 0.5 | 4 SE | -0.029 to -0.015 | 0.046 to 0.051 | -3.85 to -3.71 | -9.24 | 6 | attributed | 12.4 | -9.64 | attributed | attributed |
+| drive x0.5 + departure | 0.068 | 0 | 1 | 1 | drive_t2_scale 0.5 | 4 SE | -0.029 to -0.015 | 0.046 to 0.051 | -3.85 to -3.71 | -9.24 | 6 | attributed | 12.4 | -9.22 | attributed | attributed |
 | drive x1.5 | 0.068 | 0 | 1 | 1 | drive_t2_scale 1.5 | none | +0.014 to +0.027 | 0.046 to 0.051 | -0.28 to -0.15 | -0.52 | 6 | none | 24.0 | -0.54 | none | none |
-| drive x1.5 + departure | 0.068 | 0 | 1 | 1 | drive_t2_scale 1.5 | 4 SE | +0.014 to +0.027 | 0.046 to 0.052 | -4.27 to -4.14 | -10.29 | 6 | attributed | 4.8 | -10.73 | attributed | attributed |
+| drive x1.5 + departure | 0.068 | 0 | 1 | 1 | drive_t2_scale 1.5 | 4 SE | +0.014 to +0.027 | 0.046 to 0.052 | -4.27 to -4.14 | -10.29 | 6 | attributed | 4.8 | -10.32 | attributed | attributed |
 | axis 0.02 | 0.068 | 0 | 1 | 1 | advance 0.02 | none | +0.028 to +0.030 | 0.046 to 0.051 | -0.02 to -0.01 | -0.03 | 6 | none | 24.6 | -0.03 | none | none |
-| axis 0.02 + departure | 0.068 | 0 | 1 | 1 | advance 0.02 | 4 SE | +0.028 to +0.030 | 0.046 to 0.051 | -4.01 to -4.00 | -9.80 | 6 | attributed | 5.6 | -10.22 | attributed | attributed |
+| axis 0.02 + departure | 0.068 | 0 | 1 | 1 | advance 0.02 | 4 SE | +0.028 to +0.030 | 0.046 to 0.051 | -4.01 to -4.00 | -9.80 | 6 | attributed | 5.6 | -9.80 | attributed | attributed |
 | axis 0.1 (broken gate) | 0.068 | 0 | 1 | 1 | advance 0.1 | none | +0.526 to +0.556 | 0.576 to 0.667 | -0.02 to -0.02 | n/a | 0 | uninformative | -33.7 | n/a | uninformative | broken |
 | axis 0.02 + prx x2 | 0.068 | 0 | 1 | 2 | advance 0.02 | none | +0.036 to +0.048 | 0.049 to 0.056 | -0.27 to -0.14 | -0.49 | 6 | none | 23.0 | -0.51 | none | never_attributed |
 | prx x3 + drive x0.5 | 0.068 | 0 | 1 | 3 | drive_t2_scale 0.5 | none | -0.012 to +0.023 | 0.046 to 0.051 | -0.43 to +0.02 | -0.49 | 6 | none | 26.6 | -0.51 | none | never_attributed |
-| drive x0.5 + departure + prx x2 | 0.068 | 0 | 1 | 2 | drive_t2_scale 0.5 | 4 SE | -0.021 to +0.001 | 0.046 to 0.051 | -4.12 to -3.85 | -9.77 | 6 | attributed | 10.3 | -10.18 | attributed | either |
+| drive x0.5 + departure + prx x2 | 0.068 | 0 | 1 | 2 | drive_t2_scale 0.5 | 4 SE | -0.021 to +0.001 | 0.046 to 0.051 | -4.12 to -3.85 | -9.77 | 6 | attributed | 10.3 | -9.76 | attributed | either |
 
 Each signed circuit of a model device takes the chain of its own sign, so an axis phase moves the four circuits differently (the first generation of this sweep copied the +1 sign's result into all four). The unitary residuals of the model-error rows are the injected scatter: the dephasing scales give about +-0.015 to 0.03 and the axis phase of 0.02 rad about +0.028 to +0.030. The broken-gate row (0.1 rad per pulse) turns the unitary arm to P0 near 0.5, fails the mutation test on every qubit and reads `uninformative`. Every non-injected row reads `none` under both analyses, a prx error of three times the calibration is never attributed (pooled z -0.99, sign-pooled -1.03), and every injected departure reads `attributed`, with or without the prx error of twice the calibration. The row "axis 0.02 + prx x2" pools to -0.49 (sign-pooled -0.51) and reads `none`. On the first, one-sign generation of the sweep that row's unitary residual cancelled to near 0 (the axis phase read -0.019, the prx error +0.008 to +0.021) and, without the floor, it pooled to z = -3.82 and read `attributed`; that was the rationale stated for the floor. With each signed circuit on its own chain the two residuals add (+0.036 to +0.048), the floor is inactive on the row, and the device reads `none` with or without it. The floor stays because it was preregistered, and its stated rationale is the diagnostic's measured scatter of 0.04, which a unitary residual that happens to be small must not narrow. A 4-standard-error departure at the floored standard error is a P0 shift of about 0.2, which lowers the contrast and the mutation z (minimum 4.8 on an injected row).
 
@@ -351,12 +351,12 @@ Each signed circuit of a model device takes the chain of its own sign, so an axi
 
 | device | preregistered analysis | sign-pooled analysis | status along the grid (preregistered) |
 |---|---|---|---|
-| planning | 1.5 (0.073) | 1.5 (0.073) | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
-| drive x0.5 | 1.5 (0.073) | 1.5 (0.073) | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
-| drive x1.5 | 1.5 (0.073) | 1 (0.049) | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
-| axis 0.02 | 1.5 (0.073) | 1.5 (0.073) | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
-| prx x2 | 1.5 (0.073) | 1 (0.049) | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
-| prx x3 | 1 (0.049) | 1 (0.049) | 0.5:non / 1.0:att / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| planning | 1.5 (0.073) | 1.5 (0.070) | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| drive x0.5 | 1.5 (0.073) | 1.5 (0.070) | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| drive x1.5 | 1.5 (0.073) | 1.5 (0.070) | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| axis 0.02 | 1.5 (0.073) | 1.5 (0.070) | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| prx x2 | 1.5 (0.073) | 1.5 (0.070) | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| prx x3 | 1 (0.049) | 1 (0.047) | 0.5:non / 1.0:att / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
 
 A per-qubit shift of k standard errors pools to about sqrt(6) k when the six qubits share it, so the pooled rule fires
 near k = 1.2 on independent errors. The pooling is not conservative for a shared gate error, and the minimum
@@ -636,7 +636,7 @@ The preregistered gate-model systematic evaluated the axis-phase class on the +1
 | QB17 | +0.342 | -0.018 | 0.0474 | 0.0454 | 0.0484 | 0.0465 | +0.659 | +0.687 | consistent / consistent | match / match | True / True |
 | QB19 | +0.338 | -0.018 | 0.0469 | 0.0449 | 0.0479 | 0.0460 | +0.576 | +0.601 | consistent / consistent | match / match | True / True |
 
-Device: pooled departure z +1.649 preregistered, +1.718 sign-pooled; `departs_below` none / none, `exceeds_prediction` none / none; the settle tail reads `attributed` under both (pooled z +4.81, QB14 and QB5), because the tail gap carries no gate-model systematic. The corrected values narrow the departure standard errors by 0.0018 to 0.0020, and no verdict changes. The reach is unchanged: the smallest detectable shifts under the sign-pooled analysis are 0.049 to 0.073 in P0 (table above), which map to eps = 0.0042 to 0.0064 per measurement, or 22 to 31 % of the coherence surviving each measurement. The sibling analyses (the diagnostic and the pre-flight probe) decide on single-sign circuits only (the diagnostic's D4 to D8 and the probe's `unitary-n16-s0p` and `measure-n16-s0p` all play the +1 sign), so the one-sign evaluation is the right one there and their retained analyses do not change.
+Device: pooled departure z +1.649 preregistered, +1.718 sign-pooled; `departs_below` none / none, `exceeds_prediction` none / none; the settle tail reads `attributed` under both (pooled z +4.81, QB14 and QB5), because the tail gap carries no gate-model systematic. The corrected values narrow the departure standard errors by 0.0018 to 0.0020, and no verdict changes. The reach is unchanged at the stated precision: the smallest detectable shifts with the injection scale and the analysis both sign-pooled are 0.047 to 0.070 in P0 (table above), which map to eps = 0.0040 to 0.0061 per measurement, or 22 to 30 % of the coherence surviving each measurement, against 0.049 to 0.073, 0.0042 to 0.0064 and 22 to 31 % preregistered. The sibling analyses (the diagnostic and the pre-flight probe) decide on single-sign circuits only (the diagnostic's D4 to D8 and the probe's `unitary-n16-s0p` and `measure-n16-s0p` all play the +1 sign), so the one-sign evaluation is the right one there and their retained analyses do not change.
 
 ## Evidence
 

@@ -301,3 +301,24 @@ def test_retained_calibration_set_reproduces_the_selection_and_the_case() -> Non
         if case.sha256((folder / name).read_bytes()) != digest:
             raise AssertionError(f"{name} differs from the digest the case excerpt records")
     case.check(root / "cases" / case.CASE, folder)
+
+
+def test_injected_departure_scale_follows_the_selected_gate_model() -> None:
+    spec = next(s for s in case.sweep_cases(False) if s["label"] == "drive x0.5 + departure")
+    pre = case.injected_model(CAL, spec, "preregistered")
+    pooled = case.injected_model(CAL, spec, "sign-pooled")
+    over = {"t1_s": CAL["t1_s"], "p_init": spec["p_init"], "p_thermal": spec["p_thermal"], "prx_p": CAL["prx_p"]}
+    se = case.analyze_model(CAL, "sign-pooled", **over, **spec["errors"])["departure_n16"]["se"]
+    expected = case.eps_for_shift(CAL, spec["shift_se"] * se, **over, **spec["errors"])
+    if pooled["eps"] != expected or pooled["eps"] == pre["eps"]:
+        raise AssertionError(f"pooled eps {pooled['eps']}, preregistered {pre['eps']}, expected {expected}")
+
+
+def test_replay_mismatch_names_the_first_differing_path() -> None:
+    import iqm_jobs
+
+    message = iqm_jobs.replay_mismatch(
+        case.dump({"a": [1, {"b": 2.0}], "c": 1}), case.dump({"a": [1, {"b": 2.5}], "c": 1})
+    )
+    if message != "$.a[1].b: 2.0 retained, 2.5 recomputed":
+        raise AssertionError(message)
