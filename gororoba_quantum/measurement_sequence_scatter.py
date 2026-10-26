@@ -332,13 +332,63 @@ def sha256_of(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def floor_document(run_dir: Path) -> dict[str, Any]:
-    """The scatter-floor.json document of a collected diagnostic run directory (record.json and collect.json, whose
-    first entry is the header live_run.py writes family_analysis into)."""
+def same(a: Any, b: Any, rel: float = 1e-9) -> bool:
+    """Structural equality with floats compared to a relative 1e-9, so a replay on another libm still matches."""
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(same(a[k], b[k], rel) for k in a)
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(same(x, y, rel) for x, y in zip(a, b, strict=True))
+    if isinstance(a, float) and isinstance(b, float):
+        return math.isclose(a, b, rel_tol=rel, abs_tol=1e-15)
+    return bool(a == b)
+
+
+def replay(run_dir: Path) -> dict[str, Any]:
+    """The scatter analysis re-derived from a retained run's raw shots.
+
+    Each raw PUB file (hashes checked against the job's index.json) holds one bit string per shot for every fused
+    component's register; execution_pubs of record.json maps a PUB's components to member names, and the entries of
+    collect.json after the header hold each member's execution-time calibration. The member laws are the exact shot
+    fractions, as live_run.py --collect builds them, so the result equals collect.json's stored analysis.
+    """
     record = json.loads((run_dir / "record.json").read_text(encoding="utf-8"))
     collect = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
+    check(isinstance(collect, list) and len(collect) > 1, "collect.json is not live_run.py's list of entries")
+    jobs = sorted(path for path in (run_dir / "raw").iterdir() if path.is_dir())
+    check(len(jobs) == 1, f"the run holds {len(jobs)} raw job archives, not one")
+    index = json.loads((jobs[0] / "index.json").read_text(encoding="utf-8"))
+    for name, digest in index["files"].items():
+        check(sha256_of(jobs[0] / name) == digest, f"{name}: raw file differs from index.json")
+    registers: dict[str, dict[str, Any]] = {}
+    for name in index["files"]:
+        if name.startswith("pub_"):
+            raw = json.loads((jobs[0] / name).read_text(encoding="utf-8"))
+            registers[raw["pub_name"]] = raw["registers"]
+    distributions: dict[str, list[np.ndarray]] = {}
+    for pub in record["execution_pubs"]:
+        shots_by_register = registers[pub["name"]]
+        for component in pub["components"]:
+            bits = shots_by_register[component["registers_by_replica"][0][0]]["bitstrings"]
+            ones = sum(1 for b in bits if b == "1")
+            distributions[component["member"]] = [np.array([1 - ones / len(bits), ones / len(bits)])]
+    executed: dict[str, Any] = {}
+    for entry in collect[1:]:
+        executed.update(entry["executed"])
+    return collected(record, distributions, executed)
+
+
+def stored_scatter(run_dir: Path) -> dict[str, Any]:
+    collect = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
     check(isinstance(collect, list) and bool(collect), "collect.json is not live_run.py's list of entries")
-    scatter = collect[0]["family_analysis"]["scatter"]
+    return dict(collect[0]["family_analysis"]["scatter"])
+
+
+def floor_document(run_dir: Path) -> dict[str, Any]:
+    """The scatter-floor.json document of a collected diagnostic run directory (record.json, collect.json and the raw
+    shots), built from the replayed analysis after it matches collect.json's stored one."""
+    record = json.loads((run_dir / "record.json").read_text(encoding="utf-8"))
+    scatter = replay(run_dir)
+    check(same(scatter, stored_scatter(run_dir)), "the replayed analysis differs from collect.json's")
     check("withheld" not in scatter, f"the scatter analysis is withheld: {scatter.get('withheld')}")
     summary = scatter["floor"]
     check(summary.get("floor") is not None, f"no floor: {summary.get('withheld')}")
@@ -368,6 +418,21 @@ def floor_document(run_dir: Path) -> dict[str, Any]:
             "analysis_module_sha256": sha256_of(Path(msa.__file__)),
         },
     }
+
+
+def check_floor_file(run_dir: Path, path: Path) -> str:
+    """Re-derive the floor document from the retained run and compare it with the registered file.
+
+    Every field is compared (floats to a relative 1e-9) except source.analysis_module_sha256: the file records the
+    analysis module that computed it, and that module then names the file's digest in MODEL_SCATTER_DIAGNOSTIC_SHA256,
+    so its bytes change once the file is bound and cannot match.
+    """
+    registered = json.loads(path.read_text(encoding="utf-8"))
+    derived = floor_document(run_dir)
+    for document in (registered, derived):
+        document["source"].pop("analysis_module_sha256", None)
+    check(same(registered, derived), f"{path} differs from the floor re-derived from {run_dir}")
+    return f"{path.name}: floor {registered['floor']:.6f} equals the re-derivation from {run_dir.name}"
 
 
 def self_test() -> str:
@@ -403,6 +468,9 @@ def main(argv: list[str] | None = None) -> int:
     flo = sub.add_parser("floor", help="write scatter-floor.json from a collected diagnostic run directory")
     flo.add_argument("run_dir", type=Path)
     flo.add_argument("--out", type=Path, required=True)
+    chk = sub.add_parser("check", help="re-derive the floor from a retained run and compare with scatter-floor.json")
+    chk.add_argument("run_dir", type=Path)
+    chk.add_argument("path", type=Path)
     args = parser.parse_args(argv)
     if args.self_test:
         print(self_test())
@@ -426,6 +494,8 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "floor":
         document = floor_document(args.run_dir)
         args.out.write_text(json.dumps(document, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    elif args.command == "check":
+        print(check_floor_file(args.run_dir, args.path))
     else:
         parser.error("choose a subcommand or --self-test")
     return 0

@@ -132,7 +132,7 @@ def test_t2_pattern_reads_a_ordered_population() -> None:
     check("withheld" in scatter.t2_pattern(rows_with({q: 0.01 for q in range(5)})))
 
 
-def test_floor_document_binds_a_run(tmp_path: Path) -> None:
+def test_floor_document_binds_a_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     run = tmp_path / "run"
     run.mkdir()
     qubits = [*de.MSQD_MAIN_QUBITS, *range(200, 230)]
@@ -157,6 +157,7 @@ def test_floor_document_binds_a_run(tmp_path: Path) -> None:
     (run / "record.json").write_text(json.dumps(record), encoding="utf-8")
     header = {"submission_complete": True, "family_analysis": {"scatter": scatter_analysis}}
     (run / "collect.json").write_text(json.dumps([header, {"group": "msqd_static_q91"}]), encoding="utf-8")
+    monkeypatch.setattr(scatter, "replay", lambda _run: scatter_analysis)
     document = scatter.floor_document(run)
     check(document["schema"] == msa.SCATTER_FLOOR_SCHEMA and isinstance(document["floor"], float))
     check(math.isclose(document["floor"], 0.01) and document["backend"] == "ibm_kingston")
@@ -182,3 +183,10 @@ def test_diagnostic_family_contract_and_group_dispatch() -> None:
     check(all(len(g.members) == de.MSQD_MEMBERS_PER_QUBIT for g in groups))
     with pytest.raises(ValueError, match="named qubits"):
         de.family_contracts(de.MSQD_FAMILY, 0.08, 0.05, 0.8, None)
+
+
+def test_same_compares_floats_to_a_relative_tolerance() -> None:
+    check(scatter.same({"a": [1.0, {"b": 0.5}], "c": "x"}, {"a": [1.0 + 1e-12, {"b": 0.5}], "c": "x"}))
+    check(not scatter.same({"a": 1.0}, {"a": 1.0 + 1e-6}))
+    check(not scatter.same({"a": 1.0}, {"b": 1.0}) and not scatter.same([1.0], [1.0, 2.0]))
+    check(not scatter.same({"a": "x"}, {"a": "y"}))
