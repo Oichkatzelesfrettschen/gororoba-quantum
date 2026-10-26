@@ -105,7 +105,7 @@ PLANNING_SHOTS = 8192
 # can only report that wastes its quantum time. This module sits in live_run.EXPERIMENT_SOURCE_MANIFEST, so the digest
 # below is bound to every run's experiment digest.
 MODEL_SCATTER_FLOOR: float | None = None
-MODEL_SCATTER_DIAGNOSTIC_SHA256: str | None = None
+MODEL_SCATTER_DIAGNOSTIC_SHA256: str | None = "c8036f7d2b41018467c534785c977e5203d5e20798b8c8eb7b5902949861179f"
 MODEL_SCATTER_FLOOR_FILE = "docs/evidence/measurement_sequence/scatter-floor.json"
 SCATTER_FLOOR_SCHEMA = "measurement-sequence-scatter-floor-v1"
 # An illustrative floor for the sweeps and the Aer validation, which exercise the mechanism. It is not a measurement
@@ -1578,7 +1578,8 @@ def main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="command")
     sw = sub.add_parser("sweep", help="the estimator sweep over model devices off the planning point")
     sw.add_argument("--reduced", action="store_true", help="the planning point and the corner only")
-    sub.add_parser("detectable", help="the minimum detectable departure on the planning and large model-error rows")
+    det = sub.add_parser("detectable", help="the minimum detectable departure on the planning and model-error rows")
+    det.add_argument("--floor", type=float, default=DEMONSTRATION_SCATTER_FLOOR, help="the scatter floor of the rows")
     args = parser.parse_args(argv)
     if args.self_test:
         print(self_test())
@@ -1590,7 +1591,7 @@ def main(argv: list[str] | None = None) -> int:
         if failures:
             raise AnalysisError("estimator sweep: " + "; ".join(failures))
     elif args.command == "detectable":
-        contexts = fixture_contexts()
+        contexts = fixture_contexts(floor=args.floor)
         specs = {case["label"]: case for case in sweep_cases(False)}
         labels = ("planning", "model error, residual -0.016 to +0.014")
         print(json.dumps([minimum_detectable(contexts, specs[label], FIXTURE_SHOTS) for label in labels], indent=2))

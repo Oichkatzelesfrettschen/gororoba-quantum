@@ -283,14 +283,15 @@ floored at the model scatter when one is set.
 
 ### Source of the model-scatter floor
 
-No value is registered. A floor must come from Kingston single-qubit sx-sequence data with a known ideal outcome: the
+The registered floor is 0.018784 (see Results of the diagnostic run below). Before the diagnostic ran, no value was
+registered, because a floor must come from Kingston single-qubit sx-sequence data with a known ideal outcome: the
 model scatter of observed-minus-modeled P0 across qubits, with the model built as `chain_matrix` builds it. The
 search covered the 233 `record.json` files under `results/live/` (262 run directories) and the research registry
 (`docs/state/research_state.json`, 276 acquisitions, 32 on IBM backends). The Kingston runs hold
 `qubit_baseline` (ground, one x, Ramsey), the state-prep controls, the rank-sector, ripple, correction and N=21
 families (multi-qubit circuits with cz) and the 2026-10-25 measurement-sequence dry run (Aer outcomes, no hardware
-shots). None holds a single-qubit sx sequence of useful length with a known ideal outcome, so no defensible scatter
-exists, and the constant `MODEL_SCATTER_FLOOR` is `None`.
+shots). None held a single-qubit sx sequence of useful length with a known ideal outcome, so no defensible scatter
+existed; the constant `MODEL_SCATTER_FLOOR` stays `None` and the floor enters through the bound file.
 
 `collected` takes the floor from `MODEL_SCATTER_FLOOR` when that is set and otherwise from the diagnostic file
 `MODEL_SCATTER_FLOOR_FILE` (`docs/evidence/measurement_sequence/scatter-floor.json`) when
@@ -420,6 +421,90 @@ grows; the cost appears as detection power. The Garnet diagnostic measured about
 Kingston floor near 0.04 would leave the main run able to attribute only a transition rate near 0.01 per step, and the
 owner decides at that value whether the main run is worth its quantum time.
 
+#### Results of the diagnostic run
+
+Job `dbfc9ufgdj9s73bbbabg` on ibm_kingston (backup account, calibration 2026-10-25T19:36:09-07:00, six static PUBs at
+8192 shots over the 38 qubits of the preregistered layout, 15 s charged) is retained in
+`results/live/2026-10-26T031010.724660Z`; claim `kingston-gate-model-scatter-floor` of the research registry carries the
+numbers, `docs/evidence/measurement_sequence/scatter-floor.json` the floor document, and gate `core-694` re-derives it
+from the raw shots (`measurement_sequence_scatter.py check`; every field must match to a relative 1e-9 except
+`source.analysis_module_sha256`, which names the module the file's digest is then written into).
+
+All 38 qubits are informative (readout scale 0.81 to 0.98; q147, q151 and q5 fall below 0.95). The residual is the
+readout-corrected unitary N = 16 P0 minus the sign-pooled model at the Target's T1 and the planning excitation:
+
+| Population | Qubits | Root-mean-square residual |
+|---|---|---|
+| All informative | 38 | 0.0152 |
+| Main | 8 | 0.0188 |
+| Extra | 30 | 0.0141 |
+| Statistical standard error | 38 | 0.0024 |
+| All, less statistical in quadrature | 38 | 0.0150 |
+
+The floor is the larger of the all-qubit and main-qubit values, 0.018784 (relative sampling error of the all-qubit
+value 0.115). The mean residual is +0.0110: the model underpredicts P0 on 32 of the 38 qubits, including all eight main
+qubits, and overpredicts it on six (q3, q10, q13, q20, q80 and q108). The floor therefore mixes a common offset with
+scatter about it; the root-mean-square about the mean is 0.0105 over all 38 qubits. The largest residuals are q91 at
++0.039 (18 statistical standard errors) and q45 at +0.034 (15).
+
+T2 pattern (descriptive, preregistered statistics). The Spearman rank correlation of the residual with T2 is -0.29
+(two-sided p 0.080 by the t approximation); 9 of the 12 longest-T2 qubits (T2 at least 211 us) carry a positive residual
+and 2 of the 12 shortest (T2 at most 111 us) a negative one. The drive-dephasing lead seen on Garnet predicts a positive
+rank correlation with negative residuals on short T2; the Kingston sign is the opposite and not significant, so the
+data do not support the lead on this device. The correlation with the sx error is -0.33 (p 0.044): qubits with larger
+reported sx error carry smaller residuals. Neither correlation identifies a mechanism.
+
+Minimum detectable per-step transition rate at the measured floor (`measurement_sequence_analysis.py detectable
+--floor 0.018784`, 8192 shots, the eight fixture qubits, retained in
+`docs/evidence/measurement_sequence/minimum-detectable-measured-floor.json`): pooled z = -3 at eps = 0.0047, per-qubit
+eps 0.0049 to 0.0060 (median 0.0051), mean departure standard error 0.0180. At the demonstration floor 0.015 the
+pooled value is 0.0039, so the measured floor costs about 20 % of the detection power in eps. A main run that finds
+a transition rate below about 0.005 per step stays a null; the ideal flip it would see at that rate is a P0 shift of
+-0.052.
+
+Per-qubit residuals (main qubits first):
+
+| Qubit | Role | P0 | Model | Residual | z (statistical) | T2 (us) | sx error |
+|---|---|---|---|---|---|---|---|
+| q91 | main | 0.0778 | 0.0385 | +0.0393 | +18.4 | 118 | 2.67e-04 |
+| q118 | main | 0.0456 | 0.0359 | +0.0097 | +5.2 | 150 | 1.81e-04 |
+| q95 | main | 0.0457 | 0.0357 | +0.0100 | +5.1 | 432 | 1.83e-04 |
+| q61 | main | 0.0394 | 0.0359 | +0.0034 | +1.7 | 130 | 1.81e-04 |
+| q147 | main | 0.0626 | 0.0577 | +0.0048 | +0.9 | 111 | 9.28e-04 |
+| q151 | main | 0.0623 | 0.0352 | +0.0271 | +6.8 | 199 | 1.60e-04 |
+| q59 | main | 0.0362 | 0.0341 | +0.0021 | +1.1 | 457 | 1.29e-04 |
+| q89 | main | 0.0541 | 0.0365 | +0.0177 | +8.4 | 164 | 2.01e-04 |
+| q3 | extra | 0.0388 | 0.0445 | -0.0057 | -2.8 | 324 | 4.82e-04 |
+| q5 | extra | 0.0558 | 0.0428 | +0.0130 | +3.6 | 112 | 4.13e-04 |
+| q10 | extra | 0.0445 | 0.0463 | -0.0017 | -0.9 | 24 | 2.28e-04 |
+| q13 | extra | 0.0335 | 0.0430 | -0.0095 | -4.3 | 650 | 4.31e-04 |
+| q15 | extra | 0.0449 | 0.0347 | +0.0102 | +5.5 | 362 | 1.49e-04 |
+| q17 | extra | 0.0475 | 0.0362 | +0.0113 | +5.6 | 211 | 1.97e-04 |
+| q20 | extra | 0.0415 | 0.0436 | -0.0021 | -0.9 | 52 | 4.21e-04 |
+| q23 | extra | 0.0494 | 0.0354 | +0.0140 | +7.2 | 79 | 1.41e-04 |
+| q25 | extra | 0.0556 | 0.0410 | +0.0146 | +5.7 | 36 | 1.52e-04 |
+| q30 | extra | 0.0559 | 0.0385 | +0.0173 | +7.4 | 92 | 2.62e-04 |
+| q38 | extra | 0.0602 | 0.0361 | +0.0241 | +12.2 | 111 | 1.86e-04 |
+| q40 | extra | 0.0443 | 0.0388 | +0.0056 | +3.1 | 124 | 2.76e-04 |
+| q45 | extra | 0.0788 | 0.0444 | +0.0344 | +14.7 | 164 | 4.71e-04 |
+| q48 | extra | 0.0668 | 0.0447 | +0.0221 | +11.2 | 26 | 2.32e-04 |
+| q50 | extra | 0.0504 | 0.0345 | +0.0160 | +7.9 | 233 | 1.38e-04 |
+| q64 | extra | 0.0438 | 0.0402 | +0.0036 | +1.7 | 164 | 3.29e-04 |
+| q67 | extra | 0.0496 | 0.0363 | +0.0133 | +6.2 | 273 | 2.01e-04 |
+| q71 | extra | 0.0576 | 0.0363 | +0.0213 | +9.7 | 188 | 1.98e-04 |
+| q79 | extra | 0.0496 | 0.0359 | +0.0137 | +6.4 | 83 | 1.71e-04 |
+| q80 | extra | 0.0317 | 0.0361 | -0.0044 | -2.0 | 297 | 1.95e-04 |
+| q108 | extra | 0.0390 | 0.0447 | -0.0057 | -2.6 | 156 | 4.83e-04 |
+| q110 | extra | 0.0536 | 0.0399 | +0.0137 | +6.5 | 150 | 3.15e-04 |
+| q117 | extra | 0.0444 | 0.0375 | +0.0069 | +3.8 | 242 | 2.40e-04 |
+| q123 | extra | 0.0566 | 0.0475 | +0.0092 | +4.7 | 22 | 2.97e-04 |
+| q126 | extra | 0.0428 | 0.0392 | +0.0036 | +1.8 | 224 | 2.96e-04 |
+| q128 | extra | 0.0573 | 0.0366 | +0.0206 | +9.9 | 64 | 1.57e-04 |
+| q134 | extra | 0.0517 | 0.0351 | +0.0166 | +9.0 | 119 | 1.53e-04 |
+| q141 | extra | 0.0494 | 0.0370 | +0.0124 | +4.9 | 80 | 2.06e-04 |
+| q144 | extra | 0.0429 | 0.0352 | +0.0077 | +3.8 | 429 | 1.67e-04 |
+| q154 | extra | 0.0449 | 0.0369 | +0.0079 | +4.1 | 153 | 2.16e-04 |
+
 ### Device verdicts
 
 `device_verdict` combines the informative qubits. A verdict (`departs_below`, `exceeds_prediction`,
@@ -513,7 +598,8 @@ flip is absent from the settle arm.
 
 ### Limits
 
-- The scatter floor is unmeasured (see its section). Until its file is registered, the pinching analysis withholds.
+- The scatter floor comes from one calibration window of one backend (see Results of the diagnostic run), and the
+  analysis withholds on any other backend.
   Depolarizing error and drive dephasing are the classes that shift the unitary arm in one direction and the measure arm
   in the other (ratios -0.8 and -0.5); a model that overpredicts one and underpredicts the other can hide a measure-arm
   shift of the difference of the two ratios times the unitary shift, which the device-scatter widening covers up to

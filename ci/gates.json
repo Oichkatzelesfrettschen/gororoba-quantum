@@ -4266,6 +4266,14 @@
    "name": "core-693",
    "seconds": 4.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/measurement_sequence_scatter.py check results/live/2026-10-26T031010.724660Z docs/evidence/measurement_sequence/scatter-floor.json",
+   "name": "core-694",
+   "seconds": 3.5,
+   "tier": "pr"
   }
  ],
  "excluded": [

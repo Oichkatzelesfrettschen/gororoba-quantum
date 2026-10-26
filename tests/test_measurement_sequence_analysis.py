@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -369,6 +370,7 @@ def test_collected_withholds_without_a_bound_floor(monkeypatch: pytest.MonkeyPat
     record["groups"] = [{"backend": "ibm_kingston"}]
     distributions = _distributions(counts)
     executed = {name: template["_template"] for name in distributions}
+    monkeypatch.setattr(msa, "MODEL_SCATTER_DIAGNOSTIC_SHA256", None)
     check("no model scatter floor" in msa.collected(record, distributions, executed)["withheld"])
     document = tmp_path / "scatter-floor.json"
     body = json.dumps({"schema": msa.SCATTER_FLOOR_SCHEMA, "floor": 0.02, "backend": "ibm_kingston"}).encode()
@@ -493,3 +495,14 @@ def test_injected_axis_tilt_generates_each_member_from_its_own_sign() -> None:
     residual = row["gate_systematic_n16"]["unitary_residual"]
     one_sign = (_chain_z("unitary", 1, axis_phase=0.005) - _chain_z("unitary", 1)) / 2
     check(abs(one_sign) > 0.01 and abs(residual) < 0.4 * abs(one_sign), f"pooled {residual}, one sign {one_sign}")
+
+
+def test_registered_scatter_floor_is_bound_by_digest() -> None:
+    """The registered diagnostic file hashes to the constant and gives the floor collected() uses on ibm_kingston."""
+    path = Path(msa.__file__).resolve().parents[1] / msa.MODEL_SCATTER_FLOOR_FILE
+    check(msa.MODEL_SCATTER_DIAGNOSTIC_SHA256 == hashlib.sha256(path.read_bytes()).hexdigest())
+    floor, reason = msa.bound_floor({"ibm_kingston"})
+    document = json.loads(path.read_text(encoding="utf-8"))
+    check(reason is None and floor == document["floor"] and 0.01 < floor < 0.03, f"{floor} {reason}")
+    other, why = msa.bound_floor({"ibm_fez"})
+    check(other is None and "not on" in str(why))

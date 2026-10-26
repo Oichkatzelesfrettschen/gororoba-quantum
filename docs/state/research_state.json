@@ -10239,8 +10239,19 @@
         {
           "path": "results/live/2026-10-26T031010.724660Z/record.json",
           "sha256": "89d3b609b45284bbdcd38219b5a441752185425420687eefcbc4b0303be3dff5"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/scatter-floor.json",
+          "sha256": "c8036f7d2b41018467c534785c977e5203d5e20798b8c8eb7b5902949861179f"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/minimum-detectable-measured-floor.json",
+          "sha256": "4d3d6a7a4031e3bcda5f4b21c5f5d4c2bc1cc95239874e2973d66ea74a63e33d"
         }
       ],
+      "gates": {
+        "core-694": "replay"
+      },
       "documents": [
         "docs/design/measurement-sequence-pinching.md"
       ],
