@@ -490,6 +490,7 @@ def test_null_upper_bound_is_clopper_pearson() -> None:
     import msq_envelope_null as null
 
     check(abs(null.upper_bound(0, 400) - (1 - 0.05 ** (1 / 400))) < 1e-12, "zero fires: 1 - alpha^(1/n)")
-    check(null.upper_bound(0, 300) >= null.FALSE_FIRE_CEILING, "300 clean replicates cannot reach 0.01")
+    check(null.upper_bound(0, 298) >= null.FALSE_FIRE_CEILING, "298 clean replicates cannot reach 0.01")
+    check(null.upper_bound(0, 299) < null.FALSE_FIRE_CEILING, "299 clean replicates reach 0.01")
     check(null.upper_bound(0, 400) < null.FALSE_FIRE_CEILING, "400 clean replicates reach 0.01")
     check(null.upper_bound(5, 5) == 1.0, "all fired")
