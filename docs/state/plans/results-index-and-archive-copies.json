@@ -6,7 +6,7 @@
   "sources": [
     "docs/archive/reviews/2026-10-25-results-catalog-opposition.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "unresolved",
     "note": "Captured context; triage and evidence review pending."
@@ -17,9 +17,27 @@
   "steps": [
     {
       "id": "query-command",
-      "state": "doing",
+      "state": "done",
       "action": "Build the read-only results index command with contract tests.",
-      "acceptance": "tests/scripts/test_results_index.py passes and a build leaves git status unchanged."
+      "acceptance": "tests/scripts/test_results_index.py passes and a build leaves git status unchanged.",
+      "receipts": [
+        {
+          "result": "PR 501 merged: scripts/results_index.py and its tests are on main; the synthetic tests pass in the PR suite and the retained-tree join is an audit test.",
+          "observed_at": "2026-10-26T00:00:12.190391+00:00",
+          "revision": "b798ddac929872aa1d2885bfc41cadcad132ba99",
+          "evidence": [
+            {
+              "ref": "scripts/results_index.py",
+              "sha256": "69e72ff84b9250cd687f4c28485f55ab97d28ac77b6ae9ce0616d06faa78af5b"
+            },
+            {
+              "ref": "tests/scripts/test_results_index.py",
+              "sha256": "bdd5270952e7e134080db45d51a35a7f6e30e35940eda462c22b771a76590dfb"
+            }
+          ],
+          "scope_sha256": "8e67c8c28015e9aac9f30558da8afa0505d01182cd7474a4f8a5e1628bba6f70"
+        }
+      ]
     },
     {
       "id": "swh-visit",
@@ -44,13 +62,26 @@
           "scope_sha256": "984f607d6f09ba0cf736250a5fa7c3aa52e73d1ea9257b00b4f9283f78a26e11"
         }
       ]
-    },
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "PR 501 delivered the read-only results index and the archive tool; Software Heritage holds snapshot swh:1:snp:28882c1bdf53ccc0f4e1aef527e4e5ecaef8226d. The owner declined a git bundle destination on 2026-10-25, so the bundle step was removed from scope.",
+  "receipts": [
     {
-      "id": "bundle-copy",
-      "state": "cancelled",
-      "action": "Write and verify a git bundle on a device other than the home disk.",
-      "acceptance": "repository_archive.py verify passes on the bundle at the owner-named destination.",
-      "reason": "The owner chose Software Heritage and GitHub as the copies and declined a bundle destination on 2026-10-25; repository_archive.py bundle and verify stay available."
+      "result": "PR 501 merged: scripts/results_index.py and its tests are on main; the synthetic tests pass in the PR suite and the retained-tree join is an audit test.",
+      "observed_at": "2026-10-26T00:00:12.190391+00:00",
+      "revision": "b798ddac929872aa1d2885bfc41cadcad132ba99",
+      "evidence": [
+        {
+          "ref": "scripts/results_index.py",
+          "sha256": "69e72ff84b9250cd687f4c28485f55ab97d28ac77b6ae9ce0616d06faa78af5b"
+        },
+        {
+          "ref": "tests/scripts/test_results_index.py",
+          "sha256": "bdd5270952e7e134080db45d51a35a7f6e30e35940eda462c22b771a76590dfb"
+        }
+      ],
+      "scope_sha256": "515ef15a775b75797df4e7d991f54405743d6221d71e4d8a2e082b28e61c4468"
     }
   ]
 }

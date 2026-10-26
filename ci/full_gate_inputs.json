@@ -553,6 +553,9 @@
       "docs/evidence/calibration/**",
       "docs/evidence/primorial_cover/**",
       "results/kaggle/2026-10-25T221805Z-gororoba-primorial-bound-residuals/**"
+    ],
+    "core-692": [
+      "docs/evidence/stiefel-pfaffian-higher/**"
     ]
   }
 }

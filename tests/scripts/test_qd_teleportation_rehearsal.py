@@ -478,3 +478,81 @@ def test_analysis_of_a_zero_shot_iteration_is_inconclusive_without_a_bound() -> 
         raise AssertionError(benchmark)
     if record["verdict"] != "inconclusive" or "no shot" not in record["verdict_reason"] or record["margin"] is not None:
         raise AssertionError((record["verdict"], record["verdict_reason"]))
+
+
+def staged_run(tmp_path: Path) -> Path:
+    run = tmp_path / "run"
+    run.mkdir()
+    for name in rehearsal.STAGED:
+        (run / name).write_bytes((CASE / name).read_bytes())
+    return run
+
+
+def test_submit_binding_refuses_a_departed_body_and_a_model_below_the_justified_range(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    job = rehearsal.JOBS["job-00"]
+    checked = {"body": load("job-body.json")}
+    monkeypatch.setattr(rehearsal, "live_model", lambda: planned_model(0.635))
+    admitted: dict[str, Any] = {}
+    with pytest.raises(rehearsal.PlatformError, match="0.6350"):
+        rehearsal.binding(job, admitted)(checked)
+    if admitted:
+        raise AssertionError(admitted)
+    monkeypatch.setattr(rehearsal, "live_model", lambda: planned_model(0.868))
+    departed = copy.deepcopy(checked)
+    departed["body"]["tags"] = ["departed"]
+    with pytest.raises(rehearsal.PlatformError, match="differs from the retained body"):
+        rehearsal.binding(job, admitted)(departed)
+    process = copy.deepcopy(checked)
+    process["body"]["process_id"] = "fresh"
+    rehearsal.binding(job, admitted)(process)
+    if admitted["pooled_fidelity"] != 0.868:
+        raise AssertionError(admitted)
+
+
+def test_submit_reads_the_platform_first_and_retains_the_admitting_model(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    run = staged_run(tmp_path)
+    calls: list[str] = []
+
+    def read(out: Path) -> None:
+        calls.append("snapshot")
+        out.mkdir(exist_ok=True)
+
+    monkeypatch.setattr(rehearsal, "snapshot", read)
+    monkeypatch.setattr(rehearsal, "observe", lambda out: calls.append("observe"))
+
+    def submitted(case_dir: Path, platform: str, approval: str, *args: Any, verify: Any) -> dict[str, Any]:
+        calls.append("submit")
+        if case_dir != run or platform != rehearsal.PLATFORM or not approval:
+            raise AssertionError((case_dir, platform, approval))
+        if args != (2.2, 120.0, rehearsal.PER_JOB_CREDITS):
+            raise AssertionError(args)
+        verify({"body": load("job-body.json")})
+        return {"job_id": "job-id", "platform": platform}
+
+    monkeypatch.setattr(rehearsal, "submit", submitted)
+    monkeypatch.setattr(rehearsal, "live_model", lambda: planned_model(0.635))
+    with pytest.raises(rehearsal.PlatformError):
+        rehearsal.send(run, "approved")
+    if (run / rehearsal.SUBMIT_MODEL).exists() or calls != ["snapshot", "observe", "submit"]:
+        raise AssertionError(calls)
+    monkeypatch.setattr(rehearsal, "live_model", lambda: planned_model(0.868))
+    if rehearsal.send(run, "approved") != 0:
+        raise AssertionError("an admitted request returns 0")
+    record = json.loads((run / rehearsal.SUBMIT_MODEL).read_text(encoding="utf-8"))
+    if record["job_id"] != "job-id" or record["model"]["pooled_fidelity"] != 0.868:
+        raise AssertionError(record)
+
+
+def test_submit_refuses_a_run_directory_beyond_the_frozen_request(tmp_path: Path) -> None:
+    run = staged_run(tmp_path)
+    (run / "results.json").write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="results.json"):
+        rehearsal.staged(run)
+    (run / "results.json").unlink()
+    (run / "cases.json").write_bytes(b"{}")
+    with pytest.raises(ValueError, match="names job None"):
+        rehearsal.staged(run)

@@ -1,0 +1,3335 @@
+{
+  "schema_version": 7,
+  "schema_contract": "live-target-statistical-design-invocation-budget-v1",
+  "state": "planned",
+  "started": "2026-10-25T20:14:49.111343+00:00",
+  "versions": {
+    "numpy": "2.5.4",
+    "qiskit": "2.6.0",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "scipy": "1.18.1",
+    "rustworkx": "0.18.1",
+    "sympy": "1.14.0"
+  },
+  "policy": {
+    "max_readout_error": 0.08,
+    "max_cz_error": 0.03,
+    "max_sx_error": 0.01,
+    "min_t1_us": 20.0,
+    "min_t2_us": 20.0,
+    "max_pending": 25,
+    "seeds": 8,
+    "joint_candidates": 3,
+    "replica_floor": null,
+    "max_replicas": 1,
+    "isolated_reference": false,
+    "cross_group_buffer": true,
+    "twirl": false,
+    "dd": null,
+    "min_remaining_seconds": 60.0,
+    "max_execution_seconds": 60,
+    "operator_excluded_qubits": {
+      "ibm_kingston": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        151,
+        152,
+        153,
+        154,
+        155
+      ]
+    },
+    "design": {
+      "family": null,
+      "optimize": false,
+      "objective": "minimum_charge",
+      "cost_scenarios": [],
+      "shot_tiers": [
+        2048,
+        4096,
+        8192,
+        16384
+      ],
+      "shot_allocation": "uniform",
+      "replica_tiers": [
+        1,
+        2,
+        4
+      ],
+      "optimizer_candidates": 6,
+      "model_shots": 32768,
+      "precision": 0.08,
+      "alpha": 0.05,
+      "power": 0.8,
+      "simulation_alpha": 0.01,
+      "job_overhead_seconds": 2.3,
+      "classical_latency_us": 20.0,
+      "reserve_seconds": 60.0,
+      "max_total_execution_seconds": 60.0,
+      "patch_qubits": null,
+      "model_method": "sampled",
+      "replica_variance_bound": null
+    },
+    "local_compute": {
+      "mode": "auto",
+      "threads": 12,
+      "memory_mb": 512,
+      "shot_branching": false,
+      "method": "density_matrix_dynamic_statevector",
+      "precision": "double",
+      "shot_branching_sampling": false,
+      "parallel_experiments": 1,
+      "aer_native": {
+        "schema": "native-aer-identity-v1",
+        "distribution": "qiskit-aer",
+        "version": "0.17.2",
+        "python_soabi": "cpython-314-x86_64-linux-gnu",
+        "extension": {
+          "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+          "sha256": "cd0ba079d5e18c9ba8a73c14848a34658d47fb7f38aec81a30a014e31c578bf1"
+        },
+        "native_cuda_build": null,
+        "loaded_mapping_verified": true,
+        "loaded_mapping_scope": "linux-process-map-device-inode"
+      }
+    }
+  },
+  "shots": 8192,
+  "instance_sha256_12": "f59f9992321c",
+  "seed_simulator": 20261011,
+  "experiment_digest": "d43d66466a71bd546459c48cd259db7dd14f36cfe775a4f0143277480010c00f",
+  "code_commit": {
+    "head": "0c1baecbb0b99943dc3543360681e7d10dd0202c",
+    "sources_modified": false
+  },
+  "system_inventory": {
+    "ibm_kingston": {
+      "eligibility": "eligible",
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 3,
+      "calibration": "2026-10-25T12:55:42-07:00",
+      "fetched_at": "2026-10-25T20:14:53+00:00",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 317.13229518739774,
+        "t2_us": 406.14906050326897,
+        "readout_error": 0.00531005859375,
+        "cz_error": 0.0016695922450558481
+      },
+      "excluded_qubits": {
+        "0": "operator exclusion",
+        "1": "operator exclusion",
+        "2": "operator exclusion",
+        "3": "operator exclusion",
+        "4": "operator exclusion",
+        "5": "operator exclusion",
+        "6": "operator exclusion",
+        "7": "operator exclusion",
+        "8": "operator exclusion",
+        "9": "operator exclusion",
+        "10": "operator exclusion",
+        "11": "operator exclusion",
+        "12": "operator exclusion",
+        "13": "operator exclusion",
+        "14": "operator exclusion",
+        "15": "operator exclusion",
+        "16": "operator exclusion",
+        "17": "operator exclusion",
+        "18": "operator exclusion",
+        "19": "operator exclusion",
+        "20": "operator exclusion",
+        "21": "operator exclusion",
+        "22": "operator exclusion",
+        "23": "operator exclusion",
+        "24": "operator exclusion",
+        "25": "operator exclusion",
+        "26": "operator exclusion",
+        "27": "operator exclusion",
+        "28": "operator exclusion",
+        "29": "operator exclusion",
+        "30": "operator exclusion",
+        "31": "operator exclusion",
+        "32": "operator exclusion",
+        "33": "operator exclusion",
+        "34": "operator exclusion",
+        "35": "operator exclusion",
+        "36": "operator exclusion",
+        "37": "operator exclusion",
+        "38": "operator exclusion",
+        "39": "operator exclusion",
+        "40": "operator exclusion",
+        "41": "operator exclusion",
+        "42": "operator exclusion",
+        "43": "operator exclusion",
+        "44": "operator exclusion",
+        "45": "operator exclusion",
+        "46": "operator exclusion",
+        "47": "operator exclusion",
+        "48": "operator exclusion",
+        "49": "operator exclusion",
+        "50": "operator exclusion",
+        "51": "operator exclusion",
+        "52": "operator exclusion",
+        "53": "operator exclusion",
+        "54": "operator exclusion",
+        "55": "operator exclusion",
+        "56": "operator exclusion",
+        "57": "operator exclusion",
+        "58": "operator exclusion",
+        "59": "operator exclusion",
+        "60": "operator exclusion",
+        "61": "operator exclusion",
+        "62": "operator exclusion",
+        "63": "operator exclusion",
+        "64": "operator exclusion",
+        "65": "operator exclusion",
+        "66": "operator exclusion",
+        "67": "operator exclusion",
+        "68": "operator exclusion",
+        "69": "operator exclusion",
+        "70": "operator exclusion",
+        "71": "operator exclusion",
+        "72": "operator exclusion",
+        "73": "operator exclusion",
+        "74": "operator exclusion",
+        "75": "operator exclusion",
+        "76": "operator exclusion",
+        "77": "operator exclusion",
+        "78": "operator exclusion",
+        "79": "operator exclusion",
+        "80": "operator exclusion",
+        "81": "operator exclusion",
+        "82": "operator exclusion",
+        "83": "operator exclusion",
+        "84": "operator exclusion",
+        "85": "operator exclusion",
+        "86": "operator exclusion",
+        "87": "operator exclusion",
+        "88": "operator exclusion",
+        "89": "operator exclusion",
+        "90": "operator exclusion",
+        "91": "operator exclusion",
+        "92": "operator exclusion",
+        "93": "operator exclusion",
+        "94": "operator exclusion",
+        "95": "operator exclusion",
+        "96": "operator exclusion",
+        "97": "operator exclusion",
+        "98": "operator exclusion",
+        "99": "operator exclusion",
+        "100": "operator exclusion",
+        "101": "operator exclusion",
+        "102": "operator exclusion",
+        "103": "operator exclusion",
+        "104": "operator exclusion",
+        "105": "operator exclusion",
+        "106": "operator exclusion",
+        "107": "operator exclusion",
+        "108": "operator exclusion",
+        "109": "operator exclusion",
+        "110": "operator exclusion",
+        "111": "operator exclusion",
+        "112": "operator exclusion",
+        "113": "readout error 0.145",
+        "114": "operator exclusion",
+        "115": "T1=230.7us T2=15.2us",
+        "116": "operator exclusion",
+        "117": "operator exclusion",
+        "118": "operator exclusion",
+        "119": "operator exclusion",
+        "120": "operator exclusion",
+        "121": "missing calibration: \"Couldn't find the property 'T2' for qubit 121.\"",
+        "122": "operator exclusion",
+        "123": "operator exclusion",
+        "124": "operator exclusion",
+        "125": "operator exclusion",
+        "126": "operator exclusion",
+        "127": "operator exclusion",
+        "128": "operator exclusion",
+        "129": "operator exclusion",
+        "130": "operator exclusion",
+        "131": "readout error 0.081",
+        "132": "operator exclusion",
+        "133": "operator exclusion",
+        "134": "operator exclusion",
+        "135": "operator exclusion",
+        "136": "operator exclusion",
+        "137": "operator exclusion",
+        "138": "operator exclusion",
+        "139": "operator exclusion",
+        "140": "operator exclusion",
+        "141": "operator exclusion",
+        "142": "operator exclusion",
+        "143": "operator exclusion",
+        "144": "operator exclusion",
+        "145": "operator exclusion",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\"",
+        "147": "operator exclusion",
+        "148": "operator exclusion",
+        "151": "operator exclusion",
+        "152": "operator exclusion",
+        "153": "operator exclusion",
+        "154": "operator exclusion",
+        "155": "operator exclusion"
+      },
+      "excluded_edges": {
+        "85-86": "cz error 0.05580215918149037",
+        "86-85": "cz error 0.05580215918149037",
+        "86-87": "cz error 0.057438907819177154",
+        "87-86": "cz error 0.057438907819177154",
+        "111-112": "cz error 0.2025390308479963",
+        "112-111": "cz error 0.2025390308479963",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.04673203884538307",
+        "120-121": "cz error 0.05897084015191334",
+        "121-116": "cz error 0.04673203884538307",
+        "121-120": "cz error 0.05897084015191334",
+        "121-122": "cz error 0.051862147216969995",
+        "122-121": "cz error 0.051862147216969995",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    }
+  },
+  "backends": {
+    "ibm_kingston": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 3,
+      "calibration": "2026-10-25T12:55:42-07:00",
+      "fetched_at": "2026-10-25T20:14:53+00:00",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 317.13229518739774,
+        "t2_us": 406.14906050326897,
+        "readout_error": 0.00531005859375,
+        "cz_error": 0.0016695922450558481
+      },
+      "excluded_qubits": {
+        "0": "operator exclusion",
+        "1": "operator exclusion",
+        "2": "operator exclusion",
+        "3": "operator exclusion",
+        "4": "operator exclusion",
+        "5": "operator exclusion",
+        "6": "operator exclusion",
+        "7": "operator exclusion",
+        "8": "operator exclusion",
+        "9": "operator exclusion",
+        "10": "operator exclusion",
+        "11": "operator exclusion",
+        "12": "operator exclusion",
+        "13": "operator exclusion",
+        "14": "operator exclusion",
+        "15": "operator exclusion",
+        "16": "operator exclusion",
+        "17": "operator exclusion",
+        "18": "operator exclusion",
+        "19": "operator exclusion",
+        "20": "operator exclusion",
+        "21": "operator exclusion",
+        "22": "operator exclusion",
+        "23": "operator exclusion",
+        "24": "operator exclusion",
+        "25": "operator exclusion",
+        "26": "operator exclusion",
+        "27": "operator exclusion",
+        "28": "operator exclusion",
+        "29": "operator exclusion",
+        "30": "operator exclusion",
+        "31": "operator exclusion",
+        "32": "operator exclusion",
+        "33": "operator exclusion",
+        "34": "operator exclusion",
+        "35": "operator exclusion",
+        "36": "operator exclusion",
+        "37": "operator exclusion",
+        "38": "operator exclusion",
+        "39": "operator exclusion",
+        "40": "operator exclusion",
+        "41": "operator exclusion",
+        "42": "operator exclusion",
+        "43": "operator exclusion",
+        "44": "operator exclusion",
+        "45": "operator exclusion",
+        "46": "operator exclusion",
+        "47": "operator exclusion",
+        "48": "operator exclusion",
+        "49": "operator exclusion",
+        "50": "operator exclusion",
+        "51": "operator exclusion",
+        "52": "operator exclusion",
+        "53": "operator exclusion",
+        "54": "operator exclusion",
+        "55": "operator exclusion",
+        "56": "operator exclusion",
+        "57": "operator exclusion",
+        "58": "operator exclusion",
+        "59": "operator exclusion",
+        "60": "operator exclusion",
+        "61": "operator exclusion",
+        "62": "operator exclusion",
+        "63": "operator exclusion",
+        "64": "operator exclusion",
+        "65": "operator exclusion",
+        "66": "operator exclusion",
+        "67": "operator exclusion",
+        "68": "operator exclusion",
+        "69": "operator exclusion",
+        "70": "operator exclusion",
+        "71": "operator exclusion",
+        "72": "operator exclusion",
+        "73": "operator exclusion",
+        "74": "operator exclusion",
+        "75": "operator exclusion",
+        "76": "operator exclusion",
+        "77": "operator exclusion",
+        "78": "operator exclusion",
+        "79": "operator exclusion",
+        "80": "operator exclusion",
+        "81": "operator exclusion",
+        "82": "operator exclusion",
+        "83": "operator exclusion",
+        "84": "operator exclusion",
+        "85": "operator exclusion",
+        "86": "operator exclusion",
+        "87": "operator exclusion",
+        "88": "operator exclusion",
+        "89": "operator exclusion",
+        "90": "operator exclusion",
+        "91": "operator exclusion",
+        "92": "operator exclusion",
+        "93": "operator exclusion",
+        "94": "operator exclusion",
+        "95": "operator exclusion",
+        "96": "operator exclusion",
+        "97": "operator exclusion",
+        "98": "operator exclusion",
+        "99": "operator exclusion",
+        "100": "operator exclusion",
+        "101": "operator exclusion",
+        "102": "operator exclusion",
+        "103": "operator exclusion",
+        "104": "operator exclusion",
+        "105": "operator exclusion",
+        "106": "operator exclusion",
+        "107": "operator exclusion",
+        "108": "operator exclusion",
+        "109": "operator exclusion",
+        "110": "operator exclusion",
+        "111": "operator exclusion",
+        "112": "operator exclusion",
+        "113": "readout error 0.145",
+        "114": "operator exclusion",
+        "115": "T1=230.7us T2=15.2us",
+        "116": "operator exclusion",
+        "117": "operator exclusion",
+        "118": "operator exclusion",
+        "119": "operator exclusion",
+        "120": "operator exclusion",
+        "121": "missing calibration: \"Couldn't find the property 'T2' for qubit 121.\"",
+        "122": "operator exclusion",
+        "123": "operator exclusion",
+        "124": "operator exclusion",
+        "125": "operator exclusion",
+        "126": "operator exclusion",
+        "127": "operator exclusion",
+        "128": "operator exclusion",
+        "129": "operator exclusion",
+        "130": "operator exclusion",
+        "131": "readout error 0.081",
+        "132": "operator exclusion",
+        "133": "operator exclusion",
+        "134": "operator exclusion",
+        "135": "operator exclusion",
+        "136": "operator exclusion",
+        "137": "operator exclusion",
+        "138": "operator exclusion",
+        "139": "operator exclusion",
+        "140": "operator exclusion",
+        "141": "operator exclusion",
+        "142": "operator exclusion",
+        "143": "operator exclusion",
+        "144": "operator exclusion",
+        "145": "operator exclusion",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\"",
+        "147": "operator exclusion",
+        "148": "operator exclusion",
+        "151": "operator exclusion",
+        "152": "operator exclusion",
+        "153": "operator exclusion",
+        "154": "operator exclusion",
+        "155": "operator exclusion"
+      },
+      "excluded_edges": {
+        "85-86": "cz error 0.05580215918149037",
+        "86-85": "cz error 0.05580215918149037",
+        "86-87": "cz error 0.057438907819177154",
+        "87-86": "cz error 0.057438907819177154",
+        "111-112": "cz error 0.2025390308479963",
+        "112-111": "cz error 0.2025390308479963",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.04673203884538307",
+        "120-121": "cz error 0.05897084015191334",
+        "121-116": "cz error 0.04673203884538307",
+        "121-120": "cz error 0.05897084015191334",
+        "121-122": "cz error 0.051862147216969995",
+        "122-121": "cz error 0.051862147216969995",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    }
+  },
+  "skipped_backends": {},
+  "circuit_requirements": {
+    "qet_ladder": {
+      "qubits": 2,
+      "classical_bits": 3,
+      "static_circuits": 0,
+      "dynamic_circuits": 18,
+      "target_operations": [
+        "delay",
+        "if_else",
+        "measure"
+      ],
+      "control_flow": [
+        "if_else"
+      ]
+    }
+  },
+  "execution_requirements": {
+    "qet_ladder": {
+      "entries": 18,
+      "entry_names": [
+        "qet_ladder_ref_x",
+        "qet_ladder_ref_y",
+        "qet_ladder_ref_z",
+        "qet_ladder_fb_x",
+        "qet_ladder_fb_z",
+        "qet_ladder_rev_x",
+        "qet_ladder_rev_z",
+        "qet_ladder_plus_x",
+        "qet_ladder_plus_z",
+        "qet_ladder_minus_x",
+        "qet_ladder_minus_z",
+        "qet_ladder_za",
+        "qet_ladder_prod_ref_x",
+        "qet_ladder_prod_ref_y",
+        "qet_ladder_prod_ref_z",
+        "qet_ladder_prod_fb_x",
+        "qet_ladder_prod_fb_z",
+        "qet_ladder_prod_za"
+      ],
+      "static_circuits": 0,
+      "dynamic_circuits": 18,
+      "max_classical_bits": 3,
+      "physical_qubits": [
+        149,
+        150
+      ],
+      "operation_names": [
+        "cz",
+        "measure",
+        "rz",
+        "sx"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    }
+  },
+  "fusion_placement": {
+    "cross_group_disjoint": true,
+    "within_group_one_hop_separated": true,
+    "allocation": "required-set-backtracking-then-fair-surplus",
+    "clusters": [
+      {
+        "backend": "ibm_kingston",
+        "kind": "dynamic",
+        "rounds": 1,
+        "required_rounds": 1,
+        "physical_qubits": [
+          149,
+          150
+        ],
+        "cross_group_buffer": true,
+        "groups": [
+          {
+            "group": "qet_ladder",
+            "pattern_width": 2,
+            "floor_candidates": 2,
+            "selected_replicas": 1,
+            "selected_scores": [
+              0.959349227773505
+            ],
+            "selected_qubits": [
+              [
+                149,
+                150
+              ]
+            ]
+          }
+        ]
+      }
+    ],
+    "candidate_selection": {
+      "strategy": "best_first_combined_log_score",
+      "frontier_size": 3,
+      "attempted_combinations": 1,
+      "rejected_combinations": 0,
+      "rejected_sample": [],
+      "combined_log_score": -0.04061801028450845,
+      "selected": [
+        {
+          "group": "qet_ladder",
+          "candidate_index": 0,
+          "backend": "ibm_kingston",
+          "seed": 20261010,
+          "layout": [
+            149,
+            150
+          ],
+          "joint_score": 0.9601958448402678
+        }
+      ]
+    }
+  },
+  "fusion_summary": {
+    "strategy": "aligned_members_without_reference",
+    "reference_estimand": null,
+    "reference_estimand_by_kind": {
+      "static": null,
+      "dynamic": null
+    },
+    "logical_entries": {
+      "static": 0,
+      "dynamic": 18
+    },
+    "execution_pubs": {
+      "static": 0,
+      "dynamic": 18
+    },
+    "reference_components": {
+      "static": 0,
+      "dynamic": 0
+    }
+  },
+  "execution_pubs": [
+    {
+      "name": "ibm_kingston_dynamic_pub_01",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_ref_x",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_02",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_ref_y",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_03",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_ref_z",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_04",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_fb_x",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_05",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_fb_z",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_06",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_rev_x",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_07",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_rev_z",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_08",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_plus_x",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_09",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_plus_z",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_10",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_minus_x",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_11",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1131,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_minus_z",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_12",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1123,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_za",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_13",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1098,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_prod_ref_x",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_14",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1098,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_prod_ref_y",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_15",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1098,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_prod_ref_z",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_16",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1098,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_prod_fb_x",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_17",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1098,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_prod_fb_z",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_kingston_dynamic_pub_18",
+      "backend": "ibm_kingston",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 1090,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "qet_ladder",
+          "member": "qet_ladder_prod_za",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_alice",
+              "g0_r0_a_final",
+              "g0_r0_bob"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "selection_trace": {
+    "qet_ladder": {
+      "ibm_kingston": [
+        {
+          "stage": "capability_admission",
+          "requirements": {
+            "qubits": 2,
+            "classical_bits": 3,
+            "static_circuits": 0,
+            "dynamic_circuits": 18,
+            "target_operations": [
+              "delay",
+              "if_else",
+              "measure"
+            ],
+            "control_flow": [
+              "if_else"
+            ]
+          },
+          "rejected": []
+        },
+        {
+          "stage": "routing_admission",
+          "rejected": []
+        },
+        {
+          "seed": 20261010,
+          "cz": 1,
+          "rejected": [],
+          "primary_score": 0.959349227773505
+        },
+        {
+          "seed": 20261011,
+          "cz": 1,
+          "rejected": [],
+          "primary_score": 0.959349227773505
+        },
+        {
+          "seed": 20261012,
+          "cz": 1,
+          "rejected": [],
+          "primary_score": 0.959349227773505
+        },
+        {
+          "seed": 20261013,
+          "cz": 1,
+          "rejected": [],
+          "primary_score": 0.959349227773505
+        },
+        {
+          "seed": 20261014,
+          "cz": 1,
+          "rejected": [],
+          "primary_score": 0.959349227773505
+        },
+        {
+          "seed": 20261015,
+          "cz": 1,
+          "rejected": [],
+          "primary_score": 0.959349227773505
+        },
+        {
+          "seed": 20261016,
+          "cz": 1,
+          "rejected": [],
+          "primary_score": 0.959349227773505
+        },
+        {
+          "seed": 20261017,
+          "cz": 1,
+          "rejected": [],
+          "primary_score": 0.959349227773505
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.9601958448402678,
+          "layout": [
+            149,
+            150
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.9601958448402678,
+          "layout": [
+            149,
+            150
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.9601958448402678,
+          "layout": [
+            149,
+            150
+          ]
+        }
+      ]
+    }
+  },
+  "budget_plan": {
+    "jobs": [
+      {
+        "backend": "ibm_kingston",
+        "kind": "dynamic",
+        "batch_index": 1,
+        "pubs": 18,
+        "ceiling_seconds": 60
+      }
+    ],
+    "combined_ceiling_seconds": 60.0,
+    "reserve_seconds": 60.0,
+    "max_total_execution_seconds": 60.0,
+    "remaining_seconds": 560,
+    "admitted": true,
+    "reasons": [],
+    "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+  },
+  "execution_contract": {
+    "backends": [
+      {
+        "name": "ibm_kingston",
+        "repetition_delay_seconds": 0.00025
+      }
+    ],
+    "selected_job_costs": [],
+    "selected_cost_scenarios": [],
+    "selected_worst_case_charge_seconds": null
+  },
+  "groups": [
+    {
+      "group": "qet_ladder",
+      "backend": "ibm_kingston",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "calibration": "2026-10-25T12:55:42-07:00",
+      "noise_model_calibration": "2026-10-25T12:55:42-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        149,
+        150
+      ],
+      "joint_score": 0.9601958448402678,
+      "replica_floor": 0.9,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.959349227773505,
+          "physical_qubits": [
+            149,
+            150
+          ],
+          "initial_layout": [
+            149,
+            150
+          ],
+          "mapping": {
+            "149": 149,
+            "150": 150
+          }
+        }
+      ],
+      "summary": {
+        "reference_local": 0.06321487480964239,
+        "feedback_local": -0.07448043769035761,
+        "z_a": 0.702392578125,
+        "channel_floor": -0.004714203061547462,
+        "channel_floor_margin": 0.06976623462881015,
+        "unitary_floor": 0.0630843757544084,
+        "information_excess": 0.137564813444766,
+        "reference_y_correlation": -0.006103515625,
+        "prod_reference_local": 1.1479316716846424,
+        "prod_feedback_local": 0.5903144841846424,
+        "prod_z_a": 0.99755859375,
+        "prod_channel_floor": 0.29045181256345254,
+        "prod_channel_floor_margin": -0.29986267162118985,
+        "prod_unitary_floor": 1.1015379270580796,
+        "prod_information_excess": 0.5112234428734372,
+        "prod_reference_y_correlation": 0.006103515625,
+        "product_mutation_margin_drop": 0.36962890625,
+        "reversed_local": 0.3869453435596424,
+        "contrast": 0.230712890625,
+        "binned_drop_++": 0.09810920903477216,
+        "binned_drop_+-": -0.33682617169504736,
+        "binned_drop_-+": -0.324614639215562,
+        "binned_drop_--": 0.11884504291206976,
+        "match_local": -0.04531826688346392,
+        "mismatch_local": 0.3939063192127841,
+        "q_eff": -0.06639466853639049,
+        "record_p1": 0.503173828125
+      },
+      "summary_per_replica": [
+        {
+          "reference_local": 0.06321487480964239,
+          "feedback_local": -0.07448043769035761,
+          "z_a": 0.702392578125,
+          "channel_floor": -0.004714203061547462,
+          "channel_floor_margin": 0.06976623462881015,
+          "unitary_floor": 0.0630843757544084,
+          "information_excess": 0.137564813444766,
+          "reference_y_correlation": -0.006103515625,
+          "prod_reference_local": 1.1479316716846424,
+          "prod_feedback_local": 0.5903144841846424,
+          "prod_z_a": 0.99755859375,
+          "prod_channel_floor": 0.29045181256345254,
+          "prod_channel_floor_margin": -0.29986267162118985,
+          "prod_unitary_floor": 1.1015379270580796,
+          "prod_information_excess": 0.5112234428734372,
+          "prod_reference_y_correlation": 0.006103515625,
+          "product_mutation_margin_drop": 0.36962890625,
+          "reversed_local": 0.3869453435596424,
+          "contrast": 0.230712890625,
+          "binned_drop_++": 0.09810920903477216,
+          "binned_drop_+-": -0.33682617169504736,
+          "binned_drop_-+": -0.324614639215562,
+          "binned_drop_--": 0.11884504291206976,
+          "match_local": -0.04531826688346392,
+          "mismatch_local": 0.3939063192127841,
+          "q_eff": -0.06639466853639049,
+          "record_p1": 0.503173828125
+        }
+      ],
+      "variance": {
+        "qet_ladder_ref_x": {
+          "replicas": 1.0,
+          "mean": 0.8610720949958768,
+          "shot_variance": 1.1838926697652836e-05
+        },
+        "qet_ladder_ref_y": {
+          "replicas": 1.0,
+          "mean": 0.99365234375,
+          "shot_variance": 7.699418347328901e-07
+        },
+        "qet_ladder_ref_z": {
+          "replicas": 1.0,
+          "mean": 0.8714180911775236,
+          "shot_variance": 1.1163758613117936e-05
+        },
+        "qet_ladder_fb_x": {
+          "replicas": 1.0,
+          "mean": 0.9363779683728539,
+          "shot_variance": 6.880965781530529e-06
+        },
+        "qet_ladder_fb_z": {
+          "replicas": 1.0,
+          "mean": 0.8246806890976238,
+          "shot_variance": 9.80478289152097e-06
+        },
+        "qet_ladder_rev_x": {
+          "replicas": 1.0,
+          "mean": 0.8179908210708918,
+          "shot_variance": 9.977841779351007e-06
+        },
+        "qet_ladder_rev_z": {
+          "replicas": 1.0,
+          "mean": 0.9356655756299325,
+          "shot_variance": 6.968562474962459e-06
+        },
+        "qet_ladder_plus_x": {
+          "replicas": 1.0,
+          "mean": 0.7732671790224114,
+          "shot_variance": 9.756770232956835e-06
+        },
+        "qet_ladder_plus_z": {
+          "replicas": 1.0,
+          "mean": 0.7864553008937383,
+          "shot_variance": 9.09902712446034e-06
+        },
+        "qet_ladder_minus_x": {
+          "replicas": 1.0,
+          "mean": 0.7792695011693173,
+          "shot_variance": 9.487423036610082e-06
+        },
+        "qet_ladder_minus_z": {
+          "replicas": 1.0,
+          "mean": 0.7814919927614185,
+          "shot_variance": 9.230827843005279e-06
+        },
+        "qet_ladder_za": {
+          "replicas": 1.0,
+          "mean": 0.8704205847230247,
+          "shot_variance": 1.1256207271249523e-05
+        },
+        "qet_ladder_prod_ref_x": {
+          "replicas": 1.0,
+          "mean": 0.99169921875,
+          "shot_variance": 1.0048679541796446e-06
+        },
+        "qet_ladder_prod_ref_y": {
+          "replicas": 1.0,
+          "mean": 0.992919921875,
+          "shot_variance": 8.581482688896358e-07
+        },
+        "qet_ladder_prod_ref_z": {
+          "replicas": 1.0,
+          "mean": 0.9906005859375,
+          "shot_variance": 1.1366046237526461e-06
+        },
+        "qet_ladder_prod_fb_x": {
+          "replicas": 1.0,
+          "mean": 0.8248337387744219,
+          "shot_variance": 7.039870779445537e-06
+        },
+        "qet_ladder_prod_fb_z": {
+          "replicas": 1.0,
+          "mean": 0.965104471567945,
+          "shot_variance": 4.02204003649522e-06
+        },
+        "qet_ladder_prod_za": {
+          "replicas": 1.0,
+          "mean": 0.9954833984375,
+          "shot_variance": 5.48852767678909e-07
+        }
+      },
+      "summary_readout_corrected": {
+        "skipped": "feed-forward circuit: mid-circuit readout error changes later quantum evolution"
+      },
+      "placed_qubit_calibration": {
+        "149": {
+          "T1": 350.1244098928495,
+          "T2": 497.52111568935175,
+          "readout_error": 0.0040283203125,
+          "prob_meas1_prep0": 0.001220703125,
+          "prob_meas0_prep1": 0.0068359375
+        },
+        "150": {
+          "T1": 284.140180481946,
+          "T2": 314.77700531718625,
+          "readout_error": 0.006591796875,
+          "prob_meas1_prep0": 0.00244140625,
+          "prob_meas0_prep1": 0.0107421875
+        }
+      },
+      "calibration_fingerprint": {
+        "e01:149": 0.0068359375,
+        "e01:150": 0.0107421875,
+        "e10:149": 0.001220703125,
+        "e10:150": 0.00244140625,
+        "target:acquire_alignment": 1,
+        "target:concurrent_measurements": null,
+        "target:cz(149, 150):duration": 6.8e-08,
+        "target:cz(149, 150):error": 0.00208618031558111,
+        "target:dt": 4e-09,
+        "target:granularity": 1,
+        "target:measure(149,):duration": 2.18e-06,
+        "target:measure(149,):error": 0.0040283203125,
+        "target:measure(150,):duration": 2.18e-06,
+        "target:measure(150,):error": 0.006591796875,
+        "target:min_length": 2,
+        "target:pulse_alignment": 1,
+        "target:rz(149,):duration": 0.0,
+        "target:rz(149,):error": 0.0,
+        "target:rz(150,):duration": 0.0,
+        "target:rz(150,):error": 0.0,
+        "target:sx(149,):duration": 3.2e-08,
+        "target:sx(149,):error": 0.00020871012457480842,
+        "target:sx(150,):duration": 3.2e-08,
+        "target:sx(150,):error": 0.00021126639056446878,
+        "target:t1:149": 0.0003501244098928495,
+        "target:t1:150": 0.000284140180481946,
+        "target:t2:149": 0.0004975211156893518,
+        "target:t2:150": 0.0003147770053171863
+      },
+      "calibration_fingerprint_sha256": "132b2321c2d56143680ce082d1a2f1a9a1a78f9940f5bd48c93e956f052a2ac5",
+      "members": [
+        {
+          "name": "qet_ladder_ref_x",
+          "reference": false,
+          "cz": 1,
+          "depth": 13,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.073223304703,
+            0.0,
+            0.0,
+            0.426776695297,
+            0.426776695297,
+            0.0,
+            0.0,
+            0.073223304703
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9821267047667261,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.079224,
+                0.002808,
+                0.002563,
+                0.419678,
+                0.414062,
+                0.001343,
+                0.000244,
+                0.080078
+              ],
+              "tvd_noisy_to_ideal": 0.01981315621827355
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_ref_y",
+          "reference": false,
+          "cz": 1,
+          "depth": 12,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.25,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.25
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9821267047667261,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.244995,
+                0.001831,
+                0.001221,
+                0.25293,
+                0.247192,
+                0.001709,
+                0.001587,
+                0.248535
+              ],
+              "tvd_noisy_to_ideal": 0.009277343749999833
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_ref_z",
+          "reference": false,
+          "cz": 1,
+          "depth": 10,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.426776695297,
+            0.0,
+            0.0,
+            0.426776695297,
+            0.073223304703,
+            0.0,
+            0.0,
+            0.073223304703
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9823342389757225,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.417358,
+                0.003784,
+                0.003418,
+                0.429199,
+                0.072876,
+                0.000977,
+                0.000366,
+                0.072021
+              ],
+              "tvd_noisy_to_ideal": 0.010967445328363093
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_fb_x",
+          "reference": false,
+          "cz": 1,
+          "depth": 13,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.02639320225,
+            0.0,
+            0.0,
+            0.47360679775,
+            0.47360679775,
+            0.0,
+            0.0,
+            0.02639320225
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9812970062881535,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.033081,
+                0.002686,
+                0.001587,
+                0.472046,
+                0.460938,
+                0.000977,
+                0.000854,
+                0.027832
+              ],
+              "tvd_noisy_to_ideal": 0.014230197062457671
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_fb_z",
+          "reference": false,
+          "cz": 1,
+          "depth": 10,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.361803398875,
+            0.0,
+            0.0,
+            0.361803398875,
+            0.138196601125,
+            0.0,
+            0.0,
+            0.138196601125
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9815043651727068,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.354858,
+                0.002808,
+                0.003296,
+                0.365845,
+                0.137329,
+                0.00061,
+                0.000366,
+                0.134888
+              ],
+              "tvd_noisy_to_ideal": 0.011121405812510449
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_rev_x",
+          "reference": false,
+          "cz": 1,
+          "depth": 13,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.138196601125,
+            0.0,
+            0.0,
+            0.361803398875,
+            0.361803398875,
+            0.0,
+            0.0,
+            0.138196601125
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9812970062881535,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.139648,
+                0.001709,
+                0.00293,
+                0.351196,
+                0.358154,
+                0.001221,
+                0.000366,
+                0.144775
+              ],
+              "tvd_noisy_to_ideal": 0.014256211812478825
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_rev_z",
+          "reference": false,
+          "cz": 1,
+          "depth": 10,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.47360679775,
+            0.0,
+            0.0,
+            0.47360679775,
+            0.02639320225,
+            0.0,
+            0.0,
+            0.02639320225
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9815043651727068,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.462524,
+                0.00415,
+                0.003662,
+                0.469849,
+                0.030762,
+                0.000244,
+                0.000488,
+                0.02832
+              ],
+              "tvd_noisy_to_ideal": 0.014840548624957803
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_plus_x",
+          "reference": false,
+          "cz": 1,
+          "depth": 13,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.02639320225,
+            0.0,
+            0.0,
+            0.361803398875,
+            0.47360679775,
+            0.0,
+            0.0,
+            0.138196601125
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9812970062881535,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.035522,
+                0.002075,
+                0.003418,
+                0.355103,
+                0.458374,
+                0.001343,
+                0.001465,
+                0.1427
+              ],
+              "tvd_noisy_to_ideal": 0.021933634124968248
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_plus_z",
+          "reference": false,
+          "cz": 1,
+          "depth": 10,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.361803398875,
+            0.0,
+            0.0,
+            0.47360679775,
+            0.138196601125,
+            0.0,
+            0.0,
+            0.02639320225
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9815043651727068,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.356323,
+                0.003418,
+                0.003418,
+                0.473633,
+                0.133667,
+                0.000366,
+                0.000244,
+                0.028931
+              ],
+              "tvd_noisy_to_ideal": 0.010009765625000007
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_minus_x",
+          "reference": false,
+          "cz": 1,
+          "depth": 13,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.138196601125,
+            0.0,
+            0.0,
+            0.47360679775,
+            0.361803398875,
+            0.0,
+            0.0,
+            0.02639320225
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9812970062881535,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.143677,
+                0.003662,
+                0.004028,
+                0.468628,
+                0.349609,
+                0.00061,
+                0.000366,
+                0.029419
+              ],
+              "tvd_noisy_to_ideal": 0.017172891937468248
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_minus_z",
+          "reference": false,
+          "cz": 1,
+          "depth": 10,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.47360679775,
+            0.0,
+            0.0,
+            0.361803398875,
+            0.02639320225,
+            0.0,
+            0.0,
+            0.138196601125
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.523999999999999e-06,
+              "esp": 0.9815043651727068,
+              "coherence": 0.9768080056446167,
+              "noisy": [
+                0.46521,
+                0.002686,
+                0.003052,
+                0.358276,
+                0.028442,
+                0.001343,
+                0.000488,
+                0.140503
+              ],
+              "tvd_noisy_to_ideal": 0.011923868499968383
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_za",
+          "reference": false,
+          "cz": 1,
+          "depth": 9,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.853553390593,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.146446609407
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.492e-06,
+              "esp": 0.9825393048764428,
+              "coherence": 0.9769701478823408,
+              "noisy": [
+                0.845581,
+                0.001221,
+                0.000854,
+                0.002075,
+                0.003418,
+                0.000732,
+                0.001343,
+                0.144775
+              ],
+              "tvd_noisy_to_ideal": 0.009643554687499986
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_prod_ref_x",
+          "reference": false,
+          "cz": 0,
+          "depth": 9,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.25,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.25
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.392e-06,
+              "esp": 0.9850069804965345,
+              "coherence": 0.9774770158667103,
+              "noisy": [
+                0.255859,
+                0.001465,
+                0.002441,
+                0.239258,
+                0.251099,
+                0.001831,
+                0.002563,
+                0.245483
+              ],
+              "tvd_noisy_to_ideal": 0.0152587890625
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_prod_ref_y",
+          "reference": false,
+          "cz": 0,
+          "depth": 8,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.25,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.25
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.392e-06,
+              "esp": 0.9850069804965345,
+              "coherence": 0.9774770158667103,
+              "noisy": [
+                0.258667,
+                0.001709,
+                0.002441,
+                0.246704,
+                0.24646,
+                0.001343,
+                0.001587,
+                0.241089
+              ],
+              "tvd_noisy_to_ideal": 0.01574707031249989
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_prod_ref_z",
+          "reference": false,
+          "cz": 0,
+          "depth": 6,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.5,
+            0.0,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.392e-06,
+              "esp": 0.985215123339572,
+              "coherence": 0.9774770158667103,
+              "noisy": [
+                0.501099,
+                0.002563,
+                0.004272,
+                0.489502,
+                0.001953,
+                0.0,
+                0.0,
+                0.00061
+              ],
+              "tvd_noisy_to_ideal": 0.010498046875
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_prod_fb_x",
+          "reference": false,
+          "cz": 0,
+          "depth": 9,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.170943058496,
+            0.0,
+            0.0,
+            0.329056941504,
+            0.329056941504,
+            0.0,
+            0.0,
+            0.170943058496
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.392e-06,
+              "esp": 0.9841748487673647,
+              "coherence": 0.9774770158667103,
+              "noisy": [
+                0.180542,
+                0.002563,
+                0.001831,
+                0.326294,
+                0.317871,
+                0.001099,
+                0.002563,
+                0.167236
+              ],
+              "tvd_noisy_to_ideal": 0.017655574316709444
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_prod_fb_z",
+          "reference": false,
+          "cz": 0,
+          "depth": 6,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            0.487170824513,
+            0.0,
+            0.0,
+            0.487170824513,
+            0.012829175487,
+            0.0,
+            0.0,
+            0.012829175487
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.392e-06,
+              "esp": 0.9843828157717864,
+              "coherence": 0.9774770158667103,
+              "noisy": [
+                0.492798,
+                0.003296,
+                0.003662,
+                0.471558,
+                0.014282,
+                0.000122,
+                0.000122,
+                0.01416
+              ],
+              "tvd_noisy_to_ideal": 0.015613207325128456
+            }
+          ]
+        },
+        {
+          "name": "qet_ladder_prod_za",
+          "reference": false,
+          "cz": 0,
+          "depth": 3,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              149,
+              150
+            ]
+          ],
+          "ideal": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                149,
+                150
+              ],
+              "duration_s": 4.36e-06,
+              "esp": 0.9854207906355441,
+              "coherence": 0.9776392691547267,
+              "noisy": [
+                0.995483,
+                0.001221,
+                0.000732,
+                0.0,
+                0.002563,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tvd_noisy_to_ideal": 0.0045166015625
+            }
+          ]
+        }
+      ],
+      "noise_serialized_channels_sha256": "11b3c7ad0d66688d16208b8a6a5283ba6db05774d7f864263e7e42a1a0363742"
+    }
+  ],
+  "evaluation_simulation_batches": [
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 512,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "cd0ba079d5e18c9ba8a73c14848a34658d47fb7f38aec81a30a014e31c578bf1"
+          },
+          "native_cuda_build": null,
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "statevector",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "qet_ladder_ref_x",
+        "qet_ladder_ref_y",
+        "qet_ladder_ref_z",
+        "qet_ladder_fb_x",
+        "qet_ladder_fb_z",
+        "qet_ladder_rev_x",
+        "qet_ladder_rev_z",
+        "qet_ladder_plus_x",
+        "qet_ladder_plus_z",
+        "qet_ladder_minus_x",
+        "qet_ladder_minus_z",
+        "qet_ladder_za",
+        "qet_ladder_prod_ref_x",
+        "qet_ladder_prod_ref_y",
+        "qet_ladder_prod_ref_z",
+        "qet_ladder_prod_fb_x",
+        "qet_ladder_prod_fb_z",
+        "qet_ladder_prod_za"
+      ],
+      "ordered_qpy_sha256": "398a48e1c5c7f43ff427c323adcb187947110401fd3d8059e2885ac66a81295e",
+      "noise_serialized_channels_sha256": "11b3c7ad0d66688d16208b8a6a5283ba6db05774d7f864263e7e42a1a0363742",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 8192,
+      "seed_simulator": 20261011,
+      "wall_seconds": 3.641740679042414,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.034824521,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.033899936,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.034356079,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.034023637,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.032616582,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.032518062,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.033755476,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.03748808,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.03465358,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.038617564,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.035724764,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.032490532,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.032758482,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.028175996,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.027035981,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.031257637,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.02945119,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.030638014,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              150,
+              1
+            ],
+            [
+              149,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 2,
+          "active_input_qubits": [
+            149,
+            150
+          ],
+          "num_clbits": 3,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 512,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        }
+      ]
+    }
+  ]
+}
