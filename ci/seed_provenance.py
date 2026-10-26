@@ -1,7 +1,9 @@
-"""Every integer seed literal in the code directories is a reproduction identifier or an ANU QRNG value.
+"""Every integer seed literal in the code directories and tracked docs probes is a reproduction seed or QRNG value.
 
 The scan parses each Python file under ci/, tests/, gororoba_quantum/, scripts/
-and kaggle_kernel/ and collects every integer literal in a seed position:
+and kaggle_kernel/, and each git-tracked Python file under docs/ (retained
+probes and replays; git ls-files leaves ignored scratch out), and collects every
+integer literal in a seed position:
 
 - a keyword argument, a function parameter default, a dict entry or an
   assignment whose name is a seed name (``seed``, ``*_seed``, ``seed_*``,
@@ -24,6 +26,19 @@ under scripts/) and hold the value at its index; each (record, index) to be
 allocated once, under the canonical path docs/evidence/<source>/draw-<UTC>.json; and no
 allocation to take a record that a case manifest under
 results/ names, by file name, since such a case owns its whole draw.
+
+The ``reserved`` section of allocations.json lists consumers the scan cannot key,
+such as a value a helper alias seeds (``RNG(20108)``) or a mapping the seed
+positions omit: rows {path, value, record, index, reason}. The check requires
+the record to pass its source's admit function and hold the value at the index;
+the path to be a tracked file that holds the value as an integer token and
+names the record's file name; each (record, index) to appear once across
+allocations, runtime and reserved together; and the scan to detect none of a
+reserved row's values in its file, since a detectable literal belongs in
+allocations. --shrink also accepts a baseline row whose (file, name, value)
+literal the base tree already holds in that file at the same or a higher count,
+because such a literal predates the change; a literal the base lacks stays
+refused.
 
 Usage: "$PYTHON" ci/seed_provenance.py (--check | --shrink | --runtime | --add-runtime | --self-test)
 """
@@ -50,6 +65,7 @@ import parallel  # noqa: E402
 import qrng_seeds  # noqa: E402
 
 CODE_DIRS = ("ci", "tests", "gororoba_quantum", "scripts", "kaggle_kernel")
+DOCS_DIR = "docs"
 BASELINE = ROOT / "ci" / "reproduction_seeds.json"
 ALLOCATIONS = ROOT / "docs" / "evidence" / "qrng_seeds" / "allocations.json"
 MANIFEST_ROOT = ROOT / "results"
@@ -176,7 +192,11 @@ def plain_seed_flags(tree: ast.AST) -> Iterator[str]:
 
 
 def file_literals(relative: str) -> tuple[list[Key], list[tuple[str, str]]]:
-    text = (ROOT / relative).read_text(encoding="utf-8")
+    return text_literals(relative, (ROOT / relative).read_text(encoding="utf-8"))
+
+
+def text_literals(relative: str, text: str) -> tuple[list[Key], list[tuple[str, str]]]:
+    """The seed literals and bare seed flags of one file's text, keyed under its repository path."""
     if not SEED_TOKEN.search(text):
         return [], []
     tree = ast.parse(text, filename=relative)
@@ -184,13 +204,23 @@ def file_literals(relative: str) -> tuple[list[Key], list[tuple[str, str]]]:
     return keys, [(relative, flag) for flag in plain_seed_flags(tree)]
 
 
+def tracked_files() -> frozenset[str]:
+    """Every git-tracked path, so ignored scratch under docs/ never enters the scan."""
+    listed = subprocess.run(["git", "ls-files", "-z"], cwd=ROOT, capture_output=True, text=True)
+    if listed.returncode != 0:
+        raise SeedError(f"git ls-files failed: {listed.stderr.strip()}")
+    return frozenset(path for path in listed.stdout.split("\0") if path)
+
+
 def scan(shard: int | None = None) -> tuple[Counter[Key], list[tuple[str, str]]]:
-    """Seed literal counts and bare seed flags over the code directories, or over one shard of their files."""
+    """Seed literal counts and bare seed flags over the code directories and the tracked docs probes, or over
+    one shard of their files."""
+    tracked_docs = sorted(path for path in tracked_files() if path.startswith(f"{DOCS_DIR}/") and path.endswith(".py"))
     paths = [
         path.relative_to(ROOT).as_posix()
         for directory in CODE_DIRS
         for path in sorted((ROOT / directory).rglob("*.py"))
-    ]
+    ] + [path for path in tracked_docs if (ROOT / path).is_file()]
     selected = [path for path in paths if shard is None or shard_of(path) == shard]
     results = parallel.ordered_map(file_literals, selected)
     return Counter(key for keys, _ in results for key in keys), [flag for _, flags in results for flag in flags]
@@ -315,6 +345,80 @@ def check_runtime(
         raise SeedError("\n".join(problems))
 
 
+def admit_row(
+    key: Any,
+    row: dict[str, Any],
+    claimed: set[str],
+    records: dict[str, dict[str, Any]],
+    read_record: Callable[[str], dict[str, Any]],
+) -> None:
+    """One ledger row's record is canonically spelled, free of a case manifest, admitted by its source and
+    holds the row's value at the row's index."""
+    record_path = row["record"]
+    name = Path(record_path).name
+    directory = record_path.rpartition("/")[0]
+    if not DRAW_NAME.fullmatch(name) or directory not in SOURCES or record_path != f"{directory}/{name}":
+        raise SeedError(f"{key}: record {record_path!r} is not spelled <source directory>/draw-<UTC>.json")
+    if name in claimed:
+        raise SeedError(f"{key}: {record_path} belongs to a case manifest under results/")
+    if record_path not in records:
+        record = read_record(record_path)
+        SOURCES[directory](record)
+        records[record_path] = record
+    index = row["index"]
+    values = records[record_path]["values"]
+    if not 0 <= index < len(values) or values[index] != row["value"]:
+        raise SeedError(f"{key}: value {row['value']} is not index {index} of {record_path}")
+
+
+def value_token(value: int) -> re.Pattern[str]:
+    """The integer ``value`` as a whole token, so 7190 never matches inside 71900 or a longer name."""
+    return re.compile(rf"(?<![\w.]){value}(?![\w.])")
+
+
+def check_reserved(
+    reserved: list[dict[str, Any]],
+    allocations: list[dict[str, Any]],
+    runtime: list[dict[str, Any]],
+    claimed: set[str],
+    read_record: Callable[[str], dict[str, Any]],
+    files: dict[str, tuple[str, frozenset[int]]],
+) -> None:
+    """Admit every reserved row. files maps each tracked path to its text and the values the scan detects in
+    it; an untracked path is absent."""
+    records: dict[str, dict[str, Any]] = {}
+    owners: dict[tuple[str, int], str] = {}
+    for section, rows in (("allocations", allocations), ("runtime", runtime)):
+        for row in rows:
+            owners.setdefault((row["record"], row["index"]), section)
+    for row in reserved:
+        key = (row["path"], row["value"])
+        slot = (row["record"], row["index"])
+        admit_row(key, row, claimed, records, read_record)
+        if not str(row.get("reason", "")).strip():
+            raise SeedError(f"reserved {key}: reason is empty")
+        if slot in owners:
+            raise SeedError(f"reserved {key}: index {slot[1]} of {slot[0]} is already taken in {owners[slot]}")
+        owners[slot] = "reserved"
+        if row["path"] not in files:
+            raise SeedError(f"reserved {key}: {row['path']} is not a tracked file")
+        text, detected = files[row["path"]]
+        if row["value"] in detected:
+            raise SeedError(f"reserved {key}: the scan detects {row['value']} in {row['path']}; list it in allocations")
+        if not value_token(row["value"]).search(text):
+            raise SeedError(f"reserved {key}: {row['path']} holds no integer token {row['value']}")
+        if Path(row["record"]).name not in text:
+            raise SeedError(f"reserved {key}: {row['path']} does not cite {Path(row['record']).name}")
+
+
+def reserved_file(path: str) -> tuple[str, tuple[str, frozenset[int]]] | None:
+    """One tracked reserved row's file as (path, (text, detected values)), or None when it is absent on disk."""
+    if not (ROOT / path).is_file():
+        return None
+    text = (ROOT / path).read_text(encoding="utf-8")
+    return path, (text, frozenset(value for _, _, value in text_literals(path, text)[0]))
+
+
 def check(
     found: Counter[Key],
     baseline: list[dict[str, Any]],
@@ -331,20 +435,8 @@ def check(
     for row in allocations:
         key = (row["path"], row["name"], row["value"])
         record_path = row["record"]
-        name = Path(record_path).name
-        directory = record_path.rpartition("/")[0]
-        if not DRAW_NAME.fullmatch(name) or directory not in SOURCES or record_path != f"{directory}/{name}":
-            raise SeedError(f"{key}: record {record_path!r} is not spelled <source directory>/draw-<UTC>.json")
-        if name in claimed:
-            raise SeedError(f"{key}: {record_path} belongs to a case manifest under results/")
-        if record_path not in records:
-            record = read_record(record_path)
-            SOURCES[directory](record)
-            records[record_path] = record
+        admit_row(key, row, claimed, records, read_record)
         index = row["index"]
-        values = records[record_path]["values"]
-        if not 0 <= index < len(values) or values[index] != row["value"]:
-            raise SeedError(f"{key}: value {row['value']} is not index {index} of {record_path}")
         if (record_path, index) in taken:
             raise SeedError(f"{key}: index {index} of {record_path} is allocated twice")
         taken.add((record_path, index))
@@ -380,15 +472,49 @@ def check(
         raise SeedError("\n".join(problems))
 
 
-def shrink_problems(base: list[dict[str, Any]], head: list[dict[str, Any]]) -> list[str]:
-    """Rows the head baseline adds or raises over the base baseline; an exemption only ever goes away."""
+def raised_rows(base: list[dict[str, Any]], head: list[dict[str, Any]]) -> list[tuple[Key, int, int]]:
+    """(key, head count, base count) for every row the head baseline adds or raises over the base baseline."""
     before = baseline_counts(base)
+    return [(key, count, before[key]) for key, count in sorted(baseline_counts(head).items()) if count > before[key]]
+
+
+def shrink_problems(
+    base: list[dict[str, Any]], head: list[dict[str, Any]], base_literals: dict[str, Counter[Key]]
+) -> list[str]:
+    """Rows the head baseline adds or raises over the base baseline; an exemption only ever goes away. A row
+    whose literal base_literals (the base tree's literals of that file) already holds at the row's count
+    predates the change and is no new seed."""
     return [
-        f"ci/reproduction_seeds.json: {key} count {count} exceeds {before[key]} on {BASE_REF}; "
+        f"ci/reproduction_seeds.json: {key} count {count} exceeds {before} on {BASE_REF}; "
         "a new seed takes a QRNG value through docs/evidence/qrng_seeds/allocations.json"
-        for key, count in sorted(baseline_counts(head).items())
-        if count > before[key]
+        for key, count, before in raised_rows(base, head)
+        if base_literals.get(key[0], Counter())[key] < count
     ]
+
+
+def base_file_literals(path: str) -> Counter[Key]:
+    """The seed literal counts of one file as BASE_REF holds it; empty when BASE_REF lacks the file."""
+    shown = subprocess.run(["git", "show", f"{BASE_REF}:{path}"], cwd=ROOT, capture_output=True, text=True)
+    if shown.returncode != 0:
+        return Counter()
+    return Counter(text_literals(path, shown.stdout)[0])
+
+
+def base_allocated() -> Counter[Key]:
+    """Allocation counts per literal key in BASE_REF's allocations.json; empty when BASE_REF lacks the file."""
+    relative = ALLOCATIONS.relative_to(ROOT).as_posix()
+    shown = subprocess.run(["git", "show", f"{BASE_REF}:{relative}"], cwd=ROOT, capture_output=True, text=True)
+    if shown.returncode != 0:
+        return Counter()
+    return Counter(
+        (row["path"], row["name"], row["value"]) for row in parse_rows(shown.stdout, relative, "allocations")
+    )
+
+
+def unaccounted(literals: dict[str, Counter[Key]], allocated: Counter[Key]) -> dict[str, Counter[Key]]:
+    """Base-tree literals less the ones a base allocation already accounts for: a QRNG consumer allocated on the
+    base never becomes a reproduction seed, since dropping its allocation would free an index it still uses."""
+    return {path: Counter({key: n - allocated[key] for key, n in counts.items()}) for path, counts in literals.items()}
 
 
 def base_baseline() -> list[dict[str, Any]] | None:
@@ -407,7 +533,11 @@ def base_baseline() -> list[dict[str, Any]] | None:
 
 def check_shrink() -> int:
     base = base_baseline()
-    problems = [] if base is None else shrink_problems(base, load(BASELINE, "seeds"))
+    head = load(BASELINE, "seeds")
+    paths = [] if base is None else sorted({key[0] for key, _, _ in raised_rows(base, head)})
+    literals = dict(zip(paths, parallel.ordered_map(base_file_literals, paths), strict=True))
+    base_literals = unaccounted(literals, base_allocated() if paths else Counter())
+    problems = [] if base is None else shrink_problems(base, head, base_literals)
     if problems:
         raise SeedError("\n".join(problems))
     print(f"seed provenance: reproduction seeds only shrink against {BASE_REF}")
@@ -435,6 +565,12 @@ def check_tree(shard: int | None = None) -> int:
     claimed = claimed_records(MANIFEST_ROOT)
     allocations = load(ALLOCATIONS, "allocations")
     check(found, load(BASELINE, "seeds"), allocations, claimed, read_tree_record, shard, flags)
+    if shard in (None, 0):
+        reserved = load(ALLOCATIONS, "reserved")
+        tracked = tracked_files()
+        paths = sorted({row["path"] for row in reserved if row["path"] in tracked})
+        files = {item[0]: item[1] for item in parallel.ordered_map(reserved_file, paths) if item is not None}
+        check_reserved(reserved, allocations, load(ALLOCATIONS, "runtime"), claimed, read_tree_record, files)
     print(f"seed provenance: {sum(found.values())} seed literals accounted")
     return 0
 
@@ -443,6 +579,7 @@ def check_runtime_tree() -> int:
     consumed, stray = runtime_consumption(MANIFEST_ROOT)
     allocations = load(ALLOCATIONS, "allocations")
     runtime = load(ALLOCATIONS, "runtime")
+    allocations = allocations + load(ALLOCATIONS, "reserved")
     check_runtime(consumed, stray, runtime, allocations, claimed_records(MANIFEST_ROOT), read_tree_record)
     print(f"seed provenance: {len(consumed)} retained qrng references match the runtime ledger")
     return 0
@@ -555,12 +692,28 @@ def self_test() -> int:
         raise SystemExit(f"self-test: the {fragment!r} mutation was admitted")
     raised = dict(baseline[0], count=2)
     added = {"path": "c.py", "name": "SEED", "value": 12345, "count": 1}
-    if shrink_problems(baseline, []) or shrink_problems(baseline, baseline):
+    if shrink_problems(baseline, [], {}) or shrink_problems(baseline, baseline, {}):
         raise SystemExit("self-test: a kept or removed reproduction seed was refused")
-    for name, head in (("a raised count", [raised]), ("an added row", [*baseline, added])):
-        if not shrink_problems(baseline, head):
+    # A base tree holding the literal at the row's count admits the row; a new literal or higher count stays refused.
+    held = {"a.py": Counter({("a.py", "SEED", 5): 1}), "c.py": Counter({("c.py", "SEED", 12345): 1})}
+    for name, head, literals_held in (
+        ("a raised count", [raised], held),
+        ("an added row", [*baseline, added], {}),
+        ("an added row over another file's literal", [*baseline, added], {"a.py": held["a.py"]}),
+        ("an added row over a lower base count", [*baseline, dict(added, count=2)], held),
+    ):
+        if not shrink_problems(baseline, head, literals_held):
             raise SystemExit(f"self-test: {name} in ci/reproduction_seeds.json was admitted")
-    runtime_refusals = runtime_self_test(record_path, record)
+    if not shrink_problems(baseline, [*baseline, added], unaccounted(held, Counter({("c.py", "SEED", 12345): 1}))):
+        raise SystemExit("self-test: a base-allocated QRNG literal entered ci/reproduction_seeds.json")
+    held_twice = {"a.py": Counter({("a.py", "SEED", 5): 2})}
+    for name, head, literals_held in (
+        ("an added row", [*baseline, added], held),
+        ("a raised count", [raised], held_twice),
+    ):
+        if shrink_problems(baseline, head, literals_held):
+            raise SystemExit(f"self-test: {name} over a base-tree literal was refused")
+    runtime_refusals = runtime_self_test(record_path, record) + reserved_self_test(record_path, record) + 1
     flag_tree = ast.parse(
         "p.add_argument('--seed', type=int)\n"
         "p.add_argument('--seeds', type=int)\n"
@@ -578,9 +731,56 @@ def self_test() -> int:
             raise SystemExit(f"self-test: a bare seed flag raised {error}") from None
     else:
         raise SystemExit("self-test: a bare seed flag was admitted")
-    total = len(mutations) + 2 + runtime_refusals + 1
+    total = len(mutations) + 5 + runtime_refusals + 1
     print(f"seed_provenance self-test: scan matched, {total} mutations rejected")
     return 0
+
+
+def reserved_self_test(record_path: str, record: dict[str, Any]) -> int:
+    """The reserved section admits one alias consumer per index and refuses each defect; returns the refusal count."""
+    value = record["values"][2]
+    name = Path(record_path).name
+    row = {"path": "p.py", "value": value, "record": record_path, "index": 2, "reason": "RNG alias"}
+    text = f"# {name}\nrng = RNG({value})\n"
+    files: dict[str, tuple[str, frozenset[int]]] = {"p.py": (text, frozenset())}
+    taken = {"record": record_path, "index": 2}
+
+    def run(
+        rows: list[dict[str, Any]],
+        allocs: list[dict[str, Any]] | None = None,
+        runtime: list[dict[str, Any]] | None = None,
+        tracked: dict[str, tuple[str, frozenset[int]]] | None = None,
+    ) -> None:
+        check_reserved(
+            rows, allocs or [], runtime or [], set(), lambda path: record, files if tracked is None else tracked
+        )
+
+    run([row])
+    refusals: dict[str, Any] = {
+        "is not index": ([dict(row, value=value + 1)], None, None, None),
+        "is not a tracked file": ([row], None, None, {}),
+        "already taken in allocations": ([row], [taken], None, None),
+        "already taken in runtime": ([row], None, [taken], None),
+        "already taken in reserved": ([row, dict(row, path="q.py")], None, None, {**files, "q.py": files["p.py"]}),
+        "the scan detects": ([row], None, None, {"p.py": (text, frozenset({value}))}),
+        "holds no integer token": ([row], None, None, {"p.py": (f"# {name}\nrng = RNG({value}0)\n", frozenset())}),
+        "does not cite": ([row], None, None, {"p.py": (f"rng = RNG({value})\n", frozenset())}),
+        "reason is empty": ([dict(row, reason=" ")], None, None, None),
+    }
+    for fragment, (rows, allocs, runtime, tracked) in refusals.items():
+        try:
+            run(rows, allocs, runtime, tracked)
+        except SeedError as error:
+            if fragment in str(error):
+                continue
+            raise SystemExit(f"self-test: the {fragment!r} reserved mutation raised {error}") from None
+        raise SystemExit(f"self-test: the {fragment!r} reserved mutation was admitted")
+    detected = frozenset(
+        value for _, _, value in text_literals("p.py", f"# {name}\nrng = np.random.default_rng({value})\n")[0]
+    )
+    if detected != {value}:
+        raise SystemExit("self-test: the scan misses a default_rng literal that a reserved row would hide")
+    return len(refusals)
 
 
 def runtime_self_test(record_path: str, record: dict[str, Any]) -> int:
