@@ -112,6 +112,19 @@ def test_joins_runs_jobs_acquisitions_and_claims(index: results_index.Index) -> 
         index.claim("absent")
 
 
+def test_claim_names_missing_runs_and_unknown_acquisitions(index: results_index.Index) -> None:
+    del index.runs[QD_RUN]
+    with pytest.raises(
+        SystemExit, match=f"claim claim-a cites runs the tree does not hold: acquisition acq-qd names run {QD_RUN}$"
+    ):
+        index.claim("claim-a")
+    registry = json.loads(research_state.REGISTRY.read_text(encoding="utf-8"))
+    registry["claims"][0]["acquisitions"].append("acq-ghost")
+    _write(research_state.REGISTRY, registry)
+    with pytest.raises(SystemExit, match="claim claim-a cites acquisition acq-ghost, which the registry lacks"):
+        results_index.Index()
+
+
 def test_path_lookup_names_owner_and_citing_claims(index: results_index.Index) -> None:
     owner = index.path(f"{IBM_RUN}/raw/ibm-job/pub_00.json")
     if [row["path"] for row in owner["runs"]] != [IBM_RUN] or owner["runs"][0]["claims"] != ["claim-a"]:

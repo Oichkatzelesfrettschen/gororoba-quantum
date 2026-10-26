@@ -2256,6 +2256,43 @@
       "supersedes": []
     },
     {
+      "id": "ascella-signed-coherence-heater-coupling",
+      "statement": "Eight heater-coupling families of the returned 12-mode Ascella mesh, fitted on job-00 alone (uniform neighbor crosstalk and uniform coupler offset with dephasing, static coupler offsets, static heater with coupler offsets, a three-coefficient crosstalk kernel by mode distance and a drive-power loss, the last two also with the static offsets), each miss the pooled X statistics of job-02's 56 served meshes: the residuals' joint quadratic forms in counting plus shared fitted-prediction covariance read 327 to 1107 against the chi-square 0.999 quantile 94.5 on 56. Coupling-only fits predict noise-free X spreads of 0.0017 to 0.0059 against the observed compilation-induced 0.0104 (0.0113 with counting noise); offset-carrying fits predict 0.014 to 0.028 at positions uncorrelated with the observations (predicted-observed correlation -0.04 to 0.19). Refitted on job-00 plus job-02, the kernel and loss families are identified (median variance ratios 0.01 to 0.60) and keep the left-out X shortfall (sums 180 to 347 on 10).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Families, priors, training set and reading were fixed in plan ascella-heater-coupling-families (commit 249c26a) after the compilation reading had already exposed job-02's per-mesh statistics, so the confirmatory content is that no family saw job-02 before scoring. A feasibility screen sized the kernel and loss priors against job-02's served phases and observed spread before the plan; that favors the families, so the shortfall is conservative. The returned phase in [0, 2 pi) stands for heater drive power and the logical (mode, column) layout for physical distance; crosstalk nonlinear in power, crosstalk over the physical layout and errors outside the mesh remain untested. Both drive-loss fits put gamma below zero, which no heater loss produces; the loss-alone posterior rises monotonically for gamma at or above zero, so a fit held to physical loss reduces to the nominal mesh or, with offsets, to the offsets family. The predicted-observed correlations and the identification folds are descriptive and decide nothing. One setting, one job; the fits follow the OpenBLAS Haswell kernel and numpy's x86-64-v3 dispatch that ci/run_gates.py sets and replay within 1e-3 relative plus 1e-8 absolute.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+          "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/heater-coupling.json",
+          "sha256": "df0a0543d8e6b215f1b31d289fc840c95cd6948bced0c499a4e5c6fa877c1857"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-heater-coupling-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-compilations"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-compilation-dependence"
+      ],
+      "supersedes": []
+    },
+    {
       "id": "ascella-signed-coherence-conformance",
       "statement": "The approved 64-setting signed-coherence request on qpu:ascella (job 739a5271) completed 524288 detected samples in 186 execution seconds for a token-reported debit of 1.016384 free credits, and all 27 preregistered endpoints qualify under the 0.05 coefficient tolerance: the 15 sign-odd and dark coefficients deviate from their ideals by at most 0.0303, the 10 sign-even coefficients stay within 0.0116 of zero, and the mutation difference reads 0.1646 against its ideal 0.1727. The X sign-odd constant (0.4697) and the Y sign-odd sin(2 theta) coefficient (0.4777) exclude their ideal 0.5 while conforming. 6659 of 524288 events (1.27 percent) fall outside the logical block, between 4 and 586 per setting.",
       "domain": "hardware",
@@ -10110,6 +10147,74 @@
       ],
       "related_claims": [
         "kingston-qet-window-phase-static"
+      ]
+    },
+    {
+      "id": "hw-n21-feedback-null-scheduled-idle",
+      "statement": "The service schedule of the encoded N=21 Kingston run leaves leaf qubits 104, 106, 124 and 126 idle for 14,323 to 15,481 dt (57 to 62 us of a 70 us circuit) behind their hubs' CZ chains, in both arms; NoiseModel.from_backend charges relaxation on gates and explicit delays only, so the model charged that idle nothing. With the scheduled idle written in as delays under the execution Target and the declared initial excitation 0.014393, the exact branch-resolved contrast difference moves from +0.0310 (the unpadded control reproduces the record's exact model to 1e-15) to -0.0007, inside the measured 95 % interval [-0.0129, +0.0184], and the law distance to hardware falls from 0.0216 to 0.0129 TV (feedback) and from 0.0273 to 0.0158 TV (omitted correction). A list schedule under the Target durations alone predicts the service idle within 5 % on every leaf qubit and 11 % on the hubs, so the idle is predictable before submission.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Incoherent idle only: a residual of 0.013 to 0.016 TV, mostly outcome 2, leaves coherent idle error (detuning, ZZ) and mid-circuit measurement error above the reported assignment open. A contrast near zero follows from any added decoherence, so the replay's support is its absence of a fitted parameter and the law-distance reduction. The prospective test is a placement or routing that halves the leaf idle, predicted from a local schedule before submission.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/idle-replay.json",
+          "sha256": "218790a98f99de9835fe219061e11a004908ea0809df3c88bea1b4688ac7bd6c"
+        },
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/collect.json",
+          "sha256": "9bfac1fab310b4c8417bc273600d2b004fe5c30b3c08fd69c9dcd50f12dc9462"
+        },
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/local-idle-schedule.json",
+          "sha256": "bb15026541810717753c574430a02b91ae7d8bd791f1fde3d464f29373116f5f"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-18T090603.530638Z/IDLE_REPLAY_FINDINGS.md"
+      ],
+      "acquisitions": [
+        "kingston-n21-feedback-encoded-50us"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-kingston",
+        "hw-ghost-calibration-replay",
+        "kingston-qet-window-phase-static"
+      ]
+    },
+    {
+      "id": "kingston-qet-scheduled-idle-coherent-phase",
+      "statement": "Replaying the three ibm_kingston QET jobs exactly with the service-scheduled idle written in as delays under the execution Target, incoherent idle moves the ladder channel floor margin from +0.057 to +0.001 (measured -0.160), the frame diagnostic's as-run parity from 0.982 to 0.960 (measured 0.863) and the compensated selected margin from +0.057 to +0.028 (measured -0.073), and produces no window phase (0.010 rad padded against 0.267 measured). The phase that empties the uncompensated information excess (padded 0.099, measured 0.019) is therefore coherent and outside the Target's T1 and T2; once each pair's reference arms compensate it, the measured information excess 0.107 agrees with both the padded exact 0.112 and the unpadded exact 0.105, an endpoint insensitive to the incoherent idle.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Model comparison of retained data under one calibration per job; the residual margin shortfall of about 0.10 in the reference arm is attributed to preparation and assignment error without a separating test.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T203822.040562Z/idle-replay.json",
+          "sha256": "2edfd824002b7d01d4a7f76bf86fb00925c374dd2035a8daaa19a014a8a5e1cd"
+        },
+        {
+          "path": "results/live/2026-10-25T225332.266272Z/idle-replay.json",
+          "sha256": "d82329c30d2464ec6770e95106002c6faa79969cc57eb2798ece02bf5352a08d"
+        },
+        {
+          "path": "results/live/2026-10-25T233207.284563Z/idle-replay.json",
+          "sha256": "aa5e5cf9d2661bda0510c0f9a8fc5b4c059e39d02b51d46042f780aad0c4fdcf"
+        }
+      ],
+      "documents": [
+        "docs/notes/topics/pais-claims-falsification.md"
+      ],
+      "acquisitions": [
+        "kingston-qet-ladder",
+        "kingston-qet-frame-diagnostic",
+        "kingston-qet-compensated-ladder"
+      ],
+      "related_claims": [
+        "kingston-qet-window-phase-static",
+        "kingston-qet-compensated-information-excess",
+        "hw-n21-feedback-null-scheduled-idle"
       ]
     }
   ]
