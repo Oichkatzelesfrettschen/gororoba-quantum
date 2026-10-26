@@ -275,7 +275,7 @@ floored at the model scatter when one is set.
 
 ### Source of the model-scatter floor
 
-No value is registered. A floor must come from retained Kingston unitary data with a known ideal outcome: the
+No value is registered. A floor must come from Kingston single-qubit sx-sequence data with a known ideal outcome: the
 model scatter of observed-minus-modeled P0 across qubits, with the model built as `chain_matrix` builds it. The
 search covered the 233 `record.json` files under `results/live/` (262 run directories) and the research registry
 (`docs/state/research_state.json`, 276 acquisitions, 32 on IBM backends). The Kingston runs hold
@@ -284,14 +284,127 @@ families (multi-qubit circuits with cz) and the 2026-10-25 measurement-sequence 
 shots). None holds a single-qubit sx sequence of useful length with a known ideal outcome, so no defensible scatter
 exists, and the constant `MODEL_SCATTER_FLOOR` is `None`.
 
-With the floor unset, a fired `departs_below` or `exceeds_prediction` verdict reads `gate_model_unbounded` and
-attributes nothing to the measurement; the gap verdicts compare arms of equal gate count and need no floor. A
-measured floor needs a Heron diagnostic that spends quantum time and the owner's approval: the unitary arm (four
-signed members at N = 16) on many qubits in one static PUB set, whose per-qubit residuals give the scatter; its run
-and computation then go in this section and the value replaces `None`. The sweeps and the Aer validation below use
+`collected` takes the floor from `MODEL_SCATTER_FLOOR` when that is set and otherwise from the diagnostic file
+`MODEL_SCATTER_FLOOR_FILE` (`docs/evidence/measurement_sequence/scatter-floor.json`) when
+`MODEL_SCATTER_DIAGNOSTIC_SHA256` names its SHA-256 digest, the file carries schema
+`measurement-sequence-scatter-floor-v1` and a floor in (0, 1), and its `backend` is the backend of the run. With
+neither it withholds the whole pinching analysis (`family_analysis.pinching.withheld`), because a main run without a
+floor can only report `gate_model_unbounded` on a fired departure verdict and attributes nothing. The digest constant
+sits in `measurement_sequence_analysis.py`, which is in `live_run.EXPERIMENT_SOURCE_MANIFEST`, so the experiment
+digest of every later main run binds the floor file by content. The sweeps and the Aer validation below use
 `DEMONSTRATION_SCATTER_FLOOR = 0.015`, an illustrative value that exercises the mechanism and measures no device.
-The largest floor that keeps a fixture qubit informative is about 0.0175, so a measured scatter beyond that makes
-the family uninformative on that device.
+
+#### The diagnostic family
+
+`live_run.py --family measurement-sequence-diagnostic --layout Q1,Q2,...` plans the members of the main family that need
+no measurement history, built by the main family's own functions under the main family's names, so the circuits are
+identical (`diagnostic_experiments.py --self-test` compares each one): the four signed unitary members at N = 16 in the
+order +, -, -, +, ro0, and the t1 member at idle 0 (ro1). Every member is static, so each row fuses across all named
+qubits into one PUB and the run holds six static PUBs in one job, with no mid-circuit measurement, twirling or
+dynamical decoupling. A PUB lasts about one repetition cycle per shot whatever the qubit count, which puts 38 qubits at
+the cost of one. Two endpoints per qubit admit the design at the main family's half-width 0.03: the pooled unitary P0
+(`msq_p0_unitary_n16_qQ`) and ro1's P1 (`msq_p1_t1_d0_qQ`); 8192 shots admit up to 60 qubits.
+
+The qubits are the main family's eight (91, 118, 95, 61, 147, 151, 59, 89, `MSQD_MAIN_QUBITS`) and thirty further qubits
+chosen from the live Target alone by `measurement_sequence_scatter.select_extra_qubits`, which the command
+`measurement_sequence_scatter.py select` runs against a backend (a calibration read, no job):
+
+- A further qubit is eligible when the live Target does not exclude it, reports a readout error of at most 0.01 and an
+  sx error of at most 1e-3 (both bounds cover the eight main qubits), and reports T1 and T2 of at least 20 us.
+  On the Kingston Target of 2026-10-25 18:19 PDT the readout bound sits near the median (0.0093) and the sx bound above
+  the 95th percentile (8.7e-4); no bound selects on T1 or T2 beyond the 20 us minimum, so the T2 pattern test below
+  keeps its spread.
+- It must couple to no main qubit and to no kept qubit, so the 38 qubits are pairwise uncoupled and share no coupler
+  (the eight main qubits are pairwise uncoupled on ibm_kingston).
+- The eligible qubits are scanned in ascending readout error (ties by qubit index), each kept when no coupler joins it
+  to a main or kept qubit, until thirty are kept. The ascending order draws the extra qubits from the same quality
+  class as the main eight, whose readout errors (0.0037 to 0.0056) lie in the best quarter of the Target, so the floor describes the
+  qubits the main verdict uses.
+
+The layout is pinned on the command line. The planner refuses a layout with a repeated qubit, a qubit the live Target
+excludes or a pair joined by a coupler (`layout_violations`), records the roles in `main_qubits` and `extra_qubits`
+and records each qubit's readout error, sx error, T1 and T2 at planning in `plan_calibration`. `floor_document`
+refuses a run whose `main_qubits` differ from `MSQD_MAIN_QUBITS`.
+
+#### Model path of the residual
+
+The diagnostic has no t1 series, so the unitary model cannot fit T1 and q in the job. It evaluates
+`model_tables(t1_cal_s, q_planning, ctx)["unitary"]["16"]`, the function the main analysis calls for the unitary arm,
+at the Target's T1 at execution and the planning excitation `PLANNING_P_INIT` (q = 1 / (1 - 2 p)). The 32 sx last about
+1 us and the arm has no idle, so the modeled P0 depends on T1 and q only through the relaxation during the gates:
+T1 x 0.5 to x 2 and p from 0 to 0.1 move it by at most 0.0009 on the eight main qubits (about a tenth of the smallest
+floor of interest). The readout correction is the analysis's: offset and scale from ro0 and ro1, `(Zobs - o) / s`.
+The residual is the corrected P0 minus the model; its statistical standard error propagates the binomial variances
+(Agresti-Coull-shifted, `msa.var`) of ro0, ro1 and the pooled unitary members through `propagate_many`, and the sx
+systematic of 100 % of the reported sx error is reported apart as `se_sx_systematic`.
+
+#### Floor rule (preregistered before any diagnostic data)
+
+An informative diagnostic qubit has a fitted readout scale of at least 0.5 (`READOUT_CONTRAST_FLOOR`). The scale test is
+the only rejection: no outlier removal follows, because a qubit whose gate model fails is the scatter the floor must
+carry. The floor is the larger of the root-mean-square, over the informative qubits, of the readout-corrected unitary
+N = 16 residual taken over all informative qubits and over the informative main qubits alone, and statistical noise stays
+in.
+
+- Statistical noise stays in, as it did for the Garnet floor. The residual's statistical standard error is about 0.002
+  per qubit at 8192 shots (the Aer planning row, 0.0021), so keeping it raises a floor of 0.02 by 0.5 % and errs
+  towards a wider departure standard error. The summary reports the all-qubit root-mean-square, the root-mean-square
+  statistical standard error and the root-mean-square less the latter in quadrature
+  (`rms_all_less_statistical_in_quadrature`), so a reader sees how much of the floor counting noise explains.
+- Both populations enter. The extra qubits give the estimate its statistical weight: its relative sampling error is
+  1 / sqrt(2 n), 0.11 for the 38 qubits and 0.35 for the eight alone. The main qubits are the ones the main verdict
+  applies to, so a floor below their own root-mean-square would understate; the rule takes the larger, and the summary
+  reports `rms_all`, `rms_main` and `rms_extra`.
+- At least 20 informative qubits (`MIN_INFORMATIVE`) are needed; fewer give no floor and the file is not written.
+
+The summary also reports the mean residual (a common-mode offset enters the root-mean-square in full), the per-qubit
+residuals with their standard errors, and the descriptive T2 pattern: the Spearman rank correlation of the residual with
+T2 (and with the sx error), its two-sided p value from the t approximation on n - 2 degrees of freedom, and the sign
+counts in the lowest and highest T2 terciles. The drive-dephasing lead seen on Garnet predicts residuals above 0 on long
+T2 qubits and below 0 on short ones, a positive rank correlation. The pattern enters no decision.
+
+`measurement_sequence_scatter.py floor RUN_DIR --out FILE` writes `scatter-floor.json` from a collected diagnostic run
+directory (`record.json` and `collect.json`, `family_analysis.scatter`): the floor, backend, both rule texts, the qubit
+lists, the summary, the T2 pattern, every qubit's row and the digests of the record, collect.json, the experiment and
+both modules. Registering it sets `MODEL_SCATTER_DIAGNOSTIC_SHA256` to the file's digest in the same change; the main
+case is then planned again, because the analysis digest changes.
+
+#### Aer validation of the estimator
+
+`scripts/measurement_sequence_scatter_validation.py` (summaries in
+`docs/evidence/measurement_sequence/scatter-validation.json`) plans the diagnostic on FakeFez (the fixture excludes
+q91, so it runs 7 main qubits and 31 further qubits chosen by the same rule), simulates every entry with
+`live_run.noise_simulator` at 8192 shots and runs `measurement_sequence_scatter.collected`. An RZ gate after every sx of the
+compiled unitary members moves a qubit's ideal P0 by a chosen amount (the relative-tilt class); a tilt of one sign
+moves the +THETA and -THETA members in opposite directions, so the error is solved per member from the compiled
+step. The seeds are values 0 to 3 of `docs/evidence/anu_qrng/draw-2026-10-26T013550Z.json`, one per
+row in order.
+
+| Row | Statistical rms | rms, all 38 | rms, main 7 | rms, extra 31 | Floor | T2 rank correlation (p) |
+|---|---|---|---|---|---|---|
+| planning (Target as reported) | 0.0021 | 0.0019 | 0.0007 | 0.0021 | 0.0019 | -0.05 (0.8) |
+| tilt +-0.02, alternating by qubit index | 0.0022 | 0.0199 | 0.0210 | 0.0197 | 0.0210 | +0.10 (0.6) |
+| tilt +0.03 on the 7 main qubits only | 0.0022 | 0.0123 | 0.0282 | 0.0024 | 0.0282 | +0.03 (0.8) |
+| tilt +0.02 above and -0.02 below the median T2 | 0.0022 | 0.0194 | 0.0210 | 0.0190 | 0.0210 | +0.71 (6e-07) |
+
+The pass rules are fixed in `violations`: the planning floor stays within `(1 + 3 / sqrt(2 n))` times
+`sqrt(statistical_rms ** 2 + 0.003 ** 2)` (0.003 allows the Aer-versus-model mismatch of the existing validation, about
+0.002); the injected rows recover `sqrt(mean(injected ** 2) + planning_floor ** 2)` within 10 %, every residual
+carries the injected sign, and the main-only row's floor equals the main-qubit root-mean-square (0.0282 for an injected
+0.03) because the all-qubit value (0.0123) lies below it. The planning row shows the estimator returns about the
+statistical scatter (0.0020 against 0.0021) when the model is right, and the injected rows show that a per-qubit model
+error of 0.02 comes back as a floor of 0.0210, with the sign pattern against T2 recovered (rank correlation +0.71)
+when the error is ordered by T2. The pattern test finds nothing in the alternating row (p 0.56), where no order exists.
+
+#### What a floor value means for the main case
+
+The floor widens each qubit's departure standard error by about 0.8 of its value (the depolarizing class,
+`propagated_se`), so the smallest per-step transition rate the device rule detects at pooled z = -3 on the eight fixture
+qubits grows with it (`minimum_detectable`, 8192 shots): 0.0030 at a floor of 0.01, 0.0064 at 0.02 and 0.0097 at 0.04.
+The planning standard error includes the floor, so the informative-qubit rule does not remove qubits as the floor
+grows; the cost appears as detection power. The Garnet diagnostic measured about 0.04 on its pi / 2-pair arm. A
+Kingston floor near 0.04 would leave the main run able to attribute only a transition rate near 0.01 per step, and the
+owner decides at that value whether the main run is worth its quantum time.
 
 ### Device verdicts
 
@@ -382,7 +495,7 @@ flip is absent from the settle arm.
 
 ### Limits
 
-- The scatter floor is unmeasured (see its section). Until it is, no departure is attributed to the measurement.
+- The scatter floor is unmeasured (see its section). Until its file is registered, the pinching analysis withholds.
   Combinations of a relative tilt and an sx error that cancel in the unitary arm were scanned (tilt -0.006 to -0.03 rad
   against sx errors x2 to x6, demonstration floor): the largest pooled z was -2.88, at a tilt of -0.022 rad with sx x4.
   A larger cancelling error than the floor covers would attribute a departure that is a gate error.
