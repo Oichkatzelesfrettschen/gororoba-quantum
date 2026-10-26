@@ -1,0 +1,25 @@
+{
+ "gate": "anchor",
+ "job_id": "55479252-d907-45ac-b1e1-84f19d21a131",
+ "live_model": {
+  "figures": {
+   "g2": 0.16699999999999998,
+   "hom": 0.838,
+   "transmittance": 0.0005
+  },
+  "inside_justified_range": false,
+  "mean_score": 0.86,
+  "pooled_fidelity": 0.6353793879995677
+ },
+ "model": {
+  "figures": {
+   "g2": 0.011000000000000001,
+   "hom": 0.888,
+   "transmittance": 0.055
+  },
+  "inside_justified_range": true,
+  "mean_score": 0.86,
+  "pooled_fidelity": 0.8679104642613193
+ },
+ "perfs_basis": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01/platform-after/catalogue.json"
+}
