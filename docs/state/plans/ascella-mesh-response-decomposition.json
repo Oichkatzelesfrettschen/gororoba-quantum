@@ -16,7 +16,7 @@
   },
   "scope": "Offline analysis of the retained Ascella jobs 00, 01 and 02 with local simulation only (Perceval SLOS, Naive and NoiseModel on this host; no provider job, emulator or credits). Steps: (1) the split: one ANU QRNG draw orders the 56 perturbed meshes, the first 28 form the exploration half and the rest the held-out half, recorded before any new family is fitted; (2) a retained decomposition record of job-02's block light (mean versus mesh-dependent deviation, noise-whitened covariance spectrum at the anchor and over the perturbed meshes, over all and over quiet iterations), the outside-block clicks and every static job-00 fit's predicted leakage; (3) a retained exploration record holding every screen run on the exploration half with its trial count and a null matched to that count: heater-phase quantization (resolution r and grid origin, Perceval phase_imprecision semantics) against per-heater scrambled grid origins, scalar mesh-power features, mode-2 overdispersion and its relation to the X deviation (coherent error leaks at second order where noise leaks at first), a mesh-independent nuisance fitted across job-00's configurations first (per-mode detection efficiency, uniform dephasing, Perceval NoiseModel transmittance and g2) and mesh families fitted on top of it; (4) confirmation: each kept family is fitted once on job-00 with its nuisance and scored on the held-out half by the joint quadratic form of every mesh's three block-fraction residuals in counting plus shared fitted-prediction covariance, shortfall at or above the chi-square 0.999 quantile on 84 (3 per mesh), predicted below the 0.97 quantile with median variance ratio at most 1. A family is kept when, fitted on job-00 alone with the nuisance, the same quadratic form on the exploration half falls below the 0.999 quantile on 84. If none is kept, the plan closes with the decomposition and the exploration record. Every family assumes the per-mesh deviation is a deterministic function of the returned mesh; reproducibility is shown only at seed 0 (job-00 against job-01, the anchors), and only repeats of nonzero seeds, a hardware case for the owner, would test it.",
   "owner": "ascella signed-coherence analysis",
-  "next_action": "Build the twelve-output likelihood (in-block light, out-of-block light and the dark-burst background) and fit the mesh-independent nuisance on job-00 under it.",
+  "next_action": "Run the source and detector screen through Perceval's NoiseModel (g2, transmittance, per-mode detector efficiency) under the twelve-output likelihood; with no family kept, close the plan on the decomposition and exploration records.",
   "related": [
     "ascella-heater-coupling-families",
     "ascella-signed-coherence-conformance"
@@ -26,19 +26,55 @@
       "id": "split",
       "action": "Draw one ANU QRNG request, order job-02's 56 perturbed meshes by it and record the exploration and held-out halves with the draw path and indices.",
       "acceptance": "A retained split record citing the draw and its indices exists before any new family is fitted.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "mesh-split.json orders job-02's 56 perturbed meshes by values 0..55 of draw-2026-10-26T012622Z into 28 exploration and 28 held-out meshes, committed in 76e47ed before any new family was fitted; core-ascella-signed-coherence-mesh-split-replay replays it.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/mesh-split.json",
+              "sha256": "dd44cc67fb7702c27abd77d954c95911477c98b457a110836599e4ddcd40e1c9"
+            },
+            {
+              "ref": "docs/evidence/anu_qrng/draw-2026-10-26T012622Z.json",
+              "sha256": "52921d95b350836666121c1080ef6f985bbfd7f9e1bd24f4b9f44f9ed26d167b"
+            }
+          ],
+          "observed_at": "2026-10-26T02:04:37+00:00",
+          "revision": "91924136a689f917b3f7d928a3f9054138ecdbca",
+          "scope_sha256": "73f87a73669e30d39a6721dd8b7bdca19024bf6bd700aa491f1fd38a0919ffc1"
+        }
+      ]
     },
     {
       "id": "decomposition-record",
       "action": "Write the block-geometry, leakage and burst decomposition of job-02 as a retained record with a replay gate.",
       "acceptance": "The record replays within the fit bounds and states every number the design section cites.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "mesh-decomposition.json records the mesh-independent block mean deficit, the quiet-iteration whitened spectra (anchor at counting noise, perturbed excess in three directions), the dark-shaped timed bursts, the 0.0025 leakage bound and the static fits' predicted leakage; core-ascella-signed-coherence-mesh-decomposition-replay replays it.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/mesh-decomposition.json",
+              "sha256": "7f8097beb8525baf0ecb5337e7721343ae1319aeca0bde49bb9536c44258ce70"
+            },
+            {
+              "ref": "scripts/ascella_mesh_decomposition.py",
+              "sha256": "f0e42d8044a317f7fd773b4913b9bd157fd2cb6ef8f4d42c61977f4aa12f25e9"
+            }
+          ],
+          "observed_at": "2026-10-26T02:04:37+00:00",
+          "revision": "91924136a689f917b3f7d928a3f9054138ecdbca",
+          "scope_sha256": "dbf89e214423a676d5bb46f62585ead2a234b51b425b2e196fdaf773f85c87fe"
+        }
+      ]
     },
     {
       "id": "exploration-families",
       "action": "Run every screen and family of the scope on job-00 plus the exploration half, each fitted family on job-00 alone with the nuisance and scored on the exploration half over the three block coordinates.",
       "acceptance": "A retained exploration record lists every screen with its trial count and matched null, each family's fit and exploration-half quadratic form on 84, and the families kept for confirmation.",
-      "state": "todo",
+      "state": "doing",
       "depends_on": [
         "split"
       ]
