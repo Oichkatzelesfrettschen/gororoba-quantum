@@ -13,9 +13,9 @@
   "state": "active",
   "reconciliation": {
     "status": "verified",
-    "note": "Plan ascella-fixed-mesh-confirmation read the heater and coupler offsets on the 28 held-out meshes at r 0.318 (one-sided p 0.050), not carried at alpha 0.01, with a 99 % Fisher-z upper bound of r 0.661, and spent the held-out half. Job-03 (claim ascella-signed-coherence-seed-repeat) showed each served mesh's X statistic fixed across a calibration with steady anchors, so meshes served by later jobs join one test set. The offsets below are frozen from retained data before any new seed is drawn; the served meshes are known only from the returned computed_circuit, so the plan freezes parameters, and a prediction is a deterministic function of the returned phases and couplers."
+    "note": "Plan ascella-fixed-mesh-confirmation read the heater and coupler offsets on the 28 held-out meshes at r 0.318 (one-sided p 0.050), not carried at alpha 0.01, with a 99 % Fisher-z upper bound of r 0.661, and spent the held-out half. Job-03 (claim ascella-signed-coherence-seed-repeat) showed each served mesh's X statistic fixed across a calibration with steady anchors, so meshes served by later jobs join one test set. The offsets below are frozen from retained data before any new seed is drawn; the served meshes are known only from the returned computed_circuit, so the plan freezes parameters, and a prediction is a deterministic function of the returned phases and couplers. Amended after 98d8a0d, before any new-seed job was submitted: the outcome rules now name P-B carried alone and the inconclusive case, and state the not-carried reading as a bound on the share; the draw values carry no outcome information."
   },
-  "scope": "Jobs job-04 and job-05 each submit theta2-x-arm0 (configuration 13 of job-00) 64 times at 16,384 samples per iteration: seed-0 anchors at every eighth position and 56 positions at new compilation seeds, the nonzero values of one ANU QRNG draw taken in index order with repeats and job-02's 56 seeds skipped, job-04 the first 56 and job-05 the next 56. The owner may approve job-04 alone, both, or both plus a third job job-06 on the following 56 values; the readings take the meshes of every job run. Predictors, frozen in docs/evidence/ascella-order-coefficients/new-mesh-offsets.json, family heater_0.3_coupler_0.1_offsets: P-A, the offsets fitted on job-00 plus the 28 exploration meshes of mesh-split.json (the fit plan ascella-fixed-mesh-confirmation scored); P-B, the offsets fitted on job-00 plus all 56 perturbed meshes of jobs 02 and 03 pooled by setting name. A prediction is static_light of the returned mesh under the frozen offsets. Readings: M, mesh identity, the count of distinct new served meshes and of any equal to a mesh of jobs 00 to 03; P-A and P-B read only the new distinct meshes, n. A, anchor control, each job's anchor mean X against job-03's 0.8858 in counting standard errors, descriptive. Primary, for each predictor: the Pearson correlation of predicted with observed block-conditioned X after centering both within each job, one-sided against r <= 0 by the t distribution on n - 1 - jobs degrees of freedom at alpha 0.005 each (Bonferroni 0.01 over the two predictors); p below 0.005 reads carried. At 112 meshes the critical r is 0.244 and power is 0.79 at the held-out 0.318 and 0.99 at 0.437, attenuation ceiling 0.967 at 16,384 samples. Secondary, descriptive: r^2 against the squared ceiling as a point estimate and at the one-sided 99.5 % Fisher-z bounds, the Spearman correlation, the affine slope, and job-02's R1 dispersion ratio on the new meshes. Exploratory and outside the decision: the same correlation pooled with the 28 held-out meshes of plan ascella-fixed-mesh-confirmation. A carried P-A refutes the design statement that the returned circuit with element offsets does not carry the fixed per-mesh error, for the share r^2 states; a not-carried P-A and P-B with upper bounds below the held-out point estimate close the static element offsets as a carrier. The readings spend every new mesh: a family proposed after scoring needs further seeds or the applied voltages of Perceval#799.",
+  "scope": "Jobs job-04 and job-05 each submit theta2-x-arm0 (configuration 13 of job-00) 64 times at 16,384 samples per iteration: seed-0 anchors at every eighth position and 56 positions at new compilation seeds, the nonzero values of one ANU QRNG draw taken in index order with repeats and job-02's 56 seeds skipped, job-04 the first 56 and job-05 the next 56. The owner may approve job-04 alone, both, or both plus a third job job-06 on the following 56 values; the readings take the meshes of every job run. Predictors, frozen in docs/evidence/ascella-order-coefficients/new-mesh-offsets.json, family heater_0.3_coupler_0.1_offsets: P-A, the offsets fitted on job-00 plus the 28 exploration meshes of mesh-split.json (the fit plan ascella-fixed-mesh-confirmation scored); P-B, the offsets fitted on job-00 plus all 56 perturbed meshes of jobs 02 and 03 pooled by setting name. A prediction is static_light of the returned mesh under the frozen offsets. Readings: M, mesh identity, the count of distinct new served meshes and of any equal to a mesh of jobs 00 to 03; P-A and P-B read only the new distinct meshes, n. A, anchor control, each job's anchor mean X against job-03's 0.8858 in counting standard errors, descriptive. Primary, for each predictor: the Pearson correlation of predicted with observed block-conditioned X after centering both within each job, one-sided against r <= 0 by the t distribution on n - 1 - jobs degrees of freedom at alpha 0.005 each (Bonferroni 0.01 over the two predictors); p below 0.005 reads carried. At 112 meshes (109 degrees of freedom) the critical r is 0.244 and power is 0.79 at the held-out 0.318 and 0.99 at 0.437, attenuation ceiling 0.967 at 16,384 samples. Secondary, descriptive: r^2 against the squared ceiling as a point estimate and at the one-sided 99.5 % Fisher-z bounds, the Spearman correlation, the affine slope, and job-02's R1 dispersion ratio on the new meshes. Exploratory and outside the decision: the same correlation pooled with the 28 held-out meshes of plan ascella-fixed-mesh-confirmation. Outcomes: a carried P-A or P-B refutes the design statement that the returned circuit with element offsets does not carry the fixed per-mesh error, for the share between its one-sided 99.5 % Fisher-z bounds; P-B carried with P-A not carried places the carrier in offsets the 28 exploration meshes left underdetermined. Neither carried with both upper share bounds below 10.6 %, the held-out point estimate, bounds the static element offsets' share of the compilation-induced variance by the larger of the two. Neither carried with an upper share bound at or above 10.6 % reads inconclusive. The readings spend every new mesh: a family proposed after scoring needs further seeds or the applied voltages of Perceval#799.",
   "owner": "ascella signed-coherence analysis",
   "next_action": "The owner approves, resizes or declines the written case in the design document's section 'New-seed meshes case (job-04 and job-05)'.",
   "related": [
@@ -31,16 +31,16 @@
       "state": "done",
       "receipts": [
         {
-          "result": "new-mesh-offsets.json freezes P-A (58 training meshes) and P-B (86) at 258 free offsets each, committed and pushed in 9e92be5 before any new seed was drawn; P-A reproduces fixed-mesh-frozen-predictions.json to 9e-15.",
+          "result": "new-mesh-offsets.json freezes P-A (58 training meshes) and P-B (86) at 258 free offsets each, committed and pushed in 9e92be5 before any new seed was drawn; P-A reproduces fixed-mesh-frozen-predictions.json to 9e-15. Re-issued after the scope amendment of the outcome rules.",
           "evidence": [
             {
               "ref": "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json",
               "sha256": "f5887275150d4f4518941719f7ff22be7f617b8437e70dfcb9d9858e344b4664"
             }
           ],
-          "observed_at": "2026-10-26T17:42:54+00:00",
+          "observed_at": "2026-10-26T17:52:54+00:00",
           "revision": "9e92be5d1706fcecbdecbc769189e787ccf1772e",
-          "scope_sha256": "018e8b1cb7e86a8eb04e35a3a14fe1ee8e6dcadb0dc153bdbc23584101df03ac"
+          "scope_sha256": "4e85fdd75e912ef42ca21e43ee9ce2e6189444de7835cff598919771f27d861e"
         }
       ]
     },
@@ -54,7 +54,7 @@
       ],
       "receipts": [
         {
-          "result": "ascella_coherence_request.py registers jobs 04 to 06, each 56 new seeds from draw-2026-10-26T174307Z indices 0 to 167 with job-02's seeds skipped plus 8 seed-0 anchors; --check rebuilds jobs 00 to 03 to their retained bytes and validates the three new frozen bodies, none sent; the 224 seeds of jobs 02 and 04 to 06 are distinct and nonzero.",
+          "result": "ascella_coherence_request.py registers jobs 04 to 06, each 56 new seeds from draw-2026-10-26T174307Z indices 0 to 167 with job-02's seeds skipped plus 8 seed-0 anchors; --check rebuilds jobs 00 to 03 to their retained bytes and validates the three new frozen bodies, none sent; the 224 seeds of jobs 02 and 04 to 06 are distinct and nonzero. Re-issued after the scope amendment of the outcome rules.",
           "evidence": [
             {
               "ref": "results/quandela/cases/ascella_signed_coherence/job-04/cases.json",
@@ -85,9 +85,9 @@
               "sha256": "f8894a34dee6ae4349a92300b781eb4566b43564e859c5e428df8db00b1b4766"
             }
           ],
-          "observed_at": "2026-10-26T17:48:16+00:00",
+          "observed_at": "2026-10-26T17:52:54+00:00",
           "revision": "b01c67feeac00d83674e9f77dcccb930aa861703",
-          "scope_sha256": "22c947f9b0157d1797e02000a2bb5420d614e6900040e891aaa8be33c0ad251d"
+          "scope_sha256": "4ee3274471875d86abc93bd8aa3d6f193cd40567c471a4f81b06e5c5260bb775"
         }
       ]
     },

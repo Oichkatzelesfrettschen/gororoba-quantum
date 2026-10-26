@@ -1760,11 +1760,20 @@ Secondary and descriptive: r² against the squared attenuation ceiling 0.967
 at 16,384 samples, as a point estimate and at the one-sided 99.5 % Fisher-z
 bounds; the Spearman correlation; the affine slope; job-02's R1 dispersion
 ratio on the new meshes. Pooling with the 28 spent held-out meshes is
-exploratory and decides nothing. A carried P-A refutes the statement above
-that the returned circuit with element offsets does not carry the fixed
-per-mesh error, for the share r² states. Neither predictor carried, with
-upper bounds below the held-out point estimate, closes the static element
-offsets as a carrier. The readings spend every new mesh, so a family
+exploratory and decides nothing.
+
+- **Either predictor carried** refutes the statement above that the returned
+  circuit with element offsets does not carry the fixed per-mesh error. The
+  carried share lies between the one-sided 99.5 % Fisher-z bounds.
+- **P-B carried, P-A not** places the carrier in offsets that the 28
+  exploration meshes left underdetermined.
+- **Neither carried, both upper share bounds below 10.6 %** (the held-out
+  point estimate) bounds the static element offsets' share of the
+  compilation-induced variance by the larger bound.
+- **Neither carried, an upper share bound at or above 10.6 %** reads
+  inconclusive.
+
+The readings spend every new mesh, so a family
 proposed after scoring needs further seeds or the applied voltages that
 Perceval#799 requests.
 
@@ -1775,11 +1784,12 @@ service serves at a new seed, and what X that mesh emits under Ascella's
 calibration, exist only on the chip.
 
 **Sizing.** Each job serves 56 new meshes. Power of the primary at alpha
-0.005, with true correlations scaled to the 0.967 ceiling:
+0.005 on n - 1 - jobs degrees of freedom, with true correlations scaled to
+the 0.967 ceiling:
 
 | Jobs | New meshes | Critical r | Power at r 0.25 | at 0.318 (held-out) | at 0.437 | Credits |
 |---|---|---|---|---|---|---|
-| job-04 | 56 | 0.345 | 0.22 | 0.40 | 0.77 | 1.032768 |
+| job-04 | 56 | 0.341 | 0.23 | 0.41 | 0.78 | 1.032768 |
 | job-04, job-05 (recommended) | 112 | 0.244 | 0.52 | 0.79 | 0.99 | 2.065536 |
 | job-04 to job-06 | 168 | 0.199 | 0.74 | 0.94 | 1.00 | 3.098304 |
 
@@ -1807,6 +1817,9 @@ writes `job-04/cases.json` (digest `da7ee788…`), `job-05/cases.json`
 `results/quandela/cases/ascella_signed_coherence/`. `--body` froze each body
 against the live processor record without sending it (`c8ca77a8…`,
 `f8c757e0…`, `8b61692c…`). `--check` rebuilds jobs 00 to 06 and their bodies,
-with the retained bytes of jobs 00 to 03 unchanged. The procedure is that of
-job-03: `--preflight RUN`, the owner's approval of this case at a size,
+with the retained bytes of jobs 00 to 03 unchanged. `--preflight` on staged
+run directories for job-04 and job-05 at 17:50 UTC found `qpu:ascella`
+available, accepted the 1.032768-credit ceiling and matched each planned body
+to its frozen body beyond `process_id` (`a2ec7819…` and `19c9ce0d…`), sending
+nothing. The procedure is that of job-03: `--preflight RUN`, the owner's approval of this case at a size,
 `--submit RUN APPROVAL`, collection.
