@@ -109,6 +109,22 @@
               "sha256": "cccd78580b5931ed72ea6c364361fa3d920a1617fa1ab70460e3e11ce6ca9300"
             }
           ]
+        },
+        {
+          "result": "Revalidated at 6765b115 after 5dee678: tower_bridge.py (sources-393) exits 0, including its control that every single negated sigma branch disagrees with cd_sign.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-imaginary-sum-conference/tower_bridge.py",
+              "sha256": "765816f332826a61d829a1a9f654d9a7f72b3644ffee0ddb47eeb9981e45c006"
+            },
+            {
+              "ref": "gororoba_quantum/cd_core.py",
+              "sha256": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+            }
+          ],
+          "scope_sha256": "a3ba0c20118d9ff23351e6b94655756ada5a2b9ffeb7c3494d4b1bb23718efdc"
         }
       ]
     },
