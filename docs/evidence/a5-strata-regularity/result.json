@@ -35,7 +35,7 @@
   "reflection_VQ": "1",
   "boost_VG": "1",
   "reflection_VG": "1",
-  "seconds": "0.3"
+  "seconds": "0.2"
  },
  "representatives": {
   "pass": true,
@@ -749,7 +749,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P2",
@@ -765,7 +765,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P2",
@@ -832,7 +832,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P2",
@@ -852,7 +852,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P3a",
@@ -990,7 +990,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P3a",
@@ -999,16 +999,6 @@
     "lower": [
      "Nm"
     ],
-    "pass": true,
-    "drop_escapes": "0",
-    "open_components": "0",
-    "seconds": "0.1"
-   },
-   {
-    "slice": "P3a",
-    "closure": "Np",
-    "mutation": "",
-    "lower": [],
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
@@ -1016,6 +1006,16 @@
    },
    {
     "slice": "P3a",
+    "closure": "Np",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3a",
     "closure": "Nm",
     "mutation": "",
     "lower": [],
@@ -1058,7 +1058,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "1",
-    "seconds": "0.3"
+    "seconds": "0.2"
    },
    {
     "slice": "P3b",
@@ -1089,7 +1089,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "1",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P3b",
@@ -1160,7 +1160,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P3b",
@@ -1172,7 +1172,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P3b",
@@ -1182,7 +1182,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P3b",
@@ -1192,7 +1192,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P3c",
@@ -1228,7 +1228,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.3"
+    "seconds": "0.2"
    },
    {
     "slice": "P3c",
@@ -1259,7 +1259,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P3c",
@@ -1275,7 +1275,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P3c",
@@ -1330,7 +1330,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P3c",
@@ -1352,7 +1352,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P3c",
@@ -1398,7 +1398,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P4s",
@@ -1429,7 +1429,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P4s",
@@ -1500,7 +1500,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P4s",
@@ -1629,7 +1629,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P4g",
@@ -1670,7 +1670,7 @@
     "pass": true,
     "drop_escapes": "0",
     "open_components": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P4g",
@@ -1714,7 +1714,7 @@
     "pass": true,
     "global_dim": "11",
     "escapes": "0",
-    "seconds": "0.1"
+    "seconds": "0.0"
    },
    {
     "slice": "P3a",
@@ -1823,7 +1823,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.0",
+    "seconds": "0.1",
     "type": "smooth",
     "expected": [
      1,
@@ -1854,7 +1854,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      3,
@@ -1885,7 +1885,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.0",
+    "seconds": "0.1",
     "type": "smooth",
     "expected": [
      5,
@@ -1916,7 +1916,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "A1",
     "expected": [
      6,
@@ -1947,7 +1947,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.0",
+    "seconds": "0.1",
     "type": "A1",
     "expected": [
      6,
@@ -2219,7 +2219,7 @@
      }
     ],
     "meets": {},
-    "seconds": "4.2",
+    "seconds": "3.3",
     "type": "singular",
     "expected": [
      5,
@@ -2250,7 +2250,7 @@
      }
     ],
     "meets": {},
-    "seconds": "4.1",
+    "seconds": "2.9",
     "type": "singular",
     "expected": [
      5,
@@ -2436,7 +2436,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.6",
+    "seconds": "0.5",
     "type": "smooth",
     "expected": [
      3,
@@ -2506,7 +2506,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.2",
+    "seconds": "0.1",
     "type": "singular",
     "expected": [
      4,
@@ -2638,7 +2638,7 @@
     "meets": {
      "12": 0
     },
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "two smooth sheets meeting in dimension 0",
     "expected": [
      3,
@@ -2669,7 +2669,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.3",
+    "seconds": "0.1",
     "type": "smooth",
     "expected": [
      4,
@@ -2700,7 +2700,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.2",
+    "seconds": "0.1",
     "type": "singular",
     "expected": [
      4,
@@ -2731,7 +2731,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      2,
@@ -2762,7 +2762,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      3,
@@ -2793,7 +2793,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      3,
@@ -2855,7 +2855,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      1,
@@ -2886,7 +2886,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      1,
@@ -2917,7 +2917,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "A1",
     "expected": [
      2,
@@ -2948,7 +2948,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "A1",
     "expected": [
      2,
@@ -2979,7 +2979,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      1,
@@ -3010,7 +3010,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      1,
@@ -3041,7 +3041,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      1,
@@ -3072,7 +3072,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      1,
@@ -3103,7 +3103,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      3,
@@ -3413,7 +3413,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      8,
@@ -3444,7 +3444,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "A1",
     "expected": [
      2,
@@ -3475,7 +3475,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      3,
@@ -3537,7 +3537,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "smooth",
     "expected": [
      4,
@@ -3599,7 +3599,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "corank 4 quadric tangent cone",
     "expected": [
      5,
@@ -3630,7 +3630,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "A1",
     "expected": [
      6,
@@ -3661,7 +3661,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "corank 6 quadric tangent cone",
     "expected": [
      7,
@@ -3723,7 +3723,7 @@
      }
     ],
     "meets": {},
-    "seconds": "0.1",
+    "seconds": "0.0",
     "type": "corank 1 quadric tangent cone",
     "expected": [
      7,
@@ -3800,17 +3800,17 @@
  },
  "timings_s": {
   "identities": 0.0,
-  "symmetry": 0.3,
-  "representatives": 0.42,
-  "closure_dims": 0.17,
-  "certificate": 1.16,
-  "iso": 0.35,
-  "nullity4": 0.12,
-  "germs": 8.75
+  "symmetry": 0.22,
+  "representatives": 0.32,
+  "closure_dims": 0.12,
+  "certificate": 1.08,
+  "iso": 0.04,
+  "nullity4": 0.1,
+  "germs": 6.55
  },
- "total_s": 11.28,
+ "total_s": 8.44,
  "workers": 12,
- "script_sha256": "b462a8bcbc8a145120b6b32dc184b2573b9570d68f6edce68bb0fc658fa93654",
+ "script_sha256": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
  "versions": {
   "python": "3.14.8",
   "python-flint": "0.9.0",

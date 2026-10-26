@@ -88,16 +88,23 @@ SPLIT16 = [[(-1) ** popcount(p & q) * SIGN16[p][q] for q in range(16)] for p in 
 ETA = [-SPLIT16[j][j] for j in range(8)]  # e'_j e'_j = -eta_j e'_0, j = 1..7
 
 
-def check_tables() -> dict[str, Any]:
+def table_row_failures(job: tuple[int, int]) -> int:
+    """Basis products e_p e_q, q < dim, where cd_multiply_exact differs from the sign table."""
+    dim, p = job
+    table = SIGN16 if dim == 16 else SIGN32
     bad = 0
-    for dim, table in ((16, SIGN16), (32, SIGN32)):
-        for p in range(dim):
-            for q in range(dim):
-                prod = cd_multiply_exact(dim, _basis(dim, p), _basis(dim, q))
-                expect = [0] * dim
-                expect[p ^ q] = table[p][q]
-                if [int(x) for x in prod] != expect:
-                    bad += 1
+    for q in range(dim):
+        prod = cd_multiply_exact(dim, _basis(dim, p), _basis(dim, q))
+        expect = [0] * dim
+        expect[p ^ q] = table[p][q]
+        if [int(x) for x in prod] != expect:
+            bad += 1
+    return bad
+
+
+def check_tables() -> dict[str, Any]:
+    jobs = [(dim, p) for dim in (16, 32) for p in range(dim)]
+    bad = sum(parallel.ordered_map(table_row_failures, jobs, min_items=1))
     if bad:
         raise RuntimeError(f"sign tables disagree with cd_multiply_exact on {bad} pairs")
     oct_ok = all(SIGN16[p][q] == sign_table(8)[p][q] for p in range(8) for q in range(8))
@@ -316,26 +323,31 @@ DERS8 = derivations()
 DERS = [[[d[i][j] for j in range(1, 8)] for i in range(1, 8)] for d in DERS8]  # 7 x 7 blocks
 
 
+def lift_failures(d: Sequence[Sequence[Fraction]]) -> int:
+    """Triples (p, q, k) where the lift D + D of a split octonion derivation breaks the Leibniz rule on SPLIT16."""
+    d16 = [[Fraction(0)] * 16 for _ in range(16)]
+    for i in range(8):
+        for j in range(8):
+            d16[i][j] = d[i][j]
+            d16[8 + i][8 + j] = d[i][j]
+    bad = 0
+    for p in range(16):
+        for q in range(16):
+            for k in range(16):
+                lhs = SPLIT16[p][q] * d16[k][p ^ q]
+                rhs = d16[k ^ q][p] * SPLIT16[k ^ q][q] + d16[p ^ k][q] * SPLIT16[p][p ^ k]
+                if lhs != rhs:
+                    bad += 1
+    return bad
+
+
 def check_derivations() -> dict[str, Any]:
     if len(DERS8) != 14:
         raise RuntimeError(f"derivation space has dimension {len(DERS8)}")
     fixes = all(d[i][0] == 0 and d[0][i] == 0 for d in DERS8 for i in range(8))
     skew = all(ETA[i + 1] * d[i][j] + ETA[j + 1] * d[j][i] == 0 for d in DERS for i in range(7) for j in range(7))
     # the lift D + D on (a, b) is a derivation of the split sedenion table
-    lift_bad = 0
-    for d in DERS8:
-        d16 = [[Fraction(0)] * 16 for _ in range(16)]
-        for i in range(8):
-            for j in range(8):
-                d16[i][j] = d[i][j]
-                d16[8 + i][8 + j] = d[i][j]
-        for p in range(16):
-            for q in range(16):
-                for k in range(16):
-                    lhs = SPLIT16[p][q] * d16[k][p ^ q]
-                    rhs = d16[k ^ q][p] * SPLIT16[k ^ q][q] + d16[p ^ k][q] * SPLIT16[p][p ^ k]
-                    if lhs != rhs:
-                        lift_bad += 1
+    lift_bad = sum(parallel.ordered_map(lift_failures, list(DERS8), min_items=1))
     if not (fixes and skew) or lift_bad:
         raise RuntimeError("derivation checks failed")
     return {"dimension": 14, "fix_e0_preserve_im": fixes, "eta_skew": skew, "sedenion_lift_failures": lift_bad}
@@ -596,6 +608,40 @@ REPS: dict[str, list[Fraction]] = {
 REPS = {k: [Fraction(x) for x in v] for k, v in REPS.items()}
 
 
+def representative_row(job: tuple[str, Sequence[Sequence[Fraction]]]) -> tuple[dict[str, Any], bool]:
+    """Nullity, rank C_z, orbit dimension and pattern at one representative and its four moved images."""
+    name, g = job
+    z = REPS[name]
+    nul = nullity_ly(z)
+    rk = rank_cz(z)
+    od = orbit_dim(z)
+    pat = pattern(z)
+    moved = {
+        "g2": act_g2(g, z),
+        "boost": act_boost(BOOST[0], BOOST[1], z),
+        "scale": [2 * x for x in z],
+        "g2_boost": act_boost(Fraction(13, 12), Fraction(5, 12), act_g2(g, z)),
+    }
+    moved_rows = {}
+    moved_ok = True
+    for mname, mz in moved.items():
+        mrow = {"nullity": nullity_ly(mz), "orbit_dim": orbit_dim(mz), "pattern": pattern(mz)}
+        moved_rows[mname] = mrow
+        moved_ok &= mrow == {"nullity": nul, "orbit_dim": od, "pattern": pat}
+    expected_pat = "".join("1" if (c == name or c_in(name, c)) else "0" for c in CLOSURES)
+    row_ok = nul == NULLITY[name] and nul == 28 - 2 * rk and od == DIMS[name] and pat == expected_pat
+    row = {
+        "nullity_Ly": nul,
+        "28_minus_2_rank_Cz": 28 - 2 * rk,
+        "orbit_dim": od,
+        "pattern": pat,
+        "pattern_expected_from_closure_order": expected_pat,
+        "moved": moved_rows,
+        "pass": row_ok,
+    }
+    return row, moved_ok
+
+
 def check_representatives() -> dict[str, Any]:
     """Nullity of L_y, rank C_z, orbit dimension and pattern at the twelve representatives and at moved points."""
     nil = nilpotent_derivations()
@@ -609,35 +655,13 @@ def check_representatives() -> dict[str, Any]:
     rows = {}
     patterns = {}
     ok = True
-    for name, z in REPS.items():
-        nul = nullity_ly(z)
-        rk = rank_cz(z)
-        od = orbit_dim(z)
-        pat = pattern(z)
-        moved = {
-            "g2": act_g2(g, z),
-            "boost": act_boost(BOOST[0], BOOST[1], z),
-            "scale": [2 * x for x in z],
-            "g2_boost": act_boost(Fraction(13, 12), Fraction(5, 12), act_g2(g, z)),
-        }
-        moved_rows = {}
-        for mname, mz in moved.items():
-            mrow = {"nullity": nullity_ly(mz), "orbit_dim": orbit_dim(mz), "pattern": pattern(mz)}
-            moved_rows[mname] = mrow
-            ok &= mrow == {"nullity": nul, "orbit_dim": od, "pattern": pat}
-        expected_pat = "".join("1" if (c == name or c_in(name, c)) else "0" for c in CLOSURES)
-        row_ok = nul == NULLITY[name] and nul == 28 - 2 * rk and od == DIMS[name] and pat == expected_pat
-        ok &= row_ok
-        rows[name] = {
-            "nullity_Ly": nul,
-            "28_minus_2_rank_Cz": 28 - 2 * rk,
-            "orbit_dim": od,
-            "pattern": pat,
-            "pattern_expected_from_closure_order": expected_pat,
-            "moved": moved_rows,
-            "pass": row_ok,
-        }
-        patterns[name] = pat
+    names = list(REPS)
+    for name, (row, moved_ok) in zip(
+        names, parallel.ordered_map(representative_row, [(n, g) for n in names], min_items=1), strict=True
+    ):
+        ok &= moved_ok and row["pass"]
+        rows[name] = row
+        patterns[name] = row["pattern"]
     distinct = len(set(patterns.values())) == len(patterns)
     lower_dims = all(DIMS[y] < DIMS[x] for x in LOWER for y in LOWER[x])
     return {
@@ -1277,10 +1301,11 @@ def check_germs() -> dict[str, Any]:
         rows.append(row)
     # Theorem 3: singular loci from the germ smoothness, and the origin
     sing: dict[str, Any] = {}
-    for x in [*CLOSURES, "VQ", "VG"]:
+    closures = [*CLOSURES, "VQ", "VG"]
+    spans = parallel.ordered_map(origin_span, [(x, nil) for x in closures], min_items=1)
+    for x, span in zip(closures, spans, strict=True):
         singular_orbits = sorted(r["orbit"] for r in rows if r["closure"] == x and not r["smooth"])
         smooth_orbits = sorted(r["orbit"] for r in rows if r["closure"] == x and r["smooth"])
-        span = origin_span(x, nil)
         dim_x = 14 if x in ("VQ", "VG") else DIMS[x]
         origin_singular = span > dim_x
         match = singular_orbits == sorted(SING_TABLE[x]) and origin_singular == (x not in LINEAR_CLOSURES)
@@ -1297,8 +1322,9 @@ def check_germs() -> dict[str, Any]:
     return {"pairs": rows, "singular_loci": sing, "seconds": round(time.time() - start, 1), "pass": ok}
 
 
-def origin_span(closure: str, nil: Sequence[Any]) -> int:
+def origin_span(job: tuple[str, Sequence[Any]]) -> int:
     """Dimension of the linear span of the representatives in the closure and their unipotent and boost images."""
+    closure, nil = job
     pts = []
     for o in orbits_in(closure):
         p = REPS[o]
@@ -1411,6 +1437,21 @@ def check_x0() -> dict[str, Any]:
 # Identities, the nullity-4 locus, closure dimensions, irreducibility and the non-nested intersections
 
 
+def charpoly_matches(zo: Sequence[int]) -> bool:
+    """At an original rational point, charpoly(C_z) = lam (lam^2 + Q)^3 (lam^4 + 2 Q lam^2 + G)^2."""
+    lam = flint.fmpq_poly([0, 1])
+    cz = [[Fraction(x.re) for x in r] for r in cz_matrix([Gq(x) for x in zo])]
+    cp = flint.fmpq_mat([[flint.fmpq(x.numerator, x.denominator) for x in r] for r in cz]).charpoly()
+    zs = [Gq(zo[k]) * i_pow(-popcount(k + 1)) for k in range(15)]
+    qv, dv = inv_q(zs), inv_delta(zs)
+    gv = qv * qv - 4 * dv
+    if qv.im or gv.im:
+        return False
+    qf = flint.fmpq(qv.re.numerator, qv.re.denominator)
+    gf = flint.fmpq(gv.re.numerator, gv.re.denominator)
+    return bool(cp == lam * (lam**2 + qf) ** 3 * (lam**4 + 2 * qf * lam**2 + gf) ** 2)
+
+
 def check_identities() -> dict[str, Any]:
     u, mu, v = split_z(XS)
     s = [a + b for a, b in zip(u, v, strict=True)]
@@ -1445,20 +1486,7 @@ def check_identities() -> dict[str, Any]:
         [2, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 2, 0, 0],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ]
-    lam = flint.fmpq_poly([0, 1])
-    for zo in pts:
-        cz = [[Fraction(x.re) for x in r] for r in cz_matrix([Gq(x) for x in zo])]
-        cp = flint.fmpq_mat([[flint.fmpq(x.numerator, x.denominator) for x in r] for r in cz]).charpoly()
-        zs = [Gq(zo[k]) * i_pow(-popcount(k + 1)) for k in range(15)]
-        qv, dv = inv_q(zs), inv_delta(zs)
-        gv = qv * qv - 4 * dv
-        if qv.im or gv.im:
-            charpoly_ok = False
-            continue
-        qf = flint.fmpq(qv.re.numerator, qv.re.denominator)
-        gf = flint.fmpq(gv.re.numerator, gv.re.denominator)
-        expect = lam * (lam**2 + qf) ** 3 * (lam**4 + 2 * qf * lam**2 + gf) ** 2
-        charpoly_ok &= cp == expect
+    charpoly_ok &= all(parallel.ordered_map(charpoly_matches, pts, min_items=1))
     hess = q_rank([[evaluate(q.derivative(i).derivative(j), [Fraction(0)] * 15) for j in range(15)] for i in range(15)])
     ok = q == q_sd and g == g_sd and grad_ok and cross_ok and charpoly_ok and hess == 15
     return {

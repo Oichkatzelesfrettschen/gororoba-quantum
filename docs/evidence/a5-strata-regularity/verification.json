@@ -1,5 +1,5 @@
 {
- "script_sha256": "cd0190244bcf3c632983573a17908e44b90ebeb9063837f08d62d88319d9f6ae",
+ "script_sha256": "b3636a38eb5186ddcb72500c971e24a3fb8197c3911637878c40f5e4f43fbc0f",
  "versions": {
   "python": "3.14.8",
   "python_flint": "0.9.0",
@@ -18,14 +18,14 @@
    -1
   ],
   "octonion_block_consistent": true,
-  "runtime_s": 0.1
+  "runtime_s": 0.5
  },
  "derivations": {
   "dimension": 14,
   "fix_e0_preserve_im": true,
   "eta_skew": true,
   "sedenion_lift_failures": 0,
-  "runtime_s": 0.2
+  "runtime_s": 0.1
  },
  "identities": {
   "Q_equals_eta(s,d)-mu^2": true,
@@ -35,7 +35,7 @@
   "charpoly_of_Cz_at_4_points": true,
   "hessian_rank_Q": 15,
   "pass": true,
-  "runtime_s": 0.0
+  "runtime_s": 0.3
  },
  "symmetry": {
   "boost_element": [
@@ -51,7 +51,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.03
+    "seconds": 0.02
    },
    "E8bar": {
     "nonzero_normal_forms": {
@@ -78,7 +78,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.19
+    "seconds": 0.22
    },
    "X-": {
     "nonzero_normal_forms": {
@@ -87,7 +87,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.2
+    "seconds": 0.23
    },
    "B9": {
     "nonzero_normal_forms": {
@@ -96,7 +96,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.03
+    "seconds": 0.02
    },
    "V": {
     "nonzero_normal_forms": {
@@ -105,7 +105,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.03
+    "seconds": 0.02
    },
    "VB": {
     "nonzero_normal_forms": {
@@ -123,7 +123,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.03
+    "seconds": 0.02
    },
    "Va-": {
     "nonzero_normal_forms": {
@@ -132,7 +132,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.03
+    "seconds": 0.02
    },
    "N+": {
     "nonzero_normal_forms": {
@@ -559,7 +559,7 @@
   "patterns_distinct": true,
   "lower_closures_smaller_dimension": true,
   "pass": true,
-  "runtime_s": 0.8
+  "runtime_s": 0.5
  },
  "global": {
   "closure_dims": {
@@ -709,7 +709,7 @@
     "X-"
    ],
    "anomalies_total": 0,
-   "seconds": 38.3
+   "seconds": 38.8
   },
   "integer_box_[-3,3]": {
    "per_slice": {
@@ -910,11 +910,11 @@
     "X-"
    ],
    "anomalies_total": 0,
-   "seconds": 41.4
+   "seconds": 41.9
   },
   "pass_char0": true,
   "pass_F13": true,
-  "runtime_s": 90.0
+  "runtime_s": 91.0
  },
  "germs": {
   "pairs": [
@@ -943,7 +943,7 @@
     "jacobian_rank_of_generators_at_rep": 3,
     "jacobian_rank_at_moved_point": 3,
     "codim": 3,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -1139,7 +1139,7 @@
     "jacobian_rank_of_generators_at_rep": 4,
     "jacobian_rank_at_moved_point": 4,
     "codim": 4,
-    "seconds": 0.06,
+    "seconds": 0.05,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -1231,7 +1231,7 @@
     "jacobian_rank_of_generators_at_rep": 3,
     "jacobian_rank_at_moved_point": 3,
     "codim": 4,
-    "seconds": 0.07,
+    "seconds": 0.06,
     "record_says": {
      "dim": 2,
      "mult": 2,
@@ -1275,7 +1275,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 4,
-    "seconds": 0.08,
+    "seconds": 0.09,
     "record_says": {
      "dim": 3,
      "mult": 2,
@@ -1312,7 +1312,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 4,
-    "seconds": 0.17,
+    "seconds": 0.2,
     "record_says": {
      "dim": 4,
      "mult": 2,
@@ -1402,7 +1402,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 4,
-    "seconds": 0.05,
+    "seconds": 0.06,
     "record_says": {
      "dim": 4,
      "mult": 2,
@@ -1539,7 +1539,7 @@
     "jacobian_rank_of_generators_at_rep": 4,
     "jacobian_rank_at_moved_point": 4,
     "codim": 4,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -1819,7 +1819,7 @@
     "jacobian_rank_of_generators_at_rep": 2,
     "jacobian_rank_at_moved_point": 2,
     "codim": 5,
-    "seconds": 0.21,
+    "seconds": 0.22,
     "record_says": {
      "dim": 4,
      "mult": 2,
@@ -1884,7 +1884,7 @@
     "jacobian_rank_of_generators_at_rep": 5,
     "jacobian_rank_at_moved_point": 5,
     "codim": 5,
-    "seconds": 0.05,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2050,7 +2050,7 @@
     "jacobian_rank_of_generators_at_rep": 2,
     "jacobian_rank_at_moved_point": 2,
     "codim": 5,
-    "seconds": 0.22,
+    "seconds": 0.25,
     "record_says": {
      "dim": 4,
      "mult": 2,
@@ -2175,7 +2175,7 @@
     "jacobian_rank_of_generators_at_rep": 6,
     "jacobian_rank_at_moved_point": 6,
     "codim": 6,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2265,7 +2265,7 @@
     "jacobian_rank_of_generators_at_rep": 7,
     "jacobian_rank_at_moved_point": 7,
     "codim": 7,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2295,7 +2295,7 @@
     "jacobian_rank_of_generators_at_rep": 7,
     "jacobian_rank_at_moved_point": 7,
     "codim": 7,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2365,7 +2365,7 @@
     "jacobian_rank_of_generators_at_rep": 6,
     "jacobian_rank_at_moved_point": 6,
     "codim": 7,
-    "seconds": 0.05,
+    "seconds": 0.04,
     "record_says": {
      "dim": 2,
      "mult": 2,
@@ -2491,7 +2491,7 @@
     "jacobian_rank_of_generators_at_rep": 8,
     "jacobian_rank_at_moved_point": 8,
     "codim": 8,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2581,7 +2581,7 @@
     "jacobian_rank_of_generators_at_rep": 8,
     "jacobian_rank_at_moved_point": 8,
     "codim": 8,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2641,7 +2641,7 @@
     "jacobian_rank_of_generators_at_rep": 9,
     "jacobian_rank_at_moved_point": 9,
     "codim": 9,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2941,7 +2941,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 1,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2971,7 +2971,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 1,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -3003,7 +3003,7 @@
     "jacobian_rank_of_generators_at_rep": 0,
     "jacobian_rank_at_moved_point": 0,
     "codim": 1,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": {
      "dim": 2,
      "mult": 2,
@@ -3321,7 +3321,7 @@
     "jacobian_rank_of_generators_at_rep": 0,
     "jacobian_rank_at_moved_point": 0,
     "codim": 1,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": {
      "dim": 7,
      "mult": 2,
@@ -3659,9 +3659,9 @@
     "verdict": "confirmed"
    }
   },
-  "seconds": 14.3,
+  "seconds": 4.1,
   "pass": true,
-  "runtime_s": 14.7
+  "runtime_s": 4.4
  },
  "x0_link": {
   "x0_split_coordinates": "u' = e'_2 - i e'_1, mu' = 0, v' = 0",
@@ -3750,9 +3750,9 @@
    "intersection": 7
   },
   "conclusion": "V is a smooth curve germ and B9 a smooth surface germ in the 8-dimensional transverse slice, meeting only at x0 with transverse tangent spaces; the link of their union is S^1 disjoint union S^3",
-  "seconds": 0.4,
+  "seconds": 0.3,
   "pass": true,
-  "runtime_s": 0.4
+  "runtime_s": 0.3
  },
  "controls": {
   "rotation_breaks_Q": true,
@@ -3760,6 +3760,6 @@
   "pass": true,
   "runtime_s": 0.0
  },
- "total_s": 108.6,
+ "total_s": 99.5,
  "pass": true
 }

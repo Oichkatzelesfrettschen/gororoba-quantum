@@ -424,7 +424,7 @@ def certificate() -> dict[str, Any]:
     for r in rows:
         expect = 1 if r["slice"] in OPEN_SLICES.get(r["closure"], ()) else 0
         ok = ok and r.get("open_components") == str(expect)
-    planes = [plane_data(name) for name in eq.SLICE_PLANES]
+    planes = parallel.ordered_map(plane_data, list(eq.SLICE_PLANES), min_items=1)
     ok = ok and {p["plane"]: (p["r_G"], p["s_dim"]) for p in planes} == PLANE_TABLE
     return {"pass": ok, "planes": planes, "rows": rows}
 
@@ -639,14 +639,17 @@ EXPECTED_GERMS: dict[tuple[str, str], tuple[int, int, int, int, int, int | None]
 SMOOTH = "smooth"
 
 
+def pair_member(pair: tuple[str, str]) -> bool:
+    closure, orbit = pair
+    return member(closure_ideals()[closure], REPS[orbit])
+
+
 def germ_pairs() -> list[tuple[str, str]]:
-    ideals = closure_ideals()
-    pairs = []
-    for x in [*DIMS, *HYPERSURFACES]:
-        for orbit, zp in REPS.items():
-            if orbit != x and member(ideals[x], zp):
-                pairs.append((x, orbit))
-    return pairs
+    """Pairs (X, O) with the representative of O in X and O != X."""
+    cands = [(x, orbit) for x in [*DIMS, *HYPERSURFACES] for orbit in REPS if orbit != x]
+    return [
+        pr for pr, inside in zip(cands, parallel.ordered_map(pair_member, cands, min_items=1), strict=True) if inside
+    ]
 
 
 def classify_germ(row: dict[str, Any]) -> str:

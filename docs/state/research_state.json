@@ -6207,11 +6207,11 @@
       "evidence": [
         {
           "path": "docs/evidence/a5-strata-regularity/result.json",
-          "sha256": "004e21b82afcecc7f7faf531756285fe00619935e88ec1e21d9862c56b6756bb"
+          "sha256": "dee5af58e0312225420e88c7d3e0692fb8534592686d85e4a20de01825fc8093"
         },
         {
           "path": "docs/evidence/a5-strata-regularity/verification.json",
-          "sha256": "8a4ded5a7194dd961f5e7984e56c466d6bfe1735c1ff020ff5111c883eb1401a"
+          "sha256": "0df35e5190f78bba84452ff1f2e7683c1c8ac6227d20b80e4cddea92bb6e1f4b"
         }
       ],
       "documents": [
