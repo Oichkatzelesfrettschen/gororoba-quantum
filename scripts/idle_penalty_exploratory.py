@@ -18,7 +18,7 @@ retained report (`idle-penalty-report.json` beside the record), and writes quant
 
 Usage:
     "$PYTHON" scripts/idle_penalty_exploratory.py RUN [--historical RUN ...] --out RUN/idle-penalty-exploratory.json
-    (add --check to require the retained file to equal a fresh reanalysis)
+    (add --check to require the retained file to agree with a fresh reanalysis)
 """
 
 from __future__ import annotations
@@ -128,7 +128,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("run", type=Path)
     parser.add_argument("--historical", type=Path, nargs="*", default=[])
     parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--check", action="store_true", help="require --out to equal a fresh reanalysis byte for byte")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="require --out to agree with a fresh reanalysis (idle_penalty_report.replay_differences)",
+    )
     args = parser.parse_args(argv)
     try:
         result = exploratory(args.run, args.historical)
@@ -137,9 +141,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     text = json.dumps(result, indent=1, sort_keys=True) + "\n"
     if args.check:
-        matches = args.out.read_text() == text
-        print(f"replay {'matches' if matches else 'differs from'} {args.out}")
-        return 0 if matches else 1
+        return report.check_replay(args.out, result)
     args.out.write_text(text)
     for key in ("free", "echo"):
         band = result["pure_dephasing_multiplier"][key]["cohort_order_statistic"]

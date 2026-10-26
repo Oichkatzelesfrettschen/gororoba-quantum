@@ -74,8 +74,10 @@ Preregistered decisions (fixed before any hardware data):
 - a readout decision is "present" when both contrasts read present with one
   sign and the quiet null (after against Ramsey) does not read present,
   "absent" when both contrasts and the null read absent, else "unresolved";
-- across two measured runs on one backend at distinct execution calibrations
-  (--compare), over the qubits that keep their role and partner, a multiplier
+- across two measured runs of one campaign on one backend at distinct execution
+  calibrations (--compare: equal campaign digest, shots, ladders, repetition
+  delay and execution policy), over a second-run cohort of at least
+  COMPARE_MIN_QUBITS qubits that each keep their first-run role and partner, a multiplier
   is "stable" when the per-qubit values correlate at r >= 0.5 and the interval
   of the median second/first ratio lies inside [0.8, 1.25], "drifted" when it
   lies wholly outside, otherwise "unresolved".
@@ -113,6 +115,9 @@ SELF_CHECK_TOLERANCE = 0.15
 CHI2_ALPHA = 1e-3
 STABLE_RATIO = (0.8, 1.25)
 STABLE_CORRELATION = 0.5
+# --compare refuses a cohort smaller than 25 of the 31 pairs: the stability verdicts read order-statistic intervals
+# whose coverage needs that many paired ratios.
+COMPARE_MIN_QUBITS = 50
 GAMMA_GRID = np.linspace(0.0, 2e5, 4001)
 
 
@@ -327,6 +332,37 @@ def schedule_timelines(
     return timelines
 
 
+def campaign_digest(run: Path, record: dict[str, Any], names: list[str], roles: list[tuple[int, int]]) -> str:
+    """sha256 of every member's compiled instructions on replica 0, qubits named by role, in member order.
+
+    It binds a report to the circuits its run executed rather than to the runner's source, so two runs of one
+    campaign compare even when live_run.py changed between them, and differ when any member's compiled body does.
+    """
+    from qiskit import qpy
+
+    with (run / "isa.qpy").open("rb") as stream:
+        fused = {circuit.name: circuit for circuit in qpy.load(stream)}
+    pub_of = {
+        component["member"]: pub["name"]
+        for pub in record["execution_pubs"]
+        for component in pub["components"]
+        if component["group"] == "idle_penalty"
+    }
+    role = {q: i for i, q in enumerate(roles[0])}
+    body = []
+    for name in names:
+        circuit = fused[pub_of[name]]
+        for instruction in circuit.data:
+            qubits = [circuit.find_bit(bit).index for bit in instruction.qubits]
+            if not qubits or not set(qubits) <= role.keys():
+                continue
+            operation = instruction.operation
+            params = [round(float(p), 12) for p in operation.params]
+            duration = int(operation.duration) if operation.name == "delay" else None
+            body.append([name, operation.name, [role[q] for q in qubits], params, duration])
+    return hashlib.sha256(json.dumps(body, separators=(",", ":")).encode()).hexdigest()
+
+
 def skeleton_violations(run: Path, record: dict[str, Any], names: list[str]) -> list[str]:
     """Replicas whose compiled instructions, qubit by qubit and in order, differ from their scheduled instances.
 
@@ -407,6 +443,8 @@ def load(run: Path, predicted: bool) -> dict[str, Any]:
         "backend": group["backend"],
         "shots": int(record["shots"]),
         "repetition_delay_seconds": record["policy"].get("rep_delay_seconds"),
+        "execution_policy": {key: record["policy"].get(key) for key in ("twirl", "dd", "isolated_reference")},
+        "campaign_digest": campaign_digest(run, record, names, role_map(group)),
         "ladders": {"relax": ip.RELAX_DT, "ramsey": ip.RAMSEY_DT, "echo": ip.ECHO_DT, "meas": ip.MEAS_DT},
     }
     calibration: dict[str, Any]
@@ -616,7 +654,8 @@ def pooled(qubits: dict[str, Any], pairs: list[dict[str, Any]]) -> dict[str, Any
 
 
 def compare(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
-    """Cross-calibration stability over the qubits that keep their role and partner in both measured runs."""
+    """Cross-calibration stability of one campaign over the second run's cohort, every qubit of which keeps its
+    role and partner from the first run."""
     a, b = first["identity"], second["identity"]
     reasons = []
     if a["source"] != "measured" or b["source"] != "measured":
@@ -625,9 +664,19 @@ def compare(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
         reasons.append(f"backends differ: {a['backend']} and {b['backend']}")
     if a["calibration"] == b["calibration"] or a.get("collect_sha256") == b.get("collect_sha256"):
         reasons.append("the reports share an execution calibration or a collection")
-    for key in ("shots", "ladders", "experiment_digest"):
-        if a[key] != b[key]:
-            reasons.append(f"{key} differs")
+    for key in ("shots", "ladders", "campaign_digest", "execution_policy", "repetition_delay_seconds"):
+        if a.get(key) is None or a.get(key) != b.get(key):
+            reasons.append(f"{key} differs or is missing")
+    moved = [
+        q
+        for q, entry in second["qubits"].items()
+        if (entry["role"], entry["partner"])
+        != (first["qubits"].get(q, {}).get("role"), first["qubits"].get(q, {}).get("partner"))
+    ]
+    if moved:
+        reasons.append(f"qubits {sorted(moved, key=int)} leave the first run's role or partner")
+    if len(second["qubits"]) < COMPARE_MIN_QUBITS:
+        reasons.append(f"{len(second['qubits'])} qubits, fewer than {COMPARE_MIN_QUBITS}")
     if reasons:
         raise RefusedAnalysis("; ".join(reasons))
     out: dict[str, Any] = {"first": a["run"], "second": b["run"]}
@@ -639,9 +688,6 @@ def compare(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
             and key in second["qubits"].get(q, {})
             and (entry["role"], entry["partner"]) == (second["qubits"][q]["role"], second["qubits"][q]["partner"])
         ]
-        if len(common) < 3:
-            out[key] = {"n": len(common), "verdict": "unresolved"}
-            continue
         x = np.array([first["qubits"][q][key] for q in common])
         y = np.array([second["qubits"][q][key] for q in common])
         r = float(np.corrcoef(x, y)[0, 1])
@@ -651,6 +697,46 @@ def compare(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
         verdict = "stable" if inside and r >= STABLE_CORRELATION else "drifted" if outside else "unresolved"
         out[key] = {"n": len(common), "pearson_r": r, "ratio": band, "verdict": verdict}
     return out
+
+
+REPLAY_REL_TOL = 1e-9
+
+
+def replay_differences(retained: Any, fresh: Any, path: str = "") -> list[str]:
+    """JSON paths where a fresh analysis departs from the retained one: any non-float value or structure that
+    differs, or a float beyond REPLAY_REL_TOL relative. The fits run LAPACK least squares and vectorized exp,
+    whose last bits follow the CPU, so the replay holds every number to the tolerance rather than bit for bit."""
+    if isinstance(retained, dict) and isinstance(fresh, dict):
+        if retained.keys() != fresh.keys():
+            return [f"{path}: keys {sorted(retained.keys() ^ fresh.keys())}"]
+        return [d for key in retained for d in replay_differences(retained[key], fresh[key], f"{path}/{key}")]
+    if isinstance(retained, list) and isinstance(fresh, list):
+        if len(retained) != len(fresh):
+            return [f"{path}: length {len(retained)} against {len(fresh)}"]
+        return [
+            d
+            for i, (a, b) in enumerate(zip(retained, fresh, strict=True))
+            for d in replay_differences(a, b, f"{path}/{i}")
+        ]
+    if isinstance(retained, float) or isinstance(fresh, float):
+        numbers = all(isinstance(v, int | float) and not isinstance(v, bool) for v in (retained, fresh))
+        if numbers and math.isclose(retained, fresh, rel_tol=REPLAY_REL_TOL, abs_tol=1e-15):
+            return []
+    elif retained == fresh and type(retained) is type(fresh):
+        return []
+    return [f"{path}: {retained!r} against {fresh!r}"]
+
+
+def check_replay(out: Path | None, result: dict[str, Any]) -> int:
+    """0 when the retained analysis at out agrees with a fresh one (replay_differences), else 1."""
+    if out is None:
+        print("--check needs --out naming the retained analysis")
+        return 1
+    differences = replay_differences(json.loads(out.read_text()), json.loads(json.dumps(result)))
+    print(
+        f"replay {'differs from' if differences else 'matches'} {out}" + "".join(f"\n  {d}" for d in differences[:10])
+    )
+    return 1 if differences else 0
 
 
 def placement_violations(run: Path, snapshot: Path | None = None) -> list[str]:
@@ -710,7 +796,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--snapshot", type=Path, help="calibration_snapshot.py export for --check-placement")
     parser.add_argument("--compare", nargs=2, type=Path, metavar=("FIRST", "SECOND"), help="two --out reports")
     parser.add_argument("--out", type=Path)
-    parser.add_argument("--check", action="store_true", help="require --out to equal a fresh analysis byte for byte")
+    parser.add_argument(
+        "--check", action="store_true", help="require --out to agree with a fresh analysis (replay_differences)"
+    )
     args = parser.parse_args(argv)
     try:
         if args.compare:
@@ -733,11 +821,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     text = json.dumps(result, indent=1, sort_keys=True) + "\n"
     if args.check:
-        if args.out is None or args.out.read_text() != text:
-            print(f"replay differs from {args.out}")
-            return 1
-        print(f"replay matches {args.out}")
-        return 0
+        return check_replay(args.out, result)
     if args.out:
         args.out.write_text(text)
     _print(result)

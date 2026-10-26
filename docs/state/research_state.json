@@ -11229,7 +11229,7 @@
         },
         {
           "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
-          "sha256": "f943d9a43b247e8cea22dccb2e3ae78cfd9f207bc932f55e162d40c047ccbc6a"
+          "sha256": "e0caacf9157241b198a1fb40df17a0852d0df84ad73d3cec51d1b2363d5a298a"
         }
       ],
       "documents": [
@@ -11254,11 +11254,11 @@
       "evidence": [
         {
           "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory.json",
-          "sha256": "dcda04080c006427a21f33607eb35a1a809f7f28054970ce37fb8274cb3fb931"
+          "sha256": "2fe0f0a994d7bfc0786a70645c7fb67c6e993c42edf086a6d0caa62d99c15071"
         },
         {
           "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
-          "sha256": "f943d9a43b247e8cea22dccb2e3ae78cfd9f207bc932f55e162d40c047ccbc6a"
+          "sha256": "e0caacf9157241b198a1fb40df17a0852d0df84ad73d3cec51d1b2363d5a298a"
         }
       ],
       "documents": [
