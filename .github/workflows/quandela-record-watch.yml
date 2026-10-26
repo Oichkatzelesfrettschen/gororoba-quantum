@@ -90,13 +90,14 @@ jobs:
         if: env.STATE == 'changed'
         env:
           GH_TOKEN: ${{ github.token }}
+          TITLE: qpu:belenos performance record changed
         run: |
           set -eu
-          title="qpu:belenos performance record changed"
-          open=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --search "\"$title\" in:title" --json number --jq '.[0].number // empty')
+          open=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
+            --jq '.[] | select(.pull_request == null and .title == env.TITLE) | .number' | sed -n 1p)
           if [ -n "$open" ]; then
-            gh issue comment "$open" --repo "$GITHUB_REPOSITORY" --body-file "$RUNNER_TEMP/summary.md"
+            gh api "repos/$GITHUB_REPOSITORY/issues/$open/comments" -F "body=@$RUNNER_TEMP/summary.md" --jq .html_url
           else
-            gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file "$RUNNER_TEMP/summary.md"
+            gh api "repos/$GITHUB_REPOSITORY/issues" -f "title=$TITLE" -F "body=@$RUNNER_TEMP/summary.md" --jq .html_url
           fi
           gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/quandela-record-watch.yml/disable"
