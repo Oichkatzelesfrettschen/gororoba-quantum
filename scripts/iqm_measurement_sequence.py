@@ -1267,11 +1267,33 @@ def z_eq(model: dict[str, Any]) -> float:
     return 1 - 2 * model["p_thermal"]
 
 
+def chain_z(item: tuple[str, int, int, dict[str, Any]]) -> float:
+    """The true Bloch z of one signed circuit of a model device before the pre-readout delay (device_counts)."""
+    arm, n, sign, m = item
+    eps = m["eps_settle"] if arm == "settle" and m["eps_settle"] is not None else m["eps"]
+    return bloch_z(
+        arm,
+        n,
+        m["t1_s"],
+        min(m["t2_s"], 2 * m["t1_s"]),
+        tau_of(arm, m["window_s"]),
+        eps,
+        1 - 2 * m["p_init"],
+        m["prx_p"],
+        z_eq(m),
+        angle_scale=m["angle_scale"],
+        advance=m["advance"],
+        drive_t2_scale=m["drive_t2_scale"],
+        sign=sign,
+    )
+
+
 def device_counts(models: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict[str, Any]:
     """Expected counts of a model device, rounded to whole shots: each circuit's true Bloch z from the Bloch model
     (T1, T2, an initialization excitation p_init), relaxed over the pre-readout delay and read through the qubit's
     assignment errors. Each signed circuit takes the chain of its own sign; at a nominal axis phase the signs coincide
-    (gate_errors_trig) and the counts are those of the +1 chain."""
+    (gate_errors_trig) and the counts are those of the +1 chain. The chains are independent and map through
+    parallel.ordered_map (chain_z)."""
     counts: dict[str, Any] = {}
 
     def put(name: str, z: dict[str, float], flips: dict[str, float] | None = None, n: int = 0) -> None:
@@ -1285,28 +1307,11 @@ def device_counts(models: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict
             row["flips"] = {q: [round(shots * (n - 1) * flips[q]), shots * (n - 1)] for q in models}
         counts[name] = row
 
+    keys = [(arm, n, sign, q) for arm, n in group_keys() for sign in dict.fromkeys(SIGNS) for q in models]
+    chains = dict(zip(keys, ordered_map(chain_z, [(arm, n, sign, models[q]) for arm, n, sign, q in keys]), strict=True))
     for arm, n in group_keys():
-        z_by_sign: dict[int, dict[str, float]] = {}
+        z_by_sign = {sign: {q: chains[(arm, n, sign, q)] for q in models} for sign in dict.fromkeys(SIGNS)}
         flips = {}
-        for sign in dict.fromkeys(SIGNS):
-            z_by_sign[sign] = {}
-            for q, m in models.items():
-                eps = m["eps_settle"] if arm == "settle" and m["eps_settle"] is not None else m["eps"]
-                z_by_sign[sign][q] = bloch_z(
-                    arm,
-                    n,
-                    m["t1_s"],
-                    min(m["t2_s"], 2 * m["t1_s"]),
-                    tau_of(arm, m["window_s"]),
-                    eps,
-                    1 - 2 * m["p_init"],
-                    m["prx_p"],
-                    z_eq(m),
-                    angle_scale=m["angle_scale"],
-                    advance=m["advance"],
-                    drive_t2_scale=m["drive_t2_scale"],
-                    sign=sign,
-                )
         for q, m in models.items():
             eps = m["eps_settle"] if arm == "settle" and m["eps_settle"] is not None else m["eps"]
             flips[q] = max(0.0, (1 - (1 - 2 * eps) * math.cos(THETA / n)) / 2)
