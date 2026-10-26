@@ -33,16 +33,16 @@
       "state": "done",
       "receipts": [
         {
-          "result": "new-mesh-offsets.json freezes P-A (58 training meshes) and P-B (86) at 258 free offsets each, committed and pushed in 9e92be5 before any new seed was drawn; P-A reproduces fixed-mesh-frozen-predictions.json to 9e-15. Re-issued after the scope amendment of the outcome rules.",
+          "result": "new-mesh-offsets.json freezes P-A (58 training meshes) and P-B (86) at 258 free offsets each; the offsets and free masks equal, element for element, those committed and pushed in 9e92be5 before any seed was drawn, and the record replays within the fit bounds; P-A reproduces fixed-mesh-frozen-predictions.json to 9e-15.",
           "evidence": [
             {
               "ref": "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json",
-              "sha256": "f5887275150d4f4518941719f7ff22be7f617b8437e70dfcb9d9858e344b4664"
+              "sha256": "bbf0ff9417275275ae17f4b1394e8843ca84fd388eb67e278c4c2af89a9172f1"
             }
           ],
-          "observed_at": "2026-10-26T17:52:54+00:00",
-          "revision": "9e92be5d1706fcecbdecbc769189e787ccf1772e",
-          "scope_sha256": "4e85fdd75e912ef42ca21e43ee9ce2e6189444de7835cff598919771f27d861e"
+          "observed_at": "2026-10-26T20:32:48+00:00",
+          "revision": "55c8e6e2413d1414967190a2d8086388afee858a",
+          "scope_sha256": "571f0f890e32720d522c63c4d1011d65b25db869ba006275707b8ea2808bb10c"
         }
       ]
     },
@@ -56,40 +56,48 @@
       ],
       "receipts": [
         {
-          "result": "ascella_coherence_request.py registers jobs 04 to 06, each 56 new seeds from draw-2026-10-26T174307Z indices 0 to 167 with job-02's seeds skipped plus 8 seed-0 anchors; --check rebuilds jobs 00 to 03 to their retained bytes and validates the three new frozen bodies, none sent; the 224 seeds of jobs 02 and 04 to 06 are distinct and nonzero. Re-issued after the scope amendment of the outcome rules.",
+          "result": "ascella_coherence_request.py registers job-04 (80 iterations, usable draw values 0 to 69) and job-05-i80, -i88 and -i96 (from usable value 70) at 32,768 samples with stride-8 anchors; --check rebuilds jobs 00 to 03 to their retained bytes and validates the four new frozen bodies, none sent; the new seeds are distinct, nonzero and outside job-02's.",
           "evidence": [
             {
               "ref": "results/quandela/cases/ascella_signed_coherence/job-04/cases.json",
-              "sha256": "da7ee78868216fde1a03469da91d995caa8138a6502f1638b13a6e77a0b4d78f"
+              "sha256": "abbe4e5a3bf69ae8fbceefe5607b862fed4a0afdf31276582cc587e8f85718be"
             },
             {
               "ref": "results/quandela/cases/ascella_signed_coherence/job-04/job-body.json",
-              "sha256": "c8ca77a88d6f0f3baa74c147043cf5131a457a8ce365899367b06d595587bb1c"
+              "sha256": "0f905efca9d80cae8933fe187005e18a855c809e1f6336763fbddb8dd9b464b2"
             },
             {
-              "ref": "results/quandela/cases/ascella_signed_coherence/job-05/cases.json",
-              "sha256": "6993abae4327fb315ba9139a5f6699e483c9bf8153845a84e65df7bc7885291f"
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-05-i80/cases.json",
+              "sha256": "0f1f94e5c403ab86aec57449b73b46dd86ccaa1dda37863d79e559144b1b5800"
             },
             {
-              "ref": "results/quandela/cases/ascella_signed_coherence/job-05/job-body.json",
-              "sha256": "f8c757e06fac14112c17f9ab7ac7bcfe28e56be894b40192a19a77bc99e4f1ba"
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-05-i80/job-body.json",
+              "sha256": "134cb95da3d937be027392550c89a5115c028c6dbcbef2cdb4f0aa2dd9f37be8"
             },
             {
-              "ref": "results/quandela/cases/ascella_signed_coherence/job-06/cases.json",
-              "sha256": "2f75bddf9ac546c039d4e262304478577df2a8ed665048faa244d65d90cb5e73"
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-05-i88/cases.json",
+              "sha256": "87a926b794dba5be551293013e85c4f151cffba4b147656849bc352803de576b"
             },
             {
-              "ref": "results/quandela/cases/ascella_signed_coherence/job-06/job-body.json",
-              "sha256": "8b61692cb4da8d5c98dec222bb331a534f5ecd917ed943a0b6f821274835c502"
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-05-i88/job-body.json",
+              "sha256": "839ceb3bcb1aa600747aaa96ea1da8060422f2b3933fac85e4e6e2e8134a3a5b"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-05-i96/cases.json",
+              "sha256": "c50b53d8417a391a5cfe3266b5c6292548e371f3ea12a73a96d3897e044727a4"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-05-i96/job-body.json",
+              "sha256": "5a5930ea773befd617862df8e8a73461aff2f91317f09859bb0f82a34e3fad1c"
             },
             {
               "ref": "docs/evidence/anu_qrng/draw-2026-10-26T174307Z.json",
               "sha256": "f8894a34dee6ae4349a92300b781eb4566b43564e859c5e428df8db00b1b4766"
             }
           ],
-          "observed_at": "2026-10-26T17:52:54+00:00",
-          "revision": "b01c67feeac00d83674e9f77dcccb930aa861703",
-          "scope_sha256": "4ee3274471875d86abc93bd8aa3d6f193cd40567c471a4f81b06e5c5260bb775"
+          "observed_at": "2026-10-26T20:32:48+00:00",
+          "revision": "55c8e6e2413d1414967190a2d8086388afee858a",
+          "scope_sha256": "d1954b4aa90ca1bafd5b7b29b21ce4c74a1a3007000ec19f96251669d6460f6c"
         }
       ]
     },
