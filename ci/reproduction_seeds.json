@@ -3,6 +3,36 @@
  "description": "Seed literals that reproduce retained records, approved plans and known meshes; ci/seed_provenance.py checks the tree against them. Rows only shrink: a new seed takes an ANU QRNG value through docs/evidence/anu_qrng/allocations.json.",
  "seeds": [
   {
+   "path": "docs/evidence/c5_zero_divisor_code/replay-exact.py",
+   "name": "SEED",
+   "value": 314,
+   "count": 1
+  },
+  {
+   "path": "docs/evidence/c5_zero_divisor_code/replay.py",
+   "name": "SEED",
+   "value": 314,
+   "count": 1
+  },
+  {
+   "path": "docs/notes/build_host/probe_custatevec.py",
+   "name": "SEED",
+   "value": 20261016,
+   "count": 1
+  },
+  {
+   "path": "docs/notes/build_host/probe_custatevec.py",
+   "name": "seed",
+   "value": 1234,
+   "count": 1
+  },
+  {
+   "path": "docs/notes/build_host/probe_custatevec.py",
+   "name": "seed_transpiler",
+   "value": 7,
+   "count": 1
+  },
+  {
    "path": "gororoba_quantum/adjudicate.py",
    "name": "ANALYSIS_SEED",
    "value": 20261011,
