@@ -106,6 +106,18 @@ def test_pooled_sweep_rows_equal_the_serial_rows(monkeypatch: pytest.MonkeyPatch
 
 
 @pytest.mark.audit
+def test_pooled_diagnostic_projection_equals_the_serial_one(monkeypatch: pytest.MonkeyPatch) -> None:
+    analysis = case.load_json(case.DIAGNOSTIC_ANALYSIS)
+    excerpt = case.load_json(case.DIAGNOSTIC_EXCERPT)
+    serial = case.project_diagnostic(analysis, excerpt)
+    pool = case.ordered_map
+    monkeypatch.setattr(case, "ordered_map", lambda function, items, min_items=1: pool(function, items, min_items=1))
+    pooled = case.project_diagnostic(analysis, excerpt)
+    if pooled != serial or list(pooled) != list(analysis["qubits"]):
+        raise AssertionError("the pooled diagnostic projection differs from the serial one")
+
+
+@pytest.mark.audit
 def test_self_test_holds() -> None:
     if "measurement sequence pinching" not in case.self_test(with_sweep=False):
         raise AssertionError("the self-test summary changed")

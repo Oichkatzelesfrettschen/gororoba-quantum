@@ -1318,14 +1318,17 @@ def project_diagnostic(analysis: dict[str, Any], excerpt: dict[str, Any]) -> dic
     """Per diagnosed qubit, the diagnostic's pi/2-pair N = 16 corrected difference (measured minus modeled P0) divided
     by the case's statistical standard error at SHOTS: the z of an absolute test of the unitary arm against the model
     if the 1000-shot difference were the qubit's systematic. Descriptive: the selection does not use it, because the
-    1000-shot differences scatter across qubits beyond their errors."""
+    1000-shot differences scatter across qubits beyond their errors. The per-qubit standard errors are independent and
+    map through parallel.ordered_map."""
+    usable = [q for q, row in analysis["qubits"].items() if row["usable"]]
+    ses = dict(zip(usable, ordered_map(unitary_statistical_se, [excerpt["qubits"][q] for q in usable]), strict=True))
     out: dict[str, Any] = {}
     for q, row in analysis["qubits"].items():
         if not row["usable"]:
             out[q] = {"usable": False, "reason": row["reason"], "beyond_absolute_test": True}
             continue
         reading = row["corrected"]["d6-pair-n16"]
-        se = unitary_statistical_se(excerpt["qubits"][q])
+        se = ses[q]
         z = reading["difference"] / se
         out[q] = {
             "usable": True,
