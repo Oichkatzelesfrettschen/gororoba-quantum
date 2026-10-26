@@ -1,0 +1,105 @@
+{
+  "schema": "work-plan-v1",
+  "id": "a5-rank-strata-equations",
+  "kind": "implementation",
+  "summary": "Give every A_5 rank stratum closed equations (E8-bar = {Q = 0, Delta = 0, rank [u; v; u ^ v] <= 2}) and re-derive the covering over Q without the author's slice certificates, admitting a5-rank-strata-equations after an independent review.",
+  "sources": [
+    "docs/evidence/a5-zero-divisor-strata/verification.md",
+    "docs/evidence/a5-rank-strata-equations/README.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "The record and claim are on branch geometry/a5-e8bar-equations; admission waits on the independent review and the merge."
+  },
+  "scope": "Evidence bundle docs/evidence/a5-rank-strata-equations (script, result.json, README), the claim a5-rank-strata-equations, and the boundary text of a5-zero-divisor-strata and dimension32-global-topology.",
+  "owner": "repository maintainer",
+  "next_action": "Read the independent opus review of the record and answer every finding before opening the pull request.",
+  "related": [
+    "a5-zero-divisor-strata-admission"
+  ],
+  "claims": [
+    "a5-rank-strata-equations",
+    "a5-zero-divisor-strata"
+  ],
+  "steps": [
+    {
+      "id": "covering-over-q",
+      "state": "done",
+      "action": "Re-derive the G_2 orbit facts F1-F4 and the equivariance of C'_z from cd_core, and decide the six slice tables of orders 12, 10, 8 by radical equality over Q in Singular.",
+      "acceptance": "Fails if the derivation algebra is not 14-dimensional, any orbit-fact computation fails, or any of the 18 slice radical inclusions fails.",
+      "receipts": [
+        {
+          "result": "rederive_strata_equations.py: derivation algebra of dimension 14, D_(x,y) x = 4 (eta(x) y - eta(x,y) x), stabilizer of e'_1 acting as sl_3 on 3-dimensional null eigenspaces, null-vector orbits of dimension 6, isotropic-plane rank locus inside L (4 linear forms in the radical), sl_2 on L / n0, congruence M(Dz) = -(D^T M + M D); all 18 slice radical inclusions hold over Q in Singular 4.4.1.",
+          "observed_at": "2026-10-26T04:32:37+00:00",
+          "revision": "7aac2eed0e8fd6a2711020b728bedb927faf23ed",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/result.json",
+              "sha256": "ba6cd2d6ab3eeb73f4a75dd0f0aa9ea7ff6ba8b3d8568b01752793c95e203761"
+            },
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py",
+              "sha256": "67d6aba09e36a310c7f8d3f897a6e88a46bac9a8075cc3ce8cf5aa02fd76e3f9"
+            }
+          ],
+          "scope_sha256": "7274dd6abb836e6a4b3df17eeb068d577db1058e99773f43f32db16f8895941c"
+        }
+      ]
+    },
+    {
+      "id": "global-containments",
+      "state": "done",
+      "action": "Show every principal Pfaffian of C_z of order 12, 10, 8 lies in the ideal of each piece of its stratum, over Q in 15 variables.",
+      "acceptance": "Fails if any Pfaffian has a nonzero normal form modulo a standard basis of a piece ideal and lies outside the piece radical.",
+      "receipts": [
+        {
+          "result": "Every one of the 455, 3003 and 6435 principal Pfaffians of orders 12, 10, 8 reduces to 0 modulo standard bases of the ideals of Ehat and W8, V and B9, N_+ and N_- over Q in 15 variables.",
+          "observed_at": "2026-10-26T04:32:37+00:00",
+          "revision": "7aac2eed0e8fd6a2711020b728bedb927faf23ed",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/result.json",
+              "sha256": "ba6cd2d6ab3eeb73f4a75dd0f0aa9ea7ff6ba8b3d8568b01752793c95e203761"
+            },
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py",
+              "sha256": "67d6aba09e36a310c7f8d3f897a6e88a46bac9a8075cc3ce8cf5aa02fd76e3f9"
+            }
+          ],
+          "scope_sha256": "412cf379b5ce1e8cd76fb3d7bfbd8f3c0c8ce06c3cba18754d3654aabc366023"
+        }
+      ]
+    },
+    {
+      "id": "ehat-equals-e8bar",
+      "state": "done",
+      "action": "Prove Ehat = E8-bar: saturation of the Ehat ideal by mu'(u'_1 v'_2 - u'_2 v'_1), the case analysis on the open part, dimension 11, degree 24 and a smooth E8 point.",
+      "acceptance": "Fails if the saturation exceeds the Ehat ideal, the dimension is not 11, the Jacobian rank at the E8 point is not 4, or a mutation control passes.",
+      "receipts": [
+        {
+          "result": "Saturation of the Ehat ideal by mu'(u'_1 v'_2 - u'_2 v'_1) equals the ideal; std has dimension 11 and degree 24; Jacobian rank 4 at the P3a point (1, 3, 2, 5, 4); Q on P3a is d^2 - b^2 - m^2; self-test 8 of 8 controls in normal and -O modes.",
+          "observed_at": "2026-10-26T04:32:37+00:00",
+          "revision": "7aac2eed0e8fd6a2711020b728bedb927faf23ed",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/result.json",
+              "sha256": "ba6cd2d6ab3eeb73f4a75dd0f0aa9ea7ff6ba8b3d8568b01752793c95e203761"
+            },
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py",
+              "sha256": "67d6aba09e36a310c7f8d3f897a6e88a46bac9a8075cc3ce8cf5aa02fd76e3f9"
+            }
+          ],
+          "scope_sha256": "214845677baf8ba7828400b62b2c0cd21c72d3cdb06d2e68bab0cc344b3e7e2d"
+        }
+      ]
+    },
+    {
+      "id": "independent-review",
+      "state": "todo",
+      "action": "Have a fresh opus reviewer, given the script and README without the author's conclusion, attempt to break the computations and proofs.",
+      "acceptance": "Fails if a finding refutes a statement or leaves a proof gap that the record does not close or bound."
+    }
+  ]
+}
