@@ -26,6 +26,7 @@ from qiskit.transpiler import Target
 
 import law_encoding
 import local_compute
+import measurement_sequence_analysis
 import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
@@ -1025,7 +1026,7 @@ def measurement_sequence_candidates(
         raise runtime.LiveRunError("measurement-sequence needs --layout: it has no retained default qubits")
     qubits = [int(qubit) for qubit in declared]
     expected_kinds = sorted(
-        ["static"] * (4 * len(MSQ_STEPS) + 4 + len(MSQ_T1_MICROSECONDS))
+        ["static"] * (4 * len(MSQ_STEPS) + 4 + 1 + len(MSQ_T1_MICROSECONDS))
         + ["dynamic"] * (4 * len(MSQ_DYNAMIC_STEPS) + 4)
     )
     candidates = []
@@ -1063,7 +1064,9 @@ def measurement_sequence_candidates(
                         raise runtime.LiveRunError(f"{group.name}: {violations}")
                     operations = isa.count_ops()
                     arm = member.name.split("_")[1]
-                    if arm == "t1":
+                    if arm == "ro0":
+                        measures, delays_expected, steps = 1, 1, 0
+                    elif arm == "t1":
                         index = int(member.name.split("_d")[1].split("_")[0])
                         measures, delays_expected = 1, 1 + int(t1_delays[index] > 0)
                         steps = 0
@@ -1925,6 +1928,39 @@ def prepare(
 
 
 def measured_family(
+    record: dict[str, Any],
+    distributions: dict[str, list[np.ndarray]],
+    executed: dict[str, Any],
+    runtime: Any,
+    *,
+    correction_evidence: list[dict[str, Any]] | None = None,
+    replica_registers: dict[str, dict[str, list[str]]] | None = None,
+) -> dict[str, Any]:
+    """The family analysis of a collected record: the precision endpoints and, for measurement-sequence, the
+    preregistered pinching decisions beside them.
+
+    The pinching analysis (measurement_sequence_analysis.collected) reads every member of both jobs through one
+    readout correction, so it runs only when the members executed under one calibration
+    (runtime._comparisons_withheld); otherwise it reports the reason.
+    """
+    analysis = _measured_contracts(
+        record,
+        distributions,
+        executed,
+        runtime,
+        correction_evidence=correction_evidence,
+        replica_registers=replica_registers,
+    )
+    if record.get("family_configuration", {}).get("name") != MSQ_FAMILY:
+        return analysis
+    members = sorted(name for name in distributions if name.startswith("msq_"))
+    reason = runtime._comparisons_withheld(members, executed) if members else "no measured members"
+    if reason:
+        return {**analysis, "pinching": {"schema": measurement_sequence_analysis.SCHEMA, "withheld": reason}}
+    return {**analysis, "pinching": measurement_sequence_analysis.collected(record, distributions, executed)}
+
+
+def _measured_contracts(
     record: dict[str, Any],
     distributions: dict[str, list[np.ndarray]],
     executed: dict[str, Any],

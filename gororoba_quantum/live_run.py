@@ -155,6 +155,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "live_run.py",
     "local_compute.py",
     "maximal_experiments.py",
+    "measurement_sequence_analysis.py",
     "modular_arithmetic.py",
     "n21_exact_planning.py",
     "native_preflight.py",
@@ -2932,6 +2933,24 @@ def choice_calibration_values(choice: Choice) -> dict[str, Any]:
 
 
 PLACED_QUBIT_FIELDS = ("T1", "T2", "readout_error", "prob_meas1_prep0", "prob_meas0_prep1", "frequency")
+
+
+def placed_gate_calibration(properties: Any, qubits: list[int]) -> dict[str, dict[str, float]]:
+    """Per executing qubit, the sx error and duration and the measure duration in seconds.
+
+    The measurement-sequence analysis models each RX step with two sx and each mid-circuit measurement with the
+    Target's measure duration; BackendProperties reports gate and readout lengths in seconds.
+    """
+    if properties is None:
+        return {}
+    return {
+        str(qubit): {
+            "sx_error": float(properties.gate_error("sx", qubit)),
+            "sx_duration_s": float(properties.gate_length("sx", qubit)),
+            "measure_duration_s": float(properties.readout_length(qubit)),
+        }
+        for qubit in qubits
+    }
 
 
 def placed_qubit_calibration(properties: Any, qubits: list[int]) -> dict[str, dict[str, float]]:
@@ -5751,6 +5770,11 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                         props_then,
                         sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
                     )
+                    if record.get("family_configuration", {}).get("name") == "measurement-sequence":
+                        executed[name]["placed_gate_calibration"] = placed_gate_calibration(
+                            props_then,
+                            sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
+                        )
                     calibration = props_then.last_update_date
                     sims_by_calibration.setdefault(calibration, at[window[0]][1])
                     replay_batches.setdefault(calibration, []).append(entry)

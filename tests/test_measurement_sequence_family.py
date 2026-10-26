@@ -148,22 +148,23 @@ def test_group_split_by_job_kind(groups: list[Any]) -> None:
     for group in groups:
         dynamic = group.name.startswith("msq_dynamic_")
         check({is_dynamic(member.circuit) for member in group.members} == {dynamic})
-        check(len(group.members) == (20 if dynamic else 29))
+        check(len(group.members) == (20 if dynamic else 30))
 
 
 def test_member_order_signs_and_names(groups: list[Any]) -> None:
     static = groups[0]
     names = [member.name for member in static.members]
     check(names[:4] == [f"msq_delay_n1_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
-    check(names[-13:-9] == [f"msq_delay_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
-    check(names[-9:-5] == [f"msq_unitary_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
+    check(names[-14:-10] == [f"msq_delay_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
+    check(names[-10:-6] == [f"msq_unitary_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
+    check(names[-6] == "msq_ro0_q57")
     check(names[-5:] == [f"msq_t1_d{k}_q57" for k in range(5)])
     dynamic_names = [member.name for member in groups[1].members]
     check(dynamic_names[:4] == [f"msq_measure_n2_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
     check(dynamic_names[-8:-4] == [f"msq_measure_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
     check(dynamic_names[-4:] == [f"msq_settle_n16_{tag}_q57" for tag in ("pa", "ma", "mb", "pb")])
     for group in groups:
-        signed = [member for member in group.members if "_t1_" not in member.name]
+        signed = [member for member in group.members if "_t1_" not in member.name and "_ro0_" not in member.name]
         for start in range(0, len(signed), 4):
             quad = signed[start : start + 4]
             signs = []
@@ -403,7 +404,7 @@ def test_member_compilations_match_the_serial_compile(
     prereadouts = {q: 480 for q in qubits}
     built = de.measurement_sequence_groups(qubits, delays, settles, prereadouts, T1_IDLES)
     work = [(m.circuit, int(g.name.rsplit("_q", 1)[1])) for g in built for m in g.members]
-    check(len(work) == 49 * len(qubits))
+    check(len(work) == 50 * len(qubits))
     serial = [live_run._compile(c, snapshot, live_run.SEED_TRANSPILER, [q]) for c, q in work]
     monkeypatch.setenv("GOROROBA_WORKERS", workers)
     compiler = qpu_planning.MemberCompiler(snapshot.admission_target, live_run.SEED_TRANSPILER, plugin)
@@ -428,5 +429,11 @@ def test_case_text_states_the_settle_gap_as_a_hypothesis() -> None:
     check("a tail slower than 2 us stays unexcluded" in text)
     check("excludes a readout tail" not in text)
     check("bounds a readout tail that decays within 2 us" in text)
+    check(
+        "ro0" in text
+        and "family_analysis.pinching" in text
+        and "uninformative" in text
+        and "gate_model_unbounded" in text
+    )
     check("and a readout tail. The calibration" not in text)
     check("do not bias the read" not in text)

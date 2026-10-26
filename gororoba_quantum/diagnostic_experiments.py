@@ -423,6 +423,11 @@ MSQ_PREREADOUT_SECONDS = 2.0e-6
 # analysis fits T1 from these members for the measure-arm and settle
 # predictions instead of the Target's T1. A zero duration omits the idle.
 MSQ_T1_MICROSECONDS = (0, 20, 50, 100, 200)
+# The zero-pulse readout member: the pre-readout idle, then the final measurement. With the t1 member at idle 0
+# (the same circuit after one x) it brackets the final read's assignment channel, offset and scale, for every
+# member of both jobs: the family runs with no twirling and no dynamical decoupling, so the static and dynamic
+# jobs read through the same unsymmetrized measure after the same wait.
+MSQ_RO0 = "ro0"
 # The measure arm at N = 1 would read the delay arm's ideal and, with its
 # pre-readout delay between two measurements, would fuse as a dynamic PUB, so it
 # does not run; every measure member is dynamic.
@@ -448,6 +453,7 @@ MSQ_ARM_STEPS = {
     "unitary": "rx(sign * THETA / 16), barrier, repeated 16 times; measure into final",
     "settle": "rx(sign * THETA / 16), measure into mcm, delay of 2 us, repeated 16 times; measure into final",
     "t1": "x, delay of 0, 20, 50, 100 or 200 us, delay of 2 us, measure into final",
+    "ro0": "delay of 2 us, measure into final",
 }
 # Two-sided half-widths every endpoint must reach at the family-wise alpha
 # split over 17 endpoints per qubit (4 measure P0, 5 delay P0, the unitary P0,
@@ -530,6 +536,20 @@ def msq_t1_circuit(index: int, qubit: int, idle_dt: int, prereadout_dt: int) -> 
     return circuit
 
 
+def msq_ro0_member(qubit: int) -> str:
+    return f"msq_{MSQ_RO0}_q{qubit}"
+
+
+def msq_ro0_circuit(qubit: int, prereadout_dt: int) -> QuantumCircuit:
+    """The pre-readout idle, then the final measurement of a qubit that starts in |0>."""
+    if type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError("the pre-readout delay must be a positive integer number of dt")
+    circuit = QuantumCircuit(QuantumRegister(1, "q"), ClassicalRegister(1, "final"), name=msq_ro0_member(qubit))
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, 0)
+    return circuit
+
+
 def msq_pinched_p0(steps: int) -> float:
     """Ideal final P0 of the measure arm: (1 + cos(THETA / N) ** N) / 2."""
     return (1.0 + math.cos(MSQ_THETA / steps) ** steps) / 2.0
@@ -598,7 +618,7 @@ def msq_members(
 ) -> tuple[tuple[Member, ...], tuple[Member, ...]]:
     """(static members, dynamic members) of one qubit, in execution order.
 
-    Static: the delay arm at each N, then the unitary arm. Dynamic:
+    Static: the delay arm at each N, the unitary arm, then ro0. Dynamic:
     the measure arm at N >= 2, then the settle arm. Within an (arm, N) the order is +, -, -, +. The
     static members end with the t1 members, one per idle, whose ideal is the noise-free P1 = 1 and whose
     decay the noise model prices from the Target's T1.
@@ -631,6 +651,12 @@ def msq_members(
     static = [
         *(m for steps in MSQ_STEPS for m in build("delay", steps)),
         *build("unitary", MSQ_UNITARY_STEPS),
+        Member(
+            msq_ro0_member(qubit),
+            msq_ro0_circuit(qubit, prereadout_dt),
+            np.asarray([1.0, 0.0]),
+            weights=np.asarray([1.0, 0.0]),
+        ),
         *(
             Member(
                 msq_t1_member(index, qubit),
@@ -665,6 +691,8 @@ def _msq_summary(distributions: dict[str, np.ndarray], qubit: int) -> dict[str, 
             if arm in MSQ_MEASURING_ARMS:
                 prefix = "" if arm == "measure" else f"{arm}_"
                 result[f"q{qubit}_msq_{prefix}deficit_n{steps}"] = msq_pinched_p0(steps) - pooled
+    if msq_ro0_member(qubit) in distributions:
+        result[f"q{qubit}_msq_p1_ro0"] = float(distributions[msq_ro0_member(qubit)][1])
     for index in range(len(MSQ_T1_MICROSECONDS)):
         name = msq_t1_member(index, qubit)
         if name in distributions:

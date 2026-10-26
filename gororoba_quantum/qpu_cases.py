@@ -1734,7 +1734,9 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "Five t1 "
             "members (x, an idle of 0, 20, 50, 100 or 200 us, the pre-readout idle, a measurement) measure "
             "the qubit's relaxation in the job; the case analysis fits T1 from them and uses it, not the Target's "
-            "T1, for the measure-arm and settle predictions. The signed arms run in the order +, -, -, + "
+            "T1, for the measure-arm and settle predictions. A zero-pulse member (ro0: the pre-readout idle, a "
+            "measurement) and the t1 member at idle 0 bracket the final read's offset and scale, which corrects "
+            "every arm. The signed arms run in the order +, -, -, + "
             "and share their ideal law because cosine is even.",
             "",
             "The measure arm's ideal final P0 is (1 + cos(THETA / N) ** N) / 2 and the delay and unitary arms' is "
@@ -1751,6 +1753,22 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "design: the final P0 pooled over the four signed members of each arm at each N (half-width 0.03), "
             "and the measure minus unitary contrast at N = 16 (half-width 0.055), the mutation-test endpoint. They "
             "price resolution, not an effect; the Hoeffding radii hold under arbitrary dependence between PUBs.",
+            "",
+            "The preregistered pinching analysis (collect.json, family_analysis.pinching; "
+            "docs/design/measurement-sequence-pinching.md, Decision rule) corrects each read through ro0 and the "
+            "t1 member at idle 0, fits T1 and the equilibrium parameter in the job, and models each arm with a "
+            "Bloch iteration that uses the Target's sx error and the measure duration. Per qubit, the mutation test "
+            "passes when the N = 16 contrast exceeds 0.5 by 3 standard errors; the departure test compares the "
+            "measure arm's N = 16 P0 with the ideal-projective prediction at 3 standard errors, both sides; the "
+            "settle test asks whether lengthening the gap from zero to 2 us changes the deficit. The unitary arm "
+            "tests the gate model in the job: its residual sets the measure-arm shift that a depolarizing, "
+            "drive-dephasing, axis-tilt or over-rotation error could produce, and that shift adds to the "
+            "departure standard error, floored at a measured model scatter that no retained Heron run yet supplies: "
+            "until one is registered, a fired departure verdict reads gate_model_unbounded and nothing is "
+            "attributed to the measurement. A qubit whose mutation test fails or "
+            "whose widened standard error exceeds twice its planning value is uninformative. A device verdict "
+            "fires when two informative qubits agree or the pooled z reaches 3; with fewer than two informative "
+            "qubits the device reads uninformative, and none always means a clean null.",
             "",
         ]
     if family == "state-prep-control":

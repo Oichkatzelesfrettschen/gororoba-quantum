@@ -22,6 +22,34 @@
    "value": 28807,
    "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
    "index": 0
+  },
+  {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 29206,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 27743,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 23218,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 58511,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 3
   }
  ],
  "runtime": []

@@ -2173,7 +2173,7 @@ def _verify_state_prep_only() -> None:
 
 
 def _verify_measurement_sequence_family() -> None:
-    """measurement-sequence pins each member to its qubit, fuses 29 static and 20 dynamic PUBs, admits 8192 shots."""
+    """measurement-sequence pins each member to its qubit, fuses 30 static and 20 dynamic PUBs, admits 8192 shots."""
     backend = _ProbeBackend("measurement_sequence_fixture", FakeFez())
     service = _ProbeService([backend])
     with redirect_stdout(io.StringIO()):
@@ -2224,7 +2224,7 @@ def _verify_measurement_sequence_family() -> None:
         _require([r.qubits for r in choice.replicas] == [[qubit]], f"{choice.group.name}: moved off qubit {qubit}")
     pubs = live_run.execution_pubs(choices)
     _require(
-        sorted(pub.kind for pub in pubs) == ["dynamic"] * 20 + ["static"] * 29, "the members fused into other PUBs"
+        sorted(pub.kind for pub in pubs) == ["dynamic"] * 20 + ["static"] * 30, "the members fused into other PUBs"
     )
     for pub in pubs:
         covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
@@ -2260,7 +2260,7 @@ def _verify_measurement_sequence_only() -> None:
         _verify_measurement_sequence_family()
     print(
         "QPU planning: measurement-sequence pins each member to its named qubit with the qubit's calibrated "
-        "measure duration, fuses 29 static and 20 dynamic PUBs over every qubit, plans nothing without --layout and "
+        "measure duration, fuses 30 static and 20 dynamic PUBs over every qubit, plans nothing without --layout and "
         "admits 8192 shots"
     )
 

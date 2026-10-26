@@ -201,7 +201,7 @@ differs from it only in the `cd_core.py` digest.
 | [evidence/sedenion-clifford-envelope/README.md](evidence/sedenion-clifford-envelope/README.md) | exact eight-generator Cl(0,8) envelope spanning M16(R) |
 | [evidence/hypercomplex-operators/README.md](evidence/hypercomplex-operators/README.md) | exact replay, probability explorer and distribution inventory |
 | [design/et-rows.md](design/et-rows.md) | ET-row device experiment |
-| [design/measurement-sequence-pinching.md](design/measurement-sequence-pinching.md) | `measurement-sequence` family: N rotations each followed by a mid-circuit measurement against an elapsed-time-matched delay, ideal pinching law, endpoints and Tuna-17 port |
+| [design/measurement-sequence-pinching.md](design/measurement-sequence-pinching.md) | `measurement-sequence` family: N rotations each followed by a mid-circuit measurement against an elapsed-time-matched delay, ideal pinching law, endpoints, the preregistered decision rule with its model and Aer validation tables, and Tuna-17 port |
 | [design/hybrid-shor.md](design/hybrid-shor.md) | hybrid Shor architecture for IBM Heron r2 |
 | [design/provider-access-requests.md](design/provider-access-requests.md) | access-request drafts for Quantinuum, D-Wave, Classiq, OQC, Rigetti, SuperQ and Kipu, with the review checklist |
 | [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
