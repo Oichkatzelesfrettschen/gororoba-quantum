@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta publisher="University of Zielona Góra">
+	
+	<title>DM-GAA</title>
+	
+		
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<link rel="apple-touch-icon" sizes="180x180" href="https://www.dmgaa.uz.zgora.pl/images/dmgaa/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="https://www.dmgaa.uz.zgora.pl/images/dmgaa/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="https://www.dmgaa.uz.zgora.pl/images/dmgaa/favicon-16x16.png">
+		<link rel="manifest" href="https://www.dmgaa.uz.zgora.pl/images/dmgaa/manifest.json">
+		<link rel="mask-icon" href="https://www.dmgaa.uz.zgora.pl/images/dmgaa/safari-pinned-tab.svg" color="#5bbad5">
+		<link rel="shortcut icon" href="https://www.dmgaa.uz.zgora.pl/images/dmgaa/favicon.ico">
+		<meta name="msapplication-config" content="https://www.dmgaa.uz.zgora.pl/images/dmgaa/browserconfig.xml">
+		<meta name="theme-color" content="#ffffff">
+
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/bootstrap.min.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/bootstrapValidator.min.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/dataTables.bootstrap.min.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/buttons.dataTables.min.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/bootstrap-datepicker.min.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/bootstrap-datepicker3.min.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/font-awesome.min.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/cookieconsent.min.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/sidebar.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/select2.min.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/extlibs/css/select2-bootstrap.css?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/php/style.css.php?v=2505120720" />
+		<LINK REL=StyleSheet HREF="https://www.dmgaa.uz.zgora.pl/php/pub_utils.css.php?v=2505120720" />
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+			<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/html5shiv.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/respond.min.js?v=2505120720"></script>
+    <![endif]-->
+		
+
+	<script type="text/x-mathjax-config">
+  		MathJax.Hub.Config(
+			{
+				showProcessingMessages : false,
+        		messageStyle : "none" ,    
+        		showMathMenu: false ,				
+        		showMathMenuIE: false ,	
+				tex2jax: {
+					inlineMath: [ ['$','$'], ['\\(','\\)'] ],
+                    displayMath: [ ['$$','$$'] ],
+                    processEscapes: true, 
+    				ignoreClass: "no-mjax",
+    				processClass: "mjax",
+					skipTags: ["header", "nav", "footer", "script", "noscript", "style", "textarea", "pre", "code", "input"]
+				}
+			});
+	</script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/mathjax/MathJax.js?config=TeX-AMS-MML_SVG&v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/tinymce/tinymce.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/php/tiny_setup.js.php?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/jquery.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/bootstrap.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/bootstrap-confirmation.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/bootstrapvalidator.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/cookieconsent.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/tooltip.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/jquery.dataTables.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/bootstrap-datepicker.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/dataTables.buttons.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/jszip.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/pdfmake.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/vfs_fonts.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/buttons.html5.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/buttons.print.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/select2.full.min.js?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/php/cookies.js.php?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/php/pub_utils.js.php?v=2505120720"></script>
+		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/php/dm_adds.js.php?v=2505120720"></script>
+
+    
+</head>
+<body class="no-mjax" >
+<header class="header" id="dm_header">
+	 		<div class="header-row">
+				<div class="cell cell-left">
+
+<h1>DM-GAA</h1>
+<p>ISSN 1509-9415 (print version)
+<p>ISSN 2084-0373 (electronic version)
+<p><a href="https://doi.org/10.7151/dmgaa">https://doi.org/10.7151/dmgaa </a>
+
+				</div>
+				<div class="cell cell-mid-r1">
+<h1>Discussiones&nbsp;Mathematicae&nbsp;- General&nbsp;Algebra&nbsp;and&nbsp;Applications</h1>
+				</div>
+				<div class="cell cell-right">
+<p>Cite Score (2023): 0.6</p><p>SJR (2023): 0.214</p><p>SNIP (2023): 0.604</p><p>Index Copernicus (2022): 121.02</p><p>H-Index: 5</p>
+				</div>
+			</div>
+	 		<div class="header-row">
+				<div class="cell cell-mid-r2">
+<h1>Discussiones&nbsp;Mathematicae&nbsp;- General&nbsp;Algebra&nbsp;and&nbsp;Applications</h1>
+				</div>
+			</div>
+</header>
+
+<nav class="navbar navbar-custom-top navbar-static-top"  id="topnavbar" role="navigation" >
+  <div class="container-fluid">
+    <div class="navbar-header">
+		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#dmNavbar">
+        	<span class="icon-bar"></span>
+        	<span class="icon-bar"></span>
+        	<span class="icon-bar"></span>                        
+      	</button>
+      <a class="navbar-brand" href="#" onclick="toggleItems();"><span id="dm_switch_full_screen" class="glyphicon glyphicon-resize-small" style="font-size: 1.5em; margin-top: -2px;"></span> </a> 
+      <a class="navbar-brand" href="https://www.dmgaa.uz.zgora.pl/index.php"><span class="fa fa-home fa-lg  icon-home" ></span>DM-GAA</a>
+    </div>
+<div class="collapse navbar-collapse" id="dmNavbar">		
+	<ul class="nav navbar-nav">	
+		<li><a href="https://www.dmgaa.uz.zgora.pl/system_pages/display_page.php?98E272EEB4927C325600">Editors</a></li>
+	</ul>	
+		
+	<ul class="nav navbar-nav">	
+		<li><a href="https://www.dmgaa.uz.zgora.pl/system_pages/display_page.php?A1A73D9E96AA432F5601">Indexation</a></li>
+	</ul>	
+		
+	<ul class="nav navbar-nav">	
+		<li><a href="/publish/inpress.php">In press</a></li>
+	</ul>	
+		
+	<ul class="nav navbar-nav">	
+		<li><a href="https://www.dmgaa.uz.zgora.pl/system_pages/display_page.php?88C43D99A585201D5602">Contact</a></li>
+	</ul>	
+		
+	<ul class="nav navbar-nav">	
+		<li><a href="https://www.dmgaa.uz.zgora.pl/system_pages/guide.php">Guide for authors</a></li>
+	</ul>	
+		
+	<ul class="nav navbar-nav">	
+		<li><a href="/dmgaa/reviewers.php">Reviewers</a></li>
+	</ul>	
+		
+	<ul class="nav navbar-nav">	
+		<li><a href="https://www.dmgaa.uz.zgora.pl/system_pages/display_page.php?A8D61DAE838062205603">Subscription </a></li>
+	</ul>	
+
+	<ul class="nav navbar-nav">
+		<li><a href="http://creativecommons.org/licenses/by/4.0/" target="_blank">Open Access License</a></li>
+	</ul>
+		
+	<ul class="nav navbar-nav">	
+		<li><a href="https://www.dmgaa.uz.zgora.pl/system_pages/display_page.php?EFF603BE909120235604">Publication Ethics</a></li>
+	</ul>	
+		
+	<ul class="nav navbar-nav">	
+		<li><a href="https://www.dmgaa.uz.zgora.pl/system_pages/policy.php">Privacy statement</a></li>
+	</ul>	
+ 
+<ul class="nav navbar-nav">
+    <li class="dropdown">
+        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Search <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+            <li><a href="https://www.dmgaa.uz.zgora.pl/publish/search_author.php">Author index</a></li>
+            <li><a href="https://www.dmgaa.uz.zgora.pl/publish/search_keyword.php">Keyword index</a></li>
+        </ul>
+    <li>	
+</ul>
+
+</div>
+  </div>
+</nav>
+
+<nav class="navbar navbar-custom-left  sidebar" role="navigation" id="leftnavbar">
+
+	<div class="container-fluid" >
+		<div class="navbar-header" >
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#user_menu">
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"  >User  options</a>
+		</div>	
+	</div>
+
+
+    <div class="container-fluid " >
+  	
+		<div class="collapse navbar-collapse" id="user_menu">
+			<ul class="nav navbar-nav">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/secure/login.php" style="overflow: hidden;">
+    			<span class="pull-left">Login</span>
+    			<span class="icon-r pull-right fa fa-sign-in "></span>
+		</a></li>
+
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/secure/user/register.php" style="overflow: hidden;">
+    			<span class="pull-left">Register</span>
+    			<span class="icon-r pull-right fa fa-user-plus "></span>
+		</a></li>
+
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/system_pages/support.php" style="overflow: hidden;">
+    			<span class="pull-left">Support</span>
+    			<span class="icon-r pull-right fa fa-question-circle "></span>
+		</a></li>
+
+		
+		<li class="divider main-divider"></li>
+
+			</ul>
+		</div>	
+	</div>
+
+	<div class="container-fluid" >
+		<div class="navbar-header" >
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#issues_menu">
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#"  >Issues</a>
+		</div>	
+	</div>
+
+
+    <div class="container-fluid " >
+  	
+		<div class="collapse navbar-collapse" id="issues_menu">
+			<ul class="nav navbar-nav">
+			<li id="j2025" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2025</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=45_1">Vol. 45 No 1</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2024" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2024</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=44_1">Vol. 44 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=44_2">Vol. 44 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2023" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2023</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=43_1">Vol. 43 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=43_2">Vol. 43 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2022" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2022</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=42_1">Vol. 42 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=42_2">Vol. 42 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2021" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2021</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=41_1">Vol. 41 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=41_2">Vol. 41 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2020" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2020</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=40_1">Vol. 40 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=40_2">Vol. 40 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2019" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2019</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=39_1">Vol. 39 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=39_2">Vol. 39 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2018" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2018</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=38_1">Vol. 38 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=38_2">Vol. 38 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2017" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2017</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=37_1">Vol. 37 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=37_2">Vol. 37 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2016" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2016</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=36_1">Vol. 36 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=36_2">Vol. 36 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2015" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2015</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=35_1">Vol. 35 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=35_2">Vol. 35 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2014" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2014</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=34_1">Vol. 34 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=34_2">Vol. 34 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2013" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2013</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=33_1">Vol. 33 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=33_2">Vol. 33 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2012" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2012</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=32">Vol. 32</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2011" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2011</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=31_1">Vol. 31 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=31_2">Vol. 31 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2010" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2010</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=30_1">Vol. 30 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=30_2">Vol. 30 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2009" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2009</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=29_1">Vol. 29 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=29_2">Vol. 29 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2008" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2008</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=28_1">Vol. 28 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=28_2">Vol. 28 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2007" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2007</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=27_1">Vol. 27 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=27_2">Vol. 27 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2006" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2006</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=26_1">Vol. 26 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=26_2">Vol. 26 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2005" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2005</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=25_1">Vol. 25 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=25_2">Vol. 25 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2004" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2004</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=24_1">Vol. 24 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=24_2">Vol. 24 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2003" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2003</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=23_1">Vol. 23 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=23_2">Vol. 23 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2002" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2002</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=22_1">Vol. 22 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=22_2">Vol. 22 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2001" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2001</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=21_1">Vol. 21 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=21_2">Vol. 21 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j2000" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">2000</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=20_1">Vol. 20 No 1</a></li>
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=20_2">Vol. 20 No 2</a></li>
+		
+				</ul>
+			</li>
+			<li id="j1999" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">1999</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=19_1">Vol. 19 No 1</a></li>
+		
+				</ul>
+			</li>
+			<li id="j1998" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">1998</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=18_1">Vol. 18 No 1</a></li>
+		
+				</ul>
+			</li>
+			<li id="j1997" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">1997</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=17_1">Vol. 17 No 1</a></li>
+		
+				</ul>
+			</li>
+			<li id="j1996" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">1996</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=16_1">Vol. 16 No 1</a></li>
+		
+				</ul>
+			</li>
+			<li id="j1995" class=" dropdown ">
+				<a href="#" data-toggle="dropdown"><span class="lead">1995</span> <span class="caret"></span></a>
+				<ul class="dropdown-menu" role="menu">
+
+		<li><a href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=15_1">Vol. 15 No 1</a></li>
+		
+				</ul>
+			</li>
+		
+		<li class="divider main-divider"></li>
+
+			</ul>
+		</div>	
+	</div>
+
+</nav>
+
+<div class="main" id="main_div"><div class="pub-html"><a href="https://www.dmgaa.uz.zgora.pl/publish/pdf.php?doi=1088" class="btn btn-default btn-dm btn-dm-colors pull-right" style="margin-right: 20px;" target="_blank">PDF</a>
+
+<p style="text-indent: 4%" align="justify">
+<a href="/">Discussiones Mathematicae General Algebra and Applications 24(2) (2004)</a>
+
+251-265
+<br><span style="margin-left: 4%;">DOI: </span> <a href="https://doi.org/10.7151/dmgaa.1088">https://doi.org/10.7151/dmgaa.1088</a></p>
+<h2 align="center">ON THE STRUCTURE AND ZERO DIVISORS OF THE CAYLEY-DICKSON SEDENION ALGEBRA</h2>
+
+<p align="center">Raoul E. Cawagas
+
+<p align="center"><i><font size="-1">SciTech R and D Center, OVPRD,<br>
+Polytechnic University of the Philippines, Manila</font></i><br>
+<font size="-1"><b>e-mail:</b></font> <font size="-1">raoulec@yahoo.com</font>
+
+<H2 align="center"> Abstract</H2>
+The algebras <b>C</b> (complex numbers), <b>H</b> (quaternions), and
+<b>O</b> (octonions) are real division algebras obtained from the real
+numbers <b>R</b> by a doubling procedure called the Cayley-Dickson
+Process. By doubling <b>R</b> (dim 1), we obtain <b>C</b> (dim 2),
+then <b>C</b> produces <b>H</b> (dim 4), and <b>H</b> yields <b>O</b> (dim 8).
+The next doubling process applied to <b>O</b>
+then yields an algebra <b>S</b> (dim 16) called the <i>sedenions</i>.
+This study deals with the subalgebra structure of the <em>sedenion algebra</em>
+<b>S</b> and its <em>zero divisors. </em>In particular, it shows that <b>S</b>
+has subalgebras isomorphic to <b>R, C, H, O</b>,
+and a newly identified algebra [<b>O~</b>] called the <em>quasi-octonions </em>that contains the
+zero-divisors of <b>S</b>.
+
+<p>
+<b>Keywords:</b> sedenions, subalgebras, zero divisors, octonions,  quasi-octonions,
+quaternions, Cayley-Dickson process, Fenyves identities.
+
+<p>
+<b>2000 Mathematics Subject Classification:</b> 20N05, 17A45.
+
+<H2 align="center">References</H2>
+<table border="0" width="100%">
+<tr  valign="top"><td  align="right">[1]</td><td>   J. Baez, <em>The octonions</em>, Bull. Amer. Math. Soc. <b>39</b>
+(2) (2001), 145-205.
+</td></tr><tr  valign="top"><td  align="right">[2]</td><td>  R.E. Cawagas,  <em>FINITAS - A software for the
+construction and analysis of finite algebraic structures,</em> PUP Jour. Res.
+Expo., <b>1</b>  No. 1, 1st Semester 1997.
+</td></tr><tr  valign="top"><td  align="right">[3]</td><td>   R.E. Cawagas, <em>Loops embedded in generalized Cayley algebras of dimension 2</em>
+<sup>r</sup>,<em>&nbsp;</em>r <font face=symbol>&#x142;</font> 2, Int. J. Math. Math. Sci. <b>28</b> (2001), 181-187.
+</td></tr><tr  valign="top"><td  align="right">[4]</td><td>   J.H. Conway and  D.A. Smith, <em>On Quaternions and
+Octonions: Their Geometry and Symmetry</em>, A.K. Peters Ltd., Natik, MA, 2003.
+</td></tr><tr  valign="top"><td  align="right">[5]</td><td>K. Imaeda and M. Imaeda, <em>Sedenions: algebra and analysis</em>,
+Appl. Math. Comput. <b>115</b>  (2000), 77-88.
+</td></tr><tr  valign="top"><td  align="right">[6]</td><td>  R.P.C. de Marrais, <em>The 42 assessors and the
+box-kites they fly: diagonal axis-pair systems of zero-divisors in the
+sedenions'16 dimensions</em>, <a href="http://arXiv.org/abs/math.GM/0011260">http://arXiv.org/abs/math.GM/0011260</a> (preprint 2000).
+</td></tr><tr  valign="top"><td  align="right">[7]</td><td> G. Moreno, <em>The zero divisors of the Cayley-Dickson
+algebras over the real numbers</em>, Bol. Soc. Mat. Mexicana (3) <b>4</b> (1998), 13-28.
+</td></tr><tr  valign="top"><td  align="right">[8]</td><td> S. Okubo,  <em>Introduction to Octonions and Other
+Non-Associative Algebras in Physics</em>, Cambridge University Press, Cambridge 1995.
+</td></tr><tr  valign="top"><td  align="right">[9]</td><td>   J.D. Phillips and  P. Vojtechovsky, <em>The varieties
+of loops of the Bol-Moufang type</em>, submitted to Algebra Universalis.
+</td></tr><tr  valign="top"><td  align="right">[10]</td><td>   R.D. Schafer,  <i>An Introduction to Nonassociative Algebras</i>,
+Academic Press, New York 1966.
+</td></tr><tr  valign="top"><td  align="right">[11]</td><td> J.D.H. Smith, <em>A left loop on the 15-sphere</em>,
+J. Algebra <b>176</b> (1995), 128-138.
+</td></tr><tr  valign="top"><td  align="right">[12]</td><td>  J.D.H, Smith,  <em>New developments with octonions and
+sedenions</em>, Iowa State University Combinatorics/Algebra Seminar.
+(January 26, 2004), <a href="http://www.math.iastate.edu/jdhsmith/math/JS26jan4.htm">http://www.math.iastate.edu/jdhsmith/math/JS26jan4.htm</a>
+</td></tr><tr  valign="top"><td  align="right">[13]</td><td>  T. Smith, <em>Why not SEDENIONS?</em>,
+<a href="http://www.innerx.net/personal/tsmith/sedenion.html">http://www.innerx.net/personal/tsmith/sedenion.html</a>
+
+</td></tr><tr  valign="top"><td  align="right">[14]</td><td>J.P. Ward, <i>Quaternions and Cayley Numbers</i>, Kluwer Academic
+ Publishers, Dordrecht 1997.
+</td></tr></table>
+<p align="right">
+Received 19 May 2004<br>
+Revised 25 July 2004<br>
+Revised 30 December 2004
+</div>
+<script>
+$(function(){
+    $(".pub-html a").attr("target","_blank");
+  });
+</script>
+
+<hr class="split-hr"><a class="btn btn-margin btn-default btn-dm" href="https://www.dmgaa.uz.zgora.pl/publish/volume.php?volume=24_2"   >Close</a></div>		<script type="text/javascript" src="https://www.dmgaa.uz.zgora.pl/extlibs/js/dataTables.bootstrap.min.js?v=2505120720"></script>
+		
+    <footer class="navbar-fixed-bottom footer" id="dm_footer">
+Copyright &copy; 2018 - 2025 University of Zielona Góra (build: 2505120720)
+	</footer>
+</body></html>

@@ -39,7 +39,7 @@ acquisition of every provider:
 | mathematical claim | open | 2 |
 | numerical or stochastic simulation | established | 10 |
 | preregistered emulator control | established | 10 |
-| preregistered hardware inference | established | 58 |
+| preregistered hardware inference | established | 59 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |

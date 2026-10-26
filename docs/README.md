@@ -118,7 +118,7 @@ differs from it only in the `cd_core.py` digest.
 | [1003.0429.md](notes/papers/1003.0429.md) | Morier-Genoud and Ovsienko 2011 cubic twisted group algebras; the octonion cochain and the Cayley-Dickson algebras outside the cubic class |
 | [2608.26890.md](notes/papers/2608.26890.md) | Zhilina 2024 diameter 3 of the commutativity graph of the real sedenion zero divisors (arXiv 2026 posting, external-only) |
 | [guterman-zhilina-2023-split-algebras.md](notes/papers/guterman-zhilina-2023-split-algebras.md) | Guterman and Zhilina 2023 split-algebra zero divisors and relation graphs, abstract only (no open copy) |
-| [cawagas-2004-sedenion-structure.md](notes/papers/cawagas-2004-sedenion-structure.md) | Cawagas 2004 sedenion subalgebras and zero divisors, bibliographic identity only (journal host unreachable) |
+| [cawagas-2004-sedenion-structure.md](notes/papers/cawagas-2004-sedenion-structure.md) | Cawagas 2004 sedenion loop census, quasi-octonions and Proposition 2, read in full from the archived PDF and recomputed against `cd_core` (external-only) |
 | [2512.07210.md](notes/papers/2512.07210.md) | Wilmot 2026 sedenion automorphisms: the graded sedenion table and 35-term calibration (both agree with `cd_core`), and the Schafer and Brown discrepancy for `Aut(S)` |
 | [2609.10569.md](notes/papers/2609.10569.md) | Gresnigt 2026 review of the sedenion `S3` family symmetry: Table 5 (11 printed defects against `cd_core`) and the `S3` maps `epsilon` and `psi`, certified on basis pairs |
 | [sources/cayley-dickson-2n-ion-survey.md](sources/cayley-dickson-2n-ion-survey.md) | survey of Cayley-Dickson sources at dimension 16 and above: candidate table, dispositions, convention map and mismatches |
