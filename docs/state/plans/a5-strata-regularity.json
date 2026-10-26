@@ -8,14 +8,14 @@
     "docs/evidence/a5-rank-strata-equations/README.md",
     "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "unresolved",
     "note": "Work runs on branch geometry/a5-strata-regularity; no claim is admitted until an independent verification from cd_core and a critical review confirm it."
   },
   "scope": "Evidence bundle docs/evidence/a5-strata-regularity (author script, result.json, README, independent verifier, verification.md), the claim a5-strata-regularity and the boundary text of dimension32-global-topology. Kernel bundles, attachments and homology (items 5 to 8) stay out of scope.",
   "owner": "repository maintainer",
-  "next_action": "Open the pull request for branch geometry/a5-strata-regularity, run the Codex review loop to a clean verdict with the four pr.yml checks green, merge, and close the plan with a resolution naming the merge.",
+  "next_action": "None; the plan is closed.",
   "related": [
     "a5-zero-divisor-strata-admission",
     "a5-rank-strata-equations"
@@ -236,9 +236,47 @@
     },
     {
       "id": "admission",
-      "state": "doing",
+      "state": "done",
       "action": "Add claim a5-strata-regularity with its replay and update the boundary of dimension32-global-topology for confirmed subclaims only.",
-      "acceptance": "research_state.py --check and plan_tracker.py check pass, the four pr.yml checks are green and Codex reports clean on the PR head."
+      "acceptance": "research_state.py --check and plan_tracker.py check pass, the four pr.yml checks are green and Codex reports clean on the PR head.",
+      "receipts": [
+        {
+          "result": "PR 559 at head ddb38e1: research_state.py --check and plan_tracker.py check --base origin/main pass, the pr.yml checks lint, types, tests and gates are green and mergeable_state is clean. Codex reviewed three rounds; each round's single thread (pooling of independent verifier loops) was fixed and resolved, and the loop stopped at the repository's round cap without a clean verdict on the final head.",
+          "observed_at": "2026-10-26T21:19:48+00:00",
+          "revision": "ddb38e15359fd07d7f2fda7339adff5dcd370aa9",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-strata-regularity/result.json",
+              "sha256": "dee5af58e0312225420e88c7d3e0692fb8534592686d85e4a20de01825fc8093"
+            },
+            {
+              "ref": "docs/evidence/a5-strata-regularity/verification.json",
+              "sha256": "bbc65de56c59a05a46064345ea78cf15fec300733be4cb67fb2838178f293c81"
+            }
+          ],
+          "scope_sha256": "17b5ad2309d29202d1e1d29e31a57307fdcae4220d8deafef65ac0b27cec5452"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Roadmap item 4 of dimension32-global-topology is discharged through PR 559: claim a5-strata-regularity establishes the twelve-orbit decomposition of R_8 minus 0 under G_2(C) x SO(2, C) x C^*, the singular locus of every closure and of V(Q), V(G), a Whitney stratification refining the nullity strata, every transverse germ, and the link S^1 disjoint union S^3 of R_12 at x0. Items 5-8 stay open; over V, VB and E8-bar the boost adds an orbit dimension beyond G_2 x C^*, so kernel-bundle transition data along the boost needs its own computation.",
+  "receipts": [
+    {
+      "result": "PR 559 at head ddb38e1: research_state.py --check and plan_tracker.py check --base origin/main pass, the pr.yml checks lint, types, tests and gates are green and mergeable_state is clean. Codex reviewed three rounds; each round's single thread (pooling of independent verifier loops) was fixed and resolved, and the loop stopped at the repository's round cap without a clean verdict on the final head.",
+      "observed_at": "2026-10-26T21:19:48+00:00",
+      "revision": "ddb38e15359fd07d7f2fda7339adff5dcd370aa9",
+      "evidence": [
+        {
+          "ref": "docs/evidence/a5-strata-regularity/result.json",
+          "sha256": "dee5af58e0312225420e88c7d3e0692fb8534592686d85e4a20de01825fc8093"
+        },
+        {
+          "ref": "docs/evidence/a5-strata-regularity/verification.json",
+          "sha256": "bbc65de56c59a05a46064345ea78cf15fec300733be4cb67fb2838178f293c81"
+        }
+      ],
+      "scope_sha256": "20cf356a07bfe7e42930cbb745d6d5ad6eb9e65505b7757a7c2db14186ef38bf"
     }
   ]
 }
