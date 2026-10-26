@@ -4216,7 +4216,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py",
    "name": "core-687",
    "seconds": 15.0,
    "tier": "pr"
@@ -4277,6 +4277,15 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/primorial_null_residuals.py --check docs/evidence/primorial_cover/null_residuals.json --run results/kaggle/2026-10-25T185707Z-gororoba-primorial-null-residuals",
    "name": "core-primorial-null-residuals-replay",
    "seconds": 14.0,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_bound_residuals.py --check docs/evidence/primorial_cover/bound_residuals.json --run results/kaggle/2026-10-25T221805Z-gororoba-primorial-bound-residuals",
+   "name": "core-primorial-bound-residuals-replay",
+   "seconds": 376.0,
    "tier": "full",
    "workers": "all"
   },

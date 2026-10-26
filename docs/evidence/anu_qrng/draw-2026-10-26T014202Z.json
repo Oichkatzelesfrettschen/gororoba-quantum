@@ -1,0 +1,11 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=1&type=uint16",
+ "retrieved_utc": "2026-10-26T014202Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"1\", \"data\": [64095]}",
+ "raw_sha256": "f8de319c2ff96f5471e826c0fd8cb71a43ca59c1240966be248c9110abd04bd3",
+ "type": "uint16",
+ "values": [
+  64095
+ ]
+}
