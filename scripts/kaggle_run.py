@@ -1432,8 +1432,8 @@ def dataset(args: argparse.Namespace) -> int:
     with tempfile.TemporaryDirectory() as scratch:
         staging = Path(scratch)
         with tarfile.open(staging / ARCHIVE, "w:gz") as archive:
-            for path in files:
-                archive.add(path, arcname=path.relative_to(ROOT).as_posix(), recursive=False)
+            for member in files:
+                archive.add(member, arcname=member.relative_to(ROOT).as_posix(), recursive=False)
         metadata = {"title": args.slug, "id": ref, "licenses": [{"name": "unknown"}]}
         (staging / "dataset-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
         archive_sha256 = sha256((staging / ARCHIVE).read_bytes())
