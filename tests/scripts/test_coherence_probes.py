@@ -153,3 +153,48 @@ def test_readout_preflight_fails_a_faulty_wire() -> None:
         got = cp.readout_summary({"cp_readout_0": law(flips, 0), "cp_readout_1": law(flips, 1)})
         if got["passed"] != passed or abs(got["fidelity_q0"] - (1 - flips[0][0] - flips[0][1])) > 1e-12:
             raise AssertionError(got)
+
+
+def _readout_laws(flips: list[tuple[float, float]]) -> tuple[np.ndarray, np.ndarray]:
+    laws = []
+    for prepared in (0, 1):
+        law = np.zeros(8)
+        for k in range(8):
+            p = 1.0
+            for wire, (e10, e01) in enumerate(flips):
+                wrong = e10 if prepared == 0 else e01
+                p *= wrong if (k >> wire & 1) != prepared else 1.0 - wrong
+            law[k] = p
+        laws.append(law)
+    return laws[0], laws[1]
+
+
+def test_each_path_voids_on_its_own_readout() -> None:
+    healthy = [(0.006, 0.009), (0.004, 0.012), (0.010, 0.013)]
+    faulty = [(0.786, 0.108), *healthy[1:]]
+    first, second = _readout_laws(healthy), _readout_laws(faulty)
+    entry = {"measured": {"cp_readout_0": [first[0], second[0]], "cp_readout_1": [first[1], second[1]]}}
+    rows = case.readout_by_path(entry, [[58, 71, 72], [0, 1, 2]])
+    if [row["passed"] for row in rows] != [True, False]:
+        raise AssertionError(rows)
+    if abs(rows[1]["fidelity"][0] - (1 - 0.786 - 0.108)) > 1e-12 or abs(rows[0]["e10"][2] - 0.010) > 1e-12:
+        raise AssertionError(rows)
+
+
+def test_crosstalk_flags_a_moved_distribution(tmp_path: Path) -> None:
+    import json
+
+    pin = {"backend": "ibm_kingston", "qubits": [0, 1, 2], "replicas": [[0, 1, 2], [4, 5, 6]]}
+    (tmp_path / "record.json").write_text(json.dumps({"shots": 4000, "policy": {"design": {"pin_layout": pin}}}))
+    base = np.full(8, 1 / 8)
+    moved = base + np.array([0.04, -0.04, 0, 0, 0, 0, 0, 0])
+    for isolated, detected in ((base, False), (moved, True)):
+        measured = {"g88": [base, base], "g88_isolated": [isolated]}
+        collected = [
+            {},
+            {"group": "primorial_gap88", "measured": {k: [list(v) for v in d] for k, d in measured.items()}},
+        ]
+        (tmp_path / "collect.json").write_text(json.dumps(collected))
+        verdict = case.crosstalk(tmp_path, "primorial_gap88")
+        if verdict["crosstalk_detected"] != detected or verdict["member"] != "g88":
+            raise AssertionError(verdict)

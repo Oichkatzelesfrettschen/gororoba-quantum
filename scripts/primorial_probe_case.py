@@ -60,6 +60,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from scipy import stats
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -785,26 +786,39 @@ def run() -> dict[str, Any]:
     }
 
 
-def path_budget(snapshot: dict[str, Any], layout: list[int]) -> dict[str, Any]:
-    """The gap-88 null-subtracted budget of any path: primorial_cover_noise's noisy analysis on that layout.
+def path_budgets(snapshot: dict[str, Any], layouts: list[list[int]]) -> list[dict[str, Any]]:
+    """The gap-88 null-subtracted budget of each path: primorial_cover_noise's noisy analysis on that layout.
 
-    Returns the per-shot variance of every coefficient, the shots that identify all seven at the
-    incoherent bias, and that bias.
+    Returns, per path, the per-shot variance of every coefficient, the shots that identify all seven at the
+    incoherent bias, and that bias. Every path's arms compile and simulate in one pooled map.
     """
     logical = [
         (m, c)
         for m, c in noise.arms()
         if (m["family"] == "gradient" and m["cost"] in ("gap88", "null")) or m["family"] == "readout3"
     ]
-    compiled = parallel.ordered_map(noise.ArmCompile(snapshot), [(c, layout) for _, c in logical], min_items=1)
-    items = [(meta, circuit, isa) for (meta, circuit), isa in zip(logical, compiled, strict=True)]
+    jobs = [(c, layout) for layout in layouts for _, c in logical]
+    compiled = parallel.ordered_map(noise.ArmCompile(snapshot), jobs, min_items=1)
+    items = [(meta, circuit, isa) for (meta, circuit), isa in zip(logical * len(layouts), compiled, strict=True)]
     rows = parallel.ordered_map(noise.ArmLaw(snapshot, "CPU"), items, min_items=1)
-    fit = tomo.gradient_analysis(rows, "gap88")["null_subtracted"]
-    return {
-        "per_shot_coefficient_variance": {k: float(v) for k, v in fit["per_shot_coefficient_variance"].items()},
-        "shots_identify_all": fit["shots_identify_all"],
-        "incoherent_max_bias": float(fit["max_coefficient_bias"]),
-    }
+    out = []
+    for k in range(len(layouts)):
+        fit = tomo.gradient_analysis(rows[k * len(logical) : (k + 1) * len(logical)], "gap88")["null_subtracted"]
+        out.append(
+            {
+                "per_shot_coefficient_variance": {
+                    key: float(v) for key, v in fit["per_shot_coefficient_variance"].items()
+                },
+                "shots_identify_all": fit["shots_identify_all"],
+                "incoherent_max_bias": float(fit["max_coefficient_bias"]),
+            }
+        )
+    return out
+
+
+def path_budget(snapshot: dict[str, Any], layout: list[int]) -> dict[str, Any]:
+    """path_budgets for one path."""
+    return path_budgets(snapshot, [layout])[0]
 
 
 # The decision's sampled inputs: the independent components (each its own circuits' quadrature noise) and the
@@ -829,59 +843,271 @@ def joint_sample(probe: dict[str, float], shots: int, normals: list[float]) -> d
     return {**{k: components[k] for k in cp.COMPONENTS if k in ESTIMATES}, **cp.derived(components)}
 
 
-def decide_path(
-    snapshot: dict[str, Any], layout: list[int], probe: dict[str, float], probe_shots: int, gap88_shots: int
-) -> dict[str, Any]:
-    """The preregistered stage-2 decision for one path from a probe summary at ``probe_shots`` shots per circuit.
+class PathFits:
+    """Picklable worker: (path index, spec) -> that path's br.Fit of the spec as a shared error."""
 
-    ``probe`` holds every estimate of ESTIMATES and its one-shot standard error ``se_<estimate>``, as
+    def __init__(self, fits: list[br.Fit]) -> None:
+        self.fits = fits
+
+    def __call__(self, item: tuple[int, dict[str, Any]]) -> dict[str, Any]:
+        index, spec = item
+        return self.fits[index]((spec, spec))
+
+
+def _quantile(values: list[float], q: float) -> float:
+    ordered = sorted(values)
+    return ordered[min(len(ordered) - 1, max(0, math.ceil(q * len(ordered)) - 1))]
+
+
+def decide_many(
+    snapshot: dict[str, Any],
+    paths: list[tuple[list[int], dict[str, float]]],
+    probe_shots: int,
+    gap88_shots: int,
+    family_size: int = 1,
+) -> list[dict[str, Any]]:
+    """The preregistered stage-2 decision for each (path, probe summary) at ``probe_shots`` shots per circuit.
+
+    Each probe summary holds every estimate of ESTIMATES and its one-shot standard error ``se_<estimate>``, as
     coherence_probes.summarize reports them; the estimates' uncertainty is sampled jointly over the independent
     components and the shared readout flips (``joint_sample``), so the ZZ, detuning and CZ-phase estimates keep
     the correlations their shared slopes give them. Each gap-88 reading averages two executions of ``gap88_shots``
     shots (primorial_campaigns' gap-88, null, null, gap-88 order), so the path's coefficient standard
-    deviations are taken at twice that count. Stage 2 proceeds when, over the estimates' uncertainty, the
-    95th percentile of max_z is below 1 and the 95th percentile of the shots that identify all seven
-    coefficients (primorial_tomography.phase_fit's rule) is at most the per-reading count. The falsifier band
-    of the stage-2 largest bias is the 2.5 to 97.5 percent range of the predicted largest bias widened by
-    three of the largest coefficient standard deviations and by the path's incoherent bias.
+    deviations are taken at twice that count. Stage 2 proceeds on a path when, over its estimates' uncertainty,
+    the 95th percentile of max_z is below 1 and the 95th percentile of the shots that identify all seven
+    coefficients (primorial_tomography.phase_fit's rule) is at most the per-reading count.
+
+    The falsifier band of a path's stage-2 largest bias spans the predicted largest bias from its
+    alpha / 2 quantile to its 1 - alpha / 2 quantile, widened by z(1 - alpha / 2) of the largest coefficient
+    standard deviations (at least three) and by the path's incoherent bias, with alpha = 0.05 / family_size: a
+    Bonferroni band over the family_size paths that reach stage 2 together.
     """
     view = calibration_snapshot.snapshot_backend(snapshot)
     logical = [(m, c) for m, c in noise.arms() if m["family"] == "gradient" and m["cost"] in ("gap88", "null")]
-    budget = path_budget(snapshot, layout)
+    budgets = path_budgets(snapshot, [layout for layout, _ in paths])
     per_reading = 2 * gap88_shots
-    fit = br.Fit(br.path_arms(snapshot, view, layout, logical), budget["per_shot_coefficient_variance"], per_reading)
-    estimate = {k: float(probe[k]) for k in ESTIMATES}
-    se = {k: float(probe[f"se_{k}"]) / math.sqrt(probe_shots) for k in ESTIMATES}
-    specs = [spec_of(joint_sample(probe, probe_shots, row)) for row in decision_points(len(JOINT_INPUTS))]
-    rows = parallel.ordered_map(fit, [(s, s) for s in specs], min_items=1)
+    fits = [
+        br.Fit(br.path_arms(snapshot, view, layout, logical), budget["per_shot_coefficient_variance"], per_reading)
+        for (layout, _), budget in zip(paths, budgets, strict=True)
+    ]
+    points = decision_points(len(JOINT_INPUTS))
+    specs = [[spec_of(joint_sample(probe, probe_shots, row)) for row in points] for _, probe in paths]
+    jobs = [(k, spec) for k, path_specs in enumerate(specs) for spec in path_specs]
+    flat = parallel.ordered_map(PathFits(fits), jobs, min_items=1)
+    alpha = 0.05 / family_size
+    z = max(3.0, statistics.NormalDist().inv_cdf(1 - alpha / 2))
+    out = []
+    for k, ((layout, probe), budget, fit) in enumerate(zip(paths, budgets, fits, strict=True)):
+        rows = flat[k * len(points) : (k + 1) * len(points)]
+        max_z = [r["max_z"] for r in rows]
+        shots = [math.inf if r["shots_identify_all"] is None else float(r["shots_identify_all"]) for r in rows]
+        bias = [r["null_subtracted_max_bias"] for r in rows]
+        widen = z * max(fit.sd.values()) + budget["incoherent_max_bias"]
+        p95_shots = _quantile(shots, 0.95)
+        out.append(
+            {
+                "calibration": snapshot["calibration"],
+                **calibration_snapshot.backend_identity(snapshot),
+                "layout": layout,
+                "budget": budget,
+                "gap88_shots_per_circuit": gap88_shots,
+                "shots_per_reading": per_reading,
+                "coefficient_sd": fit.sd,
+                "probe_shots": probe_shots,
+                "estimate": {key: float(probe[key]) for key in ESTIMATES},
+                "se": {key: float(probe[f"se_{key}"]) / math.sqrt(probe_shots) for key in ESTIMATES},
+                "decision": {
+                    "median_max_z": _quantile(max_z, 0.5),
+                    "p95_max_z": _quantile(max_z, 0.95),
+                    "p95_shots_identify_all": None if math.isinf(p95_shots) else int(p95_shots),
+                    "proceed": _quantile(max_z, 0.95) < 1.0 and p95_shots <= per_reading,
+                },
+                "falsifier_family_size": family_size,
+                "falsifier_band": [
+                    max(0.0, _quantile(bias, alpha / 2) - widen),
+                    _quantile(bias, 1 - alpha / 2) + widen,
+                ],
+            }
+        )
+    return out
 
-    def p(values: list[float], q: float) -> float:
-        ordered = sorted(values)
-        return ordered[min(len(ordered) - 1, max(0, math.ceil(q * len(ordered)) - 1))]
 
-    max_z = [r["max_z"] for r in rows]
-    shots = [math.inf if r["shots_identify_all"] is None else float(r["shots_identify_all"]) for r in rows]
-    bias = [r["null_subtracted_max_bias"] for r in rows]
-    widen = 3.0 * max(fit.sd.values()) + budget["incoherent_max_bias"]
-    p95_shots = p(shots, 0.95)
+def decide_path(
+    snapshot: dict[str, Any], layout: list[int], probe: dict[str, float], probe_shots: int, gap88_shots: int
+) -> dict[str, Any]:
+    """decide_many for one path, whose falsifier band covers that path alone."""
+    return decide_many(snapshot, [(layout, probe)], probe_shots, gap88_shots)[0]
+
+
+# The readout floor below which a wire's in-job calibration voids every estimate that reads or postselects on it.
+READOUT_FLOOR = cp.READOUT_FLOOR
+# Shots per gap-88 circuit: the cap the approval binds and the floor the decision may lower it to.
+GAP88_CAP, GAP88_FLOOR = 3200, 1600
+
+
+def _group_record(run_dir: Path, group: str) -> tuple[dict[str, Any], dict[str, Any], list[list[int]]]:
+    """The run record, the collected entry of ``group`` and the pinned paths in replica order."""
+    record = json.loads((run_dir / "record.json").read_text(encoding="utf-8"))
+    collected = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
+    entry = next((item for item in collected if isinstance(item, dict) and item.get("group") == group), None)
+    if entry is None:
+        raise SystemExit(f"{run_dir}: no collected {group} group")
+    pin = record["policy"]["design"]["pin_layout"]
+    return record, entry, [list(path) for path in pin.get("replicas", [pin["qubits"]])]
+
+
+def readout_by_path(entry: dict[str, Any], paths: list[list[int]]) -> list[dict[str, Any]]:
+    """Each path's in-job e10, e01 and 1 - e10 - e01 per wire from its own cp_readout distributions."""
+    measured = entry["measured"]
+    out = []
+    for k, path in enumerate(paths):
+        flips = cp.assignment(
+            {name: np.asarray(measured[name][k], dtype=float) for name in ("cp_readout_0", "cp_readout_1")}
+        )
+        fidelity = [1.0 - e10 - e01 for e10, e01 in flips]
+        out.append(
+            {
+                "path": path,
+                "e10": [e10 for e10, _ in flips],
+                "e01": [e01 for _, e01 in flips],
+                "fidelity": fidelity,
+                "passed": all(f >= READOUT_FLOOR for f in fidelity),
+            }
+        )
+    return out
+
+
+def with_excitation(snapshot: dict[str, Any], excess: dict[int, float]) -> dict[str, Any]:
+    """The snapshot with each named qubit's e10 raised by its excess preparation excitation."""
+    moved = json.loads(json.dumps(snapshot))
+    for qubit, value in excess.items():
+        moved["qubits"][qubit]["e10"] = moved["qubits"][qubit]["e10"] + value
+    return moved
+
+
+def decide_delay(snapshot: dict[str, Any], slow_dir: Path, fast_dir: Path) -> dict[str, Any]:
+    """The preregistered repetition-delay rule from the readout preflight at the longer and the shorter delay.
+
+    A path is retained when every wire reaches READOUT_FLOOR at the longer delay. The shorter delay is taken when
+    every retained path also reaches the floor there and its zero-estimate decision at GAP88_CAP still proceeds
+    with each wire's e10 raised by the upper bound (estimate plus two standard errors, floored at zero) of its
+    excess excitation, the shorter-delay e10 less the longer-delay e10; otherwise the longer delay is kept. The
+    zero estimate isolates the excitation's effect on the incoherent budget.
+    """
+    _, slow, paths = _group_record(slow_dir, "readout_preflight")
+    _, fast, fast_paths = _group_record(fast_dir, "readout_preflight")
+    if fast_paths != paths:
+        raise SystemExit(f"preflight paths differ: {paths} against {fast_paths}")
+    shots = [int(json.loads((d / "record.json").read_text(encoding="utf-8"))["shots"]) for d in (slow_dir, fast_dir)]
+    readout = [readout_by_path(entry, paths) for entry in (slow, fast)]
+    retained = [k for k, row in enumerate(readout[0]) if row["passed"]]
+    excess: dict[int, float] = {}
+    for k in retained:
+        for wire, qubit in enumerate(paths[k]):
+            e_slow, e_fast = readout[0][k]["e10"][wire], readout[1][k]["e10"][wire]
+            se = math.sqrt(e_slow * (1 - e_slow) / shots[0] + e_fast * (1 - e_fast) / shots[1])
+            excess[qubit] = max(0.0, e_fast - e_slow + 2 * se)
+    zero = {key: 0.0 for key in (*cp.COMPONENTS, *ESTIMATES)} | {f"se_{key}": 0.0 for key in ESTIMATES}
+    zero |= {f"qse_{c}": 0.0 for c in cp.COMPONENTS}
+    zero |= {f"d_{c}__{flip}_q{w}": 0.0 for c in cp.COMPONENTS for w, flip in cp.FLIPS}
+    zero |= {f"var_{flip}_q{w}": 0.0 for w, flip in cp.FLIPS}
+    fast_pass = all(readout[1][k]["passed"] for k in retained)
+    verdicts = (
+        decide_many(with_excitation(snapshot, excess), [(paths[k], zero) for k in retained], 1, GAP88_CAP)
+        if retained and fast_pass
+        else []
+    )
+    shorter = bool(retained) and fast_pass and all(v["decision"]["proceed"] for v in verdicts)
     return {
         "calibration": snapshot["calibration"],
-        **calibration_snapshot.backend_identity(snapshot),
-        "layout": layout,
-        "budget": budget,
-        "gap88_shots_per_circuit": gap88_shots,
-        "shots_per_reading": per_reading,
-        "coefficient_sd": fit.sd,
+        "paths": paths,
+        "readout": {"longer": readout[0], "shorter": readout[1]},
+        "retained": [paths[k] for k in retained],
+        "excess_e10_upper": {str(q): v for q, v in sorted(excess.items())},
+        "shorter_delay_decisions": [v["decision"] | {"layout": v["layout"]} for v in verdicts],
+        "use_shorter_delay": shorter,
+    }
+
+
+def decide_paths(snapshot: dict[str, Any], run_dir: Path, excess: dict[int, float] | None = None) -> dict[str, Any]:
+    """The preregistered multi-path stage-2 rule from a collected coherence-probe run.
+
+    Each path is voided when a wire's in-job readout calibration falls below READOUT_FLOOR. Every other path is
+    decided at GAP88_CAP from its own per-replica summary (live_run's summary_per_replica, the raw distributions
+    with that path's own in-job readout inversion); the paths that proceed set the stage-2 shots, the smallest
+    multiple of 100 between GAP88_FLOOR and GAP88_CAP that covers their largest 95th-percentile identification
+    need, and are decided again at that count with a Bonferroni falsifier band over the paths that proceed.
+    ``excess`` raises each qubit's e10 (the shorter-delay rule's excitation) before every decision.
+    """
+    record, entry, paths = _group_record(run_dir, "coherence_probes")
+    probe_shots = int(record["shots"])
+    moved = with_excitation(snapshot, excess or {})
+    readout = readout_by_path(entry, paths)
+    summaries = entry["measured_statistics"]["summary_per_replica"]
+    valid = [k for k, row in enumerate(readout) if row["passed"]]
+    first = decide_many(moved, [(paths[k], summaries[k]) for k in valid], probe_shots, GAP88_CAP) if valid else []
+    proceeding = [k for k, v in zip(valid, first, strict=True) if v["decision"]["proceed"]]
+    need = max(
+        (v["decision"]["p95_shots_identify_all"] for k, v in zip(valid, first, strict=True) if k in proceeding),
+        default=None,
+    )
+    shots = None if need is None else min(GAP88_CAP, max(GAP88_FLOOR, 100 * math.ceil(need / 200)))
+    final = (
+        decide_many(moved, [(paths[k], summaries[k]) for k in proceeding], probe_shots, shots, len(proceeding))
+        if shots is not None
+        else []
+    )
+    # A smaller shot count raises every coefficient's standard deviation, so max_z only falls, and the count covers
+    # each proceeding path's identification need: every path that proceeds at the cap proceeds again.
+    stage2 = [paths[k] for k, v in zip(proceeding, final, strict=True) if v["decision"]["proceed"]]
+    if len(stage2) != len(proceeding):
+        raise SystemExit(f"paths proceeding at the cap failed at {shots} shots: {proceeding} against {stage2}")
+    return {
+        "calibration": snapshot["calibration"],
         "probe_shots": probe_shots,
-        "estimate": estimate,
-        "se": se,
-        "decision": {
-            "median_max_z": p(max_z, 0.5),
-            "p95_max_z": p(max_z, 0.95),
-            "p95_shots_identify_all": None if math.isinf(p95_shots) else int(p95_shots),
-            "proceed": p(max_z, 0.95) < 1.0 and p95_shots <= per_reading,
-        },
-        "falsifier_band": [max(0.0, p(bias, 0.025) - widen), p(bias, 0.975) + widen],
+        "paths": paths,
+        "readout": readout,
+        "voided": [paths[k] for k in range(len(paths)) if k not in valid],
+        "at_cap": first,
+        "gap88_shots": shots,
+        "decisions": final,
+        "stage2_paths": stage2,
+        "proceed": bool(stage2),
+    }
+
+
+# live_run.ISOLATED_SUFFIX: the name suffix of a group's isolated reference entry.
+ISOLATED_SUFFIX = "_isolated"
+# The packed-against-isolated homogeneity test rejects at this level.
+CROSSTALK_ALPHA = 0.01
+
+
+def crosstalk(run_dir: Path, group: str) -> dict[str, Any]:
+    """The packed-against-isolated check of a multi-path run's first member on the first path.
+
+    live_run's isolated reference runs the group's first member on the first path alone in its own PUB. A
+    chi-square homogeneity test of its outcome counts against the same member's first-path counts in the packed
+    PUB, where every path runs at once, detects crosstalk from the other paths at CROSSTALK_ALPHA.
+    """
+    record, entry, paths = _group_record(run_dir, group)
+    shots = int(record["shots"])
+    measured = entry["measured"]
+    reference = next((name for name in measured if name.endswith(ISOLATED_SUFFIX)), None)
+    if reference is None:
+        return {"group": group, "paths": len(paths), "reference": None, "crosstalk_detected": False}
+    member = reference[: -len(ISOLATED_SUFFIX)]
+    counts = np.rint(shots * np.asarray([measured[member][0], measured[reference][0]], dtype=float))
+    counts = counts[:, counts.sum(axis=0) > 0]
+    statistic, p_value, dof, _ = stats.chi2_contingency(counts, correction=False)
+    return {
+        "group": group,
+        "paths": len(paths),
+        "reference": reference,
+        "member": member,
+        "chi_square": float(statistic),
+        "degrees_of_freedom": int(dof),
+        "p_value": float(p_value),
+        "crosstalk_detected": bool(p_value < CROSSTALK_ALPHA),
     }
 
 
@@ -898,6 +1124,11 @@ def check(path: Path, run_dir: Path) -> int:
     return 1 if failures else 0
 
 
+def _write(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", type=Path)
@@ -909,7 +1140,48 @@ def main() -> int:
     parser.add_argument("--probe-summary", type=Path, help="--decide: JSON of the probe estimates and se_ keys")
     parser.add_argument("--probe-shots", type=int, help="--decide: shots per probe circuit")
     parser.add_argument("--gap88-shots", type=int, help="--decide: shots per gap-88 circuit")
+    parser.add_argument(
+        "--decide-delay", type=Path, metavar="RUN", help="apply the delay rule; RUN is the shorter-delay preflight"
+    )
+    parser.add_argument("--preflight-slow", type=Path, help="--decide-delay: the longer-delay preflight run")
+    parser.add_argument(
+        "--decide-paths", type=Path, metavar="RUN", help="apply the multi-path stage-2 rule to a collected probe run"
+    )
+    parser.add_argument("--delay-verdict", type=Path, help="--decide-paths: the --decide-delay output")
+    parser.add_argument("--crosstalk", type=Path, metavar="RUN", help="packed-against-isolated check of a run")
+    parser.add_argument("--group", help="--crosstalk: the campaign")
     args = parser.parse_args()
+    if args.decide_delay:
+        if args.snapshot is None or args.preflight_slow is None or args.out is None:
+            parser.error("--decide-delay needs --snapshot, --preflight-slow, --out and the run directory")
+        verdict = decide_delay(
+            json.loads(args.snapshot.read_text(encoding="utf-8")), args.preflight_slow, args.decide_delay
+        )
+        _write(args.out, verdict)
+        print(f"delay rule: retained {len(verdict['retained'])} paths, shorter delay {verdict['use_shorter_delay']}")
+        return 0
+    if args.decide_paths:
+        if args.snapshot is None or args.out is None:
+            parser.error("--decide-paths needs --snapshot and --out")
+        excess = None
+        if args.delay_verdict is not None:
+            rule = json.loads(args.delay_verdict.read_text(encoding="utf-8"))
+            if rule["use_shorter_delay"]:
+                excess = {int(q): float(v) for q, v in rule["excess_e10_upper"].items()}
+        verdict = decide_paths(json.loads(args.snapshot.read_text(encoding="utf-8")), args.decide_paths, excess)
+        _write(args.out, verdict)
+        print(
+            f"stage 2: {len(verdict['stage2_paths'])} of {len(verdict['paths'])} paths at "
+            f"{verdict['gap88_shots']} shots, {len(verdict['voided'])} voided"
+        )
+        return 0
+    if args.crosstalk:
+        if args.group is None or args.out is None:
+            parser.error("--crosstalk needs --group and --out")
+        verdict = crosstalk(args.crosstalk, args.group)
+        _write(args.out, verdict)
+        print(f"crosstalk {args.group}: detected {verdict['crosstalk_detected']}")
+        return 0
     if args.decide:
         needed = (args.snapshot, args.layout, args.probe_summary, args.probe_shots, args.gap88_shots, args.out)
         if any(value is None for value in needed):

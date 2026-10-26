@@ -401,7 +401,8 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             and all(type(qubit) is int and qubit >= 0 for qubit in pin["qubits"]),
             "pin_layout names a backend and its nonnegative qubits",
         )
-        arguments.extend(["--pin-layout", f"{pin['backend']}:" + ",".join(map(str, pin["qubits"]))])
+        paths = pin.get("replicas", [pin["qubits"]])
+        arguments.extend(["--pin-layout", f"{pin['backend']}:" + "/".join(",".join(map(str, path)) for path in paths)])
     arguments.extend(["--out", (Path("..") / location.parent).as_posix()])
     return arguments
 

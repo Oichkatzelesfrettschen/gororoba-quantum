@@ -23,3 +23,4 @@ repository-relative; a branch name stands for its worktree.
 | [2026-10-25-das-mergus-data-review.md](2026-10-25-das-mergus-data-review.md) | adversarial claim review of the DAS MERGUS monograph, data and statistics chapters and the pasted Ascella claims, with its [claim ledger](2026-10-25-das-mergus-data-claims.json) |
 | [das-mergus-checks/README.md](das-mergus-checks/README.md) | the independent probes and reruns both DAS MERGUS ledgers cite |
 | [2026-10-25-results-catalog-opposition.md](2026-10-25-results-catalog-opposition.md) | opposition review of the results catalog and storage proposals, with ranked alternatives |
+| [primorial-coherence-case-2-review.md](primorial-coherence-case-2-review.md) | adversarial review of the second primorial coherence case against the run-economy rules; drove its 23-path, short-delay redesign |

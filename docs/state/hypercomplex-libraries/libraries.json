@@ -1880,7 +1880,10 @@
    "imported_by": [
     "scripts/kaggle_run.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_run.py"
+   ]
   },
   {
    "distribution": "kagglesdk",
@@ -1894,7 +1897,10 @@
    "imported_by": [
     "scripts/kaggle_run.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_run.py"
+   ]
   },
   {
    "distribution": "kingdon",
@@ -6273,7 +6279,10 @@
    "imported_by": [
     "scripts/kaggle_sessions.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_sessions.py"
+   ]
   },
   {
    "distribution": "setuptools",

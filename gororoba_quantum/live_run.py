@@ -405,17 +405,24 @@ def _qubit_exclusion(text: str) -> tuple[str, frozenset[int]]:
 
 
 def _pinned_layout(text: str) -> dict[str, Any]:
-    """Parse BACKEND:Q,Q,... into the backend name and the physical qubit of each logical qubit, in order."""
+    """Parse BACKEND:Q,Q,...[/Q,Q,...] into the backend name and the physical qubit of each logical qubit, in order.
+
+    Paths after the first, separated by "/", are further replicas of the same logical qubits; "qubits" holds the
+    first path and "replicas" every path when there is more than one.
+    """
     backend_name, separator, spec = text.partition(":")
     if not separator or not backend_name or not spec:
         raise argparse.ArgumentTypeError(f"expected BACKEND:Q,Q,..., got {text!r}")
     try:
-        qubits = [int(part) for part in spec.split(",")]
+        paths = [[int(part) for part in path.split(",")] for path in spec.split("/")]
     except ValueError as error:
         raise argparse.ArgumentTypeError(f"invalid qubit list {spec!r}") from error
-    if any(qubit < 0 for qubit in qubits) or len(set(qubits)) != len(qubits):
+    every = [qubit for path in paths for qubit in path]
+    if any(qubit < 0 for qubit in every) or len(set(every)) != len(every):
         raise argparse.ArgumentTypeError(f"--pin-layout names distinct nonnegative qubits, got {spec!r}")
-    return {"backend": backend_name, "qubits": qubits}
+    if len({len(path) for path in paths}) != 1:
+        raise argparse.ArgumentTypeError(f"--pin-layout paths name the same number of qubits, got {spec!r}")
+    return {"backend": backend_name, "qubits": paths[0]} | ({"replicas": paths} if len(paths) > 1 else {})
 
 
 def take_snapshot(service: QiskitRuntimeService, name: str, operator_excluded: Collection[int] = ()) -> Snapshot:
@@ -3578,40 +3585,74 @@ def reuse_approved_predictions(choices: list[Choice], record: dict[str, Any], ar
     return True
 
 
-def campaign_pin(args: argparse.Namespace, snaps: list[Snapshot]) -> tuple[list[Snapshot], list[int] | None]:
-    """The snapshots a pinned campaign selects on and its pinned layout; every snapshot and no pin otherwise."""
+def campaign_pin(args: argparse.Namespace, snaps: list[Snapshot]) -> tuple[list[Snapshot], list[list[int]] | None]:
+    """The snapshots a pinned campaign selects on and its pinned paths, the first compiled on; none unpinned."""
     pin = getattr(args, "pin_layout", None)
     if pin is None or getattr(args, "family", None):
         return snaps, None
     pinned = [snap for snap in snaps if snap.name == pin["backend"]]
     if not pinned:
         raise LiveRunError(f"--pin-layout backend {pin['backend']} is not among the eligible backends")
-    return pinned, list(pin["qubits"])
+    return pinned, [list(path) for path in pin.get("replicas", [pin["qubits"]])]
+
+
+def pinned_replicas(candidate: Choice, paths: list[list[int]]) -> list[Replica]:
+    """One replica per pinned path, each logical qubit on its path's qubit and scored on the snapshot.
+
+    The candidate compiles on the first path, so replica k maps that path's i-th qubit to path k's i-th qubit and
+    moves every member and mirror twin with it. PlacementJudge admits a mapping only when every moved operation
+    exists in the Target away from excluded qubits and edges, and scores it with the calibration selection
+    reads. Paths keep one CZ hop apart on the device's full coupler graph, the separation place_replicas keeps
+    between replicas of one group, so no coupler joins qubits of two paths.
+    """
+    snap = candidate.snap
+    bases = _entry_bases(candidate)
+    judge = PlacementJudge(
+        tuple(isa for _, isa, _, _ in bases),
+        snap.backend.target,
+        frozenset(snap.excluded_qubits),
+        frozenset(snap.excluded_edges),
+    )
+    graph = packing.coupling_graph(snap.backend.target, snap.backend.num_qubits)
+    replicas: list[Replica] = []
+    blocked: set[int] = set()
+    for index, path in enumerate(paths):
+        if set(path) & blocked:
+            raise LiveRunError(f"{candidate.group.name}: pinned path {path} sits within one CZ hop of another path")
+        mapping = dict(zip(paths[0], path, strict=True))
+        score = judge(mapping)
+        if score is None:
+            raise LiveRunError(f"{candidate.group.name}: pinned path {path} is not an admissible placement")
+        replicas.append(Replica(index, mapping, score))
+        blocked |= set(path) | {neighbor for qubit in path for neighbor in graph.neighbors(qubit)}
+    return replicas
 
 
 def pinned_campaign_choices(
-    candidate_sets: list[list[Choice]], policy: ReplicaPolicy, log: dict[str, Any], pinned: list[int]
+    candidate_sets: list[list[Choice]], policy: ReplicaPolicy, log: dict[str, Any], pinned: list[list[int]]
 ) -> tuple[list[Choice], dict[str, Any]]:
-    """Each pinned campaign's best candidate with its one replica on the pinned qubits.
+    """Each pinned campaign's best candidate with one replica on each pinned path.
 
-    Fusion's replica search would place the replica wherever the packing scores best; a pinned campaign
-    measures named qubits, so its replica maps every compiled qubit to itself, as the n21 pinned layout does
-    (qpu_planning.family_design), and a candidate whose replica leaves the pin is refused.
+    Fusion's replica search would place replicas wherever the packing scores best; a pinned campaign measures
+    named qubits, so its replicas are the pinned paths (pinned_replicas), the first mapping every compiled qubit
+    to itself as the n21 pinned layout does (qpu_planning.family_design), and a candidate whose replicas leave
+    the pin is refused.
     """
     choices: list[Choice] = []
     for candidates in candidate_sets:
         for candidate in candidates:
             trial = copy.copy(candidate)
-            replicas = [Replica(0, {qubit: qubit for qubit in candidate.layout}, min(candidate.member_scores))]
-            if _prepare_individual_candidate(trial, log, policy, replicas):
+            if _prepare_individual_candidate(trial, log, policy, pinned_replicas(trial, pinned)):
                 placed = [list(replica.qubits) for replica in trial.replicas]
-                if sorted(placed[0]) != sorted(pinned) or len(placed) != 1:
-                    raise LiveRunError(f"{trial.group.name}: pinned replica placed on {placed}, not {pinned}")
+                if placed != [sorted(path) for path in pinned]:
+                    raise LiveRunError(f"{trial.group.name}: pinned replicas placed on {placed}, not {pinned}")
                 choices.append(trial)
                 break
         else:
-            raise LiveRunError(f"{candidates[0].group.name}: no candidate validates on the pinned layout {pinned}")
-    return choices, {"allocation": "pinned", "pin_layout": pinned}
+            raise LiveRunError(f"{candidates[0].group.name}: no candidate validates on the pinned paths {pinned}")
+    return choices, {"allocation": "pinned", "pin_layout": pinned[0]} | (
+        {"pin_replicas": pinned} if len(pinned) > 1 else {}
+    )
 
 
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
@@ -3735,10 +3776,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                 # errors that echo pulses would refocus.
                 if args.dd:
                     raise LiveRunError(f"{campaigns[0]} runs without dynamical decoupling; omit --dd")
-                if args.max_replicas != 1:
-                    raise LiveRunError(f"{campaigns[0]} runs one replica on its pinned path; pass --max-replicas 1")
-                if getattr(args, "pin_layout", None) is None:
-                    raise LiveRunError(f"{campaigns[0]} runs on the path --pin-layout names")
+                pin = getattr(args, "pin_layout", None)
+                if pin is None:
+                    raise LiveRunError(f"{campaigns[0]} runs on the paths --pin-layout names")
+                if args.max_replicas != len(pin.get("replicas", [pin["qubits"]])):
+                    raise LiveRunError(
+                        f"{campaigns[0]} runs one replica on each pinned path; pass --max-replicas "
+                        f"{len(pin.get('replicas', [pin['qubits']]))}"
+                    )
             if set(campaigns) & PINNED_CAMPAIGNS and args.twirl:
                 # Gate twirling turns the coherent CZ phase the pair probe measures into a stochastic channel.
                 # Every member is its own PUB, so the gap-88 signal and null arms draw independent
@@ -3746,7 +3791,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                 # cancelling them (docs/evidence/primorial_cover/probe_case.json, twirl).
                 raise LiveRunError(f"{campaigns[0]} runs without twirling; omit --twirl")
         selection_snaps, pinned = campaign_pin(args, snaps)
-        candidate_sets = [select_candidates(group, selection_snaps, args.seeds, trace, pinned) for group in groups]
+        candidate_sets = [
+            select_candidates(group, selection_snaps, args.seeds, trace, None if pinned is None else pinned[0])
+            for group in groups
+        ]
         if pinned is None:
             choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
         else:
@@ -4668,7 +4716,10 @@ def submit(
     else:
         selection_snaps, pinned = campaign_pin(args, fresh_snapshots)
         fresh_candidate_sets = [
-            select_candidates(choice.group, selection_snaps, args.seeds, attempt_trace, pinned) for choice in choices
+            select_candidates(
+                choice.group, selection_snaps, args.seeds, attempt_trace, None if pinned is None else pinned[0]
+            )
+            for choice in choices
         ]
         if pinned is None:
             fresh_choices, fresh_fusion_placement = select_fusion_choices(fresh_candidate_sets, _policy(args))
@@ -6178,10 +6229,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--pin-layout",
         type=_pinned_layout,
-        metavar="BACKEND:Q,Q,...",
-        help="n21-orbit-rca, coherence_probes and primorial_gap88: place logical qubit i on the i-th physical "
-        "qubit of BACKEND (n21: control, then the work qubits of bits 1, 4 and 16; the campaigns: the path in "
-        "order) with no replica search; the policy binds it",
+        metavar="BACKEND:Q,Q,...[/Q,Q,...]",
+        help="n21-orbit-rca and the pinned campaigns: place logical qubit i on the i-th physical qubit of BACKEND "
+        "(n21: control, then the work qubits of bits 1, 4 and 16; the campaigns: the path in order) with no "
+        "replica search; a pinned campaign takes further '/'-separated paths as one replica each, one CZ hop "
+        "apart; the policy binds it",
     )
     parser.add_argument(
         "--init-herald",
@@ -6486,6 +6538,8 @@ def main(argv: list[str] | None = None) -> int:
                 parser.error(f"{flag} applies to the latency-recovery family only")
             if value <= 0:
                 parser.error(f"{flag} must be a positive integer dt")
+    if args.pin_layout is not None and "replicas" in args.pin_layout and args.family is not None:
+        parser.error("--pin-layout names one path for a family; several paths apply to the pinned campaigns only")
     if args.pin_layout is not None and args.family != "n21-orbit-rca":
         if args.family is not None or not args.groups or not set(args.groups) <= PINNED_CAMPAIGNS:
             parser.error(
