@@ -135,26 +135,6 @@ def test_joint_sample_at_zero_draw_returns_the_estimates() -> None:
             raise AssertionError(f"{key}: {sample[key]} against {summary[key]}")
 
 
-def test_readout_preflight_fails_a_faulty_wire() -> None:
-    def law(flips: list[tuple[float, float]], prepared: int) -> np.ndarray:
-        out = np.zeros(8)
-        for k in range(8):
-            p = 1.0
-            for wire, (e10, e01) in enumerate(flips):
-                read = k >> wire & 1
-                wrong = e10 if prepared == 0 else e01
-                p *= wrong if read != prepared else 1.0 - wrong
-            out[k] = p
-        return out
-
-    healthy = [(0.006, 0.009), (0.004, 0.012), (0.010, 0.013)]
-    faulty = [(0.786, 0.108), *healthy[1:]]
-    for flips, passed in ((healthy, 1.0), (faulty, 0.0)):
-        got = cp.readout_summary({"cp_readout_0": law(flips, 0), "cp_readout_1": law(flips, 1)})
-        if got["passed"] != passed or abs(got["fidelity_q0"] - (1 - flips[0][0] - flips[0][1])) > 1e-12:
-            raise AssertionError(got)
-
-
 def _readout_laws(flips: list[tuple[float, float]]) -> tuple[np.ndarray, np.ndarray]:
     laws = []
     for prepared in (0, 1):
@@ -181,20 +161,60 @@ def test_each_path_voids_on_its_own_readout() -> None:
         raise AssertionError(rows)
 
 
-def test_crosstalk_flags_a_moved_distribution(tmp_path: Path) -> None:
+def _crosstalk_run(tmp_path: Path, packed: np.ndarray, isolated: np.ndarray | None, shots: int) -> dict[str, Any]:
     import json
 
     pin = {"backend": "ibm_kingston", "qubits": [0, 1, 2], "replicas": [[0, 1, 2], [4, 5, 6]]}
-    (tmp_path / "record.json").write_text(json.dumps({"shots": 4000, "policy": {"design": {"pin_layout": pin}}}))
-    base = np.full(8, 1 / 8)
-    moved = base + np.array([0.04, -0.04, 0, 0, 0, 0, 0, 0])
-    for isolated, detected in ((base, False), (moved, True)):
-        measured = {"g88": [base, base], "g88_isolated": [isolated]}
-        collected = [
-            {},
-            {"group": "primorial_gap88", "measured": {k: [list(v) for v in d] for k, d in measured.items()}},
-        ]
-        (tmp_path / "collect.json").write_text(json.dumps(collected))
-        verdict = case.crosstalk(tmp_path, "primorial_gap88")
-        if verdict["crosstalk_detected"] != detected or verdict["member"] != "g88":
-            raise AssertionError(verdict)
+    (tmp_path / "record.json").write_text(json.dumps({"shots": shots, "policy": {"design": {"pin_layout": pin}}}))
+    measured = {"g88": [list(packed), list(packed)]} | ({} if isolated is None else {"g88_isolated": [list(isolated)]})
+    (tmp_path / "collect.json").write_text(json.dumps([{}, {"group": "primorial_gap88", "measured": measured}]))
+    return case.crosstalk(tmp_path, "primorial_gap88")
+
+
+def test_crosstalk_on_a_sparse_two_outcome_law(tmp_path: Path) -> None:
+    # A gap-88 member's ideal law sits on two outcomes; noise leaves the other six near empty.
+    law = np.array([0.4925, 0.0005, 0.001, 0.0, 0.0, 0.001, 0.0005, 0.5045])
+    moved = law + np.array([0.06, 0, 0, 0, 0, 0, 0, -0.06])
+    consistent = _crosstalk_run(tmp_path, law, law, 3200)
+    detected = _crosstalk_run(tmp_path, law, moved, 3200)
+    if consistent["outcome"] != "consistent" or detected["outcome"] != "crosstalk":
+        raise AssertionError((consistent, detected))
+    if consistent["pooled_columns"] != 3:
+        raise AssertionError(consistent)
+    missing = _crosstalk_run(tmp_path, law, None, 3200)
+    if missing["outcome"] != "indeterminate":
+        raise AssertionError(missing)
+
+
+def test_path_excitation_binds_the_approved_plan_and_delay() -> None:
+    excess = {
+        "inputs": {"plan_record": {"sha256": "a" * 64}},
+        "placement": {"rep_delay_seconds": 2e-05},
+        "qubits": {str(q): {"eps": {"2e-05s": 0.001 * q}} for q in (1, 2, 3, 4, 5, 6)},
+    }
+    record = {"approved_record": {"record_sha256": "a" * 64}, "policy": {"rep_delay_seconds": 2e-05}}
+    if case.path_excitation(excess, record, [[1, 2, 3], [4, 6, 5]]) != [0.003, 0.006]:
+        raise AssertionError("per-path eps is the largest of its qubits")
+    for moved in (
+        {**record, "approved_record": {"record_sha256": "b" * 64}},
+        {**record, "policy": {"rep_delay_seconds": 5e-05}},
+    ):
+        try:
+            case.path_excitation(excess, moved, [[1, 2, 3]])
+        except SystemExit:
+            continue
+        raise AssertionError(moved)
+
+
+def test_prep0_control_drops_a_path_with_a_faulty_qubit(tmp_path: Path) -> None:
+    import json
+
+    fractions = {0: 0.786, 1: 0.004, 2: 0.010, 4: 0.006, 5: 0.002, 6: 0.011}
+    collected: list[dict[str, Any]] = [{}] + [
+        {"group": f"state_prep_q{q}", "measured_statistics": {"summary": {f"q{q}_excited_fraction": f}}}
+        for q, f in fractions.items()
+    ]
+    (tmp_path / "collect.json").write_text(json.dumps(collected))
+    verdict = case.retained_paths(tmp_path, [[0, 1, 2], [4, 5, 6]])
+    if verdict["retained"] != [[4, 5, 6]] or verdict["pin"] != "4,5,6":
+        raise AssertionError(verdict)

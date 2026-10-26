@@ -74,6 +74,7 @@ from qiskit.circuit.library import UnitaryGate  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import coherence_probes as cp  # noqa: E402
+import dynamic_density  # noqa: E402
 import parallel  # noqa: E402
 import primorial_tomography as tomo  # noqa: E402
 import snapshot_laws  # noqa: E402
@@ -786,11 +787,40 @@ def run() -> dict[str, Any]:
     }
 
 
-def path_budgets(snapshot: dict[str, Any], layouts: list[list[int]]) -> list[dict[str, Any]]:
+class ExcitedArmLaw(noise.ArmLaw):
+    """noise.ArmLaw with every active qubit initialized through an X error of probability ``prep_excitation``.
+
+    The excitation enters the noisy law only (dynamic_density.with_prep_excitation, the channel live_run's
+    --prep-excitation plans with); the noiseless check runs on the bare circuit, and zero leaves the law of
+    noise.ArmLaw unchanged.
+    """
+
+    def __call__(self, item: tuple[dict[str, Any], QuantumCircuit, QuantumCircuit, float]) -> dict[str, Any]:  # type: ignore[override]
+        meta, logical, compiled, prep_excitation = item
+        expected = noise.ideal_law(logical)
+        noiseless = snapshot_laws.outcome_law(self.snapshot, compiled, self.device, noisy=False)
+        if not np.allclose(noiseless, expected, atol=1e-9):
+            raise SystemExit(f"{meta}: compiled noiseless law {noiseless} against {expected}")
+        excited = dynamic_density.with_prep_excitation(compiled, prep_excitation)
+        law = snapshot_laws.outcome_law(self.snapshot, excited, self.device)
+        return {
+            **meta,
+            "ideal": [round(float(v), 12) for v in expected],
+            "law": [float(v) for v in law],
+            "cz": sum(1 for instruction in compiled.data if instruction.operation.name == "cz"),
+            "depth": compiled.depth(),
+        }
+
+
+def path_budgets(
+    snapshot: dict[str, Any], layouts: list[list[int]], excitation: list[float] | None = None
+) -> list[dict[str, Any]]:
     """The gap-88 null-subtracted budget of each path: primorial_cover_noise's noisy analysis on that layout.
 
     Returns, per path, the per-shot variance of every coefficient, the shots that identify all seven at the
-    incoherent bias, and that bias. Every path's arms compile and simulate in one pooled map.
+    incoherent bias, that bias, and each coefficient's signed incoherent shift from its exact value. Every
+    path's arms compile and simulate in one pooled map; ``excitation`` gives each path the preparation
+    excitation of every qubit (ExcitedArmLaw), zero when omitted.
     """
     logical = [
         (m, c)
@@ -799,8 +829,13 @@ def path_budgets(snapshot: dict[str, Any], layouts: list[list[int]]) -> list[dic
     ]
     jobs = [(c, layout) for layout in layouts for _, c in logical]
     compiled = parallel.ordered_map(noise.ArmCompile(snapshot), jobs, min_items=1)
-    items = [(meta, circuit, isa) for (meta, circuit), isa in zip(logical * len(layouts), compiled, strict=True)]
-    rows = parallel.ordered_map(noise.ArmLaw(snapshot, "CPU"), items, min_items=1)
+    eps = [0.0] * len(layouts) if excitation is None else excitation
+    items = [
+        (meta, circuit, isa, eps[k // len(logical)])
+        for k, ((meta, circuit), isa) in enumerate(zip(logical * len(layouts), compiled, strict=True))
+    ]
+    rows = parallel.ordered_map(ExcitedArmLaw(snapshot, "CPU"), items, min_items=1)
+    exact = tomo.coefficients(tomo.cost_table("gap88"))
     out = []
     for k in range(len(layouts)):
         fit = tomo.gradient_analysis(rows[k * len(logical) : (k + 1) * len(logical)], "gap88")["null_subtracted"]
@@ -811,6 +846,9 @@ def path_budgets(snapshot: dict[str, Any], layouts: list[list[int]]) -> list[dic
                 },
                 "shots_identify_all": fit["shots_identify_all"],
                 "incoherent_max_bias": float(fit["max_coefficient_bias"]),
+                "incoherent_shift": {
+                    key: float(value - exact[key]) for key, value in fit["recovered_coefficients"].items()
+                },
             }
         )
     return out
@@ -865,6 +903,7 @@ def decide_many(
     probe_shots: int,
     gap88_shots: int,
     family_size: int = 1,
+    excitation: list[float] | None = None,
 ) -> list[dict[str, Any]]:
     """The preregistered stage-2 decision for each (path, probe summary) at ``probe_shots`` shots per circuit.
 
@@ -877,14 +916,18 @@ def decide_many(
     the 95th percentile of max_z is below 1 and the 95th percentile of the shots that identify all seven
     coefficients (primorial_tomography.phase_fit's rule) is at most the per-reading count.
 
-    The falsifier band of a path's stage-2 largest bias spans the predicted largest bias from its
-    alpha / 2 quantile to its 1 - alpha / 2 quantile, widened by z(1 - alpha / 2) of the largest coefficient
-    standard deviations (at least three) and by the path's incoherent bias, with alpha = 0.05 / family_size: a
-    Bonferroni band over the family_size paths that reach stage 2 together.
+    The falsifier tests each of the seven null-subtracted coefficients on each of the family_size paths that
+    reach stage 2 together. A coefficient's predicted shift is the mean of its coherent shift over the joint
+    draws plus its signed incoherent shift from the noisy budget, the two added to first order; its spread
+    combines the coefficient's stage-2 standard deviation and the draws' standard deviation in quadrature, as
+    Gaussian errors. The band is the prediction plus or minus z of that spread, z = z(1 - 0.025 / (7
+    family_size)) and at least 3, so the bands hold simultaneously over every coefficient and path at
+    family-wise level 0.05 under that approximation. ``excitation`` gives each path's preparation excitation
+    (path_budgets).
     """
     view = calibration_snapshot.snapshot_backend(snapshot)
     logical = [(m, c) for m, c in noise.arms() if m["family"] == "gradient" and m["cost"] in ("gap88", "null")]
-    budgets = path_budgets(snapshot, [layout for layout, _ in paths])
+    budgets = path_budgets(snapshot, [layout for layout, _ in paths], excitation)
     per_reading = 2 * gap88_shots
     fits = [
         br.Fit(br.path_arms(snapshot, view, layout, logical), budget["per_shot_coefficient_variance"], per_reading)
@@ -894,15 +937,18 @@ def decide_many(
     specs = [[spec_of(joint_sample(probe, probe_shots, row)) for row in points] for _, probe in paths]
     jobs = [(k, spec) for k, path_specs in enumerate(specs) for spec in path_specs]
     flat = parallel.ordered_map(PathFits(fits), jobs, min_items=1)
-    alpha = 0.05 / family_size
-    z = max(3.0, statistics.NormalDist().inv_cdf(1 - alpha / 2))
+    z = max(3.0, statistics.NormalDist().inv_cdf(1 - 0.025 / (7 * family_size)))
     out = []
     for k, ((layout, probe), budget, fit) in enumerate(zip(paths, budgets, fits, strict=True)):
         rows = flat[k * len(points) : (k + 1) * len(points)]
         max_z = [r["max_z"] for r in rows]
         shots = [math.inf if r["shots_identify_all"] is None else float(r["shots_identify_all"]) for r in rows]
-        bias = [r["null_subtracted_max_bias"] for r in rows]
-        widen = z * max(fit.sd.values()) + budget["incoherent_max_bias"]
+        bands = {}
+        for key, sd in fit.sd.items():
+            coherent = [r["null_subtracted_shift"][key] for r in rows]
+            center = statistics.fmean(coherent) + budget["incoherent_shift"][key]
+            half = z * math.hypot(sd, statistics.stdev(coherent))
+            bands[key] = [center - half, center + half]
         p95_shots = _quantile(shots, 0.95)
         out.append(
             {
@@ -922,11 +968,8 @@ def decide_many(
                     "p95_shots_identify_all": None if math.isinf(p95_shots) else int(p95_shots),
                     "proceed": _quantile(max_z, 0.95) < 1.0 and p95_shots <= per_reading,
                 },
-                "falsifier_family_size": family_size,
-                "falsifier_band": [
-                    max(0.0, _quantile(bias, alpha / 2) - widen),
-                    _quantile(bias, 1 - alpha / 2) + widen,
-                ],
+                "prep_excitation": 0.0 if excitation is None else excitation[k],
+                "falsifier": {"family_size": family_size, "z": z, "shift_bands": bands},
             }
         )
     return out
@@ -977,86 +1020,101 @@ def readout_by_path(entry: dict[str, Any], paths: list[list[int]]) -> list[dict[
     return out
 
 
-def with_excitation(snapshot: dict[str, Any], excess: dict[int, float]) -> dict[str, Any]:
-    """The snapshot with each named qubit's e10 raised by its excess preparation excitation."""
-    moved = json.loads(json.dumps(snapshot))
-    for qubit, value in excess.items():
-        moved["qubits"][qubit]["e10"] = moved["qubits"][qubit]["e10"] + value
-    return moved
+# A prep0 excited fraction above this reads |0> as 1 often enough that 1 - e10 - e01 falls below READOUT_FLOOR.
+PREP0_DROP = 1.0 - READOUT_FLOOR
 
 
-def decide_delay(snapshot: dict[str, Any], slow_dir: Path, fast_dir: Path) -> dict[str, Any]:
-    """The preregistered repetition-delay rule from the readout preflight at the longer and the shorter delay.
+def retained_paths(control_dir: Path, paths: list[list[int]]) -> dict[str, Any]:
+    """The pinned paths a prep0 state-prep control retains: every qubit's excited fraction at most PREP0_DROP.
 
-    A path is retained when every wire reaches READOUT_FLOOR at the longer delay. The shorter delay is taken when
-    every retained path also reaches the floor there and its zero-estimate decision at GAP88_CAP still proceeds
-    with each wire's e10 raised by the upper bound (estimate plus two standard errors, floored at zero) of its
-    excess excitation, the shorter-delay e10 less the longer-delay e10; otherwise the longer delay is kept. The
-    zero estimate isolates the excitation's effect on the incoherent budget.
+    A qubit whose implicit initialization or readout leaves |0> reading 1 that often voids its path before any
+    probe time is spent, and keeps state_prep_excess's monotone domain for the qubits that remain.
     """
-    _, slow, paths = _group_record(slow_dir, "readout_preflight")
-    _, fast, fast_paths = _group_record(fast_dir, "readout_preflight")
-    if fast_paths != paths:
-        raise SystemExit(f"preflight paths differ: {paths} against {fast_paths}")
-    shots = [int(json.loads((d / "record.json").read_text(encoding="utf-8"))["shots"]) for d in (slow_dir, fast_dir)]
-    readout = [readout_by_path(entry, paths) for entry in (slow, fast)]
-    retained = [k for k, row in enumerate(readout[0]) if row["passed"]]
-    excess: dict[int, float] = {}
-    for k in retained:
-        for wire, qubit in enumerate(paths[k]):
-            e_slow, e_fast = readout[0][k]["e10"][wire], readout[1][k]["e10"][wire]
-            se = math.sqrt(e_slow * (1 - e_slow) / shots[0] + e_fast * (1 - e_fast) / shots[1])
-            excess[qubit] = max(0.0, e_fast - e_slow + 2 * se)
-    zero = {key: 0.0 for key in (*cp.COMPONENTS, *ESTIMATES)} | {f"se_{key}": 0.0 for key in ESTIMATES}
-    zero |= {f"qse_{c}": 0.0 for c in cp.COMPONENTS}
-    zero |= {f"d_{c}__{flip}_q{w}": 0.0 for c in cp.COMPONENTS for w, flip in cp.FLIPS}
-    zero |= {f"var_{flip}_q{w}": 0.0 for w, flip in cp.FLIPS}
-    fast_pass = all(readout[1][k]["passed"] for k in retained)
-    verdicts = (
-        decide_many(with_excitation(snapshot, excess), [(paths[k], zero) for k in retained], 1, GAP88_CAP)
-        if retained and fast_pass
-        else []
-    )
-    shorter = bool(retained) and fast_pass and all(v["decision"]["proceed"] for v in verdicts)
+    collected = json.loads((control_dir / "collect.json").read_text(encoding="utf-8"))
+    fractions: dict[int, float] = {}
+    for entry in collected:
+        if isinstance(entry, dict) and str(entry.get("group", "")).startswith("state_prep_q"):
+            qubit = int(str(entry["group"]).removeprefix("state_prep_q"))
+            fractions[qubit] = float(entry["measured_statistics"]["summary"][f"q{qubit}_excited_fraction"])
+    missing = sorted(q for path in paths for q in path if q not in fractions)
+    if missing:
+        raise SystemExit(f"{control_dir}: no prep0 fraction for qubits {missing}")
+    kept = [path for path in paths if all(fractions[q] <= PREP0_DROP for q in path)]
     return {
-        "calibration": snapshot["calibration"],
-        "paths": paths,
-        "readout": {"longer": readout[0], "shorter": readout[1]},
-        "retained": [paths[k] for k in retained],
-        "excess_e10_upper": {str(q): v for q, v in sorted(excess.items())},
-        "shorter_delay_decisions": [v["decision"] | {"layout": v["layout"]} for v in verdicts],
-        "use_shorter_delay": shorter,
+        "control": control_dir.name,
+        "excited_fraction": {str(q): fractions[q] for path in paths for q in path},
+        "retained": kept,
+        "dropped": [path for path in paths if path not in kept],
+        "pin": "/".join(",".join(map(str, path)) for path in kept),
     }
 
 
-def decide_paths(snapshot: dict[str, Any], run_dir: Path, excess: dict[int, float] | None = None) -> dict[str, Any]:
+def path_excitation(excess: dict[str, Any], record: dict[str, Any], paths: list[list[int]]) -> list[float]:
+    """Each path's preparation excitation: the largest eps state_prep_excess bounds on any of its qubits.
+
+    The excess output must bound the run's own approved plan (its plan_record sha256 equals the run's approved
+    record) at the run's repetition delay, and cover every path qubit with the single-delay rule's one eps.
+    """
+    plan = excess["inputs"].get("plan_record") or {}
+    approved = (record.get("approved_record") or {}).get("record_sha256")
+    if plan.get("sha256") != approved:
+        raise SystemExit(f"state-prep excess bounds plan {plan.get('sha256')}, the run's approved record is {approved}")
+    delay = (record.get("policy") or {}).get("rep_delay_seconds")
+    if delay is None or not math.isclose(float(excess["placement"]["rep_delay_seconds"]), float(delay)):
+        raise SystemExit(f"state-prep excess at {excess['placement']['rep_delay_seconds']} s, the run at {delay} s")
+    out = []
+    for path in paths:
+        values = []
+        for qubit in path:
+            row = excess["qubits"].get(str(qubit))
+            if row is None or len(row["eps"]) != 1:
+                raise SystemExit(f"state-prep excess holds no single-delay eps for q{qubit}")
+            values.append(float(next(iter(row["eps"].values()))))
+        out.append(max(values))
+    return out
+
+
+def decide_paths(snapshot: dict[str, Any], run_dir: Path, excess: dict[str, Any] | None = None) -> dict[str, Any]:
     """The preregistered multi-path stage-2 rule from a collected coherence-probe run.
 
-    Each path is voided when a wire's in-job readout calibration falls below READOUT_FLOOR. Every other path is
-    decided at GAP88_CAP from its own per-replica summary (live_run's summary_per_replica, the raw distributions
-    with that path's own in-job readout inversion); the paths that proceed set the stage-2 shots, the smallest
-    multiple of 100 between GAP88_FLOOR and GAP88_CAP that covers their largest 95th-percentile identification
-    need, and are decided again at that count with a Bonferroni falsifier band over the paths that proceed.
-    ``excess`` raises each qubit's e10 (the shorter-delay rule's excitation) before every decision.
+    The snapshot must carry the calibration every probe member executed under, with no change during its
+    shots, and a run at a set repetition delay needs ``excess``, the state_prep_excess output on the run's
+    approved plan, whose per-path eps enters every decision (path_excitation). Each path is voided when a wire's
+    in-job readout calibration falls below READOUT_FLOOR. Every other path is decided at GAP88_CAP from its own
+    per-replica summary (live_run's summary_per_replica, the raw distributions with that path's own in-job
+    readout inversion); the paths that proceed set the stage-2 shots, the smallest multiple of 100 between
+    GAP88_FLOOR and GAP88_CAP that covers their largest 95th-percentile identification need, and are decided
+    again at that count with falsifier bands simultaneous over the paths that proceed.
     """
     record, entry, paths = _group_record(run_dir, "coherence_probes")
+    executed = {
+        (str(item["calibration"]), bool(item["calibration_changed_during_shots"]))
+        for item in entry["executed"].values()
+    }
+    if executed != {(str(snapshot["calibration"]), False)}:
+        raise SystemExit(f"probe members executed under {sorted(executed)}, the snapshot is {snapshot['calibration']}")
+    if excess is None and (record.get("policy") or {}).get("rep_delay_seconds") is not None:
+        raise SystemExit("a run at a set repetition delay needs its state-prep excess")
+    eps_all = [0.0] * len(paths) if excess is None else path_excitation(excess, record, paths)
     probe_shots = int(record["shots"])
-    moved = with_excitation(snapshot, excess or {})
     readout = readout_by_path(entry, paths)
     summaries = entry["measured_statistics"]["summary_per_replica"]
     valid = [k for k, row in enumerate(readout) if row["passed"]]
-    first = decide_many(moved, [(paths[k], summaries[k]) for k in valid], probe_shots, GAP88_CAP) if valid else []
+
+    def decide(indices: list[int], shots: int, family: int) -> list[dict[str, Any]]:
+        if not indices:
+            return []
+        chosen = [(paths[k], summaries[k]) for k in indices]
+        return decide_many(snapshot, chosen, probe_shots, shots, family, [eps_all[k] for k in indices])
+
+    first = decide(valid, GAP88_CAP, 1)
     proceeding = [k for k, v in zip(valid, first, strict=True) if v["decision"]["proceed"]]
     need = max(
         (v["decision"]["p95_shots_identify_all"] for k, v in zip(valid, first, strict=True) if k in proceeding),
         default=None,
     )
     shots = None if need is None else min(GAP88_CAP, max(GAP88_FLOOR, 100 * math.ceil(need / 200)))
-    final = (
-        decide_many(moved, [(paths[k], summaries[k]) for k in proceeding], probe_shots, shots, len(proceeding))
-        if shots is not None
-        else []
-    )
+    final = [] if shots is None else decide(proceeding, shots, len(proceeding))
     # A smaller shot count raises every coefficient's standard deviation, so max_z only falls, and the count covers
     # each proceeding path's identification need: every path that proceeds at the cap proceeds again.
     stage2 = [paths[k] for k, v in zip(proceeding, final, strict=True) if v["decision"]["proceed"]]
@@ -1066,6 +1124,7 @@ def decide_paths(snapshot: dict[str, Any], run_dir: Path, excess: dict[int, floa
         "calibration": snapshot["calibration"],
         "probe_shots": probe_shots,
         "paths": paths,
+        "prep_excitation": eps_all,
         "readout": readout,
         "voided": [paths[k] for k in range(len(paths)) if k not in valid],
         "at_cap": first,
@@ -1078,8 +1137,33 @@ def decide_paths(snapshot: dict[str, Any], run_dir: Path, excess: dict[int, floa
 
 # live_run.ISOLATED_SUFFIX: the name suffix of a group's isolated reference entry.
 ISOLATED_SUFFIX = "_isolated"
-# The packed-against-isolated homogeneity test rejects at this level.
+# The packed-against-isolated homogeneity test rejects at this level, and pools every outcome whose expected count
+# in either row falls below the floor, the regime where the chi-square approximation holds.
 CROSSTALK_ALPHA = 0.01
+CROSSTALK_EXPECTED_FLOOR = 5.0
+
+
+def pooled_counts(counts: np.ndarray) -> np.ndarray:
+    """A 2-row count table with every sparse outcome merged into one rest column.
+
+    An outcome is sparse when its expected count under homogeneity, row total times column share, falls below
+    CROSSTALK_EXPECTED_FLOOR in either row; the rest column joins the table only when its own expected counts
+    reach the floor, and merges into the smallest kept column otherwise.
+    """
+    totals = counts.sum(axis=1, keepdims=True)
+    expected = totals * counts.sum(axis=0, keepdims=True) / counts.sum()
+    dense = (expected >= CROSSTALK_EXPECTED_FLOOR).all(axis=0)
+    kept = counts[:, dense]
+    rest = counts[:, ~dense].sum(axis=1, keepdims=True)
+    if not rest.any():
+        return kept
+    rest_expected = totals * rest.sum() / counts.sum()
+    if (rest_expected >= CROSSTALK_EXPECTED_FLOOR).all() or kept.shape[1] == 0:
+        return np.hstack([kept, rest])
+    smallest = int(np.argmin(kept.sum(axis=0)))
+    kept = kept.copy()
+    kept[:, smallest] += rest[:, 0]
+    return kept
 
 
 def crosstalk(run_dir: Path, group: str) -> dict[str, Any]:
@@ -1087,27 +1171,29 @@ def crosstalk(run_dir: Path, group: str) -> dict[str, Any]:
 
     live_run's isolated reference runs the group's first member on the first path alone in its own PUB. A
     chi-square homogeneity test of its outcome counts against the same member's first-path counts in the packed
-    PUB, where every path runs at once, detects crosstalk from the other paths at CROSSTALK_ALPHA.
+    PUB, where every path runs at once, detects crosstalk from the other paths at CROSSTALK_ALPHA, after
+    pooled_counts merges the sparse outcomes. A run without the reference, or a table that pools to one column,
+    is indeterminate, which the case treats as a failed check.
     """
     record, entry, paths = _group_record(run_dir, group)
     shots = int(record["shots"])
     measured = entry["measured"]
     reference = next((name for name in measured if name.endswith(ISOLATED_SUFFIX)), None)
+    base = {"group": group, "paths": len(paths), "reference": reference}
     if reference is None:
-        return {"group": group, "paths": len(paths), "reference": None, "crosstalk_detected": False}
+        return base | {"outcome": "indeterminate", "reason": "no isolated reference entry"}
     member = reference[: -len(ISOLATED_SUFFIX)]
-    counts = np.rint(shots * np.asarray([measured[member][0], measured[reference][0]], dtype=float))
-    counts = counts[:, counts.sum(axis=0) > 0]
+    counts = pooled_counts(np.rint(shots * np.asarray([measured[member][0], measured[reference][0]], dtype=float)))
+    if counts.shape[1] < 2:
+        return base | {"member": member, "outcome": "indeterminate", "reason": "the outcomes pool to one column"}
     statistic, p_value, dof, _ = stats.chi2_contingency(counts, correction=False)
-    return {
-        "group": group,
-        "paths": len(paths),
-        "reference": reference,
+    return base | {
         "member": member,
+        "pooled_columns": int(counts.shape[1]),
         "chi_square": float(statistic),
         "degrees_of_freedom": int(dof),
         "p_value": float(p_value),
-        "crosstalk_detected": bool(p_value < CROSSTALK_ALPHA),
+        "outcome": "crosstalk" if p_value < CROSSTALK_ALPHA else "consistent",
     }
 
 
@@ -1141,33 +1227,22 @@ def main() -> int:
     parser.add_argument("--probe-shots", type=int, help="--decide: shots per probe circuit")
     parser.add_argument("--gap88-shots", type=int, help="--decide: shots per gap-88 circuit")
     parser.add_argument(
-        "--decide-delay", type=Path, metavar="RUN", help="apply the delay rule; RUN is the shorter-delay preflight"
-    )
-    parser.add_argument("--preflight-slow", type=Path, help="--decide-delay: the longer-delay preflight run")
-    parser.add_argument(
         "--decide-paths", type=Path, metavar="RUN", help="apply the multi-path stage-2 rule to a collected probe run"
     )
-    parser.add_argument("--delay-verdict", type=Path, help="--decide-paths: the --decide-delay output")
+    parser.add_argument(
+        "--excess", type=Path, help="--decide-paths: state_prep_excess.py's output on the run's approved plan"
+    )
+    parser.add_argument(
+        "--retained-paths", type=Path, metavar="RUN", help="the paths a collected prep0 state-prep control retains"
+    )
+    parser.add_argument("--paths", help="--retained-paths: the pinned paths, Q,Q,Q/Q,Q,Q")
     parser.add_argument("--crosstalk", type=Path, metavar="RUN", help="packed-against-isolated check of a run")
     parser.add_argument("--group", help="--crosstalk: the campaign")
     args = parser.parse_args()
-    if args.decide_delay:
-        if args.snapshot is None or args.preflight_slow is None or args.out is None:
-            parser.error("--decide-delay needs --snapshot, --preflight-slow, --out and the run directory")
-        verdict = decide_delay(
-            json.loads(args.snapshot.read_text(encoding="utf-8")), args.preflight_slow, args.decide_delay
-        )
-        _write(args.out, verdict)
-        print(f"delay rule: retained {len(verdict['retained'])} paths, shorter delay {verdict['use_shorter_delay']}")
-        return 0
     if args.decide_paths:
         if args.snapshot is None or args.out is None:
             parser.error("--decide-paths needs --snapshot and --out")
-        excess = None
-        if args.delay_verdict is not None:
-            rule = json.loads(args.delay_verdict.read_text(encoding="utf-8"))
-            if rule["use_shorter_delay"]:
-                excess = {int(q): float(v) for q, v in rule["excess_e10_upper"].items()}
+        excess = None if args.excess is None else json.loads(args.excess.read_text(encoding="utf-8"))
         verdict = decide_paths(json.loads(args.snapshot.read_text(encoding="utf-8")), args.decide_paths, excess)
         _write(args.out, verdict)
         print(
@@ -1175,12 +1250,20 @@ def main() -> int:
             f"{verdict['gap88_shots']} shots, {len(verdict['voided'])} voided"
         )
         return 0
+    if args.retained_paths:
+        if args.paths is None or args.out is None:
+            parser.error("--retained-paths needs --paths and --out")
+        paths = [[int(q) for q in path.split(",")] for path in args.paths.split("/")]
+        verdict = retained_paths(args.retained_paths, paths)
+        _write(args.out, verdict)
+        print(f"prep0 control retains {len(verdict['retained'])} of {len(paths)} paths: {verdict['pin']}")
+        return 0
     if args.crosstalk:
         if args.group is None or args.out is None:
             parser.error("--crosstalk needs --group and --out")
         verdict = crosstalk(args.crosstalk, args.group)
         _write(args.out, verdict)
-        print(f"crosstalk {args.group}: detected {verdict['crosstalk_detected']}")
+        print(f"crosstalk {args.group}: {verdict['outcome']}")
         return 0
     if args.decide:
         needed = (args.snapshot, args.layout, args.probe_summary, args.probe_shots, args.gap88_shots, args.out)

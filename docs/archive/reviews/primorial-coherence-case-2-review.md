@@ -51,10 +51,11 @@ record of the first case (job `dbfdotnpc3tc739n8nm0`) and live_run.py's replica 
 
 ## Revision
 
-The revised case runs every member on the 23 separated paths at once in each stage and decides per path with a
-Bonferroni falsifier band. It runs the readout preflight at 50 us and at 20 us and takes the shorter delay only
-when no retained path fails the readout floor there and every retained path's decision still proceeds with its
-measured excess excitation, and it tests crosstalk through the isolated reference with a preregistered
-consequence. live_run.py takes several `/`-separated pinned paths as one replica each
-(`pinned_replicas`), and `scripts/primorial_probe_case.py` gains `--decide-delay`, `--decide-paths` and
-`--crosstalk`.
+The second draft ran every member on the 23 separated paths at once, decided per path with a Bonferroni band and
+chose a 20 or 50 us delay from a two-delay readout preflight. live_run.py takes several `/`-separated pinned
+paths as one replica each (`pinned_replicas`). A Codex review of that draft
+([primorial-coherence-case-2-codex-review.md](primorial-coherence-case-2-codex-review.md)) showed that the
+preflight modeled initialization as readout, relied on an unguaranteed PUB order and bounded each wire alone. The
+third draft replaces the preflight with the `state-prep-control` family and `scripts/state_prep_excess.py`,
+adds the excitation to every decision as an initial X error, and tests every coefficient against a simultaneous
+band.

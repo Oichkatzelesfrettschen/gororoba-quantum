@@ -12144,6 +12144,7 @@
    "argparse",
    "calibration_snapshot",
    "coherence_probes",
+   "dynamic_density",
    "hashlib",
    "itertools",
    "json",

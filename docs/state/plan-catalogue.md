@@ -14,7 +14,7 @@ Work completion describes the recorded obligation. Scientific claims and provide
   Next: The owner chooses the next lever now that every heater and heater-coupling family of plans ascella-perturbed-compilation-case and ascella-heater-coupling-families misses job-02: further offline families (crosstalk nonlinear in drive power, crosstalk over the physical layout), a request to Quandela for heater geometry or applied-voltage calibration, or a new written hardware case. A timing budget for larger sample counts still needs controlled repeats that vary only the samples per iteration. Blocked: reconciliation evidence unresolved. Historical receipt inputs changed; revalidation required.
 
 - **[primorial-coherent-device-question](plans/primorial-coherent-device-question.json)** (active; verified): Joint tilt and CZ-phase gate-error bounds reopen the primorial gap-88 device question; measure the coherent fractions that decide it in simulation-designed probes before any hardware case. [Context](../../docs/design/primorial-cover-joint-coherent-bounds.md).
-  Next: Await the user approval of results/live/PRIMORIAL\_COHERENCE\_CASE.md; the approval dry runs are made from main after the change merges.
+  Next: Await the user approval of results/live/PRIMORIAL\_COHERENCE\_CASE.md; the approval dry runs are made from main after the change merges. Historical receipt inputs changed; revalidation required.
 
 ## Paused
 

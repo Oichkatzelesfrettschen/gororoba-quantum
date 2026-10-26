@@ -288,6 +288,11 @@ paths of `noise.json`:
 - **Noise model.** The decisive scenarios under the snapshot's noise give a null-subtracted bias of 0.051
   and 0.053 at the joint bound against 0.049 and 0.050 noise-free, the difference the incoherent floor
   (0.0026 and 0.0033).
+
+[PRIMORIAL_COHERENCE_CASE_2.md](../../../results/live/PRIMORIAL_COHERENCE_CASE_2.md) carries the same probes and
+gap-88 circuits to 23 one-hop-separated Kingston paths per PUB at a short repetition delay, bounds the
+paths' preparation excitation with the state-prep-control family and `scripts/state_prep_excess.py`, and decides
+per path (`primorial_probe_case.py --decide-paths`, `--crosstalk`).
 - **Schedule.** The probe job runs a 25.0 ms column of 98 circuits, about 20.9 s of QPU time at 757 shots;
   the untwirled gap-88 job of 104 circuits (gap-88, null, null, gap-88 per setting and 8 basis
   preparations) a 26.3 ms column, 75.8 and 85.4 s at the paths' budgets.

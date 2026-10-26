@@ -168,14 +168,3 @@ def coherence_probe_group() -> Group:
     return Group(
         "coherence_probes", probe_members, cp.summarize, summarize_with_covariance=cp.summarize_with_covariance
     )
-
-
-def readout_preflight_group() -> Group:
-    """The two readout calibrations of the coherence probes alone, run before any probe time is spent."""
-    circuits = [cp.readout_circuit(prepared) for prepared in (0, 1)]
-    ideals = parallel.ordered_map(IdealLaw(), circuits)
-    return Group(
-        "readout_preflight",
-        tuple(Member(circuit.name, circuit, ideal) for circuit, ideal in zip(circuits, ideals, strict=True)),
-        cp.readout_summary,
-    )
