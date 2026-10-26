@@ -146,6 +146,26 @@
             }
           ],
           "scope_sha256": "33410abf939434da8bee2d778096d9725f510fa5bf0a1c26b087b011bacfd405"
+        },
+        {
+          "result": "Revalidated at 5717aefa after merging main: research_state.json added claim a5-zero-divisor-strata, appended one boundary sentence to a5-nonzero-divisor-two-dimension-gap crediting it with the global mu direction, and extended dimension32-global-topology; ascella-signed-coherence-conformance.md gained 75 lines and lost none, and its heater-coupling section keeps every family's reading; plan_tracker.py check and check_markdown_links.py pass.",
+          "observed_at": "2026-10-26T04:04:56.060818+00:00",
+          "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+          "evidence": [
+            {
+              "ref": "docs/design/ascella-signed-coherence-conformance.md",
+              "sha256": "2785947695b3b774fa2e37b33ee6891c64127fd1dafa088a1d661a90f9b023d0"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+            },
+            {
+              "ref": "docs/state/plans/ascella-signed-coherence-conformance.json",
+              "sha256": "b0e734baccebe1aa280e3c729eb8c1112575758c6fa9ab17f20bc8e1d7495b50"
+            }
+          ],
+          "scope_sha256": "33410abf939434da8bee2d778096d9725f510fa5bf0a1c26b087b011bacfd405"
         }
       ]
     }

@@ -72,6 +72,22 @@
             }
           ],
           "scope_sha256": "4f9259c08349577a052aa3f1c3d4a338bdbc2f861ed9d5e0a0df570d891e69c0"
+        },
+        {
+          "result": "Revalidated at 5717aefa after merging main: research_state.json added claim a5-zero-divisor-strata, appended one boundary sentence to a5-nonzero-divisor-two-dimension-gap crediting it with the global mu direction, and extended dimension32-global-topology; a5-nonzero-divisor-two-dimension-gap stays established with its statement unchanged; core-270, core-690 and core-691 pass.",
+          "observed_at": "2026-10-26T04:04:56.060818+00:00",
+          "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+            },
+            {
+              "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+              "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+            }
+          ],
+          "scope_sha256": "4f9259c08349577a052aa3f1c3d4a338bdbc2f861ed9d5e0a0df570d891e69c0"
         }
       ]
     },
@@ -159,6 +175,22 @@
         {
           "ref": "docs/state/research_state.json",
           "sha256": "04391f498de69b65b74540b639bd2b31b62f045bb8c3ab63292d1b20b84ace4d"
+        },
+        {
+          "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+          "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+        }
+      ],
+      "scope_sha256": "19ad1a4f557be6f82416b29085d3be15c855f8e7c2cef946792409e0585dd8f7"
+    },
+    {
+      "result": "Revalidated at 5717aefa after merging main: research_state.json added claim a5-zero-divisor-strata, appended one boundary sentence to a5-nonzero-divisor-two-dimension-gap crediting it with the global mu direction, and extended dimension32-global-topology; a5-nonzero-divisor-two-dimension-gap stays established with its statement unchanged; core-270, core-690 and core-691 pass.",
+      "observed_at": "2026-10-26T04:04:56.060818+00:00",
+      "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
         },
         {
           "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",

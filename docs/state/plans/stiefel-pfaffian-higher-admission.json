@@ -74,6 +74,22 @@
             }
           ],
           "scope_sha256": "5ea871e694105133e925bfedc1304b531e94933c5b4a561418d610fe5fef4fc7"
+        },
+        {
+          "result": "Revalidated at 5717aefa after merging main: research_state.json added claim a5-zero-divisor-strata, appended one boundary sentence to a5-nonzero-divisor-two-dimension-gap crediting it with the global mu direction, and extended dimension32-global-topology; every claim record this plan cites keeps its bytes and core-270 passes.",
+          "observed_at": "2026-10-26T04:04:56.060818+00:00",
+          "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+            },
+            {
+              "ref": "docs/evidence/stiefel-pfaffian-higher/result.json",
+              "sha256": "fb208dddfb9a17d3a611399582e682e8d6001645bd808e7b29a2ec96c6732be6"
+            }
+          ],
+          "scope_sha256": "5ea871e694105133e925bfedc1304b531e94933c5b4a561418d610fe5fef4fc7"
         }
       ]
     }
@@ -121,6 +137,22 @@
         {
           "ref": "docs/state/research_state.json",
           "sha256": "04391f498de69b65b74540b639bd2b31b62f045bb8c3ab63292d1b20b84ace4d"
+        },
+        {
+          "ref": "docs/evidence/stiefel-pfaffian-higher/result.json",
+          "sha256": "fb208dddfb9a17d3a611399582e682e8d6001645bd808e7b29a2ec96c6732be6"
+        }
+      ],
+      "scope_sha256": "90ca6b74eb352e341f5217bce5e1dd1f4495c1030ab04035a199617f8235e3c7"
+    },
+    {
+      "result": "Revalidated at 5717aefa after merging main: research_state.json added claim a5-zero-divisor-strata, appended one boundary sentence to a5-nonzero-divisor-two-dimension-gap crediting it with the global mu direction, and extended dimension32-global-topology; every claim record this plan cites keeps its bytes and core-270 passes.",
+      "observed_at": "2026-10-26T04:04:56.060818+00:00",
+      "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
         },
         {
           "ref": "docs/evidence/stiefel-pfaffian-higher/result.json",

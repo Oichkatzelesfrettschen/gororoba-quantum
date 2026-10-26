@@ -163,6 +163,26 @@
         }
       ],
       "scope_sha256": "d8736fa33f2306e5677371d9e780ed3928ac9af3827b8a76c563098e848fa707"
+    },
+    {
+      "result": "Revalidated at 5717aefa after merging main: research_state.json added claim a5-zero-divisor-strata, appended one boundary sentence to a5-nonzero-divisor-two-dimension-gap crediting it with the global mu direction, and extended dimension32-global-topology; every claim record this plan cites keeps its bytes and core-270 passes.",
+      "observed_at": "2026-10-26T04:04:56.060818+00:00",
+      "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+      "evidence": [
+        {
+          "ref": "proofs/CdAssociatorAnf.v",
+          "sha256": "5fbec4bf0a2160766ee7d7d74c5b5139d65b1c31ada7bbfe5e1dd65abc479d1b"
+        },
+        {
+          "ref": "docs/notes/cd_phase_degree.md",
+          "sha256": "faafde365485f5830b84fdc5b45bc07be0dac43743e2fa226158fa219b51bc15"
+        },
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+        }
+      ],
+      "scope_sha256": "d8736fa33f2306e5677371d9e780ed3928ac9af3827b8a76c563098e848fa707"
     }
   ]
 }

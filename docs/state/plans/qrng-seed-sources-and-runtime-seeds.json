@@ -170,6 +170,26 @@
             }
           ],
           "scope_sha256": "7c656d08e879396dff13b836f476d1305727d5813709f362fb234ec344b6724f"
+        },
+        {
+          "result": "Revalidated at 5717aefa after merging main: docs/README.md added the a5-zero-divisor-strata evidence row; check_markdown_links.py passes and the AGENTS.md Seeds rule links docs/notes/qrng/README.md.",
+          "observed_at": "2026-10-26T04:04:56.060818+00:00",
+          "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+          "evidence": [
+            {
+              "ref": "docs/notes/qrng/README.md",
+              "sha256": "c2f6df03fa684c6624478856a200a7233d061cd899e728eb7d608a02b254738d"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "29ef68c4909cf820f0c81da74d120f1989a36da56a6aa77fef8a51d527dbb89e"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "0e8817b3cf2fdc6d67ede62f0089549dafcff4fb97005a73fce4d4b8471b7024"
+            }
+          ],
+          "scope_sha256": "7c656d08e879396dff13b836f476d1305727d5813709f362fb234ec344b6724f"
         }
       ]
     },
@@ -223,6 +243,30 @@
             {
               "ref": "docs/evidence/qrng_seeds/allocations.json",
               "sha256": "bb96629a9ce9c415b069760838645c51fc13f2ed359f7e0174ae848f6ca92477"
+            }
+          ],
+          "scope_sha256": "aa8ba528067c91af6e77a1a168e499c0dc3597f10a3ce34634d12f874e99b72e"
+        },
+        {
+          "result": "Revalidated at 5717aefa after merging main: allocations.json gained the strata verifier's two owned ANU draws (75bd5ba); seed_provenance.py --check and --runtime pass and test_qrng_seeds.py runs the parse-time refusal.",
+          "observed_at": "2026-10-26T04:04:56.060818+00:00",
+          "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/qrng_seeds.py",
+              "sha256": "96466443ff4c479c6f78512fc6702bef33d8b697c463d3be5bf8a96414e23f76"
+            },
+            {
+              "ref": "ci/seed_provenance.py",
+              "sha256": "13462cc1c98e1df093b2847c131d954cc3db6b8e8f547602146f51949d396363"
+            },
+            {
+              "ref": "tests/scripts/test_seed_sources_in_records.py",
+              "sha256": "66e8fd8f083c81200a0b4133d7df3df8cbfd840a670dd3f761523a8077b0fc61"
+            },
+            {
+              "ref": "docs/evidence/qrng_seeds/allocations.json",
+              "sha256": "b8987f5489ba2f8c77c8befb49d7de87c5d008be1941e8e0b287a56b2bda514b"
             }
           ],
           "scope_sha256": "aa8ba528067c91af6e77a1a168e499c0dc3597f10a3ce34634d12f874e99b72e"
