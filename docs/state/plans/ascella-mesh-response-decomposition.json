@@ -1,0 +1,56 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-mesh-response-decomposition",
+  "kind": "investigation",
+  "summary": "Decompose the mesh-dependent Ascella job-02 response beyond the X statistic (block geometry, dark-output and outside-block leakage), explore new error families on half of job-02's meshes and confirm survivors on the QRNG-held-out half.",
+  "sources": [
+    "docs/design/ascella-signed-coherence-conformance.md",
+    "docs/state/plans/ascella-heater-coupling-families.json",
+    "scripts/ascella_heater_coupling.py",
+    "scripts/ascella_physical_models.py"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Every per-heater and heater-coupling family read so far misses job-02. All 56 per-mesh X statistics have been read, so this plan is exploratory until its confirmation step: a QRNG-drawn split holds out 28 meshes, and a family selected or tuned on job-00 plus the 28 exploration meshes is scored once on the 28 held-out meshes. A first look (scratch, before this record) found the block mean loss equal at the anchor mesh and over the perturbed meshes, the dark block output (mode 2) and the outside modes near their dark level in quiet iterations, the outside-click bursts dark-shaped and time-ordered rather than mesh-ordered, no X overdispersion at the anchor mesh (chi-square 6.7 on 7), heater-offset fits predicting leakage (mode 2 plus outside) of 0.007 to 0.12 against an observed bound of 0.0025, and returned phases continuous with no power-of-two grid."
+  },
+  "scope": "Offline analysis of the retained Ascella jobs 00, 01 and 02 with local simulation only (Perceval SLOS, Naive and NoiseModel on this host; no provider job, emulator or credits). Steps: (1) a retained decomposition record of job-02's block light (mean versus mesh-dependent deviation, noise-whitened covariance spectrum at the anchor and over the perturbed meshes), the outside-block clicks (burst profile against the dark catalogue, light-leak bound per mesh) and every fitted family's predicted leakage; (2) the split: one ANU QRNG draw orders the 56 perturbed meshes, the first 28 form the exploration half and the rest the held-out half, recorded before any new family is fitted; (3) exploration on job-00 plus the exploration half: heater-phase quantization (each returned phase rounded to a grid of resolution r, Perceval phase_imprecision semantics, r and the grid origin fitted), per-heater non-negative phase-noise variances, a likelihood over all twelve outputs that scores leakage rather than conditioning on the block, and source and detector imperfections through Perceval's NoiseModel and per-mode detection efficiencies; (4) confirmation: each family the exploration keeps is fitted once on job-00 plus the exploration half and scored on the held-out half by mesh_score's joint quadratic form, shortfall at or above the chi-square 0.999 quantile on 28, predicted below the 0.97 quantile with median variance ratio at most 1. A family is kept for confirmation when its exploration-half quadratic form falls below the 0.999 quantile on 28. If none is kept, the plan closes with the decomposition and the exploration record.",
+  "owner": "ascella signed-coherence analysis",
+  "next_action": "Draw the split from the ANU QRNG and record it, then write the decomposition record.",
+  "related": [
+    "ascella-heater-coupling-families",
+    "ascella-signed-coherence-conformance"
+  ],
+  "steps": [
+    {
+      "id": "split",
+      "action": "Draw one ANU QRNG request, order job-02's 56 perturbed meshes by it and record the exploration and held-out halves with the draw path and indices.",
+      "acceptance": "A retained split record and its seed-ledger entry exist before any new family is fitted.",
+      "state": "todo"
+    },
+    {
+      "id": "decomposition-record",
+      "action": "Write the block-geometry, leakage and burst decomposition of job-02 as a retained record with a replay gate.",
+      "acceptance": "The record replays within the fit bounds and states every number the design section cites.",
+      "state": "todo"
+    },
+    {
+      "id": "exploration-families",
+      "action": "Fit the quantization, phase-noise, full-output-likelihood and source-detector families on job-00 plus the exploration half and score each on that half.",
+      "acceptance": "A retained exploration record lists each family's fit and exploration-half quadratic form and names the families kept for confirmation.",
+      "state": "todo",
+      "depends_on": [
+        "split"
+      ]
+    },
+    {
+      "id": "confirmation",
+      "action": "Score each kept family once on the held-out half.",
+      "acceptance": "A retained confirmation record with each kept family's held-out reading, or a statement that none was kept.",
+      "state": "todo",
+      "depends_on": [
+        "exploration-families"
+      ]
+    }
+  ]
+}
