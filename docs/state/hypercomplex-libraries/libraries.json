@@ -2623,6 +2623,7 @@
     "scripts/local_simulation_replay.py",
     "scripts/lsq_conditioning_study.py",
     "scripts/mod15_signed_multiplier_census.py",
+    "scripts/n21_dose_decisions.py",
     "scripts/n21_exact_crosscheck.py",
     "scripts/n21_exact_model_validation.py",
     "scripts/n21_orbit_context_refit.py",
@@ -6103,6 +6104,7 @@
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
     "scripts/lsq_conditioning_study.py",
+    "scripts/n21_dose_decisions.py",
     "scripts/n21_orbit_context_refit.py",
     "scripts/n21_orbit_rca.py",
     "scripts/n21_q143_beat_model.py",
@@ -11527,6 +11529,19 @@
    "snapshot_laws",
    "sys",
    "time",
+   "typing"
+  ],
+  "scripts/n21_dose_decisions.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "json",
+   "math",
+   "numpy",
+   "pathlib",
+   "re",
+   "scipy",
+   "sys",
    "typing"
   ],
   "scripts/n21_exact_crosscheck.py": [
