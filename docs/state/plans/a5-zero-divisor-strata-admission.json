@@ -1,0 +1,79 @@
+{
+  "schema": "work-plan-v1",
+  "id": "a5-zero-divisor-strata-admission",
+  "kind": "implementation",
+  "summary": "Admit a5-zero-divisor-strata (roadmap item 3 of dimension32-global-topology) only for the subclaims an independent opus re-check from cd_core confirms.",
+  "sources": [
+    "docs/evidence/a5-zero-divisor-strata/README.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "scope": "Evidence bundle docs/evidence/a5-zero-divisor-strata (author script, result.json, README, independent verifier and verification.md), its replay and admission gates, the claim a5-zero-divisor-strata and the boundary text of dimension32-global-topology and a5-nonzero-divisor-two-dimension-gap.",
+  "owner": "repository maintainer",
+  "next_action": "Read verification.md from the opus re-check; drop or correct every subclaim it refutes before any registry edit.",
+  "steps": [
+    {
+      "id": "zd-criterion",
+      "state": "todo",
+      "action": "Re-check that zero divisors are the doubly pure points with Q*G = 0 and nullity = 28 - 2 rank_C C_z.",
+      "acceptance": "Fails if any exact point has nullity differing from 28 - 2 rank C_z, or a zero divisor with y0 or y16 nonzero, or Q*G nonzero."
+    },
+    {
+      "id": "irreducibility",
+      "state": "todo",
+      "action": "Re-check absolute irreducibility of Q and G and complex dimension 14 each.",
+      "acceptance": "Fails if either polynomial factors over a finite-field extension or a Jacobian rank gives another dimension."
+    },
+    {
+      "id": "strata-pieces",
+      "state": "todo",
+      "action": "Re-check the two-piece decomposition of the nullity 8, 12 and 16 strata with the stated dimensions.",
+      "acceptance": "Fails if a point of some stratum lies in neither claimed piece, one piece lies inside the other, or a smooth-point Jacobian rank gives another dimension."
+    },
+    {
+      "id": "incidences",
+      "state": "todo",
+      "action": "Re-check the closure incidences, the V(Q) and V(G) memberships and the component counts 1, 2, 1, 2.",
+      "acceptance": "Fails if an exact point of a claimed subset lies outside its claimed container or W8 has a point in V(Q) off the other pieces."
+    },
+    {
+      "id": "mu-direction",
+      "state": "todo",
+      "action": "Re-check that the +2 of the two-dimension gap is the complex coordinate mu = (y8, y24).",
+      "acceptance": "Fails if the gap dimension survives with mu fixed to zero."
+    },
+    {
+      "id": "admission",
+      "state": "todo",
+      "action": "Add claim a5-zero-divisor-strata with gates and the boundary updates, only for confirmed subclaims.",
+      "acceptance": "research_state.py --check and plan_tracker.py check pass and Codex reports clean on the PR head."
+    },
+    {
+      "id": "author-replay",
+      "state": "done",
+      "action": "Replay the author's --check against result.json and --self-test.",
+      "acceptance": "--check exits 0 and --self-test rejects every mutation and corrupted row.",
+      "receipts": [
+        {
+          "result": "--check docs/evidence/a5-zero-divisor-strata/result.json exited 0 in 9.6 s on 12 CPUs and --self-test rejected 13 mutations and corrupted rows.",
+          "observed_at": "2026-10-26T01:23:57+00:00",
+          "revision": "326da18eb5b7b89f1e9388a652328a4ccb791601",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/result.json",
+              "sha256": "5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c"
+            },
+            {
+              "ref": "scripts/a5_zero_divisor_strata.py",
+              "sha256": "b1bc9bfb7d9bdd2087a321b3e8d4f92d60bcf0028b2be003a33374114648493c"
+            }
+          ],
+          "scope_sha256": "0a505457669fa5fe1e851d076a57b2de51ff0ac7d392083447f265426f6b7219"
+        }
+      ]
+    }
+  ]
+}
