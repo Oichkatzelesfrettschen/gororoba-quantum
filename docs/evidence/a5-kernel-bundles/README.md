@@ -9,14 +9,16 @@ stabilizer and its irreducible kernel representation on both nullity-sixteen com
 the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and quaternionic classes. An exhaustive
 component census, the non-homogeneous pieces' reduced transitions, the remaining non-homogeneous unit-section
 topologies, and their characteristic classes remain open. The aligned nullity-twelve pieces now have an explicit
-one-dimensional compact-orbit quotient and a computed unit-section topology.
+one-dimensional compact-orbit quotient, a computed unit-section topology, and exact stabilizer representations on
+their principal and endpoint orbits.
 
 Every computation uses rational or Gaussian-rational arithmetic. [`result.json`](result.json) is the output of
 [`kernel_symmetry.py`](kernel_symmetry.py) `--out`. [`frames-result.json`](frames-result.json) is the output of
 [`kernel_frames.py`](kernel_frames.py) `--out`. `stabilizer-result.json` is the output of
 `stabilizer_representation.py --out`. `nullity-sixteen-bundle-result.json` is the output of
 `nullity_sixteen_bundle.py --out`. `aligned-orbit-moduli-result.json` is the output of
-`aligned_orbit_moduli.py --out`. The focused contracts and mutation controls run without random input.
+`aligned_orbit_moduli.py --out`. `aligned-stabilizer-result.json` is the output of
+`aligned_stabilizer_representation.py --out`. The focused contracts and mutation controls run without random input.
 
 ## Conventions
 
@@ -271,8 +273,50 @@ The falsifier was an aligned point outside `0<rho<=1`, incomplete Gram data, a t
 at the three displayed loci, a different compact stabilizer algebra, a sign-dependent result, a different link
 complement topology, or survival of a phase-deletion or trivial-monodromy mutation. None occurred. The exact replay
 uses rational cone representatives; positive rescaling to the unit section preserves `rho`, stabilizers, and
-nullity. This result identifies the moduli and topology but does not yet decompose the nullity-twelve kernel under
-the principal or endpoint stabilizers, reduce its transition functions, or compute its characteristic classes.
+nullity. This result identifies the moduli and topology. The following section decomposes the kernel on its compact
+orbits; reduced transitions and characteristic classes over the full unit section remain open.
+
+## The aligned fiber representation is constant on the principal interval
+
+Fix the canonical representative `u=e_1+i t e_2`, with `0<t<1`. The connected compact stabilizer is the same
+`SU(2)` subgroup of `G_2` for every `t`: it fixes the ordered frame `(e_1,e_2)` pointwise, while a nonzero infinitesimal
+phase cannot fix a Gram matrix with unequal eigenvalues. Restricting the compact domain lifts to the complex
+rank-six kernel and computing the inverse-Killing Casimir gives
+
+`(ker_R L_y,J) = 2 V_0 + 2 V_1`,
+
+where `V_0` is the trivial complex line and `V_1` is the standard complex doublet of `SU(2)`. The Casimir has
+eigenvalue zero with multiplicity two and `3/8` with multiplicity four. Its two spectral projectors have ranks two
+and four. The fixed `SU(2)` acts on a smooth constant-rank kernel over the connected interval `0<t<1`, so the integer
+isotypic multiplicities are locally constant and hence constant on the entire principal interval. Exact calculations
+at `t=1/3,1/2,2/3`, on both signs, check the implementation rather than replace that continuity argument.
+
+At the collinear endpoint `t=0`, the stabilizer algebra jumps to `su(3)`. Its inverse-Killing Casimir is `4/9` on all
+six complex dimensions. The exact commutant has dimension two and contains complementary invariant projectors of
+rank three. A unique invariant symmetric form has rank six and vanishes on each projected summand, pairing the two
+summands nondegenerately. Thus the endpoint representation is
+
+`3 + conjugate(3)`.
+
+The fundamental plus dual representation is faithful on the order-three center of the simply connected group. The
+represented connected stabilizer is therefore `SU(3)`, rather than `PSU(3)` or another quotient with the same Lie
+algebra. This representation is the complexification of the real tangent isotropy representation on the `S^6`
+factor of the collinear locus.
+
+At the closure boundary `t=1`, the same exact calculation recovers the committed nullity-sixteen restriction
+
+`2 V_0 + 3 V_1`.
+
+The passage from a principal aligned orbit to `N_+` or `N_-` consequently adds one standard `SU(2)` doublet to the
+kernel. Both aligned signs have identical endpoint, principal, and boundary representations. This comparison is a
+statement about the connected stabilizers. It does not determine the action of disconnected stabilizer elements,
+the gluing around the quadratic-argument circle, or the characteristic classes of the full aligned unit section.
+
+The falsifier was a stabilizer direction moving the point, escaping the kernel, or failing to commute with `J`; a
+different representation at another principal value or on the other sign; an endpoint without complementary
+dual rank-three summands; a boundary restriction different from the committed `N_+-` result; or survival of the
+moving-generator or perturbed-fiber-action mutations. None occurred. The exact certificates and input digests are
+in `aligned-stabilizer-result.json`.
 
 ## Principal-Pfaffian frames cover `N_+` and `N_-`
 
@@ -548,10 +592,12 @@ closed-form frames on all seven pieces of nullity at least twelve. On each `N_+`
 identifies the connected compact point stabilizer as `U(2)` and decomposes the complex rank-eight fiber into five
 irreducible summands. The `SU(2)` reduction then classifies the ordinary real, complex, and quaternionic bundles on
 both `N_+` and `N_-`, including the order-two complex K-class that their zero Chern classes do not detect. The
-computation has not proved that the visible components exhaust the group and has not classified an equivariant
-extension under the disconnected `N_+-` stabilizers, the actual real type of the individual four-plane `xi_R`, or the
-remaining non-homogeneous pieces' K-orbit moduli and topology, or any non-homogeneous piece's reduced transition
-functions and bundle invariants. The compact
+computation also decomposes the connected stabilizer representations on the principal and endpoint orbits of both
+aligned nullity-twelve pieces and identifies the extra doublet acquired at their nullity-sixteen boundaries. It has
+not proved that the visible components exhaust the group and has not classified an equivariant extension under the
+disconnected `N_+-` stabilizers, the actual real type of the individual four-plane `xi_R`, the other non-homogeneous
+pieces' K-orbit moduli and topology, or any non-homogeneous piece's reduced transition functions and bundle
+invariants. The compact
 symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit
 labels do not make those kernel bundles homogeneous under the constant symmetry group.
 
@@ -586,4 +632,9 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py \
     --out docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_aligned_stabilizer_representation.py
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py \
+    --out docs/evidence/a5-kernel-bundles/aligned-stabilizer-result.json
 ```
