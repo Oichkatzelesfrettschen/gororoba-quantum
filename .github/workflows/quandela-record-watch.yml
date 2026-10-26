@@ -66,8 +66,11 @@ jobs:
             gh api "repos/$GITHUB_REPOSITORY/issues" -f "title=$TITLE" -F "body=@$body" --jq .html_url
             exit 0
           fi
+          # The marker counts in the issue body (an issue this helper opened) and in every comment.
+          in_body=$(MARKER="$marker" gh api "repos/$GITHUB_REPOSITORY/issues/$open" \
+            --jq 'if ((.body // "") | contains(env.MARKER)) then 1 else 0 end')
           seen=$(MARKER="$marker" gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$open/comments?per_page=100" \
-            --jq '[.[] | select(.body | contains(env.MARKER))] | length' | awk '{n += $1} END {print n + 0}')
+            --jq '[.[] | select((.body // "") | contains(env.MARKER))] | length' | awk -v n="$in_body" '{n += $1} END {print n + 0}')
           if [ "$seen" -gt 0 ]; then
             echo "issue $open already carries $marker"
             exit 0
