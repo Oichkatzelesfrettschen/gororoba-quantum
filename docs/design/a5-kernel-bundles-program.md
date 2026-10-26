@@ -155,6 +155,12 @@ replaced by better ones:
   along M (then the bundle is pulled back from M times a homogeneous piece) or jumps (then the jump locus is a new
   stratum that the twelve H-orbits do not see). Exhaustiveness of the component group stays open and is not a
   blocker.
+- Committed 7a8a329: Pfaffian-chart rational frames over N_+-. They are correct but generic (they frame any
+  constant-rank skew family). Since N_+- is one K-orbit, its unit section is K / K_p with K_p the stabilizer of the
+  representative, and the kernel bundle is K x_(K_p) ker L_p. The decisive output is the stabilizer K_p and its
+  representation on ker L_p (complex dimension 8 under J), decomposed into irreducibles; global frames, triviality
+  and characteristic classes then follow from representation theory. Prefer this over more chart atlases, and do the
+  same on each K-orbit of the other pieces.
 - No jobs in flight.
 
 ## Order
