@@ -584,6 +584,13 @@
       "docs/evidence/ascella-order-coefficients/mesh-split.json",
       "docs/evidence/ascella-order-coefficients/source-detector.json"
     ],
+    "core-ascella-signed-coherence-fixed-mesh-error-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/**",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json",
+      "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json"
+    ],
     "core-primorial-null-residuals-replay": [
       "docs/evidence/calibration/**",
       "docs/evidence/primorial_cover/**",
