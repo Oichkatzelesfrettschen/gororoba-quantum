@@ -85,3 +85,15 @@ def test_cz_pair_slope_matches_record_convention() -> None:
     got = probe_summary({"cz_phase": (phi, -phi)})
     if abs(got["cz_phase_c0"] - phi) > 1e-9 or abs(got["cz_phase_c1"] + phi) > 1e-9:
         raise AssertionError(got)
+
+
+def test_covariance_summary_matches_the_multinomial_errors() -> None:
+    laws = {name: np.asarray(br.law(case.logical_ops(c, DURATIONS), TRUTH)) for name, c in cp.circuits()}
+    # A readout-like mixing keeps every law strictly inside the simplex, as live_run's inverted laws are.
+    mixed = {name: 0.9 * law + 0.1 / 8 for name, law in laws.items()}
+    covariances = {name: np.diag(law) - np.outer(law, law) for name, law in mixed.items()}
+    plain = cp.summarize(mixed)
+    propagated = cp.summarize_with_covariance(mixed, covariances)
+    for key, value in plain.items():
+        if not np.isclose(value, propagated[key], rtol=1e-12, atol=1e-15):
+            raise AssertionError(f"{key}: {value} against {propagated[key]}")

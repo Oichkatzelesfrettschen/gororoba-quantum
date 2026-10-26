@@ -163,4 +163,6 @@ def gap88_group() -> Group:
 def coherence_probe_group() -> Group:
     """Every coherence probe on one pinned three-qubit path, the readout calibrations included."""
     probe_members = tuple(Member(name, circuit, cp.ideal_distribution(circuit)) for name, circuit in cp.circuits())
-    return Group("coherence_probes", probe_members, cp.summarize)
+    return Group(
+        "coherence_probes", probe_members, cp.summarize, summarize_with_covariance=cp.summarize_with_covariance
+    )

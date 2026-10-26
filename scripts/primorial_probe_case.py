@@ -287,7 +287,9 @@ def thresholds(gates: list[dict[str, float]], cz: list[float]) -> dict[str, floa
 def noisy_probes(
     snapshot: dict[str, Any], view: Any, layout: list[int], durations: dict[str, float], limits: dict[str, float]
 ) -> dict[str, Any]:
-    named = [(name, noise.compile_arm(view, circuit, layout)) for name, circuit in cp.circuits()]
+    probes = cp.circuits()
+    compiled = parallel.ordered_map(noise.ArmCompile(snapshot), [(c, layout) for _, c in probes], min_items=1)
+    named = [(name, circuit) for (name, _), circuit in zip(probes, compiled, strict=True)]
     truth_spec = {
         "tilt": tuple(limits[f"tilt_sx_q{w}"] for w in range(3)),
         "tilt_x": tuple(-limits[f"tilt_x_q{w}"] for w in range(3)),
@@ -378,7 +380,12 @@ class InstanceOps:
 
 
 def twirled_arms(
-    view: Any, layout: list[int], logical: list[tuple[dict[str, Any], QuantumCircuit]], count: int, seed: int
+    snapshot: dict[str, Any],
+    view: Any,
+    layout: list[int],
+    logical: list[tuple[dict[str, Any], QuantumCircuit]],
+    count: int,
+    seed: int,
 ) -> list[tuple[dict[str, Any], list[tuple[list[br.Op], int]]]]:
     """Each compiled arm's ``count`` sampled twirl instances: (timed ops, measurement flip mask).
 
@@ -392,7 +399,7 @@ def twirled_arms(
         if qargs is not None and props is not None and props.duration and set(qargs) <= set(layout)
     }
     dt = float(view.target.dt)
-    compiled = [noise.compile_arm(view, circuit, layout) for _, circuit in logical]
+    compiled = parallel.ordered_map(noise.ArmCompile(snapshot), [(c, layout) for _, c in logical], min_items=1)
     built = parallel.ordered_map(TemplateBuild(), compiled, min_items=1)
     rng = np.random.default_rng(seed)
     items: list[tuple[QuantumCircuit, np.ndarray, np.ndarray]] = []
@@ -647,7 +654,6 @@ def noisy_fit(
 
 def noise_model_check(
     snapshot: dict[str, Any],
-    view: Any,
     layout: list[int],
     durations: dict[str, float],
     logical: list[tuple[dict[str, Any], QuantumCircuit]],
@@ -662,7 +668,8 @@ def noise_model_check(
     the noisy insertion models tilt, amplitude, CZ phase and detuning only. The noisy bias includes the
     incoherent model's own bias, which the zero-error row gives.
     """
-    compiled = [(meta, noise.compile_arm(view, circuit, layout)) for meta, circuit in logical]
+    circuits = parallel.ordered_map(noise.ArmCompile(snapshot), [(c, layout) for _, c in logical], min_items=1)
+    compiled = [(meta, circuit) for (meta, _), circuit in zip(logical, circuits, strict=True)]
     worst = bound_patch["families"]["joint_sx"]["worst_max_z"]["spec"]
     sx_tilt = 2 * math.pi * 30e3 * 32e-9 / (math.pi / 2)
     scenarios: dict[str, dict[str, Any]] = {
@@ -714,8 +721,8 @@ def evaluate(snapshot: dict[str, Any], noise_record: dict[str, Any], bound_recor
         budget, variance = br.budget(noise_record, patch)
         arms = br.path_arms(snapshot, view, layout, logical)
         fit = br.Fit(arms, variance, budget)
-        arms32 = twirled_arms(view, layout, logical, TWIRL_INSTANCES, TWIRL_SEED)
-        arms_limit = twirled_arms(view, layout, logical, TWIRL_LIMIT_INSTANCES, TWIRL_LIMIT_SEED)
+        arms32 = twirled_arms(snapshot, view, layout, logical, TWIRL_INSTANCES, TWIRL_SEED)
+        arms_limit = twirled_arms(snapshot, view, layout, logical, TWIRL_LIMIT_INSTANCES, TWIRL_LIMIT_SEED)
         bounds = bound_record["patches"][patch]["bounds"]
         tilt = [b["tilt"] for b in bounds["sx"]]
         twirl = twirl_record(fit, arms32, arms_limit, tilt, bounds["cz_phase"])
@@ -735,7 +742,7 @@ def evaluate(snapshot: dict[str, Any], noise_record: dict[str, Any], bound_recor
             "gap88_arms": "per edge setting gap88, null, null and gap88 again (+, -, -, +), and 8 basis preparations",
         }
         decisions = {label: decide(fit, values, se, points) for label, values in outcomes(limits, gates, cz).items()}
-        check = noise_model_check(snapshot, view, layout, durations, logical, fit, bound_record["patches"][patch])
+        check = noise_model_check(snapshot, layout, durations, logical, fit, bound_record["patches"][patch])
         out["patches"][patch] = {
             "noise_model_check": check,
             "layout": layout,
@@ -784,13 +791,13 @@ def path_budget(snapshot: dict[str, Any], layout: list[int]) -> dict[str, Any]:
     Returns the per-shot variance of every coefficient, the shots that identify all seven at the
     incoherent bias, and that bias.
     """
-    view = calibration_snapshot.snapshot_backend(snapshot)
     logical = [
         (m, c)
         for m, c in noise.arms()
         if (m["family"] == "gradient" and m["cost"] in ("gap88", "null")) or m["family"] == "readout3"
     ]
-    items = [(meta, circuit, noise.compile_arm(view, circuit, layout)) for meta, circuit in logical]
+    compiled = parallel.ordered_map(noise.ArmCompile(snapshot), [(c, layout) for _, c in logical], min_items=1)
+    items = [(meta, circuit, isa) for (meta, circuit), isa in zip(logical, compiled, strict=True)]
     rows = parallel.ordered_map(noise.ArmLaw(snapshot, "CPU"), items, min_items=1)
     fit = tomo.gradient_analysis(rows, "gap88")["null_subtracted"]
     return {

@@ -216,18 +216,25 @@ def assignment(distributions: Mapping[str, np.ndarray]) -> list[tuple[float, flo
 Keep = tuple[tuple[int, int], ...]
 
 
-def _expectation(distribution: np.ndarray, wire: int, keep: Keep = ()) -> tuple[float, float]:
-    """Raw <Z> of ``wire`` and the kept probability over outcomes whose every (wire, bit) of ``keep`` holds."""
-    total = 0.0
-    z = 0.0
-    for k, p in enumerate(distribution):
-        if any(_bit(k, w) != bit for w, bit in keep):
-            continue
-        total += p
-        z += p * (1 - 2 * _bit(k, wire))
+def _expectation(
+    distribution: np.ndarray, wire: int, keep: Keep = (), covariance: np.ndarray | None = None
+) -> tuple[float, float]:
+    """<Z> of ``wire`` over outcomes whose every (wire, bit) of ``keep`` holds, and its one-shot variance.
+
+    The kept-outcome mean is a ratio of linear functions of the law, so its variance is g^T C g for the gradient
+    g_k = (s_k - z) / P_K on kept outcomes; C is the multinomial covariance diag(p) - p p^T of a raw law, where
+    g^T C g = (1 - z^2) / P_K, or the covariance live_run.corrected_summary supplies for a readout-inverted law.
+    """
+    law = np.asarray(distribution, dtype=float)
+    kept = np.asarray([all(_bit(k, w) == bit for w, bit in keep) for k in range(len(law))])
+    signs = np.asarray([1 - 2 * _bit(k, wire) for k in range(len(law))], dtype=float)
+    total = float(law[kept].sum())
     if total <= 0.0:
         raise ValueError("no outcome survives the control postselection")
-    return z / total, total
+    z = float(signs[kept] @ law[kept]) / total
+    gradient = np.where(kept, (signs - z) / total, 0.0)
+    matrix = np.diag(law) - np.outer(law, law) if covariance is None else np.asarray(covariance, dtype=float)
+    return z, float(gradient @ matrix @ gradient)
 
 
 def _point(
@@ -236,6 +243,7 @@ def _point(
     wire: int,
     flips: tuple[float, float],
     keep: Keep = (),
+    covariances: Mapping[str, np.ndarray] | None = None,
 ) -> tuple[float, float]:
     """Phase atan2(second, first) of two corrected quadratures and its one-shot variance."""
     values = []
@@ -243,9 +251,10 @@ def _point(
     e10, e01 = flips
     scale = (1.0 - e10 - e01) ** 2
     for name in names:
-        raw, kept = _expectation(distributions[name], wire, keep)
+        covariance = None if covariances is None else covariances[name]
+        raw, variance = _expectation(distributions[name], wire, keep, covariance)
         values.append(corrected_expectation(raw, e10, e01))
-        variances.append((1.0 - raw**2) / scale / kept)
+        variances.append(variance / scale)
     first, second = values
     norm = first**2 + second**2
     if norm <= 0.0:
@@ -262,7 +271,9 @@ def _slope(steps: tuple[int, ...], phases: list[float], variances: list[float]) 
     return float(weights @ np.asarray(unwrapped)), float(np.sum(weights**2 * np.asarray(variances)))
 
 
-def summarize(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
+def summarize(
+    distributions: Mapping[str, np.ndarray], covariances: Mapping[str, np.ndarray] | None = None
+) -> dict[str, float]:
     """Every estimate and its one-shot standard error (key ``se_<estimate>``).
 
     Keys: ``tilt_x_q<w>`` and ``tilt_sx_q<w>`` (rad), ``cz_phase_c<k>`` (rad, coupler index k of COUPLERS;
@@ -279,6 +290,7 @@ def summarize(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
                     (f"cp_tilt_{gate}_{subset}_{cells}_z", f"cp_tilt_{gate}_{subset}_{cells}_x"),
                     wire,
                     flips[wire],
+                    covariances=covariances,
                 )
                 for cells in TILT_CELLS
             ]
@@ -295,6 +307,7 @@ def summarize(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
                     1,
                     flips[1],
                     keep=((control, state),),
+                    covariances=covariances,
                 )
                 for pairs in CZ_PAIRS
             ]
@@ -311,6 +324,7 @@ def summarize(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
                     wire,
                     flips[wire],
                     keep=() if arm == "outer" else ((0, int(arm[-2])), (2, int(arm[-1]))),
+                    covariances=covariances,
                 )
                 for delay in RAMSEY_DELAYS_DT
             ]
@@ -340,3 +354,10 @@ def ideal_distribution(circuit: QuantumCircuit) -> np.ndarray:
     from qiskit.quantum_info import Statevector
 
     return np.asarray(Statevector(circuit.remove_final_measurements(inplace=False)).probabilities(), dtype=float)
+
+
+def summarize_with_covariance(
+    distributions: Mapping[str, np.ndarray], covariances: Mapping[str, np.ndarray]
+) -> dict[str, float]:
+    """summarize on readout-inverted laws, every variance propagated through the supplied covariances."""
+    return summarize(distributions, covariances)
