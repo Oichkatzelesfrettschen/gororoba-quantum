@@ -23,8 +23,10 @@ preregistration, stage 2 (the gap-88 tomography) is not sent, and no decision re
 
 ## Estimates that stand on qubits 1 and 2
 
-The tilt cells of the middle qubit and of the outer pair read each wire through its own readout, and the
-coupler-(1, 2) pair probe postselects on qubit 2 only. These estimates rest on qubits whose readout passed:
+These estimates are descriptive and outside the preregistered decision, which the void stopped. The tilt cells
+of the middle qubit and of the outer pair read each wire through its own readout, the coupler-(1, 2) pair probe
+postselects on qubit 2 only, and the outer Ramsey arm keeps every shot; the summary's derivatives of these
+estimates with respect to qubit 0's assignment flips are zero. They rest on qubits whose readout passed:
 
 | estimate | value (rad) | standard error at 800 shots | gate-error bound | fraction of bound | share of the gate infidelity |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -33,13 +35,23 @@ coupler-(1, 2) pair probe postselects on qubit 2 only. These estimates rest on q
 | sx tilt, qubit 2 | +0.00158 | 0.00016 | 0.0196 | 0.080 | 0.0064 |
 | x tilt, qubit 2 | -0.00040 | 0.00018 | 0.0139 | 0.029 | 0.0008 |
 | raw CZ conditional phase, coupler (1, 2) | +0.0192 | 0.0009 | 0.0780 | 0.246 | 0.061 |
+| static detuning, qubit 2 (kHz) | -2.40 | 0.49 | none | | |
 
 The raw CZ phase omits the partner-in-0 ZZ share, at most 2 pi x 68 ns x zeta, 0.0026 rad for a 6 kHz ZZ.
 Coherent tilt carries under 1 percent of the sx and x infidelity on these qubits and the conditional phase about
-6 percent of the CZ infidelity. In the joint-bound record's coherent-fraction scan
-([primorial-cover-joint-coherent-bounds.md](../../docs/design/primorial-cover-joint-coherent-bounds.md)) that
-region (f near 0.1, g near 0.25) predicts max_z near 0.1, far below the device-question threshold; the scan
-scales the three qubits together, and qubit 0 and coupler (0, 1) are unmeasured.
+6 percent of the CZ infidelity, and qubit 2's static detuning is 2.4 kHz, inside the 5 to 30 kHz range the
+repository's Fez fits found. The joint-bound record's coherent-fraction scan
+([primorial-cover-joint-coherent-bounds.md](../../docs/design/primorial-cover-joint-coherent-bounds.md)) puts
+that region (f near 0.1, g near 0.25) near max_z 0.1, but the scan was computed on other paths under an older
+snapshot, scales all three qubits together and holds no detuning; qubit 0, coupler (0, 1), the detuning of
+qubits 0 and 1 and both ZZ rates are unmeasured here.
+
+## Deviation from the preregistration
+
+The preregistration names `groups[0].summary` of the collected record as the decision's input; in the collected
+layout that summary sits at `collect.json[1].measured_statistics.summary`. It is the same raw summary with the
+in-job readout inversion only, which `probe-summary.json` holds; the analysis choice is unchanged. The stage-2
+approval dry run `2026-10-26T045028.853944Z` was never consumed, and its approval does not carry to another path.
 
 ## Consequences
 
@@ -52,6 +64,10 @@ scales the three qubits together, and qubit 0 and coupler (0, 1) are unmeasured.
 - A decision on the gap-88 tomography needs a path whose three qubits pass the readout rule. A re-run on another
   path is a new case and needs a fresh approval; the case allowed no path change.
 
-The run's registry entries (the backup instance's retention audit and the submitted-circuit comparison) wait for
-the archive of job `dbfc9ufgdj9s73bbbabg`, another session's 15 s Kingston run retained on its own branch, because
-the account-wide inventory lists it and the audit requires every listed job to be retained.
+The run's registry entries wait for the archive of job `dbfc9ufgdj9s73bbbabg`, another session's 15 s Kingston run
+retained on its own branch (pull request #516), because the account-wide inventory lists it and the audit
+requires every listed job to be retained. #516 edits the same backup-instance inventory and audit, so the change
+that merges second regenerates both from main: `observe_qpu_job_inventory.py --out
+results/live/qpu-job-inventory.json` and `reconcile_qpu_inventory.py` under `GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform`,
+then `compare_submitted_circuits.py --write --out NEW --seed PREVIOUS` under the replay interpreter for the new job,
+and the research_state.py acquisition and claim.
