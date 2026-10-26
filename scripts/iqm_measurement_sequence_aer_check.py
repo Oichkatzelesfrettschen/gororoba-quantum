@@ -37,7 +37,7 @@ import iqm_measurement_sequence as case  # noqa: E402
 import iqm_signed_probe  # noqa: E402
 import iqm_sim  # noqa: E402
 
-from parallel import ordered_map  # noqa: E402
+from parallel import MIN_PARALLEL_ITEMS, ordered_map  # noqa: E402
 
 PINCH = Kraus([np.array([[1, 0], [0, 0]], dtype=complex), np.array([[0, 0], [0, 1]], dtype=complex)])
 TOLERANCE = 1e-9
@@ -82,14 +82,17 @@ def p0_item(item: tuple[dict[str, Any], str, iqm_sim.Calibration]) -> float:
 
 
 def compare(
-    circuits: dict[str, dict[str, Any]], qubits: dict[str, dict[str, float]], calibration: iqm_sim.Calibration
+    circuits: dict[str, dict[str, Any]],
+    qubits: dict[str, dict[str, float]],
+    calibration: iqm_sim.Calibration,
+    min_items: int = MIN_PARALLEL_ITEMS,
 ) -> list[dict[str, Any]]:
     """Per qubit, arm and N: the simulation's P0 over the four signed circuits against the Bloch model at q = 1
     (a cold start), with the calibration's prx error. The qubit x arm x N x sign simulations are independent and run
     through parallel.ordered_map; the sums keep the serial order, so the rows match a serial run bit for bit."""
     keys = [(qubit, arm, n) for qubit in qubits for arm, n in case.group_keys()]
     items = [(circuits[name], qubit, calibration) for qubit, arm, n in keys for name in case.group_names(arm, n)]
-    values = iter(ordered_map(p0_item, items))
+    values = iter(ordered_map(p0_item, items, min_items))
     rows = []
     for qubit, arm, n in keys:
         inputs = qubits[qubit]

@@ -2052,66 +2052,68 @@ def injected_model(cal: dict[str, float], spec: dict[str, Any]) -> dict[str, Any
     return device_model(cal, **over)
 
 
-def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """The real analyze path over a synthetic run directory per true device: readout correction, T1 and p fit,
-    prediction recompute and decisions. Each row summarizes one device over its qubits."""
+def sweep_case(item: tuple[dict[str, str], dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    """One row of run_sweep: the real analyze path over a synthetic run directory of the true device `spec`. The
+    run directory and the run_facts substitution stay local to the call, so cases run in any worker."""
     global run_facts
+    files, excerpt, spec = item
     job = json.loads(files["cases.json"])["jobs"][0]
     circuits = [json.loads(files[entry["file"]]) for entry in job["circuits"]]
     prediction = json.loads(files["prediction.json"])
     original = run_facts
     run_facts = lambda run_dir: {"statuses": {"completed": 1}, "charge": 0.0}  # noqa: E731
-    rows = []
     try:
-        for spec in cases:
-            models = {q: injected_model(cal, spec) for q, cal in excerpt["qubits"].items()}
-            measurements = synthetic_measurements(circuits, device_counts(models), job["shots"])
-            with tempfile.TemporaryDirectory() as scratch:
-                run = Path(scratch)
-                (run / "raw").mkdir()
-                for rel, text in files.items():
-                    (run / rel).parent.mkdir(parents=True, exist_ok=True)
-                    (run / rel).write_text(text, encoding="utf-8")
-                (run / "submission.json").write_text(dump({"qc": QC, "job": JOB}), encoding="utf-8")
-                schedule = prediction["estimator_per_shot_seconds_all_circuits"] * job["shots"]
-                record = {
-                    "compilation": {
-                        "calibration_set_id": prediction["calibration_set"],
-                        "execution_runtime_estimate_seconds": JOB_SECONDS + schedule,
-                    },
-                    "metrics": {"runtime_seconds": 7.0, "billed_seconds": 7.0, "execution_seconds": 6.0},
-                }
-                (run / "raw/job.json").write_text(json.dumps(record), encoding="utf-8")
-                (run / "raw/measurements.json").write_text(json.dumps(measurements), encoding="utf-8")
-                result = analyze(run)
-            usable = {q: r for q, r in result["qubits"].items() if r["usable"]}
-            rows.append(
-                {
-                    **spec,
-                    "usable": len(usable),
-                    "departure_z": {q: r["decisions"]["departure"]["z"] for q, r in usable.items()},
-                    "settle": {q: r["settle_n16"]["verdict"] for q, r in usable.items()},
-                    "mutation_z": {q: r["decisions"]["mutation_test"]["z"] for q, r in usable.items()},
-                    "mutation_passes": all(r["decisions"]["mutation_test"]["passes"] for r in usable.values()),
-                    "informative": {q: r["informative"] for q, r in usable.items()},
-                    "t1_error": {q: r["fitted"]["t1_s"] / models[q]["t1_s"] - 1 for q, r in usable.items()},
-                    "device": {
-                        k: v["device"] for k, v in result["device"].items() if isinstance(v, dict) and "device" in v
-                    },
-                    "device_status": {
-                        k: v["status"] for k, v in result["device"].items() if isinstance(v, dict) and "status" in v
-                    },
-                    "pooled_departure_z": result["device"]["departs_below"]["pooled_z"],
-                    "gate_check_z": {q: r["gate_check_n16"]["z"] for q, r in usable.items()},
-                    "unitary_residual": {q: r["gate_check_n16"]["difference"] for q, r in usable.items()},
-                    "departure_se": {q: r["departure_n16"]["se"] for q, r in usable.items()},
-                    "injected_eps": {q: m["eps"] for q, m in models.items()},
-                    "schedule_ratio": result["compiled_schedule"]["ratio"],
-                }
-            )
+        models = {q: injected_model(cal, spec) for q, cal in excerpt["qubits"].items()}
+        measurements = synthetic_measurements(circuits, device_counts(models), job["shots"])
+        with tempfile.TemporaryDirectory() as scratch:
+            run = Path(scratch)
+            (run / "raw").mkdir()
+            for rel, text in files.items():
+                (run / rel).parent.mkdir(parents=True, exist_ok=True)
+                (run / rel).write_text(text, encoding="utf-8")
+            (run / "submission.json").write_text(dump({"qc": QC, "job": JOB}), encoding="utf-8")
+            schedule = prediction["estimator_per_shot_seconds_all_circuits"] * job["shots"]
+            record = {
+                "compilation": {
+                    "calibration_set_id": prediction["calibration_set"],
+                    "execution_runtime_estimate_seconds": JOB_SECONDS + schedule,
+                },
+                "metrics": {"runtime_seconds": 7.0, "billed_seconds": 7.0, "execution_seconds": 6.0},
+            }
+            (run / "raw/job.json").write_text(json.dumps(record), encoding="utf-8")
+            (run / "raw/measurements.json").write_text(json.dumps(measurements), encoding="utf-8")
+            result = analyze(run)
+        usable = {q: r for q, r in result["qubits"].items() if r["usable"]}
+        return {
+            **spec,
+            "usable": len(usable),
+            "departure_z": {q: r["decisions"]["departure"]["z"] for q, r in usable.items()},
+            "settle": {q: r["settle_n16"]["verdict"] for q, r in usable.items()},
+            "mutation_z": {q: r["decisions"]["mutation_test"]["z"] for q, r in usable.items()},
+            "mutation_passes": all(r["decisions"]["mutation_test"]["passes"] for r in usable.values()),
+            "informative": {q: r["informative"] for q, r in usable.items()},
+            "t1_error": {q: r["fitted"]["t1_s"] / models[q]["t1_s"] - 1 for q, r in usable.items()},
+            "device": {k: v["device"] for k, v in result["device"].items() if isinstance(v, dict) and "device" in v},
+            "device_status": {
+                k: v["status"] for k, v in result["device"].items() if isinstance(v, dict) and "status" in v
+            },
+            "pooled_departure_z": result["device"]["departs_below"]["pooled_z"],
+            "gate_check_z": {q: r["gate_check_n16"]["z"] for q, r in usable.items()},
+            "unitary_residual": {q: r["gate_check_n16"]["difference"] for q, r in usable.items()},
+            "departure_se": {q: r["departure_n16"]["se"] for q, r in usable.items()},
+            "injected_eps": {q: m["eps"] for q, m in models.items()},
+            "schedule_ratio": result["compiled_schedule"]["ratio"],
+        }
     finally:
         run_facts = original
-    return rows
+
+
+def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The real analyze path over a synthetic run directory per true device: readout correction, T1 and p fit,
+    prediction recompute and decisions. Each row summarizes one device over its qubits. The cases are independent and
+    draw no random number, so they map through parallel.ordered_map in order; a case's own per-qubit analyses run
+    serially inside its worker."""
+    return ordered_map(sweep_case, [(files, excerpt, spec) for spec in cases], min_items=2)
 
 
 def sweep_failures(rows: list[dict[str, Any]], qubits: int = QUBIT_COUNT) -> list[str]:
@@ -2153,15 +2155,17 @@ def detect() -> list[dict[str, Any]]:
     """The minimum detectable departure per device: the smallest multiple of the departure standard error (the null
     device's own, gate-model systematic included) by which a true departure lowers the measure arm's N = 16 P0 on
     every qubit and still reads `attributed`, over DETECT_GRID. A per-qubit shift of k standard errors pools to about
-    sqrt(6) k."""
+    sqrt(6) k. The retained case's billing model builds its files; all (device, k) rows run as one ordered map."""
     excerpt = load_json(ROOT / "results/iqm/cases" / CASE / EXCERPT)
-    files = build_files(excerpt)
+    files = build_files(excerpt, retained_billing_model())
     wanted = {spec["label"]: spec for spec in sweep_cases(False) if spec["label"] in DETECT_ROWS}
+    specs = [{**wanted[label], "shift_se": k} for label in DETECT_ROWS for k in DETECT_GRID]
+    rows = iter(run_sweep(files, excerpt, specs))
     out = []
     for label in DETECT_ROWS:
         found: dict[str, Any] = {"label": label, "scan": {}}
         for k in DETECT_GRID:
-            row = run_sweep(files, excerpt, [{**wanted[label], "shift_se": k}])[0]
+            row = next(rows)
             shift = {
                 q: -measure_p0_shift(
                     excerpt["qubits"][q],
