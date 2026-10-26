@@ -131,6 +131,10 @@ ANCHOR_STRIDE = 8
 SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-25T182813Z.json"
 COMPILATION_PLAN = "docs/state/plans/ascella-perturbed-compilation-case.json"
 COMPILATION_DESIGN = "docs/evidence/ascella-order-coefficients/compilation-design.json"
+# The ANU QRNG draw whose values 0..55 place job-02's 56 perturbed meshes on the seed-repeat job's off-stride
+# positions: the k-th off-stride position takes the mesh of the k-th smallest value, ties by index.
+REPEAT_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T033936Z.json"
+REPEAT_PLAN = "docs/state/plans/ascella-seed-repeat-case.json"
 
 
 @dataclass(frozen=True)
@@ -147,12 +151,14 @@ class Job:
     expected_seconds: float
     permuted: bool
     compilations: bool = False
+    order_draw: str = ORDER_DRAW
 
 
 JOBS = {
     "job-00": Job("job-00", 8192, 16384, 1.016384, 200.0, False),
     "job-01": Job("job-01", 16384, 32768, 1.032768, 240.0, True),
     "job-02": Job("job-02", 8192, 16384, 1.016384, 200.0, False, True),
+    "job-03": Job("job-03", 8192, 16384, 1.016384, 200.0, True, True, REPEAT_ORDER_DRAW),
 }
 STAGED = ("cases.json", "circuit.json")
 # qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers
@@ -237,11 +243,11 @@ def design_order() -> list[dict[str, Any]]:
     return rows
 
 
-def permutation() -> list[int]:
-    """Design positions in submission order: ascending ANU QRNG values 0..63 of ORDER_DRAW, ties by index."""
-    values = json.loads((ROOT / ORDER_DRAW).read_text(encoding="utf-8"))["values"][:64]
-    require(len(values) == 64, f"{ORDER_DRAW} holds {len(values)} values, not 64")
-    return sorted(range(64), key=lambda index: (values[index], index))
+def permutation(draw: str, count: int) -> list[int]:
+    """Positions 0..count-1 in submission order: ascending ANU QRNG values 0..count-1 of draw, ties by index."""
+    values = json.loads((ROOT / draw).read_text(encoding="utf-8"))["values"][:count]
+    require(len(values) == count, f"{draw} holds {len(values)} values, not {count}")
+    return sorted(range(count), key=lambda index: (values[index], index))
 
 
 def compilation_seeds() -> tuple[list[int], list[int]]:
@@ -269,15 +275,21 @@ def entries(job: Job) -> list[dict[str, Any]]:
         base = next(row for row in rows if row["block"] == block and row["arm"] == arm)
         seeds = iter(compilation_seeds()[0])
         # An anchor row names no seed and takes job-00's from build_setting.
-        return [
+        compiled = [
             {**base, "compilation_position": p}
             if p % ANCHOR_STRIDE == 0
             else {**base, "compilation_position": p, "compilation_seed": next(seeds)}
             for p in range(64)
         ]
+        if not job.permuted:
+            return compiled
+        # The anchors keep job-02's evenly spaced positions as the drift monitor; the perturbed meshes move.
+        perturbed = [row for row in compiled if "compilation_seed" in row]
+        moved = iter(perturbed[index] for index in permutation(job.order_draw, len(perturbed)))
+        return [row if p % ANCHOR_STRIDE == 0 else next(moved) for p, row in enumerate(compiled)]
     if not job.permuted:
         return rows
-    return [{**rows[position], "design_index": position} for position in permutation()]
+    return [{**rows[position], "design_index": position} for position in permutation(job.order_draw, 64)]
 
 
 def closed_form(theta: float, phi: float, generator: str) -> ComplexMatrix:
@@ -390,7 +402,20 @@ def documents(job: Job) -> dict[str, bytes]:
             "family_alpha": 0.01,
             "interpretation": "compilation dependence of one logical setting's analyzer response",
         }
-    if job.permuted:
+    if job.compilations and job.permuted:
+        manifest["compilation_order"] = {
+            "draw": job.order_draw,
+            "indices": list(range(64 - 64 // ANCHOR_STRIDE)),
+            "rule": "anchors stay at every eighth position; the k-th off-stride position takes the perturbed mesh "
+            "of the k-th smallest draw value, ties by index",
+        }
+        manifest["preregistered"] = {
+            "plan": REPEAT_PLAN,
+            "repeats": "job-02",
+            "family_alpha": 0.01,
+            "interpretation": "reproduction of each served mesh's analyzer response at a repeated compilation seed",
+        }
+    elif job.permuted:
         manifest["order"] = {
             "draw": ORDER_DRAW,
             "indices": list(range(64)),

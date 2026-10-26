@@ -1487,3 +1487,78 @@ returned circuit does not carry. Confidence: medium-high. A model outside
 these classes that passes the held-out confirmation would lower it. The
 calibration snapshot or the applied voltages per iteration would test it
 directly.
+
+## Seed-repeat case (job-03)
+
+Plan
+[`ascella-seed-repeat-case`](../state/plans/ascella-seed-repeat-case.json)
+fixes the readings below before acquisition. Every model fitted to job-02
+treats each served mesh's X deviation as a deterministic function of that
+mesh. Only the seed-0 mesh has been served twice under separate submissions:
+job-00 read 0.881 there and job-02's anchors 0.883. The calibration reading
+above predicts reproduction while the calibration in force stays the same,
+and the hourly recalibration of Maring et al. can change it between jobs.
+
+**What it measures.** Job-03 submits job-02's 64 settings of theta2-x-arm0
+at 8,192 samples per iteration, each with job-02's compilation seed and
+circuit parameters under the same setting name. The seeds are identifiers
+that job-02's request takes from
+[`draw-2026-10-25T182813Z.json`](../evidence/anu_qrng/draw-2026-10-25T182813Z.json).
+The 8 seed-0 anchors keep every eighth position, the drift monitor. The 56
+perturbed meshes take the off-stride positions in the order of values 0 to
+55 of
+[`draw-2026-10-26T033936Z.json`](../evidence/anu_qrng/draw-2026-10-26T033936Z.json),
+so each mesh follows another predecessor than in job-02. Value 56 of that
+draw seeds the permutation nulls. Readings, each at alpha 0.01:
+
+| Reading | Statistic | Reading rule |
+|---|---|---|
+| M, mesh identity | settings whose `computed_circuit` equals job-02's under the same name | the readings below use the identical subset; with no perturbed mesh repeated, job-03's meshes join the held-out set of the decomposition plan and P1 is not read |
+| A, anchor control | job-03 minus job-02 anchor mean X, in counting standard errors | a moved mean marks a calibration change between the jobs |
+| P1, reproduction | Pearson r of the 56 perturbed X statistics between the jobs, against 20,000 label permutations | fixed per mesh at p below 0.01 with r at least 0.726; partly fixed at p below 0.01 with r below 0.726; not reproduced at p at least 0.01 |
+| P2, replicated dependence | job-02's R1 anchor-ratio test on job-03 alone | dependent when the perturbed dispersion exceeds the anchors' |
+
+A fully fixed per-mesh error reaches r = s_c^2 / (s_c^2 + s_n^2) = 0.845,
+with job-02's compilation-induced standard deviation s_c = 0.01037 and
+counting variance s_n^2 = 1.965e-5
+([heater-coupling reading](../evidence/ascella-order-coefficients/heater-coupling.json),
+`observed_spread`). The 0.01 Fisher-z lower bound of that ceiling on 56
+meshes is 0.726. P1 detects r = 0.459 at power 0.9, a fixed share of 54 % of
+the compilation variance. Two readings are exploratory and decide nothing:
+the Spearman correlation of per-mesh dark-output (mode 2) counts between the
+jobs, and the Spearman correlation of each mesh's X change with the change
+in its predecessor's L1 compiled-phase distance.
+
+Reproduction with steady anchors places the error in a fixed property of
+each mesh's voltages. No reproduction with steady anchors places it in the
+compilation or the calibration in force at each job. A moved anchor mean
+marks a calibration change between the jobs, and P1 then reads a lower
+bound on the fixed share.
+
+**Why simulation cannot answer it.** Local SLOS returns the ideal statistic
+for every seed, and Perceval's `SimulatedComputer` uses `compilation_seed`
+for random phase noise rather than for the remote compilation. Whether a
+served mesh repeats its error depends on Ascella's calibration and control
+loop, which no local model holds.
+
+**Sizing.** At 16,384 samples the ceiling rises to 0.880 and its lower bound
+to 0.784, for 1.032768 credits; 8,192 samples match job-02's counting noise
+and keep P1 symmetric between the jobs.
+
+**Backend and seconds.** `qpu:ascella`, available on 2026-10-26 at 03:40 UTC
+with HOM 86.96 % and g2 2 %. Expected 186 s against the 300-second
+`max_duration`: job-00, job-01 and job-02 each took 186 s for 64 iterations.
+
+**Credits.** Ceiling and expectation 1.016384 free credits, the tariff that
+billed job-02 exactly. The usage report reads 70.35 free credits spent this
+month across all platforms, 4.08 of them on `qpu:ascella`.
+
+**Request.**
+[`scripts/ascella_coherence_request.py job-03`](../../scripts/ascella_coherence_request.py)
+writes
+[`job-03/cases.json`](../../results/quandela/cases/ascella_signed_coherence/job-03/cases.json)
+(digest `121a6380…`), and `--body job-03` froze the body against the live
+processor record without sending it (digest `04dba7a2…`). `--check` rebuilds
+jobs 00 to 03 and their bodies. The procedure is that of job-02:
+`--preflight RUN`, the owner's approval of this case, `--submit RUN
+APPROVAL`, collection.

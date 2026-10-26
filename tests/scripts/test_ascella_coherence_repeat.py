@@ -22,7 +22,7 @@ def manifest(job: str) -> dict[str, Any]:
 
 def test_permuted_request_holds_job_00_settings_in_draw_order() -> None:
     first, second = manifest("job-00")["settings"], manifest("job-01")["settings"]
-    order = request.permutation()
+    order = request.permutation(request.ORDER_DRAW, 64)
     if sorted(order) != list(range(64)):
         raise AssertionError("the draw order is not a permutation of the 64 design entries")
     for position, setting in enumerate(second):
@@ -31,6 +31,26 @@ def test_permuted_request_holds_job_00_settings_in_draw_order() -> None:
             raise AssertionError(f"position {position} does not submit design entry {order[position]}")
         if setting["circuit_params"] != design["circuit_params"] or setting["observation_index"] != position:
             raise AssertionError(f"{setting['name']} departs from job-00 beyond its position")
+
+
+def test_seed_repeat_request_holds_job_02_meshes_with_fixed_anchors() -> None:
+    first, second = manifest("job-02")["settings"], manifest("job-03")["settings"]
+    by_name = {setting["name"]: setting for setting in first}
+    if sorted(by_name) != sorted(setting["name"] for setting in second):
+        raise AssertionError("job-03 does not hold job-02's 64 settings")
+    for position, setting in enumerate(second):
+        earlier = by_name[setting["name"]]
+        if (setting["compilation_seed"], setting["circuit_params"]) != (
+            earlier["compilation_seed"],
+            earlier["circuit_params"],
+        ):
+            raise AssertionError(f"{setting['name']} departs from job-02 beyond its position")
+        anchor = position % request.ANCHOR_STRIDE == 0
+        if anchor != (setting["compilation_seed"] == 0):
+            raise AssertionError(f"position {position} breaks the anchor stride")
+    moved = [s["name"] for s in second if s["compilation_seed"]] != [s["name"] for s in first if s["compilation_seed"]]
+    if not moved:
+        raise AssertionError("the perturbed meshes keep job-02's order")
 
 
 def test_ideal_response_to_permuted_manifest_qualifies_every_endpoint() -> None:
