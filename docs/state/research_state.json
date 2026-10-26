@@ -1899,6 +1899,139 @@
       "question": "Does Garnet schedule a circuit job's gates as soon or as late as possible, and what over-rotation does each qubit's prx carry when fitted with its own readout?"
     },
     {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 54-circuit measurement-sequence case, whose leakage circuits read only measure_012? It fails validation: circuit 45 contains no measurements."
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-50",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 50-circuit measurement-sequence case (cases.json a1ab2596), return every key in the documented format, and compile to the schedule the case predicts?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-57",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the hardened 57-circuit measurement-sequence case (cases.json 84fd16f8), with pre-readout delays and the in-job T1 series, and compile it to the predicted schedule?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-57-qpu-window",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit case rebuilt at the QPU-measured 1.096 us window (cases.json 2a49b954), and does analyze --mock keep the planned window when the mock's own compiler (1.772 us window) puts the schedule ratio at 1.304?"
+    },
+    {
+      "id": "iqm-garnet-qpu-window-probe-unitary",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does Garnet's compiler estimate per shot for the N = 16 unitary-arm circuit of the pinching case on QB5, QB7, QB11, QB14, QB17 and QB19, with its 2 us pre-readout delay?"
+    },
+    {
+      "id": "iqm-garnet-qpu-window-probe-measure",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does Garnet's compiler estimate per shot for the N = 16 measure-arm circuit of the pinching case on the same six qubits, and so what mid-circuit measure window does it compile?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-diagnostic",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the eight-circuit unitary-arm diagnostic (cases.json 47a3675d), with pi/2-pair steps and a circuit without the pre-readout delay, and return the final key of every circuit?"
+    },
+    {
+      "id": "iqm-garnet-qpu-measurement-diagnostic",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Is the N = 16 unitary excess of the window probes an axis phase per small-angle prx pulse or |1> loss before the readout, read from eight circuits with in-situ readout on QB5, QB7, QB11, QB14, QB17 and QB19?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-pairs",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit pinching case rebuilt with pi/2-pair steps on QB1, QB5, QB8, QB12, QB14 and QB19 (cases.json 6b94d0db), and return every key?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-pairs-all-n",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit pinching case with pi/2-pair steps at every N on QB6, QB9, QB13, QB15, QB18 and QB20 (cases.json ba32d095), and return every key?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-systematic",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit pinching case with the calibration-only selection (QB1, QB5, QB8, QB14, QB17, QB19) and the gate-model systematic (cases.json 918d7bd5), and return every key?"
+    },
+    {
+      "id": "iqm-garnet-qpu-measurement-pinching-probe",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T004628Z-garnet-measurement-sequence-pinching-probe-probe",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Do the ro0, ro1, N = 16 unitary and N = 16 measure circuits of the pinching case read on QB1, QB5, QB8, QB14, QB17 and QB19 within their raw model bands at 1000 shots, with every key returned?"
+    },
+    {
+      "id": "iqm-garnet-qpu-measurement-pinching",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does a Garnet mid-circuit measurement act as ideal pinching on QB1, QB5, QB8, QB14, QB17 and QB19, read by the Zeno build-up of N rotations of 8 pi/9 over N against the unitary null, with a delay of the measure duration and a settled readout as controls and with T1 and the initialization excitation measured in the job (cases.json e9896a89)?"
+    },
+    {
+      "id": "iqm-garnet-mock-measure-012-probe",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock circuit API return outcomes for a four-qubit measure_012 beside a plain measure?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-unitary-n16",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191223Z-garnet_mock-measurement-timing-probe-unitary-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the unitary-n16 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-measure-n16",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191233Z-garnet_mock-measurement-timing-probe-measure-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the measure-n16 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-delay-n16",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191238Z-garnet_mock-measurement-timing-probe-delay-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the delay-n16 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-measure-n1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191247Z-garnet_mock-measurement-timing-probe-measure-n1-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the measure-n1 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-ro0",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191250Z-garnet_mock-measurement-timing-probe-ro0",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the ro0 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
       "id": "iqm-garnet-kernel-cancellation",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation",
@@ -9498,6 +9631,395 @@
       "gates": {},
       "acquisitions": [
         "iqm-garnet-mock-idle-schedule"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-measure-012",
+      "statement": "garnet:mock rejected the 54-circuit measurement-sequence case (cases.json 4e319aed, job 01a17474) at validation with 'Circuit 45: Circuit contains no measurements', because that circuit's only readout is measure_012, and completed a probe (cases.json 4a14c996, job 01a17476) in which a four-qubit measure_012 beside a plain measure returned only the plain measure's key; the mock's circuit API accepts measure_012 and returns no outcome for it. Both jobs charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock only; a QPU run of measure_012 through the circuit API is untested.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "60954db3af5eb6499e0597f8ded2d7c352af525825b1340d728e232ae20f84b0"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe/results.json",
+          "sha256": "a177ea17ae42bc19c8d09a2fe86bdfb679ce544c3b1e091665828df219914865"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching",
+        "iqm-garnet-mock-measure-012-probe"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-timing",
+      "statement": "garnet:mock (calibration set f04fe114) compiled five single-circuit probes on QB1, QB3, QB7 and QB14 at 100 shots to per-shot qpu_execution estimates of 8.684 us (ro0), 9.324 us (unitary, N = 16), 37.676 us (measure, N = 16), 10.496 us (measure, N = 1) and 25.708 us (delay of 1.024 us, N = 16): 40 ns per prx layer and 1.772 us per mid-circuit measure, 0.75 us longer than the calibration's acquisition_delay plus integration_length. All five charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Compiler estimates of the mock, not measured durations; the QPU job's own estimate is compared in the analysis.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T191223Z-garnet_mock-measurement-timing-probe-unitary-n16-s0p/results.json",
+          "sha256": "0beabc7c6f9fe8e61fae0e5da675d545f4c1bad9028838e3bd9fcd266bd60f13"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191233Z-garnet_mock-measurement-timing-probe-measure-n16-s0p/results.json",
+          "sha256": "30b8b30dbcc3adbb1bbc9f11f630335884325eb24ec147d928b07f31696458f6"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191238Z-garnet_mock-measurement-timing-probe-delay-n16-s0p/results.json",
+          "sha256": "80df61a9751f9d719e616be389ad7f8d3677da95f98f59c8c966ddc31ed10a97"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191247Z-garnet_mock-measurement-timing-probe-measure-n1-s0p/results.json",
+          "sha256": "5846e3b991b9483020d023fd4bc53cabe498aef8e18815a79545aa681463d1be"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191250Z-garnet_mock-measurement-timing-probe-ro0/results.json",
+          "sha256": "68756dd8f0d72e61b596a1bbaf477203943524461f2ef8bb26becab266d230fd"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-timing-unitary-n16",
+        "iqm-garnet-mock-timing-measure-n16",
+        "iqm-garnet-mock-timing-delay-n16",
+        "iqm-garnet-mock-timing-measure-n1",
+        "iqm-garnet-mock-timing-ro0"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-pipeline",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 50-circuit measurement-sequence case (cases.json a1ab2596, job 01a17484) at 2400 shots: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 2400 shots of four 0/1 outcomes in the locus order QB1, QB3, QB7, QB14, and the compiled qpu_execution estimate of 2.71235 s equals the case's predicted 2.71235 s (ratio 1.0000). The mock's outcomes are uniform random bits (ro0 and ro1 contrasts -0.013 to 0.014), so the mock analysis marks every qubit unusable under the 0.5 readout-contrast floor and decides nothing. The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies the format, the schedule model and the analysis guards, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "79a447ce8e18c6d7698a2728a558b6617559e3adaad6d07ca7b7b86a6be813ef"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_mock_analysis.json",
+          "sha256": "7b14108858d4574bd3b2bfd915dc4418295a119b8414e39610fecc3676fa1498"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-50"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-57",
+      "statement": "garnet:mock (calibration set f04fe114) completed the hardened 57-circuit measurement-sequence case (cases.json 84fd16f8, job 01a174a7) at 3000 shots: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order QB5, QB7, QB11, QB14, QB17, QB19, and the compiled qpu_execution estimate of 5.067636 s equals the case's predicted 5.067636 s (ratio 1.0000). The mock executed in 4.041 s and billed 5 s at 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies the format and the schedule model, not any device property, and its execution time does not carry to the QPU.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "d90e20f8a88a49a69e3e9cf14fe79359317e018794cb7ee732a5c33c548e93fe"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-57",
+        "iqm-garnet-mock-measurement-sequence-pinching-57-qpu-window"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-qpu-measure-window",
+      "statement": "On IQM Garnet under calibration set be070414, two single-circuit probes of 100 shots on QB5, QB7, QB11, QB14, QB17 and QB19 (the pinching case's own circuits with a 2 us pre-readout delay) compiled to 7.032 us per shot for the N = 16 unitary circuit (job 01a174be-d1f7-75fc-b324-d27d7133409b) and 24.568 us for the N = 16 measure circuit (job 01a174be-e68b-776e-8241-8bb3d259ae57), so the compiled mid-circuit measure window is (24.568 - 7.032)/16 = 1.096 us, against the 1.772 us that garnet:mock compiles. With the 4.344 us per-circuit base of the retained active-reset pilot job (2026-10-22T212742Z) the unitary circuit's remaining 5.032 - 4.344 = 0.688 us over 16 layers gives 43 ns per prx layer, consistent with the mock's 40 ns. Both jobs billed 1 s and charged 0.50 credits, 1.00 credit in all.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Compiler estimates of one calibration set, not measured durations; the per-circuit base is taken from a different job and circuit family, so the layer time carries that assumption.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p/results.json",
+          "sha256": "774e3ecdcecba795df21c654fd60de824bb5451d1fe577b21f11868b45e0d5e3"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p/results.json",
+          "sha256": "6edc51c6bc37df90b11aabfc789aace5647c85d1a4fb63bbc918febe5b52cd41"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-qpu-window-probe-unitary",
+        "iqm-garnet-qpu-window-probe-measure"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-diagnostic",
+      "statement": "garnet:mock (calibration set f04fe114) completed the eight-circuit unitary-arm diagnostic (cases.json 47a3675d, job 01a17539-b5b7-75f7-9654-8751db6609cd) at 1000 shots: every circuit returned its final key f as 1000 shots of six 0/1 outcomes in the locus order QB5, QB7, QB11, QB14, QB17, QB19, including the 32-pulse pi/2-pair circuit and the circuit without a pre-readout delay. The compiled qpu_execution estimate of 0.086 s is 1.68 times the case's QPU-calibrated 0.0513 s, the 8 x (8.684 - 4.344) us per-circuit base difference between the mock and the QPU. The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic/results.json",
+          "sha256": "fc5eb10b4bcd81dffdf7d2645319942e719b1171433210a37c8e686729c973d8"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-diagnostic.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-diagnostic"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-qpu-measurement-diagnostic",
+      "statement": "On IQM Garnet (calibration set be070414, job 01a1753f-3b98-7437-9433-83d0b4b87721, eight circuits x 1000 shots, 0.50 credits) the preregistered diagnosis of the unitary-arm excess reads no_excess: no usable qubit's raw N = 16 unitary reading exceeds its raw model by 3 standard errors (QB17 +1.1, QB19 +1.1, QB14 -3.2, QB5 -3.5, QB7 -1.4), and the corrected pi/2-pair circuit lies within 3 standard errors of its model on all five usable qubits (-2.64 to +2.71), so the rebuild criterion holds. QB11 is unusable: its readout scale is 0.384, with |1> reading P(0) = 0.172 at once and 0.522 after the 2 us idle. The compiled schedule was 1.0076 times the QPU-calibrated prediction.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One job at 1000 shots on six qubits; the models use the calibration and an assumed initialization excitation, and the readings below 3 standard errors are descriptive. The stated decision rule omitted the readout-scale exclusion that the approved code applied (usable qubits only, scale at least 0.5); applied as written, QB11 (scale 0.384) enters L, the verdict reads readout_loss instead of no_excess, and the rebuild criterion holds either way (QB11 corrected D6 z +1.45).",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic/results.json",
+          "sha256": "af099e10887456bc197dc1280e7877a6bd745e9a50b9678985cf53c747e2802c"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_diagnostic_analysis.json",
+          "sha256": "9d14bb8508834cc06cc6570b4ebb809b389aec6f6a46f618d1ad67ceb7976459"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-diagnostic.md"
+      ],
+      "gates": {
+        "core-707": "replay"
+      },
+      "acquisitions": [
+        "iqm-garnet-qpu-measurement-diagnostic"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-pairs",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 57-circuit pinching case rebuilt with pi/2-pair steps (cases.json 6b94d0db, job 01a17548-7e68-72ab-8a27-38f1b6f3d94f) at 3000 shots on QB1, QB5, QB8, QB12, QB14 and QB19: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order. The compiled qpu_execution estimate of 4.847 s is 1.30 times the case's QPU-calibrated 3.723 s, the 57 x (8.684 - 4.344) us per-circuit base and the 188 x (1.772 - 1.096) us measure-window differences between the mock and the QPU (1.12 s). The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "f128552db62aab4548ca7a46253679028e722d80caab729a94683dc33d55edac"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-pairs"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-pairs-all-n",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 57-circuit pinching case with pi/2-pair steps at every N (cases.json ba32d095, job 01a1755f-4e86-77ee-81be-7b1de90a3c0a) at 3000 shots on QB6, QB9, QB13, QB15, QB18 and QB20: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order. The compiled qpu_execution estimate of 4.861 s is 1.30 times the case's QPU-calibrated 3.738 s, the 57 x (8.684 - 4.344) us per-circuit base and the 188 x (1.772 - 1.096) us measure-window differences between the mock and the QPU (1.12 s). The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "e218517ba720a6f68a8d307861623871badeb33ed4e72b124e93eb5ad8797934"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-pairs-all-n"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-systematic",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 57-circuit pinching case with pi/2-pair steps at every N, the calibration-only qubit selection and the gate-model systematic (cases.json 918d7bd5, job 01a17585-dd26-7086-9e63-655882ecc988) at 3000 shots on QB1, QB5, QB8, QB14, QB17 and QB19: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order. The compiled qpu_execution estimate is 1.30 times the case's QPU-calibrated 3.738 s, the per-circuit base and measure-window differences between the mock and the QPU. The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "55c0244f8a9da4747d2f6e668528cff7b39fcd15d2d3c963d809bc5de82a267a"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-systematic"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-pinching-probe",
+      "statement": "On IQM Garnet (calibration set be070414, job 01a175ac-522d-73e4-ae3e-7404b2335bf6, four circuits x 1000 shots, 0.50 credits) the pre-flight probe of the pinching case read all six qubits (QB1, QB5, QB8, QB14, QB17, QB19) within 3 binomial standard errors of their raw model bands, with ro0 minus ro1 contrast 0.79 to 0.95 and every key returned; the largest distance outside a band was 2.69 standard errors (QB14 ro0, 0.997). The rule printed proceed.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One job at 1000 shots. The bands of the two N = 16 circuits are widened by 0.04 for the model scatter the diagnostic found, so the probe stops a collapse and does not test the gate model.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T004628Z-garnet-measurement-sequence-pinching-probe-probe/results.json",
+          "sha256": "7f68b2898381a6d26bacaaad5574c1e05f88a04869b2f3a4e0fb17e766647ef8"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_preflight.json",
+          "sha256": "e2da84da397a68bdeadeee81c4d1a66fde7ee6f3834014ac253abb0a5b1b8519"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {
+        "core-708": "replay"
+      },
+      "acquisitions": [
+        "iqm-garnet-qpu-measurement-pinching-probe"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-pinching-departure",
+      "statement": "On IQM Garnet (calibration set be070414, job 01a175ac-da6c-718e-8efc-438c1bff1c46, 57 circuits x 3000 shots, 5.00 credits, QB1, QB5, QB8, QB14, QB17, QB19) the preregistered departure test of ideal pinching reads none: departs_below and exceeds_prediction both read none at pooled z +1.65, with all six qubits informative (mutation z 36 to 56; the N = 16 measure-minus-unitary contrast 0.80 to 0.83 against the ideal 0.861). The measure arm's N = 16 P0 sits 0.022 to 0.042 above its prediction on every qubit (0.5 to 0.85 standard errors at the departure standard error of 0.044 to 0.049, which carries a gate-model systematic floored at 0.04). By the reach fixed before the data, the none bounds the measurement to a transition probability below about 0.006 per measurement, or to less than about 30 % of the coherence surviving each measurement.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Exploratory. The reach is set by the gate-model floor of 0.04 in P0, not by the shot count, and no tighter bound follows from this run. The unitary arm departs from its model by -0.028 (QB14, statistical z -5.4), -0.026 (QB1) and -0.018 (QB5), beyond 3 statistical standard errors on three qubits, which the widened standard error absorbs. The eps fits to P0(N) have chi-square 58 to 196 on 4 degrees of freedom with negative eps, so the single-transition-loss description fails. Four qubits fit a negative initialization excitation (down to -0.067), which the readout model reads through q and does not separate from a thermal excitation of the idle qubit. The preregistered gate-model systematic evaluated the axis-phase class on the +1 signed circuit only, while the experiment pools the circuits +, -, -, +; the sign-pooled reanalysis (results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json, gate core-710) has an axis-phase ratio of -0.017 to -0.018 against +0.31 to +0.35 one-sign, gate systematics of 0.040 to 0.046 against 0.042 to 0.048, departure standard errors of 0.042 to 0.047 against 0.044 to 0.049, and a pooled departure z of +1.72 against +1.65. The verdict is unchanged: both read none, and the reach (a transition probability below about 0.006 per measurement, or less than about 30 % coherence surviving each measurement) is unchanged at that precision: with the injection scale and the analysis both sign-pooled the smallest detectable shifts are 0.047 to 0.070 in P0 (eps 0.0040 to 0.0061), against 0.049 to 0.073 (0.0042 to 0.0064) preregistered.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "bb227a69d4271554a96caea4639bd79944e6ffffb9a5e0b4efb8016f1a261d12"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_analysis.json",
+          "sha256": "f6015b4b079b6f6f3996b33249a956840ab8a8e3d7b24ca5ce9b8a20f378b42f"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json",
+          "sha256": "e1ece592f5b295e358fcd1e0f9230ac8792327f906c6c0337685307efb99c760"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {
+        "core-709": "replay",
+        "core-710": "replay"
+      },
+      "acquisitions": [
+        "iqm-garnet-qpu-measurement-pinching"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-pinching-settle-tail",
+      "statement": "On IQM Garnet (calibration set be070414, job 01a175ac-da6c-718e-8efc-438c1bff1c46, 3000 shots, QB1, QB5, QB8, QB14, QB17, QB19) the preregistered settle-tail rule reads attributed at pooled z +4.81, by the count rule on QB14 (+3.15) and QB5 (+3.43). The rule compares the settle arm's N = 16 P0, which adds a 2.0 us idle after each mid-circuit measure to the measure arm, with the model's prediction from the measure arm's own N = 16 loss and the in-job T1: lengthening the post-measurement idle from zero to 2 us raised P0 beyond that prediction by +0.0066 (QB1), +0.0161 (QB5), +0.0056 (QB8), +0.0156 (QB14) and +0.0125 (QB17) and lowered it by 0.0056 on QB19.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Exploratory observation without a mechanism. The effect may come from a readout tail or from measurement-induced relaxation during the idle, and a tail slower than 2 us stays unexcluded. The tail gap carries its delta-method standard error with no gate-model floor; the settle and measure arms play identical pulses. The preregistration text was inconsistent about the settle arm (conditioned on a departure, decides nothing, or feeds the device verdict); the reported attributed comes from the code's unconditional per-qubit and device rule, and no qubit departs in this run, so under the conditional reading the gap would be descriptive only.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "bb227a69d4271554a96caea4639bd79944e6ffffb9a5e0b4efb8016f1a261d12"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_analysis.json",
+          "sha256": "f6015b4b079b6f6f3996b33249a956840ab8a8e3d7b24ca5ce9b8a20f378b42f"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {
+        "core-709": "replay"
+      },
+      "acquisitions": [
+        "iqm-garnet-qpu-measurement-pinching"
       ],
       "assumptions": [],
       "depends_on": [],

@@ -265,6 +265,30 @@ Emerald 0.75, Garnet 0.50, Sirius 0.30 credits/s. A one-hour timeslot costs
 credits of this account buy 40 s on Emerald, 60 s on Garnet or 100 s on
 Sirius, and expire 2026-11-01.
 
+Execution time of an active-reset Garnet job follows the compiled schedule plus a cost per circuit-shot, and each
+executed mid-circuit measure record adds more. Over twelve retained QPU jobs (the seven active-reset jobs
+`01a16583-43fc`, `01a16630-b928`, `01a16631-2b7c`, `01a167ac-58d4`, `01a167ac-e6f3`, `01a167ac-ec22` and
+`01a1707f-6157`; the window probes `01a174be-d1f7` and `01a174be-e68b`; the diagnostic `01a1753f-3b98`; the pre-flight
+probe `01a175ac-522d`; and the main pinching run `01a175ac-da6c`), `execution_seconds` = the record's
+`execution_runtime_estimate_seconds` less 1.6 s + 0.162 s + 7.862 us per circuit-shot + 6.338 us per executed
+mid-circuit measure record (records = shots x the mid-circuit measures of the circuits), with residuals of at most
+0.168 s; `runtime_seconds` exceeded `execution_seconds` by 0.04 to 0.411 s, and `billed_seconds` is
+`ceil(runtime_seconds)` with no fixed 1.6 s term.
+
+The earlier fit over the seven active-reset jobs (0.141 s + 7.967 us per circuit-shot) held no job with a large number
+of mid-circuit measures. The main pinching run (57 circuits, 3000 shots, 564000 mid-circuit records) executed in 8.793 s
+against that fit's 5.241 s: 3.55 s unexplained, 6.3 us per record. The per-record term is therefore fitted to that one
+run; the 1600 and 16000 records of the two single-circuit probes agree with it within 0.07 s, which is inside the
+residual, so they do not test it. A measure-heavy job is the next test. The run's runtime of 9.035 s sat 0.035 s above
+`collect`'s cancel threshold of 9.0 s for `max_credits` 5.0 and billed 10 s, 5.0 credits. A future case sets
+`max_credits` with margin above the corrected worst case (execution + 0.17 s fit residual + 0.42 s runtime over
+execution), at least 1 s below the cancel threshold, which `collect` takes as `floor(max_credits / price)` billed seconds less 1 s
+(`iqm_jobs.cancel_threshold_seconds`, the expression the build uses too). The corrected worst case for the pinching
+circuits is 9.41 s, which needs a threshold of 10.41 s and so `max_credits` of 6.0 (a threshold of 11.0 s; 5.71 buys
+11 billed seconds and a 10.0 s threshold, a 0.59 s margin), not the 5.0 the case carried; a fresh build carries 6.0. The
+retained fit and its check are `scripts/iqm_measurement_sequence.py`, `BILLING_MODELS` and `check_billing_fit`; a case
+built before the correction keeps its predicted billing (`billing_model_of`).
+
 The [read-only API audit](../../evidence/provider-api-audit/README.md) refreshes those rates and balances
 on 22 October 2026. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
 sum upward separately for each job. The balance therefore buys billed runtime, not pure pulse execution.
@@ -397,6 +421,8 @@ bytes stay as approved, so a charged resubmission of them refuses and a rerun
 goes through a new case. The first case is the
 [Garnet timing pilot](../../design/iqm-garnet-timing-pilot.md), which prices
 later cases from measured billing.
+The [measurement-sequence pinching case](../../design/iqm-garnet-measurement-sequence-pinching.md)
+tests mid-circuit measurement against ideal pinching on six uncoupled qubits.
 
 ## What the Garnet runs measured
 
@@ -436,6 +462,17 @@ Facts a Garnet case design starts from, each with the record that carries it:
   and the calibrated T1 (apparent T1 a median 0.53 of calibrated), so a
   prediction that depends on idle length carries that gap as a stated
   uncertainty. A retained case keeps the ALAP prediction its approval covered.
+  The 16 ns per prx behind that apparent-T1 ratio of 0.53 conflicts with the
+  mock estimator's 40 ns per layer (the
+  [timing probe](../../design/iqm-garnet-measurement-sequence-pinching.md#circuits))
+  and with a back-solve of the retained idle-schedule QPU job, whose estimate
+  of 204.76 us per shot fits 32.5 ns per layer at a 4.34 us per-circuit base,
+  so the ratio is unreliable; the claim `iqm-garnet-idle-schedule` itself is
+  unchanged.
+  On set `be070414` the QPU compiles a mid-circuit measure to 1.096 us and a
+  circuit to a 4.344 us base, where garnet:mock compiles 1.772 us and 8.684 us
+  (claim `iqm-garnet-qpu-measure-window`, two single-circuit probes), so a timing
+  taken from the mock needs a QPU check.
 - **Per-qubit over-rotation.** Fitted with its own readout pair, QB11's prx
   over-rotates by -0.30 +- 0.06 % and QB6's by -0.18 +- 0.07 %; the +2.7 %
   QB11 attribution of the signed null re-test is excluded. Driving all 20
@@ -483,6 +520,13 @@ Facts a Garnet case design starts from, each with the record that carries it:
 - **Readout.** `measure_012` (three-state readout) is offered on QB1, QB3,
   QB7, QB9 and QB14; the Qiskit Target omits it, so a leakage readout goes
   through the circuit JSON directly.
+  The garnet:mock circuit API accepts `measure_012` but returns no outcome
+  for it: job `01a17474-d704-754e-9f02-88a9801da412` failed validation with
+  "Circuit 45: Circuit contains no measurements" for a circuit whose only
+  readout was `measure_012`, and probe job `01a17476-59e7-7133-b4ac-05f867b44ea9`
+  returned only the key of its plain `measure`
+  ([findings](../../design/iqm-garnet-measurement-sequence-pinching.md#leakage-readout)).
+  The QPU path is untested.
 
 ## Gates and snapshot state
 

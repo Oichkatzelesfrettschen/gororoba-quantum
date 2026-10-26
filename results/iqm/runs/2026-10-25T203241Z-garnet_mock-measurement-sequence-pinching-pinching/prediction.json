@@ -1,0 +1,646 @@
+{
+ "acquisition_window_seconds": 1.024e-06,
+ "billing": {
+  "billed_seconds": 6,
+  "cancel_margin_seconds": 3.213883,
+  "cancel_threshold_seconds": 9.0,
+  "circuits": 57,
+  "compiled_schedule_seconds": 3.69276,
+  "credits": 3.0,
+  "execution_seconds": 5.196117,
+  "shots": 3000,
+  "worst_case_runtime_seconds": 5.786117
+ },
+ "billing_fit": {
+  "execution_fixed_seconds": 0.141,
+  "execution_per_circuit_shot_seconds": 7.967e-06,
+  "residual_seconds": 0.17,
+  "runtime_over_execution_seconds": 0.42
+ },
+ "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
+ "estimator_per_shot_seconds_all_circuits": 0.00123092,
+ "ideal": {
+  "contrast_n16": 0.8612215512138341,
+  "delay_and_unitary": 0.03015368960704584,
+  "measure": {
+   "1": 0.03015368960704584,
+   "16": 0.89137524082088,
+   "2": 0.5150768448035229,
+   "4": 0.6721812556176133,
+   "8": 0.8039880670646521
+  }
+ },
+ "measure_window_seconds": 1.096e-06,
+ "model": "Bloch iteration from z0 = 1 - 2 p: a rotation of THETA/N per step, then an ideal pinch (measure and settle arms; T2 does not enter because the state is diagonal) or coherent evolution (delay and unitary arms), then T1 and Ramsey T2 relaxation over the rotation layer and, per arm, the measure window, the delay or the settle idle, and over the pre-readout delay; readout through the calibrated errors. The `expected` figures apply the run's estimator, T1 and p fit included, to the model's expected counts, so they are the standard errors the analysis reports at the case's shots",
+ "planning_note": "These are planning values at the calibrated T1 and T2 and an assumed initialization excitation. The analysis fits T1 and the excitation in the job and recomputes every prediction at the fitted values.",
+ "prx_layer_seconds": 4e-08,
+ "qubits": {
+  "QB11": {
+   "expected": {
+    "contrast_n16": 0.8703471350899205,
+    "contrast_se": 0.010300107073753662,
+    "departure_se": 0.008279616645395308,
+    "dephasing_zeno_n16": 0.3537152117042797,
+    "mutation_z": 35.955658755589525,
+    "p_init_se": 0.007800634111298834,
+    "readout_history_se": 0.006104245202624016,
+    "settle_gap_se": 0.005132708865702684,
+    "t1_se": 1.353024317542492e-06
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.013,
+    "e01_plus_e10": 0.0382,
+    "e10": 0.0252,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0011325077255159854,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.7781533297949565e-05,
+    "t2_s": 1.218514437280813e-05
+   },
+   "p0": {
+    "delay": {
+     "1": 0.05530842953593873,
+     "16": 0.4098976965487931,
+     "2": 0.09984084589357112,
+     "4": 0.15698524404761605,
+     "8": 0.2552532585073796
+    },
+    "measure": {
+     "1": 0.05530842953593873,
+     "16": 0.9264090129047045,
+     "2": 0.5302434181788616,
+     "4": 0.6928717676824212,
+     "8": 0.8308607291195284
+    },
+    "settle": {
+     "16": 0.9755425933070225
+    },
+    "unitary": {
+     "16": 0.05618248484451338
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.9041490783451656,
+     "0.05": 0.9198619733283695,
+     "0.1": 0.9395030920573744,
+     "0.15": 0.9647559589946665,
+     "0.2": 0.9984264482443892
+    },
+    "spread": 0.09427736989922364,
+    "spread_over_departure_se": 11.386682975431695
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 31613.033447774884,
+     "settle": 18764.46951757371
+    },
+    "measure_shift_over_departure_se": 2.36155663118109,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.909631024935182,
+      "settle": 0.9656239048484098
+     },
+     "0.800": {
+      "measure": 0.9166683624442347,
+      "settle": 0.9697747526504856
+     },
+     "1.096": {
+      "measure": 0.9264090129047045,
+      "settle": 0.9755425933070225
+     },
+     "1.400": {
+      "measure": 0.9356384099263095,
+      "settle": 0.9810342934249388
+     },
+     "1.772": {
+      "measure": 0.9459617964972751,
+      "settle": 0.9872114564107479
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.01955278359257062,
+     "settle": 0.011668863103725391
+    }
+   }
+  },
+  "QB14": {
+   "expected": {
+    "contrast_n16": 0.868072787427626,
+    "contrast_se": 0.010010516472783188,
+    "departure_se": 0.006537412667969927,
+    "dephasing_zeno_n16": 0.463531805154202,
+    "mutation_z": 36.76861113293708,
+    "p_init_se": 0.007108667201669759,
+    "readout_history_se": 0.005931628931236336,
+    "settle_gap_se": 0.004901682380130437,
+    "t1_se": 1.171674018923896e-06
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0124,
+    "e01_plus_e10": 0.0248,
+    "e10": 0.0124,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.000663492310070346,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.488061124827712e-05,
+    "t2_s": 7.0063340552353605e-06
+   },
+   "p0": {
+    "delay": {
+     "1": 0.05666503929339034,
+     "16": 0.5264277449745101,
+     "2": 0.129722982347604,
+     "4": 0.21290382114873557,
+     "8": 0.3443826402884773
+    },
+    "measure": {
+     "1": 0.05666503929339034,
+     "16": 0.9311770306507248,
+     "2": 0.5312249410572455,
+     "4": 0.6945223789478607,
+     "8": 0.833681178871617
+    },
+    "settle": {
+     "16": 0.9811498222882671
+    },
+    "unitary": {
+     "16": 0.06289593982030806
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.9076636511370468,
+     "0.05": 0.9242613307937607,
+     "0.1": 0.9450084303646531,
+     "0.15": 0.9716832726700861,
+     "0.2": 1.0072497290773301
+    },
+    "spread": 0.09958607794028329,
+    "spread_over_departure_se": 15.233255570388815
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 32660.409715440375,
+     "settle": 18746.21837306134
+    },
+    "measure_shift_over_departure_se": 3.0721911697250697,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.9137636950790448,
+      "settle": 0.9712010042185754
+     },
+     "0.800": {
+      "measure": 0.9210865024200348,
+      "settle": 0.9753739916510179
+     },
+     "1.096": {
+      "measure": 0.9311770306507248,
+      "settle": 0.9811498222882671
+     },
+     "1.400": {
+      "measure": 0.9406868490883974,
+      "settle": 0.9866234623435355
+     },
+     "1.772": {
+      "measure": 0.9512612121221108,
+      "settle": 0.9927488946955594
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.02008418147138602,
+     "settle": 0.011599072407292299
+    }
+   }
+  },
+  "QB17": {
+   "expected": {
+    "contrast_n16": 0.8755169561621176,
+    "contrast_se": 0.010037903541676444,
+    "departure_se": 0.0074282784835249084,
+    "dephasing_zeno_n16": 0.33212902826122387,
+    "mutation_z": 37.40989885019377,
+    "p_init_se": 0.0072468127410354214,
+    "readout_history_se": 0.005960527617076391,
+    "settle_gap_se": 0.004922030685221382,
+    "t1_se": 1.2377745423689773e-06
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0096,
+    "e01_plus_e10": 0.025799999999999997,
+    "e10": 0.0162,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0009426719046679022,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.628028389450517e-05,
+    "t2_s": 1.4129965435438016e-05
+   },
+   "p0": {
+    "delay": {
+     "1": 0.05601035140147881,
+     "16": 0.38524565514611275,
+     "2": 0.09494432546909998,
+     "4": 0.1469286288514598,
+     "8": 0.23794463356847395
+    },
+    "measure": {
+     "1": 0.05601035140147881,
+     "16": 0.9285705524972345,
+     "2": 0.5307348136826421,
+     "4": 0.6936706173515209,
+     "8": 0.8321769370627015
+    },
+    "settle": {
+     "16": 0.9782037834212947
+    },
+    "unitary": {
+     "16": 0.053116626884888885
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.9056859231652291,
+     "0.05": 0.9218397791642918,
+     "0.1": 0.9420320991631201,
+     "0.15": 0.9679936534473279,
+     "0.2": 1.002609059159605
+    },
+    "spread": 0.09692313599437596,
+    "spread_over_departure_se": 13.047859771189334
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 32183.57272719019,
+     "settle": 18788.10716539059
+    },
+    "measure_shift_over_departure_se": 2.6720480123541983,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.9114510111622106,
+      "settle": 0.9682528825562918
+     },
+     "0.800": {
+      "measure": 0.9186408564158183,
+      "settle": 0.9724219316548608
+     },
+     "1.096": {
+      "measure": 0.9285705524972345,
+      "settle": 0.9782037834212947
+     },
+     "1.400": {
+      "measure": 0.9379541246557289,
+      "settle": 0.9836960833222922
+     },
+     "1.772": {
+      "measure": 0.9484192692543507,
+      "settle": 0.9898582873250921
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.01984871675711619,
+     "settle": 0.011654503903797409
+    }
+   }
+  },
+  "QB19": {
+   "expected": {
+    "contrast_n16": 0.859671848013817,
+    "contrast_se": 0.011071094219858838,
+    "departure_se": 0.008556945454516735,
+    "dephasing_zeno_n16": 0.41931253329096485,
+    "mutation_z": 32.4874706032809,
+    "p_init_se": 0.012145187862347426,
+    "readout_history_se": 0.006262762636579773,
+    "settle_gap_se": 0.006443339237423758,
+    "t1_se": 2.267990911755039e-06
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0376,
+    "e01_plus_e10": 0.0756,
+    "e10": 0.038,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0009197776575640138,
+    "settle_idle_s": 2e-06,
+    "t1_s": 5.9114854283241813e-05,
+    "t2_s": 7.930177543079434e-06
+   },
+   "p0": {
+    "delay": {
+     "1": 0.0505350504648428,
+     "16": 0.4803059785986953,
+     "2": 0.11592280588432224,
+     "4": 0.19018635718598298,
+     "8": 0.30974161179795634
+    },
+    "measure": {
+     "1": 0.0505350504648428,
+     "16": 0.9204793160579058,
+     "2": 0.5273709291620559,
+     "4": 0.689010162609828,
+     "8": 0.8259940807234429
+    },
+    "settle": {
+     "16": 0.9643000326045401
+    },
+    "unitary": {
+     "16": 0.06099344530773043
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.9018602400017536,
+     "0.05": 0.915003117217861,
+     "0.1": 0.9314317137379953,
+     "0.15": 0.952554194978168,
+     "0.2": 0.9807175032983981
+    },
+    "spread": 0.07885726329664455,
+    "spread_over_departure_se": 9.215585598365617
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 26974.33473063393,
+     "settle": 17587.579762873283
+    },
+    "measure_shift_over_departure_se": 1.9815575857444463,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.9063442499745464,
+      "settle": 0.9551071643444107
+     },
+     "0.800": {
+      "measure": 0.9122301031889886,
+      "settle": 0.9589295719985832
+     },
+     "1.096": {
+      "measure": 0.9204793160579058,
+      "settle": 0.9643000326045401
+     },
+     "1.400": {
+      "measure": 0.9284132911366012,
+      "settle": 0.9694810568279347
+     },
+     "1.772": {
+      "measure": 0.9374353962341049,
+      "settle": 0.9753933771974089
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.016956080176199095,
+     "settle": 0.011093344592868815
+    }
+   }
+  },
+  "QB5": {
+   "expected": {
+    "contrast_n16": 0.8694560669456068,
+    "contrast_se": 0.01028482123206918,
+    "departure_se": 0.00764409538098719,
+    "dephasing_zeno_n16": 0.40588314293432753,
+    "mutation_z": 35.922458797203305,
+    "p_init_se": 0.0070359231364080605,
+    "readout_history_se": 0.006217448401930224,
+    "settle_gap_se": 0.004837394688035121,
+    "t1_se": 1.2252866559130288e-06
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0058,
+    "e01_plus_e10": 0.0364,
+    "e10": 0.0306,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0010199997118700566,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.577432550446066e-05,
+    "t2_s": 9.32218886620192e-06
+   },
+   "p0": {
+    "delay": {
+     "1": 0.05632322829047853,
+     "16": 0.46551632481853383,
+     "2": 0.1129905528949845,
+     "4": 0.18179434098443326,
+     "8": 0.2958939136775054
+    },
+    "measure": {
+     "1": 0.05632322829047853,
+     "16": 0.9285660339449806,
+     "2": 0.5309031015947846,
+     "4": 0.6938552833407461,
+     "8": 0.8323158500523062
+    },
+    "settle": {
+     "16": 0.978536885830664
+    },
+    "unitary": {
+     "16": 0.0596331818842063
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.9054850489665892,
+     "0.05": 0.921777508951336,
+     "0.1": 0.9421430839322696,
+     "0.15": 0.9683273946220414,
+     "0.2": 1.0032398088750705
+    },
+    "spread": 0.09775475990848126,
+    "spread_over_departure_se": 12.78827055868798
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 32481.08907714653,
+     "settle": 18864.12269955784
+    },
+    "measure_shift_over_departure_se": 2.618253391659653,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.9112758424479237,
+      "settle": 0.9685396576918435
+     },
+     "0.800": {
+      "measure": 0.9185403147282001,
+      "settle": 0.97272956995394
+     },
+     "1.096": {
+      "measure": 0.9285660339449806,
+      "settle": 0.978536885830664
+     },
+     "1.400": {
+      "measure": 0.9380324156577474,
+      "settle": 0.9840494790306372
+     },
+     "1.772": {
+      "measure": 0.9485802126024202,
+      "settle": 0.9902297076649056
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.020014178657439596,
+     "settle": 0.011692821834241585
+    }
+   }
+  },
+  "QB7": {
+   "expected": {
+    "contrast_n16": 0.8156996587030716,
+    "contrast_se": 0.010494996188937204,
+    "departure_se": 0.02725167397041382,
+    "dephasing_zeno_n16": 0.42196299588609,
+    "mutation_z": 30.080969351456385,
+    "p_init_se": 0.006760216214678298,
+    "readout_history_se": 0.00651720968284963,
+    "settle_gap_se": 0.005068463387314952,
+    "t1_se": 1.0719367611088144e-06
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0122,
+    "e01_plus_e10": 0.0514,
+    "e10": 0.0392,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.005449217832772746,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.178067451526524e-05,
+    "t2_s": 7.76256408852692e-06
+   },
+   "p0": {
+    "delay": {
+     "1": 0.06077087455637925,
+     "16": 0.5155892728795578,
+     "2": 0.12901641419643145,
+     "4": 0.20988263900211795,
+     "8": 0.3383321352599553
+    },
+    "measure": {
+     "1": 0.06077087455637925,
+     "16": 0.9097026875657886,
+     "2": 0.5322553165738343,
+     "4": 0.6929905317776075,
+     "8": 0.825320734507852
+    },
+    "settle": {
+     "16": 0.9670060421748667
+    },
+    "unitary": {
+     "16": 0.09362627699346782
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8855499503643371,
+     "0.05": 0.9025989413300677,
+     "0.1": 0.9239101800372308,
+     "0.15": 0.9513103440892977,
+     "0.2": 0.9878438961587203
+    },
+    "spread": 0.10229394579438311,
+    "spread_over_departure_se": 3.7536756789854464
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 37740.69045644479,
+     "settle": 21328.969772427263
+    },
+    "measure_shift_over_departure_se": 0.8490363649823481,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.8895291845515776,
+      "settle": 0.9556691176725196
+     },
+     "0.800": {
+      "measure": 0.8980251763482558,
+      "settle": 0.9604286094625945
+     },
+     "1.096": {
+      "measure": 0.9097026875657886,
+      "settle": 0.9670060421748667
+     },
+     "1.400": {
+      "measure": 0.9206760335390718,
+      "settle": 0.9732286634143306
+     },
+     "1.772": {
+      "measure": 0.9328403497733129,
+      "settle": 0.9801804017985898
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.023137662207524223,
+     "settle": 0.013174359623723042
+    }
+   }
+  }
+ },
+ "selection": {
+  "median_t1_s": 3.7962256471572834e-05,
+  "qubits": {
+   "QB11": {
+    "e01": 0.013,
+    "e10": 0.0252,
+    "prx_p": 0.0011325077255159854,
+    "t1_s": 4.7781533297949565e-05,
+    "t2_s": 1.218514437280813e-05
+   },
+   "QB14": {
+    "e01": 0.0124,
+    "e10": 0.0124,
+    "prx_p": 0.000663492310070346,
+    "t1_s": 4.488061124827712e-05,
+    "t2_s": 7.0063340552353605e-06
+   },
+   "QB17": {
+    "e01": 0.0096,
+    "e10": 0.0162,
+    "prx_p": 0.0009426719046679022,
+    "t1_s": 4.628028389450517e-05,
+    "t2_s": 1.4129965435438016e-05
+   },
+   "QB19": {
+    "e01": 0.0376,
+    "e10": 0.038,
+    "prx_p": 0.0009197776575640138,
+    "t1_s": 5.9114854283241813e-05,
+    "t2_s": 7.930177543079434e-06
+   },
+   "QB5": {
+    "e01": 0.0058,
+    "e10": 0.0306,
+    "prx_p": 0.0010199997118700566,
+    "t1_s": 4.577432550446066e-05,
+    "t2_s": 9.32218886620192e-06
+   },
+   "QB7": {
+    "e01": 0.0122,
+    "e10": 0.0392,
+    "prx_p": 0.005449217832772746,
+    "t1_s": 4.178067451526524e-05,
+    "t2_s": 7.76256408852692e-06
+   }
+  },
+  "rule": "the 6 qubits of smallest e01 + e10 among those with T1 at least the set's median, taken in that order and skipping any that shares a cz coupler with one already taken"
+ },
+ "timing_source": "Garnet QPU compiler estimates, calibration set be070414, 100 shots, the case's own circuits with the 2 us pre-readout delay: unitary-n16 7.032 us (job 01a174be-d1f7) and measure-n16 24.568 us (job 01a174be-e68b) per shot give a measure window of (24.568 - 7.032)/16 = 1.096 us; with the retained pilot job's 4.344 us per-circuit base the prx layer is (7.032 - 2.0 - 4.344)/16 = 43 ns, taken as the mock's 40 ns. garnet:mock compiles 1.772 us and 8.684 us per circuit"
+}

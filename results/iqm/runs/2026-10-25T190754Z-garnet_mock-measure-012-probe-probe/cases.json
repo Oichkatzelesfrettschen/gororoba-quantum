@@ -1,0 +1,28 @@
+{
+ "case": "measure-012-probe",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/measure-012-probe.json",
+     "sha256": "1048d6a9d59aab5a7c4f47533558c02348b2ea72c69d5f9543e047410ff14922"
+    }
+   ],
+   "expected_seconds": 0.01,
+   "job": "probe",
+   "max_credits": {
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "heralding_mode": "none"
+   },
+   "shots": 100
+  }
+ ],
+ "qcs": [
+  "garnet:mock"
+ ],
+ "question": "Does the Garnet circuit-job API execute a four-qubit measure_012 final readout when a plain measure on an uncoupled spectator (QB20) gives the circuit its required measurement, and in what outcome format?",
+ "schema": "iqm-circuit-case-v1"
+}

@@ -1,0 +1,17 @@
+{
+ "approval": "the approval is for the dry run with granular decomposition of the results",
+ "body_sha256": "3363860fd5f5d05b9409c1725473645f8d8741055c846ca22ca997ffa88b4465",
+ "cases_sha256": "a1ab2596b67d448d1cc6d2190254de6076cc3ff59cdddce1f319943af286bf43",
+ "credit_before": {
+  "currentBalance": "16.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 6.17,
+ "job": "pinching",
+ "job_id": "01a17484-5499-7266-9771-7b2d3f23c30f",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T19:23:12Z"
+}

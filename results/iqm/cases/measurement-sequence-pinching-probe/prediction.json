@@ -1,0 +1,148 @@
+{
+ "band_source": "prediction.json of the main case, raw_band per qubit",
+ "billing": {
+  "billed_seconds": 1,
+  "cancel_margin_seconds": 0.19162,
+  "cancel_threshold_seconds": 1.0,
+  "circuits": 4,
+  "compiled_schedule_seconds": 0.045512000000000004,
+  "credits": 0.5,
+  "execution_seconds": 0.21838,
+  "shots": 1000,
+  "worst_case_runtime_seconds": 0.80838
+ },
+ "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
+ "excitation_band": [
+  0.0,
+  0.068
+ ],
+ "main_cases_sha256": "e9896a89afa91fb77afe9c0b5687d1041f2d7db53734522db11162ea59145e45",
+ "qubits": {
+  "QB1": {
+   "raw_band": {
+    "measure-16": [
+     0.8290067687200305,
+     0.9311898697615184
+    ],
+    "ro0": [
+     0.9306223500914583,
+     0.9924
+    ],
+    "ro1": [
+     0.08390514840379835,
+     0.1456827983123401
+    ],
+    "unitary-16": [
+     0.13843342784712478,
+     0.2676449762968899
+    ]
+   }
+  },
+  "QB14": {
+   "raw_band": {
+    "measure-16": [
+     0.8028318423251724,
+     0.912418418181195
+    ],
+    "ro0": [
+     0.9241766346983913,
+     0.9876
+    ],
+    "ro1": [
+     0.05490345144693137,
+     0.11832681674854001
+    ],
+    "unitary-16": [
+     0.1130816850510313,
+     0.24333903815767963
+    ]
+   }
+  },
+  "QB17": {
+   "raw_band": {
+    "measure-16": [
+     0.8137439788473334,
+     0.9248375729967852
+    ],
+    "ro0": [
+     0.9269562237118306,
+     0.9904
+    ],
+    "ro1": [
+     0.05740328987986318,
+     0.12084706616803256
+    ],
+    "unitary-16": [
+     0.09131600562717107,
+     0.22487955557583295
+    ]
+   }
+  },
+  "QB19": {
+   "raw_band": {
+    "measure-16": [
+     0.7761711628800245,
+     0.8874988883798971
+    ],
+    "ro0": [
+     0.9016319072731045,
+     0.9623999999999999
+    ],
+    "ro1": [
+     0.06875157754565372,
+     0.12951967027254924
+    ],
+    "unitary-16": [
+     0.11895324685935457,
+     0.2475883882983503
+    ]
+   }
+  },
+  "QB5": {
+   "raw_band": {
+    "measure-16": [
+     0.8130965747456547,
+     0.9229233424825483
+    ],
+    "ro0": [
+     0.931476506054932,
+     0.9942
+    ],
+    "ro1": [
+     0.07179567727841255,
+     0.1345191712234805
+    ],
+    "unitary-16": [
+     0.11986096943089788,
+     0.2507844103674968
+    ]
+   }
+  },
+  "QB8": {
+   "raw_band": {
+    "measure-16": [
+     0.8261577437164571,
+     0.9303417548421916
+    ],
+    "ro0": [
+     0.933053844088031,
+     0.994
+    ],
+    "ro1": [
+     0.09773300129457546,
+     0.1586791572065444
+    ],
+    "unitary-16": [
+     0.15164634929036466,
+     0.28006638752937985
+    ]
+   }
+  }
+ },
+ "rule": {
+  "contrast_floor": 0.6,
+  "reading": "raw P(0) of key f; a reading outside its band is judged at the binomial standard error of the nearest band edge and the probe's shot count; ro0 minus ro1 raw P(0) is at least the contrast floor; every declared key returns one outcome per shot for every qubit",
+  "z_decide": 3.0
+ },
+ "shots": 1000
+}

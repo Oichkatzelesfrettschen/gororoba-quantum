@@ -1,0 +1,26 @@
+{
+ "billed_credits": 0.0,
+ "compilation": {
+  "calibration_set_id": "f04fe114-002f-46bd-8fa4-2a577ff56501"
+ },
+ "credit_after": {
+  "currentBalance": "16.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "credits_charged": 0.0,
+ "errors": [
+  {
+   "error_code": "unknown",
+   "message": "Error in stage \"circuit_stage\" pass \"_validate_circuits\": Circuit 45: Circuit contains no measurements.",
+   "source": "iqm-station-control"
+  }
+ ],
+ "job_id": "01a17474-d704-754e-9f02-88a9801da412",
+ "metrics": {},
+ "raw_sha256": {
+  "job.json": "f53f14d603cd6c85792ee7a8ce446f8ce6fe417195e018361fe5a779aab5eb04"
+ },
+ "schema": "iqm-results-v1",
+ "shots_per_circuit": [],
+ "status": "failed"
+}
