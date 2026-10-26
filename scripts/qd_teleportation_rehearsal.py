@@ -38,12 +38,15 @@ qd_platform.submit plans afresh under the token's submit lock and calls binding 
 the request unless the fresh body equals the retained job-body.json in every field but process_id and the noise
 model's pooled fidelity at the live performance figures reaches the justified mean score F*. A refusal writes no
 checkpoint and sends nothing; an accepted request leaves RUN/submit-model.json with the model it was admitted under.
+With --anchor the plan, the shot estimate and the model gate read the anchor read's performance figures (the
+written case's anchor approval); RUN/platform-before keeps the live record, and submit-model.json carries the live
+model beside the admitting one.
 
 Usage:
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--check | --justify | --estimate | JOB]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--body JOB | --plan JOB] [--anchor]
-  "$PYTHON" scripts/qd_teleportation_rehearsal.py [--simulate OUT | --analyze RUN]
-  "$PYTHON" scripts/qd_teleportation_rehearsal.py --submit RUN APPROVAL
+  "$PYTHON" scripts/qd_teleportation_rehearsal.py [--simulate OUT | --analyze RUN [--check]]
+  "$PYTHON" scripts/qd_teleportation_rehearsal.py --submit RUN APPROVAL [--anchor]
 """
 
 from __future__ import annotations
@@ -833,6 +836,8 @@ def event_vector(key: str) -> tuple[int, ...]:
 
 
 REJECTIONS = ("excess", "outside", "herald", "receiver", "pattern")
+# The entry kinds qd_platform.result_summary writes for an iteration of a partial job that carries no counts.
+UNCOUNTED = ("missing", "malformed", "error")
 
 
 def tally(counts: Mapping[str, int]) -> tuple[dict[tuple[str, int], int], dict[str, int]]:
@@ -871,24 +876,34 @@ def analyze_results(
     trial for each input, cross-checks the pooled value when every input has an accepted event. An input without one
     keeps its rejection counts, reports a null conditional fidelity with a reason, and drops out of the pooled
     statistic; the verdict is then inconclusive, because the preregistered rule pools all six inputs. The frame table
-    `table` must equal the propagated one when given. The service counts shots as samples and reports no optical
-    trials, so the classical bound is the larger of attempts_benchmark at the reported shots
-    (result_fields.nb_shots_used) and at the modeled attempts."""
+    `table` must equal the propagated one when given. An iteration ended by its sample budget reports shots equal to
+    its samples and one ended by its max_shots reports that budget, neither a count of optical trials, so the
+    classical bound is the larger of attempts_benchmark at the reported shots (result_fields.nb_shots_used) and at
+    the modeled attempts. A partial result (an error or canceled job) scores its
+    counted iterations, lists the uncounted entry kinds and the inputs left without counts, and is inconclusive
+    whenever an input has none, since the bound and the rule need all six."""
     frame_table = frames()
     if table is not None and {k: tuple(v) for k, v in table.items()} != frame_table:
         raise ProtocolError(f"the frame table {dict(table)} differs from the propagated {frame_table}")
     settings = manifest["settings"]
+    partial = results.get("partial") is True
     iterations = results.get("iterations")
-    if not isinstance(iterations, list) or len(iterations) != len(settings):
-        raise ProtocolError(
-            f"results hold {None if iterations is None else len(iterations)} iterations, not {len(settings)}"
-        )
+    if iterations is None and partial:
+        iterations = []
+    if not isinstance(iterations, list) or len(iterations) > len(settings):
+        raise ProtocolError(f"results hold {None if iterations is None else len(iterations)} iterations")
+    if not partial and len(iterations) != len(settings):
+        raise ProtocolError(f"results hold {len(iterations)} iterations, not {len(settings)}")
     histogram: dict[tuple[str, str, str, int], int] = {}
     rows: dict[str, dict[str, Any]] = {}
     attempts: dict[str, int] = {}
+    uncounted: list[str] = []
     for entry in iterations:
         if "counts" not in entry:
-            raise ProtocolError("an iteration carries no counts")
+            if not partial:
+                raise ProtocolError("an iteration carries no counts")
+            uncounted.append(next((kind for kind in UNCOUNTED if kind in entry), "uncounted"))
+            continue
         values = entry.get("iteration", {}).get("circuit_params")
         matches = [s for s in settings if values is not None and parameters_equal(values, s["circuit_params"])]
         if len(matches) != 1 or matches[0]["label"] in rows:
@@ -917,9 +932,10 @@ def analyze_results(
         x, z = frame_table[pattern]
         successes[label] += count if decode_bit(basis, raw, x, z) == expected_bit(label) else 0
     silent = [label for label, row in rows.items() if row["accepted"] == 0]
+    absent = [setting["label"] for setting in settings if setting["label"] not in rows]
     total_accepted = sum(row["accepted"] for row in rows.values())
     pooled_fidelity = sum(successes.values()) / total_accepted if total_accepted else None
-    if not silent:
+    if not silent and not absent:
         scores = joint_teleportation_scores(histogram, frame_table, attempts)
         shared = float(scores["pooled_conditional_fidelity"])  # type: ignore[arg-type]
         require(
@@ -932,12 +948,12 @@ def analyze_results(
     # attempts_benchmark needs a positive attempt count for every input, so an iteration that returned no shot
     # leaves the classical bound, and with it the verdict, unavailable.
     empty = sorted(label for label, row in rows.items() if row["shots"] == 0 or row["samples"] == 0)
-    bound_reported = None if empty else attempts_benchmark(attempts).certified
-    bound_modeled = None if empty else model_benchmark(preregistered["sample_probability"], sample_counts)
+    bound_reported = None if empty or absent else attempts_benchmark(attempts).certified
+    bound_modeled = None if empty or absent else model_benchmark(preregistered["sample_probability"], sample_counts)
     bound = None if bound_reported is None or bound_modeled is None else max(bound_reported, bound_modeled)
     allowance = preregistered["systematic_allowance"]
     lower = None if pooled_fidelity is None or radius is None else pooled_fidelity - radius
-    if silent or bound is None or pooled_fidelity is None or radius is None or lower is None:
+    if absent or silent or bound is None or pooled_fidelity is None or radius is None or lower is None:
         verdict = "inconclusive"
     elif lower - allowance > bound:
         verdict = "beats-classical"
@@ -956,6 +972,9 @@ def analyze_results(
         "schema": "qd-teleportation-analysis-v1",
         "claim_level": preregistered["claim_level"],
         "inputs": rows,
+        "partial": partial,
+        "inputs_without_counts": absent,
+        "uncounted_iterations": uncounted,
         "inputs_without_accepted": silent,
         "success_rate_per_reported_shot": {label: row["accepted_per_shot"] for label, row in rows.items()},
         "pooled": {
@@ -977,7 +996,9 @@ def analyze_results(
         "margin": None if lower is None or bound is None else lower - allowance - bound,
         "verdict": verdict,
         "verdict_reason": (
-            "these iterations returned no shot, so no classical bound is defined: " + ", ".join(empty)
+            "the job ended partial and these inputs returned no counted iteration: " + ", ".join(absent)
+            if absent
+            else "these iterations returned no shot or no sample, so no classical bound is defined: " + ", ".join(empty)
             if empty
             else "the preregistered rule pools all six inputs, and these have no accepted event: " + ", ".join(silent)
             if silent
@@ -1290,23 +1311,40 @@ def binding(job: Job, admitted: dict[str, Any]) -> Callable[[dict[str, Any]], No
     return bound
 
 
-def send(run: Path, approval: str) -> int:
-    """Read the platform into RUN/platform-before and submit the approved case once under the binding."""
+def send(run: Path, approval: str, anchor: bool = False) -> int:
+    """Read the platform into RUN/platform-before and submit the approved case once under the binding.
+
+    With `anchor` the plan, Perceval's shot estimate and the binding's model run under the anchor read's performance
+    figures (anchor_perfs), the gate the written case's anchor approval names; the platform read, and the live
+    model recorded beside the admitting one, stay on the live record."""
     job = staged(run)
     snapshot(run / BEFORE)
     observe(run / BEFORE)
+    live = live_model() if anchor else None
     admitted: dict[str, Any] = {}
-    record = submit(
-        run,
-        PLATFORM,
-        approval,
-        job.credit_ceiling,
-        job.expected_seconds,
-        PER_JOB_CREDITS,
-        verify=binding(job, admitted),
+    with anchor_perfs() if anchor else nullcontext():
+        record = submit(
+            run,
+            PLATFORM,
+            approval,
+            job.credit_ceiling,
+            job.expected_seconds,
+            PER_JOB_CREDITS,
+            verify=binding(job, admitted),
+        )
+    gate = {
+        "job_id": record["job_id"],
+        "gate": "anchor" if anchor else "live",
+        "perfs_basis": ANCHOR_READ if anchor else "live processor record",
+        "model": admitted,
+    }
+    if live is not None:
+        gate["live_model"] = live
+    write_json(run / SUBMIT_MODEL, gate, exclusive=True)
+    print(
+        f"job {record['job_id']} on {record['platform']}, {gate['gate']} model pooled fidelity "
+        f"{admitted['pooled_fidelity']:.4f}"
     )
-    write_json(run / SUBMIT_MODEL, {"job_id": record["job_id"], "model": admitted}, exclusive=True)
-    print(f"job {record['job_id']} on {record['platform']}, model pooled fidelity {admitted['pooled_fidelity']:.4f}")
     return 0
 
 
@@ -1350,10 +1388,18 @@ def simulate(out: Path) -> int:
     return 0
 
 
-def analyze(run: Path) -> int:
+def analyze(run: Path, replay: bool = False) -> int:
+    """Write RUN/analysis.json, or with `replay` require the retained one to equal a fresh analysis.
+
+    The replay compares within bdsc_certificate.close's tolerance, since the record carries floats."""
     manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
     results = json.loads((run / "results.json").read_text(encoding="utf-8"))
     record = analyze_results(manifest, results, manifest.get("frames"))
+    if replay:
+        retained = json.loads((run / "analysis.json").read_text(encoding="utf-8"))
+        close(json.loads(json.dumps(record)), retained, f"{run.name}/analysis.json")
+        print(f"{run.name}: analysis.json replays, verdict {record['verdict']}")
+        return 0
     write_json(run / "analysis.json", record)
     pooled_row = record["pooled"]
     if pooled_row["fidelity"] is None:
@@ -1384,16 +1430,17 @@ def main(argv: list[str]) -> int:
         return dry_run(JOBS[argv[1]], anchor)
     if len(argv) == 2 and argv[0] == "--simulate":
         return simulate(Path(argv[1]))
-    if len(argv) == 2 and argv[0] == "--analyze":
-        return analyze(Path(argv[1]))
-    if len(argv) == 3 and argv[0] == "--submit":
-        return send(Path(argv[1]), argv[2])
+    if len(argv) in (2, 3) and argv[0] == "--analyze" and argv[2:] in ([], ["--check"]):
+        return analyze(Path(argv[1]), argv[2:] == ["--check"])
+    if len(argv) in (3, 4) and argv[0] == "--submit" and argv[3:] in ([], ["--anchor"]):
+        return send(Path(argv[1]), argv[2], argv[3:] == ["--anchor"])
     if len(argv) == 1 and argv[0] in JOBS:
         return build(JOBS[argv[0]])
     raise ValueError(
         "usage: qd_teleportation_rehearsal.py [--check | --justify | --estimate | JOB | --body JOB [--anchor] | "
         "--plan JOB [--anchor] | "
-        f"--simulate OUT | --analyze RUN | --submit RUN APPROVAL], JOB in {sorted(JOBS)}, not {argv}"
+        f"--simulate OUT | --analyze RUN [--check] | --submit RUN APPROVAL [--anchor]], JOB in {sorted(JOBS)}, "
+        f"not {argv}"
     )
 
 

@@ -556,3 +556,70 @@ def test_submit_refuses_a_run_directory_beyond_the_frozen_request(tmp_path: Path
     (run / "cases.json").write_bytes(b"{}")
     with pytest.raises(ValueError, match="names job None"):
         rehearsal.staged(run)
+
+
+def test_partial_results_score_counted_iterations_and_stay_inconclusive() -> None:
+    cells = {label: {event("1100", correct_raw(label, "1100")): 300} for label in LABELS}
+    manifest, results = manifest_and_results(cells)
+    results["partial"] = True
+    results["iterations"][4] = {"missing": True}
+    results["iterations"][5] = {"error": "worker stopped", "iteration": {}, "result_fields": {}}
+    record = rehearsal.analyze_results(manifest, results, manifest["frames"])
+    absent = [setting["label"] for setting in manifest["settings"][4:]]
+    if record["inputs_without_counts"] != absent or record["uncounted_iterations"] != ["missing", "error"]:
+        raise AssertionError((record["inputs_without_counts"], record["uncounted_iterations"]))
+    if record["verdict"] != "inconclusive" or "ended partial" not in record["verdict_reason"]:
+        raise AssertionError((record["verdict"], record["verdict_reason"]))
+    if record["benchmark"]["classical_bound"] is not None or record["pooled"]["accepted"] != 1200:
+        raise AssertionError(record["benchmark"])
+    countless = rehearsal.analyze_results(manifest, {"partial": True, "counts": {}}, manifest["frames"])
+    if countless["verdict"] != "inconclusive" or len(countless["inputs_without_counts"]) != 6:
+        raise AssertionError(countless["inputs_without_counts"])
+    results["partial"] = False
+    with pytest.raises(rehearsal.ProtocolError):
+        rehearsal.analyze_results(manifest, results, manifest["frames"])
+
+
+def test_anchor_submission_reads_the_live_platform_and_gates_on_the_anchor_model(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from contextlib import contextmanager
+
+    run = staged_run(tmp_path)
+    inside = {"anchor": False}
+
+    @contextmanager
+    def anchored() -> Any:
+        inside["anchor"] = True
+        try:
+            yield
+        finally:
+            inside["anchor"] = False
+
+    def read(out: Path) -> None:
+        if inside["anchor"]:
+            raise AssertionError("the platform read ran under the anchor figures")
+        out.mkdir(exist_ok=True)
+
+    def observed(out: Path) -> None:
+        if inside["anchor"]:
+            raise AssertionError("the route observation ran under the anchor figures")
+
+    def submitted(case_dir: Path, platform: str, approval: str, *args: Any, verify: Any) -> dict[str, Any]:
+        if not inside["anchor"]:
+            raise AssertionError("the anchor submission planned on the live figures")
+        verify({"body": load("job-body.json")})
+        return {"job_id": "job-id", "platform": platform}
+
+    monkeypatch.setattr(rehearsal, "anchor_perfs", anchored)
+    monkeypatch.setattr(rehearsal, "snapshot", read)
+    monkeypatch.setattr(rehearsal, "observe", observed)
+    monkeypatch.setattr(rehearsal, "submit", submitted)
+    monkeypatch.setattr(rehearsal, "live_model", lambda: planned_model(0.868 if inside["anchor"] else 0.635))
+    if rehearsal.main(["--submit", str(run), "approved", "--anchor"]) != 0:
+        raise AssertionError("the anchor submission returns 0")
+    record = json.loads((run / rehearsal.SUBMIT_MODEL).read_text(encoding="utf-8"))
+    if record["gate"] != "anchor" or record["perfs_basis"] != rehearsal.ANCHOR_READ:
+        raise AssertionError(record)
+    if record["model"]["pooled_fidelity"] != 0.868 or record["live_model"]["pooled_fidelity"] != 0.635:
+        raise AssertionError(record)
