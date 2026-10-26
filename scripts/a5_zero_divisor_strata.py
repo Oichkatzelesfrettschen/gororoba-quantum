@@ -1033,9 +1033,9 @@ def curve_to_b9(e0_sign: int = -1) -> dict[str, Any]:
     """z(s) with u' = 4 a n + 16 s e0 + 4 k, mu' = 12 s, v' = 4 c n + 20 s e0 + 5 k, n = e'_1 + e'_3, k = e'_4 + e'_6.
 
     The frame e0 = -e'_2 has eta(e0) = -1, e0 perp n, k and e0 x n = n, while n x k = 0 and n, k are null. For s != 0
-    the point is a multiple of (a n + b e_t, m, c n + d e_t) with the unit vector e_t = e0 + k / (4 s), b = 4 s,
-    d = 5 s and m = 12 s up to scale, so Q = d^2 - b^2 - m^2 = 0 and z(s) lies in E8. The order-12 Pfaffians vanish in s
-    identically, and z(0) lies in B9 with nullity 12.
+    the point is a multiple of (a n + b e_t, m, c n + d e_t) with the unit vector e_t = e0 + k / (4 s), b = 16 s,
+    d = 20 s and m = 12 s, so Q = d^2 - b^2 - m^2 = (400 - 256 - 144) s^2 = 0 and z(s) lies in E8. The order-12
+    Pfaffians vanish in s identically, and z(0) lies in B9 with nullity 12.
     """
     s = flint.fmpz_poly([0, 1])
     one = flint.fmpz_poly([1])

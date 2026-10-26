@@ -48,11 +48,7 @@
   "pass": true
  },
  "double_cross": {
-  "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
-  "indices": [
-   200,
-   227
-  ],
+  "method": "symbolic expansion over Z[x1..x7, w1..w7]",
   "identity_holds": true,
   "pass": true
  },
@@ -2186,22 +2182,23 @@
   "unexplained": 0
  },
  "timings_s": {
-  "tables": 0.55,
-  "split_consistency": 0.03,
-  "identities": 0.77,
-  "double_cross": 0.0,
+  "tables": 0.12,
+  "split_consistency": 0.01,
+  "identities": 0.46,
+  "double_cross": 0.05,
   "g_irreducibility": 0.0,
-  "families": 19.56,
-  "witnesses": 3.37,
-  "b9_curves": 3.08,
-  "exhaustive": 52.76,
-  "rank_crosscheck": 1.37,
-  "fp_slices": 62.4,
-  "fp_samples": 33.04,
-  "float_search": 57.07
+  "families": 8.97,
+  "witnesses": 2.5,
+  "b9_curves": 3.6,
+  "exhaustive": 37.51,
+  "rank_crosscheck": 0.64,
+  "fp_slices": 51.72,
+  "fp_samples": 21.44,
+  "float_search": 26.2
  },
- "total_s": 234.02,
+ "total_s": 153.21,
  "workers": 12,
+ "verifier_sha256": "19832b9d75f270d69eb6e6c44e04727f9567da2fbf34a591e139044a404c15d3",
  "versions": {
   "python": "3.14.7",
   "python-flint": "0.9.0",

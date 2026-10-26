@@ -6,6 +6,16 @@ with these sha256 digests:
 - `docs/evidence/a5-zero-divisor-strata/README.md`: 898a9c37ae7ace9e3535744788b422651684da6892704ecf485ba16e9fe60b46;
 - `docs/evidence/a5-zero-divisor-strata/result.json`: 5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c.
 
+The retained `verification.json` comes from a rerun after review edits that pooled the author's equivariance and
+anticommutation loops, fixed a docstring, and corrected the README's Theorem 4 multiplicity, its P3b covering argument,
+scope and literature lines. `result.json` is byte-identical, and the rerun changed no verdict: only the double-cross
+entry (now a symbolic identity) and the recorded verifier digest differ from the first run. Rerun digests:
+- `scripts/a5_zero_divisor_strata.py`: 09fd6941e7945638d37e53d24f6d4cd7e49c45b724e313394091b2bee9f1b0d4;
+- `docs/evidence/a5-zero-divisor-strata/README.md`: 07844db54b186b1194b7ef465dd8be1072993bc74958e6ac760132d960527adf;
+- `docs/evidence/a5-zero-divisor-strata/result.json`: 5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c;
+- `docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py`: 19832b9d75f270d69eb6e6c44e04727f9567da2fbf34a591e139044a404c15d3 (also `verifier_sha256` in the JSON);
+- `docs/evidence/a5-zero-divisor-strata/verification.json`: 4868225961525cd737368e7a1c04f06c9eb9bcccb400014127eee5e139a3d388.
+
 [`verify_strata_independent.py`](verify_strata_independent.py) re-derives the claims of
 [`scripts/a5_zero_divisor_strata.py`](../../../scripts/a5_zero_divisor_strata.py) and its [README](README.md) from
 `gororoba_quantum/cd_core.py` alone and writes [`verification.json`](verification.json). It imports nothing from the
@@ -29,8 +39,8 @@ equals the README's E8 under the standard transitivity of G_2 on {e.e = -1} and 
 Randomness comes from two fresh ANU QRNG draws of 1024 uint16 values each,
 `docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json` (A) and `draw-2026-10-26T012529Z.json` (B). The script header
 gives every index range, and each index is used once: A 0..119 for the Schwartz-Zippel points, A 120..139 for one
-PCG64 seed per point family, A 200..227 for the double-cross identity, B 0 for the B9 curves, B 1..4 for the F_p
-samples and B 5 for the float search.
+PCG64 seed per point family, A 240..254 for the self-test point, B 0 for the B9 curves, B 1..4 for the F_p samples and
+B 5 for the float search.
 
 Replay:
 
@@ -42,7 +52,7 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 PYTHON=...   # the ci-
     --out docs/evidence/a5-zero-divisor-strata/verification.json
 ```
 
-The full run took 234 s wall clock on 12 workers (user 7 min 42 s), with Python 3.14.7, python-flint 0.9.0 and
+The first full run took 234 s wall clock on 12 workers (user 7 min 42 s) and the rerun 153 s, with Python 3.14.7, python-flint 0.9.0 and
 numpy 2.5.4; `verification.json` records these versions under `versions`. Per stage:
 
 | Stage | Seconds |
@@ -256,7 +266,7 @@ same components.
   - x.w = 0, with x and w spanning an isotropic plane where x x w != 0. Dependent pairs lie in V n B9 and N+-, and
     x x w = 0 is B9; all of these are in R_12.
 
-  The cd_core identity x x (x x w) = (x.w) x - (x.x) w (`double_cross`, QRNG A 200..227, exact) and the
+  The cd_core identity x x (x x w) = (x.w) x - (x.x) w (`double_cross`, a symbolic expansion over Z[x_1..x_7, w_1..w_7]) and the
   anticommutativity of the cross product (`tables`) show that on an isotropic plane x x w lies in span(x, w) only
   when x x w = 0. Since u x v = -(i/2) x x w, generic isotropic pairs
   lie outside Ehat. So W8 minus R_12 misses E8-bar, and the two parts of S_8 are disjoint.
@@ -334,5 +344,5 @@ proof leans on more than the code certifies:
   check at two good primes.
 - Not checked: the G_2 orbit facts F1 to F4, which this verifier uses only to identify E8i with the README's E8 and
   to cite Lemma 5. Each fact is standard; the author's certificates cover them and re-ran green.
-- The two QRNG draw files are new. They are not entered in `docs/evidence/qrng_seeds/allocations.json`, because the
-  script holds no seed literals and reads its values from the draw files at run time.
+- The two QRNG draw files are `owned` rows of `docs/evidence/qrng_seeds/allocations.json`: the script holds no seed
+  literals and reads its values from the draw files by runtime index, so no other row may take one of their indices.

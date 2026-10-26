@@ -268,8 +268,11 @@ have tangent dimension 6 = orbit dimension 6.
   two components. V n B9 = {mu' = 0, u' = alpha n, v' = beta n, n null} has complex dimension 7 (unit dimension 13),
   with lower bound 7 from the representative and the same upper bound from the parametrization.
 
-*R_8 = W8 u E8-bar.* On every slice the order-12 variety is W8, V or {Q = 0} on P3a, P3b (the piece E8 by definition).
-V lies in E8-bar (Theorem 7). So R_8 = W8 u E8-bar.
+*R_8 = W8 u E8-bar.* On every slice the order-12 variety is W8, V or {Q = 0} on P3a, P3b. On P3a, {Q = 0} is the piece
+E8 by definition. P3b reduces to P3a: G_2(C) acts transitively on the vectors of each nonzero eta-norm (F1), so some g
+sends e'_1 to -e'_1, and since -e'_1 x w = -(e'_1 x w) it swaps V_+ and V_-. By F2 g maps the P3b plane onto the P3a
+plane, sending the point (a, b, c, d, m) to a P3a point with (b, d) -> (-b, -d); Q is G_2-invariant, so {Q = 0} on P3b
+lies in G_2 . E8. V lies in E8-bar (Theorem 7). So R_8 = W8 u E8-bar.
 - W8 = N x N is irreducible of complex dimension 12 (unit dimension 23); the hyperbolic representative has tangent
   dimension 12 and orbit-family rank 12.
 - E8 is the image of G_2 x {b^2 - d^2 + m^2 = 0}, irreducible; at the representative the tangent dimension and the
@@ -338,8 +341,8 @@ theorem), so the unit dimension drops by 2.
 
 - **Nullity 12 near e_1 + e_18.** x_0 = e_1 + e_18 is the point u = e_1 + i e_2, v = 0, mu = 0: it lies in V and B9.
   The two pieces of the Bouligand cone `A15 u B17` of
-  [the selected-center note](../../notes/nullity_twelve_local_geometry.md) are the tangent cones of V (cone dimension
-  16, unit 15) and B9 (cone dimension 18, unit 17, the Biss-Christensen-Dugger-Isaksen D-locus bundle with its length
+  [the selected-center note](../../notes/nullity_twelve_local_geometry.md) match, by dimension and containment, the
+  tangent cones of V (cone dimension 16, unit 15) and B9 (cone dimension 18, unit 17, the Biss-Christensen-Dugger-Isaksen D-locus bundle with its length
   ratio), and the stated intersection dimension thirteen is dim V n B9 = 13. The global nullity-12 locus is exactly
   V u B9.
 - **The {a, 0} families.** {a, 0} and {0, a} with a not a zero divisor are v' = +-u', mu' = 0, u' non-null: complex
@@ -377,8 +380,8 @@ lies in R_8. None occurred.
 The record covers the algebraic and connected-component structure of the strata. It does not cover:
 
 - the singular loci, smoothness and normal links of the pieces (roadmap item 4) beyond the regular points listed;
-- the Zariski-closure incidences among pieces other than those of Theorem 7 (for example whether B9 meets E8-bar
-  outside the dense orbit, which does not affect the component count);
+- the intersections of pieces that are not nested (W8 n E8-bar, W8 n V, V(Q) n V(G) beyond the pieces it contains);
+  Theorem 7 and the V(Q), V(G) memberships fix every containment among the pieces;
 - kernel bundles, attachments, homology, homotopy type (items 5 to 8);
 - a Rocq formalization of any statement.
 
@@ -396,10 +399,11 @@ admission weight.
 
 ## Literature
 
-- [Biss, Dugger and Isaksen](../../notes/math-0511691.md), Lemmas 9.4 and 9.5 and Corollary 8.13: zero divisors are
-  imaginary and orthogonal to C_n; the top stratum of A_5 is two copies of V_2(R^7).
-- [Biss, Christensen, Dugger and Isaksen](../../notes/math-0702075.md), Theorem 1.5, Corollary 7.4, Theorem 7.5: the
-  H_5^perp nullity table and the D-locus bundle, which the pieces B9, W8, V and E8-bar reproduce on {mu = 0}.
+- [Biss, Dugger and Isaksen](../../notes/math-0511691.md), Lemmas 9.4 and 9.5: zero divisors are imaginary and
+  orthogonal to C_n.
+- [Biss, Christensen, Dugger and Isaksen](../../notes/math-0702075.md), Theorem 1.5, Corollary 7.4, Theorem 7.5 and
+  Corollary 8.13: the H_5^perp nullity table and the D-locus bundle, which the pieces B9, W8, V and E8-bar reproduce on
+  {mu = 0}, and the top stratum of A_5 as two copies of V_2(R^7).
 - [Koebisu](../../notes/2608.08232.md): det L_x = N(x)^2 D_14(x)^2 in A_5. With Theorem 1 the zero set of D_14 in A_5
   is the doubly pure set V(Q) u V(G).
 
@@ -410,7 +414,7 @@ No external literature search was run for this record; the sources above are the
 [verification.md](verification.md) re-derives the six claims from `cd_core` alone with
 [verify_strata_independent.py](verify_strata_independent.py), which imports nothing from the author's script and writes
 [verification.json](verification.json); its seeds and sample points come from the ANU QRNG draws
-`docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json` and `draw-2026-10-26T012529Z.json`, which it owns whole. It
+`docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json` and `draw-2026-10-26T012529Z.json`, which it owns: it takes about 174 of their 2048 values by runtime index, each once. It
 refutes nothing across exhaustive integer points, random points on every piece, finite-field enumeration of the six
 slices over F_11 and F_13 and full-space finite-field samples. It runs about four minutes on 12 workers and is not a
 gate.

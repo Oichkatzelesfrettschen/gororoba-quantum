@@ -20,7 +20,7 @@ matrices of rank <= r form a variety smooth at rank exactly r with that tangent 
 Randomness. Every random value comes from two ANU QRNG draws of 1024 uint16 values, each index used once:
 - DRAW_A indices 0..119: eight integer points z in [0, 65535]^15 for the Schwartz-Zippel identity tests;
 - DRAW_A indices 120..139: one numpy PCG64 seed per random point family, in FAMILIES order (20 families);
-- DRAW_A indices 200..227: two integer pairs (x, w) in [0, 65535]^7 for the double-cross identity;
+- DRAW_A indices 240..254: the integer point z of the --self-test mutation controls;
 - DRAW_B index 0: seed of the B9-to-E8 curve parameters; indices 1..4: seeds of the F_p full-space samples
   (p = 7 and 13, two batches each); index 5: seed of the float search starts.
 
@@ -33,6 +33,7 @@ Usage (--self-test runs the four mutation controls):
 from __future__ import annotations
 
 import argparse
+import hashlib
 import itertools
 import json
 import sys
@@ -45,6 +46,7 @@ from typing import Any
 
 import flint
 import numpy as np
+import sympy
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -56,6 +58,7 @@ DRAW_A = "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json"
 DRAW_B = "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json"
 SZ_POINTS = 8
 FAMILY_SEED_BASE = 120
+SELF_TEST_BASE = 240
 
 
 def qrng_values(path: str) -> list[int]:
@@ -782,17 +785,14 @@ def sz_point(index: int) -> dict[str, Any]:
 
 
 def double_cross() -> dict[str, Any]:
-    """x x (x x w) = (x.w) x - (x.x) w for the cd_core octonion cross product, a cubic identity over Z checked at two
-    QRNG integer pairs (DRAW_A indices 200..227); with x.x = x.w = w.w = 0 it forces x x w in span(x, w) to be 0."""
-    vals = QA[200:228]
-    ok = True
-    for j in range(2):
-        x = vals[14 * j : 14 * j + 7]
-        w = vals[14 * j + 7 : 14 * j + 14]
-        lhs = cross(x, cross(x, w))
-        rhs = lin((dot(x, w), x), (-dot(x, x), w))
-        ok &= lhs == rhs
-    return {"draw": DRAW_A, "indices": [200, 227], "identity_holds": ok, "pass": ok}
+    """x x (x x w) = (x.w) x - (x.x) w for the cd_core octonion cross product, as a polynomial identity in the 14
+    coordinates of x and w over Z (sympy expansion); with x.x = x.w = w.w = 0 it forces x x w in span(x, w) to be 0."""
+    x = list(sympy.symbols("x1:8"))
+    w = list(sympy.symbols("w1:8"))
+    lhs = cross(x, cross(x, w))
+    rhs = lin((dot(x, w), x), (-dot(x, x), w))
+    ok = all(sympy.expand(a - b) == 0 for a, b in zip(lhs, rhs, strict=True))
+    return {"method": "symbolic expansion over Z[x1..x7, w1..w7]", "identity_holds": ok, "pass": ok}
 
 
 def identity_checks() -> dict[str, Any]:
@@ -1441,7 +1441,7 @@ def float_search(per_rank: int) -> dict[str, Any]:
 def self_test() -> list[str]:
     """Mutation controls: each corrupted input must be rejected by the check that guards it."""
     failures = []
-    z = QA[:15]
+    z = QA[SELF_TEST_BASE : SELF_TEST_BASE + 15]
     c = flint.fmpz_mat(15, 15, [x for r in cz_rows(z) for x in r])
     u, mu, w = z[:7], z[7], z[8:]
     uu, vv, uv = dot(u, u), dot(w, w), dot(u, w)
@@ -1532,6 +1532,7 @@ def main() -> int:
     report["timings_s"] = timings
     report["total_s"] = round(time.perf_counter() - t0, 2)
     report["workers"] = parallel.workers()
+    report["verifier_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     report["versions"] = {"python": sys.version.split()[0], "python-flint": flint.__version__, "numpy": np.__version__}
     print(f"total {report['total_s']} s on {report['workers']} workers")
     if args.out:
