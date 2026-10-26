@@ -1,6 +1,8 @@
 # Case: coherent-error probes and gap-88 phase-gradient tomography on an ibm_kingston path
 
-Status: written case awaiting the user's approval. Nothing in this file authorizes a submission.
+Status: approved by the user on 2026-10-26 for the envelope below with both stages under the
+calibration-identity gate and N1 = 800 probe shots. The approval takes effect on the submit-free dry runs
+made from main after this change merges; stage 2 additionally needs stage 1's decision to proceed.
 
 ## What it measures
 
