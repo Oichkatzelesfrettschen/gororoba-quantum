@@ -1,6 +1,6 @@
 {
  "schema": "reproduction-seeds-v1",
- "description": "Seed literals that reproduce retained records, approved plans and known meshes; ci/seed_provenance.py checks the tree against them. Rows only shrink: a new seed takes an ANU QRNG value through docs/evidence/anu_qrng/allocations.json.",
+ "description": "Seed literals that reproduce retained records, approved plans and known meshes; ci/seed_provenance.py checks the tree against them. Rows only shrink: a new seed takes an ANU QRNG value through docs/evidence/qrng_seeds/allocations.json.",
  "seeds": [
   {
    "path": "docs/evidence/c5_zero_divisor_code/replay-exact.py",

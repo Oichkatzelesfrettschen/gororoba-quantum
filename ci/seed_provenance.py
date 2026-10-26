@@ -412,8 +412,8 @@ def check_reserved(
 
 
 def reserved_file(path: str) -> tuple[str, tuple[str, frozenset[int]]] | None:
-    """One reserved row's file as (path, (text, detected values)), or None when git does not track it."""
-    if path not in tracked_files() or not (ROOT / path).is_file():
+    """One tracked reserved row's file as (path, (text, detected values)), or None when it is absent on disk."""
+    if not (ROOT / path).is_file():
         return None
     text = (ROOT / path).read_text(encoding="utf-8")
     return path, (text, frozenset(value for _, _, value in text_literals(path, text)[0]))
@@ -549,7 +549,8 @@ def check_tree(shard: int | None = None) -> int:
     check(found, load(BASELINE, "seeds"), allocations, claimed, read_tree_record, shard, flags)
     if shard in (None, 0):
         reserved = load(ALLOCATIONS, "reserved")
-        paths = sorted({row["path"] for row in reserved})
+        tracked = tracked_files()
+        paths = sorted({row["path"] for row in reserved if row["path"] in tracked})
         files = {item[0]: item[1] for item in parallel.ordered_map(reserved_file, paths) if item is not None}
         check_reserved(reserved, allocations, load(ALLOCATIONS, "runtime"), claimed, read_tree_record, files)
     print(f"seed provenance: {sum(found.values())} seed literals accounted")
