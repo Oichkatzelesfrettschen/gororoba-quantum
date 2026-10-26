@@ -6,7 +6,7 @@
   "sources": [
     "docs/evidence/stiefel-pfaffian-higher/README.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "unresolved",
     "note": "Captured context; triage and evidence review pending."
@@ -23,9 +23,47 @@
   "steps": [
     {
       "id": "admission",
-      "state": "doing",
+      "state": "done",
       "action": "Register the verified statements with the verification wording and gates.",
-      "acceptance": "research_state.py --check passes on main with the three claims established and the open claim recorded."
+      "acceptance": "research_state.py --check passes on main with the three claims established and the open claim recorded.",
+      "receipts": [
+        {
+          "result": "PR 518 merged: research_state.json carries stiefel-pfaffian-transport-all-n, a6-a8-stiefel-zero-divisor-cone and a7-a8-stiefel-witness as established and stiefel-pfaffian-f-modulo-q as open, with gates core-692 and core-693.",
+          "observed_at": "2026-10-26T00:00:12.190391+00:00",
+          "revision": "b798ddac929872aa1d2885bfc41cadcad132ba99",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "1d0439e8af4ba966643fe2bb26cf39afbe1ffcfa6acaaac3ff10d10ab7e25b9e"
+            },
+            {
+              "ref": "docs/evidence/stiefel-pfaffian-higher/result.json",
+              "sha256": "fb208dddfb9a17d3a611399582e682e8d6001645bd808e7b29a2ec96c6732be6"
+            }
+          ],
+          "scope_sha256": "5ea871e694105133e925bfedc1304b531e94933c5b4a561418d610fe5fef4fc7"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "PR 518 admitted the all-n transport, the A_6-A_8 zero-divisor cone and the A_7/A_8 witnesses after an independent verification; f_n modulo Q stays open as its own claim.",
+  "receipts": [
+    {
+      "result": "PR 518 merged: research_state.json carries stiefel-pfaffian-transport-all-n, a6-a8-stiefel-zero-divisor-cone and a7-a8-stiefel-witness as established and stiefel-pfaffian-f-modulo-q as open, with gates core-692 and core-693.",
+      "observed_at": "2026-10-26T00:00:12.190391+00:00",
+      "revision": "b798ddac929872aa1d2885bfc41cadcad132ba99",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "1d0439e8af4ba966643fe2bb26cf39afbe1ffcfa6acaaac3ff10d10ab7e25b9e"
+        },
+        {
+          "ref": "docs/evidence/stiefel-pfaffian-higher/result.json",
+          "sha256": "fb208dddfb9a17d3a611399582e682e8d6001645bd808e7b29a2ec96c6732be6"
+        }
+      ],
+      "scope_sha256": "90ca6b74eb352e341f5217bce5e1dd1f4495c1030ab04035a199617f8235e3c7"
     }
   ]
 }
