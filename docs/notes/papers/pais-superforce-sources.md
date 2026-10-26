@@ -1,8 +1,9 @@
 # Pais "Superforce" papers and the sources they lean on -- bibliographic record
 
 This note lists the sources of the Planck-force ("Superforce", `c^4/G`) argument of Pais and the references the
-repository needs to check it. It records identities, licenses and retention; the mathematical decomposition lives
-in [pais-claims-falsification.md](../topics/pais-claims-falsification.md) and the patents in
+repository needs to check it. It records identities, licenses and retention; the statement-by-statement mathematical decomposition
+lives in [pais-superforce-preprints.md](pais-superforce-preprints.md) and its summary in
+[pais-claims-falsification.md](../topics/pais-claims-falsification.md) and the patents in
 [pais-patent-web-sources.md](pais-patent-web-sources.md). Tag convention: [P] marks a statement of the source's own
 record; [I] marks repository interpretation.
 

@@ -61,8 +61,12 @@ tests on hardware.
   (craft using an inertial mass reduction device), US 10,322,827 B2 (high
   frequency gravitational wave generator), US 2019/0058105 A1
   (piezoelectricity-induced room-temperature superconductor) and
-  US 2019/0295733 A1 (plasma compression fusion device). The three granted
-  patents carry Eq. 1 below; none reports a measurement.
+  US 2019/0295733 A1 (plasma compression fusion device). The field-generator
+  patent prints Eq. 1 below with gamma^2, the craft patent prints it without
+  gamma^2 as the non-relativistic form, and the gravitational-wave patent
+  carries only the vibration form of Eq. 2; none reports a measurement.
+  Equation locators are in the per-patent notes linked from
+  [pais-patent-web-sources.md](../papers/pais-patent-web-sources.md).
 - [P] The craft application was rejected and then granted after the Naval
   Aviation Enterprise chief technology officer attested operability and
   cited Chinese research.
@@ -97,7 +101,8 @@ radiates only as a magnetic dipole through the moment's second derivative
 spinning the worked example up to 30000 RPM in 1 s radiates about 2.7e-13 W.
 
 **Eq. 2 integrates an acceleration that a vibration cannot sustain.** [P] The
-vibrating case is `S_max = f_G (sigma^2/eps0) R_v nu^2 t_op`, and the
+vibrating case is `S_max = f_G gamma^2 (sigma^2/eps0) R_v nu^2 t_op` (the craft
+and gravitational-wave patents print it without gamma^2), and the
 gravitational-wave patent adds `R_v nu^3 t_op^2`. [I] `R_v nu^2 t_op` is
 acceleration times operating time, a speed growing without bound, while a
 vibration of amplitude R_v keeps `|v| <= 2 pi nu R_v`. [E] At 1 um, 1 GHz and
@@ -159,8 +164,10 @@ radii, where no conductor exists.
 
 **The gravitational-wave arithmetic is consistent; its inputs are not.** [P]
 Ejlli et al. write the graviton-photon mixing as `kappa B/2` with
-`kappa^2 = 16 pi G` in rationalized Lorentz-Heaviside units, so the conversion
-probability over length L is `4 pi G B^2 L^2/(mu0 c^4)` in SI. [E] A 10 T field
+`kappa^2 = 16 pi G` in rationalized Lorentz-Heaviside units (Appendix A,
+[s10052-019-7542-5.md](../papers/s10052-019-7542-5.md)). [I] The conversion
+probability over length L, `4 pi G B^2 L^2/(mu0 c^4)` in SI, follows from their
+Eqs. A.6 and A.7; the paper prints no SI form. [E] A 10 T field
 over 1 m converts 8.3e-36. The patent's B0 = 1e10 T is 2.27 times the QED
 critical field `m_e^2 c^2/(e hbar)` = 4.41e9 T, stores 4.0e25 J/m^3 (a mass
 density of 4.4e8 kg/m^3), and its input flux of 1e33 W/m^2 is 0.43 of the
