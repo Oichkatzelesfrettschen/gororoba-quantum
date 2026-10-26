@@ -1549,7 +1549,7 @@ def _measurement_sequence_self_test() -> None:
     expected = [signed[0] + signed[1] for signed in MSQ_SIGNED]
     if (
         expected != ["pa", "ma", "mb", "pb"]
-        or len(static_members) != 4 * len(MSQ_STEPS) + 4 + len(MSQ_T1_MICROSECONDS)
+        or len(static_members) != 4 * len(MSQ_STEPS) + 4 + 1 + len(MSQ_T1_MICROSECONDS)
         or len(dynamic_members) != 20
     ):
         raise AssertionError("the member order or counts moved")
