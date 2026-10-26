@@ -9,6 +9,13 @@
       "question": "Do job-00's outside-block clicks and analyzer residuals follow the setting, the execution order or the sample budget when the same 64 circuits run in a QRNG-drawn order at twice the samples?"
     },
     {
+      "id": "qd-ascella-signed-coherence-seed-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03",
+      "family": "photonic signed-coherence seed repeat",
+      "question": "Does each served mesh of job-02 return its analyzer statistic again when job-02's 56 compilation seeds and 8 seed-0 anchors rerun in a QRNG-drawn order at twice the samples after a platform calibration?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-compilations",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02",
@@ -2348,6 +2355,43 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-seed-repeat",
+      "statement": "Job-02's 64 settings of theta2-x-arm0 rerun on qpu:ascella (job e2f30d83, 2026-10-26 03:57 UTC, nine hours after job-02 and after a platform calibration state at 03:50 UTC) at the same compilation seeds, the perturbed meshes in a QRNG-drawn order at 16,384 samples, return every one of job-02's 57 served meshes and repeat each mesh's analyzer statistic: the 56 perturbed block-conditioned X statistics correlate with job-02's at r 0.885 (label-permutation p 5e-5, alpha 0.01) against the 0.880 attenuation ceiling of a fully fixed per-mesh error and its 0.01 lower bound 0.784, the seed-0 anchors stay within 1.48 standard errors (0.8858 against 0.8829), the compilation dependence replicates (dispersion ratio 36.8, p 0.00025), and the perturbed mean reads 0.8869 against job-02's 0.8868.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting and two jobs nine hours apart; the readings M, A, P1 and P2 were fixed in plan ascella-seed-repeat-case before the acquisition, and the dark-output and predecessor correlations are exploratory. The ceiling takes job-02's compilation-induced standard deviation and counting variance from heater-coupling.json. The result establishes that the per-mesh deviation is a deterministic function of the served mesh across the interval and the calibration between the jobs; it names no mechanism and leaves open whether the error follows the applied voltages or a quantity the returned circuit omits.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+          "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/results.json",
+          "sha256": "337f9e9539e332f1713679b7a94501700ef9edbc308cfe9feea6e622c51a04ff"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/seed-repeat-reading.json",
+          "sha256": "a631dd14d30c487746a8d0d457b50aa84622090b5239403b768ea9636eeb0e73"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-seed-repeat-reading-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-compilations",
+        "qd-ascella-signed-coherence-seed-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-compilation-dependence"
+      ],
+      "supersedes": []
     },
     {
       "id": "ascella-signed-coherence-compilation-dependence",

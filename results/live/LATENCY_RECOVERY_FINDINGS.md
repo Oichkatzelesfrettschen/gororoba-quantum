@@ -4,8 +4,9 @@
 
 - Record: [2026-10-25T193443.839527Z](2026-10-25T193443.839527Z/collect.json), job
   `dbf5kdom94ac738ssug0`, on the backup account.
-- Approved dry run: [2026-10-25T192932.145570Z](2026-10-25T192932.145570Z/CASE_ADDENDUM.md);
-  the submission reused its predictions under unchanged calibration values.
+- Approved dry run: [2026-10-25T192932.145570Z](2026-10-25T192932.145570Z/CASE_ADDENDUM.md),
+  with its [correction](2026-10-25T192932.145570Z/CASE_ADDENDUM_CORRECTION.md) of the layout and the
+  account-read time; the submission reused its predictions under unchanged calibration values.
 - Calibration: 2026-10-25T12:18:10-07:00, with medians T1 258 us and
   T2 163 us.
 - Executed layout: physical qubits [106, 105, 104, 117, 107, 125] for r, d0,
