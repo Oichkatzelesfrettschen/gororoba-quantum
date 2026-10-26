@@ -6,11 +6,11 @@ The selected bounded-search candidate is `candidate-000-shots-8192` at 8192 shot
 
 ## Artifact and source binding
 
-- Saved run: `results/live/2026-10-25T201344.631258Z`.
-- [record.json](record.json) SHA-256: `277f4797f81877054f57714425afbe4ced29055ab9a0ceb876f970e06abf7203`.
-- [isa.qpy](isa.qpy) SHA-256: `9f0d045dcfa4547345d0bfe5868028ec15a7631cb435f9564accdabc6867033c`.
-- Experiment source digest: `ba57bdd8f70821c7e1692ce8fbd8c4fec3f60fe956fb4bd486c89286e4dd9073`.
-- Source commit: `7bb03cff02efb86eb43c2388ab196ae5f5697152`; sources_modified=`false`.
+- Saved run: `results/live/2026-10-26T005951.692602Z`.
+- [record.json](record.json) SHA-256: `a8848b9c3e9e24483b4f8836a3e24ca04d0335d5c4e3445ffe0cc359a122f9ed`.
+- [isa.qpy](isa.qpy) SHA-256: `4f784d5f83a913b973699d48ceed90a9223afd729b5e71454c0031c222586683`.
+- Experiment source digest: `76f7d1b8d29d976aabcf584c38067c08dfbbd629bfa9fead81e383ee4cd3e352`.
+- Source commit: `49fc7da4af25044afb5f88846aa39ce38e14a4d1`; sources_modified=`false`.
 - Simulator seed: `20261011`; the source digest binds the simulator implementation.
 
 Recorded dependency versions:
@@ -18,7 +18,7 @@ Recorded dependency versions:
 | Dependency | Version |
 |---|---|
 | numpy | 2.5.4 |
-| qiskit | 2.5.2 |
+| qiskit | 2.6.0 |
 | qiskit-aer | 0.17.2 |
 | qiskit-ibm-runtime | 0.50.0 |
 | rustworkx | 0.18.1 |
@@ -27,11 +27,13 @@ Recorded dependency versions:
 
 ## Scientific question and interpretation
 
-The measurement-sequence family asks, on 8 qubits of ibm_kingston (the declared layout: 91, 118, 95, 61, 147, 151, 59, 89) at the backend's default repetition delay, whether a mid-circuit measurement acts as an ideal pinching, a nonselective projective measurement in Z. Each qubit starts in |0> and receives N rotations RX(sign * THETA / N) with THETA = 8 pi / 9 and N in 1, 2, 4, 8, 16. The measure arm, at N >= 2, follows each rotation with a mid-circuit measurement whose outcome the program never reads, then reads the qubit into the final register. The delay arm replaces each measurement with an idle of that qubit's calibrated measure duration, which keeps the elapsed time and drops the projection; idle dephasing pinches the qubit too, so it is the elapsed-time control that quantifies dephasing's share of the rise. The unitary arm, at N = 16 only, plays the 16 rotations back to back with a barrier between them so the transpiler cannot merge them; it is the mutation null. The settle arm, also at N = 16 only, is the measure arm with a 2 us idle after each measurement: a readout-induced frequency shift acts during the next pulse at second order, about -2.5e-6 per step in the flip probability, and a departure that survives the settle gap unchanged excludes a readout tail. Every member idles 2 us before its final measurement, so residual readout photons of the last mid-circuit measurement do not bias the read. Five t1 members (x, an idle of 0, 20, 50, 100 or 200 us, the pre-readout idle, a measurement) measure the qubit's relaxation in the job; the case analysis fits T1 from them and uses it, not the Target's T1, for the measure-arm and settle predictions. The signed arms run in the order +, -, -, + and share their ideal law because cosine is even.
+The measurement-sequence family asks, on 8 qubits of ibm_kingston (the declared layout: 91, 118, 95, 61, 147, 151, 59, 89) at the backend's default repetition delay, whether a mid-circuit measurement acts as an ideal pinching, a nonselective projective measurement in Z. Each qubit starts in |0> and receives N rotations RX(sign * THETA / N) with THETA = 8 pi / 9 and N in 1, 2, 4, 8, 16. The measure arm, at N >= 2, follows each rotation with a mid-circuit measurement whose outcome the program never reads, then reads the qubit into the final register. The delay arm replaces each measurement with an idle of that qubit's calibrated measure duration, which keeps the elapsed time and drops the projection; idle dephasing pinches the qubit too, so it is the elapsed-time control that quantifies dephasing's share of the rise. The unitary arm, at N = 16 only, plays the 16 rotations back to back with a barrier between them so the transpiler cannot merge them; it is the mutation null. The settle arm, also at N = 16 only, is the measure arm with a 2 us idle after each measurement: a readout-induced frequency shift acts during the next pulse at second order, about -2.5e-6 per step in the flip probability. The 2 us gap is an experimental hypothesis, not a validated bound, because the repository's Heron r2 sources report no device-matched ring-down or residual-photon decay time. The settle arm tests whether lengthening the gap after each measurement from zero to 2 us changes the deficit; a deficit that stays unchanged bounds only the tail component that decays within 2 us, and a tail slower than 2 us stays unexcluded. Every member idles 2 us before its final measurement as a hypothesized allowance for residual readout photons of the last mid-circuit measurement; no in-job diagnostic validates it. Five t1 members (x, an idle of 0, 20, 50, 100 or 200 us, the pre-readout idle, a measurement) measure the qubit's relaxation in the job; the case analysis fits T1 from them and uses it, not the Target's T1, for the measure-arm and settle predictions. A zero-pulse member (ro0: the pre-readout idle, a measurement) and the t1 member at idle 0 bracket the final read's offset and scale, which corrects every arm. The signed arms run in the order +, -, -, + and share their ideal law because cosine is even.
 
-The measure arm's ideal final P0 is (1 + cos(THETA / N) ** N) / 2 and the delay and unitary arms' is cos(THETA / 2) ** 2; the settle arm's is the measure arm's. The state after each measurement is diagonal in Z, so a shift of the qubit frequency after readout moves the flip probability only at second order; a deficit of the measured P0 below the ideal, which grows with N, measures transitions the measurement induces once the unitary, delay and settle controls separate it from rotation error, idle dephasing and a readout tail. The calibration noise model treats a mid-circuit measurement as projective, so it prices the measure arm at readout and decoherence alone.
+The measure arm's ideal final P0 is (1 + cos(THETA / N) ** N) / 2 and the delay and unitary arms' is cos(THETA / 2) ** 2; the settle arm's is the measure arm's. The state after each measurement is diagonal in Z, so a shift of the qubit frequency after readout moves the flip probability only at second order; a deficit of the measured P0 below the ideal, which grows with N, measures transitions the measurement induces once the unitary and delay controls separate it from rotation error and idle dephasing, and the settle arm bounds a readout tail that decays within 2 us. The calibration noise model treats a mid-circuit measurement as projective, so it prices the measure arm at readout and decoherence alone.
 
 Per qubit, seventeen two-sided precision contracts split the family-wise alpha evenly and admit the design: the final P0 pooled over the four signed members of each arm at each N (half-width 0.03), and the measure minus unitary contrast at N = 16 (half-width 0.055), the mutation-test endpoint. They price resolution, not an effect; the Hoeffding radii hold under arbitrary dependence between PUBs.
+
+The preregistered pinching analysis (collect.json, family_analysis.pinching; docs/design/measurement-sequence-pinching.md, Decision rule) corrects each read through ro0 and the t1 member at idle 0, fits T1 and the equilibrium parameter in the job, and models each arm with a Bloch iteration that uses the Target's sx error and the measure duration. Per qubit, the mutation test passes when the N = 16 contrast exceeds 0.5 by 3 standard errors; the departure test compares the measure arm's N = 16 P0 with the ideal-projective prediction at 3 standard errors, both sides; the settle test asks whether lengthening the gap from zero to 2 us changes the deficit. The unitary arm tests the gate model in the job: its residual sets the measure-arm shift that a depolarizing, drive-dephasing, axis-tilt or over-rotation error could produce, and that shift adds to the departure standard error, floored at a measured model scatter that no retained Heron run yet supplies: until one is registered, a fired departure verdict reads gate_model_unbounded and nothing is attributed to the measurement. A qubit whose mutation test fails or whose widened standard error exceeds twice its planning value is uninformative. A device verdict fires when two informative qubits agree or the pooled z reaches 3; with fewer than two informative qubits the device reads uninformative, and none always means a clean null.
 
 ## Archived ideal laws and placement
 
@@ -63,6 +65,7 @@ The ideal arrays below come from the retained record. Their label order stays in
 | msq_unitary_n16_ma_q91 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_mb_q91 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_pb_q91 | `[0.030153689607, 0.969846310393]` |
+| msq_ro0_q91 | `[1.0, 0.0]` |
 | msq_t1_d0_q91 | `[0.0, 1.0]` |
 | msq_t1_d1_q91 | `[0.0, 1.0]` |
 | msq_t1_d2_q91 | `[0.0, 1.0]` |
@@ -112,6 +115,7 @@ The ideal arrays below come from the retained record. Their label order stays in
 | msq_unitary_n16_ma_q118 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_mb_q118 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_pb_q118 | `[0.030153689607, 0.969846310393]` |
+| msq_ro0_q118 | `[1.0, 0.0]` |
 | msq_t1_d0_q118 | `[0.0, 1.0]` |
 | msq_t1_d1_q118 | `[0.0, 1.0]` |
 | msq_t1_d2_q118 | `[0.0, 1.0]` |
@@ -161,6 +165,7 @@ The ideal arrays below come from the retained record. Their label order stays in
 | msq_unitary_n16_ma_q95 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_mb_q95 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_pb_q95 | `[0.030153689607, 0.969846310393]` |
+| msq_ro0_q95 | `[1.0, 0.0]` |
 | msq_t1_d0_q95 | `[0.0, 1.0]` |
 | msq_t1_d1_q95 | `[0.0, 1.0]` |
 | msq_t1_d2_q95 | `[0.0, 1.0]` |
@@ -210,6 +215,7 @@ The ideal arrays below come from the retained record. Their label order stays in
 | msq_unitary_n16_ma_q61 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_mb_q61 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_pb_q61 | `[0.030153689607, 0.969846310393]` |
+| msq_ro0_q61 | `[1.0, 0.0]` |
 | msq_t1_d0_q61 | `[0.0, 1.0]` |
 | msq_t1_d1_q61 | `[0.0, 1.0]` |
 | msq_t1_d2_q61 | `[0.0, 1.0]` |
@@ -259,6 +265,7 @@ The ideal arrays below come from the retained record. Their label order stays in
 | msq_unitary_n16_ma_q147 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_mb_q147 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_pb_q147 | `[0.030153689607, 0.969846310393]` |
+| msq_ro0_q147 | `[1.0, 0.0]` |
 | msq_t1_d0_q147 | `[0.0, 1.0]` |
 | msq_t1_d1_q147 | `[0.0, 1.0]` |
 | msq_t1_d2_q147 | `[0.0, 1.0]` |
@@ -308,6 +315,7 @@ The ideal arrays below come from the retained record. Their label order stays in
 | msq_unitary_n16_ma_q151 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_mb_q151 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_pb_q151 | `[0.030153689607, 0.969846310393]` |
+| msq_ro0_q151 | `[1.0, 0.0]` |
 | msq_t1_d0_q151 | `[0.0, 1.0]` |
 | msq_t1_d1_q151 | `[0.0, 1.0]` |
 | msq_t1_d2_q151 | `[0.0, 1.0]` |
@@ -357,6 +365,7 @@ The ideal arrays below come from the retained record. Their label order stays in
 | msq_unitary_n16_ma_q59 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_mb_q59 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_pb_q59 | `[0.030153689607, 0.969846310393]` |
+| msq_ro0_q59 | `[1.0, 0.0]` |
 | msq_t1_d0_q59 | `[0.0, 1.0]` |
 | msq_t1_d1_q59 | `[0.0, 1.0]` |
 | msq_t1_d2_q59 | `[0.0, 1.0]` |
@@ -406,6 +415,7 @@ The ideal arrays below come from the retained record. Their label order stays in
 | msq_unitary_n16_ma_q89 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_mb_q89 | `[0.030153689607, 0.969846310393]` |
 | msq_unitary_n16_pb_q89 | `[0.030153689607, 0.969846310393]` |
+| msq_ro0_q89 | `[1.0, 0.0]` |
 | msq_t1_d0_q89 | `[0.0, 1.0]` |
 | msq_t1_d1_q89 | `[0.0, 1.0]` |
 | msq_t1_d2_q89 | `[0.0, 1.0]` |
@@ -434,22 +444,22 @@ The ideal arrays below come from the retained record. Their label order stays in
 
 | Group | Backend | Calibration | Transpiler seed | Template layout | Executed physical layouts |
 |---|---|---|---:|---|---|
-| msq_static_q91 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[91]` | `[[91]]` |
-| msq_dynamic_q91 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[91]` | `[[91]]` |
-| msq_static_q118 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[118]` | `[[118]]` |
-| msq_dynamic_q118 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[118]` | `[[118]]` |
-| msq_static_q95 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[95]` | `[[95]]` |
-| msq_dynamic_q95 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[95]` | `[[95]]` |
-| msq_static_q61 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[61]` | `[[61]]` |
-| msq_dynamic_q61 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[61]` | `[[61]]` |
-| msq_static_q147 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[147]` | `[[147]]` |
-| msq_dynamic_q147 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[147]` | `[[147]]` |
-| msq_static_q151 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[151]` | `[[151]]` |
-| msq_dynamic_q151 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[151]` | `[[151]]` |
-| msq_static_q59 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[59]` | `[[59]]` |
-| msq_dynamic_q59 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[59]` | `[[59]]` |
-| msq_static_q89 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[89]` | `[[89]]` |
-| msq_dynamic_q89 | ibm_kingston | 2026-10-25T12:55:42-07:00 | 20261010 | `[89]` | `[[89]]` |
+| msq_static_q91 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[91]` | `[[91]]` |
+| msq_dynamic_q91 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[91]` | `[[91]]` |
+| msq_static_q118 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[118]` | `[[118]]` |
+| msq_dynamic_q118 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[118]` | `[[118]]` |
+| msq_static_q95 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[95]` | `[[95]]` |
+| msq_dynamic_q95 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[95]` | `[[95]]` |
+| msq_static_q61 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[61]` | `[[61]]` |
+| msq_dynamic_q61 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[61]` | `[[61]]` |
+| msq_static_q147 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[147]` | `[[147]]` |
+| msq_dynamic_q147 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[147]` | `[[147]]` |
+| msq_static_q151 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[151]` | `[[151]]` |
+| msq_dynamic_q151 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[151]` | `[[151]]` |
+| msq_static_q59 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[59]` | `[[59]]` |
+| msq_dynamic_q59 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[59]` | `[[59]]` |
+| msq_static_q89 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[89]` | `[[89]]` |
+| msq_dynamic_q89 | ibm_kingston | 2026-10-25T17:12:46-07:00 | 20261010 | `[89]` | `[[89]]` |
 
 Calibration-bound family and replica mapping:
 
@@ -600,7 +610,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d0_q91`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.988891601562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.962489500631.
+The noise model predicts 0.98486328125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.958461180318.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -610,7 +620,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d1_q91`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.916625976562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.890223875631.
+The noise model predicts 0.918579101562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.892177000631.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -620,7 +630,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d2_q91`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.820434570312; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.794032469381.
+The noise model predicts 0.822143554688; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.795741453756.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -630,7 +640,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d3_q91`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.684326171875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.657924070943.
+The noise model predicts 0.684692382812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.658290281881.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -640,7 +650,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d4_q91`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.473510742188; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.447108641256.
+The noise model predicts 0.482788085938; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.456385985006.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -653,7 +663,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n2_mb_q91`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n2_pb_q91`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.514862060547; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.488459959615.
+The noise model predicts 0.5146484375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.488246336568.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -666,7 +676,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n4_mb_q91`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n4_pb_q91`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.676330566406; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.649928465475.
+The noise model predicts 0.674468994141; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.648066893209.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -679,7 +689,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n8_mb_q91`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n8_pb_q91`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.804138183594; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.777736082662.
+The noise model predicts 0.801422119141; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.775020018209.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -692,7 +702,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n16_mb_q91`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_measure_n16_pb_q91`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.886383056641; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.859980955709.
+The noise model predicts 0.883392333984; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.856990233053.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -705,7 +715,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n1_mb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n1_pb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0506591796875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.024257078756.
+The noise model predicts 0.0520935058594; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0256914049279.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -718,7 +728,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n2_mb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n2_pb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0589904785156; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0325883775841.
+The noise model predicts 0.0609436035156; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0345415025841.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -731,7 +741,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n4_mb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n4_pb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.074462890625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0480607896935.
+The noise model predicts 0.076171875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0497697740685.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -744,7 +754,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n8_mb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n8_pb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.104583740234; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0781816393029.
+The noise model predicts 0.106140136719; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0797380357872.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -757,7 +767,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n16_mb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n16_pb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.153259277344; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.126857176412.
+The noise model predicts 0.154266357422; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.12786425649.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -770,7 +780,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q91`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0487976074219; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0223955064904.
+The noise model predicts 0.0505981445312; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0241960435997.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -783,7 +793,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_settle_n16_mb_q91`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_settle_n16_pb_q91`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.893920898438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.867518797506.
+The noise model predicts 0.890716552734; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.864314451803.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -800,7 +810,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q91`: sign -1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q91`: sign -1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.837585449219; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.784781247356.
+The noise model predicts 0.832794189453; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.77998998759.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0510652536205; requested precision is 0.055.
 
@@ -810,7 +820,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d0_q118`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.985229492188; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.958827391256.
+The noise model predicts 0.983032226562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.956630125631.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -820,7 +830,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d1_q118`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.905395507812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.878993406881.
+The noise model predicts 0.908935546875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.882533445943.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -830,7 +840,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d2_q118`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.7998046875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.773402586568.
+The noise model predicts 0.804443359375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.778041258443.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -840,7 +850,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d3_q118`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.6572265625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.630824461568.
+The noise model predicts 0.652709960938; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.626307860006.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -850,7 +860,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d4_q118`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.437866210938; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.411464110006.
+The noise model predicts 0.44384765625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.417445555318.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -863,7 +873,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n2_mb_q118`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n2_pb_q118`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.516693115234; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.490291014303.
+The noise model predicts 0.516448974609; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.490046873678.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -876,7 +886,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n4_mb_q118`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n4_pb_q118`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.677429199219; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.651027098287.
+The noise model predicts 0.677307128906; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.650905027975.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -889,7 +899,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n8_mb_q118`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n8_pb_q118`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.80517578125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.778773680318.
+The noise model predicts 0.804718017578; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.778315916647.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -902,7 +912,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n16_mb_q118`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_measure_n16_pb_q118`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.888458251953; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.862056151022.
+The noise model predicts 0.888305664062; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.861903563131.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -915,7 +925,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n1_mb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n1_pb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.05419921875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0277971178185.
+The noise model predicts 0.0541687011719; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0277666002404.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -928,7 +938,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n2_mb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n2_pb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0611877441406; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0347856432091.
+The noise model predicts 0.0611572265625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.034755125631.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -941,7 +951,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n4_mb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n4_pb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0738525390625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.047450438131.
+The noise model predicts 0.0738220214844; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0474199205529.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -954,7 +964,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n8_mb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n8_pb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.100311279297; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0739091783654.
+The noise model predicts 0.100219726562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.073817625631.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -967,7 +977,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n16_mb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n16_pb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.143798828125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.117396727193.
+The noise model predicts 0.143676757812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.117274656881.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -980,7 +990,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q118`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0495910644531; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0231889635216.
+The noise model predicts 0.0495300292969; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0231279283654.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -993,7 +1003,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_settle_n16_mb_q118`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_settle_n16_pb_q118`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.895965576172; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.86956347524.
+The noise model predicts 0.8955078125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.869105711568.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1010,7 +1020,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q118`: sign -1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q118`: sign -1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.8388671875; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.786062985637.
+The noise model predicts 0.838775634766; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.785971432903.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0510652536205; requested precision is 0.055.
 
@@ -1020,7 +1030,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d0_q95`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.990234375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.963832274068.
+The noise model predicts 0.984375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.957972899068.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1030,7 +1040,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d1_q95`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.93115234375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.904750242818.
+The noise model predicts 0.930053710938; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.903651610006.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1040,7 +1050,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d2_q95`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.849731445312; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.823329344381.
+The noise model predicts 0.849365234375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.822963133443.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1050,7 +1060,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d3_q95`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.733642578125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.707240477193.
+The noise model predicts 0.73193359375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.705531492818.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1060,7 +1070,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d4_q95`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.538940429688; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.512538328756.
+The noise model predicts 0.550048828125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.523646727193.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1073,7 +1083,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n2_mb_q95`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n2_pb_q95`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.512603759766; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.486201658834.
+The noise model predicts 0.515014648438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.488612547506.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1086,7 +1096,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n4_mb_q95`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n4_pb_q95`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.674774169922; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.64837206899.
+The noise model predicts 0.675109863281; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.64870776235.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1112,7 +1122,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n16_mb_q95`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_measure_n16_pb_q95`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.886108398438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.859706297506.
+The noise model predicts 0.885864257812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.859462156881.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1125,7 +1135,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n1_mb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n1_pb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0477600097656; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0213579088341.
+The noise model predicts 0.0512084960938; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0248063951622.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1138,7 +1148,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n2_mb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n2_pb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0485534667969; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0221513658654.
+The noise model predicts 0.0523071289062; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0259050279747.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1151,7 +1161,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n4_mb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n4_pb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0563049316406; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0299028307091.
+The noise model predicts 0.0598449707031; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0334428697716.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1164,7 +1174,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n8_mb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n8_pb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0706176757812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0442155748497.
+The noise model predicts 0.0738525390625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.047450438131.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1177,7 +1187,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n16_mb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n16_pb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0932312011719; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0668291002404.
+The noise model predicts 0.0966796875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0702775865685.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1190,7 +1200,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q95`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0443115234375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.017909422506.
+The noise model predicts 0.0480346679688; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0216325670372.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1203,7 +1213,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_settle_n16_mb_q95`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_settle_n16_pb_q95`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.891510009766; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.865107908834.
+The noise model predicts 0.891265869141; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.864863768209.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1220,7 +1230,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q95`: sign -1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q95`: sign -1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.841796875; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.788992673137.
+The noise model predicts 0.837829589844; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.785025387981.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0510652536205; requested precision is 0.055.
 
@@ -1230,7 +1240,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d0_q61`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.982788085938; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.956385985006.
+The noise model predicts 0.981079101562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.954677000631.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1240,7 +1250,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d1_q61`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.872314453125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.845912352193.
+The noise model predicts 0.8759765625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.849574461568.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1250,7 +1260,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d2_q61`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.73828125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.711879149068.
+The noise model predicts 0.743286132812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.716884031881.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1260,7 +1270,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d3_q61`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.56201171875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.535609617818.
+The noise model predicts 0.553833007812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.527430906881.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1270,7 +1280,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d4_q61`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.321899414062; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.295497313131.
+The noise model predicts 0.322509765625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.296107664693.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1283,7 +1293,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n2_mb_q61`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n2_pb_q61`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.516418457031; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.4900163561.
+The noise model predicts 0.515228271484; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.488826170553.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1296,7 +1306,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n4_mb_q61`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n4_pb_q61`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.677764892578; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.651362791647.
+The noise model predicts 0.675720214844; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.649318113912.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1309,7 +1319,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n8_mb_q61`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n8_pb_q61`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.805999755859; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.779597654928.
+The noise model predicts 0.803436279297; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.777034178365.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1322,7 +1332,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n16_mb_q61`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_measure_n16_pb_q61`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.88916015625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.862758055318.
+The noise model predicts 0.886566162109; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.860164061178.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1335,7 +1345,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n1_mb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n1_pb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.05908203125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0326799303185.
+The noise model predicts 0.0587768554688; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0323747545372.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1348,7 +1358,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n2_mb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n2_pb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.067626953125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0412248521935.
+The noise model predicts 0.0674438476562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0410417467247.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1361,7 +1371,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n4_mb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n4_pb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.08447265625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0580705553185.
+The noise model predicts 0.0843811035156; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0579790025841.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1374,7 +1384,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n8_mb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n8_pb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.115509033203; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0891069322716.
+The noise model predicts 0.115295410156; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0888933092247.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1387,7 +1397,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n16_mb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n16_pb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.166961669922; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.14055956899.
+The noise model predicts 0.166473388672; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.14007128774.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1400,7 +1410,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q61`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0520629882812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0256608873497.
+The noise model predicts 0.0518798828125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.025477781881.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1413,7 +1423,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_settle_n16_mb_q61`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_settle_n16_pb_q61`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.899658203125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.873256102193.
+The noise model predicts 0.897155761719; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.870753660787.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1430,7 +1440,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q61`: sign -1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q61`: sign -1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.837097167969; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.784292966106.
+The noise model predicts 0.834686279297; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.781882077434.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0510652536205; requested precision is 0.055.
 
@@ -1440,7 +1450,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d0_q147`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.986938476562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.960536375631.
+The noise model predicts 0.981811523438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.955409422506.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1450,7 +1460,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d1_q147`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.928833007812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.902430906881.
+The noise model predicts 0.927856445312; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.901454344381.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1460,7 +1470,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d2_q147`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.849243164062; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.822841063131.
+The noise model predicts 0.848266601562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.821864500631.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1470,7 +1480,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d3_q147`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.734741210938; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.708339110006.
+The noise model predicts 0.732666015625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.706263914693.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1480,7 +1490,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d4_q147`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.542724609375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.516322508443.
+The noise model predicts 0.553833007812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.527430906881.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1493,7 +1503,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n2_mb_q147`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n2_pb_q147`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.515411376953; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.489009276022.
+The noise model predicts 0.518127441406; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.491725340475.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1506,7 +1516,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n4_mb_q147`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n4_pb_q147`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.675170898438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.648768797506.
+The noise model predicts 0.676696777344; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.650294676412.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1519,7 +1529,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n8_mb_q147`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n8_pb_q147`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.797271728516; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.770869627584.
+The noise model predicts 0.797912597656; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.771510496725.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1532,7 +1542,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n16_mb_q147`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_measure_n16_pb_q147`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.869323730469; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.842921629537.
+The noise model predicts 0.8701171875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.843715086568.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1545,7 +1555,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n1_mb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n1_pb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0513610839844; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0249589830529.
+The noise model predicts 0.0550842285156; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0286821275841.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1558,7 +1568,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n2_mb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n2_pb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0614929199219; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0350908189904.
+The noise model predicts 0.0652770996094; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0388749986779.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1571,7 +1581,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n4_mb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n4_pb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0790710449219; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0526689439904.
+The noise model predicts 0.08251953125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0561174303185.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1584,7 +1594,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n8_mb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n8_pb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.112365722656; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0859636217247.
+The noise model predicts 0.115264892578; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0888627916466.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1597,7 +1607,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n16_mb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n16_pb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.166595458984; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.140193358053.
+The noise model predicts 0.170166015625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.143763914693.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1610,7 +1620,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q147`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0701904296875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.043788328756.
+The noise model predicts 0.0741882324219; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0477861314904.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1623,7 +1633,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_settle_n16_mb_q147`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_settle_n16_pb_q147`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.876953125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.850551024068.
+The noise model predicts 0.877868652344; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.851466551412.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1640,7 +1650,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q147`: sign -1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q147`: sign -1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.799133300781; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.746329098918.
+The noise model predicts 0.795928955078; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.743124753215.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0510652536205; requested precision is 0.055.
 
@@ -1650,7 +1660,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d0_q151`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.987915039062; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.961512938131.
+The noise model predicts 0.983520507812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.957118406881.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1660,7 +1670,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d1_q151`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.912963867188; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.886561766256.
+The noise model predicts 0.916015625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.889613524068.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1670,7 +1680,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d2_q151`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.814208984375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.787806883443.
+The noise model predicts 0.817749023438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.791346922506.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1680,7 +1690,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d3_q151`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.678344726562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.651942625631.
+The noise model predicts 0.675170898438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.648768797506.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1690,7 +1700,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d4_q151`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.465087890625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.438685789693.
+The noise model predicts 0.4716796875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.445277586568.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1703,7 +1713,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n2_mb_q151`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n2_pb_q151`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.513946533203; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.487544432272.
+The noise model predicts 0.514770507812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.488368406881.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1716,7 +1726,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n4_mb_q151`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n4_pb_q151`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.676208496094; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.649806395162.
+The noise model predicts 0.676422119141; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.650020018209.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1729,7 +1739,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n8_mb_q151`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n8_pb_q151`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.8037109375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.777308836568.
+The noise model predicts 0.804351806641; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.777949705709.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1742,7 +1752,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n16_mb_q151`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_measure_n16_pb_q151`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.887603759766; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.861201658834.
+The noise model predicts 0.887878417969; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.861476317037.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1755,7 +1765,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n1_mb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n1_pb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0517272949219; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0253251939904.
+The noise model predicts 0.0532836914062; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0268815904747.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1768,7 +1778,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n2_mb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n2_pb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0562438964844; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0298417955529.
+The noise model predicts 0.0578002929688; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0313981920372.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1781,7 +1791,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n4_mb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n4_pb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0675659179688; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0411638170372.
+The noise model predicts 0.0689086914062; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0425065904747.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1794,7 +1804,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n8_mb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n8_pb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0897216796875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.063319578756.
+The noise model predicts 0.0909423828125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.064540281881.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1807,7 +1817,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n16_mb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n16_pb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.125823974609; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0994218736779.
+The noise model predicts 0.127166748047; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.100764647115.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1820,7 +1830,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q151`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0466613769531; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0202592760216.
+The noise model predicts 0.0481872558594; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0217851549279.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1833,7 +1843,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_settle_n16_mb_q151`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_settle_n16_pb_q151`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.893890380859; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.867488279928.
+The noise model predicts 0.894073486328; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.867671385397.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1850,7 +1860,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q151`: sign -1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q151`: sign -1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.840942382812; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.788138180949.
+The noise model predicts 0.839691162109; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.786886960246.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0510652536205; requested precision is 0.055.
 
@@ -1860,7 +1870,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d0_q59`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.987670898438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.961268797506.
+The noise model predicts 0.982788085938; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.956385985006.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1870,7 +1880,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d1_q59`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.929565429688; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.903163328756.
+The noise model predicts 0.928588867188; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.902186766256.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1880,7 +1890,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d2_q59`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.848999023438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.822596922506.
+The noise model predicts 0.84912109375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.822718992818.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1890,7 +1900,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d3_q59`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.734130859375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.707728758443.
+The noise model predicts 0.732299804688; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.705897703756.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1900,7 +1910,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d4_q59`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.540161132812; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.513759031881.
+The noise model predicts 0.553344726562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.526942625631.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -1913,7 +1923,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n2_mb_q59`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n2_pb_q59`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.514953613281; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.48855151235.
+The noise model predicts 0.516967773438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.490565672506.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1926,7 +1936,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n4_mb_q59`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n4_pb_q59`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.675506591797; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.649104490865.
+The noise model predicts 0.676513671875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.650111570943.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1939,7 +1949,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n8_mb_q59`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n8_pb_q59`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.804168701172; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.77776660024.
+The noise model predicts 0.804443359375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.778041258443.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1952,7 +1962,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n16_mb_q59`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_measure_n16_pb_q59`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.888153076172; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.86175097524.
+The noise model predicts 0.888458251953; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.862056151022.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1965,7 +1975,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n1_mb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n1_pb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0498962402344; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0234941393029.
+The noise model predicts 0.0531311035156; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0267290025841.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1978,7 +1988,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n2_mb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n2_pb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0509643554688; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0245622545372.
+The noise model predicts 0.0542297363281; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0278276353966.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -1991,7 +2001,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n4_mb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n4_pb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0573425292969; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0309404283654.
+The noise model predicts 0.0605163574219; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0341142564904.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2004,7 +2014,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n8_mb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n8_pb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0714111328125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.045009031881.
+The noise model predicts 0.0740356445312; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0476335435997.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2017,7 +2027,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n16_mb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n16_pb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0928955078125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.066493406881.
+The noise model predicts 0.0960998535156; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0696977525841.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2030,7 +2040,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q59`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.04541015625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0190080553185.
+The noise model predicts 0.0486450195312; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0222429185997.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2043,7 +2053,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_settle_n16_mb_q59`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_settle_n16_pb_q59`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.893707275391; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.867305174459.
+The noise model predicts 0.893341064453; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.866938963522.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2060,7 +2070,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q59`: sign -1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q59`: sign -1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.842742919922; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.789938718059.
+The noise model predicts 0.839813232422; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.787009030559.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0510652536205; requested precision is 0.055.
 
@@ -2070,7 +2080,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d0_q89`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.984741210938; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.958339110006.
+The noise model predicts 0.982666015625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.956263914693.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -2080,7 +2090,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d1_q89`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.906616210938; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.880214110006.
+The noise model predicts 0.909912109375; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.883510008443.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -2090,7 +2100,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d2_q89`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.801391601562; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.774989500631.
+The noise model predicts 0.807861328125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.781459227193.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -2100,7 +2110,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d3_q89`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.660888671875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.634486570943.
+The noise model predicts 0.6572265625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.630824461568.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -2110,7 +2120,7 @@ Score terms (each member averages its recorded replicas):
 
 - `msq_t1_d4_q89`: sign +1, labeled score vector `[0.0, 1.0]`.
 
-The noise model predicts 0.44384765625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.417445555318.
+The noise model predicts 0.449340820312; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.422938719381.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0229127910221; requested precision is 0.03.
 
@@ -2123,7 +2133,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n2_mb_q89`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n2_pb_q89`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.517425537109; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.491023436178.
+The noise model predicts 0.51611328125; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.489711180318.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2136,7 +2146,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n4_mb_q89`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n4_pb_q89`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.677642822266; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.651240721334.
+The noise model predicts 0.676574707031; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.6501726061.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2149,7 +2159,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n8_mb_q89`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 - `msq_measure_n8_pb_q89`: sign +1, labeled score vector `[0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.0]`.
 
-The noise model predicts 0.805114746094; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.778712645162.
+The noise model predicts 0.803314208984; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.776912108053.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2162,7 +2172,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_measure_n16_mb_q89`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_measure_n16_pb_q89`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.888549804688; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.862147703756.
+The noise model predicts 0.887145996094; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.860743895162.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2175,7 +2185,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n1_mb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n1_pb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0547790527344; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0283769518029.
+The noise model predicts 0.0544128417969; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0280107408654.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2188,7 +2198,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n2_mb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n2_pb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0610961914062; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0346940904747.
+The noise model predicts 0.0607604980469; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0343583971154.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2201,7 +2211,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n4_mb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n4_pb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0730285644531; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0466264635216.
+The noise model predicts 0.07275390625; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0463518053185.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2214,7 +2224,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n8_mb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n8_pb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0981750488281; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0717729478966.
+The noise model predicts 0.0979309082031; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0715288072716.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2227,7 +2237,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_delay_n16_mb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_delay_n16_pb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.139984130859; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.113582029928.
+The noise model predicts 0.139404296875; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.113002195943.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2240,7 +2250,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q89`: sign +1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.0507202148438; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0243181139122.
+The noise model predicts 0.0504760742188; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.0240739732872.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2253,7 +2263,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_settle_n16_mb_q89`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 - `msq_settle_n16_pb_q89`: sign +1, labeled score vector `{"encoding": "bits", "length": 131072, "bits": [0], "table": [0.25, 0.0]}`.
 
-The noise model predicts 0.895355224609; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.868953123678.
+The noise model predicts 0.893646240234; the simultaneous finite-simulation allowance is +/-0.0264021009315. The lower modeled value is 0.867244139303.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0246902548663; requested precision is 0.03.
 
@@ -2270,7 +2280,7 @@ Score terms (each member averages its recorded replicas):
 - `msq_unitary_n16_mb_q89`: sign -1, labeled score vector `[0.25, 0.0]`.
 - `msq_unitary_n16_pb_q89`: sign -1, labeled score vector `[0.25, 0.0]`.
 
-The noise model predicts 0.837829589844; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.785025387981.
+The noise model predicts 0.836669921875; the simultaneous finite-simulation allowance is +/-0.052804201863. The lower modeled value is 0.783865720012.
 
 At alpha 0.000367647058824, the two-sided confidence half-width is 0.0510652536205; requested precision is 0.055.
 
@@ -2287,9 +2297,9 @@ The worst confidence half-width divided by its declared target is 0.928459156736
 | Job | PUBs | Submitted PUB shots | Estimated charge (s) | Service ceiling (s) |
 |---|---:|---:|---:|---:|
 | ibm_kingston/dynamic/1 | 20 | 163840 | 48.375871232 | 80 |
-| ibm_kingston/static/1 | 29 | 237568 | 68.030412544 | 80 |
+| ibm_kingston/static/1 | 30 | 245760 | 70.112655104 | 80 |
 
-The cost model predicts 116.406283776 seconds. The per-job service ceilings sum to 160 seconds against an invocation cap of 170 seconds. The global reserve is 60 seconds; the saved quota reports 560 seconds remaining.
+The cost model predicts 118.488526336 seconds. The per-job service ceilings sum to 160 seconds against an invocation cap of 170 seconds. The global reserve is 60 seconds; the saved quota reports 450 seconds remaining.
 
 Every PUB cost includes its Target duration, explicit repetition delay, and declared reset/classical-latency additions. Each job also includes its declared fixed overhead. Those model assumptions estimate charge; the ceilings bound service execution instead. The ledger retains accepted and attempted jobs' reservations while their charges remain unsettled. External submissions can still change the shared quota. Dynamic Target duration omits classical scheduler latency; the declared addition remains a planning assumption. Explicit circuit resets contribute to Target duration. Runtime's implicit initialization cost remains unseparated unless a native server timing artifact qualifies that accounting boundary.
 
@@ -2344,11 +2354,12 @@ Job `ibm_kingston/dynamic/1` adds 2.3 seconds of modeled overhead.
 | ibm_kingston_static_pub_22 | 8192 | 5.204e-06 | 0.00025 | 0 | 0 |
 | ibm_kingston_static_pub_23 | 8192 | 5.204e-06 | 0.00025 | 0 | 0 |
 | ibm_kingston_static_pub_24 | 8192 | 5.204e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_25 | 8192 | 4.212e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_26 | 8192 | 2.4212e-05 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_27 | 8192 | 5.4212e-05 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_28 | 8192 | 0.000104212 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_29 | 8192 | 0.000204212 | 0.00025 | 0 | 0 |
+| ibm_kingston_static_pub_25 | 8192 | 4.18e-06 | 0.00025 | 0 | 0 |
+| ibm_kingston_static_pub_26 | 8192 | 4.212e-06 | 0.00025 | 0 | 0 |
+| ibm_kingston_static_pub_27 | 8192 | 2.4212e-05 | 0.00025 | 0 | 0 |
+| ibm_kingston_static_pub_28 | 8192 | 5.4212e-05 | 0.00025 | 0 | 0 |
+| ibm_kingston_static_pub_29 | 8192 | 0.000104212 | 0.00025 | 0 | 0 |
+| ibm_kingston_static_pub_30 | 8192 | 0.000204212 | 0.00025 | 0 | 0 |
 
 Job `ibm_kingston/static/1` adds 2.3 seconds of modeled overhead.
 
@@ -2436,7 +2447,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --reserve-seconds 60.0 \
   --max-total-execution-seconds 170.0 \
   --out ../results/live \
-  --approved-record ../results/live/2026-10-25T201344.631258Z \
-  --approved-record-sha256 277f4797f81877054f57714425afbe4ced29055ab9a0ceb876f970e06abf7203 \
+  --approved-record ../results/live/2026-10-26T005951.692602Z \
+  --approved-record-sha256 a8848b9c3e9e24483b4f8836a3e24ca04d0335d5c4e3445ffe0cc359a122f9ed \
   --submit
 ```
