@@ -296,6 +296,41 @@ class SourceRightsChecks(unittest.TestCase):
         self.zenodo_path.write_bytes(raw_response)
         self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
 
+    def use_inspire(self) -> None:
+        file_key = "a743e4f4baf5e260d1ce4c700251edce"
+        self.entry["source_url"] = f"https://inspirehep.net/files/{file_key}"
+        self.entry["rights"]["evidence_url"] = "https://inspirehep.net/api/literature/1747547"
+        self.entry["rights"]["doi"] = "10.1140/epjc/s10052-019-7542-5"
+        self.entry["rights"]["publisher_title"] = "Upper limits on the amplitude of gravitational waves"
+        self.inspire_record: dict[str, Any] = {
+            "id": "1747547",
+            "metadata": {
+                "control_number": 1747547,
+                "dois": [{"value": "10.1140/epjc/s10052-019-7542-5", "source": "bibmatch"}],
+                "titles": [
+                    {"source": "Springer", "title": "Upper limits on the amplitude of gravitational waves"},
+                    {"source": "arXiv", "title": "Upper limits on the amplitude from graviton-photon mixing"},
+                ],
+                "documents": [
+                    {"key": file_key, "url": self.entry["source_url"], "source": "SCOAP3", "filename": "scoap"}
+                ],
+                "license": [
+                    {"license": "arXiv nonexclusive-distrib 1.0", "material": "preprint"},
+                    {"license": "CC-BY-4.0", "imposing": "Springer"},
+                ],
+            },
+        }
+        self.inspire_path = self.root / "docs/evidence/source_rights/inspire-1747547.json"
+        self.inspire_path.parent.mkdir(parents=True, exist_ok=True)
+        self.entry["rights"]["evidence_path"] = self.inspire_path.relative_to(self.root).as_posix()
+        self.entry["rights"]["evidence_retrieved_at_utc"] = "2026-10-26T01:37:46+00:00"
+        self.write_inspire_capture()
+
+    def write_inspire_capture(self) -> None:
+        raw_response = json.dumps(self.inspire_record).encode()
+        self.inspire_path.write_bytes(raw_response)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
+
     def use_dagstuhl(self) -> None:
         self.entry["source_url"] = (
             "https://drops.dagstuhl.de/storage/00lipics/lipics-vol193-itp2021/LIPIcs.ITP.2021.21/LIPIcs.ITP.2021.21.pdf"
@@ -865,6 +900,98 @@ class SourceRightsChecks(unittest.TestCase):
         self.zenodo_record["files"].append(unrelated)
         self.write_zenodo_capture()
         self.verify()
+
+    def test_inspire_scoap3_version_of_record_passes(self) -> None:
+        self.use_inspire()
+        self.verify()
+
+    def test_inspire_changed_capture_hash_is_rejected(self) -> None:
+        self.use_inspire()
+        self.inspire_path.write_bytes(self.inspire_path.read_bytes() + b" ")
+        self.reject("captured INSPIRE evidence SHA-256")
+
+    def test_inspire_capture_path_symlink_and_encoding_are_rejected(self) -> None:
+        self.use_inspire()
+        self.entry["rights"]["evidence_path"] = "docs/evidence/source_rights/inspire-1.json"
+        self.reject("captured INSPIRE evidence path")
+        self.use_inspire()
+        target = self.inspire_path.with_name("target.json")
+        self.inspire_path.rename(target)
+        self.inspire_path.symlink_to(target)
+        self.reject("captured INSPIRE evidence file")
+        self.inspire_path.unlink()
+        target.rename(self.inspire_path)
+        for payload, message in ((b"\xff", "captured INSPIRE JSON"), (b"[]", "captured INSPIRE record")):
+            with self.subTest(payload=payload):
+                self.inspire_path.write_bytes(payload)
+                self.entry["rights"]["evidence_sha256"] = hashlib.sha256(payload).hexdigest()
+                self.reject(message)
+
+    def test_inspire_record_identity_mutations_are_rejected_after_rehash(self) -> None:
+        self.use_inspire()
+        original = copy.deepcopy(self.inspire_record)
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            ("id", "1747548", "captured INSPIRE record identity"),
+            ("id", 1747547, "captured INSPIRE record identity"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field, value=value):
+                self.inspire_record = copy.deepcopy(original)
+                self.inspire_record[field] = value
+                self.write_inspire_capture()
+                self.reject(message)
+        for value in (1747548, "1747547", True):
+            with self.subTest(control_number=value):
+                self.inspire_record = copy.deepcopy(original)
+                self.inspire_record["metadata"]["control_number"] = value
+                self.write_inspire_capture()
+                self.reject("captured INSPIRE control number")
+
+    def test_inspire_doi_and_title_must_match_the_registry(self) -> None:
+        self.use_inspire()
+        original = copy.deepcopy(self.inspire_record)
+        self.inspire_record["metadata"]["dois"][0]["value"] = "10.1140/epjc/other"
+        self.write_inspire_capture()
+        self.reject("captured INSPIRE DOI identity")
+        self.inspire_record = copy.deepcopy(original)
+        self.inspire_record["metadata"]["titles"][0]["source"] = "arXiv"
+        self.write_inspire_capture()
+        self.reject("captured INSPIRE title identity")
+
+    def test_inspire_document_must_be_the_registered_scoap3_file(self) -> None:
+        self.use_inspire()
+        original = copy.deepcopy(self.inspire_record["metadata"]["documents"][0])
+        for documents, message in (
+            ([], "captured INSPIRE matching document"),
+            ([original, copy.deepcopy(original)], "captured INSPIRE matching document"),
+            ([{**original, "source": "arXiv"}], "captured INSPIRE document source"),
+            ([{**original, "key": "0" * 32}], "captured INSPIRE document route"),
+        ):
+            with self.subTest(message=message, count=len(documents)):
+                self.inspire_record["metadata"]["documents"] = documents
+                self.write_inspire_capture()
+                self.reject(message)
+
+    def test_inspire_article_license_is_required_once(self) -> None:
+        self.use_inspire()
+        licenses = self.inspire_record["metadata"]["license"]
+        article = licenses[1]
+        for replacement, message in (
+            ([licenses[0]], "captured INSPIRE article license count"),
+            ([licenses[0], article, copy.deepcopy(article)], "captured INSPIRE article license count"),
+            ([licenses[0], {**article, "license": "CC-BY-NC-4.0"}], "captured INSPIRE article license identity"),
+            ([licenses[0], {"license": "CC-BY-4.0"}], "captured INSPIRE article license identity"),
+            ([{**licenses[0], "license": "CC-BY-4.0"}], "captured INSPIRE article license count"),
+        ):
+            with self.subTest(message=message, licenses=len(replacement)):
+                self.inspire_record["metadata"]["license"] = replacement
+                self.write_inspire_capture()
+                self.reject(message)
+
+    def test_inspire_other_evidence_route_is_rejected(self) -> None:
+        self.use_inspire()
+        self.entry["rights"]["evidence_url"] = "https://inspirehep.net/literature/1747547"
+        self.reject("published INSPIRE evidence route")
 
     def test_coordinated_pdf_and_registry_replacement_is_rejected(self) -> None:
         self.use_zenodo()

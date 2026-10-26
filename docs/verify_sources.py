@@ -405,6 +405,64 @@ def verify_nature_evidence(root: Path, entry: dict[str, Any], article: str) -> N
     require(parser.fields["citation_pdf_url"] == [entry["source_url"]], "captured Nature PDF identity")
 
 
+def verify_inspire_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any], record_id: str) -> None:
+    """Bind a SCOAP3 version-of-record PDF to its INSPIRE record, DOI and article license."""
+    relative = f"docs/evidence/source_rights/inspire-{record_id}.json"
+    require(rights.get("evidence_path") == relative, "captured INSPIRE evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured INSPIRE evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured INSPIRE retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured INSPIRE evidence SHA-256")
+    try:
+        decoded = json.loads(raw_response)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("captured INSPIRE JSON") from error
+    captured = require_mapping(decoded, "captured INSPIRE record")
+    require(captured.get("id") == record_id, "captured INSPIRE record identity")
+    require(
+        rights["evidence_url"] == f"https://inspirehep.net/api/literature/{record_id}", "captured INSPIRE record URL"
+    )
+    metadata = require_mapping(captured.get("metadata"), "captured INSPIRE metadata")
+    require(
+        type(metadata.get("control_number")) is int and metadata["control_number"] == int(record_id),
+        "captured INSPIRE control number",
+    )
+
+    def entries(field: str) -> list[dict[str, Any]]:
+        values = metadata.get(field)
+        if not isinstance(values, list):
+            raise ValueError(f"captured INSPIRE {field}")
+        return [require_mapping(value, f"captured INSPIRE {field}") for value in values]
+
+    doi = require_text(rights.get("doi"), "captured INSPIRE registered DOI")
+    require(any(item.get("value") == doi for item in entries("dois")), "captured INSPIRE DOI identity")
+    title = require_text(rights.get("publisher_title"), "captured INSPIRE registered title")
+    require(
+        any(item.get("source") == "Springer" and item.get("title") == title for item in entries("titles")),
+        "captured INSPIRE title identity",
+    )
+    documents = [item for item in entries("documents") if item.get("url") == entry["source_url"]]
+    require(len(documents) == 1, "captured INSPIRE matching document")
+    require(documents[0].get("source") == "SCOAP3", "captured INSPIRE document source")
+    require(
+        re.fullmatch(r"[0-9a-f]{32}", str(documents[0].get("key"))) is not None
+        and entry["source_url"] == f"https://inspirehep.net/files/{documents[0]['key']}",
+        "captured INSPIRE document route",
+    )
+    # A license entry carrying a material qualifier (the arXiv preprint grant) leaves the article untouched.
+    article_licenses = [item for item in entries("license") if "material" not in item]
+    require(len(article_licenses) == 1, "captured INSPIRE article license count")
+    require(
+        article_licenses[0].get("license") == rights["license_identifier"] == "CC-BY-4.0"
+        and article_licenses[0].get("imposing") == "Springer",
+        "captured INSPIRE article license identity",
+    )
+
+
 def verify_zenodo_evidence(root: Path, rights: dict[str, Any], licensed_file: dict[str, Any], record_id: str) -> None:
     """Bind the declared license and deposit identity to the retained endpoint response."""
     relative = f"docs/evidence/source_rights/zenodo-record-{record_id}.json"
@@ -510,6 +568,11 @@ def verify_source_rights(
         if article is None:
             raise ValueError("published Nature evidence route")
         verify_nature_evidence(root, entry, article[1])
+    elif published and urlsplit(rights["evidence_url"]).netloc == "inspirehep.net":
+        inspire = re.fullmatch(r"https://inspirehep\.net/api/literature/([1-9]\d*)", rights["evidence_url"])
+        if inspire is None:
+            raise ValueError("published INSPIRE evidence route")
+        verify_inspire_evidence(root, entry, rights, inspire[1])
     elif published:
         record = re.fullmatch(r"https://zenodo\.org/api/records/([1-9]\d*)", rights["evidence_url"])
         if record is None:
