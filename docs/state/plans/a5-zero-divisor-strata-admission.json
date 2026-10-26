@@ -36,6 +36,22 @@
             }
           ],
           "scope_sha256": "94f7ccb73966653b3468aecae7866cdaddea875691e854331ea8ffda3d7c5b5f"
+        },
+        {
+          "result": "Revalidated at b5349a6a: verify_strata_independent.py rerun from cd_core passes every stage (exit 0, 128 s on 12 workers) and reproduces the retained verification.json verdicts exactly, with the same verifier digest and pins (Python 3.14.7, python-flint 0.9.0, numpy 2.5.4); only stage timings differ. The receipt binds the retained verification.json and verification.md written by the review-fix rerun. Covers the zero-divisor criterion stages (identities, double_cross, exhaustive, rank_crosscheck).",
+          "observed_at": "2026-10-26T22:14:53.275738+00:00",
+          "revision": "b5349a6a781822ca841d13136b795a42f661b208",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "4868225961525cd737368e7a1c04f06c9eb9bcccb400014127eee5e139a3d388"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "111cb5bc98660b7a1abee1ff5044ccd066e8000f77a5eda8a6889230e5c77443"
+            }
+          ],
+          "scope_sha256": "94f7ccb73966653b3468aecae7866cdaddea875691e854331ea8ffda3d7c5b5f"
         }
       ]
     },
@@ -57,6 +73,22 @@
             {
               "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
               "sha256": "3a6d25b9e6b0a8ec7ba49b8c837f0ad113bca6ae3241cb8e71d33fb59e4cc77f"
+            }
+          ],
+          "scope_sha256": "1fc6bac7482dec4ebe24dee8ab97b86a41cfcee0ad0e1779b16a068faffc3e05"
+        },
+        {
+          "result": "Revalidated at b5349a6a: verify_strata_independent.py rerun from cd_core passes every stage (exit 0, 128 s on 12 workers) and reproduces the retained verification.json verdicts exactly, with the same verifier digest and pins (Python 3.14.7, python-flint 0.9.0, numpy 2.5.4); only stage timings differ. The receipt binds the retained verification.json and verification.md written by the review-fix rerun. Covers g_irreducibility and the tangent-dimension rows.",
+          "observed_at": "2026-10-26T22:14:53.275738+00:00",
+          "revision": "b5349a6a781822ca841d13136b795a42f661b208",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "4868225961525cd737368e7a1c04f06c9eb9bcccb400014127eee5e139a3d388"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "111cb5bc98660b7a1abee1ff5044ccd066e8000f77a5eda8a6889230e5c77443"
             }
           ],
           "scope_sha256": "1fc6bac7482dec4ebe24dee8ab97b86a41cfcee0ad0e1779b16a068faffc3e05"
@@ -84,6 +116,22 @@
             }
           ],
           "scope_sha256": "707304b57c522e947b2338f128d640f81dd1619f52f447b36ad25cd514634f4e"
+        },
+        {
+          "result": "Revalidated at b5349a6a: verify_strata_independent.py rerun from cd_core passes every stage (exit 0, 128 s on 12 workers) and reproduces the retained verification.json verdicts exactly, with the same verifier digest and pins (Python 3.14.7, python-flint 0.9.0, numpy 2.5.4); only stage timings differ. The receipt binds the retained verification.json and verification.md written by the review-fix rerun. Covers families, exhaustive and the fp_slices covering over F_11 and F_13.",
+          "observed_at": "2026-10-26T22:14:53.275738+00:00",
+          "revision": "b5349a6a781822ca841d13136b795a42f661b208",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "4868225961525cd737368e7a1c04f06c9eb9bcccb400014127eee5e139a3d388"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "111cb5bc98660b7a1abee1ff5044ccd066e8000f77a5eda8a6889230e5c77443"
+            }
+          ],
+          "scope_sha256": "707304b57c522e947b2338f128d640f81dd1619f52f447b36ad25cd514634f4e"
         }
       ]
     },
@@ -105,6 +153,22 @@
             {
               "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
               "sha256": "3a6d25b9e6b0a8ec7ba49b8c837f0ad113bca6ae3241cb8e71d33fb59e4cc77f"
+            }
+          ],
+          "scope_sha256": "d4384577522e72ae4dac3e7f87c5f8642d27b7153f675ed03154f9527abcc5ca"
+        },
+        {
+          "result": "Revalidated at b5349a6a: verify_strata_independent.py rerun from cd_core passes every stage (exit 0, 128 s on 12 workers) and reproduces the retained verification.json verdicts exactly, with the same verifier digest and pins (Python 3.14.7, python-flint 0.9.0, numpy 2.5.4); only stage timings differ. The receipt binds the retained verification.json and verification.md written by the review-fix rerun. Covers witnesses, b9_curves and the incidence rows.",
+          "observed_at": "2026-10-26T22:14:53.275738+00:00",
+          "revision": "b5349a6a781822ca841d13136b795a42f661b208",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "4868225961525cd737368e7a1c04f06c9eb9bcccb400014127eee5e139a3d388"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "111cb5bc98660b7a1abee1ff5044ccd066e8000f77a5eda8a6889230e5c77443"
             }
           ],
           "scope_sha256": "d4384577522e72ae4dac3e7f87c5f8642d27b7153f675ed03154f9527abcc5ca"
@@ -132,6 +196,22 @@
             }
           ],
           "scope_sha256": "d01a555703f5433179be8c8b782e15d8949b3f12c3fe875057bba07b83e570da"
+        },
+        {
+          "result": "Revalidated at b5349a6a: verify_strata_independent.py rerun from cd_core passes every stage (exit 0, 128 s on 12 workers) and reproduces the retained verification.json verdicts exactly, with the same verifier digest and pins (Python 3.14.7, python-flint 0.9.0, numpy 2.5.4); only stage timings differ. The receipt binds the retained verification.json and verification.md written by the review-fix rerun. Covers the mu-direction rows of families and witnesses.",
+          "observed_at": "2026-10-26T22:14:53.275738+00:00",
+          "revision": "b5349a6a781822ca841d13136b795a42f661b208",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "4868225961525cd737368e7a1c04f06c9eb9bcccb400014127eee5e139a3d388"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "111cb5bc98660b7a1abee1ff5044ccd066e8000f77a5eda8a6889230e5c77443"
+            }
+          ],
+          "scope_sha256": "d01a555703f5433179be8c8b782e15d8949b3f12c3fe875057bba07b83e570da"
         }
       ]
     },
@@ -149,6 +229,22 @@
             {
               "ref": "docs/state/research_state.json",
               "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/result.json",
+              "sha256": "5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c"
+            }
+          ],
+          "scope_sha256": "8ab722b4f71ceb39df19f784b1b93f775a0b8f07c49b6ae2a0efc930daf64088"
+        },
+        {
+          "result": "Revalidated at b5349a6a: research_state.py --check passes (273 claims, 306 acquisitions) with claim a5-zero-divisor-strata as admitted by PR 533, and result.json replays under core-694. The receipt binds the claim record rather than the whole registry.",
+          "observed_at": "2026-10-26T22:15:15.575854+00:00",
+          "revision": "b5349a6a781822ca841d13136b795a42f661b208",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#claims/id=a5-zero-divisor-strata",
+              "sha256": "d5fb6b91abfc1989c3f053a84afe42f4ade85017f7496ba27fb560443365eaf5"
             },
             {
               "ref": "docs/evidence/a5-zero-divisor-strata/result.json",
@@ -177,6 +273,22 @@
             {
               "ref": "scripts/a5_zero_divisor_strata.py",
               "sha256": "b1bc9bfb7d9bdd2087a321b3e8d4f92d60bcf0028b2be003a33374114648493c"
+            }
+          ],
+          "scope_sha256": "0a505457669fa5fe1e851d076a57b2de51ff0ac7d392083447f265426f6b7219"
+        },
+        {
+          "result": "Revalidated at b5349a6a over the pooled author script: --check docs/evidence/a5-zero-divisor-strata/result.json exits 0 in 8.6 s and --self-test rejects 13 mutations and corrupted rows.",
+          "observed_at": "2026-10-26T22:12:44.264035+00:00",
+          "revision": "b5349a6a781822ca841d13136b795a42f661b208",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/result.json",
+              "sha256": "5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c"
+            },
+            {
+              "ref": "scripts/a5_zero_divisor_strata.py",
+              "sha256": "09fd6941e7945638d37e53d24f6d4cd7e49c45b724e313394091b2bee9f1b0d4"
             }
           ],
           "scope_sha256": "0a505457669fa5fe1e851d076a57b2de51ff0ac7d392083447f265426f6b7219"
@@ -243,6 +355,22 @@
         {
           "ref": "docs/state/research_state.json",
           "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+        },
+        {
+          "ref": "docs/evidence/a5-zero-divisor-strata/result.json",
+          "sha256": "5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c"
+        }
+      ],
+      "scope_sha256": "7f46160e559a0ab583c87298c105957ffb54af866c72774c56ae667743a158bc"
+    },
+    {
+      "result": "Revalidated at b5349a6a: research_state.py --check passes (273 claims, 306 acquisitions) with claim a5-zero-divisor-strata as admitted by PR 533, and result.json replays under core-694. The receipt binds the claim record rather than the whole registry.",
+      "observed_at": "2026-10-26T22:15:15.575854+00:00",
+      "revision": "b5349a6a781822ca841d13136b795a42f661b208",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json#claims/id=a5-zero-divisor-strata",
+          "sha256": "d5fb6b91abfc1989c3f053a84afe42f4ade85017f7496ba27fb560443365eaf5"
         },
         {
           "ref": "docs/evidence/a5-zero-divisor-strata/result.json",
