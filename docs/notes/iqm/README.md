@@ -282,8 +282,10 @@ run; the 1600 and 16000 records of the two single-circuit probes agree with it w
 residual, so they do not test it. A measure-heavy job is the next test. The run's runtime of 9.035 s sat 0.035 s above
 `collect`'s cancel threshold of 9.0 s for `max_credits` 5.0 and billed 10 s, 5.0 credits. A future case sets
 `max_credits` with margin above the corrected worst case (execution + 0.17 s fit residual + 0.42 s runtime over
-execution), at least 1 s below the cancel threshold of `max_credits` / price - 1 s. The corrected worst case for the
-pinching circuits is 9.41 s, which needs `max_credits` of at least 5.71 (a threshold of 10.41 s with the 1 s build margin), not the 5.0 the case carried. The
+execution), at least 1 s below the cancel threshold, which `collect` takes as `floor(max_credits / price)` billed seconds less 1 s
+(`iqm_jobs.cancel_threshold_seconds`, the expression the build uses too). The corrected worst case for the pinching
+circuits is 9.41 s, which needs a threshold of 10.41 s and so `max_credits` of 6.0 (a threshold of 11.0 s; 5.71 buys
+11 billed seconds and a 10.0 s threshold, a 0.59 s margin), not the 5.0 the case carried; a fresh build carries 6.0. The
 retained fit and its check are `scripts/iqm_measurement_sequence.py`, `BILLING_MODELS` and `check_billing_fit`; a case
 built before the correction keeps its predicted billing (`billing_model_of`).
 

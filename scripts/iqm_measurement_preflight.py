@@ -14,8 +14,8 @@ CONTRAST_FLOOR = 0.6; every key a circuit declares (f, and m0 to m15 in measure-
 shot for every qubit. The probe proceeds to the main submission only if every qubit passes. The check gates the
 submission and never enters the main case's analysis.
 
-Usage: "$PYTHON" scripts/iqm_measurement_preflight.py (build DIR [--shots N] | check DIR
-       | analyze RUN_DIR --out FILE [--replay] [--mock] | --self-test)
+Usage: "$PYTHON" scripts/iqm_measurement_preflight.py (build DIR [--shots N] [--main CASE_DIR]
+       | check DIR [--main CASE_DIR] | analyze RUN_DIR --out FILE [--replay] [--mock] | --self-test)
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import iqm_measurement_sequence as seq  # noqa: E402
-from iqm_jobs import CANCEL_MARGIN, CASE_SCHEMA, dump, run_facts  # noqa: E402
+from iqm_jobs import CASE_SCHEMA, cancel_threshold_seconds, dump, run_facts  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
 CASE = "measurement-sequence-pinching-probe"
@@ -59,7 +59,7 @@ def billing(circuits: list[dict[str, Any]], shots: int, model: str = "v2") -> di
         schedule + fit["fixed"] + fit["per_circuit_shot"] * len(circuits) * shots + fit["per_mid_record"] * records
     )
     worst = execution + fit["residual"] + fit["runtime_over"]
-    threshold = MAX_CREDITS[QC] / PRICE[QC] - CANCEL_MARGIN
+    threshold = cancel_threshold_seconds(MAX_CREDITS[QC], PRICE[QC])
     return {
         "shots": shots,
         "circuits": len(circuits),
@@ -140,17 +140,17 @@ def write(directory: Path, main: Path, shots: int) -> None:
     print(json.dumps({"circuits": len(NAMES), "shots": shots, **prediction["billing"]}))
 
 
-def check(directory: Path) -> None:
+def check(directory: Path, main: Path = MAIN_CASE) -> None:
     shots = seq.load_json(directory / "cases.json")["jobs"][0]["shots"]
     model = seq.load_json(directory / "prediction.json").get("billing_model", "v1")
-    files = build_files(MAIN_CASE, shots, model)
+    files = build_files(main, shots, model)
     present = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
     if present != set(files):
         raise ValueError(f"{directory}: files differ from the build: {sorted(present ^ set(files))}")
     for rel, text in files.items():
         if (directory / rel).read_text(encoding="utf-8") != text:
             raise ValueError(f"{directory}/{rel} differs from the build")
-    print(f"{directory}: matches the build from {MAIN_CASE.name}")
+    print(f"{directory}: matches the build from {main.name}")
 
 
 def judge(p0: float, band: list[float], shots: int) -> dict[str, Any]:
@@ -341,7 +341,10 @@ def main() -> int:
     bd = sub.add_parser("build")
     bd.add_argument("directory", type=Path)
     bd.add_argument("--shots", type=int, default=SHOTS)
-    sub.add_parser("check").add_argument("directory", type=Path)
+    bd.add_argument("--main", type=Path, default=MAIN_CASE, help="the main case directory to copy the circuits from")
+    ck = sub.add_parser("check")
+    ck.add_argument("directory", type=Path)
+    ck.add_argument("--main", type=Path, default=MAIN_CASE)
     an = sub.add_parser("analyze")
     an.add_argument("run_dir", type=Path)
     an.add_argument("--out", type=Path, required=True)
@@ -351,9 +354,9 @@ def main() -> int:
     if args.self_test:
         print(self_test())
     elif args.command == "build":
-        write(args.directory, MAIN_CASE, args.shots)
+        write(args.directory, args.main, args.shots)
     elif args.command == "check":
-        check(args.directory)
+        check(args.directory, args.main)
     elif args.command == "analyze":
         analysis = analyze(args.run_dir, args.mock)
         text = dump(analysis)

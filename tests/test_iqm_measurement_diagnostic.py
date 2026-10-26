@@ -69,3 +69,23 @@ def test_drive_dephasing_scan_keeps_the_retained_model() -> None:
     ]
     if not all(base["sum_squares"] < value for value in scaled):
         raise AssertionError("a scaled dephasing rate fits the five corrected circuits better than the calibrated one")
+
+
+def test_the_question_names_the_qubits_it_builds() -> None:
+    if case.list_of(["QB1", "QB2", "QB3"]) != "QB1, QB2 and QB3":
+        raise AssertionError(case.list_of(["QB1", "QB2", "QB3"]))
+
+
+@pytest.mark.audit
+def test_build_refuses_qubits_other_than_the_window_probes() -> None:
+    retained = case.seq.load_json(case.ROOT / "results/iqm/cases" / case.CASE / case.EXCERPT)
+    other = {**retained, "qubits": {q: retained["qubits"][q] for q in list(retained["qubits"])[:5]}}
+    try:
+        case.build_files(other)
+    except ValueError as error:
+        if "window probe" not in str(error):
+            raise AssertionError(str(error)) from error
+    else:
+        raise AssertionError("a build on other qubits was accepted")
+    if "QB5, QB7, QB11, QB14, QB17 and QB19" not in case.build_files(retained)["cases.json"]:
+        raise AssertionError("the question lost the diagnosed qubits")

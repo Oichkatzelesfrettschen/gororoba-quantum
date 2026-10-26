@@ -111,6 +111,16 @@ errors of its model on all five usable qubits (z = -1.63, -1.96, -2.64, +2.71 an
 QB19), so the main case is rebuilt with pi/2-pair steps. The compiled schedule was 1.0076 times the QPU-calibrated
 prediction, inside the 1 % tolerance.
 
+**Correction to the stated rule.** The decision rule above, as preregistered, says that L runs over qubits and that the
+rebuild criterion holds "on all six qubits". The code approved for the run (commit `d828935`,
+`evaluate_qubit` and `diagnose`) marks a qubit unusable below `READOUT_CONTRAST_FLOOR` (0.5) and builds L and the
+rebuild criterion over the usable qubits only; the prose omitted that exclusion, and the code is what ran. Applied as
+written, QB11 enters L (raw D4 z +24.1, raw D2 z +24.9, corrected D4 z +1.70, evaluated with the floor lowered to 0.3,
+`docs/local/reviews/pr524_diag_qb11.py`), the readout-loss test passes on it, and the verdict reads `readout_loss`
+instead of `no_excess`. The rebuild criterion holds either way (QB11's corrected D6 z is +1.45). The Results above
+report the rule the code ran; QB11's collapse (readout scale 0.384, about 4 us of T1 in situ) is the reason it is
+excluded, and the main case's selection removes it for that measured failure.
+
 Raw P(0) of the final key:
 
 | qubit | D1 | D2 | D3 | D4 | D5 | D6 | D7 | D8 |

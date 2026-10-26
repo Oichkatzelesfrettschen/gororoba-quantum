@@ -448,11 +448,21 @@ def stamp_of(record: dict[str, Any], status: str) -> dt.datetime | None:
     return None
 
 
+def ceiling_seconds(max_credits: float, price: float) -> int:
+    """The billed seconds that max_credits buy at the price per second."""
+    return math.floor(max_credits / price + 1e-9)
+
+
+def cancel_threshold_seconds(max_credits: float, price: float) -> float:
+    """The runtime at which ceiling_breach cancels a running job: the billed seconds less CANCEL_MARGIN."""
+    return float(ceiling_seconds(max_credits, price)) - CANCEL_MARGIN
+
+
 def ceiling_breach(record: dict[str, Any], max_credits: float, price: float, now: dt.datetime) -> str | None:
     """Why a nonterminal priced job must be cancelled to stay within max_credits, or None."""
     if price <= 0:
         return None
-    seconds = math.floor(max_credits / price + 1e-9)
+    seconds = ceiling_seconds(max_credits, price)
     # The billed runtime is compilation plus execution seconds: the wait between them, post-processing and the
     # terminal notification after execution_ended are not counted, so an ended execution has nothing left to stop.
     if stamp_of(record, "execution_ended") is not None:

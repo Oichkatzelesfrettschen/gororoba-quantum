@@ -9742,7 +9742,7 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "One job at 1000 shots on six qubits; the models use the calibration and an assumed initialization excitation, and the readings below 3 standard errors are descriptive.",
+      "boundary": "One job at 1000 shots on six qubits; the models use the calibration and an assumed initialization excitation, and the readings below 3 standard errors are descriptive. The stated decision rule omitted the readout-scale exclusion that the approved code applied (usable qubits only, scale at least 0.5); applied as written, QB11 (scale 0.384) enters L, the verdict reads readout_loss instead of no_excess, and the rebuild criterion holds either way (QB11 corrected D6 z +1.45).",
       "evidence": [
         {
           "path": "results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic/results.json",
@@ -9915,7 +9915,7 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Exploratory observation without a mechanism. The effect may come from a readout tail or from measurement-induced relaxation during the idle, and a tail slower than 2 us stays unexcluded. The tail gap carries its delta-method standard error with no gate-model floor; the settle and measure arms play identical pulses.",
+      "boundary": "Exploratory observation without a mechanism. The effect may come from a readout tail or from measurement-induced relaxation during the idle, and a tail slower than 2 us stays unexcluded. The tail gap carries its delta-method standard error with no gate-model floor; the settle and measure arms play identical pulses. The preregistration text was inconsistent about the settle arm (conditioned on a departure, decides nothing, or feeds the device verdict); the reported attributed comes from the code's unconditional per-qubit and device rule, and no qubit departs in this run, so under the conditional reading the gap would be descriptive only.",
       "evidence": [
         {
           "path": "results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching/results.json",

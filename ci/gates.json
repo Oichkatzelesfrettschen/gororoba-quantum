@@ -3882,6 +3882,25 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py check results/iqm/cases/measurement-sequence-pinching --calibration-dir results/iqm/calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684",
+   "name": "core-711",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence_aer_check.py run results/iqm/cases/measurement-sequence-pinching --calibration-dir results/iqm/calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684 | cmp - results/iqm/measurement_sequence_pinching_aer_check.json",
+   "name": "core-712",
+   "seconds": 8.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_aer_check.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py analyze results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0 results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate --out results/iqm/signed_kernel_null_retest_analysis.json --replay",
    "name": "core-643",
    "seconds": 20.0,

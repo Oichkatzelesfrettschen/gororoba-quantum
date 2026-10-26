@@ -20,20 +20,23 @@ each ending with the 2 us pre-readout delay and a final measure keyed `f` over a
 Every circuit's ideal P(0) is cos(4 pi/9)^2 = 0.0302. The prediction is the Bloch model of scripts/
 iqm_measurement_sequence.py with the calibration's T1, T2, prx error and readout errors.
 
-Preregistered decision rule (diagnose), per qubit with binomial standard errors propagated by the delta method through
+Decision rule as the approved code ran it (diagnose; the first statement of the rule omitted the readout-scale
+exclusion, see docs/design/iqm-garnet-measurement-sequence-diagnostic.md, Results). A qubit whose readout scale, the
+D2 minus D1 P(1), lies below seq.READOUT_CONTRAST_FLOOR (0.5) is unusable and takes no part in L, the cause tests or
+the rebuild criterion. Per usable qubit, with binomial standard errors propagated by the delta method through
 the in-situ correction and a prx-error systematic of 100 % of the calibrated value. D1 and D2 correct D4 to D8: the
 corrected z is (Zobs - o)/s with o and s from the pair, and every corrected prediction a + b q is the response to
 the initial z plus the response to the relaxation source times q = 1/(1 - 2 p) at the planning excitation p = 0.068.
 z is (measured - model)/SE.
 
-- L is the set of qubits whose raw D4 P(0) exceeds the raw model by more than Z_DECIDE = 3 standard errors.
+- L is the set of usable qubits whose raw D4 P(0) exceeds the raw model by more than Z_DECIDE = 3 standard errors.
 - Readout-loss cause: on every qubit of L, D2's raw P(0) exceeds the model's (calibration e10 and T1 decay over the
   idle) by more than 3 standard errors and the corrected D4 lies within 3 standard errors of its model.
 - Phase cause: on every qubit of L, D2 does not exceed its model by 3 standard errors, the corrected D4 exceeds its
   model by more than 3, the corrected D5 lies within 3, and the pooled corrected excess ranks D4, D7, D8 without a
   significant inversion (D4 - D7 and D7 - D8 not below -3 standard errors).
-- Rebuild criterion: the corrected D6 lies within 3 standard errors of its model on all six qubits, and the main case
-  is rebuilt with pi/2-pair steps.
+- Rebuild criterion: the corrected D6 lies within 3 standard errors of its model on all usable qubits, and the main
+  case is rebuilt with pi/2-pair steps.
 - No excess: L is empty. Neither: L is not empty and neither pattern holds; the readings are reported without a choice.
 
 Mock outcomes are random bits and never enter the analysis (analyze --mock only exercises the pipeline).
@@ -59,7 +62,7 @@ from scipy.linalg import expm
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
 import iqm_measurement_sequence as seq  # noqa: E402
-from iqm_jobs import CANCEL_MARGIN, CASE_SCHEMA, JOB_SECONDS, dump, run_facts  # noqa: E402
+from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, cancel_threshold_seconds, dump, run_facts  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
@@ -69,7 +72,6 @@ QC = "garnet"
 QCS = ["garnet:mock", "garnet"]
 JOB = "diagnostic"
 EXCERPT = "calibration/excerpt.json"
-MAIN_CASE = ROOT / "results/iqm/cases" / seq.CASE
 PROBE_CASE = ROOT / "results/iqm/cases/measurement-window-qpu-probe"
 OPTIONS: dict[str, Any] = {"heralding_mode": "none", "active_reset_cycles": 1}
 SHOTS = 1000
@@ -227,15 +229,26 @@ def device_of(cal: dict[str, float], **over: Any) -> dict[str, Any]:
     return device
 
 
+def diagnosed_qubits() -> list[str]:
+    """The qubits of the window probe's unitary-n16 circuit, which D4 repeats."""
+    probe = seq.load_json(PROBE_CASE / "circuits/unitary-n16-s0p.json")
+    return sorted(seq.qubits_of(probe), key=lambda q: int(q[2:]))
+
+
+def list_of(qubits: list[str]) -> str:
+    return f"{', '.join(qubits[:-1])} and {qubits[-1]}"
+
+
 def excerpt_of(calibration_dir: Path) -> dict[str, Any]:
-    """The six qubits of the main case with their T1, T2, prx error and readout errors from one calibration set."""
+    """The six qubits of the window probe's circuit (the qubits D4 must reproduce instruction for instruction) with
+    their T1, T2, prx error and readout errors from one calibration set."""
     metrics = seq.load_json(calibration_dir / "metrics.json")
     architecture = seq.load_json(calibration_dir / "dynamic-quantum-architecture.json")
     identity = architecture["calibration_set_id"]
     if metrics.get("describes_id") != identity:
         raise ValueError(f"{calibration_dir}: the metrics and the architecture describe different sets")
     values = {o["dut_field"]: o["value"] for o in metrics["observations"] if not o.get("invalid")}
-    qubits = sorted(seq.load_json(MAIN_CASE / seq.EXCERPT)["qubits"], key=lambda q: int(q[2:]))
+    qubits = diagnosed_qubits()
     coupled = {
         frozenset(locus) for impl in architecture["gates"]["cz"]["implementations"].values() for locus in impl["loci"]
     }
@@ -283,7 +296,7 @@ def billing(circuits: list[dict[str, Any]], shots: int) -> dict[str, Any]:
     schedule = shots * sum(seq.estimator_shot_seconds(c) for c in circuits)
     execution = schedule + seq.EXECUTION_FIXED_SECONDS + seq.EXECUTION_PER_CIRCUIT_SHOT_SECONDS * len(circuits) * shots
     worst = execution + seq.EXECUTION_FIT_RESIDUAL_SECONDS + seq.RUNTIME_OVER_EXECUTION_SECONDS
-    threshold = MAX_CREDITS[QC] / PRICE[QC] - CANCEL_MARGIN
+    threshold = cancel_threshold_seconds(MAX_CREDITS[QC], PRICE[QC])
     return {
         "shots": shots,
         "circuits": len(circuits),
@@ -328,6 +341,8 @@ def build_files(excerpt: dict[str, Any]) -> dict[str, str]:
     if excerpt["couplers_among_qubits"]:
         raise ValueError(f"the qubits share couplers {excerpt['couplers_among_qubits']}")
     qubits = sorted(excerpt["qubits"], key=lambda q: int(q[2:]))
+    if qubits != diagnosed_qubits():
+        raise ValueError(f"D4 repeats the window probe on {diagnosed_qubits()}, not on {qubits}")
     circuits = [circuit_of(name, qubits) for name in NAMES]
     files = {f"circuits/{c['name']}.json": dump(c) for c in circuits}
     prediction = predict(excerpt, circuits)
@@ -345,7 +360,7 @@ def build_files(excerpt: dict[str, Any]) -> dict[str, str]:
             "schema": CASE_SCHEMA,
             "case": CASE,
             "question": (
-                "Is the excess of the N = 16 unitary circuit over its model on QB5, QB7, QB11, QB14, QB17 and QB19 "
+                f"Is the excess of the N = 16 unitary circuit over its model on {list_of(qubits)} "
                 "an axis phase per small-angle prx pulse or |1> loss during the pre-readout idle and the readout, "
                 "and do pi/2-pair steps avoid it?"
             ),

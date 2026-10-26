@@ -235,3 +235,69 @@ def test_selector_reproduces_the_retained_analyses_byte_for_byte() -> None:
         text = case.dump(case.analyze(run, gate_model=gate_model))
         if (root / name).read_text(encoding="utf-8") != text:
             raise AssertionError(f"{gate_model}: {name} differs from the recomputation")
+
+
+def test_a_fresh_build_is_admissible_under_the_corrected_billing() -> None:
+    files = case.build_files(synthetic_excerpt())
+    job = case.json.loads(files["cases.json"])["jobs"][0]
+    bill = case.json.loads(files["prediction.json"])["billing"]
+    if job["max_credits"] != case.MAX_CREDITS or bill["cancel_margin_seconds"] < case.RUNTIME_MARGIN_SECONDS:
+        raise AssertionError(f"{job['max_credits']} {bill}")
+    retained = case.build_files(synthetic_excerpt(), "v1")
+    if case.json.loads(retained["cases.json"])["jobs"][0]["max_credits"] != case.RETAINED_MAX_CREDITS:
+        raise AssertionError("a v1 build does not carry the retained ceiling")
+
+
+def test_the_build_threshold_floors_like_collect() -> None:
+    from datetime import UTC, datetime, timedelta
+
+    import iqm_jobs
+
+    circuits = case.circuits_of(["QB1"])
+    bill = case.billing(circuits, case.SHOTS, "v2", max_credits=5.71)
+    start = datetime(2026, 10, 26, tzinfo=UTC)
+    record = {"timeline": [{"status": "compilation_started", "timestamp": start.isoformat()}]}
+    at = lambda seconds: iqm_jobs.ceiling_breach(record, 5.71, 0.5, start + timedelta(seconds=seconds))  # noqa: E731
+    threshold = bill["cancel_threshold_seconds"]
+    if threshold != 10.0 or at(threshold) is None or at(threshold - 0.01) is not None:
+        raise AssertionError(f"build threshold {threshold} against collect")
+    if abs(bill["cancel_margin_seconds"] - (threshold - bill["worst_case_runtime_seconds"])) > 1e-12:
+        raise AssertionError("the build margin is not measured from the collect threshold")
+
+
+def test_tally_counts_match_a_shot_by_shot_loop() -> None:
+    qubits = ["QB1", "QB2"]
+    circuit = case.circuit("measure-n2-s0p", qubits, "measure", 2, 1)
+    shots = 7
+    keys = ["m0", "m1", case.FINAL_KEY]
+    result = {k: [[(shot + i + j) % 2 for j in range(2)] for shot in range(shots)] for i, k in enumerate(keys)}
+    row = case.tally([circuit], [result])["measure-n2-s0p"]
+    expected_final = {q: [0, 0] for q in qubits}
+    for shot in result[case.FINAL_KEY]:
+        for position, q in enumerate(qubits):
+            expected_final[q][shot[position]] += 1
+    expected_flips = {
+        q: [sum(1 for x, y in zip(result["m0"], result["m1"], strict=True) if x[p] != y[p]), shots]
+        for p, q in enumerate(qubits)
+    }
+    if row["final"] != expected_final or row["flips"] != expected_flips or row["shots"] != shots:
+        raise AssertionError(f"{row}")
+    bad = {**result, case.FINAL_KEY: [[0, 2]] * shots}
+    try:
+        case.tally([circuit], [bad])
+    except ValueError as error:
+        if "outcome 2" not in str(error):
+            raise AssertionError(str(error)) from error
+    else:
+        raise AssertionError("an outcome of 2 is counted")
+
+
+@pytest.mark.audit
+def test_retained_calibration_set_reproduces_the_selection_and_the_case() -> None:
+    root = case.ROOT / "results/iqm"
+    folder = root / "calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684"
+    excerpt = case.load_json(root / "cases" / case.CASE / case.EXCERPT)
+    for name, digest in excerpt["source_sha256"].items():
+        if case.sha256((folder / name).read_bytes()) != digest:
+            raise AssertionError(f"{name} differs from the digest the case excerpt records")
+    case.check(root / "cases" / case.CASE, folder)

@@ -21,9 +21,11 @@ signed circuits of each (arm, N) run in the order +, -, -, + (docs/notes/iqm/REA
 - settle (N = 16 only): the measure arm with a `delay` of SETTLE_SECONDS = 2.0 us after each mid-circuit measure,
   several ring-down times of the readout resonator (docs/notes/ibm_quantum/heron-r2-readout-resonator.md records no
   Garnet figure; docs/notes/quantum_inspire/tuna-17.md, "Readout ring-down results", holds the repository's ring-down
-  design). Where a qubit departs below its prediction, the settle gap (measured settle P0 minus the settle
-  prediction at the per-step z loss the measure arm implies) within Z_DECIDE standard errors of zero is a match that
-  excludes a readout tail as the cause, and at least Z_DECIDE above zero attributes part of the departure to it.
+  design). For every informative qubit, departing or not, the settle gap (measured settle P0 minus the settle
+  prediction at the per-step z loss the measure arm implies) is tested: within Z_DECIDE standard errors of zero it is a
+  `match`, at least Z_DECIDE above zero it is `tail_attributed`, and below -Z_DECIDE `settle_below_measure`. The
+  device settle verdict follows the device rule below (at least DEVICE_QUBITS tail_attributed qubits, or a pooled gap
+  z at least Z_DECIDE), whether or not the departure test fires.
   A readout-induced frequency shift that outlasts the measure enters only during the next prx, at second order in
   delta*tau; for tau <= 100 ns and delta <= 2 pi 100 kHz it moves the N = 16 flip probability by about 2.5e-6 per
   step, so a departure larger than that bound needs this control to be read as measurement-induced.
@@ -106,7 +108,7 @@ of three times the calibration must never read `attributed`; the same model erro
 four departure standard errors added must read `attributed`. The `detect` subcommand reports the smallest injected
 departure that reads `attributed` per model error.
 
-Descriptive outputs, deciding nothing: the settle gap, the readout-history diagnostic, the delay arm's measured and
+Descriptive outputs, deciding nothing: the readout-history diagnostic, the delay arm's measured and
 modeled (T1 and T2) P0 per N, the delay minus unitary difference at N = 16, the per-N measure-arm deficit against
 the ideal, the fit P0(N) = (1 + ((1 - 2 eps) cos(THETA/N))^N)/2 for eps per qubit (weighted least squares, no
 randomness) and the same fit against the relaxed model, and the transition rate between consecutive mid-circuit
@@ -138,7 +140,7 @@ from scipy.optimize import minimize_scalar
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
-from iqm_jobs import CANCEL_MARGIN, CASE_SCHEMA, JOB_SECONDS, dump, run_facts  # noqa: E402
+from iqm_jobs import CASE_SCHEMA, JOB_SECONDS, cancel_threshold_seconds, dump, run_facts  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
 from parallel import ordered_map  # noqa: E402
@@ -263,7 +265,11 @@ BILLING_V2_JOBS = (
 )
 # collect cancels a run once its runtime comes within iqm_jobs.CANCEL_MARGIN of the seconds max_credits buys, so the
 # worst-case runtime stays at least RUNTIME_MARGIN_SECONDS below that threshold.
-MAX_CREDITS = {"garnet": 5.0, "garnet:mock": 0.0}
+# The ceiling of a fresh build: the v2 billing fit puts the 57-circuit case at a 9.409 s worst case, which needs a
+# cancel threshold of 10.409 s, so 6.0 credits (an 11.0 s threshold, a multiple of the price). The retained case ran
+# under RETAINED_MAX_CREDITS and the v1 fit, and a rebuild of it reads those.
+MAX_CREDITS = {"garnet": 6.0, "garnet:mock": 0.0}
+RETAINED_MAX_CREDITS = {"garnet": 5.0, "garnet:mock": 0.0}
 PRICE = {"garnet": 0.5, "garnet:mock": 0.0}
 RUNTIME_MARGIN_SECONDS = 1.0
 GARNET_MAX_CIRCUITS = 100
@@ -452,8 +458,17 @@ def billing_model_of(prediction: dict[str, Any]) -> str:
     return "v2" if "execution_per_mid_record_seconds" in prediction.get("billing_fit", {}) else "v1"
 
 
-def billing(circuits: list[dict[str, Any]], shots: int, model: str = "v2") -> dict[str, Any]:
-    """The predicted execution and worst-case runtime of the job from a fit over retained QPU jobs (BILLING_MODELS)."""
+def ceiling_of(model: str) -> dict[str, float]:
+    """The max_credits of a case built under a billing model: the retained case's under v1, a fresh build's under v2."""
+    return RETAINED_MAX_CREDITS if model == "v1" else MAX_CREDITS
+
+
+def billing(
+    circuits: list[dict[str, Any]], shots: int, model: str = "v2", max_credits: float | None = None
+) -> dict[str, Any]:
+    """The predicted execution and worst-case runtime of the job from a fit over retained QPU jobs (BILLING_MODELS),
+    against the cancel threshold that iqm_jobs.ceiling_breach enforces for `max_credits` (default: the ceiling of
+    that model)."""
     fit = BILLING_MODELS[model]
     schedule = shots * sum(estimator_shot_seconds(c) for c in circuits)
     records = shots * sum(mid_measures(c) for c in circuits)
@@ -461,7 +476,8 @@ def billing(circuits: list[dict[str, Any]], shots: int, model: str = "v2") -> di
         schedule + fit["fixed"] + fit["per_circuit_shot"] * len(circuits) * shots + fit["per_mid_record"] * records
     )
     worst = execution + fit["residual"] + fit["runtime_over"]
-    threshold = MAX_CREDITS[QC] / PRICE[QC] - CANCEL_MARGIN
+    ceiling = ceiling_of(model)[QC] if max_credits is None else max_credits
+    threshold = cancel_threshold_seconds(ceiling, PRICE[QC])
     return {
         "shots": shots,
         "circuits": len(circuits),
@@ -1195,30 +1211,36 @@ def contexts_of(
 def tally(circuits: list[dict[str, Any]], results: list[dict[str, Any]]) -> dict[str, Any]:
     """Per circuit name: shots, the final readout's counts of states 0 and 1 per qubit, and for circuits with
     mid-circuit measures the shots whose consecutive mid-circuit outcomes differ, summed over its consecutive pairs,
-    per qubit."""
+    per qubit. The counts are numpy reductions over the shot-by-qubit outcome arrays, which give the integers of a
+    shot-by-shot loop."""
     out: dict[str, Any] = {}
     for c, result in zip(circuits, results, strict=True):
         qubits = qubits_of(c)
         final = result[FINAL_KEY]
-        row: dict[str, Any] = {"shots": len(final), "final": {}}
+        shots = len(final)
+        outcomes = np.asarray(final, dtype=np.int64).reshape(shots, len(qubits)) if shots else None
+        row: dict[str, Any] = {"shots": shots, "final": {}}
         for position, qubit in enumerate(qubits):
-            counts = [0, 0]
-            for shot in final:
-                if shot[position] not in (0, 1):
-                    raise ValueError(f"{c['name']}: outcome {shot[position]} is not a state 0 or 1")
-                counts[shot[position]] += 1
-            row["final"][qubit] = counts
+            if outcomes is None:
+                row["final"][qubit] = [0, 0]
+                continue
+            column = outcomes[:, position]
+            invalid = np.flatnonzero((column != 0) & (column != 1))
+            if invalid.size:
+                raise ValueError(f"{c['name']}: outcome {final[int(invalid[0])][position]} is not a state 0 or 1")
+            ones = int(column.sum())
+            row["final"][qubit] = [shots - ones, ones]
         mids = [o["args"]["key"] for o in c["instructions"] if o["name"] == "measure" and o["args"]["key"] != FINAL_KEY]
         if len(mids) > 1:
+            if any(len(result[key]) != len(result[mids[0]]) for key in mids):
+                raise ValueError(f"{c['name']}: the mid-circuit keys return different shot counts")
+            arrays = [np.asarray(result[key], dtype=np.int64).reshape(len(result[key]), len(qubits)) for key in mids]
             row["flips"] = {}
             for position, qubit in enumerate(qubits):
                 flips = sum(
-                    1
-                    for a, b in zip(mids, mids[1:], strict=False)
-                    for x, y in zip(result[a], result[b], strict=True)
-                    if x[position] != y[position]
+                    int((a[:, position] != b[:, position]).sum()) for a, b in zip(arrays, arrays[1:], strict=False)
                 )
-                row["flips"][qubit] = [flips, len(final) * (len(mids) - 1)]
+                row["flips"][qubit] = [flips, shots * (len(mids) - 1)]
         out[c["name"]] = row
     return out
 
@@ -1572,7 +1594,7 @@ def build_files(excerpt: dict[str, Any], model: str = "v2") -> dict[str, str]:
         raise ValueError("the job exceeds Garnet's circuits or instructions per job")
     files = {f"circuits/{c['name']}.json": dump(c) for c in circuits}
     bill = billing(circuits, SHOTS, model)
-    if bill["cancel_margin_seconds"] < RUNTIME_MARGIN_SECONDS or bill["credits"] > MAX_CREDITS[QC]:
+    if bill["cancel_margin_seconds"] < RUNTIME_MARGIN_SECONDS or bill["credits"] > ceiling_of(model)[QC]:
         raise ValueError(
             f"worst-case runtime {bill['worst_case_runtime_seconds']:.3f} s leaves "
             f"{bill['cancel_margin_seconds']:.3f} s below the {bill['cancel_threshold_seconds']} s cancel threshold "
@@ -1585,7 +1607,7 @@ def build_files(excerpt: dict[str, Any], model: str = "v2") -> dict[str, str]:
         # The job compiles against the calibration set the case was planned from, or fails if it is gone.
         "options": {**OPTIONS, "calibration_set_id": {QC: excerpt["calibration_set"]}},
         "expected_seconds": round(bill["execution_seconds"], 3),
-        "max_credits": MAX_CREDITS,
+        "max_credits": ceiling_of(model),
     }
     files["prediction.json"] = dump(predict(excerpt, circuits, model))
     files["cases.json"] = dump(
@@ -1631,15 +1653,19 @@ def write(directory: Path, calibration_dir: Path) -> None:
     )
 
 
-def check(directory: Path) -> None:
-    files = build_files(load_json(directory / EXCERPT), billing_model_of(load_json(directory / "prediction.json")))
+def check(directory: Path, calibration_dir: Path | None = None) -> None:
+    """The retained case against its build: from its own calibration excerpt, or with `calibration_dir` (the retained
+    calibration set the case was selected from) from the set itself, which also re-derives the qubit selection."""
+    excerpt = load_json(directory / EXCERPT) if calibration_dir is None else excerpt_of(calibration_dir)
+    files = build_files(excerpt, billing_model_of(load_json(directory / "prediction.json")))
     present = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
     if present != set(files):
         raise ValueError(f"{directory}: files differ from the build: {sorted(present ^ set(files))}")
     for rel, text in files.items():
         if (directory / rel).read_text(encoding="utf-8") != text:
             raise ValueError(f"{directory}/{rel} differs from the build")
-    print(f"{directory}: matches the build from its retained calibration excerpt")
+    source = "its retained calibration excerpt" if calibration_dir is None else str(calibration_dir)
+    print(f"{directory}: matches the build from {source}")
 
 
 def compiled_schedule(
@@ -2363,9 +2389,9 @@ def self_test(with_sweep: bool = True) -> str:
     fit_text = check_billing_fit()
     bill = billing(circuits, SHOTS, model)
     expect(prediction["billing"] == bill, "prediction.json carries another billing")
-    expect(job["max_credits"] == {"garnet": 5.0, "garnet:mock": 0.0}, f"max_credits {job['max_credits']}")
+    expect(job["max_credits"] == ceiling_of(model), f"max_credits {job['max_credits']}")
     expect(bill["cancel_margin_seconds"] >= RUNTIME_MARGIN_SECONDS, f"cancel margin {bill['cancel_margin_seconds']}")
-    expect(bill["credits"] <= 5.0 and bill["billed_seconds"] <= 10, f"billing {bill}")
+    expect(bill["credits"] <= ceiling_of(model)[QC] and bill["billed_seconds"] <= 10, f"billing {bill}")
     expect(
         abs(job["expected_seconds"] - bill["execution_seconds"]) < 5e-4,
         "expected_seconds is not the predicted execution",
@@ -2604,7 +2630,11 @@ def main() -> int:
     bd = sub.add_parser("build")
     bd.add_argument("directory", type=Path)
     bd.add_argument("--calibration-dir", type=Path, default=CALIBRATION_DIR)
-    sub.add_parser("check").add_argument("directory", type=Path)
+    ck = sub.add_parser("check")
+    ck.add_argument("directory", type=Path)
+    ck.add_argument(
+        "--calibration-dir", type=Path, help="rebuild from this retained calibration set, selection included"
+    )
     detect_parser = sub.add_parser("detect", help="the minimum detectable departure per device with a gate-model error")
     sub.add_parser("project", help="the diagnostic's pi/2-pair residuals projected to the case's unitary-arm guard")
     sw = sub.add_parser("sweep", help="the estimator sweep over true devices off the planning point")
@@ -2623,7 +2653,7 @@ def main() -> int:
     elif args.command == "build":
         write(args.directory, args.calibration_dir)
     elif args.command == "check":
-        check(args.directory)
+        check(args.directory, args.calibration_dir)
     elif args.command == "detect":
         print(dump(detect(args.gate_model)), end="")
     elif args.command == "project":

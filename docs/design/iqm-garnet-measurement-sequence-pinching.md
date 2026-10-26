@@ -7,7 +7,11 @@ built by `scripts/iqm_measurement_sequence.py build DIR [--calibration-dir DIR]`
 preregistered decisions, and `prediction.json`, bound by digest into `cases.json`, holds the planning values and the
 standard errors the margins below come from.
 
-calibration set: `be070414-7624-4943-ac7e-1e2678f05684` (created 2026-10-25T16:45:12Z, read 2026-10-25)
+calibration set: `be070414-7624-4943-ac7e-1e2678f05684` (created 2026-10-25T16:45:12Z, read 2026-10-25), retained read-only
+under [results/iqm/calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684](../../results/iqm/calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684/):
+its `set.json`, `metrics.json` and `dynamic-quantum-architecture.json` carry the three digests of the case excerpt's
+`source_sha256` (the API still served the set on 2026-10-26, and the digests match byte for byte). Gate `core-711`
+re-derives the qubit selection and the whole case from it, and `core-712` replays the Aer cross-check below on it.
 
 The built case pins that set in `calibration/excerpt.json`. Garnet refuses a job pinned to a retired set, so the
 orchestrator rebuilds the case with `--calibration-dir` pointing at a directory holding the then live `set.json`,
@@ -25,7 +29,7 @@ N = 1, 2, 4, 8 and 16. Four arms run:
 | measure | 1, 2, 4, 8, 16 | `measure`, own key per step | 0.0302, 0.5151, 0.6722, 0.8040, 0.8914 | the object under test |
 | unitary | 16 | none; N rotations back to back | 0.0302 | mutation null: the measurements removed |
 | delay | 1, 2, 4, 8, 16 | `delay` of 1.096 us | 0.0302 | elapsed-time control, descriptive |
-| settle | 16 | `measure`, then `delay` of 2.0 us | 0.8914 | readout-tail control for the departure decision |
+| settle | 16 | `measure`, then `delay` of 2.0 us | 0.8914 | readout-tail control; its gap has its own per-qubit and device verdict |
 
 The unitary rotations compose to one rotation of THETA, so the N = 16 contrast measure minus unitary is the
 measurement's own action, ideally 0.8612. Every step of every arm at every N is built from two prx(pi/2) pulses (see
@@ -45,7 +49,7 @@ mock twin returns random bits. The question concerns the device's readout, so on
 The six qubits come from the live calibration set by one rule, which reads calibration data and measured failures
 only. The recorded rule takes the six qubits of smallest e01 + e10 among those whose T1 is at least the set's median
 (37.96 us), in that order, skipping any that shares a cz coupler with one already taken, and extends by the uncoupled
-remainder in decreasing T1 when fewer qualify. Its output on set `be070414` with no other condition is QB5, QB7, QB11,
+remainder in decreasing T1 when fewer qualify. Its output on set `be070414` (re-derived by `check --calibration-dir` on the retained set) with no other condition is QB5, QB7, QB11,
 QB14, QB17 and QB19. Two conditions remove qubits from the candidates:
 
 - **A measured failure** (`EXCLUDED_QUBITS`): QB11. The [diagnostic job](iqm-garnet-measurement-sequence-diagnostic.md#results)
@@ -180,7 +184,7 @@ error.
   runtime exceeded execution by 0.04 to 0.411 s, and billing is `ceil(runtime)` with no fixed 1.6 s term. This fit held no job with many mid-circuit
   measures and underpredicted the run by 3.55 s (Results); the corrected fit is in the
   [IQM notes](../notes/iqm/README.md#cost), and its worst case for these circuits, 9.41 s, would need a `max_credits`
-  of 5.71.
+  of 6.0 (a fresh build carries it; the retained case keeps 5.0 and its v1 prediction).
 - **Prediction:** compiled schedule 3.738 s (the QPU-calibrated schedule, 1.246 ms per shot over the 57 circuits, the
   pairs adding 376 layers of 40 ns, 15 us, to each shot), plus 0.141 s plus 57 x 3000 x 7.967 us = 1.362 s gives 5.241 s of
   execution; the worst-case runtime adds 0.17 s of fit residual and 0.42 s of runtime over execution, 5.831 s, billed as
@@ -241,7 +245,7 @@ and pooled rules skip it. The device reads `uninformative`, and attributes nothi
 remain. A gate so far from its model that the unitary arm leaves P0 near 0.5 (the broken-gate sweep row) then reads
 `uninformative` and not `none`, which a clean null also reads.
 
-Reported without a decision: the settle gap; the readout-history diagnostic (the N = 1 measure arm against the N = 1
+Reported without a decision: the readout-history diagnostic (the N = 1 measure arm against the N = 1
 delay arm, both ideally 0.0302 with equal models, where only the measure arm has a measurement before the final one,
 so a difference of 3 standard errors or more reads as residual readout-history bias, or as a measurement-induced
 transition at N = 1, about 0.94 eps in P0, which the eps fit over N tells apart); the delay arm's measured and
@@ -266,9 +270,10 @@ The settle arm relaxes for 16 x 2.0 us longer, which raises its P0 above the mea
 comparison is model-adjusted. The analysis solves, per qubit, for the per-step z loss at which the Bloch model
 reproduces the measure arm's readout-corrected N = 16 P0, predicts the settle arm's P0 at that loss and the fitted
 T1 and p, and reports the settle arm's measured P0 minus that prediction with its standard error
-(`settle_n16.tail_gap`). When a qubit departs, a gap within 3 standard errors of zero is a match that excludes a
-readout tail as the cause; a gap at least 3 standard errors above zero attributes part of the departure to the tail.
-The raw settle minus measure difference is reported beside it. The arm decides nothing.
+(`settle_n16.tail_gap`). For every informative qubit, whether or not it departs, a gap within 3 standard errors of zero
+is a `match`, a gap at least 3 standard errors above zero is `tail_attributed`, and one below -3 is
+`settle_below_measure`; the device-level `settle_tail_attributed` verdict follows the count and pooled rule above. The
+raw settle minus measure difference is reported beside it. The gap carries no gate-model floor.
 
 ## Compiled-window check
 
@@ -383,7 +388,8 @@ shared error; the prx-x3 and model-error rows are the evidence for that.
 of every qubit through an independent Aer density-matrix simulation built on `scripts/iqm_sim.py`'s calibration noise
 model (prx depolarizing error per qubit) with thermal relaxation on every wait (`iqm_signed_probe.relaxation`), the
 pinch as a Kraus channel, the case's own pulses (the pi/2 pairs with their phases) and the live set's T1 and T2, from
-|0>. Against the Bloch model with the prx error the largest gap over the 72 points is 3e-15 in P0. The check
+|0>. Against the Bloch model with the prx error the largest gap over the 72 points is 8e-15 in P0 (run on the retained
+set `be070414` and replayed by `core-712`; the Aer self-test, `core-702`, covers 12 points of QB1 on the retained snapshot 9069c4ef). The check
 verifies the model's algebra and time accounting, not the estimator, which the sweep covers.
 
 ## Pre-flight stop rule
@@ -411,8 +417,9 @@ qubit is compared with the band of `prediction.json` (`raw_band`), the raw model
 | QB19 | 0.902 to 0.962 | 0.069 to 0.130 | 0.119 to 0.248 | 0.776 to 0.887 |
 
 **Stop rule.** The orchestrator submits the main case only if, on every qubit, each of the four readings lies within 3
-binomial standard errors of its band (the standard error taken at the nearest band edge and the probe's 1000 shots,
-0.010 to 0.015), the ro0 minus ro1 contrast is at least 0.6, and every key (`f` in the first three circuits, `f` and `m0` to
+binomial standard errors of its band (the standard error taken at the nearest band edge and the probe's 1000 shots; it runs
+0.0024 to 0.0142 over the retained bands, because `judge` evaluates p(1 - p)/n at the edge probability and the `ro0` edges
+sit near 0.99), the ro0 minus ro1 contrast is at least 0.6, and every key (`f` in the first three circuits, `f` and `m0` to
 `m15` in measure-16) returns one outcome per shot. `analyze RUN_DIR --out FILE` prints PASS or FAIL per qubit with the
 four readings, the contrast and the largest |z|, and ends with `proceed` or `stop`. A collapse like QB11's (ro1 at 0.52
 against a band of 0.07 to 0.15) or a reading like the first form's QB19 (0.38 against 0.13 to 0.22) fails it. The check
@@ -441,7 +448,11 @@ through the probe's stop rule against QB11's own bands, read FAIL: `ro1` at 0.52
 37 standard errors outside, and the contrast of 0.384 is under the 0.6 floor. `tests/test_iqm_measurement_preflight.py`
 pins it.
 
-**Power.** One standard error of a 1000-shot reading is 0.010 to 0.015 in P(0), against 0.03 to 0.04 at 100 shots. The
+**Power.** The standard error that `judge` applies to a 1000-shot reading runs from 0.0024 (QB5 `ro0`, edge 0.994) to 0.0142
+(QB8 `unitary-16`, edge 0.28) over the retained bands, since it is taken at the nearest band edge: 0.0024 to 0.0094 for
+`ro0`, 0.0072 to 0.0116 for `ro1`, 0.0080 to 0.0132 for `measure-16` and 0.0091 to 0.0142 for `unitary-16`, against 0.03 to
+0.04 at 100 shots. The `ro0` and `ro1` tests are therefore 2 to 4 times tighter than the unitary and measure tests,
+which is why QB14's `ro0` at 0.997 read z +2.69, close to a stop. The
 probe stops a collapse or a gross shift. The gate-model scatter of about 0.03 sits near its 3-standard-error limit, so
 it is a diagnostic and no substitute for the in-job unitary arm.
 
@@ -528,6 +539,14 @@ scope fixed above.
   5.314 s; runtime was 9.035 s, within 1 s of `collect`'s 10 s cancel threshold (+0.035 s from the 9.0 s the
   ceiling allows), billed 10 s, 5.0 credits, leaving 9.00. The billing fit had no job with many mid-circuit measures
   and underpredicted this run by 3.55 s; the corrected fit is in [the IQM notes](../notes/iqm/README.md#cost).
+
+**Correction to the settle-arm rule.** The preregistration text was inconsistent about the settle arm: the module
+docstring conditioned its gap on a departure, two method sections said it was reported without a decision ("the arm
+decides nothing"), and the device-verdict section gave it a count and pooled rule. The code computes the per-qubit
+verdict (`match`, `tail_attributed`, `settle_below_measure`) for every informative qubit unconditionally and the device
+verdict by the count and pooled rule, and the `attributed` above comes from that unconditional rule. No qubit departs
+in this run, so under the conditional reading the gap would be descriptive only. The settle-tail claim is exploratory
+in the registry for that reason, and the method sections now state what the code computes.
 
 **Pre-flight probe.** It printed `proceed`: all six qubits PASS, the largest |z| 2.69 (QB14's `ro0`, 0.997 against the
 band's upper edge). Raw P(0) with the z outside the band in parentheses:
