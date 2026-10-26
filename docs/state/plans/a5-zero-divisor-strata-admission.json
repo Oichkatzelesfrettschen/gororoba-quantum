@@ -167,9 +167,51 @@
     },
     {
       "id": "critical-diff-review",
-      "state": "todo",
+      "state": "done",
       "action": "Run the review-work-critically skill over the full PR diff against origin/main before merge, after the last Codex round.",
-      "acceptance": "Every criticism it raises is fixed on the branch or answered in the PR body with its governing principle."
+      "acceptance": "Every criticism it raises is fixed on the branch or answered in the PR body with its governing principle.",
+      "receipts": [
+        {
+          "result": "review-work-critically (opus) over the full diff found no fatal defect; its proof gap (P3b covering) is closed in the README, the symbolic double-cross identity, stale provenance, plan state, scope, literature, docstring and seed-index findings are fixed; the topology() representative guard is left unchanged to keep result.json bytes.",
+          "observed_at": "2026-10-26T03:00:11+00:00",
+          "revision": "4c2573ae68976277efe8fff51e821ca295f01dce",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/README.md",
+              "sha256": "07844db54b186b1194b7ef465dd8be1072993bc74958e6ac760132d960527adf"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "111cb5bc98660b7a1abee1ff5044ccd066e8000f77a5eda8a6889230e5c77443"
+            }
+          ],
+          "scope_sha256": "6cdc5aba7101c8a92a85c762789dc9e4acd6869335a63faee7c0de41cc6db4fd"
+        }
+      ]
+    },
+    {
+      "id": "verifier-rerun",
+      "state": "done",
+      "action": "Rerun the independent verifier at the head that carries the review and Codex fixes.",
+      "acceptance": "Every stage passes with exit 0 and verification.md pins the rerun digests.",
+      "receipts": [
+        {
+          "result": "verify_strata_independent.py rerun at the review-fix head: every stage passes, exit 0, 153 s on 12 workers; verdicts identical to the first run, double_cross now symbolic, verifier digest recorded in verification.json; result.json byte-identical under --check.",
+          "observed_at": "2026-10-26T03:00:11+00:00",
+          "revision": "4c2573ae68976277efe8fff51e821ca295f01dce",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "4868225961525cd737368e7a1c04f06c9eb9bcccb400014127eee5e139a3d388"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py",
+              "sha256": "19832b9d75f270d69eb6e6c44e04727f9567da2fbf34a591e139044a404c15d3"
+            }
+          ],
+          "scope_sha256": "5493098e1ce285eb14b00b90b4d7a2488ae46bb14dc09e2fd61a75579f00b065"
+        }
+      ]
     }
   ]
 }
