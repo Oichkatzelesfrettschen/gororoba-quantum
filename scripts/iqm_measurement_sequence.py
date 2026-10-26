@@ -77,9 +77,11 @@ by the delta method:
   ratio_c x d, with the ratios of gate_class_ratios computed per qubit from the model at the fitted T1 and q. Each
   qubit's departure standard error therefore adds, in quadrature over the classes, ratio_c x s, with s the root of the
   squared unitary residual plus its squared statistical standard error, at least RAW_MODEL_SCATTER (the measured
-  scatter of the model across qubits; error classes whose unitary-arm shifts cancel would otherwise leave s at the
-  statistical floor while their measure-arm shifts add). A model error that the unitary arm shows widens the
-  departure test and cannot be read as incomplete pinching;
+  scatter of the model across qubits, which keeps s from narrowing when the unitary residual happens to be small).
+  A model error that the unitary arm shows widens the departure test and cannot be read as incomplete pinching.
+  gate_class_ratios evaluates the +1 signed circuit (analyze --gate-model preregistered, the default and the analysis
+  as preregistered) or the response pooled over the four signed circuits (--gate-model sign-pooled): the reflection
+  x -> -x makes the pooled axis-phase response even in the advance, so its ratio is the curvature ratio;
 - informative qubits. A qubit is `uninformative` when its mutation test fails or its widened departure standard
   error exceeds UNINFORMATIVE_SE_FACTOR (2) times its planning value in prediction.json; the count and pooled rules
   skip it, and the device reads `uninformative` when fewer than DEVICE_QUBITS informative qubits remain;
@@ -113,7 +115,8 @@ outcomes against sin(THETA/(2N))^2.
 The case draws no random number; it holds no seed.
 
 Usage: "$PYTHON" scripts/iqm_measurement_sequence.py (build DIR [--calibration-dir DIR] | check DIR
-       | analyze RUN_DIR --out FILE [--replay] [--mock] | sweep [--reduced] | detect | project | --self-test)
+       | analyze RUN_DIR --out FILE [--replay] [--mock] [--gate-model preregistered|sign-pooled]
+       | sweep [--reduced] [--gate-model M] | detect [--gate-model M] | project | --self-test)
 """
 
 from __future__ import annotations
@@ -608,17 +611,22 @@ def pulse_trig(n: int, paired: bool) -> tuple[tuple[tuple[float, float, float, f
 
 
 def gate_errors_trig(
-    n: int, paired: bool, angle_scale: float, advance: float
+    n: int, paired: bool, angle_scale: float, advance: float, sign: int = 1
 ) -> tuple[tuple[tuple[float, float, float, float], ...], ...]:
     """pulse_trig with every pulse angle scaled by angle_scale and every pulse's axis phase advanced by `advance`
-    radians per pulse played so far in the chain (the gate-model error classes of GATE_CLASSES)."""
+    radians per pulse played so far in the chain (the gate-model error classes of GATE_CLASSES), for the signed
+    circuit `sign` (SIGNS). The reflection x -> -x maps the sign -1 chain at advance d onto the sign +1 chain at
+    advance -d, so at advance 0 the two signs are identical for every other error class too, and the +1 chain
+    stands for both; a nonzero advance is odd under the reflection and builds the chain of its own sign."""
+    if advance == 0.0:
+        sign = 1
     if angle_scale == 1.0 and advance == 0.0:
         return pulse_trig(n, paired)
     out = []
     played = 0
     for step in range(n):
         row = []
-        for a, f in step_pulses(n, step, 1, paired):
+        for a, f in step_pulses(n, step, sign, paired):
             a, f = a * angle_scale, f + advance * played
             played += 1
             row.append((math.cos(a), math.sin(a), math.cos(f), math.sin(f)))
@@ -640,6 +648,7 @@ def bloch_z(
     angle_scale: float = 1.0,
     advance: float = 0.0,
     drive_t2_scale: float = 1.0,
+    sign: int = 1,
 ) -> float:
     """Bloch z of the chain from z0 with T1 and Ramsey T2 relaxation, just before the pre-readout delay.
 
@@ -659,7 +668,7 @@ def bloch_z(
     layer = PRX_LAYER_SECONDS
     layer_t2, layer_t1 = math.exp(-drive_t2_scale * layer / t2), math.exp(-layer / t1)
     step_t2, step_t1 = math.exp(-(tau + (drive_t2_scale - 1) * layer) / t2), math.exp(-tau / t1)
-    for pulses in gate_errors_trig(n, paired, angle_scale, advance):
+    for pulses in gate_errors_trig(n, paired, angle_scale, advance, sign):
         for index, (c, s_, cp, sp) in enumerate(pulses):
             dot = (cp * x + sp * y) * (1 - c)
             x, y, z = (
@@ -689,6 +698,7 @@ def corrected_z(
     angle_scale: float = 1.0,
     advance: float = 0.0,
     drive_t2_scale: float = 1.0,
+    sign: int = 1,
 ) -> float:
     """The z that ro0/ro1 correction recovers on the relaxing model: a + b*q, with a the chain's response to the
     initial z and b its response to the relaxation source, both at unit strength.
@@ -697,9 +707,36 @@ def corrected_z(
     initial state enters through q alone, and q = z_eq/(1 - 2 p) is the single combination the T1 series fixes:
     its asymptote is z_eq/(1 - 2 p), whatever the thermal excitation of an idle qubit.
     """
-    errors = {"angle_scale": angle_scale, "advance": advance, "drive_t2_scale": drive_t2_scale}
-    b = bloch_z(arm, n, t1, t2, tau, eps, 0.0, gate_p, paired=paired, **errors)
-    return bloch_z(arm, n, t1, t2, tau, eps, 1.0, gate_p, paired=paired, **errors) - b + b * q
+    b = bloch_z(arm, n, t1, t2, tau, eps, 0.0, gate_p, 1.0, paired, angle_scale, advance, drive_t2_scale, sign)
+    return (
+        bloch_z(arm, n, t1, t2, tau, eps, 1.0, gate_p, 1.0, paired, angle_scale, advance, drive_t2_scale, sign)
+        - b
+        + b * q
+    )
+
+
+def pooled_corrected_z(
+    arm: str,
+    n: int,
+    t1: float,
+    t2: float,
+    tau: float,
+    eps: float,
+    gate_p: float,
+    q: float,
+    angle_scale: float = 1.0,
+    advance: float = 0.0,
+    drive_t2_scale: float = 1.0,
+) -> float:
+    """corrected_z averaged over the four signed circuits (SIGNS), the quantity the experiment pools. At advance 0 the
+    signs coincide (gate_errors_trig) and the +1 value stands for the mean; a nonzero advance is odd under the
+    reflection, so the pooled response is even in it and its first-order term cancels."""
+    if advance == 0.0:
+        return corrected_z(arm, n, t1, t2, tau, eps, gate_p, q, True, angle_scale, advance, drive_t2_scale)
+    return sum(
+        corrected_z(arm, n, t1, t2, tau, eps, gate_p, q, True, angle_scale, advance, drive_t2_scale, sign)
+        for sign in SIGNS
+    ) / len(SIGNS)
 
 
 def model_tables(
@@ -742,37 +779,53 @@ GATE_CLASSES = {
 }
 
 
-def gate_class_ratios(t1: float, t2: float, q: float, window: float, gate_p: float) -> dict[str, float]:
+def gate_class_ratios(
+    t1: float, t2: float, q: float, window: float, gate_p: float, pooled: bool = False
+) -> dict[str, float]:
     """Per error class, the ratio of the N = 16 measure arm's corrected-P0 shift to the unitary arm's, for a small
     change of the class parameter about its nominal value on the relaxing model (central differences). A gate-model
     error of that class that moves the unitary arm by d moves the measure arm by ratio x d. Zero when the class does
     not move the unitary arm. The depolarizing class steps the prx error by half its value (a floor of 4e-5 times
-    one half)."""
+    one half).
+
+    The default is the preregistered one-sign evaluation (the +1 signed circuit). With `pooled` the response is the
+    mean over the four signed circuits (pooled_corrected_z). The reflection symmetry makes the axis-phase response
+    even in the advance, so its first-order shift vanishes in both arms; where the unitary arm's first-order shift is
+    at most 1e-12 the ratio is the curvature ratio of f(h) + f(-h) - 2 f(0). The other classes are reflection
+    invariant and their pooled ratios equal the one-sign ones."""
     nominal = {"gate_p": gate_p, "angle_scale": 1.0, "advance": 0.0, "drive_t2_scale": 1.0}
+
+    def response(arm: str, pert: dict[str, float]) -> float:
+        z = pooled_corrected_z if pooled else corrected_z
+        return z(
+            arm,
+            TOP_STEPS,
+            t1,
+            t2,
+            tau_of(arm, window),
+            0.0,
+            pert["gate_p"],
+            q,
+            angle_scale=pert["angle_scale"],
+            advance=pert["advance"],
+            drive_t2_scale=pert["drive_t2_scale"],
+        )
+
     out = {}
     for name, (key, step) in GATE_CLASSES.items():
         h = max(gate_p, 4e-5) * step if key == "gate_p" else step
-        shifts = {}
+        first, curvature = {}, {}
         for arm in ("measure", "unitary"):
-            tau = tau_of(arm, window)
-            high, low = (
-                corrected_z(
-                    arm,
-                    TOP_STEPS,
-                    t1,
-                    t2,
-                    tau,
-                    0.0,
-                    pert["gate_p"],
-                    q,
-                    angle_scale=pert["angle_scale"],
-                    advance=pert["advance"],
-                    drive_t2_scale=pert["drive_t2_scale"],
-                )
-                for pert in ({**nominal, key: nominal[key] + sign * h} for sign in (1, -1))
-            )
-            shifts[arm] = (high - low) / 2
-        out[name] = shifts["measure"] / shifts["unitary"] if abs(shifts["unitary"]) > 1e-12 else 0.0
+            high, low = (response(arm, {**nominal, key: nominal[key] + sign * h}) for sign in (1, -1))
+            first[arm] = (high - low) / 2
+            if pooled:
+                curvature[arm] = (high + low - 2 * response(arm, nominal)) / 2
+        if abs(first["unitary"]) > 1e-12:
+            out[name] = first["measure"] / first["unitary"]
+        elif pooled and abs(curvature["unitary"]) > 1e-15:
+            out[name] = curvature["measure"] / curvature["unitary"]
+        else:
+            out[name] = 0.0
     return out
 
 
@@ -1008,7 +1061,12 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
     key = f"measure-{top}"
     scale_u = max(math.hypot(gate_check["difference"], statistical), RAW_MODEL_SCATTER)
     ratios = gate_class_ratios(
-        value["t1_s"], min(ctx["t2_s"], 2 * value["t1_s"]), value["q"], ctx["window_s"], ctx["prx_p"]
+        value["t1_s"],
+        min(ctx["t2_s"], 2 * value["t1_s"]),
+        value["q"],
+        ctx["window_s"],
+        ctx["prx_p"],
+        ctx.get("gate_model", "preregistered") == "sign-pooled",
     )
     systematic = {name: abs(r) * scale_u for name, r in ratios.items()}
     gate_systematic = math.sqrt(sum(v * v for v in systematic.values()))
@@ -1110,8 +1168,16 @@ def evaluate(counts: dict[str, Any], contexts: dict[str, Any]) -> dict[str, Any]
     return dict(zip(qubits, results, strict=True))
 
 
-def contexts_of(prediction: dict[str, Any], window: float | None = None) -> dict[str, Any]:
-    """Per qubit the context evaluate needs from a prediction: the calibrated T2, the window and the planning P0."""
+GATE_MODELS = ("preregistered", "sign-pooled")
+
+
+def contexts_of(
+    prediction: dict[str, Any], window: float | None = None, gate_model: str = "preregistered"
+) -> dict[str, Any]:
+    """Per qubit the context evaluate needs from a prediction: the calibrated T2, the window and the planning P0.
+    `gate_model` selects how evaluate_qubit evaluates the gate-model error classes (GATE_MODELS): the preregistered
+    one-sign evaluation, or the response pooled over the four signed circuits. The key is added to the context only
+    for the pooled model, so the preregistered contexts are those of the first analysis."""
     used = prediction["measure_window_seconds"] if window is None else window
     return {
         q: {
@@ -1120,6 +1186,7 @@ def contexts_of(prediction: dict[str, Any], window: float | None = None) -> dict
             "window_s": used,
             "planning": row["p0"],
             "planning_departure_se": row["expected"]["departure_se"],
+            **({"gate_model": gate_model} if gate_model != "preregistered" else {}),
         }
         for q, row in prediction["qubits"].items()
     }
@@ -1187,7 +1254,8 @@ def z_eq(model: dict[str, Any]) -> float:
 def device_counts(models: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict[str, Any]:
     """Expected counts of a model device, rounded to whole shots: each circuit's true Bloch z from the Bloch model
     (T1, T2, an initialization excitation p_init), relaxed over the pre-readout delay and read through the qubit's
-    assignment errors."""
+    assignment errors. Each signed circuit takes the chain of its own sign; at a nominal axis phase the signs coincide
+    (gate_errors_trig) and the counts are those of the +1 chain."""
     counts: dict[str, Any] = {}
 
     def put(name: str, z: dict[str, float], flips: dict[str, float] | None = None, n: int = 0) -> None:
@@ -1202,26 +1270,32 @@ def device_counts(models: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict
         counts[name] = row
 
     for arm, n in group_keys():
-        z, flips = {}, {}
+        z_by_sign: dict[int, dict[str, float]] = {}
+        flips = {}
+        for sign in dict.fromkeys(SIGNS):
+            z_by_sign[sign] = {}
+            for q, m in models.items():
+                eps = m["eps_settle"] if arm == "settle" and m["eps_settle"] is not None else m["eps"]
+                z_by_sign[sign][q] = bloch_z(
+                    arm,
+                    n,
+                    m["t1_s"],
+                    min(m["t2_s"], 2 * m["t1_s"]),
+                    tau_of(arm, m["window_s"]),
+                    eps,
+                    1 - 2 * m["p_init"],
+                    m["prx_p"],
+                    z_eq(m),
+                    angle_scale=m["angle_scale"],
+                    advance=m["advance"],
+                    drive_t2_scale=m["drive_t2_scale"],
+                    sign=sign,
+                )
         for q, m in models.items():
             eps = m["eps_settle"] if arm == "settle" and m["eps_settle"] is not None else m["eps"]
-            z[q] = bloch_z(
-                arm,
-                n,
-                m["t1_s"],
-                min(m["t2_s"], 2 * m["t1_s"]),
-                tau_of(arm, m["window_s"]),
-                eps,
-                1 - 2 * m["p_init"],
-                m["prx_p"],
-                z_eq(m),
-                angle_scale=m["angle_scale"],
-                advance=m["advance"],
-                drive_t2_scale=m["drive_t2_scale"],
-            )
             flips[q] = max(0.0, (1 - (1 - 2 * eps) * math.cos(THETA / n)) / 2)
-        for name in group_names(arm, n):
-            put(name, z, flips if arm in PINCHED_ARMS and n > 1 else None, n)
+        for name, sign in zip(group_names(arm, n), SIGNS, strict=True):
+            put(name, z_by_sign[sign], flips if arm in PINCHED_ARMS and n > 1 else None, n)
     put("ro0", {q: 1 - 2 * m["p_init"] for q, m in models.items()})
     for name, delay in zip(SERIES_NAMES, SERIES_DELAYS, strict=True):
         put(
@@ -1287,15 +1361,16 @@ def unitary_statistical_se(cal: dict[str, float]) -> float:
 
 
 def measure_p0_shift(cal: dict[str, float], eps: float, **over: Any) -> float:
-    """The true corrected N = 16 measure-arm P0 of a model device with step loss eps, less its value at eps = 0."""
+    """The sign-pooled true corrected N = 16 measure-arm P0 of a model device with step loss eps, less its value at
+    eps = 0."""
     model = device_model(cal, **over)
     t2 = min(model["t2_s"], 2 * model["t1_s"])
     q = z_eq(model) / (1 - 2 * model["p_init"])
     errors = {k: model[k] for k in ("angle_scale", "advance", "drive_t2_scale")}
     tau = tau_of("measure", model["window_s"])
     gate_p = model["prx_p"]
-    pinched = corrected_z("measure", TOP_STEPS, model["t1_s"], t2, tau, eps, gate_p, q, **errors)
-    flat = corrected_z("measure", TOP_STEPS, model["t1_s"], t2, tau, 0.0, gate_p, q, **errors)
+    pinched = pooled_corrected_z("measure", TOP_STEPS, model["t1_s"], t2, tau, eps, gate_p, q, **errors)
+    flat = pooled_corrected_z("measure", TOP_STEPS, model["t1_s"], t2, tau, 0.0, gate_p, q, **errors)
     return (pinched - flat) / 2
 
 
@@ -1626,7 +1701,7 @@ def device_verdict(qubits: dict[str, Any]) -> dict[str, Any]:
     verdicts stay descriptive. The pooling treats the qubits as independent and weights each by the inverse of its
     inflated departure variance: the departure standard error of evaluate_qubit already carries, per error class
     of GATE_CLASSES, the measure-arm shift that a gate-model error consistent with that qubit's unitary-arm residual
-    (at least RAW_MODEL_SCATTER, so that classes cancelling in the unitary arm cannot narrow it) could produce.
+    (at least RAW_MODEL_SCATTER, so that a small unitary residual cannot narrow it) could produce.
 
     A qubit is informative when its mutation test passes and its widened departure standard error stays within
     UNINFORMATIVE_SE_FACTOR times its planning value (the prediction's own); otherwise it is `uninformative`, and the
@@ -1680,12 +1755,16 @@ def readout_crosstalk(circuits: list[dict[str, Any]], measurements: list[dict[st
     return {"max_abs_correlation": out, "shot_noise": 1 / math.sqrt(SHOTS)}
 
 
-def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
+def analyze(run_dir: Path, mock: bool = False, gate_model: str = "preregistered") -> dict[str, Any]:
     """The preregistered decisions of a garnet run, or with mock the same pipeline over a garnet:mock run.
 
     Mock outcomes are random bits, so a mock analysis exercises the format, the tally and every guard; its
     numbers decide nothing, and it skips the calibration-set match because the mock compiles against its own set.
+    `gate_model` selects the evaluation of the gate-model error classes (contexts_of); the preregistered one is the
+    default, and the sign-pooled one records itself in the output.
     """
+    if gate_model not in GATE_MODELS:
+        raise ValueError(f"gate model {gate_model!r} is not one of {GATE_MODELS}")
     facts = run_facts(run_dir)
     submission = load_json(run_dir / "submission.json")
     record = json.loads((run_dir / "raw/job.json").read_bytes())
@@ -1714,7 +1793,7 @@ def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
         schedule["runtime_estimates_sha256"] = sha256(artifact.read_bytes())
     metrics = record["metrics"]
     predicted_execution = billing(circuits, row["shots"], billing_model_of(prediction))
-    qubits = evaluate(counts, contexts_of(prediction, window))
+    qubits = evaluate(counts, contexts_of(prediction, window, gate_model))
     return {
         "schema": "iqm-measurement-sequence-analysis-v2",
         "run": run_dir.name,
@@ -1733,6 +1812,7 @@ def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
         "readout_crosstalk": readout_crosstalk(circuits, measurements),
         "device": device_verdict(qubits),
         "qubits": qubits,
+        **({"gate_model": gate_model} if gate_model != "preregistered" else {}),
     }
 
 
@@ -2055,18 +2135,26 @@ def injected_model(cal: dict[str, float], spec: dict[str, Any]) -> dict[str, Any
     return device_model(cal, **over)
 
 
-def sweep_case(item: tuple[dict[str, str], dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
-    """One row of run_sweep: the real analyze path over a synthetic run directory of the true device `spec`. The
-    run directory and the run_facts substitution stay local to the call, so cases run in any worker."""
+def injected_model_item(item: tuple[dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    """injected_model for one (calibration, spec) item, so the qubits of every case map through ordered_map."""
+    cal, spec = item
+    return injected_model(cal, spec)
+
+
+def sweep_case(
+    item: tuple[dict[str, str], dict[str, Any], dict[str, Any], dict[str, dict[str, Any]], str],
+) -> dict[str, Any]:
+    """One row of run_sweep: the real analyze path over a synthetic run directory of the true device `spec`, whose
+    per-qubit models are `models`. The run directory and the run_facts substitution stay local to the call, so cases
+    run in any worker."""
     global run_facts
-    files, excerpt, spec = item
+    files, excerpt, spec, models, gate_model = item
     job = json.loads(files["cases.json"])["jobs"][0]
     circuits = [json.loads(files[entry["file"]]) for entry in job["circuits"]]
     prediction = json.loads(files["prediction.json"])
     original = run_facts
     run_facts = lambda run_dir: {"statuses": {"completed": 1}, "charge": 0.0}  # noqa: E731
     try:
-        models = {q: injected_model(cal, spec) for q, cal in excerpt["qubits"].items()}
         measurements = synthetic_measurements(circuits, device_counts(models), job["shots"])
         with tempfile.TemporaryDirectory() as scratch:
             run = Path(scratch)
@@ -2085,7 +2173,7 @@ def sweep_case(item: tuple[dict[str, str], dict[str, Any], dict[str, Any]]) -> d
             }
             (run / "raw/job.json").write_text(json.dumps(record), encoding="utf-8")
             (run / "raw/measurements.json").write_text(json.dumps(measurements), encoding="utf-8")
-            result = analyze(run)
+            result = analyze(run, gate_model=gate_model)
         usable = {q: r for q, r in result["qubits"].items() if r["usable"]}
         return {
             **spec,
@@ -2111,12 +2199,21 @@ def sweep_case(item: tuple[dict[str, str], dict[str, Any], dict[str, Any]]) -> d
         run_facts = original
 
 
-def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def run_sweep(
+    files: dict[str, str],
+    excerpt: dict[str, Any],
+    cases: list[dict[str, Any]],
+    gate_model: str = "preregistered",
+) -> list[dict[str, Any]]:
     """The real analyze path over a synthetic run directory per true device: readout correction, T1 and p fit,
     prediction recompute and decisions. Each row summarizes one device over its qubits. The cases are independent and
-    draw no random number, so they map through parallel.ordered_map in order; a case's own per-qubit analyses run
-    serially inside its worker."""
-    return ordered_map(sweep_case, [(files, excerpt, spec) for spec in cases], min_items=2)
+    draw no random number, so they map through parallel.ordered_map in order, in two stages: the true device of every
+    (case, qubit) pair, then the cases; a case's own per-qubit analyses run serially inside its worker. `gate_model`
+    selects the analysis of the gate-model error classes (GATE_MODELS)."""
+    pairs = [(cal, spec) for spec in cases for cal in excerpt["qubits"].values()]
+    built = iter(ordered_map(injected_model_item, pairs, min_items=2))
+    items = [(files, excerpt, spec, {q: next(built) for q in excerpt["qubits"]}, gate_model) for spec in cases]
+    return ordered_map(sweep_case, items, min_items=2)
 
 
 def sweep_failures(rows: list[dict[str, Any]], qubits: int = QUBIT_COUNT) -> list[str]:
@@ -2154,7 +2251,7 @@ DETECT_ROWS = ("planning", "drive x0.5", "drive x1.5", "axis 0.02", "prx x2", "p
 DETECT_GRID = (0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0)
 
 
-def detect() -> list[dict[str, Any]]:
+def detect(gate_model: str = "preregistered") -> list[dict[str, Any]]:
     """The minimum detectable departure per device: the smallest multiple of the departure standard error (the null
     device's own, gate-model systematic included) by which a true departure lowers the measure arm's N = 16 P0 on
     every qubit and still reads `attributed`, over DETECT_GRID. A per-qubit shift of k standard errors pools to about
@@ -2163,23 +2260,29 @@ def detect() -> list[dict[str, Any]]:
     files = build_files(excerpt, retained_billing_model())
     wanted = {spec["label"]: spec for spec in sweep_cases(False) if spec["label"] in DETECT_ROWS}
     specs = [{**wanted[label], "shift_se": k} for label in DETECT_ROWS for k in DETECT_GRID]
-    rows = iter(run_sweep(files, excerpt, specs))
+    run_rows = run_sweep(files, excerpt, specs, gate_model)
+    items = [
+        (
+            excerpt["qubits"][q],
+            row["injected_eps"][q],
+            {
+                "t1_s": spec["t1_scale"] * excerpt["qubits"][q]["t1_s"],
+                "p_init": spec["p_init"],
+                "prx_p": spec["prx_scale"] * excerpt["qubits"][q]["prx_p"],
+                **spec["errors"],
+            },
+        )
+        for spec, row in zip(specs, run_rows, strict=True)
+        for q in row["injected_eps"]
+    ]
+    shifts = iter(ordered_map(shift_item, items))
+    rows = iter(run_rows)
     out = []
     for label in DETECT_ROWS:
         found: dict[str, Any] = {"label": label, "scan": {}}
         for k in DETECT_GRID:
             row = next(rows)
-            shift = {
-                q: -measure_p0_shift(
-                    excerpt["qubits"][q],
-                    row["injected_eps"][q],
-                    t1_s=wanted[label]["t1_scale"] * excerpt["qubits"][q]["t1_s"],
-                    p_init=wanted[label]["p_init"],
-                    prx_p=wanted[label]["prx_scale"] * excerpt["qubits"][q]["prx_p"],
-                    **wanted[label]["errors"],
-                )
-                for q in row["injected_eps"]
-            }
+            shift = {q: -next(shifts) for q in row["injected_eps"]}
             found["scan"][str(k)] = {
                 "status": row["device_status"]["departs_below"],
                 "pooled_z": row["pooled_departure_z"],
@@ -2193,15 +2296,21 @@ def detect() -> list[dict[str, Any]]:
     return out
 
 
+def shift_item(item: tuple[dict[str, float], float, dict[str, Any]]) -> float:
+    """measure_p0_shift for one (calibration, eps, device fields) item, so detect maps its rows through ordered_map."""
+    cal, eps, over = item
+    return measure_p0_shift(cal, eps, **over)
+
+
 def retained_billing_model() -> str:
     """The billing model of the retained case's prediction.json (see billing_model_of)."""
     return billing_model_of(load_json(ROOT / "results/iqm/cases" / CASE / "prediction.json"))
 
 
-def sweep(reduced: bool = False) -> list[dict[str, Any]]:
+def sweep(reduced: bool = False, gate_model: str = "preregistered") -> list[dict[str, Any]]:
     """The estimator sweep over the retained case; raises on any failure of the pass rule."""
     excerpt = load_json(ROOT / "results/iqm/cases" / CASE / EXCERPT)
-    rows = run_sweep(build_files(excerpt, retained_billing_model()), excerpt, sweep_cases(reduced))
+    rows = run_sweep(build_files(excerpt, retained_billing_model()), excerpt, sweep_cases(reduced), gate_model)
     failures = sweep_failures(rows)
     if failures:
         raise RuntimeError("estimator sweep: " + "; ".join(failures))
@@ -2496,7 +2605,7 @@ def main() -> int:
     bd.add_argument("directory", type=Path)
     bd.add_argument("--calibration-dir", type=Path, default=CALIBRATION_DIR)
     sub.add_parser("check").add_argument("directory", type=Path)
-    sub.add_parser("detect", help="the minimum detectable departure per device with a gate-model error")
+    detect_parser = sub.add_parser("detect", help="the minimum detectable departure per device with a gate-model error")
     sub.add_parser("project", help="the diagnostic's pi/2-pair residuals projected to the case's unitary-arm guard")
     sw = sub.add_parser("sweep", help="the estimator sweep over true devices off the planning point")
     sw.add_argument("--reduced", action="store_true", help="the planning point and the corner only")
@@ -2505,6 +2614,9 @@ def main() -> int:
     an.add_argument("--out", type=Path, required=True)
     an.add_argument("--replay", action="store_true")
     an.add_argument("--mock", action="store_true", help="analyze a garnet:mock run; its numbers decide nothing")
+    an.add_argument("--gate-model", choices=GATE_MODELS, default="preregistered")
+    for command in (sw, detect_parser):
+        command.add_argument("--gate-model", choices=GATE_MODELS, default="preregistered")
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
@@ -2513,13 +2625,13 @@ def main() -> int:
     elif args.command == "check":
         check(args.directory)
     elif args.command == "detect":
-        print(dump(detect()), end="")
+        print(dump(detect(args.gate_model)), end="")
     elif args.command == "project":
         print(dump(project_diagnostic(load_json(DIAGNOSTIC_ANALYSIS), load_json(DIAGNOSTIC_EXCERPT))), end="")
     elif args.command == "sweep":
-        print(dump(sweep(args.reduced)), end="")
+        print(dump(sweep(args.reduced, args.gate_model)), end="")
     elif args.command == "analyze":
-        text = dump(analyze(args.run_dir, args.mock))
+        text = dump(analyze(args.run_dir, args.mock, args.gate_model))
         if args.replay:
             if args.out.read_text(encoding="utf-8") != text:
                 raise ValueError(f"{args.out} differs from the recomputation")

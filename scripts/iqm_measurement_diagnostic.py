@@ -575,7 +575,13 @@ def drive_scan(run_dir: Path, labels: tuple[str, ...] | None = None) -> dict[str
     counts = seq.tally(circuits, json.loads((run_dir / "raw/measurements.json").read_bytes()))
     cals = sorted(seq.load_json(run_dir / EXCERPT)["qubits"].items())
     chosen = {k: v for k, v in DRIVE_SCAN.items() if labels is None or k in labels}
-    ses = {q: seq.unitary_statistical_se(cal) for q, cal in cals}
+    ses = dict(
+        zip(
+            (q for q, _ in cals),
+            ordered_map(seq.unitary_statistical_se, [cal for _, cal in cals], min_items=2),
+            strict=True,
+        )
+    )
     items = [(label, drive, q, counts, cal) for label, drive in chosen.items() for q, cal in cals]
     rows = ordered_map(scan_row, items, min_items=2)
     out: dict[str, Any] = {}

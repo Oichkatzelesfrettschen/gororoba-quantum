@@ -4,6 +4,7 @@ Tests that read the retained case, its calibration set or the retained runs carr
 their input here (a synthetic qubit calibration and a two-qubit excerpt).
 """
 
+import math
 from typing import Any
 
 import iqm_measurement_sequence as case
@@ -31,6 +32,64 @@ def test_ideal_laws_and_pair_composition_hold() -> None:
     if [round(case.ideal_measure(n), 4) for n in case.STEPS] != [0.0302, 0.5151, 0.6722, 0.8040, 0.8914]:
         raise AssertionError("the ideal measure-arm P0 changed")
     case.check_pairs()
+
+
+def pooled_inputs() -> tuple[float, float, float, float, float]:
+    """(t1, t2, tau of the measure arm, q, window) for CAL at the planning excitation."""
+    return (
+        CAL["t1_s"],
+        min(CAL["t2_s"], 2 * CAL["t1_s"]),
+        case.tau_of("measure", case.MEASURE_WINDOW_SECONDS),
+        case.PLANNING_Q,
+        case.MEASURE_WINDOW_SECONDS,
+    )
+
+
+def test_sign_pooled_response_is_the_per_sign_mean_and_even_in_the_advance() -> None:
+    t1, t2, tau, q, _ = pooled_inputs()
+    for arm in ("measure", "unitary"):
+        args = (arm, case.TOP_STEPS, t1, t2, case.tau_of(arm, case.MEASURE_WINDOW_SECONDS), 0.0, CAL["prx_p"], q)
+        pooled = case.pooled_corrected_z(*args, advance=0.02)
+        explicit = sum(case.corrected_z(*args, advance=0.02, sign=sign) for sign in case.SIGNS) / len(case.SIGNS)
+        if abs(pooled - explicit) > 1e-15:
+            raise AssertionError(f"{arm}: pooled {pooled} against the per-sign mean {explicit}")
+        # The reflection x -> -x maps sign -1 at advance d onto sign +1 at advance -d.
+        if abs(case.corrected_z(*args, advance=0.02, sign=-1) - case.corrected_z(*args, advance=-0.02, sign=1)) > 1e-12:
+            raise AssertionError(f"{arm}: the reflection does not map the signs onto each other")
+        if abs(case.pooled_corrected_z(*args, advance=0.02) - case.pooled_corrected_z(*args, advance=-0.02)) > 1e-12:
+            raise AssertionError(f"{arm}: the pooled response is not even in the advance")
+        # A nominal axis phase makes the signs identical, which the +1 chain stands for.
+        if abs(case.corrected_z(*args, advance=1e-9, sign=-1) - case.corrected_z(*args, sign=1)) > 1e-7:
+            raise AssertionError(f"{arm}: the signs differ at a nominal axis phase")
+
+
+def test_pooled_axis_ratio_has_no_first_order_term_and_other_classes_are_unchanged() -> None:
+    t1, t2, _, q, window = pooled_inputs()
+    one = case.gate_class_ratios(t1, t2, q, window, CAL["prx_p"])
+    pooled = case.gate_class_ratios(t1, t2, q, window, CAL["prx_p"], pooled=True)
+    h = case.GATE_CLASSES["axis_phase"][1]
+    first = {}
+    for arm in ("measure", "unitary"):
+        args = (arm, case.TOP_STEPS, t1, t2, case.tau_of(arm, window), 0.0, CAL["prx_p"], q)
+        first[arm] = (case.pooled_corrected_z(*args, advance=h) - case.pooled_corrected_z(*args, advance=-h)) / 2
+    if abs(first["unitary"]) > 1e-12 or abs(first["measure"]) > 1e-12:
+        raise AssertionError(f"the pooled first-order axis response is {first}")
+    if not (math.isfinite(pooled["axis_phase"]) and 0 < abs(pooled["axis_phase"]) < 0.1 and one["axis_phase"] > 0.2):
+        raise AssertionError(f"axis ratio: pooled {pooled['axis_phase']}, one-sign {one['axis_phase']}")
+    for name in ("drive_dephasing", "composite_angle", "depolarizing"):
+        if abs(pooled[name] - one[name]) > 1e-9:
+            raise AssertionError(f"{name}: pooled {pooled[name]}, one-sign {one[name]}")
+
+
+def test_device_counts_give_each_signed_circuit_its_own_chain() -> None:
+    skewed = case.device_counts({"Q": case.device_model(CAL, advance=0.02)})
+    nominal = case.device_counts({"Q": case.device_model(CAL)})
+    unitary = [skewed[name]["final"]["Q"][0] for name in case.group_names("unitary", case.TOP_STEPS)]
+    flat = [nominal[name]["final"]["Q"][0] for name in case.group_names("unitary", case.TOP_STEPS)]
+    if len(set(flat)) != 1:
+        raise AssertionError(f"the nominal device differs between signs: {flat}")
+    if unitary[0] != unitary[3] or unitary[1] != unitary[2] or unitary[0] == unitary[1]:
+        raise AssertionError(f"an axis phase does not separate the signs: {unitary}")
 
 
 def test_gate_model_error_widens_the_departure_without_flagging_it() -> None:
@@ -82,7 +141,8 @@ def sweep_inputs() -> tuple[dict[str, str], dict[str, Any], list[dict[str, Any]]
 def test_sweep_case_returns_its_row_and_restores_run_facts() -> None:
     files, excerpt, specs = sweep_inputs()
     original = case.run_facts
-    row = case.sweep_case((files, excerpt, specs[0]))
+    models = {q: case.injected_model(cal, specs[0]) for q, cal in excerpt["qubits"].items()}
+    row = case.sweep_case((files, excerpt, specs[0], models, "preregistered"))
     if case.run_facts is not original:
         raise AssertionError("a sweep case leaves run_facts substituted")
     if (
@@ -162,3 +222,16 @@ def test_billing_fit_covers_the_measure_heavy_run_and_the_retained_case_keeps_it
     retained = case.load_json(case.ROOT / "results/iqm/cases" / case.CASE / "prediction.json")
     if case.billing_model_of(retained) != "v1":
         raise AssertionError("the retained case no longer carries the billing it ran under")
+
+
+@pytest.mark.audit
+def test_selector_reproduces_the_retained_analyses_byte_for_byte() -> None:
+    root = case.ROOT / "results/iqm"
+    run = root / "runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching"
+    for gate_model, name in (
+        ("preregistered", "measurement_sequence_pinching_analysis.json"),
+        ("sign-pooled", "measurement_sequence_pinching_sign_pooled_analysis.json"),
+    ):
+        text = case.dump(case.analyze(run, gate_model=gate_model))
+        if (root / name).read_text(encoding="utf-8") != text:
+            raise AssertionError(f"{gate_model}: {name} differs from the recomputation")

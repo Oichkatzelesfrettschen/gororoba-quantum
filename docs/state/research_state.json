@@ -9842,7 +9842,7 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Exploratory. The reach is set by the gate-model floor of 0.04 in P0, not by the shot count, and no tighter bound follows from this run. The unitary arm departs from its model by -0.028 (QB14, statistical z -5.4), -0.026 (QB1) and -0.018 (QB5), beyond 3 statistical standard errors on three qubits, which the widened standard error absorbs. The eps fits to P0(N) have chi-square 58 to 196 on 4 degrees of freedom with negative eps, so the single-transition-loss description fails. Four qubits fit a negative initialization excitation (down to -0.067), which the readout model reads through q and does not separate from a thermal excitation of the idle qubit.",
+      "boundary": "Exploratory. The reach is set by the gate-model floor of 0.04 in P0, not by the shot count, and no tighter bound follows from this run. The unitary arm departs from its model by -0.028 (QB14, statistical z -5.4), -0.026 (QB1) and -0.018 (QB5), beyond 3 statistical standard errors on three qubits, which the widened standard error absorbs. The eps fits to P0(N) have chi-square 58 to 196 on 4 degrees of freedom with negative eps, so the single-transition-loss description fails. Four qubits fit a negative initialization excitation (down to -0.067), which the readout model reads through q and does not separate from a thermal excitation of the idle qubit. The preregistered gate-model systematic evaluated the axis-phase class on the +1 signed circuit only, while the experiment pools the circuits +, -, -, +; the sign-pooled reanalysis (results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json, gate core-710) has an axis-phase ratio of -0.017 to -0.018 against +0.31 to +0.35 one-sign, gate systematics of 0.040 to 0.046 against 0.042 to 0.048, departure standard errors of 0.042 to 0.047 against 0.044 to 0.049, and a pooled departure z of +1.72 against +1.65. The verdict is unchanged: both read none, and the reach (a transition probability below about 0.006 per measurement, or less than about 30 % coherence surviving each measurement) is unchanged.",
       "evidence": [
         {
           "path": "results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching/results.json",
@@ -9851,13 +9851,18 @@
         {
           "path": "results/iqm/measurement_sequence_pinching_analysis.json",
           "sha256": "02e9e1c8c63c33a42e185bd955fb5c18c3a75a4f035c43484eab823329f7fab9"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json",
+          "sha256": "ab1076d4384560424dd3c6e67604f4fe9ac89989fe6102ee96b384565b7cde14"
         }
       ],
       "documents": [
         "docs/design/iqm-garnet-measurement-sequence-pinching.md"
       ],
       "gates": {
-        "core-709": "replay"
+        "core-709": "replay",
+        "core-710": "replay"
       },
       "acquisitions": [
         "iqm-garnet-qpu-measurement-pinching"

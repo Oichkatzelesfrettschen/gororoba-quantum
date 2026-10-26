@@ -3871,6 +3871,17 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py analyze results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching --gate-model sign-pooled --out results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json --replay",
+   "name": "core-710",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py analyze results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0 results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate --out results/iqm/signed_kernel_null_retest_analysis.json --replay",
    "name": "core-643",
    "seconds": 20.0,
