@@ -650,7 +650,14 @@ def endpoint_variance(dist: Mapping[str, np.ndarray], shots: float | Mapping[str
     """
     variance = dict.fromkeys(ENDPOINTS, 0.0)
     step = 1e-6
+    table = arm_table()
+    alphas = {0.0, ql.summarize_compensated(dist)["selected_alpha"]}
     for key, law in dist.items():
+        _, prep, _, rule, _, alpha = table[key[len(GROUP) + 1 :]]
+        # The calibration arms feed only the assignment fields and a feedback arm only the margins at its own
+        # alpha, so every other arm has a zero gradient in ENDPOINTS.
+        if prep != "ground" or (rule == "feedback" and alpha not in alphas):
+            continue
         p = law / law.sum()
         grads = {name: np.zeros(len(law)) for name in ENDPOINTS}
         for i in range(len(law)):
