@@ -62,6 +62,7 @@ from qiskit_ibm_runtime.executor_sampler import Sampler
 
 import correction_collection
 import ibm_account
+import idle_padding
 import law_encoding
 import local_compute
 import packing
@@ -156,6 +157,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "factoring.py",
     "hybrid_shor.py",
     "ibm_account.py",
+    "idle_padding.py",
     "integral_homology.py",
     "jax_bridge.py",
     "latency_recovery.py",
@@ -2884,14 +2886,60 @@ def choice_structure(choice: Choice) -> dict[str, Any]:
     }
 
 
+def idle_padded_choice(choice: Choice) -> tuple[Choice, dict[str, list[dict[str, Any]]]]:
+    """choice with every replica's ALAP list-schedule idle written in as delays, and each replica's inserted idle.
+
+    NoiseModel.from_backend relaxes a qubit only during its own gates and explicit delays, so the unpadded
+    prediction charges no relaxation while a qubit waits behind others. idle_padding.pad places the replica as late
+    as its makespan allows under the snapshot Target's durations, the placement IBM's scheduler plays, and the
+    noise model's RelaxationNoisePass relaxes each inserted delay at the qubit's T1 and T2. A replica holding an
+    instruction the Target states no duration for keeps its unpadded circuit and names the refusal.
+    """
+    duration = idle_padding.target_duration(choice.snap.backend.target)
+    entries = []
+    idle: dict[str, list[dict[str, Any]]] = {}
+    for entry in choice.entries:
+        replicas = []
+        for replica in entry.replicas:
+            try:
+                padded, inserted = idle_padding.pad(replica, duration, placement="alap")
+            except (KeyError, RuntimeError) as error:
+                replicas.append(replica)
+                idle.setdefault(entry.name, []).append({"refused": str(error)})
+                continue
+            replicas.append(padded)
+            idle.setdefault(entry.name, []).append(
+                {"placement": "alap", "inserted_dt": {str(q): v for q, v in sorted(inserted.items())}}
+            )
+        entries.append(dataclasses.replace(entry, replicas=replicas))
+    return dataclasses.replace(choice, entries=entries), idle
+
+
 def _choice_record(
     choice: Choice,
     noisy: dict[str, list[np.ndarray]],
     noise_calibration: str,
     shots: int,
     scopes: dict[str, dict[str, Any]] | None = None,
+    padded: tuple[dict[str, list[np.ndarray]], dict[str, list[dict[str, Any]]]] | None = None,
 ) -> dict[str, Any]:
     target = choice.snap.backend.target
+
+    def idle_padded(entry: Entry, k: int) -> dict[str, Any]:
+        if padded is None:
+            return {}
+        laws, idle = padded
+        if "refused" in idle[entry.name][k]:
+            return {"idle_padded": idle[entry.name][k]}
+        dist = laws[entry.name][k]
+        return {
+            "idle_padded": {
+                **idle[entry.name][k],
+                "noisy": law_encoding.encode([round(float(p), 6) for p in dist]),
+                "tvd_noisy_to_ideal": tvd(dist, entry.ideal),
+            }
+        }
+
     members = [
         {
             **_member_fields(entry),
@@ -2900,8 +2948,9 @@ def _choice_record(
                     **_replica_fields(rep, target),
                     "noisy": law_encoding.encode([round(float(p), 6) for p in dist]),
                     "tvd_noisy_to_ideal": tvd(dist, entry.ideal),
+                    **idle_padded(entry, k),
                 }
-                for rep, dist in zip(entry.replicas, noisy[entry.name], strict=True)
+                for k, (rep, dist) in enumerate(zip(entry.replicas, noisy[entry.name], strict=True))
             ],
         }
         for entry in choice.entries
@@ -3261,7 +3310,7 @@ FRESH_GROUP_FIELDS = (
     "calibration_fingerprint",
     "calibration_fingerprint_sha256",
 )
-PREDICTION_REPLICA_FIELDS = ("noisy", "tvd_noisy_to_ideal")
+PREDICTION_REPLICA_FIELDS = ("noisy", "tvd_noisy_to_ideal", "idle_padded")
 
 
 def _approved_structure(group: Mapping[str, Any]) -> dict[str, Any]:
@@ -3777,9 +3826,11 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
             )
         sim, cal = sims[key]
         excitation = record.get("policy", {}).get("design", {}).get("prep_excitation")
+        padded = None
         if record.get("family_configuration", {}).get("name") == "et-row":
             from et_planning import simulate as simulate_et
 
+            # et_planning.simulate draws its own replica circuits, so the et-row prediction stays unpadded.
             noisy = simulate_et(sys.modules[__name__], choice, sim, int(record["shots"]))
         else:
             noisy = (
@@ -3787,7 +3838,14 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
                 if excitation
                 else simulate(choice, sim, int(record["shots"]))
             )
-        entry = _choice_record(choice, noisy, cal, int(record["shots"]), scopes)
+            # The idle-padded prediction runs beside the unpadded one under the same simulator, shots and seed;
+            # PREDICTION_REPLICA_FIELDS keeps it out of the approved-record structure comparison.
+            padded_choice, idle = idle_padded_choice(choice)
+            padded = (
+                simulate(padded_choice, sim, int(record["shots"]), prep_excitation=excitation or 0.0),
+                idle,
+            )
+        entry = _choice_record(choice, noisy, cal, int(record["shots"]), scopes, padded)
         # Provenance of the whole-device noise model the prediction ran under;
         # the approval binds the group's calibration_fingerprint, not this digest.
         entry["noise_serialized_channels_sha256"] = getattr(sim, "_gororoba_noise_digest", None)
