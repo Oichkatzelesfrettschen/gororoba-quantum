@@ -1,0 +1,317 @@
+{
+ "build": {
+  "herald": "auto",
+  "idle_cc_angle": "zero",
+  "pairs": null,
+  "shot_seconds": null,
+  "shots": null
+ },
+ "case": "qet-compensated-ladder",
+ "ideal": {
+  "endpoints": {
+   "assignment_a_p0_given_1": 0.0,
+   "assignment_a_p1_given_0": 0.0,
+   "assignment_b_p0_given_1": 0.0,
+   "assignment_b_p1_given_0": 0.0,
+   "assignment_r_p0_given_1": 0.0,
+   "assignment_r_p1_given_0": 0.0,
+   "channel_floor": 0.0,
+   "excess_m03": 0.06481231072567395,
+   "excess_p00": 0.1147476339401472,
+   "excess_p03": 0.06481231072567395,
+   "excess_p06": -0.08053308521493263,
+   "excess_p09": -0.30830528253740086,
+   "excess_p12": -0.5981580692177371,
+   "margin_m03": 0.06481231072567395,
+   "margin_p00": 0.1147476339401472,
+   "margin_p03": 0.06481231072567395,
+   "margin_p06": -0.08053308521493263,
+   "margin_p09": -0.30830528253740086,
+   "margin_p12": -0.5981580692177371,
+   "reference_phase": -0.0,
+   "selected_alpha": 0.0,
+   "selected_excess": 0.1147476339401472,
+   "selected_margin": 0.1147476339401472,
+   "uncompensated_margin": 0.1147476339401472,
+   "unitary_floor": 0.0
+  },
+  "qualification_p1": {
+   "qual_src0_phi": 0.0,
+   "qual_src0_pi": 0.0,
+   "qual_src1_phi": 0.1,
+   "qual_src1_pi": 1.0
+  }
+ },
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/ref_x.json",
+     "sha256": "c9583a3f665049101fbffd47ba394911311c40796a601a975fb125c57eed3a54"
+    },
+    {
+     "file": "circuits/ref_y.json",
+     "sha256": "37f40be40ead18dcbf32327604304368850f4d3a550ae8d66cf5a2744b6154c8"
+    },
+    {
+     "file": "circuits/ref_z.json",
+     "sha256": "d6409af21ef7b881dd8e2ef8bceaeb10fb1d3e46ab64226d7247d165e3c16f4e"
+    },
+    {
+     "file": "circuits/za.json",
+     "sha256": "c1b476fd6f1efe2d685105e8f480b5711dcdadc000e8393d05913d6a667dba35"
+    },
+    {
+     "file": "circuits/fb_m03_x.json",
+     "sha256": "5ce01a2ed724084c67167f221f8f4ea272475fa8c661aec35fba56df31f36aff"
+    },
+    {
+     "file": "circuits/fb_m03_z.json",
+     "sha256": "fffa098fc787ada89fb6ab9ae70833ab6d8bc722a12fb7f2d9d093c89df8392b"
+    },
+    {
+     "file": "circuits/fb_p00_x.json",
+     "sha256": "b9652ba97138d5307dbebb4e9076180b21a8fc632d67e4d97a6ce68c57285c26"
+    },
+    {
+     "file": "circuits/fb_p00_z.json",
+     "sha256": "4311672aa2c8f2354d584732af475c91e0c41a6f55e1fcba0457e96167fdbaae"
+    },
+    {
+     "file": "circuits/fb_p03_x.json",
+     "sha256": "66d99aab9b6949c9445754cf2dba1210f67e28737030f637c562781889cd0018"
+    },
+    {
+     "file": "circuits/fb_p03_z.json",
+     "sha256": "b3919ddd42302927f81943626d81f8bcdc055ae7336314bb7d12279c1acb4b3d"
+    },
+    {
+     "file": "circuits/fb_p06_x.json",
+     "sha256": "87999b79195d6c5f2c3a5c1296b91945b844e1ce152da2efb8692fee689d539a"
+    },
+    {
+     "file": "circuits/fb_p06_z.json",
+     "sha256": "7adadc119af686b28eaeb8eedde8dd9a0a94357f9e6fb1588964003a315617c0"
+    },
+    {
+     "file": "circuits/fb_p09_x.json",
+     "sha256": "a88a8058ae8614afe22c31fc306c02a840164a10297ef7771418126c92ae8ad9"
+    },
+    {
+     "file": "circuits/fb_p09_z.json",
+     "sha256": "949786c8a636d645cd9dbee572413a9d4a4a865056ee43970a9fc6c5395c3b5c"
+    },
+    {
+     "file": "circuits/fb_p12_x.json",
+     "sha256": "37c8566835d2ee03a23ab890111d75b0f8157fbe9340c8966ea3d2b255c84f69"
+    },
+    {
+     "file": "circuits/fb_p12_z.json",
+     "sha256": "5d560c2d495a258dd04096519c894d08c7e2c214cda95a6f24e676c9ea4cb239"
+    },
+    {
+     "file": "circuits/cal_00.json",
+     "sha256": "a3670cc4ba6ed127fbf3e31021479244c26a084ed9d029beca8ab7574d46a9d3"
+    },
+    {
+     "file": "circuits/cal_11.json",
+     "sha256": "3decfdda6c43863ea50e753002105d4dcd706935415a8667e149100ae3f2570d"
+    },
+    {
+     "file": "circuits/qual_src1_phi.json",
+     "sha256": "8cb59b82bb39d324fa51153a3ff71cefd26f0c6b761170504ebcb02a8816e68d"
+    },
+    {
+     "file": "circuits/qual_src0_phi.json",
+     "sha256": "3c593035b221209b1c504969d67006b091af97e18121d645cd641a37ebaa065f"
+    },
+    {
+     "file": "circuits/qual_src1_pi.json",
+     "sha256": "12a6d190413b1395c704316f13508a387e91a7a8882375c0fdb03554cedac43b"
+    },
+    {
+     "file": "circuits/qual_src0_pi.json",
+     "sha256": "0586ce2b672cee3b9c399050a4fdcadfbe5f17846d8de5d681de9b6c62123826"
+    }
+   ],
+   "expected_seconds": 4.393,
+   "expected_seconds_by_qc": {
+    "garnet": 4.393,
+    "garnet:mock": 4.393
+   },
+   "job": "ladder",
+   "max_credits": {
+    "garnet": 4.0,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "9069c4ef-7ab6-4e50-be4f-c91d71c3a06d"
+    },
+    "heralding_mode": "zeros"
+   },
+   "shots": 10900
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/ref_x.json",
+     "sha256": "c9583a3f665049101fbffd47ba394911311c40796a601a975fb125c57eed3a54"
+    },
+    {
+     "file": "circuits/ref_y.json",
+     "sha256": "37f40be40ead18dcbf32327604304368850f4d3a550ae8d66cf5a2744b6154c8"
+    },
+    {
+     "file": "circuits/ref_z.json",
+     "sha256": "d6409af21ef7b881dd8e2ef8bceaeb10fb1d3e46ab64226d7247d165e3c16f4e"
+    },
+    {
+     "file": "circuits/za.json",
+     "sha256": "c1b476fd6f1efe2d685105e8f480b5711dcdadc000e8393d05913d6a667dba35"
+    },
+    {
+     "file": "circuits/fb_m03_x.json",
+     "sha256": "5ce01a2ed724084c67167f221f8f4ea272475fa8c661aec35fba56df31f36aff"
+    },
+    {
+     "file": "circuits/fb_m03_z.json",
+     "sha256": "fffa098fc787ada89fb6ab9ae70833ab6d8bc722a12fb7f2d9d093c89df8392b"
+    },
+    {
+     "file": "circuits/fb_p00_x.json",
+     "sha256": "b9652ba97138d5307dbebb4e9076180b21a8fc632d67e4d97a6ce68c57285c26"
+    },
+    {
+     "file": "circuits/fb_p00_z.json",
+     "sha256": "4311672aa2c8f2354d584732af475c91e0c41a6f55e1fcba0457e96167fdbaae"
+    },
+    {
+     "file": "circuits/fb_p03_x.json",
+     "sha256": "66d99aab9b6949c9445754cf2dba1210f67e28737030f637c562781889cd0018"
+    },
+    {
+     "file": "circuits/fb_p03_z.json",
+     "sha256": "b3919ddd42302927f81943626d81f8bcdc055ae7336314bb7d12279c1acb4b3d"
+    },
+    {
+     "file": "circuits/fb_p06_x.json",
+     "sha256": "87999b79195d6c5f2c3a5c1296b91945b844e1ce152da2efb8692fee689d539a"
+    },
+    {
+     "file": "circuits/fb_p06_z.json",
+     "sha256": "7adadc119af686b28eaeb8eedde8dd9a0a94357f9e6fb1588964003a315617c0"
+    },
+    {
+     "file": "circuits/fb_p09_x.json",
+     "sha256": "a88a8058ae8614afe22c31fc306c02a840164a10297ef7771418126c92ae8ad9"
+    },
+    {
+     "file": "circuits/fb_p09_z.json",
+     "sha256": "949786c8a636d645cd9dbee572413a9d4a4a865056ee43970a9fc6c5395c3b5c"
+    },
+    {
+     "file": "circuits/fb_p12_x.json",
+     "sha256": "37c8566835d2ee03a23ab890111d75b0f8157fbe9340c8966ea3d2b255c84f69"
+    },
+    {
+     "file": "circuits/fb_p12_z.json",
+     "sha256": "5d560c2d495a258dd04096519c894d08c7e2c214cda95a6f24e676c9ea4cb239"
+    },
+    {
+     "file": "circuits/cal_00.json",
+     "sha256": "a3670cc4ba6ed127fbf3e31021479244c26a084ed9d029beca8ab7574d46a9d3"
+    },
+    {
+     "file": "circuits/cal_11.json",
+     "sha256": "3decfdda6c43863ea50e753002105d4dcd706935415a8667e149100ae3f2570d"
+    },
+    {
+     "file": "circuits/qual_src1_phi.json",
+     "sha256": "8cb59b82bb39d324fa51153a3ff71cefd26f0c6b761170504ebcb02a8816e68d"
+    },
+    {
+     "file": "circuits/qual_src0_phi.json",
+     "sha256": "3c593035b221209b1c504969d67006b091af97e18121d645cd641a37ebaa065f"
+    },
+    {
+     "file": "circuits/qual_src1_pi.json",
+     "sha256": "12a6d190413b1395c704316f13508a387e91a7a8882375c0fdb03554cedac43b"
+    },
+    {
+     "file": "circuits/qual_src0_pi.json",
+     "sha256": "0586ce2b672cee3b9c399050a4fdcadfbe5f17846d8de5d681de9b6c62123826"
+    }
+   ],
+   "expected_seconds": 0.081,
+   "expected_seconds_by_qc": {
+    "garnet:mock": 0.081
+   },
+   "job": "accept",
+   "max_credits": {
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {},
+    "heralding_mode": "zeros"
+   },
+   "shots": 200
+  }
+ ],
+ "pairs": [
+  {
+   "alice": "QB2",
+   "bob": "QB1",
+   "cz": [
+    "QB2",
+    "QB1"
+   ],
+   "index": 0
+  },
+  {
+   "alice": "QB6",
+   "bob": "QB7",
+   "cz": [
+    "QB6",
+    "QB7"
+   ],
+   "index": 1
+  },
+  {
+   "alice": "QB8",
+   "bob": "QB3",
+   "cz": [
+    "QB8",
+    "QB3"
+   ],
+   "index": 2
+  },
+  {
+   "alice": "QB16",
+   "bob": "QB17",
+   "cz": [
+    "QB16",
+    "QB17"
+   ],
+   "index": 3
+  },
+  {
+   "alice": "QB18",
+   "bob": "QB14",
+   "cz": [
+    "QB14",
+    "QB18"
+   ],
+   "index": 4
+  }
+ ],
+ "prediction_sha256": "8ac41c756d25399bdefb14f3c1757ca1302b4e025f48ef148e2754369d99b157",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "Does the phase-compensated QET ladder that ran on ibm_kingston replicate on Garnet: does Bob's record-steered rotation lower his energy below the best record-independent unitary (information excess), and below the vacuum floor (channel floor margin), and does cc_prx at the non-pi angle 2 phi* reach its ideal P(1)?",
+ "schema": "iqm-circuit-case-v1"
+}
