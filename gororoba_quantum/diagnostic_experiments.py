@@ -737,7 +737,7 @@ def measurement_sequence_groups(
 
 
 def measurement_sequence_contracts(qubits: list[int], alpha: float, power: float) -> tuple[ObservableContract, ...]:
-    """Eighteen two-sided precision endpoints per qubit at the family-wise alpha split over all.
+    """Seventeen two-sided precision endpoints per qubit at the family-wise alpha split over all.
 
     msq_p0_{measure,delay}_nN_qQ, msq_p0_unitary_n16_qQ and msq_p0_settle_n16_qQ read the final P0
     pooled over the four signed members of the arm at N;
@@ -1722,7 +1722,7 @@ def _measurement_sequence_self_test() -> None:
     if len(contracts) != MSQ_ENDPOINTS_PER_QUBIT * len(qubits) or not math.isclose(
         math.fsum(c.alpha for c in contracts), 0.05
     ):
-        raise AssertionError("the endpoints do not split the family-wise alpha over eighteen per qubit")
+        raise AssertionError("the endpoints do not split the family-wise alpha over seventeen per qubit")
     for count in (1, 4, 14):
         share = 0.05 / (MSQ_ENDPOINTS_PER_QUBIT * count)
         for shots, admitted in ((4096, False), (8192, True)):

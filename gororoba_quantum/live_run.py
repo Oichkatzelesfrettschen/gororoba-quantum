@@ -4390,22 +4390,30 @@ def _recovery_tags(
     batch_count: int,
     pubs: list[dict[str, Any]],
     qpy_archive_sha256: str,
+    attempt: dict[str, Any] | None = None,
 ) -> list[str]:
-    """Tags that identify exactly one planned Runtime job after response loss."""
+    """Tags that identify exactly one planned Runtime job after response loss.
+
+    An envelope attempt adds its repetition delay, attempt index and envelope digest, so two attempts of one approval
+    never share a batch tag; a record without an attempt keeps the identity its retained tags were computed from.
+    """
     run_digest = hashlib.sha256(started.encode()).hexdigest()[:20]
-    batch_identity = json.dumps(
-        {
-            "started": started,
-            "backend": backend,
-            "kind": kind,
-            "batch_index": batch_index,
-            "batch_count": batch_count,
-            "pubs": pubs,
-            "qpy_archive_sha256": qpy_archive_sha256,
-        },
-        sort_keys=True,
-        separators=(",", ":"),
-    )
+    identity: dict[str, Any] = {
+        "started": started,
+        "backend": backend,
+        "kind": kind,
+        "batch_index": batch_index,
+        "batch_count": batch_count,
+        "pubs": pubs,
+        "qpy_archive_sha256": qpy_archive_sha256,
+    }
+    if attempt is not None:
+        if set(attempt) != {"rep_delay", "attempt_index", "envelope_sha256"}:
+            raise LiveRunError(
+                f"an envelope attempt identity needs rep_delay, attempt_index, envelope_sha256: {sorted(attempt)}"
+            )
+        identity["attempt"] = attempt
+    batch_identity = json.dumps(identity, sort_keys=True, separators=(",", ":"))
     batch_digest = hashlib.sha256(batch_identity.encode()).hexdigest()[:24]
     return ["gororoba-quantum", f"gororoba-run-{run_digest}", f"gororoba-batch-{batch_digest}"]
 
