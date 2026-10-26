@@ -51,9 +51,11 @@ Every circuit runs passive reset with no heralding.
   exactly the five Bob drives (claim `iqm-garnet-cc-prx-feedback-label-limit`).
 - **Cost of the fix.** A passive-reset shot ran 316.2 us on the reset and billing pilot. An active-reset shot ran
   16 to 37.5 us on the retained Garnet jobs.
-- **Initial state.** The model starts each qubit in the ground state and lets the unheralded readout errors carry
-  the passive initialization error. QB1 read 0.0065 against 0.0046 predicted; no other qubit was measured. A
-  sensitivity row starts every qubit at its calibrated `init_error` instead.
+- **Initial state.** The base model is a folded terminal-error approximation. It starts each qubit in the ground
+  state and lets the unheralded readout errors carry the passive initialization error, so an excited input's
+  propagation through the gates is not modeled. QB1 read 0.0065 against 0.0046 predicted; no other qubit was measured. A
+  sensitivity row starts every qubit at its calibrated `init_error` instead. That row can double-count the population
+  the assignment errors already carry, so it bounds the effect rather than offering a second prediction.
 
 ## Jobs
 
@@ -97,7 +99,9 @@ five pairs with shot-noise standard errors at 1600 shots per circuit:
 | reference unitary floor | 0.271 +- 0.020 | 0.362 | 0.304 | 0.177 +- 0.013 |
 | qualification P(1), source 1, angle 2 phi* | 0.10 to 0.12 | | | not measured |
 
-Per pair, the shot-noise standard error is about 0.06 on the excess and 0.04 on the margin. The relaxation column
+Per pair, the shot-noise standard error is about 0.06 on the excess and 0.04 on the margin. These delta-method
+errors hold the selected alpha fixed. The predicted phases sit 3.3 to 3.65 phase standard errors from the nearest
+grid midpoint, where a selection switch would add variance the formula does not carry. The relaxation column
 uses the apparent T1 the retained idle-schedule case measured, a median 0.53 of calibrated.
 
 ## Preregistered decisions
@@ -122,6 +126,10 @@ The hypotheses:
 - **H3, non-pi conditional angle.** Only the shots whose recorded Alice bit matches the prepared source enter, since
   `cc_prx` reads that bit. Bob's assignment errors come from the pair's own `cal_00` and `cal_11` arms in the same
   job.
+  - The corrected interval maps the target's Wilson 99 percent interval through those errors.
+  - Each side is widened in quadrature by the delta-method uncertainty of the two assignment errors (z = 2.576),
+    so the calibration arms' binomial noise enters the interval.
+  - A test checks that a `cc_prx` firing on bit 0 unscores its pair.
   - Through them, the readout-corrected conditional angle 2 asin(sqrt p) from the |1> source must lie within
     2 phi* +- 0.15 rad (0.494 to 0.794 rad) across its Wilson 99 percent interval.
   - The readout-corrected P(1) from the |0> source must stay below 0.03 at its Wilson 99 percent upper bound.
@@ -131,7 +139,12 @@ The hypotheses:
     percent of 2 phi* and no larger.
 - **H1, QET information signature.** It is reproduced on Garnet when the information excess has a lower bound above
   0, and refuted when its upper bound is below 0. Its power at the predicted +0.113 with a per-pair standard error of
-  0.06 is 0.96 at five pairs and 0.88 at four.
+  0.06 is 0.96 at five pairs and 0.88 at four, with no between-pair spread beyond shot noise. An extra
+  between-pair spread of 0.04, 0.06, 0.09 or 0.12 lowers the five-pair power to 0.89, 0.79, 0.61 or 0.47.
+  - The model predicts a spread of 0.018; Kingston's pairs scattered more than its model did.
+  - A refuting verdict with a pair whose reference phase lies beyond the 1.05 rad reach reads "inconclusive". Such
+    a pair's selected alpha sits at the grid edge, and its low excess measures the finite grid rather than
+    feed-forward. A failing H2 verdict is treated the same way.
 - **H2, energy below the vacuum value.** It passes when the channel floor margin's lower bound is above 0, and fails
   when its upper bound is below 0. The model predicts a failure. A pass would place Kingston's failure in
   Heron-specific preparation or window error rather than in the protocol.

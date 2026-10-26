@@ -145,6 +145,8 @@ DECISION_LEVEL = 0.95
 H3_ANGLE_TOLERANCE = 0.15
 H3_SOURCE0_LIMIT = 0.03
 H4_PHASE_SCALE = 0.2
+# Every phase within this distance of zero lies within half a GARNET_ALPHAS step of a grid point.
+COMPENSATION_REACH = 1.05
 
 
 # ---------------------------------------------------------------------------------------------------------
@@ -1370,17 +1372,51 @@ def counts_of_pair(by_name: Mapping[str, Mapping[str, Any]], index: int) -> dict
     return {name: ladder_counts(by_name[name], index) for name in ("cal_00", "cal_11")}
 
 
-def corrected_angle(ones: int, shots: int, e0: float, e1: float, z: float) -> dict[str, float]:
-    """The conditional rotation angle 2 asin(sqrt p) of a target read through P(1|0) = e0, P(0|1) = e1, with the
-    Wilson interval of the raw P(1) at z mapped through the same correction (the readout uncertainty is not
-    propagated)."""
+class Readout(NamedTuple):
+    """A target's assignment errors P(1|0) = e0 and P(0|1) = e1 with the shot counts that estimated them."""
 
-    def angle(p1: float) -> float:
-        true = min(max((p1 - e0) / (1 - e0 - e1), 0.0), 1.0)
-        return 2 * math.asin(math.sqrt(true))
+    e0: float
+    n0: float
+    e1: float
+    n1: float
 
-    low, high = wilson(ones, shots, z)
-    return {"angle": angle(ones / shots), "low": angle(low), "high": angle(high)}
+
+def corrected_probability(ones: int, shots: int, readout: Readout, z: float) -> dict[str, float]:
+    """The readout-corrected P(1) (p - e0)/(1 - e0 - e1) of a target and its interval at z.
+
+    The raw P(1)'s Wilson interval is mapped through the correction, and each side is widened in quadrature by the
+    delta-method uncertainty of the two assignment errors, d/de0 = -(1 - q)/D and d/de1 = q/D at the bound's q with
+    D = 1 - e0 - e1, so the interval carries the calibration arms' binomial noise as well as the target's.
+    """
+    e0, e1 = readout.e0, readout.e1
+    scale = 1 - e0 - e1
+
+    def correct(p1: float) -> float:
+        return (p1 - e0) / scale
+
+    def nuisance(q: float) -> float:
+        var0 = e0 * (1 - e0) / readout.n0
+        var1 = e1 * (1 - e1) / readout.n1
+        return z * math.sqrt(var0 * (1 - q) ** 2 + var1 * q**2) / scale
+
+    point = correct(ones / shots)
+    raw_low, raw_high = wilson(ones, shots, z)
+    low, high = correct(raw_low), correct(raw_high)
+    return {
+        "p1": point,
+        "low": point - math.hypot(point - low, nuisance(low)),
+        "high": point + math.hypot(high - point, nuisance(high)),
+    }
+
+
+def corrected_angle(ones: int, shots: int, readout: Readout, z: float) -> dict[str, float]:
+    """The conditional rotation angle 2 asin(sqrt q) of the corrected P(1) q, with its interval mapped through."""
+
+    def angle(q: float) -> float:
+        return 2 * math.asin(math.sqrt(min(max(q, 0.0), 1.0)))
+
+    q = corrected_probability(ones, shots, readout, z)
+    return {"angle": angle(q["p1"]), "low": angle(q["low"]), "high": angle(q["high"])}
 
 
 def angle_qualification(qualification: Mapping[str, Any], cal: Mapping[str, np.ndarray]) -> dict[str, Any]:
@@ -1392,12 +1428,16 @@ def angle_qualification(qualification: Mapping[str, Any], cal: Mapping[str, np.n
     """
     zeros, ones = cal["cal_00"] / cal["cal_00"].sum(), cal["cal_11"] / cal["cal_11"].sum()
     bob = [i for i in range(8) if (i >> 2) & 1]
-    e0, e1 = float(zeros[bob].sum()), float(1 - ones[bob].sum())
+    readout = Readout(
+        float(zeros[bob].sum()), float(cal["cal_00"].sum()), float(1 - ones[bob].sum()), float(cal["cal_11"].sum())
+    )
+    e0, e1 = readout.e0, readout.e1
     src1 = qualification["qual_src1_phi"]
-    fitted = corrected_angle(src1["matched_target_ones"], src1["matched_shots"], e0, e1, Z99)
+    fitted = corrected_angle(src1["matched_target_ones"], src1["matched_shots"], readout, Z99)
     src0 = qualification["qual_src0_phi"]
-    _, src0_high = wilson(src0["matched_target_ones"], src0["matched_shots"], Z99)
-    src0_corrected_high = (src0_high - e0) / (1 - e0 - e1)
+    src0_corrected_high = corrected_probability(src0["matched_target_ones"], src0["matched_shots"], readout, Z99)[
+        "high"
+    ]
     pi = qualification["qual_src1_pi"]
     target = 2 * ql.PHI_STAR
     passes = (
@@ -1410,7 +1450,7 @@ def angle_qualification(qualification: Mapping[str, Any], cal: Mapping[str, np.n
         "bob_p0_given_1": e1,
         "fitted_angle": fitted,
         "target_angle": target,
-        "pi_arm_angle": corrected_angle(pi["matched_target_ones"], pi["matched_shots"], e0, e1, Z99),
+        "pi_arm_angle": corrected_angle(pi["matched_target_ones"], pi["matched_shots"], readout, Z99),
         "source0_corrected_p1_upper99": src0_corrected_high,
         "scored": passes,
     }
@@ -1455,13 +1495,26 @@ def decisions(per_pair: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
             state = "unresolved"
         return {"mean": centre, "lower": low, "upper": high, "pairs": len(values), "verdict": state}
 
+    # A reference phase beyond COMPENSATION_REACH leaves that pair's selected alpha at the grid edge, so a low
+    # excess there measures the finite grid, not feed-forward: a refuting H1 or failing H2 verdict with such a
+    # pair present is inconclusive about the mechanism.
+    out_of_reach = [r for r in per_pair if abs(r["endpoints"]["reference_phase"]) > COMPENSATION_REACH]
+    out["phase_out_of_reach_pairs"] = [[r["pair"]["alice"], r["pair"]["bob"]] for r in out_of_reach]
+
+    def guarded(entry: dict[str, Any], rows: Sequence[Mapping[str, Any]], negative: str) -> dict[str, Any]:
+        if entry["verdict"] == negative and any(r in out_of_reach for r in rows):
+            entry["verdict"] = "inconclusive: a phase lies outside the compensation reach"
+        return entry
+
     for label, rows in (("all_pairs", per_pair), ("h3_scored", scored)):
         out[label] = {
-            "h1_information_excess": verdict(
-                [r["endpoints"]["selected_excess"] for r in rows], 0.0, "reproduced", "refuted"
+            "h1_information_excess": guarded(
+                verdict([r["endpoints"]["selected_excess"] for r in rows], 0.0, "reproduced", "refuted"),
+                rows,
+                "refuted",
             ),
-            "h2_channel_floor_margin": verdict(
-                [r["endpoints"]["selected_margin"] for r in rows], 0.0, "passes", "fails"
+            "h2_channel_floor_margin": guarded(
+                verdict([r["endpoints"]["selected_margin"] for r in rows], 0.0, "passes", "fails"), rows, "fails"
             ),
             "h4_window_phase": verdict(
                 [abs(r["endpoints"]["reference_phase"]) for r in rows],
@@ -1528,10 +1581,14 @@ def quantize(law: Sequence[float] | np.ndarray, n: int) -> list[int]:
 
 
 def synthetic_measurements(
-    case: Mapping[str, Any], n: int, laws: Sequence[Mapping[str, Sequence[float]]] | None = None
+    case: Mapping[str, Any],
+    n: int,
+    laws: Sequence[Mapping[str, Sequence[float]]] | None = None,
+    qual_p1: Sequence[Mapping[str, float]] | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, np.ndarray]]:
     """The artifact of a run whose pairs follow the ideal laws (or laws[pair index], each arm's law over
-    r + 2a + 4b) at n shots, with the quantized counts of the last pair."""
+    r + 2a + 4b, and qual_p1[pair index], each qualification arm's target P(1)) at n shots, with the quantized
+    counts of the last pair."""
     row = next(r for r in case["jobs"] if r["job"] == JOB)
     table = arm_table()
     ideal_p1 = case["ideal"]["qualification_p1"]
@@ -1543,7 +1600,8 @@ def synthetic_measurements(
         for pair in case["pairs"]:
             i = pair["index"]
             if name in QUAL_ARMS:
-                ones = quantize([1 - ideal_p1[name], ideal_p1[name]], n)[1]
+                target_p1 = ideal_p1[name] if qual_p1 is None else qual_p1[i][name]
+                ones = quantize([1 - target_p1, target_p1], n)[1]
                 source = 1 if name.startswith("qual_src1") else 0
                 circuit[f"alice{i}"] = [[source]] * n
                 circuit[f"bob{i}"] = [[1]] * ones + [[0]] * (n - ones)

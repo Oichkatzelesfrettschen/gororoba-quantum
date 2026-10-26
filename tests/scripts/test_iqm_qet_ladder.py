@@ -315,6 +315,50 @@ def test_a_cc_prx_that_never_fires_lowers_the_all_pairs_excess() -> None:
         raise AssertionError(f"the all-pairs H1 test does not carry the broken pair: {primary}")
 
 
+def test_h3_unscores_a_cc_prx_that_fires_on_zero() -> None:
+    """A cc_prx that fires on bit 0 rotates the |0>-source target and leaves the |1>-source one: H3 must unscore
+    that pair and only that pair."""
+    case = json.loads((CASE / "cases.json").read_text(encoding="utf-8"))
+    ideal = case["ideal"]["qualification_p1"]
+    inverted = {
+        "qual_src1_phi": ideal["qual_src0_phi"],
+        "qual_src0_phi": ideal["qual_src1_phi"],
+        "qual_src1_pi": ideal["qual_src0_pi"],
+        "qual_src0_pi": ideal["qual_src1_pi"],
+    }
+    qual = [inverted if pair["index"] == 0 else ideal for pair in case["pairs"]]
+    measurements, _ = lad.synthetic_measurements(case, case_shots(), qual_p1=qual)
+    result = lad.endpoints_of_run(case, measurements)
+    scored = [row["h3"]["scored"] for row in result["pairs"]]
+    if scored != [False] + [True] * (len(scored) - 1):
+        raise AssertionError(f"H3 scoring under a fires-on-zero pair 0: {scored}")
+
+
+def test_negative_h1_with_a_phase_beyond_the_grid_is_inconclusive() -> None:
+    def row(index: int, excess: float, phase: float) -> dict:
+        endpoints = {"selected_excess": excess, "selected_margin": -0.2, "reference_phase": phase}
+        return {
+            "pair": {"alice": f"QB{index}", "bob": f"QB{index + 1}"},
+            "endpoints": endpoints,
+            "h3": {"scored": True},
+        }
+
+    inside = [row(i, -0.05 - 0.001 * i, 0.1) for i in range(5)]
+    if lad.decisions(inside)["all_pairs"]["h1_information_excess"]["verdict"] != "refuted":
+        raise AssertionError("a negative excess with every phase inside the grid is not refuted")
+    beyond = inside[:4] + [row(4, -0.054, lad.COMPENSATION_REACH + 0.3)]
+    verdict = lad.decisions(beyond)["all_pairs"]["h1_information_excess"]["verdict"]
+    if not verdict.startswith("inconclusive"):
+        raise AssertionError(f"a negative excess with a phase beyond the grid reads {verdict}")
+
+
+def test_cal_arm_noise_widens_the_corrected_interval() -> None:
+    narrow = lad.corrected_probability(30, 1600, lad.Readout(0.02, 1e12, 0.03, 1e12), lad.Z99)
+    wide = lad.corrected_probability(30, 1600, lad.Readout(0.02, 1600, 0.03, 1600), lad.Z99)
+    if not (wide["low"] < narrow["low"] and wide["high"] > narrow["high"] and wide["p1"] == narrow["p1"]):
+        raise AssertionError(f"calibration-arm noise leaves the interval {narrow} unchanged: {wide}")
+
+
 def test_analysis_refuses_a_mock_run(tmp_path: Path) -> None:
     run = synthetic_run(tmp_path, case_shots())
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
