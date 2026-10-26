@@ -1787,18 +1787,28 @@ def readout_crosstalk(circuits: list[dict[str, Any]], measurements: list[dict[st
     """Descriptive: the largest absolute correlation of each qubit's final outcome with another qubit's, in ro0,
     ro1 and the N = 16 measure arm. ro1 puts every qubit in |1> at once, while the measure arm's neighbor states vary
     from shot to shot, so state-dependent simultaneous-readout crosstalk is not calibrated; independent qubits read
-    out independently, so a correlation beyond the shot noise (about 0.02 at 3000 shots) points at it."""
+    out independently, so a correlation beyond the shot noise (about 0.02 at 3000 shots) points at it.
+
+    Each correlation is the phi coefficient of two 0/1 columns from integer counts, (n n11 - na nb) /
+    sqrt(na (n - na) nb (n - nb)): the numerator and the product under the root are exact integers, so the value is
+    one correctly rounded square root and division on every CPU, where a BLAS covariance sums in a kernel- and
+    thread-dependent order. A column with no spread has no correlation and reads 0."""
     wanted = {"ro0", "ro1", *group_names("measure", TOP_STEPS)}
     out: dict[str, float] = {}
     for c, entry in zip(circuits, measurements, strict=True):
         if c["name"] not in wanted:
             continue
-        bits = np.array(entry[FINAL_KEY], dtype=float)
-        with np.errstate(invalid="ignore", divide="ignore"):
-            phi = np.nan_to_num(np.corrcoef(bits, rowvar=False))
-        np.fill_diagonal(phi, 0.0)
-        for position, qubit in enumerate(qubits_of(c)):
-            out[qubit] = max(out.get(qubit, 0.0), float(np.max(np.abs(phi[position]))))
+        bits = np.array(entry[FINAL_KEY], dtype=np.int64)
+        shots = int(bits.shape[0])
+        ones = [int(v) for v in bits.sum(axis=0)]
+        both = [[int(v) for v in row] for row in bits.T @ bits]
+        for a, qubit in enumerate(qubits_of(c)):
+            largest = 0.0
+            for b in range(len(ones)):
+                spread = ones[a] * (shots - ones[a]) * ones[b] * (shots - ones[b])
+                if b != a and spread > 0:
+                    largest = max(largest, abs((shots * both[a][b] - ones[a] * ones[b]) / math.sqrt(spread)))
+            out[qubit] = max(out.get(qubit, 0.0), largest)
     return {"max_abs_correlation": out, "shot_noise": 1 / math.sqrt(SHOTS)}
 
 
