@@ -150,6 +150,26 @@
             }
           ],
           "scope_sha256": "7c656d08e879396dff13b836f476d1305727d5813709f362fb234ec344b6724f"
+        },
+        {
+          "result": "Revalidated at 2b7690d7 after merging main: docs/README.md added the primorial joint-bounds design row; check_markdown_links.py (core-611) passes and the AGENTS.md Seeds rule links docs/notes/qrng/README.md.",
+          "observed_at": "2026-10-26T03:29:52.921698+00:00",
+          "revision": "2b7690d78bde7ad11ba4d159af9e71ebbe2f5a49",
+          "evidence": [
+            {
+              "ref": "docs/notes/qrng/README.md",
+              "sha256": "c2f6df03fa684c6624478856a200a7233d061cd899e728eb7d608a02b254738d"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "29ef68c4909cf820f0c81da74d120f1989a36da56a6aa77fef8a51d527dbb89e"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "153bdb8802b6af4b9c28c490f79f9d9a4e90a0de6f6c8967e4cbf90e50e5b57f"
+            }
+          ],
+          "scope_sha256": "7c656d08e879396dff13b836f476d1305727d5813709f362fb234ec344b6724f"
         }
       ]
     },

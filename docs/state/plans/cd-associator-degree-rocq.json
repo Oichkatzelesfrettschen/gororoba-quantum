@@ -143,6 +143,26 @@
         }
       ],
       "scope_sha256": "d8736fa33f2306e5677371d9e780ed3928ac9af3827b8a76c563098e848fa707"
+    },
+    {
+      "result": "Revalidated at 2b7690d7 after merging main: research_state.json gained claims primorial-bound-residuals-joint and qd-belenos-teleportation-rehearsal-job-00 and changed only primorial-null-residuals-zz-tilt, so every claim record this plan cites keeps its bytes; core-270 research_state.py --check passes.",
+      "observed_at": "2026-10-26T03:29:52.921698+00:00",
+      "revision": "2b7690d78bde7ad11ba4d159af9e71ebbe2f5a49",
+      "evidence": [
+        {
+          "ref": "proofs/CdAssociatorAnf.v",
+          "sha256": "5fbec4bf0a2160766ee7d7d74c5b5139d65b1c31ada7bbfe5e1dd65abc479d1b"
+        },
+        {
+          "ref": "docs/notes/cd_phase_degree.md",
+          "sha256": "faafde365485f5830b84fdc5b45bc07be0dac43743e2fa226158fa219b51bc15"
+        },
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "04391f498de69b65b74540b639bd2b31b62f045bb8c3ab63292d1b20b84ace4d"
+        }
+      ],
+      "scope_sha256": "d8736fa33f2306e5677371d9e780ed3928ac9af3827b8a76c563098e848fa707"
     }
   ]
 }
