@@ -9,14 +9,14 @@
     "scripts/ascella_heater_coupling.py",
     "scripts/ascella_physical_models.py"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
-    "status": "unresolved",
+    "status": "verified",
     "note": "Every per-heater and heater-coupling family read so far misses job-02. All 56 per-mesh X statistics have been read, so this plan is exploratory until its confirmation step: a QRNG-drawn split holds out 28 meshes, and a family selected or tuned on job-00 plus the 28 exploration meshes is scored once on the 28 held-out meshes. A first look (scratch, before this record) found the block mean loss equal at the anchor mesh and over the perturbed meshes, the dark block output (mode 2) and the outside modes near their dark level in quiet iterations, the outside-click bursts dark-shaped and time-ordered rather than mesh-ordered, no X overdispersion at the anchor mesh (chi-square 6.7 on 7), heater-offset fits predicting leakage (mode 2 plus outside) of 0.007 to 0.12 against an observed bound of 0.0025, and returned phases continuous with no power-of-two grid. Amended before any fit touched the held-out half: the keep rule first scored a family on the exploration meshes it was fitted to, which a many-parameter family passes trivially; it now fits on job-00 alone and scores the unseen meshes over all three block coordinates. Two screens ran from scratch before the amendment, phase quantization (120 resolutions by 8 origins, best per-mesh X correlation 0.685 at r 0.35 against a scrambled-origin null whose 97.5 percentile reached 0.677 on a quarter of the trials) and seven scalar mesh features (every |r| at most 0.17, p at least 0.38); the exploration record retains both with matched nulls. A scratch screen of coherent input-stage admixture (an amplitude alpha into other input waveguides, which reaches the outputs through each mesh's unconstrained columns) followed the amendment and is to be retained with the families: admixture into input modes 1 and 2, fitted on job-00, predicts an exploration X spread of 0.0093 and leakage of 0.0005 but a per-mesh X correlation of 0.17; admixture into all eleven other inputs runs to its bounds on job-00 and predicts leakage of 0.23. Block-conditioned likelihoods are blind to leakage, so the families move to the twelve-output likelihood. Two further scratch screens on the exploration half, to be retained with the twelve-output likelihood: in quiet iterations the exploration meshes add about 3.5 counts per iteration to the dark block output (4.3 against 0.8 at the anchor) and about 3.5 to all eight outside modes together (18.2 against 14.7, Poisson dispersion 15.5 on 11), so the mesh-dependent leak concentrates in the logical block where an error spread over the twelve-mode mesh would send about eight times more outside; and mode-2 counts follow neither the bright block modes' counts nor their shares (|rho| at most 0.23, p at least 0.25), which rules out detector crosstalk from the neighbors as its source."
   },
   "scope": "Offline analysis of the retained Ascella jobs 00, 01 and 02 with local simulation only (Perceval SLOS, Naive and NoiseModel on this host; no provider job, emulator or credits). Steps: (1) the split: one ANU QRNG draw orders the 56 perturbed meshes, the first 28 form the exploration half and the rest the held-out half, recorded before any new family is fitted; (2) a retained decomposition record of job-02's block light (mean versus mesh-dependent deviation, noise-whitened covariance spectrum at the anchor and over the perturbed meshes, over all and over quiet iterations), the outside-block clicks and every static job-00 fit's predicted leakage; (3) a retained exploration record holding every screen run on the exploration half with its trial count and a null matched to that count: heater-phase quantization (resolution r and grid origin, Perceval phase_imprecision semantics) against per-heater scrambled grid origins, scalar mesh-power features, mode-2 overdispersion and its relation to the X deviation (coherent error leaks at second order where noise leaks at first), a mesh-independent nuisance fitted across job-00's configurations first (per-mode detection efficiency, uniform dephasing, Perceval NoiseModel transmittance and g2) and mesh families fitted on top of it; (4) confirmation: each kept family is fitted once on job-00 with its nuisance and scored on the held-out half by the joint quadratic form of every mesh's three block-fraction residuals in counting plus shared fitted-prediction covariance, shortfall at or above the chi-square 0.999 quantile on 84 (3 per mesh), predicted below the 0.97 quantile with median variance ratio at most 1. A family is kept when, fitted on job-00 alone with the nuisance, the same quadratic form on the exploration half falls below the 0.999 quantile on 84. If none is kept, the plan closes with the decomposition and the exploration record. Every family assumes the per-mesh deviation is a deterministic function of the returned mesh; reproducibility is shown only at seed 0 (job-00 against job-01, the anchors), and only repeats of nonzero seeds, a hardware case for the owner, would test it.",
   "owner": "ascella signed-coherence analysis",
-  "next_action": "Run the source and detector screen through Perceval's NoiseModel (g2, transmittance, per-mode detector efficiency) under the twelve-output likelihood; with no family kept, close the plan on the decomposition and exploration records.",
+  "next_action": "None; plan ascella-seed-repeat-case tests whether each served mesh's error repeats, and a model of the map from a served mesh to its error is a new plan.",
   "related": [
     "ascella-heater-coupling-families",
     "ascella-signed-coherence-conformance"
@@ -74,19 +74,75 @@
       "id": "exploration-families",
       "action": "Run every screen and family of the scope on job-00 plus the exploration half, each fitted family on job-00 alone with the nuisance and scored on the exploration half over the three block coordinates.",
       "acceptance": "A retained exploration record lists every screen with its trial count and matched null, each family's fit and exploration-half quadratic form on 84, and the families kept for confirmation.",
-      "state": "doing",
+      "state": "done",
       "depends_on": [
         "split"
+      ],
+      "receipts": [
+        {
+          "result": "mesh-exploration.json retains the quantization, scalar-feature, dark-output and dephasing screens with matched nulls; twelve-output.json the output and input stages and source-detector.json the detector-efficiency and photon-bunching families, each fitted on job-00 and scored on the 28 exploration meshes; every family reads shortfall and none is kept, and the observed fractions about their own mean form 466 on 84 against 129.8, beyond any mesh-independent family.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/mesh-exploration.json",
+              "sha256": "70fc19a8c0fe3f97f54947d45f850fd545655161c640882b51822e7b0333a80d"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/twelve-output.json",
+              "sha256": "e675b00a4d9d546a839aae1136e471c9328275a36c6b45624e5eebcb8ad1c5ee"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/source-detector.json",
+              "sha256": "2ce2e64dd1e4f4ad0321b669f65d59535fe555d63ebdcd6055c7af06a6e4fd3c"
+            }
+          ],
+          "observed_at": "2026-10-26T04:08:16+00:00",
+          "revision": "28bc0ab050504180800870b9e19a44565b05ed29",
+          "scope_sha256": "85bd3083d630f90d778c29a1b2da8f90d8bf7f877e24d53fe348ad9e78d42736"
+        }
       ]
     },
     {
       "id": "confirmation",
       "action": "Score each kept family once on the held-out half.",
       "acceptance": "A retained confirmation record with each kept family's held-out reading, or a statement that none was kept.",
-      "state": "todo",
       "depends_on": [
         "exploration-families"
+      ],
+      "state": "done",
+      "receipts": [
+        {
+          "result": "None was kept: twelve-output.json and source-detector.json list no kept family, and mesh-exploration.json keeps no screen, so no held-out mesh was scored.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/twelve-output.json",
+              "sha256": "e675b00a4d9d546a839aae1136e471c9328275a36c6b45624e5eebcb8ad1c5ee"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/source-detector.json",
+              "sha256": "2ce2e64dd1e4f4ad0321b669f65d59535fe555d63ebdcd6055c7af06a6e4fd3c"
+            }
+          ],
+          "observed_at": "2026-10-26T04:08:43+00:00",
+          "revision": "28bc0ab050504180800870b9e19a44565b05ed29",
+          "scope_sha256": "6778956c71727879a56c8a1c1faf55f4e859d854ab3e6464f87d77a6891ab22e"
+        }
       ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The mesh-independent block deficit, the coherent mesh-dependent error confined near the logical block and its exclusion of incoherent dephasing are recorded; every exploration screen and family, from phase quantization and scalar mesh features to output and input stages, detector efficiency and photon bunching, misses the 28 exploration meshes, so no family is kept and the 28 held-out meshes stay unspent.",
+  "receipts": [
+    {
+      "result": "Split, decomposition, exploration and the confirmation's no-family statement are done; every record replays under its gate.",
+      "observed_at": "2026-10-26T04:08:26+00:00",
+      "revision": "28bc0ab050504180800870b9e19a44565b05ed29",
+      "evidence": [
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/source-detector.json",
+          "sha256": "2ce2e64dd1e4f4ad0321b669f65d59535fe555d63ebdcd6055c7af06a6e4fd3c"
+        }
+      ],
+      "scope_sha256": "fefcedf41ab6be723960837d490e80a8fee9432fbd9139bbe2ed7d06f648d9f1"
     }
   ]
 }
