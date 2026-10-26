@@ -50,7 +50,7 @@ plan_args() {
 	printf '%s\n' --family n21-orbit-rca --shot-allocation uniform --objective minimum_charge --optimize \
 		--backends ibm_fez,ibm_kingston,ibm_marrakesh --shots 8192 --seeds 8 --max-pending 200 \
 		--min-remaining-seconds 60.0 --max-execution-seconds 30 --rep-delay "$1" --no-isolated-reference \
-		--cross-group-buffer --shot-tiers 8192 --replica-tiers 24 --replica-floor 0.45 --optimizer-candidates 6 --model-shots 131072 \
+		--cross-group-buffer --shot-tiers 8192 --replica-tiers 24 --replica-floor 0.45 --optimizer-candidates 2 --model-shots 32768 \
 		--precision 0.08 --alpha 0.05 --power 0.8 --simulation-alpha 0.01 --job-overhead-seconds 2.3 \
 		--classical-latency-us 20.0 --reserve-seconds 0.0 --max-total-execution-seconds 30.0 --init-herald \
 		--window-doses-dt 0,1752,3500,5252,7000,10500,14000 --seed-transpiler "qrng:$draw#0" --seed-simulator "qrng:$draw#1" \
