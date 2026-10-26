@@ -2394,6 +2394,52 @@
       "supersedes": []
     },
     {
+      "id": "ascella-signed-coherence-fixed-mesh-offsets",
+      "statement": "Static heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on job-00 plus the 28 exploration meshes of jobs 02 and 03, predict the 28 held-out served meshes' pooled X statistics at Pearson r 0.318 (one-sided t p 0.050 on 26 degrees of freedom), below the preregistered alpha 0.01: not carried. The fit explains at most 10.6 % of the compilation-induced variance against the 0.978 attenuation ceiling, overshoots the spread (predicted 0.0147 against observed 0.0102) and reads shortfall in both quadratic forms. The coupler offsets alone fail the exploration leave-one-out gate (sum 1133 against 56.9, r 0.08).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, 56 served meshes split by mesh-split.json, two element-offset families. The held-out predictions were frozen and their digest committed in plan ascella-fixed-mesh-confirmation before scoring, after the plan ascella-fixed-mesh-error-model gates had barred its quadratic-form reading; the held-out X statistics had been seen through job-02's readings and job-03's P1. The exploration leave-one-out correlation of 0.59 is exploratory. The result bounds what static element offsets on the returned circuit carry; it names no mechanism for the fixed per-mesh error, and both plans spent the held-out half.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+          "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/results.json",
+          "sha256": "337f9e9539e332f1713679b7a94501700ef9edbc308cfe9feea6e622c51a04ff"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+          "sha256": "c3e1d2c5c8d68a173d1635a017f379cfb931a6c5d26a12943577d83446660532"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/fixed-mesh-frozen-predictions.json",
+          "sha256": "648fb4043ac2bb559c5020362519bc6bfdb26d82bcbbb48352e5760edea85475"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+          "sha256": "a40c8bf70178b0ef3331fc5dad49836467e8f5efd5562ad53b6b71e488ba2636"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-fixed-mesh-error-replay": "replay",
+        "core-ascella-signed-coherence-fixed-mesh-confirmation-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-compilations",
+        "qd-ascella-signed-coherence-seed-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-seed-repeat"
+      ],
+      "supersedes": []
+    },
+    {
       "id": "ascella-signed-coherence-compilation-dependence",
       "statement": "Theta2-x-arm0 run 64 times on qpu:ascella (job 788097fb), at 56 QRNG-drawn compilation seeds that served 56 distinct meshes (heaters a median 1.58 rad from job-00's) and 8 seed-0 anchors that served job-00's mesh, reads a block-conditioned X statistic that moves with the served mesh: the perturbed dispersion per degree of freedom is 7.08 times the anchors' (label-permutation p 0.0049, alpha 0.01), the perturbed statistics span 0.865 to 0.915 around a mean of 0.888 against the ideal 0.9045 and the anchors' 0.883. Every family fitted on job-00 misses the 56 meshes: the residuals' joint quadratic forms in counting plus shared fitted-prediction covariance read 1150 (static heater offsets), 649 (drive-linear), 771 (order-1 polynomial) and 201 (order-1 harmonic) against the chi-square 0.999 quantile 94.5. Refitted on job-00 plus the perturbed iterations, every family is identified on the 19 training-only folds (median variance ratios 0.22 to 0.86) and keeps the left-out X shortfall (sums 85 to 377 on 10), three of four also on Y.",
       "domain": "hardware",

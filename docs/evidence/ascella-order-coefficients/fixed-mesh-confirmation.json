@@ -1,0 +1,299 @@
+{
+ "affine": {
+  "intercept": 0.6899185310326381,
+  "slope": 0.22041428070336694
+ },
+ "explained_share": {
+  "compilation_variance": 0.00014114993759659365,
+  "mean_counting_variance": 6.537557824849652e-06,
+  "r_ceiling": 0.9776164090444731,
+  "r_squared": 0.10085113574640459,
+  "share_of_ceiling": 0.10552219790109159
+ },
+ "family": "heater_0.3_coupler_0.1_offsets",
+ "meshes": 28,
+ "plan": "docs/state/plans/ascella-fixed-mesh-confirmation.json",
+ "primary": {
+  "alpha": 0.01,
+  "degrees_of_freedom": 26,
+  "p_one_sided": 0.049803922738894106,
+  "pearson_r": 0.31757067834799324,
+  "reading": "not carried",
+  "t": 1.7076987899228768
+ },
+ "quadratic_forms": {
+  "full": {
+   "median_variance_ratio": 2.0876089141479515,
+   "quadratic_form": 638.0259039359983,
+   "reading": "shortfall"
+  },
+  "scatter": {
+   "constant": -0.008207841736478531,
+   "degrees_of_freedom": 27,
+   "predicted_threshold": 42.406553793471616,
+   "quadratic_form": 505.7441817429083,
+   "reading": "shortfall",
+   "shortfall_threshold": 55.47602020574521
+  }
+ },
+ "rows": [
+  {
+   "counting_variance": 5.5393791113419514e-06,
+   "mesh": [
+    "theta2-x-arm0-c03"
+   ],
+   "observed": 0.9030862181580667,
+   "predicted": 0.9021753235195342,
+   "prediction_variance": 3.209392833376155e-05
+  },
+  {
+   "counting_variance": 6.796359078960317e-06,
+   "mesh": [
+    "theta2-x-arm0-c06"
+   ],
+   "observed": 0.8874087357499679,
+   "predicted": 0.9180152643367119,
+   "prediction_variance": 6.468601010963924e-06
+  },
+  {
+   "counting_variance": 6.561115289778976e-06,
+   "mesh": [
+    "theta2-x-arm0-c09"
+   ],
+   "observed": 0.8795809384044678,
+   "predicted": 0.9036495201403992,
+   "prediction_variance": 1.390782819282486e-05
+  },
+  {
+   "counting_variance": 7.048473793853126e-06,
+   "mesh": [
+    "theta2-x-arm0-c10"
+   ],
+   "observed": 0.879763226045135,
+   "predicted": 0.8906975242009775,
+   "prediction_variance": 1.4488014191141908e-05
+  },
+  {
+   "counting_variance": 6.406190666762845e-06,
+   "mesh": [
+    "theta2-x-arm0-c14"
+   ],
+   "observed": 0.8900069823797593,
+   "predicted": 0.906956969688404,
+   "prediction_variance": 1.0554542578877295e-05
+  },
+  {
+   "counting_variance": 6.378564126291813e-06,
+   "mesh": [
+    "theta2-x-arm0-c15"
+   ],
+   "observed": 0.888276038994356,
+   "predicted": 0.879571538636767,
+   "prediction_variance": 1.3944605767939175e-05
+  },
+  {
+   "counting_variance": 5.953500661178919e-06,
+   "mesh": [
+    "theta2-x-arm0-c18"
+   ],
+   "observed": 0.8949367088607595,
+   "predicted": 0.8610743847851662,
+   "prediction_variance": 1.8770363145024808e-05
+  },
+  {
+   "counting_variance": 7.097058636249348e-06,
+   "mesh": [
+    "theta2-x-arm0-c20"
+   ],
+   "observed": 0.8786447026773933,
+   "predicted": 0.8847211055807748,
+   "prediction_variance": 1.1776455154529948e-05
+  },
+  {
+   "counting_variance": 6.898518171505443e-06,
+   "mesh": [
+    "theta2-x-arm0-c21"
+   ],
+   "observed": 0.875636393496469,
+   "predicted": 0.9028204667457731,
+   "prediction_variance": 2.667086538177212e-05
+  },
+  {
+   "counting_variance": 6.302363904905304e-06,
+   "mesh": [
+    "theta2-x-arm0-c28"
+   ],
+   "observed": 0.8952259023705295,
+   "predicted": 0.8926920631663967,
+   "prediction_variance": 6.335168494835686e-06
+  },
+  {
+   "counting_variance": 6.291003901070359e-06,
+   "mesh": [
+    "theta2-x-arm0-c30"
+   ],
+   "observed": 0.8876024297769987,
+   "predicted": 0.8772404233325862,
+   "prediction_variance": 1.824089297563002e-05
+  },
+  {
+   "counting_variance": 7.964551663906495e-06,
+   "mesh": [
+    "theta2-x-arm0-c31"
+   ],
+   "observed": 0.878336574155913,
+   "predicted": 0.8835415395305323,
+   "prediction_variance": 1.8395727842950138e-05
+  },
+  {
+   "counting_variance": 6.835285314113065e-06,
+   "mesh": [
+    "theta2-x-arm0-c34"
+   ],
+   "observed": 0.8823072520644265,
+   "predicted": 0.9049748750876054,
+   "prediction_variance": 6.72715957031601e-06
+  },
+  {
+   "counting_variance": 4.643070608063851e-06,
+   "mesh": [
+    "theta2-x-arm0-c36"
+   ],
+   "observed": 0.9126666121514433,
+   "predicted": 0.9053314186869961,
+   "prediction_variance": 1.4238746713909796e-05
+  },
+  {
+   "counting_variance": 6.52013656438331e-06,
+   "mesh": [
+    "theta2-x-arm0-c39"
+   ],
+   "observed": 0.8873608382449247,
+   "predicted": 0.9015838097023854,
+   "prediction_variance": 1.1477188874731326e-05
+  },
+  {
+   "counting_variance": 6.20259909924813e-06,
+   "mesh": [
+    "theta2-x-arm0-c42"
+   ],
+   "observed": 0.8943939582555293,
+   "predicted": 0.8956933740825308,
+   "prediction_variance": 1.4848841009559326e-05
+  },
+  {
+   "counting_variance": 6.099623210118935e-06,
+   "mesh": [
+    "theta2-x-arm0-c43"
+   ],
+   "observed": 0.8949314953349584,
+   "predicted": 0.8960172327995046,
+   "prediction_variance": 4.2099456819846505e-06
+  },
+  {
+   "counting_variance": 6.985007080066787e-06,
+   "mesh": [
+    "theta2-x-arm0-c45"
+   ],
+   "observed": 0.8808627322583286,
+   "predicted": 0.8991503008944723,
+   "prediction_variance": 7.43570917945239e-06
+  },
+  {
+   "counting_variance": 6.935580542316947e-06,
+   "mesh": [
+    "theta2-x-arm0-c47"
+   ],
+   "observed": 0.8764710689767898,
+   "predicted": 0.8832017473500532,
+   "prediction_variance": 2.8712797602522134e-05
+  },
+  {
+   "counting_variance": 6.027261747280825e-06,
+   "mesh": [
+    "theta2-x-arm0-c49"
+   ],
+   "observed": 0.9000575799950645,
+   "predicted": 0.9198091276847477,
+   "prediction_variance": 9.60638208454896e-06
+  },
+  {
+   "counting_variance": 6.795431921989711e-06,
+   "mesh": [
+    "theta2-x-arm0-c51"
+   ],
+   "observed": 0.887344609741186,
+   "predicted": 0.880620191808316,
+   "prediction_variance": 1.7864886070962757e-05
+  },
+  {
+   "counting_variance": 7.541738893200945e-06,
+   "mesh": [
+    "theta2-x-arm0-c54"
+   ],
+   "observed": 0.8687389933243232,
+   "predicted": 0.8991198473330242,
+   "prediction_variance": 7.131703400462667e-06
+  },
+  {
+   "counting_variance": 6.6807333216205985e-06,
+   "mesh": [
+    "theta2-x-arm0-c57"
+   ],
+   "observed": 0.8850891477723496,
+   "predicted": 0.8891057326230895,
+   "prediction_variance": 5.186621388380947e-06
+  },
+  {
+   "counting_variance": 6.100210806281862e-06,
+   "mesh": [
+    "theta2-x-arm0-c59"
+   ],
+   "observed": 0.8890447120937139,
+   "predicted": 0.9048588085633189,
+   "prediction_variance": 8.601951991218595e-06
+  },
+  {
+   "counting_variance": 5.769008688639376e-06,
+   "mesh": [
+    "theta2-x-arm0-c60"
+   ],
+   "observed": 0.8987906896103334,
+   "predicted": 0.9119101270868876,
+   "prediction_variance": 1.0364388514282707e-05
+  },
+  {
+   "counting_variance": 8.205226498652386e-06,
+   "mesh": [
+    "theta2-x-arm0-c61"
+   ],
+   "observed": 0.8639505430816125,
+   "predicted": 0.8641851744410389,
+   "prediction_variance": 5.27507287237149e-05
+  },
+  {
+   "counting_variance": 6.703052880682629e-06,
+   "mesh": [
+    "theta2-x-arm0-c62"
+   ],
+   "observed": 0.8843059582635684,
+   "predicted": 0.9006305750834177,
+   "prediction_variance": 2.864774960082506e-05
+  },
+  {
+   "counting_variance": 6.70519203415414e-06,
+   "mesh": [
+    "theta2-x-arm0-c63"
+   ],
+   "observed": 0.8896752884656629,
+   "predicted": 0.8697805177892,
+   "prediction_variance": 2.0429883759030692e-05
+  }
+ ],
+ "schema": "ascella-fixed-mesh-confirmation-v1",
+ "spearman": 0.2928297755883963,
+ "spread": {
+  "observed_sd": 0.01022184788000993,
+  "predicted_sd": 0.014727535597357339
+ }
+}
