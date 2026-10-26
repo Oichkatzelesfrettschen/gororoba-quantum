@@ -1,0 +1,438 @@
+{
+  "chart_count": 12870,
+  "chart_domain": "N_sigma intersect {pf(A_I,I) != 0}",
+  "chart_indexing": "all 8-subsets I of {0,...,15}",
+  "coverage_argument": "rank(A)=8 on N_sigma; the principal-rank theorem for skew matrices gives an order-eight principal block with nonzero Pfaffian at every point",
+  "degeneracy_locus": "pf(B_I)=0, equivalently det(B_I)=pf(B_I)^2=0",
+  "fixture_scope": "all 21 coordinate isotropic two-planes for each sign",
+  "mutation": "",
+  "mutation_control": {
+    "detected": true,
+    "frame_identity_failure_count": 12,
+    "mutation": "flip_border_sign"
+  },
+  "orbits": [
+    {
+      "bordered_rank": 8,
+      "coverage_witness": true,
+      "fixture_count": 21,
+      "frame_columns": 8,
+      "frame_identity_failure_count": 0,
+      "frame_identity_verified": true,
+      "frame_rank_verified": true,
+      "left_kernel_verified": true,
+      "orbit": "N_+",
+      "parameterization_verified": true,
+      "pass": true,
+      "real_frame_rank_verified": true,
+      "representative": {
+        "coverage_witness": true,
+        "fixture": [
+          1,
+          2
+        ],
+        "frame": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "I",
+            "0",
+            "0",
+            "I",
+            "0",
+            "0",
+            "1"
+          ],
+          [
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "-1",
+            "0"
+          ],
+          [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        ],
+        "frame_identity_verified": true,
+        "frame_rank_verified": true,
+        "left_kernel_verified": true,
+        "orbit": "N_+",
+        "parameterization_verified": true,
+        "pass": true,
+        "pivot_determinant": "16",
+        "pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          8,
+          9
+        ],
+        "pivot_pfaffian": "4",
+        "real_frame_rank_verified": true
+      },
+      "symbolic_parameterization": {
+        "isotropy_equations": true,
+        "middle_coordinate_zero": true,
+        "second_half_sign": true,
+        "unit_norm_equation": true
+      }
+    },
+    {
+      "bordered_rank": 8,
+      "coverage_witness": true,
+      "fixture_count": 21,
+      "frame_columns": 8,
+      "frame_identity_failure_count": 0,
+      "frame_identity_verified": true,
+      "frame_rank_verified": true,
+      "left_kernel_verified": true,
+      "orbit": "N_-",
+      "parameterization_verified": true,
+      "pass": true,
+      "real_frame_rank_verified": true,
+      "representative": {
+        "coverage_witness": true,
+        "fixture": [
+          1,
+          2
+        ],
+        "frame": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "I",
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "-1"
+          ],
+          [
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "1",
+            "0"
+          ],
+          [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        ],
+        "frame_identity_verified": true,
+        "frame_rank_verified": true,
+        "left_kernel_verified": true,
+        "orbit": "N_-",
+        "parameterization_verified": true,
+        "pass": true,
+        "pivot_determinant": "16",
+        "pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          8,
+          9
+        ],
+        "pivot_pfaffian": "4",
+        "real_frame_rank_verified": true
+      },
+      "symbolic_parameterization": {
+        "isotropy_equations": true,
+        "middle_coordinate_zero": true,
+        "second_half_sign": true,
+        "unit_norm_equation": true
+      }
+    }
+  ],
+  "parameterization": "z=(w,0,sigma*i*w), w=a+i*b, a.a=b.b, a.b=0; on the unit section a.a=b.b=1/4",
+  "pass": true,
+  "polynomial_frame": "in pivot/free order, Fhat_I=[-adj(B_I) C_I; det(B_I) I_8]",
+  "rational_frame": "in pivot/free order, F_I=[-B_I^(-1) C_I; I_8]",
+  "schema": "a5-nullity-sixteen-kernel-frames-v1",
+  "source_sha256": "253d286d2a9e28c0824239ab7938f2d009634386d5de448f64bc0d2fab7cb7f9"
+}

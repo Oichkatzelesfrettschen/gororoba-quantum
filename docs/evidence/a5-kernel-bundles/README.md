@@ -1,14 +1,15 @@
-# A_5 kernel bundles: exact transport and symmetry evidence
+# A_5 kernel bundles: exact transport, symmetry, and Pfaffian frames
 
 This evidence directory executes the
 [kernel-bundle program](../../design/a5-kernel-bundles-program.md). The current result corrects the complex transport
-used to represent the real annihilator kernel, fixes the action of the canonical complex structure, and computes the
-constant kernel-pencil symmetry algebra and a visible twelve-component subgroup. An exhaustive component census,
-closed-form frames, transition atlas, unit-section topology, and characteristic classes remain open.
+used to represent the real annihilator kernel, fixes the action of the canonical complex structure, computes the
+constant kernel-pencil symmetry algebra and a visible twelve-component subgroup, and gives an exact finite family of
+rational kernel frames covering `N_+` and `N_-`. An exhaustive component census, frames on the five nullity-twelve
+pieces, a transition atlas, the remaining unit-section topology, and characteristic classes remain open.
 
 Every computation uses rational or Gaussian-rational arithmetic. [`result.json`](result.json) is the output of
-[`kernel_symmetry.py`](kernel_symmetry.py) `--out`. The focused contracts and both mutation controls run without random
-input.
+[`kernel_symmetry.py`](kernel_symmetry.py) `--out`. [`frames-result.json`](frames-result.json) is the output of
+[`kernel_frames.py`](kernel_frames.py) `--out`. The focused contracts and mutation controls run without random input.
 
 ## Conventions
 
@@ -24,6 +25,90 @@ where `C_z` is the imaginary block of left multiplication by `z` in the complexi
 names `B9`, `V`, `VB`, `Vap`, `Vam`, `Np`, and `Nm` are the open-orbit representatives B9, V, V intersect B9,
 V^a_+, V^a_-, N_+, and N_- from the
 [regularity record](../a5-strata-regularity/README.md#conventions).
+
+## Principal-Pfaffian frames cover `N_+` and `N_-`
+
+Let `sigma` be `+1` or `-1`. The original and split coordinates obey
+
+`z_k = i^(popcount(k)) z'_k`.
+
+On `N_sigma`, the split coordinates satisfy `mu'=0`, `v'=sigma u'`, and `eta(u')=0`. Put
+
+`w_j=z_j=i^(popcount(j))u'_j`, for `1 <= j <= 7`.
+
+Since `popcount(8+j)=1+popcount(j)`, every point of the cone has the exact original-coordinate form
+
+`z=(w,0,sigma i w)`, with `w dot w=0` and `w!=0`.
+
+Conversely, every such `w` gives a point of `N_sigma`. Writing `w=a+i b` with real `a,b` turns `w dot w=0` into
+
+`a dot a=b dot b` and `a dot b=0`.
+
+The squared norm of `z` is `2(a dot a+b dot b)`. The unit section therefore has
+`a dot a=b dot b=1/4`; the pair `(2a,2b)` is an ordered orthonormal two-frame in `R^7`. This recovers the
+`V_2(R^7)` description directly from the repository's coordinate change.
+
+Let `A_sigma(a,b)=A(z,conjugate(z))`, indexed by the scalar coordinate `0` and the fifteen imaginary coordinates.
+The matrix is skew and has rank eight everywhere on `N_sigma`: the nullity-sixteen theorem gives complex kernel
+dimension eight under the proved bordered transport. For an eight-element index set `I`, let `J` be its complement
+and write, in `I,J` order,
+
+```text
+A_sigma = [[B_I, C_I],[-C_I^T,D_I]].
+```
+
+Define the chart
+
+`U_I={z in N_sigma: pf(B_I)!=0}`.
+
+On `U_I`, `B_I` is invertible. The rank of the full matrix already equals the rank of `B_I`, so its Schur complement
+vanishes:
+
+`D_I+C_I^T B_I^(-1) C_I=0`.
+
+Consequently the columns of
+
+`F_I=[-B_I^(-1) C_I; I_8]`
+
+in `I,J` order satisfy `A_sigma F_I=0`. Their free rows form `I_8`, so they are independent and constitute the entire
+complex kernel. The polynomially cleared frame is
+
+`Fhat_I=[-adj(B_I) C_I; det(B_I) I_8]`.
+
+The rational frame's exact degeneracy locus is `pf(B_I)=0`, equivalently
+`det(B_I)=pf(B_I)^2=0`. The inequation remains part of the chart: the cleared columns alone carry no claim on that
+locus.
+
+The 12,870 choices of `I` cover both cones. A skew matrix of rank eight has a nonzero order-eight principal minor:
+choose a nonzero entry to obtain an invertible principal two-block, eliminate that pair by congruence, and repeat on
+the residual skew matrix. Four iterations select eight original coordinate indices, and the Schur determinant
+identity makes their principal block invertible. Thus some `pf(B_I)` is nonzero at every point of either cone. The
+argument supplies coverage of the parameterized real family; the finite fixture sweep is an implementation check,
+not the coverage proof.
+
+To recover a frame of the requested real annihilator, write a complex bordered vector as
+`xi=(xi_0,...,xi_15)`. The inverse of `psi=conjugate o phi` is
+
+```text
+r_j=Re(xi_j),
+s_0=-Im(xi_0),
+s_j=Im(xi_j) for 1 <= j <= 15.
+```
+
+If `f_1,...,f_8` are the columns of `F_I`, then
+
+`psi^-1(f_1), psi^-1(i f_1), ..., psi^-1(f_8), psi^-1(i f_8)`
+
+are sixteen real independent columns in `ker_R L_y`. The transport identity proves annihilation for every point of
+every chart. The exact replay also constructs `L_y` from `cd_core` and checks these sixteen columns directly on all
+21 coordinate isotropic two-planes `w=e_j+i e_k`, `j<k`, for each sign. At `w=e_1+i e_2`, both signs admit the pivot
+`I={0,1,2,3,4,5,8,9}`, with Pfaffian `4` and determinant `16`. A mutation that flips one top-border coefficient makes
+the corresponding complex frame fail annihilation.
+
+The falsifier was a parameter outside the stated cone, a point with every order-eight principal Pfaffian zero, a
+nonzero-Pfaffian chart whose frame lost rank or escaped either `ker A_sigma` or `ker_R L_y`, a different denominator
+locus, or a surviving border mutation. None occurred. This result completes the closed-form-frame deliverable only
+for `N_+` and `N_-`; it makes no transition, characteristic-class, or nullity-twelve-piece claim.
 
 ## The transport uses the conjugated input
 
@@ -156,11 +241,11 @@ algebra automorphisms. An exhaustive normalizer census remains open.
 ## Scope
 
 The exact solve establishes the identity-component Lie algebra of constant linear kernel-pencil symmetries, its orbit
-dimensions, and twelve distinct visible components. The computation has not proved that those components exhaust the
-group and has not classified point-dependent kernel transports, a second anticommuting complex structure, a
-closed-form frame, or a bundle invariant. The compact symmetry orbits are strictly smaller than the complex
-rank-stratum orbits in general, so the rank-stratum orbit labels do not make the kernel bundles homogeneous under the
-constant symmetry group.
+dimensions, and twelve distinct visible components. The Pfaffian charts establish closed-form frames on `N_+` and
+`N_-`. The computation has not proved that the visible components exhaust the group and has not classified
+point-dependent kernel transports, a second anticommuting complex structure, frames on the nullity-twelve pieces, or
+a bundle invariant. The compact symmetry orbits are strictly smaller than the complex rank-stratum orbits in general,
+so the rank-stratum orbit labels do not make those kernel bundles homogeneous under the constant symmetry group.
 
 ## Replay
 
@@ -173,4 +258,9 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/kernel_symmetry.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/kernel_symmetry.py \
     --out docs/evidence/a5-kernel-bundles/result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_kernel_frames.py
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/kernel_frames.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/kernel_frames.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/kernel_frames.py \
+    --out docs/evidence/a5-kernel-bundles/frames-result.json
 ```
