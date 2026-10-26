@@ -373,6 +373,27 @@ near k = 1.2 on independent errors. The pooling is not conservative for a shared
 detectable departure above is the shift at which the rule fires, not a guarantee of its false-positive rate under a
 shared error; the prx-x3 and model-error rows are the evidence for that.
 
+**Reach, sidedness and scope of the verdict, fixed before any data.**
+
+- *Reach in the physical parameter.* The sweep injects a departure as `eps`, the fraction of z each mid-circuit
+  measurement loses to transitions (`bloch_z`). On the ideal law P0 = (1 + ((1 - 2 eps) cos(THETA/16))^16)/2 the
+  detectable shifts of 0.049 and 0.073 at N = 16 correspond to eps of 0.0042 and 0.0064 per measurement. Read instead
+  as incomplete pinching on the ideal noiseless chain, where each measurement keeps a fraction eta of the transverse
+  coherence, the same shifts correspond to eta of 0.22 and 0.31. A `none` verdict therefore bounds the measurement
+  to a transition probability below about 0.006 per measurement, or to less than about 30 % of the coherence
+  surviving each measurement, and no tighter. The 0.04 gate-model floor limits this reach, not the shot count: with
+  propagation ratios of order 1, no shot count brings the detectable shift much below 0.05 on this chip.
+- *One-sided in practice.* At the floored departure standard error of about 0.048, `exceeds_prediction` cannot fire
+  on a single qubit, because the planning P0 near 0.93 plus three standard errors passes 1. Pooled, it sits near that
+  ceiling. The test reads `departs_below` or `none`.
+- *Scope of `attributed`.* `attributed` holds only while every gate-model error class stays within the diagnostic
+  scatter that sets the floor. Two classes that cancel in the unitary arm at twice the floor, the same way on every
+  qubit, can still produce a false attribution. An `attributed` verdict enters the research registry as exploratory.
+  A stronger claim needs a confirmation run with a different pulse construction.
+- *Settle comparison.* The settle arm's tail gap carries its delta-method standard error with no gate-model floor
+  (`evaluate_qubit`). The settle and measure arms play identical pulses, so their difference is close to immune to
+  gate-model error.
+
 **Cross-check.** `scripts/iqm_measurement_sequence_aer_check.py run CASE_DIR --calibration-dir DIR` runs every arm and N
 of every qubit through an independent Aer density-matrix simulation built on `scripts/iqm_sim.py`'s calibration noise
 model (prx depolarizing error per qubit) with thermal relaxation on every wait (`iqm_signed_probe.relaxation`), the
