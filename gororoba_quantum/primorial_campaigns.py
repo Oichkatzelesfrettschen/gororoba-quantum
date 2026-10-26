@@ -34,6 +34,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 
 import coherence_probes as cp
+import parallel
 import primorial_tomography as tomography
 from coherence_probes import STRUCTURE_PRESERVING_CONTRACT
 from experiments import Group, Member
@@ -77,33 +78,32 @@ def readout_arm(label: int) -> QuantumCircuit:
     return circuit
 
 
-def _ideal(circuit: QuantumCircuit) -> np.ndarray:
-    from qiskit.quantum_info import Statevector
+class IdealLaw:
+    """Picklable worker: one bound circuit -> its noise-free outcome law."""
 
-    return np.asarray(Statevector(circuit.remove_final_measurements(inplace=False)).probabilities(), dtype=float)
+    def __call__(self, circuit: QuantumCircuit) -> np.ndarray:
+        return cp.ideal_distribution(circuit)
 
 
 def members() -> tuple[Member, ...]:
+    """Every gap-88 member, its ideal law computed through the process pool in member order."""
     signal = angles(tomography.cost_table("gap88"))
-    out: list[Member] = []
+    planned: list[tuple[str, QuantumCircuit, dict[Parameter, float] | None, QuantumCircuit]] = []
     for j, x in tomography.edges():
         for basis in ("X", "Y"):
             circuit, parameters = parametrized_arm(j, x, basis)
             for arm in ARMS:
                 values = signal if COSTS[arm].startswith("gap88") else dict.fromkeys(signal, 0.0)
                 binding = {parameters[mask]: values[mask] for mask in parameters}
-                out.append(
-                    Member(
-                        f"{arm}_{j}_{x}_{basis}",
-                        circuit,
-                        _ideal(circuit.assign_parameters(binding)),
-                        binding=binding,
-                    )
-                )
+                planned.append((f"{arm}_{j}_{x}_{basis}", circuit, binding, circuit.assign_parameters(binding)))
     for label in range(8):
         circuit = readout_arm(label)
-        out.append(Member(circuit.name, circuit, _ideal(circuit)))
-    return tuple(out)
+        planned.append((circuit.name, circuit, None, circuit))
+    ideals = parallel.ordered_map(IdealLaw(), [bound for *_, bound in planned])
+    return tuple(
+        Member(name, circuit, ideal, binding=binding)
+        for (name, circuit, binding, _), ideal in zip(planned, ideals, strict=True)
+    )
 
 
 def rows_of(distributions: Mapping[str, np.ndarray]) -> list[dict[str, Any]]:
@@ -162,7 +162,9 @@ def gap88_group() -> Group:
 
 def coherence_probe_group() -> Group:
     """Every coherence probe on one pinned three-qubit path, the readout calibrations included."""
-    probe_members = tuple(Member(name, circuit, cp.ideal_distribution(circuit)) for name, circuit in cp.circuits())
+    probes = cp.circuits()
+    ideals = parallel.ordered_map(IdealLaw(), [circuit for _, circuit in probes])
+    probe_members = tuple(Member(name, circuit, ideal) for (name, circuit), ideal in zip(probes, ideals, strict=True))
     return Group(
         "coherence_probes", probe_members, cp.summarize, summarize_with_covariance=cp.summarize_with_covariance
     )

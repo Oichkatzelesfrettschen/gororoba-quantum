@@ -8695,6 +8695,7 @@
    "collections",
    "experiments",
    "numpy",
+   "parallel",
    "primorial_tomography",
    "qiskit",
    "typing"
