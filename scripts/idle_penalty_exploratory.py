@@ -45,7 +45,9 @@ def pure_dephasing(entry: dict[str, Any], label: str) -> dict[str, float] | None
     """Measured over reported pure-dephasing rate for one ladder, or None when the reported rate is not positive."""
     t1, t2 = entry["t1_reported_us"], entry["t2_reported_us"]
     reported = 1.0 / t2 - 1.0 / (2.0 * t1)
-    if label not in entry or reported <= 0:
+    # A fit the report refused leaves its key out (kappa_1_reason, kappa_2star_reason); the qubit has no value.
+    usable = all(entry.get(key) is not None for key in ("kappa_1", "kappa_1_se", label, f"{label}_se"))
+    if not usable or reported <= 0:
         return None
     measured = entry[label] / t2 - entry["kappa_1"] / (2.0 * t1)
     error = math.hypot(entry[f"{label}_se"] / t2, entry["kappa_1_se"] / (2.0 * t1)) / reported
@@ -74,7 +76,7 @@ def exploratory(run: Path, historical: list[Path]) -> dict[str, Any]:
         dephasing[key] = {
             "per_qubit": per_qubit,
             "cohort_order_statistic": report.median_interval(values),
-            "range": [min(values), max(values)],
+            "range": [min(values), max(values)] if values else None,
         }
     excitation: dict[str, float] = {}
     induced, measured_shift = [], []
@@ -145,7 +147,8 @@ def main(argv: list[str] | None = None) -> int:
     args.out.write_text(text)
     for key in ("free", "echo"):
         band = result["pure_dephasing_multiplier"][key]["cohort_order_statistic"]
-        print(f"pure dephasing {key}: median {band['median']:.3f} cohort band [{band['low']:.3f}, {band['high']:.3f}]")
+        if band["n"]:
+            print(f"pure dephasing {key}: median {band['median']:.3f} band [{band['low']:.3f}, {band['high']:.3f}]")
     print(f"reader final excitation: {result['reader_final_excitation']}"[:200])
     print(f"zz through final excitation: {result['zz_through_final_excitation']}")
     print(f"pair dV-shift correlation: {result['pair_dV_shift_correlation']:.3f}")

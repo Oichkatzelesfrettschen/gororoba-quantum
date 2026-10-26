@@ -11263,6 +11263,7 @@
    "law_encoding",
    "math",
    "numpy",
+   "parallel",
    "pathlib",
    "qiskit",
    "scheduled_idle_replay",

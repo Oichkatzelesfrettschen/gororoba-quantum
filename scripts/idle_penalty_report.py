@@ -103,6 +103,7 @@ import scheduled_idle_replay  # noqa: E402
 
 import idle_penalty as ip  # noqa: E402
 import law_encoding  # noqa: E402
+import parallel  # noqa: E402
 
 ANALYZER_SOURCES = (
     "scripts/idle_penalty_report.py",
@@ -118,6 +119,9 @@ STABLE_CORRELATION = 0.5
 # --compare refuses a cohort smaller than 25 of the 31 pairs: the stability verdicts read order-statistic intervals
 # whose coverage needs that many paired ratios.
 COMPARE_MIN_QUBITS = 50
+# The CZ kick anchors each pair to a coupler and feeds only cz_kick_p0_excess; a pinned compile commutes its
+# partner X through the CZ, so its body follows the placement path and stays out of the campaign digest.
+PLACEMENT_ANCHORS = frozenset({"idle_cz_kick"})
 GAMMA_GRID = np.linspace(0.0, 2e5, 4001)
 
 
@@ -333,10 +337,13 @@ def schedule_timelines(
 
 
 def campaign_digest(run: Path, record: dict[str, Any], names: list[str], roles: list[tuple[int, int]]) -> str:
-    """sha256 of every member's compiled instructions on replica 0, qubits named by role, in member order.
+    """sha256 of every estimator member's compiled instructions on replica 0, each role's own sequence, qubits named
+    by role (PLACEMENT_ANCHORS excluded).
 
     It binds a report to the circuits its run executed rather than to the runner's source, so two runs of one
     campaign compare even when live_run.py changed between them, and differ when any member's compiled body does.
+    Per-role sequences keep the order a qubit sees and drop the interleaving of instructions on different qubits,
+    which the transpiler emits in either order.
     """
     from qiskit import qpy
 
@@ -351,7 +358,10 @@ def campaign_digest(run: Path, record: dict[str, Any], names: list[str], roles: 
     role = {q: i for i, q in enumerate(roles[0])}
     body = []
     for name in names:
+        if name in PLACEMENT_ANCHORS:
+            continue
         circuit = fused[pub_of[name]]
+        lines: list[list[Any]] = [[], []]
         for instruction in circuit.data:
             qubits = [circuit.find_bit(bit).index for bit in instruction.qubits]
             if not qubits or not set(qubits) <= role.keys():
@@ -359,7 +369,9 @@ def campaign_digest(run: Path, record: dict[str, Any], names: list[str], roles: 
             operation = instruction.operation
             params = [round(float(p), 12) for p in operation.params]
             duration = int(operation.duration) if operation.name == "delay" else None
-            body.append([name, operation.name, [role[q] for q in qubits], params, duration])
+            for q in qubits:
+                lines[role[q]].append([operation.name, [role[other] for other in qubits], params, duration])
+        body.append([name, lines])
     return hashlib.sha256(json.dumps(body, separators=(",", ":")).encode()).hexdigest()
 
 
@@ -496,86 +508,108 @@ def load(run: Path, predicted: bool) -> dict[str, Any]:
     }
 
 
+def _pair_analysis(
+    item: tuple[int, tuple[int, int], dict[str, Any], dict[str, Any], float, int],
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Every per-qubit estimate of one replica's pair and its pair-mean readout contrasts.
+
+    `laws` maps each member to {k: that replica's law}, so the estimators index it exactly as the full table.
+    """
+    k, pair, laws, calibration, dt, shots = item
+    qubits: dict[str, Any] = {}
+    refs: dict[int, tuple[float, float]] = {}
+    for bit, qubit in enumerate(pair):
+        p1g = _p1(laws["idle_ground"][k], bit)
+        p1e = _p1(laws["idle_excited"][k], bit)
+        refs[bit] = (p1g, 1.0 - p1e)
+        points = [(d * dt, _p1(laws[f"idle_relax_{d}dt"][k], bit)) for d in ip.RELAX_DT]
+        fit = relaxation_rate(p1e, p1g, points, shots)
+        t1 = calibration[str(qubit)]["T1"] * 1e-6
+        entry = qubits.setdefault(str(qubit), {})
+        entry |= {"role": "target" if bit == ip.TARGET else "spectator", "partner": pair[1 - bit], "replica": k}
+        entry["t1_reported_us"] = t1 * 1e6
+        if fit["gamma"] is not None:
+            entry["kappa_1"] = fit["gamma"] * t1
+            entry["kappa_1_se"] = fit["gamma_se"] * t1 if fit["gamma_se"] else None
+        else:
+            entry["kappa_1_reason"] = fit["reason"]
+    contrasts = []
+    for probe, qubit in enumerate(pair):
+        head = ip.probe_prefix(probe)
+        entry = qubits[str(qubit)]
+        t2 = calibration[str(qubit)]["T2"] * 1e-6
+        entry["t2_reported_us"] = t2 * 1e6
+        for label, ladder, kind in (("kappa_2star", ip.RAMSEY_DT, "ramsey"), ("kappa_2echo", ip.ECHO_DT, "echo")):
+            points = [(d * dt, visibility(laws, f"{head}{kind}_{{q}}_{d}dt", k, refs[probe], probe)[0]) for d in ladder]
+            fit = decay_time(points, shots)
+            entry[f"{label}_visibilities"] = [round(v, 5) for _, v in points]
+            if fit["time"] is not None:
+                entry[label] = t2 / fit["time"]
+                entry[f"{label}_se"] = fit["rate_se"] * t2
+                entry[f"{label}_amplitude"] = fit["amplitude"]
+                entry[f"{label}_fit_chi2"] = fit["chi2"]
+            else:
+                entry[f"{label}_reason"] = fit["reason"]
+        if "kappa_2star" in entry and "kappa_2echo" in entry:
+            entry["free_over_echo"] = entry["kappa_2star"] / entry["kappa_2echo"]
+        v_during, phi_during = visibility(laws, f"{head}meas_during_{{q}}", k, refs[probe], probe)
+        v_after, phi_after = visibility(laws, f"{head}meas_after_{{q}}", k, refs[probe], probe)
+        v_quiet, phi_quiet = visibility(laws, f"{head}ramsey_{{q}}_{ip.MEAS_DT}dt", k, refs[probe], probe)
+        _, phi_short = visibility(laws, f"{head}meas_short_{{q}}", k, refs[probe], probe)
+        _, phi_short_quiet = visibility(laws, f"{head}ramsey_{{q}}_{ip.SHORT_MEAS_DT}dt", k, refs[probe], probe)
+        short_khz = _phase_khz(phi_short, phi_short_quiet, ip.SHORT_MEAS_DT, dt)
+        se_v = math.sqrt(2) * visibility_se(shots, *refs[probe])
+        denominator = max(min(v_during, v_after, v_quiet), VISIBILITY_FLOOR)
+        contrast = {
+            "probe": qubit,
+            "reader": pair[1 - probe],
+            "dV": v_during - v_after,
+            "dV_quiet": v_during - v_quiet,
+            "null_dV": v_after - v_quiet,
+            "shift_khz": unwrap_shift(_phase_khz(phi_during, phi_after, ip.MEAS_DT, dt), short_khz, dt),
+            "shift_quiet_khz": unwrap_shift(_phase_khz(phi_during, phi_quiet, ip.MEAS_DT, dt), short_khz, dt),
+            "null_shift_khz": _phase_khz(phi_after, phi_quiet, ip.MEAS_DT, dt),
+            "short_shift_khz": short_khz,
+            "dV_se": se_v,
+            "shift_se_khz": se_v / denominator / (2 * math.pi * ip.MEAS_DT * dt) / 1e3,
+        }
+        contrasts.append(contrast)
+        entry["readout"] = contrast
+    target = qubits[str(pair[ip.TARGET])]
+    _, phi_free = visibility(laws, f"idle_ramsey_{{q}}_{ip.ZZ_DT}dt", k, refs[ip.TARGET])
+    _, phi_zz = visibility(laws, f"idle_zz_{{q}}_{ip.ZZ_DT}dt", k, refs[ip.TARGET])
+    # S relaxes from |1> during the idle; conditioning on S's final read keeps the shots whose S stayed excited.
+    _, phi_kept = visibility(laws, f"idle_zz_{{q}}_{ip.ZZ_DT}dt", k, refs[ip.TARGET], partner=1)
+    target["zz_khz"] = _phase_khz(phi_zz, phi_free, ip.ZZ_DT, dt)
+    target["zz_postselected_khz"] = _phase_khz(phi_kept, phi_free, ip.ZZ_DT, dt)
+    target["cz_kick_p0_excess"] = (1.0 - _p1(laws["idle_cz_kick"][k], ip.TARGET)) - refs[ip.TARGET][1]
+    pair_entry: dict[str, Any] = {"replica": k, "target": pair[0], "spectator": pair[1]}
+    for key in ("dV", "dV_quiet", "null_dV", "shift_khz", "shift_quiet_khz", "null_shift_khz"):
+        pair_entry[key] = float(np.mean([c[key] for c in contrasts]))
+    pair_entry["dV_se"] = math.sqrt(sum(c["dV_se"] ** 2 for c in contrasts)) / len(contrasts)
+    pair_entry["shift_se_khz"] = math.sqrt(sum(c["shift_se_khz"] ** 2 for c in contrasts)) / len(contrasts)
+    return qubits, pair_entry
+
+
 def report(run: Path, predicted: bool) -> dict[str, Any]:
     data = load(run, predicted)
     laws, calibration, dt = data["laws"], data["calibration"], data["dt"]
     shots = data["identity"]["shots"]
+    items = [
+        (
+            k,
+            pair,
+            {name: {k: replicas[k]} for name, replicas in laws.items()},
+            {str(q): calibration[str(q)] for q in pair},
+            dt,
+            shots,
+        )
+        for k, pair in enumerate(data["roles"])
+    ]
     qubits: dict[str, Any] = {}
     pairs: list[dict[str, Any]] = []
-    for k, pair in enumerate(data["roles"]):
-        refs: dict[int, tuple[float, float]] = {}
-        for bit, qubit in enumerate(pair):
-            p1g = _p1(laws["idle_ground"][k], bit)
-            p1e = _p1(laws["idle_excited"][k], bit)
-            refs[bit] = (p1g, 1.0 - p1e)
-            points = [(d * dt, _p1(laws[f"idle_relax_{d}dt"][k], bit)) for d in ip.RELAX_DT]
-            fit = relaxation_rate(p1e, p1g, points, shots)
-            t1 = calibration[str(qubit)]["T1"] * 1e-6
-            entry = qubits.setdefault(str(qubit), {})
-            entry |= {"role": "target" if bit == ip.TARGET else "spectator", "partner": pair[1 - bit], "replica": k}
-            entry["t1_reported_us"] = t1 * 1e6
-            if fit["gamma"] is not None:
-                entry["kappa_1"] = fit["gamma"] * t1
-                entry["kappa_1_se"] = fit["gamma_se"] * t1 if fit["gamma_se"] else None
-            else:
-                entry["kappa_1_reason"] = fit["reason"]
-        contrasts = []
-        for probe, qubit in enumerate(pair):
-            head = ip.probe_prefix(probe)
-            entry = qubits[str(qubit)]
-            t2 = calibration[str(qubit)]["T2"] * 1e-6
-            entry["t2_reported_us"] = t2 * 1e6
-            for label, ladder, kind in (("kappa_2star", ip.RAMSEY_DT, "ramsey"), ("kappa_2echo", ip.ECHO_DT, "echo")):
-                points = [
-                    (d * dt, visibility(laws, f"{head}{kind}_{{q}}_{d}dt", k, refs[probe], probe)[0]) for d in ladder
-                ]
-                fit = decay_time(points, shots)
-                entry[f"{label}_visibilities"] = [round(v, 5) for _, v in points]
-                if fit["time"] is not None:
-                    entry[label] = t2 / fit["time"]
-                    entry[f"{label}_se"] = fit["rate_se"] * t2
-                    entry[f"{label}_amplitude"] = fit["amplitude"]
-                    entry[f"{label}_fit_chi2"] = fit["chi2"]
-                else:
-                    entry[f"{label}_reason"] = fit["reason"]
-            if "kappa_2star" in entry and "kappa_2echo" in entry:
-                entry["free_over_echo"] = entry["kappa_2star"] / entry["kappa_2echo"]
-            v_during, phi_during = visibility(laws, f"{head}meas_during_{{q}}", k, refs[probe], probe)
-            v_after, phi_after = visibility(laws, f"{head}meas_after_{{q}}", k, refs[probe], probe)
-            v_quiet, phi_quiet = visibility(laws, f"{head}ramsey_{{q}}_{ip.MEAS_DT}dt", k, refs[probe], probe)
-            _, phi_short = visibility(laws, f"{head}meas_short_{{q}}", k, refs[probe], probe)
-            _, phi_short_quiet = visibility(laws, f"{head}ramsey_{{q}}_{ip.SHORT_MEAS_DT}dt", k, refs[probe], probe)
-            short_khz = _phase_khz(phi_short, phi_short_quiet, ip.SHORT_MEAS_DT, dt)
-            se_v = math.sqrt(2) * visibility_se(shots, *refs[probe])
-            denominator = max(min(v_during, v_after, v_quiet), VISIBILITY_FLOOR)
-            contrast = {
-                "probe": qubit,
-                "reader": pair[1 - probe],
-                "dV": v_during - v_after,
-                "dV_quiet": v_during - v_quiet,
-                "null_dV": v_after - v_quiet,
-                "shift_khz": unwrap_shift(_phase_khz(phi_during, phi_after, ip.MEAS_DT, dt), short_khz, dt),
-                "shift_quiet_khz": unwrap_shift(_phase_khz(phi_during, phi_quiet, ip.MEAS_DT, dt), short_khz, dt),
-                "null_shift_khz": _phase_khz(phi_after, phi_quiet, ip.MEAS_DT, dt),
-                "short_shift_khz": short_khz,
-                "dV_se": se_v,
-                "shift_se_khz": se_v / denominator / (2 * math.pi * ip.MEAS_DT * dt) / 1e3,
-            }
-            contrasts.append(contrast)
-            entry["readout"] = contrast
-        target = qubits[str(pair[ip.TARGET])]
-        _, phi_free = visibility(laws, f"idle_ramsey_{{q}}_{ip.ZZ_DT}dt", k, refs[ip.TARGET])
-        _, phi_zz = visibility(laws, f"idle_zz_{{q}}_{ip.ZZ_DT}dt", k, refs[ip.TARGET])
-        # S relaxes from |1> during the idle; conditioning on S's final read keeps the shots whose S stayed excited.
-        _, phi_kept = visibility(laws, f"idle_zz_{{q}}_{ip.ZZ_DT}dt", k, refs[ip.TARGET], partner=1)
-        target["zz_khz"] = _phase_khz(phi_zz, phi_free, ip.ZZ_DT, dt)
-        target["zz_postselected_khz"] = _phase_khz(phi_kept, phi_free, ip.ZZ_DT, dt)
-        target["cz_kick_p0_excess"] = (1.0 - _p1(laws["idle_cz_kick"][k], ip.TARGET)) - refs[ip.TARGET][1]
-        pair_entry: dict[str, Any] = {"replica": k, "target": pair[0], "spectator": pair[1]}
-        for key in ("dV", "dV_quiet", "null_dV", "shift_khz", "shift_quiet_khz", "null_shift_khz"):
-            pair_entry[key] = float(np.mean([c[key] for c in contrasts]))
-        pair_entry["dV_se"] = math.sqrt(sum(c["dV_se"] ** 2 for c in contrasts)) / len(contrasts)
-        pair_entry["shift_se_khz"] = math.sqrt(sum(c["shift_se_khz"] ** 2 for c in contrasts)) / len(contrasts)
+    for entries, pair_entry in parallel.ordered_map(_pair_analysis, items):
+        qubits |= entries
         pairs.append(pair_entry)
     return {"identity": data["identity"], "qubits": qubits, "pairs": pairs, "pooled": pooled(qubits, pairs)}
 
@@ -688,6 +722,9 @@ def compare(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
             and key in second["qubits"].get(q, {})
             and (entry["role"], entry["partner"]) == (second["qubits"][q]["role"], second["qubits"][q]["partner"])
         ]
+        if len(common) < COMPARE_MIN_QUBITS:
+            out[key] = {"n": len(common), "verdict": "unresolved", "reason": f"fewer than {COMPARE_MIN_QUBITS} fits"}
+            continue
         x = np.array([first["qubits"][q][key] for q in common])
         y = np.array([second["qubits"][q][key] for q in common])
         r = float(np.corrcoef(x, y)[0, 1])
@@ -803,7 +840,10 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.compare:
             first, second = (json.loads(path.read_text()) for path in args.compare)
-            text = json.dumps(compare(first, second), indent=1, sort_keys=True)
+            verdicts = compare(first, second)
+            if args.check:
+                return check_replay(args.out, verdicts)
+            text = json.dumps(verdicts, indent=1, sort_keys=True)
             print(text)
             if args.out:
                 args.out.write_text(text + "\n")
