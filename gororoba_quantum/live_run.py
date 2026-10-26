@@ -184,7 +184,6 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "primorial_campaigns.py",
     "primorial_cover.py",
     "primorial_tomography.py",
-    "ramsey_phase.py",
     "crossed_tile_template.py",
     "diagnostic_controls.py",
     "qpu_cases.py",

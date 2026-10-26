@@ -2542,7 +2542,6 @@
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
     "gororoba_quantum/qubit_baseline.py",
-    "gororoba_quantum/ramsey_phase.py",
     "gororoba_quantum/rank_sector_contracts.py",
     "gororoba_quantum/rank_sector_experiments.py",
     "gororoba_quantum/replica_covariance_contracts.py",
@@ -7677,10 +7676,10 @@
   "gororoba_quantum/coherence_probes.py": [
    "__future__",
    "collections",
+   "conditional_ramsey",
    "math",
    "numpy",
-   "qiskit",
-   "ramsey_phase"
+   "qiskit"
   ],
   "gororoba_quantum/coherence_window.py": [
    "__future__",
@@ -7746,8 +7745,7 @@
    "fractions",
    "math",
    "numpy",
-   "qiskit",
-   "ramsey_phase"
+   "qiskit"
   ],
   "gororoba_quantum/correction_case_contracts.py": [
    "__future__",
@@ -8960,11 +8958,6 @@
    "numpy",
    "qiskit"
   ],
-  "gororoba_quantum/ramsey_phase.py": [
-   "__future__",
-   "math",
-   "numpy"
-  ],
   "gororoba_quantum/rank_attachments.py": [
    "__future__",
    "cd_core",
@@ -9263,7 +9256,6 @@
    "numpy",
    "parallel",
    "qiskit",
-   "ramsey_phase",
    "typing"
   ],
   "gororoba_quantum/target_flip.py": [
