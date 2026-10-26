@@ -556,6 +556,9 @@
     ],
     "core-692": [
       "docs/evidence/stiefel-pfaffian-higher/**"
+    ],
+    "core-694": [
+      "docs/evidence/a5-zero-divisor-strata/**"
     ]
   }
 }

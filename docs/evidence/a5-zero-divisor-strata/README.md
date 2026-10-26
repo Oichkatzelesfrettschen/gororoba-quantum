@@ -404,6 +404,33 @@ admission weight.
 
 No external literature search was run for this record; the sources above are the registered notes.
 
+## Independent verification
+
+[verification.md](verification.md) re-derives the six claims from `cd_core` alone with
+[verify_independent.py](verify_independent.py), which imports nothing from the author's script and writes
+[verification.json](verification.json); its seeds and sample points come from the ANU QRNG draws
+`docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json` and `draw-2026-10-26T012529Z.json`, which it owns whole. It
+refutes nothing across exhaustive integer points, random points on every piece, finite-field enumeration of the six
+slices over F_11 and F_13 and full-space finite-field samples. It runs about four minutes on 12 workers and is not a
+gate.
+
+Three values of `result.json` are asserted by the script rather than computed, and the verifier supplies their
+independent support:
+
+- `topology.intersection_V_B9.complex` is the literal 7; the script records the lower bound only. The verifier proves 7
+  from a random-point lower bound and a parametrization count upper bound.
+- `PIECE_DIMENSIONS` is a literal table guarded at representative points; the verifier finds tangent dimension equal to
+  parametrization rank at random points of N_+, N_-, V, B9, W8 and E8.
+- The connected-component counts 1, 2, 1, 2 are literals; the script checks the supporting incidences. The verifier
+  derives the two components of D_(5,8) without the two-orbit claim of Theorem 8: hyperbolic W8 points have Q != 0, and
+  generic isotropic W8 points lie outside the closed set {Q = 0, Delta = 0, rank[u; v; Im(uv)] <= 2} that contains
+  E8-bar, by x x (x x w) = (x.w) x - (x.x) w.
+
+The covering half of Theorem 6 (every point of R_k lies in the listed pieces) rests on the slice Groebner certificates of
+Lemma 5, which `--check` recomputes over Q; the verifier corroborates them by exhaustive enumeration over F_11 and F_13
+only. Equations for E8-bar are not given; the closed set above contained every nullity-8 point off W8 in the verifier's
+searches, which suggests R_8 = W8 u that set, unproved over Q.
+
 ## Replay
 
 ```sh

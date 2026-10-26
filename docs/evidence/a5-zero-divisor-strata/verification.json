@@ -1,0 +1,2210 @@
+{
+ "tables": {
+  "octonion_imaginary_units_anticommute": true,
+  "octonion_table_matches_cd_multiply_exact": true,
+  "sedenion_table_matches_cd_multiply_exact": true,
+  "J_squared_is_minus_identity": true,
+  "L_ek_skew_for_k_nonzero": true,
+  "J_anticommutes_with_L_ek_for_k_not_0_16": true,
+  "cross_matches_cd_multiply_exact": true,
+  "pass": true
+ },
+ "split_consistency": {
+  "M_equals_DCD": true,
+  "Q": true,
+  "Delta": true,
+  "cross": true,
+  "M_skew": true,
+  "pass": true
+ },
+ "identities": {
+  "points": 8,
+  "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+  "indices": [
+   0,
+   119
+  ],
+  "char_poly_all": true,
+  "minimal_relation_all": true,
+  "cofactor_det_equals_sign_times_QGz_squared": true,
+  "cofactor_signs": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "schwartz_zippel_bound_per_identity": "(15/65536)^8",
+  "pass": true
+ },
+ "double_cross": {
+  "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+  "indices": [
+   200,
+   227
+  ],
+  "identity_holds": true,
+  "pass": true
+ },
+ "g_irreducibility": {
+  "Q_and_G_real_in_split_coordinates": true,
+  "G_terms": 141,
+  "G_irreducible_over_Q": true,
+  "factorization_shape": [
+   [
+    "w1^4 + 2*w1^2*w2^2 - 2*w1^2*w3^2 + 2*w1^",
+    1
+   ]
+  ],
+  "smooth_zero": {
+   "point": [
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    4,
+    5,
+    0,
+    2,
+    0,
+    0,
+    0,
+    0
+   ],
+   "G": 0,
+   "gradient_nonzero": true
+  },
+  "Q_hessian_rank_original": 15,
+  "pass": true
+ },
+ "families": {
+  "rows": [
+   {
+    "family": "generic",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 120,
+     "value": 37734
+    },
+    "points": 6,
+    "expected": {
+     "nullity": 0,
+     "required": [],
+     "forbidden": [
+      "VQ",
+      "VG"
+     ],
+     "tangent": null,
+     "lower_bound": 15
+    },
+    "nullities": [
+     [
+      0,
+      6
+     ]
+    ],
+    "tangents": [],
+    "tangent_mu0": [],
+    "mu_direction_in_tangent": [],
+    "lower_bounds": [
+     [
+      15,
+      6
+     ]
+    ],
+    "member_sets": [
+     [
+      "",
+      6
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "V(Q) generic",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 121,
+     "value": 54669
+    },
+    "points": 6,
+    "expected": {
+     "nullity": 4,
+     "required": [
+      "VQ"
+     ],
+     "forbidden": [
+      "VG"
+     ],
+     "tangent": 14,
+     "lower_bound": 14
+    },
+    "nullities": [
+     [
+      4,
+      6
+     ]
+    ],
+    "tangents": [
+     [
+      14,
+      6
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      13,
+      6
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      0,
+      6
+     ]
+    ],
+    "lower_bounds": [
+     [
+      14,
+      6
+     ]
+    ],
+    "member_sets": [
+     [
+      "VQ",
+      6
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "V(G) generic",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 122,
+     "value": 31610
+    },
+    "points": 6,
+    "expected": {
+     "nullity": 4,
+     "required": [
+      "VG"
+     ],
+     "forbidden": [
+      "VQ"
+     ],
+     "tangent": 14,
+     "lower_bound": 14
+    },
+    "nullities": [
+     [
+      4,
+      6
+     ]
+    ],
+    "tangents": [
+     [
+      14,
+      6
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      13,
+      6
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      0,
+      6
+     ]
+    ],
+    "lower_bounds": [
+     [
+      14,
+      6
+     ]
+    ],
+    "member_sets": [
+     [
+      "VG",
+      6
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "V(Q) n V(G), Gram rank 1 unaligned",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 123,
+     "value": 59373
+    },
+    "points": 6,
+    "expected": {
+     "nullity": 4,
+     "required": [
+      "VQ",
+      "VG"
+     ],
+     "forbidden": [
+      "Ehat",
+      "W8"
+     ],
+     "tangent": null,
+     "lower_bound": null
+    },
+    "nullities": [
+     [
+      4,
+      6
+     ]
+    ],
+    "tangents": [
+     [
+      15,
+      6
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      14,
+      6
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      1,
+      6
+     ]
+    ],
+    "lower_bounds": [],
+    "member_sets": [
+     [
+      "VG,VQ",
+      6
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "V(Q), nondegenerate plane",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 124,
+     "value": 26683
+    },
+    "points": 6,
+    "expected": {
+     "nullity": 4,
+     "required": [
+      "VQ"
+     ],
+     "forbidden": [
+      "VG"
+     ],
+     "tangent": null,
+     "lower_bound": null
+    },
+    "nullities": [
+     [
+      4,
+      6
+     ]
+    ],
+    "tangents": [
+     [
+      14,
+      6
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      13,
+      6
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      0,
+      6
+     ]
+    ],
+    "lower_bounds": [],
+    "member_sets": [
+     [
+      "VQ",
+      6
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "W8 hyperbolic",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 125,
+     "value": 64164
+    },
+    "points": 12,
+    "expected": {
+     "nullity": 8,
+     "required": [
+      "W8",
+      "VG"
+     ],
+     "forbidden": [
+      "VQ",
+      "Ehat",
+      "V",
+      "B9"
+     ],
+     "tangent": 12,
+     "lower_bound": 12
+    },
+    "nullities": [
+     [
+      8,
+      12
+     ]
+    ],
+    "tangents": [
+     [
+      12,
+      12
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      12,
+      12
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      0,
+      12
+     ]
+    ],
+    "lower_bounds": [
+     [
+      8,
+      1
+     ],
+     [
+      12,
+      11
+     ]
+    ],
+    "member_sets": [
+     [
+      "VG,W8",
+      12
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "W8 generic isotropic",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 126,
+     "value": 17682
+    },
+    "points": 12,
+    "expected": {
+     "nullity": 8,
+     "required": [
+      "W8",
+      "VQ",
+      "VG"
+     ],
+     "forbidden": [
+      "Ehat",
+      "V",
+      "B9"
+     ],
+     "tangent": 12,
+     "lower_bound": null
+    },
+    "nullities": [
+     [
+      8,
+      12
+     ]
+    ],
+    "tangents": [
+     [
+      12,
+      12
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      12,
+      12
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      0,
+      12
+     ]
+    ],
+    "lower_bounds": [],
+    "member_sets": [
+     [
+      "VG,VQ,W8",
+      12
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "E8",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 127,
+     "value": 17281
+    },
+    "points": 8,
+    "expected": {
+     "nullity": 8,
+     "required": [
+      "E8i",
+      "Ehat",
+      "VQ",
+      "VG"
+     ],
+     "forbidden": [
+      "W8",
+      "V",
+      "B9"
+     ],
+     "tangent": 11,
+     "lower_bound": 11
+    },
+    "nullities": [
+     [
+      8,
+      8
+     ]
+    ],
+    "tangents": [
+     [
+      11,
+      8
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      10,
+      8
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      0,
+      8
+     ]
+    ],
+    "lower_bounds": [
+     [
+      11,
+      8
+     ]
+    ],
+    "member_sets": [
+     [
+      "E8i,Ehat,VG,VQ",
+      8
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "V",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 128,
+     "value": 43395
+    },
+    "points": 8,
+    "expected": {
+     "nullity": 12,
+     "required": [
+      "V",
+      "Ehat",
+      "VQ",
+      "VG"
+     ],
+     "forbidden": [
+      "B9",
+      "W8"
+     ],
+     "tangent": 8,
+     "lower_bound": 8
+    },
+    "nullities": [
+     [
+      12,
+      8
+     ]
+    ],
+    "tangents": [
+     [
+      8,
+      8
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      7,
+      8
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      0,
+      8
+     ]
+    ],
+    "lower_bounds": [
+     [
+      8,
+      8
+     ]
+    ],
+    "member_sets": [
+     [
+      "Ehat,V,VG,VQ",
+      8
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "B9",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 129,
+     "value": 51630
+    },
+    "points": 8,
+    "expected": {
+     "nullity": 12,
+     "required": [
+      "B9",
+      "W8",
+      "Ehat",
+      "VQ",
+      "VG"
+     ],
+     "forbidden": [
+      "V"
+     ],
+     "tangent": 9,
+     "lower_bound": 9
+    },
+    "nullities": [
+     [
+      12,
+      8
+     ]
+    ],
+    "tangents": [
+     [
+      9,
+      8
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      9,
+      8
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      0,
+      8
+     ]
+    ],
+    "lower_bounds": [
+     [
+      9,
+      8
+     ]
+    ],
+    "member_sets": [
+     [
+      "B9,Ehat,VG,VQ,W8",
+      8
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "V n B9",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 130,
+     "value": 30397
+    },
+    "points": 6,
+    "expected": {
+     "nullity": 12,
+     "required": [
+      "V",
+      "B9",
+      "W8"
+     ],
+     "forbidden": [
+      "Np",
+      "Nm"
+     ],
+     "tangent": null,
+     "lower_bound": 7
+    },
+    "nullities": [
+     [
+      12,
+      6
+     ]
+    ],
+    "tangents": [
+     [
+      11,
+      6
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      10,
+      6
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      1,
+      6
+     ]
+    ],
+    "lower_bounds": [
+     [
+      7,
+      6
+     ]
+    ],
+    "member_sets": [
+     [
+      "B9,Ehat,V,VG,VQ,W8",
+      6
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "{a,0} axis +",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 131,
+     "value": 42437
+    },
+    "points": 4,
+    "expected": {
+     "nullity": 12,
+     "required": [
+      "V"
+     ],
+     "forbidden": [
+      "B9",
+      "W8"
+     ],
+     "tangent": 8,
+     "lower_bound": 7
+    },
+    "nullities": [
+     [
+      12,
+      4
+     ]
+    ],
+    "tangents": [
+     [
+      8,
+      4
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      7,
+      4
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      1,
+      4
+     ]
+    ],
+    "lower_bounds": [
+     [
+      7,
+      4
+     ]
+    ],
+    "member_sets": [
+     [
+      "Ehat,V,VG,VQ",
+      4
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "{a,0} axis -",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 132,
+     "value": 33397
+    },
+    "points": 4,
+    "expected": {
+     "nullity": 12,
+     "required": [
+      "V"
+     ],
+     "forbidden": [
+      "B9",
+      "W8"
+     ],
+     "tangent": 8,
+     "lower_bound": 7
+    },
+    "nullities": [
+     [
+      12,
+      4
+     ]
+    ],
+    "tangents": [
+     [
+      8,
+      4
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      7,
+      4
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      1,
+      4
+     ]
+    ],
+    "lower_bounds": [
+     [
+      7,
+      4
+     ]
+    ],
+    "member_sets": [
+     [
+      "Ehat,V,VG,VQ",
+      4
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "N+",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 133,
+     "value": 16217
+    },
+    "points": 6,
+    "expected": {
+     "nullity": 16,
+     "required": [
+      "Np",
+      "V",
+      "B9",
+      "W8"
+     ],
+     "forbidden": [
+      "Nm"
+     ],
+     "tangent": 6,
+     "lower_bound": 6
+    },
+    "nullities": [
+     [
+      16,
+      6
+     ]
+    ],
+    "tangents": [
+     [
+      6,
+      6
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      6,
+      6
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      0,
+      6
+     ]
+    ],
+    "lower_bounds": [
+     [
+      6,
+      6
+     ]
+    ],
+    "member_sets": [
+     [
+      "B9,Ehat,Np,V,VG,VQ,W8",
+      6
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "N-",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 134,
+     "value": 11161
+    },
+    "points": 6,
+    "expected": {
+     "nullity": 16,
+     "required": [
+      "Nm",
+      "V",
+      "B9",
+      "W8"
+     ],
+     "forbidden": [
+      "Np"
+     ],
+     "tangent": 6,
+     "lower_bound": 6
+    },
+    "nullities": [
+     [
+      16,
+      6
+     ]
+    ],
+    "tangents": [
+     [
+      6,
+      6
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      6,
+      6
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      0,
+      6
+     ]
+    ],
+    "lower_bounds": [
+     [
+      6,
+      6
+     ]
+    ],
+    "member_sets": [
+     [
+      "B9,Ehat,Nm,V,VG,VQ,W8",
+      6
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "isotropic plane, mu != 0",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 135,
+     "value": 19164
+    },
+    "points": 4,
+    "expected": {
+     "nullity": 0,
+     "required": [],
+     "forbidden": [
+      "VQ",
+      "VG"
+     ],
+     "tangent": null,
+     "lower_bound": null
+    },
+    "nullities": [
+     [
+      0,
+      4
+     ]
+    ],
+    "tangents": [],
+    "tangent_mu0": [],
+    "mu_direction_in_tangent": [],
+    "lower_bounds": [],
+    "member_sets": [
+     [
+      "",
+      4
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "Gram rank 1 aligned, Q != 0",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 136,
+     "value": 3148
+    },
+    "points": 4,
+    "expected": {
+     "nullity": 0,
+     "required": [],
+     "forbidden": [
+      "VQ",
+      "VG"
+     ],
+     "tangent": null,
+     "lower_bound": null
+    },
+    "nullities": [
+     [
+      0,
+      4
+     ]
+    ],
+    "tangents": [],
+    "tangent_mu0": [],
+    "mu_direction_in_tangent": [],
+    "lower_bounds": [],
+    "member_sets": [
+     [
+      "",
+      4
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "E8 n {mu = 0}",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 137,
+     "value": 59348
+    },
+    "points": 6,
+    "expected": {
+     "nullity": 8,
+     "required": [
+      "E8i"
+     ],
+     "forbidden": [
+      "W8"
+     ],
+     "tangent": 11,
+     "lower_bound": 10
+    },
+    "nullities": [
+     [
+      8,
+      6
+     ]
+    ],
+    "tangents": [
+     [
+      11,
+      6
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      10,
+      6
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      1,
+      6
+     ]
+    ],
+    "lower_bounds": [
+     [
+      10,
+      6
+     ]
+    ],
+    "member_sets": [
+     [
+      "E8i,Ehat,VG,VQ",
+      6
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "V(G) n {mu = 0}",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 138,
+     "value": 3588
+    },
+    "points": 4,
+    "expected": {
+     "nullity": 4,
+     "required": [
+      "VG"
+     ],
+     "forbidden": [
+      "VQ"
+     ],
+     "tangent": 14,
+     "lower_bound": 13
+    },
+    "nullities": [
+     [
+      4,
+      4
+     ]
+    ],
+    "tangents": [
+     [
+      14,
+      4
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      13,
+      4
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      1,
+      4
+     ]
+    ],
+    "lower_bounds": [
+     [
+      13,
+      4
+     ]
+    ],
+    "member_sets": [
+     [
+      "VG",
+      4
+     ]
+    ],
+    "pass": true
+   },
+   {
+    "family": "V(Q) n {mu = 0}",
+    "seed": {
+     "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+     "index": 139,
+     "value": 51812
+    },
+    "points": 4,
+    "expected": {
+     "nullity": 4,
+     "required": [
+      "VQ"
+     ],
+     "forbidden": [
+      "VG"
+     ],
+     "tangent": 14,
+     "lower_bound": 13
+    },
+    "nullities": [
+     [
+      4,
+      4
+     ]
+    ],
+    "tangents": [
+     [
+      14,
+      4
+     ]
+    ],
+    "tangent_mu0": [
+     [
+      13,
+      4
+     ]
+    ],
+    "mu_direction_in_tangent": [
+     [
+      1,
+      4
+     ]
+    ],
+    "lower_bounds": [
+     [
+      13,
+      4
+     ]
+    ],
+    "member_sets": [
+     [
+      "VQ",
+      4
+     ]
+    ],
+    "pass": true
+   }
+  ],
+  "pass": true
+ },
+ "witnesses": {
+  "rows": [
+   {
+    "family": "zd-axis",
+    "witness": 0,
+    "nullity": 16,
+    "recorded": 16,
+    "rank_C": 6,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "B9",
+     "Ehat",
+     "Np",
+     "V",
+     "VG",
+     "VQ",
+     "W8"
+    ],
+    "tangent": 6,
+    "tangent_mu0": 6,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "nonzd-axis",
+    "witness": 1,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "Ehat",
+     "V",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 8,
+    "tangent_mu0": 7,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "zd-zd-locus",
+    "witness": 2,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "B9",
+     "Ehat",
+     "VG",
+     "VQ",
+     "W8"
+    ],
+    "tangent": 9,
+    "tangent_mu0": 9,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "zd-zd-generic",
+    "witness": 3,
+    "nullity": 8,
+    "recorded": 8,
+    "rank_C": 10,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "VG",
+     "W8"
+    ],
+    "tangent": 12,
+    "tangent_mu0": 12,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "zd-nonzd-locus",
+    "witness": 4,
+    "nullity": 8,
+    "recorded": 8,
+    "rank_C": 10,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "E8i",
+     "Ehat",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 11,
+    "tangent_mu0": 10,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "zd-nonzd-generic",
+    "witness": 5,
+    "nullity": 4,
+    "recorded": 4,
+    "rank_C": 12,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "VG"
+    ],
+    "tangent": 14,
+    "tangent_mu0": 13,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "nonzd-nonzd-locus",
+    "witness": 6,
+    "nullity": 4,
+    "recorded": 4,
+    "rank_C": 12,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "VQ"
+    ],
+    "tangent": 14,
+    "tangent_mu0": 13,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "zd-axis",
+    "witness": 7,
+    "nullity": 16,
+    "recorded": 16,
+    "rank_C": 6,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "B9",
+     "Ehat",
+     "Np",
+     "V",
+     "VG",
+     "VQ",
+     "W8"
+    ],
+    "tangent": 6,
+    "tangent_mu0": 6,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "nonzd-axis",
+    "witness": 8,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "Ehat",
+     "V",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 8,
+    "tangent_mu0": 7,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "zd-zd-locus",
+    "witness": 9,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "B9",
+     "Ehat",
+     "VG",
+     "VQ",
+     "W8"
+    ],
+    "tangent": 9,
+    "tangent_mu0": 9,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "zd-zd-generic",
+    "witness": 10,
+    "nullity": 8,
+    "recorded": 8,
+    "rank_C": 10,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "VG",
+     "W8"
+    ],
+    "tangent": 12,
+    "tangent_mu0": 12,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "zd-nonzd-locus",
+    "witness": 11,
+    "nullity": 8,
+    "recorded": 8,
+    "rank_C": 10,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "E8i",
+     "Ehat",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 11,
+    "tangent_mu0": 10,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "zd-nonzd-generic",
+    "witness": 12,
+    "nullity": 4,
+    "recorded": 4,
+    "rank_C": 12,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "VG"
+    ],
+    "tangent": 14,
+    "tangent_mu0": 13,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "nonzd-nonzd-locus",
+    "witness": 13,
+    "nullity": 4,
+    "recorded": 4,
+    "rank_C": 12,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "VQ"
+    ],
+    "tangent": 14,
+    "tangent_mu0": 13,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "zd-axis",
+    "witness": 14,
+    "nullity": 16,
+    "recorded": 16,
+    "rank_C": 6,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "B9",
+     "Ehat",
+     "Np",
+     "V",
+     "VG",
+     "VQ",
+     "W8"
+    ],
+    "tangent": 6,
+    "tangent_mu0": 6,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "nonzd-axis",
+    "witness": 15,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "Ehat",
+     "V",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 8,
+    "tangent_mu0": 7,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "zd-zd-locus",
+    "witness": 16,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "B9",
+     "Ehat",
+     "VG",
+     "VQ",
+     "W8"
+    ],
+    "tangent": 9,
+    "tangent_mu0": 9,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "zd-zd-generic",
+    "witness": 17,
+    "nullity": 8,
+    "recorded": 8,
+    "rank_C": 10,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "VG",
+     "W8"
+    ],
+    "tangent": 12,
+    "tangent_mu0": 12,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "zd-nonzd-locus",
+    "witness": 18,
+    "nullity": 8,
+    "recorded": 8,
+    "rank_C": 10,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "E8i",
+     "Ehat",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 11,
+    "tangent_mu0": 10,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "zd-nonzd-generic",
+    "witness": 19,
+    "nullity": 4,
+    "recorded": 4,
+    "rank_C": 12,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "VG"
+    ],
+    "tangent": 14,
+    "tangent_mu0": 13,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "nonzd-nonzd-locus",
+    "witness": 20,
+    "nullity": 4,
+    "recorded": 4,
+    "rank_C": 12,
+    "identity": true,
+    "mu_zero": true,
+    "violations": [],
+    "members": [
+     "VQ"
+    ],
+    "tangent": 14,
+    "tangent_mu0": 13,
+    "mu_direction_in_tangent": 1
+   },
+   {
+    "family": "proposition-8.2",
+    "witness": 21,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": false,
+    "violations": [],
+    "members": [
+     "Ehat",
+     "V",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 8,
+    "tangent_mu0": 7,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "proposition-8.2",
+    "witness": 22,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": false,
+    "violations": [],
+    "members": [
+     "Ehat",
+     "V",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 8,
+    "tangent_mu0": 7,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "proposition-8.2",
+    "witness": 23,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": false,
+    "violations": [],
+    "members": [
+     "Ehat",
+     "V",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 8,
+    "tangent_mu0": 7,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "proposition-8.2",
+    "witness": 24,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": false,
+    "violations": [],
+    "members": [
+     "Ehat",
+     "V",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 8,
+    "tangent_mu0": 7,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "proposition-8.2",
+    "witness": 25,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": false,
+    "violations": [],
+    "members": [
+     "Ehat",
+     "V",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 8,
+    "tangent_mu0": 7,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "proposition-8.2",
+    "witness": 26,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": false,
+    "violations": [],
+    "members": [
+     "Ehat",
+     "V",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 8,
+    "tangent_mu0": 7,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "proposition-8.2",
+    "witness": 27,
+    "nullity": 12,
+    "recorded": 12,
+    "rank_C": 8,
+    "identity": true,
+    "mu_zero": false,
+    "violations": [],
+    "members": [
+     "Ehat",
+     "V",
+     "VG",
+     "VQ"
+    ],
+    "tangent": 8,
+    "tangent_mu0": 7,
+    "mu_direction_in_tangent": 0
+   },
+   {
+    "family": "moreno-unequal-norm",
+    "witness": 28,
+    "nullity": 4,
+    "recorded": 4,
+    "rank_C": 12,
+    "identity": true,
+    "mu_zero": false,
+    "violations": [],
+    "members": [
+     "VG"
+    ],
+    "tangent": 14,
+    "tangent_mu0": 13,
+    "mu_direction_in_tangent": 0
+   }
+  ],
+  "pass": true
+ },
+ "b9_curves": {
+  "seed": {
+   "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
+   "index": 0,
+   "value": 38338
+  },
+  "curves": [
+   {
+    "solvable": true,
+    "rank_le_10_at_8_values": true,
+    "E8i_at_all_s": true,
+    "endpoint_B9": true,
+    "endpoint_nullity": 12,
+    "endpoint_tangent": 9
+   },
+   {
+    "solvable": true,
+    "rank_le_10_at_8_values": true,
+    "E8i_at_all_s": true,
+    "endpoint_B9": true,
+    "endpoint_nullity": 12,
+    "endpoint_tangent": 9
+   },
+   {
+    "solvable": true,
+    "rank_le_10_at_8_values": true,
+    "E8i_at_all_s": true,
+    "endpoint_B9": true,
+    "endpoint_nullity": 12,
+    "endpoint_tangent": 9
+   },
+   {
+    "solvable": true,
+    "rank_le_10_at_8_values": true,
+    "E8i_at_all_s": true,
+    "endpoint_B9": true,
+    "endpoint_nullity": 12,
+    "endpoint_tangent": 9
+   },
+   {
+    "solvable": true,
+    "rank_le_10_at_8_values": true,
+    "E8i_at_all_s": true,
+    "endpoint_B9": true,
+    "endpoint_nullity": 12,
+    "endpoint_tangent": 9
+   },
+   {
+    "solvable": true,
+    "rank_le_10_at_8_values": true,
+    "E8i_at_all_s": true,
+    "endpoint_B9": true,
+    "endpoint_nullity": 12,
+    "endpoint_tangent": 9
+   },
+   {
+    "solvable": true,
+    "rank_le_10_at_8_values": true,
+    "E8i_at_all_s": true,
+    "endpoint_B9": true,
+    "endpoint_nullity": 12,
+    "endpoint_tangent": 9
+   },
+   {
+    "solvable": true,
+    "rank_le_10_at_8_values": true,
+    "E8i_at_all_s": true,
+    "endpoint_B9": true,
+    "endpoint_nullity": 12,
+    "endpoint_tangent": 9
+   }
+  ],
+  "pass": true
+ },
+ "exhaustive": {
+  "points": 472760,
+  "counts": {
+   "n12:Ehat+V": 7392,
+   "n12:W8+Ehat+B9": 1344,
+   "n12:W8+Ehat+V+B9": 7728,
+   "n16:W8+Ehat+V+B9+Nm": 168,
+   "n16:W8+Ehat+V+B9+Np": 168,
+   "n8:E8i+Ehat": 5376,
+   "n8:W8": 46704,
+   "nullity_0": 274520,
+   "nullity_12": 16464,
+   "nullity_16": 336,
+   "nullity_4": 129360,
+   "nullity_8": 52080
+  },
+  "violations": [],
+  "violation_count": 0,
+  "pass": true
+ },
+ "rank_crosscheck": {
+  "matrices": 6000,
+  "ranks_seen": [
+   [
+    6,
+    7
+   ],
+   [
+    8,
+    290
+   ],
+   [
+    10,
+    346
+   ],
+   [
+    14,
+    5357
+   ]
+  ],
+  "pass": true
+ },
+ "fp_slices": {
+  "slices": {
+   "P2@11": {
+    "points": 161050,
+    "R8_points": 1440,
+    "R12_points": 1440,
+    "R16_points": 0,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 0,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P3a@11": {
+    "points": 161050,
+    "R8_points": 14640,
+    "R12_points": 1440,
+    "R16_points": 20,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 13200,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P3b@11": {
+    "points": 161050,
+    "R8_points": 14640,
+    "R12_points": 1440,
+    "R16_points": 20,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 13200,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P3c@11": {
+    "points": 161050,
+    "R8_points": 1440,
+    "R12_points": 1440,
+    "R16_points": 20,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 0,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P4s@11": {
+    "points": 161050,
+    "R8_points": 14640,
+    "R12_points": 14640,
+    "R16_points": 240,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 0,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P4g@11": {
+    "points": 161050,
+    "R8_points": 14640,
+    "R12_points": 1440,
+    "R16_points": 240,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 0,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P2@13": {
+    "points": 371292,
+    "R8_points": 2640,
+    "R12_points": 2352,
+    "R16_points": 48,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 0,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P3a@13": {
+    "points": 371292,
+    "R8_points": 28560,
+    "R12_points": 2352,
+    "R16_points": 24,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 26208,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P3b@13": {
+    "points": 371292,
+    "R8_points": 28560,
+    "R12_points": 2352,
+    "R16_points": 24,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 26208,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P3c@13": {
+    "points": 371292,
+    "R8_points": 2352,
+    "R12_points": 2352,
+    "R16_points": 24,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 0,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P4s@13": {
+    "points": 371292,
+    "R8_points": 28560,
+    "R12_points": 28560,
+    "R16_points": 336,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 0,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   },
+   "P4g@13": {
+    "points": 371292,
+    "R8_points": 28560,
+    "R12_points": 2352,
+    "R16_points": 336,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 0,
+    "bad_table_order12": 0,
+    "bad_table_order10": 0,
+    "bad_table_order8": 0
+   }
+  },
+  "pass": true
+ },
+ "fp_samples": {
+  "seeds": [
+   {
+    "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
+    "index": 1,
+    "value": 52656
+   },
+   {
+    "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
+    "index": 2,
+    "value": 61857
+   },
+   {
+    "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
+    "index": 3,
+    "value": 8785
+   },
+   {
+    "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
+    "index": 4,
+    "value": 51336
+   }
+  ],
+  "per_prime": {
+   "7": {
+    "points": 800000,
+    "R8_points": 2734,
+    "R12_points": 7,
+    "R16_points": 0,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 309
+   },
+   "13": {
+    "points": 800000,
+    "R8_points": 394,
+    "R12_points": 0,
+    "R16_points": 0,
+    "bad_R4_vs_QG": 0,
+    "bad_R8_outside_W8_Ehat": 0,
+    "bad_W8_or_E8i_not_in_R8": 0,
+    "bad_R12_vs_V_B9": 0,
+    "bad_R16_vs_N": 0,
+    "bad_rank_below_6": 0,
+    "R8_not_W8_E8i_V_B9": 0,
+    "Ehat_rank_gt_10": 0,
+    "E8i_in_R8": 19
+   }
+  },
+  "pass": true
+ },
+ "float_search": {
+  "seed": {
+   "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
+   "index": 5,
+   "value": 65302
+  },
+  "by_rank": {
+   "10": {
+    "starts": 150,
+    "converged": 140,
+    "explained": 140,
+    "W8": 74,
+    "Ehat_not_W8": 66,
+    "V": 0,
+    "B9": 0,
+    "N": 0
+   },
+   "8": {
+    "starts": 150,
+    "converged": 121,
+    "explained": 121,
+    "W8": 101,
+    "Ehat_not_W8": 20,
+    "V": 20,
+    "B9": 101,
+    "N": 0
+   },
+   "6": {
+    "starts": 150,
+    "converged": 149,
+    "explained": 149,
+    "W8": 149,
+    "Ehat_not_W8": 0,
+    "V": 149,
+    "B9": 149,
+    "N": 149
+   },
+   "4": {
+    "starts": 150,
+    "converged": 0,
+    "explained": 0,
+    "W8": 0,
+    "Ehat_not_W8": 0,
+    "V": 0,
+    "B9": 0,
+    "N": 0
+   }
+  },
+  "unexplained": 0
+ },
+ "timings_s": {
+  "tables": 0.55,
+  "split_consistency": 0.03,
+  "identities": 0.77,
+  "double_cross": 0.0,
+  "g_irreducibility": 0.0,
+  "families": 19.56,
+  "witnesses": 3.37,
+  "b9_curves": 3.08,
+  "exhaustive": 52.76,
+  "rank_crosscheck": 1.37,
+  "fp_slices": 62.4,
+  "fp_samples": 33.04,
+  "float_search": 57.07
+ },
+ "total_s": 234.02,
+ "workers": 12,
+ "versions": {
+  "python": "3.14.7",
+  "python-flint": "0.9.0",
+  "numpy": "2.5.4"
+ }
+}

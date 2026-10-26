@@ -4266,6 +4266,26 @@
    "name": "core-693",
    "seconds": 4.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/a5_zero_divisor_strata.py --check docs/evidence/a5-zero-divisor-strata/result.json",
+   "name": "core-694",
+   "seconds": 9.6,
+   "tier": "full",
+   "workers": "all",
+   "replays": [
+    "docs/evidence/a5-zero-divisor-strata/result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/a5_zero_divisor_strata.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_zero_divisor_strata.py --self-test",
+   "name": "core-695",
+   "seconds": 6.6,
+   "tier": "pr"
   }
  ],
  "excluded": [
