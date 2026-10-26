@@ -69,6 +69,7 @@ import json
 import math
 import sys
 import tempfile
+import warnings
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass
@@ -189,9 +190,9 @@ BOX_RATIO = 1.1
 HOMOGENEITY_ALPHA = 0.01
 BREAK_EVEN_CEILING = 3.0
 BREAK_EVEN_TOLERANCE = 0.005
-FIT_CATEGORIES = ("correct", "wrong", "excess", "outside", "herald", "receiver", "pattern")
 TWO_COPY_ASSUMPTIONS = (
     "one label-blind trace-nonincreasing instrument acts on every input",
+    "equal optical attempts per input (uniform priors), since unequal priors raise the six-state value",
     "the input source emits at most two copies per attempt (Perceval's truncated source model)",
     "the classical device may postselect on photon number with no acceptance constraint",
 )
@@ -205,8 +206,8 @@ BOX_ASSUMPTIONS = (
 @dataclass(frozen=True)
 class Request:
     """The budget-free part of a case: the chip mode of each logical mode, the compilation seed of each iteration in
-    submission order (schedule), the repository path of the anchor read, whose performance figures preregister the decision
-    rule, size max_shots and serve the --anchor gate."""
+    submission order (schedule), the repository path of the anchor read, whose performance figures preregister the
+    analysis, size max_shots and serve the --anchor gate, and the case's rule and block count."""
 
     name: str
     layout: tuple[int, ...]
@@ -873,7 +874,12 @@ def derive(sim: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def vertex_bound(attempts: dict[str, int]) -> float:
-    return attempts_benchmark(attempts).certified
+    """attempts_benchmark's certified bound at one attempt profile. qd_classical_benchmark._require_optimal admits an
+    inaccurate optimum and _free_postselection_bound certifies the bound from the projected witness, so cvxpy's
+    inaccuracy warning on an extreme profile carries no defect and is silenced here alone."""
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message="Solution may be inaccurate", category=UserWarning)
+        return attempts_benchmark(attempts).certified
 
 
 def box_bound(probability: Mapping[str, float], ratio: float) -> float:
@@ -888,7 +894,7 @@ def box_bound(probability: Mapping[str, float], ratio: float) -> float:
         {label: max(1, round(1e12 * factor / probability[label])) for label, factor in zip(labels, signs, strict=True)}
         for signs in itertools.product((1.0 / ratio, ratio), repeat=len(labels))
     ]
-    return max(ordered_map(vertex_bound, vertices, min_items=1))
+    return round(max(ordered_map(vertex_bound, vertices, min_items=1)), 9)
 
 
 def derive_descriptive(sim: Mapping[str, Any], request: Request) -> dict[str, Any]:
@@ -1363,7 +1369,7 @@ def analyze_descriptive(
     differ = sorted(label for label, test in tests.items() if test["status"] == "differ")
     comparisons = []
     for comparison in preregistered["comparisons"]:
-        record = {key: comparison[key] for key in ("name", "bound", "assumptions")}
+        record = {key: value for key, value in comparison.items() if key != "forecast_margin"}
         if partial or absent or lower is None:
             record["label"], record["margin"] = "not-evaluated", None
         elif differ:

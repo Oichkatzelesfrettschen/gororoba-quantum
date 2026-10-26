@@ -6151,6 +6151,7 @@
     "scripts/primorial_probe_case.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
+    "scripts/qd_teleportation_rehearsal.py",
     "scripts/qet_passivity_controls.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_coupler_zz_map.py",
@@ -12573,10 +12574,13 @@
    "qd_classical_benchmark",
    "qd_network_protocol",
    "qd_platform",
+   "qd_record_watch",
    "qd_schedule",
+   "scipy",
    "sys",
    "tempfile",
-   "typing"
+   "typing",
+   "warnings"
   ],
   "scripts/qet_passivity_controls.py": [
    "__future__",

@@ -705,7 +705,7 @@ def staged_case_tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, catalogue:
 
 
 def test_the_decision_rule_refuses_a_read_without_power_and_prepare_an_unseeded_case() -> None:
-    low = {name: {"pooled": 0.6} for name in rehearsal.ANCHOR_VARIANTS}
+    low: dict[str, dict[str, Any]] = {name: {"pooled": 0.6} for name in rehearsal.ANCHOR_VARIANTS}
     low["fresh per-mode transmission"] = {"pooled": 0.6}
     low["anchor per-mode transmission"]["inputs"] = {
         label: {"sample_probability": 4e-5, "accepted_share": 0.08} for label in LABELS
@@ -1010,7 +1010,6 @@ def test_the_attempt_box_bound_takes_the_largest_of_its_64_vertices(monkeypatch:
 
 
 @pytest.mark.audit
-@pytest.mark.filterwarnings("ignore:Solution may be inaccurate:UserWarning")
 def test_the_certified_attempt_box_bound_at_ratio_1_1_bounds_an_interior_profile() -> None:
     probability = load("noise-model.json")["derived"]["sample_probability"]
     box = rehearsal.box_bound(probability, 1.1)

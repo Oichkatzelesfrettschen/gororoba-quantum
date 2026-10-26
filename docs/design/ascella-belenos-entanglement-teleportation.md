@@ -541,9 +541,10 @@ twice; neither failure was retained as a receipt. Block B takes 5573, 39099, 453
   vetoes both comparisons; a pass establishes neither stationarity nor independence.
 - **Model-conditional comparisons.** Each reports `L - B` and a label, `exceeds-under-assumptions` when `L > B`;
   neither subtracts an allowance, since the data are the realized circuits' correctness:
-  - **(a) two-copy bound, B = 3/4:** one label-blind instrument; a source with at most two input copies per
-    attempt, Perceval's truncated model; free photon-number-dependent postselection. A three-copy tail raises the
-    bound to 5/6.
+  - **(a) two-copy bound, B = 3/4:** one label-blind instrument; equal optical attempts per input, since unequal
+    priors raise the six-state value (to 0.6937 already for single copies at job-00's modeled profile); a source with
+    at most two input copies per attempt, Perceval's truncated model; free photon-number-dependent postselection. A
+    three-copy tail raises the bound to 5/6.
   - **(b) attempt-box bound, B = B_box(1.1):** one label-blind instrument; single-copy inputs (photon-number-blind
     acceptance); each input's attempts within a factor 1.1 of the modeled profile. The maximum over the box lies at
     one of its 64 vertices, because for a fixed instrument the pooled score is a linear-fractional function of the

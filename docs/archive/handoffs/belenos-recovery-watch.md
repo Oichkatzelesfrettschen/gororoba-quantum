@@ -144,6 +144,13 @@ The written case then goes to the owner. If the live record changes between prep
 refuses, and the case is prepared again from the new read. A split into several jobs is a different experiment and
 needs its own reviewed case. The twelve seeds stay reserved for job-01.
 
+Two details matter when job-01 is retained:
+- **Break-even replay.** `break_even_ratio` bisects on strict comparisons against certified solver values, so a
+  last-digit difference between runners can move it by one bisection step, 0.005. Exempt that field from the replay
+  gate's byte comparison, or compare it on the 0.005 grid.
+- **Shot estimate.** `shot-estimate.json` keys its `inputs` by label, so block B's estimates replace block A's in
+  the record. Both blocks run identical parameters, so the shot ceiling is unaffected.
+
 ## References
 
 | item | content |
