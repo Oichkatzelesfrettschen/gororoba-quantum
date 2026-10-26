@@ -500,6 +500,23 @@ def base_file_literals(path: str) -> Counter[Key]:
     return Counter(text_literals(path, shown.stdout)[0])
 
 
+def base_allocated() -> Counter[Key]:
+    """Allocation counts per literal key in BASE_REF's allocations.json; empty when BASE_REF lacks the file."""
+    relative = ALLOCATIONS.relative_to(ROOT).as_posix()
+    shown = subprocess.run(["git", "show", f"{BASE_REF}:{relative}"], cwd=ROOT, capture_output=True, text=True)
+    if shown.returncode != 0:
+        return Counter()
+    return Counter(
+        (row["path"], row["name"], row["value"]) for row in parse_rows(shown.stdout, relative, "allocations")
+    )
+
+
+def unaccounted(literals: dict[str, Counter[Key]], allocated: Counter[Key]) -> dict[str, Counter[Key]]:
+    """Base-tree literals less the ones a base allocation already accounts for: a QRNG consumer allocated on the
+    base never becomes a reproduction seed, since dropping its allocation would free an index it still uses."""
+    return {path: Counter({key: n - allocated[key] for key, n in counts.items()}) for path, counts in literals.items()}
+
+
 def base_baseline() -> list[dict[str, Any]] | None:
     """The baseline at BASE_REF, or None when BASE_REF predates the file."""
     relative = BASELINE.relative_to(ROOT).as_posix()
@@ -518,7 +535,8 @@ def check_shrink() -> int:
     base = base_baseline()
     head = load(BASELINE, "seeds")
     paths = [] if base is None else sorted({key[0] for key, _, _ in raised_rows(base, head)})
-    base_literals = dict(zip(paths, parallel.ordered_map(base_file_literals, paths), strict=True))
+    literals = dict(zip(paths, parallel.ordered_map(base_file_literals, paths), strict=True))
+    base_literals = unaccounted(literals, base_allocated() if paths else Counter())
     problems = [] if base is None else shrink_problems(base, head, base_literals)
     if problems:
         raise SeedError("\n".join(problems))
@@ -686,6 +704,8 @@ def self_test() -> int:
     ):
         if not shrink_problems(baseline, head, literals_held):
             raise SystemExit(f"self-test: {name} in ci/reproduction_seeds.json was admitted")
+    if not shrink_problems(baseline, [*baseline, added], unaccounted(held, Counter({("c.py", "SEED", 12345): 1}))):
+        raise SystemExit("self-test: a base-allocated QRNG literal entered ci/reproduction_seeds.json")
     held_twice = {"a.py": Counter({("a.py", "SEED", 5): 2})}
     for name, head, literals_held in (
         ("an added row", [*baseline, added], held),
@@ -711,7 +731,7 @@ def self_test() -> int:
             raise SystemExit(f"self-test: a bare seed flag raised {error}") from None
     else:
         raise SystemExit("self-test: a bare seed flag was admitted")
-    total = len(mutations) + 4 + runtime_refusals + 1
+    total = len(mutations) + 5 + runtime_refusals + 1
     print(f"seed_provenance self-test: scan matched, {total} mutations rejected")
     return 0
 

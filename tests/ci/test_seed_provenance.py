@@ -24,6 +24,7 @@ def test_retained_qrng_references_match_the_runtime_ledger() -> None:
     seed_provenance.check_runtime_tree()
 
 
+@pytest.mark.audit
 def test_tracked_docs_probes_enter_the_scan() -> None:
     probe = "docs/evidence/c5_zero_divisor_code/replay.py"
     if probe not in seed_provenance.tracked_files():
@@ -33,39 +34,32 @@ def test_tracked_docs_probes_enter_the_scan() -> None:
         raise AssertionError(f"the scan reads {keys} in {probe}")
 
 
-def test_reserved_rows_hold_their_values() -> None:
-    reserved = seed_provenance.load(seed_provenance.ALLOCATIONS, "reserved")
-    if not reserved:
-        raise AssertionError("allocations.json lists no reserved consumer")
-    for row in reserved:
-        values = seed_provenance.read_tree_record(row["record"])["values"]
-        if values[row["index"]] != row["value"]:
-            raise AssertionError(f"{row['path']}: {row['value']} is not index {row['index']} of {row['record']}")
+RECORD = "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json"
+SYNTHETIC = {"values": [11, 22, 33]}
+ROW = {"path": "p.py", "value": 22, "record": RECORD, "index": 1, "reason": "RNG alias"}
+TEXT = f"# {RECORD.rsplit('/', 1)[1]}\nrng = RNG(22)\n"
 
 
-def test_reserved_value_the_scan_detects_is_refused() -> None:
-    row = seed_provenance.load(seed_provenance.ALLOCATIONS, "reserved")[0]
-    path = row["path"]
-    text = (seed_provenance.ROOT / path).read_text(encoding="utf-8")
-    detected = frozenset(value for _, _, value in seed_provenance.text_literals(path, text)[0])
+def admit_synthetic(record: dict[str, object]) -> None:
+    del record
+
+
+def run_reserved(
+    allocations: list[dict[str, object]], files: dict[str, tuple[str, frozenset[int]]], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setitem(seed_provenance.SOURCES, "docs/evidence/anu_qrng", admit_synthetic)
+    seed_provenance.check_reserved([ROW], allocations, [], set(), lambda path: SYNTHETIC, files)
+
+
+def test_reserved_value_the_scan_detects_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
+    run_reserved([], {"p.py": (TEXT, frozenset())}, monkeypatch)
     with pytest.raises(seed_provenance.SeedError, match="the scan detects"):
-        seed_provenance.check_reserved(
-            [row],
-            [],
-            [],
-            set(),
-            seed_provenance.read_tree_record,
-            {path: (text, detected | {row["value"]})},
-        )
+        run_reserved([], {"p.py": (TEXT, frozenset({22}))}, monkeypatch)
 
 
-def test_allocated_index_reused_by_a_reserved_row_is_refused() -> None:
-    row = seed_provenance.load(seed_provenance.ALLOCATIONS, "reserved")[0]
-    taken = {"record": row["record"], "index": row["index"]}
+def test_allocated_index_reused_by_a_reserved_row_is_refused(monkeypatch: pytest.MonkeyPatch) -> None:
     with pytest.raises(seed_provenance.SeedError, match="already taken in allocations"):
-        seed_provenance.check_reserved(
-            [row], [taken], [], set(), seed_provenance.read_tree_record, {row["path"]: (row["record"], frozenset())}
-        )
+        run_reserved([{"record": RECORD, "index": 1}], {"p.py": (TEXT, frozenset())}, monkeypatch)
 
 
 def test_base_tree_literal_admits_a_baseline_row() -> None:
@@ -75,3 +69,11 @@ def test_base_tree_literal_admits_a_baseline_row() -> None:
         raise AssertionError("a literal the base tree holds was refused")
     if not seed_provenance.shrink_problems([], head, {}):
         raise AssertionError("a literal the base tree lacks was admitted")
+
+
+def test_base_allocated_literal_stays_out_of_the_baseline() -> None:
+    key = ("scripts/x.py", "SEED", 314)
+    head = [{"path": key[0], "name": key[1], "value": key[2], "count": 1}]
+    held = seed_provenance.unaccounted({key[0]: seed_provenance.Counter({key: 1})}, seed_provenance.Counter({key: 1}))
+    if not seed_provenance.shrink_problems([], head, held):
+        raise AssertionError("a QRNG literal allocated on the base entered the reproduction baseline")
