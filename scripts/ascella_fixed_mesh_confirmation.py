@@ -11,7 +11,8 @@ block split enters. `score` recomputes those predictions, requires them to equal
   mean deficit leave it unchanged;
 - the share of the compilation-induced variance the predictions carry, r^2 against the attenuation ceiling
   s_c^2 / (s_c^2 + mean counting variance), s_c^2 the exploration meshes' observed X variance less their mean
-  counting variance;
+  counting variance, as a point estimate and at the one-sided 1 - ALPHA Fisher-z upper bound of r,
+  tanh(atanh(r) + z_(1 - ALPHA) / sqrt(meshes - 3));
 - the full and scatter quadratic forms of scripts/ascella_fixed_mesh_error.py, which the plan records as an expected
   shortfall because the predicted spread exceeds the observed one.
 
@@ -117,6 +118,7 @@ def score(paths: list[Path], frozen: dict[str, Any], error: dict[str, Any]) -> d
     t = r * math.sqrt(dof / (1 - r * r))
     p = float(stats.t.sf(t, dof))
     bound = ceiling(error)
+    upper = math.tanh(math.atanh(r) + float(stats.norm.ppf(1 - ALPHA)) / math.sqrt(meshes - 3))
     slope, intercept = np.polyfit(predicted, observed, 1)
     return {
         "schema": "ascella-fixed-mesh-confirmation-v1",
@@ -131,7 +133,13 @@ def score(paths: list[Path], frozen: dict[str, Any], error: dict[str, Any]) -> d
             "alpha": ALPHA,
             "reading": "carried" if p < ALPHA else "not carried",
         },
-        "explained_share": {**bound, "r_squared": r * r, "share_of_ceiling": r * r / bound["r_ceiling"] ** 2},
+        "explained_share": {
+            **bound,
+            "r_squared": r * r,
+            "share_of_ceiling": r * r / bound["r_ceiling"] ** 2,
+            "r_upper": upper,
+            "share_of_ceiling_upper": upper * upper / bound["r_ceiling"] ** 2,
+        },
         "spearman": float(stats.spearmanr(predicted, observed).statistic),
         "affine": {"slope": float(slope), "intercept": float(intercept)},
         "spread": {"predicted_sd": float(predicted.std()), "observed_sd": float(observed.std())},

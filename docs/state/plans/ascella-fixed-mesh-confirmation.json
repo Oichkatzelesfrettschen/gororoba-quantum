@@ -101,7 +101,7 @@
   "claims": [
     "ascella-signed-coherence-fixed-mesh-offsets"
   ],
-  "resolution": "The frozen held-out predictions correlate with the held-out X at r 0.318 (one-sided p 0.050): not carried at alpha 0.01, at most 10.6 % of the compilation-induced variance.",
+  "resolution": "The frozen held-out predictions correlate with the held-out X at r 0.318 (one-sided p 0.050): not carried at alpha 0.01; explained share 10.6 % of the compilation-induced variance as a point estimate, 45.7 % at the one-sided 99 % upper bound.",
   "receipts": [
     {
       "result": "All three steps are done; the confirmation record replays and the registry claim states the not-carried reading.",

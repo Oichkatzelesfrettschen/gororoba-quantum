@@ -16,8 +16,9 @@ the posterior Hessian's inverse C as the fit covariance.
   at the predicted block counts. The held-out settings' sample totals and outside-block counts enter; their block
   split does not. A median ratio above 1 bars the family from reading predicted, so its held-out reading is not run.
 - exploration leave-one-out: each exploration mesh leaves the training set with both jobs' copies, the family is
-  refitted from zero and predicts that mesh, and the squared standardized residuals sum against chi-square on the
-  mesh count; a sum below the 0.999 quantile lets the family proceed.
+  refitted from zero and predicts that mesh, and a sum of the squared standardized residuals below the chi-square
+  0.999 quantile on the mesh count lets the family proceed. The folds share all but one training mesh, so their
+  residuals are dependent and the quantile is the plan's fixed threshold, not the sum's calibrated distribution.
 - held-out reading: scripts/ascella_compilation_reading.py mesh_score, and the scatter form that adds one free
   constant to every held-out X under a flat prior, r^T (S^-1 - S^-1 1 1^T S^-1 / 1^T S^-1 1) r on one fewer degree
   of freedom, because a mesh-independent deficit belongs to no element offset.

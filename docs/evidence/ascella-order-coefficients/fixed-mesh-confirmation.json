@@ -8,7 +8,9 @@
   "mean_counting_variance": 6.537557824849652e-06,
   "r_ceiling": 0.9776164090444731,
   "r_squared": 0.10085113574640459,
-  "share_of_ceiling": 0.10552219790109159
+  "r_upper": 0.6607888235906255,
+  "share_of_ceiling": 0.10552219790109159,
+  "share_of_ceiling_upper": 0.4568655515067162
  },
  "family": "heater_0.3_coupler_0.1_offsets",
  "meshes": 28,

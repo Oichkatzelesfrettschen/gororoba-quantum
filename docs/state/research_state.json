@@ -2395,7 +2395,7 @@
     },
     {
       "id": "ascella-signed-coherence-fixed-mesh-offsets",
-      "statement": "Static heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on job-00 plus the 28 exploration meshes of jobs 02 and 03, predict the 28 held-out served meshes' pooled X statistics at Pearson r 0.318 (one-sided t p 0.050 on 26 degrees of freedom), below the preregistered alpha 0.01: not carried. The fit explains at most 10.6 % of the compilation-induced variance against the 0.978 attenuation ceiling, overshoots the spread (predicted 0.0147 against observed 0.0102) and reads shortfall in both quadratic forms. The coupler offsets alone fail the exploration leave-one-out gate (sum 1133 against 56.9, r 0.08).",
+      "statement": "Static heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on job-00 plus the 28 exploration meshes of jobs 02 and 03, predict the 28 held-out served meshes' pooled X statistics at Pearson r 0.318 (one-sided t p 0.050 on 26 degrees of freedom), below the preregistered alpha 0.01: not carried. The point estimate of the explained share is 10.6 % of the compilation-induced variance against the 0.978 attenuation ceiling, with a one-sided 99 % Fisher-z upper bound of 45.7 % (r 0.661); the fit overshoots the spread (predicted 0.0147 against observed 0.0102) and reads shortfall in both quadratic forms. The coupler offsets alone fail the exploration leave-one-out gate (sum 1133 against 56.9, r 0.08).",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
@@ -2419,7 +2419,7 @@
         },
         {
           "path": "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
-          "sha256": "a40c8bf70178b0ef3331fc5dad49836467e8f5efd5562ad53b6b71e488ba2636"
+          "sha256": "bd24a2cc5d2fdef2cdef93088fe76c5ac67c87cc593258df79bfd7015ba75bf2"
         }
       ],
       "documents": [
