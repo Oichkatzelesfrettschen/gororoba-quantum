@@ -10342,6 +10342,39 @@
       "acquisitions": [
         "qd-qpu-belenos-teleportation-rehearsal-job-00"
       ]
+    },
+    {
+      "id": "hw-n21-orbit-scheduled-idle-control",
+      "statement": "Replayed with its service-scheduled idle written in as delays under the execution Target, the N=21 orbit run on ibm_fez (4 qubits, 28 CZ before routing; most idle qubit 1,958 dt) gives an idle-padded exact contrast difference of +0.179 against +0.208 unpadded and a measured +0.197 (95 percent interval +-0.030 at 4096 shots per arm), while the encoded N=21 Kingston run (336 CZ; most idle leaf 15,481 dt) gives -0.0007 padded against +0.031 unpadded and a measured +0.0027. The same parameter-free idle model lies inside both measured intervals, so the Kingston null follows the encoded circuit's length rather than N=21 feed-forward.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Two retained runs on two backends and calibrations; the orbit run's predicted idle loss (0.029) equals its interval half-width, so it does not separate the padded from the unpadded model on its own. Incoherent idle only; the orbit runs' fitted work phase (hw-n21-orbit-phase) is coherent and outside this model.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T080216.451663Z/idle-replay.json",
+          "sha256": "f589f9ccf10ae470f45c4d8c101af9969ea022e1187166e554e493419d30ad71"
+        },
+        {
+          "path": "results/live/2026-10-13T080216.451663Z/collect.json",
+          "sha256": "fc50723a9ee530cf9b4869a58da64cfbddf9dc98c999c66145ea7762881b2ddb"
+        },
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/idle-replay.json",
+          "sha256": "218790a98f99de9835fe219061e11a004908ea0809df3c88bea1b4688ac7bd6c"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-18T090603.530638Z/IDLE_REPLAY_FINDINGS.md"
+      ],
+      "acquisitions": [
+        "fez-n21-orbit-feedback",
+        "kingston-n21-feedback-encoded-50us"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-scheduled-idle",
+        "hw-n21-orbit-phase"
+      ]
     }
   ]
 }
