@@ -1,0 +1,63 @@
+{
+  "schema": "work-plan-v1",
+  "id": "a5-kernel-bundles",
+  "kind": "investigation",
+  "summary": "Roadmap item 5 of dimension32-global-topology: transition data, structure group, invariants and equivalence classes of the kernel bundles ker L_y over the smooth pieces of D_(5,12), starting from the kernel symmetry group, run as a Codex program.",
+  "sources": [
+    "docs/design/a5-kernel-bundles-program.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "scope": "Evidence bundle docs/evidence/a5-kernel-bundles (scripts, result.json, README, ledger) and the program file docs/design/a5-kernel-bundles-program.md; nullity >= 12 orbits first, nullity 8 as stretch. Attachments, global model and uniform structure (items 6-8) stay out of scope.",
+  "owner": "repository maintainer",
+  "next_action": "Codex (gpt-daybreak-blue-latest, xhigh) in tmux pursues the program file; the orchestrator reviews each local commit, answers owner decisions recorded as BLOCKED in the ledger, and opens the pull request.",
+  "related": [
+    "a5-strata-regularity"
+  ],
+  "claims": [
+    "dimension32-global-topology",
+    "a5-strata-regularity",
+    "a5-zero-divisor-strata"
+  ],
+  "steps": [
+    {
+      "id": "kernel-symmetry-group",
+      "state": "todo",
+      "action": "Compute the Lie algebra of the real group K transporting ker L_y, test which directions of G_2(C) x SO(2, C) x C^* lift, and the K-orbit dimensions on each nullity >= 12 orbit.",
+      "acceptance": "Fails if a direction claimed to lift fails kernel transport at any representative, or a claimed non-lifting direction transports kernels."
+    },
+    {
+      "id": "closed-form-frames",
+      "state": "todo",
+      "action": "Give kernel frames polynomial or rational in (z, conj z) on each nullity >= 12 orbit with their degeneracy loci.",
+      "acceptance": "Fails if L_y x != 0 for a frame vector, or the frame loses rank at an orbit point outside the stated locus."
+    },
+    {
+      "id": "unit-section-topology",
+      "state": "todo",
+      "action": "Determine pi_1 and the cohomology needed for the invariants of the unit sections of B9, V, VB, V^a_+- and N_+-.",
+      "acceptance": "Fails if a stated group disagrees with an explicit fibration or homogeneous-space computation."
+    },
+    {
+      "id": "transition-data",
+      "state": "todo",
+      "action": "Build an exact atlas of kernel frames over each smooth piece of D_(5,12), verify the cocycle on overlaps and identify the structure group.",
+      "acceptance": "Fails if a transition function fails the cocycle identity exactly or leaves the stated structure group."
+    },
+    {
+      "id": "invariants",
+      "state": "todo",
+      "action": "Compute characteristic classes and monodromy and decide triviality or identification with named bundles.",
+      "acceptance": "Fails if an invariant contradicts an explicit global section or frame."
+    },
+    {
+      "id": "review-and-admission",
+      "state": "todo",
+      "action": "Independent verification, critical review and a claim for confirmed results only, through a pull request and the Codex review loop.",
+      "acceptance": "research_state.py --check and plan_tracker.py check pass and the four pr.yml checks are green on the PR head."
+    }
+  ]
+}
