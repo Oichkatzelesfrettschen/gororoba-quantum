@@ -32,7 +32,7 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 70 |
+| exploratory reanalysis | exploratory | 71 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 25 |
@@ -334,10 +334,11 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-25T203822.040562Z](results/live/2026-10-25T203822.040562Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 19 | DONE | 43 s |
 | [2026-10-25T225332.266272Z](results/live/2026-10-25T225332.266272Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 24 | DONE | 55 s |
 | [2026-10-25T233207.284563Z](results/live/2026-10-25T233207.284563Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 18 | DONE | 12 s |
+| [2026-10-26T031010.724660Z](results/live/2026-10-26T031010.724660Z) | IBM Quantum | measurement-sequence-diagnostic | ibm_kingston | 1 | 6 | DONE | 15 s |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
-The IBM service inventory observed at 2026-10-25T23:36:01.130164+00:00 holds 4 physical jobs with 150 settled seconds; the account then reported 150 of 600 s consumed in the rolling window ending 2026-10-25T23:36:01.079Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-26T03:17:03.514437+00:00 holds 5 physical jobs with 165 settled seconds; the account then reported 165 of 600 s consumed in the rolling window ending 2026-10-26T03:17:03.462Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 

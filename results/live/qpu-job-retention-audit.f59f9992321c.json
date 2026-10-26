@@ -1,25 +1,25 @@
 {
   "account_reserve_seconds": 60,
   "account_usage_observation": {
-    "usage_consumed_seconds": 150,
+    "usage_consumed_seconds": 165,
     "usage_limit_seconds": 600,
     "usage_period": {
-      "end_time": "2026-10-25T23:36:01.079Z",
-      "start_time": "2026-09-27T23:36:01.079Z"
+      "end_time": "2026-10-26T03:17:03.462Z",
+      "start_time": "2026-09-28T03:17:03.462Z"
     },
-    "usage_remaining_seconds": 450
+    "usage_remaining_seconds": 435
   },
-  "acquisition_count": 4,
+  "acquisition_count": 5,
   "awaiting_observation": [],
   "failed_charge_seconds": "0",
   "failed_job_count": 0,
-  "final_charge_seconds": "150",
+  "final_charge_seconds": "165",
   "historical_charge_seconds": "0",
-  "indexed_metrics_snapshots": 4,
-  "indexed_raw_data_files": 99,
+  "indexed_metrics_snapshots": 5,
+  "indexed_raw_data_files": 106,
   "instance_crn_hash": "f59f9992321c",
-  "inventory_sha256": "1c0009dd3450d2814969ee04e80cffebcf11f91cea33ec6f5e65f4cdeae2ba9e",
-  "job_count": 4,
+  "inventory_sha256": "07bfc7a5873e5b9d862a748f23ade8cb2d9316befb157029ff246aa2ef0e82c3",
+  "job_count": 5,
   "jobs": [
     {
       "backend": "ibm_kingston",
@@ -231,18 +231,53 @@
         "running": "2026-10-25T23:32:34.807382Z"
       },
       "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-26T03:11:53.949934+00:00",
+      "final_qpu_charge_seconds": 15,
+      "input_schema_version": "v2.0",
+      "job_id": "dbfc9ufgdj9s73bbbabg",
+      "metrics_snapshots": 1,
+      "provenance": "registered_collection",
+      "pub_count": 6,
+      "raw_data_files": 7,
+      "run": "results/live/2026-10-26T031010.724660Z",
+      "shots_per_pub": 8192,
+      "source_files": {
+        "results/live/2026-10-26T031010.724660Z/collect.json": "0fd6b3a2213e01f9b7aea7f221631f5c0416ff69becbde14dde1c84ef950af90",
+        "results/live/2026-10-26T031010.724660Z/isa.qpy": "80353d6df7f1b83ceaa2c76fd7bf9c91d6414d939fcf795d719ab8e6a035c03f",
+        "results/live/2026-10-26T031010.724660Z/raw/dbfc9ufgdj9s73bbbabg/index.json": "ee85e876014402fd221fd54dad02e7697bc49d70dbd608c413270004e192e2ae",
+        "results/live/2026-10-26T031010.724660Z/raw/dbfc9ufgdj9s73bbbabg/job_metrics.json": "d509682da4f7e0e957e2871fca1ce3047cb65c08f5321247abe48b0f042e6a4c",
+        "results/live/2026-10-26T031010.724660Z/raw/dbfc9ufgdj9s73bbbabg/pub_00.json": "7e37d50fdd6ba0045a9bc2829954790f96774980467bfaef6943165704fdf136",
+        "results/live/2026-10-26T031010.724660Z/raw/dbfc9ufgdj9s73bbbabg/pub_01.json": "b351b65940b6e5f1d19daf36d24c60192ab38b6665812fc5df31b7407b39ab16",
+        "results/live/2026-10-26T031010.724660Z/raw/dbfc9ufgdj9s73bbbabg/pub_02.json": "710607b810e0377acbf1d71733ac7f6eedd772871de1d069acdebac9ebdc22ab",
+        "results/live/2026-10-26T031010.724660Z/raw/dbfc9ufgdj9s73bbbabg/pub_03.json": "9acc738cd40be5e17d9da25b44a6d726e19817715aa74de6892497bd1c828f6b",
+        "results/live/2026-10-26T031010.724660Z/raw/dbfc9ufgdj9s73bbbabg/pub_04.json": "721c46233e8bbd23d132188e28e24b2dcc6c516fad3b0945fdb81dcd18310dec",
+        "results/live/2026-10-26T031010.724660Z/raw/dbfc9ufgdj9s73bbbabg/pub_05.json": "126c69c84ccd78efba8b1c1b9504e2813b8bbc9ac221037cf74f238d3df0c99a",
+        "results/live/2026-10-26T031010.724660Z/raw/dbfc9ufgdj9s73bbbabg/result_metadata.json": "2a5527b3542a87465c70b8344ba80b8ffa2b261d355929a53b4d9eabdc8a75dd",
+        "results/live/2026-10-26T031010.724660Z/record.json": "89d3b609b45284bbdcd38219b5a441752185425420687eefcbc4b0303be3dff5"
+      },
+      "status": "DONE",
+      "submitted_pub_shots": 49152,
+      "timestamps": {
+        "created": "2026-10-26T03:11:53.949934Z",
+        "finished": "2026-10-26T03:12:14.687715Z",
+        "running": "2026-10-26T03:11:55.887504Z"
+      },
+      "usage_status": "complete"
     }
   ],
-  "later_program_charge_seconds": "150",
+  "later_program_charge_seconds": "165",
   "new_campaign_ceiling_seconds": 180,
   "new_campaign_charge_seconds": "0",
   "new_campaign_cutoff": "2026-10-14T00:00:00Z",
-  "observed_at": "2026-10-25T23:36:01.130164+00:00",
-  "pub_count": 95,
+  "observed_at": "2026-10-26T03:17:03.514437+00:00",
+  "pub_count": 101,
   "replay_source_sha256": "258ede87c94abb5a70d33f1b7a81e7aadaa9338d95e8638fe12d46d98976873b",
   "schema": "qpu-job-retention-audit-v1",
   "scope": "All completed jobs in the retained service inventory have lossless raw archives, and every failed job's settled charge is bound to the collection that records why it returned no result. Offline replay establishes retained coverage at the observation time; subsequent live jobs require a fresh inventory.",
-  "submitted_pub_shots": 1056768,
+  "submitted_pub_shots": 1105920,
   "unallocated_campaign_seconds": "180",
-  "usage_window_charge_seconds": "150"
+  "usage_window_charge_seconds": "165"
 }

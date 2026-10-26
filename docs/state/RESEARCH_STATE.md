@@ -28,7 +28,7 @@ and neither establishes a theorem or authorizes a QPU run.
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
-The IBM service inventory observed at 2026-10-25T23:36:01.130164+00:00 holds 4 physical jobs with 150 settled seconds; the account then reported 150 of 600 s consumed in the rolling window ending 2026-10-25T23:36:01.079Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-26T03:17:03.514437+00:00 holds 5 physical jobs with 165 settled seconds; the account then reported 165 of 600 s consumed in the rolling window ending 2026-10-26T03:17:03.462Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
@@ -322,6 +322,7 @@ circuit and charges the account ledger's change.
 | [2026-10-25T203822.040562Z](../../results/live/2026-10-25T203822.040562Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 19 | DONE | 43 s | kingston-qet-ladder-margin-and-feedforward, kingston-qet-scheduled-idle-coherent-phase |
 | [2026-10-25T225332.266272Z](../../results/live/2026-10-25T225332.266272Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 24 | DONE | 55 s | kingston-qet-window-phase-static, kingston-qet-scheduled-idle-coherent-phase |
 | [2026-10-25T233207.284563Z](../../results/live/2026-10-25T233207.284563Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 18 | DONE | 12 s | kingston-qet-compensated-information-excess, kingston-qet-scheduled-idle-coherent-phase |
+| [2026-10-26T031010.724660Z](../../results/live/2026-10-26T031010.724660Z) | IBM Quantum | measurement-sequence-diagnostic | ibm_kingston | 1 | 6 | DONE | 15 s | kingston-gate-model-scatter-floor |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -604,6 +605,7 @@ circuit and charges the account ledger's change.
 - **kingston-qet-ladder** (2026-10-25T203822.040562Z): On 14 calibration-qualified ibm_kingston pairs, does a record-steered rotation lower Bob's local energy of the Hotta two-qubit model below the floor -<H_A> that binds every record-independent operation, and does the feed-forward branch execute the rotation the bit selects?
 - **kingston-qet-frame-diagnostic** (2026-10-25T225332.266272Z): Is the ladder's lost parity a phase on B over the measure-to-branch idle, static or driven by Alice's readout, and does completing the CX first or an X echo on B move or refocus it?
 - **kingston-qet-compensated-ladder** (2026-10-25T233207.284563Z): Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?
+- **kingston-measurement-sequence-scatter-floor** (2026-10-26T031010.724660Z): On 38 pairwise uncoupled ibm_kingston qubits (the main pinching family's eight and thirty chosen by a calibration-only rule), how far does the readout-corrected P0 of the 32-sx unitary sequence at N = 16 lie from the pinching analysis's Bloch-iteration prediction, qubit by qubit, and does the residual follow T2 as the drive-dephasing lead from IQM Garnet predicts?
 
 ## Established claims
 
@@ -1755,6 +1757,10 @@ circuit and charges the account ledger's change.
   Evidence: [idle-replay.json](../../results/live/2026-10-25T203822.040562Z/idle-replay.json), [idle-replay.json](../../results/live/2026-10-25T225332.266272Z/idle-replay.json), [idle-replay.json](../../results/live/2026-10-25T233207.284563Z/idle-replay.json), [pais-claims-falsification.md](../notes/topics/pais-claims-falsification.md).
   Acquisitions: kingston-qet-ladder, kingston-qet-frame-diagnostic, kingston-qet-compensated-ladder.
   Related claims: kingston-qet-window-phase-static, kingston-qet-compensated-information-excess, hw-n21-feedback-null-scheduled-idle.
+- **kingston-gate-model-scatter-floor** (exploratory reanalysis, hardware). On ibm_kingston (calibration 2026-10-25T19:36:09-07:00; one static job of six PUBs at 8192 shots over 38 pairwise uncoupled qubits, 15 s charged) the readout-corrected P0 of the 32-sx unitary sequence at N = 16 differs from the pinching analysis's sign-pooled Bloch-iteration prediction by a root-mean-square of 0.0152 over all 38 informative qubits, 0.0188 over the eight main qubits and 0.0141 over the thirty further qubits, against a statistical root-mean-square standard error of 0.0024. The preregistered floor, the larger of the all-qubit and main-qubit values, is 0.018784. The mean residual is +0.0110: the model underpredicts P0 on 32 of 38 qubits (all eight main qubits), by up to +0.039 on q91 and +0.034 on q45, and overpredicts it on six. The residual does not follow T2 in the drive-dephasing lead's direction: its Spearman correlation with T2 is -0.29 (two-sided p 0.080; 9 of the 12 longest-T2 qubits positive, 2 of the 12 shortest negative) and with the sx error -0.33 (p 0.044).
+  Boundary: One calibration window, one job, one backend; the floor is the root-mean-square of a model residual that includes counting noise, and it measures the sign-even part of the gate-model error because the pooled unitary arm is blind to the first-order axis tilt. The mean residual is positive, so the model underpredicts P0 systematically on this device and the floor mixes a common offset (+0.011) with qubit-to-qubit scatter. The correlations come from 38 qubits chosen by readout error, rank-based with a t-approximation p value, and are descriptive: the T2 test does not support the Garnet drive-dephasing lead and neither establishes a mechanism nor excludes one. The model takes the Target T1 at execution and the planning excitation, not a fit.
+  Evidence: [collect.json](../../results/live/2026-10-26T031010.724660Z/collect.json), [record.json](../../results/live/2026-10-26T031010.724660Z/record.json), [measurement-sequence-pinching.md](../design/measurement-sequence-pinching.md).
+  Acquisitions: kingston-measurement-sequence-scatter-floor.
 
 ## Open claims
 
