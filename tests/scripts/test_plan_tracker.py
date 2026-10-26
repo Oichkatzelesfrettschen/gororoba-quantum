@@ -125,6 +125,25 @@ def test_completed_falsification_and_historical_revalidation(root: Path) -> None
     records.validate(root, {item["id"]: item})
     if not records.receipt_freshness(root, item):
         raise RuntimeError("changed receipt inputs must request revalidation")
+    stale = copy.deepcopy(item)
+    newer = receipt(root, item, step) | {"observed_at": "2026-10-24T12:00:00Z"}
+    step["receipts"].append(newer)
+    if records.receipt_freshness(root, item) != [f"{item['id']}: revalidation required for context.md"]:
+        raise RuntimeError("a step revalidation leaves the plan receipt stale")
+    step["receipts"].insert(0, step["receipts"].pop())
+    if records.receipt_freshness(root, item) != [f"{item['id']}: revalidation required for context.md"]:
+        raise RuntimeError("the newest receipt is chosen by observed_at, not list position")
+    tracker.publish(root, {}, item)
+    revalidation = root / "revalidation.json"
+    revalidation.write_text(records.encoded(receipt(root, item) | {"observed_at": "2026-10-24T12:00:00Z"}))
+    invoke(root, "update", item["id"], "--receipt", str(revalidation))
+    revalidated = records.load(root)[item["id"]]
+    if records.receipt_freshness(root, revalidated) or len(revalidated["receipts"]) != 2:
+        raise RuntimeError("update --receipt appends a plan revalidation and keeps the superseded receipt")
+    if records.receipt_freshness(root, stale) != sorted(
+        f"{name}: revalidation required for context.md" for name in (item["id"], step["id"])
+    ):
+        raise RuntimeError("the superseded receipts alone still request revalidation")
     step["acceptance"] = "Prove the universal claim."
     with pytest.raises(ValueError, match="scope differs"):
         records.validate(root, {item["id"]: item})

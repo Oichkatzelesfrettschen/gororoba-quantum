@@ -59,6 +59,42 @@
             }
           ],
           "revision": "7607d4e10b4fe5527686449f0f51be15d8f30b7d"
+        },
+        {
+          "result": "Revalidated at 6765b115: the cd-sign-python-translation and cd-associator-point-indicators replays compile with warnings as errors under Rocq 9.3.0 / OCaml 5.5.1, pass the kernel check and match their assumption receipts.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "proofs/CdAssociatorPointIndicators.v",
+              "sha256": "f8107462007e7f99203c6eb8eb6ce1938f807593a1bdb0afb8eb9374d736434f"
+            },
+            {
+              "ref": "proofs/CdSignAstTranslation.v",
+              "sha256": "25f7fe47ba1b26dc4a349779000d5adc48ef798308ddead3ef1eb892ee5ed6f6"
+            },
+            {
+              "ref": "proofs/CdSignSourceCertificate.v",
+              "sha256": "6c83e82d0708f93e3e294f0302b62f7f2609a1aa8827f0381423f480c3b6f510"
+            },
+            {
+              "ref": "docs/evidence/cd-associator-point-indicators/assumptions.txt",
+              "sha256": "f0532d0e8a885018e887fe9f2fc1415078fabe8f12825919a931ee3c625a3996"
+            },
+            {
+              "ref": "docs/evidence/cd-associator-point-indicators/kernel.txt",
+              "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-translation/assumptions.txt",
+              "sha256": "68842fc80f589bb583cf4916a7401c359d1e235988e35f686ccf4605c8211ae0"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-translation/kernel.txt",
+              "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+            }
+          ],
+          "scope_sha256": "fbfb7ead9094a1a13f78344040868c50d6b9422cf0380c1806fd86ce6791305c"
         }
       ]
     },
@@ -114,6 +150,138 @@
             }
           ],
           "revision": "7607d4e10b4fe5527686449f0f51be15d8f30b7d"
+        },
+        {
+          "result": "Revalidated at 6765b115: both replays reproduce their kernel and assumption receipts; cd_sign_source_ast.py --check (sources-411), test_cd_sign_source_ast.py, check_rocq_ci_pins.py, test_rocq_ci_pins.py, research_state.py --check and plan_tracker.py check pass; core-001 ruff and core-039 mypy pass.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
+              "sha256": "cadae5083d705508393a0bec03e05b74df245471102060819378c851eac2d7ff"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+              "sha256": "3241e2d39a2a6719782568ee0b42c96f3d634bf2e40bd3b5f976390aa4d9fc42"
+            },
+            {
+              "ref": "scripts/cd_sign_source_ast.py",
+              "sha256": "d7e1231563718aec1f2546a0c4b97f0c58bba29f9d402a0707304b4143009c4c"
+            },
+            {
+              "ref": "tests/scripts/test_cd_sign_source_ast.py",
+              "sha256": "9fe413b535e4c85fd85d853cc8d6143ac986a467c2ae9474133a4358d327a1ce"
+            },
+            {
+              "ref": "ci/check_rocq_ci_pins.py",
+              "sha256": "5f4ef4b8a96cc3c2aefdbba73ad43e53ebc3b4f6f812e2638ede7c52d10a5c49"
+            },
+            {
+              "ref": "tests/ci/test_rocq_ci_pins.py",
+              "sha256": "0e58e01e826ccf8abb476a10d44d6e16bbf59d6c5e37749a56dccca9b2d44ef3"
+            },
+            {
+              "ref": ".github/workflows/ci.yml",
+              "sha256": "01fb809603260edecec4dcf7ceefddf55cc0e1f7cfe5ca3fdb6065a9f1772aaa"
+            },
+            {
+              "ref": "ci/gates.json",
+              "sha256": "7e5f6df456aaae579fb587595a20dfcde5439ad554c6253d67da4f7e87ee4302"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "61ebc74ffdb7a6204cfb1b427949cf090bf7141c41adaa7b8973450fd57b8b9b"
+            }
+          ],
+          "scope_sha256": "f017030a979720e82164de11f317102a69afc0ca532de847d0dc064b8b65872b"
+        },
+        {
+          "result": "Revalidated at 2b7690d7 after merging main: ci/gates.json added core-primorial-bound-residuals-replay and core-teleportation-rehearsal-job-00-replay and widened the primorial ruff gate core-687, leaving every Rocq, AST and registry gate this plan cites unchanged; sources-406, sources-411, check_rocq_ci_pins.py, test_rocq_ci_pins.py and core-270 pass; claim cd-sign-python-translation-rocq keeps its record.",
+          "observed_at": "2026-10-26T03:29:52.921698+00:00",
+          "revision": "2b7690d78bde7ad11ba4d159af9e71ebbe2f5a49",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
+              "sha256": "cadae5083d705508393a0bec03e05b74df245471102060819378c851eac2d7ff"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+              "sha256": "3241e2d39a2a6719782568ee0b42c96f3d634bf2e40bd3b5f976390aa4d9fc42"
+            },
+            {
+              "ref": "scripts/cd_sign_source_ast.py",
+              "sha256": "d7e1231563718aec1f2546a0c4b97f0c58bba29f9d402a0707304b4143009c4c"
+            },
+            {
+              "ref": "tests/scripts/test_cd_sign_source_ast.py",
+              "sha256": "9fe413b535e4c85fd85d853cc8d6143ac986a467c2ae9474133a4358d327a1ce"
+            },
+            {
+              "ref": "ci/check_rocq_ci_pins.py",
+              "sha256": "5f4ef4b8a96cc3c2aefdbba73ad43e53ebc3b4f6f812e2638ede7c52d10a5c49"
+            },
+            {
+              "ref": "tests/ci/test_rocq_ci_pins.py",
+              "sha256": "0e58e01e826ccf8abb476a10d44d6e16bbf59d6c5e37749a56dccca9b2d44ef3"
+            },
+            {
+              "ref": ".github/workflows/ci.yml",
+              "sha256": "01fb809603260edecec4dcf7ceefddf55cc0e1f7cfe5ca3fdb6065a9f1772aaa"
+            },
+            {
+              "ref": "ci/gates.json",
+              "sha256": "8b5ee1471ab73dbef2a36158c162239da952bc33d0cee403c58782cf658c1fb4"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "04391f498de69b65b74540b639bd2b31b62f045bb8c3ab63292d1b20b84ace4d"
+            }
+          ],
+          "scope_sha256": "f017030a979720e82164de11f317102a69afc0ca532de847d0dc064b8b65872b"
+        },
+        {
+          "result": "Revalidated at 5717aefa after merging main: ci/gates.json added core-694, core-695 and four Ascella replay gates and changed none; sources-406, sources-411, check_rocq_ci_pins.py and core-270 pass, and claim cd-sign-python-translation-rocq keeps its record.",
+          "observed_at": "2026-10-26T04:04:56.060818+00:00",
+          "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
+              "sha256": "cadae5083d705508393a0bec03e05b74df245471102060819378c851eac2d7ff"
+            },
+            {
+              "ref": "docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+              "sha256": "3241e2d39a2a6719782568ee0b42c96f3d634bf2e40bd3b5f976390aa4d9fc42"
+            },
+            {
+              "ref": "scripts/cd_sign_source_ast.py",
+              "sha256": "d7e1231563718aec1f2546a0c4b97f0c58bba29f9d402a0707304b4143009c4c"
+            },
+            {
+              "ref": "tests/scripts/test_cd_sign_source_ast.py",
+              "sha256": "9fe413b535e4c85fd85d853cc8d6143ac986a467c2ae9474133a4358d327a1ce"
+            },
+            {
+              "ref": "ci/check_rocq_ci_pins.py",
+              "sha256": "5f4ef4b8a96cc3c2aefdbba73ad43e53ebc3b4f6f812e2638ede7c52d10a5c49"
+            },
+            {
+              "ref": "tests/ci/test_rocq_ci_pins.py",
+              "sha256": "0e58e01e826ccf8abb476a10d44d6e16bbf59d6c5e37749a56dccca9b2d44ef3"
+            },
+            {
+              "ref": ".github/workflows/ci.yml",
+              "sha256": "01fb809603260edecec4dcf7ceefddf55cc0e1f7cfe5ca3fdb6065a9f1772aaa"
+            },
+            {
+              "ref": "ci/gates.json",
+              "sha256": "712c7cc2077c04cd6eee1db73b21a6b7a049e47ea09169841478fefad0051f1c"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+            }
+          ],
+          "scope_sha256": "f017030a979720e82164de11f317102a69afc0ca532de847d0dc064b8b65872b"
         }
       ]
     }
@@ -172,6 +340,50 @@
         }
       ],
       "revision": "7607d4e10b4fe5527686449f0f51be15d8f30b7d"
+    },
+    {
+      "result": "Revalidated at 6765b115: both replays pass under Rocq 9.3.0 after 3fb2f8f bound the source certificate to cd_sign's helper closure; cd-sign-python-translation-rocq changed only in its evidence digests; core-270 research_state.py --check and plan_tracker.py check pass.",
+      "observed_at": "2026-10-26T03:16:45.530392+00:00",
+      "revision": "6765b11589672fd85bfe05401800a9e075667168",
+      "evidence": [
+        {
+          "ref": "proofs/CdAssociatorPointIndicators.v",
+          "sha256": "f8107462007e7f99203c6eb8eb6ce1938f807593a1bdb0afb8eb9374d736434f"
+        },
+        {
+          "ref": "proofs/CdSignAstTranslation.v",
+          "sha256": "25f7fe47ba1b26dc4a349779000d5adc48ef798308ddead3ef1eb892ee5ed6f6"
+        },
+        {
+          "ref": "proofs/CdSignSourceCertificate.v",
+          "sha256": "6c83e82d0708f93e3e294f0302b62f7f2609a1aa8827f0381423f480c3b6f510"
+        },
+        {
+          "ref": "docs/evidence/cd-associator-point-indicators/assumptions.txt",
+          "sha256": "f0532d0e8a885018e887fe9f2fc1415078fabe8f12825919a931ee3c625a3996"
+        },
+        {
+          "ref": "docs/evidence/cd-associator-point-indicators/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        },
+        {
+          "ref": "docs/evidence/cd-sign-python-translation/assumptions.txt",
+          "sha256": "68842fc80f589bb583cf4916a7401c359d1e235988e35f686ccf4605c8211ae0"
+        },
+        {
+          "ref": "docs/evidence/cd-sign-python-translation/kernel.txt",
+          "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+        },
+        {
+          "ref": "docs/evidence/cd-associator-point-indicators/source_hashes.sha256",
+          "sha256": "cadae5083d705508393a0bec03e05b74df245471102060819378c851eac2d7ff"
+        },
+        {
+          "ref": "docs/evidence/cd-sign-python-translation/source_hashes.sha256",
+          "sha256": "3241e2d39a2a6719782568ee0b42c96f3d634bf2e40bd3b5f976390aa4d9fc42"
+        }
+      ],
+      "scope_sha256": "315c25dc9db9c7606d973d9768b184bfb84aa2d80edd84e54a4cc512ebc03d55"
     }
   ]
 }

@@ -143,6 +143,20 @@
    "index": 5
   },
   {
+   "path": "scripts/primorial_probe_case.py",
+   "name": "TWIRL_SEED",
+   "value": 2441,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T231051Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/primorial_probe_case.py",
+   "name": "TWIRL_LIMIT_SEED",
+   "value": 50280,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T231051Z.json",
+   "index": 1
+  },
+  {
    "path": "scripts/qd_rehearsal_secondary.py",
    "name": "CONTROL_SEED",
    "value": 64095,
