@@ -1,0 +1,3819 @@
+{
+ "identities": {
+  "pass": true,
+  "Q_sign": 1,
+  "G_sign": 1
+ },
+ "symmetry": {
+  "pass": true,
+  "mutation": "",
+  "boost_W8": "1",
+  "reflection_W8": "1",
+  "boost_Ehat": "1",
+  "reflection_Ehat": "1",
+  "boost_Iso": "1",
+  "reflection_Iso": "1",
+  "boost_Xp": "1",
+  "reflection_Xp": "1",
+  "boost_Xm": "1",
+  "reflection_Xm": "1",
+  "boost_B9": "1",
+  "reflection_B9": "1",
+  "boost_V": "1",
+  "reflection_V": "1",
+  "boost_VB": "1",
+  "reflection_VB": "1",
+  "boost_Vap": "1",
+  "reflection_Vap": "1",
+  "boost_Vam": "1",
+  "reflection_Vam": "1",
+  "boost_Np": "1",
+  "reflection_Np": "1",
+  "boost_Nm": "1",
+  "reflection_Nm": "1",
+  "boost_VQ": "1",
+  "reflection_VQ": "1",
+  "boost_VG": "1",
+  "reflection_VG": "1",
+  "seconds": "0.2"
+ },
+ "representatives": {
+  "pass": true,
+  "rows": [
+   {
+    "closure": "W8",
+    "point": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    "nullity": 8,
+    "orbit_rank": 12,
+    "pattern": [
+     "W8"
+    ],
+    "in_VQ": false,
+    "in_VG": true
+   },
+   {
+    "closure": "Ehat",
+    "point": [
+     3,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     4,
+     5,
+     2,
+     2,
+     0,
+     0,
+     0,
+     0
+    ],
+    "nullity": 8,
+    "orbit_rank": 11,
+    "pattern": [
+     "Ehat"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   },
+   {
+    "closure": "Iso",
+    "point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     1,
+     0,
+     0
+    ],
+    "nullity": 8,
+    "orbit_rank": 11,
+    "pattern": [
+     "W8",
+     "Iso"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   },
+   {
+    "closure": "Xp",
+    "point": [
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "nullity": 8,
+    "orbit_rank": 10,
+    "pattern": [
+     "Ehat",
+     "Xp"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   },
+   {
+    "closure": "Xm",
+    "point": [
+     1,
+     1,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     -1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "nullity": 8,
+    "orbit_rank": 10,
+    "pattern": [
+     "Ehat",
+     "Xm"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   },
+   {
+    "closure": "B9",
+    "point": [
+     1,
+     0,
+     1,
+     2,
+     0,
+     2,
+     0,
+     0,
+     3,
+     0,
+     3,
+     5,
+     0,
+     5,
+     0
+    ],
+    "nullity": 12,
+    "orbit_rank": 9,
+    "pattern": [
+     "W8",
+     "Ehat",
+     "Iso",
+     "Xp",
+     "Xm",
+     "B9"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   },
+   {
+    "closure": "V",
+    "point": [
+     3,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     4,
+     5,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "nullity": 12,
+    "orbit_rank": 8,
+    "pattern": [
+     "Ehat",
+     "V"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   },
+   {
+    "closure": "VB",
+    "point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "nullity": 12,
+    "orbit_rank": 7,
+    "pattern": [
+     "W8",
+     "Ehat",
+     "Iso",
+     "Xp",
+     "Xm",
+     "B9",
+     "V",
+     "VB"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   },
+   {
+    "closure": "Vap",
+    "point": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "nullity": 12,
+    "orbit_rank": 7,
+    "pattern": [
+     "Ehat",
+     "Xp",
+     "V",
+     "Vap"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   },
+   {
+    "closure": "Vam",
+    "point": [
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     -1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "nullity": 12,
+    "orbit_rank": 7,
+    "pattern": [
+     "Ehat",
+     "Xm",
+     "V",
+     "Vam"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   },
+   {
+    "closure": "Np",
+    "point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    "nullity": 16,
+    "orbit_rank": 6,
+    "pattern": [
+     "W8",
+     "Ehat",
+     "Iso",
+     "Xp",
+     "Xm",
+     "B9",
+     "V",
+     "VB",
+     "Vap",
+     "Np"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   },
+   {
+    "closure": "Nm",
+    "point": [
+     1,
+     0,
+     1,
+     0,
+     0,
+     0,
+     0,
+     0,
+     -1,
+     0,
+     -1,
+     0,
+     0,
+     0,
+     0
+    ],
+    "nullity": 16,
+    "orbit_rank": 6,
+    "pattern": [
+     "W8",
+     "Ehat",
+     "Iso",
+     "Xp",
+     "Xm",
+     "B9",
+     "V",
+     "VB",
+     "Vam",
+     "Nm"
+    ],
+    "in_VQ": true,
+    "in_VG": true
+   }
+  ],
+  "lower": {
+   "W8": [
+    "Iso",
+    "B9",
+    "VB",
+    "Np",
+    "Nm"
+   ],
+   "Ehat": [
+    "Xp",
+    "Xm",
+    "B9",
+    "V",
+    "VB",
+    "Vap",
+    "Vam",
+    "Np",
+    "Nm"
+   ],
+   "Iso": [
+    "B9",
+    "VB",
+    "Np",
+    "Nm"
+   ],
+   "Xp": [
+    "B9",
+    "VB",
+    "Vap",
+    "Np",
+    "Nm"
+   ],
+   "Xm": [
+    "B9",
+    "VB",
+    "Vam",
+    "Np",
+    "Nm"
+   ],
+   "B9": [
+    "VB",
+    "Np",
+    "Nm"
+   ],
+   "V": [
+    "VB",
+    "Vap",
+    "Vam",
+    "Np",
+    "Nm"
+   ],
+   "VB": [
+    "Np",
+    "Nm"
+   ],
+   "Vap": [
+    "Np"
+   ],
+   "Vam": [
+    "Nm"
+   ],
+   "Np": [],
+   "Nm": []
+  }
+ },
+ "closure_dims": {
+  "pass": true,
+  "rows": [
+   {
+    "closure": "W8",
+    "mutation": "",
+    "dim": "12",
+    "pass": true
+   },
+   {
+    "closure": "Ehat",
+    "mutation": "",
+    "dim": "11",
+    "pass": true
+   },
+   {
+    "closure": "Iso",
+    "mutation": "",
+    "dim": "11",
+    "pass": true
+   },
+   {
+    "closure": "Xp",
+    "mutation": "",
+    "dim": "10",
+    "pass": true
+   },
+   {
+    "closure": "Xm",
+    "mutation": "",
+    "dim": "10",
+    "pass": true
+   },
+   {
+    "closure": "B9",
+    "mutation": "",
+    "dim": "9",
+    "pass": true
+   },
+   {
+    "closure": "V",
+    "mutation": "",
+    "dim": "8",
+    "pass": true
+   },
+   {
+    "closure": "VB",
+    "mutation": "",
+    "dim": "7",
+    "pass": true
+   },
+   {
+    "closure": "Vap",
+    "mutation": "",
+    "dim": "7",
+    "pass": true
+   },
+   {
+    "closure": "Vam",
+    "mutation": "",
+    "dim": "7",
+    "pass": true
+   },
+   {
+    "closure": "Np",
+    "mutation": "",
+    "dim": "6",
+    "pass": true
+   },
+   {
+    "closure": "Nm",
+    "mutation": "",
+    "dim": "6",
+    "pass": true
+   }
+  ]
+ },
+ "certificate": {
+  "pass": true,
+  "planes": [
+   {
+    "plane": "P2",
+    "r_G": 11,
+    "s_dim": 1,
+    "s_basis": [
+     [
+      "0",
+      "-1",
+      "1",
+      "0"
+     ]
+    ]
+   },
+   {
+    "plane": "P3a",
+    "r_G": 9,
+    "s_dim": 2,
+    "s_basis": [
+     [
+      "-1",
+      "0",
+      "0",
+      "0"
+     ],
+     [
+      "0",
+      "0",
+      "-1",
+      "0"
+     ]
+    ]
+   },
+   {
+    "plane": "P3b",
+    "r_G": 9,
+    "s_dim": 2,
+    "s_basis": [
+     [
+      "-1",
+      "0",
+      "0",
+      "0"
+     ],
+     [
+      "0",
+      "0",
+      "-1",
+      "0"
+     ]
+    ]
+   },
+   {
+    "plane": "P3c",
+    "r_G": 11,
+    "s_dim": 2,
+    "s_basis": [
+     [
+      "4",
+      "0",
+      "0",
+      "0"
+     ],
+     [
+      "0",
+      "0",
+      "4",
+      "0"
+     ]
+    ]
+   },
+   {
+    "plane": "P4s",
+    "r_G": 9,
+    "s_dim": 4,
+    "s_basis": [
+     [
+      "-1",
+      "0",
+      "0",
+      "0"
+     ],
+     [
+      "0",
+      "-1",
+      "0",
+      "0"
+     ],
+     [
+      "0",
+      "0",
+      "-1",
+      "0"
+     ],
+     [
+      "0",
+      "0",
+      "0",
+      "-1"
+     ]
+    ]
+   },
+   {
+    "plane": "P4g",
+    "r_G": 11,
+    "s_dim": 4,
+    "s_basis": [
+     [
+      "-1",
+      "0",
+      "0",
+      "0"
+     ],
+     [
+      "0",
+      "-1",
+      "0",
+      "0"
+     ],
+     [
+      "0",
+      "0",
+      "-1",
+      "0"
+     ],
+     [
+      "0",
+      "0",
+      "0",
+      "-1"
+     ]
+    ]
+   }
+  ],
+  "rows": [
+   {
+    "slice": "P2",
+    "closure": "W8",
+    "mutation": "",
+    "lower": [
+     "Iso",
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "1",
+    "seconds": "0.2"
+   },
+   {
+    "slice": "P2",
+    "closure": "Ehat",
+    "mutation": "",
+    "lower": [
+     "Xp",
+     "Xm",
+     "B9",
+     "V",
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.2"
+   },
+   {
+    "slice": "P2",
+    "closure": "Iso",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P2",
+    "closure": "Xp",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vap",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P2",
+    "closure": "Xm",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P2",
+    "closure": "B9",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P2",
+    "closure": "V",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P2",
+    "closure": "VB",
+    "mutation": "",
+    "lower": [
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P2",
+    "closure": "Vap",
+    "mutation": "",
+    "lower": [
+     "Np"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P2",
+    "closure": "Vam",
+    "mutation": "",
+    "lower": [
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P2",
+    "closure": "Np",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P2",
+    "closure": "Nm",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3a",
+    "closure": "W8",
+    "mutation": "",
+    "lower": [
+     "Iso",
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3a",
+    "closure": "Ehat",
+    "mutation": "",
+    "lower": [
+     "Xp",
+     "Xm",
+     "B9",
+     "V",
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "1",
+    "seconds": "0.2"
+   },
+   {
+    "slice": "P3a",
+    "closure": "Iso",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3a",
+    "closure": "Xp",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vap",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "1",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3a",
+    "closure": "Xm",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "1",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3a",
+    "closure": "B9",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3a",
+    "closure": "V",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3a",
+    "closure": "VB",
+    "mutation": "",
+    "lower": [
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3a",
+    "closure": "Vap",
+    "mutation": "",
+    "lower": [
+     "Np"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3a",
+    "closure": "Vam",
+    "mutation": "",
+    "lower": [
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3a",
+    "closure": "Np",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3a",
+    "closure": "Nm",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3b",
+    "closure": "W8",
+    "mutation": "",
+    "lower": [
+     "Iso",
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3b",
+    "closure": "Ehat",
+    "mutation": "",
+    "lower": [
+     "Xp",
+     "Xm",
+     "B9",
+     "V",
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "1",
+    "seconds": "0.2"
+   },
+   {
+    "slice": "P3b",
+    "closure": "Iso",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3b",
+    "closure": "Xp",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vap",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "1",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3b",
+    "closure": "Xm",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "1",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3b",
+    "closure": "B9",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3b",
+    "closure": "V",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3b",
+    "closure": "VB",
+    "mutation": "",
+    "lower": [
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3b",
+    "closure": "Vap",
+    "mutation": "",
+    "lower": [
+     "Np"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3b",
+    "closure": "Vam",
+    "mutation": "",
+    "lower": [
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3b",
+    "closure": "Np",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3b",
+    "closure": "Nm",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3c",
+    "closure": "W8",
+    "mutation": "",
+    "lower": [
+     "Iso",
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3c",
+    "closure": "Ehat",
+    "mutation": "",
+    "lower": [
+     "Xp",
+     "Xm",
+     "B9",
+     "V",
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.2"
+   },
+   {
+    "slice": "P3c",
+    "closure": "Iso",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3c",
+    "closure": "Xp",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vap",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3c",
+    "closure": "Xm",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3c",
+    "closure": "B9",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3c",
+    "closure": "V",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3c",
+    "closure": "VB",
+    "mutation": "",
+    "lower": [
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3c",
+    "closure": "Vap",
+    "mutation": "",
+    "lower": [
+     "Np"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3c",
+    "closure": "Vam",
+    "mutation": "",
+    "lower": [
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3c",
+    "closure": "Np",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3c",
+    "closure": "Nm",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4s",
+    "closure": "W8",
+    "mutation": "",
+    "lower": [
+     "Iso",
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "closure": "Ehat",
+    "mutation": "",
+    "lower": [
+     "Xp",
+     "Xm",
+     "B9",
+     "V",
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "closure": "Iso",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "closure": "Xp",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vap",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "closure": "Xm",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "closure": "B9",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "1",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "closure": "V",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "closure": "VB",
+    "mutation": "",
+    "lower": [
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "closure": "Vap",
+    "mutation": "",
+    "lower": [
+     "Np"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4s",
+    "closure": "Vam",
+    "mutation": "",
+    "lower": [
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "closure": "Np",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4s",
+    "closure": "Nm",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4g",
+    "closure": "W8",
+    "mutation": "",
+    "lower": [
+     "Iso",
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4g",
+    "closure": "Ehat",
+    "mutation": "",
+    "lower": [
+     "Xp",
+     "Xm",
+     "B9",
+     "V",
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4g",
+    "closure": "Iso",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "1",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4g",
+    "closure": "Xp",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vap",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4g",
+    "closure": "Xm",
+    "mutation": "",
+    "lower": [
+     "B9",
+     "VB",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4g",
+    "closure": "B9",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4g",
+    "closure": "V",
+    "mutation": "",
+    "lower": [
+     "VB",
+     "Vap",
+     "Vam",
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4g",
+    "closure": "VB",
+    "mutation": "",
+    "lower": [
+     "Np",
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4g",
+    "closure": "Vap",
+    "mutation": "",
+    "lower": [
+     "Np"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4g",
+    "closure": "Vam",
+    "mutation": "",
+    "lower": [
+     "Nm"
+    ],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4g",
+    "closure": "Np",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4g",
+    "closure": "Nm",
+    "mutation": "",
+    "lower": [],
+    "pass": true,
+    "drop_escapes": "0",
+    "open_components": "0",
+    "seconds": "0.0"
+   }
+  ]
+ },
+ "iso": {
+  "pass": true,
+  "rows": [
+   {
+    "slice": "P2",
+    "pass": true,
+    "global_dim": "11",
+    "escapes": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3a",
+    "pass": true,
+    "global_dim": "11",
+    "escapes": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3b",
+    "pass": true,
+    "global_dim": "11",
+    "escapes": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P3c",
+    "pass": true,
+    "global_dim": "11",
+    "escapes": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4s",
+    "pass": true,
+    "global_dim": "11",
+    "escapes": "0",
+    "seconds": "0.0"
+   },
+   {
+    "slice": "P4g",
+    "pass": true,
+    "global_dim": "11",
+    "escapes": "0",
+    "seconds": "0.0"
+   }
+  ]
+ },
+ "nullity4": {
+  "pass": true,
+  "rows": [
+   {
+    "slice": "P2",
+    "pass": true,
+    "sing_vg_equals_w8_u_v": "1",
+    "dependent_escapes": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3a",
+    "pass": true,
+    "sing_vg_equals_w8_u_v": "1",
+    "dependent_escapes": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3b",
+    "pass": true,
+    "sing_vg_equals_w8_u_v": "1",
+    "dependent_escapes": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3c",
+    "pass": true,
+    "sing_vg_equals_w8_u_v": "1",
+    "dependent_escapes": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "pass": true,
+    "sing_vg_equals_w8_u_v": "1",
+    "dependent_escapes": "0",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4g",
+    "pass": true,
+    "sing_vg_equals_w8_u_v": "1",
+    "dependent_escapes": "0",
+    "seconds": "0.1"
+   }
+  ]
+ },
+ "germs": {
+  "pass": true,
+  "rows": [
+   {
+    "closure": "W8",
+    "orbit": "Iso",
+    "mutation": "",
+    "slice_dim": 4,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "W8",
+    "orbit": "B9",
+    "mutation": "",
+    "slice_dim": 6,
+    "germ": {
+     "dim": 3,
+     "mult": 1,
+     "embdim": 3,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     3,
+     1,
+     3,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "W8",
+    "orbit": "VB",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 5,
+     "mult": 1,
+     "embdim": 5,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 5,
+      "mult": 1,
+      "embdim": 5,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "smooth",
+    "expected": [
+     5,
+     1,
+     5,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "W8",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 6,
+     "mult": 2,
+     "embdim": 7,
+     "quadric_rank": 7
+    },
+    "components": [
+     {
+      "dim": 6,
+      "mult": 2,
+      "embdim": 7,
+      "quadric_rank": 7
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "A1",
+    "expected": [
+     6,
+     2,
+     7,
+     7,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "W8",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 6,
+     "mult": 2,
+     "embdim": 7,
+     "quadric_rank": 7
+    },
+    "components": [
+     {
+      "dim": 6,
+      "mult": 2,
+      "embdim": 7,
+      "quadric_rank": 7
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "A1",
+    "expected": [
+     6,
+     2,
+     7,
+     7,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Ehat",
+    "orbit": "Xp",
+    "mutation": "",
+    "slice_dim": 5,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Ehat",
+    "orbit": "Xm",
+    "mutation": "",
+    "slice_dim": 5,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Ehat",
+    "orbit": "B9",
+    "mutation": "",
+    "slice_dim": 6,
+    "germ": {
+     "dim": 2,
+     "mult": 2,
+     "embdim": 3,
+     "quadric_rank": 3
+    },
+    "components": [
+     {
+      "dim": 2,
+      "mult": 2,
+      "embdim": 3,
+      "quadric_rank": 3
+     }
+    ],
+    "meets": {},
+    "seconds": "0.2",
+    "type": "A1",
+    "expected": [
+     2,
+     2,
+     3,
+     3,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Ehat",
+    "orbit": "V",
+    "mutation": "",
+    "slice_dim": 7,
+    "germ": {
+     "dim": 3,
+     "mult": 2,
+     "embdim": 6,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     },
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {
+     "12": 0
+    },
+    "seconds": "0.1",
+    "type": "two smooth sheets meeting in dimension 0",
+    "expected": [
+     3,
+     2,
+     6,
+     -1,
+     2,
+     0
+    ]
+   },
+   {
+    "closure": "Ehat",
+    "orbit": "VB",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 4,
+     "mult": 2,
+     "embdim": 7,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 2,
+      "embdim": 7,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "singular",
+    "expected": [
+     4,
+     2,
+     7,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Ehat",
+    "orbit": "Vap",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 4,
+     "mult": 2,
+     "embdim": 7,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 1,
+      "embdim": 4,
+      "quadric_rank": -1
+     },
+     {
+      "dim": 4,
+      "mult": 1,
+      "embdim": 4,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {
+     "12": 1
+    },
+    "seconds": "0.1",
+    "type": "two smooth sheets meeting in dimension 1",
+    "expected": [
+     4,
+     2,
+     7,
+     -1,
+     2,
+     1
+    ]
+   },
+   {
+    "closure": "Ehat",
+    "orbit": "Vam",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 4,
+     "mult": 2,
+     "embdim": 7,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 1,
+      "embdim": 4,
+      "quadric_rank": -1
+     },
+     {
+      "dim": 4,
+      "mult": 1,
+      "embdim": 4,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {
+     "12": 1
+    },
+    "seconds": "0.1",
+    "type": "two smooth sheets meeting in dimension 1",
+    "expected": [
+     4,
+     2,
+     7,
+     -1,
+     2,
+     1
+    ]
+   },
+   {
+    "closure": "Ehat",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 5,
+     "mult": 3,
+     "embdim": 8,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 5,
+      "mult": 3,
+      "embdim": 8,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "3.3",
+    "type": "singular",
+    "expected": [
+     5,
+     3,
+     8,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Ehat",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 5,
+     "mult": 3,
+     "embdim": 8,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 5,
+      "mult": 3,
+      "embdim": 8,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "2.9",
+    "type": "singular",
+    "expected": [
+     5,
+     3,
+     8,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Iso",
+    "orbit": "B9",
+    "mutation": "",
+    "slice_dim": 6,
+    "germ": {
+     "dim": 2,
+     "mult": 1,
+     "embdim": 2,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 2,
+      "mult": 1,
+      "embdim": 2,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "smooth",
+    "expected": [
+     2,
+     1,
+     2,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Iso",
+    "orbit": "VB",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 4,
+     "mult": 2,
+     "embdim": 5,
+     "quadric_rank": 5
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 2,
+      "embdim": 5,
+      "quadric_rank": 5
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "A1",
+    "expected": [
+     4,
+     2,
+     5,
+     5,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Iso",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 5,
+     "mult": 2,
+     "embdim": 6,
+     "quadric_rank": 5
+    },
+    "components": [
+     {
+      "dim": 5,
+      "mult": 2,
+      "embdim": 6,
+      "quadric_rank": 5
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "corank 1 quadric tangent cone",
+    "expected": [
+     5,
+     2,
+     6,
+     5,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Iso",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 5,
+     "mult": 2,
+     "embdim": 6,
+     "quadric_rank": 5
+    },
+    "components": [
+     {
+      "dim": 5,
+      "mult": 2,
+      "embdim": 6,
+      "quadric_rank": 5
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "corank 1 quadric tangent cone",
+    "expected": [
+     5,
+     2,
+     6,
+     5,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Xp",
+    "orbit": "B9",
+    "mutation": "",
+    "slice_dim": 6,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Xp",
+    "orbit": "VB",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 3,
+     "mult": 1,
+     "embdim": 3,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.5",
+    "type": "smooth",
+    "expected": [
+     3,
+     1,
+     3,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Xp",
+    "orbit": "Vap",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 3,
+     "mult": 2,
+     "embdim": 6,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     },
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {
+     "12": 0
+    },
+    "seconds": "0.1",
+    "type": "two smooth sheets meeting in dimension 0",
+    "expected": [
+     3,
+     2,
+     6,
+     -1,
+     2,
+     0
+    ]
+   },
+   {
+    "closure": "Xp",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 4,
+     "mult": 2,
+     "embdim": 7,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 2,
+      "embdim": 7,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "singular",
+    "expected": [
+     4,
+     2,
+     7,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Xp",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 4,
+     "mult": 1,
+     "embdim": 4,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 1,
+      "embdim": 4,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.2",
+    "type": "smooth",
+    "expected": [
+     4,
+     1,
+     4,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Xm",
+    "orbit": "B9",
+    "mutation": "",
+    "slice_dim": 6,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Xm",
+    "orbit": "VB",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 3,
+     "mult": 1,
+     "embdim": 3,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.5",
+    "type": "smooth",
+    "expected": [
+     3,
+     1,
+     3,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Xm",
+    "orbit": "Vam",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 3,
+     "mult": 2,
+     "embdim": 6,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     },
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {
+     "12": 0
+    },
+    "seconds": "0.0",
+    "type": "two smooth sheets meeting in dimension 0",
+    "expected": [
+     3,
+     2,
+     6,
+     -1,
+     2,
+     0
+    ]
+   },
+   {
+    "closure": "Xm",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 4,
+     "mult": 1,
+     "embdim": 4,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 1,
+      "embdim": 4,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "smooth",
+    "expected": [
+     4,
+     1,
+     4,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Xm",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 4,
+     "mult": 2,
+     "embdim": 7,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 2,
+      "embdim": 7,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "singular",
+    "expected": [
+     4,
+     2,
+     7,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "B9",
+    "orbit": "VB",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 2,
+     "mult": 1,
+     "embdim": 2,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 2,
+      "mult": 1,
+      "embdim": 2,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     2,
+     1,
+     2,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "B9",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 3,
+     "mult": 1,
+     "embdim": 3,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     3,
+     1,
+     3,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "B9",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 3,
+     "mult": 1,
+     "embdim": 3,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     3,
+     1,
+     3,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "V",
+    "orbit": "VB",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.1",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "V",
+    "orbit": "Vap",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "V",
+    "orbit": "Vam",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "V",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 2,
+     "mult": 2,
+     "embdim": 3,
+     "quadric_rank": 3
+    },
+    "components": [
+     {
+      "dim": 2,
+      "mult": 2,
+      "embdim": 3,
+      "quadric_rank": 3
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "A1",
+    "expected": [
+     2,
+     2,
+     3,
+     3,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "V",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 2,
+     "mult": 2,
+     "embdim": 3,
+     "quadric_rank": 3
+    },
+    "components": [
+     {
+      "dim": 2,
+      "mult": 2,
+      "embdim": 3,
+      "quadric_rank": 3
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "A1",
+    "expected": [
+     2,
+     2,
+     3,
+     3,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VB",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VB",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Vap",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "Vam",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 1,
+     "mult": 1,
+     "embdim": 1,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 1,
+      "mult": 1,
+      "embdim": 1,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     1,
+     1,
+     1,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "Ehat",
+    "mutation": "",
+    "slice_dim": 4,
+    "germ": {
+     "dim": 3,
+     "mult": 1,
+     "embdim": 3,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     3,
+     1,
+     3,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "Iso",
+    "mutation": "",
+    "slice_dim": 4,
+    "germ": {
+     "dim": 3,
+     "mult": 1,
+     "embdim": 3,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     3,
+     1,
+     3,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "Xp",
+    "mutation": "",
+    "slice_dim": 5,
+    "germ": {
+     "dim": 4,
+     "mult": 1,
+     "embdim": 4,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 1,
+      "embdim": 4,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     4,
+     1,
+     4,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "Xm",
+    "mutation": "",
+    "slice_dim": 5,
+    "germ": {
+     "dim": 4,
+     "mult": 1,
+     "embdim": 4,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 1,
+      "embdim": 4,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     4,
+     1,
+     4,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "B9",
+    "mutation": "",
+    "slice_dim": 6,
+    "germ": {
+     "dim": 5,
+     "mult": 1,
+     "embdim": 5,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 5,
+      "mult": 1,
+      "embdim": 5,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     5,
+     1,
+     5,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "V",
+    "mutation": "",
+    "slice_dim": 7,
+    "germ": {
+     "dim": 6,
+     "mult": 1,
+     "embdim": 6,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 6,
+      "mult": 1,
+      "embdim": 6,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     6,
+     1,
+     6,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "VB",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 7,
+     "mult": 1,
+     "embdim": 7,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 7,
+      "mult": 1,
+      "embdim": 7,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     7,
+     1,
+     7,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "Vap",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 7,
+     "mult": 1,
+     "embdim": 7,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 7,
+      "mult": 1,
+      "embdim": 7,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     7,
+     1,
+     7,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "Vam",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 7,
+     "mult": 1,
+     "embdim": 7,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 7,
+      "mult": 1,
+      "embdim": 7,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     7,
+     1,
+     7,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 8,
+     "mult": 1,
+     "embdim": 8,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 8,
+      "mult": 1,
+      "embdim": 8,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     8,
+     1,
+     8,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VQ",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 8,
+     "mult": 1,
+     "embdim": 8,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 8,
+      "mult": 1,
+      "embdim": 8,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     8,
+     1,
+     8,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "W8",
+    "mutation": "",
+    "slice_dim": 3,
+    "germ": {
+     "dim": 2,
+     "mult": 2,
+     "embdim": 3,
+     "quadric_rank": 3
+    },
+    "components": [
+     {
+      "dim": 2,
+      "mult": 2,
+      "embdim": 3,
+      "quadric_rank": 3
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "A1",
+    "expected": [
+     2,
+     2,
+     3,
+     3,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "Ehat",
+    "mutation": "",
+    "slice_dim": 4,
+    "germ": {
+     "dim": 3,
+     "mult": 1,
+     "embdim": 3,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 1,
+      "embdim": 3,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     3,
+     1,
+     3,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "Iso",
+    "mutation": "",
+    "slice_dim": 4,
+    "germ": {
+     "dim": 3,
+     "mult": 2,
+     "embdim": 4,
+     "quadric_rank": 2
+    },
+    "components": [
+     {
+      "dim": 3,
+      "mult": 2,
+      "embdim": 4,
+      "quadric_rank": 2
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "corank 2 quadric tangent cone",
+    "expected": [
+     3,
+     2,
+     4,
+     2,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "Xp",
+    "mutation": "",
+    "slice_dim": 5,
+    "germ": {
+     "dim": 4,
+     "mult": 1,
+     "embdim": 4,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 1,
+      "embdim": 4,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     4,
+     1,
+     4,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "Xm",
+    "mutation": "",
+    "slice_dim": 5,
+    "germ": {
+     "dim": 4,
+     "mult": 1,
+     "embdim": 4,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 4,
+      "mult": 1,
+      "embdim": 4,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "smooth",
+    "expected": [
+     4,
+     1,
+     4,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "B9",
+    "mutation": "",
+    "slice_dim": 6,
+    "germ": {
+     "dim": 5,
+     "mult": 2,
+     "embdim": 6,
+     "quadric_rank": 2
+    },
+    "components": [
+     {
+      "dim": 5,
+      "mult": 2,
+      "embdim": 6,
+      "quadric_rank": 2
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "corank 4 quadric tangent cone",
+    "expected": [
+     5,
+     2,
+     6,
+     2,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "V",
+    "mutation": "",
+    "slice_dim": 7,
+    "germ": {
+     "dim": 6,
+     "mult": 2,
+     "embdim": 7,
+     "quadric_rank": 7
+    },
+    "components": [
+     {
+      "dim": 6,
+      "mult": 2,
+      "embdim": 7,
+      "quadric_rank": 7
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "A1",
+    "expected": [
+     6,
+     2,
+     7,
+     7,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "VB",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 7,
+     "mult": 2,
+     "embdim": 8,
+     "quadric_rank": 2
+    },
+    "components": [
+     {
+      "dim": 7,
+      "mult": 2,
+      "embdim": 8,
+      "quadric_rank": 2
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "corank 6 quadric tangent cone",
+    "expected": [
+     7,
+     2,
+     8,
+     2,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "Vap",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 7,
+     "mult": 2,
+     "embdim": 8,
+     "quadric_rank": 7
+    },
+    "components": [
+     {
+      "dim": 7,
+      "mult": 2,
+      "embdim": 8,
+      "quadric_rank": 7
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "corank 1 quadric tangent cone",
+    "expected": [
+     7,
+     2,
+     8,
+     7,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "Vam",
+    "mutation": "",
+    "slice_dim": 8,
+    "germ": {
+     "dim": 7,
+     "mult": 2,
+     "embdim": 8,
+     "quadric_rank": 7
+    },
+    "components": [
+     {
+      "dim": 7,
+      "mult": 2,
+      "embdim": 8,
+      "quadric_rank": 7
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "corank 1 quadric tangent cone",
+    "expected": [
+     7,
+     2,
+     8,
+     7,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "Np",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 8,
+     "mult": 3,
+     "embdim": 9,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 8,
+      "mult": 3,
+      "embdim": 9,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "singular",
+    "expected": [
+     8,
+     3,
+     9,
+     -1,
+     1,
+     null
+    ]
+   },
+   {
+    "closure": "VG",
+    "orbit": "Nm",
+    "mutation": "",
+    "slice_dim": 9,
+    "germ": {
+     "dim": 8,
+     "mult": 3,
+     "embdim": 9,
+     "quadric_rank": -1
+    },
+    "components": [
+     {
+      "dim": 8,
+      "mult": 3,
+      "embdim": 9,
+      "quadric_rank": -1
+     }
+    ],
+    "meets": {},
+    "seconds": "0.0",
+    "type": "singular",
+    "expected": [
+     8,
+     3,
+     9,
+     -1,
+     1,
+     null
+    ]
+   }
+  ]
+ },
+ "timings_s": {
+  "identities": 0.0,
+  "symmetry": 0.22,
+  "representatives": 0.32,
+  "closure_dims": 0.12,
+  "certificate": 1.08,
+  "iso": 0.04,
+  "nullity4": 0.1,
+  "germs": 6.55
+ },
+ "total_s": 8.44,
+ "workers": 12,
+ "script_sha256": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
+ "versions": {
+  "python": "3.14.8",
+  "python-flint": "0.9.0",
+  "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00"
+ }
+}
