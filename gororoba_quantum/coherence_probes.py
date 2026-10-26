@@ -164,6 +164,25 @@ def readout_circuit(prepared: int) -> QuantumCircuit:
     return circuit
 
 
+# The case's voiding rule: a wire whose in-job readout calibration gives 1 - e10 - e01 below this floor voids every
+# estimate that reads or postselects on it.
+READOUT_FLOOR = 0.8
+
+
+def readout_summary(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
+    """The readout preflight: each wire's e10, e01 and 1 - e10 - e01 from the two calibration circuits.
+
+    ``passed`` is 1 when every wire's fidelity reaches READOUT_FLOOR and 0 otherwise.
+    """
+    out: dict[str, float] = {}
+    for wire, (e10, e01) in enumerate(assignment(distributions)):
+        out[f"e10_q{wire}"] = e10
+        out[f"e01_q{wire}"] = e01
+        out[f"fidelity_q{wire}"] = 1.0 - e10 - e01
+    out["passed"] = float(all(out[f"fidelity_q{wire}"] >= READOUT_FLOOR for wire in range(WIRES)))
+    return out
+
+
 def ramsey_arms() -> tuple[str, ...]:
     return ("outer", *(f"middle_{a}{b}" for a, b in MIDDLE_STATES))
 

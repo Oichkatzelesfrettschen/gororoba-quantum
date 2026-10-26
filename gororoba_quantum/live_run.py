@@ -100,8 +100,8 @@ SHOTS = 4096
 ODR_MIN_SHOTS = 16384
 TWIRLING_RANDOMIZATIONS = 32
 # Campaigns whose members carry the structure-preserving compilation contract and run on the one path
-# --pin-layout names: the coherence probes and the primorial gap-88 tomography of that path.
-PINNED_CAMPAIGNS = frozenset({"coherence_probes", "primorial_gap88"})
+# --pin-layout names: the readout preflight, the coherence probes and the primorial gap-88 tomography of that path.
+PINNED_CAMPAIGNS = frozenset({"coherence_probes", "primorial_gap88", "readout_preflight"})
 TWIRLING_MIN_SHOTS_PER_RANDOMIZATION = 64
 OPT_LEVEL = 3
 SEED_TRANSPILER = 20261010

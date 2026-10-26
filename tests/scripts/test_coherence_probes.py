@@ -133,3 +133,23 @@ def test_joint_sample_at_zero_draw_returns_the_estimates() -> None:
     for key in case.ESTIMATES:
         if abs(sample[key] - summary[key]) > 1e-12 * max(1.0, abs(summary[key])):
             raise AssertionError(f"{key}: {sample[key]} against {summary[key]}")
+
+
+def test_readout_preflight_fails_a_faulty_wire() -> None:
+    def law(flips: list[tuple[float, float]], prepared: int) -> np.ndarray:
+        out = np.zeros(8)
+        for k in range(8):
+            p = 1.0
+            for wire, (e10, e01) in enumerate(flips):
+                read = k >> wire & 1
+                wrong = e10 if prepared == 0 else e01
+                p *= wrong if read != prepared else 1.0 - wrong
+            out[k] = p
+        return out
+
+    healthy = [(0.006, 0.009), (0.004, 0.012), (0.010, 0.013)]
+    faulty = [(0.786, 0.108), *healthy[1:]]
+    for flips, passed in ((healthy, 1.0), (faulty, 0.0)):
+        got = cp.readout_summary({"cp_readout_0": law(flips, 0), "cp_readout_1": law(flips, 1)})
+        if got["passed"] != passed or abs(got["fidelity_q0"] - (1 - flips[0][0] - flips[0][1])) > 1e-12:
+            raise AssertionError(got)
