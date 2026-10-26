@@ -22,14 +22,30 @@ meshes. The held-out meshes enter only the plan's confirmation step.
 - the predicted leakage of the static families: each fitted on job-00 at the posterior mode, its light outside modes
   0, 1 and 3 at every perturbed mesh.
 
+`explore` runs the plan's screens on job-02's exploration meshes alone, each with its trial count and a null matched
+to it:
+
+- quantization: every returned phase rounded to o + r round((phi - o) / r) over QUANT_RESOLUTIONS resolutions r and
+  QUANT_ORIGINS grid origins o, the statistic the largest correlation over that grid between the quantized mesh's
+  light-only X and the observed X; the null repeats the same grid with every heater's origin drawn uniformly, from a
+  numpy generator seeded with value NULL_INDEX of the split's draw, QUANT_NULLS times;
+- scalar mesh features: the correlation of the observed X with each of SCALAR_FEATURES;
+- the dark block output: over quiet iterations, the Poisson dispersion of mode-2 counts at the anchor mesh and over
+  the exploration meshes, the rank correlation of each exploration mesh's mode-2 excess with its |X - mean|, and the
+  mode-2, outside and X change that uniform dephasing at DEPHASING_VARIANCES predicts, beside the observed X deficit
+  and mode-2 excess. Incoherent noise fills the dark outputs at the order it lowers contrast; coherent error lowers it
+  at first order and leaks at second.
+
 Usage:
   "$PYTHON" scripts/ascella_mesh_decomposition.py split JOB_02 DRAW OUT [--check]
   "$PYTHON" scripts/ascella_mesh_decomposition.py decompose JOB_00 JOB_02 OUT [--check]
+  "$PYTHON" scripts/ascella_mesh_decomposition.py explore JOB_02 SPLIT OUT [--check]
 """
 
 from __future__ import annotations
 
 import json
+import math
 import sys
 from pathlib import Path
 from typing import Any
@@ -47,6 +63,14 @@ import ascella_physical_models as models  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
 LIGHT_MODES = (0, 1, 3)
+QUANT_RESOLUTIONS = tuple(math.exp(math.log(0.005) + k * math.log(100.0) / 119) for k in range(120))
+QUANT_ORIGINS = 8
+QUANT_NULLS = 100
+# The split consumes values 0..55 of its draw; value 56 seeds the quantization null.
+NULL_INDEX = 56
+SCALAR_FEATURES = ("phase_sum", "phase_square_sum", "near_wrap_count", "x_gradient_norm", "phase_weighted_x_gradient")
+NEAR_WRAP = 0.3
+DEPHASING_VARIANCES = (0.005, 0.01)
 DARK_BLOCK_MODE = 2
 # (name, heater tau, coupler tau) of the static families whose leakage the record predicts.
 LEAK_FAMILIES: tuple[tuple[str, float | None, float | None], ...] = (
@@ -191,6 +215,148 @@ def decompose(a_dir: Path, c_dir: Path) -> dict[str, Any]:
     }
 
 
+def exploration_data(c_dir: Path, split_path: Path) -> tuple[dict[str, Any], dict[str, Any], np.ndarray]:
+    """job-02, its exploration meshes as a subset, and the per-mesh observed X of that subset."""
+    c = models.job_data(c_dir)
+    chosen = json.loads(split_path.read_text(encoding="utf-8"))
+    seeds = np.array([int(s["compilation_seed"]) for s in c["record"]["manifest"]["settings"]])
+    explore = reading.subset(c, np.flatnonzero(np.isin(seeds, chosen["exploration_seeds"])))
+    models.require(len(explore["keys"]) == len(explore["block"]), "an exploration mesh carries more than one iteration")
+    z = np.zeros(len(explore["keys"]))
+    z[explore["configuration"]] = reading.x_statistics(explore)[0]
+    return c, explore, z
+
+
+def light_x(data: dict[str, Any], phases: np.ndarray) -> np.ndarray:
+    p, _ = models.pure_jacobians(data["couplers"], data["arch"], phases, data["sources"])
+    block = p[:, : models.LOGICAL]
+    out: np.ndarray = (block[:, 0] - block[:, 3]) / block.sum(axis=1)
+    return out
+
+
+class QuantizedCorrelation:
+    """Largest correlation over the origin sets between the observed X and the X of the mesh quantized at one
+    resolution; an origin set holds one fraction per heater or one shared fraction."""
+
+    def __init__(self, data: dict[str, Any], observed: np.ndarray, origins: np.ndarray) -> None:
+        self.data, self.observed, self.origins = data, observed, origins
+
+    def __call__(self, resolution: float) -> float:
+        phases = self.data["phases"] % (2 * math.pi)
+        best = -1.0
+        for fraction in self.origins:
+            origin = fraction * resolution
+            quantized = origin + resolution * np.round((phases - origin) / resolution)
+            best = max(best, float(np.corrcoef(light_x(self.data, quantized), self.observed)[0, 1]))
+        return best
+
+
+def quantization_screen(explore: dict[str, Any], z: np.ndarray, draw: Path) -> dict[str, Any]:
+    shared = (np.arange(QUANT_ORIGINS) / QUANT_ORIGINS)[:, None] * np.ones((1, explore["phases"].shape[1]))
+    observed = ordered_map(QuantizedCorrelation(explore, z, shared), list(QUANT_RESOLUTIONS), min_items=1)
+    values = json.loads(draw.read_text(encoding="utf-8"))["values"]
+    generator = np.random.default_rng(int(values[NULL_INDEX]))
+    origin_sets = generator.random((QUANT_NULLS, QUANT_ORIGINS, explore["phases"].shape[1]))
+    nulls = [
+        max(ordered_map(QuantizedCorrelation(explore, z, origins), list(QUANT_RESOLUTIONS), min_items=1))
+        for origins in origin_sets
+    ]
+    best = int(np.argmax(observed))
+    statistic = float(observed[best])
+    return {
+        "trials": len(QUANT_RESOLUTIONS) * QUANT_ORIGINS,
+        "statistic": statistic,
+        "resolution": QUANT_RESOLUTIONS[best],
+        "null_draws": QUANT_NULLS,
+        "null_seed": {"draw": draw.relative_to(ROOT).as_posix(), "index": NULL_INDEX},
+        "null_quantiles": {q: float(np.quantile(nulls, float(q))) for q in ("0.5", "0.9", "0.975")},
+        "p": float((1 + sum(n >= statistic for n in nulls)) / (1 + QUANT_NULLS)),
+    }
+
+
+def feature_screen(explore: dict[str, Any], z: np.ndarray) -> dict[str, Any]:
+    phases = explore["phases"] % (2 * math.pi)
+    heaters = phases.shape[1]
+    _, dp = models.pure_jacobians(explore["couplers"], explore["arch"], explore["phases"], explore["sources"])
+    gradient = dp[:, 0, :heaters] - dp[:, 3, :heaters]
+    features = {
+        "phase_sum": phases.sum(axis=1),
+        "phase_square_sum": (phases * phases).sum(axis=1),
+        "near_wrap_count": ((phases < NEAR_WRAP) | (phases > 2 * math.pi - NEAR_WRAP)).sum(axis=1).astype(float),
+        "x_gradient_norm": np.linalg.norm(gradient, axis=1),
+        "phase_weighted_x_gradient": (phases * np.abs(gradient)).sum(axis=1),
+    }
+    out = {}
+    for name in SCALAR_FEATURES:
+        test = stats.pearsonr(features[name], z)
+        out[name] = {"r": float(test.statistic), "p": float(test.pvalue)}
+    return {"features": out, "trials": len(SCALAR_FEATURES)}
+
+
+def dark_output(c: dict[str, Any], split_path: Path) -> dict[str, Any]:
+    chosen = json.loads(split_path.read_text(encoding="utf-8"))
+    seeds = np.array([int(s["compilation_seed"]) for s in c["record"]["manifest"]["settings"]])
+    counts = c["record"]["counts"]
+    outside = counts[:, models.LOGICAL :].sum(axis=1)
+    quiet = outside <= np.median(outside)
+    mode_2 = counts[:, DARK_BLOCK_MODE]
+    background = c["background"][:, DARK_BLOCK_MODE]
+    z = reading.x_statistics(c)[0]
+    explore = np.isin(seeds, chosen["exploration_seeds"])
+    out: dict[str, Any] = {}
+    for name, rows in (("anchor", (seeds == 0) & quiet), ("exploration", explore & quiet)):
+        k = mode_2[rows]
+        mean = float(k.mean())
+        statistic = float(((k - mean) ** 2).sum() / mean)
+        out[name] = {
+            "iterations": int(rows.sum()),
+            "mean_count": mean,
+            "mean_background": float(background[rows].mean()),
+            "dispersion": statistic,
+            "dof": int(rows.sum()) - 1,
+            "p": float(stats.chi2.sf(statistic, int(rows.sum()) - 1)),
+        }
+    rows = explore & quiet
+    test = stats.spearmanr(np.abs(z[rows] - z[explore].mean()), mode_2[rows] - background[rows])
+    out["excess_against_x_deviation"] = {"rho": float(test.statistic), "p": float(test.pvalue)}
+    block_total = c["block"].sum(axis=1)
+    out["observed"] = {
+        "x_deficit": float(z[explore].mean() - light_x(c, c["phases"])[0]),
+        "mode_2_excess": float(((mode_2 - background)[rows] / block_total[rows]).mean()),
+    }
+    sub = reading.subset(c, np.flatnonzero(explore))
+    pure = models.channel(sub["couplers"], sub["arch"], sub["phases"], sub["sources"], 0.0, 0.0)
+    out["dephasing"] = []
+    for variance in DEPHASING_VARIANCES:
+        p = models.channel(sub["couplers"], sub["arch"], sub["phases"], sub["sources"], variance, 0.0)
+        block, base = p[:, : models.LOGICAL], pure[:, : models.LOGICAL]
+        shift = (block[:, 0] - block[:, 3]) / block.sum(axis=1) - (base[:, 0] - base[:, 3]) / base.sum(axis=1)
+        out["dephasing"].append(
+            {
+                "variance": variance,
+                "mean_x_change": float(shift.mean()),
+                "mode_2_light": float((block[:, DARK_BLOCK_MODE] / block.sum(axis=1)).mean()),
+                "outside_light": float(p[:, models.LOGICAL :].sum(axis=1).mean()),
+            }
+        )
+    return out
+
+
+def explore(c_dir: Path, split_path: Path) -> dict[str, Any]:
+    c, explore_data, z = exploration_data(c_dir, split_path)
+    draw = ROOT / json.loads(split_path.read_text(encoding="utf-8"))["draw"]
+    return {
+        "schema": "ascella-mesh-exploration-v1",
+        "plan": "docs/state/plans/ascella-mesh-response-decomposition.json",
+        "run": c_dir.relative_to(ROOT).as_posix(),
+        "split": split_path.relative_to(ROOT).as_posix(),
+        "exploration_meshes": len(z),
+        "quantization": quantization_screen(explore_data, z, draw),
+        "scalar_features": feature_screen(explore_data, z),
+        "dark_output": dark_output(c, split_path),
+    }
+
+
 def emit(record: dict[str, Any], out: Path, check: bool) -> None:
     text = json.dumps(record, indent=1, sort_keys=True) + "\n"
     if check:
@@ -208,6 +374,9 @@ def main(argv: list[str]) -> int:
         return 0
     if len(args) == 4 and args[0] == "decompose":
         emit(decompose(Path(args[1]).resolve(), Path(args[2]).resolve()), Path(args[3]).resolve(), check)
+        return 0
+    if len(args) == 4 and args[0] == "explore":
+        emit(explore(Path(args[1]).resolve(), Path(args[2]).resolve()), Path(args[3]).resolve(), check)
         return 0
     raise ValueError(f"usage: see the module docstring, not {argv}")
 
