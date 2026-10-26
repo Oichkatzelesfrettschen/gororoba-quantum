@@ -4483,6 +4483,22 @@
     "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
     "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py --self-test",
+   "name": "core-696",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py check results/iqm/cases/qet-compensated-ladder",
+   "name": "core-697",
+   "seconds": 4.0,
+   "tier": "full"
   }
  ],
  "excluded": [

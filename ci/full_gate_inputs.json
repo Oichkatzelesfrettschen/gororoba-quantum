@@ -482,6 +482,9 @@
     "core-642": [
       "results/iqm/cases/kernel-cancellation-probe/**"
     ],
+    "core-697": [
+      "results/iqm/cases/qet-compensated-ladder/**"
+    ],
     "core-644": [
       "results/iqm/cases/signed-kernel-null-retest/**"
     ],
