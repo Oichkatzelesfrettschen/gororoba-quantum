@@ -42,6 +42,22 @@
             }
           ],
           "scope_sha256": "5ea871e694105133e925bfedc1304b531e94933c5b4a561418d610fe5fef4fc7"
+        },
+        {
+          "result": "Revalidated at 6765b115: core-270 research_state.py --check passes; the four claim records equal their b798ddac bytes (stiefel-pfaffian-transport-all-n, a6-a8-stiefel-zero-divisor-cone and a7-a8-stiefel-witness established, stiefel-pfaffian-f-modulo-q open); research_state.json changed only by added claims; core-692 replay and core-693 admission pass.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "61ebc74ffdb7a6204cfb1b427949cf090bf7141c41adaa7b8973450fd57b8b9b"
+            },
+            {
+              "ref": "docs/evidence/stiefel-pfaffian-higher/result.json",
+              "sha256": "fb208dddfb9a17d3a611399582e682e8d6001645bd808e7b29a2ec96c6732be6"
+            }
+          ],
+          "scope_sha256": "5ea871e694105133e925bfedc1304b531e94933c5b4a561418d610fe5fef4fc7"
         }
       ]
     }
@@ -57,6 +73,22 @@
         {
           "ref": "docs/state/research_state.json",
           "sha256": "1d0439e8af4ba966643fe2bb26cf39afbe1ffcfa6acaaac3ff10d10ab7e25b9e"
+        },
+        {
+          "ref": "docs/evidence/stiefel-pfaffian-higher/result.json",
+          "sha256": "fb208dddfb9a17d3a611399582e682e8d6001645bd808e7b29a2ec96c6732be6"
+        }
+      ],
+      "scope_sha256": "90ca6b74eb352e341f5217bce5e1dd1f4495c1030ab04035a199617f8235e3c7"
+    },
+    {
+      "result": "Revalidated at 6765b115: core-270 research_state.py --check passes; the four claim records equal their b798ddac bytes (stiefel-pfaffian-transport-all-n, a6-a8-stiefel-zero-divisor-cone and a7-a8-stiefel-witness established, stiefel-pfaffian-f-modulo-q open); research_state.json changed only by added claims; core-692 replay and core-693 admission pass.",
+      "observed_at": "2026-10-26T03:16:45.530392+00:00",
+      "revision": "6765b11589672fd85bfe05401800a9e075667168",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "61ebc74ffdb7a6204cfb1b427949cf090bf7141c41adaa7b8973450fd57b8b9b"
         },
         {
           "ref": "docs/evidence/stiefel-pfaffian-higher/result.json",

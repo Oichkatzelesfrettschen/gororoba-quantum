@@ -106,6 +106,26 @@
           "observed_at": "2026-10-26T00:42:03+00:00",
           "revision": "d5c389813f638d6e0aebfb1699ecbcc99a44f60a",
           "scope_sha256": "33410abf939434da8bee2d778096d9725f510fa5bf0a1c26b087b011bacfd405"
+        },
+        {
+          "result": "Revalidated at 6765b115: claim ascella-signed-coherence-heater-coupling equals its d5c38981 record; research_state.json changed only through other claims and additions; plan_tracker.py check and check_markdown_links.py pass.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "docs/design/ascella-signed-coherence-conformance.md",
+              "sha256": "88e43833f21fa5fff80e874a63ae793ea79a64fb8762ecde316d3abe5e07ac6c"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "61ebc74ffdb7a6204cfb1b427949cf090bf7141c41adaa7b8973450fd57b8b9b"
+            },
+            {
+              "ref": "docs/state/plans/ascella-signed-coherence-conformance.json",
+              "sha256": "b0e734baccebe1aa280e3c729eb8c1112575758c6fa9ab17f20bc8e1d7495b50"
+            }
+          ],
+          "scope_sha256": "33410abf939434da8bee2d778096d9725f510fa5bf0a1c26b087b011bacfd405"
         }
       ]
     }
