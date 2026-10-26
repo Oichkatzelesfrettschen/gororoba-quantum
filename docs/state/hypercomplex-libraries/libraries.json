@@ -12100,6 +12100,7 @@
   ],
   "scripts/qd_rehearsal_secondary.py": [
    "__future__",
+   "bdsc_certificate",
    "cd_core",
    "collections",
    "itertools",
