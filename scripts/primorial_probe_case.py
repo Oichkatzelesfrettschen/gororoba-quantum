@@ -615,6 +615,75 @@ def outcomes(limits: dict[str, float], gates: list[dict[str, float]], cz: list[f
     return {"zero": dict.fromkeys(ESTIMATES, 0.0), "measured_scale": measured, "threshold": threshold}
 
 
+# ------------------------------------------------------- noise-model check
+
+
+def noisy_fit(
+    worker: NoisyProbe,
+    compiled: list[tuple[dict[str, Any], QuantumCircuit]],
+    snapshot: dict[str, Any],
+    layout: list[int],
+    fit: br.Fit,
+    spec: dict[str, Any],
+) -> float:
+    """The largest gap-88 null-subtracted coefficient bias of the arms run under the snapshot's noise with ``spec``.
+
+    Each quadrature is inverted through the snapshot's assignment channel of the read qubit before the fit.
+    """
+    laws = parallel.ordered_map(worker, [(str(k), c, spec) for k, (_, c) in enumerate(compiled)], min_items=1)
+    rows = [{**meta, "law": law} for (meta, _), law in zip(compiled, laws, strict=True)]
+    edges = noise.edges()
+    a = np.asarray([snapshot["qubits"][layout[j]]["e10"] for j, _ in edges])
+    b = np.asarray([snapshot["qubits"][layout[j]]["e01"] for j, _ in edges])
+    readings = {}
+    for cost in ("gap88", "null"):
+        x_read, y_read = noise.gradient_readings(rows, cost)
+        readings[cost] = (noise.corrected(x_read, a, b), noise.corrected(y_read, a, b))
+    unit = np.ones(len(edges))
+    sub = noise.null_subtracted(fit.table, *readings["gap88"], readings["null"], unit, unit)
+    return float(sub["max_coefficient_bias"])
+
+
+def noise_model_check(
+    snapshot: dict[str, Any],
+    view: Any,
+    layout: list[int],
+    durations: dict[str, float],
+    logical: list[tuple[dict[str, Any], QuantumCircuit]],
+    fit: br.Fit,
+    bound_patch: dict[str, Any],
+) -> dict[str, Any]:
+    """The decisive coherent scenarios under the snapshot's noise model against the noise-free law.
+
+    docs/notes/algebra_circuit_rules.md requires a coherent-error response derived through the device's noise
+    model. The scenarios are the record's worst joint tilt and CZ-phase vertex and the repository's measured
+    scales (30 kHz detuning, its in-pulse tilt, 0.04 rad CZ phase). Static ZZ is left out of both, because
+    the noisy insertion models tilt, amplitude, CZ phase and detuning only. The noisy bias includes the
+    incoherent model's own bias, which the zero-error row gives.
+    """
+    compiled = [(meta, noise.compile_arm(view, circuit, layout)) for meta, circuit in logical]
+    worst = bound_patch["families"]["joint_sx"]["worst_max_z"]["spec"]
+    sx_tilt = 2 * math.pi * 30e3 * 32e-9 / (math.pi / 2)
+    scenarios: dict[str, dict[str, Any]] = {
+        "zero": {},
+        "joint_bound": {"tilt": tuple(worst["tilt"]), "cz_phase": tuple(worst["cz_phase"])},
+        "measured_scale": {
+            "tilt": (sx_tilt, -sx_tilt, sx_tilt),
+            "tilt_x": (sx_tilt / 2, -sx_tilt / 2, sx_tilt / 2),
+            "cz_phase": (0.04, -0.04),
+            "detuning": (30.0, -30.0, 30.0),
+            "detuning_gates": MAPPED_DETUNING,
+        },
+    }
+    worker = NoisyProbe(snapshot, layout, durations)
+    out: dict[str, Any] = {}
+    for name, spec in scenarios.items():
+        noisy = noisy_fit(worker, compiled, snapshot, layout, fit, spec)
+        clean = fit((spec, spec))["null_subtracted_max_bias"]
+        out[name] = {"noisy_bias": noisy, "noise_free_bias": clean}
+    return out
+
+
 # ------------------------------------------------------------------ record
 
 
@@ -652,10 +721,8 @@ def evaluate(snapshot: dict[str, Any], noise_record: dict[str, Any], bound_recor
         measure_seconds = max(view.target["measure"][(q,)].duration for q in layout)
         arm_seconds = [ops_seconds(ops, measure_seconds) for _, ops in arms]
         readout_seconds = [measure_seconds + 32e-9] * 8
-        gap88_seconds = arm_seconds + arm_seconds[len(arm_seconds) // 2 :] + readout_seconds
-        twirled_seconds = [ops_seconds(instances[0][0], measure_seconds) for _, instances in arms32] + [
-            ops_seconds(instances[0][0], measure_seconds) for _, instances in arms32[len(arms32) // 2 :]
-        ]
+        gap88_seconds = arm_seconds * 2 + readout_seconds
+        twirled_seconds = [ops_seconds(instances[0][0], measure_seconds) for _, instances in arms32] * 2
         twirled_seconds += readout_seconds
         probe_seconds = list(noisy["circuit_seconds"].values())
         schedule = {
@@ -664,10 +731,12 @@ def evaluate(snapshot: dict[str, Any], noise_record: dict[str, Any], bound_recor
             "probe_job": job_schedule(probe_seconds, shots),
             "gap88_untwirled_job": job_schedule(gap88_seconds, budget),
             "gap88_twirled_job": job_schedule(twirled_seconds, twirled_shots(budget), TWIRL_INSTANCES),
-            "gap88_arms": "24 gap88, 24 null, 24 repeated null and 8 basis preparations",
+            "gap88_arms": "per edge setting gap88, null, null and gap88 again (+, -, -, +), and 8 basis preparations",
         }
         decisions = {label: decide(fit, values, se, points) for label, values in outcomes(limits, gates, cz).items()}
+        check = noise_model_check(snapshot, view, layout, durations, logical, fit, bound_record["patches"][patch])
         out["patches"][patch] = {
+            "noise_model_check": check,
             "layout": layout,
             "durations": durations,
             "thresholds": limits,

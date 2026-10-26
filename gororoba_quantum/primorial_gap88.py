@@ -3,14 +3,16 @@
 docs/design/primorial-cover-defect-probes.md defines the protocol and scripts/primorial_cover_noise.py the arms:
 for each cube edge (j, x) with x_j = 0 an arm prepares (|x> + |x ^ 2^j>)/sqrt2, applies exp(-i gamma H) through
 the eight-CNOT parity network at gamma = pi/9 and reads qubit j in X and Y. The campaign runs, per edge and
-basis, three members that bind one parametrized circuit:
+basis, four members that bind one parametrized circuit, listed in the +, -, -, + order of a contrast:
 
-- ``g88``, the network's seven RZ angles at 2 gamma c_S of the gap-88 cost table;
-- ``null``, every angle zero, the identity map with the same CZ count and schedule;
-- ``nullrep``, the null binding again, the drift monitor: the null-subtracted fit of ``nullrep`` against
-  ``null`` reads zero coefficients unless the device moved between the two executions.
+- ``g88`` and ``g88rep``, the network's seven RZ angles at 2 gamma c_S of the gap-88 cost table;
+- ``null`` and ``nullrep``, every angle zero, the identity map with the same CZ count and schedule.
 
-Binding one circuit makes the three members' compiled pulse streams identical by construction
+The signal reading averages the two gap-88 executions and the null reading the two null executions, so a
+position effect linear in the member order cancels. Each repeated pair is a drift monitor: the fit of one
+copy against the other reads zero coefficients unless the device moved between them.
+
+Binding one circuit makes the four members' compiled pulse streams identical by construction
 (experiments.Member.binding); they differ only in the zero-duration RZ angles. Eight basis preparations
 give the per-qubit assignment channel. Every member carries coherence_probes' structure-preserving
 compilation contract, so live_run compiles at optimization level 0 and the zero-angle network stays in the
@@ -39,7 +41,9 @@ from coherence_probes import STRUCTURE_PRESERVING_CONTRACT
 from experiments import Group, Member
 
 ROOT = Path(__file__).resolve().parents[1]
-ARMS = ("g88", "null", "nullrep")
+# The +, -, -, + order of each setting's contrast (docs/notes/algebra_circuit_rules.md, Hardware probes).
+ARMS = ("g88", "null", "nullrep", "g88rep")
+COSTS = {"g88": "gap88", "null": "null", "nullrep": "nullrep", "g88rep": "gap88rep"}
 
 
 @cache
@@ -104,7 +108,7 @@ def members() -> tuple[Member, ...]:
         for basis in ("X", "Y"):
             circuit, parameters = parametrized_arm(j, x, basis)
             for arm in ARMS:
-                values = signal if arm == "g88" else dict.fromkeys(signal, 0.0)
+                values = signal if COSTS[arm].startswith("gap88") else dict.fromkeys(signal, 0.0)
                 binding = {parameters[mask]: values[mask] for mask in parameters}
                 out.append(
                     Member(
@@ -126,9 +130,9 @@ def rows_of(distributions: Mapping[str, np.ndarray]) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     for j, x in noise.edges():
         for basis in ("X", "Y"):
-            for arm, cost in zip(ARMS, ("gap88", "null", "nullrep"), strict=True):
+            for arm in ARMS:
                 law = [float(v) for v in distributions[f"{arm}_{j}_{x}_{basis}"]]
-                out.append({"family": "gradient", "cost": cost, "j": j, "x": x, "basis": basis, "law": law})
+                out.append({"family": "gradient", "cost": COSTS[arm], "j": j, "x": x, "basis": basis, "law": law})
     for label in range(8):
         out.append(
             {"family": "readout3", "label": label, "law": [float(v) for v in distributions[f"g88_readout_{label}"]]}
@@ -148,18 +152,26 @@ def summarize(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
         x_read, y_read = noise.gradient_readings(rows, cost)
         return noise.corrected(x_read, a, b), noise.corrected(y_read, a, b)
 
-    signal, null, repeat = readings("gap88"), readings("null"), readings("nullrep")
+    first, again = readings("gap88"), readings("gap88rep")
+    zero, zero_again = readings("null"), readings("nullrep")
+    signal = ((first[0] + again[0]) / 2, (first[1] + again[1]) / 2)
+    null = ((zero[0] + zero_again[0]) / 2, (zero[1] + zero_again[1]) / 2)
     unit = np.ones_like(signal[0])
     fit = noise.null_subtracted(noise.cost_table("gap88"), *signal, null, unit, unit)
     exact = noise.coefficients(noise.cost_table("gap88"))
-    drift = noise.null_subtracted(noise.cost_table("null"), *repeat, null, unit, unit)
+    # Each repeat read against its first copy on the zero table: the recovered coefficients are the drift.
+    zero_table = noise.cost_table("null")
+    null_drift = noise.null_subtracted(zero_table, *zero_again, zero, unit, unit)["max_coefficient_bias"]
+    signal_drift = noise.null_subtracted(zero_table, *again, first, unit, unit)["max_coefficient_bias"]
     out: dict[str, float] = {}
     for key, value in fit["recovered_coefficients"].items():
         out[f"c_{key}"] = float(value)
         out[f"bias_{key}"] = float(value - exact[key])
     out["max_bias"] = float(fit["max_coefficient_bias"])
     out["identified"] = float(fit["max_coefficient_bias"] < noise.IDENTIFY_RADIUS)
-    out["drift_max"] = float(drift["max_coefficient_bias"])
+    out["drift_null"] = float(null_drift)
+    out["drift_signal"] = float(signal_drift)
+    out["drift_max"] = float(max(null_drift, signal_drift))
     out["cycle_residual_rms"] = float(fit["cycle_residual_rms"])
     return out
 

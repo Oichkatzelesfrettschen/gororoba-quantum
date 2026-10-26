@@ -73,8 +73,8 @@ def test_gap88_arms_share_one_circuit_and_read_exact_coefficients() -> None:
         if member.binding is not None:
             setting = member.name.split("_", 1)[1]
             by_setting.setdefault(setting, set()).add(id(member.circuit))
-    if len(by_setting) != 24 or any(len(ids) != 1 for ids in by_setting.values()):
-        raise AssertionError("signal, null and repeated null arms do not share one circuit per setting")
+    if len(by_setting) != 24 or any(len(ids) != 1 for ids in by_setting.values()) or len(members) != 104:
+        raise AssertionError("the four arms of a setting do not share one circuit")
     summary = g88.summarize({m.name: m.ideal for m in members})
     if summary["max_bias"] > 1e-9 or summary["drift_max"] > 1e-9 or summary["identified"] != 1.0:
         raise AssertionError(summary)
