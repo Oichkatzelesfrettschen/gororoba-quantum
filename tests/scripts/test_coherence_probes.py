@@ -218,3 +218,78 @@ def test_prep0_control_drops_a_path_with_a_faulty_qubit(tmp_path: Path) -> None:
     verdict = case.retained_paths(tmp_path, [[0, 1, 2], [4, 5, 6]])
     if verdict["retained"] != [[4, 5, 6]] or verdict["pin"] != "4,5,6":
         raise AssertionError(verdict)
+
+
+def _pinned_run(tmp_path: Path, group: str, shots: int, measured: dict[str, Any], summaries: list[Any]) -> None:
+    import json
+
+    paths = [[58, 71, 72], [0, 1, 2], [33, 39, 53]]
+    pin = {"backend": "ibm_kingston", "qubits": paths[0], "replicas": paths}
+    record = {"shots": shots, "policy": {"design": {"pin_layout": pin}}, "approved_record": {"record_sha256": "a"}}
+    executed = {name: {"calibration": "C1", "calibration_changed_during_shots": False} for name in measured}
+    entry = {
+        "group": group,
+        "measured": {k: [list(map(float, d)) for d in v] for k, v in measured.items()},
+        "executed": executed,
+        "measured_statistics": {"summary_per_replica": summaries},
+    }
+    (tmp_path / "record.json").write_text(json.dumps(record))
+    (tmp_path / "collect.json").write_text(json.dumps([{}, entry]))
+
+
+def test_decide_paths_voids_sets_n2_and_sizes_the_family(tmp_path: Path, monkeypatch: Any) -> None:
+    healthy = _readout_laws([(0.006, 0.009), (0.004, 0.012), (0.010, 0.013)])
+    faulty = _readout_laws([(0.786, 0.108), (0.004, 0.012), (0.010, 0.013)])
+    measured = {
+        "cp_readout_0": [healthy[0], faulty[0], healthy[0]],
+        "cp_readout_1": [healthy[1], faulty[1], healthy[1]],
+    }
+    _pinned_run(tmp_path, "coherence_probes", 800, measured, [{"tag": 0}, {"tag": 1}, {"tag": 2}])
+    calls: list[tuple[list[list[int]], int, int]] = []
+
+    def fake(snapshot: Any, paths: Any, probe_shots: int, shots: int, family: int = 1, eps: Any = None) -> Any:
+        calls.append(([layout for layout, _ in paths], shots, family))
+        need = {0: 2500, 2: 3100}
+        return [
+            {"layout": layout, "decision": {"proceed": True, "p95_shots_identify_all": need[probe["tag"]]}}
+            for layout, probe in paths
+        ]
+
+    monkeypatch.setattr(case, "decide_many", fake)
+    verdict = case.decide_paths({"calibration": "C1"}, tmp_path)
+    if verdict["voided"] != [[0, 1, 2]] or verdict["stage2_paths"] != [[58, 71, 72], [33, 39, 53]]:
+        raise AssertionError(verdict)
+    # The largest need, 3100 per reading, sets N2 = 100 * ceil(3100 / 200) = 1600 per circuit.
+    if verdict["gap88_shots"] != 1600 or calls[0][1:] != (3200, 1) or calls[1][1:] != (1600, 2):
+        raise AssertionError((verdict["gap88_shots"], calls))
+    try:
+        case.decide_paths({"calibration": "C2"}, tmp_path)
+    except SystemExit:
+        return
+    raise AssertionError("a snapshot of another calibration was accepted")
+
+
+def test_falsify_names_out_of_band_coefficients(tmp_path: Path) -> None:
+    keys = ("0", "1", "2", "01", "02", "12", "012")
+    summaries = [{f"bias_{k}": 0.0 for k in keys}, {f"bias_{k}": (0.2 if k == "12" else 0.0) for k in keys}]
+    _pinned_run(tmp_path, "primorial_gap88", 1600, {"g88": [np.zeros(8)] * 3}, summaries)
+    import json
+
+    record = json.loads((tmp_path / "record.json").read_text())
+    record["policy"]["design"]["pin_layout"]["replicas"] = [[58, 71, 72], [33, 39, 53]]
+    (tmp_path / "record.json").write_text(json.dumps(record))
+    band = {k: [-0.05, 0.05] for k in keys}
+    decision = {
+        "calibration": "C1",
+        "gap88_shots": 1600,
+        "stage2_paths": [[58, 71, 72], [33, 39, 53]],
+        "decisions": [
+            {"layout": [58, 71, 72], "falsifier": {"shift_bands": band}},
+            {"layout": [33, 39, 53], "falsifier": {"shift_bands": band}},
+        ],
+    }
+    verdict = case.falsify(tmp_path, decision, {"outcome": "consistent"})
+    if verdict["falsified"] != [{"path": [33, 39, 53], "coefficients": ["12"]}] or verdict["claim"] != "device":
+        raise AssertionError(verdict)
+    if case.falsify(tmp_path, decision, None)["claim"] != "descriptive":
+        raise AssertionError("a missing crosstalk check admitted a device claim")

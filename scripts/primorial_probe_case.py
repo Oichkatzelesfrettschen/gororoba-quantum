@@ -273,6 +273,21 @@ class NoisyProbe:
         return [float(v) for v in law]
 
 
+class ExcitedProbe(NoisyProbe):
+    """NoisyProbe with every active qubit initialized through an X error of probability ``prep_excitation``."""
+
+    def __init__(
+        self, snapshot: dict[str, Any], layout: list[int], durations: dict[str, float], prep_excitation: float
+    ) -> None:
+        super().__init__(snapshot, layout, durations)
+        self.prep_excitation = prep_excitation
+
+    def __call__(self, item: tuple[str, QuantumCircuit, dict[str, Any]]) -> list[float]:
+        _, compiled, spec = item
+        circuit = dynamic_density.with_prep_excitation(self.inject(compiled, spec), self.prep_excitation)
+        return [float(v) for v in snapshot_laws.outcome_law(self.snapshot, circuit, "CPU")]
+
+
 def thresholds(gates: list[dict[str, float]], cz: list[float]) -> dict[str, float]:
     """Decision thresholds: tilt 0.2 of each sx and x bound, CZ phase 0.7 of its bound, 5 kHz and 2 kHz."""
     out: dict[str, float] = {}
@@ -316,6 +331,52 @@ def noisy_probes(
     out["circuits"] = len(named)
     out["circuit_seconds"] = {name: schedule_seconds(c, view) for name, c in named}
     return out
+
+
+def excitation_check(
+    snapshot: dict[str, Any], layout: list[int], prep_excitation: float, probe_shots: int
+) -> dict[str, Any]:
+    """How far a preparation excitation moves each probe estimate, in standard errors at ``probe_shots``.
+
+    The probes run at the decision thresholds (noisy_probes' truth) under the snapshot's noise, once without and
+    once with an initial X error of probability ``prep_excitation`` on every qubit; the in-job readout inversion
+    treats that excitation as a readout flip, so the shift is the bias it leaves.
+    """
+    view = calibration_snapshot.snapshot_backend(snapshot)
+    durations = path_durations(view, layout)
+    gates, cz = br.gate_errors(snapshot, layout)
+    limits = thresholds(gates, cz)
+    probes = cp.circuits()
+    compiled = parallel.ordered_map(noise.ArmCompile(snapshot), [(c, layout) for _, c in probes], min_items=1)
+    named = [(name, circuit) for (name, _), circuit in zip(probes, compiled, strict=True)]
+    spec = {
+        "tilt": tuple(limits[f"tilt_sx_q{w}"] for w in range(3)),
+        "tilt_x": tuple(-limits[f"tilt_x_q{w}"] for w in range(3)),
+        "cz_phase": (limits["cz_phase_c0"], -limits["cz_phase_c1"]),
+        "detuning": (5.0, -5.0, 5.0),
+    }
+    truth = truth_of(spec)
+    summaries = []
+    for eps in (0.0, prep_excitation):
+        worker = ExcitedProbe(snapshot, layout, durations, eps)
+        laws = parallel.ordered_map(worker, [(name, c, spec) for name, c in named], min_items=1)
+        summaries.append(cp.summarize({name: np.asarray(law) for (name, _), law in zip(named, laws, strict=True)}))
+    rows = {}
+    for key in truth:
+        se = summaries[0][f"se_{key}"] / math.sqrt(probe_shots)
+        rows[key] = {
+            "bias": summaries[0][key] - truth[key],
+            "bias_excited": summaries[1][key] - truth[key],
+            "shift_over_se": abs(summaries[1][key] - summaries[0][key]) / se,
+        }
+    return {
+        "calibration": snapshot["calibration"],
+        "layout": layout,
+        "prep_excitation": prep_excitation,
+        "probe_shots": probe_shots,
+        "estimates": rows,
+        "largest_shift_over_se": max(row["shift_over_se"] for row in rows.values()),
+    }
 
 
 def schedule_seconds(compiled: QuantumCircuit, view: Any) -> float:
@@ -1197,6 +1258,94 @@ def crosstalk(run_dir: Path, group: str) -> dict[str, Any]:
     }
 
 
+# A ranked path joins the separated set only when every qubit reads at a reported 1 - e10 - e01 of this floor.
+RANK_READOUT_FLOOR = 0.9
+
+
+def rank_paths(snapshot: dict[str, Any], excluded: list[int]) -> dict[str, Any]:
+    """Every three-qubit path ranked by its worst joint max_z at its own gate-error bounds, and the separated set.
+
+    primorial_bound_residuals.sweep scores each path's gap-88 and null arms under the joint tilt and CZ-phase
+    bounds at the noise record's best budget. The separated set takes paths in ranking order that avoid
+    ``excluded``, read at RANK_READOUT_FLOOR on every qubit, admit the fit, and keep one CZ hop from every path
+    already taken on the snapshot's coupler graph, the separation live_run's pinned_replicas requires.
+    """
+    view = calibration_snapshot.snapshot_backend(snapshot)
+    record = json.loads(nr.NOISE_RECORD.read_text(encoding="utf-8"))
+    shots, variance = br.budget(record, "best")
+    logical = [(m, c) for m, c in noise.arms() if m["family"] == "gradient" and m["cost"] in ("gap88", "null")]
+    swept = br.sweep(snapshot, view, logical, variance, shots)
+    rows = sorted(swept["rows"], key=lambda row: row["worst_max_z"])
+    neighbors: dict[int, set[int]] = {}
+    for entry in snapshot["instructions"]["cz"]:
+        a, b = entry["qargs"]
+        neighbors.setdefault(a, set()).add(b)
+        neighbors.setdefault(b, set()).add(a)
+    qubits = snapshot["qubits"]
+    chosen: list[list[int]] = []
+    blocked: set[int] = set()
+    for row in rows:
+        layout = row["layout"]
+        if set(layout) & set(excluded) or row["worst_shots_identify_all"] is None:
+            continue
+        if any(1.0 - qubits[q]["e10"] - qubits[q]["e01"] < RANK_READOUT_FLOOR for q in layout):
+            continue
+        if set(layout) & blocked:
+            continue
+        chosen.append(layout)
+        blocked |= set(layout) | {n for q in layout for n in neighbors.get(q, set())}
+    return {
+        "calibration": snapshot["calibration"],
+        "excluded": excluded,
+        **{key: value for key, value in swept.items() if key != "rows"},
+        "rows": rows,
+        "separated": chosen,
+        "pin": "/".join(",".join(map(str, layout)) for layout in chosen),
+    }
+
+
+def falsify(run_dir: Path, decision: dict[str, Any], crosstalk_verdict: dict[str, Any] | None) -> dict[str, Any]:
+    """The stage-2 falsification: each path's null-subtracted coefficient biases against its decision bands.
+
+    The stage-2 run must pin the decision's stage-2 paths in order at its N2. primorial_campaigns.summarize's
+    ``bias_<coefficient>`` (recovered minus exact on the in-job assignment-corrected readings, gap-88 and its
+    repeat against null and its repeat) is the quantity decide_many's bands predict. A coefficient outside its
+    band falsifies the coherent-error model on that path. The result supports a device-question claim only when
+    every member executed under the decision's calibration with no change during its shots and the crosstalk
+    check (``crosstalk_verdict``) reads consistent; otherwise it is descriptive.
+    """
+    record, entry, paths = _group_record(run_dir, "primorial_gap88")
+    if paths != decision["stage2_paths"]:
+        raise SystemExit(f"stage 2 pins {paths}, the decision's stage-2 paths are {decision['stage2_paths']}")
+    if int(record["shots"]) != decision["gap88_shots"]:
+        raise SystemExit(f"stage 2 ran {record['shots']} shots, the decision set {decision['gap88_shots']}")
+    bands = {tuple(v["layout"]): v["falsifier"]["shift_bands"] for v in decision["decisions"]}
+    summaries = entry["measured_statistics"]["summary_per_replica"]
+    rows = []
+    for path, summary in zip(paths, summaries, strict=True):
+        observed = {key: float(summary[f"bias_{key}"]) for key in bands[tuple(path)]}
+        outside = sorted(key for key, (low, high) in bands[tuple(path)].items() if not low <= observed[key] <= high)
+        rows.append({"path": path, "observed_bias": observed, "bands": bands[tuple(path)], "outside": outside})
+    executed = {
+        (str(item["calibration"]), bool(item["calibration_changed_during_shots"]))
+        for item in entry["executed"].values()
+    }
+    reasons = []
+    if executed != {(str(decision["calibration"]), False)}:
+        reasons.append(f"stage 2 executed under {sorted(executed)}, the decision read {decision['calibration']}")
+    outcome = None if crosstalk_verdict is None else crosstalk_verdict.get("outcome")
+    if outcome != "consistent":
+        reasons.append(f"crosstalk check {outcome or 'not supplied'}")
+    return {
+        "calibration": decision["calibration"],
+        "gap88_shots": decision["gap88_shots"],
+        "paths": rows,
+        "falsified": [{"path": row["path"], "coefficients": row["outside"]} for row in rows if row["outside"]],
+        "claim": "device" if not reasons else "descriptive",
+        "descriptive_reasons": reasons,
+    }
+
+
 def check(path: Path, run_dir: Path) -> int:
     retained = json.loads(path.read_text(encoding="utf-8"))
     ledger = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
@@ -1232,6 +1381,14 @@ def main() -> int:
     parser.add_argument(
         "--excess", type=Path, help="--decide-paths: state_prep_excess.py's output on the run's approved plan"
     )
+    parser.add_argument("--rank-paths", type=Path, metavar="SNAPSHOT", help="rank paths and select separated ones")
+    parser.add_argument("--exclude", help="--rank-paths: qubits no selected path may use, Q,Q")
+    parser.add_argument(
+        "--excitation-check", type=float, metavar="EPS", help="probe-estimate shifts under preparation excitation EPS"
+    )
+    parser.add_argument("--falsify", type=Path, metavar="RUN", help="test a collected stage-2 run against its decision")
+    parser.add_argument("--decision", type=Path, help="--falsify: the --decide-paths output")
+    parser.add_argument("--crosstalk-verdict", type=Path, help="--falsify: the --crosstalk output on the stage-2 run")
     parser.add_argument(
         "--retained-paths", type=Path, metavar="RUN", help="the paths a collected prep0 state-prep control retains"
     )
@@ -1249,6 +1406,32 @@ def main() -> int:
             f"stage 2: {len(verdict['stage2_paths'])} of {len(verdict['paths'])} paths at "
             f"{verdict['gap88_shots']} shots, {len(verdict['voided'])} voided"
         )
+        return 0
+    if args.rank_paths is not None:
+        if args.out is None:
+            parser.error("--rank-paths needs --out")
+        excluded = [int(q) for q in args.exclude.split(",")] if args.exclude else []
+        verdict = rank_paths(json.loads(args.rank_paths.read_text(encoding="utf-8")), excluded)
+        _write(args.out, verdict)
+        print(f"{len(verdict['separated'])} separated paths of {len(verdict['rows'])}: {verdict['pin']}")
+        return 0
+    if args.excitation_check is not None:
+        if args.snapshot is None or args.layout is None or args.probe_shots is None or args.out is None:
+            parser.error("--excitation-check needs --snapshot, --layout, --probe-shots and --out")
+        snapshot = json.loads(args.snapshot.read_text(encoding="utf-8"))
+        verdict = excitation_check(snapshot, args.layout, args.excitation_check, args.probe_shots)
+        _write(args.out, verdict)
+        print(f"excitation {args.excitation_check}: largest probe shift {verdict['largest_shift_over_se']:.3g} SE")
+        return 0
+    if args.falsify:
+        if args.decision is None or args.out is None:
+            parser.error("--falsify needs --decision and --out")
+        crosstalk_verdict = (
+            None if args.crosstalk_verdict is None else json.loads(args.crosstalk_verdict.read_text(encoding="utf-8"))
+        )
+        verdict = falsify(args.falsify, json.loads(args.decision.read_text(encoding="utf-8")), crosstalk_verdict)
+        _write(args.out, verdict)
+        print(f"stage 2: {len(verdict['falsified'])} falsified paths, claim {verdict['claim']}")
         return 0
     if args.retained_paths:
         if args.paths is None or args.out is None:

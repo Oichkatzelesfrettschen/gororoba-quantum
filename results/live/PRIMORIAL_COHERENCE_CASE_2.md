@@ -26,7 +26,9 @@ IBM bills shots times (repetition delay plus circuit) per job, independent of ho
 once, one replica per path in each PUB. The paths come from the 226-path joint-bound ranking at the calibration of
 2026-10-26T00:48:55-07:00, taken greedily in ranking order. Each avoids qubit 0, reads at a reported
 1 - e10 - e01 of at least 0.9 on every qubit, admits the gap-88 fit, and keeps one CZ hop from every other path,
-so no coupler joins qubits of two paths. Middle qubit second:
+so no coupler joins qubits of two paths
+(`primorial_probe_case.py --rank-paths`, retained in
+[docs/evidence/primorial_cover/case2/](../../docs/evidence/primorial_cover/case2/README.md)). Middle qubit second:
 
 58-71-72, 33-39-53, 3-16-23, 17-27-28, 141-142-143, 15-19-35, 60-61-62, 151-152-153, 82-83-96, 38-49-50,
 105-106-107, 118-129-128, 100-101-102, 55-59-75, 78-89-90, 66-67-68, 42-43-44, 10-11-12, 79-93-92, 132-133-134,
@@ -44,9 +46,14 @@ The delay is the approver's choice among three options:
 
 | delay | preparation control | expected total | cap |
 | --- | --- | ---: | ---: |
-| 20 us (recommended) | prep0 and x_history at 20 us, unmeasured on this account before | 19.7 to 25.1 s | 68 s |
+| 20 us, falling back to 50 us (recommended) | prep0 and x_history at 20 us; at 50 us after a fallback | 19.7 to 25.1 s; 35.3 to 45.7 s after a fallback | 84 s |
+| 20 us | prep0 and x_history at 20 us, unmeasured on this account before | 19.7 to 25.1 s | 68 s |
 | 50 us | prep0 and x_history at 50 us | 28.7 to 39.1 s | 68 s |
 | 250 us default | none: the calibration's reported readout carries the default-delay excitation (rule 5) | 69.5 to 113.5 s | 180 s |
+
+Under the fallback option, a 20 us control that fails the timing canary below, or whose excitation stops a path
+the 50 us rule would keep, moves the case to 50 us with its own two controls. That costs the spent 20 us
+controls (at most their two 8 s ceilings) and needs no second approval.
 
 A delay below the default carries a preparation control on the run's own qubits (rule 1). It is the repository's
 `state-prep-control` family: two jobs at the chosen delay over all 69 path qubits, each one PUB, 32768 shots.
@@ -61,11 +68,15 @@ single-delay rule to a pinned-campaign plan at any delay. That rule takes one-si
 simultaneous over every controlled qubit at family-wise alpha 0.01, and corrects for the x_history end state.
 Every decision then simulates each path with an X error of probability eps, the path's largest eps, on every qubit
 before the circuit (`dynamic_density.with_prep_excitation`). That is the channel the n21 planner uses, applied in
-the noisy law beside the reported readout error.
+the noisy law beside the reported readout error. The probes need no such term: at the decision thresholds on
+58-71-72, an excitation of 0.015 on every qubit moves no probe estimate by more than 0.016 of its standard error at
+800 shots, because the in-job inversion absorbs it as a readout flip
+(`--excitation-check`, [probe-excitation.json](../../docs/evidence/primorial_cover/case2/probe-excitation.json)).
 
 ## Stages
 
-- **Stage 0, controls.** prep0, then x_history, at the chosen delay. `primorial_probe_case.py --retained-paths`
+- **Stage 0, controls.** prep0 and x_history at the chosen delay, submitted back to back without waiting for
+  either to finish. `primorial_probe_case.py --retained-paths`
   drops every path with a qubit whose prep0 excited fraction exceeds 0.2, a readout of |0> as 1 that alone puts
   1 - e10 - e01 below 0.8. It would have dropped the first case's qubit 0 at 0.79. The two controls form a timing
   canary. A control job that ends in error 1305, the failure of the 0 us attempt, or bills above its 8 s ceiling
@@ -74,7 +85,9 @@ the noisy law beside the reported readout error.
   bounds eps on the stage-1 approval dry run, the plan whose placement it reads.
   `primorial_probe_case.py --decide-paths` then applies the stage-2 rule:
   - it requires the snapshot to carry the calibration every probe member executed under, with no change during
-    the shots;
+    the shots; the snapshot is exported after collection at stage 1's recorded execution start
+    (`calibration_snapshot.py --export ibm_kingston --at START`, the `properties(datetime=)` and
+    `target_history(datetime=)` pair live_run's collection reads), so it is what ran by construction;
   - it requires the excess output to name the run's approved record and delay;
   - it voids a path whose in-job readout calibration falls below 0.8 on any wire;
   - it decides every other path at 3200 gap-88 shots from that path's own per-replica summary, with its eps;
@@ -88,8 +101,11 @@ the noisy law beside the reported readout error.
     standard deviation and the draws' spread, with z = z(1 - 0.025/(7k)) for k paths in stage 2, and at least 3.
     The bands hold simultaneously over all 7k coefficients at family-wise level 0.05 under a Gaussian
     approximation of both spreads.
-  - **Falsification.** A coefficient outside its band falsifies the coherent-error model on that path. The
-    device-question claim names every such path and coefficient.
+  - **Falsification.** `--falsify` compares each path's collected `bias_<coefficient>` (recovered minus exact on
+    the in-job assignment-corrected readings, the quantity the bands predict) with its band. A coefficient
+    outside its band falsifies the coherent-error model on that path, and the device-question claim names every
+    such path and coefficient. The claim stands only when every stage-2 member executed under the decision's
+    calibration with no change and the crosstalk check reads consistent; otherwise the result is descriptive.
   - **Assumptions.** The coherent and incoherent shifts add to first order; the probe case's noise-model check
     measured a null-subtracted bias of 0.051 under the snapshot's noise against 0.049 noise-free, the difference
     the incoherent floor (`docs/evidence/primorial_cover/probe_case.json`). Path selection uses only probe shots,
@@ -128,8 +144,10 @@ The case stops and returns to the user in any of these cases:
 
 A 23-path decision takes 85 s on the build host, so `--decide-paths` adds about 3 minutes between stage 1's
 collection and the stage-2 dry run. The Kingston queue held 79 pending jobs at 2026-10-26T17:53Z, and a long queue
-wait exposes the gate to a recalibration. Stage 1's seconds then stay spent and its estimates stand as descriptive
-results.
+wait before stage 2 exposes the identity gate to a recalibration. Stage 1's seconds then stay spent, its estimates
+stand as descriptive results, and the case returns to the user. The controls carry the same exposure:
+`calibration_scope.matched` fails when Kingston recalibrates between the controls and the stage-1 approval dry
+run.
 
 ## Expected seconds
 
@@ -183,7 +201,6 @@ paths, `K` their count and `QUBITS` their qubits. Each submission is the dry-run
 to the queue observed at submission.
 
 ```sh
-"$PYTHON" calibration_snapshot.py --export ibm_kingston --out SNAPSHOT
 for arm in prep0 x_history; do
   "$PYTHON" live_run.py --family state-prep-control --layout QUBITS --state-prep-arms $arm --max-replicas 1 \
     --backends ibm_kingston --shots 32768 --rep-delay D --max-execution-seconds 8 \
@@ -195,13 +212,21 @@ done
   --max-total-execution-seconds 15 --out ../results/live
 "$PYTHON" ../scripts/state_prep_excess.py --n21-record STAGE1_APPROVAL_RECORD --control PREP0_RUN \
   --control X_HISTORY_RUN
+"$PYTHON" calibration_snapshot.py --export ibm_kingston --at STAGE1_EXECUTION_START --out SNAPSHOT
 "$PYTHON" ../scripts/primorial_probe_case.py --decide-paths STAGE1_RUN --excess EXCESS --snapshot SNAPSHOT \
   --out DECISION
 "$PYTHON" live_run.py --groups primorial_gap88 --pin-layout ibm_kingston:PATHS --max-replicas K \
   --backends ibm_kingston --shots N2 --rep-delay D --max-execution-seconds 30 \
   --max-total-execution-seconds 30 --out ../results/live
 "$PYTHON" ../scripts/primorial_probe_case.py --crosstalk STAGE2_RUN --group primorial_gap88 --out CROSSTALK
+"$PYTHON" ../scripts/primorial_probe_case.py --falsify STAGE2_RUN --decision DECISION \
+  --crosstalk-verdict CROSSTALK --out FALSIFICATION
 ```
+
+STAGE1_EXECUTION_START is the `start` that stage 1's collect.json records for its first probe member. At the 250 us
+default the controls, `--retained-paths` and `state_prep_excess.py` are skipped, and every live_run command omits
+`--rep-delay` and `--decide-paths` omits `--excess`: the run then records no repetition delay, and `--decide-paths`
+decides with zero excitation, the reported readout carrying the default-delay excitation.
 
 `state_prep_excess.py` takes the plan through its `--n21-record` flag, which reads a pinned-campaign plan as well.
 `--fetch-readout` on each control precedes it, as for the n21 controls.
@@ -211,7 +236,8 @@ done
 This case approves the following envelope:
 - the state-prep controls and the two campaigns on any rule-made subset of the 23 listed paths, with their member
   structure;
-- the policy: twirl off, dd none, the structure-preserving contract, and the delay the approver chooses;
+- the policy: twirl off, dd none, the structure-preserving contract, and the delay the approver chooses, with the
+  20-to-50 us fallback when that option is chosen;
 - the shots: 32768 per control, 800 in stage 1, and the decision's N2 between 1600 and 3200 in stage 2;
 - the ceilings above, with an expected bill within the chosen delay's row.
 
