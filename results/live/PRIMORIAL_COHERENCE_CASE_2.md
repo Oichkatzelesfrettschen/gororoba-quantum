@@ -1,6 +1,7 @@
 # Case: primorial coherence case on 23 ibm_kingston paths at a short repetition delay
 
-Status: written case awaiting the user's approval. Nothing in this file authorizes a submission.
+Status: approved by the user on 2026-10-26 for the envelope below with the 20 us delay and its preregistered
+fallback to 50 us. The approval takes effect on the binding dry runs made from main after this change merges.
 
 This case repeats [PRIMORIAL_COHERENCE_CASE.md](PRIMORIAL_COHERENCE_CASE.md) on 23 three-qubit paths at once and at
 a repetition delay below the 250 us default. It keeps that case's probe and gap-88 circuits, its estimators, its
