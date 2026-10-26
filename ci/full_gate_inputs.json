@@ -556,6 +556,11 @@
     ],
     "core-692": [
       "docs/evidence/stiefel-pfaffian-higher/**"
+    ],
+    "core-primorial-probe-case-replay": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/primorial_cover/**",
+      "results/kaggle/2026-10-26T012733Z-gororoba-primorial-probe-case/**"
     ]
   }
 }
