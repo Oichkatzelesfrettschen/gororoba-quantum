@@ -62,6 +62,8 @@ the chip was in a state at least as lossy as the held record describes, not mere
 records before and after the job carry the held figures unchanged. This is the first retained run ended by its shot
 budget: such an iteration reports the budget, and a sample-limited one reports its samples, so neither counts
 optical trials.
+The workflow `quandela-record-watch.yml` reads the record every two hours against the held digest and opens an
+issue when it changes ([runbook](../../runbooks/quandela-scheduled-runs.md#record-watch)).
 
 ### Live reads of 2026-10-20 (historical)
 

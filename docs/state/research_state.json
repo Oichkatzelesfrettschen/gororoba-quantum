@@ -10000,6 +10000,42 @@
       "superseded_by": null
     },
     {
+      "id": "primorial-probe-case-design",
+      "statement": "On the best and median ibm_kingston paths of the primorial noise record, the coherence probes of gororoba_quantum/coherence_probes.py recover injected drive-axis tilt, CZ conditional phase, static detuning and partner-in-0 ZZ, every family at once, within 5.2e-5 rad of x tilt, 4.1e-5 rad of sx tilt, 3.8e-6 rad of CZ phase, 2.6 Hz of detuning and 1.3 Hz of ZZ; a constant-amplitude detuned pulse equals the tilt Delta / Omega to an infidelity of 3.6e-10 up to 60 kHz. Under the snapshot's noise each estimate's bias stays below its standard error, and the shots that resolve each decision threshold at three standard deviations are 2 for CZ phase at 0.7 of its bound, at most 18 for tilt at 0.2 of its sx and x bounds, at most 60 for 5 kHz detuning and 757 for 2 kHz ZZ. Thirty-two independent samplomatic twirl randomizations of the gap-88 signal and null arms raise the joint tilt and CZ-phase max_z at the gate-error bounds to 5.4 and 6.5 against 2.6 and 2.8 untwirled (512 randomizations: 1.03 and 1.11). The untwirled decision rule's 95th-percentile predicted max_z is 0.0004 and 0.0005 at zero error, 0.069 and 0.072 at the repository's measured coherent scales and 1.07 and 1.14 at the decision thresholds.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Noise-free and noise-model simulations on the retained ibm_kingston snapshot of 2026-10-15; the twirl model samples the client-side Sampler's boxing with independent randomizations per arm, as live_run's packing gives them (one member per PUB, 104 PUBs in the gap-88 dry run); the probe design assumes coherent errors static over a job and the drift monitors of the hardware case flag only drift several times the subtraction tolerance. An exploratory build-host run changed the design before the retained run. No hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/probe_case.json",
+          "sha256": "757db2030ba888cc21e250f797713f505c7c140eb2e78e957072f080b141fa56"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/bound_residuals.json",
+          "sha256": "491226721d81588a2d9914fc9880c19ea11d013e40b4663c72405293900b836e"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/noise.json",
+          "sha256": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/README.md",
+        "results/live/PRIMORIAL_COHERENCE_CASE.md"
+      ],
+      "gates": {
+        "core-primorial-probe-case-replay": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "primorial-bound-residuals-joint"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "stiefel-pfaffian-transport-all-n",
       "statement": "For doubly pure y = (p, q) in A_n and z = p + i q, phi(y x) = A(z, conj z) conj(phi(x)) with A(z, t) = [[0, -t^T], [t, C_z]], so rank_R L_y = 2 rank_C A(z, conj z); the cofactors of C_z satisfy P_j = f_n z_j for a homogeneous f_n in Z[z] of degree 2^(n-2) - 2, and det L_y = N^4 |f_n(z)|^4, with f_4 = Q and f_5 = Q G.",
       "domain": "algebra",
@@ -10341,6 +10377,39 @@
       },
       "acquisitions": [
         "qd-qpu-belenos-teleportation-rehearsal-job-00"
+      ]
+    },
+    {
+      "id": "hw-n21-orbit-scheduled-idle-control",
+      "statement": "Replayed with its service-scheduled idle written in as delays under the execution Target, the N=21 orbit run on ibm_fez (4 qubits, 28 CZ before routing; most idle qubit 1,958 dt) gives an idle-padded exact contrast difference of +0.179 against +0.208 unpadded and a measured +0.197 (95 percent interval +-0.030 at 4096 shots per arm), while the encoded N=21 Kingston run (336 CZ; most idle leaf 15,481 dt) gives -0.0007 padded against +0.031 unpadded and a measured +0.0027. The same parameter-free idle model lies inside both measured intervals, so the Kingston null follows the encoded circuit's length rather than N=21 feed-forward.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Two retained runs on two backends and calibrations; the orbit run's predicted idle loss (0.029) equals its interval half-width, so it does not separate the padded from the unpadded model on its own. Incoherent idle only; the orbit runs' fitted work phase (hw-n21-orbit-phase) is coherent and outside this model.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T080216.451663Z/idle-replay.json",
+          "sha256": "f589f9ccf10ae470f45c4d8c101af9969ea022e1187166e554e493419d30ad71"
+        },
+        {
+          "path": "results/live/2026-10-13T080216.451663Z/collect.json",
+          "sha256": "fc50723a9ee530cf9b4869a58da64cfbddf9dc98c999c66145ea7762881b2ddb"
+        },
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/idle-replay.json",
+          "sha256": "218790a98f99de9835fe219061e11a004908ea0809df3c88bea1b4688ac7bd6c"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-18T090603.530638Z/IDLE_REPLAY_FINDINGS.md"
+      ],
+      "acquisitions": [
+        "fez-n21-orbit-feedback",
+        "kingston-n21-feedback-encoded-50us"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-scheduled-idle",
+        "hw-n21-orbit-phase"
       ]
     }
   ]

@@ -36,6 +36,22 @@
             }
           ],
           "scope_sha256": "8e67c8c28015e9aac9f30558da8afa0505d01182cd7474a4f8a5e1628bba6f70"
+        },
+        {
+          "result": "Revalidated at 6765b115: test_results_index.py passes after b7dd24b added the missing-run diagnostics, the audit join included, and the build leaves git status unchanged.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "scripts/results_index.py",
+              "sha256": "1a775bdfe022a2ff2c883ec21af7d352dec180297f78610ed1b5023a6916f877"
+            },
+            {
+              "ref": "tests/scripts/test_results_index.py",
+              "sha256": "559d7d054a3a2839ac21de628551c59a60bf469c56dc77dd3108f0174ee04344"
+            }
+          ],
+          "scope_sha256": "8e67c8c28015e9aac9f30558da8afa0505d01182cd7474a4f8a5e1628bba6f70"
         }
       ]
     },
@@ -79,6 +95,22 @@
         {
           "ref": "tests/scripts/test_results_index.py",
           "sha256": "bdd5270952e7e134080db45d51a35a7f6e30e35940eda462c22b771a76590dfb"
+        }
+      ],
+      "scope_sha256": "515ef15a775b75797df4e7d991f54405743d6221d71e4d8a2e082b28e61c4468"
+    },
+    {
+      "result": "Revalidated at 6765b115: test_results_index.py passes, the audit join over the retained tree included, and the build leaves git status unchanged.",
+      "observed_at": "2026-10-26T03:16:45.530392+00:00",
+      "revision": "6765b11589672fd85bfe05401800a9e075667168",
+      "evidence": [
+        {
+          "ref": "scripts/results_index.py",
+          "sha256": "1a775bdfe022a2ff2c883ec21af7d352dec180297f78610ed1b5023a6916f877"
+        },
+        {
+          "ref": "tests/scripts/test_results_index.py",
+          "sha256": "559d7d054a3a2839ac21de628551c59a60bf469c56dc77dd3108f0174ee04344"
         }
       ],
       "scope_sha256": "515ef15a775b75797df4e7d991f54405743d6221d71e4d8a2e082b28e61c4468"

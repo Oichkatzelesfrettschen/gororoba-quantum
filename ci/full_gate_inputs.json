@@ -590,6 +590,11 @@
     "core-692": [
       "docs/evidence/stiefel-pfaffian-higher/**"
     ],
+    "core-primorial-probe-case-replay": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/primorial_cover/**",
+      "results/kaggle/2026-10-26T032845Z-gororoba-primorial-probe-case/**"
+    ],
     "core-694": [
       "docs/evidence/a5-zero-divisor-strata/**"
     ]

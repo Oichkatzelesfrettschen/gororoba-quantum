@@ -36,6 +36,22 @@
             }
           ],
           "scope_sha256": "4ec25ad958494968a7fed5d5fa90f4e12320c3f9e49afdf8e2b3b2877ab7956b"
+        },
+        {
+          "result": "Revalidated at 6765b115: test_latency_recovery.py passes after 7726c6f bound the module in the experiment digest; core-001 ruff and core-039 mypy pass.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/latency_recovery.py",
+              "sha256": "1adcfaa6a9de51f52582404c0c6299c74c642c498074ce257a413afa7892bea3"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_latency_recovery.py",
+              "sha256": "296d40b9f9bbaa8925d61bd7f588de863c7fcf7968ec65837b459b6f1eac70d8"
+            }
+          ],
+          "scope_sha256": "4ec25ad958494968a7fed5d5fa90f4e12320c3f9e49afdf8e2b3b2877ab7956b"
         }
       ]
     },
@@ -81,6 +97,26 @@
             {
               "ref": "results/live/LATENCY_RECOVERY_FINDINGS.md",
               "sha256": "3b9b8d67a72b03e3d3ba5dc781b8132e9aa2fb6d48d5905108286d03b93c0791"
+            }
+          ],
+          "scope_sha256": "8adb5268a1b931e801d3e23ba8ddb71cd452b6051237abd24b20f609efa08042"
+        },
+        {
+          "result": "Revalidated at 6765b115: the addendum keeps the 2026-10-25 approval and job dbf5kdom94ac738ssug0 and now names the executed replica [106, 105, 104, 117, 107, 125]; the findings keep the 2.7x window cost and attribute about 0.12 of the 0.22 loss to a -13 kHz rotation and the rest to decay 1.6 to 1.75 times the T1/T2 rate.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-25T192932.145570Z/CASE_ADDENDUM.md",
+              "sha256": "a61f7a71e5ae88f7c20bc604d5ac5af1382cf0dd4216de075abbb89c49ea5a34"
+            },
+            {
+              "ref": "results/live/2026-10-25T193443.839527Z/collect.json",
+              "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
+            },
+            {
+              "ref": "results/live/LATENCY_RECOVERY_FINDINGS.md",
+              "sha256": "2f0bdead6ed454f62c546878821526a2aa5cd9eeaa33c6bf21af3b4cffbb050b"
             }
           ],
           "scope_sha256": "8adb5268a1b931e801d3e23ba8ddb71cd452b6051237abd24b20f609efa08042"
