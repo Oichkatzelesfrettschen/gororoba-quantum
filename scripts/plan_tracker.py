@@ -172,6 +172,7 @@ def parser() -> argparse.ArgumentParser:
     update.add_argument("--input", help="JSON object patch; - reads stdin")
     for field in ("summary", "scope", "owner", "next-action", "state"):
         update.add_argument("--" + field)
+    update.add_argument("--receipt", help="JSON plan receipt object; scope_sha256 may be omitted and will be filled")
     step = actions.add_parser("step")
     step.add_argument("id")
     step.add_argument("step_id")
@@ -293,6 +294,10 @@ def _run(arguments: argparse.Namespace) -> int:
                 }
             )
             plan.update(patch)
+            if arguments.receipt:
+                receipt = read_input(arguments.receipt)
+                receipt.setdefault("scope_sha256", records.obligation(plan))
+                plan.setdefault("receipts", []).append(receipt)
         elif arguments.command == "step":
             steps = plan.setdefault("steps", [])
             step = next((item for item in steps if item["id"] == arguments.step_id), None)
