@@ -423,6 +423,17 @@ def test_an_unmatched_source_unscores_its_pair_without_aborting() -> None:
         raise AssertionError("the primary test dropped a pair")
 
 
+def test_a_singular_bob_readout_unscores_its_pair_without_aborting() -> None:
+    case = json.loads((CASE / "cases.json").read_text(encoding="utf-8"))
+    measurements, _ = lad.synthetic_measurements(case, case_shots())
+    for circuit, entry in zip(measurements, case["jobs"][0]["circuits"], strict=True):
+        if Path(entry["file"]).stem in ("cal_00", "cal_11"):
+            circuit["bob0"] = [[0]] * len(circuit["bob0"])
+    result = lad.endpoints_of_run(case, measurements)
+    if result["pairs"][0]["h3"]["scored"] or not result["pairs"][0]["h3"].get("singular_readout"):
+        raise AssertionError(f"a singular readout leaves pair 0 at {result['pairs'][0]['h3']}")
+
+
 def test_analysis_refuses_a_mock_run(tmp_path: Path) -> None:
     run = synthetic_run(tmp_path, case_shots())
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))

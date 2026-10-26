@@ -1503,6 +1503,16 @@ def angle_qualification(qualification: Mapping[str, Any], cal: Mapping[str, np.n
     )
     e0, e1 = readout.e0, readout.e1
     empty = [name for name in QUAL_ARMS if qualification[name]["matched_shots"] == 0]
+    if 1 - e0 - e1 <= 0:
+        # P(1|0) + P(0|1) >= 1 leaves Bob's readout carrying no information about his state, so no correction exists
+        # and the pair cannot qualify; the primary tests keep it.
+        return {
+            "bob_p1_given_0": e0,
+            "bob_p0_given_1": e1,
+            "singular_readout": True,
+            "target_angle": 2 * ql.PHI_STAR,
+            "scored": False,
+        }
     if empty:
         # A source whose recorded bit never matches its preparation leaves no shot the conditional rotation acted
         # on, so the pair cannot qualify; the primary tests keep it.
