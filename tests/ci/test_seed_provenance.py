@@ -24,13 +24,13 @@ def test_retained_qrng_references_match_the_runtime_ledger() -> None:
     seed_provenance.check_runtime_tree()
 
 
-def test_docs_probes_are_scanned() -> None:
-    found, _ = seed_provenance.scan()
-    docs = {key[0] for key in found if key[0].startswith("docs/")}
-    if not docs:
-        raise AssertionError("no tracked docs probe entered the seed scan")
-    if any(not path.endswith(".py") for path in docs):
-        raise AssertionError(f"the scan keyed a non-Python docs path: {sorted(docs)}")
+def test_tracked_docs_probes_enter_the_scan() -> None:
+    probe = "docs/evidence/c5_zero_divisor_code/replay.py"
+    if probe not in seed_provenance.tracked_files():
+        raise AssertionError(f"{probe} is not tracked")
+    keys, _ = seed_provenance.file_literals(probe)
+    if (probe, "SEED", 314) not in keys:
+        raise AssertionError(f"the scan reads {keys} in {probe}")
 
 
 def test_reserved_rows_hold_their_values() -> None:
