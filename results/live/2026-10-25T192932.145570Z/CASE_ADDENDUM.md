@@ -8,9 +8,7 @@ it rests on. `UNAPPROVED_CASE.md` keeps its generated text.
 - Admission: `candidate-000-shots-16384`, one dynamic job of 34 PUBs at
   16384 shots and a 50 us repetition delay. The planned charge is 40.4 s
   under a 90 s per-job and combined ceiling.
-- Layout: the routing template [150, 151, 138, 152, 149, 153]; the planned and
-  executed replica sits on [106, 105, 104, 117, 107, 125] for r, d0, d1, d2,
-  a0, a1 (`groups[0].replicas[0].initial_layout`), with 24 CZ
+- Layout: [150, 151, 138, 152, 149, 153] for r, d0, d1, d2, a0, a1, with 24 CZ
   per encoded member and 14 per unencoded member.
 - Calibration: 2026-10-25T12:18:10-07:00, with medians T1 258 us and
   T2 163 us.
@@ -41,8 +39,8 @@ it rests on. `UNAPPROVED_CASE.md` keeps its generated text.
 
 ## Account
 
-- The primary account held 117 s of 600 s at the exploration's budget read
-  (2026-10-25T19:22Z). Less the 60 s reserve, that falls below the 90 s ceiling.
+- The primary account held 117 s of 600 s at 2026-10-25T18:4x UTC. Less the
+  60 s reserve, that falls below the 90 s ceiling.
 - The backup account (`backup-ibm-quantum-platform`, 600 s free) runs the
   dry run, the submission and the collection.
 
