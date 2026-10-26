@@ -1,0 +1,56 @@
+{
+ "numerical_search_counts": {
+  "R_12": {
+   "V(Q) with Gram rank at most 1": 2,
+   "W8": 19,
+   "not converged": 3
+  },
+  "R_16": {
+   "W8": 24
+  },
+  "R_8": {
+   "V(Q) with Gram rank at most 1": 15,
+   "W8": 8,
+   "not converged": 1
+  }
+ },
+ "order_14_slices": [
+  {
+   "each_generator_in_q_or_g": true,
+   "generators": 5,
+   "q_g_radical_power": 2,
+   "slice": "P2"
+  },
+  {
+   "each_generator_in_q_or_g": true,
+   "generators": 7,
+   "q_g_radical_power": 2,
+   "slice": "P3a"
+  },
+  {
+   "each_generator_in_q_or_g": true,
+   "generators": 5,
+   "q_g_radical_power": 2,
+   "slice": "P3b"
+  },
+  {
+   "each_generator_in_q_or_g": true,
+   "generators": 7,
+   "q_g_radical_power": 2,
+   "slice": "P3c"
+  },
+  {
+   "each_generator_in_q_or_g": true,
+   "generators": 5,
+   "q_g_radical_power": 2,
+   "slice": "P4s"
+  },
+  {
+   "each_generator_in_q_or_g": true,
+   "generators": 7,
+   "q_g_radical_power": 2,
+   "slice": "P4g"
+  }
+ ],
+ "schema": "a5-zero-divisor-strata-v1-explore"
+}
