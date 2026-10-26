@@ -19,9 +19,10 @@ prediction-to-counting variance ratio at most 1 it reads predicted.
 The returned phase stands for the heater's drive power because the passive offset is absent from the returned
 circuit, and the layout's (mode, column) distance stands for the physical distance between heaters.
 
-For the kernel and loss families the record also reports, descriptively, the training-only folds of
-scripts/ascella_configuration_holdout.py fitted on job-00 plus job-02's meshes, which read identification and
-decide nothing.
+Beside each reading the record states, descriptively, the predicted X spread over the meshes and its correlation
+with the observed statistics, and the observed spread with its counting share removed. For the kernel and loss
+families it also reports the training-only folds of scripts/ascella_configuration_holdout.py fitted on job-00 plus
+job-02's meshes, which read identification and decide nothing.
 
 Usage:
   "$PYTHON" scripts/ascella_heater_coupling.py JOB_00 JOB_02 OUT [--check]
@@ -159,6 +160,14 @@ def identification_fold(item: tuple[str, dict[str, Any], int]) -> dict[str, Any]
     return holdout.configuration_fold((name, taus, with_coupling(both, kernel, loss), left_out))
 
 
+def spread(rows: list[dict[str, Any]]) -> dict[str, float]:
+    """Descriptive: the noise-free predicted X standard deviation over the meshes and its correlation with the
+    observed statistics; neither enters the reading."""
+    predicted = np.array([row["predicted"] for row in rows])
+    observed = np.array([row["observed"] for row in rows])
+    return {"predicted_sd": float(predicted.std()), "correlation": float(np.corrcoef(predicted, observed)[0, 1])}
+
+
 def build(a_dir: Path, c_dir: Path) -> dict[str, Any]:
     a, c = models.job_data(a_dir), models.job_data(c_dir)
     models.require(a["record"]["manifest"]["job"] == "job-00", "the fit run is not job-00")
@@ -179,6 +188,10 @@ def build(a_dir: Path, c_dir: Path) -> dict[str, Any]:
         summary = holdout.summarize([entry for fold in chosen for entry in fold["rows"]])
         identification.append({"family": name, "summary": summary, "reading": drive.reading(summary), "folds": chosen})
     families = [*low, *static]
+    for row in families:
+        row["spread"] = spread(row["rows"])
+    observed = np.array([r["observed"] for r in families[0]["rows"]])
+    counting = float(np.mean([r["counting_variance"] for r in families[0]["rows"]]))
     return {
         "schema": "ascella-heater-coupling-reading-v1",
         "plan": "docs/state/plans/ascella-heater-coupling-families.json",
@@ -186,6 +199,11 @@ def build(a_dir: Path, c_dir: Path) -> dict[str, Any]:
         "training": "job-00",
         "meshes": len(meshes),
         "kernel": {"distances": list(KERNEL_DISTANCES), "columns": KERNEL_COLUMNS},
+        "observed_spread": {
+            "sd": float(observed.std()),
+            "mean_counting_variance": counting,
+            "compilation_sd": float(math.sqrt(max(float(observed.var()) - counting, 0.0))),
+        },
         "families": families,
         "predicting_families": [row["family"] for row in families if row["reading"] == "predicted"],
         "identification": identification,

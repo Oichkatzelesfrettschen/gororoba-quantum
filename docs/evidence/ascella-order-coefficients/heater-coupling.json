@@ -468,7 +468,11 @@
      "standardized_residual": -2.9716941946727453
     }
    ],
-   "shortfall_threshold": 94.46054464187807
+   "shortfall_threshold": 94.46054464187807,
+   "spread": {
+    "correlation": 0.0452361305518802,
+    "predicted_sd": 0.0016919440784945409
+   }
   },
   {
    "diagonal_sum": 960.5123241286135,
@@ -938,7 +942,11 @@
      "standardized_residual": -3.2993005721528843
     }
    ],
-   "shortfall_threshold": 94.46054464187807
+   "shortfall_threshold": 94.46054464187807,
+   "spread": {
+    "correlation": 0.16577948935327977,
+    "predicted_sd": 0.0018106560205582243
+   }
   },
   {
    "coupler_offset_rms": 0.039292661568121175,
@@ -1401,6 +1409,10 @@
     }
    ],
    "shortfall_threshold": 94.46054464187807,
+   "spread": {
+    "correlation": 0.06512729317554428,
+    "predicted_sd": 0.014065674841236631
+   },
    "training_objective": 432608.74206963216
   },
   {
@@ -1865,6 +1877,10 @@
     }
    ],
    "shortfall_threshold": 94.46054464187807,
+   "spread": {
+    "correlation": 0.024502290009973636,
+    "predicted_sd": 0.028165823456574625
+   },
    "training_objective": 432554.2451990509
   },
   {
@@ -2340,6 +2356,10 @@
     }
    ],
    "shortfall_threshold": 94.46054464187807,
+   "spread": {
+    "correlation": -0.014863287280242719,
+    "predicted_sd": 0.005387693725757117
+   },
    "training_objective": 433222.82736088504
   },
   {
@@ -2817,6 +2837,10 @@
     }
    ],
    "shortfall_threshold": 94.46054464187807,
+   "spread": {
+    "correlation": 0.18872344844741454,
+    "predicted_sd": 0.02722205146804217
+   },
    "training_objective": 432546.68528937676
   },
   {
@@ -3284,6 +3308,10 @@
     }
    ],
    "shortfall_threshold": 94.46054464187807,
+   "spread": {
+    "correlation": -0.0394632170107629,
+    "predicted_sd": 0.005896723291405667
+   },
    "training_objective": 433498.55648927385
   },
   {
@@ -3753,6 +3781,10 @@
     }
    ],
    "shortfall_threshold": 94.46054464187807,
+   "spread": {
+    "correlation": 0.1162632823136162,
+    "predicted_sd": 0.02836899453303161
+   },
    "training_objective": 432544.12079157046
   }
  ],
@@ -5523,6 +5555,11 @@
   ]
  },
  "meshes": 56,
+ "observed_spread": {
+  "compilation_sd": 0.010368112323932335,
+  "mean_counting_variance": 1.9647935549230343e-05,
+  "sd": 0.011275889708174157
+ },
  "plan": "docs/state/plans/ascella-heater-coupling-families.json",
  "predicting_families": [],
  "runs": [

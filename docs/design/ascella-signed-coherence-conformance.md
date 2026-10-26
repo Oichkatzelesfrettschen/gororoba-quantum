@@ -1356,7 +1356,11 @@ absent from the returned circuit. The layout's (mode, column) distance
 stands for physical distance. A screen that reads no mesh feature found no
 association of the X statistic with execution index, its parity, its lag-1
 neighbor or the outside-block count (every p above 0.19), so the reading
-carries no sequence term.
+carries no sequence term. Before the plan was written, a feasibility screen
+sized the kernel and loss priors against job-02's served phases and its
+observed X spread, so that each family at its prior scale could produce the
+observed compilation-induced spread. That choice favors the families and makes
+a shortfall conservative.
 
 [`heater-coupling.json`](../evidence/ascella-order-coefficients/heater-coupling.json),
 written by
@@ -1373,15 +1377,23 @@ written by
 | drive loss, intensity e^{-gamma phi} | gamma -0.0049 (SE 0.0002) | 785 | 0.003 | 0.0059 | shortfall |
 | drive loss with heater and coupler offsets | gamma -0.0083 (SE 0.0018) | 348 | 27 | 0.0284 | shortfall |
 
-The 56 meshes read an X standard deviation of 0.0113 around 0.887. The
-families fall into two groups. The coupling-only families fit job-00 to a
+The 56 meshes read an X standard deviation of 0.0113 around 0.887. Their
+mean counting variance accounts for 0.0044 of it, which leaves a
+compilation-induced standard deviation of 0.0104. The predicted spreads in the
+table carry no counting noise, so 0.0104 is their comparison. The families
+fall into two groups. The coupling-only families fit job-00 to a
 small coupling and predict too little spread. The families that carry
 per-element offsets predict spread of the right size, but at mesh-by-mesh
 positions that the observations do not follow. Across the 56 meshes, the
 correlation between predicted and observed X lies between -0.04 and 0.19 for
-every family; that is a description, not a preregistered statistic. Both
+every family. The record states these spreads and correlations beside each
+reading as descriptions; they are not preregistered statistics. Both
 drive-loss fits put gamma below zero, a gain with drive power, which no
-heater loss produces. The identification folds, refitted on job-00 plus
+heater loss produces. The loss-alone posterior on job-00 rises monotonically
+for every gamma at or above zero (gradient +45,000 at zero), so a fit held to
+physical loss lands on gamma 0, the nominal mesh, and the loss-with-offsets
+family reduces to the heater and coupler offsets family; both readings stay
+shortfall. The identification folds, refitted on job-00 plus
 job-02's meshes and read under the training-only rule, keep the left-out X
 shortfall for all four kernel and loss families: sums 180 to 347 on 10, with
 median variance ratios 0.01 to 0.60, so the shortfall comes with identified
