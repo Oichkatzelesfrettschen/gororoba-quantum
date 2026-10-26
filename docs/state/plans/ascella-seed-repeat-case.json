@@ -27,13 +27,31 @@
       "id": "request-builder",
       "action": "Register job-03 in ascella_coherence_request.py: job-02's seeds by name, anchors at stride 8, the perturbed meshes in the draw's order, the frozen body and a preflight that sends nothing.",
       "acceptance": "--check reproduces the frozen bytes of jobs 00 to 03 and validates job-03's body; every job-03 setting carries job-02's seed and circuit_params under the same name.",
-      "state": "doing"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "ascella_coherence_request.py registers job-03; --check rebuilds jobs 00 to 03 to their retained digests and validates job-03's frozen body; the preflight planned an equal body on available qpu:ascella.",
+          "evidence": [
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-03/cases.json",
+              "sha256": "121a638020333b7d00a0231b3977456bca5e752d4aba01da215fe0b217e69b32"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-03/job-body.json",
+              "sha256": "04dba7a2a97b8b116ea33c31f6c1cb9f8be5de4cfe8e43e9543edf9c36ed49ad"
+            }
+          ],
+          "observed_at": "2026-10-26T03:45:05+00:00",
+          "revision": "3a16b49ba27c62927bee6714875eb4e4e83d2971",
+          "scope_sha256": "2f85c3d2e26a329042f917666bdb605a21d12b7b758fb63faa47428878d47b69"
+        }
+      ]
     },
     {
       "id": "written-case",
       "action": "Write the case in the design document: what it measures, why simulation cannot answer it, backend, samples, seconds and credits.",
       "acceptance": "The owner approves the written case, or declines it.",
-      "state": "todo",
+      "state": "doing",
       "depends_on": [
         "request-builder"
       ]
