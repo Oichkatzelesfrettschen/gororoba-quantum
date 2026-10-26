@@ -57,15 +57,15 @@
       ],
       "receipts": [
         {
-          "result": "The owner approved the written case on 2026-10-26 at 16,384 samples per iteration, ceiling 1.032768 credits, expected 186 s.",
+          "result": "The owner approved the written case on 2026-10-26 at 16,384 samples per iteration, ceiling 1.032768 credits, expected 186 s; the run's submission record carries the approval text the submission consumed.",
           "evidence": [
             {
-              "ref": "docs/design/ascella-signed-coherence-conformance.md",
-              "sha256": "fb5df1f7d9470c05a4932338d82b402d45aa9524fd78c6514374f34cf187937e"
+              "ref": "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/submission.json",
+              "sha256": "bde08f2218538e037398c45c68189a3640c7da5811280f686dc32445b70a230d"
             }
           ],
-          "observed_at": "2026-10-26T03:52:05+00:00",
-          "revision": "855318ec1decdb53678ba952edc3726c2ad28a8c",
+          "observed_at": "2026-10-26T05:42:11+00:00",
+          "revision": "87724bc847cbe5e97670936240e0498e0a50370f",
           "scope_sha256": "b02fcc5140ec38e52108eba2c54c377a287f5fa65d037244e00d4220e886bf30"
         }
       ]
