@@ -2109,6 +2109,34 @@
       "question": "Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?"
     },
     {
+      "id": "iqm-garnet-mock-qet-ladder-accept",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station pipeline accept the cc_prx-fed QET ladder circuits (five packed pairs, a feedback_key distinct from the measure key, cc_prx at angle 0 and 2 phi*, barrier) under one active-reset cycle with all-zeros heralding?"
+    },
+    {
+      "id": "iqm-garnet-mock-qet-ladder-accept-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station accept the passive-reset, unheralded cc_prx QET ladder circuits whose five pairs were chosen without the fast-feedback probe-line wiring?"
+    },
+    {
+      "id": "iqm-garnet-mock-qet-ladder-accept-wired",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station accept the passive-reset cc_prx QET ladder circuits on five probe-line-compatible pairs, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-qet-compensated-ladder",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the record-steered rotation of the two-qubit QET ladder, fed forward by cc_prx on IQM Garnet, lower Bob's local energy below every record-independent unitary (H1) and below the vacuum value (H2), is the non-pi conditional angle realized (H3), and does Bob carry a coherent window phase (H4)?"
+    },
+    {
       "id": "qd-qpu-belenos-teleportation-rehearsal-job-00",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00",
@@ -10973,6 +11001,92 @@
         "kingston-qet-window-phase-static",
         "kingston-qet-compensated-information-excess",
         "hw-n21-feedback-null-scheduled-idle"
+      ]
+    },
+    {
+      "id": "iqm-garnet-cc-prx-feedback-label-limit",
+      "statement": "The garnet:mock station control refused job 01a17621-1452-701f-8874-ba08a138aec4 (22 circuits x 200 shots, active_reset_cycles 1, all-zeros heralding) at compilation, charging 0.00 credits: \"Playlist segment 0 can't be handled by the instruments\" with \"unique feedback signal labels: 2/1\" on the drive AWG of each of the five qubits that receive cc_prx (QB1, QB6, QB13, QB17, QB19) and on no other drive. Each of those drives carried exactly one cc_prx label (its partner's qubit and key) across all 22 circuits, so the second label is the active reset's conditional pulse on the qubit's own readout: on Garnet a qubit whose drive takes another qubit's feedback bit cannot also take active reset, and a cc_prx case runs under passive reset.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One mock compilation under the mock's own calibration set; the limit is the station's instrument constraint as reported, and the QPU station was not exercised. Whether two distinct cc_prx sources on one drive are refused with passive reset was not tested.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "6e2b778a7f69252a74eb1806e2d69b8220cd6bf8f88e5bf7ce746402f3a4ecdb"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept/raw/job.json",
+          "sha256": "5b6fab552ccffd94eb43d44c9c0641d73424a41bb295cfec5b9fac27b5bf48ce"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-mock-qet-ladder-accept"
+      ]
+    },
+    {
+      "id": "iqm-garnet-cc-prx-probe-line-limit",
+      "statement": "The garnet:mock station refused job 01a17675-111d-731e-9c6f-2132756f1686 (24 circuits x 200 shots, passive reset, no heralding) in circuit resolution, charging 0.00 credits: \"QB8 does not support fast feedback from QB3 (probe line: PL-2). Valid source probe lines are ['PL-3']\". The retained channel properties list the drive fast_feedback_sources of QB8, QB13, QB14, QB15, QB18 and QB19 as PL-3 only and of every other qubit as PL-1 and PL-2, and the chip design record places QB3 on PL-2: on Garnet a cc_prx needs its feedback qubit's readout probe line among the target drive's sources.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One mock compilation; the error names the first violating circuit and pair only, and the QPU station was not exercised. The wiring is read from the snapshot artifacts, which the QPU and the mock share at this snapshot.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "85c07f6f72e1de69815d892430730353f384e481d6d939959205cdccd738bc73"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept/raw/job.json",
+          "sha256": "7a244b2059b4ab8c3b8b7a5ca758ddfea746e44c2892767b5f1afd2f690068e3"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-mock-qet-ladder-accept-passive"
+      ],
+      "related_claims": [
+        "iqm-garnet-cc-prx-feedback-label-limit"
+      ]
+    },
+    {
+      "id": "iqm-garnet-qet-compensated-ladder-verdicts",
+      "statement": "On IQM Garnet (calibration set 7b30f37a; one job of 24 circuits x 1600 shots, passive reset, five packed probe-line-compatible pairs with cc_prx feedback, 6.5 credits), the preregistered all-pairs tests read: H1 information excess +0.073 with one-sided 95 percent bounds [-0.070, +0.216], unresolved, with per-pair values +0.005, +0.005, +0.186, -0.100 and +0.268 (between-pair spread 0.150 against per-pair shot noise 0.064 to 0.071); H2 channel floor margin -0.423 (upper bound -0.266), fails, the reference unitary floors 0.25 to 0.73 lying above the vacuum value and above the predicted 0.21 to 0.38; H4 mean window-phase magnitude 0.549 rad (lower bound 0.272), a coherent phase of Kingston's order over Garnet's 1.1 us readout-plus-feedback window. The cc_prx(2 phi*) rotation is present (raw pooled P(1) 0.0968 after a |1> source against sin^2 phi* = 0.100, 0.0089 after |0>); H3's readout-corrected angle band admitted 2 of 5 pairs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, one job, five pairs, t-bounds across pairs; energies are expectations of an encoded spin Hamiltonian. H3's band failures are attributed, with moderate confidence and no separating arm, to the |11> calibration arm's preparation error inflating the corrected angle. The garnet:mock acceptance job returns random bits and enters no endpoint.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/analysis.json",
+          "sha256": "5538b9d9a1052dcb03a031d65ad42230debdce210a08164b593b0683a1edd1c2"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/results.json",
+          "sha256": "e5863ec28bf04f3c2b63317c09b8d2dcb2e2658f136c0250af153fd5aa32f744"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "ba1b6cfd654f96fc08e3435eca7348471b790ab4f5c2f133d1dffc8134d457d7"
+        }
+      ],
+      "documents": [
+        "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/FINDINGS.md",
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-qet-compensated-ladder",
+        "iqm-garnet-mock-qet-ladder-accept-wired"
+      ],
+      "related_claims": [
+        "kingston-qet-scheduled-idle-coherent-phase",
+        "iqm-garnet-cc-prx-probe-line-limit",
+        "iqm-garnet-cc-prx-feedback-label-limit"
       ]
     },
     {

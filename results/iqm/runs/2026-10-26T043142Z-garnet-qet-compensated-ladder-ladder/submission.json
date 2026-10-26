@@ -1,0 +1,17 @@
+{
+ "approval": "8 credits, ~1700 shots (Recommended): mock first (free), then the QPU job, after own adversarial review, advisor and Codex gpt-daybreak-blue-latest review resolved; same command keeps approval across calibration and pair-choice rebuilds",
+ "body_sha256": "70e7cc5ea7878bfe261531372e67370c773cbb38dca4f79bfe490ee35e8b7263",
+ "cases_sha256": "3eff494269119187489e931f4d88699beae268cfc48179918b4095fdb98a58f7",
+ "credit_before": {
+  "currentBalance": "9.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 12.191,
+ "job": "ladder",
+ "job_id": "01a1767a-8993-7687-b1c3-e8097fb8b712",
+ "max_credits": 8.0,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-26T04:31:44Z"
+}
