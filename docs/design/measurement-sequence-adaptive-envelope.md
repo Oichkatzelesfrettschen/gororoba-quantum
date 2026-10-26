@@ -1,8 +1,8 @@
 # Measurement-sequence pinching: calibration-adaptive approval envelope
 
-Status: design v3. v1 and v2 each received an adversarial self-review, a Codex (gpt-daybreak-blue-latest) review and an
-advisor review (reports under the ignored `docs/local/reviews/`); v3 answers the v2 review's five P1 and eleven P2/P3
-findings (A to P). Nothing here has run. Every charge figure is the planner's, and every measurement names its record.
+Status: design v3.1. v1 and v2 each received an adversarial self-review, a Codex (gpt-daybreak-blue-latest) review and
+an advisor review (reports under the ignored `docs/local/reviews/`); v3 answers the v2 review's five P1 and eleven P2/P3
+findings (A to P), and v3.1 answers the scoped v3 re-check (B, C and E refuted, a new aggregate-cap P1). Nothing here has run. Every charge figure is the planner's, and every measurement names its record.
 
 ## Problem
 
@@ -42,17 +42,29 @@ every plan and its digest, and the envelope digest. A gate rebuilds the Target f
 `plan` and compares its QPY and manifest with the sent bytes byte for byte; a rebuild that differs fails the gate, which
 is also the falsifier of the snapshot serializer (Findings A and N).
 
-Repetition-delay refusals arrive after acceptance. The service accepted a 0 us job and failed it at execution with 1602
-(`docs/notes/ibm_heron_platform.md`, Heron r2 timing; `results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md`), so no
-synchronous refusal exists to trigger a fallback (Finding B). The fallback therefore runs in `--collect`: when the
-attempt-1 job, known by its retained job id, reaches the terminal state ERROR with error code 1602 or 8030, collect
-re-plans at 50 us on a fresh snapshot and sends attempt 2. Every other terminal state of attempt 1 (DONE, CANCELLED,
-any other error code, 1305, 8045) ends the envelope, and a further attempt needs the owner. The approval marker becomes
-per attempt: `approval-consumed-attempt-1.json` before the first call, `approval-consumed-attempt-2.json` (exclusive
-create, naming the attempt-1 job id and its error code) before the second. `_recovery_tags` adds the repetition delay,
-the attempt index and the envelope digest to the batch identity, so the two attempts can never share a recovery tag.
-Two kingston 20 us jobs have completed on this account (below), so the fallback guards a refusal the account has not
-yet met.
+No provider code separates a refused repetition delay from an overrun ceiling. The retained Kingston failures all
+report 1305 (`results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md`): the two 0 us jobs (`2026-10-18T201601.788510Z`,
+`201618.987131Z`) ran no circuit, reported zero `circuits_execution_time_ns` and billed 2 s under a 5 s ceiling, while
+the two 20 us jobs at 100,000 shots (`2026-10-18T213733.601097Z`, `213828.038774Z`) executed shots and billed 5 s
+against a 6 s ceiling, an overrun of about 6 s of shot loop. At 32768 shots the two 20 us controls completed with about
+1.02 s of circuit time each (job metrics under their `raw/`). The retained evidence therefore separates the two cases by
+execution, not by code, on two jobs each.
+
+The fallback runs in `--collect` on the known attempt-1 job id (Finding B). Collect sends attempt 2 at 50 us only when
+attempt 1 is in ERROR with code 1305, its job metrics report zero or absent `circuits_execution_time_ns`, and its final
+billed charge is at most 3 s (the 2.3 s planned job overhead rounded up); any other terminal state, including a 1305
+with executed circuit time, ends the envelope, and a further attempt needs the owner. A 1602 or 8030 on attempt 1 also
+triggers attempt 2, since both name an unsupported delay. The approval marker becomes per attempt:
+`approval-consumed-attempt-1.json` before the first call, `approval-consumed-attempt-2.json` (exclusive create, naming
+the attempt-1 job id, its error code, its circuit time and its billed charge) before the second. `_recovery_tags` adds
+the repetition delay, the attempt index and the envelope digest to the batch identity, so the two attempts never share
+a recovery tag.
+
+A stalled attempt bills, so the envelope binds an aggregate cap, `envelope_cap = ceiling_1 + ceiling_2`, in
+`envelope.json` (new P1 of the v3 re-check). Attempt 1 is admitted when the account's remaining seconds minus the reserve
+cover `envelope_cap`; attempt 2 is admitted only when the remaining seconds read at collect, minus the reserve, cover
+attempt 1's attributed final charge (its ceiling while the charge is unattributed) plus `ceiling_2`, and that sum stays at
+most `envelope_cap`.
 
 The per-batch eligibility gate stays, with `--max-pending` set by the owner in the case.
 
@@ -115,8 +127,13 @@ The erasure is measured, not assumed (Finding C). Two control members run on eve
 PUBs: `x; measure; reset; measure` and `measure; reset; measure`. Each control's second bit is the reset residual from a
 `|1>` and a `|0>` start on that qubit, read inside the same job and independent of circuit order; their readout-corrected
 difference bounds the history a terminal reset passes on, conservatively, since `init_qubits` resets again before the
-next shot. A qubit whose residual difference exceeds half its departure floor, judged at 3 standard errors with a
-Bonferroni split over the W qubits, is withheld and reported. A gate requires every member's compiled QPY to retain its
+next shot. The screen is an equivalence rule (Finding C): a qubit stays usable only if the upper end of its two-sided
+confidence interval on the absolute readout-corrected residual difference, at family alpha 0.05 Bonferroni-split over the
+W qubits, lies below 0.0094, half the 0.0188 bound floor; every other qubit is withheld and reported. The margin uses the
+fixed bound floor, not the departure floor, because the departure floor's in-job term moves with the residuals the
+screen protects. At 8192 shots and a 1% residual the difference's standard error is about 0.0016 before readout
+correction, so the bound passes a qubit whose residual difference is below about 0.004 at W = 32; the envelope dry run
+reports the readout-corrected standard error per qubit before the tier is chosen. A gate requires every member's compiled QPY to retain its
 terminal resets and controls, and a reset-deletion mutation fails it.
 
 The ro0 member's excited fraction stays a reported readout check against `prob_meas1_prep0`, not the history bound
@@ -136,18 +153,24 @@ The count rule fires when at least max(2, ceil(0.1 W)) informative qubits depart
 Null calibration (Finding D). A preregistered stochastic null replays the complete decision pipeline at the chosen W:
 binomial shot noise on every member and control, a common offset of +0.011 plus an independent per-qubit part of 0.0105,
 the same-run rms floor, the informative filter, execution-time withholding, the reset-control and crosstalk withholding,
-and both verdict directions of both the pooled test and the count rule. Its seed is a QRNG draw cited by index, its
+and both verdict directions of both the pooled test and the count rule. The reset screen is the equivalence rule
+above and the crosstalk screen the K-pattern dispersion test, each with its own shot noise in the replay. Its seed is a QRNG draw cited by index, its
 replicates are numpy-batched with the scalar bit-equality gate of `docs/runbooks/vectorized-fits.md`, and its result is
 a 95% upper bound on the family-wise false-fire rate, which must lie below 0.01. An exploratory unseeded run of the
 pooled test and count rule alone fired zero times in 20000 replicates per cell at W = 8 to 44 (95% upper bound 1.5e-4);
 the preregistered replay replaces it.
 
-Readout crosstalk (Finding E). Two pattern members prepare the selected qubits in alternating states, kept qubits at even
-rank in `|1>` and odd rank in `|0>` and the complement, and measure all of them. Against the all-`|0>` and all-`|1>`
-readout members, each qubit's marginal shift when its neighbors flip measures marginal-only crosstalk directly, which a
-correlation statistic misses when a neighbor's state is nearly deterministic. A qubit whose shift in either pattern
-exceeds 3 standard errors, with a Bonferroni split over 2W looks (two patterns per qubit), is withheld before the device
-test reads any measure-member outcome, so the device verdict's selection uses only the readout and pattern members.
+Readout crosstalk (Finding E). The measure members put each selected qubit's neighbors in mixed, shot-dependent states,
+and no fixed pattern pair covers that mixture: opposite-signed neighbor effects can cancel in two checkerboards and
+add in another configuration. K pattern members therefore prepare the selected qubits in states drawn independently
+and uniformly from a QRNG draw cited by index, one bit per qubit per pattern, and measure all of them. Each qubit's
+assignment error is then estimated over K random neighbor configurations, the same mixture the measure members present,
+and the readout correction of the measure members uses that pooled estimate. A qubit's configuration dependence is
+tested directly: its error count across the K patterns against the binomial dispersion its pooled rate predicts, a
+chi-square test with K - 1 degrees of freedom at family alpha 0.05 Bonferroni-split over the W qubits. A failing qubit is
+withheld before the device test reads any measure-member outcome, so the device verdict's selection uses only the
+readout and pattern members. K is the smallest value whose planner charge adds at most 10% to the family's, with a
+floor of 8; the envelope dry run prices K and records it, and the null calibration includes the pattern withholding.
 
 Execution-time eligibility (Finding H). The analysis reads every execution start's properties that `collect` records
 for every PUB that contributes to a qubit. A qubit stays usable only if it passes `rule`'s eligibility on each of them;
@@ -162,20 +185,22 @@ and the per-shot initialization, and filled in the table below. One client-side 
 `ceil(1.5 * planner charge)`, which a gate recomputes from the retained plan. The planner charge is an estimate, not
 billing: the service can split one job into sub-jobs and charge about 2 s of overhead each
 (`docs/notes/ibm_heron_platform.md`), and no submit-free evidence bounds that split, so the case states the ceiling as
-the bound and the planner value as the expectation (Finding O).
+the bound and the planner value as the expectation (Finding O). The case also states `envelope_cap`, the two
+attempts' summed ceilings, as the most the envelope can bill.
 
-| W | Planner charge at 20 us | Ceiling | Planner charge at 50 us | Largest tracked file | Run directory | Submit invocation |
-|---|---|---|---|---|---|---|
-| 16 | | | | | | |
-| 24 | | | | | | |
-| 32 | | | | | | |
+| W | Planner charge at 20 us | Ceiling 1 | Planner charge at 50 us | Ceiling 2 | envelope_cap | Largest tracked file | Run directory | Submit invocation |
+|---|---|---|---|---|---|---|---|---|
+| 16 | | | | | | | | |
+| 24 | | | | | | | | |
+| 32 | | | | | | | | |
 
 The backup instance reports 412 s remaining; the primorial-coherence branch's run (`results/live/2026-10-26T045124.175747Z`,
 job dbfdotnpc3tc739n8nm0, 23 s) shares the instance, and the branch that merges second regenerates its job inventory.
 
 ## Sequence
 
-1. One Codex pass on the dispositions of Findings A to E only, answered Fixed, Refuted or Boundary.
+1. One Codex pass on the v3.1 dispositions of B, C, E and the aggregate cap, answered Fixed, Refuted or Boundary; the
+   pieces A and D settled start implementation in parallel.
 2. Implementation: `envelope.json` and its schema, the canonical snapshot and plan digest, the equality and rebuild gate,
    `rule`, the end reset, the reset and crosstalk control members, the per-attempt approval markers and recovery tags,
    the collect-time fallback, execution-time eligibility, the stochastic null, the doctrine edit, and the stale
