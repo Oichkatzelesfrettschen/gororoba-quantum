@@ -121,19 +121,27 @@ def anchor_mean(data: dict[str, Any]) -> tuple[float, float]:
     return float((weight * z[anchor]).sum() / weight.sum()), float(1 / weight.sum())
 
 
+def evaluated(item: tuple[dict[str, Any], dict[str, Any]]) -> list[tuple[float, float, float]]:
+    """(observed X, its counting variance, predicted X) of every mesh of a subset under one frozen predictor."""
+    part, entry = item
+    light, dlight = models.static_light(part, np.array(entry["offsets"]), np.array(entry["free"]))
+    rows = fixed.mesh_rows(part, light, dlight)
+    models.require(all(len(r) == 1 and r[0][0] == "x" for r in rows), "a new mesh serves one X readout")
+    return [(r[0][1], r[0][3], r[0][2]) for r in rows]
+
+
+def admitted(keys: list[str], perturbed: list[int], seen: set[str]) -> tuple[list[int], list[int]]:
+    """The perturbed configurations an earlier run already served, and those the primary admits."""
+    return [c for c in perturbed if keys[c] in seen], [c for c in perturbed if keys[c] not in seen]
+
+
 def job_rows(data: dict[str, Any], keep: list[int], offsets: dict[str, Any]) -> list[dict[str, Any]]:
     """Observed and predicted X of the kept configurations, one row per mesh."""
     settings = np.flatnonzero(np.isin(data["configuration"], keep) & ~reading.anchors_of(data))
     part = reading.subset(data, settings)
-    predicted: dict[str, list[float]] = {}
-    observed: list[tuple[float, float]] = []
-    for name in PREDICTORS:
-        entry = offsets[name]
-        light, dlight = models.static_light(part, np.array(entry["offsets"]), np.array(entry["free"]))
-        rows = fixed.mesh_rows(part, light, dlight)
-        models.require(all(len(r) == 1 and r[0][0] == "x" for r in rows), "a new mesh serves one X readout")
-        predicted[name] = [r[0][2] for r in rows]
-        observed = [(r[0][1], r[0][3]) for r in rows]
+    results = ordered_map(evaluated, [(part, offsets[name]) for name in PREDICTORS], min_items=1)
+    predicted = {name: [row[2] for row in result] for name, result in zip(PREDICTORS, results, strict=True)}
+    observed = [(row[0], row[1]) for row in results[0]]
     return [
         {
             "mesh": list(part["keys"][i]),
@@ -217,11 +225,11 @@ def score(offsets_path: Path, confirmation_path: Path, references: list[Path], r
     names = [summary["job"] for summary in summaries]
     if any(name.startswith("job-05") for name in names):
         models.require(names[0] == "job-04", "a job-05 run needs job-04 first, whose duration sets its size")
-        admitted = job_05_iterations(summaries[0])
+        allowed = job_05_iterations(summaries[0])
         for summary in summaries[1:]:
             models.require(
-                admitted is not None and summary["job"] == f"job-05-i{admitted}",
-                f"job-04's duration {summaries[0]['duration']} admits job-05 variant {admitted}, not {summary['job']}",
+                allowed is not None and summary["job"] == f"job-05-i{allowed}",
+                f"job-04's duration {summaries[0]['duration']} admits job-05 variant {allowed}, not {summary['job']}",
             )
     datasets = ordered_map(loaded, [(path, summary["complete"]) for path, summary in zip(runs, summaries, strict=True)])
     jobs: list[dict[str, Any]] = []
@@ -234,8 +242,7 @@ def score(offsets_path: Path, confirmation_path: Path, references: list[Path], r
         keys = mesh_keys(data)
         anchor = reading.anchors_of(data)
         perturbed = sorted({int(c) for c in data["configuration"][~anchor]})
-        old = [c for c in perturbed if keys[c] in seen]
-        keep = [c for c in perturbed if keys[c] not in seen]
+        old, keep = admitted(keys, perturbed, seen)
         seen.update(keys)
         mean, _ = anchor_mean(data)
         z, v = reading.x_statistics(data)
@@ -262,21 +269,28 @@ def score(offsets_path: Path, confirmation_path: Path, references: list[Path], r
     labels = np.array([row["job"] for row in rows])
     observed = np.array([row["observed"] for row in rows])
     compilation = confirmation["explained_share"]["compilation_variance"]
-    counting = float(np.mean([row["counting_variance"] for row in rows])) if rows else float("nan")
-    ceiling_sq = compilation / (compilation + counting)
-    readings = {
-        LABELS[name]: primary(np.array([row[f"predicted_{name}"] for row in rows]), observed, labels, ceiling_sq)
-        for name in PREDICTORS
-    }
     steady = all(job["anchor_control"]["reading"] == "steady" for job in jobs if job["scored"])
     reference = confirmation["explained_share"]["share_of_ceiling"]
     held = confirmation["rows"]
-    pooled = primary(
-        np.concatenate([[row["predicted_exploration"] for row in rows], [row["predicted"] for row in held]]),
-        np.concatenate([observed, [row["observed"] for row in held]]),
-        np.concatenate([labels, ["held-out"] * len(held)]),
-        ceiling_sq,
-    )
+    # With no scored mesh the ceiling and every correlation are unavailable, and the record says so in place of NaN.
+    counting: float | None = None
+    ceiling_sq: float | None = None
+    unread = {"meshes": 0, "jobs": 0, "reading": "not read"}
+    readings = {LABELS[name]: unread for name in PREDICTORS}
+    pooled: dict[str, Any] = unread
+    if rows:
+        counting = float(np.mean([row["counting_variance"] for row in rows]))
+        ceiling_sq = compilation / (compilation + counting)
+        readings = {
+            LABELS[name]: primary(np.array([row[f"predicted_{name}"] for row in rows]), observed, labels, ceiling_sq)
+            for name in PREDICTORS
+        }
+        pooled = primary(
+            np.concatenate([[row["predicted_exploration"] for row in rows], [row["predicted"] for row in held]]),
+            np.concatenate([observed, [row["observed"] for row in held]]),
+            np.concatenate([labels, ["held-out"] * len(held)]),
+            ceiling_sq,
+        )
     return {
         "schema": "ascella-new-mesh-score-v1",
         "plan": "docs/state/plans/ascella-new-seed-meshes-case.json",

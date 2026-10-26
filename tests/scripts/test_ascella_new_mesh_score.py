@@ -23,6 +23,7 @@ JOB_02 = RUNS / "2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02"
 JOB_03 = RUNS / "2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03"
 
 
+@pytest.mark.audit
 def test_retained_runs_score_end_to_end(monkeypatch: pytest.MonkeyPatch) -> None:
     """Job-02 stands in for a new job against job-00; job-03 repeats every job-02 mesh and so scores nothing."""
     monkeypatch.setattr(score, "BASELINE_JOB", "job-00")
@@ -110,7 +111,8 @@ def test_job_05_size_follows_job_04_duration_alone(
         raise AssertionError(f"job-04 at {duration} s, complete {complete}, must admit {expected}")
 
 
-def test_a_truncated_run_is_partial(tmp_path: Path) -> None:
+@pytest.mark.audit
+def test_a_truncated_retained_run_is_partial(tmp_path: Path) -> None:
     run = tmp_path / "truncated"
     run.mkdir()
     (run / "cases.json").write_bytes((JOB_02 / "cases.json").read_bytes())
@@ -120,3 +122,36 @@ def test_a_truncated_run_is_partial(tmp_path: Path) -> None:
     summary = score.returned(run)
     if summary["complete"] or summary["returned_iterations"] != 40 or summary["requested_iterations"] != 64:
         raise AssertionError(f"a run returning 40 of 64 iterations must read partial: {summary}")
+
+
+@pytest.mark.audit
+def test_a_score_without_scored_meshes_replays() -> None:
+    """Job-02's meshes all repeat job-03's, so nothing scores, and the record still replays against itself."""
+    record = score.score(
+        EVIDENCE / "new-mesh-offsets.json", EVIDENCE / "fixed-mesh-confirmation.json", [JOB_00, JOB_03], [JOB_02]
+    )
+    if record["rows"] or record["outcome"] != "not read" or record["ceiling"]["squared"] is not None:
+        raise AssertionError("a score with no admitted mesh must read not read with no ceiling")
+    text = json.dumps(record, indent=1, sort_keys=True)
+    score.models.replay(json.loads(text), json.loads(text), "empty score")
+
+
+def test_admission_excludes_served_meshes_and_counts_a_repeat_once() -> None:
+    seen = {"m0", "m1"}
+    old, keep = score.admitted(["m0", "m2", "m3", "m1"], [1, 2, 3], seen)
+    if (old, keep) != ([3], [1, 2]):
+        raise AssertionError("served meshes leave the primary and new ones enter it")
+    seen.update(["m0", "m2", "m3", "m1"])
+    if score.admitted(["m2", "m4"], [0, 1], seen) != ([0], [1]):
+        raise AssertionError("a mesh a first new job served counts in that job alone")
+
+
+def test_a_run_without_counts_is_partial(tmp_path: Path) -> None:
+    run = tmp_path / "empty"
+    run.mkdir()
+    manifest = {"job": "job-04", "iterations": 2, "settings": [{"name": "a"}, {"name": "b"}]}
+    (run / "cases.json").write_text(json.dumps(manifest), encoding="utf-8")
+    (run / "results.json").write_text(json.dumps({"partial": True, "status": {"status": "error"}}), encoding="utf-8")
+    summary = score.returned(run)
+    if summary["complete"] or summary["returned_iterations"] != 0 or summary["status"] != "error":
+        raise AssertionError(f"a run returning no counts must read partial: {summary}")
