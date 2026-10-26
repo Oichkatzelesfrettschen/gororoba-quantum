@@ -287,13 +287,14 @@ def interpolated(family: Mapping[float, np.ndarray], grid: np.ndarray) -> np.nda
     return np.asarray(PchipInterpolator(np.asarray(ks), table, axis=0)(grid))
 
 
-def profile_interval(grid: np.ndarray, chi2: np.ndarray) -> dict[str, Any]:
+def profile_interval(grid: np.ndarray, chi2: np.ndarray, scale: float = 1.0) -> dict[str, Any]:
     """The minimum and the 95 percent profile interval, its limits interpolated linearly to the threshold crossing.
 
-    A limit that reaches the grid's end is censored: the interval extends past the grid and the estimate is not read.
+    scale multiplies the delta-chi2 threshold (the misfit scale factor). A limit that reaches the grid's end is
+    censored: the interval extends past the grid and the estimate is not read.
     """
     best = int(np.argmin(chi2))
-    level = chi2[best] + PROFILE_95
+    level = chi2[best] + PROFILE_95 * scale
     inside = np.flatnonzero(chi2 <= level)
     lo, hi = int(inside[0]), int(inside[-1])
 
@@ -357,17 +358,17 @@ def decide(measured: Mapping[str, Estimate], models: Mapping[str, Mapping[float,
     w_plain = np.linalg.inv(c_plain)
     residual = y_plain[None, :] - r_plain
     chi2_plain = np.einsum("ki,ij,kj->k", residual, w_plain, residual)
-    fit = profile_interval(grid, chi2_plain)
-    shape_p = float(stats.chi2.sf(fit["chi2_min"], len(nonzero) - 1))
+    df_plain = len(nonzero) - 1
+    scale_plain = max(1.0, float(chi2_plain.min()) / df_plain)
+    fit = profile_interval(grid, chi2_plain, scale_plain)
+    shape_p = float(stats.chi2.sf(fit["chi2_min"], df_plain))
     if fit["censored"] or not fit["contiguous"]:
         verdict = "withheld: the profile interval of kappa_P reaches the edge of the fitted range or splits"
-    elif shape_p < SHAPE_P:
-        verdict = "no single dose-relaxation rate describes the plain dose response"
     elif fit["lower"] > 1.0 or fit["upper"] < 1.0:
         verdict = "plain idle loss at kappa_P times the Target's rate, the interval excluding 1"
     else:
         verdict = "plain idle loss consistent with the Target's rate"
-    out["d2_plain_rate"] = fit | {"shape_p": shape_p, "verdict": verdict}
+    out["d2_plain_rate"] = fit | {"shape_p": shape_p, "scale_factor": scale_plain, "verdict": verdict}
 
     y_echo = np.asarray([mean[echo[d]] - mean[zero] for d in nonzero])
     r_echo = np.stack([model_mean[echo[d]] - model_mean[zero] for d in nonzero], axis=1)
@@ -384,16 +385,16 @@ def decide(measured: Mapping[str, Estimate], models: Mapping[str, Mapping[float,
     offsets = np.arange(-(grid.size - 1), grid.size)
     profile = np.asarray([np.diagonal(joint, offset=-o).min() for o in offsets])
     delta = offsets * FIT_STEP
-    difference = profile_interval(delta, profile)
     i, j = np.unravel_index(int(np.argmin(joint)), joint.shape)
-    joint_p = float(stats.chi2.sf(float(joint[i, j]), 2 * k - 2))
-    kappa_p = profile_interval(grid, joint.min(axis=1))
-    kappa_e = profile_interval(grid, joint.min(axis=0))
+    df_joint = 2 * k - 2
+    joint_p = float(stats.chi2.sf(float(joint[i, j]), df_joint))
+    scale_joint = max(1.0, float(joint[i, j]) / df_joint)
+    difference = profile_interval(delta, profile, scale_joint)
+    kappa_p = profile_interval(grid, joint.min(axis=1), scale_joint)
+    kappa_e = profile_interval(grid, joint.min(axis=0), scale_joint)
     supported = not any(x["censored"] or not x["contiguous"] for x in (kappa_p, kappa_e, difference))
     if not supported:
         verdict = "withheld: a profile interval of kappa_P, kappa_E or their difference reaches the fitted range's edge"
-    elif joint_p < SHAPE_P:
-        verdict = "no pair of dose-relaxation rates describes the plain and echo dose responses"
     elif difference["lower"] > 0:
         verdict = "the Hahn echo removes idle loss beyond the Target model: quasi-static dephasing or static detuning"
     elif difference["upper"] < 0:
@@ -405,6 +406,7 @@ def decide(measured: Mapping[str, Estimate], models: Mapping[str, Mapping[float,
         "kappa_e": kappa_e,
         "delta": difference,
         "joint_shape_p": joint_p,
+        "scale_factor": scale_joint,
         "minimum_effect": MIN_EFFECT,
         "verdict": verdict,
     }
@@ -536,7 +538,12 @@ def retry_check(run_dir: Path) -> dict[str, Any]:
 
 
 def synthetic_sweep(
-    kappa_p: float, kappa_e: float, replicas: int = 6, sigma: float = 0.006, wobble: float = 0.0
+    kappa_p: float,
+    kappa_e: float,
+    replicas: int = 6,
+    sigma: float = 0.006,
+    wobble: float = 0.0,
+    gaussian: float = 0.0,
 ) -> tuple[dict[str, Estimate], dict[str, dict[float, np.ndarray]]]:
     """Measured estimates at the given true rates and their exponential model family, for the self-test."""
     amplitude = np.linspace(0.17, 0.23, replicas)
@@ -556,8 +563,11 @@ def synthetic_sweep(
             if "echo" in name and not d:
                 continue
             models[name] = {s: curve(d, s, tau) for s in scales} if d else {1.0: curve(0, 1.0, tau)}
-            shift = wobble * math.sin(d / 1500.0) if "echo" not in name else 0.0
-            measured[name] = (curve(d, k, tau) + shift, sigma**2 * np.eye(replicas))
+            plain = "echo" not in name
+            shift = wobble * math.sin(d / 1500.0) if plain else 0.0
+            dephased = math.exp(-((gaussian * d / 14000.0) ** 2)) if plain else 1.0
+            value = amplitude * math.exp(-k * d / tau) * dephased + floor
+            measured[name] = (value + shift, sigma**2 * np.eye(replicas))
     return measured, models
 
 
@@ -577,8 +587,11 @@ def self_test() -> str:
     common = decide(*synthetic_sweep(1.5, 1.5))
     require(common["d2_plain_rate"]["lower"] > 1.0, f"a common rate 1.5 reads {common['d2_plain_rate']}")
     require(common["d3_echo_refocusing"]["verdict"].startswith("unresolved"), f"{common['d3_echo_refocusing']}")
-    wobbly = decide(*synthetic_sweep(1.0, 1.0, wobble=0.05))
-    require(wobbly["d2_plain_rate"]["verdict"].startswith("no single"), f"an oscillating plain arm reads {wobbly}")
+    wobbly = decide(*synthetic_sweep(1.0, 1.0, wobble=0.05))["d2_plain_rate"]
+    require(wobbly["scale_factor"] > 5.0 and wobbly["shape_p"] < SHAPE_P, f"an oscillating plain arm reads {wobbly}")
+    # Out of family: quasi-static dephasing gives the plain arm a Gaussian factor the exponential family lacks.
+    gaussian = decide(*synthetic_sweep(1.0, 1.0, gaussian=math.sqrt(0.45 * 14000 / 9000), sigma=0.011, replicas=19))
+    require(gaussian["d3_echo_refocusing"]["verdict"].startswith("the Hahn echo"), f"{gaussian['d3_echo_refocusing']}")
     measured, models = synthetic_sweep(1.0, 1.0)
     flat = {
         name: (np.full_like(vector, float(measured["n21_orbit_window_dose_d0_feedback_contrast"][0].mean())), cov)
@@ -589,8 +602,8 @@ def self_test() -> str:
     require(beyond["d2_plain_rate"]["verdict"].startswith("withheld"), f"kappa_P 7 reads {beyond['d2_plain_rate']}")
     require(beyond["d3_echo_refocusing"]["verdict"].startswith("withheld"), f"{beyond['d3_echo_refocusing']}")
     return (
-        "n21 dose decisions: Target-rate, refocused (1.9 against 1.2), common-rate, oscillating, flat and "
-        "beyond-range sweeps decide as stated"
+        "n21 dose decisions: Target-rate, refocused (1.9 against 1.2), common-rate, oscillating, Gaussian-dephased, "
+        "flat and beyond-range sweeps decide as stated"
     )
 
 

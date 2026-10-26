@@ -109,18 +109,25 @@ an error common to them moves the fitted rates, and a per-qubit error outside th
 - **D2, plain rate.** kappa_P fits the six pooled plain responses, measured(d) - measured(0), by generalized least
   squares against the replica-mean model family with their full covariance (the shared dose-0 arm included), with
   a 95 percent profile interval whose limits interpolate the threshold crossing. A dose-independent offset cancels in every response, and an error common to the
-  Target's T1 and T2 values moves kappa_P rather than failing a point test. A minimum chi2 beyond p = 0.01 on five
-  degrees of freedom reads as a dose response no single rate describes, and an interval that reaches the fitted
-  range 0.25 to 6 or splits is withheld; otherwise an interval that excludes 1 reads as plain idle loss at kappa_P
-  times the Target's rate.
+  Target's T1 and T2 values moves kappa_P rather than failing a point test. The one-rate family need not hold
+  exactly (quasi-static dephasing adds a Gaussian factor in dose), so when the minimum chi2 exceeds its five
+  degrees of freedom the interval's delta-chi2 threshold is multiplied by chi2_min / 5, the misfit scale factor,
+  and the shape p-value is reported beside it. An interval that reaches the fitted range 0.25 to 6 or splits is
+  withheld; otherwise an interval that excludes 1 reads as plain idle loss at kappa_P times the Target's rate.
 - **D3, echo refocusing.** kappa_P and kappa_E fit the six plain and the six echo responses (echo(d) - plain(0))
-  jointly, under the same shape rule on ten degrees of freedom, with a 95 percent profile interval of delta =
+  jointly, under the same scale-factor rule on ten degrees of freedom, with a 95 percent profile interval of delta =
   kappa_P - kappa_E; the verdict is withheld when the profile of kappa_P, kappa_E or delta reaches the fitted
   range's edge. A lower bound above zero reads as idle loss the Hahn echo removes beyond the Target model:
   quasi-static dephasing or static detuning, which this design does not separate. An upper bound below zero reads
   as an echo that costs more than it refocuses. A per-replica static detuning of either sign raises each replica's
   plain loss in second order and so enters delta as well.
 - **Per replica.** Each replica's kappa_P,r and its interval are reported, not decided.
+
+The self-test (`n21_dose_decisions.py --self-test`) decides synthetic sweeps drawn inside and outside the fitted
+family: Target rates (unresolved), kappa 1.9 against 1.2 (refocusing), a common rate 1.5 (unresolved), an
+oscillating plain arm (scale factor above 5), a flat sweep (no idle response), a rate beyond the fitted range
+(withheld), and a plain arm with a Gaussian dephasing factor and an echo arm on the Target model at 19 replicas
+and per-replica sigma 0.011, which reads as refocusing with the scale factor widening its interval.
 
 **Power.** With a conservative contract variance (scores in [-1, 1], 97 percent of shots kept, replicas
 independent) and the dry run's model shape, the standard error of delta is 0.054 at the floor of 4 replicas and

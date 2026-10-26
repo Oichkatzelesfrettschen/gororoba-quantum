@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -212,3 +213,76 @@ def test_retry_check_admits_one_retry_after_an_unexecuted_1305(tmp_path: Path) -
         (tmp_path / "collect.json").write_text(json.dumps([{"jobs": {"j": job}}]))
         with pytest.raises(ValueError):
             dose.retry_check(tmp_path)
+
+
+def _sweep_run(tmp_path: Path) -> None:
+    """A three-dose run directory: record, collect.json, shot-ordered raw registers and idle-replay.json."""
+    doses = [0, 3500, 7000]
+    registers = [["g0_r0_phase", "g0_r0_herald"], ["g0_r1_phase", "g0_r1_herald"]]
+    score = [0.0, 1.0, 0.0, -1.0] * 2
+    contracts: list[dict[str, Any]] = []
+    pubs: list[dict[str, Any]] = []
+    laws: dict[str, list[list[float]]] = {}
+    model_base: dict[str, list[list[float]]] = {}
+    scaled: dict[str, dict[str, list[list[float]]]] = {repr(s): {} for s in dose.DOSE_SCALES}
+    raw = tmp_path / "raw" / "job"
+    raw.mkdir(parents=True)
+    index: dict[str, str] = {}
+
+    def law(p1: float) -> list[float]:
+        # Phase outcome 1 with probability p1, 3 otherwise, herald 0 with probability 0.98.
+        head = [0.0, p1, 0.0, 1.0 - p1]
+        return [0.98 * x for x in head] + [0.02 * x for x in head]
+
+    for d in doses:
+        for echo in (False, True):
+            if echo and not d:
+                continue
+            name = f"n21_orbit_window_dose{'_echo' if echo else ''}_d{d}"
+            members = [f"{name}_feedback", f"{name}_no_feedback"]
+            contracts.append(
+                {
+                    "name": f"{name}_feedback_contrast",
+                    "terms": [
+                        {"member": members[0], "sign": 1, "values": score},
+                        {"member": members[1], "sign": -1, "values": score},
+                    ],
+                }
+            )
+            tau = 14000.0 if echo else 9000.0
+            for k, member in enumerate(members):
+                p1 = 0.5 + (0.1 if k == 0 else 0.0) * math.exp(-d / tau)
+                model_base[member] = [law(p1), law(p1)]
+                for s in dose.DOSE_SCALES:
+                    scaled[repr(s)][member] = [law(0.5 + (0.1 if k == 0 else 0.0) * math.exp(-s * d / tau))] * 2
+                shots = 2048
+                # Outcome 1 spread evenly through the shots, so the blocks carry no drift.
+                phase = ["01" if math.floor((s + 1) * p1) > math.floor(s * p1) else "11" for s in range(shots)]
+                herald = ["1" if s % 50 == 0 else "0" for s in range(shots)]
+                pub = f"pub_{len(pubs):02d}"
+                pubs.append({"name": pub, "components": [{"member": member, "registers_by_replica": registers}]})
+                regs = {n: {"bitstrings": phase if n.endswith("phase") else herald} for pair in registers for n in pair}
+                payload = json.dumps({"pub_name": pub, "registers": regs}).encode()
+                (raw / f"{pub}.json").write_bytes(payload)
+                index[f"{pub}.json"] = hashlib.sha256(payload).hexdigest()
+                counts = [0.0] * 8
+                for ph, he in zip(phase, herald, strict=True):
+                    counts[int(he + ph, 2)] += 1
+                laws[member] = [counts, list(counts)]
+    (raw / "index.json").write_text(json.dumps({"files": index}))
+    (tmp_path / "record.json").write_text(
+        json.dumps({"observable_contracts": contracts, "execution_pubs": pubs, "shots": 2048})
+    )
+    (tmp_path / "collect.json").write_text(json.dumps([{"jobs": {"job": {}}}, {"measured": laws}]))
+    replay = {"exact_laws": {"idle_padded": model_base}, "dose_scaled_exact_laws": scaled}
+    (tmp_path / "idle-replay.json").write_text(json.dumps(replay))
+
+
+def test_analyze_runs_end_to_end_and_serializes(tmp_path: Path) -> None:
+    _sweep_run(tmp_path)
+    out = json.loads(json.dumps(dose.analyze(tmp_path)))
+    for key in ("d1_idle_response", "d2_plain_rate", "d3_echo_refocusing", "kappa_p_per_replica", "drift"):
+        if key not in out:
+            raise AssertionError(f"analyze omits {key}")
+    if out["replicas"] != 2 or not out["d1_idle_response"]["holds"]:
+        raise AssertionError(f"the decaying fixture reads {out['d1_idle_response']}")
