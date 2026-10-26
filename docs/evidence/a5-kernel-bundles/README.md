@@ -5,13 +5,16 @@ This evidence directory executes the
 used to represent the real annihilator kernel, fixes the action of the canonical complex structure, computes the
 constant kernel-pencil symmetry algebra and a visible twelve-component subgroup, and gives an exact finite family of
 rational kernel frames covering all seven pieces of nullity at least twelve. It also identifies the connected compact
-stabilizer and its irreducible kernel representation on both nullity-sixteen components. An exhaustive component
-census, a reduced transition atlas, the remaining unit-section topology, and characteristic classes remain open.
+stabilizer and its irreducible kernel representation on both nullity-sixteen components, reduces those two bundles to
+the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and quaternionic classes. An exhaustive
+component census, the non-homogeneous pieces' reduced transitions and topology, and their characteristic classes
+remain open.
 
 Every computation uses rational or Gaussian-rational arithmetic. [`result.json`](result.json) is the output of
 [`kernel_symmetry.py`](kernel_symmetry.py) `--out`. [`frames-result.json`](frames-result.json) is the output of
 [`kernel_frames.py`](kernel_frames.py) `--out`. `stabilizer-result.json` is the output of
-`stabilizer_representation.py --out`. The focused contracts and mutation controls run without random input.
+`stabilizer_representation.py --out`. `nullity-sixteen-bundle-result.json` is the output of
+`nullity_sixteen_bundle.py --out`. The focused contracts and mutation controls run without random input.
 
 ## Conventions
 
@@ -97,7 +100,101 @@ Killing-form mismatch, a different decomposition on the two components, an isoty
 projectors, a failed diagonal half-turn, or a planted moving direction that survived. None occurred. The mutation
 replaces one stabilizer basis vector with a compact direction that moves `p`, and both component checks reject it.
 The result determines the connected compact homogeneous representation. The disconnected stabilizer inside the
-still-unclassified full component group and the characteristic map of the resulting homogeneous bundle remain open.
+still-unclassified full component group remains open. The next section uses the connected representation to compute
+the ordinary bundle's characteristic and K-theory classes.
+
+## The complex bundle has a nonzero order-two K-class
+
+The connected compact orbit can be written as
+
+`(G_2 x U(1))/U(2) = G_2/SU(2) = V_2(R^7)`.
+
+The determinant sequence `SU(2) -> U(2) -> U(1)` makes the inclusion of `G_2` a reduction of the homogeneous
+principal `U(2)` bundle to the source-established principal bundle
+`SU(2) -> G_2 -> V_2(R^7)`. Consequently, the central weights in `V_(n,m)` retain equivariant information but do not
+change the ordinary vector bundle. If `xi=G_2 x_(SU(2)) C^2` denotes the standard complex doublet, the fiber
+decomposition above gives, on each of `N_+` and `N_-`,
+
+`E_C = C^2 + 3 xi`.
+
+The seven sedenion complement charts supply the transition representation
+
+`diag(I_2,Q,Q,Q)`, `Q in SU(2)`.
+
+The exact replay checks the real and complex quaternion representations on all sixteen products of quaternion basis
+elements, a rational unit-quaternion inverse and cocycle, unitarity, determinant one, and two preserved
+anticommuting right-quaternion structures. The structure group therefore reduces to the diagonal `SU(2)=Sp(1)` in
+`Sp(4)` and `SU(8)`. The source-backed sedenion atlas supplies the seven base charts; the replay derives the displayed
+fiber representation from the committed stabilizer decomposition instead of constructing another kernel atlas.
+
+The sphere fibration `S^5 -> V_2(R^7)=S(TS^6) -> S^6` gives a four-cell complex in degrees 0, 5, 6, and 11. The
+degree-six cellular boundary is the Euler number `chi(S^6)=2`; every other cellular boundary is zero by degree. The
+resulting groups are
+
+```text
+H_0=Z, H_5=Z/2, H_11=Z,
+H^0=Z, H^6=Z/2, H^11=Z.
+```
+
+The base is simply connected, and every positive-degree cup product vanishes by degree. This cellular calculation
+also gives `K^0=Z+(Z/2)` and `K^1=Z` through the complex K-theory Atiyah-Hirzebruch spectral sequence; degree and
+torsion leave every differential zero.
+
+The homogeneous calculation identifies which class `xi` occupies. Put `t=[V_1]` in
+`R(SU(2))=Z[t]`. The point stabilizer fixes the three imaginary directions of its quaternion subalgebra and acts on
+the four-dimensional complement as the real quaternionic standard module. The complexified restrictions of the two
+fundamental `G_2` representations are therefore
+
+```text
+7  -> 3 V_0 + 2 V_1 = 3+2t,
+14 -> 3 V_0 + 4 V_1 + V_2 = t^2+4t+2.
+```
+
+For `x=t-2`, the two augmentation relations are `2x` and `x^2+8x`. The Hodgkin Tor spectral sequence applies because
+`G_2` is simply connected and `SU(2)` is connected. Its Koszul complex has
+
+```text
+Tor_0 = Z[x]/(2x,x^2) = Z + (Z/2)x,
+Tor_1 = Z,
+Tor_2 = 0.
+```
+
+For completeness, every first syzygy is a polynomial multiple of `(-(x+8),2)`, while the second Koszul boundary is
+`x (-(x+8),2)`; hence `Tor_1=Z[x]/(x)=Z`. The spectral sequence has only columns zero and one, so it collapses without
+an extension ambiguity. The associated-bundle map sends `x` to `[xi]-2`, proving
+
+`reduced K^0(V_2(R^7)) = (Z/2){[xi]-2}`.
+
+This order-two class is invisible to ordinary Chern classes. A line summand is trivial because `H^2=0`. The rank-two
+bundle `xi` has `c_1=c_2=0` because `H^2=H^4=0`, and `c_j=0` for `j>2` by rank. The Whitney formula then gives
+`c(E_C)=1`, in particular `c_3 mod 2=w_6=0`. The stable and actual conclusions are nevertheless:
+
+| Connected-stabilizer summand | Ordinary bundle per copy | `c_3 mod 2` | Reduced K-class per copy | Complex class |
+| --- | --- | ---: | --- | --- |
+| `V_(0,-4)` | `C` | 0 | 0 | trivial |
+| `2 V_(1,-3)` | two copies of `xi` | 0 | `x` each | stably and actually nontrivial per copy |
+| `V_(0,-2)` | `C` | 0 | 0 | trivial |
+| `V_(1,-1)` | `xi` | 0 | `x` | stably and actually nontrivial |
+| Total `E_C` | `C^2+3xi` | 0 | `3x=x` | stably and actually nontrivial |
+
+The real and quaternionic answers differ. At `(a,b)` the four vectors `(1,a,b,ab)` globally frame the quaternion
+subalgebra `H`, so the octonion splitting `O=H+H^perp` gives
+
+`xi_R + R^4 = R^8` and `E_R + R^12 = R^28`.
+
+The real rank of `E_R` is 16, greater than the base dimension 11, so stable-range cancellation makes `E_R` actually
+trivial. This argument does not decide whether the individual real four-plane `xi_R` is actually trivial. Pairing
+the two trivial complex lines gives a trivial quaternionic line, so `E_H=H+3xi_H`; forgetting quaternionic structure
+recovers the nonzero complex class `x`, which proves that the quaternionic bundle is stably and actually nontrivial.
+All Stiefel-Whitney and Pontryagin classes of the total real bundle vanish, and its Euler class lies in the zero group
+`H^16`.
+
+The falsifier was a restricted fiber other than two trivial lines plus three standard doublets, a transition outside
+the diagonal `SU(2)`, a failed inverse or cocycle, a cellular boundary other than two, a K-theory quotient in which
+`x` vanished, a nonzero `c_3`, or a failure of the real stable complement. None occurred. Three mutations remove one
+doublet, replace the Euler boundary by one, or replace `3+2t` by the rank-preserving false branching `5+t`; the replay
+rejects all three. The result classifies the ordinary bundles under the connected homogeneous action. It makes no
+claim about an equivariant extension to the still-unclassified disconnected stabilizer.
 
 ## Principal-Pfaffian frames cover `N_+` and `N_-`
 
@@ -371,9 +468,11 @@ The exact solve establishes the identity-component Lie algebra of constant linea
 dimensions, and twelve distinct visible components. The order-eight and order-ten Pfaffian charts establish
 closed-form frames on all seven pieces of nullity at least twelve. On each `N_+` and `N_-` unit section it also
 identifies the connected compact point stabilizer as `U(2)` and decomposes the complex rank-eight fiber into five
-irreducible summands. The computation has not proved that the visible components exhaust the group and has not
-classified the disconnected `N_+-` stabilizers, point-dependent kernel transports, a second anticommuting complex
-structure, the non-homogeneous pieces' K-orbit moduli, transition functions, or bundle invariants. The compact
+irreducible summands. The `SU(2)` reduction then classifies the ordinary real, complex, and quaternionic bundles on
+both `N_+` and `N_-`, including the order-two complex K-class that their zero Chern classes do not detect. The
+computation has not proved that the visible components exhaust the group and has not classified an equivariant
+extension under the disconnected `N_+-` stabilizers, the actual real type of the individual four-plane `xi_R`, or the
+non-homogeneous pieces' K-orbit moduli, reduced transition functions, topology, and bundle invariants. The compact
 symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit
 labels do not make those kernel bundles homogeneous under the constant symmetry group.
 
@@ -398,4 +497,9 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/stabilizer_representation.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/stabilizer_representation.py \
     --out docs/evidence/a5-kernel-bundles/stabilizer-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_nullity_sixteen_bundle.py
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py \
+    --out docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json
 ```
