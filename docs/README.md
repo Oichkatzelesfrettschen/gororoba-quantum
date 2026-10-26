@@ -236,6 +236,7 @@ differs from it only in the `cd_core.py` digest.
 | [evidence/hypercomplex-operators/README.md](evidence/hypercomplex-operators/README.md) | exact replay, probability explorer and distribution inventory |
 | [design/et-rows.md](design/et-rows.md) | ET-row device experiment |
 | [design/hybrid-shor.md](design/hybrid-shor.md) | hybrid Shor architecture for IBM Heron r2 |
+| [design/n21-orbit-window-dose-envelope.md](design/n21-orbit-window-dose-envelope.md) | calibration-adaptive approval envelope, bounds and decisions D1-D3 of the N=21 orbit window-dose sweep |
 | [design/provider-access-requests.md](design/provider-access-requests.md) | access-request drafts for Quantinuum, D-Wave, Classiq, OQC, Rigetti, SuperQ and Kipu, with the review checklist |
 | [design/factoring-notes.md](design/factoring-notes.md) | factoring and the Cayley-Dickson ladder |
 | [design/numpy-validation.md](design/numpy-validation.md) | numerical environment validation |
