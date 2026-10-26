@@ -37,7 +37,6 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import ascella_compilation_reading as reading  # noqa: E402
-import ascella_configuration_holdout as holdout  # noqa: E402
 import ascella_fixed_mesh_error as fixed  # noqa: E402
 import ascella_physical_models as models  # noqa: E402
 
@@ -59,19 +58,18 @@ def predictions(train: dict[str, Any], held: dict[str, Any]) -> tuple[list[dict[
     offsets, covariance = fixed.fit((FAMILY, train))
     _, free = fixed.free_widths(train, FAMILY)
     light, dlight = models.static_light(held, offsets, free)
-    rows = []
-    for k in range(len(held["keys"])):
-        entries = holdout.left_out_rows(held, light, dlight, k)
-        models.require(len(entries) == 1 and entries[0][0] == "x", "a held-out mesh serves one X readout")
-        _, _, model, _, gradient = entries[0]
-        rows.append(
-            {
-                "mesh": list(held["keys"][k]),
-                "predicted": model,
-                "prediction_variance": float(gradient @ covariance @ gradient),
-            }
-        )
-    return rows, (light, dlight, offsets, covariance)
+    entries = fixed.mesh_rows(held, light, dlight)
+    models.require(all(len(e) == 1 and e[0][0] == "x" for e in entries), "a held-out mesh serves one X readout")
+    gradients = np.array([e[0][4] for e in entries])
+    rows = [
+        {
+            "mesh": list(key),
+            "predicted": e[0][2],
+            "prediction_variance": float(gradient @ covariance @ gradient),
+        }
+        for key, e, gradient in zip(held["keys"], entries, gradients, strict=True)
+    ]
+    return rows, (light, dlight, gradients, covariance)
 
 
 def freeze(paths: list[Path]) -> dict[str, Any]:
@@ -104,12 +102,11 @@ def ceiling(error: dict[str, Any]) -> dict[str, float]:
 
 def score(paths: list[Path], frozen: dict[str, Any], error: dict[str, Any]) -> dict[str, Any]:
     train, _, held = sets(paths)
-    rows, (light, dlight, _, covariance) = predictions(train, held)
+    rows, (light, dlight, gradients, covariance) = predictions(train, held)
     models.replay(
         json.loads(json.dumps(rows)), frozen["held_out"], "the frozen predictions against the recomputed ones"
     )
     full = reading.mesh_score(FAMILY, held, light, dlight, covariance)
-    gradients = np.array([holdout.left_out_rows(held, light, dlight, k)[0][4] for k in range(len(held["keys"]))])
     predicted = np.array([row["predicted"] for row in frozen["held_out"]])
     observed = np.array([row["observed"] for row in full["rows"]])
     meshes = len(predicted)

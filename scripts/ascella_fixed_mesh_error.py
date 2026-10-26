@@ -108,23 +108,35 @@ def fit(item: tuple[str, dict[str, Any]]) -> tuple[np.ndarray, np.ndarray]:
     return offsets, np.linalg.inv(hessian)
 
 
+class MeshRows:
+    """One held-out mesh's scored readout rows of holdout.left_out_rows, each followed by the counting variance of its
+    statistic at the predicted block counts, which no held-out block split enters."""
+
+    def __init__(self, held: dict[str, Any], light: np.ndarray, dlight: np.ndarray) -> None:
+        self.held, self.light, self.dlight = held, light, dlight
+        total = held["block"].sum(axis=1)
+        self.expected = models.setting_probabilities(held, light) * total[:, None]
+
+    def __call__(self, mesh: int) -> list[tuple[Any, ...]]:
+        settings = self.held["record"]["manifest"]["settings"]
+        out = []
+        for row in holdout.left_out_rows(self.held, self.light, self.dlight, mesh):
+            chosen = [i for i in np.flatnonzero(self.held["configuration"] == mesh) if settings[i]["readout"] == row[0]]
+            out.append((*row, float(geometry.statistic(self.expected[chosen].sum(axis=0), row[0])[1])))
+        return out
+
+
+def mesh_rows(held: dict[str, Any], light: np.ndarray, dlight: np.ndarray) -> list[list[tuple[Any, ...]]]:
+    """MeshRows of every held-out mesh, in mesh order."""
+    return ordered_map(MeshRows(held, light, dlight), list(range(len(held["keys"]))), min_items=1)
+
+
 def power(name: str, train: dict[str, Any], held: dict[str, Any], offsets: np.ndarray, covariance: np.ndarray) -> dict:
     """Prediction-to-counting variance ratios over the held-out meshes, the counting variance taken at the
     predicted block counts so no held-out block split enters."""
     _, free = free_widths(train, name)
     light, dlight = models.static_light(held, offsets, free)
-    total = held["block"].sum(axis=1)
-    expected = models.setting_probabilities(held, light) * total[:, None]
-    ratios = []
-    for k in range(len(held["keys"])):
-        for readout, _, _, _, gradient in holdout.left_out_rows(held, light, dlight, k):
-            chosen = [
-                i
-                for i in np.flatnonzero(held["configuration"] == k)
-                if held["record"]["manifest"]["settings"][i]["readout"] == readout
-            ]
-            variance = geometry.statistic(expected[chosen].sum(axis=0), readout)[1]
-            ratios.append(float(gradient @ covariance @ gradient) / float(variance))
+    ratios = [float(row[4] @ covariance @ row[4]) / row[5] for rows in mesh_rows(held, light, dlight) for row in rows]
     median = float(np.median(ratios))
     return {
         "median_variance_ratio": median,
@@ -209,9 +221,7 @@ def held_out_reading(
     _, free = free_widths(train, name)
     light, dlight = models.static_light(held, offsets, free)
     score = reading.mesh_score(name, held, light, dlight, covariance)
-    gradients = np.array(
-        [row[4] for k in range(len(held["keys"])) for row in holdout.left_out_rows(held, light, dlight, k)]
-    )
+    gradients = np.array([row[4] for rows in mesh_rows(held, light, dlight) for row in rows])
     predicted = np.array([row["predicted"] for row in score["rows"]])
     observed = np.array([row["observed"] for row in score["rows"]])
     return {
