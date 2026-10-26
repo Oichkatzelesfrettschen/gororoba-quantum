@@ -404,6 +404,16 @@ stay as written; the gate guards credits, and a chip in the held state returns a
 chip is a new case, job-01, with its own compilation seeds and written case, and a watcher that sees the record
 change only reports it.
 
+**Result of job-00.** Job `55479252-d907-45ac-b1e1-84f19d21a131`, submitted 2026-10-26 02:54:50 UTC under the anchor
+gate and retained in
+[results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00](../../results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/),
+completed in 292 s and charged 2.2 credits. Every iteration returned 0 three-click samples and reported its
+`max_shots` of 1,200,000. The preregistered verdict is `inconclusive` (no accepted event, so neither the pooled
+fidelity nor the bound is defined), and the record-state class is `degraded-as-recorded`: the chip was in the state the
+held record describes, and the rehearsal waits for a recovered chip as job-01. Registry claim
+`qd-belenos-teleportation-rehearsal-job-00` cites the run; gate `core-teleportation-rehearsal-job-00-replay`
+re-derives both analyses.
+
 ## Secondary analyses of job-00
 
 `scripts/qd_rehearsal_secondary.py RUN` writes `RUN/secondary-analysis.json`. Its three analyses are fixed here

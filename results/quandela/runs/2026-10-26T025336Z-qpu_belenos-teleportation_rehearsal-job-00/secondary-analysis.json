@@ -1,0 +1,148 @@
+{
+ "cd_lens": {
+  "controls": 999,
+  "dimensions": {
+   "128": {
+    "status": "an input has no event inside this dimension"
+   },
+   "256": {
+    "status": "an input has no event inside this dimension"
+   },
+   "64": {
+    "status": "an input has no event inside this dimension"
+   }
+  },
+  "flag": "no algebra-specific separation",
+  "label": "exploratory; outside the verdict and the evidence registry",
+  "rule": "flag when the percentile is at or below 0.01 in every dimension",
+  "seed": 64095
+ },
+ "design": "docs/design/ascella-belenos-entanglement-teleportation.md",
+ "in_situ_fit": {
+  "categories": [
+   "correct",
+   "wrong",
+   "excess",
+   "outside",
+   "herald",
+   "receiver",
+   "pattern"
+  ],
+  "counts": [
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "grid": {
+   "g2": [
+    0.0,
+    0.02,
+    0.04,
+    0.06,
+    0.08,
+    0.1,
+    0.12,
+    0.14,
+    0.16,
+    0.18,
+    0.2,
+    0.22,
+    0.24
+   ],
+   "hom": [
+    0.7,
+    0.72,
+    0.74,
+    0.76,
+    0.78,
+    0.8,
+    0.82,
+    0.84,
+    0.86,
+    0.88,
+    0.9,
+    0.92,
+    0.94,
+    0.96,
+    0.98
+   ],
+   "transmittance": [
+    0.0001,
+    0.00017782794100389227,
+    0.00031622776601683794,
+    0.0005623413251903491,
+    0.001,
+    0.0017782794100389228,
+    0.0031622776601683794,
+    0.005623413251903491,
+    0.01,
+    0.01778279410038923,
+    0.03162277660168379,
+    0.05623413251903491,
+    0.1
+   ]
+  },
+  "status": "0 three-click samples, below the 100 the fit needs"
+ },
+ "record_state": {
+  "counted_iterations": 6,
+  "partial": false,
+  "requested_samples": 5400,
+  "returned_samples": 0,
+  "returned_share": 0.0,
+  "rule": "near-anchor at a share >= 0.5, degraded-as-recorded at <= 0.01, else intermediate",
+  "state": "degraded-as-recorded"
+ },
+ "schema": "qd-teleportation-secondary-v1"
+}

@@ -4307,6 +4307,18 @@
    "name": "core-693",
    "seconds": 4.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_teleportation_rehearsal.py --analyze results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check && \"$PYTHON\" -B -W error scripts/qd_rehearsal_secondary.py results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check",
+   "name": "core-teleportation-rehearsal-job-00-replay",
+   "seconds": 12.0,
+   "tier": "pr",
+   "replays": [
+    "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
+    "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json"
+   ]
   }
  ],
  "excluded": [

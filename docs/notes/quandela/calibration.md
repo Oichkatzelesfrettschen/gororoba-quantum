@@ -53,6 +53,16 @@ it). The explorer row of the same read reports 97.89 % availability for 2026-10-
 maintenance for 2026-10-29 08:30 to 12:00 UTC, not yet started. A plan admits the rehearsal only on a record that
 models at or above F* = 0.86, so a frozen record holds the case.
 
+The rehearsal job 55479252 of 2026-10-26 02:54 UTC, sent under the anchor gate
+([run](../../../results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/)), returned no
+three-click sample in 7.2e6 reported shots, six iterations each ended by its `max_shots` of 1,200,000 and reporting
+that budget as `nb_shots_used`; the anchor state predicts about 900 samples per iteration within 0.9e6 shots. The
+three-click rate per reported shot is below 4.2e-7 at 95 %, at least 2300 times below the anchor state's 1e-3, so
+the chip was in a state at least as lossy as the held record describes, not merely published late. The platform
+records before and after the job carry the held figures unchanged. This is the first retained run ended by its shot
+budget: such an iteration reports the budget, and a sample-limited one reports its samples, so neither counts
+optical trials.
+
 ### Live reads of 2026-10-20 (historical)
 
 The table below is the state as of the live processor reads of 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). The maintenance window is the snapshot's Explorer row, which read it on 2026-10-17.
