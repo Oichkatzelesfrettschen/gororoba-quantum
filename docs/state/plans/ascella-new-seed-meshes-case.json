@@ -12,14 +12,14 @@
     "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
     "docs/evidence/ascella-order-coefficients/seed-repeat-reading.json"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
     "note": "Plan ascella-fixed-mesh-confirmation read the heater and coupler offsets on the 28 held-out meshes at r 0.318 (one-sided p 0.050), not carried at alpha 0.01, with a 99 % Fisher-z upper bound of r 0.661, and spent the held-out half. Job-03 (claim ascella-signed-coherence-seed-repeat) showed each served mesh's X statistic fixed across a calibration with steady anchors, so meshes served by later jobs join one test set. The offsets below are frozen from retained data before any new seed is drawn; the served meshes are known only from the returned computed_circuit, so the plan freezes parameters, and a prediction is a deterministic function of the returned phases and couplers. Amended after 98d8a0d, before any new-seed job was submitted: the outcome rules now name P-B carried alone and the inconclusive case, and state the not-carried reading as a bound on the share; the draw values carry no outcome information. Amended a second time before any submission, after two Codex CLI reviews (gpt-daybreak-blue-latest, medium and high) and the advisor: samples rise to the 32,768 shots each iteration already pays for; job-04 runs 80 iterations and job-05's size follows job-04's duration by a rule that reads no X count; the score contract is code (ascella_new_mesh_score.py) tested on the retained runs; the anchor control is a gross-shift margin in X units; job-06 is dropped. new-mesh-offsets.json lost its exact covariance digest, which a last-bit BLAS change would break; its offsets and free masks equal those committed in 9e92be5 before the draw, element for element, now at digest bbf0ff94. Amended a third time before any submission, after a final gpt-daybreak-blue-latest high review of head ccd2fde and the advisor: attribution refuses an entry whose echoed compilation_seed differs from its setting's; a setting with no logical-block count makes its job partial and a non-finite input reads not read; the score's entry point enforces the frozen reference and acquisition sets; r reads at an endpoint of +-1; the anchor control requires its whole 99 % interval within +-s_c; an upper bound of r below 0 reads inconclusive: anticorrelated. The frozen requests and bodies are unchanged."
   },
   "scope": "Acquisition: job-04 submits theta2-x-arm0 (configuration 13 of job-00) 80 times at 32,768 samples and 32,768 max_shots per iteration, the seed-0 mesh of job-00 at every eighth position (10 anchors) and 70 positions at the first 70 usable values of the ANU QRNG draw docs/evidence/anu_qrng/draw-2026-10-26T174307Z.json (nonzero, repeats and job-02's 56 seeds skipped, index order). Job-05 runs one variant, job-05-i80, job-05-i88 or job-05-i96, at the usable values after job-04's, chosen by job-04's provider-reported status.duration d4 alone: with job-04 complete and d4 at most 279 s, 8 floor(min(96, 279 * 80 / d4) / 8) iterations; d4 above 279 s sends no job-05 and the reading runs on job-04 alone; a partial job-04 sends no job-05 and reads not read. 279 s keeps the 21 s margin below the 300 s max_duration that 96 iterations hold at the 64-iteration bound of 2.90625 s per iteration. Predictors, frozen in docs/evidence/ascella-order-coefficients/new-mesh-offsets.json, family heater_0.3_coupler_0.1_offsets: P-A, the offsets fitted on job-00 plus the 28 exploration meshes of mesh-split.json; P-B, the offsets fitted on job-00 plus all 56 perturbed meshes of jobs 02 and 03 pooled by setting name. A prediction is static_light of the returned mesh under the frozen offsets. Score, scripts/ascella_new_mesh_score.py: a served mesh is its returned computed_circuit with computed_input; anchors never enter the primary; a mesh served by jobs 00, 02 or 03 is excluded; a mesh served by both new jobs counts once, in job-04; settings serving one mesh in a job pool their counts; a job with fewer than 3 meshes, or partial (a setting without counts, a setting with no logical-block count, or a status other than completed), stays descriptive; an entry whose echoed compilation_seed differs from its setting's is refused. Acquisition set, enforced by the entry point: references exactly jobs 00, 02 and 03, each new run's cases.json equal to its frozen case, and the new runs job-04 followed by exactly the admitted job-05 variant, or job-04 alone when the rule admits none; a submitted but partial job-05 stays descriptive and the primary reads job-04 alone. Primary, per predictor: Pearson r of predicted with observed block-conditioned X centered within each job, one-sided by the t distribution on n - 1 - J degrees of freedom at alpha 0.005 each (Bonferroni 0.01 over two predictors); not read when n - J - 2 < 1, a centered variable is constant or an input is not finite; r clamps to [-1, 1] and reads at an endpoint without dividing by zero. Bounds: one-sided 99.5 % Fisher-z, standard error 1 / sqrt(n - J - 2); positive-direction share r^2 / c^2 with the plug-in ceiling c^2 = s_c^2 / (s_c^2 + mean counting variance of the scored meshes), s_c^2 from fixed-mesh-confirmation.json, conditional on that estimate, negative bounds mapping to 0 and shares clipping at 1. Anchor control per job: the anchor mean X less job-03's reads steady when its whole two-sided 99 % interval lies within +-s_c (0.0119) and moved otherwise, a gross calibration event; job-03 reproduced every per-mesh error at the ceiling across a recalibration that moved the anchors by 0.00285, which passes. Outcomes, disjoint and in this order: not read when a predictor is not read; both carried; P-A carried only; P-B carried only; neither carried with a predictor's upper bound of r below 0 reads inconclusive: anticorrelated; neither carried with a moved job reads inconclusive: anchors moved; neither carried with both upper shares below 10.6 % (the held-out point estimate) reads bounded, the frozen signed offsets' positive-direction share of the compilation-induced variance below the larger bound; otherwise inconclusive. A carried predictor refutes the design statement that the returned circuit with element offsets does not carry the fixed per-mesh error, for the share between its bounds; P-B carried alone places the carrier in offsets the 28 exploration meshes left underdetermined. Secondary, descriptive: Spearman correlation and affine slope of the centered values, each job's dispersion ratio. Exploratory: P-A's centered correlation over the new meshes and the 28 spent held-out meshes. Sizing, docs/evidence/ascella-order-coefficients/new-seed-sizing.json: with job-05 at 80, 88 or 96 iterations, 140, 147 or 154 meshes, power 0.89, 0.91 or 0.92 at r 0.318 and 0.64 to 0.69 at 0.25, and a bounded reading at a true r of 0 with probability 0.895 to 0.925 per predictor; job-04 alone 70 meshes, power 0.53 at 0.318. The readings spend every new mesh: a family proposed after scoring needs further seeds or the applied voltages of Perceval#799.",
   "owner": "ascella signed-coherence analysis",
-  "next_action": "The owner approves or declines the final case in the design document's section 'New-seed meshes case (job-04 and job-05)' after Codex's second review round.",
+  "next_action": "None; the owner's further 96-iteration jobs are a later, separate plan, and the remaining nine tenths of the per-mesh error await the applied voltages of Perceval#799.",
   "related": [
     "ascella-fixed-mesh-confirmation",
     "ascella-fixed-mesh-error-model",
@@ -105,19 +105,78 @@
       "id": "written-case",
       "action": "Write the case in the design document: what it measures, why simulation cannot answer it, backend, sizing options, seconds and credits.",
       "acceptance": "The owner approves the case at a size, or declines it.",
-      "state": "doing",
+      "state": "done",
       "depends_on": [
         "request-builder"
+      ],
+      "receipts": [
+        {
+          "result": "The owner approved the case on 2026-10-26 after the final review; each run's submission.json carries the approval text the submission consumed.",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04/submission.json",
+              "sha256": "e1a4b07a0a5fa78fedfc2d9664741f5ca3647f2cd033af64080dfc50f1bc8dca"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88/submission.json",
+              "sha256": "554f01e8bf759d2f8712274585bce858442223dd884ef3d66df9f31e2e209b5e"
+            }
+          ],
+          "observed_at": "2026-10-26T22:46:51+00:00",
+          "revision": "1c8a17924d222cf8c530722b863e6aac1cf606d9",
+          "scope_sha256": "1e9a8cad7fdb7dc068baa538bff0962df48623ee32ac0a80a8b8ae303c8a1854"
+        }
       ]
     },
     {
       "id": "acquisition-and-reading",
       "action": "Submit job-04 on approval, collect it, apply the duration rule, submit the admitted job-05 variant, collect and retain both, and run ascella_new_mesh_score.py as fixed here.",
       "acceptance": "Retained runs and a reading record with every fixed reading, replayed by a gate.",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "written-case"
+      ],
+      "receipts": [
+        {
+          "result": "Job be11a4b0 (80 iterations, 243 s) and the admitted job 690c6e49 (88 iterations, 265 s) completed and are retained at 1.032768 credits each; new-seed-score.json reads P-B carried only (r 0.319, p 4.4e-5, share 10.5 %, bounds 1.4 to 25.6 %), P-A not carried (r 0.157, p 0.030); core-ascella-signed-coherence-new-seed-score-replay replays it.",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04/results.json",
+              "sha256": "c5a9e2f442c5e525372ce66f6f1a6b75aed842c7f9de9131ce2efed154340223"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88/results.json",
+              "sha256": "dc664063904e984933dfdfdcd54a963fd67076183ab531f24166ab131c374be1"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/new-seed-score.json",
+              "sha256": "fa4a2982afb3e01ec71f78b8aa999752dcfd374459388258f51b88cfbb029610"
+            }
+          ],
+          "observed_at": "2026-10-26T22:46:51+00:00",
+          "revision": "1c8a17924d222cf8c530722b863e6aac1cf606d9",
+          "scope_sha256": "e24e9b3e5fed6e1a4f74022627d9ba7b8c19e318b01de76b5e405155f27b6e48"
+        }
       ]
+    }
+  ],
+  "disposition": "completed",
+  "claims": [
+    "ascella-signed-coherence-new-seed-offsets"
+  ],
+  "resolution": "On 147 meshes no fit had seen (jobs be11a4b0 and 690c6e49, job-05's 88 iterations admitted by job-04's 243 s), heater and coupler offsets fitted on all 56 earlier meshes carry the fixed per-mesh error at within-job r 0.319 (one-sided p 4.4e-5): carried, a positive-direction share of 10.5 % (1.4 to 25.6 %); the exploration-only fit reads r 0.157 (p 0.030), not carried. Outcome P-B carried only.",
+  "receipts": [
+    {
+      "result": "All four steps are done; the runs, the score and its replay gate are retained, and claim ascella-signed-coherence-new-seed-offsets registers the result.",
+      "evidence": [
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/new-seed-score.json",
+          "sha256": "fa4a2982afb3e01ec71f78b8aa999752dcfd374459388258f51b88cfbb029610"
+        }
+      ],
+      "observed_at": "2026-10-26T22:46:51+00:00",
+      "revision": "1c8a17924d222cf8c530722b863e6aac1cf606d9",
+      "scope_sha256": "86905737227e67a69c942a903ea61d1d7dc13486add614665984e8b25dc338a8"
     }
   ]
 }
