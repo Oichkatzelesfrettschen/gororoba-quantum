@@ -80,7 +80,7 @@
       ],
       "receipts": [
         {
-          "result": "mesh-exploration.json retains the quantization, scalar-feature, dark-output and dephasing screens with matched nulls; twelve-output.json the output and input stages and source-detector.json the detector-efficiency and photon-bunching families, each fitted on job-00 and scored on the 28 exploration meshes; every family reads shortfall and none is kept, and the observed fractions about their own mean form 466 on 84 against 129.8, beyond any mesh-independent family.",
+          "result": "mesh-exploration.json retains the quantization, scalar-feature, dark-output and dephasing screens with matched nulls; twelve-output.json the output and input stages and source-detector.json the detector-efficiency and photon-bunching families, each fitted on job-00 and scored on the 28 exploration meshes; every family reads shortfall and none is kept, and the observed fractions against any constant fraction vector form at least 451.7 on 84 against 129.8, beyond any model with constant block fractions.",
           "evidence": [
             {
               "ref": "docs/evidence/ascella-order-coefficients/mesh-exploration.json",
@@ -92,7 +92,7 @@
             },
             {
               "ref": "docs/evidence/ascella-order-coefficients/source-detector.json",
-              "sha256": "2ce2e64dd1e4f4ad0321b669f65d59535fe555d63ebdcd6055c7af06a6e4fd3c"
+              "sha256": "3b55983eea9016a3b525e4fcabc07a3ab1f1a7f7153d4a467f9362df51dcde21"
             }
           ],
           "observed_at": "2026-10-26T04:08:16+00:00",
@@ -119,7 +119,7 @@
             },
             {
               "ref": "docs/evidence/ascella-order-coefficients/source-detector.json",
-              "sha256": "2ce2e64dd1e4f4ad0321b669f65d59535fe555d63ebdcd6055c7af06a6e4fd3c"
+              "sha256": "3b55983eea9016a3b525e4fcabc07a3ab1f1a7f7153d4a467f9362df51dcde21"
             }
           ],
           "observed_at": "2026-10-26T04:08:43+00:00",
@@ -139,7 +139,7 @@
       "evidence": [
         {
           "ref": "docs/evidence/ascella-order-coefficients/source-detector.json",
-          "sha256": "2ce2e64dd1e4f4ad0321b669f65d59535fe555d63ebdcd6055c7af06a6e4fd3c"
+          "sha256": "3b55983eea9016a3b525e4fcabc07a3ab1f1a7f7153d4a467f9362df51dcde21"
         }
       ],
       "scope_sha256": "fefcedf41ab6be723960837d490e80a8fee9432fbd9139bbe2ed7d06f648d9f1"

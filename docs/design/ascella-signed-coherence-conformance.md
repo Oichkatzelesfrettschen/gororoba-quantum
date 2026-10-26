@@ -1482,9 +1482,11 @@ reproduces that form to 1e-9 on a dense 12-mode unitary for distinguishable
 and indistinguishable noise photons alike, and gives gamma 0.0098 at job-00's
 platform g2 of 1.9 %. Every served mesh realizes the same target column from
 input mode 0, so these families predict the same light on all 56 meshes.
-The observed block fractions about their own exploration mean already form
-466 on 84 coordinates against 129.8, the floor of every mesh-independent
-model, so these families test only the mean deficit:
+The observed block fractions against one constant fraction vector form at
+least 451.7 on 84 coordinates (466.0 at the exploration mean), against
+129.8: no model whose block fractions stay constant over the meshes is
+kept, and these families move theirs only through the per-iteration
+background weight. They therefore test the mean deficit:
 
 | Family | Parameters | Gain over nominal on job-00 | Exploration-mean X | Mean deficit in standard errors |
 |---|---|---|---|---|
@@ -1497,7 +1499,9 @@ model, so these families test only the mean deficit:
 The observed exploration-mean X is 0.887. Every family misses the mean by
 more than six standard errors of the observed mean (0.0115 over the square
 root of 28). Job-00 rejects the bunching that the platform's g2 implies:
-fitted freely, gamma goes to 0. The fitted efficiencies raise modes 1 and 3
+fitted freely on gamma itself, gamma stops at its bound 0, where the
+negative log posterior still falls toward negative gamma (slope 1771), and
+gamma 0.01 costs 18.2. The fitted efficiencies raise modes 1 and 3
 by 4 % and 3 % and move the setting's X by 0.003 of its 0.017 deficit.
 Source multiphoton emission, detector efficiency and transmittance therefore
 carry neither the mean deficit nor the spread.

@@ -150,50 +150,56 @@
    "bunching_gamma": 0.0,
    "efficiencies": [
     1.0,
-    1.0420719139562762,
-    1.0000020606408861,
-    1.0329801707914503,
-    1.0000043420881846,
-    1.0000015263763375,
-    1.0000032341648404,
-    1.0000002124554759,
-    0.9999998910673557,
-    0.9999999215218164,
-    0.9999999034449524,
-    0.9999999849067241
+    1.042071914094929,
+    1.0000020608803093,
+    1.0329801718036498,
+    1.0000043427506562,
+    1.0000015265704645,
+    1.0000032347007877,
+    1.0000002121428806,
+    0.9999998905068959,
+    0.9999999210797869,
+    0.9999999031622056,
+    0.9999999847485155
    ],
    "exploration": {
     "coordinates": 84,
     "kept_threshold": 110.01109805234124,
-    "median_variance_ratio": 0.005565587968227655,
-    "mode_2_model_mean": 0.00035222371823877404,
+    "median_variance_ratio": 0.030667255126401657,
+    "mode_2_model_mean": 0.00035222371823536233,
     "mode_2_observed_mean": 0.0008602708906159203,
-    "quadratic_form": 1750.9960517402576,
+    "quadratic_form": 1640.163949240385,
     "reading": "shortfall",
     "shortfall_threshold": 129.80369323488026,
-    "x_correlation": -0.05127765003778612,
-    "x_model_mean": 0.9002447777699089,
+    "x_correlation": -0.051277650058060245,
+    "x_model_mean": 0.9002447777182263,
     "x_observed_mean": 0.8866762807045063
    },
    "family": "efficiency_and_free_bunching",
-   "job_00_gain_over_nominal": 67.78498671151465,
+   "job_00_gain_over_nominal": 67.78498671157286,
    "job_00_leak_median": 3.150742799440387e-07,
-   "job_00_negative_log_posterior": 474618.5858839205,
-   "lowest_hessian_eigenvalue": 10.600433773923768,
+   "job_00_negative_log_posterior": 474618.58588392043,
+   "lowest_hessian_eigenvalue": 10.559357165758946,
    "magnitudes": [],
    "mean": {
     "critical": 2.5758293035489004,
     "reading": "mean missed",
     "standard_error": 0.002170666180240792,
-    "z": -6.250844643416049
+    "z": -6.250844619606516
    },
    "parameters": 12
   }
  ],
  "floor": {
-  "any_mesh_independent_family_kept": false,
+  "any_constant_fraction_model_kept": false,
+  "at_exploration_mean": 466.048692576071,
   "coordinates": 84,
-  "quadratic_form": 466.0486925760725,
+  "minimized": 451.6600413198668,
+  "minimizing_fractions": [
+   0.9148602685050566,
+   0.05466720365342896,
+   0.00108203134085719
+  ],
   "shortfall_threshold": 129.80369323488026
  },
  "g2_at_plan": 0.019,

@@ -19,9 +19,10 @@ record states both limits as numbers:
 - mean: the exploration-mean observed X less the family's, in standard errors of the observed mean (the sample
   standard deviation over meshes over the square root of their count); below the two-sided 0.01 normal quantile
   it reads "mean reproduced", otherwise "mean missed";
-- floor: the quadratic form of the observed block fractions about their own exploration mean under counting
-  covariance, the smallest form any mesh-independent model reaches; at or above the shortfall threshold no such
-  family can be kept, whatever its mean.
+- floor: the counting-covariance quadratic form of the observed block fractions against one constant fraction
+  vector, minimized over that vector; at or above the shortfall threshold no model with constant block fractions
+  can be kept, whatever its mean. These families' fractions move only through the per-iteration background
+  weight, so the floor bounds them up to that motion.
 
 Usage:
   "$PYTHON" scripts/ascella_source_detector.py JOB_00 JOB_02 SPLIT OUT [--check]
@@ -37,6 +38,7 @@ from typing import Any
 
 import numpy as np
 from scipy import stats
+from scipy.optimize import minimize
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -67,24 +69,41 @@ def observed_fractions(data: dict[str, Any]) -> np.ndarray:
     return out
 
 
+def constant_form(fractions: np.ndarray, observed: np.ndarray, totals: np.ndarray) -> float:
+    """sum_i N_i r_i^T S^-1 r_i over the block coordinates, r_i = o_i - p and S = diag(p) - p p^T, for one constant
+    block-fraction vector p (coordinates 0, 1 and 2; mode 3 takes the rest)."""
+    residual = observed - fractions[None, :]
+    scatter = (totals[:, None, None] * residual[:, :, None] * residual[:, None, :]).sum(axis=0)
+    covariance = np.diag(fractions) - np.outer(fractions, fractions)
+    return float(np.trace(np.linalg.solve(covariance, scatter)))
+
+
 def floor(data: dict[str, Any]) -> dict[str, Any]:
-    """The quadratic form of the observed block fractions about their exploration mean, counting covariance only."""
-    observed = observed_fractions(data)
-    totals = data["record"]["counts"][:, : models.LOGICAL].sum(axis=1)
+    """The counting-covariance quadratic form of the observed block fractions against one constant fraction vector,
+    at the exploration mean and minimized over the vector: no model whose block fractions stay constant over the
+    meshes scores below the minimum."""
+    counts = data["record"]["counts"][:, : models.LOGICAL]
+    totals = counts.sum(axis=1)
     coordinates = list(twelve.COORDINATES)
-    mean = observed.mean(axis=0)[coordinates]
-    statistic = 0.0
-    for row, total in zip(observed, totals, strict=True):
-        residual = row[coordinates] - mean
-        covariance = (np.diag(mean) - np.outer(mean, mean)) / total
-        statistic += float(residual @ np.linalg.solve(covariance, residual))
+    observed = (counts / totals[:, None])[:, coordinates]
+    mean = observed.mean(axis=0)
+
+    def objective(fractions: np.ndarray) -> float:
+        if fractions.min() <= 0 or fractions.sum() >= 1:
+            return math.inf
+        return constant_form(fractions, observed, totals)
+
+    result = minimize(objective, mean, method="Nelder-Mead", options={"xatol": 1e-12, "fatol": 1e-9, "maxiter": 20000})
+    models.require(bool(result.success), f"the constant-fraction floor did not converge: {result.message}")
     dof = len(coordinates) * len(observed)
     threshold = float(stats.chi2.ppf(twelve.SHORTFALL_QUANTILE, dof))
     return {
-        "quadratic_form": statistic,
+        "at_exploration_mean": constant_form(mean, observed, totals),
+        "minimized": float(result.fun),
+        "minimizing_fractions": [float(value) for value in result.x],
         "coordinates": dof,
         "shortfall_threshold": threshold,
-        "any_mesh_independent_family_kept": statistic < threshold,
+        "any_constant_fraction_model_kept": float(result.fun) < threshold,
     }
 
 

@@ -76,7 +76,8 @@ BUNCHING_WIDTH = 0.3
 @dataclass(frozen=True)
 class Family:
     """The chip stages a family fits: output and input stages, detector efficiencies, and photon bunching, either
-    free (gamma = b^2 under N(0, BUNCHING_WIDTH^2) on b) or fixed at a given gamma."""
+    free (gamma >= 0 under a half-normal prior of width BUNCHING_WIDTH, fitted on that bound) or fixed at a given
+    gamma."""
 
     output: bool = False
     input: bool = False
@@ -152,7 +153,7 @@ def light(family: str | Family, unitary: np.ndarray, sources: np.ndarray, params
         efficiency = np.exp(np.concatenate(([0.0], params[cursor : cursor + MODES - 1])))
         cursor += MODES - 1
     if spec.bunching == "free":
-        intensity = intensity + params[cursor] * params[cursor] * intensity * intensity
+        intensity = intensity + params[cursor] * intensity * intensity
     elif isinstance(spec.bunching, float):
         intensity = intensity + spec.bunching * intensity * intensity
     if efficiency is not None:
@@ -167,7 +168,7 @@ def parameter_count(family: str | Family) -> int:
 
 
 def prior(family: str | Family, params: np.ndarray) -> float:
-    """The negative log prior: each stage component, log-efficiency and bunching root under its own width."""
+    """The negative log prior: each stage component, log-efficiency and the free gamma under its own width."""
     spec = FAMILIES[family] if isinstance(family, str) else family
     stages = stage_count(spec)
     value = float((params[:stages] * params[:stages]).sum()) / (2 * PRIOR_WIDTH * PRIOR_WIDTH)
@@ -337,12 +338,16 @@ def fit(item: tuple[Any, ...]) -> dict[str, Any]:
     objective = Objective(spec, train, train_unitary)
     count = parameter_count(spec)
     params = np.zeros(count)
+    # A free gamma enters linearly, so its gradient at the zero start is the likelihood's own; the bound keeps the
+    # bunched-pair probability nonnegative.
+    bounds = [(None, None)] * (count - 1) + [(0.0, None)] if spec.bunching == "free" else None
     if count:
         result = minimize(
             objective,
             params,
             jac=objective.gradient,
             method="L-BFGS-B",
+            bounds=bounds,
             options={"ftol": FIT_TOLERANCE, "gtol": 1e-6, "maxiter": FIT_ITERATIONS},
         )
         models.require(bool(result.success), f"{family}: the fit did not converge: {result.message}")
@@ -372,7 +377,7 @@ def fit(item: tuple[Any, ...]) -> dict[str, Any]:
         row["efficiencies"] = [1.0, *(float(np.exp(value)) for value in rest[: MODES - 1])]
         rest = rest[MODES - 1 :]
     if spec.bunching == "free":
-        row["bunching_gamma"] = float(rest[0] * rest[0])
+        row["bunching_gamma"] = float(rest[0])
     elif isinstance(spec.bunching, float):
         row["bunching_gamma"] = spec.bunching
     return row

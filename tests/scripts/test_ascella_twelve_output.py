@@ -100,4 +100,4 @@ def test_efficiencies_scale_outputs_relative_to_mode_zero_and_stage_families_kee
     if float(np.abs(scaled - expected / expected.sum()).max()) > 1e-15:
         raise AssertionError("efficiencies do not scale each output relative to mode 0")
     if twelve.parameter_count(twelve.Family(efficiency=True, bunching="free")) != twelve.MODES:
-        raise AssertionError("eleven log-efficiencies and one bunching root make twelve parameters")
+        raise AssertionError("eleven log-efficiencies and one free gamma make twelve parameters")
