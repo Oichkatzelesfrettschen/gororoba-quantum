@@ -11,14 +11,14 @@
     "scripts/ascella_physical_models.py",
     "scripts/ascella_compilation_reading.py"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
     "note": "Job-03 reproduced every served mesh's X statistic at r 0.885 against the 0.880 ceiling of a fully fixed per-mesh error (seed-repeat-reading.json). Every static offset family so far was fitted on job-00 alone, where 30 configurations share the seed-0 mesh; the heater-coupling identification folds refitted only the kernel and loss families on served meshes. A fit of per-element offsets on served meshes is therefore untested. The held-out meshes' X statistics have been seen, in job-02's readings and in job-03's P1 correlation; no fit, screen or tuning has used them, and the split of mesh-split.json stays the split. A family that reads predicted on the held-out half refutes the design document's statement that the returned circuit does not carry the fixed error."
   },
   "scope": "Offline analysis of the retained Ascella jobs 00, 02 and 03 (no provider job, emulator or credits). Targets: each mesh's X statistic pooled over job-02 and job-03, the two jobs' settings joined by setting name, so a mesh's counting variance is about a third of job-02's alone. Training set: job-00 plus the 28 exploration meshes of mesh-split.json from both jobs. Families, each the block-conditioned static offset fit of scripts/ascella_physical_models.py at its posterior mode with the posterior Hessian: F1, heater offsets under N(0, 0.3^2) with coupler offsets under N(0, 0.1^2); F2, coupler offsets under N(0, 0.1^2). Steps: (1) power, from designs only: each family's held-out prediction variance G C G^T against the pooled held-out counting variance; a family whose median prediction-to-counting variance ratio exceeds 1 cannot read predicted, and its held-out reading is not run; (2) exploration leave-one-mesh-out: each of the 28 exploration meshes in turn leaves the training set (both jobs' copies), the family is refitted from zero and predicts that mesh's pooled X, and the 28 squared standardized residuals in counting plus fitted-prediction variance sum against chi-square on 28; a family proceeds when the sum falls below the 0.999 quantile (56.89); (3) held-out reading, once per proceeding family: scripts/ascella_compilation_reading.py mesh_score over the 28 held-out meshes' pooled X, shortfall at or above the chi-square 0.999 quantile on 28, predicted below the 0.97 quantile with median variance ratio at most 1; a second form adds one free constant to every held-out mesh's X (a flat-prior rank-one term in the covariance) and reads the scatter alone against the same quantiles on 27, because the 0.017 mesh-independent mean deficit belongs to no element offset; (4) a model-free screen on the exploration half, descriptive: the Mantel correlation between pairwise circular phase distance of the served meshes and pairwise absolute difference of their pooled X, against label permutations seeded from a new ANU QRNG draw, run only when the pairwise distances spread (coefficient of variation at least 0.1). The plan closes with the design-document section and the retained record whatever the readings.",
   "owner": "ascella signed-coherence analysis",
-  "next_action": "Write scripts/ascella_fixed_mesh_error.py and run the power step.",
+  "next_action": "None; plan ascella-fixed-mesh-confirmation scored the frozen held-out predictions.",
   "related": [
     "ascella-mesh-response-decomposition",
     "ascella-seed-repeat-case",
@@ -29,31 +29,140 @@
       "id": "power",
       "action": "Fit F1 and F2 on the training set and compute each family's held-out prediction-to-counting variance ratios from the held-out designs alone.",
       "acceptance": "The record states each family's median held-out variance ratio and whether its held-out reading may run, before any held-out residual is computed.",
-      "state": "doing"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "heater and coupler offsets read a median held-out variance ratio of 2.42 and may not read predicted; coupler offsets read 0.54.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+              "sha256": "c3e1d2c5c8d68a173d1635a017f379cfb931a6c5d26a12943577d83446660532"
+            },
+            {
+              "ref": "scripts/ascella_fixed_mesh_error.py",
+              "sha256": "1989cdef7333099356cef03583b9f01cba5de5d1d3308557225337ec20037ffe"
+            }
+          ],
+          "observed_at": "2026-10-26T08:59:19+00:00",
+          "revision": "93588a89b4275f7d4a396de9bd0691a07617e895",
+          "scope_sha256": "778cda89283637db6029bdecb0fbd83b20aff45537533b03ce49db9843917588"
+        }
+      ]
     },
     {
       "id": "exploration-cv",
       "action": "Run the 28 leave-one-exploration-mesh-out refits of each family and sum their squared standardized residuals.",
       "acceptance": "The record states each family's sum against 56.89 and whether it proceeds.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Leave-one-out sums 597 (heater and coupler, r 0.59) and 1133 (coupler, r 0.08) against 56.89: neither family proceeds.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+              "sha256": "c3e1d2c5c8d68a173d1635a017f379cfb931a6c5d26a12943577d83446660532"
+            }
+          ],
+          "observed_at": "2026-10-26T08:59:19+00:00",
+          "revision": "93588a89b4275f7d4a396de9bd0691a07617e895",
+          "scope_sha256": "0aebfea2ce2feca09bc44978e41139e78c355e08445aed394dbf1ae3566743cf"
+        }
+      ]
     },
     {
       "id": "held-out-reading",
       "action": "Score each proceeding family once on the 28 held-out meshes, full and scatter forms.",
       "acceptance": "The record states each form's quadratic form, median variance ratio and reading, or states that no family proceeded and the held-out half stays unspent.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "No family passed both gates; the record states each held-out reading as not run and the held-out half stays unspent under this plan.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+              "sha256": "c3e1d2c5c8d68a173d1635a017f379cfb931a6c5d26a12943577d83446660532"
+            }
+          ],
+          "observed_at": "2026-10-26T08:59:19+00:00",
+          "revision": "93588a89b4275f7d4a396de9bd0691a07617e895",
+          "scope_sha256": "e9e50b59c4a5fd33eea404b1e59e248a9709f171ee5683accdb008db2b816a00"
+        }
+      ]
     },
     {
       "id": "mantel-screen",
       "action": "Read the pairwise phase-distance spread of the exploration meshes and, when it reaches 0.1, the Mantel correlation against QRNG-seeded permutations.",
       "acceptance": "The record states the spread and the correlation with its permutation p, or states that the screen did not run and why.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "The exploration meshes' pairwise phase distances read a coefficient of variation of 0.052 against 0.1, so the Mantel screen did not run and needed no draw.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+              "sha256": "c3e1d2c5c8d68a173d1635a017f379cfb931a6c5d26a12943577d83446660532"
+            }
+          ],
+          "observed_at": "2026-10-26T08:59:19+00:00",
+          "revision": "93588a89b4275f7d4a396de9bd0691a07617e895",
+          "scope_sha256": "87437073e8d35eadef4cd6bbf4c40df452a2674e4feaa0f3e8bfb197248d7a62"
+        }
+      ]
     },
     {
       "id": "written-reading",
       "action": "Retain the record with a replay gate, add the design-document section and the research-registry claim.",
       "acceptance": "The replay gate passes and the design section states every reading the record holds.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "The record replays under core-ascella-signed-coherence-fixed-mesh-error-replay and the registry claim ascella-signed-coherence-fixed-mesh-offsets states the gates.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+              "sha256": "c3e1d2c5c8d68a173d1635a017f379cfb931a6c5d26a12943577d83446660532"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-ascella-signed-coherence-fixed-mesh-error-replay",
+              "sha256": "57741b815d4b72be6a0e0c40e464ec1d09155bca8402be00b2efb24c1578e862"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=ascella-signed-coherence-fixed-mesh-offsets",
+              "sha256": "a07400b350e9341c0ab3dae0b0a84ca8663da8ad80f90638c97abdd8f54a0088"
+            }
+          ],
+          "observed_at": "2026-10-26T08:59:19+00:00",
+          "revision": "93588a89b4275f7d4a396de9bd0691a07617e895",
+          "scope_sha256": "0b37ffc01ecb8e996b54188ca51ceb0d8bcb0b25ab17e8bc4ebae9826f841205"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "claims": [
+    "ascella-signed-coherence-fixed-mesh-offsets"
+  ],
+  "resolution": "Neither element-offset family passed the power and leave-one-out gates, so the held-out quadratic-form reading did not run; the heater and coupler offsets showed exploration leave-one-out correlation 0.59, which plan ascella-fixed-mesh-confirmation tested.",
+  "receipts": [
+    {
+      "result": "All five steps are done; the record replays and the registry claim ascella-signed-coherence-fixed-mesh-offsets states its gates.",
+      "evidence": [
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+          "sha256": "c3e1d2c5c8d68a173d1635a017f379cfb931a6c5d26a12943577d83446660532"
+        },
+        {
+          "ref": "ci/gates.json#gates/name=core-ascella-signed-coherence-fixed-mesh-error-replay",
+          "sha256": "57741b815d4b72be6a0e0c40e464ec1d09155bca8402be00b2efb24c1578e862"
+        },
+        {
+          "ref": "docs/state/research_state.json#claims/id=ascella-signed-coherence-fixed-mesh-offsets",
+          "sha256": "a07400b350e9341c0ab3dae0b0a84ca8663da8ad80f90638c97abdd8f54a0088"
+        }
+      ],
+      "observed_at": "2026-10-26T08:59:19+00:00",
+      "revision": "93588a89b4275f7d4a396de9bd0691a07617e895",
+      "scope_sha256": "33c26d36a084502c7d793d3e7bb957d4a2d0be26913856414e7e5888e52265c1"
     }
   ]
 }
