@@ -220,6 +220,13 @@
    "index": 0
   },
   {
+   "path": "gororoba_quantum/msq_envelope_null.py",
+   "name": "NULL_SEED",
+   "value": 56182,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 1
+  },
+  {
    "path": "gororoba_quantum/diagnostic_experiments.py",
    "name": "MSQE_PATTERN_SEED",
    "value": 49615,

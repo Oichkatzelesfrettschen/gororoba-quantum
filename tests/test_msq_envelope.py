@@ -280,6 +280,8 @@ def approved_envelope(tmp_path: Any, **record_overrides: Any) -> tuple[Any, str,
     import hashlib
     import json
 
+    import live_run
+
     record: dict[str, Any] = {
         "state": "planned",
         "experiment_digest": "d" * 64,
@@ -303,7 +305,7 @@ def approved_envelope(tmp_path: Any, **record_overrides: Any) -> tuple[Any, str,
                 "envelope_cap_seconds": 90.0,
             }
         },
-        "groups": [{"backend": "ibm_kingston", "seed_transpiler": 7}],
+        "groups": [{"backend": "ibm_kingston", "seed_transpiler": live_run.SEED_TRANSPILER}],
         "execution_pubs": [{"name": f"p{k}"} for k in range(3)],
     }
     record.update(record_overrides)
@@ -329,7 +331,7 @@ def test_envelope_mismatches_admit_a_moved_layout_only(tmp_path: Any) -> None:
         lambda r: r["family_configuration"].update(qubits=list(range(15))),
         lambda r: r.update(experiment_digest="x" * 64),
         lambda r: r["envelope"]["contract"].update(envelope_cap_seconds=95.0),
-        lambda r: r["groups"][0].update(seed_transpiler=8),
+        lambda r: r["groups"][0].update(backend="ibm_fez"),
         lambda r: r["execution_pubs"].pop(),
     ):
         changed = copy.deepcopy(fresh)
@@ -482,3 +484,12 @@ def test_count_rule_scales_with_width() -> None:
     import msq_envelope_analysis as ea
 
     check([ea.count_rule(w) for w in (8, 16, 24, 32)] == [2, 2, 3, 4], "max(2, ceil(0.1 W))")
+
+
+def test_null_upper_bound_is_clopper_pearson() -> None:
+    import msq_envelope_null as null
+
+    check(abs(null.upper_bound(0, 400) - (1 - 0.05 ** (1 / 400))) < 1e-12, "zero fires: 1 - alpha^(1/n)")
+    check(null.upper_bound(0, 300) >= null.FALSE_FIRE_CEILING, "300 clean replicates cannot reach 0.01")
+    check(null.upper_bound(0, 400) < null.FALSE_FIRE_CEILING, "400 clean replicates reach 0.01")
+    check(null.upper_bound(5, 5) == 1.0, "all fired")
