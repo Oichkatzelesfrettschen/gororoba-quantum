@@ -452,6 +452,64 @@ Cayley-Dickson table near 1 even on model-consistent data, so the lens tests the
 structure; on the simulated anchor-state run the percentiles are 0.87, 0.40 and 0.48 for n = 6, 7 and 8. A flag
 motivates a designed probe that passes the mutation test of the algebra rules and enters no registry from this run.
 
+## Recovered-chip rehearsal (job-01)
+
+**Question.** Job-01 asks job-00's question again, on a chip whose performance record has left the degraded state:
+does the pooled conditional fidelity of the frame-corrected receiver over the six inputs beat the classical bound?
+Job-00 returned no three-click sample, so its verdict is `inconclusive` and says nothing about the circuit. Job-01
+keeps job-00's inputs, readout bases, eligibility rule, decision-rule form, claim level C1, `min_detected_photons` 3,
+`mitigations: []`, `max_duration` 300 s and `sample_count`; its seeds, layout, preregistered values and budgets are
+its own.
+
+**Preregistration at its own read.** On 2026-10-26 the owner chose to preregister job-01 at its own platform read:
+the first read after the record recovers, retained as
+`results/quandela/cases/teleportation_rehearsal/job-01/platform-read/catalogue.json`, is both the case's fresh read
+and its anchor read (`Request.anchor_read`). The noise variants, F*, the allowance, the decision count, the sample
+budget and the modeled three-click probabilities of the classical bound all come from that read's figures, and
+`estimate_required_shots` under its perfs sizes `max_shots`. The fresh-read variants then repeat the anchor ones, so
+the allowance is the unmodeled 0.02 alone. Only the live gate applies: `binding` requires the model's pooled fidelity
+at the figures live at submission to reach job-01's own F*, so it refuses a chip that drifted below the
+preregistration between the read and the submission, and `--anchor` refuses a case anchored at its own read. The
+record watch keeps triggering on job-00's F* = 0.86; it decides when to read, and job-01's own F* decides admission.
+A read whose model gives an F* that does not exceed the classical bound plus 0.02 has no decision power:
+`bernoulli_decision_count` refuses it and `--prepare` retains nothing.
+
+**Compilation seeds.** The six values are 8608, 30481, 4339, 55973, 12504 and 37710 for +Z, -Z, +X, -X, +Y, -Y:
+indices 0 to 5, in index order, of the Cisco Outshift QRNG draw
+[`draw-2026-10-26T204106Z.json`](../evidence/outshift_qrng/draw-2026-10-26T204106Z.json), registered in
+[`allocations.json`](../evidence/qrng_seeds/allocations.json) as `JOB_01_COMPILATION_SEEDS` of
+`scripts/qd_teleportation_rehearsal.py`. On 2026-10-26 the keyed ANU service answered `success` with an empty data
+array and the keyless ANU service timed out, so the source order of [the QRNG guide](../notes/qrng/README.md)
+reached Outshift. Job-01 is a new acquisition on new meshes, so its seeds are new values, none shared with job-00.
+
+**Derived at the read.** `qd_teleportation_rehearsal.py --prepare job-01` computes:
+- the layout, by job-00's rule (source photons on connected inputs, every window mode at or below 100 dark counts per
+  second, the closest `t_out` over the three rails);
+- `noise-model.json`, holding F*, the allowance, B, the decision count and the samples per iteration;
+- `shot-estimate.json`, with `max_shots` at 1.25 times the largest per-input estimate, rounded up to 100,000.
+
+The charge is 1 + `max_shots` * 1e-06 credits. The expected seconds are the 300 s `max_duration`, because job-00 ran
+292 s with every iteration at its `max_shots`. The command prints the `REQUESTS` and `JOBS` rows that register the
+case; [the test](../../tests/scripts/test_qd_teleportation_rehearsal.py) runs the whole sequence on a stand-in read
+whose layout moves off chip modes 8 to 15.
+
+**Procedure.** Each step reads the platform and sends no job, until the owner approves the written case.
+1. `"$PYTHON" scripts/qd_platform.py snapshot --out results/quandela/cases/teleportation_rehearsal/job-01/platform-read`
+   retains the read.
+2. `"$PYTHON" scripts/qd_teleportation_rehearsal.py --prepare job-01` retains the derivation and the estimate. Its
+   two printed rows go below `JOBS` in the script.
+3. `"$PYTHON" scripts/qd_teleportation_rehearsal.py job-01` writes `cases.json` and `circuit.json`, and `--check`
+   validates every registered case.
+4. `--body job-01` freezes `job-body.json`, and `--plan job-01` retains `plan.json`, or `plan-refused.json` when the
+   platform or the live model refuses.
+5. A written-case paragraph below states:
+   - what the run measures, and why a simulation cannot answer it (job-00's paragraph carries over);
+   - the backend `qpu:belenos`;
+   - the samples, `max_shots`, seconds and credits from steps 2 to 4.
+6. After the owner approves, `--submit RUN APPROVAL`, with no `--anchor`, sends job-01 once. `qd_platform.py collect
+   RUN`, `--analyze RUN` and `qd_rehearsal_secondary.py RUN` follow. Retention mirrors job-00: a replay gate, a
+   registry acquisition and claim, and the plan step's receipt.
+
 ## Provider request
 
 The request splits by channel. Items 2 and 3 concern the open-source client's

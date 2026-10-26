@@ -1,7 +1,7 @@
 """Single-chip teleportation rehearsal on qpu:belenos: one job of six inputs, each read in its matching basis.
 
-docs/design/ascella-belenos-entanglement-teleportation.md, section "Single-chip rehearsal (job-00)", fixes the
-request. Three photons enter eight logical modes q0 q1 a0 a1 b0 b1 h0 h1 of one chip:
+docs/design/ascella-belenos-entanglement-teleportation.md, sections "Single-chip rehearsal (job-00)" and "Recovered-chip
+rehearsal (job-01)", fixes the request. Three photons enter eight logical modes q0 q1 a0 a1 b0 b1 h0 h1 of one chip:
 
 - q carries the input on modes (q0, q1) in dual rail, one of the six Pauli eigenstates;
 - a (a0, a1) is prepared in |+> and b (b0, b1) in |0>, and the postselected Ralph CNOT of
@@ -15,22 +15,30 @@ analyzer in a pattern of the frame table, one on b and none on the heralds or ou
 instrument accepts each input with probability 1/18 (CNOT 1/9 times analyzer 1/2) at conditional fidelity 1.
 
 The eight logical modes occupy eight consecutive chip modes. photonic_template (hypercomplex_cases) decomposes the
-eight-mode unitary of every setting into the same nearest-neighbor Rx/phase mesh, and LAYOUT places the logical
-modes on chip modes: the three photons enter source-connected inputs, no mode of the window has a dark count above
-DARK_LIMIT, and the two rails of each qubit have the closest output transmissions the platform read offers.
+eight-mode unitary of every setting into the same nearest-neighbor Rx/phase mesh, and a case's layout places the
+logical modes on chip modes: the three photons enter source-connected inputs, no mode of the window has a dark count
+above DARK_LIMIT, and the two rails of each qubit have the closest output transmissions its platform read offers.
 
 Each template iteration carries its own compilation_seed, the service's per-iteration compilation randomness
-(qd_platform.payload sends settings[k]["compilation_seed"]). COMPILATION_SEEDS holds the six values, one ANU QRNG
-draw value per input in the order of the iterations, and validation requires exactly those seeds. The analysis draws
+(qd_platform.payload sends settings[k]["compilation_seed"]). CASE_SEEDS holds each case's six values, one QRNG draw
+value per input in the order of the iterations, and validation requires exactly the case's seeds. The analysis draws
 nothing.
 
---check rebuilds the case in memory, requires the retained bytes (cases.json within the shared check tolerance,
-circuit.json exactly), validates them through qd_platform.template_experiment and the closed form of every setting,
-and requires the refusal of mutated requests. --justify retains the noise-model derivation of the sample budget, and
---estimate retains Perceval's shot estimate in the anchor state. --simulate OUT writes a results.json of the local
-noise simulation into OUT beside the staged request. --analyze RUN parses RUN/results.json into the joint histogram
-of qd_network_protocol.joint_teleportation_scores. --body JOB and --plan JOB read the live platform record and send
-no job; with --anchor they evaluate the request under the anchor read's performance figures.
+A Request is the budget-free part of a case: its layout, its seeds and its anchor read, the platform read whose
+performance figures preregister the decision rule, size max_shots and serve the --anchor gate. A Job adds the budgets
+and the written case's plan arguments. job-00 takes the 2026-10-24 read ANCHOR_READ as its anchor; a later case takes
+its own platform read, so its decision rule describes the chip state it is sent into and only the live gate applies.
+--prepare JOB derives such a case from its retained read (CASES/JOB/platform-read/catalogue.json): the layout,
+noise-model.json, shot-estimate.json, and the REQUESTS and JOBS rows it prints for the change that registers the case.
+
+--check rebuilds every registered case in memory, requires the retained bytes (cases.json within the shared check
+tolerance, circuit.json exactly), validates them through qd_platform.template_experiment and the closed form of every
+setting, and requires the refusal of mutated requests. --justify retains job-00's noise-model derivation of the sample
+budget, and --estimate retains Perceval's shot estimate in its anchor state. --simulate OUT [JOB] writes a results.json
+of the local noise simulation of a registered case (job-00 by default) into OUT beside the staged request. --analyze RUN
+parses RUN/results.json into the joint histogram of qd_network_protocol.joint_teleportation_scores. --body JOB and
+--plan JOB read the live platform record and send no job; with --anchor they evaluate the request under the anchor
+read's performance figures, which a case anchored at its own read refuses.
 
 --submit RUN APPROVAL sends the written case once. RUN holds copies of the frozen cases.json and circuit.json and
 nothing a submission writes; the platform catalogue and raw route answers land in RUN/platform-before first.
@@ -43,9 +51,9 @@ written case's anchor approval); RUN/platform-before keeps the live record, and 
 model beside the admitting one.
 
 Usage:
-  "$PYTHON" scripts/qd_teleportation_rehearsal.py [--check | --justify | --estimate | JOB]
+  "$PYTHON" scripts/qd_teleportation_rehearsal.py [--check | --justify | --estimate | --prepare JOB | JOB]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--body JOB | --plan JOB] [--anchor]
-  "$PYTHON" scripts/qd_teleportation_rehearsal.py [--simulate OUT | --analyze RUN [--check]]
+  "$PYTHON" scripts/qd_teleportation_rehearsal.py [--simulate OUT [JOB] | --analyze RUN [--check]]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py --submit RUN APPROVAL [--anchor]
 """
 
@@ -56,6 +64,7 @@ import itertools
 import json
 import math
 import sys
+import tempfile
 from collections.abc import Callable, Iterator, Mapping, Sequence
 from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass
@@ -128,6 +137,11 @@ LAYOUT = (8, 14, 9, 12, 13, 11, 10, 15)
 # The compilation_seed of each iteration (+Z, -Z, +X, -X, +Y, -Y): indices 0 to 5, in index order, of the ANU QRNG
 # draw docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json, registered in docs/evidence/qrng_seeds/allocations.json.
 COMPILATION_SEEDS = (42862, 37522, 45230, 47441, 29246, 17743)
+# The compilation_seed of each job-01 iteration, in the same order: indices 0 to 5, in index order, of the Cisco
+# Outshift QRNG draw docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json, registered in
+# docs/evidence/qrng_seeds/allocations.json.
+JOB_01_COMPILATION_SEEDS = (8608, 30481, 4339, 55973, 12504, 37710)
+CASE_SEEDS = {"job-00": COMPILATION_SEEDS, "job-01": JOB_01_COMPILATION_SEEDS}
 ANALYZER_MODES = (Q0, Q1, A0, A1)
 RECEIVER_MODES = (B0, B1)
 HERALD_MODES = (H0, H1)
@@ -154,20 +168,46 @@ SYSTEMATIC_QUANTUM = 0.01
 
 
 @dataclass(frozen=True)
+class Request:
+    """The budget-free part of a case: the chip mode of each logical mode, the compilation seed of each iteration in
+    design order, and the repository path of the anchor read, whose performance figures preregister the decision
+    rule, size max_shots and serve the --anchor gate."""
+
+    name: str
+    layout: tuple[int, ...]
+    seeds: tuple[int, ...]
+    anchor_read: str
+
+    @property
+    def directory(self) -> Path:
+        return CASES / self.name
+
+    @property
+    def own_anchor(self) -> bool:
+        """True when the anchor read is the case's own platform read, so only the live gate applies."""
+        return ROOT / self.anchor_read == self.directory / READ
+
+
+@dataclass(frozen=True)
 class Job:
     """One retained request: per-iteration budgets and the written case's plan arguments.
 
     The credit ceiling is the per-job price plus the largest iteration's max_shots at 1e-6 credits per shot, written
     out so the plan compares a literal; expected seconds are the written case's upper bound."""
 
-    name: str
+    request: Request
     samples: int
     shots: int
     credit_ceiling: float
     expected_seconds: float
 
+    @property
+    def name(self) -> str:
+        return self.request.name
 
-JOBS = {"job-00": Job("job-00", 900, 1_200_000, 2.2, 120.0)}
+
+REQUESTS = {"job-00": Request("job-00", LAYOUT, COMPILATION_SEEDS, ANCHOR_READ)}
+JOBS = {"job-00": Job(REQUESTS["job-00"], 900, 1_200_000, 2.2, 120.0)}
 STAGED = ("cases.json", "circuit.json")
 # qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers, read before the submission.
 BEFORE = "platform-before"
@@ -240,7 +280,7 @@ def logical_unitary(label: str) -> np.ndarray:
     return np.asarray(receive @ analyze @ cnot @ prepare, dtype=complex)
 
 
-def window_matrix(logical: np.ndarray, layout: Sequence[int] = LAYOUT) -> np.ndarray:
+def window_matrix(logical: np.ndarray, layout: Sequence[int]) -> np.ndarray:
     """The logical unitary in chip-window coordinates: entry [layout[o] - w, layout[i] - w] holds [o, i]."""
     start = min(layout)
     slots = [mode - start for mode in layout]
@@ -250,7 +290,7 @@ def window_matrix(logical: np.ndarray, layout: Sequence[int] = LAYOUT) -> np.nda
     return matrix
 
 
-def chip_operator(logical: np.ndarray, layout: Sequence[int] = LAYOUT) -> np.ndarray:
+def chip_operator(logical: np.ndarray, layout: Sequence[int]) -> np.ndarray:
     """The 24-mode operator: the window block at the layout's first mode, identity elsewhere."""
     start = min(layout)
     full = np.eye(MODES, dtype=complex)
@@ -258,7 +298,7 @@ def chip_operator(logical: np.ndarray, layout: Sequence[int] = LAYOUT) -> np.nda
     return full
 
 
-def source_state(layout: Sequence[int] = LAYOUT) -> list[int]:
+def source_state(layout: Sequence[int]) -> list[int]:
     """The 24-entry input occupation: one photon on each of q0, a0 and b0."""
     state = [0] * MODES
     for logical in SOURCES:
@@ -266,7 +306,7 @@ def source_state(layout: Sequence[int] = LAYOUT) -> list[int]:
     return state
 
 
-def classify(clicks: Sequence[int], layout: Sequence[int] = LAYOUT) -> tuple[str, str | None, int | None]:
+def classify(clicks: Sequence[int], layout: Sequence[int]) -> tuple[str, str | None, int | None]:
     """(outcome, Bell pattern, raw receiver bit) of a 24-mode threshold click vector.
 
     The outcomes are "below" and "excess" for fewer or more than three clicks, "outside" for a click off the logical
@@ -296,12 +336,12 @@ def expected_bit(label: str) -> int:
     return 0 if sign == 1 else 1
 
 
-def scored(label: str, outcomes: Mapping[tuple[int, ...], float]) -> tuple[float, float]:
+def scored(label: str, outcomes: Mapping[tuple[int, ...], float], layout: Sequence[int]) -> tuple[float, float]:
     """(accepted probability, correct probability) of a distribution over 24-mode click vectors."""
     basis = next(basis for name, _, basis, _ in SIX_STATES if name == label)
     accepted = correct = 0.0
     for clicks, probability in outcomes.items():
-        outcome, pattern, raw = classify(clicks)
+        outcome, pattern, raw = classify(clicks, layout)
         if outcome != "accepted" or pattern is None or raw is None:
             continue
         x, z = frames()[pattern]
@@ -310,10 +350,10 @@ def scored(label: str, outcomes: Mapping[tuple[int, ...], float]) -> tuple[float
     return accepted, correct
 
 
-def ideal_clicks(label: str) -> dict[tuple[int, ...], float]:
+def ideal_clicks(label: str, layout: Sequence[int]) -> dict[tuple[int, ...], float]:
     """Threshold-click distribution of the noiseless photon-number-resolving propagation of the three photons."""
-    unitary = chip_operator(logical_unitary(label))
-    output = propagate(unitary, {tuple(source_state()): 1.0 + 0.0j})
+    unitary = chip_operator(logical_unitary(label), layout)
+    output = propagate(unitary, {tuple(source_state(layout)): 1.0 + 0.0j})
     clicks: dict[tuple[int, ...], float] = {}
     for occupation, amplitude in output.items():
         key = tuple(1 if count else 0 for count in occupation)
@@ -333,64 +373,67 @@ def inputs() -> list[dict[str, Any]]:
     return rows
 
 
-def ideal(label: str) -> dict[str, float]:
-    accepted, correct = scored(label, ideal_clicks(label))
+def ideal(label: str, layout: Sequence[int]) -> dict[str, float]:
+    accepted, correct = scored(label, ideal_clicks(label, layout), layout)
     return {
         "accepted_probability": round(float(accepted), 12),
         "conditional_fidelity": round(float(correct / accepted), 12),
     }
 
 
-def build_setting(item: tuple[int, dict[str, Any]]) -> tuple[dict[str, Any], dict[str, Any]]:
+def build_setting(item: tuple[int, dict[str, Any], Request]) -> tuple[dict[str, Any], dict[str, Any]]:
     """The template mesh and the manifest setting of one input."""
-    index, row = item
+    index, row, request = item
+    layout = request.layout
     logical = logical_unitary(row["label"])
-    window = window_matrix(logical)
+    window = window_matrix(logical, layout)
     mesh, parameters = photonic_template(window)
-    full = chip_operator(logical)
-    start = min(LAYOUT)
-    source = LAYOUT[Q0]
+    full = chip_operator(logical, layout)
+    start = min(layout)
+    source = layout[Q0]
     return mesh, {
         "name": row["label"],
         "observation_index": index,
         **row,
-        "ideal": ideal(row["label"]),
+        "ideal": ideal(row["label"], layout),
         "circuit_params": parameters,
-        "compilation_seed": COMPILATION_SEEDS[index],
+        "compilation_seed": request.seeds[index],
         "column": [[float(value.real), float(value.imag)] for value in full[:, source]],
         "operator": encoded(full),
         "window_start": start,
     }
 
 
-def circuit_document(mesh: dict[str, Any]) -> dict[str, Any]:
+def circuit_document(mesh: dict[str, Any], layout: Sequence[int]) -> dict[str, Any]:
     """The 24-mode template: the window mesh shifted to the layout's first mode and the three-photon input."""
-    start = min(LAYOUT)
+    start = min(layout)
     ops = [[kind, mode + start, index] for kind, mode, index in mesh["ops"]]
     return {
         "schema": "qd-template-circuit-v1",
         "modes": MODES,
-        "input_state": source_state(),
+        "input_state": source_state(layout),
         "parameters": mesh["parameters"],
         "ops": ops,
     }
 
 
-def request_parts() -> tuple[list[dict[str, Any]], dict[str, Any]]:
+def request_parts(request: Request) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """The six manifest settings and the one template circuit they share."""
-    built = ordered_map(build_setting, list(enumerate(inputs())), min_items=1)
+    require(len(request.seeds) == len(SIX_STATES), f"{request.name}: {len(request.seeds)} seeds for six inputs")
+    built = ordered_map(build_setting, [(index, row, request) for index, row in enumerate(inputs())], min_items=1)
     template = built[0][0]
     for index, (mesh, _) in enumerate(built):
         require(mesh == template, f"input {index} needs another mesh than input 0")
-    return [setting for _, setting in built], circuit_document(template)
+    return [setting for _, setting in built], circuit_document(template, request.layout)
 
 
 def documents(job: Job) -> dict[str, bytes]:
     """{"cases.json": bytes, "circuit.json": bytes} of the job's request."""
-    settings, circuit = request_parts()
+    settings, circuit = request_parts(job.request)
     circuit_bytes = (json.dumps(circuit, indent=1) + "\n").encode()
     count = len(settings)
-    derived = retained_derivation()
+    derived = retained_derivation(job.name)
+    layout = job.request.layout
     manifest = {
         "schema": "qd-hypercomplex-cases-v1",
         "family": FAMILY,
@@ -405,8 +448,8 @@ def documents(job: Job) -> dict[str, bytes]:
         "max_duration": MAX_DURATION,
         "mitigations": [],
         "output_modes": MODES,
-        "logical_modes": sorted(LAYOUT),
-        "layout": {"logical": ["q0", "q1", "a0", "a1", "b0", "b1", "h0", "h1"], "chip_modes": list(LAYOUT)},
+        "logical_modes": sorted(layout),
+        "layout": {"logical": ["q0", "q1", "a0", "a1", "b0", "b1", "h0", "h1"], "chip_modes": list(layout)},
         "eligibility": "three threshold clicks across all 24 returned modes: two on the analyzer in a frame-table "
         "pattern, one on b, none on the heralds or outside the logical modes",
         "frames": {pattern: list(frame) for pattern, frame in sorted(frames().items())},
@@ -438,6 +481,7 @@ def validate(manifest: dict[str, Any], circuit: dict[str, Any]) -> None:
     owner = f"{manifest.get('family')}/{manifest.get('job')}"
     require(manifest.get("job") in JOBS, f"{owner}: job is not registered")
     job = JOBS[manifest["job"]]
+    layout = job.request.layout
     count = len(inputs())
     for key, value in (
         ("family", FAMILY),
@@ -453,11 +497,13 @@ def validate(manifest: dict[str, Any], circuit: dict[str, Any]) -> None:
         ("output_modes", MODES),
     ):
         require(manifest.get(key) == value, f"{owner}: {key} is {manifest.get(key)!r}, not {value!r}")
-    require(manifest["layout"]["chip_modes"] == list(LAYOUT), f"{owner}: the layout is not {LAYOUT}")
+    require(manifest["layout"]["chip_modes"] == list(layout), f"{owner}: the layout is not {layout}")
     require(circuit.get("modes") == MODES, f"{owner}: the circuit spans {circuit.get('modes')} modes, not {MODES}")
-    require(circuit.get("input_state") == source_state(), f"{owner}: the input occupation is not the layout's sources")
+    require(
+        circuit.get("input_state") == source_state(layout), f"{owner}: the input occupation is not the layout's sources"
+    )
     require(all(mode in CONNECTED for mode, count_ in enumerate(circuit["input_state"]) if count_), "unconnected input")
-    start = min(LAYOUT)
+    start = min(layout)
     require(
         all(start <= op[1] and op[1] + (op[0] == "BS") < start + LOGICAL for op in circuit["ops"]),
         f"{owner}: a template op leaves the window {start}..{start + LOGICAL - 1}",
@@ -470,35 +516,42 @@ def validate(manifest: dict[str, Any], circuit: dict[str, Any]) -> None:
     template_experiment(manifest, circuit)
     ordered_map(
         check_setting,
-        [(owner, index, setting, row) for index, (setting, row) in enumerate(zip(settings, rows, strict=True))],
+        [
+            (owner, index, setting, row, job.request)
+            for index, (setting, row) in enumerate(zip(settings, rows, strict=True))
+        ],
         min_items=1,
     )
 
 
-def check_setting(item: tuple[str, int, dict[str, Any], dict[str, Any]]) -> None:
+def check_setting(item: tuple[str, int, dict[str, Any], dict[str, Any], Request]) -> None:
     """One input's position, closed-form chip operator, registered ideal and unitarity."""
-    owner, index, setting, row = item
+    owner, index, setting, row, request = item
+    layout, seeds = request.layout, request.seeds
     label = f"{owner}/{setting.get('name')}"
     for key, value in row.items():
         require(setting.get(key) == value, f"{label}: {key} is {setting.get(key)!r}, not {value!r} at {index}")
     require(setting.get("observation_index") == index, f"{label}: observation_index is not {index}")
     seed = setting.get("compilation_seed")
     require(
-        seed == COMPILATION_SEEDS[index] and type(seed) is int,
-        f"{label}: compilation_seed is {seed!r}, not the registered {COMPILATION_SEEDS[index]} at {index}",
+        seed == seeds[index] and type(seed) is int,
+        f"{label}: compilation_seed is {seed!r}, not the registered {seeds[index]} at {index}",
     )
     full = operator_of(setting)
     require(full.shape == (MODES, MODES), f"{label}: the operator is {full.shape}, not {MODES}-mode")
-    deviation = float(np.max(np.abs(full - chip_operator(logical_unitary(row["label"])))))
+    deviation = float(np.max(np.abs(full - chip_operator(logical_unitary(row["label"]), layout))))
     require(deviation <= BODY_TOLERANCE, f"{label}: the operator departs from the closed form by {deviation:.2e}")
     gram = float(np.max(np.abs(full.conj().T @ full - np.eye(MODES))))
     require(gram <= BODY_TOLERANCE, f"{label}: the operator is not unitary ({gram:.2e})")
-    require(setting.get("ideal") == ideal(row["label"]), f"{label}: the registered ideal differs from propagation")
+    require(
+        setting.get("ideal") == ideal(row["label"], layout), f"{label}: the registered ideal differs from propagation"
+    )
 
 
 def rejections(manifest: dict[str, Any], circuit: dict[str, Any]) -> list[str]:
     """Mutated requests that validate must refuse: a perturbed unitary, an unconnected source, a photon on a herald,
     an unregistered compilation seed."""
+    layout = JOBS[manifest["job"]].request.layout
     reseeded = copy.deepcopy(manifest)
     reseeded["settings"][2]["compilation_seed"] = 0
     perturbed = copy.deepcopy(manifest)
@@ -506,10 +559,10 @@ def rejections(manifest: dict[str, Any], circuit: dict[str, Any]) -> list[str]:
     perturbed["settings"][3]["circuit_params"][parameter] += 1e-3
     moved = copy.deepcopy(circuit)
     state = moved["input_state"]
-    source = LAYOUT[Q0]
+    source = layout[Q0]
     state[source], state[source + 1] = 0, 1
     herald = copy.deepcopy(circuit)
-    herald["input_state"][LAYOUT[H0]] = 1
+    herald["input_state"][layout[H0]] = 1
     return ordered_map(
         refusal,
         [
@@ -654,12 +707,12 @@ class Variant:
     transmission: tuple[float, ...]
 
 
-def variant_scores(item: tuple[Variant, str, dict[str, Any], dict[str, Any]]) -> dict[str, float]:
+def variant_scores(item: tuple[Variant, str, dict[str, Any], dict[str, Any], tuple[int, ...]]) -> dict[str, float]:
     """Per-shot accepted probability, accepted share of the three-click samples and conditional fidelity."""
-    variant, label, setting, circuit = item
+    variant, label, setting, circuit, layout = item
     clicks = detected_clicks(photon_distribution(setting, circuit, variant.hom, variant.g2), variant.transmission)
     sampled = sum(probability for vector, probability in clicks.items() if sum(vector) >= MIN_CLICKS)
-    accepted, correct = scored(label, clicks)
+    accepted, correct = scored(label, clicks, layout)
     return {
         "sample_probability": sampled,
         "accepted_probability": accepted,
@@ -671,11 +724,12 @@ def variant_scores(item: tuple[Variant, str, dict[str, Any], dict[str, Any]]) ->
 ANCHOR_VARIANTS = ("source only", "source and uniform loss", "anchor per-mode transmission")
 
 
-def variants() -> list[Variant]:
+def variants(request: Request) -> list[Variant]:
     """The anchor source figures with ideal detection, with the anchor loss, and with per-mode transmissions of the
-    anchor read and of the fresh read."""
-    anchor = json.loads((ROOT / ANCHOR_READ).read_text(encoding="utf-8"))
-    fresh = json.loads((CASES / "job-00" / READ).read_text(encoding="utf-8"))
+    anchor read and of the case's fresh read. A case anchored at its own read makes the fresh variants repeat the
+    anchor ones, so its allowance holds UNMODELED_ALLOWANCE alone."""
+    anchor = json.loads((ROOT / request.anchor_read).read_text(encoding="utf-8"))
+    fresh = json.loads((request.directory / READ).read_text(encoding="utf-8"))
     t_anchor, _, figures = read_perfs(anchor)
     t_fresh, _, fresh_figures = read_perfs(fresh)
     hom, g2, loss = figures["hom"], figures["g2"], figures["transmittance"]
@@ -695,12 +749,14 @@ def pooled(scores: Mapping[str, Mapping[str, float]]) -> float:
     return sum(weights[label] * scores[label]["conditional_fidelity"] for label in scores) / sum(weights.values())
 
 
-def simulation() -> dict[str, Any]:
+def simulation(request: Request) -> dict[str, Any]:
     """Every variant's per-input scores and pooled fidelity."""
-    settings, circuit = request_parts()
+    settings, circuit = request_parts(request)
     out: dict[str, Any] = {}
-    for variant in variants():
-        rows = ordered_map(variant_scores, [(variant, s["label"], s, circuit) for s in settings], min_items=1)
+    for variant in variants(request):
+        rows = ordered_map(
+            variant_scores, [(variant, s["label"], s, circuit, request.layout) for s in settings], min_items=1
+        )
         per_input = {s["label"]: row for s, row in zip(settings, rows, strict=True)}
         out[variant.name] = {"hom": variant.hom, "g2": variant.g2, "inputs": per_input, "pooled": pooled(per_input)}
     return out
@@ -720,7 +776,8 @@ def derive(sim: Mapping[str, Any]) -> dict[str, Any]:
     service reports nb_shots_used equal to the samples it returns and no count of optical trials, so the attempts of
     an input are modeled as its samples over its three-click probability in the anchor transmission variant; the
     classical bound is attempts_benchmark of those attempts at equal samples, and the analysis takes the larger of it
-    and the bound at the reported shots."""
+    and the bound at the reported shots. bernoulli_decision_count refuses a mean score that does not exceed the bound
+    plus the allowance, so a case without decision power derives no budget."""
     anchor = [sim[name]["pooled"] for name in ANCHOR_VARIANTS]
     mean_score = math.floor(min(anchor) / SYSTEMATIC_QUANTUM) * SYSTEMATIC_QUANTUM
     fresh = sim["fresh per-mode transmission"]["pooled"]
@@ -743,22 +800,23 @@ def derive(sim: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
-def retained_derivation() -> dict[str, Any]:
+def retained_derivation(name: str) -> dict[str, Any]:
     """The derivation retained as noise-model.json, which fixes the manifest's preregistered values."""
-    path = CASES / "job-00" / "noise-model.json"
+    path = CASES / name / "noise-model.json"
     return dict(json.loads(path.read_text(encoding="utf-8"))["derived"])
 
 
 @contextmanager
-def anchor_perfs() -> Iterator[None]:
-    """Serve the anchor read's performance figures wherever Perceval or qd_platform reads the processor's perfs.
+def anchor_perfs(read: str = ANCHOR_READ) -> Iterator[None]:
+    """Serve the performance figures of the platform read at repository path `read` wherever Perceval or qd_platform
+    reads the processor's perfs.
 
     The live record still supplies the architecture, constraints and commands; only `perfs` changes, so payload and
     plan evaluate the request in the anchor state, not the live one."""
     import qd_platform
     from perceval import QuandelaCommunicationLayer
 
-    anchor = json.loads((ROOT / ANCHOR_READ).read_text(encoding="utf-8"))["processors"][PLATFORM]["perfs"]
+    anchor = json.loads((ROOT / read).read_text(encoding="utf-8"))["processors"][PLATFORM]["perfs"]
     live_get = qd_platform.get
     live_perfs = QuandelaCommunicationLayer.get_performances
 
@@ -777,12 +835,13 @@ def anchor_perfs() -> Iterator[None]:
         QuandelaCommunicationLayer.get_performances = live_perfs
 
 
-def shot_estimate() -> dict[str, Any]:
+def shot_estimate(request: Request, case_dir: Path) -> dict[str, Any]:
     """Perceval's estimate_required_shots for each input's max_samples under the anchor read's performance figures.
 
     The platform's live processor record supplies the architecture and constraints, and the anchor read's perfs
     replace the live ones, so the estimate is the one plan would compute in the anchor state. The recorder keeps every
-    estimate payload computes, and an estimate above the case's max_shots stops payload only after it is recorded."""
+    estimate payload computes, and an estimate above the case's max_shots stops payload only after it is recorded, so
+    the max_shots of the request staged in `case_dir` does not enter the estimate."""
     from perceval import RemoteComputer
 
     estimates: list[tuple[int, int | None]] = []
@@ -794,10 +853,10 @@ def shot_estimate() -> dict[str, Any]:
         return value
 
     RemoteComputer.estimate_required_shots = recorded
-    manifest, circuit, _ = load_case(CASES / "job-00")
+    manifest, circuit, _ = load_case(case_dir)
     try:
-        with anchor_perfs():
-            payload(CASES / "job-00", manifest, circuit, PLATFORM)
+        with anchor_perfs(request.anchor_read):
+            payload(case_dir, manifest, circuit, PLATFORM)
     except PlatformError:
         pass
     finally:
@@ -807,7 +866,7 @@ def shot_estimate() -> dict[str, Any]:
     largest = max(value for _, value in estimates if value is not None)
     return {
         "schema": "qd-teleportation-shot-estimate-v1",
-        "basis": "estimate_required_shots under the perfs of " + ANCHOR_READ,
+        "basis": "estimate_required_shots under the perfs of " + request.anchor_read,
         "inputs": {s["label"]: value for s, (_, value) in zip(manifest["settings"], estimates, strict=True)},
         "samples": estimates[0][0],
         "largest": largest,
@@ -815,9 +874,9 @@ def shot_estimate() -> dict[str, Any]:
     }
 
 
-def justify() -> dict[str, Any]:
+def justify(request: Request) -> dict[str, Any]:
     """The simulated variants and the values derived from them; check compares them with noise-model.json."""
-    sim = simulation()
+    sim = simulation(request)
     return {"schema": "qd-teleportation-noise-model-v1", "variants": sim, "derived": derive(sim)}
 
 
@@ -840,8 +899,8 @@ REJECTIONS = ("excess", "outside", "herald", "receiver", "pattern")
 UNCOUNTED = ("missing", "malformed", "error")
 
 
-def tally(counts: Mapping[str, int]) -> tuple[dict[tuple[str, int], int], dict[str, int]]:
-    """Accepted counts by (Bell pattern, raw bit) and rejected counts by reason.
+def tally(counts: Mapping[str, int], layout: Sequence[int]) -> tuple[dict[tuple[str, int], int], dict[str, int]]:
+    """Accepted counts by (Bell pattern, raw bit) and rejected counts by reason under the case's layout.
 
     The job's three-click filter excludes events below three clicks, so one in the counts refuses the record."""
     accepted: dict[tuple[str, int], int] = {}
@@ -849,7 +908,7 @@ def tally(counts: Mapping[str, int]) -> tuple[dict[tuple[str, int], int], dict[s
     for key, count in counts.items():
         if not isinstance(count, int) or isinstance(count, bool) or count < 0:
             raise ProtocolError(f"count {count!r} of {key[:60]!r} is not a nonnegative integer")
-        outcome, pattern, raw = classify(event_vector(key))
+        outcome, pattern, raw = classify(event_vector(key), layout)
         if outcome == "below":
             raise ProtocolError(f"event {key} carries fewer than {MIN_CLICKS} clicks, below the job's filter")
         if outcome == "accepted" and pattern is not None and raw is not None:
@@ -871,7 +930,8 @@ def analyze_results(
 ) -> dict[str, Any]:
     """Score a collected results.json against its manifest.
 
-    Each result iteration binds to the setting whose circuit_params it carries. The joint histogram keyed (input,
+    Each result iteration binds to the setting whose circuit_params it carries, and its events classify under the
+    manifest's layout (layout.chip_modes). The joint histogram keyed (input,
     basis, pattern, raw bit) scores per input and pooled; joint_teleportation_scores, which needs a matching-basis
     trial for each input, cross-checks the pooled value when every input has an accepted event. An input without one
     keeps its rejection counts, reports a null conditional fidelity with a reason, and drops out of the pooled
@@ -886,6 +946,7 @@ def analyze_results(
     if table is not None and {k: tuple(v) for k, v in table.items()} != frame_table:
         raise ProtocolError(f"the frame table {dict(table)} differs from the propagated {frame_table}")
     settings = manifest["settings"]
+    layout = tuple(manifest["layout"]["chip_modes"])
     partial = results.get("partial") is True
     iterations = results.get("iterations")
     if iterations is None and partial:
@@ -909,7 +970,7 @@ def analyze_results(
         if len(matches) != 1 or matches[0]["label"] in rows:
             raise ProtocolError("an iteration does not bind to exactly one unused setting by its circuit_params")
         setting = matches[0]
-        accepted, rejected = tally(entry["counts"])
+        accepted, rejected = tally(entry["counts"], layout)
         shots = entry.get("result_fields", {}).get("nb_shots_used")
         samples = sum(entry["counts"].values())
         if not isinstance(shots, int) or isinstance(shots, bool) or shots < samples:
@@ -1046,7 +1107,10 @@ def simulated_results(manifest: Mapping[str, Any], circuit: Mapping[str, Any], v
 
 
 def check() -> int:
-    """Rebuild each job in memory, require the retained bytes, validate them and their derivation and body."""
+    """Rebuild each job in memory, require the retained bytes, validate them and their derivation and body.
+
+    A job's layout must be the one its own platform read selects, and its budgets those its retained derivation and
+    shot estimate give."""
     for job in JOBS.values():
         out = CASES / job.name
         if not (out / "cases.json").is_file():
@@ -1061,9 +1125,15 @@ def check() -> int:
         validate(manifest, circuit)
         refused = rejections(manifest, circuit)
         t_out, dark, _ = read_perfs(json.loads((out / READ).read_text(encoding="utf-8")))
-        require(choose_layout(t_out, dark) == LAYOUT, f"{job.name}: the retained read selects another layout")
-        derived = retained_derivation()
-        close(justify(), json.loads((out / "noise-model.json").read_text(encoding="utf-8")), "noise-model.json")
+        require(
+            choose_layout(t_out, dark) == job.request.layout, f"{job.name}: the retained read selects another layout"
+        )
+        derived = retained_derivation(job.name)
+        close(
+            justify(job.request),
+            json.loads((out / "noise-model.json").read_text(encoding="utf-8")),
+            f"{job.name}/noise-model.json",
+        )
         require(
             derived["samples_per_iteration"] <= job.samples,
             f"{job.name}: {job.samples} samples per iteration are below the derived {derived['samples_per_iteration']}",
@@ -1072,6 +1142,10 @@ def check() -> int:
         require(
             estimate["samples"] == job.samples and estimate["shots_per_iteration"] == job.shots,
             f"{job.name}: max_shots {job.shots} differs from the retained estimate's {estimate['shots_per_iteration']}",
+        )
+        require(
+            job.credit_ceiling >= PER_JOB_CREDITS + job.shots * PRICE_PER_SHOT - 1e-9,
+            f"{job.name}: the credit ceiling {job.credit_ceiling} is below the per-job price plus max_shots",
         )
         print(
             f"teleportation rehearsal {job.name}: {len(manifest['settings'])} inputs validated, cases.json "
@@ -1100,6 +1174,7 @@ def validate_body(body: dict[str, Any], manifest: dict[str, Any]) -> None:
     from perceval.serialization import deserialize
 
     job = JOBS[manifest["job"]]
+    seeds = job.request.seeds
     for key, value in (
         ("job_name", f"{manifest['family']}/{manifest['job']}"),
         ("platform_name", PLATFORM),
@@ -1114,16 +1189,15 @@ def validate_body(body: dict[str, Any], manifest: dict[str, Any]) -> None:
     iterations = computation.iterations
     require(len(iterations) == len(manifest["settings"]), f"job body: {len(iterations)} entries")
     experiment = computation.experiment
-    require(list(experiment.input_state) == source_state(), "job body: the input occupation differs")
+    require(list(experiment.input_state) == source_state(job.request.layout), "job body: the input occupation differs")
     require(experiment.min_photons_filter == MIN_CLICKS, "job body: the photon filter differs")
     circuit = experiment.unitary_circuit()
     parameters = circuit.get_parameters()
     for index, (entry, setting) in enumerate(zip(iterations, manifest["settings"], strict=True)):
         require(entry.get("circuit_params") == setting["circuit_params"], f"job body entry {index}: params differ")
         require(
-            entry.get("compilation_seed") == COMPILATION_SEEDS[index],
-            f"job body entry {index}: compilation_seed is {entry.get('compilation_seed')!r}, "
-            f"not {COMPILATION_SEEDS[index]}",
+            entry.get("compilation_seed") == seeds[index],
+            f"job body entry {index}: compilation_seed is {entry.get('compilation_seed')!r}, not {seeds[index]}",
         )
         require(
             entry.get("max_samples") == job.samples and entry.get("max_shots") == job.shots, f"entry {index} budgets"
@@ -1143,7 +1217,7 @@ def freeze_body(job: Job, anchor: bool) -> int:
     out = CASES / job.name
     manifest, circuit, cases_sha256 = load_case(out)
     validate(manifest, circuit)
-    with anchor_perfs() if anchor else nullcontext():
+    with perfs_gate(job, anchor):
         built = payload(out, manifest, circuit, PLATFORM)
     validate_body(built["body"], manifest)
     body_bytes = (json.dumps(built["body"], indent=1, sort_keys=True) + "\n").encode()
@@ -1154,7 +1228,7 @@ def freeze_body(job: Job, anchor: bool) -> int:
         "estimated_shots": built["estimated_shots"],
         "payload_version_basis": built["payload_version_basis"],
         "versions": built["versions"],
-        "perfs_basis": ANCHOR_READ if anchor else "live processor record",
+        "perfs_basis": job.request.anchor_read if anchor else "live processor record",
         "built_utc": datetime.now(UTC).isoformat(timespec="seconds"),
         "sent": False,
     }
@@ -1169,16 +1243,28 @@ def freeze_body(job: Job, anchor: bool) -> int:
     return 0
 
 
-def live_model() -> dict[str, Any]:
+def perfs_gate(job: Job, anchor: bool) -> Any:
+    """The anchor read's performance figures with `anchor`, else the live ones; a case anchored at its own read
+    refuses `anchor`, since its preregistration already describes that read and only the live gate applies."""
+    if not anchor:
+        return nullcontext()
+    require(not job.request.own_anchor, f"{job.name} is anchored at its own platform read; the live gate applies")
+    return anchor_perfs(job.request.anchor_read)
+
+
+def live_model(request: Request | None = None) -> dict[str, Any]:
     """The pooled fidelity the noise model gives at the platform's live performance figures, read without a token
-    write: the source figures, uniform loss and per-mode transmission of the live processor record."""
+    write: the source figures, uniform loss and per-mode transmission of the live processor record. The case is
+    job-00 unless named."""
     from qd_platform import get, platform_route, scrub
 
-    return model_at(scrub(get(platform_route(PLATFORM)).get("perfs") or {}))
+    return model_at(scrub(get(platform_route(PLATFORM)).get("perfs") or {}), request)
 
 
-def model_at(perfs: Mapping[str, Any]) -> dict[str, Any]:
-    """The noise model's pooled fidelity at one processor record's perfs object, against the justified mean score."""
+def model_at(perfs: Mapping[str, Any], request: Request | None = None) -> dict[str, Any]:
+    """The noise model's pooled fidelity at one processor record's perfs object, against the justified mean score of
+    the case `request` (job-00 unless named, the case scripts/qd_record_watch.py gates on)."""
+    request = request or REQUESTS["job-00"]
     figures = {
         "hom": perfs["HOM (%)"] / 100.0,
         "g2": perfs["g2 (%)"] / 100.0,
@@ -1186,10 +1272,12 @@ def model_at(perfs: Mapping[str, Any]) -> dict[str, Any]:
     }
     transmission = tuple(detection_efficiency(perfs["Transmission per mode (%)"]["t_out"], figures["transmittance"]))
     variant = Variant("live read", figures["hom"], figures["g2"], transmission)
-    settings, circuit = request_parts()
-    rows = ordered_map(variant_scores, [(variant, s["label"], s, circuit) for s in settings], min_items=1)
+    settings, circuit = request_parts(request)
+    rows = ordered_map(
+        variant_scores, [(variant, s["label"], s, circuit, request.layout) for s in settings], min_items=1
+    )
     pooled_fidelity = pooled({s["label"]: row for s, row in zip(settings, rows, strict=True)})
-    mean_score = retained_derivation()["mean_score"]
+    mean_score = retained_derivation(request.name)["mean_score"]
     return {
         "figures": figures,
         "pooled_fidelity": pooled_fidelity,
@@ -1207,8 +1295,8 @@ def dry_run(job: Job, anchor: bool) -> int:
     runs under the anchor read's performance figures and lands in plan-anchor.json."""
     out = CASES / job.name
     suffix = "-anchor" if anchor else ""
-    with anchor_perfs() if anchor else nullcontext():
-        model = live_model()
+    with perfs_gate(job, anchor):
+        model = live_model(job.request)
         return planned(job, out, suffix, model)
 
 
@@ -1232,7 +1320,7 @@ def retain_refusal(job: Job, out: Path, suffix: str, model: dict[str, Any], reas
         {
             "refusal": reason,
             "model": model,
-            "perfs_basis": ANCHOR_READ if suffix else "live processor record",
+            "perfs_basis": job.request.anchor_read if suffix else "live processor record",
             "planned_utc": datetime.now(UTC).isoformat(timespec="seconds"),
             "sent": False,
         },
@@ -1266,7 +1354,7 @@ def planned(job: Job, out: Path, suffix: str, model: dict[str, Any]) -> int:
     record = {key: value for key, value in checked.items() if key != "body"}
     record["body_sha256_without_process_id"] = body_digest(checked["body"])
     record["model"] = model
-    record["perfs_basis"] = ANCHOR_READ if suffix else "live processor record"
+    record["perfs_basis"] = job.request.anchor_read if suffix else "live processor record"
     record["planned_utc"] = datetime.now(UTC).isoformat(timespec="seconds")
     record["sent"] = False
     path = attempt_path(out, f"plan{suffix}")
@@ -1304,7 +1392,7 @@ def binding(job: Job, admitted: dict[str, Any]) -> Callable[[dict[str, Any]], No
         fresh, frozen = body_digest(checked["body"]), body_digest(retained)
         if fresh != frozen:
             raise PlatformError(f"the planned body {fresh} differs from the retained body {frozen} beyond process_id")
-        model = live_model()
+        model = live_model(job.request)
         if not model["inside_justified_range"]:
             raise PlatformError(
                 f"model pooled fidelity {model['pooled_fidelity']:.4f} at the live figures is below the justified "
@@ -1322,11 +1410,12 @@ def send(run: Path, approval: str, anchor: bool = False) -> int:
     figures (anchor_perfs), the gate the written case's anchor approval names; the platform read, and the live
     model recorded beside the admitting one, stay on the live record."""
     job = staged(run)
+    context = perfs_gate(job, anchor)
     snapshot(run / BEFORE)
     observe(run / BEFORE)
-    live = live_model() if anchor else None
+    live = live_model(job.request) if anchor else None
     admitted: dict[str, Any] = {}
-    with anchor_perfs() if anchor else nullcontext():
+    with context:
         record = submit(
             run,
             PLATFORM,
@@ -1339,7 +1428,7 @@ def send(run: Path, approval: str, anchor: bool = False) -> int:
     gate = {
         "job_id": record["job_id"],
         "gate": "anchor" if anchor else "live",
-        "perfs_basis": ANCHOR_READ if anchor else "live processor record",
+        "perfs_basis": job.request.anchor_read if anchor else "live processor record",
         "model": admitted,
     }
     if live is not None:
@@ -1352,41 +1441,86 @@ def send(run: Path, approval: str, anchor: bool = False) -> int:
     return 0
 
 
-def write_estimate() -> int:
-    """Retain the anchor-state shot estimate beside the case; a retained file is never rewritten."""
-    path = CASES / "job-00" / ESTIMATE
+def write_estimate(request: Request, case_dir: Path | None = None) -> dict[str, Any]:
+    """Retain the anchor-state shot estimate of the request staged in `case_dir` (the case directory by default)
+    beside the case; a retained file is never rewritten."""
+    path = request.directory / ESTIMATE
     require(not path.exists(), f"{path.relative_to(ROOT)} exists; the retained estimate is frozen")
-    record = shot_estimate()
+    record = shot_estimate(request, case_dir or request.directory)
     path.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(record, indent=1, sort_keys=True))
-    return 0
+    return record
 
 
-def write_justification() -> int:
+def write_justification(request: Request) -> dict[str, Any]:
     """Retain the noise-model derivation beside the case; a retained file is never rewritten."""
-    out = CASES / "job-00"
-    path = out / "noise-model.json"
+    path = request.directory / "noise-model.json"
     require(not path.exists(), f"{path.relative_to(ROOT)} exists; the retained derivation is frozen")
-    record = justify()
+    record = justify(request)
     path.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(record["derived"], indent=1, sort_keys=True))
+    return record
+
+
+def prepare(name: str) -> int:
+    """Derive the case `name` from its retained platform read and print the rows that register it.
+
+    CASES/name/platform-read/catalogue.json, written by `qd_platform.py snapshot --out` that directory, is the case's
+    fresh read and its anchor read. choose_layout places the logical modes on it, justify derives the decision rule
+    and the sample budget under its figures (noise-model.json), and estimate_required_shots under its perfs sizes
+    max_shots (shot-estimate.json) on the request staged in a temporary directory. The job bills 1 + max_shots * 1e-6
+    credits, and its expected seconds are max_duration: an iteration that exhausts max_shots runs until the service's
+    limit, as job-00's six iterations did in 292 of their 300 s. The REQUESTS and JOBS rows printed last enter the
+    script in the change that retains these files, and `JOB`, --check, --body JOB and --plan JOB follow. A rerun
+    re-derives and compares a retained noise-model.json and reuses a retained shot-estimate.json, so a failed live
+    estimate resumes without rewriting a retained file."""
+    require(name in CASE_SEEDS and name not in JOBS, f"{name} is not a seeded case without a registered job")
+    request_dir = CASES / name
+    read = request_dir / READ
+    require(read.is_file(), f"{read.relative_to(ROOT)} is absent; snapshot the platform into it first")
+    t_out, dark, _ = read_perfs(json.loads(read.read_text(encoding="utf-8")))
+    request = Request(name, choose_layout(t_out, dark), CASE_SEEDS[name], str(read.relative_to(ROOT)))
+    retained = request_dir / "noise-model.json"
+    if retained.is_file():
+        close(justify(request), json.loads(retained.read_text(encoding="utf-8")), f"{name}/noise-model.json")
+        derived = retained_derivation(name)
+    else:
+        derived = write_justification(request)["derived"]
+    samples = int(derived["samples_per_iteration"])
+    if (request_dir / ESTIMATE).is_file():
+        estimate = json.loads((request_dir / ESTIMATE).read_text(encoding="utf-8"))
+        require(estimate["samples"] == samples, f"{name}/{ESTIMATE} estimates {estimate['samples']} samples")
+    else:
+        with tempfile.TemporaryDirectory() as staging:
+            stage = Path(staging)
+            # payload records every estimate before it compares max_shots, so this staging budget leaves them as is.
+            provisional = Job(request, samples, SHOT_QUANTUM, PER_JOB_CREDITS, float(MAX_DURATION))
+            for file_name, content in documents(provisional).items():
+                (stage / file_name).write_bytes(content)
+            estimate = write_estimate(request, stage)
+    shots = int(estimate["shots_per_iteration"])
+    credits = round(PER_JOB_CREDITS + shots * PRICE_PER_SHOT, 6)
+    print(
+        f'REQUESTS["{name}"] = Request("{name}", {request.layout}, {name.upper().replace("-", "_")}_COMPILATION_SEEDS, '
+        f'"{request.anchor_read}")'
+    )
+    print(f'JOBS["{name}"] = Job(REQUESTS["{name}"], {samples}, {shots:_}, {credits}, {float(MAX_DURATION)})')
     return 0
 
 
-def simulate(out: Path) -> int:
+def simulate(out: Path, job: Job) -> int:
     """Stage the frozen request into OUT and write the local simulation's results.json beside it.
 
     OUT holds no request or result file beforehand: a run directory that carries cases.json, circuit.json,
     results.json, submission.json or raw/ belongs to a staged or collected run, and the simulation never overwrites
     it."""
-    job = JOBS["job-00"]
     held = [name for name in (*STAGED, "results.json", "submission.json", "raw") if (out / name).exists()]
     require(not held, f"{out} already holds {', '.join(held)}; --simulate writes into a directory without a run")
     manifest, circuit, _ = load_case(CASES / job.name)
     out.mkdir(parents=True, exist_ok=True)
     for name in STAGED:
         (out / name).write_bytes((CASES / job.name / name).read_bytes())
-    variant = next(v for v in variants() if v.name == "anchor per-mode transmission")
+    variant = next(v for v in variants(job.request) if v.name == "anchor per-mode transmission")
     write_json(out / "results.json", simulated_results(manifest, circuit, variant))
     print(f"teleportation rehearsal: {out / 'results.json'} from the {variant.name} variant")
     return 0
@@ -1424,16 +1558,20 @@ def main(argv: list[str]) -> int:
     if argv == ["--check"]:
         return check()
     if argv == ["--estimate"]:
-        return write_estimate()
+        write_estimate(REQUESTS["job-00"])
+        return 0
     if argv == ["--justify"]:
-        return write_justification()
+        write_justification(REQUESTS["job-00"])
+        return 0
+    if len(argv) == 2 and argv[0] == "--prepare":
+        return prepare(argv[1])
     anchor = argv[2:] == ["--anchor"]
     if len(argv) in (2, 3) and argv[0] == "--body" and argv[1] in JOBS and (len(argv) == 2 or anchor):
         return freeze_body(JOBS[argv[1]], anchor)
     if len(argv) in (2, 3) and argv[0] == "--plan" and argv[1] in JOBS and (len(argv) == 2 or anchor):
         return dry_run(JOBS[argv[1]], anchor)
-    if len(argv) == 2 and argv[0] == "--simulate":
-        return simulate(Path(argv[1]))
+    if len(argv) in (2, 3) and argv[0] == "--simulate" and argv[2:3] in ([], *([job] for job in JOBS)):
+        return simulate(Path(argv[1]), JOBS[argv[2] if len(argv) == 3 else "job-00"])
     if len(argv) in (2, 3) and argv[0] == "--analyze" and argv[2:] in ([], ["--check"]):
         return analyze(Path(argv[1]), argv[2:] == ["--check"])
     if len(argv) in (3, 4) and argv[0] == "--submit" and argv[3:] in ([], ["--anchor"]):
@@ -1441,10 +1579,10 @@ def main(argv: list[str]) -> int:
     if len(argv) == 1 and argv[0] in JOBS:
         return build(JOBS[argv[0]])
     raise ValueError(
-        "usage: qd_teleportation_rehearsal.py [--check | --justify | --estimate | JOB | --body JOB [--anchor] | "
-        "--plan JOB [--anchor] | "
-        f"--simulate OUT | --analyze RUN [--check] | --submit RUN APPROVAL [--anchor]], JOB in {sorted(JOBS)}, "
-        f"not {argv}"
+        "usage: qd_teleportation_rehearsal.py [--check | --justify | --estimate | --prepare CASE | JOB | "
+        "--body JOB [--anchor] | --plan JOB [--anchor] | "
+        f"--simulate OUT [JOB] | --analyze RUN [--check] | --submit RUN APPROVAL [--anchor]], JOB in {sorted(JOBS)}, "
+        f"CASE in {sorted(set(CASE_SEEDS) - set(JOBS))}, not {argv}"
     )
 
 
