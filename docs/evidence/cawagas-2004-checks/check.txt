@@ -15,5 +15,5 @@ Table 5 pairs zero in cd_core after the sign map: 84
 Table 5 pairs zero in cd_core with indices copied unmapped: 84
 Section 4 worked product (e2 - e14)(e3 + e15) in the paper's rule: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 Moreno (e1 + e10)(e15 - e4): paper's rule [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; cd_core unmapped [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-cd_core four-term +-1 elements with support spanning F_2^4: 6720; zero divisors: 672
+cd_core four-term +-1 elements, every sign, spanning support: 13440; zero divisors: 1344
   first: support (1, 2, 11, 12) signs (1, 1, 1, 1) nullity 4; it lies in no order-16 subloop, so no quasi-octonion copy

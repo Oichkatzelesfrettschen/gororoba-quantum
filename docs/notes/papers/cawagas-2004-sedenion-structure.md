@@ -156,8 +156,8 @@ proposed use. [C] identifies a statement recomputed against
   e_1 = 0`.
 - [C] The worked product is zero in the paper's rule and in `cd_core`.
 - [C] Proposition 2 holds for the listed pairs and says nothing about all
-  zero divisors: among the 6720 four-term elements with `+-1` coefficients
-  whose index support spans `F_2^4`, 672 are zero divisors in `cd_core`
+  zero divisors: among the 13440 four-term elements with `+-1` coefficients (every sign pattern)
+  whose index support spans `F_2^4`, 1344 are zero divisors in `cd_core`
   (first: `e_1 + e_2 + e_11 + e_12`, nullity 4). A spanning support lies in
   no order-16 subloop, so these zero divisors lie in no quasi-octonion copy.
   [I] The unit zero divisors of the sedenions form an 11-dimensional set

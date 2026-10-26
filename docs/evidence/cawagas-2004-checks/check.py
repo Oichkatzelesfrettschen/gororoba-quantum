@@ -91,16 +91,17 @@ def cawagas_sign() -> dict[tuple[int, int], int]:
     return sign
 
 
-def diagonal_maps(cw: dict[tuple[int, int], int]) -> list[tuple[int, ...]]:
-    """Every s in {+-1}^16 with s_0 = 1 and cw(a, b) = s_a s_b s_(a^b) cd_sign(a, b) on all pairs."""
-    maps = []
-    for bits in range(1 << (DIM - 1)):
-        s = (1,) + tuple(-1 if bits >> k & 1 else 1 for k in range(DIM - 1))
-        if all(
-            cw[(a, b)] == s[a] * s[b] * s[a ^ b] * cd_core.cd_sign(DIM, a, b) for a in range(DIM) for b in range(DIM)
-        ):
-            maps.append(s)
-    return maps
+def sign_map(bits: int) -> tuple[int, ...] | None:
+    """The diagonal map s with s_0 = 1 encoded by bits when cw(a, b) = s_a s_b s_(a^b) cd_sign(a, b) on all pairs."""
+    cw = cawagas_sign()
+    s = (1,) + tuple(-1 if bits >> k & 1 else 1 for k in range(DIM - 1))
+    ok = all(cw[(a, b)] == s[a] * s[b] * s[a ^ b] * cd_core.cd_sign(DIM, a, b) for a in range(DIM) for b in range(DIM))
+    return s if ok else None
+
+
+def diagonal_maps() -> list[tuple[int, ...]]:
+    """Every s in {+-1}^16 with s_0 = 1 carrying the paper's rule onto cd_core, in candidate order."""
+    return [s for s in parallel.ordered_map(sign_map, list(range(1 << (DIM - 1)))) if s is not None]
 
 
 def subspaces() -> list[tuple[int, ...]]:
@@ -182,7 +183,7 @@ def main() -> int:
     print("rule: the 35 triplets fix all 256 basis products and obey e_a e_b = +-e_(a^b)")
     agree = sum(cw[(a, b)] == cd_core.cd_sign(DIM, a, b) for a in range(DIM) for b in range(DIM))
     print(f"sign agreement with cd_core.cd_sign before any map: {agree} of 256")
-    maps = diagonal_maps(cw)
+    maps = diagonal_maps()
     print(f"diagonal sign maps e_i -> s_i e_i carrying the paper's rule onto cd_core: {len(maps)}")
     s = maps[0] if maps else None
     if s:
@@ -224,10 +225,10 @@ def main() -> int:
     print(f"Moreno (e1 + e10)(e15 - e4): paper's rule {moreno_cw}; cd_core unmapped {[int(x) for x in moreno_cd]}")
 
     supports = [t for t in itertools.combinations(range(1, DIM), 4) if rank_f2(t) == 4]
-    jobs = [(t, (1,) + signs) for t in supports for signs in itertools.product((1, -1), repeat=3)]
+    jobs = [(t, signs) for t in supports for signs in itertools.product((1, -1), repeat=4)]
     results = parallel.ordered_map(candidate, jobs)
     spanning = [(t, sg, n) for t, sg, n in results if n]
-    print(f"cd_core four-term +-1 elements with support spanning F_2^4: {len(jobs)}; zero divisors: {len(spanning)}")
+    print(f"cd_core four-term +-1 elements, every sign, spanning support: {len(jobs)}; zero divisors: {len(spanning)}")
     if spanning:
         t, sg, n = spanning[0]
         print(f"  first: support {t} signs {sg} nullity {n}; it lies in no order-16 subloop, so no quasi-octonion copy")
