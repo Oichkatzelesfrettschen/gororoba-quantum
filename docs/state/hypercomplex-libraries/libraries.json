@@ -2533,14 +2533,16 @@
     "gororoba_quantum/patch_characterization.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/predict.py",
+    "gororoba_quantum/primorial_campaigns.py",
     "gororoba_quantum/primorial_cover.py",
-    "gororoba_quantum/primorial_gap88.py",
+    "gororoba_quantum/primorial_tomography.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
     "gororoba_quantum/qet_ladder.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
     "gororoba_quantum/qubit_baseline.py",
+    "gororoba_quantum/ramsey_phase.py",
     "gororoba_quantum/rank_sector_contracts.py",
     "gororoba_quantum/rank_sector_experiments.py",
     "gororoba_quantum/replica_covariance_contracts.py",
@@ -2687,6 +2689,7 @@
     "gororoba_quantum/check_et_rows.py",
     "gororoba_quantum/check_et_runtime.py",
     "gororoba_quantum/claim_boundaries.py",
+    "gororoba_quantum/coherence_probes.py",
     "gororoba_quantum/coherence_window.py",
     "gororoba_quantum/conditional_ramsey.py",
     "gororoba_quantum/correction_circuits.py",
@@ -2730,6 +2733,7 @@
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/predict.py",
     "gororoba_quantum/primorial_cover.py",
+    "gororoba_quantum/primorial_gap88.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
     "gororoba_quantum/qet_ladder.py",
     "gororoba_quantum/qpe_diagnostics.py",
@@ -2831,6 +2835,7 @@
     "scripts/photonic_repeat_readout_pooled.py",
     "scripts/primorial_bound_residuals.py",
     "scripts/primorial_cover_noise.py",
+    "scripts/primorial_probe_case.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
     "scripts/qd_belenos_mesh.py",
@@ -4513,7 +4518,8 @@
     "gororoba_quantum/packing.py",
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/patch_characterization.py",
-    "gororoba_quantum/primorial_gap88.py",
+    "gororoba_quantum/primorial_campaigns.py",
+    "gororoba_quantum/primorial_tomography.py",
     "gororoba_quantum/pub_shot_runtime_contracts.py",
     "gororoba_quantum/qet_ladder.py",
     "gororoba_quantum/qpe_diagnostics.py",
@@ -4610,6 +4616,7 @@
     "gororoba_quantum/check_et_rows.py",
     "gororoba_quantum/check_et_runtime.py",
     "gororoba_quantum/claim_boundaries.py",
+    "gororoba_quantum/coherence_probes.py",
     "gororoba_quantum/coherence_window.py",
     "gororoba_quantum/compile_evidence.py",
     "gororoba_quantum/conditional_ramsey.py",
@@ -4651,6 +4658,7 @@
     "gororoba_quantum/packing.py",
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/patch_characterization.py",
+    "gororoba_quantum/primorial_gap88.py",
     "gororoba_quantum/pub_shot_runtime_contracts.py",
     "gororoba_quantum/qet_ladder.py",
     "gororoba_quantum/qpe_diagnostics.py",
@@ -4718,6 +4726,7 @@
     "scripts/packed_pauli_probe.py",
     "scripts/primorial_cover_noise.py",
     "scripts/primorial_null_residuals.py",
+    "scripts/primorial_probe_case.py",
     "scripts/qi_bdsc_pauli_cases.py",
     "scripts/qi_cancellation_cases.py",
     "scripts/qi_ibm_noise_replay.py",
@@ -5406,6 +5415,7 @@
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/n21_orbit_rca.py",
     "scripts/observe_qpu_job_inventory.py",
+    "scripts/primorial_probe_case.py",
     "scripts/qpu_runtime_levers.py",
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
@@ -6001,7 +6011,9 @@
     "scripts/primorial_probe_case.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
-   "historical_imported_by": []
+   "historical_imported_by": [
+    "scripts/primorial_probe_case.py"
+   ]
   },
   {
    "distribution": "scikit-build",
@@ -6124,6 +6136,7 @@
     "scripts/n21_spectator_ramsey.py",
     "scripts/pais_claim_bounds.py",
     "scripts/patch_window_analysis.py",
+    "scripts/primorial_probe_case.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
     "scripts/qet_passivity_controls.py",
@@ -7659,11 +7672,10 @@
   "gororoba_quantum/coherence_probes.py": [
    "__future__",
    "collections",
-   "conditional_ramsey",
-   "experiments",
    "math",
    "numpy",
-   "qiskit"
+   "qiskit",
+   "ramsey_phase"
   ],
   "gororoba_quantum/coherence_window.py": [
    "__future__",
@@ -7729,7 +7741,8 @@
    "fractions",
    "math",
    "numpy",
-   "qiskit"
+   "qiskit",
+   "ramsey_phase"
   ],
   "gororoba_quantum/correction_case_contracts.py": [
    "__future__",
@@ -8109,7 +8122,6 @@
   "gororoba_quantum/experiments.py": [
    "__future__",
    "cd_core",
-   "coherence_probes",
    "collections",
    "conditional_ramsey",
    "crossed_tile_template",
@@ -8122,7 +8134,7 @@
    "numpy",
    "order_finding",
    "predict",
-   "primorial_gap88",
+   "primorial_campaigns",
    "qet_ladder",
    "qiskit",
    "qubit_baseline",
@@ -8662,6 +8674,16 @@
    "cd_core",
    "numpy"
   ],
+  "gororoba_quantum/primorial_campaigns.py": [
+   "__future__",
+   "coherence_probes",
+   "collections",
+   "experiments",
+   "numpy",
+   "primorial_tomography",
+   "qiskit",
+   "typing"
+  ],
   "gororoba_quantum/primorial_cover.py": [
    "__future__",
    "argparse",
@@ -8677,19 +8699,6 @@
    "sys",
    "typing"
   ],
-  "gororoba_quantum/primorial_gap88.py": [
-   "__future__",
-   "coherence_probes",
-   "collections",
-   "experiments",
-   "functools",
-   "importlib",
-   "numpy",
-   "pathlib",
-   "qiskit",
-   "sys",
-   "typing"
-  ],
   "gororoba_quantum/primorial_table.py": [
    "__future__",
    "argparse",
@@ -8699,6 +8708,16 @@
    "pathlib",
    "primorial_cover",
    "sys",
+   "typing"
+  ],
+  "gororoba_quantum/primorial_tomography.py": [
+   "__future__",
+   "collections",
+   "math",
+   "numpy",
+   "primorial_cover",
+   "qiskit",
+   "statistics",
    "typing"
   ],
   "gororoba_quantum/principal_skew_atlas.py": [
@@ -8935,6 +8954,11 @@
    "experiments",
    "numpy",
    "qiskit"
+  ],
+  "gororoba_quantum/ramsey_phase.py": [
+   "__future__",
+   "math",
+   "numpy"
   ],
   "gororoba_quantum/rank_attachments.py": [
    "__future__",
@@ -9234,6 +9258,7 @@
    "numpy",
    "parallel",
    "qiskit",
+   "ramsey_phase",
    "typing"
   ],
   "gororoba_quantum/target_flip.py": [
@@ -11863,6 +11888,7 @@
    "pathlib",
    "primorial_cover_noise",
    "primorial_null_residuals",
+   "primorial_tomography",
    "sys",
    "time",
    "typing"
@@ -11871,7 +11897,6 @@
    "__future__",
    "argparse",
    "calibration_snapshot",
-   "collections",
    "hashlib",
    "json",
    "math",
@@ -11879,10 +11904,10 @@
    "parallel",
    "pathlib",
    "primorial_cover",
+   "primorial_tomography",
    "qiskit",
    "qiskit_aer",
    "snapshot_laws",
-   "statistics",
    "sys",
    "time",
    "typing"
@@ -11898,6 +11923,7 @@
    "parallel",
    "pathlib",
    "primorial_cover_noise",
+   "primorial_tomography",
    "qiskit",
    "sys",
    "time",
@@ -11918,6 +11944,7 @@
    "primorial_bound_residuals",
    "primorial_cover_noise",
    "primorial_null_residuals",
+   "primorial_tomography",
    "qiskit",
    "qiskit_ibm_runtime",
    "samplomatic",

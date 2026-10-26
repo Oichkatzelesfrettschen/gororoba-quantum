@@ -60,6 +60,7 @@ import numpy as np
 from qiskit import QuantumCircuit
 
 from experiments import Group, Member
+from ramsey_phase import corrected_expectation, fit_rate
 
 SECTORS = ("even", "odd", "a_given_b0", "a_given_b1")
 # Rows of the design matrix over (omega_A, omega_B, J).
@@ -173,10 +174,6 @@ def a_assignment(distributions: Mapping[str, np.ndarray]) -> tuple[float, float]
     return float(zero[1] + zero[3]), float(one[0] + one[2])
 
 
-def corrected_expectation(raw: float, e10: float, e01: float) -> float:
-    return (raw - (e01 - e10)) / (1.0 - e10 - e01)
-
-
 def conditioned(distribution: np.ndarray, sector: str) -> np.ndarray:
     """A conditional arm's law restricted to B read as prepared and renormalized; Bell arms unchanged.
 
@@ -194,31 +191,6 @@ def conditioned(distribution: np.ndarray, sector: str) -> np.ndarray:
 def b_preparation_error(distribution: np.ndarray, sector: str) -> float:
     b = B_PREPARED[sector]
     return float(distribution[(1 - b) << 1] + distribution[((1 - b) << 1) | 1])
-
-
-def unwrap(delays: tuple[int, ...], phases: list[float]) -> list[float]:
-    """Unwrap each phase to the branch nearest its prediction from the shorter delays.
-
-    The first increment is taken inside (-pi, pi]; every later phase is moved
-    by whole turns toward the line fitted through the phases already placed.
-    """
-    out = [phases[0]]
-    for index in range(1, len(phases)):
-        if index == 1:
-            predicted = out[0]
-        else:
-            slope, intercept = np.polyfit(np.asarray(delays[:index], dtype=float), np.asarray(out), 1)
-            predicted = float(slope * delays[index] + intercept)
-        turns = round((predicted - phases[index]) / (2.0 * math.pi))
-        out.append(phases[index] + 2.0 * math.pi * turns)
-    return out
-
-
-def fit_rate(delays: tuple[int, ...], phases: list[float]) -> tuple[float, float]:
-    """Least-squares slope (rad per dt) and intercept of unwrapped phase against delay."""
-    unwrapped = unwrap(delays, phases)
-    slope, intercept = np.polyfit(np.asarray(delays, dtype=float), np.asarray(unwrapped), 1)
-    return float(slope), float(intercept)
 
 
 def reconstruct(rates: Mapping[str, float]) -> dict[str, float]:

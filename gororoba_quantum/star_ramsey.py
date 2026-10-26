@@ -98,12 +98,11 @@ from conditional_ramsey import (
     FIRST_DELAY_DT,
     QUADRATURES,
     Evolution,
-    corrected_expectation,
-    fit_rate,
     rate_hz,
     unambiguous_rate_bound,
 )
 from experiments import Group, Member
+from ramsey_phase import corrected_expectation, fit_rate
 
 QUBITS = 4
 LEAVES = (1, 2, 3)

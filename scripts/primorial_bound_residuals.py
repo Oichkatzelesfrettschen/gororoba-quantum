@@ -71,6 +71,7 @@ import primorial_null_residuals as nr  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import parallel  # noqa: E402
+import primorial_tomography as tomo  # noqa: E402
 
 NULL_RECORD = ROOT / "docs/evidence/primorial_cover/null_residuals.json"
 OUTPUT = "results/kaggle_out/primorial_bound_residuals.json"
@@ -337,8 +338,8 @@ class Fit:
         self.arms = arms
         self.variance = variance
         self.sd = {k: math.sqrt(v / shots) for k, v in variance.items()}
-        self.table = noise.cost_table("gap88")
-        self.exact = noise.coefficients(self.table)
+        self.table = tomo.cost_table("gap88")
+        self.exact = tomo.coefficients(self.table)
 
     def __call__(self, item: tuple[dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
         signal, null_spec = item
@@ -347,19 +348,19 @@ class Fit:
 
     def fit_rows(self, rows: list[dict[str, Any]]) -> dict[str, Any]:
         """Raw and null-subtracted fits of gap88 and null laws, each row carrying its arm metadata and law."""
-        readings = noise.gradient_readings(rows, "gap88")
-        null = noise.gradient_readings(rows, "null")
-        raw = noise.phase_fit(self.table, *readings, noise.raw_phase_variance(*readings))
-        sub = noise.null_subtracted(
-            self.table, *readings, null, noise.raw_phase_variance(*readings), noise.raw_phase_variance(*null)
+        readings = tomo.gradient_readings(rows, "gap88")
+        null = tomo.gradient_readings(rows, "null")
+        raw = tomo.phase_fit(self.table, *readings, tomo.raw_phase_variance(*readings))
+        sub = tomo.null_subtracted(
+            self.table, *readings, null, tomo.raw_phase_variance(*readings), tomo.raw_phase_variance(*null)
         )
         shift = {k: v - self.exact[k] for k, v in sub["recovered_coefficients"].items()}
         z = {k: abs(v) / self.sd[k] for k, v in shift.items()}
         keys = sorted(z)
         worst = keys[first_max([z[k] for k in keys])]
         # primorial_cover_noise.phase_fit's budget rule with this bias in place of the incoherent one.
-        margin = noise.IDENTIFY_RADIUS - max(abs(v) for v in shift.values())
-        identify = math.ceil(noise.SIMULTANEOUS_Z**2 * max(self.variance.values()) / margin**2) if margin > 0 else None
+        margin = tomo.IDENTIFY_RADIUS - max(abs(v) for v in shift.values())
+        identify = math.ceil(tomo.SIMULTANEOUS_Z**2 * max(self.variance.values()) / margin**2) if margin > 0 else None
         return {
             "max_coefficient_bias": raw["max_coefficient_bias"],
             "null_subtracted_max_bias": sub["max_coefficient_bias"],

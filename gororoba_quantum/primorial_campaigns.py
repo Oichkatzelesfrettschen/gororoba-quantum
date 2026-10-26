@@ -1,6 +1,6 @@
-"""Primorial gap-88 phase-gradient tomography on a pinned three-qubit path, as a live_run campaign.
+"""The primorial live_run campaigns on a pinned three-qubit path: the coherence probes and gap-88 tomography.
 
-docs/design/primorial-cover-defect-probes.md defines the protocol and scripts/primorial_cover_noise.py the arms:
+docs/design/primorial-cover-defect-probes.md defines the protocol and primorial_tomography the arms and fit:
 for each cube edge (j, x) with x_j = 0 an arm prepares (|x> + |x ^ 2^j>)/sqrt2, applies exp(-i gamma H) through
 the eight-CNOT parity network at gamma = pi/9 and reads qubit j in X and Y. The campaign runs, per edge and
 basis, four members that bind one parametrized circuit, listed in the +, -, -, + order of a contrast:
@@ -19,52 +19,35 @@ compilation contract, so live_run compiles at optimization level 0 and the zero-
 circuit.
 
 The summary inverts each quadrature through its qubit's assignment channel, fits the null-subtracted
-coefficients c_S (primorial_cover_noise.null_subtracted) and reports each against its exact value, the
+coefficients c_S (primorial_tomography.null_subtracted) and reports each against its exact value, the
 largest bias, whether every coefficient sits inside the identification radius 1/16, and the drift monitor's
 largest coefficient.
 """
 
 from __future__ import annotations
 
-import importlib.util
-import sys
 from collections.abc import Mapping
-from functools import cache
-from pathlib import Path
 from typing import Any
 
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 
+import coherence_probes as cp
+import primorial_tomography as tomography
 from coherence_probes import STRUCTURE_PRESERVING_CONTRACT
 from experiments import Group, Member
 
-ROOT = Path(__file__).resolve().parents[1]
 # The +, -, -, + order of each setting's contrast (docs/notes/algebra_circuit_rules.md, Hardware probes).
 ARMS = ("g88", "null", "nullrep", "g88rep")
 COSTS = {"g88": "gap88", "null": "null", "nullrep": "nullrep", "g88rep": "gap88rep"}
 
 
-@cache
-def noise_module() -> Any:
-    """scripts/primorial_cover_noise.py, the single home of the arm, cost-table and fit definitions."""
-    spec = importlib.util.spec_from_file_location("primorial_cover_noise", ROOT / "scripts/primorial_cover_noise.py")
-    if spec is None or spec.loader is None:
-        raise ImportError("scripts/primorial_cover_noise.py does not load")
-    module = sys.modules.get(spec.name)
-    if module is None:
-        module = importlib.util.module_from_spec(spec)
-        sys.modules[spec.name] = module
-        spec.loader.exec_module(module)
-    return module
-
-
 def angles(table: list[int]) -> dict[int, float]:
-    noise = noise_module()
-    c = noise.coefficients(table)
+    c = tomography.coefficients(table)
     return {
-        mask: 2.0 * noise.GRADIENT_GAMMA * c["".join(str(j) for j in range(3) if mask >> j & 1)] for mask in range(1, 8)
+        mask: 2.0 * tomography.GRADIENT_GAMMA * c["".join(str(j) for j in range(3) if mask >> j & 1)]
+        for mask in range(1, 8)
     }
 
 
@@ -77,7 +60,7 @@ def parametrized_arm(j: int, x: int, basis: str) -> tuple[QuantumCircuit, dict[i
             circuit.x(i)
     circuit.h(j)
     circuit.barrier()
-    noise_module().parity_network(circuit, parameters)
+    tomography.parity_network(circuit, parameters)
     circuit.barrier()
     if basis == "Y":
         circuit.sdg(j)
@@ -88,7 +71,7 @@ def parametrized_arm(j: int, x: int, basis: str) -> tuple[QuantumCircuit, dict[i
 
 
 def readout_arm(label: int) -> QuantumCircuit:
-    circuit = noise_module().basis_arm(3, label)
+    circuit = tomography.basis_arm(3, label)
     circuit.name = f"g88_readout_{label}"
     circuit.metadata = {"compilation_contract": STRUCTURE_PRESERVING_CONTRACT}
     return circuit
@@ -101,10 +84,9 @@ def _ideal(circuit: QuantumCircuit) -> np.ndarray:
 
 
 def members() -> tuple[Member, ...]:
-    noise = noise_module()
-    signal = angles(noise.cost_table("gap88"))
+    signal = angles(tomography.cost_table("gap88"))
     out: list[Member] = []
-    for j, x in noise.edges():
+    for j, x in tomography.edges():
         for basis in ("X", "Y"):
             circuit, parameters = parametrized_arm(j, x, basis)
             for arm in ARMS:
@@ -125,10 +107,9 @@ def members() -> tuple[Member, ...]:
 
 
 def rows_of(distributions: Mapping[str, np.ndarray]) -> list[dict[str, Any]]:
-    """primorial_cover_noise rows: gradient arms under costs gap88, null and nullrep, and the readout arms."""
-    noise = noise_module()
+    """primorial_tomography rows: gradient arms under costs gap88, null, nullrep and gap88rep, and the readout arms."""
     out: list[dict[str, Any]] = []
-    for j, x in noise.edges():
+    for j, x in tomography.edges():
         for basis in ("X", "Y"):
             for arm in ARMS:
                 law = [float(v) for v in distributions[f"{arm}_{j}_{x}_{basis}"]]
@@ -142,33 +123,32 @@ def rows_of(distributions: Mapping[str, np.ndarray]) -> list[dict[str, Any]]:
 
 def summarize(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
     """Null-subtracted gap-88 coefficients, their biases, identification and the drift monitor."""
-    noise = noise_module()
     rows = rows_of(distributions)
-    flips = noise.assignment(rows)
-    a = np.asarray([flips[j][0] for j, _ in noise.edges()])
-    b = np.asarray([flips[j][1] for j, _ in noise.edges()])
+    flips = tomography.assignment(rows)
+    a = np.asarray([flips[j][0] for j, _ in tomography.edges()])
+    b = np.asarray([flips[j][1] for j, _ in tomography.edges()])
 
     def readings(cost: str) -> tuple[np.ndarray, np.ndarray]:
-        x_read, y_read = noise.gradient_readings(rows, cost)
-        return noise.corrected(x_read, a, b), noise.corrected(y_read, a, b)
+        x_read, y_read = tomography.gradient_readings(rows, cost)
+        return tomography.corrected(x_read, a, b), tomography.corrected(y_read, a, b)
 
     first, again = readings("gap88"), readings("gap88rep")
     zero, zero_again = readings("null"), readings("nullrep")
     signal = ((first[0] + again[0]) / 2, (first[1] + again[1]) / 2)
     null = ((zero[0] + zero_again[0]) / 2, (zero[1] + zero_again[1]) / 2)
     unit = np.ones_like(signal[0])
-    fit = noise.null_subtracted(noise.cost_table("gap88"), *signal, null, unit, unit)
-    exact = noise.coefficients(noise.cost_table("gap88"))
+    fit = tomography.null_subtracted(tomography.cost_table("gap88"), *signal, null, unit, unit)
+    exact = tomography.coefficients(tomography.cost_table("gap88"))
     # Each repeat read against its first copy on the zero table: the recovered coefficients are the drift.
-    zero_table = noise.cost_table("null")
-    null_drift = noise.null_subtracted(zero_table, *zero_again, zero, unit, unit)["max_coefficient_bias"]
-    signal_drift = noise.null_subtracted(zero_table, *again, first, unit, unit)["max_coefficient_bias"]
+    zero_table = tomography.cost_table("null")
+    null_drift = tomography.null_subtracted(zero_table, *zero_again, zero, unit, unit)["max_coefficient_bias"]
+    signal_drift = tomography.null_subtracted(zero_table, *again, first, unit, unit)["max_coefficient_bias"]
     out: dict[str, float] = {}
     for key, value in fit["recovered_coefficients"].items():
         out[f"c_{key}"] = float(value)
         out[f"bias_{key}"] = float(value - exact[key])
     out["max_bias"] = float(fit["max_coefficient_bias"])
-    out["identified"] = float(fit["max_coefficient_bias"] < noise.IDENTIFY_RADIUS)
+    out["identified"] = float(fit["max_coefficient_bias"] < tomography.IDENTIFY_RADIUS)
     out["drift_null"] = float(null_drift)
     out["drift_signal"] = float(signal_drift)
     out["drift_max"] = float(max(null_drift, signal_drift))
@@ -178,3 +158,9 @@ def summarize(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
 
 def gap88_group() -> Group:
     return Group("primorial_gap88", members(), summarize)
+
+
+def coherence_probe_group() -> Group:
+    """Every coherence probe on one pinned three-qubit path, the readout calibrations included."""
+    probe_members = tuple(Member(name, circuit, cp.ideal_distribution(circuit)) for name, circuit in cp.circuits())
+    return Group("coherence_probes", probe_members, cp.summarize)

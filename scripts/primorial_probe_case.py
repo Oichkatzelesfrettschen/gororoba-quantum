@@ -74,6 +74,7 @@ from qiskit.circuit.library import UnitaryGate  # noqa: E402
 import calibration_snapshot  # noqa: E402
 import coherence_probes as cp  # noqa: E402
 import parallel  # noqa: E402
+import primorial_tomography as tomo  # noqa: E402
 import snapshot_laws  # noqa: E402
 
 BOUND_RECORD = ROOT / "docs/evidence/primorial_cover/bound_residuals.json"
@@ -632,15 +633,15 @@ def noisy_fit(
     """
     laws = parallel.ordered_map(worker, [(str(k), c, spec) for k, (_, c) in enumerate(compiled)], min_items=1)
     rows = [{**meta, "law": law} for (meta, _), law in zip(compiled, laws, strict=True)]
-    edges = noise.edges()
+    edges = tomo.edges()
     a = np.asarray([snapshot["qubits"][layout[j]]["e10"] for j, _ in edges])
     b = np.asarray([snapshot["qubits"][layout[j]]["e01"] for j, _ in edges])
     readings = {}
     for cost in ("gap88", "null"):
-        x_read, y_read = noise.gradient_readings(rows, cost)
-        readings[cost] = (noise.corrected(x_read, a, b), noise.corrected(y_read, a, b))
+        x_read, y_read = tomo.gradient_readings(rows, cost)
+        readings[cost] = (tomo.corrected(x_read, a, b), tomo.corrected(y_read, a, b))
     unit = np.ones(len(edges))
-    sub = noise.null_subtracted(fit.table, *readings["gap88"], readings["null"], unit, unit)
+    sub = tomo.null_subtracted(fit.table, *readings["gap88"], readings["null"], unit, unit)
     return float(sub["max_coefficient_bias"])
 
 
@@ -791,7 +792,7 @@ def path_budget(snapshot: dict[str, Any], layout: list[int]) -> dict[str, Any]:
     ]
     items = [(meta, circuit, noise.compile_arm(view, circuit, layout)) for meta, circuit in logical]
     rows = parallel.ordered_map(noise.ArmLaw(snapshot, "CPU"), items, min_items=1)
-    fit = noise.gradient_analysis(rows, "gap88")["null_subtracted"]
+    fit = tomo.gradient_analysis(rows, "gap88")["null_subtracted"]
     return {
         "per_shot_coefficient_variance": {k: float(v) for k, v in fit["per_shot_coefficient_variance"].items()},
         "shots_identify_all": fit["shots_identify_all"],

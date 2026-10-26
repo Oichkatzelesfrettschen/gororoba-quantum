@@ -1,4 +1,4 @@
-"""gororoba_quantum/coherence_probes.py and primorial_gap88.py: the probes recover injected coherent errors in
+"""gororoba_quantum/coherence_probes.py and primorial_campaigns.py: the probes recover injected coherent errors in
 primorial_bound_residuals' conventions, a detuned pulse is a tilt, and the gap-88 campaign's arms share one
 compiled circuit and read the exact coefficients.
 """
@@ -18,7 +18,7 @@ import primorial_bound_residuals as br  # noqa: E402
 import primorial_probe_case as case  # noqa: E402
 
 import coherence_probes as cp  # noqa: E402
-import primorial_gap88 as g88  # noqa: E402
+import primorial_campaigns as g88  # noqa: E402
 
 DURATIONS = {"sx": 32e-9, "x": 32e-9, "cz": 68e-9}
 # Every family at once, detuning on idles and CZs only (the probe case's mapping).

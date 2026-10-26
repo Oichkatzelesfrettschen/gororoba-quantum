@@ -28,7 +28,7 @@ scripts/primorial_bound_residuals.py in that script's conventions:
   when that partner is 1.
 
 Every ladder grows by at most a factor 4 per step after its first nonzero point, so
-conditional_ramsey.unwrap places each phase on the branch its shorter points predict. Two calibration
+ramsey_phase.unwrap places each phase on the branch its shorter points predict. Two calibration
 circuits read all wires prepared in 0 and in 1; each expectation is inverted through its wire's
 measured assignment channel before any phase is taken. Each estimate carries a delta-method standard
 error at one shot per circuit (divide by sqrt(shots)).
@@ -47,8 +47,7 @@ from collections.abc import Mapping
 import numpy as np
 from qiskit import QuantumCircuit
 
-from conditional_ramsey import corrected_expectation, unwrap
-from experiments import Group, Member
+from ramsey_phase import corrected_expectation, unwrap
 
 STRUCTURE_PRESERVING_CONTRACT = "structure-preserving-native-v1"
 WIRES = 3
@@ -341,9 +340,3 @@ def ideal_distribution(circuit: QuantumCircuit) -> np.ndarray:
     from qiskit.quantum_info import Statevector
 
     return np.asarray(Statevector(circuit.remove_final_measurements(inplace=False)).probabilities(), dtype=float)
-
-
-def coherence_probe_group() -> Group:
-    """Every probe on one pinned three-qubit path, the readout calibrations included."""
-    members = tuple(Member(name, circuit, ideal_distribution(circuit)) for name, circuit in circuits())
-    return Group("coherence_probes", members, summarize)
