@@ -44,7 +44,7 @@ question, the AGENTS.md criterion for IBM hardware below 16 qubits.
   live_run compiles at optimization level 0 on the pinned layout: single-qubit fusion would collapse each
   identity cell, CZ cancellation would remove each pair, and both would remove the zero-angle network of the
   null arms. The retained dry runs (results/live/ of this change) compile 4, 16 and 64 CZ per CZ arm and 8
-  per gap-88 arm.
+  per gap-88 arm, and place their one replica on physical qubits 0, 1 and 2.
 - **One member per PUB.** The probe job packs 98 PUBs and the gap-88 job 104, one member each.
 - **One replica, no co-run.** live_run refuses `--max-replicas` other than 1, a missing `--pin-layout` and any
   other group beside either campaign.
@@ -106,8 +106,10 @@ The hardware-probe rules ask that a first-order observable's coherent parameters
 job. live_run refuses to co-run the two campaigns, so the case runs them as two jobs and closes the gap
 with a calibration-identity gate:
 
-1. Both dry runs are made back to back under one calibration; their records' `calibration_fingerprint`
-   values must be equal.
+1. Both dry runs are made back to back under one calibration. Every key their records'
+   `calibration_fingerprint` values share must be equal, and each coupler's CZ error and duration must agree
+   between the orientations the two campaigns compile (the retained dry runs at 19:08:38 share 44 keys,
+   all equal, and differ only in the orientation of coupler (1, 2)).
 2. Immediately before stage 1's `--submit`, `"$PYTHON" calibration_snapshot.py --export ibm_kingston --out
    STAGE1_DIR/calibration-snapshot.json` retains the calibration `--decide` uses; its calibration timestamp
    must equal the stage-1 dry run's.

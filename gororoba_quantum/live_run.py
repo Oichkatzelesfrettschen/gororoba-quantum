@@ -3589,6 +3589,31 @@ def campaign_pin(args: argparse.Namespace, snaps: list[Snapshot]) -> tuple[list[
     return pinned, list(pin["qubits"])
 
 
+def pinned_campaign_choices(
+    candidate_sets: list[list[Choice]], policy: ReplicaPolicy, log: dict[str, Any], pinned: list[int]
+) -> tuple[list[Choice], dict[str, Any]]:
+    """Each pinned campaign's best candidate with its one replica on the pinned qubits.
+
+    Fusion's replica search would place the replica wherever the packing scores best; a pinned campaign
+    measures named qubits, so its replica maps every compiled qubit to itself, as the n21 pinned layout does
+    (qpu_planning.family_design), and a candidate whose replica leaves the pin is refused.
+    """
+    choices: list[Choice] = []
+    for candidates in candidate_sets:
+        for candidate in candidates:
+            trial = copy.copy(candidate)
+            replicas = [Replica(0, {qubit: qubit for qubit in candidate.layout}, min(candidate.member_scores))]
+            if _prepare_individual_candidate(trial, log, policy, replicas):
+                placed = [list(replica.qubits) for replica in trial.replicas]
+                if sorted(placed[0]) != sorted(pinned) or len(placed) != 1:
+                    raise LiveRunError(f"{trial.group.name}: pinned replica placed on {placed}, not {pinned}")
+                choices.append(trial)
+                break
+        else:
+            raise LiveRunError(f"{candidates[0].group.name}: no candidate validates on the pinned layout {pinned}")
+    return choices, {"allocation": "pinned", "pin_layout": pinned}
+
+
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
     # The ET adapter constructs its complete family. Building every unrelated
     # standalone circuit before backend discovery consumes time and memory
@@ -3722,7 +3747,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                 raise LiveRunError(f"{campaigns[0]} runs without twirling; omit --twirl")
         selection_snaps, pinned = campaign_pin(args, snaps)
         candidate_sets = [select_candidates(group, selection_snaps, args.seeds, trace, pinned) for group in groups]
-        choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
+        if pinned is None:
+            choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
+        else:
+            choices, fusion_placement = pinned_campaign_choices(candidate_sets, _policy(args), trace, pinned)
         for choice in choices:
             if choice.group.name == "crossed_tile_template":
                 from crossed_tile_template import placement_violation
@@ -4642,7 +4670,12 @@ def submit(
         fresh_candidate_sets = [
             select_candidates(choice.group, selection_snaps, args.seeds, attempt_trace, pinned) for choice in choices
         ]
-        fresh_choices, fresh_fusion_placement = select_fusion_choices(fresh_candidate_sets, _policy(args))
+        if pinned is None:
+            fresh_choices, fresh_fusion_placement = select_fusion_choices(fresh_candidate_sets, _policy(args))
+        else:
+            fresh_choices, fresh_fusion_placement = pinned_campaign_choices(
+                fresh_candidate_sets, _policy(args), attempt_trace, pinned
+            )
     old_execution_pubs = execution_pubs(choices)
     fresh_execution_pubs = execution_pubs(fresh_choices)
     fused_changed = _qpy_digest([pub.circuit for pub in old_execution_pubs]) != _qpy_digest(
