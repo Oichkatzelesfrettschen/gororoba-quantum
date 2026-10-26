@@ -240,6 +240,11 @@ def test_campaign_digest_names_qubits_by_role_and_tracks_the_compiled_body(tmp_p
     base = digest(_fused(), [(0, 1)])
     if digest(_fused(target=1), [(1, 0)]) != base:
         raise AssertionError("the same body on swapped physical qubits changed the campaign digest")
+    reordered = _fused()
+    # reset(pair) appends one reset per qubit; the transpiler may emit them in either order.
+    reordered.data.insert(0, reordered.data.pop(1))
+    if digest(reordered, [(0, 1)]) != base:
+        raise AssertionError("reordering instructions on different qubits changed the campaign digest")
     if digest(_fused(delay=116), [(0, 1)]) == base or digest(_fused(probe=1), [(0, 1)]) == base:
         raise AssertionError("a changed delay or a moved probe kept the campaign digest")
 
@@ -311,6 +316,33 @@ def test_compare_refuses_predicted_and_same_calibration_reports(tmp_path: Path) 
         edit(changed)
         with pytest.raises(report.RefusedAnalysis):
             report.compare(measured, changed)
+    sparse = copy.deepcopy(later)
+    sparse["qubits"][str(LAYOUTS[0][0])].pop("kappa_1")
+    if report.compare(measured, sparse)["kappa_1"]["verdict"] != "unresolved":
+        raise AssertionError("a multiplier with fewer paired fits than the cohort floor read a verdict")
+
+
+def test_compare_check_leaves_the_retained_comparison_in_place(tmp_path: Path) -> None:
+    first = report.report(_write_run(tmp_path / "a", measured=True), predicted=False)
+    later = report.report(_write_run(tmp_path / "c", measured=True, calibration="c2"), predicted=False)
+    later["identity"]["collect_sha256"] = "other"
+    paths = [tmp_path / "first.json", tmp_path / "second.json", tmp_path / "compare.json"]
+    paths[0].write_text(json.dumps(first))
+    paths[1].write_text(json.dumps(later))
+    paths[2].write_text("{}\n")
+    argv = ["--compare", str(paths[0]), str(paths[1]), "--out", str(paths[2]), "--check"]
+    if report.main(argv) != 1 or paths[2].read_text() != "{}\n":
+        raise AssertionError("--compare --check passed a stale comparison or rewrote it")
+
+
+def test_pure_dephasing_skips_a_qubit_whose_relaxation_fit_was_refused() -> None:
+    import idle_penalty_exploratory as exploratory
+
+    entry = {"t1_reported_us": 200.0, "t2_reported_us": 150.0, "kappa_2star": 1.2, "kappa_2star_se": 0.1}
+    if exploratory.pure_dephasing(entry | {"kappa_1_reason": "grid boundary"}, "kappa_2star") is not None:
+        raise AssertionError("a refused relaxation fit produced a pure-dephasing value")
+    if exploratory.pure_dephasing(entry | {"kappa_1": 1.0, "kappa_1_se": 0.02}, "kappa_2star") is None:
+        raise AssertionError("a complete entry produced no pure-dephasing value")
 
 
 def test_dephasing_needs_a_negative_mean_and_a_quiet_null() -> None:
