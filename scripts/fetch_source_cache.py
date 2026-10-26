@@ -44,15 +44,18 @@ def registry_entries(root: Path) -> list[dict[str, Any]]:
 
 
 def select(entries: list[dict[str, Any]], notes: list[str], names: list[str]) -> list[dict[str, Any]]:
-    """Returns the entries owned by a named note or cache file, refusing a name no entry carries."""
+    """Returns the entries owned by a named note or cache file, refusing a selector its own flag cannot match.
+
+    ``--note`` matches only the ``note`` field and ``--file`` only the cache file name, so a selector passed
+    under the other flag is refused rather than selecting nothing.
+    """
     if not notes and not names:
         return entries
-    chosen = [e for e in entries if e["note"] in notes or Path(e["local_cache_path"]).name in names]
-    known = {e["note"] for e in entries} | {Path(e["local_cache_path"]).name for e in entries}
-    unknown = sorted((set(notes) | set(names)) - known)
+    unknown = [f"--note {n}" for n in sorted(set(notes) - {e["note"] for e in entries})]
+    unknown += [f"--file {n}" for n in sorted(set(names) - {Path(e["local_cache_path"]).name for e in entries})]
     if unknown:
         raise SystemExit(f"no external_pdfs entry for: {', '.join(unknown)}")
-    return chosen
+    return [e for e in entries if e["note"] in notes or Path(e["local_cache_path"]).name in names]
 
 
 def cache_target(root: Path, entry: dict[str, Any]) -> Path:
