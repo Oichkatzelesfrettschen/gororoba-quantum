@@ -201,7 +201,7 @@ least 8 usable qubits after every withholding step; below that the run reports p
 
 Recomputed from the envelope dry run through `budget_plan` for each width tier, with the end reset, the control members
 and the per-shot initialization, and filled in the table below. One client-side Sampler job per attempt; the ceiling is
-`ceil(1.5 * planner charge)`, which a gate recomputes from the retained plan. The planner charge is an estimate, not
+the case's choice, at least `ceil(1.5 * planner charge)`, which a gate recomputes from the retained plan. The planner charge is an estimate, not
 billing: the service can split one job into sub-jobs and charge about 2 s of overhead each
 (`docs/notes/ibm_heron_platform.md`), and no submit-free evidence bounds that split, so the case states the ceiling as
 the bound and the planner value as the expectation (Finding O). The case also states `envelope_cap`, the two
