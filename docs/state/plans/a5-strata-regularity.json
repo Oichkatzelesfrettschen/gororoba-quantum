@@ -47,6 +47,22 @@
             }
           ],
           "scope_sha256": "9aba726d74cec72e6dcd9ef490667a1893e8219021ca3a1757ccbbaeb75583d4"
+        },
+        {
+          "result": "Rerun with every independent loop pooled; records unchanged apart from timings and digests. strata_regularity.py: all 63 germ rows match the germ table; the singular loci of every closure, V(Q) and V(G) as stated.",
+          "observed_at": "2026-10-26T21:09:50+00:00",
+          "revision": "fd198f8892795f3ea91eb3ea96f56201a6f63746",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-strata-regularity/result.json",
+              "sha256": "dee5af58e0312225420e88c7d3e0692fb8534592686d85e4a20de01825fc8093"
+            },
+            {
+              "ref": "docs/evidence/a5-strata-regularity/strata_regularity.py",
+              "sha256": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651"
+            }
+          ],
+          "scope_sha256": "9aba726d74cec72e6dcd9ef490667a1893e8219021ca3a1757ccbbaeb75583d4"
         }
       ]
     },
@@ -71,6 +87,22 @@
             }
           ],
           "scope_sha256": "c9e6b69ad1c4a197ad28e56eb1ee4300cf94e5047a3ef9569fc9467907725717"
+        },
+        {
+          "result": "Rerun with every independent loop pooled; records unchanged apart from timings and digests. strata_regularity.py: representatives reproduce the closure order and memberships, the certificate passes on all six slices, nullity-4 radicals hold.",
+          "observed_at": "2026-10-26T21:09:50+00:00",
+          "revision": "fd198f8892795f3ea91eb3ea96f56201a6f63746",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-strata-regularity/result.json",
+              "sha256": "dee5af58e0312225420e88c7d3e0692fb8534592686d85e4a20de01825fc8093"
+            },
+            {
+              "ref": "docs/evidence/a5-strata-regularity/strata_regularity.py",
+              "sha256": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651"
+            }
+          ],
+          "scope_sha256": "c9e6b69ad1c4a197ad28e56eb1ee4300cf94e5047a3ef9569fc9467907725717"
         }
       ]
     },
@@ -92,6 +124,22 @@
             {
               "ref": "docs/evidence/a5-strata-regularity/verification.json",
               "sha256": "73b87b80b9c725fedfcaf446545c0275f4e06f9070c2eafa55d9297992a2495e"
+            }
+          ],
+          "scope_sha256": "266df161bc4259aab9fb5c7f1e6745a4607714dba4293d8df3516069b4791165"
+        },
+        {
+          "result": "Rerun with every independent loop pooled; records unchanged apart from timings and digests. VB is one H-orbit; V and B9 slice germs are a smooth curve and a smooth surface meeting only at the point, and the verifier repeats this at x0 over Q(i): link S^1 disjoint union S^3.",
+          "observed_at": "2026-10-26T21:09:50+00:00",
+          "revision": "fd198f8892795f3ea91eb3ea96f56201a6f63746",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-strata-regularity/result.json",
+              "sha256": "dee5af58e0312225420e88c7d3e0692fb8534592686d85e4a20de01825fc8093"
+            },
+            {
+              "ref": "docs/evidence/a5-strata-regularity/verification.json",
+              "sha256": "0df35e5190f78bba84452ff1f2e7683c1c8ac6227d20b80e4cddea92bb6e1f4b"
             }
           ],
           "scope_sha256": "266df161bc4259aab9fb5c7f1e6745a4607714dba4293d8df3516069b4791165"
@@ -132,6 +180,22 @@
             {
               "ref": "docs/evidence/a5-strata-regularity/verify_regularity_independent.py",
               "sha256": "cd0190244bcf3c632983573a17908e44b90ebeb9063837f08d62d88319d9f6ae"
+            }
+          ],
+          "scope_sha256": "d41eaaeff24a0e52861bb81069cde59787a17a66a59826923c80ee4423510e0f"
+        },
+        {
+          "result": "Rerun with every independent loop pooled; records unchanged apart from timings and digests. verify_regularity_independent.py pass=True; every statement and all 75 germ pairs confirmed.",
+          "observed_at": "2026-10-26T21:09:50+00:00",
+          "revision": "fd198f8892795f3ea91eb3ea96f56201a6f63746",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-strata-regularity/verification.json",
+              "sha256": "0df35e5190f78bba84452ff1f2e7683c1c8ac6227d20b80e4cddea92bb6e1f4b"
+            },
+            {
+              "ref": "docs/evidence/a5-strata-regularity/verify_regularity_independent.py",
+              "sha256": "b3636a38eb5186ddcb72500c971e24a3fb8197c3911637878c40f5e4f43fbc0f"
             }
           ],
           "scope_sha256": "d41eaaeff24a0e52861bb81069cde59787a17a66a59826923c80ee4423510e0f"
