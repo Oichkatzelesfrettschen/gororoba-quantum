@@ -106,6 +106,41 @@ def calibration_from_snapshot(snapshot: Any) -> dict[str, Any]:
     return calibration
 
 
+def calibration_from_canonical(data: bytes) -> dict[str, Any]:
+    """The layout rule's inputs rebuilt from canonical snapshot bytes alone, as the rebuild gate replays them.
+
+    Rows come from the properties (readout error, sx gate error, T1, T2, prob_meas1_prep0), which
+    live_run.check_snapshot_matches_properties holds equal to the Target's; the edges are the configuration's
+    coupling map; a qubit is excluded when the properties name it faulty or not operational or name one of its
+    single-qubit gates faulty. The live snapshot also excludes qubits outside live_run.QUALITY, all of which the
+    rule's tighter thresholds reject, so the rule returns the same layout on both.
+    """
+    from qiskit_ibm_runtime.models import BackendProperties
+
+    document = json.loads(data)
+    if document.get("schema") != SNAPSHOT_SCHEMA:
+        raise EnvelopeError(f"not a {SNAPSHOT_SCHEMA} snapshot")
+    properties = BackendProperties.from_dict(document["properties"])
+    count = int(document["configuration"]["n_qubits"])
+    faulty = set(properties.faulty_qubits())
+    faulty |= {q for gate in properties.faulty_gates() if gate.gate != "cz" for q in gate.qubits}
+    rows: dict[int, dict[str, float | None]] = {}
+    excluded = []
+    for q in range(count):
+        if q in faulty or not properties.is_qubit_operational(q):
+            excluded.append(q)
+        values = properties.qubit_property(q)
+        rows[q] = {
+            "readout_error": float(properties.readout_error(q)),
+            "sx_error": float(properties.gate_error("sx", q)),
+            "t1_s": values.get("T1", (None,))[0],
+            "t2_s": values.get("T2", (None,))[0],
+            "prob_meas1_prep0": values.get("prob_meas1_prep0", (None,))[0],
+        }
+    edges = sorted({(min(a, b), max(a, b)) for a, b in document["configuration"]["coupling_map"]})
+    return {"qubits": rows, "edges": [list(e) for e in edges], "excluded": sorted(excluded)}
+
+
 def qubit_eligibility(row: Mapping[str, float | None]) -> str | None:
     """The first rule threshold a qubit's calibration fails, or None when it is eligible; a missing value fails."""
     if not scatter.eligible(dict(row)):

@@ -5201,8 +5201,15 @@ def submit(
                 raise EnvelopeReplan(f"{name}: {batch_tag} {error}") from error
             if fresh_layout != list(record["family_configuration"]["qubits"]):
                 raise EnvelopeReplan(f"{name}: {batch_tag} the layout rule moved to {fresh_layout}")
+            fresh_bytes = snapshot_bytes(fresh)
+            directory = getattr(args, "envelope_snapshot_dir", None)
+            digest = (
+                write_envelope_snapshot(directory, fresh_bytes)
+                if directory is not None
+                else msq_envelope.sha256_hex(fresh_bytes)
+            )
             record.setdefault("envelope", {}).setdefault("batch_snapshots", []).append(
-                {"batch": batch_tag, "snapshot_sha256": msq_envelope.sha256_hex(snapshot_bytes(fresh))}
+                {"batch": batch_tag, "snapshot_sha256": digest, "layout": fresh_layout}
             )
             drift = None
         else:
@@ -6568,6 +6575,12 @@ def main(argv: list[str] | None = None) -> int:
         "measurement-sequence requires it",
     )
     parser.add_argument(
+        "--check-envelope",
+        type=Path,
+        metavar="RUN_DIR",
+        help="replay the layout rule on an envelope run's retained snapshots and compare the recorded layouts; offline",
+    )
+    parser.add_argument(
         "--envelope-fallback",
         type=Path,
         metavar="RUN_DIR",
@@ -7076,6 +7089,13 @@ def main(argv: list[str] | None = None) -> int:
             )
         print(f"FAIL: {error}", file=sys.stderr)
         return 1
+    if args.check_envelope:
+        violations = envelope_layout_violations(args.check_envelope)
+        for violation in violations:
+            print(f"FAIL: {violation}", file=sys.stderr)
+        if not violations:
+            print(f"{args.check_envelope.name}: every retained snapshot replays its recorded layout")
+        return 1 if violations else 0
     service = ibm_account.open_service(QiskitRuntimeService)
     try:
         if args.collect:
@@ -7150,6 +7170,7 @@ def main(argv: list[str] | None = None) -> int:
                 if case_path is not None:
                     print(f"unapproved written case: {case_path}")
         if args.submit and run_dir:
+            args.envelope_snapshot_dir = run_dir
             try:
                 while True:
                     try:
@@ -7390,6 +7411,42 @@ def write_envelope_snapshot(run_dir: Path, data: bytes) -> str:
     if not target.exists():
         _write_text_atomically(target, data.decode())
     return digest
+
+
+def envelope_layout_violations(run_dir: Path) -> list[str]:
+    """Every retained snapshot of an envelope run whose replayed layout rule differs from the layout it records.
+
+    The planning snapshot must reproduce the planned layout, and every batch snapshot the layout that batch sent.
+    """
+    record = json.loads((run_dir / "record.json").read_text())
+    envelope = record.get("envelope")
+    if not isinstance(envelope, dict):
+        return [f"{run_dir.name} carries no envelope section"]
+    width = int(record["family_configuration"]["layout_width"])
+    checks = [(envelope["planning_snapshot_sha256"], record["family_configuration"]["qubits"], "planning")]
+    planned = (record.get("submission") or {}).get("planned_jobs") or []
+    checks += [
+        (entry["snapshot_sha256"], entry["layout"], entry["batch"]) for entry in envelope.get("batch_snapshots", [])
+    ]
+    violations = []
+    for digest, layout, label in checks:
+        path = run_dir / ENVELOPE_SNAPSHOT_DIRECTORY / f"{digest}.json"
+        if not path.exists():
+            violations.append(f"{label}: snapshot {digest[:12]} is not retained")
+            continue
+        data = path.read_bytes()
+        if msq_envelope.sha256_hex(data) != digest:
+            violations.append(f"{label}: snapshot bytes differ from {digest[:12]}")
+            continue
+        rows = msq_envelope.calibration_from_canonical(data)
+        replayed = msq_envelope.layout_rule(
+            rows["qubits"], rows["excluded"], [tuple(edge) for edge in rows["edges"]], width
+        )
+        if replayed != list(layout):
+            violations.append(f"{label}: the rule replays {replayed}, the record holds {list(layout)}")
+    if planned and envelope.get("batch_snapshots") is None:
+        violations.append("a submitted envelope run retains no batch snapshot")
+    return violations
 
 
 def write_archive(run_dir: Path, choices: list[Choice]) -> str:
