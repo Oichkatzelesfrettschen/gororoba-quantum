@@ -48,16 +48,54 @@
       "id": "request-builder",
       "action": "Draw the seeds from the ANU QRNG and register jobs 04 to 06 in ascella_coherence_request.py with the anchors at stride 8, the frozen bodies and a preflight that sends nothing.",
       "acceptance": "--check reproduces the frozen bytes of jobs 00 to 03 and validates the new jobs; no new seed equals a seed of job-02 or zero.",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "frozen-offsets"
+      ],
+      "receipts": [
+        {
+          "result": "ascella_coherence_request.py registers jobs 04 to 06, each 56 new seeds from draw-2026-10-26T174307Z indices 0 to 167 with job-02's seeds skipped plus 8 seed-0 anchors; --check rebuilds jobs 00 to 03 to their retained bytes and validates the three new frozen bodies, none sent; the 224 seeds of jobs 02 and 04 to 06 are distinct and nonzero.",
+          "evidence": [
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-04/cases.json",
+              "sha256": "da7ee78868216fde1a03469da91d995caa8138a6502f1638b13a6e77a0b4d78f"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-04/job-body.json",
+              "sha256": "c8ca77a88d6f0f3baa74c147043cf5131a457a8ce365899367b06d595587bb1c"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-05/cases.json",
+              "sha256": "6993abae4327fb315ba9139a5f6699e483c9bf8153845a84e65df7bc7885291f"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-05/job-body.json",
+              "sha256": "f8c757e06fac14112c17f9ab7ac7bcfe28e56be894b40192a19a77bc99e4f1ba"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-06/cases.json",
+              "sha256": "2f75bddf9ac546c039d4e262304478577df2a8ed665048faa244d65d90cb5e73"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-06/job-body.json",
+              "sha256": "8b61692cb4da8d5c98dec222bb331a534f5ecd917ed943a0b6f821274835c502"
+            },
+            {
+              "ref": "docs/evidence/anu_qrng/draw-2026-10-26T174307Z.json",
+              "sha256": "f8894a34dee6ae4349a92300b781eb4566b43564e859c5e428df8db00b1b4766"
+            }
+          ],
+          "observed_at": "2026-10-26T17:48:16+00:00",
+          "revision": "b01c67feeac00d83674e9f77dcccb930aa861703",
+          "scope_sha256": "22c947f9b0157d1797e02000a2bb5420d614e6900040e891aaa8be33c0ad251d"
+        }
       ]
     },
     {
       "id": "written-case",
       "action": "Write the case in the design document: what it measures, why simulation cannot answer it, backend, sizing options, seconds and credits.",
       "acceptance": "The owner approves the case at a size, or declines it.",
-      "state": "todo",
+      "state": "doing",
       "depends_on": [
         "request-builder"
       ]
