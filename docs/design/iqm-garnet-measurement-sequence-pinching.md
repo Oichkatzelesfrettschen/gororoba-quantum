@@ -158,7 +158,7 @@ prediction, the settle prediction, the delay-arm model) at the fitted T1 and q. 
 values at the calibrated T1 and T2 and an assumed p of 0.068 (README, "Reset"), and says so.
 
 **p_init sensitivity.** The planning prediction for the N = 16 measure arm moves from 0.871 to 0.889 at p = 0 to 0.947 to 1.028 at p = 0.20 across p = 0, 0.05, 0.10, 0.15 and 0.20 (per qubit in
-`prediction.json`), a spread of 0.076 to 0.139 in P0, or 4.8 to 7.7 departure standard errors. The prediction and the corrected
+`prediction.json`), a spread of 0.076 to 0.139 in P0, or 1.5 to 3.0 departure standard errors. The prediction and the corrected
 estimate live in the same space, the ro0/ro1-normalized z, and the ro0/ro1 normalization cancels the p dependence of
 a's term: a z0 / z0 = a. What remains is the relaxation offset divided by the initial z, b/(1 - 2 p). That offset is
 not small: the measure arm spends 16 x 1.14 us = 18 us relaxing toward |0> at a T1 of 28 to 59 us, so for QB1
@@ -203,8 +203,9 @@ circuit group propagated through the joint correction and T1 fit by the delta me
 
 **Device verdict.** Six qubits times about four 3-SE tests give about a 6 % chance of at least one false flag, so the
 per-qubit verdicts stay descriptive and the device-level verdict is the decision. The device departs below the
-prediction when at least 2 of the usable qubits return `departs_below`, or the inverse-variance pooled departure z over
-the usable qubits is at or below -3 (the pooling treats the qubits as independent). The device exceeds the prediction by
+prediction when at least 2 of the informative qubits return `departs_below`, or the inverse-variance pooled departure z
+over the informative qubits is at or below -3 (the pooling treats the qubits as independent); a qubit is informative
+unless it is `uninformative` (below). The device exceeds the prediction by
 the same rule with `exceeds_prediction` and z >= +3, and the settle arm attributes a readout tail to the device by the
 same rule with `tail_attributed` and the pooled settle gap z >= +3.
 
@@ -218,24 +219,34 @@ for a small change of each error class (`gate_class_ratios`, central differences
 
 | qubit | axis phase per pulse | dephasing rate during the layers | composite pulse-angle scale | depolarizing prx error | departure SE before | departure SE after |
 |---|---|---|---|---|---|---|
-| QB1 | +0.324 | -0.435 | +0.657 | -0.683 | 0.0155 | 0.0183 |
-| QB5 | +0.353 | -0.478 | +0.735 | -0.749 | 0.0114 | 0.0153 |
-| QB8 | +0.334 | -0.453 | +0.683 | -0.711 | 0.0122 | 0.0161 |
-| QB14 | +0.352 | -0.482 | +0.729 | -0.757 | 0.0085 | 0.0129 |
-| QB17 | +0.353 | -0.471 | +0.739 | -0.739 | 0.0110 | 0.0146 |
-| QB19 | +0.364 | -0.497 | +0.763 | -0.779 | 0.0115 | 0.0158 |
+| QB1 | +0.324 | -0.435 | +0.657 | -0.683 | 0.0155 | 0.0464 |
+| QB5 | +0.353 | -0.478 | +0.735 | -0.749 | 0.0114 | 0.0496 |
+| QB8 | +0.334 | -0.453 | +0.683 | -0.711 | 0.0122 | 0.0470 |
+| QB14 | +0.352 | -0.482 | +0.729 | -0.757 | 0.0085 | 0.0491 |
+| QB17 | +0.353 | -0.471 | +0.739 | -0.739 | 0.0110 | 0.0492 |
+| QB19 | +0.364 | -0.497 | +0.763 | -0.779 | 0.0115 | 0.0514 |
 
 The computed ratios differ from the values a first-order argument suggests: the depolarizing error moves the measure arm -0.78 to -0.68 of the unitary arm's shift (not -1, because the pinch
 and the relaxation share the loss), the composite-angle scale +0.66 to +0.76 (not +0.4; the pair composite barely moves the unitary arm, so
 the ratio rests on a small denominator), the axis phase +0.32 to +0.36 and the dephasing-during-drive scale
 -0.50 to -0.44. The departure standard error of each qubit adds, in quadrature over the four classes, ratio_c x s,
-with s the root of the squared unitary residual and its squared statistical standard error. The device pooling weights
-each qubit by the inverse of the widened variance. The right-hand column is the departure standard error when the unitary
-arm matches its model (its statistical standard error alone sets s); a unitary arm that is off by 0.03 widens it to about
-0.03 to 0.04. The
+with s the root of the squared unitary residual and its squared statistical standard error, floored at 0.04
+(`RAW_MODEL_SCATTER`, the diagnostic's measured model scatter). The floor is needed because error classes whose ratios
+have opposite signs cancel in the unitary arm and add on the measure arm: an axis phase of 0.02 rad (unitary shift
+-0.019, measure shift negative) with a prx error of twice the calibration (unitary shift +0.008 to +0.021, measure
+shift negative) leaves a unitary residual near 0, and without the floor that device pooled to z = -3.82 and read
+`attributed`; with it the device pools to -1.35. The device pooling weights each qubit by the inverse of the widened
+variance. The right-hand column is the departure standard error at the floor, which a unitary arm matching its model
+and one off by up to 0.04 share. The
 quadrature sum ignores the signs of the ratios, which makes it conservative for a single class and not for a mixture,
 and the pooling treats the per-qubit systematics as independent although a shared gate error is not; the sweep tests
 both. The prx systematic of 100 % of the calibrated error stays in the standard error beside the depolarizing class.
+
+**Uninformative qubits and devices.** A qubit is `uninformative` when its mutation test fails or its widened departure
+standard error exceeds 2 x its planning value in `prediction.json` (`UNINFORMATIVE_SE_FACTOR`, preregistered); the count
+and pooled rules skip it. The device reads `uninformative`, and attributes nothing, when fewer than 2 informative qubits
+remain. A gate so far from its model that the unitary arm leaves P0 near 0.5 (the broken-gate sweep row) then reads
+`uninformative` and not `none`, which a clean null also reads.
 
 Reported without a decision: the settle gap; the readout-history diagnostic (the N = 1 measure arm against the N = 1
 delay arm, both ideally 0.0302 with equal models, where only the measure arm has a measurement before the final one,
@@ -285,12 +296,12 @@ counts at 3000 shots.
 
 | qubit | measure P0 at N = 1, 2, 4, 8, 16 (the N = 16 value is the planning departure prediction) | delay P0 at N = 1, 2, 4, 8, 16 | unitary N = 16 | settle N = 16 | contrast | contrast SE | mutation z | departure SE |
 |---|---|---|---|---|---|---|---|---|
-| QB1 | 0.0759, 0.5410, 0.7037, 0.8371, 0.9215 | 0.0759, 0.1321, 0.2083, 0.3337, 0.5146 | 0.1044 | 0.9893 | 0.8170 | 0.0104 | 30.6 | 0.0183 |
-| QB5 | 0.0587, 0.5307, 0.6904, 0.8207, 0.9017 | 0.0587, 0.1172, 0.1890, 0.3060, 0.4741 | 0.0957 | 0.9576 | 0.8063 | 0.0100 | 30.6 | 0.0153 |
-| QB8 | 0.0697, 0.5372, 0.6987, 0.8307, 0.9136 | 0.0697, 0.1346, 0.2160, 0.3465, 0.5280 | 0.1051 | 0.9787 | 0.8084 | 0.0106 | 29.0 | 0.0161 |
-| QB14 | 0.0596, 0.5310, 0.6903, 0.8198, 0.8991 | 0.0596, 0.1346, 0.2207, 0.3541, 0.5311 | 0.1055 | 0.9563 | 0.7932 | 0.0097 | 30.2 | 0.0129 |
-| QB17 | 0.0577, 0.5306, 0.6912, 0.8238, 0.9092 | 0.0577, 0.0981, 0.1525, 0.2468, 0.3959 | 0.0794 | 0.9631 | 0.8296 | 0.0098 | 33.5 | 0.0146 |
-| QB19 | 0.0533, 0.5272, 0.6851, 0.8127, 0.8893 | 0.0533, 0.1206, 0.1979, 0.3200, 0.4873 | 0.1011 | 0.9388 | 0.7884 | 0.0107 | 27.0 | 0.0158 |
+| QB1 | 0.0759, 0.5410, 0.7037, 0.8371, 0.9215 | 0.0759, 0.1321, 0.2083, 0.3337, 0.5146 | 0.1044 | 0.9893 | 0.8170 | 0.0104 | 30.6 | 0.0464 |
+| QB5 | 0.0587, 0.5307, 0.6904, 0.8207, 0.9017 | 0.0587, 0.1172, 0.1890, 0.3060, 0.4741 | 0.0957 | 0.9576 | 0.8063 | 0.0100 | 30.6 | 0.0496 |
+| QB8 | 0.0697, 0.5372, 0.6987, 0.8307, 0.9136 | 0.0697, 0.1346, 0.2160, 0.3465, 0.5280 | 0.1051 | 0.9787 | 0.8084 | 0.0106 | 29.0 | 0.0470 |
+| QB14 | 0.0596, 0.5310, 0.6903, 0.8198, 0.8991 | 0.0596, 0.1346, 0.2207, 0.3541, 0.5311 | 0.1055 | 0.9563 | 0.7932 | 0.0097 | 30.2 | 0.0491 |
+| QB17 | 0.0577, 0.5306, 0.6912, 0.8238, 0.9092 | 0.0577, 0.0981, 0.1525, 0.2468, 0.3959 | 0.0794 | 0.9631 | 0.8296 | 0.0098 | 33.5 | 0.0492 |
+| QB19 | 0.0533, 0.5272, 0.6851, 0.8127, 0.8893 | 0.0533, 0.1206, 0.1979, 0.3200, 0.4873 | 0.1011 | 0.9388 | 0.7884 | 0.0107 | 27.0 | 0.0514 |
 
 The model device passes the mutation test by 27 to 33 standard errors, with a contrast of 0.79 to 0.83 against the ideal 0.861 (32 pulses
 carry the depolarizing error and 32 layers of relaxation). The fitted T1 carries 0.5 to 2.3 us of standard error and p
@@ -311,35 +322,38 @@ error the analysis does not model (a scale on the dephasing rate during the laye
 nominal prediction keeps the calibrated model) and, where marked, a true departure: a per-step z loss that lowers the
 measure arm's N = 16 P0 by 4 departure standard errors of the same device without it. The pass rule per row is its
 last column: `nuisance` (every qubit |departure z| < 1, settle `match`, no flag), `none` (no device flag),
-`never_attributed`, `attributed`, or `broken` (the mutation test fails and nothing is attributed).
+`never_attributed`, `attributed`, or `broken` (the device reads `uninformative`).
 
-| device | p | thermal | T1 / calibrated | prx / calibrated | model error | injected departure | unitary residual (P0) | departure SE | departure z over the six qubits | pooled z | `departs_below` status | mutation z (min) | rule |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| planning | 0.068 | 0 | 1 | 1 | none | none | -0.000 to +0.000 | 0.013 to 0.018 | -0.03 to +0.01 | -0.02 | none | 27.0 | nuisance |
-| p=0 | 0 | 0 | 1 | 1 | none | none | -0.000 to +0.000 | 0.010 to 0.016 | -0.02 to +0.02 | +0.00 | none | 37.3 | nuisance |
-| p=0.15 | 0.15 | 0 | 1 | 1 | none | none | -0.000 to +0.000 | 0.018 to 0.023 | -0.02 to +0.01 | -0.01 | none | 20.1 | nuisance |
-| thermal 0.02 | 0.068 | 0.02 | 1 | 1 | none | none | -0.000 to +0.000 | 0.013 to 0.018 | -0.01 to +0.01 | -0.00 | none | 26.5 | nuisance |
-| T1 x0.8 | 0.068 | 0 | 0.8 | 1 | none | none | -0.000 to +0.000 | 0.013 to 0.017 | -0.02 to +0.01 | -0.01 | none | 27.1 | nuisance |
-| T1 x1.2 | 0.068 | 0 | 1.2 | 1 | none | none | -0.000 to +0.000 | 0.013 to 0.019 | -0.01 to +0.01 | -0.00 | none | 26.8 | nuisance |
-| prx x0.5 | 0.068 | 0 | 1 | 0.5 | none | none | -0.011 to -0.004 | 0.014 to 0.022 | +0.21 to +0.35 | +0.67 | none | 27.8 | nuisance |
-| prx x2 | 0.068 | 0 | 1 | 2 | none | none | +0.008 to +0.021 | 0.016 to 0.029 | -0.49 to -0.40 | -1.07 | none | 25.3 | nuisance |
-| prx x3 | 0.068 | 0 | 1 | 3 | none | none | +0.017 to +0.041 | 0.024 to 0.048 | -0.58 to -0.54 | -1.33 | none | 23.6 | never_attributed |
-| corner | 0.15 | 0.02 | 0.8 | 2 | none | none | +0.008 to +0.021 | 0.020 to 0.031 | -0.48 to -0.33 | -0.95 | none | 19.1 | nuisance |
-| drive x0.5 | 0.068 | 0 | 1 | 1 | drive_t2_scale 0.5 | none | -0.029 to -0.015 | 0.024 to 0.038 | +0.31 to +0.36 | +0.81 | none | 30.0 | none |
-| drive x0.5 + departure | 0.068 | 0 | 1 | 1 | drive_t2_scale 0.5 | 4 SE | -0.029 to -0.015 | 0.024 to 0.038 | -3.69 to -3.62 | -8.84 | attributed | 17.9 | attributed |
-| drive x1.5 | 0.068 | 0 | 1 | 1 | drive_t2_scale 1.5 | none | +0.014 to +0.027 | 0.023 to 0.035 | -0.38 to -0.30 | -0.82 | none | 24.0 | none |
-| drive x1.5 + departure | 0.068 | 0 | 1 | 1 | drive_t2_scale 1.5 | 4 SE | +0.014 to +0.027 | 0.023 to 0.035 | -4.37 to -4.29 | -10.47 | attributed | 11.5 | attributed |
-| axis 0.02 | 0.068 | 0 | 1 | 1 | advance 0.02 | none | -0.019 to -0.018 | 0.026 to 0.028 | -0.69 to -0.59 | -1.59 | none | 27.0 | none |
-| axis 0.02 + departure | 0.068 | 0 | 1 | 1 | advance 0.02 | 4 SE | -0.019 to -0.018 | 0.026 to 0.028 | -4.66 to -4.57 | -11.33 | attributed | 17.4 | attributed |
-| axis 0.1 (broken gate) | 0.068 | 0 | 1 | 1 | advance 0.1 | none | +0.430 to +0.459 | 0.474 to 0.551 | -0.18 to -0.18 | -0.44 | none | -29.5 | broken |
-| prx x3 + drive x0.5 | 0.068 | 0 | 1 | 3 | drive_t2_scale 0.5 | none | -0.012 to +0.023 | 0.016 to 0.031 | -0.65 to +0.05 | -1.08 | none | 26.6 | never_attributed |
-| drive x0.5 + departure + prx x2 | 0.068 | 0 | 1 | 2 | drive_t2_scale 0.5 | 4 SE | -0.021 to +0.001 | 0.015 to 0.028 | -4.30 to -3.73 | -9.67 | attributed | 20.6 | either |
+| device | p | thermal | T1 / calibrated | prx / calibrated | model error | injected departure | unitary residual (P0) | departure SE | departure z over the six qubits | pooled z | informative qubits | `departs_below` status | mutation z (min) | rule |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| planning | 0.068 | 0 | 1 | 1 | none | none | -0.000 to +0.000 | 0.046 to 0.051 | -0.01 to +0.00 | -0.00 | 6 | none | 27.0 | nuisance |
+| p=0 | 0 | 0 | 1 | 1 | none | none | -0.000 to +0.000 | 0.045 to 0.050 | -0.00 to +0.00 | +0.00 | 6 | none | 37.3 | nuisance |
+| p=0.15 | 0.15 | 0 | 1 | 1 | none | none | -0.000 to +0.000 | 0.049 to 0.053 | -0.01 to +0.00 | -0.00 | 6 | none | 20.1 | nuisance |
+| thermal 0.02 | 0.068 | 0.02 | 1 | 1 | none | none | -0.000 to +0.000 | 0.046 to 0.051 | -0.00 to +0.00 | -0.00 | 6 | none | 26.5 | nuisance |
+| T1 x0.8 | 0.068 | 0 | 0.8 | 1 | none | none | -0.000 to +0.000 | 0.044 to 0.050 | -0.01 to +0.01 | +0.00 | 6 | none | 27.1 | nuisance |
+| T1 x1.2 | 0.068 | 0 | 1.2 | 1 | none | none | -0.000 to +0.000 | 0.048 to 0.052 | -0.00 to +0.00 | -0.00 | 6 | none | 26.8 | nuisance |
+| prx x0.5 | 0.068 | 0 | 1 | 0.5 | none | none | -0.011 to -0.004 | 0.046 to 0.051 | +0.06 to +0.17 | +0.26 | 6 | none | 27.8 | nuisance |
+| prx x2 | 0.068 | 0 | 1 | 2 | none | none | +0.008 to +0.021 | 0.046 to 0.051 | -0.31 to -0.13 | -0.51 | 6 | none | 25.3 | nuisance |
+| prx x3 | 0.068 | 0 | 1 | 3 | none | none | +0.017 to +0.041 | 0.047 to 0.051 | -0.58 to -0.26 | -0.99 | 6 | none | 23.6 | never_attributed |
+| corner | 0.15 | 0.02 | 0.8 | 2 | none | none | +0.008 to +0.021 | 0.046 to 0.052 | -0.32 to -0.14 | -0.52 | 6 | none | 19.1 | nuisance |
+| drive x0.5 | 0.068 | 0 | 1 | 1 | drive_t2_scale 0.5 | none | -0.029 to -0.015 | 0.046 to 0.051 | +0.15 to +0.28 | +0.54 | 6 | none | 30.0 | none |
+| drive x0.5 + departure | 0.068 | 0 | 1 | 1 | drive_t2_scale 0.5 | 4 SE | -0.029 to -0.015 | 0.046 to 0.051 | -3.85 to -3.71 | -9.24 | 6 | attributed | 12.4 | attributed |
+| drive x1.5 | 0.068 | 0 | 1 | 1 | drive_t2_scale 1.5 | none | +0.014 to +0.027 | 0.046 to 0.051 | -0.28 to -0.15 | -0.52 | 6 | none | 24.0 | none |
+| drive x1.5 + departure | 0.068 | 0 | 1 | 1 | drive_t2_scale 1.5 | 4 SE | +0.014 to +0.027 | 0.046 to 0.052 | -4.27 to -4.14 | -10.29 | 6 | attributed | 4.8 | attributed |
+| axis 0.02 | 0.068 | 0 | 1 | 1 | advance 0.02 | none | -0.019 to -0.018 | 0.046 to 0.051 | -0.37 to -0.34 | -0.87 | 6 | none | 27.0 | none |
+| axis 0.02 + departure | 0.068 | 0 | 1 | 1 | advance 0.02 | 4 SE | -0.019 to -0.018 | 0.046 to 0.052 | -4.36 to -4.33 | -10.64 | 6 | attributed | 8.6 | attributed |
+| axis 0.1 (broken gate) | 0.068 | 0 | 1 | 1 | advance 0.1 | none | +0.430 to +0.459 | 0.474 to 0.551 | -0.18 to -0.18 | n/a | 0 | uninformative | -29.5 | broken |
+| axis 0.02 + prx x2 | 0.068 | 0 | 1 | 2 | advance 0.02 | none | -0.010 to +0.004 | 0.046 to 0.051 | -0.64 to -0.48 | -1.35 | 6 | none | 25.3 | never_attributed |
+| prx x3 + drive x0.5 | 0.068 | 0 | 1 | 3 | drive_t2_scale 0.5 | none | -0.012 to +0.023 | 0.046 to 0.051 | -0.43 to +0.02 | -0.49 | 6 | none | 26.6 | never_attributed |
+| drive x0.5 + departure + prx x2 | 0.068 | 0 | 1 | 2 | drive_t2_scale 0.5 | 4 SE | -0.021 to +0.001 | 0.046 to 0.051 | -4.12 to -3.85 | -9.77 | 6 | attributed | 10.3 | either |
 
 The unitary residuals of the model-error rows are the injected scatter: the dephasing scales give about +-0.015 to
-0.03 and the axis phase of 0.02 rad about -0.02; the broken-gate row (0.1 rad per pulse) turns the unitary arm to P0
-near 0.5, fails the mutation test and attributes nothing. Every non-injected row reads `none`, a prx error of three
-times the calibration is never attributed (pooled z -1.33, against -3.97 under the earlier absolute guard that this rule replaces), and
-every injected departure reads `attributed`, with or without the prx error of twice the calibration.
+0.03 and the axis phase of 0.02 rad about -0.02. The broken-gate row (0.1 rad per pulse) turns the unitary arm to P0
+near 0.5, fails the mutation test on every qubit and reads `uninformative`. Every non-injected row reads `none`, a prx
+error of three times the calibration is never attributed (pooled z -0.99), the cancellation row (axis phase 0.02 rad with prx
+twice the calibration) pools to -1.35 and is not attributed, and every injected departure reads `attributed`, with or without
+the prx error of twice the calibration. A 4-standard-error departure at the floored standard error is a P0 shift of
+about 0.2, which lowers the contrast and the mutation z (minimum 4.8 on the dephasing x1.5 row).
 
 **Minimum detectable departure.** `iqm_measurement_sequence.py detect` raises the injected departure in steps of
 0.5 departure standard errors per qubit (the standard error of the same device without the departure) until the device
@@ -347,12 +361,12 @@ reads `attributed`:
 
 | device | smallest injected shift per qubit, in departure SE | mean P0 shift at that point | status along the grid 0.5, 1, 1.5, 2, 2.5, 3, 4 |
 |---|---|---|---|
-| planning | 1.5 | 0.023 | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
-| drive x0.5 | 2 | 0.063 | 0.5:non / 1.0:non / 1.5:non / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
-| drive x1.5 | 1 | 0.030 | 0.5:non / 1.0:att / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
-| axis 0.02 | 1 | 0.027 | 0.5:non / 1.0:att / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
-| prx x2 | 1 | 0.022 | 0.5:non / 1.0:att / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
-| prx x3 | 1 | 0.035 | 0.5:non / 1.0:att / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| planning | 1.5 | 0.073 | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| drive x0.5 | 1.5 | 0.073 | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| drive x1.5 | 1.5 | 0.073 | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| axis 0.02 | 1 | 0.049 | 0.5:non / 1.0:att / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| prx x2 | 1.5 | 0.073 | 0.5:non / 1.0:non / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
+| prx x3 | 1 | 0.049 | 0.5:non / 1.0:att / 1.5:att / 2.0:att / 2.5:att / 3.0:att / 4.0:att |
 
 A per-qubit shift of k standard errors pools to about sqrt(6) k when the six qubits share it, so the pooled rule fires
 near k = 1.2 on independent errors. The pooling is not conservative for a shared gate error, and the minimum
@@ -416,6 +430,11 @@ The largest |z| is 0.87 at 1000 shots (0.28 at 100 shots). The two N = 16 bands 
 the widening QB14's unitary reading (0.116 against a lower edge of 0.153) sits 3.3 standard errors outside at 1000
 shots and would stop a qubit whose scatter the decision rule already carries.
 
+**QB11 replay.** The diagnostic's QB11 readings (ro0 0.906, ro1 0.522, pi/2-pair unitary 0.586, contrast 0.384), run
+through the probe's stop rule against QB11's own bands, read FAIL: `ro1` at 0.522 against a band of 0.065 to 0.127 is
+37 standard errors outside, and the contrast of 0.384 is under the 0.6 floor. `tests/test_iqm_measurement_preflight.py`
+pins it.
+
 **Power.** One standard error of a 1000-shot reading is 0.010 to 0.015 in P(0), against 0.03 to 0.04 at 100 shots. The
 probe stops a collapse or a gross shift. The gate-model scatter of about 0.03 sits near its 3-standard-error limit, so
 it is a diagnostic and no substitute for the in-job unitary arm.
@@ -446,14 +465,14 @@ garnet:mock compiles, in departure standard errors:
 
 | qubit | measure P0 at 0.6 / 0.8 / 1.096 / 1.4 / 1.772 us | settle P0 at 0.6 / 1.096 / 1.772 us | dP0/dw measure, settle (per us) | shift 1.096 to 1.772 us, measure |
 |---|---|---|---|---|
-| QB1 | 0.8938 / 0.9057 / 0.9215 / 0.9357 / 0.9508 | 0.9772 / 0.9893 / 1.0025 | 0.0500, 0.0221 | 0.0293 (1.6) |
-| QB5 | 0.8825 / 0.8905 / 0.9017 / 0.9122 / 0.9239 | 0.9463 / 0.9576 / 0.9709 | 0.0360, 0.0214 | 0.0223 (1.5) |
-| QB8 | 0.8887 / 0.8993 / 0.9136 / 0.9268 / 0.9410 | 0.9665 / 0.9787 / 0.9923 | 0.0457, 0.0225 | 0.0274 (1.7) |
-| QB14 | 0.8794 / 0.8877 / 0.8991 / 0.9098 / 0.9219 | 0.9448 / 0.9563 / 0.9698 | 0.0370, 0.0218 | 0.0228 (1.8) |
-| QB17 | 0.8907 / 0.8985 / 0.9092 / 0.9193 / 0.9307 | 0.9522 / 0.9631 / 0.9759 | 0.0347, 0.0206 | 0.0215 (1.5) |
-| QB19 | 0.8735 / 0.8801 / 0.8893 / 0.8982 / 0.9083 | 0.9283 / 0.9388 / 0.9514 | 0.0302, 0.0200 | 0.0190 (1.2) |
+| QB1 | 0.8938 / 0.9057 / 0.9215 / 0.9357 / 0.9508 | 0.9772 / 0.9893 / 1.0025 | 0.0500, 0.0221 | 0.0293 (0.6) |
+| QB5 | 0.8825 / 0.8905 / 0.9017 / 0.9122 / 0.9239 | 0.9463 / 0.9576 / 0.9709 | 0.0360, 0.0214 | 0.0223 (0.4) |
+| QB8 | 0.8887 / 0.8993 / 0.9136 / 0.9268 / 0.9410 | 0.9665 / 0.9787 / 0.9923 | 0.0457, 0.0225 | 0.0274 (0.6) |
+| QB14 | 0.8794 / 0.8877 / 0.8991 / 0.9098 / 0.9219 | 0.9448 / 0.9563 / 0.9698 | 0.0370, 0.0218 | 0.0228 (0.5) |
+| QB17 | 0.8907 / 0.8985 / 0.9092 / 0.9193 / 0.9307 | 0.9522 / 0.9631 / 0.9759 | 0.0347, 0.0206 | 0.0215 (0.4) |
+| QB19 | 0.8735 / 0.8801 / 0.8893 / 0.8982 / 0.9083 | 0.9283 / 0.9388 / 0.9514 | 0.0302, 0.0200 | 0.0190 (0.4) |
 
-A window error of 0.1 us moves the measure-arm prediction by 0.003 to 0.005, 0.2 to 0.3 departure standard errors.
+A window error of 0.1 us moves the measure-arm prediction by 0.003 to 0.005, 0.1 to 0.1 departure standard errors.
 
 ## Readout crosstalk
 
@@ -480,9 +499,10 @@ this case carries no leakage circuits and no P(2) readout.
   [run](../../results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic/results.json),
   [analysis](../../results/iqm/measurement_sequence_diagnostic_analysis.json), and its
   [design](iqm-garnet-measurement-sequence-diagnostic.md).
-- Mock run of this case (pi/2 pairs at every N, the calibration-only selection and the gate-model systematic; job
-  01a17585-dd26-7086-9e63-655882ecc988; all 57 circuits returned every key; compiled schedule 1.30 times the QPU-calibrated prediction, the mock's
-  own base and window):
+- Mock run of this case's circuits (pi/2 pairs at every N, the calibration-only selection; job
+  01a17585-dd26-7086-9e63-655882ecc988; all 57 circuits returned every key; compiled schedule 1.30 times the
+  QPU-calibrated prediction, the mock's own base and window). It ran under the cases.json digest 918d7bd5, before the
+  departure-standard-error floor changed prediction.json; its circuits are byte for byte those of the current case:
   [run](../../results/iqm/runs/2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching/results.json).
 - Mock run of the projected-exclusion form (QB6, QB9, QB13, QB15, QB18, QB20; job 01a1755f-4e86-77ee-81be-7b1de90a3c0a),
   superseded and not replayable by the current script:

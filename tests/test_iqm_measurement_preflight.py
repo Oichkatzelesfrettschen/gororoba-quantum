@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+from typing import Any
 
 import iqm_measurement_preflight as probe
 import pytest
@@ -39,7 +40,7 @@ def test_analyze_reads_a_run_directory_and_stops_on_a_collapsed_qubit(
     )
     monkeypatch.setattr(probe, "run_facts", lambda run_dir: {"statuses": {"completed": 1}, "charge": 0.5})
 
-    def run(values: dict[str, dict[str, float]]) -> dict[str, object]:
+    def run(values: dict[str, dict[str, float]]) -> dict[str, Any]:
         outcomes = probe.synthetic(circuits, prediction, probe.SHOTS, values)
         (tmp_path / "raw/measurements.json").write_text(json.dumps(outcomes), encoding="utf-8")
         return probe.analyze(tmp_path)
@@ -49,6 +50,36 @@ def test_analyze_reads_a_run_directory_and_stops_on_a_collapsed_qubit(
         raise AssertionError(f"a model device stops the probe: {probe.table(quiet)}")
     reading[qubits[2]]["ro1"] = 0.52
     stopped = run(reading)
-    flags = {q: row["passes"] for q, row in stopped["qubits"].items()}  # type: ignore[attr-defined]
+    flags = {q: row["passes"] for q, row in stopped["qubits"].items()}
     if stopped["proceed"] is not False or flags != {q: q != qubits[2] for q in qubits}:
         raise AssertionError(f"a collapsed qubit does not stop exactly its own verdict: {flags}")
+
+
+def qb11_replay() -> dict[str, Any]:
+    """The diagnostic's QB11 readings (ro0 0.906, ro1 0.522, pi/2-pair unitary 0.586; the measure reading is the
+    model's) run through the probe's stop rule on the first qubit's circuits, against QB11's own calibrated bands."""
+    files = probe.build_files(probe.MAIN_CASE, probe.SHOTS)
+    prediction = json.loads(files["prediction.json"])
+    excerpt = json.loads(files[probe.EXCERPT])
+    circuits = [json.loads(files[f"circuits/{name}.json"]) for name in probe.NAMES]
+    diag = probe.seq.load_json(probe.seq.DIAGNOSTIC_EXCERPT)["qubits"]["QB11"]
+    host = sorted(prediction["qubits"], key=lambda q: int(q[2:]))[0]
+    prediction["qubits"][host]["raw_band"] = probe.seq.raw_band(diag)
+    reading = {
+        q: {name: probe.seq.raw_p0(probe.BAND_KEY[name], excerpt["qubits"][q], 0.03) for name in probe.NAMES}
+        for q in prediction["qubits"]
+    }
+    reading[host].update({"ro0": 0.906, "ro1": 0.522, "unitary-n16-s0p": 0.586})
+    outcomes = probe.synthetic(circuits, prediction, probe.SHOTS, reading)
+    result = probe.evaluate(circuits, outcomes, prediction, probe.SHOTS)
+    result["host"] = host
+    return result
+
+
+def test_qb11_diagnostic_readings_fail_the_stop_rule() -> None:
+    result = qb11_replay()
+    row = result["qubits"][result["host"]]
+    if row["passes"] or row["contrast_passes"] or row["readings"]["ro1"]["passes"]:
+        raise AssertionError(probe.table(result))
+    if result["proceed"]:
+        raise AssertionError("the probe proceeds with a collapsed qubit")

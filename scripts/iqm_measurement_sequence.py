@@ -76,13 +76,18 @@ by the delta method:
   composite pulse-angle scale, depolarizing prx error) that moves the unitary arm by d moves the measure arm by
   ratio_c x d, with the ratios of gate_class_ratios computed per qubit from the model at the fitted T1 and q. Each
   qubit's departure standard error therefore adds, in quadrature over the classes, ratio_c x s, with s the root of the
-  squared unitary residual plus its squared statistical standard error. A model error that the unitary arm shows
-  widens the departure test and cannot be read as incomplete pinching, and a unitary arm that matches its model adds
-  little;
+  squared unitary residual plus its squared statistical standard error, at least RAW_MODEL_SCATTER (the measured
+  scatter of the model across qubits; error classes whose unitary-arm shifts cancel would otherwise leave s at the
+  statistical floor while their measure-arm shifts add). A model error that the unitary arm shows widens the
+  departure test and cannot be read as incomplete pinching;
+- informative qubits. A qubit is `uninformative` when its mutation test fails or its widened departure standard
+  error exceeds UNINFORMATIVE_SE_FACTOR (2) times its planning value in prediction.json; the count and pooled rules
+  skip it, and the device reads `uninformative` when fewer than DEVICE_QUBITS informative qubits remain;
 - a qubit whose fitted readout scale lies below READOUT_CONTRAST_FLOOR makes no decision;
 - the device verdicts (device_verdict) are the decisions: six qubits times about four 3-SE tests give about a 6 %
-  chance of one false flag, so a device departs only when at least DEVICE_QUBITS usable qubits return `departs_below`
-  or the inverse-variance pooled departure z over the usable qubits, weighted by the widened variances, is at or
+  chance of one false flag, so a device departs only when at least DEVICE_QUBITS informative qubits return
+  `departs_below` or the inverse-variance pooled departure z over the informative qubits, weighted by the widened
+  variances, is at or
   below -Z_DECIDE; `exceeds_prediction` and the settle `tail_attributed` follow the same rule. The per-qubit
   verdicts stay descriptive. The pooling treats the qubits as independent, which a shared gate error is not; the
   sweep rows with a prx error of three times the calibration and with injected model errors test that.
@@ -235,6 +240,8 @@ P_INIT_SENSITIVITY = (0.0, 0.05, 0.1, 0.15, 0.2)
 PRX_SYSTEMATIC = 1.0
 # A device departs when this many usable qubits return the same per-qubit verdict (or the pooled z does).
 DEVICE_QUBITS = 2
+# A qubit whose widened departure standard error exceeds this multiple of its planning value cannot test the prediction.
+UNINFORMATIVE_SE_FACTOR = 2.0
 # Deterministic stand-ins for independent shot orderings of the six qubits in a synthetic run (coprime to 3000).
 SHOT_PERMUTATIONS = (7, 11, 13, 17, 19, 23)
 WINDOW_GRID = (0.6e-6, 0.8e-6, MEASURE_WINDOW_SECONDS, 1.4e-6, MOCK_MEASURE_WINDOW_SECONDS)
@@ -949,7 +956,7 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
         "z": value[f"diff:{unitary_key}"] / statistical if statistical > 0 else math.inf,
     }
     key = f"measure-{top}"
-    scale_u = math.hypot(gate_check["difference"], statistical)
+    scale_u = max(math.hypot(gate_check["difference"], statistical), RAW_MODEL_SCATTER)
     ratios = gate_class_ratios(
         value["t1_s"], min(ctx["t2_s"], 2 * value["t1_s"]), value["q"], ctx["window_s"], ctx["prx_p"]
     )
@@ -957,6 +964,15 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
     gate_systematic = math.sqrt(sum(v * v for v in systematic.values()))
     departure_se = math.hypot(se[f"diff:{key}"], gate_systematic)
     decisions = decide(value["contrast"], se["contrast"], value[f"diff:{key}"], departure_se)
+    uninformative = []
+    if not decisions["mutation_test"]["passes"]:
+        uninformative.append("the mutation test fails")
+    planning_se = ctx.get("planning_departure_se")
+    if planning_se is not None and departure_se > UNINFORMATIVE_SE_FACTOR * planning_se:
+        uninformative.append(
+            f"the departure standard error {departure_se:.4f} exceeds {UNINFORMATIVE_SE_FACTOR:g} times "
+            f"the planning {planning_se:.4f}"
+        )
     gap_z = value["tail_gap"] / se["tail_gap"]
     history_z = value["history"] / se["history"]
     t1, p_init, q = value["t1_s"], value["p_init"], value["q"]
@@ -1003,6 +1019,8 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
             "unitary_residual_scale": scale_u,
         },
         "decisions": decisions,
+        "informative": not uninformative,
+        "uninformative_reasons": uninformative,
         "gate_check_n16": gate_check,
         "settle_n16": {
             "raw_difference": value[f"p0:settle-{top}"] - value[f"p0:measure-{top}"],
@@ -1046,7 +1064,13 @@ def contexts_of(prediction: dict[str, Any], window: float | None = None) -> dict
     """Per qubit the context evaluate needs from a prediction: the calibrated T2, the window and the planning P0."""
     used = prediction["measure_window_seconds"] if window is None else window
     return {
-        q: {"t2_s": row["inputs"]["t2_s"], "prx_p": row["inputs"]["prx_p"], "window_s": used, "planning": row["p0"]}
+        q: {
+            "t2_s": row["inputs"]["t2_s"],
+            "prx_p": row["inputs"]["prx_p"],
+            "window_s": used,
+            "planning": row["p0"],
+            "planning_departure_se": row["expected"]["departure_se"],
+        }
         for q, row in prediction["qubits"].items()
     }
 
@@ -1541,30 +1565,42 @@ def pooled_z(estimates: list[tuple[float, float]]) -> float | None:
 
 
 def device_verdict(qubits: dict[str, Any]) -> dict[str, Any]:
-    """The preregistered device-level verdicts. A device departs when at least DEVICE_QUBITS of the usable qubits
-    return `departs_below`, or the inverse-variance pooled departure z over the usable qubits is at or below
+    """The preregistered device-level verdicts. A device departs when at least DEVICE_QUBITS of the informative qubits
+    return `departs_below`, or the inverse-variance pooled departure z over the informative qubits is at or below
     -Z_DECIDE; `exceeds_prediction` and the settle `tail_attributed` follow the same rule with the signs of their
     own z. Six qubits times about four 3-SE tests give about a 6 % chance of one false flag, so the per-qubit
     verdicts stay descriptive. The pooling treats the qubits as independent and weights each by the inverse of its
     inflated departure variance: the departure standard error of evaluate_qubit already carries, per error class
     of GATE_CLASSES, the measure-arm shift that a gate-model error consistent with that qubit's unitary-arm residual
-    could produce, so a gate-model error withholds an attribution by widening the standard error and no separate
-    guard is needed. The status is `attributed` when the rule fires and `none` otherwise.
+    (at least RAW_MODEL_SCATTER, so that classes cancelling in the unitary arm cannot narrow it) could produce.
+
+    A qubit is informative when its mutation test passes and its widened departure standard error stays within
+    UNINFORMATIVE_SE_FACTOR times its planning value (the prediction's own); otherwise it is `uninformative`, and the
+    count and pooled rules skip it. The status is `attributed` when the rule fires on the informative qubits, `none`
+    when it does not, and `uninformative` when fewer than DEVICE_QUBITS informative qubits remain.
     """
     usable = {q: r for q, r in qubits.items() if r["usable"]}
-    departure = [(r["departure_n16"]["difference"], r["departure_n16"]["se"]) for r in usable.values()]
-    tail = [(r["settle_n16"]["tail_gap"], r["settle_n16"]["se"]) for r in usable.values()]
+    informative = {q: r for q, r in usable.items() if r["informative"]}
+    departure = [(r["departure_n16"]["difference"], r["departure_n16"]["se"]) for r in informative.values()]
+    tail = [(r["settle_n16"]["tail_gap"], r["settle_n16"]["se"]) for r in informative.values()]
     z_departure, z_tail = pooled_z(departure), pooled_z(tail)
-    below = sorted(q for q, r in usable.items() if r["decisions"]["departure"]["outcome"] == "departs_below")
-    above = sorted(q for q, r in usable.items() if r["decisions"]["departure"]["outcome"] == "exceeds_prediction")
-    tailed = sorted(q for q, r in usable.items() if r["settle_n16"]["verdict"] == "tail_attributed")
+    below = sorted(q for q, r in informative.items() if r["decisions"]["departure"]["outcome"] == "departs_below")
+    above = sorted(q for q, r in informative.items() if r["decisions"]["departure"]["outcome"] == "exceeds_prediction")
+    tailed = sorted(q for q, r in informative.items() if r["settle_n16"]["verdict"] == "tail_attributed")
+    enough = len(informative) >= DEVICE_QUBITS
 
     def verdict(named: list[str], z: float | None, sign: int) -> dict[str, Any]:
+        if not enough:
+            return {"qubits": named, "pooled_z": z, "status": "uninformative", "device": False}
         fired = len(named) >= DEVICE_QUBITS or (z is not None and sign * z >= Z_DECIDE)
         return {"qubits": named, "pooled_z": z, "status": "attributed" if fired else "none", "device": fired}
 
     return {
         "usable_qubits": sorted(usable),
+        "informative_qubits": sorted(informative),
+        "uninformative_qubits": {
+            q: r["uninformative_reasons"] for q, r in sorted(usable.items()) if not r["informative"]
+        },
         "departs_below": verdict(below, z_departure, -1),
         "exceeds_prediction": verdict(above, z_departure, 1),
         "settle_tail_attributed": verdict(tailed, z_tail, 1),
@@ -1879,7 +1915,7 @@ def sweep_cases(reduced: bool) -> list[dict[str, Any]]:
     and a prx error of three times the calibration). The reduced grid keeps the planning point and the corner.
     `expect` names the pass rule: `nuisance` (every qubit |departure z| < 1, no flag), `none` (no device flag),
     `never_attributed` (the departs_below status is not `attributed`), `attributed`, `broken` (the mutation test
-    fails and the departs_below status is not `attributed`) or `either`."""
+    fails and the departs_below status is `uninformative`) or `either`."""
     base = {
         "label": "planning",
         "p_init": ACTIVE_RESET_EXCITED,
@@ -1911,6 +1947,13 @@ def sweep_cases(reduced: bool) -> list[dict[str, Any]]:
         )
     injected += [
         {**base, "label": "axis 0.1 (broken gate)", "errors": BROKEN_GATE, "expect": "broken"},
+        {
+            **base,
+            "label": "axis 0.02 + prx x2",
+            "prx_scale": 2.0,
+            "errors": MODEL_ERRORS["axis 0.02"],
+            "expect": "never_attributed",
+        },
         {
             **base,
             "label": "prx x3 + drive x0.5",
@@ -1989,6 +2032,7 @@ def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[s
                     "settle": {q: r["settle_n16"]["verdict"] for q, r in usable.items()},
                     "mutation_z": {q: r["decisions"]["mutation_test"]["z"] for q, r in usable.items()},
                     "mutation_passes": all(r["decisions"]["mutation_test"]["passes"] for r in usable.values()),
+                    "informative": {q: r["informative"] for q, r in usable.items()},
                     "t1_error": {q: r["fitted"]["t1_s"] / models[q]["t1_s"] - 1 for q, r in usable.items()},
                     "device": {
                         k: v["device"] for k, v in result["device"].items() if isinstance(v, dict) and "device" in v
@@ -2020,8 +2064,8 @@ def sweep_failures(rows: list[dict[str, Any]], qubits: int = QUBIT_COUNT) -> lis
             failures.append(f"{label}: {row['usable']} usable qubits")
         if not row["mutation_passes"] and expect_rule != "broken":
             failures.append(f"{label}: the mutation test fails")
-        if expect_rule == "broken" and (row["mutation_passes"] or status == "attributed"):
-            failures.append(f"{label}: a broken gate passes the mutation test or is attributed")
+        if expect_rule == "broken" and (row["mutation_passes"] or status != "uninformative"):
+            failures.append(f"{label}: a broken gate reads {status}")
         if expect_rule == "nuisance":
             for q, z in row["departure_z"].items():
                 if abs(z) >= 1:
@@ -2029,6 +2073,8 @@ def sweep_failures(rows: list[dict[str, Any]], qubits: int = QUBIT_COUNT) -> lis
             for q, verdict in row["settle"].items():
                 if verdict != "match":
                     failures.append(f"{label} {q}: settle {verdict}")
+        if expect_rule != "broken" and not all(row["informative"].values()):
+            failures.append(f"{label}: an uninformative qubit {row['informative']}")
         if expect_rule in ("nuisance", "none") and flagged:
             failures.append(f"{label}: a device-level flag {flagged}")
         if expect_rule == "never_attributed" and status == "attributed":
@@ -2165,7 +2211,10 @@ def self_test(with_sweep: bool = True) -> str:
     # The qubits with the smallest prx errors carry the planted losses, since a large prx error widens a qubit's
     # departure standard error (the prx systematic) beyond a loss this size.
     by_gate = sorted(qubits, key=lambda q: excerpt["qubits"][q]["prx_p"])
-    planted = {q: (0.015, 0.01, -0.01)[rank] if rank < 3 else 0.0 for rank, q in enumerate(by_gate)}
+    # The departure standard error carries the gate-model systematic at its floor (about 0.05 in P0), so a loss reads
+    # as a departure only when it moves P0 by about 0.15; a gain cannot reach `exceeds_prediction`, since the planning
+    # P0 is already near 0.93.
+    planted = {q: (0.06, 0.005, -0.01)[rank] if rank < 3 else 0.0 for rank, q in enumerate(by_gate)}
     models = {
         q: device_model(cal, t1_s=0.8 * cal["t1_s"], p_init=0.12, eps=planted[q], eps_settle=planted[q])
         for q, cal in excerpt["qubits"].items()
@@ -2182,7 +2231,7 @@ def self_test(with_sweep: bool = True) -> str:
         )
         expect(abs(fitted["p_init"] - 0.12) <= 4 * fitted["p_init_se"] + 1e-3, f"{q}: p {fitted}")
         expect(row["decisions"]["mutation_test"]["passes"], f"{q}: the mutation test fails on a pinching device")
-        want = "departs_below" if eps > 0 else "exceeds_prediction" if eps < 0 else "consistent"
+        want = "departs_below" if eps >= 0.05 else "consistent"
         expect(row["decisions"]["departure"]["outcome"] == want, f"{q}: departure {row['departure_n16']}")
         relaxed = row["fit_relaxed"]
         expect(
@@ -2190,7 +2239,10 @@ def self_test(with_sweep: bool = True) -> str:
             f"{q}: {relaxed}",
         )
         expect(row["settle_n16"]["verdict"] == "match", f"{q}: settle {row['settle_n16']}")
-        expect(row["readout_history_n1"]["verdict"] == "none", f"{q}: history {row['readout_history_n1']}")
+        # A step loss of 0.06 also separates the N = 1 measure arm from the delay arm by 0.94 eps (the docstring's
+        # readout-history diagnostic reads a transition at N = 1 as bias).
+        history = "bias_detected" if eps >= 0.05 else "none"
+        expect(row["readout_history_n1"]["verdict"] == history, f"{q}: history {row['readout_history_n1']}")
         for n in STEPS[1:]:
             rate = row["transitions"][str(n)]["rate"]
             expect(abs(rate - max(0.0, (1 - (1 - 2 * eps) * math.cos(THETA / n)) / 2)) < 1e-3, f"{q}: flips {n}")
@@ -2220,7 +2272,7 @@ def self_test(with_sweep: bool = True) -> str:
         biased[name]["final"][qubits[0]][0] -= shift
         biased[name]["final"][qubits[0]][1] += shift
     for q, row in evaluate(biased, contexts).items():
-        want = "bias_detected" if q == qubits[0] else "none"
+        want = "bias_detected" if q == qubits[0] or planted[q] >= 0.05 else "none"
         expect(row["readout_history_n1"]["verdict"] == want, f"{q}: history {row['readout_history_n1']}")
     # A device without pinching: the measure arm follows the unitary law.
     flat = json.loads(json.dumps(counts))
@@ -2255,9 +2307,11 @@ def self_test(with_sweep: bool = True) -> str:
     )
 
     # The device rule: two qubits, or a pooled z, flags the device; one qubit does not.
-    def usable(outcome: str, difference: float, tail: str = "match") -> dict[str, Any]:
+    def usable(outcome: str, difference: float, tail: str = "match", informative: bool = True) -> dict[str, Any]:
         return {
             "usable": True,
+            "informative": informative,
+            "uninformative_reasons": [] if informative else ["test"],
             "departure_n16": {"difference": difference, "se": 0.01},
             "decisions": {"departure": {"outcome": outcome}},
             "settle_n16": {"tail_gap": 0.0, "se": 0.01, "verdict": tail},
@@ -2274,6 +2328,22 @@ def self_test(with_sweep: bool = True) -> str:
     verdict = device_verdict(two)
     expect(verdict["departs_below"]["device"] and verdict["settle_tail_attributed"]["device"], f"{verdict}")
     expect(not verdict["exceeds_prediction"]["device"], "exceeds_prediction follows departs_below")
+    # Uninformative qubits leave the count and pooled rules; fewer than two informative qubits make the device so.
+    blind = {f"QB{n}": usable("departs_below", -0.031, "tail_attributed", informative=n >= 4) for n in range(6)}
+    verdict = device_verdict(blind)
+    expect(
+        verdict["departs_below"]["qubits"] == ["QB4", "QB5"] and verdict["departs_below"]["status"] == "attributed",
+        f"{verdict['departs_below']}",
+    )
+    verdict = device_verdict({**blind, "QB5": usable("departs_below", -0.031, informative=False)})
+    expect(
+        verdict["departs_below"]["status"] == "uninformative"
+        and verdict["exceeds_prediction"]["status"] == "uninformative"
+        and verdict["settle_tail_attributed"]["status"] == "uninformative"
+        and not verdict["departs_below"]["device"]
+        and sorted(verdict["uninformative_qubits"]) == ["QB0", "QB1", "QB2", "QB3", "QB5"],
+        f"{verdict}",
+    )
     drift = {f"QB{n}": usable("consistent", -0.015) for n in range(6)}
     expect(device_verdict(drift)["departs_below"]["device"], "a pooled departure at -3.7 sigma is not a flag")
     expect(
@@ -2300,8 +2370,9 @@ def self_test(with_sweep: bool = True) -> str:
         f"a model error reads {null['decisions']['departure']}",
     )
     expect(
-        null["departure_n16"]["se"] > analyze_model(cal)["departure_n16"]["se"],
-        "the unitary residual does not widen the departure standard error",
+        analyze_model(cal, advance=0.05)["departure_n16"]["se"] > analyze_model(cal)["departure_n16"]["se"] * 1.5
+        and abs(null["departure_n16"]["se"] - analyze_model(cal)["departure_n16"]["se"]) < 1e-3,
+        "a residual above the floor does not widen the departure standard error, or the floor is not the minimum",
     )
     over = {"drive_t2_scale": 0.5}
     eps_hit = eps_for_shift(cal, 4 * null["departure_n16"]["se"], **over)

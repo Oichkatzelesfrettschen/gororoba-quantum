@@ -42,11 +42,30 @@ def test_gate_model_error_widens_the_departure_without_flagging_it() -> None:
     cal = next(iter(excerpt["qubits"].values()))
     nominal = case.analyze_model(cal)["departure_n16"]
     skewed = case.analyze_model(cal, drive_t2_scale=0.5)
-    if not skewed["departure_n16"]["se"] > nominal["se"]:
-        raise AssertionError("a unitary-arm residual does not widen the departure standard error")
+    if abs(skewed["departure_n16"]["se"] - nominal["se"]) > 1e-3:
+        raise AssertionError("a residual under the floor moves the departure standard error")
+    if not case.analyze_model(cal, advance=0.05)["departure_n16"]["se"] > 1.5 * nominal["se"]:
+        raise AssertionError("a unitary-arm residual above the floor does not widen the departure standard error")
     if skewed["decisions"]["departure"]["outcome"] != "consistent":
         raise AssertionError("a gate-model error reads as a departure")
     eps = case.eps_for_shift(cal, 4 * skewed["departure_n16"]["se"], drive_t2_scale=0.5)
     hit = case.analyze_model(cal, eps=eps, drive_t2_scale=0.5)
     if hit["decisions"]["departure"]["outcome"] != "departs_below":
         raise AssertionError("an injected departure of four standard errors is missed")
+
+
+def test_broken_gate_reads_uninformative_and_cancelling_classes_are_not_attributed() -> None:
+    excerpt = case.load_json(case.ROOT / "results/iqm/cases" / case.CASE / case.EXCERPT)
+    cal = next(iter(excerpt["qubits"].values()))
+    broken = case.analyze_model(cal, **case.BROKEN_GATE)
+    if broken["decisions"]["mutation_test"]["passes"] or broken["informative"]:
+        raise AssertionError("a broken gate stays informative")
+    row = {"usable": True, **{k: broken[k] for k in ("informative", "uninformative_reasons")}}
+    row |= {
+        "departure_n16": broken["departure_n16"],
+        "settle_n16": broken["settle_n16"],
+        "decisions": broken["decisions"],
+    }
+    verdict = case.device_verdict({f"QB{n}": row for n in range(6)})
+    if verdict["departs_below"]["status"] != "uninformative":
+        raise AssertionError(f"{verdict['departs_below']}")
