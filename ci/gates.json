@@ -3783,7 +3783,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py --self-test",
-   "name": "core-690",
+   "name": "core-700",
    "seconds": 8.0,
    "tier": "pr"
   },
@@ -3791,7 +3791,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py check results/iqm/cases/measurement-sequence-pinching",
-   "name": "core-691",
+   "name": "core-701",
    "seconds": 2.0,
    "tier": "pr"
   },
@@ -3799,7 +3799,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence_aer_check.py --self-test",
-   "name": "core-692",
+   "name": "core-702",
    "seconds": 4.0,
    "tier": "pr"
   },
@@ -3807,7 +3807,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py --self-test",
-   "name": "core-693",
+   "name": "core-703",
    "seconds": 5.0,
    "tier": "pr"
   },
@@ -3815,7 +3815,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py check results/iqm/cases/measurement-sequence-diagnostic",
-   "name": "core-694",
+   "name": "core-704",
    "seconds": 2.0,
    "tier": "pr"
   },
@@ -3823,7 +3823,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_preflight.py --self-test",
-   "name": "core-695",
+   "name": "core-705",
    "seconds": 2.0,
    "tier": "pr"
   },
@@ -3831,9 +3831,42 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_preflight.py check results/iqm/cases/measurement-sequence-pinching-probe",
-   "name": "core-696",
+   "name": "core-706",
    "seconds": 2.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py analyze results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic --out results/iqm/measurement_sequence_diagnostic_analysis.json --replay",
+   "name": "core-707",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_diagnostic_analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_preflight.py analyze results/iqm/runs/2026-10-26T004628Z-garnet-measurement-sequence-pinching-probe-probe --out results/iqm/measurement_sequence_pinching_preflight.json --replay",
+   "name": "core-708",
+   "seconds": 2.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_preflight.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py analyze results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching --out results/iqm/measurement_sequence_pinching_analysis.json --replay",
+   "name": "core-709",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_analysis.json"
+   ]
   },
   {
    "suite": "core",

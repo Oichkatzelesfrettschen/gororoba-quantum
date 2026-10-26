@@ -37,6 +37,8 @@ import iqm_measurement_sequence as case  # noqa: E402
 import iqm_signed_probe  # noqa: E402
 import iqm_sim  # noqa: E402
 
+from parallel import ordered_map  # noqa: E402
+
 PINCH = Kraus([np.array([[1, 0], [0, 0]], dtype=complex), np.array([[0, 0], [0, 1]], dtype=complex)])
 TOLERANCE = 1e-9
 
@@ -63,28 +65,47 @@ def p0_of(circuit: dict[str, Any], qubit: str, calibration: iqm_sim.Calibration,
     return float(simulator.run(noisy).result().data()["probabilities"][0])
 
 
+_SIMULATORS: dict[str, AerSimulator] = {}
+
+
+def simulator_of(calibration: iqm_sim.Calibration) -> AerSimulator:
+    """The density-matrix simulator of a calibration's noise model, built once per process and set."""
+    if calibration.set_id not in _SIMULATORS:
+        _SIMULATORS[calibration.set_id] = AerSimulator(method="density_matrix", noise_model=calibration.noise_model())
+    return _SIMULATORS[calibration.set_id]
+
+
+def p0_item(item: tuple[dict[str, Any], str, iqm_sim.Calibration]) -> float:
+    """p0_of for one (circuit, qubit, calibration) item, with the simulator built inside the worker."""
+    circuit, qubit, calibration = item
+    return p0_of(circuit, qubit, calibration, simulator_of(calibration))
+
+
 def compare(
     circuits: dict[str, dict[str, Any]], qubits: dict[str, dict[str, float]], calibration: iqm_sim.Calibration
 ) -> list[dict[str, Any]]:
     """Per qubit, arm and N: the simulation's P0 over the four signed circuits against the Bloch model at q = 1
-    (a cold start), with the calibration's prx error."""
-    simulator = AerSimulator(method="density_matrix", noise_model=calibration.noise_model())
+    (a cold start), with the calibration's prx error. The qubit x arm x N x sign simulations are independent and run
+    through parallel.ordered_map; the sums keep the serial order, so the rows match a serial run bit for bit."""
+    keys = [(qubit, arm, n) for qubit in qubits for arm, n in case.group_keys()]
+    items = [(circuits[name], qubit, calibration) for qubit, arm, n in keys for name in case.group_names(arm, n)]
+    values = iter(ordered_map(p0_item, items))
     rows = []
-    for qubit, inputs in qubits.items():
+    for qubit, arm, n in keys:
+        inputs = qubits[qubit]
         tables = case.model_tables(inputs["t1_s"], inputs["t2_s"], 1.0, case.MEASURE_WINDOW_SECONDS, inputs["prx_p"])
-        for arm, n in case.group_keys():
-            names = case.group_names(arm, n)
-            simulated = sum(p0_of(circuits[name], qubit, calibration, simulator) for name in names) / len(names)
-            rows.append(
-                {
-                    "qubit": qubit,
-                    "arm": arm,
-                    "n": n,
-                    "simulated": simulated,
-                    "model": tables[arm][str(n)],
-                    "gap": simulated - tables[arm][str(n)],
-                }
-            )
+        names = case.group_names(arm, n)
+        simulated = sum(next(values) for _ in names) / len(names)
+        rows.append(
+            {
+                "qubit": qubit,
+                "arm": arm,
+                "n": n,
+                "simulated": simulated,
+                "model": tables[arm][str(n)],
+                "gap": simulated - tables[arm][str(n)],
+            }
+        )
     return rows
 
 
