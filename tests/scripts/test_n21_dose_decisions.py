@@ -61,6 +61,10 @@ def _design_record() -> dict:
         "policy": {
             "rep_delay_seconds": 2e-05,
             "max_execution_seconds": 30,
+            "replica_floor": dose.DESIGN_REPLICA_FLOOR,
+            "twirl": False,
+            "dd": None,
+            "cross_group_buffer": True,
             "design": {
                 "family": "n21-orbit-rca",
                 "window_doses": list(dose.DESIGN_DOSES),
@@ -73,6 +77,7 @@ def _design_record() -> dict:
             "candidates": [{"name": "c", "feasible": True, "estimated_charge_seconds": 12.0}],
         },
         "groups": [{"backend": "ibm_fez", "calibration": "t", "replicas": [{}] * 8}],
+        "code_commit": {"head": "abc", "sources_modified": False},
         "seed_source": [{"flag": flag, "sources": sources} for flag, sources in dose.DESIGN_SEED_SOURCES.items()],
     }
 
@@ -85,7 +90,7 @@ def test_preflight_admits_the_design_and_refuses_each_departure(tmp_path: Path) 
 
     def check(record: dict) -> dict:
         (tmp_path / "record.json").write_text(json.dumps(record))
-        return dose.preflight(tmp_path)
+        return dose.preflight(tmp_path, "abc")
 
     if check(_design_record())["replicas"] != 8:
         raise AssertionError("the design record does not pass")
@@ -96,6 +101,11 @@ def test_preflight_admits_the_design_and_refuses_each_departure(tmp_path: Path) 
         ("doses", lambda r: r["policy"]["design"].update(window_doses=[0, 3500])),
         ("seed sources", lambda r: r.update(seed_source=[])),
         ("estimated charge", lambda r: r["optimization"]["candidates"][0].update(estimated_charge_seconds=31.0)),
+        ("backend", lambda r: r["groups"][0].update(backend="ibm_torino")),
+        ("replica floor", lambda r: r["policy"].update(replica_floor=None)),
+        ("twirling", lambda r: r["policy"].update(twirl=True)),
+        ("modified tree", lambda r: r["code_commit"].update(sources_modified=True)),
+        ("other commit", lambda r: r["code_commit"].update(head="def")),
     ]
     for label, mutate in departures:
         record = copy.deepcopy(_design_record())
