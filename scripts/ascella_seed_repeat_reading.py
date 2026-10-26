@@ -127,12 +127,9 @@ def dependence(z: np.ndarray, v: np.ndarray, anchor: np.ndarray, generator: np.r
 def predecessor_distance(data: dict[str, Any]) -> dict[str, float]:
     """Per setting name, the L1 heater-phase distance of its mesh to the mesh of the iteration before it."""
     phases = data["phases"][data["configuration"]]
-    out: dict[str, float] = {}
-    for index, name in enumerate(names(data)):
-        if index:
-            change = np.angle(np.exp(1j * (phases[index] - phases[index - 1])))
-            out[name] = float(np.abs(change).sum())
-    return out
+    change = np.angle(np.exp(1j * (phases[1:] - phases[:-1])))
+    distances = np.abs(change).sum(axis=1)
+    return {name: float(value) for name, value in zip(names(data)[1:], distances, strict=True)}
 
 
 def build(b_dir: Path, c_dir: Path) -> dict[str, Any]:
@@ -167,18 +164,29 @@ def build(b_dir: Path, c_dir: Path) -> dict[str, Any]:
             "perturbed_identical": len(perturbed),
             "perturbed": int((~anchor_c).sum()),
         },
-        "anchor_control": anchor_control(
+    }
+    record["anchor_control"] = (
+        anchor_control(
             z_b[[index_b[names_c[i]] for i in anchors]],
             v_b[[index_b[names_c[i]] for i in anchors]],
             z_c[anchors],
             v_c[anchors],
-        ),
-    }
+        )
+        if anchors
+        else {"reading": "not read: no anchor mesh repeats"}
+    )
     if len(perturbed) >= 4:
         record["reproduction"] = reproduction(z_b[paired], z_c[perturbed], generator)
     else:
         record["reproduction"] = {"meshes": len(perturbed), "reading": "not read: too few perturbed meshes repeat"}
-    record["dependence"] = dependence(z_c[keep], v_c[keep], anchor_c[keep], generator)
+    # The dispersion ratio needs two members on each side, and a rank correlation three pairs.
+    if len(anchors) >= 2 and len(perturbed) >= 2:
+        record["dependence"] = dependence(z_c[keep], v_c[keep], anchor_c[keep], generator)
+    else:
+        record["dependence"] = {"reading": "not read: fewer than two identical anchors or perturbed meshes"}
+    if len(perturbed) < 3:
+        record["exploratory"] = {"reading": "not read: fewer than three perturbed meshes repeat"}
+        return record
     block_b = b["block"] / b["block"].sum(axis=1, keepdims=True)
     block_c = c["block"] / c["block"].sum(axis=1, keepdims=True)
     distance_b, distance_c = predecessor_distance(b), predecessor_distance(c)
