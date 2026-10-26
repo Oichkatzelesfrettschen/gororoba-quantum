@@ -29,6 +29,30 @@ The newest retained catalogue is the after-job read of the Ascella signed-cohere
 
 `t_out` above 100 % shows a relative normalization, not an absolute detector efficiency. Ascella's record has carried no transmittance field since the plan read of 2026-10-23 17:11 UTC (`ascella-mosaiq-update-order-retry`), after 5.12 % at 06:56 UTC that day (`ascella-approved-order-pilot-retry`); the earlier Ascella values below keep their dates. The before-job read of the same run (15:30:55 UTC) and both reads of job-00 (09:17:08 and 09:21:58 UTC) sit beside it in their run directories.
 
+### Belenos read of 2026-10-25 19:04 UTC
+
+The plan read of the single-chip teleportation rehearsal, retained as
+[platform-read/catalogue.json](../../../results/quandela/cases/teleportation_rehearsal/job-00/platform-read/catalogue.json),
+reports `qpu:belenos` `available` with HOM 83.8 %, g2 16.7 %, Transmittance 0.05 % and 21187.1 /s dark counts on
+mode 5, at the 2026-10-24 schema and clock. Every source-connected mode's `t_in` reads 0.01 % to 0.02 %, against
+2.43 % to 6.31 % at 2026-10-24 15:35:30 UTC, so the source-side transmission fell about 250-fold while `t_out`
+stays between 15.88 % (mode 5) and 164.32 %. Perceval's `estimate_required_shots` answers None for the rehearsal
+under these figures. Cause not identified; `qpu:ascella` in the same read reports HOM 86.8 % and g2 1.9 %.
+
+The record holds still. The read of 2026-10-26 01:16:38 UTC,
+[live-processor-qpu-belenos-2026-10-26T01-16-38Z.json](../../evidence/quandela/live-processor-qpu-belenos-2026-10-26T01-16-38Z.json),
+carries a `perfs` object byte-identical to the 19:04:53 UTC read, every per-mode dark count and transmission included,
+and the first read of this state is the 18:47:04 UTC catalogue of
+[ascella_signed_coherence job-02](../../../results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/platform-before/catalogue.json).
+On 2026-10-24 the same object changed at each of the six two-hourly reads of the dark drift series (07:04 to 19:04 UTC,
+[results/quandela/bdsc_drift_series_dark/](../../../results/quandela/bdsc_drift_series_dark/)) and held between them,
+with the mode-5 dark count moving between 7326.8 /s and 18616.3 /s. Six and a half hours without a change therefore
+span at least three refresh intervals, and the figures most likely describe the last calibration the service
+published rather than the chip at the time of the read (inference; a changed record or a provider statement settles
+it). The explorer row of the same read reports 97.89 % availability for 2026-10-26 and schedules the weekly
+maintenance for 2026-10-29 08:30 to 12:00 UTC, not yet started. A plan admits the rehearsal only on a record that
+models at or above F* = 0.86, so a frozen record holds the case.
+
 ### Live reads of 2026-10-20 (historical)
 
 The table below is the state as of the live processor reads of 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). The maintenance window is the snapshot's Explorer row, which read it on 2026-10-17.

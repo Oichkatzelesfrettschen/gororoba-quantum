@@ -76,6 +76,13 @@ from experiment_optimizer import (
     optimize,
     planned_empirical_bernstein,
 )
+from latency_recovery import (
+    DEFAULT_LATENCY_DT,
+    DEFAULT_WINDOW_DT,
+    LATENCY_RECOVERY_FAMILY,
+    latency_recovery_group,
+    syndrome_window_violations,
+)
 from packing import Replica
 from qpe_diagnostics import (
     has_herald,
@@ -178,8 +185,8 @@ def settings(args: Any) -> dict[str, Any]:
 
     A declared preparation excitation, the empirical-Bernstein opt-in, a
     state-prep arm selection, the n21-orbit-rca initialization herald, its
-    overlap split, its ground-control split and its pinned layout join them
-    only when given, so a plan without them keeps its settings unchanged.
+    overlap split, its ground-control split, its pinned layout and the
+    latency-recovery delays join them only when given, so a plan without them keeps its settings unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
     bernstein = {"empirical_bernstein": True} if getattr(args, "empirical_bernstein", False) else {}
@@ -191,6 +198,9 @@ def settings(args: Any) -> dict[str, Any]:
     ramsey = {"ramsey_windows": list(windows), "ramsey_analyzer_closure": ramsey_analyzer_closure()} if windows else {}
     sweep = getattr(args, "segmented_sweep", None)
     segmented = {"segmented_sweep": sweep, "segmented_analyzer_closure": segmented_analyzer_closure()} if sweep else {}
+    latency = {
+        name: getattr(args, name) for name in ("latency_dt", "window_dt") if getattr(args, name, None) is not None
+    }
     pin = getattr(args, "pin_layout", None)
     return (
         {
@@ -226,6 +236,7 @@ def settings(args: Any) -> dict[str, Any]:
         | ground
         | ramsey
         | segmented
+        | latency
         | ({"pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}} if pin is not None else {})
     )
 
@@ -957,6 +968,68 @@ def state_prep_candidates(
     return candidates[: args.optimizer_candidates]
 
 
+def latency_recovery_candidates(
+    runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
+) -> list[tuple[list[Any], dict[str, Any]]]:
+    """Route the 34-member latency-recovery group on each snapshot, one placement per candidate.
+
+    Delays are multiples of the backend's timing granularity, so L and W
+    (--latency-dt and --window-dt, else the ibm_kingston design values) round
+    up to it; the configuration records requested and effective values, and
+    record_groups rebuilds the group from the effective ones. A routed
+    candidate whose syndrome window holds an operation besides the two
+    ancilla measurements is rejected. The analysis reads one replica's
+    schedule, so the replica count is 1.
+    """
+    requested = (
+        getattr(args, "latency_dt", None) or DEFAULT_LATENCY_DT,
+        getattr(args, "window_dt", None) or DEFAULT_WINDOW_DT,
+    )
+    candidates: list[tuple[list[Any], dict[str, Any]]] = []
+    routed: list[tuple[Any, dict[str, Any]]] = []
+    for snapshot in snapshots:
+        local: dict[str, Any] = {}
+        try:
+            target = snapshot.backend.target
+            granularity = max(1, int(target.granularity))
+            latency_dt, window_dt = (granularity * math.ceil(value / granularity) for value in requested)
+            group = latency_recovery_group(latency_dt, window_dt)
+            placed = runtime.select_candidates(group, [snapshot], args.seeds, local)
+        except (runtime.LiveRunError, QiskitError, ValueError) as error:
+            trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
+            continue
+        trace.setdefault(group.name, {}).update(local.get(group.name, {}))
+        configuration = {
+            "name": LATENCY_RECOVERY_FAMILY,
+            "latency_dt": latency_dt,
+            "window_dt": window_dt,
+            "requested_latency_dt": requested[0],
+            "requested_window_dt": requested[1],
+            "granularity_dt": granularity,
+            "dt_seconds": target.dt,
+        }
+        for placement in placed:
+            try:
+                for isa in placement.isas:
+                    if moved := syndrome_window_violations(isa):
+                        raise runtime.LiveRunError(f"{isa.name}: operations inside the syndrome window: {moved}")
+            except (runtime.LiveRunError, ValueError) as error:
+                trace.setdefault("family_rejections", []).append(
+                    {"backend": snapshot.name, "seed": placement.seed, "layout": placement.layout, "reason": str(error)}
+                )
+                continue
+            routed.append((placement, configuration))
+    if not routed:
+        raise runtime.LiveRunError(f"no backend routes the latency-recovery family: {trace.get('family_rejections')}")
+    routed.sort(key=lambda item: -item[0].joint_score)
+    for placement, configuration in routed[: args.optimizer_candidates]:
+        trial = copy.copy(placement)
+        policy = runtime.ReplicaPolicy(args.replica_floor, 1, False, True)
+        if runtime._prepare_individual_candidate(trial, trace, policy):
+            candidates.append(([trial], {**configuration, "replica_cap": 1}))
+    return candidates
+
+
 def measurement_delay(runtime: Any, snapshot: Any, physical_qubit: int) -> int:
     """Round the actual measurement writer's fresh duration to timing granularity."""
     target = snapshot.backend.target
@@ -1347,6 +1420,8 @@ def family_candidates(
         return state_prep_candidates(runtime, snapshots, args, trace)
     if args.family in (MSQ_FAMILY, MSQD_FAMILY):
         return measurement_sequence_candidates(runtime, snapshots, args, trace)
+    if args.family == LATENCY_RECOVERY_FAMILY:
+        return latency_recovery_candidates(runtime, snapshots, args, trace)
     if args.family != "folded-qpe":
         raise runtime.LiveRunError(f"unknown family {args.family}")
     coherent = runtime.select_candidates(folded_group(("coherent",)), snapshots, args.seeds, trace)

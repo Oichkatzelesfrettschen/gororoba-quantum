@@ -9,6 +9,13 @@
       "question": "Do job-00's outside-block clicks and analyzer residuals follow the setting, the execution order or the sample budget when the same 64 circuits run in a QRNG-drawn order at twice the samples?"
     },
     {
+      "id": "qd-ascella-signed-coherence-compilations",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02",
+      "family": "photonic signed-coherence perturbed compilations",
+      "question": "Does one logical setting's analyzer statistic move with the served mesh when the same unitary runs at 56 QRNG-drawn compilation seeds beside 8 seed-0 anchors, and do the per-heater error families fitted on job-00 predict or, refitted with it, explain the configuration response?"
+    },
+    {
       "id": "qd-ascella-signed-coherence",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
@@ -1241,6 +1248,13 @@
       "question": "Are qubit 143's two Ramsey lines a classical mixture fixed within a shot or an exchange-coupled two-level system, which alias cell holds their splitting, and does the herald perturb them?"
     },
     {
+      "id": "kingston-latency-recovery",
+      "provider": "ibm",
+      "run": "results/live/2026-10-25T193443.839527Z",
+      "family": "latency-recovery",
+      "question": "How much logical entanglement fidelity does a feed-forward correction of a bit-flip-coded Bell pair lose to the controller latency and to a 10 us idle, against a Pauli-frame correction at matched idles?"
+    },
+    {
       "id": "qi-tuna17-quaternion-order-00",
       "provider": "quantum_inspire",
       "run": "results/quantum_inspire/runs/tuna17-quaternion-order-noise/order-batch-00",
@@ -1932,6 +1946,27 @@
       "run": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7",
       "family": "BDSC drift series on qpu:belenos",
       "question": "slot t7 of the approved drift series, the frozen request of the stationarity case's first block and job (`b1-j1`, 24 iterations of 100000 samples) resubmitted unchanged every two hours by the scheduled workflow: does the superposition class's excess spread carry memory from run to run, or is it run-to-run jitter, under the mode-5 detector_absent veto?"
+    },
+    {
+      "id": "kingston-qet-ladder",
+      "provider": "ibm",
+      "run": "results/live/2026-10-25T203822.040562Z",
+      "family": "qet-ladder",
+      "question": "On 14 calibration-qualified ibm_kingston pairs, does a record-steered rotation lower Bob's local energy of the Hotta two-qubit model below the floor -<H_A> that binds every record-independent operation, and does the feed-forward branch execute the rotation the bit selects?"
+    },
+    {
+      "id": "kingston-qet-frame-diagnostic",
+      "provider": "ibm",
+      "run": "results/live/2026-10-25T225332.266272Z",
+      "family": "qet-ladder",
+      "question": "Is the ladder's lost parity a phase on B over the measure-to-branch idle, static or driven by Alice's readout, and does completing the CX first or an X echo on B move or refocus it?"
+    },
+    {
+      "id": "kingston-qet-compensated-ladder",
+      "provider": "ibm",
+      "run": "results/live/2026-10-25T233207.284563Z",
+      "family": "qet-ladder",
+      "question": "Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?"
     }
   ],
   "claims": [
@@ -2173,6 +2208,89 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "ascella-signed-coherence-compilation-dependence",
+      "statement": "Theta2-x-arm0 run 64 times on qpu:ascella (job 788097fb), at 56 QRNG-drawn compilation seeds that served 56 distinct meshes (heaters a median 1.58 rad from job-00's) and 8 seed-0 anchors that served job-00's mesh, reads a block-conditioned X statistic that moves with the served mesh: the perturbed dispersion per degree of freedom is 7.08 times the anchors' (label-permutation p 0.0049, alpha 0.01), the perturbed statistics span 0.865 to 0.915 around a mean of 0.888 against the ideal 0.9045 and the anchors' 0.883. Every family fitted on job-00 misses the 56 meshes: the residuals' joint quadratic forms in counting plus shared fitted-prediction covariance read 1150 (static heater offsets), 649 (drive-linear), 771 (order-1 polynomial) and 201 (order-1 harmonic) against the chi-square 0.999 quantile 94.5. Refitted on job-00 plus the perturbed iterations, every family is identified on the 19 training-only folds (median variance ratios 0.22 to 0.86) and keeps the left-out X shortfall (sums 85 to 377 on 10), three of four also on Y.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, one job and the four heater families of the sizing record (static offsets, drive-linear, order-1 shifted Legendre and order-1 harmonic responses of the returned phase); the setting, perturbation and readings R1 to R3 were fixed in plan ascella-perturbed-compilation-case before the acquisition. R2's thresholds count distinct perturbed meshes; its first implementation summed individually standardized squares, which drop the shared covariance and read 1035, 223, 235 and 13.9, and the joint form replaced it after review. The sizing the owner approved overstated R1's sensitivity (it treated the anchor ratio as a chi-square); its successor puts R1's detectable compilation-induced X standard deviation at 0.013 for power 0.9; and R3 uses the training-only folds and the 30-on-10 and below-20 rule of plan ascella-configuration-holdout-training-only, whose folds share training data, so its sums are descriptive. The result refutes these families as the explanation of the configuration response; it names no mechanism, and couplings across heaters (thermal crosstalk, coupler error, mesh-dependent loss) remain untested. The fits follow the OpenBLAS Haswell kernel and numpy's x86-64-v3 dispatch that ci/run_gates.py sets and replay within 1e-3 relative plus 1e-8 absolute.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+          "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/compilation-design.json",
+          "sha256": "4b8a14088b4ef83a6fe23b2ad4fa97f4f40b530077b505e7b85863471d3f656d"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/compilation-design-anchor-ratio.json",
+          "sha256": "87549b2d2924ac8666474e157e872fd58359f68c01c476322ef589c052b64e41"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/compilation-reading.json",
+          "sha256": "6aa696088fedcd9b43358151c1a661ef5faa718825d04bd8e0a528780a0cb3cc"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-compilation-reading-replay": "replay",
+        "core-ascella-signed-coherence-compilation-design-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-compilations"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-conformance"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "ascella-signed-coherence-heater-coupling",
+      "statement": "Eight heater-coupling families of the returned 12-mode Ascella mesh, fitted on job-00 alone (uniform neighbor crosstalk and uniform coupler offset with dephasing, static coupler offsets, static heater with coupler offsets, a three-coefficient crosstalk kernel by mode distance and a drive-power loss, the last two also with the static offsets), each miss the pooled X statistics of job-02's 56 served meshes: the residuals' joint quadratic forms in counting plus shared fitted-prediction covariance read 327 to 1107 against the chi-square 0.999 quantile 94.5 on 56. Coupling-only fits predict noise-free X spreads of 0.0017 to 0.0059 against the observed compilation-induced 0.0104 (0.0113 with counting noise); offset-carrying fits predict 0.014 to 0.028 at positions uncorrelated with the observations (predicted-observed correlation -0.04 to 0.19). Refitted on job-00 plus job-02, the kernel and loss families are identified (median variance ratios 0.01 to 0.60) and keep the left-out X shortfall (sums 180 to 347 on 10).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Families, priors, training set and reading were fixed in plan ascella-heater-coupling-families (commit 249c26a) after the compilation reading had already exposed job-02's per-mesh statistics, so the confirmatory content is that no family saw job-02 before scoring. A feasibility screen sized the kernel and loss priors against job-02's served phases and observed spread before the plan; that favors the families, so the shortfall is conservative. The returned phase in [0, 2 pi) stands for heater drive power and the logical (mode, column) layout for physical distance; crosstalk nonlinear in power, crosstalk over the physical layout and errors outside the mesh remain untested. Both drive-loss fits put gamma below zero, which no heater loss produces; the loss-alone posterior rises monotonically for gamma at or above zero, so a fit held to physical loss reduces to the nominal mesh or, with offsets, to the offsets family. The predicted-observed correlations and the identification folds are descriptive and decide nothing. One setting, one job; the fits follow the OpenBLAS Haswell kernel and numpy's x86-64-v3 dispatch that ci/run_gates.py sets and replay within 1e-3 relative plus 1e-8 absolute.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+          "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/heater-coupling.json",
+          "sha256": "df0a0543d8e6b215f1b31d289fc840c95cd6948bced0c499a4e5c6fa877c1857"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-heater-coupling-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-compilations"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-compilation-dependence"
+      ],
+      "supersedes": []
     },
     {
       "id": "ascella-signed-coherence-conformance",
@@ -2688,7 +2806,7 @@
       "domain": "algebra",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "Written proof, not machine-checked; the exceptional subset's exact dimension, components and geometry, and the A_5 question, remain open.",
+      "boundary": "Written proof, not machine-checked. Claim a6-a8-stiefel-zero-divisor-cone sharpens the bound: the exceptional subset has dimension exactly 57; its components and real geometry remain open.",
       "evidence": [],
       "documents": [
         "docs/notes/math-0512517.md",
@@ -9800,6 +9918,304 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "stiefel-pfaffian-transport-all-n",
+      "statement": "For doubly pure y = (p, q) in A_n and z = p + i q, phi(y x) = A(z, conj z) conj(phi(x)) with A(z, t) = [[0, -t^T], [t, C_z]], so rank_R L_y = 2 rank_C A(z, conj z); the cofactors of C_z satisfy P_j = f_n z_j for a homogeneous f_n in Z[z] of degree 2^(n-2) - 2, and det L_y = N^4 |f_n(z)|^4, with f_4 = Q and f_5 = Q G.",
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof for every n in docs/evidence/stiefel-pfaffian-higher/README.md; gate core-692 checks the transport on every basis pair at n = 6 and 7 and the cofactor identities at n = 6, 7, 8, and the independent verification (verification.md) re-derived the proof and checked n = 8 with its own code. The degree-(2^(n-2) - 2) form of f_n beyond n = 8 rests on the written argument only; not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/stiefel-pfaffian-higher/result.json",
+          "sha256": "fb208dddfb9a17d3a611399582e682e8d6001645bd808e7b29a2ec96c6732be6"
+        }
+      ],
+      "documents": [
+        "docs/evidence/stiefel-pfaffian-higher/README.md",
+        "docs/evidence/stiefel-pfaffian-higher/verification.md"
+      ],
+      "gates": {
+        "core-692": "replay",
+        "core-693": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-stiefel-universal"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a6-a8-stiefel-zero-divisor-cone",
+      "statement": "For n = 6, 7, 8, f_n is irreducible over Q and not divisible by Q = z.z, so the zero-divisor Stiefel elements of A_n form the complex points of V(Q, f_n), a cone of pure real dimension 2^n - 6, codimension 2 in the Stiefel cone; on unit pairs the dimension is 57, 121 and 249. The five-term element e_12 + e_15 + e_16 + e_23 + 2 e_34 is an invertible Stiefel element of A_6.",
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Irreducibility by a mod-p line argument in gate core-692 and, independently, by an exact factorization over Z on an integer line (verification.md); the dimension follows from Krull's principal ideal theorem on the irreducible quadric cone V(Q) because z = p + i q covers all of C^(2^(n-1) - 1). Given Biss-Christensen-Dugger-Isaksen Theorem 1.5, V(Q, f_6) contains the component {Q = z_16 = 0} and at least one other, through e_16 + i e_1 (nullity 28). Every Stiefel element of A_6 supported on at most four coordinates is a zero divisor by an exact slice computation in the ungated --explore record, not by a gate. Open: f_n modulo Q, absolute irreducibility, the number and real structure of components, and least supports at A_7 and A_8.",
+      "evidence": [
+        {
+          "path": "docs/evidence/stiefel-pfaffian-higher/result.json",
+          "sha256": "fb208dddfb9a17d3a611399582e682e8d6001645bd808e7b29a2ec96c6732be6"
+        }
+      ],
+      "documents": [
+        "docs/evidence/stiefel-pfaffian-higher/README.md",
+        "docs/evidence/stiefel-pfaffian-higher/verification.md"
+      ],
+      "gates": {
+        "core-692": "replay",
+        "core-693": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "Biss, Christensen, Dugger and Isaksen, math/0702075, Theorem 1.5, for the component statement only"
+      ],
+      "depends_on": [
+        "stiefel-pfaffian-transport-all-n",
+        "a6-stiefel-generic-invertibility"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a7-a8-stiefel-witness",
+      "statement": "Moreno's question has a negative answer at A_7 and A_8: an explicit disjoint-support integer Stiefel element has left multiplication of exact rank 128 and 256, so it is not a zero divisor.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact integer ranks of the two retained witnesses, re-derived by gate core-692 and independently by the verification; nothing beyond the two elements.",
+      "evidence": [
+        {
+          "path": "docs/evidence/stiefel-pfaffian-higher/result.json",
+          "sha256": "fb208dddfb9a17d3a611399582e682e8d6001645bd808e7b29a2ec96c6732be6"
+        }
+      ],
+      "documents": [
+        "docs/evidence/stiefel-pfaffian-higher/README.md",
+        "docs/evidence/stiefel-pfaffian-higher/verification.md"
+      ],
+      "gates": {
+        "core-692": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "stiefel-pfaffian-f-modulo-q",
+      "statement": "Open: the form of f_n modulo Q for n >= 6, whether f_n lies in (Q, z_s^2) with s = 2^(n-2), and whether f_n is absolutely irreducible.",
+      "domain": "algebra",
+      "evidence_class": "mathematical claim",
+      "status": "open",
+      "boundary": "f_n does not lie in (Q, z_s^3) for n = 6, 7 (isotropic lines over F_p, verification row 7b); membership in (Q, z_s^2) holds on two coordinate slices and on every tested line, which proves nothing beyond them.",
+      "evidence": [],
+      "documents": [
+        "docs/evidence/stiefel-pfaffian-higher/README.md",
+        "docs/evidence/stiefel-pfaffian-higher/verification.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "stiefel-pfaffian-transport-all-n"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "unproved-open"
+    }
+,
+    {
+      "id": "kingston-latency-recovery-window-cost",
+      "statement": "On ibm_kingston (calibration 2026-10-25T12:18:10-07:00, executed on physical qubits 106, 105, 104, 117, 107, 125 for r, d0, d1, d2, a0, a1; one job of 34 dynamic PUBs at 16384 shots) a single conditional X recovers an injected X error on a bit-flip-coded Bell pair: F(ff_0) - null is 0.745 [0.699, 0.790] and F(ff_0) - F(unencoded) is 0.553 [0.507, 0.598]. The controller latency and the conditional cost no resolved fidelity beyond their idle: frame_0 - ff_0 reads 0.010 [-0.035, 0.055] and frame_l - ff_0 reads -0.004 [-0.049, 0.041]. A requested 10 us idle, executed as 9.748 us on the feed-forward path (the broadcast overlaps the delay) and 10.000 us on the frame path per the returned scheduler_timing, costs 0.217 [0.172, 0.262] and 0.223 [0.178, 0.268], against 0.082 and 0.079 predicted from the calibrated T1 and T2: a finite-window slope of 0.022 per us on both paths, and -ln(F(W)/F(0)) of 0.033 to 0.034 per us. Descriptively, about 0.12 of that loss is a -0.81 rad rotation of the four-qubit block (near -13 kHz) and the rest a coherence decay with time constant 38 to 40 us against 65 to 67 us predicted.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One layout, one calibration and one job; Hoeffding intervals at alpha 0.05/7 per endpoint. The +-0.01 equivalence margins of latency_is_idle and window_slope are not reached, so equal cost is bounded, not shown. The phase and the decay time constants come from the summary expectations and were not preregistered beyond decay_not_phase; the detuning's source is undecided. A bit-flip code protects no phase. Layout search and model sampling used the runner's reproduction seeds, not a QRNG draw; the runner took no seed at run time then (issue #514). Two exposures cannot decide whether the fidelity decays exponentially, so -ln(F(W)/F(0)) is a rate of an exponential law only under that assumption.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T193443.839527Z/collect.json",
+          "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
+        },
+        {
+          "path": "results/live/2026-10-25T193443.839527Z/record.json",
+          "sha256": "8ae42c7cdd1f5d339b144b1e0b42f1b9471ba31b3b947c26d3fb5b2add58efe9"
+        }
+      ],
+      "documents": [
+        "results/live/LATENCY_RECOVERY_FINDINGS.md",
+        "docs/design/heron-latency-logical-recovery.md",
+        "scripts/latency_recovery_exposure.py"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "kingston-latency-recovery"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "kingston-qet-ladder-margin-and-feedforward",
+      "statement": "On ibm_kingston (calibration 2026-10-25T13:27:48-07:00; one job of 19 dynamic PUBs at 8192 shots over 14 disjoint pairs with both readout errors at most 1 percent) the record-steered rotation of the two-qubit QET ladder does not lower Bob's local energy below the floor -<H_A>: the mean channel floor margin over pairs is -0.160 +- 0.052 (one-sided 95 percent lower bound -0.252) against +0.057 from the calibration-noise model. Feed-forward executes the selected branch: the feedback arm's local energy 0.159 equals the record-binned fixed arms' 0.164 and q_eff has median -0.049 across pairs. The product-state mutation reads -0.307 +- 0.010 and the ground-minus-product margin drop +0.147 (lower bound +0.066). The shortfall tracks the prepared parity <Z_A Z_B> (correlation 0.961 across pairs), 0.874 pooled against 1.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, one job, 14 pairs placed under a 1 percent readout cap, t-intervals across pairs. Energies are expectations of an encoded spin Hamiltonian, not field stress-energy. The margin result concerns this operating point (14 simultaneous captures, 2.83 us measure-to-branch wait). Layout search and model sampling used the runner's reproduction seeds.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T203822.040562Z/collect.json",
+          "sha256": "046965df030f54cecdc818f0479c38c6a4c4ee9db76162395717f015e7df5731"
+        },
+        {
+          "path": "results/live/2026-10-25T203822.040562Z/record.json",
+          "sha256": "64011c5446d3b9cf2ae165c18be0fbec46b5e489bb107e20113024d3d40652a2"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-25T203822.040562Z/FINDINGS.md",
+        "docs/notes/topics/pais-claims-falsification.md"
+      ],
+      "acquisitions": [
+        "kingston-qet-ladder"
+      ]
+    },
+    {
+      "id": "kingston-qet-window-phase-static",
+      "statement": "On the same 14 ibm_kingston pairs (calibration 2026-10-25T15:17:22-07:00, 24 dynamic PUBs at 8192 shots) the ladder's parity loss is a phase on B over the measure-to-branch idle that the service scheduler places inside the preparation CX: the parity is equal with and without Alice's readout during the 722 dt wait (difference -0.001 +- 0.004), completing the CX first restores the parity to 0.965 +- 0.002 and moves the phase onto <X_A X_B> pair by pair (0.998 against 0.862 rad on [149, 150]), and the service schedules a branch-target qubit's pre-branch operations at the broadcast receive, so an X echo written before the branch played after the window and left the phase unchanged. A per-pair fit of delta Z_B / 2 + zeta Z_A Z_B / 2 plus dephasing to the deferred-frame observables gives delta from -54 to +11 kHz and zeta from 1.5 to 14 kHz.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The readout and frame decisions were preregistered; the Hamiltonian fit is descriptive and fits the two large-delta pairs at rms 0.10 against 0.013 to 0.030 elsewhere, which leaves a time-varying frequency possible there. The scheduler rule is read from this job's returned scheduler_timing and may change with the service.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T225332.266272Z/collect.json",
+          "sha256": "d02be2c062098be3f95c1962dbc1f1d609a2be8e04723c03e9b1e2f21c85f646"
+        },
+        {
+          "path": "results/live/2026-10-25T225332.266272Z/record.json",
+          "sha256": "0ce289ddf4569edcc96faa488feb677028aaa3a9776c864af1800acd37152364"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-25T225332.266272Z/FINDINGS.md"
+      ],
+      "acquisitions": [
+        "kingston-qet-frame-diagnostic"
+      ],
+      "related_claims": [
+        "kingston-qet-ladder-margin-and-feedforward",
+        "kingston-latency-recovery-window-cost"
+      ]
+    },
+    {
+      "id": "kingston-qet-compensated-information-excess",
+      "statement": "With Bob's record-independent rz(alpha) fixed per pair from that pair's own reference arms (grid -0.3 to +1.2 rad), the 14 ibm_kingston pairs show an information excess of +0.107 +- 0.006 (one-sided 95 percent lower bound +0.096) against the ideal E_B = 0.115: the record lowers Bob's local energy below every record-independent unitary on the same preparation. The channel floor margin stays negative at -0.073 +- 0.015 (lower bound -0.100), because the reference state's best uninformed local energy is 0.177 above the vacuum value. A 50 us repetition delay charged 12 s for 147,456 shots (81 us per shot against 276 us at 250 us) and left assignment, parity and coherence unchanged on 11 of 14 pairs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The excess is sound against record-independent unitaries only; a non-unitary record-independent channel is bounded by the channel floor margin, which is negative. The repetition-delay comparison spans two jobs 25 minutes apart, so drift and delay are not separated on the three pairs that moved. One calibration, one job.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T233207.284563Z/collect.json",
+          "sha256": "99e8d7102a750441d9cbbf0a80f31f7ae53d65d2d1a29c6b401e55c8b91ef4e4"
+        },
+        {
+          "path": "results/live/2026-10-25T233207.284563Z/record.json",
+          "sha256": "2e0b901264a64966f01dad5416a1a2f6e430f2956b1a207b3c8b1f09b9628116"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-25T233207.284563Z/FINDINGS.md"
+      ],
+      "acquisitions": [
+        "kingston-qet-compensated-ladder"
+      ],
+      "related_claims": [
+        "kingston-qet-window-phase-static"
+      ]
+    },
+    {
+      "id": "hw-n21-feedback-null-scheduled-idle",
+      "statement": "The service schedule of the encoded N=21 Kingston run leaves leaf qubits 104, 106, 124 and 126 idle for 14,323 to 15,481 dt (57 to 62 us of a 70 us circuit) behind their hubs' CZ chains, in both arms; NoiseModel.from_backend charges relaxation on gates and explicit delays only, so the model charged that idle nothing. With the scheduled idle written in as delays under the execution Target and the declared initial excitation 0.014393, the exact branch-resolved contrast difference moves from +0.0310 (the unpadded control reproduces the record's exact model to 1e-15) to -0.0007, inside the measured 95 % interval [-0.0129, +0.0184], and the law distance to hardware falls from 0.0216 to 0.0129 TV (feedback) and from 0.0273 to 0.0158 TV (omitted correction). A list schedule under the Target durations alone predicts the service idle within 5 % on every leaf qubit and 11 % on the hubs, so the idle is predictable before submission.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Incoherent idle only: a residual of 0.013 to 0.016 TV, mostly outcome 2, leaves coherent idle error (detuning, ZZ) and mid-circuit measurement error above the reported assignment open. A contrast near zero follows from any added decoherence, so the replay's support is its absence of a fitted parameter and the law-distance reduction. The prospective test is a placement or routing that halves the leaf idle, predicted from a local schedule before submission.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/idle-replay.json",
+          "sha256": "218790a98f99de9835fe219061e11a004908ea0809df3c88bea1b4688ac7bd6c"
+        },
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/collect.json",
+          "sha256": "9bfac1fab310b4c8417bc273600d2b004fe5c30b3c08fd69c9dcd50f12dc9462"
+        },
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/local-idle-schedule.json",
+          "sha256": "bb15026541810717753c574430a02b91ae7d8bd791f1fde3d464f29373116f5f"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-18T090603.530638Z/IDLE_REPLAY_FINDINGS.md"
+      ],
+      "acquisitions": [
+        "kingston-n21-feedback-encoded-50us"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-kingston",
+        "hw-ghost-calibration-replay",
+        "kingston-qet-window-phase-static"
+      ]
+    },
+    {
+      "id": "kingston-qet-scheduled-idle-coherent-phase",
+      "statement": "Replaying the three ibm_kingston QET jobs exactly with the service-scheduled idle written in as delays under the execution Target, incoherent idle moves the ladder channel floor margin from +0.057 to +0.001 (measured -0.160), the frame diagnostic's as-run parity from 0.982 to 0.960 (measured 0.863) and the compensated selected margin from +0.057 to +0.028 (measured -0.073), and produces no window phase (0.010 rad padded against 0.267 measured). The phase that empties the uncompensated information excess (padded 0.099, measured 0.019) is therefore coherent and outside the Target's T1 and T2; once each pair's reference arms compensate it, the measured information excess 0.107 agrees with both the padded exact 0.112 and the unpadded exact 0.105, an endpoint insensitive to the incoherent idle.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Model comparison of retained data under one calibration per job; the residual margin shortfall of about 0.10 in the reference arm is attributed to preparation and assignment error without a separating test.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T203822.040562Z/idle-replay.json",
+          "sha256": "2edfd824002b7d01d4a7f76bf86fb00925c374dd2035a8daaa19a014a8a5e1cd"
+        },
+        {
+          "path": "results/live/2026-10-25T225332.266272Z/idle-replay.json",
+          "sha256": "d82329c30d2464ec6770e95106002c6faa79969cc57eb2798ece02bf5352a08d"
+        },
+        {
+          "path": "results/live/2026-10-25T233207.284563Z/idle-replay.json",
+          "sha256": "aa5e5cf9d2661bda0510c0f9a8fc5b4c059e39d02b51d46042f780aad0c4fdcf"
+        }
+      ],
+      "documents": [
+        "docs/notes/topics/pais-claims-falsification.md"
+      ],
+      "acquisitions": [
+        "kingston-qet-ladder",
+        "kingston-qet-frame-diagnostic",
+        "kingston-qet-compensated-ladder"
+      ],
+      "related_claims": [
+        "kingston-qet-window-phase-static",
+        "kingston-qet-compensated-information-excess",
+        "hw-n21-feedback-null-scheduled-idle"
+      ]
     }
   ]
 }

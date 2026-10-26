@@ -109,8 +109,30 @@ modes on left-out configurations 20 and 23; its bytes stay.
 holds the polynomial and harmonic heater responses to the returned phase,
 fitted on job-00, scored on job-01 and on the same training-only folds
 ([design](../../design/ascella-signed-coherence-conformance.md#polynomial-and-harmonic-drive-responses)).
+[`compilation-design.json`](compilation-design.json), from
+[`scripts/ascella_compilation_design.py`](../../../scripts/ascella_compilation_design.py),
+holds the sizing the perturbed-compilation case was approved on: R1 power and
+the R3 variance ratios of each planted family over the candidate designs, and
+the chosen design. Its bytes stay;
+[`compilation-design-anchor-ratio.json`](compilation-design-anchor-ratio.json)
+is its successor, sizing R1 as the anchor-ratio test it applies and R3 without
+the anchors
+([design](../../design/ascella-signed-coherence-conformance.md#perturbed-compilation-case-job-02)).
+[`compilation-reading.json`](compilation-reading.json), from
+[`scripts/ascella_compilation_reading.py`](../../../scripts/ascella_compilation_reading.py),
+holds that case's preregistered reading of job-02: the served-mesh count, R1's
+permutation test, R2's predictions of the 56 meshes by the job-00 fits and
+R3's refits on job-00 plus job-02 under the training-only folds.
+[`heater-coupling.json`](heater-coupling.json), from
+[`scripts/ascella_heater_coupling.py`](../../../scripts/ascella_heater_coupling.py),
+scores the heater-coupling families of plan
+[`ascella-heater-coupling-families`](../../state/plans/ascella-heater-coupling-families.json)
+fitted on job-00 alone against job-02's 56 meshes, with their identification
+folds on job-00 plus job-02
+([design](../../design/ascella-signed-coherence-conformance.md#heater-coupling-families-on-the-served-meshes)).
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance, and the physical-model, holdout, drive-linear and
+certificate tolerance, the compilation design and reading and the heater-coupling reading within the fit replay bounds,
+and the physical-model, holdout, drive-linear and
 drive-response records their nominal family there and their fitted families
 within 1e-3 relative plus 1e-8 absolute, the rounding of optimizer endpoints
 under another BLAS build. Which posterior mode a fit reaches follows the

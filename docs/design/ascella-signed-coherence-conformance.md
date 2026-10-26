@@ -1182,3 +1182,233 @@ Hessian difference read the kink as eigenvalues near -7e5, so Newton steps
 could not certify the mode. The floor now guards only the setting
 probabilities, which the in-block background keeps above it on every setting
 of these runs; `physical-models.json` replays unchanged under that path.
+
+## Perturbed-compilation case (job-02)
+
+Plan
+[`ascella-perturbed-compilation-case`](../state/plans/ascella-perturbed-compilation-case.json)
+fixes the setting, the perturbation and the readings below before any
+acquisition. Job-00 and job-01, both at compilation seed 0, return identical
+heater phases and couplers for all 30 configurations, so the service compiles
+a submitted unitary deterministically and every configuration answers with
+one mesh. Every heater family above therefore predicts each configuration's
+error from that one mesh, and 29 training configurations leave the drive
+coefficients unidentified. On Belenos the service fits the occupied input
+column from random starts that `compilation_seed` selects, and distinct seeds
+serve distinct meshes of the same target
+([form-dwell findings](../notes/quandela/form-dwell-decomposition.md)).
+Repeating one logical setting at many seeds holds its ideal output fixed
+while the heaters move.
+
+**What it measures.** Job-02 submits theta2-x-arm0 (configuration 13 of
+job-00, theta 2 pi/5, phi +pi/4, X readout) 64 times at 8,192 samples per
+iteration. Every eighth position, starting at position 0, runs at seed 0,
+job-00's mesh. The other 56 positions run at the nonzero values of the ANU
+QRNG draw
+[`draw-2026-10-25T182813Z.json`](../evidence/anu_qrng/draw-2026-10-25T182813Z.json),
+taken in index order (indices 0 to 55, with no repeat or zero among them).
+The setting carries the largest X residual of the drive-linear training-only
+folds: observed 0.8813 against 0.9309 predicted, standardized -4.21. Its
+prediction variance is small, so the residual reflects the model rather than
+an unidentified fit. Readings, each at alpha 0.01:
+
+| Reading | Statistic | Reading rule |
+|---|---|---|
+| R1, compilation dependence | dispersion of the block-conditioned X statistic over the distinct served meshes against the anchors' dispersion, by label permutation | dependent when the perturbed dispersion exceeds the anchors' |
+| R2, prediction | each heater family fitted on job-00 scored on the perturbed iterations in counting plus fitted-prediction variance | shortfall at or above the chi-square 0.999 quantile on the iteration count; predicted below its 0.97 quantile with median variance ratio at most 1 |
+| R3, identification | each family refitted on job-00 plus job-02 and rescored on the 19 training-only folds | the 30-on-10 and below-20 rule of the training-only folds |
+
+Every per-heater family, static offsets included, predicts that the served
+mesh moves the X statistic. A null R1 at the design's power therefore refutes
+per-heater phase error as the cause of the configuration response and moves
+the search to compile-independent elements: the source, the detectors and the
+couplers' fixed angles. A dependent R1 with an R3 shortfall under identified
+coefficients raises the confidence that no heater family explains the
+response. R3 sums below 20 with variance ratios at most 1 lower it. The
+service's behavior at nonzero seeds on Ascella is known only once the job
+returns. If the returned `computed_circuit` values realize fewer distinct
+heater-phase vectors than seeds, R1 to R3 read the distinct set and the
+record states the collapse. A single distinct mesh reads as "seed ignored"
+and decides nothing about the heaters.
+
+**Why simulation cannot answer it.** Local SLOS returns the ideal statistic
+for every seed. The question is how Ascella's heaters err when the same
+target is compiled onto other phases, and the served meshes are unknown
+until the job returns: Perceval does not pass `compilation_seed` to the local
+optimizer.
+
+**Sizing.**
+[`compilation-design.json`](../evidence/ascella-order-coefficients/compilation-design.json),
+written by
+[`scripts/ascella_compilation_design.py`](../../scripts/ascella_compilation_design.py),
+sizes the case before acquisition. It stands in for the served meshes with
+248 phase vectors of the returned layout that reproduce the setting's
+twelve output intensities to 1e-6, found from deterministic starts spread
+over the torus. Their heaters sit a median 1.57 rad from job-00's, and 84 %
+move by more than 0.5 rad. It plants each family's job-00 posterior mode as
+the device response. At 56 perturbed and 8 anchor iterations of 8,192
+samples:
+
+| Planted family | Planted X spread | R1 power | Detectable X SD at power 0.9 | R3 median ratio X / Y, without job-02 | with job-02 |
+|---|---|---|---|---|---|
+| static heater offsets | 0.115 | 1.000 | 0.0039 | 0.96 / 0.61 | 0.25 / 0.25 |
+| drive-linear | 0.174 | 1.000 | 0.0041 | 6.86 / 2.28 | 0.54 / 0.52 |
+| polynomial order 1 | 0.141 | 1.000 | 0.0041 | 4.85 / 4.65 | 0.55 / 0.55 |
+| harmonic order 1 | 0.140 | 1.000 | 0.0041 | 135 / 38 | 0.90 / 0.76 |
+
+R1 detects a compilation-induced standard deviation of 0.004 in the X
+statistic, a twelfth of the setting's 0.05 residual. Twenty-four perturbed
+iterations would leave the harmonic family at a median ratio of 3.15 on X.
+The R3 ratios use the leave-one-out approximation of each fold, the full-data
+posterior Hessian less the left-out configuration's information. Without
+job-02 the approximation gives the training-only folds' recorded ratios to
+within a factor of 2.2 (drive-linear X 6.86 against 10.4, polynomial order 1
+X 4.85 against 10.2).
+
+**Sizing correction.** The approval rested on `compilation-design.json`,
+which keeps its bytes. That record sized R1 by the perturbed dispersion alone
+as a chi-square, while R1 divides it by the dispersion of eight anchors. It
+also credited R3 with the anchors' information, which R3 never trains on.
+Its successor,
+[`compilation-design-anchor-ratio.json`](../evidence/ascella-order-coefficients/compilation-design-anchor-ratio.json),
+sizes the anchor-ratio test as noncentral F on 55 and 7 degrees of freedom
+(critical ratio 5.84) and gives R3 only the perturbed iterations:
+- R1 detects a compilation-induced X standard deviation of 0.013 at power
+  0.9, not 0.004, and every planted family still gives power 1.000.
+- At 56 + 8 iterations of 8,192 samples, the order-1 harmonic family's R3
+  median ratio on X is 1.04. The corrected rule therefore chooses 16,384
+  samples (1.032768 credits).
+
+The run used the approved 8,192 samples. Its realized R3 ratios, 0.23 to
+0.86 on X, meet the criterion.
+
+**Seconds.** Expected 186 s against the 300-second `max_duration`. Job-00 and
+job-01 each took 186 s for 64 iterations, at 8,192 and 16,384 samples, so
+the 64-iteration job takes job-00's time unless a nonzero seed costs the
+service compilation time that seed 0 does not. Whether the service recompiles
+per seed is unobserved, and the expectation carries that uncertainty.
+
+**Credits.** Ceiling and expectation 1.016384 credits: 1.0 per job plus
+16,384 billed shots of one iteration at 1e-6, the tariff that billed job-00
+exactly. The account's usage report reads 3.07 free credits spent on
+qpu:ascella over 9 jobs, and 67.1 across all platforms.
+
+**Request.**
+[`scripts/ascella_coherence_request.py job-02`](../../scripts/ascella_coherence_request.py)
+writes
+[`job-02/cases.json`](../../results/quandela/cases/ascella_signed_coherence/job-02/cases.json),
+and `--body job-02` freezes the body against the live processor record without
+sending it. `--check` rebuilds the request and requires each iteration's seed,
+the closed-form operator and the body entries. It also refuses a perturbed
+unitary, a moved seed and a four-mode output width. The procedure is that of
+job-00: `--preflight RUN`, then the owner's approval of this case, then
+`--submit RUN APPROVAL`, then collection.
+
+**Outcome.** The owner approved the case on 2026-10-25, and job `788097fb`
+ran at 18:47 UTC
+([retained run](../../results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/README.md),
+[reading](../evidence/ascella-order-coefficients/compilation-reading.json)).
+It returned 524,288 samples in 186 s for 1.016384 credits. Ascella honors the
+seed: the 56 seeds served 56 distinct meshes, with heaters a median 1.58 rad
+from job-00's, and the 8 anchors served job-00's mesh.
+
+- **R1.** The X statistic moves with the served mesh. The perturbed iterations'
+  dispersion is 7.08 times the anchors' (permutation p 0.0049). The 56 meshes
+  read 0.865 to 0.915, a mean of 0.888 against the ideal 0.9045. The anchors
+  read a mean of 0.883, as job-00 read 0.881.
+- **R2.** Every job-00 fit misses the new meshes. All meshes share one set of
+  fitted coefficients, so R2 takes the residuals' joint quadratic form in
+  diag(v) + G C G^T. That gives 1150 for the static offsets, 649 for the
+  drive-linear family, 771 for the order-1 polynomial and 201 for the order-1
+  harmonic, against 94.5. The sum of individually standardized squares,
+  which the first implementation scored until review noted the shared
+  covariance, reads 1035, 223, 235 and 13.9. It hid the harmonic family's
+  miss behind a median prediction variance 254 times the counting variance.
+- **R3.** Refitted with job-02, every family is identified on the training-only
+  folds (median variance ratios 0.23 to 0.86 on X) and keeps the left-out X
+  shortfall (sums 85 to 377 on 10). Three of four keep it on Y; the harmonic
+  family reads 20.9 there.
+
+Under the preset reading, R1's dependence with R3's identified shortfall
+raises the confidence that no per-heater error family of this document
+explains the configuration response: high, and a family that predicted the
+left-out configurations within the criterion would lower it. The heaters'
+state matters, but static offsets and responses to each heater's own
+returned phase cannot carry it. The untested candidates couple heaters:
+thermal crosstalk between neighbors, coupler-angle error and mesh-dependent
+loss. The 56 served meshes of one logical setting are the test set any such
+model must predict.
+
+## Heater-coupling families on the served meshes
+
+Plan
+[`ascella-heater-coupling-families`](../state/plans/ascella-heater-coupling-families.json)
+fixed eight families, their priors, the training set and the reading before
+any of them met job-02. Each family is fitted on job-00 alone, from the zero
+start, and predicts the pooled X statistic of every one of job-02's 56 served
+meshes. The meshes share the fitted parameters, so the score is R2's joint
+quadratic form in counting plus shared prediction covariance: 94.46 or more
+(chi-square 0.999 on 56) reads shortfall, and below 77.52 (0.97) with a
+median prediction-to-counting variance ratio at most 1 reads predicted.
+Two assumptions stand in for missing provider data. The returned phase in
+[0, 2 pi) stands for the heater's drive power, because the passive offset is
+absent from the returned circuit. The layout's (mode, column) distance
+stands for physical distance. A screen that reads no mesh feature found no
+association of the X statistic with execution index, its parity, its lag-1
+neighbor or the outside-block count (every p above 0.19), so the reading
+carries no sequence term. Before the plan was written, a feasibility screen
+sized the kernel and loss priors against job-02's served phases and its
+observed X spread, so that each family at its prior scale could produce the
+observed compilation-induced spread. That choice favors the families and makes
+a shortfall conservative.
+
+[`heater-coupling.json`](../evidence/ascella-order-coefficients/heater-coupling.json),
+written by
+[`scripts/ascella_heater_coupling.py`](../../scripts/ascella_heater_coupling.py):
+
+| Family | Fitted coupling (job-00) | Quadratic form | Median variance ratio | Predicted X SD over meshes | Reading |
+|---|---|---|---|---|---|
+| uniform crosstalk on mesh neighbors, with dephasing | c -0.00065 (SE 0.00026) | 937 | 0.003 | 0.0017 | shortfall |
+| uniform coupler offset, with dephasing | delta 0.0021 (SE 0.0006) | 952 | 0.002 | 0.0018 | shortfall |
+| static coupler offsets, tau 0.1 | RMS 0.039 rad | 762 | 1.19 | 0.0141 | shortfall |
+| heater (tau 0.3) and coupler (tau 0.1) offsets | RMS 0.061 / 0.026 rad | 327 | 66 | 0.0282 | shortfall |
+| crosstalk kernel, c_d for d = 0, 1, 2 modes within two columns | -0.0006, 0.0007, -0.0020 | 1107 | 0.009 | 0.0054 | shortfall |
+| kernel with heater and coupler offsets | 0.0046, 0.0006, 0.0006 | 359 | 32 | 0.0272 | shortfall |
+| drive loss, intensity e^{-gamma phi} | gamma -0.0049 (SE 0.0002) | 785 | 0.003 | 0.0059 | shortfall |
+| drive loss with heater and coupler offsets | gamma -0.0083 (SE 0.0018) | 348 | 27 | 0.0284 | shortfall |
+
+The 56 meshes read an X standard deviation of 0.0113 around 0.887. Their
+mean counting variance accounts for 0.0044 of it, which leaves a
+compilation-induced standard deviation of 0.0104. The predicted spreads in the
+table carry no counting noise, so 0.0104 is their comparison. The families
+fall into two groups. The coupling-only families fit job-00 to a
+small coupling and predict too little spread. The families that carry
+per-element offsets predict spread of the right size, but at mesh-by-mesh
+positions that the observations do not follow. Across the 56 meshes, the
+correlation between predicted and observed X lies between -0.04 and 0.19 for
+every family. The record states these spreads and correlations beside each
+reading as descriptions; they are not preregistered statistics. Both
+drive-loss fits put gamma below zero, a gain with drive power, which no
+heater loss produces. The loss-alone posterior on job-00 rises monotonically
+for every gamma at or above zero (gradient +45,000 at zero), so a fit held to
+physical loss lands on gamma 0, the nominal mesh, and the loss-with-offsets
+family reduces to the heater and coupler offsets family; both readings stay
+shortfall. The identification folds, refitted on job-00 plus
+job-02's meshes and read under the training-only rule, keep the left-out X
+shortfall for all four kernel and loss families: sums 180 to 347 on 10, with
+median variance ratios 0.01 to 0.60, so the shortfall comes with identified
+coefficients. They decide nothing under the plan.
+
+Under the preset reading, no heater-coupling family of the plan predicts the
+served meshes, and none of the twelve families scored on job-02 (the four
+per-heater families of R2 and these eight) explains the configuration
+response. Confidence that the mechanism lies outside the 126 heaters' and
+132 couplers' static and drive-linear parametrizations: medium-high. Two
+things would lower it: a family outside the plan that predicts job-02 from
+job-00 under the same reading, or the layout distance proving a poor stand-in
+for physical distance once the provider's heater geometry or applied-voltage
+calibration is known. The candidates the plan leaves untested are
+crosstalk that is nonlinear in drive power, crosstalk over the physical
+rather than the logical layout, and an error outside the mesh that the
+compilation still reaches, such as the source's spectral overlap with
+mesh-dependent paths.

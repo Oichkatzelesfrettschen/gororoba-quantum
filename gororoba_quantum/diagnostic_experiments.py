@@ -64,6 +64,7 @@ FAMILY_NAMES = (
     "state-prep-control",
     "measurement-sequence",
     "measurement-sequence-diagnostic",
+    "latency-recovery",
 )
 # Families that run on one pinned patch (--patch-qubits, patch_characterization.PATCH_ROLES).
 PATCH_FAMILIES = ("patch-window", "coherence-window")
@@ -1255,6 +1256,10 @@ def family_contracts(
         if configuration is None or not configuration.get("qubits"):
             raise ValueError("measurement-sequence-diagnostic contracts need the configuration's named qubits")
         return msq_diagnostic_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
+    if family == "latency-recovery":
+        from latency_recovery import latency_recovery_contracts
+
+        return latency_recovery_contracts(alpha, power)
     if family == "folded-correction":
         # The correction collector evaluates four exact-binomial directional
         # bounds on integer counts; bounded-score optimizer inference differs.
@@ -1432,6 +1437,10 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
         return [
             n21_group(orbit=family["name"] == "n21-orbit-feedback", encoded=family["name"] == "n21-feedback-encoded")
         ]
+    if family.get("name") == "latency-recovery":
+        from latency_recovery import latency_recovery_group
+
+        return [latency_recovery_group(int(family["latency_dt"]), int(family["window_dt"]))]
     if family.get("name") == STATE_PREP_FAMILY:
         return state_prep_groups([int(qubit) for qubit in family["qubits"]], family.get("arms"))
     if family.get("name") == MSQ_FAMILY:

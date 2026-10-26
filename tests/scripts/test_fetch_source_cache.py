@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -76,3 +77,23 @@ def test_selection_refuses_unknown_names(tmp_path: Path) -> None:
         fetch.main(["--root", str(root), "--check", "--note", "docs/notes/papers/absent.md"])
     if fetch.main(["--root", str(root), "--check", "--file", "paper-v1.pdf"]) != 1:
         raise AssertionError("a selected missing copy passes")
+
+
+@pytest.mark.parametrize(
+    ("selectors", "refused"),
+    [
+        (["--note", "paper-v1.pdf"], "--note paper-v1.pdf"),
+        (["--file", "docs/notes/papers/paper.md"], "--file docs/notes/papers/paper.md"),
+        (["--note", "docs/notes/papers/paper.md", "--file", "absent.pdf"], "for: --file absent.pdf"),
+    ],
+    ids=["file-name-as-note", "note-as-file-name", "valid-and-invalid"],
+)
+def test_selection_matches_each_flag_to_its_own_field(tmp_path: Path, selectors: list[str], refused: str) -> None:
+    root, _ = make_root(tmp_path)
+    with pytest.raises(SystemExit, match=f"{re.escape(refused)}$"):
+        fetch.main(["--root", str(root), "--check", *selectors])
+    entries = fetch.registry_entries(root)
+    if fetch.select(entries, ["docs/notes/papers/paper.md"], []) != entries:
+        raise AssertionError("--note selects its entry by note path")
+    if fetch.select(entries, [], ["paper-v1.pdf"]) != entries:
+        raise AssertionError("--file selects its entry by cache file name")
