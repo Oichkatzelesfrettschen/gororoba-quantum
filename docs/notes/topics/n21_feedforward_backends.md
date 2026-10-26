@@ -49,6 +49,13 @@ feedback-dependent structure. The findings note names the candidates: mid-circui
 measurement error above the reported assignment error, feed-forward latency
 beyond the classical allowance, and dephasing during the conditional branch.
 
+The [scheduled-idle replay](../../../results/live/2026-10-18T090603.530638Z/IDLE_REPLAY_FINDINGS.md)
+reaches the null without any of the three. The service schedule leaves the leaf qubits 104, 106, 124 and 126
+idle for 57 to 62 us of the 70 us circuit behind their hubs' CZ chains, and the noise model charged that idle
+nothing. Written in as delays under the execution Target's T1 and T2, the idle moves the exact contrast from
++0.0310 to -0.0007, inside the measured interval, and cuts the law distance to hardware by 40 percent in both
+arms. A residual of about 0.013 TVD leaves coherent idle error open.
+
 Consequences for this survey:
 
 - The residual factor f below is fitted to the noise-model values, not to a

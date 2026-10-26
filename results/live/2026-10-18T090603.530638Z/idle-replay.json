@@ -1,0 +1,117 @@
+{
+ "contracts": {
+  "idle_padded_exact": {
+   "n21_encoded_feedback_contrast": -0.0006587574359447901
+  },
+  "idle_padded_sampled": {
+   "n21_encoded_feedback_contrast": 0.002880000000000049
+  },
+  "recorded_exact": {
+   "n21_encoded_feedback_contrast": 0.031039262580353222
+  },
+  "unpadded_exact": {
+   "n21_encoded_feedback_contrast": 0.03103926258035236
+  }
+ },
+ "exact_laws": {
+  "idle_padded": {
+   "n21_encoded_feedback": [
+    [
+     0.2721278241847681,
+     0.25413355786540703,
+     0.22418472320322777,
+     0.24955389474659698
+    ]
+   ],
+   "n21_encoded_no_feedback": [
+    [
+     0.2719203393153248,
+     0.2544639177322619,
+     0.22439024577490624,
+     0.24922549717750705
+    ]
+   ]
+  },
+  "unpadded": {
+   "n21_encoded_feedback": [
+    [
+     0.27887842507202415,
+     0.2552891091518102,
+     0.21553052807635562,
+     0.25030193769981
+    ]
+   ],
+   "n21_encoded_no_feedback": [
+    [
+     0.2790467278656913,
+     0.23977012851014193,
+     0.2153609239856726,
+     0.2658222196384941
+    ]
+   ]
+  }
+ },
+ "group": "n21_encoded_feedback",
+ "idle_padded_laws": {
+  "n21_encoded_feedback": [
+   [
+    0.27128,
+    0.25513,
+    0.2256,
+    0.24799
+   ]
+  ],
+  "n21_encoded_no_feedback": [
+   [
+    0.27023,
+    0.25403,
+    0.22597,
+    0.24977
+   ]
+  ]
+ },
+ "inserted_idle_dt": {
+  "n21_encoded_feedback": [
+   {
+    "104": 14323,
+    "105": 6651,
+    "106": 14486,
+    "117": 7535,
+    "124": 14757,
+    "125": 7769,
+    "126": 15351
+   }
+  ],
+  "n21_encoded_no_feedback": [
+   {
+    "104": 14569,
+    "105": 6980,
+    "106": 14739,
+    "117": 7635,
+    "124": 15099,
+    "125": 7771,
+    "126": 15481
+   }
+  ]
+ },
+ "job_id": "dba8r7k24mrc738527d0",
+ "prep_excitation": 0.014393,
+ "replicas": [
+  [
+   104,
+   105,
+   106,
+   117,
+   124,
+   125,
+   126
+  ]
+ ],
+ "run": "results/live/2026-10-18T090603.530638Z",
+ "sampled_to_exact": {
+  "max_gap": 0.0016903393153247515,
+  "radius": 0.006073614619083051,
+  "tail": 0.01
+ },
+ "schema": "scheduled-idle-replay-v1"
+}
