@@ -16,7 +16,7 @@
   },
   "scope": "The gap-88 phase-gradient tomography of the primorial cover on Heron r2: the joint coherent-bound record, simulation-designed probes of each path qubit's coherent tilt and each coupler's CZ conditional phase, a sampled-instance twirling model, and the signal and null interleave schedule. Provider jobs need their own approved cases.",
   "owner": "primorial cover-defect benchmarks",
-  "next_action": "Design the CZ-phase and tilt amplification probes in simulation on the ibm_kingston snapshot and state the shots that resolve tilt at 0.2 and CZ phase at 0.7 of their bounds at three standard deviations.",
+  "next_action": "Await the user approval of results/live/PRIMORIAL_COHERENCE_CASE.md; the approval dry runs are made from main after the change merges.",
   "related": [
     "primorial-cover-defect-benchmarks"
   ],
@@ -47,24 +47,81 @@
     },
     {
       "id": "coherent-fraction-probes",
-      "state": "todo",
+      "state": "done",
       "action": "Simulate a repeated-CZ conditional-phase Ramsey and an identity sx-train tilt Ramsey on the snapshot paths and compute the shots that resolve tilt at 0.2 and CZ phase at 0.7 of their bounds at three standard deviations.",
-      "acceptance": "Each probe shows a first-order response to its family and none to the others within the bounds, with a shot and seconds estimate; a probe failing that is rejected. Stop before any provider job."
+      "acceptance": "Each probe shows a first-order response to its family and none to the others within the bounds, with a shot and seconds estimate; a probe failing that is rejected. Stop before any provider job.",
+      "receipts": [
+        {
+          "result": "The probe circuits recover injected tilt, CZ phase, detuning and ZZ at once within 5.2e-5 rad, 3.8e-6 rad, 2.6 Hz and 1.3 Hz; noisy estimates stay unbiased within their standard errors; CZ phase at 0.7 of its bound needs 2 shots, tilt at 0.2 of its bounds at most 18, 5 kHz detuning at most 60 and 2 kHz ZZ 757 at three standard deviations.",
+          "observed_at": "2026-10-26T01:59:22+00:00",
+          "revision": "4bc5a7201f3578cde387d317ae22528696993afe",
+          "evidence": [
+            {
+              "ref": "docs/evidence/primorial_cover/probe_case.json",
+              "sha256": "152c958101925a790cb7a3407c1af288aca54ed905c90d364319317836f2f5f2"
+            },
+            {
+              "ref": "gororoba_quantum/coherence_probes.py",
+              "sha256": "a07058eb317a5a41e13039ba896051d1ae5e7d6ab51479ab7d600287c63be9ab"
+            }
+          ],
+          "scope_sha256": "15917a94dda6894c5c5e4d2b887b2f9f02d513c60e6fab3df39c6a7233946119"
+        }
+      ]
     },
     {
       "id": "twirl-instance-model",
-      "state": "todo",
+      "state": "done",
       "action": "Sample twirled instances of the gap-88 and null arms, compile them to sx and rz, apply tilt to the compiled pulses and CZ phase to each CZ, and recompute the joint max_z.",
-      "acceptance": "A record giving joint max_z at tilt fractions 0.1 to 1.0 under sampled twirling; joint max_z above 1 at tilt fraction 0.3 rejects twirling as a sufficient mitigation."
+      "acceptance": "A record giving joint max_z at tilt fractions 0.1 to 1.0 under sampled twirling; joint max_z above 1 at tilt fraction 0.3 rejects twirling as a sufficient mitigation.",
+      "receipts": [
+        {
+          "result": "Sampled samplomatic twirl instances reproduce the ideal law to 3e-7; 32 independent randomizations of the signal and null arms raise the joint max_z at the gate-error bounds to 5.4 and 6.5 against 2.6 and 2.8 untwirled, and 512 to 1.03 and 1.11, so twirling is rejected as a mitigation for the 32-randomization Sampler and the case runs untwirled.",
+          "observed_at": "2026-10-26T01:59:22+00:00",
+          "revision": "4bc5a7201f3578cde387d317ae22528696993afe",
+          "evidence": [
+            {
+              "ref": "docs/evidence/primorial_cover/probe_case.json",
+              "sha256": "152c958101925a790cb7a3407c1af288aca54ed905c90d364319317836f2f5f2"
+            }
+          ],
+          "scope_sha256": "db8c5eb6447d9463a29f1fc3f95d07eee9924d76913e0291b4fb9788f94485ca"
+        }
+      ]
     },
     {
       "id": "interleave-schedule",
-      "state": "todo",
+      "state": "done",
       "action": "Set the signal and null interleave period from the arm-mismatch tolerances and the atlas drift rates.",
-      "acceptance": "A stated interleave period whose expected q0 frequency drift stays below 2.2 kHz, citing the drift source; a measured drift above that per period rejects the schedule."
+      "acceptance": "A stated interleave period whose expected q0 frequency drift stays below 2.2 kHz, citing the drift source; a measured drift above that per period rejects the schedule.",
+      "receipts": [
+        {
+          "result": "Signal and null arms of a setting run in one batch column of 26.3 ms in the order gap-88, null, null, gap-88; no retained Kingston record measures a drift rate, so the case carries repeated-pair drift monitors whose noise floor is about 0.024 in the largest coefficient at 3200 shots.",
+          "observed_at": "2026-10-26T01:59:22+00:00",
+          "revision": "4bc5a7201f3578cde387d317ae22528696993afe",
+          "evidence": [
+            {
+              "ref": "results/live/PRIMORIAL_COHERENCE_CASE.md",
+              "sha256": "18e313019cd8fd4e74b34f2ab9b7c3889750ffbb2a53fb5f8cc8a73bd6fff337"
+            },
+            {
+              "ref": "docs/evidence/primorial_cover/probe_case.json",
+              "sha256": "152c958101925a790cb7a3407c1af288aca54ed905c90d364319317836f2f5f2"
+            }
+          ],
+          "scope_sha256": "419a64fc19791efc4e6441c0b0908a35654e0883fe116edf17c7bbe7a5dcc659"
+        }
+      ]
+    },
+    {
+      "id": "hardware-case",
+      "state": "todo",
+      "action": "Run stage 1 (coherence probes) and, when its decision rule proceeds, stage 2 (gap-88 tomography) of results/live/PRIMORIAL_COHERENCE_CASE.md on ibm_kingston path 0-1-2 after the user approves the case and its fresh dry runs.",
+      "acceptance": "Retained runs with raw results, the probe summary, the --decide record, and either the gap-88 coefficients with identification and drift monitors or the stop verdict; a claim citing them."
     }
   ],
   "claims": [
-    "primorial-bound-residuals-joint"
+    "primorial-bound-residuals-joint",
+    "primorial-probe-case-design"
   ]
 }
