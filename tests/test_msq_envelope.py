@@ -51,7 +51,10 @@ def test_layout_orders_by_readout_then_index() -> None:
     qubits[30]["readout_error"] = 1e-4
     qubits[45]["readout_error"] = 1e-4
     layout = env.layout_rule(qubits, (), edges, 16)
-    check(layout[:2] == [30, 45], f"lowest readout error first, ties by index: {layout[:2]}")
+    check({30, 45} <= set(layout) and 29 not in layout and 31 not in layout, f"low readout error keeps first: {layout}")
+    check(layout == sorted(layout), "the kept set returns in index order")
+    qubits[30]["readout_error"], qubits[45]["readout_error"] = 2e-4, 1e-4
+    check(env.layout_rule(qubits, (), edges, 16) == layout, "a reordering among kept qubits moves nothing")
 
 
 @pytest.mark.parametrize(
@@ -177,14 +180,14 @@ def envelope_groups(qubits: list[int]) -> list[Any]:
 def test_envelope_new_members_match_their_exact_oracle() -> None:
     """The reset controls, the patterns and a terminal-reset member of each arm against the exact oracle; planning
     proves every compiled member (qpu_planning.check_compiled_ideals), the 16-step members included."""
-    import qpu_planning
+    import qpe_diagnostics
 
     groups = envelope_groups([3, 9])
     for group in groups:
         for member in group.members:
             if member.circuit.num_clbits > 3:
                 continue
-            law = qpu_planning.ideal_compiled_probabilities(member.circuit)
+            law = qpe_diagnostics.ideal_compiled_probabilities(member.circuit)
             check(
                 bool(np.allclose(law, member.ideal, rtol=0, atol=1e-10)),
                 f"{member.name}: exact oracle {law} differs from the labeled ideal {member.ideal}",
@@ -494,3 +497,20 @@ def test_null_upper_bound_is_clopper_pearson() -> None:
     check(null.upper_bound(0, 299) < null.FALSE_FIRE_CEILING, "299 clean replicates reach 0.01")
     check(null.upper_bound(0, 400) < null.FALSE_FIRE_CEILING, "400 clean replicates reach 0.01")
     check(null.upper_bound(5, 5) == 1.0, "all fired")
+
+
+def test_shared_laws_round_trip_and_leave_other_records() -> None:
+    import live_run
+
+    big = {"encoding": "support", "length": 1 << 17, "support": {str(k): 1.0 / 2000 for k in range(2000)}}
+    members = [{"name": f"m_q{q}", "ideal": big} for q in range(3)] + [{"name": "small", "ideal": [0.5, 0.5]}]
+    record = {"family_configuration": {"name": "measurement-sequence-envelope"}, "groups": [{"members": members}]}
+    shared = live_run.shared_law_record(record)
+    check(len(shared["ideal_laws"]) == 1, "three copies of one law share one entry")
+    for original, stored in zip(members, shared["groups"][0]["members"], strict=True):
+        check(live_run.stored_ideal(shared, stored) == live_run.stored_ideal(record, original), str(original["name"]))
+    check(live_run.shared_law_record(shared) == shared, "sharing an already shared record changes nothing")
+    other = {**record, "family_configuration": {"name": "measurement-sequence"}}
+    check(live_run.shared_law_record(other) is other, "only envelope records share laws")
+    with pytest.raises(live_run.LiveRunError):
+        live_run.stored_ideal({}, shared["groups"][0]["members"][0])

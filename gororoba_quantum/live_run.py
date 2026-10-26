@@ -38,9 +38,11 @@ import os
 import re
 import subprocess
 import sys
+import threading
 import time
 from collections import OrderedDict
 from collections.abc import Callable, Collection, Mapping
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_EVEN, Decimal, InvalidOperation
@@ -62,6 +64,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
 import correction_collection
+import diagnostic_experiments
 import ibm_account
 import law_encoding
 import local_compute
@@ -3500,13 +3503,13 @@ def approved_family_design(
     if blockers or approved is None:
         log["design"] = {"reused": False, "blockers": blockers}
         return None
-    for choice in choices:
-        if args.family == "et-row":
-            from et_planning import validate_ideals
+    if args.family == "et-row":
+        from et_planning import validate_ideals
 
+        for choice in choices:
             validate_ideals(choice)
-            continue
-        qpu_planning.check_compiled_ideals(sys.modules[__name__], [choice])
+    else:
+        qpu_planning.check_compiled_ideals(sys.modules[__name__], choices)
     args.shots = approved["shots"]
     if "pub_shots" in approved:
         args.pub_shots = dict(approved["pub_shots"])
@@ -3892,45 +3895,55 @@ def check_choice_targets(choices: list[Choice]) -> None:
 
 
 def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
-    """Noise-simulate each choice under its backend's live properties, after proving they match the Target."""
-    # One simulator per snapshot: a group recompiled on a fresh snapshot of a
-    # backend is simulated with that snapshot's Target, not an earlier one.
-    sims: dict[int, tuple[AerSimulator, str]] = {}
-    record["groups"] = []
+    """Noise-simulate each choice under its backend's live properties, after proving they match the Target.
+
+    Aer releases the GIL while it simulates, so the choices run on threads, as qpu_planning.prepare runs them: each
+    thread keeps one simulator per snapshot, and each choice's batch is seeded by its own call (simulate_entries), so
+    the predictions equal the serial loop's. The batch evidence joins per snapshot in choice order.
+    """
     record["execution_requirements"] = {choice.group.name: execution_requirements(choice) for choice in choices}
     pubs = execution_pubs(choices)
     record["fusion_summary"] = fusion_summary(pubs)
     record["execution_pubs"] = [pub.manifest() for pub in pubs]
     scopes = pub_scopes(pubs)
     check_choice_targets(choices)
-    for choice in choices:
-        key = id(choice.snap)
-        if key not in sims:
-            sims[key] = (
-                noise_simulator(
-                    choice.snap.name,
-                    choice.snap.backend.target,
-                    choice.snap.properties,
-                    record.get("policy", {}).get("local_compute", local_compute.settings()),
-                ),
-                choice.snap.calibration,
+    settings = record.get("policy", {}).get("local_compute", local_compute.settings())
+    excitation = record.get("policy", {}).get("design", {}).get("prep_excitation")
+    et_row = record.get("family_configuration", {}).get("name") == "et-row"
+    shots = int(record["shots"])
+    lane = threading.local()
+
+    def simulate_choice(choice: Choice) -> tuple[list[dict[str, Any]], dict[str, list[np.ndarray]], Any]:
+        # One simulator per snapshot and thread: a group recompiled on a fresh snapshot of a backend is simulated
+        # with that snapshot's Target, not an earlier one.
+        owned: dict[int, AerSimulator] = lane.__dict__.setdefault("simulators", {})
+        sim = owned.get(id(choice.snap))
+        if sim is None:
+            sim = owned[id(choice.snap)] = noise_simulator(
+                choice.snap.name, choice.snap.backend.target, choice.snap.properties, settings
             )
-        sim, cal = sims[key]
-        excitation = record.get("policy", {}).get("design", {}).get("prep_excitation")
-        if record.get("family_configuration", {}).get("name") == "et-row":
+        start = len(local_compute.batches(sim))
+        if et_row:
             from et_planning import simulate as simulate_et
 
-            noisy = simulate_et(sys.modules[__name__], choice, sim, int(record["shots"]))
+            noisy = simulate_et(sys.modules[__name__], choice, sim, shots)
         else:
             noisy = (
-                simulate(choice, sim, int(record["shots"]), prep_excitation=excitation)
-                if excitation
-                else simulate(choice, sim, int(record["shots"]))
+                simulate(choice, sim, shots, prep_excitation=excitation) if excitation else simulate(choice, sim, shots)
             )
-        entry = _choice_record(choice, noisy, cal, int(record["shots"]), scopes)
+        return local_compute.batches(sim)[start:], noisy, getattr(sim, "_gororoba_noise_digest", None)
+
+    concurrent = max(1, parallel.workers() // int(settings.get("threads", 1) or 1))
+    with ThreadPoolExecutor(max_workers=concurrent) as pool:
+        simulated = list(pool.map(simulate_choice, choices))
+    record["groups"] = []
+    evidence: dict[int, list[dict[str, Any]]] = {}
+    for choice, (batches, noisy, digest) in zip(choices, simulated, strict=True):
+        evidence.setdefault(id(choice.snap), []).extend(batches)
+        entry = _choice_record(choice, noisy, choice.snap.calibration, shots, scopes)
         # Provenance of the whole-device noise model the prediction ran under;
         # the approval binds the group's calibration_fingerprint, not this digest.
-        entry["noise_serialized_channels_sha256"] = getattr(sim, "_gororoba_noise_digest", None)
+        entry["noise_serialized_channels_sha256"] = digest
         record["groups"].append(entry)
         cz = [m["cz"] for m in entry["members"]]
         summary = {k: round(v, 4) for k, v in entry["summary"].items()}
@@ -3940,9 +3953,7 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
             f"joint_score={choice.joint_score:.4f} replicas={len(choice.replicas)} scores={scores} "
             f"cz={cz} summary={summary}"
         )
-    record["evaluation_simulation_batches"] = [
-        batch for simulator, _calibration in sims.values() for batch in local_compute.batches(simulator)
-    ]
+    record["evaluation_simulation_batches"] = [batch for batches in evidence.values() for batch in batches]
 
 
 def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
@@ -4282,6 +4293,56 @@ def envelope_plan(
         "shots": record.get("shots"),
         "planner_seconds": planner_charge(execution, delay) if delay is not None else None,
     }
+
+
+# Reasons choice_change_reasons gives that move no byte of an envelope plan: the envelope binds the layout rule and
+# the compiled circuits, not the calibration values the circuits read.
+ENVELOPE_VALUE_REASON = "calibration values changed on compiled instructions"
+
+
+def envelope_drift(record: Mapping[str, Any], choices: list[Choice], fresh: Snapshot) -> list[str]:
+    """Why the envelope's plan on fresh differs from the planned one, or [] when it would send the same bytes.
+
+    The layout rule's qubits, every dt duration the circuits carry (measure, settle and pre-readout idles and the t1
+    idles), capabilities and exclusions must hold; calibration values alone do not move the plan.
+    """
+    configuration = record["family_configuration"]
+    reasons: list[str] = []
+    calibration = msq_envelope.calibration_from_snapshot(fresh)
+    try:
+        layout = msq_envelope.layout_rule(
+            calibration["qubits"],
+            calibration["excluded"],
+            [tuple(edge) for edge in calibration["edges"]],
+            int(configuration["layout_width"]),
+        )
+    except msq_envelope.EnvelopeError as error:
+        return [str(error)]
+    if layout != list(configuration["qubits"]):
+        reasons.append(f"the layout rule moved to {layout}")
+    runtime = sys.modules[__name__]
+    for qubit in layout if layout == list(configuration["qubits"]) else []:
+        durations = {
+            "measurement_delay_dt": qpu_planning.measurement_delay(runtime, fresh, qubit),
+            "settle_delay_dt": qpu_planning.settle_delay(runtime, fresh),
+            "prereadout_delay_dt": qpu_planning.prereadout_delay(runtime, fresh),
+        }
+        for name, value in durations.items():
+            if configuration[name][str(qubit)] != value:
+                reasons.append(f"q{qubit}: {name} {configuration[name][str(qubit)]} -> {value}")
+    t1 = [
+        qpu_planning.rounded_delay(runtime, fresh, microseconds * 1e-6)
+        for microseconds in diagnostic_experiments.MSQ_T1_MICROSECONDS
+    ]
+    if t1 != list(configuration["t1_delays_dt"]):
+        reasons.append(f"t1 idles {configuration['t1_delays_dt']} -> {t1}")
+    for choice in choices:
+        reasons.extend(
+            f"{choice.group.name}: {reason}"
+            for reason in choice_change_reasons(choice, fresh)
+            if reason != ENVELOPE_VALUE_REASON
+        )
+    return reasons
 
 
 def note_envelope_replan(record: dict[str, Any], reasons: Any) -> None:
@@ -4954,6 +5015,21 @@ def submit(
     unchanged = unchanged_since_planning(
         record, inventory, choices, fresh_snapshots, service.usage().get("usage_remaining_seconds")
     )
+    approved_record = getattr(args, "approved_record", None)
+    if not unchanged and approved_record is not None and approved_is_envelope(Path(approved_record)):
+        # An envelope plan reads the layout rule and the circuits' dt durations, not calibration values: a republish
+        # that moves neither sends the same bytes, so the plan stands without a second planning simulation.
+        fresh_by_name = {snapshot.name: snapshot for snapshot in fresh_snapshots}
+        planned_backend = choices[0].snap.name
+        refresh_drift = (
+            envelope_drift(record, choices, fresh_by_name[planned_backend])
+            if planned_backend in fresh_by_name
+            else ["the planned backend left the eligible set"]
+        )
+        record.setdefault("envelope", {}).setdefault("refresh_checks", []).append(
+            {"at": _now(), "drift": refresh_drift}
+        )
+        unchanged = not refresh_drift
     if unchanged:
         # plan() ran in this process against the same calibrations, so a
         # rebuild reproduces its choices exactly; the approved-record
@@ -5187,20 +5263,9 @@ def submit(
         except Exception:
             batch_values = None
         if envelope:
-            # The batch sends the constructor's output on this snapshot: the rule must keep the planned layout and
-            # the hardware under every owner must be unchanged, or the invocation re-plans on it.
-            calibration = msq_envelope.calibration_from_snapshot(fresh)
-            try:
-                fresh_layout = msq_envelope.layout_rule(
-                    calibration["qubits"],
-                    calibration["excluded"],
-                    [tuple(edge) for edge in calibration["edges"]],
-                    int(record["family_configuration"]["layout_width"]),
-                )
-            except msq_envelope.EnvelopeError as error:
-                raise EnvelopeReplan(f"{name}: {batch_tag} {error}") from error
-            if fresh_layout != list(record["family_configuration"]["qubits"]):
-                raise EnvelopeReplan(f"{name}: {batch_tag} the layout rule moved to {fresh_layout}")
+            # The batch sends the constructor's output on this snapshot: the rule must keep the planned layout and the
+            # circuits' durations and exclusions must hold, or the invocation re-plans on it.
+            moved = envelope_drift(record, owners, fresh)
             fresh_bytes = snapshot_bytes(fresh)
             directory = getattr(args, "envelope_snapshot_dir", None)
             digest = (
@@ -5209,8 +5274,14 @@ def submit(
                 else msq_envelope.sha256_hex(fresh_bytes)
             )
             record.setdefault("envelope", {}).setdefault("batch_snapshots", []).append(
-                {"batch": batch_tag, "snapshot_sha256": digest, "layout": fresh_layout}
+                {
+                    "batch": batch_tag,
+                    "snapshot_sha256": digest,
+                    "layout": list(record["family_configuration"]["qubits"]),
+                }
             )
+            if moved:
+                raise EnvelopeReplan(f"{name}: {batch_tag} {'; '.join(moved)}")
             drift = None
         else:
             drift = approved_calibration_drift(record, name, fresh.calibration, batch_values)
@@ -5221,9 +5292,7 @@ def submit(
             reasons = choice_change_reasons(owner, fresh)
             if reasons:
                 owner_reasons[owner.group.name] = reasons
-        if owner_reasons and envelope:
-            raise EnvelopeReplan(f"{name}: {batch_tag} hardware moved after batch planning ({owner_reasons})")
-        if owner_reasons:
+        if owner_reasons and not envelope:
             raise LiveRunError(
                 f"{name}: {batch_tag} hardware moved after batch planning; "
                 f"no circuit in this batch was submitted ({owner_reasons})"
@@ -5986,7 +6055,7 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                 Entry(
                     name=member_name,
                     base=replicas[0],
-                    ideal=np.asarray(law_encoding.dense(member["ideal"])),
+                    ideal=np.asarray(stored_ideal(record, member)),
                     packed=packed,
                     replicas=replicas,
                     prefixes=prefixes,
@@ -7456,9 +7525,45 @@ def write_archive(run_dir: Path, choices: list[Choice]) -> str:
     return hashlib.sha256(qpy_bytes).hexdigest()
 
 
+# A member ideal whose JSON text exceeds this many characters is stored once per record under its digest in an envelope
+# record, where every qubit repeats the same 17-clbit laws of the 16-step members.
+SHARED_LAW_MIN_CHARS = 4096
+
+
+def shared_law_record(record: dict[str, Any]) -> dict[str, Any]:
+    """An envelope record with each repeated large member ideal moved into ideal_laws; other records unchanged."""
+    if not is_envelope_family(record.get("family_configuration", {}).get("name")):
+        return record
+    laws: dict[str, Any] = {}
+    groups = []
+    for group in record.get("groups", []):
+        members = []
+        for member in group.get("members", []):
+            ideal = member.get("ideal")
+            text = json.dumps(ideal, sort_keys=True, separators=(",", ":"))
+            if len(text) > SHARED_LAW_MIN_CHARS:
+                digest = hashlib.sha256(text.encode()).hexdigest()
+                laws[digest] = ideal
+                member = {**member, "ideal": {"law_sha256": digest}}
+            members.append(member)
+        groups.append({**group, "members": members})
+    return {**record, "groups": groups, "ideal_laws": laws} if laws else record
+
+
+def stored_ideal(record: Mapping[str, Any], member: Mapping[str, Any]) -> list[float]:
+    """A member's ideal law from a record, resolving a shared law reference."""
+    ideal = member["ideal"]
+    if isinstance(ideal, dict) and "law_sha256" in ideal:
+        shared = record.get("ideal_laws", {}).get(ideal["law_sha256"])
+        if shared is None:
+            raise LiveRunError(f"{member.get('name')}: the shared ideal law {ideal['law_sha256'][:12]} is missing")
+        ideal = shared
+    return law_encoding.dense(ideal)
+
+
 def write_json(run_dir: Path, record: dict[str, Any]) -> None:
     """The run's JSON record."""
-    text = json.dumps(record, indent=2, default=str) + "\n"
+    text = json.dumps(shared_law_record(record), indent=2, default=str) + "\n"
     _replace_atomically(run_dir / "record.json", lambda handle: handle.write(text), "w")
     print(f"audit record: {run_dir}")
 

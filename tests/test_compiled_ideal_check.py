@@ -60,3 +60,37 @@ def test_the_submit_path_proves_ideals_through_the_pooled_helper() -> None:
     source = inspect.getsource(live_run.approved_family_design)
     check("check_compiled_ideals" in source and "ideal_compiled_probabilities" not in source)
     check("check_compiled_ideals" in inspect.getsource(qpu_planning.prepare))
+
+
+def rotation(angle: float, physical: int, name: str) -> QuantumCircuit:
+    """rx(angle) and a measurement on device wire physical of a five-wire circuit."""
+    circuit = QuantumCircuit(QuantumRegister(5, "q"), ClassicalRegister(1, "c"), name=name)
+    circuit.rx(angle, physical)
+    circuit.measure(physical, 0)
+    return circuit
+
+
+def test_copies_on_other_wires_share_one_oracle_input() -> None:
+    from qpe_diagnostics import compact_ideal_circuit, oracle_key
+
+    keys = {oracle_key(compact_ideal_circuit(rotation(0.7, wire, f"m_q{wire}"))) for wire in range(5)}
+    check(len(keys) == 1, f"one member on five wires compacts to one oracle input: {keys}")
+    check(oracle_key(compact_ideal_circuit(rotation(0.7000001, 2, "m_q2"))) not in keys, "an angle moves the key")
+
+
+def test_a_perturbed_copy_fails_alone() -> None:
+    """One copy compiled with a perturbed angle fails its own entry; the shared law clears every other copy."""
+    angle = 0.7
+    law = [np.cos(angle / 2) ** 2, np.sin(angle / 2) ** 2]
+    entries = [
+        SimpleNamespace(
+            name=f"m_q{wire}",
+            replicas=[rotation(angle + (0.1 if wire == 3 else 0.0), wire, "m")],
+            ideal=np.asarray(law),
+        )
+        for wire in range(5)
+    ]
+    with pytest.raises(live_run.LiveRunError, match="m_q3: compiled labeled ideal differs"):
+        qpu_planning.check_compiled_ideals(live_run, [SimpleNamespace(entries=entries)])
+    entries[3].replicas = [rotation(angle, 3, "m")]
+    qpu_planning.check_compiled_ideals(live_run, [SimpleNamespace(entries=entries)])

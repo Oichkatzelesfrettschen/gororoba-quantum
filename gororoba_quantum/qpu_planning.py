@@ -91,11 +91,13 @@ from latency_recovery import (
 )
 from packing import Replica
 from qpe_diagnostics import (
+    compact_ideal_circuit,
     has_herald,
     herald_measurement,
-    ideal_compiled_probabilities,
+    ideal_branch_probabilities,
     n21_ramsey_multiple,
     n21_segmented_key,
+    oracle_key,
 )
 
 # The ground Ramsey sweep's preregistered analysis. Its source closure (the
@@ -1740,24 +1742,39 @@ def admitted_family_candidates(
 IDEAL_PARALLEL_MIN_ITEMS = 16
 
 
-def compiled_ideal_mismatch(item: tuple[QuantumCircuit, Any]) -> bool:
-    """Whether a compiled replica's exact branch law differs from its labeled ideal (module level for the pool)."""
-    replica, ideal = item
-    return not np.allclose(ideal_compiled_probabilities(replica), ideal, rtol=0, atol=1e-10)
+def compiled_ideal_key(replica: QuantumCircuit) -> tuple[str | None, QuantumCircuit]:
+    """A compiled replica's oracle input and its exact key (module level for the pool)."""
+    compact = compact_ideal_circuit(replica)
+    return oracle_key(compact), compact
+
+
+def compiled_ideal_law(compact: QuantumCircuit) -> tuple[float, ...]:
+    """The exact branch law of one compact oracle input (module level for the pool)."""
+    return ideal_branch_probabilities(compact)
 
 
 def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
     """Prove every replica of every entry equals its labeled ideal, raising for the first entry in order that fails.
 
-    The exact oracle of a replica is independent of every other, so the replicas map through parallel.ordered_map in
-    entry order; a serial loop over them takes minutes on the measurement-sequence family and widens the time between
-    the pre-submit snapshot and the first batch beyond a calibration period.
+    The oracle runs once per distinct oracle input (qpe_diagnostics.oracle_key): compiled copies of one member on
+    different physical qubits compact to one circuit and share its law, while each entry is still compared with its
+    own labeled ideal. Keys and laws map through parallel.ordered_map; a serial proof widens the time between the
+    pre-submit snapshot and the first batch beyond a calibration period.
     """
     names = [entry.name for choice in choices for entry in choice.entries for _ in entry.replicas]
-    items = [(replica, entry.ideal) for choice in choices for entry in choice.entries for replica in entry.replicas]
-    mismatched = parallel.ordered_map(compiled_ideal_mismatch, items, min_items=IDEAL_PARALLEL_MIN_ITEMS)
-    for name, differs in zip(names, mismatched, strict=True):
-        if differs:
+    ideals = [entry.ideal for choice in choices for entry in choice.entries for _ in entry.replicas]
+    replicas = [replica for choice in choices for entry in choice.entries for replica in entry.replicas]
+    keyed = parallel.ordered_map(compiled_ideal_key, replicas, min_items=IDEAL_PARALLEL_MIN_ITEMS)
+    inputs: dict[str, QuantumCircuit] = {}
+    keys = []
+    for index, (key, compact) in enumerate(keyed):
+        # Control flow has no key; such a replica keeps a law of its own.
+        resolved = key if key is not None else f"unkeyed-{index}"
+        inputs.setdefault(resolved, compact)
+        keys.append(resolved)
+    laws = dict(zip(inputs, parallel.ordered_map(compiled_ideal_law, list(inputs.values()), min_items=2), strict=True))
+    for name, key, ideal in zip(names, keys, ideals, strict=True):
+        if not np.allclose(laws[key], ideal, rtol=0, atol=1e-10):
             raise runtime.LiveRunError(f"{name}: compiled labeled ideal differs from its exact oracle")
 
 
@@ -1868,6 +1885,8 @@ def prepare(
         simulated = iter(list(pool.map(simulate_choice, ordered)))
     for candidate_index, (choices, configuration) in enumerate(candidates):
         predictions: dict[str, tuple[tuple[float, ...], ...]] = {}
+        if args.family != "et-row":
+            check_compiled_ideals(runtime, choices)
         for choice in choices:
             if args.family == "et-row":
                 from et_planning import validate_ideals
@@ -1876,8 +1895,6 @@ def prepare(
                     validate_ideals(choice)
                 except ValueError as error:
                     raise runtime.LiveRunError(str(error)) from error
-            else:
-                check_compiled_ideals(runtime, [choice])
             evidence, noisy = next(simulated)
             local_compute.append_batches(simulators[id(choice.snap)], evidence)
             predictions.update(

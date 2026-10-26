@@ -159,11 +159,12 @@ def layout_rule(
     edges: Iterable[tuple[int, int]],
     width: int,
 ) -> list[int]:
-    """The ordered layout of width qubits the envelope places on one snapshot.
+    """The layout of width qubits the envelope places on one snapshot, in ascending qubit index.
 
     Eligible qubits (qubit_eligibility, not excluded by the snapshot's exclusion policy) are scanned in ascending
     readout error with ties by index; a qubit is kept when its CZ-graph distance to every kept qubit is at least
-    RULE_MIN_GRAPH_DISTANCE. Fewer than width keepable qubits raise EnvelopeError.
+    RULE_MIN_GRAPH_DISTANCE. The kept set returns sorted by index, so a reordering of readout errors among the same
+    kept qubits leaves the plan unchanged. Fewer than width keepable qubits raise EnvelopeError.
     """
     if width not in WIDTH_TIERS:
         raise EnvelopeError(f"width {width} is not an envelope tier {WIDTH_TIERS}")
@@ -180,7 +181,7 @@ def layout_rule(
             continue
         kept.append(q)
         if len(kept) == width:
-            return kept
+            return sorted(kept)
         near.update(coupling_distances(edge_list, q, RULE_MIN_GRAPH_DISTANCE - 1))
     raise EnvelopeError(f"only {len(kept)} qubits satisfy the layout rule; width {width} needs {width}")
 
