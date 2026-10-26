@@ -525,7 +525,7 @@ def job_schedule(seconds: list[float], shots: int, randomizations: int = 1) -> d
     Each randomization is its own bound circuit run shots / randomizations times, so one column holds every
     circuit of every randomization once.
     """
-    period = sum(s + REP_DELAY_SECONDS for s in seconds)
+    period = randomizations * sum(s + REP_DELAY_SECONDS for s in seconds)
     per_randomization = shots // randomizations
     executions_seconds = period * per_randomization
     return {
@@ -777,6 +777,57 @@ def run() -> dict[str, Any]:
     }
 
 
+def path_budget(snapshot: dict[str, Any], layout: list[int]) -> dict[str, Any]:
+    """The gap-88 null-subtracted budget of any path: primorial_cover_noise's noisy analysis on that layout.
+
+    Returns the per-shot variance of every coefficient, the shots that identify all seven at the
+    incoherent bias, and that bias.
+    """
+    view = calibration_snapshot.snapshot_backend(snapshot)
+    logical = [
+        (m, c)
+        for m, c in noise.arms()
+        if (m["family"] == "gradient" and m["cost"] in ("gap88", "null")) or m["family"] == "readout3"
+    ]
+    items = [(meta, circuit, noise.compile_arm(view, circuit, layout)) for meta, circuit in logical]
+    rows = parallel.ordered_map(noise.ArmLaw(snapshot, "CPU"), items, min_items=1)
+    fit = noise.gradient_analysis(rows, "gap88")["null_subtracted"]
+    return {
+        "per_shot_coefficient_variance": {k: float(v) for k, v in fit["per_shot_coefficient_variance"].items()},
+        "shots_identify_all": fit["shots_identify_all"],
+        "incoherent_max_bias": float(fit["max_coefficient_bias"]),
+    }
+
+
+def decide_path(
+    snapshot: dict[str, Any], layout: list[int], probe: dict[str, float], probe_shots: int, gap88_shots: int
+) -> dict[str, Any]:
+    """The preregistered decision for one path from a probe summary at ``probe_shots`` shots per circuit.
+
+    ``probe`` holds every estimate of ESTIMATES and its one-shot standard error ``se_<estimate>``, as
+    coherence_probes.summarize reports them; the gap-88 standard deviations are the path's own at
+    ``gap88_shots`` shots per setting.
+    """
+    view = calibration_snapshot.snapshot_backend(snapshot)
+    logical = [(m, c) for m, c in noise.arms() if m["family"] == "gradient" and m["cost"] in ("gap88", "null")]
+    budget = path_budget(snapshot, layout)
+    fit = br.Fit(br.path_arms(snapshot, view, layout, logical), budget["per_shot_coefficient_variance"], gap88_shots)
+    estimate = {k: float(probe[k]) for k in ESTIMATES}
+    se = {k: float(probe[f"se_{k}"]) / math.sqrt(probe_shots) for k in ESTIMATES}
+    return {
+        "calibration": snapshot["calibration"],
+        **calibration_snapshot.backend_identity(snapshot),
+        "layout": layout,
+        "budget": budget,
+        "gap88_shots": gap88_shots,
+        "coefficient_sd": fit.sd,
+        "probe_shots": probe_shots,
+        "estimate": estimate,
+        "se": se,
+        "decision": decide(fit, estimate, se, decision_points()),
+    }
+
+
 def check(path: Path, run_dir: Path) -> int:
     retained = json.loads(path.read_text(encoding="utf-8"))
     ledger = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
@@ -795,7 +846,29 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path)
     parser.add_argument("--run", type=Path, help="Kaggle run directory whose collected output --check binds")
+    parser.add_argument("--decide", action="store_true", help="apply the decision rule to a collected probe summary")
+    parser.add_argument("--snapshot", type=Path, help="--decide: the calibration snapshot of the run")
+    parser.add_argument("--layout", type=lambda text: [int(q) for q in text.split(",")], help="--decide: the path")
+    parser.add_argument("--probe-summary", type=Path, help="--decide: JSON of the probe estimates and se_ keys")
+    parser.add_argument("--probe-shots", type=int, help="--decide: shots per probe circuit")
+    parser.add_argument("--gap88-shots", type=int, help="--decide: shots per gap-88 setting")
     args = parser.parse_args()
+    if args.decide:
+        needed = (args.snapshot, args.layout, args.probe_summary, args.probe_shots, args.gap88_shots, args.out)
+        if any(value is None for value in needed):
+            parser.error("--decide needs --snapshot, --layout, --probe-summary, --probe-shots, --gap88-shots, --out")
+        verdict = decide_path(
+            json.loads(args.snapshot.read_text(encoding="utf-8")),
+            args.layout,
+            json.loads(args.probe_summary.read_text(encoding="utf-8")),
+            args.probe_shots,
+            args.gap88_shots,
+        )
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(json.dumps(verdict, indent=1, sort_keys=True) + "\n", encoding="utf-8")
+        decision = verdict["decision"]
+        print(f"decision for {args.layout}: proceed={decision['proceed']} p95={decision['p95_max_z']}")
+        return 0
     if args.check:
         if args.run is None:
             parser.error("--check needs --run")
