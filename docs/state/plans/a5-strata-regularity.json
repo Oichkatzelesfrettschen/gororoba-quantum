@@ -15,7 +15,7 @@
   },
   "scope": "Evidence bundle docs/evidence/a5-strata-regularity (author script, result.json, README, independent verifier, verification.md), the claim a5-strata-regularity and the boundary text of dimension32-global-topology. Kernel bundles, attachments and homology (items 5 to 8) stay out of scope.",
   "owner": "repository maintainer",
-  "next_action": "Compute the singular locus of each piece by the Jacobian criterion on the six slice families of Lemma 5, with radicality settled before any singularity claim.",
+  "next_action": "Open the pull request for branch geometry/a5-strata-regularity, run the Codex review loop to a clean verdict with the four pr.yml checks green, merge, and close the plan with a resolution naming the merge.",
   "related": [
     "a5-zero-divisor-strata-admission",
     "a5-rank-strata-equations"
@@ -28,31 +28,103 @@
   "steps": [
     {
       "id": "piece-singular-loci",
-      "state": "doing",
+      "state": "done",
       "action": "Determine Sing P for P in N_+, N_-, V, B9, W8, E8-bar, V(Q), V(G): smoothness off the named locus from full Jacobian rank of a generating set, and singularity on it only from a radical ideal, a tangent-cone multiplicity above 1 or several local branches.",
-      "acceptance": "Fails if a point off the named locus has Jacobian rank below codimension for a radical generating set, or a claimed singular point has a tangent cone equal to a linear space of the piece dimension."
+      "acceptance": "Fails if a point off the named locus has Jacobian rank below codimension for a radical generating set, or a claimed singular point has a tangent cone equal to a linear space of the piece dimension.",
+      "receipts": [
+        {
+          "result": "strata_regularity.py: every germ of every closure, of V(Q) and of V(G) along every orbit matches the 63-row germ table; Sing V = Sing W8 = N_+ u N_-, Sing Iso = VB, Sing X_+- = V^a_+-, Sing E8-bar = V u B9, Sing V(G) = W8 u V, with radical slice ideals throughout.",
+          "observed_at": "2026-10-26T20:53:32+00:00",
+          "revision": "31ab47459c473b4ff8d9710bcd5d57e725c127cc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-strata-regularity/result.json",
+              "sha256": "004e21b82afcecc7f7faf531756285fe00619935e88ec1e21d9862c56b6756bb"
+            },
+            {
+              "ref": "docs/evidence/a5-strata-regularity/strata_regularity.py",
+              "sha256": "b462a8bcbc8a145120b6b32dc184b2573b9570d68f6edce68bb0fc658fa93654"
+            }
+          ],
+          "scope_sha256": "9aba726d74cec72e6dcd9ef490667a1893e8219021ca3a1757ccbbaeb75583d4"
+        }
+      ]
     },
     {
       "id": "stratum-intersections",
-      "state": "todo",
+      "state": "done",
       "action": "Decide the non-nested intersections W8 n E8-bar, W8 n V, V(Q) n V(G) and give each nullity stratum S_k a partition into smooth locally closed pieces with dimensions and componentwise closure incidences.",
-      "acceptance": "Fails if a partition piece is not smooth of constant dimension, two pieces overlap, or a closure incidence disagrees with an exact point or curve."
+      "acceptance": "Fails if a partition piece is not smooth of constant dimension, two pieces overlap, or a closure incidence disagrees with an exact point or curve.",
+      "receipts": [
+        {
+          "result": "strata_regularity.py: twelve representatives with distinct membership patterns reproducing the closure order, the orbit certificate on all six slices with open components only on the expected slices, W8 n E8-bar = B9 and W8 n V = VB from the shared orbits; Iso a normal complete intersection; nullity-4 radicals on every slice.",
+          "observed_at": "2026-10-26T20:53:32+00:00",
+          "revision": "31ab47459c473b4ff8d9710bcd5d57e725c127cc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-strata-regularity/result.json",
+              "sha256": "004e21b82afcecc7f7faf531756285fe00619935e88ec1e21d9862c56b6756bb"
+            },
+            {
+              "ref": "docs/evidence/a5-strata-regularity/strata_regularity.py",
+              "sha256": "b462a8bcbc8a145120b6b32dc184b2573b9570d68f6edce68bb0fc658fa93654"
+            }
+          ],
+          "scope_sha256": "c9e6b69ad1c4a197ad28e56eb1ee4300cf94e5047a3ef9569fc9467907725717"
+        }
+      ]
     },
     {
       "id": "normal-link",
-      "state": "todo",
+      "state": "done",
       "action": "Compute the normal slice of R_12 = V u B9 at x0 = e_1 + e_18 and at a second point of V n B9 minus N_+-, and decide whether the transverse type is constant along V n B9 minus N_+-.",
-      "acceptance": "Fails if the curve branch count of V or the surface type of B9 in the slice differs between the two points without the record saying so, or a link is stated without a computed singularity type."
+      "acceptance": "Fails if the curve branch count of V or the surface type of B9 in the slice differs between the two points without the record saying so, or a link is stated without a computed singularity type.",
+      "receipts": [
+        {
+          "result": "Transverse type is constant along V n B9 minus N_+- because VB is one H-orbit (Theorem 5, Thom-Mather); at its representative the slice germs of V and B9 are a smooth curve and a smooth surface meeting only at the point, and the independent verifier repeats this at x0 = e_1 + e_18 over Q(i): link S^1 disjoint union S^3.",
+          "observed_at": "2026-10-26T20:53:32+00:00",
+          "revision": "31ab47459c473b4ff8d9710bcd5d57e725c127cc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-strata-regularity/result.json",
+              "sha256": "004e21b82afcecc7f7faf531756285fe00619935e88ec1e21d9862c56b6756bb"
+            },
+            {
+              "ref": "docs/evidence/a5-strata-regularity/verification.json",
+              "sha256": "73b87b80b9c725fedfcaf446545c0275f4e06f9070c2eafa55d9297992a2495e"
+            }
+          ],
+          "scope_sha256": "266df161bc4259aab9fb5c7f1e6745a4607714dba4293d8df3516069b4791165"
+        }
+      ]
     },
     {
       "id": "independent-verification",
-      "state": "todo",
+      "state": "done",
       "action": "An opus re-check from cd_core re-derives every admitted subclaim with separate code.",
-      "acceptance": "Fails if any admitted subclaim is refuted or left unchecked without being withdrawn from the claim."
+      "acceptance": "Fails if any admitted subclaim is refuted or left unchecked without being withdrawn from the claim.",
+      "receipts": [
+        {
+          "result": "verify_regularity_independent.py re-derives statements 1-7 and all 75 germ pairs from cd_core with separate code and orthogonal slices, pass=True; nothing refuted; the drop-locus certificate is corroborated by an exhaustive slice search rather than re-proved, as the claim boundary states.",
+          "observed_at": "2026-10-26T20:53:32+00:00",
+          "revision": "31ab47459c473b4ff8d9710bcd5d57e725c127cc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-strata-regularity/verification.json",
+              "sha256": "73b87b80b9c725fedfcaf446545c0275f4e06f9070c2eafa55d9297992a2495e"
+            },
+            {
+              "ref": "docs/evidence/a5-strata-regularity/verify_regularity_independent.py",
+              "sha256": "fc9fcda35e3710c1d0595a2d2129550b127922a07da952e584bc2278c2d928f9"
+            }
+          ],
+          "scope_sha256": "d41eaaeff24a0e52861bb81069cde59787a17a66a59826923c80ee4423510e0f"
+        }
+      ]
     },
     {
       "id": "admission",
-      "state": "todo",
+      "state": "doing",
       "action": "Add claim a5-strata-regularity with its replay and update the boundary of dimension32-global-topology for confirmed subclaims only.",
       "acceptance": "research_state.py --check and plan_tracker.py check pass, the four pr.yml checks are green and Codex reports clean on the PR head."
     }
