@@ -76,8 +76,11 @@ has full measure. Its complement, the zero-divisor Stiefel elements of
 
 ## Not established
 
-- The exact dimension, components, conditioning and attachment geometry of
-  `Z`.
+- The components, conditioning and attachment geometry of `Z`. Its
+  dimension is exactly 57: `Z` is the set of complex points of V(Q, f_6)
+  for an irreducible f_6 not divisible by Q (claim
+  `a6-a8-stiefel-zero-divisor-cone`,
+  [the higher Pfaffian evidence](../evidence/stiefel-pfaffian-higher/README.md)).
 - Which points `Z` contains beyond the Proposition 4.3 zero divisors of
   `nullity.json`. Those are Stiefel elements of nullity 28, so `Z` is
   nonempty.

@@ -2292,13 +2292,13 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-latency-recovery-family.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-qet-campaigns.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-latency-recovery-family.json"
+    "docs/evidence/submitted_circuits/comparison-qet-campaigns.json"
    ]
   },
   {
@@ -4248,6 +4248,25 @@
    "seconds": 376.0,
    "tier": "full",
    "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_pfaffian_higher.py --check docs/evidence/stiefel-pfaffian-higher/result.json",
+   "name": "core-692",
+   "seconds": 9.9,
+   "tier": "full",
+   "replays": [
+    "docs/evidence/stiefel-pfaffian-higher/result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_pfaffian_higher.py --self-test && \"$PYTHON\" -B -W error -O scripts/stiefel_pfaffian_higher.py --self-test",
+   "name": "core-693",
+   "seconds": 4.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

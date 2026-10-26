@@ -263,6 +263,7 @@ approval; each needs the dry run, analysis and case of
    | fixed plus, fixed minus | `-phi*`, `+phi*` in both branches | X, Z | 4 |
    | Z_A reference | no Alice measurement; A read in Z | Z | 1 |
    | product-state mutation | reference, feedback and Z_A reference on \|00> | X, Y, Z; X, Z; Z | 6 |
+   | readout calibration | \|11> through the floor arm's measure, idle branch and readouts | Z | 1 |
 
    Endpoints: the channel floor margin (preregistered positive on the ground
    state, negative on the product state), the information excess, the binned
@@ -272,7 +273,11 @@ approval; each needs the dry run, analysis and case of
    Binning both sides by the same record cancels readout and preparation
    error to first order, so q_eff measures whether the branch executes the
    rotation the bit selects. [E] A 5-sigma detection of the ideal excess needs
-   7785 shots per setting and arm; the 18 circuits take about 140000 shots.
+   7785 shots per setting and arm; the 19 circuits take about 148000 shots, and
+   every disjoint pair the placer packs into the same shots adds a replica at no
+   extra charge. The product-state floor arm doubles as the \|00> readout
+   calibration, so the summary also reports a readout-corrected margin; readout
+   error lowers the raw margin, which stays the conservative primary.
    The device question that justifies hardware under the routing rule is
    q_eff: it measures measure-and-feed-forward fidelity on the stack whose
    N = 21 feedback contrast read +0.0027 against a predicted +0.0344
@@ -299,14 +304,41 @@ approval; each needs the dry run, analysis and case of
    fidelity dominates it, so it waits on an exact free-fermion reference
    checked against exact diagonalization at 12 to 14 qubits.
 
+## Hardware results on ibm_kingston
+
+Three jobs on 14 calibration-qualified pairs (backup instance, 110 s in total; claims
+`kingston-qet-ladder-margin-and-feedforward`, `kingston-qet-window-phase-static` and
+`kingston-qet-compensated-information-excess` in [the registry](../../state/RESEARCH_STATE.md)):
+
+- [E] **[The ladder](../../../results/live/2026-10-25T203822.040562Z/FINDINGS.md).** Feed-forward executes the
+  selected branch (`q_eff` median -0.05), but the channel floor margin is -0.160 +- 0.052 against +0.057 predicted.
+  The shortfall tracks the prepared parity at a correlation of 0.961.
+- [E] **[The frame diagnostic](../../../results/live/2026-10-25T225332.266272Z/FINDINGS.md).** The parity loss is a
+  static phase on B over the measure-to-branch idle, with or without Alice's readout. The service scheduler puts
+  that idle inside the preparation CX. Completing the CX first moves the phase onto `<X_A X_B>`. A fit gives B
+  detunings of -54 to +11 kHz and A-B ZZ of 1.5 to 14 kHz. An echo cannot be placed in the window, because the
+  scheduler plays a branch target's pre-branch gates at the receive.
+- [E] **[The compensated ladder](../../../results/live/2026-10-25T233207.284563Z/FINDINGS.md).** With Bob's
+  record-independent `rz` fixed per pair from that pair's reference arms, the information excess is
+  +0.107 +- 0.006 (lower bound +0.096) against the ideal 0.115: the measured record lowers Bob's energy below every
+  record-independent unitary on the same state. The channel floor margin stays at -0.073 +- 0.015, because the
+  prepared state's best uninformed local energy already sits 0.18 above the vacuum value. At a 50 us repetition
+  delay the job charged 81 us per shot against 276 us at 250 us.
+
+[I] For the Pais question, no arm in any of the three jobs lowered Bob's energy below the floor that binds
+record-independent operations. The information-driven lowering appears at 93 percent of ideal, but always from a
+state that preparation and idle error left above the vacuum value. The same unmodeled idle leaves 27 to 61 us per
+qubit uncharged in the retained N = 21 Kingston feedback job (`exp(-idle/T2)` products near 0.21). That makes
+unmodeled idle the leading candidate for the vanished N = 21 contrast; an idle-padded replay of that job is the
+check.
+
 ## Uncertainty
 
 [I] That the field-generator, inertial-mass and gravitational-wave devices
 produce none of the claimed effects: very high confidence, resting on the
 Maxwell identities, the vacuum-field ratios and the NAWCAD result; a
 reproducible measurement of radiation from a steady axisymmetric charge would
-lower it. That the QET ladder measures a positive information excess on Heron
-r2: moderate confidence, since Ikeda reports QET on IBM processors but the
-N = 21 feedback contrast vanished on Kingston; a measured q_eff below the
-0.2566 zero crossing would raise it, and a reference-arm Y-basis correlation
-implying a phase near 0.5 rad would lower it.
+lower it. The information excess of +0.107 on Kingston is measured, not
+inferred; it would fall if a non-unitary record-independent channel on B
+(for example a reset timed by the record's schedule) beat the Kabsch floor,
+which the negative channel floor margin leaves open.

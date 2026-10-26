@@ -379,7 +379,16 @@ figures, so a later live plan must reproduce that digest; each later attempt wri
 88.8 %, below the 90 % rule of [strategy.md](../notes/quandela/strategy.md); the warning does not hold the case.
 Nothing was sent.
 
-Awaits the owner's written approval
+**Approval.** The owner approved this case in writing on 2026-10-25, for one submission that fires
+without a further check-in once a fresh plan admits the request and the model pooled fidelity at the live figures
+reaches F* = 0.86. The read of 22:41:26 UTC returned the degraded figures of 19:04 UTC unchanged, so the case
+waits on the platform. `qd_teleportation_rehearsal.py --submit RUN APPROVAL` carries both conditions: RUN starts from
+copies of the frozen `cases.json` and `circuit.json`, the platform catalogue and raw route answers land in
+`RUN/platform-before/`, and `qd_platform.submit` plans afresh under the token's submit lock with `binding` as its
+verify step, which refuses a body whose digest without `process_id` departs from `3db7e1a0...` or a model pooled
+fidelity below F*. A refusal sends nothing and writes no checkpoint; an admitted request leaves
+`RUN/submit-model.json` with the model it was admitted under. `qd_platform.py collect RUN` then retains the result and
+`--analyze RUN` returns the verdict.
 
 ## Provider request
 
