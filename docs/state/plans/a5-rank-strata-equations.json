@@ -264,6 +264,26 @@
             }
           ],
           "scope_sha256": "6470b2600e320c2cfd813c2d898c31e183d81afaa28b392e6b0a705a649b8926"
+        },
+        {
+          "result": "Revalidated at the merged head: since the reviewed head fdd4c47 the script changes only route the table, inner-derivation, lift, congruence, point-nullity and control loops through parallel.ordered_map with the same checks, and result.json differs only in timing fields and the script digest, so the review's findings and dispositions stand.",
+          "observed_at": "2026-10-26T08:45:18+00:00",
+          "revision": "33dfdc5ce169a92bff07902bbd4f9b5dd0f45955",
+          "evidence": [
+            {
+              "ref": "docs/archive/reviews/2026-10-26-a5-rank-strata-equations-review.md",
+              "sha256": "45912ba46984fe37a23f970c8f3c8f64c934f5e5cb62bf45e197de6165b976d0"
+            },
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/result.json",
+              "sha256": "d0aefa47d1bd2751bb573dd192cd2bab2527b568d89ddaa5207f5cc7bc9a7daa"
+            },
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py",
+              "sha256": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b"
+            }
+          ],
+          "scope_sha256": "6470b2600e320c2cfd813c2d898c31e183d81afaa28b392e6b0a705a649b8926"
         }
       ]
     }
