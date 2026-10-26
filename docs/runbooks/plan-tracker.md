@@ -50,6 +50,22 @@ The command fills `scope_sha256`, binding parent ID/scope/dependencies and the s
 Hashes and revisions must come from actual observations. HTTPS references retain an observed digest but
 receive no implicit freshness check; retain sanitized response files for reproducible remote observations.
 
+An evidence `ref` names a whole file or one record of a shared JSON registry:
+`FILE.json#COLLECTION/FIELD=VALUE` selects the single object of the top-level array `COLLECTION` whose string
+`FIELD` equals `VALUE`, for example `docs/state/research_state.json#claims/id=a5-stiefel-universal`,
+`ci/gates.json#gates/name=core-690` or `docs/SOURCES.json#pdfs/path=docs/pdf/2103.12805v1.pdf`. Its digest is
+`plan_records.digest` of that object (sorted-key JSON), so edits to other records of the registry leave the
+receipt fresh, while a changed, removed or duplicated record requests revalidation. Code, proofs and evidence
+bundles keep whole-file references. `digest REF...` prints the digest each reference binds:
+
+```sh
+"$PYTHON" scripts/plan_tracker.py digest scripts/plan_records.py \
+  'docs/state/research_state.json#claims/id=a5-stiefel-universal'
+```
+
+A revalidation moves a whole-registry reference to a record selector when it observes that record; the
+receipts already recorded keep the references they observed.
+
 A closed plan needs `disposition` (completed, cancelled, superseded) and `resolution`. Supersession also
 needs `superseded_by`. All children must be terminal. Completed plans require all steps done and a plan
 receipt whose digest binds the ordered step obligations. `plan_records.obligation(plan)` calculates that
