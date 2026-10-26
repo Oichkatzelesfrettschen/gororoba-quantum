@@ -1,0 +1,194 @@
+{
+  "aligned_orbit_moduli": {
+    "component_results_identical": true,
+    "earlier_rank_scope": "the rank-seven V^a representative is the rho=1 endpoint, not the principal orbit",
+    "gram_invariant": {
+      "canonical_gram_eigenvalues_at_fixed_norm": [
+        "h(1+rho)/2",
+        "h(1-rho)/2"
+      ],
+      "completeness": "a phase makes u dot u nonnegative real; the real-imaginary Gram matrix then diagonalizes with the displayed eigenvalues, and G_2 transitivity on ordered orthonormal two-frames identifies equal-rho points",
+      "fixture_gram_eigenvalues": [
+        2,
+        8
+      ],
+      "invariant": "rho=abs(u dot u)/(u^* dot u)",
+      "pass": true,
+      "real_gram_determinant_preserved_by_phase": true,
+      "real_gram_discriminant_preserved_by_phase": true,
+      "real_gram_trace_preserved_by_phase": true
+    },
+    "input_digests": {
+      "kernel_symmetry_result_sha256": "0e10a92b0a6aa185ffe78f74807167f5cdfd38bcad95c164daa90108438ab390",
+      "kernel_symmetry_script_sha256": "c7443882f68b3cb1be3808b3af70426c7c96ff4e96479287662bf80d0de5dd92",
+      "nullity_sixteen_stabilizer_result_sha256": "94e69a84e565a9014eb18a523d023a7e6a2158e413b25e02372684411928044e",
+      "nullity_sixteen_stabilizer_script_sha256": "613a9ffc88af07bae1d2af43c1df4546111ccca92a9405f6436fad6ed9f88788"
+    },
+    "mutation": "",
+    "nullity_sixteen_boundary": "rho=0 with stabilizer Lie algebra su(2)+u(1) and dimension 11",
+    "orbit_space": "0<rho<=1",
+    "original_coordinate_parameterization": "z=(u,0,+/- i u), u dot u != 0",
+    "pass": true,
+    "principal_orbits": "0<rho<1 with stabilizer Lie algebra su(2) and dimension 12",
+    "rows": [
+      {
+        "aligned_original_coordinates": true,
+        "canonical_u": "e_1+i*(0)*e_2",
+        "compact_generator_count": 15,
+        "compact_tangent_rank": 7,
+        "component": "V^a_+",
+        "derived_killing_negative_definite": true,
+        "inside_aligned_piece": true,
+        "left_nullity": 12,
+        "orbit_type": "collinear_endpoint",
+        "pass": true,
+        "rho_squared": "1",
+        "sign": 1,
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 8,
+        "stabilizer_dimension": 8,
+        "stabilizer_lie_algebra": "su(3)",
+        "u_bilinear_square": [
+          "1",
+          "0"
+        ],
+        "u_hermitian_norm_squared": "1"
+      },
+      {
+        "aligned_original_coordinates": true,
+        "canonical_u": "e_1+i*(1/2)*e_2",
+        "compact_generator_count": 15,
+        "compact_tangent_rank": 12,
+        "component": "V^a_+",
+        "derived_killing_negative_definite": true,
+        "inside_aligned_piece": true,
+        "left_nullity": 12,
+        "orbit_type": "principal",
+        "pass": true,
+        "rho_squared": "9/25",
+        "sign": 1,
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)",
+        "u_bilinear_square": [
+          "3/4",
+          "0"
+        ],
+        "u_hermitian_norm_squared": "5/4"
+      },
+      {
+        "aligned_original_coordinates": true,
+        "canonical_u": "e_1+i*(1)*e_2",
+        "compact_generator_count": 15,
+        "compact_tangent_rank": 11,
+        "component": "V^a_+",
+        "derived_killing_negative_definite": true,
+        "inside_aligned_piece": false,
+        "left_nullity": 16,
+        "orbit_type": "null_boundary",
+        "pass": true,
+        "rho_squared": "0",
+        "sign": 1,
+        "stabilizer_center_dimension": 1,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 4,
+        "stabilizer_lie_algebra": "su(2)+u(1)",
+        "u_bilinear_square": [
+          "0",
+          "0"
+        ],
+        "u_hermitian_norm_squared": "2"
+      },
+      {
+        "aligned_original_coordinates": true,
+        "canonical_u": "e_1+i*(0)*e_2",
+        "compact_generator_count": 15,
+        "compact_tangent_rank": 7,
+        "component": "V^a_-",
+        "derived_killing_negative_definite": true,
+        "inside_aligned_piece": true,
+        "left_nullity": 12,
+        "orbit_type": "collinear_endpoint",
+        "pass": true,
+        "rho_squared": "1",
+        "sign": -1,
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 8,
+        "stabilizer_dimension": 8,
+        "stabilizer_lie_algebra": "su(3)",
+        "u_bilinear_square": [
+          "1",
+          "0"
+        ],
+        "u_hermitian_norm_squared": "1"
+      },
+      {
+        "aligned_original_coordinates": true,
+        "canonical_u": "e_1+i*(1/2)*e_2",
+        "compact_generator_count": 15,
+        "compact_tangent_rank": 12,
+        "component": "V^a_-",
+        "derived_killing_negative_definite": true,
+        "inside_aligned_piece": true,
+        "left_nullity": 12,
+        "orbit_type": "principal",
+        "pass": true,
+        "rho_squared": "9/25",
+        "sign": -1,
+        "stabilizer_center_dimension": 0,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)",
+        "u_bilinear_square": [
+          "3/4",
+          "0"
+        ],
+        "u_hermitian_norm_squared": "5/4"
+      },
+      {
+        "aligned_original_coordinates": true,
+        "canonical_u": "e_1+i*(1)*e_2",
+        "compact_generator_count": 15,
+        "compact_tangent_rank": 11,
+        "component": "V^a_-",
+        "derived_killing_negative_definite": true,
+        "inside_aligned_piece": false,
+        "left_nullity": 16,
+        "orbit_type": "null_boundary",
+        "pass": true,
+        "rho_squared": "0",
+        "sign": -1,
+        "stabilizer_center_dimension": 1,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 4,
+        "stabilizer_lie_algebra": "su(2)+u(1)",
+        "u_bilinear_square": [
+          "0",
+          "0"
+        ],
+        "u_hermitian_norm_squared": "2"
+      }
+    ],
+    "singular_endpoint_orbit": "rho=1 with stabilizer Lie algebra su(3) and dimension 7",
+    "topology": {
+      "alexander_duality_check": "H~^1=H_11(V_2)=Z and H~^7=H_5(V_2)=Z/2",
+      "fiber": "open tangent disk bundle of S^6, homotopy equivalent to S^6",
+      "fundamental_group": "Z",
+      "integral_cohomology": {
+        "0": "Z",
+        "1": "Z",
+        "7": "Z/2"
+      },
+      "monodromy": "u -> -u; antipodal on the S^6 zero section",
+      "monodromy_degree_on_h6": -1,
+      "pass": true,
+      "quadratic_argument_fibration": "q/abs(q): S^13 minus {q=0} -> S^1, q(u)=u dot u",
+      "unit_section": "S^13 minus V_2(R^7), independently for V^a_+ and V^a_-"
+    },
+    "unit_norm_condition": "u^* dot u=1/2"
+  },
+  "pass": true,
+  "schema": "a5-aligned-nullity-twelve-orbit-moduli-v1",
+  "script_sha256": "fea6c7522b991d58c2d4cec39665c4207168b53ae05879851f8d706352f4bb85"
+}

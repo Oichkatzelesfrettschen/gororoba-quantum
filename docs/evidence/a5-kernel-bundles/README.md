@@ -7,14 +7,16 @@ constant kernel-pencil symmetry algebra and a visible twelve-component subgroup,
 rational kernel frames covering all seven pieces of nullity at least twelve. It also identifies the connected compact
 stabilizer and its irreducible kernel representation on both nullity-sixteen components, reduces those two bundles to
 the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and quaternionic classes. An exhaustive
-component census, the non-homogeneous pieces' reduced transitions and topology, and their characteristic classes
-remain open.
+component census, the non-homogeneous pieces' reduced transitions, the remaining non-homogeneous unit-section
+topologies, and their characteristic classes remain open. The aligned nullity-twelve pieces now have an explicit
+one-dimensional compact-orbit quotient and a computed unit-section topology.
 
 Every computation uses rational or Gaussian-rational arithmetic. [`result.json`](result.json) is the output of
 [`kernel_symmetry.py`](kernel_symmetry.py) `--out`. [`frames-result.json`](frames-result.json) is the output of
 [`kernel_frames.py`](kernel_frames.py) `--out`. `stabilizer-result.json` is the output of
 `stabilizer_representation.py --out`. `nullity-sixteen-bundle-result.json` is the output of
-`nullity_sixteen_bundle.py --out`. The focused contracts and mutation controls run without random input.
+`nullity_sixteen_bundle.py --out`. `aligned-orbit-moduli-result.json` is the output of
+`aligned_orbit_moduli.py --out`. The focused contracts and mutation controls run without random input.
 
 ## Conventions
 
@@ -195,6 +197,82 @@ the diagonal `SU(2)`, a failed inverse or cocycle, a cellular boundary other tha
 doublet, replace the Euler boundary by one, or replace `3+2t` by the rank-preserving false branching `5+t`; the replay
 rejects all three. The result classifies the ordinary bundles under the connected homogeneous action. It makes no
 claim about an equivariant extension to the still-unclassified disconnected stabilizer.
+
+## The aligned nullity-twelve pieces have a one-dimensional compact-orbit quotient
+
+The two aligned pieces `V^a_+` and `V^a_-` have split coordinates `(w,0,+-w)`. Under
+`z_k=i^popcount(k) z'_k`, put `u_j=z_j` for `1<=j<=7`. The upper coordinates then obey
+
+`z_(8+j)=+- i u_j`,
+
+and the split quadratic form becomes the ordinary complex bilinear form `u dot u`. Thus the two pieces have the
+original-coordinate parameterizations
+
+`z=(u,0,+- i u)`, with `u dot u != 0`.
+
+The unit condition is `u^* dot u=1/2`. Write `u=a+i b` with `a,b` real and define
+
+`rho=abs(u dot u)/(u^* dot u)`.
+
+The compact connected symmetry `G_2 x U(1)` preserves `rho`: `G_2` preserves the real Gram matrix of `(a,b)`, while
+the phase rotates that ordered pair and multiplies `u dot u` by a unit complex number. Conversely, a phase makes
+`u dot u` nonnegative real. The resulting real Gram matrix is diagonal, with eigenvalues
+
+`(u^* dot u)(1+rho)/2` and `(u^* dot u)(1-rho)/2`.
+
+For `0<=rho<1`, the normalized real and imaginary parts form an ordered orthonormal two-frame. The
+source-established transitivity `G_2/SU(2)=V_2(R^7)` therefore identifies any two points with the same `rho`. At
+`rho=1`, one Gram eigenvalue vanishes and the point is phase-equivalent to a real vector. The endpoint locus is
+connected and seven-dimensional; the exact compact orbit below is closed and has the same dimension, so it fills the
+endpoint. Consequently each aligned unit section has compact-orbit space
+
+`0<rho<=1`.
+
+The exact compact tangent and bracket calculation gives three orbit types, identically for both signs:
+
+| Locus | Compact orbit dimension | Connected stabilizer algebra | Left nullity |
+| --- | ---: | --- | ---: |
+| `0<rho<1` | 12 | `su(2)` | 12 |
+| `rho=1` | 7 | `su(3)` | 12 |
+| closure boundary `rho=0` | 11 | `su(2)+u(1)` | 16 |
+
+The stabilizer identifications use exact centers, derived algebras, and Killing forms. The principal stabilizer has
+dimension three, zero center, and negative-definite Killing form. The collinear endpoint stabilizer has dimension
+eight, zero center, equals its derived algebra, and has negative-definite Killing form. The null boundary reproduces
+the committed four-dimensional `su(2)+u(1)` stabilizer. In particular, the earlier rank-seven computation at the
+repository representative of each `V^a` piece measured the `rho=1` endpoint orbit. It did not measure the principal
+orbit: the generic compact orbit has codimension one in the thirteen-dimensional unit section, rather than
+codimension six. The source-established stabilizer of an ordered two-frame identifies the principal connected group
+as `SU(2)`; the exact endpoint calculation identifies its Lie algebra but does not yet certify the endpoint group's
+global finite quotient. This stabilizer jump is a finer real stratification inside each complex `H`-orbit.
+
+The same parameterization settles the unit-section topology. After a constant radial rescaling, each sign's unit
+section is diffeomorphic to `S^13 minus V_2(R^7)`.
+
+The quadratic argument map
+
+`u -> (u dot u)/abs(u dot u)`
+
+is a fibration over `S^1`; a local square root of the argument gives its local trivializations. Its fiber over `1`
+consists of `a perpendicular to b` with `norm(a)>norm(b)` and fixed total norm. It is the open tangent disk bundle of
+`S^6`, hence retracts to `S^6`. A circuit around the base changes the chosen square-root phase by `pi`, so the
+monodromy is `u -> -u`; on the zero section it is the antipodal map of degree `-1`. The mapping-torus sequence gives
+
+```text
+pi_1 = Z,
+H^0 = Z, H^1 = Z, H^7 = Z/2,
+H^j = 0 otherwise.
+```
+
+Alexander duality supplies an independent check: the link has `H_11=Z` and `H_5=Z/2`, which become reduced
+cohomology in degrees one and seven of its complement. Every positive-degree cup product vanishes by degree.
+
+The falsifier was an aligned point outside `0<rho<=1`, incomplete Gram data, a tangent rank other than 12, 7, or 11
+at the three displayed loci, a different compact stabilizer algebra, a sign-dependent result, a different link
+complement topology, or survival of a phase-deletion or trivial-monodromy mutation. None occurred. The exact replay
+uses rational cone representatives; positive rescaling to the unit section preserves `rho`, stabilizers, and
+nullity. This result identifies the moduli and topology but does not yet decompose the nullity-twelve kernel under
+the principal or endpoint stabilizers, reduce its transition functions, or compute its characteristic classes.
 
 ## Principal-Pfaffian frames cover `N_+` and `N_-`
 
@@ -472,7 +550,8 @@ irreducible summands. The `SU(2)` reduction then classifies the ordinary real, c
 both `N_+` and `N_-`, including the order-two complex K-class that their zero Chern classes do not detect. The
 computation has not proved that the visible components exhaust the group and has not classified an equivariant
 extension under the disconnected `N_+-` stabilizers, the actual real type of the individual four-plane `xi_R`, or the
-non-homogeneous pieces' K-orbit moduli, reduced transition functions, topology, and bundle invariants. The compact
+remaining non-homogeneous pieces' K-orbit moduli and topology, or any non-homogeneous piece's reduced transition
+functions and bundle invariants. The compact
 symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit
 labels do not make those kernel bundles homogeneous under the constant symmetry group.
 
@@ -502,4 +581,9 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py \
     --out docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_aligned_orbit_moduli.py
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py \
+    --out docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json
 ```
