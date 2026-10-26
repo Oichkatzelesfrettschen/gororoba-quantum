@@ -1502,6 +1502,17 @@ def angle_qualification(qualification: Mapping[str, Any], cal: Mapping[str, np.n
         float(zeros[bob].sum()), float(cal["cal_00"].sum()), float(1 - ones[bob].sum()), float(cal["cal_11"].sum())
     )
     e0, e1 = readout.e0, readout.e1
+    empty = [name for name in QUAL_ARMS if qualification[name]["matched_shots"] == 0]
+    if empty:
+        # A source whose recorded bit never matches its preparation leaves no shot the conditional rotation acted
+        # on, so the pair cannot qualify; the primary tests keep it.
+        return {
+            "bob_p1_given_0": e0,
+            "bob_p0_given_1": e1,
+            "unmatched_arms": empty,
+            "target_angle": 2 * ql.PHI_STAR,
+            "scored": False,
+        }
     src1 = qualification["qual_src1_phi"]
     fitted = corrected_angle(src1["matched_target_ones"], src1["matched_shots"], readout, Z99)
     src0 = qualification["qual_src0_phi"]

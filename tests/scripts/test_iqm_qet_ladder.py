@@ -409,6 +409,20 @@ def test_build_refuses_active_reset() -> None:
         lad.build_from(CASE / "calibration", lad.BuildArgs(reset="active"))
 
 
+def test_an_unmatched_source_unscores_its_pair_without_aborting() -> None:
+    case = json.loads((CASE / "cases.json").read_text(encoding="utf-8"))
+    ideal = case["ideal"]["qualification_p1"]
+    measurements, _ = lad.synthetic_measurements(case, case_shots())
+    for circuit, entry in zip(measurements, case["jobs"][0]["circuits"], strict=True):
+        if Path(entry["file"]).stem.startswith("qual_src1"):
+            circuit["alice0"] = [[0]] * len(circuit["alice0"])
+    result = lad.endpoints_of_run(case, measurements)
+    if result["pairs"][0]["h3"]["scored"] or "unmatched_arms" not in result["pairs"][0]["h3"]:
+        raise AssertionError(f"an unmatched source arm leaves pair 0 at {result['pairs'][0]['h3']}")
+    if result["decisions"]["all_pairs"]["h1_information_excess"]["pairs"] != len(case["pairs"]) or not ideal:
+        raise AssertionError("the primary test dropped a pair")
+
+
 def test_analysis_refuses_a_mock_run(tmp_path: Path) -> None:
     run = synthetic_run(tmp_path, case_shots())
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
