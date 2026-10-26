@@ -1,0 +1,22 @@
+{
+ "schema": "outshift-qrng-draw-v1",
+ "source": "https://api.qrng.outshift.com/api/v1/random_numbers",
+ "request": {
+  "encoding": "raw",
+  "format": "all",
+  "bits_per_block": 16,
+  "number_of_blocks": 6
+ },
+ "retrieved_utc": "2026-10-26T204106Z",
+ "raw": "{\"encoding\":\"raw\",\"random_numbers\":[{\"binary\":\"0010000110100000\",\"octal\":\"20640\",\"decimal\":\"8608\",\"hexadecimal\":\"21a0\"},{\"binary\":\"0111011100010001\",\"octal\":\"73421\",\"decimal\":\"30481\",\"hexadecimal\":\"7711\"},{\"binary\":\"0001000011110011\",\"octal\":\"10363\",\"decimal\":\"4339\",\"hexadecimal\":\"10f3\"},{\"binary\":\"1101101010100101\",\"octal\":\"155245\",\"decimal\":\"55973\",\"hexadecimal\":\"daa5\"},{\"binary\":\"0011000011011000\",\"octal\":\"30330\",\"decimal\":\"12504\",\"hexadecimal\":\"30d8\"},{\"binary\":\"1001001101001110\",\"octal\":\"111516\",\"decimal\":\"37710\",\"hexadecimal\":\"934e\"}]}",
+ "raw_sha256": "654c77c760a897fe05077e0cbb676b7f918a036ab4f8269edd4d45c544643599",
+ "bits": 16,
+ "values": [
+  8608,
+  30481,
+  4339,
+  55973,
+  12504,
+  37710
+ ]
+}
