@@ -359,6 +359,19 @@ def test_cal_arm_noise_widens_the_corrected_interval() -> None:
         raise AssertionError(f"calibration-arm noise leaves the interval {narrow} unchanged: {wide}")
 
 
+def test_pairs_respect_the_probe_line_feedback_wiring(device: lad.Device) -> None:
+    """Every case pair's Bob drive accepts fast feedback from its Alice's probe line, and a crossing pair is refused."""
+    case = json.loads((CASE / "cases.json").read_text(encoding="utf-8"))
+    case_device = lad.load_device(str(CASE / "calibration"))
+    for pair in case["pairs"]:
+        if not lad.feedback_allowed(case_device, pair["alice"], pair["bob"]):
+            raise AssertionError(f"{pair['alice']} -> {pair['bob']} crosses probe lines")
+    crossing = lad.Pair(0, "QB3", "QB8", device.loci[frozenset(("QB3", "QB8"))])
+    circuit = {"name": "crossing", "instructions": lad.pair_ladder_ops(lad.arm_table()["fb_p00_x"], crossing)}
+    with pytest.raises(ValueError, match="no fast feedback"):
+        lad.validate_circuit(circuit, device, [crossing])
+
+
 def test_analysis_refuses_a_mock_run(tmp_path: Path) -> None:
     run = synthetic_run(tmp_path, case_shots())
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))

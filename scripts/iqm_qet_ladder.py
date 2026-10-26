@@ -90,6 +90,11 @@ QC = "garnet"
 QCS = ["garnet:mock", "garnet"]
 GROUP = ql.COMPENSATED_GROUP_NAME
 CALIBRATION_FILES = ("metrics.json", "dynamic-quantum-architecture.json")
+# Each qubit's readout probe line (chip-design-records.json) and the probe lines its drive AWG accepts fast feedback
+# from (channel-properties.json fast_feedback_sources); the station refuses a cc_prx whose feedback qubit sits on
+# another probe line (garnet:mock job 01a17675-111d-731e-9c6f-2132756f1686: "QB8 does not support fast feedback
+# from QB3 (probe line: PL-2). Valid source probe lines are ['PL-3']").
+FEEDBACK_FILE = "feedback.json"
 TIMING_FILE = "timing.json"
 EVIDENCE_CALIBRATION = iqm_sim.EVIDENCE / QC / "calibration"
 ANALYSIS_SCHEMA = "iqm-qet-ladder-analysis-v1"
@@ -432,8 +437,10 @@ def prepare_calibration(source: Path, target: Path) -> None:
         shutil.copyfile(source / name, target / name)
     if not (source / "set.json").exists() and (source / TIMING_FILE).exists():
         shutil.copyfile(source / TIMING_FILE, target / TIMING_FILE)
+        shutil.copyfile(source / FEEDBACK_FILE, target / FEEDBACK_FILE)
         return
     (target / TIMING_FILE).write_text(dump(derive_timing(source)), encoding="utf-8")
+    (target / FEEDBACK_FILE).write_text(dump(derive_feedback(source.parent / "artifacts")), encoding="utf-8")
 
 
 def timing_of(record: Mapping[str, Any]) -> Timing:
@@ -450,6 +457,50 @@ class Device(NamedTuple):
     calibration: iqm_sim.Calibration
     timing: Timing
     loci: dict[frozenset[str], tuple[str, str]]
+    feedback: dict[str, dict[str, Any]]
+
+
+def feedback_allowed(device: Device, source: str, target: str) -> bool:
+    """Whether target's drive accepts fast feedback from source's readout probe line."""
+    return device.feedback[source]["probe_line"] in device.feedback[target]["drive_feedback_sources"]
+
+
+def derive_feedback(artifacts: Path) -> dict[str, dict[str, Any]]:
+    """{qubit: probe_line, drive_feedback_sources} from a snapshot's chip design record and channel properties."""
+    design = json.loads((artifacts / "chip-design-records.json").read_text(encoding="utf-8"))
+    channels = json.loads((artifacts / "channel-properties.json").read_text(encoding="utf-8"))
+
+    def components(node: Any) -> Any:
+        if isinstance(node, dict):
+            if "components" in node:
+                return node["components"]
+            for value in node.values():
+                found = components(value)
+                if found is not None:
+                    return found
+        elif isinstance(node, list):
+            for value in node:
+                found = components(value)
+                if found is not None:
+                    return found
+        return None
+
+    found = components(design)
+    if found is None:
+        raise ValueError(f"{artifacts}: the chip design record lists no components")
+    out: dict[str, dict[str, Any]] = {}
+    for qubit in found["qubit"]:
+        lines = [c for c in qubit["connections"] if c.startswith("PL-")]
+        if len(lines) != 1:
+            raise ValueError(f"{qubit['name']}: {len(lines)} probe lines")
+        sources = channels.get(f"{qubit['name']}__drive.awg", {}).get("fast_feedback_sources")
+        if sources is None:
+            raise ValueError(f"{qubit['name']}: the channel properties state no drive fast_feedback_sources")
+        out[qubit["name"]] = {
+            "probe_line": lines[0],
+            "drive_feedback_sources": sorted(s.split("__")[0] for s in sources),
+        }
+    return dict(sorted(out.items(), key=lambda kv: qubit_number(kv[0])))
 
 
 @functools.lru_cache(maxsize=8)
@@ -461,7 +512,8 @@ def load_device(folder: str) -> Device:
     timing = timing_of(json.loads((path / TIMING_FILE).read_text(encoding="utf-8")))
     if timing.set_id != calibration.set_id:
         raise ValueError(f"{path}: timing.json describes set {timing.set_id}, the architecture is {calibration.set_id}")
-    return Device(calibration, timing, loci)
+    feedback = json.loads((path / FEEDBACK_FILE).read_text(encoding="utf-8"))
+    return Device(calibration, timing, loci, feedback)
 
 
 def schedule(ops: Sequence[Mapping[str, Any]], timing: Timing) -> tuple[list[float], list[float]]:
@@ -801,14 +853,17 @@ def predict_pair(item: tuple[Any, ...]) -> dict[str, Any]:
 # ---------------------------------------------------------------------------------------------------------
 
 
-def induced_matchings(edges: Sequence[tuple[str, str]]) -> Iterator[tuple[int, ...]]:
-    """Every nonempty set of edges, as index tuples, that share no qubit and whose qubits share no coupler."""
-    couplers = {frozenset(edge) for edge in edges}
+def induced_matchings(
+    edges: Sequence[tuple[str, str]], couplers: Sequence[tuple[str, str]] | None = None
+) -> Iterator[tuple[int, ...]]:
+    """Every nonempty set of edges, as index tuples, that share no qubit and whose qubits share no coupler of
+    couplers (default: the edges themselves), so a subset of the device's couplers still sees every coupler."""
+    couplers_set = {frozenset(edge) for edge in (edges if couplers is None else couplers)}
 
     def conflict(i: int, j: int) -> bool:
         if set(edges[i]) & set(edges[j]):
             return True
-        return any(frozenset((u, v)) in couplers for u in edges[i] for v in edges[j])
+        return any(frozenset((u, v)) in couplers_set for u in edges[i] for v in edges[j])
 
     clash = [[conflict(i, j) for j in range(len(edges))] for i in range(len(edges))]
 
@@ -897,14 +952,20 @@ def plan(
             for a, b in (locus, locus[::-1])
         ]
         results = ordered_map(predict_pair, items)
+        # Each coupler takes its better orientation among those whose Alice the Bob drive accepts fast feedback from;
+        # a coupler with neither orientation allowed is left out of every matching.
         best: list[dict[str, Any]] = []
-        for k in range(len(loci)):
-            first, second = results[2 * k], results[2 * k + 1]
-            best.append(
-                second if second["endpoints"]["selected_margin"] > first["endpoints"]["selected_margin"] else first
-            )
+        usable: list[int] = []
+        for k, locus in enumerate(loci):
+            allowed = [
+                results[2 * k + j] for j, (a, b) in enumerate((locus, locus[::-1])) if feedback_allowed(device, a, b)
+            ]
+            best.append(max(allowed, key=lambda r: r["endpoints"]["selected_margin"]) if allowed else results[2 * k])
+            if allowed:
+                usable.append(k)
         top: dict[int, tuple[float, tuple[int, ...]]] = {}
-        for chosen in induced_matchings(loci):
+        for local in induced_matchings([loci[k] for k in usable], loci):
+            chosen = tuple(usable[i] for i in local)
             score = sum(best[i]["endpoints"]["selected_margin"] for i in chosen)
             size = len(chosen)
             if size not in top or score > top[size][0] + 1e-12:
@@ -1153,7 +1214,7 @@ def check(directory: Path) -> None:
     case = json.loads((directory / "cases.json").read_text(encoding="utf-8"))
     files = build_from(directory / "calibration", BuildArgs(**case["build"]))
     present = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
-    expected = set(files) | {f"calibration/{n}" for n in (*CALIBRATION_FILES, TIMING_FILE)}
+    expected = set(files) | {f"calibration/{n}" for n in (*CALIBRATION_FILES, TIMING_FILE, FEEDBACK_FILE)}
     if present != expected:
         raise ValueError(f"{directory}: files differ from the build: {sorted(present ^ expected)}")
     for rel, text in files.items():
@@ -1255,6 +1316,10 @@ def validate_circuit(circuit: Mapping[str, Any], device: Device, pairs: Sequence
                 feedback[args["feedback_key"]] = locus[0]
         if name == "cc_prx" and feedback.get(args["feedback_key"]) != args["feedback_qubit"]:
             raise ValueError(f"{circuit['name']}: cc_prx reads a feedback_key no earlier measure holds")
+        if name == "cc_prx" and not feedback_allowed(device, args["feedback_qubit"], locus[0]):
+            raise ValueError(
+                f"{circuit['name']}: {locus[0]} takes no fast feedback from {args['feedback_qubit']}'s probe line"
+            )
     for i, p in enumerate(pairs):
         for q in pairs[i + 1 :]:
             near = {frozenset((u, v)) for u in (p.alice, p.bob) for v in (q.alice, q.bob)}
@@ -1662,7 +1727,7 @@ def self_test() -> str:
             raise RuntimeError(f"relaxation_kraus differs from the Aer pass by {relax}")
         pairs = [
             Pair(0, "QB1", "QB2", device.loci[frozenset(("QB1", "QB2"))]),
-            Pair(1, "QB19", "QB20", device.loci[frozenset(("QB19", "QB20"))]),
+            Pair(1, "QB19", "QB15", device.loci[frozenset(("QB15", "QB19"))]),
         ]
         for arm in arm_names():
             validate_circuit(circuit_json(arm, pairs), device, pairs)

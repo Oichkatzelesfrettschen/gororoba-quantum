@@ -1974,6 +1974,13 @@
       "run": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept",
       "family": "IQM QET compensated ladder",
       "question": "Does the garnet:mock station pipeline accept the cc_prx-fed QET ladder circuits (five packed pairs, a feedback_key distinct from the measure key, cc_prx at angle 0 and 2 phi*, barrier) under one active-reset cycle with all-zeros heralding?"
+    },
+    {
+      "id": "iqm-garnet-mock-qet-ladder-accept-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station accept the passive-reset, unheralded cc_prx QET ladder circuits whose five pairs were chosen without the fast-feedback probe-line wiring?"
     }
   ],
   "claims": [
@@ -10246,6 +10253,33 @@
       ],
       "acquisitions": [
         "iqm-garnet-mock-qet-ladder-accept"
+      ]
+    },
+    {
+      "id": "iqm-garnet-cc-prx-probe-line-limit",
+      "statement": "The garnet:mock station refused job 01a17675-111d-731e-9c6f-2132756f1686 (24 circuits x 200 shots, passive reset, no heralding) in circuit resolution, charging 0.00 credits: \"QB8 does not support fast feedback from QB3 (probe line: PL-2). Valid source probe lines are ['PL-3']\". The retained channel properties list the drive fast_feedback_sources of QB8, QB13, QB14, QB15, QB18 and QB19 as PL-3 only and of every other qubit as PL-1 and PL-2, and the chip design record places QB3 on PL-2: on Garnet a cc_prx needs its feedback qubit's readout probe line among the target drive's sources.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One mock compilation; the error names the first violating circuit and pair only, and the QPU station was not exercised. The wiring is read from the snapshot artifacts, which the QPU and the mock share at this snapshot.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "85c07f6f72e1de69815d892430730353f384e481d6d939959205cdccd738bc73"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept/raw/job.json",
+          "sha256": "7a244b2059b4ab8c3b8b7a5ca758ddfea746e44c2892767b5f1afd2f690068e3"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-mock-qet-ladder-accept-passive"
+      ],
+      "related_claims": [
+        "iqm-garnet-cc-prx-feedback-label-limit"
       ]
     }
   ]

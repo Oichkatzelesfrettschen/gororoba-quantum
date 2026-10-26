@@ -6,7 +6,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB2"
+    "QB4"
    ],
    "name": "prx"
   },
@@ -16,7 +16,7 @@
     "key": "alice0"
    },
    "locus": [
-    "QB2"
+    "QB4"
    ],
    "name": "measure"
   },
@@ -24,7 +24,7 @@
    "args": {
     "angle": 3.14159265358979,
     "feedback_key": "fb0",
-    "feedback_qubit": "QB2",
+    "feedback_qubit": "QB4",
     "phase": 1.5707963267949
    },
    "locus": [
@@ -47,7 +47,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB3"
+    "QB7"
    ],
    "name": "prx"
   },
@@ -57,7 +57,7 @@
     "key": "alice1"
    },
    "locus": [
-    "QB3"
+    "QB7"
    ],
    "name": "measure"
   },
@@ -65,11 +65,11 @@
    "args": {
     "angle": 3.14159265358979,
     "feedback_key": "fb1",
-    "feedback_qubit": "QB3",
+    "feedback_qubit": "QB7",
     "phase": 1.5707963267949
    },
    "locus": [
-    "QB8"
+    "QB6"
    ],
    "name": "cc_prx"
   },
@@ -78,7 +78,7 @@
     "key": "bob1"
    },
    "locus": [
-    "QB8"
+    "QB6"
    ],
    "name": "measure"
   },
@@ -88,7 +88,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB7"
+    "QB8"
    ],
    "name": "prx"
   },
@@ -98,7 +98,7 @@
     "key": "alice2"
    },
    "locus": [
-    "QB7"
+    "QB8"
    ],
    "name": "measure"
   },
@@ -106,11 +106,11 @@
    "args": {
     "angle": 3.14159265358979,
     "feedback_key": "fb2",
-    "feedback_qubit": "QB7",
+    "feedback_qubit": "QB8",
     "phase": 1.5707963267949
    },
    "locus": [
-    "QB12"
+    "QB13"
    ],
    "name": "cc_prx"
   },
@@ -119,7 +119,7 @@
     "key": "bob2"
    },
    "locus": [
-    "QB12"
+    "QB13"
    ],
    "name": "measure"
   },
@@ -129,7 +129,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB14"
+    "QB16"
    ],
    "name": "prx"
   },
@@ -139,7 +139,7 @@
     "key": "alice3"
    },
    "locus": [
-    "QB14"
+    "QB16"
    ],
    "name": "measure"
   },
@@ -147,11 +147,11 @@
    "args": {
     "angle": 3.14159265358979,
     "feedback_key": "fb3",
-    "feedback_qubit": "QB14",
+    "feedback_qubit": "QB16",
     "phase": 1.5707963267949
    },
    "locus": [
-    "QB18"
+    "QB17"
    ],
    "name": "cc_prx"
   },
@@ -160,7 +160,7 @@
     "key": "bob3"
    },
    "locus": [
-    "QB18"
+    "QB17"
    ],
    "name": "measure"
   },
@@ -170,7 +170,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB16"
+    "QB19"
    ],
    "name": "prx"
   },
@@ -180,7 +180,7 @@
     "key": "alice4"
    },
    "locus": [
-    "QB16"
+    "QB19"
    ],
    "name": "measure"
   },
@@ -188,11 +188,11 @@
    "args": {
     "angle": 3.14159265358979,
     "feedback_key": "fb4",
-    "feedback_qubit": "QB16",
+    "feedback_qubit": "QB19",
     "phase": 1.5707963267949
    },
    "locus": [
-    "QB20"
+    "QB18"
    ],
    "name": "cc_prx"
   },
@@ -201,7 +201,7 @@
     "key": "bob4"
    },
    "locus": [
-    "QB20"
+    "QB18"
    ],
    "name": "measure"
   }

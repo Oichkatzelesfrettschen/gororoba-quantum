@@ -39,9 +39,16 @@ tracking.
 Four angle-qualification circuits read Bob after `cc_prx` from an Alice source in |1> or |0>, at angle 2 phi*
 (ideal P(1) = sin^2 phi* = 0.100 or 0) and at angle pi (1 or 0).
 
-The 24 circuits pack five pairs, Alice first: QB2-QB1, QB3-QB8, QB7-QB12, QB14-QB18 and QB16-QB20. They form an
+The 24 circuits pack five pairs, Alice first: QB4-QB1, QB7-QB6, QB8-QB13, QB16-QB17 and QB19-QB18. They form an
 induced matching of Garnet's couplers, chosen by predicted margin under the calibration set `7b30f37a`, read
 2026-10-26 02:40Z and copied into the case's `calibration/`.
+
+Every pair also respects the fast-feedback wiring. Bob's drive must accept fast feedback from Alice's readout
+probe line: QB8, QB13, QB14, QB15, QB18 and QB19 take only PL-3 sources, and the rest take PL-1 and PL-2 (the
+snapshot's `chip-design-records.json` and `channel-properties.json`, copied as `calibration/feedback.json`). The
+second `garnet:mock` acceptance job (`01a17675-111d-731e-9c6f-2132756f1686`) refused the previous pair QB3-QB8 at
+circuit resolution: "QB8 does not support fast feedback from QB3 (probe line: PL-2)". The planner now admits only
+compatible orientations, and `validate_circuit` refuses a crossing pair.
 
 Every circuit runs passive reset with no heralding.
 - **Why passive.** The station control admits one feedback signal label per drive AWG in a playlist segment, and
@@ -94,9 +101,9 @@ five pairs with shot-noise standard errors at 1600 shots per circuit:
 
 | Endpoint | Predicted | Relaxation x 0.53 | Calibrated init_error | Kingston measured |
 |---|---|---|---|---|
-| information excess at the selected alpha | +0.113 +- 0.027 | +0.141 | +0.108 | +0.107 +- 0.006 |
-| channel floor margin at the selected alpha | -0.183 +- 0.020 | -0.246 | -0.231 | -0.073 +- 0.015 |
-| reference unitary floor | 0.271 +- 0.020 | 0.362 | 0.304 | 0.177 +- 0.013 |
+| information excess at the selected alpha | +0.119 +- 0.027 | +0.150 | +0.114 | +0.107 +- 0.006 |
+| channel floor margin at the selected alpha | -0.190 +- 0.020 | -0.261 | -0.241 | -0.073 +- 0.015 |
+| reference unitary floor | 0.285 +- 0.020 | 0.387 | 0.320 | 0.177 +- 0.013 |
 | qualification P(1), source 1, angle 2 phi* | 0.10 to 0.12 | | | not measured |
 
 Per pair, the shot-noise standard error is about 0.06 on the excess and 0.04 on the margin. These delta-method
@@ -138,9 +145,9 @@ The hypotheses:
   - The angle interval at 1600 shots is about +- 0.06 rad, so the band admits a calibration error of about 30
     percent of 2 phi* and no larger.
 - **H1, QET information signature.** It is reproduced on Garnet when the information excess has a lower bound above
-  0, and refuted when its upper bound is below 0. Its power at the predicted +0.113 with a per-pair standard error of
-  0.06 is 0.96 at five pairs and 0.88 at four, with no between-pair spread beyond shot noise. An extra
-  between-pair spread of 0.04, 0.06, 0.09 or 0.12 lowers the five-pair power to 0.89, 0.79, 0.61 or 0.47.
+  0, and refuted when its upper bound is below 0. Its power at the predicted +0.119 with a per-pair standard error of
+  0.06 is 0.97 at five pairs and 0.90 at four, with no between-pair spread beyond shot noise. An extra
+  between-pair spread of 0.04, 0.06, 0.09 or 0.12 lowers the five-pair power to 0.91, 0.82, 0.65 or 0.50.
   - The model predicts a spread of 0.018; Kingston's pairs scattered more than its model did.
   - A refuting verdict with a pair whose reference phase lies beyond the 1.05 rad reach reads "inconclusive". Such
     a pair's selected alpha sits at the grid edge, and its low excess measures the finite grid rather than

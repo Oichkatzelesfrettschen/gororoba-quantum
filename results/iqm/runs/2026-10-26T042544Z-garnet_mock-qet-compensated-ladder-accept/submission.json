@@ -1,0 +1,17 @@
+{
+ "approval": "8 credits, ~1700 shots (Recommended): mock first, then the QPU job, after own review, advisor and Codex review resolved",
+ "body_sha256": "5b41ba0e4f8c21e069a247c958ff7c93851f5f6bfd6add08f663a18d40bcba20",
+ "cases_sha256": "271d3162575413ab948d81b5381b1455353540d9a8073965d129ee765025682d",
+ "credit_before": {
+  "currentBalance": "9.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 1.524,
+ "job": "accept",
+ "job_id": "01a17675-111d-731e-9c6f-2132756f1686",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-26T04:25:46Z"
+}
