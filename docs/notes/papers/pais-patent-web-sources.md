@@ -5,7 +5,10 @@
 Retrieved 2026-10-25 between 19:37:58Z and 19:47:39Z. Each SHA-256 identifies the bytes served at
 retrieval; Google Patents and the news pages are mutable, so the hash names the inspected copy only.
 The journal records are Crossref DOI metadata. The arXiv PDF of Ejlli et al. is the version-pinned v2,
-1595078 bytes. No PDF of the patents or the Pais papers is retained. The JASON report JSR-08-506
+1595078 bytes. The journal version of record of Ejlli et al. is retained as
+[docs/pdf/s10052-019-7542-5.pdf](s10052-019-7542-5.md), and the five patent documents have official PDFs
+cached for reading under external-only decisions ([Mapping](#mapping-to-this-repository)); no PDF of the Pais
+journal papers is retained. The JASON report JSR-08-506
 (Eardley et al., October 2008) on high-frequency gravitational waves returned an HTTP 202 challenge with an
 empty body from irp.fas.org and was not read, so no statement here or in the topic note attributes content
 to it.
@@ -13,7 +16,7 @@ to it.
 | Source | URL | SHA-256 of retrieved bytes | Cited for |
 |---|---|---|---|
 | Pais, US 10,135,366 B2, Electromagnetic field generator, filed 2015-07-24, granted 2018-11-20, assignee US Navy | https://patents.google.com/patent/US10135366B2/en | `d7fdcac7148ba243533fd1d8c7af7319dfcf9eb785da7083d1dfd55d75c9bea8` | [P] Eq. 1 `S_max = f_G gamma^2 (sigma^2/eps0)[R_r omega + R_v nu + v_R]`, Eq. 2 `f_G gamma^2 (sigma^2/eps0) R_v nu^2 t_op`; worked example sigma = 50000 C/m^2, 2 m, 30000 RPM, about 1e24 W/m^2; vacuum field limit 1e9 V/m; claim 1 (piezoelectric shell, electrostatic generator, spin and vibration). |
-| Pais, US 10,144,532 B2, Craft using an inertial mass reduction device, filed 2016-04-28, granted 2018-12-04 | https://patents.google.com/patent/US10144532B2/en | `20c7860d853c2fbffd72032195f45fcacbf7a576e23c52058b6aeed7b7abf6b2` | [P] the same Eq. 1 and 2; Eq. 3 pair-production balance `2 gamma (dm/dt) c^2 = S_max A_S`; Eq. 4 `S_max/c = hbar nu^4/(8 pi^2 c^3)`; Eq. 5 the Hayasaka gyro-weight law `-2e-10 M r_eq omega`; "negative pressure (hence repulsive gravity)" of a polarized vacuum; claim 1 (resonant cavity, microwave emitters, local polarized vacuum). |
+| Pais, US 10,144,532 B2, Craft using an inertial mass reduction device, filed 2016-04-28, granted 2018-12-04 | https://patents.google.com/patent/US10144532B2/en | `20c7860d853c2fbffd72032195f45fcacbf7a576e23c52058b6aeed7b7abf6b2` | [P] the same Eq. 1 and 2 without the `gamma^2` factor (Eq. 1 is printed as the non-relativistic form); Eq. 3 pair-production balance `2 gamma (dm/dt) c^2 = S_max A_S`; Eq. 4 `S_max/c = hbar nu^4/(8 pi^2 c^3)`; Eq. 5 the Hayasaka gyro-weight law `-2e-10 M r_eq omega`; "negative pressure (hence repulsive gravity)" of a polarized vacuum; claim 1 (resonant cavity, microwave emitters, local polarized vacuum). |
 | Pais, US 10,322,827 B2, High frequency gravitational wave generator, filed 2017-02-14, granted 2019-06-18 | https://patents.google.com/patent/US10322827B2/en | `63e81f89fe47d53c96969983104cc6f759f7214f8f84467d1966dc38fc439e3e` | [P] Eq. 2 `(sigma^2/eps0) R_v nu^3 t_op^2`; Eq. 3 `E_T = m R_v^2 Omega^2 exp(2 Omega t)`; Eq. 4 Gertsenshtein `P_GW = (4 pi G/c^4) B0^2 L^2 P_EM` with the patent's statement that JASON omits a 1/mu0 factor; inputs 1e33 W/m^2, B0 about 1e10 T, output about 1e10 W. |
 | Pais, US 2019/0058105 A1, Piezoelectricity-induced room temperature superconductor, published 2019-02-21 | https://patents.google.com/patent/US20190058105A1/en | `28841f1bfa844e7b7899facc7e2e003132dcb2f727983ab77cc1b3b7cc0a9468` | [P] vibration of a coated wire is said to form Cooper pairs at room temperature; the description contains no resistance or magnetization measurement. |
 | Pais, US 2019/0295733 A1, Plasma compression fusion device, published 2019-09-26 | https://patents.google.com/patent/US20190295733A1/en | `3a940962f6040f0278b51fadc3598024fdf0be5c3f1d4d0187c819463cb20aa2` | [P] dynamic fusors of a tungsten alloy "to hold an electric charge of a least one Coulomb". |
@@ -32,6 +35,16 @@ to it.
 | Ejlli, Ejlli, Cruise, Pisano and Grote 2019, Eur. Phys. J. C 79, 1032, arXiv:1908.00232v2 | https://arxiv.org/pdf/1908.00232v2 | `bd42095d6ee01002f082b290490f9f38b6e2a091d784beb80e0952702ad0f8cb` | [P] Appendix A: graviton-photon mixing `M_g gamma = kappa k B/(omega + k)` with `kappa^2 = 16 pi G_N` in rationalized Lorentz-Heaviside natural units, the source of the SI conversion probability `4 pi G B^2 L^2/(mu0 c^4)` in [scripts/pais_claim_bounds.py](../../../scripts/pais_claim_bounds.py). |
 
 ## Mapping to this repository
+
+- [I] Granular notes read the retained PDFs with equation, column or paragraph locators:
+  [Ejlli et al. 2019](s10052-019-7542-5.md);
+  [US 10,135,366 B2](pais-us-10135366-b2-electromagnetic-field-generator.md);
+  [US 10,144,532 B2](pais-us-10144532-b2-craft-inertial-mass-reduction.md);
+  [US 10,322,827 B2](pais-us-10322827-b2-high-frequency-gravitational-wave-generator.md);
+  [US 2019/0058105 A1](pais-us-2019-0058105-a1-room-temperature-superconductor.md);
+  [US 2019/0295733 A1](pais-us-2019-0295733-a1-plasma-compression-fusion-device.md). The rows above keep
+  the page hashes of the first reading. The Superforce preprints and their references are listed in
+  [pais-superforce-sources.md](pais-superforce-sources.md).
 
 - [I] [pais-claims-falsification.md](../topics/pais-claims-falsification.md) decomposes every patent equation above
   against Maxwell, QED and general-relativity bounds, and states which claims a QPU can and cannot test.

@@ -11,7 +11,9 @@
     "docs/evidence/bdsc/provider_contract.json",
     "scripts/qd_classical_benchmark.py",
     "scripts/qd_teleportation_rehearsal.py",
-    "tests/scripts/test_qd_teleportation_rehearsal.py"
+    "tests/scripts/test_qd_teleportation_rehearsal.py",
+    "scripts/qd_rehearsal_secondary.py",
+    "tests/scripts/test_qd_rehearsal_secondary.py"
   ],
   "state": "paused",
   "reconciliation": {
@@ -196,7 +198,7 @@
       "id": "single-chip-rehearsal",
       "state": "todo",
       "action": "Acquire the single-chip teleportation rehearsal on qpu:belenos: six Pauli eigenstates, each read in its matching basis, from one 3-photon job of 6 template iterations (scripts/qd_teleportation_rehearsal.py, results/quandela/cases/teleportation_rehearsal/job-00).",
-      "acceptance": "The owner approved the section 'Single-chip rehearsal (job-00)' in writing on 2026-10-25; 'qd_teleportation_rehearsal.py --submit RUN APPROVAL' sends the job once a fresh plan admits the request and the model pooled fidelity at the live figures reaches F* = 0.86, the job is collected, and 'qd_teleportation_rehearsal.py --analyze' returns beats-classical (C1 local conformance only, no C2 or C3), at-or-below-classical, or inconclusive; the verdict is recorded without a cross-device claim."
+      "acceptance": "The owner approved the section 'Single-chip rehearsal (job-00)' on 2026-10-25 and its anchor gate on 2026-10-26 for one job-00 submission: 'qd_teleportation_rehearsal.py --submit RUN APPROVAL --anchor' sends the job with the frozen body under the anchor read's performance figures, the job is collected, 'qd_teleportation_rehearsal.py --analyze' returns beats-classical (C1 local conformance only, no C2 or C3), at-or-below-classical, or inconclusive, and 'qd_rehearsal_secondary.py RUN' records the preregistered record state, in-situ fit and exploratory Cayley-Dickson lens; the verdict is recorded without a cross-device claim, and a later run is job-01."
     }
   ],
   "pause": {

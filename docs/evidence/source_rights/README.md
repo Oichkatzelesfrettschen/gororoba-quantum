@@ -1,6 +1,6 @@
 # Captured source-rights evidence
 
-The raw arXiv HTML, Dagstuhl HTML and Zenodo JSON responses bind PDF hosting
+The raw arXiv HTML, Dagstuhl HTML, Zenodo JSON and INSPIRE-HEP JSON responses bind PDF hosting
 decisions to inspectable primary-source metadata. The
 [source registry](../../SOURCES.json) records response URLs, retrieval times,
 SHA-256 values, reading scopes and canonical capture paths. The captures
@@ -18,6 +18,13 @@ For Nature-family open-access articles, the article page's DOI, title, PDF link,
 canonical URL and structured-data license must agree with the registry; the
 PDF link must be the canonical article URL with a `.pdf` suffix, and exactly one
 structured-data block must carry the license.
+
+For a SCOAP3 version of record served by INSPIRE-HEP, the captured record's identifier, control number, DOI,
+publisher-sourced title, SCOAP3 document entry and article license must agree with the registry. Exactly one
+document entry must carry the registered PDF URL, whose path must equal the entry's file key, and exactly one
+license entry without a material qualifier (the arXiv preprint grant carries one) must be `CC-BY-4.0` imposed by
+the publisher. The publisher's own site may serve only a client challenge to automated requests; the capture then
+binds the deposited bytes through the record, and the PDF's Open Access paragraph supplies the page-level check.
 
 For Dagstuhl, article-specific title, DOI, abstract link, PDF link and license
 must agree with the registry and the captured canonical landing URL. The
