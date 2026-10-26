@@ -12160,6 +12160,19 @@
    "urllib",
    "zlib"
   ],
+  "scripts/qd_record_watch.py": [
+   "__future__",
+   "argparse",
+   "collections",
+   "datetime",
+   "hashlib",
+   "json",
+   "pathlib",
+   "qd_platform",
+   "qd_teleportation_rehearsal",
+   "sys",
+   "typing"
+  ],
   "scripts/qd_rehearsal_secondary.py": [
    "__future__",
    "bdsc_certificate",
