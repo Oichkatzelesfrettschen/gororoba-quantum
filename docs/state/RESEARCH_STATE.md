@@ -937,6 +937,12 @@ circuit and charges the account ledger's change.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); Singular 4.4.1 std, radical, intersect, sat and minor over Q.
   Evidence: [result.json](../evidence/a5-rank-strata-equations/result.json), [README.md](../evidence/a5-rank-strata-equations/README.md).
   Depends on: a5-zero-divisor-strata.
+- **a5-strata-regularity** (mathematical claim, geometry). Under H = G_2(C) x SO(2, C) x C^* (the boost of split coordinates), R_8 minus 0 of the A_5 rank strata is the disjoint union of twelve H-orbits, five of nullity 8 (W8, E8-bar, Iso, X_+, X_-) and seven of nullity at least 12 (B9, V, VB = V n B9, V^a_+, V^a_-, N_+, N_-), with W8 n E8-bar = B9 and W8 n V = VB. The singular loci are Sing V = Sing W8 = N_+ u N_-, Sing Iso = VB, Sing X_+- = V^a_+-, Sing E8-bar = V u B9, Sing V(G) = W8 u V, and B9, VB, N_+-, V(Q) are smooth off 0. The orbits, the origin, three nullity-4 strata and the complement form a Whitney stratification of C^15 refining the nullity strata, and the normal link of R_12 = V u B9 along VB, at x0 = e_1 + e_18, is S^1 disjoint union S^3.
+  Boundary: Written proof in docs/evidence/a5-strata-regularity/README.md. strata_regularity.py decides the orbit certificate on the six slice families, the closure dimensions, the nullity-4 radicals and the transverse germ of every closure along every orbit over Q in Singular 4.4.1, and its pass flag compares every germ invariant with a constant germ table. verify_regularity_independent.py re-derives every statement from cd_core with separate code and other slices; it corroborates the orbit-dimension certificate (computation 5) by an exhaustive slice search rather than re-proving it. The record is a retained replay and not a gate, because Singular is absent from the hosted CI image. Open: the link topology of the germs marked open in the germ table, analytic branch counts where a germ has one minimal prime, kernel bundles, attachments and homology (roadmap items 5-8); not formalized in Rocq.
+  Proof origin: repository-written.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); Singular 4.4.1 std, radical, sat, intersect, minAssGTZ and minor over Q.
+  Evidence: [result.json](../evidence/a5-strata-regularity/result.json), [verification.json](../evidence/a5-strata-regularity/verification.json), [README.md](../evidence/a5-strata-regularity/README.md), [verification.md](../evidence/a5-strata-regularity/verification.md).
+  Depends on: a5-zero-divisor-strata, a5-rank-strata-equations.
 - **c881-exhaustive-rocq** (machine-checked proof, formal). Exhaustive quadratic rejection for the fixed fifteen-label C881 partition, kernel-checked by Rocq 9.3.0 with six closed assumption queries.
   Boundary: The fixed partition only; count identities carry no topology-transfer map.
   Evidence: [assumptions.v](../evidence/c881_exhaustive/assumptions.v), [provenance.json](../evidence/c881_exhaustive/provenance.json), [kernel.txt](../evidence/c881_exhaustive/kernel.txt), [c881_exhaustive_proof.md](../notes/c881_exhaustive_proof.md), [README.md](../evidence/c881_exhaustive/README.md).
@@ -1926,11 +1932,11 @@ circuit and charges the account ledger's change.
   Evidence: [README.md](../evidence/stiefel-pfaffian-higher/README.md), [verification.md](../evidence/stiefel-pfaffian-higher/verification.md).
   Depends on: stiefel-pfaffian-transport-all-n.
 - **dimension32-global-topology** (mathematical claim, geometry). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.
-  Boundary: Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; smooth strata and singular loci, normal links, kernel bundles, attachments and integral invariants (roadmap items 4-8) remain open.
+  Boundary: Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; item 4 (smooth strata, singular loci and normal links) is discharged by a5-strata-regularity, which decomposes R_8 minus 0 into twelve orbits of G_2(C) x SO(2, C) x C^* and gives a Whitney stratification with every transverse germ; kernel bundles, attachments and integral invariants (roadmap items 5-8) remain open.
   Proof origin: unproved-open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
   Evidence: [RESEARCH_ROADMAP.md](../RESEARCH_ROADMAP.md), [rank_locus_two_dimension_gap.md](../notes/rank_locus_two_dimension_gap.md).
-  Depends on: four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone, a5-zero-divisor-strata, a5-rank-strata-equations.
+  Depends on: four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone, a5-zero-divisor-strata, a5-rank-strata-equations, a5-strata-regularity.
 
 ## Proposed claims
 
