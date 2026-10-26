@@ -1,0 +1,60 @@
+{
+  "schema": "work-plan-v1",
+  "id": "a5-strata-regularity",
+  "kind": "investigation",
+  "summary": "Roadmap item 4 of dimension32-global-topology: singular loci of every A_5 rank-stratum piece, a stratification of each nullity stratum S_k with rank loci and smooth strata kept distinct, and the normal link of R_12 = V u B9 along V n B9.",
+  "sources": [
+    "docs/evidence/a5-zero-divisor-strata/README.md",
+    "docs/evidence/a5-rank-strata-equations/README.md",
+    "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Work runs on branch geometry/a5-strata-regularity; no claim is admitted until an independent verification from cd_core and a critical review confirm it."
+  },
+  "scope": "Evidence bundle docs/evidence/a5-strata-regularity (author script, result.json, README, independent verifier, verification.md), the claim a5-strata-regularity and the boundary text of dimension32-global-topology. Kernel bundles, attachments and homology (items 5 to 8) stay out of scope.",
+  "owner": "repository maintainer",
+  "next_action": "Compute the singular locus of each piece by the Jacobian criterion on the six slice families of Lemma 5, with radicality settled before any singularity claim.",
+  "related": [
+    "a5-zero-divisor-strata-admission",
+    "a5-rank-strata-equations"
+  ],
+  "claims": [
+    "dimension32-global-topology",
+    "a5-zero-divisor-strata",
+    "a5-rank-strata-equations"
+  ],
+  "steps": [
+    {
+      "id": "piece-singular-loci",
+      "state": "doing",
+      "action": "Determine Sing P for P in N_+, N_-, V, B9, W8, E8-bar, V(Q), V(G): smoothness off the named locus from full Jacobian rank of a generating set, and singularity on it only from a radical ideal, a tangent-cone multiplicity above 1 or several local branches.",
+      "acceptance": "Fails if a point off the named locus has Jacobian rank below codimension for a radical generating set, or a claimed singular point has a tangent cone equal to a linear space of the piece dimension."
+    },
+    {
+      "id": "stratum-intersections",
+      "state": "todo",
+      "action": "Decide the non-nested intersections W8 n E8-bar, W8 n V, V(Q) n V(G) and give each nullity stratum S_k a partition into smooth locally closed pieces with dimensions and componentwise closure incidences.",
+      "acceptance": "Fails if a partition piece is not smooth of constant dimension, two pieces overlap, or a closure incidence disagrees with an exact point or curve."
+    },
+    {
+      "id": "normal-link",
+      "state": "todo",
+      "action": "Compute the normal slice of R_12 = V u B9 at x0 = e_1 + e_18 and at a second point of V n B9 minus N_+-, and decide whether the transverse type is constant along V n B9 minus N_+-.",
+      "acceptance": "Fails if the curve branch count of V or the surface type of B9 in the slice differs between the two points without the record saying so, or a link is stated without a computed singularity type."
+    },
+    {
+      "id": "independent-verification",
+      "state": "todo",
+      "action": "An opus re-check from cd_core re-derives every admitted subclaim with separate code.",
+      "acceptance": "Fails if any admitted subclaim is refuted or left unchecked without being withdrawn from the claim."
+    },
+    {
+      "id": "admission",
+      "state": "todo",
+      "action": "Add claim a5-strata-regularity with its replay and update the boundary of dimension32-global-topology for confirmed subclaims only.",
+      "acceptance": "research_state.py --check and plan_tracker.py check pass, the four pr.yml checks are green and Codex reports clean on the PR head."
+    }
+  ]
+}
