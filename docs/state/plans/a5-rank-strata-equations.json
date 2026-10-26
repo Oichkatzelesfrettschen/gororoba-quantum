@@ -7,14 +7,14 @@
     "docs/evidence/a5-zero-divisor-strata/verification.md",
     "docs/evidence/a5-rank-strata-equations/README.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "unresolved",
     "note": "The record and claim are on branch geometry/a5-e8bar-equations; admission waits on the independent review and the merge."
   },
   "scope": "Evidence bundle docs/evidence/a5-rank-strata-equations (script, result.json, README), the claim a5-rank-strata-equations, and the boundary text of a5-zero-divisor-strata and dimension32-global-topology.",
   "owner": "repository maintainer",
-  "next_action": "Open the pull request, request the Codex review and merge when the four pr.yml checks pass.",
+  "next_action": "None; the plan is closed.",
   "related": [
     "a5-zero-divisor-strata-admission"
   ],
@@ -286,6 +286,26 @@
           "scope_sha256": "6470b2600e320c2cfd813c2d898c31e183d81afaa28b392e6b0a705a649b8926"
         }
       ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The A_5 rank-strata equations are established on main through PR 550: the covering re-derived over Q in Singular independently of the author's slice certificates, every principal Pfaffian of orders 12, 10, 8 in the piece ideals, and Ehat equal to E8-bar, irreducible of dimension 11 and degree 24. Roadmap items 4-8 of dimension32-global-topology stay open.",
+  "receipts": [
+    {
+      "result": "PR 550 merged: research_state.json carries a5-rank-strata-equations as established, a5-zero-divisor-strata points to it for the E8-bar equations, and result.json records the 18 slice inclusions, the global Pfaffian memberships and the Ehat saturation, dimension 11 and degree 24.",
+      "observed_at": "2026-10-26T08:48:46+00:00",
+      "revision": "02c4d5c24d9da2d7a3243874e6536e855853e58a",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json#claims/id=a5-rank-strata-equations",
+          "sha256": "cb3ba426956fbcf173ad0dcba55c9ae64b19fc22c2d237c6ae005b4bab2fadb1"
+        },
+        {
+          "ref": "docs/evidence/a5-rank-strata-equations/result.json",
+          "sha256": "d0aefa47d1bd2751bb573dd192cd2bab2527b568d89ddaa5207f5cc7bc9a7daa"
+        }
+      ],
+      "scope_sha256": "307c4dcd171436f769ec39252ec40c0878578b79215ddbc26ffa1a652b6b54ff"
     }
   ]
 }
