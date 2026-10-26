@@ -2633,6 +2633,7 @@
     "scripts/photonic_compilation_audit.py",
     "scripts/photonic_repeat_readout.py",
     "scripts/photonic_repeat_readout_pooled.py",
+    "scripts/primorial_bound_residuals.py",
     "scripts/primorial_cover_noise.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
@@ -2829,6 +2830,7 @@
     "scripts/photonic_compilation_audit.py",
     "scripts/photonic_repeat_readout.py",
     "scripts/photonic_repeat_readout_pooled.py",
+    "scripts/primorial_bound_residuals.py",
     "scripts/primorial_cover_noise.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_cone.py",
@@ -6071,6 +6073,7 @@
     "scripts/n21_q143_segmented_sweep.py",
     "scripts/n21_spectator_ramsey.py",
     "scripts/pais_claim_bounds.py",
+    "scripts/pais_superforce_bounds.py",
     "scripts/patch_window_analysis.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
@@ -11729,6 +11732,14 @@
    "pathlib",
    "scipy"
   ],
+  "scripts/pais_superforce_bounds.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "math",
+   "pathlib",
+   "scipy"
+  ],
   "scripts/patch_window_analysis.py": [
    "__future__",
    "argparse",
@@ -11836,6 +11847,23 @@
    "subprocess",
    "sys",
    "tempfile",
+   "typing"
+  ],
+  "scripts/primorial_bound_residuals.py": [
+   "__future__",
+   "argparse",
+   "calibration_snapshot",
+   "hashlib",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "primorial_cover_noise",
+   "primorial_null_residuals",
+   "sys",
+   "time",
    "typing"
   ],
   "scripts/primorial_cover_noise.py": [

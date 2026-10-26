@@ -1,4 +1,10 @@
-# Pais patent claims: decomposition, falsifiers and the QPU-testable mechanism
+# Pais Superforce and patent claims: decomposition, falsifiers and the QPU-testable mechanism
+
+Salvatore Cezar Pais's central claim is the Superforce: the Planck force c^4/G, read as "the ruling force of
+unification" that "gives birth to Energy Density, hence generates Matter" and that a material's permittivity and
+permeability can engineer (OSF preprints yh84c, April 2023, and 9kebt, July 2023). The section
+[The Superforce](#the-superforce) decomposes it; the patents that follow rest on a separate equation and are
+decomposed after it.
 
 The three granted Navy patents of Salvatore Cezar Pais (2018-2019) rest on one
 equation, the magnitude of a charged rotor's Poynting vector, read as a
@@ -17,14 +23,50 @@ protocol measures that boundary on a device. [P] marks a source statement, [I]
 a repository deduction, [E] a value the scripts compute. Sources and retrieval
 hashes: [pais-patent-web-sources.md](../papers/pais-patent-web-sources.md).
 
+## The Superforce
+
+[pais-superforce-preprints.md](../papers/pais-superforce-preprints.md) takes both preprints statement by
+statement; [scripts/pais_superforce_bounds.py](../../../scripts/pais_superforce_bounds.py) computes every number
+below from CODATA constants and the cited measurements, raising when a stated inequality fails.
+
+- **Unification is an identity of the unit definitions.** [I] The preprints' two equalities, (1/alpha) F_EM =
+  c^4/G and G m_P^2/L_P^2 = c^4/G at the Planck length, are both hbar c/L_P^2, which is c^4/G by the definition of
+  L_P and m_P. The charge cancels from the first, so it contains no electromagnetic or strong input.
+- **The measured strong force falls 53 times short.** [E] The premise F_SN/F_EM = 1/alpha is alpha_s = 1. The
+  measured alpha_s(m_Z) = 0.1180 runs to alpha_s(M_Pl) = 0.0189 at three loops (0.0191 at one loop), so the strong
+  force at L_P is c^4/G divided by 52.9.
+- **The Schrodinger step inserts what it finds.** [E] hbar^2/(2 m L^3) reaches c^4/(2G) only at the Planck mass and
+  length; an electron at its Compton wavelength gives 8.8e-46 of it.
+- **The cosmic "coincidence" is the Friedmann equation.** [E] Critical density inside the Hubble radius gives
+  M_H c^2/R_H = c^4/(2G) for every Hubble rate; the measured flatness Omega_K = 0.001 +- 0.002 is the only content
+  of the July version's Eq. 1.
+- **The proton pressure is QCD, 39 decades down.** [E] Pais's 1e35 Pa is 1.66 times m_p c^2 over the proton volume.
+  Times the proton's cross-section it is 2.2e5 N, 1.8e-39 of c^4/G.
+- **Engineering by permittivity is refuted three ways.** [I] Writing c/n into the coupling makes active
+  gravitational mass scale as n^4.
+  - [E] Kreuzer's 5e-5 null on fluorine against bromine would then require the two materials to match in index to
+    1.25e-5, and the lunar 4e-12 null on aluminum against iron to 1e-12.
+  - [E] c/n would also be the invariant speed in water, yet electrons above 0.254 MeV outrun it and emit Cherenkov
+    light.
+- **The constant is a ceiling, not an agent.** [I] c^4/G is 4 times Gibbons' maximal tension c^4/(4G) of
+  classical GR. Its independence of hbar marks it as classical.
+
+No quantum processor measures G, so every Superforce falsifier is a measured coupling or a gravitational null
+already in hand. The vacuum-energy part of the program, local energy extraction, is what the QET ladder below
+tests on hardware.
+
 ## The record
 
 - [P] US 10,135,366 B2 (electromagnetic field generator), US 10,144,532 B2
   (craft using an inertial mass reduction device), US 10,322,827 B2 (high
   frequency gravitational wave generator), US 2019/0058105 A1
   (piezoelectricity-induced room-temperature superconductor) and
-  US 2019/0295733 A1 (plasma compression fusion device). The three granted
-  patents carry Eq. 1 below; none reports a measurement.
+  US 2019/0295733 A1 (plasma compression fusion device). The field-generator
+  patent prints Eq. 1 below with gamma^2, the craft patent prints it without
+  gamma^2 as the non-relativistic form, and the gravitational-wave patent
+  carries only the vibration form of Eq. 2; none reports a measurement.
+  Equation locators are in the per-patent notes linked from
+  [pais-patent-web-sources.md](../papers/pais-patent-web-sources.md).
 - [P] The craft application was rejected and then granted after the Naval
   Aviation Enterprise chief technology officer attested operability and
   cited Chinese research.
@@ -59,7 +101,8 @@ radiates only as a magnetic dipole through the moment's second derivative
 spinning the worked example up to 30000 RPM in 1 s radiates about 2.7e-13 W.
 
 **Eq. 2 integrates an acceleration that a vibration cannot sustain.** [P] The
-vibrating case is `S_max = f_G (sigma^2/eps0) R_v nu^2 t_op`, and the
+vibrating case is `S_max = f_G gamma^2 (sigma^2/eps0) R_v nu^2 t_op` (the craft
+and gravitational-wave patents print it without gamma^2), and the
 gravitational-wave patent adds `R_v nu^3 t_op^2`. [I] `R_v nu^2 t_op` is
 acceleration times operating time, a speed growing without bound, while a
 vibration of amplitude R_v keeps `|v| <= 2 pi nu R_v`. [E] At 1 um, 1 GHz and
@@ -121,8 +164,10 @@ radii, where no conductor exists.
 
 **The gravitational-wave arithmetic is consistent; its inputs are not.** [P]
 Ejlli et al. write the graviton-photon mixing as `kappa B/2` with
-`kappa^2 = 16 pi G` in rationalized Lorentz-Heaviside units, so the conversion
-probability over length L is `4 pi G B^2 L^2/(mu0 c^4)` in SI. [E] A 10 T field
+`kappa^2 = 16 pi G` in rationalized Lorentz-Heaviside units (Appendix A,
+[s10052-019-7542-5.md](../papers/s10052-019-7542-5.md)). [I] The conversion
+probability over length L, `4 pi G B^2 L^2/(mu0 c^4)` in SI, follows from their
+Eqs. A.6 and A.7; the paper prints no SI form. [E] A 10 T field
 over 1 m converts 8.3e-36. The patent's B0 = 1e10 T is 2.27 times the QED
 critical field `m_e^2 c^2/(e hbar)` = 4.41e9 T, stores 4.0e25 J/m^3 (a mass
 density of 4.4e8 kg/m^3), and its input flux of 1e33 W/m^2 is 0.43 of the

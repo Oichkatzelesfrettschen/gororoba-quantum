@@ -9899,7 +9899,7 @@
       "statement": "On the best and median three-qubit ibm_kingston paths of the primorial noise record, the compiled gap-88 phase-gradient arms and their zero-angle null arms carry identical sx, x, cz and delay streams, differing only in zero-duration rz. Noise-free static ZZ of 2 to 20 kHz on both couplers (partner-in-0 and symmetric frames) biases the raw coefficients by up to 0.078 and the null-subtracted ones by at most 0.00038; a drive-axis tilt of 0.005 or 0.02 rad on one or all path qubits biases them by up to 0.174 raw and at most 0.0055 null-subtracted, both entering at second order; tilt at each path qubit's sx gate-error bound (0.021 to 0.036 rad) in the worst of eight sign patterns leaves 0.0147 (best) and 0.0159 (median) null-subtracted. Every residual stays below one standard deviation of the noisy null-subtracted estimate at the retained budget (0.0188 at 2,803 and 0.0186 at 3,169 shots per setting), so the circuits pose no primorial-specific device question on Heron r2.",
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
-      "status": "established",
+      "status": "superseded",
       "boundary": "Noise-free statevector scenarios of the gap-88 cost on the snapshot's Heron r2 durations, one family at a time; the gate-error tilt bound charges the whole sx error to tilt and leaves a margin of 0.78 and 0.85 standard deviations; crosstalk, leakage and combined families are outside it. The IQM and Tuna-17 rows of the hardware decision rest on the provider guides, not on compiled circuits, and no hardware run exists.",
       "evidence": [
         {
@@ -9924,6 +9924,44 @@
         "primorial-cover-noise-null-subtraction"
       ],
       "supersedes": [],
+      "superseded_by": "primorial-bound-residuals-joint"
+    },
+    {
+      "id": "primorial-bound-residuals-joint",
+      "statement": "On the best (45-46-47) and median (117-125-126) ibm_kingston paths of the primorial noise record, a numpy statevector of the compiled gap-88 phase-gradient and zero-angle null arms reproduces every retained null-residual and coherent-sensitivity scenario to 1.6e-15. Drive-axis tilt at each path qubit's sx gate-error bound and CZ conditional phase at each coupler's CZ bound (0.097 to 0.104 rad), applied jointly, leave a null-subtracted coefficient bias of 0.049 (best) and 0.050 (median), 2.61 and 2.84 standard deviations of that coefficient at the retained budgets, and identifying all seven coefficients at that bias takes 53,363 and 76,596 shots per setting against the retained 2,803 and 3,169; under the sx-and-x budget the joint residual is 1.90 and 2.06 standard deviations. Each family alone stays below one standard deviation (tilt 0.79 and 0.89, CZ phase 0.72 and 0.77). With tilt at 0.1 of its bound no CZ phase within its bound reaches one standard deviation (0.84 and 0.90); at 0.2 the full CZ bound reaches 0.98 and 1.04. Static detuning on all three qubits, which no gate error bounds, pairs the same way: 30 kHz alone reaches 0.13 and 0.14, with the atlas-fitted 0.04 rad CZ phase 0.43 and 0.45, with the CZ-phase bound 1.32 and 1.40 and with the tilt bound 1.59 and 1.75; partner-in-0 ZZ of 20 kHz with the tilt bound reaches 1.03 and 1.15. The single-family gate-error argument therefore does not close the device question; it rests on the coherent tilt, CZ phase and static detuning of the chosen path.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Noise-free scenarios on the snapshot's compiled arms; the gate-error bounds charge each gate's whole reported error to one coherent family and are upper limits on the coherent part; the twirled-CZ rows assume ideal Pauli frames around each CZ; the every-path sweep reads all 226 working paths against the best path's coefficient standard deviations; crosstalk and leakage are outside it, and the coherent tilt and CZ-phase fractions of Kingston paths are unmeasured. The per-coefficient reading and every row after the joint families were added after an exploratory run had shown the joint result, and the detuning and ZZ pairs after a review of the first retained run. No hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/bound_residuals.json",
+          "sha256": "491226721d81588a2d9914fc9880c19ea11d013e40b4663c72405293900b836e"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/null_residuals.json",
+          "sha256": "fdda4701dc8b33fb1122c53658f12a4b4b3870d05cba8e491f684bc722ffabbe"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/noise.json",
+          "sha256": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/README.md",
+        "docs/design/primorial-cover-joint-coherent-bounds.md"
+      ],
+      "gates": {
+        "core-primorial-bound-residuals-replay": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "primorial-cover-noise-null-subtraction"
+      ],
+      "supersedes": [
+        "primorial-null-residuals-zz-tilt"
+      ],
       "superseded_by": null
     },
     {
