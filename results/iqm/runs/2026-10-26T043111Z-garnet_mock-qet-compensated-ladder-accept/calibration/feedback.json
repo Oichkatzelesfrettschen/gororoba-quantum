@@ -1,0 +1,136 @@
+{
+ "QB1": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-1"
+ },
+ "QB10": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-2"
+ },
+ "QB11": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-2"
+ },
+ "QB12": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-1"
+ },
+ "QB13": {
+  "drive_feedback_sources": [
+   "PL-3"
+  ],
+  "probe_line": "PL-3"
+ },
+ "QB14": {
+  "drive_feedback_sources": [
+   "PL-3"
+  ],
+  "probe_line": "PL-3"
+ },
+ "QB15": {
+  "drive_feedback_sources": [
+   "PL-3"
+  ],
+  "probe_line": "PL-3"
+ },
+ "QB16": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-2"
+ },
+ "QB17": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-1"
+ },
+ "QB18": {
+  "drive_feedback_sources": [
+   "PL-3"
+  ],
+  "probe_line": "PL-3"
+ },
+ "QB19": {
+  "drive_feedback_sources": [
+   "PL-3"
+  ],
+  "probe_line": "PL-3"
+ },
+ "QB2": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-1"
+ },
+ "QB20": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-2"
+ },
+ "QB3": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-2"
+ },
+ "QB4": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-2"
+ },
+ "QB5": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-1"
+ },
+ "QB6": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-1"
+ },
+ "QB7": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-1"
+ },
+ "QB8": {
+  "drive_feedback_sources": [
+   "PL-3"
+  ],
+  "probe_line": "PL-3"
+ },
+ "QB9": {
+  "drive_feedback_sources": [
+   "PL-1",
+   "PL-2"
+  ],
+  "probe_line": "PL-2"
+ }
+}

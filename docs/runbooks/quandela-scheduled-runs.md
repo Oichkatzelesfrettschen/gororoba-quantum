@@ -154,7 +154,10 @@ hashes the record's `perfs` object (sorted, compact JSON) and compares it with
 `results/quandela/watch/qpu-belenos-held.json`, which names the held state of
 2026-10-25 18:47 UTC that every later retained read reproduces. A read in the
 held state, or one missing a figure the rehearsal model reads, ends the run
-quietly. A changed record runs `qd_teleportation_rehearsal.model_at` on the
+quietly, as does a changed record whose figures the model rejects with
+ValueError (state `unscorable`, such as Perceval's refusal of
+emission_probability * g2 above 0.5), which leaves the watch armed for a later
+scorable record. A changed record runs `qd_teleportation_rehearsal.model_at` on the
 same perfs object the read classified, opens the issue "qpu:belenos performance record changed" (or
 comments on an open one) with both sets of figures and the model's pooled
 fidelity against F* = 0.86, and disables the workflow. A run on the recovered

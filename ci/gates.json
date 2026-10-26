@@ -4259,6 +4259,22 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_fixed_mesh_error.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/fixed-mesh-error.json --check",
+   "name": "core-ascella-signed-coherence-fixed-mesh-error-replay",
+   "seconds": 160.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_fixed_mesh_confirmation.py score results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/fixed-mesh-frozen-predictions.json docs/evidence/ascella-order-coefficients/fixed-mesh-error.json docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json --check",
+   "name": "core-ascella-signed-coherence-fixed-mesh-confirmation-replay",
+   "seconds": 12.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
@@ -4483,6 +4499,22 @@
     "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
     "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py --self-test",
+   "name": "core-696",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py check results/iqm/cases/qet-compensated-ladder",
+   "name": "core-697",
+   "seconds": 4.0,
+   "tier": "full"
   }
  ],
  "excluded": [

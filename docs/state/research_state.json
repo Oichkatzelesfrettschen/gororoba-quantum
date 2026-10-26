@@ -2109,6 +2109,34 @@
       "question": "Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?"
     },
     {
+      "id": "iqm-garnet-mock-qet-ladder-accept",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station pipeline accept the cc_prx-fed QET ladder circuits (five packed pairs, a feedback_key distinct from the measure key, cc_prx at angle 0 and 2 phi*, barrier) under one active-reset cycle with all-zeros heralding?"
+    },
+    {
+      "id": "iqm-garnet-mock-qet-ladder-accept-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station accept the passive-reset, unheralded cc_prx QET ladder circuits whose five pairs were chosen without the fast-feedback probe-line wiring?"
+    },
+    {
+      "id": "iqm-garnet-mock-qet-ladder-accept-wired",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station accept the passive-reset cc_prx QET ladder circuits on five probe-line-compatible pairs, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-qet-compensated-ladder",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the record-steered rotation of the two-qubit QET ladder, fed forward by cc_prx on IQM Garnet, lower Bob's local energy below every record-independent unitary (H1) and below the vacuum value (H2), is the non-pi conditional angle realized (H3), and does Bob carry a coherent window phase (H4)?"
+    },
+    {
       "id": "qd-qpu-belenos-teleportation-rehearsal-job-00",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00",
@@ -2390,6 +2418,52 @@
       "assumptions": [],
       "depends_on": [
         "ascella-signed-coherence-compilation-dependence"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "ascella-signed-coherence-fixed-mesh-offsets",
+      "statement": "Static heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on job-00 plus the 28 exploration meshes of jobs 02 and 03, predict the 28 held-out served meshes' pooled X statistics at Pearson r 0.318 (one-sided t p 0.050 on 26 degrees of freedom), below the preregistered alpha 0.01: not carried. The point estimate of the explained share is 10.6 % of the compilation-induced variance against the 0.978 attenuation ceiling, with a one-sided 99 % Fisher-z upper bound of 45.7 % (r 0.661); the fit overshoots the spread (predicted 0.0147 against observed 0.0102) and reads shortfall in both quadratic forms. The coupler offsets alone fail the exploration leave-one-out gate (sum 1133 against 56.9, r 0.08).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, 56 served meshes split by mesh-split.json, two element-offset families. The held-out predictions were frozen and their digest committed in plan ascella-fixed-mesh-confirmation before scoring, after the plan ascella-fixed-mesh-error-model gates had barred its quadratic-form reading; the held-out X statistics had been seen through job-02's readings and job-03's P1. The exploration leave-one-out correlation of 0.59 is exploratory. The result bounds what static element offsets on the returned circuit carry; it names no mechanism for the fixed per-mesh error, and both plans spent the held-out half.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+          "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/results.json",
+          "sha256": "337f9e9539e332f1713679b7a94501700ef9edbc308cfe9feea6e622c51a04ff"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+          "sha256": "c3e1d2c5c8d68a173d1635a017f379cfb931a6c5d26a12943577d83446660532"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/fixed-mesh-frozen-predictions.json",
+          "sha256": "648fb4043ac2bb559c5020362519bc6bfdb26d82bcbbb48352e5760edea85475"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+          "sha256": "bd24a2cc5d2fdef2cdef93088fe76c5ac67c87cc593258df79bfd7015ba75bf2"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-fixed-mesh-error-replay": "replay",
+        "core-ascella-signed-coherence-fixed-mesh-confirmation-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-compilations",
+        "qd-ascella-signed-coherence-seed-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-seed-repeat"
       ],
       "supersedes": []
     },
@@ -3193,7 +3267,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata; smooth strata and singular loci, normal links, kernel bundles, attachments and integral invariants (roadmap items 4-8) remain open.",
+      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; smooth strata and singular loci, normal links, kernel bundles, attachments and integral invariants (roadmap items 4-8) remain open.",
       "evidence": [],
       "documents": [
         "docs/RESEARCH_ROADMAP.md",
@@ -3209,7 +3283,8 @@
         "principal-skew-atlas",
         "kernel-limit-slice",
         "nullity-twelve-cone",
-        "a5-zero-divisor-strata"
+        "a5-zero-divisor-strata",
+        "a5-rank-strata-equations"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -6064,7 +6139,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "Written proof in docs/evidence/a5-zero-divisor-strata/README.md; gate core-694 recomputes result.json (Groebner membership and radical-power certificates of the Pfaffian ideals of orders 12, 10, 8 on six G_2-slice families, is_groebner re-verified) and core-695 rejects its mutation controls. The covering of each stratum by its two pieces rests on those slice certificates and the G_2 orbit facts; the V n B9 dimension, the piece dimensions and the component counts are asserted literals in the script whose support is the independent cd_core verification (verification.md: tangent dimension equals parametrization rank at random points, the V n B9 upper bound by counting, and an orbit-free argument for the two components of D_(5,8)), which is not a gate and checks the slice tables over F_11 and F_13 only. Equations for E8-bar are not given. Open: singular loci of the pieces, normal links, kernel bundles, attachments and homology (roadmap items 4-8); not formalized in Rocq.",
+      "boundary": "Written proof in docs/evidence/a5-zero-divisor-strata/README.md; gate core-694 recomputes result.json (Groebner membership and radical-power certificates of the Pfaffian ideals of orders 12, 10, 8 on six G_2-slice families, is_groebner re-verified) and core-695 rejects its mutation controls. The covering of each stratum by its two pieces rests on those slice certificates and the G_2 orbit facts; the V n B9 dimension, the piece dimensions and the component counts are asserted literals in the script whose support is the independent cd_core verification (verification.md: tangent dimension equals parametrization rank at random points, the V n B9 upper bound by counting, and an orbit-free argument for the two components of D_(5,8)), which is not a gate and checks the slice tables over F_11 and F_13 only. a5-rank-strata-equations gives E8-bar its equations and re-derives the covering over Q with Singular and independent G_2 orbit facts. Open: singular loci of the pieces, normal links, kernel bundles, attachments and homology (roadmap items 4-8); not formalized in Rocq.",
       "evidence": [
         {
           "path": "docs/evidence/a5-zero-divisor-strata/result.json",
@@ -6087,6 +6162,35 @@
         "a5-stiefel-universal",
         "a5-nullity12-quadric-germ",
         "a5-nonzero-divisor-two-dimension-gap"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-rank-strata-equations",
+      "statement": "In the coordinates z = p + i q of a doubly pure y in A_5, the rank strata of C_z have closed equations: R_8 = W8 u Ehat, R_12 = V u B9, R_16 = N_+ u N_-, with Ehat = {Q = 0, Delta = 0, rank [u; v; u ^ v] <= 2}. Ehat equals E8-bar and is irreducible of complex dimension 11, its projectivization of degree 24. Every principal Pfaffian of C_z of order 12, 10 or 8 lies in the ideal of each piece of its stratum, so V and B9 lie in E8-bar.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-rank-strata-equations/README.md. rederive_strata_equations.py imports nothing from the author's strata script or its verifier; the covering (Lemma A) re-derives the G_2 orbit facts from the split octonion table and decides the six slice tables by radical equality over Q in Singular 4.4.1, and Ehat = E8-bar rests on a saturation over Q and a case analysis. The record is a retained replay and not a gate, because Singular is absent from the hosted CI image. Not decided: radicality of the Ehat ideal. Inherited from a5-zero-divisor-strata: irreducibility of W8, V, B9 and N_+-, and the nullity identity of Theorem 2 (gate core-690 transport). Open: roadmap items 4-8; not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-rank-strata-equations/result.json",
+          "sha256": "d0aefa47d1bd2751bb573dd192cd2bab2527b568d89ddaa5207f5cc7bc9a7daa"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-rank-strata-equations/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "Singular 4.4.1 std, radical, intersect, sat and minor over Q"
+      ],
+      "depends_on": [
+        "a5-zero-divisor-strata"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -10897,6 +11001,92 @@
         "kingston-qet-window-phase-static",
         "kingston-qet-compensated-information-excess",
         "hw-n21-feedback-null-scheduled-idle"
+      ]
+    },
+    {
+      "id": "iqm-garnet-cc-prx-feedback-label-limit",
+      "statement": "The garnet:mock station control refused job 01a17621-1452-701f-8874-ba08a138aec4 (22 circuits x 200 shots, active_reset_cycles 1, all-zeros heralding) at compilation, charging 0.00 credits: \"Playlist segment 0 can't be handled by the instruments\" with \"unique feedback signal labels: 2/1\" on the drive AWG of each of the five qubits that receive cc_prx (QB1, QB6, QB13, QB17, QB19) and on no other drive. Each of those drives carried exactly one cc_prx label (its partner's qubit and key) across all 22 circuits, so the second label is the active reset's conditional pulse on the qubit's own readout: on Garnet a qubit whose drive takes another qubit's feedback bit cannot also take active reset, and a cc_prx case runs under passive reset.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One mock compilation under the mock's own calibration set; the limit is the station's instrument constraint as reported, and the QPU station was not exercised. Whether two distinct cc_prx sources on one drive are refused with passive reset was not tested.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "6e2b778a7f69252a74eb1806e2d69b8220cd6bf8f88e5bf7ce746402f3a4ecdb"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept/raw/job.json",
+          "sha256": "5b6fab552ccffd94eb43d44c9c0641d73424a41bb295cfec5b9fac27b5bf48ce"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-mock-qet-ladder-accept"
+      ]
+    },
+    {
+      "id": "iqm-garnet-cc-prx-probe-line-limit",
+      "statement": "The garnet:mock station refused job 01a17675-111d-731e-9c6f-2132756f1686 (24 circuits x 200 shots, passive reset, no heralding) in circuit resolution, charging 0.00 credits: \"QB8 does not support fast feedback from QB3 (probe line: PL-2). Valid source probe lines are ['PL-3']\". The retained channel properties list the drive fast_feedback_sources of QB8, QB13, QB14, QB15, QB18 and QB19 as PL-3 only and of every other qubit as PL-1 and PL-2, and the chip design record places QB3 on PL-2: on Garnet a cc_prx needs its feedback qubit's readout probe line among the target drive's sources.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One mock compilation; the error names the first violating circuit and pair only, and the QPU station was not exercised. The wiring is read from the snapshot artifacts, which the QPU and the mock share at this snapshot.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "85c07f6f72e1de69815d892430730353f384e481d6d939959205cdccd738bc73"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept/raw/job.json",
+          "sha256": "7a244b2059b4ab8c3b8b7a5ca758ddfea746e44c2892767b5f1afd2f690068e3"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-mock-qet-ladder-accept-passive"
+      ],
+      "related_claims": [
+        "iqm-garnet-cc-prx-feedback-label-limit"
+      ]
+    },
+    {
+      "id": "iqm-garnet-qet-compensated-ladder-verdicts",
+      "statement": "On IQM Garnet (calibration set 7b30f37a; one job of 24 circuits x 1600 shots, passive reset, five packed probe-line-compatible pairs with cc_prx feedback, 6.5 credits), the preregistered all-pairs tests read: H1 information excess +0.073 with one-sided 95 percent bounds [-0.070, +0.216], unresolved, with per-pair values +0.005, +0.005, +0.186, -0.100 and +0.268 (between-pair spread 0.150 against per-pair shot noise 0.064 to 0.071); H2 channel floor margin -0.423 (upper bound -0.266), fails, the reference unitary floors 0.25 to 0.73 lying above the vacuum value and above the predicted 0.21 to 0.38; H4 mean window-phase magnitude 0.549 rad (lower bound 0.272), a coherent phase of Kingston's order over Garnet's 1.1 us readout-plus-feedback window. The cc_prx(2 phi*) rotation is present (raw pooled P(1) 0.0968 after a |1> source against sin^2 phi* = 0.100, 0.0089 after |0>); H3's readout-corrected angle band admitted 2 of 5 pairs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, one job, five pairs, t-bounds across pairs; energies are expectations of an encoded spin Hamiltonian. H3's band failures are attributed, with moderate confidence and no separating arm, to the |11> calibration arm's preparation error inflating the corrected angle. The garnet:mock acceptance job returns random bits and enters no endpoint.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/analysis.json",
+          "sha256": "5538b9d9a1052dcb03a031d65ad42230debdce210a08164b593b0683a1edd1c2"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/results.json",
+          "sha256": "e5863ec28bf04f3c2b63317c09b8d2dcb2e2658f136c0250af153fd5aa32f744"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "ba1b6cfd654f96fc08e3435eca7348471b790ab4f5c2f133d1dffc8134d457d7"
+        }
+      ],
+      "documents": [
+        "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/FINDINGS.md",
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-qet-compensated-ladder",
+        "iqm-garnet-mock-qet-ladder-accept-wired"
+      ],
+      "related_claims": [
+        "kingston-qet-scheduled-idle-coherent-phase",
+        "iqm-garnet-cc-prx-probe-line-limit",
+        "iqm-garnet-cc-prx-feedback-label-limit"
       ]
     },
     {

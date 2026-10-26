@@ -1,0 +1,30 @@
+{
+ "billed_credits": 0.0,
+ "compilation": {
+  "calibration_set_id": "f04fe114-002f-46bd-8fa4-2a577ff56501",
+  "execution_runtime_estimate_ms": 1690,
+  "execution_runtime_estimate_seconds": 1.6904544
+ },
+ "credit_after": {
+  "currentBalance": "9.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "credits_charged": 0.0,
+ "errors": [
+  {
+   "error_code": "unknown",
+   "message": "Playlist segment 0 can't be handled by the instruments and can't be broken to smaller parts. Violated limits:\n- QB1__drive.awg unique feedback signal labels: 2/1\n- QB6__drive.awg unique feedback signal labels: 2/1\n- QB13__drive.awg unique feedback signal labels: 2/1\n- QB17__drive.awg unique feedback signal labels: 2/1\n- QB19__drive.awg unique feedback signal labels: 2/1",
+   "source": "iqm-station-control"
+  }
+ ],
+ "job_id": "01a17621-1452-701f-8874-ba08a138aec4",
+ "metrics": {
+  "compilation_seconds": 0.10478
+ },
+ "raw_sha256": {
+  "job.json": "5b6fab552ccffd94eb43d44c9c0641d73424a41bb295cfec5b9fac27b5bf48ce"
+ },
+ "schema": "iqm-results-v1",
+ "shots_per_circuit": [],
+ "status": "failed"
+}

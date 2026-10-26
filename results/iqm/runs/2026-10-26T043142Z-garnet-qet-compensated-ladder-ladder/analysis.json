@@ -1,0 +1,649 @@
+{
+ "billed_seconds": 13.0,
+ "charge": 6.5,
+ "compiled_calibration_set": "7b30f37a-7e3e-46f4-af99-702468389ddc",
+ "decisions": {
+  "all_pairs": {
+   "h1_information_excess": {
+    "lower": -0.070197184,
+    "mean": 0.072827635,
+    "pairs": 5,
+    "upper": 0.215852455,
+    "verdict": "unresolved"
+   },
+   "h2_channel_floor_margin": {
+    "lower": -0.580847176,
+    "mean": -0.423427125,
+    "pairs": 5,
+    "upper": -0.266007074,
+    "verdict": "fails"
+   },
+   "h4_window_phase": {
+    "lower": 0.272431156,
+    "mean": 0.549093523,
+    "pairs": 5,
+    "upper": 0.825755891,
+    "verdict": "coherent phase of Kingston's order"
+   }
+  },
+  "h3_all_pairs_scored": false,
+  "h3_scored": {
+   "h1_information_excess": {
+    "lower": -0.473318878,
+    "mean": 0.095469026,
+    "pairs": 2,
+    "upper": 0.664256931,
+    "verdict": "unresolved"
+   },
+   "h2_channel_floor_margin": {
+    "lower": -0.665401416,
+    "mean": -0.361552125,
+    "pairs": 2,
+    "upper": -0.057702833,
+    "verdict": "fails"
+   },
+   "h4_window_phase": {
+    "lower": -0.536013412,
+    "mean": 0.487044294,
+    "pairs": 2,
+    "upper": 1.510102,
+    "verdict": "unresolved"
+   }
+  },
+  "phase_out_of_reach_pairs": [],
+  "scored_pairs": [
+   [
+    "QB7",
+    "QB6"
+   ],
+   [
+    "QB8",
+    "QB13"
+   ]
+  ]
+ },
+ "estimate_seconds": 13.4184448,
+ "heralding_retention": 1.0,
+ "kingston": {
+  "selected_excess": {
+   "half_width": 0.006,
+   "measured": 0.107,
+   "model": 0.129
+  },
+  "selected_margin": {
+   "half_width": 0.015,
+   "measured": -0.073,
+   "model": 0.063
+  },
+  "uncompensated_margin": {
+   "half_width": 0.059,
+   "measured": -0.157,
+   "model": 0.063
+  },
+  "unitary_floor": {
+   "half_width": 0.013,
+   "measured": 0.177,
+   "model": 0.063
+  }
+ },
+ "pairs": [
+  {
+   "endpoints": {
+    "channel_floor": -0.058356781,
+    "reference_phase": -0.629595008,
+    "selected_alpha": 0.6,
+    "selected_excess": 0.005174617,
+    "selected_margin": -0.307177125,
+    "uncompensated_margin": -0.414677125,
+    "unitary_floor": 0.25399496
+   },
+   "h3": {
+    "bob_p0_given_1": 0.11125,
+    "bob_p1_given_0": 0.005625,
+    "fitted_angle": {
+     "angle": 0.735592082,
+     "high": 0.81077191,
+     "low": 0.665222185
+    },
+    "pi_arm_angle": {
+     "angle": 3.141592654,
+     "high": 3.141592654,
+     "low": 3.141592654
+    },
+    "scored": false,
+    "source0_corrected_p1_upper99": 0.00703424,
+    "target_angle": 0.643501109
+   },
+   "kept_shots_min": 1600,
+   "pair": {
+    "alice": "QB4",
+    "bob": "QB1",
+    "cz": [
+     "QB4",
+     "QB1"
+    ],
+    "index": 0
+   },
+   "qualification": {
+    "qual_src0_phi": {
+     "matched_shots": 1595,
+     "matched_target_ones": 6,
+     "p1": 0.00375,
+     "shots": 1600,
+     "source_ones": 5,
+     "target_ones": 6,
+     "wilson95": [
+      0.001719757,
+      0.00815744
+     ]
+    },
+    "qual_src0_pi": {
+     "matched_shots": 1590,
+     "matched_target_ones": 13,
+     "p1": 0.014375,
+     "shots": 1600,
+     "source_ones": 10,
+     "target_ones": 23,
+     "wilson95": [
+      0.009597744,
+      0.021478556
+     ]
+    },
+    "qual_src1_phi": {
+     "matched_shots": 1586,
+     "matched_target_ones": 190,
+     "p1": 0.11875,
+     "shots": 1600,
+     "source_ones": 1586,
+     "target_ones": 190,
+     "wilson95": [
+      0.103804917,
+      0.135521394
+     ]
+    },
+    "qual_src1_pi": {
+     "matched_shots": 1584,
+     "matched_target_ones": 1555,
+     "p1": 0.971875,
+     "shots": 1600,
+     "source_ones": 1584,
+     "target_ones": 1555,
+     "wilson95": [
+      0.962574919,
+      0.978914648
+     ]
+    }
+   },
+   "shot_se": {
+    "selected_excess": 0.063739182,
+    "selected_margin": 0.045541651,
+    "uncompensated_margin": 0.048468407,
+    "unitary_floor": 0.04848292
+   }
+  },
+  {
+   "endpoints": {
+    "channel_floor": 0.007893219,
+    "reference_phase": -0.325007872,
+    "selected_alpha": 0.3,
+    "selected_excess": 0.005381872,
+    "selected_margin": -0.409677125,
+    "uncompensated_margin": -0.450927125,
+    "unitary_floor": 0.422952216
+   },
+   "h3": {
+    "bob_p0_given_1": 0.109375,
+    "bob_p1_given_0": 0.005625,
+    "fitted_angle": {
+     "angle": 0.714186057,
+     "high": 0.792362501,
+     "low": 0.641354503
+    },
+    "pi_arm_angle": {
+     "angle": 3.141592654,
+     "high": 3.141592654,
+     "low": 3.141592654
+    },
+    "scored": true,
+    "source0_corrected_p1_upper99": 0.009058214,
+    "target_angle": 0.643501109
+   },
+   "kept_shots_min": 1600,
+   "pair": {
+    "alice": "QB7",
+    "bob": "QB6",
+    "cz": [
+     "QB6",
+     "QB7"
+    ],
+    "index": 1
+   },
+   "qualification": {
+    "qual_src0_phi": {
+     "matched_shots": 1578,
+     "matched_target_ones": 8,
+     "p1": 0.006875,
+     "shots": 1600,
+     "source_ones": 22,
+     "target_ones": 11,
+     "wilson95": [
+      0.003843211,
+      0.012269017
+     ]
+    },
+    "qual_src0_pi": {
+     "matched_shots": 1583,
+     "matched_target_ones": 13,
+     "p1": 0.01875,
+     "shots": 1600,
+     "source_ones": 17,
+     "target_ones": 30,
+     "wilson95": [
+      0.013165025,
+      0.026640317
+     ]
+    },
+    "qual_src1_phi": {
+     "matched_shots": 1468,
+     "matched_target_ones": 167,
+     "p1": 0.104375,
+     "shots": 1600,
+     "source_ones": 1468,
+     "target_ones": 167,
+     "wilson95": [
+      0.090329266,
+      0.120315906
+     ]
+    },
+    "qual_src1_pi": {
+     "matched_shots": 1468,
+     "matched_target_ones": 1453,
+     "p1": 0.909375,
+     "shots": 1600,
+     "source_ones": 1468,
+     "target_ones": 1455,
+     "wilson95": [
+      0.894310742,
+      0.92247822
+     ]
+    }
+   },
+   "shot_se": {
+    "selected_excess": 0.066243887,
+    "selected_margin": 0.048768216,
+    "uncompensated_margin": 0.049227271,
+    "unitary_floor": 0.048118583
+   }
+  },
+  {
+   "endpoints": {
+    "channel_floor": 0.057893219,
+    "reference_phase": 0.649080716,
+    "selected_alpha": -0.6,
+    "selected_excess": 0.18555618,
+    "selected_margin": -0.313427125,
+    "uncompensated_margin": -0.464677125,
+    "unitary_floor": 0.556876524
+   },
+   "h3": {
+    "bob_p0_given_1": 0.096875,
+    "bob_p1_given_0": 0.009375,
+    "fitted_angle": {
+     "angle": 0.672057785,
+     "high": 0.754100073,
+     "low": 0.59508105
+    },
+    "pi_arm_angle": {
+     "angle": 3.141592654,
+     "high": 3.141592654,
+     "low": 3.141592654
+    },
+    "scored": true,
+    "source0_corrected_p1_upper99": 0.013658163,
+    "target_angle": 0.643501109
+   },
+   "kept_shots_min": 1600,
+   "pair": {
+    "alice": "QB8",
+    "bob": "QB13",
+    "cz": [
+     "QB8",
+     "QB13"
+    ],
+    "index": 2
+   },
+   "qualification": {
+    "qual_src0_phi": {
+     "matched_shots": 1588,
+     "matched_target_ones": 17,
+     "p1": 0.0125,
+     "shots": 1600,
+     "source_ones": 12,
+     "target_ones": 20,
+     "wilson95": [
+      0.008106287,
+      0.019228995
+     ]
+    },
+    "qual_src0_pi": {
+     "matched_shots": 1595,
+     "matched_target_ones": 16,
+     "p1": 0.013125,
+     "shots": 1600,
+     "source_ones": 5,
+     "target_ones": 21,
+     "wilson95": [
+      0.008600469,
+      0.019981819
+     ]
+    },
+    "qual_src1_phi": {
+     "matched_shots": 1389,
+     "matched_target_ones": 148,
+     "p1": 0.09375,
+     "shots": 1600,
+     "source_ones": 1389,
+     "target_ones": 150,
+     "wilson95": [
+      0.080424715,
+      0.109021354
+     ]
+    },
+    "qual_src1_pi": {
+     "matched_shots": 1370,
+     "matched_target_ones": 1348,
+     "p1": 0.844375,
+     "shots": 1600,
+     "source_ones": 1370,
+     "target_ones": 1351,
+     "wilson95": [
+      0.825790139,
+      0.861310194
+     ]
+    }
+   },
+   "shot_se": {
+    "selected_excess": 0.067639736,
+    "selected_margin": 0.048111362,
+    "uncompensated_margin": 0.050259434,
+    "unitary_floor": 0.050196266
+   }
+  },
+  {
+   "endpoints": {
+    "channel_floor": 0.122893219,
+    "reference_phase": -0.93776604,
+    "selected_alpha": 0.9,
+    "selected_excess": -0.100292126,
+    "selected_margin": -0.708427125,
+    "uncompensated_margin": -0.860927125,
+    "unitary_floor": 0.731028217
+   },
+   "h3": {
+    "bob_p0_given_1": 0.118125,
+    "bob_p1_given_0": 0.01125,
+    "fitted_angle": {
+     "angle": 0.704244929,
+     "high": 0.809598529,
+     "low": 0.607067994
+    },
+    "pi_arm_angle": {
+     "angle": 3.141592654,
+     "high": 3.141592654,
+     "low": 3.141592654
+    },
+    "scored": false,
+    "source0_corrected_p1_upper99": 0.012262416,
+    "target_angle": 0.643501109
+   },
+   "kept_shots_min": 1600,
+   "pair": {
+    "alice": "QB16",
+    "bob": "QB17",
+    "cz": [
+     "QB16",
+     "QB17"
+    ],
+    "index": 3
+   },
+   "qualification": {
+    "qual_src0_phi": {
+     "matched_shots": 1588,
+     "matched_target_ones": 17,
+     "p1": 0.011875,
+     "shots": 1600,
+     "source_ones": 12,
+     "target_ones": 19,
+     "wilson95": [
+      0.007615357,
+      0.018472919
+     ]
+    },
+    "qual_src0_pi": {
+     "matched_shots": 1591,
+     "matched_target_ones": 18,
+     "p1": 0.016875,
+     "shots": 1600,
+     "source_ones": 9,
+     "target_ones": 27,
+     "wilson95": [
+      0.01162316,
+      0.024441165
+     ]
+    },
+    "qual_src1_phi": {
+     "matched_shots": 871,
+     "matched_target_ones": 100,
+     "p1": 0.069375,
+     "shots": 1600,
+     "source_ones": 871,
+     "target_ones": 111,
+     "wilson95": [
+      0.057928417,
+      0.082884416
+     ]
+    },
+    "qual_src1_pi": {
+     "matched_shots": 862,
+     "matched_target_ones": 848,
+     "p1": 0.531875,
+     "shots": 1600,
+     "source_ones": 862,
+     "target_ones": 851,
+     "wilson95": [
+      0.507378118,
+      0.556219191
+     ]
+    }
+   },
+   "shot_se": {
+    "selected_excess": 0.071042211,
+    "selected_margin": 0.052851502,
+    "uncompensated_margin": 0.053948145,
+    "unitary_floor": 0.049478803
+   }
+  },
+  {
+   "endpoints": {
+    "channel_floor": 0.032893219,
+    "reference_phase": -0.20401798,
+    "selected_alpha": 0.3,
+    "selected_excess": 0.268317634,
+    "selected_margin": -0.378427125,
+    "uncompensated_margin": -0.382177125,
+    "unitary_floor": 0.679637978
+   },
+   "h3": {
+    "bob_p0_given_1": 0.194375,
+    "bob_p1_given_0": 0.008125,
+    "fitted_angle": {
+     "angle": 0.729186186,
+     "high": 0.816255025,
+     "low": 0.648096748
+    },
+    "pi_arm_angle": {
+     "angle": 3.141592654,
+     "high": 3.141592654,
+     "low": 3.141592654
+    },
+    "scored": false,
+    "source0_corrected_p1_upper99": 0.011838531,
+    "target_angle": 0.643501109
+   },
+   "kept_shots_min": 1600,
+   "pair": {
+    "alice": "QB19",
+    "bob": "QB18",
+    "cz": [
+     "QB19",
+     "QB18"
+    ],
+    "index": 4
+   },
+   "qualification": {
+    "qual_src0_phi": {
+     "matched_shots": 1569,
+     "matched_target_ones": 12,
+     "p1": 0.009375,
+     "shots": 1600,
+     "source_ones": 31,
+     "target_ones": 15,
+     "wilson95": [
+      0.005689566,
+      0.015410686
+     ]
+    },
+    "qual_src0_pi": {
+     "matched_shots": 1568,
+     "matched_target_ones": 14,
+     "p1": 0.02875,
+     "shots": 1600,
+     "source_ones": 32,
+     "target_ones": 46,
+     "wilson95": [
+      0.021623107,
+      0.038134332
+     ]
+    },
+    "qual_src1_phi": {
+     "matched_shots": 1397,
+     "matched_target_ones": 153,
+     "p1": 0.0975,
+     "shots": 1600,
+     "source_ones": 1397,
+     "target_ones": 156,
+     "wilson95": [
+      0.08391453,
+      0.113013575
+     ]
+    },
+    "qual_src1_pi": {
+     "matched_shots": 1412,
+     "matched_target_ones": 1396,
+     "p1": 0.873125,
+     "shots": 1600,
+     "source_ones": 1412,
+     "target_ones": 1397,
+     "wilson95": [
+      0.855917838,
+      0.888544773
+     ]
+    }
+   },
+   "shot_se": {
+    "selected_excess": 0.06772073,
+    "selected_margin": 0.049052905,
+    "uncompensated_margin": 0.049257961,
+    "unitary_floor": 0.049625193
+   }
+  }
+ ],
+ "pooled": {
+  "compensation_gain": {
+   "mean": 0.09125,
+   "pairs": 5,
+   "t95_half_width": 0.082763856
+  },
+  "selected_excess": {
+   "mean": 0.072827635,
+   "pairs": 5,
+   "shot_se": 0.030105921,
+   "t95_half_width": 0.186270684
+  },
+  "selected_margin": {
+   "mean": -0.423427125,
+   "pairs": 5,
+   "shot_se": 0.021878348,
+   "t95_half_width": 0.205018547
+  },
+  "uncompensated_margin": {
+   "mean": -0.514677125,
+   "pairs": 5,
+   "shot_se": 0.022481344,
+   "t95_half_width": 0.243639485
+  },
+  "unitary_floor": {
+   "mean": 0.528897979,
+   "pairs": 5,
+   "shot_se": 0.021996789,
+   "t95_half_width": 0.241373664
+  }
+ },
+ "predicted_calibration_set": "7b30f37a-7e3e-46f4-af99-702468389ddc",
+ "predicted_pooled": {
+  "selected_excess": {
+   "mean": 0.119012308,
+   "shot_se": 0.026922283
+  },
+  "selected_margin": {
+   "mean": -0.190182393,
+   "shot_se": 0.019747841
+  },
+  "uncompensated_margin": {
+   "mean": -0.190182393,
+   "shot_se": 0.019747841
+  },
+  "unitary_floor": {
+   "mean": 0.284869488,
+   "shot_se": 0.020038109
+  }
+ },
+ "qc": "garnet",
+ "qualification": {
+  "qual_src0_phi": {
+   "p1": 0.008875,
+   "shots": 8000,
+   "wilson95": [
+    0.007042545,
+    0.011178887
+   ]
+  },
+  "qual_src0_pi": {
+   "p1": 0.018375,
+   "shots": 8000,
+   "wilson95": [
+    0.015654802,
+    0.021557512
+   ]
+  },
+  "qual_src1_phi": {
+   "p1": 0.09675,
+   "shots": 8000,
+   "wilson95": [
+    0.090464329,
+    0.103422752
+   ]
+  },
+  "qual_src1_pi": {
+   "p1": 0.826125,
+   "shots": 8000,
+   "wilson95": [
+    0.8176639,
+    0.834273052
+   ]
+  }
+ },
+ "run": "2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder",
+ "runtime_seconds": 12.43199,
+ "schema": "iqm-qet-ladder-analysis-v1"
+}

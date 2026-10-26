@@ -8,7 +8,10 @@ live record through qd_platform.get and classifies it:
 - held: the perfs object hashes to the held digest;
 - missing: the record carries no perfs object or lacks a figure the rehearsal model reads;
 - changed: any other perfs object. The noise model of qd_teleportation_rehearsal.live_model then scores the
-  rehearsal at the live figures, which tells whether job-01's live gate (F* = 0.86) could admit it.
+  rehearsal at the live figures, which tells whether job-01's live gate (F* = 0.86) could admit it;
+- unscorable: any other perfs object whose figures the model rejects with ValueError, as Perceval's source model
+  does when emission_probability * g2 exceeds 0.5 (the maintenance record of 2026-10-26 reads g2 66.7 %). The report
+  carries the error, and the watch goes on to the next read, so a later scorable record still reports a change.
 
 Every class also records the record's status. The report lands in --report as JSON beside a Markdown summary
 (--summary) for the issue the workflow .github/workflows/quandela-record-watch.yml opens on a change. Nothing is
@@ -106,7 +109,10 @@ def check(
         "figures": figures(perfs),
     }
     if state == "changed":
-        report["model"] = dict(model(perfs))
+        try:
+            report["model"] = dict(model(perfs))
+        except ValueError as error:
+            report["state"], report["model_error"] = "unscorable", str(error)
     return report
 
 
@@ -150,6 +156,8 @@ def run_check(held_path: Path, report_path: Path, summary_path: Path) -> int:
     if report["state"] == "changed":
         summary_path.write_text(summary(report), encoding="utf-8")
     print(f"{report['platform']} {report['status']}: {report['state']} {report['figures']}")
+    if report["state"] == "unscorable":
+        print(f"the rehearsal model rejects the changed figures: {report['model_error']}")
     return 0
 
 
@@ -171,6 +179,7 @@ def self_test() -> int:
         ({"status": "available", "perfs": moved}, "changed"),
         ({"status": "available"}, "missing"),
         ({"status": "available", "perfs": {"HOM (%)": 88.8}}, "missing"),
+        ({"status": "maintenance", "perfs": {**perfs, "g2 (%)": 66.7}}, "unscorable"),
     )
     for record, want in cases:
         calls: list[int] = []
@@ -181,17 +190,24 @@ def self_test() -> int:
             if seen != record.get("perfs"):
                 raise SystemExit("self-test: the model scored another perfs object than the classified read")
             calls.append(1)
+            if seen["g2 (%)"] == 66.7:
+                raise ValueError("emission_probability * g2 higher than 0.5 can not be computed")
             return model
 
         def read(_name: str, record: Mapping[str, Any] = record) -> Mapping[str, Any]:
             return record
 
         report = check(held, read, scored)
-        if report["state"] != want or bool(calls) != (want == "changed"):
+        if report["state"] != want or bool(calls) != (want in ("changed", "unscorable")):
             raise SystemExit(f"self-test: {record} read {report['state']}, expected {want}")
         if want == "changed" and "reaches F* = 0.86" not in summary(report):
             raise SystemExit("self-test: the summary omits the model verdict")
-    print("qd_record_watch self-test: held, changed and missing records classify; the model runs only on a change")
+        if want == "unscorable" and "model" in report:
+            raise SystemExit("self-test: an unscorable record carries a model")
+    print(
+        "qd_record_watch self-test: held, changed, unscorable and missing records classify; the model runs only on "
+        "a change"
+    )
     return 0
 
 

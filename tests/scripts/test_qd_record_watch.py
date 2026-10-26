@@ -1,5 +1,5 @@
 """Contract of the Quandela record watch: the held file names every retained read of the held qpu:belenos state,
-and the classifier separates held, changed and missing records."""
+and the classifier separates held, changed, unscorable and missing records."""
 
 from __future__ import annotations
 
@@ -44,6 +44,17 @@ def test_a_refreshing_read_departs_from_the_held_state() -> None:
     record = {"status": "available", "perfs": perfs_of(anchor)}
     if watch.classify(record, held) != "changed":
         raise AssertionError("the 2026-10-24 read classifies as held")
+
+
+def test_the_maintenance_record_is_unscorable_and_keeps_the_watch_armed() -> None:
+    held = json.loads(HELD.read_text(encoding="utf-8"))
+    read = ROOT / "docs/evidence/quandela/live-processor-qpu-belenos-2026-10-26T12-58-09Z.json"
+    record = json.loads(read.read_text(encoding="utf-8"))["record"]
+    report = watch.check(held, lambda _platform: record, watch.model_at)
+    if report["state"] != "unscorable" or "emission_probability * g2" not in report["model_error"]:
+        raise AssertionError(report)
+    if report["figures"]["g2 (%)"] != 66.7 or "model" in report:
+        raise AssertionError(report)
 
 
 def test_self_test_passes() -> None:
