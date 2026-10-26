@@ -35,7 +35,12 @@ campaigns; it differs from the seed-flag successor only in the `live_run.py` dig
 The [primorial-campaign successor](comparison-primorial-campaigns.json) rebinds the retained-audit comparison
 offline after `live_run.py` gained the structure-preserving compilation contract, pinned layouts for the
 `coherence_probes` and `primorial_gap88` campaigns and their manifest entries; it differs from the QET-campaign
-successor only in the `live_run.py` digest and the offline validation time. Gate `core-281` checks it.
+successor only in the `live_run.py` digest and the offline validation time.
+
+The [readout-preflight successor](comparison-readout-preflight.json) rebinds the retained-audit comparison
+offline after `live_run.py` listed the `readout_preflight` campaign among its pinned campaigns; it differs from
+the primorial-campaign successor only in the `live_run.py` digest and the offline validation time. Gate
+`core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
@@ -49,7 +54,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-primorial-campaigns.json
+  --out docs/evidence/submitted_circuits/comparison-readout-preflight.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0

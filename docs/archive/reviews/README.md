@@ -24,3 +24,5 @@ repository-relative; a branch name stands for its worktree.
 | [das-mergus-checks/README.md](das-mergus-checks/README.md) | the independent probes and reruns both DAS MERGUS ledgers cite |
 | [2026-10-25-results-catalog-opposition.md](2026-10-25-results-catalog-opposition.md) | opposition review of the results catalog and storage proposals, with ranked alternatives |
 | [2026-10-26-a5-rank-strata-equations-review.md](2026-10-26-a5-rank-strata-equations-review.md) | adversarial opus review of the A_5 rank-strata equations record: no refutation, seven robustness and wording findings and their disposition |
+| [primorial-coherence-case-2-review.md](primorial-coherence-case-2-review.md) | adversarial review of the second primorial coherence case against the run-economy rules; drove its 23-path, short-delay redesign |
+| [primorial-coherence-case-2-codex-review.md](primorial-coherence-case-2-codex-review.md) | Codex (gpt-daybreak-blue-latest, high) review of the second primorial coherence case with each finding's disposition |
