@@ -345,8 +345,10 @@ derivations, and `--check` re-derives the first.
 samples at the 4.94 MHz clock and the modeled three-click probabilities of 3.3e-5 to 5.0e-5 takes about 30 s, so
 the job runs under 100 s; the written case states 120 s against the 300 s limit. Credits follow the measured rule,
 1 credit per job plus 1e-06 per billed shot, with the largest iteration's `max_shots` billed
-([quandela-credit-optimization.md](../runbooks/quandela-credit-optimization.md)): 1 + 1.2 = 2.2 credits at most
-and about 1.005 if the job bills the 5400 samples it returns. The primary 200-credit monthly pool covers it.
+([quandela-credit-optimization.md](../runbooks/quandela-credit-optimization.md)): 1 + 1.2 = 2.2 credits. An
+iterated job bills its largest iteration's `max_shots` whatever it returns (`qd_platform.charged`; every retained
+iterated `qpu:belenos` job charged 1 + 1e-06 times that budget), so 2.2 credits is the charge, not a ceiling. The
+primary 200-credit monthly pool covers it.
 
 **Decision rule and falsifier.** With `F_hat` the pooled conditional fidelity over `n` accepted outcomes and
 `r = sqrt(ln(1/0.01)/(2n))`, the analysis (`--analyze RUN`) returns `beats-classical` when
@@ -389,6 +391,56 @@ verify step, which refuses a body whose digest without `process_id` departs from
 fidelity below F*. A refusal sends nothing and writes no checkpoint; an admitted request leaves
 `RUN/submit-model.json` with the model it was admitted under. `qd_platform.py collect RUN` then retains the result and
 `--analyze RUN` returns the verdict.
+
+**Anchor-gate approval.** The `qpu:belenos` performance record held one state from 2026-10-25 18:47 UTC
+([calibration.md](../notes/quandela/calibration.md#belenos-read-of-2026-10-25-1904-utc)), so the live gate above cannot
+pass until the service publishes a new calibration. On 2026-10-26 the owner approved one submission now under the
+anchor gate: `--submit RUN APPROVAL --anchor` plans, estimates shots and evaluates the model under the 2026-10-24
+anchor read's performance figures (`anchor_perfs`), where the model pooled fidelity is 0.868, and requires the body
+digest above as before. `RUN/platform-before/` keeps the live record, and `submit-model.json` carries the live model
+(0.635 at the held figures) beside the admitting one. The decision rule, F*, the sample budget and the claim level
+stay as written; the gate guards credits, and a chip in the held state returns an `at-or-below-classical` or
+`inconclusive` verdict about itself. The approval covers this one job-00 submission. A later run on a recovered
+chip is a new case, job-01, with its own compilation seeds and written case, and a watcher that sees the record
+change only reports it.
+
+## Secondary analyses of job-00
+
+`scripts/qd_rehearsal_secondary.py RUN` writes `RUN/secondary-analysis.json`. Its three analyses are fixed here
+before the job is sent, and none of them enters the verdict.
+
+**Record state.** The returned three-click samples over the 5400 requested, counting an uncounted iteration of a
+partial job as zero, classify the chip: `near-anchor` at a share of 0.5 or more, `degraded-as-recorded` at 0.01 or
+less, `intermediate` between. Each iteration stops at its `max_shots` of 1,200,000. Under the anchor figures Perceval
+estimates 5,377,923 shots for the 5400 samples, so every iteration returns its 900; under the held figures it finds
+no finite estimate (`plan-refused.json`), and the noise model returns about one accepted event per 2e8 detected
+shots. No retained run has yet been shot-limited, so the class rests on the documented `max_shots` semantics.
+
+**In-situ fit.** Each returned event falls in one of seven categories: accepted and decoded correctly, accepted and
+decoded wrongly, or one of the five rejection reasons of `classify`. A grid of Perceval's noise model (HOM 0.70 to
+0.98 in steps of 0.02, g2 0 to 0.24 in steps of 0.02, transmittance scale T from 1e-4 to 1e-1 in quarter decades)
+gives each category's probability conditioned on three clicks or more. The multinomial maximum-likelihood cell,
+each parameter's interval where its profile log-likelihood lies within 1.92 of the maximum, the deviance against the
+saturated model (33 degrees of freedom for six inputs) and the model's pooled fidelity at the best cell are reported
+under the anchor read's `t_out` profile (primary) and under the profile of `RUN/platform-before`. A simulated
+anchor-state run (`--simulate`) recovers HOM 0.84 (0.82 to 0.92) and g2 0 (0 to 0.02) against the generating
+0.888 and 0.011, and leaves T unidentified across the whole grid: without events below three clicks the category
+mix carries no absolute loss, which only a shot-limited iteration supplies. The fit needs 100 samples.
+
+**Cayley-Dickson lens (exploratory).** An event whose clicks all lie on the eight logical modes maps to the basis
+element `e_i` of the Cayley-Dickson algebra of dimension 2^n, where bit b of i is the click on logical mode b (q0 q1
+a0 a1 b0 b1 h0 h1, the little-endian rule of [algebra_circuit_rules.md](../notes/algebra_circuit_rules.md)): n = 6
+keeps the events without a herald click, n = 7 adds h0 and n = 8 adds h1. Each input's normalized vector `x_k`, and
+the anchor noise model's `y_k`, give the separation `D = sum over input pairs a < b of |x_a x_b - y_a y_b|`, the
+product taken under a sign table on the basis `e_i e_j = s(i, j) e_(i xor j)`. The Cayley-Dickson table is
+`cd_core.cd_sign`, checked against `cd_core.cd_multiply` on every basis pair. The 999 control tables per dimension
+keep its identity, its units squaring to -1 and the anticommutation of distinct units, and draw every other sign
+independently from `numpy.random.default_rng(64095)`, index 0 of the ANU QRNG draw `draw-2026-10-26T014202Z`, in
+dimension order before any map. The percentile `(1 + #controls with D >= D_CD) / 1000` flags algebra-specific
+separation when it is at or below 0.01 in all three dimensions. Controls that drop the anticommutation rank the
+Cayley-Dickson table near 1 even on model-consistent data, so the lens tests the algebra beyond its commutation
+structure; on the simulated anchor-state run the percentiles are 0.87, 0.40 and 0.48 for n = 6, 7 and 8. A flag
+motivates a designed probe that passes the mutation test of the algebra rules and enters no registry from this run.
 
 ## Provider request
 

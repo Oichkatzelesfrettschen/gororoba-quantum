@@ -11,7 +11,7 @@
   "state": "active",
   "scope": "One 64-setting Ascella order-family job measuring sign-odd and sign-even X/Y and sign-averaged dark coefficients at five angles plus a commuting mutation, under a 300-second cap and a 1.2-credit ceiling, with the coefficient atlas rendered from its retained counts.",
   "owner": "Quandela experiment operator",
-  "next_action": "Model a mechanism that couples heaters (thermal crosstalk between neighbors, coupler-angle error or mesh-dependent loss) and test it on job-02's 56 served meshes of one setting, which every per-heater error family fails (plan ascella-perturbed-compilation-case). Applied-voltage calibration data from the provider would constrain crosstalk directly. A timing budget for larger sample counts still needs controlled repeats that vary only the samples per iteration.",
+  "next_action": "The owner chooses the next lever now that every heater and heater-coupling family of plans ascella-perturbed-compilation-case and ascella-heater-coupling-families misses job-02: further offline families (crosstalk nonlinear in drive power, crosstalk over the physical layout), a request to Quandela for heater geometry or applied-voltage calibration, or a new written hardware case. A timing budget for larger sample counts still needs controlled repeats that vary only the samples per iteration.",
   "reconciliation": {
     "status": "unresolved",
     "note": "The approved acquisition ran and is retained with its reproducing analysis; all 27 endpoints qualify. The outside-block share above the dark-count bound remains an open mechanism question."
