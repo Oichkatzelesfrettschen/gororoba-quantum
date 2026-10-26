@@ -10,7 +10,8 @@ meshes. The held-out meshes enter only the plan's confirmation step.
 
 - the block light: the background-subtracted block fractions of every iteration against the returned mesh's ideal,
   their mean deviation at the anchor mesh and over the perturbed meshes, and the eigenvalues of the deviations'
-  covariance whitened by the mean multinomial covariance (1 is counting noise), in the three coordinates of modes 0..2,
+  covariance whitened by the mean counting covariance of the subtracted fractions, the multinomial over block and
+  outside clicks carried through the background subtraction (1 is counting noise), in the three coordinates of modes 0..2,
   over every iteration and again over the iterations at or below the median outside total, because the in-block share
   of a background burst follows the catalogue dark profile only on average;
 - the anchor X dispersion: chi-square of the anchors' X statistics about their inverse-variance mean;
@@ -30,7 +31,8 @@ to it:
   light-only X and the observed X; the null repeats the same grid with every heater's origin drawn uniformly, from a
   numpy generator seeded with value NULL_INDEX of the split's draw, QUANT_NULLS times;
 - scalar mesh features: the correlation of the observed X with each of SCALAR_FEATURES;
-- the dark block output: over quiet iterations, the Poisson dispersion of mode-2 counts at the anchor mesh and over
+- the dark block output: over quiet iterations (outside total at or below the median of the anchor and exploration
+  iterations), the Poisson dispersion of mode-2 counts at the anchor mesh and over
   the exploration meshes, the rank correlation of each exploration mesh's mode-2 excess with its |X - mean|, and the
   mode-2, outside and X change that uniform dephasing at DEPHASING_VARIANCES predicts, beside the observed X deficit
   and mode-2 excess. Incoherent noise fills the dark outputs at the order it lowers contrast; coherent error lowers it
@@ -107,23 +109,44 @@ def split(c_dir: Path, draw: Path) -> dict[str, Any]:
     }
 
 
+def light_fraction_covariance(c: dict[str, Any]) -> np.ndarray:
+    """Per iteration, the covariance (iterations x 4 x 4) of the background-subtracted block fractions.
+
+    The fractions f_m = (n_m - s_m O) / (N - S O) take the raw block counts n, their total N and the outside total O,
+    with s the catalogue share of the outside total each block mode receives and S its sum. The block counts and
+    the outside total are cells of one multinomial over T = N + O clicks, covariance T (diag(q) - q q^T) at the
+    observed shares q, and the delta method carries it through the subtraction and the normalization."""
+    dark = c["record"]["dark"]
+    share = dark[: models.LOGICAL] / dark[models.LOGICAL :].sum()
+    block = c["block"]
+    outside = c["background"].sum(axis=1) / share.sum()
+    out = np.zeros((len(block), models.LOGICAL, models.LOGICAL))
+    for row, (counts, o) in enumerate(zip(block, outside, strict=True)):
+        cells = np.append(counts, o)
+        total = cells.sum()
+        q = cells / total
+        multinomial = total * (np.diag(q) - np.outer(q, q))
+        denominator = counts.sum() - share.sum() * o
+        fraction = (counts - share * o) / denominator
+        jacobian = np.zeros((models.LOGICAL, models.LOGICAL + 1))
+        jacobian[:, : models.LOGICAL] = (np.eye(models.LOGICAL) - fraction[:, None]) / denominator
+        jacobian[:, models.LOGICAL] = (fraction * share.sum() - share) / denominator
+        out[row] = jacobian @ multinomial @ jacobian.T
+    return out
+
+
 def block_geometry(c: dict[str, Any], anchor: np.ndarray) -> dict[str, Any]:
     light = c["block"] - c["background"]
     total = light.sum(axis=1)
     observed = light / total[:, None]
+    covariance = light_fraction_covariance(c)
     p, _ = models.pure_jacobians(c["couplers"], c["arch"], c["phases"], c["sources"])
     ideal = (p[:, : models.LOGICAL] / p[:, : models.LOGICAL].sum(axis=1, keepdims=True))[c["configuration"]]
     deviation = observed - ideal
     coordinates = list(range(models.LOGICAL - 1))
 
     def spectrum(rows: np.ndarray) -> list[float]:
-        noise = np.mean(
-            [
-                (np.diag(f[coordinates]) - np.outer(f[coordinates], f[coordinates])) / n
-                for f, n in zip(observed[rows], total[rows], strict=True)
-            ],
-            axis=0,
-        )
+        noise = covariance[rows][:, coordinates][:, :, coordinates].mean(axis=0)
         inverse = np.linalg.inv(np.linalg.cholesky(noise))
         whitened = inverse @ np.cov(deviation[rows][:, coordinates].T) @ inverse.T
         return [float(w) for w in np.linalg.eigvalsh(whitened)]
@@ -298,11 +321,14 @@ def dark_output(c: dict[str, Any], split_path: Path) -> dict[str, Any]:
     seeds = np.array([int(s["compilation_seed"]) for s in c["record"]["manifest"]["settings"]])
     counts = c["record"]["counts"]
     outside = counts[:, models.LOGICAL :].sum(axis=1)
-    quiet = outside <= np.median(outside)
+    explore = np.isin(seeds, chosen["exploration_seeds"])
+    # The held-out meshes enter only the confirmation step, so the quiet cutoff reads the anchor and exploration
+    # iterations alone.
+    permitted = explore | (seeds == 0)
+    quiet = outside <= np.median(outside[permitted])
     mode_2 = counts[:, DARK_BLOCK_MODE]
     background = c["background"][:, DARK_BLOCK_MODE]
     z = reading.x_statistics(c)[0]
-    explore = np.isin(seeds, chosen["exploration_seeds"])
     out: dict[str, Any] = {}
     for name, rows in (("anchor", (seeds == 0) & quiet), ("exploration", explore & quiet)):
         k = mode_2[rows]

@@ -1427,7 +1427,7 @@ exploration half is retained with its trial count and a matched null.
 ([`mesh-decomposition.json`](../evidence/ascella-order-coefficients/mesh-decomposition.json)).
 The block light splits into two parts:
 - *A mean deficit that does not depend on the mesh.* Mode 0 loses 0.015 at the anchor mesh and 0.012 over the perturbed meshes, and modes 1 and 3 gain it. The anchor mesh read the same deficit in job-00.
-- *A mesh-dependent scatter.* Over quiet iterations, which exclude the dark-shaped background bursts, the noise-whitened covariance of the block fractions reads counting noise at the anchor mesh (eigenvalues 0.2, 1.4, 2.7) and an excess in all three block directions over the perturbed meshes (2.7, 5.4, 6.1).
+- *A mesh-dependent scatter.* Over quiet iterations, which exclude the dark-shaped background bursts, the noise-whitened covariance of the block fractions reads counting noise at the anchor mesh (eigenvalues 0.15, 1.3, 2.5) and an excess in all three block directions over the perturbed meshes (2.5, 5.3, 6.0). The whitening carries the multinomial over block and outside clicks through the background subtraction.
 
 The outside-block clicks are timed bursts with the catalogue dark profile
 (lag-1 correlation -0.32 in execution order). In quiet iterations the dark

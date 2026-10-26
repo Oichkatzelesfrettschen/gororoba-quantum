@@ -281,7 +281,7 @@ def build(a_dir: Path, c_dir: Path, split_path: Path) -> dict[str, Any]:
         "counts": c["record"]["counts"][np.isin(seeds, chosen["exploration_seeds"])],
     }
     train_unitary, test_unitary = unitaries(a), unitaries(explore)
-    rows = [fit((family, a, explore, train_unitary, test_unitary)) for family in FAMILIES]
+    rows = ordered_map(fit, [(family, a, explore, train_unitary, test_unitary) for family in FAMILIES], min_items=1)
     nominal = rows[0]["job_00_negative_log_posterior"]
     for row in rows:
         row["job_00_gain_over_nominal"] = nominal - row["job_00_negative_log_posterior"]
