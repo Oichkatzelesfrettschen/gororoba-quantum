@@ -4260,7 +4260,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_probe_case.py --check docs/evidence/primorial_cover/probe_case.json --run results/kaggle/2026-10-26T012733Z-gororoba-primorial-probe-case",
+   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_probe_case.py --check docs/evidence/primorial_cover/probe_case.json --run results/kaggle/2026-10-26T032845Z-gororoba-primorial-probe-case",
    "name": "core-primorial-probe-case-replay",
    "seconds": 720.0,
    "tier": "full",

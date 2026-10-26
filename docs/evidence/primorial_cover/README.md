@@ -59,11 +59,11 @@ Six records live here.
   string to match exactly and every float to 1e-8 (376 s wall and 3,326
   CPU-s on the build host). The Kaggle record and a build-host run of the same commit agree
   with no departure at that tolerance.
-- `probe_case.json` is the output of `scripts/primorial_probe_case.py`, run as Kaggle CPU kernel version 3
+- `probe_case.json` is the output of `scripts/primorial_probe_case.py`, run as Kaggle CPU kernel version 4
   of `gororoba-primorial-probe-case` under `push --ci-env` with the private dataset
   `gororoba-primorial-evidence` (noise.json, bound_residuals.json and the ibm_kingston snapshot,
   results/kaggle/datasets/gororoba-primorial-evidence.json) attached, and retained under
-  `results/kaggle/2026-10-26T012733Z-gororoba-primorial-probe-case/`, whose `collect.json` binds the file's
+  `results/kaggle/2026-10-26T032845Z-gororoba-primorial-probe-case/`, whose `collect.json` binds the file's
   bytes. Gate `core-primorial-probe-case-replay` requires the file to equal the collected output, recomputes
   it, and requires every count, boolean and string to match and every float to 1e-8 (720 s wall and
   2,244 CPU-s on the build host under load).
