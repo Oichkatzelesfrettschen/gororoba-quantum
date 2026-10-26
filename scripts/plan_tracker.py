@@ -22,6 +22,8 @@ from plan_inventory import check_retained_inventory, git, scan
 ROOT = Path(__file__).resolve().parents[1]
 INDEX = Path("docs/state/plans.md")
 CATALOGUE = Path("docs/state/plan-catalogue.md")
+# The paths check reads, which a gate command names so a change to any of them selects the gate.
+CHECK_INPUTS = (records.DIRECTORY.as_posix(), INDEX.as_posix(), CATALOGUE.as_posix())
 ORDER = {name: position for position, name in enumerate(("active", "paused", "planned", "inbox", "closed"))}
 
 
@@ -145,6 +147,41 @@ def tree_records(root: Path, revision: str) -> dict[str, Any]:
     }
 
 
+def receipts_of(plan: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
+    return [(item["id"], receipt) for item in [plan, *plan.get("steps", [])] for receipt in item.get("receipts", [])]
+
+
+def closure_findings(root: Path, plans: dict[str, dict[str, Any]], base: str) -> list[str]:
+    """Hold every plan a change closes or adds a receipt to against the evidence at HEAD.
+
+    The change runs from the merge base of ``base`` and HEAD, so a branch behind main answers only for its own
+    records. Such a plan needs the newest receipt of the plan and of each step fresh at HEAD, and every added
+    receipt names a revision HEAD descends from. A receipt the change adds and then supersedes keeps the bytes it
+    observed. Unchanged plans keep the revalidation flag of the generated views.
+    """
+    head = git(root, "rev-parse", "HEAD")
+    try:
+        fork = git(root, "merge-base", base, head)
+    except subprocess.CalledProcessError as error:
+        raise ValueError(f"no merge base of {base} and HEAD; fetch {base} with its history") from error
+    before = tree_records(root, fork)
+    findings = []
+    for name, plan in sorted(plans.items()):
+        previous = before.get(name, {})
+        known = receipts_of(previous)
+        added = [(owner, receipt) for owner, receipt in receipts_of(plan) if (owner, receipt) not in known]
+        if not added and (plan["state"] != "closed" or previous.get("state") == "closed"):
+            continue
+        findings += [f"{name}: {line}" for line in records.receipt_freshness(root, plan)]
+        for owner, receipt in added:
+            descends = subprocess.run(
+                ["git", "-C", str(root), "merge-base", "--is-ancestor", receipt["revision"], head], capture_output=True
+            )
+            if descends.returncode != 0:
+                findings.append(f"{name}: {owner}: receipt revision {receipt['revision']} is not an ancestor of HEAD")
+    return sorted(set(findings))
+
+
 def parser() -> argparse.ArgumentParser:
     command = argparse.ArgumentParser(description=__doc__)
     command.add_argument("--root", type=Path, default=ROOT)
@@ -187,7 +224,21 @@ def parser() -> argparse.ArgumentParser:
         pause.add_argument("--" + field, required=True)
     resume = actions.add_parser("resume")
     resume.add_argument("id")
-    actions.add_parser("check")
+    check = actions.add_parser("check")
+    check.add_argument(
+        "--base",
+        help="hold each plan closed or given a receipt since the merge base of BASE and HEAD to fresh evidence",
+    )
+    check.add_argument(
+        "inputs",
+        nargs="*",
+        choices=CHECK_INPUTS,
+        help="the record directory and generated views check reads, named for changed-path gate selection",
+    )
+    evidence = actions.add_parser("digest")
+    evidence.add_argument(
+        "refs", nargs="+", help="local evidence references, a file or FILE.json#COLLECTION/FIELD=VALUE"
+    )
     render = actions.add_parser("render")
     render.add_argument("--write", action="store_true")
     inventory = actions.add_parser("scan")
@@ -213,6 +264,12 @@ def _run(arguments: argparse.Namespace) -> int:
             end="",
         )
         return int(bool(findings))
+    if arguments.command == "digest":
+        for ref in arguments.refs:
+            value = records.evidence_digest(root, ref)
+            records.require(value is not None, f"no single record matches {ref}")
+            print(f"{value}  {ref}")
+        return 0
     plans = records.load(root)
     records.validate(root, plans)
     if arguments.command in {"check", "render"}:
@@ -226,6 +283,9 @@ def _run(arguments: argparse.Namespace) -> int:
                 records.require(
                     (root / path).exists() and (root / path).read_text() == content, f"stale generated view: {path}"
                 )
+            if arguments.base is not None:
+                unfresh = closure_findings(root, plans, arguments.base)
+                records.require(not unfresh, "changed plans need fresh receipts:\n" + "\n".join(unfresh))
         else:
             print(outputs[INDEX], end="")
         print(f"plan tracker: {len(plans)} records; input {git(root, 'rev-parse', 'HEAD')}", file=sys.stderr)

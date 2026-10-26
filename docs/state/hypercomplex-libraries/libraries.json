@@ -2778,6 +2778,7 @@
     "scripts/ascella_mesh_decomposition.py",
     "scripts/ascella_physical_models.py",
     "scripts/ascella_response_geometry.py",
+    "scripts/ascella_seed_repeat_reading.py",
     "scripts/ascella_source_detector.py",
     "scripts/ascella_twelve_output.py",
     "scripts/associator_cubic_normal_form.py",
@@ -6152,6 +6153,7 @@
     "scripts/ascella_mesh_decomposition.py",
     "scripts/ascella_physical_models.py",
     "scripts/ascella_response_geometry.py",
+    "scripts/ascella_seed_repeat_reading.py",
     "scripts/ascella_source_detector.py",
     "scripts/ascella_twelve_output.py",
     "scripts/atlas_fringe_amplitudes.py",
@@ -11980,6 +11982,7 @@
   "scripts/plan_records.py": [
    "__future__",
    "datetime",
+   "functools",
    "hashlib",
    "json",
    "parallel",
