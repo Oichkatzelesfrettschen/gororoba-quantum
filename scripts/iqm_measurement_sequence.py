@@ -1438,16 +1438,62 @@ def project_diagnostic(analysis: dict[str, Any], excerpt: dict[str, Any]) -> dic
     return out
 
 
+def planning_table(cal: dict[str, float]) -> dict[str, Any]:
+    """One qubit's planning P0 tables at the calibrated T1 and T2 and the planning q."""
+    return model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"])
+
+
 def planning_tables(excerpt: dict[str, Any]) -> dict[str, Any]:
+    """planning_table per qubit; the qubits are independent and map through parallel.ordered_map."""
+    names = list(excerpt["qubits"])
+    return dict(zip(names, ordered_map(planning_table, [excerpt["qubits"][q] for q in names]), strict=True))
+
+
+def planning_model(cal: dict[str, float]) -> dict[str, Any]:
+    """One qubit's Bloch-model planning figures that need no expected analysis: the measure arm's N = 16 P0 over
+    P_INIT_SENSITIVITY, the pinched arms' N = 16 P0 over WINDOW_GRID and their derivative in the window, the gate-class
+    ratios and the raw pre-flight band."""
+    sensitivity = {
+        str(p): model_tables(cal["t1_s"], cal["t2_s"], 1 / (1 - 2 * p), MEASURE_WINDOW_SECONDS, cal["prx_p"])[
+            "measure"
+        ][str(TOP_STEPS)]
+        for p in P_INIT_SENSITIVITY
+    }
+    windows = {
+        f"{w * 1e6:.3f}": {
+            arm: model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, w, cal["prx_p"])[arm][str(TOP_STEPS)]
+            for arm in PINCHED_ARMS
+        }
+        for w in WINDOW_GRID
+    }
+    step = 1e-8
+    derivative = {
+        arm: (
+            model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS + step, cal["prx_p"])[arm][
+                str(TOP_STEPS)
+            ]
+            - model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS - step, cal["prx_p"])[arm][
+                str(TOP_STEPS)
+            ]
+        )
+        / (2 * step)
+        for arm in PINCHED_ARMS
+    }
     return {
-        q: model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"])
-        for q, cal in excerpt["qubits"].items()
+        "sensitivity": sensitivity,
+        "windows": windows,
+        "derivative": derivative,
+        "raw_band": raw_band(cal),
+        "gate_class_ratios": gate_class_ratios(
+            cal["t1_s"], min(cal["t2_s"], 2 * cal["t1_s"]), PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"]
+        ),
     }
 
 
 def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]], model: str = "v2") -> dict[str, Any]:
     """Planning values: every table is computed at the calibrated T1 and T2 and the assumed initialization
-    excitation; the analysis recomputes them at the T1 and p it fits in the job."""
+    excitation; the analysis recomputes them at the T1 and p it fits in the job. The per-qubit planning figures are
+    independent and map through parallel.ordered_map."""
     tables = planning_tables(excerpt)
     bill = billing(circuits, SHOTS, model)
     contexts = {
@@ -1455,36 +1501,13 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]], model: str 
         for q, cal in excerpt["qubits"].items()
     }
     expected = evaluate(device_counts({q: device_model(cal) for q, cal in excerpt["qubits"].items()}), contexts)
+    names = list(excerpt["qubits"])
+    planned = dict(zip(names, ordered_map(planning_model, [excerpt["qubits"][q] for q in names]), strict=True))
     qubits: dict[str, Any] = {}
     for q, cal in excerpt["qubits"].items():
         row = expected[q]
-        sensitivity = {
-            str(p): model_tables(cal["t1_s"], cal["t2_s"], 1 / (1 - 2 * p), MEASURE_WINDOW_SECONDS, cal["prx_p"])[
-                "measure"
-            ][str(TOP_STEPS)]
-            for p in P_INIT_SENSITIVITY
-        }
+        sensitivity, windows, derivative = (planned[q][k] for k in ("sensitivity", "windows", "derivative"))
         spread = max(sensitivity.values()) - min(sensitivity.values())
-        windows = {
-            f"{w * 1e6:.3f}": {
-                arm: model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, w, cal["prx_p"])[arm][str(TOP_STEPS)]
-                for arm in PINCHED_ARMS
-            }
-            for w in WINDOW_GRID
-        }
-        step = 1e-8
-        derivative = {
-            arm: (
-                model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS + step, cal["prx_p"])[arm][
-                    str(TOP_STEPS)
-                ]
-                - model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS - step, cal["prx_p"])[arm][
-                    str(TOP_STEPS)
-                ]
-            )
-            / (2 * step)
-            for arm in PINCHED_ARMS
-        }
         qubits[q] = {
             "inputs": {
                 "t1_s": cal["t1_s"],
@@ -1515,10 +1538,8 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]], model: str 
                 )
                 / row["departure_n16"]["se"],
             },
-            "raw_band": raw_band(cal),
-            "gate_class_ratios": gate_class_ratios(
-                cal["t1_s"], min(cal["t2_s"], 2 * cal["t1_s"]), PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"]
-            ),
+            "raw_band": planned[q]["raw_band"],
+            "gate_class_ratios": planned[q]["gate_class_ratios"],
             "p_init_sensitivity": {
                 "measure_n16_p0": sensitivity,
                 "spread": spread,

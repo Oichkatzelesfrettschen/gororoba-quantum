@@ -685,6 +685,7 @@ Device: pooled departure z +1.649 preregistered, +1.718 sign-pooled; `departs_be
    probe with `scripts/iqm_measurement_preflight.py build` and run its `check`.
 2. Run the pre-flight probe on the QPU after the owner approves its 0.5 credits (`iqm_jobs.py submit` of the probe case,
    `collect`, then `iqm_measurement_preflight.py analyze RUN_DIR --out FILE`) and apply its stop rule.
-3. Approval of this written case, then `submit` on `garnet` with `--approved-cases-sha256` and `--max-credits 5.0`,
-   and `collect` right after.
+3. Approval of this written case, then `submit` on `garnet` with `--approved-cases-sha256` and `--max-credits` equal
+   to the rebuilt case's `max_credits` (6.0 under billing model v2; the retained run carried 5.0 under v1), and
+   `collect` right after.
 4. `analyze RUN_DIR --out FILE` writes the decisions.
