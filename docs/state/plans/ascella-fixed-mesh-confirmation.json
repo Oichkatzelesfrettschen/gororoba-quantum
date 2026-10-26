@@ -1,0 +1,46 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-fixed-mesh-confirmation",
+  "kind": "investigation",
+  "summary": "Score once, on the 28 held-out Ascella meshes, whether heater and coupler offsets fitted on served meshes carry the fixed per-mesh error, by the correlation of frozen predictions with the pooled X statistics.",
+  "sources": [
+    "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+    "docs/evidence/ascella-order-coefficients/fixed-mesh-frozen-predictions.json",
+    "docs/evidence/ascella-order-coefficients/mesh-split.json",
+    "scripts/ascella_fixed_mesh_error.py",
+    "scripts/ascella_fixed_mesh_confirmation.py"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Plan ascella-fixed-mesh-error-model closed with no family through its gates, the held-out half unspent. Its exploration leave-one-out nevertheless found mesh-specific signal in the heater and coupler offsets (heater_0.3_coupler_0.1_offsets): the 28 refitted predictions correlate with the exploration meshes' pooled X at Pearson 0.593 and Spearman 0.55 (p 0.003), with slope 0.40, a predicted spread 2.5 times the observed one in variance, and a mean residual of -0.014 that is the known mesh-independent deficit; the coupler-only family reads 0.08. Every family scored before reached a per-mesh correlation of at most 0.19. The quadratic-form reading of the closed plan demands a complete prediction and reads shortfall for a partial one (an affine-corrected residual variance of about 14 counting variances per mesh), so this plan tests the finding by an affine-invariant statistic. The held-out X statistics have been seen through job-02's readings and job-03's P1 correlation; the predictions below were computed from job-00 and the exploration meshes alone and frozen, with their digest, before this plan's commit."
+  },
+  "scope": "Offline analysis of the retained Ascella jobs 00, 02 and 03. The family is heater_0.3_coupler_0.1_offsets of scripts/ascella_fixed_mesh_error.py, fitted once on job-00 plus the exploration meshes of jobs 02 and 03; its 28 held-out predicted X statistics are frozen in docs/evidence/ascella-order-coefficients/fixed-mesh-frozen-predictions.json (sha256 648fb4043ac2bb559c5020362519bc6bfdb26d82bcbbb48352e5760edea85475), and the score step requires its recomputed predictions to equal that file. Primary statistic: Pearson r between the frozen predictions and the held-out meshes' X statistics pooled over jobs 02 and 03, one-sided against r <= 0 by the t distribution on 26 degrees of freedom at alpha 0.01 (critical r 0.437); p below 0.01 reads carried, otherwise not carried. Power by Fisher z: 0.86 at the exploration's 0.593, 0.53 at 0.45. Secondary, descriptive: r^2 as a share of the attenuation ceiling 0.978^2 (exploration compilation variance against mean counting variance), the Spearman correlation, the affine slope and the predicted against observed spread. The full and scatter quadratic forms are recorded and expected to read shortfall, because the predicted spread exceeds the observed one. A carried reading refutes the design document's statement that the returned circuit does not carry the fixed error, for the share r^2 states; a not-carried reading leaves it standing and closes the offline route on these meshes.",
+  "owner": "ascella signed-coherence analysis",
+  "next_action": "Run scripts/ascella_fixed_mesh_confirmation.py score once.",
+  "related": [
+    "ascella-fixed-mesh-error-model",
+    "ascella-mesh-response-decomposition",
+    "ascella-seed-repeat-case"
+  ],
+  "steps": [
+    {
+      "id": "frozen-predictions",
+      "action": "Fit the family on the training set and write the 28 held-out predictions with their prediction variances.",
+      "acceptance": "The frozen file exists with the digest the scope names before any held-out residual is computed.",
+      "state": "doing"
+    },
+    {
+      "id": "held-out-score",
+      "action": "Run the score command once and retain its record with a replay gate.",
+      "acceptance": "The record states the primary reading, the secondary statistics and both quadratic forms.",
+      "state": "todo"
+    },
+    {
+      "id": "written-reading",
+      "action": "Write the design-document section and the research-registry claim at the reading's strength.",
+      "acceptance": "The design section and the claim state the primary reading, its share of the ceiling and the boundary.",
+      "state": "todo"
+    }
+  ]
+}
