@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import functools
 import hashlib
 import json
 import re
@@ -43,6 +44,10 @@ PLAN_KEYS = {
     "receipts",
 }
 STEP_KEYS = {"id", "action", "acceptance", "state", "depends_on", "receipts", "reason"}
+# A local evidence reference PATH#COLLECTION/FIELD=VALUE names the one object of the top-level JSON array
+# COLLECTION of PATH whose string FIELD equals VALUE, and binds the digest() of that object, so an edit to
+# another record of a shared registry leaves the receipt fresh.
+SELECTOR = re.compile(r"(?P<collection>[^/=]+)/(?P<field>[^/=]+)=(?P<value>.+)\Z")
 
 
 def require(condition: bool, message: str) -> None:
@@ -135,7 +140,59 @@ def check_receipts(root: Path, receipts: Any, scope: str) -> None:
         for evidence in receipt["evidence"]:
             require(isinstance(evidence, dict) and set(evidence) == {"ref", "sha256"}, "evidence needs ref and sha256")
             reference(root, evidence["ref"])
+            if not evidence["ref"].startswith("https://"):
+                selector(evidence["ref"])
             require(bool(HEX.fullmatch(evidence["sha256"])), "evidence digest needs SHA-256")
+
+
+def selector(reference: str) -> re.Match[str] | None:
+    """The record selector of a local evidence reference; None for a reference to a whole file."""
+    path, separator, fragment = reference.partition("#")
+    if not separator:
+        return None
+    match = SELECTOR.fullmatch(fragment)
+    require(
+        match is not None and path.endswith(".json"),
+        f"evidence selector needs FILE.json#COLLECTION/FIELD=VALUE: {reference}",
+    )
+    return match
+
+
+@functools.lru_cache(maxsize=16)
+def json_document(content: bytes) -> Any:
+    return loads(content.decode("utf-8"))
+
+
+def selected_record(root: Path, reference: str) -> dict[str, Any] | None:
+    """The one record a selector names; None when no record or several records match."""
+    match = selector(reference)
+    if match is None:
+        raise ValueError(f"evidence reference names no record: {reference}")
+    document = json_document(local_path(root, reference).read_bytes())
+    members = document.get(match["collection"]) if isinstance(document, dict) else None
+    found = [
+        member
+        for member in (members if isinstance(members, list) else [])
+        if isinstance(member, dict) and member.get(match["field"]) == match["value"]
+    ]
+    return found[0] if len(found) == 1 else None
+
+
+def evidence_digest(root: Path, reference: str) -> str | None:
+    """The SHA-256 a local evidence reference binds: the checkout bytes of a file, or the digest() of a selected
+    record. None when a selector matches no single record, which reads as changed evidence."""
+    if selector(reference) is None:
+        return hashlib.sha256(local_path(root, reference).read_bytes()).hexdigest()
+    record = selected_record(root, reference)
+    return None if record is None else digest(record)
+
+
+def newest_receipt(item: dict[str, Any]) -> dict[str, Any] | None:
+    """The receipt with the latest observed_at, the later listed on a tie; None for an item without one."""
+    receipts = item.get("receipts", [])
+    if not receipts:
+        return None
+    return max(enumerate(receipts), key=lambda pair: (observed(pair[1]["observed_at"]), pair[0]))[1]
 
 
 def receipt_freshness(root: Path, plan: dict[str, Any]) -> list[str]:
@@ -146,15 +203,13 @@ def receipt_freshness(root: Path, plan: dict[str, Any]) -> list[str]:
     """
     stale = []
     for item in [plan, *plan.get("steps", [])]:
-        receipts = item.get("receipts", [])
-        if not receipts:
+        newest = newest_receipt(item)
+        if newest is None:
             continue
-        _, newest = max(enumerate(receipts), key=lambda pair: (observed(pair[1]["observed_at"]), pair[0]))
         for evidence in newest["evidence"]:
             if evidence["ref"].startswith("https://"):
                 continue
-            path = local_path(root, evidence["ref"])
-            if hashlib.sha256(path.read_bytes()).hexdigest() != evidence["sha256"]:
+            if evidence_digest(root, evidence["ref"]) != evidence["sha256"]:
                 stale.append(f"{item['id']}: revalidation required for {evidence['ref']}")
     return sorted(set(stale))
 

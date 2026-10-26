@@ -1,0 +1,808 @@
+{
+ "acquisition_window_seconds": 1.024e-06,
+ "billing": {
+  "billed_seconds": 6,
+  "cancel_margin_seconds": 3.168763,
+  "cancel_threshold_seconds": 9.0,
+  "circuits": 57,
+  "compiled_schedule_seconds": 3.7378799999999996,
+  "credits": 3.0,
+  "execution_seconds": 5.241237,
+  "shots": 3000,
+  "worst_case_runtime_seconds": 5.831237
+ },
+ "billing_fit": {
+  "execution_fixed_seconds": 0.141,
+  "execution_per_circuit_shot_seconds": 7.967e-06,
+  "residual_seconds": 0.17,
+  "runtime_over_execution_seconds": 0.42
+ },
+ "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
+ "estimator_per_shot_seconds_all_circuits": 0.00124596,
+ "ideal": {
+  "contrast_n16": 0.8612215512138341,
+  "delay_and_unitary": 0.03015368960704584,
+  "measure": {
+   "1": 0.03015368960704584,
+   "16": 0.89137524082088,
+   "2": 0.5150768448035229,
+   "4": 0.6721812556176133,
+   "8": 0.8039880670646521
+  }
+ },
+ "measure_window_seconds": 1.096e-06,
+ "model": "Bloch iteration from z0 = 1 - 2 p: a rotation of THETA/N per step, then an ideal pinch (measure and settle arms; T2 does not enter because the state is diagonal) or coherent evolution (delay and unitary arms), then T1 and Ramsey T2 relaxation over the rotation layer and, per arm, the measure window, the delay or the settle idle, and over the pre-readout delay; readout through the calibrated errors. The `expected` figures apply the run's estimator, T1 and p fit included, to the model's expected counts, so they are the standard errors the analysis reports at the case's shots",
+ "planning_note": "These are planning values at the calibrated T1 and T2 and an assumed initialization excitation. The analysis fits T1 and the excitation in the job and recomputes every prediction at the fitted values.",
+ "prx_layer_seconds": 4e-08,
+ "qubits": {
+  "QB1": {
+   "expected": {
+    "contrast_n16": 0.8169851380042463,
+    "contrast_se": 0.010371178977306774,
+    "departure_se": 0.0182696734770841,
+    "departure_se_before_gate_systematic": 0.015545434229476015,
+    "dephasing_zeno_n16": 0.4101988418289743,
+    "mutation_z": 30.5640408576347,
+    "p_init_se": 0.005176839716841319,
+    "readout_history_se": 0.006643783148684423,
+    "settle_gap_se": 0.004296722699700568,
+    "t1_se": 5.288313171853604e-07
+   },
+   "gate_class_ratios": {
+    "axis_phase": 0.324294641474907,
+    "composite_angle": 0.6570024258271799,
+    "depolarizing": -0.6829766972332525,
+    "drive_dephasing": -0.43510109921736384
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0076,
+    "e01_plus_e10": 0.023,
+    "e10": 0.0154,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0016867186658144906,
+    "settle_idle_s": 2e-06,
+    "t1_s": 2.751128847820201e-05,
+    "t2_s": 9.910996801720528e-06
+   },
+   "p0": {
+    "delay": {
+     "1": 0.07589820033191097,
+     "16": 0.5146173002934217,
+     "2": 0.13214719125625213,
+     "4": 0.20828735098184398,
+     "8": 0.33374720098349514
+    },
+    "measure": {
+     "1": 0.07589820033191097,
+     "16": 0.9215027689307131,
+     "2": 0.5409585096848841,
+     "4": 0.7037467811831017,
+     "8": 0.8370600171873217
+    },
+    "settle": {
+     "16": 0.989276817295696
+    },
+    "unitary": {
+     "16": 0.10441845846444736
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8885958131070769,
+     "0.05": 0.9118242525119966,
+     "0.1": 0.9408598017681462,
+     "0.15": 0.9781912222403386,
+     "0.2": 1.027966449536595
+    },
+    "spread": 0.13937063642951808,
+    "spread_over_departure_se": 7.628523662687927
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8290067687200305,
+     0.9311898697615184
+    ],
+    "ro0": [
+     0.9306223500914583,
+     0.9924
+    ],
+    "ro1": [
+     0.08390514840379835,
+     0.1456827983123401
+    ],
+    "unitary-16": [
+     0.13843342784712478,
+     0.2676449762968899
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 50007.786576239385,
+     "settle": 22138.72455756327
+    },
+    "measure_shift_over_departure_se": 1.6062105892918241,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.893792234308168,
+      "settle": 0.977181822576553
+     },
+     "0.800": {
+      "measure": 0.9057000796329067,
+      "settle": 0.982339360511637
+     },
+     "1.096": {
+      "measure": 0.9215027689307131,
+      "settle": 0.989276817295696
+     },
+     "1.400": {
+      "measure": 0.935748921215959,
+      "settle": 0.9956369906148486
+     },
+     "1.772": {
+      "measure": 0.9508477119325096,
+      "settle": 1.0025095239940311
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.029344943001796464,
+     "settle": 0.013232706698335095
+    }
+   }
+  },
+  "QB14": {
+   "expected": {
+    "contrast_n16": 0.7932175351530188,
+    "contrast_se": 0.009705558702465084,
+    "departure_se": 0.012860844239979767,
+    "departure_se_before_gate_systematic": 0.008525975758354435,
+    "dephasing_zeno_n16": 0.4255915860629817,
+    "mutation_z": 30.211298920745847,
+    "p_init_se": 0.007108667201669759,
+    "readout_history_se": 0.005965313734235005,
+    "settle_gap_se": 0.005191703403394143,
+    "t1_se": 1.171674018923896e-06
+   },
+   "gate_class_ratios": {
+    "axis_phase": 0.35207271282648045,
+    "composite_angle": 0.7292083712927336,
+    "depolarizing": -0.7574586397238269,
+    "drive_dephasing": -0.482499184095574
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0124,
+    "e01_plus_e10": 0.0248,
+    "e10": 0.0124,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.000663492310070346,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.488061124827712e-05,
+    "t2_s": 7.0063340552353605e-06
+   },
+   "p0": {
+    "delay": {
+     "1": 0.059573239262335875,
+     "16": 0.5310854628568211,
+     "2": 0.1346110924227768,
+     "4": 0.22070725178083783,
+     "8": 0.35408099215307176
+    },
+    "measure": {
+     "1": 0.059573239262335875,
+     "16": 0.8990571312900875,
+     "2": 0.5310281161462576,
+     "4": 0.6903318536693361,
+     "8": 0.8197507935765901
+    },
+    "settle": {
+     "16": 0.956295842011594
+    },
+    "unitary": {
+     "16": 0.10549387679383943
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8765069067774603,
+     "0.05": 0.8924247123157854,
+     "0.1": 0.9123219692386917,
+     "0.15": 0.9379041567109997,
+     "0.2": 0.9720137400074105
+    },
+    "spread": 0.09550683322995013,
+    "spread_over_departure_se": 7.426171365411108
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8028318423251724,
+     0.912418418181195
+    ],
+    "ro0": [
+     0.9241766346983913,
+     0.9876
+    ],
+    "ro1": [
+     0.05490345144693137,
+     0.11832681674854001
+    ],
+    "unitary-16": [
+     0.1130816850510313,
+     0.24333903815767963
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 36964.71879147123,
+     "settle": 21789.298678004387
+    },
+    "measure_shift_over_departure_se": 1.7749510712642314,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.8794121650534464,
+      "settle": 0.9447720886208992
+     },
+     "0.800": {
+      "measure": 0.8876585398749602,
+      "settle": 0.94959621230347
+     },
+     "1.096": {
+      "measure": 0.8990571312900875,
+      "settle": 0.956295842011594
+     },
+     "1.400": {
+      "measure": 0.9098409740700483,
+      "settle": 0.9626711909824945
+     },
+     "1.772": {
+      "measure": 0.921884500551202,
+      "settle": 0.9698390898156484
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.022827369261114505,
+     "settle": 0.013543247804054359
+    }
+   }
+  },
+  "QB17": {
+   "expected": {
+    "contrast_n16": 0.8296112489660876,
+    "contrast_se": 0.00984818456058802,
+    "departure_se": 0.01462609092834757,
+    "departure_se_before_gate_systematic": 0.010962214530663221,
+    "dephasing_zeno_n16": 0.31642574834600384,
+    "mutation_z": 33.46923962871052,
+    "p_init_se": 0.0072468127410354214,
+    "readout_history_se": 0.005979620507332664,
+    "settle_gap_se": 0.005095918438461899,
+    "t1_se": 1.2377745423689773e-06
+   },
+   "gate_class_ratios": {
+    "axis_phase": 0.35330051220252584,
+    "composite_angle": 0.7391461139942512,
+    "depolarizing": -0.7387550851971397,
+    "drive_dephasing": -0.4712102256264808
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0096,
+    "e01_plus_e10": 0.025799999999999997,
+    "e10": 0.0162,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0009426719046679022,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.628028389450517e-05,
+    "t2_s": 1.4129965435438016e-05
+   },
+   "p0": {
+    "delay": {
+     "1": 0.05773565812234427,
+     "16": 0.39585976644214577,
+     "2": 0.0981045878942024,
+     "4": 0.15254488831748853,
+     "8": 0.24681839830984886
+    },
+    "measure": {
+     "1": 0.05773565812234427,
+     "16": 0.9091782493979184,
+     "2": 0.5306181298318237,
+     "4": 0.6911768601865809,
+     "8": 0.8238446025541755
+    },
+    "settle": {
+     "16": 0.9631234612860704
+    },
+    "unitary": {
+     "16": 0.07943401809614192
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8868565924636304,
+     "0.05": 0.9026130561819513,
+     "0.1": 0.9223086358298525,
+     "0.15": 0.9476315239485824,
+     "0.2": 0.9813953747735559
+    },
+    "spread": 0.09453878230992552,
+    "spread_over_departure_se": 6.463708093506727
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8137439788473334,
+     0.9248375729967852
+    ],
+    "ro0": [
+     0.9269562237118306,
+     0.9904
+    ],
+    "ro1": [
+     0.05740328987986318,
+     0.12084706616803256
+    ],
+    "unitary-16": [
+     0.09131600562717107,
+     0.22487955557583295
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 34729.08245025774,
+     "settle": 20600.932544234674
+    },
+    "measure_shift_over_departure_se": 1.4681310407082144,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.8907402073432232,
+      "settle": 0.9522351706053496
+     },
+     "0.800": {
+      "measure": 0.8984754186884151,
+      "settle": 0.9567915719501294
+     },
+     "1.096": {
+      "measure": 0.9091782493979184,
+      "settle": 0.9631234612860704
+     },
+     "1.400": {
+      "measure": 0.9193156893525689,
+      "settle": 0.9691532092298996
+     },
+     "1.772": {
+      "measure": 0.9306512674940463,
+      "settle": 0.9759374773626477
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.021473018096127894,
+     "settle": 0.012814016076577284
+    }
+   }
+  },
+  "QB19": {
+   "expected": {
+    "contrast_n16": 0.7884283246977548,
+    "contrast_se": 0.0106854979592993,
+    "departure_se": 0.015768970948295696,
+    "departure_se_before_gate_systematic": 0.01152635985262043,
+    "dephasing_zeno_n16": 0.38617789245747897,
+    "mutation_z": 26.992501968216036,
+    "p_init_se": 0.012145187862347426,
+    "readout_history_se": 0.0062921842785650045,
+    "settle_gap_se": 0.006559706168821288,
+    "t1_se": 2.267990911755039e-06
+   },
+   "gate_class_ratios": {
+    "axis_phase": 0.3640044963029405,
+    "composite_angle": 0.7633419310692726,
+    "depolarizing": -0.7793550625532223,
+    "drive_dephasing": -0.4967254494407869
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0376,
+    "e01_plus_e10": 0.0756,
+    "e10": 0.038,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0009197776575640138,
+    "settle_idle_s": 2e-06,
+    "t1_s": 5.9114854283241813e-05,
+    "t2_s": 7.930177543079434e-06
+   },
+   "p0": {
+    "delay": {
+     "1": 0.05327328036063045,
+     "16": 0.48728847494102634,
+     "2": 0.12061872256779654,
+     "4": 0.1979014248205404,
+     "8": 0.3200057700900931
+    },
+    "measure": {
+     "1": 0.05327328036063045,
+     "16": 0.8893156457083607,
+     "2": 0.5271880641554056,
+     "4": 0.6850597428140457,
+     "8": 0.8127234628069682
+    },
+    "settle": {
+     "16": 0.9387630899729238
+    },
+    "unitary": {
+     "16": 0.10111058248354737
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8714247026760986,
+     "0.05": 0.8840536036400484,
+     "0.1": 0.8998397298449855,
+     "0.15": 0.9201361778227618,
+     "0.2": 0.9471981084597969
+    },
+    "spread": 0.07577340578369829,
+    "spread_over_departure_se": 4.80522197879297
+   },
+   "raw_band": {
+    "measure-16": [
+     0.7761711628800245,
+     0.8874988883798971
+    ],
+    "ro0": [
+     0.9016319072731045,
+     0.9623999999999999
+    ],
+    "ro1": [
+     0.06875157754565372,
+     0.12951967027254924
+    ],
+    "unitary-16": [
+     0.11895324685935457,
+     0.2475883882983503
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 30180.33767849815,
+     "settle": 20045.042708050074
+    },
+    "measure_shift_over_departure_se": 1.2066605788903098,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.8735359291817733,
+      "settle": 0.9283107548888674
+     },
+     "0.800": {
+      "measure": 0.8800982472565987,
+      "settle": 0.9326509162387999
+     },
+     "1.096": {
+      "measure": 0.8893156457083607,
+      "settle": 0.9387630899729238
+     },
+     "1.400": {
+      "measure": 0.8982045717081277,
+      "settle": 0.9446765329298104
+     },
+     "1.772": {
+      "measure": 0.9083434413213357,
+      "settle": 0.9514465349063039
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.019027795612974963,
+     "settle": 0.012683444933380139
+    }
+   }
+  },
+  "QB5": {
+   "expected": {
+    "contrast_n16": 0.806276150627615,
+    "contrast_se": 0.010003641178529067,
+    "departure_se": 0.015298855797816022,
+    "departure_se_before_gate_systematic": 0.011398420906374872,
+    "dephasing_zeno_n16": 0.37836433013456683,
+    "mutation_z": 30.61646706051184,
+    "p_init_se": 0.0070359231364080605,
+    "readout_history_se": 0.006244383970222494,
+    "settle_gap_se": 0.005095999160334184,
+    "t1_se": 1.2252866559130288e-06
+   },
+   "gate_class_ratios": {
+    "axis_phase": 0.35309618943380766,
+    "composite_angle": 0.7349610945168107,
+    "depolarizing": -0.7491082166566245,
+    "drive_dephasing": -0.4775009935935757
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0058,
+    "e01_plus_e10": 0.0364,
+    "e10": 0.0306,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0010199997118700566,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.577432550446066e-05,
+    "t2_s": 9.32218886620192e-06
+   },
+   "p0": {
+    "delay": {
+     "1": 0.05874865018185582,
+     "16": 0.4740598408109886,
+     "2": 0.11724242181469258,
+     "4": 0.18895159360605512,
+     "8": 0.3059570133665252
+    },
+    "measure": {
+     "1": 0.05874865018185582,
+     "16": 0.9016510321398146,
+     "2": 0.5307390999688657,
+     "4": 0.6903582950374185,
+     "8": 0.8206736148212969
+    },
+    "settle": {
+     "16": 0.9576228504892392
+    },
+    "unitary": {
+     "16": 0.09569551067642179
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8793623850448511,
+     "0.05": 0.8950955477001195,
+     "0.1": 0.9147620010192049,
+     "0.15": 0.9400474410008861,
+     "0.2": 0.973761360976461
+    },
+    "spread": 0.09439897593160995,
+    "spread_over_departure_se": 6.170329152660281
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8130965747456547,
+     0.9229233424825483
+    ],
+    "ro0": [
+     0.931476506054932,
+     0.9942
+    ],
+    "ro1": [
+     0.07179567727841255,
+     0.1345191712234805
+    ],
+    "unitary-16": [
+     0.11986096943089788,
+     0.2507844103674968
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 36025.80158460489,
+     "settle": 21385.314367733386
+    },
+    "measure_shift_over_departure_se": 1.456030497622305,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.8825244943639018,
+      "settle": 0.946321735626594
+     },
+     "0.800": {
+      "measure": 0.8905485951782736,
+      "settle": 0.9510504956293266
+     },
+     "1.096": {
+      "measure": 0.9016510321398146,
+      "settle": 0.9576228504892392
+     },
+     "1.400": {
+      "measure": 0.9121671016766704,
+      "settle": 0.9638828295834281
+     },
+     "1.772": {
+      "measure": 0.9239266327601605,
+      "settle": 0.9709279296115293
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.022275600620345948,
+     "settle": 0.013305079122290064
+    }
+   }
+  },
+  "QB8": {
+   "expected": {
+    "contrast_n16": 0.808437365475678,
+    "contrast_se": 0.010623143307442726,
+    "departure_se": 0.016053785289155326,
+    "departure_se_before_gate_systematic": 0.01221230351460458,
+    "dephasing_zeno_n16": 0.4228588250410177,
+    "mutation_z": 29.034472806140382,
+    "p_init_se": 0.005391768158303891,
+    "readout_history_se": 0.006822776252806029,
+    "settle_gap_se": 0.004553480276818188,
+    "t1_se": 6.749873109967757e-07
+   },
+   "gate_class_ratios": {
+    "axis_phase": 0.3343939881058883,
+    "composite_angle": 0.6828057037545219,
+    "depolarizing": -0.7108628960389846,
+    "drive_dephasing": -0.45282235523170333
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.006,
+    "e01_plus_e10": 0.0464,
+    "e10": 0.0404,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0012211084132804917,
+    "settle_idle_s": 2e-06,
+    "t1_s": 3.225497527003969e-05,
+    "t2_s": 8.338930447242396e-06
+   },
+   "p0": {
+    "delay": {
+     "1": 0.06971254567501567,
+     "16": 0.527959407099805,
+     "2": 0.13456174144434074,
+     "4": 0.215950781341615,
+     "8": 0.3465040792703481
+    },
+    "measure": {
+     "1": 0.06971254567501567,
+     "16": 0.9136127490931117,
+     "2": 0.537209280468674,
+     "4": 0.6987385714475858,
+     "8": 0.8307342062227296
+    },
+    "settle": {
+     "16": 0.9786645627268579
+    },
+    "unitary": {
+     "16": 0.10510058205878736
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8843444583951733,
+     "0.05": 0.9050044282996004,
+     "0.1": 0.9308293906801344,
+     "0.15": 0.9640329137408208,
+     "0.2": 1.0083042778217362
+    },
+    "spread": 0.12395981942656287,
+    "spread_over_departure_se": 7.721532161657872
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8261577437164571,
+     0.9303417548421916
+    ],
+    "ro0": [
+     0.933053844088031,
+     0.994
+    ],
+    "ro1": [
+     0.09773300129457546,
+     0.1586791572065444
+    ],
+    "unitary-16": [
+     0.15164634929036466,
+     0.28006638752937985
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 45744.31568880599,
+     "settle": 22469.894530557922
+    },
+    "measure_shift_over_departure_se": 1.7038352839492368,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.8886589104770087,
+      "settle": 0.9665289583154426
+     },
+     "0.800": {
+      "measure": 0.8992890794940761,
+      "settle": 0.9716702739730982
+     },
+     "1.096": {
+      "measure": 0.9136127490931117,
+      "settle": 0.9786645627268579
+     },
+     "1.400": {
+      "measure": 0.9267596981771362,
+      "settle": 0.9851611236210434
+     },
+     "1.772": {
+      "measure": 0.9409657549097198,
+      "settle": 0.9922779097745065
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.027353005816608045,
+     "settle": 0.013613347047648605
+    }
+   }
+  }
+ },
+ "selection": {
+  "excluded": {
+   "QB11": "T1 collapsed in situ: the prepared excited state reads P(0) = 0.172 at once and 0.522 after the 2 us idle, about 4 us against 47.8 us in the set, and the readout scale is 0.384"
+  },
+  "excluded_for_prx_error": {
+   "QB12": 0.00435504959084998,
+   "QB3": 0.009703557358832882,
+   "QB7": 0.005449217832772746
+  },
+  "median_t1_s": 3.7962256471572834e-05,
+  "prx_error_limit": 0.0022394075906988498,
+  "prx_error_median": 0.0011197037953494249,
+  "qualified_at_median": 4,
+  "qubits": {
+   "QB1": {
+    "e01": 0.0076,
+    "e10": 0.0154,
+    "prx_p": 0.0016867186658144906,
+    "t1_s": 2.751128847820201e-05,
+    "t2_s": 9.910996801720528e-06
+   },
+   "QB14": {
+    "e01": 0.0124,
+    "e10": 0.0124,
+    "prx_p": 0.000663492310070346,
+    "t1_s": 4.488061124827712e-05,
+    "t2_s": 7.0063340552353605e-06
+   },
+   "QB17": {
+    "e01": 0.0096,
+    "e10": 0.0162,
+    "prx_p": 0.0009426719046679022,
+    "t1_s": 4.628028389450517e-05,
+    "t2_s": 1.4129965435438016e-05
+   },
+   "QB19": {
+    "e01": 0.0376,
+    "e10": 0.038,
+    "prx_p": 0.0009197776575640138,
+    "t1_s": 5.9114854283241813e-05,
+    "t2_s": 7.930177543079434e-06
+   },
+   "QB5": {
+    "e01": 0.0058,
+    "e10": 0.0306,
+    "prx_p": 0.0010199997118700566,
+    "t1_s": 4.577432550446066e-05,
+    "t2_s": 9.32218886620192e-06
+   },
+   "QB8": {
+    "e01": 0.006,
+    "e10": 0.0404,
+    "prx_p": 0.0012211084132804917,
+    "t1_s": 3.225497527003969e-05,
+    "t2_s": 8.338930447242396e-06
+   }
+  },
+  "rule": "the 6 qubits of smallest e01 + e10 among those with T1 at least the set's median, taken in that order and skipping any that shares a cz coupler with one already taken, is excluded for a measured failure, or has a prx error above 2.0 times the set's median; when fewer qualify, the uncoupled remainder in decreasing T1",
+  "t1_floor_s": 2.751128847820201e-05
+ },
+ "timing_source": "Garnet QPU compiler estimates, calibration set be070414, 100 shots, the case's own circuits with the 2 us pre-readout delay: unitary-n16 7.032 us (job 01a174be-d1f7) and measure-n16 24.568 us (job 01a174be-e68b) per shot give a measure window of (24.568 - 7.032)/16 = 1.096 us; with the retained pilot job's 4.344 us per-circuit base the prx layer is (7.032 - 2.0 - 4.344)/16 = 43 ns, taken as the mock's 40 ns. garnet:mock compiles 1.772 us and 8.684 us per circuit"
+}

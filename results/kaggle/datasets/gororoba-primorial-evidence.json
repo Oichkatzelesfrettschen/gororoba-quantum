@@ -1,0 +1,19 @@
+{
+ "schema": "kaggle-dataset-v1",
+ "ref": "probablyeric/gororoba-primorial-evidence",
+ "archive": "repository-files.bundle",
+ "archive_sha256": "8ca58dc1aa1b00b0c45b5bc28735d72242574ee33a44d8e141996781c1104c3f",
+ "git_commit": "a959f83c197bdad9e13b0ccb1a1c12267f163dda",
+ "includes": [
+  "docs/evidence/primorial_cover/noise.json",
+  "docs/evidence/primorial_cover/bound_residuals.json",
+  "docs/evidence/calibration/ibm_kingston.json"
+ ],
+ "files": {
+  "docs/evidence/calibration/ibm_kingston.json": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346",
+  "docs/evidence/primorial_cover/bound_residuals.json": "491226721d81588a2d9914fc9880c19ea11d013e40b4663c72405293900b836e",
+  "docs/evidence/primorial_cover/noise.json": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527"
+ },
+ "reply": "lled: 2.2.4), please consider upgrading to the latest version (2.2.5)\nStarting upload for file repository-files.bundle\nUpload successful: repository-files.bundle (72KB)\nDataset version is being created. Please check progress at https://www.kaggle.com/datasets/probablyeric/gororoba-primorial-evidence",
+ "history": []
+}

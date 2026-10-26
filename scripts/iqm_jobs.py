@@ -26,9 +26,9 @@ Subcommands:
   terminal status while holding the approved max_credits (a priced job whose compiled estimate cannot
   finish within it, or whose runtime nears it, is cancelled and ceiling-cancel.json records why), so it
   starts right after submit; it keeps the job
-  record and, for a completed job, the measurements and measurement_counts artifacts byte for byte
-  under raw/, reads the credit again and writes results.json: status, metrics, credits charged and
-  per-circuit shot counts.
+  record and, for a completed job, the measurements and measurement_counts artifacts (and runtime_estimates
+  when served) byte for byte under raw/, reads the credit again and writes results.json: status, metrics,
+  credits charged and per-circuit shot counts.
 - analyze RUN_DIR... --out FILE [--replay] writes (or with --replay compares) the reset and billing
   pilot's H1-H4 decisions from its retained runs.
 - --self-test runs build, check, submit and collect against a stubbed transport on a temporary
@@ -65,6 +65,8 @@ SUBMISSION_SCHEMA = "iqm-submission-v1"
 RESULTS_SCHEMA = "iqm-results-v1"
 TERMINAL = ("completed", "failed", "cancelled")
 ARTIFACTS = ("measurements", "measurement_counts")
+# Kept when the server serves them: the compiler's runtime_estimates, which jobs of earlier servers lack.
+OPTIONAL_ARTIFACTS = ("runtime_estimates",)
 CREDIT_QUERY = "query($a: UUID!){ credit(accountId: $a) { currentBalance expiresAt } }"
 # IQM Server takes no runtime limit with a job, so collect holds the approved ceiling itself. Billing is
 # ceil(compilation + execution seconds) times the price. The compiler's estimate ran up to
@@ -108,6 +110,38 @@ RESET_JOBS = (
 
 def dump(value: Any) -> str:
     return json.dumps(value, indent=1, sort_keys=True) + "\n"
+
+
+def first_difference(expected: Any, actual: Any, path: str = "$") -> str | None:
+    """The first JSON path, in sorted-key order, at which two parsed values differ, with both values; None if equal."""
+    if isinstance(expected, dict) and isinstance(actual, dict):
+        for key in sorted(set(expected) | set(actual)):
+            if key not in expected or key not in actual:
+                return f"{path}.{key}: {'absent' if key not in expected else 'present'} in the retained file"
+            found = first_difference(expected[key], actual[key], f"{path}.{key}")
+            if found:
+                return found
+        return None
+    if isinstance(expected, list) and isinstance(actual, list):
+        if len(expected) != len(actual):
+            return f"{path}: length {len(expected)} retained, {len(actual)} recomputed"
+        for index, (a, b) in enumerate(zip(expected, actual, strict=True)):
+            found = first_difference(a, b, f"{path}[{index}]")
+            if found:
+                return found
+        return None
+    if type(expected) is not type(actual) or expected != actual:
+        return f"{path}: {expected!r} retained, {actual!r} recomputed"
+    return None
+
+
+def replay_mismatch(retained: str, recomputed: str) -> str:
+    """The reason a retained JSON text differs from its recomputation: the first differing path, or the bytes."""
+    try:
+        found = first_difference(json.loads(retained), json.loads(recomputed))
+    except ValueError:
+        found = None
+    return found or "the parsed values agree and the text differs (key order, spacing or number formatting)"
 
 
 def now_stamp() -> str:
@@ -446,11 +480,21 @@ def stamp_of(record: dict[str, Any], status: str) -> dt.datetime | None:
     return None
 
 
+def ceiling_seconds(max_credits: float, price: float) -> int:
+    """The billed seconds that max_credits buy at the price per second."""
+    return math.floor(max_credits / price + 1e-9)
+
+
+def cancel_threshold_seconds(max_credits: float, price: float) -> float:
+    """The runtime at which ceiling_breach cancels a running job: the billed seconds less CANCEL_MARGIN."""
+    return float(ceiling_seconds(max_credits, price)) - CANCEL_MARGIN
+
+
 def ceiling_breach(record: dict[str, Any], max_credits: float, price: float, now: dt.datetime) -> str | None:
     """Why a nonterminal priced job must be cancelled to stay within max_credits, or None."""
     if price <= 0:
         return None
-    seconds = math.floor(max_credits / price + 1e-9)
+    seconds = ceiling_seconds(max_credits, price)
     # The billed runtime is compilation plus execution seconds: the wait between them, post-processing and the
     # terminal notification after execution_ended are not counted, so an ended execution has nothing left to stop.
     if stamp_of(record, "execution_ended") is not None:
@@ -552,6 +596,12 @@ def collect_locked(run_dir: Path, client: Client, poll: float, timeout: float, c
             if status != 200:
                 raise PlatformError(f"GET {artifact} of {job_id} answered {status}")
             keep(f"{artifact}.json", data)
+        for artifact in OPTIONAL_ARTIFACTS:
+            status, data = client.get(f"{API}/jobs/{job_id}/artifacts/{artifact}")
+            if status == 200:
+                keep(f"{artifact}.json", data)
+            elif status != 404:
+                raise PlatformError(f"GET {artifact} of {job_id} answered {status}")
         for circuit in json.loads((raw / "measurements.json").read_bytes()):
             lengths = {len(values) for values in circuit.values()}
             if len(lengths) != 1:
@@ -617,7 +667,8 @@ def run_facts(run_dir: Path) -> dict[str, Any]:
         raise PlatformError(f"{run_dir}: raw/job.json disagrees with results.json")
     if results["status"] == "completed":
         expected = {"job.json", *(f"{artifact}.json" for artifact in ARTIFACTS)}
-        if set(results["raw_sha256"]) != expected:
+        optional = {f"{artifact}.json" for artifact in OPTIONAL_ARTIFACTS}
+        if not expected <= set(results["raw_sha256"]) <= expected | optional:
             raise PlatformError(
                 f"{run_dir}: a completed run retains {sorted(results['raw_sha256'])}, not {sorted(expected)}"
             )
@@ -813,6 +864,10 @@ def self_test() -> str:
         if job_id in scripted and path == f"{API}/jobs/{job_id}":
             queue = scripted[job_id]
             return 200, {}, json.dumps(queue.pop(0) if len(queue) > 1 else queue[0]).encode()
+        if path.endswith("runtime_estimates"):
+            if state.get("estimates"):
+                return 200, {}, json.dumps({"qpu_execution": [{"circuit": 0, "seconds": 0.001}]}).encode()
+            return 404, {}, b"{}"
         if path.endswith("measurements"):
             n = shots_back["value"] or sent["shots"]
             return 200, {}, json.dumps([{"m": [[1]] * n} for _ in sent["circuits"]]).encode()
@@ -976,8 +1031,13 @@ def self_test() -> str:
         state["fail"] = False
         # A collected failure ran nothing, so the same job submits again under a new stamp.
         again = submit(case, "j1-1x1000-passive", "garnet", "approved", approved, 5, client, runs, "s3b")
-        if collect(again, client, poll=0)["status"] != "completed":
+        state["estimates"] = True
+        retried = collect(again, client, poll=0)
+        state["estimates"] = False
+        if retried["status"] != "completed":
             raise RuntimeError("the resubmission after a collected failure did not complete")
+        if "runtime_estimates.json" not in retried["raw_sha256"] or run_facts(again)["statuses"] != {"completed": 1}:
+            raise RuntimeError(f"a served runtime_estimates artifact was not kept: {retried['raw_sha256']}")
         # Only an explicit zero of billed seconds frees a failed job; an empty metrics record does not.
         probe = root / "settled"
         probe.mkdir()

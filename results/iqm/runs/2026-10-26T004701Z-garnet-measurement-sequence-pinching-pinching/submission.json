@@ -1,0 +1,17 @@
+{
+ "approval": "Owner delegation 2026-10-25: 'when you have the agent handing it back, have Advisor here review it and have it as the final approval authority after resolving its findings through an advererial peer review: its approved after that.' Advisor final approval after the third adversarial review round. main cases.json e9896a89afa91fb77afe9c0b5687d1041f2d7db53734522db11162ea59145e45; probe cases.json b77ce475a32a7ff710a351938984963407fea843c59dabca1c09caa497fd7892; iqm_measurement_sequence.py ffebcc9e9c9ca89810e4199a9668620ffe5d7679fbd0428427f1adb6337c5351 at 189f848 (doc 35871a3); iqm_measurement_preflight.py 46b06ea43d4a73ee464d0210e6809303feae12b359272ec64ec57cfb5f82faeb; circuits byte-identical to the mock retained at 918d7bd5. Pre-flight probe 2026-10-26T004628Z printed proceed.",
+ "body_sha256": "f5ecd25fcdd75e1bd226cd60c23d1a72ed7517ebd4edd03a9dd761f0b074b846",
+ "cases_sha256": "e9896a89afa91fb77afe9c0b5687d1041f2d7db53734522db11162ea59145e45",
+ "credit_before": {
+  "currentBalance": "14.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 5.241,
+ "job": "pinching",
+ "job_id": "01a175ac-da6c-718e-8efc-438c1bff1c46",
+ "max_credits": 5.0,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-26T00:47:05Z"
+}

@@ -1,0 +1,56 @@
+{
+ "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
+ "couplers_among_qubits": [],
+ "measure_012_loci": [
+  "QB1",
+  "QB14",
+  "QB2",
+  "QB3",
+  "QB7",
+  "QB9"
+ ],
+ "qubits": {
+  "QB1": {
+   "acquisition_delay_s": 4.6550000000000003e-07,
+   "e01": 0.0076,
+   "e10": 0.0154,
+   "integration_length_s": 3.64e-07,
+   "probe_duration_s": 3.64e-07,
+   "t1_s": 2.751128847820201e-05,
+   "t2_s": 9.910996801720528e-06
+  },
+  "QB14": {
+   "acquisition_delay_s": 4.6450000000000006e-07,
+   "e01": 0.0124,
+   "e10": 0.0124,
+   "integration_length_s": 4.2e-07,
+   "probe_duration_s": 4.2e-07,
+   "t1_s": 4.488061124827712e-05,
+   "t2_s": 7.0063340552353605e-06
+  },
+  "QB3": {
+   "acquisition_delay_s": 4.665e-07,
+   "e01": 0.124,
+   "e10": 0.2538,
+   "integration_length_s": 4.44e-07,
+   "probe_duration_s": 4.44e-07,
+   "t1_s": 2.3685352416411237e-05,
+   "t2_s": 7.01743955846726e-06
+  },
+  "QB7": {
+   "acquisition_delay_s": 4.6550000000000003e-07,
+   "e01": 0.0122,
+   "e10": 0.0392,
+   "integration_length_s": 5.56e-07,
+   "probe_duration_s": 5.56e-07,
+   "t1_s": 4.178067451526524e-05,
+   "t2_s": 7.76256408852692e-06
+  }
+ },
+ "schema": "iqm-measurement-sequence-calibration-v1",
+ "source_sha256": {
+  "dynamic-quantum-architecture.json": "0ac8713029672f1fc967ad6fb01dcd549f753d7ab79bd7b0fad45d4164feb1ff",
+  "metrics.json": "b9ec7e20214b8cbfca93d4059289cc3bb08b689db1b99b689d19ab23850a2436",
+  "set.json": "23b1faefcd112c035138c289def9359825173f7c8bb206915e9440191b3b947d"
+ }
+}

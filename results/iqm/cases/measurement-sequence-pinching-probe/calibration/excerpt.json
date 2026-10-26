@@ -1,0 +1,88 @@
+{
+ "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
+ "couplers_among_qubits": [],
+ "qubits": {
+  "QB1": {
+   "acquisition_delay_s": 4.6550000000000003e-07,
+   "e01": 0.0076,
+   "e10": 0.0154,
+   "integration_length_s": 3.64e-07,
+   "probe_duration_s": 3.64e-07,
+   "prx_p": 0.0016867186658144906,
+   "t1_s": 2.751128847820201e-05,
+   "t2_s": 9.910996801720528e-06
+  },
+  "QB14": {
+   "acquisition_delay_s": 4.6450000000000006e-07,
+   "e01": 0.0124,
+   "e10": 0.0124,
+   "integration_length_s": 4.2e-07,
+   "probe_duration_s": 4.2e-07,
+   "prx_p": 0.000663492310070346,
+   "t1_s": 4.488061124827712e-05,
+   "t2_s": 7.0063340552353605e-06
+  },
+  "QB17": {
+   "acquisition_delay_s": 4.6550000000000003e-07,
+   "e01": 0.0096,
+   "e10": 0.0162,
+   "integration_length_s": 4.2e-07,
+   "probe_duration_s": 4.2e-07,
+   "prx_p": 0.0009426719046679022,
+   "t1_s": 4.628028389450517e-05,
+   "t2_s": 1.4129965435438016e-05
+  },
+  "QB19": {
+   "acquisition_delay_s": 4.6450000000000006e-07,
+   "e01": 0.0376,
+   "e10": 0.038,
+   "integration_length_s": 5.24e-07,
+   "probe_duration_s": 5.24e-07,
+   "prx_p": 0.0009197776575640138,
+   "t1_s": 5.9114854283241813e-05,
+   "t2_s": 7.930177543079434e-06
+  },
+  "QB5": {
+   "acquisition_delay_s": 4.6550000000000003e-07,
+   "e01": 0.0058,
+   "e10": 0.0306,
+   "integration_length_s": 5.56e-07,
+   "probe_duration_s": 5.56e-07,
+   "prx_p": 0.0010199997118700566,
+   "t1_s": 4.577432550446066e-05,
+   "t2_s": 9.32218886620192e-06
+  },
+  "QB8": {
+   "acquisition_delay_s": 4.6450000000000006e-07,
+   "e01": 0.006,
+   "e10": 0.0404,
+   "integration_length_s": 4.76e-07,
+   "probe_duration_s": 4.76e-07,
+   "prx_p": 0.0012211084132804917,
+   "t1_s": 3.225497527003969e-05,
+   "t2_s": 8.338930447242396e-06
+  }
+ },
+ "schema": "iqm-measurement-sequence-calibration-v2",
+ "selection": {
+  "excluded": {
+   "QB11": "T1 collapsed in situ: the prepared excited state reads P(0) = 0.172 at once and 0.522 after the 2 us idle, about 4 us against 47.8 us in the set, and the readout scale is 0.384"
+  },
+  "excluded_for_prx_error": {
+   "QB12": 0.00435504959084998,
+   "QB3": 0.009703557358832882,
+   "QB7": 0.005449217832772746
+  },
+  "median_t1_s": 3.7962256471572834e-05,
+  "prx_error_limit": 0.0022394075906988498,
+  "prx_error_median": 0.0011197037953494249,
+  "qualified_at_median": 4,
+  "rule": "the 6 qubits of smallest e01 + e10 among those with T1 at least the set's median, taken in that order and skipping any that shares a cz coupler with one already taken, is excluded for a measured failure, or has a prx error above 2.0 times the set's median; when fewer qualify, the uncoupled remainder in decreasing T1",
+  "t1_floor_s": 2.751128847820201e-05
+ },
+ "source_sha256": {
+  "dynamic-quantum-architecture.json": "0ac8713029672f1fc967ad6fb01dcd549f753d7ab79bd7b0fad45d4164feb1ff",
+  "metrics.json": "b9ec7e20214b8cbfca93d4059289cc3bb08b689db1b99b689d19ab23850a2436",
+  "set.json": "23b1faefcd112c035138c289def9359825173f7c8bb206915e9440191b3b947d"
+ }
+}

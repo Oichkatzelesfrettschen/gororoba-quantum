@@ -1,0 +1,17 @@
+{
+ "approval": "Owner approved 2026-10-25: 'Diagnostic job first (Recommended)' then, after the raw-model correction, 'Run the diagnostic (Recommended)'; 8 circuits x 1000 shots on QB5 QB7 QB11 QB14 QB17 QB19, 0.5 credit, max 1.0; case commit d828935",
+ "body_sha256": "3f4a065f790762b5980775c15420df5c6d104594c7e3af87acecef1c8799fe83",
+ "cases_sha256": "47a3675d1c8a370d57d808c7a2b5d49545383b3e97d4b55d70bc21a092fdf458",
+ "credit_before": {
+  "currentBalance": "15.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 0.256,
+ "job": "diagnostic",
+ "job_id": "01a1753f-3b98-7437-9433-83d0b4b87721",
+ "max_credits": 1.0,
+ "price_per_second": 0.5,
+ "qc": "garnet",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T22:47:20Z"
+}

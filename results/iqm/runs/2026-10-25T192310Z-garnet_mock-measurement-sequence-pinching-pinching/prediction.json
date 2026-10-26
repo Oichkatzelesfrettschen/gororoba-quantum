@@ -1,0 +1,217 @@
+{
+ "acquisition_window_seconds": 1.024e-06,
+ "active_reset_excited": 0.068,
+ "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
+ "estimator_per_shot_seconds_all_circuits": 0.0011301439999999998,
+ "ideal": {
+  "contrast_n16": 0.8612215512138341,
+  "delay_and_unitary": 0.03015368960704584,
+  "measure": {
+   "1": 0.03015368960704584,
+   "16": 0.89137524082088,
+   "2": 0.5150768448035229,
+   "4": 0.6721812556176133,
+   "8": 0.8039880670646521
+  }
+ },
+ "measure_window_seconds": 1.772e-06,
+ "model": "Bloch iteration from |0>: a rotation of THETA/N per step, then an ideal pinch (measure arm; T2 does not enter because the state is diagonal) or coherent evolution (delay and unitary arms), then T1 and Ramsey T2 relaxation over the rotation layer and, for measure and delay, one measure window; readout through the calibrated errors and an initialization excitation. The measure arm's N = 16 P0 is the departure prediction. decisions_on_the_model_device applies the run's estimator to the model's expected counts, so the mutation margin and the standard errors are those the analysis reports at the case's shots",
+ "per_shot_seconds_all_circuits": 0.002570944,
+ "probe_duration_seconds": 5.56e-07,
+ "prx_layer_seconds": 4e-08,
+ "qubits": {
+  "QB1": {
+   "contrast_n16": 0.8800592300098716,
+   "contrast_se": 0.009904117887566972,
+   "decisions_on_the_model_device": {
+    "departs_from_ideal_pinching": {
+     "departs": false,
+     "z": -0.026084230664347317
+    },
+    "mutation_test": {
+     "passes": true,
+     "z": 38.37385967376003
+    }
+   },
+   "departure_inputs": {
+    "e01": 0.0076,
+    "e10": 0.0154,
+    "measure_window_s": 1.772e-06,
+    "p_init": 0.068,
+    "prx_layer_s": 4e-08,
+    "settle_idle_s": 2e-06,
+    "t1_s": 2.751128847820201e-05,
+    "t2_s_delay_and_unitary_only": 9.910996801720528e-06
+   },
+   "departure_se": 0.007204223123592983,
+   "dephasing_zeno_n16": 0.5747139610727767,
+   "p0": {
+    "delay": {
+     "1": 0.09197333634586713,
+     "16": 0.6284972520781179,
+     "2": 0.1721152733310387,
+     "4": 0.27389871583290526,
+     "8": 0.42962161939322996
+    },
+    "measure": {
+     "1": 0.09197333634586713,
+     "16": 0.9336719056922571,
+     "2": 0.5502684497394104,
+     "4": 0.7151843277958645,
+     "8": 0.8494448938881549
+    },
+    "settle": {
+     "16": 0.957583200116872
+    },
+    "unitary": {
+     "16": 0.05378329100534118
+    }
+   }
+  },
+  "QB14": {
+   "contrast_n16": 0.8625123639960435,
+   "contrast_se": 0.009911778671023599,
+   "decisions_on_the_model_device": {
+    "departs_from_ideal_pinching": {
+     "departs": false,
+     "z": 0.025321342868349913
+    },
+    "mutation_test": {
+     "passes": true,
+     "z": 36.57389617222017
+    }
+   },
+   "departure_inputs": {
+    "e01": 0.0124,
+    "e10": 0.0124,
+    "measure_window_s": 1.772e-06,
+    "p_init": 0.068,
+    "prx_layer_s": 4e-08,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.488061124827712e-05,
+    "t2_s_delay_and_unitary_only": 7.0063340552353605e-06
+   },
+   "departure_se": 0.00740143594139809,
+   "dephasing_zeno_n16": 0.5864032395239539,
+   "p0": {
+    "delay": {
+     "1": 0.06853013881618697,
+     "16": 0.6443867782452328,
+     "2": 0.17739130057879215,
+     "4": 0.2920991265047772,
+     "8": 0.4543260150712277
+    },
+    "measure": {
+     "1": 0.06853013881618697,
+     "16": 0.9205632797769132,
+     "2": 0.5369917419455503,
+     "4": 0.6994340439725242,
+     "8": 0.8336951731255167
+    },
+    "settle": {
+     "16": 0.9415592074427687
+    },
+    "unitary": {
+     "16": 0.05798353872127893
+    }
+   }
+  },
+  "QB3": {
+   "contrast_n16": 0.8767441860465115,
+   "contrast_se": 0.02285408319485441,
+   "decisions_on_the_model_device": {
+    "departs_from_ideal_pinching": {
+     "departs": false,
+     "z": 0.0171622906739352
+    },
+    "mutation_test": {
+     "passes": true,
+     "z": 16.484764793861228
+    }
+   },
+   "departure_inputs": {
+    "e01": 0.124,
+    "e10": 0.2538,
+    "measure_window_s": 1.772e-06,
+    "p_init": 0.068,
+    "prx_layer_s": 4e-08,
+    "settle_idle_s": 2e-06,
+    "t1_s": 2.3685352416411237e-05,
+    "t2_s_delay_and_unitary_only": 7.01743955846726e-06
+   },
+   "departure_se": 0.01532598928130815,
+   "dephasing_zeno_n16": 0.645950986418783,
+   "p0": {
+    "delay": {
+     "1": 0.10158271964178767,
+     "16": 0.7075818611393685,
+     "2": 0.2087041068801666,
+     "4": 0.33316041899033266,
+     "8": 0.5085879998143963
+    },
+    "measure": {
+     "1": 0.10158271964178767,
+     "16": 0.9382475252069424,
+     "2": 0.555686354645665,
+     "4": 0.7214503375276959,
+     "8": 0.855430048840454
+    },
+    "settle": {
+     "16": 0.9623658402783032
+    },
+    "unitary": {
+     "16": 0.06163087472058548
+    }
+   }
+  },
+  "QB7": {
+   "contrast_n16": 0.8662938485002543,
+   "contrast_se": 0.010721974317245291,
+   "decisions_on_the_model_device": {
+    "departs_from_ideal_pinching": {
+     "departs": false,
+     "z": 0.008682850473579123
+    },
+    "mutation_test": {
+     "passes": true,
+     "z": 34.16291045494344
+    }
+   },
+   "departure_inputs": {
+    "e01": 0.0122,
+    "e10": 0.0392,
+    "measure_window_s": 1.772e-06,
+    "p_init": 0.068,
+    "prx_layer_s": 4e-08,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.178067451526524e-05,
+    "t2_s_delay_and_unitary_only": 7.76256408852692e-06
+   },
+   "departure_se": 0.007521856648881985,
+   "dephasing_zeno_n16": 0.5745298758510947,
+   "p0": {
+    "delay": {
+     "1": 0.07131622988111275,
+     "16": 0.6305655594378918,
+     "2": 0.17090131636274886,
+     "4": 0.2801172712178541,
+     "8": 0.4387173141208712
+    },
+    "measure": {
+     "1": 0.07131622988111275,
+     "16": 0.922281884618691,
+     "2": 0.5385739933626775,
+     "4": 0.7013408227723803,
+     "8": 0.8356562507828524
+    },
+    "settle": {
+     "16": 0.9438684251672681
+    },
+    "unitary": {
+     "16": 0.056035683586797114
+    }
+   }
+  }
+ },
+ "timing_source": "garnet:mock compiler estimates, calibration set f04fe114: ro0 8.684 us, unitary-n16 9.324 us, measure-n16 37.676 us, measure-n1 10.496 us and delay-n16 25.708 us per shot (jobs 01a1747a-dd17, 01a1747a-74f4, 01a1747a-9d43, 01a1747a-d133, 01a1747a-ab9e)"
+}

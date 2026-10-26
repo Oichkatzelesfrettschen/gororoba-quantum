@@ -1,0 +1,62 @@
+{
+ "case": "measurement-sequence-diagnostic",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/d1-ro0.json",
+     "sha256": "b686b81b0e62c1e085c281bad510a182c2bb23ec12e8e043574e901110d28c5f"
+    },
+    {
+     "file": "circuits/d2-ro1.json",
+     "sha256": "2eeb26fb23d91f179a05afdc192cde9e30085a168b6b02a56f06192a39e8bdf4"
+    },
+    {
+     "file": "circuits/d3-ro1-now.json",
+     "sha256": "cc2e1f3bc63bc1db3418ffd0caf9c5240873db7d3338bc95115db377b9da4fc6"
+    },
+    {
+     "file": "circuits/d4-unitary-n16.json",
+     "sha256": "e5cebb2e191cdec4745474eaa9b0de2c824c0562c603aef375df29ebeecf2837"
+    },
+    {
+     "file": "circuits/d5-single.json",
+     "sha256": "a97902b99eba7b84890a0700b720be37653454c5ec6b96e879cbb2df8c40c6d7"
+    },
+    {
+     "file": "circuits/d6-pair-n16.json",
+     "sha256": "078dd130b580ebb982d63ccc83d3baeb74891975d9fe4cb31af7bf48aeb445da"
+    },
+    {
+     "file": "circuits/d7-n8.json",
+     "sha256": "80e3af9d9ab1d1708fc7608a9948c94f9c9792268c9790ab8f1cd76cf29bb5e2"
+    },
+    {
+     "file": "circuits/d8-n4.json",
+     "sha256": "000260ced8a938969fb9a9556785b7bb01c4fa7412e782f40d49b1c590c16c9c"
+    }
+   ],
+   "expected_seconds": 0.256,
+   "job": "diagnostic",
+   "max_credits": {
+    "garnet": 1.0,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "be070414-7624-4943-ac7e-1e2678f05684"
+    },
+    "heralding_mode": "none"
+   },
+   "shots": 1000
+  }
+ ],
+ "prediction_sha256": "ae5b4299c01c2bf0888c30397a32209672fda543c6fb815486c3312f922dd491",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "Is the excess of the N = 16 unitary circuit over its model on QB5, QB7, QB11, QB14, QB17 and QB19 an axis phase per small-angle prx pulse or |1> loss during the pre-readout idle and the readout, and do pi/2-pair steps avoid it?",
+ "schema": "iqm-circuit-case-v1"
+}

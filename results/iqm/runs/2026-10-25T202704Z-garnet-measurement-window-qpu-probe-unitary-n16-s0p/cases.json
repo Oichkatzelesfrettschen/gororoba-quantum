@@ -1,0 +1,52 @@
+{
+ "case": "measurement-window-qpu-probe",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/unitary-n16-s0p.json",
+     "sha256": "22b9ee4f8a8b6df066d3638aa59c0fab7923369890cade6c6900159d0e5e0844"
+    }
+   ],
+   "expected_seconds": 0.01,
+   "job": "unitary-n16-s0p",
+   "max_credits": {
+    "garnet": 1.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "be070414-7624-4943-ac7e-1e2678f05684"
+    },
+    "heralding_mode": "none"
+   },
+   "shots": 100
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/measure-n16-s0p.json",
+     "sha256": "8887f2128dbf6a4971855be062ed97d283d9e163ca054638a934a6a298d5e56b"
+    }
+   ],
+   "expected_seconds": 0.01,
+   "job": "measure-n16-s0p",
+   "max_credits": {
+    "garnet": 1.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "be070414-7624-4943-ac7e-1e2678f05684"
+    },
+    "heralding_mode": "none"
+   },
+   "shots": 100
+  }
+ ],
+ "qcs": [
+  "garnet"
+ ],
+ "question": "What compiled mid-circuit measure window does the Garnet QPU schedule? The difference between the compiled qpu_execution estimates of the N = 16 measure and unitary circuits of the measurement-sequence case, divided by 16 measures and 100 shots, is the window the case's predictions and delay arm rest on.",
+ "schema": "iqm-circuit-case-v1"
+}

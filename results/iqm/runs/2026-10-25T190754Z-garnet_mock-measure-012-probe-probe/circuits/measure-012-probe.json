@@ -1,0 +1,46 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 3.141592653589793,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.141592653589793,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "s"
+   },
+   "locus": [
+    "QB20"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "key": "f"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure_012"
+  }
+ ],
+ "name": "measure-012-probe"
+}
