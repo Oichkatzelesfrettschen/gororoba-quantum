@@ -86,3 +86,24 @@ should restore a contrast near the padded model's value for its schedule, and a 
 mechanism. The service schedule exists only after compilation, so the plan needs an idle-aware prediction
 before submission: a local schedule under the Target's durations, checked against this run's retained service
 schedule. Such a run needs its own written case and approval.
+
+## Control: the short orbit circuit on ibm_fez
+
+The same replay of the N=21 orbit run ([2026-10-13T080216.451663Z](../2026-10-13T080216.451663Z/idle-replay.json),
+job of the `n21-orbit-feedback` family on ibm_fez) tests the mechanism's other side. That circuit carries the
+multipliers compiled on the orbit {1, 4, 16} of multiplication by 4 modulo 21. It runs on 4 qubits with 28 CZ before
+routing, against 7 qubits and 336 CZ for the encoded circuit.
+
+| Circuit | Most idle qubit, scheduled dt | Unpadded exact | Idle-padded exact | Measured contrast difference |
+|---|---|---|---|---|
+| orbit, ibm_fez | 1,958 | +0.208 | +0.179 | +0.197, 95 % interval +- 0.030 (4,096 shots per arm) |
+| encoded, ibm_kingston | 15,481 | +0.031 | -0.0007 | +0.0027, [-0.0129, +0.0184] |
+
+- [O] With no fitted parameter, the idle-padded model lies inside both measured intervals. The unpadded model lies
+  inside the orbit interval and outside the encoded one.
+- [I] The idle model therefore accounts for both circuits: the short circuit keeps most of its contrast through
+  about 8 us of idle, and the long one loses all of it to about 60 us. The Kingston null is a property of the encoded
+  circuit's length, not of N=21 feed-forward.
+- [I] The orbit run does not separate the two models: its predicted idle loss, 0.029, equals its interval
+  half-width.
+- [O] The sampled orbit replay stays within 0.006 of its exact law, against a Hoeffding radius of 0.030.
