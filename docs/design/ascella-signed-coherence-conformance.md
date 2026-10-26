@@ -1902,3 +1902,35 @@ The procedure:
 5. Run `--preflight` and `--submit` on the admitted job-05 variant, and
    collect it.
 6. Run the score.
+
+**Outcome.** The owner approved the case after the final review. Job-04
+(`be11a4b0`) ran at 22:30 UTC on 2026-10-26. It returned 80 of 80 iterations
+and 2,621,440 samples in 243 s for 1.032768 credits. That is 3.04 s per
+iteration, above the 2.906 s the 64-iteration jobs implied under the linear
+model. Under the frozen rule, 243 s admitted `job-05-i88`. Job-05
+(`690c6e49`) returned 88 of 88 iterations in 265 s for 1.032768 credits,
+within 2 s of the 267 s that job-04's rate projects.
+([job-04 run](../../results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04/README.md),
+[job-05 run](../../results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88/README.md),
+[score](../evidence/ascella-order-coefficients/new-seed-score.json)).
+
+The score ran once. Every one of the 147 perturbed meshes (70 and 77) was
+new, and both jobs' anchors read steady: shifts of −0.0028 and −0.0018 from
+job-03, each with a 99 % half-width of 0.0034, inside ±0.0119.
+
+| Predictor | Pearson r | One-sided p | Reading | Positive-direction share (99.5 % bounds) | Slope |
+|---|---|---|---|---|---|
+| P-A, job-00 + 28 exploration meshes | 0.157 | 0.030 | not carried | 2.5 % (0 to 13.2 %) | 0.12 |
+| P-B, job-00 + all 56 meshes | 0.319 | 4.4e-5 | carried | 10.5 % (1.4 to 25.6 %) | 0.32 |
+
+The outcome is **P-B carried only**. Static heater and coupler offsets on the
+returned circuit, fitted on all 56 served meshes of jobs 02 and 03, predict
+meshes no fit has seen: about a tenth of the compilation-induced variance, at
+least 1.4 % and at most 25.6 %. The 28 exploration meshes alone leave those
+offsets underdetermined. The statement of the confirmation section stands
+corrected: element offsets carry a real but minor part of the fixed per-mesh
+error, and the remaining nine tenths depend on something the returned circuit
+with static offsets does not express. The applied voltages that Perceval#799
+requests remain the direct test of that remainder. The 147 meshes are spent
+for confirmatory use. The owner's further 96-iteration jobs belong to a later,
+separate plan.
