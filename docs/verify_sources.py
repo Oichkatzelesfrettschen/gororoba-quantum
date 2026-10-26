@@ -463,6 +463,107 @@ def verify_inspire_evidence(root: Path, entry: dict[str, Any], rights: dict[str,
     )
 
 
+def verify_pdg_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any], record_id: str) -> None:
+    """Bind a Review of Particle Physics chapter to the INSPIRE record of the licensed review."""
+    relative = f"docs/evidence/source_rights/inspire-{record_id}.json"
+    require(rights.get("evidence_path") == relative, "captured PDG evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured PDG evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured PDG retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured PDG evidence SHA-256")
+    require(
+        re.fullmatch(r"https://pdg\.lbl\.gov/2024/reviews/rpp2024-rev-[a-z0-9-]+\.pdf", entry["source_url"])
+        is not None,
+        "captured PDG chapter route",
+    )
+    try:
+        decoded = json.loads(raw_response)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("captured PDG JSON") from error
+    hits = require_mapping(require_mapping(decoded, "captured PDG search").get("hits"), "captured PDG hits")
+    records = hits.get("hits")
+    if not isinstance(records, list) or len(records) != 1:
+        raise ValueError("captured PDG record count")
+    record = require_mapping(records[0], "captured PDG record")
+    require(record.get("id") == record_id, "captured PDG record identity")
+    metadata = require_mapping(record.get("metadata"), "captured PDG metadata")
+    require(
+        type(metadata.get("control_number")) is int and metadata["control_number"] == int(record_id),
+        "captured PDG control number",
+    )
+
+    def entries(field: str) -> list[dict[str, Any]]:
+        values = metadata.get(field)
+        if not isinstance(values, list):
+            raise ValueError(f"captured PDG {field}")
+        return [require_mapping(value, f"captured PDG {field}") for value in values]
+
+    doi = require_text(rights.get("doi"), "captured PDG registered DOI")
+    require(
+        any(item.get("value") == doi and item.get("material") == "publication" for item in entries("dois")),
+        "captured PDG DOI identity",
+    )
+    title = require_text(rights.get("publisher_title"), "captured PDG registered title")
+    require(
+        any(item.get("source") == "APS" and item.get("title") == title for item in entries("titles")),
+        "captured PDG title identity",
+    )
+    article_licenses = [item for item in entries("license") if item.get("material") == "publication"]
+    require(len(article_licenses) == 1, "captured PDG license count")
+    require(
+        article_licenses[0].get("license") == "CC BY 4.0"
+        and rights["license_identifier"] == "CC-BY-4.0"
+        and article_licenses[0].get("url") == LICENSE_URLS["CC-BY-4.0"],
+        "captured PDG license identity",
+    )
+
+
+# OSF license identifiers resolved through https://api.osf.io/v2/licenses/ID/ (attribute "name").
+OSF_LICENSES = {"563c1cf88c5e4a3877f9e96c": "CC0-1.0"}
+
+
+def verify_osf_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any], preprint_id: str) -> None:
+    """Bind an OSF preprint file to its DOI, title and registered license."""
+    relative = f"docs/evidence/source_rights/osf-{preprint_id}.json"
+    require(rights.get("evidence_path") == relative, "captured OSF evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured OSF evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured OSF retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured OSF evidence SHA-256")
+    try:
+        decoded = json.loads(raw_response)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("captured OSF JSON") from error
+    data = require_mapping(require_mapping(decoded, "captured OSF record").get("data"), "captured OSF data")
+    require(data.get("id") == preprint_id, "captured OSF record identity")
+    links = require_mapping(data.get("links"), "captured OSF links")
+    doi = require_text(rights.get("doi"), "captured OSF registered DOI")
+    require(links.get("preprint_doi") == f"https://doi.org/{doi}", "captured OSF DOI identity")
+    attributes = require_mapping(data.get("attributes"), "captured OSF attributes")
+    title = require_text(rights.get("publisher_title"), "captured OSF registered title")
+    require(attributes.get("title") == title, "captured OSF title identity")
+    relationships = require_mapping(data.get("relationships"), "captured OSF relationships")
+
+    def related(name: str) -> str:
+        reference = require_mapping(relationships.get(name), f"captured OSF {name}")
+        target = require_mapping(reference.get("data"), f"captured OSF {name}")
+        return require_text(target.get("id"), f"captured OSF {name} identifier")
+
+    require(
+        OSF_LICENSES.get(related("license")) == rights["license_identifier"],
+        "captured OSF license identity",
+    )
+    require(entry["source_url"] == f"https://osf.io/download/{related('primary_file')}/", "captured OSF file identity")
+
+
 def verify_zenodo_evidence(root: Path, rights: dict[str, Any], licensed_file: dict[str, Any], record_id: str) -> None:
     """Bind the declared license and deposit identity to the retained endpoint response."""
     relative = f"docs/evidence/source_rights/zenodo-record-{record_id}.json"
@@ -570,9 +671,21 @@ def verify_source_rights(
         verify_nature_evidence(root, entry, article[1])
     elif published and urlsplit(rights["evidence_url"]).netloc == "inspirehep.net":
         inspire = re.fullmatch(r"https://inspirehep\.net/api/literature/([1-9]\d*)", rights["evidence_url"])
-        if inspire is None:
+        review = re.fullmatch(
+            r"https://inspirehep\.net/api/literature\?q=recid%3A([1-9]\d*)&fields=control_number,dois,titles,license",
+            rights["evidence_url"],
+        )
+        if inspire is not None:
+            verify_inspire_evidence(root, entry, rights, inspire[1])
+        elif review is not None:
+            verify_pdg_evidence(root, entry, rights, review[1])
+        else:
             raise ValueError("published INSPIRE evidence route")
-        verify_inspire_evidence(root, entry, rights, inspire[1])
+    elif published and urlsplit(rights["evidence_url"]).netloc == "api.osf.io":
+        osf = re.fullmatch(r"https://api\.osf\.io/v2/preprints/([a-z0-9]{5}_v[1-9]\d*)/", rights["evidence_url"])
+        if osf is None:
+            raise ValueError("published OSF evidence route")
+        verify_osf_evidence(root, entry, rights, osf[1])
     elif published:
         record = re.fullmatch(r"https://zenodo\.org/api/records/([1-9]\d*)", rights["evidence_url"])
         if record is None:

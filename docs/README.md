@@ -183,6 +183,7 @@ differs from it only in the `cd_core.py` digest.
 | [pais-us-10322827-b2-high-frequency-gravitational-wave-generator.md](notes/papers/pais-us-10322827-b2-high-frequency-gravitational-wave-generator.md) | Pais US 10,322,827 B2 -- Eq. 1 to 4, the Gertsenshtein power law and the claimed 1e10 W output, claim 1 |
 | [pais-us-2019-0058105-a1-room-temperature-superconductor.md](notes/papers/pais-us-2019-0058105-a1-room-temperature-superconductor.md) | Pais US 2019/0058105 A1 -- London depth, Meissner condition and flux-quantum equations, claim 1, no measurement |
 | [pais-us-2019-0295733-a1-plasma-compression-fusion-device.md](notes/papers/pais-us-2019-0295733-a1-plasma-compression-fusion-device.md) | Pais US 2019/0295733 A1 -- Lawson, scaling, flux and field equations, the 1e6 T and 1e18 gain claims, claim 1 |
+| [pais-superforce-sources.md](notes/papers/pais-superforce-sources.md) | Pais Superforce preprints (c^4/G) and their supporting references: retained CC0, CC BY PDFs, external-only reading copies, Crossref receipts |
 | [2001.09190.md](notes/papers/2001.09190.md) | Vepsäläinen et al. 2020 -- ionizing radiation limits transmon T1 to about 4 ms; power density and shield test |
 | [2402.03208.md](notes/papers/2402.03208.md) | Harrington et al. 2025 -- cosmic rays cause 17.1 % of correlated qubit errors; coincidence rates, qubit participation, recovery times |
 | [2104.05219.md](notes/papers/2104.05219.md) | McEwen et al. 2022 -- chip-wide cosmic-ray error bursts, one per 10 s, 25 ms recovery, 26 qubits |

@@ -43,7 +43,8 @@ to it.
   [US 10,322,827 B2](pais-us-10322827-b2-high-frequency-gravitational-wave-generator.md);
   [US 2019/0058105 A1](pais-us-2019-0058105-a1-room-temperature-superconductor.md);
   [US 2019/0295733 A1](pais-us-2019-0295733-a1-plasma-compression-fusion-device.md). The rows above keep
-  the page hashes of the first reading.
+  the page hashes of the first reading. The Superforce preprints and their references are listed in
+  [pais-superforce-sources.md](pais-superforce-sources.md).
 
 - [I] [pais-claims-falsification.md](../topics/pais-claims-falsification.md) decomposes every patent equation above
   against Maxwell, QED and general-relativity bounds, and states which claims a QPU can and cannot test.
