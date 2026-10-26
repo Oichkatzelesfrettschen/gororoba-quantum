@@ -22,7 +22,7 @@ Singular in global orderings only, local invariants by the deformation to the no
 | Multiplication convention: (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); `cd_core.cd_sign`, `cd_multiply_exact`, `left_mult_matrix_exact(32, y)` | `gororoba_quantum/cd_core.py` (never edit it: seven gates bind its bytes) |
 | Every A_5 zero divisor is doubly pure, y_0 = y_16 = 0. Put z = p + i q in C^15, z_k = y_k + i y_(16+k), k = 1..15 | [strata record](../evidence/a5-zero-divisor-strata/README.md), Theorem 1 and Conventions |
 | C_z is the 15 x 15 Im-block of left multiplication by z on Im(A_4)_C, skew, with C_z z = 0. nullity L_y = 28 - 2 rank C_z, so nullity 4, 8, 12, 16 means rank C_z = 12, 10, 8, 6 | strata record, Theorem 2 |
-| Transport: phi(r, s) = r + i conj(s) is an R-linear bijection R^32 -> C^16 with phi(y x) = A(z, conj z) phi(x), A(z, t) = [[0, -t^T], [t, C_z]]. So **ker L_y = phi^-1(ker_C A(z, conj z))**, complex dimension k/2 for nullity k | [Pfaffian record](../evidence/a5-stiefel-pfaffian-germs/README.md), item 2 (gate core-690) |
+| Transport: phi(r, s) = r + i conj(s) is an R-linear bijection R^32 -> C^16 with phi(y x) = A(z, conj z) conj(phi(x)) (the outer conj coefficientwise), A(z, t) = [[0, -t^T], [t, C_z]]. So with psi = conj o phi, **ker L_y = psi^-1(ker_C A(z, conj z))** and phi(ker L_y) = conj(ker_C A), complex dimension k/2 for nullity k. Verified at the seven nullity >= 12 representatives (ledger row 1); phi(J x) = i phi(x) | [Pfaffian record](../evidence/a5-stiefel-pfaffian-germs/README.md), item 2 (gate core-690) |
 | J = L_(e_16) has J^2 = -I and anticommutes with L_(e_k) for every k outside {0, 16}, so J L_y = -L_y J for doubly pure y and **J preserves ker L_y** | strata record, finite computation 1 |
 | Split coordinates z'_k = i^(-popcount k) z_k: the 14 derivations of the split octonion table (Lie algebra of G_2(C)) act on u' = z'_1..7 and v' = z'_9..15 alike and fix mu' = z'_8; eta = diag(-, -, +, -, +, +, -) | strata record, Conventions |
 | R_8 minus 0 is the disjoint union of twelve orbits of H = G_2(C) x SO(2, C) x C^*. SO(2, C) is the boost (u', v') -> (c u' + s v', s u' + c v') | [regularity record](../evidence/a5-strata-regularity/README.md), Theorem 2 |
@@ -113,14 +113,16 @@ replaced by better ones:
 - Write results as you go: the ledger (a dated row per sub-step with probe, falsifier, outcome and evidence path), and
   `docs/evidence/a5-kernel-bundles/README.md` for durable statements with proofs. Use the voice of the existing evidence
   READMEs: mechanism first, American spelling, emoji-free, no local absolute paths.
-- Commit locally on branch `geometry/a5-kernel-bundles` at each sub-step boundary, with a component-prefixed subject
-  and the trailer `Assisted-by: Codex CLI (gpt-daybreak-blue-latest)`.
+- The sandbox keeps git metadata and `~/.cache/gororoba-quantum` read-only, so the agent does not stage or commit and
+  does not run `ci/pr_checks.sh`. At each sub-step boundary it leaves the files in the worktree, adds the ledger row,
+  and ends the turn. The orchestrator reviews, runs the repository lanes and commits with the trailer
+  `Assisted-by: Codex CLI (gpt-daybreak-blue-latest)`.
 
 ## Standing rules
 
 - Authorized without asking: reading anything in the repository; creating and editing files under
   `docs/evidence/a5-kernel-bundles/` and the ledger; running Python, Singular, python-flint and the repository's local
-  checks; local commits on `geometry/a5-kernel-bundles`; spawning no subagents.
+  checks that need no shared cache lock; spawning no subagents.
 - Owner-only decisions, recorded in the ledger as `BLOCKED: owner` and left for the orchestrator: adding or changing a
   claim in `docs/state/research_state.json`; editing any file outside `docs/evidence/a5-kernel-bundles/` and this
   file's ledger; scope beyond item 5 (items 6-8); any network access, provider job or QPU job.
@@ -139,12 +141,16 @@ replaced by better ones:
 ## Handoff state (2026-10-26)
 
 - Branch `geometry/a5-kernel-bundles` from main at 57ee0f9, with the AGENTS.md computer-algebra rule and this program
-  file added by the orchestrator. Nothing under `docs/evidence/a5-kernel-bundles/` exists yet beyond the ledger stub.
+  file added by the orchestrator.
+- Orchestrator correction: the transport identity carries the outer conjugation (Pfaffian record item 2); the facts
+  table and item 1 now read psi = conj o phi. The `BLOCKED: owner` note of ledger row 1 is resolved.
+- The first sub-step (transport and J at the seven representatives) is reviewed and committed by the orchestrator; the
+  next sub-step is the exact Lie-algebra solve for K.
 - No jobs in flight.
 
 ## Order
 
-1. **Kernel symmetry group (deliverable 1, gaps G1, G2, G5).** Verify ker L_y = phi^-1(ker A(z, conj z)) and the
+1. **Kernel symmetry group (deliverable 1, gaps G1, G2, G5).** Verify ker L_y = psi^-1(ker A(z, conj z)) and the
    action of J on it at every representative. Solve for the Lie algebra of K. Test the compact G_2, U(1) phase, R_+ and
    the boost explicitly, at least at one representative of each nullity >= 12 orbit. Acceptance: an exact Lie algebra
    with its dimension, a statement of which H-directions lift, and orbit dimensions. Falsifier: a non-lifting direction
