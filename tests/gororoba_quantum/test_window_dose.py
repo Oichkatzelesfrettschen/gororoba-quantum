@@ -143,19 +143,18 @@ def test_dose_delays_sit_at_the_top_level_of_every_qubit(variant: str) -> None:
         _require(per_qubit[ONE] == per_qubit[SIXTEEN] == [dose // 4, dose // 2, dose // 4])
 
 
-@pytest.mark.parametrize("variant", qpe_diagnostics.N21_DOSE_VARIANTS)
-def test_noise_model_relaxation_pass_charges_every_dose_delay(variant: str) -> None:
-    model = NoiseModel.from_backend(FakeFez(), readout_error=False)
-    passes = model._pass_manager()
+def test_noise_model_relaxation_pass_charges_every_dose_delay() -> None:
+    passes = NoiseModel.from_backend(FakeFez(), readout_error=False)._pass_manager()
     _require(passes is not None)
-    circuit = qpe_diagnostics.n21_orbit_diagnostic(True, variant, dose_dt=3500)
-    delays = [circuit.find_bit(i.qubits[0]).index for i in circuit.data if i.operation.name == "delay"]
-    relaxed = passes.run(circuit)
-    charged = [relaxed.find_bit(i.qubits[0]).index for i in relaxed.data if i.operation.name == "quantum_channel"]
-    _require(sorted(charged) == sorted(delays))
-    _require(set(charged) == set(range(circuit.num_qubits)))
-    uncharged = passes.run(qpe_diagnostics.n21_orbit_diagnostic(True, variant, dose_dt=0))
-    _require(not any(i.operation.name == "quantum_channel" for i in uncharged.data))
+    for variant in qpe_diagnostics.N21_DOSE_VARIANTS:
+        circuit = qpe_diagnostics.n21_orbit_diagnostic(True, variant, dose_dt=3500)
+        delays = [circuit.find_bit(i.qubits[0]).index for i in circuit.data if i.operation.name == "delay"]
+        relaxed = passes.run(circuit)
+        charged = [relaxed.find_bit(i.qubits[0]).index for i in relaxed.data if i.operation.name == "quantum_channel"]
+        _require(sorted(charged) == sorted(delays), (variant, charged, delays))
+        _require(set(charged) == set(range(circuit.num_qubits)), (variant, charged))
+        uncharged = passes.run(qpe_diagnostics.n21_orbit_diagnostic(True, variant, dose_dt=0))
+        _require(not any(i.operation.name == "quantum_channel" for i in uncharged.data), variant)
 
 
 def test_invalid_doses_and_conflicts_raise() -> None:
