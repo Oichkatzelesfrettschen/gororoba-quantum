@@ -345,6 +345,42 @@ def test_check_base_holds_closed_and_receipted_plans_to_fresh_evidence(root: Pat
         invoke(root, "check", "--base", base)
 
 
+def test_record_selector_binds_one_registry_record(root: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    registry = root / "registry.json"
+    claims = [{"id": "target", "status": "open"}, {"id": "neighbor", "status": "open"}]
+
+    def write(members: list[dict[str, Any]]) -> None:
+        registry.write_text(records.encoded({"claims": members}))
+
+    write(claims)
+    ref = "registry.json#claims/id=target"
+    invoke(root, "digest", ref)
+    printed = capsys.readouterr().out.split()[0]
+    if printed != records.digest(claims[0]):
+        raise RuntimeError("digest prints the canonical digest of the selected record")
+    item = plan()
+    step = item["steps"][0]
+    step.update(state="done", receipts=[receipt(root, item, step)])
+    step["receipts"][0]["evidence"] = [{"ref": ref, "sha256": printed}]
+    records.validate(root, {item["id"]: item})
+    write([claims[0], {"id": "neighbor", "status": "established"}, {"id": "added", "status": "open"}])
+    if records.receipt_freshness(root, item):
+        raise RuntimeError("edits to other records leave a selected record fresh")
+    stale = [f"{step['id']}: revalidation required for {ref}"]
+    for members in (
+        [{"id": "target", "status": "established"}],
+        [{"id": "neighbor", "status": "open"}],
+        [claims[0], claims[0]],
+    ):
+        write(members)
+        if records.receipt_freshness(root, item) != stale:
+            raise RuntimeError(f"a changed, missing or ambiguous record requests revalidation: {members}")
+    for malformed in ("registry.json#claims", "context.md#claims/id=target"):
+        step["receipts"][0]["evidence"] = [{"ref": malformed, "sha256": printed}]
+        with pytest.raises(ValueError, match="evidence selector needs"):
+            records.validate(root, {item["id"]: item})
+
+
 def test_runnable_frontier_and_closed_unfinished_steps(root: Path) -> None:
     item = plan()
     item["steps"][0]["depends_on"] = ["later-prerequisite"]

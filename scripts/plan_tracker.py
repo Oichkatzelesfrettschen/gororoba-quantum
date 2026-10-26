@@ -235,6 +235,10 @@ def parser() -> argparse.ArgumentParser:
         choices=CHECK_INPUTS,
         help="the record directory and generated views check reads, named for changed-path gate selection",
     )
+    evidence = actions.add_parser("digest")
+    evidence.add_argument(
+        "refs", nargs="+", help="local evidence references, a file or FILE.json#COLLECTION/FIELD=VALUE"
+    )
     render = actions.add_parser("render")
     render.add_argument("--write", action="store_true")
     inventory = actions.add_parser("scan")
@@ -260,6 +264,12 @@ def _run(arguments: argparse.Namespace) -> int:
             end="",
         )
         return int(bool(findings))
+    if arguments.command == "digest":
+        for ref in arguments.refs:
+            value = records.evidence_digest(root, ref)
+            records.require(value is not None, f"no single record matches {ref}")
+            print(f"{value}  {ref}")
+        return 0
     plans = records.load(root)
     records.validate(root, plans)
     if arguments.command in {"check", "render"}:

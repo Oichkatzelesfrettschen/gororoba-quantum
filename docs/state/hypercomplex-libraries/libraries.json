@@ -11945,6 +11945,7 @@
   "scripts/plan_records.py": [
    "__future__",
    "datetime",
+   "functools",
    "hashlib",
    "json",
    "parallel",
