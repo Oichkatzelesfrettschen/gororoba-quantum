@@ -1635,3 +1635,79 @@ returned circuit does not carry it. Every family of the decomposition
 section, fitted on job-00, misses this deterministic per-mesh target. The
 per-mesh statistics of job-02 and job-03 together form a reproducible test
 set, job-03's at half job-02's counting variance.
+
+## Element offsets fitted on the served meshes
+
+Every element-offset family above was fitted on job-00 alone, where 30
+configurations share the seed-0 mesh. Plan
+[`ascella-fixed-mesh-error-model`](../state/plans/ascella-fixed-mesh-error-model.json)
+fits them on the served meshes themselves: job-00 plus the 28 exploration
+meshes of [`mesh-split.json`](../evidence/ascella-order-coefficients/mesh-split.json),
+each mesh's X statistic pooled over job-02 and job-03 by setting name, at
+about a third of job-02's counting variance. Two families, each the
+block-conditioned static fit at its posterior mode: heater offsets under
+N(0, 0.3²) with coupler offsets under N(0, 0.1²) (258 parameters), and the
+coupler offsets alone (132). A family reaches the held-out half only when its
+median prediction-to-counting variance ratio on the held-out designs stays at
+or below 1 and its 28 exploration leave-one-mesh-out refits sum below 56.9,
+the chi-square 0.999 quantile on 28. The folds share all but one training
+mesh, so their residuals are dependent and 56.9 is the plan's fixed
+threshold rather than the sum's calibrated distribution
+([`fixed-mesh-error.json`](../evidence/ascella-order-coefficients/fixed-mesh-error.json),
+[`scripts/ascella_fixed_mesh_error.py`](../../scripts/ascella_fixed_mesh_error.py)):
+
+| Family | Held-out variance ratio | Leave-one-out sum | Leave-one-out X correlation | Held-out reading |
+|---|---|---|---|---|
+| heater and coupler offsets | 2.42 | 597 | 0.59 | not run |
+| coupler offsets | 0.54 | 1133 | 0.08 | not run |
+
+Any two of the 28 exploration meshes differ at all 126 heaters, and their
+pairwise circular phase distances have a coefficient of variation of 0.052.
+The served meshes sit nearly equidistant, so no smooth map from phase to
+error can be learned by neighborhood, and the plan's Mantel screen does not
+run.
+
+The heater and coupler offsets failed both gates. Their leave-one-out
+predictions still followed the unseen exploration meshes, at Pearson 0.59
+and Spearman 0.55 (p 0.003). The offsets overshoot the spread, with a
+regression slope of 0.40, and the mean residual of -0.014 is the
+mesh-independent deficit no element offset carries. A complete-prediction
+quadratic form reads shortfall for a partial predictor, so plan
+[`ascella-fixed-mesh-confirmation`](../state/plans/ascella-fixed-mesh-confirmation.json)
+tests that signal on the held-out half by an affine-invariant statistic. The
+28 held-out predictions of one fit on the training set were frozen
+([`fixed-mesh-frozen-predictions.json`](../evidence/ascella-order-coefficients/fixed-mesh-frozen-predictions.json))
+and their digest committed with the plan before any held-out residual was
+computed. The primary reading is the one-sided Pearson correlation of those
+predictions with the held-out pooled X, by the t distribution on 26 degrees of
+freedom at alpha 0.01 (critical r 0.437, power 0.86 at the exploration's 0.59)
+([`fixed-mesh-confirmation.json`](../evidence/ascella-order-coefficients/fixed-mesh-confirmation.json),
+[`scripts/ascella_fixed_mesh_confirmation.py`](../../scripts/ascella_fixed_mesh_confirmation.py)):
+
+| Statistic | Held-out value |
+|---|---|
+| Pearson r | 0.318 (t 1.71, one-sided p 0.050) |
+| reading at alpha 0.01 | not carried |
+| Spearman correlation | 0.29 |
+| r² against the 0.978² attenuation ceiling | 0.101, 10.6 % of the ceiling |
+| one-sided 99 % Fisher-z upper bound of r | 0.661, 45.7 % of the ceiling |
+| affine slope of observed on predicted | 0.22 |
+| predicted against observed X spread | 0.0147 against 0.0102 |
+| full quadratic form on 28 | 638, shortfall (as the plan expected) |
+| scatter form on 27, one free constant | 506, shortfall (as the plan expected) |
+
+The exploration correlation of 0.59 shrinks to 0.32 on the unseen half. That
+is the regression to the mean expected of a 258-parameter fit selected on 28
+meshes. The point estimate puts a tenth of the compilation-induced variance
+with the static element offsets, and the data still admit up to 46 % at the
+99 % upper bound, so the reading fails to establish the offsets as a carrier
+without excluding a partial one. The returned circuit with fixed per-element
+offsets does not reproduce the fixed per-mesh error. The design statement of
+the decomposition section stands. Confidence that the error depends on a
+quantity the returned circuit omits, such as the applied voltages under the
+calibration in force: medium-high. Two things would lower it: a family that
+carries the held-out meshes at alpha 0.01 under a fresh preregistration, or
+new served meshes that the same fitted offsets predict at r above 0.437.
+The applied voltages per iteration, which the provider has not published,
+would test it directly. Both plans spent the held-out half on this one
+reading, so a further offline family needs new served meshes.
