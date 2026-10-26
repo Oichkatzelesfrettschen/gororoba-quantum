@@ -4,12 +4,41 @@
   "kind": "investigation",
   "summary": "Measure the per-measurement departure from ideal pinching: N steps of RX(8pi/9 / N), on the pi/36 angle grid, each followed by a discarded mid-circuit measurement; ideal P0 = (1 + cos(THETA/N)^N)/2, against a unitary N = 16 null, a duration-matched delay control and a settle-gap control.",
   "sources": [
-    "docs/archive/reviews/quantum-recovery-proposal-audit.md"
+    "docs/archive/reviews/quantum-recovery-proposal-audit.md",
+    "docs/design/measurement-sequence-adaptive-envelope.md"
   ],
-  "state": "inbox",
+  "state": "active",
   "reconciliation": {
-    "status": "unresolved",
-    "note": "Captured context; triage and evidence review pending."
+    "status": "verified",
+    "note": "Envelope design v3.3 answers three Codex review rounds; implementation on the branch."
   },
-  "next_action": "Write the circuit family and a submit-free dry run on Tuna-17 (mid-circuit measurement, no feed-forward) and on a Heron r2 Target, with N in {1,2,4,8,16}, signed arms +,-,-,+ and the duration-matched delay null; then a written case."
+  "next_action": "Retain the 32-qubit envelope dry run, run the null calibration at its width, write the case with the doctrine question, and submit on the owner's approval.",
+  "scope": "Heron r2 (ibm_kingston) pinching run under a calibration-adaptive envelope approval: layout rule at width tier 16/24/32, terminal resets, reset controls, Hadamard crosstalk patterns, 20 us repetition delay with a 50 us fallback attempt, preregistered screens and stochastic null.",
+  "owner": "measurement-sequence-pinching branch",
+  "steps": [
+    {
+      "id": "envelope-dry-run",
+      "action": "Run and retain the envelope dry run at the largest width tier that meets the size and time limits.",
+      "acceptance": "results/live run with an envelope section, live_run.py --check-envelope passing, the charge table filled.",
+      "state": "doing"
+    },
+    {
+      "id": "null-calibration",
+      "action": "Run msq_envelope_null.py at the chosen width with at least 299 replicates and retain its output.",
+      "acceptance": "Clopper-Pearson 95 % upper bound on the false-fire rate below 0.01.",
+      "state": "todo"
+    },
+    {
+      "id": "written-case",
+      "action": "Write the case from the record's envelope section with the doctrine change as its own question.",
+      "acceptance": "Owner approval of the run and a separate ratification of the doctrine edit.",
+      "state": "todo"
+    },
+    {
+      "id": "submit-collect",
+      "action": "Submit under the envelope, collect, and run msq_envelope_analysis.",
+      "acceptance": "Retained run with raw shots and the preregistered analysis, registered in research_state.json.",
+      "state": "todo"
+    }
+  ]
 }
