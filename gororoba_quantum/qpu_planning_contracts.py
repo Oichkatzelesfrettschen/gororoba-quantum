@@ -2735,6 +2735,23 @@ def _verify_ground_ramsey_sweep(snapshot: live_run.Snapshot) -> None:
 WINDOW_DOSES = [0, 3500, 7000]
 
 
+def _verify_window_dose_packing(snapshot: live_run.Snapshot) -> None:
+    """Unpinned, a window-dose sweep takes the replica tiers; the window variants stay at one replica."""
+    packed = _args(
+        "n21-orbit-rca",
+        init_herald=True,
+        window_doses_dt=WINDOW_DOSES,
+        optimize=True,
+        replica_tiers=[4],
+        max_replicas=4,
+    )
+    packed_candidates = qpu_planning.family_candidates(live_run, [snapshot], packed, {})
+    _require(
+        any(config.get("replica_cap") == 4 and len(choices[0].replicas) >= 2 for choices, config in packed_candidates),
+        "an unpinned window-dose sweep places one replica under a four-replica tier",
+    )
+
+
 def _verify_window_dose_sweep(snapshot: live_run.Snapshot) -> None:
     """A window-dose plan keeps each dose as a top-level delay on all four wires and binds the doses.
 
@@ -2925,6 +2942,16 @@ def _verify_window_dose_sweep(snapshot: live_run.Snapshot) -> None:
         with redirect_stderr(stderr), contextlib.suppress(SystemExit):
             live_run.main(argv)
         _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}, not {message!r}")
+
+
+def _verify_window_dose_packing_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_window_dose_packing(snapshot)
+    print("QPU planning: an unpinned n21-orbit-rca window-dose sweep places several replicas under a replica tier")
 
 
 def _verify_window_dose_sweep_only() -> None:

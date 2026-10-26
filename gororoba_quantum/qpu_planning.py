@@ -429,6 +429,21 @@ def ramsey_windows_of(members: Any) -> tuple[int, ...]:
     return tuple(sorted({key[0] for key in found if key is not None}))
 
 
+def n21_replica_tiers(args: Any) -> list[int]:
+    """The replica tiers an N=21 family plans.
+
+    The orbit-rca window analysis reads one replica's schedule and wires, so its window variants plan one. A
+    window-dose sweep's doses are fixed dt values that no control's calibration sizes, and its replay and decisions
+    read every replica, so it packs as many replicas as the tiers admit.
+    """
+    tiers = list(args.replica_tiers) if args.optimize else [args.max_replicas or 1]
+    if args.family == "n21-orbit-rca" and not getattr(args, "window_doses_dt", None):
+        tiers = [1]
+    if args.max_replicas is not None:
+        tiers = [tier for tier in tiers if tier <= args.max_replicas]
+    return tiers
+
+
 def window_doses_of(members: Any) -> tuple[int, ...]:
     """The window-dose sweep's doses in dt that a group's member names carry; () for any other group."""
     found = (n21_dose_key(member.name) for member in members)
@@ -1134,12 +1149,7 @@ def family_candidates(
                 args.seeds,
                 trace,
             )
-        tiers = args.replica_tiers if args.optimize else [args.max_replicas or 1]
-        if args.family == "n21-orbit-rca":
-            # The window analysis reads one replica's schedule and wires.
-            tiers = [1]
-        if args.max_replicas is not None:
-            tiers = [tier for tier in tiers if tier <= args.max_replicas]
+        tiers = n21_replica_tiers(args)
         if not tiers:
             raise runtime.LiveRunError("replica tiers contain no placement within --max-replicas")
         for candidate in routed[: args.optimizer_candidates]:

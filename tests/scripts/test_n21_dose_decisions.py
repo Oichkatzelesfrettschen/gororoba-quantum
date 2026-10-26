@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import n21_dose_decisions as dose
 
 
@@ -21,7 +23,7 @@ def test_measured_contrast_and_sigma_follow_the_score_vector() -> None:
             ],
         }
     ]
-    laws = {"fb": [0.25, 0.5, 0.0, 0.25], "nf": [0.25, 0.25, 0.25, 0.25]}
+    laws = {"fb": [[0.25, 0.5, 0.0, 0.25]], "nf": [[0.25, 0.25, 0.25, 0.25]]}
     value, sigma = dose.measured(contracts, laws, 100)["c"]
     if abs(value - 0.25) > 1e-12:
         raise AssertionError(f"contrast {value}")
@@ -30,7 +32,7 @@ def test_measured_contrast_and_sigma_follow_the_score_vector() -> None:
         raise AssertionError(f"variance {sigma**2} against {expected}")
 
 
-def test_withheld_comparisons_are_refused(tmp_path) -> None:  # type: ignore[no-untyped-def]
+def test_withheld_comparisons_are_refused(tmp_path: Path) -> None:
     import json
 
     import pytest
@@ -42,3 +44,11 @@ def test_withheld_comparisons_are_refused(tmp_path) -> None:  # type: ignore[no-
     (tmp_path / "idle-replay.json").write_text(json.dumps({"contracts": {"idle_padded_exact": {}}}))
     with pytest.raises(ValueError, match="withheld"):
         dose.analyze(tmp_path)
+
+
+def test_replicas_pool_as_the_collector_averages_them() -> None:
+    contracts = [{"name": "c", "terms": [{"member": "fb", "sign": 1, "values": [0.0, 1.0, 0.0, -1.0]}]}]
+    laws = {"fb": [[0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0]]}
+    value, sigma = dose.measured(contracts, laws, 100)["c"]
+    if abs(value) > 1e-12 or abs(sigma) > 1e-12:
+        raise AssertionError(f"two deterministic replicas pool to {value} +- {sigma}")

@@ -43,21 +43,48 @@ def require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
-def measured(contracts: Sequence[Mapping[str, Any]], laws: Mapping[str, Sequence[float]], shots: int) -> dict:
-    """{contract name: (value, sigma)} from each member's one measured law at shots."""
-    out = {}
+def replica_values(
+    contracts: Sequence[Mapping[str, Any]], laws: Mapping[str, Sequence[Sequence[float]]], shots: int
+) -> dict[str, list[tuple[float, float]]]:
+    """{contract name: [(value, sigma) per replica]} from each member's measured law per replica at shots."""
+    out: dict[str, list[tuple[float, float]]] = {}
     for contract in contracts:
-        value = 0.0
-        variance = 0.0
-        for term in contract["terms"]:
-            law = np.asarray(laws[term["member"]], dtype=float)
-            law = law / law.sum()
-            w = np.asarray(term["values"], dtype=float)
-            mean = float(w @ law)
-            value += term["sign"] * mean
-            variance += (float((w * w) @ law) - mean * mean) / shots
-        out[contract["name"]] = (value, math.sqrt(variance))
+        count = {len(laws[term["member"]]) for term in contract["terms"]}
+        require(len(count) == 1, f"{contract['name']}: its members hold different replica counts {sorted(count)}")
+        rows = []
+        for r in range(count.pop()):
+            value = 0.0
+            variance = 0.0
+            for term in contract["terms"]:
+                law = np.asarray(laws[term["member"]][r], dtype=float)
+                law = law / law.sum()
+                w = np.asarray(term["values"], dtype=float)
+                mean = float(w @ law)
+                value += term["sign"] * mean
+                variance += (float((w * w) @ law) - mean * mean) / shots
+            rows.append((value, math.sqrt(variance)))
+        out[contract["name"]] = rows
     return out
+
+
+def pooled(rows: Sequence[tuple[float, float]]) -> tuple[float, float]:
+    """The replica mean, as the collector's contract value is, and its shot-noise sigma."""
+    n = len(rows)
+    return sum(v for v, _ in rows) / n, math.sqrt(sum(s * s for _, s in rows)) / n
+
+
+def measured(
+    contracts: Sequence[Mapping[str, Any]], laws: Mapping[str, Sequence[Sequence[float]]], shots: int
+) -> dict[str, tuple[float, float]]:
+    """{contract name: (replica-mean value, sigma)} from each member's measured laws at shots."""
+    return {name: pooled(rows) for name, rows in replica_values(contracts, laws, shots).items()}
+
+
+def exact_replica_values(
+    contracts: Sequence[Mapping[str, Any]], laws: Mapping[str, Sequence[Sequence[float]]]
+) -> dict[str, list[float]]:
+    """{contract name: [model value per replica]} from the idle-padded exact laws of each replica."""
+    return {name: [v for v, _ in rows] for name, rows in replica_values(contracts, laws, 1).items()}
 
 
 def arms(names: Sequence[str]) -> tuple[list[int], dict[int, str], dict[int, str]]:
@@ -144,15 +171,23 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     # (live_run._comparisons_withheld); a dose response read across such PUBs would include the calibration change.
     withheld = groups[0].get("comparisons_withheld")
     require(withheld is None, f"{run_dir}: the collector withheld the sweep's comparisons: {withheld}")
-    laws = {}
-    for member, replicas in groups[0]["measured"].items():
-        require(len(replicas) == 1, f"{member}: {len(replicas)} replicas, the sweep runs one")
-        laws[member] = replicas[0]
+    laws = groups[0]["measured"]
     contracts = record["observable_contracts"]
-    values = measured(contracts, laws, int(record["shots"]))
+    shots = int(record["shots"])
+    values = measured(contracts, laws, shots)
     model = replay["contracts"]["idle_padded_exact"]
     require(set(values) <= set(model), "idle-replay.json lacks an idle-padded exact value for a contract")
     out = decide(values, model)
+    # Each replica against its own exact model, for the spread across qubit sets the pooled test averages over.
+    per_replica = replica_values(contracts, laws, shots)
+    exact = exact_replica_values(contracts, replay["exact_laws"]["idle_padded"])
+    out["replicas"] = {
+        name: [
+            {"measured": v, "sigma": s, "model": m, "z": (v - m) / s}
+            for (v, s), m in zip(per_replica[name], exact[name], strict=True)
+        ]
+        for name in per_replica
+    }
     out["run"] = run_dir.name
     out["model_source"] = "idle-replay.json contracts.idle_padded_exact"
     return out
