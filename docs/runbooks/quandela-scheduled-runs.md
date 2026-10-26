@@ -164,6 +164,17 @@ fidelity against F* = 0.86, and disables the workflow. A run on the recovered
 chip stays plan step `recovered-chip-rehearsal` (job-01), with its own written
 case and the owner's approval.
 
+With `--booking results/quandela/watch/qpu-belenos-booking.json` the same run
+reads the platform's public explorer row and compares its maintenance window
+with the booked one (`qd_record_watch.booking_event`). The window ending
+(no window, another window, `maintenance_ended`, or a status other than
+`maintenance`), overrunning its listed end, or moving its end posts one comment
+each, keyed on the window and never on the read time, with the record's class
+at that read. A failed run comments once per commit with its URL. Every comment
+goes to the open issue titled "qpu:belenos performance record changed" (#556)
+and mentions the repository owner. The procedure for each comment is the
+[Belenos recovery handoff](../archive/handoffs/belenos-recovery-watch.md).
+
 Re-arm the watch for a later held state by writing a new held file from a
 retained catalogue and enabling the workflow. `first_seen_utc` takes the
 catalogue's `retrieved_utc` unless `--first-seen` names an earlier retained

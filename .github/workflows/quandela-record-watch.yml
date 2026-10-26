@@ -8,6 +8,11 @@ name: quandela-record-watch
 # figures and the rehearsal model's pooled fidelity at that same snapshot, then
 # disables this workflow. A changed record whose figures the model rejects
 # (state unscorable) ends the run quietly and leaves the watch armed.
+# The same run reads the platform's explorer row against the maintenance window
+# of results/quandela/watch/qpu-belenos-booking.json and comments once per
+# booking event (ended, overran, moved) with the record's class at that read.
+# A failed run comments once per commit with its URL. Every comment goes to the
+# open issue titled TITLE and mentions the repository owner.
 # The token lives only in the quandela environment, whose deployment branches
 # are restricted to main.
 on:
@@ -23,6 +28,7 @@ permissions:
   contents: read
 
 env:
+  TITLE: qpu:belenos performance record changed
   PYTHON: python3
   # Qiskit 2.6 Rust TLS plus late-loaded Aer OpenMP need reserved loader capacity.
   GLIBC_TUNABLES: glibc.rtld.optional_static_tls=4096
@@ -44,6 +50,30 @@ jobs:
       PINS_VENV: /home/runner/.cache/gororoba-ci/pins-venv
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      # Every comment step posts through post_once: the open issue titled TITLE
+      # (created when none is open), skipped when a comment already carries MARKER.
+      - name: Write the comment helper
+        run: |
+          cat > "$RUNNER_TEMP/post_once.sh" <<'EOF'
+          # post_once MARKER BODY_FILE
+          set -eu
+          marker=$1
+          body=$2
+          printf '\ncc @%s\n' "$GITHUB_REPOSITORY_OWNER" >> "$body"
+          open=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
+            --jq '.[] | select(.pull_request == null and .title == env.TITLE) | .number' | sed -n 1p)
+          if [ -z "$open" ]; then
+            gh api "repos/$GITHUB_REPOSITORY/issues" -f "title=$TITLE" -F "body=@$body" --jq .html_url
+            exit 0
+          fi
+          seen=$(MARKER="$marker" gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$open/comments?per_page=100" \
+            --jq '[.[] | select(.body | contains(env.MARKER))] | length' | awk '{n += $1} END {print n + 0}')
+          if [ "$seen" -gt 0 ]; then
+            echo "issue $open already carries $marker"
+            exit 0
+          fi
+          gh api "repos/$GITHUB_REPOSITORY/issues/$open/comments" -F "body=@$body" --jq .html_url
+          EOF
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
         id: python
         with:
@@ -83,22 +113,49 @@ jobs:
           umask 022
           QUANDELA_TOKEN_FILE="$RUNNER_TEMP/qd-token/token" "$PYTHON" scripts/qd_record_watch.py check \
             results/quandela/watch/qpu-belenos-held.json \
-            --report "$RUNNER_TEMP/report.json" --summary "$RUNNER_TEMP/summary.md"
+            --report "$RUNNER_TEMP/report.json" --summary "$RUNNER_TEMP/summary.md" \
+            --booking results/quandela/watch/qpu-belenos-booking.json --booking-summary "$RUNNER_TEMP/booking.md"
           rm -f "$RUNNER_TEMP/qd-token/token"
-          state=$("$PYTHON" -c 'import json, sys; print(json.load(open(sys.argv[1]))["state"])' "$RUNNER_TEMP/report.json")
-          echo "STATE=$state" >> "$GITHUB_ENV"
+          "$PYTHON" - "$RUNNER_TEMP/report.json" >> "$GITHUB_ENV" <<'EOF'
+          import json, sys
+          report = json.load(open(sys.argv[1]))
+          booking = report.get("booking", {})
+          print(f"STATE={report['state']}")
+          print(f"BOOKING_KEY={(booking.get('event') or {}).get('key', '')}")
+          print(f"BOOKING_ERROR={'1' if 'error' in booking else ''}")
+          EOF
+      - name: Report a booking event
+        if: env.BOOKING_KEY != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: sh "$RUNNER_TEMP/post_once.sh" "<!-- qd-record-watch:booking:$BOOKING_KEY -->" "$RUNNER_TEMP/booking.md"
       - name: Report a change and stop the watch
         if: env.STATE == 'changed'
         env:
           GH_TOKEN: ${{ github.token }}
-          TITLE: qpu:belenos performance record changed
         run: |
           set -eu
-          open=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
-            --jq '.[] | select(.pull_request == null and .title == env.TITLE) | .number' | sed -n 1p)
-          if [ -n "$open" ]; then
-            gh api "repos/$GITHUB_REPOSITORY/issues/$open/comments" -F "body=@$RUNNER_TEMP/summary.md" --jq .html_url
-          else
-            gh api "repos/$GITHUB_REPOSITORY/issues" -f "title=$TITLE" -F "body=@$RUNNER_TEMP/summary.md" --jq .html_url
-          fi
+          marker="<!-- qd-record-watch:change:$("$PYTHON" -c 'import json, sys; print(json.load(open(sys.argv[1]))["perfs_sha256"])' "$RUNNER_TEMP/report.json") -->"
+          printf '%s\n' "$marker" | cat - "$RUNNER_TEMP/summary.md" > "$RUNNER_TEMP/change.md"
+          sh "$RUNNER_TEMP/post_once.sh" "$marker" "$RUNNER_TEMP/change.md"
           gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/quandela-record-watch.yml/disable"
+      - name: Fail on an explorer read error
+        if: env.BOOKING_ERROR != ''
+        run: |
+          echo "::error::the explorer read failed; the report's booking.error names the cause"
+          exit 1
+      - name: Report a failed run
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -eu
+          marker="<!-- qd-record-watch:failure:$GITHUB_SHA -->"
+          printf '%s\nThe record watch run %s failed at commit %s; its log names the failing step. Later runs of the same commit fail without a further comment.\n' \
+            "$marker" "$RUN_URL" "$GITHUB_SHA" > "$RUNNER_TEMP/failure.md"
+          if [ -f "$RUNNER_TEMP/post_once.sh" ]; then
+            sh "$RUNNER_TEMP/post_once.sh" "$marker" "$RUNNER_TEMP/failure.md"
+          else
+            echo "::error::the run failed before the comment helper was written"
+          fi

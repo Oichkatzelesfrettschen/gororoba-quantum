@@ -327,6 +327,7 @@ differs from it only in the `cd_core.py` digest.
 | [repository_reconciliation_2026-10-17.md](notes/handbacks/repository_reconciliation_2026-10-17.md) | repository reconciliation, 17 October 2026 |
 | [belenos-first-load-hypothesis-2026-10-18.md](archive/handoffs/belenos-first-load-hypothesis-2026-10-18.md) | Belenos first-load hypothesis |
 | [box-kite-case-generator.md](archive/handoffs/box-kite-case-generator.md) | box-kite case generator handoff |
+| [belenos-recovery-watch.md](archive/handoffs/belenos-recovery-watch.md) | Belenos recovery watch, issue #556 procedure and the job-01 rehearsal build |
 | [handoff-notes-2026-10-15.md](archive/handoffs/handoff-notes-2026-10-15.md) | chat-session decisions and falsification results |
 | [handoff-notes.md](archive/handoffs/handoff-notes.md) | program handoff sections |
 | [archive/reviews/README.md](archive/reviews/README.md) | review and audit reports; [docs audit](archive/reviews/docs-audit.md) |
