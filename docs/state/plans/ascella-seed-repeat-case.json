@@ -9,14 +9,14 @@
     "docs/evidence/ascella-order-coefficients/compilation-reading.json",
     "docs/evidence/ascella-order-coefficients/heater-coupling.json"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
-    "status": "unresolved",
+    "status": "verified",
     "note": "The readings below are fixed in this record before acquisition. Every error family fitted on job-00 assumes the per-mesh deviation of job-02 is a deterministic function of the returned mesh, and reproducibility is shown only at seed 0 (job-00 read 0.881 and job-02's anchors 0.883 on the same mesh). Maring et al. (arXiv:2306.00874, Fig. 1 caption) describe hourly recalibration of phi = A V^2 + b, so job-03 runs under another calibration than job-02; the seed-0 anchors are the control for that change."
   },
   "scope": "Job-03 submits job-02's 64 settings (theta2-x-arm0, 16,384 samples per iteration) with job-02's seeds, imported from SEED_DRAW by name. The 8 anchors keep every eighth position; the 56 perturbed meshes take the off-stride positions in the order of values 0..55 of the ANU QRNG draw docs/evidence/anu_qrng/draw-2026-10-26T033936Z.json, so each mesh's predecessor changes. Value 56 of that draw seeds the permutation nulls. Readings at alpha 0.01, on the block-conditioned X statistic of scripts/ascella_compilation_reading.py: M, mesh identity: the count of settings whose computed_circuit equals job-02's for the same name; A, P1 and P2 read the identical subset, and if no perturbed mesh repeats, job-03's meshes join the held-out set of ascella-mesh-response-decomposition and P1 is not read. A, anchor control: the difference of job-03's and job-02's anchor mean X in counting standard errors. P1, per-mesh reproduction: Pearson r of the 56 perturbed X statistics between job-02 and job-03 against 20,000 label permutations. A fully fixed per-mesh error predicts r at the attenuation ceiling 0.880 = s_c^2 / sqrt((s_c^2 + s_n^2)(s_c^2 + s_n^2 / 2)), with job-02's compilation-induced SD s_c 0.01037 and counting variance s_n^2 1.965e-5 at 8,192 samples, halved at job-03's 16,384; the Fisher-z 0.01 lower bound of that ceiling on 56 meshes is 0.784. P1 reads fixed per mesh at p < 0.01 and r >= 0.784, partly fixed at p < 0.01 and r < 0.784, and not reproduced at p >= 0.01. The test detects at power 0.9 a correlation of 0.459, a fixed share of 52 % of the compilation variance. P2, replicated compilation dependence: job-02's R1 anchor-ratio test applied to job-03 alone. Exploratory, outside the decision: the Spearman correlation of per-mesh dark-output (mode 2) counts between the jobs, and the Spearman correlation of each mesh's X change between the jobs with the change of its predecessor's L1 compiled-phase distance. Reading P1 with A: reproduction with steady anchors places the error in a fixed per-mesh property; no reproduction with steady anchors places it in the compilation or calibration in force at each job; a moved anchor mean places a calibration change between the jobs, and P1 then reads a lower bound on the fixed share.",
   "owner": "ascella signed-coherence analysis",
-  "next_action": "Submit the approved job-03 once qpu:ascella reads available (it read calibration at 03:50 UTC on 2026-10-26), collect, retain and apply the readings.",
+  "next_action": "None; a model of the map from a served mesh to its fixed error, scored on the per-mesh statistics of job-02 and job-03, is a new plan.",
   "related": [
     "ascella-perturbed-compilation-case",
     "ascella-mesh-response-decomposition",
@@ -74,10 +74,47 @@
       "id": "acquisition-and-reading",
       "action": "Submit on approval, collect, retain and apply M, A, P1 and P2 as fixed in this record, with the exploratory readings labeled.",
       "acceptance": "A retained run and a reading record with every fixed reading and its gate.",
-      "state": "doing",
+      "state": "done",
       "depends_on": [
         "written-case"
+      ],
+      "receipts": [
+        {
+          "result": "Job e2f30d83 completed and is retained; seed-repeat-reading.json applies M, A, P1 and P2: every served mesh repeats, the anchors stay steady, P1 reads fixed per mesh (r 0.885, p 5e-5) and P2 compilation dependent; core-ascella-signed-coherence-seed-repeat-reading-replay replays it.",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/results.json",
+              "sha256": "337f9e9539e332f1713679b7a94501700ef9edbc308cfe9feea6e622c51a04ff"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/seed-repeat-reading.json",
+              "sha256": "a631dd14d30c487746a8d0d457b50aa84622090b5239403b768ea9636eeb0e73"
+            }
+          ],
+          "observed_at": "2026-10-26T04:07:11+00:00",
+          "revision": "2b48d0202e1680510c810de7840fa29232a05b8f",
+          "scope_sha256": "e5c30567c5a64e4746a6064f77e1c8899da35ffc3315b55cdb05bfe4740bfaa4"
+        }
       ]
+    }
+  ],
+  "disposition": "completed",
+  "claims": [
+    "ascella-signed-coherence-seed-repeat"
+  ],
+  "resolution": "Every served mesh of job-02 repeats in job-03, nine hours and a platform calibration later, and so does its analyzer error: the 56 per-mesh X statistics correlate at r 0.885 (p 5e-5) against the 0.880 ceiling of a fully fixed error, with steady anchors; the per-mesh deviation is a deterministic function of the served mesh.",
+  "receipts": [
+    {
+      "result": "All three steps are done; the run, the reading record and its replay gate are retained, and claim ascella-signed-coherence-seed-repeat registers the result.",
+      "observed_at": "2026-10-26T04:07:26+00:00",
+      "revision": "2b48d0202e1680510c810de7840fa29232a05b8f",
+      "evidence": [
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/seed-repeat-reading.json",
+          "sha256": "a631dd14d30c487746a8d0d457b50aa84622090b5239403b768ea9636eeb0e73"
+        }
+      ],
+      "scope_sha256": "e601a39da069c381917c1f3d9a577cfd345a03d1515ff2bc4879fda3dacbceb7"
     }
   ]
 }
