@@ -1,0 +1,149 @@
+{
+ "exploration_meshes": 28,
+ "families": [
+  {
+   "exploration": {
+    "coordinates": 84,
+    "kept_threshold": 110.01109805234124,
+    "median_variance_ratio": 0.0,
+    "mode_2_model_mean": 0.0003526687701138682,
+    "mode_2_observed_mean": 0.0008602708906159203,
+    "quadratic_form": 1974.5101972707707,
+    "reading": "shortfall",
+    "shortfall_threshold": 129.80369323488026,
+    "x_correlation": -0.050588872668255146,
+    "x_model_mean": 0.9035460265195493,
+    "x_observed_mean": 0.8866762807045063
+   },
+   "family": "nominal",
+   "job_00_gain_over_nominal": 0.0,
+   "job_00_leak_median": 3.2275435796202956e-07,
+   "job_00_negative_log_posterior": 474686.370870632,
+   "lowest_hessian_eigenvalue": 0.0,
+   "magnitudes": [],
+   "parameters": 0
+  },
+  {
+   "exploration": {
+    "coordinates": 84,
+    "kept_threshold": 110.01109805234124,
+    "median_variance_ratio": 0.036626014655526146,
+    "mode_2_model_mean": 0.0003949052388675197,
+    "mode_2_observed_mean": 0.0008602708906159203,
+    "quadratic_form": 1544.49071349713,
+    "reading": "shortfall",
+    "shortfall_threshold": 129.80369323488026,
+    "x_correlation": -0.012329813367656716,
+    "x_model_mean": 0.9036364896701502,
+    "x_observed_mean": 0.8866762807045063
+   },
+   "family": "output_stage",
+   "job_00_gain_over_nominal": 447.2870749356807,
+   "job_00_leak_median": 0.0006305755327482565,
+   "job_00_negative_log_posterior": 474239.0837956963,
+   "lowest_hessian_eigenvalue": 59.8950225602552,
+   "magnitudes": [
+    0.0009751194770466739,
+    0.023827889766550495,
+    0.034951317884203116,
+    0.017911445743092558,
+    0.001752515547128213,
+    0.00018679180742251997,
+    0.0001482593994472613,
+    2.5395025632720437e-05,
+    2.7551059977323097e-06,
+    2.9593584784354786e-06,
+    1.0086278416532746e-06
+   ],
+   "parameters": 22
+  },
+  {
+   "exploration": {
+    "coordinates": 84,
+    "kept_threshold": 110.01109805234124,
+    "median_variance_ratio": 0.05530101626861217,
+    "mode_2_model_mean": 0.0006397168787288745,
+    "mode_2_observed_mean": 0.0008602708906159203,
+    "quadratic_form": 1304.7343940586736,
+    "reading": "shortfall",
+    "shortfall_threshold": 129.80369323488026,
+    "x_correlation": 0.13604221868370567,
+    "x_model_mean": 0.9013393148419278,
+    "x_observed_mean": 0.8866762807045063
+   },
+   "family": "input_stage",
+   "job_00_gain_over_nominal": 821.8930871922639,
+   "job_00_leak_median": 0.0015941229719267924,
+   "job_00_negative_log_posterior": 473864.47778343974,
+   "lowest_hessian_eigenvalue": 34661.6593839076,
+   "magnitudes": [
+    0.03332370092407221,
+    0.004809420255773592,
+    0.004436968359443698,
+    0.009892274892010937,
+    0.017427933844593152,
+    0.011073952440664553,
+    0.01742322336260763,
+    0.0093525657427719,
+    0.005543447501409141,
+    0.014061178715842629,
+    0.005993357935854911
+   ],
+   "parameters": 22
+  },
+  {
+   "exploration": {
+    "coordinates": 84,
+    "kept_threshold": 110.01109805234124,
+    "median_variance_ratio": 0.09945727663761458,
+    "mode_2_model_mean": 0.0005233982931441768,
+    "mode_2_observed_mean": 0.0008602708906159203,
+    "quadratic_form": 1386.997334351689,
+    "reading": "shortfall",
+    "shortfall_threshold": 129.80369323488026,
+    "x_correlation": 0.14585103417065173,
+    "x_model_mean": 0.9025305371032191,
+    "x_observed_mean": 0.8866762807045063
+   },
+   "family": "output_and_input_stage",
+   "job_00_gain_over_nominal": 957.3856492399937,
+   "job_00_leak_median": 0.0017631178237089706,
+   "job_00_negative_log_posterior": 473728.985221392,
+   "lowest_hessian_eigenvalue": 47.26626661399505,
+   "magnitudes": [
+    0.008560050694385497,
+    0.02259518921321422,
+    0.027167337391784483,
+    0.009216929839533249,
+    0.10874080269232121,
+    0.21648452987394282,
+    0.09483645663392742,
+    0.14869224870801628,
+    0.08122231071873781,
+    0.06565415712766641,
+    0.08463253394579,
+    0.018710409866710683,
+    0.002896563419341086,
+    0.006980644694886057,
+    0.01369605010147149,
+    0.016043416425197916,
+    0.02118739679326648,
+    0.014361178975546517,
+    0.004615026131902592,
+    0.003267971621079344,
+    0.013984055265626932,
+    0.007130157409053193
+   ],
+   "parameters": 44
+  }
+ ],
+ "kept": [],
+ "plan": "docs/state/plans/ascella-mesh-response-decomposition.json",
+ "prior_width": 0.1,
+ "runs": [
+  "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+  "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02"
+ ],
+ "schema": "ascella-twelve-output-v1",
+ "split": "docs/evidence/ascella-order-coefficients/mesh-split.json"
+}

@@ -2100,6 +2100,13 @@
       "run": "results/live/2026-10-25T233207.284563Z",
       "family": "qet-ladder",
       "question": "Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?"
+    },
+    {
+      "id": "qd-qpu-belenos-teleportation-rehearsal-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00",
+      "family": "single-chip teleportation rehearsal on qpu:belenos",
+      "question": "job-00 of the teleportation rehearsal, sent under the anchor gate while the platform record held one state: does the chip teleport the six Pauli eigenstates above the classical bound, and does it return the requested three-click samples (near the anchor state) or almost none (the state the held record describes)?"
     }
   ],
   "claims": [
@@ -10775,6 +10782,52 @@
         "kingston-qet-window-phase-static",
         "kingston-qet-compensated-information-excess",
         "hw-n21-feedback-null-scheduled-idle"
+      ]
+    },
+    {
+      "id": "qd-belenos-teleportation-rehearsal-job-00",
+      "statement": "The single-chip teleportation rehearsal on qpu:belenos, job 55479252-d907-45ac-b1e1-84f19d21a131 submitted 2026-10-26 02:54:50 UTC under the anchor gate (model pooled fidelity 0.868 at the 2026-10-24 anchor figures, 0.635 at the held live figures), completed in 292 s and returned 0 three-click samples in each of its six iterations, each reporting its full max_shots of 1,200,000 as nb_shots_used. The preregistered verdict is inconclusive: no input has an accepted event, so neither the pooled fidelity nor the classical bound is defined. The preregistered record-state class is degraded-as-recorded (0 of 5400 requested samples, against 5400 expected in the anchor state and about none in the held state); the in-situ fit and the exploratory Cayley-Dickson lens have no event to read. The platform record before and after the job carries the held figures (HOM 83.8 %, g2 16.7 %, Transmittance 0.05 %) unchanged.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job on one chip in one held calibration state. The record-state class rests on the documented max_shots semantics, which this job is the first retained run to exercise: an iteration ended by its shot budget reports that budget, not a count of optical trials, so the zero count bounds the three-click rate per reported shot (below 4.2e-7 at 95 % over 7.2e6 shots, against about 1e-3 in the anchor state) without fixing the transmittance, whose value depends on what a shot counts. The run establishes nothing about teleportation fidelity, and no C1 conformance; the approval was single-use, and a run on a recovered chip is job-01.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/results.json",
+          "sha256": "0263dbe81e6d4aa97ded1429130fb0b984e11e8d8074fe819a57e6e960b1fe13"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/raw/result.json",
+          "sha256": "0f0e51170c9057855e3fe0369f4ac3093179ab276ce9e3dc7a8b7dfad46aa8cb"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/submission.json",
+          "sha256": "31dd85622c29c3357b0e67ec3f72990d9dd6102b09ea4778ef286474264e3a63"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/submit-model.json",
+          "sha256": "11e84460c354ee561c0a958c991be3a9d37267e0c8d9b6c34d660aaf72264a64"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
+          "sha256": "c517763c77c48192551dfcb133b422d404b5bba403c3c4dd6eb2d4699ded520d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json",
+          "sha256": "e9b27dfa955ac53bcce60fd679a14eeee2758eed41cfb765d5ef08cc7cd5967b"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-belenos-entanglement-teleportation.md",
+        "docs/notes/quandela/calibration.md",
+        "scripts/qd_teleportation_rehearsal.py",
+        "scripts/qd_rehearsal_secondary.py"
+      ],
+      "gates": {
+        "core-teleportation-rehearsal-job-00-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-teleportation-rehearsal-job-00"
       ]
     }
   ]
