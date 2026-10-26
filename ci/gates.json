@@ -2292,13 +2292,13 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-measurement-sequence-families.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-pooled-compiled-ideals.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-measurement-sequence-families.json"
+    "docs/evidence/submitted_circuits/comparison-pooled-compiled-ideals.json"
    ]
   },
   {

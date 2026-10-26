@@ -34,8 +34,10 @@ campaigns; it differs from the seed-flag successor only in the `live_run.py` dig
 
 The [measurement-sequence successor](comparison-measurement-sequence-families.json) rebinds the retained-audit
 comparison offline after `live_run.py` gained the measurement-sequence and measurement-sequence-diagnostic families;
-it differs from the QET-campaign successor only in the `live_run.py` digest and the offline validation time. Gate
-`core-281` checks it.
+it differs from the QET-campaign successor only in the `live_run.py` digest and the offline validation time.
+
+The [compiled-ideal successor](comparison-pooled-compiled-ideals.json) rebinds it after `live_run.py` and `qpu_planning.py`
+proved the compiled ideals through the process pool; its rows equal the predecessor's. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
