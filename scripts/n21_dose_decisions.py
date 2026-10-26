@@ -1,7 +1,7 @@
 """Preregistered decisions D1-D3 of an N=21 orbit window-dose sweep against its idle-padded exact model.
 
 The run directory holds the dry-run record (record.json: observable contracts, shots), the collected result
-(collect.json: each member's measured law, one replica) and the scheduled-idle replay (idle-replay.json from
+(collect.json: each member's measured law per replica) and the scheduled-idle replay (idle-replay.json from
 scripts/scheduled_idle_replay.py: contracts.idle_padded_exact, the exact branch-resolved law with the explicit doses
 and the service-scheduled idle charged under the execution Target). A contract's measured value is the signed sum of
 its members' scores; its shot variance is the sum over members of (E[w^2] - E[w]^2) / shots for score vector w.
@@ -11,12 +11,18 @@ A collection whose group carries comparisons_withheld (its PUBs did not all run 
 Decisions (the run's DOSE_CASE.md):
 - D1: the plain contrast at the largest dose lies below the dose-0 contrast at one-sided 95 percent.
 - D2: every plain arm's z = (measured - model) / sigma lies within the Bonferroni two-sided 95 percent bound over
-  the plain doses (z = 2.498 at four doses).
+  the plain doses (z = 2.498 at four doses, 2.69 at seven).
 - D3: the excess echo gain at the largest dose, (echo - plain) measured minus the same in the model, is tested
   one-sided at 95 percent; a positive lower bound reads as coherent detuning only when D2 holds at that dose, since
   an echo gain beyond the model can also come from an effective T1 that departs from the Target's.
 
+Preflight. --preflight RECORD_DIR checks a fresh dry-run record against the reviewed design before it is
+submitted: a planned n21-orbit-rca window-dose record with the design's doses, shots, repetition delay
+(DESIGN_REP_DELAYS, the 20 us target and its 50 us fallback), ceiling, replica floor and QRNG seed references. The
+calibration, layout and model values are the record's own; they are what the fresh plan adapts.
+
 Usage: "$PYTHON" scripts/n21_dose_decisions.py RUN_DIR [--out FILE]
+       "$PYTHON" scripts/n21_dose_decisions.py --preflight RECORD_DIR
        "$PYTHON" scripts/n21_dose_decisions.py --self-test
 """
 
@@ -35,6 +41,16 @@ import numpy as np
 from scipy import stats
 
 ONE_SIDED = float(stats.norm.ppf(0.95))
+# The reviewed design a fresh dry-run record must carry (the run's DOSE_CASE.md).
+DESIGN_DOSES = [0, 1752, 3500, 5252, 7000, 10500, 14000]
+DESIGN_SHOTS = 8192
+DESIGN_REP_DELAYS = (2e-05, 5e-05)
+DESIGN_CEILING_SECONDS = 30.0
+DESIGN_MIN_REPLICAS = 4
+DESIGN_SEED_SOURCES = {
+    "--seed-transpiler": ["qrng:docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json#0"],
+    "--seed-simulator": ["qrng:docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json#1"],
+}
 NAME = re.compile(r"n21_orbit_window_dose(?P<echo>_echo)?_d(?P<dose>\d+)_feedback_contrast")
 
 
@@ -193,6 +209,43 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     return out
 
 
+def preflight(record_dir: Path) -> dict[str, Any]:
+    """The fresh record's binding facts, after requiring every invariant of the reviewed design."""
+    record = json.loads((record_dir / "record.json").read_text(encoding="utf-8"))
+    policy = record["policy"]
+    design = policy["design"]
+    require(record["state"] == "planned", f"{record_dir}: state {record['state']}, not planned")
+    require(design.get("family") == "n21-orbit-rca", f"family {design.get('family')}")
+    require(design.get("window_doses") == DESIGN_DOSES, f"doses {design.get('window_doses')}, not {DESIGN_DOSES}")
+    require(design.get("init_herald") is True, "the design runs without the initialization herald")
+    require(int(record["shots"]) == DESIGN_SHOTS, f"shots {record['shots']}, not {DESIGN_SHOTS}")
+    require(policy.get("rep_delay_seconds") in DESIGN_REP_DELAYS, f"repetition delay {policy.get('rep_delay_seconds')}")
+    require(
+        float(design.get("max_total_execution_seconds", math.inf)) <= DESIGN_CEILING_SECONDS
+        and float(policy.get("max_execution_seconds", math.inf)) <= DESIGN_CEILING_SECONDS,
+        "a ceiling exceeds the design's 30 s",
+    )
+    optimization = record["optimization"]
+    chosen = [c for c in optimization["candidates"] if c["name"] == optimization["selected"]]
+    require(len(chosen) == 1 and chosen[0]["feasible"], "the record selects no feasible candidate")
+    charge = float(chosen[0]["estimated_charge_seconds"])
+    require(charge <= DESIGN_CEILING_SECONDS, f"estimated charge {charge} s exceeds the ceiling")
+    groups = record["groups"]
+    require(len(groups) == 1, f"{len(groups)} groups")
+    replicas = len(groups[0]["replicas"])
+    require(replicas >= DESIGN_MIN_REPLICAS, f"{replicas} replicas, below the design's {DESIGN_MIN_REPLICAS}")
+    sources = {row["flag"]: row["sources"] for row in record.get("seed_source") or []}
+    require(sources == DESIGN_SEED_SOURCES, f"seed sources {sources}")
+    return {
+        "record": record_dir.name,
+        "backend": groups[0]["backend"],
+        "calibration": groups[0]["calibration"],
+        "replicas": replicas,
+        "rep_delay_seconds": policy["rep_delay_seconds"],
+        "estimated_charge_seconds": charge,
+    }
+
+
 def self_test() -> str:
     doses = (0, 3500, 7000, 14000)
     model = {}
@@ -224,9 +277,13 @@ def main() -> int:
     parser.add_argument("run_dir", type=Path, nargs="?")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--self-test", action="store_true")
+    parser.add_argument("--preflight", type=Path, metavar="RECORD_DIR")
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
+        return 0
+    if args.preflight is not None:
+        print(json.dumps(preflight(args.preflight), sort_keys=True))
         return 0
     if args.run_dir is None:
         parser.error("a run directory or --self-test is required")
