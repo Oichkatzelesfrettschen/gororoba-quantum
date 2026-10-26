@@ -164,6 +164,11 @@ def readout_circuit(prepared: int) -> QuantumCircuit:
     return circuit
 
 
+# The case's voiding rule: a wire whose in-job readout calibration gives 1 - e10 - e01 below this floor voids every
+# estimate that reads or postselects on it.
+READOUT_FLOOR = 0.8
+
+
 def ramsey_arms() -> tuple[str, ...]:
     return ("outer", *(f"middle_{a}{b}" for a, b in MIDDLE_STATES))
 

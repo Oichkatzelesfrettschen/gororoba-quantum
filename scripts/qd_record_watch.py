@@ -17,9 +17,23 @@ Every class also records the record's status. The report lands in --report as JS
 (--summary) for the issue the workflow .github/workflows/quandela-record-watch.yml opens on a change. Nothing is
 submitted, staged or planned.
 
+With --booking, a booking file names one maintenance window the service published (its explorer row's start_time and
+end_time), and the same run reads the platform's row of the public explorer after classifying the record.
+`booking_event` turns that row into at most one event per read:
+
+- ended: the row carries no maintenance block, books another window, sets maintenance_ended, or reports a status
+  other than maintenance;
+- overran: the booking still runs at or after its listed end_time;
+- moved: the listed end_time differs from the booked one and has not passed.
+
+Each event has a key built from the window's start_time, its kind and the listed end_time, never from the read time,
+so the workflow posts each event once (--booking-summary holds that comment, with the record's class at the same
+read). An explorer failure lands in the report as booking.error and leaves the record classification intact.
+
 Usage:
   "$PYTHON" scripts/qd_record_watch.py held CATALOGUE PLATFORM --out HELD [--first-seen UTC]
   "$PYTHON" scripts/qd_record_watch.py check HELD --report REPORT --summary SUMMARY
+      [--booking BOOKING --booking-summary BOOKING_SUMMARY]
   "$PYTHON" scripts/qd_record_watch.py --self-test
 """
 
@@ -40,6 +54,15 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 SCHEMA = "qd-record-watch-v1"
 FIGURES = ("HOM (%)", "g2 (%)", "Transmittance (%)", "Transmission per mode (%)")
+# The explorer row's maintenance fields that describe the window; its staff and booking identifiers stay out.
+BOOKING_FIELDS = (
+    "maintenance_title",
+    "start_time",
+    "end_time",
+    "maintenance_started",
+    "maintenance_ended",
+    "time_zone",
+)
 
 
 def digest(perfs: Mapping[str, Any]) -> str:
@@ -130,6 +153,90 @@ def model_at(perfs: Mapping[str, Any]) -> Mapping[str, Any]:
     return model
 
 
+def explorer_row(platform: str) -> dict[str, Any]:
+    """The platform's row of the public explorer: its status and the maintenance window it lists."""
+    from qd_platform import get
+
+    rows = get("/api/platforms/public/explorer", auth=False)
+    row = next(item for item in rows if isinstance(item, dict) and item.get("name") == platform)
+    window = row.get("maintenance")
+    return {
+        "status": row.get("status"),
+        "maintenance": {name: window.get(name) for name in BOOKING_FIELDS} if isinstance(window, dict) else None,
+    }
+
+
+def utc(text: str) -> datetime:
+    return datetime.fromisoformat(text.replace("Z", "+00:00"))
+
+
+def booking_event(booking: Mapping[str, Any], row: Mapping[str, Any], now: datetime) -> dict[str, str] | None:
+    """The one event an explorer row shows for the booked window at `now`, or None while it runs as booked."""
+    start = booking["start_time"]
+    window = row.get("maintenance")
+    if not isinstance(window, dict):
+        reason = "the explorer row lists no maintenance window"
+    elif window.get("start_time") != start:
+        reason = f"the explorer row lists another window, from {window.get('start_time')} to {window.get('end_time')}"
+    elif window.get("maintenance_ended"):
+        reason = "the explorer row sets maintenance_ended"
+    elif row.get("status") != "maintenance":
+        reason = f"the explorer status reads {row.get('status')}"
+    else:
+        end = str(window.get("end_time"))
+        if now >= utc(end):
+            return {"kind": "overran", "key": f"overran:{start}:{end}", "reason": f"the window runs past {end}"}
+        if end != booking["end_time"]:
+            return {"kind": "moved", "key": f"moved:{start}:{end}", "reason": f"the window now ends at {end}"}
+        return None
+    return {"kind": "ended", "key": f"ended:{start}", "reason": reason}
+
+
+def booking_summary(report: Mapping[str, Any]) -> str:
+    """The Markdown comment for a booking event, led by the marker the workflow deduplicates on."""
+    booking = report["booking"]
+    event, booked, row = booking["event"], booking["booked"], booking["explorer"]
+    window = row.get("maintenance") or {}
+    headline = {
+        "ended": "ended",
+        "overran": "is running past its listed end",
+        "moved": "moved its end",
+    }[event["kind"]]
+    lines = [
+        f"<!-- qd-record-watch:booking:{event['key']} -->",
+        f"The `{report['platform']}` maintenance window booked from {booked['start_time']} to {booked['end_time']} "
+        f"{headline} at the read of {report['read_utc']}: {event['reason']}.",
+        "",
+        f"Explorer status `{row.get('status')}`; listed window: {window.get('maintenance_title')} from "
+        f"{window.get('start_time')} to {window.get('end_time')}, started {window.get('maintenance_started')}, "
+        f"ended {window.get('maintenance_ended')}.",
+        "",
+        f"The performance record at the same read is `{report['state']}` (status `{report['status']}`) with "
+        + ", ".join(f"{name} {value}" for name, value in report["figures"].items())
+        + ".",
+    ]
+    model = report.get("model")
+    if model is not None:
+        verdict = "reaches" if model["inside_justified_range"] else "falls below"
+        lines.append(
+            f"The rehearsal noise model gives pooled fidelity {model['pooled_fidelity']:.4f}, which {verdict} "
+            f"F* = {model['mean_score']}; the change comment of this run carries the decision."
+        )
+    elif report["state"] == "unscorable":
+        lines.append(
+            f"The rehearsal model rejects these figures ({report['model_error']}), so job-01 stays held and the watch "
+            "stays armed for a scorable record."
+        )
+    elif report["state"] == "held":
+        lines.append("The record still carries the held state, so job-01 stays held and the watch stays armed.")
+    lines += [
+        "",
+        "The procedure for each outcome is [belenos-recovery-watch.md]"
+        "(../blob/main/docs/archive/handoffs/belenos-recovery-watch.md).",
+    ]
+    return "\n".join(lines) + "\n"
+
+
 def write_held(catalogue: Path, platform: str, out: Path, first_seen: str | None = None) -> int:
     """Name a retained catalogue's processor record as the held state, first seen at `first_seen` (an earlier retained
     read of the same state) or else at the catalogue's retrieved_utc."""
@@ -149,15 +256,46 @@ def write_held(catalogue: Path, platform: str, out: Path, first_seen: str | None
     return 0
 
 
-def run_check(held_path: Path, report_path: Path, summary_path: Path) -> int:
+def add_booking(
+    report: dict[str, Any],
+    booking: Mapping[str, Any],
+    read: Callable[[str], Mapping[str, Any]],
+    now: datetime,
+) -> None:
+    """Attach the explorer read and its booking event to a classified report; a failed read records its error."""
+    try:
+        row = read(booking["platform"])
+    except Exception as error:  # noqa: BLE001 - an explorer failure leaves the record classification standing
+        report["booking"] = {"booked": dict(booking), "error": repr(error)}
+        return
+    report["booking"] = {"booked": dict(booking), "explorer": dict(row), "event": booking_event(booking, row, now)}
+
+
+def run_check(
+    held_path: Path,
+    report_path: Path,
+    summary_path: Path,
+    booking_path: Path | None = None,
+    booking_summary_path: Path | None = None,
+) -> int:
     held = json.loads(held_path.read_text(encoding="utf-8"))
     report = check(held, live_read, model_at)
+    if booking_path is not None:
+        add_booking(report, json.loads(booking_path.read_text(encoding="utf-8")), explorer_row, datetime.now(UTC))
     report_path.write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8")
     if report["state"] == "changed":
         summary_path.write_text(summary(report), encoding="utf-8")
     print(f"{report['platform']} {report['status']}: {report['state']} {report['figures']}")
     if report["state"] == "unscorable":
         print(f"the rehearsal model rejects the changed figures: {report['model_error']}")
+    booking = report.get("booking")
+    if booking is not None and "error" in booking:
+        print(f"explorer read failed: {booking['error']}")
+    elif booking is not None:
+        event = booking["event"]
+        print(f"booking {booking['booked']['start_time']}: {event['key'] if event else 'running as booked'}")
+        if event is not None and booking_summary_path is not None:
+            booking_summary_path.write_text(booking_summary(report), encoding="utf-8")
     return 0
 
 
@@ -225,10 +363,14 @@ def main(argv: list[str]) -> int:
     checked.add_argument("held", type=Path)
     checked.add_argument("--report", type=Path, required=True)
     checked.add_argument("--summary", type=Path, required=True)
+    checked.add_argument("--booking", type=Path, help="booking file naming the maintenance window to watch")
+    checked.add_argument("--booking-summary", type=Path, help="where a booking event's comment lands")
     args = parser.parse_args(argv)
     if args.command == "held":
         return write_held(args.catalogue.resolve(), args.platform, args.out.resolve(), args.first_seen)
-    return run_check(args.held, args.report, args.summary)
+    if (args.booking is None) != (args.booking_summary is None):
+        parser.error("--booking and --booking-summary go together")
+    return run_check(args.held, args.report, args.summary, args.booking, args.booking_summary)
 
 
 if __name__ == "__main__":

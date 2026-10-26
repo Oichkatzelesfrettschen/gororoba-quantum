@@ -41,6 +41,7 @@ import shutil
 import subprocess
 import sys
 from collections.abc import Mapping
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -528,7 +529,13 @@ def probe_qubits(snapshot: dict[str, Any]) -> list[int]:
     return [a, b]
 
 
-def export(name: str, out: Path) -> None:
+def export(name: str, out: Path, at: str | None = None) -> None:
+    """Write the snapshot of backend ``name``'s calibration, the current one or the one in force at ``at``.
+
+    ``at`` (ISO 8601 with offset) reads properties(datetime=at) and target_history(datetime=at), the pair
+    live_run --collect reads at a PUB's execution start, so a snapshot can carry the calibration a collected
+    run executed under.
+    """
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from qiskit_ibm_runtime import QiskitRuntimeService
 
@@ -536,9 +543,18 @@ def export(name: str, out: Path) -> None:
     import live_run
 
     backend = ibm_account.open_service(QiskitRuntimeService).backend(name)
-    backend.refresh()
-    props = backend.properties()
-    target = backend.target
+    if at is None:
+        backend.refresh()
+        props = backend.properties()
+        target = backend.target
+    else:
+        moment = datetime.fromisoformat(at)
+        if moment.tzinfo is None:
+            raise SystemExit(f"--at {at} names no UTC offset")
+        props = backend.properties(datetime=moment)
+        if props is None:
+            raise SystemExit(f"{name}: no calibration in force at {at}")
+        target = backend.target_history(datetime=moment)
     processor_type = live_run.backend_identity(backend)["processor_type"]
     snapshot = describe(name, target, props, live_run.readout_flips, processor_type)
     snapshot = json.loads(json.dumps(snapshot))
@@ -566,11 +582,12 @@ def main() -> int:
     mode.add_argument("--export", metavar="BACKEND")
     mode.add_argument("--check", metavar="FILE", type=Path)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--at", help="--export: the calibration in force at this ISO 8601 instant, with offset")
     args = parser.parse_args()
     if args.export:
         if args.out is None:
             parser.error("--export needs --out")
-        export(args.export, args.out)
+        export(args.export, args.out, args.at)
         return 0
     # T1, T2, frequency, e10, e01 and every duration and error are readings with no offline recomputation.
     # The import is local because Kaggle bundles carry this module without record_digest.
