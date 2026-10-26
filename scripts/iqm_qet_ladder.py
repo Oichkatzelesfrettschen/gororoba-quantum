@@ -698,7 +698,8 @@ class PairState:
         self.branches = {(r, m): c_alice[r][m] * blocks[m, :, m, :] for r in (0, 1) for m in (0, 1)}
 
     def conditional_prx(self, qubit: str, angle: float, phase: float, p: float, duration: float) -> None:
-        """cc_prx on Bob: the prx where the recorded bit is 1, a wait of equal duration where it is 0."""
+        """cc_prx on Bob: the prx where the recorded bit is 1, a wait of equal duration where it is 0; at angle 0 the
+        pulse is an idle too, so both branches take the wait's relaxation."""
         if self.branches is None:
             raise ValueError("cc_prx precedes the feedback measure")
         kraus_wait = relaxation_kraus(duration, self.noise.t1[qubit], self.noise.t2[qubit])
@@ -706,7 +707,7 @@ class PairState:
         depolarizing = [math.sqrt(1 - 3 * p / 4) * IDENTITY, *(math.sqrt(p / 4) * m for m in PAULIS[1:])]
         out = {}
         for (r, m), sigma in self.branches.items():
-            if r == 1:
+            if r == 1 and angle != 0.0:
                 moved = _kraus(sigma, gate, 0, 1)
                 out[(r, m)] = _kraus(moved, depolarizing, 0, 1) if p > 0 else moved
             elif math.isfinite(self.noise.t1[qubit]):
@@ -951,7 +952,8 @@ def plan(
             for locus in loci
             for a, b in (locus, locus[::-1])
         ]
-        results = ordered_map(predict_pair, items)
+        # One exact prediction per coupler orientation is CPU-heavy, and Garnet has 30 couplers: pool from 2 items.
+        results = ordered_map(predict_pair, items, min_items=2)
         # Each coupler takes its better orientation among those whose Alice the Bob drive accepts fast feedback from;
         # a coupler with neither orientation allowed is left out of every matching.
         best: list[dict[str, Any]] = []
@@ -1045,7 +1047,7 @@ class BuildArgs(NamedTuple):
     shots: int | None = None
     shot_seconds: float | None = None
     idle_cc_angle: str = "zero"
-    reset: str = "active"
+    reset: str = "passive"
     max_credits: float = MAX_CREDITS[QC]
 
     def as_dict(self) -> dict[str, Any]:
@@ -1060,16 +1062,19 @@ def sensitivity(
     herald = bool(chosen["herald"])
     scale = 1.0 if excited else RELAXATION_SENSITIVITY
     items = [(folder, row, herald, scale, idle_angle, passive, excited) for row in chosen["pairs"]]
-    return pooled(ordered_map(predict_pair, items), float(chosen["kept_shots"]))
+    return pooled(ordered_map(predict_pair, items, min_items=2), float(chosen["kept_shots"]))
 
 
 def build_from(folder: Path, args: BuildArgs) -> dict[str, str]:
     """Relative path -> text of the case, planned and predicted from the calibration folder."""
     device = load_device(str(folder))
     idle_angle = idle_angle_of(args.idle_cc_angle)
-    if args.reset not in ("active", "passive"):
-        raise ValueError(f"reset mode {args.reset!r} is neither active nor passive")
-    passive = args.reset == "passive"
+    if args.reset != "passive":
+        raise ValueError(
+            f"reset mode {args.reset!r}: every ladder arm feeds Bob's drive from Alice's readout, and active reset "
+            "adds a second feedback label to that drive, which the station refuses; a case runs passive reset"
+        )
+    passive = True
     if not args.max_credits > 0:
         raise ValueError(f"a Garnet credit ceiling must be positive, not {args.max_credits}")
     selected = plan(str(folder), args.herald, args.pairs, 1.0, idle_angle, passive, args.max_credits)
@@ -1524,9 +1529,9 @@ def angle_qualification(qualification: Mapping[str, Any], cal: Mapping[str, np.n
 def one_sided(values: Sequence[float]) -> tuple[float, float, float]:
     """(mean, lower, upper) one-sided DECISION_LEVEL t bounds across pairs."""
     n = len(values)
-    centre = mean(values)
     if n < 2:
-        return centre, float("nan"), float("nan")
+        return (values[0] if values else float("nan")), float("nan"), float("nan")
+    centre = mean(values)
     spread = math.sqrt(sum((v - centre) ** 2 for v in values) / (n - 1))
     half = float(stats.t.ppf(DECISION_LEVEL, n - 1)) * spread / math.sqrt(n)
     return centre, centre - half, centre + half
@@ -1732,7 +1737,7 @@ def self_test() -> str:
         for arm in arm_names():
             validate_circuit(circuit_json(arm, pairs), device, pairs)
         case_dir = Path(tmp) / CASE
-        write(case_dir, EVIDENCE_CALIBRATION, BuildArgs(pairs=2, herald="zeros"))
+        write(case_dir, EVIDENCE_CALIBRATION, BuildArgs(pairs=2, herald="none"))
         check(case_dir)
         case = json.loads((case_dir / "cases.json").read_text(encoding="utf-8"))
         row = case["jobs"][0]
@@ -1787,7 +1792,7 @@ def predict_case(directory: Path, source: Path) -> dict[str, Any]:
         folder = str(with_calibration(source, tmp))
         for label, scale in (("calibrated", 1.0), ("relaxation_scaled", RELAXATION_SENSITIVITY)):
             results = ordered_map(
-                predict_pair, [(folder, p, herald, scale, idle_angle, passive) for p in case["pairs"]]
+                predict_pair, [(folder, p, herald, scale, idle_angle, passive) for p in case["pairs"]], min_items=2
             )
             out[label] = {
                 "calibration_set": load_device(folder).calibration.set_id,
@@ -1812,14 +1817,14 @@ def main() -> int:
     build.add_argument("--shots", type=int)
     build.add_argument("--shot-seconds", type=float)
     build.add_argument("--idle-cc-angle", choices=("zero", "two-pi"), default="zero")
-    build.add_argument("--reset", choices=("active", "passive"), default="active")
+    build.add_argument("--reset", choices=("passive",), default="passive")
     build.add_argument("--max-credits", type=float, default=MAX_CREDITS[QC])
     sub.add_parser("check").add_argument("directory", type=Path)
     planner = sub.add_parser("plan")
     planner.add_argument("--calibration-dir", type=Path, default=EVIDENCE_CALIBRATION)
     planner.add_argument("--herald", choices=("auto", "zeros", "none"), default="auto")
     planner.add_argument("--pairs", type=int)
-    planner.add_argument("--reset", choices=("active", "passive"), default="active")
+    planner.add_argument("--reset", choices=("passive",), default="passive")
     predictor = sub.add_parser("predict")
     predictor.add_argument("directory", type=Path)
     predictor.add_argument("--calibration-dir", type=Path, required=True)

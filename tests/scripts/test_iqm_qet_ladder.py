@@ -372,6 +372,43 @@ def test_pairs_respect_the_probe_line_feedback_wiring(device: lad.Device) -> Non
         lad.validate_circuit(circuit, device, [crossing])
 
 
+def test_an_empty_h3_subset_reports_insufficient_pairs() -> None:
+    rows = [
+        {
+            "pair": {"alice": f"QB{i}", "bob": f"QB{i + 1}"},
+            "endpoints": {"selected_excess": 0.1, "selected_margin": -0.2, "reference_phase": 0.1},
+            "h3": {"scored": False},
+        }
+        for i in range(5)
+    ]
+    out = lad.decisions(rows)
+    if out["h3_scored"]["h1_information_excess"]["verdict"] != "insufficient pairs":
+        raise AssertionError(f"an empty H3 subset reads {out['h3_scored']['h1_information_excess']}")
+    if out["all_pairs"]["h1_information_excess"]["pairs"] != 5:
+        raise AssertionError("the primary test lost pairs")
+
+
+def test_zero_angle_cc_prx_relaxes_both_branches(device: lad.Device) -> None:
+    """At angle 0 the conditional pulse is an idle, so both recorded branches take the same wait channel."""
+    pair = first_pair(device)
+    noise = lad.noise_of(device, pair, False, passive=True)
+    state = lad.PairState(pair, noise)
+    state.unitary_only(pair.alice, lad.HADAMARD)
+    state.unitary_only(pair.bob, lad.HADAMARD)
+    state.split(lad.confusion((0.0, 0.0)))
+    state.conditional_prx(pair.bob, 0.0, math.pi / 2, 0.01, 1e-6)
+    if state.branches is None:
+        raise AssertionError("the split left no branches")
+    bobs = {r: np.asarray(sigma) / np.trace(sigma).real for (r, m), sigma in state.branches.items() if r == m}
+    if np.abs(bobs[0] - bobs[1]).max() > 1e-12:
+        raise AssertionError("a zero-angle cc_prx relaxes the two recorded branches differently")
+
+
+def test_build_refuses_active_reset() -> None:
+    with pytest.raises(ValueError, match="passive reset"):
+        lad.build_from(CASE / "calibration", lad.BuildArgs(reset="active"))
+
+
 def test_analysis_refuses_a_mock_run(tmp_path: Path) -> None:
     run = synthetic_run(tmp_path, case_shots())
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
