@@ -101,6 +101,16 @@ def test_noisy_laws_are_distributions_and_feedback_wait_is_equal(device: lad.Dev
         raise AssertionError(f"feedback waits {sorted(ends)} differ from {window}")
 
 
+def test_passive_reset_starts_in_the_ground_state_and_runs_longer(device: lad.Device) -> None:
+    pair = first_pair(device)
+    if any(v != 0.0 for v in lad.noise_of(device, pair, False, passive=True).init.values()):
+        raise AssertionError("passive reset carries an initial excitation beside the unheralded readout errors")
+    active = lad.shot_seconds_of(device, [pair], False, lad.IDLE_CC_ANGLE)
+    passive = lad.shot_seconds_of(device, [pair], False, lad.IDLE_CC_ANGLE, passive=True)
+    if not math.isclose(passive - active, lad.PASSIVE_SHOT_SECONDS - lad.SHOT_BASE_SECONDS, rel_tol=1e-12):
+        raise AssertionError(f"passive shot {passive} against active {active}")
+
+
 def test_variance_scales_with_shots_and_is_positive(device: lad.Device) -> None:
     pair = first_pair(device)
     noise = lad.noise_of(device, pair, True)
@@ -146,11 +156,20 @@ def test_retained_case_is_native_and_within_its_credit_ceiling() -> None:
         for qc, credits in row["max_credits"].items():
             if qc == "garnet" and iqm_jobs.ceiling_credits(row["expected_seconds"], lad.PRICE[qc]) > credits:
                 raise AssertionError(f"{job['job']} expects more than {credits} credits on {qc}")
-    if case["jobs"][0]["max_credits"]["garnet"] > 4.0 or case["jobs"][1]["max_credits"] != {"garnet:mock": 0.0}:
+    if case["jobs"][0]["max_credits"]["garnet"] > 8.0 or case["jobs"][1]["max_credits"] != {"garnet:mock": 0.0}:
         raise AssertionError("the credit ceilings leave the approved plan")
+    # Bob's drive takes Alice's feedback label, and the station admits one label per drive AWG per segment.
+    for job in case["jobs"]:
+        if job["options"]["active_reset_cycles"] is not None or job["options"]["heralding_mode"] != "none":
+            raise AssertionError(f"{job['job']} runs active reset or heralding beside cc_prx feedback")
     names = {Path(e["file"]).stem for e in case["jobs"][0]["circuits"]}
     if names != set(lad.arm_names()) or len(names) != 22:
         raise AssertionError(f"circuits {sorted(names)}")
+
+
+def case_shots() -> int:
+    """The ladder job's shots: an unheralded run returns exactly that many per circuit."""
+    return int(json.loads((CASE / "cases.json").read_text(encoding="utf-8"))["jobs"][0]["shots"])
 
 
 def synthetic_run(tmp: Path, shots: int) -> Path:
@@ -206,12 +225,14 @@ def synthetic_run(tmp: Path, shots: int) -> Path:
 
 
 def test_analysis_recovers_the_ideal_endpoints_from_synthetic_bits(tmp_path: Path) -> None:
-    run = synthetic_run(tmp_path, 2000)
+    run = synthetic_run(tmp_path, case_shots())
     result = lad.analyze([run])
     ideal = json.loads((CASE / "cases.json").read_text(encoding="utf-8"))["ideal"]
     for name in lad.ENDPOINTS:
         got = result["pooled"][name]["mean"]
-        if abs(got - ideal["endpoints"][name]) > 4e-3:
+        # Synthetic counts round every outcome to the nearest shot, so the recovery error falls as 1/shots;
+        # endpoints_of_run is checked exactly against the counts in --self-test.
+        if abs(got - ideal["endpoints"][name]) > 10 / case_shots():
             raise AssertionError(f"{name}: recovered {got}, ideal {ideal['endpoints'][name]}")
     for name, p1 in ideal["qualification_p1"].items():
         low, high = result["qualification"][name]["wilson95"]
@@ -220,7 +241,7 @@ def test_analysis_recovers_the_ideal_endpoints_from_synthetic_bits(tmp_path: Pat
 
 
 def test_analysis_refuses_a_mock_run(tmp_path: Path) -> None:
-    run = synthetic_run(tmp_path, 400)
+    run = synthetic_run(tmp_path, case_shots())
     submission = json.loads((run / "submission.json").read_text(encoding="utf-8"))
     submission["qc"] = "garnet:mock"
     (run / "submission.json").write_text(iqm_jobs.dump(submission))

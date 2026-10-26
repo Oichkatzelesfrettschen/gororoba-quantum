@@ -111,6 +111,11 @@ JOB = "ladder"
 # One active-reset shot of a bare one-measure circuit ran 16.04 to 17.23 us on the retained Garnet jobs
 # (results/iqm/runs/*-garnet-*: calibrate 16.04, kernel cancellation 17.23, idle schedule 16.34).
 SHOT_BASE_SECONDS = 16.0e-6
+# A passive-reset shot of the same bare circuit ran 316.158 us (results/iqm/reset_billing_pilot_analysis.json,
+# per_shot_seconds of p-2x2000-passive). The station control limits each drive AWG to one feedback signal
+# label per playlist segment, and active reset conditions every qubit's drive on its own readout, so Bob's
+# cc_prx from Alice needs passive reset (garnet:mock job 01a17621-1452-701f-8874-ba08a138aec4).
+PASSIVE_SHOT_SECONDS = 316.158e-6
 # Active reset leaves QB1 at P(1) = 0.068 against 0.0065 passive (results/iqm/reset_billing_pilot_analysis.json).
 ACTIVE_RESET_INIT_ERROR = 0.068 - 0.0065
 # All-zeros heralding kept 0.920 to 0.936 per qubit on the retained seven-qubit jobs (shots kept ** (1 / 7)).
@@ -458,14 +463,19 @@ class Noise(NamedTuple):
         )
 
 
-def noise_of(device: Device, pair: Pair, herald: bool, scale: float = 1.0) -> Noise:
-    """The pair's noise; idle T1 and T2 scale by scale, and the initial excitation is the herald-conditioned
-    calibration value when herald and ACTIVE_RESET_INIT_ERROR after one active-reset cycle otherwise."""
+def noise_of(device: Device, pair: Pair, herald: bool, scale: float = 1.0, passive: bool = False) -> Noise:
+    """The pair's noise; idle T1 and T2 scale by scale. The initial excitation is the herald-conditioned
+    calibration value when herald, zero after passive reset (the unheralded readout errors carry the
+    initialization error: the passive pilot read QB1 at P(1) 0.0065 against 0.0046 predicted from them), and
+    ACTIVE_RESET_INIT_ERROR after one active-reset cycle otherwise."""
     cal = device.calibration
     qubits = (pair.alice, pair.bob)
     t1 = {q: float(cal.values[f"characterization.model.{q}.t1_time"]) for q in qubits}
     t2 = {q: min(float(cal.values[f"characterization.model.{q}.t2_time"]), 2 * t1[q]) for q in qubits}
-    init = {q: float(cal.values[INIT_ERROR_FIELD.format(q=q)]) if herald else ACTIVE_RESET_INIT_ERROR for q in qubits}
+    init = {
+        q: float(cal.values[INIT_ERROR_FIELD.format(q=q)]) if herald else 0.0 if passive else ACTIVE_RESET_INIT_ERROR
+        for q in qubits
+    }
     return Noise(
         {q: cal.prx_p(q) for q in qubits},
         4 * (1 - cal.cz[frozenset(qubits)]) / 3,
@@ -678,13 +688,13 @@ def endpoint_variance(dist: Mapping[str, np.ndarray], shots: float | Mapping[str
     return variance
 
 
-def predict_pair(item: tuple[str, dict[str, Any], bool, float, float]) -> dict[str, Any]:
+def predict_pair(item: tuple[str, dict[str, Any], bool, float, float, bool]) -> dict[str, Any]:
     """Every arm's exact law for one pair under a calibration folder, and the endpoints with their variance
-    at one shot per arm. item = (folder, pair, herald, relaxation scale, idle cc_prx angle)."""
-    folder, row, herald, scale, idle_angle = item
+    at one shot per arm. item = (folder, pair, herald, relaxation scale, idle cc_prx angle, passive reset)."""
+    folder, row, herald, scale, idle_angle, passive = item
     device = load_device(folder)
     pair = pair_of(row)
-    noise = noise_of(device, pair, herald, scale)
+    noise = noise_of(device, pair, herald, scale, passive)
     laws: dict[str, list[float]] = {}
     qual: dict[str, list[float]] = {}
     for arm in arm_names():
@@ -737,21 +747,24 @@ def measure_window(device: Device, pairs: Sequence[Pair]) -> float:
     return max(sum(device.timing.measure[q]) for p in pairs for q in (p.alice, p.bob))
 
 
-def shot_seconds_of(device: Device, pairs: Sequence[Pair], herald: bool, idle_angle: float) -> float:
-    """Seconds per shot: the retained bare-circuit shot plus the circuit beyond one measure window, and one
-    more window for the herald measurement."""
+def shot_seconds_of(
+    device: Device, pairs: Sequence[Pair], herald: bool, idle_angle: float, passive: bool = False
+) -> float:
+    """Seconds per shot: the retained bare-circuit shot under the reset mode plus the circuit beyond one measure
+    window, and one more window for the herald measurement."""
     window = measure_window(device, pairs)
     longest = max(circuit_seconds(circuit_ops(arm, pairs, idle_angle), device.timing) for arm in arm_names())
-    return SHOT_BASE_SECONDS + longest - window + (window if herald else 0.0)
+    base = PASSIVE_SHOT_SECONDS if passive else SHOT_BASE_SECONDS
+    return base + longest - window + (window if herald else 0.0)
 
 
-def plan_seconds() -> float:
-    return MAX_CREDITS[QC] / PRICE[QC] - PLAN_HEADROOM_SECONDS
+def plan_seconds(credits: float) -> float:
+    return credits / PRICE[QC] - PLAN_HEADROOM_SECONDS
 
 
-def shots_for(shot_seconds: float, circuits: int) -> int:
+def shots_for(shot_seconds: float, circuits: int, credits: float) -> int:
     """The largest multiple of SHOT_STEP that keeps JOB_SECONDS plus the shot schedule within the plan."""
-    shots = math.floor((plan_seconds() - JOB_SECONDS) / (circuits * shot_seconds) / SHOT_STEP) * SHOT_STEP
+    shots = math.floor((plan_seconds(credits) - JOB_SECONDS) / (circuits * shot_seconds) / SHOT_STEP) * SHOT_STEP
     return min(shots, 20000)
 
 
@@ -769,8 +782,16 @@ def pooled(results: Sequence[Mapping[str, Any]], kept: float) -> dict[str, dict[
     return out
 
 
-def plan(folder: str, herald_option: str, pairs_option: int | None, scale: float, idle_angle: float) -> dict[str, Any]:
-    """Select pairs, P and heralding from the calibration at folder.
+def plan(
+    folder: str,
+    herald_option: str,
+    pairs_option: int | None,
+    scale: float,
+    idle_angle: float,
+    passive: bool = False,
+    credits: float = MAX_CREDITS[QC],
+) -> dict[str, Any]:
+    """Select pairs, P and heralding from the calibration at folder; passive reset admits no herald.
 
     Each coupler takes the orientation of the larger predicted selected margin. For each size P the induced
     matching of the largest mean margin is scored by its pooled shot-noise standard errors at the shots its
@@ -781,10 +802,14 @@ def plan(folder: str, herald_option: str, pairs_option: int | None, scale: float
     device = load_device(folder)
     loci = sorted(device.loci.values(), key=lambda e: (qubit_number(e[0]), qubit_number(e[1])))
     options = {"auto": [True, False], "zeros": [True], "none": [False]}[herald_option]
+    if passive:
+        if True in options and herald_option == "zeros":
+            raise ValueError("passive reset runs unheralded")
+        options = [False]
     rows: dict[bool, list[dict[str, Any]]] = {}
     for herald in options:
         items = [
-            (folder, Pair(0, a, b, locus).as_dict(), herald, scale, idle_angle)
+            (folder, Pair(0, a, b, locus).as_dict(), herald, scale, idle_angle, passive)
             for locus in loci
             for a, b in (locus, locus[::-1])
         ]
@@ -811,8 +836,8 @@ def plan(folder: str, herald_option: str, pairs_option: int | None, scale: float
                 row = dict(best[i]["pair"])
                 row["index"] = index
                 chosen_pairs.append(pair_of(row))
-            shot_seconds = shot_seconds_of(device, chosen_pairs, herald, idle_angle)
-            shots = shots_for(shot_seconds, len(arm_names()))
+            shot_seconds = shot_seconds_of(device, chosen_pairs, herald, idle_angle, passive)
+            shots = shots_for(shot_seconds, len(arm_names()), credits)
             kept = shots * (HERALD_KEEP_PER_QUBIT ** (2 * size) if herald else 1.0)
             results_for = [best[i] for i in members]
             table.append(
@@ -876,15 +901,17 @@ class BuildArgs(NamedTuple):
     shots: int | None = None
     shot_seconds: float | None = None
     idle_cc_angle: str = "zero"
+    reset: str = "active"
+    max_credits: float = MAX_CREDITS[QC]
 
     def as_dict(self) -> dict[str, Any]:
         return self._asdict()
 
 
-def sensitivity(folder: str, chosen: Mapping[str, Any], idle_angle: float) -> dict[str, Any]:
+def sensitivity(folder: str, chosen: Mapping[str, Any], idle_angle: float, passive: bool) -> dict[str, Any]:
     """The chosen pairs' pooled endpoints with every idle time scaled by RELAXATION_SENSITIVITY."""
     herald = bool(chosen["herald"])
-    items = [(folder, row, herald, RELAXATION_SENSITIVITY, idle_angle) for row in chosen["pairs"]]
+    items = [(folder, row, herald, RELAXATION_SENSITIVITY, idle_angle, passive) for row in chosen["pairs"]]
     return pooled(ordered_map(predict_pair, items), float(chosen["kept_shots"]))
 
 
@@ -892,13 +919,18 @@ def build_from(folder: Path, args: BuildArgs) -> dict[str, str]:
     """Relative path -> text of the case, planned and predicted from the calibration folder."""
     device = load_device(str(folder))
     idle_angle = idle_angle_of(args.idle_cc_angle)
-    selected = plan(str(folder), args.herald, args.pairs, 1.0, idle_angle)
+    if args.reset not in ("active", "passive"):
+        raise ValueError(f"reset mode {args.reset!r} is neither active nor passive")
+    passive = args.reset == "passive"
+    if not args.max_credits > 0:
+        raise ValueError(f"a Garnet credit ceiling must be positive, not {args.max_credits}")
+    selected = plan(str(folder), args.herald, args.pairs, 1.0, idle_angle, passive, args.max_credits)
     chosen = selected["chosen"]
     herald = bool(chosen["herald"])
     pairs = [pair_of(row) for row in chosen["pairs"]]
     names = arm_names()
     shot_seconds = args.shot_seconds if args.shot_seconds is not None else float(chosen["shot_seconds"])
-    shots = args.shots if args.shots is not None else shots_for(shot_seconds, len(names))
+    shots = args.shots if args.shots is not None else shots_for(shot_seconds, len(names), args.max_credits)
     keep = HERALD_KEEP_PER_QUBIT ** (2 * len(pairs)) if herald else 1.0
     kept = shots * keep
     files: dict[str, str] = {}
@@ -909,7 +941,7 @@ def build_from(folder: Path, args: BuildArgs) -> dict[str, str]:
         entries.append({"file": rel, "sha256": sha256(files[rel].encode())})
     options: dict[str, Any] = {
         "heralding_mode": "zeros" if herald else "none",
-        "active_reset_cycles": 1,
+        "active_reset_cycles": None if passive else 1,
         "calibration_set_id": {QC: device.calibration.set_id},
     }
     expected = round(len(names) * shots * shot_seconds, 3)
@@ -925,7 +957,7 @@ def build_from(folder: Path, args: BuildArgs) -> dict[str, str]:
                 QC: expected,
                 "garnet:mock": round(len(names) * shots * shot_seconds, 3),
             },
-            "max_credits": dict(MAX_CREDITS),
+            "max_credits": {QC: args.max_credits, "garnet:mock": 0.0},
         },
         {
             "job": MOCK_JOB,
@@ -980,7 +1012,7 @@ def build_from(folder: Path, args: BuildArgs) -> dict[str, str]:
         "best_by_herald": other,
         "relaxation_sensitivity": {
             "scale": RELAXATION_SENSITIVITY,
-            "pooled": sensitivity(str(folder), chosen, idle_angle),
+            "pooled": sensitivity(str(folder), chosen, idle_angle, passive),
         },
         "ideal": ideal_endpoints(),
     }
@@ -1388,13 +1420,16 @@ def predict_case(directory: Path, source: Path) -> dict[str, Any]:
     case = json.loads((directory / "cases.json").read_text(encoding="utf-8"))
     row = case["jobs"][0]
     herald = row["options"]["heralding_mode"] == "zeros"
+    passive = row["options"]["active_reset_cycles"] is None
     idle_angle = idle_angle_of(case["build"]["idle_cc_angle"])
     kept = row["shots"] * (HERALD_KEEP_PER_QUBIT ** (2 * len(case["pairs"])) if herald else 1.0)
     out: dict[str, Any] = {}
     with tempfile.TemporaryDirectory() as tmp:
         folder = str(with_calibration(source, tmp))
         for label, scale in (("calibrated", 1.0), ("relaxation_scaled", RELAXATION_SENSITIVITY)):
-            results = ordered_map(predict_pair, [(folder, p, herald, scale, idle_angle) for p in case["pairs"]])
+            results = ordered_map(
+                predict_pair, [(folder, p, herald, scale, idle_angle, passive) for p in case["pairs"]]
+            )
             out[label] = {
                 "calibration_set": load_device(folder).calibration.set_id,
                 "pooled": pooled(results, kept),
@@ -1418,11 +1453,14 @@ def main() -> int:
     build.add_argument("--shots", type=int)
     build.add_argument("--shot-seconds", type=float)
     build.add_argument("--idle-cc-angle", choices=("zero", "two-pi"), default="zero")
+    build.add_argument("--reset", choices=("active", "passive"), default="active")
+    build.add_argument("--max-credits", type=float, default=MAX_CREDITS[QC])
     sub.add_parser("check").add_argument("directory", type=Path)
     planner = sub.add_parser("plan")
     planner.add_argument("--calibration-dir", type=Path, default=EVIDENCE_CALIBRATION)
     planner.add_argument("--herald", choices=("auto", "zeros", "none"), default="auto")
     planner.add_argument("--pairs", type=int)
+    planner.add_argument("--reset", choices=("active", "passive"), default="active")
     predictor = sub.add_parser("predict")
     predictor.add_argument("directory", type=Path)
     predictor.add_argument("--calibration-dir", type=Path, required=True)
@@ -1437,7 +1475,9 @@ def main() -> int:
         write(
             args.directory,
             args.calibration_dir,
-            BuildArgs(args.pairs, args.herald, args.shots, args.shot_seconds, args.idle_cc_angle),
+            BuildArgs(
+                args.pairs, args.herald, args.shots, args.shot_seconds, args.idle_cc_angle, args.reset, args.max_credits
+            ),
         )
         print(f"{args.directory}: written")
     elif args.command == "check":
@@ -1445,7 +1485,14 @@ def main() -> int:
         print(f"{args.directory}: matches the build from its retained calibration")
     elif args.command == "plan":
         with tempfile.TemporaryDirectory() as tmp:
-            result = plan(str(with_calibration(args.calibration_dir, tmp)), args.herald, args.pairs, 1.0, IDLE_CC_ANGLE)
+            result = plan(
+                str(with_calibration(args.calibration_dir, tmp)),
+                args.herald,
+                args.pairs,
+                1.0,
+                IDLE_CC_ANGLE,
+                args.reset == "passive",
+            )
         for row in result["table"]:
             row.pop("members")
         print(dump(rounded(result["table"])), end="")

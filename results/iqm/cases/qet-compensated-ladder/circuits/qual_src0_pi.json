@@ -130,7 +130,7 @@
     "key": "alice4"
    },
    "locus": [
-    "QB18"
+    "QB19"
    ],
    "name": "measure"
   },
@@ -138,11 +138,11 @@
    "args": {
     "angle": 3.14159265358979,
     "feedback_key": "fb4",
-    "feedback_qubit": "QB18",
+    "feedback_qubit": "QB19",
     "phase": 1.5707963267949
    },
    "locus": [
-    "QB19"
+    "QB18"
    ],
    "name": "cc_prx"
   },
@@ -151,7 +151,7 @@
     "key": "bob4"
    },
    "locus": [
-    "QB19"
+    "QB18"
    ],
    "name": "measure"
   }

@@ -28,17 +28,26 @@ non-pi conditional angle on Garnet hardware, which published `cc_prx` examples d
 Four angle-qualification circuits read a target qubit after `cc_prx` from a source in |1> or |0>, at angle 2 phi*
 (ideal P(1) = sin^2 phi* = 0.100 or 0) and at angle pi (1 or 0).
 
-The circuits pack five pairs, Alice first: QB4-QB1, QB7-QB6, QB8-QB13, QB16-QB17 and QB18-QB19. They form an
+The circuits pack five pairs, Alice first: QB4-QB1, QB7-QB6, QB8-QB13, QB16-QB17 and QB19-QB18. They form an
 induced matching of Garnet's couplers, chosen by predicted margin under the calibration set `be070414` read
-2026-10-25 (copied into the case's `calibration/`). Every circuit runs one active-reset cycle and all-zeros
-heralding, which keeps a predicted 48 percent of shots.
+2026-10-25 (copied into the case's `calibration/`).
+
+Every circuit runs passive reset with no heralding (`build --reset passive --herald none --max-credits 8.0`).
+- **Why passive.** The station control admits one feedback signal label per drive AWG in a playlist segment.
+  Active reset conditions every qubit's drive on its own readout, so a Bob qubit would carry two labels.
+- **Evidence.** The first `garnet:mock` acceptance job (`01a17621-1452-701f-8874-ba08a138aec4`, active reset
+  with heralding) was refused at compilation with "unique feedback signal labels: 2/1" on exactly the five Bob
+  drives, at no charge (claim `iqm-garnet-cc-prx-feedback-label-limit`).
+- **Cost of the fix.** A passive-reset shot ran 316 us on the reset and billing pilot, against 16 us active.
+- **Initial state.** Its residual excitation matches the unheralded readout errors, which the model already
+  applies (QB1 read 0.0065 against 0.0046 predicted).
 
 ## Jobs
 
 | Job | QC | Circuits x shots | Expected execution | Expected credits | max_credits |
 |---|---|---|---|---|---|
-| `accept` | `garnet:mock` | 22 x 200 | 0.08 s | 0.00 | 0.0 |
-| `ladder` | `garnet` | 22 x 10900 | 4.39 s + 1.6 s fixed, billed 6 s | 3.0 at 0.50/s | 4.0 |
+| `accept` | `garnet:mock` | 22 x 200 | 1.40 s | 0.00 | 0.0 |
+| `ladder` | `garnet` | 22 x 1700 | 11.87 s + 1.6 s fixed, billed 14 s | 7.0 at 0.50/s | 8.0 |
 
 - **The mock job comes first and costs nothing.** It confirms the server accepts the operation set that no earlier
   case used: `barrier`, a `feedback_key` distinct from `key`, `cc_prx` at angle 0, at a negative-phase frame and
@@ -47,14 +56,14 @@ heralding, which keeps a predicted 48 percent of shots.
 - **The QPU job pins `be070414`.** A refusal of a retired set creates no job, and the case is then rebuilt and
   re-approved. `iqm_jobs.py collect` cancels the job once its runtime nears the ceiling.
 - **Budget.** The account holds 9.00 credits, expiring 2026-11-01.
-- **Shot time.** The modeled shot is 18.3 us. If the mock's estimate exceeds 21 us per shot, the case is rebuilt
-  with fewer shots before the QPU job.
+- **Shot time.** The modeled shot is 317.5 us. `collect` cancels at 15 s of runtime, so the job fits up to about
+  400 us per shot. If the mock's estimate implies more, the case is rebuilt with fewer shots before the QPU job.
 
 ## Why a simulation cannot answer it
 
 The prediction (`prediction.json`, an exact density-matrix law with no sampling) models:
 - depolarizing gate error from RB and IRB;
-- per-qubit readout and herald-conditioned initialization;
+- per-qubit unheralded readout, which carries the passive initialization error;
 - T1/T2 relaxation over the ASAP schedule;
 - the 290 ns `cc_prx` control delay.
 
@@ -64,17 +73,18 @@ It omits the effects that decided the Kingston margin:
 - measurement-induced dephasing and readout non-QNDness.
 
 Whether Garnet realizes a non-pi `cc_prx` angle is a device property. Prediction under `be070414`, pooled over the
-five pairs with shot-noise standard errors at 5275 kept shots per circuit:
+five pairs with shot-noise standard errors at 1700 shots per circuit:
 
 | Endpoint | Predicted | Kingston measured |
 |---|---|---|
-| information excess at the selected alpha | +0.121 +- 0.015 | +0.107 +- 0.006 |
-| channel floor margin at the selected alpha | -0.160 +- 0.011 | -0.073 +- 0.015 |
-| reference unitary floor | 0.271 +- 0.011 | 0.177 +- 0.013 |
-| qualification P(1), source 1, angle 2 phi* | 0.10 to 0.11 | not measured |
+| information excess at the selected alpha | +0.113 +- 0.026 | +0.107 +- 0.006 |
+| channel floor margin at the selected alpha | -0.188 +- 0.019 | -0.073 +- 0.015 |
+| reference unitary floor | 0.278 +- 0.019 | 0.177 +- 0.013 |
+| qualification P(1), source 1, angle 2 phi* | 0.10 to 0.12 | not measured |
 
-The retained idle-schedule case measured an apparent T1 at 0.53 of calibrated. Under that, the predicted margin
-falls to about -0.24 and the excess rises to +0.15.
+Per pair, the shot-noise standard error is about 0.06 on the excess and 0.04 on the margin. The retained
+idle-schedule case measured an apparent T1 at 0.53 of calibrated. Under that, the predicted margin falls to -0.26
+and the excess rises to +0.14.
 
 ## Preregistered decisions
 

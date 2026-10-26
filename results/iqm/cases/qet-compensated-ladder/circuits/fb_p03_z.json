@@ -430,7 +430,7 @@
     "phase": 1.5707963267949
    },
    "locus": [
-    "QB18"
+    "QB19"
    ],
    "name": "prx"
   },
@@ -440,7 +440,7 @@
     "phase": -1.5707963267949
    },
    "locus": [
-    "QB19"
+    "QB18"
    ],
    "name": "prx"
   },
@@ -458,15 +458,15 @@
     "phase": 1.5707963267949
    },
    "locus": [
-    "QB19"
+    "QB18"
    ],
    "name": "prx"
   },
   {
    "args": {},
    "locus": [
-    "QB18",
-    "QB19"
+    "QB19",
+    "QB18"
    ],
    "name": "barrier"
   },
@@ -476,7 +476,7 @@
     "phase": 1.5707963267949
    },
    "locus": [
-    "QB18"
+    "QB19"
    ],
    "name": "prx"
   },
@@ -486,7 +486,7 @@
     "key": "alice4"
    },
    "locus": [
-    "QB18"
+    "QB19"
    ],
    "name": "measure"
   },
@@ -496,7 +496,7 @@
     "phase": 1.2707963267949
    },
    "locus": [
-    "QB19"
+    "QB18"
    ],
    "name": "prx"
   },
@@ -504,11 +504,11 @@
    "args": {
     "angle": 0.64350110879328,
     "feedback_key": "fb4",
-    "feedback_qubit": "QB18",
+    "feedback_qubit": "QB19",
     "phase": 1.2707963267949
    },
    "locus": [
-    "QB19"
+    "QB18"
    ],
    "name": "cc_prx"
   },
@@ -517,7 +517,7 @@
     "key": "afinal4"
    },
    "locus": [
-    "QB18"
+    "QB19"
    ],
    "name": "measure"
   },
@@ -526,7 +526,7 @@
     "key": "bob4"
    },
    "locus": [
-    "QB19"
+    "QB18"
    ],
    "name": "measure"
   }
