@@ -35,7 +35,7 @@ acquisition of every provider:
 | exploratory reanalysis | exploratory | 70 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
-| mathematical claim | established | 26 |
+| mathematical claim | established | 27 |
 | mathematical claim | open | 2 |
 | numerical or stochastic simulation | established | 10 |
 | numerical or stochastic simulation | superseded | 1 |

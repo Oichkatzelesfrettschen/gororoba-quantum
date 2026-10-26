@@ -1,0 +1,424 @@
+{
+ "tables": {
+  "pass": true,
+  "basis_pair_mismatches": 0
+ },
+ "identities": {
+  "pass": true,
+  "orthogonal": true,
+  "anticommutative": true,
+  "double_cross_alpha_beta": [
+   1,
+   -1
+  ],
+  "lagrange_sign": 1
+ },
+ "g2": {
+  "derivation_dimension": 14,
+  "preserve_im_and_eta": true,
+  "F1": {
+   "inner_derivations_in_span": true,
+   "constant": 4,
+   "identity": true
+  },
+  "F2": {
+   "stabilizer_dimension": 8,
+   "k_squared_on_perp": true,
+   "eigenspace_dimensions": [
+    3,
+    3
+   ],
+   "eigenspaces_isotropic": true,
+   "pairing_rank": 3,
+   "stabilizer_commutes_with_k": true,
+   "image_rank_on_vplus": 8,
+   "traceless": true
+  },
+  "slice_frames": {
+   "e1_norm": "-1",
+   "P2_gram": [
+    [
+     "-1",
+     "0"
+    ],
+    [
+     "0",
+     "-1"
+    ]
+   ],
+   "P2_second_vector_type": "mixed",
+   "radical_types": {
+    "P3a": "V+",
+    "P3b": "V-",
+    "P3c": "mixed"
+   },
+   "radicals_null_and_perp_e1": true,
+   "P3c_split_pairing_zero": true
+  },
+  "F3": {
+   "P3a": 6,
+   "P3b": 6,
+   "P3c": 6
+  },
+  "F4": {
+   "n0_null": true,
+   "stabilizer_dimension": 8,
+   "kernel_L_ok": true,
+   "sl2_rank_on_L_mod_n0": 3,
+   "P4s_special": true,
+   "P4g_generic": true
+  },
+  "equivariance": {
+   "sedenion_derivation_dimension": 14,
+   "lifts_are_derivations": true,
+   "integral_lifts": true,
+   "congruence_M(Dz)=-(D^T M + M D)": true
+  },
+  "pass": true
+ },
+ "isotropic": {
+  "pass": true,
+  "forms_in_radical": "1",
+  "linear_forms": "4"
+ },
+ "points": {
+  "pass": true,
+  "rows": [
+   {
+    "point": "E8 (P3a)",
+    "nullity": 8,
+    "expected": 8,
+    "in_piece": true,
+    "in_Ehat": true,
+    "in_W8": false
+   },
+   {
+    "point": "W8 hyperbolic",
+    "nullity": 8,
+    "expected": 8,
+    "in_piece": true,
+    "in_Ehat": false,
+    "in_W8": true
+   },
+   {
+    "point": "V",
+    "nullity": 12,
+    "expected": 12,
+    "in_piece": true,
+    "in_Ehat": true,
+    "in_W8": false
+   },
+   {
+    "point": "B9 (P4s)",
+    "nullity": 12,
+    "expected": 12,
+    "in_piece": true,
+    "in_Ehat": true,
+    "in_W8": true
+   },
+   {
+    "point": "N_+",
+    "nullity": 16,
+    "expected": 16,
+    "in_piece": true,
+    "in_Ehat": true,
+    "in_W8": true
+   },
+   {
+    "point": "N_-",
+    "nullity": 16,
+    "expected": 16,
+    "in_piece": true,
+    "in_Ehat": true,
+    "in_W8": true
+   }
+  ],
+  "ehat_jacobian_rank_at_E8_point": 4,
+  "Q_on_P3a": "-b^2 + d^2 - m^2"
+ },
+ "slices": {
+  "pass": true,
+  "rows": [
+   {
+    "slice": "P2",
+    "order": 12,
+    "mutation": "",
+    "pass": true,
+    "piece_W8_in_R": "1",
+    "piece_Ehat_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "2 3",
+    "generators": "80",
+    "seconds": "0.3"
+   },
+   {
+    "slice": "P2",
+    "order": 10,
+    "mutation": "",
+    "pass": true,
+    "piece_V_in_R": "1",
+    "piece_B9_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "3",
+    "generators": "274",
+    "seconds": "0.3"
+   },
+   {
+    "slice": "P2",
+    "order": 8,
+    "mutation": "",
+    "pass": true,
+    "piece_Np_in_R": "1",
+    "piece_Nm_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "1 1",
+    "generators": "379",
+    "seconds": "0.3"
+   },
+   {
+    "slice": "P3a",
+    "order": 12,
+    "mutation": "",
+    "pass": true,
+    "piece_W8_in_R": "1",
+    "piece_Ehat_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "4",
+    "generators": "82",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3a",
+    "order": 10,
+    "mutation": "",
+    "pass": true,
+    "piece_V_in_R": "1",
+    "piece_B9_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "3",
+    "generators": "332",
+    "seconds": "0.3"
+   },
+   {
+    "slice": "P3a",
+    "order": 8,
+    "mutation": "",
+    "pass": true,
+    "piece_Np_in_R": "1",
+    "piece_Nm_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "1 1",
+    "generators": "520",
+    "seconds": "0.4"
+   },
+   {
+    "slice": "P3b",
+    "order": 12,
+    "mutation": "",
+    "pass": true,
+    "piece_W8_in_R": "1",
+    "piece_Ehat_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "4",
+    "generators": "72",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P3b",
+    "order": 10,
+    "mutation": "",
+    "pass": true,
+    "piece_V_in_R": "1",
+    "piece_B9_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "3",
+    "generators": "318",
+    "seconds": "0.3"
+   },
+   {
+    "slice": "P3b",
+    "order": 8,
+    "mutation": "",
+    "pass": true,
+    "piece_Np_in_R": "1",
+    "piece_Nm_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "1 1",
+    "generators": "488",
+    "seconds": "0.3"
+   },
+   {
+    "slice": "P3c",
+    "order": 12,
+    "mutation": "",
+    "pass": true,
+    "piece_W8_in_R": "1",
+    "piece_Ehat_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "3",
+    "generators": "150",
+    "seconds": "0.2"
+   },
+   {
+    "slice": "P3c",
+    "order": 10,
+    "mutation": "",
+    "pass": true,
+    "piece_V_in_R": "1",
+    "piece_B9_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "3",
+    "generators": "960",
+    "seconds": "0.6"
+   },
+   {
+    "slice": "P3c",
+    "order": 8,
+    "mutation": "",
+    "pass": true,
+    "piece_Np_in_R": "1",
+    "piece_Nm_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "1 1",
+    "generators": "1739",
+    "seconds": "0.7"
+   },
+   {
+    "slice": "P4s",
+    "order": 12,
+    "mutation": "",
+    "pass": true,
+    "piece_W8_in_R": "1",
+    "piece_Ehat_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "4",
+    "generators": "59",
+    "seconds": "0.1"
+   },
+   {
+    "slice": "P4s",
+    "order": 10,
+    "mutation": "",
+    "pass": true,
+    "piece_V_in_R": "1",
+    "piece_B9_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "4",
+    "generators": "342",
+    "seconds": "0.2"
+   },
+   {
+    "slice": "P4s",
+    "order": 8,
+    "mutation": "",
+    "pass": true,
+    "piece_Np_in_R": "1",
+    "piece_Nm_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "2 2",
+    "generators": "556",
+    "seconds": "0.3"
+   },
+   {
+    "slice": "P4g",
+    "order": 12,
+    "mutation": "",
+    "pass": true,
+    "piece_W8_in_R": "1",
+    "piece_Ehat_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "4",
+    "generators": "218",
+    "seconds": "0.2"
+   },
+   {
+    "slice": "P4g",
+    "order": 10,
+    "mutation": "",
+    "pass": true,
+    "piece_V_in_R": "1",
+    "piece_B9_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "3",
+    "generators": "1770",
+    "seconds": "0.7"
+   },
+   {
+    "slice": "P4g",
+    "order": 8,
+    "mutation": "",
+    "pass": true,
+    "piece_Np_in_R": "1",
+    "piece_Nm_in_R": "1",
+    "R_in_union": "1",
+    "component_dims": "2 2",
+    "generators": "2966",
+    "seconds": "1.1"
+   }
+  ]
+ },
+ "global": {
+  "pass": true,
+  "rows": [
+   {
+    "job": "ehat_structure",
+    "mutation": "",
+    "dim": "11",
+    "degree": "24",
+    "piece_dims": "12 8 9 6 6",
+    "ehat_vanishes_on_V": "1",
+    "ehat_vanishes_on_B9": "1",
+    "qg_vanishes_on_ehat": "1",
+    "saturation_equals_ehat": "1",
+    "seconds": "13.0"
+   },
+   {
+    "job": "pf12",
+    "mutation": "",
+    "in_ideal_Ehat": "1",
+    "in_radical_Ehat": "1",
+    "in_ideal_W8": "1",
+    "in_radical_W8": "1",
+    "generators": "455",
+    "seconds": "6.7"
+   },
+   {
+    "job": "pf10",
+    "mutation": "",
+    "in_ideal_V": "1",
+    "in_radical_V": "1",
+    "in_ideal_B9": "1",
+    "in_radical_B9": "1",
+    "generators": "3003",
+    "seconds": "12.0"
+   },
+   {
+    "job": "pf8",
+    "mutation": "",
+    "in_ideal_Np": "1",
+    "in_radical_Np": "1",
+    "in_ideal_Nm": "1",
+    "in_radical_Nm": "1",
+    "generators": "6435",
+    "seconds": "6.9"
+   }
+  ]
+ },
+ "timings_s": {
+  "tables": 0.3,
+  "identities": 0.0,
+  "g2": 7.65,
+  "isotropic": 7.18,
+  "points": 0.04,
+  "slices": 1.9,
+  "global": 13.23
+ },
+ "total_s": 30.31,
+ "workers": 12,
+ "script_sha256": "67d6aba09e36a310c7f8d3f897a6e88a46bac9a8075cc3ce8cf5aa02fd76e3f9",
+ "versions": {
+  "python": "3.14.8",
+  "python-flint": "0.9.0",
+  "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00"
+ }
+}
