@@ -66,12 +66,22 @@ FAMILIES: dict[str, tuple[bool, bool]] = {
 }
 
 
+class InputColumn:
+    """Every configuration's output amplitudes for a photon entering one input mode."""
+
+    def __init__(self, data: dict[str, Any]) -> None:
+        self.couplers, self.arch, self.phases = data["couplers"], data["arch"], data["phases"]
+
+    def __call__(self, mode: int) -> np.ndarray:
+        count = len(self.phases)
+        column: np.ndarray = models.pure_amplitudes(self.couplers, self.arch, self.phases, np.full(count, mode))[0]
+        return column
+
+
 def unitaries(data: dict[str, Any]) -> np.ndarray:
-    """Every configuration's full mesh unitary (configurations x output x input)."""
-    count = len(data["sources"])
-    out = np.zeros((count, MODES, MODES), dtype=complex)
-    for k in range(MODES):
-        out[:, :, k] = models.pure_amplitudes(data["couplers"], data["arch"], data["phases"], np.full(count, k))[0]
+    """Every configuration's full mesh unitary (configurations x output x input), one input mode per pool item."""
+    columns = ordered_map(InputColumn(data), list(range(MODES)), min_items=1)
+    out: np.ndarray = np.stack(columns, axis=2)
     return out
 
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from typing import Any
 
 import ascella_mesh_decomposition as decomposition
@@ -29,8 +30,9 @@ def test_delta_method_matches_the_sampled_subtracted_fractions() -> None:
     total = 8192
     expected = probabilities * total
     predicted = decomposition.light_fraction_covariance(run(expected[None, :4], expected[4:], dark))[0]
-    # A fixed generator seed reproduces a contract test; it draws synthetic counts, never a scientific seed.
-    generator = np.random.default_rng(np.random.SeedSequence(entropy=[int(x) for x in expected.astype(int)]))
+    draw = decomposition.ROOT / "docs/evidence/anu_qrng/draw-2026-10-26T012622Z.json"
+    values = json.loads(draw.read_text(encoding="utf-8"))["values"]
+    generator = np.random.default_rng(int(values[decomposition.COVARIANCE_CHECK_INDEX]))
     samples = generator.multinomial(total, probabilities, size=40000)
     light = samples[:, :4] - samples[:, 4:5] * share[None, :]
     fractions = light / light.sum(axis=1, keepdims=True)

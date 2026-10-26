@@ -68,8 +68,10 @@ LIGHT_MODES = (0, 1, 3)
 QUANT_RESOLUTIONS = tuple(math.exp(math.log(0.005) + k * math.log(100.0) / 119) for k in range(120))
 QUANT_ORIGINS = 8
 QUANT_NULLS = 100
-# The split consumes values 0..55 of its draw; value 56 seeds the quantization null.
+# The split consumes values 0..55 of its draw; value 56 seeds the quantization null and value 57 the sampled
+# covariance check of tests/scripts/test_ascella_mesh_decomposition.py.
 NULL_INDEX = 56
+COVARIANCE_CHECK_INDEX = 57
 SCALAR_FEATURES = ("phase_sum", "phase_square_sum", "near_wrap_count", "x_gradient_norm", "phase_weighted_x_gradient")
 NEAR_WRAP = 0.3
 DEPHASING_VARIANCES = (0.005, 0.01)
