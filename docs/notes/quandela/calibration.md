@@ -39,6 +39,20 @@ mode 5, at the 2026-10-24 schema and clock. Every source-connected mode's `t_in`
 stays between 15.88 % (mode 5) and 164.32 %. Perceval's `estimate_required_shots` answers None for the rehearsal
 under these figures. Cause not identified; `qpu:ascella` in the same read reports HOM 86.8 % and g2 1.9 %.
 
+The record holds still. The read of 2026-10-26 01:16:38 UTC,
+[live-processor-qpu-belenos-2026-10-26T01-16-38Z.json](../../evidence/quandela/live-processor-qpu-belenos-2026-10-26T01-16-38Z.json),
+carries a `perfs` object byte-identical to the 19:04:53 UTC read, every per-mode dark count and transmission included,
+and the first read of this state is the 18:47:04 UTC catalogue of
+[ascella_signed_coherence job-02](../../../results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/platform-before/catalogue.json).
+On 2026-10-24 the same object changed at each of the six two-hourly reads of the dark drift series (07:04 to 19:04 UTC,
+[results/quandela/bdsc_drift_series_dark/](../../../results/quandela/bdsc_drift_series_dark/)) and held between them,
+with the mode-5 dark count moving between 7326.8 /s and 18616.3 /s. Six and a half hours without a change therefore
+span at least three refresh intervals, and the figures most likely describe the last calibration the service
+published rather than the chip at the time of the read (inference; a changed record or a provider statement settles
+it). The explorer row of the same read reports 97.89 % availability for 2026-10-26 and schedules the weekly
+maintenance for 2026-10-29 08:30 to 12:00 UTC, not yet started. A plan admits the rehearsal only on a record that
+models at or above F* = 0.86, so a frozen record holds the case.
+
 ### Live reads of 2026-10-20 (historical)
 
 The table below is the state as of the live processor reads of 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). The maintenance window is the snapshot's Explorer row, which read it on 2026-10-17.

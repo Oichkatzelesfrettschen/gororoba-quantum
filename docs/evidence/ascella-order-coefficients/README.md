@@ -123,8 +123,15 @@ the anchors
 holds that case's preregistered reading of job-02: the served-mesh count, R1's
 permutation test, R2's predictions of the 56 meshes by the job-00 fits and
 R3's refits on job-00 plus job-02 under the training-only folds.
+[`heater-coupling.json`](heater-coupling.json), from
+[`scripts/ascella_heater_coupling.py`](../../../scripts/ascella_heater_coupling.py),
+scores the heater-coupling families of plan
+[`ascella-heater-coupling-families`](../../state/plans/ascella-heater-coupling-families.json)
+fitted on job-00 alone against job-02's 56 meshes, with their identification
+folds on job-00 plus job-02
+([design](../../design/ascella-signed-coherence-conformance.md#heater-coupling-families-on-the-served-meshes)).
 The `core-ascella-signed-coherence-*` gates replay the first four within the
-certificate tolerance, the compilation design and reading within the fit replay bounds,
+certificate tolerance, the compilation design and reading and the heater-coupling reading within the fit replay bounds,
 and the physical-model, holdout, drive-linear and
 drive-response records their nominal family there and their fitted families
 within 1e-3 relative plus 1e-8 absolute, the rounding of optimizer endpoints
