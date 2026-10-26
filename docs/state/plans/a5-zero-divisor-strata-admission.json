@@ -74,6 +74,12 @@
           "scope_sha256": "0a505457669fa5fe1e851d076a57b2de51ff0ac7d392083447f265426f6b7219"
         }
       ]
+    },
+    {
+      "id": "critical-diff-review",
+      "state": "todo",
+      "action": "Run the review-work-critically skill over the full PR diff against origin/main before merge, after the last Codex round.",
+      "acceptance": "Every criticism it raises is fixed on the branch or answered in the PR body with its governing principle."
     }
   ]
 }
