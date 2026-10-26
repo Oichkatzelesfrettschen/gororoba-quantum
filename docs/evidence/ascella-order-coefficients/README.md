@@ -123,6 +123,35 @@ the anchors
 holds that case's preregistered reading of job-02: the served-mesh count, R1's
 permutation test, R2's predictions of the 56 meshes by the job-00 fits and
 R3's refits on job-00 plus job-02 under the training-only folds.
+[`seed-repeat-reading.json`](seed-repeat-reading.json), from
+[`scripts/ascella_seed_repeat_reading.py`](../../../scripts/ascella_seed_repeat_reading.py),
+holds the seed-repeat case's preregistered reading of job-03 against job-02:
+mesh identity, the anchor control, the per-mesh reproduction against its
+attenuation ceiling and the replicated compilation dependence
+([design](../../design/ascella-signed-coherence-conformance.md#seed-repeat-case-job-03)).
+[`fixed-mesh-error.json`](fixed-mesh-error.json), from
+[`scripts/ascella_fixed_mesh_error.py`](../../../scripts/ascella_fixed_mesh_error.py),
+fits heater and coupler offsets, and coupler offsets alone, on job-00 plus the
+exploration meshes of jobs 02 and 03 and records the power and leave-one-out
+gates that bar their held-out quadratic-form reading;
+[`fixed-mesh-frozen-predictions.json`](fixed-mesh-frozen-predictions.json)
+freezes the heater and coupler fit's 28 held-out predictions, and
+[`fixed-mesh-confirmation.json`](fixed-mesh-confirmation.json), from
+[`scripts/ascella_fixed_mesh_confirmation.py`](../../../scripts/ascella_fixed_mesh_confirmation.py),
+scores them once by their correlation with the held-out X statistics
+([design](../../design/ascella-signed-coherence-conformance.md#element-offsets-fitted-on-the-served-meshes)).
+[`new-mesh-offsets.json`](new-mesh-offsets.json), from
+[`scripts/ascella_new_mesh_offsets.py`](../../../scripts/ascella_new_mesh_offsets.py),
+freezes the heater and coupler offsets of plan
+[`ascella-new-seed-meshes-case`](../../state/plans/ascella-new-seed-meshes-case.json)
+before any new seed was drawn;
+[`new-seed-sizing.json`](new-seed-sizing.json), from
+[`scripts/ascella_new_seed_sizing.py`](../../../scripts/ascella_new_seed_sizing.py),
+records the case's power and null-bound probabilities; and
+[`new-seed-score.json`](new-seed-score.json), from
+[`scripts/ascella_new_mesh_score.py`](../../../scripts/ascella_new_mesh_score.py),
+scores the offsets once on the 147 unseen meshes of jobs 04 and 05
+([design](../../design/ascella-signed-coherence-conformance.md#new-seed-meshes-case-job-04-and-job-05)).
 [`heater-coupling.json`](heater-coupling.json), from
 [`scripts/ascella_heater_coupling.py`](../../../scripts/ascella_heater_coupling.py),
 scores the heater-coupling families of plan

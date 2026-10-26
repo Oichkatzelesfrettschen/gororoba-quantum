@@ -37,9 +37,13 @@ offline after `live_run.py` gained the structure-preserving compilation contract
 `coherence_probes` and `primorial_gap88` campaigns and their manifest entries; it differs from the QET-campaign
 successor only in the `live_run.py` digest and the offline validation time.
 
+The [readout-preflight successor](comparison-readout-preflight.json) rebinds the retained-audit comparison
+offline after `live_run.py` listed the `readout_preflight` campaign among its pinned campaigns; it differs from
+the primorial-campaign successor only in the `live_run.py` digest and the offline validation time.
+
 The [window-dose successor](comparison-window-doses.json) rebinds the retained-audit comparison offline after
-`live_run.py` gained `--window-doses-dt`; it differs from the primorial-campaign successor only in the `live_run.py`
-digest and the offline validation time. Gate `core-281` checks it.
+`live_run.py` gained `--window-doses-dt`; it differs from the readout-preflight successor only in the
+`live_run.py` digest and the offline validation time. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These

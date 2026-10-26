@@ -452,6 +452,104 @@ Cayley-Dickson table near 1 even on model-consistent data, so the lens tests the
 structure; on the simulated anchor-state run the percentiles are 0.87, 0.40 and 0.48 for n = 6, 7 and 8. A flag
 motivates a designed probe that passes the mutation test of the algebra rules and enters no registry from this run.
 
+## Recovered-chip rehearsal (job-01)
+
+**Question.** Job-01 asks job-00's question again, on a chip whose performance record has left the degraded state:
+does the pooled conditional fidelity of the frame-corrected receiver over the six inputs beat the classical bound?
+Job-00 returned no three-click sample, so its verdict is `inconclusive` and says nothing about the circuit. Job-01
+keeps job-00's inputs, readout bases, eligibility rule, decision-rule form, claim level C1, `min_detected_photons` 3,
+`mitigations: []`, `max_duration` 300 s and `sample_count`; its seeds, layout, preregistered values and budgets are
+its own.
+
+**Preregistration at its own read.** On 2026-10-26 the owner chose to preregister job-01 at its own platform read:
+the first read after the record recovers, retained as
+`results/quandela/cases/teleportation_rehearsal/job-01/platform-read/catalogue.json`, is both the case's fresh read
+and its anchor read (`Request.anchor_read`). The noise variants, F*, the allowance, the decision count, the sample
+budget and the modeled three-click probabilities of the classical bound all come from that read's figures, and
+`estimate_required_shots` under its perfs sizes `max_shots`. The fresh-read variants then repeat the anchor ones, so
+the allowance is the unmodeled 0.02 alone. Only the live gate applies: `binding` requires the model's pooled fidelity
+at the figures live at submission to reach job-01's own F*, so it refuses a *published performance record* that
+changed below the preregistration between the read and the submission, and `--anchor` refuses a case anchored at its
+own read. An unchanged record passes by construction, and the record most likely describes the last published
+calibration rather than the chip at read time ([calibration.md](../notes/quandela/calibration.md)), so the gate
+cannot see drift of the chip itself, and the written case names that risk. The gate also holds at read time only:
+`qd_platform.submit` reads usage, writes its checkpoint and POSTs after the last authenticated read, and no provider
+precondition binds that read to execution. The
+record watch keeps triggering on job-00's F* = 0.86; it decides when to read, and job-01's own F* decides admission.
+A read whose model gives an F* that does not exceed the classical bound plus 0.02 has no decision power:
+`bernoulli_decision_count` refuses it and `--prepare` retains nothing. A read whose budget does not fit the 300 s
+`max_duration` is refused the same way (below).
+
+**Compilation seeds.** The six values are 8608, 30481, 4339, 55973, 12504 and 37710 for +Z, -Z, +X, -X, +Y, -Y:
+indices 0 to 5, in index order, of the Cisco Outshift QRNG draw
+[`draw-2026-10-26T204106Z.json`](../evidence/outshift_qrng/draw-2026-10-26T204106Z.json), registered in
+[`allocations.json`](../evidence/qrng_seeds/allocations.json) as `JOB_01_COMPILATION_SEEDS` of
+`scripts/qd_teleportation_rehearsal.py`. On 2026-10-26 the operator observed the keyed ANU service answer `success`
+with an empty data array and the keyless ANU service time out twice; neither failure was retained as a receipt.
+The source order of [the QRNG guide](../notes/qrng/README.md) therefore reached Outshift. Job-01 is a new acquisition on new meshes, so its seeds are new values, none shared with job-00.
+
+**Derived at the read.** `qd_teleportation_rehearsal.py --prepare job-01` computes:
+- the layout, by job-00's rule (source photons on connected inputs, every window mode at or below 100 dark counts per
+  second, the closest `t_out` over the three rails);
+- `noise-model.json`, holding F*, the allowance, B, the decision count and the samples per iteration;
+- `shot-estimate.json`, with `max_shots` at 1.25 times the largest per-input estimate, rounded up to 100,000.
+
+The charge is 1 + `max_shots` * 1e-06 credits. The expected seconds follow job-00's method (`expected_seconds`):
+10 s of server compilation per iteration plus each input's samples over the 4.94 MHz clock times its modeled
+three-click probability, times 1.25, rounded up to whole minutes; job-00's figures give its 120 s. A case whose
+expected seconds exceed the 300 s `max_duration` retains nothing, because a job the service cuts off bills its
+`max_shots` and decides nothing. At job-00's modeled probabilities that admits F* of 0.77 and above (2115 accepted
+outcomes, 5600 samples per iteration, 300 s); F* 0.76 needs 420 s. The method is unverified on the chip: job-00,
+predicted under 100 s, ran 292 s in the degraded state with every iteration at its `max_shots`, and job-01's
+written case says so. The command prints the `REQUESTS` and `JOBS` rows that register the
+case; [the test](../../tests/scripts/test_qd_teleportation_rehearsal.py) runs the whole sequence on a stand-in read
+whose layout moves off chip modes 8 to 15.
+
+**Procedure.** Each step reads the platform and sends no job, until the owner approves the written case.
+1. `"$PYTHON" scripts/qd_platform.py snapshot --out results/quandela/cases/teleportation_rehearsal/job-01/platform-read`
+   retains the read.
+2. `"$PYTHON" scripts/qd_teleportation_rehearsal.py --prepare job-01` retains the derivation and the estimate. Its
+   two printed rows go below `JOBS` in the script.
+3. `"$PYTHON" scripts/qd_teleportation_rehearsal.py job-01` writes `cases.json` and `circuit.json`, and `--check`
+   validates every registered case.
+4. `--body job-01` freezes `job-body.json`, and `--plan job-01` retains `plan.json`, or `plan-refused.json` when the
+   platform or the live model refuses.
+5. A written-case paragraph below states:
+   - what the run measures, and why a simulation cannot answer it (job-00's paragraph carries over);
+   - the backend `qpu:belenos`;
+   - the samples, `max_shots`, seconds and credits from steps 2 to 4.
+6. After the owner approves, `--submit RUN APPROVAL`, with no `--anchor`, sends job-01 once. `qd_platform.py collect
+   RUN`, `--analyze RUN` and `qd_rehearsal_secondary.py RUN` follow. Retention mirrors job-00: a replay gate, a
+   registry acquisition and claim, and the plan step's receipt.
+
+**Review of 2026-10-26.** An owner-requested Codex deep peer review
+([report and disposition](../archive/reviews/2026-10-26-belenos-teleportation-rehearsal-review.md)) changed the shared
+analysis before job-01's preregistration:
+- a partial job (errored or canceled) is `inconclusive` even when every input has counts, because a stop the service
+  chose may depend on the outcomes;
+- `at-or-below-classical` requires `F_hat + r` below the *smaller* of the two candidate bounds (the bound at the
+  reported shots, 2/3 at equal shots, and the bound at the modeled attempts), so neither verdict direction rests on
+  the attempt profile that favors it;
+- `--check` refuses a registered job whose case is absent.
+
+Job-00's retained verdict (`inconclusive`, no accepted event) replays unchanged. F* is the noise model's power
+forecast: it sizes the budget and never enters the verdict, which compares the data with B.
+
+The review also names open questions that bear on the claim a `beats-classical` verdict supports. Each waits on the
+owner's decision before job-01's written case:
+- **The verdict supports a narrower claim than C1.** It establishes accepted-event pooled conditional fidelity above
+  the bound; the acceptance rate and the rejection mix are reported, but no preregistered tolerance tests them.
+- **Multiphoton sectors leave the single-copy benchmark.** Threshold-accepted multiphoton events (1.4 to 2.5 % of
+  accepted mass at g2 1.1 %) carry extra input copies or failed CNOT branches, outside the single-copy Choi-cone
+  benchmark; no registered bound covers them.
+- **The modeled attempts are a forecast, not an upper bound.** The service reports no optical attempts
+  ([Perceval #798](https://github.com/Quandela/Perceval/issues/798)), so B at the modeled attempts does not
+  upper-bound the classical optimum over the attempt profiles the record allows.
+- **Independence is assumed.** The Hoeffding radius treats accepted events as independent, while each input runs as
+  one compiled block.
+- **The allowance is stated, not derived.** The 0.02 allowance is not a derived bound on compilation error or
+  three-photon distinguishability.
+
 ## Provider request
 
 The request splits by channel. Items 2 and 3 concern the open-source client's

@@ -82,3 +82,20 @@ def test_comparison_accepts_the_plan_and_refuses_an_edit(planned: tuple[Any, dic
     blockers = live_run.approved_choice_blockers(tmp_path, record, [choice])
     if not any("compiled members" in blocker for blocker in blockers):
         raise AssertionError(f"a one-entry law edit passed: {blockers}")
+
+
+def test_pinned_layout_takes_further_paths_as_replicas() -> None:
+    import argparse
+
+    one = live_run._pinned_layout("ibm_kingston:58,71,72")
+    several = live_run._pinned_layout("ibm_kingston:58,71,72/33,39,53")
+    if one != {"backend": "ibm_kingston", "qubits": [58, 71, 72]}:
+        raise AssertionError(one)
+    if several != {"backend": "ibm_kingston", "qubits": [58, 71, 72], "replicas": [[58, 71, 72], [33, 39, 53]]}:
+        raise AssertionError(several)
+    for bad in ("ibm_kingston:1,2,3/3,4,5", "ibm_kingston:1,2,3/4,5"):
+        try:
+            live_run._pinned_layout(bad)
+        except argparse.ArgumentTypeError:
+            continue
+        raise AssertionError(bad)

@@ -222,7 +222,14 @@ def settings(args: Any) -> dict[str, Any]:
         | segmented
         | dosed
         | latency
-        | ({"pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}} if pin is not None else {})
+        | (
+            {
+                "pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}
+                | ({"replicas": [list(path) for path in pin["replicas"]]} if "replicas" in pin else {})
+            }
+            if pin is not None
+            else {}
+        )
     )
 
 

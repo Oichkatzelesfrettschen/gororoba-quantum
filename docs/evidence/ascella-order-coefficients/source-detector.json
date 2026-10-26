@@ -1,0 +1,216 @@
+{
+ "bunching_gamma": 0.009779618928864703,
+ "bunching_width": 0.3,
+ "efficiency_width": 0.3,
+ "exploration_meshes": 28,
+ "families": [
+  {
+   "exploration": {
+    "coordinates": 84,
+    "kept_threshold": 110.01109805234124,
+    "median_variance_ratio": 0.0,
+    "mode_2_model_mean": 0.0003526687701138682,
+    "mode_2_observed_mean": 0.0008602708906159203,
+    "quadratic_form": 1974.5101972707707,
+    "reading": "shortfall",
+    "shortfall_threshold": 129.80369323488026,
+    "x_correlation": -0.050588872668255146,
+    "x_model_mean": 0.9035460265195493,
+    "x_observed_mean": 0.8866762807045063
+   },
+   "family": "nominal",
+   "job_00_gain_over_nominal": 0.0,
+   "job_00_leak_median": 3.2275435796202956e-07,
+   "job_00_negative_log_posterior": 474686.370870632,
+   "lowest_hessian_eigenvalue": 0.0,
+   "magnitudes": [],
+   "mean": {
+    "critical": 2.5758293035489004,
+    "reading": "mean missed",
+    "standard_error": 0.002170666180240792,
+    "z": -7.771690538418768
+   },
+   "parameters": 0
+  },
+  {
+   "efficiencies": [
+    1.0,
+    1.0420719139562762,
+    1.0000020606408861,
+    1.0329801707914503,
+    1.0000043420881846,
+    1.0000015263763375,
+    1.0000032341648404,
+    1.0000002124554759,
+    0.9999998910673557,
+    0.9999999215218164,
+    0.9999999034449524,
+    0.9999999849067241
+   ],
+   "exploration": {
+    "coordinates": 84,
+    "kept_threshold": 110.01109805234124,
+    "median_variance_ratio": 0.005565587968227655,
+    "mode_2_model_mean": 0.00035222371823877404,
+    "mode_2_observed_mean": 0.0008602708906159203,
+    "quadratic_form": 1750.9960517402576,
+    "reading": "shortfall",
+    "shortfall_threshold": 129.80369323488026,
+    "x_correlation": -0.05127765003778612,
+    "x_model_mean": 0.9002447777699089,
+    "x_observed_mean": 0.8866762807045063
+   },
+   "family": "detector_efficiency",
+   "job_00_gain_over_nominal": 67.78498671151465,
+   "job_00_leak_median": 3.150742799440387e-07,
+   "job_00_negative_log_posterior": 474618.5858839205,
+   "lowest_hessian_eigenvalue": 10.600433773923765,
+   "magnitudes": [],
+   "mean": {
+    "critical": 2.5758293035489004,
+    "reading": "mean missed",
+    "standard_error": 0.002170666180240792,
+    "z": -6.250844643416049
+   },
+   "parameters": 11
+  },
+  {
+   "bunching_gamma": 0.009779618928864703,
+   "exploration": {
+    "coordinates": 84,
+    "kept_threshold": 110.01109805234124,
+    "median_variance_ratio": 0.0,
+    "mode_2_model_mean": 0.0003527686822555689,
+    "mode_2_observed_mean": 0.0008602708906159203,
+    "quadratic_form": 2026.038520524412,
+    "reading": "shortfall",
+    "shortfall_threshold": 129.80369323488026,
+    "x_correlation": -0.050418575423086254,
+    "x_model_mean": 0.9043122934056527,
+    "x_observed_mean": 0.8866762807045063
+   },
+   "family": "platform_g2",
+   "job_00_gain_over_nominal": -20.866068726289086,
+   "job_00_leak_median": 3.21556592131067e-07,
+   "job_00_negative_log_posterior": 474707.2369393583,
+   "lowest_hessian_eigenvalue": 0.0,
+   "magnitudes": [],
+   "mean": {
+    "critical": 2.5758293035489004,
+    "reading": "mean missed",
+    "standard_error": 0.002170666180240792,
+    "z": -8.124700546626649
+   },
+   "parameters": 0
+  },
+  {
+   "bunching_gamma": 0.009779618928864703,
+   "efficiencies": [
+    1.0,
+    1.043172791186253,
+    1.0000020574299142,
+    1.0335790815126686,
+    1.0000043278176243,
+    1.0000015213896396,
+    1.000003228719827,
+    1.0000002120093052,
+    0.9999998917614875,
+    0.9999999209167141,
+    0.9999999035008638,
+    0.9999999841344247
+   ],
+   "exploration": {
+    "coordinates": 84,
+    "kept_threshold": 110.01109805234124,
+    "median_variance_ratio": 0.005532741881940676,
+    "mode_2_model_mean": 0.0003523086653012884,
+    "mode_2_observed_mean": 0.0008602708906159203,
+    "quadratic_form": 1782.9764027386261,
+    "reading": "shortfall",
+    "shortfall_threshold": 129.80369323488026,
+    "x_correlation": -0.051115314226184205,
+    "x_model_mean": 0.900961713822193,
+    "x_observed_mean": 0.8866762807045063
+   },
+   "family": "efficiency_and_platform_g2",
+   "job_00_gain_over_nominal": 50.054362337396014,
+   "job_00_leak_median": 3.137275157438779e-07,
+   "job_00_negative_log_posterior": 474636.3165082946,
+   "lowest_hessian_eigenvalue": 10.278027062891242,
+   "magnitudes": [],
+   "mean": {
+    "critical": 2.5758293035489004,
+    "reading": "mean missed",
+    "standard_error": 0.002170666180240792,
+    "z": -6.581128525300019
+   },
+   "parameters": 11
+  },
+  {
+   "bunching_gamma": 0.0,
+   "efficiencies": [
+    1.0,
+    1.042071914094929,
+    1.0000020608803093,
+    1.0329801718036498,
+    1.0000043427506562,
+    1.0000015265704645,
+    1.0000032347007877,
+    1.0000002121428806,
+    0.9999998905068959,
+    0.9999999210797869,
+    0.9999999031622056,
+    0.9999999847485155
+   ],
+   "exploration": {
+    "coordinates": 84,
+    "kept_threshold": 110.01109805234124,
+    "median_variance_ratio": 0.030667255126401657,
+    "mode_2_model_mean": 0.00035222371823536233,
+    "mode_2_observed_mean": 0.0008602708906159203,
+    "quadratic_form": 1640.163949240385,
+    "reading": "shortfall",
+    "shortfall_threshold": 129.80369323488026,
+    "x_correlation": -0.051277650058060245,
+    "x_model_mean": 0.9002447777182263,
+    "x_observed_mean": 0.8866762807045063
+   },
+   "family": "efficiency_and_free_bunching",
+   "job_00_gain_over_nominal": 67.78498671157286,
+   "job_00_leak_median": 3.150742799440387e-07,
+   "job_00_negative_log_posterior": 474618.58588392043,
+   "lowest_hessian_eigenvalue": 10.559357165758946,
+   "magnitudes": [],
+   "mean": {
+    "critical": 2.5758293035489004,
+    "reading": "mean missed",
+    "standard_error": 0.002170666180240792,
+    "z": -6.250844619606516
+   },
+   "parameters": 12
+  }
+ ],
+ "floor": {
+  "any_constant_fraction_model_kept": false,
+  "at_exploration_mean": 466.048692576071,
+  "coordinates": 84,
+  "minimized": 451.6600413198668,
+  "minimizing_fractions": [
+   0.9148602685050566,
+   0.05466720365342896,
+   0.00108203134085719
+  ],
+  "shortfall_threshold": 129.80369323488026
+ },
+ "g2_at_plan": 0.019,
+ "kept": [],
+ "mean_reproduced": [],
+ "observed_x_sd": 0.011486085784511284,
+ "plan": "docs/state/plans/ascella-mesh-response-decomposition.json",
+ "runs": [
+  "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00",
+  "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02"
+ ],
+ "schema": "ascella-source-detector-v1",
+ "split": "docs/evidence/ascella-order-coefficients/mesh-split.json"
+}

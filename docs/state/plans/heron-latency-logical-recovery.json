@@ -120,6 +120,30 @@
             }
           ],
           "scope_sha256": "8adb5268a1b931e801d3e23ba8ddb71cd452b6051237abd24b20f609efa08042"
+        },
+        {
+          "result": "Revalidated at 431bbf8e: CASE_ADDENDUM.md holds the approved bytes (sha256 41272663, the digest the first receipt bound) with the 2026-10-25 approval; CASE_ADDENDUM_CORRECTION.md names the executed replica [106, 105, 104, 117, 107, 125] from record.json groups[0].replicas[0].initial_layout and dates the account read by the 19:22:34Z exploration start; the findings link both and job dbf5kdom94ac738ssug0's collection is unchanged.",
+          "observed_at": "2026-10-26T05:01:04.806425+00:00",
+          "revision": "431bbf8e9d921c5344f07e2724a432cee778f367",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-25T192932.145570Z/CASE_ADDENDUM.md",
+              "sha256": "41272663d2ac60e86d94e8cce8d2690c3dd61c580f83d5cc7d19c39ed1e9454b"
+            },
+            {
+              "ref": "results/live/2026-10-25T192932.145570Z/CASE_ADDENDUM_CORRECTION.md",
+              "sha256": "f85e47f647fff9145537002a53166918e5a017aa8b19526da0f4aa7d1e474bf0"
+            },
+            {
+              "ref": "results/live/2026-10-25T193443.839527Z/collect.json",
+              "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
+            },
+            {
+              "ref": "results/live/LATENCY_RECOVERY_FINDINGS.md",
+              "sha256": "08d1dbb1ad9de587af26ef46b664b3d8569b1767b845b2ff9311e3bb7f9a6b2a"
+            }
+          ],
+          "scope_sha256": "8adb5268a1b931e801d3e23ba8ddb71cd452b6051237abd24b20f609efa08042"
         }
       ]
     }
@@ -142,6 +166,22 @@
           "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
         }
       ]
+    },
+    {
+      "result": "Revalidated at 431bbf8e: the findings change only by linking CASE_ADDENDUM_CORRECTION.md beside the restored approved addendum; the run, the 2.7x window cost and the loss attribution read as before, and job dbf5kdom94ac738ssug0's collection is unchanged.",
+      "observed_at": "2026-10-26T05:01:23.636999+00:00",
+      "revision": "431bbf8e9d921c5344f07e2724a432cee778f367",
+      "evidence": [
+        {
+          "ref": "results/live/LATENCY_RECOVERY_FINDINGS.md",
+          "sha256": "08d1dbb1ad9de587af26ef46b664b3d8569b1767b845b2ff9311e3bb7f9a6b2a"
+        },
+        {
+          "ref": "results/live/2026-10-25T193443.839527Z/collect.json",
+          "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
+        }
+      ],
+      "scope_sha256": "f380dc36dc6388b57a664f912f2f0ea2130fe9e1b1f20e2b829fac56286f8044"
     }
   ]
 }

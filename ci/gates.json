@@ -3782,6 +3782,125 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py --self-test",
+   "name": "core-700",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py check results/iqm/cases/measurement-sequence-pinching",
+   "name": "core-701",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence_aer_check.py --self-test",
+   "name": "core-702",
+   "seconds": 4.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py --self-test",
+   "name": "core-703",
+   "seconds": 5.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py check results/iqm/cases/measurement-sequence-diagnostic",
+   "name": "core-704",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_preflight.py --self-test",
+   "name": "core-705",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_preflight.py check results/iqm/cases/measurement-sequence-pinching-probe",
+   "name": "core-706",
+   "seconds": 2.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_diagnostic.py analyze results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic --out results/iqm/measurement_sequence_diagnostic_analysis.json --replay",
+   "name": "core-707",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_diagnostic_analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_preflight.py analyze results/iqm/runs/2026-10-26T004628Z-garnet-measurement-sequence-pinching-probe-probe --out results/iqm/measurement_sequence_pinching_preflight.json --replay",
+   "name": "core-708",
+   "seconds": 2.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_preflight.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py analyze results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching --out results/iqm/measurement_sequence_pinching_analysis.json --replay",
+   "name": "core-709",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py analyze results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching --gate-model sign-pooled --out results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json --replay",
+   "name": "core-710",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence.py check results/iqm/cases/measurement-sequence-pinching --calibration-dir results/iqm/calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684",
+   "name": "core-711",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_measurement_sequence_aer_check.py run results/iqm/cases/measurement-sequence-pinching --calibration-dir results/iqm/calibration-sets/garnet/be070414-7624-4943-ac7e-1e2678f05684 | cmp - results/iqm/measurement_sequence_pinching_aer_check.json",
+   "name": "core-712",
+   "seconds": 8.0,
+   "tier": "pr",
+   "replays": [
+    "results/iqm/measurement_sequence_pinching_aer_check.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py --self-test && \"$PYTHON\" -B -W error scripts/iqm_signed_resolve.py analyze results/iqm/runs/2026-10-23T073222Z-garnet-signed-kernel-null-retest-probe-0 results/iqm/runs/2026-10-23T073227Z-garnet-signed-kernel-null-retest-calibrate --out results/iqm/signed_kernel_null_retest_analysis.json --replay",
    "name": "core-643",
    "seconds": 20.0,
@@ -4084,6 +4203,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_seed_repeat_reading.py results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/seed-repeat-reading.json --check",
+   "name": "core-ascella-signed-coherence-seed-repeat-reading-replay",
+   "seconds": 10.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ascella_heater_coupling.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/heater-coupling.json --check",
    "name": "core-ascella-signed-coherence-heater-coupling-replay",
    "seconds": 885.0,
@@ -4119,6 +4246,54 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/ascella_twelve_output.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/twelve-output.json --check",
    "name": "core-ascella-signed-coherence-twelve-output-replay",
    "seconds": 170.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_source_detector.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/source-detector.json --check",
+   "name": "core-ascella-signed-coherence-source-detector-replay",
+   "seconds": 35.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_fixed_mesh_error.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/fixed-mesh-error.json --check",
+   "name": "core-ascella-signed-coherence-fixed-mesh-error-replay",
+   "seconds": 160.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_fixed_mesh_confirmation.py score results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/fixed-mesh-frozen-predictions.json docs/evidence/ascella-order-coefficients/fixed-mesh-error.json docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json --check",
+   "name": "core-ascella-signed-coherence-fixed-mesh-confirmation-replay",
+   "seconds": 12.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_new_mesh_offsets.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/new-mesh-offsets.json --check",
+   "name": "core-ascella-signed-coherence-new-mesh-offsets-replay",
+   "seconds": 30.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_new_seed_sizing.py docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json docs/evidence/ascella-order-coefficients/heater-coupling.json docs/evidence/ascella-order-coefficients/new-seed-sizing.json --check",
+   "name": "core-ascella-signed-coherence-new-seed-sizing-replay",
+   "seconds": 2.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_new_mesh_score.py docs/evidence/ascella-order-coefficients/new-mesh-offsets.json docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 -- results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04 results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88 docs/evidence/ascella-order-coefficients/new-seed-score.json --check",
+   "name": "core-ascella-signed-coherence-new-seed-score-replay",
+   "seconds": 20.0,
    "tier": "full"
   },
   {
@@ -4180,7 +4355,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/plan_tracker.py check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/plan_tracker.py check --base origin/main docs/state/plans docs/state/plans.md docs/state/plan-catalogue.md",
    "name": "core-plan-tracker",
    "seconds": 1.0,
    "tier": "pr"
@@ -4348,6 +4523,22 @@
     "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
     "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py --self-test",
+   "name": "core-696",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py check results/iqm/cases/qet-compensated-ladder",
+   "name": "core-697",
+   "seconds": 4.0,
+   "tier": "full"
   }
  ],
  "excluded": [
