@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import math
+from dataclasses import replace
 from typing import Any
 
 import numpy as np
@@ -790,6 +791,187 @@ def measurement_sequence_contracts(qubits: list[int], alpha: float, power: float
     return tuple(contracts)
 
 
+# measurement-sequence-envelope: the main family re-planned on each calibration by the envelope's layout rule
+# (msq_envelope.layout_rule). Every member of the main family runs with a reset of its qubit after its final
+# measurement, so the next shot starts from the reset state whatever circuit ran before it (IBM orders a job's
+# circuits column-wise with no guaranteed circuit order). Each member then holds a reset, so every PUB is dynamic and
+# the family runs as one job. Two reset controls per qubit measure what the terminal reset passes on: x, measure into
+# pre, reset, the pre-readout idle, measure into final; and the same without the x. K pattern members prepare every
+# selected qubit in |0> or |1> and measure them all. The pattern bits are the non-constant columns of a normalized
+# Hadamard matrix of order K, so every column holds K / 2 ones and every two columns agree in exactly K / 2 rows:
+# within the K / 2 patterns of either own state, every other selected qubit sits in |1> in exactly K / 4 of them, and
+# each (qubit, own state) dispersion test sees every single-neighbor shift. A Paley construction gives the smallest
+# order above each width tier. MSQE_PATTERN_SEED permutes the columns over the layout ranks and the rows into
+# execution order. The design and its tests are in docs/design/measurement-sequence-adaptive-envelope.md.
+MSQE_FAMILY = "measurement-sequence-envelope"
+# Width tier -> (Hadamard order K, Paley construction, prime q): Paley I gives order q + 1 for q = 3 mod 4, Paley II
+# order 2 (q + 1) for q = 1 mod 4.
+MSQE_PATTERN_DESIGNS = {16: (20, 1, 19), 24: (28, 2, 13), 32: (36, 2, 17)}
+MSQE_MAX_WIDTH = max(MSQE_PATTERN_DESIGNS)
+# ANU QRNG docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json, index 0.
+MSQE_PATTERN_SEED = 49615
+MSQE_RESET_CONTROLS = ("rc1", "rc0")
+
+
+def _jacobsthal(q: int) -> np.ndarray:
+    """Q[i, j] = the quadratic character of j - i modulo the prime q."""
+    character = [0] + [1 if pow(a, (q - 1) // 2, q) == 1 else -1 for a in range(1, q)]
+    return np.asarray([[character[(j - i) % q] for j in range(q)] for i in range(q)], dtype=np.int64)
+
+
+def paley_hadamard(construction: int, q: int) -> np.ndarray:
+    """A Hadamard matrix by Paley I (order q + 1, q = 3 mod 4) or Paley II (order 2 (q + 1), q = 1 mod 4), q prime."""
+    jacobsthal = _jacobsthal(q)
+    if construction == 1 and q % 4 == 3:
+        matrix = np.ones((q + 1, q + 1), dtype=np.int64)
+        matrix[1:, 0] = -1
+        matrix[1:, 1:] = jacobsthal + np.eye(q, dtype=np.int64)
+    elif construction == 2 and q % 4 == 1:
+        conference = np.zeros((q + 1, q + 1), dtype=np.int64)
+        conference[0, 1:] = 1
+        conference[1:, 0] = 1
+        conference[1:, 1:] = jacobsthal
+        off, on = np.asarray([[1, -1], [-1, -1]]), np.asarray([[1, 1], [1, -1]])
+        matrix = np.block([[on if i == j else conference[i, j] * off for j in range(q + 1)] for i in range(q + 1)])
+    else:
+        raise ValueError(f"no Paley {construction} construction for q = {q}")
+    order = matrix.shape[0]
+    if not np.array_equal(matrix @ matrix.T, order * np.eye(order, dtype=np.int64)):
+        raise ValueError(f"Paley {construction} with q = {q} is not a Hadamard matrix")
+    return matrix
+
+
+def msqe_pattern_tier(width: int) -> int:
+    """The smallest width tier that holds width qubits."""
+    if type(width) is not int or width < 1:
+        raise ValueError(f"the envelope pattern width must be a positive integer, got {width!r}")
+    for tier in sorted(MSQE_PATTERN_DESIGNS):
+        if width <= tier:
+            return tier
+    raise ValueError(f"the envelope pattern width {width} exceeds {MSQE_MAX_WIDTH}")
+
+
+def msqe_pattern_bits(width: int) -> tuple[tuple[int, ...], ...]:
+    """Pattern bits, row k = pattern k in execution order, column r = layout rank r, for width ranks."""
+    order, construction, q = MSQE_PATTERN_DESIGNS[msqe_pattern_tier(width)]
+    matrix = paley_hadamard(construction, q)
+    # Normalize the first column to +1 and drop it; the remaining order - 1 columns are balanced and orthogonal.
+    columns = (matrix * matrix[:, :1])[:, 1:]
+    generator = np.random.default_rng(MSQE_PATTERN_SEED)
+    column_order = generator.permutation(order - 1)
+    row_order = generator.permutation(order)
+    bits = (columns[np.ix_(row_order, column_order[:width])] < 0).astype(np.int64)
+    return tuple(tuple(int(v) for v in row) for row in bits)
+
+
+def msqe_reset_member(control: str, qubit: int) -> str:
+    return f"msqe_{control}_q{qubit}"
+
+
+def msqe_reset_circuit(control: str, qubit: int, prereadout_dt: int) -> QuantumCircuit:
+    """rc1: x, measure into pre, reset, the pre-readout idle, measure into final, reset; rc0 omits the x."""
+    if control not in MSQE_RESET_CONTROLS or type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError(f"unknown reset control {control!r} or pre-readout delay {prereadout_dt!r}")
+    final, pre = ClassicalRegister(1, "final"), ClassicalRegister(1, "pre")
+    circuit = QuantumCircuit(QuantumRegister(1, "q"), final, pre, name=msqe_reset_member(control, qubit))
+    if control == "rc1":
+        circuit.x(0)
+    circuit.measure(0, pre[0])
+    circuit.reset(0)
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, final[0])
+    circuit.reset(0)
+    return circuit
+
+
+def msqe_pattern_member(index: int, qubit: int) -> str:
+    return f"msqe_pat{index}_q{qubit}"
+
+
+def msqe_pattern_circuit(index: int, bit: int, qubit: int, prereadout_dt: int) -> QuantumCircuit:
+    """x when bit is 1, the pre-readout idle, measure into final, reset."""
+    if type(index) is not int or index < 0 or bit not in (0, 1) or type(prereadout_dt) is not int or prereadout_dt <= 0:
+        raise ValueError(f"unknown pattern member {index!r} bit {bit!r} or pre-readout delay {prereadout_dt!r}")
+    circuit = QuantumCircuit(
+        QuantumRegister(1, "q"), ClassicalRegister(1, "final"), name=msqe_pattern_member(index, qubit)
+    )
+    if bit:
+        circuit.x(0)
+    circuit.delay(prereadout_dt, 0, unit="dt")
+    circuit.measure(0, 0)
+    circuit.reset(0)
+    return circuit
+
+
+def _with_terminal_reset(member: Member) -> Member:
+    """The member with a reset of its qubit after the final measurement; its ideal law over the clbits is unchanged."""
+    circuit = member.circuit.copy()
+    circuit.reset(0)
+    return replace(member, circuit=circuit)
+
+
+def _msqe_summary(distributions: dict[str, np.ndarray], qubit: int) -> dict[str, float]:
+    """The main family's summary plus each reset control's final P1 and each pattern's final P1."""
+    result = _msq_summary(distributions, qubit)
+    for control in MSQE_RESET_CONTROLS:
+        name = msqe_reset_member(control, qubit)
+        if name in distributions:
+            result[f"q{qubit}_msqe_p1_{control}"] = float(distributions[name][1::2].sum())
+    index = 0
+    while (name := msqe_pattern_member(index, qubit)) in distributions:
+        result[f"q{qubit}_msqe_p1_pat{index}"] = float(distributions[name][1])
+        index += 1
+    return result
+
+
+def _msqe_summarizer(qubit: int) -> Summary:
+    def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
+        return _msqe_summary(distributions, qubit)
+
+    return summarize
+
+
+def msqe_groups(
+    qubits: list[int],
+    measurement_delay_dt: Any,
+    settle_delay_dt: Any,
+    prereadout_delay_dt: Any,
+    t1_delays_dt: Any,
+) -> list[Group]:
+    """One group per qubit in layout order: the main family's members with a terminal reset, the reset controls,
+    then the patterns of the width's tier; row r fuses across the qubits into one dynamic PUB."""
+    delays = msq_delays(qubits, measurement_delay_dt)
+    settles = msq_delays(qubits, settle_delay_dt, "settle")
+    prereadouts = msq_delays(qubits, prereadout_delay_dt, "pre-readout")
+    t1_dt = msq_t1_delays(t1_delays_dt)
+    bits = msqe_pattern_bits(len(qubits))
+    groups = []
+    for rank, qubit in enumerate(qubits):
+        static, dynamic = msq_members(qubit, delays[qubit], settles[qubit], prereadouts[qubit], t1_dt)
+        controls = [
+            Member(
+                msqe_reset_member(control, qubit),
+                msqe_reset_circuit(control, qubit, prereadouts[qubit]),
+                # index = final + 2 * pre: rc1 reads pre 1 and final 0, rc0 reads both 0.
+                np.asarray([0.0, 0.0, 1.0, 0.0] if control == "rc1" else [1.0, 0.0, 0.0, 0.0]),
+                weights=np.asarray([0.0, 1.0, 0.0, 1.0]),
+            )
+            for control in MSQE_RESET_CONTROLS
+        ]
+        patterns = [
+            Member(
+                msqe_pattern_member(index, qubit),
+                msqe_pattern_circuit(index, row[rank], qubit, prereadouts[qubit]),
+                np.asarray([1.0 - row[rank], float(row[rank])]),
+                weights=np.asarray([0.0, 1.0]),
+            )
+            for index, row in enumerate(bits)
+        ]
+        members = (*(_with_terminal_reset(m) for m in (*static, *dynamic)), *controls, *patterns)
+        groups.append(Group(f"msqe_q{qubit}", members, _msqe_summarizer(qubit)))
+    return groups
+
+
 # measurement-sequence-diagnostic: the gate-model scatter floor of the pinching analysis. Each named qubit runs the
 # members of the main family that need no measurement history and carry the model's unitary-arm test: the four
 # signed unitary members at N = 16, ro0, and the t1 member at idle 0 (ro1). Their circuits come from msq_circuit,
@@ -1252,6 +1434,10 @@ def family_contracts(
         if configuration is None or not configuration.get("qubits"):
             raise ValueError("measurement-sequence contracts need the configuration's named qubits")
         return measurement_sequence_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
+    if family == MSQE_FAMILY:
+        if configuration is None or not configuration.get("qubits"):
+            raise ValueError("measurement-sequence-envelope contracts need the configuration's named qubits")
+        return measurement_sequence_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
     if family == MSQD_FAMILY:
         if configuration is None or not configuration.get("qubits"):
             raise ValueError("measurement-sequence-diagnostic contracts need the configuration's named qubits")
@@ -1445,6 +1631,14 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
         return state_prep_groups([int(qubit) for qubit in family["qubits"]], family.get("arms"))
     if family.get("name") == MSQ_FAMILY:
         return measurement_sequence_groups(
+            [int(qubit) for qubit in family["qubits"]],
+            family["measurement_delay_dt"],
+            family["settle_delay_dt"],
+            family["prereadout_delay_dt"],
+            family["t1_delays_dt"],
+        )
+    if family.get("name") == MSQE_FAMILY:
+        return msqe_groups(
             [int(qubit) for qubit in family["qubits"]],
             family["measurement_delay_dt"],
             family["settle_delay_dt"],

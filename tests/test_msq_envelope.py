@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 from typing import Any
 
+import numpy as np
 import pytest
 
 import msq_envelope as env
@@ -162,3 +163,93 @@ def test_canonical_snapshot_is_order_free() -> None:
     check(first == second, "key order must not move the canonical bytes")
     with pytest.raises(env.EnvelopeError):
         env.canonical_snapshot({}, {}, -1)
+
+
+def envelope_groups(qubits: list[int]) -> list[Any]:
+    import diagnostic_experiments as de
+
+    per = {q: 545 for q in qubits}
+    return de.msqe_groups(
+        qubits, per, {q: 500 for q in qubits}, {q: 500 for q in qubits}, [0, 5000, 12500, 25000, 50000]
+    )
+
+
+def test_envelope_new_members_match_their_exact_oracle() -> None:
+    """The reset controls, the patterns and a terminal-reset member of each arm against the exact oracle; planning
+    proves every compiled member (qpu_planning.check_compiled_ideals), the 16-step members included."""
+    import qpu_planning
+
+    groups = envelope_groups([3, 9])
+    for group in groups:
+        for member in group.members:
+            if member.circuit.num_clbits > 3:
+                continue
+            law = qpu_planning.ideal_compiled_probabilities(member.circuit)
+            check(
+                bool(np.allclose(law, member.ideal, rtol=0, atol=1e-10)),
+                f"{member.name}: exact oracle {law} differs from the labeled ideal {member.ideal}",
+            )
+
+
+def test_envelope_members_are_dynamic_and_end_in_reset() -> None:
+    import local_compute
+
+    for group in envelope_groups([3, 9]):
+        for member in group.members:
+            check(local_compute.is_dynamic(member.circuit), f"{member.name} must run in the dynamic job")
+            last = member.circuit.data[-1].operation.name
+            check(last == "reset", f"{member.name} must end in a reset, ends in {last}")
+
+
+def test_envelope_rows_align_across_qubits() -> None:
+    import diagnostic_experiments as de
+
+    groups = envelope_groups([3, 9, 27])
+    base = 4 * len(de.MSQ_STEPS) + 4 + 1 + len(de.MSQ_T1_MICROSECONDS) + 4 * len(de.MSQ_DYNAMIC_STEPS) + 4
+    patterns = de.MSQE_PATTERN_DESIGNS[16][0]
+    lengths = {len(group.members) for group in groups}
+    check(lengths == {base + 2 + patterns}, f"members per qubit {lengths}")
+    for row in range(base + 2 + patterns):
+        stems = {group.members[row].name.rsplit("_q", 1)[0] for group in groups}
+        check(len(stems) == 1, f"row {row} fuses different members {stems}")
+
+
+@pytest.mark.parametrize("width", [16, 24, 32, 5])
+def test_envelope_patterns_are_an_orthogonal_design(width: int) -> None:
+    """Every column holds K / 2 ones and every two columns agree in exactly K / 2 rows, so within either own state
+    every other qubit sits in |1> in exactly K / 4 patterns; identical or complementary columns cannot occur."""
+    import diagnostic_experiments as de
+
+    bits = np.asarray(de.msqe_pattern_bits(width))
+    order = de.MSQE_PATTERN_DESIGNS[de.msqe_pattern_tier(width)][0]
+    check(bits.shape == (order, width), f"shape {bits.shape}")
+    signs = 1 - 2 * bits
+    check(bool((signs.sum(axis=0) == 0).all()), "a column is unbalanced")
+    gram = signs.T @ signs
+    check(bool((gram == order * np.eye(width, dtype=np.int64)).all()), "two columns are not orthogonal")
+    for target in range(width):
+        for state in (0, 1):
+            rows = bits[:, target] == state
+            for other in range(width):
+                if other != target:
+                    ones = int(bits[rows, other].sum())
+                    check(ones == order // 4, f"rank {other} is in |1> {ones} times at rank {target} state {state}")
+
+
+def test_envelope_pattern_design_refuses_bad_inputs() -> None:
+    import diagnostic_experiments as de
+
+    with pytest.raises(ValueError):
+        de.msqe_pattern_bits(de.MSQE_MAX_WIDTH + 1)
+    with pytest.raises(ValueError):
+        de.paley_hadamard(1, 13)
+
+
+def test_envelope_leaves_the_main_family_unchanged() -> None:
+    import diagnostic_experiments as de
+
+    static, dynamic = de.msq_members(5, 545, 500, 500, (0, 5000, 12500, 25000, 50000))
+    check(
+        all(m.circuit.data[-1].operation.name == "measure" for m in (*static, *dynamic)),
+        "the main family gained a reset",
+    )

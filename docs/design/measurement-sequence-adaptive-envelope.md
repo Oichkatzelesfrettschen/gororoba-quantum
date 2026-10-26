@@ -3,7 +3,8 @@
 Status: design v3.1. v1 and v2 each received an adversarial self-review, a Codex (gpt-daybreak-blue-latest) review and
 an advisor review (reports under the ignored `docs/local/reviews/`); v3 answers the v2 review's five P1 and eleven P2/P3
 findings (A to P), v3.1 answers the scoped v3 re-check (B, C and E refuted, a new aggregate-cap P1), and v3.2 answers
-the v3.1 re-check (E refuted again, a fallback falsifier that contradicted the trigger). Nothing here has run. Every charge figure is the planner's, and every measurement names its record.
+the v3.1 re-check (E refuted again, a fallback falsifier that contradicted the trigger); v3.3 replaces the random
+patterns, which the v3.2 re-check showed can align a neighbor's column with the target's, by an orthogonal design. Nothing here has run. Every charge figure is the planner's, and every measurement names its record.
 
 ## Problem
 
@@ -164,22 +165,27 @@ pooled test and count rule alone fired zero times in 20000 replicates per cell a
 the preregistered replay replaces it.
 
 Readout crosstalk (Finding E). The screen asks one question: does a qubit's final readout depend on the states of the
-other selected qubits, at fixed own state? K = 12 pattern members each prepare every selected qubit in `|0>` or `|1>`
-and measure all of them. Each qubit's column of 12 bits holds exactly six ones, ordered by a permutation drawn from a
-QRNG draw cited by index, independently per qubit, so every qubit sees six patterns at each own state and its neighbors'
-states vary independently of its own. The analysis tests each own state separately, so the asymmetric assignment
-channels P(1|0) and P(0|1) never mix: within the six patterns of one own state, the qubit's error counts against the
-binomial dispersion of their pooled rate, a chi-square test with 5 degrees of freedom at family alpha 0.05
-Bonferroni-split over the 2W (qubit, own state) tests. A failing qubit is withheld before the device test reads any
-measure-member outcome, so the device verdict's selection uses only the readout and pattern members.
+other selected qubits, at fixed own state? K pattern members each prepare every selected qubit in `|0>` or `|1>` and
+measure all of them. The pattern bits are the non-constant columns of a normalized Hadamard matrix of order K, the
+smallest Paley order above the width tier (K = 20, 28 and 36 for W = 16, 24 and 32;
+`diagnostic_experiments.MSQE_PATTERN_DESIGNS`). Every column holds K/2 ones and every two columns agree in exactly K/2
+rows, so within the K/2 patterns of either own state of a qubit, every other selected qubit sits in `|1>` in exactly K/4
+of them: no neighbor's column can coincide with or complement the target's, which independent random columns allowed
+with probability 2/C(12,6) per pair. A QRNG draw (`MSQE_PATTERN_SEED`) permutes the columns over the layout ranks and
+the rows into execution order. The analysis tests each own state separately, so the asymmetric channels P(1|0) and
+P(0|1) never mix: within the K/2 patterns of one own state, the qubit's error counts against the binomial dispersion of
+their pooled rate, a chi-square test with K/2 - 1 degrees of freedom at family alpha 0.05 Bonferroni-split over the 2W
+(qubit, own state) tests. A failing qubit is withheld before the device test reads any measure-member outcome, so the
+device verdict's selection uses only the readout and pattern members. A gate checks the realized pattern matrix: every
+column balanced, every column pair orthogonal, every other rank at K/4 within each (rank, own state) stratum.
 
 The patterns cover configuration dependence; they do not reproduce the measure members' state distribution (the N = 16
 measure arm's final P0 is 0.89 and its mid-circuit outcomes follow a low-flip chain), and they do not supply the readout
-correction, which stays with the own-state ro0 and t1 members of the base family. Balanced random neighbor states put
-each neighbor in `|1>` half the time, more often than any measure member does, so a neighbor shift reaches the screen at
-least as strongly as it reaches the departures. K = 12 is the power criterion: a single-neighbor shift of 0.005 (about a
-quarter of the bound floor) at a 1% error rate and 8192 shots gives the test power 0.92 at W = 32, 0.93 at W = 24 and
-0.94 at W = 16 (noncentral chi-square), while K = 8 gives 0.75 at W = 32.
+correction, which stays with the own-state ro0 and t1 members of the base family. Each neighbor sits in `|1>` in half of
+every stratum, more often than in any measure member, so a neighbor shift reaches the screen at least as strongly as it
+reaches the departures. Power, with every pair exactly balanced: a single-neighbor shift of 0.005 (about a quarter of
+the bound floor) at a 1% error rate and 8192 shots is detected with probability 0.996 at W = 16, and 1.000 at W = 24 and
+32 (noncentral chi-square); a 0.0025 shift with 0.26 to 0.42.
 
 Execution-time eligibility (Finding H). The analysis reads every execution start's properties that `collect` records
 for every PUB that contributes to a qubit. A qubit stays usable only if it passes `rule`'s eligibility on each of them;

@@ -220,6 +220,13 @@
    "index": 0
   },
   {
+   "path": "gororoba_quantum/diagnostic_experiments.py",
+   "name": "MSQE_PATTERN_SEED",
+   "value": 49615,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 0
+  },
+  {
    "path": "tests/scripts/test_qd_rehearsal_secondary.py",
    "name": "TEST_SEEDS",
    "value": 57403,
