@@ -1,0 +1,88 @@
+{
+ "dark_output": {
+  "anchor": {
+   "dispersion": 3.3999999999999995,
+   "dof": 5,
+   "iterations": 6,
+   "mean_background": 0.2734200961425724,
+   "mean_count": 0.8333333333333334,
+   "p": 0.6385699231037951
+  },
+  "dephasing": [
+   {
+    "mean_x_change": -0.01421416842100345,
+    "mode_2_light": 0.00500798559786923,
+    "outside_light": 0.004339688712009802,
+    "variance": 0.005
+   },
+   {
+    "mean_x_change": -0.02817866883142283,
+    "mode_2_light": 0.009924337523970867,
+    "outside_light": 0.00856642729309596,
+    "variance": 0.01
+   }
+  ],
+  "excess_against_x_deviation": {
+   "p": 0.09515736659412467,
+   "rho": 0.5034965034965035
+  },
+  "exploration": {
+   "dispersion": 28.307692307692314,
+   "dof": 11,
+   "iterations": 12,
+   "mean_background": 0.3386680736311409,
+   "mean_count": 4.333333333333333,
+   "p": 0.002903784859276212
+  },
+  "observed": {
+   "mode_2_excess": 0.0004887297791141093,
+   "x_deficit": -0.0178332949120239
+  }
+ },
+ "exploration_meshes": 28,
+ "plan": "docs/state/plans/ascella-mesh-response-decomposition.json",
+ "quantization": {
+  "null_draws": 100,
+  "null_quantiles": {
+   "0.5": 0.5925511499906035,
+   "0.9": 0.6697860306264334,
+   "0.975": 0.7115318651543235
+  },
+  "null_seed": {
+   "draw": "docs/evidence/anu_qrng/draw-2026-10-26T012622Z.json",
+   "index": 56
+  },
+  "p": 0.0594059405940594,
+  "resolution": 0.35294700433093745,
+  "statistic": 0.6852828982076322,
+  "trials": 960
+ },
+ "run": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02",
+ "scalar_features": {
+  "features": {
+   "near_wrap_count": {
+    "p": 0.6932015940618841,
+    "r": -0.07799849887303834
+   },
+   "phase_square_sum": {
+    "p": 0.3837663918686096,
+    "r": 0.17118411266767167
+   },
+   "phase_sum": {
+    "p": 0.44246569988030937,
+    "r": 0.15120129554104908
+   },
+   "phase_weighted_x_gradient": {
+    "p": 0.5528735088858826,
+    "r": -0.11710543771018356
+   },
+   "x_gradient_norm": {
+    "p": 0.9399826963247307,
+    "r": 0.014907697913238425
+   }
+  },
+  "trials": 5
+ },
+ "schema": "ascella-mesh-exploration-v1",
+ "split": "docs/evidence/ascella-order-coefficients/mesh-split.json"
+}
