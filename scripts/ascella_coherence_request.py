@@ -58,7 +58,11 @@ ANCHOR_STRIDE-th position at compilation seed 0, job-00's served mesh, and each
 other position at its own seed, the nonzero values of the ANU QRNG draw
 SEED_DRAW taken in index order with repeats skipped. Its manifest names the
 draw, the indices it consumes and the sizing record
-COMPILATION_DESIGN.
+COMPILATION_DESIGN. job-03 repeats job-02's seeds with the perturbed meshes
+moved by REPEAT_ORDER_DRAW. job-04 to job-06, the new-seed jobs of plan
+ascella-new-seed-meshes-case, take job-02's layout at 16,384 samples with each
+perturbed position at a seed of NEW_SEED_DRAW that job-02 did not use, one run
+of 56 per job.
 
 Usage:
   "$PYTHON" scripts/ascella_coherence_request.py [--check | JOB | --body JOB]
@@ -135,6 +139,11 @@ COMPILATION_DESIGN = "docs/evidence/ascella-order-coefficients/compilation-desig
 # positions: the k-th off-stride position takes the mesh of the k-th smallest value, ties by index.
 REPEAT_ORDER_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T033936Z.json"
 REPEAT_PLAN = "docs/state/plans/ascella-seed-repeat-case.json"
+# The ANU QRNG draw whose nonzero values, job-02's seeds and repeats skipped, seed the new-seed jobs: the job of
+# draw_run b takes the b-th run of 56 such values in index order.
+NEW_SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T174307Z.json"
+NEW_SEED_PLAN = "docs/state/plans/ascella-new-seed-meshes-case.json"
+NEW_SEED_OFFSETS = "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json"
 
 
 @dataclass(frozen=True)
@@ -152,6 +161,8 @@ class Job:
     permuted: bool
     compilations: bool = False
     order_draw: str = ORDER_DRAW
+    seed_draw: str = SEED_DRAW
+    draw_run: int = 0
 
 
 JOBS = {
@@ -159,6 +170,12 @@ JOBS = {
     "job-01": Job("job-01", 16384, 32768, 1.032768, 240.0, True),
     "job-02": Job("job-02", 8192, 16384, 1.016384, 200.0, False, True),
     "job-03": Job("job-03", 16384, 32768, 1.032768, 200.0, True, True, REPEAT_ORDER_DRAW),
+    **{
+        f"job-{4 + block:02d}": Job(
+            f"job-{4 + block:02d}", 16384, 32768, 1.032768, 200.0, False, True, ORDER_DRAW, NEW_SEED_DRAW, block
+        )
+        for block in range(3)
+    },
 }
 STAGED = ("cases.json", "circuit.json")
 # qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers
@@ -250,20 +267,22 @@ def permutation(draw: str, count: int) -> list[int]:
     return sorted(range(count), key=lambda index: (values[index], index))
 
 
-def compilation_seeds() -> tuple[list[int], list[int]]:
-    """The perturbed positions' seeds and the SEED_DRAW indices they consume: nonzero values in index order, each
-    value once."""
-    values = json.loads((ROOT / SEED_DRAW).read_text(encoding="utf-8"))["values"]
+def compilation_seeds(job: Job) -> tuple[list[int], list[int]]:
+    """The perturbed positions' seeds and the job.seed_draw indices they consume: nonzero values in index order, each
+    value once, the job's draw_run-th run of 56. A draw other than SEED_DRAW also skips job-02's seeds, so every
+    new-seed job serves meshes no earlier job served."""
+    values = json.loads((ROOT / job.seed_draw).read_text(encoding="utf-8"))["values"]
     needed = 64 - 64 // ANCHOR_STRIDE
+    excluded = set() if job.seed_draw == SEED_DRAW else set(compilation_seeds(JOBS["job-02"])[0])
     seeds: list[int] = []
     indices: list[int] = []
     for index, value in enumerate(values):
-        if value != 0 and value not in seeds:
+        if value != 0 and value not in seeds and value not in excluded:
             seeds.append(int(value))
             indices.append(index)
-        if len(seeds) == needed:
-            return seeds, indices
-    raise ValueError(f"{SEED_DRAW} holds {len(seeds)} distinct nonzero values, not {needed}")
+        if len(seeds) == needed * (job.draw_run + 1):
+            return seeds[needed * job.draw_run :], indices[needed * job.draw_run :]
+    raise ValueError(f"{job.seed_draw} holds {len(seeds)} usable values, not {needed * (job.draw_run + 1)}")
 
 
 def entries(job: Job) -> list[dict[str, Any]]:
@@ -273,7 +292,7 @@ def entries(job: Job) -> list[dict[str, Any]]:
     if job.compilations:
         block, arm = COMPILATION_SETTING
         base = next(row for row in rows if row["block"] == block and row["arm"] == arm)
-        seeds = iter(compilation_seeds()[0])
+        seeds = iter(compilation_seeds(job)[0])
         # An anchor row names no seed and takes job-00's from build_setting.
         compiled = [
             {**base, "compilation_position": p}
@@ -389,19 +408,29 @@ def documents(job: Job) -> dict[str, bytes]:
         },
     }
     if job.compilations:
-        seeds, indices = compilation_seeds()
-        manifest["compilation_seeds"] = {
-            "draw": SEED_DRAW,
+        seeds, indices = compilation_seeds(job)
+        seed_record: dict[str, Any] = {
+            "draw": job.seed_draw,
             "indices": indices,
             "anchor_stride": ANCHOR_STRIDE,
             "rule": "nonzero draw values in index order, repeats skipped, at the positions off the stride",
         }
+        manifest["compilation_seeds"] = seed_record
         manifest["preregistered"] = {
             "plan": COMPILATION_PLAN,
             "design_record": COMPILATION_DESIGN,
             "family_alpha": 0.01,
             "interpretation": "compilation dependence of one logical setting's analyzer response",
         }
+        if job.seed_draw != SEED_DRAW:
+            seed_record["rule"] += ", job-02's seeds skipped, run draw_run of 56"
+            seed_record["draw_run"] = job.draw_run
+            manifest["preregistered"] = {
+                "plan": NEW_SEED_PLAN,
+                "frozen_offsets": NEW_SEED_OFFSETS,
+                "family_alpha": 0.01,
+                "interpretation": "prediction of unseen served meshes' analyzer response by frozen element offsets",
+            }
     if job.compilations and job.permuted:
         manifest["compilation_order"] = {
             "draw": job.order_draw,

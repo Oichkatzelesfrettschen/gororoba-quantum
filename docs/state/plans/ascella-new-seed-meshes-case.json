@@ -28,7 +28,21 @@
       "id": "frozen-offsets",
       "action": "Fit P-A and P-B on retained data and write their offsets, free masks and covariance digests before any new seed is drawn.",
       "acceptance": "new-mesh-offsets.json exists and replays under --check; P-A's offsets reproduce fixed-mesh-frozen-predictions.json.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "new-mesh-offsets.json freezes P-A (58 training meshes) and P-B (86) at 258 free offsets each, committed and pushed in 9e92be5 before any new seed was drawn; P-A reproduces fixed-mesh-frozen-predictions.json to 9e-15.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json",
+              "sha256": "f5887275150d4f4518941719f7ff22be7f617b8437e70dfcb9d9858e344b4664"
+            }
+          ],
+          "observed_at": "2026-10-26T17:42:54+00:00",
+          "revision": "9e92be5d1706fcecbdecbc769189e787ccf1772e",
+          "scope_sha256": "018e8b1cb7e86a8eb04e35a3a14fe1ee8e6dcadb0dc153bdbc23584101df03ac"
+        }
+      ]
     },
     {
       "id": "request-builder",
