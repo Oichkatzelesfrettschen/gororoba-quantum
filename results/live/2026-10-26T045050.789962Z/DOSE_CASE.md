@@ -38,7 +38,9 @@ its contrast difference.
 | 7,000 | 28 | +0.087 | +0.129 | +0.042 |
 | 14,000 | 56 | -0.017 | +0.064 | +0.081 |
 
-- **Model.** The values are the dry run's sampled noise model (131,072 shots, simulation allowance +-0.023).
+- **Model.** The values are the dry run's sampled planning model (131,072 shots, simulation allowance +-0.023). They
+  charge the explicit doses but not the service-scheduled idle, which cost the orbit circuit about 0.03 at dose 0 on
+  ibm_fez (+0.208 unpadded against +0.179 padded). They size the run; the decisions use the exact model below.
 - **Echo gain under the incoherent model.** The model's echo gain is not zero. The two X pulses on the work bits
   reverse T1's population drift halfway, so amplitude damping biases the echo arm less. A coherent effect therefore
   shows up as echo gain beyond the model's gain, not as gain above zero.
@@ -46,27 +48,30 @@ its contrast difference.
 
 ## Preregistered decisions
 
-`live_run.py --collect` writes the measured summary (`window_dose_*_contrast_difference`, `window_dose_echo_gain_*`)
-and the model replay under the calibration in force at execution (`replayed_statistics`). Every decision below
-compares the measured value with that execution-calibration replay. The shot-noise standard error of a measured
-contrast difference, sigma_c, comes from the collected per-member shot variances; that of an echo gain is
-sigma_g = sqrt(sigma_c(plain)^2 + sigma_c(echo)^2). Each decision is its own two-sided or one-sided 95 percent
-test, as stated; no family correction is applied.
+After `live_run.py --collect`, two scripts at this branch's head run on the run directory:
+- `scripts/scheduled_idle_replay.py RUN_DIR --out RUN_DIR/idle-replay.json` writes the model. It is the
+  idle-padded exact branch-resolved law under the Target and properties in force at the PUB's execution start, with
+  the explicit doses and the service-scheduled idle both charged (`contracts.idle_padded_exact`).
+- `scripts/n21_dose_decisions.py RUN_DIR --out RUN_DIR/dose-decisions.json` computes every decision. It takes each
+  contract's measured value and shot standard error sigma from the measured laws in `collect.json` and the record's
+  score vectors and shot count. An echo gain's error is the two arms' errors in quadrature.
 
-- **D1, idle response exists.** The plain contrast at 14,000 dt lies below the plain contrast at dose 0, with the
-  one-sided 95 percent upper bound of the difference below zero. A failure means added idle of 56 us does not cost
-  contrast, which contradicts the mechanism outright.
-- **D2, incoherent model accounts for the plain arms.** At every dose, |measured - replayed| <= 1.96 sigma_c +
-  0.023 (the simulation allowance).
-  - A pass at all four doses says the Target's T1/T2 account for the contrast's dependence on idle on these
-    qubits.
-  - A failure in which measured contrast stays above the model at long dose says the model overstates idle damage
-    here. The encoded null would then need part of its explanation elsewhere.
+The model is exact, so no simulation allowance enters.
+- **D1, idle response exists.** The plain contrast at 14,000 dt minus the plain contrast at dose 0 has a one-sided
+  95 percent upper bound below zero. A failure means 56 us of added idle costs no contrast, which contradicts the
+  mechanism outright.
+- **D2, the incoherent model accounts for the plain arms.** Each plain arm's z = (measured - model) / sigma lies
+  within the Bonferroni two-sided 95 percent bound over the four doses, |z| <= 2.498.
+  - A pass says the Target's T1/T2, charged on both the doses and the scheduled idle, account for the contrast's
+    dependence on idle on these qubits.
+  - A failure with the measurement above the model at long dose says the model overstates idle damage here, and the
+    encoded null then needs part of its explanation elsewhere.
   - A failure below the model says idle costs more than T1/T2 state.
-- **D3, coherent detuning.** The excess echo gain, measured gain minus replayed gain at 14,000 dt, is tested
-  one-sided.
-  - A lower bound above zero says the echo refocuses a coherent idle error the model lacks, of the kind the QET
-    window phase and Fez's two-line beat show.
+- **D3, coherent detuning.** The excess echo gain, measured gain minus model gain at 14,000 dt, is tested
+  one-sided at 95 percent.
+  - A lower bound above zero reads as coherent detuning refocused beyond the model only if D2 holds at 14,000 dt.
+    Otherwise it is inconclusive, because an effective T1 that departs from the Target's also changes the echo gain
+    the model expects.
   - An upper bound below zero says the echo's X pulses cost more than they refocus.
   - Otherwise D3 is unresolved, and the idle loss is consistent with the incoherent model at this precision.
 - **D4, the Kingston null amplitude.** Reported, not decided: the plain contrast at 14,000 dt against the encoded
