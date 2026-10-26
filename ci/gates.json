@@ -4311,6 +4311,26 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/a5_zero_divisor_strata.py --check docs/evidence/a5-zero-divisor-strata/result.json",
+   "name": "core-694",
+   "seconds": 9.6,
+   "tier": "full",
+   "workers": "all",
+   "replays": [
+    "docs/evidence/a5-zero-divisor-strata/result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/a5_zero_divisor_strata.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_zero_divisor_strata.py --self-test",
+   "name": "core-695",
+   "seconds": 6.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/qd_teleportation_rehearsal.py --analyze results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check && \"$PYTHON\" -B -W error scripts/qd_rehearsal_secondary.py results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check",
    "name": "core-teleportation-rehearsal-job-00-replay",
    "seconds": 12.0,
