@@ -3193,7 +3193,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata; smooth strata and singular loci, normal links, kernel bundles, attachments and integral invariants (roadmap items 4-8) remain open.",
+      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; smooth strata and singular loci, normal links, kernel bundles, attachments and integral invariants (roadmap items 4-8) remain open.",
       "evidence": [],
       "documents": [
         "docs/RESEARCH_ROADMAP.md",
@@ -3209,7 +3209,8 @@
         "principal-skew-atlas",
         "kernel-limit-slice",
         "nullity-twelve-cone",
-        "a5-zero-divisor-strata"
+        "a5-zero-divisor-strata",
+        "a5-rank-strata-equations"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -6064,7 +6065,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "Written proof in docs/evidence/a5-zero-divisor-strata/README.md; gate core-694 recomputes result.json (Groebner membership and radical-power certificates of the Pfaffian ideals of orders 12, 10, 8 on six G_2-slice families, is_groebner re-verified) and core-695 rejects its mutation controls. The covering of each stratum by its two pieces rests on those slice certificates and the G_2 orbit facts; the V n B9 dimension, the piece dimensions and the component counts are asserted literals in the script whose support is the independent cd_core verification (verification.md: tangent dimension equals parametrization rank at random points, the V n B9 upper bound by counting, and an orbit-free argument for the two components of D_(5,8)), which is not a gate and checks the slice tables over F_11 and F_13 only. Equations for E8-bar are not given. Open: singular loci of the pieces, normal links, kernel bundles, attachments and homology (roadmap items 4-8); not formalized in Rocq.",
+      "boundary": "Written proof in docs/evidence/a5-zero-divisor-strata/README.md; gate core-694 recomputes result.json (Groebner membership and radical-power certificates of the Pfaffian ideals of orders 12, 10, 8 on six G_2-slice families, is_groebner re-verified) and core-695 rejects its mutation controls. The covering of each stratum by its two pieces rests on those slice certificates and the G_2 orbit facts; the V n B9 dimension, the piece dimensions and the component counts are asserted literals in the script whose support is the independent cd_core verification (verification.md: tangent dimension equals parametrization rank at random points, the V n B9 upper bound by counting, and an orbit-free argument for the two components of D_(5,8)), which is not a gate and checks the slice tables over F_11 and F_13 only. a5-rank-strata-equations gives E8-bar its equations and re-derives the covering over Q with Singular and independent G_2 orbit facts. Open: singular loci of the pieces, normal links, kernel bundles, attachments and homology (roadmap items 4-8); not formalized in Rocq.",
       "evidence": [
         {
           "path": "docs/evidence/a5-zero-divisor-strata/result.json",
@@ -6087,6 +6088,35 @@
         "a5-stiefel-universal",
         "a5-nullity12-quadric-germ",
         "a5-nonzero-divisor-two-dimension-gap"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-rank-strata-equations",
+      "statement": "In the coordinates z = p + i q of a doubly pure y in A_5, the rank strata of C_z have closed equations: R_8 = W8 u Ehat, R_12 = V u B9, R_16 = N_+ u N_-, with Ehat = {Q = 0, Delta = 0, rank [u; v; u ^ v] <= 2}. Ehat equals E8-bar and is irreducible of complex dimension 11, its projectivization of degree 24. Every principal Pfaffian of C_z of order 12, 10 or 8 lies in the ideal of each piece of its stratum, so V and B9 lie in E8-bar.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-rank-strata-equations/README.md. rederive_strata_equations.py imports nothing from the author's strata script or its verifier; the covering (Lemma A) re-derives the G_2 orbit facts from the split octonion table and decides the six slice tables by radical equality over Q in Singular 4.4.1, and Ehat = E8-bar rests on a saturation over Q and a case analysis. The record is a retained replay and not a gate, because Singular is absent from the hosted CI image. Not decided: radicality of the Ehat ideal. Inherited from a5-zero-divisor-strata: irreducibility of W8, V, B9 and N_+-, and the nullity identity of Theorem 2 (gate core-690 transport). Open: roadmap items 4-8; not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-rank-strata-equations/result.json",
+          "sha256": "d0aefa47d1bd2751bb573dd192cd2bab2527b568d89ddaa5207f5cc7bc9a7daa"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-rank-strata-equations/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "Singular 4.4.1 std, radical, intersect, sat and minor over Q"
+      ],
+      "depends_on": [
+        "a5-zero-divisor-strata"
       ],
       "supersedes": [],
       "superseded_by": null,

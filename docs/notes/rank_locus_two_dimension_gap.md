@@ -330,12 +330,12 @@ admits on its own:
 
 | Item | First deliverable | Rests on | Admission |
 | --- | --- | --- | --- |
-| 3. Components of D_(5,4), D_(5,8), D_(5,12) | D_(5,12) first: its known pieces are B17, A15, the {a, 0} family and Proposition 8.2's (i_4, e_p) points; the extended-precision probe (computation 4) decides nothing, computation 5 excludes a linear piece, and computation 6 finds the Schur-complement germ M unobstructed through order 63, and computation 7 identifies M at the nonzd-axis witnesses and the Proposition 8.2 points as the quadric cone V, which also carries the A15 family at x0, so the remaining deliverable is how V meets B17 and the other pieces | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
+| 3. Components of D_(5,4), D_(5,8), D_(5,12) | discharged: [the strata record](../evidence/a5-zero-divisor-strata/README.md) gives the pieces, dimensions, incidences and connected components of every stratum, and [the equations record](../evidence/a5-rank-strata-equations/README.md) gives each stratum closed equations (R_8 = W8 u E8-bar with E8-bar = {Q = 0, Delta = 0, rank [u; v; u ^ v] <= 2}) and re-derives the covering over Q | the gap computation | a covering argument for every real coefficient vector, exact boundary admission; numerical charts alone do not admit |
 | 4. Regularity and links | smoothness of each D_(5,12) piece from independent local equations; the normal link at x0, where A15 and B17 meet in dimension 13 | item 3 for D_(5,12) | rank loci and smooth strata kept distinct |
 | 5. Kernel bundles | transition data of ker L_x over each smooth piece of D_(5,12) | item 4 | invariants computed; a classification needs its own sufficiency argument |
 | 6. Attachments | how partner spheres specialize across every admitted closure incidence of D_(5,12) | items 3 and 5 | attaching maps, not a frontier matrix |
 | 7. Global model | a finite model of Z_5 with a proved map, homology, cup products | items 3-6 for every nullity | chain maps and selected homotopy invariants; homology agreement alone does not admit |
 | 8. Uniform structure in n | a recurrence across the doubling ladder | item 7 at n = 5 and the restricted family's sparse chain construction | a theorem, distinct from an algorithm that accepts n |
 
-Items 3 to 8 are research obligations with no near-term hardware question;
-the D_(5,12) column above is the smallest step that moves item 3.
+Items 4 to 8 are research obligations with no near-term hardware question;
+item 4 starts from the closed equations of the equations record.
