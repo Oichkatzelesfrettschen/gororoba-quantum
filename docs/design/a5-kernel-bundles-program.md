@@ -161,6 +161,14 @@ replaced by better ones:
   representation on ker L_p (complex dimension 8 under J), decomposed into irreducibles; global frames, triviality
   and characteristic classes then follow from representation theory. Prefer this over more chart atlases, and do the
   same on each K-orbit of the other pieces.
+- Committed 453fd07: on N_+- the connected stabilizer is U(2) and ker L_p = V(0,-4) + 2 V(1,-3) + V(0,-2) +
+  V(1,-1). Sharpest next question for N_+-: the unit section is V_2(R^7), whose integral cohomology is Z in
+  degrees 0 and 11 and Z/2 in degree 6 and zero elsewhere (verify from a cited source or a cell structure before
+  use). So the only possible nonzero Chern class of any complex summand is c_3 in H^6 = Z/2, and the only
+  candidate obstruction to stable triviality beyond it lives in K-theory. Decide, per summand and for the total
+  fiber: c_3 mod 2 (equivalently w_6), stable triviality, and actual triviality (rank versus dimension 11),
+  using the homogeneous description G_2 x U(1) over U(2) (Borel-Hirzebruch weights) or an explicit
+  clutching construction. Then the same for the nullity-twelve pieces along their K-orbits.
 - No jobs in flight.
 
 ## Order
