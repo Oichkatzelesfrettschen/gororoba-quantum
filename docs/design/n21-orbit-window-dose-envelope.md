@@ -51,7 +51,7 @@ qubit into its own register before the circuit, and the analysis keeps only shot
 | Execution | one dynamic job of 26 PUBs, one member each; estimated charge at most 30 s | preflight, live_run.py |
 | Repetition delay | 20 us; 50 us when no plan is admitted at 20 us, or as the bound retry below | preflight, runner |
 | Seeds | `--seed-transpiler` `qrng:docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json#0`, `--seed-simulator` index 1 | preflight |
-| Code | the plan is made at the checked-out commit, and nothing under `gororoba_quantum/`, `scripts/`, `ci/`, `docs/design/` or `requirements.txt` differs from it | preflight, runner |
+| Code | the plan is made at the checked-out commit, and nothing under `gororoba_quantum/`, `scripts/`, `ci/`, `docs/design/`, `docs/evidence/anu_qrng/`, `docs/evidence/qrng_seeds/` or `requirements.txt` differs from it before each plan, preflight and submission; the draw's bytes match their pinned SHA-256 and the record's seeds are its index-0 and index-1 values | preflight, runner |
 
 **Planner screen.** The model-shot count, the candidate count and the precision screen decide which plan is
 admitted, not how the result is read. The precision screen bounds one replica's 8,192 shots by Hoeffding at the
@@ -69,16 +69,17 @@ planning and writes an `approval_required` record within seconds when any value 
 leaving the approval unconsumed. The runner then plans again on the new calibration, preflights that plan and
 submits it; the first three such refusals re-plan and the fourth ends the invocation. Each attempt's plan and
 submission logs stay under `docs/local/`. A submission whose approval is consumed but whose run records no job id
-is reported as an unknown outcome and never retried.
+is reported as an unknown outcome and never retried, whether or not its log names a run directory.
 
 **Retry.** The 20 us delay lies at the floor IBM's changelog sets for Heron. The retained 0 us jobs and the 20 us
 jobs of a 100,000-shot design under a 6 s ceiling all ended in error 1305, which the service reports for a stalled
 shot loop and an overrun ceiling alike
 ([REP_DELAY_ZERO_CONTROL_FINDINGS.md](../../results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md)). The 50 us retry is
 therefore an operational fallback, not a diagnosis: `sh scripts/n21_dose_run.sh --delay 5e-05 --retry-of RUN
---submit` runs once, after the 20 us run RUN whose single job ended in error 1305 with no PUB executed
-(`n21_dose_decisions.py --retry-check`), and writes `RUN/retry-consumed.json` before it submits. Any other failure
-after a batch was sent ends the case.
+--submit` runs once, after the 20 us run RUN of this envelope's design and policy whose single submitted job,
+the one collected, ended in error 1305 with no PUB executed (`n21_dose_decisions.py --retry-check`). It claims the
+retry by exclusive creation of `RUN/retry-consumed.json` before planning, so a failed plan spends the retry and a
+second invocation stops. Any other failure after a batch was sent ends the case.
 
 ## Decisions
 
@@ -98,20 +99,24 @@ registers, binds them to the collected marginals, keeps each replica's shots who
 conditions the replay laws the same way, so an initial excitation at the 20 us delay leaves the estimates instead
 of evolving through the dose. The covariance across replicas comes from the shots themselves (delta method), so
 common-mode readout or crosstalk within a shot enters every variance. Sixteen contiguous blocks per PUB test for
-drift within the job; their mean dispersion ratio, when above one, multiplies every covariance. One calibration
-supplies no between-calibration variance, and the estimates carry none.
+drift within the job; each member's block dispersion ratio, when above one, multiplies that member's covariance
+alone. One calibration supplies no between-calibration variance, and the estimates carry none. The model curves
+take the execution Target's per-qubit T1 and T2 as exact, so every interval is conditional on those point values:
+an error common to them moves the fitted rates, and a per-qubit error outside that common scale carries no term.
 
 - **D1, idle response.** The pooled plain contrast at 14,000 dt lies below the dose-0 contrast at one-sided 95
   percent. A failure withholds evidence for the drop; it is no equivalence test.
 - **D2, plain rate.** kappa_P fits the six pooled plain responses, measured(d) - measured(0), by generalized least
   squares against the replica-mean model family with their full covariance (the shared dose-0 arm included), with
-  a 95 percent profile interval. A dose-independent offset cancels in every response, and an error common to the
+  a 95 percent profile interval whose limits interpolate the threshold crossing. A dose-independent offset cancels in every response, and an error common to the
   Target's T1 and T2 values moves kappa_P rather than failing a point test. A minimum chi2 beyond p = 0.01 on five
-  degrees of freedom reads as a dose response no single rate describes, and the interval is not read; otherwise an
-  interval that excludes 1 reads as plain idle loss at kappa_P times the Target's rate.
+  degrees of freedom reads as a dose response no single rate describes, and an interval that reaches the fitted
+  range 0.25 to 6 or splits is withheld; otherwise an interval that excludes 1 reads as plain idle loss at kappa_P
+  times the Target's rate.
 - **D3, echo refocusing.** kappa_P and kappa_E fit the six plain and the six echo responses (echo(d) - plain(0))
   jointly, under the same shape rule on ten degrees of freedom, with a 95 percent profile interval of delta =
-  kappa_P - kappa_E. A lower bound above zero reads as idle loss the Hahn echo removes beyond the Target model:
+  kappa_P - kappa_E; the verdict is withheld when the profile of kappa_P, kappa_E or delta reaches the fitted
+  range's edge. A lower bound above zero reads as idle loss the Hahn echo removes beyond the Target model:
   quasi-static dephasing or static detuning, which this design does not separate. An upper bound below zero reads
   as an echo that costs more than it refocuses. A per-replica static detuning of either sign raises each replica's
   plain loss in second order and so enters delta as well.

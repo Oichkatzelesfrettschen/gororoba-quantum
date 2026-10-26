@@ -112,9 +112,16 @@ def test_withheld_comparisons_are_refused(tmp_path: Path) -> None:
         dose.analyze(tmp_path)
 
 
+def _draw_values() -> list[int]:
+    values: list[int] = json.loads((dose.ROOT / dose.DESIGN_DRAW).read_text())["values"]
+    return values
+
+
 def _design_record() -> dict[str, Any]:
     members = 2 * (2 * len(dose.DESIGN_DOSES) - 1)
+    values = _draw_values()
     return {
+        "seed_simulator": values[1],
         "state": "planned",
         "shots": dose.DESIGN_SHOTS,
         "policy": dict(dose.EXPECTED_POLICY)
@@ -124,7 +131,7 @@ def _design_record() -> dict[str, Any]:
             "searched_routed_sets": 1,
             "candidates": [{"name": "c", "feasible": True, "estimated_charge_seconds": 12.0}],
         },
-        "groups": [{"backend": "ibm_fez", "calibration": "t", "replicas": [{}] * 8}],
+        "groups": [{"backend": "ibm_fez", "calibration": "t", "replicas": [{}] * 8, "seed_transpiler": values[0] + 1}],
         "execution_pubs": [{"name": f"p{k}", "components": [{}]} for k in range(members)],
         "budget_plan": {"jobs": [{"kind": "dynamic", "pubs": members}]},
         "code_commit": {"head": "abc", "sources_modified": False},
@@ -159,6 +166,8 @@ def test_preflight_admits_the_design_and_refuses_each_departure(tmp_path: Path) 
         lambda r: r["budget_plan"]["jobs"].append({"kind": "static", "pubs": 1}),
         lambda r: r["code_commit"].update(sources_modified=True),
         lambda r: r["code_commit"].update(head="def"),
+        lambda r: r.update(seed_simulator=r["seed_simulator"] + 1),
+        lambda r: r["groups"][0].update(seed_transpiler=r["groups"][0]["seed_transpiler"] + 8),
     ]
     for k, mutate in enumerate(departures):
         record = _design_record()
@@ -169,7 +178,12 @@ def test_preflight_admits_the_design_and_refuses_each_departure(tmp_path: Path) 
 
 
 def test_retry_check_admits_one_retry_after_an_unexecuted_1305(tmp_path: Path) -> None:
-    record = {"policy": {"rep_delay_seconds": 2e-05, "design": {"window_doses": list(dose.DESIGN_DOSES)}}}
+    record = {
+        "state": "submitted",
+        "policy": dict(dose.EXPECTED_POLICY)
+        | {"rep_delay_seconds": 2e-05, "design": copy.deepcopy(dose.EXPECTED_DESIGN)},
+        "submission": {"jobs": [{"job_id": "j"}]},
+    }
     job = {
         "usage": {"job_status": "ERROR", "qpu_charge_time_seconds": "2"},
         "pub_timing": {},
@@ -186,5 +200,15 @@ def test_retry_check_admits_one_retry_after_an_unexecuted_1305(tmp_path: Path) -
     changes: list[dict[str, Any]] = [{"pub_timing": {"p": {}}}, {"result_unavailable": "Error code 1517"}]
     for change in changes:
         (tmp_path / "collect.json").write_text(json.dumps([{"jobs": {"j": job | change}}]))
+        with pytest.raises(ValueError):
+            dose.retry_check(tmp_path)
+    (tmp_path / "collect.json").write_text(json.dumps([{"jobs": {"other": job}}]))
+    with pytest.raises(ValueError, match="not the submitted"):
+        dose.retry_check(tmp_path)
+    for mutate in (lambda r: r.update(state="planned"), lambda r: r["policy"]["design"].update(family="x")):
+        changed = copy.deepcopy(record)
+        mutate(changed)
+        (tmp_path / "record.json").write_text(json.dumps(changed))
+        (tmp_path / "collect.json").write_text(json.dumps([{"jobs": {"j": job}}]))
         with pytest.raises(ValueError):
             dose.retry_check(tmp_path)

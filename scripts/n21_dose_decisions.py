@@ -53,6 +53,7 @@ Usage: "$PYTHON" scripts/n21_dose_decisions.py RUN_DIR [--out FILE]
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import re
@@ -85,6 +86,8 @@ DESIGN_CEILING_SECONDS = 30.0
 DESIGN_MIN_REPLICAS = 4
 DESIGN_REPLICA_FLOOR = 0.45
 DESIGN_BACKENDS = {"ibm_fez", "ibm_kingston", "ibm_marrakesh"}
+DESIGN_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json"
+DESIGN_DRAW_SHA256 = "df2c0e24a5cf12120dc4739a2565a30d413de562df3c5e05d2bda562f0d8fe85"
 DESIGN_SEED_SOURCES = {
     "--seed-transpiler": ["qrng:docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json#0"],
     "--seed-simulator": ["qrng:docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json#1"],
@@ -227,16 +230,23 @@ def measured_from_raw(run_dir: Path, record: Mapping[str, Any], collected_laws: 
 
 
 def contract_estimates(
-    contracts: Sequence[Mapping[str, Any]], moments: Mapping[str, Mapping[str, Any]], inflation: float
+    contracts: Sequence[Mapping[str, Any]], moments: Mapping[str, Mapping[str, Any]]
 ) -> dict[str, Estimate]:
-    """{contract: (replica vector, covariance)}: the signed sum of its members, whose PUBs are independent."""
+    """{contract: (replica vector, covariance)}: the signed sum of its members, whose PUBs are independent.
+
+    Each member's covariance is multiplied by its own block dispersion ratio when that exceeds one, so drift in one
+    PUB widens that PUB's arms and no other's.
+    """
     out: dict[str, Estimate] = {}
     for contract in contracts:
         members = [term["member"] for term in contract["terms"]]
         require(len(set(members)) == len(members), f"{contract['name']}: a member enters twice")
         vector = sum(term["sign"] * moments[term["member"]]["means"] for term in contract["terms"])
-        covariance = sum(moments[term["member"]]["covariance"] for term in contract["terms"])
-        out[contract["name"]] = (np.asarray(vector, dtype=float), inflation * np.asarray(covariance, dtype=float))
+        covariance = sum(
+            max(1.0, moments[term["member"]]["dispersion"]) * moments[term["member"]]["covariance"]
+            for term in contract["terms"]
+        )
+        out[contract["name"]] = (np.asarray(vector, dtype=float), np.asarray(covariance, dtype=float))
     return out
 
 
@@ -278,14 +288,26 @@ def interpolated(family: Mapping[float, np.ndarray], grid: np.ndarray) -> np.nda
 
 
 def profile_interval(grid: np.ndarray, chi2: np.ndarray) -> dict[str, Any]:
+    """The minimum and the 95 percent profile interval, its limits interpolated linearly to the threshold crossing.
+
+    A limit that reaches the grid's end is censored: the interval extends past the grid and the estimate is not read.
+    """
     best = int(np.argmin(chi2))
-    inside = np.flatnonzero(chi2 <= chi2[best] + PROFILE_95)
+    level = chi2[best] + PROFILE_95
+    inside = np.flatnonzero(chi2 <= level)
+    lo, hi = int(inside[0]), int(inside[-1])
+
+    def crossing(a: int, b: int) -> float:
+        # chi2[a] > level >= chi2[b]: the linear crossing between grid[a] and grid[b].
+        return float(grid[a] + (grid[b] - grid[a]) * (chi2[a] - level) / (chi2[a] - chi2[b]))
+
+    censored = lo == 0 or hi == grid.size - 1
     return {
         "estimate": float(grid[best]),
-        "lower": float(grid[inside[0]]),
-        "upper": float(grid[inside[-1]]),
-        "contiguous": bool(inside[-1] - inside[0] + 1 == inside.size),
-        "at_grid_edge": bool(inside[0] == 0 or inside[-1] == grid.size - 1),
+        "lower": float(grid[0]) if lo == 0 else crossing(lo - 1, lo),
+        "upper": float(grid[-1]) if hi == grid.size - 1 else crossing(hi + 1, hi),
+        "contiguous": bool(hi - lo + 1 == inside.size),
+        "censored": bool(censored),
         "chi2_min": float(chi2[best]),
     }
 
@@ -295,9 +317,7 @@ def response_covariance(variances: Sequence[float], shared: float) -> np.ndarray
     return np.diag(np.asarray(variances, dtype=float)) + shared
 
 
-def decide(
-    measured: Mapping[str, Estimate], models: Mapping[str, Mapping[float, np.ndarray]], dispersion: float = 1.0
-) -> dict[str, Any]:
+def decide(measured: Mapping[str, Estimate], models: Mapping[str, Mapping[float, np.ndarray]]) -> dict[str, Any]:
     """D1-D3 from each contract's (replica vector, covariance) and its exact model family."""
     doses, plain, echo = arms(list(measured))
     nonzero = doses[1:]
@@ -312,7 +332,7 @@ def decide(
     out: dict[str, Any] = {
         "doses_dt": doses,
         "replicas": replicas,
-        "dispersion_inflation": dispersion,
+        "intervals": "conditional on the execution Target's per-qubit T1 and T2 point values",
         "arms": {
             name: {
                 "measured": mean[name],
@@ -339,7 +359,9 @@ def decide(
     chi2_plain = np.einsum("ki,ij,kj->k", residual, w_plain, residual)
     fit = profile_interval(grid, chi2_plain)
     shape_p = float(stats.chi2.sf(fit["chi2_min"], len(nonzero) - 1))
-    if shape_p < SHAPE_P:
+    if fit["censored"] or not fit["contiguous"]:
+        verdict = "withheld: the profile interval of kappa_P reaches the edge of the fitted range or splits"
+    elif shape_p < SHAPE_P:
         verdict = "no single dose-relaxation rate describes the plain dose response"
     elif fit["lower"] > 1.0 or fit["upper"] < 1.0:
         verdict = "plain idle loss at kappa_P times the Target's rate, the interval excluding 1"
@@ -365,7 +387,12 @@ def decide(
     difference = profile_interval(delta, profile)
     i, j = np.unravel_index(int(np.argmin(joint)), joint.shape)
     joint_p = float(stats.chi2.sf(float(joint[i, j]), 2 * k - 2))
-    if joint_p < SHAPE_P:
+    kappa_p = profile_interval(grid, joint.min(axis=1))
+    kappa_e = profile_interval(grid, joint.min(axis=0))
+    supported = not any(x["censored"] or not x["contiguous"] for x in (kappa_p, kappa_e, difference))
+    if not supported:
+        verdict = "withheld: a profile interval of kappa_P, kappa_E or their difference reaches the fitted range's edge"
+    elif joint_p < SHAPE_P:
         verdict = "no pair of dose-relaxation rates describes the plain and echo dose responses"
     elif difference["lower"] > 0:
         verdict = "the Hahn echo removes idle loss beyond the Target model: quasi-static dephasing or static detuning"
@@ -374,8 +401,8 @@ def decide(
     else:
         verdict = "unresolved: the interval of kappa_P - kappa_E contains 0"
     out["d3_echo_refocusing"] = {
-        "kappa_p": float(grid[i]),
-        "kappa_e": float(grid[j]),
+        "kappa_p": kappa_p,
+        "kappa_e": kappa_e,
         "delta": difference,
         "joint_shape_p": joint_p,
         "minimum_effect": MIN_EFFECT,
@@ -407,16 +434,15 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     require(withheld is None, f"{run_dir}: the collector withheld the sweep's comparisons: {withheld}")
     contracts = [c for c in record["observable_contracts"] if NAME.fullmatch(c["name"])]
     moments = measured_from_raw(run_dir, record, groups[0]["measured"])
-    ratios = [m["dispersion"] for m in moments.values()]
+    ratios = {member: m["dispersion"] for member, m in moments.items()}
     df = sum(m["blocks"] - 1 for m in moments.values())
     statistic = sum((m["blocks"] - 1) * m["dispersion"] for m in moments.values())
-    inflation = max(1.0, sum(ratios) / len(ratios))
-    measured = contract_estimates(contracts, moments, inflation)
+    measured = contract_estimates(contracts, moments)
     models = contract_models(contracts, replay, {member: m["phase_bits"] for member, m in moments.items()})
-    out = decide(measured, models, inflation)
+    out = decide(measured, models)
     out["drift"] = {
         "batches": BATCHES,
-        "mean_dispersion_ratio": sum(ratios) / len(ratios),
+        "dispersion_ratio": ratios,
         "chi2": statistic,
         "df": df,
         "p": float(stats.chi2.sf(statistic, df)),
@@ -461,6 +487,12 @@ def preflight(record_dir: Path, head: str | None = None) -> dict[str, Any]:
     require(jobs == [("dynamic", members)], f"jobs {jobs}, not one dynamic job of {members} PUBs")
     sources = {row["flag"]: row["sources"] for row in record.get("seed_source") or []}
     require(sources == DESIGN_SEED_SOURCES, f"seed sources {sources}")
+    draw_bytes = (ROOT / DESIGN_DRAW).read_bytes()
+    require(hashlib.sha256(draw_bytes).hexdigest() == DESIGN_DRAW_SHA256, f"{DESIGN_DRAW} differs from its bound bytes")
+    values = json.loads(draw_bytes)["values"]
+    require(record.get("seed_simulator") == values[1], "the simulator seed is not the draw's index 1")
+    offset = int(groups[0]["seed_transpiler"]) - int(values[0])
+    require(0 <= offset < int(EXPECTED_POLICY["seeds"]), "the layout seed is not among the draw's index-0 seeds")
     commit = record.get("code_commit") or {}
     require(commit.get("sources_modified") is False, "the plan was made from a modified source tree")
     if head is not None:
@@ -483,10 +515,18 @@ def retry_check(run_dir: Path) -> dict[str, Any]:
     """
     record = json.loads((run_dir / "record.json").read_text(encoding="utf-8"))
     collected = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
-    require(record["policy"]["design"].get("window_doses") == DESIGN_DOSES, f"{run_dir} is not the dose sweep")
-    require(record["policy"].get("rep_delay_seconds") == DESIGN_REP_DELAYS[0], f"{run_dir} did not run at 20 us")
-    jobs = collected[0]["jobs"]
-    require(len(jobs) == 1, f"{run_dir} holds {len(jobs)} jobs")
+    policy = record["policy"]
+    require(record.get("state") == "submitted", f"{run_dir} is a {record.get('state')} record, not a submission")
+    require(policy["design"] == EXPECTED_DESIGN, f"{run_dir} is not the envelope's dose sweep")
+    require({key: policy.get(key) for key in EXPECTED_POLICY} == EXPECTED_POLICY, f"{run_dir} departs from the policy")
+    require(policy.get("rep_delay_seconds") == DESIGN_REP_DELAYS[0], f"{run_dir} did not run at 20 us")
+    submitted = [job.get("job_id") for job in record.get("submission", {}).get("jobs", [])]
+    groups = [entry for entry in collected if isinstance(entry, dict) and "jobs" in entry]
+    require(len(groups) == 1, f"{run_dir} holds {len(groups)} collection entries with jobs")
+    jobs = groups[0]["jobs"]
+    require(
+        len(jobs) == 1 and list(jobs) == submitted, f"collected jobs {list(jobs)} are not the submitted {submitted}"
+    )
     job_id, job = next(iter(jobs.items()))
     require(job["usage"]["job_status"] == "ERROR", f"{job_id} ended {job['usage']['job_status']}")
     require("Error code 1305" in str(job.get("result_unavailable", "")), f"{job_id} did not end in error 1305")
@@ -545,9 +585,12 @@ def self_test() -> str:
         for name, (vector, cov) in measured.items()
     }
     require(not decide(flat, models)["d1_idle_response"]["holds"], "a flat sweep shows an idle response")
+    beyond = decide(*synthetic_sweep(7.0, 1.0))
+    require(beyond["d2_plain_rate"]["verdict"].startswith("withheld"), f"kappa_P 7 reads {beyond['d2_plain_rate']}")
+    require(beyond["d3_echo_refocusing"]["verdict"].startswith("withheld"), f"{beyond['d3_echo_refocusing']}")
     return (
-        "n21 dose decisions: Target-rate, refocused (1.9 against 1.2), common-rate, oscillating and flat sweeps "
-        "decide as stated"
+        "n21 dose decisions: Target-rate, refocused (1.9 against 1.2), common-rate, oscillating, flat and "
+        "beyond-range sweeps decide as stated"
     )
 
 

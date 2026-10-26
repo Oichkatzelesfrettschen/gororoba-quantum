@@ -157,6 +157,8 @@ def padded_replica(
     # -1 marks a qubit whose first scheduled instruction has not been reached; no idle precedes it.
     cursor = dict.fromkeys(qubits, -1)
     inserted = dict.fromkeys(qubits, 0)
+    stated = dict.fromkeys(qubits, 0)
+    emitted = dict.fromkeys(qubits, 0)
     for instruction in fused.data:
         physical = [fused.find_bit(bit).index for bit in instruction.qubits]
         if not set(physical) <= keep:
@@ -173,8 +175,14 @@ def padded_replica(
             if dose_scale == 1.0:
                 out.append(instruction)
             else:
-                scaled = max(1, round(dose_scale * int(instruction.operation.duration)))
-                out.append(Delay(scaled, unit="dt"), instruction.qubits)
+                # Each qubit's scaled segments sum to round(k * its total ISA delay), so a dose split around echo
+                # pulses is charged exactly k times over to the dt.
+                (q,) = physical
+                stated[q] += int(instruction.operation.duration)
+                scaled = round(dose_scale * stated[q]) - emitted[q]
+                emitted[q] += scaled
+                if scaled > 0:
+                    out.append(Delay(scaled, unit="dt"), instruction.qubits)
             continue
         starts: dict[int, tuple[int, int]] = {}
         for q in physical:

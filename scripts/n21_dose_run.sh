@@ -68,14 +68,31 @@ logs=$root/docs/local
 mkdir -p "$logs"
 draw=docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json
 head=$(git rev-parse HEAD)
-dirty=$(git status --porcelain -- gororoba_quantum scripts ci docs/design requirements.txt)
-if [ -n "$dirty" ]; then
-	echo "the tree differs from $head where the plan is built, checked or submitted:" >&2
-	echo "$dirty" >&2
-	exit 1
-fi
+# Every tracked input that builds, seeds, checks or submits the plan; re-read before each plan, preflight and submit.
+clean() {
+	[ "$(git rev-parse HEAD)" = "$head" ] || {
+		echo "HEAD moved from $head" >&2
+		exit 1
+	}
+	dirty=$(git status --porcelain -- gororoba_quantum scripts ci docs/design docs/evidence/anu_qrng \
+		docs/evidence/qrng_seeds requirements.txt)
+	if [ -n "$dirty" ]; then
+		echo "the tree differs from $head where the plan is built, seeded, checked or submitted:" >&2
+		echo "$dirty" >&2
+		exit 1
+	fi
+}
+clean
 if [ -n "$retry_of" ]; then
 	"$PYTHON" scripts/n21_dose_decisions.py --retry-check "$retry_of"
+	if [ "$submit" -eq 1 ]; then
+		# Exclusive creation claims the single retry before planning; a second invocation finds the file and stops.
+		if ! (set -C && printf '{"retry": "50 us after error 1305", "at": "%s"}\n' \
+			"$(date -u +%Y-%m-%dT%H:%M:%SZ)" >"$retry_of/retry-consumed.json") 2>/dev/null; then
+			echo "the retry after $retry_of is already claimed" >&2
+			exit 1
+		fi
+	fi
 fi
 
 plan_args() {
@@ -94,11 +111,13 @@ plan() {
 	record=
 	delay=
 	for candidate in $delays; do
+		clean
 		log=$logs/n21-dose-plan-$1-$candidate.log
 		# shellcheck disable=SC2046
 		if (cd "$root/gororoba_quantum" && "$PYTHON" live_run.py $(plan_args "$candidate")) >"$log" 2>&1; then
 			path=$(sed -n 's|^unapproved written case: \.\./\(results/live/[^/]*\)/UNAPPROVED_CASE\.md$|\1|p' "$log" |
 				tail -n 1)
+			clean
 			if [ -n "$path" ] && "$PYTHON" scripts/n21_dose_decisions.py --preflight "$path" --head "$head" \
 				>"$logs/n21-dose-preflight.json"; then
 				record=$path
@@ -135,10 +154,7 @@ while :; do
 		echo "plan only; rerun with --submit to submit it"
 		exit 0
 	fi
-	if [ -n "$retry_of" ] && [ ! -e "$retry_of/retry-consumed.json" ]; then
-		printf '{"retry": "50 us after error 1305", "approved_record": "%s", "at": "%s"}\n' "$record" \
-			"$(date -u +%Y-%m-%dT%H:%M:%SZ)" >"$retry_of/retry-consumed.json"
-	fi
+	clean
 	submit_log=$logs/n21-dose-submit-$attempt.log
 	status=0
 	# shellcheck disable=SC2046
@@ -148,14 +164,16 @@ while :; do
 	tail -n 5 "$submit_log"
 	# live_run.py writes the submission to its own directory; the dry run it compared against stays unsubmitted.
 	run=$(sed -n 's|^audit record: \.\./\(results/live/[^/]*\)$|\1|p' "$submit_log" | tail -n 1)
-	if [ -n "$run" ] && [ -e "$record/approval-consumed.json" ]; then
-		ids=$(job_ids "$run")
+	if [ -e "$record/approval-consumed.json" ]; then
+		ids=
+		[ -z "$run" ] || ids=$(job_ids "$run")
 		if [ -n "$ids" ]; then
 			echo "submitted $run (jobs $ids) against $record (exit $status) in $(($(date +%s) - started)) s;" \
 				"collect with: (cd gororoba_quantum && \"\$PYTHON\" live_run.py --collect ../$run)"
 			exit "$status"
 		fi
-		echo "outcome unknown: $record's approval is consumed and $run records no job id (log $submit_log)" >&2
+		echo "outcome unknown: $record's approval is consumed and ${run:-no run directory} records no job id" \
+			"(log $submit_log)" >&2
 		exit 1
 	fi
 	if [ -n "$run" ] && [ "$(state_of "$run")" = approval_required ] && [ "$attempt" -lt "$ATTEMPTS" ]; then
