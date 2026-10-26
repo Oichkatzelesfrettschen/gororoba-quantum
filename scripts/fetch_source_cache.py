@@ -47,7 +47,7 @@ def select(entries: list[dict[str, Any]], notes: list[str], names: list[str]) ->
     """Returns the entries owned by a named note or cache file, refusing a selector its own flag cannot match.
 
     ``--note`` matches only the ``note`` field and ``--file`` only the cache file name, so a selector passed
-    under the other flag is refused rather than selecting nothing.
+    under the other flag is refused with that flag named.
     """
     if not notes and not names:
         return entries

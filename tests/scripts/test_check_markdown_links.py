@@ -24,7 +24,7 @@ def targets(text: str) -> list[str]:
     ],
 )
 def test_repeated_headings_take_github_anchors(headings: list[str], anchors: list[str]) -> None:
-    # Expected ids are those GitHub's contents API rendered (application/vnd.github.html) for these documents.
+    # Expected ids are those GitHub's contents API renders (application/vnd.github.html) for these documents.
     found = cml.anchors_of("".join(f"# {heading}\n\n" for heading in headings))
     if found != set(anchors):
         raise AssertionError(f"{headings} -> {sorted(found)}, expected {anchors}")
