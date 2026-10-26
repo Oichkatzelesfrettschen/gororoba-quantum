@@ -1412,3 +1412,78 @@ crosstalk that is nonlinear in drive power, crosstalk over the physical
 rather than the logical layout, and an error outside the mesh that the
 compilation still reaches, such as the source's spectral overlap with
 mesh-dependent paths.
+
+## Decomposition of the served-mesh response
+
+Plan
+[`ascella-mesh-response-decomposition`](../state/plans/ascella-mesh-response-decomposition.json)
+examines job-02 beyond the X statistic. One ANU QRNG draw splits the 56
+perturbed meshes into 28 exploration meshes and 28 held-out meshes
+([`mesh-split.json`](../evidence/ascella-order-coefficients/mesh-split.json)),
+and the held-out half enters only a confirmation step. Every screen on the
+exploration half is retained with its trial count and a matched null.
+
+**Block geometry and leakage**
+([`mesh-decomposition.json`](../evidence/ascella-order-coefficients/mesh-decomposition.json)).
+The block light splits into two parts:
+- *A mean deficit that does not depend on the mesh.* Mode 0 loses 0.015 at the anchor mesh and 0.012 over the perturbed meshes, and modes 1 and 3 gain it. The anchor mesh read the same deficit in job-00.
+- *A mesh-dependent scatter.* Over quiet iterations, which exclude the dark-shaped background bursts, the noise-whitened covariance of the block fractions reads counting noise at the anchor mesh (eigenvalues 0.2, 1.4, 2.7) and an excess in all three block directions over the perturbed meshes (2.7, 5.4, 6.1).
+
+The outside-block clicks are timed bursts with the catalogue dark profile
+(lag-1 correlation -0.32 in execution order). In quiet iterations the dark
+block output and the outside modes together hold at most 0.0025 of all
+clicks, dark clicks included. Every static heater fit from job-00 would put
+0.007 of the light there at its median mesh, and up to 0.12 at the worst.
+
+**Exploration screens**
+([`mesh-exploration.json`](../evidence/ascella-order-coefficients/mesh-exploration.json)):
+- *Heater-phase quantization.* Rounding every returned phase to a grid (960 resolution and origin trials) reaches a per-mesh X correlation of 0.685. Against 100 scrambled-origin nulls at equal trials, p is 0.059, and the best resolution of 0.35 rad wrecks job-00's likelihood.
+- *Scalar mesh features.* Total phase, squared phase, near-wrap count and sensitivity norms track the X statistic with |r| at most 0.17.
+- *The dark block output.* Mode 2 separates coherent error from noise. A coherent error moves the bright modes at first order and fills a dark output at second order. Incoherent noise fills it at the order it lowers contrast.
+  - Uniform dephasing strong enough to produce the observed X deficit would put 0.005 of the block light into mode 2. The observed excess is 0.0005, ten times less.
+  - The exploration meshes fill mode 2 with 4.3 counts per quiet iteration against 0.8 at the anchor, overdispersed across meshes (p 0.003). The eight outside modes together gain about as much as mode 2 alone, so the mesh-dependent error stays near the logical block.
+  - Mode-2 counts follow neither the bright modes' counts nor their shares (|rho| at most 0.23), which excludes detector crosstalk from the neighbors.
+
+**Twelve-output likelihood**
+([`twelve-output.json`](../evidence/ascella-order-coefficients/twelve-output.json),
+[`scripts/ascella_twelve_output.py`](../../scripts/ascella_twelve_output.py)).
+Every block-conditioned fit above was blind to light leaving the block. The
+twelve-output likelihood scores every output, with each iteration's
+background weight profiled against the catalogue dark profile. The chip
+factors as O M I. Because the service fits only the occupied column, an
+output stage O acts on the target column every mesh shares. An input
+admixture I reaches the outputs through each mesh's unconstrained columns.
+Each family below is fitted on job-00 alone and scored on the exploration
+meshes over the three block coordinates (threshold 129.8 on 84):
+
+| Family | Gain over nominal on job-00 | Predicted leak | Exploration quadratic form | Per-mesh X correlation |
+|---|---|---|---|---|
+| nominal mesh | 0 | 0 | 1975 | -0.05 |
+| output stage, neighbor couplings | 447 | 0.0006 | 1545 | -0.01 |
+| input stage, admixture into the other inputs | 822 | 0.0016 | 1305 | 0.14 |
+| both stages | 957 | 0.0018 | 1387 | 0.15 |
+
+Every family reads shortfall. The output stage, fitted across job-00's 30
+configurations, predicts this setting's X at 0.904 against the observed
+0.887. A fixed output-side map therefore cannot carry the setting's deficit
+while it also fits the other configurations.
+
+**Reading.** Five classes of model that see only the returned circuit fail on
+job-02's meshes:
+- fixed per-element offsets;
+- drive responses of each heater's own phase;
+- crosstalk on returned phases, uniform or by kernel;
+- drive-power loss;
+- fixed input- and output-stage maps.
+
+The error is coherent, specific to the compilation, close to the logical block
+and reproducible at the seed-0 mesh. Maring et al.'s control model accounts
+for every one of these properties
+([2306.00874](../notes/papers/2306.00874.md), pp. 3-4 and S-IV). The applied
+voltages solve phi = A V^2 + b with a 126 x 126 crosstalk matrix A, more than
+16,000 fitted parameters and an hourly recalibration. A served mesh's residual
+error is then that calibration's error at its own voltages, which the
+returned circuit does not carry. Confidence: medium-high. A model outside
+these classes that passes the held-out confirmation would lower it. The
+calibration snapshot or the applied voltages per iteration would test it
+directly.
