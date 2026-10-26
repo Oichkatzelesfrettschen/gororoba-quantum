@@ -1,7 +1,91 @@
 {
  "schema": "anu-qrng-allocations-v1",
- "description": "Seed values taken from retained QRNG draws. allocations: code literals (path, seed name, value, draw record, index). runtime: values a CLI seed flag took as qrng:<draw>#<index> (draw record, index, value, script, flag, experiment), added by ci/seed_provenance.py --add-runtime in the change that retains the run. ci/seed_provenance.py checks every row against its draw and allows each (record, index) once.",
+ "description": "Seed values taken from retained QRNG draws. allocations: code literals (path, seed name, value, draw record, index). runtime: values a CLI seed flag took as qrng:<draw>#<index> (draw record, index, value, script, flag, experiment), added by ci/seed_provenance.py --add-runtime in the change that retains the run. reserved: values a tracked file takes that the literal scan cannot key, such as a helper alias or a mapping (path, value, draw record, index, reason). owned: draws a tracked file consumes whole, as seeds and raw sample values a per-index row cannot key (draw record, path, reason); no other row may take an owned draw's index. ci/seed_provenance.py checks every row against its draw and allows each (record, index) once across the three sections.",
  "allocations": [
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_cz_ranks.py",
+   "name": "default_rng",
+   "value": 9845,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 1
+  },
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_pf_crosslink.py",
+   "name": "Random",
+   "value": 13924,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 2
+  },
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_small.py",
+   "name": "SeedSequence",
+   "value": 55842,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 3
+  },
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/data/serial3.py",
+   "name": "default_rng",
+   "value": 39076,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 0
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 20190,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 0
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 12958,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 4
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 34530,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 5
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 20003,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 6
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 56778,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 7
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 26843,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 8
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 46053,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 9
+  },
+  {
+   "path": "scripts/bdsc_null_calibration.py",
+   "name": "NULL_SEED",
+   "value": 28807,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 0
+  },
   {
    "path": "scripts/iqm_idle_schedule_probe.py",
    "name": "SYNTHETIC_SEEDS",
@@ -15,13 +99,6 @@
    "value": 40623,
    "record": "docs/evidence/anu_qrng/draw-2026-10-25T001615Z.json",
    "index": 1
-  },
-  {
-   "path": "scripts/bdsc_null_calibration.py",
-   "name": "NULL_SEED",
-   "value": 28807,
-   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
-   "index": 0
   },
   {
    "path": "scripts/qd_teleportation_rehearsal.py",
@@ -132,5 +209,50 @@
    "flag": "--seed-simulator",
    "experiment": "2026-10-25T223857.467590Z"
   }
- ]
+ ],
+ "reserved": [
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_det_membership.py",
+   "value": 22315,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 5,
+   "reason": "RNG(22315) seeds through the RNG helper of common.py, which the scan does not key"
+  },
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_small.py",
+   "value": 20108,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 4,
+   "reason": "RNG(20108) seeds through the RNG helper of common.py, which the scan does not key"
+  },
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_strata.py",
+   "value": 7190,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 6,
+   "reason": "RNG(7190) seeds through the RNG helper of common.py, which the scan does not key"
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "value": 60101,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 1,
+   "reason": "LINE_SEEDS maps each n to a seed in a dict whose int keys the scan does not read"
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "value": 35443,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 2,
+   "reason": "LINE_SEEDS maps each n to a seed in a dict whose int keys the scan does not read"
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "value": 30416,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 3,
+   "reason": "LINE_SEEDS maps each n to a seed in a dict whose int keys the scan does not read"
+  }
+ ],
+ "owned": []
 }
