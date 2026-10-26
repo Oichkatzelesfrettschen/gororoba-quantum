@@ -161,7 +161,7 @@
     "R_in_union": "1",
     "component_dims": "3",
     "generators": "274",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P2",
@@ -173,7 +173,7 @@
     "R_in_union": "1",
     "component_dims": "1 1",
     "generators": "379",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P3a",
@@ -197,7 +197,7 @@
     "R_in_union": "1",
     "component_dims": "3",
     "generators": "332",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P3a",
@@ -233,7 +233,7 @@
     "R_in_union": "1",
     "component_dims": "3",
     "generators": "318",
-    "seconds": "0.2"
+    "seconds": "0.1"
    },
    {
     "slice": "P3b",
@@ -269,7 +269,7 @@
     "R_in_union": "1",
     "component_dims": "3",
     "generators": "960",
-    "seconds": "0.3"
+    "seconds": "0.2"
    },
    {
     "slice": "P3c",
@@ -353,7 +353,7 @@
     "R_in_union": "1",
     "component_dims": "2 2",
     "generators": "2966",
-    "seconds": "0.5"
+    "seconds": "0.4"
    }
   ]
  },
@@ -369,7 +369,7 @@
     "ehat_vanishes_on_V": "1",
     "ehat_vanishes_on_B9": "1",
     "saturation_equals_ehat": "1",
-    "seconds": "12.5"
+    "seconds": "6.6"
    },
    {
     "job": "pf12",
@@ -377,7 +377,7 @@
     "in_ideal_Ehat": "1",
     "in_ideal_W8": "1",
     "generators": "455",
-    "seconds": "3.0"
+    "seconds": "2.3"
    },
    {
     "job": "pf10",
@@ -385,7 +385,7 @@
     "in_ideal_V": "1",
     "in_ideal_B9": "1",
     "generators": "3003",
-    "seconds": "8.9"
+    "seconds": "5.3"
    },
    {
     "job": "pf8",
@@ -393,22 +393,22 @@
     "in_ideal_Np": "1",
     "in_ideal_Nm": "1",
     "generators": "6435",
-    "seconds": "3.5"
+    "seconds": "2.5"
    }
   ]
  },
  "timings_s": {
-  "tables": 0.39,
-  "identities": 0.01,
-  "g2": 3.28,
-  "isotropic": 2.49,
+  "tables": 0.12,
+  "identities": 0.0,
+  "g2": 1.87,
+  "isotropic": 2.34,
   "points": 0.02,
-  "slices": 0.97,
-  "global": 12.62
+  "slices": 0.85,
+  "global": 6.7
  },
- "total_s": 19.78,
+ "total_s": 11.91,
  "workers": 12,
- "script_sha256": "f22cedb28703947ef6887aaef179fd085114fdd20528dbaa067af142846ce7a3",
+ "script_sha256": "9ed99727568601a945a5cfc00ba1e6a98a9f336518d87201fcae0fc98e7519da",
  "versions": {
   "python": "3.14.8",
   "python-flint": "0.9.0",

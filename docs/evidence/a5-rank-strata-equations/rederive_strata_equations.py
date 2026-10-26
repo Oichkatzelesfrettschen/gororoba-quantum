@@ -567,6 +567,29 @@ def orbit_rank(ders: Sequence[Sequence[Sequence[Fraction]]], x: Sequence[Fractio
     return qrank([apply(d, x) for d in ders])
 
 
+class InSpan:
+    """Picklable test that a flattened matrix lies in the rational span of fixed rows."""
+
+    def __init__(self, rows: list[list[Fraction]]) -> None:
+        self.rows = rows
+        self.rank = qrank(rows)
+
+    def __call__(self, row: list[Any]) -> bool:
+        return qrank([*self.rows, row]) == self.rank
+
+
+def congruence_holds(big: Sequence[Sequence[Fraction]]) -> bool:
+    """M(D z') = -(D^T M(z') + M(z') D) over Z[z'] for the restriction D of a lift to Im A_4."""
+    zgens = list(global_ctx().gens())
+    zero = zgens[0] * 0
+    mz = split_matrix(zgens)
+    d15 = [[int(big[r][s]) for s in range(1, 16)] for r in range(1, 16)]
+    mdz = split_matrix([sum((d15[r][s] * zgens[s] for s in range(15)), zero) for r in range(15)])
+    left = [[sum((d15[k][r] * mz[k][c] for k in range(15)), zero) for c in range(15)] for r in range(15)]
+    right = [[sum((mz[r][k] * d15[k][c] for k in range(15)), zero) for c in range(15)] for r in range(15)]
+    return all(mdz[r][c] == -(left[r][c] + right[r][c]) for r in range(15) for c in range(15))
+
+
 def g2_facts(mutation: str = "") -> dict[str, Any]:
     ders = derivations(SPLIT8)
     out: dict[str, Any] = {"derivation_dimension": len(ders)}
@@ -575,11 +598,10 @@ def g2_facts(mutation: str = "") -> dict[str, Any]:
     skew_eta = all(ETA[r] * d[r][s] + ETA[s] * d[s][r] == 0 for d in ders for r in range(1, 8) for s in range(1, 8))
     out["preserve_im_and_eta"] = preserve and skew_eta
     # F1: D_(e_p, e_q) lie in the derivation span, and D_(x, y) x = c (eta(x) y - eta(x, y) x) over Z[x, y].
-    span_rank = qrank([flat(d) for d in ders])
+    in_span = InSpan([flat(d) for d in ders])
+    pairs = [(p, q) for p in range(1, 8) for q in range(1, 8)]
     inner_ok = all(
-        qrank([flat(d) for d in ders] + [flat(inner_derivation(unit_vec(8, p), unit_vec(8, q)))]) == span_rank
-        for p in range(1, 8)
-        for q in range(1, 8)
+        parallel.ordered_map(in_span, [flat(inner_derivation(unit_vec(8, p), unit_vec(8, q))) for p, q in pairs])
     )
     pctx = flint.fmpz_mpoly_ctx.get(
         tuple(f"x{k}" for k in range(1, 8)) + tuple(f"y{k}" for k in range(1, 8)), "degrevlex"
@@ -737,24 +759,8 @@ def g2_facts(mutation: str = "") -> dict[str, Any]:
                 big[r][s] = d[r][s]
                 big[8 + r][8 + s] = -d[r][s] if mutation == "lift_sign" else d[r][s]
         lifts.append(big)
-    span16 = qrank([flat(d) for d in ders16])
-    lift_ok = all(qrank([flat(d) for d in ders16] + [flat(b)]) == span16 for b in lifts)
-    zctx = global_ctx()
-    zgens = list(zctx.gens())
-    mz = split_matrix(zgens)
-    equiv = []
-    for big in lifts:
-        d15 = [[big[r][s] for s in range(1, 16)] for r in range(1, 16)]
-        dz = [sum((int(d15[r][s]) * zgens[s] for s in range(15)), zgens[0] * 0) for r in range(15)]
-        mdz = split_matrix(dz)
-        left = [
-            [sum((int(d15[k][r]) * mz[k][c] for k in range(15)), zgens[0] * 0) for c in range(15)] for r in range(15)
-        ]
-        right = [
-            [sum((mz[r][k] * int(d15[k][c]) for k in range(15)), zgens[0] * 0) for c in range(15)] for r in range(15)
-        ]
-        congruence = all(mdz[r][c] == -(left[r][c] + right[r][c]) for r in range(15) for c in range(15))
-        equiv.append(congruence)
+    lift_ok = all(parallel.ordered_map(InSpan([flat(d) for d in ders16]), [flat(b) for b in lifts]))
+    equiv = parallel.ordered_map(congruence_holds, lifts)
     integral = all(x.denominator == 1 for big in lifts for row in big for x in row)
     out["equivariance"] = {
         "sedenion_derivation_dimension": len(ders16),
