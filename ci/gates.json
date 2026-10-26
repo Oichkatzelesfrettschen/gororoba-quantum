@@ -4084,6 +4084,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_seed_repeat_reading.py results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/seed-repeat-reading.json --check",
+   "name": "core-ascella-signed-coherence-seed-repeat-reading-replay",
+   "seconds": 10.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ascella_heater_coupling.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/heater-coupling.json --check",
    "name": "core-ascella-signed-coherence-heater-coupling-replay",
    "seconds": 885.0,

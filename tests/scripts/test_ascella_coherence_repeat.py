@@ -9,6 +9,7 @@ from typing import Any
 import ascella_coherence_analysis as analysis
 import ascella_coherence_repeat as repeat
 import ascella_coherence_request as request
+import ascella_seed_repeat_reading as seed_repeat
 import numpy as np
 import pytest
 
@@ -82,3 +83,12 @@ def test_alternating_series_reads_negative_lag_one() -> None:
 def test_zero_outside_count_stays_finite() -> None:
     if not np.isfinite(repeat.log_counts(np.array([0.0, 3.0]))).all():
         raise AssertionError("a setting without outside-block clicks breaks the log statistic")
+
+
+def test_seed_repeat_reading_thresholds_match_the_preregistered_case() -> None:
+    limits = seed_repeat.fixed_bound(56)
+    if abs(limits["ceiling"] - 0.880) > 5e-4 or abs(limits["bound"] - 0.784) > 5e-4:
+        raise AssertionError(f"the reproduction ceiling and bound moved from 0.880 and 0.784: {limits}")
+    rows = np.array([[0.1, 0.2, 0.3], [0.3, 0.1, 0.2]])
+    if not np.allclose(seed_repeat.correlations(rows[0], rows), [1.0, -0.5]):
+        raise AssertionError("correlations is not Pearson r per row")

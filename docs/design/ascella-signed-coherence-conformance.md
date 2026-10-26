@@ -1564,3 +1564,35 @@ processor record without sending it (digest `64de4fe5…`). `--check` rebuilds
 jobs 00 to 03 and their bodies. The procedure is that of job-02:
 `--preflight RUN`, the owner's approval of this case, `--submit RUN
 APPROVAL`, collection.
+
+**Outcome.** The owner approved the case at 16,384 samples on 2026-10-26.
+The platform reported a calibration state at 03:50 UTC, and job `e2f30d83`
+ran at 03:57 UTC
+([retained run](../../results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/README.md),
+[reading](../evidence/ascella-order-coefficients/seed-repeat-reading.json)).
+It returned 1,048,576 samples in 186 s for 1.032768 credits.
+
+- **M.** Every setting's `computed_circuit` equals job-02's under the same
+  name: the service compiles a given seed to the same mesh nine hours and a
+  calibration later.
+- **A.** The anchors read 0.8858 against job-02's 0.8829, 1.48 standard errors
+  apart: steady.
+- **P1.** The 56 perturbed X statistics correlate with job-02's at r 0.885
+  (p 5e-5), at the 0.880 ceiling of a fully fixed per-mesh error: fixed per
+  mesh. The perturbed mean reads 0.8869 against 0.8868.
+- **P2.** The compilation dependence replicates: dispersion ratio 36.8,
+  p 0.00025.
+
+The exploratory readings find no predecessor effect (rho 0.06, p 0.67) and
+a weak dark-output correspondence (rho 0.18, p 0.18) at about four mode-2
+counts per iteration.
+
+Each served mesh carries its own analyzer error, and that error survives the
+interval and the calibration between the jobs. Thermal history and drift
+between jobs drop out as causes, and so does a calibration error that
+changes with each hourly refit. The error is a fixed property of the map
+from each mesh's returned phases to the light the chip emits, and the
+returned circuit does not carry it. Every family of the decomposition
+section, fitted on job-00, misses this deterministic per-mesh target. The
+per-mesh statistics of job-02 and job-03 together form a reproducible test
+set, job-03's at half job-02's counting variance.
