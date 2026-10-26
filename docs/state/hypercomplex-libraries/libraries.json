@@ -2534,6 +2534,7 @@
     "gororoba_quantum/predict.py",
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
+    "gororoba_quantum/qet_ladder.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
@@ -2664,6 +2665,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/stiefel_pfaffian_higher.py",
     "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
     "scripts/tpu_probe.py",
@@ -2726,6 +2728,7 @@
     "gororoba_quantum/predict.py",
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/pub_shot_allocation_contracts.py",
+    "gororoba_quantum/qet_ladder.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
@@ -2753,6 +2756,7 @@
     "scripts/ascella_compilation_reading.py",
     "scripts/ascella_configuration_holdout.py",
     "scripts/ascella_drive_response.py",
+    "scripts/ascella_heater_coupling.py",
     "scripts/ascella_physical_models.py",
     "scripts/ascella_response_geometry.py",
     "scripts/associator_cubic_normal_form.py",
@@ -2855,6 +2859,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/stiefel_pfaffian_higher.py",
     "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
     "scripts/tpu_probe.py",
@@ -4268,7 +4273,8 @@
     "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/rank_locus_second_order.py",
-    "scripts/rank_locus_tangent_linearity.py"
+    "scripts/rank_locus_tangent_linearity.py",
+    "scripts/stiefel_pfaffian_higher.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
@@ -4280,7 +4286,8 @@
     "scripts/rank_locus_quadric_germ.py",
     "scripts/rank_locus_rotation_composite.py",
     "scripts/rank_locus_second_order.py",
-    "scripts/rank_locus_tangent_linearity.py"
+    "scripts/rank_locus_tangent_linearity.py",
+    "scripts/stiefel_pfaffian_higher.py"
    ]
   },
   {
@@ -4503,6 +4510,7 @@
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/patch_characterization.py",
     "gororoba_quantum/pub_shot_runtime_contracts.py",
+    "gororoba_quantum/qet_ladder.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_case_allocation_contracts.py",
     "gororoba_quantum/qpu_cases.py",
@@ -4638,6 +4646,7 @@
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/patch_characterization.py",
     "gororoba_quantum/pub_shot_runtime_contracts.py",
+    "gororoba_quantum/qet_ladder.py",
     "gororoba_quantum/qpe_diagnostics.py",
     "gororoba_quantum/qpu_case_allocation_contracts.py",
     "gororoba_quantum/qpu_cases.py",
@@ -8093,6 +8102,7 @@
    "numpy",
    "order_finding",
    "predict",
+   "qet_ladder",
    "qiskit",
    "qubit_baseline",
    "star_ramsey",
@@ -8396,6 +8406,7 @@
    "qiskit_ibm_runtime",
    "qpu_cases",
    "qpu_planning",
+   "qrng_seeds",
    "rustworkx",
    "subprocess",
    "sys",
@@ -8732,6 +8743,16 @@
    "tempfile",
    "typing",
    "unittest"
+  ],
+  "gororoba_quantum/qet_ladder.py": [
+   "__future__",
+   "collections",
+   "experiments",
+   "math",
+   "numpy",
+   "parallel",
+   "qiskit",
+   "typing"
   ],
   "gororoba_quantum/qi_stack.py": [
    "__future__",
@@ -13040,6 +13061,24 @@
    "scipy",
    "sys",
    "tempfile",
+   "typing"
+  ],
+  "scripts/stiefel_pfaffian_higher.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "flint",
+   "functools",
+   "hashlib",
+   "importlib",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "sys",
    "typing"
   ],
   "scripts/stiefel_pfaffian_identity.py": [

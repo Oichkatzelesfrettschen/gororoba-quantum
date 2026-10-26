@@ -504,6 +504,18 @@ ibm_algiers, ibmq_kolkata, ibm_mumbai and Eagle devices ibm_osaka, ibm_kyoto
 of section 4d, with no per-device split, and a rounded figure that cites
 reference [70] for the latency). These are context, not device values.
 
+Placement of a branch target's pre-branch gates, from the returned `scheduler_timing` of the ibm_kingston
+qet-campaign jobs [2026-10-25T203822.040562Z](../../../results/live/2026-10-25T203822.040562Z/FINDINGS.md) and
+[2026-10-25T225332.266272Z](../../../results/live/2026-10-25T225332.266272Z/FINDINGS.md) (backend version 1.0.0,
+14 captures per broadcast, 262 cycles from capture end to receive): every operation that precedes an `if_else` on
+the branch's target qubit plays at the broadcast receive, adjacent to the branch, whatever its program position.
+A CX whose closing `sx` targets the branch qubit is therefore split across the window: the closing `sx` played at
+cycle 1894 against a CZ ending at 1172. An echo written before the branch played after the receive, at cycles 2075
+and 2437. The measure-to-branch window (708 cycles from Alice's measure start) is a bare idle on the target qubit,
+and a circuit cannot fill it with gates. A barrier after the target's last pre-window gate keeps that gate before
+the window. The repository's Aer prediction (`live_run.noise_simulator`) charges relaxation only on gates and
+explicit delays, so this idle is noiseless in every dynamic prediction unless the circuit writes it as a delay.
+
 ## Summary table
 
 | Quantity | Value | Exact device | Revision | Source and version | Status | Predates account version? |

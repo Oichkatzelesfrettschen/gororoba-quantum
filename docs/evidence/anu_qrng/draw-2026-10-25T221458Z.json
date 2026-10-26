@@ -1,0 +1,20 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=10&type=uint16",
+ "retrieved_utc": "2026-10-25T221458Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"10\", \"data\": [20190, 60101, 35443, 30416, 12958, 34530, 20003, 56778, 26843, 46053]}",
+ "raw_sha256": "75351e80ab8cbbfea72f9171f93f16965073e959e769627343f260bec7c6110b",
+ "type": "uint16",
+ "values": [
+  20190,
+  60101,
+  35443,
+  30416,
+  12958,
+  34530,
+  20003,
+  56778,
+  26843,
+  46053
+ ]
+}

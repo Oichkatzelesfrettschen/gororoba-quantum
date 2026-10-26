@@ -31,15 +31,15 @@ acquisition of every provider:
 | Evidence class | Status | Claim records |
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
-| exact finite certificate | established | 24 |
+| exact finite certificate | established | 25 |
 | exploratory reanalysis | exploratory | 68 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
-| mathematical claim | established | 23 |
-| mathematical claim | open | 1 |
+| mathematical claim | established | 25 |
+| mathematical claim | open | 2 |
 | numerical or stochastic simulation | established | 10 |
 | preregistered emulator control | established | 10 |
-| preregistered hardware inference | established | 56 |
+| preregistered hardware inference | established | 59 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -331,10 +331,13 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe](results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe) | IQM Resonance | IQM idle schedule and train readout probe | garnet | 1 | 24 | completed | 1.0 credits |
 | [2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02](results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02) | Quandela Cloud | photonic signed-coherence perturbed compilations | qpu:ascella | 1 | 64 | completed | 1.016384 credits |
 | [2026-10-25T193443.839527Z](results/live/2026-10-25T193443.839527Z) | IBM Quantum | latency-recovery | ibm_kingston | 1 | 34 | DONE | 40 s |
+| [2026-10-25T203822.040562Z](results/live/2026-10-25T203822.040562Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 19 | DONE | 43 s |
+| [2026-10-25T225332.266272Z](results/live/2026-10-25T225332.266272Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 24 | DONE | 55 s |
+| [2026-10-25T233207.284563Z](results/live/2026-10-25T233207.284563Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 18 | DONE | 12 s |
 
 The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
 
-The IBM service inventory observed at 2026-10-25T19:43:33.493131+00:00 holds 1 physical jobs with 40 settled seconds; the account then reported 40 of 600 s consumed in the rolling window ending 2026-10-25T19:43:33.435Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-25T23:36:01.130164+00:00 holds 4 physical jobs with 150 settled seconds; the account then reported 150 of 600 s consumed in the rolling window ending 2026-10-25T23:36:01.079Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
