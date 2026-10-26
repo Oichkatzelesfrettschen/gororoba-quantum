@@ -132,7 +132,10 @@ holds the question, the preregistration rule and the six-step procedure. The fac
 When the watch posts a scorable change, take step 1 of the design's procedure (the snapshot), then step 2, and open
 one pull request carrying the read, the derivation, the estimate, the two rows, the case files, the frozen body, the
 plan record and the written-case paragraph. The written case then goes to the owner. A refusal by `--prepare` means
-the chip has not recovered enough for this case: report it, and keep the watch re-armed (procedure above). The six seeds stay reserved for job-01.
+the one-job form of this case does not fit the read (no decision power, or more than the 300 s `max_duration`):
+report it, and keep the watch re-armed (procedure above). A split into several jobs is a different experiment and
+needs its own reviewed case. The design's "Review of 2026-10-26" lists the questions the owner settles before
+job-01's written case. The six seeds stay reserved for job-01.
 
 ## References
 

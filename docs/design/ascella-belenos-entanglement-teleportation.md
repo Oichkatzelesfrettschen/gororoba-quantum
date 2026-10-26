@@ -468,8 +468,13 @@ and its anchor read (`Request.anchor_read`). The noise variants, F*, the allowan
 budget and the modeled three-click probabilities of the classical bound all come from that read's figures, and
 `estimate_required_shots` under its perfs sizes `max_shots`. The fresh-read variants then repeat the anchor ones, so
 the allowance is the unmodeled 0.02 alone. Only the live gate applies: `binding` requires the model's pooled fidelity
-at the figures live at submission to reach job-01's own F*, so it refuses a chip that drifted below the
-preregistration between the read and the submission, and `--anchor` refuses a case anchored at its own read. The
+at the figures live at submission to reach job-01's own F*, so it refuses a *published performance record* that
+changed below the preregistration between the read and the submission, and `--anchor` refuses a case anchored at its
+own read. An unchanged record passes by construction, and the record most likely describes the last published
+calibration rather than the chip at read time ([calibration.md](../notes/quandela/calibration.md)), so the gate
+cannot see drift of the chip itself, and the written case names that risk. The gate also holds at read time only:
+`qd_platform.submit` reads usage, writes its checkpoint and POSTs after the last authenticated read, and no provider
+precondition binds that read to execution. The
 record watch keeps triggering on job-00's F* = 0.86; it decides when to read, and job-01's own F* decides admission.
 A read whose model gives an F* that does not exceed the classical bound plus 0.02 has no decision power:
 `bernoulli_decision_count` refuses it and `--prepare` retains nothing. A read whose budget does not fit the 300 s
@@ -479,9 +484,9 @@ A read whose model gives an F* that does not exceed the classical bound plus 0.0
 indices 0 to 5, in index order, of the Cisco Outshift QRNG draw
 [`draw-2026-10-26T204106Z.json`](../evidence/outshift_qrng/draw-2026-10-26T204106Z.json), registered in
 [`allocations.json`](../evidence/qrng_seeds/allocations.json) as `JOB_01_COMPILATION_SEEDS` of
-`scripts/qd_teleportation_rehearsal.py`. On 2026-10-26 the keyed ANU service answered `success` with an empty data
-array and the keyless ANU service timed out, so the source order of [the QRNG guide](../notes/qrng/README.md)
-reached Outshift. Job-01 is a new acquisition on new meshes, so its seeds are new values, none shared with job-00.
+`scripts/qd_teleportation_rehearsal.py`. On 2026-10-26 the operator observed the keyed ANU service answer `success`
+with an empty data array and the keyless ANU service time out twice; neither failure was retained as a receipt.
+The source order of [the QRNG guide](../notes/qrng/README.md) therefore reached Outshift. Job-01 is a new acquisition on new meshes, so its seeds are new values, none shared with job-00.
 
 **Derived at the read.** `qd_teleportation_rehearsal.py --prepare job-01` computes:
 - the layout, by job-00's rule (source photons on connected inputs, every window mode at or below 100 dark counts per
@@ -516,6 +521,34 @@ whose layout moves off chip modes 8 to 15.
 6. After the owner approves, `--submit RUN APPROVAL`, with no `--anchor`, sends job-01 once. `qd_platform.py collect
    RUN`, `--analyze RUN` and `qd_rehearsal_secondary.py RUN` follow. Retention mirrors job-00: a replay gate, a
    registry acquisition and claim, and the plan step's receipt.
+
+**Review of 2026-10-26.** An owner-requested Codex deep peer review
+([report and disposition](../archive/reviews/2026-10-26-belenos-teleportation-rehearsal-review.md)) changed the shared
+analysis before job-01's preregistration:
+- a partial job (errored or canceled) is `inconclusive` even when every input has counts, because a stop the service
+  chose may depend on the outcomes;
+- `at-or-below-classical` requires `F_hat + r` below the *smaller* of the two candidate bounds (the bound at the
+  reported shots, 2/3 at equal shots, and the bound at the modeled attempts), so neither verdict direction rests on
+  the attempt profile that favors it;
+- `--check` refuses a registered job whose case is absent.
+
+Job-00's retained verdict (`inconclusive`, no accepted event) replays unchanged. F* is the noise model's power
+forecast: it sizes the budget and never enters the verdict, which compares the data with B.
+
+The review also names open questions that bear on the claim a `beats-classical` verdict supports. Each waits on the
+owner's decision before job-01's written case:
+- **The verdict supports a narrower claim than C1.** It establishes accepted-event pooled conditional fidelity above
+  the bound; the acceptance rate and the rejection mix are reported, but no preregistered tolerance tests them.
+- **Multiphoton sectors leave the single-copy benchmark.** Threshold-accepted multiphoton events (1.4 to 2.5 % of
+  accepted mass at g2 1.1 %) carry extra input copies or failed CNOT branches, outside the single-copy Choi-cone
+  benchmark; no registered bound covers them.
+- **The modeled attempts are a forecast, not an upper bound.** The service reports no optical attempts
+  ([Perceval #798](https://github.com/Quandela/Perceval/issues/798)), so B at the modeled attempts does not
+  upper-bound the classical optimum over the attempt profiles the record allows.
+- **Independence is assumed.** The Hoeffding radius treats accepted events as independent, while each input runs as
+  one compiled block.
+- **The allowance is stated, not derived.** The 0.02 allowance is not a derived bound on compilation error or
+  three-photon distinguishability.
 
 ## Provider request
 

@@ -956,9 +956,10 @@ def analyze_results(
     `table` must equal the propagated one when given. An iteration ended by its sample budget reports shots equal to
     its samples and one ended by its max_shots reports that budget, neither a count of optical trials, so the
     classical bound is the larger of attempts_benchmark at the reported shots (result_fields.nb_shots_used) and at
-    the modeled attempts. A partial result (an error or canceled job) scores its
-    counted iterations, lists the uncounted entry kinds and the inputs left without counts, and is inconclusive
-    whenever an input has none, since the bound and the rule need all six."""
+    the modeled attempts, and `beats-classical` must clear it; `at-or-below-classical` must fall below the smaller of
+    the two, so neither verdict rests on the candidate profile that favors it. A partial result (an error or canceled
+    job) scores its counted iterations descriptively, lists the uncounted entry kinds and the inputs left without
+    counts, and is inconclusive, since a stop the service chose may depend on the outcomes."""
     frame_table = frames()
     if table is not None and {k: tuple(v) for k, v in table.items()} != frame_table:
         raise ProtocolError(f"the frame table {dict(table)} differs from the propagated {frame_table}")
@@ -1031,11 +1032,15 @@ def analyze_results(
     bound = None if bound_reported is None or bound_modeled is None else max(bound_reported, bound_modeled)
     allowance = preregistered["systematic_allowance"]
     lower = None if pooled_fidelity is None or radius is None else pooled_fidelity - radius
-    if absent or silent or bound is None or pooled_fidelity is None or radius is None or lower is None:
+    if partial or absent or silent or bound is None or pooled_fidelity is None or radius is None or lower is None:
         verdict = "inconclusive"
     elif lower - allowance > bound:
         verdict = "beats-classical"
-    elif pooled_fidelity + radius < bound:
+    elif (
+        bound_reported is not None
+        and bound_modeled is not None
+        and (pooled_fidelity + radius < min(bound_reported, bound_modeled))
+    ):
         verdict = "at-or-below-classical"
     else:
         verdict = "inconclusive"
@@ -1080,6 +1085,8 @@ def analyze_results(
             if empty
             else "the preregistered rule pools all six inputs, and these have no accepted event: " + ", ".join(silent)
             if silent
+            else "the job ended partial, so its counts are descriptive: a stop the service chose may depend on them"
+            if partial
             else "the preregistered decision rule over all six inputs"
         ),
         "histogram": [[*key, count] for key, count in sorted(histogram.items())],
@@ -1130,8 +1137,7 @@ def check() -> int:
     shot estimate give."""
     for job in JOBS.values():
         out = CASES / job.name
-        if not (out / "cases.json").is_file():
-            continue
+        require((out / "cases.json").is_file(), f"{job.name} is registered, and its case directory has no cases.json")
         built = documents(job)
         require(documents(job) == built, f"{job.name}: a second build differs from the first")
         retained = {name: (out / name).read_bytes() for name in built}

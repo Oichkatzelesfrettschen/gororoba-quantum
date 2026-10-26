@@ -99,7 +99,7 @@ def test_template_unitary_reproduces_the_ideal_instrument_through_propagate_and_
             )
 
 
-def test_every_accepted_pattern_implies_the_cnot_success_branch() -> None:
+def test_every_ideal_three_photon_accepted_pattern_implies_the_cnot_success_branch() -> None:
     for label in LABELS:
         clicks = rehearsal.ideal_clicks(label, rehearsal.LAYOUT)
         for vector, probability in clicks.items():
@@ -791,6 +791,7 @@ def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
         raise AssertionError((job, seconds))
     monkeypatch.setitem(rehearsal.REQUESTS, "job-01", job.request)
     monkeypatch.setitem(rehearsal.JOBS, "job-01", job)
+    monkeypatch.delitem(rehearsal.JOBS, "job-00")
     rehearsal.build(job)
     if rehearsal.check() != 0:
         raise AssertionError("check refuses the prepared case")
@@ -805,3 +806,46 @@ def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
     record = json.loads((run / "analysis.json").read_text(encoding="utf-8"))
     if record["verdict"] != "beats-classical" or record["pooled"]["accepted"] < derived["decision_count"]:
         raise AssertionError((record["verdict"], record["pooled"]))
+
+
+def test_a_partial_job_with_every_input_counted_stays_inconclusive() -> None:
+    cells = {label: {event("1100", correct_raw(label, "1100")): 300} for label in LABELS}
+    manifest, results = manifest_and_results(cells)
+    results["partial"] = True
+    record = rehearsal.analyze_results(manifest, results, manifest["frames"])
+    if record["pooled"]["fidelity"] != 1.0 or record["verdict"] != "inconclusive":
+        raise AssertionError((record["pooled"], record["verdict"]))
+    if "descriptive" not in record["verdict_reason"]:
+        raise AssertionError(record["verdict_reason"])
+
+
+def test_the_negative_verdict_falls_below_the_smaller_candidate_bound() -> None:
+    def record_at(correct: int) -> dict[str, Any]:
+        cells = {
+            label: {
+                event("1100", correct_raw(label, "1100")): correct,
+                event("1100", 1 - correct_raw(label, "1100")): 900 - correct,
+            }
+            for label in LABELS
+        }
+        manifest, results = manifest_and_results(cells)
+        return rehearsal.analyze_results(manifest, results, manifest["frames"])
+
+    between = record_at(603)
+    benchmark, pooled = between["benchmark"], between["pooled"]
+    upper = pooled["fidelity"] + pooled["radius"]
+    if not benchmark["bound_at_reported_attempts"] < upper < benchmark["bound_at_modeled_attempts"]:
+        raise AssertionError((benchmark, pooled))
+    if between["verdict"] != "inconclusive":
+        raise AssertionError(between["verdict"])
+    if record_at(540)["verdict"] != "at-or-below-classical":
+        raise AssertionError("a fidelity well below both bounds is not at-or-below-classical")
+
+
+def test_check_refuses_a_registered_job_without_its_case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    request = rehearsal.Request("job-01", rehearsal.LAYOUT, rehearsal.JOB_01_COMPILATION_SEEDS, rehearsal.ANCHOR_READ)
+    monkeypatch.setattr(rehearsal, "CASES", tmp_path)
+    monkeypatch.setitem(rehearsal.JOBS, "job-01", rehearsal.Job(request, 900, 1_200_000, 2.2, 120.0))
+    monkeypatch.delitem(rehearsal.JOBS, "job-00")
+    with pytest.raises(ValueError, match="has no cases.json"):
+        rehearsal.check()
