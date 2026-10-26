@@ -426,7 +426,7 @@ owner decides at that value whether the main run is worth its quantum time.
 Job `dbfc9ufgdj9s73bbbabg` on ibm_kingston (backup account, calibration 2026-10-25T19:36:09-07:00, six static PUBs at
 8192 shots over the 38 qubits of the preregistered layout, 15 s charged) is retained in
 `results/live/2026-10-26T031010.724660Z`; claim `kingston-gate-model-scatter-floor` of the research registry carries the
-numbers, `docs/evidence/measurement_sequence/scatter-floor.json` the floor document, and gate `core-694` re-derives it
+numbers, `docs/evidence/measurement_sequence/scatter-floor.json` the floor document, and gate `core-msq-scatter-floor-replay` re-derives it
 from the raw shots (`measurement_sequence_scatter.py check`; every field must match to a relative 1e-9 except
 `source.analysis_module_sha256`, which names the module the file's digest is then written into).
 

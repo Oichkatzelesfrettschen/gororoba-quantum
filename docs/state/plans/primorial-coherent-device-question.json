@@ -1,0 +1,70 @@
+{
+  "schema": "work-plan-v1",
+  "id": "primorial-coherent-device-question",
+  "kind": "investigation",
+  "summary": "Joint tilt and CZ-phase gate-error bounds reopen the primorial gap-88 device question; measure the coherent fractions that decide it in simulation-designed probes before any hardware case.",
+  "sources": [
+    "docs/design/primorial-cover-joint-coherent-bounds.md",
+    "docs/evidence/primorial_cover/README.md",
+    "docs/design/primorial-cover-defect-probes.md",
+    "docs/notes/topics/coherent-error-families-report.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "An adversarial review of the single-family closure found the joint tilt and CZ-phase bound untested; the retained Kaggle record shows it reaches 2.61 and 2.84 standard deviations, so the device question reopens as a coherent-fraction question."
+  },
+  "scope": "The gap-88 phase-gradient tomography of the primorial cover on Heron r2: the joint coherent-bound record, simulation-designed probes of each path qubit's coherent tilt and each coupler's CZ conditional phase, a sampled-instance twirling model, and the signal and null interleave schedule. Provider jobs need their own approved cases.",
+  "owner": "primorial cover-defect benchmarks",
+  "next_action": "Design the CZ-phase and tilt amplification probes in simulation on the ibm_kingston snapshot and state the shots that resolve tilt at 0.2 and CZ phase at 0.7 of their bounds at three standard deviations.",
+  "related": [
+    "primorial-cover-defect-benchmarks"
+  ],
+  "steps": [
+    {
+      "id": "joint-bounds",
+      "state": "done",
+      "action": "Evaluate tilt, sx/x amplitude and CZ phase jointly at their gate-error bounds on the compiled gap-88 and null arms, per coefficient, with the identification-shot endpoint, arm mismatch, coherent-fraction scan and every-path sweep.",
+      "acceptance": "A retained Kaggle record and replay gate whose simulator reproduces every earlier single-family scenario to 1e-9, and a design document stating whether the bounds close the device question.",
+      "receipts": [
+        {
+          "result": "The bounds do not close the device question: tilt and CZ phase jointly at their gate-error bounds reach max_z 2.61 (best) and 2.84 (median) per coefficient, needing 53,363 and 76,596 shots per setting to identify against 2,803 and 3,169; each family alone stays below 1; static detuning of 30 kHz on all three qubits crosses 1 with the CZ-phase or tilt bound but stays at 0.43 and 0.45 with the atlas-fitted 0.04 rad CZ phase; all 226 working paths exceed 1 at their bounds.",
+          "observed_at": "2026-10-26T00:44:58+00:00",
+          "revision": "a1c0832ada190578d890fe27e3a45298040d4cdf",
+          "evidence": [
+            {
+              "ref": "docs/evidence/primorial_cover/bound_residuals.json",
+              "sha256": "491226721d81588a2d9914fc9880c19ea11d013e40b4663c72405293900b836e"
+            },
+            {
+              "ref": "docs/design/primorial-cover-joint-coherent-bounds.md",
+              "sha256": "123a8771cd50d9dd30b6931d52ff0126e36f38aafd710a606d1097eba100cfcf"
+            }
+          ],
+          "scope_sha256": "de64e87c35b2f13f7d12c211bff13cb7105fe43753b837bf27965cb7e48925cb"
+        }
+      ]
+    },
+    {
+      "id": "coherent-fraction-probes",
+      "state": "todo",
+      "action": "Simulate a repeated-CZ conditional-phase Ramsey and an identity sx-train tilt Ramsey on the snapshot paths and compute the shots that resolve tilt at 0.2 and CZ phase at 0.7 of their bounds at three standard deviations.",
+      "acceptance": "Each probe shows a first-order response to its family and none to the others within the bounds, with a shot and seconds estimate; a probe failing that is rejected. Stop before any provider job."
+    },
+    {
+      "id": "twirl-instance-model",
+      "state": "todo",
+      "action": "Sample twirled instances of the gap-88 and null arms, compile them to sx and rz, apply tilt to the compiled pulses and CZ phase to each CZ, and recompute the joint max_z.",
+      "acceptance": "A record giving joint max_z at tilt fractions 0.1 to 1.0 under sampled twirling; joint max_z above 1 at tilt fraction 0.3 rejects twirling as a sufficient mitigation."
+    },
+    {
+      "id": "interleave-schedule",
+      "state": "todo",
+      "action": "Set the signal and null interleave period from the arm-mismatch tolerances and the atlas drift rates.",
+      "acceptance": "A stated interleave period whose expected q0 frequency drift stays below 2.2 kHz, citing the drift source; a measured drift above that per period rejects the schedule."
+    }
+  ],
+  "claims": [
+    "primorial-bound-residuals-joint"
+  ]
+}

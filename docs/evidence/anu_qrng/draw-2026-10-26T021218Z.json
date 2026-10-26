@@ -1,0 +1,15 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=5&type=uint16",
+ "retrieved_utc": "2026-10-26T021218Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"5\", \"data\": [57403, 35698, 22313, 39335, 24314]}",
+ "raw_sha256": "ce722a52751ab8b8751a1cc781549ee300fb0a0915d49b537091c6c4059bc5a5",
+ "type": "uint16",
+ "values": [
+  57403,
+  35698,
+  22313,
+  39335,
+  24314
+ ]
+}
