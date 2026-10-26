@@ -4,8 +4,8 @@ This evidence directory executes the
 [kernel-bundle program](../../design/a5-kernel-bundles-program.md). The current result corrects the complex transport
 used to represent the real annihilator kernel, fixes the action of the canonical complex structure, computes the
 constant kernel-pencil symmetry algebra and a visible twelve-component subgroup, and gives an exact finite family of
-rational kernel frames covering `N_+` and `N_-`. An exhaustive component census, frames on the five nullity-twelve
-pieces, a transition atlas, the remaining unit-section topology, and characteristic classes remain open.
+rational kernel frames covering all seven pieces of nullity at least twelve. An exhaustive component census, a
+transition atlas, the remaining unit-section topology, and characteristic classes remain open.
 
 Every computation uses rational or Gaussian-rational arithmetic. [`result.json`](result.json) is the output of
 [`kernel_symmetry.py`](kernel_symmetry.py) `--out`. [`frames-result.json`](frames-result.json) is the output of
@@ -108,7 +108,61 @@ the corresponding complex frame fail annihilation.
 The falsifier was a parameter outside the stated cone, a point with every order-eight principal Pfaffian zero, a
 nonzero-Pfaffian chart whose frame lost rank or escaped either `ker A_sigma` or `ker_R L_y`, a different denominator
 locus, or a surviving border mutation. None occurred. This result completes the closed-form-frame deliverable only
-for `N_+` and `N_-`; it makes no transition, characteristic-class, or nullity-twelve-piece claim.
+for `N_+` and `N_-`; the next section supplies the nullity-twelve pieces.
+
+## Order-ten Pfaffian frames cover every nullity-twelve piece
+
+The same rank-only construction removes the apparent dependence of the frame problem on the unresolved K-orbit
+moduli. In split coordinates the five pieces have these parameterizations and open conditions:
+
+| Piece | Parameterization |
+| --- | --- |
+| B9 | `(u',0,v')`, where `u',v'` are independent, isotropic, and `u' cross v'=0` |
+| V | `(alpha w,mu',beta w)`, where `eta(w)!=0`, `mu'!=0`, and `(alpha^2-beta^2)eta(w)=mu'^2` |
+| VB | `(alpha n,0,beta n)`, where `n!=0` is null and `alpha^2!=beta^2` |
+| `V^a_+` | `(w,0,w)`, where `eta(w)!=0` |
+| `V^a_-` | `(w,0,-w)`, where `eta(w)!=0` |
+
+At every point of every row, `A(z,conjugate(z))` has rank ten and complex kernel dimension six. For a ten-element
+coordinate set `I` and its six-element complement `J`, write
+
+```text
+A = [[B_I,C_I],[-C_I^T,D_I]]
+```
+
+in `I,J` order. On `pf(B_I)!=0`, the Schur complement vanishes and
+
+`F_I=[-B_I^(-1)C_I;I_6]`
+
+is a six-column complex frame. Its polynomial clearing is
+
+`Fhat_I=[-adj(B_I)C_I;det(B_I)I_6]`.
+
+The rational frame degenerates exactly on `pf(B_I)=0`; as before,
+`det(B_I)=pf(B_I)^2`. The 8,008 ten-element subsets cover each piece because the principal-rank argument applied to a
+rank-ten skew matrix produces a nonzero principal order-ten Pfaffian. Realification through `psi^-1` turns the six
+complex columns and their `i` multiples into twelve independent columns of `ker_R L_y`. The proof is pointwise in the
+ambient `(z,conjugate(z))` coordinates, so it applies over every K-orbit modulus without choosing a quotient coordinate
+or assuming that a stabilizer type stays constant.
+
+The replay verifies the relevant closure equations at the five exact representatives from the regularity record,
+constructs each bordered matrix independently from `cd_core` signs, derives a principal pivot, checks `A F_I=0`, and
+checks all twelve realified columns against `L_y`. The representative certificates are:
+
+| Piece | Pivot indices | Pfaffian | Determinant |
+| --- | --- | ---: | ---: |
+| B9 | `{0,1,2,3,4,5,7,9,10,12}` | `-104` | `10816` |
+| V | `{0,1,2,3,4,5,6,7,8,9}` | `-1350 i` | `-1822500` |
+| VB | `{0,1,2,3,4,5,8,9,12,13}` | `-2 i` | `-4` |
+| `V^a_+` | `{0,1,2,3,4,5,6,7,8,9}` | `-2 i` | `-4` |
+| `V^a_-` | `{0,1,2,3,4,5,6,7,8,9}` | `-2 i` | `-4` |
+
+The falsifier was a nullity-twelve point with every order-ten principal Pfaffian zero, a nonzero-Pfaffian chart whose
+frame lost rank or escaped the complex or real kernel, a denominator locus other than the stated Pfaffian zero set, or
+a surviving border mutation. None occurred; the mutation fails at one of the five representatives. Together with the
+order-eight result, the order-ten construction completes deliverable 2 for all seven high-nullity pieces. The common
+atlas does not identify the K-moduli spaces, their stabilizers, or a smaller structure group; those questions remain
+live inputs to topology, transitions, and invariants.
 
 ## The transport uses the conjugated input
 
@@ -241,11 +295,12 @@ algebra automorphisms. An exhaustive normalizer census remains open.
 ## Scope
 
 The exact solve establishes the identity-component Lie algebra of constant linear kernel-pencil symmetries, its orbit
-dimensions, and twelve distinct visible components. The Pfaffian charts establish closed-form frames on `N_+` and
-`N_-`. The computation has not proved that the visible components exhaust the group and has not classified
-point-dependent kernel transports, a second anticommuting complex structure, frames on the nullity-twelve pieces, or
-a bundle invariant. The compact symmetry orbits are strictly smaller than the complex rank-stratum orbits in general,
-so the rank-stratum orbit labels do not make those kernel bundles homogeneous under the constant symmetry group.
+dimensions, and twelve distinct visible components. The order-eight and order-ten Pfaffian charts establish
+closed-form frames on all seven pieces of nullity at least twelve. The computation has not proved that the visible
+components exhaust the group and has not classified point-dependent kernel transports, a second anticommuting complex
+structure, the K-orbit moduli, transition functions, or bundle invariants. The compact symmetry orbits are strictly
+smaller than the complex rank-stratum orbits in general, so the rank-stratum orbit labels do not make those kernel
+bundles homogeneous under the constant symmetry group.
 
 ## Replay
 

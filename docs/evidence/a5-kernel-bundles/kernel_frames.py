@@ -1,6 +1,12 @@
-"""Exact principal-Pfaffian kernel frames on the A_5 nullity-sixteen cones.
+"""Exact principal-Pfaffian kernel frames on every high-nullity A_5 orbit.
 
-In original complex coordinates, the two cones are
+For a rank-r bordered skew matrix A, every invertible principal r by r
+block B supplies the rational frame [-B^-1*C; I_(16-r)] in pivot/free
+order.  The principal blocks cover a constant-rank locus because a skew
+matrix has a nonzero principal minor of order equal to its rank.  Rank ten
+covers B9, V, VB, V^a_+, and V^a_-; rank eight covers N_+ and N_-.
+
+In original complex coordinates, the two nullity-sixteen cones are
 
     N_sigma = {z=(w, 0, sigma*i*w): w.w=0, w != 0}, sigma in {+1,-1}.
 
@@ -29,7 +35,13 @@ import sympy as sp
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
+REGULARITY = HERE.parent / "a5-strata-regularity"
+EQUATIONS = HERE.parent / "a5-rank-strata-equations"
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+sys.path.insert(0, str(REGULARITY))
+sys.path.insert(0, str(EQUATIONS))
+
+import strata_regularity as regularity  # noqa: E402
 
 import parallel  # noqa: E402
 from cd_core import cd_sign, left_mult_matrix_exact  # noqa: E402
@@ -40,6 +52,16 @@ OCTONION_IMAGINARY_DIMENSION = 7
 FRAME_RANK = 8
 CHART_COUNT = math.comb(BORDERED_DIMENSION, FRAME_RANK)
 ORBIT_SIGNS = (("N_+", 1), ("N_-", -1))
+NULLITY_TWELVE_MATRIX_RANK = 10
+NULLITY_TWELVE_FRAME_RANK = BORDERED_DIMENSION - NULLITY_TWELVE_MATRIX_RANK
+NULLITY_TWELVE_CHART_COUNT = math.comb(BORDERED_DIMENSION, NULLITY_TWELVE_MATRIX_RANK)
+NULLITY_TWELVE_ORBITS = (
+    ("B9", "B9"),
+    ("V", "V"),
+    ("VB", "VB"),
+    ("Vap", "V^a_+"),
+    ("Vam", "V^a_-"),
+)
 
 
 def _require(condition: bool, message: str) -> None:
@@ -92,10 +114,12 @@ def _pfaffian(matrix: sp.Matrix) -> sp.Expr:
     return sp.expand(total)
 
 
-def _find_principal_pivot(matrix: sp.Matrix) -> tuple[int, ...]:
+def _find_principal_pivot(matrix: sp.Matrix, matrix_rank: int = FRAME_RANK) -> tuple[int, ...]:
     """Choose an invertible principal block by exact skew elimination."""
+    if not 0 < matrix_rank <= BORDERED_DIMENSION or matrix_rank % 2:
+        raise ValueError("skew-matrix pivot rank must be a positive even integer at most 16")
     selected: tuple[int, ...] = ()
-    while len(selected) < FRAME_RANK:
+    while len(selected) < matrix_rank:
         remaining = tuple(index for index in range(BORDERED_DIMENSION) if index not in selected)
         extension = next(
             (
@@ -114,8 +138,8 @@ def _find_principal_pivot(matrix: sp.Matrix) -> tuple[int, ...]:
 def _principal_frame(matrix: sp.Matrix, pivot_indices: Sequence[int]) -> tuple[sp.Matrix, sp.Expr, sp.Expr]:
     """Construct the rational Schur frame and its determinant/Pfaffian denominator."""
     pivot = tuple(pivot_indices)
-    if len(pivot) != FRAME_RANK or len(set(pivot)) != FRAME_RANK:
-        raise ValueError("a nullity-sixteen chart needs eight distinct pivot indices")
+    if not pivot or len(pivot) % 2 or len(pivot) >= BORDERED_DIMENSION or len(set(pivot)) != len(pivot):
+        raise ValueError("a bordered skew chart needs a distinct, nonempty, proper even pivot set")
     free = tuple(index for index in range(BORDERED_DIMENSION) if index not in pivot)
     block = matrix.extract(pivot, pivot)
     upper_right = matrix.extract(pivot, free)
@@ -124,10 +148,10 @@ def _principal_frame(matrix: sp.Matrix, pivot_indices: Sequence[int]) -> tuple[s
         raise ValueError("principal chart denominator vanishes")
     pfaffian = _pfaffian(block)
     _require(sp.expand(determinant - pfaffian * pfaffian) == 0, "principal determinant differs from Pfaffian squared")
-    frame = sp.zeros(BORDERED_DIMENSION, FRAME_RANK)
+    frame = sp.zeros(BORDERED_DIMENSION, len(free))
     pivot_rows = -block.inv() * upper_right
     for row_position, row in enumerate(pivot):
-        for column in range(FRAME_RANK):
+        for column in range(len(free)):
             frame[row, column] = pivot_rows[row_position, column]
     for row_position, row in enumerate(free):
         frame[row, row_position] = 1
@@ -249,6 +273,65 @@ def _symbolic_parameterization_check(sign: int) -> dict[str, bool]:
     }
 
 
+def _original_z_from_split(split_point: Sequence[int]) -> tuple[sp.Expr, ...]:
+    """Convert z'_1,...,z'_15 to z_k=i^popcount(k) z'_k."""
+    if len(split_point) != IMAGINARY_DIMENSION:
+        raise ValueError(f"split point must have {IMAGINARY_DIMENSION} coordinates")
+    return tuple(sp.I ** index.bit_count() * value for index, value in enumerate(split_point, start=1))
+
+
+def _nullity_twelve_representative_check(task: tuple[str, str, str]) -> dict[str, Any]:
+    orbit_key, orbit_label, mutation = task
+    split_point = regularity.REPS[orbit_key]
+    ideals = regularity.closure_ideals()
+    membership_pattern = tuple(name for name in regularity.DIMS if regularity.member(ideals[name], split_point))
+    expected_pattern = tuple(
+        name for name in regularity.DIMS if name == orbit_key or orbit_key in regularity.EXPECTED_LOWER[name]
+    )
+    representative_membership_verified = membership_pattern == expected_pattern
+    z = _original_z_from_split(split_point)
+    bordered = _bordered_matrix(z)
+    _require(bordered.T == -bordered, "bordered matrix is not skew")
+    pivot = _find_principal_pivot(bordered, NULLITY_TWELVE_MATRIX_RANK)
+    frame, determinant, pfaffian = _principal_frame(bordered, pivot)
+    free = tuple(index for index in range(BORDERED_DIMENSION) if index not in pivot)
+    tested_matrix = _mutated_bordered_matrix(bordered, mutation)
+    frame_identity_verified = tested_matrix * frame == sp.zeros(BORDERED_DIMENSION, NULLITY_TWELVE_FRAME_RANK)
+    frame_rank_verified = frame.extract(free, range(NULLITY_TWELVE_FRAME_RANK)) == sp.eye(NULLITY_TWELVE_FRAME_RANK)
+    y = _real_coordinates_from_z(z)
+    left_matrix = sp.Matrix(left_mult_matrix_exact(32, y))
+    real_frame = _real_kernel_frame(frame)
+    left_kernel_verified = left_matrix * real_frame == sp.zeros(32, 2 * NULLITY_TWELVE_FRAME_RANK)
+    real_frame_rank_verified = real_frame.rank() == 2 * NULLITY_TWELVE_FRAME_RANK
+    return {
+        "orbit": orbit_label,
+        "representative_key": orbit_key,
+        "representative_membership_verified": representative_membership_verified,
+        "membership_pattern": list(membership_pattern),
+        "expected_membership_pattern": list(expected_pattern),
+        "bordered_rank": NULLITY_TWELVE_MATRIX_RANK,
+        "frame_columns": NULLITY_TWELVE_FRAME_RANK,
+        "pivot_indices": list(pivot),
+        "pivot_pfaffian": str(pfaffian),
+        "pivot_determinant": str(determinant),
+        "coverage_witness": pfaffian != 0,
+        "frame_identity_verified": frame_identity_verified,
+        "frame_rank_verified": frame_rank_verified,
+        "left_kernel_verified": left_kernel_verified,
+        "real_frame_rank_verified": real_frame_rank_verified,
+        "frame": [
+            [str(frame[row, column]) for column in range(NULLITY_TWELVE_FRAME_RANK)]
+            for row in range(BORDERED_DIMENSION)
+        ],
+        "pass": representative_membership_verified
+        and pfaffian != 0
+        and frame_identity_verified
+        and frame_rank_verified
+        and left_kernel_verified
+        and real_frame_rank_verified,
+    }
+
+
 def nullity_sixteen_frame_checks(mutation: str = "") -> dict[str, Any]:
     """Verify the finite N_+- frame cover on deterministic exact fixtures."""
     if mutation not in ("", "flip_border_sign"):
@@ -300,25 +383,76 @@ def nullity_sixteen_frame_checks(mutation: str = "") -> dict[str, Any]:
     }
 
 
+def nullity_twelve_frame_checks(mutation: str = "") -> dict[str, Any]:
+    """Verify the common principal-Pfaffian frame cover on all five nullity-twelve orbits."""
+    if mutation not in ("", "flip_border_sign"):
+        raise ValueError(f"unknown mutation {mutation!r}")
+    tasks = [(orbit_key, orbit_label, mutation) for orbit_key, orbit_label in NULLITY_TWELVE_ORBITS]
+    orbit_rows = parallel.ordered_map(_nullity_twelve_representative_check, tasks, min_items=1)
+    return {
+        "schema": "a5-nullity-twelve-kernel-frames-v1",
+        "mutation": mutation,
+        "chart_count": NULLITY_TWELVE_CHART_COUNT,
+        "chart_indexing": "all 10-subsets I of {0,...,15}",
+        "chart_domain": "each nullity-twelve orbit intersect {pf(A_I,I) != 0}",
+        "rational_frame": "in pivot/free order, F_I=[-B_I^(-1) C_I; I_6]",
+        "polynomial_frame": "in pivot/free order, Fhat_I=[-adj(B_I) C_I; det(B_I) I_6]",
+        "degeneracy_locus": "pf(B_I)=0, equivalently det(B_I)=pf(B_I)^2=0",
+        "coverage_argument": (
+            "rank(A)=10 on every nullity-twelve orbit; the principal-rank theorem for skew matrices gives an "
+            "order-ten principal block with nonzero Pfaffian at every point"
+        ),
+        "parameterizations": {
+            "B9": "(u',0,v') with u',v' independent, isotropic, and u' cross v'=0",
+            "V": "(alpha*w,mu,beta*w) with eta(w)!=0, mu!=0, and (alpha^2-beta^2)*eta(w)=mu^2",
+            "VB": "(alpha*n,0,beta*n) with n!=0 null and alpha^2!=beta^2",
+            "V^a_+": "(w,0,w) with eta(w)!=0",
+            "V^a_-": "(w,0,-w) with eta(w)!=0",
+        },
+        "orbits": orbit_rows,
+        "pass": all(row["pass"] for row in orbit_rows),
+    }
+
+
 def build_result() -> dict[str, Any]:
-    result = nullity_sixteen_frame_checks()
-    mutated = nullity_sixteen_frame_checks(mutation="flip_border_sign")
-    result["mutation_control"] = {
-        "mutation": "flip_border_sign",
-        "detected": not mutated["pass"],
-        "frame_identity_failure_count": sum(row["frame_identity_failure_count"] for row in mutated["orbits"]),
+    nullity_sixteen = nullity_sixteen_frame_checks()
+    nullity_twelve = nullity_twelve_frame_checks()
+    mutated_sixteen = nullity_sixteen_frame_checks(mutation="flip_border_sign")
+    mutated_twelve = nullity_twelve_frame_checks(mutation="flip_border_sign")
+    result = {
+        "schema": "a5-high-nullity-kernel-frames-v2",
+        "nullity_sixteen": nullity_sixteen,
+        "nullity_twelve": nullity_twelve,
+        "mutation_control": {
+            "mutation": "flip_border_sign",
+            "nullity_sixteen_detected": not mutated_sixteen["pass"],
+            "nullity_sixteen_frame_identity_failure_count": sum(
+                row["frame_identity_failure_count"] for row in mutated_sixteen["orbits"]
+            ),
+            "nullity_twelve_detected": not mutated_twelve["pass"],
+            "nullity_twelve_frame_identity_failure_count": sum(
+                not row["frame_identity_verified"] for row in mutated_twelve["orbits"]
+            ),
+        },
+        "pass": nullity_sixteen["pass"] and nullity_twelve["pass"],
     }
     result["source_sha256"] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     return result
 
 
 def self_test() -> None:
-    baseline = nullity_sixteen_frame_checks()
-    if not baseline["pass"]:
+    baseline_sixteen = nullity_sixteen_frame_checks()
+    if not baseline_sixteen["pass"]:
         raise RuntimeError("baseline nullity-sixteen frame check failed")
-    mutated = nullity_sixteen_frame_checks(mutation="flip_border_sign")
-    if mutated["pass"] or all(row["frame_identity_verified"] for row in mutated["orbits"]):
-        raise RuntimeError("bordered-sign mutation escaped detection")
+    baseline_twelve = nullity_twelve_frame_checks()
+    if not baseline_twelve["pass"]:
+        raise RuntimeError("baseline nullity-twelve frame check failed")
+    mutated_sixteen = nullity_sixteen_frame_checks(mutation="flip_border_sign")
+    if mutated_sixteen["pass"] or all(row["frame_identity_verified"] for row in mutated_sixteen["orbits"]):
+        raise RuntimeError("nullity-sixteen bordered-sign mutation escaped detection")
+    mutated_twelve = nullity_twelve_frame_checks(mutation="flip_border_sign")
+    if mutated_twelve["pass"] or all(row["frame_identity_verified"] for row in mutated_twelve["orbits"]):
+        raise RuntimeError("nullity-twelve bordered-sign mutation escaped detection")
 
 
 def main() -> int:
@@ -328,11 +462,11 @@ def main() -> int:
     arguments = parser.parse_args()
     if arguments.self_test:
         self_test()
-        print("nullity-sixteen kernel-frame self-test: pass")
+        print("high-nullity kernel-frame self-test: pass")
         return 0
     result = build_result()
     if not result["pass"]:
-        raise RuntimeError("nullity-sixteen kernel-frame result failed")
+        raise RuntimeError("high-nullity kernel-frame result failed")
     payload = json.dumps(result, indent=2, sort_keys=True) + "\n"
     if arguments.out is None:
         print(payload, end="")
