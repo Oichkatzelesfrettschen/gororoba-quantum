@@ -56,6 +56,7 @@ import math
 import statistics
 import sys
 import time
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -153,7 +154,17 @@ def layouts(snapshot: dict[str, Any], length: int) -> dict[str, list[int]]:
 def cost_block(circuit: QuantumCircuit, table: list[int], gamma: float) -> None:
     """exp(-i gamma H) up to a global phase, through the eight-CNOT network on the path 0-1-2."""
     c = coefficients(table)
-    angle = {mask: 2.0 * gamma * c["".join(str(j) for j in range(3) if mask >> j & 1)] for mask in range(1, 8)}
+    parity_network(
+        circuit, {mask: 2.0 * gamma * c["".join(str(j) for j in range(3) if mask >> j & 1)] for mask in range(1, 8)}
+    )
+
+
+def parity_network(circuit: QuantumCircuit, angle: Mapping[int, Any]) -> None:
+    """The eight-CNOT network on the path 0-1-2 with RZ(angle[mask]) on the wire carrying parity ``mask``.
+
+    ``angle`` maps each nonzero three-bit parity mask to a float or a Parameter, so a parametrized network
+    binds to any cost table's angles.
+    """
     wires = [1, 2, 4]
     done: set[int] = set()
     for j in range(3):

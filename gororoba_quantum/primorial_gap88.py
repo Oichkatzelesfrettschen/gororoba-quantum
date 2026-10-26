@@ -1,0 +1,168 @@
+"""Primorial gap-88 phase-gradient tomography on a pinned three-qubit path, as a live_run campaign.
+
+docs/design/primorial-cover-defect-probes.md defines the protocol and scripts/primorial_cover_noise.py the arms:
+for each cube edge (j, x) with x_j = 0 an arm prepares (|x> + |x ^ 2^j>)/sqrt2, applies exp(-i gamma H) through
+the eight-CNOT parity network at gamma = pi/9 and reads qubit j in X and Y. The campaign runs, per edge and
+basis, three members that bind one parametrized circuit:
+
+- ``g88``, the network's seven RZ angles at 2 gamma c_S of the gap-88 cost table;
+- ``null``, every angle zero, the identity map with the same CZ count and schedule;
+- ``nullrep``, the null binding again, the drift monitor: the null-subtracted fit of ``nullrep`` against
+  ``null`` reads zero coefficients unless the device moved between the two executions.
+
+Binding one circuit makes the three members' compiled pulse streams identical by construction
+(experiments.Member.binding); they differ only in the zero-duration RZ angles. Eight basis preparations
+give the per-qubit assignment channel. Every member carries coherence_probes' structure-preserving
+compilation contract, so live_run compiles at optimization level 0 and the zero-angle network stays in the
+circuit.
+
+The summary inverts each quadrature through its qubit's assignment channel, fits the null-subtracted
+coefficients c_S (primorial_cover_noise.null_subtracted) and reports each against its exact value, the
+largest bias, whether every coefficient sits inside the identification radius 1/16, and the drift monitor's
+largest coefficient.
+"""
+
+from __future__ import annotations
+
+import importlib.util
+import sys
+from collections.abc import Mapping
+from functools import cache
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+from qiskit import QuantumCircuit
+from qiskit.circuit import Parameter
+
+from coherence_probes import STRUCTURE_PRESERVING_CONTRACT
+from experiments import Group, Member
+
+ROOT = Path(__file__).resolve().parents[1]
+ARMS = ("g88", "null", "nullrep")
+
+
+@cache
+def noise_module() -> Any:
+    """scripts/primorial_cover_noise.py, the single home of the arm, cost-table and fit definitions."""
+    spec = importlib.util.spec_from_file_location("primorial_cover_noise", ROOT / "scripts/primorial_cover_noise.py")
+    if spec is None or spec.loader is None:
+        raise ImportError("scripts/primorial_cover_noise.py does not load")
+    module = sys.modules.get(spec.name)
+    if module is None:
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
+    return module
+
+
+def angles(table: list[int]) -> dict[int, float]:
+    noise = noise_module()
+    c = noise.coefficients(table)
+    return {
+        mask: 2.0 * noise.GRADIENT_GAMMA * c["".join(str(j) for j in range(3) if mask >> j & 1)] for mask in range(1, 8)
+    }
+
+
+def parametrized_arm(j: int, x: int, basis: str) -> tuple[QuantumCircuit, dict[int, Parameter]]:
+    """gradient_arm's circuit with each network angle a Parameter."""
+    parameters = {mask: Parameter(f"a{mask}") for mask in range(1, 8)}
+    circuit = QuantumCircuit(3, 3, name=f"g88_{j}_{x}_{basis}")
+    for i in range(3):
+        if i != j and x >> i & 1:
+            circuit.x(i)
+    circuit.h(j)
+    circuit.barrier()
+    noise_module().parity_network(circuit, parameters)
+    circuit.barrier()
+    if basis == "Y":
+        circuit.sdg(j)
+    circuit.h(j)
+    circuit.measure(range(3), range(3))
+    circuit.metadata = {"compilation_contract": STRUCTURE_PRESERVING_CONTRACT}
+    return circuit, parameters
+
+
+def readout_arm(label: int) -> QuantumCircuit:
+    circuit = noise_module().basis_arm(3, label)
+    circuit.name = f"g88_readout_{label}"
+    circuit.metadata = {"compilation_contract": STRUCTURE_PRESERVING_CONTRACT}
+    return circuit
+
+
+def _ideal(circuit: QuantumCircuit) -> np.ndarray:
+    from qiskit.quantum_info import Statevector
+
+    return np.asarray(Statevector(circuit.remove_final_measurements(inplace=False)).probabilities(), dtype=float)
+
+
+def members() -> tuple[Member, ...]:
+    noise = noise_module()
+    signal = angles(noise.cost_table("gap88"))
+    out: list[Member] = []
+    for j, x in noise.edges():
+        for basis in ("X", "Y"):
+            circuit, parameters = parametrized_arm(j, x, basis)
+            for arm in ARMS:
+                values = signal if arm == "g88" else dict.fromkeys(signal, 0.0)
+                binding = {parameters[mask]: values[mask] for mask in parameters}
+                out.append(
+                    Member(
+                        f"{arm}_{j}_{x}_{basis}",
+                        circuit,
+                        _ideal(circuit.assign_parameters(binding)),
+                        binding=binding,
+                    )
+                )
+    for label in range(8):
+        circuit = readout_arm(label)
+        out.append(Member(circuit.name, circuit, _ideal(circuit)))
+    return tuple(out)
+
+
+def rows_of(distributions: Mapping[str, np.ndarray]) -> list[dict[str, Any]]:
+    """primorial_cover_noise rows: gradient arms under costs gap88, null and nullrep, and the readout arms."""
+    noise = noise_module()
+    out: list[dict[str, Any]] = []
+    for j, x in noise.edges():
+        for basis in ("X", "Y"):
+            for arm, cost in zip(ARMS, ("gap88", "null", "nullrep"), strict=True):
+                law = [float(v) for v in distributions[f"{arm}_{j}_{x}_{basis}"]]
+                out.append({"family": "gradient", "cost": cost, "j": j, "x": x, "basis": basis, "law": law})
+    for label in range(8):
+        out.append(
+            {"family": "readout3", "label": label, "law": [float(v) for v in distributions[f"g88_readout_{label}"]]}
+        )
+    return out
+
+
+def summarize(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
+    """Null-subtracted gap-88 coefficients, their biases, identification and the drift monitor."""
+    noise = noise_module()
+    rows = rows_of(distributions)
+    flips = noise.assignment(rows)
+    a = np.asarray([flips[j][0] for j, _ in noise.edges()])
+    b = np.asarray([flips[j][1] for j, _ in noise.edges()])
+
+    def readings(cost: str) -> tuple[np.ndarray, np.ndarray]:
+        x_read, y_read = noise.gradient_readings(rows, cost)
+        return noise.corrected(x_read, a, b), noise.corrected(y_read, a, b)
+
+    signal, null, repeat = readings("gap88"), readings("null"), readings("nullrep")
+    unit = np.ones_like(signal[0])
+    fit = noise.null_subtracted(noise.cost_table("gap88"), *signal, null, unit, unit)
+    exact = noise.coefficients(noise.cost_table("gap88"))
+    drift = noise.null_subtracted(noise.cost_table("null"), *repeat, null, unit, unit)
+    out: dict[str, float] = {}
+    for key, value in fit["recovered_coefficients"].items():
+        out[f"c_{key}"] = float(value)
+        out[f"bias_{key}"] = float(value - exact[key])
+    out["max_bias"] = float(fit["max_coefficient_bias"])
+    out["identified"] = float(fit["max_coefficient_bias"] < noise.IDENTIFY_RADIUS)
+    out["drift_max"] = float(drift["max_coefficient_bias"])
+    out["cycle_residual_rms"] = float(fit["cycle_residual_rms"])
+    return out
+
+
+def gap88_group() -> Group:
+    return Group("primorial_gap88", members(), summarize)

@@ -210,9 +210,10 @@ def law(ops: list[Op], spec: dict[str, Any]) -> list[float]:
     """Noise-free outcome law of the timed arm under ``spec``.
 
     spec keys, each optional: ``tilt`` and ``amplitude`` (per wire, on the gates named by ``amplitude_gates``,
-    default sx and x), ``cz_phase`` (per coupler of primorial_null_residuals.COUPLERS), ``detuning`` (kHz per
-    wire, RZ(2 pi delta t) after every instruction of duration t on the wire, as in
-    primorial_cover_noise.CoherentLaw), ``zz`` and ``zz_symmetric`` (kHz per coupler, CPhase(-2 pi zeta t) and
+    default sx and x; ``tilt_x``, when given, replaces ``tilt`` on x pulses), ``cz_phase`` (per coupler of
+    primorial_null_residuals.COUPLERS), ``detuning`` (kHz per wire, RZ(2 pi delta t) after every instruction of
+    duration t on the wire, as in primorial_cover_noise.CoherentLaw, restricted to the instruction names of
+    ``detuning_gates`` when given), ``zz`` and ``zz_symmetric`` (kHz per coupler, CPhase(-2 pi zeta t) and
     RZZ(pi zeta t) before every non-rz instruction on either qubit over the interval since the previous one, as
     in primorial_null_residuals.ScenarioLaw). ``cz_twirl`` true replaces the coherent CZ phase by its Pauli twirl
     (``twirled_law``).
@@ -220,7 +221,9 @@ def law(ops: list[Op], spec: dict[str, Any]) -> list[float]:
     if spec.get("cz_twirl"):
         return twirled_law(ops, spec)
     tilt, amplitude = spec.get("tilt", (0.0,) * 3), spec.get("amplitude", (0.0,) * 3)
+    tilts = {"sx": tilt, "x": spec.get("tilt_x", tilt)}
     amplitude_gates = spec.get("amplitude_gates", ("sx", "x"))
+    detuned_names = spec.get("detuning_gates", ("rz", "sx", "x", "cz", "delay"))
     cz_phase, detuning = spec.get("cz_phase", (0.0, 0.0)), spec.get("detuning", (0.0,) * 3)
     zz, zz_sym = spec.get("zz", (0.0, 0.0)), spec.get("zz_symmetric", (0.0, 0.0))
     coupled = any(zz) or any(zz_sym)
@@ -246,12 +249,12 @@ def law(ops: list[Op], spec: dict[str, Any]) -> list[float]:
                 state = apply1(state, rz(angle), wires[0])
             elif name in DRIVEN:
                 eta = amplitude[wires[0]] if name in amplitude_gates else 0.0
-                state = apply1(state, driven(name, tilt[wires[0]], eta), wires[0])
+                state = apply1(state, driven(name, tilts[name][wires[0]], eta), wires[0])
             else:
                 pair = (min(wires), max(wires))
                 phi = cz_phase[nr.COUPLERS.index(pair)]
                 state = diagonal2(state, pair, (1.0, 1.0, 1.0, -np.exp(1j * phi)))
-        if seconds:
+        if seconds and name in detuned_names:
             for wire in wires:
                 if detuning[wire]:
                     state = apply1(state, rz(2.0 * math.pi * detuning[wire] * KHZ * seconds), wire)
@@ -340,6 +343,10 @@ class Fit:
     def __call__(self, item: tuple[dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
         signal, null_spec = item
         rows = [{**meta, "law": law(ops, signal if meta["cost"] == "gap88" else null_spec)} for meta, ops in self.arms]
+        return self.fit_rows(rows)
+
+    def fit_rows(self, rows: list[dict[str, Any]]) -> dict[str, Any]:
+        """Raw and null-subtracted fits of gap88 and null laws, each row carrying its arm metadata and law."""
         readings = noise.gradient_readings(rows, "gap88")
         null = noise.gradient_readings(rows, "null")
         raw = noise.phase_fit(self.table, *readings, noise.raw_phase_variance(*readings))
@@ -464,8 +471,11 @@ def bounded(gates: list[dict[str, float]], cz: list[float]) -> dict[str, Any]:
 
 
 def round_spec(spec: dict[str, Any]) -> dict[str, Any]:
+    """The spec with every numeric tuple rounded to 12 decimals; name tuples such as amplitude_gates kept."""
     return {
-        k: [round(float(x), 12) for x in v] if isinstance(v, tuple) and k != "amplitude_gates" else v
+        k: [round(float(x), 12) for x in v]
+        if isinstance(v, tuple) and all(isinstance(x, (int, float)) for x in v)
+        else v
         for k, v in spec.items()
     }
 
