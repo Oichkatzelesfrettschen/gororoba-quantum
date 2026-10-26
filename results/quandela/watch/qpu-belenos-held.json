@@ -1,0 +1,12 @@
+{
+ "schema": "qd-record-watch-v1",
+ "platform": "qpu:belenos",
+ "perfs_sha256": "ae1cc9f8f9999bd76ecf8857fc6cd9a591c4ee9656880194a5cb9ca775e20446",
+ "figures": {
+  "HOM (%)": 83.8,
+  "g2 (%)": 16.7,
+  "Transmittance (%)": 0.05
+ },
+ "first_seen_utc": "2026-10-25T18:47:04+00:00",
+ "source": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/platform-after/catalogue.json"
+}

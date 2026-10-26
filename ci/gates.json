@@ -2292,13 +2292,13 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-qet-campaigns.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-primorial-campaigns.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-qet-campaigns.json"
+    "docs/evidence/submitted_circuits/comparison-primorial-campaigns.json"
    ]
   },
   {
@@ -4224,7 +4224,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py scripts/primorial_probe_case.py gororoba_quantum/coherence_probes.py gororoba_quantum/primorial_campaigns.py gororoba_quantum/primorial_tomography.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py tests/scripts/test_coherence_probes.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py scripts/primorial_probe_case.py gororoba_quantum/coherence_probes.py gororoba_quantum/primorial_campaigns.py gororoba_quantum/primorial_tomography.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py tests/scripts/test_coherence_probes.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py scripts/primorial_probe_case.py gororoba_quantum/coherence_probes.py gororoba_quantum/primorial_campaigns.py gororoba_quantum/primorial_tomography.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py tests/scripts/test_coherence_probes.py",
    "name": "core-687",
    "seconds": 15.0,
    "tier": "pr"
@@ -4294,6 +4294,15 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/primorial_bound_residuals.py --check docs/evidence/primorial_cover/bound_residuals.json --run results/kaggle/2026-10-25T221805Z-gororoba-primorial-bound-residuals",
    "name": "core-primorial-bound-residuals-replay",
    "seconds": 376.0,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_probe_case.py --check docs/evidence/primorial_cover/probe_case.json --run results/kaggle/2026-10-26T032845Z-gororoba-primorial-probe-case",
+   "name": "core-primorial-probe-case-replay",
+   "seconds": 720.0,
    "tier": "full",
    "workers": "all"
   },

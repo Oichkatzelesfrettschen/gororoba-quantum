@@ -68,6 +68,7 @@ from qiskit.quantum_info import Statevector  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import parallel  # noqa: E402
+import primorial_tomography as tomo  # noqa: E402
 
 NOISE_RECORD = ROOT / "docs/evidence/primorial_cover/noise.json"
 OUTPUT = "results/kaggle_out/primorial_null_residuals.json"
@@ -166,11 +167,11 @@ class ScenarioFit:
 
     def __call__(self, item: tuple[Scenario, list[dict[str, Any]]]) -> dict[str, Any]:
         scenario, chunk = item
-        readings = noise.gradient_readings(chunk, "gap88")
-        null = noise.gradient_readings(chunk, "null")
-        raw = noise.phase_fit(self.table, *readings, noise.raw_phase_variance(*readings))
-        subtracted = noise.null_subtracted(
-            self.table, *readings, null, noise.raw_phase_variance(*readings), noise.raw_phase_variance(*null)
+        readings = tomo.gradient_readings(chunk, "gap88")
+        null = tomo.gradient_readings(chunk, "null")
+        raw = tomo.phase_fit(self.table, *readings, tomo.raw_phase_variance(*readings))
+        subtracted = tomo.null_subtracted(
+            self.table, *readings, null, tomo.raw_phase_variance(*readings), tomo.raw_phase_variance(*null)
         )
         residual = subtracted["max_coefficient_bias"]
         return {
@@ -201,7 +202,7 @@ def budget(record: dict[str, Any], patch: str) -> tuple[int, float]:
 def evaluate(snapshot: dict[str, Any], record: dict[str, Any]) -> dict[str, Any]:
     view = calibration_snapshot.snapshot_backend(snapshot)
     dt = float(view.target.dt)
-    table = noise.cost_table("gap88")
+    table = tomo.cost_table("gap88")
     logical = [(m, c) for m, c in noise.arms() if m["family"] == "gradient" and m["cost"] in ("gap88", "null")]
     out: dict[str, Any] = {"layouts": {}, "patches": {}}
     for patch in PATCHES:
