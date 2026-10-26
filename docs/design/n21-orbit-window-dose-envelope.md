@@ -1,41 +1,43 @@
 # N=21 orbit window-dose sweep: the calibration-adaptive approval envelope
 
-This case asks approval for a rule and its bounds, not for one calibration's values. A plan made at one
-calibration lapses within the 30-40 minute calibration cycle of IBM Heron r2 backends
-([calibration-jobs.md](../notes/ibm_quantum/calibration-jobs.md)), so `scripts/n21_dose_run.sh --submit` plans on
-the calibration in force, checks the plan against this envelope with `scripts/n21_dose_decisions.py --preflight`,
-and submits that plan within the same minute. The layout, the replica sets and the model values are the fresh
-plan's own. Every bound below is enforced by the preflight or by live_run.py, and a plan outside any of them sends
-nothing.
+This case asks approval for a rule and its bounds, not for one calibration's values. IBM recalibrates its Heron
+backends when monitoring calls for it, with no fixed period
+([calibration-jobs.md](../notes/ibm_quantum/calibration-jobs.md)); across the dry run below, ibm_kingston's
+calibration moved once in 53 minutes. `scripts/n21_dose_run.sh --submit` therefore plans on the calibration in
+force, checks the plan against this envelope with `scripts/n21_dose_decisions.py --preflight`, and submits that
+plan. The layout, the replica sets and the model values are the fresh plan's own. The bounds below are enforced by
+the preflight, the runner or live_run.py, as the table names, and a plan outside any of them sends nothing.
 
 ## Question
 
 Two retained N=21 runs bound the feedback-contrast loss from either side: the encoded circuit on ibm_kingston (336
 CZ, about 15,000 dt of scheduled leaf idle) measured +0.0027 against a predicted +0.031, and the orbit circuit on
 ibm_fez (28 CZ, about 2,000 dt) kept +0.197 against the idle-padded model's +0.179. One parameter-free incoherent
-idle model fits both (claims `hw-n21-feedback-null-scheduled-idle` and `hw-n21-orbit-scheduled-idle-control`),
-retrospectively and across circuits and backends. This run adds idle to the orbit circuit in controlled doses, in
-one job on one calibration, with and without an echo that refocuses static detuning. It answers two questions:
-- does the contrast fall with added idle as the Target's T1 and T2 predict (D1, D2);
-- does the echo recover more than the model's own echo gain, which comes from the T1 asymmetry of the echo's X
-  pulses, as a static detuning would make it (D3)?
+idle model fits both (claims `hw-n21-feedback-null-scheduled-idle` and `hw-n21-orbit-scheduled-idle-control`,
+both exploratory), retrospectively and across circuits and backends. This run adds idle to the orbit circuit in
+controlled doses, in one job on one calibration, with and without a Hahn echo. It estimates two numbers:
+- kappa_P, the multiple of the Target's relaxation rate at which added free idle costs feedback contrast;
+- kappa_P - kappa_E, how much of that loss the echo removes beyond the model's own echo gain (which comes from the
+  T1 asymmetry of the echo's X pulses).
 
-A noise simulation cannot answer either: it assumes the Target's T1/T2 description that the run tests, and Fez
-qubit 143's two-line beat (claim `hw-n21-q143-segmented-lines`) shows idle error that such a description cannot
-express.
+The Target reports T2 from a Hahn echo ([qpu-information.md](../notes/ibm_quantum/qpu-information.md)), and the
+model charges free idle with that T2. A free-induction T2* below it, or a static detuning, makes kappa_P exceed
+kappa_E. A noise simulation cannot answer either question: it assumes the Target description the run measures,
+and Fez qubit 143's two-line beat (claim `hw-n21-q143-segmented-lines`) shows idle error outside that description.
 
 ## Circuit
 
 The `n21-orbit-rca` family with `--window-doses-dt 0,1752,3500,5252,7000,10500,14000`, built by
 `qpe_diagnostics` (`window_dose` and `window_dose_echo` variants). After the control's mid-circuit measurement and
 reset, a barrier across the replica's four wires precedes the dose, so every dose delay starts after that
-replica's reset. The plain arm
-holds `delay(D)` on all four wires; the echo arm holds `delay(D/4) X delay(D/2) X delay(D/4)` on work bits 1 and
-16 and `delay(D)` on the control and the bit for 4. Each dose is a pair of feed-forward and omitted-correction
-members scored by their contrast difference; dose 0 has no echo arm. That gives 13 contracts and 26 members, one
-PUB per member, each PUB packing every admitted disjoint replica of the four-qubit circuit with its own barriers.
-The initialization herald (`--init-herald`) measures every qubit into its own register before the circuit, so
-the preparation error at the chosen delay is recorded beside each contrast.
+replica's reset. The plain arm holds `delay(D)` on all four wires; the echo arm holds
+`delay(D/4) X delay(D/2) X delay(D/4)` on work bits 1 and 16 and `delay(D)` on the control and the bit for 4. Each
+dose is a pair of feed-forward and omitted-correction members scored by their contrast difference; dose 0 has no
+echo arm. That gives 13 contracts and 26 members, one PUB per member, each PUB packing every admitted disjoint
+replica of the four-qubit circuit with its own barriers. The ISA archive holds no operation across two replicas;
+whether the native schedule makes one replica wait on another's measurement is known only from the scheduler
+timing the job returns, which the idle replay charges. The initialization herald (`--init-herald`) measures every
+qubit into its own register before the circuit, and the analysis keeps only shots whose herald reads all zeros.
 
 ## Bounds
 
@@ -43,74 +45,102 @@ the preparation error at the chosen delay is recorded beside each contrast.
 |---|---|---|
 | Account | backup instance, `GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform` | runner |
 | Backends | ibm_fez, ibm_kingston, ibm_marrakesh (Heron r2), the planner's choice among those operational | preflight |
-| Shots | 8,192 per PUB | preflight |
-| Repetition delay | 20 us; 50 us when no plan is admitted at 20 us, or as the single retry below | preflight, runner |
-| Replicas | replica tier 24, replica floor 0.45, at least 4 placed | preflight |
-| Ceiling | 30 s estimated charge and 30 s `max_execution_time` for the one job | preflight, live_run.py |
-| Execution | twirling and dynamical decoupling off, cross-group buffer on, one dynamic job | preflight, live_run.py |
+| Design | every field of `EXPECTED_DESIGN`: the seven doses, 8,192 shots, replica tier 24, one routed candidate, 32,768 model shots, the 0.09 precision screen, uniform allocation, minimum-charge objective, the herald, the 30 s total ceiling | preflight |
+| Planning policy | every field of `EXPECTED_POLICY`: replica floor 0.45, calibration screens, cross-group buffer on, twirling and dynamical decoupling off, 30 s `max_execution_time`, the QRNG seed references | preflight |
+| Replicas | at least 4 placed | preflight |
+| Execution | one dynamic job of 26 PUBs, one member each; estimated charge at most 30 s | preflight, live_run.py |
+| Repetition delay | 20 us; 50 us when no plan is admitted at 20 us, or as the bound retry below | preflight, runner |
 | Seeds | `--seed-transpiler` `qrng:docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json#0`, `--seed-simulator` index 1 | preflight |
-| Code | the plan is made from a clean tree at the checked-out commit | preflight |
-| Planner screen | one routed candidate, 32,768 model shots, a 0.09 Hoeffding half-width at alpha 0.05/13 | runner |
+| Code | the plan is made at the checked-out commit, and nothing under `gororoba_quantum/`, `scripts/`, `ci/`, `docs/design/` or `requirements.txt` differs from it | preflight, runner |
 
-**Planner screen.** These arguments decide which plan is admitted, not how the result is read. The precision
-screen bounds one replica's 8,192 shots by Hoeffding at the Bonferroni alpha over the thirteen contracts, 0.082
-per contrast, so a 0.08 screen refused every seven-dose plan; D1-D3 pool every replica, whose shot sigma lies
-near 0.004 at 19 replicas. One routed candidate makes the dry run's design reusable: when every calibration value
-of the plan is unchanged at submission, live_run.py copies the approved predictions and design
-(`reuse_approved_predictions`, `approved_family_design`) instead of simulating again.
+**Planner screen.** The model-shot count, the candidate count and the precision screen decide which plan is
+admitted, not how the result is read. The precision screen bounds one replica's 8,192 shots by Hoeffding at the
+Bonferroni alpha over the thirteen contracts, 0.082 per contrast, so a 0.08 screen refused every seven-dose plan
+(the infeasible records of that attempt were not retained); the decisions pool every replica. One routed candidate
+makes the dry run's design reusable at submission: when the policy, dependency versions, source digest, simulator
+seed, compiled circuits, QPY bytes, PUB manifests and every calibration value equal the approved record's and every
+recorded Aer batch ran on CPU by a host-independent route, live_run.py copies the approved predictions and design
+(`reuse_approved_predictions`, `approved_family_design`) instead of simulating again
+([qpu-submission.md](../notes/ibm_quantum/qpu-submission.md)). The wall time of that path is unmeasured, because
+live_run.py takes `--approved-record` only with `--submit`; a full re-plan took 8 min 37 s.
 
 **Calibration refusals.** `--submit` checks the approved circuits against the fresh calibration values before
 planning and writes an `approval_required` record within seconds when any value changed, sending nothing and
 leaving the approval unconsumed. The runner then plans again on the new calibration, preflights that plan and
-submits it, up to four attempts; each attempt's plan and submission logs stay under `docs/local/`. A refusal that
-sent nothing therefore never ends the case.
+submits it; the first three such refusals re-plan and the fourth ends the invocation. Each attempt's plan and
+submission logs stay under `docs/local/`. A submission whose approval is consumed but whose run records no job id
+is reported as an unknown outcome and never retried.
 
-**Retry.** The 20 us delay lies at the floor IBM's changelog sets for Heron. Two 0 us jobs and the 20 us jobs of a
-100,000-shot design under a 6 s ceiling all ended in error 1305, and none of the 20 us jobs separated a stalled
-shot loop from an overrun ceiling
-([REP_DELAY_ZERO_CONTROL_FINDINGS.md](../../results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md)). This plan's
-estimated charge sits far below its 30 s ceiling, so a 1305 here with zero circuit execution time reads as a
-stalled loop. That outcome admits one retry, `sh scripts/n21_dose_run.sh --delay 5e-05 --submit`, under this
-envelope; any failure after a batch was sent, other than that one, ends the case.
+**Retry.** The 20 us delay lies at the floor IBM's changelog sets for Heron. The retained 0 us jobs and the 20 us
+jobs of a 100,000-shot design under a 6 s ceiling all ended in error 1305, which the service reports for a stalled
+shot loop and an overrun ceiling alike
+([REP_DELAY_ZERO_CONTROL_FINDINGS.md](../../results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md)). The 50 us retry is
+therefore an operational fallback, not a diagnosis: `sh scripts/n21_dose_run.sh --delay 5e-05 --retry-of RUN
+--submit` runs once, after the 20 us run RUN whose single job ended in error 1305 with no PUB executed
+(`n21_dose_decisions.py --retry-check`), and writes `RUN/retry-consumed.json` before it submits. Any other failure
+after a batch was sent ends the case.
 
 ## Decisions
 
-`scripts/n21_dose_decisions.py RUN --out RUN/dose-decisions.json` reads the collected run against
-`scripts/scheduled_idle_replay.py RUN --out RUN/idle-replay.json`, the exact branch-resolved law of every replica
-with the explicit doses and the service-scheduled idle charged under the execution Target. A collection whose
-comparisons the collector withheld (its PUBs did not run under one calibration) is refused.
+The analysis reads the collected run through three commands:
+```sh
+"$PYTHON" scripts/scheduled_idle_replay.py RUN --out RUN/idle-replay.json \
+    --dose-scales 0.25,0.5,0.75,1.25,1.5,1.75,2.0,2.5,3.0,3.5,4.0,5.0,6.0
+"$PYTHON" scripts/n21_dose_decisions.py RUN --out RUN/dose-decisions.json
+```
+The replay gives each replica's exact branch-resolved law with the explicit doses and the service-scheduled idle
+charged under the execution Target, and the same law with the dose delays' relaxation multiplied by each factor
+(the model family M_r(d; k), k = 1 the Target's T1 and T2). A collection whose comparisons the collector withheld
+(its PUBs did not run under one calibration) is refused.
+
+**Estimates.** Each shot measures every replica of its PUB together. The analysis reads the shot-ordered
+registers, binds them to the collected marginals, keeps each replica's shots whose herald reads all zeros, and
+conditions the replay laws the same way, so an initial excitation at the 20 us delay leaves the estimates instead
+of evolving through the dose. The covariance across replicas comes from the shots themselves (delta method), so
+common-mode readout or crosstalk within a shot enters every variance. Sixteen contiguous blocks per PUB test for
+drift within the job; their mean dispersion ratio, when above one, multiplies every covariance. One calibration
+supplies no between-calibration variance, and the estimates carry none.
 
 - **D1, idle response.** The pooled plain contrast at 14,000 dt lies below the dose-0 contrast at one-sided 95
-  percent. Its failure falsifies the claim that idle on these wires costs feedback contrast.
-- **D2, incoherent model.** At each nonzero dose, the pooled plain dose response, measured(d) - measured(0),
-  agrees with the model's within the Bonferroni two-sided 95 percent bound over the six nonzero doses (|z| at most
-  2.638). A dose-independent offset (readout, initialization at a 20 us delay, the orbit run's 0.018 residual, the
-  baseline idle of packed replicas) cancels in the response. A failure falsifies the Target's T1/T2 as the
-  description of added idle on this circuit.
-- **D3, coherent detuning.** At 14,000 dt, each replica's excess echo gain, (echo - plain) measured minus the same
-  in the model, enters a chi-square across replicas at 5 percent. A static detuning shifts each replica's plain arm
-  by a first-order term with the sign of that replica's detuning, which a replica mean cancels; the per-replica
-  test keeps it. A rejection reads as coherent detuning refocused by the echo only when the echo arm's own dose
-  response agrees with the model across replicas (chi-square at 5 percent) and D2 holds at 14,000 dt; otherwise it
-  is inconclusive, because an effective T1 off the Target's moves the echo arm as well.
+  percent. A failure withholds evidence for the drop; it is no equivalence test.
+- **D2, plain rate.** kappa_P fits the six pooled plain responses, measured(d) - measured(0), by generalized least
+  squares against the replica-mean model family with their full covariance (the shared dose-0 arm included), with
+  a 95 percent profile interval. A dose-independent offset cancels in every response, and an error common to the
+  Target's T1 and T2 values moves kappa_P rather than failing a point test. A minimum chi2 beyond p = 0.01 on five
+  degrees of freedom reads as a dose response no single rate describes, and the interval is not read; otherwise an
+  interval that excludes 1 reads as plain idle loss at kappa_P times the Target's rate.
+- **D3, echo refocusing.** kappa_P and kappa_E fit the six plain and the six echo responses (echo(d) - plain(0))
+  jointly, under the same shape rule on ten degrees of freedom, with a 95 percent profile interval of delta =
+  kappa_P - kappa_E. A lower bound above zero reads as idle loss the Hahn echo removes beyond the Target model:
+  quasi-static dephasing or static detuning, which this design does not separate. An upper bound below zero reads
+  as an echo that costs more than it refocuses. A per-replica static detuning of either sign raises each replica's
+  plain loss in second order and so enters delta as well.
+- **Per replica.** Each replica's kappa_P,r and its interval are reported, not decided.
+
+**Power.** With a conservative contract variance (scores in [-1, 1], 97 percent of shots kept, replicas
+independent) and the dry run's model shape, the standard error of delta is 0.054 at the floor of 4 replicas and
+0.025 at the dry run's 19; the smallest delta detected at 80 percent power against the two-sided 95 percent
+interval is 0.15 and 0.07. The design is powered for delta = 0.3 (`MIN_EFFECT`). The idle-penalty probe of
+2026-10-26 on ibm_kingston (62 qubits, branch `heron/idle-penalty-probe`, commit `4774d70`) measured median
+dephasing-rate multiples of 1.45 for free induction (T2_reported / T2*) and 1.14 for the echo (T2_reported /
+T2echo), a gap of 0.31 that sets the scale of the effect this design is built to resolve.
 
 ## Plan at the dry run
 
 The values below come from the dry run named here and illustrate the envelope; the submitted plan replaces them
 with its own calibration's.
 
-Dry run `results/live/2026-10-26T221115.366606Z` (record.json SHA-256
-`9c190f9f4e31efd2398d45caabe9ac9115abc4faf9fa0ad5df4e422fc273eac7`, commit `2677994`): ibm_kingston, calibration
-2026-10-26T14:25:32-07:00, 19 replicas, 26 PUBs x 8,192 shots at a 20 us repetition delay, an estimated 17.1 s
-against the 30 s ceiling on the backup instance, whose rolling window held 390 s at the time of writing. The
-plan took 18 min 46 s of wall time at nice 19 with a 1.3 GiB peak; Kingston's calibration had moved to
-15:18:32-07:00 by the time it was read again, so a plan of this duration lapses before its submission re-plans.
+Dry run `results/live/2026-10-26T223508.256543Z` (record.json SHA-256
+`dcc6a7e7077f03b78c50e0a39c68a9d79e64451bd225edb96dec2132e35dbb1f`, commit `fc94e2f`, one routed candidate):
+ibm_kingston, calibration 2026-10-26T15:18:32-07:00, 19 replicas, 26 PUBs x 8,192 shots at a 20 us repetition
+delay, an estimated 17.1 s against the 30 s ceiling on the backup instance, whose rolling window held 390 s at the
+time of writing. The plan took 8 min 37 s of wall time at nice 19 with a 1.3 GiB peak.
 
 | Dose (dt) | Plain arm, model | Echo arm, model | Model echo gain |
 |---|---|---|---|
 | 0 | +0.198 | n/a | n/a |
 | 1,752 | +0.172 | +0.169 | -0.002 |
-| 3,500 | +0.140 | +0.160 | +0.019 |
+| 3,500 | +0.140 | +0.159 | +0.019 |
 | 5,252 | +0.118 | +0.141 | +0.023 |
 | 7,000 | +0.088 | +0.117 | +0.029 |
 | 10,500 | +0.050 | +0.085 | +0.035 |

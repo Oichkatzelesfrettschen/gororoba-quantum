@@ -9,12 +9,15 @@
 # that sent nothing leaves the approval unconsumed (approval-consumed.json absent), so the runner plans again on
 # the new calibration, up to ATTEMPTS times.
 #
-# The 20 us repetition delay is tried first and the 50 us one when no admitted plan comes back at 20 us;
-# --delay 5e-05 plans at 50 us only, the envelope's single retry after a 20 us job that ends in error 1305 with no
-# circuit execution time. scripts/n21_dose_decisions.py --preflight requires the envelope's bounds and a plan
-# made at the checked-out commit from a clean tree.
+# The 20 us repetition delay is tried first and the 50 us one when no admitted plan comes back at 20 us.
+# --delay 5e-05 --retry-of RUN plans at 50 us only: the envelope's single operational retry after the 20 us run RUN
+# whose job ended in error 1305 with no PUB executed (n21_dose_decisions.py --retry-check), marked spent by
+# RUN/retry-consumed.json before the retry plans. --preflight requires the envelope's bounds and a plan made at the
+# checked-out commit; the runner refuses to plan while any file under the directories that build, check or submit
+# the plan differs from that commit.
 #
-# Usage: sh scripts/n21_dose_run.sh [--delay 2e-05|5e-05] [--submit]   (from the repository root)
+# Usage: sh scripts/n21_dose_run.sh [--delay 2e-05] [--submit]
+#        sh scripts/n21_dose_run.sh --delay 5e-05 --retry-of results/live/RUN --submit   (from the repository root)
 set -eu
 
 PYTHON=${PYTHON:-python3}
@@ -24,11 +27,13 @@ export GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform
 ATTEMPTS=4
 
 usage() {
-	echo "usage: sh scripts/n21_dose_run.sh [--delay 2e-05|5e-05] [--submit]" >&2
+	echo "usage: sh scripts/n21_dose_run.sh [--delay 2e-05] [--submit]" >&2
+	echo "       sh scripts/n21_dose_run.sh --delay 5e-05 --retry-of results/live/RUN --submit" >&2
 	exit 2
 }
 submit=0
 delays="2e-05 5e-05"
+retry_of=
 while [ $# -gt 0 ]; do
 	case $1 in
 	--submit) submit=1 ;;
@@ -37,10 +42,22 @@ while [ $# -gt 0 ]; do
 		case $2 in 2e-05 | 5e-05) delays=$2 ;; *) usage ;; esac
 		shift
 		;;
+	--retry-of)
+		[ $# -ge 2 ] || usage
+		retry_of=$2
+		shift
+		;;
 	*) usage ;;
 	esac
 	shift
 done
+if [ "$submit" -eq 1 ] && [ "$delays" = 5e-05 ] && [ -z "$retry_of" ]; then
+	echo "a 50 us submission is the retry after a 20 us run: name it with --retry-of" >&2
+	exit 2
+fi
+if [ -n "$retry_of" ] && [ "$delays" != 5e-05 ]; then
+	usage
+fi
 
 root=$(pwd)
 [ -f "$root/gororoba_quantum/live_run.py" ] || {
@@ -51,6 +68,15 @@ logs=$root/docs/local
 mkdir -p "$logs"
 draw=docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json
 head=$(git rev-parse HEAD)
+dirty=$(git status --porcelain -- gororoba_quantum scripts ci docs/design requirements.txt)
+if [ -n "$dirty" ]; then
+	echo "the tree differs from $head where the plan is built, checked or submitted:" >&2
+	echo "$dirty" >&2
+	exit 1
+fi
+if [ -n "$retry_of" ]; then
+	"$PYTHON" scripts/n21_dose_decisions.py --retry-check "$retry_of"
+fi
 
 plan_args() {
 	printf '%s\n' --family n21-orbit-rca --shot-allocation uniform --objective minimum_charge --optimize \
@@ -89,6 +115,12 @@ state_of() {
 	"$PYTHON" -c 'import json, sys; print(json.load(open(sys.argv[1]))["state"])' "$1/record.json"
 }
 
+job_ids() {
+	"$PYTHON" -c 'import json, sys
+jobs = json.load(open(sys.argv[1])).get("submission", {}).get("jobs", [])
+print(" ".join(job["job_id"] for job in jobs if job.get("job_id")))' "$1/record.json"
+}
+
 attempt=1
 while :; do
 	started=$(date +%s)
@@ -103,6 +135,10 @@ while :; do
 		echo "plan only; rerun with --submit to submit it"
 		exit 0
 	fi
+	if [ -n "$retry_of" ] && [ ! -e "$retry_of/retry-consumed.json" ]; then
+		printf '{"retry": "50 us after error 1305", "approved_record": "%s", "at": "%s"}\n' "$record" \
+			"$(date -u +%Y-%m-%dT%H:%M:%SZ)" >"$retry_of/retry-consumed.json"
+	fi
 	submit_log=$logs/n21-dose-submit-$attempt.log
 	status=0
 	# shellcheck disable=SC2046
@@ -113,9 +149,14 @@ while :; do
 	# live_run.py writes the submission to its own directory; the dry run it compared against stays unsubmitted.
 	run=$(sed -n 's|^audit record: \.\./\(results/live/[^/]*\)$|\1|p' "$submit_log" | tail -n 1)
 	if [ -n "$run" ] && [ -e "$record/approval-consumed.json" ]; then
-		echo "submitted $run against $record (exit $status) in $(($(date +%s) - started)) s;" \
-			"collect with: (cd gororoba_quantum && \"\$PYTHON\" live_run.py --collect ../$run)"
-		exit "$status"
+		ids=$(job_ids "$run")
+		if [ -n "$ids" ]; then
+			echo "submitted $run (jobs $ids) against $record (exit $status) in $(($(date +%s) - started)) s;" \
+				"collect with: (cd gororoba_quantum && \"\$PYTHON\" live_run.py --collect ../$run)"
+			exit "$status"
+		fi
+		echo "outcome unknown: $record's approval is consumed and $run records no job id (log $submit_log)" >&2
+		exit 1
 	fi
 	if [ -n "$run" ] && [ "$(state_of "$run")" = approval_required ] && [ "$attempt" -lt "$ATTEMPTS" ]; then
 		echo "attempt $attempt: $run refused the plan with nothing sent; planning again" >&2

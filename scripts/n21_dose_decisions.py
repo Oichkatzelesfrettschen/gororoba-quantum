@@ -1,34 +1,52 @@
 """Preregistered decisions D1-D3 of an N=21 orbit window-dose sweep against its idle-padded exact model.
 
-The run directory holds the submitted record (record.json: observable contracts, shots), the collected result
-(collect.json: each member's measured law per replica) and the scheduled-idle replay (idle-replay.json from
-scripts/scheduled_idle_replay.py: exact_laws.idle_padded, each replica's exact branch-resolved law with the explicit
-doses and the service-scheduled idle charged under the execution Target). A contract's measured value is the signed
-sum of its members' scores; its shot variance is the sum over members of (E[w^2] - E[w]^2) / shots for score vector
-w. A pooled value is the replica mean, with sigma sqrt(sum s^2) / n over independent replicas.
+Data. The run directory holds the submitted record (record.json), the collected result (collect.json), the lossless
+shot-ordered registers --collect writes under raw/<job_id>/, and the scheduled-idle replay (idle-replay.json from
+`scripts/scheduled_idle_replay.py RUN --out RUN/idle-replay.json --dose-scales` with DOSE_SCALES): each replica's
+exact branch-resolved law with the explicit doses and the service-scheduled idle charged under the execution
+Target, at the Target's relaxation (exact_laws.idle_padded) and with the dose delays' relaxation multiplied by each
+factor of DOSE_SCALES (dose_scaled_exact_laws). A collection whose group carries comparisons_withheld (its PUBs
+did not all run under one calibration) is refused.
 
-A collection whose group carries comparisons_withheld (its PUBs did not all run under one calibration) is refused.
+Estimates. Each member's PUB packs every replica, so one shot measures all replicas together. A shot enters a
+replica's estimate when that replica's initialization herald reads all zeros, and the replay laws are conditioned
+the same way. A member's per-replica mean score and the covariance across replicas come from the shot-ordered
+registers by the delta method (Cov(m_r, m_q) = sum_s psi_rs psi_qs / S^2, psi the herald-conditioned influence), so
+common-mode readout or crosstalk within a shot enters the variance. BATCHES contiguous blocks of shots test for
+drift within the job: the mean ratio of each member's block dispersion to its shot variance, when above one,
+multiplies every covariance. A contract's replica vector is the signed sum of its two members, whose PUBs are
+independent; a pooled value is the replica mean with variance 1' C 1 / n^2.
+
+Model. M_r(d; k) is replica r's exact contract value at dose d with the dose relaxation charged k times over (k = 1
+is the Target's T1 and T2). The fits interpolate the replica mean, and each replica, in k by PCHIP over DOSE_SCALES
+and 1.
 
 Decisions (docs/design/n21-orbit-window-dose-envelope.md):
-- D1: the pooled plain contrast at the largest dose lies below the dose-0 contrast at one-sided 95 percent.
-- D2: at every nonzero dose d, the pooled plain dose response, measured(d) - measured(0) against model(d) - model(0),
-  lies within the Bonferroni two-sided 95 percent bound over the nonzero doses (z = 2.638 at six). A
-  dose-independent level offset (readout, initialization, the model residual) cancels in the response.
-- D3: at the largest dose, each replica's excess echo gain, (echo - plain) measured minus the same in the model, is
-  tested across replicas by a chi-square of its z with one degree of freedom per replica at 5 percent, because a
-  static detuning moves each replica's plain arm with the sign of that replica's detuning and a replica mean
-  cancels it. A rejection reads as coherent detuning refocused by the echo only when the echo arm's own dose
-  response agrees with the model across replicas (chi-square at 5 percent) and D2 holds at that dose; an effective
-  T1 off the Target's moves the echo arm as well.
+- D1, idle response: the pooled plain contrast at the largest dose lies below the dose-0 contrast at one-sided 95
+  percent. A failure withholds evidence for the drop; it is no equivalence test.
+- D2, plain rate: kappa_P, the dose-relaxation multiple that fits the six pooled plain responses measured(d) -
+  measured(0) by generalized least squares with their covariance (the shared dose-0 arm included), with its 95
+  percent profile interval (delta chi2 3.841). A dose-independent offset cancels in every response. The minimum
+  chi2 on five degrees of freedom tests the one-rate shape; below p = 0.01 the dose response is one no single rate
+  describes, and the interval is not read. Otherwise an interval that excludes 1 reads as plain idle loss at
+  kappa_P times the Target's rate.
+- D3, echo refocusing: kappa_P and kappa_E fitted jointly to the six plain and the six echo responses (echo(d) -
+  plain(0)), with the 95 percent profile interval of delta = kappa_P - kappa_E and the joint chi2 on ten degrees of
+  freedom under the same shape rule. A lower bound above zero reads as idle loss the Hahn echo removes beyond the
+  Target model: quasi-static dephasing (a free-induction T2* below the Hahn-echo T2 the Target reports) or static
+  detuning, which this design does not separate. An upper bound below zero reads as an echo that costs more than it
+  refocuses. MIN_EFFECT is the smallest delta the envelope's replica floor is powered for.
+- Each replica's kappa_P,r and its interval are reported, not decided.
 
 Preflight. --preflight RECORD_DIR checks a fresh dry-run record against the approved envelope before it is
-submitted: a planned n21-orbit-rca window-dose record on an approved backend with the envelope's doses, shots,
-repetition delay (DESIGN_REP_DELAYS), ceiling, replica floor and count, twirling and dynamical decoupling off, the
-cross-group buffer, the QRNG seed references and a clean source tree at the checked-out commit. The calibration,
-layout and model values are the record's own; they are what the fresh plan adapts.
+submitted: the full design projection (EXPECTED_DESIGN), the planning policy (EXPECTED_POLICY), one dynamic job of
+one PUB per member, one routed candidate, an envelope backend, the replica floor and count, the shots, the
+repetition delay, the ceilings and the commit. The calibration, layout and model values are the record's own; they
+are what the fresh plan adapts.
 
 Usage: "$PYTHON" scripts/n21_dose_decisions.py RUN_DIR [--out FILE]
        "$PYTHON" scripts/n21_dose_decisions.py --preflight RECORD_DIR [--head COMMIT]
+       "$PYTHON" scripts/n21_dose_decisions.py --retry-check RUN_DIR
        "$PYTHON" scripts/n21_dose_decisions.py --self-test
 """
 
@@ -45,8 +63,20 @@ from typing import Any
 
 import numpy as np
 from scipy import stats
+from scipy.interpolate import PchipInterpolator
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 ONE_SIDED = float(stats.norm.ppf(0.95))
+PROFILE_95 = float(stats.chi2.ppf(0.95, 1))
+SHAPE_P = 0.01
+BATCHES = 16
+DOSE_SCALES = (0.25, 0.5, 0.75, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 3.5, 4.0, 5.0, 6.0)
+FIT_STEP = 0.01
+MIN_EFFECT = 0.3
+NAME = re.compile(r"n21_orbit_window_dose(?P<echo>_echo)?_d(?P<dose>\d+)_feedback_contrast")
+
 # The approved envelope a fresh dry-run record must carry (docs/design/n21-orbit-window-dose-envelope.md).
 DESIGN_DOSES = [0, 1752, 3500, 5252, 7000, 10500, 14000]
 DESIGN_SHOTS = 8192
@@ -59,56 +89,58 @@ DESIGN_SEED_SOURCES = {
     "--seed-transpiler": ["qrng:docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json#0"],
     "--seed-simulator": ["qrng:docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json#1"],
 }
-NAME = re.compile(r"n21_orbit_window_dose(?P<echo>_echo)?_d(?P<dose>\d+)_feedback_contrast")
+EXPECTED_DESIGN: dict[str, Any] = {
+    "alpha": 0.05,
+    "classical_latency_us": 20.0,
+    "cost_scenarios": [],
+    "family": "n21-orbit-rca",
+    "init_herald": True,
+    "job_overhead_seconds": 2.3,
+    "max_total_execution_seconds": DESIGN_CEILING_SECONDS,
+    "model_method": "sampled",
+    "model_shots": 32768,
+    "objective": "minimum_charge",
+    "optimize": True,
+    "optimizer_candidates": 1,
+    "patch_qubits": None,
+    "power": 0.8,
+    "precision": 0.09,
+    "replica_tiers": [24],
+    "replica_variance_bound": None,
+    "reserve_seconds": 0.0,
+    "shot_allocation": "uniform",
+    "shot_tiers": [DESIGN_SHOTS],
+    "simulation_alpha": 0.01,
+    "window_doses": DESIGN_DOSES,
+}
+EXPECTED_POLICY: dict[str, Any] = {
+    "max_readout_error": 0.08,
+    "max_cz_error": 0.03,
+    "max_sx_error": 0.01,
+    "min_t1_us": 20.0,
+    "min_t2_us": 20.0,
+    "max_pending": 200,
+    "seeds": 8,
+    "joint_candidates": 3,
+    "replica_floor": DESIGN_REPLICA_FLOOR,
+    "max_replicas": None,
+    "isolated_reference": False,
+    "cross_group_buffer": True,
+    "twirl": False,
+    "dd": None,
+    "min_remaining_seconds": 60.0,
+    "max_execution_seconds": 30,
+    "seed_transpiler": DESIGN_SEED_SOURCES["--seed-transpiler"][0],
+    "seed_simulator": DESIGN_SEED_SOURCES["--seed-simulator"][0],
+    "operator_excluded_qubits": {},
+}
+
+Estimate = tuple[np.ndarray, np.ndarray]
 
 
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise ValueError(message)
-
-
-def replica_values(
-    contracts: Sequence[Mapping[str, Any]], laws: Mapping[str, Sequence[Sequence[float]]], shots: int
-) -> dict[str, list[tuple[float, float]]]:
-    """{contract name: [(value, sigma) per replica]} from each member's measured law per replica at shots."""
-    out: dict[str, list[tuple[float, float]]] = {}
-    for contract in contracts:
-        count = {len(laws[term["member"]]) for term in contract["terms"]}
-        require(len(count) == 1, f"{contract['name']}: its members hold different replica counts {sorted(count)}")
-        rows = []
-        for r in range(count.pop()):
-            value = 0.0
-            variance = 0.0
-            for term in contract["terms"]:
-                law = np.asarray(laws[term["member"]][r], dtype=float)
-                law = law / law.sum()
-                w = np.asarray(term["values"], dtype=float)
-                mean = float(w @ law)
-                value += term["sign"] * mean
-                variance += (float((w * w) @ law) - mean * mean) / shots
-            rows.append((value, math.sqrt(variance)))
-        out[contract["name"]] = rows
-    return out
-
-
-def pooled(rows: Sequence[tuple[float, float]]) -> tuple[float, float]:
-    """The replica mean, as the collector's contract value is, and its shot-noise sigma."""
-    n = len(rows)
-    return sum(v for v, _ in rows) / n, math.sqrt(sum(s * s for _, s in rows)) / n
-
-
-def measured(
-    contracts: Sequence[Mapping[str, Any]], laws: Mapping[str, Sequence[Sequence[float]]], shots: int
-) -> dict[str, tuple[float, float]]:
-    """{contract name: (replica-mean value, sigma)} from each member's measured laws at shots."""
-    return {name: pooled(rows) for name, rows in replica_values(contracts, laws, shots).items()}
-
-
-def exact_replica_values(
-    contracts: Sequence[Mapping[str, Any]], laws: Mapping[str, Sequence[Sequence[float]]]
-) -> dict[str, list[float]]:
-    """{contract name: [model value per replica]} from the idle-padded exact laws of each replica."""
-    return {name: [v for v, _ in rows] for name, rows in replica_values(contracts, laws, 1).items()}
 
 
 def arms(names: Sequence[str]) -> tuple[list[int], dict[int, str], dict[int, str]]:
@@ -126,104 +158,240 @@ def arms(names: Sequence[str]) -> tuple[list[int], dict[int, str], dict[int, str
     return doses, plain, echo
 
 
-Row = tuple[float, float, float]
+def member_moments(keep: np.ndarray, scores: np.ndarray, batches: int = BATCHES) -> dict[str, Any]:
+    """Herald-conditioned replica means, their delta-method covariance and the block dispersion ratio.
+
+    keep and scores are (shots, replicas): whether the shot's herald admits it for that replica, and its score.
+    """
+    shots, _ = keep.shape
+    kept = keep.sum(axis=0)
+    require(bool((kept > 0).all()), "a replica keeps no shot")
+    weighted = scores * keep
+    means = weighted.sum(axis=0) / kept
+    psi = keep * (scores - means) / (kept / shots)
+    covariance = psi.T @ psi / shots**2
+    pooled_variance = float(covariance.sum()) / means.size**2
+    # A block in which some replica keeps no shot carries no estimate of that replica and is skipped.
+    blocks = []
+    count = min(batches, shots)
+    for index in np.array_split(np.arange(shots), count):
+        block_kept = keep[index].sum(axis=0)
+        if bool((block_kept > 0).all()):
+            blocks.append(float((weighted[index].sum(axis=0) / block_kept).mean()))
+    used = len(blocks)
+    dispersion = float(np.var(blocks, ddof=1)) / (count * pooled_variance) if used >= 2 and pooled_variance > 0 else 1.0
+    return {"means": means, "covariance": covariance, "dispersion": dispersion, "kept": kept, "blocks": used}
 
 
-def pool(rows: Sequence[Row]) -> Row:
-    """(replica-mean measured value, its shot-noise sigma, replica-mean model value)."""
-    value, sigma = pooled([(v, s) for v, s, _ in rows])
-    return value, sigma, sum(m for _, _, m in rows) / len(rows)
+def conditioned_value(law: Sequence[float], values: Sequence[float], phase_bits: int) -> float:
+    """The score's expectation under law given an all-zero herald (outcome index below 2**phase_bits)."""
+    law_array = np.asarray(law, dtype=float)
+    require(law_array.size == len(values), "a law and its score vector differ in length")
+    head = law_array[: 1 << phase_bits]
+    require(head.sum() > 0, "the law gives the all-zero herald no weight")
+    return float(np.asarray(values, dtype=float)[: 1 << phase_bits] @ head / head.sum())
 
 
-def chi_square(z: Sequence[float]) -> dict[str, float]:
-    statistic = sum(x * x for x in z)
-    return {"statistic": statistic, "df": float(len(z)), "p": float(stats.chi2.sf(statistic, len(z)))}
+def measured_from_raw(run_dir: Path, record: Mapping[str, Any], collected_laws: Mapping[str, Any]) -> dict[str, Any]:
+    """{member: member_moments} from the shot-ordered registers, after binding them to the collected marginals."""
+    import law_encoding
+    import n21_exact_planning
+
+    contracts = [c for c in record["observable_contracts"] if NAME.fullmatch(c["name"])]
+    scores = {term["member"]: law_encoding.dense(term["values"]) for c in contracts for term in c["terms"]}
+    components = {}
+    for pub in record["execution_pubs"]:
+        require(len(pub["components"]) == 1, f"{pub['name']}: a dose PUB holds one member")
+        components[pub["components"][0]["member"]] = (pub["name"], pub["components"][0]["registers_by_replica"])
+    registers = n21_exact_planning.retained_registers(run_dir, {pub for pub, _ in components.values()})
+    out: dict[str, Any] = {}
+    for member, values in scores.items():
+        pub_name, replicas = components[member]
+        require(pub_name in registers, f"{pub_name}: no retained shot-ordered registers")
+        keep_columns, score_columns = [], []
+        for r, names in enumerate(replicas):
+            outcomes = n21_exact_planning.replica_outcomes(registers[pub_name], names)
+            frequency = np.bincount(outcomes, minlength=len(values)) / outcomes.size
+            marginal = np.asarray(law_encoding.dense(collected_laws[member][r]), dtype=float)
+            require(
+                np.allclose(frequency, marginal / marginal.sum(), rtol=0.0, atol=1e-12),
+                f"{member} replica {r}: register frequencies differ from the collected marginal",
+            )
+            phase_bits = len(registers[pub_name][names[0]][0])
+            keep_columns.append(outcomes >> phase_bits == 0)
+            score_columns.append(np.asarray(values, dtype=float)[outcomes])
+        moments = member_moments(np.stack(keep_columns, axis=1).astype(float), np.stack(score_columns, axis=1))
+        moments["phase_bits"] = phase_bits
+        out[member] = moments
+    return out
 
 
-def decide(replicas: Mapping[str, Sequence[Row]]) -> dict[str, Any]:
-    """D1-D3 from each contract's per-replica (measured, sigma, model) rows."""
-    doses, plain, echo = arms(list(replicas))
-    count = {len(rows) for rows in replicas.values()}
-    require(len(count) == 1, f"contracts hold different replica counts {sorted(count)}")
-    pooled_rows = {name: pool(rows) for name, rows in replicas.items()}
+def contract_estimates(
+    contracts: Sequence[Mapping[str, Any]], moments: Mapping[str, Mapping[str, Any]], inflation: float
+) -> dict[str, Estimate]:
+    """{contract: (replica vector, covariance)}: the signed sum of its members, whose PUBs are independent."""
+    out: dict[str, Estimate] = {}
+    for contract in contracts:
+        members = [term["member"] for term in contract["terms"]]
+        require(len(set(members)) == len(members), f"{contract['name']}: a member enters twice")
+        vector = sum(term["sign"] * moments[term["member"]]["means"] for term in contract["terms"])
+        covariance = sum(moments[term["member"]]["covariance"] for term in contract["terms"])
+        out[contract["name"]] = (np.asarray(vector, dtype=float), inflation * np.asarray(covariance, dtype=float))
+    return out
+
+
+def contract_models(
+    contracts: Sequence[Mapping[str, Any]], replay: Mapping[str, Any], phase_bits: Mapping[str, int]
+) -> dict[str, dict[float, np.ndarray]]:
+    """{contract: {k: replica vector of herald-conditioned exact values}}; an undosed contract holds k = 1 only."""
+    import law_encoding
+
+    base = replay["exact_laws"]["idle_padded"]
+    scaled = replay.get("dose_scaled_exact_laws", {})
+    out: dict[str, dict[float, np.ndarray]] = {}
+    for contract in contracts:
+        dose = int(NAME.fullmatch(contract["name"])["dose"])  # type: ignore[index]
+        sources = {1.0: base} | ({float(k): scaled[k] for k in scaled} if dose else {})
+        if dose:
+            require({float(k) for k in scaled} >= set(DOSE_SCALES), f"idle-replay.json lacks the scales {DOSE_SCALES}")
+        family: dict[float, np.ndarray] = {}
+        for k, laws in sources.items():
+            terms = []
+            for term in contract["terms"]:
+                values = law_encoding.dense(term["values"])
+                bits = phase_bits[term["member"]]
+                terms.append(
+                    term["sign"] * np.asarray([conditioned_value(law, values, bits) for law in laws[term["member"]]])
+                )
+            family[k] = np.sum(terms, axis=0)
+        out[contract["name"]] = family
+    return out
+
+
+def interpolated(family: Mapping[float, np.ndarray], grid: np.ndarray) -> np.ndarray:
+    """(len(grid), replicas): each replica's model over grid, PCHIP in k; an undosed model is constant in k."""
+    ks = sorted(family)
+    if len(ks) == 1:
+        return np.repeat(family[ks[0]][None, :], grid.size, axis=0)
+    table = np.stack([family[k] for k in ks])
+    return np.asarray(PchipInterpolator(np.asarray(ks), table, axis=0)(grid))
+
+
+def profile_interval(grid: np.ndarray, chi2: np.ndarray) -> dict[str, Any]:
+    best = int(np.argmin(chi2))
+    inside = np.flatnonzero(chi2 <= chi2[best] + PROFILE_95)
+    return {
+        "estimate": float(grid[best]),
+        "lower": float(grid[inside[0]]),
+        "upper": float(grid[inside[-1]]),
+        "contiguous": bool(inside[-1] - inside[0] + 1 == inside.size),
+        "at_grid_edge": bool(inside[0] == 0 or inside[-1] == grid.size - 1),
+        "chi2_min": float(chi2[best]),
+    }
+
+
+def response_covariance(variances: Sequence[float], shared: float) -> np.ndarray:
+    """Covariance of responses y_i = arm_i - plain(0): independent arms plus the shared dose-0 variance."""
+    return np.diag(np.asarray(variances, dtype=float)) + shared
+
+
+def decide(
+    measured: Mapping[str, Estimate], models: Mapping[str, Mapping[float, np.ndarray]], dispersion: float = 1.0
+) -> dict[str, Any]:
+    """D1-D3 from each contract's (replica vector, covariance) and its exact model family."""
+    doses, plain, echo = arms(list(measured))
     nonzero = doses[1:]
-    bound = float(stats.norm.ppf(1 - 0.025 / len(nonzero)))
-    top = doses[-1]
-    out: dict[str, Any] = {"doses_dt": doses, "replicas": count.pop(), "bonferroni_z": bound, "arms": {}}
-    for dose in doses:
-        for kind, name in (("plain", plain[dose]), ("echo", echo.get(dose))):
-            if name is None:
-                continue
-            value, sigma, model = pooled_rows[name]
-            # The level offset is descriptive: a dose-independent offset (readout, initialization, the residual of
-            # the earlier orbit run) leaves every dose response unchanged.
-            out["arms"][name] = {
-                "dose_dt": dose,
-                "kind": kind,
-                "measured": value,
-                "sigma": sigma,
-                "model": model,
-                "level_z": (value - model) / sigma,
+    n = {vector.size for vector, _ in measured.values()}
+    require(len(n) == 1, f"contracts hold different replica counts {sorted(n)}")
+    replicas = n.pop()
+    grid = np.round(np.arange(min(DOSE_SCALES), max(DOSE_SCALES) + FIT_STEP / 2, FIT_STEP), 10)
+    mean = {name: float(vector.mean()) for name, (vector, _) in measured.items()}
+    var = {name: float(cov.sum()) / replicas**2 for name, (_, cov) in measured.items()}
+    model_mean = {name: interpolated(family, grid).mean(axis=1) for name, family in models.items()}
+    at_one = int(np.argmin(np.abs(grid - 1.0)))
+    out: dict[str, Any] = {
+        "doses_dt": doses,
+        "replicas": replicas,
+        "dispersion_inflation": dispersion,
+        "arms": {
+            name: {
+                "measured": mean[name],
+                "sigma": math.sqrt(var[name]),
+                "model_at_target": float(model_mean[name][at_one]),
             }
-    zero = pooled_rows[plain[0]]
-    top_plain = pooled_rows[plain[top]]
-    drop = top_plain[0] - zero[0]
-    drop_sigma = math.hypot(top_plain[1], zero[1])
+            for name in measured
+        },
+    }
+    zero = plain[0]
+    drop = mean[plain[doses[-1]]] - mean[zero]
+    drop_sigma = math.sqrt(var[plain[doses[-1]]] + var[zero])
     out["d1_idle_response"] = {
         "difference": drop,
+        "sigma": drop_sigma,
         "upper": drop + ONE_SIDED * drop_sigma,
         "holds": drop + ONE_SIDED * drop_sigma < 0,
     }
-    responses = {}
-    for dose in nonzero:
-        v, s, m = pooled_rows[plain[dose]]
-        sigma = math.hypot(s, zero[1])
-        responses[str(dose)] = {
-            "measured": v - zero[0],
-            "model": m - zero[2],
-            "sigma": sigma,
-            "z": ((v - zero[0]) - (m - zero[2])) / sigma,
-        }
-    out["d2_dose_response"] = {
-        "responses": responses,
-        "holds": all(abs(r["z"]) <= bound for r in responses.values()),
-        "holds_at_largest_dose": abs(responses[str(top)]["z"]) <= bound,
-    }
-    # D3 per replica: a static detuning shifts each replica's plain arm by a first-order term whose sign follows
-    # that replica's detuning, so a replica mean cancels it; the echo refocuses it. The excess echo gain is tested
-    # across replicas by a chi-square of its per-replica z, and the echo arm's own dose response separates a
-    # refocused detuning (echo agrees with the model) from an effective T1 that departs (echo departs as well).
-    excess_z, echo_z, rows_out = [], [], []
-    for (ep, es, em), (pp, ps, pm), (zp, zs, zm) in zip(
-        replicas[echo[top]], replicas[plain[top]], replicas[plain[0]], strict=True
-    ):
-        excess = (ep - pp) - (em - pm)
-        excess_sigma = math.hypot(es, ps)
-        echo_sigma = math.hypot(es, zs)
-        excess_z.append(excess / excess_sigma)
-        echo_z.append(((ep - zp) - (em - zm)) / echo_sigma)
-        rows_out.append({"excess": excess, "sigma": excess_sigma, "z": excess_z[-1], "echo_response_z": echo_z[-1]})
-    e_value, e_sigma, e_model = pooled_rows[echo[top]]
-    excess_pooled = (e_value - top_plain[0]) - (e_model - top_plain[2])
-    excess_test = chi_square(excess_z)
-    echo_test = chi_square(echo_z)
-    if excess_test["p"] >= 0.05:
-        verdict = "consistent with the model's echo gain"
-    elif echo_test["p"] < 0.05:
-        verdict = "inconclusive: the echo arm departs from the model, as an effective T1 off the Target's would"
-    elif not out["d2_dose_response"]["holds_at_largest_dose"]:
-        verdict = "inconclusive: the pooled plain dose response departs from the model at the largest dose"
+    y_plain = np.asarray([mean[plain[d]] - mean[zero] for d in nonzero])
+    r_plain = np.stack([model_mean[plain[d]] - model_mean[zero] for d in nonzero], axis=1)
+    c_plain = response_covariance([var[plain[d]] for d in nonzero], var[zero])
+    w_plain = np.linalg.inv(c_plain)
+    residual = y_plain[None, :] - r_plain
+    chi2_plain = np.einsum("ki,ij,kj->k", residual, w_plain, residual)
+    fit = profile_interval(grid, chi2_plain)
+    shape_p = float(stats.chi2.sf(fit["chi2_min"], len(nonzero) - 1))
+    if shape_p < SHAPE_P:
+        verdict = "no single dose-relaxation rate describes the plain dose response"
+    elif fit["lower"] > 1.0 or fit["upper"] < 1.0:
+        verdict = "plain idle loss at kappa_P times the Target's rate, the interval excluding 1"
     else:
-        verdict = "coherent detuning refocused by the echo beyond the model"
-    out["d3_coherent_detuning"] = {
-        "dose_dt": top,
-        "per_replica": rows_out,
-        "excess_chi_square": excess_test,
-        "echo_response_chi_square": echo_test,
-        "pooled_excess": excess_pooled,
-        "pooled_excess_sigma": math.hypot(e_sigma, top_plain[1]),
+        verdict = "plain idle loss consistent with the Target's rate"
+    out["d2_plain_rate"] = fit | {"shape_p": shape_p, "verdict": verdict}
+
+    y_echo = np.asarray([mean[echo[d]] - mean[zero] for d in nonzero])
+    r_echo = np.stack([model_mean[echo[d]] - model_mean[zero] for d in nonzero], axis=1)
+    c_joint = response_covariance([var[plain[d]] for d in nonzero] + [var[echo[d]] for d in nonzero], var[zero])
+    w = np.linalg.inv(c_joint)
+    k = len(nonzero)
+    a = y_plain[None, :] - r_plain
+    b = y_echo[None, :] - r_echo
+    joint = (
+        np.einsum("ki,ij,kj->k", a, w[:k, :k], a)[:, None]
+        + 2 * a @ w[:k, k:] @ b.T
+        + np.einsum("ki,ij,kj->k", b, w[k:, k:], b)[None, :]
+    )
+    offsets = np.arange(-(grid.size - 1), grid.size)
+    profile = np.asarray([np.diagonal(joint, offset=-o).min() for o in offsets])
+    delta = offsets * FIT_STEP
+    difference = profile_interval(delta, profile)
+    i, j = np.unravel_index(int(np.argmin(joint)), joint.shape)
+    joint_p = float(stats.chi2.sf(float(joint[i, j]), 2 * k - 2))
+    if joint_p < SHAPE_P:
+        verdict = "no pair of dose-relaxation rates describes the plain and echo dose responses"
+    elif difference["lower"] > 0:
+        verdict = "the Hahn echo removes idle loss beyond the Target model: quasi-static dephasing or static detuning"
+    elif difference["upper"] < 0:
+        verdict = "the echo costs more than it refocuses"
+    else:
+        verdict = "unresolved: the interval of kappa_P - kappa_E contains 0"
+    out["d3_echo_refocusing"] = {
+        "kappa_p": float(grid[i]),
+        "kappa_e": float(grid[j]),
+        "delta": difference,
+        "joint_shape_p": joint_p,
+        "minimum_effect": MIN_EFFECT,
         "verdict": verdict,
     }
+
+    per_replica = []
+    zero_models = interpolated(models[zero], grid)
+    plain_models = {d: interpolated(models[plain[d]], grid) for d in nonzero}
+    for r in range(replicas):
+        y = np.asarray([measured[plain[d]][0][r] - measured[zero][0][r] for d in nonzero])
+        model = np.stack([plain_models[d][:, r] - zero_models[:, r] for d in nonzero], axis=1)
+        c = response_covariance([measured[plain[d]][1][r, r] for d in nonzero], measured[zero][1][r, r])
+        res = y[None, :] - model
+        per_replica.append(profile_interval(grid, np.einsum("ki,ij,kj->k", res, np.linalg.inv(c), res)))
+    out["kappa_p_per_replica"] = per_replica
     return out
 
 
@@ -237,23 +405,27 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     # (live_run._comparisons_withheld); a dose response read across such PUBs would include the calibration change.
     withheld = groups[0].get("comparisons_withheld")
     require(withheld is None, f"{run_dir}: the collector withheld the sweep's comparisons: {withheld}")
-    laws = groups[0]["measured"]
     contracts = [c for c in record["observable_contracts"] if NAME.fullmatch(c["name"])]
-    shots = int(record["shots"])
-    per_replica = replica_values(contracts, laws, shots)
-    exact = exact_replica_values(contracts, replay["exact_laws"]["idle_padded"])
-    model = replay["contracts"]["idle_padded_exact"]
-    rows: dict[str, list[Row]] = {}
-    for name, measured_rows in per_replica.items():
-        require(len(exact[name]) == len(measured_rows), f"{name}: the replay holds a different replica count")
-        require(
-            abs(sum(exact[name]) / len(exact[name]) - model[name]) < 1e-9,
-            f"{name}: the replay's replica laws do not average to its idle-padded exact contract",
-        )
-        rows[name] = [(v, s, m) for (v, s), m in zip(measured_rows, exact[name], strict=True)]
-    out = decide(rows)
+    moments = measured_from_raw(run_dir, record, groups[0]["measured"])
+    ratios = [m["dispersion"] for m in moments.values()]
+    df = sum(m["blocks"] - 1 for m in moments.values())
+    statistic = sum((m["blocks"] - 1) * m["dispersion"] for m in moments.values())
+    inflation = max(1.0, sum(ratios) / len(ratios))
+    measured = contract_estimates(contracts, moments, inflation)
+    models = contract_models(contracts, replay, {member: m["phase_bits"] for member, m in moments.items()})
+    out = decide(measured, models, inflation)
+    out["drift"] = {
+        "batches": BATCHES,
+        "mean_dispersion_ratio": sum(ratios) / len(ratios),
+        "chi2": statistic,
+        "df": df,
+        "p": float(stats.chi2.sf(statistic, df)),
+    }
+    out["herald_kept_fraction"] = {
+        member: (m["kept"] / int(record["shots"])).round(6).tolist() for member, m in moments.items()
+    }
     out["run"] = run_dir.name
-    out["model_source"] = "idle-replay.json exact_laws.idle_padded, per replica"
+    out["model_source"] = "idle-replay.json exact_laws.idle_padded and dose_scaled_exact_laws, herald-conditioned"
     return out
 
 
@@ -263,17 +435,13 @@ def preflight(record_dir: Path, head: str | None = None) -> dict[str, Any]:
     policy = record["policy"]
     design = policy["design"]
     require(record["state"] == "planned", f"{record_dir}: state {record['state']}, not planned")
-    require(design.get("family") == "n21-orbit-rca", f"family {design.get('family')}")
-    require(design.get("window_doses") == DESIGN_DOSES, f"doses {design.get('window_doses')}, not {DESIGN_DOSES}")
-    require(design.get("init_herald") is True, "the design runs without the initialization herald")
+    require(design == EXPECTED_DESIGN, f"design {design} differs from the envelope's {EXPECTED_DESIGN}")
+    planning = {key: policy.get(key) for key in EXPECTED_POLICY}
+    require(planning == EXPECTED_POLICY, f"planning policy {planning} differs from the envelope's {EXPECTED_POLICY}")
     require(int(record["shots"]) == DESIGN_SHOTS, f"shots {record['shots']}, not {DESIGN_SHOTS}")
     require(policy.get("rep_delay_seconds") in DESIGN_REP_DELAYS, f"repetition delay {policy.get('rep_delay_seconds')}")
-    require(
-        float(design.get("max_total_execution_seconds", math.inf)) <= DESIGN_CEILING_SECONDS
-        and float(policy.get("max_execution_seconds", math.inf)) <= DESIGN_CEILING_SECONDS,
-        "a ceiling exceeds the design's 30 s",
-    )
     optimization = record["optimization"]
+    require(optimization.get("searched_routed_sets") == 1, "the plan searched more than one routed candidate set")
     chosen = [c for c in optimization["candidates"] if c["name"] == optimization["selected"]]
     require(len(chosen) == 1 and chosen[0]["feasible"], "the record selects no feasible candidate")
     charge = float(chosen[0]["estimated_charge_seconds"])
@@ -282,12 +450,17 @@ def preflight(record_dir: Path, head: str | None = None) -> dict[str, Any]:
     require(len(groups) == 1, f"{len(groups)} groups")
     replicas = len(groups[0]["replicas"])
     require(replicas >= DESIGN_MIN_REPLICAS, f"{replicas} replicas, below the design's {DESIGN_MIN_REPLICAS}")
+    require(groups[0]["backend"] in DESIGN_BACKENDS, f"backend {groups[0]['backend']} lies outside the envelope")
+    members = 2 * (2 * len(DESIGN_DOSES) - 1)
+    pubs = record.get("execution_pubs") or []
+    require(
+        len(pubs) == members and all(len(pub["components"]) == 1 for pub in pubs),
+        f"{len(pubs)} PUBs, not one per each of the {members} members",
+    )
+    jobs = [(job.get("kind"), job.get("pubs")) for job in record.get("budget_plan", {}).get("jobs", [])]
+    require(jobs == [("dynamic", members)], f"jobs {jobs}, not one dynamic job of {members} PUBs")
     sources = {row["flag"]: row["sources"] for row in record.get("seed_source") or []}
     require(sources == DESIGN_SEED_SOURCES, f"seed sources {sources}")
-    require(groups[0]["backend"] in DESIGN_BACKENDS, f"backend {groups[0]['backend']} lies outside the envelope")
-    require(policy.get("replica_floor") == DESIGN_REPLICA_FLOOR, f"replica floor {policy.get('replica_floor')}")
-    require(policy.get("twirl") is False and not policy.get("dd"), "twirling or dynamical decoupling is on")
-    require(policy.get("cross_group_buffer") is True, "the plan runs without the cross-group buffer")
     commit = record.get("code_commit") or {}
     require(commit.get("sources_modified") is False, "the plan was made from a modified source tree")
     if head is not None:
@@ -302,37 +475,79 @@ def preflight(record_dir: Path, head: str | None = None) -> dict[str, Any]:
     }
 
 
+def retry_check(run_dir: Path) -> dict[str, Any]:
+    """The facts that admit the envelope's single 50 us retry after the 20 us run in run_dir.
+
+    The run must be a submitted window-dose sweep at a 20 us repetition delay whose one job ended in error 1305 with
+    no PUB timing (no shot executed), and the retry must be unused (retry-consumed.json absent).
+    """
+    record = json.loads((run_dir / "record.json").read_text(encoding="utf-8"))
+    collected = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
+    require(record["policy"]["design"].get("window_doses") == DESIGN_DOSES, f"{run_dir} is not the dose sweep")
+    require(record["policy"].get("rep_delay_seconds") == DESIGN_REP_DELAYS[0], f"{run_dir} did not run at 20 us")
+    jobs = collected[0]["jobs"]
+    require(len(jobs) == 1, f"{run_dir} holds {len(jobs)} jobs")
+    job_id, job = next(iter(jobs.items()))
+    require(job["usage"]["job_status"] == "ERROR", f"{job_id} ended {job['usage']['job_status']}")
+    require("Error code 1305" in str(job.get("result_unavailable", "")), f"{job_id} did not end in error 1305")
+    require(not job.get("pub_timing"), f"{job_id} executed PUBs before it failed")
+    require(not (run_dir / "retry-consumed.json").exists(), f"the retry after {run_dir} is spent")
+    return {"run": run_dir.name, "job_id": job_id, "charged_seconds": job["usage"].get("qpu_charge_time_seconds")}
+
+
+def synthetic_sweep(
+    kappa_p: float, kappa_e: float, replicas: int = 6, sigma: float = 0.006, wobble: float = 0.0
+) -> tuple[dict[str, Estimate], dict[str, dict[float, np.ndarray]]]:
+    """Measured estimates at the given true rates and their exponential model family, for the self-test."""
+    amplitude = np.linspace(0.17, 0.23, replicas)
+    floor = np.linspace(-0.01, 0.01, replicas)
+    scales = (1.0, *DOSE_SCALES)
+
+    def curve(d: int, k: float, tau: float) -> np.ndarray:
+        return np.asarray(amplitude * math.exp(-k * d / tau) + floor)
+
+    measured: dict[str, Estimate] = {}
+    models: dict[str, dict[float, np.ndarray]] = {}
+    for d in DESIGN_DOSES:
+        for name, tau, k in (
+            (f"n21_orbit_window_dose_d{d}_feedback_contrast", 9000.0, kappa_p),
+            (f"n21_orbit_window_dose_echo_d{d}_feedback_contrast", 14000.0, kappa_e),
+        ):
+            if "echo" in name and not d:
+                continue
+            models[name] = {s: curve(d, s, tau) for s in scales} if d else {1.0: curve(0, 1.0, tau)}
+            shift = wobble * math.sin(d / 1500.0) if "echo" not in name else 0.0
+            measured[name] = (curve(d, k, tau) + shift, sigma**2 * np.eye(replicas))
+    return measured, models
+
+
 def self_test() -> str:
-    doses = (0, 3500, 7000, 14000)
-    model: dict[str, float] = {}
-    for d in doses:
-        model[f"n21_orbit_window_dose_d{d}_feedback_contrast"] = 0.22 - 0.0000168 * d
-        if d:
-            model[f"n21_orbit_window_dose_echo_d{d}_feedback_contrast"] = 0.22 - 0.0000112 * d
-    plain_top = "n21_orbit_window_dose_d14000_feedback_contrast"
-    echo_top = "n21_orbit_window_dose_echo_d14000_feedback_contrast"
-
-    def sweep(shift: Any) -> dict[str, list[Row]]:
-        return {name: [(m + shift(name, r), 0.008, m) for r in range(4)] for name, m in model.items()}
-
-    agree = decide(sweep(lambda name, r: 0.0))
-    require(agree["d1_idle_response"]["holds"] and agree["d2_dose_response"]["holds"], f"agreement: {agree}")
-    require(agree["d3_coherent_detuning"]["verdict"].startswith("consistent"), "an exact sweep reads as an excess")
-    offset = decide(sweep(lambda name, r: 0.03))
-    require(offset["d2_dose_response"]["holds"], "a dose-independent level offset fails the dose-response test")
-    # Detuning of alternating sign: each replica's plain arm moves, the replica mean does not, the echo agrees.
-    detuned = decide(sweep(lambda name, r: (0.06 if r % 2 else -0.06) if name == plain_top else 0.0))
-    coherent = detuned["d3_coherent_detuning"]["verdict"]
-    require(coherent.startswith("coherent"), f"replica-alternating detuning reads {coherent}")
-    # An effective T1 off the Target's lowers the plain and the echo arm at the top dose in every replica.
-    relaxed = decide(sweep(lambda name, r: -0.05 if name in (plain_top, echo_top) else 0.0))
-    require(not relaxed["d2_dose_response"]["holds"], "a plain dose response 4 sigma off the model passes D2")
-    require(not relaxed["d3_coherent_detuning"]["verdict"].startswith("coherent"), "a T1 departure reads coherent")
-    flat = {name: [(0.2, 0.008, m)] * 4 for name, m in model.items()}
-    require(not decide(flat)["d1_idle_response"]["holds"], "a flat sweep shows an idle response")
+    target = decide(*synthetic_sweep(1.0, 1.0))
+    require(target["d1_idle_response"]["holds"], f"a Target-rate sweep shows no drop: {target['d1_idle_response']}")
+    rate = target["d2_plain_rate"]
+    require(
+        rate["lower"] <= 1.0 <= rate["upper"] and rate["verdict"].startswith("plain idle loss consistent"), f"{rate}"
+    )
+    require(target["d3_echo_refocusing"]["verdict"].startswith("unresolved"), f"{target['d3_echo_refocusing']}")
+    refocused = decide(*synthetic_sweep(1.9, 1.2))
+    rate = refocused["d2_plain_rate"]
+    require(abs(rate["estimate"] - 1.9) < 0.02 and rate["lower"] > 1.0, f"kappa_P 1.9 reads {rate}")
+    d3 = refocused["d3_echo_refocusing"]
+    require(abs(d3["delta"]["estimate"] - 0.7) < 0.03 and d3["verdict"].startswith("the Hahn echo"), f"{d3}")
+    common = decide(*synthetic_sweep(1.5, 1.5))
+    require(common["d2_plain_rate"]["lower"] > 1.0, f"a common rate 1.5 reads {common['d2_plain_rate']}")
+    require(common["d3_echo_refocusing"]["verdict"].startswith("unresolved"), f"{common['d3_echo_refocusing']}")
+    wobbly = decide(*synthetic_sweep(1.0, 1.0, wobble=0.05))
+    require(wobbly["d2_plain_rate"]["verdict"].startswith("no single"), f"an oscillating plain arm reads {wobbly}")
+    measured, models = synthetic_sweep(1.0, 1.0)
+    flat = {
+        name: (np.full_like(vector, float(measured["n21_orbit_window_dose_d0_feedback_contrast"][0].mean())), cov)
+        for name, (vector, cov) in measured.items()
+    }
+    require(not decide(flat, models)["d1_idle_response"]["holds"], "a flat sweep shows an idle response")
     return (
-        "n21 dose decisions: agreement, level offset, replica-alternating detuning, T1 departure and flat-sweep "
-        "cases decide as stated"
+        "n21 dose decisions: Target-rate, refocused (1.9 against 1.2), common-rate, oscillating and flat sweeps "
+        "decide as stated"
     )
 
 
@@ -343,9 +558,13 @@ def main() -> int:
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--preflight", type=Path, metavar="RECORD_DIR")
     parser.add_argument("--head", help="with --preflight: the commit the plan must have been made at")
+    parser.add_argument("--retry-check", type=Path, metavar="RUN_DIR")
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
+        return 0
+    if args.retry_check is not None:
+        print(json.dumps(retry_check(args.retry_check), sort_keys=True))
         return 0
     if args.preflight is not None:
         print(json.dumps(preflight(args.preflight, args.head), sort_keys=True))
