@@ -60,6 +60,22 @@
             }
           ],
           "scope_sha256": "7274dd6abb836e6a4b3df17eeb068d577db1058e99773f43f32db16f8895941c"
+        },
+        {
+          "result": "Rerun at the pooled-checks head: derivation algebra of dimension 14, D_(x,y) x = 4 (eta(x) y - eta(x,y) x), sl_3 on the eigenspaces of e'_1 ^ -, null orbits of dimension 6, isotropic-plane rank locus inside L, pgl_2 on L / n0, congruence of M(z'); all 18 slice radical inclusions hold over Q in Singular 4.4.1.",
+          "observed_at": "2026-10-26T05:10:46+00:00",
+          "revision": "32477d66cf597d58d227406ddb336bc61a034363",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/result.json",
+              "sha256": "cb3c09b589b6fca858a8fb1842d7936f576fcc03ec69c9bbfea262698cb4f7d7"
+            },
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py",
+              "sha256": "9ed99727568601a945a5cfc00ba1e6a98a9f336518d87201fcae0fc98e7519da"
+            }
+          ],
+          "scope_sha256": "7274dd6abb836e6a4b3df17eeb068d577db1058e99773f43f32db16f8895941c"
         }
       ]
     },
@@ -100,6 +116,22 @@
             }
           ],
           "scope_sha256": "412cf379b5ce1e8cd76fb3d7bfbd8f3c0c8ce06c3cba18754d3654aabc366023"
+        },
+        {
+          "result": "Rerun at the pooled-checks head: every one of the 455, 3003 and 6435 principal Pfaffians of orders 12, 10, 8 reduces to 0 modulo standard bases of the ideals of Ehat and W8, V and B9, N_+ and N_-.",
+          "observed_at": "2026-10-26T05:10:46+00:00",
+          "revision": "32477d66cf597d58d227406ddb336bc61a034363",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/result.json",
+              "sha256": "cb3c09b589b6fca858a8fb1842d7936f576fcc03ec69c9bbfea262698cb4f7d7"
+            },
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py",
+              "sha256": "9ed99727568601a945a5cfc00ba1e6a98a9f336518d87201fcae0fc98e7519da"
+            }
+          ],
+          "scope_sha256": "412cf379b5ce1e8cd76fb3d7bfbd8f3c0c8ce06c3cba18754d3654aabc366023"
         }
       ]
     },
@@ -137,6 +169,22 @@
             {
               "ref": "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py",
               "sha256": "f22cedb28703947ef6887aaef179fd085114fdd20528dbaa067af142846ce7a3"
+            }
+          ],
+          "scope_sha256": "214845677baf8ba7828400b62b2c0cd21c72d3cdb06d2e68bab0cc344b3e7e2d"
+        },
+        {
+          "result": "Rerun at the pooled-checks head: saturation of the Ehat ideal by mu'(u'_1 v'_2 - u'_2 v'_1) equals the ideal; dimension 11, degree 24; Jacobian rank 4 at the P3a point (1, 3, 2, 5, 4); Q on P3a is d^2 - b^2 - m^2; self-test 9 of 9 controls in normal and -O modes.",
+          "observed_at": "2026-10-26T05:10:46+00:00",
+          "revision": "32477d66cf597d58d227406ddb336bc61a034363",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/result.json",
+              "sha256": "cb3c09b589b6fca858a8fb1842d7936f576fcc03ec69c9bbfea262698cb4f7d7"
+            },
+            {
+              "ref": "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py",
+              "sha256": "9ed99727568601a945a5cfc00ba1e6a98a9f336518d87201fcae0fc98e7519da"
             }
           ],
           "scope_sha256": "214845677baf8ba7828400b62b2c0cd21c72d3cdb06d2e68bab0cc344b3e7e2d"
