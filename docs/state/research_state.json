@@ -1946,6 +1946,27 @@
       "run": "results/quandela/runs/2026-10-24T190006Z-qpu_belenos-bdsc_drift_series-t7",
       "family": "BDSC drift series on qpu:belenos",
       "question": "slot t7 of the approved drift series, the frozen request of the stationarity case's first block and job (`b1-j1`, 24 iterations of 100000 samples) resubmitted unchanged every two hours by the scheduled workflow: does the superposition class's excess spread carry memory from run to run, or is it run-to-run jitter, under the mode-5 detector_absent veto?"
+    },
+    {
+      "id": "kingston-qet-ladder",
+      "provider": "ibm",
+      "run": "results/live/2026-10-25T203822.040562Z",
+      "family": "qet-ladder",
+      "question": "On 14 calibration-qualified ibm_kingston pairs, does a record-steered rotation lower Bob's local energy of the Hotta two-qubit model below the floor -<H_A> that binds every record-independent operation, and does the feed-forward branch execute the rotation the bit selects?"
+    },
+    {
+      "id": "kingston-qet-frame-diagnostic",
+      "provider": "ibm",
+      "run": "results/live/2026-10-25T225332.266272Z",
+      "family": "qet-ladder",
+      "question": "Is the ladder's lost parity a phase on B over the measure-to-branch idle, static or driven by Alice's readout, and does completing the CX first or an X echo on B move or refocus it?"
+    },
+    {
+      "id": "kingston-qet-compensated-ladder",
+      "provider": "ibm",
+      "run": "results/live/2026-10-25T233207.284563Z",
+      "family": "qet-ladder",
+      "question": "Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?"
     }
   ],
   "claims": [
@@ -10010,6 +10031,86 @@
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "kingston-qet-ladder-margin-and-feedforward",
+      "statement": "On ibm_kingston (calibration 2026-10-25T13:27:48-07:00; one job of 19 dynamic PUBs at 8192 shots over 14 disjoint pairs with both readout errors at most 1 percent) the record-steered rotation of the two-qubit QET ladder does not lower Bob's local energy below the floor -<H_A>: the mean channel floor margin over pairs is -0.160 +- 0.052 (one-sided 95 percent lower bound -0.252) against +0.057 from the calibration-noise model. Feed-forward executes the selected branch: the feedback arm's local energy 0.159 equals the record-binned fixed arms' 0.164 and q_eff has median -0.049 across pairs. The product-state mutation reads -0.307 +- 0.010 and the ground-minus-product margin drop +0.147 (lower bound +0.066). The shortfall tracks the prepared parity <Z_A Z_B> (correlation 0.961 across pairs), 0.874 pooled against 1.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, one job, 14 pairs placed under a 1 percent readout cap, t-intervals across pairs. Energies are expectations of an encoded spin Hamiltonian, not field stress-energy. The margin result concerns this operating point (14 simultaneous captures, 2.83 us measure-to-branch wait). Layout search and model sampling used the runner's reproduction seeds.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T203822.040562Z/collect.json",
+          "sha256": "046965df030f54cecdc818f0479c38c6a4c4ee9db76162395717f015e7df5731"
+        },
+        {
+          "path": "results/live/2026-10-25T203822.040562Z/record.json",
+          "sha256": "64011c5446d3b9cf2ae165c18be0fbec46b5e489bb107e20113024d3d40652a2"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-25T203822.040562Z/FINDINGS.md",
+        "docs/notes/topics/pais-claims-falsification.md"
+      ],
+      "acquisitions": [
+        "kingston-qet-ladder"
+      ]
+    },
+    {
+      "id": "kingston-qet-window-phase-static",
+      "statement": "On the same 14 ibm_kingston pairs (calibration 2026-10-25T15:17:22-07:00, 24 dynamic PUBs at 8192 shots) the ladder's parity loss is a phase on B over the measure-to-branch idle that the service scheduler places inside the preparation CX: the parity is equal with and without Alice's readout during the 722 dt wait (difference -0.001 +- 0.004), completing the CX first restores the parity to 0.965 +- 0.002 and moves the phase onto <X_A X_B> pair by pair (0.998 against 0.862 rad on [149, 150]), and the service schedules a branch-target qubit's pre-branch operations at the broadcast receive, so an X echo written before the branch played after the window and left the phase unchanged. A per-pair fit of delta Z_B / 2 + zeta Z_A Z_B / 2 plus dephasing to the deferred-frame observables gives delta from -54 to +11 kHz and zeta from 1.5 to 14 kHz.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The readout and frame decisions were preregistered; the Hamiltonian fit is descriptive and fits the two large-delta pairs at rms 0.10 against 0.013 to 0.030 elsewhere, which leaves a time-varying frequency possible there. The scheduler rule is read from this job's returned scheduler_timing and may change with the service.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T225332.266272Z/collect.json",
+          "sha256": "d02be2c062098be3f95c1962dbc1f1d609a2be8e04723c03e9b1e2f21c85f646"
+        },
+        {
+          "path": "results/live/2026-10-25T225332.266272Z/record.json",
+          "sha256": "0ce289ddf4569edcc96faa488feb677028aaa3a9776c864af1800acd37152364"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-25T225332.266272Z/FINDINGS.md"
+      ],
+      "acquisitions": [
+        "kingston-qet-frame-diagnostic"
+      ],
+      "related_claims": [
+        "kingston-qet-ladder-margin-and-feedforward",
+        "kingston-latency-recovery-window-cost"
+      ]
+    },
+    {
+      "id": "kingston-qet-compensated-information-excess",
+      "statement": "With Bob's record-independent rz(alpha) fixed per pair from that pair's own reference arms (grid -0.3 to +1.2 rad), the 14 ibm_kingston pairs show an information excess of +0.107 +- 0.006 (one-sided 95 percent lower bound +0.096) against the ideal E_B = 0.115: the record lowers Bob's local energy below every record-independent unitary on the same preparation. The channel floor margin stays negative at -0.073 +- 0.015 (lower bound -0.100), because the reference state's best uninformed local energy is 0.177 above the vacuum value. A 50 us repetition delay charged 12 s for 147,456 shots (81 us per shot against 276 us at 250 us) and left assignment, parity and coherence unchanged on 11 of 14 pairs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The excess is sound against record-independent unitaries only; a non-unitary record-independent channel is bounded by the channel floor margin, which is negative. The repetition-delay comparison spans two jobs 25 minutes apart, so drift and delay are not separated on the three pairs that moved. One calibration, one job.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-25T233207.284563Z/collect.json",
+          "sha256": "99e8d7102a750441d9cbbf0a80f31f7ae53d65d2d1a29c6b401e55c8b91ef4e4"
+        },
+        {
+          "path": "results/live/2026-10-25T233207.284563Z/record.json",
+          "sha256": "2e0b901264a64966f01dad5416a1a2f6e430f2956b1a207b3c8b1f09b9628116"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-25T233207.284563Z/FINDINGS.md"
+      ],
+      "acquisitions": [
+        "kingston-qet-compensated-ladder"
+      ],
+      "related_claims": [
+        "kingston-qet-window-phase-static"
+      ]
     }
   ]
 }
