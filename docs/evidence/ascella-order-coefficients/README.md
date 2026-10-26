@@ -140,6 +140,18 @@ freezes the heater and coupler fit's 28 held-out predictions, and
 [`scripts/ascella_fixed_mesh_confirmation.py`](../../../scripts/ascella_fixed_mesh_confirmation.py),
 scores them once by their correlation with the held-out X statistics
 ([design](../../design/ascella-signed-coherence-conformance.md#element-offsets-fitted-on-the-served-meshes)).
+[`new-mesh-offsets.json`](new-mesh-offsets.json), from
+[`scripts/ascella_new_mesh_offsets.py`](../../../scripts/ascella_new_mesh_offsets.py),
+freezes the heater and coupler offsets of plan
+[`ascella-new-seed-meshes-case`](../../state/plans/ascella-new-seed-meshes-case.json)
+before any new seed was drawn;
+[`new-seed-sizing.json`](new-seed-sizing.json), from
+[`scripts/ascella_new_seed_sizing.py`](../../../scripts/ascella_new_seed_sizing.py),
+records the case's power and null-bound probabilities; and
+[`new-seed-score.json`](new-seed-score.json), from
+[`scripts/ascella_new_mesh_score.py`](../../../scripts/ascella_new_mesh_score.py),
+scores the offsets once on the 147 unseen meshes of jobs 04 and 05
+([design](../../design/ascella-signed-coherence-conformance.md#new-seed-meshes-case-job-04-and-job-05)).
 [`heater-coupling.json`](heater-coupling.json), from
 [`scripts/ascella_heater_coupling.py`](../../../scripts/ascella_heater_coupling.py),
 scores the heater-coupling families of plan

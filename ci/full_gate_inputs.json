@@ -603,6 +603,28 @@
       "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
       "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json"
     ],
+    "core-ascella-signed-coherence-new-mesh-offsets-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/**",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json",
+      "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json"
+    ],
+    "core-ascella-signed-coherence-new-seed-sizing-replay": [
+      "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+      "docs/evidence/ascella-order-coefficients/heater-coupling.json",
+      "docs/evidence/ascella-order-coefficients/new-seed-sizing.json"
+    ],
+    "core-ascella-signed-coherence-new-seed-score-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/**",
+      "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04/**",
+      "results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88/**",
+      "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json",
+      "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+      "docs/evidence/ascella-order-coefficients/new-seed-score.json"
+    ],
     "core-primorial-null-residuals-replay": [
       "docs/evidence/calibration/**",
       "docs/evidence/primorial_cover/**",

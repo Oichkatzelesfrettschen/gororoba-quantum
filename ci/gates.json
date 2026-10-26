@@ -4275,6 +4275,30 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_new_mesh_offsets.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/new-mesh-offsets.json --check",
+   "name": "core-ascella-signed-coherence-new-mesh-offsets-replay",
+   "seconds": 30.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_new_seed_sizing.py docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json docs/evidence/ascella-order-coefficients/heater-coupling.json docs/evidence/ascella-order-coefficients/new-seed-sizing.json --check",
+   "name": "core-ascella-signed-coherence-new-seed-sizing-replay",
+   "seconds": 2.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_new_mesh_score.py docs/evidence/ascella-order-coefficients/new-mesh-offsets.json docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 -- results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04 results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88 docs/evidence/ascella-order-coefficients/new-seed-score.json --check",
+   "name": "core-ascella-signed-coherence-new-seed-score-replay",
+   "seconds": 20.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
