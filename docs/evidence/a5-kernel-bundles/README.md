@@ -1,15 +1,17 @@
-# A_5 kernel bundles: exact transport, symmetry, and Pfaffian frames
+# A_5 kernel bundles: exact transport, symmetry, stabilizers, and Pfaffian frames
 
 This evidence directory executes the
 [kernel-bundle program](../../design/a5-kernel-bundles-program.md). The current result corrects the complex transport
 used to represent the real annihilator kernel, fixes the action of the canonical complex structure, computes the
 constant kernel-pencil symmetry algebra and a visible twelve-component subgroup, and gives an exact finite family of
-rational kernel frames covering all seven pieces of nullity at least twelve. An exhaustive component census, a
-transition atlas, the remaining unit-section topology, and characteristic classes remain open.
+rational kernel frames covering all seven pieces of nullity at least twelve. It also identifies the connected compact
+stabilizer and its irreducible kernel representation on both nullity-sixteen components. An exhaustive component
+census, a reduced transition atlas, the remaining unit-section topology, and characteristic classes remain open.
 
 Every computation uses rational or Gaussian-rational arithmetic. [`result.json`](result.json) is the output of
 [`kernel_symmetry.py`](kernel_symmetry.py) `--out`. [`frames-result.json`](frames-result.json) is the output of
-[`kernel_frames.py`](kernel_frames.py) `--out`. The focused contracts and mutation controls run without random input.
+[`kernel_frames.py`](kernel_frames.py) `--out`. `stabilizer-result.json` is the output of
+`stabilizer_representation.py --out`. The focused contracts and mutation controls run without random input.
 
 ## Conventions
 
@@ -25,6 +27,77 @@ where `C_z` is the imaginary block of left multiplication by `z` in the complexi
 names `B9`, `V`, `VB`, `Vap`, `Vam`, `Np`, and `Nm` are the open-orbit representatives B9, V, V intersect B9,
 V^a_+, V^a_-, N_+, and N_- from the
 [regularity record](../a5-strata-regularity/README.md#conventions).
+
+## The connected compact stabilizer on `N_+` and `N_-` is `U(2)`
+
+Let `K_c` denote the connected compact symmetry acting effectively on a unit section: the fourteen compact `G_2`
+directions and the lifted base phase. The two directions that act trivially on the base and the radial scaling belong
+to the full constant-triple group but do not change this unit-section orbit calculation. At either exact representative
+`p` of `N_+` or `N_-`, the tangent map
+
+`Lie(K_c) -> T_p N_+-`, `X -> X p`,
+
+has rank 11 and a four-dimensional kernel. Every computed kernel direction fixes `p`; its domain lift preserves
+`ker_R L_p` and commutes there with `J=L_(e_16)`. Exact brackets give a one-dimensional center and a
+three-dimensional derived algebra. In the derived basis selected by the computation, the Killing matrix is
+`-32 I_3`, so the compact derived algebra is `su(2)`, not the split real form. Thus
+
+`Lie((K_c)_p) = su(2) + u(1)`.
+
+The repository source record identifies the `G_2` action on `V_2(R^7)` with point stabilizer `SU(2)`
+([source note](../../notes/papers/2411.18881.md)). The exact lattice check identifies the extra central circle. In the
+ordered basis of fourteen derivations followed by the base phase, its primitive generator has nonzero coefficients
+
+`compact_g2_7 + compact_g2_13 + 2 base_phase_lift`.
+
+The `G_2` part `X` has characteristic polynomial
+
+`lambda^8 (lambda^2+1)^8 (lambda^2+4)^4`
+
+on both the base and the domain, and satisfies `X(X^2+1)(X^2+4)=0`. Therefore its half-turn is the exact rational
+matrix
+
+`exp(pi X)=I+(8/3)X^2+(2/3)X^4`.
+
+The replay checks that this matrix is a nonidentity involution, fixes `p`, and centralizes the derived `SU(2)`. The
+phase coefficient two contributes `exp(2 pi J)=I` at the same parameter value. The half-turn is consequently the
+nontrivial center of the source-established `SU(2)`, and the connected compact stabilizer is
+
+`(K_c)_p = (SU(2) x U(1))/diagonal Z_2 = U(2)`.
+
+## The rank-eight complex fiber splits into five `U(2)` irreducibles
+
+Use the complex structure `J` on `ker_R L_p`, so the fiber has complex dimension eight. The program constructs a
+`J`-adapted exact kernel basis and expresses all four stabilizer generators as Gaussian-rational 8 by 8 matrices.
+Their matrix commutators equal the represented stabilizer brackets exactly.
+
+Normalize the central generator `Z` by the primitive circle above and write `V_(n,m)` for the irreducible module on
+which the `SU(2)` factor has highest weight `n` and `Z` acts by `i m`. The inverse-Killing Casimir has characteristic
+polynomial
+
+`lambda^2 (8 lambda-3)^6 / 262144`.
+
+The eigenvalues `0` and `3/8=n(n+2)/8` give two `SU(2)` singlets and three standard doublets. Joint central weights
+give the full decomposition, identically on `N_+` and `N_-`:
+
+`(ker_R L_p,J) = V_(0,-4) + 2 V_(1,-3) + V_(0,-2) + V_(1,-1)`.
+
+The parity `m=n mod 2` in every summand is the diagonal-`Z_2` descent condition. If `S` denotes the standard
+two-dimensional representation of `U(2)`, the same decomposition is
+
+`det^(-2) + 2(S tensor det^(-2)) + det^(-1) + (S tensor det^(-1))`.
+
+The repeated `V_(1,-3)` term is not inferred from dimensions alone. The exact commutant has dimension seven and
+supplies two commuting rank-two projectors inside its four-dimensional isotypic block. Together with the three
+central spectral projectors, the five projectors have ranks `1,2,2,1,2`; they are idempotent, invariant, pairwise
+annihilating, and sum to the identity. This proves the displayed irreducible direct sum.
+
+The falsifier was a stabilizer direction moving `p`, failing to preserve the kernel or commute with `J`, a bracket or
+Killing-form mismatch, a different decomposition on the two components, an isotypic block without exact invariant
+projectors, a failed diagonal half-turn, or a planted moving direction that survived. None occurred. The mutation
+replaces one stabilizer basis vector with a compact direction that moves `p`, and both component checks reject it.
+The result determines the connected compact homogeneous representation. The disconnected stabilizer inside the
+still-unclassified full component group and the characteristic map of the resulting homogeneous bundle remain open.
 
 ## Principal-Pfaffian frames cover `N_+` and `N_-`
 
@@ -296,11 +369,13 @@ algebra automorphisms. An exhaustive normalizer census remains open.
 
 The exact solve establishes the identity-component Lie algebra of constant linear kernel-pencil symmetries, its orbit
 dimensions, and twelve distinct visible components. The order-eight and order-ten Pfaffian charts establish
-closed-form frames on all seven pieces of nullity at least twelve. The computation has not proved that the visible
-components exhaust the group and has not classified point-dependent kernel transports, a second anticommuting complex
-structure, the K-orbit moduli, transition functions, or bundle invariants. The compact symmetry orbits are strictly
-smaller than the complex rank-stratum orbits in general, so the rank-stratum orbit labels do not make those kernel
-bundles homogeneous under the constant symmetry group.
+closed-form frames on all seven pieces of nullity at least twelve. On each `N_+` and `N_-` unit section it also
+identifies the connected compact point stabilizer as `U(2)` and decomposes the complex rank-eight fiber into five
+irreducible summands. The computation has not proved that the visible components exhaust the group and has not
+classified the disconnected `N_+-` stabilizers, point-dependent kernel transports, a second anticommuting complex
+structure, the non-homogeneous pieces' K-orbit moduli, transition functions, or bundle invariants. The compact
+symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit
+labels do not make those kernel bundles homogeneous under the constant symmetry group.
 
 ## Replay
 
@@ -318,4 +393,9 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/kernel_frames.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/kernel_frames.py \
     --out docs/evidence/a5-kernel-bundles/frames-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_stabilizer_representation.py
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/stabilizer_representation.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/stabilizer_representation.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/stabilizer_representation.py \
+    --out docs/evidence/a5-kernel-bundles/stabilizer-result.json
 ```
