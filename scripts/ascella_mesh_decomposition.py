@@ -12,8 +12,8 @@ meshes. The held-out meshes enter only the plan's confirmation step.
   their mean deviation at the anchor mesh and over the perturbed meshes, and the eigenvalues of the deviations'
   covariance whitened by the mean counting covariance of the subtracted fractions, the multinomial over block and
   outside clicks carried through the background subtraction (1 is counting noise), in the three coordinates of modes
-  0..2, over every iteration and again over the iterations at or below the median outside total, because the in-block share
-  of a background burst follows the catalogue dark profile only on average;
+  0..2, over every iteration and again over the iterations at or below the median outside total, because the in-block
+  share of a background burst follows the catalogue dark profile only on average;
 - the anchor X dispersion: chi-square of the anchors' X statistics about their inverse-variance mean;
 - the outside clicks: per iteration the outside-block total, its lag-1 correlation in execution order, and the
   outside mode profile of the iterations above and below the median total beside the catalogue dark profile;
