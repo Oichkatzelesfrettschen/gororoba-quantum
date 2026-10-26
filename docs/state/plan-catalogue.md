@@ -14,7 +14,7 @@ Work completion describes the recorded obligation. Scientific claims and provide
   Next: Model a mechanism that couples heaters (thermal crosstalk between neighbors, coupler-angle error or mesh-dependent loss) and test it on job-02's 56 served meshes of one setting, which every per-heater error family fails (plan ascella-perturbed-compilation-case). Applied-voltage calibration data from the provider would constrain crosstalk directly. A timing budget for larger sample counts still needs controlled repeats that vary only the samples per iteration. Blocked: reconciliation evidence unresolved. Historical receipt inputs changed; revalidation required.
 
 - **[primorial-coherent-device-question](plans/primorial-coherent-device-question.json)** (active; verified): Joint tilt and CZ-phase gate-error bounds reopen the primorial gap-88 device question; measure the coherent fractions that decide it in simulation-designed probes before any hardware case. [Context](../../docs/design/primorial-cover-joint-coherent-bounds.md).
-  Next: Await the user approval of results/live/PRIMORIAL\_COHERENCE\_CASE.md; the approval dry runs are made from main after the change merges.
+  Next: Await the user approval of results/live/PRIMORIAL\_COHERENCE\_CASE.md; the approval dry runs are made from main after the change merges. Historical receipt inputs changed; revalidation required.
 
 ## Paused
 
