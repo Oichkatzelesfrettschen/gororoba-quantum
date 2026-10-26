@@ -45,7 +45,7 @@ model beside the admitting one.
 Usage:
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--check | --justify | --estimate | JOB]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py [--body JOB | --plan JOB] [--anchor]
-  "$PYTHON" scripts/qd_teleportation_rehearsal.py [--simulate OUT | --analyze RUN]
+  "$PYTHON" scripts/qd_teleportation_rehearsal.py [--simulate OUT | --analyze RUN [--check]]
   "$PYTHON" scripts/qd_teleportation_rehearsal.py --submit RUN APPROVAL [--anchor]
 """
 
@@ -876,9 +876,10 @@ def analyze_results(
     trial for each input, cross-checks the pooled value when every input has an accepted event. An input without one
     keeps its rejection counts, reports a null conditional fidelity with a reason, and drops out of the pooled
     statistic; the verdict is then inconclusive, because the preregistered rule pools all six inputs. The frame table
-    `table` must equal the propagated one when given. The service counts shots as samples and reports no optical
-    trials, so the classical bound is the larger of attempts_benchmark at the reported shots
-    (result_fields.nb_shots_used) and at the modeled attempts. A partial result (an error or canceled job) scores its
+    `table` must equal the propagated one when given. An iteration ended by its sample budget reports shots equal to
+    its samples and one ended by its max_shots reports that budget, neither a count of optical trials, so the
+    classical bound is the larger of attempts_benchmark at the reported shots (result_fields.nb_shots_used) and at
+    the modeled attempts. A partial result (an error or canceled job) scores its
     counted iterations, lists the uncounted entry kinds and the inputs left without counts, and is inconclusive
     whenever an input has none, since the bound and the rule need all six."""
     frame_table = frames()
@@ -997,7 +998,7 @@ def analyze_results(
         "verdict_reason": (
             "the job ended partial and these inputs returned no counted iteration: " + ", ".join(absent)
             if absent
-            else "these iterations returned no shot, so no classical bound is defined: " + ", ".join(empty)
+            else "these iterations returned no shot or no sample, so no classical bound is defined: " + ", ".join(empty)
             if empty
             else "the preregistered rule pools all six inputs, and these have no accepted event: " + ", ".join(silent)
             if silent
@@ -1173,7 +1174,11 @@ def live_model() -> dict[str, Any]:
     write: the source figures, uniform loss and per-mode transmission of the live processor record."""
     from qd_platform import get, platform_route, scrub
 
-    perfs = scrub(get(platform_route(PLATFORM)).get("perfs") or {})
+    return model_at(scrub(get(platform_route(PLATFORM)).get("perfs") or {}))
+
+
+def model_at(perfs: Mapping[str, Any]) -> dict[str, Any]:
+    """The noise model's pooled fidelity at one processor record's perfs object, against the justified mean score."""
     figures = {
         "hom": perfs["HOM (%)"] / 100.0,
         "g2": perfs["g2 (%)"] / 100.0,
@@ -1387,10 +1392,18 @@ def simulate(out: Path) -> int:
     return 0
 
 
-def analyze(run: Path) -> int:
+def analyze(run: Path, replay: bool = False) -> int:
+    """Write RUN/analysis.json, or with `replay` require the retained one to equal a fresh analysis.
+
+    The replay compares within bdsc_certificate.close's tolerance, since the record carries floats."""
     manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
     results = json.loads((run / "results.json").read_text(encoding="utf-8"))
     record = analyze_results(manifest, results, manifest.get("frames"))
+    if replay:
+        retained = json.loads((run / "analysis.json").read_text(encoding="utf-8"))
+        close(json.loads(json.dumps(record)), retained, f"{run.name}/analysis.json")
+        print(f"{run.name}: analysis.json replays, verdict {record['verdict']}")
+        return 0
     write_json(run / "analysis.json", record)
     pooled_row = record["pooled"]
     if pooled_row["fidelity"] is None:
@@ -1421,8 +1434,8 @@ def main(argv: list[str]) -> int:
         return dry_run(JOBS[argv[1]], anchor)
     if len(argv) == 2 and argv[0] == "--simulate":
         return simulate(Path(argv[1]))
-    if len(argv) == 2 and argv[0] == "--analyze":
-        return analyze(Path(argv[1]))
+    if len(argv) in (2, 3) and argv[0] == "--analyze" and argv[2:] in ([], ["--check"]):
+        return analyze(Path(argv[1]), argv[2:] == ["--check"])
     if len(argv) in (3, 4) and argv[0] == "--submit" and argv[3:] in ([], ["--anchor"]):
         return send(Path(argv[1]), argv[2], argv[3:] == ["--anchor"])
     if len(argv) == 1 and argv[0] in JOBS:
@@ -1430,7 +1443,8 @@ def main(argv: list[str]) -> int:
     raise ValueError(
         "usage: qd_teleportation_rehearsal.py [--check | --justify | --estimate | JOB | --body JOB [--anchor] | "
         "--plan JOB [--anchor] | "
-        f"--simulate OUT | --analyze RUN | --submit RUN APPROVAL [--anchor]], JOB in {sorted(JOBS)}, not {argv}"
+        f"--simulate OUT | --analyze RUN [--check] | --submit RUN APPROVAL [--anchor]], JOB in {sorted(JOBS)}, "
+        f"not {argv}"
     )
 
 

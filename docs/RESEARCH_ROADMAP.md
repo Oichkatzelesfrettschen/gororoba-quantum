@@ -64,15 +64,15 @@ proposed work, in dependency order:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 70 |
+| exploratory reanalysis | exploratory | 71 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
-| mathematical claim | established | 25 |
+| mathematical claim | established | 26 |
 | mathematical claim | open | 2 |
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
 | preregistered emulator control | established | 10 |
-| preregistered hardware inference | established | 59 |
+| preregistered hardware inference | established | 60 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -82,7 +82,7 @@ These metadata counts are not summed into a headline of established scientific r
 Independent hardware replication requires an adjudicated replication design, not a job count.
 
 - **proposed-tuna17-zero-divisor-matched-response** (proposed, proposed experiment). Nine unsubmitted Tuna-17 jobs compare dark, bright and same-support quadrature witnesses with fixed routed shapes per region; the preregistered contrast cancels batch intercepts and a fixed region offset under a common affine response.
-- **dimension32-global-topology** (open, mathematical claim). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants. Depends on four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone.
+- **dimension32-global-topology** (open, mathematical claim). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants. Depends on four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone, a5-zero-divisor-strata.
 - **proposed-conditional-ramsey-hamiltonian** (proposed, proposed experiment). Add Ramsey of qubit A conditioned on B in |0> and |1> to the Bell odd and even coherence rates: the design matrix for H/hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B)/2 rises from rank 2 to 3, J = (nu_A|0 - nu_A|1)/2, and nu_odd + nu_even = nu_A|0 + nu_A|1 is the falsifier of the reduced diagonal model. Depends on hw-coherence-window.
 - **proposed-signed-kernel-probe** (proposed, proposed experiment). Perturb the certified kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) by t L_e2: the dark probability t^2/(2+|t|)^2 is even in t, while the Hermitian dilation reference reads Re<v|B(t)|u> = t/(2+|t|), signed and first order. Depends on algebra-circuit-fixtures.
 - **proposed-crossed-tile-template** (proposed, proposed experiment). Cross {affected template, reference template} x {candidate weak tile, reference tile}, optionally x {isolated, packed}, to separate tile, template and interaction effects on the weak-lane loss. Depends on hw-corner-explains-weak-lane.

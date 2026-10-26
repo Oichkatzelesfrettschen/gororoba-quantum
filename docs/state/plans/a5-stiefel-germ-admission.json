@@ -40,6 +40,54 @@
             }
           ],
           "scope_sha256": "4f9259c08349577a052aa3f1c3d4a338bdbc2f861ed9d5e0a0df570d891e69c0"
+        },
+        {
+          "result": "Revalidated at 6765b115: core-270 research_state.py --check passes with a5-stiefel-universal and a5-nonzero-divisor-two-dimension-gap established and both records equal to their b798ddac bytes; core-690 regenerates result.json and core-691 passes with and without -O.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "61ebc74ffdb7a6204cfb1b427949cf090bf7141c41adaa7b8973450fd57b8b9b"
+            },
+            {
+              "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+              "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+            }
+          ],
+          "scope_sha256": "4f9259c08349577a052aa3f1c3d4a338bdbc2f861ed9d5e0a0df570d891e69c0"
+        },
+        {
+          "result": "Revalidated at 2b7690d7 after merging main: research_state.json gained claims primorial-bound-residuals-joint and qd-belenos-teleportation-rehearsal-job-00 and changed only primorial-null-residuals-zz-tilt, so every claim record this plan cites keeps its bytes; core-270 research_state.py --check passes.",
+          "observed_at": "2026-10-26T03:29:52.921698+00:00",
+          "revision": "2b7690d78bde7ad11ba4d159af9e71ebbe2f5a49",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "04391f498de69b65b74540b639bd2b31b62f045bb8c3ab63292d1b20b84ace4d"
+            },
+            {
+              "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+              "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+            }
+          ],
+          "scope_sha256": "4f9259c08349577a052aa3f1c3d4a338bdbc2f861ed9d5e0a0df570d891e69c0"
+        },
+        {
+          "result": "Revalidated at 5717aefa after merging main: research_state.json added claim a5-zero-divisor-strata, appended one boundary sentence to a5-nonzero-divisor-two-dimension-gap crediting it with the global mu direction, and extended dimension32-global-topology; a5-nonzero-divisor-two-dimension-gap stays established with its statement unchanged; core-270, core-690 and core-691 pass.",
+          "observed_at": "2026-10-26T04:04:56.060818+00:00",
+          "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+            },
+            {
+              "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+              "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+            }
+          ],
+          "scope_sha256": "4f9259c08349577a052aa3f1c3d4a338bdbc2f861ed9d5e0a0df570d891e69c0"
         }
       ]
     },
@@ -64,6 +112,22 @@
             }
           ],
           "scope_sha256": "2f9d543ecae41587f9f9db6009842fc80aacb0b8c9b2a322c6a792e7a28e9437"
+        },
+        {
+          "result": "Revalidated at 6765b115: core-690 --check regenerates result.json and core-691 --self-test passes with and without -O after 763fc80 pooled the square-zero identities. The superseded receipt's digests match commit 7690f4a, not its recorded revision f8c6e3e7.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+              "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+            },
+            {
+              "ref": "scripts/a5_stiefel_pfaffian_germs.py",
+              "sha256": "af79da08318ee7176c11d9f263fd326403dceba71a966d81873e7bb036815485"
+            }
+          ],
+          "scope_sha256": "2f9d543ecae41587f9f9db6009842fc80aacb0b8c9b2a322c6a792e7a28e9437"
         }
       ]
     }
@@ -79,6 +143,54 @@
         {
           "ref": "docs/state/research_state.json",
           "sha256": "1d0439e8af4ba966643fe2bb26cf39afbe1ffcfa6acaaac3ff10d10ab7e25b9e"
+        },
+        {
+          "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+          "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+        }
+      ],
+      "scope_sha256": "19ad1a4f557be6f82416b29085d3be15c855f8e7c2cef946792409e0585dd8f7"
+    },
+    {
+      "result": "Revalidated at 6765b115: core-270 research_state.py --check passes with a5-stiefel-universal and a5-nonzero-divisor-two-dimension-gap established and both records equal to their b798ddac bytes; core-690 regenerates result.json and core-691 passes with and without -O.",
+      "observed_at": "2026-10-26T03:16:45.530392+00:00",
+      "revision": "6765b11589672fd85bfe05401800a9e075667168",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "61ebc74ffdb7a6204cfb1b427949cf090bf7141c41adaa7b8973450fd57b8b9b"
+        },
+        {
+          "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+          "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+        }
+      ],
+      "scope_sha256": "19ad1a4f557be6f82416b29085d3be15c855f8e7c2cef946792409e0585dd8f7"
+    },
+    {
+      "result": "Revalidated at 2b7690d7 after merging main: research_state.json gained claims primorial-bound-residuals-joint and qd-belenos-teleportation-rehearsal-job-00 and changed only primorial-null-residuals-zz-tilt, so every claim record this plan cites keeps its bytes; core-270 research_state.py --check passes.",
+      "observed_at": "2026-10-26T03:29:52.921698+00:00",
+      "revision": "2b7690d78bde7ad11ba4d159af9e71ebbe2f5a49",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "04391f498de69b65b74540b639bd2b31b62f045bb8c3ab63292d1b20b84ace4d"
+        },
+        {
+          "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
+          "sha256": "a964c4efaa9ede6a1ee09af7f678156955e58dbfd1321b44a39ec8a2cc1225cf"
+        }
+      ],
+      "scope_sha256": "19ad1a4f557be6f82416b29085d3be15c855f8e7c2cef946792409e0585dd8f7"
+    },
+    {
+      "result": "Revalidated at 5717aefa after merging main: research_state.json added claim a5-zero-divisor-strata, appended one boundary sentence to a5-nonzero-divisor-two-dimension-gap crediting it with the global mu direction, and extended dimension32-global-topology; a5-nonzero-divisor-two-dimension-gap stays established with its statement unchanged; core-270, core-690 and core-691 pass.",
+      "observed_at": "2026-10-26T04:04:56.060818+00:00",
+      "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
         },
         {
           "ref": "docs/evidence/a5-stiefel-pfaffian-germs/result.json",
