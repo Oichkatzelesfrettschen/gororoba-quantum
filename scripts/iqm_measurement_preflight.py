@@ -33,6 +33,8 @@ import iqm_measurement_sequence as seq  # noqa: E402
 from iqm_jobs import CASE_SCHEMA, cancel_threshold_seconds, dump, replay_mismatch, run_facts  # noqa: E402
 from iqm_platform import sha256  # noqa: E402
 
+from parallel import ordered_map  # noqa: E402
+
 CASE = "measurement-sequence-pinching-probe"
 QC = "garnet"
 QCS = ["garnet:mock", "garnet"]
@@ -267,6 +269,12 @@ def synthetic(
     return out
 
 
+def raw_reading(item: tuple[str, dict[str, float], float]) -> float:
+    """seq.raw_p0 of one (band key, calibration, initialization excitation) item, the unit self_test maps."""
+    key, cal, p_init = item
+    return seq.raw_p0(key, cal, p_init)
+
+
 def self_test() -> str:
     seq_prediction = seq.load_json(MAIN_CASE / "prediction.json")
     files = build_files(MAIN_CASE, SHOTS)
@@ -297,7 +305,10 @@ def self_test() -> str:
     excerpt = json.loads(files[EXCERPT])
 
     def reading(p_init: float) -> dict[str, dict[str, float]]:
-        return {q: {name: seq.raw_p0(BAND_KEY[name], excerpt["qubits"][q], p_init) for name in NAMES} for q in qubits}
+        keys = [(q, name) for q in qubits for name in NAMES]
+        values = ordered_map(raw_reading, [(BAND_KEY[name], excerpt["qubits"][q], p_init) for q, name in keys])
+        flat = dict(zip(keys, values, strict=True))
+        return {q: {name: flat[(q, name)] for name in NAMES} for q in qubits}
 
     # A model device at either end of the excitation band passes on every qubit.
     for p_init in seq.RAW_EXCITATION_BAND:

@@ -2014,29 +2014,40 @@ def check_selection(values: dict[str, float], architecture: dict[str, Any], coun
         expect(bool(blockers), f"{q} outranks a chosen qubit and no better chosen qubit is coupled to it")
 
 
-def check_pairs() -> None:
-    """The pi/2 pairs compose to the rotation they replace, up to a global phase and a final Z rotation, for both signs,
-    and the model reaches each arm's ideal law with the pairs in the relaxation-free limit."""
+def prx_matrix(theta: float, phase: float) -> Any:
+    """The prx(theta, phase) unitary, a rotation by theta about (cos phase, sin phase, 0)."""
     x = np.array([[0, 1], [1, 0]], dtype=complex)
     y = np.array([[0, -1j], [1j, 0]])
+    return math.cos(theta / 2) * np.eye(2) - 1j * math.sin(theta / 2) * (math.cos(phase) * x + math.sin(phase) * y)
 
-    def prx(theta: float, phase: float) -> Any:
-        return math.cos(theta / 2) * np.eye(2) - 1j * math.sin(theta / 2) * (math.cos(phase) * x + math.sin(phase) * y)
 
-    for n in STEPS:
-        for sign in (1, -1):
-            product = np.eye(2, dtype=complex)
-            for step in range(n):
-                for angle, phase in step_pulses(n, step, sign):
-                    product = prx(angle, phase) @ product
-            target = prx(sign * THETA, 0.0)
-            leftover = product @ target.conj().T
-            expect(abs(leftover[0, 1]) < 1e-12 and abs(leftover[1, 0]) < 1e-12, f"n {n} sign {sign}: {leftover}")
-    for arm in ARMS:
-        for n in ARM_STEPS[arm]:
-            for paired in (True, False):
-                z = bloch_z(arm, n, 1e9, 1e9, 0.0, paired=paired)
-                expect(abs((1 + z) / 2 - ideal_arm(arm, n)) < 1e-9, f"{arm} n {n} paired {paired}: {(1 + z) / 2}")
+def pair_leftover(item: tuple[int, int]) -> list[float]:
+    """|off-diagonal| of the n-step pi/2-pair chain of `sign` times the inverse of prx(sign * THETA, 0)."""
+    n, sign = item
+    product = np.eye(2, dtype=complex)
+    for step in range(n):
+        for angle, phase in step_pulses(n, step, sign):
+            product = prx_matrix(angle, phase) @ product
+    leftover = product @ prx_matrix(sign * THETA, 0.0).conj().T
+    return [float(abs(leftover[0, 1])), float(abs(leftover[1, 0]))]
+
+
+def relaxation_free_p0(item: tuple[str, int, bool]) -> float:
+    """P0 of the model chain of one arm, N and construction in the relaxation-free limit."""
+    arm, n, paired = item
+    return (1 + bloch_z(arm, n, 1e9, 1e9, 0.0, paired=paired)) / 2
+
+
+def check_pairs() -> None:
+    """The pi/2 pairs compose to the rotation they replace, up to a global phase and a final Z rotation, for both signs,
+    and the model reaches each arm's ideal law with the pairs in the relaxation-free limit. Each chain is independent
+    and maps through parallel.ordered_map."""
+    pairs = [(n, sign) for n in STEPS for sign in (1, -1)]
+    for (n, sign), off in zip(pairs, ordered_map(pair_leftover, pairs), strict=True):
+        expect(max(off) < 1e-12, f"n {n} sign {sign}: off-diagonal {off}")
+    chains = [(arm, n, paired) for arm in ARMS for n in ARM_STEPS[arm] for paired in (True, False)]
+    for (arm, n, paired), p0 in zip(chains, ordered_map(relaxation_free_p0, chains), strict=True):
+        expect(abs(p0 - ideal_arm(arm, n)) < 1e-9, f"{arm} n {n} paired {paired}: {p0}")
 
 
 def check_exclusion_and_fallback(values: dict[str, float], architecture: dict[str, Any], count: int) -> None:

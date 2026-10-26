@@ -621,13 +621,23 @@ def drive_scan(run_dir: Path, labels: tuple[str, ...] | None = None) -> dict[str
     return out
 
 
+def raw_p0_item(item: tuple[str, dict[str, float], dict[str, Any]]) -> float:
+    """raw_p0 of one (circuit, calibration, device) item, the unit synthetic_counts maps."""
+    name, cal, device = item
+    return raw_p0(name, cal, device)
+
+
 def synthetic_counts(excerpt: dict[str, Any], devices: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict[str, Any]:
-    """Expected counts of model devices, rounded to whole shots, in the layout of seq.tally."""
+    """Expected counts of model devices, rounded to whole shots, in the layout of seq.tally. The circuit x qubit
+    evolutions are independent and map through parallel.ordered_map in that order."""
+    keys = [(name, q) for name in NAMES for q in excerpt["qubits"]]
+    values = ordered_map(raw_p0_item, [(name, excerpt["qubits"][q], devices[q]) for name, q in keys])
+    p0 = dict(zip(keys, values, strict=True))
     counts: dict[str, Any] = {}
     for name in NAMES:
         row: dict[str, Any] = {"shots": shots, "final": {}}
-        for q, cal in excerpt["qubits"].items():
-            k0 = round(shots * raw_p0(name, cal, devices[q]))
+        for q in excerpt["qubits"]:
+            k0 = round(shots * p0[(name, q)])
             row["final"][q] = [k0, shots - k0]
         counts[name] = row
     return counts

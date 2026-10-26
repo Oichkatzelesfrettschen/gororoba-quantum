@@ -81,6 +81,11 @@ def p0_item(item: tuple[dict[str, Any], str, iqm_sim.Calibration]) -> float:
     return p0_of(circuit, qubit, calibration, simulator_of(calibration))
 
 
+def cold_tables(inputs: dict[str, float]) -> dict[str, Any]:
+    """One qubit's model P0 tables at q = 1 (a cold start) with its calibrated T1, T2 and prx error."""
+    return case.model_tables(inputs["t1_s"], inputs["t2_s"], 1.0, case.MEASURE_WINDOW_SECONDS, inputs["prx_p"])
+
+
 def compare(
     circuits: dict[str, dict[str, Any]],
     qubits: dict[str, dict[str, float]],
@@ -93,10 +98,11 @@ def compare(
     keys = [(qubit, arm, n) for qubit in qubits for arm, n in case.group_keys()]
     items = [(circuits[name], qubit, calibration) for qubit, arm, n in keys for name in case.group_names(arm, n)]
     values = iter(ordered_map(p0_item, items, min_items))
+    names = list(qubits)
+    model = dict(zip(names, ordered_map(cold_tables, [qubits[q] for q in names], min_items), strict=True))
     rows = []
     for qubit, arm, n in keys:
-        inputs = qubits[qubit]
-        tables = case.model_tables(inputs["t1_s"], inputs["t2_s"], 1.0, case.MEASURE_WINDOW_SECONDS, inputs["prx_p"])
+        tables = model[qubit]
         names = case.group_names(arm, n)
         simulated = sum(next(values) for _ in names) / len(names)
         rows.append(
