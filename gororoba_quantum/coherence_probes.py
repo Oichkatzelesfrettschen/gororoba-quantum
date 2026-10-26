@@ -271,16 +271,42 @@ def _slope(steps: tuple[int, ...], phases: list[float], variances: list[float]) 
     return float(weights @ np.asarray(unwrapped)), float(np.sum(weights**2 * np.asarray(variances)))
 
 
-def summarize(
-    distributions: Mapping[str, np.ndarray], covariances: Mapping[str, np.ndarray] | None = None
-) -> dict[str, float]:
-    """Every estimate and its one-shot standard error (key ``se_<estimate>``).
+# Independent components: each comes from its own circuits, so their quadrature noises are independent. The
+# reported estimates are linear in them; the assignment flips of the two readout calibrations are shared.
+COMPONENTS = (
+    *(f"tilt_{gate}_q{w}" for gate in ("x", "sx") for w in range(WIRES)),
+    "cz_raw_c0",
+    "cz_raw_c1",
+    "detuning_q0",
+    "detuning_q1",
+    "detuning_q2",
+    "rate_middle_10",
+    "rate_middle_01",
+)
+FLIPS = tuple((w, j) for w in range(WIRES) for j in ("e10", "e01"))
+FLIP_STEP = 1e-6
+# The pair probe winds by phi - 2 pi zeta tau per CZ, the partner-in-0 ZZ acting over each CZ of duration tau;
+# the conditional phase is the raw estimate plus that ZZ share.
+ZZ_SHARE = 2 * math.pi * CZ_SECONDS
 
-    Keys: ``tilt_x_q<w>`` and ``tilt_sx_q<w>`` (rad), ``cz_phase_c<k>`` (rad, coupler index k of COUPLERS;
-    ``cz_raw_c<k>`` before the ZZ share), ``detuning_q<w>`` (Hz) and ``zz_c<k>`` (Hz, partner-in-0 frame).
-    """
-    flips = assignment(distributions)
+
+def derived(components: Mapping[str, float]) -> dict[str, float]:
+    """zz_c* (Hz) and cz_phase_c* (rad) from the components: a conditioned rate minus the middle qubit's own."""
     out: dict[str, float] = {}
+    for index, arm in enumerate(("rate_middle_10", "rate_middle_01")):
+        out[f"zz_c{index}"] = -(components[arm] - components["detuning_q1"])
+        out[f"cz_phase_c{index}"] = components[f"cz_raw_c{index}"] + ZZ_SHARE * out[f"zz_c{index}"]
+    return out
+
+
+def _components(
+    distributions: Mapping[str, np.ndarray],
+    flips: list[tuple[float, float]],
+    covariances: Mapping[str, np.ndarray] | None,
+) -> tuple[dict[str, float], dict[str, float]]:
+    """Every component and its one-shot quadrature variance at the given assignment flips."""
+    value: dict[str, float] = {}
+    variance: dict[str, float] = {}
     for gate, gain in (("x", TILT_X_SLOPE), ("sx", TILT_SX_SLOPE)):
         for wire in range(WIRES):
             subset = "middle" if wire == 1 else "outer"
@@ -294,9 +320,9 @@ def summarize(
                 )
                 for cells in TILT_CELLS
             ]
-            slope, variance = _slope(TILT_CELLS, [p for p, _ in points], [v for _, v in points])
-            out[f"tilt_{gate}_q{wire}"] = slope / gain
-            out[f"se_tilt_{gate}_q{wire}"] = math.sqrt(variance) / abs(gain)
+            slope, slope_var = _slope(TILT_CELLS, [p for p, _ in points], [v for _, v in points])
+            value[f"tilt_{gate}_q{wire}"] = slope / gain
+            variance[f"tilt_{gate}_q{wire}"] = slope_var / gain**2
     for index, control in enumerate((0, 2)):
         slopes = []
         for state in (0, 1):
@@ -312,9 +338,9 @@ def summarize(
                 for pairs in CZ_PAIRS
             ]
             slopes.append(_slope(CZ_PAIRS, [p for p, _ in points], [v for _, v in points]))
-        out[f"cz_raw_c{index}"] = (slopes[1][0] - slopes[0][0]) / CZ_PAIR_SLOPE
-        out[f"se_cz_raw_c{index}"] = math.sqrt(slopes[0][1] + slopes[1][1]) / CZ_PAIR_SLOPE
-    rates: dict[tuple[str, int], tuple[float, float]] = {}
+        value[f"cz_raw_c{index}"] = (slopes[1][0] - slopes[0][0]) / CZ_PAIR_SLOPE
+        variance[f"cz_raw_c{index}"] = (slopes[0][1] + slopes[1][1]) / CZ_PAIR_SLOPE**2
+    hertz = 2 * math.pi * DT_SECONDS
     for arm in ramsey_arms():
         for wire in (0, 2) if arm == "outer" else (1,):
             points = [
@@ -328,24 +354,71 @@ def summarize(
                 )
                 for delay in RAMSEY_DELAYS_DT
             ]
-            rates[arm, wire] = _slope(RAMSEY_DELAYS_DT, [p for p, _ in points], [v for _, v in points])
-    for wire in (0, 2):
-        slope, variance = rates["outer", wire]
-        out[f"detuning_q{wire}"] = slope / (2 * math.pi * DT_SECONDS)
-        out[f"se_detuning_q{wire}"] = math.sqrt(variance) / (2 * math.pi * DT_SECONDS)
-    base, base_var = rates["middle_00", 1]
-    out["detuning_q1"] = base / (2 * math.pi * DT_SECONDS)
-    out["se_detuning_q1"] = math.sqrt(base_var) / (2 * math.pi * DT_SECONDS)
-    for index, arm in enumerate(("middle_10", "middle_01")):
-        slope, variance = rates[arm, 1]
-        out[f"zz_c{index}"] = -(slope - base) / (2 * math.pi * DT_SECONDS)
-        out[f"se_zz_c{index}"] = math.sqrt(variance + base_var) / (2 * math.pi * DT_SECONDS)
-    for index in range(len(COUPLERS)):
-        # The pair probe winds by phi - 2 pi zeta tau per CZ, the partner-in-0 ZZ acting over each CZ of
-        # duration tau; the conditional phase is the raw estimate plus that ZZ share.
-        share = 2 * math.pi * CZ_SECONDS
-        out[f"cz_phase_c{index}"] = out[f"cz_raw_c{index}"] + share * out[f"zz_c{index}"]
-        out[f"se_cz_phase_c{index}"] = math.hypot(out[f"se_cz_raw_c{index}"], share * out[f"se_zz_c{index}"])
+            slope, slope_var = _slope(RAMSEY_DELAYS_DT, [p for p, _ in points], [v for _, v in points])
+            key = f"detuning_q{wire}" if arm in ("outer", "middle_00") else f"rate_{arm}"
+            value[key] = slope / hertz
+            variance[key] = slope_var / hertz**2
+    return value, variance
+
+
+def _flip_variances(
+    distributions: Mapping[str, np.ndarray], covariances: Mapping[str, np.ndarray] | None
+) -> dict[tuple[int, str], float]:
+    """One-shot variance of each wire's e10 (from cp_readout_0) and e01 (from cp_readout_1)."""
+    out: dict[tuple[int, str], float] = {}
+    for wire in range(WIRES):
+        for flip, name, wrong in (("e10", READOUT_MEMBERS[0], 1), ("e01", READOUT_MEMBERS[1], 0)):
+            law = np.asarray(distributions[name], dtype=float)
+            indicator = np.asarray([float(_bit(k, wire) == wrong) for k in range(len(law))])
+            matrix = np.diag(law) - np.outer(law, law) if covariances is None else np.asarray(covariances[name])
+            out[wire, flip] = float(indicator @ matrix @ indicator)
+    return out
+
+
+def summarize(
+    distributions: Mapping[str, np.ndarray], covariances: Mapping[str, np.ndarray] | None = None
+) -> dict[str, float]:
+    """Every estimate and its one-shot standard error (key ``se_<estimate>``), with the inputs a joint decision needs.
+
+    Keys: ``tilt_x_q<w>`` and ``tilt_sx_q<w>`` (rad), ``cz_phase_c<k>`` (rad, coupler index k of COUPLERS;
+    ``cz_raw_c<k>`` before the ZZ share), ``detuning_q<w>`` (Hz), ``zz_c<k>`` (Hz, partner-in-0 frame) and the
+    conditioned middle-qubit rates ``rate_middle_10`` and ``rate_middle_01`` (Hz). Each ``se_`` combines the
+    quadrature noise of the estimate's circuits with the finite-shot noise of the in-job readout calibration,
+    which every point of a ladder shares: ``qse_<component>`` is the quadrature part, ``d_<component>__<flip>_q<w>``
+    the component's derivative with respect to that assignment flip and ``var_<flip>_q<w>`` the flip's one-shot
+    variance, so a decision can sample the components and flips jointly and keep their correlations.
+    """
+    flips = assignment(distributions)
+    value, quadrature = _components(distributions, flips, covariances)
+    flip_var = _flip_variances(distributions, covariances)
+    slope: dict[tuple[int, str], dict[str, float]] = {}
+    for wire, flip in FLIPS:
+        shifted = []
+        for sign in (1.0, -1.0):
+            moved = list(flips)
+            e10, e01 = moved[wire]
+            moved[wire] = (e10 + sign * FLIP_STEP, e01) if flip == "e10" else (e10, e01 + sign * FLIP_STEP)
+            shifted.append(_components(distributions, moved, covariances)[0])
+        slope[wire, flip] = {c: (shifted[0][c] - shifted[1][c]) / (2 * FLIP_STEP) for c in COMPONENTS}
+    out: dict[str, float] = dict(value)
+    for c in COMPONENTS:
+        out[f"qse_{c}"] = math.sqrt(quadrature[c])
+        for wire, flip in FLIPS:
+            out[f"d_{c}__{flip}_q{wire}"] = slope[wire, flip][c]
+    for wire, flip in FLIPS:
+        out[f"var_{flip}_q{wire}"] = flip_var[wire, flip]
+    out.update(derived(value))
+    # Each reported quantity is linear in the components; its variance adds the independent quadrature terms
+    # and the shared flip terms through that linear map.
+    linear: dict[str, dict[str, float]] = {c: {c: 1.0} for c in COMPONENTS}
+    for index, arm in enumerate(("rate_middle_10", "rate_middle_01")):
+        linear[f"zz_c{index}"] = {arm: -1.0, "detuning_q1": 1.0}
+        linear[f"cz_phase_c{index}"] = {f"cz_raw_c{index}": 1.0, arm: -ZZ_SHARE, "detuning_q1": ZZ_SHARE}
+    for key, weights in linear.items():
+        total = sum(w**2 * quadrature[c] for c, w in weights.items())
+        for wire, flip in FLIPS:
+            total += sum(w * slope[wire, flip][c] for c, w in weights.items()) ** 2 * flip_var[wire, flip]
+        out[f"se_{key}"] = math.sqrt(total)
     return out
 
 

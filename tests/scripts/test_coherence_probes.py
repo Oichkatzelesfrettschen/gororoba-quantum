@@ -50,7 +50,7 @@ def test_probes_recover_every_family_at_once() -> None:
 
 def test_ideal_probes_read_zero() -> None:
     got = probe_summary({})
-    if any(abs(v) > 1e-9 for k, v in got.items() if not k.startswith("se_")):
+    if any(abs(v) > 1e-9 for k, v in got.items() if not k.startswith(("se_", "qse_", "d_", "var_"))):
         raise AssertionError(got)
 
 
@@ -97,3 +97,39 @@ def test_covariance_summary_matches_the_multinomial_errors() -> None:
     for key, value in plain.items():
         if not np.isclose(value, propagated[key], rtol=1e-12, atol=1e-15):
             raise AssertionError(f"{key}: {value} against {propagated[key]}")
+
+
+def test_readout_calibration_noise_enters_every_error() -> None:
+    laws = {
+        name: 0.9 * np.asarray(br.law(case.logical_ops(c, DURATIONS), TRUTH)) + 0.1 / 8 for name, c in cp.circuits()
+    }
+    got = cp.summarize(laws)
+    for component in cp.COMPONENTS:
+        if got[f"se_{component}"] < got[f"qse_{component}"] - 1e-15:
+            raise AssertionError(f"{component}: total error below its quadrature part")
+    # The flip derivative of each component equals a direct recomputation at a shifted assignment.
+    flips = cp.assignment(laws)
+    step = 1e-5
+    for wire, flip in cp.FLIPS:
+        moved = list(flips)
+        e10, e01 = moved[wire]
+        moved[wire] = (e10 + step, e01) if flip == "e10" else (e10, e01 + step)
+        shifted = cp._components(laws, moved, None)[0]
+        for component in cp.COMPONENTS:
+            slope = (shifted[component] - got[component]) / step
+            scale = max(1.0, abs(slope))
+            if abs(slope - got[f"d_{component}__{flip}_q{wire}"]) > 1e-3 * scale:
+                raise AssertionError(
+                    f"{component} {flip} q{wire}: {slope} against {got[f'd_{component}__{flip}_q{wire}']}"
+                )
+
+
+def test_joint_sample_at_zero_draw_returns_the_estimates() -> None:
+    laws = {
+        name: 0.9 * np.asarray(br.law(case.logical_ops(c, DURATIONS), TRUTH)) + 0.1 / 8 for name, c in cp.circuits()
+    }
+    summary = cp.summarize(laws)
+    sample = case.joint_sample(summary, 800, [0.0] * len(case.JOINT_INPUTS))
+    for key in case.ESTIMATES:
+        if abs(sample[key] - summary[key]) > 1e-12 * max(1.0, abs(summary[key])):
+            raise AssertionError(f"{key}: {sample[key]} against {summary[key]}")

@@ -573,11 +573,11 @@ def spec_of(values: dict[str, float]) -> dict[str, Any]:
     }
 
 
-def decision_points() -> list[list[float]]:
-    """Standard normal quantiles of unscrambled Sobol points, the all-zero first point dropped."""
+def decision_points(dims: int = len(ESTIMATES)) -> list[list[float]]:
+    """Standard normal quantiles of ``dims``-dimensional unscrambled Sobol points, the all-zero first point dropped."""
     from scipy.stats import qmc
 
-    unit = qmc.Sobol(d=len(ESTIMATES), scramble=False).random_base2(8)[1 : DECISION_POINTS + 1]
+    unit = qmc.Sobol(d=dims, scramble=False).random_base2(8)[1 : DECISION_POINTS + 1]
     normal = statistics.NormalDist()
     return [[normal.inv_cdf(min(max(u, 1e-9), 1 - 1e-9)) for u in row] for row in unit]
 
@@ -807,13 +807,37 @@ def path_budget(snapshot: dict[str, Any], layout: list[int]) -> dict[str, Any]:
     }
 
 
+# The decision's sampled inputs: the independent components (each its own circuits' quadrature noise) and the
+# assignment flips of the in-job readout calibration, which the components share.
+JOINT_INPUTS = (*cp.COMPONENTS, *(f"{flip}_q{wire}" for wire, flip in cp.FLIPS))
+
+
+def joint_sample(probe: dict[str, float], shots: int, normals: list[float]) -> dict[str, float]:
+    """The estimates at one joint draw: each component moved by its quadrature normal and every flip's normal.
+
+    ``probe`` is coherence_probes.summarize's output; one-shot errors scale by 1 / sqrt(shots).
+    """
+    draw = dict(zip(JOINT_INPUTS, normals, strict=True))
+    root = math.sqrt(shots)
+    components = {}
+    for c in cp.COMPONENTS:
+        moved = float(probe[c]) + draw[c] * float(probe[f"qse_{c}"]) / root
+        for wire, flip in cp.FLIPS:
+            sigma = math.sqrt(float(probe[f"var_{flip}_q{wire}"])) / root
+            moved += float(probe[f"d_{c}__{flip}_q{wire}"]) * draw[f"{flip}_q{wire}"] * sigma
+        components[c] = moved
+    return {**{k: components[k] for k in cp.COMPONENTS if k in ESTIMATES}, **cp.derived(components)}
+
+
 def decide_path(
     snapshot: dict[str, Any], layout: list[int], probe: dict[str, float], probe_shots: int, gap88_shots: int
 ) -> dict[str, Any]:
     """The preregistered stage-2 decision for one path from a probe summary at ``probe_shots`` shots per circuit.
 
     ``probe`` holds every estimate of ESTIMATES and its one-shot standard error ``se_<estimate>``, as
-    coherence_probes.summarize reports them. Each gap-88 reading averages two executions of ``gap88_shots``
+    coherence_probes.summarize reports them; the estimates' uncertainty is sampled jointly over the independent
+    components and the shared readout flips (``joint_sample``), so the ZZ, detuning and CZ-phase estimates keep
+    the correlations their shared slopes give them. Each gap-88 reading averages two executions of ``gap88_shots``
     shots (primorial_campaigns' gap-88, null, null, gap-88 order), so the path's coefficient standard
     deviations are taken at twice that count. Stage 2 proceeds when, over the estimates' uncertainty, the
     95th percentile of max_z is below 1 and the 95th percentile of the shots that identify all seven
@@ -828,9 +852,7 @@ def decide_path(
     fit = br.Fit(br.path_arms(snapshot, view, layout, logical), budget["per_shot_coefficient_variance"], per_reading)
     estimate = {k: float(probe[k]) for k in ESTIMATES}
     se = {k: float(probe[f"se_{k}"]) / math.sqrt(probe_shots) for k in ESTIMATES}
-    specs = [
-        spec_of({k: estimate[k] + z * se[k] for k, z in zip(ESTIMATES, row, strict=True)}) for row in decision_points()
-    ]
+    specs = [spec_of(joint_sample(probe, probe_shots, row)) for row in decision_points(len(JOINT_INPUTS))]
     rows = parallel.ordered_map(fit, [(s, s) for s in specs], min_items=1)
 
     def p(values: list[float], q: float) -> float:
