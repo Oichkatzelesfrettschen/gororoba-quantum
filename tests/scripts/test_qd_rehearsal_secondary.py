@@ -127,7 +127,7 @@ def test_controls_are_deterministic_support_matched_tables() -> None:
 def test_lens_of_the_model_against_itself_ranks_at_one() -> None:
     event = tuple(1 if mode == rehearsal.LAYOUT[rehearsal.Q0] else 0 for mode in range(rehearsal.MODES))
     model: list[dict[tuple[int, ...], float]] = [{event: 1.0}] * 6
-    record = secondary.cd_lens(model, model, seed=LENS_SEED, count=9, dims=(64,))
+    record = secondary.cd_lens(model, lambda: model, seed=LENS_SEED, count=9, dims=(64,))
     if record["dimensions"]["64"]["percentile"] != 1.0 or record["flag"] != "no algebra-specific separation":
         raise AssertionError(record)
 
@@ -193,4 +193,13 @@ def test_in_situ_fit_of_a_simulated_run_uses_the_anchor_profile(tmp_path: Any, m
     }
     record = secondary.in_situ_fit(manifest(), results, tmp_path)
     if calls != [1] or list(record["fits"]) != ["anchor"] or "absent" not in record["platform_before"]:
+        raise AssertionError(record)
+
+
+def test_lens_without_events_builds_no_model() -> None:
+    def model() -> list[dict[tuple[int, ...], float]]:
+        raise AssertionError("the model ran for a run without events")
+
+    record = secondary.cd_lens([{}] * 6, model, seed=LENS_SEED, count=3, dims=(64,))
+    if record["dimensions"]["64"]["status"] == "computed":
         raise AssertionError(record)

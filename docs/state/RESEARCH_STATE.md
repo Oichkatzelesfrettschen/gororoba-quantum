@@ -32,7 +32,7 @@ The IBM service inventory observed at 2026-10-25T23:36:01.130164+00:00 holds 4 p
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 75 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 76 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 26 IQM run directories are retained. That is an observation, not an authorization.
 
@@ -322,6 +322,7 @@ circuit and charges the account ledger's change.
 | [2026-10-25T203822.040562Z](../../results/live/2026-10-25T203822.040562Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 19 | DONE | 43 s | kingston-qet-ladder-margin-and-feedforward, kingston-qet-scheduled-idle-coherent-phase |
 | [2026-10-25T225332.266272Z](../../results/live/2026-10-25T225332.266272Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 24 | DONE | 55 s | kingston-qet-window-phase-static, kingston-qet-scheduled-idle-coherent-phase |
 | [2026-10-25T233207.284563Z](../../results/live/2026-10-25T233207.284563Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 18 | DONE | 12 s | kingston-qet-compensated-information-excess, kingston-qet-scheduled-idle-coherent-phase |
+| [2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00](../../results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00) | Quandela Cloud | single-chip teleportation rehearsal on qpu:belenos | qpu:belenos | 1 | 6 | completed | 2.2 credits | qd-belenos-teleportation-rehearsal-job-00 |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -604,6 +605,7 @@ circuit and charges the account ledger's change.
 - **kingston-qet-ladder** (2026-10-25T203822.040562Z): On 14 calibration-qualified ibm_kingston pairs, does a record-steered rotation lower Bob's local energy of the Hotta two-qubit model below the floor -<H_A> that binds every record-independent operation, and does the feed-forward branch execute the rotation the bit selects?
 - **kingston-qet-frame-diagnostic** (2026-10-25T225332.266272Z): Is the ladder's lost parity a phase on B over the measure-to-branch idle, static or driven by Alice's readout, and does completing the CX first or an X echo on B move or refocus it?
 - **kingston-qet-compensated-ladder** (2026-10-25T233207.284563Z): Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?
+- **qd-qpu-belenos-teleportation-rehearsal-job-00** (2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00, job 55479252-d907-45ac-b1e1-84f19d21a131, 0 samples, 7200000 shots): job-00 of the teleportation rehearsal, sent under the anchor gate while the platform record held one state: does the chip teleport the six Pauli eigenstates above the classical bound, and does it return the requested three-click samples (near the anchor state) or almost none (the state the held record describes)?
 
 ## Established claims
 
@@ -1394,6 +1396,11 @@ circuit and charges the account ledger's change.
   Evidence: [collect.json](../../results/live/2026-10-25T233207.284563Z/collect.json), [record.json](../../results/live/2026-10-25T233207.284563Z/record.json), [FINDINGS.md](../../results/live/2026-10-25T233207.284563Z/FINDINGS.md).
   Acquisitions: kingston-qet-compensated-ladder.
   Related claims: kingston-qet-window-phase-static.
+- **qd-belenos-teleportation-rehearsal-job-00** (preregistered hardware inference, hardware). The single-chip teleportation rehearsal on qpu:belenos, job 55479252-d907-45ac-b1e1-84f19d21a131 submitted 2026-10-26 02:54:50 UTC under the anchor gate (model pooled fidelity 0.868 at the 2026-10-24 anchor figures, 0.635 at the held live figures), completed in 292 s and returned 0 three-click samples in each of its six iterations, each reporting its full max_shots of 1,200,000 as nb_shots_used. The preregistered verdict is inconclusive: no input has an accepted event, so neither the pooled fidelity nor the classical bound is defined. The preregistered record-state class is degraded-as-recorded (0 of 5400 requested samples, against 5400 expected in the anchor state and about none in the held state); the in-situ fit and the exploratory Cayley-Dickson lens have no event to read. The platform record before and after the job carries the held figures (HOM 83.8 %, g2 16.7 %, Transmittance 0.05 %) unchanged.
+  Boundary: One job on one chip in one held calibration state. The record-state class rests on the documented max_shots semantics, which this job is the first retained run to exercise: an iteration ended by its shot budget reports that budget, not a count of optical trials, so the zero count bounds the three-click rate per reported shot (below 4.2e-7 at 95 % over 7.2e6 shots, against about 1e-3 in the anchor state) without fixing the transmittance, whose value depends on what a shot counts. The run establishes nothing about teleportation fidelity, and no C1 conformance; the approval was single-use, and a run on a recovered chip is job-01.
+  Evidence: [results.json](../../results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/results.json), [result.json](../../results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/raw/result.json), [submission.json](../../results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/submission.json), [submit-model.json](../../results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/submit-model.json), [analysis.json](../../results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json), [secondary-analysis.json](../../results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json), [ascella-belenos-entanglement-teleportation.md](../design/ascella-belenos-entanglement-teleportation.md), [calibration.md](../notes/quandela/calibration.md), [qd_teleportation_rehearsal.py](../../scripts/qd_teleportation_rehearsal.py), [qd_rehearsal_secondary.py](../../scripts/qd_rehearsal_secondary.py).
+  Gates: replayed by core-teleportation-rehearsal-job-00-replay.
+  Acquisitions: qd-qpu-belenos-teleportation-rehearsal-job-00.
 
 ## Exploratory claims
 

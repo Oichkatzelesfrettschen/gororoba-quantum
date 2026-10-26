@@ -6124,6 +6124,7 @@
     "scripts/n21_q143_segmented_sweep.py",
     "scripts/n21_spectator_ramsey.py",
     "scripts/pais_claim_bounds.py",
+    "scripts/pais_superforce_bounds.py",
     "scripts/patch_window_analysis.py",
     "scripts/provider_patch_packing.py",
     "scripts/qd_belenos_mesh.py",
@@ -12128,6 +12129,7 @@
   ],
   "scripts/qd_rehearsal_secondary.py": [
    "__future__",
+   "bdsc_certificate",
    "cd_core",
    "collections",
    "itertools",

@@ -17,7 +17,7 @@ three analyses; none of them enters the verdict of qd_teleportation_rehearsal.an
   distinct units anticommuting) that form no algebra.
 
 Usage:
-  "$PYTHON" scripts/qd_rehearsal_secondary.py RUN
+  "$PYTHON" scripts/qd_rehearsal_secondary.py RUN [--check]
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ import itertools
 import json
 import math
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +37,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import qd_teleportation_rehearsal as rehearsal  # noqa: E402
+from bdsc_certificate import close  # noqa: E402
 from qd_network_protocol import ProtocolError, decode_bit  # noqa: E402
 from qd_platform import write_json  # noqa: E402
 
@@ -382,13 +383,15 @@ def observed_distributions(
 
 def cd_lens(
     observed: Sequence[Mapping[tuple[int, ...], float]],
-    model: Sequence[Mapping[tuple[int, ...], float]],
+    model: Callable[[], Sequence[Mapping[tuple[int, ...], float]]],
     seed: int = CONTROL_SEED,
     count: int = CONTROLS,
     dims: Sequence[int] = CD_DIMENSIONS,
 ) -> dict[str, Any]:
-    """The exploratory lens over every dimension; the controls are drawn before any map."""
+    """The exploratory lens over every dimension; the controls are drawn before any map, and `model` runs only
+    when some dimension holds an event of every input."""
     tables = control_tables(seed, dims, count)
+    reference: Sequence[Mapping[tuple[int, ...], float]] | None = None
     record: dict[str, Any] = {
         "label": "exploratory; outside the verdict and the evidence registry",
         "seed": seed,
@@ -397,7 +400,10 @@ def cd_lens(
     }
     available = []
     for dim in dims:
-        x, y = lens_vectors(observed, dim), lens_vectors(model, dim)
+        x = lens_vectors(observed, dim)
+        if x is not None and reference is None:
+            reference = model()
+        y = None if x is None or reference is None else lens_vectors(reference, dim)
         if x is None or y is None:
             record["dimensions"][str(dim)] = {"status": "an input has no event inside this dimension"}
             continue
@@ -412,7 +418,9 @@ def cd_lens(
 # ---------------------------------------------------------------- command
 
 
-def analyze(run: Path) -> int:
+def analyze(run: Path, replay: bool = False) -> int:
+    """Write RUN/secondary-analysis.json once, or with `replay` require the retained one to equal a fresh run of the
+    three analyses within bdsc_certificate.close's tolerance."""
     manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
     results = json.loads((run / "results.json").read_text(encoding="utf-8"))
     record: dict[str, Any] = {
@@ -420,8 +428,13 @@ def analyze(run: Path) -> int:
         "design": rehearsal.DESIGN,
         "record_state": record_state(manifest, results),
         "in_situ_fit": in_situ_fit(manifest, results, run),
-        "cd_lens": cd_lens(observed_distributions(manifest, results), model_distributions()),
+        "cd_lens": cd_lens(observed_distributions(manifest, results), model_distributions),
     }
+    if replay:
+        retained = json.loads((run / OUTPUT).read_text(encoding="utf-8"))
+        close(json.loads(json.dumps(record)), retained, f"{run.name}/{OUTPUT}")
+        print(f"{run.name}: {OUTPUT} replays")
+        return 0
     write_json(run / OUTPUT, record, exclusive=True)
     state = record["record_state"]
     print(
@@ -432,9 +445,9 @@ def analyze(run: Path) -> int:
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) == 1:
-        return analyze(Path(argv[0]))
-    raise ValueError(f"usage: qd_rehearsal_secondary.py RUN, not {argv}")
+    if len(argv) in (1, 2) and argv[1:] in ([], ["--check"]):
+        return analyze(Path(argv[0]), argv[1:] == ["--check"])
+    raise ValueError(f"usage: qd_rehearsal_secondary.py RUN [--check], not {argv}")
 
 
 if __name__ == "__main__":
