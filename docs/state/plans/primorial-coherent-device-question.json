@@ -53,8 +53,8 @@
       "receipts": [
         {
           "result": "The probe circuits recover injected tilt, CZ phase, detuning and ZZ at once within 5.2e-5 rad, 3.8e-6 rad, 2.6 Hz and 1.3 Hz; noisy estimates stay unbiased within their standard errors; CZ phase at 0.7 of its bound needs 2 shots, tilt at 0.2 of its bounds at most 18, 5 kHz detuning at most 60 and 2 kHz ZZ 757 at three standard deviations.",
-          "observed_at": "2026-10-26T01:59:22+00:00",
-          "revision": "4bc5a7201f3578cde387d317ae22528696993afe",
+          "observed_at": "2026-10-26T02:13:43+00:00",
+          "revision": "539b6050a70bff27afc9e2e40867a93f016d7e34",
           "evidence": [
             {
               "ref": "docs/evidence/primorial_cover/probe_case.json",
@@ -62,7 +62,7 @@
             },
             {
               "ref": "gororoba_quantum/coherence_probes.py",
-              "sha256": "a07058eb317a5a41e13039ba896051d1ae5e7d6ab51479ab7d600287c63be9ab"
+              "sha256": "262ab2356a65370d36f269d80032071cae8ab326944678b42220037bdb3027d1"
             }
           ],
           "scope_sha256": "15917a94dda6894c5c5e4d2b887b2f9f02d513c60e6fab3df39c6a7233946119"
