@@ -138,6 +138,19 @@ def check_receipts(root: Path, receipts: Any, scope: str) -> None:
             require(bool(HEX.fullmatch(evidence["sha256"])), "evidence digest needs SHA-256")
 
 
+def evidence_digest(root: Path, reference: str) -> str:
+    """The SHA-256 of the checkout bytes a local evidence reference names."""
+    return hashlib.sha256(local_path(root, reference).read_bytes()).hexdigest()
+
+
+def newest_receipt(item: dict[str, Any]) -> dict[str, Any] | None:
+    """The receipt with the latest observed_at, the later listed on a tie; None for an item without one."""
+    receipts = item.get("receipts", [])
+    if not receipts:
+        return None
+    return max(enumerate(receipts), key=lambda pair: (observed(pair[1]["observed_at"]), pair[0]))[1]
+
+
 def receipt_freshness(root: Path, plan: dict[str, Any]) -> list[str]:
     """Name each local input whose bytes differ from the digest in the newest receipt of the plan or a step.
 
@@ -146,15 +159,13 @@ def receipt_freshness(root: Path, plan: dict[str, Any]) -> list[str]:
     """
     stale = []
     for item in [plan, *plan.get("steps", [])]:
-        receipts = item.get("receipts", [])
-        if not receipts:
+        newest = newest_receipt(item)
+        if newest is None:
             continue
-        _, newest = max(enumerate(receipts), key=lambda pair: (observed(pair[1]["observed_at"]), pair[0]))
         for evidence in newest["evidence"]:
             if evidence["ref"].startswith("https://"):
                 continue
-            path = local_path(root, evidence["ref"])
-            if hashlib.sha256(path.read_bytes()).hexdigest() != evidence["sha256"]:
+            if evidence_digest(root, evidence["ref"]) != evidence["sha256"]:
                 stale.append(f"{item['id']}: revalidation required for {evidence['ref']}")
     return sorted(set(stale))
 
