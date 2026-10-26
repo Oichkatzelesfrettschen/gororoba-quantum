@@ -1,5 +1,5 @@
 {
- "script_sha256": "fc9fcda35e3710c1d0595a2d2129550b127922a07da952e584bc2278c2d928f9",
+ "script_sha256": "cd0190244bcf3c632983573a17908e44b90ebeb9063837f08d62d88319d9f6ae",
  "versions": {
   "python": "3.14.8",
   "python_flint": "0.9.0",
@@ -60,7 +60,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.11
+    "seconds": 0.12
    },
    "Iso": {
     "nonzero_normal_forms": {
@@ -78,7 +78,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.2
+    "seconds": 0.19
    },
    "X-": {
     "nonzero_normal_forms": {
@@ -87,7 +87,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.19
+    "seconds": 0.2
    },
    "B9": {
     "nonzero_normal_forms": {
@@ -123,7 +123,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.02
+    "seconds": 0.03
    },
    "Va-": {
     "nonzero_normal_forms": {
@@ -132,7 +132,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.02
+    "seconds": 0.03
    },
    "N+": {
     "nonzero_normal_forms": {
@@ -141,7 +141,7 @@
      "derivations": 0
     },
     "pass": true,
-    "seconds": 0.03
+    "seconds": 0.02
    },
    "N-": {
     "nonzero_normal_forms": {
@@ -172,7 +172,7 @@
    }
   },
   "pass": true,
-  "runtime_s": 0.6
+  "runtime_s": 0.7
  },
  "representatives": {
   "pattern_order": [
@@ -709,7 +709,7 @@
     "X-"
    ],
    "anomalies_total": 0,
-   "seconds": 37.9
+   "seconds": 38.3
   },
   "integer_box_[-3,3]": {
    "per_slice": {
@@ -807,7 +807,7 @@
     "X-"
    ],
    "anomalies_total": 0,
-   "seconds": 9.9
+   "seconds": 10.4
   },
   "F13_complete_slices": {
    "per_slice": {
@@ -910,11 +910,11 @@
     "X-"
    ],
    "anomalies_total": 0,
-   "seconds": 39.5
+   "seconds": 41.4
   },
   "pass_char0": true,
   "pass_F13": true,
-  "runtime_s": 87.2
+  "runtime_s": 90.0
  },
  "germs": {
   "pairs": [
@@ -943,7 +943,7 @@
     "jacobian_rank_of_generators_at_rep": 3,
     "jacobian_rank_at_moved_point": 3,
     "codim": 3,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -1139,7 +1139,7 @@
     "jacobian_rank_of_generators_at_rep": 4,
     "jacobian_rank_at_moved_point": 4,
     "codim": 4,
-    "seconds": 0.05,
+    "seconds": 0.06,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -1169,7 +1169,7 @@
     "jacobian_rank_of_generators_at_rep": 4,
     "jacobian_rank_at_moved_point": 4,
     "codim": 4,
-    "seconds": 0.07,
+    "seconds": 0.05,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -1231,7 +1231,7 @@
     "jacobian_rank_of_generators_at_rep": 3,
     "jacobian_rank_at_moved_point": 3,
     "codim": 4,
-    "seconds": 0.06,
+    "seconds": 0.07,
     "record_says": {
      "dim": 2,
      "mult": 2,
@@ -1275,7 +1275,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 4,
-    "seconds": 0.07,
+    "seconds": 0.08,
     "record_says": {
      "dim": 3,
      "mult": 2,
@@ -1312,7 +1312,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 4,
-    "seconds": 0.18,
+    "seconds": 0.17,
     "record_says": {
      "dim": 4,
      "mult": 2,
@@ -1402,7 +1402,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 4,
-    "seconds": 0.06,
+    "seconds": 0.05,
     "record_says": {
      "dim": 4,
      "mult": 2,
@@ -1439,7 +1439,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 4,
-    "seconds": 0.26,
+    "seconds": 0.24,
     "record_says": {
      "dim": 5,
      "mult": 3,
@@ -1509,7 +1509,7 @@
     "jacobian_rank_of_generators_at_rep": 4,
     "jacobian_rank_at_moved_point": 4,
     "codim": 4,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -1683,7 +1683,7 @@
     "jacobian_rank_of_generators_at_rep": 5,
     "jacobian_rank_at_moved_point": 5,
     "codim": 5,
-    "seconds": 0.06,
+    "seconds": 0.05,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -1743,7 +1743,7 @@
     "jacobian_rank_of_generators_at_rep": 3,
     "jacobian_rank_at_moved_point": 3,
     "codim": 5,
-    "seconds": 0.07,
+    "seconds": 0.06,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -1819,7 +1819,7 @@
     "jacobian_rank_of_generators_at_rep": 2,
     "jacobian_rank_at_moved_point": 2,
     "codim": 5,
-    "seconds": 0.22,
+    "seconds": 0.21,
     "record_says": {
      "dim": 4,
      "mult": 2,
@@ -1983,7 +1983,7 @@
     "jacobian_rank_of_generators_at_rep": 2,
     "jacobian_rank_at_moved_point": 2,
     "codim": 5,
-    "seconds": 0.06,
+    "seconds": 0.05,
     "record_says": {
      "dim": 3,
      "mult": 2,
@@ -2205,7 +2205,7 @@
     "jacobian_rank_of_generators_at_rep": 7,
     "jacobian_rank_at_moved_point": 7,
     "codim": 7,
-    "seconds": 0.05,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2235,7 +2235,7 @@
     "jacobian_rank_of_generators_at_rep": 7,
     "jacobian_rank_at_moved_point": 7,
     "codim": 7,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2265,7 +2265,7 @@
     "jacobian_rank_of_generators_at_rep": 7,
     "jacobian_rank_at_moved_point": 7,
     "codim": 7,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2431,7 +2431,7 @@
     "jacobian_rank_of_generators_at_rep": 8,
     "jacobian_rank_at_moved_point": 8,
     "codim": 8,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2461,7 +2461,7 @@
     "jacobian_rank_of_generators_at_rep": 8,
     "jacobian_rank_at_moved_point": 8,
     "codim": 8,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2611,7 +2611,7 @@
     "jacobian_rank_of_generators_at_rep": 9,
     "jacobian_rank_at_moved_point": 9,
     "codim": 9,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2641,7 +2641,7 @@
     "jacobian_rank_of_generators_at_rep": 9,
     "jacobian_rank_at_moved_point": 9,
     "codim": 9,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2941,7 +2941,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 1,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -2971,7 +2971,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 1,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -3003,7 +3003,7 @@
     "jacobian_rank_of_generators_at_rep": 0,
     "jacobian_rank_at_moved_point": 0,
     "codim": 1,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": {
      "dim": 2,
      "mult": 2,
@@ -3039,7 +3039,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 1,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -3107,7 +3107,7 @@
     "jacobian_rank_of_generators_at_rep": 1,
     "jacobian_rank_at_moved_point": 1,
     "codim": 1,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": "smooth",
     "verdict": "confirmed",
     "consistency_checks": true
@@ -3169,7 +3169,7 @@
     "jacobian_rank_of_generators_at_rep": 0,
     "jacobian_rank_at_moved_point": 0,
     "codim": 1,
-    "seconds": 0.03,
+    "seconds": 0.04,
     "record_says": {
      "dim": 5,
      "mult": 2,
@@ -3207,7 +3207,7 @@
     "jacobian_rank_of_generators_at_rep": 0,
     "jacobian_rank_at_moved_point": 0,
     "codim": 1,
-    "seconds": 0.04,
+    "seconds": 0.03,
     "record_says": {
      "dim": 6,
      "mult": 2,
@@ -3659,9 +3659,9 @@
     "verdict": "confirmed"
    }
   },
-  "seconds": 14.1,
+  "seconds": 14.3,
   "pass": true,
-  "runtime_s": 14.5
+  "runtime_s": 14.7
  },
  "x0_link": {
   "x0_split_coordinates": "u' = e'_2 - i e'_1, mu' = 0, v' = 0",
@@ -3750,9 +3750,9 @@
    "intersection": 7
   },
   "conclusion": "V is a smooth curve germ and B9 a smooth surface germ in the 8-dimensional transverse slice, meeting only at x0 with transverse tangent spaces; the link of their union is S^1 disjoint union S^3",
-  "seconds": 0.3,
+  "seconds": 0.4,
   "pass": true,
-  "runtime_s": 0.3
+  "runtime_s": 0.4
  },
  "controls": {
   "rotation_breaks_Q": true,
@@ -3760,6 +3760,6 @@
   "pass": true,
   "runtime_s": 0.0
  },
- "total_s": 105.6,
+ "total_s": 108.6,
  "pass": true
 }

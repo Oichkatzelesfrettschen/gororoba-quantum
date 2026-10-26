@@ -1216,20 +1216,25 @@ def moved_point(z: Sequence[Fraction], g: Sequence[Sequence[Fraction]]) -> list[
     return act_boost(Fraction(13, 12), Fraction(5, 12), act_g2(g, [3 * x for x in z]))
 
 
+def jacobian_ranks(job: tuple[str, str, Sequence[Sequence[Fraction]]]) -> tuple[int, int]:
+    """Jacobian rank of the closure generators at the orbit representative and at its image under g, boost, scaling."""
+    x, o, g = job
+    p = REPS[o]
+    return jacobian_rank(GENS[x], p), jacobian_rank(GENS[x], moved_point(p, g))
+
+
 def check_germs() -> dict[str, Any]:
     nil = nilpotent_derivations()
     g = matmul7(matmul7(expm_nilpotent(nil[0]), expm_nilpotent(nil[len(nil) // 2])), expm_nilpotent(nil[-1]))
     pairs = germ_pairs()
     start = time.time()
     res = singular_batch([germ_job(pr) for pr in pairs])
+    ranks = parallel.ordered_map(jacobian_ranks, [(x, o, g) for x, o in pairs], min_items=1)
     rows = []
     ok = True
-    for x, o in pairs:
+    for (x, o), (jr, jr_moved) in zip(pairs, ranks, strict=True):
         tags, secs = res[f"germ|{x}|{o}"]
         gm = parse_germ(tags)
-        p = REPS[o]
-        jr = jacobian_rank(GENS[x], p)
-        jr_moved = jacobian_rank(GENS[x], moved_point(p, g))
         smooth = gm["germ_embdim"] == gm["germ_dim"] and gm["germ_mult"] == 1
         expected_dim = (14 if x in ("VQ", "VG") else DIMS[x]) - DIMS[o]
         row: dict[str, Any] = {

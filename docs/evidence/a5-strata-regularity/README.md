@@ -295,9 +295,11 @@ unit dimension 15) and B9 (18, unit 17) meeting in the tangent space of VB (14, 
 
 [verification.md](verification.md) re-derives every statement from `gororoba_quantum/cd_core.py` with separate code,
 [verify_regularity_independent.py](verify_regularity_independent.py), whose output is
-[verification.json](verification.json). It uses a finite boost element instead of the boost derivation, orthogonal
-complements instead of coordinate slices, and the deformation to the normal cone with global orderings instead of
-local standard bases. It confirms every statement and every row of the singular-locus and germ tables, including the
+[verification.json](verification.json). It uses a finite boost element instead of the boost derivation and
+orthogonal complements instead of coordinate slices. For the germ invariants both scripts use the deformation to the
+normal cone, so the two germ computations differ in code and in slice, not in algorithm; the germ-table constant of
+`strata_regularity.py` takes its values from the verifier's rows, and the record reproduces all 63 on its own slices.
+It confirms every statement and every row of the singular-locus and germ tables, including the
 A_1 type of E8-bar along B9. It does not re-prove computation 5: it replaces the drop-locus certificate by an exhaustive
 search of the six slices (a Gaussian box, an integer box and all of F_13^5), which finds no point of R_8 outside the
 twelve orbits, so computation 5 remains the only proof of that step. A
