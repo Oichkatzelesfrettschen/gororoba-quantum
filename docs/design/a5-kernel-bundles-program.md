@@ -147,8 +147,13 @@ replaced by better ones:
 - Committed after orchestrator review and replay: 1baaaee (transport with psi = conj o phi; J acts as i), a6268f8
   (constant symmetry algebra g_2 + four central directions, no boost lift, visible S_3 x Z_2 components). The
   orchestrator reproduced the unit-section orbit dimensions 14, 7, 11, 7, 7, 11, 11 with separate code.
-- Consequence to build on: only N_+- is K-homogeneous. On B9, VB, V and V^a_+- the K-orbits have codimension 3, 2, 8
-  and 6 in the unit section, so each piece is a family of K-orbits over a moduli space M. The kernel bundle over a
+- Consequence to build on: only N_+- is K-homogeneous. Correction (orchestrator, after the aligned-moduli result):
+  the codimensions first written here were read at the recorded representatives, which are special points for K. An
+  independent check at points moved by non-compact G_2 elements and the boost gives generic K-orbit dimensions on the
+  unit sections B9 14 of 17, V 12 of 15, VB 11 of 13, V^a_+- 12 of 13: generic codimensions 3, 3, 2, 1 (B9 and VB
+  unchanged at every tested point, V and V^a_+- jumping from 7). The recorded representatives of V and V^a_+- lie on
+  a lower K-stratum (stabilizer su(3) at V^a_+-). So each piece is a family of K-orbits over a moduli space M, and
+  each M carries its own stabilizer strata. The kernel bundle over a
   piece restricts to a homogeneous bundle on each K-orbit (stabilizer representation on the fiber) and varies over M.
   Item 2 and the transition data should exploit this: find M for each piece (explicit K-invariants separating
   orbits), the stabilizer type over each point of M, and whether the stabilizer representation on ker L_y is constant
