@@ -22,8 +22,8 @@ pinching case on 2026-10-26 sent nothing:
 
 ## Approval contract
 
-The owner approves an envelope: a versioned, machine-readable `envelope.json` that a dry run writes and the written case
-is generated from. It binds the experiment digest and the pinching analysis digest, the family definition (arms, N grid,
+The owner approves an envelope: the dry run's `record.json`, whose `envelope` section (schema `msq-envelope-v1`) the
+written case is generated from, bound by the record's sha256. It binds the experiment digest and the pinching analysis digest, the family definition (arms, N grid,
 signs, member list and order, control members), shots, seeds (`seed_transpiler` 20261010 and its count, the simulator
 seed), Sampler policy (twirling and dynamical decoupling off, `init_qubits` true), the repetition delay and its
 fallback, the IBM Cloud instance, the dependency versions, the backend (ibm_kingston only), the layout function and its
@@ -52,7 +52,8 @@ against a 6 s ceiling, an overrun of about 6 s of shot loop. At 32768 shots the 
 1.02 s of circuit time each (job metrics under their `raw/`). The retained evidence therefore separates the two cases by
 execution, not by code, on two jobs each.
 
-The fallback runs in `--collect` on the known attempt-1 job id (Finding B). Collect sends attempt 2 at 50 us only when
+The fallback runs after `--collect`, as `live_run.py --envelope-fallback RUN_DIR` with attempt 1's planning flags, on
+the known attempt-1 job id (Finding B). It sends attempt 2 at 50 us only when
 attempt 1 is in ERROR with code 1305, its job metrics report zero or absent `circuits_execution_time_ns`, and its final
 billed charge is at most 3 s (the 2.3 s planned job overhead rounded up); any other terminal state, including a 1305
 with executed circuit time, ends the envelope, and a further attempt needs the owner. A 1602 or 8030 on attempt 1 also
@@ -62,9 +63,9 @@ the attempt-1 job id, its error code, its circuit time and its billed charge) be
 the repetition delay, the attempt index and the envelope digest to the batch identity, so the two attempts never share
 a recovery tag.
 
-A stalled attempt bills, so the envelope binds an aggregate cap, `envelope_cap = ceiling_1 + ceiling_2`, in
-`envelope.json` (new P1 of the v3 re-check). Attempt 1 is admitted when the account's remaining seconds minus the reserve
-cover `envelope_cap`; attempt 2 is admitted only when the remaining seconds read at collect, minus the reserve, cover
+A stalled attempt bills, so the envelope binds an aggregate cap, `envelope_cap = ceiling_1 + ceiling_2`, in the
+record's envelope contract (new P1 of the v3 re-check). Attempt 1 is admitted when the account's remaining seconds minus the reserve
+cover `envelope_cap`; attempt 2 is admitted only when the remaining seconds read by the fallback step, minus the reserve, cover
 attempt 1's attributed final charge (its ceiling while the charge is unattributed) plus `ceiling_2`, and that sum stays at
 most `envelope_cap`.
 
@@ -154,13 +155,16 @@ the diagnostic's.
 The pooled z keeps the code's convention: statistical errors in quadrature, the shared gate-model systematic linearly.
 The count rule fires when at least max(2, ceil(0.1 W)) informative qubits depart in the same direction.
 
-Null calibration (Finding D). A preregistered stochastic null replays the complete decision pipeline at the chosen W:
-binomial shot noise on every member and control, a common offset of +0.011 plus an independent per-qubit part of 0.0105,
-the same-run rms floor, the informative filter, execution-time withholding, the reset-control and crosstalk withholding,
-and both verdict directions of both the pooled test and the count rule; the reset screen is the equivalence rule above
-and the crosstalk screen the pattern dispersion test below, each with its own shot noise. Its seed is a QRNG draw cited
-by index, its replicates are numpy-batched with the scalar bit-equality gate of `docs/runbooks/vectorized-fits.md`, and its result is
-a 95% upper bound on the family-wise false-fire rate, which must lie below 0.01. An exploratory unseeded run of the
+Null calibration (Finding D). A preregistered stochastic null (`gororoba_quantum/msq_envelope_null.py`) replays the
+complete decision pipeline at the chosen W: binomial shot noise on every member and control, a unitary residual of
++0.011 common to all qubits plus an independent normal part of SD 0.0105 (realized through each qubit's sx error, the
+even-under-sign gate error the model propagates), the same-run rms floor, the informative filter, the reset and pattern
+withholding, and both verdict directions of both the pooled test and the count rule. Null devices pass execution-time
+eligibility by construction, so that screen only removes qubits and is left out. Its seed is ANU QRNG draw
+2026-10-26T220128Z index 1; each replicate runs the scalar pipeline under its own `SeedSequence` child, and the
+replicates map through the pool. The per-qubit fits keep the replicates from a numpy batch, so the batched-estimator
+rule of AGENTS.md does not apply to this null. Its result is the one-sided 95 % Clopper-Pearson upper bound on the
+family-wise false-fire rate, which must lie below 0.01: 299 clean replicates reach it. An exploratory unseeded run of the
 pooled test and count rule alone fired zero times in 20000 replicates per cell at W = 8 to 44 (95% upper bound 1.5e-4);
 the preregistered replay replaces it.
 
@@ -216,11 +220,11 @@ job dbfdotnpc3tc739n8nm0, 23 s) shares the instance, and the branch that merges 
 
 1. One Codex pass on the v3.1 dispositions of B, C, E and the aggregate cap, answered Fixed, Refuted or Boundary; the
    pieces A and D settled start implementation in parallel.
-2. Implementation: `envelope.json` and its schema, the canonical snapshot and plan digest, the equality and rebuild gate,
+2. Implementation: the record's envelope section, the canonical snapshot and plan digest, the equality and rebuild gate,
    `rule`, the end reset, the reset and crosstalk control members, the per-attempt approval markers and recovery tags,
    the collect-time fallback, execution-time eligibility, the stochastic null, the doctrine edit, and the stale
    "eighteen endpoints" prose in `diagnostic_experiments.py` corrected to seventeen (Finding P); tests and lanes.
 3. The envelope dry run on the live calibration, which fills the charge table and chooses the tier, and the null
    calibration at that tier.
-4. The written case generated from `envelope.json`, with the doctrine change as its own question.
+4. The written case generated from the record's envelope section, with the doctrine change as its own question.
 5. On approval, the submission on the live calibration, the collection and the preregistered analysis.
