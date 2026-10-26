@@ -84,11 +84,13 @@ figures, which approximates job-01's F*. Job-01 recomputes F* at its own layout 
 Job-01 is preregistered at its own read, so 0.86 is no admission threshold for it. Decision power needs F* above
 B + 0.02: 0.7137 at job-00's B = 0.6937, and job-01 recomputes B from its own read's three-click
 probabilities. The cost grows as the margin shrinks: 314 accepted outcomes decide at F* 0.86, 901 at 0.80
-and 5093 at 0.75, so the samples, `max_shots` and credits grow by the same factor.
+and 2115 at 0.77, and the samples, `max_shots`, credits and seconds grow by the same factor. The job must also fit
+the 300 s `max_duration` by job-00's seconds model, which at job-00's modeled probabilities holds from F* 0.77
+upward (300 s; 0.76 needs 420 s). `--prepare` refuses either shortfall and retains nothing.
 
-- At or below B + 0.02, job-01 has no decision power at this read. Report the comment and re-arm the watch for the
-  new state.
-- Above B + 0.02, prepare job-01 by the procedure of [Building job-01](#building-job-01). Its written case carries the
+- Below F* 0.77 (the comment's figure is a guide; `--prepare` decides at job-01's own layout), report the comment
+  and re-arm the watch for the new state.
+- At F* 0.77 or above, prepare job-01 by the procedure of [Building job-01](#building-job-01). Its written case carries the
   derived credits, so the owner weighs the cost before approving. Re-arm the watch as well when the owner wants
   later reads reported. Nothing is submitted before the owner approves the written case; the job-00 approval
   covered one submission and does not carry over.
@@ -124,13 +126,13 @@ holds the question, the preregistration rule and the six-step procedure. The fac
   `scripts/qd_rehearsal_secondary.py` takes the job named by the run's `cases.json`.
 - `--prepare job-01` derives the layout, `noise-model.json` and `shot-estimate.json` from
   `results/quandela/cases/teleportation_rehearsal/job-01/platform-read/catalogue.json`. It then prints the
-  `REQUESTS` and `JOBS` rows. A read without decision power (F* not above B + 0.02) leaves nothing retained.
+  `REQUESTS` and `JOBS` rows. A read without decision power (F* not above B + 0.02) or whose expected seconds
+  exceed the 300 s `max_duration` leaves nothing retained.
 
 When the watch posts a scorable change, take step 1 of the design's procedure (the snapshot), then step 2, and open
 one pull request carrying the read, the derivation, the estimate, the two rows, the case files, the frozen body, the
-plan record and the written-case paragraph. The written case then goes to the owner. A model pooled fidelity at
-the fresh read that does not exceed B + 0.02 means the chip has not recovered enough for this case: report it, and
-keep the watch re-armed (procedure above). The six seeds stay reserved for job-01.
+plan record and the written-case paragraph. The written case then goes to the owner. A refusal by `--prepare` means
+the chip has not recovered enough for this case: report it, and keep the watch re-armed (procedure above). The six seeds stay reserved for job-01.
 
 ## References
 

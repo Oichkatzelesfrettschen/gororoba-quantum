@@ -709,6 +709,31 @@ def test_prepare_refuses_a_read_without_decision_power(tmp_path: Path, monkeypat
 
 # qd_classical_benchmark._require_optimal admits an inaccurate optimum and _free_postselection_bound certifies the
 # bound from the projected witness, so cvxpy's inaccuracy warning on the moved layout's attempts carries no defect.
+def test_expected_seconds_reproduce_job_00_and_bound_the_job_by_max_duration() -> None:
+    derived = rehearsal.retained_derivation("job-00")
+    clock = json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))["processors"][rehearsal.PLATFORM][
+        "perfs"
+    ]["Clock (MHz)"]
+    if rehearsal.expected_seconds(derived, 900, clock) != rehearsal.JOBS["job-00"].expected_seconds:
+        raise AssertionError("the seconds model departs from job-00's written case")
+    if rehearsal.expected_seconds(derived, 15 * 900, clock) <= rehearsal.MAX_DURATION:
+        raise AssertionError("fifteen times job-00's samples fit in max_duration")
+
+
+@pytest.mark.filterwarnings("ignore:Solution may be inaccurate:UserWarning")
+def test_prepare_refuses_a_case_whose_expected_seconds_exceed_max_duration(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    cases = staged_case_tree(
+        tmp_path, monkeypatch, json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))
+    )
+    monkeypatch.setattr(rehearsal, "COMPILE_SECONDS", 60.0)
+    with pytest.raises(ValueError, match="above max_duration"):
+        rehearsal.prepare("job-01")
+    if sorted(path.name for path in (cases / "job-01").iterdir()) != ["platform-read"]:
+        raise AssertionError("a refused preparation retained a file")
+
+
 @pytest.mark.filterwarnings("ignore:Solution may be inaccurate:UserWarning")
 def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
@@ -760,8 +785,10 @@ def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
         raise AssertionError((job, derived))
     if job.shots != math.ceil(1000 * job.samples * rehearsal.SHOT_MARGIN / 100_000) * 100_000:
         raise AssertionError(job)
-    if job.credit_ceiling != round(1 + job.shots * 1e-6, 6) or job.expected_seconds != rehearsal.MAX_DURATION:
-        raise AssertionError(job)
+    clock = catalogue["processors"][rehearsal.PLATFORM]["perfs"]["Clock (MHz)"]
+    seconds = rehearsal.expected_seconds(derived, job.samples, clock)
+    if job.credit_ceiling != round(1 + job.shots * 1e-6, 6) or job.expected_seconds != seconds or seconds > 300:
+        raise AssertionError((job, seconds))
     monkeypatch.setitem(rehearsal.REQUESTS, "job-01", job.request)
     monkeypatch.setitem(rehearsal.JOBS, "job-01", job)
     rehearsal.build(job)

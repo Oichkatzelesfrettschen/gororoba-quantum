@@ -165,6 +165,11 @@ ESTIMATE = "shot-estimate.json"
 # The allowance for what no noise variant models: compilation phase error and dark clicks (bounded in justify).
 UNMODELED_ALLOWANCE = 0.02
 SYSTEMATIC_QUANTUM = 0.01
+# The server's compilation time of one template iteration, the figure of job-00's written case.
+COMPILE_SECONDS = 10.0
+# The written case's seconds exceed the modeled compile and acquisition time by this factor, in whole minutes.
+SECONDS_MARGIN = 1.25
+SECONDS_QUANTUM = 60
 
 
 @dataclass(frozen=True)
@@ -800,6 +805,18 @@ def derive(sim: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+def expected_seconds(derived: Mapping[str, Any], samples: int, clock_mhz: float) -> float:
+    """The written case's seconds: COMPILE_SECONDS per iteration plus each input's samples over the clock rate times its
+    modeled three-click probability per pulse, times SECONDS_MARGIN, rounded up to SECONDS_QUANTUM.
+
+    Job-00's derivation gives 120 s. The model is unverified on the chip: job-00 ran 292 s in the degraded state, in
+    which every iteration ran to its max_shots."""
+    probability = derived["sample_probability"]
+    acquisition = sum(samples / (clock_mhz * 1e6 * probability[label]) for label, *_ in SIX_STATES)
+    modeled = COMPILE_SECONDS * len(SIX_STATES) + acquisition
+    return float(math.ceil(modeled * SECONDS_MARGIN / SECONDS_QUANTUM) * SECONDS_QUANTUM)
+
+
 def retained_derivation(name: str) -> dict[str, Any]:
     """The derivation retained as noise-model.json, which fixes the manifest's preregistered values."""
     path = CASES / name / "noise-model.json"
@@ -1147,6 +1164,12 @@ def check() -> int:
             job.credit_ceiling >= PER_JOB_CREDITS + job.shots * PRICE_PER_SHOT - 1e-9,
             f"{job.name}: the credit ceiling {job.credit_ceiling} is below the per-job price plus max_shots",
         )
+        clock = read_perfs(json.loads((ROOT / job.request.anchor_read).read_text(encoding="utf-8")))[2]["clock_mhz"]
+        seconds = expected_seconds(derived, job.samples, clock)
+        require(
+            job.expected_seconds == seconds and seconds <= MAX_DURATION,
+            f"{job.name}: expected {job.expected_seconds} s, derived {seconds:g} s against max_duration {MAX_DURATION}",
+        )
         print(
             f"teleportation rehearsal {job.name}: {len(manifest['settings'])} inputs validated, cases.json "
             f"{sha256_bytes(retained['cases.json'])}; refused {', '.join(refused)}"
@@ -1452,11 +1475,12 @@ def write_estimate(request: Request, case_dir: Path | None = None) -> dict[str, 
     return record
 
 
-def write_justification(request: Request) -> dict[str, Any]:
-    """Retain the noise-model derivation beside the case; a retained file is never rewritten."""
+def write_justification(request: Request, record: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Retain the noise-model derivation `record` (justify's by default) beside the case; a retained file is never
+    rewritten."""
     path = request.directory / "noise-model.json"
     require(not path.exists(), f"{path.relative_to(ROOT)} exists; the retained derivation is frozen")
-    record = justify(request)
+    record = record or justify(request)
     path.write_text(json.dumps(record, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(record["derived"], indent=1, sort_keys=True))
     return record
@@ -1469,8 +1493,9 @@ def prepare(name: str) -> int:
     fresh read and its anchor read. choose_layout places the logical modes on it, justify derives the decision rule
     and the sample budget under its figures (noise-model.json), and estimate_required_shots under its perfs sizes
     max_shots (shot-estimate.json) on the request staged in a temporary directory. The job bills 1 + max_shots * 1e-6
-    credits, and its expected seconds are max_duration: an iteration that exhausts max_shots runs until the service's
-    limit, as job-00's six iterations did in 292 of their 300 s. The REQUESTS and JOBS rows printed last enter the
+    credits, and its expected seconds follow expected_seconds at the read's clock. A read without decision power
+    (bernoulli_decision_count) or whose expected seconds exceed max_duration retains nothing: a job cut off at
+    max_duration bills its max_shots and decides nothing. The REQUESTS and JOBS rows printed last enter the
     script in the change that retains these files, and `JOB`, --check, --body JOB and --plan JOB follow. A rerun
     re-derives and compares a retained noise-model.json and reuses a retained shot-estimate.json, so a failed live
     estimate resumes without rewriting a retained file."""
@@ -1478,15 +1503,21 @@ def prepare(name: str) -> int:
     request_dir = CASES / name
     read = request_dir / READ
     require(read.is_file(), f"{read.relative_to(ROOT)} is absent; snapshot the platform into it first")
-    t_out, dark, _ = read_perfs(json.loads(read.read_text(encoding="utf-8")))
+    t_out, dark, figures = read_perfs(json.loads(read.read_text(encoding="utf-8")))
     request = Request(name, choose_layout(t_out, dark), CASE_SEEDS[name], str(read.relative_to(ROOT)))
     retained = request_dir / "noise-model.json"
+    record = justify(request)
     if retained.is_file():
-        close(justify(request), json.loads(retained.read_text(encoding="utf-8")), f"{name}/noise-model.json")
-        derived = retained_derivation(name)
-    else:
-        derived = write_justification(request)["derived"]
+        close(record, json.loads(retained.read_text(encoding="utf-8")), f"{name}/noise-model.json")
+    derived = record["derived"]
     samples = int(derived["samples_per_iteration"])
+    seconds = expected_seconds(derived, samples, figures["clock_mhz"])
+    require(
+        seconds <= MAX_DURATION,
+        f"{name}: {samples} samples per iteration need an expected {seconds:g} s, above max_duration {MAX_DURATION} s",
+    )
+    if not retained.is_file():
+        write_justification(request, record)
     if (request_dir / ESTIMATE).is_file():
         estimate = json.loads((request_dir / ESTIMATE).read_text(encoding="utf-8"))
         require(estimate["samples"] == samples, f"{name}/{ESTIMATE} estimates {estimate['samples']} samples")
@@ -1504,7 +1535,7 @@ def prepare(name: str) -> int:
         f'REQUESTS["{name}"] = Request("{name}", {request.layout}, {name.upper().replace("-", "_")}_COMPILATION_SEEDS, '
         f'"{request.anchor_read}")'
     )
-    print(f'JOBS["{name}"] = Job(REQUESTS["{name}"], {samples}, {shots:_}, {credits}, {float(MAX_DURATION)})')
+    print(f'JOBS["{name}"] = Job(REQUESTS["{name}"], {samples}, {shots:_}, {credits}, {seconds})')
     return 0
 
 

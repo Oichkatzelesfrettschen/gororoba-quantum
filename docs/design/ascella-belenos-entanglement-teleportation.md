@@ -472,7 +472,8 @@ at the figures live at submission to reach job-01's own F*, so it refuses a chip
 preregistration between the read and the submission, and `--anchor` refuses a case anchored at its own read. The
 record watch keeps triggering on job-00's F* = 0.86; it decides when to read, and job-01's own F* decides admission.
 A read whose model gives an F* that does not exceed the classical bound plus 0.02 has no decision power:
-`bernoulli_decision_count` refuses it and `--prepare` retains nothing.
+`bernoulli_decision_count` refuses it and `--prepare` retains nothing. A read whose budget does not fit the 300 s
+`max_duration` is refused the same way (below).
 
 **Compilation seeds.** The six values are 8608, 30481, 4339, 55973, 12504 and 37710 for +Z, -Z, +X, -X, +Y, -Y:
 indices 0 to 5, in index order, of the Cisco Outshift QRNG draw
@@ -488,8 +489,14 @@ reached Outshift. Job-01 is a new acquisition on new meshes, so its seeds are ne
 - `noise-model.json`, holding F*, the allowance, B, the decision count and the samples per iteration;
 - `shot-estimate.json`, with `max_shots` at 1.25 times the largest per-input estimate, rounded up to 100,000.
 
-The charge is 1 + `max_shots` * 1e-06 credits. The expected seconds are the 300 s `max_duration`, because job-00 ran
-292 s with every iteration at its `max_shots`. The command prints the `REQUESTS` and `JOBS` rows that register the
+The charge is 1 + `max_shots` * 1e-06 credits. The expected seconds follow job-00's method (`expected_seconds`):
+10 s of server compilation per iteration plus each input's samples over the 4.94 MHz clock times its modeled
+three-click probability, times 1.25, rounded up to whole minutes; job-00's figures give its 120 s. A case whose
+expected seconds exceed the 300 s `max_duration` retains nothing, because a job the service cuts off bills its
+`max_shots` and decides nothing. At job-00's modeled probabilities that admits F* of 0.77 and above (2115 accepted
+outcomes, 5600 samples per iteration, 300 s); F* 0.76 needs 420 s. The method is unverified on the chip: job-00,
+predicted under 100 s, ran 292 s in the degraded state with every iteration at its `max_shots`, and job-01's
+written case says so. The command prints the `REQUESTS` and `JOBS` rows that register the
 case; [the test](../../tests/scripts/test_qd_teleportation_rehearsal.py) runs the whole sequence on a stand-in read
 whose layout moves off chip modes 8 to 15.
 
