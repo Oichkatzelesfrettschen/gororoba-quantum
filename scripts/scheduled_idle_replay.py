@@ -22,7 +22,9 @@ channel in through that pass and then drops every delay, top level and branch bo
 if_else body carries no noise under Aer either. The unpadded exact law is the control: it reproduces the record's
 own exact model where the record keeps one. A record's declared `prep_excitation` runs in both paths, as the
 leading X error of the sampled run and the initial bit flip of the exact law. The sampled laws stay beside the
-exact ones, and every sampled frequency must lie within the simultaneous Hoeffding radius of its exact law.
+exact ones, and every sampled frequency must lie within the simultaneous Hoeffding radius of its exact law. The
+sampled path reuses the record's own replay seed (`live_run.SEED_SIMULATOR`), so it differs from the recorded replay
+only by the inserted delays.
 
 The padded replay adds incoherent idle only; the remaining gap to the measured laws is idle-time detuning, ZZ,
 leakage and any other effect the Target's T1, T2 and gate errors do not express.
@@ -235,12 +237,42 @@ def list_schedule_idle(
     return {q: cursor[q] - first[q] - busy[q] for q in qubits if q in first}
 
 
+ReplicaItem = tuple[QuantumCircuit, list[tuple[str, str, str, int, int, str]], list[int], list[str]]
+
+
+Replica = tuple[QuantumCircuit, QuantumCircuit, dict[int, int], bytes, bytes]
+
+
+def replica_circuits(item: ReplicaItem) -> Replica:
+    """The padded and unpadded replica of one (fused circuit, schedule rows, qubits, registers) item.
+
+    Returns both circuits, the inserted idle per qubit and the qpy bytes of each circuit, which the exact path
+    loads.
+    """
+    fused, rows, qubits, registers = item
+    padded, inserted = padded_replica(fused, rows, qubits, registers)
+    bare, _ = padded_replica(fused, rows, qubits, registers, insert=False)
+    return padded, bare, inserted, _serialized(padded), _serialized(bare)
+
+
+def _schedule_item(item: tuple[ReplicaItem, Any]) -> dict[str, dict[str, int]]:
+    replica, target = item
+
+    def duration(name: str, physical: tuple[int, ...]) -> int:
+        return round(target[name][physical].duration / target.dt)
+
+    _, bare, service_idle, _, _ = replica_circuits(replica)
+    local = list_schedule_idle(bare, duration, replica[2])
+    return {"service": {str(q): v for q, v in service_idle.items()}, "local": {str(q): v for q, v in local.items()}}
+
+
 def local_schedule(run_dir: Path, out: Path) -> dict[str, Any]:
     """The service's inserted idle beside a local list schedule under the execution Target's durations."""
     from qiskit_ibm_runtime import QiskitRuntimeService
 
     import ibm_account
     import live_run
+    import parallel
 
     record = json.loads((run_dir / "record.json").read_text(encoding="utf-8"))
     collected = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
@@ -251,26 +283,19 @@ def local_schedule(run_dir: Path, out: Path) -> dict[str, Any]:
     service = ibm_account.open_service(QiskitRuntimeService)
     ibm_account.require_instance(ibm_account.recorded_instance(run_dir), live_run._instance_hash(service), job_id)
     backend = service.backend(job["backend"])
-    members: dict[str, list[dict[str, dict[str, int]]]] = {}
+    keys: list[str] = []
+    items: list[tuple[ReplicaItem, Any]] = []
     for index, pub in enumerate(record["execution_pubs"]):
         rows = schedule_rows(run_dir / "raw" / job_id / f"pub_{index:02d}.json")
         start = job["pub_timing"][pub["name"]]["execution_window_start"]
         target = backend.target_history(datetime=datetime.fromisoformat(start))
-
-        def duration(name: str, physical: tuple[int, ...], target: Any = target) -> int:
-            return round(target[name][physical].duration / target.dt)
-
         for component in pub["components"]:
-            members[component["member"]] = []
             for qubits, registers in zip(replicas, component["registers_by_replica"], strict=True):
-                bare, service_idle = padded_replica(fused_by_name[pub["name"]], rows, qubits, registers, insert=False)
-                local = list_schedule_idle(bare, duration, qubits)
-                members[component["member"]].append(
-                    {
-                        "service": {str(q): v for q, v in service_idle.items()},
-                        "local": {str(q): v for q, v in local.items()},
-                    }
-                )
+                keys.append(component["member"])
+                items.append(((fused_by_name[pub["name"]], rows, qubits, registers), target))
+    members: dict[str, list[dict[str, dict[str, int]]]] = {}
+    for member, row in zip(keys, parallel.ordered_map(_schedule_item, items, min_items=2), strict=True):
+        members.setdefault(member, []).append(row)
     report = {"schema": "local-idle-schedule-v1", "run": run_dir.relative_to(ROOT).as_posix(), "members": members}
     out.write_text(json.dumps(report, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     return report
@@ -352,8 +377,18 @@ def replay(run_dir: Path, out: Path) -> dict[str, Any]:
     idle_dt: dict[str, list[dict[str, int]]] = {}
     exact_keys: list[tuple[str, str]] = []
     exact_items: list[tuple[bytes, Any, float]] = []
+    replica_keys: list[str] = []
+    replica_items: list[ReplicaItem] = []
     for index, pub in enumerate(record["execution_pubs"]):
         rows = schedule_rows(run_dir / "raw" / job_id / f"pub_{index:02d}.json")
+        for component in pub["components"]:
+            for qubits, registers in zip(replicas, component["registers_by_replica"], strict=True):
+                replica_keys.append(component["member"])
+                replica_items.append((fused_by_name[pub["name"]], rows, qubits, registers))
+    built: dict[str, list[Replica]] = {}
+    for member, triple in zip(replica_keys, parallel.ordered_map(replica_circuits, replica_items), strict=True):
+        built.setdefault(member, []).append(triple)
+    for pub in record["execution_pubs"]:
         start = job["pub_timing"][pub["name"]]["execution_window_start"]
         if start not in simulators:
             moment = datetime.fromisoformat(start)
@@ -367,14 +402,12 @@ def replay(run_dir: Path, out: Path) -> dict[str, Any]:
         for component in pub["components"]:
             noise = simulators[start].options.noise_model
             circuits, gaps = [], []
-            for qubits, registers in zip(replicas, component["registers_by_replica"], strict=True):
-                circuit, inserted = padded_replica(fused_by_name[pub["name"]], rows, qubits, registers)
-                bare, _ = padded_replica(fused_by_name[pub["name"]], rows, qubits, registers, insert=False)
+            for circuit, _, inserted, padded_bytes, bare_bytes in built[component["member"]]:
                 circuits.append(circuit)
                 gaps.append({str(q): v for q, v in inserted.items()})
-                for variant, member_circuit in (("idle_padded", circuit), ("unpadded", bare)):
+                for variant, payload in (("idle_padded", padded_bytes), ("unpadded", bare_bytes)):
                     exact_keys.append((variant, component["member"]))
-                    exact_items.append((_serialized(member_circuit), noise, prep_excitation))
+                    exact_items.append((payload, noise, prep_excitation))
             sampled = (
                 [dynamic_density.with_prep_excitation(circuit, prep_excitation) for circuit in circuits]
                 if prep_excitation

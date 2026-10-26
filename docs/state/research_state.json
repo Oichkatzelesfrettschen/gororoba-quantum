@@ -10147,7 +10147,7 @@
     },
     {
       "id": "kingston-qet-scheduled-idle-coherent-phase",
-      "statement": "Replaying the three ibm_kingston QET jobs exactly with the service-scheduled idle written in as delays under the execution Target, incoherent idle moves the ladder channel floor margin from +0.057 to +0.001 (measured -0.160), the frame diagnostic's as-run parity from 0.982 to 0.960 (measured 0.863) and the compensated selected margin from +0.057 to +0.028 (measured -0.073), and produces no window phase (0.010 rad padded against 0.267 measured). The phase that empties the uncompensated information excess (padded 0.099, measured 0.019) is therefore coherent and outside the Target's T1 and T2; once each pair's reference arms compensate it, the measured information excess 0.107 agrees with the padded exact 0.112.",
+      "statement": "Replaying the three ibm_kingston QET jobs exactly with the service-scheduled idle written in as delays under the execution Target, incoherent idle moves the ladder channel floor margin from +0.057 to +0.001 (measured -0.160), the frame diagnostic's as-run parity from 0.982 to 0.960 (measured 0.863) and the compensated selected margin from +0.057 to +0.028 (measured -0.073), and produces no window phase (0.010 rad padded against 0.267 measured). The phase that empties the uncompensated information excess (padded 0.099, measured 0.019) is therefore coherent and outside the Target's T1 and T2; once each pair's reference arms compensate it, the measured information excess 0.107 agrees with both the padded exact 0.112 and the unpadded exact 0.105, an endpoint insensitive to the incoherent idle.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",

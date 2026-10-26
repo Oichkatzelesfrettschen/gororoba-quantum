@@ -339,7 +339,8 @@ Three jobs on 14 calibration-qualified pairs (backup instance, 110 s in total; c
 
   Incoherent idle closes about a quarter of each margin gap and creates no window phase. The phase that empties the
   uncompensated information excess is coherent and lies outside the Target's T1 and T2. Once each pair's own
-  reference arms compensate it, the measured information excess agrees with the padded model within 0.005. The
+  reference arms compensate it, the measured information excess agrees with the model padded or not (0.112 and
+  0.105 against 0.107), an endpoint the incoherent idle barely moves. The
   remaining margin shortfall of 0.10 sits in the reference arm's uninformed energy, where preparation and the
   measured assignment errors carry it (on the ladder, A's `p(0|1)` reads 0.030 against 0.014 in the padded model).
 
