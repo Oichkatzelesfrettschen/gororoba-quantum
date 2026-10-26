@@ -176,6 +176,14 @@ def left_matrix_32(y: Sequence[int]) -> list[list[int]]:
     return [[y[r ^ c] * cd_sign(DIM, r ^ c, c) for c in range(DIM)] for r in range(DIM)]
 
 
+def anticommutes(item: tuple[list[list[int]], list[list[int]]]) -> bool:
+    """J L + L J = 0 for one left multiplication matrix L."""
+    j_matrix, left_k = item
+    left = matmul(j_matrix, left_k)
+    right = matmul(left_k, j_matrix)
+    return all(left[r][c] + right[r][c] == 0 for r in range(DIM) for c in range(DIM))
+
+
 def doubly_pure(flip: tuple[int, int] | None = None) -> dict[str, Any]:
     """J = L_(e_16) squares to -I, every L_(e_k) is skew, and J anticommutes with L_(e_k) for k not in {0, 16}.
 
@@ -184,19 +192,14 @@ def doubly_pure(flip: tuple[int, int] | None = None) -> dict[str, Any]:
     flip = (r, c) negates one entry of J, a mutation that must break the identities.
     """
     unit = [[1 if r == c else 0 for c in range(DIM)] for r in range(DIM)]
-    basis = {k: left_matrix_32([1 if j == k else 0 for j in range(DIM)]) for k in range(1, DIM)}
+    units = [[1 if j == k else 0 for j in range(DIM)] for k in range(1, DIM)]
+    basis = dict(zip(range(1, DIM), parallel.ordered_map(left_matrix_32, units), strict=True))
     j_matrix = copy.deepcopy(basis[HALF])
     if flip is not None:
         j_matrix[flip[0]][flip[1]] = -j_matrix[flip[0]][flip[1]]
     square = matmul(j_matrix, j_matrix)
     skew = all(basis[k][r][c] == -basis[k][c][r] for k in basis for r in range(DIM) for c in range(DIM))
-    anticommute = []
-    for k in basis:
-        if k == HALF:
-            continue
-        left = matmul(j_matrix, basis[k])
-        right = matmul(basis[k], j_matrix)
-        anticommute.append(all(left[r][c] + right[r][c] == 0 for r in range(DIM) for c in range(DIM)))
+    anticommute = parallel.ordered_map(anticommutes, [(j_matrix, basis[k]) for k in basis if k != HALF])
     return {
         "j_squares_to_minus_identity": all(square[r][c] == -unit[r][c] for r in range(DIM) for c in range(DIM)),
         "imaginary_left_matrices_skew": skew,

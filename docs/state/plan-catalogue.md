@@ -27,7 +27,7 @@ Work completion describes the recorded obligation. Scientific claims and provide
 ## Inbox
 
 - **[a5-zero-divisor-strata-admission](plans/a5-zero-divisor-strata-admission.json)** (inbox; unresolved): Admit a5-zero-divisor-strata (roadmap item 3 of dimension32-global-topology) only for the subclaims an independent opus re-check from cd\_core confirms. [Context](../../docs/evidence/a5-zero-divisor-strata/README.md).
-  Next: Add the owned rows for the verifier's two draws after the owned-section PR lands, open the admission PR, run the Codex loop and the critical diff review, then merge. Blocked: reconciliation evidence unresolved.
+  Next: Add the owned rows for the verifier's two draws after the owned-section PR lands, open the admission PR, run the Codex loop and the critical diff review, then merge. Blocked: reconciliation evidence unresolved. Historical receipt inputs changed; revalidation required.
 
 - **[aer-gpu-stack-qualification](plans/aer-gpu-stack-qualification.json)** (inbox; unresolved): aer-gpu-stack: Aer GPU configuration, the GPU ghost benchmark, and a Kaggle GPU Aer build [Context](../../docs/evidence/plan-reconciliation/sources/f6f781ba372f8c318aaea54ca3a0e255195f019b893276d9aa2cd8abedd70ac5.txt).
   Next: Match the original acceptance obligations below to retained validation, acquisition, or supersession receipts. Blocked: reconciliation evidence unresolved.

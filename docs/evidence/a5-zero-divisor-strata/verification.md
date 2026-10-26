@@ -6,7 +6,7 @@ with these sha256 digests:
 - `docs/evidence/a5-zero-divisor-strata/README.md`: 898a9c37ae7ace9e3535744788b422651684da6892704ecf485ba16e9fe60b46;
 - `docs/evidence/a5-zero-divisor-strata/result.json`: 5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c.
 
-[`verify_independent.py`](verify_independent.py) re-derives the claims of
+[`verify_strata_independent.py`](verify_strata_independent.py) re-derives the claims of
 [`scripts/a5_zero_divisor_strata.py`](../../../scripts/a5_zero_divisor_strata.py) and its [README](README.md) from
 `gororoba_quantum/cd_core.py` alone and writes [`verification.json`](verification.json). It imports nothing from the
 author's script. Every multiplication table comes from `left_mult_matrix_exact` and is checked against
@@ -36,9 +36,9 @@ Replay:
 
 ```sh
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 PYTHON=...   # the ci-py3.14.7 interpreter
-"$PYTHON" -B -W error docs/evidence/a5-zero-divisor-strata/verify_independent.py --self-test
-"$PYTHON" -B -W error -O docs/evidence/a5-zero-divisor-strata/verify_independent.py --self-test
-"$PYTHON" -B -W error docs/evidence/a5-zero-divisor-strata/verify_independent.py \
+"$PYTHON" -B -W error docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py \
     --out docs/evidence/a5-zero-divisor-strata/verification.json
 ```
 

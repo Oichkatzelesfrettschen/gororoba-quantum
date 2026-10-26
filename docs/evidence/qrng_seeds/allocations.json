@@ -208,12 +208,12 @@
  "owned": [
   {
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
-   "path": "docs/evidence/a5-zero-divisor-strata/verify_independent.py",
+   "path": "docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py",
    "reason": "DRAW_A: family-point PCG64 seeds and integer z points read as raw values by runtime index"
   },
   {
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
-   "path": "docs/evidence/a5-zero-divisor-strata/verify_independent.py",
+   "path": "docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py",
    "reason": "DRAW_B: curve, finite-field sample and float-start seeds read by runtime index"
   }
  ]

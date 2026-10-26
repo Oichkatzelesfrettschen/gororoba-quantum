@@ -407,7 +407,7 @@ No external literature search was run for this record; the sources above are the
 ## Independent verification
 
 [verification.md](verification.md) re-derives the six claims from `cd_core` alone with
-[verify_independent.py](verify_independent.py), which imports nothing from the author's script and writes
+[verify_strata_independent.py](verify_strata_independent.py), which imports nothing from the author's script and writes
 [verification.json](verification.json); its seeds and sample points come from the ANU QRNG draws
 `docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json` and `draw-2026-10-26T012529Z.json`, which it owns whole. It
 refutes nothing across exhaustive integer points, random points on every piece, finite-field enumeration of the six

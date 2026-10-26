@@ -25,8 +25,8 @@ Randomness. Every random value comes from two ANU QRNG draws of 1024 uint16 valu
   (p = 7 and 13, two batches each); index 5: seed of the float search starts.
 
 Usage (--self-test runs the four mutation controls):
-    "$PYTHON" -B docs/evidence/a5-zero-divisor-strata/verify_independent.py --self-test
-    "$PYTHON" -B docs/evidence/a5-zero-divisor-strata/verify_independent.py \
+    "$PYTHON" -B docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py --self-test
+    "$PYTHON" -B docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py \
         --out docs/evidence/a5-zero-divisor-strata/verification.json
 """
 
@@ -1491,7 +1491,7 @@ def main() -> int:
         failures = self_test()
         for line in failures:
             print("FAIL", line)
-        print(f"verify_independent self-test: {4 - len(failures)} of 4 mutation controls rejected")
+        print(f"verify_strata_independent self-test: {4 - len(failures)} of 4 mutation controls rejected")
         return 1 if failures else 0
     t0 = time.perf_counter()
     timings: dict[str, float] = {}
