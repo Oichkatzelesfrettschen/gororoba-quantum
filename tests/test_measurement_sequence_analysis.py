@@ -506,3 +506,18 @@ def test_registered_scatter_floor_is_bound_by_digest() -> None:
     check(reason is None and floor == document["floor"] and 0.01 < floor < 0.03, f"{floor} {reason}")
     other, why = msa.bound_floor({"ibm_fez"})
     check(other is None and "not on" in str(why))
+
+
+def test_collected_reads_the_registered_scatter_floor_on_kingston() -> None:
+    contexts = msa.fixture_contexts(FEW)
+    counts = msa.device_counts({q: msa.device_model(c) for q, c in contexts.items()}, contexts, msa.FIXTURE_SHOTS)
+    record, template = _record_and_executed(contexts, msa.FIXTURE_SHOTS)
+    record["groups"] = [{"backend": "ibm_kingston"}]
+    distributions = _distributions(counts)
+    executed = {name: template["_template"] for name in distributions}
+    result = msa.collected(record, distributions, executed)
+    check("withheld" not in result, f"{result.get('withheld')}")
+    floor, _ = msa.bound_floor({"ibm_kingston"})
+    check(all(row["model_scatter_floor"] == floor for row in result["qubits"].values()))
+    record["groups"] = [{"backend": "ibm_fez"}]
+    check("not on" in msa.collected(record, distributions, executed)["withheld"])
