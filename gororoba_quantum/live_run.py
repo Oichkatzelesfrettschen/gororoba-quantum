@@ -3480,10 +3480,7 @@ def approved_family_design(
 
             validate_ideals(choice)
             continue
-        for entry in choice.entries:
-            for replica in entry.replicas:
-                if not np.allclose(qpu_planning.ideal_compiled_probabilities(replica), entry.ideal, rtol=0, atol=1e-10):
-                    raise LiveRunError(f"{entry.name}: compiled labeled ideal differs from its exact oracle")
+        qpu_planning.check_compiled_ideals(sys.modules[__name__], [choice])
     args.shots = approved["shots"]
     if "pub_shots" in approved:
         args.pub_shots = dict(approved["pub_shots"])

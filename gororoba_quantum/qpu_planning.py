@@ -1656,6 +1656,32 @@ def admitted_family_candidates(
     return admitted
 
 
+# A worker pool starts slower than a handful of small circuits take, while one measurement-sequence member with 17
+# classical bits enumerates 2**17 branches; the check parallelizes from this many circuits.
+IDEAL_PARALLEL_MIN_ITEMS = 16
+
+
+def compiled_ideal_mismatch(item: tuple[QuantumCircuit, Any]) -> bool:
+    """Whether a compiled replica's exact branch law differs from its labeled ideal (module level for the pool)."""
+    replica, ideal = item
+    return not np.allclose(ideal_compiled_probabilities(replica), ideal, rtol=0, atol=1e-10)
+
+
+def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
+    """Prove every replica of every entry equals its labeled ideal, raising for the first entry in order that fails.
+
+    The exact oracle of a replica is independent of every other, so the replicas map through parallel.ordered_map in
+    entry order; a serial loop over them takes minutes on the measurement-sequence family and widens the time between
+    the pre-submit snapshot and the first batch beyond a calibration period.
+    """
+    names = [entry.name for choice in choices for entry in choice.entries for _ in entry.replicas]
+    items = [(replica, entry.ideal) for choice in choices for entry in choice.entries for replica in entry.replicas]
+    mismatched = parallel.ordered_map(compiled_ideal_mismatch, items, min_items=IDEAL_PARALLEL_MIN_ITEMS)
+    for name, differs in zip(names, mismatched, strict=True):
+        if differs:
+            raise runtime.LiveRunError(f"{name}: compiled labeled ideal differs from its exact oracle")
+
+
 def prepare(
     runtime: Any, snapshots: list[Any], args: Any, usage: dict[str, Any], trace: dict[str, Any]
 ) -> tuple[list[Any], dict[str, Any]]:
@@ -1772,13 +1798,7 @@ def prepare(
                 except ValueError as error:
                     raise runtime.LiveRunError(str(error)) from error
             else:
-                for entry in choice.entries:
-                    for replica in entry.replicas:
-                        actual = ideal_compiled_probabilities(replica)
-                        if not np.allclose(actual, entry.ideal, rtol=0, atol=1e-10):
-                            raise runtime.LiveRunError(
-                                f"{entry.name}: compiled labeled ideal differs from its exact oracle"
-                            )
+                check_compiled_ideals(runtime, [choice])
             evidence, noisy = next(simulated)
             local_compute.append_batches(simulators[id(choice.snap)], evidence)
             predictions.update(
