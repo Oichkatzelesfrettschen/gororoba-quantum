@@ -177,7 +177,10 @@ error.
   `01a167ac-58d4-74f0-96fe-9af62e1f1dfe`, `01a167ac-e6f3-711a-a9be-86bb8bfe89f9`,
   `01a167ac-ec22-7645-b50d-74b793ed808d`, `01a1707f-6157-75dc-aca8-6f30e5f0280b`), execution seconds = compiled
   schedule (the record's estimate less 1.6 s) + 0.141 s + 7.967 us per circuit-shot, with residuals of at most 0.162 s;
-  runtime exceeded execution by 0.04 to 0.411 s, and billing is `ceil(runtime)` with no fixed 1.6 s term.
+  runtime exceeded execution by 0.04 to 0.411 s, and billing is `ceil(runtime)` with no fixed 1.6 s term. This fit held no job with many mid-circuit
+  measures and underpredicted the run by 3.55 s (Results); the corrected fit is in the
+  [IQM notes](../notes/iqm/README.md#cost), and its worst case for these circuits, 9.41 s, would need a `max_credits`
+  of 5.71.
 - **Prediction:** compiled schedule 3.738 s (the QPU-calibrated schedule, 1.246 ms per shot over the 57 circuits, the
   pairs adding 376 layers of 40 ns, 15 us, to each shot), plus 0.141 s plus 57 x 3000 x 7.967 us = 1.362 s gives 5.241 s of
   execution; the worst-case runtime adds 0.17 s of fit residual and 0.42 s of runtime over execution, 5.831 s, billed as
@@ -514,6 +517,110 @@ on QB1 and QB3, a plain `measure` on QB20 (key `s`) and a four-qubit `measure_01
 `measurements.json` returned only key `s`. The circuit API accepts `measure_012` and returns no outcome for it, so
 this case carries no leakage circuits and no P(2) readout.
 
+## Results
+
+The main run (job `01a175ac-da6c-718e-8efc-438c1bff1c46`, 57 circuits x 3000 shots, set `be070414`, 5.0 credits;
+[run](../../results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching/results.json),
+[analysis](../../results/iqm/measurement_sequence_pinching_analysis.json)) followed a pre-flight probe (job
+`01a175ac-522d-73e4-ae3e-7404b2335bf6`, 1000 shots, 0.5 credits;
+[run](../../results/iqm/runs/2026-10-26T004628Z-garnet-measurement-sequence-pinching-probe-probe/results.json),
+[analysis](../../results/iqm/measurement_sequence_pinching_preflight.json)). Both are exploratory in the registry, per the
+scope fixed above.
+
+**Verdicts, preregistered.**
+
+- **Departure from ideal pinching: `none`.** `departs_below` and `exceeds_prediction` both read `none`, pooled z
+  +1.65, with all six qubits informative (mutation z 36 to 56, contrast 0.80 to 0.83 against the ideal
+  0.861). By the reach fixed before the data, a `none` bounds the measurement to a transition probability below about
+  0.006 per measurement, or to less than about 30 % of the coherence surviving each measurement, and no tighter. It does
+  not establish ideal pinching below that reach.
+- **Settle tail: `attributed`**, pooled z +4.81, by the count rule (QB14 +3.15 and QB5 +3.43).
+  What the rule tests: the settle arm differs from the measure arm only by a 2.0 us idle after each measure, and the
+  rule compares its P0 with the model's prediction from the measure arm's own N = 16 loss and the in-job T1. P0 of the
+  settle arm exceeds that prediction on five of six qubits (QB1 +0.0066, QB5 +0.0161, QB8 +0.0056, QB14 +0.0156, QB17 +0.0125, QB19 -0.0056 in P0). The observation is that
+  lengthening the post-measurement idle from zero to 2 us raises P0 beyond the model's prediction. The effect may come
+  from a readout tail or from measurement-induced relaxation during the idle, and a tail slower than 2 us stays
+  unexcluded; the run names no mechanism.
+- **Compiled schedule, execution and billing.** The compiled schedule was 0.9935 times the QPU-calibrated prediction (inside the 1 %
+  tolerance, window kept). Execution took 8.793 s against a predicted 5.241 s and the IQM estimate of
+  5.314 s; runtime was 9.035 s, within 1 s of `collect`'s 10 s cancel threshold (+0.035 s from the 9.0 s the
+  ceiling allows), billed 10 s, 5.0 credits, leaving 9.00. The billing fit had no job with many mid-circuit measures
+  and underpredicted this run by 3.55 s; the corrected fit is in [the IQM notes](../notes/iqm/README.md#cost).
+
+**Pre-flight probe.** It printed `proceed`: all six qubits PASS, the largest |z| 2.69 (QB14's `ro0`, 0.997 against the
+band's upper edge). Raw P(0) with the z outside the band in parentheses:
+
+| qubit | ro0 | ro1 | unitary-16 | measure-16 | contrast |
+|---|---|---|---|---|---|
+| QB1 | 0.986 (+0.00) | 0.102 (+0.00) | 0.204 (+0.00) | 0.903 (+0.00) | 0.884 |
+| QB5 | 0.989 (+0.00) | 0.060 (-1.44) | 0.179 (+0.00) | 0.867 (+0.00) | 0.929 |
+| QB8 | 0.991 (+0.00) | 0.085 (-1.36) | 0.207 (+0.00) | 0.900 (+0.00) | 0.906 |
+| QB14 | 0.997 (+2.69) | 0.046 (-1.24) | 0.119 (+0.00) | 0.894 (+0.00) | 0.951 |
+| QB17 | 0.987 (+0.00) | 0.060 (+0.00) | 0.195 (+0.00) | 0.895 (+0.00) | 0.927 |
+| QB19 | 0.912 (+0.00) | 0.121 (+0.00) | 0.234 (+0.00) | 0.841 (+0.00) | 0.791 |
+
+**Per-qubit readings** (the measure arm's N = 16 corrected P0; z is measured less predicted over the SE, which includes
+the gate-model systematic floored at 0.04; the pre-systematic columns repeat the statistical-plus-prx SE):
+
+| qubit | measured P0 | predicted | difference | SE | z | SE before the systematic | z before | contrast | mutation z |
+|---|---|---|---|---|---|---|---|---|---|
+| QB1 | 0.9095 | 0.8872 | +0.0223 | 0.0448 | +0.50 | 0.0145 | +1.55 | 0.831 | 42.0 |
+| QB5 | 0.9029 | 0.8660 | +0.0369 | 0.0494 | +0.75 | 0.0105 | +3.51 | 0.826 | 56.1 |
+| QB8 | 0.9122 | 0.8808 | +0.0313 | 0.0435 | +0.72 | 0.0105 | +2.98 | 0.802 | 45.1 |
+| QB14 | 0.8997 | 0.8580 | +0.0417 | 0.0488 | +0.85 | 0.0074 | +5.66 | 0.823 | 55.7 |
+| QB17 | 0.9018 | 0.8699 | +0.0319 | 0.0484 | +0.66 | 0.0099 | +3.22 | 0.809 | 53.2 |
+| QB19 | 0.9057 | 0.8780 | +0.0276 | 0.0479 | +0.58 | 0.0100 | +2.76 | 0.822 | 36.4 |
+
+Unitary-arm check (descriptive; measured less modeled N = 16 unitary P0 with its statistical SE) and settle tail gap
+(measured settle P0 less the prediction from the measure arm's loss):
+
+| qubit | unitary difference | statistical SE | z | tail gap | SE | z | tail verdict |
+|---|---|---|---|---|---|---|---|
+| QB1 | -0.0256 | 0.0074 | -3.44 | +0.0066 | 0.0033 | +1.98 | match |
+| QB5 | -0.0176 | 0.0051 | -3.43 | +0.0161 | 0.0047 | +3.43 | tail_attributed |
+| QB8 | +0.0043 | 0.0064 | +0.68 | +0.0056 | 0.0032 | +1.77 | match |
+| QB14 | -0.0281 | 0.0052 | -5.40 | +0.0156 | 0.0049 | +3.15 | tail_attributed |
+| QB17 | +0.0137 | 0.0052 | +2.62 | +0.0125 | 0.0048 | +2.63 | match |
+| QB19 | -0.0188 | 0.0073 | -2.56 | -0.0056 | 0.0052 | -1.07 | match |
+
+Fitted T1, initialization excitation and q from the in-job series, and the eps fits (a per-step z loss, against the
+ideal law and against the relaxed model; chi-square on 4 degrees of freedom):
+
+| qubit | T1 (us) | p_init | q | eps, ideal law | chi2 | eps, relaxed | chi2 |
+|---|---|---|---|---|---|---|---|
+| QB1 | 27.6 +- 0.6 | -0.0033 +- 0.0037 | 0.9935 | -0.00174 | 154.7 | -0.00251 | 18.5 |
+| QB5 | 54.4 +- 1.6 | -0.0430 +- 0.0117 | 0.9208 | -0.00107 | 107.4 | -0.00365 | 28.0 |
+| QB8 | 27.5 +- 0.6 | -0.0211 +- 0.0034 | 0.9594 | -0.00172 | 195.7 | -0.00329 | 48.8 |
+| QB14 | 54.0 +- 1.7 | -0.0669 +- 0.0132 | 0.8820 | -0.00069 | 64.7 | -0.00402 | 18.8 |
+| QB17 | 51.6 +- 1.6 | -0.0643 +- 0.0119 | 0.8861 | -0.00100 | 108.6 | -0.00317 | 37.4 |
+| QB19 | 42.5 +- 1.2 | -0.0015 +- 0.0093 | 0.9970 | -0.00133 | 58.4 | -0.00272 | 14.6 |
+
+**Descriptive readings** (outside the preregistered verdicts):
+
+- **The measure arm reads above its prediction on every qubit**, by 0.022 to 0.042 in P0. The widened standard error
+  (0.044 to 0.049) puts that at 0.5 to 0.85 SE; before the gate-model systematic it is +1.55 (QB1), +5.66 (QB14), +3.22
+  (QB17), +2.76 (QB19), +3.51 (QB5) and +2.98 (QB8) SE. The pooled +1.65 is the widened-variance figure.
+- **QB14's unitary arm repeats the diagnostic's sign**: -0.0281 against the diagnostic's -0.042, statistical z -5.4. QB5 (-0.0176,
+  z -3.43) repeats it too (diagnostic -0.033), and QB17 (+0.0137) has the diagnostic's positive sign at a smaller size (+0.053);
+  QB19 (-0.0188) reverses (+0.018 in the diagnostic). Three qubits (QB1, QB5, QB14) read beyond 3
+  statistical SE, which an absolute test of the unitary arm would have read as a gate-model inconsistency on half the
+  device; the widened departure standard error is what kept the verdict from resting on it.
+- **Negative fitted p_init.** Four qubits fit a p_init below zero by 3.7 to 6.2 SE (QB8 -0.021, QB5 -0.043, QB17
+  -0.064, QB14 -0.067); QB1 (-0.003) and QB19 (-0.002) sit within one error of zero. No initialization excitation is
+  negative. In the readout model p comes from q = z_eq/(1 - 2 p), the asymptote of the T1 series corrected by `ro0` and
+  `ro1`, with the idle qubit assumed cold (z_eq = 1). A fitted q below 1 (0.88 to 0.92 on QB14, QB17 and QB5) means the
+  corrected series ends below 1. A thermal excitation of the idle qubit of 4 to 6 % after the 100 to 150 us delays
+  (z_eq < 1) produces that with p = 0, and so does an assignment error that differs between `ro1`, read 2 us after the
+  pi pulse, and the long-delay circuits. The fit separates neither. The prediction uses q and not p alone, so the
+  departure test does not depend on which of them q is attributed to.
+- **Poor eps fits.** The one-parameter fit of a per-step loss to P0(N) has chi-square 58 to 196 on 4 degrees of freedom against the ideal law and
+  15 to 49 against the relaxed model, with negative eps (-0.0040 to -0.0025 relaxed): a loss per measurement
+  cannot make P0 exceed the model at N = 16 while the lower N follow it, so the N dependence is not that of a single
+  transition loss, and the family is the wrong description of the residual. The consecutive-outcome flip rate at N = 16
+  is 0.013 to 0.065 against the ideal 0.0076 (QB19 0.065), reported raw beside the 1 to 4 % readout error.
+- **Readout crosstalk.** The largest correlation of one qubit's outcome with another's is 0.03 to 0.06 against a shot
+  noise of 0.018 (QB14 and QB17 0.060).
+
 ## Evidence
 
 - Diagnostic job on the QPU (`01a1753f-3b98-7437-9433-83d0b4b87721`, 0.50 credits):
@@ -532,7 +639,10 @@ this case carries no leakage circuits and no P(2) readout.
   01a17548-7e68-72ab-8a27-38f1b6f3d94f), superseded and not replayable by the current script:
   [run](../../results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching/results.json).
 - Pre-flight probe case: [case](../../results/iqm/cases/measurement-sequence-pinching-probe/cases.json), built by
-  `scripts/iqm_measurement_preflight.py`; not yet run on the QPU.
+  `scripts/iqm_measurement_preflight.py`; run as job `01a175ac-522d-73e4-ae3e-7404b2335bf6`, see Results.
+- Main run: job `01a175ac-da6c-718e-8efc-438c1bff1c46`, [run](../../results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching/results.json),
+  [analysis](../../results/iqm/measurement_sequence_pinching_analysis.json); probe run
+  [analysis](../../results/iqm/measurement_sequence_pinching_preflight.json).
 - Failed mock job of the first, 54-circuit form of this case:
   [run](../../results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching/results.json).
 - Mock run of the second, 50-circuit form (job 01a17484):

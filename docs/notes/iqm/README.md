@@ -265,14 +265,27 @@ Emerald 0.75, Garnet 0.50, Sirius 0.30 credits/s. A one-hour timeslot costs
 credits of this account buy 40 s on Emerald, 60 s on Garnet or 100 s on
 Sirius, and expire 2026-11-01.
 
-Execution time of an active-reset Garnet job follows the compiled schedule. Over the seven retained active-reset
-QPU jobs (`01a16583-43fc-75e5-82b0-5b192921a4c5`, `01a16630-b928-72d1-b66e-b7779c623df5`,
-`01a16631-2b7c-7668-a276-3341e9d17bdd`, `01a167ac-58d4-74f0-96fe-9af62e1f1dfe`,
-`01a167ac-e6f3-711a-a9be-86bb8bfe89f9`, `01a167ac-ec22-7645-b50d-74b793ed808d` and
-`01a1707f-6157-75dc-aca8-6f30e5f0280b`), `execution_seconds` = the record's `execution_runtime_estimate_seconds`
-less 1.6 s + 0.141 s + 7.967 us per circuit-shot, with residuals of at most 0.162 s; `runtime_seconds` exceeded
-`execution_seconds` by 0.04 to 0.411 s, and `billed_seconds` is `ceil(runtime_seconds)` with no fixed 1.6 s term
-(`scripts/iqm_measurement_sequence.py`, `EXECUTION_*`, checks the fit against the retained records).
+Execution time of an active-reset Garnet job follows the compiled schedule plus a cost per circuit-shot, and each
+executed mid-circuit measure record adds more. Over twelve retained QPU jobs (the seven active-reset jobs
+`01a16583-43fc`, `01a16630-b928`, `01a16631-2b7c`, `01a167ac-58d4`, `01a167ac-e6f3`, `01a167ac-ec22` and
+`01a1707f-6157`; the window probes `01a174be-d1f7` and `01a174be-e68b`; the diagnostic `01a1753f-3b98`; the pre-flight
+probe `01a175ac-522d`; and the main pinching run `01a175ac-da6c`), `execution_seconds` = the record's
+`execution_runtime_estimate_seconds` less 1.6 s + 0.162 s + 7.862 us per circuit-shot + 6.338 us per executed
+mid-circuit measure record (records = shots x the mid-circuit measures of the circuits), with residuals of at most
+0.168 s; `runtime_seconds` exceeded `execution_seconds` by 0.04 to 0.411 s, and `billed_seconds` is
+`ceil(runtime_seconds)` with no fixed 1.6 s term.
+
+The earlier fit over the seven active-reset jobs (0.141 s + 7.967 us per circuit-shot) held no job with a large number
+of mid-circuit measures. The main pinching run (57 circuits, 3000 shots, 564000 mid-circuit records) executed in 8.793 s
+against that fit's 5.241 s: 3.55 s unexplained, 6.3 us per record. The per-record term is therefore fitted to that one
+run; the 1600 and 16000 records of the two single-circuit probes agree with it within 0.07 s, which is inside the
+residual, so they do not test it. A measure-heavy job is the next test. The run's runtime of 9.035 s sat 0.035 s above
+`collect`'s cancel threshold of 9.0 s for `max_credits` 5.0 and billed 10 s, 5.0 credits. A future case sets
+`max_credits` with margin above the corrected worst case (execution + 0.17 s fit residual + 0.42 s runtime over
+execution), at least 1 s below the cancel threshold of `max_credits` / price - 1 s. The corrected worst case for the
+pinching circuits is 9.41 s, which needs `max_credits` of at least 5.71 (a threshold of 10.41 s with the 1 s build margin), not the 5.0 the case carried. The
+retained fit and its check are `scripts/iqm_measurement_sequence.py`, `BILLING_MODELS` and `check_billing_fit`; a case
+built before the correction keeps its predicted billing (`billing_model_of`).
 
 The [read-only API audit](../../evidence/provider-api-audit/README.md) refreshes those rates and balances
 on 22 October 2026. `runtime_seconds` includes compilation plus execution; `billed_seconds` rounds that
@@ -407,7 +420,7 @@ goes through a new case. The first case is the
 [Garnet timing pilot](../../design/iqm-garnet-timing-pilot.md), which prices
 later cases from measured billing.
 The [measurement-sequence pinching case](../../design/iqm-garnet-measurement-sequence-pinching.md)
-tests mid-circuit measurement against ideal pinching on four uncoupled qubits.
+tests mid-circuit measurement against ideal pinching on six uncoupled qubits.
 
 ## What the Garnet runs measured
 

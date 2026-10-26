@@ -50,11 +50,15 @@ BAND_KEY = {"ro0": "ro0", "ro1": "ro1", "unitary-n16-s0p": "unitary-16", "measur
 NAMES = tuple(BAND_KEY)
 
 
-def billing(circuits: list[dict[str, Any]], shots: int) -> dict[str, Any]:
-    """The seq.billing model at the probe's ceiling."""
+def billing(circuits: list[dict[str, Any]], shots: int, model: str = "v2") -> dict[str, Any]:
+    """The seq.BILLING_MODELS fit at the probe's ceiling."""
+    fit = seq.BILLING_MODELS[model]
     schedule = shots * sum(seq.estimator_shot_seconds(c) for c in circuits)
-    execution = schedule + seq.EXECUTION_FIXED_SECONDS + seq.EXECUTION_PER_CIRCUIT_SHOT_SECONDS * len(circuits) * shots
-    worst = execution + seq.EXECUTION_FIT_RESIDUAL_SECONDS + seq.RUNTIME_OVER_EXECUTION_SECONDS
+    records = shots * sum(seq.mid_measures(c) for c in circuits)
+    execution = (
+        schedule + fit["fixed"] + fit["per_circuit_shot"] * len(circuits) * shots + fit["per_mid_record"] * records
+    )
+    worst = execution + fit["residual"] + fit["runtime_over"]
     threshold = MAX_CREDITS[QC] / PRICE[QC] - CANCEL_MARGIN
     return {
         "shots": shots,
@@ -69,7 +73,7 @@ def billing(circuits: list[dict[str, Any]], shots: int) -> dict[str, Any]:
     }
 
 
-def build_files(main: Path, shots: int) -> dict[str, str]:
+def build_files(main: Path, shots: int, model: str = "v2") -> dict[str, str]:
     """The probe case from the main case directory `main`: its four circuits verbatim, the band per qubit, the job."""
     main_cases = (main / "cases.json").read_bytes()
     main_prediction = seq.load_json(main / "prediction.json")
@@ -77,7 +81,7 @@ def build_files(main: Path, shots: int) -> dict[str, str]:
     for name in NAMES:
         files[f"circuits/{name}.json"] = (main / f"circuits/{name}.json").read_text(encoding="utf-8")
     circuits = [json.loads(files[f"circuits/{name}.json"]) for name in NAMES]
-    bill = billing(circuits, shots)
+    bill = billing(circuits, shots, model)
     if bill["billed_seconds"] > 1 or bill["credits"] > MAX_CREDITS[QC] or bill["cancel_margin_seconds"] <= 0:
         raise ValueError(f"the probe bills {bill}")
     excerpt_text = (main / EXCERPT).read_text(encoding="utf-8")
@@ -96,6 +100,7 @@ def build_files(main: Path, shots: int) -> dict[str, str]:
         },
         "qubits": {q: {"raw_band": row["raw_band"]} for q, row in main_prediction["qubits"].items()},
         "billing": bill,
+        **({"billing_model": model} if model == "v2" else {}),
     }
     files["prediction.json"] = dump(prediction)
     job = {
@@ -137,7 +142,8 @@ def write(directory: Path, main: Path, shots: int) -> None:
 
 def check(directory: Path) -> None:
     shots = seq.load_json(directory / "cases.json")["jobs"][0]["shots"]
-    files = build_files(MAIN_CASE, shots)
+    model = seq.load_json(directory / "prediction.json").get("billing_model", "v1")
+    files = build_files(MAIN_CASE, shots, model)
     present = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
     if present != set(files):
         raise ValueError(f"{directory}: files differ from the build: {sorted(present ^ set(files))}")

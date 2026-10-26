@@ -218,6 +218,46 @@ EXECUTION_FIXED_SECONDS = 0.141
 EXECUTION_PER_CIRCUIT_SHOT_SECONDS = 7.967e-6
 EXECUTION_FIT_RESIDUAL_SECONDS = 0.17
 RUNTIME_OVER_EXECUTION_SECONDS = 0.42
+# The first fit above ("v1") held no job with mid-circuit measurements to speak of, and the main pinching run (job
+# 01a175ac-da6c-718e-8efc-438c1bff1c46, 57 circuits, 188 mid-circuit measures per shot of the set, 3000 shots) executed
+# in 8.793 s against the predicted 5.241 s. Each executed mid-circuit measure record costs execution time beyond its
+# compiled schedule. Version "v2" is the least-squares fit of execution - schedule = fixed + per circuit-shot + per
+# mid-circuit record over twelve retained jobs (the seven above, the two window probes 01a174be-d1f7 and -e68b, the
+# diagnostic 01a1753f-3b98, the pre-flight probe 01a175ac-522d and the main run), residuals at most 0.168 s and
+# runtime over execution at most 0.411 s. The per-record term rests on one large run (564000 records; the probes' 1600
+# and 16000 records agree within 0.07 s), so the next measure-heavy job is the test of it. A case built under "v1"
+# keeps its prediction.json; a case built now uses "v2", and a case whose worst case leaves less than
+# RUNTIME_MARGIN_SECONDS below the cancel threshold needs a larger max_credits.
+BILLING_MODELS = {
+    "v1": {
+        "fixed": EXECUTION_FIXED_SECONDS,
+        "per_circuit_shot": EXECUTION_PER_CIRCUIT_SHOT_SECONDS,
+        "per_mid_record": 0.0,
+        "residual": EXECUTION_FIT_RESIDUAL_SECONDS,
+        "runtime_over": RUNTIME_OVER_EXECUTION_SECONDS,
+    },
+    "v2": {
+        "fixed": 0.1623,
+        "per_circuit_shot": 7.862e-6,
+        "per_mid_record": 6.338e-6,
+        "residual": 0.17,
+        "runtime_over": 0.42,
+    },
+}
+BILLING_V2_JOBS = (
+    "01a16583-43fc",
+    "01a16630-b928",
+    "01a16631-2b7c",
+    "01a167ac-58d4",
+    "01a167ac-e6f3",
+    "01a167ac-ec22",
+    "01a1707f-6157",
+    "01a174be-d1f7",
+    "01a174be-e68b",
+    "01a1753f-3b98",
+    "01a175ac-522d",
+    "01a175ac-da6c",
+)
 # collect cancels a run once its runtime comes within iqm_jobs.CANCEL_MARGIN of the seconds max_credits buys, so the
 # worst-case runtime stays at least RUNTIME_MARGIN_SECONDS below that threshold.
 MAX_CREDITS = {"garnet": 5.0, "garnet:mock": 0.0}
@@ -403,11 +443,21 @@ def solve_window(circuits: list[dict[str, Any]], shots: int, estimated_seconds: 
     return (estimated_seconds / shots - fixed) / measures
 
 
-def billing(circuits: list[dict[str, Any]], shots: int) -> dict[str, Any]:
-    """The predicted execution and worst-case runtime of the job from the fit over retained QPU jobs."""
+def billing_model_of(prediction: dict[str, Any]) -> str:
+    """The billing model a retained prediction.json was built under: "v2" when its billing_fit holds the per-record
+    term, else "v1"."""
+    return "v2" if "execution_per_mid_record_seconds" in prediction.get("billing_fit", {}) else "v1"
+
+
+def billing(circuits: list[dict[str, Any]], shots: int, model: str = "v2") -> dict[str, Any]:
+    """The predicted execution and worst-case runtime of the job from a fit over retained QPU jobs (BILLING_MODELS)."""
+    fit = BILLING_MODELS[model]
     schedule = shots * sum(estimator_shot_seconds(c) for c in circuits)
-    execution = schedule + EXECUTION_FIXED_SECONDS + EXECUTION_PER_CIRCUIT_SHOT_SECONDS * len(circuits) * shots
-    worst = execution + EXECUTION_FIT_RESIDUAL_SECONDS + RUNTIME_OVER_EXECUTION_SECONDS
+    records = shots * sum(mid_measures(c) for c in circuits)
+    execution = (
+        schedule + fit["fixed"] + fit["per_circuit_shot"] * len(circuits) * shots + fit["per_mid_record"] * records
+    )
+    worst = execution + fit["residual"] + fit["runtime_over"]
     threshold = MAX_CREDITS[QC] / PRICE[QC] - CANCEL_MARGIN
     return {
         "shots": shots,
@@ -1295,11 +1345,11 @@ def planning_tables(excerpt: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str, Any]:
+def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]], model: str = "v2") -> dict[str, Any]:
     """Planning values: every table is computed at the calibrated T1 and T2 and the assumed initialization
     excitation; the analysis recomputes them at the T1 and p it fits in the job."""
     tables = planning_tables(excerpt)
-    bill = billing(circuits, SHOTS)
+    bill = billing(circuits, SHOTS, model)
     contexts = {
         q: {"t2_s": cal["t2_s"], "prx_p": cal["prx_p"], "window_s": MEASURE_WINDOW_SECONDS, "planning": tables[q]}
         for q, cal in excerpt["qubits"].items()
@@ -1413,10 +1463,11 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str
         "estimator_per_shot_seconds_all_circuits": sum(estimator_shot_seconds(c) for c in circuits),
         "billing": bill,
         "billing_fit": {
-            "execution_fixed_seconds": EXECUTION_FIXED_SECONDS,
-            "execution_per_circuit_shot_seconds": EXECUTION_PER_CIRCUIT_SHOT_SECONDS,
-            "residual_seconds": EXECUTION_FIT_RESIDUAL_SECONDS,
-            "runtime_over_execution_seconds": RUNTIME_OVER_EXECUTION_SECONDS,
+            "execution_fixed_seconds": BILLING_MODELS[model]["fixed"],
+            "execution_per_circuit_shot_seconds": BILLING_MODELS[model]["per_circuit_shot"],
+            **({"execution_per_mid_record_seconds": BILLING_MODELS[model]["per_mid_record"]} if model == "v2" else {}),
+            "residual_seconds": BILLING_MODELS[model]["residual"],
+            "runtime_over_execution_seconds": BILLING_MODELS[model]["runtime_over"],
         },
         "planning_note": (
             "These are planning values at the calibrated T1 and T2 and an assumed initialization excitation. The "
@@ -1434,7 +1485,7 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str
     }
 
 
-def build_files(excerpt: dict[str, Any]) -> dict[str, str]:
+def build_files(excerpt: dict[str, Any], model: str = "v2") -> dict[str, str]:
     if excerpt["couplers_among_qubits"]:
         raise ValueError(f"the qubits share couplers {excerpt['couplers_among_qubits']}")
     qubits = sorted(excerpt["qubits"], key=lambda q: int(q[2:]))
@@ -1442,7 +1493,7 @@ def build_files(excerpt: dict[str, Any]) -> dict[str, str]:
     if len(circuits) > GARNET_MAX_CIRCUITS or any(len(c["instructions"]) > GARNET_MAX_INSTRUCTIONS for c in circuits):
         raise ValueError("the job exceeds Garnet's circuits or instructions per job")
     files = {f"circuits/{c['name']}.json": dump(c) for c in circuits}
-    bill = billing(circuits, SHOTS)
+    bill = billing(circuits, SHOTS, model)
     if bill["cancel_margin_seconds"] < RUNTIME_MARGIN_SECONDS or bill["credits"] > MAX_CREDITS[QC]:
         raise ValueError(
             f"worst-case runtime {bill['worst_case_runtime_seconds']:.3f} s leaves "
@@ -1458,7 +1509,7 @@ def build_files(excerpt: dict[str, Any]) -> dict[str, str]:
         "expected_seconds": round(bill["execution_seconds"], 3),
         "max_credits": MAX_CREDITS,
     }
-    files["prediction.json"] = dump(predict(excerpt, circuits))
+    files["prediction.json"] = dump(predict(excerpt, circuits, model))
     files["cases.json"] = dump(
         {
             "schema": CASE_SCHEMA,
@@ -1503,7 +1554,7 @@ def write(directory: Path, calibration_dir: Path) -> None:
 
 
 def check(directory: Path) -> None:
-    files = build_files(load_json(directory / EXCERPT))
+    files = build_files(load_json(directory / EXCERPT), billing_model_of(load_json(directory / "prediction.json")))
     present = {p.relative_to(directory).as_posix() for p in directory.rglob("*") if p.is_file()}
     if present != set(files):
         raise ValueError(f"{directory}: files differ from the build: {sorted(present ^ set(files))}")
@@ -1659,7 +1710,7 @@ def analyze(run_dir: Path, mock: bool = False) -> dict[str, Any]:
     if artifact.exists():
         schedule["runtime_estimates_sha256"] = sha256(artifact.read_bytes())
     metrics = record["metrics"]
-    predicted_execution = billing(circuits, row["shots"])
+    predicted_execution = billing(circuits, row["shots"], billing_model_of(prediction))
     qubits = evaluate(counts, contexts_of(prediction, window))
     return {
         "schema": "iqm-measurement-sequence-analysis-v2",
@@ -1744,23 +1795,16 @@ def check_structure(circuits: list[dict[str, Any]], qubits: list[str]) -> None:
 
 
 def check_billing_fit() -> str:
-    """The constants EXECUTION_* against the seven retained jobs they were fitted on."""
-    ids = (
-        "01a16583-43fc-75e5-82b0-5b192921a4c5",
-        "01a16630-b928-72d1-b66e-b7779c623df5",
-        "01a16631-2b7c-7668-a276-3341e9d17bdd",
-        "01a167ac-58d4-74f0-96fe-9af62e1f1dfe",
-        "01a167ac-e6f3-711a-a9be-86bb8bfe89f9",
-        "01a167ac-ec22-7645-b50d-74b793ed808d",
-        "01a1707f-6157-75dc-aca8-6f30e5f0280b",
-    )
+    """The BILLING_MODELS["v2"] constants against the twelve retained jobs they were fitted on, and the v1 model's
+    underprediction of the main run that motivated them."""
     rows = []
     for directory in sorted((ROOT / "results/iqm/runs").glob("*-garnet-*")):
         submission = load_json(directory / "submission.json") if (directory / "submission.json").exists() else {}
-        if submission.get("job_id") in ids:
+        if submission.get("job_id", "")[:13] in BILLING_V2_JOBS:
             record = json.loads((directory / "raw/job.json").read_bytes())
             case = load_json(directory / "cases.json")
             job = next(r for r in case["jobs"] if r["job"] == submission["job"])
+            circuits = [load_json(directory / entry["file"]) for entry in job["circuits"]]
             metrics = record["metrics"]
             schedule = record["compilation"]["execution_runtime_estimate_seconds"] - JOB_SECONDS
             rows.append(
@@ -1769,20 +1813,37 @@ def check_billing_fit() -> str:
                     metrics["execution_seconds"],
                     metrics["runtime_seconds"],
                     len(job["circuits"]) * job["shots"],
+                    job["shots"] * sum(mid_measures(c) for c in circuits),
                 )
             )
-    expect(len(rows) == len(ids), f"{len(rows)} of the {len(ids)} fitted jobs are retained")
-    design = np.array([[1.0, r[3]] for r in rows])
+    expect(len(rows) == len(BILLING_V2_JOBS), f"{len(rows)} of the {len(BILLING_V2_JOBS)} fitted jobs are retained")
+    design = np.array([[1.0, r[3], r[4]] for r in rows])
     target = np.array([r[1] - r[0] for r in rows])
-    fixed, per = (float(v) for v in np.linalg.lstsq(design, target, rcond=None)[0])
-    residual = float(np.max(np.abs(target - design @ np.array([fixed, per]))))
+    fixed, per, record = (float(v) for v in np.linalg.lstsq(design, target, rcond=None)[0])
+    fit = BILLING_MODELS["v2"]
+    residual = float(np.max(np.abs(target - design @ np.array([fixed, per, record]))))
     expect(
-        abs(fixed - EXECUTION_FIXED_SECONDS) < 5e-4 and abs(per - EXECUTION_PER_CIRCUIT_SHOT_SECONDS) < 5e-9,
-        f"fit {fixed} {per}",
+        abs(fixed - fit["fixed"]) < 5e-4
+        and abs(per - fit["per_circuit_shot"]) < 5e-9
+        and abs(record - fit["per_mid_record"]) < 5e-9,
+        f"fit {fixed} {per} {record}",
     )
-    expect(residual <= EXECUTION_FIT_RESIDUAL_SECONDS, f"residual {residual}")
-    expect(max(r[2] - r[1] for r in rows) <= RUNTIME_OVER_EXECUTION_SECONDS, "runtime minus execution")
-    return f"{fixed:.3f} s + {per * 1e6:.3f} us per circuit-shot, residual {residual:.3f} s"
+    expect(residual <= fit["residual"], f"residual {residual}")
+    expect(max(r[2] - r[1] for r in rows) <= fit["runtime_over"], "runtime minus execution")
+    main = rows[-1]
+    expect(
+        abs(main[0] + fit["fixed"] + fit["per_circuit_shot"] * main[3] + fit["per_mid_record"] * main[4] - main[1])
+        <= fit["residual"],
+        "the v2 model misses the main run",
+    )
+    expect(
+        main[1] - (main[0] + BILLING_MODELS["v1"]["fixed"] + BILLING_MODELS["v1"]["per_circuit_shot"] * main[3]) > 3,
+        "the v1 model no longer underpredicts the main run",
+    )
+    return (
+        f"{fixed:.3f} s + {per * 1e6:.3f} us per circuit-shot + {record * 1e6:.3f} us per mid-circuit record, "
+        f"residual {residual:.3f} s"
+    )
 
 
 def check_selection(values: dict[str, float], architecture: dict[str, Any], count: int) -> None:
@@ -2125,10 +2186,15 @@ def detect() -> list[dict[str, Any]]:
     return out
 
 
+def retained_billing_model() -> str:
+    """The billing model of the retained case's prediction.json (see billing_model_of)."""
+    return billing_model_of(load_json(ROOT / "results/iqm/cases" / CASE / "prediction.json"))
+
+
 def sweep(reduced: bool = False) -> list[dict[str, Any]]:
     """The estimator sweep over the retained case; raises on any failure of the pass rule."""
     excerpt = load_json(ROOT / "results/iqm/cases" / CASE / EXCERPT)
-    rows = run_sweep(build_files(excerpt), excerpt, sweep_cases(reduced))
+    rows = run_sweep(build_files(excerpt, retained_billing_model()), excerpt, sweep_cases(reduced))
     failures = sweep_failures(rows)
     if failures:
         raise RuntimeError("estimator sweep: " + "; ".join(failures))
@@ -2137,8 +2203,9 @@ def sweep(reduced: bool = False) -> list[dict[str, Any]]:
 
 def self_test(with_sweep: bool = True) -> str:
     excerpt = load_json(ROOT / "results/iqm/cases" / CASE / EXCERPT)
-    files = build_files(excerpt)
-    expect(files == build_files(excerpt), "the build is not deterministic")
+    model = retained_billing_model()
+    files = build_files(excerpt, model)
+    expect(files == build_files(excerpt, model), "the build is not deterministic")
     qubits = sorted(excerpt["qubits"], key=lambda q: int(q[2:]))
     # Exact ideals.
     expect(
@@ -2178,7 +2245,7 @@ def self_test(with_sweep: bool = True) -> str:
     prediction = json.loads(files["prediction.json"])
     # Billing: the fit, the worst-case runtime and the cancel margin.
     fit_text = check_billing_fit()
-    bill = billing(circuits, SHOTS)
+    bill = billing(circuits, SHOTS, model)
     expect(prediction["billing"] == bill, "prediction.json carries another billing")
     expect(job["max_credits"] == {"garnet": 5.0, "garnet:mock": 0.0}, f"max_credits {job['max_credits']}")
     expect(bill["cancel_margin_seconds"] >= RUNTIME_MARGIN_SECONDS, f"cancel margin {bill['cancel_margin_seconds']}")
@@ -2401,10 +2468,14 @@ def self_test(with_sweep: bool = True) -> str:
     for row in evaluate(uniform, contexts).values():
         expect(not row["usable"] and "decisions" not in row, "a zero readout scale reaches a decision")
     margin = min(v["expected"]["mutation_z"] for v in prediction["qubits"].values())
+    corrected = billing(circuits, SHOTS, "v2")
     return (
         f"measurement sequence pinching: {len(circuits)} circuits on {', '.join(qubits)}, {SHOTS} shots, "
         f"{bill['execution_seconds']:.2f} s predicted execution, {bill['billed_seconds']} s worst-case billed "
-        f"({bill['cancel_margin_seconds']:.2f} s below the cancel threshold); billing fit {fit_text}; the ideal laws, "
+        f"({bill['cancel_margin_seconds']:.2f} s below the cancel threshold); billing fit {fit_text} "
+        f"(the corrected model predicts "
+        f"{corrected['execution_seconds']:.2f} s execution and a {corrected['worst_case_runtime_seconds']:.2f} s worst "
+        f"case for these circuits); the ideal laws, "
         f"circuit structure, T1 and p recovery, two-sided departure, settle, history and decision thresholds hold; the "
         f"weakest predicted mutation margin is {margin:.1f} standard errors"
     )

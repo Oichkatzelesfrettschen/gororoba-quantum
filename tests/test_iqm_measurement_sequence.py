@@ -69,3 +69,18 @@ def test_broken_gate_reads_uninformative_and_cancelling_classes_are_not_attribut
     verdict = case.device_verdict({f"QB{n}": row for n in range(6)})
     if verdict["departs_below"]["status"] != "uninformative":
         raise AssertionError(f"{verdict['departs_below']}")
+
+
+def test_billing_fit_covers_the_measure_heavy_run_and_the_retained_case_keeps_its_model() -> None:
+    if "per mid-circuit record" not in case.check_billing_fit():
+        raise AssertionError("the billing fit lost its per-record term")
+    retained = case.load_json(case.ROOT / "results/iqm/cases" / case.CASE / "prediction.json")
+    if case.billing_model_of(retained) != "v1":
+        raise AssertionError("the retained case no longer carries the billing it ran under")
+    circuits = [
+        case.load_json(case.ROOT / "results/iqm/cases" / case.CASE / f"circuits/{name}.json")
+        for name in ("measure-n16-s0p", "ro0")
+    ]
+    low, high = case.billing(circuits, 3000, "v1"), case.billing(circuits, 3000, "v2")
+    if not high["execution_seconds"] > low["execution_seconds"]:
+        raise AssertionError("the per-record term does not raise a measure-heavy prediction")
