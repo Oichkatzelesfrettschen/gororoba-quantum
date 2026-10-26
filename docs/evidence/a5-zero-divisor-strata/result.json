@@ -1,0 +1,1249 @@
+{
+ "characteristic_identities": {
+  "characteristic_polynomial_on_slice": true,
+  "minimal_polynomial_relation_on_slice": true
+ },
+ "containment_table": {
+  "10": {
+   "B9": true,
+   "E8": false,
+   "Nm": true,
+   "Np": true,
+   "V": true,
+   "W8": false
+  },
+  "12": {
+   "B9": true,
+   "E8": true,
+   "Nm": true,
+   "Np": true,
+   "V": true,
+   "W8": true
+  },
+  "8": {
+   "B9": false,
+   "E8": false,
+   "Nm": true,
+   "Np": true,
+   "V": false,
+   "W8": false
+  }
+ },
+ "curve_to_b9": {
+  "frame": {
+   "e0_cross_n_is_n": true,
+   "e0_perp_k": 0,
+   "e0_perp_n": 0,
+   "eta_e0": -1,
+   "eta_k": 0,
+   "eta_k_n": 0,
+   "eta_n": 0,
+   "n_cross_k_zero": true
+  },
+  "nullity_at_s_equal_0": 12,
+  "nullity_at_s_equal_2": 8,
+  "order_10_pfaffians_not_all_zero": true,
+  "order_12_pfaffians_vanish_identically": true,
+  "rank_at_s_equal_0": 8,
+  "rank_at_s_equal_2": 10
+ },
+ "doubly_pure": {
+  "anticommuting_basis_elements": 30,
+  "basis_elements_outside_C5": 30,
+  "imaginary_left_matrices_skew": true,
+  "j_squares_to_minus_identity": true
+ },
+ "nullity_identity": [
+  {
+   "agrees": true,
+   "nullity": 8,
+   "point": "W8 hyperbolic plane (e1; e3)",
+   "rank_C": 10
+  },
+  {
+   "agrees": true,
+   "nullity": 8,
+   "point": "W8 generic isotropic plane",
+   "rank_C": 10
+  },
+  {
+   "agrees": true,
+   "nullity": 8,
+   "point": "E8",
+   "rank_C": 10
+  },
+  {
+   "agrees": true,
+   "nullity": 12,
+   "point": "B9",
+   "rank_C": 8
+  },
+  {
+   "agrees": true,
+   "nullity": 12,
+   "point": "V",
+   "rank_C": 8
+  },
+  {
+   "agrees": true,
+   "nullity": 12,
+   "point": "V axis {a,0}",
+   "rank_C": 8
+  },
+  {
+   "agrees": true,
+   "nullity": 12,
+   "point": "V and B9 dependent null pair",
+   "rank_C": 8
+  },
+  {
+   "agrees": true,
+   "nullity": 16,
+   "point": "N+",
+   "rank_C": 6
+  },
+  {
+   "agrees": true,
+   "nullity": 16,
+   "point": "N-",
+   "rank_C": 6
+  },
+  {
+   "agrees": true,
+   "nullity": 4,
+   "point": "V(G) generic",
+   "rank_C": 12
+  },
+  {
+   "agrees": true,
+   "nullity": 4,
+   "point": "V(Q) and V(G), nullity 4",
+   "rank_C": 12
+  },
+  {
+   "agrees": true,
+   "nullity": 4,
+   "point": "V(Q) all coordinates nonzero",
+   "rank_C": 12
+  },
+  {
+   "agrees": true,
+   "nullity": 0,
+   "point": "generic",
+   "rank_C": 14
+  },
+  {
+   "agrees": true,
+   "nullity": 0,
+   "point": "e1 alone",
+   "rank_C": 14
+  }
+ ],
+ "orbit_facts": {
+  "derivations": {
+   "block_diagonal_fixing_e0_e8": true,
+   "count": 14,
+   "eta_invariant": true,
+   "same_block_on_u_and_v": true
+  },
+  "equivariance_cprime": true,
+  "isotropic_planes": {
+   "groebner_size": 42,
+   "minors": 917,
+   "special_forms_equal_cross_product_locus": true,
+   "special_forms_radical_powers": [
+    4,
+    4,
+    4
+   ],
+   "special_subspace_invariant": true,
+   "stabilizer_dimension": 8,
+   "traceless_action_rank_on_special_line": 3
+  },
+  "null_orbit_dimensions": {
+   "e1_plus_e3": 6,
+   "n_minus": 6,
+   "n_mixed": 6,
+   "n_plus": 6
+  },
+  "orbit_dimension_e1": 6,
+  "orbit_dimension_frame_e1_e2": 11,
+  "plane_table": {
+   "P2": {
+    "induced_rank_in_gl2": 1,
+    "ordered_pair_orbit_dimension": 11,
+    "plane_orbit_dimension": 10,
+    "plane_stabilizer_dimension": 4
+   },
+   "P3a": {
+    "induced_rank_in_gl2": 2,
+    "ordered_pair_orbit_dimension": 9,
+    "plane_orbit_dimension": 7,
+    "plane_stabilizer_dimension": 7
+   },
+   "P3b": {
+    "induced_rank_in_gl2": 2,
+    "ordered_pair_orbit_dimension": 9,
+    "plane_orbit_dimension": 7,
+    "plane_stabilizer_dimension": 7
+   },
+   "P3c": {
+    "induced_rank_in_gl2": 2,
+    "ordered_pair_orbit_dimension": 11,
+    "plane_orbit_dimension": 9,
+    "plane_stabilizer_dimension": 5
+   },
+   "P4g": {
+    "induced_rank_in_gl2": 4,
+    "ordered_pair_orbit_dimension": 11,
+    "plane_orbit_dimension": 7,
+    "plane_stabilizer_dimension": 7
+   },
+   "P4s": {
+    "induced_rank_in_gl2": 4,
+    "ordered_pair_orbit_dimension": 9,
+    "plane_orbit_dimension": 5,
+    "plane_stabilizer_dimension": 9
+   }
+  },
+  "quadric_certificate": {
+   "beta": "-1",
+   "kernel_dimension": 1,
+   "unique_solution": true
+  },
+  "sl3": {
+   "commutes_with_left_e1": true,
+   "minus": {
+    "action_rank": 8,
+    "eigenvectors": true,
+    "invariant": true,
+    "totally_null": true,
+    "traceless": true
+   },
+   "pairing_plus_minus_rank": 3,
+   "plus": {
+    "action_rank": 8,
+    "eigenvectors": true,
+    "invariant": true,
+    "totally_null": true,
+    "traceless": true
+   },
+   "stabilizer_dimension": 8
+  },
+  "slice_dominance_rank": 15
+ },
+ "piece_identities": {
+  "binet_cauchy": true,
+  "g_at_mu_zero_is_square_difference": true,
+  "g_equals_q_squared_plus_4_gram": true,
+  "q_without_mu": true
+ },
+ "representatives": [
+  {
+   "invariants": {
+    "G": 0,
+    "Q": -2,
+    "eta_u": -1,
+    "eta_uv": 0,
+    "eta_v": 1,
+    "mu": 0,
+    "wedge_squares": 1
+   },
+   "nullity": 8,
+   "orbit_dimension": 11,
+   "orbit_plus_scaling": 12,
+   "orbit_scaling_family": 12,
+   "point": "W8 hyperbolic plane (e1; e3)",
+   "rank_C": 10,
+   "tangent_order_10": null,
+   "tangent_order_12": 12,
+   "tangent_order_14": 15,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 0,
+    "Q": 0,
+    "eta_u": 0,
+    "eta_uv": 0,
+    "eta_v": 0,
+    "mu": 0,
+    "wedge_squares": 4
+   },
+   "nullity": 8,
+   "orbit_dimension": 11,
+   "orbit_plus_scaling": 11,
+   "orbit_scaling_family": 11,
+   "point": "W8 generic isotropic plane",
+   "rank_C": 10,
+   "tangent_order_10": null,
+   "tangent_order_12": 12,
+   "tangent_order_14": 15,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 0,
+    "Q": 0,
+    "eta_u": -9,
+    "eta_uv": -15,
+    "eta_v": -25,
+    "mu": 4,
+    "wedge_squares": 2
+   },
+   "nullity": 8,
+   "orbit_dimension": 9,
+   "orbit_plus_scaling": 10,
+   "orbit_scaling_family": 11,
+   "point": "E8",
+   "rank_C": 10,
+   "tangent_order_10": null,
+   "tangent_order_12": 11,
+   "tangent_order_14": 15,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 0,
+    "Q": 0,
+    "eta_u": 0,
+    "eta_uv": 0,
+    "eta_v": 0,
+    "mu": 0,
+    "wedge_squares": 4
+   },
+   "nullity": 12,
+   "orbit_dimension": 9,
+   "orbit_plus_scaling": 9,
+   "orbit_scaling_family": 9,
+   "point": "B9",
+   "rank_C": 8,
+   "tangent_order_10": 9,
+   "tangent_order_12": 15,
+   "tangent_order_14": 15,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 0,
+    "Q": 0,
+    "eta_u": -9,
+    "eta_uv": -15,
+    "eta_v": -25,
+    "mu": 4,
+    "wedge_squares": 0
+   },
+   "nullity": 12,
+   "orbit_dimension": 6,
+   "orbit_plus_scaling": 7,
+   "orbit_scaling_family": 8,
+   "point": "V",
+   "rank_C": 8,
+   "tangent_order_10": 8,
+   "tangent_order_12": 15,
+   "tangent_order_14": 15,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 0,
+    "Q": 0,
+    "eta_u": -1,
+    "eta_uv": -1,
+    "eta_v": -1,
+    "mu": 0,
+    "wedge_squares": 0
+   },
+   "nullity": 12,
+   "orbit_dimension": 6,
+   "orbit_plus_scaling": 7,
+   "orbit_scaling_family": 7,
+   "point": "V axis {a,0}",
+   "rank_C": 8,
+   "tangent_order_10": 8,
+   "tangent_order_12": 15,
+   "tangent_order_14": 15,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 0,
+    "Q": 0,
+    "eta_u": 0,
+    "eta_uv": 0,
+    "eta_v": 0,
+    "mu": 0,
+    "wedge_squares": 0
+   },
+   "nullity": 12,
+   "orbit_dimension": 6,
+   "orbit_plus_scaling": 6,
+   "orbit_scaling_family": 7,
+   "point": "V and B9 dependent null pair",
+   "rank_C": 8,
+   "tangent_order_10": 11,
+   "tangent_order_12": 15,
+   "tangent_order_14": 15,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 0,
+    "Q": 0,
+    "eta_u": 0,
+    "eta_uv": 0,
+    "eta_v": 0,
+    "mu": 0,
+    "wedge_squares": 0
+   },
+   "nullity": 16,
+   "orbit_dimension": 6,
+   "orbit_plus_scaling": 6,
+   "orbit_scaling_family": 6,
+   "point": "N+",
+   "rank_C": 6,
+   "tangent_order_10": 15,
+   "tangent_order_12": 15,
+   "tangent_order_14": 15,
+   "tangent_order_8": 6
+  },
+  {
+   "invariants": {
+    "G": 0,
+    "Q": 0,
+    "eta_u": 0,
+    "eta_uv": 0,
+    "eta_v": 0,
+    "mu": 0,
+    "wedge_squares": 0
+   },
+   "nullity": 16,
+   "orbit_dimension": 6,
+   "orbit_plus_scaling": 6,
+   "orbit_scaling_family": 6,
+   "point": "N-",
+   "rank_C": 6,
+   "tangent_order_10": 15,
+   "tangent_order_12": 15,
+   "tangent_order_14": 15,
+   "tangent_order_8": 6
+  },
+  {
+   "invariants": {
+    "G": 0,
+    "Q": 6,
+    "eta_u": -1,
+    "eta_uv": -5,
+    "eta_v": -16,
+    "mu": 3,
+    "wedge_squares": 9
+   },
+   "nullity": 4,
+   "orbit_dimension": 11,
+   "orbit_plus_scaling": 12,
+   "orbit_scaling_family": 12,
+   "point": "V(G) generic",
+   "rank_C": 12,
+   "tangent_order_10": null,
+   "tangent_order_12": null,
+   "tangent_order_14": 14,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 0,
+    "Q": 0,
+    "eta_u": -9,
+    "eta_uv": -15,
+    "eta_v": -25,
+    "mu": 4,
+    "wedge_squares": 100
+   },
+   "nullity": 4,
+   "orbit_dimension": 11,
+   "orbit_plus_scaling": 12,
+   "orbit_scaling_family": 12,
+   "point": "V(Q) and V(G), nullity 4",
+   "rank_C": 12,
+   "tangent_order_10": null,
+   "tangent_order_12": null,
+   "tangent_order_14": 15,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 28,
+    "Q": 0,
+    "eta_u": -4,
+    "eta_uv": -5,
+    "eta_v": -8,
+    "mu": 2,
+    "wedge_squares": 31
+   },
+   "nullity": 4,
+   "orbit_dimension": 11,
+   "orbit_plus_scaling": 12,
+   "orbit_scaling_family": 12,
+   "point": "V(Q) all coordinates nonzero",
+   "rank_C": 12,
+   "tangent_order_10": null,
+   "tangent_order_12": null,
+   "tangent_order_14": 14,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 233424,
+    "Q": -500,
+    "eta_u": -20,
+    "eta_uv": 18,
+    "eta_v": 191,
+    "mu": 17,
+    "wedge_squares": 385622
+   },
+   "nullity": 0,
+   "orbit_dimension": 11,
+   "orbit_plus_scaling": 12,
+   "orbit_scaling_family": 12,
+   "point": "generic",
+   "rank_C": 14,
+   "tangent_order_10": null,
+   "tangent_order_12": null,
+   "tangent_order_14": null,
+   "tangent_order_8": null
+  },
+  {
+   "invariants": {
+    "G": 1,
+    "Q": -1,
+    "eta_u": -1,
+    "eta_uv": 0,
+    "eta_v": 0,
+    "mu": 0,
+    "wedge_squares": 0
+   },
+   "nullity": 0,
+   "orbit_dimension": 6,
+   "orbit_plus_scaling": 7,
+   "orbit_scaling_family": 7,
+   "point": "e1 alone",
+   "rank_C": 14,
+   "tangent_order_10": null,
+   "tangent_order_12": null,
+   "tangent_order_14": null,
+   "tangent_order_8": null
+  }
+ ],
+ "schema": "a5-zero-divisor-strata-v1",
+ "slice_certificates": [
+  {
+   "covering": {
+    "max_power": 2,
+    "prefix": 80
+   },
+   "generators": 80,
+   "gram_determinant_vanishes": false,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": true
+   },
+   "named_pieces": [
+    "W8",
+    "V"
+   ],
+   "order": 12,
+   "slice": "P2"
+  },
+  {
+   "covering": {
+    "max_power": 3,
+    "prefix": 32
+   },
+   "generators": 82,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "E8": true,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": true
+   },
+   "named_pieces": [
+    "E8"
+   ],
+   "order": 12,
+   "slice": "P3a"
+  },
+  {
+   "covering": {
+    "max_power": 3,
+    "prefix": 32
+   },
+   "generators": 72,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "E8": true,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": true
+   },
+   "named_pieces": [
+    "E8"
+   ],
+   "order": 12,
+   "slice": "P3b"
+  },
+  {
+   "covering": {
+    "max_power": 4,
+    "prefix": 128
+   },
+   "generators": 150,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": true
+   },
+   "named_pieces": [
+    "V"
+   ],
+   "order": 12,
+   "slice": "P3c"
+  },
+  {
+   "covering": {
+    "max_power": 6,
+    "prefix": 8
+   },
+   "generators": 59,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": true
+   },
+   "named_pieces": [
+    "W8"
+   ],
+   "order": 12,
+   "slice": "P4s"
+  },
+  {
+   "covering": {
+    "max_power": 6,
+    "prefix": 16
+   },
+   "generators": 218,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": true
+   },
+   "named_pieces": [
+    "W8"
+   ],
+   "order": 12,
+   "slice": "P4g"
+  },
+  {
+   "covering": {
+    "max_power": 3,
+    "prefix": 256
+   },
+   "generators": 274,
+   "gram_determinant_vanishes": false,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": false
+   },
+   "named_pieces": [
+    "V"
+   ],
+   "order": 10,
+   "slice": "P2"
+  },
+  {
+   "covering": {
+    "max_power": 3,
+    "prefix": 332
+   },
+   "generators": 332,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "E8": false,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": false
+   },
+   "named_pieces": [
+    "V"
+   ],
+   "order": 10,
+   "slice": "P3a"
+  },
+  {
+   "covering": {
+    "max_power": 3,
+    "prefix": 256
+   },
+   "generators": 318,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "E8": false,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": false
+   },
+   "named_pieces": [
+    "V"
+   ],
+   "order": 10,
+   "slice": "P3b"
+  },
+  {
+   "covering": {
+    "max_power": 3,
+    "prefix": 128
+   },
+   "generators": 960,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": false
+   },
+   "named_pieces": [
+    "V"
+   ],
+   "order": 10,
+   "slice": "P3c"
+  },
+  {
+   "covering": {
+    "max_power": 5,
+    "prefix": 16
+   },
+   "generators": 342,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": true
+   },
+   "named_pieces": [
+    "B9"
+   ],
+   "order": 10,
+   "slice": "P4s"
+  },
+  {
+   "covering": {
+    "max_power": 3,
+    "prefix": 512
+   },
+   "generators": 1770,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": true,
+    "Nm": true,
+    "Np": true,
+    "V": true,
+    "W8": false
+   },
+   "named_pieces": [
+    "V"
+   ],
+   "order": 10,
+   "slice": "P4g"
+  },
+  {
+   "covering": {
+    "max_power": 2,
+    "prefix": 256
+   },
+   "generators": 379,
+   "gram_determinant_vanishes": false,
+   "ideal_inside_piece_ideal": {
+    "B9": false,
+    "Nm": true,
+    "Np": true,
+    "V": false,
+    "W8": false
+   },
+   "named_pieces": [
+    "Np",
+    "Nm"
+   ],
+   "order": 8,
+   "slice": "P2"
+  },
+  {
+   "covering": {
+    "max_power": 2,
+    "prefix": 256
+   },
+   "generators": 520,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": false,
+    "E8": false,
+    "Nm": true,
+    "Np": true,
+    "V": false,
+    "W8": false
+   },
+   "named_pieces": [
+    "Np",
+    "Nm"
+   ],
+   "order": 8,
+   "slice": "P3a"
+  },
+  {
+   "covering": {
+    "max_power": 2,
+    "prefix": 256
+   },
+   "generators": 488,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": false,
+    "E8": false,
+    "Nm": true,
+    "Np": true,
+    "V": false,
+    "W8": false
+   },
+   "named_pieces": [
+    "Np",
+    "Nm"
+   ],
+   "order": 8,
+   "slice": "P3b"
+  },
+  {
+   "covering": {
+    "max_power": 3,
+    "prefix": 256
+   },
+   "generators": 1739,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": false,
+    "Nm": true,
+    "Np": true,
+    "V": false,
+    "W8": false
+   },
+   "named_pieces": [
+    "Np",
+    "Nm"
+   ],
+   "order": 8,
+   "slice": "P3c"
+  },
+  {
+   "covering": {
+    "max_power": 3,
+    "prefix": 512
+   },
+   "generators": 556,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": false,
+    "Nm": true,
+    "Np": true,
+    "V": false,
+    "W8": false
+   },
+   "named_pieces": [
+    "Np",
+    "Nm"
+   ],
+   "order": 8,
+   "slice": "P4s"
+  },
+  {
+   "covering": {
+    "max_power": 3,
+    "prefix": 128
+   },
+   "generators": 2966,
+   "gram_determinant_vanishes": true,
+   "ideal_inside_piece_ideal": {
+    "B9": false,
+    "Nm": true,
+    "Np": true,
+    "V": false,
+    "W8": false
+   },
+   "named_pieces": [
+    "Np",
+    "Nm"
+   ],
+   "order": 8,
+   "slice": "P4g"
+  }
+ ],
+ "split_algebra": {
+  "congruent_to_cross_matrix": true,
+  "skew_on_basis": true
+ },
+ "split_factorization": {
+  "cofactor_terms": 995,
+  "cofactors_equal_q_g_z": [
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "g_terms": 141,
+  "q_is_sum_eps_z_squared": true,
+  "q_terms": 15,
+  "skew": true
+ },
+ "statements": [
+  {
+   "carried_by": [
+    "doubly_pure"
+   ],
+   "claim": "every zero divisor of A_5 is doubly pure (y_0 = y_16 = 0)",
+   "id": 1,
+   "status": "established"
+  },
+  {
+   "carried_by": [
+    "nullity_identity",
+    "split_algebra"
+   ],
+   "claim": "for doubly pure y != 0, nullity L_y = 28 - 2 rank C_z, so nullity 4, 8, 12, 16 is rank C_z = 12, 10, 8, 6",
+   "id": 2,
+   "status": "established"
+  },
+  {
+   "carried_by": [
+    "split_factorization",
+    "zero_divisor_set"
+   ],
+   "claim": "Z_5 minus 0 is V(Q) u V(G) in C^15; Q and G are absolutely irreducible; complex dimension 14, real cone dimension 28, unit dimension 27; each unit section is connected",
+   "id": 3,
+   "status": "established"
+  },
+  {
+   "carried_by": [
+    "characteristic_identities",
+    "orbit_facts"
+   ],
+   "claim": "C_z satisfies C (C^2 + Q)(C^4 + 2 Q C^2 + G) = 0 with characteristic polynomial l (l^2 + Q)^3 (l^4 + 2 Q l^2 + G)^2",
+   "id": 4,
+   "status": "established"
+  },
+  {
+   "carried_by": [
+    "orbit_facts",
+    "slice_certificates"
+   ],
+   "claim": "every pair (u, v) lies in a G_2-translate of one of six slice families, and on each slice the Pfaffian ideals of orders 12, 10, 8 have the exact varieties of LEVEL_PIECES",
+   "id": 5,
+   "status": "established"
+  },
+  {
+   "carried_by": [
+    "slice_certificates",
+    "containment_table",
+    "representatives",
+    "topology"
+   ],
+   "claim": "R_16 = N_+ u N_-: two irreducible cones of complex dimension 6, unit dimension 11 (V_2(R^7)), meeting only at 0; R_12 = V u B9, irreducible of complex dimensions 8 and 9 (unit 15 and 17), meeting in complex dimension 7 (unit 13); R_8 = W8 u E8-bar, irreducible of complex dimensions 12 and 11 (unit 23 and 21)",
+   "id": 6,
+   "status": "established"
+  },
+  {
+   "carried_by": [
+    "curve_to_b9",
+    "piece_identities",
+    "topology"
+   ],
+   "claim": "V lies in E8-bar, B9 in W8 and in E8-bar, N_+ and N_- in V and in B9; W8 lies in V(G) only; E8-bar, V, B9 lie in V(Q) and V(G)",
+   "id": 7,
+   "status": "established"
+  },
+  {
+   "carried_by": [
+    "topology"
+   ],
+   "claim": "D_(5,4) is connected (two irreducible algebraic pieces, unit dimension 27 each); D_(5,8) has two connected components (unit dimensions 23 and 21); D_(5,12) is connected (two irreducible pieces, unit dimensions 15 and 17); D_(5,16) has two components (unit dimension 11 each)",
+   "id": 8,
+   "status": "established"
+  },
+  {
+   "carried_by": [],
+   "claim": "smoothness and singular loci of the pieces, normal links, kernel bundles, attachments and homology (roadmap items 4 to 8)",
+   "id": 9,
+   "status": "open"
+  }
+ ],
+ "topology": {
+  "intersection_V_B9": {
+   "complex": 7,
+   "lower_bound_rank": 7,
+   "unit_real": 13
+  },
+  "membership_of_representatives": {
+   "B9": {
+    "B9": true,
+    "Nm": false,
+    "Np": false,
+    "V": false,
+    "W8": true
+   },
+   "E8": {
+    "B9": false,
+    "Nm": false,
+    "Np": false,
+    "V": false,
+    "W8": false
+   },
+   "N+": {
+    "B9": true,
+    "Nm": false,
+    "Np": true,
+    "V": true,
+    "W8": true
+   },
+   "N-": {
+    "B9": true,
+    "Nm": true,
+    "Np": false,
+    "V": true,
+    "W8": true
+   },
+   "V": {
+    "B9": false,
+    "Nm": false,
+    "Np": false,
+    "V": true,
+    "W8": false
+   },
+   "V and B9 dependent null pair": {
+    "B9": true,
+    "Nm": false,
+    "Np": false,
+    "V": true,
+    "W8": true
+   },
+   "V axis {a,0}": {
+    "B9": false,
+    "Nm": false,
+    "Np": false,
+    "V": true,
+    "W8": false
+   },
+   "V(G) generic": {
+    "B9": false,
+    "Nm": false,
+    "Np": false,
+    "V": false,
+    "W8": false
+   },
+   "V(Q) all coordinates nonzero": {
+    "B9": false,
+    "Nm": false,
+    "Np": false,
+    "V": false,
+    "W8": false
+   },
+   "V(Q) and V(G), nullity 4": {
+    "B9": false,
+    "Nm": false,
+    "Np": false,
+    "V": false,
+    "W8": false
+   },
+   "W8 generic isotropic plane": {
+    "B9": false,
+    "Nm": false,
+    "Np": false,
+    "V": false,
+    "W8": true
+   },
+   "W8 hyperbolic plane (e1; e3)": {
+    "B9": false,
+    "Nm": false,
+    "Np": false,
+    "V": false,
+    "W8": true
+   },
+   "e1 alone": {
+    "B9": false,
+    "Nm": false,
+    "Np": false,
+    "V": false,
+    "W8": false
+   },
+   "generic": {
+    "B9": false,
+    "Nm": false,
+    "Np": false,
+    "V": false,
+    "W8": false
+   }
+  },
+  "pieces": {
+   "B9": {
+    "complex": 9,
+    "cone_real": 18,
+    "inside_mu_zero": true,
+    "unit_real": 17,
+    "unit_real_in_mu_zero": 17
+   },
+   "E8": {
+    "complex": 11,
+    "cone_real": 22,
+    "inside_mu_zero": false,
+    "unit_real": 21,
+    "unit_real_in_mu_zero": 19
+   },
+   "N": {
+    "complex": 6,
+    "cone_real": 12,
+    "inside_mu_zero": true,
+    "unit_real": 11,
+    "unit_real_in_mu_zero": 11
+   },
+   "V": {
+    "complex": 8,
+    "cone_real": 16,
+    "inside_mu_zero": false,
+    "unit_real": 15,
+    "unit_real_in_mu_zero": 13
+   },
+   "VG": {
+    "complex": 14,
+    "cone_real": 28,
+    "inside_mu_zero": false,
+    "unit_real": 27,
+    "unit_real_in_mu_zero": 25
+   },
+   "VQ": {
+    "complex": 14,
+    "cone_real": 28,
+    "inside_mu_zero": false,
+    "unit_real": 27,
+    "unit_real_in_mu_zero": 25
+   },
+   "W8": {
+    "complex": 12,
+    "cone_real": 24,
+    "inside_mu_zero": true,
+    "unit_real": 23,
+    "unit_real_in_mu_zero": 23
+   }
+  },
+  "strata": {
+   "12": {
+    "connected_components": 1,
+    "irreducible_pieces": [
+     "V",
+     "B9"
+    ],
+    "unit_dimensions": [
+     15,
+     17
+    ],
+    "why": "V minus R_16 and B9 minus R_16 are connected and share a nullity-12 point"
+   },
+   "16": {
+    "connected_components": 2,
+    "irreducible_pieces": [
+     "N+",
+     "N-"
+    ],
+    "unit_dimensions": [
+     11,
+     11
+    ],
+    "why": "N+ and N- are irreducible cones meeting only at 0"
+   },
+   "4": {
+    "connected_components": 1,
+    "irreducible_pieces": [
+     "VQ",
+     "VG"
+    ],
+    "unit_dimensions": [
+     27,
+     27
+    ],
+    "why": "V(Q) and V(G) are irreducible, R_8 is a proper closed subset of each, and a nullity-4 point lies on both"
+   },
+   "8": {
+    "connected_components": 2,
+    "irreducible_pieces": [
+     "W8",
+     "E8-bar"
+    ],
+    "unit_dimensions": [
+     23,
+     21
+    ],
+    "why": "W8 minus R_12 is regular for the order-12 Pfaffian scheme (two single orbit types), so E8-bar, irreducible and not inside {mu = 0}, misses it"
+   }
+  }
+ },
+ "versions": {
+  "python-flint": "0.9.0",
+  "sympy": "1.14.0"
+ },
+ "zero_divisor_set": {
+  "g_content": 1,
+  "g_degree": 4,
+  "g_factor_count": 1,
+  "g_factor_exponent": 1,
+  "g_terms": 141,
+  "q_divides_g": false,
+  "q_hessian_rank": 15,
+  "q_terms": 15,
+  "smooth_point_split": {
+   "G": 0,
+   "Q": 6,
+   "gradient_nonzero": true
+  }
+ }
+}

@@ -1995,6 +1995,13 @@
       "run": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder",
       "family": "IQM QET compensated ladder",
       "question": "Does the record-steered rotation of the two-qubit QET ladder, fed forward by cc_prx on IQM Garnet, lower Bob's local energy below every record-independent unitary (H1) and below the vacuum value (H2), is the non-pi conditional angle realized (H3), and does Bob carry a coherent window phase (H4)?"
+    },
+    {
+      "id": "qd-qpu-belenos-teleportation-rehearsal-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00",
+      "family": "single-chip teleportation rehearsal on qpu:belenos",
+      "question": "job-00 of the teleportation rehearsal, sent under the anchor gate while the platform record held one state: does the chip teleport the six Pauli eigenstates above the classical bound, and does it return the requested three-click samples (near the anchor state) or almost none (the state the held record describes)?"
     }
   ],
   "claims": [
@@ -3037,7 +3044,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.",
+      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata; smooth strata and singular loci, normal links, kernel bundles, attachments and integral invariants (roadmap items 4-8) remain open.",
       "evidence": [],
       "documents": [
         "docs/RESEARCH_ROADMAP.md",
@@ -3052,7 +3059,8 @@
         "four-support-topology",
         "principal-skew-atlas",
         "kernel-limit-slice",
-        "nullity-twelve-cone"
+        "nullity-twelve-cone",
+        "a5-zero-divisor-strata"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -5853,7 +5861,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md, local to the twelve recorded witnesses 1, 4, 5, 6, 8, 11, 12, 13, 15, 18, 19 and 20 of rank_locus_local_dimension. At each, exact integer kernels give the family nullity, the Schur tangent cone dimension 16, 22 or 28, e_8 and e_24 in T(x) and dim T(x) cap H_5^perp = dim T(x) - 2, and a smooth piece of that dimension through x lies in R_k: the quadric cone V at 1, 8, 15 (a5-nullity12-quadric-germ); the Stiefel cone Q = 0 at 6, 13, 20 and the quartic G = 0 at 5, 12, 19, each with real Jacobian rank 4 and inside R_4 by Pf A = -(z.t) Q G; at 4, 11, 18 the image of s exp(D_X) z(k) for the 14 octonion derivations D_X on both halves and a degree-2 curve z(k) through x whose rank C_z <= 10 holds identically by 13 exact points against degree 12, with complex orbit rank 11. The Schur sandwich makes each piece the germ of S_k. The family dimensions are imported from the local-dimension record; the result covers no point off these witnesses, no covering of D_(5,4), D_(5,8) or D_(5,12), and is not formalized in Rocq.",
+      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md, local to the twelve recorded witnesses 1, 4, 5, 6, 8, 11, 12, 13, 15, 18, 19 and 20 of rank_locus_local_dimension. At each, exact integer kernels give the family nullity, the Schur tangent cone dimension 16, 22 or 28, e_8 and e_24 in T(x) and dim T(x) cap H_5^perp = dim T(x) - 2, and a smooth piece of that dimension through x lies in R_k: the quadric cone V at 1, 8, 15 (a5-nullity12-quadric-germ); the Stiefel cone Q = 0 at 6, 13, 20 and the quartic G = 0 at 5, 12, 19, each with real Jacobian rank 4 and inside R_4 by Pf A = -(z.t) Q G; at 4, 11, 18 the image of s exp(D_X) z(k) for the 14 octonion derivations D_X on both halves and a degree-2 curve z(k) through x whose rank C_z <= 10 holds identically by 13 exact points against degree 12, with complex orbit rank 11. The Schur sandwich makes each piece the germ of S_k. The family dimensions are imported from the local-dimension record; the result covers no point off these witnesses, no covering of D_(5,4), D_(5,8) or D_(5,12), and is not formalized in Rocq. a5-zero-divisor-strata identifies the two extra directions globally as the complex coordinate mu = (y_8, y_24) transverse to H_5^perp.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
@@ -5896,6 +5904,40 @@
         "nullity-twelve-cone",
         "a5-nullity12-quadric-germ",
         "a5-stiefel-universal"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-zero-divisor-strata",
+      "statement": "The zero divisors of A_5 are the doubly pure y = (p, q) with Q G = 0 for z = p + i q, a union of two absolutely irreducible hypersurfaces of C^15 of complex dimension 14; nullity L_y = 28 - 2 rank C_z, so nullity 4, 8, 12, 16 is the rank 12, 10, 8, 6 locus of C_z. Each rank stratum has two irreducible pieces (complex dimension, unit dimension): R_16 = N_+ u N_- (6, 11 each), R_12 = V (8, 15) u B9 (9, 17) meeting in dimension (7, 13), R_8 = W8 (12, 23) u E8-bar (11, 21); V and B9 lie in E8-bar, B9 in W8, N_+ and N_- in V n B9, W8 in V(G) off V(Q) generically and the other pieces in V(Q) n V(G). D_(5,4) and D_(5,12) are connected and D_(5,8) and D_(5,16) have two connected components.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-zero-divisor-strata/README.md; gate core-694 recomputes result.json (Groebner membership and radical-power certificates of the Pfaffian ideals of orders 12, 10, 8 on six G_2-slice families, is_groebner re-verified) and core-695 rejects its mutation controls. The covering of each stratum by its two pieces rests on those slice certificates and the G_2 orbit facts; the V n B9 dimension, the piece dimensions and the component counts are asserted literals in the script whose support is the independent cd_core verification (verification.md: tangent dimension equals parametrization rank at random points, the V n B9 upper bound by counting, and an orbit-free argument for the two components of D_(5,8)), which is not a gate and checks the slice tables over F_11 and F_13 only. Equations for E8-bar are not given. Open: singular loci of the pieces, normal links, kernel bundles, attachments and homology (roadmap items 4-8); not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-zero-divisor-strata/result.json",
+          "sha256": "5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-zero-divisor-strata/README.md",
+        "docs/evidence/a5-zero-divisor-strata/verification.md"
+      ],
+      "gates": {
+        "core-694": "replay",
+        "core-695": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-stiefel-universal",
+        "a5-nullity12-quadric-germ",
+        "a5-nonzero-divisor-two-dimension-gap"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -9920,7 +9962,7 @@
       "statement": "On the best and median three-qubit ibm_kingston paths of the primorial noise record, the compiled gap-88 phase-gradient arms and their zero-angle null arms carry identical sx, x, cz and delay streams, differing only in zero-duration rz. Noise-free static ZZ of 2 to 20 kHz on both couplers (partner-in-0 and symmetric frames) biases the raw coefficients by up to 0.078 and the null-subtracted ones by at most 0.00038; a drive-axis tilt of 0.005 or 0.02 rad on one or all path qubits biases them by up to 0.174 raw and at most 0.0055 null-subtracted, both entering at second order; tilt at each path qubit's sx gate-error bound (0.021 to 0.036 rad) in the worst of eight sign patterns leaves 0.0147 (best) and 0.0159 (median) null-subtracted. Every residual stays below one standard deviation of the noisy null-subtracted estimate at the retained budget (0.0188 at 2,803 and 0.0186 at 3,169 shots per setting), so the circuits pose no primorial-specific device question on Heron r2.",
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
-      "status": "established",
+      "status": "superseded",
       "boundary": "Noise-free statevector scenarios of the gap-88 cost on the snapshot's Heron r2 durations, one family at a time; the gate-error tilt bound charges the whole sx error to tilt and leaves a margin of 0.78 and 0.85 standard deviations; crosstalk, leakage and combined families are outside it. The IQM and Tuna-17 rows of the hardware decision rest on the provider guides, not on compiled circuits, and no hardware run exists.",
       "evidence": [
         {
@@ -9945,6 +9987,44 @@
         "primorial-cover-noise-null-subtraction"
       ],
       "supersedes": [],
+      "superseded_by": "primorial-bound-residuals-joint"
+    },
+    {
+      "id": "primorial-bound-residuals-joint",
+      "statement": "On the best (45-46-47) and median (117-125-126) ibm_kingston paths of the primorial noise record, a numpy statevector of the compiled gap-88 phase-gradient and zero-angle null arms reproduces every retained null-residual and coherent-sensitivity scenario to 1.6e-15. Drive-axis tilt at each path qubit's sx gate-error bound and CZ conditional phase at each coupler's CZ bound (0.097 to 0.104 rad), applied jointly, leave a null-subtracted coefficient bias of 0.049 (best) and 0.050 (median), 2.61 and 2.84 standard deviations of that coefficient at the retained budgets, and identifying all seven coefficients at that bias takes 53,363 and 76,596 shots per setting against the retained 2,803 and 3,169; under the sx-and-x budget the joint residual is 1.90 and 2.06 standard deviations. Each family alone stays below one standard deviation (tilt 0.79 and 0.89, CZ phase 0.72 and 0.77). With tilt at 0.1 of its bound no CZ phase within its bound reaches one standard deviation (0.84 and 0.90); at 0.2 the full CZ bound reaches 0.98 and 1.04. Static detuning on all three qubits, which no gate error bounds, pairs the same way: 30 kHz alone reaches 0.13 and 0.14, with the atlas-fitted 0.04 rad CZ phase 0.43 and 0.45, with the CZ-phase bound 1.32 and 1.40 and with the tilt bound 1.59 and 1.75; partner-in-0 ZZ of 20 kHz with the tilt bound reaches 1.03 and 1.15. The single-family gate-error argument therefore does not close the device question; it rests on the coherent tilt, CZ phase and static detuning of the chosen path.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Noise-free scenarios on the snapshot's compiled arms; the gate-error bounds charge each gate's whole reported error to one coherent family and are upper limits on the coherent part; the twirled-CZ rows assume ideal Pauli frames around each CZ; the every-path sweep reads all 226 working paths against the best path's coefficient standard deviations; crosstalk and leakage are outside it, and the coherent tilt and CZ-phase fractions of Kingston paths are unmeasured. The per-coefficient reading and every row after the joint families were added after an exploratory run had shown the joint result, and the detuning and ZZ pairs after a review of the first retained run. No hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/bound_residuals.json",
+          "sha256": "491226721d81588a2d9914fc9880c19ea11d013e40b4663c72405293900b836e"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/null_residuals.json",
+          "sha256": "fdda4701dc8b33fb1122c53658f12a4b4b3870d05cba8e491f684bc722ffabbe"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/noise.json",
+          "sha256": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/README.md",
+        "docs/design/primorial-cover-joint-coherent-bounds.md"
+      ],
+      "gates": {
+        "core-primorial-bound-residuals-replay": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "primorial-cover-noise-null-subtraction"
+      ],
+      "supersedes": [
+        "primorial-null-residuals-zz-tilt"
+      ],
       "superseded_by": null
     },
     {
@@ -10329,6 +10409,85 @@
         "kingston-qet-scheduled-idle-coherent-phase",
         "iqm-garnet-cc-prx-probe-line-limit",
         "iqm-garnet-cc-prx-feedback-label-limit"
+      ]
+    },
+    {
+      "id": "qd-belenos-teleportation-rehearsal-job-00",
+      "statement": "The single-chip teleportation rehearsal on qpu:belenos, job 55479252-d907-45ac-b1e1-84f19d21a131 submitted 2026-10-26 02:54:50 UTC under the anchor gate (model pooled fidelity 0.868 at the 2026-10-24 anchor figures, 0.635 at the held live figures), completed in 292 s and returned 0 three-click samples in each of its six iterations, each reporting its full max_shots of 1,200,000 as nb_shots_used. The preregistered verdict is inconclusive: no input has an accepted event, so neither the pooled fidelity nor the classical bound is defined. The preregistered record-state class is degraded-as-recorded (0 of 5400 requested samples, against 5400 expected in the anchor state and about none in the held state); the in-situ fit and the exploratory Cayley-Dickson lens have no event to read. The platform record before and after the job carries the held figures (HOM 83.8 %, g2 16.7 %, Transmittance 0.05 %) unchanged.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job on one chip in one held calibration state. The record-state class rests on the documented max_shots semantics, which this job is the first retained run to exercise: an iteration ended by its shot budget reports that budget, not a count of optical trials, so the zero count bounds the three-click rate per reported shot (below 4.2e-7 at 95 % over 7.2e6 shots, against about 1e-3 in the anchor state) without fixing the transmittance, whose value depends on what a shot counts. The run establishes nothing about teleportation fidelity, and no C1 conformance; the approval was single-use, and a run on a recovered chip is job-01.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/results.json",
+          "sha256": "0263dbe81e6d4aa97ded1429130fb0b984e11e8d8074fe819a57e6e960b1fe13"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/raw/result.json",
+          "sha256": "0f0e51170c9057855e3fe0369f4ac3093179ab276ce9e3dc7a8b7dfad46aa8cb"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/submission.json",
+          "sha256": "31dd85622c29c3357b0e67ec3f72990d9dd6102b09ea4778ef286474264e3a63"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/submit-model.json",
+          "sha256": "11e84460c354ee561c0a958c991be3a9d37267e0c8d9b6c34d660aaf72264a64"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
+          "sha256": "c517763c77c48192551dfcb133b422d404b5bba403c3c4dd6eb2d4699ded520d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json",
+          "sha256": "e9b27dfa955ac53bcce60fd679a14eeee2758eed41cfb765d5ef08cc7cd5967b"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-belenos-entanglement-teleportation.md",
+        "docs/notes/quandela/calibration.md",
+        "scripts/qd_teleportation_rehearsal.py",
+        "scripts/qd_rehearsal_secondary.py"
+      ],
+      "gates": {
+        "core-teleportation-rehearsal-job-00-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-teleportation-rehearsal-job-00"
+      ]
+    },
+    {
+      "id": "hw-n21-orbit-scheduled-idle-control",
+      "statement": "Replayed with its service-scheduled idle written in as delays under the execution Target, the N=21 orbit run on ibm_fez (4 qubits, 28 CZ before routing; most idle qubit 1,958 dt) gives an idle-padded exact contrast difference of +0.179 against +0.208 unpadded and a measured +0.197 (95 percent interval +-0.030 at 4096 shots per arm), while the encoded N=21 Kingston run (336 CZ; most idle leaf 15,481 dt) gives -0.0007 padded against +0.031 unpadded and a measured +0.0027. The same parameter-free idle model lies inside both measured intervals, so the Kingston null follows the encoded circuit's length rather than N=21 feed-forward.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Two retained runs on two backends and calibrations; the orbit run's predicted idle loss (0.029) equals its interval half-width, so it does not separate the padded from the unpadded model on its own. Incoherent idle only; the orbit runs' fitted work phase (hw-n21-orbit-phase) is coherent and outside this model.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T080216.451663Z/idle-replay.json",
+          "sha256": "f589f9ccf10ae470f45c4d8c101af9969ea022e1187166e554e493419d30ad71"
+        },
+        {
+          "path": "results/live/2026-10-13T080216.451663Z/collect.json",
+          "sha256": "fc50723a9ee530cf9b4869a58da64cfbddf9dc98c999c66145ea7762881b2ddb"
+        },
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/idle-replay.json",
+          "sha256": "218790a98f99de9835fe219061e11a004908ea0809df3c88bea1b4688ac7bd6c"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-18T090603.530638Z/IDLE_REPLAY_FINDINGS.md"
+      ],
+      "acquisitions": [
+        "fez-n21-orbit-feedback",
+        "kingston-n21-feedback-encoded-50us"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-scheduled-idle",
+        "hw-n21-orbit-phase"
       ]
     }
   ]

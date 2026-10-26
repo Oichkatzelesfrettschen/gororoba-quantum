@@ -12,7 +12,7 @@
   "state": "closed",
   "scope": "Exact certificates, the Kingston noise prediction and the hardware decision for the primorial quotient, phase-gradient and QAOA circuits; a reproduction of Ziller Table 1 by the exhaustive search. Provider acquisitions need their own approved cases.",
   "owner": "primorial cover-defect benchmarks",
-  "next_action": "None. A hardware case reopens only on a platform whose compiled signal and null arms differ in physical pulses, or on a coherent family whose null-subtracted residual reaches the budget's standard deviation.",
+  "next_action": "None; primorial-coherent-device-question carries the device question.",
   "reconciliation": {
     "status": "verified",
     "note": "The user asked for the verified mathematics and a simulator run whose analysis decides on hardware; the certificates and the Kaggle CPU prediction are retained, and no provider job was sent."
@@ -63,8 +63,8 @@
       ]
     }
   ],
-  "disposition": "completed",
-  "resolution": "Both obligations closed: Ziller Table 1 reproduces for k = 1..20, and no primorial-specific device question survives the null-subtracted prediction with static ZZ and axis tilt added; no provider job was sent.",
+  "disposition": "superseded",
+  "resolution": "Ziller Table 1 reproduces for k = 1..20. The device-question closure tested one coherent family at a time; tilt and CZ phase jointly at their gate-error bounds exceed one standard deviation (docs/design/primorial-cover-joint-coherent-bounds.md), so primorial-coherent-device-question carries the reopened question. No provider job was sent.",
   "receipts": [
     {
       "scope_sha256": "5f2b6d48b8ca6ba2e34d3b6e1052a7c2b897869fea54192eec259bfb67359881",
@@ -82,5 +82,8 @@
         }
       ]
     }
+  ],
+  "superseded_by": [
+    "primorial-coherent-device-question"
   ]
 }

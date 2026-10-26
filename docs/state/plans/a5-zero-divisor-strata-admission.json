@@ -1,0 +1,255 @@
+{
+  "schema": "work-plan-v1",
+  "id": "a5-zero-divisor-strata-admission",
+  "kind": "implementation",
+  "summary": "Admit a5-zero-divisor-strata (roadmap item 3 of dimension32-global-topology) only for the subclaims an independent opus re-check from cd_core confirms.",
+  "sources": [
+    "docs/evidence/a5-zero-divisor-strata/README.md"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Independent cd_core verification (verification.md) refutes none of the six subclaims; PR 533 carries the admission."
+  },
+  "scope": "Evidence bundle docs/evidence/a5-zero-divisor-strata (author script, result.json, README, independent verifier and verification.md), its replay and admission gates, the claim a5-zero-divisor-strata and the boundary text of dimension32-global-topology and a5-nonzero-divisor-two-dimension-gap.",
+  "owner": "repository maintainer",
+  "next_action": "None; the plan is closed.",
+  "steps": [
+    {
+      "id": "zd-criterion",
+      "state": "done",
+      "action": "Re-check that zero divisors are the doubly pure points with Q*G = 0 and nullity = 28 - 2 rank_C C_z.",
+      "acceptance": "Fails if any exact point has nullity differing from 28 - 2 rank C_z, or a zero divisor with y0 or y16 nonzero, or Q*G nonzero.",
+      "receipts": [
+        {
+          "result": "Confirmed by verify_independent.py from cd_core: the doubly-pure operator identities, characteristic polynomial, degree-7 relation and 14 x 14 cofactor identities at 8 random integer points; nullity = 28 - 2 rank C_z at every point touched, with the general rank transport imported from core-690.",
+          "observed_at": "2026-10-26T02:10:57+00:00",
+          "revision": "30c5ef47b1532cb2f59ee1df62b9a01bd3af3650",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "afda29d983eee302576791e7af9ca9d307e4a8764add46e3d8eb72309a413601"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "3a6d25b9e6b0a8ec7ba49b8c837f0ad113bca6ae3241cb8e71d33fb59e4cc77f"
+            }
+          ],
+          "scope_sha256": "94f7ccb73966653b3468aecae7866cdaddea875691e854331ea8ffda3d7c5b5f"
+        }
+      ]
+    },
+    {
+      "id": "irreducibility",
+      "state": "done",
+      "action": "Re-check absolute irreducibility of Q and G and complex dimension 14 each.",
+      "acceptance": "Fails if either polynomial factors over a finite-field extension or a Jacobian rank gives another dimension.",
+      "receipts": [
+        {
+          "result": "Confirmed: G in split coordinates (141 terms) is irreducible over Q with a smooth rational zero, giving absolute irreducibility; tangent dimension 14 at random points of both hypersurfaces.",
+          "observed_at": "2026-10-26T02:10:57+00:00",
+          "revision": "30c5ef47b1532cb2f59ee1df62b9a01bd3af3650",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "afda29d983eee302576791e7af9ca9d307e4a8764add46e3d8eb72309a413601"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "3a6d25b9e6b0a8ec7ba49b8c837f0ad113bca6ae3241cb8e71d33fb59e4cc77f"
+            }
+          ],
+          "scope_sha256": "1fc6bac7482dec4ebe24dee8ab97b86a41cfcee0ad0e1779b16a068faffc3e05"
+        }
+      ]
+    },
+    {
+      "id": "strata-pieces",
+      "state": "done",
+      "action": "Re-check the two-piece decomposition of the nullity 8, 12 and 16 strata with the stated dimensions.",
+      "acceptance": "Fails if a point of some stratum lies in neither claimed piece, one piece lies inside the other, or a smooth-point Jacobian rank gives another dimension.",
+      "receipts": [
+        {
+          "result": "Confirmed: tangent dimension equals parametrization rank for N+-, V, B9, W8, E8 at random points; V n B9 has dimension 7 by lower and counting upper bounds; no point outside the pieces in any search. The covering rests on the author's slice certificates (core-694), checked here over F_11 and F_13.",
+          "observed_at": "2026-10-26T02:10:57+00:00",
+          "revision": "30c5ef47b1532cb2f59ee1df62b9a01bd3af3650",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "afda29d983eee302576791e7af9ca9d307e4a8764add46e3d8eb72309a413601"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "3a6d25b9e6b0a8ec7ba49b8c837f0ad113bca6ae3241cb8e71d33fb59e4cc77f"
+            }
+          ],
+          "scope_sha256": "707304b57c522e947b2338f128d640f81dd1619f52f447b36ad25cd514634f4e"
+        }
+      ]
+    },
+    {
+      "id": "incidences",
+      "state": "done",
+      "action": "Re-check the closure incidences, the V(Q) and V(G) memberships and the component counts 1, 2, 1, 2.",
+      "acceptance": "Fails if an exact point of a claimed subset lies outside its claimed container or W8 has a point in V(Q) off the other pieces.",
+      "receipts": [
+        {
+          "result": "Confirmed: B9 < E8-bar by 8 independent curves, the V(Q)/V(G) memberships algebraically and at points, and two components of D_(5,8) by an orbit-free argument; meeting points have exact nullity 4 and 12.",
+          "observed_at": "2026-10-26T02:10:57+00:00",
+          "revision": "30c5ef47b1532cb2f59ee1df62b9a01bd3af3650",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "afda29d983eee302576791e7af9ca9d307e4a8764add46e3d8eb72309a413601"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "3a6d25b9e6b0a8ec7ba49b8c837f0ad113bca6ae3241cb8e71d33fb59e4cc77f"
+            }
+          ],
+          "scope_sha256": "d4384577522e72ae4dac3e7f87c5f8642d27b7153f675ed03154f9527abcc5ca"
+        }
+      ]
+    },
+    {
+      "id": "mu-direction",
+      "state": "done",
+      "action": "Re-check that the +2 of the two-dimension gap is the complex coordinate mu = (y8, y24).",
+      "acceptance": "Fails if the gap dimension survives with mu fixed to zero.",
+      "receipts": [
+        {
+          "result": "Confirmed: at points of V, E8, V(G), V(Q) on mu = 0 and at the 12 gap witnesses the mu-direction lies in the tangent space and mu = 0 drops it by exactly 1, reproducing family dimensions 13/19/25/25 and tangent bounds 15/21/27/27.",
+          "observed_at": "2026-10-26T02:10:57+00:00",
+          "revision": "30c5ef47b1532cb2f59ee1df62b9a01bd3af3650",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "afda29d983eee302576791e7af9ca9d307e4a8764add46e3d8eb72309a413601"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "3a6d25b9e6b0a8ec7ba49b8c837f0ad113bca6ae3241cb8e71d33fb59e4cc77f"
+            }
+          ],
+          "scope_sha256": "d01a555703f5433179be8c8b782e15d8949b3f12c3fe875057bba07b83e570da"
+        }
+      ]
+    },
+    {
+      "id": "admission",
+      "state": "done",
+      "action": "Add claim a5-zero-divisor-strata with gates and the boundary updates, only for confirmed subclaims.",
+      "acceptance": "research_state.py --check and plan_tracker.py check pass and Codex reports clean on the PR head.",
+      "receipts": [
+        {
+          "result": "PR 533 merged: research_state.json carries a5-zero-divisor-strata as established with gates core-694 and core-695, dimension32-global-topology depends on it with roadmap items 4-8 open, and the verifier's two QRNG draws are owned rows.",
+          "observed_at": "2026-10-26T03:39:34+00:00",
+          "revision": "b509a224953c11ec368b43bdfeb8c42eb6b10c3f",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/result.json",
+              "sha256": "5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c"
+            }
+          ],
+          "scope_sha256": "8ab722b4f71ceb39df19f784b1b93f775a0b8f07c49b6ae2a0efc930daf64088"
+        }
+      ]
+    },
+    {
+      "id": "author-replay",
+      "state": "done",
+      "action": "Replay the author's --check against result.json and --self-test.",
+      "acceptance": "--check exits 0 and --self-test rejects every mutation and corrupted row.",
+      "receipts": [
+        {
+          "result": "--check docs/evidence/a5-zero-divisor-strata/result.json exited 0 in 9.6 s on 12 CPUs and --self-test rejected 13 mutations and corrupted rows.",
+          "observed_at": "2026-10-26T01:23:57+00:00",
+          "revision": "326da18eb5b7b89f1e9388a652328a4ccb791601",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/result.json",
+              "sha256": "5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c"
+            },
+            {
+              "ref": "scripts/a5_zero_divisor_strata.py",
+              "sha256": "b1bc9bfb7d9bdd2087a321b3e8d4f92d60bcf0028b2be003a33374114648493c"
+            }
+          ],
+          "scope_sha256": "0a505457669fa5fe1e851d076a57b2de51ff0ac7d392083447f265426f6b7219"
+        }
+      ]
+    },
+    {
+      "id": "critical-diff-review",
+      "state": "done",
+      "action": "Run the review-work-critically skill over the full PR diff against origin/main before merge, after the last Codex round.",
+      "acceptance": "Every criticism it raises is fixed on the branch or answered in the PR body with its governing principle.",
+      "receipts": [
+        {
+          "result": "review-work-critically (opus) over the full diff found no fatal defect; its proof gap (P3b covering) is closed in the README, the symbolic double-cross identity, stale provenance, plan state, scope, literature, docstring and seed-index findings are fixed; the topology() representative guard is left unchanged to keep result.json bytes.",
+          "observed_at": "2026-10-26T03:00:11+00:00",
+          "revision": "4c2573ae68976277efe8fff51e821ca295f01dce",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/README.md",
+              "sha256": "07844db54b186b1194b7ef465dd8be1072993bc74958e6ac760132d960527adf"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.md",
+              "sha256": "111cb5bc98660b7a1abee1ff5044ccd066e8000f77a5eda8a6889230e5c77443"
+            }
+          ],
+          "scope_sha256": "6cdc5aba7101c8a92a85c762789dc9e4acd6869335a63faee7c0de41cc6db4fd"
+        }
+      ]
+    },
+    {
+      "id": "verifier-rerun",
+      "state": "done",
+      "action": "Rerun the independent verifier at the head that carries the review and Codex fixes.",
+      "acceptance": "Every stage passes with exit 0 and verification.md pins the rerun digests.",
+      "receipts": [
+        {
+          "result": "verify_strata_independent.py rerun at the review-fix head: every stage passes, exit 0, 153 s on 12 workers; verdicts identical to the first run, double_cross now symbolic, verifier digest recorded in verification.json; result.json byte-identical under --check.",
+          "observed_at": "2026-10-26T03:00:11+00:00",
+          "revision": "4c2573ae68976277efe8fff51e821ca295f01dce",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verification.json",
+              "sha256": "4868225961525cd737368e7a1c04f06c9eb9bcccb400014127eee5e139a3d388"
+            },
+            {
+              "ref": "docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py",
+              "sha256": "19832b9d75f270d69eb6e6c44e04727f9567da2fbf34a591e139044a404c15d3"
+            }
+          ],
+          "scope_sha256": "5493098e1ce285eb14b00b90b4d7a2488ae46bb14dc09e2fd61a75579f00b065"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The A_5 zero-divisor strata are established on main through PR 533 after an independent cd_core verification and a critical diff review; roadmap items 4-8 of dimension32-global-topology stay open.",
+  "receipts": [
+    {
+      "result": "PR 533 merged: research_state.json carries a5-zero-divisor-strata as established with gates core-694 and core-695, dimension32-global-topology depends on it with roadmap items 4-8 open, and the verifier's two QRNG draws are owned rows.",
+      "observed_at": "2026-10-26T03:39:34+00:00",
+      "revision": "b509a224953c11ec368b43bdfeb8c42eb6b10c3f",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json",
+          "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+        },
+        {
+          "ref": "docs/evidence/a5-zero-divisor-strata/result.json",
+          "sha256": "5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c"
+        }
+      ],
+      "scope_sha256": "7f46160e559a0ab583c87298c105957ffb54af866c72774c56ae667743a158bc"
+    }
+  ]
+}

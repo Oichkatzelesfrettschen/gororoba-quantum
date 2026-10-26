@@ -4092,6 +4092,38 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_mesh_decomposition.py split results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/anu_qrng/draw-2026-10-26T012622Z.json docs/evidence/ascella-order-coefficients/mesh-split.json --check",
+   "name": "core-ascella-signed-coherence-mesh-split-replay",
+   "seconds": 30.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_mesh_decomposition.py decompose results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/mesh-decomposition.json --check",
+   "name": "core-ascella-signed-coherence-mesh-decomposition-replay",
+   "seconds": 60.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_mesh_decomposition.py explore results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/mesh-exploration.json --check",
+   "name": "core-ascella-signed-coherence-mesh-exploration-replay",
+   "seconds": 200.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_twelve_output.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/twelve-output.json --check",
+   "name": "core-ascella-signed-coherence-twelve-output-replay",
+   "seconds": 170.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
@@ -4184,7 +4216,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py && \"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py && MYPYPATH=gororoba_quantum \"$PYTHON\" ci/pinned_tool.py mypy gororoba_quantum/primorial_cover.py gororoba_quantum/primorial_table.py scripts/primorial_cover_noise.py scripts/primorial_null_residuals.py scripts/primorial_bound_residuals.py tests/gororoba_quantum/test_primorial_cover.py tests/gororoba_quantum/test_primorial_table.py tests/scripts/test_primorial_bound_residuals.py",
    "name": "core-687",
    "seconds": 15.0,
    "tier": "pr"
@@ -4251,6 +4283,15 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/primorial_bound_residuals.py --check docs/evidence/primorial_cover/bound_residuals.json --run results/kaggle/2026-10-25T221805Z-gororoba-primorial-bound-residuals",
+   "name": "core-primorial-bound-residuals-replay",
+   "seconds": 376.0,
+   "tier": "full",
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_pfaffian_higher.py --check docs/evidence/stiefel-pfaffian-higher/result.json",
    "name": "core-692",
    "seconds": 9.9,
@@ -4270,8 +4311,40 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py --self-test",
+   "cmd": "\"$PYTHON\" -B -W error scripts/a5_zero_divisor_strata.py --check docs/evidence/a5-zero-divisor-strata/result.json",
    "name": "core-694",
+   "seconds": 9.6,
+   "tier": "full",
+   "workers": "all",
+   "replays": [
+    "docs/evidence/a5-zero-divisor-strata/result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/a5_zero_divisor_strata.py --self-test && \"$PYTHON\" -B -W error -O scripts/a5_zero_divisor_strata.py --self-test",
+   "name": "core-695",
+   "seconds": 6.6,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/qd_teleportation_rehearsal.py --analyze results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check && \"$PYTHON\" -B -W error scripts/qd_rehearsal_secondary.py results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00 --check",
+   "name": "core-teleportation-rehearsal-job-00-replay",
+   "seconds": 12.0,
+   "tier": "pr",
+   "replays": [
+    "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
+    "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py --self-test",
+   "name": "core-696",
    "seconds": 6.0,
    "tier": "pr"
   },
@@ -4279,7 +4352,7 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py check results/iqm/cases/qet-compensated-ladder",
-   "name": "core-695",
+   "name": "core-697",
    "seconds": 4.0,
    "tier": "full"
   }

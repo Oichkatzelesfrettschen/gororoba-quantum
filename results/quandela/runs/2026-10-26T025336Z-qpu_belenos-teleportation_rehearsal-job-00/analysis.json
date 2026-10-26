@@ -1,0 +1,160 @@
+{
+ "benchmark": {
+  "bound_at_modeled_attempts": null,
+  "bound_at_reported_attempts": null,
+  "classical_bound": null,
+  "modeled_attempts_basis": "samples over the preregistered three-click probability of each input",
+  "reported_attempts": {
+   "+X": 1200000,
+   "+Y": 1200000,
+   "+Z": 1200000,
+   "-X": 1200000,
+   "-Y": 1200000,
+   "-Z": 1200000
+  }
+ },
+ "claim_level": "C1",
+ "histogram": [],
+ "inputs": {
+  "+X": {
+   "accepted": 0,
+   "accepted_per_sample": null,
+   "accepted_per_shot": 0.0,
+   "basis": "X",
+   "conditional_fidelity": null,
+   "conditional_fidelity_reason": "no accepted event among the input's samples",
+   "correct": 0,
+   "rejected": {
+    "excess": 0,
+    "herald": 0,
+    "outside": 0,
+    "pattern": 0,
+    "receiver": 0
+   },
+   "samples": 0,
+   "shots": 1200000
+  },
+  "+Y": {
+   "accepted": 0,
+   "accepted_per_sample": null,
+   "accepted_per_shot": 0.0,
+   "basis": "Y",
+   "conditional_fidelity": null,
+   "conditional_fidelity_reason": "no accepted event among the input's samples",
+   "correct": 0,
+   "rejected": {
+    "excess": 0,
+    "herald": 0,
+    "outside": 0,
+    "pattern": 0,
+    "receiver": 0
+   },
+   "samples": 0,
+   "shots": 1200000
+  },
+  "+Z": {
+   "accepted": 0,
+   "accepted_per_sample": null,
+   "accepted_per_shot": 0.0,
+   "basis": "Z",
+   "conditional_fidelity": null,
+   "conditional_fidelity_reason": "no accepted event among the input's samples",
+   "correct": 0,
+   "rejected": {
+    "excess": 0,
+    "herald": 0,
+    "outside": 0,
+    "pattern": 0,
+    "receiver": 0
+   },
+   "samples": 0,
+   "shots": 1200000
+  },
+  "-X": {
+   "accepted": 0,
+   "accepted_per_sample": null,
+   "accepted_per_shot": 0.0,
+   "basis": "X",
+   "conditional_fidelity": null,
+   "conditional_fidelity_reason": "no accepted event among the input's samples",
+   "correct": 0,
+   "rejected": {
+    "excess": 0,
+    "herald": 0,
+    "outside": 0,
+    "pattern": 0,
+    "receiver": 0
+   },
+   "samples": 0,
+   "shots": 1200000
+  },
+  "-Y": {
+   "accepted": 0,
+   "accepted_per_sample": null,
+   "accepted_per_shot": 0.0,
+   "basis": "Y",
+   "conditional_fidelity": null,
+   "conditional_fidelity_reason": "no accepted event among the input's samples",
+   "correct": 0,
+   "rejected": {
+    "excess": 0,
+    "herald": 0,
+    "outside": 0,
+    "pattern": 0,
+    "receiver": 0
+   },
+   "samples": 0,
+   "shots": 1200000
+  },
+  "-Z": {
+   "accepted": 0,
+   "accepted_per_sample": null,
+   "accepted_per_shot": 0.0,
+   "basis": "Z",
+   "conditional_fidelity": null,
+   "conditional_fidelity_reason": "no accepted event among the input's samples",
+   "correct": 0,
+   "rejected": {
+    "excess": 0,
+    "herald": 0,
+    "outside": 0,
+    "pattern": 0,
+    "receiver": 0
+   },
+   "samples": 0,
+   "shots": 1200000
+  }
+ },
+ "inputs_without_accepted": [
+  "+Z",
+  "-Z",
+  "+X",
+  "-X",
+  "+Y",
+  "-Y"
+ ],
+ "inputs_without_counts": [],
+ "margin": null,
+ "partial": false,
+ "pooled": {
+  "accepted": 0,
+  "alpha": 0.01,
+  "fidelity": null,
+  "inputs_pooled": 0,
+  "lower_bound": null,
+  "radius": null
+ },
+ "schema": "qd-teleportation-analysis-v1",
+ "success_rate_per_reported_shot": {
+  "+X": 0.0,
+  "+Y": 0.0,
+  "+Z": 0.0,
+  "-X": 0.0,
+  "-Y": 0.0,
+  "-Z": 0.0
+ },
+ "systematic_allowance": 0.02,
+ "uncounted_iterations": [],
+ "verdict": "inconclusive",
+ "verdict_reason": "these iterations returned no shot or no sample, so no classical bound is defined: +X, +Y, +Z, -X, -Y, -Z"
+}
