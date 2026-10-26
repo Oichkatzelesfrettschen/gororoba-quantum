@@ -2,7 +2,8 @@
 
 Status: design v3.1. v1 and v2 each received an adversarial self-review, a Codex (gpt-daybreak-blue-latest) review and
 an advisor review (reports under the ignored `docs/local/reviews/`); v3 answers the v2 review's five P1 and eleven P2/P3
-findings (A to P), and v3.1 answers the scoped v3 re-check (B, C and E refuted, a new aggregate-cap P1). Nothing here has run. Every charge figure is the planner's, and every measurement names its record.
+findings (A to P), v3.1 answers the scoped v3 re-check (B, C and E refuted, a new aggregate-cap P1), and v3.2 answers
+the v3.1 re-check (E refuted again, a fallback falsifier that contradicted the trigger). Nothing here has run. Every charge figure is the planner's, and every measurement names its record.
 
 ## Problem
 
@@ -74,8 +75,10 @@ only; every other family keeps value binding. The owner ratifies that change sep
 Falsifiers: the envelope gate accepts a mutated member angle, a deleted member or control, a permuted classical
 destination, twirling on, a deleted terminal reset, a layout other than `plan(snapshot)`'s, or a plan whose options
 differ; two snapshots with the same layout and one changed constructor-relevant Target field yield different QPY
-without a counted replan; a collect on an attempt-1 job in DONE or in ERROR with any code other than 1602 or 8030 sends
-attempt 2.
+without a counted replan; a collect sends attempt 2 on an attempt-1 job that is not in ERROR, or in ERROR with a code
+other than 1602, 8030 or 1305, or in ERROR 1305 with executed circuit time, an unattributed charge or a billed charge
+above 3 s; a collect withholds attempt 2 from an attempt-1 job in ERROR 1602 or 8030, or in ERROR 1305 with zero or
+absent circuit time and at most 3 s billed. Each conjunct of the 1305 signature has its own mutation test.
 
 ## Layout rule and width
 
@@ -153,24 +156,30 @@ The count rule fires when at least max(2, ceil(0.1 W)) informative qubits depart
 Null calibration (Finding D). A preregistered stochastic null replays the complete decision pipeline at the chosen W:
 binomial shot noise on every member and control, a common offset of +0.011 plus an independent per-qubit part of 0.0105,
 the same-run rms floor, the informative filter, execution-time withholding, the reset-control and crosstalk withholding,
-and both verdict directions of both the pooled test and the count rule. The reset screen is the equivalence rule
-above and the crosstalk screen the K-pattern dispersion test, each with its own shot noise in the replay. Its seed is a QRNG draw cited by index, its
-replicates are numpy-batched with the scalar bit-equality gate of `docs/runbooks/vectorized-fits.md`, and its result is
+and both verdict directions of both the pooled test and the count rule; the reset screen is the equivalence rule above
+and the crosstalk screen the pattern dispersion test below, each with its own shot noise. Its seed is a QRNG draw cited
+by index, its replicates are numpy-batched with the scalar bit-equality gate of `docs/runbooks/vectorized-fits.md`, and its result is
 a 95% upper bound on the family-wise false-fire rate, which must lie below 0.01. An exploratory unseeded run of the
 pooled test and count rule alone fired zero times in 20000 replicates per cell at W = 8 to 44 (95% upper bound 1.5e-4);
 the preregistered replay replaces it.
 
-Readout crosstalk (Finding E). The measure members put each selected qubit's neighbors in mixed, shot-dependent states,
-and no fixed pattern pair covers that mixture: opposite-signed neighbor effects can cancel in two checkerboards and
-add in another configuration. K pattern members therefore prepare the selected qubits in states drawn independently
-and uniformly from a QRNG draw cited by index, one bit per qubit per pattern, and measure all of them. Each qubit's
-assignment error is then estimated over K random neighbor configurations, the same mixture the measure members present,
-and the readout correction of the measure members uses that pooled estimate. A qubit's configuration dependence is
-tested directly: its error count across the K patterns against the binomial dispersion its pooled rate predicts, a
-chi-square test with K - 1 degrees of freedom at family alpha 0.05 Bonferroni-split over the W qubits. A failing qubit is
-withheld before the device test reads any measure-member outcome, so the device verdict's selection uses only the
-readout and pattern members. K is the smallest value whose planner charge adds at most 10% to the family's, with a
-floor of 8; the envelope dry run prices K and records it, and the null calibration includes the pattern withholding.
+Readout crosstalk (Finding E). The screen asks one question: does a qubit's final readout depend on the states of the
+other selected qubits, at fixed own state? K = 12 pattern members each prepare every selected qubit in `|0>` or `|1>`
+and measure all of them. Each qubit's column of 12 bits holds exactly six ones, ordered by a permutation drawn from a
+QRNG draw cited by index, independently per qubit, so every qubit sees six patterns at each own state and its neighbors'
+states vary independently of its own. The analysis tests each own state separately, so the asymmetric assignment
+channels P(1|0) and P(0|1) never mix: within the six patterns of one own state, the qubit's error counts against the
+binomial dispersion of their pooled rate, a chi-square test with 5 degrees of freedom at family alpha 0.05
+Bonferroni-split over the 2W (qubit, own state) tests. A failing qubit is withheld before the device test reads any
+measure-member outcome, so the device verdict's selection uses only the readout and pattern members.
+
+The patterns cover configuration dependence; they do not reproduce the measure members' state distribution (the N = 16
+measure arm's final P0 is 0.89 and its mid-circuit outcomes follow a low-flip chain), and they do not supply the readout
+correction, which stays with the own-state ro0 and t1 members of the base family. Balanced random neighbor states put
+each neighbor in `|1>` half the time, more often than any measure member does, so a neighbor shift reaches the screen at
+least as strongly as it reaches the departures. K = 12 is the power criterion: a single-neighbor shift of 0.005 (about a
+quarter of the bound floor) at a 1% error rate and 8192 shots gives the test power 0.92 at W = 32, 0.93 at W = 24 and
+0.94 at W = 16 (noncentral chi-square), while K = 8 gives 0.75 at W = 32.
 
 Execution-time eligibility (Finding H). The analysis reads every execution start's properties that `collect` records
 for every PUB that contributes to a qubit. A qubit stays usable only if it passes `rule`'s eligibility on each of them;
