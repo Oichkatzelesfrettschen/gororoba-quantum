@@ -273,6 +273,6 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 PYTHON="${PYTHON:-pyth
     --out docs/evidence/a5-rank-strata-equations/result.json
 ```
 
-The full run measured 13 to 31 s on 12 workers, depending on host load. The self-test measured 12 s.
+The full run measured 13 to 31 s on 12 workers, depending on host load. The self-test measured 8 s.
 `result.json` records the Python, python-flint and Singular versions and the script's sha256. Its `seconds` and
 `timings_s` fields vary from run to run; every other field is deterministic.

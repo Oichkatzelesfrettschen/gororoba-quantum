@@ -89,18 +89,24 @@ def unit_vec(dim: int, k: int) -> list[int]:
     return [1 if j == k else 0 for j in range(dim)]
 
 
+def table_row(item: tuple[int, int]) -> int:
+    """Basis pairs (p, q), q < dim, where cd_sign disagrees with cd_multiply_exact or left_mult_matrix_exact."""
+    dim, p = item
+    mat = left_mult_matrix_exact(dim, unit_vec(dim, p))
+    mismatches = 0
+    for q in range(dim):
+        prod = cd_multiply_exact(dim, unit_vec(dim, p), unit_vec(dim, q))
+        expect = [Fraction(0)] * dim
+        expect[p ^ q] = Fraction(cd_sign(dim, p, q))
+        if list(prod) != expect or mat[p ^ q][q] != cd_sign(dim, p, q):
+            mismatches += 1
+    return mismatches
+
+
 def table_checks() -> dict[str, Any]:
     """cd_sign agrees with cd_multiply_exact; the split tables are the scaled cd_core tables."""
-    mismatches = 0
-    for dim in (8, 16, 32):
-        for p in range(dim):
-            mat = left_mult_matrix_exact(dim, unit_vec(dim, p))
-            for q in range(dim):
-                prod = cd_multiply_exact(dim, unit_vec(dim, p), unit_vec(dim, q))
-                expect = [Fraction(0)] * dim
-                expect[p ^ q] = Fraction(cd_sign(dim, p, q))
-                if list(prod) != expect or mat[p ^ q][q] != cd_sign(dim, p, q):
-                    mismatches += 1
+    rows = [(dim, p) for dim in (8, 16, 32) for p in range(dim)]
+    mismatches = sum(parallel.ordered_map(table_row, rows))
     # e'_p e'_q = i^(pc p + pc q) cd_sign e_(p^q) = i^(pc p + pc q - pc(p^q)) cd_sign e'_(p^q); the exponent is
     # 2 popcount(p & q), so the split table is (-1)^popcount(p & q) cd_sign.
     exponent_even = all(
@@ -897,6 +903,10 @@ def nullity(y: Sequence[Fraction]) -> int:
     return 32 - qrank(l_matrix(y))
 
 
+def point_nullity(zp: Sequence[int]) -> int:
+    return nullity(y_from_split([Fraction(x) for x in zp]))
+
+
 def point_checks() -> dict[str, Any]:
     """Rational split points: nullity of L_y, piece membership, and the Jacobian rank of Ehat at an E8 point."""
     ctx = global_ctx()
@@ -925,8 +935,8 @@ def point_checks() -> dict[str, Any]:
         "N_+": (split_point({1: 1, 3: 1}, 0, {1: 1, 3: 1}), 16, "Np"),
         "N_-": (split_point({1: 1, 3: 1}, 0, {1: -1, 3: -1}), 16, "Nm"),
     }
-    for label, (zp, expect, piece) in reps.items():
-        nul = nullity(y_from_split([Fraction(x) for x in zp]))
+    nullities = parallel.ordered_map(point_nullity, [zp for zp, _, _ in reps.values()])
+    for (label, (zp, expect, piece)), nul in zip(reps.items(), nullities, strict=True):
         rows.append(
             {
                 "point": label,
@@ -974,36 +984,61 @@ def global_pass(rows: Sequence[dict[str, Any]]) -> bool:
     return ok and not any("singular_error" in r for r in rows)
 
 
+def run_control(name: str) -> str | None:
+    """One mutation control; returns the failure message when the control does not behave as required."""
+    if name == "ehat_no_q":
+        bad = slice_job(("P3a", 12, "ehat_no_q"))
+        if bad.get("piece_Ehat_in_R") != "0" or "singular_error" in bad:
+            return "Ehat without Q lay inside the P3a order-12 Pfaffian variety"
+    elif name == "w8_sign_slice":
+        bad = slice_job(("P2", 12, "w8_sign"))
+        if bad.get("piece_W8_in_R") != "0" or "singular_error" in bad:
+            return "W8 with u.u = -v.v lay inside the P2 order-12 Pfaffian variety"
+    elif name == "w8_sign_unread":
+        if not slice_job(("P2", 10, "w8_sign"))["pass"]:
+            return "the order-10 P2 slice, which reads no W8 equation, failed under the W8 mutation"
+    elif name == "p3c_radical_in_vplus":
+        facts = g2_facts("p3c_radical_in_vplus")
+        if facts["slice_frames"]["radical_types"]["P3c"] != "V+" or facts["pass"]:
+            return "a P3c radical inside V_+ passed the slice-frame check"
+    elif name == "w8_sign_global":
+        res = global_job(("pf12", "w8_sign"))
+        if res.get("in_ideal_W8") != "0" or res.get("in_radical_W8") != "0" or res.get("in_ideal_Ehat") != "1":
+            return "the order-12 Pfaffians lie in the radical of W8 with u.u = -v.v"
+    elif name == "ehat_plus_w8":
+        if global_job(("ehat_structure", "ehat_plus_w8")).get("saturation_equals_ehat") != "0":
+            return "Ehat with the W8 component added survived saturation by f"
+    elif name == "iso_no_eta":
+        if isotropic_plane_job("iso_no_eta").get("forms_in_radical") != "0":
+            return "the isotropic-plane certificate held without the null condition eta(x) = 0"
+    elif name == "lift_sign":
+        if g2_facts("lift_sign")["equivariance"]["lifts_are_derivations"]:
+            return "a lift D + (-D) passed as a derivation of the split sedenions"
+    elif name == "union_drops_ehat":
+        bad = slice_job(("P2", 12, "union_drops_ehat"))
+        if bad.get("R_in_union") != "0" or "singular_error" in bad:
+            return "the P2 order-12 Pfaffian variety lay inside W8 alone"
+    else:
+        return f"unknown control {name}"
+    return None
+
+
+CONTROLS = (
+    "ehat_no_q",
+    "w8_sign_slice",
+    "w8_sign_unread",
+    "p3c_radical_in_vplus",
+    "w8_sign_global",
+    "ehat_plus_w8",
+    "iso_no_eta",
+    "lift_sign",
+    "union_drops_ehat",
+)
+
+
 def self_test() -> list[str]:
     """Mutation controls: each mutated check returns an explicit 0 from Singular or a failed exact check."""
-    failures = []
-    bad = slice_job(("P3a", 12, "ehat_no_q"))
-    if bad.get("piece_Ehat_in_R") != "0" or "singular_error" in bad:
-        failures.append("Ehat without Q lay inside the P3a order-12 Pfaffian variety")
-    bad = slice_job(("P2", 12, "w8_sign"))
-    if bad.get("piece_W8_in_R") != "0" or "singular_error" in bad:
-        failures.append("W8 with u.u = -v.v lay inside the P2 order-12 Pfaffian variety")
-    control = slice_job(("P2", 10, "w8_sign"))
-    if not control["pass"]:
-        failures.append("the order-10 P2 slice, which reads no W8 equation, failed under the W8 mutation")
-    facts = g2_facts("p3c_radical_in_vplus")
-    if facts["slice_frames"]["radical_types"]["P3c"] != "V+" or facts["pass"]:
-        failures.append("a P3c radical inside V_+ passed the slice-frame check")
-    res = global_job(("pf12", "w8_sign"))
-    if res.get("in_ideal_W8") != "0" or res.get("in_radical_W8") != "0" or res.get("in_ideal_Ehat") != "1":
-        failures.append("the order-12 Pfaffians lie in the radical of W8 with u.u = -v.v")
-    res = global_job(("ehat_structure", "ehat_plus_w8"))
-    if res.get("saturation_equals_ehat") != "0":
-        failures.append("Ehat with the W8 component added survived saturation by f")
-    res = isotropic_plane_job("iso_no_eta")
-    if res.get("forms_in_radical") != "0":
-        failures.append("the isotropic-plane certificate held without the null condition eta(x) = 0")
-    if g2_facts("lift_sign")["equivariance"]["lifts_are_derivations"]:
-        failures.append("a lift D + (-D) passed as a derivation of the split sedenions")
-    bad = slice_job(("P2", 12, "union_drops_ehat"))
-    if bad.get("R_in_union") != "0" or "singular_error" in bad:
-        failures.append("the P2 order-12 Pfaffian variety lay inside W8 alone")
-    return failures
+    return [msg for msg in parallel.ordered_map(run_control, list(CONTROLS), min_items=1) if msg is not None]
 
 
 def main() -> int:
@@ -1018,7 +1053,10 @@ def main() -> int:
         failures = self_test()
         for line in failures:
             print("FAIL", line)
-        print(f"rederive_strata_equations self-test: {9 - len(failures)} of 9 controls behaved as required")
+        print(
+            f"rederive_strata_equations self-test: {len(CONTROLS) - len(failures)} of {len(CONTROLS)} controls"
+            " behaved as required"
+        )
         return 1 if failures else 0
     t0 = time.perf_counter()
     report: dict[str, Any] = {}

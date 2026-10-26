@@ -173,7 +173,7 @@
     "R_in_union": "1",
     "component_dims": "1 1",
     "generators": "379",
-    "seconds": "0.1"
+    "seconds": "0.2"
    },
    {
     "slice": "P3a",
@@ -197,7 +197,7 @@
     "R_in_union": "1",
     "component_dims": "3",
     "generators": "332",
-    "seconds": "0.1"
+    "seconds": "0.2"
    },
    {
     "slice": "P3a",
@@ -233,7 +233,7 @@
     "R_in_union": "1",
     "component_dims": "3",
     "generators": "318",
-    "seconds": "0.1"
+    "seconds": "0.2"
    },
    {
     "slice": "P3b",
@@ -269,7 +269,7 @@
     "R_in_union": "1",
     "component_dims": "3",
     "generators": "960",
-    "seconds": "0.2"
+    "seconds": "0.3"
    },
    {
     "slice": "P3c",
@@ -369,7 +369,7 @@
     "ehat_vanishes_on_V": "1",
     "ehat_vanishes_on_B9": "1",
     "saturation_equals_ehat": "1",
-    "seconds": "6.6"
+    "seconds": "7.0"
    },
    {
     "job": "pf12",
@@ -385,7 +385,7 @@
     "in_ideal_V": "1",
     "in_ideal_B9": "1",
     "generators": "3003",
-    "seconds": "5.3"
+    "seconds": "5.7"
    },
    {
     "job": "pf8",
@@ -393,22 +393,22 @@
     "in_ideal_Np": "1",
     "in_ideal_Nm": "1",
     "generators": "6435",
-    "seconds": "2.5"
+    "seconds": "2.6"
    }
   ]
  },
  "timings_s": {
   "tables": 0.12,
   "identities": 0.0,
-  "g2": 1.87,
-  "isotropic": 2.34,
+  "g2": 1.86,
+  "isotropic": 2.32,
   "points": 0.02,
-  "slices": 0.85,
-  "global": 6.7
+  "slices": 0.84,
+  "global": 7.14
  },
- "total_s": 11.91,
+ "total_s": 12.3,
  "workers": 12,
- "script_sha256": "9ed99727568601a945a5cfc00ba1e6a98a9f336518d87201fcae0fc98e7519da",
+ "script_sha256": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
  "versions": {
   "python": "3.14.8",
   "python-flint": "0.9.0",
