@@ -35,6 +35,7 @@ import io
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 import time
@@ -64,6 +65,7 @@ import correction_collection
 import ibm_account
 import law_encoding
 import local_compute
+import msq_envelope
 import packing
 import parallel
 import placement_feasibility
@@ -73,6 +75,7 @@ import variance
 from coherence_window import COHERENCE_PRECISION
 from diagnostic_experiments import (
     FAMILY_NAMES,
+    MSQE_FAMILY,
     N21_FAMILIES,
     PATCH_FAMILIES,
     n21_ramsey_windows,
@@ -3692,7 +3695,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     snaps, skipped, inventory = discovery
     approved_dir = getattr(args, "approved_record", None)
     preflight: dict[str, Any] | None = None
-    if getattr(args, "submit", False) and approved_dir is not None:
+    # An envelope approval binds the layout rule, not calibration values, so its plan re-derives on any calibration.
+    if getattr(args, "submit", False) and approved_dir is not None and not approved_is_envelope(Path(approved_dir)):
         preflight = approved_calibration_preflight(Path(approved_dir), snaps)
         _preflight_refusal(args, Path(approved_dir), preflight, discovery)
         print(
@@ -4048,15 +4052,18 @@ def refreshed_plan_view(record: dict[str, Any], choices: list[Choice], pubs: lis
 APPROVAL_CONSUMED_FILE = "approval-consumed.json"
 
 
-def consume_approval(approved_dir: Path, run_name: str) -> dict[str, Any]:
+def consume_approval(
+    approved_dir: Path, run_name: str, marker_name: str = APPROVAL_CONSUMED_FILE, detail: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Mark the approved record's one-attempt authorization as consumed by run_name, exactly once.
 
     The marker is created with O_EXCL inside the approved record directory,
     so a second invocation that passes every comparison still finds the
-    authorization spent and sends nothing.
+    authorization spent and sends nothing. An envelope approval holds one
+    marker per attempt (envelope_marker), and detail records what admitted it.
     """
-    marker = approved_dir / APPROVAL_CONSUMED_FILE
-    payload = {"consumed_at": _now(), "run": run_name}
+    marker = approved_dir / marker_name
+    payload = {"consumed_at": _now(), "run": run_name, **(detail or {})}
     try:
         descriptor = os.open(marker, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
     except FileExistsError:
@@ -4166,6 +4173,234 @@ def approved_record_mismatches(
         mismatches.append("fused PUB manifests differ")
     if approved_qpy != qpy_archive_sha256:
         mismatches.append(f"QPY archive {approved_qpy[:12]} -> {qpy_archive_sha256[:12]}")
+    return mismatches
+
+
+# An envelope approval (docs/design/measurement-sequence-adaptive-envelope.md) binds the constructor rather than one
+# calibration: these record fields and family fields must equal the approved dry run's, while the layout, the compiled
+# circuits, the calibration values and the planner price follow msq_envelope.layout_rule on the live snapshot.
+ENVELOPE_RECORD_FIELDS = (
+    "experiment_digest",
+    "schema_version",
+    "schema_contract",
+    "shots",
+    "pub_shots",
+    "policy",
+    "versions",
+    "instance_sha256_12",
+)
+ENVELOPE_FAMILY_FIELDS = (
+    "name",
+    "layout_width",
+    "layout_source",
+    "arms",
+    "total_rotation_rad",
+    "steps",
+    "placement_contract",
+)
+
+
+class EnvelopeReplan(LiveRunError):
+    """The live calibration changed the envelope's plan after its pre-submit check; the invocation re-plans."""
+
+
+def is_envelope_family(name: Any) -> bool:
+    return name == MSQE_FAMILY
+
+
+def approved_is_envelope(approved_dir: Path | None) -> bool:
+    """Whether the approved dry run in approved_dir is an envelope plan."""
+    if approved_dir is None:
+        return False
+    try:
+        approved = json.loads((Path(approved_dir) / "record.json").read_text())
+    except (OSError, ValueError):
+        return False
+    return is_envelope_family(approved.get("family_configuration", {}).get("name"))
+
+
+def envelope_marker(attempt: int) -> str:
+    return f"approval-consumed-attempt-{attempt}.json"
+
+
+def snapshot_bytes(snapshot: Snapshot) -> bytes:
+    """The canonical bytes of one snapshot's configuration, properties and queue, which the rebuild gate replays."""
+    return msq_envelope.canonical_snapshot(
+        snapshot.backend.configuration().to_dict(), snapshot.properties.to_dict(), snapshot.pending_jobs
+    )
+
+
+def planner_charge(execution: Mapping[str, Any], rep_delay: float) -> float:
+    """The planner's charge of the selected jobs with every PUB's repetition delay replaced by rep_delay."""
+    total = 0.0
+    for job in execution.get("selected_job_costs", []):
+        total += float(job.get("overhead_seconds", 0.0))
+        for pub in job.get("pubs", []):
+            shots = int(pub["shots"])
+            total += float(pub["estimated_execution_seconds"]) + shots * (
+                rep_delay - float(pub["repetition_delay_seconds"])
+            )
+    return total
+
+
+def envelope_contract(record: Mapping[str, Any], args: argparse.Namespace) -> dict[str, Any]:
+    """The approval-bound envelope: delays, ceilings, the aggregate cap and the replan bound."""
+    ceiling_1 = getattr(args, "max_execution_seconds", None)
+    ceiling_2 = getattr(args, "fallback_max_execution_seconds", None)
+    return {
+        "schema": msq_envelope.ENVELOPE_SCHEMA,
+        "backend": msq_envelope.ENVELOPE_BACKEND,
+        "layout_width": record.get("family_configuration", {}).get("layout_width"),
+        "rep_delay_seconds": getattr(args, "rep_delay", None),
+        "fallback_rep_delay_seconds": msq_envelope.FALLBACK_REP_DELAY_S,
+        "ceiling_seconds": {"attempt_1": ceiling_1, "attempt_2": ceiling_2},
+        "envelope_cap_seconds": None if ceiling_1 is None or ceiling_2 is None else ceiling_1 + ceiling_2,
+        "reserve_seconds": getattr(args, "reserve_seconds", None),
+        "max_replans": msq_envelope.MAX_REPLANS,
+        "fallback_rule": {
+            "delay_codes": list(msq_envelope.FALLBACK_DELAY_CODES),
+            "timeout_code": msq_envelope.FALLBACK_TIMEOUT_CODE,
+            "timeout_max_billed_seconds": msq_envelope.FALLBACK_MAX_BILLED_S,
+        },
+    }
+
+
+def envelope_plan(
+    record: Mapping[str, Any], qpy_archive_sha256: str, planned_jobs: list[dict[str, Any]] | None = None
+) -> dict[str, Any]:
+    """The full submission plan msq_envelope.plan_digest hashes."""
+    execution = record.get("execution_contract", {})
+    delay = record.get("policy", {}).get("rep_delay_seconds")
+    return {
+        "layout": list(record.get("family_configuration", {}).get("qubits", [])),
+        "qpy_sha256": qpy_archive_sha256,
+        "execution_pubs": record.get("execution_pubs"),
+        "sampler_options": [job.get("options") for job in planned_jobs or []],
+        "rep_delay": delay,
+        "shots": record.get("shots"),
+        "planner_seconds": planner_charge(execution, delay) if delay is not None else None,
+    }
+
+
+def note_envelope_replan(record: dict[str, Any], reasons: Any) -> None:
+    """Record one re-plan of the envelope; past msq_envelope.MAX_REPLANS the run returns to approval."""
+    replans = record.setdefault("envelope", {}).setdefault("replans", [])
+    replans.append({"at": _now(), "reasons": _json_value(reasons)})
+    if len(replans) > msq_envelope.MAX_REPLANS:
+        record["state"] = "approval_required"
+        raise LiveRunError(
+            f"the live calibration moved the envelope's plan {len(replans)} times; the envelope allows "
+            f"{msq_envelope.MAX_REPLANS}; no Runtime job was submitted"
+        )
+
+
+def job_error_code(message: Any) -> int | None:
+    """The service's numeric error code in a job's error text ("Error code 1305; ..."), or None."""
+    match = re.search(r"[Ee]rror code (\d+)", str(message or ""))
+    return int(match.group(1)) if match else None
+
+
+def envelope_fallback_setup(service: QiskitRuntimeService, args: argparse.Namespace) -> dict[str, Any]:
+    """Admit the 50 us attempt 2 of the envelope that attempt 1 in args.envelope_fallback ran under, or raise.
+
+    Attempt 1 must be the envelope's one accepted job, in a terminal state msq_envelope.fallback_permitted accepts
+    from its status, error code, circuit time and attributed charge; attempt 2 must fit the aggregate cap with attempt
+    1's charge (its ceiling while unattributed). args then carries attempt 2's delay, ceiling, approval and identity.
+    """
+    first_dir = Path(args.envelope_fallback)
+    first = json.loads((first_dir / "record.json").read_text())
+    approved_meta = first.get("approved_record", {})
+    if not approved_meta.get("envelope"):
+        raise LiveRunError(f"{first_dir.name} is not an envelope attempt")
+    approved_dir = first_dir.parent / str(approved_meta["run"])
+    approved_sha = str(approved_meta["record_sha256"])
+    if hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest() != approved_sha:
+        raise LiveRunError(f"the approved envelope {approved_dir.name} no longer carries sha256 {approved_sha}")
+    jobs = first.get("submission", {}).get("jobs", [])
+    if len(jobs) != 1:
+        raise LiveRunError(f"attempt 1 holds {len(jobs)} accepted jobs; the envelope's fallback needs exactly one")
+    job = service.job(jobs[0]["job_id"])
+    status = str(job.status())
+    code = job_error_code(job.error_message()) if status == "ERROR" else None
+    metrics = job.metrics()
+    circuit_ns = metrics.get("circuits_execution_time_ns") if isinstance(metrics, dict) else None
+    usage = job_usage_record(job, len(jobs[0].get("pubs", [])), int(first.get("shots", 0)))
+    billed = usage.get("qpu_charge_time_seconds")
+    billed_seconds = float(billed) if billed is not None else None
+    evidence = {
+        "attempt_1_run": first_dir.name,
+        "attempt_1_job": jobs[0]["job_id"],
+        "status": status,
+        "error_code": code,
+        "circuits_execution_time_ns": circuit_ns,
+        "billed_seconds": billed_seconds,
+    }
+    if not msq_envelope.fallback_permitted(status, code, circuit_ns, billed_seconds):
+        raise LiveRunError(f"attempt 1 does not authorize the 50 us fallback: {evidence}")
+    contract = json.loads((approved_dir / "record.json").read_text())["envelope"]["contract"]
+    remaining = service.usage().get("usage_remaining_seconds")
+    refused = msq_envelope.attempt_admission(
+        2,
+        float(remaining) if remaining is not None else math.nan,
+        float(contract["reserve_seconds"] or 0.0),
+        float(contract["envelope_cap_seconds"]),
+        float(contract["ceiling_seconds"]["attempt_2"]),
+        billed_seconds if billed_seconds is not None else float(contract["ceiling_seconds"]["attempt_1"]),
+    )
+    if refused:
+        raise LiveRunError(f"attempt 2 leaves the envelope cap: {'; '.join(refused)}")
+    args.submit = True
+    args.approved_record = approved_dir
+    args.approved_record_sha256 = approved_sha
+    args.rep_delay = float(contract["fallback_rep_delay_seconds"])
+    args.max_execution_seconds = float(contract["ceiling_seconds"]["attempt_2"])
+    args.envelope_attempt = {"rep_delay": args.rep_delay, "attempt_index": 2, "envelope_sha256": approved_sha}
+    args.envelope_fallback_evidence = evidence
+    return evidence
+
+
+def approved_envelope_mismatches(
+    approved_dir: Path, record: dict[str, Any], expected_record_sha256: str | None
+) -> list[str]:
+    """Every way the fresh envelope plan departs from the approved envelope; calibration-dependent fields may move.
+
+    The record fields, the calibration-free family fields, the envelope contract, the groups' seeds and backend and
+    the PUB count must equal the approved dry run's, and the fresh layout must hold layout_width qubits.
+    """
+    approved, blockers = _read_approved(approved_dir, expected_record_sha256)
+    if approved is None:
+        return blockers
+    if record.get("envelope", {}).get("attempt") == 2:
+        # Attempt 2 runs the approved fallback delay under the approved second ceiling.
+        contract = approved.get("envelope", {}).get("contract", {})
+        approved = {
+            **approved,
+            "policy": {
+                **approved.get("policy", {}),
+                "rep_delay_seconds": contract.get("fallback_rep_delay_seconds"),
+                "max_execution_seconds": contract.get("ceiling_seconds", {}).get("attempt_2"),
+            },
+        }
+    mismatches: list[str] = []
+    for name in ENVELOPE_RECORD_FIELDS:
+        if approved.get(name) != record.get(name):
+            mismatches.append(f"{name} differs")
+    old_family, new_family = approved.get("family_configuration", {}), record.get("family_configuration", {})
+    for name in ENVELOPE_FAMILY_FIELDS:
+        if old_family.get(name) != new_family.get(name):
+            mismatches.append(f"family {name} {old_family.get(name)!r} -> {new_family.get(name)!r}")
+    if not is_envelope_family(new_family.get("name")):
+        mismatches.append("the fresh plan is not an envelope family")
+    if len(new_family.get("qubits", [])) != new_family.get("layout_width"):
+        mismatches.append(f"the fresh layout holds {len(new_family.get('qubits', []))} qubits")
+    if approved.get("envelope", {}).get("contract") != record.get("envelope", {}).get("contract"):
+        mismatches.append("the envelope contract differs")
+    old_groups = sorted((g.get("backend"), g.get("seed_transpiler")) for g in approved.get("groups", []))
+    new_groups = sorted((g.get("backend"), g.get("seed_transpiler")) for g in record.get("groups", []))
+    if {g for g in old_groups} != {g for g in new_groups}:
+        mismatches.append(f"group backends or seeds {sorted(set(old_groups))} -> {sorted(set(new_groups))}")
+    if len(approved.get("execution_pubs", [])) != len(record.get("execution_pubs", [])):
+        mismatches.append("the fused PUB count differs")
     return mismatches
 
 
@@ -4447,6 +4682,7 @@ def build_submission_plan(
                 pub_manifests = [pub.manifest() for pub in batch]
                 members = [component.entry.name for pub in batch for component in pub.components]
                 batch_count = len(batches)
+                attempt = getattr(args, "envelope_attempt", None)
                 recovery_tags = _recovery_tags(
                     args.started,
                     name,
@@ -4455,6 +4691,7 @@ def build_submission_plan(
                     batch_count,
                     pub_manifests,
                     qpy_archive_sha256,
+                    attempt,
                 )
                 sampler = configure_sampler(
                     backend,
@@ -4483,6 +4720,7 @@ def build_submission_plan(
                         "recovery_tags": recovery_tags,
                         "options": sampler.options.model_dump(mode="json"),
                         "state": "planned",
+                        **({"attempt": attempt} if attempt is not None else {}),
                     }
                 )
                 runtime_batches.append((plan_index, name, kind, batch))
@@ -4568,6 +4806,7 @@ def submission_gaps(submission: dict[str, Any]) -> tuple[list[dict[str, Any]], l
             int(planned_job["batch_count"]),
             planned_job.get("pubs", []),
             archive_digest,
+            planned_job.get("attempt"),
         )
         if planned_job.get("recovery_tags") != expected_tags:
             raise LiveRunError(f"planned job {key} recovery tags do not bind its fused-PUB manifest")
@@ -4803,6 +5042,20 @@ def submit(
         }
     )
     refresh_backend_identity(record, inventory)
+    approved_dir = getattr(args, "approved_record", None)
+    envelope = approved_is_envelope(Path(approved_dir)) if approved_dir is not None else False
+    if reselected and envelope:
+        # The envelope's plan is the constructor's output on the live snapshot: a moved layout or calibration
+        # re-plans and re-evaluates instead of returning to approval, and approved_envelope_mismatches bounds it.
+        record["system_inventory"] = inventory
+        record["backends"] = {snapshot.name: snapshot.summary() for snapshot in fresh_snapshots}
+        record["skipped_backends"] = skipped
+        record["selection_trace"] = attempt_trace
+        record["fusion_placement"] = fresh_fusion_placement
+        evaluate(choices, record)
+        record["reevaluated_before_submit"] = int(record.get("reevaluated_before_submit", 0)) + 1
+        note_envelope_replan(record, reselected)
+        reselected = {}
     if reselected:
         record["system_inventory"] = inventory
         record["backends"] = {snapshot.name: snapshot.summary() for snapshot in fresh_snapshots}
@@ -4825,8 +5078,31 @@ def submit(
             "a renewed written submission case and user approval; no Runtime job was submitted"
         )
     qpy_archive_sha256 = archive()
-    approved_dir = getattr(args, "approved_record", None)
-    if approved_dir is not None:
+    if envelope and approved_dir is not None:
+        record["execution_pubs"] = [pub.manifest() for pub in fresh_execution_pubs]
+        mismatches = approved_envelope_mismatches(
+            Path(approved_dir), record, getattr(args, "approved_record_sha256", None)
+        )
+        record["approved_record"] = {
+            "run": Path(approved_dir).name,
+            "record_sha256": hashlib.sha256((Path(approved_dir) / "record.json").read_bytes()).hexdigest(),
+            "envelope": True,
+            "mismatches": mismatches,
+        }
+        if mismatches:
+            record["state"] = "approval_required"
+            record["renewed_approval"] = {
+                "required_at": _now(),
+                "reason": "the fresh plan leaves the approved envelope",
+                "mismatches": mismatches,
+                "qpy_archive_sha256": qpy_archive_sha256,
+            }
+            checkpoint()
+            raise LiveRunError(
+                f"the fresh plan leaves the approved envelope {Path(approved_dir).name} ({'; '.join(mismatches)}); "
+                "no Runtime job was submitted"
+            )
+    elif approved_dir is not None:
         # The comparison reads the refreshed choices and PUBs, the plan that
         # build_submission_plan sends, since record["groups"] still describes
         # the initial snapshot when the refresh changed nothing routable.
@@ -4870,6 +5146,11 @@ def submit(
         raise LiveRunError("; ".join(record["budget_plan"]["reasons"]))
     submission, runtime_batches = build_submission_plan(choices, args, qpy_archive_sha256)
     submission["budget_reservation"] = record["budget_plan"]
+    if envelope:
+        plan_view = envelope_plan(record, qpy_archive_sha256, submission["planned_jobs"])
+        record["envelope"].setdefault("plans", []).append(
+            {"plan_sha256": msq_envelope.plan_digest(plan_view), "layout": plan_view["layout"]}
+        )
     # The complete batch ledger reaches disk before the first job starts. A
     # partial submission can therefore name every unsent circuit, including a
     # later batch on a backend that already accepted an earlier one.
@@ -4903,7 +5184,27 @@ def submit(
             }
         except Exception:
             batch_values = None
-        drift = approved_calibration_drift(record, name, fresh.calibration, batch_values)
+        if envelope:
+            # The batch sends the constructor's output on this snapshot: the rule must keep the planned layout and
+            # the hardware under every owner must be unchanged, or the invocation re-plans on it.
+            calibration = msq_envelope.calibration_from_snapshot(fresh)
+            try:
+                fresh_layout = msq_envelope.layout_rule(
+                    calibration["qubits"],
+                    calibration["excluded"],
+                    [tuple(edge) for edge in calibration["edges"]],
+                    int(record["family_configuration"]["layout_width"]),
+                )
+            except msq_envelope.EnvelopeError as error:
+                raise EnvelopeReplan(f"{name}: {batch_tag} {error}") from error
+            if fresh_layout != list(record["family_configuration"]["qubits"]):
+                raise EnvelopeReplan(f"{name}: {batch_tag} the layout rule moved to {fresh_layout}")
+            record.setdefault("envelope", {}).setdefault("batch_snapshots", []).append(
+                {"batch": batch_tag, "snapshot_sha256": msq_envelope.sha256_hex(snapshot_bytes(fresh))}
+            )
+            drift = None
+        else:
+            drift = approved_calibration_drift(record, name, fresh.calibration, batch_values)
         if drift is not None:
             raise LiveRunError(f"{name}: {batch_tag} {drift}; no circuit in this batch was submitted")
         owner_reasons: dict[str, list[str]] = {}
@@ -4911,6 +5212,8 @@ def submit(
             reasons = choice_change_reasons(owner, fresh)
             if reasons:
                 owner_reasons[owner.group.name] = reasons
+        if owner_reasons and envelope:
+            raise EnvelopeReplan(f"{name}: {batch_tag} hardware moved after batch planning ({owner_reasons})")
         if owner_reasons:
             raise LiveRunError(
                 f"{name}: {batch_tag} hardware moved after batch planning; "
@@ -4968,11 +5271,35 @@ def submit(
             raise LiveRunError(
                 f"{name}: {batch_tag} execution ceiling {ceiling} s exceeds the {remaining} s of QPU time remaining"
             )
+        if envelope:
+            contract = record["envelope"]["contract"]
+            attempt_index = int(record["envelope"].get("attempt", 1))
+            evidence = record["envelope"].get("fallback_evidence", {})
+            earlier = evidence.get("billed_seconds") if attempt_index == 2 else 0.0
+            refused = msq_envelope.attempt_admission(
+                attempt_index,
+                float(remaining) if remaining is not None else math.nan,
+                float(contract["reserve_seconds"] or 0.0),
+                float(contract["envelope_cap_seconds"]),
+                float(contract["ceiling_seconds"][f"attempt_{attempt_index}"]),
+                float(earlier if earlier is not None else contract["ceiling_seconds"]["attempt_1"]),
+            )
+            if refused:
+                raise LiveRunError(f"{name}: {batch_tag} {'; '.join(refused)}; no circuit in this batch was submitted")
         if approved_dir is not None and plan_index == runtime_batches[0][0]:
             # The authorization is spent at the first batch of the invocation;
             # a later batch of the same plan belongs to the same attempt.
             try:
-                record["approval_consumed"] = consume_approval(Path(approved_dir), record["started"])
+                record["approval_consumed"] = (
+                    consume_approval(
+                        Path(approved_dir),
+                        record["started"],
+                        envelope_marker(int(record["envelope"].get("attempt", 1))),
+                        record["envelope"].get("fallback_evidence"),
+                    )
+                    if envelope
+                    else consume_approval(Path(approved_dir), record["started"])
+                )
             except LiveRunError:
                 record["state"] = "approval_required"
                 checkpoint()
@@ -5950,6 +6277,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     if record.get("family_configuration", {}).get("name") in (
                         "measurement-sequence",
                         "measurement-sequence-diagnostic",
+                        "measurement-sequence-envelope",
                     ):
                         executed[name]["placed_gate_calibration"] = placed_gate_calibration(
                             props_then,
@@ -6236,6 +6564,23 @@ def main(argv: list[str] | None = None) -> int:
         help="physical qubits state-prep-control or measurement-sequence characterizes; for state-prep-control, "
         "omitted, the replica qubits of diagnostic_experiments.STATE_PREP_SOURCE_RECORD on its backend; "
         "measurement-sequence requires it",
+    )
+    parser.add_argument(
+        "--envelope-fallback",
+        type=Path,
+        metavar="RUN_DIR",
+        help="send the envelope's 50 us attempt 2 after the attempt-1 run in RUN_DIR ended in a fallback signature",
+    )
+    parser.add_argument(
+        "--fallback-max-execution-seconds",
+        type=float,
+        help="measurement-sequence-envelope: the 50 us attempt's execution ceiling, bound into the envelope cap",
+    )
+    parser.add_argument(
+        "--layout-width",
+        type=int,
+        choices=(16, 24, 32),
+        help="measurement-sequence-envelope: the qubit count msq_envelope.layout_rule keeps on the live calibration",
     )
     parser.add_argument(
         "--state-prep-arms",
@@ -6562,6 +6907,22 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--layout applies to the state-prep-control and measurement-sequence families only")
     if args.family in layout_families[1:] and args.layout is None:
         parser.error(f"{args.family} requires --layout: the physical qubits whose measurement it characterizes")
+    if (args.layout_width is not None) != (args.family == "measurement-sequence-envelope"):
+        parser.error("measurement-sequence-envelope requires --layout-width, and only it takes one")
+    if args.envelope_fallback and (
+        args.submit or args.approved_record or args.family != "measurement-sequence-envelope" or not args.out
+    ):
+        parser.error(
+            "--envelope-fallback takes attempt 1's planning flags and --out; it derives --submit and the approval "
+            "from attempt 1's record"
+        )
+    if args.family == "measurement-sequence-envelope" and (
+        args.rep_delay is None or args.max_execution_seconds is None or args.fallback_max_execution_seconds is None
+    ):
+        parser.error(
+            "measurement-sequence-envelope binds --rep-delay, --max-execution-seconds and "
+            "--fallback-max-execution-seconds into its envelope"
+        )
     if args.state_prep_arms is not None:
         if args.family != "state-prep-control":
             parser.error("--state-prep-arms applies to the state-prep-control family only")
@@ -6631,6 +6992,7 @@ def main(argv: list[str] | None = None) -> int:
         "state-prep-control",
         "measurement-sequence",
         "measurement-sequence-diagnostic",
+        "measurement-sequence-envelope",
     ) and args.max_replicas not in (None, 1):
         parser.error(f"{args.family} pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "latency-recovery" and args.max_replicas not in (None, 1):
@@ -6721,6 +7083,9 @@ def main(argv: list[str] | None = None) -> int:
             preserved = preserve_raw(service, args.preserve_raw)
             print(f"raw results preserved for {len(preserved)} jobs under {args.preserve_raw / RAW_DIRECTORY}")
             return 0
+        if args.envelope_fallback:
+            evidence = envelope_fallback_setup(service, args)
+            print(f"envelope fallback admitted: {evidence}")
         now = datetime.now(UTC)
         args.started = now.isoformat(timespec="microseconds")
         # Microsecond names and exclusive creation keep concurrent runs from
@@ -6733,9 +7098,40 @@ def main(argv: list[str] | None = None) -> int:
         choices, record = plan(service, args)
         if not reuse_approved_predictions(choices, record, args):
             evaluate(choices, record)
+        envelope_snapshot: bytes | None = None
+        if is_envelope_family(record.get("family_configuration", {}).get("name")):
+            envelope_snapshot = snapshot_bytes(choices[0].snap)
+            record["envelope"] = {
+                "contract": envelope_contract(record, args),
+                "planning_snapshot_sha256": msq_envelope.sha256_hex(envelope_snapshot),
+            }
+            if getattr(args, "envelope_fallback", None):
+                # Attempt 2's delay and ceiling come from the approved contract, which binds it unchanged.
+                approved = json.loads((Path(args.approved_record) / "record.json").read_text())
+                record["envelope"].update(
+                    contract=approved["envelope"]["contract"],
+                    attempt=2,
+                    fallback_evidence=args.envelope_fallback_evidence,
+                )
+            elif args.submit:
+                args.envelope_attempt = {
+                    "rep_delay": args.rep_delay,
+                    "attempt_index": 1,
+                    "envelope_sha256": str(args.approved_record_sha256).lower(),
+                }
         if run_dir:
             run_dir.mkdir(parents=True, exist_ok=False)
-            write_archive(run_dir, choices)
+            qpy_sha256 = write_archive(run_dir, choices)
+            if envelope_snapshot is not None:
+                write_envelope_snapshot(run_dir, envelope_snapshot)
+                plan_view = envelope_plan(record, qpy_sha256)
+                record["envelope"]["planning_plan_sha256"] = msq_envelope.plan_digest(plan_view)
+                record["envelope"]["planner_charge_seconds"] = {
+                    "attempt_1": plan_view["planner_seconds"],
+                    "attempt_2": planner_charge(
+                        record.get("execution_contract", {}), msq_envelope.FALLBACK_REP_DELAY_S
+                    ),
+                }
             write_json(run_dir, record)
             if args.native_dry_run:
                 from native_preflight import qualify
@@ -6753,14 +7149,22 @@ def main(argv: list[str] | None = None) -> int:
                     print(f"unapproved written case: {case_path}")
         if args.submit and run_dir:
             try:
-                submit(
-                    service,
-                    choices,
-                    args,
-                    record,
-                    lambda: write_archive(run_dir, choices),
-                    lambda: write_json(run_dir, record),
-                )
+                while True:
+                    try:
+                        submit(
+                            service,
+                            choices,
+                            args,
+                            record,
+                            lambda: write_archive(run_dir, choices),
+                            lambda: write_json(run_dir, record),
+                        )
+                        break
+                    except EnvelopeReplan as replan:
+                        # Raised before the approval marker is written, so the next pass re-snapshots and re-plans
+                        # under the same unconsumed authorization.
+                        print(f"envelope re-plan: {replan}")
+                        note_envelope_replan(record, str(replan))
             finally:
                 write_json(run_dir, record)
     except ApprovalPreflightRefused as exc:
@@ -6970,6 +7374,20 @@ def archive_bytes(choices: list[Choice]) -> bytes:
     buffer = io.BytesIO()
     qpy.dump(archived, buffer)
     return buffer.getvalue()
+
+
+ENVELOPE_SNAPSHOT_DIRECTORY = "envelope-snapshots"
+
+
+def write_envelope_snapshot(run_dir: Path, data: bytes) -> str:
+    """Retain one canonical snapshot under its sha256, the input the envelope rebuild gate replays."""
+    digest = msq_envelope.sha256_hex(data)
+    directory = run_dir / ENVELOPE_SNAPSHOT_DIRECTORY
+    directory.mkdir(exist_ok=True)
+    target = directory / f"{digest}.json"
+    if not target.exists():
+        _write_text_atomically(target, data.decode())
+    return digest
 
 
 def write_archive(run_dir: Path, choices: list[Choice]) -> str:

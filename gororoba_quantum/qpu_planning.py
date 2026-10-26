@@ -28,6 +28,7 @@ import law_encoding
 import local_compute
 import measurement_sequence_analysis
 import measurement_sequence_scatter
+import msq_envelope
 import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
@@ -41,6 +42,8 @@ from diagnostic_experiments import (
     MSQ_THETA,
     MSQD_ARM_STEPS,
     MSQD_FAMILY,
+    MSQE_FAMILY,
+    MSQE_RESET_CONTROLS,
     N21_FAMILIES,
     N21_OVERLAP_ARM,
     PATCH_FAMILIES,
@@ -53,6 +56,8 @@ from diagnostic_experiments import (
     folded_group,
     measurement_sequence_groups,
     msq_diagnostic_groups,
+    msqe_groups,
+    msqe_pattern_bits,
     n21_group,
     n21_orbit_rca_group,
     state_prep_arms,
@@ -175,7 +180,7 @@ def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[s
     """
     return (
         {"configuration": configuration}
-        if family in (STATE_PREP_FAMILY, MSQ_FAMILY, MSQD_FAMILY, "n21-orbit-rca")
+        if family in (STATE_PREP_FAMILY, MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY, "n21-orbit-rca")
         else {}
     )
 
@@ -185,8 +190,9 @@ def settings(args: Any) -> dict[str, Any]:
 
     A declared preparation excitation, the empirical-Bernstein opt-in, a
     state-prep arm selection, the n21-orbit-rca initialization herald, its
-    overlap split, its ground-control split, its pinned layout and the
-    latency-recovery delays join them only when given, so a plan without them keeps its settings unchanged.
+    overlap split, its ground-control split, its pinned layout, the
+    latency-recovery delays and the envelope's layout width join them only when given, so a plan without
+    them keeps its settings unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
     bernstein = {"empirical_bernstein": True} if getattr(args, "empirical_bernstein", False) else {}
@@ -202,6 +208,7 @@ def settings(args: Any) -> dict[str, Any]:
         name: getattr(args, name) for name in ("latency_dt", "window_dt") if getattr(args, name, None) is not None
     }
     pin = getattr(args, "pin_layout", None)
+    width = getattr(args, "layout_width", None)
     return (
         {
             name: getattr(args, name, default)
@@ -237,6 +244,7 @@ def settings(args: Any) -> dict[str, Any]:
         | ramsey
         | segmented
         | latency
+        | ({"layout_width": width} if width is not None else {})
         | (
             {
                 "pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}
@@ -1110,11 +1118,26 @@ def measurement_sequence_candidates(
     excludes a named qubit refuses the snapshot.
     """
     diagnostic = args.family == MSQD_FAMILY
+    envelope = args.family == MSQE_FAMILY
     declared = getattr(args, "layout", None)
-    if declared is None:
+    if declared is None and not envelope:
         raise runtime.LiveRunError(f"{args.family} needs --layout: it has no retained default qubits")
-    qubits = [int(qubit) for qubit in declared]
-    if diagnostic:
+    qubits = [int(qubit) for qubit in declared] if declared is not None else []
+    if envelope:
+        width = int(args.layout_width)
+        # Every member holds a terminal reset, so every PUB is dynamic: the main family's rows, two reset controls
+        # and the width tier's patterns.
+        expected_kinds = ["dynamic"] * (
+            4 * len(MSQ_STEPS)
+            + 4
+            + 1
+            + len(MSQ_T1_MICROSECONDS)
+            + 4 * len(MSQ_DYNAMIC_STEPS)
+            + 4
+            + len(MSQE_RESET_CONTROLS)
+            + len(msqe_pattern_bits(width))
+        )
+    elif diagnostic:
         # Four signed unitary members, ro0 and ro1, all static: six PUBs whatever the qubit count.
         expected_kinds = ["static"] * 6
     else:
@@ -1125,6 +1148,16 @@ def measurement_sequence_candidates(
     candidates = []
     for snapshot in snapshots:
         try:
+            if envelope:
+                if snapshot.name != msq_envelope.ENVELOPE_BACKEND:
+                    raise runtime.LiveRunError(f"the envelope runs on {msq_envelope.ENVELOPE_BACKEND} only")
+                envelope_calibration = msq_envelope.calibration_from_snapshot(snapshot)
+                qubits = msq_envelope.layout_rule(
+                    envelope_calibration["qubits"],
+                    envelope_calibration["excluded"],
+                    [tuple(edge) for edge in envelope_calibration["edges"]],
+                    width,
+                )
             outside = [qubit for qubit in qubits if qubit < 0 or qubit >= snapshot.backend.target.num_qubits]
             excluded = sorted(set(qubits) & set(snapshot.excluded_qubits))
             if outside or excluded:
@@ -1145,7 +1178,8 @@ def measurement_sequence_candidates(
                 t1_delays = [
                     rounded_delay(runtime, snapshot, microseconds * 1e-6) for microseconds in MSQ_T1_MICROSECONDS
                 ]
-                groups = measurement_sequence_groups(qubits, delays, settles, prereadouts, t1_delays)
+                build = msqe_groups if envelope else measurement_sequence_groups
+                groups = build(qubits, delays, settles, prereadouts, t1_delays)
             if snapshot.admission_target is None:
                 snapshot.admission_target = runtime.build_admission_target(snapshot)
             get_plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
@@ -1169,7 +1203,17 @@ def measurement_sequence_candidates(
                         raise runtime.LiveRunError(f"{group.name}: {violations}")
                     operations = isa.count_ops()
                     arm = member.name.split("_")[1]
-                    if arm == "ro0":
+                    # The envelope's terminal resets and the reset controls' mid-circuit reset survive compilation.
+                    resets_expected = (2 if arm in MSQE_RESET_CONTROLS else 1) if envelope else 0
+                    if operations.get("reset", 0) != resets_expected:
+                        raise runtime.LiveRunError(
+                            f"{member.name}: compiled {operations.get('reset', 0)} resets, not {resets_expected}"
+                        )
+                    if arm in MSQE_RESET_CONTROLS:
+                        measures, delays_expected, steps = 2, 1, 0
+                    elif arm.startswith("pat"):
+                        measures, delays_expected, steps = 1, 1, 0
+                    elif arm == "ro0":
                         measures, delays_expected, steps = 1, 1, 0
                     elif arm == "t1":
                         index = int(member.name.split("_d")[1].split("_")[0])
@@ -1238,6 +1282,33 @@ def measurement_sequence_candidates(
                         "placement_contract": (
                             "one pinned single-qubit placement per named qubit; every qubit runs each member in the "
                             "same shots; the six static PUBs hold the four signed unitary members, ro0 and ro1"
+                        ),
+                        "dt_seconds": snapshot.backend.target.dt,
+                    },
+                )
+            )
+            continue
+        if envelope:
+            candidates.append(
+                (
+                    choices,
+                    {
+                        "name": MSQE_FAMILY,
+                        "qubits": qubits,
+                        "layout_source": "msq_envelope.layout_rule",
+                        "layout_width": width,
+                        "plan_calibration": {str(q): envelope_calibration["qubits"][q] for q in qubits},
+                        "arms": dict(MSQ_ARM_STEPS),
+                        "total_rotation_rad": MSQ_THETA,
+                        "steps": list(MSQ_STEPS),
+                        "measurement_delay_dt": {str(qubit): dt for qubit, dt in delays.items()},
+                        "settle_delay_dt": {str(qubit): dt for qubit, dt in settles.items()},
+                        "prereadout_delay_dt": {str(qubit): dt for qubit, dt in prereadouts.items()},
+                        "t1_delays_dt": t1_delays,
+                        "pattern_bits": [list(row) for row in msqe_pattern_bits(width)],
+                        "placement_contract": (
+                            "one single-qubit placement per qubit the layout rule keeps; every qubit runs each member "
+                            "in the same shots; every member ends in a reset, so every PUB is dynamic"
                         ),
                         "dt_seconds": snapshot.backend.target.dt,
                     },
@@ -1425,7 +1496,7 @@ def family_candidates(
         return patch_candidates(runtime, snapshots, args, trace)
     if args.family == STATE_PREP_FAMILY:
         return state_prep_candidates(runtime, snapshots, args, trace)
-    if args.family in (MSQ_FAMILY, MSQD_FAMILY):
+    if args.family in (MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY):
         return measurement_sequence_candidates(runtime, snapshots, args, trace)
     if args.family == LATENCY_RECOVERY_FAMILY:
         return latency_recovery_candidates(runtime, snapshots, args, trace)

@@ -253,3 +253,179 @@ def test_envelope_leaves_the_main_family_unchanged() -> None:
         all(m.circuit.data[-1].operation.name == "measure" for m in (*static, *dynamic)),
         "the main family gained a reset",
     )
+
+
+def test_job_error_code_parses_the_service_text() -> None:
+    import live_run
+
+    check(live_run.job_error_code("Error code 1305; Job ran longer than 5 s.") == 1305, "1305")
+    check(live_run.job_error_code("error code 8030: Repetition delay not supported") == 8030, "8030")
+    check(live_run.job_error_code(None) is None and live_run.job_error_code("no code") is None, "absent code")
+
+
+def test_recovery_tags_separate_attempts_and_keep_retained_tags() -> None:
+    import live_run
+
+    base = ("2026-10-26T00:00:00+00:00", "ibm_kingston", "dynamic", 1, 1, [{"name": "p"}], "a" * 64)
+    retained = live_run._recovery_tags(*base)
+    first = live_run._recovery_tags(*base, {"rep_delay": 2e-5, "attempt_index": 1, "envelope_sha256": "e" * 64})
+    second = live_run._recovery_tags(*base, {"rep_delay": 5e-5, "attempt_index": 2, "envelope_sha256": "e" * 64})
+    check(retained == live_run._recovery_tags(*base, None), "a record without an attempt keeps its tags")
+    check(len({retained[2], first[2], second[2]}) == 3, "each attempt has its own batch tag")
+    with pytest.raises(live_run.LiveRunError):
+        live_run._recovery_tags(*base, {"attempt_index": 1})
+
+
+def approved_envelope(tmp_path: Any, **record_overrides: Any) -> tuple[Any, str, dict[str, Any]]:
+    import hashlib
+    import json
+
+    record: dict[str, Any] = {
+        "state": "planned",
+        "experiment_digest": "d" * 64,
+        "schema_version": 9,
+        "shots": 8192,
+        "policy": {"rep_delay_seconds": 2e-5, "max_execution_seconds": 30.0},
+        "versions": {"qiskit": "2"},
+        "instance_sha256_12": "i" * 12,
+        "family_configuration": {
+            "name": "measurement-sequence-envelope",
+            "layout_width": 16,
+            "layout_source": "msq_envelope.layout_rule",
+            "qubits": list(range(16)),
+            "arms": {"measure": "m"},
+            "steps": [1, 2],
+        },
+        "envelope": {
+            "contract": {
+                "fallback_rep_delay_seconds": 5e-5,
+                "ceiling_seconds": {"attempt_1": 30.0, "attempt_2": 60.0},
+                "envelope_cap_seconds": 90.0,
+            }
+        },
+        "groups": [{"backend": "ibm_kingston", "seed_transpiler": 7}],
+        "execution_pubs": [{"name": f"p{k}"} for k in range(3)],
+    }
+    record.update(record_overrides)
+    directory = tmp_path / "approved"
+    directory.mkdir()
+    data = json.dumps(record).encode()
+    (directory / "record.json").write_bytes(data)
+    return directory, hashlib.sha256(data).hexdigest(), record
+
+
+def test_envelope_mismatches_admit_a_moved_layout_only(tmp_path: Any) -> None:
+    import copy
+
+    import live_run
+
+    directory, sha, approved = approved_envelope(tmp_path)
+    fresh = copy.deepcopy(approved)
+    fresh["family_configuration"]["qubits"] = list(range(100, 116))
+    check(live_run.approved_envelope_mismatches(directory, fresh, sha) == [], "a moved layout stays inside")
+    for mutate in (
+        lambda r: r["policy"].update(rep_delay_seconds=5e-5),
+        lambda r: r["family_configuration"].update(layout_width=24),
+        lambda r: r["family_configuration"].update(qubits=list(range(15))),
+        lambda r: r.update(experiment_digest="x" * 64),
+        lambda r: r["envelope"]["contract"].update(envelope_cap_seconds=95.0),
+        lambda r: r["groups"][0].update(seed_transpiler=8),
+        lambda r: r["execution_pubs"].pop(),
+    ):
+        changed = copy.deepcopy(fresh)
+        mutate(changed)
+        check(live_run.approved_envelope_mismatches(directory, changed, sha) != [], "a bound field moved")
+    check(live_run.approved_envelope_mismatches(directory, fresh, "0" * 64) != [], "a wrong digest refuses")
+
+
+def test_envelope_attempt_two_reads_the_fallback_delay_and_ceiling(tmp_path: Any) -> None:
+    import copy
+
+    import live_run
+
+    directory, sha, approved = approved_envelope(tmp_path)
+    second = copy.deepcopy(approved)
+    second["envelope"]["attempt"] = 2
+    second["policy"] = {"rep_delay_seconds": 5e-5, "max_execution_seconds": 60.0}
+    check(live_run.approved_envelope_mismatches(directory, second, sha) == [], "attempt 2 policy matches")
+    second["policy"]["max_execution_seconds"] = 61.0
+    check(live_run.approved_envelope_mismatches(directory, second, sha) != [], "attempt 2 past its ceiling")
+
+
+class FakeJob:
+    def __init__(self, status: str, message: str | None, circuit_ns: int | None, billed: int | None) -> None:
+        self._status, self._message = status, message
+        usage = {"status": "complete", "qpu_charge_time_seconds": billed} if billed is not None else None
+        self._metrics: dict[str, Any] = {"usage": usage} if usage else {}
+        if circuit_ns is not None:
+            self._metrics["circuits_execution_time_ns"] = circuit_ns
+        self._billed = billed
+
+    def status(self) -> str:
+        return self._status
+
+    def error_message(self) -> str | None:
+        return self._message
+
+    def metrics(self) -> dict[str, Any]:
+        return self._metrics
+
+    def usage(self, partial: bool = False) -> float:
+        return float(self._billed or 0)
+
+
+class FakeService:
+    def __init__(self, job: FakeJob, remaining: float) -> None:
+        self._job, self._remaining = job, remaining
+
+    def job(self, job_id: str) -> FakeJob:
+        return self._job
+
+    def usage(self) -> dict[str, Any]:
+        return {"usage_remaining_seconds": self._remaining}
+
+
+@pytest.mark.parametrize(
+    "job, remaining, admitted",
+    [
+        (FakeJob("ERROR", "Error code 1305; ran longer", None, 2), 400.0, True),
+        (FakeJob("ERROR", "Error code 1305; ran longer", 1_000_000, 2), 400.0, False),
+        (FakeJob("ERROR", "Error code 1305; ran longer", None, 5), 400.0, False),
+        (FakeJob("ERROR", "Error code 8045; buffer", None, 2), 400.0, False),
+        (FakeJob("DONE", None, 1_000_000, 4), 400.0, False),
+        (FakeJob("ERROR", "Error code 1602; range", 0, 2), 400.0, True),
+        (FakeJob("ERROR", "Error code 1305; ran longer", None, 2), 50.0, False),  # ceiling 2 past the quota
+    ],
+)
+def test_envelope_fallback_setup(tmp_path: Any, job: FakeJob, remaining: float, admitted: bool) -> None:
+    import argparse
+    import json
+
+    import live_run
+
+    directory, sha, approved = approved_envelope(tmp_path)
+    approved["envelope"]["contract"]["reserve_seconds"] = 0.0
+    data = json.dumps(approved).encode()
+    (directory / "record.json").write_bytes(data)
+    import hashlib
+
+    sha = hashlib.sha256(data).hexdigest()
+    first = tmp_path / "first"
+    first.mkdir()
+    (first / "record.json").write_text(
+        json.dumps(
+            {
+                "shots": 8192,
+                "approved_record": {"run": "approved", "record_sha256": sha, "envelope": True},
+                "submission": {"jobs": [{"job_id": "j1", "pubs": [{"name": "p"}]}]},
+            }
+        )
+    )
+    args = argparse.Namespace(envelope_fallback=first)
+    if admitted:
+        evidence = live_run.envelope_fallback_setup(FakeService(job, remaining), args)
+        check(args.rep_delay == 5e-5 and args.max_execution_seconds == 60.0 and args.submit, "attempt 2 settings")
+        check(args.envelope_attempt["attempt_index"] == 2 and evidence["attempt_1_job"] == "j1", "attempt identity")
+    else:
+        with pytest.raises(live_run.LiveRunError):
+            live_run.envelope_fallback_setup(FakeService(job, remaining), args)

@@ -65,6 +65,7 @@ FAMILY_NAMES = (
     "state-prep-control",
     "measurement-sequence",
     "measurement-sequence-diagnostic",
+    "measurement-sequence-envelope",
     "latency-recovery",
 )
 # Families that run on one pinned patch (--patch-qubits, patch_characterization.PATCH_ROLES).
