@@ -12562,6 +12562,7 @@
    "qd_platform",
    "qd_schedule",
    "sys",
+   "tempfile",
    "typing"
   ],
   "scripts/qet_passivity_controls.py": [
