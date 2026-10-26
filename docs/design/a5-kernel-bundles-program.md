@@ -144,8 +144,17 @@ replaced by better ones:
   file added by the orchestrator.
 - Orchestrator correction: the transport identity carries the outer conjugation (Pfaffian record item 2); the facts
   table and item 1 now read psi = conj o phi. The `BLOCKED: owner` note of ledger row 1 is resolved.
-- The first sub-step (transport and J at the seven representatives) is reviewed and committed by the orchestrator; the
-  next sub-step is the exact Lie-algebra solve for K.
+- Committed after orchestrator review and replay: 1baaaee (transport with psi = conj o phi; J acts as i), a6268f8
+  (constant symmetry algebra g_2 + four central directions, no boost lift, visible S_3 x Z_2 components). The
+  orchestrator reproduced the unit-section orbit dimensions 14, 7, 11, 7, 7, 11, 11 with separate code.
+- Consequence to build on: only N_+- is K-homogeneous. On B9, VB, V and V^a_+- the K-orbits have codimension 3, 2, 8
+  and 6 in the unit section, so each piece is a family of K-orbits over a moduli space M. The kernel bundle over a
+  piece restricts to a homogeneous bundle on each K-orbit (stabilizer representation on the fiber) and varies over M.
+  Item 2 and the transition data should exploit this: find M for each piece (explicit K-invariants separating
+  orbits), the stabilizer type over each point of M, and whether the stabilizer representation on ker L_y is constant
+  along M (then the bundle is pulled back from M times a homogeneous piece) or jumps (then the jump locus is a new
+  stratum that the twelve H-orbits do not see). Exhaustiveness of the component group stays open and is not a
+  blocker.
 - No jobs in flight.
 
 ## Order
