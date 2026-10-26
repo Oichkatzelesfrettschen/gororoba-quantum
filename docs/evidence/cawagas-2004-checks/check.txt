@@ -1,0 +1,19 @@
+rule: the 35 triplets fix all 256 basis products and obey e_a e_b = +-e_(a^b)
+sign agreement with cd_core.cd_sign before any map: 256 of 256
+diagonal sign maps e_i -> s_i e_i carrying the paper's rule onto cd_core: 16
+first map: flipped indices []
+order-16 subloops satisfying Table 2's printed MP (xy)(zx) = (x(yx))z: 0 of 15
+order-16 subloops {+-e_i : i in V}, V a 3-dim subspace of F_2^4: 15
+Moufang (octonion loop copies): 8; non-Moufang (quasi-octonion copies): 7
+Moufang copies equal Table 3's octonion column: True
+non-Moufang copies equal Table 3's quasi-octonion column: True
+octonion-loop copies other than O contain e_8: True
+order-8 subloops (2-dim subspaces): 35; order-4 subloops (nonzero vectors): 15
+cd_core rule: Moufang split 8 / 7
+Table 5 pairs: 84; zero in the paper's rule: 84; inside a quasi-octonion copy: 84
+Table 5 pairs zero in cd_core after the sign map: 84
+Table 5 pairs zero in cd_core with indices copied unmapped: 84
+Section 4 worked product (e2 - e14)(e3 + e15) in the paper's rule: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Moreno (e1 + e10)(e15 - e4): paper's rule [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; cd_core unmapped [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+cd_core four-term +-1 elements with support spanning F_2^4: 6720; zero divisors: 672
+  first: support (1, 2, 11, 12) signs (1, 1, 1, 1) nullity 4; it lies in no order-16 subloop, so no quasi-octonion copy
