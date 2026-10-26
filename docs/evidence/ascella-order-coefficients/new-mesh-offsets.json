@@ -3,7 +3,6 @@
  "plan": "docs/state/plans/ascella-new-seed-meshes-case.json",
  "predictors": [
   {
-   "covariance_sha256": "908fb3f75f1e1f273d6b33011b5ebffdc433c502980f69125d87156fbb2876d6",
    "free": [
     true,
     true,
@@ -528,7 +527,6 @@
    ]
   },
   {
-   "covariance_sha256": "5e7d71539e84e869c8ad5322d89b34deb2fac85ffea5c0216f29b6089fe2d12c",
    "free": [
     true,
     true,

@@ -22,7 +22,7 @@ import ascella_compilation_reading as reading  # noqa: E402
 
 def test_compilation_job_anchors_seed_zero_and_draws_distinct_seeds() -> None:
     rows = request.entries(request.JOBS["job-02"])
-    seeds, indices = request.compilation_seeds()
+    seeds, indices = request.compilation_seeds(request.JOBS["job-02"])
     if len(rows) != 64 or {row["block"] for row in rows} != {"theta2-x"} or {row["arm"] for row in rows} != {0}:
         raise AssertionError("job-02 is not 64 iterations of theta2-x-arm0")
     settings = [request.build_setting((index, row))[1] for index, row in enumerate(rows)]

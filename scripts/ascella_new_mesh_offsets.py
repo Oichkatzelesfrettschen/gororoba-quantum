@@ -10,8 +10,8 @@ predicted X statistic is static_light of the returned phases and couplers under 
 - all-meshes: the fit on job-00 plus all 56 perturbed meshes of jobs 02 and 03, each pooled over both jobs by
   setting name.
 
-Each entry carries the free-parameter mask, the posterior-mode offsets and the sha256 of the inverse posterior
-Hessian's float64 bytes. `freeze` writes the record; `--check` refits both and requires the written record.
+Each entry carries the free-parameter mask and the posterior-mode offsets, the only fit outputs a prediction uses;
+`--check` refits both and requires every offset within the fit replay bounds of ascella_physical_models.replay.
 
 Usage:
   "$PYTHON" scripts/ascella_new_mesh_offsets.py JOB_00 JOB_02 JOB_03 SPLIT OUT [--check]
@@ -19,13 +19,10 @@ Usage:
 
 from __future__ import annotations
 
-import hashlib
 import json
 import sys
 from pathlib import Path
 from typing import Any
-
-import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -53,14 +50,13 @@ def training_sets(paths: list[Path]) -> list[tuple[str, dict[str, Any]]]:
 
 def predictor(item: tuple[str, dict[str, Any]]) -> dict[str, Any]:
     name, train = item
-    offsets, covariance = fixed.fit((confirmation.FAMILY, train))
+    offsets, _ = fixed.fit((confirmation.FAMILY, train))
     _, free = fixed.free_widths(train, confirmation.FAMILY)
     return {
         "name": name,
         "meshes": len(train["keys"]),
         "free": [bool(f) for f in free],
         "offsets": [float(x) for x in offsets],
-        "covariance_sha256": hashlib.sha256(np.ascontiguousarray(covariance, dtype="<f8").tobytes()).hexdigest(),
     }
 
 
