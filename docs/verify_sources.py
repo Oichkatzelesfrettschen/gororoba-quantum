@@ -218,6 +218,33 @@ def capture_relative_path(rights: dict[str, Any]) -> str:
     return relative
 
 
+def verify_dmgaa_capture(entry: dict[str, Any], rights: dict[str, Any], raw_response: bytes, doi: str) -> None:
+    """Bind an archived Discussiones Mathematicae article page to the archived PDF route of the same article.
+
+    The journal pages carry no citation metadata, so the page identity is its own PDF link and its heading,
+    which prints the registered title in capitals. Its journal-wide license link names no article, so the route
+    admits external-only records alone.
+    """
+    require(
+        re.fullmatch(
+            rf"https://web\.archive\.org/web/\d{{14}}id_/https://www\.dmgaa\.uz\.zgora\.pl/publish/article\.php\?doi={doi}",
+            rights["evidence_url"],
+        )
+        is not None,
+        "captured DMGAA article evidence identity",
+    )
+    require(rights.get("decision") == "external_only", "captured DMGAA article decision")
+    try:
+        html = raw_response.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError("captured external HTML encoding") from error
+    links = re.findall(r'href="https://www\.dmgaa\.uz\.zgora\.pl/publish/pdf\.php\?doi=(\d+)"', html)
+    require(links == [doi], "captured DMGAA article PDF identity")
+    title = require_text(entry.get("title"), "captured DMGAA article registered title")
+    headings = [re.sub(r"\s+", " ", text).strip() for text in re.findall(r"<h2[^>]*>(.*?)</h2>", html, re.I | re.S)]
+    require(title.upper() in headings, "captured DMGAA article title identity")
+
+
 def verify_external_article_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any]) -> None:
     """Bind a retained external article capture to its bytes and publisher identity."""
     relative = capture_relative_path(rights)
@@ -229,6 +256,13 @@ def verify_external_article_evidence(root: Path, entry: dict[str, Any], rights: 
     require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured external retrieval timestamp")
     raw_response = source.read_bytes()
     require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured external evidence SHA-256")
+    archived = re.fullmatch(
+        r"https://web\.archive\.org/web/\d{14}id_/https://www\.dmgaa\.uz\.zgora\.pl/publish/pdf\.php\?doi=([1-9]\d*)",
+        entry["source_url"],
+    )
+    if archived is not None:
+        verify_dmgaa_capture(entry, rights, raw_response, archived[1])
+        return
     article = re.fullmatch(
         r"https://pmihes\.centre-mersenne\.org/item/(10\.1007/[A-Za-z0-9_.-]+)\.pdf", entry["source_url"]
     )

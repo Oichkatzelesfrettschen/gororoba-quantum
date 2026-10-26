@@ -19,6 +19,7 @@ from verify_sources import (
     LICENSE_URLS,
     PUBLIC_LICENSES,
     verify_capture_inventory,
+    verify_dmgaa_capture,
     verify_external_sources,
     verify_source_archives,
     verify_source_rights,
@@ -1849,6 +1850,63 @@ class HostedArxivCaptureChecks(unittest.TestCase):
                 verify_source_rights(
                     entry, registry, root=root, published=True, payload=(root / entry["path"]).read_bytes()
                 )
+
+
+class DmgaaCaptureChecks(unittest.TestCase):
+    DOI = "1088"
+    TITLE = "On the structure and zero divisors of the Cayley-Dickson sedenion algebra"
+
+    def setUp(self) -> None:
+        stamp = "https://web.archive.org/web/20240718205948id_/https://www.dmgaa.uz.zgora.pl/publish/"
+        self.entry: dict[str, Any] = {"title": self.TITLE, "source_url": f"{stamp}pdf.php?doi={self.DOI}"}
+        self.rights: dict[str, Any] = {
+            "decision": "external_only",
+            "evidence_url": f"{stamp}article.php?doi={self.DOI}".replace("20240718205948", "20250726081148"),
+        }
+        self.html = (
+            '<a href="http://creativecommons.org/licenses/by/4.0/">Open Access License</a>'
+            f'<a href="https://www.dmgaa.uz.zgora.pl/publish/pdf.php?doi={self.DOI}">PDF</a>'
+            f'<h2 align="center">{self.TITLE.upper()}</h2>'
+        )
+
+    def verify(self) -> None:
+        verify_dmgaa_capture(self.entry, self.rights, self.html.encode(), self.DOI)
+
+    def reject(self, message: str) -> None:
+        with self.assertRaisesRegex(ValueError, message):
+            self.verify()
+
+    def test_registered_capture_passes(self) -> None:
+        self.verify()
+
+    def test_other_article_page_is_rejected(self) -> None:
+        self.rights["evidence_url"] = self.rights["evidence_url"].replace("doi=1088", "doi=1089")
+        self.reject("captured DMGAA article evidence identity")
+
+    def test_publication_decision_is_rejected(self) -> None:
+        self.rights["decision"] = "publish_under_explicit_license"
+        self.reject("captured DMGAA article decision")
+
+    def test_other_or_extra_pdf_link_is_rejected(self) -> None:
+        self.html = self.html.replace("doi=1088", "doi=1089")
+        self.reject("captured DMGAA article PDF identity")
+        self.setUp()
+        self.html += '<a href="https://www.dmgaa.uz.zgora.pl/publish/pdf.php?doi=1090">PDF</a>'
+        self.reject("captured DMGAA article PDF identity")
+
+    def test_other_title_is_rejected(self) -> None:
+        self.entry["title"] = "On the structure of the octonion algebra"
+        self.reject("captured DMGAA article title identity")
+
+    def test_registered_record_passes(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        registry = json.loads((root / "docs/SOURCES.json").read_text())
+        entries = [entry for entry in registry["external_pdfs"] if "dmgaa.uz.zgora.pl" in entry["source_url"]]
+        self.assertTrue(entries)
+        for entry in entries:
+            capture = (root / entry["rights"]["evidence_path"]).read_bytes()
+            doi = entry["source_url"].rsplit("=", 1)[1]
+            verify_dmgaa_capture(entry, entry["rights"], capture, doi)
 
 
 if __name__ == "__main__":

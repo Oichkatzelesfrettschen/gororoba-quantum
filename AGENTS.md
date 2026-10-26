@@ -78,10 +78,12 @@ earlier result imports the earlier seed constant by name, and a new job on an
 earlier circuit that needs its own randomness (an independent replicate, a
 fresh layout or twirl, a new mesh) takes new values from a draw.
 `ci/seed_provenance.py`, run by the `tests` check, requires every integer seed
-literal in the code directories to be a row of ci/reproduction_seeds.json,
-which only shrinks against main, or an entry of
-docs/evidence/qrng_seeds/allocations.json naming a registered source's draw
-that no case manifest owns and the index holding that value. A seed a CLI takes
+literal in the code directories and in every git-tracked Python file under
+docs/ to be a row of ci/reproduction_seeds.json, which only shrinks against
+main, or an entry of docs/evidence/qrng_seeds/allocations.json naming a
+registered source's draw that no case manifest owns and the index holding that
+value. A tracked file that takes a draw value the literal scan cannot key (a
+helper alias, a mapping) gets a `reserved` row there instead. A seed a CLI takes
 at run time goes through `qrng_seeds.add_seed_argument`, which accepts
 `qrng:<draw>#<index>`, the flag's default or `repro:<integer>` and refuses any
 other integer; the run record's `seed_source` names the spelling, and the
