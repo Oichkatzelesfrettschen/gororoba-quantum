@@ -29,8 +29,8 @@
       "receipts": [
         {
           "result": "The bounds do not close the device question: tilt and CZ phase jointly at their gate-error bounds reach max_z 2.61 (best) and 2.84 (median) per coefficient, needing 53,363 and 76,596 shots per setting to identify against 2,803 and 3,169; each family alone stays below 1; static detuning of 30 kHz on all three qubits crosses 1 with the CZ-phase or tilt bound but stays at 0.43 and 0.45 with the atlas-fitted 0.04 rad CZ phase; all 226 working paths exceed 1 at their bounds.",
-          "observed_at": "2026-10-25T22:45:40+00:00",
-          "revision": "a2cc0c4b70123fb8d38cff73802897c9802e1789",
+          "observed_at": "2026-10-26T00:44:58+00:00",
+          "revision": "a1c0832ada190578d890fe27e3a45298040d4cdf",
           "evidence": [
             {
               "ref": "docs/evidence/primorial_cover/bound_residuals.json",
@@ -38,7 +38,7 @@
             },
             {
               "ref": "docs/design/primorial-cover-joint-coherent-bounds.md",
-              "sha256": "b75b4463c256e10270ac9c06b630b0306ac4a99b89a0716c74335ff257aaa8de"
+              "sha256": "123a8771cd50d9dd30b6931d52ff0126e36f38aafd710a606d1097eba100cfcf"
             }
           ],
           "scope_sha256": "de64e87c35b2f13f7d12c211bff13cb7105fe43753b837bf27965cb7e48925cb"
