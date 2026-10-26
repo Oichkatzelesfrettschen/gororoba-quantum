@@ -37,7 +37,7 @@ acquisition of every provider:
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 26 |
 | mathematical claim | open | 2 |
-| numerical or stochastic simulation | established | 10 |
+| numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
 | preregistered emulator control | established | 10 |
 | preregistered hardware inference | established | 60 |
