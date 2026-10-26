@@ -40,6 +40,13 @@ literal the base tree already holds in that file at the same or a higher count,
 because such a literal predates the change; a literal the base lacks stays
 refused.
 
+The ``owned`` section lists draws a tracked file consumes whole, as seeds and as
+raw sample values a per-index row cannot key: rows {record, path, reason}. The
+check requires the record to be canonically spelled and admitted by its source,
+owned once and named by no case manifest; the path to be a tracked file citing
+the record's file name; and a nonempty reason. An owned record then counts as
+claimed, so no allocation, runtime or reserved row may take one of its indices.
+
 Usage: "$PYTHON" ci/seed_provenance.py (--check | --shrink | --runtime | --add-runtime | --self-test)
 """
 
@@ -323,7 +330,7 @@ def check_runtime(
         if slot in code:
             problems.append(f"runtime ledger: index {slot[1]} of {slot[0]} also seeds a code literal")
         if Path(slot[0]).name in claimed:
-            problems.append(f"runtime ledger: {slot[0]} belongs to a case manifest under results/")
+            problems.append(f"runtime ledger: {slot[0]} belongs to a case manifest under results/ or an owned row")
         qrng_seeds.source_directory(slot[0])
         values = read_record(slot[0])["values"]
         if not 0 <= slot[1] < len(values) or values[slot[1]] != row["value"]:
@@ -360,7 +367,7 @@ def admit_row(
     if not DRAW_NAME.fullmatch(name) or directory not in SOURCES or record_path != f"{directory}/{name}":
         raise SeedError(f"{key}: record {record_path!r} is not spelled <source directory>/draw-<UTC>.json")
     if name in claimed:
-        raise SeedError(f"{key}: {record_path} belongs to a case manifest under results/")
+        raise SeedError(f"{key}: {record_path} belongs to a case manifest under results/ or an owned row")
     if record_path not in records:
         record = read_record(record_path)
         SOURCES[directory](record)
@@ -417,6 +424,48 @@ def reserved_file(path: str) -> tuple[str, tuple[str, frozenset[int]]] | None:
         return None
     text = (ROOT / path).read_text(encoding="utf-8")
     return path, (text, frozenset(value for _, _, value in text_literals(path, text)[0]))
+
+
+def check_owned(
+    owned: list[dict[str, Any]],
+    manifest_claimed: set[str],
+    read_record: Callable[[str], dict[str, Any]],
+    texts: dict[str, str],
+) -> set[str]:
+    """Admit every owned row and return the owned records' file names. texts maps each tracked path to its text;
+    an untracked path is absent."""
+    names: set[str] = set()
+    for row in owned:
+        record_path = row["record"]
+        key = ("owned", record_path)
+        name = Path(record_path).name
+        directory = record_path.rpartition("/")[0]
+        if not DRAW_NAME.fullmatch(name) or directory not in SOURCES or record_path != f"{directory}/{name}":
+            raise SeedError(f"{key}: record {record_path!r} is not spelled <source directory>/draw-<UTC>.json")
+        if name in manifest_claimed:
+            raise SeedError(f"{key}: {record_path} belongs to a case manifest under results/")
+        if name in names:
+            raise SeedError(f"{key}: {record_path} is owned twice")
+        SOURCES[directory](read_record(record_path))
+        if not str(row.get("reason", "")).strip():
+            raise SeedError(f"{key}: reason is empty")
+        if row["path"] not in texts:
+            raise SeedError(f"{key}: {row['path']} is not a tracked file")
+        if name not in texts[row["path"]]:
+            raise SeedError(f"{key}: {row['path']} does not cite {name}")
+        names.add(name)
+    return names
+
+
+def owned_records(validate: bool) -> set[str]:
+    """File names of the owned draws in allocations.json, each row admitted first when validate is set."""
+    owned = load(ALLOCATIONS, "owned")
+    if not validate:
+        return {Path(row["record"]).name for row in owned}
+    tracked = tracked_files()
+    paths = sorted({row["path"] for row in owned if row["path"] in tracked and (ROOT / row["path"]).is_file()})
+    texts = {path: (ROOT / path).read_text(encoding="utf-8") for path in paths}
+    return check_owned(owned, claimed_records(MANIFEST_ROOT), read_tree_record, texts)
 
 
 def check(
@@ -562,7 +611,7 @@ def read_tree_record(record_path: str) -> dict[str, Any]:
 
 def check_tree(shard: int | None = None) -> int:
     found, flags = scan(shard)
-    claimed = claimed_records(MANIFEST_ROOT)
+    claimed = claimed_records(MANIFEST_ROOT) | owned_records(validate=shard in (None, 0))
     allocations = load(ALLOCATIONS, "allocations")
     check(found, load(BASELINE, "seeds"), allocations, claimed, read_tree_record, shard, flags)
     if shard in (None, 0):
@@ -580,7 +629,8 @@ def check_runtime_tree() -> int:
     allocations = load(ALLOCATIONS, "allocations")
     runtime = load(ALLOCATIONS, "runtime")
     allocations = allocations + load(ALLOCATIONS, "reserved")
-    check_runtime(consumed, stray, runtime, allocations, claimed_records(MANIFEST_ROOT), read_tree_record)
+    claimed = claimed_records(MANIFEST_ROOT) | owned_records(validate=False)
+    check_runtime(consumed, stray, runtime, allocations, claimed, read_tree_record)
     print(f"seed provenance: {len(consumed)} retained qrng references match the runtime ledger")
     return 0
 
@@ -713,7 +763,12 @@ def self_test() -> int:
     ):
         if shrink_problems(baseline, head, literals_held):
             raise SystemExit(f"self-test: {name} over a base-tree literal was refused")
-    runtime_refusals = runtime_self_test(record_path, record) + reserved_self_test(record_path, record) + 1
+    runtime_refusals = (
+        runtime_self_test(record_path, record)
+        + reserved_self_test(record_path, record)
+        + owned_self_test(record_path, record)
+        + 1
+    )
     flag_tree = ast.parse(
         "p.add_argument('--seed', type=int)\n"
         "p.add_argument('--seeds', type=int)\n"
@@ -734,6 +789,44 @@ def self_test() -> int:
     total = len(mutations) + 5 + runtime_refusals + 1
     print(f"seed_provenance self-test: scan matched, {total} mutations rejected")
     return 0
+
+
+def owned_self_test(record_path: str, record: dict[str, Any]) -> int:
+    """The owned section admits one whole-draw consumer and refuses each defect; returns the refusal count."""
+    name = Path(record_path).name
+    row = {"record": record_path, "path": "p.py", "reason": "sample points"}
+    texts = {"p.py": f"DRAW = {record_path!r}\n"}
+
+    def run(rows: list[dict[str, Any]], claimed: set[str] | None = None, tracked: dict[str, str] | None = None) -> None:
+        check_owned(rows, claimed or set(), lambda path: record, texts if tracked is None else tracked)
+
+    if check_owned([row], set(), lambda path: record, texts) != {name}:
+        raise SystemExit("self-test: an owned draw was not admitted")
+    refusals: dict[str, Any] = {
+        "is owned twice": ([row, dict(row, path="p.py")], None, None),
+        "belongs to a case manifest": ([row], {name}, None),
+        "is not a tracked file": ([row], None, {}),
+        "does not cite": ([row], None, {"p.py": "DRAW = None\n"}),
+        "reason is empty": ([dict(row, reason="")], None, None),
+        "is not spelled": ([dict(row, record="draws/" + name)], None, None),
+    }
+    for fragment, (rows, claimed, tracked) in refusals.items():
+        try:
+            run(rows, claimed, tracked)
+        except SeedError as error:
+            if fragment in str(error):
+                continue
+            raise SystemExit(f"self-test: the {fragment!r} owned mutation raised {error}") from None
+        raise SystemExit(f"self-test: the {fragment!r} owned mutation was admitted")
+    allocation = {"path": "a.py", "name": "SEED", "value": record["values"][0], "record": record_path, "index": 0}
+    try:
+        admit_row(("a.py", "SEED", allocation["value"]), allocation, {name}, {}, lambda path: record)
+    except SeedError as error:
+        if "or an owned row" not in str(error):
+            raise SystemExit(f"self-test: an allocation on an owned draw raised {error}") from None
+    else:
+        raise SystemExit("self-test: an allocation on an owned draw was admitted")
+    return len(refusals) + 1
 
 
 def reserved_self_test(record_path: str, record: dict[str, Any]) -> int:
