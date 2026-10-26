@@ -803,29 +803,56 @@ def path_budget(snapshot: dict[str, Any], layout: list[int]) -> dict[str, Any]:
 def decide_path(
     snapshot: dict[str, Any], layout: list[int], probe: dict[str, float], probe_shots: int, gap88_shots: int
 ) -> dict[str, Any]:
-    """The preregistered decision for one path from a probe summary at ``probe_shots`` shots per circuit.
+    """The preregistered stage-2 decision for one path from a probe summary at ``probe_shots`` shots per circuit.
 
     ``probe`` holds every estimate of ESTIMATES and its one-shot standard error ``se_<estimate>``, as
-    coherence_probes.summarize reports them; the gap-88 standard deviations are the path's own at
-    ``gap88_shots`` shots per setting.
+    coherence_probes.summarize reports them. Each gap-88 reading averages two executions of ``gap88_shots``
+    shots (primorial_campaigns' gap-88, null, null, gap-88 order), so the path's coefficient standard
+    deviations are taken at twice that count. Stage 2 proceeds when, over the estimates' uncertainty, the
+    95th percentile of max_z is below 1 and the 95th percentile of the shots that identify all seven
+    coefficients (primorial_tomography.phase_fit's rule) is at most the per-reading count. The falsifier band
+    of the stage-2 largest bias is the 2.5 to 97.5 percent range of the predicted largest bias widened by
+    three of the largest coefficient standard deviations and by the path's incoherent bias.
     """
     view = calibration_snapshot.snapshot_backend(snapshot)
     logical = [(m, c) for m, c in noise.arms() if m["family"] == "gradient" and m["cost"] in ("gap88", "null")]
     budget = path_budget(snapshot, layout)
-    fit = br.Fit(br.path_arms(snapshot, view, layout, logical), budget["per_shot_coefficient_variance"], gap88_shots)
+    per_reading = 2 * gap88_shots
+    fit = br.Fit(br.path_arms(snapshot, view, layout, logical), budget["per_shot_coefficient_variance"], per_reading)
     estimate = {k: float(probe[k]) for k in ESTIMATES}
     se = {k: float(probe[f"se_{k}"]) / math.sqrt(probe_shots) for k in ESTIMATES}
+    specs = [
+        spec_of({k: estimate[k] + z * se[k] for k, z in zip(ESTIMATES, row, strict=True)}) for row in decision_points()
+    ]
+    rows = parallel.ordered_map(fit, [(s, s) for s in specs], min_items=1)
+
+    def p(values: list[float], q: float) -> float:
+        ordered = sorted(values)
+        return ordered[min(len(ordered) - 1, max(0, math.ceil(q * len(ordered)) - 1))]
+
+    max_z = [r["max_z"] for r in rows]
+    shots = [math.inf if r["shots_identify_all"] is None else float(r["shots_identify_all"]) for r in rows]
+    bias = [r["null_subtracted_max_bias"] for r in rows]
+    widen = 3.0 * max(fit.sd.values()) + budget["incoherent_max_bias"]
+    p95_shots = p(shots, 0.95)
     return {
         "calibration": snapshot["calibration"],
         **calibration_snapshot.backend_identity(snapshot),
         "layout": layout,
         "budget": budget,
-        "gap88_shots": gap88_shots,
+        "gap88_shots_per_circuit": gap88_shots,
+        "shots_per_reading": per_reading,
         "coefficient_sd": fit.sd,
         "probe_shots": probe_shots,
         "estimate": estimate,
         "se": se,
-        "decision": decide(fit, estimate, se, decision_points()),
+        "decision": {
+            "median_max_z": p(max_z, 0.5),
+            "p95_max_z": p(max_z, 0.95),
+            "p95_shots_identify_all": None if math.isinf(p95_shots) else int(p95_shots),
+            "proceed": p(max_z, 0.95) < 1.0 and p95_shots <= per_reading,
+        },
+        "falsifier_band": [max(0.0, p(bias, 0.025) - widen), p(bias, 0.975) + widen],
     }
 
 
@@ -852,7 +879,7 @@ def main() -> int:
     parser.add_argument("--layout", type=lambda text: [int(q) for q in text.split(",")], help="--decide: the path")
     parser.add_argument("--probe-summary", type=Path, help="--decide: JSON of the probe estimates and se_ keys")
     parser.add_argument("--probe-shots", type=int, help="--decide: shots per probe circuit")
-    parser.add_argument("--gap88-shots", type=int, help="--decide: shots per gap-88 setting")
+    parser.add_argument("--gap88-shots", type=int, help="--decide: shots per gap-88 circuit")
     args = parser.parse_args()
     if args.decide:
         needed = (args.snapshot, args.layout, args.probe_summary, args.probe_shots, args.gap88_shots, args.out)

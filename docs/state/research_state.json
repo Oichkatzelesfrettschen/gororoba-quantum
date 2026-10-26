@@ -9926,7 +9926,7 @@
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
       "status": "established",
-      "boundary": "Noise-free and noise-model simulations on the retained ibm_kingston snapshot of 2026-10-15; the twirl model samples the client-side Sampler's boxing with independent randomizations per arm, and whether IBM shares one randomization across a PUB's parameter bindings is not observable locally; the probe design assumes coherent errors static over a job and the drift monitors of the hardware case flag only drift several times the subtraction tolerance. An exploratory build-host run changed the design before the retained run. No hardware run exists.",
+      "boundary": "Noise-free and noise-model simulations on the retained ibm_kingston snapshot of 2026-10-15; the twirl model samples the client-side Sampler's boxing with independent randomizations per arm, as live_run's packing gives them (one member per PUB, 104 PUBs in the gap-88 dry run); the probe design assumes coherent errors static over a job and the drift monitors of the hardware case flag only drift several times the subtraction tolerance. An exploratory build-host run changed the design before the retained run. No hardware run exists.",
       "evidence": [
         {
           "path": "docs/evidence/primorial_cover/probe_case.json",

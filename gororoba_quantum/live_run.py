@@ -3715,10 +3715,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                 if getattr(args, "pin_layout", None) is None:
                     raise LiveRunError(f"{campaigns[0]} runs on the path --pin-layout names")
             if set(campaigns) & PINNED_CAMPAIGNS and args.twirl:
-                # Gate twirling turns the coherent CZ phase the pair probe measures into a stochastic channel,
-                # and 32 independent randomizations of the gap-88 signal and null arms leave their coherent
-                # errors unshared, so null subtraction stops cancelling them
-                # (docs/evidence/primorial_cover/probe_case.json, twirl).
+                # Gate twirling turns the coherent CZ phase the pair probe measures into a stochastic channel.
+                # Every member is its own PUB, so the gap-88 signal and null arms draw independent
+                # randomizations, which leave their coherent errors unshared and stop null subtraction from
+                # cancelling them (docs/evidence/primorial_cover/probe_case.json, twirl).
                 raise LiveRunError(f"{campaigns[0]} runs without twirling; omit --twirl")
         selection_snaps, pinned = campaign_pin(args, snaps)
         candidate_sets = [select_candidates(group, selection_snaps, args.seeds, trace, pinned) for group in groups]
