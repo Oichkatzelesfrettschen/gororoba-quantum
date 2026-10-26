@@ -69,6 +69,26 @@
           "observed_at": "2026-10-26T08:59:19+00:00",
           "revision": "93588a89b4275f7d4a396de9bd0691a07617e895",
           "scope_sha256": "b4b3ddfdfe590b694e6ff0da2a2762c2911bae18d61946211961055e06d1a8d8"
+        },
+        {
+          "result": "Pearson r 0.318, one-sided p 0.050 on 26 degrees of freedom: not carried at alpha 0.01; explained share 10.6 % of the ceiling as a point estimate and 45.7 % at the one-sided 99 % upper bound; both quadratic forms shortfall as expected.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+              "sha256": "bd24a2cc5d2fdef2cdef93088fe76c5ac67c87cc593258df79bfd7015ba75bf2"
+            },
+            {
+              "ref": "scripts/ascella_fixed_mesh_confirmation.py",
+              "sha256": "89c3f46ccc849a99f809d5aea21ee814d897673d08652e08e69fb6f8ce453e3c"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-ascella-signed-coherence-fixed-mesh-confirmation-replay",
+              "sha256": "aebcd4d1e4d63fd8a4f47c8795c0fdf102445680a113d89003707bf7023cb699"
+            }
+          ],
+          "observed_at": "2026-10-26T09:08:16+00:00",
+          "revision": "19715a53ed5d525aa0c4451ce8ee8c70f4a5abdf",
+          "scope_sha256": "b4b3ddfdfe590b694e6ff0da2a2762c2911bae18d61946211961055e06d1a8d8"
         }
       ]
     },
@@ -92,6 +112,22 @@
           ],
           "observed_at": "2026-10-26T08:59:19+00:00",
           "revision": "93588a89b4275f7d4a396de9bd0691a07617e895",
+          "scope_sha256": "405193edb23a1f4bdd629ea651160ac4ebff6305e57731a348aaadc801425e8d"
+        },
+        {
+          "result": "The registry claim ascella-signed-coherence-fixed-mesh-offsets states the not-carried reading, its 10.6 % point-estimate share of the ceiling, its 45.7 % upper bound and the boundary.",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#claims/id=ascella-signed-coherence-fixed-mesh-offsets",
+              "sha256": "c68898ffb04b32194d6b00fffdea1ebf7bd4c69249051956ed006b334e7c69f1"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+              "sha256": "bd24a2cc5d2fdef2cdef93088fe76c5ac67c87cc593258df79bfd7015ba75bf2"
+            }
+          ],
+          "observed_at": "2026-10-26T09:08:16+00:00",
+          "revision": "19715a53ed5d525aa0c4451ce8ee8c70f4a5abdf",
           "scope_sha256": "405193edb23a1f4bdd629ea651160ac4ebff6305e57731a348aaadc801425e8d"
         }
       ]
@@ -117,6 +153,22 @@
       ],
       "observed_at": "2026-10-26T08:59:19+00:00",
       "revision": "93588a89b4275f7d4a396de9bd0691a07617e895",
+      "scope_sha256": "ae8f82d3be6c2066c8912613fe8e38a949799564c17f0fbf22deae635be4c530"
+    },
+    {
+      "result": "All three steps are done; the confirmation record replays and the registry claim states the not-carried reading.",
+      "evidence": [
+        {
+          "ref": "docs/state/research_state.json#claims/id=ascella-signed-coherence-fixed-mesh-offsets",
+          "sha256": "c68898ffb04b32194d6b00fffdea1ebf7bd4c69249051956ed006b334e7c69f1"
+        },
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+          "sha256": "bd24a2cc5d2fdef2cdef93088fe76c5ac67c87cc593258df79bfd7015ba75bf2"
+        }
+      ],
+      "observed_at": "2026-10-26T09:08:16+00:00",
+      "revision": "19715a53ed5d525aa0c4451ce8ee8c70f4a5abdf",
       "scope_sha256": "ae8f82d3be6c2066c8912613fe8e38a949799564c17f0fbf22deae635be4c530"
     }
   ]
