@@ -1,4 +1,10 @@
-# Pais patent claims: decomposition, falsifiers and the QPU-testable mechanism
+# Pais Superforce and patent claims: decomposition, falsifiers and the QPU-testable mechanism
+
+Salvatore Cezar Pais's central claim is the Superforce: the Planck force c^4/G, read as "the ruling force of
+unification" that "gives birth to Energy Density, hence generates Matter" and that a material's permittivity and
+permeability can engineer (OSF preprints yh84c, April 2023, and 9kebt, July 2023). The section
+[The Superforce](#the-superforce) decomposes it; the patents that follow rest on a separate equation and are
+decomposed after it.
 
 The three granted Navy patents of Salvatore Cezar Pais (2018-2019) rest on one
 equation, the magnitude of a charged rotor's Poynting vector, read as a
@@ -16,6 +22,38 @@ measurement injected. The two-qubit quantum energy teleportation (QET)
 protocol measures that boundary on a device. [P] marks a source statement, [I]
 a repository deduction, [E] a value the scripts compute. Sources and retrieval
 hashes: [pais-patent-web-sources.md](../papers/pais-patent-web-sources.md).
+
+## The Superforce
+
+[pais-superforce-preprints.md](../papers/pais-superforce-preprints.md) takes both preprints statement by
+statement; [scripts/pais_superforce_bounds.py](../../../scripts/pais_superforce_bounds.py) computes every number
+below from CODATA constants and the cited measurements, raising when a stated inequality fails.
+
+- **Unification is an identity of the unit definitions.** [I] The preprints' two equalities, (1/alpha) F_EM =
+  c^4/G and G m_P^2/L_P^2 = c^4/G at the Planck length, are both hbar c/L_P^2, which is c^4/G by the definition of
+  L_P and m_P. The charge cancels from the first, so it contains no electromagnetic or strong input.
+- **The measured strong force falls 53 times short.** [E] The premise F_SN/F_EM = 1/alpha is alpha_s = 1. The
+  measured alpha_s(m_Z) = 0.1180 runs to alpha_s(M_Pl) = 0.0189 at three loops (0.0191 at one loop), so the strong
+  force at L_P is c^4/G divided by 52.9.
+- **The Schrodinger step inserts what it finds.** [E] hbar^2/(2 m L^3) reaches c^4/(2G) only at the Planck mass and
+  length; an electron at its Compton wavelength gives 8.8e-46 of it.
+- **The cosmic "coincidence" is the Friedmann equation.** [E] Critical density inside the Hubble radius gives
+  M_H c^2/R_H = c^4/(2G) for every Hubble rate; the measured flatness Omega_K = 0.001 +- 0.002 is the only content
+  of the July version's Eq. 1.
+- **The proton pressure is QCD, 39 decades down.** [E] Pais's 1e35 Pa is 1.66 times m_p c^2 over the proton volume.
+  Times the proton's cross-section it is 2.2e5 N, 1.8e-39 of c^4/G.
+- **Engineering by permittivity is refuted three ways.** [I] Writing c/n into the coupling makes active
+  gravitational mass scale as n^4.
+  - [E] Kreuzer's 5e-5 null on fluorine against bromine would then require the two materials to match in index to
+    1.25e-5, and the lunar 4e-12 null on aluminum against iron to 1e-12.
+  - [E] c/n would also be the invariant speed in water, yet electrons above 0.254 MeV outrun it and emit Cherenkov
+    light.
+- **The constant is a ceiling, not an agent.** [I] c^4/G is 4 times Gibbons' maximal tension c^4/(4G) of
+  classical GR. Its independence of hbar marks it as classical.
+
+No quantum processor measures G, so every Superforce falsifier is a measured coupling or a gravitational null
+already in hand. The vacuum-energy part of the program, local energy extraction, is what the QET ladder below
+tests on hardware.
 
 ## The record
 
