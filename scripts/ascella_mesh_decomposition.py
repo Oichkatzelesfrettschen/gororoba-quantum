@@ -10,7 +10,9 @@ meshes. The held-out meshes enter only the plan's confirmation step.
 
 - the block light: the background-subtracted block fractions of every iteration against the returned mesh's ideal,
   their mean deviation at the anchor mesh and over the perturbed meshes, and the eigenvalues of the deviations'
-  covariance whitened by the mean multinomial covariance (1 is counting noise), in the three coordinates of modes 0..2;
+  covariance whitened by the mean multinomial covariance (1 is counting noise), in the three coordinates of modes 0..2,
+  over every iteration and again over the iterations at or below the median outside total, because the in-block share
+  of a background burst follows the catalogue dark profile only on average;
 - the anchor X dispersion: chi-square of the anchors' X statistics about their inverse-variance mean;
 - the outside clicks: per iteration the outside-block total, its lag-1 correlation in execution order, and the
   outside mode profile of the iterations above and below the median total beside the catalogue dark profile;
@@ -174,12 +176,15 @@ def decompose(a_dir: Path, c_dir: Path) -> dict[str, Any]:
     anchor = reading.anchors_of(c)
     meshes = reading.new_meshes(a, c, anchor)
     perturbed = reading.subset(c, np.flatnonzero([int(m) in meshes for m in c["configuration"]]))
+    outside = c["record"]["counts"][:, models.LOGICAL :].sum(axis=1)
+    quiet_c = reading.subset(c, np.flatnonzero(outside <= np.median(outside)))
     leaks = ordered_map(family_leak, [(*f, a, perturbed) for f in LEAK_FAMILIES], min_items=1)
     return {
         "schema": "ascella-mesh-decomposition-v1",
         "plan": "docs/state/plans/ascella-mesh-response-decomposition.json",
         "runs": [a_dir.relative_to(ROOT).as_posix(), c_dir.relative_to(ROOT).as_posix()],
         "block": block_geometry(c, anchor),
+        "block_quiet": block_geometry(quiet_c, reading.anchors_of(quiet_c)),
         "anchor_x_dispersion": anchor_dispersion(c, anchor),
         "outside": outside_clicks(c),
         "family_leakage": leaks,
