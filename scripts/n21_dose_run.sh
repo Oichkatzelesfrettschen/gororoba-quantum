@@ -1,13 +1,18 @@
 #!/bin/sh
-# Plan the N=21 orbit window-dose sweep on the calibration in force now, check the plan against the reviewed
-# design, and with --submit submit that plan at once.
+# Plan the N=21 orbit window-dose sweep on the calibration in force now, check the plan against the approved
+# envelope (docs/design/n21-orbit-window-dose-envelope.md), and with --submit submit that plan at once.
 #
-# live_run.py fetches each backend's Target and properties in the planning process, and --submit compares the
-# fresh plan with the approved record, so a plan made minutes before submission carries the current calibration.
+# live_run.py fetches each backend's Target and properties in the planning process. --submit first checks the
+# approved isa.qpy against the fresh calibration values and writes an approval_required record within seconds
+# when any value changed; when every value matches, it reuses the dry run's predictions and its single routed
+# design (live_run.reuse_approved_predictions, approved_family_design) instead of simulating again. A refusal
+# that sent nothing leaves the approval unconsumed (approval-consumed.json absent), so the runner plans again on
+# the new calibration, up to ATTEMPTS times.
+#
 # The 20 us repetition delay is tried first and the 50 us one when no admitted plan comes back at 20 us;
 # --delay 5e-05 plans at 50 us only, the envelope's single retry after a 20 us job that ends in error 1305 with no
-# circuit execution time. scripts/n21_dose_decisions.py --preflight requires the approved envelope of
-# docs/design/n21-orbit-window-dose-envelope.md and a plan made at the checked-out commit from a clean tree.
+# circuit execution time. scripts/n21_dose_decisions.py --preflight requires the envelope's bounds and a plan
+# made at the checked-out commit from a clean tree.
 #
 # Usage: sh scripts/n21_dose_run.sh [--delay 2e-05|5e-05] [--submit]   (from the repository root)
 set -eu
@@ -16,6 +21,7 @@ PYTHON=${PYTHON:-python3}
 export PYTHON
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 export GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform
+ATTEMPTS=4
 
 usage() {
 	echo "usage: sh scripts/n21_dose_run.sh [--delay 2e-05|5e-05] [--submit]" >&2
@@ -50,49 +56,72 @@ plan_args() {
 	printf '%s\n' --family n21-orbit-rca --shot-allocation uniform --objective minimum_charge --optimize \
 		--backends ibm_fez,ibm_kingston,ibm_marrakesh --shots 8192 --seeds 8 --max-pending 200 \
 		--min-remaining-seconds 60.0 --max-execution-seconds 30 --rep-delay "$1" --no-isolated-reference \
-		--cross-group-buffer --shot-tiers 8192 --replica-tiers 24 --replica-floor 0.45 --optimizer-candidates 2 --model-shots 32768 \
-		--precision 0.09 --alpha 0.05 --power 0.8 --simulation-alpha 0.01 --job-overhead-seconds 2.3 \
-		--classical-latency-us 20.0 --reserve-seconds 0.0 --max-total-execution-seconds 30.0 --init-herald \
-		--window-doses-dt 0,1752,3500,5252,7000,10500,14000 --seed-transpiler "qrng:$draw#0" --seed-simulator "qrng:$draw#1" \
-		--out ../results/live
+		--cross-group-buffer --shot-tiers 8192 --replica-tiers 24 --replica-floor 0.45 --optimizer-candidates 1 \
+		--model-shots 32768 --precision 0.09 --alpha 0.05 --power 0.8 --simulation-alpha 0.01 \
+		--job-overhead-seconds 2.3 --classical-latency-us 20.0 --reserve-seconds 0.0 \
+		--max-total-execution-seconds 30.0 --init-herald --window-doses-dt 0,1752,3500,5252,7000,10500,14000 \
+		--seed-transpiler "qrng:$draw#0" --seed-simulator "qrng:$draw#1" --out ../results/live
 }
 
-record=
-delay=
-for candidate in $delays; do
-	log=$logs/n21-dose-plan-$candidate.log
-	# shellcheck disable=SC2046
-	if (cd "$root/gororoba_quantum" && "$PYTHON" live_run.py $(plan_args "$candidate")) >"$log" 2>&1; then
-		path=$(sed -n 's|^unapproved written case: \.\./\(results/live/[^/]*\)/UNAPPROVED_CASE\.md$|\1|p' "$log" | tail -n 1)
-		if [ -n "$path" ] && "$PYTHON" scripts/n21_dose_decisions.py --preflight "$path" --head "$head" \
-			>"$logs/n21-dose-preflight.json"; then
-			record=$path
-			delay=$candidate
-			break
+# plan TAG: sets record and delay to the first admitted, preflighted plan over $delays, or returns 1.
+plan() {
+	record=
+	delay=
+	for candidate in $delays; do
+		log=$logs/n21-dose-plan-$1-$candidate.log
+		# shellcheck disable=SC2046
+		if (cd "$root/gororoba_quantum" && "$PYTHON" live_run.py $(plan_args "$candidate")) >"$log" 2>&1; then
+			path=$(sed -n 's|^unapproved written case: \.\./\(results/live/[^/]*\)/UNAPPROVED_CASE\.md$|\1|p' "$log" |
+				tail -n 1)
+			if [ -n "$path" ] && "$PYTHON" scripts/n21_dose_decisions.py --preflight "$path" --head "$head" \
+				>"$logs/n21-dose-preflight.json"; then
+				record=$path
+				delay=$candidate
+				return 0
+			fi
 		fi
-	fi
-	echo "no admitted plan at rep delay $candidate s (log $log)" >&2
-done
-[ -n "$record" ] || {
-	echo "no admitted plan at rep delay $delays s" >&2
-	exit 1
+		echo "no admitted plan at rep delay $candidate s (log $log)" >&2
+	done
+	return 1
 }
-digest=$(sha256sum "$record/record.json" | cut -d ' ' -f 1)
-echo "planned $record at rep delay $delay s: $(cat "$logs/n21-dose-preflight.json")"
-if [ "$submit" -eq 0 ]; then
-	echo "plan only; rerun with --submit to submit it"
-	exit 0
-fi
-status=0
-# shellcheck disable=SC2046
-(cd "$root/gororoba_quantum" && "$PYTHON" live_run.py $(plan_args "$delay") \
-	--approved-record "../$record" --approved-record-sha256 "$digest" --submit) \
-	>"$logs/n21-dose-submit.log" 2>&1 || status=$?
-tail -n 5 "$logs/n21-dose-submit.log"
-# live_run.py writes the submitted run to its own directory; the dry run it compared against stays unsubmitted.
-run=$(sed -n 's|^audit record: \.\./\(results/live/[^/]*\)$|\1|p' "$logs/n21-dose-submit.log" | tail -n 1)
-if [ "$status" -ne 0 ] || [ -z "$run" ]; then
-	echo "submission of $record failed with status $status (log $logs/n21-dose-submit.log)" >&2
+
+state_of() {
+	"$PYTHON" -c 'import json, sys; print(json.load(open(sys.argv[1]))["state"])' "$1/record.json"
+}
+
+attempt=1
+while :; do
+	started=$(date +%s)
+	plan "$attempt" || {
+		echo "no admitted plan at rep delay $delays s" >&2
+		exit 1
+	}
+	digest=$(sha256sum "$record/record.json" | cut -d ' ' -f 1)
+	echo "attempt $attempt: planned $record at rep delay $delay s in $(($(date +%s) - started)) s:" \
+		"$(cat "$logs/n21-dose-preflight.json")"
+	if [ "$submit" -eq 0 ]; then
+		echo "plan only; rerun with --submit to submit it"
+		exit 0
+	fi
+	submit_log=$logs/n21-dose-submit-$attempt.log
+	status=0
+	# shellcheck disable=SC2046
+	(cd "$root/gororoba_quantum" && "$PYTHON" live_run.py $(plan_args "$delay") \
+		--approved-record "../$record" --approved-record-sha256 "$digest" --submit) \
+		>"$submit_log" 2>&1 || status=$?
+	tail -n 5 "$submit_log"
+	# live_run.py writes the submission to its own directory; the dry run it compared against stays unsubmitted.
+	run=$(sed -n 's|^audit record: \.\./\(results/live/[^/]*\)$|\1|p' "$submit_log" | tail -n 1)
+	if [ -n "$run" ] && [ -e "$record/approval-consumed.json" ]; then
+		echo "submitted $run against $record (exit $status) in $(($(date +%s) - started)) s;" \
+			"collect with: (cd gororoba_quantum && \"\$PYTHON\" live_run.py --collect ../$run)"
+		exit "$status"
+	fi
+	if [ -n "$run" ] && [ "$(state_of "$run")" = approval_required ] && [ "$attempt" -lt "$ATTEMPTS" ]; then
+		echo "attempt $attempt: $run refused the plan with nothing sent; planning again" >&2
+		attempt=$((attempt + 1))
+		continue
+	fi
+	echo "submission of $record failed with status $status and nothing sent (log $submit_log)" >&2
 	exit 1
-fi
-echo "submitted $run against $record; collect with: (cd gororoba_quantum && \"\$PYTHON\" live_run.py --collect ../$run)"
+done

@@ -50,6 +50,20 @@ the preparation error at the chosen delay is recorded beside each contrast.
 | Execution | twirling and dynamical decoupling off, cross-group buffer on, one dynamic job | preflight, live_run.py |
 | Seeds | `--seed-transpiler` `qrng:docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json#0`, `--seed-simulator` index 1 | preflight |
 | Code | the plan is made from a clean tree at the checked-out commit | preflight |
+| Planner screen | one routed candidate, 32,768 model shots, a 0.09 Hoeffding half-width at alpha 0.05/13 | runner |
+
+**Planner screen.** These arguments decide which plan is admitted, not how the result is read. The precision
+screen bounds one replica's 8,192 shots by Hoeffding at the Bonferroni alpha over the thirteen contracts, 0.082
+per contrast, so a 0.08 screen refused every seven-dose plan; D1-D3 pool every replica, whose shot sigma lies
+near 0.004 at 19 replicas. One routed candidate makes the dry run's design reusable: when every calibration value
+of the plan is unchanged at submission, live_run.py copies the approved predictions and design
+(`reuse_approved_predictions`, `approved_family_design`) instead of simulating again.
+
+**Calibration refusals.** `--submit` checks the approved circuits against the fresh calibration values before
+planning and writes an `approval_required` record within seconds when any value changed, sending nothing and
+leaving the approval unconsumed. The runner then plans again on the new calibration, preflights that plan and
+submits it, up to four attempts; each attempt's plan and submission logs stay under `docs/local/`. A refusal that
+sent nothing therefore never ends the case.
 
 **Retry.** The 20 us delay lies at the floor IBM's changelog sets for Heron. Two 0 us jobs and the 20 us jobs of a
 100,000-shot design under a 6 s ceiling all ended in error 1305, and none of the 20 us jobs separated a stalled
@@ -57,7 +71,7 @@ shot loop from an overrun ceiling
 ([REP_DELAY_ZERO_CONTROL_FINDINGS.md](../../results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md)). This plan's
 estimated charge sits far below its 30 s ceiling, so a 1305 here with zero circuit execution time reads as a
 stalled loop. That outcome admits one retry, `sh scripts/n21_dose_run.sh --delay 5e-05 --submit`, under this
-envelope; any other failure ends the case.
+envelope; any failure after a batch was sent, other than that one, ends the case.
 
 ## Decisions
 
