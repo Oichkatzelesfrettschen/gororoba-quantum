@@ -9807,6 +9807,7 @@
    "ascella_fixed_mesh_error",
    "ascella_physical_models",
    "ascella_response_geometry",
+   "hashlib",
    "json",
    "math",
    "numpy",
