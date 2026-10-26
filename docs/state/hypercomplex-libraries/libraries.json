@@ -2640,6 +2640,7 @@
     "scripts/qd_mcp_server.py",
     "scripts/qd_network_protocol.py",
     "scripts/qd_platform.py",
+    "scripts/qd_rehearsal_secondary.py",
     "scripts/qd_teleportation_rehearsal.py",
     "scripts/qet_passivity_controls.py",
     "scripts/qet_two_qubit_reference.py",
@@ -12078,6 +12079,22 @@
    "unittest",
    "urllib",
    "zlib"
+  ],
+  "scripts/qd_rehearsal_secondary.py": [
+   "__future__",
+   "cd_core",
+   "collections",
+   "itertools",
+   "json",
+   "math",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qd_network_protocol",
+   "qd_platform",
+   "qd_teleportation_rehearsal",
+   "sys",
+   "typing"
   ],
   "scripts/qd_schedule.py": [
    "__future__",
