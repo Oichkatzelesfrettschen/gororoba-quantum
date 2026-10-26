@@ -29,6 +29,7 @@ import local_compute
 import measurement_sequence_analysis
 import measurement_sequence_scatter
 import msq_envelope
+import msq_envelope_analysis
 import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
@@ -2183,6 +2184,12 @@ def measured_family(
         if reason:
             return {**analysis, "scatter": {"schema": measurement_sequence_scatter.SCHEMA, "withheld": reason}}
         return {**analysis, "scatter": measurement_sequence_scatter.collected(record, distributions, executed)}
+    if name == MSQE_FAMILY:
+        members = sorted(name for name in distributions if name.startswith("msq"))
+        reason = runtime._comparisons_withheld(members, executed) if members else "no measured members"
+        if reason:
+            return {**analysis, "envelope": {"schema": msq_envelope_analysis.SCHEMA, "withheld": reason}}
+        return {**analysis, "envelope": msq_envelope_analysis.collected(record, distributions, executed)}
     if name != MSQ_FAMILY:
         return analysis
     members = sorted(name for name in distributions if name.startswith("msq_"))

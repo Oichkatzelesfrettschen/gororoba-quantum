@@ -429,3 +429,56 @@ def test_envelope_fallback_setup(tmp_path: Any, job: FakeJob, remaining: float, 
     else:
         with pytest.raises(live_run.LiveRunError):
             live_run.envelope_fallback_setup(FakeService(job, remaining), args)
+
+
+def test_reset_screen_is_an_equivalence_bound() -> None:
+    import msq_envelope_analysis as ea
+
+    ro0, ro1 = (80, 8192), (8100, 8192)
+    clean = ea.reset_screen((90, 8192), (82, 8192), ro0, ro1, 16)
+    check(clean["passes"] and clean["upper_bound"] < ea.RESET_MARGIN, f"a near-zero residual passes: {clean}")
+    leaky = ea.reset_screen((160, 8192), (82, 8192), ro0, ro1, 16)
+    check(not leaky["passes"], f"a 0.01 residual difference fails: {leaky}")
+    # An estimate below the margin whose upper bound crosses it still fails: the rule demands equivalence.
+    edge = ea.reset_screen((82 + 60, 8192), (82, 8192), ro0, ro1, 32)
+    check(edge["difference"] < ea.RESET_MARGIN and not edge["passes"], f"the bound, not the estimate, decides: {edge}")
+    check(not ea.reset_screen((90, 8192), (82, 8192), ro1, ro0, 16)["passes"], "a reversed contrast fails")
+
+
+def test_pattern_screen_reads_each_own_state_separately() -> None:
+    import msq_envelope_analysis as ea
+
+    bits = [0, 1] * 10
+    asymmetric = [(80, 8192) if b == 0 else (8192 - 160, 8192) for b in bits]
+    result = ea.pattern_screen(bits, asymmetric, 16)
+    check(result["passes"], f"P(1|0) != P(0|1) alone is not crosstalk: {result['states']}")
+    shifted = [(80 + (60 if k % 4 == 0 else 0), 8192) if b == 0 else (8192 - 160, 8192) for k, b in enumerate(bits)]
+    check(not ea.pattern_screen(bits, shifted, 16)["passes"], "a configuration-dependent shift fails")
+    flat = [(0, 8192) if b == 0 else (8192, 8192) for b in bits]
+    check(ea.pattern_screen(bits, flat, 16)["states"]["0"]["statistic"] == 0.0, "a zero error rate tests nothing")
+
+
+def eligible_evidence(**overrides: float) -> dict[str, Any]:
+    coherence = {"T1": 200.0, "T2": 100.0, "readout_error": 0.005, "prob_meas1_prep0": 0.004}
+    gate = {"sx_error": 2e-4, "sx_duration_s": 3.2e-8, "measure_duration_s": 2.2e-6}
+    coherence.update({k: v for k, v in overrides.items() if k in coherence})
+    gate.update({k: v for k, v in overrides.items() if k in gate})
+    return {"placed_qubit_calibration": {"7": coherence}, "placed_gate_calibration": {"7": gate}}
+
+
+def test_execution_eligibility_fails_closed() -> None:
+    import msq_envelope_analysis as ea
+
+    good = {"a_q7": eligible_evidence(), "b_q7": eligible_evidence()}
+    check(ea.execution_eligibility(good, 7, ["a_q7", "b_q7"]) is None, "an eligible qubit passes")
+    check(ea.execution_eligibility({"a_q7": eligible_evidence(readout_error=0.02)}, 7, ["a_q7"]) is not None, "ro")
+    check(ea.execution_eligibility({"a_q7": eligible_evidence(T2=10.0)}, 7, ["a_q7"]) is not None, "T2")
+    moved = {"a_q7": eligible_evidence(), "b_q7": eligible_evidence(readout_error=0.006)}
+    check(ea.execution_eligibility(moved, 7, ["a_q7", "b_q7"]) is not None, "a calibration change between PUBs")
+    check(ea.execution_eligibility({"a_q7": {}}, 7, ["a_q7"]) is not None, "missing evidence fails")
+
+
+def test_count_rule_scales_with_width() -> None:
+    import msq_envelope_analysis as ea
+
+    check([ea.count_rule(w) for w in (8, 16, 24, 32)] == [2, 2, 3, 4], "max(2, ceil(0.1 W))")

@@ -847,7 +847,7 @@ def pooled_z(estimates: list[tuple[float, float, float]]) -> float | None:
     return mean / math.sqrt(variance)
 
 
-def device_verdict(qubits: dict[Any, dict[str, Any]]) -> dict[str, Any]:
+def device_verdict(qubits: dict[Any, dict[str, Any]], count: int = DEVICE_QUBITS) -> dict[str, Any]:
     """The preregistered device-level verdicts.
 
     Only informative qubits count (a usable qubit whose mutation test passes and whose widened departure standard
@@ -877,7 +877,7 @@ def device_verdict(qubits: dict[Any, dict[str, Any]]) -> dict[str, Any]:
         "mutation_test_passes": bool(usable) and not mutation,
     }
     names = ("departs_below", "exceeds_prediction", "settle_reduced_by_gap", "settle_deepened_by_gap")
-    if len(informed) < DEVICE_QUBITS:
+    if len(informed) < count:
         # Fewer than two informative qubits cannot support a null: `none` is reserved for a clean null.
         silent: dict[str, Any] = {"qubits": [], "pooled_z": None, "status": "uninformative", "device": False}
         return {**common, "status": "uninformative", **dict.fromkeys(names, silent)}
@@ -903,7 +903,7 @@ def device_verdict(qubits: dict[Any, dict[str, Any]]) -> dict[str, Any]:
 
     def verdict(members: list[Any], z: float | None, sign: int, gate_dependent: bool = True) -> dict[str, Any]:
         pooled_fired = z is not None and sign * z >= Z_DECIDE
-        fired = len(members) >= DEVICE_QUBITS or pooled_fired
+        fired = len(members) >= count or pooled_fired
         if fired and gate_dependent and not bounded:
             # Errors that cancel in the unitary arm are unbounded without a measured model scatter.
             return {"qubits": members, "pooled_z": z, "status": "gate_model_unbounded", "device": False}
@@ -1357,13 +1357,14 @@ def analyze_members(
     member_counts: dict[int, dict[str, Any]],
     contexts: dict[int, dict[str, Any]],
     floor: float | None = MODEL_SCATTER_FLOOR,
+    device_count: int = DEVICE_QUBITS,
 ) -> dict[str, Any]:
-    """The decisions from whole-shot member counts and per-qubit contexts."""
+    """The decisions from whole-shot member counts and per-qubit contexts; device_count is the count rule's size."""
     contexts = with_planning(contexts, floor)
     qubits = evaluate(member_counts, contexts)
     return {
         "schema": SCHEMA,
-        "device": device_verdict(qubits),
+        "device": device_verdict(qubits, device_count),
         "qubits": {str(q): r for q, r in qubits.items()},
     }
 
@@ -1407,6 +1408,7 @@ def collected(
     distributions: dict[str, list[np.ndarray]],
     executed: dict[str, Any],
     floor: float | None = None,
+    device_count: int = DEVICE_QUBITS,
 ) -> dict[str, Any]:
     """The preregistered pinching analysis for a collected measurement-sequence record, or a withheld reason.
 
@@ -1436,7 +1438,7 @@ def collected(
                 if n not in counts[q]["final"]
             ]
             check(not absent, f"q{q}: missing measured members {absent}")
-        return analyze_members(counts, contexts, floor)
+        return analyze_members(counts, contexts, floor, device_count)
     except AnalysisError as error:
         return {"schema": SCHEMA, "withheld": str(error)}
 
