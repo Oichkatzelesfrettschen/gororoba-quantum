@@ -27,6 +27,7 @@ from qiskit.transpiler import Target
 import law_encoding
 import local_compute
 import measurement_sequence_analysis
+import measurement_sequence_scatter
 import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
@@ -38,6 +39,8 @@ from diagnostic_experiments import (
     MSQ_STEPS,
     MSQ_T1_MICROSECONDS,
     MSQ_THETA,
+    MSQD_ARM_STEPS,
+    MSQD_FAMILY,
     N21_FAMILIES,
     N21_OVERLAP_ARM,
     PATCH_FAMILIES,
@@ -49,6 +52,7 @@ from diagnostic_experiments import (
     family_contracts,
     folded_group,
     measurement_sequence_groups,
+    msq_diagnostic_groups,
     n21_group,
     n21_orbit_rca_group,
     state_prep_arms,
@@ -158,11 +162,15 @@ def analyzer_closure(entry: Path, directories: tuple[Path, ...]) -> dict[str, An
 def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[str, Any]:
     """family_contracts' configuration keyword for a family whose contracts read its candidate's configuration.
 
-    state-prep-control and measurement-sequence read their named qubits and
+    state-prep-control and the measurement-sequence families read their named qubits and
     n21-orbit-rca its herald outcome width there; prepare and live_run.approved_family_design both
     pass this, so a reused approved design rebuilds the approved contracts.
     """
-    return {"configuration": configuration} if family in (STATE_PREP_FAMILY, MSQ_FAMILY, "n21-orbit-rca") else {}
+    return (
+        {"configuration": configuration}
+        if family in (STATE_PREP_FAMILY, MSQ_FAMILY, MSQD_FAMILY, "n21-orbit-rca")
+        else {}
+    )
 
 
 def settings(args: Any) -> dict[str, Any]:
@@ -1021,14 +1029,19 @@ def measurement_sequence_candidates(
     durations that record_groups rebuilds them from. A calibration that
     excludes a named qubit refuses the snapshot.
     """
+    diagnostic = args.family == MSQD_FAMILY
     declared = getattr(args, "layout", None)
     if declared is None:
-        raise runtime.LiveRunError("measurement-sequence needs --layout: it has no retained default qubits")
+        raise runtime.LiveRunError(f"{args.family} needs --layout: it has no retained default qubits")
     qubits = [int(qubit) for qubit in declared]
-    expected_kinds = sorted(
-        ["static"] * (4 * len(MSQ_STEPS) + 4 + 1 + len(MSQ_T1_MICROSECONDS))
-        + ["dynamic"] * (4 * len(MSQ_DYNAMIC_STEPS) + 4)
-    )
+    if diagnostic:
+        # Four signed unitary members, ro0 and ro1, all static: six PUBs whatever the qubit count.
+        expected_kinds = ["static"] * 6
+    else:
+        expected_kinds = sorted(
+            ["static"] * (4 * len(MSQ_STEPS) + 4 + 1 + len(MSQ_T1_MICROSECONDS))
+            + ["dynamic"] * (4 * len(MSQ_DYNAMIC_STEPS) + 4)
+        )
     candidates = []
     for snapshot in snapshots:
         try:
@@ -1036,11 +1049,23 @@ def measurement_sequence_candidates(
             excluded = sorted(set(qubits) & set(snapshot.excluded_qubits))
             if outside or excluded:
                 raise runtime.LiveRunError(f"qubits {outside} lie outside the device; calibration excludes {excluded}")
-            delays = {qubit: measurement_delay(runtime, snapshot, qubit) for qubit in qubits}
-            settles = {qubit: settle_delay(runtime, snapshot) for qubit in qubits}
             prereadouts = {qubit: prereadout_delay(runtime, snapshot) for qubit in qubits}
-            t1_delays = [rounded_delay(runtime, snapshot, microseconds * 1e-6) for microseconds in MSQ_T1_MICROSECONDS]
-            groups = measurement_sequence_groups(qubits, delays, settles, prereadouts, t1_delays)
+            if diagnostic:
+                delays, settles, t1_delays = {}, {}, [0]
+                calibration = measurement_sequence_scatter.calibration_from_snapshot(snapshot)
+                faults = measurement_sequence_scatter.layout_violations(
+                    qubits, calibration["edges"], set(calibration["excluded"])
+                )
+                if faults:
+                    raise runtime.LiveRunError("; ".join(faults))
+                groups = msq_diagnostic_groups(qubits, prereadouts)
+            else:
+                delays = {qubit: measurement_delay(runtime, snapshot, qubit) for qubit in qubits}
+                settles = {qubit: settle_delay(runtime, snapshot) for qubit in qubits}
+                t1_delays = [
+                    rounded_delay(runtime, snapshot, microseconds * 1e-6) for microseconds in MSQ_T1_MICROSECONDS
+                ]
+                groups = measurement_sequence_groups(qubits, delays, settles, prereadouts, t1_delays)
             if snapshot.admission_target is None:
                 snapshot.admission_target = runtime.build_admission_target(snapshot)
             get_plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
@@ -1110,6 +1135,33 @@ def measurement_sequence_candidates(
         except (runtime.LiveRunError, QiskitError, ValueError) as error:
             trace.setdefault("family_rejections", []).append(
                 {"backend": snapshot.name, "qubits": qubits, "reason": str(error)}
+            )
+            continue
+        if diagnostic:
+            candidates.append(
+                (
+                    choices,
+                    {
+                        "name": MSQD_FAMILY,
+                        "qubits": qubits,
+                        "layout_source": "declared",
+                        "main_qubits": [q for q in qubits if q in measurement_sequence_scatter.MSQD_MAIN_QUBITS],
+                        "extra_qubits": [q for q in qubits if q not in measurement_sequence_scatter.MSQD_MAIN_QUBITS],
+                        "arms": dict(MSQD_ARM_STEPS),
+                        "total_rotation_rad": MSQ_THETA,
+                        "steps": [16],
+                        "prereadout_delay_dt": {str(qubit): dt for qubit, dt in prereadouts.items()},
+                        "t1_delays_dt": t1_delays,
+                        "selection_rule": measurement_sequence_scatter.SELECTION_RULE,
+                        "floor_rule": measurement_sequence_scatter.FLOOR_RULE,
+                        "plan_calibration": {str(q): calibration["qubits"][q] for q in qubits},
+                        "placement_contract": (
+                            "one pinned single-qubit placement per named qubit; every qubit runs each member in the "
+                            "same shots; the six static PUBs hold the four signed unitary members, ro0 and ro1"
+                        ),
+                        "dt_seconds": snapshot.backend.target.dt,
+                    },
+                )
             )
             continue
         candidates.append(
@@ -1293,7 +1345,7 @@ def family_candidates(
         return patch_candidates(runtime, snapshots, args, trace)
     if args.family == STATE_PREP_FAMILY:
         return state_prep_candidates(runtime, snapshots, args, trace)
-    if args.family == MSQ_FAMILY:
+    if args.family in (MSQ_FAMILY, MSQD_FAMILY):
         return measurement_sequence_candidates(runtime, snapshots, args, trace)
     if args.family != "folded-qpe":
         raise runtime.LiveRunError(f"unknown family {args.family}")
@@ -1951,7 +2003,14 @@ def measured_family(
         correction_evidence=correction_evidence,
         replica_registers=replica_registers,
     )
-    if record.get("family_configuration", {}).get("name") != MSQ_FAMILY:
+    name = record.get("family_configuration", {}).get("name")
+    if name == MSQD_FAMILY:
+        members = sorted(name for name in distributions if name.startswith("msq_"))
+        reason = runtime._comparisons_withheld(members, executed) if members else "no measured members"
+        if reason:
+            return {**analysis, "scatter": {"schema": measurement_sequence_scatter.SCHEMA, "withheld": reason}}
+        return {**analysis, "scatter": measurement_sequence_scatter.collected(record, distributions, executed)}
+    if name != MSQ_FAMILY:
         return analysis
     members = sorted(name for name in distributions if name.startswith("msq_"))
     reason = runtime._comparisons_withheld(members, executed) if members else "no measured members"

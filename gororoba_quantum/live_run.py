@@ -156,6 +156,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "local_compute.py",
     "maximal_experiments.py",
     "measurement_sequence_analysis.py",
+    "measurement_sequence_scatter.py",
     "modular_arithmetic.py",
     "n21_exact_planning.py",
     "native_preflight.py",
@@ -5770,7 +5771,10 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                         props_then,
                         sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
                     )
-                    if record.get("family_configuration", {}).get("name") == "measurement-sequence":
+                    if record.get("family_configuration", {}).get("name") in (
+                        "measurement-sequence",
+                        "measurement-sequence-diagnostic",
+                    ):
                         executed[name]["placed_gate_calibration"] = placed_gate_calibration(
                             props_then,
                             sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
@@ -6345,10 +6349,11 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--patch-qubits applies to the pinned-patch families only")
     if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):
         parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
-    if args.layout is not None and args.family not in ("state-prep-control", "measurement-sequence"):
+    layout_families = ("state-prep-control", "measurement-sequence", "measurement-sequence-diagnostic")
+    if args.layout is not None and args.family not in layout_families:
         parser.error("--layout applies to the state-prep-control and measurement-sequence families only")
-    if args.family == "measurement-sequence" and args.layout is None:
-        parser.error("measurement-sequence requires --layout: the physical qubits whose measurement it characterizes")
+    if args.family in layout_families[1:] and args.layout is None:
+        parser.error(f"{args.family} requires --layout: the physical qubits whose measurement it characterizes")
     if args.state_prep_arms is not None:
         if args.family != "state-prep-control":
             parser.error("--state-prep-arms applies to the state-prep-control family only")
@@ -6403,7 +6408,11 @@ def main(argv: list[str] | None = None) -> int:
             "--ground-control-split requires --init-herald: idle_ground's contracts read only shots whose "
             "herald reads the control 0"
         )
-    if args.family in ("state-prep-control", "measurement-sequence") and args.max_replicas not in (None, 1):
+    if args.family in (
+        "state-prep-control",
+        "measurement-sequence",
+        "measurement-sequence-diagnostic",
+    ) and args.max_replicas not in (None, 1):
         parser.error(f"{args.family} pins one placement per named qubit; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:

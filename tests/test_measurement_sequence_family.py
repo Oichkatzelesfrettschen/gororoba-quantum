@@ -433,7 +433,8 @@ def test_case_text_states_the_settle_gap_as_a_hypothesis() -> None:
         "ro0" in text
         and "family_analysis.pinching" in text
         and "uninformative" in text
-        and "gate_model_unbounded" in text
+        and "scatter-floor.json" in text
+        and "without that file the analysis withholds" in text
     )
     check("and a readout tail. The calibration" not in text)
     check("do not bias the read" not in text)

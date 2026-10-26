@@ -2252,16 +2252,66 @@ def _verify_measurement_sequence_family() -> None:
     _require(len(metadata["observable_contracts"]) == 17, "the plan lost a per-qubit endpoint")
 
 
+def _verify_measurement_sequence_diagnostic_family() -> None:
+    """The diagnostic pins six static members per qubit, fuses six PUBs over all qubits and refuses a coupled pair."""
+    import measurement_sequence_scatter as scatter
+
+    backend = _ProbeBackend("measurement_sequence_diagnostic_fixture", FakeFez())
+    service = _ProbeService([backend])
+    with redirect_stdout(io.StringIO()):
+        snapshot = live_run.take_snapshot(cast(Any, service), backend.name)
+    calibration = scatter.calibration_from_snapshot(snapshot)
+    qubits = scatter.select_extra_qubits(calibration, (), 12)
+    base = {
+        "optimize": True,
+        "shot_tiers": [4096, 8192, 16384],
+        "optimizer_candidates": 1,
+        "max_execution_seconds": 90,
+        "max_total_execution_seconds": 200.0,
+        "reserve_seconds": 0.0,
+    }
+    trace: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(
+        live_run, [snapshot], _args("measurement-sequence-diagnostic", layout=qubits, **base), trace
+    )
+    _require(len(candidates) == 1, f"the diagnostic layout produced {len(candidates)} candidates: {trace}")
+    choices, configuration = candidates[0]
+    _require(configuration["qubits"] == qubits and configuration["layout_source"] == "declared", "layout lost")
+    _require(configuration["main_qubits"] == [] and configuration["extra_qubits"] == qubits, "qubit roles lost")
+    _require(set(configuration["plan_calibration"]) == {str(q) for q in qubits}, "plan calibration lost")
+    _require(len(choices) == len(qubits), "each qubit needs one static group")
+    pubs = live_run.execution_pubs(choices)
+    _require(sorted(pub.kind for pub in pubs) == ["static"] * 6, "the members fused into other PUBs")
+    for pub in pubs:
+        covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
+        _require(covered == sorted(qubits), f"{pub.name}: measures {covered}, not every named qubit")
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require([g.name for g in rebuilt] == [c.group.name for c in choices], "record_groups lost the per-qubit groups")
+    edge = calibration["edges"][0]
+    coupled = _args("measurement-sequence-diagnostic", layout=[edge[0], edge[1]], **base)
+    refused: dict[str, Any] = {}
+    _require(not qpu_planning.family_candidates(live_run, [snapshot], coupled, refused), "a coupled pair was planned")
+    _require("coupled pairs" in str(refused.get("family_rejections")), f"refused for another reason: {refused}")
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+    single = _args("measurement-sequence-diagnostic", layout=qubits, **base)
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        _selected, metadata = qpu_planning.prepare(live_run, [snapshot], single, usage, {})
+    _require(single.shots == 8192, f"the optimizer selected {single.shots} shots")
+    _require(len(metadata["observable_contracts"]) == 2 * len(qubits), "the plan lost a per-qubit endpoint")
+
+
 def _verify_measurement_sequence_only() -> None:
     with (
         patch.object(live_run, "QiskitRuntimeService", _forbid_service),
         patch.object(live_run, "configure_sampler", _forbid_service),
     ):
         _verify_measurement_sequence_family()
+        _verify_measurement_sequence_diagnostic_family()
     print(
         "QPU planning: measurement-sequence pins each member to its named qubit with the qubit's calibrated "
         "measure duration, fuses 30 static and 20 dynamic PUBs over every qubit, plans nothing without --layout and "
-        "admits 8192 shots"
+        "admits 8192 shots; measurement-sequence-diagnostic fuses six static PUBs over uncoupled qubits, refuses a "
+        "coupled pair and admits 8192 shots"
     )
 
 

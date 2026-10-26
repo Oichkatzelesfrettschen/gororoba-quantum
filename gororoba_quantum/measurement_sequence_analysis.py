@@ -58,10 +58,12 @@ from __future__ import annotations
 
 import argparse
 import functools
+import hashlib
 import json
 import math
 import sys
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 import numpy as np
@@ -95,11 +97,17 @@ PLANNING_SHOTS = 8192
 # The floor on the unitary-arm residual scale (in P0) that widens every informative qubit's departure standard error.
 # Two gate-model errors of opposite unitary sign cancel in the unitary arm and add in the measure arm, so the residual
 # observed on a few qubits can sit at zero while the measure arm moves; the floor is the model scatter that a
-# population of qubits shows. No retained Kingston run holds a single-qubit sx sequence with a known ideal outcome, so
-# no measured scatter exists and the floor stays None: with it unset, a fired departure or exceedance verdict reads
-# `gate_model_unbounded` and nothing is attributed. A small Heron diagnostic (the unitary arm on many qubits) would
-# measure it; the value then replaces None here, with the run and the computation cited in docs/design.
+# population of qubits shows. It is measured by the measurement-sequence-diagnostic family
+# (measurement_sequence_scatter.py, docs/design/measurement-sequence-pinching.md, "Source of the model-scatter
+# floor"). `collected` takes the floor from MODEL_SCATTER_FLOOR when that is set and otherwise from the diagnostic
+# file MODEL_SCATTER_FLOOR_FILE when MODEL_SCATTER_DIAGNOSTIC_SHA256 names its digest; with neither it withholds the
+# analysis, because a departure verdict without a floor attributes nothing (`gate_model_unbounded`) and a run that
+# can only report that wastes its quantum time. This module sits in live_run.EXPERIMENT_SOURCE_MANIFEST, so the digest
+# below is bound to every run's experiment digest.
 MODEL_SCATTER_FLOOR: float | None = None
+MODEL_SCATTER_DIAGNOSTIC_SHA256: str | None = None
+MODEL_SCATTER_FLOOR_FILE = "docs/evidence/measurement_sequence/scatter-floor.json"
+SCATTER_FLOOR_SCHEMA = "measurement-sequence-scatter-floor-v1"
 # An illustrative floor for the sweeps and the Aer validation, which exercise the mechanism. It is not a measurement
 # of any device: the largest floor for which PLANNING_SE_FACTOR still leaves a qubit informative at the fixture is
 # about 0.0175, and 0.015 keeps an axis tilt of -0.016 rad against an sx error of three times the Target's unattributed.
@@ -1284,8 +1292,8 @@ def contexts_from_record(record: dict[str, Any], executed: dict[str, Any]) -> di
             "sx_error": float(gate["sx_error"]),
             "sx_duration_s": float(gate["sx_duration_s"]),
             "window_s": float(gate["measure_duration_s"]),
-            "delay_s": int(configuration["measurement_delay_dt"][str(qubit)]) * dt,
-            "settle_s": int(configuration["settle_delay_dt"][str(qubit)]) * dt,
+            "delay_s": int(configuration.get("measurement_delay_dt", {}).get(str(qubit), 0)) * dt,
+            "settle_s": int(configuration.get("settle_delay_dt", {}).get(str(qubit), 0)) * dt,
             "prereadout_s": int(configuration["prereadout_delay_dt"][str(qubit)]) * dt,
             "t1_delays_s": [int(d) * dt for d in configuration["t1_delays_dt"]],
             "t1_cal_s": float(coherence["T1"]) * 1e-6,
@@ -1341,14 +1349,56 @@ def analyze_members(
     }
 
 
+def bound_floor(backends: set[str]) -> tuple[float | None, str | None]:
+    """(floor, None) from MODEL_SCATTER_FLOOR or the digest-bound diagnostic file, or (None, the reason it is unset).
+
+    The file must hash to MODEL_SCATTER_DIAGNOSTIC_SHA256, carry SCATTER_FLOOR_SCHEMA and a positive finite floor, and
+    name the backend of the run being analyzed.
+    """
+    if MODEL_SCATTER_FLOOR is not None:
+        return MODEL_SCATTER_FLOOR, None
+    if MODEL_SCATTER_DIAGNOSTIC_SHA256 is None:
+        return None, (
+            "no model scatter floor: MODEL_SCATTER_FLOOR is None and MODEL_SCATTER_DIAGNOSTIC_SHA256 binds no "
+            "diagnostic file; run the measurement-sequence-diagnostic family and register its scatter-floor.json"
+        )
+    path = Path(__file__).resolve().parents[1] / MODEL_SCATTER_FLOOR_FILE
+    try:
+        data = path.read_bytes()
+    except OSError as error:
+        return None, f"the bound scatter-floor file {MODEL_SCATTER_FLOOR_FILE} is unreadable: {error}"
+    digest = hashlib.sha256(data).hexdigest()
+    if digest != MODEL_SCATTER_DIAGNOSTIC_SHA256:
+        return None, f"{MODEL_SCATTER_FLOOR_FILE} hashes to {digest}, not the bound {MODEL_SCATTER_DIAGNOSTIC_SHA256}"
+    document = json.loads(data)
+    floor = document.get("floor")
+    if document.get("schema") != SCATTER_FLOOR_SCHEMA or not isinstance(floor, float) or not 0 < floor < 1:
+        return None, f"{MODEL_SCATTER_FLOOR_FILE} is not a {SCATTER_FLOOR_SCHEMA} document with a floor in (0, 1)"
+    if backends != {document.get("backend")}:
+        return None, f"the scatter floor was measured on {document.get('backend')}, not on {sorted(backends)}"
+    return floor, None
+
+
+def record_backends(record: dict[str, Any]) -> set[str]:
+    return {str(group["backend"]) for group in record.get("groups", [])}
+
+
 def collected(
     record: dict[str, Any],
     distributions: dict[str, list[np.ndarray]],
     executed: dict[str, Any],
-    floor: float | None = MODEL_SCATTER_FLOOR,
+    floor: float | None = None,
 ) -> dict[str, Any]:
-    """The preregistered pinching analysis for a collected measurement-sequence record, or a withheld reason."""
+    """The preregistered pinching analysis for a collected measurement-sequence record, or a withheld reason.
+
+    `floor` overrides the registered scatter floor (the sweeps and the Aer validation pass the demonstration value);
+    left None, the floor comes from bound_floor and an unset floor withholds the analysis.
+    """
     configuration = record["family_configuration"]
+    if floor is None:
+        floor, reason = bound_floor(record_backends(record))
+        if floor is None:
+            return {"schema": SCHEMA, "withheld": reason}
     qubits = [int(q) for q in configuration["qubits"]]
     needed = [ro0_name(q) for q in qubits]
     missing = sorted(name for name in needed if name not in distributions)

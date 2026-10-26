@@ -24,6 +24,7 @@ from typing import Any
 from qiskit import QuantumCircuit, qpy
 
 import law_encoding
+from diagnostic_experiments import MSQ_PRECISION
 
 CASE_FILENAME = "UNAPPROVED_CASE.md"
 FAMILIES = {
@@ -40,6 +41,7 @@ FAMILIES = {
     "rank-sector",
     "state-prep-control",
     "measurement-sequence",
+    "measurement-sequence-diagnostic",
 }
 # Families that run on one pinned patch and carry its six physical qubits.
 PATCH_FAMILIES = ("patch-window", "coherence-window")
@@ -254,7 +256,7 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         arguments.append("--optimize")
     arguments.extend(_patch_arguments(record))
     configuration = record["family_configuration"]
-    if family == "measurement-sequence" or (
+    if family in ("measurement-sequence", "measurement-sequence-diagnostic") or (
         family == "state-prep-control" and configuration.get("layout_source") == "declared"
     ):
         qubits = configuration["qubits"]
@@ -1698,6 +1700,58 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "reported only where |C| supports it.",
             "",
         ]
+    if family == "measurement-sequence-diagnostic":
+        configuration = record["family_configuration"]
+        qubits = configuration["qubits"]
+        backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
+        delay = record["policy"].get("rep_delay_seconds")
+        delay_text = (
+            f"a requested repetition delay of {_format_number(delay * 1e6)} us (`--rep-delay {delay}`)"
+            if delay is not None
+            else "the backend's default repetition delay"
+        )
+        return [
+            "## Scientific question and interpretation",
+            "",
+            f"The measurement-sequence-diagnostic family measures, on {len(qubits)} qubits of {backends} at "
+            f"{delay_text}, the scatter of the pinching analysis's gate model: how far the readout-corrected P0 of "
+            "sixteen composite RX(THETA / 16) rotations (THETA = 8 pi / 9, thirty-two sx pulses, no measurement "
+            "and no idle) lies from the analysis's Bloch-iteration prediction, qubit by qubit. The main "
+            "measurement-sequence case bounds what a gate error could do to its measure arm by that residual, and "
+            "classes of gate error with opposite-signed effects cancel in the unitary arm and add on the measure "
+            "arm, so the main analysis needs the scatter across qubits as a floor "
+            "(docs/design/measurement-sequence-pinching.md, Source of the model-scatter floor). No retained "
+            "Heron run holds single-qubit sx sequences with a known ideal outcome, and a floor that is assumed "
+            "instead of measured is a guessed hardware value. A noise simulation prices the Target's reported "
+            "errors and returns the model's own prediction with counting noise; it cannot show how the device "
+            "departs from that Target-built model, which is the quantity measured here.",
+            "",
+            "Every qubit runs the four signed unitary members in the order +, -, -, +, a zero-pulse member (ro0) "
+            "and the x member at idle 0 (ro1), all with the 2 us pre-readout delay, with circuits identical to "
+            "the main family's. All members are static, so each row fuses across every named qubit into one PUB "
+            "and the run holds six PUBs. The named qubits are the main family's eight and further qubits chosen "
+            "from the live calibration alone by the preregistered rule: "
+            f"{configuration['selection_rule']}. The layout is pinned on the command line, and the planner refuses "
+            "a layout with a coupled pair, an excluded qubit or a missing main qubit. The residual enters the "
+            "floor through the preregistered rule: "
+            f"{configuration['floor_rule']}. The run also reports each qubit's residual against its T2, which "
+            "tests the drive-dephasing lead seen on IQM Garnet. The result is a scatter-floor.json that "
+            "the main analysis binds by digest; until it exists the main analysis withholds. "
+            "A measured floor above about 0.02 raises the smallest per-step transition rate the main case can "
+            "detect from about 0.003 (floor 0.01) to 0.0064 (0.02) and 0.0097 (0.04), at the main design's "
+            "shots; the main design stays admissible at every floor, and the owner decides at the floor's value "
+            "whether the main run is worth its quantum time.",
+            "",
+            "The record binds the IBM Cloud instance of the backup account (instance sha256 prefix "
+            f"{record.get('instance_sha256_12')}): run the dry run and the submission with "
+            "`GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform` in the environment, which is the account whose "
+            "600 s rolling quota the run charges.",
+            "",
+            f"Two precision contracts per qubit split the family-wise alpha evenly and admit the design: the "
+            f"unitary P0 pooled over the four signed members and ro1's P1, each at half-width "
+            f"{MSQ_PRECISION['p0']}. They price resolution, not an effect.",
+            "",
+        ]
     if family == "measurement-sequence":
         configuration = record["family_configuration"]
         qubits = configuration["qubits"]
@@ -1763,9 +1817,9 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "settle test asks whether lengthening the gap from zero to 2 us changes the deficit. The unitary arm "
             "tests the gate model in the job: its residual sets the measure-arm shift that a depolarizing, "
             "drive-dephasing, axis-tilt or over-rotation error could produce, and that shift adds to the "
-            "departure standard error, floored at a measured model scatter that no retained Heron run yet supplies: "
-            "until one is registered, a fired departure verdict reads gate_model_unbounded and nothing is "
-            "attributed to the measurement. A qubit whose mutation test fails or "
+            "departure standard error, floored at the model scatter that the measurement-sequence-diagnostic run "
+            "measures (scatter-floor.json, bound to the analysis by digest); without that file the analysis "
+            "withholds. A qubit whose mutation test fails or "
             "whose widened standard error exceeds twice its planning value is uninformative. A device verdict "
             "fires when two informative qubits agree or the pooled z reaches 3; with fewer than two informative "
             "qubits the device reads uninformative, and none always means a clean null.",

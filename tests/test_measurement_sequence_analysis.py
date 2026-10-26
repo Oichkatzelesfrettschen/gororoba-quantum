@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 from typing import Any
 
@@ -20,6 +22,7 @@ def check(condition: bool, message: str = "check failed") -> None:
 
 
 FEW = msa.FIXTURE_QUBITS[:3]
+FLOOR = msa.DEMONSTRATION_SCATTER_FLOOR
 
 
 def test_self_test_passes() -> None:
@@ -332,11 +335,11 @@ def test_collected_matches_the_direct_analysis() -> None:
     record, template = _record_and_executed(contexts, msa.FIXTURE_SHOTS)
     distributions = _distributions(counts)
     executed = {name: template["_template"] for name in distributions}
-    result = msa.collected(record, distributions, executed)
+    result = msa.collected(record, distributions, executed, msa.DEMONSTRATION_SCATTER_FLOOR)
     check("withheld" not in result, f"{result.get('withheld')}")
     check(result["schema"] == msa.SCHEMA and sorted(result["qubits"]) == sorted(str(q) for q in contexts))
     check(result["device"]["mutation_test_passes"] and not any(msa.device_flags(result["device"]).values()))
-    direct = msa.analyze_members(counts, contexts)
+    direct = msa.analyze_members(counts, contexts, msa.DEMONSTRATION_SCATTER_FLOOR)
     for q in contexts:
         a, b = result["qubits"][str(q)], direct["qubits"][str(q)]
         check(math.isclose(a["departure_n16"]["measured"], b["departure_n16"]["measured"], abs_tol=1e-9))
@@ -349,13 +352,35 @@ def test_collected_withholds_without_evidence() -> None:
     distributions = _distributions(counts)
     executed = {name: template["_template"] for name in distributions}
     missing = {k: v for k, v in distributions.items() if k != msa.ro0_name(FEW[0])}
-    check("missing measured members" in msa.collected(record, missing, executed)["withheld"])
+    check("missing measured members" in msa.collected(record, missing, executed, FLOOR)["withheld"])
     short = {k: v for k, v in distributions.items() if k != f"msq_delay_n4_pa_q{FEW[0]}"}
-    check("missing measured members" in msa.collected(record, short, executed)["withheld"])
+    check("missing measured members" in msa.collected(record, short, executed, FLOOR)["withheld"])
     bare = {name: {"shots": msa.FIXTURE_SHOTS} for name in distributions}
-    check("no execution-time calibration" in msa.collected(record, distributions, bare)["withheld"])
+    check("no execution-time calibration" in msa.collected(record, distributions, bare, FLOOR)["withheld"])
     skewed = {k: [np.asarray(v[0]) * 0.99] for k, v in distributions.items()}
-    check("whole-shot count" in msa.collected(record, skewed, executed)["withheld"])
+    check("whole-shot count" in msa.collected(record, skewed, executed, FLOOR)["withheld"])
+
+
+def test_collected_withholds_without_a_bound_floor(monkeypatch: pytest.MonkeyPatch, tmp_path: Any) -> None:
+    contexts = msa.fixture_contexts(FEW)
+    counts = msa.device_counts({q: msa.device_model(c) for q, c in contexts.items()}, contexts, msa.FIXTURE_SHOTS)
+    record, template = _record_and_executed(contexts, msa.FIXTURE_SHOTS)
+    record["groups"] = [{"backend": "ibm_kingston"}]
+    distributions = _distributions(counts)
+    executed = {name: template["_template"] for name in distributions}
+    check("no model scatter floor" in msa.collected(record, distributions, executed)["withheld"])
+    document = tmp_path / "scatter-floor.json"
+    body = json.dumps({"schema": msa.SCATTER_FLOOR_SCHEMA, "floor": 0.02, "backend": "ibm_kingston"}).encode()
+    document.write_bytes(body)
+    monkeypatch.setattr(msa, "MODEL_SCATTER_FLOOR_FILE", str(document))
+    monkeypatch.setattr(msa, "MODEL_SCATTER_DIAGNOSTIC_SHA256", "0" * 64)
+    check("hashes to" in msa.collected(record, distributions, executed)["withheld"])
+    monkeypatch.setattr(msa, "MODEL_SCATTER_DIAGNOSTIC_SHA256", hashlib.sha256(body).hexdigest())
+    result = msa.collected(record, distributions, executed)
+    check("withheld" not in result, f"{result.get('withheld')}")
+    check(all(row["model_scatter_floor"] == 0.02 for row in result["qubits"].values()))
+    other = {**record, "groups": [{"backend": "ibm_fez"}]}
+    check("not on" in msa.collected(other, distributions, executed)["withheld"])
 
 
 def test_flip_counts_follow_the_joint_law() -> None:

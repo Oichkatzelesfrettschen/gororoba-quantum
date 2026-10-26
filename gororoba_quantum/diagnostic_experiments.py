@@ -63,6 +63,7 @@ FAMILY_NAMES = (
     "rank-sector",
     "state-prep-control",
     "measurement-sequence",
+    "measurement-sequence-diagnostic",
 )
 # Families that run on one pinned patch (--patch-qubits, patch_characterization.PATCH_ROLES).
 PATCH_FAMILIES = ("patch-window", "coherence-window")
@@ -788,6 +789,109 @@ def measurement_sequence_contracts(qubits: list[int], alpha: float, power: float
     return tuple(contracts)
 
 
+# measurement-sequence-diagnostic: the gate-model scatter floor of the pinching analysis. Each named qubit runs the
+# members of the main family that need no measurement history and carry the model's unitary-arm test: the four
+# signed unitary members at N = 16, ro0, and the t1 member at idle 0 (ro1). Their circuits come from msq_circuit,
+# msq_ro0_circuit and msq_t1_circuit with the main family's names, so the analysis helpers read both families
+# alike. Every member is static, so each row fuses across all named qubits into one PUB and the run costs about one
+# PUB-duration per member whatever the qubit count. The qubits are the main family's MSQD_MAIN_QUBITS and further
+# qubits chosen by the calibration-only rule of measurement_sequence_scatter.
+MSQD_FAMILY = "measurement-sequence-diagnostic"
+MSQD_MAIN_QUBITS = (91, 118, 95, 61, 147, 151, 59, 89)
+MSQD_ARM_STEPS = {
+    "unitary": MSQ_ARM_STEPS["unitary"],
+    "t1": "x, delay of 2 us, measure into final (the main family's t1 member at idle 0, ro1)",
+    "ro0": MSQ_ARM_STEPS["ro0"],
+}
+# Static members per qubit: the four signed unitary members, ro0 and ro1.
+MSQD_MEMBERS_PER_QUBIT = len(MSQ_SIGNED) + 2
+# Endpoints per qubit: the pooled unitary P0 and ro1's P1.
+MSQD_ENDPOINTS_PER_QUBIT = 2
+
+
+def msqd_members(qubit: int, prereadout_dt: int) -> tuple[Member, ...]:
+    """The static members of one diagnostic qubit in execution order: unitary +, -, -, +, then ro0 and ro1."""
+    ideal = np.asarray([msq_delay_p0(), 1.0 - msq_delay_p0()])
+    weights = msq_weights(MSQ_UNITARY_STEPS, "unitary")
+    return (
+        *(
+            Member(
+                msq_member("unitary", MSQ_UNITARY_STEPS, signed, qubit),
+                msq_circuit(
+                    "unitary",
+                    MSQ_UNITARY_STEPS,
+                    signed[2],
+                    qubit,
+                    msq_member("unitary", MSQ_UNITARY_STEPS, signed, qubit),
+                    1,
+                    1,
+                    prereadout_dt,
+                ),
+                ideal,
+                weights=weights,
+            )
+            for signed in MSQ_SIGNED
+        ),
+        Member(
+            msq_ro0_member(qubit),
+            msq_ro0_circuit(qubit, prereadout_dt),
+            np.asarray([1.0, 0.0]),
+            weights=np.asarray([1.0, 0.0]),
+        ),
+        Member(
+            msq_t1_member(0, qubit),
+            msq_t1_circuit(0, qubit, 0, prereadout_dt),
+            np.asarray([0.0, 1.0]),
+            weights=np.asarray([0.0, 1.0]),
+        ),
+    )
+
+
+def msq_diagnostic_groups(qubits: list[int], prereadout_delay_dt: Any) -> list[Group]:
+    """One static group per qubit; row r fuses across the qubits into one PUB, six PUBs in all."""
+    prereadouts = msq_delays(qubits, prereadout_delay_dt, "pre-readout")
+    return [
+        Group(f"msqd_static_q{qubit}", msqd_members(qubit, prereadouts[qubit]), _msq_summarizer(qubit))
+        for qubit in qubits
+    ]
+
+
+def msq_diagnostic_contracts(qubits: list[int], alpha: float, power: float) -> tuple[ObservableContract, ...]:
+    """Two two-sided precision endpoints per qubit at the family-wise alpha split over all.
+
+    msq_p0_unitary_n16_qQ is the P0 pooled over the four signed unitary members and msq_p1_t1_d0_qQ is ro1's P1,
+    both at the main family's half-width.
+    """
+    if not qubits or len(set(qubits)) != len(qubits) or any(type(q) is not int or q < 0 for q in qubits):
+        raise ValueError(f"measurement-sequence-diagnostic needs distinct nonnegative qubits, got {qubits}")
+    share = alpha / (MSQD_ENDPOINTS_PER_QUBIT * len(qubits))
+    values = tuple(float(v) / len(MSQ_SIGNED) for v in msq_weights(MSQ_UNITARY_STEPS, "unitary"))
+    contracts: list[ObservableContract] = []
+    for qubit in qubits:
+        contracts.append(
+            ObservableContract(
+                f"msq_p0_unitary_n{MSQ_UNITARY_STEPS}_q{qubit}",
+                tuple(
+                    ObservableTerm(msq_member("unitary", MSQ_UNITARY_STEPS, signed, qubit), values)
+                    for signed in MSQ_SIGNED
+                ),
+                alpha=share,
+                power=power,
+                precision_half_width=MSQ_PRECISION["p0"],
+            )
+        )
+        contracts.append(
+            ObservableContract(
+                f"msq_p1_t1_d0_q{qubit}",
+                (ObservableTerm(msq_t1_member(0, qubit), (0.0, 1.0)),),
+                alpha=share,
+                power=power,
+                precision_half_width=MSQ_PRECISION["p0"],
+            )
+        )
+    return tuple(contracts)
+
+
 # Clbits of a heralded n21-orbit-rca member: two phase bits and one herald
 # bit per qubit (control and the three work bits).
 N21_ORBIT_HERALDED_CLBITS = 6
@@ -1147,6 +1251,10 @@ def family_contracts(
         if configuration is None or not configuration.get("qubits"):
             raise ValueError("measurement-sequence contracts need the configuration's named qubits")
         return measurement_sequence_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
+    if family == MSQD_FAMILY:
+        if configuration is None or not configuration.get("qubits"):
+            raise ValueError("measurement-sequence-diagnostic contracts need the configuration's named qubits")
+        return msq_diagnostic_contracts([int(qubit) for qubit in configuration["qubits"]], alpha, power)
     if family == "folded-correction":
         # The correction collector evaluates four exact-binomial directional
         # bounds on integer counts; bounded-score optimizer inference differs.
@@ -1334,6 +1442,8 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
             family["prereadout_delay_dt"],
             family["t1_delays_dt"],
         )
+    if family.get("name") == MSQD_FAMILY:
+        return msq_diagnostic_groups([int(qubit) for qubit in family["qubits"]], family["prereadout_delay_dt"])
     return []
 
 
@@ -1448,6 +1558,52 @@ def _msq_unitary_p0(steps: int, sign: int) -> float:
     for _ in range(steps):
         state = rotation @ state
     return float(abs(state[0]) ** 2)
+
+
+def _measurement_sequence_diagnostic_self_test() -> None:
+    """The diagnostic members equal the main family's, six static per qubit, and the shot tier admits 38 qubits."""
+    from local_compute import is_dynamic
+
+    qubits = [57, 65, 66, 104]
+    prereadouts = {qubit: 500 for qubit in qubits}
+    delays = {qubit: 545 for qubit in qubits}
+    settles = {qubit: 500 for qubit in qubits}
+    t1_dt = (0, 5000, 12500, 25000, 50000)
+    groups = msq_diagnostic_groups(qubits, prereadouts)
+    if len(groups) != len(qubits):
+        raise AssertionError("one diagnostic group per qubit")
+    for qubit, group in zip(qubits, groups, strict=True):
+        static, _ = msq_members(qubit, delays[qubit], settles[qubit], prereadouts[qubit], t1_dt)
+        main = {m.name: m for m in static}
+        if len(group.members) != MSQD_MEMBERS_PER_QUBIT or MSQD_MEMBERS_PER_QUBIT != 6:
+            raise AssertionError("the diagnostic holds the four unitary members, ro0 and ro1")
+        expected = [msq_member("unitary", MSQ_UNITARY_STEPS, s, qubit) for s in MSQ_SIGNED]
+        expected += [msq_ro0_member(qubit), msq_t1_member(0, qubit)]
+        if [m.name for m in group.members] != expected:
+            raise AssertionError("the diagnostic member order moved")
+        for member in group.members:
+            twin = main[member.name]
+            if (
+                member.circuit != twin.circuit
+                or not np.array_equal(member.ideal, twin.ideal)
+                or not np.array_equal(np.asarray(member.weights), np.asarray(twin.weights))
+                or is_dynamic(member.circuit)
+            ):
+                raise AssertionError(f"{member.name}: differs from the main family's member or is dynamic")
+    contracts = msq_diagnostic_contracts(qubits, 0.05, 0.8)
+    if len(contracts) != MSQD_ENDPOINTS_PER_QUBIT * len(qubits) or not math.isclose(
+        math.fsum(c.alpha for c in contracts), 0.05
+    ):
+        raise AssertionError("the diagnostic endpoints do not split the family-wise alpha")
+    for count in (8, 38, 60):
+        share = 0.05 / (MSQD_ENDPOINTS_PER_QUBIT * count)
+        single = math.sqrt(math.log(8 / share) / (2 * 8192))
+        if single > MSQ_PRECISION["p0"]:
+            raise AssertionError(f"{count} qubits: the pooled P0 radius {single:.4f} exceeds the half-width")
+    print(
+        f"measurement-sequence-diagnostic: {MSQD_MEMBERS_PER_QUBIT} static members per qubit equal the main "
+        f"family's, {len(contracts)} endpoints on {len(qubits)} qubits, 8192 shots admit 8 to 60 qubits"
+    )
 
 
 def _measurement_sequence_self_test() -> None:
@@ -1582,6 +1738,7 @@ def main() -> int:
     if parser.parse_args().self_test:
         _state_prep_self_test()
         _measurement_sequence_self_test()
+        _measurement_sequence_diagnostic_self_test()
     return 0
 
 
