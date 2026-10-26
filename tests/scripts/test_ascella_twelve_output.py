@@ -58,3 +58,46 @@ def test_output_stage_is_unitary_and_couples_neighbors() -> None:
     small = twelve.output_stage(1e-6 * np.eye(1, twelve.MODES - 1, 4)[0].astype(complex))
     if abs(small[4, 5] - 1e-6j) > 1e-11 or abs(small[0, 5]) > 1e-11:
         raise AssertionError("the coupling does not act on its own neighbor pair")
+
+
+def scrambled_unitary() -> np.ndarray:
+    """A dense 12-mode unitary from the QR factor of a deterministic complex matrix."""
+    index = np.arange(twelve.MODES)
+    matrix = np.cos(1.3 * index[:, None] + 0.7 * index[None, :]) + 1j * np.sin(0.9 * np.outer(index, index) + 0.4)
+    unitary: np.ndarray = np.linalg.qr(matrix)[0]
+    return unitary
+
+
+def test_bunching_term_matches_perceval_noise_model_clicks() -> None:
+    import perceval as pcvl
+    from perceval.utils import Matrix, NoiseModel
+
+    unitary = scrambled_unitary()
+    for g2 in (0.02, 0.2):
+        gamma = twelve.bunching_weight(g2)
+        model = twelve.light(twelve.Family(bunching=gamma), unitary[None], np.array([0]), np.zeros(0))[0]
+        processor = pcvl.Processor("SLOS", pcvl.Unitary(Matrix(unitary)), noise=NoiseModel(g2=g2))
+        processor.with_input(pcvl.BasicState([1] + [0] * (twelve.MODES - 1)))
+        clicks = np.zeros(twelve.MODES)
+        for state, probability in processor.probs()["results"].items():
+            occupied = [mode for mode, count in enumerate(state) if count > 0]
+            if len(occupied) == 1:
+                clicks[occupied[0]] += float(probability)
+        deviation = float(np.abs(model - clicks / clicks.sum()).max())
+        if deviation > 1e-9:
+            raise AssertionError(f"g2 {g2}: the bunching term departs from Perceval's clicks by {deviation:.2e}")
+
+
+def test_efficiencies_scale_outputs_relative_to_mode_zero_and_stage_families_keep_their_light() -> None:
+    unitary = scrambled_unitary()[None]
+    sources = np.array([0])
+    bare = twelve.light("nominal", unitary, sources, np.zeros(0))[0]
+    if not np.array_equal(bare, twelve.light(twelve.Family(), unitary, sources, np.zeros(0))[0]):
+        raise AssertionError("a Family without stages changes the nominal light")
+    logs = np.linspace(-0.3, 0.3, twelve.MODES - 1)
+    scaled = twelve.light(twelve.Family(efficiency=True), unitary, sources, logs)[0]
+    expected = bare * np.exp(np.concatenate(([0.0], logs)))
+    if float(np.abs(scaled - expected / expected.sum()).max()) > 1e-15:
+        raise AssertionError("efficiencies do not scale each output relative to mode 0")
+    if twelve.parameter_count(twelve.Family(efficiency=True, bunching="free")) != twelve.MODES:
+        raise AssertionError("eleven log-efficiencies and one bunching root make twelve parameters")

@@ -1468,13 +1468,48 @@ configurations, predicts this setting's X at 0.904 against the observed
 0.887. A fixed output-side map therefore cannot carry the setting's deficit
 while it also fits the other configurations.
 
-**Reading.** Five classes of model that see only the returned circuit fail on
+**Source and detector families**
+([`source-detector.json`](../evidence/ascella-order-coefficients/source-detector.json),
+[`scripts/ascella_source_detector.py`](../../scripts/ascella_source_detector.py)).
+Source and detector terms act on each output's intensity after the mesh.
+Detector efficiency scales output m by eta_m relative to mode 0; a uniform
+transmittance cancels in the one-photon normalization, so a per-mode
+transmittance is the same parameter. Photon bunching adds gamma I_m^2:
+under threshold detection a two-photon emission that leaves both photons
+in output m reads as one click there with probability |a_m|^4, and split
+pairs fail the one-photon eligibility. Perceval 1.3.1's `NoiseModel`
+reproduces that form to 1e-9 on a dense 12-mode unitary for distinguishable
+and indistinguishable noise photons alike, and gives gamma 0.0098 at job-00's
+platform g2 of 1.9 %. Every served mesh realizes the same target column from
+input mode 0, so these families predict the same light on all 56 meshes.
+The observed block fractions about their own exploration mean already form
+466 on 84 coordinates against 129.8, the floor of every mesh-independent
+model, so these families test only the mean deficit:
+
+| Family | Parameters | Gain over nominal on job-00 | Exploration-mean X | Mean deficit in standard errors |
+|---|---|---|---|---|
+| nominal mesh | 0 | 0 | 0.904 | -7.8 |
+| per-mode detector efficiency | 11 | 67.8 | 0.900 | -6.3 |
+| bunching at the platform g2 | 0 | -20.9 | 0.904 | -8.1 |
+| efficiency and platform bunching | 11 | 50.1 | 0.901 | -6.6 |
+| efficiency and free bunching | 12 | 67.8 | 0.900 | -6.3 |
+
+The observed exploration-mean X is 0.887. Every family misses the mean by
+more than six standard errors of the observed mean (0.0115 over the square
+root of 28). Job-00 rejects the bunching that the platform's g2 implies:
+fitted freely, gamma goes to 0. The fitted efficiencies raise modes 1 and 3
+by 4 % and 3 % and move the setting's X by 0.003 of its 0.017 deficit.
+Source multiphoton emission, detector efficiency and transmittance therefore
+carry neither the mean deficit nor the spread.
+
+**Reading.** Six classes of model that see only the returned circuit fail on
 job-02's meshes:
 - fixed per-element offsets;
 - drive responses of each heater's own phase;
 - crosstalk on returned phases, uniform or by kernel;
 - drive-power loss;
-- fixed input- and output-stage maps.
+- fixed input- and output-stage maps;
+- source multiphoton emission and per-mode detection.
 
 The error is coherent, specific to the compilation, close to the logical block
 and reproducible at the seed-0 mesh. Maring et al.'s control model accounts
