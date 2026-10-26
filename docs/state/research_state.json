@@ -9719,7 +9719,9 @@
       "documents": [
         "docs/design/iqm-garnet-measurement-sequence-diagnostic.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-707": "replay"
+      },
       "acquisitions": [
         "iqm-garnet-qpu-measurement-diagnostic"
       ],
@@ -9823,7 +9825,9 @@
       "documents": [
         "docs/design/iqm-garnet-measurement-sequence-pinching.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-708": "replay"
+      },
       "acquisitions": [
         "iqm-garnet-qpu-measurement-pinching-probe"
       ],
@@ -9852,7 +9856,9 @@
       "documents": [
         "docs/design/iqm-garnet-measurement-sequence-pinching.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-709": "replay"
+      },
       "acquisitions": [
         "iqm-garnet-qpu-measurement-pinching"
       ],
@@ -9881,7 +9887,9 @@
       "documents": [
         "docs/design/iqm-garnet-measurement-sequence-pinching.md"
       ],
-      "gates": {},
+      "gates": {
+        "core-709": "replay"
+      },
       "acquisitions": [
         "iqm-garnet-qpu-measurement-pinching"
       ],
