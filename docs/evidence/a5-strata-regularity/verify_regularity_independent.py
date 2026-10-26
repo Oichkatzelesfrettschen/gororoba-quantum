@@ -839,7 +839,7 @@ def symmetry_job(name: str) -> tuple[str, str]:
 
 def check_symmetry() -> dict[str, Any]:
     names = [*CLOSURES, "VQ", "VG"]
-    res = singular_batch([symmetry_job(n) for n in names])
+    res = singular_batch(parallel.ordered_map(symmetry_job, names, min_items=1))
     rows = {}
     ok = True
     for n in names:
@@ -1252,7 +1252,7 @@ def check_germs() -> dict[str, Any]:
     g = matmul7(matmul7(expm_nilpotent(nil[0]), expm_nilpotent(nil[len(nil) // 2])), expm_nilpotent(nil[-1]))
     pairs = germ_pairs()
     start = time.time()
-    res = singular_batch([germ_job(pr) for pr in pairs])
+    res = singular_batch(parallel.ordered_map(germ_job, pairs, min_items=1))
     ranks = parallel.ordered_map(jacobian_ranks, [(x, o, g) for x, o in pairs], min_items=1)
     rows = []
     ok = True
