@@ -1880,7 +1880,10 @@
    "imported_by": [
     "scripts/kaggle_run.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_run.py"
+   ]
   },
   {
    "distribution": "kagglesdk",
@@ -1894,7 +1897,10 @@
    "imported_by": [
     "scripts/kaggle_run.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_run.py"
+   ]
   },
   {
    "distribution": "kingdon",
@@ -2773,6 +2779,8 @@
     "scripts/ascella_compilation_reading.py",
     "scripts/ascella_configuration_holdout.py",
     "scripts/ascella_drive_response.py",
+    "scripts/ascella_fixed_mesh_confirmation.py",
+    "scripts/ascella_fixed_mesh_error.py",
     "scripts/ascella_heater_coupling.py",
     "scripts/ascella_mesh_decomposition.py",
     "scripts/ascella_physical_models.py",
@@ -6160,6 +6168,8 @@
     "scripts/ascella_coherence_repeat.py",
     "scripts/ascella_compilation_design.py",
     "scripts/ascella_compilation_reading.py",
+    "scripts/ascella_fixed_mesh_confirmation.py",
+    "scripts/ascella_fixed_mesh_error.py",
     "scripts/ascella_mesh_decomposition.py",
     "scripts/ascella_physical_models.py",
     "scripts/ascella_response_geometry.py",
@@ -6277,7 +6287,10 @@
    "imported_by": [
     "scripts/kaggle_sessions.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_sessions.py"
+   ]
   },
   {
    "distribution": "setuptools",
@@ -9707,7 +9720,6 @@
   "scripts/ascella_fixed_mesh_confirmation.py": [
    "__future__",
    "ascella_compilation_reading",
-   "ascella_configuration_holdout",
    "ascella_fixed_mesh_error",
    "ascella_physical_models",
    "json",
