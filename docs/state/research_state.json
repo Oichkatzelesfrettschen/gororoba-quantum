@@ -2,6 +2,20 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-signed-coherence-new-seeds-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04",
+      "family": "photonic signed-coherence new-seed meshes",
+      "question": "Do heater and coupler offsets frozen from jobs 00, 02 and 03 predict the analyzer statistic of 70 meshes no fit has seen, served by theta2-x-arm0 at fresh QRNG compilation seeds beside 10 seed-0 anchors?"
+    },
+    {
+      "id": "qd-ascella-signed-coherence-new-seeds-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88",
+      "family": "photonic signed-coherence new-seed meshes",
+      "question": "Do the same frozen offsets predict 77 further unseen meshes in the 88-iteration variant that job-04's duration admitted under the frozen rule?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-repeat",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01",
@@ -2425,6 +2439,54 @@
       "assumptions": [],
       "depends_on": [
         "ascella-signed-coherence-compilation-dependence"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "ascella-signed-coherence-new-seed-offsets",
+      "statement": "Heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on job-00 plus all 56 perturbed meshes of jobs 02 and 03 and frozen before any new seed was drawn (P-B), predict the X statistic of 147 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs be11a4b0 (70 meshes, 80 iterations) and 690c6e49 (77 meshes, 88 iterations): the within-job-centered Pearson r is 0.319 (t 4.04 on 144 degrees of freedom, one-sided p 4.4e-5, alpha 0.005), carried. Its positive-direction share of the compilation-induced variance is 10.5 % against the 0.983 attenuation ceiling, with one-sided 99.5 % Fisher-z bounds of 1.4 % and 25.6 %. The same family fitted on job-00 plus the 28 exploration meshes alone (P-A) reads r 0.157 (p 0.030): not carried. Both jobs' anchors stayed within the gross-shift margin (shifts -0.0028 and -0.0018 against job-03, 99 % half-widths 0.0034, margin 0.0119).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_new_mesh_score.py, whose contract, frozen offsets and duration rule were committed and pushed before submission after two Codex CLI reviews, two GitHub Codex rounds, a final gpt-daybreak-blue-latest high review and the advisor. The outcome is P-B carried only: the offsets carry about a tenth of the per-mesh error, the 28 exploration meshes leave them underdetermined, and the remaining nine tenths of the fixed per-mesh error stay unexplained by any element offset on the returned circuit. The share is a plug-in estimate conditional on the retained compilation variance. Job-05's size followed job-04's provider-reported duration alone (243 s, admitting 88 iterations). The result names no physical mechanism for the offsets and spends these 147 meshes for confirmatory use.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04/results.json",
+          "sha256": "c5a9e2f442c5e525372ce66f6f1a6b75aed842c7f9de9131ce2efed154340223"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88/results.json",
+          "sha256": "dc664063904e984933dfdfdcd54a963fd67076183ab531f24166ab131c374be1"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json",
+          "sha256": "bbf0ff9417275275ae17f4b1394e8843ca84fd388eb67e278c4c2af89a9172f1"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/new-seed-sizing.json",
+          "sha256": "a6d9ca0ea7af66ec9888d32f958c37adf36043fd629f4addfc4c4a682a80c5b7"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/new-seed-score.json",
+          "sha256": "fa4a2982afb3e01ec71f78b8aa999752dcfd374459388258f51b88cfbb029610"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-new-mesh-offsets-replay": "replay",
+        "core-ascella-signed-coherence-new-seed-sizing-replay": "replay",
+        "core-ascella-signed-coherence-new-seed-score-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-new-seeds-job-04",
+        "qd-ascella-signed-coherence-new-seeds-job-05"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-fixed-mesh-offsets",
+        "ascella-signed-coherence-seed-repeat"
       ],
       "supersedes": []
     },
