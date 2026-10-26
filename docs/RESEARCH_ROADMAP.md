@@ -64,7 +64,7 @@ proposed work, in dependency order:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 23 |
-| exploratory reanalysis | exploratory | 76 |
+| exploratory reanalysis | exploratory | 77 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 21 |

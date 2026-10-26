@@ -2,81 +2,83 @@
  "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
  "couplers_among_qubits": [],
  "qubits": {
-  "QB13": {
-   "acquisition_delay_s": 4.6450000000000006e-07,
-   "e01": 0.0274,
-   "e10": 0.0214,
-   "integration_length_s": 2.04e-07,
-   "probe_duration_s": 2.04e-07,
-   "prx_p": 0.0011883938217780443,
-   "t1_s": 4.647473587949398e-05,
-   "t2_s": 1.414948407469849e-05
+  "QB1": {
+   "acquisition_delay_s": 4.6550000000000003e-07,
+   "e01": 0.0076,
+   "e10": 0.0154,
+   "integration_length_s": 3.64e-07,
+   "probe_duration_s": 3.64e-07,
+   "prx_p": 0.0016867186658144906,
+   "t1_s": 2.751128847820201e-05,
+   "t2_s": 9.910996801720528e-06
   },
-  "QB15": {
+  "QB14": {
    "acquisition_delay_s": 4.6450000000000006e-07,
-   "e01": 0.013,
-   "e10": 0.0452,
-   "integration_length_s": 4.92e-07,
-   "probe_duration_s": 4.92e-07,
-   "prx_p": 0.0010923490324876717,
-   "t1_s": 4.079149548544183e-05,
-   "t2_s": 1.0471659759856258e-05
+   "e01": 0.0124,
+   "e10": 0.0124,
+   "integration_length_s": 4.2e-07,
+   "probe_duration_s": 4.2e-07,
+   "prx_p": 0.000663492310070346,
+   "t1_s": 4.488061124827712e-05,
+   "t2_s": 7.0063340552353605e-06
   },
-  "QB18": {
+  "QB17": {
+   "acquisition_delay_s": 4.6550000000000003e-07,
+   "e01": 0.0096,
+   "e10": 0.0162,
+   "integration_length_s": 4.2e-07,
+   "probe_duration_s": 4.2e-07,
+   "prx_p": 0.0009426719046679022,
+   "t1_s": 4.628028389450517e-05,
+   "t2_s": 1.4129965435438016e-05
+  },
+  "QB19": {
    "acquisition_delay_s": 4.6450000000000006e-07,
-   "e01": 0.0056,
-   "e10": 0.0224,
-   "integration_length_s": 3.16e-07,
-   "probe_duration_s": 3.16e-07,
-   "prx_p": 0.0006771602596007398,
-   "t1_s": 3.3384999903559254e-05,
-   "t2_s": 1.2090425666869577e-05
-  },
-  "QB20": {
-   "acquisition_delay_s": 4.665e-07,
-   "e01": 0.0238,
-   "e10": 0.0168,
+   "e01": 0.0376,
+   "e10": 0.038,
    "integration_length_s": 5.24e-07,
    "probe_duration_s": 5.24e-07,
-   "prx_p": 0.0008215145752332731,
-   "t1_s": 3.632499313051825e-05,
-   "t2_s": 2.8581841133562276e-05
+   "prx_p": 0.0009197776575640138,
+   "t1_s": 5.9114854283241813e-05,
+   "t2_s": 7.930177543079434e-06
   },
-  "QB6": {
+  "QB5": {
    "acquisition_delay_s": 4.6550000000000003e-07,
-   "e01": 0.0152,
-   "e10": 0.027,
-   "integration_length_s": 4.12e-07,
-   "probe_duration_s": 4.12e-07,
-   "prx_p": 0.001335513211370376,
-   "t1_s": 3.959951981262741e-05,
-   "t2_s": 8.164092116750387e-06
+   "e01": 0.0058,
+   "e10": 0.0306,
+   "integration_length_s": 5.56e-07,
+   "probe_duration_s": 5.56e-07,
+   "prx_p": 0.0010199997118700566,
+   "t1_s": 4.577432550446066e-05,
+   "t2_s": 9.32218886620192e-06
   },
-  "QB9": {
-   "acquisition_delay_s": 4.665e-07,
-   "e01": 0.0146,
-   "e10": 0.0366,
-   "integration_length_s": 5.08e-07,
-   "probe_duration_s": 5.08e-07,
-   "prx_p": 0.0015379847629595211,
-   "t1_s": 3.482841750194507e-05,
-   "t2_s": 1.1060558405385471e-05
+  "QB8": {
+   "acquisition_delay_s": 4.6450000000000006e-07,
+   "e01": 0.006,
+   "e10": 0.0404,
+   "integration_length_s": 4.76e-07,
+   "probe_duration_s": 4.76e-07,
+   "prx_p": 0.0012211084132804917,
+   "t1_s": 3.225497527003969e-05,
+   "t2_s": 8.338930447242396e-06
   }
  },
  "schema": "iqm-measurement-sequence-calibration-v2",
  "selection": {
   "excluded": {
-   "QB11": "T1 collapsed in situ: |1> reads P(0) = 0.172 at once and 0.522 after the 2 us idle, about 4 us against 47.8 us in the set, and the readout scale is 0.384",
-   "QB12": "the calibrated prx error of 0.00436 is 2.6 to 6.6 times that of the other selected qubits (0.00066 to 0.00169), so its departure standard error of 0.041 adds little to the pooled test, and a randomized-benchmarking underestimate on this qubit alone can move the device verdict",
-   "QB14": "the pi/2-pair circuit reads 0.0420 below its model at 1000 shots, which against the 0.0080 statistical standard error of the case's unitary arm at 3000 shots is z = -5.27 and fires the unitary-arm guard",
-   "QB17": "the pi/2-pair circuit reads 0.0527 above its model at 1000 shots, which against the 0.0081 statistical standard error of the case's unitary arm at 3000 shots is z = +6.52 and fires the unitary-arm guard",
-   "QB5": "the pi/2-pair circuit reads 0.0331 below its model at 1000 shots, which against the 0.0085 statistical standard error of the case's unitary arm at 3000 shots is z = -3.91 and fires the unitary-arm guard",
-   "QB7": "the pi/2-pair circuit reads 0.1233 below its model at 1000 shots (z = -14.23 against the case's statistical standard error of 0.0087), and its calibrated prx error of 0.00545 is the largest of the usable qubits"
+   "QB11": "T1 collapsed in situ: the prepared excited state reads P(0) = 0.172 at once and 0.522 after the 2 us idle, about 4 us against 47.8 us in the set, and the readout scale is 0.384"
+  },
+  "excluded_for_prx_error": {
+   "QB12": 0.00435504959084998,
+   "QB3": 0.009703557358832882,
+   "QB7": 0.005449217832772746
   },
   "median_t1_s": 3.7962256471572834e-05,
-  "qualified_at_median": 3,
-  "rule": "the 6 qubits of smallest e01 + e10 among those with T1 at least the set's median, taken in that order and skipping any that shares a cz coupler with one already taken or is excluded; when fewer qualify, the uncoupled remainder in decreasing T1",
-  "t1_floor_s": 3.3384999903559254e-05
+  "prx_error_limit": 0.0022394075906988498,
+  "prx_error_median": 0.0011197037953494249,
+  "qualified_at_median": 4,
+  "rule": "the 6 qubits of smallest e01 + e10 among those with T1 at least the set's median, taken in that order and skipping any that shares a cz coupler with one already taken, is excluded for a measured failure, or has a prx error above 2.0 times the set's median; when fewer qualify, the uncoupled remainder in decreasing T1",
+  "t1_floor_s": 2.751128847820201e-05
  },
  "source_sha256": {
   "dynamic-quantum-architecture.json": "0ac8713029672f1fc967ad6fb01dcd549f753d7ab79bd7b0fad45d4164feb1ff",

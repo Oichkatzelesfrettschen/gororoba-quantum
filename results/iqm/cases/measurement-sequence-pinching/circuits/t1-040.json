@@ -6,7 +6,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB6"
+    "QB1"
    ],
    "name": "prx"
   },
@@ -16,7 +16,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB9"
+    "QB5"
    ],
    "name": "prx"
   },
@@ -26,7 +26,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB13"
+    "QB8"
    ],
    "name": "prx"
   },
@@ -36,7 +36,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB15"
+    "QB14"
    ],
    "name": "prx"
   },
@@ -46,7 +46,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB18"
+    "QB17"
    ],
    "name": "prx"
   },
@@ -56,7 +56,7 @@
     "phase": 0.0
    },
    "locus": [
-    "QB20"
+    "QB19"
    ],
    "name": "prx"
   },
@@ -65,12 +65,12 @@
     "duration": 4e-05
    },
    "locus": [
-    "QB6",
-    "QB9",
-    "QB13",
-    "QB15",
-    "QB18",
-    "QB20"
+    "QB1",
+    "QB5",
+    "QB8",
+    "QB14",
+    "QB17",
+    "QB19"
    ],
    "name": "delay"
   },
@@ -79,12 +79,12 @@
     "duration": 2e-06
    },
    "locus": [
-    "QB6",
-    "QB9",
-    "QB13",
-    "QB15",
-    "QB18",
-    "QB20"
+    "QB1",
+    "QB5",
+    "QB8",
+    "QB14",
+    "QB17",
+    "QB19"
    ],
    "name": "delay"
   },
@@ -93,12 +93,12 @@
     "key": "f"
    },
    "locus": [
-    "QB6",
-    "QB9",
-    "QB13",
-    "QB15",
-    "QB18",
-    "QB20"
+    "QB1",
+    "QB5",
+    "QB8",
+    "QB14",
+    "QB17",
+    "QB19"
    ],
    "name": "measure"
   }

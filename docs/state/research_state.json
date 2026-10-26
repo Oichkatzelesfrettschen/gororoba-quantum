@@ -1948,6 +1948,13 @@
       "question": "Does the garnet:mock pipeline accept the 57-circuit pinching case with pi/2-pair steps at every N on QB6, QB9, QB13, QB15, QB18 and QB20 (cases.json ba32d095), and return every key?"
     },
     {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-systematic",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit pinching case with the calibration-only selection (QB1, QB5, QB8, QB14, QB17, QB19) and the gate-model systematic (cases.json 918d7bd5), and return every key?"
+    },
+    {
       "id": "iqm-garnet-mock-measure-012-probe",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe",
@@ -9612,6 +9619,31 @@
       "gates": {},
       "acquisitions": [
         "iqm-garnet-mock-measurement-sequence-pinching-pairs-all-n"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-systematic",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 57-circuit pinching case with pi/2-pair steps at every N, the calibration-only qubit selection and the gate-model systematic (cases.json 918d7bd5, job 01a17585-dd26-7086-9e63-655882ecc988) at 3000 shots on QB1, QB5, QB8, QB14, QB17 and QB19: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order. The compiled qpu_execution estimate is 1.30 times the case's QPU-calibrated 3.738 s, the per-circuit base and measure-window differences between the mock and the QPU. The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "55c0244f8a9da4747d2f6e668528cff7b39fcd15d2d3c963d809bc5de82a267a"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-systematic"
       ],
       "assumptions": [],
       "depends_on": [],

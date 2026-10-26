@@ -5,231 +5,231 @@
    "circuits": [
     {
      "file": "circuits/measure-n1-s0p.json",
-     "sha256": "c6f63fc2220ca851e914eb4d1e78f4755210c665b9ea46f010d53c9f9e256d79"
+     "sha256": "34a2db26274fac07abfb4c38ad945da0e3e273bb96f6c7d11079487c1c86a736"
     },
     {
      "file": "circuits/measure-n1-s1m.json",
-     "sha256": "d7b32c74f0466307239611bab904db24942f3578645f5337457695c4a489cdc8"
+     "sha256": "c8473088f0f23a68e2ae37c31f64580405509369c7401d94900c6bf20edab653"
     },
     {
      "file": "circuits/measure-n1-s2m.json",
-     "sha256": "200b088fb8f27d22f6a99f60fc99bbe62965c0d2b36e1a49c9d6e7b657a9ec42"
+     "sha256": "4fad4463c249127615ef29efb3837eca73ee2b52bb8256fdbbc8a247b64a15b0"
     },
     {
      "file": "circuits/measure-n1-s3p.json",
-     "sha256": "526b74348fc6803d1a2328a5307ddd1a264499251b9056a7bbe1e5a668e19400"
+     "sha256": "b75fe747828710d0a31256c303cd0d6e5d8909332c527ac4029e70d73a5a1ccb"
     },
     {
      "file": "circuits/delay-n1-s0p.json",
-     "sha256": "37ef4473dd9b40e3b18177da00117ef0575953d732f3aff7080d9db1bfaecbc9"
+     "sha256": "b43c6eaf3b78b64c700ed049d30ed8e47f2993cfed22a61a0829dc4f55b1e41d"
     },
     {
      "file": "circuits/delay-n1-s1m.json",
-     "sha256": "b196d7168b0110391d733454b3ea33c6601bca431f0855a44877690f390b8c03"
+     "sha256": "1a902db4f98775796eb07518554e8998fdd0ec8faa4e09e57a15e6a4bf6b79d6"
     },
     {
      "file": "circuits/delay-n1-s2m.json",
-     "sha256": "e190ae486121618dcf16c3d1910429f7ce68a4beb0ad44e60714f7fcd3bda341"
+     "sha256": "d59766db8ff94f6d6780212020b00357bfca6639407bb8fd18627a8ecfdcb43f"
     },
     {
      "file": "circuits/delay-n1-s3p.json",
-     "sha256": "f01d2188fe0e70f9214f2ee28cc191a0850c2d266f961d818b037facc9f53a0f"
+     "sha256": "6b2db45e63826a71d82051a13098bb1a33ce13b37d1a8f950e3c1d7c3629a6ed"
     },
     {
      "file": "circuits/measure-n2-s0p.json",
-     "sha256": "e5f4d848baea3ca93928698f380947b427c18dd12b952ee8541aa96c86655b66"
+     "sha256": "0c11189d6bf636d30429507d1e37c5e20931077b53bf566ef2127a5e44bae54a"
     },
     {
      "file": "circuits/measure-n2-s1m.json",
-     "sha256": "9f7b9909fcfb44effe7e27f72d7e3b3908d2651fe17b209a5f738e0e40712796"
+     "sha256": "c857c95afdaf0ee492cbc2d690e3badf9d2a5f69ba7f46240905f207a71e8e59"
     },
     {
      "file": "circuits/measure-n2-s2m.json",
-     "sha256": "1d16dfa666e625a1e5536fcb8db41767db169c3a2aff3fd4d93fafb75ecca65b"
+     "sha256": "0757f39a0654cda3d27d96f8ae939c72b361d3f34e599af5ce0bd83db0f3b2b6"
     },
     {
      "file": "circuits/measure-n2-s3p.json",
-     "sha256": "f5911be068a9cca6ee0dccea12dcdbd13eec1d8212884f1c5b48d1748fcb5e4f"
+     "sha256": "800d927955c459e60e22b6d25c7dbaf67299781cee9453e2cd4d3a186d1ad25b"
     },
     {
      "file": "circuits/delay-n2-s0p.json",
-     "sha256": "45626d7bf6f3281c7a29ff8e828bfd9c5d2265110c1ff05f967bfa3fd2269bfd"
+     "sha256": "aed06042a7ee51ce575f9ca94144c05b463c52ca62ae8fd8beea59354e636988"
     },
     {
      "file": "circuits/delay-n2-s1m.json",
-     "sha256": "8fa438c83d72728115b6ff7695695b1219f7b92bc1012cd2e62a1b757042a339"
+     "sha256": "4c9bdf49d1685ee4317c04a323fc66f76b2c109464293014397e39ac6c39c7a0"
     },
     {
      "file": "circuits/delay-n2-s2m.json",
-     "sha256": "e1c9baac56224c4f70df541e71ac406b3b912be8293f313f9a52eb46d806bc29"
+     "sha256": "2190c8952678355f8c0678ef1f8544df6e9cee944d3451fd41d1e81c9df4e245"
     },
     {
      "file": "circuits/delay-n2-s3p.json",
-     "sha256": "232a42d452d4b21530a972515bd08daa571b15899948eb17fb32b3b626bdca84"
+     "sha256": "71748259425ca6d9c5b2caf506b5a6a20b3c062a7edf0f07bcedf53806cfe3f5"
     },
     {
      "file": "circuits/measure-n4-s0p.json",
-     "sha256": "90629b07441df9d83d8dba6537de2b425d9aab7d5e410fe8a103868238e13690"
+     "sha256": "25d6a72e1d8d1f0fb17e8b47b5127b40afaebffc139ade8d723935557546eb1f"
     },
     {
      "file": "circuits/measure-n4-s1m.json",
-     "sha256": "35a84f021d0218b25784a7127b9dd96bbababefa291d5b0bf96ddb4956d9e7cd"
+     "sha256": "e27908957917d6f591096bc81709c30b9e325d283319ed6979e27aae566f9ddd"
     },
     {
      "file": "circuits/measure-n4-s2m.json",
-     "sha256": "7002b861f5e3712b2021afb49e71736ba7db2175d513c96fa6836ca2609e99c8"
+     "sha256": "8858d1408c5fe429902ce28e2b85816c2ffbe15951f0b4b90dd8cbeaf9d9ef91"
     },
     {
      "file": "circuits/measure-n4-s3p.json",
-     "sha256": "d5613c771325f40f4bc053b9d8f061874bda215ff314853d77aaac305e140110"
+     "sha256": "a30bf57ddadfebe7a0051def87ce946ebc331462b9e3331727287def3a3a3c18"
     },
     {
      "file": "circuits/delay-n4-s0p.json",
-     "sha256": "11b677e3502643686eda42c9fe924f199ad43fc4da0dfd5dae859b5f6816f790"
+     "sha256": "9bef88c5825e43c51c9fbd905eef7a1121341a558f847b5468a9cc0ff923ae8b"
     },
     {
      "file": "circuits/delay-n4-s1m.json",
-     "sha256": "65822352132f9a10d6a2be660e059b2a7de63a7d13000ad11a05ad3445f6231e"
+     "sha256": "09a211d251e26546f50d9aa40ae4c4365d0f18222ad8123dfcb179f7df978b9d"
     },
     {
      "file": "circuits/delay-n4-s2m.json",
-     "sha256": "3d99d7ffd6385af7471ac09c53ace202e78b47f0314d3df2845b715c79d3a42c"
+     "sha256": "961a04173f8778b1eb513610aec64bd70bcb00c2a5f7babf9c588c3a2a3d924a"
     },
     {
      "file": "circuits/delay-n4-s3p.json",
-     "sha256": "f268fa3cc8a720f37566445f7f00726e673a410e3ec871b47ac963599b60797e"
+     "sha256": "c261363fbd0d42f293e970d64f4fdb655acd6a1767bdb88331772bce0935c2bd"
     },
     {
      "file": "circuits/measure-n8-s0p.json",
-     "sha256": "eaeb78fb38b4c3621356a2e99a4ec797b482c87a9951bbdf357a8ac530f1c7a8"
+     "sha256": "41c6a8ede1899fc768bba040310dc528527d67b54fdc1a332eb69abe7344bbb1"
     },
     {
      "file": "circuits/measure-n8-s1m.json",
-     "sha256": "30cf2db91e248d7d6c6315cd4b02e151532156ea4bee98a781ea2cffbd8ea711"
+     "sha256": "7e3e7fbac7e969e7fd26f69fbb8862c006d31919b2c37734eafdd5edafc90586"
     },
     {
      "file": "circuits/measure-n8-s2m.json",
-     "sha256": "ca30d47685641f8d9af5b0ab8d0dca9a354d14693c4a025f0afc8ee25732306b"
+     "sha256": "950d166d5253db09ffd5bca2b1e39d6157114f605cc75e3b8eaade9df48d70b7"
     },
     {
      "file": "circuits/measure-n8-s3p.json",
-     "sha256": "5f1a1b558f18da6fa0233a083eb71307f1c9eab93e47cd29419182ff00fe8e50"
+     "sha256": "8649f7b09c09b29dd8ccb5fc2cfc3d767236e3a013a98a100754fb4d5b319147"
     },
     {
      "file": "circuits/delay-n8-s0p.json",
-     "sha256": "22533dde5fcda1e7c8dddc03a939ade43c2d528c7a5abc95c5dc43b2831f4ad7"
+     "sha256": "fb6ab57a6d2cef2f02b38ce860b926fcd4f6e849c887f7b14909588cf2593009"
     },
     {
      "file": "circuits/delay-n8-s1m.json",
-     "sha256": "216762208f02a585956649720dd46217495294922e1ef5ff8c05b22310e9263f"
+     "sha256": "0a50e7c11d1a5b03722ff292cec2d653c6a7b755c7e6e230967bb7612f03cc69"
     },
     {
      "file": "circuits/delay-n8-s2m.json",
-     "sha256": "bccd82451e69e137ad50e347d2787f546433737d891b39f3ea9a571b69b17a17"
+     "sha256": "464f898b4eaaa240b759986d48d775cf7825042e5740cef8dea34e5d8e8d8a14"
     },
     {
      "file": "circuits/delay-n8-s3p.json",
-     "sha256": "c40cea94a8f05f1fdac534bc76867c693a0013c095f4e19ce734801e1915b28b"
+     "sha256": "95567926a5b7ca95027fb24c262df01c9d81fddaf48e392b0a3499d63f5384e4"
     },
     {
      "file": "circuits/measure-n16-s0p.json",
-     "sha256": "7d91fef8bf6bd9d74fe9d57ffee1f6c018e8ab24997a2fe2dfbce40746a2af40"
+     "sha256": "519bef36601fc7bee8770f1c16e2dfa4d63a0e6d21dd570967be5cd9fac82cbd"
     },
     {
      "file": "circuits/measure-n16-s1m.json",
-     "sha256": "f5b489da803f7dcf77239ba4d6efddcf853db1336d06774f21e50e3977896c99"
+     "sha256": "c64c2d650695d766108f0d22f9bfa02ab9879d4c02780c002f9c6bd6b2dc0d9d"
     },
     {
      "file": "circuits/measure-n16-s2m.json",
-     "sha256": "518103acfb8e951d6295e1587df4ea4bc7e353add91505e5dd6bb9d9aff6a013"
+     "sha256": "8c13a69279cfec80b6252c40a41abcb5f2fb0ec39664eccb215a8e50cdc63616"
     },
     {
      "file": "circuits/measure-n16-s3p.json",
-     "sha256": "559571d23f154740044f3c55a762fa74289a9484fa8bc95a08e0d85b1a9221cd"
+     "sha256": "5d25355764657e300f909b422f6759c05ecaf9f5acf6b6c8cda4d41605bdc398"
     },
     {
      "file": "circuits/delay-n16-s0p.json",
-     "sha256": "4017987a38d96287fea7cce4de735916eebce89ff18bd3d83480037dd5532feb"
+     "sha256": "262879c8d81a55af026ad123b93c71bad246e7a01828c656b63e5ccd99c034ee"
     },
     {
      "file": "circuits/delay-n16-s1m.json",
-     "sha256": "4593f4ec6691e9ba092cfa25f6df7c9db77f985e2564c19aa1e5174a7e796646"
+     "sha256": "c3e15f29956d74c5cd87eb6b643b5c3eba68c7d9aba433eb6761acc1dabda1a8"
     },
     {
      "file": "circuits/delay-n16-s2m.json",
-     "sha256": "4f8a20ca8458d605046c608885310919fafc96e3d37e9d39bf696219a1a19bfc"
+     "sha256": "a1f4d2e6ae179ebcd608c9150c3c19de2e09489cc208262e571f9d2cb4881594"
     },
     {
      "file": "circuits/delay-n16-s3p.json",
-     "sha256": "7d427cb8417691150c9ed7e4b3367b815860ea6bfd14cf169cf942066b45e76a"
+     "sha256": "158909bbb1dd951acf3110f064bba3c67d69dd724a294cbe290e062b4aa16e2f"
     },
     {
      "file": "circuits/unitary-n16-s0p.json",
-     "sha256": "d80f5954b6fc5d3faa050507c6a550f7dbbec54aeeff015ea23d9e0f6f95b161"
+     "sha256": "5a73fef323016f5e617cdbbceeac1ca0809b20b946896f136ff8e3dd2c2de900"
     },
     {
      "file": "circuits/unitary-n16-s1m.json",
-     "sha256": "e96a2fe001e841a9a50229fc934a8f0a022e0fd5705304a02253bf7ed3e4bb6f"
+     "sha256": "70eb336c536a6002d9f7745952d958159f1e3f93d352c27f5cbfd8fca6fd7af1"
     },
     {
      "file": "circuits/unitary-n16-s2m.json",
-     "sha256": "a542490aeff01efe9614b4cc14f9125e1e699a90b157d0707b325cd1b9cd8cdc"
+     "sha256": "64c66e5d031cd4293da7714439b03436072bfc22f7823c2b48cc512d54d81372"
     },
     {
      "file": "circuits/unitary-n16-s3p.json",
-     "sha256": "95e7cab78026683654386380b99ffbcda3adb77d764b58e5d999285fb2da7af3"
+     "sha256": "7c6968351a8056956037d7cdf3d5f98b123178ca7f54e625f1b5abc9c62e2fb3"
     },
     {
      "file": "circuits/settle-n16-s0p.json",
-     "sha256": "964ff1822157aefe6b5d58123b8044ce3aebde1d7899a2d1ed939d7f86baac86"
+     "sha256": "b7be4e8d348ac3fe6984d0328471e36f110b52b61fbce5d98bf4bd011c2b6682"
     },
     {
      "file": "circuits/settle-n16-s1m.json",
-     "sha256": "094c97342c1cc75a7c88ef09eda334d0ec09fdc96b7cc2ed284a7cdf531d873b"
+     "sha256": "b6974fb5c5818c81c2be2bcc2afc82c955f407bae43cf53f5b56634c66bc5331"
     },
     {
      "file": "circuits/settle-n16-s2m.json",
-     "sha256": "b3d22e2d1cba27dc1f17cfa60648100e49578c9e509b6aba8c00927561adae69"
+     "sha256": "fa2ed8c9d60d29a319e110e7c901f175b8b24acced78be2637e8316aab405b5b"
     },
     {
      "file": "circuits/settle-n16-s3p.json",
-     "sha256": "3bbd2cd8d78b8e6360f0497e50b4e7568e439b787ca46eb7074e45b969ceccb9"
+     "sha256": "a8b4fe94998929c81e6fa6cf30646ac9899722f8347165504c2e45137fe33e25"
     },
     {
      "file": "circuits/ro0.json",
-     "sha256": "3ac811e1a1945029256f660b504db5d983e68465fba01a34bca918bdf19255f0"
+     "sha256": "a21336ec81740b49a9dc191963013ba40d35bd83969fa431e0b3e5bf57ea1d9c"
     },
     {
      "file": "circuits/ro1.json",
-     "sha256": "7508504d3fe9d2257efa0654f778e8e4896f0bae1b9e14a7c7271cff2ecba179"
+     "sha256": "c5105c0623a03ed16d6f16b0ad2bc1b834f84f0b3645359d110be75380a5e3dd"
     },
     {
      "file": "circuits/t1-004.json",
-     "sha256": "98ea37458a0ca883be3fc8742cfd04ecc68a6e479721702f87dce9f017af6c70"
+     "sha256": "6d0988b5573fc6bfe6add20cdc7315b8eb90f0dd40b3de38936232168fc0baab"
     },
     {
      "file": "circuits/t1-010.json",
-     "sha256": "6a62ff6f077afefe7145805c8a2c717d54f05236f5ea9b31c89afb9bba017497"
+     "sha256": "b6e6e696fbdccca957181a9e781dd4114a39ed190d6d0476ab0d934132a037f9"
     },
     {
      "file": "circuits/t1-020.json",
-     "sha256": "884b5edbfcc72010b410526587a2d3d3c8ba808bc29e3648b66c094b50db6b1e"
+     "sha256": "85035028cace632ba3b9173751c9c01c05920419746723d31a54941df38acb96"
     },
     {
      "file": "circuits/t1-040.json",
-     "sha256": "87bc03c66e293ed6c4cf670303e41d7d0d40db82edfe2093a044e07186619803"
+     "sha256": "2bc86c86acdf28c0debaee7fa0337a5ef9795525104819f5ced21c1a9c7b7ad4"
     },
     {
      "file": "circuits/t1-060.json",
-     "sha256": "1919142ea7c0dd5409e5fa76d9a0012fb67ea0945913e33eebc0dc4ad0a5eb45"
+     "sha256": "1eee9444eff4705e7c49deb3b96344dde7d789e0def4665c6f00b231cd453336"
     },
     {
      "file": "circuits/t1-100.json",
-     "sha256": "6a2ae647755aabd35ead1a4962d2fe37e9628737fd7f953d13fdad2ab2b60b36"
+     "sha256": "189aeea9b238b8f6b0aeab38799e2637c029600fa5174b85ac690a86dc2ea029"
     },
     {
      "file": "circuits/t1-150.json",
-     "sha256": "a6f56792380fde89d0dcd399c719496168d9cb6a0f2ed4a374c27b3ad20e40ca"
+     "sha256": "384d399a85bf42324cf9fdc7dd39d17dedd6a2ec68b5a3bacdc017de69d2f7c3"
     }
    ],
    "expected_seconds": 5.241,
@@ -248,11 +248,11 @@
    "shots": 3000
   }
  ],
- "prediction_sha256": "39b4dbd9ba19e1d85ca22357f349a54c53f23254728e3c7fac7363557dd4c0b8",
+ "prediction_sha256": "8628be9a287ded8430aff48c8215bab3d2a509e10809713de2082621e5747f8c",
  "qcs": [
   "garnet:mock",
   "garnet"
  ],
- "question": "Does a Garnet mid-circuit measurement act as ideal pinching, a nonselective projective measurement in Z, on QB6, QB9, QB13, QB15, QB18, QB20, read by the Zeno build-up of N rotations of 8 pi/9 over N against the same rotations with no measurement, with a delay of the measure duration and a settled readout as controls, and with T1 and the initialization excitation measured in the job?",
+ "question": "Does a Garnet mid-circuit measurement act as ideal pinching, a nonselective projective measurement in Z, on QB1, QB5, QB8, QB14, QB17, QB19, read by the Zeno build-up of N rotations of 8 pi/9 over N against the same rotations with no measurement, with a delay of the measure duration and a settled readout as controls, and with T1 and the initialization excitation measured in the job?",
  "schema": "iqm-circuit-case-v1"
 }

@@ -12,9 +12,9 @@ signed circuits of each (arm, N) run in the order +, -, -, + (docs/notes/iqm/REA
   pulses separate, 40 ns per layer (results/iqm/cases/measurement-timing-probe), so it stays as long as its pulses.
   Every step of every arm at every N is two prx(pi/2) pulses with the virtual Z frame folded into their phases
   (step_pulses; the diagnostic job read this construction at N = 16 against its model, docs/design/
-  iqm-garnet-measurement-sequence-diagnostic.md). The qubit selection skips every qubit of EXCLUDED_QUBITS: the
-  qubits that diagnostic found unusable or whose pi/2-pair residual projects to the unitary-arm guard of
-  device_verdict at |z| >= Z_DECIDE on either sign (project_diagnostic), and one qubit with a large prx error.
+  iqm-garnet-measurement-sequence-diagnostic.md). The qubit selection uses calibration data and measured failures
+  only: it skips QB11 (EXCLUDED_QUBITS, T1 collapsed in situ) and every qubit whose calibrated prx error exceeds
+  PRX_ERROR_FACTOR times the set's median.
 - delay (every N): each mid-circuit measure replaced by a `delay` of MEASURE_WINDOW_SECONDS. It is the elapsed-time
   control. Idle time dephases the qubit, which is a partial Z measurement of its own, so its P0 rises with N without
   any measurement; the arm quantifies how much of the measure arm's Zeno effect idle dephasing alone produces.
@@ -67,26 +67,37 @@ by the delta method:
 - the departure test compares the measured N = 16 measure-arm P0 with the ideal-projective prediction at the
   fitted T1 and q (a rotation with the prx depolarizing error, an ideal pinch, then T1 relaxation toward |0> over the
   rotation layer and the measure window; T2 does not enter, because the state is diagonal after every measurement)
-  and names one outcome from z = (measured - predicted)/SE, the SE including the T1 and q fit and a systematic of
-  PRX_SYSTEMATIC times the calibrated prx error (a randomized-benchmarking average over other sequences):
-  `departs_below` (z <= -Z_DECIDE), `exceeds_prediction` (z >= Z_DECIDE) or `consistent`;
+  and names one outcome from z = (measured - predicted)/SE, the SE including the T1 and q fit, a systematic of
+  PRX_SYSTEMATIC times the calibrated prx error (a randomized-benchmarking average over other sequences) and the
+  gate-model systematic below: `departs_below` (z <= -Z_DECIDE), `exceeds_prediction` (z >= Z_DECIDE) or
+  `consistent`;
+- gate-model systematic. The unitary arm has no measurement, so its N = 16 residual against the model is gate-model
+  error alone. A gate error of class c (GATE_CLASSES: axis phase per pulse, dephasing rate during the layers,
+  composite pulse-angle scale, depolarizing prx error) that moves the unitary arm by d moves the measure arm by
+  ratio_c x d, with the ratios of gate_class_ratios computed per qubit from the model at the fitted T1 and q. Each
+  qubit's departure standard error therefore adds, in quadrature over the classes, ratio_c x s, with s the root of the
+  squared unitary residual plus its squared statistical standard error. A model error that the unitary arm shows
+  widens the departure test and cannot be read as incomplete pinching, and a unitary arm that matches its model adds
+  little;
 - a qubit whose fitted readout scale lies below READOUT_CONTRAST_FLOOR makes no decision;
 - the device verdicts (device_verdict) are the decisions: six qubits times about four 3-SE tests give about a 6 %
   chance of one false flag, so a device departs only when at least DEVICE_QUBITS usable qubits return `departs_below`
-  or the inverse-variance pooled departure z over the usable qubits is at or below -Z_DECIDE; `exceeds_prediction`
-  and the settle `tail_attributed` follow the same rule. The per-qubit verdicts stay descriptive. A shared prx
-  underestimate pools coherently across qubits, so a device `departs_below` or `exceeds_prediction` counts as
-  attributed to the measurement only if, on every contributing qubit, the unitary arm's N = 16 measured-minus-modeled
-  difference lies within Z_DECIDE statistical standard errors (sixteen unmeasured pulses shift the unitary P0 by about
-  7.5 times the prx error); otherwise its status is `gate_model_inconsistent`.
+  or the inverse-variance pooled departure z over the usable qubits, weighted by the widened variances, is at or
+  below -Z_DECIDE; `exceeds_prediction` and the settle `tail_attributed` follow the same rule. The per-qubit
+  verdicts stay descriptive. The pooling treats the qubits as independent, which a shared gate error is not; the
+  sweep rows with a prx error of three times the calibration and with injected model errors test that.
 
 Known limit: ro1 puts every qubit in |1> at once, while the measure arm's neighbor states vary from shot to shot, so
 state-dependent simultaneous-readout crosstalk is not calibrated. `analyze` reports the largest correlation of each
 qubit's final outcome with another's (readout_crosstalk) as a descriptive check; the case adds no circuits for it.
 
 The sweep subcommand (and the self-test at a reduced grid) runs the real analysis over synthetic raw measurements of
-model devices off the planning point and requires every qubit to read |departure z| < 1, settle `match` and a passing
-mutation test.
+model devices off the planning point. Devices that move one nuisance (initialization excitation, T1, prx error) must
+read every qubit |departure z| < 1, settle `match` and a passing mutation test with no device flag. Devices with an
+injected gate-model error (a dephasing scale during the layers, an axis phase per pulse) must read `none`; a prx error
+of three times the calibration must never read `attributed`; the same model errors with a true departure of at least
+four departure standard errors added must read `attributed`. The `detect` subcommand reports the smallest injected
+departure that reads `attributed` per model error.
 
 Descriptive outputs, deciding nothing: the settle gap, the readout-history diagnostic, the delay arm's measured and
 modeled (T1 and T2) P0 per N, the delay minus unitary difference at N = 16, the per-N measure-arm deficit against
@@ -97,7 +108,7 @@ outcomes against sin(THETA/(2N))^2.
 The case draws no random number; it holds no seed.
 
 Usage: "$PYTHON" scripts/iqm_measurement_sequence.py (build DIR [--calibration-dir DIR] | check DIR
-       | analyze RUN_DIR --out FILE [--replay] [--mock] | sweep [--reduced] | --self-test)
+       | analyze RUN_DIR --out FILE [--replay] [--mock] | sweep [--reduced] | detect | project | --self-test)
 """
 
 from __future__ import annotations
@@ -147,37 +158,19 @@ PRE_READOUT_SECONDS = 2.0e-6
 # points anchor the fit's asymptote, which 60 us does not reach for a T1 of 25 to 60 us.
 T1_DELAYS = (4e-6, 10e-6, 20e-6, 40e-6, 60e-6, 100e-6, 150e-6)
 QUBIT_COUNT = 6
-# Qubits the selection skips. The diagnostic job 01a1753f-3b98-7437-9433-83d0b4b87721 (set be070414, 1000 shots,
-# docs/design/iqm-garnet-measurement-sequence-diagnostic.md, "Results") fixes the first five; project_diagnostic()
-# recomputes their figures, and a qubit whose projected |z| reaches Z_DECIDE is excluded on either sign, because the
-# unitary-arm guard of device_verdict is two-sided. QB12 is excluded on its calibrated prx error.
+# Qubits the selection skips on a measured failure: the diagnostic job 01a1753f-3b98-7437-9433-83d0b4b87721 (set
+# be070414, docs/design/iqm-garnet-measurement-sequence-diagnostic.md, "Results") read QB11's T1 collapsed. A residual
+# of the diagnostic against the model is not an exclusion: the residuals scatter across qubits beyond their errors
+# (project_diagnostic reports them), and the unitary-arm systematic of evaluate_qubit carries that scatter instead.
 EXCLUDED_QUBITS = {
-    "QB5": (
-        "the pi/2-pair circuit reads 0.0331 below its model at 1000 shots, which against the 0.0085 statistical "
-        "standard error of the case's unitary arm at 3000 shots is z = -3.91 and fires the unitary-arm guard"
-    ),
-    "QB7": (
-        "the pi/2-pair circuit reads 0.1233 below its model at 1000 shots (z = -14.23 against the case's statistical "
-        "standard error of 0.0087), and its calibrated prx error of 0.00545 is the largest of the usable qubits"
-    ),
     "QB11": (
-        "T1 collapsed in situ: |1> reads P(0) = 0.172 at once and 0.522 after the 2 us idle, about 4 us against "
-        "47.8 us in the set, and the readout scale is 0.384"
-    ),
-    "QB12": (
-        "the calibrated prx error of 0.00436 is 2.6 to 6.6 times that of the other selected qubits (0.00066 to "
-        "0.00169), so its departure standard error of 0.041 adds little to the pooled test, and a randomized-"
-        "benchmarking underestimate on this qubit alone can move the device verdict"
-    ),
-    "QB14": (
-        "the pi/2-pair circuit reads 0.0420 below its model at 1000 shots, which against the 0.0080 statistical "
-        "standard error of the case's unitary arm at 3000 shots is z = -5.27 and fires the unitary-arm guard"
-    ),
-    "QB17": (
-        "the pi/2-pair circuit reads 0.0527 above its model at 1000 shots, which against the 0.0081 statistical "
-        "standard error of the case's unitary arm at 3000 shots is z = +6.52 and fires the unitary-arm guard"
+        "T1 collapsed in situ: the prepared excited state reads P(0) = 0.172 at once and 0.522 after the 2 us idle, "
+        "about 4 us against 47.8 us in the set, and the readout scale is 0.384"
     ),
 }
+# The selection also skips every qubit whose calibrated prx error exceeds PRX_ERROR_FACTOR times the set's median:
+# such a qubit's departure standard error is dominated by the gate systematic and adds little to the pooled test.
+PRX_ERROR_FACTOR = 2.0
 DIAGNOSTIC_ANALYSIS = ROOT / "results/iqm/measurement_sequence_diagnostic_analysis.json"
 DIAGNOSTIC_EXCERPT = (
     ROOT / "results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic" / EXCERPT
@@ -426,16 +419,23 @@ def load_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def prx_errors(characterization: dict[str, float], names: list[str]) -> dict[str, float]:
+    """The calibrated prx depolarizing error of each qubit: 2 (1 - randomized-benchmarking fidelity)."""
+    return {q: 2 * (1 - characterization[f"metrics.rb.prx.drag_crf_sx.{q}.fidelity:par=d2"]) for q in names}
+
+
 def select_qubits(
     characterization: dict[str, float],
     architecture: dict[str, Any],
     count: int = QUBIT_COUNT,
     excluded: dict[str, str] | None = None,
+    prx_factor: float | None = PRX_ERROR_FACTOR,
 ) -> tuple[list[str], dict[str, Any]]:
     """Greedy choice by smallest e01 + e10 among the qubits whose T1 is at least the set's median, skipping any qubit
-    that shares a cz coupler with one already chosen and any qubit in `excluded`. When fewer than `count` qubits
-    qualify, the choice extends by the remaining uncoupled qubits in decreasing T1, which lowers the T1 floor to the
-    last one added."""
+    that shares a cz coupler with one already chosen, any qubit in `excluded` and, when `prx_factor` is set, any
+    qubit whose prx error exceeds prx_factor times the set's median. When fewer than `count` qubits qualify, the
+    choice extends by the remaining uncoupled qubits in decreasing T1, which lowers the T1 floor to the last one
+    added."""
     skipped = EXCLUDED_QUBITS if excluded is None else excluded
     names = list(architecture["qubits"])
     t1 = {q: characterization[f"characterization.model.{q}.t1_time"] for q in names}
@@ -444,11 +444,14 @@ def select_qubits(
         + characterization[f"metrics.ssro.measure.constant.{q}.error_1_to_0"]
         for q in names
     }
+    prx = {} if prx_factor is None else prx_errors(characterization, names)
+    prx_limit = None if prx_factor is None else prx_factor * statistics.median(prx.values())
+    high_prx = {q: prx[q] for q in names if prx_limit is not None and prx[q] > prx_limit}
     median = statistics.median(t1.values())
     coupled = {
         frozenset(locus) for impl in architecture["gates"]["cz"]["implementations"].values() for locus in impl["loci"]
     }
-    eligible = [q for q in names if q not in skipped]
+    eligible = [q for q in names if q not in skipped and q not in high_prx]
 
     def free(q: str, chosen: list[str]) -> bool:
         return all(frozenset((q, c)) not in coupled for c in chosen)
@@ -469,8 +472,9 @@ def select_qubits(
         raise ValueError(f"only {len(chosen)} uncoupled qubits remain after the exclusions")
     rule = (
         f"the {count} qubits of smallest e01 + e10 among those with T1 at least the set's median, taken in that order "
-        "and skipping any that shares a cz coupler with one already taken or is excluded; when fewer qualify, the "
-        "uncoupled remainder in decreasing T1"
+        "and skipping any that shares a cz coupler with one already taken, is excluded for a measured failure, or has "
+        f"a prx error above {prx_factor} times the set's median; when fewer qualify, the uncoupled remainder in "
+        "decreasing T1"
     )
     return sorted(chosen, key=lambda q: int(q[2:])), {
         "rule": rule,
@@ -478,6 +482,9 @@ def select_qubits(
         "qualified_at_median": at_median,
         "t1_floor_s": min(t1[q] for q in chosen),
         "excluded": {q: reason for q, reason in skipped.items() if q in names},
+        "prx_error_median": None if prx_factor is None else statistics.median(prx.values()),
+        "prx_error_limit": prx_limit,
+        "excluded_for_prx_error": dict(sorted(high_prx.items(), key=lambda item: int(item[0][2:]))),
     }
 
 
@@ -543,6 +550,25 @@ def pulse_trig(n: int, paired: bool) -> tuple[tuple[tuple[float, float, float, f
     )
 
 
+def gate_errors_trig(
+    n: int, paired: bool, angle_scale: float, advance: float
+) -> tuple[tuple[tuple[float, float, float, float], ...], ...]:
+    """pulse_trig with every pulse angle scaled by angle_scale and every pulse's axis phase advanced by `advance`
+    radians per pulse played so far in the chain (the gate-model error classes of GATE_CLASSES)."""
+    if angle_scale == 1.0 and advance == 0.0:
+        return pulse_trig(n, paired)
+    out = []
+    played = 0
+    for step in range(n):
+        row = []
+        for a, f in step_pulses(n, step, 1, paired):
+            a, f = a * angle_scale, f + advance * played
+            played += 1
+            row.append((math.cos(a), math.sin(a), math.cos(f), math.sin(f)))
+        out.append(tuple(row))
+    return tuple(out)
+
+
 def bloch_z(
     arm: str,
     n: int,
@@ -554,6 +580,9 @@ def bloch_z(
     gate_p: float = 0.0,
     z_eq: float = 1.0,
     paired: bool = True,
+    angle_scale: float = 1.0,
+    advance: float = 0.0,
+    drive_t2_scale: float = 1.0,
 ) -> float:
     """Bloch z of the chain from z0 with T1 and Ramsey T2 relaxation, just before the pre-readout delay.
 
@@ -564,13 +593,16 @@ def bloch_z(
     delay or settle idle). A pinched arm's state is diagonal after each step, so t2 never reaches its result. The
     pre-readout delay is not iterated here: relaxation over it is affine in z, so ro0 and ro1, which wait as long,
     calibrate it away exactly. z_eq is the equilibrium z the relaxation approaches, 1 - 2 times the thermal
-    excitation of an idle qubit.
+    excitation of an idle qubit. The last three parameters are gate-model errors the planning model leaves at their
+    nominal values: a scale on every pulse angle, an axis-phase advance per pulse, and a scale on the dephasing rate
+    during the 40 ns layers (idle and readout windows keep the Ramsey T2).
     """
     x = y = 0.0
     z = z0
-    layer_t2, layer_t1 = math.exp(-PRX_LAYER_SECONDS / t2), math.exp(-PRX_LAYER_SECONDS / t1)
-    step_t2, step_t1 = math.exp(-tau / t2), math.exp(-tau / t1)
-    for pulses in pulse_trig(n, paired):
+    layer = PRX_LAYER_SECONDS
+    layer_t2, layer_t1 = math.exp(-drive_t2_scale * layer / t2), math.exp(-layer / t1)
+    step_t2, step_t1 = math.exp(-(tau + (drive_t2_scale - 1) * layer) / t2), math.exp(-tau / t1)
+    for pulses in gate_errors_trig(n, paired, angle_scale, advance):
         for index, (c, s_, cp, sp) in enumerate(pulses):
             dot = (cp * x + sp * y) * (1 - c)
             x, y, z = (
@@ -588,17 +620,29 @@ def bloch_z(
 
 
 def corrected_z(
-    arm: str, n: int, t1: float, t2: float, tau: float, eps: float, gate_p: float, q: float, paired: bool = True
+    arm: str,
+    n: int,
+    t1: float,
+    t2: float,
+    tau: float,
+    eps: float,
+    gate_p: float,
+    q: float,
+    paired: bool = True,
+    angle_scale: float = 1.0,
+    advance: float = 0.0,
+    drive_t2_scale: float = 1.0,
 ) -> float:
-    """The z that ro0/ro1 correction recovers on the relaxing model: a + b q, with a the chain's response to the
+    """The z that ro0/ro1 correction recovers on the relaxing model: a + b*q, with a the chain's response to the
     initial z and b its response to the relaxation source, both at unit strength.
 
     A true z of z0 = 1 - 2 p before the wait is divided by the scale (1 - 2 p) that ro0 and ro1 measure, so the
     initial state enters through q alone, and q = z_eq/(1 - 2 p) is the single combination the T1 series fixes:
     its asymptote is z_eq/(1 - 2 p), whatever the thermal excitation of an idle qubit.
     """
-    b = bloch_z(arm, n, t1, t2, tau, eps, 0.0, gate_p, paired=paired)
-    return bloch_z(arm, n, t1, t2, tau, eps, 1.0, gate_p, paired=paired) - b + b * q
+    errors = {"angle_scale": angle_scale, "advance": advance, "drive_t2_scale": drive_t2_scale}
+    b = bloch_z(arm, n, t1, t2, tau, eps, 0.0, gate_p, paired=paired, **errors)
+    return bloch_z(arm, n, t1, t2, tau, eps, 1.0, gate_p, paired=paired, **errors) - b + b * q
 
 
 def model_tables(
@@ -627,6 +671,52 @@ def implied_loss(z_corrected: float, t1: float, t2: float, window: float, q: flo
         else:
             high = middle
     return (low + high) / 2
+
+
+# The gate-model error classes the unitary arm can reveal and the measure arm inherits, each as (bloch_z keyword,
+# nominal value, half-step of the central difference): an axis-phase advance per pulse (radians), a scale on the
+# dephasing rate during the 40 ns layers, a scale on every pulse angle (the composite-angle error) and the
+# depolarizing prx error (stepped by half its calibrated value).
+GATE_CLASSES = {
+    "axis_phase": ("advance", 0.01),
+    "drive_dephasing": ("drive_t2_scale", 0.2),
+    "composite_angle": ("angle_scale", 0.004),
+    "depolarizing": ("gate_p", 0.5),
+}
+
+
+def gate_class_ratios(t1: float, t2: float, q: float, window: float, gate_p: float) -> dict[str, float]:
+    """Per error class, the ratio of the N = 16 measure arm's corrected-P0 shift to the unitary arm's, for a small
+    change of the class parameter about its nominal value on the relaxing model (central differences). A gate-model
+    error of that class that moves the unitary arm by d moves the measure arm by ratio x d. Zero when the class does
+    not move the unitary arm. The depolarizing class steps the prx error by half its value (a floor of 4e-5 times
+    one half)."""
+    nominal = {"gate_p": gate_p, "angle_scale": 1.0, "advance": 0.0, "drive_t2_scale": 1.0}
+    out = {}
+    for name, (key, step) in GATE_CLASSES.items():
+        h = max(gate_p, 4e-5) * step if key == "gate_p" else step
+        shifts = {}
+        for arm in ("measure", "unitary"):
+            tau = tau_of(arm, window)
+            high, low = (
+                corrected_z(
+                    arm,
+                    TOP_STEPS,
+                    t1,
+                    t2,
+                    tau,
+                    0.0,
+                    pert["gate_p"],
+                    q,
+                    angle_scale=pert["angle_scale"],
+                    advance=pert["advance"],
+                    drive_t2_scale=pert["drive_t2_scale"],
+                )
+                for pert in ({**nominal, key: nominal[key] + sign * h} for sign in (1, -1))
+            )
+            shifts[arm] = (high - low) / 2
+        out[name] = shifts["measure"] / shifts["unitary"] if abs(shifts["unitary"]) > 1e-12 else 0.0
+    return out
 
 
 def var(k: float, n: int) -> float:
@@ -836,9 +926,12 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
             "measured_minus_modeled_se": se[f"diff:{key}"],
             "planning": ctx["planning"][arm][str(n)],
         }
-    # In-job check of the gate model: sixteen unmeasured pulses shift the unitary arm's P0 by about 7.5 times the prx
-    # error, and a shared randomized-benchmarking underestimate moves every qubit the same way. The check uses the
-    # statistical standard error alone, since the prx systematic would hide the very error it asks about.
+    # In-job reading of the gate model. The unitary arm has no measurement, so its residual against the model is gate-
+    # model error alone (the diagnostic job found it scattering across qubits by about 0.03 in P0 with mixed signs). A
+    # gate error of class c that moves the unitary arm by d moves the measure arm by ratio_c x d (gate_class_ratios),
+    # so the measure arm's departure carries a systematic of ratio_c x s per class, s the rms of the unitary residual
+    # and its statistical standard error, added to the departure's standard error in quadrature over the classes. The
+    # statistical standard error excludes the prx systematic, which would hide the error the reading asks about.
     unitary_key = f"unitary-{top}"
     shifted = list(x)
     shifted[index["prx_p"]] += 1e-5
@@ -856,7 +949,14 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
         "z": value[f"diff:{unitary_key}"] / statistical if statistical > 0 else math.inf,
     }
     key = f"measure-{top}"
-    decisions = decide(value["contrast"], se["contrast"], value[f"diff:{key}"], se[f"diff:{key}"])
+    scale_u = math.hypot(gate_check["difference"], statistical)
+    ratios = gate_class_ratios(
+        value["t1_s"], min(ctx["t2_s"], 2 * value["t1_s"]), value["q"], ctx["window_s"], ctx["prx_p"]
+    )
+    systematic = {name: abs(r) * scale_u for name, r in ratios.items()}
+    gate_systematic = math.sqrt(sum(v * v for v in systematic.values()))
+    departure_se = math.hypot(se[f"diff:{key}"], gate_systematic)
+    decisions = decide(value["contrast"], se["contrast"], value[f"diff:{key}"], departure_se)
     gap_z = value["tail_gap"] / se["tail_gap"]
     history_z = value["history"] / se["history"]
     t1, p_init, q = value["t1_s"], value["p_init"], value["q"]
@@ -895,7 +995,12 @@ def evaluate_qubit(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str
             "prediction": value[f"model:{key}"],
             "measured": value[f"p0:{key}"],
             "difference": value[f"diff:{key}"],
-            "se": se[f"diff:{key}"],
+            "se": departure_se,
+            "se_before_gate_systematic": se[f"diff:{key}"],
+            "gate_systematic": gate_systematic,
+            "gate_class_ratios": ratios,
+            "gate_class_systematic": systematic,
+            "unitary_residual_scale": scale_u,
         },
         "decisions": decisions,
         "gate_check_n16": gate_check,
@@ -980,7 +1085,7 @@ def tally(circuits: list[dict[str, Any]], results: list[dict[str, Any]]) -> dict
 def device_model(cal: dict[str, Any], **over: Any) -> dict[str, Any]:
     """A model device from one qubit's calibration, with fields overridden: t1_s, t2_s, p_init, eps (z lost per step
     to measurement transitions), eps_settle (None follows eps), p_thermal (the idle qubit's thermal excitation), prx_p,
-    e01, e10 and window_s."""
+    e01, e10 and window_s, and the gate-model errors angle_scale, advance and drive_t2_scale of bloch_z."""
     model = {
         "t1_s": cal["t1_s"],
         "t2_s": cal["t2_s"],
@@ -992,6 +1097,9 @@ def device_model(cal: dict[str, Any], **over: Any) -> dict[str, Any]:
         "eps": 0.0,
         "eps_settle": None,
         "window_s": MEASURE_WINDOW_SECONDS,
+        "angle_scale": 1.0,
+        "advance": 0.0,
+        "drive_t2_scale": 1.0,
     }
     model.update(over)
     return model
@@ -1033,6 +1141,9 @@ def device_counts(models: dict[str, dict[str, Any]], shots: int = SHOTS) -> dict
                 1 - 2 * m["p_init"],
                 m["prx_p"],
                 z_eq(m),
+                angle_scale=m["angle_scale"],
+                advance=m["advance"],
+                drive_t2_scale=m["drive_t2_scale"],
             )
             flips[q] = max(0.0, (1 - (1 - 2 * eps) * math.cos(THETA / n)) / 2)
         for name in group_names(arm, n):
@@ -1062,19 +1173,29 @@ def raw_p0(name: str, cal: dict[str, float], p_init: float) -> float:
     return (1 + (1 - cal["e01"] - cal["e10"]) * waited + cal["e10"] - cal["e01"]) / 2
 
 
+# Qubit-level scatter of the pi/2-pair N = 16 reading against the model, in raw P0: the root mean square of the
+# diagnostic's corrected D6 differences on the four chosen qubits it read (0.033, 0.042, 0.053 and 0.018; the
+# mixed-sign scatter that the gate-model systematic of evaluate_qubit carries in the decision). The pre-flight band
+# of the two N = 16 circuits widens by it on both sides, so that the stop rule stops a collapse and not a qubit that
+# scatters like the diagnosed ones.
+RAW_MODEL_SCATTER = 0.04
+
+
 def raw_band(cal: dict[str, float], band: tuple[float, float] = RAW_EXCITATION_BAND) -> dict[str, list[float]]:
-    """The raw P(0) of the pre-flight circuits over an initialization-excitation band, as [low, high]."""
+    """The raw P(0) of the pre-flight circuits over an initialization-excitation band, as [low, high]; the two N = 16
+    circuits widen by RAW_MODEL_SCATTER on both sides."""
     out = {}
     for name in ("ro0", "ro1", "unitary-16", "measure-16"):
         values = [raw_p0(name, cal, p) for p in band]
-        out[name] = [min(values), max(values)]
+        spread = RAW_MODEL_SCATTER if name.endswith("-16") else 0.0
+        out[name] = [min(values) - spread, max(values) + spread]
     return out
 
 
-def unitary_statistical_se(cal: dict[str, float]) -> float:
-    """The statistical standard error of the case's unitary-arm N = 16 measured-minus-modeled difference at SHOTS,
-    the denominator of the gate guard, for a qubit of calibration `cal` on its planning device."""
-    model = device_model(cal)
+def analyze_model(cal: dict[str, float], **over: Any) -> dict[str, Any]:
+    """The analysis of one qubit of calibration `cal` on a model device with the fields `over` (see device_model),
+    against the planning prediction of the nominal calibration."""
+    model = device_model(cal, **over)
     tables = model_tables(cal["t1_s"], cal["t2_s"], PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"])
     context = {
         "t2_s": cal["t2_s"],
@@ -1082,17 +1203,52 @@ def unitary_statistical_se(cal: dict[str, float]) -> float:
         "window_s": MEASURE_WINDOW_SECONDS,
         "planning": tables,
     }
-    return float(evaluate(device_counts({"Q": model}), {"Q": context})["Q"]["gate_check_n16"]["statistical_se"])
+    return dict(evaluate(device_counts({"Q": model}), {"Q": context})["Q"])
+
+
+def unitary_statistical_se(cal: dict[str, float]) -> float:
+    """The statistical standard error of the case's unitary-arm N = 16 measured-minus-modeled difference at SHOTS for
+    a qubit of calibration `cal` on its planning device."""
+    return float(analyze_model(cal)["gate_check_n16"]["statistical_se"])
+
+
+def measure_p0_shift(cal: dict[str, float], eps: float, **over: Any) -> float:
+    """The true corrected N = 16 measure-arm P0 of a model device with step loss eps, less its value at eps = 0."""
+    model = device_model(cal, **over)
+    t2 = min(model["t2_s"], 2 * model["t1_s"])
+    q = z_eq(model) / (1 - 2 * model["p_init"])
+    errors = {k: model[k] for k in ("angle_scale", "advance", "drive_t2_scale")}
+    tau = tau_of("measure", model["window_s"])
+    gate_p = model["prx_p"]
+    pinched = corrected_z("measure", TOP_STEPS, model["t1_s"], t2, tau, eps, gate_p, q, **errors)
+    flat = corrected_z("measure", TOP_STEPS, model["t1_s"], t2, tau, 0.0, gate_p, q, **errors)
+    return (pinched - flat) / 2
+
+
+def eps_for_shift(cal: dict[str, float], shift: float, **over: Any) -> float | None:
+    """The step loss eps at which the measure arm's corrected P0 falls by `shift` (positive) on a model device, or
+    None when no eps up to 0.5 reaches it."""
+    if measure_p0_shift(cal, 0.5, **over) > -shift:
+        return None
+    low, high = 0.0, 0.5
+    for _ in range(40):
+        middle = (low + high) / 2
+        if measure_p0_shift(cal, middle, **over) > -shift:
+            low = middle
+        else:
+            high = middle
+    return (low + high) / 2
 
 
 def project_diagnostic(analysis: dict[str, Any], excerpt: dict[str, Any]) -> dict[str, Any]:
     """Per diagnosed qubit, the diagnostic's pi/2-pair N = 16 corrected difference (measured minus modeled P0) divided
-    by the case's statistical standard error at SHOTS: the z that the unitary-arm guard of device_verdict would read
-    if the 1000-shot difference were the qubit's systematic. The guard is two-sided, so |z| at Z_DECIDE excludes."""
+    by the case's statistical standard error at SHOTS: the z of an absolute test of the unitary arm against the model
+    if the 1000-shot difference were the qubit's systematic. Descriptive: the selection does not use it, because the
+    1000-shot differences scatter across qubits beyond their errors."""
     out: dict[str, Any] = {}
     for q, row in analysis["qubits"].items():
         if not row["usable"]:
-            out[q] = {"usable": False, "reason": row["reason"], "excluded": True}
+            out[q] = {"usable": False, "reason": row["reason"], "beyond_absolute_test": True}
             continue
         reading = row["corrected"]["d6-pair-n16"]
         se = unitary_statistical_se(excerpt["qubits"][q])
@@ -1103,7 +1259,7 @@ def project_diagnostic(analysis: dict[str, Any], excerpt: dict[str, Any]) -> dic
             "diagnostic_z": reading["z"],
             "statistical_se": se,
             "projected_z": z,
-            "excluded": abs(z) >= Z_DECIDE,
+            "beyond_absolute_test": abs(z) >= Z_DECIDE,
         }
     return out
 
@@ -1186,6 +1342,9 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str
                 / row["departure_n16"]["se"],
             },
             "raw_band": raw_band(cal),
+            "gate_class_ratios": gate_class_ratios(
+                cal["t1_s"], min(cal["t2_s"], 2 * cal["t1_s"]), PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"]
+            ),
             "p_init_sensitivity": {
                 "measure_n16_p0": sensitivity,
                 "spread": spread,
@@ -1196,6 +1355,7 @@ def predict(excerpt: dict[str, Any], circuits: list[dict[str, Any]]) -> dict[str
                 "contrast_se": row["contrast_n16"]["se"],
                 "mutation_z": row["decisions"]["mutation_test"]["z"],
                 "departure_se": row["departure_n16"]["se"],
+                "departure_se_before_gate_systematic": row["departure_n16"]["se_before_gate_systematic"],
                 "t1_se": row["fitted"]["t1_se"],
                 "p_init_se": row["fitted"]["p_init_se"],
                 "readout_history_se": row["readout_history_n1"]["se"],
@@ -1385,13 +1545,11 @@ def device_verdict(qubits: dict[str, Any]) -> dict[str, Any]:
     return `departs_below`, or the inverse-variance pooled departure z over the usable qubits is at or below
     -Z_DECIDE; `exceeds_prediction` and the settle `tail_attributed` follow the same rule with the signs of their
     own z. Six qubits times about four 3-SE tests give about a 6 % chance of one false flag, so the per-qubit
-    verdicts stay descriptive. The pooling treats the qubits as independent.
-
-    A randomized-benchmarking underestimate of the prx error is shared across qubits and pools coherently, so a device
-    departure (either sign) is attributed to the measurement only if, on every qubit that contributes to it (the named
-    qubits, or all usable qubits when the pooled z fired), the unitary arm's N = 16 measured-minus-modeled difference
-    lies within Z_DECIDE statistical standard errors. Otherwise the status reads `gate_model_inconsistent`, `device`
-    stays false and the departure is not attributed.
+    verdicts stay descriptive. The pooling treats the qubits as independent and weights each by the inverse of its
+    inflated departure variance: the departure standard error of evaluate_qubit already carries, per error class
+    of GATE_CLASSES, the measure-arm shift that a gate-model error consistent with that qubit's unitary-arm residual
+    could produce, so a gate-model error withholds an attribution by widening the standard error and no separate
+    guard is needed. The status is `attributed` when the rule fires and `none` otherwise.
     """
     usable = {q: r for q, r in qubits.items() if r["usable"]}
     departure = [(r["departure_n16"]["difference"], r["departure_n16"]["se"]) for r in usable.values()]
@@ -1401,19 +1559,15 @@ def device_verdict(qubits: dict[str, Any]) -> dict[str, Any]:
     above = sorted(q for q, r in usable.items() if r["decisions"]["departure"]["outcome"] == "exceeds_prediction")
     tailed = sorted(q for q, r in usable.items() if r["settle_n16"]["verdict"] == "tail_attributed")
 
-    def verdict(named: list[str], z: float | None, sign: int, gate: bool = True) -> dict[str, Any]:
-        pooled_fired = z is not None and sign * z >= Z_DECIDE
-        fired = len(named) >= DEVICE_QUBITS or pooled_fired
-        contributors = sorted(usable) if pooled_fired else named
-        inconsistent = gate and any(abs(usable[q]["gate_check_n16"]["z"]) >= Z_DECIDE for q in contributors)
-        status = "none" if not fired else "gate_model_inconsistent" if inconsistent else "attributed"
-        return {"qubits": named, "pooled_z": z, "status": status, "device": status == "attributed"}
+    def verdict(named: list[str], z: float | None, sign: int) -> dict[str, Any]:
+        fired = len(named) >= DEVICE_QUBITS or (z is not None and sign * z >= Z_DECIDE)
+        return {"qubits": named, "pooled_z": z, "status": "attributed" if fired else "none", "device": fired}
 
     return {
         "usable_qubits": sorted(usable),
         "departs_below": verdict(below, z_departure, -1),
         "exceeds_prediction": verdict(above, z_departure, 1),
-        "settle_tail_attributed": verdict(tailed, z_tail, 1, gate=False),
+        "settle_tail_attributed": verdict(tailed, z_tail, 1),
     }
 
 
@@ -1598,7 +1752,7 @@ def check_billing_fit() -> str:
 def check_selection(values: dict[str, float], architecture: dict[str, Any], count: int) -> None:
     """select_qubits returns count qubits that are uncoupled, at or above the median T1 and not outranked by any
     qubit that no chosen, better-ranked qubit blocks."""
-    chosen, info = select_qubits(values, architecture, count, {})
+    chosen, info = select_qubits(values, architecture, count, {}, None)
     coupled = {
         frozenset(locus) for impl in architecture["gates"]["cz"]["implementations"].values() for locus in impl["loci"]
     }
@@ -1651,14 +1805,22 @@ def check_pairs() -> None:
 def check_exclusion_and_fallback(values: dict[str, float], architecture: dict[str, Any], count: int) -> None:
     """An excluded qubit is never chosen and is recorded; a count beyond the qubits at the median T1 extends the choice
     by decreasing T1 and lowers the floor."""
-    first, _ = select_qubits(values, architecture, count, {})
+    first, _ = select_qubits(values, architecture, count, {}, None)
     skipped = {first[0]: "test"}
-    chosen, info = select_qubits(values, architecture, count, skipped)
+    chosen, info = select_qubits(values, architecture, count, skipped, None)
     expect(first[0] not in chosen and info["excluded"] == skipped, f"exclusion {chosen} {info['excluded']}")
     coupled = {
         frozenset(locus) for impl in architecture["gates"]["cz"]["implementations"].values() for locus in impl["loci"]
     }
-    wide, info = select_qubits(values, architecture, count + 3, {})
+    capped, info = select_qubits(values, architecture, count, {})
+    limit = info["prx_error_limit"]
+    expect(
+        info["excluded_for_prx_error"]
+        and all(v > limit for v in info["excluded_for_prx_error"].values())
+        and not set(capped) & set(info["excluded_for_prx_error"]),
+        f"prx cap {info['excluded_for_prx_error']} {capped}",
+    )
+    wide, info = select_qubits(values, architecture, count + 3, {}, None)
     expect(len(wide) == count + 3, f"{len(wide)} qubits")
     expect(all(frozenset(pair) not in coupled for pair in itertools.combinations(wide, 2)), "a coupled pair")
     expect(info["qualified_at_median"] < count + 3 and info["t1_floor_s"] < info["median_t1_s"], f"{info}")
@@ -1698,10 +1860,36 @@ def synthetic_measurements(circuits: list[dict[str, Any]], counts: dict[str, Any
     return out
 
 
+# Injected gate-model errors of the sweep: a scale on the dephasing rate during the layers, and an axis-phase advance
+# per pulse in radians. 0.02 rad moves the N = 16 unitary arm by about 0.03 in P0.
+MODEL_ERRORS = {
+    "drive x0.5": {"drive_t2_scale": 0.5},
+    "drive x1.5": {"drive_t2_scale": 1.5},
+    "axis 0.02": {"advance": 0.02},
+}
+# An axis phase of 0.1 rad per pulse turns the unitary arm to P0 near 0.5: the gate is broken, the mutation test fails
+# and no departure can be read.
+BROKEN_GATE = {"advance": 0.1}
+INJECTED_SE = 4.0
+
+
 def sweep_cases(reduced: bool) -> list[dict[str, Any]]:
-    """True devices off the planning point: one axis at a time, then a corner with all four moved. The reduced grid
-    keeps the planning point and the corner."""
-    base = {"label": "planning", "p_init": ACTIVE_RESET_EXCITED, "p_thermal": 0.0, "t1_scale": 1.0, "prx_scale": 1.0}
+    """True devices off the planning point: one axis at a time, then a corner with all four moved, then the devices
+    with an injected gate-model error (a null, the same with a true departure of INJECTED_SE departure standard errors,
+    and a prx error of three times the calibration). The reduced grid keeps the planning point and the corner.
+    `expect` names the pass rule: `nuisance` (every qubit |departure z| < 1, no flag), `none` (no device flag),
+    `never_attributed` (the departs_below status is not `attributed`), `attributed`, `broken` (the mutation test
+    fails and the departs_below status is not `attributed`) or `either`."""
+    base = {
+        "label": "planning",
+        "p_init": ACTIVE_RESET_EXCITED,
+        "p_thermal": 0.0,
+        "t1_scale": 1.0,
+        "prx_scale": 1.0,
+        "errors": {},
+        "shift_se": None,
+        "expect": "nuisance",
+    }
     corner = {**base, "label": "corner", "p_init": 0.15, "p_thermal": 0.02, "t1_scale": 0.8, "prx_scale": 2.0}
     if reduced:
         return [base, corner]
@@ -1713,9 +1901,51 @@ def sweep_cases(reduced: bool) -> list[dict[str, Any]]:
         {**base, "label": "T1 x1.2", "t1_scale": 1.2},
         {**base, "label": "prx x0.5", "prx_scale": 0.5},
         {**base, "label": "prx x2", "prx_scale": 2.0},
-        {**base, "label": "prx x3", "prx_scale": 3.0, "gate_stress": True},
+        {**base, "label": "prx x3", "prx_scale": 3.0, "expect": "never_attributed"},
     ]
-    return [base, *axes, corner]
+    injected = []
+    for name, errors in MODEL_ERRORS.items():
+        injected.append({**base, "label": name, "errors": errors, "expect": "none"})
+        injected.append(
+            {**base, "label": f"{name} + departure", "errors": errors, "shift_se": INJECTED_SE, "expect": "attributed"}
+        )
+    injected += [
+        {**base, "label": "axis 0.1 (broken gate)", "errors": BROKEN_GATE, "expect": "broken"},
+        {
+            **base,
+            "label": "prx x3 + drive x0.5",
+            "prx_scale": 3.0,
+            "errors": MODEL_ERRORS["drive x0.5"],
+            "expect": "never_attributed",
+        },
+        {
+            **base,
+            "label": "drive x0.5 + departure + prx x2",
+            "prx_scale": 2.0,
+            "errors": MODEL_ERRORS["drive x0.5"],
+            "shift_se": INJECTED_SE,
+            "expect": "either",
+        },
+    ]
+    return [base, *axes, corner, *injected]
+
+
+def injected_model(cal: dict[str, float], spec: dict[str, Any]) -> dict[str, Any]:
+    """The true device of a sweep row for one qubit: its nuisances, its gate-model errors and, when the row injects a
+    departure, the step loss that lowers the measure arm's P0 by shift_se times the departure standard error that the
+    analysis of the same device without the departure reports."""
+    over = {
+        "t1_s": spec["t1_scale"] * cal["t1_s"],
+        "p_init": spec["p_init"],
+        "p_thermal": spec["p_thermal"],
+        "prx_p": spec["prx_scale"] * cal["prx_p"],
+        **spec["errors"],
+    }
+    if spec["shift_se"] is not None:
+        se = analyze_model(cal, **over)["departure_n16"]["se"]
+        eps = eps_for_shift(cal, spec["shift_se"] * se, **over)
+        over["eps"] = 0.5 if eps is None else eps
+    return device_model(cal, **over)
 
 
 def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -1730,16 +1960,7 @@ def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[s
     rows = []
     try:
         for spec in cases:
-            models = {
-                q: device_model(
-                    cal,
-                    t1_s=spec["t1_scale"] * cal["t1_s"],
-                    p_init=spec["p_init"],
-                    p_thermal=spec["p_thermal"],
-                    prx_p=spec["prx_scale"] * cal["prx_p"],
-                )
-                for q, cal in excerpt["qubits"].items()
-            }
+            models = {q: injected_model(cal, spec) for q, cal in excerpt["qubits"].items()}
             measurements = synthetic_measurements(circuits, device_counts(models), job["shots"])
             with tempfile.TemporaryDirectory() as scratch:
                 run = Path(scratch)
@@ -1777,6 +1998,9 @@ def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[s
                     },
                     "pooled_departure_z": result["device"]["departs_below"]["pooled_z"],
                     "gate_check_z": {q: r["gate_check_n16"]["z"] for q, r in usable.items()},
+                    "unitary_residual": {q: r["gate_check_n16"]["difference"] for q, r in usable.items()},
+                    "departure_se": {q: r["departure_n16"]["se"] for q, r in usable.items()},
+                    "injected_eps": {q: m["eps"] for q, m in models.items()},
                     "schedule_ratio": result["compiled_schedule"]["ratio"],
                 }
             )
@@ -1786,25 +2010,73 @@ def run_sweep(files: dict[str, str], excerpt: dict[str, Any], cases: list[dict[s
 
 
 def sweep_failures(rows: list[dict[str, Any]], qubits: int = QUBIT_COUNT) -> list[str]:
-    """The pass rule: every qubit of every device reads |departure z| < 1, settle `match`, a passing mutation test and
-    no device flag. A gate-stress row (a prx error well beyond the systematic) instead needs the device verdict to
-    report no attributed departure."""
+    """The pass rule of each row's `expect` (see sweep_cases)."""
     failures = []
     for row in rows:
+        label, expect_rule = row["label"], row["expect"]
+        status = row["device_status"]["departs_below"]
+        flagged = {k: v for k, v in row["device"].items() if v}
         if row["usable"] != qubits:
-            failures.append(f"{row['label']}: {row['usable']} usable qubits")
-        if not row.get("gate_stress"):
+            failures.append(f"{label}: {row['usable']} usable qubits")
+        if not row["mutation_passes"] and expect_rule != "broken":
+            failures.append(f"{label}: the mutation test fails")
+        if expect_rule == "broken" and (row["mutation_passes"] or status == "attributed"):
+            failures.append(f"{label}: a broken gate passes the mutation test or is attributed")
+        if expect_rule == "nuisance":
             for q, z in row["departure_z"].items():
                 if abs(z) >= 1:
-                    failures.append(f"{row['label']} {q}: departure z {z:.2f}")
+                    failures.append(f"{label} {q}: departure z {z:.2f}")
             for q, verdict in row["settle"].items():
                 if verdict != "match":
-                    failures.append(f"{row['label']} {q}: settle {verdict}")
-        if not row["mutation_passes"]:
-            failures.append(f"{row['label']}: the mutation test fails")
-        if any(row["device"].values()):
-            failures.append(f"{row['label']}: a device-level flag {row['device']}")
+                    failures.append(f"{label} {q}: settle {verdict}")
+        if expect_rule in ("nuisance", "none") and flagged:
+            failures.append(f"{label}: a device-level flag {flagged}")
+        if expect_rule == "never_attributed" and status == "attributed":
+            failures.append(f"{label}: the departure is attributed")
+        if expect_rule == "attributed" and status != "attributed":
+            failures.append(f"{label}: the injected departure reads {status}")
     return failures
+
+
+DETECT_ROWS = ("planning", "drive x0.5", "drive x1.5", "axis 0.02", "prx x2", "prx x3")
+DETECT_GRID = (0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0)
+
+
+def detect() -> list[dict[str, Any]]:
+    """The minimum detectable departure per device: the smallest multiple of the departure standard error (the null
+    device's own, gate-model systematic included) by which a true departure lowers the measure arm's N = 16 P0 on
+    every qubit and still reads `attributed`, over DETECT_GRID. A per-qubit shift of k standard errors pools to about
+    sqrt(6) k."""
+    excerpt = load_json(ROOT / "results/iqm/cases" / CASE / EXCERPT)
+    files = build_files(excerpt)
+    wanted = {spec["label"]: spec for spec in sweep_cases(False) if spec["label"] in DETECT_ROWS}
+    out = []
+    for label in DETECT_ROWS:
+        found: dict[str, Any] = {"label": label, "scan": {}}
+        for k in DETECT_GRID:
+            row = run_sweep(files, excerpt, [{**wanted[label], "shift_se": k}])[0]
+            shift = {
+                q: -measure_p0_shift(
+                    excerpt["qubits"][q],
+                    row["injected_eps"][q],
+                    t1_s=wanted[label]["t1_scale"] * excerpt["qubits"][q]["t1_s"],
+                    p_init=wanted[label]["p_init"],
+                    prx_p=wanted[label]["prx_scale"] * excerpt["qubits"][q]["prx_p"],
+                    **wanted[label]["errors"],
+                )
+                for q in row["injected_eps"]
+            }
+            found["scan"][str(k)] = {
+                "status": row["device_status"]["departs_below"],
+                "pooled_z": row["pooled_departure_z"],
+                "p0_shift": shift,
+                "departure_se": row["departure_se"],
+            }
+            if row["device_status"]["departs_below"] == "attributed" and "minimum_se" not in found:
+                found["minimum_se"] = k
+                found["minimum_p0_shift_mean"] = sum(shift.values()) / len(shift)
+        out.append(found)
+    return out
 
 
 def sweep(reduced: bool = False) -> list[dict[str, Any]]:
@@ -1983,10 +2255,9 @@ def self_test(with_sweep: bool = True) -> str:
     )
 
     # The device rule: two qubits, or a pooled z, flags the device; one qubit does not.
-    def usable(outcome: str, difference: float, tail: str = "match", gate_z: float = 0.0) -> dict[str, Any]:
+    def usable(outcome: str, difference: float, tail: str = "match") -> dict[str, Any]:
         return {
             "usable": True,
-            "gate_check_n16": {"z": gate_z},
             "departure_n16": {"difference": difference, "se": 0.01},
             "decisions": {"departure": {"outcome": outcome}},
             "settle_n16": {"tail_gap": 0.0, "se": 0.01, "verdict": tail},
@@ -2009,27 +2280,34 @@ def self_test(with_sweep: bool = True) -> str:
         device_verdict({**quiet, "QB0": {"usable": False}})["usable_qubits"] == [f"QB{n}" for n in range(1, 6)],
         "usable",
     )
-    # The gate guard: a unitary-arm difference beyond 3 SE on a contributing qubit withholds the attribution.
-    inconsistent = device_verdict({**two, "QB1": usable("departs_below", -0.031, "match", gate_z=-3.5)})
-    expect(
-        inconsistent["departs_below"]["status"] == "gate_model_inconsistent"
-        and not inconsistent["departs_below"]["device"],
-        f"{inconsistent['departs_below']}",
+    # The gate-model systematic: the class ratios, signs and sizes the design rests on, and a single-qubit injection.
+    cal = excerpt["qubits"][qubits[0]]
+    ratios = gate_class_ratios(
+        cal["t1_s"], min(cal["t2_s"], 2 * cal["t1_s"]), PLANNING_Q, MEASURE_WINDOW_SECONDS, cal["prx_p"]
     )
     expect(
-        device_verdict({**two, "QB5": usable("consistent", 0.0, "match", gate_z=4.0)})["departs_below"]["status"]
-        == "attributed",
-        "a gate difference on a non-contributing qubit blocks a count-rule departure",
+        set(ratios) == set(GATE_CLASSES)
+        and ratios["axis_phase"] > 0
+        and ratios["composite_angle"] > 0
+        and ratios["drive_dephasing"] < 0
+        and ratios["depolarizing"] < 0
+        and all(0.1 < abs(r) < 1.5 for r in ratios.values()),
+        f"class ratios {ratios}",
     )
-    pooled_blocked = device_verdict({**drift, "QB2": usable("consistent", -0.015, "match", gate_z=3.1)})
-    expect(pooled_blocked["departs_below"]["status"] == "gate_model_inconsistent", f"{pooled_blocked['departs_below']}")
+    null = analyze_model(cal, drive_t2_scale=0.5)
     expect(
-        device_verdict({f"QB{n}": usable("consistent", 0.015, "match", gate_z=3.1) for n in range(6)})[
-            "exceeds_prediction"
-        ]["status"]
-        == "gate_model_inconsistent",
-        "exceeds_prediction escapes the gate guard",
+        null["decisions"]["departure"]["outcome"] == "consistent" and null["departure_n16"]["gate_systematic"] > 0.01,
+        f"a model error reads {null['decisions']['departure']}",
     )
+    expect(
+        null["departure_n16"]["se"] > analyze_model(cal)["departure_n16"]["se"],
+        "the unitary residual does not widen the departure standard error",
+    )
+    over = {"drive_t2_scale": 0.5}
+    eps_hit = eps_for_shift(cal, 4 * null["departure_n16"]["se"], **over)
+    expect(eps_hit is not None, "no step loss reaches the injected departure")
+    hit = analyze_model(cal, eps=eps_hit, **over)
+    expect(hit["decisions"]["departure"]["z"] < -3, f"an injected departure reads {hit['decisions']['departure']}")
     if with_sweep:
         rows = run_sweep(files, excerpt, sweep_cases(True))
         failures = sweep_failures(rows)
@@ -2069,6 +2347,7 @@ def main() -> int:
     bd.add_argument("directory", type=Path)
     bd.add_argument("--calibration-dir", type=Path, default=CALIBRATION_DIR)
     sub.add_parser("check").add_argument("directory", type=Path)
+    sub.add_parser("detect", help="the minimum detectable departure per device with a gate-model error")
     sub.add_parser("project", help="the diagnostic's pi/2-pair residuals projected to the case's unitary-arm guard")
     sw = sub.add_parser("sweep", help="the estimator sweep over true devices off the planning point")
     sw.add_argument("--reduced", action="store_true", help="the planning point and the corner only")
@@ -2084,6 +2363,8 @@ def main() -> int:
         write(args.directory, args.calibration_dir)
     elif args.command == "check":
         check(args.directory)
+    elif args.command == "detect":
+        print(dump(detect()), end="")
     elif args.command == "project":
         print(dump(project_diagnostic(load_json(DIAGNOSTIC_ANALYSIS), load_json(DIAGNOSTIC_EXCERPT))), end="")
     elif args.command == "sweep":

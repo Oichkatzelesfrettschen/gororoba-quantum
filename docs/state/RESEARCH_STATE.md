@@ -32,7 +32,7 @@ The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 74 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 42 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 43 IQM run directories are retained. That is an observation, not an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -331,6 +331,7 @@ circuit and charges the account ledger's change.
 | [2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic](../../results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 8 | completed | 0.5 credits | iqm-garnet-qpu-measurement-diagnostic |
 | [2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching](../../results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits | iqm-garnet-mock-pinching-pairs |
 | [2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching](../../results/iqm/runs/2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits | iqm-garnet-mock-pinching-pairs-all-n |
+| [2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching](../../results/iqm/runs/2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet:mock | 1 | 57 | completed | 0.0 credits | iqm-garnet-mock-pinching-systematic |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -624,6 +625,7 @@ circuit and charges the account ledger's change.
 - **iqm-garnet-qpu-measurement-diagnostic** (2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic, 1 billed seconds): Is the N = 16 unitary excess of the window probes an axis phase per small-angle prx pulse or |1> loss before the readout, read from eight circuits with in-situ readout on QB5, QB7, QB11, QB14, QB17 and QB19?
 - **iqm-garnet-mock-measurement-sequence-pinching-pairs** (2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching, 5 billed seconds): Does the garnet:mock pipeline accept the 57-circuit pinching case rebuilt with pi/2-pair steps on QB1, QB5, QB8, QB12, QB14 and QB19 (cases.json 6b94d0db), and return every key?
 - **iqm-garnet-mock-measurement-sequence-pinching-pairs-all-n** (2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching, 5 billed seconds): Does the garnet:mock pipeline accept the 57-circuit pinching case with pi/2-pair steps at every N on QB6, QB9, QB13, QB15, QB18 and QB20 (cases.json ba32d095), and return every key?
+- **iqm-garnet-mock-measurement-sequence-pinching-systematic** (2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching, 5 billed seconds): Does the garnet:mock pipeline accept the 57-circuit pinching case with the calibration-only selection (QB1, QB5, QB8, QB14, QB17, QB19) and the gate-model systematic (cases.json 918d7bd5), and return every key?
 
 ## Established claims
 
@@ -1709,6 +1711,10 @@ circuit and charges the account ledger's change.
   Boundary: The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.
   Evidence: [results.json](../../results/iqm/runs/2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching/results.json), [iqm-garnet-measurement-sequence-pinching.md](../design/iqm-garnet-measurement-sequence-pinching.md).
   Acquisitions: iqm-garnet-mock-measurement-sequence-pinching-pairs-all-n.
+- **iqm-garnet-mock-pinching-systematic** (exploratory reanalysis, hardware). garnet:mock (calibration set f04fe114) completed the 57-circuit pinching case with pi/2-pair steps at every N, the calibration-only qubit selection and the gate-model systematic (cases.json 918d7bd5, job 01a17585-dd26-7086-9e63-655882ecc988) at 3000 shots on QB1, QB5, QB8, QB14, QB17 and QB19: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order. The compiled qpu_execution estimate is 1.30 times the case's QPU-calibrated 3.738 s, the per-circuit base and measure-window differences between the mock and the QPU. The job charged 0.00 credits.
+  Boundary: The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.
+  Evidence: [results.json](../../results/iqm/runs/2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching/results.json), [iqm-garnet-measurement-sequence-pinching.md](../design/iqm-garnet-measurement-sequence-pinching.md).
+  Acquisitions: iqm-garnet-mock-measurement-sequence-pinching-systematic.
 - **qi-tuna17-kernel-cancellation-matched-post-hoc** (exploratory reanalysis, hardware). A post hoc adjudication of the Tuna-17 kernel cancellation series, chosen after the bright control falsified H2: the readout-corrected kernel-minus-bright difference at phi = pi/36 reads -0.0056 +- 0.0058 (z -0.97), so the zero-divisor sign stays unresolved on this device once the kernel-independent signed response is subtracted.
   Boundary: Selected after viewing the bright control, against the manifests' preregistered H1 of the kernel against zero; it holds under the main claim's position and readout assumptions, and a matched decision needs a case that preregisters it.
   Assumptions: the two batches of a contrast carry the same within-batch position effect, so the +, -, -, + balance across them cancels it; a batch's readout assignment factor equals its batch pair's, whose two references sit in different batches; the spread of the series' readout references enters the corrected errors.
