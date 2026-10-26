@@ -133,3 +133,163 @@ def test_joint_sample_at_zero_draw_returns_the_estimates() -> None:
     for key in case.ESTIMATES:
         if abs(sample[key] - summary[key]) > 1e-12 * max(1.0, abs(summary[key])):
             raise AssertionError(f"{key}: {sample[key]} against {summary[key]}")
+
+
+def _readout_laws(flips: list[tuple[float, float]]) -> tuple[np.ndarray, np.ndarray]:
+    laws = []
+    for prepared in (0, 1):
+        law = np.zeros(8)
+        for k in range(8):
+            p = 1.0
+            for wire, (e10, e01) in enumerate(flips):
+                wrong = e10 if prepared == 0 else e01
+                p *= wrong if (k >> wire & 1) != prepared else 1.0 - wrong
+            law[k] = p
+        laws.append(law)
+    return laws[0], laws[1]
+
+
+def test_each_path_voids_on_its_own_readout() -> None:
+    healthy = [(0.006, 0.009), (0.004, 0.012), (0.010, 0.013)]
+    faulty = [(0.786, 0.108), *healthy[1:]]
+    first, second = _readout_laws(healthy), _readout_laws(faulty)
+    entry = {"measured": {"cp_readout_0": [first[0], second[0]], "cp_readout_1": [first[1], second[1]]}}
+    rows = case.readout_by_path(entry, [[58, 71, 72], [0, 1, 2]])
+    if [row["passed"] for row in rows] != [True, False]:
+        raise AssertionError(rows)
+    if abs(rows[1]["fidelity"][0] - (1 - 0.786 - 0.108)) > 1e-12 or abs(rows[0]["e10"][2] - 0.010) > 1e-12:
+        raise AssertionError(rows)
+
+
+def _crosstalk_run(tmp_path: Path, packed: np.ndarray, isolated: np.ndarray | None, shots: int) -> dict[str, Any]:
+    import json
+
+    pin = {"backend": "ibm_kingston", "qubits": [0, 1, 2], "replicas": [[0, 1, 2], [4, 5, 6]]}
+    (tmp_path / "record.json").write_text(json.dumps({"shots": shots, "policy": {"design": {"pin_layout": pin}}}))
+    measured = {"g88": [list(packed), list(packed)]} | ({} if isolated is None else {"g88_isolated": [list(isolated)]})
+    (tmp_path / "collect.json").write_text(json.dumps([{}, {"group": "primorial_gap88", "measured": measured}]))
+    return case.crosstalk(tmp_path, "primorial_gap88")
+
+
+def test_crosstalk_on_a_sparse_two_outcome_law(tmp_path: Path) -> None:
+    # A gap-88 member's ideal law sits on two outcomes; noise leaves the other six near empty.
+    law = np.array([0.4925, 0.0005, 0.001, 0.0, 0.0, 0.001, 0.0005, 0.5045])
+    moved = law + np.array([0.06, 0, 0, 0, 0, 0, 0, -0.06])
+    consistent = _crosstalk_run(tmp_path, law, law, 3200)
+    detected = _crosstalk_run(tmp_path, law, moved, 3200)
+    if consistent["outcome"] != "consistent" or detected["outcome"] != "crosstalk":
+        raise AssertionError((consistent, detected))
+    if consistent["pooled_columns"] != 3:
+        raise AssertionError(consistent)
+    missing = _crosstalk_run(tmp_path, law, None, 3200)
+    if missing["outcome"] != "indeterminate":
+        raise AssertionError(missing)
+
+
+def test_path_excitation_binds_the_approved_plan_and_delay() -> None:
+    excess = {
+        "inputs": {"plan_record": {"sha256": "a" * 64}},
+        "placement": {"rep_delay_seconds": 2e-05},
+        "qubits": {str(q): {"eps": {"2e-05s": 0.001 * q}} for q in (1, 2, 3, 4, 5, 6)},
+    }
+    record = {"approved_record": {"record_sha256": "a" * 64}, "policy": {"rep_delay_seconds": 2e-05}}
+    if case.path_excitation(excess, record, [[1, 2, 3], [4, 6, 5]]) != [0.003, 0.006]:
+        raise AssertionError("per-path eps is the largest of its qubits")
+    for moved in (
+        {**record, "approved_record": {"record_sha256": "b" * 64}},
+        {**record, "policy": {"rep_delay_seconds": 5e-05}},
+    ):
+        try:
+            case.path_excitation(excess, moved, [[1, 2, 3]])
+        except SystemExit:
+            continue
+        raise AssertionError(moved)
+
+
+def test_prep0_control_drops_a_path_with_a_faulty_qubit(tmp_path: Path) -> None:
+    import json
+
+    fractions = {0: 0.786, 1: 0.004, 2: 0.010, 4: 0.006, 5: 0.002, 6: 0.011}
+    collected: list[dict[str, Any]] = [{}] + [
+        {"group": f"state_prep_q{q}", "measured_statistics": {"summary": {f"q{q}_excited_fraction": f}}}
+        for q, f in fractions.items()
+    ]
+    (tmp_path / "collect.json").write_text(json.dumps(collected))
+    verdict = case.retained_paths(tmp_path, [[0, 1, 2], [4, 5, 6]])
+    if verdict["retained"] != [[4, 5, 6]] or verdict["pin"] != "4,5,6":
+        raise AssertionError(verdict)
+
+
+def _pinned_run(tmp_path: Path, group: str, shots: int, measured: dict[str, Any], summaries: list[Any]) -> None:
+    import json
+
+    paths = [[58, 71, 72], [0, 1, 2], [33, 39, 53]]
+    pin = {"backend": "ibm_kingston", "qubits": paths[0], "replicas": paths}
+    record = {"shots": shots, "policy": {"design": {"pin_layout": pin}}, "approved_record": {"record_sha256": "a"}}
+    executed = {name: {"calibration": "C1", "calibration_changed_during_shots": False} for name in measured}
+    entry = {
+        "group": group,
+        "measured": {k: [list(map(float, d)) for d in v] for k, v in measured.items()},
+        "executed": executed,
+        "measured_statistics": {"summary_per_replica": summaries},
+    }
+    (tmp_path / "record.json").write_text(json.dumps(record))
+    (tmp_path / "collect.json").write_text(json.dumps([{}, entry]))
+
+
+def test_decide_paths_voids_sets_n2_and_sizes_the_family(tmp_path: Path, monkeypatch: Any) -> None:
+    healthy = _readout_laws([(0.006, 0.009), (0.004, 0.012), (0.010, 0.013)])
+    faulty = _readout_laws([(0.786, 0.108), (0.004, 0.012), (0.010, 0.013)])
+    measured = {
+        "cp_readout_0": [healthy[0], faulty[0], healthy[0]],
+        "cp_readout_1": [healthy[1], faulty[1], healthy[1]],
+    }
+    _pinned_run(tmp_path, "coherence_probes", 800, measured, [{"tag": 0}, {"tag": 1}, {"tag": 2}])
+    calls: list[tuple[list[list[int]], int, int]] = []
+
+    def fake(snapshot: Any, paths: Any, probe_shots: int, shots: int, family: int = 1, eps: Any = None) -> Any:
+        calls.append(([layout for layout, _ in paths], shots, family))
+        need = {0: 2500, 2: 3100}
+        return [
+            {"layout": layout, "decision": {"proceed": True, "p95_shots_identify_all": need[probe["tag"]]}}
+            for layout, probe in paths
+        ]
+
+    monkeypatch.setattr(case, "decide_many", fake)
+    verdict = case.decide_paths({"calibration": "C1"}, tmp_path)
+    if verdict["voided"] != [[0, 1, 2]] or verdict["stage2_paths"] != [[58, 71, 72], [33, 39, 53]]:
+        raise AssertionError(verdict)
+    # The largest need, 3100 per reading, sets N2 = 100 * ceil(3100 / 200) = 1600 per circuit.
+    if verdict["gap88_shots"] != 1600 or calls[0][1:] != (3200, 1) or calls[1][1:] != (1600, 2):
+        raise AssertionError((verdict["gap88_shots"], calls))
+    try:
+        case.decide_paths({"calibration": "C2"}, tmp_path)
+    except SystemExit:
+        return
+    raise AssertionError("a snapshot of another calibration was accepted")
+
+
+def test_falsify_names_out_of_band_coefficients(tmp_path: Path) -> None:
+    keys = ("0", "1", "2", "01", "02", "12", "012")
+    summaries = [{f"bias_{k}": 0.0 for k in keys}, {f"bias_{k}": (0.2 if k == "12" else 0.0) for k in keys}]
+    _pinned_run(tmp_path, "primorial_gap88", 1600, {"g88": [np.zeros(8)] * 3}, summaries)
+    import json
+
+    record = json.loads((tmp_path / "record.json").read_text())
+    record["policy"]["design"]["pin_layout"]["replicas"] = [[58, 71, 72], [33, 39, 53]]
+    (tmp_path / "record.json").write_text(json.dumps(record))
+    band = {k: [-0.05, 0.05] for k in keys}
+    decision = {
+        "calibration": "C1",
+        "gap88_shots": 1600,
+        "stage2_paths": [[58, 71, 72], [33, 39, 53]],
+        "decisions": [
+            {"layout": [58, 71, 72], "falsifier": {"shift_bands": band}},
+            {"layout": [33, 39, 53], "falsifier": {"shift_bands": band}},
+        ],
+    }
+    verdict = case.falsify(tmp_path, decision, {"outcome": "consistent"})
+    if verdict["falsified"] != [{"path": [33, 39, 53], "coefficients": ["12"]}] or verdict["claim"] != "device":
+        raise AssertionError(verdict)
+    if case.falsify(tmp_path, decision, None)["claim"] != "descriptive":
+        raise AssertionError("a missing crosstalk check admitted a device claim")
