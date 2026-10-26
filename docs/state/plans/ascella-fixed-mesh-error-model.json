@@ -62,6 +62,22 @@
           "observed_at": "2026-10-26T09:08:16+00:00",
           "revision": "19715a53ed5d525aa0c4451ce8ee8c70f4a5abdf",
           "scope_sha256": "778cda89283637db6029bdecb0fbd83b20aff45537533b03ce49db9843917588"
+        },
+        {
+          "result": "heater and coupler offsets read a median held-out variance ratio of 2.42 and may not read predicted; coupler offsets read 0.54.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+              "sha256": "c3e1d2c5c8d68a173d1635a017f379cfb931a6c5d26a12943577d83446660532"
+            },
+            {
+              "ref": "scripts/ascella_fixed_mesh_error.py",
+              "sha256": "c84f144ca38a85d0dcb48d9644979e513526acdb8c29a1e282d508a1008173d4"
+            }
+          ],
+          "observed_at": "2026-10-26T09:20:32+00:00",
+          "revision": "84d926b3c6182981e69aa7cc2097ad0d64a45315",
+          "scope_sha256": "778cda89283637db6029bdecb0fbd83b20aff45537533b03ce49db9843917588"
         }
       ]
     },
