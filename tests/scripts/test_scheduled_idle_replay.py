@@ -147,3 +147,30 @@ def test_list_schedule_counts_waits_behind_a_neighbor_and_circuit_delays() -> No
     # Qubit 0 waits from 8 to 42 behind the two CZ on 1 and 2; qubit 2 waits through its own 40 dt delay.
     if idle != {0: 34, 1: 0, 2: 40}:
         raise AssertionError(f"list-schedule idle {idle}")
+
+
+def test_list_schedule_aligns_qubits_at_a_barrier() -> None:
+    circuit = QuantumCircuit(QuantumRegister(2, "q"))
+    for _ in range(3):
+        circuit.sx(0)
+    circuit.sx(1)
+    circuit.barrier(0, 1)
+    circuit.sx(1)
+    idle = replay.list_schedule_idle(circuit, lambda name, _: 8, [0, 1])
+    # Qubit 1 ends its first sx at 8 and waits at the barrier until qubit 0 finishes at 24.
+    if idle != {0: 0, 1: 16}:
+        raise AssertionError(f"barrier idle {idle}")
+
+
+def test_component_replicas_follow_group_and_reference() -> None:
+    record = {
+        "groups": [
+            {"group": "a", "replicas": [{"physical_qubits": [0, 1]}, {"physical_qubits": [2, 3]}]},
+            {"group": "b", "replicas": [{"physical_qubits": [4]}]},
+        ]
+    }
+    packed = replay.component_replicas(record, {"group": "a", "reference": False, "physical_qubits": [0, 1, 2, 3]})
+    isolated = replay.component_replicas(record, {"group": "a", "reference": True, "physical_qubits": [0, 1]})
+    other = replay.component_replicas(record, {"group": "b", "reference": False, "physical_qubits": [4]})
+    if packed != [[0, 1], [2, 3]] or isolated != [[0, 1]] or other != [[4]]:
+        raise AssertionError(f"component replicas {packed} {isolated} {other}")

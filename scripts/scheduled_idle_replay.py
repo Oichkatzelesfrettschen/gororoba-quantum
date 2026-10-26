@@ -197,13 +197,19 @@ def list_schedule_idle(
 ) -> dict[int, int]:
     """Idle per qubit, in dt, of an as-soon-as-possible list schedule of circuit under duration(name, qubits).
 
-    Each instruction starts once every qubit it acts on is free. An if_else aligns its qubits and plays its true
-    body; the measure-to-branch latency is not modeled. Idle is the span from a qubit's first to its last
-    instruction minus the time it plays one; a circuit delay counts as idle, as the service schedule counts it.
+    Each instruction starts once every qubit it acts on is free. A barrier aligns its qubits without playing, and an
+    if_else aligns its qubits and plays its true body; the measure-to-branch latency is not modeled. Idle is the
+    span from a qubit's first to its last instruction minus the time it plays one; a circuit delay counts as idle,
+    as the service schedule counts it.
     """
     cursor: dict[int, int] = {}
     first: dict[int, int] = {}
     busy = dict.fromkeys(qubits, 0)
+
+    def align(physical: list[int]) -> None:
+        aligned = max(cursor.get(q, 0) for q in physical)
+        for q in physical:
+            cursor[q] = aligned
 
     def play(name: str, physical: list[int], length: int | None = None) -> None:
         start = max(cursor.get(q, 0) for q in physical)
@@ -217,24 +223,36 @@ def list_schedule_idle(
     for instruction in circuit.data:
         name = instruction.operation.name
         physical = [circuit.find_bit(bit).index for bit in instruction.qubits]
-        if name in VIRTUAL:
+        if name == "barrier":
+            align(physical)
+        elif name in VIRTUAL:
             continue
-        if name == "delay":
+        elif name == "delay":
             play(name, physical, int(instruction.operation.duration))
         elif name == "if_else":
-            aligned = max(cursor.get(q, 0) for q in physical)
-            for q in physical:
-                cursor[q] = aligned
+            align(physical)
             body = instruction.operation.blocks[0]
             for inner in body.data:
                 inner_name = inner.operation.name
-                if inner_name in VIRTUAL:
-                    continue
                 mapped = [physical[body.find_bit(bit).index] for bit in inner.qubits]
-                play(inner_name, mapped, int(inner.operation.duration) if inner_name == "delay" else None)
+                if inner_name == "barrier":
+                    align(mapped)
+                elif inner_name not in VIRTUAL:
+                    play(inner_name, mapped, int(inner.operation.duration) if inner_name == "delay" else None)
         else:
             play(name, physical)
     return {q: cursor[q] - first[q] - busy[q] for q in qubits if q in first}
+
+
+def component_replicas(record: dict[str, Any], component: dict[str, Any]) -> list[list[int]]:
+    """Physical qubits of each replica of one execution component.
+
+    A packed component holds its group's replicas; an isolated reference is one replica on its own physical qubits.
+    """
+    if component.get("reference"):
+        return [list(component["physical_qubits"])]
+    entry = next(g for g in record["groups"] if g["group"] == component["group"])
+    return [list(replica["physical_qubits"]) for replica in entry["replicas"]]
 
 
 ReplicaItem = tuple[QuantumCircuit, list[tuple[str, str, str, int, int, str]], list[int], list[str]]
@@ -279,7 +297,6 @@ def local_schedule(run_dir: Path, out: Path) -> dict[str, Any]:
     job_id, job = next(iter(collected[0]["jobs"].items()))
     with (run_dir / "isa.qpy").open("rb") as stream:
         fused_by_name = {circuit.name: circuit for circuit in qpy.load(stream)}
-    replicas = [replica["physical_qubits"] for replica in record["groups"][0]["replicas"]]
     service = ibm_account.open_service(QiskitRuntimeService)
     ibm_account.require_instance(ibm_account.recorded_instance(run_dir), live_run._instance_hash(service), job_id)
     backend = service.backend(job["backend"])
@@ -290,6 +307,7 @@ def local_schedule(run_dir: Path, out: Path) -> dict[str, Any]:
         start = job["pub_timing"][pub["name"]]["execution_window_start"]
         target = backend.target_history(datetime=datetime.fromisoformat(start))
         for component in pub["components"]:
+            replicas = component_replicas(record, component)
             for qubits, registers in zip(replicas, component["registers_by_replica"], strict=True):
                 keys.append(component["member"])
                 items.append(((fused_by_name[pub["name"]], rows, qubits, registers), target))
@@ -365,9 +383,7 @@ def replay(run_dir: Path, out: Path) -> dict[str, Any]:
     job_id, job = next(iter(jobs.items()))
     with (run_dir / "isa.qpy").open("rb") as stream:
         fused_by_name = {circuit.name: circuit for circuit in qpy.load(stream)}
-    group_entry = record["groups"][0]
-    group = next((g for g in all_experiment_groups() if g.name == group_entry["group"]), None)
-    replicas = [replica["physical_qubits"] for replica in group_entry["replicas"]]
+    groups = {g.name: g for g in all_experiment_groups()}
     service = ibm_account.open_service(QiskitRuntimeService)
     ibm_account.require_instance(ibm_account.recorded_instance(run_dir), live_run._instance_hash(service), job_id)
     backend = service.backend(job["backend"])
@@ -382,12 +398,16 @@ def replay(run_dir: Path, out: Path) -> dict[str, Any]:
     for index, pub in enumerate(record["execution_pubs"]):
         rows = schedule_rows(run_dir / "raw" / job_id / f"pub_{index:02d}.json")
         for component in pub["components"]:
+            replicas = component_replicas(record, component)
             for qubits, registers in zip(replicas, component["registers_by_replica"], strict=True):
                 replica_keys.append(component["member"])
                 replica_items.append((fused_by_name[pub["name"]], rows, qubits, registers))
     built: dict[str, list[Replica]] = {}
     for member, triple in zip(replica_keys, parallel.ordered_map(replica_circuits, replica_items), strict=True):
         built.setdefault(member, []).append(triple)
+    # One sampled batch per calibration in PUB, component and replica order, as --collect replays a record
+    # (live_run.simulate_entries): Aer pools the experiments of a batch and seeds each from its position.
+    batches: dict[str, list[tuple[str, QuantumCircuit]]] = {}
     for pub in record["execution_pubs"]:
         start = job["pub_timing"][pub["name"]]["execution_window_start"]
         if start not in simulators:
@@ -401,23 +421,24 @@ def replay(run_dir: Path, out: Path) -> dict[str, Any]:
             )
         for component in pub["components"]:
             noise = simulators[start].options.noise_model
-            circuits, gaps = [], []
+            gaps = []
             for circuit, _, inserted, padded_bytes, bare_bytes in built[component["member"]]:
-                circuits.append(circuit)
+                batches.setdefault(start, []).append((component["member"], circuit))
                 gaps.append({str(q): v for q, v in inserted.items()})
                 for variant, payload in (("idle_padded", padded_bytes), ("unpadded", bare_bytes)):
                     exact_keys.append((variant, component["member"]))
                     exact_items.append((payload, noise, prep_excitation))
-            sampled = (
-                [dynamic_density.with_prep_excitation(circuit, prep_excitation) for circuit in circuits]
-                if prep_excitation
-                else circuits
-            )
-            result = local_compute.run(simulators[start], sampled, record["shots"], live_run.SEED_SIMULATOR)
-            padded[component["member"]] = [
-                live_run._distribution(result.get_counts(k), circuit.num_clbits) for k, circuit in enumerate(circuits)
-            ]
             idle_dt[component["member"]] = gaps
+    for start, batch in batches.items():
+        circuits = [circuit for _, circuit in batch]
+        sampled = (
+            [dynamic_density.with_prep_excitation(circuit, prep_excitation) for circuit in circuits]
+            if prep_excitation
+            else circuits
+        )
+        result = local_compute.run(simulators[start], sampled, record["shots"], live_run.SEED_SIMULATOR)
+        for k, (member, circuit) in enumerate(batch):
+            padded.setdefault(member, []).append(live_run._distribution(result.get_counts(k), circuit.num_clbits))
     exact: dict[str, dict[str, list[list[float]]]] = {"idle_padded": {}, "unpadded": {}}
     for (variant, member), law in zip(exact_keys, parallel.ordered_map(_exact_law, exact_items), strict=True):
         exact[variant].setdefault(member, []).append(law)
@@ -437,8 +458,12 @@ def replay(run_dir: Path, out: Path) -> dict[str, Any]:
         "schema": "scheduled-idle-replay-v1",
         "run": run_dir.relative_to(ROOT).as_posix(),
         "job_id": job_id,
-        "group": group_entry["group"],
-        "replicas": replicas,
+        "groups": [entry["group"] for entry in record["groups"]],
+        "replicas": {
+            component["member"]: component_replicas(record, component)
+            for pub in record["execution_pubs"]
+            for component in pub["components"]
+        },
         "inserted_idle_dt": idle_dt,
         "prep_excitation": prep_excitation,
         "idle_padded_laws": {name: [law.tolist() for law in laws] for name, laws in padded.items()},
@@ -456,17 +481,30 @@ def replay(run_dir: Path, out: Path) -> dict[str, Any]:
             "recorded_exact": {name: entry["exact"] for name, entry in recorded.items()},
         }
     # A family run builds its group from family_configuration; its laws are reported without a group summary.
-    if group is not None:
+    report["summary_per_replica"] = {}
+    for entry in record["groups"]:
+        group = groups.get(entry["group"])
+        if group is None:
+            continue
+        members = [
+            component["member"]
+            for pub in record["execution_pubs"]
+            for component in pub["components"]
+            if component["group"] == entry["group"] and not component.get("reference")
+        ]
+        statistics = next(item for item in collected[1:] if item.get("group") == entry["group"])
 
-        def summaries(laws: dict[str, Any]) -> list[dict[str, Any]]:
-            return [group.summarize({name: np.asarray(v[k]) for name, v in laws.items()}) for k in range(len(replicas))]
+        def summaries(
+            laws: dict[str, Any], group: Any = group, members: list[str] = members, n: int = len(entry["replicas"])
+        ) -> list[dict[str, Any]]:
+            return [group.summarize({name: np.asarray(laws[name][k]) for name in members}) for k in range(n)]
 
-        report["summary_per_replica"] = {
+        report["summary_per_replica"][entry["group"]] = {
             "idle_padded": summaries(padded),
             "idle_padded_exact": summaries(exact["idle_padded"]),
             "unpadded_exact": summaries(exact["unpadded"]),
-            "replayed": collected[1]["replayed_statistics"]["summary_per_replica"],
-            "measured": collected[1]["measured_statistics"]["summary_per_replica"],
+            "replayed": statistics["replayed_statistics"]["summary_per_replica"],
+            "measured": statistics["measured_statistics"]["summary_per_replica"],
         }
     out.write_text(json.dumps(report, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     return report
@@ -489,19 +527,25 @@ def main() -> int:
     print("sampled_to_exact", json.dumps(report["sampled_to_exact"]))
     for source, values in report.get("contracts", {}).items():
         print(source, json.dumps(values))
-    if "summary_per_replica" not in report:
+    if not report["summary_per_replica"]:
         for name, laws in report["exact_laws"]["idle_padded"].items():
             print(name, np.round(np.asarray(laws[0])[:8], 4).tolist())
         return 0
-    for key in sorted(report["summary_per_replica"]["measured"][0]):
+    for group_name, per_source in report["summary_per_replica"].items():
+        print(group_name)
+        print_summary(per_source)
+    return 0
+
+
+def print_summary(per_source: dict[str, list[dict[str, Any]]]) -> None:
+    for key in sorted(per_source["measured"][0]):
         values = {
             source: float(np.mean([row[key] for row in rows]))
-            for source, rows in report["summary_per_replica"].items()
+            for source, rows in per_source.items()
             if all(isinstance(row.get(key), (int, float)) for row in rows)
         }
-        if len(values) == len(report["summary_per_replica"]):
+        if len(values) == len(per_source):
             print(f"{key:44s} " + "  ".join(f"{source} {value:+.4f}" for source, value in values.items()))
-    return 0
 
 
 if __name__ == "__main__":

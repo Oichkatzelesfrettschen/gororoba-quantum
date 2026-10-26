@@ -4,7 +4,7 @@
    "n21_encoded_feedback_contrast": -0.0006587574359447901
   },
   "idle_padded_sampled": {
-   "n21_encoded_feedback_contrast": 0.002880000000000049
+   "n21_encoded_feedback_contrast": 0.0032000000000000084
   },
   "recorded_exact": {
    "n21_encoded_feedback_contrast": 0.031039262580353222
@@ -51,7 +51,9 @@
    ]
   }
  },
- "group": "n21_encoded_feedback",
+ "groups": [
+  "n21_encoded_feedback"
+ ],
  "idle_padded_laws": {
   "n21_encoded_feedback": [
    [
@@ -63,10 +65,10 @@
   ],
   "n21_encoded_no_feedback": [
    [
-    0.27023,
-    0.25403,
-    0.22597,
-    0.24977
+    0.27004,
+    0.25374,
+    0.22642,
+    0.2498
    ]
   ]
  },
@@ -96,22 +98,36 @@
  },
  "job_id": "dba8r7k24mrc738527d0",
  "prep_excitation": 0.014393,
- "replicas": [
-  [
-   104,
-   105,
-   106,
-   117,
-   124,
-   125,
-   126
+ "replicas": {
+  "n21_encoded_feedback": [
+   [
+    104,
+    105,
+    106,
+    117,
+    124,
+    125,
+    126
+   ]
+  ],
+  "n21_encoded_no_feedback": [
+   [
+    104,
+    105,
+    106,
+    117,
+    124,
+    125,
+    126
+   ]
   ]
- ],
+ },
  "run": "results/live/2026-10-18T090603.530638Z",
  "sampled_to_exact": {
-  "max_gap": 0.0016903393153247515,
+  "max_gap": 0.0020297542250937717,
   "radius": 0.006073614619083051,
   "tail": 0.01
  },
- "schema": "scheduled-idle-replay-v1"
+ "schema": "scheduled-idle-replay-v1",
+ "summary_per_replica": {}
 }

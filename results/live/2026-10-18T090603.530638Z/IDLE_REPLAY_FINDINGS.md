@@ -48,8 +48,8 @@ are the Target's.
 | record's exact contrast (`record.json` `exact_model`) | +0.031039262580353 |
 | idle-padded exact contrast | -0.0007 |
 | measured contrast difference | +0.0027, 95 % interval [-0.0129, +0.0184] |
-| idle-padded sampled contrast (100,000 shots, `SEED_SIMULATOR`) | +0.0029 |
-| sampled against exact, max per-outcome gap | 0.0017 against Hoeffding radius 0.0061 (tail 0.01) |
+| idle-padded sampled contrast (100,000 shots, `SEED_SIMULATOR`) | +0.0032 |
+| sampled against exact, max per-outcome gap | 0.0020 against Hoeffding radius 0.0061 (tail 0.01) |
 
 The control reproduces the record's exact model to 1e-15, so the padded value differs from it only by the inserted
 delays. The falsifier, stated before the exact computation, was a padded exact contrast outside the measured
