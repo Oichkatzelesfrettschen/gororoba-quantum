@@ -3051,7 +3051,8 @@ def _verify_pin_layout(snapshot: live_run.Snapshot) -> None:
             ]
         )
     _require(
-        "--pin-layout applies to the n21-orbit-rca family only" in stderr.getvalue(), "another family took the pin"
+        "--pin-layout applies to the n21-orbit-rca family and the campaigns" in stderr.getvalue(),
+        "another family took the pin",
     )
 
 

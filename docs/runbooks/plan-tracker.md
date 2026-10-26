@@ -56,7 +56,10 @@ receipt whose digest binds the ordered step obligations. `plan_records.obligatio
 digest for a closure patch. A completed falsification can record a rejected hypothesis. Artifact identity
 checks and substantive scientific validation have different evidentiary roles.
 
-Changed evidence requests revalidation while preserving historical completion. Changed obligations
+Changed evidence requests revalidation while preserving historical completion. Freshness reads only the
+newest receipt (latest `observed_at`) of the plan and of each step, so a revalidation reruns the acceptance
+and appends a receipt over the current bytes with `step ID STEP --receipt FILE` or `update ID --receipt
+FILE`; the superseded receipt stays in the record. Changed obligations
 invalidate their receipts: reopen and reassess, preserving prior receipts through Git history or a
 successor record. Update commands require the existing records to validate; repair malformed manual edits
 before running them.
@@ -66,11 +69,17 @@ before running them.
 ```sh
 "$PYTHON" scripts/plan_tracker.py render --write
 "$PYTHON" scripts/plan_tracker.py check
+"$PYTHON" scripts/plan_tracker.py check --base origin/main
 "$PYTHON" scripts/plan_tracker.py review-merge BASE LEFT RIGHT
 ```
 
 `render` alone prints the entrance. `check` validates records, the retained inventory and generated views
-offline. CLI mutations serialize through a worktree-local Git metadata lock and replace each record
+offline. `check --base REF` also holds each plan that the change since the merge base of REF and HEAD closes
+or gives a receipt: the newest receipt of the plan and of each step must be fresh at HEAD, and each added
+receipt must name a revision HEAD descends from. A receipt names the commit it observed, so the evidence file
+of an observation can land in the commit after it. Plans the change leaves alone keep the warning-only
+revalidation flag. Gate `core-plan-tracker` runs `check --base origin/main` and names the record directory
+and both views as operands, so a pull request that edits only plan records still selects it. CLI mutations serialize through a worktree-local Git metadata lock and replace each record
 atomically. Manual editing and CLI mutation of the same record require coordination; manual editors do
 not acquire the CLI lock. Owners record responsibility, not a global task lock.
 

@@ -100,6 +100,26 @@
             }
           ],
           "scope_sha256": "41a668871cf22fb7a9ddb1dbe71f543d3889f3988ee3b999a5fc49ba33a77c9d"
+        },
+        {
+          "result": "Revalidated at 6765b115: cd_phase_degree.py --max-n 8 exits 0; copies that drop the power-of-two case, shift the leading-bit target or take i < j in the bilinear layer exit 1 on right rows, leading and bilinear; both recorded mutations are caught (core-321, core-322).",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "scripts/cd_phase_degree.py",
+              "sha256": "2a75dce9a84a583c6d43bdb458cbeb21c0ed1295c60a6eb69c618ae7ae80758c"
+            },
+            {
+              "ref": "docs/notes/cd_phase_degree.md",
+              "sha256": "faafde365485f5830b84fdc5b45bc07be0dac43743e2fa226158fa219b51bc15"
+            },
+            {
+              "ref": "gororoba_quantum/cd_core.py",
+              "sha256": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+            }
+          ],
+          "scope_sha256": "41a668871cf22fb7a9ddb1dbe71f543d3889f3988ee3b999a5fc49ba33a77c9d"
         }
       ]
     },
@@ -166,6 +186,26 @@
             }
           ],
           "scope_sha256": "455cfb46806b48a073cf53e2f17a114008adc9ce994ff94fb422a2ad4a10636e"
+        },
+        {
+          "result": "Revalidated at 6765b115: Proposition 4 and its written proof stand in cd_phase_degree.md, core-320 checks its slices through n = 8, and CdSignRowAnf.v keeps its bytes.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "docs/notes/cd_phase_degree.md",
+              "sha256": "faafde365485f5830b84fdc5b45bc07be0dac43743e2fa226158fa219b51bc15"
+            },
+            {
+              "ref": "scripts/cd_phase_degree.py",
+              "sha256": "2a75dce9a84a583c6d43bdb458cbeb21c0ed1295c60a6eb69c618ae7ae80758c"
+            },
+            {
+              "ref": "proofs/CdSignRowAnf.v",
+              "sha256": "bea8796c80b2b3ade99274d20156228a1ed5498f6139d0c957cc043880e760a0"
+            }
+          ],
+          "scope_sha256": "455cfb46806b48a073cf53e2f17a114008adc9ce994ff94fb422a2ad4a10636e"
         }
       ]
     }
@@ -188,6 +228,22 @@
           "sha256": "0b7515d34b28f598e5e14983cbe3bf55b3dfc73d06a1aecc195f3219b021dc5b"
         }
       ]
+    },
+    {
+      "result": "Revalidated at 6765b115: CdSignRowAnf.v keeps its bytes; cd_phase_degree.md keeps Proposition 4 and its proof; cd_phase_degree.py --max-n 8 (core-320) exits 0.",
+      "observed_at": "2026-10-26T03:16:45.530392+00:00",
+      "revision": "6765b11589672fd85bfe05401800a9e075667168",
+      "evidence": [
+        {
+          "ref": "proofs/CdSignRowAnf.v",
+          "sha256": "bea8796c80b2b3ade99274d20156228a1ed5498f6139d0c957cc043880e760a0"
+        },
+        {
+          "ref": "docs/notes/cd_phase_degree.md",
+          "sha256": "faafde365485f5830b84fdc5b45bc07be0dac43743e2fa226158fa219b51bc15"
+        }
+      ],
+      "scope_sha256": "9321ffd1a2d46263442009c2a83aaeba43cd6a0a0a6ffd712c84cafe98e5b380"
     }
   ]
 }

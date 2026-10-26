@@ -102,9 +102,13 @@ def reference(root: Path, value: str) -> None:
         require(local_path(root, value).is_file(), f"missing reference: {value}")
 
 
+def observed(value: str) -> datetime:
+    return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
 def timestamp(value: Any) -> None:
     text(value, "observed_at")
-    require(datetime.fromisoformat(value.replace("Z", "+00:00")).utcoffset() is not None, "timestamp needs timezone")
+    require(observed(value).utcoffset() is not None, "timestamp needs timezone")
 
 
 def obligation(plan: dict[str, Any], step: dict[str, Any] | None = None) -> str:
@@ -134,16 +138,35 @@ def check_receipts(root: Path, receipts: Any, scope: str) -> None:
             require(bool(HEX.fullmatch(evidence["sha256"])), "evidence digest needs SHA-256")
 
 
+def evidence_digest(root: Path, reference: str) -> str:
+    """The SHA-256 of the checkout bytes a local evidence reference names."""
+    return hashlib.sha256(local_path(root, reference).read_bytes()).hexdigest()
+
+
+def newest_receipt(item: dict[str, Any]) -> dict[str, Any] | None:
+    """The receipt with the latest observed_at, the later listed on a tie; None for an item without one."""
+    receipts = item.get("receipts", [])
+    if not receipts:
+        return None
+    return max(enumerate(receipts), key=lambda pair: (observed(pair[1]["observed_at"]), pair[0]))[1]
+
+
 def receipt_freshness(root: Path, plan: dict[str, Any]) -> list[str]:
+    """Name each local input whose bytes differ from the digest in the newest receipt of the plan or a step.
+
+    The newest receipt has the latest observed_at, the later listed on a tie. Older receipts stay as history, so
+    a revalidation appends a receipt binding the current bytes and leaves the one it supersedes in place.
+    """
     stale = []
     for item in [plan, *plan.get("steps", [])]:
-        for receipt in item.get("receipts", []):
-            for evidence in receipt["evidence"]:
-                if evidence["ref"].startswith("https://"):
-                    continue
-                path = local_path(root, evidence["ref"])
-                if hashlib.sha256(path.read_bytes()).hexdigest() != evidence["sha256"]:
-                    stale.append(f"{item['id']}: revalidation required for {evidence['ref']}")
+        newest = newest_receipt(item)
+        if newest is None:
+            continue
+        for evidence in newest["evidence"]:
+            if evidence["ref"].startswith("https://"):
+                continue
+            if evidence_digest(root, evidence["ref"]) != evidence["sha256"]:
+                stale.append(f"{item['id']}: revalidation required for {evidence['ref']}")
     return sorted(set(stale))
 
 
