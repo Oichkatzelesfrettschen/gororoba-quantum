@@ -692,7 +692,12 @@ def self_test() -> int:
     )
     if got != want:
         raise SystemExit(f"self-test: scan found {got}, expected {want}")
-    record = json.loads(sorted((ROOT / "docs/evidence/anu_qrng").glob("draw-*.json"))[-1].read_text(encoding="utf-8"))
+    # The newest retained ANU draw holding the two values the allocation and runtime checks index.
+    draws = [
+        json.loads(path.read_text(encoding="utf-8"))
+        for path in sorted((ROOT / "docs/evidence/anu_qrng").glob("draw-*.json"))
+    ]
+    record = next(draw for draw in reversed(draws) if len(draw["values"]) >= 2)
     record_path = "docs/evidence/anu_qrng/draw-2000-01-01T000000Z.json"
     value = record["values"][0]
     good = Counter({("a.py", "SEED", 5): 1, ("b.py", "seed", value): 1})

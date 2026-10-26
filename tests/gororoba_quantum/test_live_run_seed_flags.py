@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import contextlib
 import io
+import json
 from pathlib import Path
 
 import pytest
@@ -17,8 +18,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def qrng_reference(index: int) -> tuple[str, int]:
-    """A qrng: reference into the newest retained ANU draw and the value it names."""
-    draw = sorted((ROOT / "docs/evidence/anu_qrng").glob("draw-*.json"))[-1]
+    """A qrng: reference into the newest retained ANU draw that holds the index, and the value it names."""
+    draws = sorted((ROOT / "docs/evidence/anu_qrng").glob("draw-*.json"))
+    draw = next(path for path in reversed(draws) if len(json.loads(path.read_text(encoding="utf-8"))["values"]) > index)
     reference = f"qrng:{draw.relative_to(ROOT).as_posix()}#{index}"
     return reference, qrng_seeds.resolve(reference)[0]
 
