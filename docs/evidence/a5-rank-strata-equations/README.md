@@ -1,4 +1,4 @@
-# Explicit equations for the A_5 rank strata and an independent covering over Q
+# Explicit equations for the A_5 rank strata and an independent covering
 
 `result.json` is the output of [`rederive_strata_equations.py`](rederive_strata_equations.py) `--out`. The record gives
 closed equations for every rank stratum of the A_5 zero-divisor set and re-derives the covering half of the
@@ -13,7 +13,8 @@ Four statements are established:
 2. **Explicit strata.** R_8 = W8 u Ehat, R_12 = V u B9, R_16 = N_+ u N_-, with the equations of the table below.
 3. **Containments without the covering.** Every principal Pfaffian of C_z of order 12 lies in the ideal of Ehat and in
    the ideal of W8, every one of order 10 in the ideals of V and B9, and every one of order 8 in the ideals of N_+ and
-   N_-, over Q in all 15 variables.
+   N_-. Singular decides this over Q in the 15 split coordinates z'; the statement holds over C, because ideal
+   membership is unchanged by the extension from Q to C, and the change to original coordinates is linear over Q(i).
 4. **Incidences.** V and B9 lie in E8-bar, because the Ehat equations vanish on V and B9. This replaces the dense-subset
    argument (V) and the curve argument (B9) of Theorem 7 items 3 and 4 of the strata record.
 
@@ -70,8 +71,9 @@ Each part of `result.json` is an exact computation; `pass` requires every listed
      V_- and in neither. The last splits as (e'_2 + e'_3) + (e'_4 - e'_5) with pairing 0.
    - The three radical vectors have orbits of dimension 6 (rank of the 14 derivations on the vector).
    - n0 = e'_1 + e'_3 is null with a stabilizer H of dimension 8. L = ker(n0 ^ -) has dimension 3, contains n0, is
-     totally null, lies in n0-perp and is H-invariant. H acts on L / n0 through traceless matrices of rank 3, which is
-     sl_2. e'_4 + e'_6 is a special partner of n0 (null, perpendicular, n0 ^ B = 0) and e'_2 + e'_5 a generic one
+     totally null, lies in n0-perp and is H-invariant. The trace-free parts of the 8 induced endomorphisms of
+     L / n0 span a space of dimension 3, so the image of H in pgl(L / n0) is all of pgl_2, which acts transitively on
+     P(L / n0). e'_4 + e'_6 is a special partner of n0 (null, perpendicular, n0 ^ B = 0) and e'_2 + e'_5 a generic one
      (n0 ^ B != 0).
    - Equivariance: the split sedenions also have a derivation space of dimension 14. Every lift D + D on the halves
      (a, b) is one of those derivations, and for each of the 14 lifts and all z',
@@ -90,10 +92,11 @@ Each part of `result.json` is an exact computation; `pass` requires every listed
    Order 12 names W8 and Ehat, order 10 names V and B9, and order 8 names N_+ and N_-. All 18 pass.
 6. **Global** (`global`), Singular over Q in z'_1..z'_15:
    - The order-12 (455), order-10 (3003) and order-8 (6435) principal Pfaffians reduce to 0 modulo standard bases of
-     the ideals of Ehat and W8, of V and B9, and of N_+ and N_-, respectively.
+     the ideals of Ehat and W8, of V and B9, and of N_+ and N_-, respectively. The script computes a radical only
+     where that reduction fails, and here it never does.
    - std of the Ehat ideal has dimension 11 and degree 24.
    - The piece ideals of W8, V, B9, N_+ and N_- have dimensions 12, 8, 9, 6 and 6.
-   - The Ehat generators lie in the radicals of the ideals of V and of B9, and Q and G lie in the Ehat ideal.
+   - The Ehat generators lie in the radicals of the ideals of V and of B9.
    - The saturation of the Ehat ideal by f = mu' (u'_1 v'_2 - u'_2 v'_1) reduces to 0 modulo the Ehat standard basis,
      so (Ehat : f^infinity) = Ehat.
 7. **Points** (`points`). At six rational split points the nullity of the 32 x 32 rational matrix L_y equals the
@@ -113,13 +116,14 @@ Each part of `result.json` is an exact computation; `pass` requires every listed
 The prime dimensions count affine dimension in (a, b, c, d, m). The script reports them; the admission reads only the
 two radical inclusions.
 
-`--self-test` runs eight controls, in normal mode and under `-O`. Each of these mutations must fail its check:
+`--self-test` runs nine controls, in normal mode and under `-O`. Each of these mutations must fail its check:
 - Ehat without Q on P3a;
 - W8 with u.u = -v.v, on P2 and globally;
 - the P3c radical moved into V_+;
 - Ehat with the W8 component added, under saturation;
 - the isotropic-plane ideal without eta(x) = 0;
-- a derivation lift D + (-D).
+- a derivation lift D + (-D);
+- the P2 order-12 union with Ehat dropped, which leaves the Pfaffian variety outside W8 alone.
 
 A slice that reads no W8 equation must still pass under the W8 mutation.
 
@@ -201,9 +205,14 @@ G_2 . {u' = a (e'_2 + e'_3) + b e'_1, mu' = m, v' = c (e'_2 + e'_3) + d e'_1, Q 
    which is its only component of dimension 11. The ideal is homogeneous, so its Hilbert multiplicity 24 is the degree
    of the projective variety P(E8-bar). QED.
 
+   The independent review corroborates the degree by a second route. Modulo 32003, the Ehat ideal plus 10 random
+   linear forms and one affine form is zero-dimensional of vector-space dimension 24, and so is its radical: 24
+   reduced points.
+
 Whether the Ehat ideal is radical, that is, the full ideal of E8-bar with no embedded components, is not decided here.
-Delta is redundant set-theoretically. If u', v' are independent and u' ^ v' lies in their span, it is perpendicular
-to both (computation 2), so eta(u' ^ v') = 0, which is Delta up to sign by the Lagrange identity. The record keeps
+Delta is redundant set-theoretically. If u', v' are dependent, Delta = 0 because the Gram determinant of a line
+vanishes. If they are independent and u' ^ v' lies in their span, it is perpendicular to both (computation 2), so
+eta(u' ^ v') = 0, which is Delta up to sign by the Lagrange identity. The record keeps
 Delta among the generators.
 
 *Corollary (Theorem 7 items 3 and 4 of the strata record).* V and B9 lie in E8-bar, since the Ehat equations vanish on
@@ -264,6 +273,6 @@ export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096 PYTHON="${PYTHON:-pyth
     --out docs/evidence/a5-rank-strata-equations/result.json
 ```
 
-The full run measured 13 s on 12 workers on an idle host and 30 s under shared load. The self-test measured 12 s.
+The full run measured 13 to 31 s on 12 workers, depending on host load. The self-test measured 12 s.
 `result.json` records the Python, python-flint and Singular versions and the script's sha256. Its `seconds` and
 `timings_s` fields vary from run to run; every other field is deterministic.

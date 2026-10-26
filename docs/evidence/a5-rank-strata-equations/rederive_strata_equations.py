@@ -1,4 +1,4 @@
-"""Explicit equations for the A_5 rank strata and an independent covering, from cd_core and Singular over Q.
+"""Explicit equations for the A_5 rank strata and an independent covering, from cd_core and Singular.
 
 The script imports nothing from scripts/a5_zero_divisor_strata.py and nothing from the earlier verifier. Every table
 comes from cd_core.cd_sign, cross-checked against cd_multiply_exact; every Groebner basis, radical and reduction is a
@@ -24,8 +24,9 @@ Parts (keys of the record):
   D_(x,y) x = c (eta(x) y - eta(x, y) x), the stabilizer of e'_1 acting as sl_3 on the eigenspaces of e'_1 ^ -, the
   null-vector orbits, the isotropic-plane certificate through n = e'_1 + e'_3, and the equivariance of C'_z;
 - identities: the cross-product identities the case analysis of Ehat uses, symbolic over Z;
-- global: Singular over Q in 15 variables. Every order-12 Pfaffian of C'_z lies in the ideal of Ehat and in the radical
-  of W8; every order-10 Pfaffian in the radicals of V and B9; every order-8 Pfaffian in those of N_+ and N_-;
+- global: Singular over Q in the 15 split coordinates. Every order-12 Pfaffian of M(z') reduces to 0 modulo standard
+  bases of the ideals of Ehat and W8, every order-10 one modulo those of V and B9, every order-8 one modulo those of
+  N_+ and N_- (a radical is computed only where that reduction fails);
   dimension and degree of Ehat; the Ehat equations vanish on V and B9; and the saturation of the Ehat ideal by
   f = mu' (u'_1 v'_2 - u'_2 v'_1) is the Ehat ideal, so V(Ehat) is the closure of its part where f != 0;
 - slices: on each of six five-parameter slices and each order 12, 10, 8 the radical of the Pfaffian ideal equals the
@@ -33,7 +34,8 @@ Parts (keys of the record):
   basis of a radical);
 - points: rational points with the nullity of the 32 x 32 matrix L_y, piece memberships and the Jacobian rank of Ehat.
 
---self-test runs eight controls: Ehat without Q, W8 with u.u = -v.v (on a slice and globally), a P3c radical moved
+--self-test runs nine controls: Ehat without Q, W8 with u.u = -v.v (on a slice and globally), the P2 union with Ehat
+dropped, a P3c radical moved
 into V_+, Ehat with the W8 component added, the isotropic-plane ideal without eta(x) and a derivation lift D + (-D) each
 fail their check, and a slice that reads no W8 equation passes.
 
@@ -355,7 +357,6 @@ def global_job(job: tuple[str, str]) -> dict[str, Any]:
                 "E = intersect(E, W);" if mutation == "ehat_plus_w8" else "",
                 ideal_text("VV", pcs["V"]),
                 ideal_text("B", pcs["B9"]),
-                ideal_text("QG", pcs["QG"]),
                 "ideal SE = std(E);",
                 '"RESULT dim", dim(SE);',
                 '"RESULT degree", mult(SE);',
@@ -365,7 +366,6 @@ def global_job(job: tuple[str, str]) -> dict[str, Any]:
                 ' + " " + string(dim(std(NP))) + " " + string(dim(std(NM)));',
                 '"RESULT ehat_vanishes_on_V", inrad(E, VV);',
                 '"RESULT ehat_vanishes_on_B9", inrad(E, B);',
-                '"RESULT qg_vanishes_on_ehat", inideal(QG, E);',
                 # f is nonzero exactly where mu' != 0 and u', v' are independent; E : f^infinity = E puts every
                 # point of V(E) in the closure of that open part.
                 "poly f = z8 * (z1 * z10 - z2 * z9);",
@@ -384,9 +384,7 @@ def global_job(job: tuple[str, str]) -> dict[str, Any]:
             lines.append(ideal_text(f"A{k}", pcs[nm]))
             # Ideal membership implies radical membership; the radical is computed only when membership fails.
             lines.append(f'int ii{k} = inideal(P, A{k}); "RESULT in_ideal_{nm}", ii{k};')
-            lines.append(
-                f'if (ii{k}) {{ "RESULT in_radical_{nm} 1"; }} else {{ "RESULT in_radical_{nm}", inrad(P, A{k}); }}'
-            )
+            lines.append(f'if (ii{k} == 0) {{ "RESULT in_radical_{nm}", inrad(P, A{k}); }}')
         lines.append(f'"RESULT generators", {len(pf)};')
         lines.append("quit;")
         res = run_singular(head + "\n".join(lines))
@@ -433,7 +431,7 @@ def slice_job(job: tuple[str, int, str]) -> dict[str, Any]:
     for k, nm in enumerate(names):
         lines.append(ideal_text(f"A{k}", pcs[nm] or [0]))
         lines.append(f'"RESULT piece_{nm}_in_R", inrad(P, A{k});')
-    lines.append("ideal I = intersect(A0, A1);")
+    lines.append("ideal I = A0;" if mutation == "union_drops_ehat" else "ideal I = intersect(A0, A1);")
     lines.append('"RESULT R_in_union", inrad(I, P);')
     lines.append('list L = minAssGTZ(P); string s = ""; int k;')
     lines.append('for (k = 1; k <= size(L); k++) { s = s + string(dim(std(L[k]))) + " "; }')
@@ -833,7 +831,8 @@ def isotropic_plane_job(mutation: str = "") -> dict[str, Any]:
         ]
     )
     res = run_singular(script)
-    return {"pass": res.get("forms_in_radical") == "1" and len(lforms) == 4, **res}
+    ok = res.get("forms_in_radical") == "1" and len(lforms) == 4 and "singular_error" not in res
+    return {"pass": ok, **res}
 
 
 # ---------------------------------------------------------------------------------------------------------------
@@ -959,11 +958,13 @@ def global_pass(rows: Sequence[dict[str, Any]]) -> bool:
     by = {r["job"]: r for r in rows}
     s = by["ehat_structure"]
     ok = s.get("dim") == "11" and s.get("ehat_vanishes_on_V") == "1" and s.get("ehat_vanishes_on_B9") == "1"
-    ok = ok and s.get("qg_vanishes_on_ehat") == "1" and s.get("saturation_equals_ehat") == "1"
+    ok = ok and s.get("saturation_equals_ehat") == "1"
     ok = ok and s.get("degree") == "24" and s.get("piece_dims") == "12 8 9 6 6"
-    ok = ok and by["pf12"].get("in_ideal_Ehat") == "1" and by["pf12"].get("in_radical_W8") == "1"
-    ok = ok and by["pf10"].get("in_radical_V") == "1" and by["pf10"].get("in_radical_B9") == "1"
-    ok = ok and by["pf8"].get("in_radical_Np") == "1" and by["pf8"].get("in_radical_Nm") == "1"
+    # Ideal membership decides containment; the radical is computed, and read, only where membership fails.
+    for job, names in (("pf12", ("Ehat", "W8")), ("pf10", ("V", "B9")), ("pf8", ("Np", "Nm"))):
+        for nm in names:
+            row = by[job]
+            ok = ok and (row.get(f"in_ideal_{nm}") == "1" or row.get(f"in_radical_{nm}") == "1")
     return ok and not any("singular_error" in r for r in rows)
 
 
@@ -983,7 +984,7 @@ def self_test() -> list[str]:
     if facts["slice_frames"]["radical_types"]["P3c"] != "V+" or facts["pass"]:
         failures.append("a P3c radical inside V_+ passed the slice-frame check")
     res = global_job(("pf12", "w8_sign"))
-    if res.get("in_radical_W8") != "0" or res.get("in_ideal_Ehat") != "1":
+    if res.get("in_ideal_W8") != "0" or res.get("in_radical_W8") != "0" or res.get("in_ideal_Ehat") != "1":
         failures.append("the order-12 Pfaffians lie in the radical of W8 with u.u = -v.v")
     res = global_job(("ehat_structure", "ehat_plus_w8"))
     if res.get("saturation_equals_ehat") != "0":
@@ -993,6 +994,9 @@ def self_test() -> list[str]:
         failures.append("the isotropic-plane certificate held without the null condition eta(x) = 0")
     if g2_facts("lift_sign")["equivariance"]["lifts_are_derivations"]:
         failures.append("a lift D + (-D) passed as a derivation of the split sedenions")
+    bad = slice_job(("P2", 12, "union_drops_ehat"))
+    if bad.get("R_in_union") != "0" or "singular_error" in bad:
+        failures.append("the P2 order-12 Pfaffian variety lay inside W8 alone")
     return failures
 
 
@@ -1008,7 +1012,7 @@ def main() -> int:
         failures = self_test()
         for line in failures:
             print("FAIL", line)
-        print(f"rederive_strata_equations self-test: {8 - len(failures)} of 8 controls behaved as required")
+        print(f"rederive_strata_equations self-test: {9 - len(failures)} of 9 controls behaved as required")
         return 1 if failures else 0
     t0 = time.perf_counter()
     report: dict[str, Any] = {}
