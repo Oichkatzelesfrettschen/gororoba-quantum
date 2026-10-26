@@ -549,6 +549,28 @@
       "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
       "docs/evidence/ascella-order-coefficients/heater-coupling.json"
     ],
+    "core-ascella-signed-coherence-mesh-split-replay": [
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/anu_qrng/draw-2026-10-26T012622Z.json",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json"
+    ],
+    "core-ascella-signed-coherence-mesh-decomposition-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/ascella-order-coefficients/mesh-decomposition.json"
+    ],
+    "core-ascella-signed-coherence-mesh-exploration-replay": [
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/anu_qrng/draw-2026-10-26T012622Z.json",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json",
+      "docs/evidence/ascella-order-coefficients/mesh-exploration.json"
+    ],
+    "core-ascella-signed-coherence-twelve-output-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json",
+      "docs/evidence/ascella-order-coefficients/twelve-output.json"
+    ],
     "core-primorial-null-residuals-replay": [
       "docs/evidence/calibration/**",
       "docs/evidence/primorial_cover/**",
@@ -561,6 +583,9 @@
     ],
     "core-692": [
       "docs/evidence/stiefel-pfaffian-higher/**"
+    ],
+    "core-694": [
+      "docs/evidence/a5-zero-divisor-strata/**"
     ]
   }
 }

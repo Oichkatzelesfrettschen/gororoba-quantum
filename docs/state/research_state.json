@@ -3016,7 +3016,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.",
+      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata; smooth strata and singular loci, normal links, kernel bundles, attachments and integral invariants (roadmap items 4-8) remain open.",
       "evidence": [],
       "documents": [
         "docs/RESEARCH_ROADMAP.md",
@@ -3031,7 +3031,8 @@
         "four-support-topology",
         "principal-skew-atlas",
         "kernel-limit-slice",
-        "nullity-twelve-cone"
+        "nullity-twelve-cone",
+        "a5-zero-divisor-strata"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -5832,7 +5833,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md, local to the twelve recorded witnesses 1, 4, 5, 6, 8, 11, 12, 13, 15, 18, 19 and 20 of rank_locus_local_dimension. At each, exact integer kernels give the family nullity, the Schur tangent cone dimension 16, 22 or 28, e_8 and e_24 in T(x) and dim T(x) cap H_5^perp = dim T(x) - 2, and a smooth piece of that dimension through x lies in R_k: the quadric cone V at 1, 8, 15 (a5-nullity12-quadric-germ); the Stiefel cone Q = 0 at 6, 13, 20 and the quartic G = 0 at 5, 12, 19, each with real Jacobian rank 4 and inside R_4 by Pf A = -(z.t) Q G; at 4, 11, 18 the image of s exp(D_X) z(k) for the 14 octonion derivations D_X on both halves and a degree-2 curve z(k) through x whose rank C_z <= 10 holds identically by 13 exact points against degree 12, with complex orbit rank 11. The Schur sandwich makes each piece the germ of S_k. The family dimensions are imported from the local-dimension record; the result covers no point off these witnesses, no covering of D_(5,4), D_(5,8) or D_(5,12), and is not formalized in Rocq.",
+      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md, local to the twelve recorded witnesses 1, 4, 5, 6, 8, 11, 12, 13, 15, 18, 19 and 20 of rank_locus_local_dimension. At each, exact integer kernels give the family nullity, the Schur tangent cone dimension 16, 22 or 28, e_8 and e_24 in T(x) and dim T(x) cap H_5^perp = dim T(x) - 2, and a smooth piece of that dimension through x lies in R_k: the quadric cone V at 1, 8, 15 (a5-nullity12-quadric-germ); the Stiefel cone Q = 0 at 6, 13, 20 and the quartic G = 0 at 5, 12, 19, each with real Jacobian rank 4 and inside R_4 by Pf A = -(z.t) Q G; at 4, 11, 18 the image of s exp(D_X) z(k) for the 14 octonion derivations D_X on both halves and a degree-2 curve z(k) through x whose rank C_z <= 10 holds identically by 13 exact points against degree 12, with complex orbit rank 11. The Schur sandwich makes each piece the germ of S_k. The family dimensions are imported from the local-dimension record; the result covers no point off these witnesses, no covering of D_(5,4), D_(5,8) or D_(5,12), and is not formalized in Rocq. a5-zero-divisor-strata identifies the two extra directions globally as the complex coordinate mu = (y_8, y_24) transverse to H_5^perp.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
@@ -5875,6 +5876,40 @@
         "nullity-twelve-cone",
         "a5-nullity12-quadric-germ",
         "a5-stiefel-universal"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-zero-divisor-strata",
+      "statement": "The zero divisors of A_5 are the doubly pure y = (p, q) with Q G = 0 for z = p + i q, a union of two absolutely irreducible hypersurfaces of C^15 of complex dimension 14; nullity L_y = 28 - 2 rank C_z, so nullity 4, 8, 12, 16 is the rank 12, 10, 8, 6 locus of C_z. Each rank stratum has two irreducible pieces (complex dimension, unit dimension): R_16 = N_+ u N_- (6, 11 each), R_12 = V (8, 15) u B9 (9, 17) meeting in dimension (7, 13), R_8 = W8 (12, 23) u E8-bar (11, 21); V and B9 lie in E8-bar, B9 in W8, N_+ and N_- in V n B9, W8 in V(G) off V(Q) generically and the other pieces in V(Q) n V(G). D_(5,4) and D_(5,12) are connected and D_(5,8) and D_(5,16) have two connected components.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-zero-divisor-strata/README.md; gate core-694 recomputes result.json (Groebner membership and radical-power certificates of the Pfaffian ideals of orders 12, 10, 8 on six G_2-slice families, is_groebner re-verified) and core-695 rejects its mutation controls. The covering of each stratum by its two pieces rests on those slice certificates and the G_2 orbit facts; the V n B9 dimension, the piece dimensions and the component counts are asserted literals in the script whose support is the independent cd_core verification (verification.md: tangent dimension equals parametrization rank at random points, the V n B9 upper bound by counting, and an orbit-free argument for the two components of D_(5,8)), which is not a gate and checks the slice tables over F_11 and F_13 only. Equations for E8-bar are not given. Open: singular loci of the pieces, normal links, kernel bundles, attachments and homology (roadmap items 4-8); not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-zero-divisor-strata/result.json",
+          "sha256": "5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-zero-divisor-strata/README.md",
+        "docs/evidence/a5-zero-divisor-strata/verification.md"
+      ],
+      "gates": {
+        "core-694": "replay",
+        "core-695": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-stiefel-universal",
+        "a5-nullity12-quadric-germ",
+        "a5-nonzero-divisor-two-dimension-gap"
       ],
       "supersedes": [],
       "superseded_by": null,
