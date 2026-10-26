@@ -49,3 +49,25 @@ def test_a_refreshing_read_departs_from_the_held_state() -> None:
 def test_self_test_passes() -> None:
     if watch.self_test() != 0:
         raise AssertionError("the self-test failed")
+
+
+def test_held_file_takes_the_catalogue_time_unless_an_earlier_read_is_named(tmp_path: Path) -> None:
+    catalogue = ROOT / READS[-1]
+    out = tmp_path / "held.json"
+    watch.write_held(catalogue, "qpu:belenos", out)
+    retrieved = json.loads(catalogue.read_text(encoding="utf-8"))["retrieved_utc"]
+    if json.loads(out.read_text(encoding="utf-8"))["first_seen_utc"] != retrieved:
+        raise AssertionError("the held file ignores the catalogue's retrieval time")
+    watch.write_held(catalogue, "qpu:belenos", out, "2026-10-25T18:47:04+00:00")
+    if json.loads(out.read_text(encoding="utf-8"))["first_seen_utc"] != "2026-10-25T18:47:04+00:00":
+        raise AssertionError("the held file ignores --first-seen")
+
+
+def test_model_at_matches_the_live_model_on_one_snapshot(monkeypatch: pytest.MonkeyPatch) -> None:
+    import qd_platform
+    import qd_teleportation_rehearsal as rehearsal
+
+    perfs = perfs_of(READS[-1])
+    monkeypatch.setattr(qd_platform, "get", lambda route, auth=True: {"perfs": perfs})
+    if rehearsal.live_model() != rehearsal.model_at(perfs):
+        raise AssertionError("live_model and model_at differ on the same perfs object")

@@ -5,7 +5,8 @@ name: quandela-record-watch
 # results/quandela/watch/qpu-belenos-held.json (scripts/qd_record_watch.py,
 # docs/runbooks/quandela-scheduled-runs.md "Record watch"). The read submits,
 # stages and plans nothing. On a change the job opens one issue with the live
-# figures and the rehearsal model's pooled fidelity, then disables this workflow.
+# figures and the rehearsal model's pooled fidelity at that same snapshot, then
+# disables this workflow.
 # The token lives only in the quandela environment, whose deployment branches
 # are restricted to main.
 on:

@@ -15,7 +15,7 @@ Every class also records the record's status. The report lands in --report as JS
 submitted, staged or planned.
 
 Usage:
-  "$PYTHON" scripts/qd_record_watch.py held CATALOGUE PLATFORM --out HELD
+  "$PYTHON" scripts/qd_record_watch.py held CATALOGUE PLATFORM --out HELD [--first-seen UTC]
   "$PYTHON" scripts/qd_record_watch.py check HELD --report REPORT --summary SUMMARY
   "$PYTHON" scripts/qd_record_watch.py --self-test
 """
@@ -86,8 +86,9 @@ def summary(report: Mapping[str, Any]) -> str:
 def check(
     held: Mapping[str, Any],
     read: Callable[[str], Mapping[str, Any]],
-    model: Callable[[], Mapping[str, Any]],
+    model: Callable[[Mapping[str, Any]], Mapping[str, Any]],
 ) -> dict[str, Any]:
+    """Read the record once and classify it; a changed record's model scores that same perfs object."""
     record = read(held["platform"])
     state = classify(record, held)
     raw = record.get("perfs")
@@ -105,7 +106,7 @@ def check(
         "figures": figures(perfs),
     }
     if state == "changed":
-        report["model"] = dict(model())
+        report["model"] = dict(model(perfs))
     return report
 
 
@@ -116,15 +117,16 @@ def live_read(platform: str) -> Mapping[str, Any]:
     return answer
 
 
-def live_model() -> Mapping[str, Any]:
-    from qd_teleportation_rehearsal import live_model as rehearsal_model
+def model_at(perfs: Mapping[str, Any]) -> Mapping[str, Any]:
+    from qd_teleportation_rehearsal import model_at as rehearsal_model
 
-    model: Mapping[str, Any] = rehearsal_model()
+    model: Mapping[str, Any] = rehearsal_model(perfs)
     return model
 
 
-def write_held(catalogue: Path, platform: str, out: Path) -> int:
-    """Name a retained catalogue's processor record as the held state."""
+def write_held(catalogue: Path, platform: str, out: Path, first_seen: str | None = None) -> int:
+    """Name a retained catalogue's processor record as the held state, first seen at `first_seen` (an earlier retained
+    read of the same state) or else at the catalogue's retrieved_utc."""
     data = json.loads(catalogue.read_text(encoding="utf-8"))
     perfs = data["processors"][platform]["perfs"]
     held: dict[str, Any] = {
@@ -132,18 +134,18 @@ def write_held(catalogue: Path, platform: str, out: Path) -> int:
         "platform": platform,
         "perfs_sha256": digest(perfs),
         "figures": figures(perfs),
-        "first_seen_utc": "2026-10-25T18:47:04+00:00",
+        "first_seen_utc": first_seen or data["retrieved_utc"],
         "source": catalogue.relative_to(ROOT).as_posix(),
     }
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(held, indent=1) + "\n", encoding="utf-8")
-    print(f"{out.relative_to(ROOT)}: {platform} held at {held['perfs_sha256'][:12]}")
+    print(f"{out}: {platform} held at {held['perfs_sha256'][:12]} since {held['first_seen_utc']}")
     return 0
 
 
 def run_check(held_path: Path, report_path: Path, summary_path: Path) -> int:
     held = json.loads(held_path.read_text(encoding="utf-8"))
-    report = check(held, live_read, live_model)
+    report = check(held, live_read, model_at)
     report_path.write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8")
     if report["state"] == "changed":
         summary_path.write_text(summary(report), encoding="utf-8")
@@ -173,7 +175,11 @@ def self_test() -> int:
     for record, want in cases:
         calls: list[int] = []
 
-        def scored(calls: list[int] = calls) -> Mapping[str, Any]:
+        def scored(
+            seen: Mapping[str, Any], calls: list[int] = calls, record: Mapping[str, Any] = record
+        ) -> Mapping[str, Any]:
+            if seen != record.get("perfs"):
+                raise SystemExit("self-test: the model scored another perfs object than the classified read")
             calls.append(1)
             return model
 
@@ -198,13 +204,14 @@ def main(argv: list[str]) -> int:
     held.add_argument("catalogue", type=Path)
     held.add_argument("platform")
     held.add_argument("--out", type=Path, required=True)
+    held.add_argument("--first-seen", help="UTC time of an earlier retained read of the same state")
     checked = commands.add_parser("check")
     checked.add_argument("held", type=Path)
     checked.add_argument("--report", type=Path, required=True)
     checked.add_argument("--summary", type=Path, required=True)
     args = parser.parse_args(argv)
     if args.command == "held":
-        return write_held(args.catalogue.resolve(), args.platform, args.out.resolve())
+        return write_held(args.catalogue.resolve(), args.platform, args.out.resolve(), args.first_seen)
     return run_check(args.held, args.report, args.summary)
 
 
