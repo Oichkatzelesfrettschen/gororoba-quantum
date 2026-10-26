@@ -15,6 +15,7 @@ import pytest
 import idle_penalty as ip
 
 SKELETON_VIOLATIONS = report.skeleton_violations
+CAMPAIGN_DIGEST = report.campaign_digest
 
 DT = 4e-9
 P1_GROUND, P1_EXCITED = 0.01, 0.98
@@ -153,8 +154,10 @@ def _write_run(
 
 @pytest.fixture(autouse=True)
 def _no_compiled_circuits(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Synthetic runs carry no isa.qpy; the compiled-instruction check has its own test below."""
+    """Synthetic runs carry no isa.qpy; the compiled-instruction checks have their own tests below."""
     monkeypatch.setattr(report, "skeleton_violations", lambda run, record, names: [])
+    monkeypatch.setattr(report, "campaign_digest", lambda run, record, names, roles: "campaign")
+    monkeypatch.setattr(report, "COMPARE_MIN_QUBITS", 2 * len(LAYOUTS))
 
 
 def test_roles_follow_the_initial_layout_not_the_sorted_ownership(tmp_path: Path) -> None:
@@ -209,16 +212,42 @@ def test_a_scheduled_exposure_off_plan_on_one_replica_is_refused(
         report.report(run, predicted=False)
 
 
-def test_compiled_instructions_must_match_the_scheduled_instances(tmp_path: Path) -> None:
-    from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, qpy
+def _fused(target: int = 0, delay: int = 100, probe: int | None = None) -> Any:
+    """A Ramsey-like body with the target on physical `target`; `probe` moves the pulses to another qubit."""
+    from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
-    register = ClassicalRegister(2, "g0_r0_c")
-    fused = QuantumCircuit(QuantumRegister(2, "q"), register, name="pub_m")
-    fused.reset([0, 1])
-    fused.sx(0)
-    fused.delay(100, 0, unit="dt")
-    fused.sx(0)
-    fused.measure([0, 1], [0, 1])
+    pair = [target, 1 - target]
+    pulsed = target if probe is None else probe
+    fused = QuantumCircuit(QuantumRegister(2, "q"), ClassicalRegister(2, "g0_r0_c"), name="pub_m")
+    fused.reset(pair)
+    fused.sx(pulsed)
+    fused.delay(delay, pulsed, unit="dt")
+    fused.sx(pulsed)
+    fused.measure(pair, [0, 1])
+    return fused
+
+
+def test_campaign_digest_names_qubits_by_role_and_tracks_the_compiled_body(tmp_path: Path) -> None:
+    from qiskit import qpy
+
+    record = {"execution_pubs": [{"name": "pub_m", "components": [{"group": "idle_penalty", "member": "m"}]}]}
+
+    def digest(fused: Any, roles: list[tuple[int, int]]) -> str:
+        with (tmp_path / "isa.qpy").open("wb") as stream:
+            qpy.dump(fused, stream)
+        return CAMPAIGN_DIGEST(tmp_path, record, ["m"], roles)
+
+    base = digest(_fused(), [(0, 1)])
+    if digest(_fused(target=1), [(1, 0)]) != base:
+        raise AssertionError("the same body on swapped physical qubits changed the campaign digest")
+    if digest(_fused(delay=116), [(0, 1)]) == base or digest(_fused(probe=1), [(0, 1)]) == base:
+        raise AssertionError("a changed delay or a moved probe kept the campaign digest")
+
+
+def test_compiled_instructions_must_match_the_scheduled_instances(tmp_path: Path) -> None:
+    from qiskit import qpy
+
+    fused = _fused()
     rows = [
         "main,reset_0,Qubit 0,0,100,play",
         "main,reset_1,Qubit 1,0,100,play",
@@ -271,6 +300,17 @@ def test_compare_refuses_predicted_and_same_calibration_reports(tmp_path: Path) 
     verdicts = report.compare(measured, later)
     if verdicts["kappa_1"]["n"] != 2 * len(LAYOUTS):
         raise AssertionError(f"compare kept {verdicts['kappa_1']['n']} qubits")
+    for edit in (
+        lambda r: r["identity"].__setitem__("campaign_digest", "other"),
+        lambda r: r["identity"].__setitem__("repetition_delay_seconds", 5e-5),
+        lambda r: r["identity"]["execution_policy"].__setitem__("twirl", True),
+        lambda r: r["qubits"][str(LAYOUTS[0][0])].__setitem__("role", "spectator"),
+        lambda r: r["qubits"].pop(str(LAYOUTS[0][0])),
+    ):
+        changed = copy.deepcopy(later)
+        edit(changed)
+        with pytest.raises(report.RefusedAnalysis):
+            report.compare(measured, changed)
 
 
 def test_dephasing_needs_a_negative_mean_and_a_quiet_null() -> None:
@@ -300,3 +340,19 @@ def test_median_interval_widens_with_spread_and_holds_the_median() -> None:
         raise AssertionError("the interval failed to widen with spread")
     if copy.deepcopy(narrow) != narrow:
         raise AssertionError("interval not plain data")
+
+
+def test_replay_holds_numbers_to_the_tolerance_and_everything_else_exactly() -> None:
+    retained = {"a": [1.0, 2, "x"], "b": {"c": True}}
+    if report.replay_differences(retained, {"a": [1.0 + 1e-12, 2, "x"], "b": {"c": True}}):
+        raise AssertionError("a last-bit float difference failed the replay")
+    for fresh in (
+        {"a": [1.001, 2, "x"], "b": {"c": True}},
+        {"a": [1.0, 3, "x"], "b": {"c": True}},
+        {"a": [1.0, 2, "y"], "b": {"c": True}},
+        {"a": [1.0, 2], "b": {"c": True}},
+        {"a": [1.0, 2, "x"], "b": {"c": False}},
+        {"a": [1.0, 2, "x"]},
+    ):
+        if not report.replay_differences(retained, fresh):
+            raise AssertionError(f"{fresh} passed the replay")

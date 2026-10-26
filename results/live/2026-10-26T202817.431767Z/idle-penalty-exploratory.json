@@ -160,10 +160,16 @@
   }
  },
  "identity": {
-  "analysis_digest": "550d44fedebc67372f17d3f4083aa3b8a635795d823ceb5f4b47b69bffd6ffd0",
+  "analysis_digest": "3b6b25275f9872e7fffc904852dfb1b686d3197cec204056c27fc1220d9a128d",
   "backend": "ibm_kingston",
   "calibration": "2026-10-26T14:25:32-07:00",
+  "campaign_digest": "a555f444a3b173a638565f4f90b1a7b0341de0e5bb44459cad57d1174ca4c7b5",
   "collect_sha256": "a055a7d4fead2ae05a425cb5c223e275f9b843aaeb56959f1f83bf366813583e",
+  "execution_policy": {
+   "dd": null,
+   "isolated_reference": false,
+   "twirl": false
+  },
   "experiment_digest": "b40853fef1067db4549f3a203990f04d12ac5d556c6214293cfbf03cef711e19",
   "exposure": "44 members on 31 replicas: compiled instructions match the schedule, planned idles and reader trains hold",
   "ladders": {
