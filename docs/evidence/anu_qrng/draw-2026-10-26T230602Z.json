@@ -1,0 +1,16 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=6&type=uint16",
+ "retrieved_utc": "2026-10-26T230602Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"6\", \"data\": [5573, 39099, 45322, 55527, 43939, 10803]}",
+ "raw_sha256": "b609e62677ff481c2f347e54564d48754e05fc515a98057bd37a28ce5d0537aa",
+ "type": "uint16",
+ "values": [
+  5573,
+  39099,
+  45322,
+  55527,
+  43939,
+  10803
+ ]
+}
