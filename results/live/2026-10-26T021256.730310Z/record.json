@@ -2,7 +2,7 @@
   "schema_version": 7,
   "schema_contract": "live-target-statistical-design-invocation-budget-v1",
   "state": "planned",
-  "started": "2026-10-26T01:39:59.007407+00:00",
+  "started": "2026-10-26T02:12:56.730310+00:00",
   "versions": {
     "numpy": "2.5.4",
     "qiskit": "2.5.2",
@@ -96,9 +96,9 @@
   "shots": 3200,
   "instance_sha256_12": "f59f9992321c",
   "seed_simulator": 20261011,
-  "experiment_digest": "c8b1808287ad4a483a59e92ab3c37caf6ebe5171bdd10c8def023d4af6e479c4",
+  "experiment_digest": "ac6d1b47c98e6a5becb6f4c3efdabda9fef8f16e51ce09ba360ba50499e19a4d",
   "code_commit": {
-    "head": "df65524e45c9894b1bb19ac88562634df6a6bcc2",
+    "head": "83893139ed4d17df108c89d0662d448e3b4e6070",
     "sources_modified": false
   },
   "system_inventory": {
@@ -106,9 +106,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 0,
-      "calibration": "2026-10-25T18:19:11-07:00",
-      "fetched_at": "2026-10-26T01:40:05+00:00",
+      "pending_jobs": 1,
+      "calibration": "2026-10-25T18:48:08-07:00",
+      "fetched_at": "2026-10-26T02:13:05+00:00",
       "backend_version": "1.0.0",
       "processor_type": {
         "family": "Heron",
@@ -180,9 +180,9 @@
     "ibm_kingston": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 0,
-      "calibration": "2026-10-25T18:19:11-07:00",
-      "fetched_at": "2026-10-26T01:40:05+00:00",
+      "pending_jobs": 1,
+      "calibration": "2026-10-25T18:48:08-07:00",
+      "fetched_at": "2026-10-26T02:13:05+00:00",
       "backend_version": "1.0.0",
       "processor_type": {
         "family": "Heron",
@@ -3418,8 +3418,8 @@
         "family": "Heron",
         "revision": "2"
       },
-      "calibration": "2026-10-25T18:19:11-07:00",
-      "noise_model_calibration": "2026-10-25T18:19:11-07:00",
+      "calibration": "2026-10-25T18:48:08-07:00",
+      "noise_model_calibration": "2026-10-25T18:48:08-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         0,
@@ -9664,10 +9664,10 @@
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 3200,
       "seed_simulator": 20261011,
-      "wall_seconds": 2.4211063029943034,
+      "wall_seconds": 0.8132349129882641,
       "experiment_metadata": [
         {
-          "time_taken": 0.017004383,
+          "time_taken": 0.004791365,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -9689,7 +9689,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.00535993,
+          "sample_measure_time": 0.001753925,
           "active_input_qubits": [
             80,
             81,
@@ -9710,7 +9710,7 @@
           }
         },
         {
-          "time_taken": 0.011141272,
+          "time_taken": 0.002886259,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -9732,7 +9732,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.003307963,
+          "sample_measure_time": 0.000639912,
           "active_input_qubits": [
             80,
             81,
@@ -9753,7 +9753,7 @@
           }
         },
         {
-          "time_taken": 0.011379913,
+          "time_taken": 0.00302439,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -9775,7 +9775,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.003193722,
+          "sample_measure_time": 0.000655882,
           "active_input_qubits": [
             80,
             81,
@@ -9796,7 +9796,7 @@
           }
         },
         {
-          "time_taken": 0.012918638,
+          "time_taken": 0.00305719,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -9818,7 +9818,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.005753361,
+          "sample_measure_time": 0.000533762,
           "active_input_qubits": [
             80,
             81,
@@ -9839,7 +9839,7 @@
           }
         },
         {
-          "time_taken": 0.014036243,
+          "time_taken": 0.003275151,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -9861,7 +9861,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.006865165,
+          "sample_measure_time": 0.000669562,
           "active_input_qubits": [
             80,
             81,
@@ -9882,7 +9882,7 @@
           }
         },
         {
-          "time_taken": 0.014659074,
+          "time_taken": 0.004587304,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -9904,7 +9904,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007817499,
+          "sample_measure_time": 0.000326211,
           "active_input_qubits": [
             80,
             81,
@@ -9925,7 +9925,7 @@
           }
         },
         {
-          "time_taken": 0.013044039,
+          "time_taken": 0.00597587,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -9947,7 +9947,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008139381,
+          "sample_measure_time": 0.001749526,
           "active_input_qubits": [
             80,
             81,
@@ -9968,7 +9968,7 @@
           }
         },
         {
-          "time_taken": 0.013952453,
+          "time_taken": 0.004984286,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -9990,7 +9990,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007141477,
+          "sample_measure_time": 0.002801749,
           "active_input_qubits": [
             80,
             81,
@@ -10011,7 +10011,7 @@
           }
         },
         {
-          "time_taken": 0.011797634,
+          "time_taken": 0.006839331,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10033,7 +10033,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007224487,
+          "sample_measure_time": 0.00337989,
           "active_input_qubits": [
             80,
             81,
@@ -10054,7 +10054,7 @@
           }
         },
         {
-          "time_taken": 0.011234242,
+          "time_taken": 0.004104704,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10076,7 +10076,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.004403006,
+          "sample_measure_time": 0.001931577,
           "active_input_qubits": [
             80,
             81,
@@ -10097,7 +10097,7 @@
           }
         },
         {
-          "time_taken": 0.012502546,
+          "time_taken": 0.004500344,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10119,7 +10119,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.00814063,
+          "sample_measure_time": 0.001949447,
           "active_input_qubits": [
             80,
             81,
@@ -10140,7 +10140,7 @@
           }
         },
         {
-          "time_taken": 0.01063125,
+          "time_taken": 0.006785002,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10162,7 +10162,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.001661607,
+          "sample_measure_time": 0.002278787,
           "active_input_qubits": [
             80,
             81,
@@ -10183,7 +10183,7 @@
           }
         },
         {
-          "time_taken": 0.011636074,
+          "time_taken": 0.003851632,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10205,7 +10205,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.006028033,
+          "sample_measure_time": 0.000579281,
           "active_input_qubits": [
             80,
             81,
@@ -10226,7 +10226,7 @@
           }
         },
         {
-          "time_taken": 0.012880968,
+          "time_taken": 0.003879783,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10248,7 +10248,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.00543282,
+          "sample_measure_time": 0.001700395,
           "active_input_qubits": [
             80,
             81,
@@ -10269,7 +10269,7 @@
           }
         },
         {
-          "time_taken": 0.011895704,
+          "time_taken": 0.004932146,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10291,7 +10291,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.004482367,
+          "sample_measure_time": 0.001326505,
           "active_input_qubits": [
             80,
             81,
@@ -10312,7 +10312,7 @@
           }
         },
         {
-          "time_taken": 0.011508304,
+          "time_taken": 0.00324759,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10334,7 +10334,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.005611432,
+          "sample_measure_time": 0.001035734,
           "active_input_qubits": [
             80,
             81,
@@ -10355,7 +10355,7 @@
           }
         },
         {
-          "time_taken": 0.047880639,
+          "time_taken": 0.005810549,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10377,7 +10377,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.015121096,
+          "sample_measure_time": 0.001666555,
           "active_input_qubits": [
             80,
             81,
@@ -10398,7 +10398,7 @@
           }
         },
         {
-          "time_taken": 0.060378116,
+          "time_taken": 0.006489771,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10420,7 +10420,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.023224147,
+          "sample_measure_time": 0.002702279,
           "active_input_qubits": [
             80,
             81,
@@ -10441,7 +10441,7 @@
           }
         },
         {
-          "time_taken": 0.041189954,
+          "time_taken": 0.002615448,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10463,7 +10463,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.015779209,
+          "sample_measure_time": 0.000281051,
           "active_input_qubits": [
             80,
             81,
@@ -10484,7 +10484,7 @@
           }
         },
         {
-          "time_taken": 0.036951648,
+          "time_taken": 0.003892142,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10506,7 +10506,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.021627671,
+          "sample_measure_time": 0.001717225,
           "active_input_qubits": [
             80,
             81,
@@ -10527,7 +10527,7 @@
           }
         },
         {
-          "time_taken": 0.020564998,
+          "time_taken": 0.004990887,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10549,7 +10549,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.013638941,
+          "sample_measure_time": 0.002831159,
           "active_input_qubits": [
             80,
             81,
@@ -10570,7 +10570,7 @@
           }
         },
         {
-          "time_taken": 0.022183682,
+          "time_taken": 0.004023332,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10592,7 +10592,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.014089122,
+          "sample_measure_time": 0.001822206,
           "active_input_qubits": [
             80,
             81,
@@ -10613,7 +10613,7 @@
           }
         },
         {
-          "time_taken": 0.020005484,
+          "time_taken": 0.005034766,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10635,7 +10635,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008884923,
+          "sample_measure_time": 0.001774566,
           "active_input_qubits": [
             80,
             81,
@@ -10656,7 +10656,7 @@
           }
         },
         {
-          "time_taken": 0.015740889,
+          "time_taken": 0.006071449,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10678,7 +10678,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.005861072,
+          "sample_measure_time": 0.001801346,
           "active_input_qubits": [
             80,
             81,
@@ -10699,7 +10699,7 @@
           }
         },
         {
-          "time_taken": 0.01584067,
+          "time_taken": 0.004886066,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10721,7 +10721,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007187217,
+          "sample_measure_time": 0.002707019,
           "active_input_qubits": [
             80,
             81,
@@ -10742,7 +10742,7 @@
           }
         },
         {
-          "time_taken": 0.024816593,
+          "time_taken": 0.004535055,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10764,7 +10764,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007206557,
+          "sample_measure_time": 0.000946463,
           "active_input_qubits": [
             80,
             81,
@@ -10785,7 +10785,7 @@
           }
         },
         {
-          "time_taken": 0.016598592,
+          "time_taken": 0.003031189,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10807,7 +10807,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007504308,
+          "sample_measure_time": 0.000328451,
           "active_input_qubits": [
             80,
             81,
@@ -10828,7 +10828,7 @@
           }
         },
         {
-          "time_taken": 0.016912793,
+          "time_taken": 0.004415754,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10850,7 +10850,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.0079,
+          "sample_measure_time": 0.002172207,
           "active_input_qubits": [
             80,
             81,
@@ -10871,7 +10871,7 @@
           }
         },
         {
-          "time_taken": 0.019449383,
+          "time_taken": 0.00308066,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10893,7 +10893,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.006984346,
+          "sample_measure_time": 0.000835843,
           "active_input_qubits": [
             80,
             81,
@@ -10914,7 +10914,7 @@
           }
         },
         {
-          "time_taken": 0.014749185,
+          "time_taken": 0.003323261,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10936,7 +10936,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007529028,
+          "sample_measure_time": 0.000790462,
           "active_input_qubits": [
             80,
             81,
@@ -10957,7 +10957,7 @@
           }
         },
         {
-          "time_taken": 0.014857575,
+          "time_taken": 0.00315845,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -10979,7 +10979,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.005741751,
+          "sample_measure_time": 0.000956233,
           "active_input_qubits": [
             80,
             81,
@@ -11000,7 +11000,7 @@
           }
         },
         {
-          "time_taken": 0.017044534,
+          "time_taken": 0.007355704,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11022,7 +11022,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007821039,
+          "sample_measure_time": 0.00326664,
           "active_input_qubits": [
             80,
             81,
@@ -11043,7 +11043,7 @@
           }
         },
         {
-          "time_taken": 0.020680378,
+          "time_taken": 0.005707238,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11065,7 +11065,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.006872766,
+          "sample_measure_time": 0.0032612,
           "active_input_qubits": [
             80,
             81,
@@ -11086,7 +11086,7 @@
           }
         },
         {
-          "time_taken": 0.023698318,
+          "time_taken": 0.003781322,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11108,7 +11108,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.014188363,
+          "sample_measure_time": 0.001231164,
           "active_input_qubits": [
             80,
             81,
@@ -11129,7 +11129,7 @@
           }
         },
         {
-          "time_taken": 0.016842324,
+          "time_taken": 0.006844072,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11151,7 +11151,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007603118,
+          "sample_measure_time": 0.002442348,
           "active_input_qubits": [
             80,
             81,
@@ -11172,7 +11172,7 @@
           }
         },
         {
-          "time_taken": 0.017005753,
+          "time_taken": 0.006842042,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11194,7 +11194,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007650649,
+          "sample_measure_time": 0.002596528,
           "active_input_qubits": [
             80,
             81,
@@ -11215,7 +11215,7 @@
           }
         },
         {
-          "time_taken": 0.01858449,
+          "time_taken": 0.005251187,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11237,7 +11237,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.00802636,
+          "sample_measure_time": 0.001955416,
           "active_input_qubits": [
             80,
             81,
@@ -11258,7 +11258,7 @@
           }
         },
         {
-          "time_taken": 0.019475373,
+          "time_taken": 0.006447781,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11280,7 +11280,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.010075638,
+          "sample_measure_time": 0.001104013,
           "active_input_qubits": [
             80,
             81,
@@ -11301,7 +11301,7 @@
           }
         },
         {
-          "time_taken": 0.013795911,
+          "time_taken": 0.007911045,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11323,7 +11323,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007544338,
+          "sample_measure_time": 0.003407951,
           "active_input_qubits": [
             80,
             81,
@@ -11344,7 +11344,7 @@
           }
         },
         {
-          "time_taken": 0.021110969,
+          "time_taken": 0.007455434,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11366,7 +11366,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007646599,
+          "sample_measure_time": 0.0031229,
           "active_input_qubits": [
             80,
             81,
@@ -11387,7 +11387,7 @@
           }
         },
         {
-          "time_taken": 0.017263545,
+          "time_taken": 0.008080146,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11409,7 +11409,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.006685664,
+          "sample_measure_time": 0.003678802,
           "active_input_qubits": [
             80,
             81,
@@ -11430,7 +11430,7 @@
           }
         },
         {
-          "time_taken": 0.015815159,
+          "time_taken": 0.008729508,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11452,7 +11452,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.006417414,
+          "sample_measure_time": 0.004333504,
           "active_input_qubits": [
             80,
             81,
@@ -11473,7 +11473,7 @@
           }
         },
         {
-          "time_taken": 0.017128834,
+          "time_taken": 0.006604311,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11495,7 +11495,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007612779,
+          "sample_measure_time": 0.001873456,
           "active_input_qubits": [
             80,
             81,
@@ -11516,7 +11516,7 @@
           }
         },
         {
-          "time_taken": 0.018125108,
+          "time_taken": 0.006411631,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11538,7 +11538,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.0054643,
+          "sample_measure_time": 0.001197164,
           "active_input_qubits": [
             80,
             81,
@@ -11559,7 +11559,7 @@
           }
         },
         {
-          "time_taken": 0.01857865,
+          "time_taken": 0.007441934,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11581,7 +11581,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007369138,
+          "sample_measure_time": 0.001632326,
           "active_input_qubits": [
             80,
             81,
@@ -11602,7 +11602,7 @@
           }
         },
         {
-          "time_taken": 0.019467923,
+          "time_taken": 0.009734221,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11624,7 +11624,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008043959,
+          "sample_measure_time": 0.004418424,
           "active_input_qubits": [
             80,
             81,
@@ -11645,7 +11645,7 @@
           }
         },
         {
-          "time_taken": 0.01869027,
+          "time_taken": 0.00935069,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11667,7 +11667,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.006288183,
+          "sample_measure_time": 0.003674982,
           "active_input_qubits": [
             80,
             81,
@@ -11688,7 +11688,7 @@
           }
         },
         {
-          "time_taken": 0.020968828,
+          "time_taken": 0.007870346,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11710,7 +11710,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009589066,
+          "sample_measure_time": 0.005274427,
           "active_input_qubits": [
             80,
             81,
@@ -11731,7 +11731,7 @@
           }
         },
         {
-          "time_taken": 0.014784115,
+          "time_taken": 0.006032519,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11753,7 +11753,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007621769,
+          "sample_measure_time": 0.003461801,
           "active_input_qubits": [
             80,
             81,
@@ -11774,7 +11774,7 @@
           }
         },
         {
-          "time_taken": 0.021607721,
+          "time_taken": 0.005188867,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11796,7 +11796,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007870019,
+          "sample_measure_time": 0.000413261,
           "active_input_qubits": [
             80,
             81,
@@ -11817,7 +11817,7 @@
           }
         },
         {
-          "time_taken": 0.01864259,
+          "time_taken": 0.002637488,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11839,7 +11839,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008281281,
+          "sample_measure_time": 0.000242461,
           "active_input_qubits": [
             80,
             81,
@@ -11860,7 +11860,7 @@
           }
         },
         {
-          "time_taken": 0.018811701,
+          "time_taken": 0.007320334,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11882,7 +11882,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.01054733,
+          "sample_measure_time": 0.002646738,
           "active_input_qubits": [
             80,
             81,
@@ -11903,7 +11903,7 @@
           }
         },
         {
-          "time_taken": 0.023315137,
+          "time_taken": 0.008499867,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11925,7 +11925,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009738727,
+          "sample_measure_time": 0.00320392,
           "active_input_qubits": [
             80,
             81,
@@ -11946,7 +11946,7 @@
           }
         },
         {
-          "time_taken": 0.017365985,
+          "time_taken": 0.00298643,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -11968,7 +11968,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009466225,
+          "sample_measure_time": 0.000775512,
           "active_input_qubits": [
             80,
             81,
@@ -11989,7 +11989,7 @@
           }
         },
         {
-          "time_taken": 0.023509478,
+          "time_taken": 0.007328683,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12011,7 +12011,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.013147899,
+          "sample_measure_time": 0.004793846,
           "active_input_qubits": [
             80,
             81,
@@ -12032,7 +12032,7 @@
           }
         },
         {
-          "time_taken": 0.020720977,
+          "time_taken": 0.006710192,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12054,7 +12054,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.012575387,
+          "sample_measure_time": 0.001605965,
           "active_input_qubits": [
             80,
             81,
@@ -12075,7 +12075,7 @@
           }
         },
         {
-          "time_taken": 0.023277577,
+          "time_taken": 0.005732798,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12097,7 +12097,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.010067737,
+          "sample_measure_time": 0.00284663,
           "active_input_qubits": [
             80,
             81,
@@ -12118,7 +12118,7 @@
           }
         },
         {
-          "time_taken": 0.016728253,
+          "time_taken": 0.005332527,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12140,7 +12140,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008607653,
+          "sample_measure_time": 0.001962376,
           "active_input_qubits": [
             80,
             81,
@@ -12161,7 +12161,7 @@
           }
         },
         {
-          "time_taken": 0.01601146,
+          "time_taken": 0.003839153,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12183,7 +12183,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.006815725,
+          "sample_measure_time": 0.001648065,
           "active_input_qubits": [
             80,
             81,
@@ -12204,7 +12204,7 @@
           }
         },
         {
-          "time_taken": 0.020195546,
+          "time_taken": 0.004960416,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12226,7 +12226,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007816379,
+          "sample_measure_time": 0.002776859,
           "active_input_qubits": [
             80,
             81,
@@ -12247,7 +12247,7 @@
           }
         },
         {
-          "time_taken": 0.021197489,
+          "time_taken": 0.007402293,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12269,7 +12269,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009715886,
+          "sample_measure_time": 0.001882266,
           "active_input_qubits": [
             80,
             81,
@@ -12290,7 +12290,7 @@
           }
         },
         {
-          "time_taken": 0.017744176,
+          "time_taken": 0.005676508,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12312,7 +12312,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009437885,
+          "sample_measure_time": 0.001404095,
           "active_input_qubits": [
             80,
             81,
@@ -12333,7 +12333,7 @@
           }
         },
         {
-          "time_taken": 0.022161902,
+          "time_taken": 0.00598066,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12355,7 +12355,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009665037,
+          "sample_measure_time": 0.001789896,
           "active_input_qubits": [
             80,
             81,
@@ -12376,7 +12376,7 @@
           }
         },
         {
-          "time_taken": 0.019883315,
+          "time_taken": 0.008287896,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12398,7 +12398,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009711616,
+          "sample_measure_time": 0.002811038,
           "active_input_qubits": [
             80,
             81,
@@ -12419,7 +12419,7 @@
           }
         },
         {
-          "time_taken": 0.021203489,
+          "time_taken": 0.00912487,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12441,7 +12441,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009696416,
+          "sample_measure_time": 0.003491111,
           "active_input_qubits": [
             80,
             81,
@@ -12462,7 +12462,7 @@
           }
         },
         {
-          "time_taken": 0.018492129,
+          "time_taken": 0.007105283,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12484,7 +12484,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009501676,
+          "sample_measure_time": 0.004408995,
           "active_input_qubits": [
             80,
             81,
@@ -12505,7 +12505,7 @@
           }
         },
         {
-          "time_taken": 0.021570561,
+          "time_taken": 0.007544744,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12527,7 +12527,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.006959506,
+          "sample_measure_time": 0.003353891,
           "active_input_qubits": [
             80,
             81,
@@ -12548,7 +12548,7 @@
           }
         },
         {
-          "time_taken": 0.020796858,
+          "time_taken": 0.006550471,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12570,7 +12570,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009416535,
+          "sample_measure_time": 0.001061703,
           "active_input_qubits": [
             80,
             81,
@@ -12591,7 +12591,7 @@
           }
         },
         {
-          "time_taken": 0.016809393,
+          "time_taken": 0.013432433,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12613,7 +12613,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009698687,
+          "sample_measure_time": 0.006118229,
           "active_input_qubits": [
             80,
             81,
@@ -12634,7 +12634,7 @@
           }
         },
         {
-          "time_taken": 0.024294971,
+          "time_taken": 0.010063422,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12656,7 +12656,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.01071385,
+          "sample_measure_time": 0.003744362,
           "active_input_qubits": [
             80,
             81,
@@ -12677,7 +12677,7 @@
           }
         },
         {
-          "time_taken": 0.020520257,
+          "time_taken": 0.008194257,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12699,7 +12699,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009077634,
+          "sample_measure_time": 0.002632999,
           "active_input_qubits": [
             80,
             81,
@@ -12720,7 +12720,7 @@
           }
         },
         {
-          "time_taken": 0.019223172,
+          "time_taken": 0.006662451,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12742,7 +12742,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008238751,
+          "sample_measure_time": 0.004438624,
           "active_input_qubits": [
             80,
             81,
@@ -12763,7 +12763,7 @@
           }
         },
         {
-          "time_taken": 0.022379874,
+          "time_taken": 0.007013863,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12785,7 +12785,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009686847,
+          "sample_measure_time": 0.001834646,
           "active_input_qubits": [
             80,
             81,
@@ -12806,7 +12806,7 @@
           }
         },
         {
-          "time_taken": 0.019764843,
+          "time_taken": 0.011138815,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12828,7 +12828,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008404241,
+          "sample_measure_time": 0.005627208,
           "active_input_qubits": [
             80,
             81,
@@ -12849,7 +12849,7 @@
           }
         },
         {
-          "time_taken": 0.025942468,
+          "time_taken": 0.008825099,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12871,7 +12871,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.010455699,
+          "sample_measure_time": 0.002697339,
           "active_input_qubits": [
             80,
             81,
@@ -12892,7 +12892,7 @@
           }
         },
         {
-          "time_taken": 0.020091015,
+          "time_taken": 0.010252843,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12914,7 +12914,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.01062579,
+          "sample_measure_time": 0.006800251,
           "active_input_qubits": [
             80,
             81,
@@ -12935,7 +12935,7 @@
           }
         },
         {
-          "time_taken": 0.022083443,
+          "time_taken": 0.009153389,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -12957,7 +12957,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009554576,
+          "sample_measure_time": 0.004582794,
           "active_input_qubits": [
             80,
             81,
@@ -12978,7 +12978,7 @@
           }
         },
         {
-          "time_taken": 0.020977318,
+          "time_taken": 0.004639515,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13000,7 +13000,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.010457739,
+          "sample_measure_time": 0.002463958,
           "active_input_qubits": [
             80,
             81,
@@ -13021,7 +13021,7 @@
           }
         },
         {
-          "time_taken": 0.018615809,
+          "time_taken": 0.011278546,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13043,7 +13043,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008275741,
+          "sample_measure_time": 0.007920356,
           "active_input_qubits": [
             80,
             81,
@@ -13064,7 +13064,7 @@
           }
         },
         {
-          "time_taken": 0.018070068,
+          "time_taken": 0.013635124,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13086,7 +13086,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007594109,
+          "sample_measure_time": 0.010586974,
           "active_input_qubits": [
             80,
             81,
@@ -13107,7 +13107,7 @@
           }
         },
         {
-          "time_taken": 0.024221361,
+          "time_taken": 0.009915822,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13129,7 +13129,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009686276,
+          "sample_measure_time": 0.007758365,
           "active_input_qubits": [
             80,
             81,
@@ -13150,7 +13150,7 @@
           }
         },
         {
-          "time_taken": 0.022310403,
+          "time_taken": 0.010321713,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13172,7 +13172,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.011027221,
+          "sample_measure_time": 0.002989869,
           "active_input_qubits": [
             80,
             81,
@@ -13193,7 +13193,7 @@
           }
         },
         {
-          "time_taken": 0.019315313,
+          "time_taken": 0.010272533,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13215,7 +13215,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008256871,
+          "sample_measure_time": 0.007788065,
           "active_input_qubits": [
             80,
             81,
@@ -13236,7 +13236,7 @@
           }
         },
         {
-          "time_taken": 0.026373309,
+          "time_taken": 0.009860862,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13258,7 +13258,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.011944075,
+          "sample_measure_time": 0.008279936,
           "active_input_qubits": [
             80,
             81,
@@ -13279,7 +13279,7 @@
           }
         },
         {
-          "time_taken": 0.015760659,
+          "time_taken": 0.008743068,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13301,7 +13301,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007571858,
+          "sample_measure_time": 0.002581599,
           "active_input_qubits": [
             80,
             81,
@@ -13322,7 +13322,7 @@
           }
         },
         {
-          "time_taken": 0.018024087,
+          "time_taken": 0.010064522,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13344,7 +13344,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008836643,
+          "sample_measure_time": 0.005830619,
           "active_input_qubits": [
             80,
             81,
@@ -13365,7 +13365,7 @@
           }
         },
         {
-          "time_taken": 0.018978341,
+          "time_taken": 0.011472117,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13387,7 +13387,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.006765856,
+          "sample_measure_time": 0.008565297,
           "active_input_qubits": [
             80,
             81,
@@ -13408,7 +13408,7 @@
           }
         },
         {
-          "time_taken": 0.020888138,
+          "time_taken": 0.011466817,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13430,7 +13430,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008793553,
+          "sample_measure_time": 0.008335757,
           "active_input_qubits": [
             80,
             81,
@@ -13451,7 +13451,7 @@
           }
         },
         {
-          "time_taken": 0.021537691,
+          "time_taken": 0.010800765,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13473,7 +13473,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007921289,
+          "sample_measure_time": 0.007806535,
           "active_input_qubits": [
             80,
             81,
@@ -13494,7 +13494,7 @@
           }
         },
         {
-          "time_taken": 0.018553989,
+          "time_taken": 0.00947778,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13516,7 +13516,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.00813648,
+          "sample_measure_time": 0.002916509,
           "active_input_qubits": [
             80,
             81,
@@ -13537,7 +13537,7 @@
           }
         },
         {
-          "time_taken": 0.024243211,
+          "time_taken": 0.00933989,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13559,7 +13559,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008673483,
+          "sample_measure_time": 0.006488561,
           "active_input_qubits": [
             80,
             81,
@@ -13580,7 +13580,7 @@
           }
         },
         {
-          "time_taken": 0.018302229,
+          "time_taken": 0.009498211,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13602,7 +13602,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007745889,
+          "sample_measure_time": 0.004119893,
           "active_input_qubits": [
             80,
             81,
@@ -13623,7 +13623,7 @@
           }
         },
         {
-          "time_taken": 0.013338489,
+          "time_taken": 0.008237876,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13645,7 +13645,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.00534517,
+          "sample_measure_time": 0.003713522,
           "active_input_qubits": [
             80,
             81,
@@ -13666,7 +13666,7 @@
           }
         },
         {
-          "time_taken": 0.023499238,
+          "time_taken": 0.007212893,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13688,7 +13688,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.00795897,
+          "sample_measure_time": 0.005321767,
           "active_input_qubits": [
             80,
             81,
@@ -13709,7 +13709,7 @@
           }
         },
         {
-          "time_taken": 0.018989821,
+          "time_taken": 0.007488895,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13731,7 +13731,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008454161,
+          "sample_measure_time": 0.004259354,
           "active_input_qubits": [
             80,
             81,
@@ -13752,7 +13752,7 @@
           }
         },
         {
-          "time_taken": 0.017715837,
+          "time_taken": 0.004895415,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13774,7 +13774,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008496732,
+          "sample_measure_time": 0.002779089,
           "active_input_qubits": [
             80,
             81,
@@ -13795,7 +13795,7 @@
           }
         },
         {
-          "time_taken": 0.019855424,
+          "time_taken": 0.008011436,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13817,7 +13817,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.007947059,
+          "sample_measure_time": 0.000166181,
           "active_input_qubits": [
             80,
             81,
@@ -13838,7 +13838,7 @@
           }
         },
         {
-          "time_taken": 0.018982761,
+          "time_taken": 0.006921082,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13860,7 +13860,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.011096281,
+          "sample_measure_time": 0.000343571,
           "active_input_qubits": [
             80,
             81,
@@ -13881,7 +13881,7 @@
           }
         },
         {
-          "time_taken": 0.02140436,
+          "time_taken": 0.00941879,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13903,7 +13903,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.012123786,
+          "sample_measure_time": 0.007916556,
           "active_input_qubits": [
             80,
             81,
@@ -13924,7 +13924,7 @@
           }
         },
         {
-          "time_taken": 0.015721709,
+          "time_taken": 0.008054286,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13946,7 +13946,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.008734323,
+          "sample_measure_time": 0.004638094,
           "active_input_qubits": [
             80,
             81,
@@ -13967,7 +13967,7 @@
           }
         },
         {
-          "time_taken": 0.021595391,
+          "time_taken": 0.008078776,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -13989,7 +13989,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009257935,
+          "sample_measure_time": 0.004584834,
           "active_input_qubits": [
             80,
             81,
@@ -14010,7 +14010,7 @@
           }
         },
         {
-          "time_taken": 0.015799909,
+          "time_taken": 0.007533765,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -14032,7 +14032,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.005388141,
+          "sample_measure_time": 0.004488885,
           "active_input_qubits": [
             80,
             81,
@@ -14053,7 +14053,7 @@
           }
         },
         {
-          "time_taken": 0.015600069,
+          "time_taken": 0.007749534,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -14075,7 +14075,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.0079757,
+          "sample_measure_time": 0.001948626,
           "active_input_qubits": [
             80,
             81,
@@ -14096,7 +14096,7 @@
           }
         },
         {
-          "time_taken": 0.024493071,
+          "time_taken": 0.010636955,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -14118,7 +14118,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 3,
-          "sample_measure_time": 0.009973147,
+          "sample_measure_time": 0.008678308,
           "active_input_qubits": [
             80,
             81,
