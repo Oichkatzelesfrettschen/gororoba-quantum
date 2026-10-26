@@ -1,0 +1,119 @@
+{
+ "contracts": {
+  "idle_padded_exact": {
+   "n21_orbit_feedback_contrast": 0.1794321239392476
+  },
+  "idle_padded_sampled": {
+   "n21_orbit_feedback_contrast": 0.181396484375
+  },
+  "recorded_exact": {},
+  "unpadded_exact": {
+   "n21_orbit_feedback_contrast": 0.20809044191367584
+  }
+ },
+ "exact_laws": {
+  "idle_padded": {
+   "n21_orbit_feedback": [
+    [
+     0.3548413694405611,
+     0.2503634074084888,
+     0.14937254699020203,
+     0.24542267616074812
+    ]
+   ],
+   "n21_orbit_no_feedback": [
+    [
+     0.356744202833924,
+     0.16064303109053707,
+     0.14747834229349494,
+     0.335134423782044
+    ]
+   ]
+  },
+  "unpadded": {
+   "n21_orbit_feedback": [
+    [
+     0.36540889964745726,
+     0.25060759567682506,
+     0.13843697271896235,
+     0.24554653195675533
+    ]
+   ],
+   "n21_orbit_no_feedback": [
+    [
+     0.3660513077640063,
+     0.14656072522016383,
+     0.13779786360205992,
+     0.34959010341376995
+    ]
+   ]
+  }
+ },
+ "groups": [
+  "n21_orbit_feedback"
+ ],
+ "idle_padded_laws": {
+  "n21_orbit_feedback": [
+   [
+    0.3515625,
+    0.252685546875,
+    0.15234375,
+    0.243408203125
+   ]
+  ],
+  "n21_orbit_no_feedback": [
+   [
+    0.350830078125,
+    0.162109375,
+    0.15283203125,
+    0.334228515625
+   ]
+  ]
+ },
+ "inserted_idle_dt": {
+  "n21_orbit_feedback": [
+   {
+    "136": 1346,
+    "142": 1018,
+    "143": 1340,
+    "144": 1958
+   }
+  ],
+  "n21_orbit_no_feedback": [
+   {
+    "136": 1215,
+    "142": 911,
+    "143": 1191,
+    "144": 1809
+   }
+  ]
+ },
+ "job_id": "db6ub8svf2bc73d1rc50",
+ "prep_excitation": 0.0,
+ "replicas": {
+  "n21_orbit_feedback": [
+   [
+    136,
+    142,
+    143,
+    144
+   ]
+  ],
+  "n21_orbit_no_feedback": [
+   [
+    136,
+    142,
+    143,
+    144
+   ]
+  ]
+ },
+ "run": "results/live/2026-10-13T080216.451663Z",
+ "sampled_to_exact": {
+  "max_gap": 0.005914124708923996,
+  "radius": 0.030010087228747522,
+  "tail": 0.01
+ },
+ "schema": "scheduled-idle-replay-v1",
+ "summary_per_replica": {}
+}

@@ -32,8 +32,13 @@ The [QET-campaign successor](comparison-qet-campaigns.json) rebinds the retained
 `live_run.py` listed `qet_ladder.py` in its experiment manifest and refused dynamical decoupling for the three QET
 campaigns; it differs from the seed-flag successor only in the `live_run.py` digest and the offline validation time.
 
+The [primorial-campaign successor](comparison-primorial-campaigns.json) rebinds the retained-audit comparison
+offline after `live_run.py` gained the structure-preserving compilation contract, pinned layouts for the
+`coherence_probes` and `primorial_gap88` campaigns and their manifest entries; it differs from the QET-campaign
+successor only in the `live_run.py` digest and the offline validation time.
+
 The [window-dose successor](comparison-window-doses.json) rebinds the retained-audit comparison offline after
-`live_run.py` gained `--window-doses-dt`; it differs from the QET-campaign successor only in the `live_run.py`
+`live_run.py` gained `--window-doses-dt`; it differs from the primorial-campaign successor only in the `live_run.py`
 digest and the offline validation time. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
