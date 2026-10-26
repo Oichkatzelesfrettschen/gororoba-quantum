@@ -2617,6 +2617,7 @@
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
     "scripts/hypercomplex_photonic_cases.py",
+    "scripts/idle_penalty_exploratory.py",
     "scripts/idle_penalty_report.py",
     "scripts/iqm_cancellation_probe.py",
     "scripts/iqm_idle_schedule_probe.py",
@@ -4608,6 +4609,7 @@
     "scripts/heron_target_snapshot.py",
     "scripts/hypercomplex_cases.py",
     "scripts/ibm_runtime_options_inventory.py",
+    "scripts/idle_penalty_report.py",
     "scripts/iqm_cancellation_probe.py",
     "scripts/iqm_idle_schedule_probe.py",
     "scripts/iqm_measurement_sequence_aer_check.py",
@@ -11193,6 +11195,18 @@
    "typing",
    "unicodedata"
   ],
+  "scripts/idle_penalty_exploratory.py": [
+   "__future__",
+   "argparse",
+   "idle_penalty",
+   "idle_penalty_report",
+   "json",
+   "math",
+   "numpy",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "scripts/idle_penalty_report.py": [
    "__future__",
    "argparse",
@@ -11203,6 +11217,7 @@
    "math",
    "numpy",
    "pathlib",
+   "qiskit",
    "scheduled_idle_replay",
    "scipy",
    "sys",

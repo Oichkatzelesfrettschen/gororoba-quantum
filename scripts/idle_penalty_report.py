@@ -710,6 +710,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--snapshot", type=Path, help="calibration_snapshot.py export for --check-placement")
     parser.add_argument("--compare", nargs=2, type=Path, metavar=("FIRST", "SECOND"), help="two --out reports")
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", action="store_true", help="require --out to equal a fresh analysis byte for byte")
     args = parser.parse_args(argv)
     try:
         if args.compare:
@@ -730,8 +731,15 @@ def main(argv: list[str] | None = None) -> int:
     except RefusedAnalysis as refusal:
         print(f"refused: {refusal}")
         return 2
+    text = json.dumps(result, indent=1, sort_keys=True) + "\n"
+    if args.check:
+        if args.out is None or args.out.read_text() != text:
+            print(f"replay differs from {args.out}")
+            return 1
+        print(f"replay matches {args.out}")
+        return 0
     if args.out:
-        args.out.write_text(json.dumps(result, indent=1, sort_keys=True) + "\n")
+        args.out.write_text(text)
     _print(result)
     if args.self_check:
         p = result["pooled"]
