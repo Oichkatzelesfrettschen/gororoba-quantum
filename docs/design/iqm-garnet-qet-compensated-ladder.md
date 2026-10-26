@@ -159,3 +159,14 @@ The hypotheses:
   with 0.2 rad. A lower bound above 0.2 means `cc_prx` feedback carries a coherent window phase of Kingston's order;
   an upper bound below it means it does not. A phase beyond 1.05 rad lies outside the grid's correction, and the
   pair's selected alpha then reads the grid edge.
+
+## Result
+
+The job ran on 2026-10-26 (`01a1767a-8993-7687-b1c3-e8097fb8b712`, 6.5 credits). Its
+[findings](../../results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/FINDINGS.md) record the
+verdicts:
+- **H1 unresolved.** The mean excess is +0.073; two pairs are positive at 2.7 and 3.9 sigma, and the spread between
+  pairs is 0.150.
+- **H2 fails.** The margin is -0.423, with reference floors of 0.25 to 0.73.
+- **H3.** The scoring band admits 2 of 5 pairs, though the raw conditional P(1) is 0.0968 against 0.100.
+- **H4.** It reads a coherent window phase of Kingston's order, a mean magnitude of 0.55 rad.

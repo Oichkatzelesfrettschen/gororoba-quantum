@@ -1981,6 +1981,20 @@
       "run": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept",
       "family": "IQM QET compensated ladder",
       "question": "Does the garnet:mock station accept the passive-reset, unheralded cc_prx QET ladder circuits whose five pairs were chosen without the fast-feedback probe-line wiring?"
+    },
+    {
+      "id": "iqm-garnet-mock-qet-ladder-accept-wired",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station accept the passive-reset cc_prx QET ladder circuits on five probe-line-compatible pairs, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-qet-compensated-ladder",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the record-steered rotation of the two-qubit QET ladder, fed forward by cc_prx on IQM Garnet, lower Bob's local energy below every record-independent unitary (H1) and below the vacuum value (H2), is the non-pi conditional angle realized (H3), and does Bob carry a coherent window phase (H4)?"
     }
   ],
   "claims": [
@@ -10279,6 +10293,41 @@
         "iqm-garnet-mock-qet-ladder-accept-passive"
       ],
       "related_claims": [
+        "iqm-garnet-cc-prx-feedback-label-limit"
+      ]
+    },
+    {
+      "id": "iqm-garnet-qet-compensated-ladder-verdicts",
+      "statement": "On IQM Garnet (calibration set 7b30f37a; one job of 24 circuits x 1600 shots, passive reset, five packed probe-line-compatible pairs with cc_prx feedback, 6.5 credits), the preregistered all-pairs tests read: H1 information excess +0.073 with one-sided 95 percent bounds [-0.070, +0.216], unresolved, with per-pair values +0.005, +0.005, +0.186, -0.100 and +0.268 (between-pair spread 0.150 against per-pair shot noise 0.064 to 0.071); H2 channel floor margin -0.423 (upper bound -0.266), fails, the reference unitary floors 0.25 to 0.73 lying above the vacuum value and above the predicted 0.21 to 0.38; H4 mean window-phase magnitude 0.549 rad (lower bound 0.272), a coherent phase of Kingston's order over Garnet's 1.1 us readout-plus-feedback window. The cc_prx(2 phi*) rotation is present (raw pooled P(1) 0.0968 after a |1> source against sin^2 phi* = 0.100, 0.0089 after |0>); H3's readout-corrected angle band admitted 2 of 5 pairs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, one job, five pairs, t-bounds across pairs; energies are expectations of an encoded spin Hamiltonian. H3's band failures are attributed, with moderate confidence and no separating arm, to the |11> calibration arm's preparation error inflating the corrected angle. The garnet:mock acceptance job returns random bits and enters no endpoint.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/analysis.json",
+          "sha256": "5538b9d9a1052dcb03a031d65ad42230debdce210a08164b593b0683a1edd1c2"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/results.json",
+          "sha256": "e5863ec28bf04f3c2b63317c09b8d2dcb2e2658f136c0250af153fd5aa32f744"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "ba1b6cfd654f96fc08e3435eca7348471b790ab4f5c2f133d1dffc8134d457d7"
+        }
+      ],
+      "documents": [
+        "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/FINDINGS.md",
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-qet-compensated-ladder",
+        "iqm-garnet-mock-qet-ladder-accept-wired"
+      ],
+      "related_claims": [
+        "kingston-qet-scheduled-idle-coherent-phase",
+        "iqm-garnet-cc-prx-probe-line-limit",
         "iqm-garnet-cc-prx-feedback-label-limit"
       ]
     }

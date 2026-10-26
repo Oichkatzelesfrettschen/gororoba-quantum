@@ -4266,6 +4266,22 @@
    "name": "core-693",
    "seconds": 4.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py --self-test",
+   "name": "core-694",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/iqm_qet_ladder.py check results/iqm/cases/qet-compensated-ladder",
+   "name": "core-695",
+   "seconds": 4.0,
+   "tier": "full"
   }
  ],
  "excluded": [

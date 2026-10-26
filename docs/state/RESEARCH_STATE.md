@@ -34,7 +34,7 @@ The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 75 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
-The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 28 IQM run directories are retained. That is an observation, not an authorization.
+The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 30 IQM run directories are retained. That is an observation, not an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -324,6 +324,8 @@ circuit and charges the account ledger's change.
 | [2026-10-25T233207.284563Z](../../results/live/2026-10-25T233207.284563Z) | IBM Quantum | qet-ladder | ibm_kingston | 1 | 18 | DONE | 12 s | kingston-qet-compensated-information-excess, kingston-qet-scheduled-idle-coherent-phase |
 | [2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept](../../results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept) | IQM Resonance | IQM QET compensated ladder | garnet:mock | 1 | 22 | failed | 0.0 credits | iqm-garnet-cc-prx-feedback-label-limit |
 | [2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept](../../results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept) | IQM Resonance | IQM QET compensated ladder | garnet:mock | 1 | 24 | failed | 0.0 credits | iqm-garnet-cc-prx-probe-line-limit |
+| [2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept](../../results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept) | IQM Resonance | IQM QET compensated ladder | garnet:mock | 1 | 24 | completed | 0.0 credits | iqm-garnet-qet-compensated-ladder-verdicts |
+| [2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder](../../results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder) | IQM Resonance | IQM QET compensated ladder | garnet | 1 | 24 | completed | 6.5 credits | iqm-garnet-qet-compensated-ladder-verdicts |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -608,6 +610,8 @@ circuit and charges the account ledger's change.
 - **kingston-qet-compensated-ladder** (2026-10-25T233207.284563Z): Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?
 - **iqm-garnet-mock-qet-ladder-accept** (2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept, 0 billed seconds): Does the garnet:mock station pipeline accept the cc_prx-fed QET ladder circuits (five packed pairs, a feedback_key distinct from the measure key, cc_prx at angle 0 and 2 phi*, barrier) under one active-reset cycle with all-zeros heralding?
 - **iqm-garnet-mock-qet-ladder-accept-passive** (2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept, 0 billed seconds): Does the garnet:mock station accept the passive-reset, unheralded cc_prx QET ladder circuits whose five pairs were chosen without the fast-feedback probe-line wiring?
+- **iqm-garnet-mock-qet-ladder-accept-wired** (2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept, 1 billed seconds): Does the garnet:mock station accept the passive-reset cc_prx QET ladder circuits on five probe-line-compatible pairs, and what does it estimate?
+- **iqm-garnet-qet-compensated-ladder** (2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder, 13 billed seconds): Does the record-steered rotation of the two-qubit QET ladder, fed forward by cc_prx on IQM Garnet, lower Bob's local energy below every record-independent unitary (H1) and below the vacuum value (H2), is the non-pi conditional angle realized (H3), and does Bob carry a coherent window phase (H4)?
 
 ## Established claims
 
@@ -1406,6 +1410,11 @@ circuit and charges the account ledger's change.
   Evidence: [collect.json](../../results/live/2026-10-25T233207.284563Z/collect.json), [record.json](../../results/live/2026-10-25T233207.284563Z/record.json), [FINDINGS.md](../../results/live/2026-10-25T233207.284563Z/FINDINGS.md).
   Acquisitions: kingston-qet-compensated-ladder.
   Related claims: kingston-qet-window-phase-static.
+- **iqm-garnet-qet-compensated-ladder-verdicts** (preregistered hardware inference, hardware). On IQM Garnet (calibration set 7b30f37a; one job of 24 circuits x 1600 shots, passive reset, five packed probe-line-compatible pairs with cc_prx feedback, 6.5 credits), the preregistered all-pairs tests read: H1 information excess +0.073 with one-sided 95 percent bounds [-0.070, +0.216], unresolved, with per-pair values +0.005, +0.005, +0.186, -0.100 and +0.268 (between-pair spread 0.150 against per-pair shot noise 0.064 to 0.071); H2 channel floor margin -0.423 (upper bound -0.266), fails, the reference unitary floors 0.25 to 0.73 lying above the vacuum value and above the predicted 0.21 to 0.38; H4 mean window-phase magnitude 0.549 rad (lower bound 0.272), a coherent phase of Kingston's order over Garnet's 1.1 us readout-plus-feedback window. The cc_prx(2 phi*) rotation is present (raw pooled P(1) 0.0968 after a |1> source against sin^2 phi* = 0.100, 0.0089 after |0>); H3's readout-corrected angle band admitted 2 of 5 pairs.
+  Boundary: One calibration, one job, five pairs, t-bounds across pairs; energies are expectations of an encoded spin Hamiltonian. H3's band failures are attributed, with moderate confidence and no separating arm, to the |11> calibration arm's preparation error inflating the corrected angle. The garnet:mock acceptance job returns random bits and enters no endpoint.
+  Evidence: [analysis.json](../../results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/analysis.json), [results.json](../../results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/results.json), [results.json](../../results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept/results.json), [FINDINGS.md](../../results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/FINDINGS.md), [iqm-garnet-qet-compensated-ladder.md](../design/iqm-garnet-qet-compensated-ladder.md).
+  Acquisitions: iqm-garnet-qet-compensated-ladder, iqm-garnet-mock-qet-ladder-accept-wired.
+  Related claims: kingston-qet-scheduled-idle-coherent-phase, iqm-garnet-cc-prx-probe-line-limit, iqm-garnet-cc-prx-feedback-label-limit.
 
 ## Exploratory claims
 
