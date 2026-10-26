@@ -176,7 +176,8 @@ def fit_from_table(
 
     A cell whose model assigns zero probability to an observed category has log-likelihood minus infinity. Each
     parameter's interval spans the grid values whose profile log-likelihood lies within PROFILE_DROP of the
-    maximum. The deviance compares the best cell with the saturated multinomial of each input."""
+    maximum. The deviance compares the best cell with the saturated multinomial of each input, and the model's
+    pooled fidelity pools the best cell's expected counts, so it weights each input by its observed samples."""
     rows = counts.sum(axis=1) > 0
     n = counts[rows].astype(np.float64)
     q = table[rows]
@@ -200,14 +201,13 @@ def fit_from_table(
     expected = n.sum(axis=1, keepdims=True) * q[:, best[0], best[1], best[2], :]
     with np.errstate(divide="ignore", invalid="ignore"):
         deviance = 2.0 * float(np.where(n > 0, n * np.log(n / expected), 0.0).sum())
-    model = q[:, best[0], best[1], best[2], :]
     return {
         "status": "fitted",
         "parameters": estimate,
         "log_likelihood": peak,
         "deviance": deviance,
         "degrees_of_freedom": int(n.shape[0] * (len(CATEGORIES) - 1) - 3),
-        "model_pooled_fidelity": pooled_fidelity(model),
+        "model_pooled_fidelity": pooled_fidelity(expected),
         "observed_pooled_fidelity": pooled_fidelity(n),
     }
 
@@ -229,10 +229,14 @@ def in_situ_fit(manifest: Mapping[str, Any], results: Mapping[str, Any], run: Pa
     if total < FIT_MIN_SAMPLES:
         record["status"] = f"{total} three-click samples, below the {FIT_MIN_SAMPLES} the fit needs"
         return record
-    profiles = {
-        "anchor": profile_of(ROOT / rehearsal.ANCHOR_READ),
-        "platform_before": profile_of(run / rehearsal.BEFORE / "catalogue.json"),
-    }
+    profiles = {"anchor": profile_of(ROOT / rehearsal.ANCHOR_READ)}
+    before = run / rehearsal.BEFORE / "catalogue.json"
+    if before.is_file():
+        profiles["platform_before"] = profile_of(before)
+    else:
+        record["platform_before"] = (
+            f"{rehearsal.BEFORE}/catalogue.json is absent (a --simulate run); anchor profile only"
+        )
     settings, circuit = rehearsal.request_parts()
     table = category_table(settings, circuit, list(profiles.values()))
     record["status"] = "fitted"
@@ -343,16 +347,21 @@ def lens_dimension(dim: int, x: np.ndarray, y: np.ndarray, controls: np.ndarray)
     }
 
 
+def model_distribution(
+    item: tuple[dict[str, Any], dict[str, Any], rehearsal.Variant],
+) -> dict[tuple[int, ...], float]:
+    """One setting's click distribution under a noise variant, conditioned on three clicks or more."""
+    setting, circuit, variant = item
+    photons = rehearsal.photon_distribution(setting, circuit, variant.hom, variant.g2)
+    clicks = rehearsal.detected_clicks(photons, variant.transmission)
+    return {vector: p for vector, p in clicks.items() if sum(vector) >= rehearsal.MIN_CLICKS}
+
+
 def model_distributions() -> list[dict[tuple[int, ...], float]]:
-    """The anchor noise variant's click distribution of each setting, conditioned on three clicks or more."""
+    """The anchor noise variant's distribution of each setting in manifest order, one process per setting."""
     settings, circuit = rehearsal.request_parts()
     variant = next(v for v in rehearsal.variants() if v.name == "anchor per-mode transmission")
-    out = []
-    for setting in settings:
-        photons = rehearsal.photon_distribution(setting, circuit, variant.hom, variant.g2)
-        clicks = rehearsal.detected_clicks(photons, variant.transmission)
-        out.append({vector: p for vector, p in clicks.items() if sum(vector) >= rehearsal.MIN_CLICKS})
-    return out
+    return ordered_map(model_distribution, [(dict(s), dict(circuit), variant) for s in settings], min_items=1)
 
 
 def observed_distributions(

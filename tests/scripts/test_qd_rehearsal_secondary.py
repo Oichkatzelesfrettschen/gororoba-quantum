@@ -154,3 +154,43 @@ def test_basis_index_places_logical_mode_b_on_bit_b() -> None:
     outside[0] = 1
     if secondary.basis_index(outside, 256) is not None:
         raise AssertionError("a click off the logical modes maps into the algebra")
+
+
+def test_fitted_pooled_fidelity_weights_inputs_by_their_samples() -> None:
+    table = np.zeros((2, 1, 1, 1, len(secondary.CATEGORIES)))
+    table[0, ..., 0], table[0, ..., 1] = 0.9, 0.1
+    table[1, ..., 0], table[1, ..., 1] = 0.1, 0.9
+    counts = np.zeros((2, len(secondary.CATEGORIES)), dtype=np.int64)
+    counts[0, :2] = (810, 90)
+    counts[1, :2] = (10, 90)
+    fit = secondary.fit_from_table(counts, table, (0.9,), (0.0,), (0.01,))
+    if abs(fit["model_pooled_fidelity"] - fit["observed_pooled_fidelity"]) > 1e-12:
+        raise AssertionError(fit)
+
+
+def test_in_situ_fit_of_a_simulated_run_uses_the_anchor_profile(tmp_path: Any, monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[int] = []
+
+    def table(settings: Any, circuit: Any, profiles: Any, *args: Any) -> np.ndarray:
+        calls.append(len(profiles))
+        cells = np.zeros((6, 1, 1, len(profiles), 1, len(secondary.CATEGORIES)))
+        cells[..., 0] = 1.0
+        return cells
+
+    monkeypatch.setattr(secondary, "category_table", table)
+    monkeypatch.setattr(secondary, "fit_from_table", lambda counts, cells: {"status": "fitted"})
+    counts = {
+        ",".join(
+            "1" if m in (rehearsal.LAYOUT[0], rehearsal.LAYOUT[2], rehearsal.LAYOUT[4]) else "0"
+            for m in range(rehearsal.MODES)
+        ): 200
+    }
+    results = {
+        "iterations": [
+            {"iteration": {"circuit_params": s["circuit_params"]}, "counts": counts, "samples": 200}
+            for s in manifest()["settings"]
+        ]
+    }
+    record = secondary.in_situ_fit(manifest(), results, tmp_path)
+    if calls != [1] or list(record["fits"]) != ["anchor"] or "absent" not in record["platform_before"]:
+        raise AssertionError(record)
