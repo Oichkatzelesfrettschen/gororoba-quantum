@@ -1,0 +1,103 @@
+name: quandela-record-watch
+
+# Reads the qpu:belenos processor record every two hours, the cadence at which the
+# record refreshed on 2026-10-24, and compares it with the held state named by
+# results/quandela/watch/qpu-belenos-held.json (scripts/qd_record_watch.py,
+# docs/runbooks/quandela-scheduled-runs.md "Record watch"). The read submits,
+# stages and plans nothing. On a change the job opens one issue with the live
+# figures and the rehearsal model's pooled fidelity at that same snapshot, then
+# disables this workflow.
+# The token lives only in the quandela environment, whose deployment branches
+# are restricted to main.
+on:
+  schedule:
+    - cron: "41 */2 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: quandela-record-watch
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  PYTHON: python3
+  # Qiskit 2.6 Rust TLS plus late-loaded Aer OpenMP need reserved loader capacity.
+  GLIBC_TUNABLES: glibc.rtld.optional_static_tls=4096
+  GOROROBA_PINS_REQUIRED: "1"
+
+jobs:
+  watch:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-26.04
+    environment: quandela
+    # A cache miss installs the pins (ci/install_pins.sh) before the read.
+    timeout-minutes: 60
+    # actions: write disables this workflow after a change; issues: write opens the report.
+    permissions:
+      actions: write
+      contents: read
+      issues: write
+    env:
+      PINS_VENV: /home/runner/.cache/gororoba-ci/pins-venv
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0, Node 24
+        id: python
+        with:
+          python-version: "3.14.7"
+      # The key equals ci.yml's, so the watch reuses the gates' pinned environment.
+      - name: Restore the pinned environment
+        id: pins-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0, Node 24
+        with:
+          path: ${{ env.PINS_VENV }}
+          key: pins-venv-ubuntu-26.04-${{ runner.arch }}-py3.14.7-${{ hashFiles('requirements.txt', 'ci/requirements-ci.txt', 'ci/install_pins.sh', 'ci/patches/**') }}
+      - name: Install pinned dependencies
+        if: steps.pins-cache.outputs.cache-hit != 'true'
+        env:
+          BASE_PYTHON: ${{ steps.python.outputs.python-path }}
+        run: |
+          set -eu
+          "$BASE_PYTHON" -m venv "$PINS_VENV"
+          PYTHON="$PINS_VENV/bin/python" sh ci/install_pins.sh
+      - name: Use the pinned environment
+        run: |
+          echo "PYTHON=$PINS_VENV/bin/python" >> "$GITHUB_ENV"
+          echo "$PINS_VENV/bin" >> "$GITHUB_PATH"
+      - name: Read the record
+        env:
+          QUANDELA_TOKEN: ${{ secrets.QUANDELA_TOKEN }}
+        run: |
+          set -eu
+          if [ -z "$QUANDELA_TOKEN" ]; then
+            echo "::error::the quandela environment holds no QUANDELA_TOKEN secret"
+            exit 1
+          fi
+          umask 077
+          mkdir -p "$RUNNER_TEMP/qd-token"
+          printf '%s\n' "$QUANDELA_TOKEN" > "$RUNNER_TEMP/qd-token/token"
+          unset QUANDELA_TOKEN
+          umask 022
+          QUANDELA_TOKEN_FILE="$RUNNER_TEMP/qd-token/token" "$PYTHON" scripts/qd_record_watch.py check \
+            results/quandela/watch/qpu-belenos-held.json \
+            --report "$RUNNER_TEMP/report.json" --summary "$RUNNER_TEMP/summary.md"
+          rm -f "$RUNNER_TEMP/qd-token/token"
+          state=$("$PYTHON" -c 'import json, sys; print(json.load(open(sys.argv[1]))["state"])' "$RUNNER_TEMP/report.json")
+          echo "STATE=$state" >> "$GITHUB_ENV"
+      - name: Report a change and stop the watch
+        if: env.STATE == 'changed'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TITLE: qpu:belenos performance record changed
+        run: |
+          set -eu
+          open=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues?state=open&per_page=100" \
+            --jq '.[] | select(.pull_request == null and .title == env.TITLE) | .number' | sed -n 1p)
+          if [ -n "$open" ]; then
+            gh api "repos/$GITHUB_REPOSITORY/issues/$open/comments" -F "body=@$RUNNER_TEMP/summary.md" --jq .html_url
+          else
+            gh api "repos/$GITHUB_REPOSITORY/issues" -f "title=$TITLE" -F "body=@$RUNNER_TEMP/summary.md" --jq .html_url
+          fi
+          gh api -X PUT "repos/$GITHUB_REPOSITORY/actions/workflows/quandela-record-watch.yml/disable"

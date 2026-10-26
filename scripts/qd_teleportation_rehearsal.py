@@ -1174,7 +1174,11 @@ def live_model() -> dict[str, Any]:
     write: the source figures, uniform loss and per-mode transmission of the live processor record."""
     from qd_platform import get, platform_route, scrub
 
-    perfs = scrub(get(platform_route(PLATFORM)).get("perfs") or {})
+    return model_at(scrub(get(platform_route(PLATFORM)).get("perfs") or {}))
+
+
+def model_at(perfs: Mapping[str, Any]) -> dict[str, Any]:
+    """The noise model's pooled fidelity at one processor record's perfs object, against the justified mean score."""
     figures = {
         "hom": perfs["HOM (%)"] / 100.0,
         "g2": perfs["g2 (%)"] / 100.0,
