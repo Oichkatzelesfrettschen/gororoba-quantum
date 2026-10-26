@@ -65,6 +65,17 @@ optical trials.
 The workflow `quandela-record-watch.yml` reads the record every two hours against the held digest and opens an
 issue when it changes ([runbook](../../runbooks/quandela-scheduled-runs.md#record-watch)).
 
+The held state ended inside a maintenance booking. The read of 2026-10-26 12:58:09 UTC,
+[live-processor-qpu-belenos-2026-10-26T12-58-09Z.json](../../evidence/quandela/live-processor-qpu-belenos-2026-10-26T12-58-09Z.json),
+reports `qpu:belenos` in `maintenance` with HOM 83.8 %, g2 66.7 %, Transmittance 0.06 %, 42792.3 /s dark counts on
+mode 5, every `t_in` between 0.00 % and 0.03 % and `t_out` between 53.43 % and 172.41 %. Its explorer row carries a
+booking titled "Maintenance", created 2026-10-26 08:28 UTC, started at 08:30 UTC and ending 2026-10-29 11:30 UTC, in
+place of the weekly window of 2026-10-29 08:30 to 12:00 UTC, and the availability statistic for 2026-10-26 reads
+59.97 %. The two-hourly watch read the held state at 07:13 UTC and failed on the changed record at 08:58 UTC. Perceval's source
+model refuses emission_probability * g2 above 0.5, so the rehearsal model scores no fidelity at these figures, and a
+g2 of 66.7 % beside the unchanged HOM most likely reads a source under adjustment rather than a calibrated state
+(inference; the first record published after the booking ends settles it).
+
 ### Live reads of 2026-10-20 (historical)
 
 The table below is the state as of the live processor reads of 2026-10-19 21:09 PDT (2026-10-20 04:09 UTC), retained as [Belenos](../../evidence/quandela/live-processor-qpu-belenos-2026-10-20T04-09-24Z.json) and [Ascella](../../evidence/quandela/live-processor-qpu-ascella-2026-10-20T04-09-25Z.json). The maintenance window is the snapshot's Explorer row, which read it on 2026-10-17.

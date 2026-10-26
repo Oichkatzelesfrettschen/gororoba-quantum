@@ -50,13 +50,32 @@ The command fills `scope_sha256`, binding parent ID/scope/dependencies and the s
 Hashes and revisions must come from actual observations. HTTPS references retain an observed digest but
 receive no implicit freshness check; retain sanitized response files for reproducible remote observations.
 
+An evidence `ref` names a whole file or one record of a shared JSON registry:
+`FILE.json#COLLECTION/FIELD=VALUE` selects the single object of the top-level array `COLLECTION` whose string
+`FIELD` equals `VALUE`, for example `docs/state/research_state.json#claims/id=a5-stiefel-universal`,
+`ci/gates.json#gates/name=core-690` or `docs/SOURCES.json#pdfs/path=docs/pdf/2103.12805v1.pdf`. Its digest is
+`plan_records.digest` of that object (sorted-key JSON), so edits to other records of the registry leave the
+receipt fresh, while a changed, removed or duplicated record requests revalidation. Code, proofs and evidence
+bundles keep whole-file references. `digest REF...` prints the digest each reference binds:
+
+```sh
+"$PYTHON" scripts/plan_tracker.py digest scripts/plan_records.py \
+  'docs/state/research_state.json#claims/id=a5-stiefel-universal'
+```
+
+A revalidation moves a whole-registry reference to a record selector when it observes that record; the
+receipts already recorded keep the references they observed.
+
 A closed plan needs `disposition` (completed, cancelled, superseded) and `resolution`. Supersession also
 needs `superseded_by`. All children must be terminal. Completed plans require all steps done and a plan
 receipt whose digest binds the ordered step obligations. `plan_records.obligation(plan)` calculates that
 digest for a closure patch. A completed falsification can record a rejected hypothesis. Artifact identity
 checks and substantive scientific validation have different evidentiary roles.
 
-Changed evidence requests revalidation while preserving historical completion. Changed obligations
+Changed evidence requests revalidation while preserving historical completion. Freshness reads only the
+newest receipt (latest `observed_at`) of the plan and of each step, so a revalidation reruns the acceptance
+and appends a receipt over the current bytes with `step ID STEP --receipt FILE` or `update ID --receipt
+FILE`; the superseded receipt stays in the record. Changed obligations
 invalidate their receipts: reopen and reassess, preserving prior receipts through Git history or a
 successor record. Update commands require the existing records to validate; repair malformed manual edits
 before running them.
@@ -66,11 +85,17 @@ before running them.
 ```sh
 "$PYTHON" scripts/plan_tracker.py render --write
 "$PYTHON" scripts/plan_tracker.py check
+"$PYTHON" scripts/plan_tracker.py check --base origin/main
 "$PYTHON" scripts/plan_tracker.py review-merge BASE LEFT RIGHT
 ```
 
 `render` alone prints the entrance. `check` validates records, the retained inventory and generated views
-offline. CLI mutations serialize through a worktree-local Git metadata lock and replace each record
+offline. `check --base REF` also holds each plan that the change since the merge base of REF and HEAD closes
+or gives a receipt: the newest receipt of the plan and of each step must be fresh at HEAD, and each added
+receipt must name a revision HEAD descends from. A receipt names the commit it observed, so the evidence file
+of an observation can land in the commit after it. Plans the change leaves alone keep the warning-only
+revalidation flag. Gate `core-plan-tracker` runs `check --base origin/main` and names the record directory
+and both views as operands, so a pull request that edits only plan records still selects it. CLI mutations serialize through a worktree-local Git metadata lock and replace each record
 atomically. Manual editing and CLI mutation of the same record require coordination; manual editors do
 not acquire the CLI lock. Owners record responsibility, not a global task lock.
 

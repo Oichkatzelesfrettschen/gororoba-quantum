@@ -1,0 +1,17 @@
+{
+ "approval": "the approval is for the dry run with granular decomposition of the results",
+ "body_sha256": "0a59f97b623fc3456f84c8b18cee7169b63a02ceca970378c1db994f920b0d56",
+ "cases_sha256": "92ed01e91c1c22bbcb5b82412093795abfa7ce0a869e0cf597ff9c2ce4ab6b41",
+ "credit_before": {
+  "currentBalance": "16.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 0.01,
+ "job": "ro0",
+ "job_id": "01a1747a-dd17-76ae-abf5-cb2840e5bdbd",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T19:12:51Z"
+}

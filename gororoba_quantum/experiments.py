@@ -414,6 +414,7 @@ def standalone_campaign_groups() -> list[Group]:
     from crossed_tile_template import crossed_group
     from diagnostic_controls import readout_delay_group, scaffold_ab_group
     from maximal_experiments import spectator_wavefront_ramsey_group
+    from primorial_campaigns import coherence_probe_group, gap88_group
     from qet_ladder import qet_compensated_ladder_group, qet_frame_diagnostic_group, qet_ladder_group
     from qubit_baseline import qubit_baseline_group
     from star_ramsey import star_ramsey_group
@@ -426,6 +427,8 @@ def standalone_campaign_groups() -> list[Group]:
         star_ramsey_group(),
         scaffold_ab_group(),
         readout_delay_group(),
+        coherence_probe_group(),
+        gap88_group(),
         qet_ladder_group(),
         qet_frame_diagnostic_group(),
         qet_compensated_ladder_group(),

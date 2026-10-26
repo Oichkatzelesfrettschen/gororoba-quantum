@@ -36,6 +36,22 @@
             }
           ],
           "scope_sha256": "4ec25ad958494968a7fed5d5fa90f4e12320c3f9e49afdf8e2b3b2877ab7956b"
+        },
+        {
+          "result": "Revalidated at 6765b115: test_latency_recovery.py passes after 7726c6f bound the module in the experiment digest; core-001 ruff and core-039 mypy pass.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/latency_recovery.py",
+              "sha256": "1adcfaa6a9de51f52582404c0c6299c74c642c498074ce257a413afa7892bea3"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_latency_recovery.py",
+              "sha256": "296d40b9f9bbaa8925d61bd7f588de863c7fcf7968ec65837b459b6f1eac70d8"
+            }
+          ],
+          "scope_sha256": "4ec25ad958494968a7fed5d5fa90f4e12320c3f9e49afdf8e2b3b2877ab7956b"
         }
       ]
     },
@@ -84,6 +100,50 @@
             }
           ],
           "scope_sha256": "8adb5268a1b931e801d3e23ba8ddb71cd452b6051237abd24b20f609efa08042"
+        },
+        {
+          "result": "Revalidated at 6765b115: the addendum keeps the 2026-10-25 approval and job dbf5kdom94ac738ssug0 and now names the executed replica [106, 105, 104, 117, 107, 125]; the findings keep the 2.7x window cost and attribute about 0.12 of the 0.22 loss to a -13 kHz rotation and the rest to decay 1.6 to 1.75 times the T1/T2 rate.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-25T192932.145570Z/CASE_ADDENDUM.md",
+              "sha256": "a61f7a71e5ae88f7c20bc604d5ac5af1382cf0dd4216de075abbb89c49ea5a34"
+            },
+            {
+              "ref": "results/live/2026-10-25T193443.839527Z/collect.json",
+              "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
+            },
+            {
+              "ref": "results/live/LATENCY_RECOVERY_FINDINGS.md",
+              "sha256": "2f0bdead6ed454f62c546878821526a2aa5cd9eeaa33c6bf21af3b4cffbb050b"
+            }
+          ],
+          "scope_sha256": "8adb5268a1b931e801d3e23ba8ddb71cd452b6051237abd24b20f609efa08042"
+        },
+        {
+          "result": "Revalidated at 431bbf8e: CASE_ADDENDUM.md holds the approved bytes (sha256 41272663, the digest the first receipt bound) with the 2026-10-25 approval; CASE_ADDENDUM_CORRECTION.md names the executed replica [106, 105, 104, 117, 107, 125] from record.json groups[0].replicas[0].initial_layout and dates the account read by the 19:22:34Z exploration start; the findings link both and job dbf5kdom94ac738ssug0's collection is unchanged.",
+          "observed_at": "2026-10-26T05:01:04.806425+00:00",
+          "revision": "431bbf8e9d921c5344f07e2724a432cee778f367",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-25T192932.145570Z/CASE_ADDENDUM.md",
+              "sha256": "41272663d2ac60e86d94e8cce8d2690c3dd61c580f83d5cc7d19c39ed1e9454b"
+            },
+            {
+              "ref": "results/live/2026-10-25T192932.145570Z/CASE_ADDENDUM_CORRECTION.md",
+              "sha256": "f85e47f647fff9145537002a53166918e5a017aa8b19526da0f4aa7d1e474bf0"
+            },
+            {
+              "ref": "results/live/2026-10-25T193443.839527Z/collect.json",
+              "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
+            },
+            {
+              "ref": "results/live/LATENCY_RECOVERY_FINDINGS.md",
+              "sha256": "08d1dbb1ad9de587af26ef46b664b3d8569b1767b845b2ff9311e3bb7f9a6b2a"
+            }
+          ],
+          "scope_sha256": "8adb5268a1b931e801d3e23ba8ddb71cd452b6051237abd24b20f609efa08042"
         }
       ]
     }
@@ -106,6 +166,22 @@
           "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
         }
       ]
+    },
+    {
+      "result": "Revalidated at 431bbf8e: the findings change only by linking CASE_ADDENDUM_CORRECTION.md beside the restored approved addendum; the run, the 2.7x window cost and the loss attribution read as before, and job dbf5kdom94ac738ssug0's collection is unchanged.",
+      "observed_at": "2026-10-26T05:01:23.636999+00:00",
+      "revision": "431bbf8e9d921c5344f07e2724a432cee778f367",
+      "evidence": [
+        {
+          "ref": "results/live/LATENCY_RECOVERY_FINDINGS.md",
+          "sha256": "08d1dbb1ad9de587af26ef46b664b3d8569b1767b845b2ff9311e3bb7f9a6b2a"
+        },
+        {
+          "ref": "results/live/2026-10-25T193443.839527Z/collect.json",
+          "sha256": "165265ac2e9d4c0df93431fa5fff73f0f1837adaab0d06293863c8bab4a6a999"
+        }
+      ],
+      "scope_sha256": "f380dc36dc6388b57a664f912f2f0ea2130fe9e1b1f20e2b829fac56286f8044"
     }
   ]
 }

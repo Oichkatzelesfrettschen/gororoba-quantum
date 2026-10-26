@@ -1,0 +1,17 @@
+{
+ "approval": "Mock validation of the diagnostic case (owner approved the diagnostic job)",
+ "body_sha256": "33b50b76ad9fea50f713a46dea30fdb3631fbcb77b5188fc556cbce32b49e8e7",
+ "cases_sha256": "47a3675d1c8a370d57d808c7a2b5d49545383b3e97d4b55d70bc21a092fdf458",
+ "credit_before": {
+  "currentBalance": "15.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 0.256,
+ "job": "diagnostic",
+ "job_id": "01a17539-b5b7-75f7-9654-8751db6609cd",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T22:41:19Z"
+}

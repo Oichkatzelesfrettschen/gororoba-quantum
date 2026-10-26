@@ -1,0 +1,100 @@
+{
+ "case": "measurement-timing-probe",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/unitary-n16-s0p.json",
+     "sha256": "5a07f4bcb32d2fb69eb2fec7dd7047edd86e384176b3140fbf218c102acd2fd7"
+    }
+   ],
+   "expected_seconds": 0.01,
+   "job": "unitary-n16-s0p",
+   "max_credits": {
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "heralding_mode": "none"
+   },
+   "shots": 100
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/measure-n16-s0p.json",
+     "sha256": "9daa1f7ef9bafff320a0d7d2d3437e5eff45aa547612ba4cd932a1fbc85cb4dd"
+    }
+   ],
+   "expected_seconds": 0.01,
+   "job": "measure-n16-s0p",
+   "max_credits": {
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "heralding_mode": "none"
+   },
+   "shots": 100
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/delay-n16-s0p.json",
+     "sha256": "96f97e0a19801d892ee6a21db2253dec673b301a41b0d90a90c339f2a59b880e"
+    }
+   ],
+   "expected_seconds": 0.01,
+   "job": "delay-n16-s0p",
+   "max_credits": {
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "heralding_mode": "none"
+   },
+   "shots": 100
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/measure-n1-s0p.json",
+     "sha256": "8243c8144305d129d7cfd75a413112bb52cd8cde5b2fc0f82644039930f20b17"
+    }
+   ],
+   "expected_seconds": 0.01,
+   "job": "measure-n1-s0p",
+   "max_credits": {
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "heralding_mode": "none"
+   },
+   "shots": 100
+  },
+  {
+   "circuits": [
+    {
+     "file": "circuits/ro0.json",
+     "sha256": "12d2a2f84d4e009b7bb922c0508414820c89212289b825aeb5055f8775e627c5"
+    }
+   ],
+   "expected_seconds": 0.01,
+   "job": "ro0",
+   "max_credits": {
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "heralding_mode": "none"
+   },
+   "shots": 100
+  }
+ ],
+ "qcs": [
+  "garnet:mock"
+ ],
+ "question": "What compiled per-shot schedule does the Garnet runtime estimator assign to sixteen mid-circuit measures, sixteen explicit delays of 1.024 us, sixteen bare prx steps, one measure and a bare readout, so that differences between single-circuit jobs give the compiled measure window and the delay length?",
+ "schema": "iqm-circuit-case-v1"
+}

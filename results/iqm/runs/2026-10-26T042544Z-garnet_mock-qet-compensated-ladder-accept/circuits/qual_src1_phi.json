@@ -1,0 +1,210 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 3.14159265358979,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB2"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "feedback_key": "fb0",
+    "key": "alice0"
+   },
+   "locus": [
+    "QB2"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 0.64350110879328,
+    "feedback_key": "fb0",
+    "feedback_qubit": "QB2",
+    "phase": 1.5707963267949
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "cc_prx"
+  },
+  {
+   "args": {
+    "key": "bob0"
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 3.14159265358979,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "feedback_key": "fb1",
+    "key": "alice1"
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 0.64350110879328,
+    "feedback_key": "fb1",
+    "feedback_qubit": "QB3",
+    "phase": 1.5707963267949
+   },
+   "locus": [
+    "QB8"
+   ],
+   "name": "cc_prx"
+  },
+  {
+   "args": {
+    "key": "bob1"
+   },
+   "locus": [
+    "QB8"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 3.14159265358979,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "feedback_key": "fb2",
+    "key": "alice2"
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 0.64350110879328,
+    "feedback_key": "fb2",
+    "feedback_qubit": "QB7",
+    "phase": 1.5707963267949
+   },
+   "locus": [
+    "QB12"
+   ],
+   "name": "cc_prx"
+  },
+  {
+   "args": {
+    "key": "bob2"
+   },
+   "locus": [
+    "QB12"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 3.14159265358979,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "feedback_key": "fb3",
+    "key": "alice3"
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 0.64350110879328,
+    "feedback_key": "fb3",
+    "feedback_qubit": "QB14",
+    "phase": 1.5707963267949
+   },
+   "locus": [
+    "QB18"
+   ],
+   "name": "cc_prx"
+  },
+  {
+   "args": {
+    "key": "bob3"
+   },
+   "locus": [
+    "QB18"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 3.14159265358979,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB16"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "feedback_key": "fb4",
+    "key": "alice4"
+   },
+   "locus": [
+    "QB16"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "angle": 0.64350110879328,
+    "feedback_key": "fb4",
+    "feedback_qubit": "QB16",
+    "phase": 1.5707963267949
+   },
+   "locus": [
+    "QB20"
+   ],
+   "name": "cc_prx"
+  },
+  {
+   "args": {
+    "key": "bob4"
+   },
+   "locus": [
+    "QB20"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "qet_compensated_ladder_qual_src1_phi"
+}

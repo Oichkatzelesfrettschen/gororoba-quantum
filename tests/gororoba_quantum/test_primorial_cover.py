@@ -1,32 +1,20 @@
-"""gororoba_quantum/primorial_cover.py and scripts/primorial_cover_noise.py: the retained certificates reproduce, the
+"""gororoba_quantum/primorial_cover.py and primorial_tomography.py: the retained certificates reproduce, the
 exhaustive search finds covers where gaps exist, the eight-CNOT block implements exp(-i gamma H), and the gap-86
 repair leaves every compiled circuit unchanged, and the shot prices carry the variance of each phase correction.
 """
 
 from __future__ import annotations
 
-import importlib.util
 import math
-import sys
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 
 import primorial_cover as pc
+import primorial_tomography as tomography
 
 ROOT = Path(__file__).resolve().parents[2]
 RECORD = ROOT / "docs/evidence/primorial_cover/certificates.json"
-
-
-def _noise_module() -> Any:
-    spec = importlib.util.spec_from_file_location("primorial_cover_noise", ROOT / "scripts/primorial_cover_noise.py")
-    if spec is None or spec.loader is None:
-        raise AssertionError("scripts/primorial_cover_noise.py does not load")
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = module
-    spec.loader.exec_module(module)
-    return module
 
 
 def test_retained_certificates_reproduce() -> None:
@@ -53,7 +41,7 @@ def test_cost_block_is_the_hamiltonian_evolution() -> None:
     from qiskit import QuantumCircuit
     from qiskit.quantum_info import Operator
 
-    noise = _noise_module()
+    noise = tomography
     gamma = 2 * math.pi / 9
     for name in ("gap86", "gap88", "gap88_repaired"):
         table = noise.cost_table(name)
@@ -69,7 +57,7 @@ def test_cost_block_is_the_hamiltonian_evolution() -> None:
 
 
 def test_gap86_repair_changes_no_circuit() -> None:
-    noise = _noise_module()
+    noise = tomography
     plain, fixed = noise.cost_table("gap86"), noise.cost_table("gap86_repaired")
     for j, x in noise.edges():
         for basis in ("X", "Y"):
@@ -80,7 +68,7 @@ def test_gap86_repair_changes_no_circuit() -> None:
 def test_phase_variance_follows_the_corrections() -> None:
     """Assignment inversion scales each mean's binomial variance by 1 / (1 - a - b)^2, and null subtraction adds
     the null arm's phase variance; a finite-difference Jacobian of atan2 of the corrected means is the reference."""
-    noise = _noise_module()
+    noise = tomography
     x_obs, y_obs = np.asarray([0.61, -0.2]), np.asarray([-0.52, 0.83])
     a, b = np.asarray([0.01, 0.03]), np.asarray([0.04, 0.02])
 
@@ -104,7 +92,7 @@ def test_phase_variance_follows_the_corrections() -> None:
     reads = [np.cos(np.arange(12) / 7.0) * 0.9, -np.sin(np.arange(12) / 7.0) * 0.9]
     null = (np.full(12, 0.95), np.full(12, 0.05))
     v_cost, v_null = noise.raw_phase_variance(*reads), noise.raw_phase_variance(*null)
-    fit = noise.null_subtracted(table, *reads, null, v_cost, v_null)
+    fit = noise.null_subtracted(table, reads[0], reads[1], null, v_cost, v_null)
     keys, w = noise.walsh_matrix()
     projector = w @ np.linalg.pinv(noise.incidence())
     expected = (projector**2) @ ((v_cost + v_null) / noise.GRADIENT_GAMMA**2)

@@ -1,0 +1,764 @@
+{
+ "acquisition_window_seconds": 9.92e-07,
+ "billing": {
+  "billed_seconds": 6,
+  "cancel_margin_seconds": 3.168763,
+  "cancel_threshold_seconds": 9.0,
+  "circuits": 57,
+  "compiled_schedule_seconds": 3.7378799999999996,
+  "credits": 3.0,
+  "execution_seconds": 5.241237,
+  "shots": 3000,
+  "worst_case_runtime_seconds": 5.831237
+ },
+ "billing_fit": {
+  "execution_fixed_seconds": 0.141,
+  "execution_per_circuit_shot_seconds": 7.967e-06,
+  "residual_seconds": 0.17,
+  "runtime_over_execution_seconds": 0.42
+ },
+ "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
+ "estimator_per_shot_seconds_all_circuits": 0.00124596,
+ "ideal": {
+  "contrast_n16": 0.8612215512138341,
+  "delay_and_unitary": 0.03015368960704584,
+  "measure": {
+   "1": 0.03015368960704584,
+   "16": 0.89137524082088,
+   "2": 0.5150768448035229,
+   "4": 0.6721812556176133,
+   "8": 0.8039880670646521
+  }
+ },
+ "measure_window_seconds": 1.096e-06,
+ "model": "Bloch iteration from z0 = 1 - 2 p: a rotation of THETA/N per step, then an ideal pinch (measure and settle arms; T2 does not enter because the state is diagonal) or coherent evolution (delay and unitary arms), then T1 and Ramsey T2 relaxation over the rotation layer and, per arm, the measure window, the delay or the settle idle, and over the pre-readout delay; readout through the calibrated errors. The `expected` figures apply the run's estimator, T1 and p fit included, to the model's expected counts, so they are the standard errors the analysis reports at the case's shots",
+ "planning_note": "These are planning values at the calibrated T1 and T2 and an assumed initialization excitation. The analysis fits T1 and the excitation in the job and recomputes every prediction at the fitted values.",
+ "prx_layer_seconds": 4e-08,
+ "qubits": {
+  "QB13": {
+   "expected": {
+    "contrast_n16": 0.8234546994072818,
+    "contrast_se": 0.010400241604199098,
+    "departure_se": 0.01331063912585119,
+    "dephasing_zeno_n16": 0.3139115050308871,
+    "mutation_z": 31.100690899015934,
+    "p_init_se": 0.008242214866751975,
+    "readout_history_se": 0.006145624863431664,
+    "settle_gap_se": 0.005594213759444075,
+    "t1_se": 1.33373749030889e-06
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0274,
+    "e01_plus_e10": 0.048799999999999996,
+    "e10": 0.0214,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0011883938217780443,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.647473587949398e-05,
+    "t2_s": 1.414948407469849e-05
+   },
+   "p0": {
+    "delay": {
+     "1": 0.057853467432115446,
+     "16": 0.3966023844156906,
+     "2": 0.09835462323018046,
+     "4": 0.15301771877045883,
+     "8": 0.24755407980695565
+    },
+    "measure": {
+     "1": 0.057853467432115446,
+     "16": 0.906581138367086,
+     "2": 0.5305384904322639,
+     "4": 0.6907672192094347,
+     "8": 0.8226632855004943
+    },
+    "settle": {
+     "16": 0.9609513114526176
+    },
+    "unitary": {
+     "16": 0.08269087938480352
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8844078363266517,
+     "0.05": 0.9000595789434288,
+     "0.1": 0.9196242572144003,
+     "0.15": 0.9447788435627922,
+     "0.2": 0.9783182920273148
+    },
+    "spread": 0.09391045570066314,
+    "spread_over_departure_se": 7.055292748360627
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8371016809549111,
+     0.8672800248912765
+    ],
+    "ro0": [
+     0.9106428734976223,
+     0.9726
+    ],
+    "ro1": [
+     0.06146578672973896,
+     0.12342291323211672
+    ],
+    "unitary-16": [
+     0.13661415220704615,
+     0.18851882401574171
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 34940.2568383117,
+     "settle": 20806.567735087712
+    },
+    "measure_shift_over_departure_se": 1.624081338689686,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.8880403172661582,
+      "settle": 0.9499595949529993
+     },
+     "0.800": {
+      "measure": 0.8958164300261182,
+      "settle": 0.9545580241639608
+     },
+     "1.096": {
+      "measure": 0.906581138367086,
+      "settle": 0.9609513114526176
+     },
+     "1.400": {
+      "measure": 0.9167832435945267,
+      "settle": 0.9670429579575517
+     },
+     "1.772": {
+      "measure": 0.9281986989774137,
+      "settle": 0.9739011568600615
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.021617560610327713,
+     "settle": 0.012949845407443927
+    }
+   }
+  },
+  "QB15": {
+   "expected": {
+    "contrast_n16": 0.8162650602409638,
+    "contrast_se": 0.010691201699666373,
+    "departure_se": 0.011941230892485527,
+    "dephasing_zeno_n16": 0.36959081085842976,
+    "mutation_z": 29.58180652889872,
+    "p_init_se": 0.00669875361965308,
+    "readout_history_se": 0.006654162912554954,
+    "settle_gap_se": 0.005096575624439917,
+    "t1_se": 1.0410212095135449e-06
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.013,
+    "e01_plus_e10": 0.058199999999999995,
+    "e10": 0.0452,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0010923490324876717,
+    "settle_idle_s": 2e-06,
+    "t1_s": 4.079149548544183e-05,
+    "t2_s": 1.0471659759856258e-05
+   },
+   "p0": {
+    "delay": {
+     "1": 0.061687883027703505,
+     "16": 0.46190410496136464,
+     "2": 0.11458270692263384,
+     "4": 0.18237126425474448,
+     "8": 0.2951507280146416
+    },
+    "measure": {
+     "1": 0.061687883027703505,
+     "16": 0.9081229125187559,
+     "2": 0.532651819995808,
+     "4": 0.6932098106170009,
+     "8": 0.8249273927042531
+    },
+    "settle": {
+     "16": 0.9666248678641802
+    },
+    "unitary": {
+     "16": 0.09231329410293487
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8835842547127046,
+     "0.05": 0.9009056602228585,
+     "0.1": 0.9225574171105507,
+     "0.15": 0.9503953902518694,
+     "0.2": 0.9875126877736276
+    },
+    "spread": 0.10392843306092292,
+    "spread_over_departure_se": 8.703326650046089
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8548372187764506,
+     0.8826056426149409
+    ],
+    "ro0": [
+     0.9260218540914265,
+     0.987
+    ],
+    "ro1": [
+     0.09026256016803706,
+     0.15124070607661055
+    ],
+    "unitary-16": [
+     0.1728219640566684,
+     0.22276330605871175
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 38719.13925126424,
+     "settle": 21656.4282462417
+    },
+    "measure_shift_over_departure_se": 1.9841846289173664,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.8873953674354789,
+      "settle": 0.9551003214482008
+     },
+     "0.800": {
+      "measure": 0.8961321145659227,
+      "settle": 0.9599418449710784
+     },
+     "1.096": {
+      "measure": 0.9081229125187559,
+      "settle": 0.9666248678641802
+     },
+     "1.400": {
+      "measure": 0.9193710797478183,
+      "settle": 0.9729387970686516
+     },
+     "1.772": {
+      "measure": 0.9318165193059789,
+      "settle": 0.9799822976426413
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.023693606787222987,
+     "settle": 0.013357429778461105
+    }
+   }
+  },
+  "QB18": {
+   "expected": {
+    "contrast_n16": 0.8419055649241146,
+    "contrast_se": 0.010329289178109994,
+    "departure_se": 0.008156852957794095,
+    "dephasing_zeno_n16": 0.3708848276875261,
+    "mutation_z": 33.10058988847817,
+    "p_init_se": 0.005367793863632309,
+    "readout_history_se": 0.006461382809644145,
+    "settle_gap_se": 0.004404646683873778,
+    "t1_se": 6.915564006473993e-07
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0056,
+    "e01_plus_e10": 0.028,
+    "e10": 0.0224,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0006771602596007398,
+    "settle_idle_s": 2e-06,
+    "t1_s": 3.3384999903559254e-05,
+    "t2_s": 1.2090425666869577e-05
+   },
+   "p0": {
+    "delay": {
+     "1": 0.06734551451632459,
+     "16": 0.45336499164833693,
+     "2": 0.11384240263810091,
+     "4": 0.17773684245278892,
+     "8": 0.2866216856617691
+    },
+    "measure": {
+     "1": 0.06734551451632459,
+     "16": 0.9238079540365389,
+     "2": 0.5365489383495478,
+     "4": 0.6993869043954524,
+     "8": 0.8347996337004207
+    },
+    "settle": {
+     "16": 0.9848603073049023
+    },
+    "unitary": {
+     "16": 0.08248016396081082
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8948305577378308,
+     "0.05": 0.9152851904192718,
+     "0.1": 0.9408534812710732,
+     "0.15": 0.973726998080532,
+     "0.2": 1.0175583538264772
+    },
+    "spread": 0.12272779608864637,
+    "spread_over_departure_se": 15.045973823933728
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8718813603225541,
+     0.8981194652807105
+    ],
+    "ro0": [
+     0.9321473511308451,
+     0.9944
+    ],
+    "ro1": [
+     0.07891986957125206,
+     0.14117251844040699
+    ],
+    "unitary-16": [
+     0.15415721846410443,
+     0.20641225232958924
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 42757.054485664805,
+     "settle": 21172.0106764679
+    },
+    "measure_shift_over_departure_se": 3.1397572326191296,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.9005188468847563,
+      "settle": 0.9734334760242435
+     },
+     "0.800": {
+      "measure": 0.9104313513962052,
+      "settle": 0.9782725652666705
+     },
+     "1.096": {
+      "measure": 0.9238079540365389,
+      "settle": 0.9848603073049023
+     },
+     "1.400": {
+      "measure": 0.93610639798312,
+      "settle": 0.990983689123099
+     },
+     "1.772": {
+      "measure": 0.9494184921061837,
+      "settle": 0.9976960090643978
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.02561053806964475,
+     "settle": 0.012835701759495555
+    }
+   }
+  },
+  "QB20": {
+   "expected": {
+    "contrast_n16": 0.8644283892902678,
+    "contrast_se": 0.010685762005703639,
+    "departure_se": 0.009845511702337984,
+    "dephasing_zeno_n16": 0.2526063935929214,
+    "mutation_z": 34.10410872858204,
+    "p_init_se": 0.0065838861575338815,
+    "readout_history_se": 0.0063243672238537775,
+    "settle_gap_se": 0.004959331496731188,
+    "t1_se": 8.584576500654479e-07
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0238,
+    "e01_plus_e10": 0.0406,
+    "e10": 0.0168,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0008215145752332731,
+    "settle_idle_s": 2e-06,
+    "t1_s": 3.632499313051825e-05,
+    "t2_s": 2.8581841133562276e-05
+   },
+   "p0": {
+    "delay": {
+     "1": 0.06382149752899219,
+     "16": 0.31602227405265104,
+     "2": 0.08594610097880884,
+     "4": 0.12413235486356022,
+     "8": 0.1943939241516911
+    },
+    "measure": {
+     "1": 0.06382149752899219,
+     "16": 0.9276851408232093,
+     "2": 0.534884327371699,
+     "4": 0.6980923117470303,
+     "8": 0.8351931753329929
+    },
+    "settle": {
+     "16": 0.9850310052602729
+    },
+    "unitary": {
+     "16": 0.06341588045972962
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.9002580808736611,
+     "0.05": 0.9196183584851069,
+     "0.1": 0.943818705499414,
+     "0.15": 0.9749334373749519,
+     "0.2": 1.0164197465423357
+    },
+    "spread": 0.11616166566867459,
+    "spread_over_departure_se": 11.798438636875524
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8577235090741244,
+     0.8856338664545167
+    ],
+    "ro0": [
+     0.9144556789057552,
+     0.9762
+    ],
+    "ro1": [
+     0.06819527802581266,
+     0.12993959912005743
+    ],
+    "unitary-16": [
+     0.125538380205106,
+     0.17969037705448299
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 39367.170127474485,
+     "settle": 20342.330744654857
+    },
+    "measure_shift_over_departure_se": 2.413576910490961,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.9063785674276615,
+      "settle": 0.9741037896548081
+     },
+     "0.800": {
+      "measure": 0.9154148751856942,
+      "settle": 0.9787188563463978
+     },
+     "1.096": {
+      "measure": 0.9276851408232093,
+      "settle": 0.9850310052602729
+     },
+     "1.400": {
+      "measure": 0.9390494391962142,
+      "settle": 0.9909299824184363
+     },
+     "1.772": {
+      "measure": 0.9514480405399408,
+      "settle": 0.9974331991499399
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.02376289971673151,
+     "settle": 0.012402193889667013
+    }
+   }
+  },
+  "QB6": {
+   "expected": {
+    "contrast_n16": 0.7950021177467177,
+    "contrast_se": 0.010244083144386972,
+    "departure_se": 0.01372161768385076,
+    "dephasing_zeno_n16": 0.4062365886109794,
+    "mutation_z": 28.797317787132354,
+    "p_init_se": 0.006553557602351064,
+    "readout_history_se": 0.006383596623665355,
+    "settle_gap_se": 0.005111652559667918,
+    "t1_se": 9.687185986545344e-07
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0152,
+    "e01_plus_e10": 0.0422,
+    "e10": 0.027,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.001335513211370376,
+    "settle_idle_s": 2e-06,
+    "t1_s": 3.959951981262741e-05,
+    "t2_s": 8.164092116750387e-06
+   },
+   "p0": {
+    "delay": {
+     "1": 0.06325046564088432,
+     "16": 0.5127541020939806,
+     "2": 0.1292908267903351,
+     "4": 0.2093112670068823,
+     "8": 0.33680513810420265
+    },
+    "measure": {
+     "1": 0.06325046564088432,
+     "16": 0.9020261845734745,
+     "2": 0.5331283720954806,
+     "4": 0.6929212437491757,
+     "8": 0.8225829135038535
+    },
+    "settle": {
+     "16": 0.9630386472283945
+    },
+    "unitary": {
+     "16": 0.10651751348300126
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8771478074337666,
+     "0.05": 0.8947090148265016,
+     "0.1": 0.9166605240674204,
+     "0.15": 0.9448838930914588,
+     "0.2": 0.9825150517901768
+    },
+    "spread": 0.1053672443564102,
+    "spread_over_departure_se": 7.678922907203498
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8457933629092851,
+     0.8729274818396479
+    ],
+    "ro0": [
+     0.922877366988769,
+     0.9847999999999999
+    ],
+    "ro1": [
+     0.07417304395248668,
+     0.13609567696371766
+    ],
+    "unitary-16": [
+     0.17093394399563794,
+     0.21990170623913985
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 40564.851559471426,
+     "settle": 22475.671412475196
+    },
+    "measure_shift_over_departure_se": 1.8058623267279335,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.8802789406574487,
+      "settle": 0.9510660402022324
+     },
+     "0.800": {
+      "measure": 0.8894530935302773,
+      "settle": 0.956098728127558
+     },
+     "1.096": {
+      "measure": 0.9020261845734745,
+      "settle": 0.9630386472283945
+     },
+     "1.400": {
+      "measure": 0.9138008462524041,
+      "settle": 0.9695877507211295
+     },
+     "1.772": {
+      "measure": 0.9268055370105044,
+      "settle": 0.9768848769813694
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.02477935243702989,
+     "settle": 0.013846229752974892
+    }
+   }
+  },
+  "QB9": {
+   "expected": {
+    "contrast_n16": 0.8156761412575365,
+    "contrast_se": 0.010709751259688965,
+    "departure_se": 0.015277688083739763,
+    "dephasing_zeno_n16": 0.37171739422403555,
+    "mutation_z": 29.47558104787435,
+    "p_init_se": 0.006079611314374682,
+    "readout_history_se": 0.006701431435647651,
+    "settle_gap_se": 0.004878187845198425,
+    "t1_se": 7.952679310712704e-07
+   },
+   "inputs": {
+    "delay_s": 1.096e-06,
+    "e01": 0.0146,
+    "e01_plus_e10": 0.0512,
+    "e10": 0.0366,
+    "measure_window_s": 1.096e-06,
+    "p_init_assumed": 0.068,
+    "pre_readout_s": 2e-06,
+    "prx_layer_s": 4e-08,
+    "prx_p": 0.0015379847629595211,
+    "settle_idle_s": 2e-06,
+    "t1_s": 3.482841750194507e-05,
+    "t2_s": 1.1060558405385471e-05
+   },
+   "p0": {
+    "delay": {
+     "1": 0.06683695635755377,
+     "16": 0.4685590596350262,
+     "2": 0.11769410757618454,
+     "4": 0.18560758736714128,
+     "8": 0.29934522090388704
+    },
+    "measure": {
+     "1": 0.06683695635755377,
+     "16": 0.9122298309000418,
+     "2": 0.5356084620078114,
+     "4": 0.6968701276972152,
+     "8": 0.8289400226163539
+    },
+    "settle": {
+     "16": 0.9750905186304166
+    },
+    "unitary": {
+     "16": 0.09684166541099065
+    }
+   },
+   "p_init_sensitivity": {
+    "measure_n16_p0": {
+     "0.0": 0.8845435197314602,
+     "0.05": 0.9040867982034002,
+     "0.1": 0.9285158962933251,
+     "0.15": 0.959924736694657,
+     "0.2": 1.0018031905630997
+    },
+    "spread": 0.11725967083163957,
+    "spread_over_departure_se": 7.675223514769916
+   },
+   "raw_band": {
+    "measure-16": [
+     0.8565467391421927,
+     0.8819682430509669
+    ],
+    "ro0": [
+     0.9244821593021423,
+     0.9854
+    ],
+    "ro1": [
+     0.08954940150209283,
+     0.1504672421999506
+    ],
+    "unitary-16": [
+     0.1760458255852685,
+     0.2254241358250767
+    ]
+   },
+   "window_sensitivity": {
+    "derivative_per_second_at_planned": {
+     "measure": 43303.7939575609,
+     "settle": 22230.955954161134
+    },
+    "measure_shift_over_departure_se": 1.7083563276108913,
+    "p0_n16_by_window_us": {
+     "0.600": {
+      "measure": 0.8887607861014297,
+      "settle": 0.9631433241071936
+     },
+     "0.800": {
+      "measure": 0.8987219870674779,
+      "settle": 0.9681905913941414
+     },
+     "1.096": {
+      "measure": 0.9122298309000418,
+      "settle": 0.9750905186304166
+     },
+     "1.400": {
+      "measure": 0.9247214719413424,
+      "settle": 0.9815358743434458
+     },
+     "1.772": {
+      "measure": 0.9383295660091642,
+      "settle": 0.9886391138914741
+     }
+    },
+    "shift_planned_to_mock_window": {
+     "measure": 0.026099735109122335,
+     "settle": 0.01354859526105745
+    }
+   }
+  }
+ },
+ "selection": {
+  "excluded": {
+   "QB11": "T1 collapsed in situ: |1> reads P(0) = 0.172 at once and 0.522 after the 2 us idle, about 4 us against 47.8 us in the set, and the readout scale is 0.384",
+   "QB12": "the calibrated prx error of 0.00436 is 2.6 to 6.6 times that of the other selected qubits (0.00066 to 0.00169), so its departure standard error of 0.041 adds little to the pooled test, and a randomized-benchmarking underestimate on this qubit alone can move the device verdict",
+   "QB14": "the pi/2-pair circuit reads 0.0420 below its model at 1000 shots, which against the 0.0080 statistical standard error of the case's unitary arm at 3000 shots is z = -5.27 and fires the unitary-arm guard",
+   "QB17": "the pi/2-pair circuit reads 0.0527 above its model at 1000 shots, which against the 0.0081 statistical standard error of the case's unitary arm at 3000 shots is z = +6.52 and fires the unitary-arm guard",
+   "QB5": "the pi/2-pair circuit reads 0.0331 below its model at 1000 shots, which against the 0.0085 statistical standard error of the case's unitary arm at 3000 shots is z = -3.91 and fires the unitary-arm guard",
+   "QB7": "the pi/2-pair circuit reads 0.1233 below its model at 1000 shots (z = -14.23 against the case's statistical standard error of 0.0087), and its calibrated prx error of 0.00545 is the largest of the usable qubits"
+  },
+  "median_t1_s": 3.7962256471572834e-05,
+  "qualified_at_median": 3,
+  "qubits": {
+   "QB13": {
+    "e01": 0.0274,
+    "e10": 0.0214,
+    "prx_p": 0.0011883938217780443,
+    "t1_s": 4.647473587949398e-05,
+    "t2_s": 1.414948407469849e-05
+   },
+   "QB15": {
+    "e01": 0.013,
+    "e10": 0.0452,
+    "prx_p": 0.0010923490324876717,
+    "t1_s": 4.079149548544183e-05,
+    "t2_s": 1.0471659759856258e-05
+   },
+   "QB18": {
+    "e01": 0.0056,
+    "e10": 0.0224,
+    "prx_p": 0.0006771602596007398,
+    "t1_s": 3.3384999903559254e-05,
+    "t2_s": 1.2090425666869577e-05
+   },
+   "QB20": {
+    "e01": 0.0238,
+    "e10": 0.0168,
+    "prx_p": 0.0008215145752332731,
+    "t1_s": 3.632499313051825e-05,
+    "t2_s": 2.8581841133562276e-05
+   },
+   "QB6": {
+    "e01": 0.0152,
+    "e10": 0.027,
+    "prx_p": 0.001335513211370376,
+    "t1_s": 3.959951981262741e-05,
+    "t2_s": 8.164092116750387e-06
+   },
+   "QB9": {
+    "e01": 0.0146,
+    "e10": 0.0366,
+    "prx_p": 0.0015379847629595211,
+    "t1_s": 3.482841750194507e-05,
+    "t2_s": 1.1060558405385471e-05
+   }
+  },
+  "rule": "the 6 qubits of smallest e01 + e10 among those with T1 at least the set's median, taken in that order and skipping any that shares a cz coupler with one already taken or is excluded; when fewer qualify, the uncoupled remainder in decreasing T1",
+  "t1_floor_s": 3.3384999903559254e-05
+ },
+ "timing_source": "Garnet QPU compiler estimates, calibration set be070414, 100 shots, the case's own circuits with the 2 us pre-readout delay: unitary-n16 7.032 us (job 01a174be-d1f7) and measure-n16 24.568 us (job 01a174be-e68b) per shot give a measure window of (24.568 - 7.032)/16 = 1.096 us; with the retained pilot job's 4.344 us per-circuit base the prx layer is (7.032 - 2.0 - 4.344)/16 = 43 ns, taken as the mock's 40 ns. garnet:mock compiles 1.772 us and 8.684 us per circuit"
+}

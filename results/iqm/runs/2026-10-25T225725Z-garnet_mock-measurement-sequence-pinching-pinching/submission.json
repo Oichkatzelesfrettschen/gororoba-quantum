@@ -1,0 +1,17 @@
+{
+ "approval": "Mock validation of the pi/2-pair rebuild (the owner directed the rebuild and one mock job)",
+ "body_sha256": "4d3a58efde7b80bf51addf86780b41b05d2f64fbab98a2fd268fc85357bda756",
+ "cases_sha256": "6b94d0dba9df799d17a8e619e954c37d22cdb5863d6773b63df86bc52828e6c2",
+ "credit_before": {
+  "currentBalance": "14.50",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 5.227,
+ "job": "pinching",
+ "job_id": "01a17548-7e68-72ab-8a27-38f1b6f3d94f",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T22:57:27Z"
+}

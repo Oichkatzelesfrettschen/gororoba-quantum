@@ -1,0 +1,17 @@
+{
+ "approval": "next steps for garnet sound great, go ahead.",
+ "body_sha256": "f23214b684b83b68c475156a00893d3705b77dbe9d0b9a26ee7262e6c511d15a",
+ "cases_sha256": "2a49b954413e5f4fdc1eb81240f9eac7efb1bcb1b759673cf988171f2957900e",
+ "credit_before": {
+  "currentBalance": "15.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 5.196,
+ "job": "pinching",
+ "job_id": "01a174c3-fbd0-756f-99e1-7bc20abd3604",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T20:32:43Z"
+}
