@@ -22,7 +22,8 @@ for |1> and 0 for |0>, and 1 and 0 for pi.
 
 Exactness. --self-test and tests/scripts/test_iqm_qet_ladder.py evolve every lowered arm over the two
 feedback branches with Qiskit's RGate and CZ matrices and require the law over r + 2a + 4b to equal
-qet_ladder.compensated_ideal to 1e-12, for every arm and every alpha of COMPENSATION_ALPHAS; a flipped frame
+qet_ladder.compensated_ideal to 1e-12, for every arm and every alpha of GARNET_ALPHAS, with the window phase
+injected at the preparation barrier and after Alice's readout window; a flipped frame
 sign fails it.
 
 Prediction. predict_pair propagates the pair's 4x4 density matrix through the ASAP schedule (Garnet
@@ -35,17 +36,22 @@ control_delays (290 ns), RB and IRB fidelities, readout errors, T1, T2 and the h
 excitation (characterization.model.QBn.init_error). Inferences with no calibration value: a measure occupies
 its qubit for duration + acquisition_delay and the feedback bit reaches Bob's drive control_delay after that;
 Alice's second measure follows the first immediately; no relaxation acts inside a measure window (the readout
-errors carry it); a cc_prx of angle 0 is an idle in both branches (no gate error); the unheralded initial
-excitation is ACTIVE_RESET_INIT_ERROR after one active-reset cycle, measured on QB1 and applied to every
-qubit; the heralded keep fraction is HERALD_KEEP_PER_QUBIT per qubit; qubits of different pairs are
+errors carry it); a cc_prx of angle 0 is an idle in both branches (no gate error); the initial excitation is
+zero after passive reset, whose initialization error the unheralded readout errors carry (measured on QB1
+only; the initial_excitation_sensitivity row starts every qubit at the calibrated init_error instead), and
+ACTIVE_RESET_INIT_ERROR after one unheralded active-reset cycle; the heralded keep fraction is
+HERALD_KEEP_PER_QUBIT per qubit; qubits of different pairs are
 independent (no crosstalk, no measurement-induced dephasing of neighbors, no leakage, no coherent phase, no
-non-QND readout); per-shot time is SHOT_BASE_SECONDS plus the circuit beyond one measure window. The
+non-QND readout); per-shot time is SHOT_BASE_SECONDS (PASSIVE_SHOT_SECONDS under passive reset) plus the
+circuit beyond one measure window. A cc_prx case runs passive reset: a drive AWG admits one feedback signal
+label per segment, and active reset puts a second one on every Bob drive. The
 retained idle-schedule case found apparent T1 a median 0.53 of the calibrated value, so the sensitivity
 rows rerun the prediction with every idle time scaled by RELAXATION_SENSITIVITY.
 T2 is the Ramsey t2_time (the echo time is longer); the calibrated qndness of the readout (0.97 on QB1) is not modeled.
 
 Usage: "$PYTHON" scripts/iqm_qet_ladder.py (build DIR [--calibration-dir D] [--pairs N] [--herald auto|zeros|none]
-       [--shots N] [--shot-seconds S] [--idle-cc-angle zero|two-pi] | check DIR | plan --calibration-dir D
+       [--shots N] [--shot-seconds S] [--idle-cc-angle zero|two-pi] [--reset active|passive] [--max-credits C]
+       | check DIR | plan --calibration-dir D
        | predict DIR --calibration-dir D | analyze RUN_DIR --out FILE [--replay] | --self-test)
 """
 
@@ -133,6 +139,12 @@ KINGSTON = {
     "uncompensated_margin": {"measured": -0.157, "half_width": 0.059, "model": 0.063},
 }
 Z95 = 1.959963984540054
+Z99 = 2.5758293035489004
+# Preregistered decision constants (docs/design/iqm-garnet-qet-compensated-ladder.md, H1-H4).
+DECISION_LEVEL = 0.95
+H3_ANGLE_TOLERANCE = 0.15
+H3_SOURCE0_LIMIT = 0.03
+H4_PHASE_SCALE = 0.2
 
 
 # ---------------------------------------------------------------------------------------------------------
@@ -275,8 +287,11 @@ def pair_ladder_ops(
         low.virtual_rz(b, alpha)
     first, second = ql.bob_angle(rule, 0), ql.bob_angle(rule, 1)
     if first is not None and second is not None:
-        low.prx(b, first, low.ry_phase(b))
+        # The conditional half precedes the unconditional one: under ASAP scheduling a prx listed first would
+        # play before Alice's readout, splitting Bob's rotation around the window phase that rz(alpha) undoes.
+        # Both halves rotate about the same axis in the same frame, so they commute and the law is unchanged.
         low.cc_prx(b, second - first, low.ry_phase(b))
+        low.prx(b, first, low.ry_phase(b))
     else:
         low.cc_prx(b, idle_angle, low.ry_phase(b))
     low.measure(a, f"afinal{p}")
@@ -300,8 +315,54 @@ def pair_qual_ops(arm: str, pair: Pair) -> list[dict[str, Any]]:
     return low.ops
 
 
+# Garnet's window phase is unmeasured, so its compensation grid is symmetric about zero: every phase within
+# 1.05 rad of zero lies within 0.15 rad of a grid point. qet_ladder.COMPENSATION_ALPHAS spans Kingston's phases.
+GARNET_ALPHAS = (-0.9, -0.6, -0.3, 0.0, 0.3, 0.6, 0.9)
+
+
+def compensated_arms() -> tuple[tuple[str, str, str, str, str, float], ...]:
+    """qet_ladder.compensated_arms with its feedback arms over GARNET_ALPHAS."""
+    kept = [arm for arm in ql.compensated_arms() if arm[3] != "feedback"]
+    feedback = [
+        (f"fb_{ql._alpha_label(alpha)}_{basis}", "ground", "x", "feedback", basis, alpha)
+        for alpha in GARNET_ALPHAS
+        for basis in "xz"
+    ]
+    return (*kept[:4], *feedback, *kept[4:])
+
+
+def summarize(dist: Mapping[str, np.ndarray]) -> dict[str, float]:
+    """qet_ladder.summarize_compensated over GARNET_ALPHAS: the same reference phase, floors and margins."""
+
+    def law(arm: str) -> np.ndarray:
+        return np.asarray(dist[f"{GROUP}_{arm}"], dtype=float)
+
+    xx, xy = ql._moments(law("ref_x"))[2], ql._moments(law("ref_y"))[2]
+    phase = math.atan2(-xy, -xx)
+    floor = ql.H_FIELD * ql._moments(law("za"))[3] - ql.H_FIELD**2 / ql.RADIUS
+    s = np.array([ql._moments(law(f"ref_{b}"))[1] for b in "xyz"])
+    c = np.array([ql._moments(law(f"ref_{b}"))[2] for b in "xyz"])
+    out: dict[str, float] = {"reference_phase": phase, "channel_floor": floor, "unitary_floor": ql.kabsch_floor(s, c)}
+    for alpha in GARNET_ALPHAS:
+        label = ql._alpha_label(alpha)
+        feedback = ql.local_energy(law(f"fb_{label}_z"), law(f"fb_{label}_x"))
+        out[f"margin_{label}"] = floor - feedback
+        out[f"excess_{label}"] = out["unitary_floor"] - feedback
+    selected = min(GARNET_ALPHAS, key=lambda alpha: abs(alpha + phase))
+    out["selected_alpha"] = selected
+    out["selected_margin"] = out[f"margin_{ql._alpha_label(selected)}"]
+    out["selected_excess"] = out[f"excess_{ql._alpha_label(selected)}"]
+    out["uncompensated_margin"] = out[f"margin_{ql._alpha_label(0.0)}"]
+    zeros, ones = law("cal_00") / law("cal_00").sum(), law("cal_11") / law("cal_11").sum()
+    for bit, label in enumerate(("r", "a", "b")):
+        mask = [index for index in range(8) if (index >> bit) & 1]
+        out[f"assignment_{label}_p1_given_0"] = float(zeros[mask].sum())
+        out[f"assignment_{label}_p0_given_1"] = float(1 - ones[mask].sum())
+    return out
+
+
 def arm_table() -> dict[str, tuple[str, str, str, str, str, float]]:
-    return {name: (name, *rest) for name, *rest in ql.compensated_arms()}  # type: ignore[misc]
+    return {arm[0]: arm for arm in compensated_arms()}
 
 
 def circuit_ops(arm: str, pairs: Sequence[Pair], idle_angle: float = IDLE_CC_ANGLE) -> list[dict[str, Any]]:
@@ -362,10 +423,14 @@ def derive_timing(folder: Path) -> dict[str, Any]:
 
 
 def prepare_calibration(source: Path, target: Path) -> None:
-    """Copy a calibration folder's metrics and architecture and derive timing.json from its set.json."""
+    """Copy a calibration folder's metrics and architecture and derive timing.json from its set.json; a case's
+    own calibration copy, which keeps timing.json in place of set.json, copies it."""
     target.mkdir(parents=True, exist_ok=True)
     for name in CALIBRATION_FILES:
         shutil.copyfile(source / name, target / name)
+    if not (source / "set.json").exists() and (source / TIMING_FILE).exists():
+        shutil.copyfile(source / TIMING_FILE, target / TIMING_FILE)
+        return
     (target / TIMING_FILE).write_text(dump(derive_timing(source)), encoding="utf-8")
 
 
@@ -463,17 +528,24 @@ class Noise(NamedTuple):
         )
 
 
-def noise_of(device: Device, pair: Pair, herald: bool, scale: float = 1.0, passive: bool = False) -> Noise:
+def noise_of(
+    device: Device, pair: Pair, herald: bool, scale: float = 1.0, passive: bool = False, excited: bool = False
+) -> Noise:
     """The pair's noise; idle T1 and T2 scale by scale. The initial excitation is the herald-conditioned
     calibration value when herald, zero after passive reset (the unheralded readout errors carry the
     initialization error: the passive pilot read QB1 at P(1) 0.0065 against 0.0046 predicted from them), and
-    ACTIVE_RESET_INIT_ERROR after one active-reset cycle otherwise."""
+    ACTIVE_RESET_INIT_ERROR after one active-reset cycle otherwise; excited starts a passive reset at the
+    calibrated herald-conditioned init_error instead, the sensitivity row for an excitation the gates propagate."""
     cal = device.calibration
     qubits = (pair.alice, pair.bob)
     t1 = {q: float(cal.values[f"characterization.model.{q}.t1_time"]) for q in qubits}
     t2 = {q: min(float(cal.values[f"characterization.model.{q}.t2_time"]), 2 * t1[q]) for q in qubits}
     init = {
-        q: float(cal.values[INIT_ERROR_FIELD.format(q=q)]) if herald else 0.0 if passive else ACTIVE_RESET_INIT_ERROR
+        q: float(cal.values[INIT_ERROR_FIELD.format(q=q)])
+        if herald or (passive and excited)
+        else 0.0
+        if passive
+        else ACTIVE_RESET_INIT_ERROR
         for q in qubits
     }
     return Noise(
@@ -606,10 +678,16 @@ class PairState:
 
 
 def simulate_pair(
-    ops: Sequence[Mapping[str, Any]], pair: Pair, timing: Timing, noise: Noise, window_phase: float = 0.0
+    ops: Sequence[Mapping[str, Any]],
+    pair: Pair,
+    timing: Timing,
+    noise: Noise,
+    window_phase: float = 0.0,
+    window_at: str = "barrier",
 ) -> np.ndarray:
     """Exact joint law of the pair's measured bits (r, [a,] b) for its operations, ASAP-scheduled; a nonzero
-    window_phase is a physical rz on Bob at the preparation barrier, the coherent phase the alpha grid undoes."""
+    window_phase is a physical rz on Bob, the coherent phase the alpha grid undoes, applied at the preparation
+    barrier or (window_at="feedback") just before Bob's cc_prx, after Alice's readout window."""
     starts, ends = schedule(ops, timing)
     state = PairState(pair, noise)
     alice = pair.alice
@@ -627,9 +705,11 @@ def simulate_pair(
         elif name == "measure" and locus[0] == alice and state.branches is None:
             state.split(c[alice])
         elif name == "cc_prx":
+            if window_phase and window_at == "feedback":
+                state.unitary_only(pair.bob, rz_gate(window_phase))
             pulsed = noise.prx_p[locus[0]] if args["angle"] != 0.0 else 0.0
             state.conditional_prx(locus[0], args["angle"], args["phase"], pulsed, end - start)
-        elif name == "barrier" and window_phase:
+        elif name == "barrier" and window_phase and window_at == "barrier":
             state.unitary_only(pair.bob, rz_gate(window_phase))
         elif name not in ("barrier", "measure"):
             raise ValueError(f"{name} has no model")
@@ -661,7 +741,7 @@ def endpoint_variance(dist: Mapping[str, np.ndarray], shots: float | Mapping[str
     variance = dict.fromkeys(ENDPOINTS, 0.0)
     step = 1e-6
     table = arm_table()
-    alphas = {0.0, ql.summarize_compensated(dist)["selected_alpha"]}
+    alphas = {0.0, summarize(dist)["selected_alpha"]}
     for key, law in dist.items():
         _, prep, _, rule, _, alpha = table[key[len(GROUP) + 1 :]]
         # The calibration arms feed only the assignment fields and a feedback arm only the margins at its own
@@ -677,8 +757,8 @@ def endpoint_variance(dist: Mapping[str, np.ndarray], shots: float | Mapping[str
             up_law, down_law = np.array(law, dtype=float), np.array(law, dtype=float)
             up_law[i] += step
             down_law[i] -= low
-            up = ql.summarize_compensated({**dist, key: up_law})
-            down = ql.summarize_compensated({**dist, key: down_law})
+            up = summarize({**dist, key: up_law})
+            down = summarize({**dist, key: down_law})
             for name in ENDPOINTS:
                 grads[name][i] = (up[name] - down[name]) / (step + low)
         for name in ENDPOINTS:
@@ -688,13 +768,14 @@ def endpoint_variance(dist: Mapping[str, np.ndarray], shots: float | Mapping[str
     return variance
 
 
-def predict_pair(item: tuple[str, dict[str, Any], bool, float, float, bool]) -> dict[str, Any]:
+def predict_pair(item: tuple[Any, ...]) -> dict[str, Any]:
     """Every arm's exact law for one pair under a calibration folder, and the endpoints with their variance
-    at one shot per arm. item = (folder, pair, herald, relaxation scale, idle cc_prx angle, passive reset)."""
-    folder, row, herald, scale, idle_angle, passive = item
+    at one shot per arm. item = (folder, pair, herald, relaxation scale, idle cc_prx angle, passive reset[,
+    excited passive start])."""
+    folder, row, herald, scale, idle_angle, passive, *rest = item
     device = load_device(folder)
     pair = pair_of(row)
-    noise = noise_of(device, pair, herald, scale, passive)
+    noise = noise_of(device, pair, herald, scale, passive, bool(rest and rest[0]))
     laws: dict[str, list[float]] = {}
     qual: dict[str, list[float]] = {}
     for arm in arm_names():
@@ -708,7 +789,7 @@ def predict_pair(item: tuple[str, dict[str, Any], bool, float, float, bool]) -> 
         "pair": pair.as_dict(),
         "laws": laws,
         "qualification": qual,
-        "endpoints": ql.summarize_compensated(dist),
+        "endpoints": summarize(dist),
         "variance_one_shot": endpoint_variance(dist),
     }
 
@@ -885,7 +966,7 @@ def idle_angle_of(name: str) -> float:
 
 def ideal_endpoints() -> dict[str, Any]:
     laws = {name: ql.compensated_ideal(*arm[1:]) for name, arm in arm_table().items()}
-    out = ql.summarize_compensated(dist_of(laws))
+    out = summarize(dist_of(laws))
     qual = {
         "qual_src1_phi": math.sin(ql.PHI_STAR) ** 2,
         "qual_src0_phi": 0.0,
@@ -908,10 +989,14 @@ class BuildArgs(NamedTuple):
         return self._asdict()
 
 
-def sensitivity(folder: str, chosen: Mapping[str, Any], idle_angle: float, passive: bool) -> dict[str, Any]:
-    """The chosen pairs' pooled endpoints with every idle time scaled by RELAXATION_SENSITIVITY."""
+def sensitivity(
+    folder: str, chosen: Mapping[str, Any], idle_angle: float, passive: bool, excited: bool = False
+) -> dict[str, Any]:
+    """The chosen pairs' pooled endpoints with every idle time scaled by RELAXATION_SENSITIVITY, or, with excited,
+    at calibrated relaxation from the calibrated initial excitation."""
     herald = bool(chosen["herald"])
-    items = [(folder, row, herald, RELAXATION_SENSITIVITY, idle_angle, passive) for row in chosen["pairs"]]
+    scale = 1.0 if excited else RELAXATION_SENSITIVITY
+    items = [(folder, row, herald, scale, idle_angle, passive, excited) for row in chosen["pairs"]]
     return pooled(ordered_map(predict_pair, items), float(chosen["kept_shots"]))
 
 
@@ -1014,6 +1099,10 @@ def build_from(folder: Path, args: BuildArgs) -> dict[str, str]:
             "scale": RELAXATION_SENSITIVITY,
             "pooled": sensitivity(str(folder), chosen, idle_angle, passive),
         },
+        "initial_excitation_sensitivity": {
+            "field": INIT_ERROR_FIELD,
+            "pooled": sensitivity(str(folder), chosen, idle_angle, passive, excited=True) if passive else None,
+        },
         "ideal": ideal_endpoints(),
     }
     files["prediction.json"] = dump(rounded(prediction))
@@ -1039,11 +1128,20 @@ def build_from(folder: Path, args: BuildArgs) -> dict[str, str]:
 
 
 def write(directory: Path, source: Path, args: BuildArgs) -> None:
-    calibration = directory / "calibration"
-    if calibration.exists():
-        shutil.rmtree(calibration)
-    prepare_calibration(source, calibration)
-    for rel, text in build_from(calibration, args).items():
+    """Build the case from source into directory, replacing its calibration copy and circuit files.
+
+    The build reads a temporary copy of source, so source may be the case's own calibration folder, and the
+    circuits folder is cleared first, so an arm the build no longer emits leaves no file behind.
+    """
+    with tempfile.TemporaryDirectory() as tmp:
+        staged = Path(tmp) / "calibration"
+        prepare_calibration(source, staged)
+        files = build_from(staged, args)
+        for folder in (directory / "calibration", directory / "circuits"):
+            if folder.exists():
+                shutil.rmtree(folder)
+        shutil.copytree(staged, directory / "calibration")
+    for rel, text in files.items():
         path = directory / rel
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
@@ -1066,15 +1164,18 @@ def check(directory: Path) -> None:
 # ---------------------------------------------------------------------------------------------------------
 
 
-def qiskit_law(ops: Sequence[Mapping[str, Any]], pair: Pair, window_phase: float = 0.0) -> np.ndarray:
+def qiskit_law(
+    ops: Sequence[Mapping[str, Any]], pair: Pair, window_phase: float = 0.0, window_at: str = "barrier"
+) -> np.ndarray:
     """The ideal law over r + 2a + 4b of one pair's native operations, evolved over the two feedback branches
-    with Qiskit's RGate and CZ matrices; a nonzero window_phase is an rz on Bob at the barrier."""
+    with Qiskit's RGate and CZ matrices; a nonzero window_phase is an rz on Bob at the barrier or, with
+    window_at="feedback", just before Bob's cc_prx."""
     index = {pair.alice: 0, pair.bob: 1}
     state = Statevector.from_label("00")
     split = next(i for i, o in enumerate(ops) if o["name"] == "measure" and o["locus"] == [pair.alice])
     for o in ops[:split]:
         if o["name"] == "barrier":
-            if window_phase:
+            if window_phase and window_at == "barrier":
                 state = state.evolve(Operator(rz_gate(window_phase)), qargs=[index[pair.bob]])
         elif o["name"] == "prx":
             state = state.evolve(Operator(RGate(o["args"]["angle"], o["args"]["phase"])), qargs=[index[o["locus"][0]]])
@@ -1093,6 +1194,8 @@ def qiskit_law(ops: Sequence[Mapping[str, Any]], pair: Pair, window_phase: float
         data[[r, r + 2]] = branch / math.sqrt(weight)
         bob = Statevector(data)
         for o in ops[split + 1 :]:
+            if o["name"] == "cc_prx" and window_phase and window_at == "feedback":
+                bob = bob.evolve(Operator(rz_gate(window_phase)), qargs=[1])
             if o["name"] == "prx" and o["locus"] == [pair.bob]:
                 bob = bob.evolve(Operator(RGate(o["args"]["angle"], o["args"]["phase"])), qargs=[1])
             elif o["name"] == "cc_prx" and r == 1:
@@ -1105,16 +1208,25 @@ def qiskit_law(ops: Sequence[Mapping[str, Any]], pair: Pair, window_phase: float
     return law
 
 
-def lowering_deviation(pair: Pair, timing: Timing, window_phases: Sequence[float], frame_sign: float = 1.0) -> float:
-    """Largest departure from qet_ladder.compensated_ideal over every arm, both simulators, each window phase."""
+def lowering_deviation(
+    pair: Pair,
+    timing: Timing,
+    window_phases: Sequence[float],
+    frame_sign: float = 1.0,
+    ops_of: Any = None,
+) -> float:
+    """Largest departure from qet_ladder.compensated_ideal over every arm, both simulators, each window phase at
+    the barrier and after Alice's readout window; ops_of(arm, pair, frame_sign) replaces pair_ladder_ops."""
+    lower = pair_ladder_ops if ops_of is None else ops_of
     worst = 0.0
     for phase in window_phases:
-        for arm in arm_table().values():
-            ops = pair_ladder_ops(arm, pair, frame_sign=frame_sign)
-            ideal = ql.compensated_ideal(*arm[1:], window_phase=phase)
-            direct = qiskit_law(ops, pair, phase)
-            joint = simulate_pair(ops, pair, timing, Noise.ideal(pair), phase)
-            worst = max(worst, float(np.abs(direct - ideal).max()), float(np.abs(flat_law(joint) - ideal).max()))
+        for where in ("barrier", "feedback"):
+            for arm in arm_table().values():
+                ops = lower(arm, pair, frame_sign=frame_sign)
+                ideal = ql.compensated_ideal(*arm[1:], window_phase=phase)
+                direct = qiskit_law(ops, pair, phase, where)
+                joint = simulate_pair(ops, pair, timing, Noise.ideal(pair), phase, where)
+                worst = max(worst, float(np.abs(direct - ideal).max()), float(np.abs(flat_law(joint) - ideal).max()))
     return worst
 
 
@@ -1191,7 +1303,7 @@ def endpoints_of_run(case: Mapping[str, Any], measurements: Sequence[Mapping[str
         counts = {name: ladder_counts(by_name[name], index) for name in arm_table()}
         dist = {f"{GROUP}_{name}": c / c.sum() for name, c in counts.items()}
         shots = {f"{GROUP}_{name}": float(c.sum()) for name, c in counts.items()}
-        endpoints = ql.summarize_compensated(dist)
+        endpoints = summarize(dist)
         variance = endpoint_variance(dist, shots)
         qualification = {}
         for name in QUAL_ARMS:
@@ -1238,7 +1350,113 @@ def endpoints_of_run(case: Mapping[str, Any], measurements: Sequence[Mapping[str
             q_ = r_["qualification"][name]
             q_["p1"] = q_["target_ones"] / q_["shots"]
             q_["wilson95"] = list(wilson(q_["target_ones"], q_["shots"]))
-    return {"pairs": per_pair, "pooled": pooled_out, "qualification": qualification_pooled}
+    for r_, pair in zip(per_pair, case["pairs"], strict=True):
+        r_["h3"] = angle_qualification(r_["qualification"], counts_of_pair(by_name, int(pair["index"])))
+    return {
+        "pairs": per_pair,
+        "pooled": pooled_out,
+        "qualification": qualification_pooled,
+        "decisions": decisions(per_pair),
+    }
+
+
+def counts_of_pair(by_name: Mapping[str, Mapping[str, Any]], index: int) -> dict[str, np.ndarray]:
+    return {name: ladder_counts(by_name[name], index) for name in ("cal_00", "cal_11")}
+
+
+def corrected_angle(ones: int, shots: int, e0: float, e1: float, z: float) -> dict[str, float]:
+    """The conditional rotation angle 2 asin(sqrt p) of a target read through P(1|0) = e0, P(0|1) = e1, with the
+    Wilson interval of the raw P(1) at z mapped through the same correction (the readout uncertainty is not
+    propagated)."""
+
+    def angle(p1: float) -> float:
+        true = min(max((p1 - e0) / (1 - e0 - e1), 0.0), 1.0)
+        return 2 * math.asin(math.sqrt(true))
+
+    low, high = wilson(ones, shots, z)
+    return {"angle": angle(ones / shots), "low": angle(low), "high": angle(high)}
+
+
+def angle_qualification(qualification: Mapping[str, Any], cal: Mapping[str, np.ndarray]) -> dict[str, Any]:
+    """H3 for one pair: Bob's readout-corrected cc_prx angle from a |1> source and P(1) from a |0> source.
+
+    The pair's own cal_00 and cal_11 arms give Bob's assignment errors in the same job (bit b, index >> 2), so a
+    |0>-source reading is compared with readout error rather than with zero.
+    """
+    zeros, ones = cal["cal_00"] / cal["cal_00"].sum(), cal["cal_11"] / cal["cal_11"].sum()
+    bob = [i for i in range(8) if (i >> 2) & 1]
+    e0, e1 = float(zeros[bob].sum()), float(1 - ones[bob].sum())
+    src1 = qualification["qual_src1_phi"]
+    fitted = corrected_angle(src1["target_ones"], src1["shots"], e0, e1, Z99)
+    src0 = qualification["qual_src0_phi"]
+    _, src0_high = wilson(src0["target_ones"], src0["shots"], Z99)
+    src0_corrected_high = (src0_high - e0) / (1 - e0 - e1)
+    pi = qualification["qual_src1_pi"]
+    target = 2 * ql.PHI_STAR
+    passes = (
+        target - H3_ANGLE_TOLERANCE <= fitted["low"]
+        and fitted["high"] <= target + H3_ANGLE_TOLERANCE
+        and src0_corrected_high < H3_SOURCE0_LIMIT
+    )
+    return {
+        "bob_p1_given_0": e0,
+        "bob_p0_given_1": e1,
+        "fitted_angle": fitted,
+        "target_angle": target,
+        "pi_arm_angle": corrected_angle(pi["target_ones"], pi["shots"], e0, e1, Z99),
+        "source0_corrected_p1_upper99": src0_corrected_high,
+        "scored": passes,
+    }
+
+
+def one_sided(values: Sequence[float]) -> tuple[float, float, float]:
+    """(mean, lower, upper) one-sided DECISION_LEVEL t bounds across pairs."""
+    n = len(values)
+    centre = mean(values)
+    if n < 2:
+        return centre, float("nan"), float("nan")
+    spread = math.sqrt(sum((v - centre) ** 2 for v in values) / (n - 1))
+    half = float(stats.t.ppf(DECISION_LEVEL, n - 1)) * spread / math.sqrt(n)
+    return centre, centre - half, centre + half
+
+
+def decisions(per_pair: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    """H1-H4 over the pairs H3 scores; each hypothesis is its own one-sided test at DECISION_LEVEL.
+
+    H1 (information excess) and H2 (channel floor margin) read the selected-alpha endpoints; H4 reads the mean
+    magnitude of the per-pair reference phase against H4_PHASE_SCALE. A verdict needs two scored pairs.
+    """
+    scored = [r for r in per_pair if r["h3"]["scored"]]
+    out: dict[str, Any] = {
+        "scored_pairs": [[r["pair"]["alice"], r["pair"]["bob"]] for r in scored],
+        "h3_all_pairs_scored": len(scored) == len(per_pair),
+    }
+
+    def verdict(values: Sequence[float], threshold: float, above: str, below: str) -> dict[str, Any]:
+        centre, low, high = one_sided(values)
+        if len(values) < 2:
+            state = "insufficient pairs"
+        elif low > threshold:
+            state = above
+        elif high < threshold:
+            state = below
+        else:
+            state = "unresolved"
+        return {"mean": centre, "lower": low, "upper": high, "pairs": len(values), "verdict": state}
+
+    out["h1_information_excess"] = verdict(
+        [r["endpoints"]["selected_excess"] for r in scored], 0.0, "reproduced", "refuted"
+    )
+    out["h2_channel_floor_margin"] = verdict(
+        [r["endpoints"]["selected_margin"] for r in scored], 0.0, "passes", "fails"
+    )
+    out["h4_window_phase"] = verdict(
+        [abs(r["endpoints"]["reference_phase"]) for r in scored],
+        H4_PHASE_SCALE,
+        "coherent phase of Kingston's order",
+        "below Kingston's order",
+    )
+    return out
 
 
 def analyze(run_dirs: Sequence[Path]) -> dict[str, Any]:
@@ -1295,8 +1513,11 @@ def quantize(law: Sequence[float] | np.ndarray, n: int) -> list[int]:
     return [int(x) for x in base]
 
 
-def synthetic_measurements(case: Mapping[str, Any], n: int) -> tuple[list[dict[str, Any]], dict[str, np.ndarray]]:
-    """The artifact of a run whose every pair follows the ideal laws at n shots, with those laws' quantized counts."""
+def synthetic_measurements(
+    case: Mapping[str, Any], n: int, laws: Sequence[Mapping[str, Sequence[float]]] | None = None
+) -> tuple[list[dict[str, Any]], dict[str, np.ndarray]]:
+    """The artifact of a run whose pairs follow the ideal laws (or laws[pair index], each arm's law over
+    r + 2a + 4b) at n shots, with the quantized counts of the last pair."""
     row = next(r for r in case["jobs"] if r["job"] == JOB)
     table = arm_table()
     ideal_p1 = case["ideal"]["qualification_p1"]
@@ -1313,7 +1534,8 @@ def synthetic_measurements(case: Mapping[str, Any], n: int) -> tuple[list[dict[s
                 circuit[f"alice{i}"] = [[source]] * n
                 circuit[f"bob{i}"] = [[1]] * ones + [[0]] * (n - ones)
                 continue
-            counts = quantize(ql.compensated_ideal(*table[name][1:]), n)
+            source_law = ql.compensated_ideal(*table[name][1:]) if laws is None else laws[i][name]
+            counts = quantize(source_law, n)
             quantized[name] = np.asarray(counts, dtype=float)
             cells = [cell for cell, c in enumerate(counts) for _ in range(c)]
             circuit[f"alice{i}"] = [[cell & 1] for cell in cells]
@@ -1383,7 +1605,7 @@ def self_test() -> str:
         measurements, quantized = synthetic_measurements(case, 4000)
         result = endpoints_of_run(case, measurements)
         ideal = case["ideal"]["endpoints"]
-        exact = ql.summarize_compensated({f"{GROUP}_{k}": v / v.sum() for k, v in quantized.items()})
+        exact = summarize({f"{GROUP}_{k}": v / v.sum() for k, v in quantized.items()})
         for entry in result["pairs"]:
             for name in ENDPOINTS:
                 if abs(entry["endpoints"][name] - exact[name]) > 1e-12:

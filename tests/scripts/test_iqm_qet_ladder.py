@@ -51,6 +51,22 @@ def test_flipped_frame_sign_fails_the_check(device: lad.Device) -> None:
         raise AssertionError(f"a flipped virtual-Z frame sign passes with deviation {deviation}")
 
 
+def unconditional_half_first(arm: tuple, pair: lad.Pair, frame_sign: float = 1.0) -> list[dict]:
+    """pair_ladder_ops with Bob's unconditional prx moved ahead of the cc_prx, the order ASAP plays early."""
+    ops = lad.pair_ladder_ops(arm, pair, frame_sign=frame_sign)
+    for i in range(len(ops) - 1):
+        if ops[i]["name"] == "cc_prx" and ops[i + 1]["name"] == "prx" and ops[i + 1]["locus"] == [pair.bob]:
+            ops[i], ops[i + 1] = ops[i + 1], ops[i]
+            break
+    return ops
+
+
+def test_window_phase_after_readout_needs_the_conditional_half_first(device: lad.Device) -> None:
+    deviation = lad.lowering_deviation(first_pair(device), device.timing, PHASES, ops_of=unconditional_half_first)
+    if deviation < 1e-3:
+        raise AssertionError(f"splitting Bob's rotation around the readout window passes with {deviation}")
+
+
 def test_two_pi_idle_angle_keeps_the_laws(device: lad.Device) -> None:
     pair = first_pair(device)
     for arm in lad.arm_table().values():
@@ -163,7 +179,7 @@ def test_retained_case_is_native_and_within_its_credit_ceiling() -> None:
         if job["options"]["active_reset_cycles"] is not None or job["options"]["heralding_mode"] != "none":
             raise AssertionError(f"{job['job']} runs active reset or heralding beside cc_prx feedback")
     names = {Path(e["file"]).stem for e in case["jobs"][0]["circuits"]}
-    if names != set(lad.arm_names()) or len(names) != 22:
+    if names != set(lad.arm_names()) or len(names) != 24:
         raise AssertionError(f"circuits {sorted(names)}")
 
 
@@ -217,7 +233,7 @@ def synthetic_run(tmp: Path, shots: int) -> Path:
                 "job_id": "job-1",
                 "status": "completed",
                 "raw_sha256": {n: lad.sha256(d) for n, d in files.items()},
-                "shots_per_circuit": [shots] * 22,
+                "shots_per_circuit": [shots] * 24,
             }
         )
     )
@@ -238,6 +254,37 @@ def test_analysis_recovers_the_ideal_endpoints_from_synthetic_bits(tmp_path: Pat
         low, high = result["qualification"][name]["wilson95"]
         if not low - 1e-6 <= p1 <= high + 1e-6:
             raise AssertionError(f"{name}: {p1} outside {low}..{high}")
+
+
+def test_analysis_maps_each_pair_and_key_to_its_own_law() -> None:
+    """Counts drawn from each pair's predicted noisy law, where the second Alice readout differs from the first,
+    recover that pair's predicted endpoints; swapping the alice and afinal keys or two pairs moves them."""
+    case = json.loads((CASE / "cases.json").read_text(encoding="utf-8"))
+    prediction = json.loads((CASE / "prediction.json").read_text(encoding="utf-8"))
+    laws = [row["laws"] for row in prediction["pairs"]]
+    measurements, _ = lad.synthetic_measurements(case, 20000, laws)
+    result = lad.endpoints_of_run(case, measurements)
+    for got, row in zip(result["pairs"], prediction["pairs"], strict=True):
+        for name in lad.ENDPOINTS:
+            if abs(got["endpoints"][name] - row["endpoints"][name]) > 2e-3:
+                raise AssertionError(f"{row['pair']}: {name} {got['endpoints'][name]} against {row['endpoints'][name]}")
+    swapped = [{**c, "alice0": c["afinal0"], "afinal0": c["alice0"]} if "afinal0" in c else c for c in measurements]
+    # Bob's rotation follows the recorded bit, so the feedback energy, read through Alice's final bit,
+    # changes when the two readouts trade places.
+    moved = lad.endpoints_of_run(case, swapped)["pairs"][0]["endpoints"]["selected_excess"]
+    if abs(moved - result["pairs"][0]["endpoints"]["selected_excess"]) < 1e-3:
+        raise AssertionError("swapping Alice's two readouts leaves the information excess unchanged")
+    pairs_swapped = [
+        {
+            **c,
+            **{f"{k}0": c[f"{k}1"] for k in ("alice", "afinal", "bob") if f"{k}1" in c},
+            **{f"{k}1": c[f"{k}0"] for k in ("alice", "afinal", "bob") if f"{k}0" in c},
+        }
+        for c in measurements
+    ]
+    first = lad.endpoints_of_run(case, pairs_swapped)["pairs"][0]["endpoints"]["selected_margin"]
+    if abs(first - prediction["pairs"][0]["endpoints"]["selected_margin"]) < 5e-3:
+        raise AssertionError("swapping two pairs' keys leaves pair 0's margin at its own prediction")
 
 
 def test_analysis_refuses_a_mock_run(tmp_path: Path) -> None:
