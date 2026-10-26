@@ -8800,7 +8800,8 @@
    "order_finding",
    "pathlib",
    "qiskit",
-   "qiskit_aer"
+   "qiskit_aer",
+   "typing"
   ],
   "gororoba_quantum/qpu_case_allocation_contracts.py": [
    "__future__",
