@@ -343,19 +343,22 @@ def derivation_data(derivations: list[list[list[int]]]) -> dict[str, Any]:
     }
 
 
+def equivariance_item(item: tuple[list[list[int]], int]) -> bool:
+    """[D, C'_z] = C'_(D z) for one derivation D on the basis vector e_k."""
+    derivation, k = item
+    d_block = [[derivation[r][c] for c in range(1, HALF)] for r in range(1, HALF)]
+    z = [1 if j == k else 0 for j in range(1, HALF)]
+    c_z = cprime(z, 0)
+    c_dz = cprime(act(derivation, z), 0)
+    left = matmul(d_block, c_z)
+    right = matmul(c_z, d_block)
+    return all(left[r][c] - right[r][c] == c_dz[r][c] for r in range(IMAG) for c in range(IMAG))
+
+
 def equivariance(derivations: list[list[list[int]]]) -> bool:
     """[D, C'_z] = C'_(D z) for every derivation D (linear in z, so the 15 basis vectors decide it)."""
-    for derivation in derivations:
-        d_block = [[derivation[r][c] for c in range(1, HALF)] for r in range(1, HALF)]
-        for k in range(1, HALF):
-            z = [1 if j == k else 0 for j in range(1, HALF)]
-            c_z = cprime(z, 0)
-            c_dz = cprime(act(derivation, z), 0)
-            left = matmul(d_block, c_z)
-            right = matmul(c_z, d_block)
-            if any(left[r][c] - right[r][c] != c_dz[r][c] for r in range(IMAG) for c in range(IMAG)):
-                return False
-    return True
+    items = [(derivation, k) for derivation in derivations for k in range(1, HALF)]
+    return all(parallel.ordered_map(equivariance_item, items))
 
 
 def characteristic_identities() -> dict[str, Any]:

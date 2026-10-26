@@ -1304,8 +1304,7 @@ def fp_slices(primes: Sequence[int]) -> dict[str, Any]:
         acc = out.setdefault(key, Counter())
         acc.update(row)
     result = {k: dict(v) for k, v in out.items()}
-    bad_keys = [k for k in next(iter(result.values())) if k.startswith("bad_")]
-    ok = all(v[b] == 0 for v in result.values() for b in bad_keys)
+    ok = all(n == 0 for v in result.values() for key, n in v.items() if key.startswith("bad_"))
     return {"slices": result, "pass": ok}
 
 
@@ -1324,18 +1323,18 @@ def fp_samples(count: int) -> dict[str, Any]:
     items = []
     for p, seed in plan:
         rng = np.random.Generator(np.random.PCG64(seed))
-        for _ in range(count // chunk):
-            items.append((p, int(rng.integers(0, 2**63 - 1)), chunk))
+        sizes = [chunk] * (count // chunk) + ([count % chunk] if count % chunk else [])
+        for size in sizes:
+            items.append((p, int(rng.integers(0, 2**63 - 1)), size))
     rows = parallel.ordered_map(sample_item, items, min_items=1)
     out: dict[str, Counter[str]] = {}
     for (p, _, _), row in zip(items, rows, strict=True):
         out.setdefault(str(p), Counter()).update(row)
     result = {k: dict(v) for k, v in out.items()}
-    bad = [k for k in next(iter(result.values())) if k.startswith("bad_")]
     return {
         "seeds": [{"draw": DRAW_B, "index": i, "value": QB[i]} for i in (1, 2, 3, 4)],
         "per_prime": result,
-        "pass": all(v[b] == 0 for v in result.values() for b in bad),
+        "pass": all(n == 0 for v in result.values() for key, n in v.items() if key.startswith("bad_")),
     }
 
 
@@ -1528,7 +1527,10 @@ def main() -> int:
     print(f"total {report['total_s']} s on {report['workers']} workers")
     if args.out:
         args.out.write_text(json.dumps(report, indent=1, default=str) + "\n", encoding="utf-8")
-    return 0
+    failed = [key for key, value in report.items() if isinstance(value, dict) and value.get("pass") is False]
+    if failed:
+        print(f"verification failed: {', '.join(failed)}")
+    return 1 if failed else 0
 
 
 if __name__ == "__main__":
