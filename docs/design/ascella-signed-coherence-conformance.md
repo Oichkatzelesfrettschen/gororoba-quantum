@@ -1753,29 +1753,48 @@ job-03 runs.
   - A mesh that jobs 00, 02 or 03 served is excluded.
   - A mesh served by both new jobs counts once, in job-04.
   - A job with fewer than three meshes, or a partial job, stays descriptive.
-    Partial means a setting without counts or a status other than completed.
+    Partial means a setting without counts, a setting with no count in the
+    logical block (modes 0 to 3, where X is undefined), or a status other than
+    completed.
+  - An entry whose echoed `compilation_seed` differs from its setting's is
+    refused, since settings that share `circuit_params` differ only by seed.
+- **Acquisition set.** The score's entry point requires the references to be
+  exactly jobs 00, 02 and 03, and each new run's `cases.json` to equal its
+  frozen case. It also requires the new runs to be job-04 followed by exactly
+  the job-05 variant that the duration rule admits, or job-04 alone when the
+  rule admits none. A partial job-04 reads not read, with no verdict, and a
+  new case follows. A submitted but partial job-05 stays descriptive, and the
+  primary reads job-04 alone.
 - **Primary statistic.** For each predictor, the Pearson r of predicted with
   observed block-conditioned X, both centered within each job. It is read
   one-sided by the t distribution on n − 1 − J degrees of freedom at alpha
-  0.005 each, which is Bonferroni 0.01 over the two predictors.
+  0.005 each, which is Bonferroni 0.01 over the two predictors. A non-finite
+  input reads not read. A correlation of exactly ±1 reads at its endpoint.
 - **Bounds.** The one-sided 99.5 % Fisher-z bounds use standard error
-  1/√(n − J − 2). The share is r²/c² under the plug-in ceiling
-  c² = s_c²/(s_c² + mean counting variance), conditional on the retained
-  s_c² = 1.41e-4.
-- **Anchor control.** Each job's anchor mean X minus job-03's reads moved when
-  its magnitude exceeds s_c = 0.0119, which marks a gross calibration event.
-  Job-03 reproduced every per-mesh error at the ceiling across a
-  recalibration that moved the anchors by 0.00285. The control gates only the
-  bounded outcome: centering removes an additive shift, and a calibration
-  change cannot correlate frozen predictions with unseen meshes.
+  1/√(n − J − 2). The positive-direction share is r²/c² under the plug-in
+  ceiling c² = s_c²/(s_c² + mean counting variance), conditional on the
+  retained s_c² = 1.41e-4. A negative correlation carries no
+  positive-direction share.
+- **Anchor control.** Each job's anchor mean X minus job-03's reads steady
+  when its whole two-sided 99 % interval lies within ±s_c = ±0.0119, and moved
+  otherwise, which marks a gross calibration event. The interval's half-width
+  is about 0.0033 at ten 32,768-sample anchors. Job-03 reproduced every
+  per-mesh error at the ceiling across a recalibration that moved the anchors
+  by 0.00285, which still passes (0.00285 + 0.0033 ≈ 0.0062). Requiring every
+  scored job to pass is conservative across jobs without a multiplicity
+  adjustment. The control gates only the bounded outcome: centering removes an
+  additive shift, and a calibration change cannot correlate frozen
+  predictions with unseen meshes.
 
 | Outcome | Condition | Reading |
 |---|---|---|
+| not read | a predictor not read (too few meshes, a constant or non-finite input, a partial job-04) | no verdict |
 | both carried | P-A and P-B at p below 0.005 | the returned circuit with element offsets carries the fixed per-mesh error, for the share between the bounds |
 | P-A carried only | P-A alone | as above, for P-A's share |
 | P-B carried only | P-B alone | as above; the carrier lies in offsets that the 28 exploration meshes left underdetermined |
-| bounded | neither carried, every scored job steady, both upper shares below 10.6 % | the static element offsets carry less of the compilation-induced variance than the larger upper share |
+| inconclusive: anticorrelated | neither carried, a predictor's upper bound of r below 0 | the offsets predict the sign-reversed error; no positive-direction share describes it |
 | inconclusive: anchors moved | neither carried, a scored job moved | no bound |
+| bounded | neither carried, every scored job steady, both upper shares below 10.6 % | the frozen signed offsets carry less of the compilation-induced variance, in the positive direction, than the larger upper share |
 | inconclusive | neither carried otherwise | no bound |
 
 10.6 % is the held-out point estimate of the confirmation plan. Secondary and
@@ -1799,8 +1818,8 @@ job-00, theta 2 pi/5, phi +pi/4, X readout) 80 times at 32,768 samples and
   Job-04's provider-reported duration d4 alone picks the variant:
   - With job-04 complete and d4 at most 279 s, job-05 runs
     8·floor(min(96, 279·80/d4)/8) iterations.
-  - A partial job-04, or d4 above 279 s, sends no job-05, and the reading
-    runs on job-04 alone.
+  - d4 above 279 s sends no job-05, and the reading runs on job-04 alone.
+  - A partial job-04 sends no job-05 and reads not read.
   - The score refuses a job-05 run of any other variant.
   - The rule reads completion and duration only, never an X count, so it
     selects nothing on the outcome.
@@ -1814,8 +1833,9 @@ calibration, exist only on the chip.
 **Sizing.** Every Ascella job so far ran 64 iterations in 186 s, at both
 8,192 and 16,384 samples. Fixed overhead per job cannot be negative, so
 2.90625 s per iteration is an upper bound on the per-iteration time under a
-linear duration model. 80 iterations then take at most 232.5 s, 67.5 s below
-the 300-second `max_duration` the platform admits. The retained sources do
+linear duration model. Under that model 80 iterations take 232.5 s, 67.5 s
+below the 300-second `max_duration` the platform admits. The model is
+unverified at 32,768 samples and above 64 iterations. The retained sources do
 not say what happens when a job reaches that limit: truncation, error and
 partial results all remain possible. That uncertainty is why the first job
 runs 80 iterations, and why its measured duration sizes the second job
@@ -1824,18 +1844,18 @@ within the same 21-second margin that 96 iterations hold at the bound.
 Job-03 billed 32,768 shots per iteration and collected only 16,384, so 32,768
 samples per iteration double the observations at the credits already paid.
 Going higher would raise the ceiling from 0.983 to 0.991 for under one point
-of power. Ten anchors per job keep the stride-8 drift coverage.
+of power. At least ten anchors per job keep the stride-8 drift coverage.
 
-Noncentral-t power and the probability that a true r of 0 ends bounded
-(marginal, per predictor):
+Noncentral-t power, and the probability that a true r of 0 ends bounded
+(marginal, per predictor, less the 0.005 that reads anticorrelated):
 
 | Branch | Meshes | Critical r | Power at r 0.25 / 0.318 / 0.437 | Bounded if null | Credits |
 |---|---|---|---|---|---|
-| job-04 alone (stop rule) | 70 | 0.306 | 0.30 / 0.53 / 0.89 | 0.55 | 1.032768 |
-| job-04 + job-05-i80 | 140 | 0.218 | 0.64 / 0.89 / 1.00 | 0.90 | 2.065536 |
-| job-04 + job-05-i88 | 147 | 0.213 | 0.67 / 0.91 / 1.00 | 0.92 | 2.065536 |
-| job-04 + job-05-i96 | 154 | 0.208 | 0.69 / 0.92 / 1.00 | 0.93 | 2.065536 |
-| three jobs of 80 (alternative) | 210 | 0.178 | 0.85 / 0.98 / 1.00 | 0.99 | 3.098304 |
+| job-04 alone (stop rule) | 70 | 0.306 | 0.30 / 0.53 / 0.89 | 0.548 | 1.032768 |
+| job-04 + job-05-i80 | 140 | 0.218 | 0.64 / 0.89 / 1.00 | 0.895 | 2.065536 |
+| job-04 + job-05-i88 | 147 | 0.213 | 0.67 / 0.91 / 1.00 | 0.911 | 2.065536 |
+| job-04 + job-05-i96 | 154 | 0.208 | 0.69 / 0.92 / 1.00 | 0.925 | 2.065536 |
+| three jobs of 80 (alternative) | 210 | 0.178 | 0.85 / 0.98 / 1.00 | 0.980 | 3.098304 |
 
 [`scripts/ascella_new_seed_sizing.py`](../../scripts/ascella_new_seed_sizing.py)
 writes the table to
@@ -1844,9 +1864,10 @@ Two fixed jobs of 96 iterations reach 0.95 at r 0.318, but they place the
 first job 21 s below an undocumented limit with no measurement behind it.
 
 **Backend and seconds.** `qpu:ascella`, available on 2026-10-26 at 17:42 UTC
-with HOM 87.46 % and g2 2.1 %, Perceval 1.3.0 on the worker. Expected at most
-232.5 s for job-04 and at most 279 s for job-05, submitted one after the
-other.
+with HOM 87.46 % and g2 2.1 %, Perceval 1.3.0 on the worker. The linear
+model projects 232.5 s for job-04 and at most 279 s for job-05, submitted one
+after the other. 300 s is the platform maximum, and no retained source says
+what happens when a job reaches it.
 
 **Credits.** 1.032768 free credits per job: 1.0 per job plus 32,768 billed
 shots of one iteration at 1e-6. Jobs 01 and 03 were billed exactly this

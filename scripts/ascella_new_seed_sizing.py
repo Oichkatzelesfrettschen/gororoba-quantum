@@ -11,9 +11,13 @@ each branch this record states:
 - power at latent correlation r, the noncentral t survival at tcrit with noncentrality rho sqrt(df / (1 - rho^2)),
   rho = c r;
 - the marginal probability, at a true correlation of zero, that one predictor's one-sided 1 - ALPHA_EACH Fisher-z
-  upper bound tanh(atanh(r) + z / sqrt(n - J - 2)) gives a plug-in share r_upper^2 / c^2 below the held-out point
-  estimate of fixed-mesh-confirmation.json, with atanh(r) taken as normal with standard error 1 / sqrt(n - J - 2);
-- credits, 1.0 per job plus SAMPLES max_shots at 1e-6, and the worst-case seconds 186 / 64 per iteration.
+  upper bound tanh(atanh(r) + z / sqrt(n - J - 2)) lies in [0, c sqrt(reference share)), the bounded branch: a
+  plug-in share below the held-out point estimate of fixed-mesh-confirmation.json, less the ALPHA_EACH probability of
+  an upper bound below 0, which reads anticorrelated; atanh(r) is taken as normal with standard error
+  1 / sqrt(n - J - 2);
+- credits, 1.0 per job plus SAMPLES max_shots at 1e-6, and the seconds the linear duration model projects at 186 / 64
+  per iteration, the bound that 64 iterations in 186 s set with nonnegative fixed overhead; 300 s is the platform's
+  maximum, and no retained source states what happens when a job reaches it.
 
 Usage:
   "$PYTHON" scripts/ascella_new_seed_sizing.py CONFIRMATION SPREAD OUT [--check]
@@ -73,9 +77,11 @@ def branch(label: str, iterations: tuple[int, ...], compilation: float, counting
         "critical_r": t_critical / math.sqrt(t_critical * t_critical + dof),
         "ceiling": ceiling,
         "power": power,
-        "null_bound_probability": float(stats.norm.cdf(threshold / error)),
+        "null_bound_probability": max(
+            0.0, float(stats.norm.cdf(threshold / error)) - float(stats.norm.cdf(-stats.norm.ppf(1 - ALPHA_EACH)))
+        ),
         "credits": round(jobs * (1 + SAMPLES * 1e-6), 6),
-        "worst_case_seconds": [count * SECONDS_PER_ITERATION for count in iterations],
+        "linear_model_projected_seconds": [count * SECONDS_PER_ITERATION for count in iterations],
     }
 
 

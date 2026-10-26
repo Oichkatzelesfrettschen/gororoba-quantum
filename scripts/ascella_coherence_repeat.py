@@ -250,7 +250,8 @@ def attributed_rows(manifest: dict[str, Any], results: dict[str, Any]) -> list[l
     """Each manifest setting's twelve-mode eligible counts, None where results.json returns none for it.
 
     ascella_coherence_run.attribute attributes every entry, so a request of any iteration count reads as the
-    64-iteration design does."""
+    64-iteration design does. Settings that share circuit_params differ only by compilation_seed, so an entry with
+    counts must echo its setting's seed; a reordered answer would otherwise exchange anchors and new meshes."""
     entries = results.get("iterations")
     if entries is None and results.get("partial"):
         entries = []
@@ -258,6 +259,10 @@ def attributed_rows(manifest: dict[str, Any], results: dict[str, Any]) -> list[l
     if not isinstance(entries, list) or len(entries) > len(settings):
         raise ValueError(f"results.json carries {type(entries).__name__} iterations, not up to {len(settings)}")
     items = [(position, entry, settings[position]) for position, entry in enumerate(entries)]
+    for position, entry, setting in items:
+        echoed = entry.get("iteration", {}).get("compilation_seed")
+        if "counts" in entry and echoed != setting["compilation_seed"]:
+            raise ValueError(f"iteration {position}: compilation_seed {echoed!r}, not {setting['name']}'s")
     rows: list[list[int] | None] = [None] * len(settings)
     for (position, _, _), (row, _, _) in zip(items, ordered_map(run_analysis.attribute, items), strict=True):
         rows[position] = row

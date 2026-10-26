@@ -13,16 +13,16 @@
    "iterations": [
     80
    ],
+   "linear_model_projected_seconds": [
+    232.5
+   ],
    "meshes": 70,
-   "null_bound_probability": 0.552799679889529,
+   "null_bound_probability": 0.547799679889529,
    "power": {
     "0.25": 0.29600808151335534,
     "0.318": 0.5286250726359196,
     "0.437": 0.894476669972053
-   },
-   "worst_case_seconds": [
-    232.5
-   ]
+   }
   },
   {
    "anchors": [
@@ -38,17 +38,17 @@
     80,
     80
    ],
+   "linear_model_projected_seconds": [
+    232.5,
+    232.5
+   ],
    "meshes": 140,
-   "null_bound_probability": 0.9002790287599022,
+   "null_bound_probability": 0.8952790287599022,
    "power": {
     "0.25": 0.6389951592304415,
     "0.318": 0.8905375184639936,
     "0.437": 0.9982740902019688
-   },
-   "worst_case_seconds": [
-    232.5,
-    232.5
-   ]
+   }
   },
   {
    "anchors": [
@@ -64,17 +64,17 @@
     80,
     88
    ],
+   "linear_model_projected_seconds": [
+    232.5,
+    255.75
+   ],
    "meshes": 147,
-   "null_bound_probability": 0.9163926240000089,
+   "null_bound_probability": 0.9113926240000089,
    "power": {
     "0.25": 0.6669555460344168,
     "0.318": 0.9078649639420883,
     "0.437": 0.9989170961803046
-   },
-   "worst_case_seconds": [
-    232.5,
-    255.75
-   ]
+   }
   },
   {
    "anchors": [
@@ -90,17 +90,17 @@
     80,
     96
    ],
+   "linear_model_projected_seconds": [
+    232.5,
+    279.0
+   ],
    "meshes": 154,
-   "null_bound_probability": 0.9301490937309127,
+   "null_bound_probability": 0.9251490937309127,
    "power": {
     "0.25": 0.6933644815456332,
     "0.318": 0.9227241862781825,
     "0.437": 0.9993250699359029
-   },
-   "worst_case_seconds": [
-    232.5,
-    279.0
-   ]
+   }
   },
   {
    "anchors": [
@@ -116,17 +116,17 @@
     96,
     96
    ],
+   "linear_model_projected_seconds": [
+    279.0,
+    279.0
+   ],
    "meshes": 168,
-   "null_bound_probability": 0.9517247142945426,
+   "null_bound_probability": 0.9467247142945426,
    "power": {
     "0.25": 0.741544180921315,
     "0.318": 0.9461789126028431,
     "0.437": 0.9997426295464503
-   },
-   "worst_case_seconds": [
-    279.0,
-    279.0
-   ]
+   }
   },
   {
    "anchors": [
@@ -144,18 +144,18 @@
     80,
     80
    ],
+   "linear_model_projected_seconds": [
+    232.5,
+    232.5,
+    232.5
+   ],
    "meshes": 210,
-   "null_bound_probability": 0.9846908028677481,
+   "null_bound_probability": 0.9796908028677481,
    "power": {
     "0.25": 0.8493710741645095,
     "0.318": 0.9825476557705781,
     "0.437": 0.9999864538590563
-   },
-   "worst_case_seconds": [
-    232.5,
-    232.5,
-    232.5
-   ]
+   }
   }
  ],
  "compilation_variance": 0.00014114993759659365,
