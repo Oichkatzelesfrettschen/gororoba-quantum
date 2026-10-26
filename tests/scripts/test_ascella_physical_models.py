@@ -382,3 +382,56 @@ def test_left_out_counts_never_reach_the_fold_fit() -> None:
             raise AssertionError((a, b))
         if a["observed"] == b["observed"]:
             raise AssertionError("the mutation left the observed statistic unchanged")
+
+
+def test_shared_basis_and_drive_loss_are_the_shifted_attenuated_mesh() -> None:
+    d = data()
+    heaters = d["phases"].shape[1]
+    turns = d["phases"] % (2 * math.pi)
+    shared = np.stack([np.roll(turns, 1, axis=1), np.roll(turns, -3, axis=1)], axis=-1)
+    d = {**d, "shared_basis": shared, "loss_drive": turns}
+    widths = models.prior_widths(d, 0.3, 0.1, 0.01, 0.05)
+    couplers = len(d["couplers"])
+    if len(widths) != heaters + 3 + couplers or not np.array_equal(widths[heaters : heaters + 3], [0.01, 0.01, 0.05]):
+        raise AssertionError(widths[heaters : heaters + 3])
+    free = widths > 0
+    params = np.array([0.02 * math.sin(i) for i in range(int(free.sum()))])
+    light, dlight = models.static_light(d, params, free)
+    offset, coefficients, gamma = params[:heaters], params[heaters : heaters + 2], params[heaters + 2]
+    shifted = d["phases"] + offset[None, :] + shared @ coefficients
+    # Intensity e^{-gamma D} on the heater's mode, applied as an amplitude factor at the heater.
+    psi = np.zeros((CONFIGURATIONS, models.MODES), dtype=complex)
+    psi[:, 0] = 1
+    ib = it = 0
+    for kind, m, _ in d["arch"]:
+        if kind == "bs":
+            angle = d["couplers"][ib] + params[heaters + 3 + ib]
+            c, s = math.cos(angle / 2), math.sin(angle / 2)
+            psi[:, m : m + 2] = psi[:, m : m + 2] @ np.array([[c, 1j * s], [1j * s, c]]).T
+            ib += 1
+        else:
+            psi[:, m] *= np.exp(1j * shifted[:, it] - gamma * turns[:, it] / 2)
+            it += 1
+    raw = (np.abs(psi) ** 2)[:, : models.LOGICAL]
+    if not np.allclose(light, raw / raw.sum(axis=1, keepdims=True), atol=1e-14):
+        raise AssertionError("the coupled light differs from the shifted attenuated mesh")
+    step = 1e-6
+    for index in (0, heaters - 1, heaters, heaters + 1, heaters + 2, heaters + 3, int(free.sum()) - 1):
+        up, down = params.copy(), params.copy()
+        up[index] += step
+        down[index] -= step
+        numeric = (models.static_light(d, up, free)[0] - models.static_light(d, down, free)[0]) / (2 * step)
+        if not np.allclose(dlight[:, :, index], numeric, rtol=1e-5, atol=1e-8):
+            raise AssertionError((index, np.abs(dlight[:, :, index] - numeric).max()))
+
+
+def test_coupling_keys_follow_the_configurations_out_of_a_fold() -> None:
+    d = data()
+    d = {**d, "shared_basis": np.arange(d["phases"].size * 2, dtype=float).reshape(*d["phases"].shape, 2)}
+    d["loss_drive"] = d["phases"] % (2 * math.pi)
+    out = models.without_configuration(d, 2)
+    kept = [0, 1, 3, 4, 5]
+    if not np.array_equal(out["shared_basis"], d["shared_basis"][kept]) or not np.array_equal(
+        out["loss_drive"], d["loss_drive"][kept]
+    ):
+        raise AssertionError("a fold keeps the left-out configuration's coupling inputs")

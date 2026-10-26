@@ -368,11 +368,21 @@ def fit_family(item: tuple[str, dict[str, Any], dict[str, Any]]) -> dict[str, An
 def pure_jacobians(
     couplers: np.ndarray, arch: list[Any], phases: np.ndarray, sources: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Detection probabilities (C x 12) and their derivatives (C x 12 x (heaters + couplers)) by adjoint.
+    """Detection probabilities (C x 12) and their derivatives (C x 12 x (heaters + couplers)) by adjoint."""
+    psi, d = pure_amplitudes(couplers, arch, phases, sources)
+    return np.abs(psi) ** 2, 2 * np.real(np.conj(psi)[:, :, None] * d)
+
+
+def pure_amplitudes(
+    couplers: np.ndarray, arch: list[Any], phases: np.ndarray, sources: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """Output amplitudes (C x 12) and their derivatives (C x 12 x (heaters + couplers)) by adjoint.
 
     The forward pass keeps each element's input amplitude; the backward pass carries G, the product of the
     elements after the current one, so d psi_out = G[:, :, pair] dB psi_pair for a coupler with
-    dB/dtheta = (1/2) [[-sin, i cos], [i cos, -sin]](theta / 2), and G[:, :, q] i psi_q for a heater on mode q."""
+    dB/dtheta = (1/2) [[-sin, i cos], [i cos, -sin]](theta / 2), and G[:, :, q] i psi_q for a heater on mode q.
+    A complex phase phi + i a attenuates its mode's amplitude by e^{-a}; the derivative along a is i times the
+    derivative along phi."""
     count = len(sources)
     psi = np.zeros((count, MODES), dtype=complex)
     psi[np.arange(count), sources] = 1
@@ -403,7 +413,7 @@ def pure_jacobians(
             it -= 1
             d[:, :, it] = g[:, :, m] * (1j * before[index])[:, None]
             g[:, :, m] *= np.exp(1j * phases[:, it])[:, None]
-    return np.abs(psi) ** 2, 2 * np.real(np.conj(psi)[:, :, None] * d)
+    return psi, d
 
 
 def heater_parameters(data: dict[str, Any]) -> int:
@@ -412,12 +422,31 @@ def heater_parameters(data: dict[str, Any]) -> int:
     return int(data["phases"].shape[1] if basis is None else basis.shape[1] * basis.shape[2])
 
 
+def coupling_parameters(data: dict[str, Any]) -> int:
+    """Shared parameters between the heater and coupler blocks: one coefficient per column of a shared heater
+    basis, then one drive-loss coefficient when the run carries a loss drive."""
+    shared = data.get("shared_basis")
+    return (0 if shared is None else int(shared.shape[2])) + int("loss_drive" in data)
+
+
 def prior_widths(
-    data: dict[str, Any], heater_tau: float | tuple[float, ...] | None, coupler_tau: float | None
+    data: dict[str, Any],
+    heater_tau: float | tuple[float, ...] | None,
+    coupler_tau: float | None,
+    shared_tau: float | None = None,
+    loss_tau: float | None = None,
 ) -> np.ndarray:
-    """Per-parameter prior widths over (heaters, couplers); a family without one kind gives it width zero. A tuple
-    heater_tau gives each heater basis function its own width, repeated over the heater-major coefficients."""
+    """Per-parameter prior widths over (heaters, shared coefficients, drive loss, couplers); a family without one
+    kind gives it width zero. A tuple heater_tau gives each heater basis function its own width, repeated over the
+    heater-major coefficients."""
     heaters, couplers = heater_parameters(data), len(data["couplers"])
+    shared = data.get("shared_basis")
+    coupling = np.concatenate(
+        [
+            np.full(0 if shared is None else shared.shape[2], shared_tau or 0.0),
+            np.full(int("loss_drive" in data), loss_tau or 0.0),
+        ]
+    )
     if isinstance(heater_tau, tuple):
         basis = data.get("heater_basis")
         if basis is None or basis.shape[2] != len(heater_tau):
@@ -425,7 +454,7 @@ def prior_widths(
         heater = np.tile(np.array(heater_tau, dtype=float), basis.shape[1])
     else:
         heater = np.full(heaters, heater_tau or 0.0)
-    return np.concatenate([heater, np.full(couplers, coupler_tau or 0.0)])
+    return np.concatenate([heater, coupling, np.full(couplers, coupler_tau or 0.0)])
 
 
 def static_light(data: dict[str, Any], offsets: np.ndarray, free: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -433,19 +462,43 @@ def static_light(data: dict[str, Any], offsets: np.ndarray, free: np.ndarray) ->
 
     A run that carries a heater basis b (configurations x heaters x K) shifts heater h of configuration c by
     sum_k b[c, h, k] w[h, k], coefficients heater-major, and its Jacobian follows by the chain rule; without one,
-    every heater carries one offset shared by all configurations."""
-    heaters = heater_parameters(data)
+    every heater carries one offset shared by all configurations. A shared basis s (configurations x heaters x S)
+    adds sum_k s[c, h, k] u_k with S coefficients common to every heater, and a loss drive D (configurations x
+    heaters) attenuates the mode under heater h by intensity e^{-gamma D[c, h]} with one shared gamma, carried as
+    the imaginary phase gamma D / 2."""
+    heaters, coupling = heater_parameters(data), coupling_parameters(data)
     full = np.zeros(len(free))
     full[free] = offsets
     basis = data.get("heater_basis")
+    shared = data.get("shared_basis")
+    loss = data.get("loss_drive")
     if basis is None:
         shift = full[None, :heaters]
     else:
         shift = np.einsum("chk,hk->ch", basis, full[:heaters].reshape(basis.shape[1], basis.shape[2]))
-    p, dp = pure_jacobians(data["couplers"] + full[heaters:], data["arch"], data["phases"] + shift, data["sources"])
-    if basis is not None:
-        phase_part = np.einsum("cmh,chk->cmhk", dp[:, :, : basis.shape[1]], basis).reshape(len(p), MODES, heaters)
-        dp = np.concatenate([phase_part, dp[:, :, basis.shape[1] :]], axis=2)
+    width = 0 if shared is None else shared.shape[2]
+    if shared is not None:
+        shift = shift + shared @ full[heaters : heaters + width]
+    phases = data["phases"] + shift
+    if loss is not None:
+        phases = phases + 0.5j * full[heaters + width] * loss
+    psi, d = pure_amplitudes(data["couplers"] + full[heaters + coupling :], data["arch"], phases, data["sources"])
+    p = np.abs(psi) ** 2
+    dp = 2 * np.real(np.conj(psi)[:, :, None] * d)
+    count = data["phases"].shape[1]
+    phase_part = dp[:, :, :count]
+    columns = []
+    if basis is None:
+        columns.append(phase_part)
+    else:
+        columns.append(np.einsum("cmh,chk->cmhk", phase_part, basis).reshape(len(p), MODES, heaters))
+    if shared is not None:
+        columns.append(np.einsum("cmh,chk->cmk", phase_part, shared))
+    if loss is not None:
+        # d psi / d Im(phase_h) = i d psi / d phi_h, and Im(phase_h) = gamma D[c, h] / 2.
+        along = 2 * np.real(np.conj(psi)[:, :, None] * 1j * d[:, :, :count])
+        columns.append(np.einsum("cmh,ch->cm", along, 0.5 * loss)[:, :, None])
+    dp = np.concatenate([*columns, dp[:, :, count:]], axis=2)
     return block_light(p, dp[:, :, free])
 
 
@@ -560,7 +613,7 @@ def posterior_hessian(data: dict[str, Any], tau: np.ndarray, free: np.ndarray, o
     differences of the analytic gradient, symmetrized. The columns are independent and go through the pool,
     which runs them serially inside a worker that already holds one slot. A heater basis with every coupler
     fixed takes the per-configuration form of basis_hessian."""
-    if "heater_basis" in data and not free[heater_parameters(data) :].any():
+    if "heater_basis" in data and not free[heater_parameters(data) :].any() and not coupling_parameters(data):
         return basis_hessian(data, tau, free, offsets)
     columns = ordered_map(HessianColumn(data, tau, free, offsets), list(range(len(offsets))))
     hessian = np.stack(columns, axis=1)
@@ -645,8 +698,9 @@ def without_configuration(data: dict[str, Any], left_out: int) -> dict[str, Any]
     out["keys"] = [data["keys"][c] for c in kept]
     out["configuration"] = np.array([renumber[int(c)] for c in data["configuration"][rows]])
     out["block"], out["background"] = data["block"][rows], data["background"][rows]
-    if "heater_basis" in data:
-        out["heater_basis"] = data["heater_basis"][kept]
+    for key in ("heater_basis", "shared_basis", "loss_drive"):
+        if key in data:
+            out[key] = data[key][kept]
     return out
 
 

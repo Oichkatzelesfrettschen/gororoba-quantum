@@ -5,9 +5,12 @@ for a leading slash). The target has to be a tracked file or a directory that
 holds tracked files, with `literature -> docs` normalized. A `#fragment` on a
 Markdown target has to match a heading slug computed by GitHub's rules
 (lowercase, drop characters other than letters, digits, underscore, hyphen and
-space, spaces to hyphens, repeated slugs numbered -1, -2) or an explicit
-`id=` / `name=` attribute of the target. Absolute URLs (any scheme) and
-fragments on non-Markdown targets are out of scope.
+space, spaces to hyphens; a slug already taken, by an earlier heading or an
+earlier suffixed one, takes the first free -1, -2 of its own counter) or an
+explicit `id=` / `name=` attribute of the target outside a code span. Links,
+headings and attributes inside fenced or indented code blocks, inline code
+spans and HTML comments do not count. Absolute URLs (any scheme) and fragments
+on non-Markdown targets are out of scope.
 
 Excluded trees (their bytes are captured vendor pages or retained records and
 keep the links of their source):
@@ -77,7 +80,10 @@ IBM_TRANSCRIPTIONS = (
 )
 EXCLUDED_PATTERNS = (re.compile(r"^docs/notes/ibm_quantum/(?:" + "|".join(IBM_TRANSCRIPTIONS) + r")\.md$"),)
 
-FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
+FENCE_OPEN = re.compile(r"^(?:(`{3,})(?!.*`)|(~{3,}))")
+FENCE_CLOSE = re.compile(r"^ {0,3}(`{3,}|~{3,})[ \t]*$")
+LIST_ITEM = re.compile(r"^([-+*]|\d{1,9}[.)])(?:([ \t]+)(.?)|$)")
+THEMATIC = re.compile(r"^([-*_])(?:[ \t]*\1){2,}[ \t]*$")
 INLINE_CODE = re.compile(r"(`+)(?:(?!\1).)+?\1")
 INLINE_LINK = re.compile(r"!?\[(?:[^\[\]]|\[[^\]]*\])*\]\(\s*(<[^>]*>|[^\s()]*(?:\([^\s()]*\)[^\s()]*)*)")
 REF_DEF = re.compile(r"^ {0,3}\[(?!\^)[^\]]+\]:\s*(<[^>]*>|\S+)")
@@ -98,21 +104,71 @@ def strip_comments(text: str) -> str:
     return HTML_COMMENT.sub(lambda m: re.sub(r"[^\n]", " ", m.group(0)), text)
 
 
+def blank_inline(line: str) -> str:
+    return INLINE_CODE.sub(lambda m: " " * len(m.group(0)), line)
+
+
 def strip_code(lines: list[str], inline: bool = True) -> list[str]:
-    """Blank fenced blocks (and inline code spans when asked), keeping line numbers."""
+    """Blank fenced and indented code blocks (and inline code spans when asked), keeping line numbers.
+
+    Block structure follows CommonMark: `columns` holds the content column of each open list item, and a
+    line's container column is the deepest one its indentation reaches. A line indented four or more past
+    its container opens indented code unless it continues an open paragraph, which indented code cannot
+    interrupt. A fence closes on a run of its own character at least as long with only whitespace after it,
+    or when its list item ends.
+    """
     out: list[str] = []
     fence = ""
+    fence_column = code_column = 0
+    in_code = paragraph = False
+    columns: list[int] = []
     for line in lines:
-        match = FENCE.match(line)
+        expanded = line.expandtabs(4)
+        rest = expanded.lstrip(" ")
+        indent = len(expanded) - len(rest)
         if fence:
-            if match and match.group(1)[0] == fence[0] and len(match.group(1)) >= len(fence):
+            if rest and indent < fence_column:
                 fence = ""
+            else:
+                close = FENCE_CLOSE.match(expanded[fence_column:])
+                if close and close.group(1)[0] == fence[0] and len(close.group(1)) >= len(fence):
+                    fence = ""
+                out.append("")
+                continue
+        if not rest:
+            paragraph = False
             out.append("")
-        elif match:
-            fence = match.group(1)
-            out.append("")
+            continue
+        base = max((c for c in columns if c <= indent), default=0)
+        if in_code:
+            if indent >= code_column + 4:
+                out.append("")
+                continue
+            in_code = False
+        if indent - base >= 4:
+            if not paragraph:
+                columns = [c for c in columns if c <= indent]
+                in_code, code_column = True, base
+                out.append("")
+                continue
         else:
-            out.append(INLINE_CODE.sub(lambda m: " " * len(m.group(0)), line) if inline else line)
+            opener = FENCE_OPEN.match(rest)
+            item = None if THEMATIC.match(rest) else LIST_ITEM.match(rest)
+            block = opener or item or THEMATIC.match(rest) or ATX.match(rest) or (paragraph and SETEXT.match(rest))
+            if block or not paragraph:
+                columns = [c for c in columns if c <= indent]
+            if opener:
+                fence, fence_column, paragraph = opener.group(1) or opener.group(2), base, False
+                out.append("")
+                continue
+            if item:
+                spaces = len(item.group(2) or "")
+                width = spaces if 1 <= spaces <= 4 and item.group(3) else 1
+                columns.append(indent + len(item.group(1)) + width)
+                paragraph = bool(item.group(3))
+            else:
+                paragraph = not block
+        out.append(blank_inline(line) if inline else line)
     return out
 
 
@@ -137,14 +193,15 @@ def anchors_of(text: str) -> set[str]:
     """Return heading slugs and explicit id/name attributes of one Markdown document."""
     lines = strip_code(text.split("\n"), inline=False)
     lines = strip_comments("\n".join(lines)).split("\n")
-    seen: Counter[str] = Counter()
+    counters: Counter[str] = Counter()
     found: set[str] = set()
 
     def add(heading: str) -> None:
-        slug = slugify(heading_text(heading))
-        count = seen[slug]
-        seen[slug] += 1
-        found.add(slug if count == 0 else f"{slug}-{count}")
+        base = slug = slugify(heading_text(heading))
+        while slug in found:
+            counters[base] += 1
+            slug = f"{base}-{counters[base]}"
+        found.add(slug)
 
     for index, line in enumerate(lines):
         atx = ATX.match(line)
@@ -154,9 +211,8 @@ def anchors_of(text: str) -> set[str]:
             previous = lines[index - 1]
             if not previous.lstrip().startswith(("-", "*", "+", ">", "|")):
                 add(previous.strip())
-    for line in lines:
-        found.update(ID_ATTR.findall(line))
-    return found
+    ids = {name for line in lines for name in ID_ATTR.findall(blank_inline(line))}
+    return found | ids
 
 
 def link_targets(text: str) -> list[tuple[int, str]]:
