@@ -158,7 +158,7 @@ JOBS = {
     "job-00": Job("job-00", 8192, 16384, 1.016384, 200.0, False),
     "job-01": Job("job-01", 16384, 32768, 1.032768, 240.0, True),
     "job-02": Job("job-02", 8192, 16384, 1.016384, 200.0, False, True),
-    "job-03": Job("job-03", 8192, 16384, 1.016384, 200.0, True, True, REPEAT_ORDER_DRAW),
+    "job-03": Job("job-03", 16384, 32768, 1.032768, 200.0, True, True, REPEAT_ORDER_DRAW),
 }
 STAGED = ("cases.json", "circuit.json")
 # qd_platform.snapshot's catalogue and qd_platform.observe's raw route answers
