@@ -46,6 +46,7 @@ import measurement_sequence_scatter as scatter  # noqa: E402
 import qpu_planning  # noqa: E402
 import qpu_planning_contracts as contracts  # noqa: E402
 from diagnostic_experiments import MSQD_FAMILY, MSQD_MAIN_QUBITS  # noqa: E402
+from parallel import ordered_map  # noqa: E402
 
 SHOTS = 8192
 INJECTED = 0.02
@@ -142,29 +143,44 @@ def tilt_for(replica: Any, residual: float) -> float:
     return float(brentq(gap, grid[k], grid[k + 1], xtol=1e-15))
 
 
+def rebuild_member(item: tuple[Any, float]) -> Any:
+    """One compiled member with the RZ error that moves its ideal P0 by the residual inserted after every sx."""
+    replica, residual = item
+    error = tilt_for(replica, residual)
+    rebuilt = replica.copy_empty_like()
+    for inst in replica.data:
+        rebuilt.append(inst.operation, inst.qubits, inst.clbits)
+        if inst.operation.name == "sx":
+            rebuilt.rz(error, inst.qubits[0])
+    return rebuilt
+
+
 def tilted(entries: list[Any], residuals: dict[int, float]) -> list[Any]:
     """Entries whose unitary-member replicas carry an RZ after every sx on a qubit with a named residual.
 
     The RZ is a native gate that the noise model leaves exact. A tilt of given sign moves the +THETA and -THETA
     members' P0 in opposite directions, so each member takes its own error, solved so that every member's ideal P0
-    moves by the qubit's residual and the pooled P0 moves by the same amount.
+    moves by the qubit's residual and the pooled P0 moves by the same amount. The members are independent fits, so
+    they map through parallel.ordered_map in entry order and replica order.
     """
+
+    def named(entry: Any) -> bool:
+        qubit = int(entry.name.rsplit("_q", 1)[1])
+        return entry.name.startswith("msq_unitary_") and residuals.get(qubit, 0.0) != 0.0
+
+    work = [
+        (replica, residuals[int(entry.name.rsplit("_q", 1)[1])])
+        for entry in entries
+        if named(entry)
+        for replica in entry.replicas
+    ]
+    rebuilt = iter(ordered_map(rebuild_member, work, min_items=2))
     out = []
     for entry in entries:
-        qubit = int(entry.name.rsplit("_q", 1)[1])
-        if not entry.name.startswith("msq_unitary_") or residuals.get(qubit, 0.0) == 0.0:
+        if not named(entry):
             out.append(entry)
             continue
-        replicas = []
-        for replica in entry.replicas:
-            error = tilt_for(replica, residuals[qubit])
-            rebuilt = replica.copy_empty_like()
-            for inst in replica.data:
-                rebuilt.append(inst.operation, inst.qubits, inst.clbits)
-                if inst.operation.name == "sx":
-                    rebuilt.rz(error, inst.qubits[0])
-            replicas.append(rebuilt)
-        out.append(dataclasses.replace(entry, replicas=replicas))
+        out.append(dataclasses.replace(entry, replicas=[next(rebuilt) for _ in entry.replicas]))
     return out
 
 

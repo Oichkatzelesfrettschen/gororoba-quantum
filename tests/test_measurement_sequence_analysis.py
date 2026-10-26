@@ -503,7 +503,9 @@ def test_registered_scatter_floor_is_bound_by_digest() -> None:
     check(msa.MODEL_SCATTER_DIAGNOSTIC_SHA256 == hashlib.sha256(path.read_bytes()).hexdigest())
     floor, reason = msa.bound_floor({"ibm_kingston"})
     document = json.loads(path.read_text(encoding="utf-8"))
-    check(reason is None and floor == document["floor"] and 0.01 < floor < 0.03, f"{floor} {reason}")
+    if floor is None:
+        raise AssertionError(str(reason))
+    check(floor == document["floor"] and 0.01 < floor < 0.03, f"{floor}")
     other, why = msa.bound_floor({"ibm_fez"})
     check(other is None and "not on" in str(why))
 
