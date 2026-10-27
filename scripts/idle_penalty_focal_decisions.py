@@ -42,6 +42,8 @@ import idle_penalty_report as report  # noqa: E402
 import numpy as np  # noqa: E402
 from scipy import stats  # noqa: E402
 
+import parallel  # noqa: E402
+
 MULTIPLIERS = ("kappa_1", "kappa_2star", "kappa_2echo")
 # optimistic_t1 in idle_penalty_report.pooled reads a cohort median above 1.5 as an optimistic reported T1; one
 # qubit is read against the same threshold.
@@ -114,6 +116,10 @@ def historical(reports: list[dict[str, Any]], region: list[int]) -> dict[str, An
     return out
 
 
+def _retest_pair(pair: tuple[dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    return retest(*pair)
+
+
 def retest(first: dict[str, Any], second: dict[str, Any]) -> dict[str, Any]:
     def keyed(rep: dict[str, Any]) -> dict[str, tuple[str, int]]:
         return {q: (e["role"], e["partner"]) for q, e in rep["qubits"].items()}
@@ -161,7 +167,7 @@ def decisions(reports: list[dict[str, Any]], focal: list[int], context: list[int
         "context": located(context),
         "calibrations": stamps,
         "same_window": same_window,
-        "retest": [retest(a, b) for a, b in itertools.combinations(reports, 2)],
+        "retest": parallel.ordered_map(_retest_pair, list(itertools.combinations(reports, 2))),
     }
 
 
