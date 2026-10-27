@@ -12,7 +12,7 @@
     "status": "verified",
     "note": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 submitted."
   },
-  "next_action": "Size the successor reset/history screen and the settle prediction offline on the retained 32-qubit run, then write the design for review; register the run once the backup inventory can be re-observed.",
+  "next_action": "Extend the stochastic null to the relaxation family (latent-end-state carryover arms, plateau truth, coverage over the rehearsal snapshot), then rehearse at the retained flags and write the successor case for approval; register the earlier run once the backup inventory can be re-observed.",
   "scope": "Heron r2 (ibm_kingston) pinching run under a calibration-adaptive envelope approval: layout rule at width tier 16/24/32, terminal resets, reset controls, Hadamard crosstalk patterns, 20 us repetition delay with a 50 us fallback attempt, preregistered screens and stochastic null.",
   "owner": "measurement-sequence-pinching branch",
   "steps": [
@@ -408,6 +408,26 @@
             {
               "ref": "gororoba_quantum/live_run.py",
               "sha256": "59f0960d5f479b24b62a08aa570a78134634ea79bb3e5f92092b0ff571cc6fb8"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "Revalidated on the successor branch, whose live_run.py adds the measurement-sequence-relaxation family to the envelope families and its shot-order collect evidence; the retained envelope run, its family and its findings are unchanged.",
+          "observed_at": "2026-10-27T23:12:23+00:00",
+          "revision": "21a27ec4f9117aa06625a02069c3a95510d275df",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "0d0d081b78aaa6c6e36a932ca7b50ca546b34e7cb835b4795312f17e37651ebb"
             },
             {
               "ref": "gororoba_quantum/msq_envelope.py",
