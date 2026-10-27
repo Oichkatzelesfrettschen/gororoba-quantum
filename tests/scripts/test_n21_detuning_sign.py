@@ -50,13 +50,38 @@ def test_decisions_withhold_below_the_replica_floor() -> None:
             "orbit": fit,
             "one": fit,
             "sixteen": fit,
-            "echo": dict.fromkeys(("moved_rad", "returned_rad"), 0.0) | {"moved_se": 0.1, "returned_se": 0.1},
+            "echo": dict.fromkeys(("moved_rad", "returned_rad"), 0.0)
+            | {"moved_se": 0.1, "returned_se": 0.1, "resolved": True},
         }
     ] * (sign.MIN_REPLICAS - 1)
     out = sign.decide(rows)
     _require(out["d1_slope"]["verdict"].startswith("withheld"), out)
     _require(out["d2_sign"]["verdict"].startswith("withheld"), out)
     _require(out["d3_echo"]["verdict"].startswith("withheld"), out)
+
+
+def test_unresolved_echo_withholds_rather_than_returns() -> None:
+    # A moved replica whose echo amplitude sits at its noise has a phase error wide enough to accept any return.
+    times = [0.0, 7.0, 14.0, 21.0, 28.0]
+
+    def turning(khz: float) -> tuple[list[tuple[float, float]], list[tuple[float, float]]]:
+        angles = [2 * math.pi * khz * 1e-3 * t for t in times]
+        return [(0.5 * math.cos(a), 4e-4) for a in angles], [(0.5 * math.sin(a), 4e-4) for a in angles]
+
+    quad: dict[str, Any] = {}
+    quad["orbit_c"], quad["orbit_s"] = turning(12.0)
+    quad["one_x"], quad["one_y"] = turning(-4.0)
+    quad["sixteen_x"], quad["sixteen_y"] = turning(8.0)
+    quad["echo"] = ((0.001, 1e-3), (0.0, 1e-3))
+    fit = sign.replica_fit((times, quad))
+    _require(not fit["echo"]["resolved"] and fit["echo"]["returned_se"] > 10, fit["echo"])
+    out = sign.decide([fit] * sign.MIN_REPLICAS)
+    _require(out["d3_echo"]["verdict"].startswith("withheld"), out["d3_echo"])
+    _require(out["d3_echo"]["unresolved_echo"] == sign.MIN_REPLICAS, out["d3_echo"])
+    # Mutation: a resolved echo at the undosed phase enters and returns.
+    quad["echo"] = (quad["orbit_c"][0], quad["orbit_s"][0])
+    back = sign.decide([sign.replica_fit((times, quad))] * sign.MIN_REPLICAS)["d3_echo"]
+    _require(back["verdict"].startswith("holds") and back["returned_fraction"] == 1.0, back)
 
 
 def _design_record() -> dict[str, Any]:

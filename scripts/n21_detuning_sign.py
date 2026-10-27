@@ -30,9 +30,11 @@ Decisions (docs/design/n21-orbit-detuning-sign-envelope.md):
   signs agree. At least SIGN_HOLDS holds, below SIGN_REFUTES refutes (random signs give one half); it needs
   MIN_REPLICAS resolved replicas.
 - D3, echo: the echo's phase at the largest dose minus the free-idle phase at dose 0, per replica, against three
-  standard errors. At least ECHO_HOLDS of the replicas whose free-idle phase moved by more than three standard
-  errors over the sweep (the fitted rate times the largest dose) returning within three standard errors reads as
-  precession during the dose.
+  standard errors. A replica enters when its free-idle phase moved by more than three standard errors over the
+  sweep (the fitted rate times the largest dose) and both the echo's and the undosed amplitude exceed three
+  standard errors, since an unresolved amplitude leaves its phase error wide enough to accept any return. At least
+  ECHO_HOLDS of those returning within three standard errors reads as precession during the dose; it needs
+  MIN_REPLICAS of them, and the moved replicas with an unresolved echo are counted.
 - D1 also reports the weighted line with a free intercept, and every rate its largest phase step between doses.
 - Every replica's rates, the per-qubit offsets and their standard errors are reported, not decided.
 
@@ -230,6 +232,7 @@ def replica_fit(item: tuple[Sequence[float], Mapping[str, Any]]) -> dict[str, An
         "moved_se": fitted["se_khz"] * span if fitted["khz"] is not None else math.hypot(orbit[-1][1], orbit[0][1]),
         "returned_rad": returned,
         "returned_se": math.hypot(echo[1], orbit[0][1]),
+        "resolved": all(amplitude > RESOLVED * se for _, _, amplitude, se in (echo, orbit[0])),
     }
     return out
 
@@ -285,12 +288,18 @@ def decide(fits: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         )
         out["d2_sign"] = {"resolved": len(resolved), "agreement": agree, "verdict": verdict}
     moved = [fit["echo"] for fit in fits if abs(fit["echo"]["moved_rad"]) > RESOLVED * fit["echo"]["moved_se"]]
-    if not moved:
-        out["d3_echo"] = {"verdict": "withheld: no replica's free-idle phase moved over the sweep"}
-    else:
-        back = sum(1 for e in moved if abs(e["returned_rad"]) <= RESOLVED * e["returned_se"]) / len(moved)
+    compared = [e for e in moved if e["resolved"]]
+    if len(compared) < MIN_REPLICAS:
         out["d3_echo"] = {
             "moved": len(moved),
+            "unresolved_echo": len(moved) - len(compared),
+            "verdict": f"withheld: {len(compared)} moved replicas with a resolved echo, below {MIN_REPLICAS}",
+        }
+    else:
+        back = sum(1 for e in compared if abs(e["returned_rad"]) <= RESOLVED * e["returned_se"]) / len(compared)
+        out["d3_echo"] = {
+            "moved": len(moved),
+            "unresolved_echo": len(moved) - len(compared),
             "returned_fraction": back,
             "verdict": "holds: the echo returns the undosed phase" if back >= ECHO_HOLDS else "fails",
         }

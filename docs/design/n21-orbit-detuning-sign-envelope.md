@@ -109,9 +109,11 @@ fit reports its largest phase step between doses, and a step near pi marks a rat
 - D2, sign: among replicas whose prediction and orbit rate both exceed three standard errors, the fraction with
   agreeing signs; at least 0.9 holds, below 0.75 refutes (random signs give 0.5); at least six resolved replicas.
 - D3, echo: among replicas whose free-idle phase moved by more than three standard errors over the sweep (the
-  fitted rate times the largest dose, which a whole number of turns cannot hide), the
-  fraction whose echo phase at the largest dose lies within three standard errors of the undosed phase; at least
-  0.8 reads as precession during the dose.
+  fitted rate times the largest dose, which a whole number of turns cannot hide) and whose echo and undosed
+  amplitudes both exceed three standard errors, the fraction whose echo phase at the largest dose lies within three
+  standard errors of the undosed phase; at least 0.8 reads as precession during the dose, at least six such
+  replicas. An unresolved amplitude leaves a phase error wide enough to accept any return, so those replicas are
+  counted and left out.
 
 A refuted D1 or D2 leaves the sweep's residual without a mechanism and reopens it: a frequency shift of a work bit
 that depends on whether the other holds the excitation (an exchange term through their coupler), or one the

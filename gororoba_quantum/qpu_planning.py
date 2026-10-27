@@ -502,17 +502,13 @@ def _turned(isa: Any, physical: int | None, angle: float) -> Any:
     return out
 
 
-def _probe_phase(cosine: Any, sine: Any, physical: int | None, read: Callable[[np.ndarray], float]) -> float:
-    """atan2 of the exact sine and cosine reads of two compiled members with physical turned during its idle."""
+def _probe_marginal(circuit: Any) -> np.ndarray:
+    """The exact phase-register marginal of one reduced probe circuit."""
     from qiskit_aer.noise import NoiseModel
 
     import dynamic_density
 
-    reads = [
-        read(phase_marginal(dynamic_density.probabilities(_turned(isa, physical, DOSE_ROLE_PROBE_RAD), NoiseModel())))
-        for isa in (cosine, sine)
-    ]
-    return math.atan2(reads[1], reads[0])
+    return phase_marginal(dynamic_density.probabilities(circuit, NoiseModel()))
 
 
 def _orbit_read(marginal: np.ndarray) -> float:
@@ -526,15 +522,27 @@ def _ramsey_read(marginal: np.ndarray) -> float:
     return float(marginal[0] - marginal[2])
 
 
-def _responses(layout: list[int], cosine: Any, sine: Any, read: Callable[[np.ndarray], float]) -> list[int]:
-    """Each logical qubit's phase response, in units of the probe turn on its initial physical qubit: -1, 0 or 1."""
-    base = _probe_phase(cosine, sine, None, read)
+def _responses(layout: list[int], pairs: list[tuple[Any, Any]], read: Callable[[np.ndarray], float]) -> list[list[int]]:
+    """Per (cosine, sine) pair of compiled members, each logical qubit's phase response, in units of the probe turn on
+    its initial physical qubit: -1, 0 or 1.
+
+    Every probe circuit is independent, so the whole batch evaluates in one
+    pooled map, and each pair's phase is atan2 of its sine and cosine reads.
+    """
+    turns: tuple[int | None, ...] = (None, *layout)
+    circuits = [_turned(isa, physical, DOSE_ROLE_PROBE_RAD) for pair in pairs for physical in turns for isa in pair]
+    reads = [read(marginal) for marginal in parallel.ordered_map(_probe_marginal, circuits, min_items=2)]
     out = []
-    for physical in layout:
-        turn = math.remainder(_probe_phase(cosine, sine, physical, read) - base, 2 * math.pi) / DOSE_ROLE_PROBE_RAD
-        if abs(turn - round(turn)) > 0.05 or round(turn) not in (-1, 0, 1):
-            raise ValueError(f"the probe turn on qubit {physical} moves the phase by {turn:.3f} turns")
-        out.append(round(turn))
+    for k in range(len(pairs)):
+        row = reads[2 * len(turns) * k : 2 * len(turns) * (k + 1)]
+        base, *phases = (math.atan2(row[2 * j + 1], row[2 * j]) for j in range(len(turns)))
+        signs = []
+        for physical, phase in zip(layout, phases, strict=True):
+            turn = math.remainder(phase - base, 2 * math.pi) / DOSE_ROLE_PROBE_RAD
+            if abs(turn - round(turn)) > 0.05 or round(turn) not in (-1, 0, 1):
+                raise ValueError(f"the probe turn on qubit {physical} moves the phase by {turn:.3f} turns")
+            signs.append(round(turn))
+        out.append(signs)
     return out
 
 
@@ -551,11 +559,11 @@ def dose_roles(choice: Any) -> dict[str, int]:
     """
     isas = {member.name: isa for member, isa in zip(choice.group.members, choice.isas, strict=True)}
     layout = list(choice.layout)
-    found = set()
-    for dose in window_doses_of(choice.group.members)[1:]:
-        cosine = isas[n21_dose_name("window_dose", dose, False)]
-        sine = isas[n21_dose_name("window_dose_y", dose, False)]
-        found.add(tuple(_responses(layout, cosine, sine, _orbit_read)))
+    pairs = [
+        (isas[n21_dose_name("window_dose", dose, False)], isas[n21_dose_name("window_dose_y", dose, False)])
+        for dose in window_doses_of(choice.group.members)[1:]
+    ]
+    found = {tuple(signs) for signs in _responses(layout, pairs, _orbit_read)}
     if len(found) != 1:
         raise ValueError(f"the orbit arms hold the work roles on different qubits across doses: {sorted(found)}")
     (signs,) = found
@@ -589,15 +597,15 @@ def detuning_roles_choice(runtime: Any, candidate: Any, windows: dict[str, Any])
         for member in group.members
     ]
     compiled = {member.name: isa for member, isa in zip(group.members, isas, strict=True)}
-    for member in group.members:
-        key = n21_work_ramsey_key(member.name)
-        if key is None or key[1] != "x" or not key[2]:
-            continue
-        role, _, dose = key
-        sine = compiled[member.name.replace("_x_d", "_y_d")]
-        want = [1 if logical == roles[role] else 0 for logical in range(len(candidate.layout))]
-        if _responses(list(candidate.layout), compiled[member.name], sine, _ramsey_read) != want:
-            raise runtime.LiveRunError(f"{member.name} does not turn with the dose-time qubit of {role}")
+    arms = [
+        (member.name, key[0])
+        for member in group.members
+        if (key := n21_work_ramsey_key(member.name)) is not None and key[1] == "x" and key[2]
+    ]
+    pairs = [(compiled[name], compiled[name.replace("_x_d", "_y_d")]) for name, _ in arms]
+    for (name, role), signs in zip(arms, _responses(list(candidate.layout), pairs, _ramsey_read), strict=True):
+        if signs != [1 if logical == roles[role] else 0 for logical in range(len(candidate.layout))]:
+            raise runtime.LiveRunError(f"{name} does not turn with the dose-time qubit of {role}")
     violations = [reason for isa in isas for reason in runtime.compiled_violations(isa, candidate.snap)]
     if violations:
         raise runtime.LiveRunError(str(violations))

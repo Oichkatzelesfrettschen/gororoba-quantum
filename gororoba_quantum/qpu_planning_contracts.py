@@ -3009,8 +3009,8 @@ def _verify_detuning_sign_plan(snapshot: live_run.Snapshot) -> None:
     layout = list(choice.layout)
     for role in ("one", "sixteen"):
         arm = qpe_diagnostics.n21_work_ramsey_name(role, "x", WINDOW_DOSES[-1])
-        responses = qpu_planning._responses(
-            layout, compiled[arm], compiled[arm.replace("_x_d", "_y_d")], qpu_planning._ramsey_read
+        (responses,) = qpu_planning._responses(
+            layout, [(compiled[arm], compiled[arm.replace("_x_d", "_y_d")])], qpu_planning._ramsey_read
         )
         _require(responses == [int(k == roles[role]) for k in range(4)], f"{arm} turns with {responses}")
         # Mutation: the same arm on another logical qubit turns with that qubit instead.
@@ -3025,7 +3025,7 @@ def _verify_detuning_sign_plan(snapshot: live_run.Snapshot) -> None:
             for q in ("x", "y")
         ]
         _require(
-            qpu_planning._responses(layout, moved[0], moved[1], qpu_planning._ramsey_read) != responses,
+            qpu_planning._responses(layout, [(moved[0], moved[1])], qpu_planning._ramsey_read) != [responses],
             "a Ramsey arm on the wrong qubit passes the role check",
         )
     for name, isa in zip(names, choice.isas, strict=True):
