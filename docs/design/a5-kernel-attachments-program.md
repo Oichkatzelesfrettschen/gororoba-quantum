@@ -177,3 +177,10 @@ probe and the result, and run the cheap ones. Seeds:
 - The seven higher-order rows (three identically zero at first order) are the substance of deliverable 1. Prefer the
   Schur-corrected effective form over the degeneracy locus, restricted to the transverse slice, before any full
   Gauss-graph elimination.
+- Item 2d (committed `c7f3295`): on `W8` to `VB` the limit depends on the second jet at a fixed tangent-cone direction,
+  so no direction-indexed upper bound is complete there. For the upper half of the two-sided certificate on the seven
+  higher-order rows, eliminate the Gauss graph over the transverse slice itself: slice coordinates `s` (dimension the
+  codimension of the boundary orbit, for example 5 for `W8` to `VB`), an affine chart of `Gr(4, K_0)` (eight
+  coordinates), the incidence `A(s) F = 0` reduced to the effective form on `K_0`, saturation by the nullity-drop ideal,
+  then `s = 0`, all in global orderings under `prlimit`. Report the fiber dimension and components, and compare them
+  with the arc lower bound.
