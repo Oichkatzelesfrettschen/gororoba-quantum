@@ -137,6 +137,26 @@
             }
           ],
           "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main: the msq-envelope-v1 exception is unchanged; main adds the one-command binding dry run and submit (scripts/approved_run.sh), which the successor case uses.",
+          "observed_at": "2026-10-27T19:04:43+00:00",
+          "revision": "7a180b6c0445ad4bb298d432f2fb7b4f5c45afe0",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "be176e74db7bd523d7122a2bc4a2f33985e08311e480de03f145a48a3530154c"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "6356035deab7899cb353432d87f8c8d7821fec4a9cfaefad1d148cbdd236d7b8"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
         }
       ]
     },
@@ -372,7 +392,33 @@
       "id": "batched-null",
       "action": "Batch the null estimator across replicates with a scalar bit-identity gate (issue #579) and plant the idle-model error the retained run shows.",
       "acceptance": "Gate proving batched equals scalar bits; null upper bound below 0.01 at the successor width.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Batched null merged in PR #589 (5185f9c): blocks of 25 replicates keep the scalar bits (float.hex row tests, SciPy solver replays); envelope-null-w32.json regenerates byte-identical.",
+          "observed_at": "2026-10-27T19:04:43+00:00",
+          "revision": "7a180b6c0445ad4bb298d432f2fb7b4f5c45afe0",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/msq_envelope_null.py",
+              "sha256": "f7b7e622cb02148b863022ef363f7675b5e6059e1b475779d9d80c4ae77eea42"
+            },
+            {
+              "ref": "tests/test_msq_envelope.py",
+              "sha256": "0fbc98562cb2461b06490589893c1e6ab5d2f9321e82be928c16dec9ee3dd16d"
+            },
+            {
+              "ref": "docs/evidence/measurement_sequence/envelope-null-w32.json",
+              "sha256": "6ed17f600fd9bff894b0ae265670f6b355b6af66f34ccf11be4b54f2cd5f6975"
+            },
+            {
+              "ref": "docs/runbooks/vectorized-fits.md",
+              "sha256": "5c67264229c46ab107d4a1d64a8054f3263ba872ddaac6bb59b25b8e60fa8342"
+            }
+          ],
+          "scope_sha256": "c1b3b02f804e86b0a8674e6f16498620476903c78f969f215ec63f7c6138eb39"
+        }
+      ]
     },
     {
       "id": "successor-case",
