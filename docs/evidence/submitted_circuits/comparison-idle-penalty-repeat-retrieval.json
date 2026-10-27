@@ -1,5 +1,5 @@
 {
- "schema": "submitted-circuit-comparison-v5",
+ "schema": "submitted-circuit-comparison-v4",
  "jobs": [
   {
    "job_id": "db5qmqclf4us73c4e1ug",
@@ -2031,17 +2031,12 @@
   }
  ],
  "provenance": {
-  "retrieved_utc": "2026-10-26T22:49:33.203857+00:00",
+  "retrieved_utc": "2026-10-27T17:49:47.974799+00:00",
   "operation": "read existing job inputs; submissions and uploads excluded",
   "sources_sha256": {
-   "results/live/qpu-job-retention-audit.json": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e",
+   "results/live/qpu-job-retention-audit.json": "6969029977aaf3c759e668a9497b00d3ee97b6a63881a61c0275d15e8ab8dcee",
    "scripts/compare_submitted_circuits.py": "77eaddfaac4f54e8a6986bf92547bbb92a721404507fbd9d529fd3c2596093c9",
-   "docs/evidence/submitted_circuits/comparison.json": "07e7e3b82c444f788aca9fa0140431b1f725e8c05cf941ec483df289b81c1bcc",
-   "docs/evidence/submitted_circuits/comparison-idle-penalty-retrieval.json": "df0029ddd87da799408665247cbab3c455f1741b68b52e1d903de3b1f0944572",
-   "docs/evidence/submitted_circuits/collector-idle-penalty-retrieval.py.txt": "77eaddfaac4f54e8a6986bf92547bbb92a721404507fbd9d529fd3c2596093c9",
-   "gororoba_quantum/ibm_account.py": "950cb1b250f92b914acf448fa0088cb1a7bd03214b3aaa9c525102567effb977",
-   "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-   "gororoba_quantum/live_run.py": "1188db79669ee7198bdcaed10ef66ad3beb2fe1a196a5ab45041f5afadb9fc9a"
+   "docs/evidence/submitted_circuits/comparison.json": "07e7e3b82c444f788aca9fa0140431b1f725e8c05cf941ec483df289b81c1bcc"
   },
   "seed_file": "docs/evidence/submitted_circuits/comparison.json",
   "retrieved_job_ids": [
@@ -2062,12 +2057,6 @@
   "runtime_versions": {
    "qiskit": "2.5.2",
    "qiskit-ibm-runtime": "0.50.0"
-  },
-  "offline_rebind": {
-   "operation": "offline validation and collector-source rebinding; provider reads excluded",
-   "validated_utc": "2026-10-27T17:36:22.037805+00:00",
-   "predecessor_file": "docs/evidence/submitted_circuits/comparison-idle-penalty-retrieval.json",
-   "collector_snapshot_file": "docs/evidence/submitted_circuits/collector-idle-penalty-retrieval.py.txt"
   }
  }
 }

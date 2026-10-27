@@ -72,10 +72,13 @@ The [adaptive-envelope successor](comparison-adaptive-envelope.json) rebinds the
 after `live_run.py` gained the measurement-sequence envelope's approval, fallback and replan contract beside the
 window doses; its 41 rows equal the window-dose successor's.
 
-The [pin and adaptive-envelope successor](comparison-pin-adaptive-envelope.json) rebinds the same retrieval
-offline against the `live_run.py` that carries the pin admission, the window doses and the envelope contract; it
-differs from its siblings only in the `live_run.py` digest and the offline validation time. Gate `core-281` checks
-it.
+The [idle-penalty repeat retrieval](comparison-idle-penalty-repeat-retrieval.json) reads the same 41 jobs afresh
+through the read-only job interface, seeded from the original comparison, after the retention audit listed the
+stability repeat's Kingston job `dbgcnp5rd2mc73cuf5p0` under `awaiting_observation`; that audit change ends the
+offline rebind chain, which binds the audit's digest. Its collector equals the archived
+[collector text](collector-idle-penalty-retrieval.py.txt), and it binds the `live_run.py` that carries the pin
+admission, the window doses and the envelope contract. Every item equals its retained circuit in order. Gate
+`core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
@@ -89,7 +92,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-pin-adaptive-envelope.json
+  --out docs/evidence/submitted_circuits/comparison-idle-penalty-repeat-retrieval.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0

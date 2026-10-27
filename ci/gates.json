@@ -2303,13 +2303,13 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-pin-adaptive-envelope.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-idle-penalty-repeat-retrieval.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-pin-adaptive-envelope.json"
+    "docs/evidence/submitted_circuits/comparison-idle-penalty-repeat-retrieval.json"
    ]
   },
   {
