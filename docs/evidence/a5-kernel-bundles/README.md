@@ -7,11 +7,12 @@ constant kernel-pencil symmetry algebra and a visible twelve-component subgroup,
 rational kernel frames covering all seven pieces of nullity at least twelve. It also identifies the connected compact
 stabilizer and its irreducible kernel representation on both nullity-sixteen components, reduces those two bundles to
 the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and quaternionic classes. An exhaustive
-component census, the non-homogeneous pieces' reduced transitions, the remaining non-homogeneous unit-section
-topologies, and their characteristic classes remain open. The aligned nullity-twelve pieces now have an explicit
+component census, the non-homogeneous pieces' reduced transitions, the full `V` unit-section topology, and the
+non-homogeneous characteristic classes remain open. The aligned nullity-twelve pieces now have an explicit
 one-dimensional compact-orbit quotient, a computed unit-section topology, and exact stabilizer representations on
 their principal and endpoint orbits. The open `V` orbit now has an explicit three-dimensional connected compact-orbit
-quotient and its recorded representative is identified as another collinear endpoint.
+quotient and its recorded representative is identified as another collinear endpoint. The `B9` and `VB` quotients,
+stabilizers, and complex rank-six kernel representations are also explicit.
 
 Every computation uses rational or Gaussian-rational arithmetic. [`result.json`](result.json) is the output of
 [`kernel_symmetry.py`](kernel_symmetry.py) `--out`. [`frames-result.json`](frames-result.json) is the output of
@@ -20,7 +21,8 @@ Every computation uses rational or Gaussian-rational arithmetic. [`result.json`]
 `nullity_sixteen_bundle.py --out`. `aligned-orbit-moduli-result.json` is the output of
 `aligned_orbit_moduli.py --out`. `aligned-stabilizer-result.json` is the output of
 `aligned_stabilizer_representation.py --out`. `v-orbit-moduli-result.json` is the output of
-`v_orbit_moduli.py --out`. The focused contracts and mutation controls run without random input.
+`v_orbit_moduli.py --out`. `isotropic-orbit-data-result.json` is the output of
+`isotropic_orbit_data.py --out`. The focused contracts and mutation controls run without random input.
 
 ## Conventions
 
@@ -382,6 +384,80 @@ generic tangent rank or stabilizer different from `12` and `su(2)`, an endpoint 
 `su(3)`, dependence on `lambda`, or survival of the phase-deletion or missing-`i` mutations. None occurred. The exact
 rows and input digests are in `v-orbit-moduli-result.json`.
 
+## One Hermitian Gram ball unifies `B9` and `VB`
+
+Write the original-coordinate seven-vector blocks as `(u,v)` and put `w=-i v`. The split-coordinate equations for
+`B9` become
+
+```text
+u dot u = w dot w = u dot w = 0,
+u cross w = 0,
+dim_C span(u,w) = 2.
+```
+
+Thus `(u,w)` is an ordered basis of a totally null cross-zero complex two-plane. Its Hermitian Gram matrix
+
+`H=[[u^* dot u,u^* dot w],[w^* dot u,w^* dot w]]`
+
+is positive definite. On the unit section `trace(H)=1`, and both the compact `G_2` action and the common `U(1)` phase
+fix `H`. Write
+
+`(x,y,z)=((H_11-H_22),2 Re(H_12),2 Im(H_12))`.
+
+The determinant identity is
+
+`1-x^2-y^2-z^2=4 det(H)`.
+
+Consequently the candidate quotient is the open unit three-ball. The invariant is complete. Hermitian polar
+normalization replaces `(u,w)` by an orthonormal basis of the same totally null cross-zero plane. The four real and
+imaginary columns of that normalized pair form an oriented coassociative frame, and `G_2` acts simply transitively on
+such frames. Equal normalized Gram matrices therefore differ by a compact `G_2` element. Polar decomposition also
+gives the product
+
+`B9_unit = G_2 x open(B^3)`.
+
+The product identifies the unit section up to the fixed choice of a reference coassociative frame. In particular,
+`B9_unit` is homotopy equivalent to `G_2`. The common phase circle is already realized by right rotation of the
+coassociative frame, so the connected stabilizer in `G_2 x U(1)` is the graph of that circle and is isomorphic to
+`U(1)`.
+
+At `det(H)=0`, the two blocks are collinear. Write `v=lambda u` on the finite chart. The open `VB` conditions remove
+`lambda=+i,-i`, which are the two nullity-sixteen components. Hence
+
+`VB/(G_2 x U(1)) = CP^1 minus {+i,-i}`.
+
+This is the rank-one boundary sphere of the Gram ball with two points removed. Its homotopy type is `C^*`. The unit
+isotropic common vector is an ordered orthonormal two-frame in `R^7`, and the tautological coefficient line is
+topologically trivial over the punctured sphere. The unit section therefore has the noncanonical product description
+
+`VB_unit = V_2(R^7) x (CP^1 minus {+i,-i})`.
+
+Its fundamental group is `Z`. The connected point stabilizer is independent of `lambda` and equals
+`U(2)=(SU(2) x U(1))/Z_2`, with the same primitive central circle as on `N_+` and `N_-`.
+
+Exact tangent and fiber computations at four Gram matrices in the ball and four projective boundary points give:
+
+| Piece | Compact quotient | Orbit dimension | Stabilizer | Complex kernel representation |
+| --- | --- | ---: | --- | --- |
+| `B9` | `open(B^3)` | 14 | `U(1)` | `3 C_(-1) + 3 C_(-2)` |
+| `VB` | `CP^1 minus {+i,-i}` | 11 | `U(2)` | `V_(0,-4) + 2 V_(1,-3) + V_(0,-2)` |
+
+The `B9` primitive circle is `compact_g2_7+base_phase_lift`; its domain action has integral imaginary eigenvalues and
+the kernel has weights `-1` and `-2`, each with multiplicity three. On `VB`, the `SU(2)` restriction is
+
+`2 V_0 + 2 V_1`.
+
+The joint center-Casimir eigenspaces have dimensions `1,4,1`. An exact six-dimensional commutant supplies invariant
+projectors of ranks `1,2,2,1`, including separate projectors for the repeated doublets. The representation is constant
+on the punctured boundary. Comparing it with the nullity-sixteen result shows that specialization to either removed
+point adds exactly the missing `V_(1,-1)` doublet.
+
+The falsifier was Gram data outside the displayed ball and sphere, a nonstationary invariant, a compact tangent rank or
+stabilizer different from `14,U(1)` or `11,U(2)`, a stabilizer action that moved the point or escaped the kernel, a
+representation jump, a boundary restriction other than the deletion of `V_(1,-1)`, or survival of a one-block phase,
+rank-one, moving-generator, or perturbed-fiber-action mutation. None occurred. The exact rows, projectors, input
+digests, and mutation controls are in `isotropic-orbit-data-result.json`.
+
 ## Principal-Pfaffian frames cover `N_+` and `N_-`
 
 Let `sigma` be `+1` or `-1`. The original and split coordinates obey
@@ -658,11 +734,11 @@ irreducible summands. The `SU(2)` reduction then classifies the ordinary real, c
 both `N_+` and `N_-`, including the order-two complex K-class that their zero Chern classes do not detect. The
 computation also decomposes the connected stabilizer representations on the principal and endpoint orbits of both
 aligned nullity-twelve pieces and identifies the extra doublet acquired at their nullity-sixteen boundaries. It has
-also classified the three-dimensional connected compact-orbit quotient of the open `V` orbit. It has not proved that
-the visible components exhaust the group and has not classified an equivariant extension under the disconnected
-`N_+-` stabilizers, the actual real type of the individual four-plane `xi_R`, the `B9` and `VB` compact-orbit moduli,
-the full unit-section topology of `V`, or any non-homogeneous piece's reduced transition functions and bundle
-invariants. The compact
+classified the connected compact-orbit quotients of `V`, `B9`, and `VB`, the unit-section product types of `B9` and
+`VB`, and the `B9` and `VB` connected stabilizer representations. It has not proved that the visible components
+exhaust the group and has not classified an equivariant extension under the disconnected `N_+-` stabilizers, the
+actual real type of the individual four-plane `xi_R`, the full unit-section topology of `V`, or any non-homogeneous
+piece's reduced transition functions and bundle invariants. The compact
 symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit
 labels do not make those kernel bundles homogeneous under the constant symmetry group.
 
@@ -707,4 +783,9 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/v_orbit_moduli.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/v_orbit_moduli.py \
     --out docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_isotropic_orbit_data.py
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py \
+    --out docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json
 ```
