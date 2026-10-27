@@ -33,7 +33,7 @@ a modeled exposure carries its assumptions.
 |---|---|---|---|
 | per-iteration `nb_shots_used` | detection events, each a trigger with at least one detected photon | observed, censored at the iteration's `max_shots` | Perceval `runtime/simulated_computer.py` (`max_shots`: "A shot is any event with at least 1 photon"); counter table |
 | returned BSCount total | photon-filtered samples (detection events passing `min_detected_photons`) | observed | counter table |
-| iterated job's top-level `shots` | the job-level `max_shots` request, one iteration's cap | requested | counter table; [strategy.md](../../notes/quandela/strategy.md) Iterations |
+| iterated job's top-level `shots` | the job-level `max_shots` request, one iteration's cap, where it equals that request; otherwise unidentified | requested, else unavailable | counter table; [strategy.md](../../notes/quandela/strategy.md) Iterations |
 | single job's top-level `shots` | detection events | observed | counter table (sim:belenos pairs: 162604 shots for 5000 two-photon samples) |
 | `physical_perf` | the share of simulated events passing the photon filter (Perceval `simulators/noisy_sampling_simulator.py`); undocumented on QPU | provider diagnostic | strategy.md |
 | `duration` | job wall time, compilation included | observed time, not exposure | counter table |

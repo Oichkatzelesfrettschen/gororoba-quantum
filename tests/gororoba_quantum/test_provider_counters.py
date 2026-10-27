@@ -84,10 +84,13 @@ def test_reaching_both_caps_names_neither_as_the_stop() -> None:
 
 
 def test_top_level_shots_of_an_iterated_job_is_a_cap() -> None:
-    iterated = pc.quandela_top_level_shots({"shots": 16384}, iterated=True)
+    iterated = pc.quandela_top_level_shots({"shots": 16384}, iterated=True, job_max_shots=16384)
     if iterated.population is not Population.REQUESTED_CAP or iterated.status is not Status.REQUESTED:
         raise AssertionError(iterated)
-    single = pc.quandela_top_level_shots({"shots": 10000}, iterated=False)
+    # Mesh job-14: one iteration, top-level shots 10000 against a job-level max_shots of 20000.
+    if pc.quandela_top_level_shots({"shots": 10000}, iterated=True, job_max_shots=20000).available:
+        raise AssertionError("a top-level value that differs from the request has no identified population")
+    single = pc.quandela_top_level_shots({"shots": 10000}, iterated=False, job_max_shots=20000)
     if single.population is not Population.DETECTION_EVENT:
         raise AssertionError(single)
     iterations = [observed("nb_shots_used", 8192, Population.DETECTION_EVENT, f"iteration:{k}") for k in range(8)]
@@ -177,7 +180,10 @@ def test_retained_teleportation_iteration_reads_as_censored_detection_events() -
     if [c.detection_events.terminated_by for c in counters] != ["max_shots"] * 6:
         raise AssertionError("every rehearsal iteration ended by its shot budget")
     job = pc.total([c.detection_events for c in counters], "nb_shots_used", "job")
-    if job.value != 7200000 or pc.quandela_top_level_shots(outer, iterated=True).value != 1200000:
+    if (
+        job.value != 7200000
+        or pc.quandela_top_level_shots(outer, iterated=True, job_max_shots=1200000).value != 1200000
+    ):
         raise AssertionError("the job total sums iterations; the top-level shots is one iteration's cap")
 
 

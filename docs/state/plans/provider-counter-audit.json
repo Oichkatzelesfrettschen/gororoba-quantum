@@ -60,6 +60,34 @@
             }
           ],
           "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
+        },
+        {
+          "result": "Revalidated after the top-level shots repair: counter table and gate-model census replay with --check.",
+          "observed_at": "2026-10-27T21:12:42+00:00",
+          "revision": "a45cfeabb9a685de588ccaf79adfcf21e3577f6d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+              "sha256": "3b23db97da519db600cb736524a21ec82abbc5ed2c13002707fd3b3dd1939caa"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+              "sha256": "f0750d81796a502b61302e397d00feafd8af413a3f9f336c97bafba090363b60"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
+              "sha256": "99c40af728f90ceca72235703189bfb69726b1f7e1be0e10eccdfe02637e0bad"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.json",
+              "sha256": "a2095b244a573237b8572f690e073342eceee48b7f224d408f3f5db0acfc8964"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "0d1a60db1d5f36451be54d28e72b83d27436d5415d93b9b96dbf723884ced0bb"
+            }
+          ],
+          "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
         }
       ]
     },
@@ -84,6 +112,22 @@
             }
           ],
           "scope_sha256": "b6b98abb7782f096e7546b9b9fe059dfa35f740cd99966c934136117f1e114ee"
+        },
+        {
+          "result": "Revalidated: 13 contract tests pass, including mesh job-14's unmatched top-level shots; 3 audit replays pass.",
+          "observed_at": "2026-10-27T21:12:42+00:00",
+          "revision": "a45cfeabb9a685de588ccaf79adfcf21e3577f6d",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/provider_counters.py",
+              "sha256": "baa03d830de398a1bb0e1ab9d26e58b5523bef58be921d0718e749dbd26b8ddf"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_provider_counters.py",
+              "sha256": "fbb52c001729a5e2f94a92389941f61cb9486c709f37deef177e397c716a67df"
+            }
+          ],
+          "scope_sha256": "b6b98abb7782f096e7546b9b9fe059dfa35f740cd99966c934136117f1e114ee"
         }
       ]
     },
@@ -101,6 +145,22 @@
             {
               "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
               "sha256": "7cd0923f9a730b0d4fa36ea2a33a7e2eb1f977c4a241259430a7c3dc9560d5cf"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.json",
+              "sha256": "d5a5aff861f8fa7032516df33c815ddc6f683bc9581a7ae2b394717091f309c8"
+            }
+          ],
+          "scope_sha256": "0dd0e47dba14ef614ef8d56c07b5c607869527c12346cd4481e78daad0ba9ee6"
+        },
+        {
+          "result": "Revalidated: pooled and serial sensitivity runs reproduce the retained output.",
+          "observed_at": "2026-10-27T21:12:42+00:00",
+          "revision": "a45cfeabb9a685de588ccaf79adfcf21e3577f6d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+              "sha256": "5069bb87ad4aa98cb8be3d9910f0281bf484eac03a24289c8612afbc0917785e"
             },
             {
               "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.json",

@@ -21,7 +21,7 @@ censored.
 The Quandela adapter follows the retained-run census of docs/evidence/provider-counter-audit/: per iteration,
 ``nb_shots_used`` counts detection events and equals the returned samples whenever ``min_detected_photons`` is 1
 and the sample budget ends the iteration, and equals ``max_shots`` when the shot budget ends it; an iterated job's
-top-level ``shots`` is the job-level ``max_shots`` request, not a total.
+top-level ``shots`` is the job-level ``max_shots`` request, not a total, wherever it equals that request.
 """
 
 from __future__ import annotations
@@ -322,19 +322,24 @@ def quandela_iteration(
     )
 
 
-def quandela_top_level_shots(outer: Mapping[str, Any], iterated: bool) -> Counter:
+def quandela_top_level_shots(outer: Mapping[str, Any], iterated: bool, job_max_shots: int | None) -> Counter:
     """The top-level ``shots`` of a Quandela job answer.
 
-    An iterated job's top-level shots equals the job-level max_shots request (one iteration's cap, not a total),
-    so it is a requested cap; a single job's top-level shots is that job's detection-event count.
+    A single job's top-level shots is that job's detection-event count. An iterated job's top-level shots equals
+    the job body's job-level max_shots on every retained iterated job but one, a one-iteration list whose value
+    equals that iteration's nb_shots_used instead; so an iterated value is a requested cap only when it equals
+    job_max_shots, and otherwise its population is unidentified and the counter is unavailable.
     """
     value = _count(outer.get("shots"))
-    if value is None:
-        population = Population.REQUESTED_CAP if iterated else Population.DETECTION_EVENT
-        return unavailable("shots", population, "job", "job answer shots (absent)")
-    if iterated:
-        return Counter("shots", value, Population.REQUESTED_CAP, "job", Status.REQUESTED, "job answer shots")
-    return Counter("shots", value, Population.DETECTION_EVENT, "job", Status.OBSERVED, "job answer shots")
+    if not iterated:
+        if value is None:
+            return unavailable("shots", Population.DETECTION_EVENT, "job", "job answer shots (absent)")
+        return Counter("shots", value, Population.DETECTION_EVENT, "job", Status.OBSERVED, "job answer shots")
+    if value is None or job_max_shots is None or value != job_max_shots:
+        return unavailable(
+            "shots", Population.REQUESTED_CAP, "job", "job answer shots differs from the job body's max_shots"
+        )
+    return Counter("shots", value, Population.REQUESTED_CAP, "job", Status.REQUESTED, "job answer shots")
 
 
 def exposure_seconds(

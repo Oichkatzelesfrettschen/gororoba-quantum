@@ -21,13 +21,16 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+sys.path.insert(1, str(ROOT / "scripts"))
+from parallel import ordered_map  # noqa: E402
+
 RETAINED = ROOT / "docs/evidence/quandela/belenos_leakage_rca.json"
 OUT = Path(__file__).with_name("exposure_sensitivity.json")
 SCHEMA = "quandela-exposure-sensitivity-v1"
 
 
 def scenario(scale: str) -> dict[str, Any]:
-    sys.path.insert(0, str(ROOT / "scripts"))
     import qd_belenos_mesh
     import qd_box_kite_analysis
 
@@ -82,31 +85,40 @@ def corrected_blocks(analysis: dict[str, Any]) -> list[tuple[int, dict[str, Any]
     return [(i, b) for i, b in enumerate(analysis.get("blocks", [])) if b.get("dark_corrected") is not None]
 
 
-def box_kite(run: Path) -> dict[str, Any]:
-    sys.path.insert(0, str(ROOT / "scripts"))
+def box_kite_scenario(run: Path, scale: str) -> dict[str, Any]:
+    """qd_box_kite_analysis.analyze of run under one exposure scenario."""
     import qd_box_kite_analysis
 
     model = qd_box_kite_analysis.acquisition_seconds
     duration = float(json.loads((run / "raw/result.json").read_text(encoding="utf-8"))["duration"])
+
+    def exposure(samples: int, physical_perf: Any, clock_mhz: Any) -> float | None:
+        seconds = model(samples, physical_perf, clock_mhz)
+        if seconds is None:
+            return None
+        return {"none": 0.0, "physical_perf_model": seconds, "job_duration": duration}[scale]
+
+    qd_box_kite_analysis.acquisition_seconds = exposure  # dark_expectation reads the module name per call
+    try:
+        return qd_box_kite_analysis.analyze(run)
+    finally:
+        qd_box_kite_analysis.acquisition_seconds = model
+
+
+def evaluate(item: tuple[str, str, str]) -> dict[str, Any]:
+    """One (record, run, exposure) item: each runs in its own pool worker, which also confines the patched
+    acquisition_seconds to that process."""
+    kind, run, scale = item
+    return scenario(scale) if kind == "root_cause" else box_kite_scenario(ROOT / run, scale)
+
+
+def box_kite(run: Path, fresh: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    import qd_box_kite_analysis
+
+    duration = float(json.loads((run / "raw/result.json").read_text(encoding="utf-8"))["duration"])
     retained = json.loads((run / "analysis.json").read_text(encoding="utf-8"))
-    rows: dict[str, Any] = {}
-    replays = None
-    for scale in SCENARIOS:
-
-        def exposure(samples: int, physical_perf: Any, clock_mhz: Any, scale: str = scale) -> float | None:
-            seconds = model(samples, physical_perf, clock_mhz)
-            if seconds is None:
-                return None
-            return {"none": 0.0, "physical_perf_model": seconds, "job_duration": duration}[scale]
-
-        qd_box_kite_analysis.acquisition_seconds = exposure  # dark_expectation reads the module name per call
-        try:
-            fresh = qd_box_kite_analysis.analyze(run)
-        finally:
-            qd_box_kite_analysis.acquisition_seconds = model
-        if scale == "physical_perf_model":
-            replays = qd_box_kite_analysis.text(fresh) == qd_box_kite_analysis.text(retained)
-        rows[scale] = {str(i): b["dark_corrected"] for i, b in corrected_blocks(fresh)}
+    replays = qd_box_kite_analysis.text(fresh["physical_perf_model"]) == qd_box_kite_analysis.text(retained)
+    rows = {s: {str(i): b["dark_corrected"] for i, b in corrected_blocks(fresh[s])} for s in SCENARIOS}
     blocks = {}
     for i, block in corrected_blocks(retained):
         values = [rows[s][str(i)] for s in SCENARIOS]
@@ -123,13 +135,17 @@ def box_kite(run: Path) -> dict[str, Any]:
 
 
 def record() -> dict[str, Any]:
-    rows = [scenario(s) for s in SCENARIOS]
-    keys = ("ideal_exceeds_floor", "no_single_parameter_reaches_floor", "convention_order")
     runs = sorted(
         p.parent
         for p in (ROOT / "results/quandela/runs").glob("*/analysis.json")
         if corrected_blocks(json.loads(p.read_text(encoding="utf-8")))
     )
+    items = [("root_cause", "", s) for s in SCENARIOS]
+    items += [("one_photon", str(run.relative_to(ROOT)), s) for run in runs for s in SCENARIOS]
+    results = ordered_map(evaluate, items, min_items=1)
+    rows = results[: len(SCENARIOS)]
+    fresh = results[len(SCENARIOS) :]
+    keys = ("ideal_exceeds_floor", "no_single_parameter_reaches_floor", "convention_order")
     return {
         "schema": SCHEMA,
         "root_cause": {
@@ -137,7 +153,10 @@ def record() -> dict[str, Any]:
             "scenarios": rows,
             "conclusions_invariant": all(all(r[k] == rows[0][k] for k in keys) for r in rows),
         },
-        "one_photon_blocks": [box_kite(run) for run in runs],
+        "one_photon_blocks": [
+            box_kite(run, dict(zip(SCENARIOS, fresh[k * len(SCENARIOS) : (k + 1) * len(SCENARIOS)], strict=True)))
+            for k, run in enumerate(runs)
+        ],
     }
 
 
