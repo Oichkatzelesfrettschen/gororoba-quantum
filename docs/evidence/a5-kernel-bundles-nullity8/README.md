@@ -8,8 +8,10 @@ computes the connected compact `G_2 x U(1)` tangent ranks on the five complex nu
 bundle classes remain open.
 
 Every calculation uses integer or rational arithmetic. [`compact-orbit-ranks-result.json`](compact-orbit-ranks-result.json)
-is the output of [`compact_orbit_ranks.py`](compact_orbit_ranks.py) `--out`. The producer carries a byte-exact
-`--check` and a `--self-test` whose mutation deletes the base-phase generator.
+is the output of [`compact_orbit_ranks.py`](compact_orbit_ranks.py) `--out`, and
+[`w8-orbit-moduli-result.json`](w8-orbit-moduli-result.json) is the output of
+[`w8_orbit_moduli.py`](w8_orbit_moduli.py) `--out`. Each producer carries a byte-exact `--check` and mutation-bearing
+`--self-test`.
 
 ## Every nullity-eight orbit has generic compact rank fifteen
 
@@ -47,6 +49,85 @@ The falsifier was a disagreement between the two exact rank implementations, a m
 open-orbit membership, failure to reach the full compact rank on any orbit, or a phase-deletion mutation that left
 every downstream rank unchanged. None occurred. The mutation lowers at least one computed tangent rank.
 
+## `W8` has a complete eight-dimensional invariant quotient
+
+Write the original complex seven-vector blocks as
+
+`u=a+i b,  v=c+i d`.
+
+The open `W8` orbit satisfies
+
+`u dot u=v dot v=q!=0,  u dot v=0`.
+
+The unit condition is
+
+`norm(a)^2+norm(b)^2+norm(c)^2+norm(d)^2=1`.
+
+A common phase multiplies `q` by its square. Choose a phase that makes `q=r>0`; the two choices differ by the
+residual phase `-1`, which sends `(a,b,c,d)` to `(-a,-b,-c,-d)`. In this phase slice the real Gram matrix has the
+exact form
+
+```text
+G(r,A,E,F) =
+[[A,   0,  E,  F],
+ [0, A-r, -F,  E],
+ [E,  -F,  C,  0],
+ [F,   E,  0, C-r]],
+
+C = 1/2+r-A.
+```
+
+Consequently the Gram part of the quotient is the four-dimensional spectrahedron
+
+`B_W={G(r,A,E,F) positive semidefinite: r>0}`.
+
+The trace-one condition is already built into the displayed value of `C`. Positive definiteness gives the
+real-frame-rank-four interior; matrix ranks three and two give its boundary strata. The exact producer reconstructs
+this matrix from every fixture rather than accepting the formula as a pass flag.
+
+Gram data alone does not classify a real four-frame under compact `G_2`. Let
+
+`tau_ijk=phi(x_i,x_j,x_k)` and `psi_1234=psi(x_1,x_2,x_3,x_4)`
+
+for `(x_1,x_2,x_3,x_4)=(a,b,c,d)`, where `phi(x,y,z)=<x cross y,z>` is the octonion associative three-form. The
+coassociative four-form is computed from
+
+`psi(a,b,c,d)=<a cross b,c cross d>-<a,c><b,d>+<a,d><b,c>`.
+
+Put `lambda=(tau_234,-tau_134,tau_124,-tau_123)`. The producer verifies the exact identity
+
+`lambda^T G lambda + psi_1234^2 = det(G)`.
+
+After Gram–Schmidt on a rank-four frame, the four `tau` values and `psi` therefore form a point of `S^4`. The
+residual common sign reverses the four `tau` coordinates and fixes `psi`, so the fiber over the rank-four interior is
+
+`S^4 / ((tau,psi)~(-tau,psi))`,
+
+equivalently the suspension of `RP^3`. Over a rank-three Gram matrix, one normalized three-form value lies in
+`[-1,1]` and the residual sign identifies its endpoints symmetrically; over rank two, Gram data is complete.
+
+**Inferred completeness.** Equal Gram matrices give the same lexicographic Gram–Schmidt transformation. For rank at
+most two, compact `G_2` transitivity on ordered orthonormal two-frames maps one frame to the other. For rank three,
+map the first two orthonormal vectors, put `h=x_1 cross x_2`, and decompose the third as
+`alpha h+w`. The value `alpha=phi(x_1,x_2,x_3)` is fixed by the invariants; the `SU(2)` stabilizer of the ordered
+two-frame acts transitively on the unit sphere in the four-dimensional quaternionic complement, so it maps `w`.
+For rank four with `abs(alpha)<1`, that normalization fixes the residual `SU(2)` element, and the remaining four form
+coordinates determine the fourth orthonormal vector. At `abs(alpha)=1`, the first three vectors form an associative
+three-frame and its `SU(2)` stabilizer is transitive on the complementary three-sphere. This proves that the displayed
+data separates every compact `G_2` orbit. Quotienting by the explicit common phase proves that the stratified space
+above is the `G_2 x U(1)` moduli space.
+
+The exact differential supplies an independent local check. The five `W8` unit constraints have rank five, leaving
+a 23-dimensional tangent space. On every moved point with compact tangent rank fifteen, the raw Gram-and-form
+invariant differential has rank nine. Its level-set tangent kernel therefore has dimension fourteen, exactly the
+compact `G_2` tangent rank; the phase supplies the ninth invariant direction before the final circle quotient.
+
+The falsifier was a failure of the form identity or Gram reconstruction, a compact tangent that changed the raw
+invariants, a generic raw invariant differential whose kernel exceeded the `G_2` tangent, two equal invariant tuples
+with distinct rank-stratified normal forms, or survival of the four-form or one-block-phase mutation. None occurred.
+The exact fixtures cover real frame ranks two, three, and four. The mutations respectively break the form identity
+and the `W8` constraint derivative.
+
 ## No nullity-eight orbit is compact homogeneous
 
 **Inferred.** A connected compact orbit has dimension at most fifteen. Each nullity-eight unit section has dimension
@@ -67,8 +148,13 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py \
     --check docs/evidence/a5-kernel-bundles-nullity8/compact-orbit-ranks-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py \
+    --check docs/evidence/a5-kernel-bundles-nullity8/w8-orbit-moduli-result.json
 ```
 
-The measured `--check` wall time was 7.84 seconds on the 2026-10-26 build host with four workers. The check builds
-the sorted, two-space-indented JSON plus its final newline in memory, compares the UTF-8 bytes with the retained
-record, writes no repository file, and exits nonzero on a difference.
+The measured `--check` wall times were 7.84 seconds for the compact-rank producer and 3.18 seconds for the `W8`
+moduli producer on the 2026-10-26 build host with four workers. Each check builds the sorted, two-space-indented JSON
+plus its final newline in memory, compares the UTF-8 bytes with the retained record, writes no repository file, and
+exits nonzero on a difference.
