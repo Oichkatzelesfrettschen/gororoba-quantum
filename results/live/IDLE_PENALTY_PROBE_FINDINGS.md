@@ -25,6 +25,11 @@ The analysis digest is in each file's `identity`. The analyzer changed in one wa
 gate the case listed as the step before any readout verdict. Every estimator, threshold and decision rule is
 unchanged.
 
+`idle-penalty-report-vectorized-encoding.json` and `idle-penalty-exploratory-vectorized-encoding.json` replay both
+analyses after `law_encoding.py`, one of the analyzer sources the digest covers, gained a vectorized encoder that
+writes byte-identical laws; they differ from the two files above only in `identity.analysis_digest`, and gate
+`core-idle-penalty-report-replay` checks them. The two files above keep their bytes.
+
 ## Exposure
 
 The analyzer reads the service schedule of every PUB (`metadata.compilation.scheduler_timing` in `raw/`) before any

@@ -108,6 +108,62 @@
    "index": 0
   },
   {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 29206,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 27743,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 23218,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/measurement_sequence_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 58511,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T225550Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/measurement_sequence_scatter_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 51265,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T013550Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/measurement_sequence_scatter_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 23818,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T013550Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/measurement_sequence_scatter_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 46022,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T013550Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/measurement_sequence_scatter_validation.py",
+   "name": "VALIDATION_SEEDS",
+   "value": 56168,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T013550Z.json",
+   "index": 3
+  },
+  {
    "path": "scripts/qd_teleportation_rehearsal.py",
    "name": "COMPILATION_SEEDS",
    "value": 37522,
@@ -245,6 +301,20 @@
    "name": "CONTROL_SEED",
    "value": 64095,
    "record": "docs/evidence/anu_qrng/draw-2026-10-26T014202Z.json",
+   "index": 0
+  },
+  {
+   "path": "gororoba_quantum/msq_envelope_null.py",
+   "name": "NULL_SEED",
+   "value": 56182,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
+   "index": 1
+  },
+  {
+   "path": "gororoba_quantum/diagnostic_experiments.py",
+   "name": "MSQE_PATTERN_SEED",
+   "value": 49615,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
    "index": 0
   },
   {
