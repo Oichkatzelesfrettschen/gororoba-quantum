@@ -6,14 +6,14 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
-    "note": "Completion audit reopened platform-toolchain admission; prior receipts and closure remain in Git history. Mathematical and operator checks retain their recorded evidence."
+    "note": "All scoped mathematical, operator, payload, analysis and local compiler checks pass at the recorded source. Acquisition and physical interpretation remain outside this completed software scope."
   },
   "scope": "Implement ideal, compiled and measured dimension-six transition conformance on Tuna-17, QX and Ascella. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Retain a complete local libqasm/OpenSquirrel replay for both QI routes, then append scope-bound receipts.",
+  "next_action": "Use the retained acquisition review to qualify and separately approve a prospective run; software completion grants no execution authority.",
   "steps": [
     {
       "id": "certify-bases",
@@ -40,6 +40,30 @@
               "sha256": "ee1f94173910604fe36372e686ac6c3e1c7a949293af9e55b61ce55dfeb0b33e"
             }
           ]
+        },
+        {
+          "scope_sha256": "010bd836988ef26b303a3ce1084917f7742cd972a35d93f48c11b44755898eda",
+          "result": "Exact orthonormality, reference cross-overlaps 1/6, Tao candidate residuals and leakage-preserving embeddings pass. Revalidated with the 102-test suite and current source-bound evidence; provider execution remains separate.",
+          "observed_at": "2026-10-27T20:45:20.558303+00:00",
+          "revision": "548e36f241a9fe1a33c086b0bccc111ec3eaa375",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/experiment_references.py",
+              "sha256": "f8e9d874da893e63c0e96d50f5cd317c2677023fd8529676748a657d2bbee0d7"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/cases/reference.json",
+              "sha256": "9439f7af9c6e63795da74b2760ca2e6608d8a02fdc78dd707c650303802c8b07"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_references.py",
+              "sha256": "ee1f94173910604fe36372e686ac6c3e1c7a949293af9e55b61ce55dfeb0b33e"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            }
+          ]
         }
       ]
     },
@@ -47,7 +71,45 @@
       "id": "compile-settings",
       "action": "Generate 54 native transition settings per primary platform.",
       "acceptance": "Full requested and compiled operators, payload hashes and output maps validate. Local libqasm analysis and OpenSquirrel replay admit every emitted QI payload and preserve its control sequence.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "c63c9074ff0c09194bb34614650b901487a9962eba6426edd3224c5fb3b5a554",
+          "result": "Complete native-operator and immutable campaign replay admission passes. Local libqasm/OpenSquirrel admit all 384 QI payloads with every control sequence preserved. The 102-test focused suite, full lint and full mypy pass.",
+          "observed_at": "2026-10-27T20:45:20.558303+00:00",
+          "revision": "548e36f241a9fe1a33c086b0bccc111ec3eaa375",
+          "evidence": [
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+              "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/cases/campaign.json",
+              "sha256": "533e3ada05a344a727d92edaf39c41c1d655b92c9d2eda8cca8ce59d2ab9db85"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json",
+              "sha256": "444c161023e21640b17ac38ad4505d7b1361b1ca843c97e7117e40ab475e37ef"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/local-toolchain.json",
+              "sha256": "0128d96fac75347d23f3cfce0ffdce341a3315d5bf135e5a8034cdbf368fa37a"
+            },
+            {
+              "ref": "scripts/experiment_toolchain.py",
+              "sha256": "1b2a6ee4da268e1424c56a5b0891b35bb1d7d8d34587ef9c19793c04d472edfa"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_toolchain.py",
+              "sha256": "020a623026601699463bb03290a63c5250494e067ad10ef35f14e38741f9980d"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "analyze-counts",
@@ -78,6 +140,74 @@
               "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
             }
           ]
+        },
+        {
+          "scope_sha256": "aeb547ee0cdd692e5872e181f65968eb7d87d53e4fa713ec1dead9d5d5c76ab0",
+          "result": "Analysis fixtures cover maps, missing/short data, leakage, detected-event denominators and native/template attribution. The written cases freeze precision/ceilings and identify pending runtime forecasts and optical qualification. Revalidated with the 102-test suite and current source-bound evidence; provider execution remains separate.",
+          "observed_at": "2026-10-27T20:45:20.558303+00:00",
+          "revision": "548e36f241a9fe1a33c086b0bccc111ec3eaa375",
+          "evidence": [
+            {
+              "ref": "scripts/experiment_analysis.py",
+              "sha256": "57878292585a9305515f4646277540ae2908cdd3d9c9362b10f78c9f158c484c"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_analysis.py",
+              "sha256": "8683d35d71f80ac9c8448d0321ed1bbecda95df6e6cd486111c0bb3da69e587d"
+            },
+            {
+              "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+              "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+              "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Completed bounded software and investigation scope with exact references, 187 prospective provider cases, validated analysis, full local QI parser/compiler replay and retained receipts. Runtime forecasts, independent optical qualification, approval and acquisition remain separate authorities.",
+  "receipts": [
+    {
+      "scope_sha256": "58edd1013daa26576e8cf23dce4bff4878984f2dee9fc78ccc81d31f7bb46e9e",
+      "result": "All three obligations have current receipts. Local QI parser/compiler admission closes the completion-audit gap; 102 tests, full lint/types and recorded gates pass.",
+      "observed_at": "2026-10-27T20:45:20.558303+00:00",
+      "revision": "548e36f241a9fe1a33c086b0bccc111ec3eaa375",
+      "evidence": [
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+          "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+          "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/local-toolchain.json",
+          "sha256": "0128d96fac75347d23f3cfce0ffdce341a3315d5bf135e5a8034cdbf368fa37a"
+        },
+        {
+          "ref": "scripts/experiment_toolchain.py",
+          "sha256": "1b2a6ee4da268e1424c56a5b0891b35bb1d7d8d34587ef9c19793c04d472edfa"
+        },
+        {
+          "ref": "tests/scripts/test_experiment_toolchain.py",
+          "sha256": "020a623026601699463bb03290a63c5250494e067ad10ef35f14e38741f9980d"
+        },
+        {
+          "ref": "docs/design/quantum-experiment-conformance.md",
+          "sha256": "ca73bafcf4a2481b2e7a4919043b1f2d375568cf3f5feb0d65fd5077223f9f88"
+        },
+        {
+          "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+          "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
         }
       ]
     }

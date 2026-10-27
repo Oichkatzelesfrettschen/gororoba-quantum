@@ -9,11 +9,11 @@
   "state": "closed",
   "reconciliation": {
     "status": "verified",
-    "note": "Scope follows the approved five-experiment plan and checked repository sources; acquisition authority stays with provider cases."
+    "note": "All scoped mathematical, operator, payload, analysis and local compiler checks pass at the recorded source. Acquisition and physical interpretation remain outside this completed software scope."
   },
   "scope": "Resolve finite filtering estimands and record missing infinite-group operator and convergence contracts. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Use the retained review procedure to qualify and separately approve a prospective provider acquisition; the completed implementation authorizes no execution.",
+  "next_action": "Use the retained acquisition review to qualify and separately approve a prospective run; software completion grants no execution authority.",
   "steps": [
     {
       "id": "separate-estimands",
@@ -40,6 +40,30 @@
               "sha256": "ee1f94173910604fe36372e686ac6c3e1c7a949293af9e55b61ce55dfeb0b33e"
             }
           ]
+        },
+        {
+          "scope_sha256": "8e2f041228b8d3218e7e37bdc6ae796970165cddba4446832de4a4a78f432167",
+          "result": "Exact projector and approximate-filter examples distinguish expectation, return probability, unnormalized success and normalized LCU success. Revalidated with the 102-test suite and current source-bound evidence; provider execution remains separate.",
+          "observed_at": "2026-10-27T20:45:20.558303+00:00",
+          "revision": "548e36f241a9fe1a33c086b0bccc111ec3eaa375",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/experiment_references.py",
+              "sha256": "f8e9d874da893e63c0e96d50f5cd317c2677023fd8529676748a657d2bbee0d7"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/cases/reference.json",
+              "sha256": "9439f7af9c6e63795da74b2760ca2e6608d8a02fdc78dd707c650303802c8b07"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_references.py",
+              "sha256": "ee1f94173910604fe36372e686ac6c3e1c7a949293af9e55b61ce55dfeb0b33e"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            }
+          ]
         }
       ]
     },
@@ -62,6 +86,26 @@
             {
               "ref": "docs/notes/papers/openai-2026-kadison-kaplansky-projection.md",
               "sha256": "aaa4bb527368771c6529545369c7fab713b852bbb6f531a8ab3219edd980c9ba"
+            }
+          ]
+        },
+        {
+          "scope_sha256": "4a021d4b2e50c77a6589ae3bd41139dce791fd7c4843508071d3364de69d1da9",
+          "result": "The report identifies missing operator entries, word convention, finite-boundary rule, block encoding and quantitative truncation guarantees. Revalidated with the 102-test suite and current source-bound evidence; provider execution remains separate.",
+          "observed_at": "2026-10-27T20:45:20.558303+00:00",
+          "revision": "548e36f241a9fe1a33c086b0bccc111ec3eaa375",
+          "evidence": [
+            {
+              "ref": "docs/design/quantum-experiment-conformance.md",
+              "sha256": "ca73bafcf4a2481b2e7a4919043b1f2d375568cf3f5feb0d65fd5077223f9f88"
+            },
+            {
+              "ref": "docs/notes/papers/openai-2026-kadison-kaplansky-projection.md",
+              "sha256": "aaa4bb527368771c6529545369c7fab713b852bbb6f531a8ab3219edd980c9ba"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
             }
           ]
         }
@@ -88,12 +132,32 @@
               "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
             }
           ]
+        },
+        {
+          "scope_sha256": "d1a18e5cafe18253ee9603ad40d1c658b19e38a26550f57373cefe635025c3ad",
+          "result": "The infinite-group acquisition remains outside admission; a finite-filter benchmark requires a separately scoped proposal and convergence contract. Revalidated with the 102-test suite and current source-bound evidence; provider execution remains separate.",
+          "observed_at": "2026-10-27T20:45:20.558303+00:00",
+          "revision": "548e36f241a9fe1a33c086b0bccc111ec3eaa375",
+          "evidence": [
+            {
+              "ref": "docs/design/quantum-experiment-conformance.md",
+              "sha256": "ca73bafcf4a2481b2e7a4919043b1f2d375568cf3f5feb0d65fd5077223f9f88"
+            },
+            {
+              "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+              "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            }
+          ]
         }
       ]
     }
   ],
   "disposition": "completed",
-  "resolution": "Completed the bounded software and investigation obligations with exact references, validated cases, analyzers and retained receipts. Provider acquisition, runtime forecasts, optical qualification and approval remain separate authorities and are explicitly pending in the acquisition review.",
+  "resolution": "Completed bounded software and investigation scope with exact references, 187 prospective provider cases, validated analysis, full local QI parser/compiler replay and retained receipts. Runtime forecasts, independent optical qualification, approval and acquisition remain separate authorities.",
   "receipts": [
     {
       "scope_sha256": "0daef7bd48cc11dcbcf67f2957733435578003cb8e068da5672d8556acf748d6",
@@ -116,6 +180,42 @@
         {
           "ref": "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json",
           "sha256": "444c161023e21640b17ac38ad4505d7b1361b1ca843c97e7117e40ab475e37ef"
+        }
+      ]
+    },
+    {
+      "scope_sha256": "0daef7bd48cc11dcbcf67f2957733435578003cb8e068da5672d8556acf748d6",
+      "result": "All three obligations have current receipts. Local QI parser/compiler admission closes the completion-audit gap; 102 tests, full lint/types and recorded gates pass.",
+      "observed_at": "2026-10-27T20:45:20.558303+00:00",
+      "revision": "548e36f241a9fe1a33c086b0bccc111ec3eaa375",
+      "evidence": [
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+          "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+          "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/local-toolchain.json",
+          "sha256": "0128d96fac75347d23f3cfce0ffdce341a3315d5bf135e5a8034cdbf368fa37a"
+        },
+        {
+          "ref": "scripts/experiment_toolchain.py",
+          "sha256": "1b2a6ee4da268e1424c56a5b0891b35bb1d7d8d34587ef9c19793c04d472edfa"
+        },
+        {
+          "ref": "tests/scripts/test_experiment_toolchain.py",
+          "sha256": "020a623026601699463bb03290a63c5250494e067ad10ef35f14e38741f9980d"
+        },
+        {
+          "ref": "docs/design/quantum-experiment-conformance.md",
+          "sha256": "ca73bafcf4a2481b2e7a4919043b1f2d375568cf3f5feb0d65fd5077223f9f88"
+        },
+        {
+          "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+          "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
         }
       ]
     }
