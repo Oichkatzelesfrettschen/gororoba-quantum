@@ -195,3 +195,37 @@ replaced by better ones:
    verified, structure group identified with a proof.
 5. **Invariants and equivalence classes (deliverable 4).**
 6. **Section 4 questions**, interleaved: run the cheapest probes as soon as the needed tools exist.
+
+## Round 2: review fixes and replay gates (orchestrator, 2026-10-26)
+
+Deliverables 1-4 are complete and committed (through a4f9127). The critical review at
+[docs/archive/reviews/2026-10-26-a5-kernel-bundles-critical.md](../archive/reviews/2026-10-26-a5-kernel-bundles-critical.md)
+found no fatal defect; the independent verifier's results, when they arrive, are folded in here. Fix the following
+in the existing scripts; the goal is that every README number is either computed and compared by the script's pass
+flag, or labeled as an argument in the README and ledger.
+
+1. **SERIOUS 1, `bundle_invariants.py` certifies its own constants.** Replace each literal that carries a conclusion
+   (`graph_circle_section`, `stable_trivial`, `reduced_class`, `standard_doublets`, the adjacency doublet counts, the
+   characteristic-class strings) by a value computed from the committed producer records it already reads, or by an
+   exact computation; where a step is a proof (cancellation, Hodgkin), keep it as a documented argument and label it
+   **Inferred**, never a pass-flag literal. Rebuild the three mutations so each perturbs an input (a representation
+   multiplicity read from a producer record, a branching coefficient, a K-relation) and fails because the downstream
+   computation changes.
+2. **SERIOUS 2, hand-typed inputs labeled Observed.** In `nullity_sixteen_bundle.py` derive `fundamental_restriction`,
+   `adjoint_restriction` and `euler_boundary` exactly (restrict the stabilizer su(2) generators to Im(O) and to the
+   adjoint action on the 14 derivations and read the Casimir spectra; the review's probe shows this is cheap). In
+   `v_topology_representation.py` compute `square_root_winding` exactly or label it and the cohomology dictionary
+   **Inferred**. Correct the ledger labels.
+3. **SERIOUS 3 and the other serial loops.** Pool `_center_dimension` and `_orbit_dimensions` in `kernel_symmetry.py`
+   and the independent mutation builds inside every `self_test` through `parallel.ordered_map`.
+4. **SLOPPY 4-6.** Replace the clutching table's even/odd criterion (GL(k, C) is connected) by the statement that
+   triviality comes from reduced K^0 = 0 plus cancellation, and cite pi_6(U(6)) = 0 where the obstruction is meant.
+   Give B9's simple-transitivity step its argument (special triple plus connectedness of the B9 unit section) in the
+   README. State the exact cancellation lemma used and make the code test the same inequality; cite Hodgkin, the
+   cancellation lemma and Bott periodicity by a standard reference.
+5. **Replay gates.** Give every producer a `--check PATH` mode that recomputes its record and exits nonzero unless the
+   fresh JSON equals the file byte for byte (the pattern of `scripts/a5_stiefel_pfaffian_germs.py --check`). Keep each
+   `--check` under 15 s on this host with `GOROROBA_WORKERS` unset. The orchestrator adds the ci/gates.json entries.
+
+After the fixes, rerun every `--out`, `--self-test` (normal and -O), every `test_*.py`, ruff, mypy, and record a
+ledger row per fix. The same rules as before apply: no staging or commits, the orchestrator reviews and commits.
