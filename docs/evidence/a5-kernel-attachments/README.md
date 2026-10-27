@@ -160,6 +160,55 @@ Evidence:
 [`first-order-normal-cones-result.json`](first-order-normal-cones-result.json), and the
 [ledger](ledger.md#ledger-rows).
 
+## Holomorphic Schur blow-ups reproduce all eight resolved first-order images
+
+The exact [`holomorphic_gauss_fibers.py`](holomorphic_gauss_fibers.py) replay constructs the holomorphic `C_z`
+matrix on the path-supported transverse slice of each first-order-resolved incidence. At every boundary point,
+`C_z` has rank eight and the bordered matrix has rank ten. An exact principal eight-dimensional block `B(t)` has a
+nonzero Pfaffian at the origin. In the fixed complement-plus-kernel basis, the replay forms the cleared seven-by-seven
+Schur numerator
+
+`Pf(B) D + C^T adj_Pf(B) C`.
+
+Its 21 upper-triangle entries have common origin order one, total degree at most five, and at most 83 terms in either
+Gaussian-rational component. Direct polynomial multiplication verifies `B adj_Pf(B)=Pf(B) I`, skew-symmetry, and
+agreement between the exceptional restriction and the committed bordered first-order form.
+
+The ordinary blow-up chart with exceptional coordinate `t_j` substitutes `t_j=e` and every other slice coordinate
+as `e u_k`, removes the common factor `e`, and sets `e=0`. The producer implements the resulting exceptional
+coordinates by taking the degree-one homogeneous Schur terms and setting `t_j=1`. Singular checks every affine
+exceptional chart first modulo 32003 and then over `Q(i)`. Every nonempty chart is basepoint-free, every rank-four
+Pfaffian vanishes on the exceptional divisor, and the two characteristics give the same image invariants:
+
+| Incidence | Holomorphic exceptional fiber: projective dimension, degree, components |
+| --- | --- |
+| E8-bar to `B9` | 1, 2, 1 |
+| E8-bar to `V` | 2, 2, 2 |
+| `Iso` to `B9` | 1, 1, 1 |
+| `W8` to `B9` | 2, 1, 1 |
+| `X_+` to `B9` | 0, 1, 1 |
+| `X_+` to `V^a_+` | 2, 2, 2 |
+| `X_-` to `B9` | 0, 1, 1 |
+| `X_-` to `V^a_-` | 2, 2, 2 |
+
+These dimension, degree, and component triples equal the committed first-order image triples. All 17 retained arc
+directions give a nonzero exceptional point. Because the exceptional coordinates have no projective basepoint on
+these eight tangent cones, the holomorphic kernel map extends after the single ordinary blow-up, and its exceptional
+fiber is the projectivization of the displayed image. The replay does not cover the seven incidences with a
+first-order base locus, variation along a boundary orbit, or the global bordered-kernel Gauss fiber beyond the
+holomorphic-kernel identification established on the retained sample set.
+
+The falsifier was a wrong boundary rank or zero pivot Pfaffian; a failed Pfaffian-adjugate, skewness, or bordered-form
+comparison; a surviving rank-four Pfaffian; a nonempty exceptional chart retaining a basepoint; a modular or rational
+dimension, degree, or component count differing from the committed image; a retained arc with zero exceptional
+coordinates; or a derivative-input mutation that leaves the map resolved. Deleting the `t2` coefficient from the
+`W8`-to-`B9` holomorphic slice input creates a one-dimensional affine degeneracy locus and a basepoint in chart two
+in both characteristics. The successful capped run took 0.82 seconds wall time and 66,868 KiB peak resident memory.
+Two prior capped attempts stopped before retention: the first exposed an unpicklable task-aggregation factory at
+0.61 seconds and 40,052 KiB, and the second exposed a python-flint integer at JSON serialization at 0.83 seconds and
+66,688 KiB. Evidence: [`holomorphic-gauss-fibers-result.json`](holomorphic-gauss-fibers-result.json) and the
+[ledger](ledger.md#ledger-rows).
+
 ## Second jets can change the limiting plane on a fixed first-order direction
 
 The seven exceptional first-order rows need the Schur-corrected form
@@ -297,6 +346,12 @@ prlimit --as=17179869184 -- "$PYTHON" -B -W error -O \
     docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --self-test
 prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py \
     --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json
+prlimit --as=17179869184 -- "$PYTHON" -B -W error \
+    docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py --self-test
+prlimit --as=17179869184 -- "$PYTHON" -B -W error -O \
+    docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py --self-test
+prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py \
+    --check docs/evidence/a5-kernel-attachments/holomorphic-gauss-fibers-result.json
 "$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --self-test
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-attachments/path_supported_basepoints.py \

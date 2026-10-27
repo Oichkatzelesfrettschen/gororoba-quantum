@@ -1,0 +1,4059 @@
+{
+  "falsifier": "A boundary C_z block has the wrong rank or zero pivot Pfaffian; the Pfaffian-adjugate or Schur-skew identity fails; the exceptional restriction differs from the bordered first-order form; a nonempty ordinary-blow-up chart retains a basepoint; a rank-four Pfaffian survives; the modular or rational fiber dimension, degree, or component count differs from the committed first-order image; a retained arc has no exceptional image; or deleting the W8-to-B9 t2 derivative leaves the blow-up resolved.",
+  "incidences": [
+    {
+      "boundary_orbit": "B9",
+      "c_schur_complement": {
+        "boundary_bordered_rank": 10,
+        "boundary_c_rank": 8,
+        "boundary_kernel_dimension": 7,
+        "common_origin_order": 1,
+        "complementary_pivot_indices": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          8,
+          9,
+          11
+        ],
+        "coordinate_count": 21,
+        "coordinate_sha256": "b253735a73350a638721a7f717b5bb8f5d4be5575ba310569f55bbca7246abd3",
+        "exceptional_restriction_matches_bordered_first_order_form": true,
+        "independent_leading_coordinate_count": 6,
+        "independent_leading_coordinate_indices": [
+          1,
+          3,
+          5,
+          12,
+          14,
+          19
+        ],
+        "linear_coordinate_matrix": [
+          [
+            [
+              "0",
+              "-884"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-1508"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "52"
+            ]
+          ],
+          [
+            [
+              "0",
+              "-338"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-542"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "58"
+            ]
+          ],
+          [
+            [
+              "-754",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-1222",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "26",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "422",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-458",
+              "0"
+            ],
+            [
+              "28",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-702"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "754"
+            ],
+            [
+              "0",
+              "-52"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "8"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        ],
+        "maximum_component_terms": 71,
+        "maximum_total_degree": 5,
+        "pfaffian_adjugate_identity": true,
+        "pivot_pfaffian_at_origin": [
+          "-52",
+          "0"
+        ],
+        "schur_numerator_skew": true
+      },
+      "canonical_path_checks": [
+        {
+          "approach": "rank-three-cone-line-1",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "8"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "E8bar->B9",
+          "pass": true
+        },
+        {
+          "approach": "rank-three-cone-line-2",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "56",
+              "0"
+            ],
+            [
+              "0",
+              "-104"
+            ],
+            [
+              "0",
+              "8"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "E8bar->B9",
+          "pass": true
+        }
+      ],
+      "canonical_paths_pass": true,
+      "committed_first_order_image": {
+        "affine_dimension": 2,
+        "component_count": 1,
+        "degree": 2,
+        "generators_in_independent_form_coordinates": [
+          "y3",
+          "y2",
+          "y1",
+          "845*y4^2+(-754*I)*y4*y5-165*y5^2+(1014*I)*y4*y6+494*y5*y6"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 1
+      },
+      "comparison": {
+        "expected_affine_dimension_degree_components": [
+          2,
+          2,
+          1
+        ],
+        "modular_and_rational_invariants_agree": true,
+        "modular_matches_committed_image": true,
+        "rational_matches_committed_image": true
+      },
+      "explicit_blowup": {
+        "center": "slice origin",
+        "exceptional_power_removed": 1,
+        "modular": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 6,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": false,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": true,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": false,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            }
+          ],
+          "image_affine_dimension": 2,
+          "image_component_count": 1,
+          "image_degree": 2,
+          "image_generator_sha256": "1c379f849687b01e6ab8b70c7a95b60283d760b11847c594808cabb5e061bcad",
+          "image_generators": [
+            "y3",
+            "y2",
+            "y1",
+            "y4^2+(5415*I)*y4*y5-4545*y5^2+(-12800*I)*y4*y6+1970*y5*y6"
+          ],
+          "image_projective_dimension": 1,
+          "nonempty_chart_count": 3,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "modular_prime": 32003,
+        "one_blowup_resolves": true,
+        "rational": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 6,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": false,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": true,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": false,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            }
+          ],
+          "image_affine_dimension": 2,
+          "image_component_count": 1,
+          "image_degree": 2,
+          "image_generator_sha256": "9159b2b198d8303cb46443140754f828eaa3be076c608075e50736fa3b454268",
+          "image_generators": [
+            "y3",
+            "y2",
+            "y1",
+            "845*y4^2+(-754*I)*y4*y5-165*y5^2+(1014*I)*y4*y6+494*y5*y6"
+          ],
+          "image_projective_dimension": 1,
+          "nonempty_chart_count": 3,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "secondary_blowup_required": false
+      },
+      "incidence": "E8bar->B9",
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "slice_dimension": 6,
+      "slice_parameterization": "z(t)=z_0+sum_j t_j e_(slice_column_j) over C; the retained tangent-cone ideal cuts the exceptional divisor of the ordinary blow-up at t=0",
+      "source_orbit": "E8bar",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 2,
+        "generators": [
+          "t6",
+          "t3",
+          "t1",
+          "779*t2^2-1754*t2*t4+987*t4^2-t5^2"
+        ],
+        "multiplicity": 2
+      }
+    },
+    {
+      "boundary_orbit": "V",
+      "c_schur_complement": {
+        "boundary_bordered_rank": 10,
+        "boundary_c_rank": 8,
+        "boundary_kernel_dimension": 7,
+        "common_origin_order": 1,
+        "complementary_pivot_indices": [
+          0,
+          7,
+          1,
+          9,
+          3,
+          11,
+          5,
+          12
+        ],
+        "coordinate_count": 21,
+        "coordinate_sha256": "aca868756afe1938e6e695ebfe1177f17960a4eb5e789a1c2aab3a33e52e1fe3",
+        "exceptional_restriction_matches_bordered_first_order_form": true,
+        "independent_leading_coordinate_count": 7,
+        "independent_leading_coordinate_indices": [
+          0,
+          1,
+          2,
+          6,
+          16,
+          17,
+          20
+        ],
+        "linear_coordinate_matrix": [
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "64"
+            ],
+            [
+              "0",
+              "64"
+            ],
+            [
+              "0",
+              "-64"
+            ],
+            [
+              "0",
+              "-64"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-64",
+              "0"
+            ],
+            [
+              "64",
+              "0"
+            ],
+            [
+              "64",
+              "0"
+            ],
+            [
+              "-64",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "64"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "128",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-64",
+              "0"
+            ],
+            [
+              "-64",
+              "0"
+            ],
+            [
+              "64",
+              "0"
+            ],
+            [
+              "-64",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-64"
+            ],
+            [
+              "0",
+              "-64"
+            ],
+            [
+              "0",
+              "-64"
+            ],
+            [
+              "0",
+              "64"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "128",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        ],
+        "maximum_component_terms": 83,
+        "maximum_total_degree": 5,
+        "pfaffian_adjugate_identity": true,
+        "pivot_pfaffian_at_origin": [
+          "0",
+          "64"
+        ],
+        "schur_numerator_skew": true
+      },
+      "canonical_path_checks": [
+        {
+          "approach": "boundary-stabilizer-unipotent-21",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-256"
+            ],
+            [
+              "256",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "E8bar->V",
+          "pass": true
+        },
+        {
+          "approach": "transverse-line-1",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "256",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "E8bar->V",
+          "pass": true
+        },
+        {
+          "approach": "transverse-line-2",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "256",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "E8bar->V",
+          "pass": true
+        }
+      ],
+      "canonical_paths_pass": true,
+      "committed_first_order_image": {
+        "affine_dimension": 3,
+        "component_count": 2,
+        "degree": 2,
+        "generators_in_independent_form_coordinates": [
+          "y3",
+          "y4*y7",
+          "y2*y7",
+          "y1*y7+(I)*y2*y7",
+          "y4*y6",
+          "y2*y6",
+          "y1*y6+(I)*y2*y6",
+          "y4*y5+(I)*y4*y6",
+          "y2*y5+(I)*y2*y6",
+          "y1*y5+(I)*y2*y5+(I)*y1*y6-y2*y6"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 2
+      },
+      "comparison": {
+        "expected_affine_dimension_degree_components": [
+          3,
+          2,
+          2
+        ],
+        "modular_and_rational_invariants_agree": true,
+        "modular_matches_committed_image": true,
+        "rational_matches_committed_image": true
+      },
+      "explicit_blowup": {
+        "center": "slice origin",
+        "exceptional_power_removed": 1,
+        "modular": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 7,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": true,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": true,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": true,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": true,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 7,
+              "exceptional_coordinate": "t7",
+              "nonempty": false,
+              "substitution": "t7=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t7=1"
+            }
+          ],
+          "image_affine_dimension": 3,
+          "image_component_count": 2,
+          "image_degree": 2,
+          "image_generator_sha256": "83baaa1e8bd193c65538d379d78d8bcdbdc72d9cf41851180b1910c745090e25",
+          "image_generators": [
+            "y3",
+            "y4*y7",
+            "y2*y7",
+            "y1*y7",
+            "y4*y6",
+            "y2*y6",
+            "y1*y6",
+            "y4*y5",
+            "y2*y5",
+            "y1*y5"
+          ],
+          "image_projective_dimension": 2,
+          "nonempty_chart_count": 6,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "modular_prime": 32003,
+        "one_blowup_resolves": true,
+        "rational": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 7,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": true,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": true,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": true,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": true,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 7,
+              "exceptional_coordinate": "t7",
+              "nonempty": false,
+              "substitution": "t7=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t7=1"
+            }
+          ],
+          "image_affine_dimension": 3,
+          "image_component_count": 2,
+          "image_degree": 2,
+          "image_generator_sha256": "83baaa1e8bd193c65538d379d78d8bcdbdc72d9cf41851180b1910c745090e25",
+          "image_generators": [
+            "y3",
+            "y4*y7",
+            "y2*y7",
+            "y1*y7",
+            "y4*y6",
+            "y2*y6",
+            "y1*y6",
+            "y4*y5",
+            "y2*y5",
+            "y1*y5"
+          ],
+          "image_projective_dimension": 2,
+          "nonempty_chart_count": 6,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "secondary_blowup_required": false
+      },
+      "incidence": "E8bar->V",
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "slice_dimension": 7,
+      "slice_parameterization": "z(t)=z_0+sum_j t_j e_(slice_column_j) over C; the retained tangent-cone ideal cuts the exceptional divisor of the ordinary blow-up at t=0",
+      "source_orbit": "E8bar",
+      "tangent_cone": {
+        "component_count": 2,
+        "dimension": 3,
+        "generators": [
+          "t7",
+          "t4*t5-t4*t6-t5*t6+t6^2",
+          "t3*t5-t5^2-t3*t6+t5*t6",
+          "t2*t5-t2*t6",
+          "t3*t4+t4^2-t3*t6-t4*t6",
+          "t1*t4-t1*t6",
+          "t3^2-t4^2-t5^2+t6^2",
+          "t2*t3+t2*t4",
+          "t1*t3-t1*t5",
+          "t1*t2"
+        ],
+        "multiplicity": 2
+      }
+    },
+    {
+      "boundary_orbit": "B9",
+      "c_schur_complement": {
+        "boundary_bordered_rank": 10,
+        "boundary_c_rank": 8,
+        "boundary_kernel_dimension": 7,
+        "common_origin_order": 1,
+        "complementary_pivot_indices": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          8,
+          9,
+          11
+        ],
+        "coordinate_count": 21,
+        "coordinate_sha256": "b253735a73350a638721a7f717b5bb8f5d4be5575ba310569f55bbca7246abd3",
+        "exceptional_restriction_matches_bordered_first_order_form": true,
+        "independent_leading_coordinate_count": 6,
+        "independent_leading_coordinate_indices": [
+          1,
+          3,
+          5,
+          12,
+          14,
+          19
+        ],
+        "linear_coordinate_matrix": [
+          [
+            [
+              "0",
+              "-884"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-1508"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "52"
+            ]
+          ],
+          [
+            [
+              "0",
+              "-338"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-542"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "58"
+            ]
+          ],
+          [
+            [
+              "-754",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-1222",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "26",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "422",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-458",
+              "0"
+            ],
+            [
+              "28",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-702"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "754"
+            ],
+            [
+              "0",
+              "-52"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "8"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        ],
+        "maximum_component_terms": 71,
+        "maximum_total_degree": 5,
+        "pfaffian_adjugate_identity": true,
+        "pivot_pfaffian_at_origin": [
+          "-52",
+          "0"
+        ],
+        "schur_numerator_skew": true
+      },
+      "canonical_path_checks": [
+        {
+          "approach": "isotropic-three-plane-1",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "36",
+              "0"
+            ],
+            [
+              "0",
+              "-52"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "Iso->B9",
+          "pass": true
+        },
+        {
+          "approach": "isotropic-three-plane-2",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-880",
+              "0"
+            ],
+            [
+              "0",
+              "1456"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "Iso->B9",
+          "pass": true
+        }
+      ],
+      "canonical_paths_pass": true,
+      "committed_first_order_image": {
+        "affine_dimension": 2,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y6",
+          "y3",
+          "y2",
+          "y1"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 1
+      },
+      "comparison": {
+        "expected_affine_dimension_degree_components": [
+          2,
+          1,
+          1
+        ],
+        "modular_and_rational_invariants_agree": true,
+        "modular_matches_committed_image": true,
+        "rational_matches_committed_image": true
+      },
+      "explicit_blowup": {
+        "center": "slice origin",
+        "exceptional_power_removed": 1,
+        "modular": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 6,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": false,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": false,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": false,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            }
+          ],
+          "image_affine_dimension": 2,
+          "image_component_count": 1,
+          "image_degree": 1,
+          "image_generator_sha256": "234d5cbf08f5b97646230a1fd2e885bd6673d1ddcc5ea9c7d8875216493447ca",
+          "image_generators": [
+            "y6",
+            "y3",
+            "y2",
+            "y1"
+          ],
+          "image_projective_dimension": 1,
+          "nonempty_chart_count": 2,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "modular_prime": 32003,
+        "one_blowup_resolves": true,
+        "rational": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 6,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": false,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": false,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": false,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            }
+          ],
+          "image_affine_dimension": 2,
+          "image_component_count": 1,
+          "image_degree": 1,
+          "image_generator_sha256": "234d5cbf08f5b97646230a1fd2e885bd6673d1ddcc5ea9c7d8875216493447ca",
+          "image_generators": [
+            "y6",
+            "y3",
+            "y2",
+            "y1"
+          ],
+          "image_projective_dimension": 1,
+          "nonempty_chart_count": 2,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "secondary_blowup_required": false
+      },
+      "incidence": "Iso->B9",
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "slice_dimension": 6,
+      "slice_parameterization": "z(t)=z_0+sum_j t_j e_(slice_column_j) over C; the retained tangent-cone ideal cuts the exceptional divisor of the ordinary blow-up at t=0",
+      "source_orbit": "Iso",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 2,
+        "generators": [
+          "t6",
+          "t5",
+          "t3",
+          "t1"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "B9",
+      "c_schur_complement": {
+        "boundary_bordered_rank": 10,
+        "boundary_c_rank": 8,
+        "boundary_kernel_dimension": 7,
+        "common_origin_order": 1,
+        "complementary_pivot_indices": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          8,
+          9,
+          11
+        ],
+        "coordinate_count": 21,
+        "coordinate_sha256": "b253735a73350a638721a7f717b5bb8f5d4be5575ba310569f55bbca7246abd3",
+        "exceptional_restriction_matches_bordered_first_order_form": true,
+        "independent_leading_coordinate_count": 6,
+        "independent_leading_coordinate_indices": [
+          1,
+          3,
+          5,
+          12,
+          14,
+          19
+        ],
+        "linear_coordinate_matrix": [
+          [
+            [
+              "0",
+              "-884"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-1508"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "52"
+            ]
+          ],
+          [
+            [
+              "0",
+              "-338"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-542"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "58"
+            ]
+          ],
+          [
+            [
+              "-754",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-1222",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "26",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "422",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-458",
+              "0"
+            ],
+            [
+              "28",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-702"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "754"
+            ],
+            [
+              "0",
+              "-52"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "8"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        ],
+        "maximum_component_terms": 71,
+        "maximum_total_degree": 5,
+        "pfaffian_adjugate_identity": true,
+        "pivot_pfaffian_at_origin": [
+          "-52",
+          "0"
+        ],
+        "schur_numerator_skew": true
+      },
+      "canonical_path_checks": [
+        {
+          "approach": "opposite-null-directions-1",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-596",
+              "0"
+            ],
+            [
+              "0",
+              "988"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "W8->B9",
+          "pass": true
+        },
+        {
+          "approach": "opposite-null-directions-2",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-248",
+              "0"
+            ],
+            [
+              "0",
+              "416"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "W8->B9",
+          "pass": true
+        }
+      ],
+      "canonical_paths_pass": true,
+      "committed_first_order_image": {
+        "affine_dimension": 3,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y6",
+          "y3",
+          "y2"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 2
+      },
+      "comparison": {
+        "expected_affine_dimension_degree_components": [
+          3,
+          1,
+          1
+        ],
+        "modular_and_rational_invariants_agree": true,
+        "modular_matches_committed_image": true,
+        "rational_matches_committed_image": true
+      },
+      "explicit_blowup": {
+        "center": "slice origin",
+        "exceptional_power_removed": 1,
+        "modular": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 6,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": true,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": true,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": false,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": true,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            }
+          ],
+          "image_affine_dimension": 3,
+          "image_component_count": 1,
+          "image_degree": 1,
+          "image_generator_sha256": "6d5097896e892c82be51d0df21c3ce5b5517c2c73a5b0de3fb0adc50d4926b9f",
+          "image_generators": [
+            "y6",
+            "y3",
+            "y2"
+          ],
+          "image_projective_dimension": 2,
+          "nonempty_chart_count": 5,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "modular_prime": 32003,
+        "one_blowup_resolves": true,
+        "rational": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 6,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": true,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": true,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": false,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": true,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            }
+          ],
+          "image_affine_dimension": 3,
+          "image_component_count": 1,
+          "image_degree": 1,
+          "image_generator_sha256": "6d5097896e892c82be51d0df21c3ce5b5517c2c73a5b0de3fb0adc50d4926b9f",
+          "image_generators": [
+            "y6",
+            "y3",
+            "y2"
+          ],
+          "image_projective_dimension": 2,
+          "nonempty_chart_count": 5,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "secondary_blowup_required": false
+      },
+      "incidence": "W8->B9",
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "slice_dimension": 6,
+      "slice_parameterization": "z(t)=z_0+sum_j t_j e_(slice_column_j) over C; the retained tangent-cone ideal cuts the exceptional divisor of the ordinary blow-up at t=0",
+      "source_orbit": "W8",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 3,
+        "generators": [
+          "t5",
+          "t3+8*t6",
+          "t1+2*t3+3*t6"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "B9",
+      "c_schur_complement": {
+        "boundary_bordered_rank": 10,
+        "boundary_c_rank": 8,
+        "boundary_kernel_dimension": 7,
+        "common_origin_order": 1,
+        "complementary_pivot_indices": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          8,
+          9,
+          11
+        ],
+        "coordinate_count": 21,
+        "coordinate_sha256": "b253735a73350a638721a7f717b5bb8f5d4be5575ba310569f55bbca7246abd3",
+        "exceptional_restriction_matches_bordered_first_order_form": true,
+        "independent_leading_coordinate_count": 6,
+        "independent_leading_coordinate_indices": [
+          1,
+          3,
+          5,
+          12,
+          14,
+          19
+        ],
+        "linear_coordinate_matrix": [
+          [
+            [
+              "0",
+              "-884"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-1508"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "52"
+            ]
+          ],
+          [
+            [
+              "0",
+              "-338"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-542"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "58"
+            ]
+          ],
+          [
+            [
+              "-754",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-1222",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "26",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "422",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-458",
+              "0"
+            ],
+            [
+              "28",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-702"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "754"
+            ],
+            [
+              "0",
+              "-52"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "8"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        ],
+        "maximum_component_terms": 71,
+        "maximum_total_degree": 5,
+        "pfaffian_adjugate_identity": true,
+        "pivot_pfaffian_at_origin": [
+          "-52",
+          "0"
+        ],
+        "schur_numerator_skew": true
+      },
+      "canonical_path_checks": [
+        {
+          "approach": "fixed-null-fiber-1",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "25",
+              "0"
+            ],
+            [
+              "0",
+              "-65"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "X+->B9",
+          "pass": true
+        },
+        {
+          "approach": "fixed-null-fiber-2",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-25",
+              "0"
+            ],
+            [
+              "0",
+              "65"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "X+->B9",
+          "pass": true
+        }
+      ],
+      "canonical_paths_pass": true,
+      "committed_first_order_image": {
+        "affine_dimension": 1,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y6",
+          "13*y4+(-5*I)*y5",
+          "y3",
+          "y2",
+          "y1"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 0
+      },
+      "comparison": {
+        "expected_affine_dimension_degree_components": [
+          1,
+          1,
+          1
+        ],
+        "modular_and_rational_invariants_agree": true,
+        "modular_matches_committed_image": true,
+        "rational_matches_committed_image": true
+      },
+      "explicit_blowup": {
+        "center": "slice origin",
+        "exceptional_power_removed": 1,
+        "modular": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 6,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": false,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": false,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": false,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            }
+          ],
+          "image_affine_dimension": 1,
+          "image_component_count": 1,
+          "image_degree": 1,
+          "image_generator_sha256": "10b4c588c8c19c6e0087b423ae89dc356a8b7466c6e5837b3689a6e5c3d0ab8b",
+          "image_generators": [
+            "y6",
+            "y4+(-14771*I)*y5",
+            "y3",
+            "y2",
+            "y1"
+          ],
+          "image_projective_dimension": 0,
+          "nonempty_chart_count": 2,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "modular_prime": 32003,
+        "one_blowup_resolves": true,
+        "rational": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 6,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": false,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": false,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": false,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            }
+          ],
+          "image_affine_dimension": 1,
+          "image_component_count": 1,
+          "image_degree": 1,
+          "image_generator_sha256": "d36e7a45cc8d0e24ff271332d0b351b20a50072d80e3f3277ca80b50a925fb02",
+          "image_generators": [
+            "y6",
+            "13*y4+(-5*I)*y5",
+            "y3",
+            "y2",
+            "y1"
+          ],
+          "image_projective_dimension": 0,
+          "nonempty_chart_count": 2,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "secondary_blowup_required": false
+      },
+      "incidence": "X+->B9",
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "slice_dimension": 6,
+      "slice_parameterization": "z(t)=z_0+sum_j t_j e_(slice_column_j) over C; the retained tangent-cone ideal cuts the exceptional divisor of the ordinary blow-up at t=0",
+      "source_orbit": "X+",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 1,
+        "generators": [
+          "t6",
+          "t5",
+          "34*t3-19*t6",
+          "19*t2-21*t4",
+          "t1"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "Va+",
+      "c_schur_complement": {
+        "boundary_bordered_rank": 10,
+        "boundary_c_rank": 8,
+        "boundary_kernel_dimension": 7,
+        "common_origin_order": 1,
+        "complementary_pivot_indices": [
+          0,
+          7,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "coordinate_count": 21,
+        "coordinate_sha256": "6c00ac2ce483466c8af1596ee6e3223e1de7d0af9cf7cef6313b32443e4afcf2",
+        "exceptional_restriction_matches_bordered_first_order_form": true,
+        "independent_leading_coordinate_count": 7,
+        "independent_leading_coordinate_indices": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          16,
+          17
+        ],
+        "linear_coordinate_matrix": [
+          [
+            [
+              "2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "2"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-2"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "2"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        ],
+        "maximum_component_terms": 38,
+        "maximum_total_degree": 4,
+        "pfaffian_adjugate_identity": true,
+        "pivot_pfaffian_at_origin": [
+          "0",
+          "-1"
+        ],
+        "schur_numerator_skew": true
+      },
+      "canonical_path_checks": [
+        {
+          "approach": "null-eigenline-1",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "4",
+              "0"
+            ],
+            [
+              "0",
+              "4"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "X+->Va+",
+          "pass": true
+        },
+        {
+          "approach": "null-eigenline-2",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-4",
+              "0"
+            ],
+            [
+              "0",
+              "-4"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "X+->Va+",
+          "pass": true
+        }
+      ],
+      "canonical_paths_pass": true,
+      "committed_first_order_image": {
+        "affine_dimension": 3,
+        "component_count": 2,
+        "degree": 2,
+        "generators_in_independent_form_coordinates": [
+          "y1",
+          "y6^2+y7^2",
+          "y5*y6-y4*y7",
+          "y4*y6+y5*y7",
+          "y3*y6+y2*y7",
+          "y2*y6-y3*y7",
+          "y4^2+y5^2",
+          "y3*y4+y2*y5",
+          "y2*y4-y3*y5",
+          "y2^2+y3^2"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 2
+      },
+      "comparison": {
+        "expected_affine_dimension_degree_components": [
+          3,
+          2,
+          2
+        ],
+        "modular_and_rational_invariants_agree": true,
+        "modular_matches_committed_image": true,
+        "rational_matches_committed_image": true
+      },
+      "explicit_blowup": {
+        "center": "slice origin",
+        "exceptional_power_removed": 1,
+        "modular": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 8,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": true,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": true,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": true,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 7,
+              "exceptional_coordinate": "t7",
+              "nonempty": true,
+              "substitution": "t7=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t7=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 8,
+              "exceptional_coordinate": "t8",
+              "nonempty": false,
+              "substitution": "t8=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t8=1"
+            }
+          ],
+          "image_affine_dimension": 3,
+          "image_component_count": 2,
+          "image_degree": 2,
+          "image_generator_sha256": "26128fd1ebb9e529981e15ff6f6def7d38b79a5d827778d103991178f7c1eece",
+          "image_generators": [
+            "y1",
+            "y6^2+y7^2",
+            "y5*y6-y4*y7",
+            "y4*y6+y5*y7",
+            "y3*y6+y2*y7",
+            "y2*y6-y3*y7",
+            "y4^2+y5^2",
+            "y3*y4+y2*y5",
+            "y2*y4-y3*y5",
+            "y2^2+y3^2"
+          ],
+          "image_projective_dimension": 2,
+          "nonempty_chart_count": 6,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "modular_prime": 32003,
+        "one_blowup_resolves": true,
+        "rational": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 8,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": true,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": true,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": true,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 7,
+              "exceptional_coordinate": "t7",
+              "nonempty": true,
+              "substitution": "t7=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t7=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 8,
+              "exceptional_coordinate": "t8",
+              "nonempty": false,
+              "substitution": "t8=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t8=1"
+            }
+          ],
+          "image_affine_dimension": 3,
+          "image_component_count": 2,
+          "image_degree": 2,
+          "image_generator_sha256": "26128fd1ebb9e529981e15ff6f6def7d38b79a5d827778d103991178f7c1eece",
+          "image_generators": [
+            "y1",
+            "y6^2+y7^2",
+            "y5*y6-y4*y7",
+            "y4*y6+y5*y7",
+            "y3*y6+y2*y7",
+            "y2*y6-y3*y7",
+            "y4^2+y5^2",
+            "y3*y4+y2*y5",
+            "y2*y4-y3*y5",
+            "y2^2+y3^2"
+          ],
+          "image_projective_dimension": 2,
+          "nonempty_chart_count": 6,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "secondary_blowup_required": false
+      },
+      "incidence": "X+->Va+",
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "slice_dimension": 8,
+      "slice_parameterization": "z(t)=z_0+sum_j t_j e_(slice_column_j) over C; the retained tangent-cone ideal cuts the exceptional divisor of the ordinary blow-up at t=0",
+      "source_orbit": "X+",
+      "tangent_cone": {
+        "component_count": 2,
+        "dimension": 3,
+        "generators": [
+          "t8",
+          "t1",
+          "t6^2-t7^2",
+          "t5*t6+t4*t7",
+          "t4*t6+t5*t7",
+          "t3*t6+t2*t7",
+          "t2*t6+t3*t7",
+          "t4^2-t5^2",
+          "t3*t4-t2*t5",
+          "t2*t4-t3*t5",
+          "t2^2-t3^2"
+        ],
+        "multiplicity": 2
+      }
+    },
+    {
+      "boundary_orbit": "B9",
+      "c_schur_complement": {
+        "boundary_bordered_rank": 10,
+        "boundary_c_rank": 8,
+        "boundary_kernel_dimension": 7,
+        "common_origin_order": 1,
+        "complementary_pivot_indices": [
+          0,
+          1,
+          3,
+          4,
+          6,
+          8,
+          9,
+          11
+        ],
+        "coordinate_count": 21,
+        "coordinate_sha256": "b253735a73350a638721a7f717b5bb8f5d4be5575ba310569f55bbca7246abd3",
+        "exceptional_restriction_matches_bordered_first_order_form": true,
+        "independent_leading_coordinate_count": 6,
+        "independent_leading_coordinate_indices": [
+          1,
+          3,
+          5,
+          12,
+          14,
+          19
+        ],
+        "linear_coordinate_matrix": [
+          [
+            [
+              "0",
+              "-884"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-1508"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "52"
+            ]
+          ],
+          [
+            [
+              "0",
+              "-338"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-542"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "58"
+            ]
+          ],
+          [
+            [
+              "-754",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-1222",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "26",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "422",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-458",
+              "0"
+            ],
+            [
+              "28",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-702"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "754"
+            ],
+            [
+              "0",
+              "-52"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "8"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        ],
+        "maximum_component_terms": 71,
+        "maximum_total_degree": 5,
+        "pfaffian_adjugate_identity": true,
+        "pivot_pfaffian_at_origin": [
+          "-52",
+          "0"
+        ],
+        "schur_numerator_skew": true
+      },
+      "canonical_path_checks": [
+        {
+          "approach": "fixed-null-fiber-1",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "1089",
+              "0"
+            ],
+            [
+              "0",
+              "-2145"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "X-->B9",
+          "pass": true
+        },
+        {
+          "approach": "fixed-null-fiber-2",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-1089",
+              "0"
+            ],
+            [
+              "0",
+              "2145"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "X-->B9",
+          "pass": true
+        }
+      ],
+      "canonical_paths_pass": true,
+      "committed_first_order_image": {
+        "affine_dimension": 1,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y6",
+          "65*y4+(-33*I)*y5",
+          "y3",
+          "y2",
+          "y1"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 0
+      },
+      "comparison": {
+        "expected_affine_dimension_degree_components": [
+          1,
+          1,
+          1
+        ],
+        "modular_and_rational_invariants_agree": true,
+        "modular_matches_committed_image": true,
+        "rational_matches_committed_image": true
+      },
+      "explicit_blowup": {
+        "center": "slice origin",
+        "exceptional_power_removed": 1,
+        "modular": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 6,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": false,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": false,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": false,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            }
+          ],
+          "image_affine_dimension": 1,
+          "image_component_count": 1,
+          "image_degree": 1,
+          "image_generator_sha256": "e6de10e87975d731af2348daac45f792da5887002498ea9a37a2d05b70aaaf73",
+          "image_generators": [
+            "y6",
+            "y4+(-11817*I)*y5",
+            "y3",
+            "y2",
+            "y1"
+          ],
+          "image_projective_dimension": 0,
+          "nonempty_chart_count": 2,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "modular_prime": 32003,
+        "one_blowup_resolves": true,
+        "rational": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 6,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": false,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": false,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": false,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            }
+          ],
+          "image_affine_dimension": 1,
+          "image_component_count": 1,
+          "image_degree": 1,
+          "image_generator_sha256": "ff57afc90a7dfde1eca22bb5186bc90e4003a4e754996425e32c1e21a577671b",
+          "image_generators": [
+            "y6",
+            "65*y4+(-33*I)*y5",
+            "y3",
+            "y2",
+            "y1"
+          ],
+          "image_projective_dimension": 0,
+          "nonempty_chart_count": 2,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "secondary_blowup_required": false
+      },
+      "incidence": "X-->B9",
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "slice_dimension": 6,
+      "slice_parameterization": "z(t)=z_0+sum_j t_j e_(slice_column_j) over C; the retained tangent-cone ideal cuts the exceptional divisor of the ordinary blow-up at t=0",
+      "source_orbit": "X-",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 1,
+        "generators": [
+          "t6",
+          "t5",
+          "34*t3+41*t6",
+          "41*t2-47*t4",
+          "t1"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "Va-",
+      "c_schur_complement": {
+        "boundary_bordered_rank": 10,
+        "boundary_c_rank": 8,
+        "boundary_kernel_dimension": 7,
+        "common_origin_order": 1,
+        "complementary_pivot_indices": [
+          0,
+          7,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "coordinate_count": 21,
+        "coordinate_sha256": "7da3b06383f6c8e50620fdcca230951b4182cbeaabcbc89f9d04e0b181fd7525",
+        "exceptional_restriction_matches_bordered_first_order_form": true,
+        "independent_leading_coordinate_count": 7,
+        "independent_leading_coordinate_indices": [
+          6,
+          7,
+          8,
+          9,
+          10,
+          16,
+          17
+        ],
+        "linear_coordinate_matrix": [
+          [
+            [
+              "-2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-2"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "2"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-2",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "-2"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ]
+        ],
+        "maximum_component_terms": 38,
+        "maximum_total_degree": 4,
+        "pfaffian_adjugate_identity": true,
+        "pivot_pfaffian_at_origin": [
+          "0",
+          "1"
+        ],
+        "schur_numerator_skew": true
+      },
+      "canonical_path_checks": [
+        {
+          "approach": "null-eigenline-1",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "-4",
+              "0"
+            ],
+            [
+              "0",
+              "-4"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "X-->Va-",
+          "pass": true
+        },
+        {
+          "approach": "null-eigenline-2",
+          "committed_first_order_plane_matches_retained_limit": true,
+          "exceptional_coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "4",
+              "0"
+            ],
+            [
+              "0",
+              "4"
+            ],
+            [
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "exceptional_point_defined": true,
+          "incidence": "X-->Va-",
+          "pass": true
+        }
+      ],
+      "canonical_paths_pass": true,
+      "committed_first_order_image": {
+        "affine_dimension": 3,
+        "component_count": 2,
+        "degree": 2,
+        "generators_in_independent_form_coordinates": [
+          "y1",
+          "y6^2+y7^2",
+          "y5*y6-y4*y7",
+          "y4*y6+y5*y7",
+          "y3*y6+y2*y7",
+          "y2*y6-y3*y7",
+          "y4^2+y5^2",
+          "y3*y4+y2*y5",
+          "y2*y4-y3*y5",
+          "y2^2+y3^2"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 2
+      },
+      "comparison": {
+        "expected_affine_dimension_degree_components": [
+          3,
+          2,
+          2
+        ],
+        "modular_and_rational_invariants_agree": true,
+        "modular_matches_committed_image": true,
+        "rational_matches_committed_image": true
+      },
+      "explicit_blowup": {
+        "center": "slice origin",
+        "exceptional_power_removed": 1,
+        "modular": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 8,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": true,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": true,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": true,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 7,
+              "exceptional_coordinate": "t7",
+              "nonempty": true,
+              "substitution": "t7=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t7=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 8,
+              "exceptional_coordinate": "t8",
+              "nonempty": false,
+              "substitution": "t8=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t8=1"
+            }
+          ],
+          "image_affine_dimension": 3,
+          "image_component_count": 2,
+          "image_degree": 2,
+          "image_generator_sha256": "26128fd1ebb9e529981e15ff6f6def7d38b79a5d827778d103991178f7c1eece",
+          "image_generators": [
+            "y1",
+            "y6^2+y7^2",
+            "y5*y6-y4*y7",
+            "y4*y6+y5*y7",
+            "y3*y6+y2*y7",
+            "y2*y6-y3*y7",
+            "y4^2+y5^2",
+            "y3*y4+y2*y5",
+            "y2*y4-y3*y5",
+            "y2^2+y3^2"
+          ],
+          "image_projective_dimension": 2,
+          "nonempty_chart_count": 6,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "modular_prime": 32003,
+        "one_blowup_resolves": true,
+        "rational": {
+          "affine_degeneracy_degree": 1,
+          "affine_degeneracy_dimension": 0,
+          "chart_count": 8,
+          "charts": [
+            {
+              "base_empty": true,
+              "chart": 1,
+              "exceptional_coordinate": "t1",
+              "nonempty": false,
+              "substitution": "t1=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t1=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 2,
+              "exceptional_coordinate": "t2",
+              "nonempty": true,
+              "substitution": "t2=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t2=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 3,
+              "exceptional_coordinate": "t3",
+              "nonempty": true,
+              "substitution": "t3=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t3=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 4,
+              "exceptional_coordinate": "t4",
+              "nonempty": true,
+              "substitution": "t4=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t4=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 5,
+              "exceptional_coordinate": "t5",
+              "nonempty": true,
+              "substitution": "t5=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t5=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 6,
+              "exceptional_coordinate": "t6",
+              "nonempty": true,
+              "substitution": "t6=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t6=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 7,
+              "exceptional_coordinate": "t7",
+              "nonempty": true,
+              "substitution": "t7=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t7=1"
+            },
+            {
+              "base_empty": true,
+              "chart": 8,
+              "exceptional_coordinate": "t8",
+              "nonempty": false,
+              "substitution": "t8=e and every other slice coordinate=e*u; divide the Schur coordinates by e and set e=0, equivalently use their linear parts with t8=1"
+            }
+          ],
+          "image_affine_dimension": 3,
+          "image_component_count": 2,
+          "image_degree": 2,
+          "image_generator_sha256": "26128fd1ebb9e529981e15ff6f6def7d38b79a5d827778d103991178f7c1eece",
+          "image_generators": [
+            "y1",
+            "y6^2+y7^2",
+            "y5*y6-y4*y7",
+            "y4*y6+y5*y7",
+            "y3*y6+y2*y7",
+            "y2*y6-y3*y7",
+            "y4^2+y5^2",
+            "y3*y4+y2*y5",
+            "y2*y4-y3*y5",
+            "y2^2+y3^2"
+          ],
+          "image_projective_dimension": 2,
+          "nonempty_chart_count": 6,
+          "nonempty_charts_base_free": true,
+          "rank_four_pfaffians_vanish": true
+        },
+        "secondary_blowup_required": false
+      },
+      "incidence": "X-->Va-",
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "slice_dimension": 8,
+      "slice_parameterization": "z(t)=z_0+sum_j t_j e_(slice_column_j) over C; the retained tangent-cone ideal cuts the exceptional divisor of the ordinary blow-up at t=0",
+      "source_orbit": "X-",
+      "tangent_cone": {
+        "component_count": 2,
+        "dimension": 3,
+        "generators": [
+          "t8",
+          "t1",
+          "t6^2-t7^2",
+          "t5*t6+t4*t7",
+          "t4*t6+t5*t7",
+          "t3*t6+t2*t7",
+          "t2*t6+t3*t7",
+          "t4^2-t5^2",
+          "t3*t4-t2*t5",
+          "t2*t4-t3*t5",
+          "t2^2-t3^2"
+        ],
+        "multiplicity": 2
+      }
+    }
+  ],
+  "inputs": {
+    "docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json": "68488363760fef1c904356f4cead3a1fa2d69983eaa3ce653c9b6b64b31ae099",
+    "docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json": "756dc35bcd99179c22085daaea9b0026c7c7f87d6909a1152ef8b189f989d843",
+    "docs/evidence/a5-kernel-attachments/holomorphic_gauss_fibers.py": "ade16627774974b2f3b3ea7565af4e18249bbbd9f95481ac91e735498e061044",
+    "docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py": "158288ec239ecbe4e63ad6eaf4bef472894ac539ee0fe15dc56d29d467c8e7dd",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0",
+    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48"
+  },
+  "mutation_control": {
+    "detected": true,
+    "input_change": "delete the t2 coefficient from the holomorphic slice input z(t) before constructing C_z and its Schur complement",
+    "modular_affine_degeneracy_dimension": 1,
+    "modular_and_rational_mutation_outcomes_agree": true,
+    "modular_nonempty_base_charts": [
+      2
+    ],
+    "modular_prime": 32003,
+    "mutated_one_blowup_resolves": false,
+    "name": "omit_w8_b9_t2_c_derivative",
+    "omitted_slice_variable_one_based": 2,
+    "rational_affine_degeneracy_dimension": 1,
+    "rational_nonempty_base_charts": [
+      2
+    ],
+    "target": "W8->B9"
+  },
+  "pass": true,
+  "schema": "a5-kernel-attachments-holomorphic-gauss-fibers-v1",
+  "scope": {
+    "claim_boundary": "The record identifies the complex-algebraic exceptional fiber of the holomorphic kernel map at the selected path-supported basepoint. It does not cover the seven higher-order incidences or variation along a boundary orbit.",
+    "passage": "the eight first-order-resolved nullity-8 to nullity-12 incidences"
+  },
+  "summary": {
+    "canonical_path_count": 17,
+    "incidence_count": 8,
+    "modular_prime": 32003,
+    "one_blowup_resolves_count": 8,
+    "secondary_blowup_count": 0
+  },
+  "tools": {
+    "python_flint": "0.9.0",
+    "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00"
+  }
+}
