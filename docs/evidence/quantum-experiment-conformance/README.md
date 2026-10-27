@@ -25,8 +25,10 @@ The Fano and spectral outputs complete bounded mathematical investigations. Thei
 remain outside the admitted cases. The primary dimension-six hardware family uses the three reference bases;
 Tao is an offline candidate comparison. Hardware results remain prospective throughout this bundle.
 
-The [validation receipt](validation.json) records source revision, runtime versions, 85 focused tests,
-full lint/types, gate measurements and the measured compiler-only probability shifts.
+The [canonical validation receipt](validation-canonical.json) binds the runner-image baseline, parallel
+regeneration, all 384 local compiler admissions, 169 focused and registry tests, full Ruff and mypy.
+The historical [validation receipt](validation.json) retains its source revision, runtime versions,
+85 focused tests, gate measurements and measured compiler-only probability shifts.
 
 ## Deterministic replay
 
