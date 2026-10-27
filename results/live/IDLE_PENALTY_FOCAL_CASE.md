@@ -61,9 +61,9 @@ calibration that admits it, and the case reports which focal qubit the calibrati
   per job, 50 s in total.
 - Expected credits: none beyond the plan's QPU seconds.
 - Seeds: one ANU draw at binding time serves the repeat (indices 0 and 1), job X (2 and 3) and job Y (4 and 5).
-  X's first binding dry run (`results/live/2026-10-27T155932.900236Z`, indices 2 and 3) failed its `--self-check`:
-  the quiet null read "present" at t -3.92 on Aer predictions, a shot-noise excursion of the simulated null. Its
-  redo took indices 6 and 7 and passed; indices 2 and 3 seed no submitted run.
+  X's first binding dry run (2026-10-27T15:59:32Z, indices 2 and 3, not retained) failed its `--self-check`: the
+  quiet null read "present" at t -3.92 on Aer predictions, a shot-noise excursion of the simulated null. Its redo
+  took indices 6 and 7 and passed; indices 2 and 3 seed no retained run.
 - Order: the stability repeat submits first, then X, then Y, all from dry runs made under one calibration. No 50 us
   fallback; a zero-execution service error stops the remaining jobs and goes to the owner.
 
