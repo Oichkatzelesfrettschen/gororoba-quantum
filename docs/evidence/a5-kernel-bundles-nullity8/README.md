@@ -4,14 +4,16 @@ This evidence directory executes the
 [nullity-eight kernel-bundle program](../../design/a5-kernel-bundles-nullity8-program.md). The first exact result
 computes the connected compact `G_2 x U(1)` tangent ranks on the five complex nullity-eight orbits from the
 [regularity record](../a5-strata-regularity/README.md): `W8`, E8-bar, the isotropic orbit `Iso`, and the two branches
-`X_+` and `X_-`. Orbit invariants, complete moduli spaces, stabilizer representations, topology, transition data, and
-bundle classes remain open.
+`X_+` and `X_-`. The record also gives complete compact-orbit invariants and moduli spaces for all five orbits.
+Stabilizer representations, topology, transition data, and bundle classes remain open.
 
 Every calculation uses integer or rational arithmetic. [`compact-orbit-ranks-result.json`](compact-orbit-ranks-result.json)
 is the output of [`compact_orbit_ranks.py`](compact_orbit_ranks.py) `--out`, and
 [`w8-orbit-moduli-result.json`](w8-orbit-moduli-result.json) is the output of
-[`w8_orbit_moduli.py`](w8_orbit_moduli.py) `--out`. Each producer carries a byte-exact `--check` and mutation-bearing
-`--self-test`.
+[`w8_orbit_moduli.py`](w8_orbit_moduli.py) `--out`, and
+[`remaining-orbit-moduli-result.json`](remaining-orbit-moduli-result.json) is the output of
+[`remaining_orbit_moduli.py`](remaining_orbit_moduli.py) `--out`. Each producer carries a byte-exact `--check` and
+mutation-bearing `--self-test`.
 
 ## Every nullity-eight orbit has generic compact rank fifteen
 
@@ -128,6 +130,152 @@ with distinct rank-stratified normal forms, or survival of the four-form or one-
 The exact fixtures cover real frame ranks two, three, and four. The mutations respectively break the form identity
 and the `W8` constraint derivative.
 
+## The remaining four moduli are complete invariant-image quotients
+
+The same ordered real four-frame
+
+`(a,b,c,d)=(Re(u),Im(u),Re(v),Im(v))`
+
+describes E8-bar, `Iso`, `X_+`, and `X_-`. Before the common-phase quotient, its real Gram matrix, four associative
+three-form values, and coassociative four-form value form a complete compact `G_2` invariant. E8-bar also requires
+the middle complex coordinate `mu`, which compact `G_2` fixes. The rank-stratified Gram-Schmidt normal-form argument
+given for `W8` applies to every ordered real four-frame, so restricting the invariant map to any one of these four
+orbits preserves completeness.
+
+The common phase acts on the frame by
+
+```text
+(a,b,c,d) -> (cos(t)a-sin(t)b, sin(t)a+cos(t)b,
+              cos(t)c-sin(t)d, sin(t)c+cos(t)d).
+```
+
+If `T(t)=diag(R(t),R(t))`, the Gram matrix transforms as `G -> T(t) G T(t)^T`, the associative values transform by
+the third exterior power of `T(t)`, and the coassociative value stays fixed because `det(T(t))=1`. The middle pair
+`(Re(mu),Im(mu))` transforms by `R(t)`. The producer checks this action exactly at a quarter turn on every fixture.
+
+The resulting moduli spaces are therefore the following explicit invariant-image quotients:
+
+- E8-bar: the complete invariant image in the unique phase gauge `mu>0` real. The open orbit has `mu!=0`, because
+  its representative has nonzero `mu` and the `H` action only rescales that coordinate by a nonzero scalar.
+- `Iso`: the complete invariant image of its unit section modulo the displayed circle action.
+- `X_+` and `X_-`: the corresponding complete invariant images modulo the same circle action.
+
+These descriptions retain the orbit equations as the defining restrictions on the invariant images; they do not
+replace those images by an unproved ball or manifold model. Their principal dimensions follow from exact tangent
+ranks:
+
+| Orbit | Unit-section tangent dimension | Raw `G_2` invariant rank | Raw level-set dimension | Phase-quotient dimension |
+| --- | ---: | ---: | ---: | ---: |
+| E8-bar | 21 | 7 | 14 | 6 |
+| `Iso` | 21 | 7 | 14 | 6 |
+| `X_+` | 19 | 5 | 14 | 4 |
+| `X_-` | 19 | 5 | 14 | 4 |
+
+The table is **Observed** at every fixture with compact tangent rank fifteen. The fixtures also cover real-frame
+ranks three and four on E8-bar and both `X` branches, and rank four on `Iso`. The equality between the
+fourteen-dimensional invariant level-set kernel and the compact `G_2` tangent supplies the local completeness check;
+the normal-form argument supplies global separation.
+
+The falsifier was an incorrectly sized unit-section tangent, motion of an invariant along compact `G_2`, a generic
+level-set kernel larger than the compact `G_2` tangent, failure of the phase direction to remove one quotient
+dimension, disagreement with the explicit quarter-turn action, failure of the rank-stratified normal form, or
+survival of a tangent or four-form mutation. The exact checks satisfy each measured condition. The planted
+one-block phase leaves the orbit tangent, and deletion of the four-form correction breaks the form identity.
+
+## Exact samples expose two `SU(2)` fiber representations
+
+[`stabilizer-fiber-samples-result.json`](stabilizer-fiber-samples-result.json) solves the connected compact point
+stabilizer on the representative and three exact noncompact moves in each nullity-eight orbit. For each point, the
+producer independently recomputes the compact tangent rank, constructs a `J`-adapted basis of the complex rank-four
+kernel, restricts the stabilizer's domain action to that basis, and verifies kernel preservation and every represented
+Lie bracket.
+
+Thirteen fixtures have full compact tangent rank fifteen. Their connected stabilizer is trivial, as the open-rank
+condition also proves generically, and the fiber is `4 V_0` for the trivial group. Seven lower-rank fixtures have
+compact tangent rank twelve, zero-dimensional stabilizer center, three-dimensional derived algebra, and a
+negative-definite Killing form. Their connected stabilizer is `SU(2)`: each fiber contains an odd-highest-weight
+doublet, so the represented group does not factor through `SO(3)`.
+
+The inverse-Killing Casimir separates two fiber types:
+
+| Orbit and sampled compact stratum | Connected stabilizer | Complex rank-four fiber |
+| --- | --- | --- |
+| `W8`, recorded representative | `SU(2)` | `2 V_1` |
+| E8-bar, representative and first unipotent move | `SU(2)` | `2 V_0 + V_1` |
+| `X_+`, representative and first unipotent move | `SU(2)` | `2 V_0 + V_1` |
+| `X_-`, representative and first unipotent move | `SU(2)` | `2 V_0 + V_1` |
+| every sampled rank-fifteen point | trivial | `4 V_0` |
+
+For `2 V_1`, the Casimir spectrum is `3/8` with multiplicity four. For `2 V_0+V_1`, the spectrum is zero with
+multiplicity two and `3/8` with multiplicity two. The different representations refute a single universal fiber
+type for all `SU(2)` stabilizer loci. The result is **Observed** on the twenty exact fixtures. The open-rank argument
+proves the trivial connected stabilizer on a generic neighborhood in every orbit. The samples do not yet prove that
+the zero and `su(2)` algebras exhaust all compact stabilizer strata, nor do they locate every jump locus in the
+complete invariant quotients.
+
+The falsifier was a stabilizer dimension different from fifteen minus the independent tangent rank, a stabilizer
+direction moving the point or escaping the kernel, failure to commute with `J`, a represented-bracket mismatch, or a
+mutation that survived. Those checks pass. The proposed constancy across all `SU(2)` samples fails in the measured
+way above and therefore becomes a required orbit-specific stratum distinction. The moving-direction and perturbed
+fiber-action mutations fail the point-fixing and bracket checks, respectively.
+
+## Frame rank, associativity, and phase fixed points give all connected stabilizer strata
+
+The complete invariant coordinates turn stabilizer classification into two finite conditions. First, a connected
+phase projection must fix the complete `G_2` invariant tuple. Second, after the phase projection is removed, the
+stabilizer is the pointwise compact `G_2` stabilizer of the real frame.
+
+The phase projection vanishes on `W8`, E8-bar, `X_+`, and `X_-`. On `W8`, the nonzero common complex-bilinear square
+rotates with phase weight two. E8-bar has nonzero `mu`, which rotates with phase weight one. Each open `X` branch lies
+outside `Iso`, so at least one complex-bilinear pairing is nonzero and again has phase weight two. Any of these
+nonzero scalars forces the infinitesimal phase coefficient to vanish.
+
+The standard compact `G_2` frame isotropy gives the remaining classification. The pointwise stabilizer is `SU(2)`
+for a real two-frame and for an associative real three-frame. It is trivial for a nonassociative real three-frame or
+for a frame of rank at least four. For a rank-three frame, associativity is expressed entirely in the recorded
+invariants: for any independent triple of frame vectors,
+
+`phi(x_i,x_j,x_k)^2 = det(G_{ijk})`.
+
+The orbit equations give the frame-rank minima. `W8` has rank at least two. E8-bar and both `X` branches have rank at
+least three, because at rank at most two their cross-product equation forces a lower orbit. The open `Iso` orbit has
+rank four, because a positive real three-plane cannot contain two independent complex-isotropic vectors after
+complexification.
+
+`Iso` is the exceptional phase case. Its isotropic equations make the Gram matrix circle-fixed, and the
+coassociative four-form is always fixed. The third exterior power of the common phase rotation fixes the four
+associative three-form values exactly when all four vanish. At such a point the real frame has rank four and hence
+trivial pointwise stabilizer. Completeness of the invariant tuple then gives a unique compensating `G_2` element for
+each phase; uniqueness makes these elements a circle homomorphism. Thus the connected stabilizer is the graph of
+`U(1)`. Away from this coassociative locus, the connected stabilizer is trivial.
+
+The full connected-stratum list is:
+
+| Orbit | Invariant locus | Connected stabilizer | Complex rank-four fiber |
+| --- | --- | --- | --- |
+| `W8` | real-frame rank two or associative rank three | `SU(2)` | `2 V_1` |
+| `W8` | nonassociative rank three or rank four | trivial | `4 V_0` |
+| E8-bar | associative rank three | `SU(2)` | `2 V_0 + V_1` |
+| E8-bar | rank four | trivial | `4 V_0` |
+| `Iso` | all four associative three-form values zero | `U(1)` | `C_0 + 2 C_(-3) + C_(-2)` |
+| `Iso` | associative three-form vector nonzero | trivial | `4 V_0` |
+| `X_+`, `X_-` | associative rank three | `SU(2)` | `2 V_0 + V_1` |
+| `X_+`, `X_-` | rank four | trivial | `4 V_0` |
+
+[`stabilizer-strata-result.json`](stabilizer-strata-result.json) checks this criterion against all twenty prior
+fixtures and adds exact canonical points for the missing loci. The associative rank-three `W8` frame
+`(e_1,(3/5)e_3,(4/5)e_2,0)` remains in the open orbit and has the same `2 V_1` fiber as the rank-two point. A
+deterministic enumeration finds seven coordinate coassociative four-planes. One signed complex null two-plane on
+each plane lies in open `Iso`, has compact tangent rank fourteen, and gives the same phase-normalized circle weights
+`0,-3,-3,-2`; the opposite sign lies on `B9`. These rows establish that the `Iso` circle locus is nonempty and that
+the weights agree across all seven coordinate realizations.
+
+The falsifier was a frame below the claimed rank minimum, a phase projection away from the circle-fixed invariant
+locus, an unclassified open-`Iso` circle fixed point, disagreement between the rank/associativity criterion and an
+exact compact rank, or survival of a three-form or phase-projection mutation. The twenty sampled rows and eight new
+canonical rows satisfy the classification. Ignoring the three-form vector misclassifies sampled `Iso` points, and
+deleting the measured phase projection misclassifies every coassociative `Iso` point.
+
 ## No nullity-eight orbit is compact homogeneous
 
 **Inferred.** A connected compact orbit has dimension at most fifteen. Each nullity-eight unit section has dimension
@@ -152,9 +300,23 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py \
     --check docs/evidence/a5-kernel-bundles-nullity8/w8-orbit-moduli-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles-nullity8/remaining_orbit_moduli.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/remaining_orbit_moduli.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/remaining_orbit_moduli.py \
+    --check docs/evidence/a5-kernel-bundles-nullity8/remaining-orbit-moduli-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py \
+    --check docs/evidence/a5-kernel-bundles-nullity8/stabilizer-fiber-samples-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py \
+    --check docs/evidence/a5-kernel-bundles-nullity8/stabilizer-strata-result.json
 ```
 
 The measured `--check` wall times were 7.84 seconds for the compact-rank producer and 3.18 seconds for the `W8`
-moduli producer on the 2026-10-26 build host with four workers. Each check builds the sorted, two-space-indented JSON
-plus its final newline in memory, compares the UTF-8 bytes with the retained record, writes no repository file, and
-exits nonzero on a difference.
+moduli producer, and 1.94 seconds for the remaining-orbit producer on the 2026-10-26 build host with four workers.
+The sampled stabilizer and representation producer checked in 9.19 seconds. Each check builds the sorted,
+two-space-indented JSON plus its final newline in memory, compares the UTF-8 bytes with the retained record, writes
+no repository file, and exits nonzero on a difference. The exhaustive stabilizer-stratum producer checked in 8.23
+seconds.

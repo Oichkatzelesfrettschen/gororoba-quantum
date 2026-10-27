@@ -1,0 +1,1025 @@
+{
+  "inputs": {
+    "docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py": "fa5d010de34b95bf67a7445ec1e196c9926dc320d6ba888b293a2a2f6f627900",
+    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py": "afcfb6bd89367bd5da667b2271303007f364fa0c08de94996c9a399032ec3673",
+    "docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py": "c4b9fec07e4881ad9884bfdb48e0d3a83ffa741aed65f4702a4001c4f078769c",
+    "docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py": "66b900530f8ff547ccd49e7450da556405fa246c336b551945890ab4e3188376",
+    "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
+    "docs/evidence/a5-kernel-bundles/stabilizer_representation.py": "b73ff8e652b57390254cda541b6c02ac35809d2a5a3942a43899d891ae656342",
+    "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280"
+  },
+  "mutation": null,
+  "pass": true,
+  "rows": [
+    {
+      "compact_tangent_rank": 12,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 12,
+      "kernel_preserved": [
+        true,
+        true,
+        true
+      ],
+      "move": "representative",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "W8",
+      "pass": true,
+      "point_fixed": [
+        true,
+        true,
+        true
+      ],
+      "representation": {
+        "casimir_spectrum": {
+          "3/8": 4
+        },
+        "connected_group": "SU(2)",
+        "decomposition": "2 V_1",
+        "derived_killing_matrix": [
+          [
+            "-32",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-32",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-32"
+          ]
+        ],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "3/8",
+            "highest_weight": 1,
+            "irreducible_dimension": 2,
+            "joint_dimension": 4,
+            "multiplicity": 2
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 3,
+      "stabilizer_dimension": 3,
+      "stabilizer_lie_algebra": "su(2)"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "unipotent",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "W8",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "unipotent_boost",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "W8",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "composite",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "W8",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 12,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 12,
+      "kernel_preserved": [
+        true,
+        true,
+        true
+      ],
+      "move": "representative",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "E8bar",
+      "pass": true,
+      "point_fixed": [
+        true,
+        true,
+        true
+      ],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 2,
+          "3/8": 2
+        },
+        "connected_group": "SU(2)",
+        "decomposition": "2 V_0 + V_1",
+        "derived_killing_matrix": [
+          [
+            "-12966387023949120000",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-12966387023949120000",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-12966387023949120000"
+          ]
+        ],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 2,
+            "multiplicity": 2
+          },
+          {
+            "casimir_eigenvalue": "3/8",
+            "highest_weight": 1,
+            "irreducible_dimension": 2,
+            "joint_dimension": 2,
+            "multiplicity": 1
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 3,
+      "stabilizer_dimension": 3,
+      "stabilizer_lie_algebra": "su(2)"
+    },
+    {
+      "compact_tangent_rank": 12,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 12,
+      "kernel_preserved": [
+        true,
+        true,
+        true
+      ],
+      "move": "unipotent",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "E8bar",
+      "pass": true,
+      "point_fixed": [
+        true,
+        true,
+        true
+      ],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 2,
+          "3/8": 2
+        },
+        "connected_group": "SU(2)",
+        "decomposition": "2 V_0 + V_1",
+        "derived_killing_matrix": [
+          [
+            "-1743392200500000000000000000",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-348678440100000000000000000",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-348678440100000000000000000"
+          ]
+        ],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 2,
+            "multiplicity": 2
+          },
+          {
+            "casimir_eigenvalue": "3/8",
+            "highest_weight": 1,
+            "irreducible_dimension": 2,
+            "joint_dimension": 2,
+            "multiplicity": 1
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 3,
+      "stabilizer_dimension": 3,
+      "stabilizer_lie_algebra": "su(2)"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "unipotent_boost",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "E8bar",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "composite",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "E8bar",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "representative",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "Iso",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "unipotent",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "Iso",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "unipotent_boost",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "Iso",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "composite",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "Iso",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 12,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 12,
+      "kernel_preserved": [
+        true,
+        true,
+        true
+      ],
+      "move": "representative",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "X+",
+      "pass": true,
+      "point_fixed": [
+        true,
+        true,
+        true
+      ],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 2,
+          "3/8": 2
+        },
+        "connected_group": "SU(2)",
+        "decomposition": "2 V_0 + V_1",
+        "derived_killing_matrix": [
+          [
+            "-32",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-32",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-32"
+          ]
+        ],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 2,
+            "multiplicity": 2
+          },
+          {
+            "casimir_eigenvalue": "3/8",
+            "highest_weight": 1,
+            "irreducible_dimension": 2,
+            "joint_dimension": 2,
+            "multiplicity": 1
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 3,
+      "stabilizer_dimension": 3,
+      "stabilizer_lie_algebra": "su(2)"
+    },
+    {
+      "compact_tangent_rank": 12,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 12,
+      "kernel_preserved": [
+        true,
+        true,
+        true
+      ],
+      "move": "unipotent",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "X+",
+      "pass": true,
+      "point_fixed": [
+        true,
+        true,
+        true
+      ],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 2,
+          "3/8": 2
+        },
+        "connected_group": "SU(2)",
+        "decomposition": "2 V_0 + V_1",
+        "derived_killing_matrix": [
+          [
+            "-8000000",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-1600000",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-1600000"
+          ]
+        ],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 2,
+            "multiplicity": 2
+          },
+          {
+            "casimir_eigenvalue": "3/8",
+            "highest_weight": 1,
+            "irreducible_dimension": 2,
+            "joint_dimension": 2,
+            "multiplicity": 1
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 3,
+      "stabilizer_dimension": 3,
+      "stabilizer_lie_algebra": "su(2)"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "unipotent_boost",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "X+",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "composite",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "X+",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 12,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 12,
+      "kernel_preserved": [
+        true,
+        true,
+        true
+      ],
+      "move": "representative",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "X-",
+      "pass": true,
+      "point_fixed": [
+        true,
+        true,
+        true
+      ],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 2,
+          "3/8": 2
+        },
+        "connected_group": "SU(2)",
+        "decomposition": "2 V_0 + V_1",
+        "derived_killing_matrix": [
+          [
+            "-32",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-32",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-32"
+          ]
+        ],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 2,
+            "multiplicity": 2
+          },
+          {
+            "casimir_eigenvalue": "3/8",
+            "highest_weight": 1,
+            "irreducible_dimension": 2,
+            "joint_dimension": 2,
+            "multiplicity": 1
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 3,
+      "stabilizer_dimension": 3,
+      "stabilizer_lie_algebra": "su(2)"
+    },
+    {
+      "compact_tangent_rank": 12,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 12,
+      "kernel_preserved": [
+        true,
+        true,
+        true
+      ],
+      "move": "unipotent",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "X-",
+      "pass": true,
+      "point_fixed": [
+        true,
+        true,
+        true
+      ],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 2,
+          "3/8": 2
+        },
+        "connected_group": "SU(2)",
+        "decomposition": "2 V_0 + V_1",
+        "derived_killing_matrix": [
+          [
+            "-8000000",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-1600000",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-1600000"
+          ]
+        ],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 2,
+            "multiplicity": 2
+          },
+          {
+            "casimir_eigenvalue": "3/8",
+            "highest_weight": 1,
+            "irreducible_dimension": 2,
+            "joint_dimension": 2,
+            "multiplicity": 1
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 3,
+      "stabilizer_dimension": 3,
+      "stabilizer_lie_algebra": "su(2)"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "unipotent_boost",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "X-",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    },
+    {
+      "compact_tangent_rank": 15,
+      "complex_kernel_dimension": 4,
+      "derived_killing_negative_definite": true,
+      "independent_compact_tangent_rank": 15,
+      "kernel_preserved": [],
+      "move": "composite",
+      "mutation": null,
+      "nullity_Ly": 8,
+      "orbit": "X-",
+      "pass": true,
+      "point_fixed": [],
+      "representation": {
+        "casimir_spectrum": {
+          "0": 4
+        },
+        "connected_group": "trivial",
+        "decomposition": "4 V_0",
+        "derived_killing_matrix": [],
+        "derived_killing_negative_definite": true,
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "highest_weight": 0,
+            "irreducible_dimension": 1,
+            "joint_dimension": 4,
+            "multiplicity": 4
+          }
+        ],
+        "pass": true
+      },
+      "representation_commutators_match": true,
+      "same_open_orbit": true,
+      "stabilizer_center_dimension": 0,
+      "stabilizer_derived_dimension": 0,
+      "stabilizer_dimension": 0,
+      "stabilizer_lie_algebra": "zero"
+    }
+  ],
+  "schema": "a5-kernel-bundles-nullity8-stabilizer-fiber-samples-v1",
+  "scope": "The rows classify the connected stabilizers and fiber representations at the recorded representative and three exact noncompact moves per complex orbit. They do not by themselves prove that these are all compact stabilizer strata.",
+  "summary": {
+    "fixtures": 20,
+    "positive_dimensional_representation_signatures": [
+      [
+        "su(2)",
+        "2 V_0 + V_1",
+        [
+          [
+            "0",
+            2
+          ],
+          [
+            "3/8",
+            2
+          ]
+        ]
+      ],
+      [
+        "su(2)",
+        "2 V_1",
+        [
+          [
+            "3/8",
+            4
+          ]
+        ]
+      ]
+    ],
+    "positive_dimensional_signatures_constant": false,
+    "positive_dimensional_stabilizer_fixtures": 7,
+    "trivial_connected_stabilizer_fixtures": 13
+  }
+}
