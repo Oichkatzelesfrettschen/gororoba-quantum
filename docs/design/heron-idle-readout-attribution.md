@@ -201,8 +201,8 @@ descriptive; the cohort decisions use the bootstrap.
 
 ## Open before a case
 
-- A written case with the binding dry run, the bootstrap seed's draw and index, and the owner's approval of that
-  case before any submit.
+- The owner's approval of the written case, [IDLE_READOUT_ATTRIBUTION_CASE.md](../../results/live/IDLE_READOUT_ATTRIBUTION_CASE.md),
+  and its binding dry run, before any submit.
 
 Done: the analyzer and its planted-law mutation tests; the measured-run loader with the collector refusals, the
 one-calibration rule and the per-class exposure gate; the execution changes; a validation dry run on the 31
