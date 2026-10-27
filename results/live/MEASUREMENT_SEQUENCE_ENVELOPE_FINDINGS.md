@@ -63,6 +63,38 @@ is a result of the case.
   on 31 qubits). It is an unexplained excess over the idle model, not a readout-tail attribution.
 - Qubits 149 and 154 are uninformative: departure standard errors 0.068 and 0.046 exceed twice their planning values.
 
+## Shot-order diagnostics (not preregistered)
+
+`scripts/msq_envelope_raw_diagnostics.py` reads the shot-ordered final bits under `raw/` and writes
+[envelope-run-raw-diagnostics.json](../../docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json). Each
+fused PUB is one member row on all 32 qubits, and the executor reports one chunk holding all 88 PUBs.
+
+- Execution order. Conditioning a row's final bit on the previous PUB's final bit at the same shot index gives rms z
+  3.37 over 2334 row-qubit cells (17.7 % above |z| 3); the same statistic at shot j - 1 or j + 1, one full column
+  away, gives rms z 1.20 and 1.19 (1.2 to 1.3 % above 3), and two and five PUBs back give 2.56 and 1.47. The correlation
+  falls with distance in submission order at a fixed shot, as column-wise execution predicts.
+- Carryover. The ro0 row follows the unitary N = 16 row, which ends with P1 0.926; its P1 after a previous final 1
+  minus after a previous final 0 is median +0.0002, mean +0.0000 +- 0.0006 over 32 qubits. The excitation an end
+  state leaves through the terminal reset, the 20 us repetition delay and `init_qubits` is below about 0.0012 (two
+  standard errors), too small to produce the +0.0185 departure offset through any member allocation (at most 2.31
+  per unit, [carryover-sensitivity.json](../../docs/evidence/measurement_sequence/carryover-sensitivity.json)).
+- Phase-sensitive adjacency. Consecutive delay-arm rows correlate at the same shot by a median 0.034 (19 row pairs)
+  and consecutive unitary rows by 0.051 (3 pairs), against 0.003 and -0.001 one column away; measure and settle rows
+  read 0.004 and 0.006, pattern rows near zero. Outcomes that depend on the qubit's phase stay correlated across
+  circuits about 50 us apart and decorrelate within one column (88 circuits, about 4 ms), while outcomes that depend
+  only on population do not. A qubit frequency that fluctuates on that time scale produces this pattern; the run
+  does not identify the source.
+- T1 series. The analysis's plateau parameter q lies between 0.28 and 1.02 (median 0.71, below 1 on 29 of 30
+  informative qubits). Weighted fits of the corrected series admit, at p >= 0.01: T1 and q free on 23 qubits, decay to
+  the ground state (q = 1) with T1 free on 14, the calibrated T1 with q free on 12, and the calibrated T1 with q = 1 on
+  2. The T1 rows also correlate one column apart (median 0.0085), and the T1 fitted to each quarter of the shots varies
+  by a median factor 1.13 (q50: 1.54). The decay is not one exponential to the ground state at the calibrated T1: T1
+  moves during the job, and the q fit absorbs that as a plateau below 1, which the analysis reads as a negative
+  initialization excitation.
+
+The departure prediction is built from that fit, so its +0.0185 offset is a property of the nuisance model as much as
+of the measure arm; carryover is excluded as its source.
+
 ## Retained files
 
 `collect.json` is 42.4 MB, `record.json` 17.9 MB and the run directory with `raw/` 361 MB, under the design's 45 MB

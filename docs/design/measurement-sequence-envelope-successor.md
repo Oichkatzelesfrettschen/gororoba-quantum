@@ -1,6 +1,10 @@
 # Measurement-sequence envelope successor: an equalized end state and an in-job carryover bound
 
-Status: design v2, after the adversarial review and the advisor review of v1; Codex review pending. The width-32
+Status: design v2, superseded before implementation. The run's
+[shot-order diagnostics](../../results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md#shot-order-diagnostics-not-preregistered)
+measure the carryover through the terminal reset at +0.0000 +- 0.0006, so the coin ending below answers a bias the
+device does not show, and the Codex review of v2 found the departure verdict resting on a misspecified T1 nuisance
+model; the successor is redesigned around that model. The text below records v2 as reviewed. The width-32
 envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`,
 [findings](../../results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md)) executed as planned and billed 38 s, and its
 reset screen withheld all 32 qubits, so it returned no device verdict. This successor keeps the envelope contract of
