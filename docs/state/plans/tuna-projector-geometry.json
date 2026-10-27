@@ -13,7 +13,7 @@
   },
   "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
   "owner": "codex-tuna-projector-geometry",
-  "next_action": "Design a separately bounded discrimination of repeated-readout context and classical reconstruction after the frozen qualification refusal; further hardware acquisition requires its own admitted case.",
+  "next_action": "Qualify the destination-invariance comparison analyzer, dependence model and actual ordering; obtain served acquisition timing or state the remaining boundary before a separately approved diagnostic run.",
   "steps": [
     {
       "id": "source-and-instrument-audit",
@@ -389,6 +389,158 @@
       "state": "todo",
       "action": "Separate readout context, settling and classical reconstruction alternatives in a successor design",
       "acceptance": "A source-grounded case distinguishes alternatives, freezes matched controls and stopping rules, and obtains separate acquisition admission before any further provider job"
+    },
+    {
+      "id": "readout-raw-diagnostics",
+      "action": "Reconstruct joint outcomes, channel contrasts and time-block diagnostics",
+      "acceptance": "Raw-bound deterministic diagnostics establish observations and bit-map falsifiers",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Bounded readout-cause investigation completed: exact diagnostics, primary-source boundaries and an unapproved destination-invariance candidate are retained; physical cause and statistical acquisition admission remain unresolved.",
+          "observed_at": "2026-10-27T17:49:31.928050+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json",
+              "sha256": "25f1090b25a06ef4ce56537d52a3bf9b569da4981474c84568f19f886f60bd77"
+            }
+          ],
+          "scope_sha256": "e9782880fb667c47fc455ac251268ba985671134c3c2094e520d0c8161186fc2"
+        }
+      ]
+    },
+    {
+      "id": "readout-server-path-audit",
+      "action": "Trace stored source, compiler mapping and acquisition reconstruction",
+      "acceptance": "Read-only server identity observations and primary source contracts bound the first unobserved layer",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Bounded readout-cause investigation completed: exact diagnostics, primary-source boundaries and an unapproved destination-invariance candidate are retained; physical cause and statistical acquisition admission remain unresolved.",
+          "observed_at": "2026-10-27T17:49:31.930194+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-server-source-observation.json",
+              "sha256": "45ccaee73356cdb1ca532f91757b1cbd87fab7ad3088143943eae36225b2d79f"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-job-log-availability.json",
+              "sha256": "51055c08b855144cd34204f2e079b9520dd8e17d47fa88ea13afb0cbf0d2b1d2"
+            }
+          ],
+          "scope_sha256": "57a49c89db41756ab5a7920dd2bc103877e804f7f14eeaa8a8564a01e4265d60"
+        }
+      ]
+    },
+    {
+      "id": "readout-physical-hypotheses",
+      "action": "Research physical and measurement-chain explanations",
+      "acceptance": "Each hypothesis carries primary sources, discriminating predictions and limits",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Bounded readout-cause investigation completed: exact diagnostics, primary-source boundaries and an unapproved destination-invariance candidate are retained; physical cause and statistical acquisition admission remain unresolved.",
+          "observed_at": "2026-10-27T17:49:31.931404+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-cause-diagnosis.md",
+              "sha256": "a4dd7276bf4c855c2cf34f252d0374317c0718819c54dac5496e07afefb707ec"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-diagnosis-monitoring.json",
+              "sha256": "d88162eb3ed6af565cf6a342f41667aacd4aee93dd0eec716cc3d25eaaa56f46"
+            }
+          ],
+          "scope_sha256": "7b332ed09e0d1ad94f2adf8194dc02ec1ee6022bd8b3a82ce2cb1170eef0525f"
+        }
+      ]
+    },
+    {
+      "id": "readout-identifiability-model",
+      "action": "Derive what binary repeated-readout data identify",
+      "acceptance": "Measurement-instrument model separates population, assignment, transition and context effects",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Bounded readout-cause investigation completed: exact diagnostics, primary-source boundaries and an unapproved destination-invariance candidate are retained; physical cause and statistical acquisition admission remain unresolved.",
+          "observed_at": "2026-10-27T17:49:31.932735+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-cause-diagnosis.md",
+              "sha256": "a4dd7276bf4c855c2cf34f252d0374317c0718819c54dac5496e07afefb707ec"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json",
+              "sha256": "8507279a292c0e3d7682ffb00abde6d159ebef71783713eaf54fe2a41d250258"
+            }
+          ],
+          "scope_sha256": "5853d237f2be3068140f159189e2d3444680fef9e33b4c856c669a0d42394289"
+        }
+      ]
+    },
+    {
+      "id": "readout-successor-case",
+      "action": "Specify the minimal discriminating hardware case and admission gaps",
+      "acceptance": "Source-validated circuits, ceilings, comparisons and unresolved power/timing requirements are explicit",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Bounded readout-cause investigation completed: exact diagnostics, primary-source boundaries and an unapproved destination-invariance candidate are retained; physical cause and statistical acquisition admission remain unresolved.",
+          "observed_at": "2026-10-27T17:49:31.933885+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-readout-destination-invariance.md",
+              "sha256": "bb95cfaad599a40eaaef00597403d3bc935bf0895aaf04f96c8b1af959407cfa"
+            },
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-invariance/proposal.json",
+              "sha256": "65b4fcff889e27bf2fcac97769d726b32d1acf7ea163d666f38503f5cb6f34cb"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-destination-decision-draft.json",
+              "sha256": "5adc66de68d8de10e65c452649c0bcb9b7e47e0590b061a861d386c17908ff3f"
+            }
+          ],
+          "scope_sha256": "4139bdcefdac4c8b29db49e86ac899fb216b9159e395d4c5578b1b0e13bc9f9e"
+        }
+      ]
+    },
+    {
+      "id": "readout-diagnostic-verification",
+      "action": "Verify retained diagnostics, documents and plan consistency",
+      "acceptance": "Focused tests, replay, lint, types, links, inventory and plan checks pass",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "29 focused tests, pinned Ruff/mypy, exact diagnostic replays, local compiler replay, Markdown links, library inventory, plan tracker and research registry checks pass. The unapproved decision draft intentionally refuses statistical admission. All 19 original acquired files match the base revision.",
+          "observed_at": "2026-10-27T17:51:44.053828+00:00",
+          "revision": "0ca88a3747ddb8abd3641b0e741b1e7b57fc0dbc",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/readout-diagnosis-verification.json",
+              "sha256": "9df289b6c84b774e862e5c1f788b39ae1e56e786f11955627613ce78fd0b4c7c"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_diagnostics.py",
+              "sha256": "24f4787ebf2e276c3136f825b2731f1540b98c093bd1c1ba038489670e028566"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_mapping_cases.py",
+              "sha256": "003b0593c4ebb531e7edf84c753ea4c10b299bf605ce85451d6d32eed99ec590"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_readout_response_mixture.py",
+              "sha256": "ff8bfd0a6069be29fa38a9a4a41517046ccd6dd0ad77f548dec4afadcca26d65"
+            }
+          ],
+          "scope_sha256": "5c175bb5d1d0a6353b013ff1ed00def7d6d529e5ebcc7c25638bb1334a98220c"
+        }
+      ]
     }
   ]
 }

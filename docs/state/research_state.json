@@ -11695,6 +11695,43 @@
       "related_claims": [
         "qi-qx-projector-geometry-conformance"
       ]
+    },
+    {
+      "id": "qi-tuna-readout-response-mixture",
+      "statement": "A post-hoc convex combination of nominal-zero and nominal-one early/final control tables approximates each geometry ancilla table with empirical total variation residual below 0.0093; exhaustive fixed early-bit permutation/polarity choices cannot repair the frozen qualification.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive fits and exact finite relabeling checks on one retained three-job batch. Mixture coordinates are not populations; calibration-context transfer, independence, stationarity, QND behavior and a physical cause remain unestablished. The frozen qualification remains refused.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json",
+          "sha256": "25f1090b25a06ef4ce56537d52a3bf9b569da4981474c84568f19f886f60bd77"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json",
+          "sha256": "8507279a292c0e3d7682ffb00abde6d159ebef71783713eaf54fe2a41d250258"
+        }
+      ],
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/readout-cause-diagnosis.md"
+      ],
+      "gates": {
+        "core-qi-tuna-readout-diagnosis": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-projector-register-qualification"
+      ],
+      "assumptions": [
+        "The documented classical-bit order supplies the fixed decoder.",
+        "Control-to-geometry transfer is a post-hoc sensitivity assumption, not an admitted calibration."
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "related_claims": [
+        "qi-tuna-projector-register-qualification"
+      ]
     }
   ]
 }

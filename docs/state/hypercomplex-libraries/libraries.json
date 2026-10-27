@@ -2679,6 +2679,8 @@
     "scripts/qi_shot_record_line.py",
     "scripts/qi_tuna17_device_context.py",
     "scripts/qi_tuna_qualification.py",
+    "scripts/qi_tuna_readout_diagnostics.py",
+    "scripts/qi_tuna_readout_response_mixture.py",
     "scripts/qi_walsh_exemplar_analysis.py",
     "scripts/qi_walsh_exemplar_cases.py",
     "scripts/qi_zero_divisor_cases.py",
@@ -3260,7 +3262,8 @@
    "imported_by": [
     "scripts/opensquirrel_fullprecision.py",
     "scripts/qi_projector_compiler_admission.py",
-    "scripts/qi_toolchain_check.py"
+    "scripts/qi_toolchain_check.py",
+    "scripts/qi_tuna_readout_mapping_cases.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
    "historical_imported_by": [
@@ -13061,6 +13064,46 @@
    "numpy",
    "parallel",
    "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_diagnostics.py": [
+   "__future__",
+   "argparse",
+   "itertools",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_tuna_qualification",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_mapping_cases.py": [
+   "__future__",
+   "argparse",
+   "hashlib",
+   "importlib",
+   "json",
+   "opensquirrel",
+   "parallel",
+   "pathlib",
+   "qi_projector_compiler_admission",
+   "qi_toolchain_check",
+   "re",
+   "sys",
+   "typing"
+  ],
+  "scripts/qi_tuna_readout_response_mixture.py": [
+   "__future__",
+   "argparse",
+   "decimal",
+   "fractions",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "qi_tuna_qualification",
    "sys",
    "typing"
   ],

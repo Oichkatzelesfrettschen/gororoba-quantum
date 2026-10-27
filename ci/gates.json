@@ -5021,6 +5021,18 @@
    "replays": [
     "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_readout_diagnostics.py --check results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json && \"$PYTHON\" scripts/qi_tuna_readout_response_mixture.py --check results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json",
+   "name": "core-qi-tuna-readout-diagnosis",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json",
+    "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json"
+   ]
   }
  ],
  "excluded": [

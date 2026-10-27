@@ -121,3 +121,8 @@ freezes finite-shot QX discrepancy tolerances before acquisition.
 The [Tuna register qualification](tuna-qualification.md) completed all 12,288 shots but
 failed its frozen contrast and early/final consistency screens. The record preserves the
 refusal, source-grounded diagnostic alternatives and the boundary on successor acquisition.
+
+The [readout cause analysis](readout-cause-diagnosis.md) adds full joint/block diagnostics,
+source-storage verification, physical-model falsifiers and a labelled post-hoc response fit.
+It links the [unapproved destination-invariance candidate](../../design/tuna-readout-destination-invariance.md)
+and identifies the timing, statistical and provider evidence required before another run.

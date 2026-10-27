@@ -1,0 +1,27 @@
+{
+  "batches": [
+    "prepared-zero",
+    "prepared-one"
+  ],
+  "boundary": "Instruction equality establishes neither provider schedule equality nor a physical mechanism.",
+  "circuits_total": 6,
+  "estimate_basis": "3*(4.948185 s + 4.896220 s), from measured control jobs; excludes queue and pause.",
+  "expected_credits": 0,
+  "expected_execution_seconds_decimal": "29.533215",
+  "pricing_condition": "Requires fresh zero-credit terms and account check.",
+  "provider_execution_authorized": false,
+  "provider_execution_ceiling_seconds": 1800,
+  "schema": "qi-tuna-readout-destination-proposal-v1",
+  "scope": "Classical destination invariance with the failing zero-gap physical controls.",
+  "shots_per_circuit": 4096,
+  "shots_total": 24576,
+  "statistical_model_status": "power-and-dependence-unqualified",
+  "status": "draft-unapproved",
+  "timing_assumption": "Equal physical workloads suggest similar duration; the estimate is unguaranteed.",
+  "timing_reference": {
+    "file": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+    "prepared_one_job": 1616330,
+    "prepared_zero_job": 1616329,
+    "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+  }
+}

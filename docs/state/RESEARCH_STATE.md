@@ -353,7 +353,7 @@ circuit and charges the account ledger's change.
 | [2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06](../../results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06) | Quandela Cloud | photonic signed-coherence replication meshes | qpu:ascella | 1 | 96 | completed | 1.032768 credits | ascella-signed-coherence-replication-offsets |
 | [2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96](../../results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96) | Quandela Cloud | photonic signed-coherence replication meshes | qpu:ascella | 1 | 96 | completed | 1.032768 credits | ascella-signed-coherence-replication-offsets |
 | [2026-10-27T162203Z-projector-geometry-qx](../../results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx) | Quantum Inspire | sequential projector geometry remote conformance | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change | qi-qx-projector-geometry-conformance |
-| [2026-10-27T170500Z-projector-geometry-tuna](../../results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna) | Quantum Inspire | sequential projector physical register qualification | tuna_17 | 3 | 3 | completed | 0 ledger change | qi-tuna-projector-register-qualification |
+| [2026-10-27T170500Z-projector-geometry-tuna](../../results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna) | Quantum Inspire | sequential projector physical register qualification | tuna_17 | 3 | 3 | completed | 0 ledger change | qi-tuna-projector-register-qualification, qi-tuna-readout-response-mixture |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -1986,6 +1986,13 @@ circuit and charges the account ledger's change.
   Acquisitions: kingston-idle-penalty-probe.
   Depends on: kingston-idle-penalty-multipliers-and-readout-phase.
   Related claims: hw-n21-feedback-null-scheduled-idle.
+- **qi-tuna-readout-response-mixture** (exploratory reanalysis, hardware). A post-hoc convex combination of nominal-zero and nominal-one early/final control tables approximates each geometry ancilla table with empirical total variation residual below 0.0093; exhaustive fixed early-bit permutation/polarity choices cannot repair the frozen qualification.
+  Boundary: Descriptive fits and exact finite relabeling checks on one retained three-job batch. Mixture coordinates are not populations; calibration-context transfer, independence, stationarity, QND behavior and a physical cause remain unestablished. The frozen qualification remains refused.
+  Assumptions: The documented classical-bit order supplies the fixed decoder.; Control-to-geometry transfer is a post-hoc sensitivity assumption, not an admitted calibration..
+  Evidence: [readout-diagnostics.json](../../results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-diagnostics.json), [readout-response-mixture.json](../../results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/readout-response-mixture.json), [readout-cause-diagnosis.md](../evidence/tuna-projector-geometry/readout-cause-diagnosis.md).
+  Gates: replayed by core-qi-tuna-readout-diagnosis.
+  Acquisitions: qi-tuna-projector-register-qualification.
+  Related claims: qi-tuna-projector-register-qualification.
 
 ## Open claims
 
