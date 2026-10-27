@@ -13589,6 +13589,13 @@
    "sys",
    "typing"
   ],
+  "scripts/source_reading_copies.py": [
+   "__future__",
+   "json",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "scripts/state_prep_control_parameters.py": [
    "__future__",
    "argparse",

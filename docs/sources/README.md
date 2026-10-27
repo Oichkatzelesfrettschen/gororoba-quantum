@@ -47,6 +47,10 @@ those copies from the registered URLs or from a checkout of the owner's private
 gororoba-quantum-documents repository, which also holds their Markdown
 transcriptions, and admits a file only when its size and SHA-256 match the
 registry.
+[`reading-copies.md`](reading-copies.md), generated from the registry by
+[`scripts/source_reading_copies.py`](../../scripts/source_reading_copies.py)
+and checked by the gate `sources-reading-copies-index`, links each external PDF
+to its note, its public source and its copy in that private repository.
 
 The [Cayley-Dickson survey at dimension 16 and above](cayley-dickson-2n-ion-survey.md) records every candidate source and its disposition.
 
