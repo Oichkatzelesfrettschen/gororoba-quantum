@@ -280,3 +280,40 @@ Sub-steps, one per turn:
   issues; mypy over all of `docs/` is a different, wider scope and is not the gate.
 - Next sub-step: **2i** as specified above, starting with the eight first-order-resolved incidences (cheapest, a check
   of the method against the committed first-order images), then the seven higher-order rows in a later sub-step.
+
+## Orchestrator note after 2j: the Nakayama-reduced Rees fiber (supersedes the 2i blow-up recipe for 2j)
+
+The 2j draft (`higher_order_holomorphic_gauss_fibers.py`) is withdrawn. It wrote `sat(...)[1]` nine times; Singular
+4.4 `sat` returns an ideal, so `[1]` kept one generator and every strict transform was a single hypersurface. Its
+Rees graphs also carried all 21 target coordinates. Neither the draft nor its all-blocked record is retained.
+
+The fiber of the closed Gauss graph over `p` is the special fiber `Proj (+)_d I^d / m I^d` of the blow-up of
+`I = (f_1, ..., f_21)` in `k[t]/J` (`J` the germ ideal of path-supported-basepoints). Each graded piece is killed by
+`m`, so the polynomial ring computes it exactly in a global ordering. The method, per incidence:
+
+1. `SJ = std(J + maxideal(1) * I)` in the slice variables only. A greedy pass over `f_1..f_21` picks `g` whose
+   normal forms modulo `SJ` are linearly independent; `s = size(g)` is the minimal generator count of `I` at `p`
+   (Nakayama). Observed: `X+-` to `VB` 3, `Iso` to `VB` 4, `W8` to `VB` 5, `E8bar` to `V^a+-` 6, `E8bar` to `VB` 10.
+2. `elimpart(J)` (presolve.lib) removes slice variables that `J` solves linearly; apply its map `EP[5]` to `J` and
+   `g`, then reduce `g` modulo `std(J)`.
+3. Rees ideal `eliminate(J + (y_i - a g_i), a)` in `k[a, t, y_1..y_s]`; the fiber is that ideal at `t = 0`,
+   saturated by `(y)`, decomposed with `minAssGTZ`.
+4. `lift(J + m I + (g), f)`; the constant terms of the `g` rows give the `21 x s` matrix `A` with
+   `f = A g mod (m I + J)`. Require `rank A = s`; then `A` embeds the reduced fiber in `P^20`.
+5. Every committed Schur arc limit `q` lies in the column span of `A` and its preimage lies in the fiber; a random
+   point of `P^20` must fail the same test (negative control).
+
+Orchestrator measurements, modulo 32003, under 4 GiB: six rows finish in under one second at about 42 MB. Fibers:
+`X+-` to `VB` all of `P^2`; `Iso` to `VB` all of `P^3`; `W8` to `VB` all of `P^4`; `E8bar` to `V^a+-` two disjoint
+planes `{y1=y2=y6=0}` and `{y3=y4=y5=0}`. All 12 committed arcs lie in their fibers; both `E8bar` to `V^a+-` arcs
+lie in the second plane, so the first plane has no committed arc witness. `E8bar` to `VB` (`s = 10`) exhausts 4 GiB
+in the Rees elimination and times out at 15 minutes with `slimgb`; it remains open in its own later sub-step.
+
+- **2j-c.** One producer, `nakayama_rees_fibers.py`, on the six rows above, modulo 32003 and over `Q(i)`, with the
+  standing producer rules (`--out`, byte-exact `--check`, `-O --self-test`, pooled rows, float-free record, input
+  hashes excluding this file and the README). Record per row: `s`, the chosen indices, the eliminated variables,
+  each fiber component (projective dimension, degree, generators), `rank A`, each arc's containment and the
+  component that holds it, and the random-point control. Mutation on a core input: drop one `g_i` from the Rees
+  ideal, which must change the fiber or break an arc containment. Every Singular call runs under
+  `prlimit --as=4294967296` with a 300 s timeout; the whole run stays under one minute. Write the README section
+  and ledger row; replace the withdrawn 2j text with the bounded `E8bar` to `VB` blocker and its measured costs.
