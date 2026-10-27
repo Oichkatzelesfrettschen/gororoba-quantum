@@ -6,14 +6,14 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
-    "note": "Review found a serial campaign-analysis stage; local numerical and provider contracts remain intact while ordered per-case dispatch is validated."
+    "note": "Explicit basis factors, fixed scalar native/optical arithmetic and ordered per-case analysis pass deterministic conformance. Historical synthesis candidates and their receipts retain their bytes; acquisition remains separate."
   },
   "scope": "Implement finite quantum experiment references, guarded cases, analysis and correction records across five proposals. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Pool complete per-case analyses, prove serial/pooled report equality, and refresh validation receipts.",
+  "next_action": "Prepare separately approved acquisition cases after current runtime, budget and instrument qualification checks.",
   "steps": [
     {
       "id": "audit-contracts",
@@ -132,6 +132,46 @@
               "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
             }
           ]
+        },
+        {
+          "scope_sha256": "d7a5192f50ae6713983f9a29a4bb116e2c4e0b32f3803705e039fef12837c731",
+          "result": "The correction document grounds all five outcomes in repository sources and separates finite identities, compiler predictions, device questions and unresolved physical claims. Revalidated with explicit basis-factor circuits, portable scalar operator arithmetic, 278 focused and registry tests, complete Qiskit/optical checks, cross-userland byte replay and the pinned 384-payload compiler replay. Per-case analysis dispatch preserves serial report bytes.",
+          "observed_at": "2026-10-27T22:50:55.733314+00:00",
+          "revision": "b5549f5d280d1b60977c0fc2cc05c92219692a52",
+          "evidence": [
+            {
+              "ref": "docs/design/quantum-experiment-conformance.md",
+              "sha256": "254826b52cd50267d7f45ff2336f3f9537ccf4c637424a07899479d3cb2435e8"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/reference.json",
+              "sha256": "9439f7af9c6e63795da74b2760ca2e6608d8a02fdc78dd707c650303802c8b07"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-portable-operators.json",
+              "sha256": "e189b6dc4e73c4721b9ac17c6d2cb0613cab06fef53c61f748548a60a7eac08d"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/provenance.json",
+              "sha256": "0572c53ab9bbac0ea69bc6093851fa2bc916d44ab62e73589f7f249da94d1ce2"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json",
+              "sha256": "fd53ad3e0944234a381383698b672cb4dcdbee517bb2508942449001f90815fd"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/campaign.json",
+              "sha256": "b7a6b05fe3b5a493b5db65935fe34f56a5eb9c889de893e322ab7e732b855085"
+            }
+          ]
         }
       ]
     },
@@ -139,7 +179,7 @@
       "id": "integrate-suites",
       "action": "Integrate references, cases and analyzers.",
       "acceptance": "Focused deterministic tests and operator checks pass with guarded execution interfaces. Local libqasm analysis and OpenSquirrel replay admit every emitted QI payload and preserve its control sequence. Canonical runner-image arithmetic binds the prospective baseline and its replay registry.",
-      "state": "doing",
+      "state": "done",
       "receipts": [
         {
           "scope_sha256": "eeafc951cf19321ebe87c4e1c292a0452c46fae4bc80eff61b7f1f8d67be22de",
@@ -206,6 +246,42 @@
             {
               "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json",
               "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
+            }
+          ]
+        },
+        {
+          "scope_sha256": "eeafc951cf19321ebe87c4e1c292a0452c46fae4bc80eff61b7f1f8d67be22de",
+          "result": "Canonical payloads, complete operator references, topology and output maps pass deterministic tests, runner-image byte replay and local parser/pass/control admission. Revalidated with explicit basis-factor circuits, portable scalar operator arithmetic, 278 focused and registry tests, complete Qiskit/optical checks, cross-userland byte replay and the pinned 384-payload compiler replay. Per-case analysis dispatch preserves serial report bytes.",
+          "observed_at": "2026-10-27T22:50:55.733314+00:00",
+          "revision": "b5549f5d280d1b60977c0fc2cc05c92219692a52",
+          "evidence": [
+            {
+              "ref": "scripts/experiment_cases.py",
+              "sha256": "303ff953446f8ce209cd3f21dd28a39c919b7d382f096a92f9fb6b2d5d0b11bd"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_cases.py",
+              "sha256": "d6bc3379c5e3cd1b21f1be652e612fcea6f426b0e31923a660e9c8928cca579c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-portable-operators.json",
+              "sha256": "e189b6dc4e73c4721b9ac17c6d2cb0613cab06fef53c61f748548a60a7eac08d"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/provenance.json",
+              "sha256": "0572c53ab9bbac0ea69bc6093851fa2bc916d44ab62e73589f7f249da94d1ce2"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json",
+              "sha256": "fd53ad3e0944234a381383698b672cb4dcdbee517bb2508942449001f90815fd"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/campaign.json",
+              "sha256": "b7a6b05fe3b5a493b5db65935fe34f56a5eb9c889de893e322ab7e732b855085"
             }
           ]
         }
@@ -344,6 +420,50 @@
               "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
             }
           ]
+        },
+        {
+          "scope_sha256": "a839223c8df9d0e5da6780acdc7f8755fcc2f060f3e45f415d7fc1656bcb22c6",
+          "result": "Validation, source-bound receipts, provider observations, cases and acquisition review are retained; seed provenance and all Markdown links pass. Revalidated with explicit basis-factor circuits, portable scalar operator arithmetic, 278 focused and registry tests, complete Qiskit/optical checks, cross-userland byte replay and the pinned 384-payload compiler replay. Per-case analysis dispatch preserves serial report bytes.",
+          "observed_at": "2026-10-27T22:50:55.733314+00:00",
+          "revision": "b5549f5d280d1b60977c0fc2cc05c92219692a52",
+          "evidence": [
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+              "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+            },
+            {
+              "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+              "sha256": "2b552211c265968cf73f7cdd33eb00ee82e1398cd79c0887e5cd5bffa527c646"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/provider-observation.json",
+              "sha256": "873a909ce8b6a2a0612140aa9f21238c1ae4719f5afa89d79888b3f2ea872e7c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-portable-operators.json",
+              "sha256": "e189b6dc4e73c4721b9ac17c6d2cb0613cab06fef53c61f748548a60a7eac08d"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/provenance.json",
+              "sha256": "0572c53ab9bbac0ea69bc6093851fa2bc916d44ab62e73589f7f249da94d1ce2"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json",
+              "sha256": "fd53ad3e0944234a381383698b672cb4dcdbee517bb2508942449001f90815fd"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/campaign.json",
+              "sha256": "b7a6b05fe3b5a493b5db65935fe34f56a5eb9c889de893e322ab7e732b855085"
+            }
+          ]
         }
       ]
     }
@@ -419,6 +539,40 @@
           "sha256": "fefcea77e1a00bc38ca6ff02f948210703d412f85432ce5fb8466906216291d0"
         }
       ]
+    },
+    {
+      "scope_sha256": "3dbe28cc9850d87bcedb25f4774cc5adf258c9a2596ce4c78c7fbc8c2dcac8c7",
+      "result": "The scoped implementation and bounded mathematical investigations pass complete operator checks, portable byte replay, local compiler admission and registry checks. Provider acquisition, live budget forecasts and physical interpretation retain separate prerequisites.",
+      "observed_at": "2026-10-27T22:50:55.733314+00:00",
+      "revision": "b5549f5d280d1b60977c0fc2cc05c92219692a52",
+      "evidence": [
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation-portable-operators.json",
+          "sha256": "e189b6dc4e73c4721b9ac17c6d2cb0613cab06fef53c61f748548a60a7eac08d"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/campaign.json",
+          "sha256": "b7a6b05fe3b5a493b5db65935fe34f56a5eb9c889de893e322ab7e732b855085"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/runner-scalar-operators/provenance.json",
+          "sha256": "0572c53ab9bbac0ea69bc6093851fa2bc916d44ab62e73589f7f249da94d1ce2"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json",
+          "sha256": "fd53ad3e0944234a381383698b672cb4dcdbee517bb2508942449001f90815fd"
+        },
+        {
+          "ref": "docs/design/quantum-experiment-conformance.md",
+          "sha256": "254826b52cd50267d7f45ff2336f3f9537ccf4c637424a07899479d3cb2435e8"
+        },
+        {
+          "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+          "sha256": "2b552211c265968cf73f7cdd33eb00ee82e1398cd79c0887e5cd5bffa527c646"
+        }
+      ]
     }
-  ]
+  ],
+  "disposition": "completed",
+  "resolution": "The scoped implementation and bounded mathematical investigations pass complete operator checks, portable byte replay, local compiler admission and registry checks. Provider acquisition, live budget forecasts and physical interpretation retain separate prerequisites."
 }
