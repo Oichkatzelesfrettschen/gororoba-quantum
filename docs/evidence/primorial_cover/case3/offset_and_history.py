@@ -331,14 +331,16 @@ def stage2_test(split: dict[str, Any]) -> dict[str, Any]:
     one = statistics.fmean(fractions[names.index(f"g88_readout_{lb}")] for lb in range(8) if lb & 1)
     x_end = 1.0 - float(q["fractions"]["x_history"])
     k0 = names.index("g88_readout_0")
-    data = json.loads(files[k0].read_text(encoding="utf-8"))["registers"]
     path_qubits = record["fusion_placement"]["pin_replicas"]
-    others = {}
-    for r, path in enumerate(path_qubits):
-        strings = data[f"g0_r{r}_c"]["bitstrings"]
-        for b, qubit in enumerate(path):
-            prep0 = float(split["qubits"][str(qubit)]["fractions"]["prep0"])
-            others[str(qubit)] = {"readout_0": statistics.fmean(int(t[-1 - b]) for t in strings), "prep0": prep0}
+    slots = [(f"g0_r{r}_c", b, qubit) for r, path in enumerate(path_qubits) for b, qubit in enumerate(path)]
+    zero_reads = parallel.ordered_map(shot_bits, [(files[k0], register, b) for register, b, _ in slots], min_items=1)
+    others = {
+        str(qubit): {
+            "readout_0": statistics.fmean(bits),
+            "prep0": float(split["qubits"][str(qubit)]["fractions"]["prep0"]),
+        }
+        for (_, _, qubit), bits in zip(slots, zero_reads, strict=True)
+    }
     excess = fractions[k0]
     excess_se = math.sqrt(excess * (1 - excess) / shots)
     prep0, history = float(q["fractions"]["prep0"]), float(q["fractions"]["x_history"])
