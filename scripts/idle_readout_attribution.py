@@ -421,3 +421,87 @@ def pinned_geometry() -> Geometry:
     targets = json.loads((ROOT / "docs/evidence/heron_platform/targets.json").read_text())
     couplers = [tuple(pair) for pair in targets["backends"]["ibm_kingston"]["instructions"]["cz"]["qargs"]]
     return geometry([(a, b) for a, b in paths], [(a, b) for a, b in couplers])
+
+
+def _couplers(backend: str) -> list[tuple[int, int]]:
+    targets = json.loads((ROOT / "docs/evidence/heron_platform/targets.json").read_text())
+    return [(int(a), int(b)) for a, b in targets["backends"][backend]["instructions"]["cz"]["qargs"]]
+
+
+def load_predicted(run: Path) -> tuple[Geometry, dict[str, np.ndarray], float, int]:
+    """A dry run's noisy predictions as (1, PAIRS, 4) laws per member, with the geometry of its own replicas.
+
+    The replicas' initial layouts must be the pinned paths the class strings index; geometry refuses a partition
+    that is not a proper coloring of them.
+    """
+    import idle_penalty_report as report
+
+    record = json.loads((run / "record.json").read_text())
+    group = next(g for g in record["groups"] if g["group"] == "idle_readout")
+    paths = report.role_map(group)
+    geo = geometry(paths, _couplers(group["backend"]))
+    laws = {
+        m["name"]: np.asarray([[r["noisy"] for r in m["replicas"]]], dtype=float)
+        for m in group["members"]
+        if not m["reference"]
+    }
+    targets = json.loads((ROOT / "docs/evidence/heron_platform/targets.json").read_text())
+    return geo, laws, float(targets["backends"][group["backend"]]["dt"]), int(record["shots"])
+
+
+def self_check(out: dict[str, Any]) -> list[str]:
+    """The design's cohort-level null on predictions that carry no readout crosstalk; empty when it holds."""
+    from scipy import stats
+
+    misses = []
+    low, high = out["b"]["interval"]
+    if not low <= 0.0 <= high:
+        misses.append(f"b interval {out['b']['interval']} excludes zero")
+    for name in ("a", "c"):
+        family = sum(label != "not applicable" for row in out["labels"][name]["material"] for label in row)
+        resolved = int(np.sum(out["labels"][name]["resolved"]))
+        ceiling = int(stats.binom.ppf(0.99, family, 0.001))
+        if resolved > ceiling:
+            misses.append(f"{resolved} of {family} {name}_p resolved, above the null's 99th percentile {ceiling}")
+    if out["additivity"]["verdict"] != "additive":
+        misses.append(f"additivity reads {out['additivity']['verdict']}")
+    if out["attribution"]["verdict"] != "unresolved":
+        misses.append(f"attribution reads {out['attribution']['verdict']}")
+    return misses
+
+
+def main(argv: list[str] | None = None) -> int:
+    import argparse
+
+    import qrng_seeds
+
+    parser = argparse.ArgumentParser(description=(__doc__ or "").splitlines()[0])
+    parser.add_argument("run", type=Path)
+    parser.add_argument("--self-check", action="store_true", help="require the no-crosstalk null on predictions")
+    qrng_seeds.add_seed_argument(parser, "--seed", help="bootstrap seed, qrng:<draw>#<index>")
+    parser.add_argument("--replicates", type=int, default=BOOTSTRAP_REPLICATES)
+    parser.add_argument("--out", type=Path)
+    args = parser.parse_args(argv)
+    if args.seed is None:
+        parser.error("--seed takes a qrng:<draw>#<index> value")
+    geo, laws, dt, shots = load_predicted(args.run)
+    out = analyze(geo, laws, dt, shots, args.seed, args.replicates)
+    out["identity"] = {"run": qrng_seeds.repo_relative(args.run), "source": "predicted", "seed": args.seed_source}
+    text = json.dumps(out, indent=1, sort_keys=True, allow_nan=True) + "\n"
+    if args.out:
+        args.out.write_text(text)
+    print(
+        f"b {out['b']['value']:+.3f} kHz {out['b']['interval']}; additivity {out['additivity']['verdict']}; "
+        f"attribution {out['attribution']['verdict']} over {out['attribution']['resolved_probes']} resolved probes"
+    )
+    if args.self_check:
+        misses = self_check(out)
+        if misses:
+            print("self-check failed: " + "; ".join(misses))
+            return 1
+        print("self-check: b contains zero, resolved labels within the null, additive, attribution unresolved")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
