@@ -1,7 +1,8 @@
 # Readout attribution on ibm_kingston: written case
 
-Status: approved by the owner on 2026-10-27 and submitted that day as job `dbgfiu1j4t8s73ac91f0` on the backup
-account; the run awaits collection. The design, its two reviews and the validation evidence are in [heron-idle-readout-attribution.md](../../docs/design/heron-idle-readout-attribution.md).
+Status: approved by the owner on 2026-10-27, run that day as job `dbgfiu1j4t8s73ac91f0` on the backup account
+(16 s charged), collected and analyzed; the [Result](#result) section holds the decisions. The design, its two
+reviews and the validation evidence are in [heron-idle-readout-attribution.md](../../docs/design/heron-idle-readout-attribution.md).
 
 ## Question
 
@@ -86,3 +87,27 @@ From `gororoba_quantum/`, with `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=40
 "$PYTHON" ../scripts/idle_readout_attribution.py RUN_SUBMITTED \
   --seed "qrng:docs/evidence/anu_qrng/draw-2026-10-27T034547Z.json#3" --out RUN_SUBMITTED/idle-readout-attribution.json
 ```
+
+## Result
+
+`scripts/idle_readout_attribution.py` on the collected run, bootstrap seed
+`qrng:docs/evidence/anu_qrng/draw-2026-10-27T034547Z.json#3`, wrote
+`results/live/2026-10-27T191953.122214Z/idle-readout-attribution.json`. The job ran from 19:23:51 to 19:24:06 UTC
+under the 2026-10-27T12:00:41-07:00 calibration, and IBM billed 16 s.
+
+| Decision | Value | Verdict |
+|---|---|---|
+| 5. Replication of the probe's shift | pair mean -2.64 kHz (SE 0.56, t -4.73); against the quiet reference -2.64 kHz (t -4.71); quiet null +0.003 kHz (t 0.12) | replicated |
+| 3. Additivity | median residual +0.010 kHz [-0.075, 0.095] | additive |
+| 2. Far-field baseline b | -0.41 kHz [-1.35, +0.011]; class A [-3.01, 0.74], class B [-1.39, -0.15], classes agree | absent or unresolved |
+| 4. Attribution, 43 probes resolve D_p | median shares: baseline 0.27 [-0.01, 0.81], own partner 0.26 [-0.05, 0.73], within three hops 0.17 [-0.12, 0.72] | mixed |
+| 1. a_p labels (60, descriptive) | 13 material, 32 negligible, 15 indeterminate; 22 resolved | descriptive |
+| 1. c_p labels (42, descriptive) | 10 material, 27 negligible, 5 indeterminate; 14 resolved | descriptive |
+
+The pull replicates at the probe's size (-2.72 kHz there, -2.64 kHz here), and the split model fits it: the
+residual sits inside [-0.5, 0.5] kHz. No single source carries it. No share's interval lies above 0.5, none of the
+three opposes another, and b's interval reaches +0.011 kHz, just across zero, so the chip-wide baseline stays
+unresolved at this sample. The material labels concentrate the pull on a minority of probes: the largest own-partner
+terms read -13.9 and -10.7 kHz and the largest within-three-hop excesses -15.8 and -15.7 kHz, against a shot-noise SE
+near 0.1 kHz. Those per-probe values are descriptive; a probe-level claim needs a replication, and a physical
+attribution needs the feedline map that the Limits section of the design names.

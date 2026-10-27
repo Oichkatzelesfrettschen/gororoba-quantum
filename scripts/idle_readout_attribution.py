@@ -689,7 +689,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"refused: {refusal}")
         return 2
     out = analyze(geo, laws, dt, shots, args.seed, args.replicates)
-    out["identity"] = identity | {"run": qrng_seeds.repo_relative(args.run), "seed": args.seed_source}
+    run = qrng_seeds.repo_relative(args.run)
+    # The bootstrap seed's seed_source entry is what ci/seed_provenance.py matches to its runtime ledger row.
+    seed = qrng_seeds.seed_record("scripts/idle_readout_attribution.py", "--seed", run, args.seed_source)
+    out["identity"] = identity | {"run": run, "seed_source": seed}
     text = json.dumps(out, indent=1, sort_keys=True, allow_nan=True) + "\n"
     if args.out:
         args.out.write_text(text)
