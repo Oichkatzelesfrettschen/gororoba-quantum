@@ -38,7 +38,9 @@ estimated 23.5 s, so the two 30 s attempts ran out of time on the serialization,
 `scripts/n21_dose_decisions.py` wrote [dose-decisions.json](dose-decisions.json) from the raw registers, the
 scheduled-idle replay [idle-replay.json](idle-replay.json) and the dose-scaled model family
 [idle-scaling.json](idle-scaling.json), the three commands of the envelope's Decisions section, run under the
-pinned CI interpreter. Every interval is conditional on the execution Target's per-qubit T1 and T2 point values.
+pinned CI interpreter. Gate `core-n21-dose-decisions-replay` recomputes the decisions from those retained inputs
+and requires the retained bytes, which `ci/runner_image_records.json` binds to the runner image. Every interval is
+conditional on the execution Target's per-qubit T1 and T2 point values.
 
 | Decision | Result | Verdict |
 |---|---|---|

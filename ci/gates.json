@@ -3859,6 +3859,17 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/replay_check.py results/live/2026-10-27T014354.701394Z/dose-decisions.json -- \"$PYTHON\" scripts/n21_dose_decisions.py results/live/2026-10-27T014354.701394Z --out {out}",
+   "name": "core-n21-dose-decisions-replay",
+   "seconds": 4.6,
+   "tier": "pr",
+   "replays": [
+    "results/live/2026-10-27T014354.701394Z/dose-decisions.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py analyze results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe --out results/iqm/idle_schedule_probe_analysis-runner-image.json --replay",
    "name": "core-684",
    "seconds": 2.0,
@@ -5063,6 +5074,40 @@
    "name": "core-755",
    "seconds": 7.2,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/runner-scalar-operators --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
+   "name": "core-quantum-experiment-cases",
+   "seconds": 15.0,
+   "tier": "full",
+   "replays": [
+    "docs/evidence/quantum-experiment-conformance/runner-scalar-operators"
+   ],
+   "workers": "all"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/experiment_analysis.py --self-test && \"$PYTHON\" -O scripts/experiment_analysis.py --self-test",
+   "name": "core-quantum-experiment-analysis",
+   "seconds": 3.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/experiment_toolchain.py --campaign docs/evidence/quantum-experiment-conformance/runner-scalar-operators/campaign.json --out docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json --check",
+   "name": "core-quantum-experiment-toolchain",
+   "seconds": 30.0,
+   "tier": "full",
+   "requires": [
+    "qi"
+   ],
+   "replays": [
+    "docs/evidence/quantum-experiment-conformance/scalar-operator-toolchain.json"
+   ]
   }
  ],
  "excluded": [

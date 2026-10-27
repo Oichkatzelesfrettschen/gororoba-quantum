@@ -1,0 +1,279 @@
+{
+ "schema": "qi-hypercomplex-cases-v1",
+ "family": "quarter-mass",
+ "setting": "amplified",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 2,
+ "logical_qubits": 2,
+ "shots": 1575,
+ "job_execution_time_limit": 300.0,
+ "hardware_pause_seconds": 120,
+ "circuits": [
+  {
+   "file": "amplified.cq",
+   "kind": "science",
+   "nqubits": 2,
+   "operator_error": 0.0,
+   "requested_probabilities": [
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "native_probabilities": [
+    2.4651903288156613e-32,
+    8.304840168620503e-32,
+    5.839649839804844e-32,
+    1.0
+   ],
+   "native_operator": {
+    "real": [
+     [
+      -1.570092458683775e-16,
+      3.925231146709438e-17,
+      2.2642405841048335e-48,
+      -1.0
+     ],
+     [
+      -2.220446049250313e-16,
+      0.9999999999999999,
+      -2.3574150014042242e-32,
+      3.92523114670944e-17
+     ],
+     [
+      -1.5700924586837752e-16,
+      3.925231146709438e-17,
+      1.0,
+      1.1102230246251565e-16
+     ],
+     [
+      1.0,
+      1.1102230246251565e-16,
+      1.570092458683775e-16,
+      -1.962615573354719e-16
+     ]
+    ],
+    "imaginary": [
+     [
+      -7.124380173985397e-32,
+      -6.12323399573677e-17,
+      -6.123233995736764e-17,
+      -3.017969956500047e-32
+     ],
+     [
+      1.8369701987210297e-16,
+      -4.250565120907878e-32,
+      9.614043519462414e-33,
+      6.123233995736761e-17
+     ],
+     [
+      1.8369701987210302e-16,
+      -1.608541658625186e-32,
+      -3.697785493223493e-32,
+      6.123233995736761e-17
+     ],
+     [
+      -6.290011731078215e-32,
+      1.83697019872103e-16,
+      1.8369701987210297e-16,
+      1.0101112403249207e-31
+     ]
+    ]
+   },
+   "measurement_mapping": [
+    0,
+    1
+   ],
+   "observable_partition": [
+    [
+     0,
+     1
+    ],
+    [
+     2,
+     3
+    ]
+   ],
+   "logical_qubits": 2,
+   "placement": [
+    11,
+    13
+   ],
+   "requested_operator": {
+    "real": [
+     [
+      0.0,
+      0.0,
+      0.0,
+      -1.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ],
+    "imaginary": [
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "compiled_operator": {
+    "real": [
+     [
+      -1.570092458683775e-16,
+      3.925231146709438e-17,
+      2.2642405841048335e-48,
+      -1.0
+     ],
+     [
+      -2.220446049250313e-16,
+      0.9999999999999999,
+      -2.3574150014042242e-32,
+      3.92523114670944e-17
+     ],
+     [
+      -1.5700924586837752e-16,
+      3.925231146709438e-17,
+      1.0,
+      1.1102230246251565e-16
+     ],
+     [
+      1.0,
+      1.1102230246251565e-16,
+      1.570092458683775e-16,
+      -1.962615573354719e-16
+     ]
+    ],
+    "imaginary": [
+     [
+      -7.124380173985397e-32,
+      -6.12323399573677e-17,
+      -6.123233995736764e-17,
+      -3.017969956500047e-32
+     ],
+     [
+      1.8369701987210297e-16,
+      -4.250565120907878e-32,
+      9.614043519462414e-33,
+      6.123233995736761e-17
+     ],
+     [
+      1.8369701987210302e-16,
+      -1.608541658625186e-32,
+      -3.697785493223493e-32,
+      6.123233995736761e-17
+     ],
+     [
+      -6.290011731078215e-32,
+      1.83697019872103e-16,
+      1.8369701987210297e-16,
+      1.0101112403249207e-31
+     ]
+    ]
+   },
+   "compiler_policy": "trivial-layout-basic-routing-optimization-zero",
+   "seed_source": "deterministic-no-randomized-passes",
+   "cz_count": 2,
+   "unrounded_operator_error": 4.54443609153122e-16,
+   "name": "amplified",
+   "family": "quarter-mass",
+   "active_outputs": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "success_outputs": [
+    3
+   ],
+   "register_kind": "qubit",
+   "register_width": 2,
+   "logical_output_labels": [
+    "00",
+    "01",
+    "10",
+    "11"
+   ],
+   "leakage_outputs": [],
+   "sha256": "814fcfc72bb2b46ed8fca311fc71dc23331d3466b60acaa8e2ebbb5d3605f1f1"
+  },
+  {
+   "file": "readout-0.cq",
+   "kind": "readout-reference",
+   "prepared": 0,
+   "sha256": "ef707b0cb286d3c4a7b56dc6f0408d437145d8b649d0c84f3032e043334a6df8",
+   "measurement_mapping": [
+    0,
+    1
+   ],
+   "register_kind": "qubit",
+   "logical_qubits": 2,
+   "register_width": 2
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout-reference",
+   "prepared": 1,
+   "sha256": "23b2ca7c2cf506fedfcdac8239dc3d90d72729b6120121b98e0589acef796f7f",
+   "measurement_mapping": [
+    0,
+    1
+   ],
+   "register_kind": "qubit",
+   "logical_qubits": 2,
+   "register_width": 2
+  }
+ ],
+ "compiler": {
+  "policy": "trivial-layout-basic-routing-optimization-zero",
+  "seed_source": "deterministic-no-randomized-passes",
+  "qiskit": "2.6.0",
+  "catalogue_sha256": "1b978cf3518149cd72886865bffb971ab0c359ae5a7a993cb5f51b230159cd78",
+  "angle_step_radians": 0.08726646259971647
+ },
+ "preregistered": {
+  "primary": "unconditional logical output probabilities",
+  "readout_correction": "sensitivity only",
+  "minimum_output_readout_contrast": 0.2,
+  "confidence": 0.95,
+  "claim": "compiled operator conformance; physical mechanism remains device-specific"
+ },
+ "budget_status": "operator-supplied ceilings; live forecast and written-case approval required"
+}
