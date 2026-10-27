@@ -1951,7 +1951,9 @@ the error that Ascella's calibrated control applies to each served mesh, and
 no simulator holds that calibration (Perceval#799).
 
 The predictors were frozen and pushed in `bc15673`, before the seeds were
-drawn. They live in
+drawn. GitHub's branch activity records the push at 00:37:09 UTC, and the draw
+was retrieved at 00:37:15 UTC
+([push order](../evidence/ascella-order-coefficients/replication-push-order.json)). They live in
 [`replication-offsets.json`](../evidence/ascella-order-coefficients/replication-offsets.json),
 written by
 [`scripts/ascella_replication_offsets.py`](../../scripts/ascella_replication_offsets.py),
@@ -2024,10 +2026,14 @@ a 99 % half-width of 0.0024.
 The outcome is **both carried**.
 - The carried P-B offsets predict independent meshes a second time. Their
   share, 6.0 %, lies inside the new-seed interval of 1.4 % to 25.6 %.
-- The refit on 233 meshes carries more: r 0.404 against 0.240 on the same
-  meshes. The P-A, P-B and R-C readings rise with training size (28, 56 and
-  203 perturbed meshes), so the offsets are still underdetermined rather than
-  exhausted.
+- On the same meshes the refit on 233 meshes reads r 0.404 against R-B's
+  0.240. The difference is descriptive, for two reasons:
+  - The preregistration tested neither predictor against the other. A post hoc
+    Williams test for the two dependent correlations reads t 2.17 on 164
+    degrees of freedom (two-sided p 0.031).
+  - R-C's added training meshes come from jobs 04 and 05, the calibrations
+    nearest these jobs, so training size and calibration proximity are
+    confounded.
 
 Even at R-C's upper bound, about two thirds of the compilation-induced
 variance lies outside static element offsets on the returned circuit. The

@@ -42,6 +42,22 @@
           "observed_at": "2026-10-27T00:36:00+00:00",
           "revision": "bc1567336ac3c51d6e74c8da856a4eba2ebbb5e7",
           "scope_sha256": "0fafa7eb28111246cac50a83d5f6d40e38e98fce87ee7f695b4ddcfa78647618"
+        },
+        {
+          "result": "Revalidation with an observed push time: GitHub's branch activity records branch_creation of quandela/ascella-replication-meshes at bc15673 at 2026-10-27T00:37:09Z, and draw-2026-10-27T003715Z.json was retrieved at 00:37:15Z; replication-offsets.json is unchanged and replays under --check.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-push-order.json",
+              "sha256": "535d1b030968fbdda9aa03be03782cd54cb5028a4ad04c875c1ffd2f59258eeb"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-offsets.json",
+              "sha256": "b541d774066373141dc1fcec175d20e43c0e98d51d8732e47735751adf6c7d0a"
+            }
+          ],
+          "observed_at": "2026-10-27T01:06:02+00:00",
+          "revision": "5acdda793eb8319259f86f4a31b03b422e3d6da0",
+          "scope_sha256": "0fafa7eb28111246cac50a83d5f6d40e38e98fce87ee7f695b4ddcfa78647618"
         }
       ]
     },
@@ -134,6 +150,22 @@
           ],
           "observed_at": "2026-10-27T00:59:13+00:00",
           "revision": "9e53324627624f87361cdf06811daa7b0eb9ac46",
+          "scope_sha256": "3761a353e8835262422487094ae72236a0ae329ae6cf533068e1afeedb38dbe0"
+        },
+        {
+          "result": "Revalidation after the claim's boundary restated R-C's margin over R-B as descriptive (post hoc Williams t 2.17, two-sided p 0.031; training size confounded with calibration proximity); replication-score.json is unchanged.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-score.json",
+              "sha256": "ae5a109a1c0e19aced9d5c25fda807b269d56b72eeb91fbbc7cbba857de1e2af"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=ascella-signed-coherence-replication-offsets",
+              "sha256": "c64159a669c1e989addb7ecac88f64be63e6076441e423ea34a4910e7f68e48a"
+            }
+          ],
+          "observed_at": "2026-10-27T01:06:02+00:00",
+          "revision": "5acdda793eb8319259f86f4a31b03b422e3d6da0",
           "scope_sha256": "3761a353e8835262422487094ae72236a0ae329ae6cf533068e1afeedb38dbe0"
         }
       ]

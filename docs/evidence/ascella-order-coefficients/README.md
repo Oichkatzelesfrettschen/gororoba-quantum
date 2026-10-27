@@ -157,7 +157,10 @@ scores the offsets once on the 147 unseen meshes of jobs 04 and 05
 carries P-B unchanged and the same family refitted on all 233 retained meshes
 for plan
 [`ascella-replication-meshes-case`](../../state/plans/ascella-replication-meshes-case.json),
-frozen before its seeds were drawn; and
+frozen before its seeds were drawn, which
+[`replication-push-order.json`](replication-push-order.json) records: GitHub's
+branch activity shows commit `bc15673` created on the remote at 00:37:09 UTC,
+six seconds before the ANU QRNG draw was retrieved; and
 [`replication-score.json`](replication-score.json), from
 [`scripts/ascella_replication_score.py`](../../../scripts/ascella_replication_score.py),
 scores both once on the 168 unseen meshes of jobs 06 and 07
