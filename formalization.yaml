@@ -60,6 +60,28 @@ sources:
     relationship: formalizes
     note: "The skew conference property of right multiplication by the imaginary sum, for every dimension."
 
+  - title: "One-sided inverses in Cayley-Dickson algebras"
+    authors: ["gororoba-quantum"]
+    id: docs/notes/topics/cd-one-sided-inverses.md
+    type: repository note
+    relationship: formalizes
+    note: >-
+      Lemmas 2 to 4, the kernel-equality theorem and the direct-finiteness
+      corollary, on the integer pair tower; the affine inverse family is
+      stated in its integer-cleared form <a, a> b = conj(a) + w.
+
+  - title: "Large annihilators in Cayley-Dickson algebras"
+    authors: ["Daniel K. Biss", "Daniel Dugger", "Daniel C. Isaksen"]
+    id: arXiv:math/0511691
+    type: article
+    relationship: formalizes
+    location: docs/notes/math-0511691.md
+    note: >-
+      Corollary 9.3 (ker L_x = ker R_x) and the purity Lemmas 9.4 and 9.5,
+      proved through the trace-form adjoint identities of Lemma 3.4 rather
+      than through Lemma 9.2's identity x(x*y) = x*(xy).
+    author_endorsement: not-contacted
+
   - title: "gororoba_quantum/cd_core.py"
     authors: ["gororoba-quantum"]
     id: gororoba_quantum/cd_core.py
@@ -105,7 +127,7 @@ related_formalizations:
 
 status:
   scope: >-
-    Selected main-result declarations of fourteen proof sources, not every
+    Selected main-result declarations of fifteen proof sources, not every
     exported declaration. Each listed declaration is kernel-checked by rocq
     check on the toolchain of its bundle's toolchain.txt, except
     proofs/TargetFlipN21.v, whose receipt is the compile and check tail in
@@ -117,7 +139,9 @@ status:
     (TerminalChannelSeparationReal.kernel.txt) also names
     ClassicalDedekindReals.sig_not_dec and Classical_Prop.classic. The
     one-sided inverse theorem of docs/notes/topics/cd-one-sided-inverses.md
-    has no Rocq source.
+    is proved over the integer tower, which covers every rational element by
+    clearing denominators; the real-coefficient statement rests on the note's
+    written argument, whose steps the integer proof follows without division.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms:
@@ -132,6 +156,12 @@ status:
       axioms: []
     - declaration: isum_skew
       file: proofs/CdImaginarySumConference.v
+      axioms: []
+    - declaration: kernel_equality
+      file: proofs/CdAnnihilatorSymmetry.v
+      axioms: []
+    - declaration: direct_finiteness
+      file: proofs/CdAnnihilatorSymmetry.v
       axioms: []
     - declaration: isum_conference
       file: proofs/CdImaginarySumConference.v
@@ -204,6 +234,14 @@ alignment:
       file: proofs/CdImaginarySumConference.v
       statement: "<x s, y s> = (2^k - 1) <x, y>: right multiplication by the imaginary sum is a skew conference matrix"
       source: docs/notes/topics/cd-star-lattice-tower.md
+    - declaration: kernel_equality
+      file: proofs/CdAnnihilatorSymmetry.v
+      statement: "a z = 0 exactly when z a = 0 for every a, z of the integer pair tower at every level (Corollary 9.3 of math/0511691)"
+      source: docs/notes/topics/cd-one-sided-inverses.md
+    - declaration: direct_finiteness
+      file: proofs/CdAnnihilatorSymmetry.v
+      statement: "a b = 1 implies b a = 1 in the integer pair tower at every level"
+      source: docs/notes/topics/cd-one-sided-inverses.md
     - declaration: sign_row_degree_all
       file: proofs/CdSignRowAnf.v
       statement: "Theorem 1: the left sign row of e_m, m != 0, has algebraic degree max(1, k - 1)"
