@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import json
 import math
 import sys
@@ -24,15 +25,15 @@ JOB_03 = RUNS / "2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03"
 
 
 @pytest.mark.audit
-def test_retained_runs_score_end_to_end(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_retained_runs_score_end_to_end() -> None:
     """Job-02 stands in for a new job against job-00; job-03 repeats every job-02 mesh and so scores nothing."""
-    monkeypatch.setattr(score, "BASELINE_JOB", "job-00")
     record = score.score(
         EVIDENCE / "new-mesh-offsets.json",
         EVIDENCE / "fixed-mesh-confirmation.json",
         [JOB_00],
         [JOB_02, JOB_03],
         enforce=False,
+        design=dataclasses.replace(score.NEW_SEED, baseline_job="job-00"),
     )
     first, second = record["jobs"]
     if (first["scored"], first["distinct_perturbed_meshes"], first["previously_served"]) != (True, 56, 0):

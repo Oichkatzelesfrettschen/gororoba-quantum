@@ -1,0 +1,733 @@
+{
+  "pass": true,
+  "schema": "a5-v-topology-stabilizer-representation-v2",
+  "script_sha256": "e1e12d7dd1f0301045a1f838eeb3ceda002c2ee5cf7872987321a27acb3cb448",
+  "v_topology_stabilizer_representation": {
+    "boundary_matches_committed_VB_result": true,
+    "boundary_representation": "V_(0,-4) + 2 V_(1,-3) + V_(0,-2)",
+    "boundary_rows_equivalent": true,
+    "endpoint_representation": "3 + conjugate(3)",
+    "endpoint_rows_equivalent": true,
+    "input_digests": {
+      "aligned_stabilizer_representation_result_sha256": "cb2328d55edff142c61c054d64ff632dada447d7cea585e7185dcb380aaf40c1",
+      "aligned_stabilizer_representation_script_sha256": "66b900530f8ff547ccd49e7450da556405fa246c336b551945890ab4e3188376",
+      "isotropic_orbit_data_result_sha256": "ab251c1601cd6fa9d8e75b95195194dd8a3f9085d3293c962b8c2d613a654550",
+      "isotropic_orbit_data_script_sha256": "09496d0c4e0a6da4db4ecf25f90f26f4f11f238a20b48c0f25b6102a20fa2628",
+      "v_orbit_moduli_result_sha256": "07dc79facf758da94b4d3a7a79d441a95c84cc111754acf2be0c6c171eec52d6",
+      "v_orbit_moduli_script_sha256": "3a579c9406e556a2b2cbd44973d693b369b44eb93b30d45708bc9d5fbb63d4b0"
+    },
+    "mutation": "",
+    "pass": true,
+    "principal_constancy_argument": "the canonical stabilizer fixes the ordered real-imaginary frame and is independent of lambda; its isotypic multiplicities are locally constant over the connected principal parameter space",
+    "principal_representation": "2 V_0 + 2 V_1",
+    "principal_rows_equivalent": true,
+    "rows": [
+      {
+        "compact_tangent_rank": 7,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "collinear_endpoint",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "4/9": 6
+          },
+          "commutant_dimension": 2,
+          "connected_group": "SU(3), because 3 + conjugate(3) is faithful on the center of the simply connected cover",
+          "decomposition": "3 + conjugate(3)",
+          "invariant_symmetric_pairing_dimension": 1,
+          "invariant_symmetric_pairing_rank": 6,
+          "irreducible_projector_ranks": [
+            3,
+            3
+          ],
+          "pass": true,
+          "summands_are_pairwise_dual": true
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "1",
+        "split_projective_coefficients": [
+          3,
+          5
+        ],
+        "split_projective_ratio_beta_over_alpha": "5/3+(0)i",
+        "stabilizer_derived_dimension": 8,
+        "stabilizer_dimension": 8,
+        "stabilizer_lie_algebra": "su(3)"
+      },
+      {
+        "compact_tangent_rank": 12,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "principal",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "0": 2,
+            "3/8": 4
+          },
+          "decomposition": "2 V_0 + 2 V_1",
+          "isotypic_projector_ranks": [
+            2,
+            4
+          ],
+          "pass": true,
+          "standard_doublets": 2,
+          "trivial_lines": 2
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "64/289",
+        "split_projective_coefficients": [
+          3,
+          5
+        ],
+        "split_projective_ratio_beta_over_alpha": "5/3+(0)i",
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)"
+      },
+      {
+        "compact_tangent_rank": 12,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "principal",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "0": 2,
+            "3/8": 4
+          },
+          "decomposition": "2 V_0 + 2 V_1",
+          "isotypic_projector_ranks": [
+            2,
+            4
+          ],
+          "pass": true,
+          "standard_doublets": 2,
+          "trivial_lines": 2
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "81/1681",
+        "split_projective_coefficients": [
+          3,
+          5
+        ],
+        "split_projective_ratio_beta_over_alpha": "5/3+(0)i",
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)"
+      },
+      {
+        "compact_tangent_rank": 11,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "VB_boundary",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "0": 2,
+            "3/8": 4
+          },
+          "decomposition": "V_(0,-4) + 2 V_(1,-3) + V_(0,-2)",
+          "irreducible_decomposition": [
+            {
+              "casimir_eigenvalue": "0",
+              "central_weight": "-4*I",
+              "irreducible_dimension": 1,
+              "joint_dimension": 1,
+              "multiplicity": 1,
+              "sl2_highest_weight": 0
+            },
+            {
+              "casimir_eigenvalue": "3/8",
+              "central_weight": "-3*I",
+              "irreducible_dimension": 2,
+              "joint_dimension": 4,
+              "multiplicity": 2,
+              "sl2_highest_weight": 1
+            },
+            {
+              "casimir_eigenvalue": "0",
+              "central_weight": "-2*I",
+              "irreducible_dimension": 1,
+              "joint_dimension": 1,
+              "multiplicity": 1,
+              "sl2_highest_weight": 0
+            }
+          ],
+          "pass": true,
+          "projectors": {
+            "commutant_dimension": 6,
+            "pass": true,
+            "projector_ranks": [
+              1,
+              2,
+              2,
+              1
+            ]
+          },
+          "su2_restriction": {
+            "standard_doublets": 2,
+            "trivial_lines": 2
+          }
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "0",
+        "split_projective_coefficients": [
+          3,
+          5
+        ],
+        "split_projective_ratio_beta_over_alpha": "5/3+(0)i",
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 4,
+        "stabilizer_lie_algebra": "su(2)+u(1)"
+      },
+      {
+        "compact_tangent_rank": 7,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "collinear_endpoint",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "4/9": 6
+          },
+          "commutant_dimension": 2,
+          "connected_group": "SU(3), because 3 + conjugate(3) is faithful on the center of the simply connected cover",
+          "decomposition": "3 + conjugate(3)",
+          "invariant_symmetric_pairing_dimension": 1,
+          "invariant_symmetric_pairing_rank": 6,
+          "irreducible_projector_ranks": [
+            3,
+            3
+          ],
+          "pass": true,
+          "summands_are_pairwise_dual": true
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "1",
+        "split_projective_coefficients": [
+          5,
+          13
+        ],
+        "split_projective_ratio_beta_over_alpha": "13/5+(0)i",
+        "stabilizer_derived_dimension": 8,
+        "stabilizer_dimension": 8,
+        "stabilizer_lie_algebra": "su(3)"
+      },
+      {
+        "compact_tangent_rank": 12,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "principal",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "0": 2,
+            "3/8": 4
+          },
+          "decomposition": "2 V_0 + 2 V_1",
+          "isotypic_projector_ranks": [
+            2,
+            4
+          ],
+          "pass": true,
+          "standard_doublets": 2,
+          "trivial_lines": 2
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "64/289",
+        "split_projective_coefficients": [
+          5,
+          13
+        ],
+        "split_projective_ratio_beta_over_alpha": "13/5+(0)i",
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)"
+      },
+      {
+        "compact_tangent_rank": 12,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "principal",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "0": 2,
+            "3/8": 4
+          },
+          "decomposition": "2 V_0 + 2 V_1",
+          "isotypic_projector_ranks": [
+            2,
+            4
+          ],
+          "pass": true,
+          "standard_doublets": 2,
+          "trivial_lines": 2
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "81/1681",
+        "split_projective_coefficients": [
+          5,
+          13
+        ],
+        "split_projective_ratio_beta_over_alpha": "13/5+(0)i",
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)"
+      },
+      {
+        "compact_tangent_rank": 11,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "VB_boundary",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "0": 2,
+            "3/8": 4
+          },
+          "decomposition": "V_(0,-4) + 2 V_(1,-3) + V_(0,-2)",
+          "irreducible_decomposition": [
+            {
+              "casimir_eigenvalue": "0",
+              "central_weight": "-4*I",
+              "irreducible_dimension": 1,
+              "joint_dimension": 1,
+              "multiplicity": 1,
+              "sl2_highest_weight": 0
+            },
+            {
+              "casimir_eigenvalue": "3/8",
+              "central_weight": "-3*I",
+              "irreducible_dimension": 2,
+              "joint_dimension": 4,
+              "multiplicity": 2,
+              "sl2_highest_weight": 1
+            },
+            {
+              "casimir_eigenvalue": "0",
+              "central_weight": "-2*I",
+              "irreducible_dimension": 1,
+              "joint_dimension": 1,
+              "multiplicity": 1,
+              "sl2_highest_weight": 0
+            }
+          ],
+          "pass": true,
+          "projectors": {
+            "commutant_dimension": 6,
+            "pass": true,
+            "projector_ranks": [
+              1,
+              2,
+              2,
+              1
+            ]
+          },
+          "su2_restriction": {
+            "standard_doublets": 2,
+            "trivial_lines": 2
+          }
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "0",
+        "split_projective_coefficients": [
+          5,
+          13
+        ],
+        "split_projective_ratio_beta_over_alpha": "13/5+(0)i",
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 4,
+        "stabilizer_lie_algebra": "su(2)+u(1)"
+      },
+      {
+        "compact_tangent_rank": 7,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "collinear_endpoint",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "4/9": 6
+          },
+          "commutant_dimension": 2,
+          "connected_group": "SU(3), because 3 + conjugate(3) is faithful on the center of the simply connected cover",
+          "decomposition": "3 + conjugate(3)",
+          "invariant_symmetric_pairing_dimension": 1,
+          "invariant_symmetric_pairing_rank": 6,
+          "irreducible_projector_ranks": [
+            3,
+            3
+          ],
+          "pass": true,
+          "summands_are_pairwise_dual": true
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "1",
+        "split_projective_coefficients": [
+          0,
+          1
+        ],
+        "split_projective_ratio_beta_over_alpha": "infinity",
+        "stabilizer_derived_dimension": 8,
+        "stabilizer_dimension": 8,
+        "stabilizer_lie_algebra": "su(3)"
+      },
+      {
+        "compact_tangent_rank": 12,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "principal",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "0": 2,
+            "3/8": 4
+          },
+          "decomposition": "2 V_0 + 2 V_1",
+          "isotypic_projector_ranks": [
+            2,
+            4
+          ],
+          "pass": true,
+          "standard_doublets": 2,
+          "trivial_lines": 2
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "64/289",
+        "split_projective_coefficients": [
+          0,
+          1
+        ],
+        "split_projective_ratio_beta_over_alpha": "infinity",
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)"
+      },
+      {
+        "compact_tangent_rank": 12,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "principal",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "0": 2,
+            "3/8": 4
+          },
+          "decomposition": "2 V_0 + 2 V_1",
+          "isotypic_projector_ranks": [
+            2,
+            4
+          ],
+          "pass": true,
+          "standard_doublets": 2,
+          "trivial_lines": 2
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "81/1681",
+        "split_projective_coefficients": [
+          0,
+          1
+        ],
+        "split_projective_ratio_beta_over_alpha": "infinity",
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 3,
+        "stabilizer_lie_algebra": "su(2)"
+      },
+      {
+        "compact_tangent_rank": 11,
+        "complex_kernel_dimension": 6,
+        "derived_killing_negative_definite": true,
+        "kernel_preserved": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit_type": "VB_boundary",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "real_kernel_dimension": 12,
+        "representation": {
+          "casimir_spectrum": {
+            "0": 2,
+            "3/8": 4
+          },
+          "decomposition": "V_(0,-4) + 2 V_(1,-3) + V_(0,-2)",
+          "irreducible_decomposition": [
+            {
+              "casimir_eigenvalue": "0",
+              "central_weight": "-4*I",
+              "irreducible_dimension": 1,
+              "joint_dimension": 1,
+              "multiplicity": 1,
+              "sl2_highest_weight": 0
+            },
+            {
+              "casimir_eigenvalue": "3/8",
+              "central_weight": "-3*I",
+              "irreducible_dimension": 2,
+              "joint_dimension": 4,
+              "multiplicity": 2,
+              "sl2_highest_weight": 1
+            },
+            {
+              "casimir_eigenvalue": "0",
+              "central_weight": "-2*I",
+              "irreducible_dimension": 1,
+              "joint_dimension": 1,
+              "multiplicity": 1,
+              "sl2_highest_weight": 0
+            }
+          ],
+          "pass": true,
+          "projectors": {
+            "commutant_dimension": 6,
+            "pass": true,
+            "projector_ranks": [
+              1,
+              2,
+              2,
+              1
+            ]
+          },
+          "su2_restriction": {
+            "standard_doublets": 2,
+            "trivial_lines": 2
+          }
+        },
+        "representation_commutators_match": true,
+        "rho_squared": "0",
+        "split_projective_coefficients": [
+          0,
+          1
+        ],
+        "split_projective_ratio_beta_over_alpha": "infinity",
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 4,
+        "stabilizer_lie_algebra": "su(2)+u(1)"
+      }
+    ],
+    "topology": {
+      "affine_quadric": "q(b)=-1 is diffeomorphic to T S^6 and retracts to S^6",
+      "base": "CP^1 minus {+i,-i}, homotopy equivalent to S^1",
+      "divisor_computation": {
+        "coefficient_polynomial": "lambda**2 + 1",
+        "common_order": 1,
+        "deleted_point_orders": {
+          "+i": 1,
+          "-i": 1
+        },
+        "factorization": "(lambda - I)*(lambda + I)",
+        "mutation": ""
+      },
+      "divisor_order_around_each_deleted_point": 1,
+      "fundamental_group": "Z^2",
+      "global_phase_factor": "mu/abs(mu) in S^1",
+      "homotopy_type": "S^1 x mapping_torus(-id:S^6->S^6)",
+      "k_theory_pass": true,
+      "mapping_torus_K0": "Z",
+      "mapping_torus_K1": "Z + Z/2",
+      "mapping_torus_cohomology": {
+        "0": "Z",
+        "1": "Z",
+        "7": "Z/2"
+      },
+      "monodromy_degree_on_H6": -1,
+      "parameterization": "z=mu*(a,1,lambda*a), q(a)=-1/(1+lambda^2)",
+      "pass": true,
+      "quadric_monodromy": "b -> -b",
+      "square_root_cover": "b=sqrt(1+lambda^2)*a with q(b)=-1",
+      "square_root_monodromy": -1,
+      "topology_argument_status": "inferred from the exact divisor order, affine-quadric model, Wang sequence, and Kunneth theorem",
+      "unit_section_K0": "Z^2 + Z/2",
+      "unit_section_K1": "Z^2 + Z/2",
+      "unit_section_cohomology": {
+        "0": "Z",
+        "1": "Z^2",
+        "2": "Z",
+        "7": "Z/2",
+        "8": "Z/2"
+      },
+      "unit_section_cohomology_status": "inferred",
+      "unit_section_reduced_K0": "Z + Z/2",
+      "wang_map_on_H6": 2,
+      "wang_map_on_reduced_K0_of_S6": 2
+    }
+  }
+}
