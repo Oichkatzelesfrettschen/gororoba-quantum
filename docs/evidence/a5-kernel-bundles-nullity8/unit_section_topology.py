@@ -287,10 +287,10 @@ def _compact_point(orbit_name: str) -> tuple[tuple[Fraction, ...], GaussianPoint
             "Mostow-adapted core point",
         )
     if orbit_name != "Iso":
-        split_point = tuple(Fraction(value) for value in independent.REPS[orbit_name])
+        rational_point = tuple(Fraction(value) for value in independent.REPS[orbit_name])
         return (
-            tuple(symmetry.equations.y_from_split(split_point)),
-            _gaussian_split_from_rational(split_point),
+            tuple(symmetry.equations.y_from_split(rational_point)),
+            _gaussian_split_from_rational(rational_point),
             "representative",
         )
     quartets = strata._coassociative_quartets()

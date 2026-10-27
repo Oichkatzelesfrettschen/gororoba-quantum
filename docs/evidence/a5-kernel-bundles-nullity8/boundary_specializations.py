@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from fractions import Fraction
 from functools import cache
 from pathlib import Path
-from typing import Any, TypeAlias
+from typing import Any, TypeAlias, cast
 
 import sympy as sp
 
@@ -487,7 +487,8 @@ def _curve_certificate(path: PathSpec) -> dict[str, Any]:
 
 @cache
 def _matrix_for_split(split_point: Sequence[Fraction | sp.Expr]) -> sp.Matrix:
-    return kernel_frames._bordered_matrix(kernel_frames._original_z_from_split(split_point))
+    # _original_z_from_split is annotated for integers but substitutes any exact scalar, sympy expressions included.
+    return kernel_frames._bordered_matrix(kernel_frames._original_z_from_split(cast("Sequence[int]", split_point)))
 
 
 def _standard_columns(indices: Sequence[int]) -> sp.Matrix:
