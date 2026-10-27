@@ -3832,6 +3832,17 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_detuning_sign.py results/live/2026-10-27T173602.753176Z --check results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json",
+   "name": "core-n21-detuning-sign-replay",
+   "seconds": 3.0,
+   "tier": "pr",
+   "replays": [
+    "results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/iqm_idle_schedule_probe.py analyze results/iqm/runs/2026-10-25T003916Z-garnet-idle-schedule-train-readout-probe --out results/iqm/idle_schedule_probe_analysis-runner-image.json --replay",
    "name": "core-684",
    "seconds": 2.0,

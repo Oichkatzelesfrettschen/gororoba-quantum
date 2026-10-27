@@ -131,3 +131,9 @@ An exact probe of the planned ISA, a 0.4 rad turn on each physical qubit of ever
 moved the orbit's quadrature pair by +1 turn on the qubit bound to the bit for 16, -1 on the qubit for 1 and 0 on
 the other two, and each Ramsey arm by +1 on its own qubit alone, in 19 of 19 replicas. The record is not retained;
 `--submit` plans again on the calibration in force and binds that plan.
+
+## Result
+
+Kingston job `dbge2jpj4t8s73ac6fk0` ran this envelope on 2026-10-27 and all three decisions hold: slope 1.010
+[0.977, 1.043] over 18 replicas, 17 of 17 signs agree, 17 of 17 echoes return. The
+[findings](../../results/live/2026-10-27T173602.753176Z/FINDINGS.md) carry every replica's rates and the limits.
