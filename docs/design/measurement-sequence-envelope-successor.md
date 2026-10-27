@@ -1,76 +1,102 @@
-# Measurement-sequence envelope successor: a carryover screen sized from the endpoint
+# Measurement-sequence envelope successor: an equalized end state and an in-job carryover bound
 
-Status: design v1, before review. The width-32 envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`,
+Status: design v2, after the adversarial review and the advisor review of v1; Codex review pending. The width-32
+envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`,
 [findings](../../results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md)) executed as planned and billed 38 s, and its
 reset screen withheld all 32 qubits, so it returned no device verdict. This successor keeps the envelope contract of
 [measurement-sequence-adaptive-envelope.md](measurement-sequence-adaptive-envelope.md) (layout rule, width tiers,
-20 us repetition delay with the 50 us fallback, aggregate cap, replan bound) and replaces the two parts that failed:
-the reset screen and the settle verdict.
+20 us repetition delay with the 50 us fallback, one client-side Sampler job per attempt, aggregate cap, replan bound)
+and changes the member constructor, the reset screen, the settle verdict and the null.
 
-## What the screen has to bound
+## What the carryover does to the departure
 
-`measurement_sequence_analysis.corrected` reads every arm through the ro0 and t1-0 brackets, and the in-job T1 fit
-carries an initialization excitation. An excitation carried over from the previous shot that is the same on every
-member therefore divides out. `scripts/msq_carryover_sensitivity.py` plants an extra initial excitation delta through
-the analysis's own device model and reports the largest endpoint shift per unit delta
+`scripts/msq_carryover_sensitivity.py` plants an extra initial excitation delta through the analysis's own device
+model and reports the signed departure shift per unit delta, per qubit and per member class, on the eight fixture
+qubits and on the retained run's 30 informative qubits at that run's contexts and counts
 ([carryover-sensitivity.json](../evidence/measurement_sequence/carryover-sensitivity.json)):
 
-| Excitation on | departure | settle gap | contrast |
-|---|---|---|---|
-| every member | 0.0000 | 0.0000 | 0.086 |
-| the measure arm only | 0.760 | 0.729 | 0.760 |
-| ro0 only | 0.883 | 0.061 | 0.891 |
-| t1-0 (the ro1 bracket) only | 1.111 | 1.703 | 0.891 |
-| the unitary arm only | 0.000 | 0.000 | 0.957 |
+| Excitation on | fixture: median (range) | run contexts: median (range) |
+|---|---|---|
+| every member | 0.000 (0.000 to 0.000) | +0.024 (-0.029 to +0.083) |
+| measure arm, N = 16 | -0.744 (-0.760 to -0.720) | -0.719 (-0.753 to -0.644) |
+| ro0 | +0.868 (+0.844 to +0.882) | +0.840 (+0.800 to +0.887) |
+| t1 delay 0 (the ro1 bracket) | -0.815 (-1.111 to -0.525) | -0.681 (-1.234 to -0.279) |
+| t1 delays 1, 2, 3 | +0.16 to +0.37 | +0.12 to +0.32 |
+| t1 delay 4 | -0.211 (-0.301 to -0.124) | -0.175 (-0.339 to -0.046) |
+| delay, unitary and settle arms | 0 | 0 |
 
-The endpoint inherits the member-to-member spread of carried-over excitation, at most 1.11 times that spread on the
-departure. Execution interleaves a job's circuits and IBM fixes no circuit order, so a member's predecessor is any
-member; the spread is bounded by the difference between the excitation an all-|1> previous shot leaves and the one a
-near-|0> previous shot leaves.
+The service fixes no circuit order within a job (docs/notes/ibm_quantum/repetition-rate-execution.md), so each member
+class inherits the excitation its unknown predecessor leaves, anywhere in [eps0, eps0 + D] with D the difference
+between the excitation an |1> end state and an |0> end state leave at the next shot's start. The departure bias is then
+bounded by D times the allocation coefficient max(sum of positive coefficients, |sum of negative ones|): 1.37 to 2.17
+on the fixture, median 1.59 and maximum 2.31 on the run's contexts. Every qubit's member at row r sits in the same
+fused PUB, so the allocation, and with it the sign of the bias, is shared by every qubit. With D at the run's in-job
+reset residual (median 0.0123), the bound at the median, 0.020, matches the run's departure offset (+0.0187 median,
+positive on 32 of 32 qubits). Carryover is therefore a live explanation of that offset, and the successor tests it.
 
-The run's reset controls (`x; measure; reset; measure` against `measure; reset; measure`) measured something else: the
-residual of one measure-and-flip reset read immediately inside the shot, median 0.0123, about 1.7 times the
-calibrated P(0|1). The previous shot's end state reaches the next shot through the terminal reset, the 20 us
-repetition delay and the service's `init_qubits` initialization; the state-prep controls of 2026-10-18 measured that
-chain without the terminal reset (`results/live/2026-10-18T214519.655411Z` x_history and
-`2026-10-18T220218.089776Z` prep0, 20 us, 32768 shots) at a median P1 difference of 0.0006 over 148 qubits.
+An excitation common to every member divides out exactly on the fixture and to 0.024 per unit (median) on the run's
+contexts, where the in-job T1 fit is misspecified (below). Equalizing the end state therefore reduces the bias
+coefficient by a factor of about 25 to 70.
 
-## Carryover controls
+## Equalized end state
 
-Two jobs, each holding one fused PUB over the layout's qubits, measure the spread directly; a job holding a single
-circuit fixes every shot's predecessor to the same circuit, so the history holds by construction
-(`scripts/state_prep_excess.py` states the argument):
+Every member, the reset controls and the pattern members included, ends with `sx; measure into coin; reset` after
+its final measurement, in place of the bare terminal reset. The final measurement leaves a diagonal state; `sx` maps
+both |0> and |1> to the equator, so the coin reads 1 with probability 1/2 whatever the member left, and every member
+hands the next shot the same end-state distribution. The coin is its own one-bit classical register. The analysis
+marginalizes it out before every existing summary, so each member's ideal law over its own registers and every
+existing endpoint stay as they are; the coin's joint law with the final bit is the equalization check.
 
-- `hist1`: measure, x, measure, reset: each shot reads the carryover of a previous shot that ended in |1> before its
-  terminal reset;
-- `hist0`: measure, measure, reset: the same after a previous shot that ended near |0>.
+The equalization is imperfect by the coin's memory of the end state, c_q = P(coin 1 | final 1) - P(coin 1 | final 0)
+pooled over the qubit's members and divided by the readout contrast 1 - e01 - e10. An sx over-rotation by delta gives
+c = sin(delta); the calibrated sx error of 2.6e-4 (median, Kingston snapshot of docs/evidence/heron_platform) bounds a
+purely coherent delta at sqrt(6 * 2.6e-4) = 0.039. Each qubit's c_q is measured in-shot over about 720,000 shots, a
+standard error near 0.0012.
 
-The first measurement of each shot is the reading; the second fixes the end state through the same terminal reset
-every family member ends with, so the controls measure the chain the members inherit (terminal reset, delay,
-`init_qubits`) instead of the conservative init-only chain of the state-prep family. Each runs at 32768 shots.
+## Carryover screen
 
-Screen: a qubit stays usable when the one-sided upper confidence bound of P1(hist1 first read) minus
-P1(hist0 first read), Bonferroni over the W qubits at family alpha 0.05, lies below the margin
-`0.25 * 0.0188 / 1.111 = 0.0042`: a quarter of the bound floor carried to the departure at the worst member-class
-sensitivity. The margin is fixed before the run from the sensitivity table, not from any run's counts. The
-2026-10-18 init-only controls, read the same way, pass 22 of the run's 30 measured layout qubits and 26 of the
-current calibration's 31 (failures there: q40 0.0077, q61 0.0134, q71, q79, q154; q62 0.053 on the run's layout), so
-the screen admits more than the 8 qubits the verdict needs even before the terminal reset shortens the chain. The
-in-job reset controls stay in the family as a reported reset diagnostic and gate nothing.
+A qubit stays usable when the upper confidence bound of its departure bias,
+`B_q = A_q * D_q * |c_q| + A0_q * D_q / 2`, lies below the margin `0.25 * 0.0188 = 0.0047`, fixed before the run:
 
-Cost: two jobs of one PUB at 32768 shots, about 3.1 s of planner charge each plus 2.3 s job overhead, priced with the
-measured 9 us per shot residual. Attempt accounting covers three jobs per attempt (the family job and the two
-controls); the fallback signature applies to each job, and the aggregate cap adds the control ceilings.
+- A_q: the qubit's allocation coefficient, computed by the sensitivity probe at the run's own execution contexts
+  and counts when the analysis runs (the probe's run section is the procedure; the table above is its sizing).
+- A0_q: the qubit's every-member coefficient from the same computation, which carries the residual common shift;
+  the coin raises the common level by at most D/2 over an |0>-end baseline.
+- D_q: the readout-corrected difference of the in-job reset controls rc1 and rc0 (`x; measure; reset; idle;
+  measure` against the same without x). It reads the excitation one measure-and-flip reset leaves immediately; the
+  repetition delay and `init_qubits` that follow can only relax it further, so it bounds D from above. Its run values:
+  median 0.0123, range 0.0049 to 0.0366.
+- |c_q|: two-sided, the coin's memory above.
+
+Confidence bounds on D_q and |c_q| are Bonferroni over the W qubits at family alpha 0.05. Both come from the same job
+as the endpoint they gate, so inter-job drift (the 2026-10-18 history-control pair, 18 minutes apart, shows 31 of 148
+qubits moving by up to 0.032 between jobs) does not enter. With the run's reset-control counts (8192 shots each, an
+upper bound about 0.005 above D) and a coherent c of 0.039 plus three standard errors, B at the run's median A, A0 and
+D is 0.0014, under a third of the margin; a qubit carrying the run's worst A (2.31), A0 (0.083) and D (0.0366) at once
+reaches about 0.006 and is withheld. The margin is a quarter of the bound floor; the null below checks it against the
+false-fire bound.
+
+Assumptions the screen does not cover, each stated in the case with its size: leakage to |2> (a measure-and-flip reset
+does not return it, and the measure arm's sixteen mid-circuit measurements may leak more than other members);
+a heating or TLS effect of measurement-heavy members on the next shot beyond the qubit's population; and the first
+shot of each executor chunk, whose predecessor is a shot of another job.
+
+## In-job T1 fit and the departure offset
+
+The run's in-job T1 fit is misspecified: its shape parameter q lies below 1 on 29 of 30 informative qubits, p_init
+reads negative (q50: p_init -1.17, q 0.30, T1 127 us against a calibrated 299 us), and the corrected series is nearer
+linear than exponential. The departure is positive on all 32 qubits, median +0.0187. Neither is a device verdict; the
+successor reports both per qubit and pooled, and preregisters one descriptive comparison: if the median departure over
+the kept qubits falls below half the run's median on the same qubits, the offset is consistent with carryover; if it
+stays at or above, carryover is refuted as its source and the offset belongs to the model.
 
 ## Settle verdict becomes descriptive
 
-The exploratory reading of the run (`docs/evidence/measurement_sequence/envelope-run-exploratory.json`) has the settle
-test reading `reduced_by_gap` on 16 qubits, pooled z 18.7, while the measure arm shows no deficit for a gap to reduce:
-the settle arm stands above the model's prediction for its sixteen 2 us gaps, in the direction of the delay arm's
-idle-model shortfall (median +0.11 over modeled). A preregistered settle verdict would attribute a model error to a
-readout tail. The successor reports the settle gap per qubit and pooled, labeled descriptive, and no device verdict
-reads it. The departure and mutation decisions stay preregistered; the exploratory reading found 32 of 32 mutation
-tests passing and every departure consistent (pooled z 1.07), so neither fires on the known model error.
+The run's settle test read `reduced_by_gap` on 16 qubits, pooled z 18.7, with no measure-arm deficit for a gap to
+reduce. `chain_matrix` zeroes the transverse state at every pinch, so the settle gap's extra idles act through T1
+alone: halving T2 in the model moves the settle gap by exactly zero. The model has no parameter that produces the
+excess, so a settle verdict could not attribute it. The successor reports the settle gap per qubit and pooled,
+labeled descriptive, and no device verdict reads it. The departure and mutation decisions stay preregistered.
 
 ## Fewer than 8 kept qubits
 
@@ -80,27 +106,47 @@ kept, and withholds only the device verdict below 8, as the original design stat
 ## Null calibration
 
 The null of `msq_envelope_null.py` is rebuilt as the batched estimator of issue #579 (numpy across replicates with a
-scalar bit-identity gate) before it runs at the successor's width. Its replicates plant, besides the sx-error residual,
-the idle-model error the run shows (the delay arm's +0.11 median excess, realized as a T2 shortfall on the idle
-segments) and a carryover spread drawn up to the margin, and it must keep the family-wise false-fire bound below 0.01
-on the departure and count-rule verdicts.
+scalar bit-identity gate) before it runs at the successor's width. Its replicates plant what the run shows, each
+coherent across qubits: the sx-error residual; each qubit's measured departure offset from the run; the run's t1
+series shape (the corrected series per qubit, in place of the model's exponential); and the carryover bias at the
+screen margin with the shared sign of the fused allocation. The family-wise false-fire bound must stay below 0.01 on
+the departure and count-rule verdicts. A null that fires above it with the run's offset planted withholds the departure
+verdict from the case, and the case reports why.
 
-## Approval scope
+## Cost and approval scope
 
-The family stays `measurement-sequence-envelope` and the record's envelope section stays schema `msq-envelope-v1`; the
-contract gains the control jobs' ceilings inside the aggregate cap. AGENTS.md ratified the envelope exception for
-`msq-envelope-v1` records of this family; the case states whether the three-job attempt stays inside that wording.
+The coin adds one sx (32 ns) and one measure (2.18 us) per member shot: 1.6 s of circuit time over the run's 720,896
+shots, priced by the planner with the measured 9 us per-shot residual at dry run, so about 40 s at width 32 against
+the 147 s cap. An attempt stays one job; the fallback signature, `envelope_drift`, the replan bound and attempt
+accounting stand as ratified. The change is a new constructor inside the `msq-envelope-v1` contract, which binds the
+constructor by digest, so the case binds the new one and needs no doctrine change.
 
 ## Sequence
 
-1. Reviews of this design: the adversarial review skill, Codex gpt-daybreak-blue in tmux, the advisor.
+1. Reviews of this design: the adversarial review skill and the advisor (done on v1, dispositions below), Codex
+   gpt-daybreak-blue in tmux on v2.
 2. Issue #579: the batched null with its gate.
-3. Implementation: the hist controls as a second family job pair, the screen, the descriptive settle, the per-qubit
-   report, the three-job attempt accounting; tests and lanes.
-4. A sizing replay of every successor screen and verdict over the retained run's counts (the hist screen over the
-   2026-10-18 controls), then the null at the chosen width.
+3. Implementation: the coin ending and its register, the marginalization, c_q and D_q, the screen, the descriptive
+   settle and offset comparison, the per-qubit report; tests and lanes.
+4. A sizing replay of the screen and every verdict over the retained run's counts (c_q set to the coherent bound,
+   since that run has no coin), then the null at the chosen width.
 5. Dry run on the live calibration, the written case, approval, run.
 
-Falsifiers: the sensitivity probe's every-member row departs from zero beyond 1e-4 per unit; a hist control whose
-predecessor is another circuit (a job holding more than one circuit); a margin derived from run counts; a settle
-reading that enters a device verdict; a null that does not plant the idle-model error.
+Falsifiers: an every-member coefficient above 0.1 per unit at the planned contexts; a coin memory |c_q| above 0.05 on
+a kept qubit; a screen input taken from another job; a margin derived from run counts; a settle reading that enters a
+device verdict; a null that omits the run's offset or t1 shape.
+
+## Review dispositions of v1
+
+- Single-class coefficient 1.111 understated the bias (adversarial review): adopted; the allocation coefficient and
+  every class enter, at the run's contexts.
+- Two control jobs measure drift above the margin, and a one-sided bound passes it: adopted by removing the control
+  jobs; every screen input comes from the family job, and the coin memory bound is two-sided.
+- The null planted a T2 shortfall that cannot move the settle gap: adopted; the null plants the run's offset and t1
+  shape.
+- The corrected screen could repeat the predecessor's unattainability: answered by the coin, which divides the
+  coefficient by 25 to 70; the worst run qubit reaches B 0.0037 under 0.0047.
+- A three-job attempt changes the ratified contract: moot; an attempt stays one job.
+- Chunk boundaries, collective end state, leakage: listed as assumptions above; no screen conditions on shot order.
+- Advisor: the coin needs the every-member row checked at the run's contexts before adoption (done: median 0.024 per
+  unit), a separate coin register, and stated residual and cost numbers (above).
