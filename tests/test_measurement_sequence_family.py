@@ -352,8 +352,9 @@ def test_ideal_decimals_match_the_recorder() -> None:
 
     import qpu_cases
 
-    source = inspect.getsource(live_run._member_fields)
-    check(f'"ideal": law_encoding.encode([round(float(p), {qpu_cases.IDEAL_DECIMALS}) for p in entry.ideal])' in source)
+    check('"ideal": encoded_ideal(entry.ideal)' in inspect.getsource(live_run._member_fields))
+    source = inspect.getsource(live_run.encoded_ideal)
+    check(f"law_encoding.encode([round(float(p), {qpu_cases.IDEAL_DECIMALS}) for p in array])" in source)
 
 
 class _PluginBackend:
