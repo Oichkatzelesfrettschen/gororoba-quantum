@@ -37,6 +37,22 @@
             }
           ],
           "scope_sha256": "8864c9ae88f4975e04a3eb88015f726a0e6b38c293966ec7357234f853331dbe"
+        },
+        {
+          "result": "Revalidated after the design doc recorded the run outcome: the width-32 dry run record and --check-envelope result are unchanged.",
+          "observed_at": "2026-10-27T03:41:33+00:00",
+          "revision": "bda6e130e4dd19d79b5bb3a062b6709b5cdfd991",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/record.json",
+              "sha256": "ac412781c7d1c5c10325b6a6c6d93013ad734cce31b7b815ec510621b191c8b4"
+            },
+            {
+              "ref": "docs/design/measurement-sequence-adaptive-envelope.md",
+              "sha256": "747cb0f056f4967eb43dbe2678c4946eef768be375dd7d178f8ae5e05794bde2"
+            }
+          ],
+          "scope_sha256": "8864c9ae88f4975e04a3eb88015f726a0e6b38c293966ec7357234f853331dbe"
         }
       ]
     },
@@ -78,6 +94,26 @@
             {
               "ref": "AGENTS.md",
               "sha256": "9f950f360ef0c18b163926b4cc3bb16cffc4ca04a11fa412bea9afe8c6155fbd"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "6a90c385c909a84c9806e4302052489e756aa0883f0821996fc6c63195317c25"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        },
+        {
+          "result": "Revalidated after merging main: the envelope exception and the attempt-1 approval marker are unchanged.",
+          "observed_at": "2026-10-27T03:41:33+00:00",
+          "revision": "bda6e130e4dd19d79b5bb3a062b6709b5cdfd991",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "aefadaa60876892fd998479199cb10968a4074353b6e5eb2368cde184313c9d3"
             },
             {
               "ref": "docs/notes/ibm_quantum/qpu-submission.md",
