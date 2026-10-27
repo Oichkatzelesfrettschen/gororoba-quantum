@@ -192,3 +192,7 @@ The full campaign reaches an interpretable device result only when the compiled 
 assignment uncertainty, scheduling range and dependence model jointly explain the reported uncertainty. A
 rejection then rejects that specified model. It does not establish nonassociative physical evolution, settle
 the dimension-six MUB maximum, or prove the exact-factoring manuscript.
+
+The [qualification admission contract](tuna-projector-qualification-admission.md) freezes
+the executable pilot decision, records peer-review dispositions and specifies live admission
+for the user-authorized unchanged three-circuit hardware case.

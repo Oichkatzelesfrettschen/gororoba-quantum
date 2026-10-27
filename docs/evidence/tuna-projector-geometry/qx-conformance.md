@@ -65,5 +65,15 @@ export PYTHON="${PYTHON:-python3}"
 
 These samples support remote circuit and register conformance, not an exact mathematical proof.
 QX returns terminal qubit outcomes and cannot validate Tuna's separate early-history bit register.
-The calibration datasource outage remains a hardware limitation. A Tuna qualification batch needs
-its separate approval and fresh hardware admission checks.
+The calibration datasource outage remains a hardware limitation. The Tuna qualification batch has recorded
+user authorization and requires completed review and fresh hardware admission checks.
+
+The supplemental [joint outcome audit](../../../results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/joint-law-audit.json)
+reconstructs all 512 terminal outcomes from independent analytic local laws. All observed
+outcomes have positive ideal support. Full-histogram total variation distances are
+0.081351602058 (geometry Z), 0.016601562500 (mutation Z), and 0.098872232426
+(geometry X). Adjacent repeats and contiguous block counts remain descriptive diagnostics;
+they establish neither shot independence nor hardware behavior. Replay with
+`"$PYTHON" scripts/qi_projector_distribution_audit.py --check
+results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/joint-law-audit.json`.
+The 18 preregistered conformance checks retain their original decision rule and bytes.

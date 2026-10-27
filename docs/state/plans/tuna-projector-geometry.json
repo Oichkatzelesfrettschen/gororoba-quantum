@@ -13,7 +13,7 @@
   },
   "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
   "owner": "codex-tuna-projector-geometry",
-  "next_action": "Obtain separate approval of the frozen Tuna three-circuit 4096-shot qualification case, then refresh live hardware status, account pause, queue and free-use conditions before any hardware submission.",
+  "next_action": "Complete the requested independent campaign review, resolve its findings, and execute only the reviewed three-circuit Tuna qualification after live admission.",
   "steps": [
     {
       "id": "source-and-instrument-audit",
@@ -160,9 +160,9 @@
     },
     {
       "id": "tuna-qualification-case",
-      "action": "Refresh hardware status and usage then present the Tuna qualification case",
+      "action": "Execute the authorized unchanged Tuna qualification after reviewed compiler and live admission",
       "acceptance": "Separate approval binds the three-circuit 4096-shot batch before submission and retained raw collection",
-      "state": "todo",
+      "state": "doing",
       "depends_on": [
         "qx-conformance-case"
       ]
@@ -175,6 +175,122 @@
       "depends_on": [
         "tuna-qualification-case"
       ]
+    },
+    {
+      "id": "full-campaign-peer-review",
+      "state": "done",
+      "action": "Review QX results and the full Tuna campaign with the requested Codex model in tmux",
+      "acceptance": "Retain a model-and-effort-verified review, resolve blocking findings, and distinguish bounded qualification from full causal campaign readiness",
+      "receipts": [
+        {
+          "result": "Requested model high-effort review accepts bounded qualification after digest-bound API submission and fresh admission; 37 live-admission and guard tests pass. Full causal successor remains prospective.",
+          "observed_at": "2026-10-27T17:04:50.282090+00:00",
+          "revision": "f6e4ef6c570f68dabf68b7b7c0a234d89b25ba74",
+          "evidence": [
+            {
+              "ref": "docs/archive/reviews/tuna-projector-admission-review.md",
+              "sha256": "21a100fba064d87ae17201eceedc17311729e05f1c06d4065dc0b64772d513f0"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-projector-campaign-review.json",
+              "sha256": "3f034dbbbcb4661a7f0c6e16a3725ef6770edf40f77cd4c1531e8f13ffbad7fd"
+            },
+            {
+              "ref": "tests/scripts/test_qi_projector_live_admission.py",
+              "sha256": "ab2ebdc2f034995dd21fda801349fb8749f361a7216fafd86e49e2b3ec9ef8cb"
+            }
+          ],
+          "scope_sha256": "73c25dff5a07445e68bc367f8529173dfe4d6c0cefc2d4c18cfb737812fa0179"
+        }
+      ]
+    },
+    {
+      "id": "compiler-replay-admission",
+      "state": "done",
+      "action": "Replay complete proposal instructions against the frozen compiler configuration",
+      "acceptance": "Six compiled programs replay with source and compiler digests",
+      "receipts": [
+        {
+          "result": "Focused checks passed; compiler replay and frozen qualification checks recorded before hardware execution.",
+          "observed_at": "2026-10-27T17:02:14.479089+00:00",
+          "revision": "f6e4ef6c570f68dabf68b7b7c0a234d89b25ba74",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-projector-geometry/compiler-admission.json",
+              "sha256": "38664edb8cba002b15ca4d40bbbcacbf6b7b76302717e2b6b022eaec50a91661"
+            }
+          ],
+          "scope_sha256": "58e43863bf9b8b4aa1c4f637ea8d8b56b6945dbeb827b9bf5e7ddc1f4f3e48f2"
+        }
+      ]
+    },
+    {
+      "id": "qualification-decision-check",
+      "state": "done",
+      "action": "Freeze and test the qualification decision before hardware acquisition",
+      "acceptance": "Malformed records fail; contrast and disagreement boundaries have tests",
+      "receipts": [
+        {
+          "result": "Focused checks passed; compiler replay and frozen qualification checks recorded before hardware execution.",
+          "observed_at": "2026-10-27T17:02:14.480616+00:00",
+          "revision": "f6e4ef6c570f68dabf68b7b7c0a234d89b25ba74",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_qualification.py",
+              "sha256": "ec1ee8e8cfa09c0beec0e8730b18a935a378a1360c2d1bdfb508cfcbd6dd9b3e"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_qualification.py",
+              "sha256": "a23f23862c2d7112863c52de6fd085ecd4481028f16e749518d00226691a4376"
+            },
+            {
+              "ref": "docs/design/tuna-projector-qualification-admission.md",
+              "sha256": "e504d9e4962338df58dcdf16b8564cd2ef2677d996bd90bed2a2588cc7da51c4"
+            }
+          ],
+          "scope_sha256": "d48bb06ae9b0eb89764181eac3b9c08cd9b8180ddef98cb8a0d13458acff2ff5"
+        }
+      ]
+    },
+    {
+      "id": "live-structural-admission",
+      "state": "todo",
+      "action": "Check current topology, compiler, terms, queue and account pause",
+      "acceptance": "Timestamped admission passes for the unchanged approved case"
+    },
+    {
+      "id": "review-fix-verification",
+      "state": "done",
+      "action": "Obtain requested Codex review of admission fixes",
+      "acceptance": "Requested model and high effort recorded; bounded qualification blockers resolved",
+      "receipts": [
+        {
+          "result": "Requested model high-effort review accepts bounded qualification after digest-bound API submission and fresh admission; 37 live-admission and guard tests pass. Full causal successor remains prospective.",
+          "observed_at": "2026-10-27T17:04:50.282090+00:00",
+          "revision": "f6e4ef6c570f68dabf68b7b7c0a234d89b25ba74",
+          "evidence": [
+            {
+              "ref": "docs/archive/reviews/tuna-projector-admission-review.md",
+              "sha256": "21a100fba064d87ae17201eceedc17311729e05f1c06d4065dc0b64772d513f0"
+            },
+            {
+              "ref": "docs/archive/reviews/tuna-projector-campaign-review.json",
+              "sha256": "3f034dbbbcb4661a7f0c6e16a3725ef6770edf40f77cd4c1531e8f13ffbad7fd"
+            },
+            {
+              "ref": "tests/scripts/test_qi_projector_live_admission.py",
+              "sha256": "ab2ebdc2f034995dd21fda801349fb8749f361a7216fafd86e49e2b3ec9ef8cb"
+            }
+          ],
+          "scope_sha256": "4f6f7770dc2ecab3df53cc085febe00c7c4f1be9e6405b291bf76f7924189ebe"
+        }
+      ]
+    },
+    {
+      "id": "retained-result-integration",
+      "state": "todo",
+      "action": "Register hardware raw results, analysis and usage",
+      "acceptance": "Registry, retained replay and focused checks pass"
     }
   ]
 }

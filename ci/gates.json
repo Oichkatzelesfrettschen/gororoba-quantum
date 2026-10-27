@@ -4991,12 +4991,24 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" scripts/qi_projector_conformance.py --check results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+   "cmd": "\"$PYTHON\" scripts/qi_projector_conformance.py --check results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json && \"$PYTHON\" scripts/qi_projector_distribution_audit.py --check results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/joint-law-audit.json",
    "name": "core-qi-projector-conformance",
-   "seconds": 0.4,
+   "seconds": 0.7,
    "tier": "pr",
    "replays": [
-    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json"
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+    "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/joint-law-audit.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/qi_projector_compiler_admission.py --check-retained",
+   "name": "core-qi-projector-compiler-admission",
+   "seconds": 0.1,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/proposals/tuna-projector-geometry/compiler-admission.json"
    ]
   }
  ],

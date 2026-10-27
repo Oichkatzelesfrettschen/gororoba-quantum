@@ -39,3 +39,9 @@ repository-relative; a branch name stands for its worktree.
 | [2026-10-27-ascella-replication-review-grok.md](2026-10-27-ascella-replication-review-grok.md) | Grok (grok-4.7, high) referee report on the replication |
 | [2026-10-27-ascella-replication-review-agy.md](2026-10-27-ascella-replication-review-agy.md) | agy (Gemini 3.8 Flash, high) referee report on the replication |
 | [2026-10-27-ascella-replication-review-orchestrator.md](2026-10-27-ascella-replication-review-orchestrator.md) | orchestrator's referee report on the replication, corrected by the audit |
+
+The [Tuna projector campaign review](tuna-projector-campaign-review.md) and its
+[model provenance](tuna-projector-campaign-review.json) separate QX conformance, bounded hardware qualification and causal successors.
+
+The [Tuna admission follow-up](tuna-projector-admission-review.md) verifies the compiler,
+qualification analyzer, structural checks and digest-bound submission path.
