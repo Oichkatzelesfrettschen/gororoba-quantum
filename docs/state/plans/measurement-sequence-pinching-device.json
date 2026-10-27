@@ -399,6 +399,26 @@
             }
           ],
           "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "Revalidated after merging main, whose live_run.py stores each PUB's placed calibration once in the collect.json header (PR #594); the retained envelope run and its findings are unchanged.",
+          "observed_at": "2026-10-27T21:30:38+00:00",
+          "revision": "ce9e046ec974c96b689e21ac58f15cfb9b559215",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "59f0960d5f479b24b62a08aa570a78134634ea79bb3e5f92092b0ff571cc6fb8"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
         }
       ]
     },
