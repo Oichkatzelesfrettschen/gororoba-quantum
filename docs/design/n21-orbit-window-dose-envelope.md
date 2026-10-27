@@ -134,7 +134,10 @@ preregistered D2 and D3 stand as written: they scale the dose delays only. The a
 idle multiplied by k (`scheduled_idle_replay.py --idle-scales`, `idle_scaled_exact_laws`), dose 0 included, since
 the hypothesis that idle decays at kappa times the Target's rate covers the waits as well; `dose-decisions.json`
 reports it under `amended_all_idle`. Where the two disagree, the reading names the disagreement rather than
-choosing one.
+choosing one. The exact branch-resolved model refuses this family at the largest factors: a 1.2 ms wait charged six times over
+leaves PUB 15's branch traces summing to 1 - 4e-9, beyond the 1e-9 bound of `dynamic_density.probabilities`, so
+the amended fit is not computed at the preregistered scales. A per-replica comparison of each contrast residual
+with the replica's serialized wait answers the serialization question in its place.
 
 The self-test (`n21_dose_decisions.py --self-test`) decides synthetic sweeps drawn inside and outside the fitted
 family: Target rates (unresolved), kappa 1.9 against 1.2 (refocusing), a common rate 1.5 (unresolved), an
