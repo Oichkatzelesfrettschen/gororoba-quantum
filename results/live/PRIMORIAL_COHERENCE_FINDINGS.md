@@ -64,12 +64,8 @@ approval dry run `2026-10-26T045028.853944Z` was never consumed, and its approva
 - A decision on the gap-88 tomography needs a path whose three qubits pass the readout rule. A re-run on another
   path is a new case and needs a fresh approval; the case allowed no path change.
 
-The run lands against the backup-instance inventory observed at 2026-10-25T23:36:01Z, before its submission, so
-the retention audit lists its raw archive under `awaiting_observation`
-([account-access.md](../../docs/notes/ibm_quantum/account-access.md#inventory-freshness)). A re-retrieval of job
-`dbfdotnpc3tc739n8nm0` through `live_run.py --preserve-raw` on 2026-10-27 returned the 101 retained raw files byte
-for byte. The research registry takes its IBM runs from the audit's covered jobs, so the acquisition and claim
-land with the next observation. That observation also lists job `dbfc9ufgdj9s73bbbabg` (pull request #516), which
-the audit requires retained, so it follows #516: `observe_qpu_job_inventory.py` and `reconcile_qpu_inventory.py`
-under `GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform`, `compare_submitted_circuits.py --write --out NEW --seed
-PREVIOUS` under the replay interpreter for the new job, and the research_state.py acquisition and claim.
+A re-retrieval of job `dbfdotnpc3tc739n8nm0` through `live_run.py --preserve-raw` on 2026-10-27 returned the 101
+retained raw files byte for byte. The backup-instance inventory observed on 2026-10-27 covers the job, and
+`docs/state/research_state.json` registers it as acquisition `kingston-primorial-coherence-case1` under claim
+`kingston-primorial-case1-q0-readout-void`. The submitted-circuit comparison reads the primary instance's audit
+only, so the backup observation leaves it unchanged.

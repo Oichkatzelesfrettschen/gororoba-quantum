@@ -32,7 +32,7 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 86 |
+| exploratory reanalysis | exploratory | 88 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
 | mathematical claim | established | 30 |
@@ -40,7 +40,7 @@ acquisition of every provider:
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
 | preregistered emulator control | established | 12 |
-| preregistered hardware inference | established | 66 |
+| preregistered hardware inference | established | 73 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -361,15 +361,34 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept](results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept) | IQM Resonance | IQM QET compensated ladder | garnet:mock | 1 | 24 | failed | 0.0 credits |
 | [2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept](results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept) | IQM Resonance | IQM QET compensated ladder | garnet:mock | 1 | 24 | completed | 0.0 credits |
 | [2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder](results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder) | IQM Resonance | IQM QET compensated ladder | garnet | 1 | 24 | completed | 6.5 credits |
+| [2026-10-26T045124.175747Z](results/live/2026-10-26T045124.175747Z) | IBM Quantum | primorial coherence probes | ibm_kingston | 1 | 98 | DONE | 23 s |
+| [2026-10-26T190449.023973Z](results/live/2026-10-26T190449.023973Z) | IBM Quantum | state-prep-control (prep0, 20 us) | ibm_kingston | 1 | 1 | DONE | 3 s |
+| [2026-10-26T190506.325237Z](results/live/2026-10-26T190506.325237Z) | IBM Quantum | state-prep-control (x_history, 20 us) | ibm_kingston | 1 | 1 | DONE | 3 s |
 | [2026-10-26T202817.431767Z](results/live/2026-10-26T202817.431767Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
+| [2026-10-26T215611.599135Z](results/live/2026-10-26T215611.599135Z) | IBM Quantum | primorial coherence probes | ibm_kingston | 1 | 99 | DONE | 5 s |
+| [2026-10-26T221707.355349Z](results/live/2026-10-26T221707.355349Z) | IBM Quantum | primorial gap-88 tomography | ibm_kingston | 1 | 105 | DONE | 11 s |
 | [2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04](results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04) | Quandela Cloud | photonic signed-coherence new-seed meshes | qpu:ascella | 1 | 80 | completed | 1.032768 credits |
 | [2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88](results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88) | Quandela Cloud | photonic signed-coherence new-seed meshes | qpu:ascella | 1 | 88 | completed | 1.032768 credits |
 | [2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06](results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06) | Quandela Cloud | photonic signed-coherence replication meshes | qpu:ascella | 1 | 96 | completed | 1.032768 credits |
 | [2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96](results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96) | Quandela Cloud | photonic signed-coherence replication meshes | qpu:ascella | 1 | 96 | completed | 1.032768 credits |
+| [2026-10-27T005259.826486Z](results/live/2026-10-27T005259.826486Z) | IBM Quantum | N=21 orbit window dose | ibm_kingston | 1 | 26 | ERROR | 2 s |
+| [2026-10-27T010741.272123Z](results/live/2026-10-27T010741.272123Z) | IBM Quantum | state-prep-control (prep0, 20 us) | ibm_kingston | 1 | 1 | DONE | 3 s |
+| [2026-10-27T010917.104805Z](results/live/2026-10-27T010917.104805Z) | IBM Quantum | state-prep-control (x_history, 20 us) | ibm_kingston | 1 | 1 | DONE | 3 s |
+| [2026-10-27T011025.944327Z](results/live/2026-10-27T011025.944327Z) | IBM Quantum | state-prep-control (x_history, 20 us) | ibm_kingston | 1 | 1 | DONE | 3 s |
+| [2026-10-27T011140.821404Z](results/live/2026-10-27T011140.821404Z) | IBM Quantum | state-prep-control (prep0, 20 us) | ibm_kingston | 1 | 1 | DONE | 3 s |
+| [2026-10-27T011538.241671Z](results/live/2026-10-27T011538.241671Z) | IBM Quantum | primorial coherence probes | ibm_kingston | 1 | 99 | DONE | 5 s |
+| [2026-10-27T011304.736763Z](results/live/2026-10-27T011304.736763Z) | IBM Quantum | N=21 orbit window dose | ibm_kingston | 1 | 26 | ERROR | 2 s |
+| [2026-10-27T013626.332783Z](results/live/2026-10-27T013626.332783Z) | IBM Quantum | primorial gap-88 tomography | ibm_kingston | 1 | 105 | DONE | 16 s |
+| [2026-10-27T014354.701394Z](results/live/2026-10-27T014354.701394Z) | IBM Quantum | N=21 orbit window dose | ibm_kingston | 1 | 26 | DONE | 86 s |
+| [2026-10-27T014422.881898Z](results/live/2026-10-27T014422.881898Z) | IBM Quantum | measurement-sequence envelope | ibm_kingston | 1 | 88 | DONE | 38 s |
+| [2026-10-27T160529.294491Z](results/live/2026-10-27T160529.294491Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
+| [2026-10-27T160738.258133Z](results/live/2026-10-27T160738.258133Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
+| [2026-10-27T191953.122214Z](results/live/2026-10-27T191953.122214Z) | IBM Quantum | idle-readout attribution | ibm_kingston | 1 | 55 | DONE | 16 s |
+| [2026-10-27T204605.871056Z](results/live/2026-10-27T204605.871056Z) | IBM Quantum | state-prep-control (two-read arms, 20 us) | ibm_kingston | 1 | 3 | DONE | 5 s |
 
 The IBM service inventory observed at 2026-10-26T22:47:13.538509+00:00 holds 41 physical jobs with 499 settled seconds; the account then reported 499 of 600 s consumed in the rolling window ending 2026-10-26T22:47:13.488Z. That is an observation, not a current balance or an authorization.
 
-The IBM service inventory observed at 2026-10-26T03:17:03.514437+00:00 holds 5 physical jobs with 165 settled seconds; the account then reported 165 of 600 s consumed in the rolling window ending 2026-10-26T03:17:03.462Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-27T22:59:56.884682+00:00 holds 24 physical jobs with 424 settled seconds; the account then reported 424 of 600 s consumed in the rolling window ending 2026-10-27T22:59:56.816Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
