@@ -71,16 +71,22 @@ Fixed before these jobs' data. `scripts/idle_penalty_focal_decisions.py` compute
 ```sh
 "$PYTHON" ../scripts/idle_penalty_focal_decisions.py X/idle-penalty-report.json Y/idle-penalty-report.json \
   REPEAT/idle-penalty-report.json --focal 79,92,93 --context 104,106,124,125,126 \
-  --out X/idle-penalty-focal-decisions.json
+  --region 73,79,92,93,94,95 --out X/idle-penalty-focal-decisions.json
 ```
 
-1. **Per focal qubit and multiplier** (kappa_1, kappa_2*, kappa_2e): "elevated" when the value less 1.96 standard
-   errors exceeds 1.5, "nominal" when the value plus or minus 1.96 standard errors lies inside [0.67, 1.5],
-   otherwise "unresolved". The standard errors are the analyzer's conditional lower bounds.
-2. **Historical reading**: "supported" when any of 79, 92 and 93 reads elevated on kappa_1 or kappa_2*; "weakened"
-   when all three read nominal on all three multipliers; otherwise "unresolved". Supported localizes a present-day
-   excess on the qubits the probe missed; weakened leaves drift over two weeks or the retained runs' own gates and
-   measurements as the accounts of kappa near 3. Neither reconstructs the two-week-old rates.
+1. **Per focal qubit and multiplier** (descriptive): kappa_1, kappa_2* and kappa_2e with their standard errors,
+   a reading against fixed thresholds ("elevated" when the value less 1.96 standard errors exceeds 1.5, "nominal"
+   when the value plus or minus 1.96 standard errors lies inside [0.67, 1.5], otherwise "unresolved"), and the
+   value's rank in its own run's cohort. These readings decide nothing: the cohort's tail is heavy, and on the
+   probe run 25 of 62 qubits read elevated on kappa_1 or kappa_2*, so three random qubits would show at least one
+   elevated reading with probability 0.79.
+2. **Historical reading**, over the region the retained runs fitted one kappa near 3 on (73, 79, 92, 93, 94 and
+   95): the six qubits against the rest of the pooled cohort, each qubit once from the first report that holds it
+   (repeat, then X, then Y), by a one-sided exact Mann-Whitney test on kappa_1 and on kappa_2*. "Supported" when
+   either p falls below 0.025, a false-positive rate of at most 0.05 for six exchangeable qubits; "weakened" when
+   the region's median lies at or below the rest's median on both multipliers; otherwise "unresolved". Supported
+   places a present-day excess on the region; weakened leaves drift over two weeks or the retained runs' own gates
+   and measurements as the accounts of kappa near 3. Neither reconstructs the two-week-old rates.
 3. **Same window**: the repeat, X and Y report one execution calibration stamp. A split reports each job against
    its own cohort and states the split.
 4. **Test-retest floor** (descriptive): over qubits that keep role and partner between any two of the three runs,
@@ -114,7 +120,7 @@ From `gororoba_quantum/`, with `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=40
 ```sh
 "$PYTHON" live_run.py --groups idle_penalty --backends ibm_kingston --max-pending 300 --shots 4096 \
   --rep-delay 0.00002 --no-isolated-reference --max-execution-seconds 25 --max-total-execution-seconds 25 \
-  --pin-layout "$PIN" --max-replicas "$N" \
+  --reserve-seconds 60 --pin-layout "$PIN" --max-replicas "$N" \
   --seed-transpiler "qrng:$D#I" --seed-simulator "qrng:$D#J" --out ../results/live
 "$PYTHON" ../scripts/idle_penalty_report.py RUN --self-check --check-placement --snapshot SNAPSHOT
 "$PYTHON" live_run.py ... (the same flags) --submit --approved-record RUN --approved-record-sha256 SHA

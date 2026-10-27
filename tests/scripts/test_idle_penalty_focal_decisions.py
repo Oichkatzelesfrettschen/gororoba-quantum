@@ -33,24 +33,28 @@ def test_classify_thresholds(value: float, se: float, expected: str) -> None:
     _expect(fd.classify(value, se) == expected, f"{value} +- {se} reads {fd.classify(value, se)}")
 
 
-def test_historical_reading() -> None:
-    cohort = {q: 1.0 for q in range(10, 20)}
-    nominal = fd.decisions(
-        [_report("X", cohort | {79: 1.0, 92: 1.05}), _report("Y", cohort | {93: 0.95})], [79, 92, 93], []
+REGION = [73, 79, 92, 93, 94, 95]
+
+
+def test_historical_reading_is_a_region_rank_test() -> None:
+    cohort = {q: 1.0 + 0.01 * (q % 37) for q in range(10, 50)}
+    high = fd.decisions([_report("X", cohort | {q: 3.0 + 0.01 * q for q in REGION})], [79, 92, 93], [], REGION)
+    _expect(high["historical_kappa_near_3"]["verdict"] == "supported", str(high["historical_kappa_near_3"]))
+    low = fd.decisions([_report("X", cohort | {q: 0.9 + 0.001 * q for q in REGION})], [79, 92, 93], [], REGION)
+    _expect(low["historical_kappa_near_3"]["verdict"] == "weakened", str(low["historical_kappa_near_3"]))
+    one = fd.decisions(
+        [_report("X", cohort | {q: 0.9 + 0.001 * q for q in REGION} | {93: 3.0})], [79, 92, 93], [], REGION
     )
-    _expect(nominal["historical_kappa_near_3"] == "weakened", nominal["historical_kappa_near_3"])
-    _expect(nominal["same_window"], "one calibration read as two")
-    elevated = fd.decisions(
-        [_report("X", cohort | {79: 3.0, 92: 1.0}), _report("Y", cohort | {93: 1.0})], [79, 92, 93], []
-    )
-    _expect(elevated["historical_kappa_near_3"] == "supported", elevated["historical_kappa_near_3"])
-    missing = fd.decisions([_report("X", cohort | {79: 1.0, 92: 1.0})], [79, 92, 93], [])
-    _expect(missing["historical_kappa_near_3"] == "unresolved", "an unplaced focal qubit decided the reading")
+    _expect(one["historical_kappa_near_3"]["verdict"] != "supported", "one outlier qubit decided the region")
+    split = [_report("X", cohort | {73: 0.9, 79: 0.91, 92: 0.92}), _report("Y", {93: 0.93, 94: 0.94, 95: 0.95})]
+    _expect(fd.decisions(split, [], [], REGION)["historical_kappa_near_3"]["verdict"] == "weakened", "pooling failed")
+    missing = fd.decisions([_report("X", cohort | {79: 1.0, 92: 1.0})], [79, 92, 93], [], REGION)
+    _expect(missing["historical_kappa_near_3"]["verdict"] == "unresolved", "an unplaced region qubit decided")
 
 
 def test_same_window_and_retest() -> None:
     cohort = {q: 1.0 + 0.1 * (q % 5) for q in range(10, 30)}
-    out = fd.decisions([_report("X", cohort), _report("Y", cohort, calibration="C2")], [10], [])
+    out = fd.decisions([_report("X", cohort), _report("Y", cohort, calibration="C2")], [10], [], [10])
     _expect(not out["same_window"], "two calibrations read as one")
     retest = out["retest"][0]["kappa_1"]
     _expect(retest["n"] == 20 and abs(retest["pearson_r"] - 1) < 1e-12, f"retest {retest}")

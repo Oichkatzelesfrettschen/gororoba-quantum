@@ -2839,6 +2839,7 @@
     "scripts/hypercomplex_evidence.py",
     "scripts/hypercomplex_photonic_cases.py",
     "scripts/idle_penalty_exploratory.py",
+    "scripts/idle_penalty_focal_decisions.py",
     "scripts/idle_penalty_repeat_decisions.py",
     "scripts/idle_penalty_report.py",
     "scripts/iqm_cancellation_probe.py",
@@ -6149,6 +6150,7 @@
     "scripts/ghost_error_scale_branching.py",
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
+    "scripts/idle_penalty_focal_decisions.py",
     "scripts/idle_penalty_repeat_decisions.py",
     "scripts/idle_penalty_report.py",
     "scripts/iqm_measurement_diagnostic.py",
@@ -11269,6 +11271,7 @@
    "json",
    "numpy",
    "pathlib",
+   "scipy",
    "sys",
    "typing"
   ],
