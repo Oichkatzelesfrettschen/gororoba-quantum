@@ -28,8 +28,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from experiment_references import (  # noqa: E402
     ACTIVE_INDICES,
+    BASIS_NAMES,
     embedded_basis,
-    mub_bases,
     quarter_mass_operators,
     reference_report,
     sedenion_operators,
@@ -41,12 +41,16 @@ from qrng_seeds import resolve  # noqa: E402
 QD_CATALOGUE = ROOT / "docs/evidence/quandela/catalogue.json"
 FAMILIES = ("mub-six", "quarter-mass", "sedenion-lcu")
 SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json"
+SEED_MAPPING = "docs/evidence/quantum-experiment-conformance/cases/seeds.json"
 
 
 @cache
 def optical_seeds() -> list[dict[str, Any]]:
     """Each static optical acquisition owns one reserved ANU draw index."""
-    rows = settings("mub-six") + [row for row in settings("sedenion-lcu") if "repeat_of" not in row]
+    rows = [
+        {"family": "mub-six", "name": f"{preparation}-to-{measurement}-input-{column}"}
+        for preparation, measurement, column in _mub_jobs()
+    ] + [{"family": "sedenion-lcu", "name": name} for name in CASES]
     allocations = []
     for index, row in enumerate(rows, start=2):
         reference = f"qrng:{SEED_DRAW}#{index}"
@@ -98,31 +102,39 @@ def _permutation(size: int, target: int) -> Any:
     return matrix
 
 
+def _mub_jobs() -> list[tuple[str, str, int]]:
+    return [
+        (preparation, measurement, column)
+        for preparation in BASIS_NAMES[:3]
+        for measurement in BASIS_NAMES[:3]
+        for column in range(6)
+    ]
+
+
+def _mub_setting(arguments: tuple[str, str, int]) -> dict[str, Any]:
+    preparation, measurement, column = arguments
+    return {
+        "name": f"{preparation}-to-{measurement}-input-{column}",
+        "family": "mub-six",
+        "preparation_basis": preparation,
+        "measurement_basis": measurement,
+        "input_column": column,
+        "matrix": embedded_basis(measurement).conj().T
+        @ embedded_basis(preparation)
+        @ _permutation(8, ACTIVE_INDICES[column]),
+        "optical_matrix": transition_matrix(preparation, measurement) @ _permutation(6, column),
+        "active_outputs": list(ACTIVE_INDICES),
+        "optical_active_outputs": list(range(6)),
+        "success_outputs": [],
+        "optical_success_outputs": [],
+        "placement": (11, 13, 14),
+    }
+
+
 def settings(family: str) -> list[dict[str, Any]]:
     """Logical settings include full operators and explicit observable partitions."""
     if family == "mub-six":
-        names = tuple(mub_bases())
-        return [
-            {
-                "name": f"{preparation}-to-{measurement}-input-{column}",
-                "family": family,
-                "preparation_basis": preparation,
-                "measurement_basis": measurement,
-                "input_column": column,
-                "matrix": embedded_basis(measurement).conj().T
-                @ embedded_basis(preparation)
-                @ _permutation(8, ACTIVE_INDICES[column]),
-                "optical_matrix": transition_matrix(preparation, measurement) @ _permutation(6, column),
-                "active_outputs": list(ACTIVE_INDICES),
-                "optical_active_outputs": list(range(6)),
-                "success_outputs": [],
-                "optical_success_outputs": [],
-                "placement": (11, 13, 14),
-            }
-            for preparation in names
-            for measurement in names
-            for column in range(6)
-        ]
+        return ordered_map(_mub_setting, _mub_jobs(), min_items=1)
     if family == "quarter-mass":
         from qiskit import QuantumCircuit
 
@@ -361,6 +373,17 @@ def _qd_cases(setting: dict[str, Any], budgets: Budgets) -> dict[str, str]:
         for row in optical_seeds()
         if (row["family"], row["setting"]) == (setting["family"], setting.get("repeat_of", setting["name"]))
     )
+    mapping_bytes = (ROOT / SEED_MAPPING).read_bytes()
+    mapped = [
+        row
+        for row in json.loads(mapping_bytes)["allocations"]
+        if (row["family"], row["setting"]) == (allocation["family"], allocation["setting"])
+    ]
+    if len(mapped) != 1 or any(
+        mapped[0][key] != allocation[original]
+        for key, original in (("value", "seed"), ("source", "source"), ("index", "index"))
+    ):
+        raise ValueError("the reserved seed mapping differs from its registered case identifier")
     text = json.dumps(circuit, indent=1) + "\n"
     manifest = {
         "schema": "qd-hypercomplex-cases-v1",
@@ -379,7 +402,14 @@ def _qd_cases(setting: dict[str, Any], budgets: Budgets) -> dict[str, str]:
         "max_credits": budgets.photonic_credits,
         "acquisition_admission": "awaiting-live-budget-review",
         "compilation_seed": allocation["seed"],
-        "seed_source": allocation["reference"],
+        "compilation_seed_allocation": {
+            "path": SEED_MAPPING,
+            "sha256": hashlib.sha256(mapping_bytes).hexdigest(),
+            "family": allocation["family"],
+            "setting": allocation["setting"],
+            "draw_index": allocation["index"],
+            "kind": "reserved-static-case-identifier",
+        },
         "compilation_seed_role": "reproduce-base-mesh" if "repeat_of" in setting else "new-mesh",
         "circuit": {"file": "circuit.json", "sha256": hashlib.sha256(text.encode()).hexdigest()},
         "catalogue_sha256": hashlib.sha256(QD_CATALOGUE.read_bytes()).hexdigest(),
@@ -413,6 +443,10 @@ def build(
         raise ValueError("routes must be a distinct nonempty selection of tuna, qx and ascella")
     if "quarter-mass" in families and not set(routes) & {"tuna", "qx"}:
         raise ValueError("quarter-mass requires at least one admitted route: tuna or qx; Ascella does not cover it")
+    # Perceval creates shared local data directories during import. Complete
+    # that initialization before spawned workers can race on directory creation.
+    if "ascella" in routes:
+        importlib.import_module("perceval")
     rows = [row for family in families for row in settings(family)]
     files = {}
     for group in ordered_map(_build_setting, [(row, budgets, routes) for row in rows], min_items=1):
@@ -488,6 +522,7 @@ def build(
         "docs/evidence/quantum_inspire/catalogue.json",
         "docs/evidence/quandela/catalogue.json",
         SEED_DRAW,
+        SEED_MAPPING,
     )
     files["provenance.json"] = (
         json.dumps(

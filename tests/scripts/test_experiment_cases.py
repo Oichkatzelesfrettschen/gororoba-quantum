@@ -18,6 +18,31 @@ def budgets() -> Budgets:
     return Budgets(1024, 1024, 1024, 2048, 60.0, 2.0)
 
 
+def test_optical_sdk_initializes_before_worker_dispatch(budgets: Budgets, monkeypatch: pytest.MonkeyPatch) -> None:
+    import experiment_cases as cases
+
+    initialized: list[str] = []
+    original = cases.importlib.import_module
+
+    def initialize(name: str, package: str | None = None) -> Any:
+        if name == "perceval":
+            initialized.append(name)
+        return original(name, package)
+
+    class DispatchReached(Exception):
+        pass
+
+    def dispatch(*args: Any, **kwargs: Any) -> Any:
+        if not initialized:
+            raise RuntimeError("spawned workers can race Perceval directory initialization")
+        raise DispatchReached
+
+    monkeypatch.setattr(cases.importlib, "import_module", initialize)
+    monkeypatch.setattr(cases, "ordered_map", dispatch)
+    with pytest.raises(DispatchReached):
+        build(budgets, ("mub-six",), ("ascella",))
+
+
 def test_reference_settings_cover_all_inputs_and_controls() -> None:
     self_test()
     rows = settings("mub-six")
@@ -27,6 +52,26 @@ def test_reference_settings_cover_all_inputs_and_controls() -> None:
         from qiskit.quantum_info import Operator
 
         np.testing.assert_allclose(Operator(row["source_circuit"]).data, row["matrix"], atol=1e-12)
+
+
+def test_transition_operators_dispatch_through_ordered_pool(monkeypatch: pytest.MonkeyPatch) -> None:
+    import experiment_cases as cases
+
+    output = [{"worker_result": True}]
+    calls = []
+
+    def dispatch(function: Any, jobs: Any, **options: Any) -> Any:
+        calls.append((function, jobs, options))
+        return output
+
+    monkeypatch.setattr(cases, "ordered_map", dispatch)
+    if cases.settings("mub-six") is not output:
+        raise RuntimeError("the transition stage must use its ordered worker output")
+    function, jobs, options = calls[0]
+    if function is not cases._mub_setting or len(jobs) != 54 or options != {"min_items": 1}:
+        raise RuntimeError("all transition operators must reach the independent-item pool")
+    if jobs[0] != ("computational", "computational", 0) or jobs[-1] != ("product_chirped", "product_chirped", 5):
+        raise RuntimeError("pooling must preserve the specified transition order")
 
 
 def test_deterministic_native_compilation_retains_layout_and_rounded_operator() -> None:
@@ -94,12 +139,26 @@ def test_optical_cases_keep_all_ports_and_registered_compilation_seed(budgets: B
     circuit = json.loads(next(value for name, value in files.items() if name.endswith("circuit.json")))
     if circuit["input_state"] != [1] + [0] * 11 or circuit["modes"] != 12:
         raise RuntimeError("a connected source and twelve-port readout must remain explicit")
-    if manifest["seed_source"] != optical_seeds()[7]["reference"]:
+    allocation = manifest["compilation_seed_allocation"]
+    if allocation["draw_index"] != optical_seeds()[7]["index"] or allocation["setting"] != manifest["job"]:
         raise RuntimeError("each optical mesh must carry its reserved draw index")
     qd_platform.template_experiment(manifest, circuit)
     manifest["settings"][0]["operator"]["real"][11][11] += 0.1
     with pytest.raises(qd_platform.PlatformError, match="full operator"):
         qd_platform.template_experiment(manifest, circuit)
+
+
+def test_static_seed_identifier_remains_valid_when_case_is_retained(budgets: Budgets, tmp_path: Path) -> None:
+    from ci.seed_provenance import claimed_records, runtime_consumption
+
+    files = _qd_cases(settings("sedenion-lcu")[0], budgets)
+    for name, text in files.items():
+        path = tmp_path / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+    consumed, stray = runtime_consumption(tmp_path)
+    if consumed or stray or claimed_records(tmp_path):
+        raise RuntimeError("a reserved protocol identifier must not claim a new runtime seed or whole draw")
 
 
 def test_seed_allocations_are_distinct_and_follow_declared_order() -> None:

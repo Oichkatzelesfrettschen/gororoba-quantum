@@ -755,15 +755,16 @@
       "docs/evidence/a5-rank-strata-equations/**"
     ],
     "core-quantum-experiment-cases": [
-      "docs/evidence/quantum-experiment-conformance/cases/**",
+      "docs/evidence/quantum-experiment-conformance/runner-cases/**",
       "docs/evidence/quantum_inspire/catalogue.json",
       "docs/evidence/quandela/catalogue.json",
       "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json",
-      "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json"
+      "docs/evidence/quantum-experiment-conformance/cases/seeds.json",
+      "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json"
     ],
     "core-quantum-experiment-toolchain": [
-      "docs/evidence/quantum-experiment-conformance/cases/**",
-      "docs/evidence/quantum-experiment-conformance/local-toolchain.json",
+      "docs/evidence/quantum-experiment-conformance/runner-cases/**",
+      "docs/evidence/quantum-experiment-conformance/runner-toolchain.json",
       "docs/evidence/quantum_inspire/catalogue.json",
       "docs/notes/quantum_inspire/requirements-qi.txt"
     ]
