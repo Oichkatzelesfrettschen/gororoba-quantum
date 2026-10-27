@@ -28,8 +28,9 @@ a property of the device.
 The campaign, members, ladders, shots and analyzer are those of the stability repeat
 ([IDLE_PENALTY_REPEAT_CASE.md](IDLE_PENALTY_REPEAT_CASE.md)): 44 two-qubit members, 4096 shots, 20 us repetition
 delay, no twirling, no dynamical decoupling, no isolated reference, one dynamic job each. Each job pins the repeat's
-31 ordered pairs, except where a new pair would sit within one CZ hop of a cohort pair; that cohort pair gives its
-slot to the new pair. Path 0 stays (150,149), so replica 0 and the campaign digest are the first run's.
+30 ordered pairs (the repeat case's amendment of 2026-10-27 drops the pair (155,154)), except where a new pair
+would sit within one CZ hop of a cohort pair; that cohort pair gives its slot to the new pair. Path 0 stays
+(150,149), so replica 0 and the campaign digest are the first run's.
 
 93 neighbors both 79 and 92 on the coupler graph (`docs/evidence/heron_platform/targets.json`), and
 `pinned_replicas` keeps paths one CZ hop apart, so the three need two jobs. The first-listed qubit of each pair is
@@ -37,12 +38,12 @@ the target:
 
 | Job | New ordered pairs | Cohort pairs replaced | Paths |
 |---|---|---|---|
-| X | 79,73 / 92,91 / 104,103 / 106,107 / 126,125 | 105,117 / 90,89 / 74,73 / 97,107 / 96,103 | 31 |
-| Y | 93,94 / 124,123 | 94,95 | 32 |
+| X | 79,73 / 92,91 / 104,103 / 106,107 / 126,125 | 105,117 / 90,89 / 74,73 / 97,107 / 96,103 | 30 |
+| Y | 93,94 / 124,123 | 94,95 | 31 |
 
 ```text
-X ibm_kingston:150,149/21,36/141,140/79,73/16,3/94,95/57,47/1,0/44,45/14,13/82,81/33,32/92,91/104,103/49,50/77,65/144,145/71,70/109,110/132,133/61,62/59,55/19,35/155,154/27,28/106,107/6,7/11,18/101,100/130,129/126,125
-Y ibm_kingston:150,149/21,36/141,140/105,117/16,3/93,94/57,47/1,0/44,45/14,13/82,81/33,32/90,89/74,73/49,50/77,65/144,145/71,70/109,110/132,133/61,62/59,55/19,35/155,154/27,28/97,107/6,7/11,18/101,100/130,129/96,103/124,123
+X ibm_kingston:150,149/21,36/141,140/79,73/16,3/94,95/57,47/1,0/44,45/14,13/82,81/33,32/92,91/104,103/49,50/77,65/144,145/71,70/109,110/132,133/61,62/59,55/19,35/27,28/106,107/6,7/11,18/101,100/130,129/126,125
+Y ibm_kingston:150,149/21,36/141,140/105,117/16,3/93,94/57,47/1,0/44,45/14,13/82,81/33,32/90,89/74,73/49,50/77,65/144,145/71,70/109,110/132,133/61,62/59,55/19,35/27,28/97,107/6,7/11,18/101,100/130,129/96,103/124,123
 ```
 
 A pinned path with an excluded qubit or edge refuses the plan. The job then runs without substitution at the next
@@ -97,7 +98,8 @@ Fixed before these jobs' data. `scripts/idle_penalty_focal_decisions.py` compute
 The context qubits 104, 106, 124, 125 and 126 carry no decision here; their values enter the N=21 replay.
 
 Validation dry runs under the 2026-10-26T19:09:26-07:00 calibration (not retained) admitted all 31 paths of X
-and all 32 of Y, passed `--self-check` and `--check-placement` against a live export, and carried campaign digest
+and all 32 of Y (the pin strings before the amendment), passed `--self-check` and `--check-placement` against a
+live export, and carried campaign digest
 `bf6be296...`.
 
 ## Binding records
@@ -116,7 +118,7 @@ and submitted under this approval.
 ## Commands
 
 From `gororoba_quantum/`, with `GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096`, `PYTHON` exported,
-`GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform`, `PIN` the job's pin string and `N` its path count (31 or 32):
+`GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform`, `PIN` the job's pin string and `N` its path count (30 or 31):
 
 ```sh
 "$PYTHON" live_run.py --groups idle_penalty --backends ibm_kingston --max-pending 300 --shots 4096 \
