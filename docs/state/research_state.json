@@ -7908,7 +7908,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "The preregistered instrument model weights each mode by the receipt's t_out and subtracts the receipt's dark rates; the runs refute both (t_out reads 3 to 6 % on modes 0 to 11 and 194 to 400 % on modes 12 to 23, while modes 0 to 11 collect about twice the clicks of 12 to 23), so the verdict holds for that model and does not name the chip's optical error class.",
+      "boundary": "The preregistered instrument model weights each mode by the receipt's t_out and subtracts the receipt's dark rates, capped per mode at the lowest click fraction over the job's settings, which is zero on every mode of all four analyses, so the fits subtract no dark count (provider-counter audit); the runs refute both (t_out reads 3 to 6 % on modes 0 to 11 and 194 to 400 % on modes 12 to 23, while modes 0 to 11 collect about twice the clicks of 12 to 23), so the verdict holds for that model and does not name the chip's optical error class.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03/analysis.json",
@@ -7932,7 +7932,8 @@
         }
       ],
       "documents": [
-        "docs/notes/quandela/strategy.md"
+        "docs/notes/quandela/strategy.md",
+        "docs/evidence/provider-counter-audit/README.md"
       ],
       "gates": {
         "core-537": "replay",
@@ -8381,7 +8382,7 @@
     {
       "id": "qd-belenos-q1-leak-needs-single-job-and-large-budget",
       "statement": "On qpu:belenos mesh 29dc6ef8, Q1's single job kept in_block 0.918 (Wilson 0.903 to 0.931) at 1500 samples (job aa4218f1) against 0.470 and 0.504 at 10000, and every iteration of an iterated job at seed 20 kept 0.896 to 0.995 at 1500 to 60000 samples (job c1eb1cbb; preregistered reading flat). The preregistered readings are D1 intermediate, 0.016 short of 'dwell' after its 0.034 cross-job margin, and D2 flat; the single-job endpoint stays unresolved, and the two cells together do not establish what the single-job leak needs.",
-      "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, so the budget is a sample count, not seconds of heater exposure; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested. The light-cone reading (qd-belenos-light-cone-reading) excludes off-cone clicks: inside the cone every seeded iterated cell on 29dc6ef8 holds 0.990 to 0.995 at every budget and D1 reads 0.918; job-13 (qd-belenos-q1-leak-single-job-form-whatever-seed) settles the single-job endpoint at 10000 samples whatever the seed.",
+      "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, the per-sample term of a linear fit of two iterated jobs' durations that two jobs determine exactly and nothing tests, so the budget reads as a sample count rather than seconds of heater exposure under that fit; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested. The light-cone reading (qd-belenos-light-cone-reading) excludes off-cone clicks: inside the cone every seeded iterated cell on 29dc6ef8 holds 0.990 to 0.995 at every budget and D1 reads 0.918; job-13 (qd-belenos-q1-leak-single-job-form-whatever-seed) settles the single-job endpoint at 10000 samples whatever the seed.",
       "evidence": [
         {
           "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell.json",
@@ -8420,7 +8421,8 @@
       "status": "established",
       "documents": [
         "docs/notes/quandela/strategy.md",
-        "docs/notes/quandela/form-dwell-decomposition.md"
+        "docs/notes/quandela/form-dwell-decomposition.md",
+        "docs/evidence/provider-counter-audit/README.md"
       ],
       "assumptions": [],
       "supersedes": [],
@@ -8675,7 +8677,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One job on one mesh, about 6.8 hours after D1 to D4. The single jobs on e296b6a9 and 14a96ca6 hold, so the leak is specific to 29dc6ef8 among the three meshes tested; what a 10000-sample single job does differently from a 1500-sample one (0.924) or an iterated job is not isolated, and acquisition time does not order the cells (0.10 s here against 0.25 s for D1).",
+      "boundary": "One job on one mesh, about 6.8 hours after D1 to D4. The single jobs on e296b6a9 and 14a96ca6 hold, so the leak is specific to 29dc6ef8 among the three meshes tested; what a 10000-sample single job does differently from a 1500-sample one (0.924) or an iterated job is not isolated, and acquisition time does not order the cells (0.10 s here against 0.25 s for D1, estimates of samples / (physical_perf x clock), a timing model no Quandela document confirms, so the ordering is conditional on it).",
       "evidence": [
         {
           "path": "docs/evidence/quandela/belenos_seeded_single.json",
@@ -8691,7 +8693,8 @@
         }
       ],
       "documents": [
-        "docs/notes/quandela/strategy.md"
+        "docs/notes/quandela/strategy.md",
+        "docs/evidence/provider-counter-audit/README.md"
       ],
       "gates": {
         "core-547": "replay",

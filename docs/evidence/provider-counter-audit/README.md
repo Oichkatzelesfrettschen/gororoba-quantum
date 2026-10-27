@@ -101,11 +101,11 @@ statement on gating would settle it.
 |---|---|---|
 | `qd-belenos-bright-block-routing-deficit` | root-cause record | unchanged; exposure-robust |
 | `qd-belenos-bright-block-leak-survives-recalibration` | raw in-block shares | unchanged |
-| `qd-belenos-random-meshes-no-class-fits-under-receipt-model` | mesh analyses with receipt dark rates | unchanged result; its boundary says the model subtracts the receipt's dark rates, which the cap set to zero, so the boundary needs that qualification |
+| `qd-belenos-random-meshes-no-class-fits-under-receipt-model` | mesh analyses with receipt dark rates | unchanged result; the boundary now states that the cap sets every dark expectation to zero |
 | `qd-belenos-q1-one-circuit-new-mesh-intermediate` | raw in-block share, mesh job-08 | unchanged |
-| `qd-belenos-q1-leak-needs-single-job-and-large-budget` | raw in-block shares; 4 x 10^4 samples per second | shares unchanged; the rate is conditional on the `physical_perf` timing model |
+| `qd-belenos-q1-leak-needs-single-job-and-large-budget` | raw in-block shares; 4 x 10^4 samples per second | shares unchanged; the rate is the per-sample term of a two-job linear duration fit ([strategy.md](../../notes/quandela/strategy.md) section 1) that the two jobs determine exactly, so it is conditional on that fit; the boundary now says so |
 | `qd-belenos-fresh-anu-mesh-holds-single-job` | raw in-block share | unchanged |
-| `qd-belenos-q1-leak-single-job-form-whatever-seed` | acquisition times 0.10 and 0.25 s | conditional on the timing model, which its boundary does not yet name |
+| `qd-belenos-q1-leak-single-job-form-whatever-seed` | acquisition times 0.10 and 0.25 s | conditional on the `physical_perf` timing model, which the boundary now names |
 | `qd-belenos-light-cone-reading` | acquisition-time estimates | unchanged; the boundary names the timing model |
 | `qd-belenos-single-job-failure-is-a-transformation` | raw distributions | unchanged |
 | `qd-belenos-teleportation-rehearsal-job-00` | `nb_shots_used` at its cap | unchanged; the boundary states that a shot is no optical trial |
