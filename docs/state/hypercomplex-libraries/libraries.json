@@ -2799,6 +2799,7 @@
     "scripts/measurement_sequence_scatter_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
     "scripts/msq_envelope_exploratory.py",
+    "scripts/n21_detuning_sign.py",
     "scripts/n21_dose_decisions.py",
     "scripts/n21_exact_crosscheck.py",
     "scripts/n21_exact_model_validation.py",
@@ -5005,6 +5006,7 @@
     "gororoba_quantum/n21_exact_planning.py",
     "gororoba_quantum/order_finding.py",
     "gororoba_quantum/qpe_diagnostics.py",
+    "gororoba_quantum/qpu_planning.py",
     "gororoba_quantum/qpu_planning_contracts.py",
     "gororoba_quantum/snapshot_laws.py",
     "gororoba_quantum/test_heron_multiprogramming.py",
@@ -8476,6 +8478,7 @@
    "parallel",
    "pathlib",
    "placement_feasibility",
+   "pub_calibration",
    "qiskit",
    "qiskit_aer",
    "qiskit_ibm_runtime",
@@ -13998,6 +14001,7 @@
    "perceval-quandela"
   ],
   "playwright": [],
+  "pub_calibration": [],
   "pyadic": [],
   "pydantic": [
    "pydantic"
@@ -14063,6 +14067,7 @@
   "kingdon",
   "octonion",
   "playwright",
+  "pub_calibration",
   "pyadic",
   "pyoctonion",
   "pyquaternion",

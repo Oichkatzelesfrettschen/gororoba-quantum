@@ -72,6 +72,7 @@ import msq_envelope
 import packing
 import parallel
 import placement_feasibility
+import pub_calibration
 import qpu_planning
 import qrng_seeds
 import variance
@@ -3032,6 +3033,21 @@ def placed_qubit_calibration(properties: Any, qubits: list[int]) -> dict[str, di
             name: float(values[name]) for name in PLACED_QUBIT_FIELDS if isinstance(values.get(name), (int, float))
         }
     return placed
+
+
+def pub_execution_calibration(
+    properties: Any, pub_manifest: dict[str, Any], *, with_gates: bool
+) -> dict[str, dict[str, dict[str, float]]]:
+    """The calibration values over every qubit of one PUB, as collect.json stores them once per PUB.
+
+    The mapping holds `placed_qubit_calibration` and, when with_gates, `placed_gate_calibration`; a member's
+    `executed` entry takes its own qubits from it through pub_calibration.split_pub_calibration.
+    """
+    qubits = sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]})
+    values = {"placed_qubit_calibration": placed_qubit_calibration(properties, qubits)}
+    if with_gates:
+        values["placed_gate_calibration"] = placed_gate_calibration(properties, qubits)
+    return values
 
 
 def discover_snapshots(
@@ -6396,6 +6412,12 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         props_by_name: dict[str, Any] = {}
         replayed: dict[str, list[np.ndarray]] = {}
         executed: dict[str, dict[str, Any]] = {}
+        pub_values: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
+        gate_calibration_family = record.get("family_configuration", {}).get("name") in (
+            "measurement-sequence",
+            "measurement-sequence-diagnostic",
+            "measurement-sequence-envelope",
+        )
         # Every windowed component of the job replays in one batch per
         # calibration, in manifest order, and replay_entries gives each batch
         # its own seed, so no two components of the job share a (seed,
@@ -6467,26 +6489,22 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 if window is not None:
                     props_then = at[window[0]][0]
                     props_by_name[name] = props_then
-                    # The calibration in force at the PUB's execution start,
-                    # by value, over every qubit the PUB ran, so the fused
-                    # components of one PUB carry one execution evidence.
-                    executed[name]["placed_qubit_calibration"] = placed_qubit_calibration(
-                        props_then,
-                        sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
-                    )
-                    if record.get("family_configuration", {}).get("name") in (
-                        "measurement-sequence",
-                        "measurement-sequence-diagnostic",
-                        "measurement-sequence-envelope",
-                    ):
-                        executed[name]["placed_gate_calibration"] = placed_gate_calibration(
-                            props_then,
-                            sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
+                    # The calibration in force at the PUB's execution start, by
+                    # value: the PUB's full values go once into the header's pub_calibration
+                    # and the member keeps those of its own qubits.
+                    if pub_manifest["name"] not in pub_values:
+                        pub_values[pub_manifest["name"]] = pub_execution_calibration(
+                            props_then, pub_manifest, with_gates=gate_calibration_family
                         )
+                    executed[name] |= pub_calibration.split_pub_calibration(
+                        pub_values[pub_manifest["name"]], [int(q) for q in component["physical_qubits"]]
+                    )
                     calibration = props_then.last_update_date
                     sims_by_calibration.setdefault(calibration, at[window[0]][1])
                     replay_batches.setdefault(calibration, []).append(entry)
         replayed = replay_entries(sims_by_calibration, replay_batches, shots, seed)
+        if pub_values:
+            out[0].setdefault("pub_calibration", {}).update(pub_values)
         family_measured.update(measured)
         family_replayed.update(replayed)
         family_executed.update(executed)
