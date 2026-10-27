@@ -65,9 +65,9 @@ analyses keep their hashes. Four facts set its cost:
 - **No retained run postdates the freeze.** No Quandela, Quantum Inspire, IQM or IBM run was retained after the
   frozen inventories (checked against main `707ea38`).
 
-Task C0 decides between two designs, and C1 to C7 follow from it.
+Task C0 chose between two designs, and C1 to C7 follow from it.
 
-- **C0, design choice (owner decision).**
+- **C0, design choice (decided: (a), by the owner on 2026-10-27).**
   - **(a) Derived view.** Add `provider_counters.quandela_record(results, job_body)`. It reads a collected
     `results.json` and the job body, and returns typed per-iteration and top-level counters. `qd_platform.py` and
     every analyzer keep their bytes, and records keep their verbatim fields, so no digest binding moves. The
@@ -75,9 +75,13 @@ Task C0 decides between two designs, and C1 to C7 follow from it.
   - **(b) Record field.** Add a `counters` block to new `results.json` files written by `qd_platform.collect`. The
     record then carries its own semantics, but the 10 conformance records and `core-502` need rebinding.
 
-  Recommendation: (a). The record keeps its provider bytes, and the plan obligation is met by the view and its
+  The owner chose (a). The record keeps its provider bytes, and the plan obligation is met by the view and its
   tests.
-- **C1.** Implement the chosen surface.
+- **C1.** Implement the chosen surface. In progress on branch `provider-counters/quandela-record-view` (worktree
+  `~/worktrees/IBMQuantum/quandela-record-view`): `provider_counters.quandela_record(results, budgets)` takes
+  `qd_platform.iteration_budgets(cases.json)` instead of parsing the job body, because the job body's job-level
+  `max_shots` equals the largest per-iteration `max_shots` on every retained iterated job, and an audit-marked
+  test checks that equality on all 81 inventoried runs.
   - Under (a): `quandela_record` returns one `IterationCounters` per counted iteration, using `quandela_iteration`
     with each iteration's `max_shots` and `max_samples` from the job body; `quandela_top_level_shots` with the job
     body's job-level `max_shots`; and an unavailable sample counter for an error payload or a partial answer.
@@ -138,8 +142,11 @@ Task C0 decides between two designs, and C1 to C7 follow from it.
     The merged claims cite the audit README instead, which is the record of all three corrections; only the
     random-meshes correction rests on retained `dark_expected` values, not on the sensitivity replay.
   - Patch the step's acceptance to "each named claim cites the provider-counter audit README". A changed obligation
-    invalidates its receipt, so append a fresh receipt over the three registry records
-    (`docs/state/research_state.json#claims/id=...`).
+    invalidates every receipt bound to it: `plan_records.check_receipts` requires each receipt's `scope_sha256` to
+    match the current obligation, not only the newest receipt's. Follow the changed-obligation procedure of
+    [plan-tracker.md](../../runbooks/plan-tracker.md): reopen the step, remove its old receipts from the record
+    (Git history keeps them), reassess, and attach one receipt over the three registry records
+    (`docs/state/research_state.json#claims/id=...`) under the new obligation.
 - **D3.** Give `review-and-merge` a receipt that lists #605, #606, #608 and the collection PR with their merge
   commits.
 - **D4.** Close the plan: disposition `completed`, a plan receipt binding `plan_records.obligation(plan)`, and
@@ -165,11 +172,13 @@ no reply as of 2026-10-26. A question sent to Quandela is an outward action that
 - **Receipts that bind the README.** `freeze-and-inventory` and `teleportation-benchmark-repair` both bind
   `docs/evidence/provider-counter-audit/README.md`. A README edit makes the plan check report them stale; append a
   revalidation receipt with `plan_tracker.py step ID STEP --receipt FILE`.
-- **Merging main.** It conflicts on `docs/state/plans.md`, `docs/state/plan-catalogue.md`, and
-  `docs/state/hypercomplex-libraries/libraries.json` when both sides add Python files. Take main's copy, regenerate
-  with `plan_tracker.py render --write` and `hypercomplex_libraries.py --out docs/state/hypercomplex-libraries`,
-  then commit. When the plan JSON itself conflicts, take main's copy and re-record this branch's receipts at the
-  merge revision.
+- **Merging main.** It conflicts on the generated views `docs/state/plans.md` and `docs/state/plan-catalogue.md`,
+  and on `docs/state/hypercomplex-libraries/libraries.json` when both sides add Python files. Take either copy of a
+  generated file, regenerate it with `plan_tracker.py render --write` or
+  `hypercomplex_libraries.py --out docs/state/hypercomplex-libraries`, then commit. A conflict in a plan record
+  under `docs/state/plans/` is different: the JSON is the authority, so reconcile it field by field (scope, steps,
+  states, acceptance, notes and both sides' receipts), as the root guide's planning rules require. Taking one side
+  wholesale and re-recording receipts discards the other side's obligation changes.
 - **Seed-provenance timing.** At host load average above about 9, `tests/ci/test_seed_provenance.py` exceeds its
   10 s test budget locally. The hosted `tests` job passed it on every head of #605 and #608.
 - **Codex reviews.**
