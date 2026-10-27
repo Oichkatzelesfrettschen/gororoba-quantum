@@ -8,14 +8,14 @@
     "docs/evidence/cd-one-sided-inverses/README.md",
     "formalization.yaml"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
     "note": "Opened from the openai/math crosswalk: family 197 refutes direct finiteness in untwisted group algebras of torsion-free groups; the twisted group algebras R^sigma[Z_2^n] of cd_core keep it at every n, which the note proves and the record checks."
   },
   "scope": "The written proof in docs/notes/topics/cd-one-sided-inverses.md, the exact replay scripts/cd_one_sided_inverses.py with its retained record under docs/evidence/cd-one-sided-inverses/ and gate core-record-check-08, and the root formalization.yaml indexing the fourteen Rocq sources. A Rocq proof of the kernel equality and dimensions above 32 stay out of scope.",
   "owner": "repository maintainer",
-  "next_action": "Attach the receipts of the three steps at the committed revision and land the pull request.",
+  "next_action": "None; the plan is closed. A Rocq statement of Lemmas 1 to 3 against CdTowerBasisSign.v is the open follow-up.",
   "related": [
     "rocq-certificate-statement-split"
   ],
@@ -87,6 +87,30 @@
           "scope_sha256": "c3e54c0446904aef498848c4dac99e9244a78fba969f539aa0208ae5a715228b"
         }
       ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The note proves the theorem, gate core-record-check-08 replays the record, and formalization.yaml validates; all three steps carry receipts at the committed revision.",
+  "receipts": [
+    {
+      "result": "All three steps are done with receipts: the note's proof, the gated record (core-record-check-08) and the validated formalization.yaml.",
+      "observed_at": "2026-10-27T15:38:15+00:00",
+      "revision": "6c715c7b23f4ac9fde919e718c9433728672b657",
+      "evidence": [
+        {
+          "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+          "sha256": "92b49cd2734806e0aa3e96bb9e1222eb99544023d7828aaff7103478365ae4ed"
+        },
+        {
+          "ref": "docs/evidence/cd-one-sided-inverses/record.json",
+          "sha256": "8d757d40e436e4104678b7504649e1ff084e9886378f7bb12a46e91edd04670d"
+        },
+        {
+          "ref": "formalization.yaml",
+          "sha256": "9da52cc4bb21607294772e9a03e0944f82d793be4e1bf5e91c3349a2c91cd5ec"
+        }
+      ],
+      "scope_sha256": "e3ab0d5c34c0106ed049f278db3941867196e363c2b378932c21e15fd4ffeb46"
     }
   ]
 }
