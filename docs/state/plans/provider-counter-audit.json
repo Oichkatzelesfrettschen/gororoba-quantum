@@ -330,8 +330,8 @@
     {
       "id": "collection-boundaries",
       "state": "doing",
-      "action": "Route qd_platform collection and the Quandela analyzers through provider_counters records beside the verbatim raw fields.",
-      "acceptance": "New records carry counter semantics and iteration scope; retained raw bytes and analyses keep their hashes."
+      "action": "Type the counters of every collected Quandela record through a derived view, provider_counters.quandela_record, leaving qd_platform collection and the analyzers byte-stable (owner decision C0 of docs/archive/handoffs/provider-counter-audit.md).",
+      "acceptance": "quandela_record types every inventoried run's top-level and per-iteration counters, marks uncounted answers unavailable, agrees with the counter table's raw nb_shots_used and job-body max_shots, and retained raw bytes and analyses keep their hashes."
     },
     {
       "id": "claim-boundaries",
