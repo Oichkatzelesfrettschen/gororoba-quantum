@@ -122,8 +122,8 @@ Total: 55 PUBs.
    - per probe and partition: R_p, Q_p from the patterned long arms, unwrapped through the patterned short arms;
      D_p from `meas_during` against `meas_after` and Ramsey, as the probe computed it;
    - b, class agreement, a_p, c_p, the residual, the shares and the bootstrap above;
-   - the exposure gate per class: within a class every replica shares one schedule, and every quiet replica's
-     probe window contains every reading replica's train in absolute schedule time (`scheduler_timing`);
+   - the exposure gate per class: within a class every replica shares one schedule, every replica idles over one
+     absolute window (`scheduler_timing`), and that window contains every other reading replica's train;
    - a readout digest over the retained members' replica-0 per-role ISA sequences, excluding the placement anchor
      `idle_cz_kick` as `campaign_digest` does (`PLACEMENT_ANCHORS`: a pinned compile commutes the partner's X
      through the CZ), which the unpinned probe run's records also yield, for the replication comparison;

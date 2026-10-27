@@ -206,6 +206,7 @@ def test_patterned_exposure_accepts_aligned_classes() -> None:
         ([600, 9000, 600], 0, "misses the trains"),
         ([600, 600, 600], 2, "quiet partner reads"),
         ([600, 3000, 3000], 0, "replica 0 idle"),
+        ([600, 1400, 600], 0, "distinct absolute windows"),
     ],
 )
 def test_patterned_exposure_refuses(starts: list[int], quiet_reads: int, fragment: str) -> None:

@@ -529,8 +529,8 @@ def _effective(body: str) -> str:
 def patterned_exposure(timelines: dict[str, list[tuple[Any, Any]]], bodies: dict[str, tuple[str, ...]]) -> list[str]:
     """Departures of a patterned member's schedule from its classes: within a class every replica shares one
     schedule; every probe repeats its quiet Ramsey reference; a reading partner plays its whole train inside its
-    probe's idle and a quiet partner reads only at the end; every probe idle contains every other reading replica's
-    train in absolute schedule time."""
+    probe's idle and a quiet partner reads only at the end; every replica idles over one absolute window, which
+    contains every other reading replica's train."""
     import idle_penalty_report as report
 
     reasons = []
@@ -571,6 +571,10 @@ def patterned_exposure(timelines: dict[str, list[tuple[Any, Any]]], bodies: dict
                 reasons.append(f"{name} replica {k}: reader train leaves the probe idle")
             else:
                 trains[k] = (between[0][1], between[-1][2])
+        # Every replica must idle over one absolute window, so no replica's preparation or terminal read falls
+        # inside another probe's idle; the model counts only the partners' trains as exposure.
+        if len(set(windows.values())) > 1:
+            reasons.append(f"{name}: probe idles span {len(set(windows.values()))} distinct absolute windows")
         # Each coefficient reads the trains of every other reading replica as the probe's exposure (n_same in R_p,
         # n_opp in Q_p), so every probe idle, reading or quiet, must contain every other reader's train.
         for k, (start, end) in windows.items():
