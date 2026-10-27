@@ -6,9 +6,10 @@ used to represent the real annihilator kernel, fixes the action of the canonical
 constant kernel-pencil symmetry algebra and a visible twelve-component subgroup, and gives an exact finite family of
 rational kernel frames covering all seven pieces of nullity at least twelve. It also identifies the connected compact
 stabilizer and its irreducible kernel representation on both nullity-sixteen components, reduces those two bundles to
-the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and quaternionic classes. An exhaustive
-component census, the non-homogeneous pieces' reduced transitions, and the non-homogeneous characteristic classes
-remain open. The aligned nullity-twelve pieces now have an explicit
+the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and quaternionic classes. The Pfaffian
+frames now carry explicit overlap maps, inverse and cocycle identities, and canonical unitary reductions on every
+high-nullity piece. An exhaustive component census, smaller reductions on the non-homogeneous pieces, and their
+characteristic classes remain open. The aligned nullity-twelve pieces now have an explicit
 one-dimensional compact-orbit quotient, a computed unit-section topology, and exact stabilizer representations on
 their principal and endpoint orbits. The open `V` orbit now has an explicit three-dimensional connected compact-orbit
 quotient, a computed unit-section topology and K-groups, and exact stabilizer representations on its principal,
@@ -24,7 +25,8 @@ Every computation uses rational or Gaussian-rational arithmetic. [`result.json`]
 `aligned_stabilizer_representation.py --out`. `v-orbit-moduli-result.json` is the output of
 `v_orbit_moduli.py --out`. `v-topology-representation-result.json` is the output of
 `v_topology_representation.py --out`. `isotropic-orbit-data-result.json` is the output of
-`isotropic_orbit_data.py --out`. The focused contracts and mutation controls run without random input.
+`isotropic_orbit_data.py --out`. `transition-atlas-result.json` is the output of
+`transition_atlas.py --out`. The focused contracts and mutation controls run without random input.
 
 ## Conventions
 
@@ -675,8 +677,84 @@ The falsifier was a nullity-twelve point with every order-ten principal Pfaffian
 frame lost rank or escaped the complex or real kernel, a denominator locus other than the stated Pfaffian zero set, or
 a surviving border mutation. None occurred; the mutation fails at one of the five representatives. Together with the
 order-eight result, the order-ten construction completes deliverable 2 for all seven high-nullity pieces. The common
-atlas does not identify the K-moduli spaces, their stabilizers, or a smaller structure group; those questions remain
-live inputs to topology, transitions, and invariants.
+atlas is independent of the K-moduli spaces and stabilizer jumps. The following overlap calculation identifies its
+structure group.
+
+## Pfaffian free rows give the exact transition cocycle
+
+Let `I` and `J` be two principal pivot sets whose Pfaffians are nonzero at the same point, and let `P_I` denote
+restriction to the free rows complementary to `I`. The Schur frames satisfy
+
+`P_I F_I=I`.
+
+The columns of `F_I` and `F_J` are bases of the same complex kernel. Therefore the overlap matrix is not an implicit
+linear solve: it is the exact row restriction
+
+`g_IJ=P_I F_J`,
+
+and
+
+`F_J=F_I g_IJ`.
+
+Its entries are Gaussian-rational functions in `(z,conjugate(z))`, localized at
+`det(B_J)=pf(B_J)^2`. Since both frames are bases, `g_IJ` is invertible. Restricting the reconstruction identity to
+the `J`-free rows proves
+
+```text
+g_IJ g_JI = I,
+g_IJ g_JK = g_IK
+```
+
+on every double and triple overlap. These are identities of rational functions on the chart domains, not identities
+inferred from the sampled points.
+
+The atlas has the following finite sizes:
+
+| Pieces | Bordered rank | Complex kernel rank | Charts on each piece | Raw structure group |
+| --- | ---: | ---: | ---: | --- |
+| `B9`, `V`, `VB`, `V^a_+`, `V^a_-` | 10 | 6 | 8,008 | `GL(6,C)` |
+| `N_+`, `N_-` | 8 | 8 | 12,870 | `GL(8,C)` |
+
+Through `psi`, the real complex structure `J=L_(e_16)` acts as multiplication by `-i`. Every complex overlap matrix
+therefore realifies to a matrix commuting with `J`; the corresponding real structure groups are the copies of
+`GL(k,C)` inside `GL(2k,R)` that centralize `J`.
+
+The ambient Euclidean metric induces a Hermitian metric on every kernel. In the frame `F_I`, its Gram matrix is
+
+`G_I=F_I^* F_I`.
+
+The reconstruction identity gives the exact metric transition rule
+
+`G_J=g_IJ^* G_I g_IJ`.
+
+Consequently the metric-normalized frames `E_I=F_I G_I^(-1/2)` have unitary transition maps
+
+`u_IJ=G_I^(1/2) g_IJ G_J^(-1/2)`.
+
+Thus the canonical Hermitian metric reduces the structure groups to `U(6)` on every nullity-twelve piece and `U(8)`
+on each nullity-sixteen piece. The exact replay uses the Gram identity and requires no numerical matrix square root.
+The independently committed sedenion complement charts reduce both nullity-sixteen bundles further to
+
+`diag(I_2,Q,Q,Q),  Q in SU(2)=Sp(1)`,
+
+inside `Sp(4)` and `SU(8)`.
+
+The constant symmetry solve has only two vertical directions, domain scaling and the `J` rotation. It therefore
+supplies no constant second complex structure anticommuting with `J` on the nullity-twelve family. The evidence
+supports the canonical `U(6)` reduction and does not assert a global `Sp(3)` reduction; a nonconstant quaternionic
+structure would need a separate certificate.
+
+At one exact point of each piece, the replay finds three simultaneous nonzero principal Pfaffians and checks all nine
+overlap matrices. It verifies frame reconstruction, both inverse orders, all 27 triple-cocycle identities, nonzero
+determinants, Hermitian Gram transport, and commutation of every realification with `J`. Some raw transitions at the
+special `VB` and aligned representatives happen to be unitary; the varying Gram formula, rather than that accidental
+property, supplies the global unitary reduction. The transition-entry mutation breaks reconstruction, inverse, and
+cocycle identities. Replacing conjugate transpose by transpose breaks metric transport.
+
+The falsifier was a point outside every chart, a singular overlap matrix, failure of reconstruction, inversion,
+cocycle, metric transport, or complex-linearity, a nullity-sixteen reduction incompatible with the committed
+`SU(2)=Sp(1)` result, or survival of either mutation. None occurred. The exact denominators, transition matrices,
+determinants, input digests, and mutation controls are in `transition-atlas-result.json`.
 
 ## The transport uses the conjugated input
 
@@ -810,7 +888,9 @@ algebra automorphisms. An exhaustive normalizer census remains open.
 
 The exact solve establishes the identity-component Lie algebra of constant linear kernel-pencil symmetries, its orbit
 dimensions, and twelve distinct visible components. The order-eight and order-ten Pfaffian charts establish
-closed-form frames on all seven pieces of nullity at least twelve. On each `N_+` and `N_-` unit section it also
+closed-form frames on all seven pieces of nullity at least twelve. Their free-row overlap maps give a finite exact
+transition atlas with raw groups `GL(6,C)` and `GL(8,C)` and canonical metric reductions to `U(6)` and `U(8)`, which
+completes deliverable 3. On each `N_+` and `N_-` unit section the computation also
 identifies the connected compact point stabilizer as `U(2)` and decomposes the complex rank-eight fiber into five
 irreducible summands. The `SU(2)` reduction then classifies the ordinary real, complex, and quaternionic bundles on
 both `N_+` and `N_-`, including the order-two complex K-class that their zero Chern classes do not detect. The
@@ -820,8 +900,8 @@ classified the connected compact-orbit quotients of `V`, `B9`, and `VB`, the uni
 stabilizer representations of `V`, the unit-section product types of `B9` and `VB`, and the `B9` and `VB` connected
 stabilizer representations. It has not proved that the visible components
 exhaust the group and has not classified an equivariant extension under the disconnected `N_+-` stabilizers, the
-actual real type of the individual four-plane `xi_R`, or any non-homogeneous piece's reduced transition functions
-and bundle invariants. The compact
+actual real type of the individual four-plane `xi_R`, smaller structure-group reductions on the nullity-twelve
+pieces, or the non-homogeneous bundles' characteristic classes, K-classes, and monodromy. The compact
 symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit
 labels do not make those kernel bundles homogeneous under the constant symmetry group.
 
@@ -876,4 +956,9 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py \
     --out docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_transition_atlas.py
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/transition_atlas.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/transition_atlas.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/transition_atlas.py \
+    --out docs/evidence/a5-kernel-bundles/transition-atlas-result.json
 ```
