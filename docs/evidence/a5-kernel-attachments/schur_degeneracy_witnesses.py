@@ -7,11 +7,12 @@ import hashlib
 import itertools
 import json
 import sys
+from collections.abc import Sequence
 from dataclasses import dataclass
 from fractions import Fraction
 from functools import partial
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import sympy as sp
 
@@ -47,7 +48,6 @@ SOURCE_PATHS = (
     HERE / "first-order-normal-cones-result.json",
     HERE / "path_supported_basepoints.py",
     HERE / "path-supported-basepoints-result.json",
-    ROOT / "docs" / "design" / "a5-kernel-attachments-program.md",
     NULLITY_EIGHT / "boundary_specializations.py",
     NULLITY_EIGHT / "boundary-specializations-result.json",
     KERNEL_BUNDLES / "kernel_frames.py",
@@ -239,7 +239,7 @@ def _analyze_path(path: boundary.PathSpec) -> WitnessAnalysis:
     boundary_key = basepoints.ORBIT_KEYS.get(boundary_orbit, boundary_orbit)
     slice_columns = tuple(
         regularity.transverse_columns(
-            selected_point,
+            cast("Sequence[int]", selected_point),
             regularity.COLUMN_ORDER.get(boundary_key, range(SPLIT_DIMENSION)),
         )
     )

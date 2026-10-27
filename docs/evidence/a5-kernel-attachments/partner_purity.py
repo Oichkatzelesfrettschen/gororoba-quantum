@@ -28,7 +28,6 @@ IMAGINARY_DIMENSION = BORDERED_DIMENSION - 1
 SIGN_MUTATION = "flip_e1_e2_skew_pair"
 SOURCE_PATHS = (
     HERE / "partner_purity.py",
-    ROOT / "docs" / "design" / "a5-kernel-attachments-program.md",
     KERNEL_BUNDLES / "kernel_frames.py",
     ROOT / "gororoba_quantum" / "cd_core.py",
 )

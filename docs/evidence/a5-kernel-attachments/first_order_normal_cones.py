@@ -50,7 +50,6 @@ SOURCE_PATHS = (
     HERE / "first_order_normal_cones.py",
     HERE / "path_supported_basepoints.py",
     HERE / "path-supported-basepoints-result.json",
-    ROOT / "docs" / "design" / "a5-kernel-attachments-program.md",
     NULLITY_EIGHT / "boundary_specializations.py",
     NULLITY_EIGHT / "boundary-specializations-result.json",
     KERNEL_BUNDLES / "kernel_frames.py",

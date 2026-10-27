@@ -39,7 +39,6 @@ MOVEMENTS = ("canonical", "unipotent", "boost")
 PASSAGE_ORDER = {(8, 12): 0, (12, 16): 1, (8, 16): 2}
 SOURCE_PATHS = (
     HERE / "incidence_census.py",
-    ROOT / "docs" / "design" / "a5-kernel-attachments-program.md",
     KERNEL_BUNDLES / "kernel_frames.py",
     NULLITY_EIGHT / "boundary_specializations.py",
     REGULARITY / "verify_regularity_independent.py",

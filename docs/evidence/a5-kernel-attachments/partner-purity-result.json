@@ -23,8 +23,7 @@
     "real_coordinate_conclusion": "Every partner has zero e_0 and e_16 coordinates, so every complex kernel vector has zero scalar row."
   },
   "inputs": {
-    "docs/design/a5-kernel-attachments-program.md": "fc573781091d7f5041ca965397558dc9da9a3eed376371860c5dd8917a2d3e6c",
-    "docs/evidence/a5-kernel-attachments/partner_purity.py": "4304e0b8f7734a4f9b54361a0ede731138e7176b5fb6340e352cbbac34a8babb",
+    "docs/evidence/a5-kernel-attachments/partner_purity.py": "b1b3eff0f8a0e5916484b63518ff7d59824a86d494697f78f58fa0d459331841",
     "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
     "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
   },

@@ -2666,10 +2666,9 @@
     }
   ],
   "inputs": {
-    "docs/design/a5-kernel-attachments-program.md": "fc573781091d7f5041ca965397558dc9da9a3eed376371860c5dd8917a2d3e6c",
-    "docs/evidence/a5-kernel-attachments/first_order_normal_cones.py": "3939456f9341309bc866a12d3e853f672669fa44e5ba802ca30d2b8f217c2666",
-    "docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json": "427deba1f7cc4d471d136f8c16029607d2fed23d54a291d92f555e403f4fcc9f",
-    "docs/evidence/a5-kernel-attachments/path_supported_basepoints.py": "e37fca13aaed86398f71b2a6b6f28ce8fb1add4c8a082411ca5755f1be47cf75",
+    "docs/evidence/a5-kernel-attachments/first_order_normal_cones.py": "64a37672da517a2d06f60b522fda290ced744584f0916965706e439b85cbf82e",
+    "docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json": "66891ac343c109a2f2eed736fe2525f658212f9d3f1f85e15964214a0c1af02c",
+    "docs/evidence/a5-kernel-attachments/path_supported_basepoints.py": "9bb0c5a3b37d4bf074d42562757fb87077f9f121fe5dad4337e11447a978c2e3",
     "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json": "78b56be630d124eb59334f6ffce9f1c83ae60dc50b0ec22d4ddf5f675affa1a7",
     "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "f7d978febf6a286b11df3ea25b30b7c8dcd9e28763a46769a153f0246419b387",
     "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",

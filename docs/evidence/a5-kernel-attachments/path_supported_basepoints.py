@@ -42,7 +42,6 @@ SINGULAR_TIMEOUT_SECONDS = 900
 ORBIT_KEYS = {"E8bar": "Ehat", "X+": "Xp", "X-": "Xm", "Va+": "Vap", "Va-": "Vam"}
 SOURCE_PATHS = (
     HERE / "path_supported_basepoints.py",
-    ROOT / "docs" / "design" / "a5-kernel-attachments-program.md",
     NULLITY_EIGHT / "boundary_specializations.py",
     NULLITY_EIGHT / "boundary-specializations-result.json",
     REGULARITY / "strata_regularity.py",
