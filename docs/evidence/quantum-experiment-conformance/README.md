@@ -25,6 +25,10 @@ The Fano and spectral outputs complete bounded mathematical investigations. Thei
 remain outside the admitted cases. The primary dimension-six hardware family uses the three reference bases;
 Tao is an offline candidate comparison. Hardware results remain prospective throughout this bundle.
 
+The [portable-operator validation](validation-portable-operators.json) binds the complete cross-userland
+replay, 278 focused and registry tests, the required 384-payload compiler replay, full Ruff and mypy,
+case-level analysis pooling and all preserved historical image identities.
+
 The historical [identity-control validation](validation-identity-controls.json) binds all 634 successor files, one-worker
 and four-worker byte replays, 189 focused and registry tests, the complete local compiler replay, full lint
 and types, and the preserved historical bindings. Its diagnosis names the hosted numerical discrepancy
