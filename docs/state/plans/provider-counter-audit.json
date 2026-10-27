@@ -29,25 +29,91 @@
   "steps": [
     {
       "id": "freeze-and-inventory",
-      "state": "doing",
+      "state": "done",
       "action": "Freeze the audit revision and source hashes and tabulate every retained provider counter.",
-      "acceptance": "quandela_counter_table.py and gate_model_counter_census.py replay with --check over every retained Quandela, Quantum Inspire, IQM and IBM run."
+      "acceptance": "quandela_counter_table.py and gate_model_counter_census.py replay with --check over every retained Quandela, Quantum Inspire, IQM and IBM run.",
+      "receipts": [
+        {
+          "result": "Counter table of 81 Quandela runs and census of 392 Quantum Inspire results, 776 IQM circuits and 56 IBM jobs replay with --check; revision and source hashes recorded in the README.",
+          "observed_at": "2026-10-27T21:06:12+00:00",
+          "revision": "97efb9badfe3e27ea4630c28762325982d3277c2",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+              "sha256": "3b23db97da519db600cb736524a21ec82abbc5ed2c13002707fd3b3dd1939caa"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+              "sha256": "f0750d81796a502b61302e397d00feafd8af413a3f9f336c97bafba090363b60"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
+              "sha256": "99c40af728f90ceca72235703189bfb69726b1f7e1be0e10eccdfe02637e0bad"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.json",
+              "sha256": "a2095b244a573237b8572f690e073342eceee48b7f224d408f3f5db0acfc8964"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "a7d53d9885cb08556c49478bb71936a18b3e8f5b7e0bf6b18e862b107c70652c"
+            }
+          ],
+          "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
+        }
+      ]
     },
     {
       "id": "counter-contract",
-      "state": "todo",
+      "state": "done",
       "action": "Add gororoba_quantum/provider_counters.py with population, scope, status, ratio and total rules and deterministic fixtures.",
-      "acceptance": "tests/gororoba_quantum/test_provider_counters.py passes in the tests lane and its audit replays pass under -m audit."
+      "acceptance": "tests/gororoba_quantum/test_provider_counters.py passes in the tests lane and its audit replays pass under -m audit.",
+      "receipts": [
+        {
+          "result": "provider_counters.py added; 13 contract tests pass in the tests lane and 3 audit replays pass under -m audit, with lint, types and the diff-reached gates green.",
+          "observed_at": "2026-10-27T21:06:12+00:00",
+          "revision": "97efb9badfe3e27ea4630c28762325982d3277c2",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/provider_counters.py",
+              "sha256": "cb5729e814acd34bb6a71c10f206e784042636945577c52160b154f77a03278f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_provider_counters.py",
+              "sha256": "bc0c5465b078685d183323a4da5e3948cc5df948d606ad20de4082d6aac7629b"
+            }
+          ],
+          "scope_sha256": "b6b98abb7782f096e7546b9b9fe059dfa35f740cd99966c934136117f1e114ee"
+        }
+      ]
     },
     {
       "id": "exposure-sensitivity",
-      "state": "todo",
+      "state": "done",
       "action": "Recompute every retained exposure-dependent dark subtraction under none, physical_perf-model and job-duration exposure.",
-      "acceptance": "exposure_sensitivity.py --check replays and reports each decisive comparison per scenario."
+      "acceptance": "exposure_sensitivity.py --check replays and reports each decisive comparison per scenario.",
+      "receipts": [
+        {
+          "result": "Root-cause record conclusions invariant across exposures 0, 0.274 and 13 s; six one-photon blocks replay their retained analyses, a moves at most 2.06e-4 and dark-corrected in_block up to 0.042.",
+          "observed_at": "2026-10-27T21:06:12+00:00",
+          "revision": "97efb9badfe3e27ea4630c28762325982d3277c2",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+              "sha256": "7cd0923f9a730b0d4fa36ea2a33a7e2eb1f977c4a241259430a7c3dc9560d5cf"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.json",
+              "sha256": "d5a5aff861f8fa7032516df33c815ddc6f683bc9581a7ae2b394717091f309c8"
+            }
+          ],
+          "scope_sha256": "0dd0e47dba14ef614ef8d56c07b5c607869527c12346cd4481e78daad0ba9ee6"
+        }
+      ]
     },
     {
       "id": "teleportation-benchmark-repair",
-      "state": "todo",
+      "state": "doing",
       "action": "Make qd_teleportation_rehearsal.analyze report the benchmark at detection events and modeled attempts as conditional comparisons, with the unconditional verdict inconclusive unless an observed attempt profile exists.",
       "acceptance": "A fixture with equal detections and differing latent trials keeps the unconditional verdict inconclusive while the conditional statistics replay the retained analysis."
     },
