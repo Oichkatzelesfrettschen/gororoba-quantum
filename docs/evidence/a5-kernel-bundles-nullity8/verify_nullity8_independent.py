@@ -941,10 +941,15 @@ def run_all() -> dict[str, Any]:
     crow = parallel.ordered_map(curve_job, cjobs, min_items=1)
     s3: dict[str, Any] = {}
     s3_ok = True
+    rows_by_inc = {inc: [r for r in crow if r["incidence"] == inc] for inc in incs}
+    valid_by_inc = {inc: [r for r in rows if r["valid"]] for inc, rows in rows_by_inc.items()}
+    cmps = dict(
+        zip(incs, parallel.ordered_map(compare_limits, [valid_by_inc[inc] for inc in incs], min_items=1), strict=True)
+    )
     for inc, d in incs.items():
-        rr_all = [r for r in crow if r["incidence"] == inc]
-        rr = [r for r in rr_all if r["valid"]]
-        cmp = compare_limits(rr)
+        rr_all = rows_by_inc[inc]
+        rr = valid_by_inc[inc]
+        cmp = cmps[inc]
         same_end = len({json.dumps(r["endpoint_y"]) for r in rr}) == 1
         valid = all(
             r["closure_identity_ok"]

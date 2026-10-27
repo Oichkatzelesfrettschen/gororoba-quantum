@@ -6456,7 +6456,9 @@
         "core-731": "replay",
         "core-732": "admission",
         "core-733": "replay",
-        "core-734": "admission"
+        "core-734": "admission",
+        "core-753": "regression",
+        "core-754": "admission"
       },
       "acquisitions": [],
       "assumptions": [
@@ -6517,7 +6519,7 @@
         },
         {
           "path": "docs/evidence/a5-kernel-bundles-nullity8/verification.json",
-          "sha256": "474b9eb6dc515c27866cf5755d7607be12a662f8e37d9648ca5b8a73ea5efe19"
+          "sha256": "dafd4a596890bdaa19754fce41c7bbbcbbdc7423eeb4c141b12be710aa93f320"
         }
       ],
       "documents": [
@@ -6543,7 +6545,9 @@
         "core-749": "replay",
         "core-750": "admission",
         "core-751": "replay",
-        "core-752": "admission"
+        "core-752": "admission",
+        "core-753": "regression",
+        "core-755": "admission"
       },
       "acquisitions": [],
       "assumptions": [

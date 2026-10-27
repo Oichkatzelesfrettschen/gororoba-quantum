@@ -1,10 +1,10 @@
 {
- "script_sha256": "a6dbd873e3fbc90fb40cdc9a4b4a1884daf682125333f2fee342ea2800458214",
+ "script_sha256": "c02405a5591686bb9d2ddcd9ea436dbdc77ab743ac2447044fc2fbc0cdedfaa1",
  "versions": {
   "python": "3.14.8",
   "python_flint": "0.9.0"
  },
- "workers": 4,
+ "workers": 12,
  "compact_g2_dimension": 14,
  "rotation_generator": {
   "skew": true,
@@ -2159,5 +2159,5 @@
   "W8_note": "2 xi has reduced class 2x = 0, so it is stably trivial; rank 4 over a 12-dimensional core lies outside the stable range, so actual triviality is undecided",
   "verdict": "confirmed (fibers and K-bookkeeping computed; bundle identifications are arguments)"
  },
- "total_s": 21.8
+ "total_s": 21.0
 }

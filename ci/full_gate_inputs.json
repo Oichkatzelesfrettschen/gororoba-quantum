@@ -747,6 +747,12 @@
       "docs/evidence/a5-kernel-bundles/**",
       "docs/evidence/a5-strata-regularity/**",
       "docs/evidence/a5-rank-strata-equations/**"
+    ],
+    "core-753": [
+      "docs/evidence/a5-kernel-bundles-nullity8/**",
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
     ]
   }
 }

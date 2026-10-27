@@ -4963,6 +4963,30 @@
    "name": "core-752",
    "seconds": 1.8,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/rerun_independent_verifications.py",
+   "name": "core-753",
+   "seconds": 28.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/verify_kernel_bundles_independent.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/verify_kernel_bundles_independent.py --self-test",
+   "name": "core-754",
+   "seconds": 8.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/verify_nullity8_independent.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/verify_nullity8_independent.py --self-test",
+   "name": "core-755",
+   "seconds": 7.2,
+   "tier": "pr"
   }
  ],
  "excluded": [
