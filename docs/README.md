@@ -160,6 +160,16 @@ differs from it only in the `cd_core.py` digest.
 | [quant-ph-0007058.md](notes/papers/quant-ph-0007058.md) | Calsamiglia and Lutkenhaus 2001 linear-optical Bell-state analyzer: the 50 percent bound and its assumptions |
 | [quant-ph-9605038.md](notes/papers/quant-ph-9605038.md) | Horodecki et al. 1996 separability criterion: positive partial transpose is exact for 2x2 and 2x3 |
 | [2411.12387.md](notes/papers/2411.12387.md) | Laneve et al. 2024 teleportation between two dissimilar quantum dots over fiber and a 270 m free-space link: sources, tuning, measured fidelities |
+| [1103.1528.md](notes/papers/1103.1528.md) | Specht et al. 2011 single-atom memory: the N-copy measure-and-prepare bound (N+1)/(N+2), its Poisson average and the efficiency-simulating classical memory |
+| [1201.4149.md](notes/papers/1201.4149.md) | Gündoğan et al. 2012 solid-state polarization-qubit storage: the efficiency-constrained classical benchmark for weak coherent inputs (Eq. 1, Appendix A) |
+| [quant-ph-0301059.md](notes/papers/quant-ph-0301059.md) | Gill 2003: martingale treatment of time and memory in Bell tests and its finite-statistics bound |
+| [1108.2468.md](notes/papers/1108.2468.md) | Zhang, Glancy and Knill 2011: prediction-based-ratio test factors, p-values valid under memory and drift |
+| [1312.2999.md](notes/papers/1312.2999.md) | Bierhorst 2015: a Clauser-Horne trial model with memory and exact supermartingale p-values against Azuma-Hoeffding |
+| [2310.20521.md](notes/papers/2310.20521.md) | Polacchi et al. 2024 quantum-dot single-rail teleportation: its measure-and-prepare benchmark under loss |
+| [1301.1170.md](notes/papers/1301.1170.md) | Chiribella and Xie 2013: probabilistic measure-and-prepare benchmarks, the fidelity of a trace-nonincreasing operation conditioned on success (Theorems 2 and 5) |
+| [1901.02260.md](notes/papers/1901.02260.md) | Anderson et al. 2020 telecom quantum-dot teleportation: g2 0.177, temporal postselection, six inputs against 2/3 |
+| [1210.1282.md](notes/papers/1210.1282.md) | Ma et al. 2012 high-loss free-space teleportation: six inputs and the stated same-quality-for-all-bases assumption |
+| [2411.12904.md](notes/papers/2411.12904.md) | Strobel et al. 2024 remote quantum-dot teleportation at telecom wavelengths: purity model, three-fold coincidence ratio, temporally postselected mean against 2/3 |
 | [1302.0932.md](notes/papers/1302.0932.md) | van Enk and Blume-Kohout 2013 common-state assumption of tomography and the Akaike test for source drift |
 | [2004.14018.md](notes/papers/2004.14018.md) | White et al. 2020 process-tensor characterization and the intervention-based memory lower bound on IBM devices |
 | [riley-2008-nist-sp-1065.md](notes/papers/riley-2008-nist-sp-1065.md) | Riley 2008 NIST SP 1065: Allan, overlapping Allan and modified Allan variances and the noise types they separate |

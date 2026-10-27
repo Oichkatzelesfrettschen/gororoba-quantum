@@ -8,8 +8,8 @@ live record through qd_platform.get and classifies it:
 - held: the perfs object hashes to the held digest;
 - missing: the record carries no perfs object or lacks a figure the rehearsal model reads;
 - changed: any other perfs object. The noise model of qd_teleportation_rehearsal.live_model then scores the
-  rehearsal at the live figures against job-00's F* = 0.86, the watch's trigger. Job-01 is preregistered at its
-  own fresh read and has decision power when its own F* exceeds the classical bound plus the 0.02 allowance;
+  rehearsal at the live figures against job-00's F* = 0.86, the watch's trigger. Job-01 is a descriptive
+  acquisition preregistered at its own fresh read, prepared whenever its modeled seconds fit max_duration;
 - unscorable: any other perfs object whose figures the model rejects with ValueError, as Perceval's source model
   does when emission_probability * g2 exceeds 0.5 (the maintenance record of 2026-10-26 reads g2 66.7 %). The report
   carries the error, and the watch goes on to the next read, so a later scorable record still reports a change.
@@ -99,9 +99,9 @@ def summary(report: Mapping[str, Any]) -> str:
         lines += [
             "",
             f"The rehearsal noise model at the live figures gives pooled fidelity {model['pooled_fidelity']:.4f}, "
-            f"which {verdict} job-00's F* = {model['mean_score']}. That F* triggers this comment; job-01 is "
-            "preregistered at its own fresh read and has decision power when its own F* exceeds the classical bound "
-            "plus the 0.02 allowance (0.7137 at job-00's bound of 0.6937).",
+            f"which {verdict} job-00's F* = {model['mean_score']}. That F* triggers this comment; job-01 is a "
+            "descriptive acquisition preregistered at its own fresh read, prepared whenever its modeled seconds fit "
+            "the 300 s max_duration.",
         ]
     lines += [
         "",

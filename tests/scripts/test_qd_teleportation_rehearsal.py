@@ -146,15 +146,23 @@ def test_request_is_byte_stable_and_validates() -> None:
 
 
 @pytest.mark.parametrize(
-    ("name", "constant", "record"),
+    ("name", "constant", "records"),
     [
-        ("job-00", "COMPILATION_SEEDS", "docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json"),
-        ("job-01", "JOB_01_COMPILATION_SEEDS", "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json"),
+        ("job-00", "COMPILATION_SEEDS", ["docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json"]),
+        (
+            "job-01",
+            "JOB_01_COMPILATION_SEEDS",
+            [
+                "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+                "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+            ],
+        ),
     ],
 )
-def test_case_seeds_are_the_registered_draw_values_in_index_order(name: str, constant: str, record: str) -> None:
+def test_case_seeds_are_the_registered_draw_values_in_index_order(name: str, constant: str, records: list[str]) -> None:
     seeds = rehearsal.CASE_SEEDS[name]
-    if getattr(rehearsal, constant) != seeds or len(seeds) != len(LABELS):
+    _, blocks = rehearsal.CASE_DESIGNS[name]
+    if getattr(rehearsal, constant) != seeds or len(seeds) != len(LABELS) * blocks or len(records) != blocks:
         raise AssertionError((name, seeds))
     rows = [
         row
@@ -163,13 +171,12 @@ def test_case_seeds_are_the_registered_draw_values_in_index_order(name: str, con
         ]
         if row["path"] == "scripts/qd_teleportation_rehearsal.py" and row["name"] == constant
     ]
-    if len(rows) != 6 or {row["record"] for row in rows} != {record}:
-        raise AssertionError(rows)
-    values = json.loads((ROOT / record).read_text(encoding="utf-8"))["values"]
-    if [row["index"] for row in rows] != list(range(6)) or [row["value"] for row in rows] != list(seeds):
-        raise AssertionError(f"the allocation rows differ from {constant} in index order")
-    if [values[row["index"]] for row in rows] != list(seeds):
-        raise AssertionError("the draw record holds other values at those indices")
+    expected = [(record, index) for record in records for index in range(len(LABELS))]
+    if [(row["record"], row["index"]) for row in rows] != expected or [row["value"] for row in rows] != list(seeds):
+        raise AssertionError(f"the allocation rows differ from {constant} in block and index order")
+    for row in rows:
+        if json.loads((ROOT / row["record"]).read_text(encoding="utf-8"))["values"][row["index"]] != row["value"]:
+            raise AssertionError("the draw record holds another value at a registered index")
     if set(seeds) & {seed for other, values_ in rehearsal.CASE_SEEDS.items() if other != name for seed in values_}:
         raise AssertionError(f"{name} shares a compilation seed with another case")
 
@@ -697,18 +704,18 @@ def staged_case_tree(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, catalogue:
     return cases
 
 
-def test_prepare_refuses_a_read_without_decision_power(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    cases = staged_case_tree(tmp_path, monkeypatch, load("platform-read/catalogue.json"))
+def test_the_decision_rule_refuses_a_read_without_power_and_prepare_an_unseeded_case() -> None:
+    low: dict[str, dict[str, Any]] = {name: {"pooled": 0.6} for name in rehearsal.ANCHOR_VARIANTS}
+    low["fresh per-mode transmission"] = {"pooled": 0.6}
+    low["anchor per-mode transmission"]["inputs"] = {
+        label: {"sample_probability": 4e-5, "accepted_share": 0.08} for label in LABELS
+    }
     with pytest.raises(protocol.ProtocolError, match="does not exceed the benchmark"):
-        rehearsal.prepare("job-01")
-    if sorted(path.name for path in (cases / "job-01").iterdir()) != ["platform-read"]:
-        raise AssertionError("a refused preparation retained a file")
+        rehearsal.derive(low)
     with pytest.raises(ValueError, match="not a seeded case"):
         rehearsal.prepare("job-00")
 
 
-# qd_classical_benchmark._require_optimal admits an inaccurate optimum and _free_postselection_bound certifies the
-# bound from the projected witness, so cvxpy's inaccuracy warning on the moved layout's attempts carries no defect.
 def test_expected_seconds_reproduce_job_00_and_bound_the_job_by_max_duration() -> None:
     derived = rehearsal.retained_derivation("job-00")
     clock = json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))["processors"][rehearsal.PLATFORM][
@@ -720,6 +727,8 @@ def test_expected_seconds_reproduce_job_00_and_bound_the_job_by_max_duration() -
         raise AssertionError("fifteen times job-00's samples fit in max_duration")
 
 
+# qd_classical_benchmark._require_optimal admits an inaccurate optimum and _free_postselection_bound certifies the
+# bound from the projected witness, so cvxpy's inaccuracy warning on the moved layout's attempts carries no defect.
 @pytest.mark.filterwarnings("ignore:Solution may be inaccurate:UserWarning")
 def test_prepare_refuses_a_case_whose_expected_seconds_exceed_max_duration(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -728,6 +737,7 @@ def test_prepare_refuses_a_case_whose_expected_seconds_exceed_max_duration(
         tmp_path, monkeypatch, json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))
     )
     monkeypatch.setattr(rehearsal, "COMPILE_SECONDS", 60.0)
+    monkeypatch.setattr(rehearsal, "box_bound", lambda probability, ratio: 0.7)
     with pytest.raises(ValueError, match="above max_duration"):
         rehearsal.prepare("job-01")
     if sorted(path.name for path in (cases / "job-01").iterdir()) != ["platform-read"]:
@@ -753,11 +763,16 @@ def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
     def payload(case_dir: Path, manifest: dict[str, Any], circuit: dict[str, Any], platform: str) -> dict[str, Any]:
         staged.append(manifest)
         for _ in manifest["settings"]:
-            perceval.RemoteComputer.estimate_required_shots(None, None, manifest["max_samples"] // 6)
+            perceval.RemoteComputer.estimate_required_shots(
+                None, None, manifest["max_samples"] // manifest["iterations"]
+            )
         raise rehearsal.PlatformError("the estimate exceeds max_shots")
 
     monkeypatch.setattr(perceval.RemoteComputer, "estimate_required_shots", estimate)
     monkeypatch.setattr(rehearsal, "payload", payload)
+    # The 64-vertex solve has its own test; a fixed stand-in keeps this sequence inside the call budget.
+    monkeypatch.setattr(rehearsal, "box_bound", lambda probability, ratio: 0.70 + 0.1 * (ratio - 1.0))
+    monkeypatch.setattr(rehearsal, "break_even_ratio", lambda probability, lower: {"status": "stub", "ratio": None})
     if rehearsal.prepare("job-01") != 0:
         raise AssertionError("prepare returns 0")
     rows = capsys.readouterr().out.strip().splitlines()[-2:]
@@ -772,6 +787,7 @@ def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
         "Request": rehearsal.Request,
         "Job": rehearsal.Job,
         "JOB_01_COMPILATION_SEEDS": rehearsal.JOB_01_COMPILATION_SEEDS,
+        "DESCRIPTIVE": rehearsal.DESCRIPTIVE,
         "REQUESTS": {},
         "JOBS": {},
     }
@@ -780,13 +796,15 @@ def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
     job = namespace["JOBS"]["job-01"]
     if job.request.layout == rehearsal.LAYOUT or not job.request.own_anchor:
         raise AssertionError(job.request)
+    if (job.request.rule, job.request.blocks) != (rehearsal.DESCRIPTIVE, 2):
+        raise AssertionError(job.request)
     derived = rehearsal.retained_derivation("job-01")
-    if job.samples != derived["samples_per_iteration"] or derived["systematic_allowance"] != 0.02:
+    if job.samples != derived["samples_per_iteration"] or job.samples != rehearsal.DESCRIPTIVE_SAMPLES:
         raise AssertionError((job, derived))
-    if job.shots != math.ceil(1000 * job.samples * rehearsal.SHOT_MARGIN / 100_000) * 100_000:
+    if job.shots != math.ceil((1000 * job.samples + 1) * rehearsal.SHOT_MARGIN / 100_000) * 100_000:
         raise AssertionError(job)
     clock = catalogue["processors"][rehearsal.PLATFORM]["perfs"]["Clock (MHz)"]
-    seconds = rehearsal.expected_seconds(derived, job.samples, clock)
+    seconds = rehearsal.expected_seconds(derived, job.samples, clock, 2)
     if job.credit_ceiling != round(1 + job.shots * 1e-6, 6) or job.expected_seconds != seconds or seconds > 300:
         raise AssertionError((job, seconds))
     monkeypatch.setitem(rehearsal.REQUESTS, "job-01", job.request)
@@ -798,14 +816,23 @@ def test_prepare_derives_a_case_that_builds_checks_simulates_and_analyzes(
     manifest = json.loads((cases / "job-01" / "cases.json").read_text(encoding="utf-8"))
     if [s["compilation_seed"] for s in manifest["settings"]] != list(rehearsal.JOB_01_COMPILATION_SEEDS):
         raise AssertionError("the prepared case carries other seeds")
+    order = [f"{s['block']}{s['label']}" for s in manifest["settings"]]
+    if order != [f"A{label}" for label in LABELS] + [f"B{label}" for label in reversed(LABELS)]:
+        raise AssertionError(order)
     with pytest.raises(ValueError, match="live gate applies"):
         rehearsal.main(["--plan", "job-01", "--anchor"])
     run = tmp_path / "run"
     rehearsal.simulate(run, job)
     rehearsal.analyze(run)
     record = json.loads((run / "analysis.json").read_text(encoding="utf-8"))
-    if record["verdict"] != "beats-classical" or record["pooled"]["accepted"] < derived["decision_count"]:
-        raise AssertionError((record["verdict"], record["pooled"]))
+    if record["schema"] != "qd-teleportation-analysis-v2" or record["status"] != "complete":
+        raise AssertionError(record["status"])
+    if record["homogeneity"]["differ"] or len(record["iterations"]) != 12:
+        raise AssertionError(record["homogeneity"])
+    if [c["label"] for c in record["comparisons"]] != ["exceeds-under-assumptions"] * 2:
+        raise AssertionError(record["comparisons"])
+    if abs(record["pooled"]["accepted"] - derived["planned_accepted"]) > 0.02 * derived["planned_accepted"]:
+        raise AssertionError((record["pooled"], derived["planned_accepted"]))
 
 
 def test_a_partial_job_with_every_input_counted_stays_inconclusive() -> None:
@@ -849,3 +876,172 @@ def test_check_refuses_a_registered_job_without_its_case(tmp_path: Path, monkeyp
     monkeypatch.delitem(rehearsal.JOBS, "job-00")
     with pytest.raises(ValueError, match="has no cases.json"):
         rehearsal.check()
+
+
+def descriptive_manifest() -> dict[str, Any]:
+    """Job-00's settings run as two blocks, B mirrored, with job-01's seeds and a descriptive preregistration."""
+    manifest = load("cases.json")
+    first = [dict(setting, block="A") for setting in manifest["settings"]]
+    second = [dict(setting, block="B") for setting in reversed(manifest["settings"])]
+    settings = first + second
+    for index, setting in enumerate(settings):
+        setting["compilation_seed"] = rehearsal.JOB_01_COMPILATION_SEEDS[index]
+        setting["observation_index"] = index
+    manifest["settings"] = settings
+    manifest["iterations"] = len(settings)
+    planned = 1200
+    manifest["preregistered"] = {
+        "rule": rehearsal.DESCRIPTIVE,
+        "alpha": 0.01,
+        "planned_accepted": planned,
+        "lambda": math.sqrt(8 * math.log(100) / planned),
+        "homogeneity_alpha": 0.01,
+        "sample_probability": manifest["preregistered"]["sample_probability"],
+        "comparisons": [
+            {"name": "two-copy", "bound": 0.75, "assumptions": ["a"]},
+            {"name": "attempt-box", "bound": 0.7167, "ratio": 1.1, "assumptions": ["b"]},
+        ],
+    }
+    return manifest
+
+
+def descriptive_results(manifest: dict[str, Any], correct: dict[str, int], wrong: dict[str, int]) -> dict[str, Any]:
+    """Per-iteration counts keyed by `block+label`: `correct` and `wrong` accepted events and 400 pattern rejections."""
+    iterations = []
+    for setting in manifest["settings"]:
+        key = setting["block"] + setting["label"]
+        good = correct_raw(setting["label"], "1100")
+        counts = {event("1100", good): correct[key], event("1010", 0): 400}
+        if wrong[key]:
+            counts[event("1100", 1 - good)] = wrong[key]
+        iterations.append(
+            {
+                "iteration": {
+                    "circuit_params": setting["circuit_params"],
+                    "compilation_seed": setting["compilation_seed"],
+                },
+                "counts": counts,
+                "samples": sum(counts.values()),
+                "result_fields": {"nb_shots_used": sum(counts.values()), "physical_perf": 0.01},
+            }
+        )
+    return {"partial": False, "iterations": iterations}
+
+
+def test_the_anytime_lower_bound_equals_the_hoeffding_radius_at_the_planned_count() -> None:
+    lam = math.sqrt(8 * math.log(100) / 1200)
+    bound = rehearsal.anytime_lower_bound(1000, 1200, lam, 0.01)
+    if abs(bound - (1000 / 1200 - rehearsal.hoeffding_radius(0.01, 1200))) > 1e-12:
+        raise AssertionError(bound)
+    if rehearsal.anytime_lower_bound(500, 600, lam, 0.01) >= 500 / 600 - rehearsal.hoeffding_radius(0.01, 600) + 1e-9:
+        raise AssertionError("a smaller count than planned is charged no more than the Hoeffding radius")
+
+
+def test_descriptive_analysis_binds_blocks_by_seed_and_evaluates_the_comparisons(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(rehearsal, "break_even_ratio", lambda probability, lower: {"status": "stub", "ratio": None})
+    manifest = descriptive_manifest()
+    keys = [s["block"] + s["label"] for s in manifest["settings"]]
+    correct = dict.fromkeys(keys, 90)
+    wrong = dict.fromkeys(keys, 10)
+    correct["B+Z"], wrong["B+Z"] = 70, 30
+    results = descriptive_results(manifest, correct, wrong)
+    results["iterations"].reverse()
+    record = rehearsal.analyze_results(manifest, results, manifest["frames"])
+    by_key = {row["block"] + row["label"]: row for row in record["iterations"]}
+    if (by_key["B+Z"]["correct"], by_key["A+Z"]["correct"]) != (70, 90):
+        raise AssertionError("block B's +Z iteration bound to block A's setting")
+    pooled = record["pooled"]
+    if pooled["accepted"] != 1200 or pooled["correct"] != 1060 or record["status"] != "complete":
+        raise AssertionError(record["status"])
+    labels = [c["label"] for c in record["comparisons"]]
+    if labels != ["exceeds-under-assumptions", "exceeds-under-assumptions"]:
+        raise AssertionError(record["comparisons"])
+    if record["homogeneity"]["tests"]["+Z"]["status"] != "consistent":
+        raise AssertionError(record["homogeneity"]["tests"]["+Z"])
+
+
+def test_descriptive_analysis_vetoes_the_comparisons_when_blocks_differ(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(rehearsal, "break_even_ratio", lambda probability, lower: {"status": "stub", "ratio": None})
+    manifest = descriptive_manifest()
+    keys = [s["block"] + s["label"] for s in manifest["settings"]]
+    correct, wrong = dict.fromkeys(keys, 95), dict.fromkeys(keys, 5)
+    correct["B-X"], wrong["B-X"] = 40, 60
+    record = rehearsal.analyze_results(manifest, descriptive_results(manifest, correct, wrong), manifest["frames"])
+    if record["homogeneity"]["differ"] != ["-X"] or "blocks differ" not in record["status"]:
+        raise AssertionError(record["homogeneity"])
+    if {c["label"] for c in record["comparisons"]} != {"vetoed-blocks-differ"}:
+        raise AssertionError(record["comparisons"])
+    if record["break_even_ratio"]["status"] != "not-evaluated":
+        raise AssertionError(record["break_even_ratio"])
+
+
+def test_descriptive_analysis_of_a_partial_job_evaluates_no_comparison() -> None:
+    manifest = descriptive_manifest()
+    keys = [s["block"] + s["label"] for s in manifest["settings"]]
+    results = descriptive_results(manifest, dict.fromkeys(keys, 95), dict.fromkeys(keys, 5))
+    results["partial"] = True
+    results["iterations"][11] = {"error": "canceled"}
+    record = rehearsal.analyze_results(manifest, results, manifest["frames"])
+    if {c["label"] for c in record["comparisons"]} != {"not-evaluated"} or record["status"] != (
+        "partial job: descriptive counts only"
+    ):
+        raise AssertionError((record["status"], record["comparisons"]))
+    if record["uncounted_iterations"] != ["error"] or record["homogeneity"]["tests"]["+Z"]["status"] != "untestable":
+        raise AssertionError(record["homogeneity"])
+
+
+def test_the_attempt_box_bound_takes_the_largest_of_its_64_vertices(monkeypatch: pytest.MonkeyPatch) -> None:
+    seen: list[dict[str, int]] = []
+
+    def stand_in(attempts: dict[str, int]) -> float:
+        seen.append(attempts)
+        return sum(attempts.values()) / 1e15
+
+    monkeypatch.setattr(rehearsal, "vertex_bound", stand_in)
+    monkeypatch.setattr(rehearsal, "ordered_map", lambda function, items, min_items=1: [function(i) for i in items])
+    probability = dict.fromkeys(LABELS, 1.0)
+    value = rehearsal.box_bound(probability, 2.0)
+    if len(seen) != 64 or len({tuple(sorted(a.items())) for a in seen}) != 64:
+        raise AssertionError(len(seen))
+    if abs(value - 6 * 2e12 / 1e15) > 1e-12:
+        raise AssertionError(value)
+
+
+@pytest.mark.audit
+def test_the_certified_attempt_box_bound_at_ratio_1_1_bounds_an_interior_profile() -> None:
+    probability = load("noise-model.json")["derived"]["sample_probability"]
+    box = rehearsal.box_bound(probability, 1.1)
+    if not 0.7166 < box < 0.7168:
+        raise AssertionError(box)
+    factors = (1.04, 0.97, 1.0, 1.08, 0.93, 1.02)
+    inside = {label: round(1e12 * f / probability[label]) for label, f in zip(LABELS, factors, strict=True)}
+    if rehearsal.vertex_bound(inside) > box + 1e-9:
+        raise AssertionError("an interior attempt profile exceeds the vertex maximum")
+
+
+def test_break_even_ratio_bisects_the_box_bound(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(rehearsal, "box_bound", lambda probability, ratio: 0.6 + 0.1 * ratio)
+    found = rehearsal.break_even_ratio({}, 0.82)
+    if found["status"] != "found" or abs(found["ratio"] - 2.2) > rehearsal.BREAK_EVEN_TOLERANCE:
+        raise AssertionError(found)
+    if rehearsal.break_even_ratio({}, 0.65)["status"] != "below-one":
+        raise AssertionError("a lower bound under the center bound has no break-even ratio")
+    if rehearsal.break_even_ratio({}, 0.95)["status"] != "at-least-ceiling":
+        raise AssertionError("a lower bound above the ceiling's bound reports the ceiling")
+
+
+def test_a_descriptive_case_admits_only_its_prepared_read(monkeypatch: pytest.MonkeyPatch) -> None:
+    read = json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))["processors"][rehearsal.PLATFORM]
+    request = rehearsal.Request(
+        "job-01", rehearsal.LAYOUT, rehearsal.JOB_01_COMPILATION_SEEDS, rehearsal.ANCHOR_READ, rehearsal.DESCRIPTIVE, 2
+    )
+    same = rehearsal.model_at(read["perfs"], request)
+    if not same["inside_justified_range"] or same["perfs_sha256"] != same["prepared_perfs_sha256"]:
+        raise AssertionError(same)
+    changed = copy.deepcopy(read["perfs"])
+    changed["g2 (%)"] = changed["g2 (%)"] + 0.1
+    moved = rehearsal.model_at(changed, request)
+    if moved["inside_justified_range"] or "differs from the prepared read" not in rehearsal.admission_failure(moved):
+        raise AssertionError(moved)
