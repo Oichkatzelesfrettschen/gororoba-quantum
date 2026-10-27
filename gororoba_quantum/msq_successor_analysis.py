@@ -31,7 +31,7 @@ import math
 from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from statistics import NormalDist
-from typing import Any
+from typing import Any, NamedTuple
 
 import numpy as np
 from scipy.optimize import brentq, minimize_scalar
@@ -416,15 +416,21 @@ def quantities(p: dict[str, float], ctx: dict[str, Any]) -> dict[str, float]:
     return out
 
 
-def evaluate_qubit(item: tuple[int, dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
-    """The decisions and descriptive outputs of one qubit from its member counts and context, at q = 1 and T1 = T."""
-    return _evaluate(item, True)
+class Prepared(NamedTuple):
+    """One qubit's inputs to the delta-method fit: the observation keys, values and variances, the context with the
+    series weights, and the readout figures."""
+
+    keys: list[str]
+    x: list[float]
+    variances: list[float]
+    index: dict[str, int]
+    ctx: dict[str, Any]
+    readout: dict[str, float]
+    usable: bool
 
 
-def _evaluate(item: tuple[int, dict[str, Any], dict[str, Any]], descriptive: bool) -> dict[str, Any]:
-    """evaluate_qubit; `descriptive` False leaves out the relaxed-loss fit, the transitions and the repeat read, which
-    no decision reads (the planning standard error needs the decisions only)."""
-    qubit, member_counts, ctx = item
+def prepare(qubit: int, member_counts: dict[str, Any], ctx: dict[str, Any]) -> Prepared:
+    """The observations, variances and series weights of one qubit from its member counts."""
     counts = {name: tuple(value) for name, value in member_counts["final"].items()}
     obs = msa.observations(counts, qubit)
     keys = [*obs, "sx_shift", "window_fraction"]
@@ -441,13 +447,32 @@ def _evaluate(item: tuple[int, dict[str, Any], dict[str, Any]], descriptive: boo
         "weights": series_weights(scale, [variances[index[f"t1-{k}"]] for k in range(msa.T1_COUNT)]),
     }
     readout = {"scale": scale, "offset": 1 - x[index["ro0"]] - x[index["t1-0"]]}
-    if not scale >= msa.READOUT_CONTRAST_FLOOR:
-        return {
-            "qubit": qubit,
-            "readout": readout,
-            "usable": False,
-            "reason": f"readout scale {scale:.4f} lies below the {msa.READOUT_CONTRAST_FLOOR} floor",
-        }
+    return Prepared(keys, x, variances, index, ctx, readout, bool(scale >= msa.READOUT_CONTRAST_FLOOR))
+
+
+def unusable_row(qubit: int, readout: dict[str, float]) -> dict[str, Any]:
+    return {
+        "qubit": qubit,
+        "readout": readout,
+        "usable": False,
+        "reason": f"readout scale {readout['scale']:.4f} lies below the {msa.READOUT_CONTRAST_FLOOR} floor",
+    }
+
+
+def evaluate_qubit(item: tuple[int, dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    """The decisions and descriptive outputs of one qubit from its member counts and context, at q = 1 and T1 = T."""
+    return _evaluate(item, True)
+
+
+def _evaluate(item: tuple[int, dict[str, Any], dict[str, Any]], descriptive: bool) -> dict[str, Any]:
+    """evaluate_qubit; `descriptive` False leaves out the relaxed-loss fit, the transitions and the repeat read, which
+    no decision reads (the planning standard error needs the decisions only)."""
+    qubit, member_counts, ctx = item
+    prepared = prepare(qubit, member_counts, ctx)
+    if not prepared.usable:
+        return unusable_row(qubit, prepared.readout)
+    keys, x, variances, index = prepared.keys, prepared.x, prepared.variances, prepared.index
+    ctx = prepared.ctx
     value, se, shared = msa.propagate_many(
         lambda xs: quantities(dict(zip(keys, xs, strict=True)), ctx),
         x,
@@ -459,6 +484,23 @@ def _evaluate(item: tuple[int, dict[str, Any], dict[str, Any]], descriptive: boo
         [((1 - 2 * x[index[f"t1-{k}"]]) - value["offset"]) / value["scale"] for k in range(msa.T1_COUNT)],
         ctx["weights"],
     )
+    curves = msa.gate_curves(value["t1_s"], 1.0, ctx, msa.WINDOW_RELAX_FRACTION)
+    return assemble_row(qubit, member_counts, ctx, prepared.readout, (value, se, shared), fit, curves, descriptive)
+
+
+def assemble_row(
+    qubit: int,
+    member_counts: dict[str, Any],
+    ctx: dict[str, Any],
+    readout: dict[str, float],
+    propagated: tuple[dict[str, float], dict[str, float], dict[str, float]],
+    fit: dict[str, Any],
+    curves: dict[str, list[dict[str, Any]]],
+    descriptive: bool,
+) -> dict[str, Any]:
+    """The usable-qubit row from the propagated figures (values, standard errors, shared parts), the gamma-rate fit at
+    the base point and the gate-model curves at the fitted T."""
+    value, se, shared = propagated
     top = str(msa.TOP_STEPS)
     p0: dict[str, dict[str, Any]] = {arm: {} for arm in msa.ARMS}
     for arm, n in msa.group_keys():
@@ -473,7 +515,6 @@ def _evaluate(item: tuple[int, dict[str, Any], dict[str, Any]], descriptive: boo
             "planning": ctx["planning"][arm][str(n)],
         }
     unitary_key = f"unitary-{top}"
-    curves = msa.gate_curves(value["t1_s"], 1.0, ctx, msa.WINDOW_RELAX_FRACTION)
     propagation = msa.gate_propagation(curves, value[f"diff:{unitary_key}"])
     gate_sigma = max(abs(row["measure_shift"]) for row in propagation.values())
     departure_se = math.sqrt(se[f"diff:measure-{top}"] ** 2 + gate_sigma**2)
@@ -618,10 +659,16 @@ def evaluate(
 ) -> dict[int, dict[str, Any]]:
     """Every qubit's row (contexts carry the planning fields of with_planning), widened by the device's unitary
     scatter, with the admission gate at layout width `width` (default: the number of contexts)."""
-    width = len(contexts) if width is None else width
     qubits = list(contexts)
     results = ordered_map(evaluate_qubit, [(q, counts[q], contexts[q]) for q in qubits], min_items=2)
-    rows = dict(zip(qubits, results, strict=True))
+    return finish_rows(dict(zip(qubits, results, strict=True)), contexts, len(contexts) if width is None else width)
+
+
+def finish_rows(
+    rows: dict[int, dict[str, Any]], contexts: dict[int, dict[str, Any]], width: int
+) -> dict[int, dict[str, Any]]:
+    """The device-level steps once every qubit row exists: the unitary scatter widening, informativeness and the
+    admission gate at layout width `width`."""
     usable = [q for q, r in rows.items() if r["usable"]]
     if usable:
         residuals = [rows[q]["gate_systematic_n16"]["unitary_residual"] for q in usable]
@@ -1273,6 +1320,85 @@ def delay_descriptive(item: tuple[int, dict[str, Any], dict[str, Any]]) -> dict[
     }
 
 
+def map_carryover(items: list[Any]) -> list[dict[str, Any]]:
+    return list(ordered_map(carryover_screen, items, min_items=2))
+
+
+def map_equilibrium(items: list[Any]) -> list[dict[str, Any]]:
+    return list(ordered_map(equilibrium_screen, items, min_items=2))
+
+
+def select_and_decide(
+    qubits: Sequence[int],
+    width: int,
+    rows: dict[int, dict[str, Any]],
+    planned: dict[int, dict[str, Any]],
+    counts: dict[int, dict[str, Any]],
+    screens: dict[str, dict[str, Any]],
+    work: Sequence[int],
+    predecessors: Mapping[int, Sequence[np.ndarray]],
+    readers: Mapping[int, Sequence[np.ndarray]],
+    equilibrium_obs: Mapping[int, tuple[int, int]],
+    equilibrium_s: float,
+    *,
+    carryover: Callable[[list[Any]], list[dict[str, Any]]] = map_carryover,
+    equilibrium: Callable[[list[Any]], list[dict[str, Any]]] = map_equilibrium,
+    bounds: Callable[[dict[int, dict[str, Any]], dict[int, dict[str, Any]]], dict[Any, float]] = shape_bounds,
+) -> dict[str, Any]:
+    """Everything after the order conditions: the carryover screen and the equilibrium bound over the qubits in
+    `work` (those that pass execution-time eligibility, the pattern screen and have a usable row), the kept set, the
+    shape bounds and `device_decision`.
+
+    `screens` holds each qubit's entry keyed by str(qubit) and receives its "carryover", "equilibrium" and "kept"
+    fields. `carryover`, `equilibrium` and `bounds` default to the production maps; a caller that holds the same
+    figures from a batched evaluation passes functions that return them item for item.
+    """
+    for qubit in qubits:
+        screens[str(qubit)].setdefault("carryover", None)
+        screens[str(qubit)].setdefault("equilibrium", None)
+    carryover_items = [
+        (
+            qubit,
+            counts[qubit],
+            planned[qubit],
+            list(predecessors[qubit]),
+            list(readers[qubit]),
+            float(rows[qubit]["readout"]["scale"]),
+            width,
+        )
+        for qubit in work
+    ]
+    for qubit, outcome in zip(work, carryover(carryover_items), strict=True):
+        screens[str(qubit)]["carryover"] = outcome
+    equilibrium_items = [
+        (
+            {**msa.observations(counts[qubit]["final"], qubit), "eq": equilibrium_obs[qubit]},
+            planned[qubit],
+            float(rows[qubit]["fitted"]["t1_s"]),
+            equilibrium_s,
+            width,
+        )
+        for qubit in work
+    ]
+    for qubit, outcome in zip(work, equilibrium(equilibrium_items), strict=True):
+        screens[str(qubit)]["equilibrium"] = outcome
+    eligible = []
+    for qubit in qubits:
+        screen = screens[str(qubit)]
+        screen["kept"] = bool(
+            screen["carryover"] is not None
+            and screen["carryover"]["passes"]
+            and screen["equilibrium"] is not None
+            and screen["equilibrium"]["passes"]
+        )
+        if screen["kept"]:
+            eligible.append(qubit)
+    pool = [q for q in eligible if rows[q]["informative"]]
+    shape = bounds({q: rows[q] for q in pool}, planned)
+    decision = device_decision(rows, eligible, ea.count_rule(width), shape)
+    return {"eligible": eligible, "decision": decision}
+
+
 def collected(
     record: Mapping[str, Any],
     distributions: dict[str, list[np.ndarray]],
@@ -1372,49 +1498,23 @@ def _collected(
         row = rows[qubit]
         if eligibility is None and patterns["passes"] and row["usable"]:
             work.append((rank, qubit))
-    carryover_items = [
-        (
-            qubit,
-            counts[qubit],
-            planned[qubit],
-            [shots[k - 1][rank] for k in readers],
-            [shots[k][rank] for k in readers],
-            float(rows[qubit]["readout"]["scale"]),
-            width,
-        )
-        for rank, qubit in work
-    ]
-    for (_, qubit), outcome in zip(work, ordered_map(carryover_screen, carryover_items, min_items=2), strict=True):
-        screens[str(qubit)]["carryover"] = outcome
-    equilibrium_items = []
-    for _, qubit in work:
-        eq_ones = ea.member_ones(distributions, executed, de.msqr_equilibrium_member(qubit))
-        obs = msa.observations(counts[qubit]["final"], qubit)
-        equilibrium_items.append(
-            (
-                {**obs, "eq": eq_ones},
-                planned[qubit],
-                float(rows[qubit]["fitted"]["t1_s"]),
-                equilibrium_s,
-                width,
-            )
-        )
-    for (_, qubit), outcome in zip(work, ordered_map(equilibrium_screen, equilibrium_items, min_items=2), strict=True):
-        screens[str(qubit)]["equilibrium"] = outcome
-    eligible = []
-    for qubit in qubits:
-        screen = screens[str(qubit)]
-        screen["kept"] = bool(
-            screen["carryover"] is not None
-            and screen["carryover"]["passes"]
-            and screen["equilibrium"] is not None
-            and screen["equilibrium"]["passes"]
-        )
-        if screen["kept"]:
-            eligible.append(qubit)
-    pool = [q for q in eligible if rows[q]["informative"]]
-    bounds = shape_bounds({q: rows[q] for q in pool}, planned)
-    decision = device_decision(rows, eligible, ea.count_rule(width), bounds)
+    equilibrium_obs = {
+        qubit: ea.member_ones(distributions, executed, de.msqr_equilibrium_member(qubit)) for _, qubit in work
+    }
+    selection = select_and_decide(
+        qubits,
+        width,
+        rows,
+        planned,
+        counts,
+        screens,
+        [qubit for _, qubit in work],
+        {qubit: [shots[k - 1][rank] for k in readers] for rank, qubit in work},
+        {qubit: [shots[k][rank] for k in readers] for rank, qubit in work},
+        equilibrium_obs,
+        equilibrium_s,
+    )
+    eligible, decision = selection["eligible"], selection["decision"]
     usable = [q for q in qubits if rows[q]["usable"]]
     delay = dict(
         zip(
