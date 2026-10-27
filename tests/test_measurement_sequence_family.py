@@ -404,8 +404,12 @@ def test_member_compilations_match_the_serial_compile(
     settles = {q: 500 for q in qubits}
     prereadouts = {q: 480 for q in qubits}
     built = de.measurement_sequence_groups(qubits, delays, settles, prereadouts, T1_IDLES)
-    work = [(m.circuit, [int(g.name.rsplit("_q", 1)[1])]) for g in built for m in g.members]
-    check(len(work) == 50 * len(qubits))
+    members = [(m.circuit, [int(g.name.rsplit("_q", 1)[1])]) for g in built for m in g.members]
+    check(len(members) == 50 * len(qubits))
+    # Each member compiles on one of the two qubits, alternating, so every member kind and both qubits enter while
+    # the serial and pooled compiles stay inside the pull-request budget.
+    work = [item for k, item in enumerate(members) if (k // 50 + k) % 2 == 0]
+    check(len(work) == 50 and {layout[0] for _, layout in work} == set(qubits))
     serial = [live_run._compile(c, snapshot, live_run.SEED_TRANSPILER, layout) for c, layout in work]
     monkeypatch.setenv("GOROROBA_WORKERS", workers)
     compiler = qpu_planning.MemberCompiler(snapshot.admission_target, live_run.SEED_TRANSPILER, plugin)
