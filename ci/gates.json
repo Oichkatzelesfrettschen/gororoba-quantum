@@ -4575,6 +4575,215 @@
    "name": "core-697",
    "seconds": 4.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/kernel_symmetry.py --check docs/evidence/a5-kernel-bundles/result.json",
+   "name": "core-713",
+   "seconds": 25.5,
+   "tier": "full",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/kernel_symmetry.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/kernel_symmetry.py --self-test",
+   "name": "core-714",
+   "seconds": 57.5,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/kernel_frames.py --check docs/evidence/a5-kernel-bundles/frames-result.json",
+   "name": "core-715",
+   "seconds": 8.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/frames-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/kernel_frames.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/kernel_frames.py --self-test",
+   "name": "core-716",
+   "seconds": 23.5,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/stabilizer_representation.py --check docs/evidence/a5-kernel-bundles/stabilizer-result.json",
+   "name": "core-717",
+   "seconds": 8.1,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/stabilizer-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/stabilizer_representation.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/stabilizer_representation.py --self-test",
+   "name": "core-718",
+   "seconds": 25.1,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py --check docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json",
+   "name": "core-719",
+   "seconds": 3.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py --self-test",
+   "name": "core-720",
+   "seconds": 14.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py --check docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json",
+   "name": "core-721",
+   "seconds": 9.6,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py --self-test",
+   "name": "core-722",
+   "seconds": 71.2,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py --check docs/evidence/a5-kernel-bundles/aligned-stabilizer-result.json",
+   "name": "core-723",
+   "seconds": 16.9,
+   "tier": "full",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/aligned-stabilizer-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py --self-test",
+   "name": "core-724",
+   "seconds": 39.4,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/v_orbit_moduli.py --check docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json",
+   "name": "core-725",
+   "seconds": 10.6,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/v_orbit_moduli.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/v_orbit_moduli.py --self-test",
+   "name": "core-726",
+   "seconds": 25.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/v_topology_representation.py --check docs/evidence/a5-kernel-bundles/v-topology-representation-result.json",
+   "name": "core-727",
+   "seconds": 16.9,
+   "tier": "full",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/v-topology-representation-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/v_topology_representation.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/v_topology_representation.py --self-test",
+   "name": "core-728",
+   "seconds": 42.9,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --check docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json",
+   "name": "core-729",
+   "seconds": 9.7,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --self-test",
+   "name": "core-730",
+   "seconds": 26.5,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/transition_atlas.py --check docs/evidence/a5-kernel-bundles/transition-atlas-result.json",
+   "name": "core-731",
+   "seconds": 5.4,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/transition-atlas-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/transition_atlas.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/transition_atlas.py --self-test",
+   "name": "core-732",
+   "seconds": 19.4,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/bundle_invariants.py --check docs/evidence/a5-kernel-bundles/bundle-invariants-result.json",
+   "name": "core-733",
+   "seconds": 0.7,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/bundle-invariants-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/bundle_invariants.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/bundle_invariants.py --self-test",
+   "name": "core-734",
+   "seconds": 5.4,
+   "tier": "pr"
   }
  ],
  "excluded": [

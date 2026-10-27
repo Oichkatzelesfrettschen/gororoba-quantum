@@ -116,6 +116,18 @@ Changes to proof replay inputs also follow the pinned Rocq replay in
 remain source limitations in the registry; checksum admission preserves the
 original bytes and differs from a fresh mathematical proof check.
 
+**Computer algebra.** Exact replays compute in global monomial orderings (`dp`,
+`lp`). A local invariant at a point p, such as a tangent cone, multiplicity or
+singularity type, comes from the deformation to the normal cone: translate p
+to 0, substitute t -> h t, take `sat(I, h)` (an ideal in Singular 4.4, not a
+list) and set h = 0. The reduced germ at p is the intersection of the
+`minAssGTZ` primes through p, with no prior `radical()`. Local orderings (`ds`,
+`tangentcone`) on the A_5 strata ran past an hour at tens of GiB on the shared
+host, while the global route takes seconds
+([a5-strata-regularity](docs/evidence/a5-strata-regularity/README.md)). A
+Singular run that may exceed a few GiB runs under `prlimit --as` with
+`GOROROBA_WORKERS` set.
+
 ## Documents
 
 [docs/README.md](docs/README.md) is the map and decides where a document
