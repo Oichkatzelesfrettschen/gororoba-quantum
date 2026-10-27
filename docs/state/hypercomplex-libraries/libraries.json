@@ -4797,6 +4797,7 @@
     "scripts/review_wide_control_job.py",
     "scripts/scaffolding_exposure.py",
     "scripts/scheduled_idle_replay.py",
+    "scripts/scheduled_idle_scaling.py",
     "scripts/signed_kernel_noise.py",
     "scripts/singular_sector_dynamics.py",
     "scripts/substrate_crossover.py",
@@ -5485,6 +5486,7 @@
     "scripts/primorial_probe_case.py",
     "scripts/qpu_runtime_levers.py",
     "scripts/scheduled_idle_replay.py",
+    "scripts/scheduled_idle_scaling.py",
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py"
@@ -11871,6 +11873,7 @@
    "math",
    "n21_exact_planning",
    "numpy",
+   "parallel",
    "pathlib",
    "re",
    "scipy",

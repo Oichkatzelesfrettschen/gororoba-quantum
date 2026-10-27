@@ -237,6 +237,23 @@ def test_echo_restores_the_contrast_that_static_detuning_removes() -> None:
     _require(max(undetuned) - min(undetuned) < 1e-9, undetuned)
 
 
+def test_static_detuning_moves_the_contrast_at_first_order_with_its_sign() -> None:
+    # 0.354 sin(pi/4 - phi) changes by -0.25 phi at first order, so opposite detunings move the first dose's contrast
+    # in opposite directions, one of them above the undetuned value, and the echo restores the dose-0 value for both.
+    rate = (math.pi / 8) / max(DOSES)
+    dose = DOSES[1]
+    base, up, down = ordered_map(
+        _pair_contrast, [("window_dose", dose, 0.0, 0.0, r, True) for r in (0.0, rate, -rate)], min_items=1
+    )
+    echoes = ordered_map(
+        _pair_contrast, [("window_dose_echo", dose, 0.0, 0.0, r, True) for r in (rate, -rate)], min_items=1
+    )
+    _require((up - base) * (down - base) < 0, (base, up, down))
+    _require(max(up, down) > base + 1e-4, (base, up, down))
+    _require(abs((up - base) + (down - base)) < 0.2 * abs(up - base), (base, up, down))
+    _require(all(abs(value - base) < 1e-9 for value in echoes), (echoes, base))
+
+
 def _asap_starts(circuit: QuantumCircuit, durations: dict[str, int]) -> list[tuple[str, list[int], int]]:
     """(name, qubits, start) of every top-level instruction under an ASAP schedule whose barriers align their qubits."""
     cursor = dict.fromkeys(range(circuit.num_qubits), 0)

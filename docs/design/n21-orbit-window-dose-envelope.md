@@ -123,8 +123,11 @@ an error common to them moves the fitted rates, and a per-qubit error outside th
   kappa_P - kappa_E; the verdict is withheld when the profile of kappa_P, kappa_E or delta reaches the fitted
   range's edge. A lower bound above zero reads as idle loss the Hahn echo removes beyond the Target model:
   quasi-static dephasing or static detuning, which this design does not separate. An upper bound below zero reads
-  as an echo that costs more than it refocuses. A per-replica static detuning of either sign raises each replica's
-  plain loss in second order and so enters delta as well.
+  as an echo that costs more than it refocuses. A per-replica static detuning moves that replica's plain contrast at
+  first order with the detuning's sign, raising it for one sign and lowering it for the other, and the echo removes
+  the shift of either sign; detunings of opposite sign across replicas cancel at first order in the pooled response
+  and leave their second-order loss, so delta reads the net pooled shift, and the per-replica kappa_P,r keeps the
+  signed spread.
 - **Per replica.** Each replica's kappa_P,r and its interval are reported, not decided.
 
 **Amendment: all-idle rate (secondary).** Written from the scheduler timing the completed job returned, before any
