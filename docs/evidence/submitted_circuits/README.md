@@ -56,9 +56,13 @@ source. The [idle-penalty successor](comparison-idle-penalty-probe.json) rebinds
 `live_run.py` listed `idle_penalty.py` in its experiment manifest and refused dynamical decoupling and twirling for
 the campaign. It binds the direct dependencies.
 
+The [window-dose successor](comparison-window-doses.json) rebinds the idle-penalty retrieval offline after
+`live_run.py` gained `--window-doses-dt`; it differs from the idle-penalty successor only in the `live_run.py`
+digest and the offline validation time.
+
 The [adaptive-envelope successor](comparison-adaptive-envelope.json) rebinds the idle-penalty retrieval offline
-after `live_run.py` gained the measurement-sequence envelope's approval, fallback and replan contract; its 41 rows
-equal the idle-penalty successor's. Gate `core-281` checks it.
+after `live_run.py` gained the measurement-sequence envelope's approval, fallback and replan contract beside the
+window doses; its 41 rows equal the window-dose successor's. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These

@@ -37,6 +37,7 @@ from qpe_diagnostics import (
     lift_phase_law,
     lift_phase_values,
     n21_diagnostic,
+    n21_dose_name,
     n21_encoded_diagnostic,
     n21_labeled_law,
     n21_orbit_diagnostic,
@@ -1137,6 +1138,34 @@ def n21_ramsey_windows(windows: Any) -> tuple[int, ...]:
     return tuple(sorted(values))
 
 
+def n21_window_doses(doses: Any) -> tuple[int, ...]:
+    """The window-dose sweep's idle doses in dt, sorted; anything but distinct integers with 0 and two more raises.
+
+    The sweep needs the undosed pair (dose 0, the nominal bracketed pair)
+    and at least two further doses to fit a decay in the added idle. A
+    dose of 1 dt is below every Target's min_length.
+    """
+    values = tuple(doses)
+    if (
+        len(values) < 3
+        or any(type(value) is not int or value < 0 or value == 1 for value in values)
+        or len(set(values)) != len(values)
+        or 0 not in values
+    ):
+        raise ValueError(f"window_doses needs 0 and at least two more distinct integer doses of 0 or >= 2 dt: {values}")
+    return tuple(sorted(values))
+
+
+def n21_dose_pairs(doses: tuple[int, ...]) -> tuple[tuple[str, int], ...]:
+    """(variant, dose_dt) of every window-dose pair: window_dose at each dose, window_dose_echo at each nonzero one."""
+    return tuple(
+        (variant, dose)
+        for dose in n21_window_doses(doses)
+        for variant in ("window_dose", "window_dose_echo")
+        if dose or variant == "window_dose"
+    )
+
+
 def n21_segmented_config(config: Any) -> dict[str, Any]:
     """The segmented ground sweep's configuration, validated and in canonical order; anything else raises.
 
@@ -1220,6 +1249,7 @@ def n21_orbit_rca_group(
     ground_control_split: bool = False,
     ramsey_windows: tuple[int, ...] = (),
     segmented: dict[str, Any] | None = None,
+    window_doses: tuple[int, ...] = (),
 ) -> Group:
     """Pair feed-forward with its omitted-correction control in each window variant.
 
@@ -1269,7 +1299,27 @@ def n21_orbit_rca_group(
     an xy and a z arm at each delay of n21_segmented_config and the
     backaction xy arms. Its idles are absolute dt, independent of the
     control's window durations.
+
+    window_doses is the window-dose sweep (n21_window_dose_group): a
+    window_dose pair at every dose and a window_dose_echo pair at every
+    nonzero dose, with doses absolute dt independent of window_delay_dt and
+    echo_half_dt. It excludes every other configuration.
     """
+    if window_doses:
+        conflicts = [
+            name
+            for name, given in (
+                ("window_sweep", window_sweep),
+                ("overlap_split", overlap_split),
+                ("ground_control_split", ground_control_split),
+                ("ramsey_windows", bool(ramsey_windows)),
+                ("segmented", segmented is not None),
+            )
+            if given
+        ]
+        if conflicts:
+            raise ValueError(f"window_doses excludes {', '.join(conflicts)}")
+        return n21_window_dose_group(window_doses, init_herald)
     if ramsey_windows and not ground_control_split:
         raise ValueError("ramsey_windows is a ground_control_split configuration")
     if segmented is not None:
@@ -1365,6 +1415,63 @@ def n21_orbit_rca_group(
                     expectations.append(float(law[0] + law[1] - law[2] - law[3]))
                     result[f"spectator_{name.removeprefix('n21_spectator_')}_expectation"] = expectations[-1]
                 result[f"spectator_{stem}_visibility"] = math.hypot(expectations[0], expectations[1])
+        if init_herald:
+            outcomes = np.arange(1 << clbits)
+            for member in members:
+                distribution = np.asarray(distributions[member.name], dtype=float)
+                for qubit in range(clbits - 2):
+                    excited = ((outcomes >> (2 + qubit)) & 1).astype(float)
+                    result[f"{member.name.removeprefix('n21_orbit_')}_herald_q{qubit}"] = float(distribution @ excited)
+        return result
+
+    return Group("n21_orbit_rca", members, summarize)
+
+
+def n21_window_dose_group(doses: tuple[int, ...], init_herald: bool = False) -> Group:
+    """The window-dose sweep as one n21_orbit_rca group, one feedback pair per n21_dose_pairs entry.
+
+    Each member keeps the exact labeled law. summarize reports each pair's
+    signed contrasts and contrast_difference under the stem
+    window_dose_d{dose} or window_dose_echo_d{dose}, and for each nonzero
+    dose window_dose_echo_gain_d{dose}, the echo pair's contrast_difference
+    minus the plain pair's.
+    """
+    pairs = n21_dose_pairs(doses)
+    clbits = N21_ORBIT_HERALDED_CLBITS if init_herald else 2
+
+    def lifted(values: Any) -> np.ndarray:
+        return lift_phase_values(values, clbits) if init_herald else np.asarray(values, dtype=float)
+
+    members = tuple(
+        Member(
+            n21_dose_name(variant, dose, feedback),
+            n21_orbit_diagnostic(feedback, variant, init_herald=init_herald, dose_dt=dose),
+            (
+                lift_phase_law(n21_labeled_law(feedback), clbits)
+                if init_herald
+                else np.asarray(n21_labeled_law(feedback), dtype=float)
+            ),
+            weights=lifted(_N21_WEIGHTS),
+        )
+        for variant, dose in pairs
+        for feedback in (True, False)
+    )
+
+    def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
+        result = {}
+        for variant, dose in pairs:
+            primary = phase_marginal(distributions[n21_dose_name(variant, dose, True)])
+            control = phase_marginal(distributions[n21_dose_name(variant, dose, False)])
+            stem = f"{variant}_d{dose}"
+            result[f"{stem}_feedback_signed_contrast"] = float(primary[1] - primary[3])
+            result[f"{stem}_no_feedback_signed_contrast"] = float(control[1] - control[3])
+            result[f"{stem}_contrast_difference"] = float(primary[1] - primary[3] - control[1] + control[3])
+        for variant, dose in pairs:
+            if variant == "window_dose_echo":
+                result[f"window_dose_echo_gain_d{dose}"] = (
+                    result[f"window_dose_echo_d{dose}_contrast_difference"]
+                    - result[f"window_dose_d{dose}_contrast_difference"]
+                )
         if init_herald:
             outcomes = np.arange(1 << clbits)
             for member in members:
@@ -1489,6 +1596,29 @@ def family_contracts(
                 for member in group.members
             )
         heralded = bool((configuration or {}).get("init_herald"))
+        if (configuration or {}).get("window_doses"):
+            # One precision endpoint per dose pair on its contrast
+            # difference: the sweep estimates a decay, so no endpoint
+            # requires a positive effect at a dose where the contrast may
+            # have vanished.
+            pairs = n21_dose_pairs(tuple((configuration or {})["window_doses"]))
+            share = alpha / len(pairs)
+            signed = (
+                tuple(float(x) for x in lift_phase_values(_SIGNED, N21_ORBIT_HERALDED_CLBITS)) if heralded else _SIGNED
+            )
+            return tuple(
+                ObservableContract(
+                    f"n21_orbit_{variant}_d{dose}_feedback_contrast",
+                    (
+                        ObservableTerm(n21_dose_name(variant, dose, True), signed),
+                        ObservableTerm(n21_dose_name(variant, dose, False), signed, sign=-1),
+                    ),
+                    precision_half_width=precision,
+                    alpha=share,
+                    power=power,
+                )
+                for variant, dose in pairs
+            )
         split = bool((configuration or {}).get("overlap_split"))
         ground = bool((configuration or {}).get("ground_control_split"))
         variants = n21_orbit_variants(
@@ -1618,6 +1748,7 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 bool(family.get("ground_control_split", False)),
                 tuple(int(multiple) for multiple in family.get("ramsey_windows", ())),
                 family.get("segmented_sweep"),
+                tuple(int(dose) for dose in family.get("window_doses", ())),
             )
         ]
     if family.get("name") in N21_FAMILIES:

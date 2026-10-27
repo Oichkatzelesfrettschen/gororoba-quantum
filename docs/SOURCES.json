@@ -1774,6 +1774,10 @@
     "docs/notes/papers/2609.10569.md": {"status": "journal-venue-unverified"},
     "docs/notes/papers/1907.07024.md": {"status": "journal-venue-unverified"},
     "docs/notes/papers/kivunge-2013-sign-matrices-2n-ons.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/openai-2026-mub-dimension-six.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md": {"status": "journal-venue-unverified"},
+    "docs/notes/papers/openai-2026-exact-quantum-factoring.md": {"status": "journal-venue-unverified"},
     "docs/notes/papers/ocathain-2012-nonaffine-hadamard.md": {
       "status": "journal-identity-verified",
       "doi": "10.1016/j.jcta.2012.02.011",
@@ -4033,6 +4037,258 @@
       "sha256": "7113266fbd3422470ac36a26059a323d081db1ef9b88a1c10749ab7d3bccfb66",
       "bytes": 83016,
       "reading_scope": "Optica (OSA) license page the Crossref vor license of DOI 10.1364/OE.20.023126 names: the OSA Open Access License permits non-commercial use with attribution",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-quadratic-bound-for-Jacobsthals-function-September-25-2026/paper.pdf",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "sha256": "f80267eebc82a9b8905057b45b35ef8734485b2b0b7b809a3051c06240cf0b1e",
+      "bytes": 824106,
+      "retrieved_at_utc": "2026-10-27T03:46:25+00:00",
+      "reading_scope": "OpenAI, A quadratic bound for Jacobsthal's function, 25 September 2026, 83 pages at openai/math commit 7ef5c0cc: pp. 1-6 and 73-74 in full and the reference list; Sections 2-11 and the appendices for section titles and result labels only, no proof step checked",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-quadratic-bound-for-Jacobsthals-function-September-25-2026/README.md",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "sha256": "b8c180c1fe87fd7b91863a8514027889535e3c4dd20be194d071f9afd7aabb68",
+      "bytes": 577,
+      "retrieved_at_utc": "2026-10-27T03:46:25+00:00",
+      "reading_scope": "Manuscript directory README: title, author, date, BibTeX citation",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357,
+      "retrieved_at_utc": "2026-10-27T03:46:29+00:00",
+      "reading_scope": "Apache License 2.0 text: title and section 4 redistribution terms, read for the rights decision",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026.pdf",
+      "note": "docs/notes/papers/openai-2026-mub-dimension-six.md",
+      "sha256": "b4cc74c840c902494d589b51c8e9706490f37cf2735e69a0486122131c6b7446",
+      "bytes": 817737,
+      "retrieved_at_utc": "2026-10-27T03:46:28+00:00",
+      "reading_scope": "OpenAI, The maximum number of mutually unbiased bases in dimension six, 24 September 2026, 76 pages at openai/math commit 7ef5c0cc: pp. 1-6, 50 and 52-55 in full (Theorem 1.1, Lemma 1.2, Corollary 1.3, platform and build, Theorem 7.1, Tables 1 and 2, Appendix A.1); Sections 2-6 and Appendices A.2-A.12 for result labels only",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/README.md",
+      "note": "docs/notes/papers/openai-2026-mub-dimension-six.md",
+      "sha256": "e21d1a5ec6153f45f25215142ecbd8272844795ccc2e9b183185655bcd5b84fc",
+      "bytes": 1229,
+      "retrieved_at_utc": "2026-10-27T03:46:28+00:00",
+      "reading_scope": "Manuscript directory README: title, author, date, BibTeX citation and verification instructions",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+      "note": "docs/notes/papers/openai-2026-mub-dimension-six.md",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357,
+      "retrieved_at_utc": "2026-10-27T03:46:29+00:00",
+      "reading_scope": "Apache License 2.0 text: title and section 4 redistribution terms, read for the rights decision",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026.pdf",
+      "note": "docs/notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md",
+      "sha256": "6bc2448ff13557610112e91ae6e713d0b469588cd9e1e3f9b44c04fc422fd612",
+      "bytes": 396915,
+      "retrieved_at_utc": "2026-10-27T03:46:26+00:00",
+      "reading_scope": "OpenAI, Exact Fourier certificates for complex Hadamard matrices of order six, 24 September 2026, 35 pages at openai/math commit 7ef5c0cc: pp. 1-4 and 24 in full (Theorems 1.1 and 1.2, Corollary 3.1, the Proposition 6.3 bound); Sections 3.2-7.3 for result labels only; the Appendix A verifier not run",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/README.md",
+      "note": "docs/notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md",
+      "sha256": "0a93439b9b59be90edb7b7009f5c962c90d1820c0bbcddea5ae259281e81f1f8",
+      "bytes": 1321,
+      "retrieved_at_utc": "2026-10-27T03:46:26+00:00",
+      "reading_scope": "Manuscript directory README: title, author, date, BibTeX citation and verification instructions",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+      "note": "docs/notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357,
+      "retrieved_at_utc": "2026-10-27T03:46:29+00:00",
+      "reading_scope": "Apache License 2.0 text: title and section 4 redistribution terms, read for the rights decision",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Exact-quantum-factoring-over-a-fixed-finite-gate-set-September-25-2026/main.pdf",
+      "note": "docs/notes/papers/openai-2026-exact-quantum-factoring.md",
+      "sha256": "35e89279253b6c8ae5ae7c941283b4b9de517243564f87e9b323ffeae4a85699",
+      "bytes": 388243,
+      "retrieved_at_utc": "2026-10-27T03:46:27+00:00",
+      "reading_scope": "OpenAI, Exact quantum factoring over a fixed finite gate set, 25 September 2026, 24 pages at openai/math commit 7ef5c0cc: pp. 1-4, 15 and 19 in full (Theorem 1.1, Lemmas 2.1 and 2.2, the transition bound, the proof of Theorem 1.1); Sections 3-5 and Appendix A for result labels only",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Exact-quantum-factoring-over-a-fixed-finite-gate-set-September-25-2026/README.md",
+      "note": "docs/notes/papers/openai-2026-exact-quantum-factoring.md",
+      "sha256": "9d5b40bf951f21595e90e71a454736603d8fb2c3d1c628f4d23517b205b013f7",
+      "bytes": 617,
+      "retrieved_at_utc": "2026-10-27T03:46:27+00:00",
+      "reading_scope": "Manuscript directory README: title, author, date, BibTeX citation",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+      "note": "docs/notes/papers/openai-2026-exact-quantum-factoring.md",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "bytes": 11357,
+      "retrieved_at_utc": "2026-10-27T03:46:29+00:00",
+      "reading_scope": "Apache License 2.0 text: title and section 4 redistribution terms, read for the rights decision",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/README.md",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "sha256": "6cb7f0e387b67c051227c6ba27aca87ee82d9dd2530b6452b86b8681a2e2743a",
+      "bytes": 4417,
+      "retrieved_at_utc": "2026-10-27T03:46:29+00:00",
+      "reading_scope": "openai/math README in full: production by an unreleased internal model, raw-research-data status, 721 manuscripts in 373 families, about 42 percent of top-line results formalized",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/history.md",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "sha256": "ac688a38eb9afdb1f3c339c1df251cdb1aa7d8f18067b3ce5d668a96d690f5fb",
+      "bytes": 3888,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "openai/math history in full: 7 October 2026 withdrawals and revisions, 26 October 2026 additions",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/docs/021.md",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "sha256": "506a0d11753aa56926eb456406fcf975c17c0e604c3248c2500485825860f7a6",
+      "bytes": 1051,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "Lean scope of family 021 in full",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/Jacobsthal.lean",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "sha256": "a2fe296ccf4e70242e6ce3db976d236525f7ca823e4a9a5c6fede1335ca0031e",
+      "bytes": 630,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "Comparator challenge JacobsthalQuadratic in full",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/Jacobsthal.json",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "sha256": "cc762a7b2dd0da4f2bb8140e32d26c2ca13f22a8c3cdf5ee1050820b7c892d69",
+      "bytes": 333,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "Comparator configuration in full: modules, theorem name, permitted axioms",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/JacobsthalImproved.lean",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "sha256": "b1ca82177690ae1d9db59652ca64f126678f5fbe7c08b7a82243c07143f1e80a",
+      "bytes": 653,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "Comparator challenge JacobsthalIteratedLog in full",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/docs/266.md",
+      "note": "docs/notes/papers/openai-2026-mub-dimension-six.md",
+      "sha256": "3141714e25026b26a4028e27ee001e70295310bad4290b5a8f7c9fd546e8a174",
+      "bytes": 2093,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "Lean scope of family 266 in full",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/MUBSix.lean",
+      "note": "docs/notes/papers/openai-2026-mub-dimension-six.md",
+      "sha256": "7a634ee492b54abe357901a69272c42aa8dfc85b7a3401eef723468bb0c6c355",
+      "bytes": 1924,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "Comparator challenge fourier_and_family_bound in full",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/docs/266.md",
+      "note": "docs/notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md",
+      "sha256": "3141714e25026b26a4028e27ee001e70295310bad4290b5a8f7c9fd546e8a174",
+      "bytes": 2093,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "Lean scope of family 266 in full",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/docs/279.md",
+      "note": "docs/notes/papers/openai-2026-exact-quantum-factoring.md",
+      "sha256": "70edc97191b737cec8ade36d26bd53cd0c75f9c0e33c8afa53e7ce32ee67a88d",
+      "bytes": 981,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "Lean scope of family 279 in full",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/ExactQuantumFactoring.lean",
+      "note": "docs/notes/papers/openai-2026-exact-quantum-factoring.md",
+      "sha256": "dd2a83b9d8b644d5e18337ffd450cce1b5032188270c3bde3dc7f49e3993bb63",
+      "bytes": 6035,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "Comparator challenge MainTheorem in full: gate set, Born sum, uniformity and resource definitions",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/lean/ComparatorChallenges/ExactQuantumFactoring.json",
+      "note": "docs/notes/papers/openai-2026-exact-quantum-factoring.md",
+      "sha256": "411e9b10be6b479ccc80a30ca382e4764492e22e51717a863066e20b61db969c",
+      "bytes": 354,
+      "retrieved_at_utc": "2026-10-27T03:49:13+00:00",
+      "reading_scope": "Comparator configuration in full: modules, theorem name, permitted axioms",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/verification/saved-run/VERIFY.md",
+      "note": "docs/notes/papers/openai-2026-mub-dimension-six.md",
+      "sha256": "f68b8abe0d7f038b0ca03e31f0f16338831043ee449fa99ccb169ee43831102d",
+      "bytes": 3880,
+      "retrieved_at_utc": "2026-10-27T03:47:22+00:00",
+      "reading_scope": "Saved-run verification instructions in full: checker scope, build conditions, pow lowering check",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/verification/run.py",
+      "note": "docs/notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md",
+      "sha256": "670e627fc97030104873c26572c0d1f6d1cb3d969cc99c95d2de9e26619a495e",
+      "bytes": 663,
+      "retrieved_at_utc": "2026-10-27T03:49:32+00:00",
+      "reading_scope": "Verifier wrapper in full: optimize-flag refusal and verifier digest check",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/verification/verify.py",
+      "note": "docs/notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md",
+      "sha256": "104a7306205b8544c8f913f6afdb59603f2e04a207c9ac592c383b80eb0e2aa9",
+      "bytes": 30160,
+      "retrieved_at_utc": "2026-10-27T03:49:32+00:00",
+      "reading_scope": "Exact verifier read for its imports and absence of file or network access; not run",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "url": "https://www.erdosproblems.com/970",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "sha256": "869f32be3c074533650850c28105ccb6c3f6ec544b45de6e61c31c74220deda9",
+      "bytes": 31864,
+      "retrieved_at_utc": "2026-10-27T04:02:02+00:00",
+      "reading_scope": "Bloom, Erdos Problem 970 page: problem statement, the Iwaniec upper bound and the Ford-Green-Konyagin-Maynard-Tao lower bound as displayed, and the note that it generalizes Problem 687; Problem 687 and the cited sources were not retrieved",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],
@@ -10923,6 +11179,138 @@
         "pdf_sha256": "7d4695c4fefe6d3c0719d31437a84785458673f0108558b2093342701e24c99c",
         "verified_at_utc": "2026-10-27T00:53:19+00:00",
         "reading_scope": "Crossref license entries of the DOI, the license page it names, and the PDF's (C) 2012 OSA notices."
+      }
+    },
+    {
+      "title": "A quadratic bound for Jacobsthal's function",
+      "authors": [
+        "OpenAI"
+      ],
+      "version": "openai/math manuscript dated 2026-09-25 at commit 7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a; unrefereed, model-generated",
+      "source_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/A-quadratic-bound-for-Jacobsthals-function-September-25-2026/paper.pdf",
+      "note": "docs/notes/papers/openai-2026-jacobsthal-quadratic-bound.md",
+      "audited_at_utc": "2026-10-27T03:54:20+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "f80267eebc82a9b8905057b45b35ef8734485b2b0b7b809a3051c06240cf0b1e",
+      "bytes": 824106,
+      "pages": 83,
+      "excluded_published_path": "docs/pdf/openai-math-021-jacobsthal-quadratic-bound.pdf",
+      "local_cache_path": "docs/local_source_cache/openai-math-021-jacobsthal-quadratic-bound.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Repository root LICENSE and the manuscript directory README at the pinned commit",
+      "rights_reason": "The openai/math repository root LICENSE is the Apache License 2.0, a repository-wide software license. The manuscript directory holds its README, BibTeX file and LaTeX build sources and no license file, and none of its text files or the PDF text carries a license, copyright or Creative Commons notice; no source-specific CC BY 4.0 or CC0 grant names the manuscript, so the source_rights_policy keeps the PDF external.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "f80267eebc82a9b8905057b45b35ef8734485b2b0b7b809a3051c06240cf0b1e",
+        "verified_at_utc": "2026-10-27T03:54:20+00:00",
+        "decision": "external_only",
+        "license_identifier": "Apache-2.0",
+        "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+        "evidence_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+        "evidence_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "evidence_locator": "Root LICENSE file of openai/math at the pinned commit",
+        "reading_scope": "LICENSE title and section 4 redistribution terms; the full file list of the manuscript directory at the pinned commit and a search of its 17 text files (binary records excluded) and the PDF text layer for license, copyright and Creative Commons notices, which found none.",
+        "evidence_summary": "Apache-2.0 covers the repository as a software license; no CC BY 4.0 or CC0 grant names the manuscript."
+      }
+    },
+    {
+      "title": "The maximum number of mutually unbiased bases in dimension six",
+      "authors": [
+        "OpenAI"
+      ],
+      "version": "openai/math manuscript dated 2026-09-24 at commit 7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a; unrefereed, model-generated",
+      "source_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026/The-maximum-number-of-mutually-unbiased-bases-in-dimension-six-September-24-2026.pdf",
+      "note": "docs/notes/papers/openai-2026-mub-dimension-six.md",
+      "audited_at_utc": "2026-10-27T03:54:20+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "b4cc74c840c902494d589b51c8e9706490f37cf2735e69a0486122131c6b7446",
+      "bytes": 817737,
+      "pages": 76,
+      "excluded_published_path": "docs/pdf/openai-math-266-mub-dimension-six.pdf",
+      "local_cache_path": "docs/local_source_cache/openai-math-266-mub-dimension-six.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Repository root LICENSE and the manuscript directory README at the pinned commit",
+      "rights_reason": "The openai/math repository root LICENSE is the Apache License 2.0, a repository-wide software license. The manuscript directory holds its README, LaTeX build sources and the saved-run verification sources and records and no license file, and none of its text files or the PDF text carries a license, copyright or Creative Commons notice; no source-specific CC BY 4.0 or CC0 grant names the manuscript, so the source_rights_policy keeps the PDF external.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "b4cc74c840c902494d589b51c8e9706490f37cf2735e69a0486122131c6b7446",
+        "verified_at_utc": "2026-10-27T03:54:20+00:00",
+        "decision": "external_only",
+        "license_identifier": "Apache-2.0",
+        "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+        "evidence_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+        "evidence_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "evidence_locator": "Root LICENSE file of openai/math at the pinned commit",
+        "reading_scope": "LICENSE title and section 4 redistribution terms; the full file list of the manuscript directory at the pinned commit and a search of its 133 text files (binary records excluded) and the PDF text layer for license, copyright and Creative Commons notices, which found none.",
+        "evidence_summary": "Apache-2.0 covers the repository as a software license; no CC BY 4.0 or CC0 grant names the manuscript."
+      }
+    },
+    {
+      "title": "Exact Fourier certificates for complex Hadamard matrices of order six",
+      "authors": [
+        "OpenAI"
+      ],
+      "version": "openai/math manuscript dated 2026-09-24 at commit 7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a; unrefereed, model-generated",
+      "source_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026/Exact-Fourier-certificates-for-complex-Hadamard-matrices-of-order-six-September-24-2026.pdf",
+      "note": "docs/notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md",
+      "audited_at_utc": "2026-10-27T03:54:20+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "6bc2448ff13557610112e91ae6e713d0b469588cd9e1e3f9b44c04fc422fd612",
+      "bytes": 396915,
+      "pages": 35,
+      "excluded_published_path": "docs/pdf/openai-math-266-hadamard-order-six-fourier-certificates.pdf",
+      "local_cache_path": "docs/local_source_cache/openai-math-266-hadamard-order-six-fourier-certificates.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Repository root LICENSE and the manuscript directory README at the pinned commit",
+      "rights_reason": "The openai/math repository root LICENSE is the Apache License 2.0, a repository-wide software license. The manuscript directory holds its README, LaTeX build sources, BibTeX file and the two verification scripts and no license file, and none of its text files or the PDF text carries a license, copyright or Creative Commons notice; no source-specific CC BY 4.0 or CC0 grant names the manuscript, so the source_rights_policy keeps the PDF external.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "6bc2448ff13557610112e91ae6e713d0b469588cd9e1e3f9b44c04fc422fd612",
+        "verified_at_utc": "2026-10-27T03:54:20+00:00",
+        "decision": "external_only",
+        "license_identifier": "Apache-2.0",
+        "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+        "evidence_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+        "evidence_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "evidence_locator": "Root LICENSE file of openai/math at the pinned commit",
+        "reading_scope": "LICENSE title and section 4 redistribution terms; the full file list of the manuscript directory at the pinned commit and a search of its 12 text files (binary records excluded) and the PDF text layer for license, copyright and Creative Commons notices, which found none.",
+        "evidence_summary": "Apache-2.0 covers the repository as a software license; no CC BY 4.0 or CC0 grant names the manuscript."
+      }
+    },
+    {
+      "title": "Exact quantum factoring over a fixed finite gate set",
+      "authors": [
+        "OpenAI"
+      ],
+      "version": "openai/math manuscript dated 2026-09-25 at commit 7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a; unrefereed, model-generated",
+      "source_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Exact-quantum-factoring-over-a-fixed-finite-gate-set-September-25-2026/main.pdf",
+      "note": "docs/notes/papers/openai-2026-exact-quantum-factoring.md",
+      "audited_at_utc": "2026-10-27T03:54:20+00:00",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "35e89279253b6c8ae5ae7c941283b4b9de517243564f87e9b323ffeae4a85699",
+      "bytes": 388243,
+      "pages": 24,
+      "excluded_published_path": "docs/pdf/openai-math-279-exact-quantum-factoring.pdf",
+      "local_cache_path": "docs/local_source_cache/openai-math-279-exact-quantum-factoring.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Repository root LICENSE and the manuscript directory README at the pinned commit",
+      "rights_reason": "The openai/math repository root LICENSE is the Apache License 2.0, a repository-wide software license. The manuscript directory holds its README and LaTeX build sources and no license file, and none of its text files or the PDF text carries a license, copyright or Creative Commons notice; no source-specific CC BY 4.0 or CC0 grant names the manuscript, so the source_rights_policy keeps the PDF external.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "35e89279253b6c8ae5ae7c941283b4b9de517243564f87e9b323ffeae4a85699",
+        "verified_at_utc": "2026-10-27T03:54:20+00:00",
+        "decision": "external_only",
+        "license_identifier": "Apache-2.0",
+        "license_url": "https://www.apache.org/licenses/LICENSE-2.0",
+        "evidence_url": "https://raw.githubusercontent.com/openai/math/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/LICENSE",
+        "evidence_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "evidence_locator": "Root LICENSE file of openai/math at the pinned commit",
+        "reading_scope": "LICENSE title and section 4 redistribution terms; the full file list of the manuscript directory at the pinned commit and a search of its 11 text files (binary records excluded) and the PDF text layer for license, copyright and Creative Commons notices, which found none.",
+        "evidence_summary": "Apache-2.0 covers the repository as a software license; no CC BY 4.0 or CC0 grant names the manuscript."
       }
     }
   ],

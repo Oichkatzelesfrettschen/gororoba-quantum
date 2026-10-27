@@ -83,6 +83,7 @@ from diagnostic_experiments import (
     PATCH_FAMILIES,
     n21_ramsey_windows,
     n21_segmented_config,
+    n21_window_doses,
     record_groups,
     state_prep_arms,
 )
@@ -6685,6 +6686,14 @@ def _ramsey_windows(text: str) -> list[int]:
         raise argparse.ArgumentTypeError(str(error)) from error
 
 
+def _window_doses(text: str) -> list[int]:
+    """Comma-separated window doses of the window-dose sweep in dt, sorted (diagnostic_experiments.n21_window_doses)."""
+    try:
+        return list(n21_window_doses(int(part) for part in text.split(",")))
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(str(error)) from error
+
+
 def _fraction(text: str) -> float:
     value = float(text)
     if not 0.0 < value <= 1.0:
@@ -6846,6 +6855,16 @@ def main(argv: list[str] | None = None) -> int:
         help="with --ground-control-split: the ground Ramsey sweep, immediate and idle_ground at each idle of M "
         "times the control's measure plus reset durations, in X and Y, with no idle arm; at least two distinct "
         "positive multiples, which the policy and family configuration bind sorted",
+    )
+    parser.add_argument(
+        "--window-doses-dt",
+        type=_window_doses,
+        metavar="D,D,...",
+        help="n21-orbit-rca: the window-dose sweep, a feedback pair with D dt of added idle after the control's reset "
+        "on every qubit at each dose and a pair with the idle split around two X pulses on the work bits at each "
+        "nonzero dose; 0 and at least two more distinct doses (0 or at least 2 dt, nonzero doses multiples of 4 dt "
+        "for the echo), which the policy and family configuration bind sorted; excludes --overlap-split, "
+        "--ground-control-split and their sweeps",
     )
     parser.add_argument(
         "--segmented-delays-dt",
@@ -7162,6 +7181,17 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--ground-control-split and --overlap-split are separate n21-orbit-rca configurations")
     if args.ramsey_windows is not None and not args.ground_control_split:
         parser.error("--ramsey-windows requires --ground-control-split: the sweep reads idle_ground arms")
+    if args.window_doses_dt is not None:
+        if args.family != "n21-orbit-rca":
+            parser.error("--window-doses-dt applies to the n21-orbit-rca family only")
+        for flag, given in (
+            ("--overlap-split", args.overlap_split),
+            ("--ground-control-split", args.ground_control_split),
+            ("--ramsey-windows", args.ramsey_windows is not None),
+            ("--segmented-delays-dt", args.segmented_delays_dt is not None),
+        ):
+            if given:
+                parser.error(f"--window-doses-dt and {flag} are separate n21-orbit-rca configurations")
     args.segmented_sweep = None
     segmented_flags = (args.segments, args.backaction_delays_dt, args.backaction_pre_idle_dt)
     if args.segmented_delays_dt is None and any(value is not None for value in segmented_flags):
