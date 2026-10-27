@@ -3436,6 +3436,14 @@
    "tier": "pr"
   },
   {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/source_reading_copies.py --check",
+   "name": "sources-reading-copies-index",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ibm_runtime_options_inventory.py --check docs/evidence/ibm_runtime_options/inventory.json && \"$PYTHON\" -B -W error scripts/ibm_runtime_options_inventory.py --self-test",

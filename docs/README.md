@@ -11,7 +11,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Area | Owns | Entry |
 |---|---|---|
 | Rules | agent doctrine, gate machinery, provider tables | [AGENTS.md](../AGENTS.md), [ci/AGENTS.md](../ci/AGENTS.md) |
-| Sources and papers | PDFs, licenses, one note per source, verifier | [INDEX.md](INDEX.md), [sources/README.md](sources/README.md) |
+| Sources and papers | PDFs, licenses, one note per source, verifier, reading-copy links | [INDEX.md](INDEX.md), [sources/README.md](sources/README.md), [sources/reading-copies.md](sources/reading-copies.md) |
 | Algebra and proofs | Cayley-Dickson conventions, rank strata, Rocq certificates | [algebra_circuit_rules.md](notes/algebra_circuit_rules.md) |
 | Circuit and QPU design | circuit designs, claim boundaries, QPU budgets | [DESIGN_NOTES.md](../gororoba_quantum/DESIGN_NOTES.md) |
 | IBM Heron r2 | Targets, transpilation, dynamic circuits, submission | [ibm_quantum/README.md](notes/ibm_quantum/README.md) |
