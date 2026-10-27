@@ -10,9 +10,9 @@
   "state": "active",
   "reconciliation": {
     "status": "verified",
-    "note": "Envelope design v3.3 answers three Codex review rounds; implementation on the branch."
+    "note": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 submitted."
   },
-  "next_action": "Retain the 32-qubit envelope dry run, run the null calibration at its width, write the case with the doctrine question, and submit on the owner's approval.",
+  "next_action": "Wait for Kingston job dbg08t9j4t8s73abaghg, then collect and run the envelope analysis.",
   "scope": "Heron r2 (ibm_kingston) pinching run under a calibration-adaptive envelope approval: layout rule at width tier 16/24/32, terminal resets, reset controls, Hadamard crosstalk patterns, 20 us repetition delay with a 50 us fallback attempt, preregistered screens and stochastic null.",
   "owner": "measurement-sequence-pinching branch",
   "steps": [
@@ -20,24 +20,90 @@
       "id": "envelope-dry-run",
       "action": "Run and retain the envelope dry run at the largest width tier that meets the size and time limits.",
       "acceptance": "results/live run with an envelope section, live_run.py --check-envelope passing, the charge table filled.",
-      "state": "doing"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Width-32 dry run on the 17:47 PDT Kingston calibration: one 88-PUB job, planner 31.2 s at 20 us and 52.8 s at 50 us; --check-envelope replays the layout from every snapshot.",
+          "observed_at": "2026-10-27T02:30:58+00:00",
+          "revision": "0c1a77952d2972bff3f35a50772e0f05827d0bbb",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/record.json",
+              "sha256": "ac412781c7d1c5c10325b6a6c6d93013ad734cce31b7b815ec510621b191c8b4"
+            },
+            {
+              "ref": "docs/design/measurement-sequence-adaptive-envelope.md",
+              "sha256": "c5b761cb85b21560dc9a95219137229bef30aa3dd1df2de9bd8ac34c435aabc7"
+            }
+          ],
+          "scope_sha256": "8864c9ae88f4975e04a3eb88015f726a0e6b38c293966ec7357234f853331dbe"
+        }
+      ]
     },
     {
       "id": "null-calibration",
       "action": "Run msq_envelope_null.py at the chosen width with at least 299 replicates and retain its output.",
       "acceptance": "Clopper-Pearson 95 % upper bound on the false-fire rate below 0.01.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "400 replicates at W = 32: 0 fires, Clopper-Pearson 95 % upper bound 0.0075 < 0.01.",
+          "observed_at": "2026-10-27T02:30:58+00:00",
+          "revision": "0c1a77952d2972bff3f35a50772e0f05827d0bbb",
+          "evidence": [
+            {
+              "ref": "docs/evidence/measurement_sequence/envelope-null-w32.json",
+              "sha256": "6ed17f600fd9bff894b0ae265670f6b355b6af66f34ccf11be4b54f2cd5f6975"
+            }
+          ],
+          "scope_sha256": "4856063ae9801cfd57668a0219bcccc5e50f075cc48ec984f34cd5f75a576f83"
+        }
+      ]
     },
     {
       "id": "written-case",
       "action": "Write the case from the record's envelope section with the doctrine change as its own question.",
       "acceptance": "Owner approval of the run and a separate ratification of the doctrine edit.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Owner approved the width-32 run and ratified the envelope doctrine; attempt 1 consumed its marker at 2026-10-27T01:54:58Z.",
+          "observed_at": "2026-10-27T02:30:58+00:00",
+          "revision": "0c1a77952d2972bff3f35a50772e0f05827d0bbb",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T012214.435220Z/approval-consumed-attempt-1.json",
+              "sha256": "5c5c59c937e8b81f456d05f45c254ede0dd2e9a1f372eef111049a6f3ed438f5"
+            },
+            {
+              "ref": "AGENTS.md",
+              "sha256": "9f950f360ef0c18b163926b4cc3bb16cffc4ca04a11fa412bea9afe8c6155fbd"
+            },
+            {
+              "ref": "docs/notes/ibm_quantum/qpu-submission.md",
+              "sha256": "6a90c385c909a84c9806e4302052489e756aa0883f0821996fc6c63195317c25"
+            }
+          ],
+          "scope_sha256": "69f6959f4bfe2de6d5b542803bef95cf737ae74a430d7e8e3182e03ad646e09c"
+        }
+      ]
     },
     {
       "id": "submit-collect",
-      "action": "Submit under the envelope, collect, and run msq_envelope_analysis.",
-      "acceptance": "Retained run with raw shots and the preregistered analysis, registered in research_state.json.",
+      "action": "Submit under the envelope (job dbg08t9j4t8s73abaghg, record results/live/2026-10-27T014422.881898Z), collect, run --envelope-fallback on the qualifying error signature, and run msq_envelope_analysis.",
+      "acceptance": "Retained raw shots and collect.json with the envelope screens and the pinching verdict.",
+      "state": "doing"
+    },
+    {
+      "id": "retain-register",
+      "action": "Retain the collected run: research_state.json entry and claim, the retained-job audit and backup inventory, and a submitted-circuit comparison successor that names the new job.",
+      "acceptance": "tests and gates lanes green with the run retained.",
+      "state": "todo"
+    },
+    {
+      "id": "pr-review-merge",
+      "action": "Push the branch, update the PR #516 body, run the Codex review loop to a clean head, and merge.",
+      "acceptance": "PR #516 merged with all four checks green and every review thread resolved.",
       "state": "todo"
     }
   ]
