@@ -169,7 +169,7 @@ multiplier stays near 1.6.
 ## Open
 
 - **Stability across calibrations (question d).** It needs a repeat on the same ordered 31 pairs under a refreshed
-  T1/T2, compared with `--compare`.
+  T1/T2, compared with `--compare`; [IDLE_PENALTY_REPEAT_CASE.md](IDLE_PENALTY_REPEAT_CASE.md) preregisters it.
 - **Readout attribution, and whether phase rate and visibility loss share a cause.** This needs a campaign whose
   replica classes differ: focal partner only, background readers only, all readers, and none.
 - **The unplaced historical qubits 79, 92 and 93.** One guarded job cannot hold all three, because 93 neighbors both
