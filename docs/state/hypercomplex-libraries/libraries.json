@@ -8603,8 +8603,11 @@
   "gororoba_quantum/msq_envelope_null.py": [
    "__future__",
    "argparse",
+   "collections",
    "diagnostic_experiments",
+   "itertools",
    "json",
+   "math",
    "measurement_sequence_analysis",
    "msq_envelope_analysis",
    "numpy",
