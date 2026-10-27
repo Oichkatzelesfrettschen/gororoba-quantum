@@ -4,7 +4,8 @@
 # docs/evidence/formalization-yaml-schema/). Each main result names a selected
 # exported declaration, the file that proves it and the theorem-specific
 # Print Assumptions list of its receipt; the imported-library kernel context
-# is a separate surface described under status. The evidence bundle named in
+# is a separate surface described under status, and the statement each
+# declaration proves is listed under alignment. The evidence bundle named in
 # each note retains the receipts and the replay script. Paths are relative to
 # the repository root.
 version: "v0.4"
@@ -126,78 +127,45 @@ status:
     - declaration: basis_mul
       file: proofs/CdTowerBasisSign.v
       axioms: []
-      literature_dependencies:
-        - statement: "e_a e_b = sigma_k(a, b) e_(a XOR b) in the integer pair tower, sigma_k the cd_sign loop"
-          source: docs/evidence/cd-tower-basis-sign/README.md
     - declaration: am_sign
       file: proofs/CdTowerBasisSign.v
       axioms: []
-      literature_dependencies:
-        - statement: "(-1)^f_k(a, b) = sigma_k(b, a) for the Corollary 4.3 cochain of Albuquerque and Majid"
-          source: docs/notes/math-9802116.md
     - declaration: isum_skew
       file: proofs/CdImaginarySumConference.v
       axioms: []
     - declaration: isum_conference
       file: proofs/CdImaginarySumConference.v
       axioms: []
-      literature_dependencies:
-        - statement: "<x s, y s> = (2^k - 1) <x, y>: right multiplication by the imaginary sum is a skew conference matrix"
-          source: docs/notes/topics/cd-star-lattice-tower.md
     - declaration: sign_row_degree_all
       file: proofs/CdSignRowAnf.v
       axioms: []
-      literature_dependencies:
-        - statement: "Theorem 1: the left sign row of e_m, m != 0, has algebraic degree max(1, k - 1)"
-          source: docs/notes/cd_phase_degree.md
     - declaration: right_row_degree
       file: proofs/CdSignRowAnf.v
       axioms: []
-      literature_dependencies:
-        - statement: "Proposition 4: the right sign row of e_m has degree 1 at a power of two and max(1, bitlen(m) - 2) otherwise"
-          source: docs/notes/cd_phase_degree.md
     - declaration: assoc_degree_is
       file: proofs/CdAssociatorAnf.v
       axioms: []
-      literature_dependencies:
-        - statement: "Theorem 2: the associator phase of distinct nonzero p, q has degree max(1, bitlen(max(p, q)) - 2)"
-          source: docs/notes/cd_phase_degree.md
     - declaration: census_degree
       file: proofs/CdAssociatorCensus.v
       axioms: []
-      literature_dependencies:
-        - statement: "3 2^d (2^(d+1) - 1) unordered basis pairs have associator-phase degree d for 2 <= d <= k - 2, and 21 have degree 1"
-          source: docs/notes/cd_phase_degree.md
     - declaration: census_total
       file: proofs/CdAssociatorCensus.v
       axioms: []
     - declaration: point_indicator_degree
       file: proofs/CdAssociatorPointIndicators.v
       axioms: []
-      literature_dependencies:
-        - statement: "Proposition 5: the point-indicator pair (2^(n-1), 2^(n-1) + 2^(n-2)) has degree n - 2"
-          source: docs/notes/cd_phase_degree.md
     - declaration: cd_sign_spec
       file: proofs/CdSignPythonSemantics.v
       axioms: []
-      literature_dependencies:
-        - statement: "the syntax tree of cd_core.cd_sign returns the tower sign on valid int arguments and raises otherwise"
-          source: docs/evidence/cd-sign-python-semantics/README.md
     - declaration: function_semantic_preservation
       file: proofs/CdSignAstTranslation.v
       axioms: []
     - declaration: cd_sign_source_spec
       file: proofs/CdSignSourceCertificate.v
       axioms: []
-      literature_dependencies:
-        - statement: "the raw serialized source of cd_sign, under an independent interpreter, satisfies the same specification"
-          source: docs/evidence/cd-sign-python-translation/README.md
     - declaration: Lv_integer_kernel_trivial
       file: proofs/StiefelWitnessInvertible.v
       axioms: []
-      literature_dependencies:
-        - statement: "the retained A_6 Stiefel witness has an invertible left-multiplication matrix"
-          source: docs/notes/stiefel_generic_invertibility.md
     - declaration: network_2_correct
       file: proofs/TargetFlipN21.v
       axioms: []
@@ -207,15 +175,9 @@ status:
     - declaration: network_16_correct
       file: proofs/TargetFlipN21.v
       axioms: []
-      literature_dependencies:
-        - statement: "the N = 21 target-flip networks for multipliers 2, 4 and 16 are correct on all 64 packed inputs"
-          source: docs/notes/formal_evidence_dependencies.md
     - declaration: average_product_does_not_descend
       file: proofs/FoldAverageDescent.v
       axioms: []
-      literature_dependencies:
-        - statement: "no operation on averages alone reproduces projected scalar-pair multiplication"
-          source: docs/evidence/formal_certificates/README.md
     - declaration: observed_means_exclude_common_binary_channel
       file: proofs/TerminalChannelSeparation.v
       axioms: []
@@ -224,9 +186,68 @@ status:
       axioms:
         - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
         - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
-      literature_dependencies:
-        - statement: "the observed terminal means exclude a common appended binary channel, in real semantics"
-          source: docs/evidence/formal_certificates/README.md
+
+alignment:
+  # Each listed declaration proves the statement beside it; the source names the
+  # note or paper whose claim the statement formalizes. The declarations assume
+  # nothing from the literature, so literature_dependencies stays empty.
+  proved_statements:
+    - declaration: basis_mul
+      file: proofs/CdTowerBasisSign.v
+      statement: "e_a e_b = sigma_k(a, b) e_(a XOR b) in the integer pair tower, sigma_k the cd_sign loop"
+      source: docs/evidence/cd-tower-basis-sign/README.md
+    - declaration: am_sign
+      file: proofs/CdTowerBasisSign.v
+      statement: "(-1)^f_k(a, b) = sigma_k(b, a) for the Corollary 4.3 cochain of Albuquerque and Majid"
+      source: docs/notes/math-9802116.md
+    - declaration: isum_skew
+      file: proofs/CdImaginarySumConference.v
+      statement: "<x s, y s> = (2^k - 1) <x, y>: right multiplication by the imaginary sum is a skew conference matrix"
+      source: docs/notes/topics/cd-star-lattice-tower.md
+    - declaration: sign_row_degree_all
+      file: proofs/CdSignRowAnf.v
+      statement: "Theorem 1: the left sign row of e_m, m != 0, has algebraic degree max(1, k - 1)"
+      source: docs/notes/cd_phase_degree.md
+    - declaration: right_row_degree
+      file: proofs/CdSignRowAnf.v
+      statement: "Proposition 4: the right sign row of e_m has degree 1 at a power of two and max(1, bitlen(m) - 2) otherwise"
+      source: docs/notes/cd_phase_degree.md
+    - declaration: assoc_degree_is
+      file: proofs/CdAssociatorAnf.v
+      statement: "Theorem 2: the associator phase of distinct nonzero p, q has degree max(1, bitlen(max(p, q)) - 2)"
+      source: docs/notes/cd_phase_degree.md
+    - declaration: census_degree
+      file: proofs/CdAssociatorCensus.v
+      statement: "3 2^d (2^(d+1) - 1) unordered basis pairs have associator-phase degree d for 2 <= d <= k - 2, and 21 have degree 1"
+      source: docs/notes/cd_phase_degree.md
+    - declaration: census_total
+      file: proofs/CdAssociatorCensus.v
+      statement: "Proposition 5: the point-indicator pair (2^(n-1), 2^(n-1) + 2^(n-2)) has degree n - 2"
+      source: docs/notes/cd_phase_degree.md
+    - declaration: cd_sign_spec
+      file: proofs/CdSignPythonSemantics.v
+      statement: "the syntax tree of cd_core.cd_sign returns the tower sign on valid int arguments and raises otherwise"
+      source: docs/evidence/cd-sign-python-semantics/README.md
+    - declaration: function_semantic_preservation
+      file: proofs/CdSignAstTranslation.v
+      statement: "the raw serialized source of cd_sign, under an independent interpreter, satisfies the same specification"
+      source: docs/evidence/cd-sign-python-translation/README.md
+    - declaration: Lv_integer_kernel_trivial
+      file: proofs/StiefelWitnessInvertible.v
+      statement: "the retained A_6 Stiefel witness has an invertible left-multiplication matrix"
+      source: docs/notes/stiefel_generic_invertibility.md
+    - declaration: network_2_correct
+      file: proofs/TargetFlipN21.v
+      statement: "the N = 21 target-flip networks for multipliers 2, 4 and 16 are correct on all 64 packed inputs"
+      source: docs/notes/formal_evidence_dependencies.md
+    - declaration: average_product_does_not_descend
+      file: proofs/FoldAverageDescent.v
+      statement: "no operation on averages alone reproduces projected scalar-pair multiplication"
+      source: docs/evidence/formal_certificates/README.md
+    - declaration: observed_means_exclude_common_binary_channel
+      file: proofs/TerminalChannelSeparation.v
+      statement: "the observed terminal means exclude a common appended binary channel, in real semantics"
+      source: docs/evidence/formal_certificates/README.md
 
 automation:
   methods:

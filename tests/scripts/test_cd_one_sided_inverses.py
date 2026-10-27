@@ -7,7 +7,7 @@ b a product, a wrong conjugation under the canonical inverse, and a right matrix
 from __future__ import annotations
 
 import os
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from fractions import Fraction
 
 import cd_one_sided_inverses as osi
@@ -110,10 +110,10 @@ def test_a_kernel_vector_with_a_real_part_fails_purity(monkeypatch: pytest.Monke
 def test_a_corrupted_b_a_product_is_a_one_sided_inverse(monkeypatch: pytest.MonkeyPatch) -> None:
     a = tuple(Fraction(x) for x in E1_PLUS_E10)
 
-    def corrupted(dim: int, x: object, y: object) -> tuple[Fraction, ...]:
-        if tuple(y) == a:  # type: ignore[call-overload]
+    def corrupted(dim: int, x: Sequence[Fraction | int], y: Sequence[Fraction | int]) -> tuple[Fraction, ...]:
+        if tuple(y) == a:
             return tuple([Fraction(0)] * dim)
-        return cd_multiply_exact(dim, x, y)  # type: ignore[arg-type]
+        return tuple(cd_multiply_exact(dim, x, y))
 
     monkeypatch.setattr(osi, "cd_multiply_exact", corrupted)
     with pytest.raises(osi.ContractError, match="b a != 1"):
@@ -143,8 +143,16 @@ def test_family_sizes_and_membership() -> None:
 
 
 def test_pooled_and_serial_runs_write_the_same_bytes(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The test session caps the pool at one worker (tests/conftest.py); the pooled run lifts it to two."""
+    if parallel.available_cpus() < 2:
+        pytest.skip("the CPU budget holds one worker, so no pooled run is possible")
     monkeypatch.setattr(osi, "KERNEL_DIMENSIONS", (16,))
     monkeypatch.setattr(osi, "families", lambda dim: [("two_blade", osi.two_blades)])
+    if len(osi.two_blades(16)) < parallel.MIN_PARALLEL_ITEMS:
+        raise AssertionError("the two-blade family is too small to reach the pool")
+    monkeypatch.setitem(os.environ, "GOROROBA_WORKERS", "2")
+    if parallel.workers() != 2:
+        raise AssertionError("GOROROBA_WORKERS=2 leaves the pool at one worker")
     pooled = osi.render(osi.record())
     monkeypatch.setitem(os.environ, "GOROROBA_WORKERS", "1")
     if parallel.workers() != 1:
