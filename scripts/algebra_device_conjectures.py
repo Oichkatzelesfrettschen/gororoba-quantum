@@ -28,7 +28,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from cd_core import cd_multiply_exact, cd_sign, left_mult_matrix_exact  # noqa: E402
 from parallel import ordered_map  # noqa: E402
 
-DEFAULT_MANIFEST = ROOT / "docs/evidence/algebra-device-conjectures-9/manifest.json"
+DEFAULT_MANIFEST = ROOT / "docs/evidence/algebra-device-conjectures-10/manifest.json"
 SCHEMA = "algebra-device-conjectures-v1"
 
 
