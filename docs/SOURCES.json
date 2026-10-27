@@ -10540,6 +10540,34 @@
         "reading_scope": "Source-specific rights statement and operative terms.",
         "evidence_path": "docs/evidence/source_rights/arxiv-1210.1282v1.html"
       }
+    },
+    {
+      "source_url": "https://doi.org/10.1364/OE.20.023126",
+      "note": "docs/notes/papers/1210.1282.md",
+      "status": "external_only",
+      "acquisition": "owner browser download from the publisher, 2026-10-27",
+      "sha256": "7d4695c4fefe6d3c0719d31437a84785458673f0108558b2093342701e24c99c",
+      "bytes": 2045416,
+      "pages": 12,
+      "audited_at_utc": "2026-10-27T00:53:19+00:00",
+      "excluded_published_path": "docs/pdf/oe-20-21-23126.pdf",
+      "local_cache_path": "docs/local_source_cache/oe-20-21-23126.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Crossref version-of-record license of DOI 10.1364/OE.20.023126: https://doi.org/10.1364/OA_License_v1",
+      "rights_reason": "The version-of-record license is the OSA Open Access License, which permits use with attribution for non-commercial purposes only; that is no CC BY 4.0 or CC0 grant, and the owner chose a private reading copy.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-OSA-Open-Access-License",
+        "license_url": "https://doi.org/10.1364/OA_License_v1",
+        "evidence_url": "https://api.crossref.org/works/10.1364/OE.20.023126",
+        "evidence_sha256": "38b932c72016b4ab3f0a5c1a4b5624585a42074c4451cfe770f412c1d40cf40e",
+        "evidence_locator": "Crossref message.license entry with content-version vor",
+        "evidence_summary": "The version-of-record license is the OSA Open Access License, which permits use with attribution for non-commercial purposes only; that is no CC BY 4.0 or CC0 grant, and the owner chose a private reading copy.",
+        "verified": true,
+        "pdf_sha256": "7d4695c4fefe6d3c0719d31437a84785458673f0108558b2093342701e24c99c",
+        "verified_at_utc": "2026-10-27T00:53:19+00:00",
+        "reading_scope": "Crossref license entries of the DOI, the license page it names, and the PDF's (C) 2012 OSA notices."
+      }
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",
