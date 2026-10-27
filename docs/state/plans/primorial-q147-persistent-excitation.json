@@ -20,15 +20,59 @@
   "steps": [
     {
       "id": "two-read-arms",
-      "state": "doing",
+      "state": "done",
       "action": "Add the static arms x_remeasure and remeasure to the state-prep-control family with two-bit registers, their summaries, endpoints, the planner's row-order contract and the written-case renderer, and dry-run the selection on ibm_kingston.",
-      "acceptance": "diagnostic_experiments.py --self-test, qpu_planning_contracts.py --state-prep and qpu_cases.py --check pass with the new arms, and a dry run plans three static PUBs in the order prep0, x_remeasure, remeasure on the six qubits with a written case."
+      "acceptance": "diagnostic_experiments.py --self-test, qpu_planning_contracts.py --state-prep and qpu_cases.py --check pass with the new arms, and a dry run plans three static PUBs in the order prep0, x_remeasure, remeasure on the six qubits with a written case.",
+      "receipts": [
+        {
+          "result": "diagnostic_experiments.py --self-test, qpu_planning_contracts.py --state-prep and qpu_cases.py --check pass with the two-read arms; the dry run 2026-10-27T191857.888009Z plans three static PUBs prep0, x_remeasure, remeasure on qubits 147, 148, 149, 141, 142, 143 at 32768 shots with a written case.",
+          "observed_at": "2026-10-27T19:28:42+00:00",
+          "revision": "a4c441fd074a8adb7357d1047856f0e14af536aa",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/diagnostic_experiments.py",
+              "sha256": "32d67a1f0e5c0389dbd0af30bfbf6cfabd45c64eefffc2a7e228a3c061a5061e"
+            },
+            {
+              "ref": "gororoba_quantum/qpu_planning_contracts.py",
+              "sha256": "e2bb49979c6b7e63e6c66ff31e67ba0260517f46f1d3bda53889a80b742cefcd"
+            },
+            {
+              "ref": "gororoba_quantum/qpu_cases.py",
+              "sha256": "a35b1b452390d7fc17257ec96bd9d2a2b1186b67699f223f931aae61bc2fc7fb"
+            },
+            {
+              "ref": "results/live/2026-10-27T191857.888009Z/record.json",
+              "sha256": "914a19475d3304e7851ea3a3347c93a84088d34862e8f8f2fcb96797eb305bc7"
+            }
+          ],
+          "scope_sha256": "032c3634a856a1daed6aa0bc9355908b14a0a3168c6f9853fad45f867698810b"
+        }
+      ]
     },
     {
       "id": "analysis-rule",
-      "state": "todo",
+      "state": "done",
       "action": "Write scripts/remeasure_history.py: the persistence rule (99 percent Clopper-Pearson against 0.5), the |1>-read-as-0 recovery, the readout-event link with its null arm, and the successor reading, with a synthetic self-test laid out by construction.",
-      "acceptance": "The script's --self-test reproduces every synthetic count and the rule's three verdicts match closed forms; the case document names the rule and the predictions under both readings."
+      "acceptance": "The script's --self-test reproduces every synthetic count and the rule's three verdicts match closed forms; the case document names the rule and the predictions under both readings.",
+      "receipts": [
+        {
+          "result": "scripts/remeasure_history.py --self-test reproduces every synthetic count and the rule's three verdicts match closed forms; the case document states the rule and both readings' predictions.",
+          "observed_at": "2026-10-27T19:28:42+00:00",
+          "revision": "a4c441fd074a8adb7357d1047856f0e14af536aa",
+          "evidence": [
+            {
+              "ref": "scripts/remeasure_history.py",
+              "sha256": "d2142d359a02d66c37b44f5cb9fa5f137ac0c421827c8c809814d7ee43d78506"
+            },
+            {
+              "ref": "results/live/PRIMORIAL_Q147_REMEASURE_CASE.md",
+              "sha256": "a806f67fa408d3d6966d90468969ed9746589e5043b450de4002f4cd3388c84e"
+            }
+          ],
+          "scope_sha256": "87a9347778034317e67760f3afe5d2ad4bc2bb608bebda6dfe09c04a5ae8a601"
+        }
+      ]
     },
     {
       "id": "approval",
