@@ -94,7 +94,10 @@ in order.
 The [idle-readout repeat successor](comparison-idle-readout-repeat.json) rebinds the idle-penalty repeat retrieval
 offline against the `live_run.py` that adds the role-patterned members and lists `idle_readout.py` in its
 experiment manifest; it differs from that retrieval only in the `live_run.py` digest and the offline validation
-time. Gate `core-281` checks it.
+time. The [state-prep remeasure successor](comparison-state-prep-remeasure.json) rebinds the same retrieval
+offline against the `live_run.py` whose `--state-prep-arms` help names the two-read arms `x_remeasure` and
+`remeasure`; it differs from the retrieval only in that digest and the validation time. Gate `core-281` checks
+it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
@@ -108,7 +111,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-idle-readout-repeat.json
+  --out docs/evidence/submitted_circuits/comparison-state-prep-remeasure.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0

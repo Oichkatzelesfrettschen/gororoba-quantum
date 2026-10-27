@@ -7006,9 +7006,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--state-prep-arms",
         type=lambda value: value.split(","),
-        help="state-prep-control arms among prep0, reset, x and x_history, comma-separated: prep0 among "
-        "them, or x_history alone, since it sets the end state every shot of its job leaves; "
-        "omitted, prep0, reset and x; the policy binds a selection",
+        help="state-prep-control arms among prep0, reset, x, x_history, x_remeasure and remeasure, "
+        "comma-separated: prep0 or remeasure among them, or x_history alone, since it sets the end state every "
+        "shot of its job leaves; the remeasure arms read each shot twice; omitted, prep0, reset and x; the "
+        "policy binds a selection",
     )
     parser.add_argument(
         "--latency-dt",
