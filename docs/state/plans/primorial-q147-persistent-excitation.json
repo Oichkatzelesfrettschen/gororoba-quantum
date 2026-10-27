@@ -1,0 +1,18 @@
+{
+  "schema": "work-plan-v1",
+  "id": "primorial-q147-persistent-excitation",
+  "kind": "investigation",
+  "summary": "Case-3 post-hoc analyses: q147's preparation excess is not set by the previous shot's end state, and in stage 2 it exceeds the end-state ceiling by 2.2 to 4.0 standard errors; a repeated-measurement arm would separate population from misassignment.",
+  "sources": [
+    "docs/evidence/primorial_cover/case3/README.md"
+  ],
+  "state": "inbox",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "related": [
+    "primorial-coherent-device-question"
+  ],
+  "next_action": "Write a case for a repeated-measurement control arm (measure, measure) on q147 and q142 at a 20 us repetition delay, alongside a gap-88-like job history; it needs a live_run change and the owner's approval before any submission."
+}
