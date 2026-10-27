@@ -87,7 +87,6 @@ variants) and needs its own control, so it can compare readouts but does not by 
 
 ## Registration
 
-The backup instance's inventory predates this submission, so the retention audit
-(`results/live/qpu-job-retention-audit.f59f9992321c.json`) lists the raw archive under `awaiting_observation`.
-The run enters `docs/state/research_state.json` in the change that re-observes the backup inventory, with the
-case-2 and case-3 runs of issue #585.
+The backup-instance inventory observed on 2026-10-27 covers job `dbggr6giudkc73e4fijg`, and
+`docs/state/research_state.json` registers the run as acquisition `kingston-primorial-q147-remeasure` under claim
+`kingston-q147-two-read-persistence`, beside the case-2 and case-3 runs.
