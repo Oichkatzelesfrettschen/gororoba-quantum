@@ -108,6 +108,7 @@ def test_non_additive_laws_withdraw_the_attribution(geo: ra.Geometry) -> None:
     )
     _expect(out["additivity"]["verdict"] == "non-additive", str(out["additivity"]))
     _expect(out["attribution"]["verdict"] == "withdrawn" and out["withdrawn_labels"], str(out["attribution"]))
+    _expect(out["b"]["verdict"] == "withdrawn", f"b kept a verdict on a failed model: {out['b']}")
 
 
 def test_attribution_outcomes(geo: ra.Geometry) -> None:
@@ -210,3 +211,27 @@ def test_patterned_exposure_refuses(starts: list[int], quiet_reads: int, fragmen
     timelines = _timelines(starts, BODIES, quiet_reads)
     reasons = ra.patterned_exposure(timelines, {"idle_meas_half_p1a_x": BODIES})
     _expect(any(fragment in reason for reason in reasons), str(reasons))
+
+
+def test_pooled_bootstrap_equals_serial(geo: ra.Geometry) -> None:
+    a, c, b = _planted()
+    laws = ra.synthetic_laws(geo, a, c, b, DT)
+    strata, resampled = ra.bootstrap_inputs(geo, laws, SHOTS, BOOTSTRAP_SEED, 2 * ra.BOOTSTRAP_BLOCK + 7)
+    pooled = ra.bootstrap_estimates(geo, resampled, strata, DT, SHOTS, pooled=True)
+    serial = ra.bootstrap_estimates(geo, resampled, strata, DT, SHOTS, pooled=False)
+    whole = ra._block_estimates((geo, resampled, DT, SHOTS, strata))
+    for part, (left, right, single) in enumerate(zip(pooled, serial, whole, strict=True)):
+        for key in left:
+            _expect(np.array_equal(left[key], right[key], equal_nan=True), f"{part} {key}: pooled differs from serial")
+            _expect(
+                np.array_equal(left[key], single[key], equal_nan=True), f"{part} {key}: blocks differ from one batch"
+            )
+
+
+def test_replication_reads_the_all_read_shift(geo: ra.Geometry) -> None:
+    a, c, b = _planted()
+    shifted = ra.analyze(geo, ra.synthetic_laws(geo, a, c, b, DT), DT, SHOTS, BOOTSTRAP_SEED, REPLICATES)
+    _expect(shifted["replication"]["verdict"] == "replicated", str(shifted["replication"]))
+    zeros = np.zeros((ra.PAIRS, 2))
+    null = ra.analyze(geo, ra.synthetic_laws(geo, zeros, zeros, 0.0, DT), DT, SHOTS, BOOTSTRAP_SEED, REPLICATES)
+    _expect(null["replication"]["verdict"] == "not replicated", str(null["replication"]))

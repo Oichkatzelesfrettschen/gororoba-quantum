@@ -52,6 +52,8 @@ BOOTSTRAP_REPLICATES = 4000
 # exists only when at least FINITE_FRACTION of the replicates resolve some probe.
 MIN_RESOLVED = 10
 FINITE_FRACTION = 0.975
+BOOTSTRAP_BLOCK = 250
+REPLICATION_ALPHA = 1e-3
 ROLES = (ip.TARGET, ip.SPECTATOR)
 
 
@@ -145,7 +147,7 @@ def _unwrap(long_khz: np.ndarray, short_khz: np.ndarray, dt: float) -> np.ndarra
 
 def contrasts(laws: dict[str, np.ndarray], dt: float, shots: int) -> dict[str, Any]:
     """Per (replicate, pair, role): D, its shot-noise standard error, and each partition's pattern shifts in kHz."""
-    out: dict[str, Any] = {"D": [], "D_se": [], "S": {}}
+    out: dict[str, Any] = {"D": [], "D_quiet": [], "null": [], "D_se": [], "S": {}}
     shifts: dict[tuple[str, str], list[np.ndarray]] = {}
     for bit in ROLES:
         head = ip.probe_prefix(bit)
@@ -154,9 +156,11 @@ def contrasts(laws: dict[str, np.ndarray], dt: float, shots: int) -> dict[str, A
         quiet_short, _ = _phase(laws, f"{head}ramsey_{{q}}_{ip.SHORT_MEAS_DT}dt", bit, refs)
         during, v_during = _phase(laws, f"{head}meas_during_{{q}}", bit, refs)
         short, _ = _phase(laws, f"{head}meas_short_{{q}}", bit, refs)
-        out["D"].append(
-            _unwrap(_khz(during, after, ip.MEAS_DT, dt), _khz(short, quiet_short, ip.SHORT_MEAS_DT, dt), dt)
-        )
+        quiet_long, _ = _phase(laws, f"{head}ramsey_{{q}}_{ip.MEAS_DT}dt", bit, refs)
+        short_khz = _khz(short, quiet_short, ip.SHORT_MEAS_DT, dt)
+        out["D"].append(_unwrap(_khz(during, after, ip.MEAS_DT, dt), short_khz, dt))
+        out["D_quiet"].append(_unwrap(_khz(during, quiet_long, ip.MEAS_DT, dt), short_khz, dt))
+        out["null"].append(_khz(after, quiet_long, ip.MEAS_DT, dt))
         se_v = math.sqrt(2) / (math.sqrt(shots) * (1.0 - refs[0] - refs[1]))
         floor = np.maximum(np.minimum(v_during, v_after), 0.06)
         out["D_se"].append(se_v / floor / (2 * np.pi * ip.MEAS_DT * dt) / 1e3)
@@ -167,8 +171,8 @@ def contrasts(laws: dict[str, np.ndarray], dt: float, shots: int) -> dict[str, A
                 _khz(long_phase, after, ip.MEAS_DT, dt), _khz(short_phase, quiet_short, ip.SHORT_MEAS_DT, dt), dt
             )
             shifts.setdefault((partition, pattern), []).append(shift)
-    out["D"] = np.stack(out["D"], axis=-1)
-    out["D_se"] = np.stack(out["D_se"], axis=-1)
+    for key in ("D", "D_quiet", "null", "D_se"):
+        out[key] = np.stack(out[key], axis=-1)
     out["S"] = {key: np.stack(value, axis=-1) for key, value in shifts.items()}
     return out
 
@@ -298,6 +302,9 @@ def decide(geo: Geometry, observed: dict[str, np.ndarray], boot: dict[str, np.nd
     else:
         additivity = "unresolved"
     out["additivity"] = {"median": float(observed["median_residual"][0]), "interval": res_iv, "verdict": additivity}
+    if additivity == "non-additive":
+        # The model that defines b failed, so decision 2 is withdrawn with the attribution and the labels.
+        out["b"]["verdict"] = "withdrawn"
     shares = {key: _interval(boot[f"share_{key}"]) for key in ("own_partner", "within_three_hop", "baseline")}
     signs = {key: (1 if iv[0] > 0 else -1 if iv[1] < 0 else 0) for key, iv in shares.items()}
     resolved_count = int(observed["resolved_count"][0])
@@ -341,17 +348,79 @@ def decide(geo: Geometry, observed: dict[str, np.ndarray], boot: dict[str, np.nd
     return out
 
 
+def _block_estimates(
+    item: tuple[Geometry, dict[str, np.ndarray], float, int, dict[str, np.ndarray]],
+) -> tuple[dict[str, np.ndarray], dict[str, np.ndarray]]:
+    """One block of replicates: the pair-resampled estimate and the shot-only estimate on every pair."""
+    geo, laws, dt, shots, strata = item
+    c = contrasts(laws, dt, shots)
+    count = len(next(iter(strata.values())))
+    identity = {name: np.repeat(idx[None, :], count, axis=0) for name, idx in strata_of(geo).items()}
+    return estimate(geo, c, strata), estimate(geo, c, identity)
+
+
+def bootstrap_estimates(
+    geo: Geometry,
+    resampled: dict[str, np.ndarray],
+    strata: dict[str, np.ndarray],
+    dt: float,
+    shots: int,
+    pooled: bool = True,
+) -> tuple[dict[str, np.ndarray], dict[str, np.ndarray]]:
+    """Every replicate's estimates, computed in blocks of BOOTSTRAP_BLOCK replicates mapped through
+    parallel.ordered_map (pooled) or in order (serial); each row depends only on its own inputs, so both give the
+    same bits."""
+    import parallel
+
+    total = len(next(iter(strata.values())))
+    items = [
+        (
+            geo,
+            {name: law[start : start + BOOTSTRAP_BLOCK] for name, law in resampled.items()},
+            dt,
+            shots,
+            {name: idx[start : start + BOOTSTRAP_BLOCK] for name, idx in strata.items()},
+        )
+        for start in range(0, total, BOOTSTRAP_BLOCK)
+    ]
+    blocks = parallel.ordered_map(_block_estimates, items) if pooled else [_block_estimates(item) for item in items]
+    boot = {key: np.concatenate([block[0][key] for block in blocks]) for key in blocks[0][0]}
+    full = {key: np.concatenate([block[1][key] for block in blocks]) for key in blocks[0][1]}
+    return boot, full
+
+
+def replication(c: dict[str, Any]) -> dict[str, Any]:
+    """The probe's all-read shift, read again by the design's t-only rule on the observed pair means: negative
+    against both quiet references with t below the one-sided REPLICATION_ALPHA quantile on PAIRS - 1 degrees of
+    freedom, and the quiet null (after against Ramsey) not resolved by the two-sided test at the same alpha."""
+    from scipy import stats
+
+    dof = PAIRS - 1
+    lower = float(stats.t.ppf(REPLICATION_ALPHA, dof))
+    two_sided = float(stats.t.ppf(1 - REPLICATION_ALPHA / 2, dof))
+    out: dict[str, Any] = {}
+    for key in ("D", "D_quiet", "null"):
+        pairs = np.asarray(c[key][0]).mean(axis=-1)
+        mean, se = float(pairs.mean()), float(pairs.std(ddof=1) / math.sqrt(len(pairs)))
+        out[key] = {"mean_khz": mean, "se_khz": se, "t": mean / se if se > 0 else math.nan}
+    negative = all(out[key]["t"] < lower for key in ("D", "D_quiet"))
+    null_present = abs(out["null"]["t"]) > two_sided
+    out["verdict"] = "replicated" if negative and not null_present else "not replicated"
+    return out
+
+
 def analyze(
     geo: Geometry, laws: dict[str, np.ndarray], dt: float, shots: int, seed: int, replicates: int = BOOTSTRAP_REPLICATES
 ) -> dict[str, Any]:
     """Observed estimate, pair-cluster bootstrap and decisions. laws holds (1, PAIRS, 4) arrays per member."""
     identity = {name: idx[None, :] for name, idx in strata_of(geo).items()}
-    observed = estimate(geo, contrasts(laws, dt, shots), identity)
+    c_observed = contrasts(laws, dt, shots)
+    observed = estimate(geo, c_observed, identity)
     strata, resampled = bootstrap_inputs(geo, laws, shots, seed, replicates)
-    c_boot = contrasts(resampled, dt, shots)
-    boot = estimate(geo, c_boot, strata)
-    full = estimate(geo, c_boot, {name: idx.repeat(replicates, axis=0) for name, idx in identity.items()})
-    return decide(geo, observed, boot, full)
+    boot, full = bootstrap_estimates(geo, resampled, strata, dt, shots)
+    out = decide(geo, observed, boot, full)
+    out["replication"] = replication(c_observed)
+    return out
 
 
 def synthetic_laws(
@@ -393,11 +462,12 @@ def synthetic_laws(
         rates = {
             "meas_after": np.zeros(PAIRS),
             f"ramsey_{{q}}_{ip.SHORT_MEAS_DT}dt": np.zeros(PAIRS),
+            f"ramsey_{{q}}_{ip.MEAS_DT}dt": np.zeros(PAIRS),
             "meas_during": a[:, bit] + near[:, bit] + b + during_extra_khz,
             "meas_short": a[:, bit] + near[:, bit] + b + during_extra_khz,
         }
         for stem, rate in rates.items():
-            idle = ip.SHORT_MEAS_DT if "short" in stem or "ramsey" in stem else ip.MEAS_DT
+            idle = ip.SHORT_MEAS_DT if "short" in stem or f"{ip.SHORT_MEAS_DT}dt" in stem else ip.MEAS_DT
             for q in ip.QUADRATURES:
                 name = f"{head}{stem}" if "{q}" in stem else f"{head}{stem}_{{q}}"
                 laws[name.format(q=q)] = law(window_phase(rate, idle), bit, q)
