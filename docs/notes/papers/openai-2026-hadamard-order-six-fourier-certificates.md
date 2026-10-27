@@ -85,7 +85,10 @@ PDF page indices.
   this repository's exact replays. The verifier's checks are `assert` statements, so it is valid only without `-O`,
   the failure mode behind this repository's rule that checks raise explicitly; `run.py` closes that gap by refusing
   `sys.flags.optimize`.
-- [I] Hardware and algebra: no circuit, record or Cayley-Dickson check uses order-six Hadamard matrices.
+- [I] Hardware and algebra: the [transition-conformance design](../../design/quantum-experiment-conformance.md)
+  uses the explicit cubic Tao matrix as an offline overlap comparator. Its exact residuals against the three
+  product bases establish a candidate-specific comparison; the prospective hardware suite uses the three
+  reference bases and makes no universal fourth-basis exclusion claim.
 
 ## Relevance
 

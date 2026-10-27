@@ -79,8 +79,10 @@ PDF page indices.
   hardware semantics as stated premises. That is the distinction this repository draws between a checksum-matched
   replay and an independent proof check, and between exact rational certificates (for example the C5 exact replay)
   and floating-point evidence.
-- [I] Hardware. The circuits here prepare and measure qubit Pauli bases, which are the three mutually unbiased bases
-  of `C^2`. Dimension six and complex Hadamard matrices of order six enter no circuit, record or algebra check.
+- [I] Hardware. The [transition-conformance design](../../design/quantum-experiment-conformance.md) implements the three
+  explicit product bases as finite mathematical targets and prospective Tuna-17/QX and Ascella cases. Exact
+  overlap checks certify those targets; compiled and observed transition residuals have separate evidence
+  boundaries. A specified fourth candidate supplies its own overlap residuals rather than a universal exclusion.
 - [I] Hadamard matrices. The Cayley-Dickson sign tables of [cd-star-lattice-tower.md](../topics/cd-star-lattice-tower.md)
   are real Hadamard matrices of order `2^n`; order six has no real Hadamard matrix, and the paper's matrices are
   complex.

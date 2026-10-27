@@ -1,0 +1,645 @@
+{
+ "schema": "qi-hypercomplex-cases-v1",
+ "family": "mub-six",
+ "setting": "computational-to-computational-input-0",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 3,
+ "logical_qubits": 3,
+ "shots": 1575,
+ "job_execution_time_limit": 300.0,
+ "hardware_pause_seconds": 120,
+ "circuits": [
+  {
+   "file": "computational-to-computational-input-0.cq",
+   "kind": "science",
+   "nqubits": 3,
+   "operator_error": 0.0,
+   "requested_probabilities": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "native_probabilities": [
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "native_operator": {
+    "real": [
+     [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "imaginary": [
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "measurement_mapping": [
+    0,
+    1,
+    2
+   ],
+   "observable_partition": [
+    [
+     0,
+     1
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     4,
+     5
+    ],
+    [
+     6,
+     7
+    ]
+   ],
+   "logical_qubits": 3,
+   "placement": [
+    11,
+    13,
+    14
+   ],
+   "requested_operator": {
+    "real": [
+     [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "imaginary": [
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "compiled_operator": {
+    "real": [
+     [
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      1.0
+     ]
+    ],
+    "imaginary": [
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ],
+     [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+     ]
+    ]
+   },
+   "compiler_policy": "trivial-layout-basic-routing-optimization-zero",
+   "seed_source": "deterministic-no-randomized-passes",
+   "cz_count": 0,
+   "unrounded_operator_error": 0.0,
+   "name": "computational-to-computational-input-0",
+   "family": "mub-six",
+   "preparation_basis": "computational",
+   "measurement_basis": "computational",
+   "input_column": 0,
+   "active_outputs": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6
+   ],
+   "success_outputs": [],
+   "register_kind": "qubit",
+   "register_width": 3,
+   "logical_output_labels": [
+    "000",
+    "001",
+    "010",
+    "011",
+    "100",
+    "101",
+    "110",
+    "111"
+   ],
+   "leakage_outputs": [
+    3,
+    7
+   ],
+   "sha256": "6ce7935ea07a0160a41032d73a25bfa65de12ed619ead799a07bdef24169cd25"
+  },
+  {
+   "file": "readout-0.cq",
+   "kind": "readout-reference",
+   "prepared": 0,
+   "sha256": "6ce7935ea07a0160a41032d73a25bfa65de12ed619ead799a07bdef24169cd25",
+   "measurement_mapping": [
+    0,
+    1,
+    2
+   ],
+   "register_kind": "qubit",
+   "logical_qubits": 3,
+   "register_width": 3
+  },
+  {
+   "file": "readout-1.cq",
+   "kind": "readout-reference",
+   "prepared": 1,
+   "sha256": "d119611a609db64cea9d08a5992c44e5401fca3e16282548c0c48d3d59893ed1",
+   "measurement_mapping": [
+    0,
+    1,
+    2
+   ],
+   "register_kind": "qubit",
+   "logical_qubits": 3,
+   "register_width": 3
+  }
+ ],
+ "compiler": {
+  "policy": "trivial-layout-basic-routing-optimization-zero",
+  "seed_source": "deterministic-no-randomized-passes",
+  "qiskit": "2.6.0",
+  "catalogue_sha256": "1b978cf3518149cd72886865bffb971ab0c359ae5a7a993cb5f51b230159cd78",
+  "angle_step_radians": 0.08726646259971647
+ },
+ "preregistered": {
+  "primary": "unconditional logical output probabilities",
+  "readout_correction": "sensitivity only",
+  "minimum_output_readout_contrast": 0.2,
+  "confidence": 0.95,
+  "claim": "compiled operator conformance; physical mechanism remains device-specific"
+ },
+ "budget_status": "operator-supplied ceilings; live forecast and written-case approval required"
+}

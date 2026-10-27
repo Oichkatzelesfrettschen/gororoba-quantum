@@ -51,6 +51,11 @@ PDF page indices.
 - [I] Completion. The paper's projection exists only after the operator-norm completion of an infinite group's
   algebra; a finite-dimensional algebra is its own completion, so no analog of that gap arises here.
 
+- [I] Measurement contracts. The [projection-estimand investigation](../../design/quantum-experiment-conformance.md)
+  retains exact finite examples separating expectation, return probability and normalized LCU success. Those
+  examples diagnose the proposed measurement equation; they supply no finite realization of the paper's
+  infinite-group completion mechanism.
+
 ## Relevance
 
 - [I] Calibration-aware compilation on IBM hardware: none.
