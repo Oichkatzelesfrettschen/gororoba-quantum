@@ -44,7 +44,7 @@ one PUB per member, one routed candidate, an envelope backend, the replica count
 the ceilings, the seed draw and the commit. The calibration, layout and model values are the record's own; they are
 what the fresh plan adapts.
 
-Usage: "$PYTHON" scripts/n21_detuning_sign.py RUN_DIR [--out FILE]
+Usage: "$PYTHON" scripts/n21_detuning_sign.py RUN_DIR [--out FILE | --check FILE]
        "$PYTHON" scripts/n21_detuning_sign.py --preflight RECORD_DIR [--head COMMIT]
        "$PYTHON" scripts/n21_detuning_sign.py --self-test
 """
@@ -536,6 +536,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("run_dir", type=Path, nargs="?")
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path, help="require the decisions to equal this file's bytes")
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--preflight", type=Path, metavar="RECORD_DIR")
     parser.add_argument("--head", help="with --preflight: the commit the plan must have been made at")
@@ -549,7 +550,10 @@ def main() -> int:
     if args.run_dir is None:
         parser.error("a run directory or --self-test is required")
     text = json.dumps(analyze(args.run_dir), indent=1, sort_keys=True) + "\n"
-    if args.out:
+    if args.check:
+        require(args.check.read_text(encoding="utf-8") == text, f"{args.check}: the decisions replay differs")
+        print(f"n21 detuning sign: {args.check} replays from the raw registers")
+    elif args.out:
         args.out.write_text(text, encoding="utf-8")
     else:
         sys.stdout.write(text)

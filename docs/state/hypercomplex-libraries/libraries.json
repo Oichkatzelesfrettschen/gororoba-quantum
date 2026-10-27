@@ -8651,6 +8651,7 @@
    "parallel",
    "pathlib",
    "placement_feasibility",
+   "pub_calibration",
    "qiskit",
    "qiskit_aer",
    "qiskit_ibm_runtime",
@@ -9047,6 +9048,9 @@
    "itertools",
    "kernel_limits",
    "sympy"
+  ],
+  "gororoba_quantum/pub_calibration.py": [
+   "__future__"
   ],
   "gororoba_quantum/pub_shot_allocation.py": [
    "__future__",
@@ -12012,6 +12016,7 @@
    "collections",
    "diagnostic_experiments",
    "experiments",
+   "fractions",
    "glob",
    "hashlib",
    "json",
