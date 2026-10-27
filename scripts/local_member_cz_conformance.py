@@ -136,6 +136,11 @@ SCAFFOLD_CONTROLS: dict[str, str] = {
         "scaffold A/B arm: the template-bound readout against scaffold_measure_only and "
         "scaffold_x_measure isolates the scaffold's loss (diagnostic_controls.scaffold_ab_group)"
     ),
+    r"null(rep)?_\d_\d_[XY]": (
+        "gap-88 null arms bind primorial_campaigns.parametrized_arm at every network angle zero, so the "
+        "eight-CNOT parity network is the identity under the gap-88 arms' CZ count and schedule, and "
+        "primorial_tomography.null_subtracted removes the network's gate error from the fitted coefficients"
+    ),
 }
 # Members whose entangling circuit maps the prepared input to a product state,
 # each with what the circuit tests at that point.
@@ -148,6 +153,12 @@ PRODUCT_OUTPUT_PROBES: dict[str, str] = {
     r"ripple_walk_lane\d+_pair\d+_\d+_depth1_packed": (
         "depth-1 point of the walk depth axis, where the walk sends its input to a product state; like "
         "every depth it executes the shared walk template"
+    ),
+    r"g88(rep)?_\d_\d_[XY]": (
+        "gap-88 tomography arms: the diagonal network exp(-i gamma H) (primorial_tomography.parity_network) "
+        "keeps the prepared (|x> + |x ^ 2^j>)/sqrt2 a product with qubit j carrying the relative phase "
+        "2 gamma (H(x ^ 2^j) - H(x)), and the X and Y readouts of qubit j measure the cost coefficients c_S "
+        "the CZ write into that phase (primorial_campaigns)"
     ),
 }
 # Dynamic members whose ideal law is a point mass or a product over classical
@@ -184,6 +195,17 @@ DYNAMIC_LAW_PROBES: dict[str, str] = {
         "product of the two top phase bits, which read the order-4 eigenphases the controlled "
         "multiplications by 2 and 4 modulo 15 (order_finding.append_controlled_modular_multiply) kick onto "
         "the control; hybrid_shor_N15_a2_null runs the schedule without them (experiments._hybrid_shor_mod15)"
+    ),
+    r"lr_(ff_0|ff_w|frame_0|frame_l|frame_lw)_err_(XY|YX)": (
+        "quadrature arms of the latency-recovery family (latency_recovery.latency_recovery_circuit): the "
+        "recovered Bell pair gives <XY> = <YX> = 0 and a product law, and a coherent phase over the idle "
+        "window rotates the pair into these arms, which latency_recovery.coherence_and_phase reads"
+    ),
+    r"lr_ff_0_unencoded_err_(XX|YY)": (
+        "unencoded control of the latency-recovery family: with d1 and d2 unencoded the syndrome ancilla a0 "
+        "records Z on d0, which collapses the r-d0 Bell pair to <XX> = <YY> = 0 and a product law; the "
+        "lr_code_property contrast against lr_ff_0 measures the coherence the code preserves, and the CZ "
+        "prepare the pair and write that Z record"
     ),
     r"coherence_measure_reset_(xy|yx)": (
         "imaginary-part arms of the branch-signed coherence C = (S_XX + S_YY + i (S_XY - S_YX)) / 4: the "
