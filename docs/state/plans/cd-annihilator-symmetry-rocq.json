@@ -1,0 +1,111 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-annihilator-symmetry-rocq",
+  "kind": "investigation",
+  "summary": "Prove in Rocq, on the integer pair tower at every level, that a z = 0 exactly when z a = 0 (Corollary 9.3 of math/0511691) through the purity of annihilators, with direct finiteness as corollary, and retain the kernel receipts.",
+  "sources": [
+    "docs/notes/topics/cd-one-sided-inverses.md",
+    "docs/notes/math-0511691.md",
+    "proofs/CdImaginarySumConference.v",
+    "proofs/CdAnnihilatorSymmetry.v",
+    "docs/evidence/cd-annihilator-symmetry/README.md"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Opened from the closed plan cd-one-sided-inverses, whose next_action named this Rocq statement as the open follow-up (action item 7 of math-0511691.md). Scope read from the note's Lemmas 2 to 4, theorem and corollary and from the tower definitions of CdImaginarySumConference.v."
+  },
+  "scope": "proofs/CdAnnihilatorSymmetry.v, requiring proofs/CdImaginarySumConference.v unchanged: the norm law, the trace-form adjoint identities, the purity of annihilators, the kernel equality and direct finiteness with the integer-cleared right-inverse family, each for every element of the integer tower at every level; the bundle docs/evidence/cd-annihilator-symmetry/ with replay script, receipts and source hashes, wired into the Rocq replay job, the Kaggle replay driver, the ledger test and formalization.yaml. The real-coefficient tower and Lemma 9.2's identity x(x*y) = x*(xy) stay out of scope.",
+  "owner": "Repository Rocq maintainer",
+  "next_action": "None; the plan is closed.",
+  "related": [
+    "cd-one-sided-inverses",
+    "cd-tower-basis-sign-theorem"
+  ],
+  "steps": [
+    {
+      "id": "tower-proof",
+      "state": "done",
+      "action": "State and prove norm_mul, adjoint, purity_left, purity_right, kernel_equality, right_inverse_affine and direct_finiteness on the tower of CdImaginarySumConference.v by induction on the doubling, under rocq 9.3.0 with -w @all and no axiom.",
+      "acceptance": "Fails if rocq compile prints any output, if any Print Assumptions query prints other than Closed under the global context, or if a step needs associativity, division or a real-number axiom. Stop condition: a doubling case the induction cannot close is recorded and ends the step.",
+      "receipts": [
+        {
+          "result": "CdAnnihilatorSymmetry.v compiles under rocq 9.3.0 with -w @all and no output; all eleven Print Assumptions queries print Closed under the global context and rocq check passes; every step cancels a nonzero integer <x, x> and none divides or uses associativity.",
+          "observed_at": "2026-10-27T17:23:52+00:00",
+          "revision": "fa565c9a3ba070d4af8e29df68c62a81854350df",
+          "evidence": [
+            {
+              "ref": "proofs/CdAnnihilatorSymmetry.v",
+              "sha256": "7569e8bd34afa3a72732cca3d9b819d8c18ffb1caa23b4e084a88ebe12f00d94"
+            },
+            {
+              "ref": "proofs/CdImaginarySumConference.v",
+              "sha256": "a64c5ab797b4f84d358e5f674627000fa65649ab8e66ff84ad18927a9cbb4c82"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry/assumptions.txt",
+              "sha256": "003974cb4fe114d51c7d2eed462e080514b2036c2028e95effd020fa8e9fb5fb"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry/kernel.txt",
+              "sha256": "1de7fc1c54d5770ffa7bcdf6648613ce68aa1dac9a2a64871f5c62c808a75d2f"
+            }
+          ],
+          "scope_sha256": "148dbe68dc902bc5bc2f2082fe010205aec0eb5958b81d9e0db32f2c56d7607e"
+        }
+      ]
+    },
+    {
+      "id": "bundle-and-wiring",
+      "state": "done",
+      "action": "Retain assumptions.v, assumptions.txt, kernel.txt, toolchain.txt, source_hashes.sha256 and replay_rocq.sh under docs/evidence/cd-annihilator-symmetry/, and name the bundle in ci/gates.json (shellcheck gate), ci/rocq_changed.sh, the ci.yml replay selection, scripts/rocq_kaggle_replay.py, tests/test_evidence_ledgers.py and formalization.yaml.",
+      "acceptance": "Fails if replay_rocq.sh departs from its receipts, if ci/check_rocq_ci_pins.py reports the bundle missing from any surface, if the ledger test rejects source_hashes.sha256, or if formalization.yaml fails the retained v0.4 schema.",
+      "receipts": [
+        {
+          "result": "replay_rocq.sh passes against its receipts in 23 s; ci/check_rocq_ci_pins.py reports 13 bundles agreeing; tests/ci/test_rocq_ci_pins.py and tests/test_evidence_ledgers.py pass (58 tests); formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link.",
+          "observed_at": "2026-10-27T17:23:52+00:00",
+          "revision": "fa565c9a3ba070d4af8e29df68c62a81854350df",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry/replay_rocq.sh",
+              "sha256": "bb1f2555fd72ea1b63517b4cb1aa68ec915958ed79d375c4194a38f8ffbc932d"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry/source_hashes.sha256",
+              "sha256": "52faeb651f04fbdd8f4135fa8a3259f007a3b7b6b049a7cce80c188ba3441716"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-413",
+              "sha256": "482834e5ae2cd3d0f0f170e6dfae8cd4c0bfd77ec83131e9f75d983efa0003a3"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "f016b34afa9d2fccc36cb2b36ade0fb978de54c5f580c596c45dde8ff9c1ba81"
+            }
+          ],
+          "scope_sha256": "1e2aad9f9684a9ac7c7efe72bc7811d5133656ff1f0243d118f26e9b69ee813c"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "kernel_equality and direct_finiteness hold for every element of the integer pair tower at every level in proofs/CdAnnihilatorSymmetry.v, closed under the global context; the bundle replays against its receipts and every Rocq surface names it. The real-coefficient tower and Lemma 9.2's identity stay open.",
+  "receipts": [
+    {
+      "result": "Both steps are done with receipts at the revision that carries the proof, the bundle and the wiring.",
+      "observed_at": "2026-10-27T17:24:18+00:00",
+      "revision": "fa565c9a3ba070d4af8e29df68c62a81854350df",
+      "evidence": [
+        {
+          "ref": "proofs/CdAnnihilatorSymmetry.v",
+          "sha256": "7569e8bd34afa3a72732cca3d9b819d8c18ffb1caa23b4e084a88ebe12f00d94"
+        },
+        {
+          "ref": "docs/evidence/cd-annihilator-symmetry/README.md",
+          "sha256": "ee243cc3f86a69e790fc53dc30c3abcf02baf9f930f659e8806f488ca3c5b1b3"
+        }
+      ],
+      "scope_sha256": "bd909737bd70ba2f97741936579c648d311c204d15b51d1b6d45806667e78c71"
+    }
+  ]
+}
