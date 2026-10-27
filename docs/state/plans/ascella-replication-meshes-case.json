@@ -12,14 +12,14 @@
     "docs/evidence/ascella-order-coefficients/new-seed-score.json",
     "docs/evidence/ascella-order-coefficients/replication-offsets.json"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
     "note": "Plan ascella-new-seed-meshes-case read P-B (offsets fitted on job-00 plus the 56 meshes of jobs 02 and 03) carried on 147 unseen meshes at within-job r 0.319 (one-sided p 4.4e-5), positive-direction share 10.5 % (1.4 to 25.6 %), and P-A (28 exploration meshes) not carried at r 0.157. The owner approved two further 96-iteration jobs on 2026-10-26 as a separate test. The predictors below are frozen and pushed before the replication's seeds are drawn."
   },
   "scope": "Acquisition: job-06 submits theta2-x-arm0 (configuration 13 of job-00) 96 times at 32,768 samples and 32,768 max_shots per iteration, the seed-0 mesh of job-00 at every eighth position (12 anchors) and 84 positions at fresh ANU QRNG seeds drawn after this plan's predictors are pushed (nonzero, repeats and every seed of jobs 02, 04 and 05 skipped, index order). Job-07 runs 96 iterations at the next 84 usable values when job-06 completed with every iteration counted, and 88 iterations (job-07-i88, 77 seeds) otherwise; 88 iterations of 32,768 samples completed in 265 s in job-05, and 80 in 243 s in job-04, so 96 projects to about 287 s by those two points against the 300 s max_duration, whose expiry behavior is undocumented. The rule reads completion alone, never an X count. Credits: 1.032768 per job, 2.065536 for both, of 126.55 free credits left before the 1 November reset. Predictors, frozen in docs/evidence/ascella-order-coefficients/replication-offsets.json, family heater_0.3_coupler_0.1_offsets: R-B, P-B of new-mesh-offsets.json unchanged; R-C, the same family refitted on job-00, the 56 meshes of jobs 02 and 03 and the 147 scored meshes of jobs 04 and 05 (233 training meshes, 258 free offsets). Score, scripts/ascella_replication_score.py on the contract of scripts/ascella_new_mesh_score.py: references exactly jobs 00, 02, 03, 04 and 05-i88, whose meshes are excluded; job-05-i88's anchors set the baseline; each new run's cases.json equals its frozen case; the new runs are job-06 followed by the job-07 variant the rule admits; a partial job stays descriptive and the primary reads the other alone. Primary per predictor: within-job-centered Pearson r, one-sided t on n - 1 - J degrees of freedom at alpha 0.005 each (Bonferroni 0.01); Fisher-z bounds at 99.5 %; positive-direction share r^2 / c^2 with the plug-in ceiling. Anchor control: the anchor mean less job-05-i88's reads steady when its whole 99 % interval lies within +-s_c (0.0119). Outcomes in order: not read; both carried; R-B carried only; R-C carried only; inconclusive: anticorrelated; inconclusive: anchors moved; bounded when both upper shares lie below 10.5 %, P-B's new-seed share; otherwise inconclusive. R-B carried replicates the new-seed reading on independent meshes; R-C carried alone places the gain in the 147 meshes jobs 04 and 05 added; bounded refutes the 10.5 % share. Sizing under ascella_new_seed_sizing.branch with the new-seed counting variance: 96 + 96 iterations give 168 meshes, critical r 0.199, power 0.946 at latent r 0.318 and 0.741 at 0.25, and a bounded reading at r 0 with probability 0.946 per predictor; 96 + 88 give 161 meshes and power 0.935; job-07-i88 alone 77 meshes and power 0.583.",
   "owner": "ascella signed-coherence analysis",
-  "next_action": "Draw the seeds from the ANU QRNG, register job-06 and job-07 in ascella_coherence_request.py, freeze their bodies and preflight.",
+  "next_action": "None; the remaining two thirds of the per-mesh error await the applied voltages of Perceval#799.",
   "related": [
     "ascella-new-seed-meshes-case",
     "ascella-fixed-mesh-confirmation"
@@ -49,28 +49,113 @@
       "id": "request-builder",
       "action": "Draw the seeds from the ANU QRNG and register job-06 and job-07-i88 and -i96 with stride-8 anchors, frozen bodies and a preflight that sends nothing.",
       "acceptance": "--check reproduces the frozen bytes of jobs 00 to 05 and validates the new jobs; no new seed is zero or a seed of jobs 02, 04 or 05.",
-      "state": "doing",
+      "state": "done",
       "depends_on": [
         "frozen-offsets"
+      ],
+      "receipts": [
+        {
+          "result": "ascella_coherence_request.py registers job-06 (96 iterations, usable values 0 to 83 of draw-2026-10-27T003715Z.json) and job-07-i88 and -i96 (from usable value 84) at 32,768 samples with stride-8 anchors; --check rebuilds jobs 00 to 05 to their retained bytes and validates the new frozen bodies; the 168 seeds are distinct, nonzero and outside every seed of jobs 02, 04 and 05.",
+          "evidence": [
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-06/cases.json",
+              "sha256": "d873ebbac64210b557cbdd36122d522f51bf2e38f9c6dacef10901d6d665d88a"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-06/job-body.json",
+              "sha256": "ca96018d6479c4afa32797bc22bf51985e37db80e6280670ad2697b17a3f701b"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-07-i88/cases.json",
+              "sha256": "e6ceae5460080e29d10d75fb3d546f0b92bfbdc8e979ade4f4be0c1d48520ba0"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-07-i96/cases.json",
+              "sha256": "0b8d9e8f25addd44cbae413d08861c7b580416321048e8991c61db32d4ac5c10"
+            },
+            {
+              "ref": "results/quandela/cases/ascella_signed_coherence/job-07-i96/job-body.json",
+              "sha256": "3abd7e01a675bb86fdee0575f7a54ed29425853ec784db4ce1115b9cfcb7ab70"
+            }
+          ],
+          "observed_at": "2026-10-27T00:59:13+00:00",
+          "revision": "9e53324627624f87361cdf06811daa7b0eb9ac46",
+          "scope_sha256": "da05137f9e2305a309b91eb5a36f718423880a4c67c1330826d766c395b09eb1"
+        }
       ]
     },
     {
       "id": "acquisition",
       "action": "Submit job-06, then the job-07 variant job-06's completion admits, and retain both runs with platform-before and platform-after.",
       "acceptance": "Both runs are retained with results.json, collect records and platform snapshots, and their credits match the ledger.",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "request-builder"
+      ],
+      "receipts": [
+        {
+          "result": "Job-06 (d54d0e9d) returned 96 of 96 iterations in 288 s and admitted job-07-i96; job-07 (f27ad639) returned 96 of 96 in 289 s; each debited 1.032768 free credits, and both runs are retained with platform-before and platform-after.",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06/results.json",
+              "sha256": "ed728d01a828c59b171c849c5b01fe25f36ce78c6e06155ee55410fd65749e8c"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96/results.json",
+              "sha256": "d3083e0fcb7a55b42bffbcea0e96c7fa4ee335c1659d72aad9c3d0f08b4db39b"
+            }
+          ],
+          "observed_at": "2026-10-27T00:59:13+00:00",
+          "revision": "9e53324627624f87361cdf06811daa7b0eb9ac46",
+          "scope_sha256": "e28111e4595adc8a4bef6629e68c19f4c70dec3e5a13b1d3a9db655eb6c22491"
+        }
       ]
     },
     {
       "id": "score",
       "action": "Score both predictors with ascella_replication_score.py, add its replay gate, and register the acquisitions and the claim.",
       "acceptance": "replication-score.json replays under --check in its gate, and research_state.json registers the runs and the outcome.",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "acquisition"
+      ],
+      "receipts": [
+        {
+          "result": "replication-score.json reads both carried: R-B r 0.240 (p 8.8e-4, share 6.0 %, 0.2 to 18.2 %), R-C r 0.404 (p 3.1e-8, share 16.9 %, 5.2 to 32.2 %) on 168 unseen meshes with steady anchors; its replay gate and claim ascella-signed-coherence-replication-offsets are registered.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-score.json",
+              "sha256": "ae5a109a1c0e19aced9d5c25fda807b269d56b72eeb91fbbc7cbba857de1e2af"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=ascella-signed-coherence-replication-offsets",
+              "sha256": "ff8a7d61dad5abfe2a88c6c64276ef26e6284358b89b217c75aee155b6d7ad35"
+            }
+          ],
+          "observed_at": "2026-10-27T00:59:13+00:00",
+          "revision": "9e53324627624f87361cdf06811daa7b0eb9ac46",
+          "scope_sha256": "3761a353e8835262422487094ae72236a0ae329ae6cf533068e1afeedb38dbe0"
+        }
       ]
+    }
+  ],
+  "disposition": "completed",
+  "claims": [
+    "ascella-signed-coherence-replication-offsets"
+  ],
+  "resolution": "On 168 meshes no fit had seen (jobs d54d0e9d and f27ad639, 96 iterations each), the P-B offsets unchanged carry the fixed per-mesh error again at within-job r 0.240 (p 8.8e-4, share 6.0 %, 0.2 to 18.2 %), and the same family refitted on 233 meshes carries more at r 0.404 (p 3.1e-8, share 16.9 %, 5.2 to 32.2 %). Outcome both carried.",
+  "receipts": [
+    {
+      "result": "All four steps are done; the runs, the score and its replay gate are retained, and claim ascella-signed-coherence-replication-offsets registers the result.",
+      "evidence": [
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/replication-score.json",
+          "sha256": "ae5a109a1c0e19aced9d5c25fda807b269d56b72eeb91fbbc7cbba857de1e2af"
+        }
+      ],
+      "observed_at": "2026-10-27T00:59:23+00:00",
+      "revision": "9e53324627624f87361cdf06811daa7b0eb9ac46",
+      "scope_sha256": "32775af6a385fb79482c9c8de824391bcf281b6ec1f7c5116a9b09fe7a4e7a06"
     }
   ]
 }

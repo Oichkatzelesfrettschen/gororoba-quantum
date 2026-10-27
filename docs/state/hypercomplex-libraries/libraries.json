@@ -2572,6 +2572,7 @@
     "scripts/ascella_mesh_decomposition.py",
     "scripts/ascella_new_mesh_score.py",
     "scripts/ascella_physical_models.py",
+    "scripts/ascella_replication_offsets.py",
     "scripts/ascella_response_geometry.py",
     "scripts/ascella_seed_repeat_reading.py",
     "scripts/ascella_source_detector.py",
@@ -9856,6 +9857,28 @@
    "photonic_compilation_audit",
    "qd_belenos_mesh",
    "scipy",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_replication_offsets.py": [
+   "__future__",
+   "ascella_compilation_reading",
+   "ascella_fixed_mesh_confirmation",
+   "ascella_fixed_mesh_error",
+   "ascella_new_mesh_offsets",
+   "ascella_new_mesh_score",
+   "ascella_physical_models",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
+  "scripts/ascella_replication_score.py": [
+   "__future__",
+   "ascella_new_mesh_score",
+   "pathlib",
    "sys",
    "typing"
   ],
