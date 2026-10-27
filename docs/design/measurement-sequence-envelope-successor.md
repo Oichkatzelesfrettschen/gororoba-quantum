@@ -75,7 +75,7 @@ the next rotation, so its gap at the measure arm's implied loss moves with q and
 post-measurement channel the constructor's 2 us gap was built to probe (residual readout photons, detuning during the
 next rotation; [heron-r2-readout-resonator.md](../notes/ibm_quantum/heron-r2-readout-resonator.md)). It is a
 composite q-consistency veto, not an estimate of q: a pooled settle z beyond 3 in either direction withholds the
-device-level departure verdict, and a qubit whose own settle z exceeds 3 is withheld. The settle standard error adds
+device-level departure verdict, and a qubit whose own settle |z| exceeds 3 is withheld. The settle standard error adds
 an independent per-qubit device-scatter term tau, estimated in the job by solving sum g^2 / (s^2 + tau^2) = n over the
 qubits that pass every gate independent of settle (eligibility, pattern, admission, carryover, equilibrium), and
 floored at 0.0019, the retained run's pilot value on the qubits that pass its pattern screen.
@@ -102,10 +102,14 @@ controls rc1 and rc0 stay as a reported diagnostic.
 
 Order. The readers read about zero under any order but column-wise, so two preregistered conditions establish the
 order and fail closed, withholding every qubit when either fails: the executor's `chunk_timing` reports one chunk
-holding every PUB, and order sentinels pass in each third of the job. The constructor places pairs of consecutive
-delay-arm rows (phase-sensitive, the strongest adjacency signal) at the head, between the reader blocks and among the
-pattern rows at the tail; each segment's same-shot conditional differences must exceed their one-column-misaligned
-counterparts at pooled one-sided z above 3 (the retained run's head segment gives 57.9).
+holding every PUB (no repository source documents the order of `chunk_timing`'s parts as execution order, so the
+chunk condition rules out a reported split and no more), and order sentinels pass in each third of the job. The
+constructor places two pairs of consecutive delay-arm rows at N = 4 or N = 8 at the head, between the reader blocks
+and among the pattern rows at the tail; each segment's same-shot conditional differences, minus the mean of the
+one-column-misaligned ones, must reach pooled one-sided z above 3. On the retained run a single N = 4 or N = 8 pair
+gives z 10 to 21, so two pairs per segment pass with a wide margin, while the N = 1 pairs give -0.7 to 2.0 and are
+not used; a run whose frequency noise falls far enough to fail this withholds every qubit, which the case states as
+the run's remaining all-withheld risk.
 
 ## Verdicts
 
@@ -139,6 +143,21 @@ veto with its in-job tau, and the departure, count-rule and mutation verdicts.
   so that withholding cannot manufacture a clean bound.
 - The order conditions gate data validity and leave every downstream statistic unevaluated when they fail, so they
   stay out of the null; a member-count simulator has no shot order.
+- The null's bound is the error guarantee of the whole pipeline; the per-component levels (admission, carryover, q_hat,
+  settle) are tuning choices it calibrates.
+- Coverage: the null draws only the retained run's calibrations. At dry run the analysis records the range of each
+  drawn quantity (T1, T2, readout errors, sx error, shape), and a live qubit with any value outside it is withheld
+  from the departure verdict; the case reports how many qubits that rule removes.
+
+## What the run can detect
+
+The departure test's sensitivity is set by the per-qubit gate-model systematic (about 0.016 to 0.019), which
+`pooled_z` adds as a shared term, so it does not shrink with the qubit count. The eight-qubit planning record
+([minimum-detectable-measured-floor.json](../evidence/measurement_sequence/minimum-detectable-measured-floor.json))
+gives a minimum detectable pooled departure of -0.052 in N = 16 P0, a per-step loss near 0.0047. The q, shape and
+carryover terms this design bounds sit an order of magnitude below that. The expected outcome is `consistent` unless
+the measurement-induced loss exceeds about 0.005 per step; the case recomputes the limit at the selected width and
+states it as what the run measures.
 
 ## Cost, size and approval scope
 
