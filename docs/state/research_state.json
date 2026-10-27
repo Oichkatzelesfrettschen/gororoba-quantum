@@ -3336,7 +3336,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; item 4 (smooth strata, singular loci and normal links) is discharged by a5-strata-regularity, which decomposes R_8 minus 0 into twelve orbits of G_2(C) x SO(2, C) x C^* and gives a Whitney stratification with every transverse germ; kernel bundles, attachments and integral invariants (roadmap items 5-8) remain open.",
+      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; item 4 (smooth strata, singular loci and normal links) is discharged by a5-strata-regularity, which decomposes R_8 minus 0 into twelve orbits of G_2(C) x SO(2, C) x C^* and gives a Whitney stratification with every transverse germ; item 5 (kernel bundles) is discharged on D_(5,12) and D_(5,16) by a5-kernel-bundles; kernel bundles on the nullity-8 and nullity-4 strata, attachments and integral invariants (roadmap items 6-8) remain open.",
       "evidence": [],
       "documents": [
         "docs/RESEARCH_ROADMAP.md",
@@ -3354,7 +3354,8 @@
         "nullity-twelve-cone",
         "a5-zero-divisor-strata",
         "a5-rank-strata-equations",
-        "a5-strata-regularity"
+        "a5-strata-regularity",
+        "a5-kernel-bundles"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -6296,6 +6297,105 @@
       "depends_on": [
         "a5-zero-divisor-strata",
         "a5-rank-strata-equations"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-kernel-bundles",
+      "statement": "Over the smooth pieces of nullity at least 12 of the A_5 zero-divisor set (B9, V, VB, V^a_+, V^a_-, N_+, N_-), the kernel ker L_y is a complex vector bundle under J = L_(e_16), identified with (conj o phi)^-1 ker A(z, conj z). The constant real symmetries transporting kernels form g_2 plus four central directions; the boost of split coordinates has no lift. Under compact G_2 x U(1), N_+- is homogeneous with stabilizer U(2), V^a_+- is cohomogeneity one (invariant rho in (0, 1]), V has orbit quotient (CP^1 minus {+i, -i}) x (0, 1], and B9, VB, N_+- are the open trace-one Hermitian three-ball, its rank-one boundary minus two points, and those two points. The stabilizer acts on the kernel as 2 V_0 + 2 V_1 (SU(2)) on principal V and V^a_+- orbits, 3 + conj(3) (SU(3)) at rho = 1, 3 C_(-1) + 3 C_(-2) (U(1)) on B9, V(0,-4) + 2 V(1,-3) + V(0,-2) (U(2)) on VB, and that module plus V(1,-1) on N_+-. All five nullity-twelve complex kernel bundles are trivial; on N_+- the complex bundle is C^2 + 3 xi over V_2(R^7) with the nonzero class x = [xi] - 2 in reduced K^0(V_2(R^7)) = Z/2, while every real kernel bundle is trivial and every Chern, Stiefel-Whitney and Pontryagin class vanishes.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proofs in docs/evidence/a5-kernel-bundles/README.md, produced by a Codex CLI program (docs/design/a5-kernel-bundles-program.md) under orchestrator review. Eleven producers replay byte for byte (replay gates) and carry mutation self-tests (admission gates); verify_kernel_bundles_independent.py re-derives the symmetry algebra, stabilizers, representations, N_+- branching and K-group, generic orbit dimensions and invariant completeness from cd_core at independent points. Arguments rather than computations: the unit-section homotopy types (fibrations, Wang and Alexander duality), Hodgkin's spectral sequence for V_2(R^7) = G_2/SU(2), the stable-cancellation steps (B9 rests on an explicit section, not cancellation), and simple transitivity of G_2 on the B9 frames. Open: exhaustiveness of the component group (a visible S_3 x Z_2 is found), real triviality of each individual xi, the disconnected equivariance, the nullity-8 and nullity-4 strata, and roadmap items 6-8; not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-kernel-bundles/result.json",
+          "sha256": "fa6af754e697dbf4a7490c1312449477817ca8e69f4c9add577ea3ef23e333d5"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/frames-result.json",
+          "sha256": "07cb7c0db4bace6961a06063a36bb638ae4639bcfe1ade041ba726f6f2307476"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/stabilizer-result.json",
+          "sha256": "52feb8e0fc3bbc7f1c8a413ba03733fa0b65f44cf4442b87de36ce58e9d87092"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json",
+          "sha256": "33196fa92daa52bc9a30142674235182fa6875df7d2c6b3fde58bbfa726b66ec"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json",
+          "sha256": "c36b3c01665608b25a41fa3af2f84c60ff0306b3b7b11621f9e268f93aa083a9"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/aligned-stabilizer-result.json",
+          "sha256": "cb2328d55edff142c61c054d64ff632dada447d7cea585e7185dcb380aaf40c1"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json",
+          "sha256": "07dc79facf758da94b4d3a7a79d441a95c84cc111754acf2be0c6c171eec52d6"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/v-topology-representation-result.json",
+          "sha256": "48497e33226d44bd33c1078495e39272cbc92b2ef3ddbbd3e3541c34c6a63bba"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json",
+          "sha256": "ab251c1601cd6fa9d8e75b95195194dd8a3f9085d3293c962b8c2d613a654550"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/transition-atlas-result.json",
+          "sha256": "3570c30e6f42f9d4cc1cac157611e93eec8f8e87ae692a64ca90971cc484961c"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/bundle-invariants-result.json",
+          "sha256": "e7f783f633339562d78d9d04fd25de9a631ac9b68aab4c2af8d39a80151513d7"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/verification.json",
+          "sha256": "b4b7a54514cb451f83468d47ea452adb97bbd6a8d8e95e01ca02d5a8a4e5fa18"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-kernel-bundles/README.md",
+        "docs/evidence/a5-kernel-bundles/verification.md",
+        "docs/design/a5-kernel-bundles-program.md"
+      ],
+      "gates": {
+        "core-713": "replay",
+        "core-714": "admission",
+        "core-715": "replay",
+        "core-716": "admission",
+        "core-717": "replay",
+        "core-718": "admission",
+        "core-719": "replay",
+        "core-720": "admission",
+        "core-721": "replay",
+        "core-722": "admission",
+        "core-723": "replay",
+        "core-724": "admission",
+        "core-725": "replay",
+        "core-726": "admission",
+        "core-727": "replay",
+        "core-728": "admission",
+        "core-729": "replay",
+        "core-730": "admission",
+        "core-731": "replay",
+        "core-732": "admission",
+        "core-733": "replay",
+        "core-734": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-zero-divisor-strata",
+        "a5-strata-regularity",
+        "a5-stiefel-universal"
       ],
       "supersedes": [],
       "superseded_by": null,
