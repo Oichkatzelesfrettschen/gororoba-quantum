@@ -109,6 +109,9 @@ TWIRLING_RANDOMIZATIONS = 32
 # Campaigns whose members carry the structure-preserving compilation contract and run on the paths
 # --pin-layout names: the coherence probes and the primorial gap-88 tomography of those paths.
 PINNED_CAMPAIGNS = frozenset({"coherence_probes", "primorial_gap88"})
+# Campaigns --pin-layout may also place: idle_penalty places by the quality policy, and a pin holds one ordered
+# cohort of (target, spectator) pairs fixed so two runs compare the same qubits in the same roles.
+PIN_CAPABLE_CAMPAIGNS = PINNED_CAMPAIGNS | {"idle_penalty"}
 TWIRLING_MIN_SHOTS_PER_RANDOMIZATION = 64
 OPT_LEVEL = 3
 SEED_TRANSPILER = 20261010
@@ -3783,6 +3786,12 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                 # dynamical decoupling would fill with echo pulses, and twirling would randomize the
                 # coherent phases the during and after arms compare.
                 raise LiveRunError("idle_penalty runs without dynamical decoupling or twirling; omit --dd and --twirl")
+            if "idle_penalty" in campaigns and (pin := getattr(args, "pin_layout", None)) is not None:
+                paths = len(pin.get("replicas", [pin["qubits"]]))
+                if args.max_replicas != paths:
+                    raise LiveRunError(
+                        f"idle_penalty runs one replica on each pinned path; pass --max-replicas {paths}"
+                    )
             if "qubit_baseline" in campaigns and args.dd:
                 # The Ramsey and relaxation idles measure free evolution, which
                 # dynamical decoupling would fill with echo pulses.
@@ -7170,9 +7179,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.pin_layout is not None and "replicas" in args.pin_layout and args.family is not None:
         parser.error("--pin-layout names one path for a family; several paths apply to the pinned campaigns only")
     if args.pin_layout is not None and args.family != "n21-orbit-rca":
-        if args.family is not None or not args.groups or not set(args.groups) <= PINNED_CAMPAIGNS:
+        if args.family is not None or not args.groups or not set(args.groups) <= PIN_CAPABLE_CAMPAIGNS:
             parser.error(
-                f"--pin-layout applies to the n21-orbit-rca family and the campaigns {sorted(PINNED_CAMPAIGNS)} only"
+                f"--pin-layout applies to the n21-orbit-rca family and the campaigns {sorted(PIN_CAPABLE_CAMPAIGNS)} "
+                "only"
             )
     if args.init_herald and args.family != "n21-orbit-rca":
         parser.error("--init-herald applies to the n21-orbit-rca family only")
