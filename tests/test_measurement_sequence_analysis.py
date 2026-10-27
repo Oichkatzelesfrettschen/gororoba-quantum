@@ -201,27 +201,24 @@ def test_planning_point_and_injected_effects() -> None:
     check(not any(rows["no relaxation in the window"]["device"].values()))
 
 
-def test_gate_model_error_rows() -> None:
-    """A gate error scaled up is never attributed, a null device with a moderate model error reads none, a real
-    departure on that device is attributed, and errors that cancel in the unitary arm are not attributed."""
-    rows = _rows(
-        (
-            "sx x3",
-            "model error, residual -0.016 to +0.014",
-            "model error -0.016..+0.014 + measure eps 0.02",
-            "model error, residual -0.016 to +0.033",
-            "model error -0.016..+0.033 + measure eps 0.02",
-            "axis tilt 0.02 + sx x3",
-        )
-    )
+# The gate-model rows split three ways so each test's sweep stays inside the pull-request budget.
+def test_scaled_gate_errors_are_never_attributed() -> None:
+    """A gate error scaled up is never attributed, and errors that cancel in the unitary arm are not attributed."""
+    rows = _rows(("sx x3", "axis tilt 0.02 + sx x3"))
     stress = rows["sx x3"]
     check(not stress["device"]["departs_below"] and not stress["device"]["exceeds_prediction"], f"{stress['device']}")
     check(min(stress["unitary_residual"].values()) > 0.01)
-    check(set(rows["model error, residual -0.016 to +0.014"]["device_status"].values()) == {"none"})
-    check(rows["model error -0.016..+0.014 + measure eps 0.02"]["device"]["departs_below"])
-    check(set(rows["model error, residual -0.016 to +0.033"]["device_status"].values()) == {"none"})
-    check(rows["model error -0.016..+0.033 + measure eps 0.02"]["device"]["departs_below"])
     check(not rows["axis tilt 0.02 + sx x3"]["device"]["departs_below"])
+
+
+@pytest.mark.parametrize("residual", ("+0.014", "+0.033"))
+def test_moderate_model_error_reads_none_and_attributes_a_real_departure(residual: str) -> None:
+    """A null device with a moderate model error reads none, and a real departure on that device is attributed."""
+    null = f"model error, residual -0.016 to {residual}"
+    departure = f"model error -0.016..{residual} + measure eps 0.02"
+    rows = _rows((null, departure))
+    check(set(rows[null]["device_status"].values()) == {"none"})
+    check(rows[departure]["device"]["departs_below"])
 
 
 def test_large_model_error_reads_uninformative() -> None:

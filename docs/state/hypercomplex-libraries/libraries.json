@@ -6136,6 +6136,7 @@
     "scripts/qi_shot_record_line.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_sector_endpoint_decomposition.py",
+    "scripts/remeasure_history.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
     "scripts/state_prep_split.py",
@@ -6213,6 +6214,7 @@
     "scripts/qi_shot_record_line.py",
     "scripts/qi_zz_map_analysis.py",
     "scripts/rank_sector_endpoint_decomposition.py",
+    "scripts/remeasure_history.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
     "scripts/state_prep_split.py",
@@ -13544,6 +13546,19 @@
    "json",
    "pathlib",
    "re",
+   "typing"
+  ],
+  "scripts/remeasure_history.py": [
+   "__future__",
+   "argparse",
+   "diagnostic_experiments",
+   "json",
+   "math",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "sys",
+   "tempfile",
    "typing"
   ],
   "scripts/render_folded_job_review.py": [

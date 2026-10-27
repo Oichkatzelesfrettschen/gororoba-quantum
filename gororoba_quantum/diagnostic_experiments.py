@@ -185,18 +185,32 @@ _SIGNED = (0.0, 1.0, 0.0, -1.0)
 # job; the X after the measurement makes H dynamic
 # (local_compute.is_dynamic), so that job runs with twirling and DD off.
 STATE_PREP_FAMILY = "state-prep-control"
-STATE_PREP_ARMS = ("prep0", "reset", "x", "x_history")
+# The order is the row order of the fused PUBs within one job: the service
+# runs every circuit of shot s in that order before shot s + 1
+# (docs/notes/ibm_quantum/repetition-rate-execution.md), so a remeasure shot
+# follows an x_remeasure shot, the |1> readout event the arm conditions on.
+STATE_PREP_ARMS = ("prep0", "reset", "x", "x_history", "x_remeasure", "remeasure")
 # The selection an omitted --state-prep-arms makes.
 STATE_PREP_DEFAULT_ARMS = ("prep0", "reset", "x")
 STATE_PREP_HISTORY_ARM = "x_history"
+# The two arms that read each shot twice. A measurement projects the qubit
+# onto the state it reads up to misassignment, so the second read separates a
+# population the first read found (it reads 1 again, less T1 decay over one
+# measurement) from a misassignment of the first read (it reads the prepared
+# state). Bit 0 of the register is the first read, bit 1 the second.
+STATE_PREP_REMEASURE_ARMS = ("x_remeasure", "remeasure")
 STATE_PREP_ARM_STEPS = {
     "prep0": "init, measure",
     "reset": "init, reset, measure",
     "x": "x, measure",
     "x_history": "init, measure, x",
+    "x_remeasure": "x, measure, measure",
+    "remeasure": "init, measure, measure",
 }
 # Arms whose circuits local_compute.is_dynamic classifies dynamic: each runs
-# in its own per-qubit group, since one group holds one job kind.
+# in its own per-qubit group, since one group holds one job kind. A second
+# measurement after the first is no later quantum work, so the remeasure arms
+# are static and fuse into the static job with prep0 and x.
 STATE_PREP_DYNAMIC_ARMS = ("reset", "x_history")
 # The retained n21-feedback-encoded dry run whose R = 2 replica qubits the
 # family measures when --layout is absent; repository-relative.
@@ -206,8 +220,19 @@ STATE_PREP_SOURCE_RECORD = "results/live/2026-10-17T130242.718497Z/record.json"
 # Hoeffding radius of one PUB is 0.0213 at 8192 shots and 0.0301 at 4096; a
 # two-PUB difference takes 0.0445 and 0.0630, so 8192 shots is the smallest
 # admitted power-of-two tier.
-STATE_PREP_PRECISION = {"excited": 0.025, "reset_benefit": 0.05, "one_column": 0.025, "history_excited": 0.025}
+STATE_PREP_PRECISION = {
+    "excited": 0.025,
+    "reset_benefit": 0.05,
+    "one_column": 0.025,
+    "history_excited": 0.025,
+    "remeasure_excited": 0.025,
+    "remeasure_persisting": 0.025,
+    "x_remeasure_one_column": 0.025,
+}
 _EXCITED = (0.0, 1.0)
+# Scores over the two-read register, outcome index = first read + 2 * second read.
+_FIRST_READ_ONE = (0.0, 1.0, 0.0, 1.0)
+_BOTH_READS_ONE = (0.0, 0.0, 0.0, 1.0)
 
 
 def state_prep_member(arm: str, qubit: int) -> str:
@@ -215,26 +240,30 @@ def state_prep_member(arm: str, qubit: int) -> str:
 
 
 def state_prep_circuit(arm: str, qubit: int) -> QuantumCircuit:
-    """One arm on one qubit: init then measure, init-reset-measure, x then measure, or measure then x."""
+    """One arm on one qubit: STATE_PREP_ARM_STEPS, the remeasure arms on a two-bit register."""
     if arm not in STATE_PREP_ARMS:
         raise ValueError(f"unknown state-prep arm {arm!r}")
-    circuit = QuantumCircuit(1, 1, name=state_prep_member(arm, qubit))
+    remeasure = arm in STATE_PREP_REMEASURE_ARMS
+    circuit = QuantumCircuit(1, 2 if remeasure else 1, name=state_prep_member(arm, qubit))
     if arm == "reset":
         circuit.reset(0)
-    elif arm == "x":
+    elif arm in ("x", "x_remeasure"):
         circuit.x(0)
     circuit.measure(0, 0)
     if arm == STATE_PREP_HISTORY_ARM:
         circuit.x(0)
+    if remeasure:
+        circuit.measure(0, 1)
     return circuit
 
 
 def state_prep_arms(arms: Any = None) -> tuple[str, ...]:
     """The selected arms in STATE_PREP_ARMS order; None selects prep0, reset and x.
 
-    Every selection holds prep0, or is x_history alone: x_history sets the
-    history of every shot of its job, so another arm in that job would start
-    from a |1> history as well.
+    Every selection reads the initial excited fraction through prep0 or
+    remeasure, or is x_history alone: x_history sets the history of every
+    shot of its job, so another arm in that job would start from a |1>
+    history as well.
     """
     if arms is None:
         return STATE_PREP_DEFAULT_ARMS
@@ -245,20 +274,26 @@ def state_prep_arms(arms: Any = None) -> tuple[str, ...]:
         raise ValueError(
             "x_history sets the end state every shot of its job leaves, so it runs as the only arm of its job"
         )
-    if "prep0" not in selected and selected != (STATE_PREP_HISTORY_ARM,):
+    if not {"prep0", "remeasure"} & set(selected) and selected != (STATE_PREP_HISTORY_ARM,):
         raise ValueError(
-            "the family measures the initial excited fraction, which only the prep0 and x_history arms read"
+            "the family measures the initial excited fraction, which only the prep0, remeasure and x_history arms read"
         )
     return tuple(arm for arm in STATE_PREP_ARMS if arm in selected)
 
 
+def _two_read_fractions(law: np.ndarray) -> tuple[float, float]:
+    """(P(first read 1), P(both reads 1)) of a two-bit law indexed first read + 2 * second read."""
+    return float(law[1] + law[3]), float(law[3])
+
+
 def state_prep_groups(qubits: list[int], arms: Any = None) -> list[Group]:
-    """Per qubit, a static group (prep0, then x) and one dynamic group per dynamic arm (reset, x_history).
+    """Per qubit, a static group (prep0, x, x_remeasure, remeasure) and one dynamic group per dynamic arm.
 
     Fusion joins row r of every group of one kind into one PUB, so PUB A
     measures every qubit's prep0 arm in the same shots, PUB C every x arm,
     the dynamic PUB B every reset arm, and the dynamic PUB H, alone in its
-    job, every x_history arm.
+    job, every x_history arm. The remeasure arms follow in the static job,
+    x_remeasure before remeasure, each on a two-bit register.
     """
     if not qubits or len(set(qubits)) != len(qubits) or any(type(q) is not int or q < 0 for q in qubits):
         raise ValueError(f"state-prep-control needs distinct nonnegative qubits, got {qubits}")
@@ -266,7 +301,14 @@ def state_prep_groups(qubits: list[int], arms: Any = None) -> list[Group]:
     static_arms = tuple(arm for arm in selected if arm not in STATE_PREP_DYNAMIC_ARMS)
     groups = []
     for qubit in qubits:
-        ideal = {"prep0": (1.0, 0.0), "reset": (1.0, 0.0), "x": (0.0, 1.0), "x_history": (1.0, 0.0)}
+        ideal = {
+            "prep0": (1.0, 0.0),
+            "reset": (1.0, 0.0),
+            "x": (0.0, 1.0),
+            "x_history": (1.0, 0.0),
+            "x_remeasure": (0.0, 0.0, 0.0, 1.0),
+            "remeasure": (1.0, 0.0, 0.0, 0.0),
+        }
         members = {
             arm: Member(
                 state_prep_member(arm, qubit),
@@ -279,11 +321,20 @@ def state_prep_groups(qubits: list[int], arms: Any = None) -> list[Group]:
 
         def summarize_static(distributions: dict[str, np.ndarray], qubit: int = qubit) -> dict[str, float]:
             names = {"prep0": f"q{qubit}_excited_fraction", "x": f"q{qubit}_one_fraction"}
-            return {
+            out = {
                 names[arm]: float(distributions[state_prep_member(arm, qubit)][1])
                 for arm in names
                 if state_prep_member(arm, qubit) in distributions
             }
+            for arm, first, both in (
+                ("remeasure", "remeasure_excited_fraction", "remeasure_persisting_fraction"),
+                ("x_remeasure", "x_remeasure_one_fraction", "x_remeasure_both_one_fraction"),
+            ):
+                if state_prep_member(arm, qubit) in distributions:
+                    read_one, both_one = _two_read_fractions(distributions[state_prep_member(arm, qubit)])
+                    out[f"q{qubit}_{first}"] = read_one
+                    out[f"q{qubit}_{both}"] = both_one
+            return out
 
         def summarize_reset(distributions: dict[str, np.ndarray], qubit: int = qubit) -> dict[str, float]:
             return {f"q{qubit}_reset_excited_fraction": float(distributions[state_prep_member("reset", qubit)][1])}
@@ -313,8 +364,12 @@ def state_prep_contracts(
     an active reset, positive where initialization leaves more excitation
     than the reset's own misassignment; spc_one_column_qQ reads P(1) after
     an X, the |1> column of the assignment matrix; spc_history_excited_qQ
-    reads P(1) after initialization from a |1> history. Each endpoint needs
-    every arm it reads among the selected arms.
+    reads P(1) after initialization from a |1> history;
+    spc_remeasure_excited_qQ reads P(first read 1) after initialization and
+    spc_remeasure_persisting_qQ P(both reads 1), the part of that excitation
+    a second measurement reads again; spc_x_remeasure_one_column_qQ reads
+    P(first read 1) after an X. Each endpoint needs every arm it reads among
+    the selected arms.
     """
     selected = state_prep_arms(arms)
     endpoints = [
@@ -324,6 +379,9 @@ def state_prep_contracts(
             ("reset_benefit", {"prep0", "reset"}),
             ("one_column", {"x"}),
             ("history_excited", {STATE_PREP_HISTORY_ARM}),
+            ("remeasure_excited", {"remeasure"}),
+            ("remeasure_persisting", {"remeasure"}),
+            ("x_remeasure_one_column", {"x_remeasure"}),
         )
         if needs <= set(selected)
     ]
@@ -363,6 +421,27 @@ def state_prep_contracts(
                     alpha=share,
                     power=power,
                     precision_half_width=STATE_PREP_PRECISION["history_excited"],
+                ),
+                ObservableContract(
+                    f"spc_remeasure_excited_q{qubit}",
+                    (ObservableTerm(state_prep_member("remeasure", qubit), _FIRST_READ_ONE),),
+                    alpha=share,
+                    power=power,
+                    precision_half_width=STATE_PREP_PRECISION["remeasure_excited"],
+                ),
+                ObservableContract(
+                    f"spc_remeasure_persisting_q{qubit}",
+                    (ObservableTerm(state_prep_member("remeasure", qubit), _BOTH_READS_ONE),),
+                    alpha=share,
+                    power=power,
+                    precision_half_width=STATE_PREP_PRECISION["remeasure_persisting"],
+                ),
+                ObservableContract(
+                    f"spc_x_remeasure_one_column_q{qubit}",
+                    (ObservableTerm(state_prep_member("x_remeasure", qubit), _FIRST_READ_ONE),),
+                    alpha=share,
+                    power=power,
+                    precision_half_width=STATE_PREP_PRECISION["x_remeasure_one_column"],
                 ),
             )
             if contract.name.removeprefix("spc_").rsplit("_q", 1)[0] in endpoints
@@ -1933,7 +2012,9 @@ def _state_prep_self_test() -> None:
     groups = state_prep_groups(qubits)
     if len(groups) != 2 * len(qubits):
         raise AssertionError("each qubit needs one static and one dynamic group")
-    for group in [*groups, *state_prep_groups(qubits, (STATE_PREP_HISTORY_ARM,))]:
+    remeasure_arms = ("prep0", "x_remeasure", "remeasure")
+    remeasure_groups = state_prep_groups(qubits, remeasure_arms)
+    for group in [*groups, *state_prep_groups(qubits, (STATE_PREP_HISTORY_ARM,)), *remeasure_groups]:
         kinds = {is_dynamic(member.circuit) for member in group.members}
         dynamic = group.name.startswith(("state_prep_reset_", "state_prep_x_history_"))
         if kinds != {dynamic}:
@@ -1942,6 +2023,12 @@ def _state_prep_self_test() -> None:
             law = np.asarray([float(value) for value in ideal_branch_probabilities(member.circuit)])
             if not np.array_equal(law, member.ideal):
                 raise AssertionError(f"{member.name}: ideal law {law} differs from {member.ideal}")
+    # The static group's row order is the in-job order: x_remeasure's read precedes remeasure's shot.
+    rows = [member.name.split("_q")[0].removeprefix("spc_") for member in remeasure_groups[0].members]
+    if rows != list(remeasure_arms) or len(remeasure_groups) != len(qubits):
+        raise AssertionError(f"the remeasure selection fused into rows {rows} over {len(remeasure_groups)} groups")
+    if [member.circuit.num_clbits for member in remeasure_groups[0].members] != [1, 2, 2]:
+        raise AssertionError("the remeasure arms need a two-bit register, prep0 one bit")
     contracts = state_prep_contracts(qubits, 0.05, 0.8)
     if len(contracts) != 3 * len(qubits) or not math.isclose(math.fsum(c.alpha for c in contracts), 0.05):
         raise AssertionError("the endpoints do not split the family-wise alpha over three per qubit")
@@ -1974,11 +2061,24 @@ def _state_prep_self_test() -> None:
         recovered = state_prep_excitation(float(laws["prep0"][1]), e10, e01)
         if abs(recovered - epsilon) > 1e-14:
             raise AssertionError(f"eps {epsilon}: the excited fraction implies {recovered}")
+        # A measurement projects onto the true state and misassigns each read independently, so the first read
+        # of a remeasure arm follows its one-read arm and both reads are 1 with the two misassignments squared.
+        for arm, population, first in (("remeasure", epsilon, excited), ("x_remeasure", flipped, one)):
+            read_one, both_one = _two_read_fractions(laws[arm])
+            both = population * (1 - e01) ** 2 + (1 - population) * e10**2
+            if abs(read_one - first) > 1e-15 or abs(both_one - both) > 1e-15:
+                raise AssertionError(f"{arm} at eps {epsilon}: reads {read_one}, {both_one} != {first}, {both}")
     for arms, group_count, endpoint_names in (
         (("prep0",), 1, {"excited"}),
         (("x", "prep0"), 1, {"excited", "one_column"}),
         (("prep0", "reset"), 2, {"excited", "reset_benefit"}),
         (("x_history",), 1, {"history_excited"}),
+        (("remeasure",), 1, {"remeasure_excited", "remeasure_persisting"}),
+        (
+            ("remeasure", "x_remeasure", "prep0"),
+            1,
+            {"excited", "remeasure_excited", "remeasure_persisting", "x_remeasure_one_column"},
+        ),
     ):
         subset = state_prep_groups(qubits, arms)
         members = {member.name.split("_q")[0].removeprefix("spc_") for group in subset for member in group.members}
@@ -1999,6 +2099,9 @@ def _state_prep_self_test() -> None:
         ("x_history", "x"),
         ("x_history", "reset"),
         ("x_history", "x_history"),
+        ("x_remeasure",),
+        ("x_remeasure", "x"),
+        ("x_history", "remeasure"),
     ):
         try:
             state_prep_arms(refused)
@@ -2007,9 +2110,10 @@ def _state_prep_self_test() -> None:
         raise AssertionError(f"arms {refused} were admitted")
     print(
         f"state-prep-control: {len(qubits)} qubits, {len(contracts)} endpoints at alpha {share:.3g} each, "
-        "8192 shots the smallest admitted tier; prep0, reset, x and x_history laws match their closed forms "
-        "under readout, reset and X errors and an initial excitation, which the excited fraction recovers; arm "
-        "subsets keep the endpoints their arms support, and x_history runs only alone"
+        "8192 shots the smallest admitted tier; prep0, reset, x, x_history, x_remeasure and remeasure laws match "
+        "their closed forms under readout, reset and X errors and an initial excitation, which the excited "
+        "fraction recovers; arm subsets keep the endpoints their arms support, x_history runs only alone, and "
+        "the remeasure arms are static two-bit rows after prep0"
     )
 
 

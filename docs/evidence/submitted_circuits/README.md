@@ -94,12 +94,13 @@ in order.
 The [idle-readout repeat successor](comparison-idle-readout-repeat.json) rebinds the idle-penalty repeat retrieval
 offline against the `live_run.py` that adds the role-patterned members and lists `idle_readout.py` in its
 experiment manifest; it differs from that retrieval only in the `live_run.py` digest and the offline validation
-time.
+time. The [state-prep remeasure successor](comparison-state-prep-remeasure.json) rebinds the same retrieval
+offline against the `live_run.py` whose `--state-prep-arms` help names the two-read arms `x_remeasure` and
+`remeasure`; it differs from the retrieval only in that digest and the validation time.
 
-The [per-PUB calibration successor](comparison-collect-pub-calibration.json) rebinds the idle-penalty repeat
-retrieval offline against the `live_run.py` that stores each PUB's placed calibration once in the collect.json header;
-its 41 rows equal the idle-readout repeat successor's, and it differs from that successor only in the `live_run.py`
-digest and the offline validation time. Gate `core-281` checks it.
+The [per-PUB calibration successor](comparison-collect-pub-calibration.json) rebinds the same retrieval offline
+against the `live_run.py` that stores each PUB's placed calibration once in the collect.json header; it differs from
+the retrieval only in that digest and the validation time. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These

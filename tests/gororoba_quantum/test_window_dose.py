@@ -144,7 +144,9 @@ def test_dose_delays_sit_at_the_top_level_of_every_qubit(variant: str) -> None:
 
 
 def test_noise_model_relaxation_pass_charges_every_dose_delay() -> None:
-    passes = NoiseModel.from_backend(FakeFez(), readout_error=False)._pass_manager()
+    # from_backend adds the delay RelaxationNoisePass from the qubit properties whatever gate_error is, and the
+    # pass manager holds that pass alone, so the 156-qubit gate-error tables stay unbuilt.
+    passes = NoiseModel.from_backend(FakeFez(), gate_error=False, readout_error=False)._pass_manager()
     _require(passes is not None)
     for variant in qpe_diagnostics.N21_DOSE_VARIANTS:
         circuit = qpe_diagnostics.n21_orbit_diagnostic(True, variant, dose_dt=3500)
