@@ -184,3 +184,13 @@ probe and the result, and run the cheap ones. Seeds:
   coordinates), the incidence `A(s) F = 0` reduced to the effective form on `K_0`, saturation by the nullity-drop ideal,
   then `s = 0`, all in global orderings under `prlimit`. Report the fiber dimension and components, and compare them
   with the arc lower bound.
+- Item 2e (blocked at 8 GiB on the 28- and 32-variable products): reformulate before retrying. Near `p`, split
+  `C^16 = K_0 + K_0^perp` and take the Schur complement `E(s) = D(s) - C(s)^T B(s)^-1 C(s)` on `K_0`, with `B(0)`
+  invertible. On the nullity-8 part of the slice germ `E(s)` is a rank-two skew 6 x 6 form, hence a decomposable
+  bivector, and its kernel four-plane is the point `[E(s)]` of `Gr(2, 6)` in its Plucker embedding in `P^14`. The
+  Gauss-graph fiber over `p` is therefore the exceptional fiber of the blow-up of the germ along the ideal of the 15
+  entries of `det(B) E(s)`, saturated by `det(B)`: the Rees algebra in the slice coordinates (at most 5 after the linear
+  eliminations already proved) plus 15 Plucker variables, then `s = 0`. Use a polynomial parameterization of the slice
+  germ where the regularity record gives one (quadric cones, smooth sheets), so the base ring is a polynomial ring.
+  Singular's `reesclos.lib` or a direct elimination in global orderings both fit. A single Singular process may use up
+  to 16 GiB (`prlimit --as=17179869184`) for this item, one such process at a time; the 15-minute stop rule stands.
