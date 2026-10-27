@@ -13,7 +13,7 @@
   },
   "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
   "owner": "codex-tuna-projector-geometry",
-  "next_action": "Verify and retain the incomplete-case refusal and posthoc nominal-zero prefix; reconcile all three acquired jobs and usage. A future complete comparison needs a separately approved case sized for measured provider waits.",
+  "next_action": "Seek served acquisition mapping, timing and IQ provenance for jobs 1618109,1618345,1618590 through authorized provider contact. Any further hardware needs a separately approved queue-aware case; the six-job endpoint remains unavailable and q6 prefix causality remains unresolved.",
   "steps": [
     {
       "id": "source-and-instrument-audit",
@@ -970,15 +970,67 @@
     },
     {
       "id": "destination-acquired-analysis",
-      "state": "doing",
+      "state": "done",
       "action": "Verify and interpret the frozen destination-response analysis",
-      "acceptance": "Ordering, raw identity, statistical endpoint and causal limits are verified from acquired evidence"
+      "acceptance": "Ordering, raw identity, statistical endpoint and causal limits are verified from acquired evidence",
+      "receipts": [
+        {
+          "result": "Frozen incomplete-case refusal and posthoc prefix retained. Semantic recovery/source checks, chronology regression, 98 focused tests, pinned tools, byte replays and final peer review pass. All three acquisitions match the refreshed zero-change ledger and registry; causal attribution remains unresolved.",
+          "observed_at": "2026-10-27T21:27:38.157502+00:00",
+          "revision": "41c7edb7e346d307fb5655ac262bbbf9b81e73b8",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/ordered-response-retention-verification.json",
+              "sha256": "d7e0ff771d76e7a6626fe718a6f0ca6435f314f280b074b106336dcb1fdab429"
+            }
+          ],
+          "scope_sha256": "1da0e9ac8d934f77013d8b5c9214fd17d11d9fdb1b0707a9ae80926c73634152"
+        }
+      ]
     },
     {
       "id": "destination-acquisition-registration",
-      "state": "todo",
+      "state": "done",
       "action": "Register acquired jobs, refresh usage and verify evidence consistency",
-      "acceptance": "Usage, research registry, retained replay, links and plan receipts account for every dispatched job"
+      "acceptance": "Usage, research registry, retained replay, links and plan receipts account for every dispatched job",
+      "receipts": [
+        {
+          "result": "Frozen incomplete-case refusal and posthoc prefix retained. Semantic recovery/source checks, chronology regression, 98 focused tests, pinned tools, byte replays and final peer review pass. All three acquisitions match the refreshed zero-change ledger and registry; causal attribution remains unresolved.",
+          "observed_at": "2026-10-27T21:27:38.157502+00:00",
+          "revision": "41c7edb7e346d307fb5655ac262bbbf9b81e73b8",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/ordered-response-retention-verification.json",
+              "sha256": "d7e0ff771d76e7a6626fe718a6f0ca6435f314f280b074b106336dcb1fdab429"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=qi-tuna-destination-case-deadline",
+              "sha256": "29db145cd5330a80d5829245f3de1f09ca5d2a02e97e0b89105e7e70f2c2c314"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=qi-tuna-destination-zero-prefix-response",
+              "sha256": "3d796a38d6cc0024120a6960504450a47bbd9140e7c36c749f43342acb5de113"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-zero-baseline-before",
+              "sha256": "10dda7dd754424c7addf67723398c6860ce06cd1cb0b883a2719c3e1e028b872"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-zero-rotated",
+              "sha256": "cc4ddc80f23d1ef26a63bbe8559179e45c3cda1ed155bd7a6f41d856f76908e0"
+            },
+            {
+              "ref": "docs/state/research_state.json#acquisitions/id=qi-tuna-destination-zero-baseline-after",
+              "sha256": "4a63a071ff6cb90500675a2179ee2440aa1e17ed39f574ef1215e709ed35270e"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-qi-tuna-destination-prefix",
+              "sha256": "5359bf189586b3b1bfad8515f380fc09e0f503980588b032eb84fd083b3062d3"
+            }
+          ],
+          "scope_sha256": "d547ffe16d9472294fd2f13b9bc19fffc4afaaa5915db6685bd7e7a03bda2d08"
+        }
+      ]
     }
   ]
 }

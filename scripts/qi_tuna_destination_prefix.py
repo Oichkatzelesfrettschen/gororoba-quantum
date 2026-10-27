@@ -54,7 +54,7 @@ def validate_recovery(run: Path, rows: list[dict[str, Any]], state: dict[str, An
     completed = timestamp(receipt["completed_utc"])
     collected = timestamp(json.loads((completion_path.parent / "results.json").read_text())["collected_utc"])
     if not timestamp(state["observed_utc"]) <= started <= completed or not (
-        timestamp(last["finished_utc"]) <= collected <= completed
+        max(started, timestamp(last["finished_utc"])) <= collected <= completed
     ):
         raise ValueError("recovery chronology contradicts stop, completion or collection")
     automatic = [json.loads((run / row["batch"] / "completion-admission.json").read_text()) for row in rows[:2]]

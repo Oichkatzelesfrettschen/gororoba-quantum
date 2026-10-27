@@ -2294,8 +2294,8 @@
       "boundary": "Descriptive frequencies from the incomplete case. A transformation restricted to stored early labels leaves each dataset terminal marginal unchanged; broader reconstruction/scheduling changes and a coincident transient remain alternatives. Neither statistical acceptance of the six-job case nor physical causation or populations is established.",
       "evidence": [
         {
-          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-receipt-validation.json",
-          "sha256": "acbd07d95fd2babd1c45fb1b52ebad3d039bb355b899480aabb84b6d5fa4facc"
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json",
+          "sha256": "0868bfaa271898d680db09ff245bdeb2e5cb2436cd5270c72cc7e058ded085fa"
         },
         {
           "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/stored-source-observation.json",

@@ -14,7 +14,7 @@ def test_retained_deadline_prefix_replays() -> None:
     primary = json.loads((RETAINED / "analysis.json").read_text())
     if analyze(RETAINED) != primary or primary["outcome"] != "implementation route unavailable":
         raise AssertionError("incomplete case must retain its frozen refusal")
-    retained = json.loads((RETAINED / "nominal-zero-prefix-receipt-validation.json").read_text())
+    retained = json.loads((RETAINED / "nominal-zero-prefix-recovery-order.json").read_text())
     if replay(RETAINED) != retained or retained["statistical_acceptance_admitted"] is not False:
         raise AssertionError("prefix counts must replay without promoting the incomplete case")
     original = json.loads((RETAINED / "nominal-zero-prefix-descriptive.json").read_text())
@@ -45,7 +45,18 @@ def test_reordered_retained_shots_refuse(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize(
     "fault",
-    ["schema", "job", "job-type", "case", "state-digest", "completion-digest", "creation", "resume", "chronology"],
+    [
+        "schema",
+        "job",
+        "job-type",
+        "case",
+        "state-digest",
+        "completion-digest",
+        "creation",
+        "resume",
+        "chronology",
+        "collection-before-recovery",
+    ],
 )
 def test_recovery_semantics_refuse(tmp_path: Path, fault: str) -> None:
     run = tmp_path / "run"
@@ -70,8 +81,11 @@ def test_recovery_semantics_refuse(tmp_path: Path, fault: str) -> None:
         intent["provider_resource_creation_authorized"] = receipt["provider_resource_creation_authorized"] = True
     elif fault == "resume":
         receipt["automatic_executor_resumed"] = True
-    else:
+    elif fault == "chronology":
         intent["started_utc"] = receipt["started_utc"] = "2026-10-27T20:00:00+00:00"
+    else:
+        intent["started_utc"] = receipt["started_utc"] = "2026-10-27T20:51:41+00:00"
+        receipt["completed_utc"] = "2026-10-27T20:51:42+00:00"
     intent_path.write_text(json.dumps(intent))
     receipt_path.write_text(json.dumps(receipt))
     with pytest.raises(ValueError):

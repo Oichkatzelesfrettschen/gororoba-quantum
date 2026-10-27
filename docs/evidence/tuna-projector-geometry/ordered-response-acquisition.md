@@ -55,7 +55,7 @@ remained within their ceilings.
 
 ## Descriptive prefix, excluded from the complete-case decision
 
-The [validated prefix description](../../../results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-receipt-validation.json)
+The [validated prefix description](../../../results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json)
 uses the frozen decoder and per-job operational validators. The separate
 [replay](../../../scripts/qi_tuna_destination_prefix.py) preserves the primary
 refusal and emits counts and exact empirical contrast numerators. It supplies
@@ -68,6 +68,11 @@ The validation successor adds semantic checks of recovery schema, job identity,
 stopped-state and completion digests, read-only flags, chronology and all three
 stored-source observations. Its counts, job tables and primary refusal are identical
 to the initial description; the added provenance does not revise the scientific result.
+The [first receipt-validation artifact](../../../results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-receipt-validation.json)
+and its producer remain preserved in commit `41c7edb`. The current successor also
+requires collection after recovery start as well as job finish, with a regression
+for collection predating the recovery intent. That correction changes provenance
+validation rather than acquired counts or the primary refusal.
 
 | Physical qubit | Early-one counts before / rotated / after | Terminal-one counts before / rotated / after | Maximum absolute empirical joint-cell contrast |
 |---|---|---|---:|
@@ -125,3 +130,10 @@ refreshed account snapshot against the preceding committed snapshot: all 426
 previous job rows remain identical and the three added rows belong to this case.
 Historical qualification completion receipts cite that immutable scoped comparison
 instead of binding their old result to every subsequent account-total change.
+
+The [retention verification](ordered-response-retention-verification.json) records
+the focused checks and byte-preservation boundaries. The
+[acquired-data review](../../archive/reviews/tuna-destination-acquired-data-review.md)
+independently reproduces the counts and their interpretation; its provenance
+findings close with the
+[focused correction review](../../archive/reviews/tuna-destination-recovery-order-review.md).

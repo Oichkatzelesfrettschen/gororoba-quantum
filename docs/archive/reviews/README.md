@@ -58,3 +58,8 @@ validation before future packet reuse remains a nonblocking follow-up in the wor
 The [acquired destination-data review](tuna-destination-acquired-data-review.md)
 independently verifies the three nominal-zero jobs, deadline stop, raw counts and
 causal limits, and requests stronger automated recovery/source-receipt validation.
+The [recovery-validation review](tuna-destination-recovery-validation-review.md)
+identifies the remaining chronology edge; the
+[focused correction review](tuna-destination-recovery-order-review.md) confirms
+that correction and numerical invariance. The
+[review provenance](tuna-destination-acquired-review-provenance.json) binds all three reports.

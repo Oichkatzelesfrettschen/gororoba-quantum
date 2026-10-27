@@ -1,0 +1,78 @@
+{
+  "checks": {
+    "focused_tests_passed": 98,
+    "normal_and_optimized_replays": "byte-exact at two/one worker settings; pool threshold may choose serial execution",
+    "pinned_mypy": "passed",
+    "pinned_ruff_check": "passed",
+    "pinned_ruff_format_check": "passed",
+    "prefix_tests_passed": 19,
+    "research_registry": "284 claims and 316 acquisitions validated",
+    "review": "Final requested high-effort model review confirms correction; acquired counts and causal limits independently checked"
+  },
+  "inputs": {
+    "docs/archive/reviews/tuna-destination-acquired-review-provenance.json": "3d9980404de5d77ec96b2582679199f4c1a2423185ad00cabe57268360fcf635",
+    "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md": "f33da189d618f4eb46d48f0b8feb9fe848734bf9ff7422d351f88c50f925c117",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json": "ab4f4b9f9a5669eebce38be49da4f3fc440ec440ec536719d2a6431de960f38e",
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-recovery-order.json": "0868bfaa271898d680db09ff245bdeb2e5cb2436cd5270c72cc7e058ded085fa",
+    "scripts/qi_tuna_destination_prefix.py": "efc5601e9ef0e1e884b2df544818ff1dddc5d82c6d99f083e6048336f6df7c4e",
+    "tests/scripts/test_qi_tuna_destination_prefix.py": "bf7fa59c857c91fb8c7f4e96cbbb1fb594937bb31fa8d2bd731c2b1451a71fc5"
+  },
+  "ledger": {
+    "acquired_job_rows": [
+      {
+        "backend_type_id": 7,
+        "batch_job": 895781,
+        "charged": 0,
+        "created_on": "2026-10-27T19:48:10.217552Z",
+        "execution_time_in_seconds": 5.17682,
+        "finished_at": "2026-10-27T20:05:21.294659Z",
+        "job": 1618109,
+        "number_of_shots": 4096,
+        "queued_at": "2026-10-27T20:05:15.896312Z",
+        "shots_done": 4096,
+        "status": "completed"
+      },
+      {
+        "backend_type_id": 7,
+        "batch_job": 895833,
+        "charged": 0,
+        "created_on": "2026-10-27T20:06:09.920424Z",
+        "execution_time_in_seconds": 4.710931,
+        "finished_at": "2026-10-27T20:22:41.917425Z",
+        "job": 1618345,
+        "number_of_shots": 4096,
+        "queued_at": "2026-10-27T20:22:36.995677Z",
+        "shots_done": 4096,
+        "status": "completed"
+      },
+      {
+        "backend_type_id": 7,
+        "batch_job": 895884,
+        "charged": 0,
+        "created_on": "2026-10-27T20:23:27.501228Z",
+        "execution_time_in_seconds": 4.469031,
+        "finished_at": "2026-10-27T20:51:29.770929Z",
+        "job": 1618590,
+        "number_of_shots": 4096,
+        "queued_at": "2026-10-27T20:51:25.002692Z",
+        "shots_done": 4096,
+        "status": "completed"
+      }
+    ],
+    "job_count": 429,
+    "recorded_change": 0,
+    "retrieved_utc": "2026-10-27T20:56:38+00:00",
+    "snapshot_sha256": "d7218af908bdbc36f5b13ba949e7761406efcf58e480fa345ae821113f9d913b",
+    "unretained": []
+  },
+  "observed_utc": "2026-10-27T21:27:38.157502+00:00",
+  "preservation": {
+    "approved_campaign_sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76",
+    "approved_named_producers_and_analysis_contract": "all matched",
+    "capture_revision": "1ba7ba8fa6974cf272e42b25c72e50c5c6d99580",
+    "captured_run_files_unchanged": 55,
+    "earlier_evidence_files_unchanged": 59
+  },
+  "schema": "qi-destination-retention-verification-v1",
+  "scope": "Three nominal-zero acquisitions retained; complete six-job endpoint unavailable. No further provider acquisition is authorized by this verification."
+}
