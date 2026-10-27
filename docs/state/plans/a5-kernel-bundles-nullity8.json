@@ -1,0 +1,58 @@
+{
+  "schema": "work-plan-v1",
+  "id": "a5-kernel-bundles-nullity8",
+  "kind": "investigation",
+  "summary": "Extend roadmap item 5 of dimension32-global-topology to the nullity-8 strata (W8, E8-bar, Iso, X_+-): compact-orbit moduli, stabilizer representations on the rank-4 kernel with their boundary restrictions into nullity 12, transition data and equivalence classes, run as a Codex program.",
+  "sources": [
+    "docs/design/a5-kernel-bundles-nullity8-program.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Captured context; triage and evidence review pending."
+  },
+  "scope": "Evidence bundle docs/evidence/a5-kernel-bundles-nullity8 (scripts, records, README, ledger) and the program file docs/design/a5-kernel-bundles-nullity8-program.md; the five nullity-8 orbits. Nullity 4 and roadmap items 6-8 proper stay out of scope.",
+  "owner": "repository maintainer",
+  "next_action": "Codex (gpt-daybreak-blue-latest, xhigh) in tmux pursues the program file; the orchestrator replays and commits each sub-step, then runs independent verification, critical review and the pull request.",
+  "related": [
+    "a5-kernel-bundles",
+    "a5-strata-regularity"
+  ],
+  "claims": [
+    "dimension32-global-topology",
+    "a5-kernel-bundles",
+    "a5-strata-regularity"
+  ],
+  "steps": [
+    {
+      "id": "generic-orbits-and-moduli",
+      "state": "todo",
+      "action": "Generic compact-orbit dimensions, complete invariants and moduli spaces for W8, E8-bar, Iso and X_+- from moved points.",
+      "acceptance": "Fails if two points with equal invariants lie in different orbits or a generic dimension disagrees with an independent rank."
+    },
+    {
+      "id": "stabilizers-and-representations",
+      "state": "todo",
+      "action": "Stabilizer types, their strata and the representations on the rank-4 kernel, with every boundary restriction into the nullity-12 pieces.",
+      "acceptance": "Fails if a stabilizer generator moves the point, escapes the kernel or fails to commute with J, or a boundary restriction is incompatible with the committed nullity-12 module."
+    },
+    {
+      "id": "unit-section-topology",
+      "state": "todo",
+      "action": "Unit-section topology of each nullity-8 orbit as far as the invariants need it.",
+      "acceptance": "Fails if a stated group disagrees with an explicit fibration or cell computation."
+    },
+    {
+      "id": "transitions-and-classes",
+      "state": "todo",
+      "action": "Transition data, structure groups, characteristic and K-classes and equivalence classes of each nullity-8 kernel bundle.",
+      "acceptance": "Fails if a transition fails the cocycle exactly, a class contradicts an explicit frame, or a conclusion is certified by a literal."
+    },
+    {
+      "id": "review-and-admission",
+      "state": "todo",
+      "action": "Independent verification, critical review, replay gates and a claim through a pull request and the Codex review loop.",
+      "acceptance": "research_state.py --check and plan_tracker.py check pass and the four pr.yml checks are green on the PR head."
+    }
+  ]
+}
