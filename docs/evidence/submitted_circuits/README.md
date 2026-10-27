@@ -91,12 +91,18 @@ offline rebind chain, which binds the audit's digest. Its collector equals the a
 admission, the window doses, the envelope contract and `--detuning-sign`. Every item equals its retained circuit
 in order.
 
+The [idle-readout repeat successor](comparison-idle-readout-repeat.json) rebinds the idle-penalty repeat retrieval
+offline against the `live_run.py` that adds the role-patterned members and lists `idle_readout.py` in its
+experiment manifest; it differs from that retrieval only in the `live_run.py` digest and the offline validation
+time.
+
 The [detuning-sign retrieval](comparison-detuning-sign-retrieval.json) reads the same 41 jobs afresh through the
 read-only job interface, seeded from the original comparison, after the retention audit added the N=21
-detuning-sign Kingston job `dbge2jpj4t8s73ac6fk0` under `awaiting_observation`, which moves the audit digest the
-previous retrieval binds. Its 41 rows equal the idle-penalty repeat retrieval's. Gate `core-281` checks it.
+detuning-sign Kingston job `dbge2jpj4t8s73ac6fk0` under `awaiting_observation`, which moves the audit digest every
+earlier comparison binds. Its 41 rows equal the idle-penalty repeat retrieval's. A fresh retrieval binds the audit,
+the original seed and the collector, so a later `live_run.py` change leaves it valid. Gate `core-281` checks it.
 
-The active successor binds the audit, original seed, current collector, predecessor comparison and archived
+An offline rebind successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
 named files and the pinned Qiskit/runtime versions bound the replay; the provenance does not claim a complete
 transitive import closure. Every earlier comparison retains its recorded bytes. Gate `core-281` checks the
