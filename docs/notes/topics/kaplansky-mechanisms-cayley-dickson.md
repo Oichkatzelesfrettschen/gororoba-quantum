@@ -85,12 +85,11 @@ sign is what keeps most of it from lifting to the reals.
 
 ## Direct finiteness
 
-[T] Every real Cayley-Dickson algebra `A` is directly finite. With the trace form `<x, y> = Re(x conj(y))`,
-`<xy, z> = <y, conj(x) z>`, `conj(x) x = N(x)` is real, and `L_p` is skew-adjoint for pure `p`. Write `a = r + p`.
-`L_a = r I + L_p` has eigenvalues `r + i lambda`, so `L_a` is invertible unless `r = 0`. For pure `a` and
-`z = s + q` in `ker L_a`, `s a = -a q`, and `<a q, a> = N(a) <q, 1> = 0`, so `s = 0`: every element annihilated by
-`a` is pure. Conjugation sends `ker L_a` onto `ker R_(conj a) = ker R_a` and acts as `-1` on pure elements, so
-`ker L_a = ker R_a`. If `ab = 1`, then `b = conj(a)/N(a) + z` with `z` in `ker L_a`, and `ba = 1 + z a = 1`.
+[T] Every real Cayley-Dickson algebra is directly finite: ker L_a = ker R_a for every a (Corollary 9.3 of
+[math/0511691](../math-0511691.md)), so `ab = 1` forces `ba = 1`, and the solutions of `ab = 1` form the affine
+space `conj(a)/N(a) + ker L_a`. The proof through the trace-form adjoint identities, its lemma attributions and the
+gated exact replay are the content of [cd-one-sided-inverses.md](cd-one-sided-inverses.md), which owns the
+statement; this note records only the comparison.
 [E] The replay confirms the mechanism on every two-blade zero divisor: all 84 at `D = 16` (nullity 4) and all 588 at
 `D = 32` (nullities 4, 8 and 12 on 168, 168 and 252 elements) have kernels of pure elements that right
 multiplication by `a` also annihilates.
@@ -109,8 +108,8 @@ untwisted `R[Z_2^k]` has the idempotents `(1 +- g)/2` for every `g != 0`; the si
 
 [E] `a = e_1 + e_10` and `b = e_4 - e_15` satisfy `a b = 0`, and `a` has the two distinct two-sided inverses
 `-(e_1 + e_10)/2` and `-(e_1 + e_10)/2 + b`. For the first, `a^(-1) (a b) = 0` while `(a^(-1) a) b = e_4 - e_15`.
-[T] In general, by the direct-finiteness argument above, the two-sided inverses of a nonzero `a` form the affine
-space `conj(a)/N(a) + ker L_a`, a single point exactly when `a` is not a zero divisor. In an associative ring a unit
+[T] In general, by the corollary of [cd-one-sided-inverses.md](cd-one-sided-inverses.md), the two-sided inverses
+of a nonzero `a` form the affine space `conj(a)/N(a) + ker L_a`, a single point exactly when `a` is not a zero divisor. In an associative ring a unit
 is never a zero divisor and its inverse is unique, the reason family 196 notes that a nontrivial unit is not a zero
 divisor ([P] its p. 2); in the sedenions every nonzero element has a two-sided inverse, and the zero divisors are
 exactly the elements whose inverse is not unique.
