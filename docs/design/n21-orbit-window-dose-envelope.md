@@ -45,11 +45,11 @@ qubit into its own register before the circuit, and the analysis keeps only shot
 |---|---|---|
 | Account | backup instance, `GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform` | runner |
 | Backends | ibm_fez, ibm_kingston, ibm_marrakesh (Heron r2), the planner's choice among those operational | preflight |
-| Design | every field of `EXPECTED_DESIGN`: the seven doses, 8,192 shots, replica tier 24, one routed candidate, 32,768 model shots, the 0.09 precision screen, uniform allocation, minimum-charge objective, the herald, the 30 s total ceiling | preflight |
-| Planning policy | every field of `EXPECTED_POLICY`: replica floor 0.45, calibration screens, cross-group buffer on, twirling and dynamical decoupling off, 30 s `max_execution_time`, the QRNG seed references | preflight |
+| Design | every field of `EXPECTED_DESIGN`: the seven doses, 8,192 shots, replica tier 24, one routed candidate, 32,768 model shots, the 0.09 precision screen, uniform allocation, minimum-charge objective, the herald, the 90 s total ceiling | preflight |
+| Planning policy | every field of `EXPECTED_POLICY`: replica floor 0.45, calibration screens, cross-group buffer on, twirling and dynamical decoupling off, 90 s `max_execution_time`, the QRNG seed references | preflight |
 | Replicas | at least 4 placed | preflight |
-| Execution | one dynamic job of 26 PUBs, one member each; estimated charge at most 30 s | preflight, live_run.py |
-| Repetition delay | 20 us; 50 us when no plan is admitted at 20 us, or as the bound retry below | preflight, runner |
+| Execution | one dynamic job of 26 PUBs, one member each; estimated charge at most 90 s | preflight, live_run.py |
+| Repetition delay | 50 us | preflight, runner |
 | Seeds | `--seed-transpiler` `qrng:docs/evidence/anu_qrng/draw-2026-10-26T092449Z.json#0`, `--seed-simulator` index 1 | preflight |
 | Code | the plan is made at the checked-out commit, and nothing under `gororoba_quantum/`, `scripts/`, `ci/`, `docs/design/`, `docs/evidence/anu_qrng/`, `docs/evidence/qrng_seeds/` or `requirements.txt` differs from it before each plan, preflight and submission; the draw's bytes match their pinned SHA-256 and the record's seeds are its index-0 and index-1 values | preflight, runner |
 
@@ -71,15 +71,17 @@ submits it; the first three such refusals re-plan and the fourth ends the invoca
 submission logs stay under `docs/local/`. A submission whose approval is consumed but whose run records no job id
 is reported as an unknown outcome and never retried, whether or not its log names a run directory.
 
-**Retry.** The 20 us delay lies at the floor IBM's changelog sets for Heron. The retained 0 us jobs and the 20 us
-jobs of a 100,000-shot design under a 6 s ceiling all ended in error 1305, which the service reports for a stalled
-shot loop and an overrun ceiling alike
-([REP_DELAY_ZERO_CONTROL_FINDINGS.md](../../results/live/REP_DELAY_ZERO_CONTROL_FINDINGS.md)). The 50 us retry is
-therefore an operational fallback, not a diagnosis: `sh scripts/n21_dose_run.sh --delay 5e-05 --retry-of RUN
---submit` runs once, after the 20 us run RUN of this envelope's design and policy whose single submitted job,
-the one collected, ended in error 1305 with no PUB executed (`n21_dose_decisions.py --retry-check`). It claims the
-retry by exclusive creation of `RUN/retry-consumed.json` before planning, so a failed plan spends the retry and a
-second invocation stops. Any other failure after a batch was sent ends the case.
+**Revision: 50 us and a 90 s ceiling.** The first revision of this envelope ran at 20 us under a 30 s ceiling
+with one bound 50 us retry. Both jobs stalled before their shot loop on ibm_kingston: `dbfvdfdjm0ks73efhflg` (20
+us, run `results/live/2026-10-27T005259.826486Z`) and `dbfvqm8iudkc73e3diq0` (50 us, run
+`results/live/2026-10-27T011304.736763Z`) each stayed running for 36 s, ended in error 1305 and report
+`circuits_execution_time_ns` 0 with about 2 s billed. The delay is therefore not the cause. Each PUB is a 156-qubit
+dynamic program with 912 CZ, 114 measurements, 19 resets and 19 `if_else`, inside the documented broadcast budget
+([execute-dynamic-circuits.md](../notes/ibm_quantum/execute-dynamic-circuits.md#quantum-compute-limitations)).
+The leading explanation is that loading the 26-PUB program takes longer than 30 s of the execution limit before
+any shot runs. The owner approved one probe of it: the same envelope at 50 us with a 90 s `max_execution_time`.
+A completed job confirms the load-time explanation; another zero-execution 1305 refutes it and points to program
+size, and ends this revision. Any failure after a batch was sent ends the case.
 
 ## Decisions
 
@@ -96,7 +98,7 @@ charged under the execution Target, and the same law with the dose delays' relax
 
 **Estimates.** Each shot measures every replica of its PUB together. The analysis reads the shot-ordered
 registers, binds them to the collected marginals, keeps each replica's shots whose herald reads all zeros, and
-conditions the replay laws the same way, so an initial excitation at the 20 us delay leaves the estimates instead
+conditions the replay laws the same way, so an initial excitation at the short delay leaves the estimates instead
 of evolving through the dose. The covariance across replicas comes from the shots themselves (delta method), so
 common-mode readout or crosstalk within a shot enters every variance. Sixteen contiguous blocks per PUB test for
 drift within the job; each member's block dispersion ratio, when above one, multiplies that member's covariance

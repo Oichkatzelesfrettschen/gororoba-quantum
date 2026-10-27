@@ -126,7 +126,7 @@ def _design_record() -> dict[str, Any]:
         "state": "planned",
         "shots": dose.DESIGN_SHOTS,
         "policy": dict(dose.EXPECTED_POLICY)
-        | {"rep_delay_seconds": 2e-05, "design": copy.deepcopy(dose.EXPECTED_DESIGN)},
+        | {"rep_delay_seconds": 5e-05, "design": copy.deepcopy(dose.EXPECTED_DESIGN)},
         "optimization": {
             "selected": "c",
             "searched_routed_sets": 1,
@@ -158,7 +158,8 @@ def test_preflight_admits_the_design_and_refuses_each_departure(tmp_path: Path) 
         lambda r: r["policy"]["design"].update(shot_allocation="neyman"),
         lambda r: r["policy"].update(max_pending=25),
         lambda r: r.update(seed_source=[]),
-        lambda r: r["optimization"]["candidates"][0].update(estimated_charge_seconds=31.0),
+        lambda r: r["optimization"]["candidates"][0].update(estimated_charge_seconds=91.0),
+        lambda r: r["policy"].update(rep_delay_seconds=2e-05),
         lambda r: r["optimization"].update(searched_routed_sets=2),
         lambda r: r["groups"][0].update(backend="ibm_torino"),
         lambda r: r["policy"].update(replica_floor=None),
@@ -176,43 +177,6 @@ def test_preflight_admits_the_design_and_refuses_each_departure(tmp_path: Path) 
         with pytest.raises(ValueError):
             check(record)
             raise AssertionError(f"departure {k} passed the preflight")
-
-
-def test_retry_check_admits_one_retry_after_an_unexecuted_1305(tmp_path: Path) -> None:
-    record = {
-        "state": "submitted",
-        "policy": dict(dose.EXPECTED_POLICY)
-        | {"rep_delay_seconds": 2e-05, "design": copy.deepcopy(dose.EXPECTED_DESIGN)},
-        "submission": {"jobs": [{"job_id": "j"}]},
-    }
-    job = {
-        "usage": {"job_status": "ERROR", "qpu_charge_time_seconds": "2"},
-        "pub_timing": {},
-        "result_unavailable": "RuntimeJobMaxTimeoutError: 'Error code 1305; Job ran longer than allowed.'",
-    }
-    (tmp_path / "record.json").write_text(json.dumps(record))
-    (tmp_path / "collect.json").write_text(json.dumps([{"jobs": {"j": job}}]))
-    if dose.retry_check(tmp_path)["job_id"] != "j":
-        raise AssertionError("an unexecuted 1305 at 20 us does not admit the retry")
-    (tmp_path / "retry-consumed.json").write_text("{}")
-    with pytest.raises(ValueError, match="spent"):
-        dose.retry_check(tmp_path)
-    (tmp_path / "retry-consumed.json").unlink()
-    changes: list[dict[str, Any]] = [{"pub_timing": {"p": {}}}, {"result_unavailable": "Error code 1517"}]
-    for change in changes:
-        (tmp_path / "collect.json").write_text(json.dumps([{"jobs": {"j": job | change}}]))
-        with pytest.raises(ValueError):
-            dose.retry_check(tmp_path)
-    (tmp_path / "collect.json").write_text(json.dumps([{"jobs": {"other": job}}]))
-    with pytest.raises(ValueError, match="not the submitted"):
-        dose.retry_check(tmp_path)
-    for mutate in (lambda r: r.update(state="planned"), lambda r: r["policy"]["design"].update(family="x")):
-        changed = copy.deepcopy(record)
-        mutate(changed)
-        (tmp_path / "record.json").write_text(json.dumps(changed))
-        (tmp_path / "collect.json").write_text(json.dumps([{"jobs": {"j": job}}]))
-        with pytest.raises(ValueError):
-            dose.retry_check(tmp_path)
 
 
 def _sweep_run(tmp_path: Path) -> None:

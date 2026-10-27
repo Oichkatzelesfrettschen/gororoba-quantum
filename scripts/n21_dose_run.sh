@@ -9,15 +9,12 @@
 # that sent nothing leaves the approval unconsumed (approval-consumed.json absent), so the runner plans again on
 # the new calibration, up to ATTEMPTS times.
 #
-# The 20 us repetition delay is tried first and the 50 us one when no admitted plan comes back at 20 us.
-# --delay 5e-05 --retry-of RUN plans at 50 us only: the envelope's single operational retry after the 20 us run RUN
-# whose job ended in error 1305 with no PUB executed (n21_dose_decisions.py --retry-check), marked spent by
-# RUN/retry-consumed.json before the retry plans. --preflight requires the envelope's bounds and a plan made at the
-# checked-out commit; the runner refuses to plan while any file under the directories that build, check or submit
-# the plan differs from that commit.
+# The plan runs at a 50 us repetition delay under a 90 s execution ceiling; the envelope's revision records why
+# (two jobs of this program stalled before any shot under a 30 s ceiling, at 20 us and at 50 us).
+# --preflight requires the envelope's bounds and a plan made at the checked-out commit; the runner refuses to
+# plan while any file under the directories that build, seed, check or submit the plan differs from that commit.
 #
-# Usage: sh scripts/n21_dose_run.sh [--delay 2e-05] [--submit]
-#        sh scripts/n21_dose_run.sh --delay 5e-05 --retry-of results/live/RUN --submit   (from the repository root)
+# Usage: sh scripts/n21_dose_run.sh [--submit]   (from the repository root)
 set -eu
 
 PYTHON=${PYTHON:-python3}
@@ -27,37 +24,18 @@ export GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform
 ATTEMPTS=4
 
 usage() {
-	echo "usage: sh scripts/n21_dose_run.sh [--delay 2e-05] [--submit]" >&2
-	echo "       sh scripts/n21_dose_run.sh --delay 5e-05 --retry-of results/live/RUN --submit" >&2
+	echo "usage: sh scripts/n21_dose_run.sh [--submit]" >&2
 	exit 2
 }
 submit=0
-delays="2e-05 5e-05"
-retry_of=
+delays=5e-05
 while [ $# -gt 0 ]; do
 	case $1 in
 	--submit) submit=1 ;;
-	--delay)
-		[ $# -ge 2 ] || usage
-		case $2 in 2e-05 | 5e-05) delays=$2 ;; *) usage ;; esac
-		shift
-		;;
-	--retry-of)
-		[ $# -ge 2 ] || usage
-		retry_of=$2
-		shift
-		;;
 	*) usage ;;
 	esac
 	shift
 done
-if [ "$submit" -eq 1 ] && [ "$delays" = 5e-05 ] && [ -z "$retry_of" ]; then
-	echo "a 50 us submission is the retry after a 20 us run: name it with --retry-of" >&2
-	exit 2
-fi
-if [ -n "$retry_of" ] && [ "$delays" != 5e-05 ]; then
-	usage
-fi
 
 root=$(pwd)
 [ -f "$root/gororoba_quantum/live_run.py" ] || {
@@ -83,26 +61,14 @@ clean() {
 	fi
 }
 clean
-if [ -n "$retry_of" ]; then
-	"$PYTHON" scripts/n21_dose_decisions.py --retry-check "$retry_of"
-	if [ "$submit" -eq 1 ]; then
-		# Exclusive creation claims the single retry before planning; a second invocation finds the file and stops.
-		if ! (set -C && printf '{"retry": "50 us after error 1305", "at": "%s"}\n' \
-			"$(date -u +%Y-%m-%dT%H:%M:%SZ)" >"$retry_of/retry-consumed.json") 2>/dev/null; then
-			echo "the retry after $retry_of is already claimed" >&2
-			exit 1
-		fi
-	fi
-fi
-
 plan_args() {
 	printf '%s\n' --family n21-orbit-rca --shot-allocation uniform --objective minimum_charge --optimize \
 		--backends ibm_fez,ibm_kingston,ibm_marrakesh --shots 8192 --seeds 8 --max-pending 200 \
-		--min-remaining-seconds 60.0 --max-execution-seconds 30 --rep-delay "$1" --no-isolated-reference \
+		--min-remaining-seconds 60.0 --max-execution-seconds 90 --rep-delay "$1" --no-isolated-reference \
 		--cross-group-buffer --shot-tiers 8192 --replica-tiers 24 --replica-floor 0.45 --optimizer-candidates 1 \
 		--model-shots 32768 --precision 0.09 --alpha 0.05 --power 0.8 --simulation-alpha 0.01 \
 		--job-overhead-seconds 2.3 --classical-latency-us 20.0 --reserve-seconds 0.0 \
-		--max-total-execution-seconds 30.0 --init-herald --window-doses-dt 0,1752,3500,5252,7000,10500,14000 \
+		--max-total-execution-seconds 90.0 --init-herald --window-doses-dt 0,1752,3500,5252,7000,10500,14000 \
 		--seed-transpiler "qrng:$draw#0" --seed-simulator "qrng:$draw#1" --out ../results/live
 }
 

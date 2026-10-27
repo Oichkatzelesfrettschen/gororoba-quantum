@@ -46,7 +46,6 @@ are what the fresh plan adapts.
 
 Usage: "$PYTHON" scripts/n21_dose_decisions.py RUN_DIR [--out FILE]
        "$PYTHON" scripts/n21_dose_decisions.py --preflight RECORD_DIR [--head COMMIT]
-       "$PYTHON" scripts/n21_dose_decisions.py --retry-check RUN_DIR
        "$PYTHON" scripts/n21_dose_decisions.py --self-test
 """
 
@@ -81,8 +80,8 @@ NAME = re.compile(r"n21_orbit_window_dose(?P<echo>_echo)?_d(?P<dose>\d+)_feedbac
 # The approved envelope a fresh dry-run record must carry (docs/design/n21-orbit-window-dose-envelope.md).
 DESIGN_DOSES = [0, 1752, 3500, 5252, 7000, 10500, 14000]
 DESIGN_SHOTS = 8192
-DESIGN_REP_DELAYS = (2e-05, 5e-05)
-DESIGN_CEILING_SECONDS = 30.0
+DESIGN_REP_DELAYS = (5e-05,)
+DESIGN_CEILING_SECONDS = 90.0
 DESIGN_MIN_REPLICAS = 4
 DESIGN_REPLICA_FLOOR = 0.45
 DESIGN_BACKENDS = {"ibm_fez", "ibm_kingston", "ibm_marrakesh"}
@@ -132,7 +131,7 @@ EXPECTED_POLICY: dict[str, Any] = {
     "twirl": False,
     "dd": None,
     "min_remaining_seconds": 60.0,
-    "max_execution_seconds": 30,
+    "max_execution_seconds": 90,
     "seed_transpiler": DESIGN_SEED_SOURCES["--seed-transpiler"][0],
     "seed_simulator": DESIGN_SEED_SOURCES["--seed-simulator"][0],
     "operator_excluded_qubits": {},
@@ -509,34 +508,6 @@ def preflight(record_dir: Path, head: str | None = None) -> dict[str, Any]:
     }
 
 
-def retry_check(run_dir: Path) -> dict[str, Any]:
-    """The facts that admit the envelope's single 50 us retry after the 20 us run in run_dir.
-
-    The run must be a submitted window-dose sweep at a 20 us repetition delay whose one job ended in error 1305 with
-    no PUB timing (no shot executed), and the retry must be unused (retry-consumed.json absent).
-    """
-    record = json.loads((run_dir / "record.json").read_text(encoding="utf-8"))
-    collected = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
-    policy = record["policy"]
-    require(record.get("state") == "submitted", f"{run_dir} is a {record.get('state')} record, not a submission")
-    require(policy["design"] == EXPECTED_DESIGN, f"{run_dir} is not the envelope's dose sweep")
-    require({key: policy.get(key) for key in EXPECTED_POLICY} == EXPECTED_POLICY, f"{run_dir} departs from the policy")
-    require(policy.get("rep_delay_seconds") == DESIGN_REP_DELAYS[0], f"{run_dir} did not run at 20 us")
-    submitted = [job.get("job_id") for job in record.get("submission", {}).get("jobs", [])]
-    groups = [entry for entry in collected if isinstance(entry, dict) and "jobs" in entry]
-    require(len(groups) == 1, f"{run_dir} holds {len(groups)} collection entries with jobs")
-    jobs = groups[0]["jobs"]
-    require(
-        len(jobs) == 1 and list(jobs) == submitted, f"collected jobs {list(jobs)} are not the submitted {submitted}"
-    )
-    job_id, job = next(iter(jobs.items()))
-    require(job["usage"]["job_status"] == "ERROR", f"{job_id} ended {job['usage']['job_status']}")
-    require("Error code 1305" in str(job.get("result_unavailable", "")), f"{job_id} did not end in error 1305")
-    require(not job.get("pub_timing"), f"{job_id} executed PUBs before it failed")
-    require(not (run_dir / "retry-consumed.json").exists(), f"the retry after {run_dir} is spent")
-    return {"run": run_dir.name, "job_id": job_id, "charged_seconds": job["usage"].get("qpu_charge_time_seconds")}
-
-
 def synthetic_sweep(
     kappa_p: float,
     kappa_e: float,
@@ -614,13 +585,9 @@ def main() -> int:
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--preflight", type=Path, metavar="RECORD_DIR")
     parser.add_argument("--head", help="with --preflight: the commit the plan must have been made at")
-    parser.add_argument("--retry-check", type=Path, metavar="RUN_DIR")
     args = parser.parse_args()
     if args.self_test:
         print(self_test())
-        return 0
-    if args.retry_check is not None:
-        print(json.dumps(retry_check(args.retry_check), sort_keys=True))
         return 0
     if args.preflight is not None:
         print(json.dumps(preflight(args.preflight, args.head), sort_keys=True))
