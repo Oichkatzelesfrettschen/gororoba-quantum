@@ -1,0 +1,514 @@
+{
+  "compact_stabilizers": [
+    {
+      "boost_adds_tangent_dimension": false,
+      "boost_projection_dimension": 1,
+      "compact_generator_count": 16,
+      "compact_stabilizer_dimension": 4,
+      "connected_compact_stabilizer": "SU(2)",
+      "external_torus_projection_rank": 1,
+      "external_torus_projection_rows": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "-1"
+        ]
+      ],
+      "full_compact_tangent_rank": 12,
+      "mutation": null,
+      "orbit": "W8",
+      "pass": true,
+      "phase_projection_dimension": 0,
+      "point": "representative"
+    },
+    {
+      "boost_adds_tangent_dimension": true,
+      "boost_projection_dimension": 0,
+      "compact_generator_count": 16,
+      "compact_stabilizer_dimension": 3,
+      "connected_compact_stabilizer": "SU(2)",
+      "external_torus_projection_rank": 0,
+      "external_torus_projection_rows": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "full_compact_tangent_rank": 13,
+      "mutation": null,
+      "orbit": "E8bar",
+      "pass": true,
+      "phase_projection_dimension": 0,
+      "point": "representative"
+    },
+    {
+      "boost_adds_tangent_dimension": false,
+      "boost_projection_dimension": 1,
+      "compact_generator_count": 16,
+      "compact_stabilizer_dimension": 2,
+      "connected_compact_stabilizer": "U(1)",
+      "external_torus_projection_rank": 2,
+      "external_torus_projection_rows": [
+        [
+          "1",
+          "0"
+        ],
+        [
+          "0",
+          "1"
+        ]
+      ],
+      "full_compact_tangent_rank": 14,
+      "mutation": null,
+      "orbit": "Iso",
+      "pass": true,
+      "phase_projection_dimension": 1,
+      "point": "coassociative core point"
+    },
+    {
+      "boost_adds_tangent_dimension": true,
+      "boost_projection_dimension": 0,
+      "compact_generator_count": 16,
+      "compact_stabilizer_dimension": 3,
+      "connected_compact_stabilizer": "SU(2)",
+      "external_torus_projection_rank": 0,
+      "external_torus_projection_rows": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "full_compact_tangent_rank": 13,
+      "mutation": null,
+      "orbit": "X+",
+      "pass": true,
+      "phase_projection_dimension": 0,
+      "point": "representative"
+    },
+    {
+      "boost_adds_tangent_dimension": true,
+      "boost_projection_dimension": 0,
+      "compact_generator_count": 16,
+      "compact_stabilizer_dimension": 3,
+      "connected_compact_stabilizer": "SU(2)",
+      "external_torus_projection_rank": 0,
+      "external_torus_projection_rows": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "full_compact_tangent_rank": 13,
+      "mutation": null,
+      "orbit": "X-",
+      "pass": true,
+      "phase_projection_dimension": 0,
+      "point": "representative"
+    }
+  ],
+  "complex_stabilizers": [
+    {
+      "complex_orbit_dimension": 12,
+      "complex_stabilizer_dimension": 4,
+      "expected_complex_stabilizer_dimension": 4,
+      "external_torus_projection_rank": 1,
+      "external_torus_projection_rows": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "1"
+        ]
+      ],
+      "h_action_implementations_match": true,
+      "killing_kernel_all_matrices_nilpotent": false,
+      "killing_kernel_dimension": 1,
+      "killing_kernel_is_ideal": true,
+      "killing_kernel_nilpotency_class": 1,
+      "killing_matrix_rank": 3,
+      "maximal_compact_dimension": 4,
+      "orbit": "W8",
+      "pass": true,
+      "unipotent_radical_dimension": 0
+    },
+    {
+      "complex_orbit_dimension": 11,
+      "complex_stabilizer_dimension": 5,
+      "expected_complex_stabilizer_dimension": 5,
+      "external_torus_projection_rank": 0,
+      "external_torus_projection_rows": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "h_action_implementations_match": true,
+      "killing_kernel_all_matrices_nilpotent": true,
+      "killing_kernel_dimension": 2,
+      "killing_kernel_is_ideal": true,
+      "killing_kernel_nilpotency_class": 1,
+      "killing_matrix_rank": 3,
+      "maximal_compact_dimension": 3,
+      "orbit": "E8bar",
+      "pass": true,
+      "unipotent_radical_dimension": 2
+    },
+    {
+      "complex_orbit_dimension": 11,
+      "complex_stabilizer_dimension": 5,
+      "expected_complex_stabilizer_dimension": 5,
+      "external_torus_projection_rank": 2,
+      "external_torus_projection_rows": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "1",
+          "0"
+        ],
+        [
+          "0",
+          "1"
+        ]
+      ],
+      "h_action_implementations_match": true,
+      "killing_kernel_all_matrices_nilpotent": true,
+      "killing_kernel_dimension": 3,
+      "killing_kernel_is_ideal": true,
+      "killing_kernel_nilpotency_class": 1,
+      "killing_matrix_rank": 2,
+      "maximal_compact_dimension": 2,
+      "orbit": "Iso",
+      "pass": true,
+      "unipotent_radical_dimension": 3
+    },
+    {
+      "complex_orbit_dimension": 10,
+      "complex_stabilizer_dimension": 6,
+      "expected_complex_stabilizer_dimension": 6,
+      "external_torus_projection_rank": 1,
+      "external_torus_projection_rows": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "-2",
+          "2"
+        ]
+      ],
+      "h_action_implementations_match": true,
+      "killing_kernel_all_matrices_nilpotent": true,
+      "killing_kernel_dimension": 2,
+      "killing_kernel_is_ideal": true,
+      "killing_kernel_nilpotency_class": 1,
+      "killing_matrix_rank": 4,
+      "maximal_compact_dimension": 4,
+      "orbit": "X+",
+      "pass": true,
+      "unipotent_radical_dimension": 2
+    },
+    {
+      "complex_orbit_dimension": 10,
+      "complex_stabilizer_dimension": 6,
+      "expected_complex_stabilizer_dimension": 6,
+      "external_torus_projection_rank": 1,
+      "external_torus_projection_rows": [
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0"
+        ],
+        [
+          "2",
+          "2"
+        ]
+      ],
+      "h_action_implementations_match": true,
+      "killing_kernel_all_matrices_nilpotent": true,
+      "killing_kernel_dimension": 2,
+      "killing_kernel_is_ideal": true,
+      "killing_kernel_nilpotency_class": 1,
+      "killing_matrix_rank": 4,
+      "maximal_compact_dimension": 4,
+      "orbit": "X-",
+      "pass": true,
+      "unipotent_radical_dimension": 2
+    }
+  ],
+  "inputs": {
+    "docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py": "fa5d010de34b95bf67a7445ec1e196c9926dc320d6ba888b293a2a2f6f627900",
+    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py": "afcfb6bd89367bd5da667b2271303007f364fa0c08de94996c9a399032ec3673",
+    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py": "5e59a895a5b4a90901644c4a330f594c03b11271c7e4fb3c8ac72449390e8dec",
+    "docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py": "54a8351945ff002b0ef962c77845f9af9ecdd6a7efa20b7688eb72ffca1be2c0",
+    "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
+    "docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json": "33196fa92daa52bc9a30142674235182fa6875df7d2c6b3fde58bbfa726b66ec",
+    "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
+    "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280"
+  },
+  "mutation": null,
+  "mutation_control": {
+    "delete_boost": {
+      "compact_ranks_changed": true,
+      "detected": true
+    },
+    "stiefel_euler_boundary_one": {
+      "detected": true,
+      "downstream_cohomology_changed": true
+    }
+  },
+  "orbit_models": [
+    {
+      "core_dimension": 12,
+      "expected_compact_stabilizer_dimension": 4,
+      "external_torus_projection_rank": 1,
+      "fixture_is_mostow_adapted": true,
+      "maximal_compact_core": "V_2(R^7) x S^1",
+      "maximal_compact_stabilizer_dimension": 4,
+      "observed_compact_stabilizer_dimension_at_fixture": 4,
+      "orbit": "W8",
+      "pass": true,
+      "remaining_external_torus_rank": 1,
+      "unit_section_dimension": 23
+    },
+    {
+      "core_dimension": 13,
+      "expected_compact_stabilizer_dimension": 3,
+      "external_torus_projection_rank": 0,
+      "fixture_is_mostow_adapted": true,
+      "maximal_compact_core": "V_2(R^7) x T^2",
+      "maximal_compact_stabilizer_dimension": 3,
+      "observed_compact_stabilizer_dimension_at_fixture": 3,
+      "orbit": "E8bar",
+      "pass": true,
+      "remaining_external_torus_rank": 2,
+      "unit_section_dimension": 21
+    },
+    {
+      "core_dimension": 14,
+      "expected_compact_stabilizer_dimension": 2,
+      "external_torus_projection_rank": 2,
+      "fixture_is_mostow_adapted": true,
+      "maximal_compact_core": "G_2",
+      "maximal_compact_stabilizer_dimension": 2,
+      "observed_compact_stabilizer_dimension_at_fixture": 2,
+      "orbit": "Iso",
+      "pass": true,
+      "remaining_external_torus_rank": 0,
+      "unit_section_dimension": 21
+    },
+    {
+      "core_dimension": 12,
+      "expected_compact_stabilizer_dimension": 4,
+      "external_torus_projection_rank": 1,
+      "fixture_is_mostow_adapted": false,
+      "maximal_compact_core": "V_2(R^7) x S^1",
+      "maximal_compact_stabilizer_dimension": 4,
+      "observed_compact_stabilizer_dimension_at_fixture": 3,
+      "orbit": "X+",
+      "pass": true,
+      "remaining_external_torus_rank": 1,
+      "unit_section_dimension": 19
+    },
+    {
+      "core_dimension": 12,
+      "expected_compact_stabilizer_dimension": 4,
+      "external_torus_projection_rank": 1,
+      "fixture_is_mostow_adapted": false,
+      "maximal_compact_core": "V_2(R^7) x S^1",
+      "maximal_compact_stabilizer_dimension": 4,
+      "observed_compact_stabilizer_dimension_at_fixture": 3,
+      "orbit": "X-",
+      "pass": true,
+      "remaining_external_torus_rank": 1,
+      "unit_section_dimension": 19
+    }
+  ],
+  "pass": true,
+  "schema": "a5-kernel-bundles-nullity8-unit-section-topology-v1",
+  "topology_inputs": {
+    "g2": {
+      "K0": "Z^2",
+      "K1": "Z^2",
+      "K_theory_input": "Hodgkin gives K^0(G_2)=K^1(G_2)=Z^2",
+      "g2_cell_degrees": [
+        0,
+        3,
+        5,
+        6,
+        8,
+        9,
+        11,
+        14
+      ],
+      "g2_cellular_boundaries": {
+        "6_to_5": 2,
+        "9_to_8": 2
+      },
+      "integral_cohomology": {
+        "0": "Z",
+        "3": "Z",
+        "6": "Z/2",
+        "9": "Z/2",
+        "11": "Z",
+        "14": "Z"
+      },
+      "pi_1": "0",
+      "reduced_K0": "Z",
+      "space": "G_2"
+    },
+    "stiefel_factor": {
+      "K0": "Z + Z/2",
+      "K1": "Z",
+      "authority_matches": true,
+      "cell_degrees": [
+        0,
+        5,
+        6,
+        11
+      ],
+      "cellular_boundary_6_to_5": 2,
+      "integral_cohomology": {
+        "0": "Z",
+        "6": "Z/2",
+        "11": "Z"
+      },
+      "space": "V_2(R^7)"
+    },
+    "stiefel_times_circle": {
+      "K0": "Z^2 + Z/2",
+      "K1": "Z^2 + Z/2",
+      "integral_cohomology": {
+        "0": "Z",
+        "1": "Z",
+        "6": "Z/2",
+        "7": "Z/2",
+        "11": "Z",
+        "12": "Z"
+      },
+      "pi_1": "Z",
+      "reduced_K0": "Z + Z/2",
+      "space": "V_2(R^7) x S^1"
+    },
+    "stiefel_times_torus": {
+      "K0": "Z^4 + Z/2 + Z/2",
+      "K1": "Z^4 + Z/2 + Z/2",
+      "integral_cohomology": {
+        "0": "Z",
+        "1": "Z^2",
+        "2": "Z",
+        "6": "Z/2",
+        "7": "Z/2 + Z/2",
+        "8": "Z/2",
+        "11": "Z",
+        "12": "Z^2",
+        "13": "Z"
+      },
+      "pi_1": "Z^2",
+      "reduced_K0": "Z^3 + Z/2 + Z/2",
+      "space": "V_2(R^7) x T^2"
+    }
+  },
+  "topology_status": "inferred from the exact stabilizer data by radial normalization and the Mostow homogeneous-space deformation theorem; the cellular and Kunneth group calculations are executable inputs"
+}

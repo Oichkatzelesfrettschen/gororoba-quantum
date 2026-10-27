@@ -5,7 +5,7 @@ This evidence directory executes the
 computes the connected compact `G_2 x U(1)` tangent ranks on the five complex nullity-eight orbits from the
 [regularity record](../a5-strata-regularity/README.md): `W8`, E8-bar, the isotropic orbit `Iso`, and the two branches
 `X_+` and `X_-`. The record also gives complete compact-orbit invariants and moduli spaces for all five orbits.
-Unit-section topology, transition data, and bundle classes remain open.
+Transition data and bundle classes remain open.
 
 Every calculation uses integer or rational arithmetic. [`compact-orbit-ranks-result.json`](compact-orbit-ranks-result.json)
 is the output of [`compact_orbit_ranks.py`](compact_orbit_ranks.py) `--out`, and
@@ -340,6 +340,83 @@ different from the boundary representation, or a surviving mutation. Adding a mi
 `W8`-to-`B9` path breaks closure containment. Deleting the second-order Schur correction on the
 E8-bar-to-`V^a_+` path changes the effective rank from two to six. Both mutations fail downstream checks.
 
+## The unit sections retract onto three compact core types
+
+Let
+
+`H = G_2(C) x SO(2,C) x C^*`.
+
+Each nullity-eight stratum is one homogeneous `H` orbit. Radial normalization removes the positive-real part of the
+last factor and is a deformation retraction from the nonzero cone orbit to its unit section. A maximal compact
+subgroup of `H` is
+
+`K = G_2 x S^1_boost x S^1_phase`.
+
+[`unit-section-topology-result.json`](unit-section-topology-result.json) solves the full complex stabilizer algebra
+from all sixteen infinitesimal `H` generators. It computes the Killing kernel, tests that kernel as an ideal, tests
+its matrices for nilpotence, and records the projection to the two external torus directions. The exact types are:
+
+| Orbit | Complex stabilizer dimension | Unipotent radical dimension | Maximal compact stabilizer | External torus rank |
+| --- | ---: | ---: | --- | ---: |
+| `W8` | 4 | 0 | `SU(2)` plus one circle | 1 |
+| E8-bar | 5 | 2 | `SU(2)` | 0 |
+| `Iso` | 5 | 3 | two-torus | 2 |
+| `X_+`, `X_-` | 6 | 2 | `SU(2)` plus one circle | 1 |
+
+For `W8`, the one-dimensional Killing kernel acts nonnilpotently and is the torus direction. For E8-bar, `Iso`, and
+the two `X` branches, every matrix in the Killing kernel is nilpotent, so the kernel is the displayed unipotent
+radical. The remaining reductive dimensions are three, two, and four. The prior exact compact classification
+identifies the semisimple factor as `SU(2)` on `W8`, E8-bar, and the `X` branches. The two-dimensional reductive
+quotient on `Iso` is a torus.
+
+The exact external projection ranks are one on `W8`, zero on E8-bar, two on `Iso`, and one on each `X` branch.
+**Inferred:** the connected stabilizer tori have saturated projection images: boost alone on `W8`, both external
+circles on `Iso`, and the diagonal or antidiagonal external circle on `X_-` or `X_+`. E8-bar projects to neither
+external circle. The ordered-frame normal forms identify the maximal compact groups as `U(2)`, `SU(2)`, `T^2`, and
+`U(2)`, respectively; the ordered frame and external torus element determine the compensating `G_2` element, so no
+additional finite stabilizer component remains. Quotienting the graph subtori leaves these compact cores:
+
+| Unit section | Compact core | Core dimension | Fundamental group |
+| --- | --- | ---: | --- |
+| `W8` | `V_2(R^7) x S^1` | 12 | `Z` |
+| E8-bar | `V_2(R^7) x T^2` | 13 | `Z^2` |
+| `Iso` | `G_2` | 14 | `0` |
+| `X_+`, `X_-` | `V_2(R^7) x S^1` | 12 | `Z` |
+
+**Inferred:** Mostow's homogeneous-space decomposition makes `H/S` a real vector bundle over `K/L`, where `S` is
+the algebraic point stabilizer and `L` its maximal compact subgroup. The vector fibers and the removed radial factor
+are contractible, so each unit section has the homotopy type in the table. The argument uses G. D. Mostow, “On
+Covariant Fiberings of Klein Spaces,” *American Journal of Mathematics* 77 (1955), 247–278.
+
+The recorded `X_+` and `X_-` representatives are not Mostow-adapted: their intersection with the fixed compact form
+is only `SU(2)`, of dimension three, while the nilpotent-radical calculation gives a four-dimensional maximal compact
+subgroup after conjugation. In contrast, the selected `W8`, E8-bar, and coassociative `Iso` points are adapted. The
+non-adapted `X` representatives require the full complex stabilizer; a compact tangent rank at one point would give
+the wrong core.
+
+The cellular and Kunneth calculations give the groups needed by the bundle invariants. The `V_2(R^7)` factor uses
+the committed cells in degrees `0,5,6,11` and boundary `d_6=2`. For `G_2`, the standard cells in degrees
+`0,3,5,6,8,9,11,14` have boundaries `d_6=d_9=2`; see Mamoru Mimura and Hirosi Toda, *Topology of Lie Groups, I and
+II*, Translations of Mathematical Monographs 91, American Mathematical Society, 1991. The producer takes that
+standard `G_2` cell structure as an **Inferred** input and computes:
+
+| Core | Nonzero integral cohomology | `K^0` | `K^1` | Reduced `K^0` |
+| --- | --- | --- | --- | --- |
+| `V_2(R^7) x S^1` | `H^0,H^1,H^11,H^12=Z`; `H^6,H^7=Z/2` | `Z^2 + Z/2` | `Z^2 + Z/2` | `Z + Z/2` |
+| `V_2(R^7) x T^2` | `H^0,H^2,H^11,H^13=Z`; `H^1,H^12=Z^2`; `H^6,H^8=Z/2`; `H^7=(Z/2)^2` | `Z^4 + (Z/2)^2` | `Z^4 + (Z/2)^2` | `Z^3 + (Z/2)^2` |
+| `G_2` | `H^0,H^3,H^11,H^14=Z`; `H^6,H^9=Z/2` | `Z^2` | `Z^2` | `Z` |
+
+The Stiefel K-groups come from the committed Hodgkin calculation, and free Kunneth factors introduce no `Tor` term.
+For `G_2`, Hodgkin's exterior-algebra theorem gives `K^0(G_2)=K^1(G_2)=Z^2`; see Luke Hodgkin, “On the K-Theory of
+Lie Groups,” *Topology* 6 (1967), 1–36.
+
+The falsifier was a complex stabilizer dimension different from sixteen minus the committed orbit dimension, a
+Killing kernel that failed to be an ideal, a claimed unipotent direction represented by a nonnilpotent matrix, a
+maximal compact dimension inconsistent with the semisimple and external-torus ranks, a compact core with the wrong
+dimension, or cohomology inconsistent with the committed Stiefel boundary. Deleting the compact boost generator
+changes the full compact ranks. Replacing the Stiefel boundary `2` by `1` removes the downstream order-two
+cohomology. Both mutations fail the integrated record.
+
 ## No nullity-eight orbit is compact homogeneous
 
 **Inferred.** A connected compact orbit has dimension at most fifteen. Each nullity-eight unit section has dimension
@@ -380,6 +457,10 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py \
     --check docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py \
+    --check docs/evidence/a5-kernel-bundles-nullity8/unit-section-topology-result.json
 ```
 
 The measured `--check` wall times were 7.84 seconds for the compact-rank producer and 3.18 seconds for the `W8`
@@ -388,3 +469,4 @@ The sampled stabilizer and representation producer checked in 9.19 seconds. Each
 two-space-indented JSON plus its final newline in memory, compares the UTF-8 bytes with the retained record, writes
 no repository file, and exits nonzero on a difference. The exhaustive stabilizer-stratum producer checked in 8.23
 seconds. The boundary-specialization producer checked in 9.91 seconds.
+The unit-section topology producer checked in 4.45 seconds.
