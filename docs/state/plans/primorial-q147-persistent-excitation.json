@@ -1,18 +1,48 @@
 {
   "schema": "work-plan-v1",
   "id": "primorial-q147-persistent-excitation",
-  "kind": "investigation",
+  "kind": "experiment",
   "summary": "Case-3 post-hoc analyses: q147's preparation excess is not set by the previous shot's end state, and in stage 2 it exceeds the end-state ceiling by 2.2 to 4.0 standard errors; a repeated-measurement arm would separate population from misassignment.",
   "sources": [
-    "docs/evidence/primorial_cover/case3/README.md"
+    "docs/evidence/primorial_cover/case3/README.md",
+    "results/live/PRIMORIAL_Q147_REMEASURE_CASE.md",
+    "scripts/remeasure_history.py"
   ],
-  "state": "inbox",
+  "state": "planned",
   "reconciliation": {
-    "status": "unresolved",
-    "note": "Captured context; triage and evidence review pending."
+    "status": "verified",
+    "note": "Case 3's post-hoc shot-history analysis (docs/evidence/primorial_cover/case3/README.md) found the in-job excess above the end-state ceiling and linked to the previous circuit's readout event; one-read arms cannot separate a population from a misassignment, so the family gained two-read arms and a written case."
   },
   "related": [
     "primorial-coherent-device-question"
   ],
-  "next_action": "Write a case for a repeated-measurement control arm (measure, measure) on q147 and q142 at a 20 us repetition delay, alongside a gap-88-like job history; it needs a live_run change and the owner's approval before any submission."
+  "next_action": "The owner reviews results/live/PRIMORIAL_Q147_REMEASURE_CASE.md (layout, shots, 12 s ceiling, backup account) and approves or amends it; on approval, run the approved_run.sh command of the case at once.",
+  "steps": [
+    {
+      "id": "two-read-arms",
+      "state": "doing",
+      "action": "Add the static arms x_remeasure and remeasure to the state-prep-control family with two-bit registers, their summaries, endpoints, the planner's row-order contract and the written-case renderer, and dry-run the selection on ibm_kingston.",
+      "acceptance": "diagnostic_experiments.py --self-test, qpu_planning_contracts.py --state-prep and qpu_cases.py --check pass with the new arms, and a dry run plans three static PUBs in the order prep0, x_remeasure, remeasure on the six qubits with a written case."
+    },
+    {
+      "id": "analysis-rule",
+      "state": "todo",
+      "action": "Write scripts/remeasure_history.py: the persistence rule (99 percent Clopper-Pearson against 0.5), the |1>-read-as-0 recovery, the readout-event link with its null arm, and the successor reading, with a synthetic self-test laid out by construction.",
+      "acceptance": "The script's --self-test reproduces every synthetic count and the rule's three verdicts match closed forms; the case document names the rule and the predictions under both readings."
+    },
+    {
+      "id": "approval",
+      "state": "todo",
+      "action": "The owner approves the written case: six qubits, 32768 shots at 20 us, the backup account, the 12 s ceiling.",
+      "acceptance": "An approval in the owner's words recorded in the case's status line."
+    },
+    {
+      "id": "run-and-collect",
+      "state": "todo",
+      "action": "Run approved_run.sh with the case's check and flags, collect the run with --collect, run remeasure_history.py with q147's execution calibration, and retain the run, its analysis and the registry row.",
+      "acceptance": "A collected run under results/live with raw shots, remeasure-history.json under the case-3 evidence successor, a research_state.json acquisition and claim citing it, and a receipt binding them."
+    }
+  ],
+  "owner": "IBM Kingston primorial operator",
+  "scope": "One static ibm_kingston job on the backup account: the state-prep-control arms prep0, x_remeasure and remeasure on qubits 147, 148, 149, 141, 142 and 143, 32768 shots at a 20 us repetition delay, under a 12 s ceiling. It decides whether q147's preparation excess is a population the first read finds or a misassignment of that read, through the persistence of a second measurement, and reads the readout-event link and q142 descriptively. The case is results/live/PRIMORIAL_Q147_REMEASURE_CASE.md and the analysis scripts/remeasure_history.py; the gap-88 circuits and the split law stay out of scope."
 }
