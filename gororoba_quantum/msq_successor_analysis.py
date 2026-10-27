@@ -843,30 +843,44 @@ def carryover_reader(
     """The excitation an |1> end state leaves at the next shot, from reader members that read ground only.
 
     predecessors[i] holds the final bits of the member row that reader i follows and readers[i] the reader's bits,
-    both indexed by shot: under column-wise execution reader shot j follows predecessor shot j. D is the reader's P1
-    after a predecessor 1 minus after a predecessor 0, pooled over the readers' shots and divided by the readout
-    contrast (the readers read ground in both classes, so no crosstalk enters the contrast). The contrast is taken as
-    fixed: D sits near zero, so the contrast's own error moves it negligibly. U is the one-sided upper confidence
-    bound of |D| (Bonferroni over `width`), and the screen keeps the qubit when allocation * U lies below
-    SCREEN_FRACTION * BOUND_FLOOR.
+    both indexed by shot: under column-wise execution reader shot j follows predecessor shot j. Each reader gives its
+    own conditional difference, the reader's P1 after a predecessor 1 minus after a predecessor 0, and the readers
+    combine by inverse-variance weights, so a baseline that differs between the measure blocks (whose predecessors
+    end at different P1) cannot enter through the pooling. A reader whose conditioning class holds fewer than
+    MIN_SIDE shots drops out.
+
+    Two readout contrasts dilute D: the reader reads the carried excitation through its own contrast c, and the
+    predecessor's measured bit separates its end states by a difference of at most c. The estimate is the combined
+    difference over `contrast ** 2` (the qubit's readout scale squared), which bounds |D| from above whether the
+    readout error is discrimination overlap or decay; the contrast is taken as fixed because D sits near zero. U is the
+    one-sided upper confidence bound of |D| (Bonferroni over `width`), and the screen keeps the qubit when
+    allocation * U lies below SCREEN_FRACTION * BOUND_FLOOR.
     """
     if len(predecessors) != len(readers) or not readers:
         raise msa.AnalysisError("each reader needs one predecessor row")
     if not contrast > 0:
         raise msa.AnalysisError("the readout contrast must be positive")
-    previous = np.concatenate([np.asarray(p).ravel() for p in predecessors])
-    current = np.concatenate([np.asarray(r).ravel() for r in readers])
-    if previous.shape != current.shape:
-        raise msa.AnalysisError("a reader and its predecessor differ in shots")
+    strata = []
+    shots = 0
+    for before, after in zip(predecessors, readers, strict=True):
+        previous, current = np.asarray(before).ravel(), np.asarray(after).ravel()
+        if previous.shape != current.shape:
+            raise msa.AnalysisError("a reader and its predecessor differ in shots")
+        value = conditional_difference(current, previous)
+        if value is not None:
+            strata.append(value)
+            shots += int(previous.size)
     margin = SCREEN_FRACTION * BOUND_FLOOR
-    value = conditional_difference(current, previous)
-    if value is None:
+    if not strata:
         return {
             "evaluable": False,
-            "reason": f"a conditioning class holds fewer than {MIN_SIDE} shots",
+            "reason": f"every reader has a conditioning class of fewer than {MIN_SIDE} shots",
             "passes": False,
         }
-    difference, se = value[0] / contrast, value[1] / contrast
+    weights = [1 / se**2 for _, se in strata]
+    total = math.fsum(weights)
+    combined = math.fsum(w * d for w, (d, _) in zip(weights, strata, strict=True)) / total
+    difference, se = combined / contrast**2, 1 / math.sqrt(total) / contrast**2
     z = NormalDist().inv_cdf(1 - alpha / width)
     upper = abs(difference) + z * se
     bias = allocation * upper
@@ -879,7 +893,8 @@ def carryover_reader(
         "allocation": allocation,
         "bias_bound": bias,
         "margin": margin,
-        "shots": int(previous.size),
+        "shots": shots,
+        "readers": len(strata),
         "passes": bias < margin,
     }
 
@@ -977,8 +992,22 @@ def retained_chunks(run_dir: Path) -> list[list[int]]:
     data = (raws[0] / RESULT_METADATA).read_bytes()
     if hashlib.sha256(data).hexdigest() != index["files"].get(RESULT_METADATA):
         raise ValueError(f"{raws[0] / RESULT_METADATA} differs from its indexed digest")
-    chunks = json.loads(data)["executor"]["chunk_timing"]
-    return [[int(part["idx_item"]) for part in chunk["parts"]] for chunk in chunks]
+    document = json.loads(data)
+    executor = document.get("executor") if isinstance(document, dict) else None
+    if not isinstance(executor, dict):
+        raise ValueError(f"{RESULT_METADATA}: executor is {type(executor).__name__}, not a mapping")
+    timing = executor.get("chunk_timing")
+    if not isinstance(timing, list):
+        raise ValueError(f"{RESULT_METADATA}: executor.chunk_timing is {type(timing).__name__}, not a list")
+    chunks = []
+    for chunk in timing:
+        parts = chunk.get("parts") if isinstance(chunk, dict) else None
+        if not isinstance(parts, list) or not all(
+            isinstance(part, dict) and type(part.get("idx_item")) is int for part in parts
+        ):
+            raise ValueError(f"{RESULT_METADATA}: executor.chunk_timing holds a chunk without integer idx_item parts")
+        chunks.append([part["idx_item"] for part in parts])
+    return chunks
 
 
 def _stem(member: str) -> str:
@@ -1184,7 +1213,8 @@ def carryover_screen(
 ) -> dict[str, Any]:
     """The reader statistic with its vertex allocation: U from the readers, A_q at U, then the screen.
 
-    item = (qubit, member counts, planned context, predecessor bits, reader bits, readout contrast, width).
+    item = (qubit, member counts, planned context, predecessor bits, reader bits, readout scale, width). The scale
+    enters `carryover_reader` squared (see there): one factor for the reader's readout, one for the predecessor's bit.
     """
     qubit, member_counts, ctx, predecessors, readers, contrast, width = item
     first = carryover_reader(predecessors, readers, contrast, 1.0, width)
@@ -1194,6 +1224,19 @@ def carryover_screen(
     out = carryover_reader(predecessors, readers, contrast, vertex["allocation"], width)
     out["vertex"] = vertex
     return out
+
+
+def equilibrium_screen(item: tuple[dict[str, tuple[int, int]], dict[str, Any], float, float, int]) -> dict[str, Any]:
+    """One qubit's q_hat, its standard error and the withhold rule at the qubit's fitted T.
+
+    item = (observations incl. "eq", planned context, fitted T in s, equilibrium idle in s, width).
+    """
+    obs, ctx, fitted_t, idle_s, width = item
+    try:
+        estimate = equilibrium_estimate(obs, ctx, idle_s)
+        return {**estimate, **q_screen(estimate, q_sensitivity(ctx, fitted_t), width)}
+    except msa.AnalysisError as error:
+        return {"passes": False, "reason": str(error)}
 
 
 def delay_descriptive(item: tuple[int, dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
@@ -1247,8 +1290,14 @@ def collected(
     """
     try:
         return _collected(record, distributions, executed, registers, chunks, floor)
-    except (msa.AnalysisError, KeyError, ValueError) as error:
-        return {"schema": SCHEMA, "withheld": f"{type(error).__name__}: {error}"}
+    except (msa.AnalysisError, KeyError, ValueError, TypeError, IndexError) as error:
+        return {
+            "schema": SCHEMA,
+            "order": None,
+            "count_rule": None,
+            "selected": [],
+            "withheld": f"{type(error).__name__}: {error}",
+        }
 
 
 def _collected(
@@ -1337,18 +1386,21 @@ def _collected(
     ]
     for (_, qubit), outcome in zip(work, ordered_map(carryover_screen, carryover_items, min_items=2), strict=True):
         screens[str(qubit)]["carryover"] = outcome
+    equilibrium_items = []
     for _, qubit in work:
+        eq_ones = ea.member_ones(distributions, executed, de.msqr_equilibrium_member(qubit))
         obs = msa.observations(counts[qubit]["final"], qubit)
-        screen = screens[str(qubit)]
-        try:
-            eq_name = de.msqr_equilibrium_member(qubit)
-            eq_ones = ea.member_ones(distributions, executed, eq_name)
-            row = rows[qubit]
-            estimate = equilibrium_estimate({**obs, "eq": eq_ones}, planned[qubit], equilibrium_s)
-            sensitivity = q_sensitivity(planned[qubit], float(row["fitted"]["t1_s"]))
-            screen["equilibrium"] = {**estimate, **q_screen(estimate, sensitivity, width)}
-        except msa.AnalysisError as error:
-            screen["equilibrium"] = {"passes": False, "reason": str(error)}
+        equilibrium_items.append(
+            (
+                {**obs, "eq": eq_ones},
+                planned[qubit],
+                float(rows[qubit]["fitted"]["t1_s"]),
+                equilibrium_s,
+                width,
+            )
+        )
+    for (_, qubit), outcome in zip(work, ordered_map(equilibrium_screen, equilibrium_items, min_items=2), strict=True):
+        screens[str(qubit)]["equilibrium"] = outcome
     eligible = []
     for qubit in qubits:
         screen = screens[str(qubit)]

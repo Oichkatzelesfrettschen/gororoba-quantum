@@ -3,6 +3,7 @@ settle veto, carryover reader and order sentinel."""
 
 from __future__ import annotations
 
+import itertools
 import math
 from typing import Any
 
@@ -339,14 +340,28 @@ def test_settle_veto_estimates_tau_about_the_weighted_mean() -> None:
 
 
 def shot_arrays(
-    carry: float, readers: int = 12, shots: int = 8192, contrast: float = 0.98, shuffle: bool = False
+    carry: float,
+    readers: int = 12,
+    shots: int = 8192,
+    e01: float = 0.006,
+    e10: float = 0.014,
+    shuffle: bool = False,
+    baselines: tuple[float, ...] = (),
 ) -> tuple[list[np.ndarray], list[np.ndarray]]:
+    """Predecessor bits and reader bits from a latent end state: the predecessor's recorded bit reads the latent state
+    through the assignment errors (discrimination overlap), and the reader's excitation `carry` follows the latent
+    state, not the recorded bit. `baselines[i]` adds a bit-independent excitation to reader i."""
     generator = np.random.default_rng(TEST_SEED)
-    previous = [(generator.random(shots) < 0.3).astype(np.int8) for _ in range(readers)]
-    read = []
-    for bits in previous:
-        p1 = 0.006 + contrast * carry * bits
+    contrast = 1 - e01 - e10
+    previous, read = [], []
+    for i in range(readers):
+        p_latent = (0.47, 0.31, 0.18)[3 * i // readers]
+        latent = generator.random(shots) < p_latent
+        bit = np.where(latent, generator.random(shots) >= e10, generator.random(shots) < e01).astype(np.int8)
+        extra = baselines[i] if i < len(baselines) else 0.0
+        p1 = e01 + contrast * (carry * latent + extra)
         draw = (generator.random(shots) < p1).astype(np.int8)
+        previous.append(bit)
         read.append(generator.permutation(draw) if shuffle else draw)
     return previous, read
 
@@ -355,7 +370,7 @@ def test_carryover_reader_recovers_a_planted_carryover() -> None:
     previous, read = shot_arrays(0.01)
     result = su.carryover_reader(previous, read, 0.98, 1.59, 32)
     check(abs(result["d"] - 0.01) < 4 * result["se"], f"{result}")
-    check(0.0003 < result["se"] < 0.001, f"standard error {result['se']}")
+    check(0.0003 < result["se"] < 0.001 and result["readers"] == 12, f"standard error {result['se']}")
     check(not result["passes"], f"{result}")
 
 
@@ -479,6 +494,7 @@ def build_run(
     pubs = [f"pub_{k:03d}" for k in range(len(stems))]
     bits: dict[tuple[int, int], np.ndarray] = {}
     uniform: dict[tuple[int, int], np.ndarray] = {}
+    latent: dict[tuple[int, int], np.ndarray] = {}
     for k, stem in enumerate(stems):
         for rank, q in enumerate(qubits):
             ctx = base[q]
@@ -490,7 +506,7 @@ def build_run(
             uniform[(k, rank)] = fresh
             member = f"{stem}_q{q}"
             if stem.startswith("msqr_reader"):
-                p1 = ctx["e01"] + contrast * carry * bits[(k - 1, rank)]
+                p1 = ctx["e01"] + contrast * carry * latent[(k - 1, rank)]
             elif stem == "msqr_eq":
                 excited = thermal * (1 - math.exp(-EQUILIBRIUM_DT * DT / ctx["t1_cal_s"]))
                 p1 = np.full(RUN_SHOTS, ctx["e01"] + contrast * excited)
@@ -505,7 +521,17 @@ def build_run(
                 p1 = np.full(RUN_SHOTS, 1 - ctx["e10"] if bit else ctx["e01"])
             else:
                 p1 = np.full(RUN_SHOTS, final[q][member][0] / RUN_SHOTS)
-            row = (fresh < p1).astype(np.int8)
+            if k + 1 < len(stems) and stems[k + 1].startswith("msqr_reader"):
+                # The predecessor's end state is latent; its recorded bit reads it through the assignment errors.
+                p_latent = np.clip((p1 - ctx["e01"]) / contrast, 0.0, 1.0)
+                latent[(k, rank)] = (fresh < p_latent).astype(np.int8)
+                row = np.where(
+                    latent[(k, rank)] == 1,
+                    generator.random(RUN_SHOTS) >= ctx["e10"],
+                    generator.random(RUN_SHOTS) < ctx["e01"],
+                ).astype(np.int8)
+            else:
+                row = (fresh < p1).astype(np.int8)
             bits[(k, rank)] = generator.permutation(row) if shuffle else row
     distributions: dict[str, Any] = {}
     executed: dict[str, Any] = {}
@@ -752,24 +778,41 @@ def test_retained_chunks_read_the_digest_checked_metadata(tmp_path: Any) -> None
         su.retained_chunks(tmp_path)
 
 
-def test_carryover_allocation_bounds_every_mixture_of_classes() -> None:
+def test_carryover_allocation_bounds_every_same_sign_mixture_of_classes() -> None:
+    """Every allocation in the box [0, U] on the positive-response classes, and in [-U, 0] on the negative ones (corners
+    and a grid of interior mixtures), shifts the departure by at most A * U."""
     ctx_map = contexts((msa.FIXTURE_QUBITS[0],))
     q = msa.FIXTURE_QUBITS[0]
     counts = ground_counts(ctx_map)[q]
     bound = 0.002
     result = su.carryover_allocation((q, {"final": counts["final"]}, ctx_map[q], bound))
     check(result["allocation"] > 0.3, f"{result}")
-    check(result["positive_classes"] and result["negative_classes"], f"{result}")
-    every = {name: (ones + 0.0, n) for name, (ones, n) in counts["final"].items()}
-    reference = su._departure(q, every, ctx_map[q])
+    check(bool(result["positive_classes"]) and bool(result["negative_classes"]), f"{result}")
+    final = counts["final"]
+    reference = su._departure(q, final, ctx_map[q])
     base = msa.device_counts({q: msa.device_model(ctx_map[q], p_init=0.0)}, ctx_map, su.VERTEX_SHOTS)[q]["final"]
     moved = msa.device_counts({q: msa.device_model(ctx_map[q], p_init=bound)}, ctx_map, su.VERTEX_SHOTS)[q]["final"]
-    shifted = {
-        name: (ones + (moved[name][0] - base[name][0]) / su.VERTEX_SHOTS * n, n)
-        for name, (ones, n) in counts["final"].items()
-    }
-    everything = abs(su._departure(q, shifted, ctx_map[q]) - reference)
-    check(everything <= result["allocation"] * bound * (1 + 1e-9), f"{everything} exceeds the vertex bound")
+    classes = su._class_members(q)
+    limit = result["allocation"] * bound * (1 + 1e-3)
+
+    def shift(weights: dict[str, float]) -> float:
+        planted = dict(final)
+        for label, weight in weights.items():
+            for name in classes[label]:
+                ones, n = final[name]
+                planted[name] = (ones + weight * (moved[name][0] - base[name][0]) / su.VERTEX_SHOTS * n, n)
+        return abs(su._departure(q, planted, ctx_map[q]) - reference)
+
+    # The planted excitation moves a class by its single-class response times its allocation weight in [0, 1].
+    for side in ("positive_classes", "negative_classes"):
+        labels = result[side]
+        corners = itertools.product((0.0, 1.0), repeat=min(len(labels), 5))
+        for corner in corners:
+            check(shift(dict(zip(labels, corner, strict=False))) <= limit, f"{side} corner {corner} exceeds A * U")
+        for level in (0.25, 0.5, 0.75):
+            check(shift(dict.fromkeys(labels, level)) <= limit, f"{side} uniform {level} exceeds A * U")
+        graded = {label: (i + 1) / (len(labels) + 1) for i, label in enumerate(labels)}
+        check(shift(graded) <= limit, f"{side} graded allocation exceeds A * U")
     with pytest.raises(msa.AnalysisError):
         su.carryover_allocation((q, {"final": counts["final"]}, ctx_map[q], 0.0))
 
@@ -795,3 +838,73 @@ def test_departure_value_equals_the_row_residual_bit_for_bit() -> None:
     counts = ground_counts(ctx_map, eps=0.004)[q]
     row = su.evaluate(ground_counts(ctx_map, eps=0.004), ctx_map)[q]
     check(su._departure(q, counts["final"], ctx_map[q]) == row["departure_n16"]["difference"], "residual differs")
+
+
+def test_carryover_reader_recovers_the_planted_excitation_under_overlap_readout_error() -> None:
+    """At contrast 0.9 the one-factor division reads D low by about the contrast; dividing by the squared contrast
+    returns D, and never less than D beyond noise (the estimate may exceed D by at most the factor 1 / c)."""
+    d = 0.01
+    previous, read = shot_arrays(d, e01=0.04, e10=0.06)
+    result = su.carryover_reader(previous, read, 0.9, 1.0, 32)
+    check(result["d"] > d - 3 * result["se"], f"estimate {result['d']} falls below {d}: {result}")
+    check(result["d"] < d / 0.9 + 3 * result["se"], f"estimate {result['d']} exceeds D / c: {result}")
+    single = su.carryover_reader(previous, read, 0.9, 1.0, 32)
+    check(single["d"] == result["d"], "deterministic")
+
+
+def test_carryover_reader_is_free_of_block_baselines_through_stratification() -> None:
+    """A bit-independent baseline that differs between the measure blocks moves a pooled difference by Simpson
+    weighting; per-reader strata leave it out."""
+    baselines = (0.001,) * 4 + (0.0,) * 8
+    previous, read = shot_arrays(0.0, baselines=baselines)
+    result = su.carryover_reader(previous, read, 0.98, 1.0, 32)
+    check(abs(result["d"]) < 4 * result["se"], f"{result}")
+    pooled = su.conditional_difference(np.concatenate(read), np.concatenate(previous))
+    check(pooled is not None and pooled[0] > 0.0001, f"the pooled estimate should carry the composition term: {pooled}")
+    thin = [np.zeros(10, dtype=np.int8)] * 2
+    dropped = su.carryover_reader([*previous, *thin], [*read, *thin], 0.98, 1.0, 32)
+    check(dropped["readers"] == 12 and dropped["d"] == result["d"], "an under-populated reader must drop out")
+    empty = su.carryover_reader(thin, thin, 0.98, 1.0, 32)
+    check(not empty["evaluable"] and not empty["passes"], f"{empty}")
+
+
+def test_relaxation_shot_order_reads_a_run_and_reports_a_malformed_one(tmp_path: Any, run: Run) -> None:
+    import hashlib
+    import json
+
+    check(live_run.relaxation_shot_order({"family_configuration": {"name": de.MSQE_FAMILY}}, tmp_path) is None, "other")
+    raw = tmp_path / "raw" / "job"
+    raw.mkdir(parents=True)
+    needed = sorted(su.required_pubs(run.record))
+    index_files: dict[str, str] = {}
+    for position, name in enumerate(needed):
+        payload = json.dumps(
+            {"pub_name": name, "registers": {r: {"bitstrings": b} for r, b in run.registers[name].items()}}
+        ).encode()
+        (raw / f"pub_{position:02d}.json").write_bytes(payload)
+        index_files[f"pub_{position:02d}.json"] = hashlib.sha256(payload).hexdigest()
+
+    def write_metadata(document: Any) -> None:
+        data = json.dumps(document).encode()
+        (raw / su.RESULT_METADATA).write_bytes(data)
+        index_files[su.RESULT_METADATA] = hashlib.sha256(data).hexdigest()
+        (raw / "index.json").write_text(json.dumps({"files": index_files}))
+
+    chunk = {"parts": [{"idx_item": k} for k in range(len(run.record["execution_pubs"]))]}
+    write_metadata({"executor": {"chunk_timing": [chunk]}})
+    ready = live_run.relaxation_shot_order(run.record, tmp_path)
+    check(ready is not None and "reason" not in ready, f"{ready}")
+    if ready is None:
+        raise AssertionError("no order evidence")
+    check(ready["chunks"] == run.chunks and set(ready["registers"]) == set(needed), "chunks and registers")
+    for bad in (
+        {"executor": None},
+        {"executor": "text"},
+        {"executor": {"chunk_timing": None}},
+        {"executor": {"chunk_timing": [{"parts": [{"idx_item": "0"}]}]}},
+        {"executor": {"chunk_timing": ["x"]}},
+        [1],
+    ):
+        write_metadata(bad)
+        reason = live_run.relaxation_shot_order(run.record, tmp_path)
+        check(reason is not None and "unreadable" in reason["reason"], f"{bad}: {reason}")
