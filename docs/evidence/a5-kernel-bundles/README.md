@@ -1,4 +1,4 @@
-# A_5 kernel bundles: exact transport, symmetry, stabilizers, and Pfaffian frames
+# A_5 kernel bundles: exact transport, atlases, and equivalence classes
 
 This evidence directory executes the
 [kernel-bundle program](../../design/a5-kernel-bundles-program.md). The current result corrects the complex transport
@@ -8,8 +8,10 @@ rational kernel frames covering all seven pieces of nullity at least twelve. It 
 stabilizer and its irreducible kernel representation on both nullity-sixteen components, reduces those two bundles to
 the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and quaternionic classes. The Pfaffian
 frames now carry explicit overlap maps, inverse and cocycle identities, and canonical unitary reductions on every
-high-nullity piece. An exhaustive component census, smaller reductions on the non-homogeneous pieces, and their
-characteristic classes remain open. The aligned nullity-twelve pieces now have an explicit
+high-nullity piece. The five nullity-twelve complex bundles are trivial; the two nullity-sixteen complex and
+quaternionic bundles retain the nonzero order-two class already found by the homogeneous calculation, although all
+seven underlying real bundles are trivial. An exhaustive component census and smaller reductions on the
+non-homogeneous pieces remain open. The aligned nullity-twelve pieces now have an explicit
 one-dimensional compact-orbit quotient, a computed unit-section topology, and exact stabilizer representations on
 their principal and endpoint orbits. The open `V` orbit now has an explicit three-dimensional connected compact-orbit
 quotient, a computed unit-section topology and K-groups, and exact stabilizer representations on its principal,
@@ -26,7 +28,8 @@ Every computation uses rational or Gaussian-rational arithmetic. [`result.json`]
 `v_orbit_moduli.py --out`. `v-topology-representation-result.json` is the output of
 `v_topology_representation.py --out`. `isotropic-orbit-data-result.json` is the output of
 `isotropic_orbit_data.py --out`. `transition-atlas-result.json` is the output of
-`transition_atlas.py --out`. The focused contracts and mutation controls run without random input.
+`transition_atlas.py --out`. `bundle-invariants-result.json` is the output of
+`bundle_invariants.py --out`. The focused contracts and mutation controls run without random input.
 
 ## Conventions
 
@@ -282,7 +285,7 @@ at the three displayed loci, a different compact stabilizer algebra, a sign-depe
 complement topology, or survival of a phase-deletion or trivial-monodromy mutation. None occurred. The exact replay
 uses rational cone representatives; positive rescaling to the unit section preserves `rho`, stabilizers, and
 nullity. This result identifies the moduli and topology. The following section decomposes the kernel on its compact
-orbits; reduced transitions and characteristic classes over the full unit section remain open.
+orbits; the equivalence-class section below then computes the global clutching and characteristic classes.
 
 ## The aligned fiber representation is constant on the principal interval
 
@@ -457,10 +460,9 @@ multiplicities are integer-valued and locally constant on the connected principa
 certificates prove constancy rather than merely agreement at isolated points. At the boundary, the exact joint
 center-Casimir decomposition reproduces the independently committed `VB` module.
 
-The result determines the topology and the connected stabilizer representation on every compact-orbit type. It does
-not yet determine how the rank-six kernel bundle occupies the free and order-two summands of reduced `K^0(V_unit)`,
-or its monodromy along either circle. Those questions require the transition calculation rather than another
-orbitwise representation sample.
+The result determines the topology and the connected stabilizer representation on every compact-orbit type. The
+equivalence-class section below combines these data with the exact periodic phase lift to place the rank-six kernel
+bundle in the free and order-two summands of `reduced K^0(V_unit)` and to identify both natural clutching maps.
 
 The falsifier was a global-phase obstruction, even square-root winding, non-antipodal quadric monodromy, different
 fundamental group, cohomology, or K-groups, a point-stabilizer action that moved the point or escaped the kernel, a
@@ -756,6 +758,100 @@ cocycle, metric transport, or complex-linearity, a nullity-sixteen reduction inc
 `SU(2)=Sp(1)` result, or survival of either mutation. None occurred. The exact denominators, transition matrices,
 determinants, input digests, and mutation controls are in `transition-atlas-result.json`.
 
+## The five nullity-twelve complex bundles are trivial
+
+The classification uses the unit-section topology and the connected compact representations above, but each piece
+needs a different obstruction argument. Put `x=[xi]-2`, the order-two generator of
+`reduced K^0(V_2(R^7))`, where `xi=G_2 x_(SU(2)) C^2`.
+
+For `B9`, let `rho:U(1)->G_2` denote the common-phase circle on an oriented coassociative frame. Its orbit bundle is
+
+`G_2 x U(1) -> (G_2 x U(1))/graph(rho) = G_2`.
+
+The quotient identification `[(g,t)] -> g rho(t)^(-1)` has the section `g -> (g,1)`. Every bundle associated to the
+graph circle is therefore trivial, including the rank-six module `3 C_(-1)+3 C_(-2)`. The open Gram ball is
+contractible, so the same section trivializes the bundle on `B9_unit=G_2 x open(B^3)`.
+
+For `VB`, forgetting the central `U(1)` weights restricts the fiber to `2 V_0+2 V_1` over the principal
+`SU(2)` bundle. Thus
+
+`E_C|_(V_2(R^7)) = C^2 + 2 xi`
+
+and its reduced class is `2x=0`. Complex rank six lies in the cancellation range on the eleven-dimensional Stiefel
+factor because `2*6>11`, so this stable trivialization is an actual one. The full `U(2)` module has irreducible
+multiplicities `(1,2,1)`, exact commutant dimension `1^2+2^2+1^2=6`, and equivariant automorphism group
+
+`GL(1,C) x GL(2,C) x GL(1,C)`.
+
+That group is connected. The `G_2`-equivariant clutching along the punctured-boundary circle is consequently
+homotopic to the identity, so it adds no `K^1(V_2(R^7))` cross-term. The whole bundle on
+`V_2(R^7) x (CP^1 minus {+i,-i})` is `C^6`.
+
+Each aligned piece `V^a_+` and `V^a_-` retracts to the mapping torus `M_-` of the antipodal map on `S^6`. The exact
+Wang calculation above gives `K^0(M_-)=Z`, hence `reduced K^0(M_-)=0`. Rank six lies in the cancellation range of its
+seven-dimensional CW model. The endpoint representation `3+conjugate(3)` identifies the restriction to the sphere
+as `T S^6 tensor C`. Its natural geometric clutching is the complexified antipodal derivative `-I_6`. The path
+
+`diag(exp(i t),exp(i t),exp(i t),exp(i t),exp(i t),exp(-5 i t)), 0<=t<=pi`
+
+lies in `SU(6)` and joins `I_6` to `-I_6`. Thus both aligned complex bundles are actually trivial.
+
+The open `V` piece requires one extra check because
+
+`reduced K^0(V_unit)=Z+(Z/2)`.
+
+Topology alone therefore does not decide its bundle. The global phase factor is the committed constant symmetry
+whose domain action is right multiplication `R_(e_16)`. Exact multiplication gives
+
+`R_(e_16)^2=-I_32`.
+
+Hence `exp(theta R_(e_16))=cos(theta)I+sin(theta)R_(e_16)` has period `2 pi` on the ambient domain and returns as
+`I_6` on the kernel. This periodic equivariant lift trivializes the bundle along the global phase circle, so the
+bundle is pulled back from `M_-`. Its class in the displayed free and order-two summands is `(0,0)`, and the same
+rank-six cancellation proves actual triviality. The projective-ratio generator retains the natural `-I_6`
+clutching above.
+
+The complete ordinary classification is:
+
+| Piece | Unit-section homotopy model | `pi_1` | Complex bundle | Reduced complex K-class | Actual type |
+| --- | --- | --- | --- | --- | --- |
+| `B9` | `G_2` | `0` | `C^6` | `0` by the graph-circle section | complex and real trivial |
+| `VB` | `V_2(R^7) x S^1` | `Z` | `C^2+2 xi = C^6` | `2x=0` | complex and real trivial |
+| `V^a_+`, `V^a_-` | `M_-` | `Z` | `C^6` | `0` in `reduced K^0(M_-)=0` | complex and real trivial |
+| `V` | `S^1 x M_-` | `Z^2` | `C^6` | `(0,0)` in `Z+(Z/2)` | complex and real trivial |
+| `N_+`, `N_-` | `V_2(R^7)` | `0` | `C^2+3 xi` | `3x=x!=0` | complex nontrivial; real rank sixteen trivial |
+
+All seven total Chern classes equal one. All Stiefel-Whitney and Pontryagin classes of the underlying real bundles
+vanish. On `N_+` and `N_-`, the zero Chern classes do not detect the order-two complex K-class. The diagonal
+`SU(2)=Sp(1)` reduction makes their quaternionic bundle `H+3 xi_H`, which is stably and actually nontrivial. The
+constant symmetry algebra supplies no second complex structure on the nullity-twelve family, so the result asserts
+no quaternionic class or `Sp(3)` reduction there.
+
+A vector bundle has no canonical connection. The following table records natural geometric clutching matrices and
+their homotopy classes, not connection-dependent holonomy:
+
+| Piece | Generator | Natural clutching representative | Homotopy class |
+| --- | --- | --- | --- |
+| `B9` | none | none | `pi_1=0` |
+| `VB` | punctured-boundary circle | `I_6` after equivariant reduction | identity component |
+| `V^a_+`, `V^a_-` | quadratic-argument circle | `-I_6` | identity component of `SU(6)` |
+| `V` | global phase | `I_6` | identity |
+| `V` | projective-ratio circle | `-I_6` | identity component of `SU(6)` |
+| `N_+`, `N_-` | none | none | `pi_1=0` |
+
+The adjacent-stratum restrictions make the torsion jump explicit. `B9 -> VB` and `V -> VB` compare trivial
+rank-six bundles. Both `VB -> N_+/-` and `V^a_+/- -> N_+/-` add one standard `SU(2)` doublet `xi`, raise the real
+rank by four, and change the reduced complex class from zero to `x`.
+
+The falsifier was a nontrivial graph-circle bundle on `B9`, a `VB` restriction other than `C^2+2 xi`, a surviving
+`VB` moduli clutching component, a nonzero reduced class on either aligned piece, a nonperiodic open-`V` phase lift,
+a nonzero free or order-two open-`V` class, failure of stable cancellation in any stated dimension, a natural
+antipodal clutching outside the identity component of `SU(6)`, a characteristic class incompatible with the actual
+trivializations, or a boundary rank jump other than one `xi`. None occurred. The mutations delete one `VB`
+doublet, inject the order-two class into `V`, or replace the even-rank antipodal clutching by odd rank; all three
+fail in normal and optimized Python. The finite denominator, input digests, exact right-phase matrix calculation,
+K-classes, cancellations, clutching weights, adjacency rows, and mutations are in `bundle-invariants-result.json`.
+
 ## The transport uses the conjugated input
 
 The Pfaffian record proves the real-linear identity
@@ -898,10 +994,13 @@ computation also decomposes the connected stabilizer representations on the prin
 aligned nullity-twelve pieces and identifies the extra doublet acquired at their nullity-sixteen boundaries. It has
 classified the connected compact-orbit quotients of `V`, `B9`, and `VB`, the unit-section topology and orbitwise
 stabilizer representations of `V`, the unit-section product types of `B9` and `VB`, and the `B9` and `VB` connected
-stabilizer representations. It has not proved that the visible components
-exhaust the group and has not classified an equivariant extension under the disconnected `N_+-` stabilizers, the
-actual real type of the individual four-plane `xi_R`, smaller structure-group reductions on the nullity-twelve
-pieces, or the non-homogeneous bundles' characteristic classes, K-classes, and monodromy. The compact
+stabilizer representations. The finite classification then proves that all five nullity-twelve complex bundles are
+trivial, both nullity-sixteen complex and quaternionic bundles are nontrivial with reduced class `x`, every
+underlying real kernel bundle is trivial, and the only natural nonidentity clutching representative is `-I_6`,
+which is homotopic to the identity inside `SU(6)`. This completes deliverable 4. The computation has not proved that
+the visible components exhaust the group and has not classified an equivariant extension under the disconnected
+`N_+-` stabilizers, the actual real type of the individual four-plane `xi_R`, or smaller structure-group reductions
+on the nullity-twelve pieces. The compact
 symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit
 labels do not make those kernel bundles homogeneous under the constant symmetry group.
 
@@ -961,4 +1060,9 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/transition_atlas.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/transition_atlas.py \
     --out docs/evidence/a5-kernel-bundles/transition-atlas-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_bundle_invariants.py
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/bundle_invariants.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/bundle_invariants.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/bundle_invariants.py \
+    --out docs/evidence/a5-kernel-bundles/bundle-invariants-result.json
 ```
