@@ -198,3 +198,42 @@ probe and the result, and run the cheap ones. Seeds:
   the shared 62 GiB host and pushed the system into memory pressure. Run every Python, Singular or sympy computation,
   inline probes and background terminals included, under `prlimit --as=17179869184` (16 GiB) or less. A computation
   that hits the cap counts as a failed attempt and calls for a smaller formulation.
+
+## Stepwise mode and the computation stack (owner direction, supersedes earlier pacing)
+
+**Stepwise.** The goal no longer auto-continues. Each orchestrator message names exactly one sub-step. Do that
+sub-step only: register its falsifier in the ledger, build or revise one producer, run it once under the resource rules
+below, write its ledger outcome and README section, and end the turn idle. The orchestrator reviews, replays and
+commits, then sends the next sub-step. Never start a second sub-step in the same turn, and never leave a background
+terminal running at the end of a turn.
+
+**Library choice.** [docs/PYTHON.md](../PYTHON.md) is the central routing page: its "Libraries by job" table and
+optimization ladder bind, the [library register](../state/hypercomplex-libraries/libraries.md) lists every pinned
+distribution's role, and [python-stack.md](../notes/build_host/python-stack.md) lists the build host's Arch (`paru`)
+packages. Choose granularly, cheapest exact tool first:
+
+- Ranks, null spaces and kernel frames: python-flint (`nmod_mat` rank modulo a word prime as a lower bound, then
+  `fmpq_mat` RREF for the rational kernel, checked in integers), through `scripts/exact_rank.py` where it fits; sympy
+  only as `DomainMatrix` on FLINT ground types, never generic `Matrix` arithmetic on large symbolic entries.
+- Polynomials: python-flint `fmpz_mpoly` / `fmpq_mpoly` for construction, substitution and Pfaffians; avoid sympy
+  expression trees beyond a few hundred terms, because expression swell is what reached 44 GB.
+- Elimination, saturation, Rees algebras, primary decomposition: Singular in global orderings. Run the computation
+  modulo a word-size prime first (`ring r = 32003, ...`) to predict the answer and its cost, then over Q; use
+  `modStd` / `modSat` (modular methods) where available, and SageMath only for a cross-check whose output a gate
+  retains.
+- Numerical probes that only suggest a conjecture: numpy or scipy on CPU; CuPy, PyTorch (CUDA) or numba-cuda on the
+  RTX 4070 Ti (12 GiB) only for a batched float sweep large enough to pay for the transfer. Exact claims never come from
+  the GPU.
+
+**Resources.** The host is shared: 12 cores, 62 GiB, one GPU.
+
+- Every process, inline probes included, runs under `prlimit --as=17179869184` (16 GiB) or less, and the total of all
+  concurrent workers stays under 16 GiB: with `GOROROBA_WORKERS=4`, each worker gets at most 4 GiB.
+- Pool independent items with `parallel.ordered_map` (`GOROROBA_WORKERS=4` by default, at most 8). Leave BLAS and
+  OpenMP threads at 1 inside pooled workers. A single Singular process is single-threaded, so parallelism comes from
+  pooling independent incidences, never from oversubscription.
+- Stream rather than accumulate: build a polynomial or matrix, reduce it, keep only the reduced form; compute
+  Pfaffians and minors chart by chart; write intermediate exact results to the evidence directory instead of holding
+  every incidence in memory.
+- Measure before scaling (`/usr/bin/time -v` for peak RSS, `py-spy` for hot spots), and record each producer's peak
+  RSS and wall time in its ledger row.
