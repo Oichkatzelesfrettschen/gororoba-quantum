@@ -1,0 +1,37 @@
+{
+  "schema": "work-plan-v1",
+  "id": "sedenion-herald-conformance",
+  "kind": "experiment",
+  "summary": "Implement certified sedenion LCU dark, bright and sign-mutation controls with unconditional herald probabilities.",
+  "sources": [
+    "docs/design/quantum-experiment-conformance.md"
+  ],
+  "state": "planned",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Scope follows the approved five-experiment plan and checked repository sources; acquisition authority stays with provider cases."
+  },
+  "scope": "Implement certified sedenion LCU dark, bright and sign-mutation controls with unconditional herald probabilities. Provider execution and acquisition completion are separate obligations.",
+  "owner": "quantum experiment implementer",
+  "next_action": "Certify the five-qubit LCU and restricted optical block.",
+  "steps": [
+    {
+      "id": "certify-operator",
+      "action": "Certify the five-qubit LCU and restricted optical block.",
+      "acceptance": "Complete operators reproduce the signed product and mutation changes the ideal herald law.",
+      "state": "todo"
+    },
+    {
+      "id": "compile-controls",
+      "action": "Generate routed Tuna and QX payloads and admitted Ascella dilation controls.",
+      "acceptance": "Payloads validate topology, normalization, port maps and full operator contracts.",
+      "state": "todo"
+    },
+    {
+      "id": "record-decision",
+      "action": "Record device question, executed-order rule and analysis gates.",
+      "acceptance": "Cases and analysis preserve unconditional denominators and distinguish requested from observed contrast order.",
+      "state": "todo"
+    }
+  ]
+}

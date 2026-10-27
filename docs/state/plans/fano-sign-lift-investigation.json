@@ -1,0 +1,37 @@
+{
+  "schema": "work-plan-v1",
+  "id": "fano-sign-lift-investigation",
+  "kind": "investigation",
+  "summary": "Resolve the Fano parity-to-protection inference with exact rank, commutation and signed-lift counterexamples.",
+  "sources": [
+    "docs/design/quantum-experiment-conformance.md"
+  ],
+  "state": "planned",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Scope follows the approved five-experiment plan and checked repository sources; acquisition authority stays with provider cases."
+  },
+  "scope": "Resolve the Fano parity-to-protection inference with exact rank, commutation and signed-lift counterexamples. Provider execution and acquisition completion are separate obligations.",
+  "owner": "quantum experiment implementer",
+  "next_action": "Calculate Fano incidence, binary rank and Pauli commutation.",
+  "steps": [
+    {
+      "id": "calculate-incidence",
+      "action": "Calculate Fano incidence, binary rank and Pauli commutation.",
+      "acceptance": "Exact rank four, eigenspace dimension eight and mixed X/Z anticommutation reproduce.",
+      "state": "todo"
+    },
+    {
+      "id": "falsify-sign-lift",
+      "action": "Exhibit a parity skeleton whose real signed product survives.",
+      "acceptance": "A cd_core product gives a nonzero counterexample with the same modulo-two skeleton.",
+      "state": "todo"
+    },
+    {
+      "id": "record-reopening",
+      "action": "Record requirements for a future protection experiment.",
+      "acceptance": "Design requires an encoding, logical operators, disjoint roles, named channel and falsifiable protection observable.",
+      "state": "todo"
+    }
+  ]
+}

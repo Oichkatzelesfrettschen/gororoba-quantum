@@ -1,0 +1,37 @@
+{
+  "schema": "work-plan-v1",
+  "id": "quarter-mass-amplification-conformance",
+  "kind": "experiment",
+  "summary": "Implement exact quarter-mass amplification, omitted-stage controls and matched full-target preparation on Tuna-17 and QX.",
+  "sources": [
+    "docs/design/quantum-experiment-conformance.md"
+  ],
+  "state": "planned",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Scope follows the approved five-experiment plan and checked repository sources; acquisition authority stays with provider cases."
+  },
+  "scope": "Implement exact quarter-mass amplification, omitted-stage controls and matched full-target preparation on Tuna-17 and QX. Provider execution and acquisition completion are separate obligations.",
+  "owner": "quantum experiment implementer",
+  "next_action": "Certify the two-qubit reflection protocol and full target state.",
+  "steps": [
+    {
+      "id": "certify-amplification",
+      "action": "Certify the two-qubit reflection protocol and full target state.",
+      "acceptance": "Exact initial success 1/4 and amplified success 1 pass; omitted controls differ.",
+      "state": "todo"
+    },
+    {
+      "id": "compile-stages",
+      "action": "Emit native preparation, oracle and reflection stages with matched target control.",
+      "acceptance": "Compiled operator records and gate resources retain stage identity and physical layout.",
+      "state": "todo"
+    },
+    {
+      "id": "analyze-success",
+      "action": "Analyze raw success and retain a bounded comparison case.",
+      "acceptance": "Count fixtures and written case compare measured performance without asserting fault tolerance or a quantization advantage.",
+      "state": "todo"
+    }
+  ]
+}

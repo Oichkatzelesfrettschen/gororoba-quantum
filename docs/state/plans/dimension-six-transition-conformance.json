@@ -1,0 +1,37 @@
+{
+  "schema": "work-plan-v1",
+  "id": "dimension-six-transition-conformance",
+  "kind": "experiment",
+  "summary": "Implement ideal, compiled and measured dimension-six transition conformance on Tuna-17, QX and Ascella.",
+  "sources": [
+    "docs/design/quantum-experiment-conformance.md"
+  ],
+  "state": "planned",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Scope follows the approved five-experiment plan and checked repository sources; acquisition authority stays with provider cases."
+  },
+  "scope": "Implement ideal, compiled and measured dimension-six transition conformance on Tuna-17, QX and Ascella. Provider execution and acquisition completion are separate obligations.",
+  "owner": "quantum experiment implementer",
+  "next_action": "Certify the three bases, Tao candidate and qubit embedding.",
+  "steps": [
+    {
+      "id": "certify-bases",
+      "action": "Certify the three bases, Tao candidate and qubit embedding.",
+      "acceptance": "Exact orthonormality, 1/6 overlaps, Tao residuals and leakage identities pass.",
+      "state": "todo"
+    },
+    {
+      "id": "compile-settings",
+      "action": "Generate 54 native transition settings per primary platform.",
+      "acceptance": "Full requested and compiled operators, payload hashes and output maps validate.",
+      "state": "todo"
+    },
+    {
+      "id": "analyze-counts",
+      "action": "Analyze counts and size written acquisition cases.",
+      "acceptance": "Fixtures cover denominator, mapping, leakage, missing data and precision failures; cases state ceilings and pending approval.",
+      "state": "todo"
+    }
+  ]
+}

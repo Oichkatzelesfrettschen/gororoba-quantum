@@ -1,0 +1,113 @@
+# Quantum experiment conformance evidence
+
+This bundle retains deterministic references and prospective cases for the
+[five-proposal design](../../design/quantum-experiment-conformance.md). The source artifact
+`multidimensional_spacetime_quantum_experiments.md` has SHA-256 `afbe80ced07e3400116ee201eb3604afcd174758a8e30d55dff8f4e257462032`; its original bytes remain
+in the owner's artifact store. The corrected design records the unsupported inferences beside the valid cores.
+
+## Evidence surfaces
+
+- [reference.json](cases/reference.json) contains exact basis overlaps, the Tao candidate's derived residuals,
+  Fano rank and sign-lift counterexample, sedenion product and herald normalization, spectral estimands and
+  full quarter-mass amplification matrices.
+- [campaign.json](cases/campaign.json) freezes setting identities, case digests, endpoint counts, requested
+  acquisition order and operator-supplied ceilings. [provenance.json](cases/provenance.json) binds producer
+  sources, retained compiler catalogues, package versions and generated artifact bytes.
+- [seeds.json](cases/seeds.json) assigns unused indices 2 through 58 of the retained ANU draw
+  `draw-2026-10-26T220128Z.json` to 57 distinct optical meshes. Repeated contrast arms reproduce their
+  named base mesh and its seed; each repeated arm has its own acquisition directory and checkpoint.
+- [provider-observation.json](provider-observation.json) retains read-only catalogue observations;
+  [offer-observation.json](offer-observation.json) records the current Ascella per-shot offer. The
+  compiler input catalogues keep their own recorded identities. Live status and capability fields establish
+  catalogue facts; instrument readiness and acquisition performance require their own checks.
+
+The Fano and spectral outputs complete bounded mathematical investigations. Their original hardware claims
+remain outside the admitted cases. The primary dimension-six hardware family uses the three reference bases;
+Tao is an offline candidate comparison. Hardware results remain prospective throughout this bundle.
+
+## Deterministic replay
+
+Use the repository's pinned interpreter and constrain worker/native-library concurrency. The generator
+constructs exact references, complete operators, native payloads and optical meshes; it draws no sampled
+outcomes. Case creation and replay contact no provider.
+
+```sh
+export PYTHON=/path/to/pinned/environment/bin/python
+export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
+export GOROROBA_WORKERS=4 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+"$PYTHON" scripts/experiment_analysis.py --size --endpoints 648
+"$PYTHON" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/cases \
+  --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 \
+  --execution-seconds 300 --photonic-credits 1.00315
+"$PYTHON" scripts/experiment_cases.py --self-test
+"$PYTHON" scripts/experiment_analysis.py --self-test
+sh ci/pr_checks.sh tests tests/scripts/test_experiment_references.py \
+  tests/scripts/test_experiment_cases.py tests/scripts/test_experiment_analysis.py \
+  tests/scripts/test_hypercomplex_cases.py
+```
+
+The same generator arguments with `--out DIRECTORY` create a new prospective bundle. `--check` requires a
+byte-exact match and the complete generated inventory. Keep runtime planning and collection files in a copy
+of a case outside this immutable generated inventory; the ordinary guarded runners own those files.
+
+The precision design uses 1,575 returned trials per setting for a central Clopper-Pearson half-width at
+most 0.05 with Bonferroni family confidence 0.95 over 648 endpoints. The science endpoints within each
+provider/family share that correction; counts across settings and batches retain their separate identities.
+The intervals condition on independent Bernoulli trials. Temporal diagnostics describe observed variation
+and supply neither an independence certificate nor a correction for unobserved drift.
+
+## Prospective acquisition cases
+
+The [written acquisition review](../../runbooks/quantum-experiment-acquisition.md) names each device or
+implementation question, its controls and the submission prerequisites. The
+[live representative preflight](live-preflight.json) captured a version-2 Ascella payload for one
+dimension-six identity transition: 1,575 estimated detected shots and 1.001575 estimated credits, within
+the declared ceilings. The preflight used the 300-second envelope as an input; it measured no runtime.
+
+The primary suite contains 54 dimension-six settings. The amplification suite includes preparation,
+amplification, two omitted-stage controls and direct target preparation. The LCU suite contains the
+requested kernel, bright, bright-repeat, kernel-repeat contrast and a separate fixture. Each QI science
+setting has readout-zero and readout-one controls in a three-circuit batch. Optical cancellation uses four-mode dark/bright restrictions and an eight-mode fixture restriction,
+completed from the actual signed-permutation witness. Every optical case keeps all twelve output ports.
+
+Every per-setting `cases.json` supplies the exact payload, predictions, output map, controls and ceilings
+for the existing provider runner. These packages are reviewable acquisition inputs. Hardware submission
+still waits for its written-case approval and current admission checks. The Ascella manifests explicitly
+hold submission for live budget review; read-only planning remains available. Expected acquisition times
+and current tariffs require that review. A 300-second limit is a ceiling rather than a measured duration.
+
+The static optical design uses 59 jobs, each with a 3,150-shot ceiling and a 1.00315-credit ceiling under
+the retained tariff of one base credit plus `1e-6` per billed shot: 59.18585 credits in aggregate. The
+54-setting primary optical family alone has a 54.1701-credit ceiling. These figures expose the static
+job-count cost; they authorize no spending. An iterator-packed successor needs a separate duration and
+payload qualification before replacing the static cases.
+
+The photonic sample cap is 1,575 and the shot cap is twice that value. Quandela's billed shots count
+photon-detection events under the retained provider contract; they are not incident laser pulses. Photon
+loss requires an independently available incident-shot denominator. Empty or truncated returns remain
+inconclusive. The QI science/control jobs use 1,575 requested shots each, within the current QX cap.
+
+The MUB settings measure independently compiled transitions. For Tuna, the rounded native operator supplies
+the compiled prediction. For Ascella, the locally reconstructed template supplies a template prediction;
+a provider-native prediction requires the returned computed mesh and input. The analyzer reports that
+prediction as unavailable when its evidence is absent, rather than attributing template residuals entirely
+to device noise.
+
+## Collection and interpretation
+
+Copy an approved case into the provider's normal run area, then use `qi_platform.py` or `qd_platform.py`
+for guarded submission and lossless collection. Acquisition approval names that case, backend, ceilings
+and question. The shared queue grants authority over the approved jobs only. Do not add collected outcomes
+to this deterministic bundle or relabel fixture outcomes as measurement.
+
+Analyze collected case directories with `scripts/experiment_analysis.py --analyze ... --out REPORT`.
+Supply a campaign inventory rooted beside those copied case directories when checking campaign completeness.
+`--campaign` binds each case's digest and distinguishes missing settings from completed observations.
+An inventory can be restricted prospectively to a separately approved family or backend; record that
+selection before acquisition rather than choosing successful observations afterward.
+
+The report retains raw hashes, payload identities, encoding, compiler prediction scope, source digests,
+batch counts and shot order where the provider supplies it. Inventory completion, empirical readout
+qualification, model-conditional precision and scientific interpretation remain separate fields. The
+algebraic cancellation contrast additionally needs observed acquisition order and matching repeated meshes;
+requested order alone supplies insufficient evidence.

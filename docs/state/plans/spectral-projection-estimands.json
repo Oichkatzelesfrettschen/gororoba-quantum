@@ -1,0 +1,37 @@
+{
+  "schema": "work-plan-v1",
+  "id": "spectral-projection-estimands",
+  "kind": "investigation",
+  "summary": "Resolve finite filtering estimands and record missing infinite-group operator and convergence contracts.",
+  "sources": [
+    "docs/design/quantum-experiment-conformance.md"
+  ],
+  "state": "planned",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Scope follows the approved five-experiment plan and checked repository sources; acquisition authority stays with provider cases."
+  },
+  "scope": "Resolve finite filtering estimands and record missing infinite-group operator and convergence contracts. Provider execution and acquisition completion are separate obligations.",
+  "owner": "quantum experiment implementer",
+  "next_action": "Compute exact expectation, return and normalized LCU success examples.",
+  "steps": [
+    {
+      "id": "separate-estimands",
+      "action": "Compute exact expectation, return and normalized LCU success examples.",
+      "acceptance": "Projector and nonprojector examples distinguish all three formulas.",
+      "state": "todo"
+    },
+    {
+      "id": "audit-operator",
+      "action": "Audit the proposed finite walk against the source projection claim.",
+      "acceptance": "The report identifies absent operator, word convention, block encoding and truncation guarantees.",
+      "state": "todo"
+    },
+    {
+      "id": "record-reopening",
+      "action": "Record requirements for a source-grounded successor.",
+      "acceptance": "Acquisition stays pending a concrete operator and quantitative convergence contract; finite benchmarks retain a separate identity.",
+      "state": "todo"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "work-plan-v1",
+  "id": "quantum-experiment-conformance",
+  "kind": "implementation",
+  "summary": "Implement finite quantum experiment references, guarded cases, analysis and correction records across five proposals.",
+  "sources": [
+    "docs/design/quantum-experiment-conformance.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Scope follows the approved five-experiment plan and checked repository sources; acquisition authority stays with provider cases."
+  },
+  "scope": "Implement finite quantum experiment references, guarded cases, analysis and correction records across five proposals. Provider execution and acquisition completion are separate obligations.",
+  "owner": "quantum experiment implementer",
+  "next_action": "Audit sources and establish the five bounded outcomes.",
+  "steps": [
+    {
+      "id": "audit-contracts",
+      "action": "Audit sources and establish the five bounded outcomes.",
+      "acceptance": "The correction document names valid cores, counterexamples and evidence boundaries.",
+      "state": "doing"
+    },
+    {
+      "id": "integrate-suites",
+      "action": "Integrate references, cases and analyzers.",
+      "acceptance": "Focused deterministic tests and operator checks pass with guarded execution interfaces.",
+      "state": "todo"
+    },
+    {
+      "id": "retain-validation",
+      "action": "Retain generated evidence, cases and scope-bound validation receipts.",
+      "acceptance": "Evidence checks, documentation links and planning validation pass.",
+      "state": "todo"
+    }
+  ],
+  "related": [
+    "dimension-six-transition-conformance",
+    "sedenion-herald-conformance",
+    "fano-sign-lift-investigation",
+    "spectral-projection-estimands",
+    "quarter-mass-amplification-conformance"
+  ]
+}

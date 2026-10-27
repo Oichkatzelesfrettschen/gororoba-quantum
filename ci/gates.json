@@ -5044,6 +5044,22 @@
    "name": "core-755",
    "seconds": 7.2,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/experiment_cases.py --check docs/evidence/quantum-experiment-conformance/cases --tuna-shots 1575 --qx-shots 1575 --photonic-samples 1575 --photonic-shots 3150 --execution-seconds 300 --photonic-credits 1.00315",
+   "name": "core-quantum-experiment-cases",
+   "seconds": 30.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" scripts/experiment_analysis.py --self-test && \"$PYTHON\" -O scripts/experiment_analysis.py --self-test",
+   "name": "core-quantum-experiment-analysis",
+   "seconds": 3.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

@@ -1,0 +1,558 @@
+"""Generate deterministic operator-conformance cases without contacting a provider.
+
+Each hardware batch carries its own readout controls. Optical settings use one
+connected input and retain all twelve outputs. Unallocated compiler randomness
+keeps an optical case outside the remote runner's acquisition boundary.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import importlib.metadata
+import json
+import math
+import re
+import sys
+from dataclasses import asdict, dataclass
+from functools import cache
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+from hypercomplex_cases import encoded, photonic_template, qi_native, write_files
+from qi_zero_divisor_cases import CASES, CATALOGUE, catalogue_check, logical
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from experiment_references import (  # noqa: E402
+    ACTIVE_INDICES,
+    embedded_basis,
+    mub_bases,
+    quarter_mass_operators,
+    reference_report,
+    sedenion_operators,
+    transition_matrix,
+)
+from parallel import ordered_map  # noqa: E402
+from qrng_seeds import resolve  # noqa: E402
+
+QD_CATALOGUE = ROOT / "docs/evidence/quandela/catalogue.json"
+FAMILIES = ("mub-six", "quarter-mass", "sedenion-lcu")
+SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T220128Z.json"
+
+
+@cache
+def optical_seeds() -> list[dict[str, Any]]:
+    """Each static optical acquisition owns one reserved ANU draw index."""
+    rows = settings("mub-six") + [row for row in settings("sedenion-lcu") if "repeat_of" not in row]
+    allocations = []
+    for index, row in enumerate(rows, start=2):
+        reference = f"qrng:{SEED_DRAW}#{index}"
+        value, source, source_index = resolve(reference, root=ROOT)
+        allocations.append(
+            {
+                "family": row["family"],
+                "setting": row["name"],
+                "seed": value,
+                "source": source,
+                "index": source_index,
+                "reference": reference,
+            }
+        )
+    return allocations
+
+
+@dataclass(frozen=True)
+class Budgets:
+    """Operator-supplied ceilings; these values make no runtime or tariff prediction."""
+
+    tuna_shots: int
+    qx_shots: int
+    photonic_samples: int
+    photonic_shots: int
+    execution_seconds: float
+    photonic_credits: float
+
+    def validate(self) -> None:
+        backend, emulator = catalogue_check()
+        for value, ceiling, label in (
+            (self.tuna_shots, backend["max_number_of_shots"], "Tuna shots"),
+            (self.qx_shots, emulator["max_number_of_shots"], "QX shots"),
+            (self.photonic_samples, self.photonic_shots, "photonic samples"),
+            (self.photonic_shots, self.photonic_shots, "photonic shots"),
+        ):
+            if type(value) is not int or not 1 <= value <= ceiling:
+                raise ValueError(f"{label} must be a positive integer within the declared ceiling")
+        for ceiling_value in (self.execution_seconds, self.photonic_credits):
+            if not math.isfinite(ceiling_value) or ceiling_value <= 0:
+                raise ValueError("execution and credit ceilings must be finite and positive")
+        if self.execution_seconds > 300:
+            raise ValueError("execution ceiling exceeds the admitted 300-second envelope")
+
+
+def _permutation(size: int, target: int) -> Any:
+    matrix = np.eye(size, dtype=np.complex128)
+    matrix[:, [0, target]] = matrix[:, [target, 0]]
+    return matrix
+
+
+def settings(family: str) -> list[dict[str, Any]]:
+    """Logical settings include full operators and explicit observable partitions."""
+    if family == "mub-six":
+        names = tuple(mub_bases())
+        return [
+            {
+                "name": f"{preparation}-to-{measurement}-input-{column}",
+                "family": family,
+                "preparation_basis": preparation,
+                "measurement_basis": measurement,
+                "input_column": column,
+                "matrix": embedded_basis(measurement).conj().T
+                @ embedded_basis(preparation)
+                @ _permutation(8, ACTIVE_INDICES[column]),
+                "optical_matrix": transition_matrix(preparation, measurement) @ _permutation(6, column),
+                "active_outputs": list(ACTIVE_INDICES),
+                "optical_active_outputs": list(range(6)),
+                "success_outputs": [],
+                "optical_success_outputs": [],
+                "placement": (11, 13, 14),
+            }
+            for preparation in names
+            for measurement in names
+            for column in range(6)
+        ]
+    if family == "quarter-mass":
+        from qiskit import QuantumCircuit
+
+        operators = quarter_mass_operators()
+        operators["direct_target"] = np.eye(4, dtype=np.complex128)[::-1]
+        circuits = {}
+        for name in ("preparation", "amplified", "omit_oracle", "omit_reflection", "direct_target"):
+            circuit = QuantumCircuit(2)
+            if name == "direct_target":
+                circuit.x([0, 1])
+                circuits[name] = circuit
+                continue
+            circuit.h([0, 1])
+            if name != "preparation":
+                circuit.barrier()
+                if name != "omit_oracle":
+                    circuit.cz(0, 1)
+                circuit.barrier()
+                if name != "omit_reflection":
+                    circuit.h([0, 1])
+                    circuit.x([0, 1])
+                    circuit.cz(0, 1)
+                    circuit.x([0, 1])
+                    circuit.h([0, 1])
+                    circuit.global_phase = math.pi
+            circuits[name] = circuit
+        return [
+            {
+                "name": name,
+                "family": family,
+                "matrix": operators[name],
+                "source_circuit": circuits[name],
+                "optical_matrix": operators[name],
+                "active_outputs": list(range(4)),
+                "optical_active_outputs": list(range(4)),
+                "success_outputs": [3],
+                "optical_success_outputs": [3],
+                "placement": (11, 13),
+            }
+            for name in ("preparation", "amplified", "omit_oracle", "omit_reflection", "direct_target")
+        ]
+    if family == "sedenion-lcu":
+        from qiskit.quantum_info import Operator
+
+        witness = sedenion_operators()["witness"]
+        rows = []
+        for name, ((first, second), phase, _) in CASES.items():
+            source = logical(name)
+            input_indices = [first, second, first + 16, second + 16]
+            outputs = sorted({1 ^ first, 10 ^ first, 1 ^ second, 10 ^ second})
+            output_indices = outputs + [index + 16 for index in outputs]
+            input_data = {index ^ multiplier for index in outputs for multiplier in (1, 10)}
+            complete_inputs = input_data | {index + 16 for index in input_data}
+            input_indices += sorted(complete_inputs - set(input_indices))
+            restricted = witness[np.ix_(output_indices, input_indices)]
+            preparation = np.array([[1, 1], [np.exp(1j * phase), -np.exp(1j * phase)]]) / np.sqrt(2)
+            complete_preparation = np.eye(len(input_indices), dtype=np.complex128)
+            complete_preparation[:4, :4] = np.kron(np.eye(2), preparation)
+            optical = restricted @ complete_preparation
+            identity = np.eye(len(input_indices))
+            if optical.shape != identity.shape or not (
+                np.allclose(optical.conj().T @ optical, identity, atol=1e-12, rtol=0)
+                and np.allclose(optical @ optical.conj().T, identity, atol=1e-12, rtol=0)
+            ):
+                raise ValueError("sedenion complete support restriction must be a square unitary")
+            if not np.allclose(witness[:, input_indices][[i for i in range(32) if i not in output_indices]], 0):
+                raise ValueError("sedenion restriction loses full-space amplitude")
+            rows.append(
+                {
+                    "name": name,
+                    "family": family,
+                    "matrix": np.asarray(Operator(source).data),
+                    "source_circuit": source,
+                    "optical_matrix": optical,
+                    "active_outputs": list(range(32)),
+                    "optical_active_outputs": list(range(len(output_indices))),
+                    "success_outputs": list(range(16)),
+                    "optical_success_outputs": list(range(len(outputs))),
+                    "support_isometry": {"input_indices": input_indices, "output_indices": output_indices},
+                    "placement": (7, 8, 11, 13, 14),
+                }
+            )
+        dark, bright, fixture = rows
+        sequenced = [
+            dark,
+            bright,
+            {**bright, "name": "bright-repeat", "repeat_of": "bright"},
+            {**dark, "name": "dark-repeat", "repeat_of": "dark"},
+            fixture,
+        ]
+        for order, (row, weight) in enumerate(zip(sequenced, (1, -1, -1, 1, 0), strict=True)):
+            row["acquisition_order"] = order
+            row["contrast_weight"] = weight
+        return sequenced
+    raise ValueError(f"unknown family {family!r}")
+
+
+def _metadata(setting: dict[str, Any]) -> dict[str, Any]:
+    excluded = {
+        "matrix",
+        "optical_matrix",
+        "source_circuit",
+        "placement",
+        "optical_active_outputs",
+        "optical_success_outputs",
+    }
+    return {key: value for key, value in setting.items() if key not in excluded}
+
+
+def _readout(width: int, mapping: list[int], prepared: int) -> str:
+    text = ["version 3.0", f"qubit[{width}] q", f"bit[{len(mapping)}] b"]
+    if prepared:
+        text.extend(f"X q[{physical}]" for physical in mapping)
+    text.append("barrier q")
+    text.extend(f"b[{logical_index}] = measure q[{physical}]" for logical_index, physical in enumerate(mapping))
+    return "\n".join(text) + "\n"
+
+
+def _qi_cases(setting: dict[str, Any], budgets: Budgets) -> dict[str, str]:
+    compiled = qi_native(
+        setting["matrix"],
+        setting["name"],
+        physical_qubits=setting["placement"],
+        deterministic=True,
+        source_circuit=setting.get("source_circuit"),
+    )
+    source = compiled.pop("source")
+    placement = compiled["placement"]
+    physical_to_compact = {physical: compact for compact, physical in enumerate(placement)}
+    twin = re.sub(r"q\[(\d+)\]", lambda match: f"q[{physical_to_compact[int(match[1])]}]", source)
+    twin = re.sub(r"qubit\[\d+\]", f"qubit[{len(placement)}]", twin)
+    files = {}
+    for route, backend, backend_id, payload, mapping, shots in (
+        ("tuna", "tuna_17", 7, source, compiled["measurement_mapping"], budgets.tuna_shots),
+        (
+            "qx",
+            "QXsinglenodesimulator",
+            1,
+            twin,
+            [physical_to_compact[q] for q in compiled["measurement_mapping"]],
+            budgets.qx_shots,
+        ),
+    ):
+        directory = f"{route}/{setting['family']}/{setting['name']}"
+        width = max(placement) + 1 if route == "tuna" else len(placement)
+        science = {**compiled, **_metadata(setting)}
+        science.update(
+            kind="science",
+            nqubits=width,
+            measurement_mapping=mapping,
+            register_kind="classical" if route == "tuna" else "qubit",
+            register_width=len(placement),
+            logical_output_labels=[format(index, f"0{len(placement)}b") for index in range(2 ** len(placement))],
+            leakage_outputs=[index for index in range(2 ** len(placement)) if index not in setting["active_outputs"]],
+            sha256=hashlib.sha256(payload.encode()).hexdigest(),
+        )
+        files[f"{directory}/{science['file']}"] = payload
+        rows = [science]
+        for prepared in (0, 1):
+            filename = f"readout-{prepared}.cq"
+            text = _readout(width, mapping, prepared)
+            files[f"{directory}/{filename}"] = text
+            rows.append(
+                {
+                    "file": filename,
+                    "kind": "readout-reference",
+                    "prepared": prepared,
+                    "sha256": hashlib.sha256(text.encode()).hexdigest(),
+                    "measurement_mapping": mapping,
+                    "register_kind": science["register_kind"],
+                    "logical_qubits": len(placement),
+                    "register_width": len(placement),
+                }
+            )
+        manifest = {
+            "schema": "qi-hypercomplex-cases-v1",
+            "family": setting["family"],
+            "setting": setting["name"],
+            "backend": backend,
+            "backend_type_id": backend_id,
+            "nqubits": width,
+            "logical_qubits": len(placement),
+            "shots": shots,
+            "job_execution_time_limit": budgets.execution_seconds,
+            "hardware_pause_seconds": 120,
+            "circuits": rows,
+            "compiler": {
+                "policy": compiled["compiler_policy"],
+                "seed_source": compiled["seed_source"],
+                "qiskit": importlib.metadata.version("qiskit"),
+                "catalogue_sha256": hashlib.sha256(CATALOGUE.read_bytes()).hexdigest(),
+                "angle_step_radians": math.pi / 36,
+            },
+            "preregistered": {
+                "primary": "unconditional logical output probabilities",
+                "readout_correction": "sensitivity only",
+                "minimum_output_readout_contrast": 0.2,
+                "confidence": 0.95,
+                "claim": "compiled operator conformance; physical mechanism remains device-specific",
+            },
+            "budget_status": "operator-supplied ceilings; live forecast and written-case approval required",
+        }
+        files[f"{directory}/cases.json"] = json.dumps(manifest, indent=1) + "\n"
+    return files
+
+
+def _qd_cases(setting: dict[str, Any], budgets: Budgets) -> dict[str, str]:
+    import qd_platform
+
+    catalogue = json.loads(QD_CATALOGUE.read_bytes())
+    specs = catalogue["processors"]["qpu:ascella"]["specs"]
+    if specs["constraints"]["max_mode_count"] != 12 or 0 not in specs["connected_input_modes"]:
+        raise ValueError("Ascella requires twelve outputs and connected input zero")
+    size = len(setting["optical_matrix"])
+    matrix = np.eye(12, dtype=np.complex128)
+    matrix[:size, :size] = setting["optical_matrix"]
+    circuit, parameters = photonic_template(matrix)
+    probabilities = (np.abs(matrix[:, 0]) ** 2).tolist()
+    row = {
+        **_metadata(setting),
+        "kind": "science",
+        "circuit_params": parameters,
+        "operator": encoded(matrix),
+        "column": [[float(value.real), float(value.imag)] for value in matrix[:, 0]],
+        "requested_probabilities": probabilities,
+        "native_probabilities": probabilities,
+        "prediction_scope": "logical template; provider compiled mesh remains unobserved",
+        "active_outputs": setting["optical_active_outputs"],
+        "success_outputs": setting["optical_success_outputs"],
+        "leakage_outputs": [index for index in range(12) if index not in setting["optical_active_outputs"]],
+        "logical_output_labels": [str(index) for index in range(12)],
+        "register_kind": "fock",
+    }
+    allocation = next(
+        row
+        for row in optical_seeds()
+        if (row["family"], row["setting"]) == (setting["family"], setting.get("repeat_of", setting["name"]))
+    )
+    text = json.dumps(circuit, indent=1) + "\n"
+    manifest = {
+        "schema": "qd-hypercomplex-cases-v1",
+        "family": setting["family"],
+        "job": setting["name"],
+        "platforms": ["qpu:ascella"],
+        "command": "sample_count",
+        "gate_form": "template",
+        "iterations": 1,
+        "settings": [row],
+        "mitigations": [],
+        "min_detected_photons": 1,
+        "max_samples": budgets.photonic_samples,
+        "max_shots": budgets.photonic_shots,
+        "max_duration": budgets.execution_seconds,
+        "max_credits": budgets.photonic_credits,
+        "acquisition_admission": "awaiting-live-budget-review",
+        "compilation_seed": allocation["seed"],
+        "seed_source": allocation["reference"],
+        "compilation_seed_role": "reproduce-base-mesh" if "repeat_of" in setting else "new-mesh",
+        "circuit": {"file": "circuit.json", "sha256": hashlib.sha256(text.encode()).hexdigest()},
+        "catalogue_sha256": hashlib.sha256(QD_CATALOGUE.read_bytes()).hexdigest(),
+        "preregistered": {
+            "primary": "all twelve detected-output probabilities",
+            "loss": "report detected and attempted denominators separately when supplied",
+            "claim": "single-photon transition-operator conformance",
+        },
+    }
+    qd_platform.template_experiment(manifest, circuit)
+    directory = f"ascella/{setting['family']}/{setting['name']}"
+    return {f"{directory}/circuit.json": text, f"{directory}/cases.json": json.dumps(manifest, indent=1) + "\n"}
+
+
+def _build_setting(arguments: tuple[dict[str, Any], Budgets, tuple[str, ...]]) -> dict[str, str]:
+    setting, budgets, routes = arguments
+    files = _qi_cases(setting, budgets) if set(routes) & {"tuna", "qx"} else {}
+    files = {name: value for name, value in files.items() if name.split("/")[0] in routes}
+    if "ascella" in routes and setting["family"] != "quarter-mass":
+        files.update(_qd_cases(setting, budgets))
+    return files
+
+
+def build(
+    budgets: Budgets, families: tuple[str, ...] = FAMILIES, routes: tuple[str, ...] = ("tuna", "qx", "ascella")
+) -> dict[str, str]:
+    budgets.validate()
+    if not families or len(set(families)) != len(families) or not set(families) <= set(FAMILIES):
+        raise ValueError("families must be a distinct nonempty selection of admitted experiments")
+    if not routes or len(set(routes)) != len(routes) or not set(routes) <= {"tuna", "qx", "ascella"}:
+        raise ValueError("routes must be a distinct nonempty selection of tuna, qx and ascella")
+    rows = [row for family in families for row in settings(family)]
+    files = {}
+    for group in ordered_map(_build_setting, [(row, budgets, routes) for row in rows], min_items=1):
+        files.update(group)
+    cases = []
+    acquisition_schedule = []
+    interval_families: dict[str, dict[str, Any]] = {}
+    for name, text in sorted(files.items()):
+        if name.endswith("/cases.json"):
+            route, family, setting, _ = name.split("/")
+            manifest = json.loads(text)
+            science = manifest["settings"][0] if route == "ascella" else manifest["circuits"][0]
+            if family == "sedenion-lcu":
+                acquisition_schedule.append(
+                    {
+                        "path": str(Path(name).parent),
+                        "backend": route,
+                        "order": science["acquisition_order"],
+                        "contrast_weight": science["contrast_weight"],
+                        "repeat_of": science.get("repeat_of"),
+                    }
+                )
+            family_key = f"{route}:{family}"
+            interval_family = interval_families.setdefault(
+                family_key, {"backend": route, "family": family, "endpoint_count": 0, "settings": 0}
+            )
+            interval_family["endpoint_count"] += len(science["logical_output_labels"]) + bool(
+                science["success_outputs"]
+            )
+            interval_family["settings"] += 1
+            cases.append(
+                {
+                    "path": str(Path(name).parent),
+                    "provider": "qd" if route == "ascella" else "qi",
+                    "backend": route,
+                    "family": family,
+                    "setting": setting,
+                    "sha256": hashlib.sha256(text.encode()).hexdigest(),
+                }
+            )
+    index = {
+        "schema": "quantum-experiment-campaign-v1",
+        "families": list(families),
+        "routes": list(routes),
+        "budgets": asdict(budgets),
+        "cases": cases,
+        "acquisition_status": "unsubmitted",
+        "interval_families": interval_families,
+        "acquisition_schedule": sorted(acquisition_schedule, key=lambda row: (row["backend"], row["order"])),
+        "contrast_admission": (
+            "requires retained execution order, per-batch readout and matching optical computed meshes"
+        ),
+        "scope": "MUB overlaps, quarter-mass amplification and certified sedenion support restrictions",
+    }
+    files["campaign.json"] = json.dumps(index, indent=1) + "\n"
+    files["reference.json"] = json.dumps(reference_report(), indent=1, sort_keys=True) + "\n"
+    if "ascella" in routes:
+        allocations = [
+            {**{key: value for key, value in row.items() if key != "seed"}, "value": row["seed"]}
+            for row in optical_seeds()
+            if row["family"] in families
+        ]
+        files["seeds.json"] = (
+            json.dumps({"schema": "quantum-experiment-seeds-v1", "allocations": allocations}, indent=1) + "\n"
+        )
+    inputs = (
+        "scripts/experiment_cases.py",
+        "scripts/hypercomplex_cases.py",
+        "scripts/qd_platform.py",
+        "scripts/qi_zero_divisor_cases.py",
+        "gororoba_quantum/experiment_references.py",
+        "gororoba_quantum/cd_core.py",
+        "docs/evidence/quantum_inspire/catalogue.json",
+        "docs/evidence/quandela/catalogue.json",
+        SEED_DRAW,
+    )
+    files["provenance.json"] = (
+        json.dumps(
+            {
+                "schema": "quantum-experiment-provenance-v1",
+                "sources": {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in inputs},
+                "versions": {
+                    name: importlib.metadata.version(name) for name in ("numpy", "scipy", "qiskit", "perceval-quandela")
+                },
+                "artifacts": {name: hashlib.sha256(text.encode()).hexdigest() for name, text in sorted(files.items())},
+                "execution": "deterministic full-operator reconstruction; no sampled outcomes or provider execution",
+            },
+            indent=1,
+            sort_keys=True,
+        )
+        + "\n"
+    )
+    return files
+
+
+def check(directory: Path, files: dict[str, str]) -> None:
+    actual = {path.relative_to(directory).as_posix() for path in directory.rglob("*") if path.is_file()}
+    if actual != set(files):
+        raise ValueError("campaign file inventory differs from the regenerated case set")
+    for name, text in files.items():
+        if (directory / name).read_bytes() != text.encode():
+            raise ValueError(f"campaign bytes differ: {name}")
+
+
+def self_test() -> None:
+    if len(settings("mub-six")) != 54:
+        raise ValueError("three bases require all 54 ordered input/measurement settings")
+    for row in settings("sedenion-lcu"):
+        full = np.abs(row["matrix"][:, 0]) ** 2
+        restricted = np.abs(row["optical_matrix"][:, 0]) ** 2
+        if not np.allclose(full[row["support_isometry"]["output_indices"]], restricted, atol=1e-12):
+            raise ValueError("photonic restriction differs from the full five-qubit witness")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    action = parser.add_mutually_exclusive_group(required=True)
+    action.add_argument("--out", type=Path)
+    action.add_argument("--check", type=Path)
+    action.add_argument("--self-test", action="store_true")
+    parser.add_argument("--families", nargs="+", choices=FAMILIES, default=list(FAMILIES))
+    parser.add_argument("--routes", nargs="+", choices=("tuna", "qx", "ascella"), default=["tuna", "qx", "ascella"])
+    parser.add_argument("--tuna-shots", type=int)
+    parser.add_argument("--qx-shots", type=int)
+    parser.add_argument("--photonic-samples", type=int)
+    parser.add_argument("--photonic-shots", type=int)
+    parser.add_argument("--execution-seconds", type=float)
+    parser.add_argument("--photonic-credits", type=float)
+    args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        print("experiment case references pass")
+        return 0
+    values = [getattr(args, name) for name in Budgets.__dataclass_fields__]
+    if any(value is None for value in values):
+        parser.error("generation/check requires every explicit shot, sample, execution and credit ceiling")
+    files = build(Budgets(*values), tuple(args.families), tuple(args.routes))
+    if args.check:
+        check(args.check, files)
+    else:
+        write_files(args.out, files)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
