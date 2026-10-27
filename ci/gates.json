@@ -2316,6 +2316,17 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/msq_envelope_exploratory.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/envelope-run-exploratory.json",
+   "name": "core-msq-envelope-exploratory-replay",
+   "seconds": 9.2,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/measurement_sequence/envelope-run-exploratory.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/ghost_run.py --check docs/evidence/ghost_runs/result.json --runs results/live/2026-10-13T080216.451663Z,merged,pairs && \"$PYTHON\" -B -W error scripts/ghost_run.py --report docs/evidence/ghost_runs/result.json | cmp - docs/evidence/ghost_runs/report.json",
    "name": "core-287",
    "seconds": 112.6,
