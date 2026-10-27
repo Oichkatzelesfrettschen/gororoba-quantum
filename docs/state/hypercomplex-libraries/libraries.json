@@ -8907,6 +8907,14 @@
    "kernel_limits",
    "sympy"
   ],
+  "gororoba_quantum/provider_counters.py": [
+   "__future__",
+   "collections",
+   "dataclasses",
+   "enum",
+   "math",
+   "typing"
+  ],
   "gororoba_quantum/pub_calibration.py": [
    "__future__"
   ],

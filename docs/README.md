@@ -52,6 +52,8 @@ Selected zero-divisor hardware witnesses have retained acquisitions on
 The [matched-response case](design/tuna17-zero-divisor-matched-response.md) is prospective and unsubmitted.
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
+[provider-counter audit](evidence/provider-counter-audit/README.md) names the population every retained shot,
+sample and exposure counter counts, traces each to its scientific sinks and reconciles the claims they support. The
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized
 density interventions and a separately labeled trapped-ion qualification; every generated program remains
 unsubmitted and native-unadmitted. Its [implementation plan](design/provider-api-billing-research-plan.md)
