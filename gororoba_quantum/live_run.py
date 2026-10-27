@@ -2864,8 +2864,31 @@ def _member_fields(entry: Entry) -> dict[str, Any]:
         "feed_forward": _has_feed_forward(entry.base),
         "replica_prefixes": entry.prefixes,
         "replica_qubits": entry.replica_qubits,
-        "ideal": law_encoding.encode([round(float(p), 12) for p in entry.ideal]),
+        "ideal": encoded_ideal(entry.ideal),
     }
+
+
+_ENCODED_IDEALS: OrderedDict[bytes, Any] = OrderedDict()
+_ENCODED_IDEALS_LOCK = threading.Lock()
+
+
+def encoded_ideal(ideal: Any) -> Any:
+    """law_encoding.encode of the ideal rounded to 12 decimals, computed once per distinct float64 bit pattern.
+
+    Every qubit of a fused family carries the same ideal laws, and rounding is a function of each value's bits, so
+    the cached form equals a fresh one; the returned object is shared and never mutated by record writers.
+    """
+    array = np.ascontiguousarray(np.asarray(ideal, dtype=float))
+    key = hashlib.sha256(array.tobytes()).digest() + array.shape[0].to_bytes(8, "little")
+    with _ENCODED_IDEALS_LOCK:
+        cached = _ENCODED_IDEALS.get(key)
+    if cached is None:
+        cached = law_encoding.encode([round(float(p), 12) for p in array])
+        with _ENCODED_IDEALS_LOCK:
+            _ENCODED_IDEALS[key] = cached
+            while len(_ENCODED_IDEALS) > 256:
+                _ENCODED_IDEALS.popitem(last=False)
+    return cached
 
 
 def _replica_fields(replica: QuantumCircuit, target: Any) -> dict[str, Any]:
