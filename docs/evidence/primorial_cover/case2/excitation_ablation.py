@@ -14,12 +14,13 @@ from pathlib import Path
 
 ROOT = Path.cwd()
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
-import primorial_probe_case as ppc  # noqa: E402
-import parallel  # noqa: E402
-import dynamic_density  # noqa: E402
 import primorial_cover_noise as noise  # noqa: E402
-import primorial_tomography as tomo  # noqa: E402
+import primorial_probe_case as ppc  # noqa: E402
 from qiskit_aer.noise import pauli_error  # noqa: E402
+
+import dynamic_density  # noqa: E402
+import parallel  # noqa: E402
+import primorial_tomography as tomo  # noqa: E402
 
 E = ROOT / "docs/evidence/primorial_cover/case2"
 SNAP = json.loads((E / "stage1-snapshot.json").read_text())
