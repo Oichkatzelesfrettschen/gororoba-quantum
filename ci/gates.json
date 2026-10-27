@@ -3460,6 +3460,14 @@
   {
    "suite": "sources",
    "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-tower-domain/replay_rocq.sh",
+   "name": "sources-415",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
    "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
    "name": "sources-410",
    "seconds": 0.1,
