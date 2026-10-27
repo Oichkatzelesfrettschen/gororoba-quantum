@@ -69,8 +69,8 @@ Fixed before these jobs' data. `scripts/idle_penalty_focal_decisions.py` compute
 `idle-penalty-report.json` files:
 
 ```sh
-"$PYTHON" ../scripts/idle_penalty_focal_decisions.py X/idle-penalty-report.json Y/idle-penalty-report.json \
-  REPEAT/idle-penalty-report.json --focal 79,92,93 --context 104,106,124,125,126 \
+"$PYTHON" ../scripts/idle_penalty_focal_decisions.py REPEAT/idle-penalty-report.json X/idle-penalty-report.json \
+  Y/idle-penalty-report.json --focal 79,92,93 --context 104,106,124,125,126 \
   --region 73,79,92,93,94,95 --out X/idle-penalty-focal-decisions.json
 ```
 
@@ -87,8 +87,9 @@ Fixed before these jobs' data. `scripts/idle_penalty_focal_decisions.py` compute
    the region's median lies at or below the rest's median on both multipliers; otherwise "unresolved". Supported
    places a present-day excess on the region; weakened leaves drift over two weeks or the retained runs' own gates
    and measurements as the accounts of kappa near 3. Neither reconstructs the two-week-old rates.
-3. **Same window**: the repeat, X and Y report one execution calibration stamp. A split reports each job against
-   its own cohort and states the split.
+3. **Same window**: the repeat, X and Y report one execution calibration stamp. A split reads "split" for decision
+   2 and reports each run's region test against its own cohort, where a region qubit the run did not place leaves
+   that run "unresolved".
 4. **Test-retest floor** (descriptive): over qubits that keep role and partner between any two of the three runs,
    Pearson r and the median-ratio band, the statistics `--compare` reads across calibrations, here under one
    calibration. They calibrate how much of a cross-calibration difference is run-to-run noise.

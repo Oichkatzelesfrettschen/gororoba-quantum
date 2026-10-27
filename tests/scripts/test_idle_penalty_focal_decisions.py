@@ -58,3 +58,15 @@ def test_same_window_and_retest() -> None:
     _expect(not out["same_window"], "two calibrations read as one")
     retest = out["retest"][0]["kappa_1"]
     _expect(retest["n"] == 20 and abs(retest["pearson_r"] - 1) < 1e-12, f"retest {retest}")
+
+
+def test_calibration_split_withholds_the_pooled_reading() -> None:
+    cohort = {q: 1.0 + 0.01 * (q % 37) for q in range(10, 50)}
+    region = {q: 3.0 + 0.01 * q for q in REGION}
+    split = fd.decisions(
+        [_report("R", cohort | region), _report("X", cohort, calibration="C2")], [79, 92, 93], [], REGION
+    )
+    reading = split["historical_kappa_near_3"]
+    _expect(reading["verdict"] == "split", str(reading))
+    _expect(reading["per_run"]["R"]["verdict"] == "supported", str(reading))
+    _expect(reading["per_run"]["X"]["verdict"] == "unresolved", str(reading))

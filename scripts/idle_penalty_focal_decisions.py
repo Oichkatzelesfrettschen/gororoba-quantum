@@ -15,7 +15,8 @@ calibration and writes:
   because the cohort's own tail is heavy: on the probe run, 25 of 62 qubits read elevated on kappa_1 or
   kappa_2star, so a per-qubit rule over three qubits would read "supported" for three random qubits with
   probability 0.79;
-- the same-window test: every report's execution calibration stamp, and whether they agree;
+- the same-window test: every report's execution calibration stamp, and whether they agree; under a split the
+  historical reading is "split" with each run's region test against its own cohort;
 - the test-retest floor between every two reports: over qubits that keep role and partner, the Pearson r and the
   order-statistic band of the median second/first ratio, the statistics `--compare` reads across calibrations,
   here under one calibration. They are descriptive and decide nothing.
@@ -144,12 +145,22 @@ def decisions(reports: list[dict[str, Any]], focal: list[int], context: list[int
 
     focal_entries = located(focal)
     stamps = {rep["identity"]["run"]: rep["identity"]["calibration"] for rep in reports}
+    same_window = len(set(stamps.values())) == 1
+    if same_window:
+        reading = historical(reports, region)
+    else:
+        # Region and reference qubits from different calibrations would confound a calibration change with the
+        # regional excess, so a split reads each run against its own cohort and decides nothing pooled.
+        reading = {
+            "verdict": "split",
+            "per_run": {rep["identity"]["run"]: historical([rep], region) for rep in reports},
+        }
     return {
         "focal": focal_entries,
-        "historical_kappa_near_3": historical(reports, region),
+        "historical_kappa_near_3": reading,
         "context": located(context),
         "calibrations": stamps,
-        "same_window": len(set(stamps.values())) == 1,
+        "same_window": same_window,
         "retest": [retest(a, b) for a, b in itertools.combinations(reports, 2)],
     }
 
