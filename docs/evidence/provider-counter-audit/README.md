@@ -13,12 +13,14 @@ replays each one with `--check` and requires `git status` over `results/` and `d
 |---|---|---|
 | [quandela_counter_table.py](quandela_counter_table.py) | [quandela_counter_table.json](quandela_counter_table.json) | Top-level, per-iteration and requested counters of all 81 retained Quandela runs |
 | [gate_model_counter_census.py](gate_model_counter_census.py) | [gate_model_counter_census.json](gate_model_counter_census.json) | Requested, reported and returned shots of every retained Quantum Inspire, IQM and IBM run |
+| [simulator_counter_census.py](simulator_counter_census.py) | [simulator_counter_census.json](simulator_counter_census.json) | Every retained simulator count histogram against the shots its record declares |
 | [exposure_sensitivity.py](exposure_sensitivity.py) | [exposure_sensitivity.json](exposure_sensitivity.json) | Every retained dark subtraction recomputed under three detector exposures |
 
 ```sh
 export PYTHON="${PYTHON:-python3}" GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" docs/evidence/provider-counter-audit/quandela_counter_table.py --check
 "$PYTHON" docs/evidence/provider-counter-audit/gate_model_counter_census.py --check
+"$PYTHON" docs/evidence/provider-counter-audit/simulator_counter_census.py --check
 "$PYTHON" docs/evidence/provider-counter-audit/exposure_sensitivity.py --check
 ```
 
@@ -75,6 +77,48 @@ run under all-zeros heralding and return a nonempty subset of them, at retention
 `iqm_jobs.shots_ok` admits that subset, and `iqm_cancellation_probe` weights each heralded circuit equally rather
 than by its kept shots. Every gate-model counter is supported as recorded.
 
+## Simulator census
+
+A simulated gate-model shot is one sampled execution, so a supported histogram sums to its declared shots.
+[simulator_counter_census.json](simulator_counter_census.json) covers 705 JSON and gzipped JSON files under
+`results/kaggle/`, `results/local_compute/` and `results/local-simulation/`. Of their histograms, 1,063 on Kaggle,
+5 in local compute and 336 in local simulation sum to the `shots` or `shots_per_pub` of their record, with no
+mismatch. Eight Kaggle files, the GPU smoke, configuration and environment probes, declare no shots in the record;
+their totals equal the shots their producers pass (`TOY_SHOTS = 200000` in `scripts/aer_gpu_probe.py`,
+`shots=256` in `kaggle_kernel/gpu_env_report.py`, `shots=1024` in the smoke kernel's `run.py`), and
+`aer_gpu_probe` scores its readout law against the histogram total itself. No simulator output under these trees
+carries a photonic count, `nb_shots_used` or `physical_perf`; the cloud simulator `sim:belenos` is in the Quandela
+counter table. Every simulator counter is supported as recorded.
+
+## Counter-arithmetic sweeps
+
+[sweeps/collect.py](sweeps/collect.py) runs two rules over every tracked Python file of `scripts/`,
+`gororoba_quantum/` and `docs/evidence/` and writes [sweeps/findings.json](sweeps/findings.json).
+[counter-arithmetic.semgrep.yml](sweeps/counter-arithmetic.semgrep.yml) is an intraprocedural taint rule (semgrep
+1.164.0) from a provider counter field to a division, product, difference or sum; it runs with no per-rule timeout
+and one worker, because a timed-out taint fixpoint drops findings by machine load.
+[counter-reads.ast-grep.yml](sweeps/counter-reads.ast-grep.yml) (ast-grep 0.42.3) lists every subscript or `.get`
+read of those fields. The collector names each finding by file, line and enclosing function, assigns it a class,
+and exits 1 on an unclassified finding, so a rule or code change that reaches new counter arithmetic needs a
+classification before the sweep passes again.
+
+The 171 findings (65 taint, 106 reads) fall into these classes: the audit's own replays and contract; Target and
+circuit instruction durations, which name no provider result field; gate-model shots compared or summed within
+one population (Quantum Inspire `shots_done`, QX simulator counts); `nb_shots_used` summed over disjoint
+iterations as detection events (`qd_platform.result_summary`, `evidence_closure.quandela`); Quandela job
+`duration` read as wall time (the job-05 iteration rule of `ascella_new_mesh_score`, the bridge and dwell
+duration windows of `qd_belenos_mesh`, `bdsc_stationarity` seconds per sample, `qd_schedule`); counters echoed
+without arithmetic; a local Perceval simulator's documented filter share; the inventoried sinks below; three
+consumers the sink table adds below; and one false positive, where taint reaches statevector probabilities in
+`local_photonic_compiler_crosscheck.qi_case` through a mapping that also holds `shots_done`. Semgrep cannot parse
+`scripts/gl52_split_conjugators.py`; its counter words name transpiled schedule durations in dt and seeded
+samples of a coset graph, both outside counter scope. Neither tool is in the CI environment, so the collector is
+an operator replay at the commit it last ran on:
+
+```sh
+SEMGREP=/usr/bin/semgrep AST_GREP=ast-grep "$PYTHON" docs/evidence/provider-counter-audit/sweeps/collect.py
+```
+
 ## Scientific sinks
 
 | Consumer | Quantity | Classification | Retained effect |
@@ -83,9 +127,13 @@ than by its kept shots. Every gate-model counter is supported as recorded.
 | `qd_belenos_mesh.rca_record` ([belenos_leakage_rca.json](../quandela/belenos_leakage_rca.json)) | dark rate x samples / (`physical_perf` x clock) | model-dependent, robust | exposures of 0, 0.274 and 13 s keep every decisive comparison: ideal-mesh TVD 0.871 to 0.880 against a floor of 0.0124 to 0.0129, best single-parameter TVD 0.252 to 0.273, and the same convention order |
 | `qd_box_kite_analysis.one_photon` `dark_corrected` (six blocks) | the same timing model | model-dependent | the algebra share `a` moves at most 2.06e-4 across exposures; the dark-corrected in-block share moves up to 0.042 |
 | `qd_teleportation_rehearsal.analyze` | `attempts_benchmark` at `nb_shots_used` and at modeled attempts | model-dependent | detection events stand in for attempts, and the larger of two benchmarks covers two candidate profiles, not every profile; the one retained run reads `inconclusive` with zero samples, and `DECISION_CASES` confines the rule to that case, so a new case takes the descriptive rule with its assumption-labeled comparisons |
-| `qd_belenos_cone`, `qd_box_kite_analysis.acquisition_seconds` | acquisition-time estimates | model-dependent, labeled | claim boundaries name the timing model as unconfirmed |
+| `qd_belenos_cone`, `qd_box_kite_analysis.acquisition_seconds` | acquisition-time estimates; the cone's per-iteration wall share of job `duration` and its pulse-gated expectation off cone x `physical_perf` / (1 - `physical_perf`) | model-dependent, labeled | claim boundaries name the timing model as unconfirmed and gating as unknown |
 | `bdsc_stray_mode_veto`, `bdsc_diagnostic`, `bdsc_stationarity` | `physical_perf` as a covariate or ordering | supported as an uninterpreted diagnostic | ranks against dark rate / `physical_perf` are reported as conditional and drive no reading |
 | `iqm_jobs`, `iqm_cancellation_probe`, `iqm_signed_probe` | heralded shot counts | supported | heralding retention reported; conditional estimators use returned shots |
+| `bdsc_stray_mode_veto.stray_report` `ungated_stray_share_bound` | stray dark rate x job `duration` / samples | model-dependent, labeled | wall time, which includes compilation, is an upper exposure, so the bound only rules out a stray detector live for the whole job; the retained shares lie far below it |
+| `qd_rehearsal_secondary.record_state` | returned samples / requested `max_samples` (the job total, `job.samples x count`) | supported as labeled | a delivery share that sorts the record into a preregistered state; it reads as no trial rate and enters no verdict of `qd_teleportation_rehearsal` |
+| `experiment_analysis.analyze_qd` `accepted_vs_detected_fraction` | accepted samples / `nb_shots_used` | supported | an acceptance fraction of logical samples among detection events; the record's `denominator_boundary` states that incident pulses stay unknown |
+| `photonic_repeat_readout.observation` and the two compilation audits | one-click samples / photon-filtered samples | supported | every frequency conditions on reported total occupation one, the claim's boundary; `nb_shots_used`, `physical_perf`, `logical_perf` and `global_perf` are echoed as `reported_*` without arithmetic |
 
 The root-cause run itself also contradicts the timing model. Under that model, 7 of its 24 modes expect more dark
 clicks than they recorded; mode 0, for one, expects 5.85 and recorded 0 (Poisson probability 0.0029). Dark counts
@@ -110,6 +158,15 @@ statement on gating would settle it.
 | `qd-belenos-single-job-failure-is-a-transformation` | raw distributions | unchanged |
 | `qd-belenos-teleportation-rehearsal-job-00` | `nb_shots_used` at its cap | unchanged; the boundary states that a shot is no optical trial |
 | `qd-belenos-bdsc-stray-mode-veto`, `qd-belenos-bdsc-diagnostic-readout`, `ascella-signed-coherence-device-diagnostics` | `physical_perf`, plan-time dark rates | unchanged; already conditional |
+
+## Providers without executed results
+
+The research registry holds acquisitions from four providers: Quantum Inspire (144), Quandela (81), IBM (57) and
+IQM (49), all covered above. Open Quantum holds two unsubmitted proposals,
+`results/open_quantum/proposals/packed-pauli-response-ionq/` (`ionq:forte-1`) and
+`.../packed-pauli-response-rigetti/` (`rigetti:cepheus-1-108q`), each with circuits and a budget and without a job
+identity or result. IonQ, BlueQubit, Quafu and Origin Quantum have no tracked path under `results/`. These
+providers carry no executed counter to audit; their first retained run enters a later census.
 
 ## Open provider questions
 

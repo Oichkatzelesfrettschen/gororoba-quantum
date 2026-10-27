@@ -187,7 +187,12 @@ def test_retained_teleportation_iteration_reads_as_censored_detection_events() -
         raise AssertionError("the job total sums iterations; the top-level shots is one iteration's cap")
 
 
-REPLAYS = ("quandela_counter_table.py", "gate_model_counter_census.py", "exposure_sensitivity.py")
+REPLAYS = (
+    "quandela_counter_table.py",
+    "gate_model_counter_census.py",
+    "simulator_counter_census.py",
+    "exposure_sensitivity.py",
+)
 
 
 @pytest.mark.audit
