@@ -32,15 +32,15 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 84 |
+| exploratory reanalysis | exploratory | 85 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
-| mathematical claim | established | 28 |
+| mathematical claim | established | 29 |
 | mathematical claim | open | 2 |
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
 | preregistered emulator control | established | 12 |
-| preregistered hardware inference | established | 64 |
+| preregistered hardware inference | established | 66 |
 | preregistered hardware inference | superseded | 1 |
 | proposed experiment | proposed | 11 |
 | proposed experiment | superseded | 4 |
@@ -360,16 +360,19 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept](results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept) | IQM Resonance | IQM QET compensated ladder | garnet:mock | 1 | 24 | failed | 0.0 credits |
 | [2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept](results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept) | IQM Resonance | IQM QET compensated ladder | garnet:mock | 1 | 24 | completed | 0.0 credits |
 | [2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder](results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder) | IQM Resonance | IQM QET compensated ladder | garnet | 1 | 24 | completed | 6.5 credits |
+| [2026-10-26T202817.431767Z](results/live/2026-10-26T202817.431767Z) | IBM Quantum | idle-penalty | ibm_kingston | 1 | 44 | DONE | 16 s |
 | [2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04](results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04) | Quandela Cloud | photonic signed-coherence new-seed meshes | qpu:ascella | 1 | 80 | completed | 1.032768 credits |
 | [2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88](results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88) | Quandela Cloud | photonic signed-coherence new-seed meshes | qpu:ascella | 1 | 88 | completed | 1.032768 credits |
+| [2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06](results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06) | Quandela Cloud | photonic signed-coherence replication meshes | qpu:ascella | 1 | 96 | completed | 1.032768 credits |
+| [2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96](results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96) | Quandela Cloud | photonic signed-coherence replication meshes | qpu:ascella | 1 | 96 | completed | 1.032768 credits |
 
-The IBM service inventory observed at 2026-10-21T08:43:37.878426+00:00 holds 40 physical jobs with 483 settled seconds; the account then reported 483 of 600 s consumed in the rolling window ending 2026-10-21T08:43:37.830Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-26T22:47:13.538509+00:00 holds 41 physical jobs with 499 settled seconds; the account then reported 499 of 600 s consumed in the rolling window ending 2026-10-26T22:47:13.488Z. That is an observation, not a current balance or an authorization.
 
 The IBM service inventory observed at 2026-10-25T23:36:01.130164+00:00 holds 4 physical jobs with 150 settled seconds; the account then reported 150 of 600 s consumed in the rolling window ending 2026-10-25T23:36:01.079Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
-The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 79 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
+The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 81 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
 The retained IQM snapshot records 30.00 credits expiring 2026-11-01T00:00:00+00:00, and 49 IQM run directories are retained. That is an observation, not an authorization.
 <!-- research-state:end -->

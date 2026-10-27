@@ -162,3 +162,20 @@ def test_new_seed_jobs_take_disjoint_runs_after_job_02s_seeds() -> None:
     short = request.compilation_seeds(request.JOBS["job-05-i80"])[0]
     if request.compilation_seeds(request.JOBS["job-05-i96"])[0][: len(short)] != short:
         raise AssertionError("every job-05 variant extends one seed sequence")
+
+
+def test_replication_jobs_skip_every_earlier_seed() -> None:
+    earlier = {
+        seed for name in ("job-02", "job-04", "job-05-i96") for seed in request.compilation_seeds(request.JOBS[name])[0]
+    }
+    first, first_indices = request.compilation_seeds(request.JOBS["job-06"])
+    rows = request.entries(request.JOBS["job-06"])
+    if [r["compilation_position"] for r in rows if "compilation_seed" not in r] != list(range(0, 96, 8)):
+        raise AssertionError("job-06's twelve anchors leave the stride positions")
+    if len(first) != 84 or len(set(first)) != 84 or 0 in first or earlier & set(first):
+        raise AssertionError("job-06 needs 84 distinct nonzero seeds outside every earlier job's")
+    second, second_indices = request.compilation_seeds(request.JOBS["job-07-i96"])
+    if len(second) != 84 or set(second) & (set(first) | earlier) or second_indices[0] <= first_indices[-1]:
+        raise AssertionError("job-07-i96 must take fresh seeds after job-06's")
+    if request.compilation_seeds(request.JOBS["job-07-i88"])[0] != second[:77]:
+        raise AssertionError("job-07-i88 takes the first 77 of job-07-i96's seeds")
