@@ -1,0 +1,62 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-replication-meshes-case",
+  "kind": "investigation",
+  "summary": "Run two qpu:ascella jobs that serve theta2-x-arm0 at fresh QRNG compilation seeds and score, on those unseen meshes, the carried P-B offsets unchanged and the same family refitted on all 233 retained meshes.",
+  "sources": [
+    "docs/design/ascella-signed-coherence-conformance.md",
+    "scripts/ascella_coherence_request.py",
+    "scripts/ascella_replication_offsets.py",
+    "scripts/ascella_replication_score.py",
+    "scripts/ascella_new_mesh_score.py",
+    "docs/evidence/ascella-order-coefficients/new-seed-score.json",
+    "docs/evidence/ascella-order-coefficients/replication-offsets.json"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Plan ascella-new-seed-meshes-case read P-B (offsets fitted on job-00 plus the 56 meshes of jobs 02 and 03) carried on 147 unseen meshes at within-job r 0.319 (one-sided p 4.4e-5), positive-direction share 10.5 % (1.4 to 25.6 %), and P-A (28 exploration meshes) not carried at r 0.157. The owner approved two further 96-iteration jobs on 2026-10-26 as a separate test. The predictors below are frozen and pushed before the replication's seeds are drawn."
+  },
+  "scope": "Acquisition: job-06 submits theta2-x-arm0 (configuration 13 of job-00) 96 times at 32,768 samples and 32,768 max_shots per iteration, the seed-0 mesh of job-00 at every eighth position (12 anchors) and 84 positions at fresh ANU QRNG seeds drawn after this plan's predictors are pushed (nonzero, repeats and every seed of jobs 02, 04 and 05 skipped, index order). Job-07 runs 96 iterations at the next 84 usable values when job-06 completed with every iteration counted, and 88 iterations (job-07-i88, 77 seeds) otherwise; 88 iterations of 32,768 samples completed in 265 s in job-05, and 80 in 243 s in job-04, so 96 projects to about 287 s by those two points against the 300 s max_duration, whose expiry behavior is undocumented. The rule reads completion alone, never an X count. Credits: 1.032768 per job, 2.065536 for both, of 126.55 free credits left before the 1 November reset. Predictors, frozen in docs/evidence/ascella-order-coefficients/replication-offsets.json, family heater_0.3_coupler_0.1_offsets: R-B, P-B of new-mesh-offsets.json unchanged; R-C, the same family refitted on job-00, the 56 meshes of jobs 02 and 03 and the 147 scored meshes of jobs 04 and 05 (233 training meshes, 258 free offsets). Score, scripts/ascella_replication_score.py on the contract of scripts/ascella_new_mesh_score.py: references exactly jobs 00, 02, 03, 04 and 05-i88, whose meshes are excluded; job-05-i88's anchors set the baseline; each new run's cases.json equals its frozen case; the new runs are job-06 followed by the job-07 variant the rule admits; a partial job stays descriptive and the primary reads the other alone. Primary per predictor: within-job-centered Pearson r, one-sided t on n - 1 - J degrees of freedom at alpha 0.005 each (Bonferroni 0.01); Fisher-z bounds at 99.5 %; positive-direction share r^2 / c^2 with the plug-in ceiling. Anchor control: the anchor mean less job-05-i88's reads steady when its whole 99 % interval lies within +-s_c (0.0119). Outcomes in order: not read; both carried; R-B carried only; R-C carried only; inconclusive: anticorrelated; inconclusive: anchors moved; bounded when both upper shares lie below 10.5 %, P-B's new-seed share; otherwise inconclusive. R-B carried replicates the new-seed reading on independent meshes; R-C carried alone places the gain in the 147 meshes jobs 04 and 05 added; bounded refutes the 10.5 % share. Sizing under ascella_new_seed_sizing.branch with the new-seed counting variance: 96 + 96 iterations give 168 meshes, critical r 0.199, power 0.946 at latent r 0.318 and 0.741 at 0.25, and a bounded reading at r 0 with probability 0.946 per predictor; 96 + 88 give 161 meshes and power 0.935; job-07-i88 alone 77 meshes and power 0.583.",
+  "owner": "ascella signed-coherence analysis",
+  "next_action": "Draw the seeds from the ANU QRNG, register job-06 and job-07 in ascella_coherence_request.py, freeze their bodies and preflight.",
+  "related": [
+    "ascella-new-seed-meshes-case",
+    "ascella-fixed-mesh-confirmation"
+  ],
+  "steps": [
+    {
+      "id": "frozen-offsets",
+      "action": "Copy P-B and refit the family on all 233 retained meshes, and push the record before any replication seed is drawn.",
+      "acceptance": "replication-offsets.json replays under --check, R-B equals P-B of new-mesh-offsets.json, and the commit carrying it is on the remote before the draw file exists.",
+      "state": "doing"
+    },
+    {
+      "id": "request-builder",
+      "action": "Draw the seeds from the ANU QRNG and register job-06 and job-07-i88 and -i96 with stride-8 anchors, frozen bodies and a preflight that sends nothing.",
+      "acceptance": "--check reproduces the frozen bytes of jobs 00 to 05 and validates the new jobs; no new seed is zero or a seed of jobs 02, 04 or 05.",
+      "state": "todo",
+      "depends_on": [
+        "frozen-offsets"
+      ]
+    },
+    {
+      "id": "acquisition",
+      "action": "Submit job-06, then the job-07 variant job-06's completion admits, and retain both runs with platform-before and platform-after.",
+      "acceptance": "Both runs are retained with results.json, collect records and platform snapshots, and their credits match the ledger.",
+      "state": "todo",
+      "depends_on": [
+        "request-builder"
+      ]
+    },
+    {
+      "id": "score",
+      "action": "Score both predictors with ascella_replication_score.py, add its replay gate, and register the acquisitions and the claim.",
+      "acceptance": "replication-score.json replays under --check in its gate, and research_state.json registers the runs and the outcome.",
+      "state": "todo",
+      "depends_on": [
+        "acquisition"
+      ]
+    }
+  ]
+}

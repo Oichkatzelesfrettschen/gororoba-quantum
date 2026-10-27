@@ -4296,6 +4296,14 @@
    "seconds": 20.0,
    "tier": "full"
   },
+ {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_replication_offsets.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/new-mesh-offsets.json results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04 results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88 docs/evidence/ascella-order-coefficients/replication-offsets.json --check",
+   "name": "core-ascella-signed-coherence-replication-offsets-replay",
+   "seconds": 60.0,
+   "tier": "full"
+  },
   {
    "suite": "core",
    "cwd": ".",
