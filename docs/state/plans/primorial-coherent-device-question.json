@@ -16,7 +16,7 @@
   },
   "scope": "The gap-88 phase-gradient tomography of the primorial cover on Heron r2: the joint coherent-bound record, simulation-designed probes of each path qubit's coherent tilt and each coupler's CZ conditional phase, a sampled-instance twirling model, and the signal and null interleave schedule. Provider jobs need their own approved cases.",
   "owner": "primorial cover-defect benchmarks",
-  "next_action": "Await the user approval of results/live/PRIMORIAL_COHERENCE_CASE.md; the approval dry runs are made from main after the change merges.",
+  "next_action": "The first case voided on qubit 0 and its run is retained awaiting observation (results/live/PRIMORIAL_COHERENCE_FINDINGS.md); its acquisition and claim land with the next backup-instance observation, after pull request #516 merges. The second case on 21 Kingston paths ran and its retention is in draft pull request #562.",
   "related": [
     "primorial-cover-defect-benchmarks"
   ],
