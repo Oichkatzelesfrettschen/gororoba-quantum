@@ -64,7 +64,11 @@ of plan ascella-new-seed-meshes-case, keep job-02's anchor stride over their
 own iteration counts at 32,768 samples, each perturbed position at a seed of
 NEW_SEED_DRAW that job-02 did not use: job-04 takes 80 iterations and the first
 70 such seeds, and the job-05 variant of 80, 88 or 96 iterations that job-04's
-duration selects takes the seeds after them.
+duration selects takes the seeds after them. job-06 and the job-07 variants, the
+replication jobs of plan ascella-replication-meshes-case, take the same form at
+REPLICATION_DRAW, skipping every seed of jobs 02, 04 and 05: job-06 takes 96
+iterations and the first 84 usable values, and the job-07 variant of 88 or 96
+iterations that job-06's completion selects takes the values after them.
 
 Usage:
   "$PYTHON" scripts/ascella_coherence_request.py [--check | JOB | --body JOB]
@@ -146,6 +150,8 @@ REPEAT_PLAN = "docs/state/plans/ascella-seed-repeat-case.json"
 NEW_SEED_DRAW = "docs/evidence/anu_qrng/draw-2026-10-26T174307Z.json"
 NEW_SEED_PLAN = "docs/state/plans/ascella-new-seed-meshes-case.json"
 NEW_SEED_OFFSETS = "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json"
+# The ANU QRNG draw that seeds the replication jobs, drawn after replication-offsets.json was pushed.
+REPLICATION_DRAW = "docs/evidence/anu_qrng/draw-2026-10-27T003715Z.json"
 
 
 @dataclass(frozen=True)
@@ -182,6 +188,15 @@ JOBS = {
             f"job-05-i{count}", 32768, 32768, 1.032768, seconds, False, True, ORDER_DRAW, NEW_SEED_DRAW, 70, count
         )
         for count, seconds in ((80, 233.0), (88, 256.0), (96, 279.0))
+    },
+    # job-04 completed 80 iterations of 32,768 samples in 243 s and job-05-i88 88 in 265 s; the line through both
+    # puts 96 iterations near 287 s and 88 at 265 s, each within the 300 s max_duration.
+    "job-06": Job("job-06", 32768, 32768, 1.032768, 290.0, False, True, ORDER_DRAW, REPLICATION_DRAW, 0, 96),
+    **{
+        f"job-07-i{count}": Job(
+            f"job-07-i{count}", 32768, 32768, 1.032768, seconds, False, True, ORDER_DRAW, REPLICATION_DRAW, 84, count
+        )
+        for count, seconds in ((88, 266.0), (96, 290.0))
     },
 }
 STAGED = ("cases.json", "circuit.json")
@@ -276,12 +291,15 @@ def permutation(draw: str, count: int) -> list[int]:
 
 def compilation_seeds(job: Job) -> tuple[list[int], list[int]]:
     """The perturbed positions' seeds and the job.seed_draw indices they consume: nonzero values in index order, each
-    value once, from the job's draw_start-th usable value. A draw other than SEED_DRAW also skips job-02's seeds, so
-    every new-seed job requests meshes no earlier job requested."""
+    value once, from the job's draw_start-th usable value. A draw other than SEED_DRAW also skips job-02's seeds, and
+    REPLICATION_DRAW also those of job-04 and job-05-i96 (which extends job-05-i80 and job-05-i88), so every new-seed
+    and replication job requests meshes no earlier job requested."""
     values = json.loads((ROOT / job.seed_draw).read_text(encoding="utf-8"))["values"]
     require(job.iterations % ANCHOR_STRIDE == 0, f"{job.name}: {job.iterations} iterations break the anchor stride")
     needed = job.iterations - job.iterations // ANCHOR_STRIDE
     excluded = set() if job.seed_draw == SEED_DRAW else set(compilation_seeds(JOBS["job-02"])[0])
+    if job.seed_draw == REPLICATION_DRAW:
+        excluded |= {seed for name in ("job-04", "job-05-i96") for seed in compilation_seeds(JOBS[name])[0]}
     seeds: list[int] = []
     indices: list[int] = []
     for index, value in enumerate(values):
@@ -430,6 +448,10 @@ def documents(job: Job) -> dict[str, bytes]:
             "family_alpha": 0.01,
             "interpretation": "compilation dependence of one logical setting's analyzer response",
         }
+        # The REPLICATION_DRAW jobs' retained manifests, whose digests their submissions and plan
+        # ascella-replication-meshes-case bind, carry this new-seed block and rule text as built; that plan,
+        # replication-offsets.json and ascella_replication_score.py are their analysis contract, and compilation_seeds
+        # states their full skip set.
         if job.seed_draw != SEED_DRAW:
             seed_record["rule"] += ", job-02's seeds skipped, from usable value draw_start"
             seed_record["draw_start"] = job.draw_start

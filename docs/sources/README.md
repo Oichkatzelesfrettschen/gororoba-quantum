@@ -15,7 +15,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
 license evidence. The library publishes 45 licensed PDFs and two aliases;
-187 external sources retain citations and optional ignored local reading copies.
+193 external sources retain citations and optional ignored local reading copies.
 Five licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
@@ -247,6 +247,13 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [1302.0932](../notes/papers/1302.0932.md) | van Enk and Blume-Kohout, When quantum tomography goes wrong: drift of quantum sources and other errors, New J. Phys. 15, 025024 (2013) | low | none | none |
 | [roadmap-2026-03](../notes/quandela/roadmap-2026-03.md) | Quandela, Roadmap 2026-2033 (March 2026) and the Quandela-Welinq interconnect announcement (provider documents) | none | none | none |
 | [2104.05219](../notes/papers/2104.05219.md) | McEwen et al., Resolving catastrophic error bursts from cosmic rays in large arrays of superconducting qubits, Nat. Phys. 18, 107 (2022) | low | none | low |
+| [ioannidis-2005-false-findings](../notes/papers/ioannidis-2005-false-findings.md) | Ioannidis, Why most published research findings are false, PLoS Med. 2, e124 (2005) | none | none | none |
+| [munafo-2017-reproducible-science](../notes/papers/munafo-2017-reproducible-science.md) | Munafo et al., A manifesto for reproducible science, Nat. Hum. Behav. 1, 0021 (2017) | none | none | none |
+| [asa-2016-p-value-statement](../notes/papers/asa-2016-p-value-statement.md) | ASA release on the Statement on Statistical Significance and P-Values, Am. Stat. 70, 129 (2016) | none | none | none |
+| [diedenhofen-musch-2015-cocor](../notes/papers/diedenhofen-musch-2015-cocor.md) | Diedenhofen and Musch, cocor: comparison of correlations, PLOS ONE 10, e0121945 (2015) | none | none | none |
+| [1910.06343](../notes/papers/1910.06343.md) | Eisert et al., Quantum certification and benchmarking, Nat. Rev. Phys. 2, 382 (2020) | low | none | none |
+| [2407.08828](../notes/papers/2407.08828.md) | Proctor et al., Benchmarking quantum computers, Nat. Rev. Phys. 7, 105 (2025) | medium | none | low |
+| [quantum-journal-referee-instructions](../notes/papers/quantum-journal-referee-instructions.md) | Quantum journal, guidelines for referees and editorial policies (web pages) | none | none | none |
 
 The [parallel-experiment synthesis](../notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,

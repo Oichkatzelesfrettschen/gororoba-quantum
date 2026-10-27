@@ -1915,22 +1915,175 @@ within 2 s of the 267 s that job-04's rate projects.
 [score](../evidence/ascella-order-coefficients/new-seed-score.json)).
 
 The score ran once. Every one of the 147 perturbed meshes (70 and 77) was
-new, and both jobs' anchors read steady: shifts of −0.0028 and −0.0018 from
-job-03, each with a 99 % half-width of 0.0034, inside ±0.0119.
+new, and both jobs' anchor means passed the gross-shift gate: shifts of
+−0.0028 and −0.0018 from job-03, each with a 99 % half-width of 0.0034, inside
+±0.0119.
 
-| Predictor | Pearson r | One-sided p | Reading | Positive-direction share (99.5 % bounds) | Slope |
-|---|---|---|---|---|---|
-| P-A, job-00 + 28 exploration meshes | 0.157 | 0.030 | not carried | 2.5 % (0 to 13.2 %) | 0.12 |
-| P-B, job-00 + all 56 meshes | 0.319 | 4.4e-5 | carried | 10.5 % (1.4 to 25.6 %) | 0.32 |
+| Predictor | Pearson r | Model-based one-sided p | Reading | Share after affine rescaling (one-sided 99.5 % bounds) | Slope | R^2 at slope one |
+|---|---|---|---|---|---|---|
+| P-A, job-00 + 28 exploration meshes (58 configurations) | 0.157 | 0.030 | not carried | 2.5 % (0 to 13.2 %) | 0.12 | −1.18 |
+| P-B, job-00 + all 56 meshes (86 configurations) | 0.319 | 4.4e-5 | carried | 10.5 % (1.4 to 25.6 %) | 0.32 | −0.36 |
 
 The outcome is **P-B carried only**. Static heater and coupler offsets on the
-returned circuit, fitted on all 56 served meshes of jobs 02 and 03, predict
-meshes no fit has seen: about a tenth of the compilation-induced variance, at
-least 1.4 % and at most 25.6 %. The 28 exploration meshes alone leave those
+returned circuit, fitted on job-00 and the 56 served meshes of jobs 02 and 03,
+are associated with the X statistic of meshes no fit has seen. The share is
+r^2 / c^2 with the plug-in ceiling c^2 = 0.966: the centered variance that an
+optimal affine rescaling of the predictions would account for. At their own
+scale the predictions overshoot (slope 0.32) and predict worse than each job's
+mean, so the offsets carry the direction of a minor part of the mesh-to-mesh
+variation, not its amplitude. The 28 exploration meshes alone leave those
 offsets underdetermined. The statement of the confirmation section stands
 corrected: element offsets carry a real but minor part of the fixed per-mesh
-error, and the remaining nine tenths depend on something the returned circuit
-with static offsets does not express. The applied voltages that Perceval#799
-requests remain the direct test of that remainder. The 147 meshes are spent
-for confirmatory use. The owner's further 96-iteration jobs belong to a later,
-separate plan.
+variation, and most of it lies outside anything the returned circuit with
+static offsets expresses. The applied voltages that Perceval#799 requests
+remain the direct test of that remainder. The 147 meshes are spent for
+confirmatory use. The frozen offsets reached the remote at 17:42:54 UTC, 13 s
+before the draw
+([push order](../evidence/ascella-order-coefficients/new-seed-push-order.json)).
+
+## Replication case (job-06 and job-07)
+
+Plan
+[`ascella-replication-meshes-case`](../state/plans/ascella-replication-meshes-case.json)
+asks two questions of meshes that no fit has seen.
+
+- **Replication.** Does P-B, unchanged, carry the fixed per-mesh error again,
+  on independent seeds?
+- **Training size.** Does the same family carry more of that error when it is
+  refitted on every retained perturbed mesh?
+
+Noise simulation cannot answer either question. The quantity under test is
+the error that Ascella's calibrated control applies to each served mesh, and
+no simulator holds that calibration (Perceval#799).
+
+The predictors were frozen and pushed in `bc15673`, before the seeds were
+drawn. GitHub's branch activity records the push at 00:37:09 UTC, and the draw
+was retrieved at 00:37:15 UTC
+([push order](../evidence/ascella-order-coefficients/replication-push-order.json)). They live in
+[`replication-offsets.json`](../evidence/ascella-order-coefficients/replication-offsets.json),
+written by
+[`scripts/ascella_replication_offsets.py`](../../scripts/ascella_replication_offsets.py),
+whose replay gate is `core-ascella-signed-coherence-replication-offsets-replay`.
+
+| Predictor | Training meshes | Free offsets |
+|---|---|---|
+| R-B, P-B of `new-mesh-offsets.json` unchanged | 86 | 258 |
+| R-C, refitted on job-00 (30 configurations), the 56 meshes of jobs 02 and 03 and the 147 of jobs 04 and 05 | 233 | 258 |
+
+The acquisition runs at 32,768 samples and 32,768 max_shots per iteration.
+Every eighth position is the seed-0 anchor.
+
+- **Job-06** runs 96 iterations: 12 anchors and 84 seeds. The seeds are the
+  first 84 usable values of the ANU QRNG draw `draw-2026-10-27T003715Z.json`,
+  retrieved after `bc15673`. A usable value is nonzero, is not a repeat and is
+  not a seed of jobs 02, 04 or 05.
+- **Job-07** runs 96 iterations when job-06 completed with every iteration
+  counted, and 88 (`job-07-i88`) otherwise. The rule reads completion alone,
+  never an X count.
+
+The two retained points bound the duration. Job-04 ran 80 iterations in
+243 s and job-05 ran 88 in 265 s. The line through them puts 96 iterations
+near 287 s, inside the 300 s max_duration, whose expiry behavior the provider
+does not document. Each job costs 1.032768 credits.
+
+The contract of
+[`scripts/ascella_new_mesh_score.py`](../../scripts/ascella_new_mesh_score.py)
+applies under the design of
+[`scripts/ascella_replication_score.py`](../../scripts/ascella_replication_score.py),
+with these changes:
+- The references are jobs 00, 02, 03, 04 and 05-i88, and every mesh they
+  served is excluded.
+- Job-05-i88's anchors set the anchor baseline.
+- A partial job stays descriptive, and the primary reads the other job alone.
+
+The outcomes are, in order:
+1. not read;
+2. both carried;
+3. R-B carried only;
+4. R-C carried only;
+5. inconclusive: anticorrelated;
+6. inconclusive: anchors moved;
+7. bounded, when both upper shares lie below P-B's new-seed share of 10.5 %;
+8. inconclusive.
+
+The replication manifests, as built and submitted, carry the new-seed
+`preregistered` block and seed-rule text. This plan, which binds their
+digests, is their analysis contract, and `compilation_seeds` states their full
+skip set.
+
+Under `ascella_new_seed_sizing.branch`, with the new-seed counting variance,
+96 + 96 iterations give 168 meshes. The critical r is 0.199. Power is 0.946
+at a latent r of 0.318 and 0.741 at 0.25.
+
+**Outcome.** The owner approved two 96-iteration jobs on 2026-10-26.
+- Job-06 (`d54d0e9d`) ran at 00:43 UTC on 2026-10-27. It returned 96 of 96
+  iterations in 288 s, which admitted `job-07-i96`.
+- Job-07 (`f27ad639`) returned 96 of 96 iterations in 289 s.
+
+Each job cost 1.032768 credits
+([job-06 run](../../results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06/README.md),
+[job-07 run](../../results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96/README.md),
+[score](../evidence/ascella-order-coefficients/replication-score.json)).
+
+The score ran once. All 168 perturbed meshes (84 and 84) were new. Both jobs'
+anchor means passed the gross-shift gate: shifts of −0.0020 and −0.0008 from
+job-05-i88, each with a 99 % half-width of 0.0024. The gate excludes a gross
+additive shift; it does not establish that the calibration was the same.
+
+| Predictor | Pearson r | Model-based one-sided p | Reading | Share after affine rescaling (one-sided 99.5 % bounds) | Slope | R^2 at slope one |
+|---|---|---|---|---|---|---|
+| R-B, P-B unchanged (86 configurations) | 0.240 | 8.8e-4 | carried | 6.0 % (0.2 to 18.2 %) | 0.20 | −0.83 |
+| R-C, refitted (233 configurations) | 0.404 | 3.1e-8 | carried | 16.9 % (5.2 to 32.2 %) | 0.44 | −0.10 |
+
+The outcome is **both carried**.
+- The carried P-B offsets are associated with independent meshes a second
+  time. Their share, 6.0 %, lies inside the new-seed interval of 1.4 % to
+  25.6 %. As in the new-seed case, the predictions carry direction, not
+  amplitude: both slopes lie well below one, and at slope one both predict
+  worse than each job's mean.
+- On the same meshes the refit on 233 meshes reads r 0.404 against R-B's
+  0.240. The difference is descriptive, for two reasons:
+  - The preregistration tested neither predictor against the other. A post hoc
+    Williams test for the two dependent correlations reads t 2.17 on 164
+    degrees of freedom (two-sided p 0.031).
+  - R-C's added training meshes come from jobs 04 and 05, the calibrations
+    nearest these jobs, so training size and calibration proximity are
+    confounded.
+
+Exploratory, post hoc checks live in
+[`replication-sensitivity.json`](../evidence/ascella-order-coefficients/replication-sensitivity.json),
+written by
+[`scripts/ascella_replication_sensitivity.py`](../../scripts/ascella_replication_sensitivity.py)
+with no random draw:
+- **In-block background.** The scored prediction includes each test
+  iteration's in-block background, read from its own outside-block counts
+  (`ascella_physical_models.setting_probabilities`). Without it, R-B reads r
+  0.231 and R-C 0.386. The returned circuit at zero offsets reads r 0.016, and
+  0.149 with the background term alone. Each predictor's increment over that
+  zero-offset prediction keeps partial r 0.207 (R-B, one-sided p 0.0037) and
+  0.395 (R-C). So the association lives in the offsets.
+- **Structure-preserving null.** Over all 7,056 alignments of circular shifts
+  of each job's outcomes, p is 0.0014 for R-B and 0.00014 for R-C, consistent
+  with the model-based t test. The centered outcomes are heavy-tailed, so the
+  t p-values and Fisher bounds are model-based.
+- **Robustness.** Spearman correlations are 0.241 and 0.305. Per job, R-B
+  reads 0.261 and 0.223 and R-C 0.366 and 0.437. Without its five most
+  influential meshes, R-C reads 0.290 (share 8.7 %) and R-B 0.234.
+- **R-C against R-B.** Williams t 2.17 on 164 degrees of freedom (two-sided p
+  0.031), with Steiger z 2.15 and Meng z 2.14 agreeing and a Zou 95 % interval
+  of 0.015 to 0.312 for the difference. The implementation reproduces the
+  worked example of Diedenhofen and Musch (2015). The difference stays
+  descriptive.
+
+258 free offsets on 86 or 233 configurations are identified through the prior,
+not the data. Between R-B and R-C the 126 heater offsets correlate 0.82 and
+the 132 coupler offsets 0.15, so the coupler offsets are not identified and no
+individual offset carries a physical reading. An unretained exploratory refit
+on the 147 meshes of jobs 04 and 05 alone read r 0.445 on these meshes, above
+R-C, which fits calibration proximity better than training size. Most of the
+mesh-to-mesh variation lies outside the offsets' predictions. The applied
+voltages that Perceval#799 requests remain the direct test of that remainder.
+The 168 meshes are spent for confirmatory use. A critical review of this case
+by three external referees and the orchestrator, against
+[the critical-review runbook](../runbooks/critical-peer-review.md), set this
+wording.
