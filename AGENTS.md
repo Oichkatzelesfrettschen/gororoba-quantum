@@ -10,7 +10,7 @@ The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only. [docs/PYTHON.md](docs/PYTHON.md) is the
 central documentation hub for all Python interpreters, dependency manifests,
-multi-environment audit, library roles and the 359-distribution inventory
+multi-environment audit, library roles and the 362-distribution inventory
 ([docs/state/hypercomplex-libraries/libraries.md](docs/state/hypercomplex-libraries/libraries.md)).
 [ci/AGENTS.md](ci/AGENTS.md) holds the gate machinery: runner and shards, the
 gate ledger and premerge cache, the Python and Qiskit pins, replay runtimes, the

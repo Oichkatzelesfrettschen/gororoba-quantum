@@ -13,7 +13,7 @@ prose:
 - the isolated provider environments: [Quantum Inspire](notes/quantum_inspire/README.md), [Open Quantum](notes/open_quantum/README.md), [Quandela](notes/quandela/README.md) ([quandela/python-stack.md](notes/quandela/python-stack.md)), [IQM](notes/iqm/README.md) ([iqm/python-stack-versions.json](notes/iqm/python-stack-versions.json)), and [Kaggle](notes/kaggle/README.md) ([kaggle_kernel/AGENTS.md](../kaggle_kernel/AGENTS.md)).
 
 The central [library register](state/hypercomplex-libraries/libraries.md) lists every
-distribution (359 distributions across all source surfaces) with its role, and its sibling
+distribution (362 distributions across all source surfaces) with its role, and its sibling
 [libraries.json](state/hypercomplex-libraries/libraries.json) records each
 tracked file that imports it (`imported_by`); gate
 core-630 (`scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check`)
@@ -104,7 +104,9 @@ The repository audit recognizes four operational statuses across all Python dist
      `hypercomplex`, `hypercomplex-engine`, `hypercomplex-algebra`, `cayley-calculator`,
      `cayley-dickson`, `octonion`, `splitoct` (split-signature negative control), `mathdunders`,
      `numpy-quaternion`, `quaternionic`, `pyquaternion`, `clifford`, `kingdon`, `galgebra`,
-     `pyoctonion`, `octonion-sedenion`, `hyprat`, `pyadic`.
+     `pyoctonion`, `octonion-sedenion`, `hyprat`.
+   - *Exact arithmetic backends*: `python-flint` (modular rank, rational null spaces) and
+     `pyadic` (finite-field and p-adic valuations), which define no Cayley-Dickson table.
 
 3. **Otherwise Used in Isolated Virtual Environments or Containers**
    - Distributions that would create conflicting requirements if installed into the main host
@@ -125,7 +127,7 @@ The repository audit recognizes four operational statuses across all Python dist
      - *Declined or not required*: `qiskit-addon-mpf` (declined multiproduct workflow; CVXPY presence does
        not establish admission), `qiskit-dynamics` (archived upstream), `benchpress` (unqualified oracle),
        `mapomatic` (unqualified against live Target), `pennylane`, `qutip`.
-     - *Machine register tracking*: All 359 evaluated distributions are tracked with their
+     - *Machine register tracking*: All 362 evaluated distributions are tracked with their
        retained roles, host presence, and citation records in
        [docs/state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md).
 
@@ -159,7 +161,7 @@ many also run under `-O`, so a check raises explicitly instead of using
 | [ci/requirements-browser.txt](../ci/requirements-browser.txt) | Headless Playwright browser automation for measured explorer verification | `scripts/validate_measured_explorer.py` |
 | [ci/requirements-replay.txt](../ci/requirements-replay.txt) | Pinned Qiskit 2.5.2 compiler stack for bit-for-bit historical replay | `ci/run_gates.py --replay-python` |
 | [packaging/qiskit-aer-cuda/build-requirements.txt](../packaging/qiskit-aer-cuda/build-requirements.txt) | Build tools (`build`, `scikit-build`, `pybind11`, `wheel`) for native Aer CUDA package | [notes/build_host/custatevec.md](notes/build_host/custatevec.md) |
-| [state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md) | Exhaustive 359-distribution register of roles, host presence, and citations | `scripts/hypercomplex_libraries.py --check` |
+| [state/hypercomplex-libraries/libraries.md](state/hypercomplex-libraries/libraries.md) | Exhaustive 362-distribution register of roles, host presence, and citations | `python3 scripts/hypercomplex_libraries.py --out docs/state/hypercomplex-libraries --check` |
 | [state/hypercomplex-libraries/libraries.json](state/hypercomplex-libraries/libraries.json) | Machine-readable AST import scan, declared pins, and unresolved roots | `test_retained_inventory_*` in behavioral suite |
 
 
