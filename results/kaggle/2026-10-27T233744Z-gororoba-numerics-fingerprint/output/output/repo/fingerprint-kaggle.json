@@ -1,0 +1,234 @@
+{
+ "both-pinned": {
+  "environment": {
+   "blas": [
+    {
+     "architecture": "Haswell",
+     "internal_api": "openblas",
+     "version": "0.3.34.106.0"
+    }
+   ],
+   "cpu_features": [
+    "AVX",
+    "AVX2",
+    "BMI",
+    "BMI2",
+    "CX16",
+    "F16C",
+    "FMA3",
+    "LAHF",
+    "LZCNT",
+    "MMX",
+    "MOVBE",
+    "POPCNT",
+    "SSE",
+    "SSE2",
+    "SSE3",
+    "SSE41",
+    "SSE42",
+    "SSSE3",
+    "X86_V2",
+    "X86_V3"
+   ],
+   "env": {
+    "NPY_DISABLE_CPU_FEATURES": "X86_V4 AVX512_ICL AVX512_SPR",
+    "OPENBLAS_CORETYPE": "Haswell"
+   },
+   "glibc": "glibc 2.39",
+   "machine": "x86_64",
+   "numpy": "2.5.4",
+   "processor": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+   "python": "3.14.7",
+   "runtime_module": "numpy",
+   "scipy": "1.18.1"
+  },
+  "kernels": {
+   "chi2_sf": "1a16f8d015ab40c575bfbedc6f817e8804260d020b876c0d01390c5cb4c6b8d9",
+   "corrected_z": "90f6dddacb7233880b0d1bf5e2710d1af6098f5be934215544e0bad47ace363b",
+   "expm_stack": "b91a0f07e82ba4f05295024738929c1d71a74dba50933c5f3e18365deca783a1",
+   "fit_gamma_rate": "cefdf06540daecbd191fcbd0e4b36a6fa41f467fdc0bf4ddc92d8b8433d30507",
+   "math_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "math_pow": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70",
+   "matmul_single": "fc3e70be324fd4fc8951d6d60d459dcba079d7978aec391ad8c31d6ed14c254d",
+   "matmul_stack": "7fdfb3c6d09b3130e2db61b31896f5452e05b04fea778cfb0dbc6d4958f6a980",
+   "matrix_power_16": "3b1af9c95ef7090d524ec05673bb623c039a3c89dffdb95862da633e1c46b50d",
+   "np_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "np_power": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70"
+  },
+  "stderr": ""
+ },
+ "default": {
+  "environment": {
+   "blas": [
+    {
+     "architecture": "Haswell",
+     "internal_api": "openblas",
+     "version": "0.3.34.106.0"
+    }
+   ],
+   "cpu_features": [
+    "AVX",
+    "AVX2",
+    "BMI",
+    "BMI2",
+    "CX16",
+    "F16C",
+    "FMA3",
+    "LAHF",
+    "LZCNT",
+    "MMX",
+    "MOVBE",
+    "POPCNT",
+    "SSE",
+    "SSE2",
+    "SSE3",
+    "SSE41",
+    "SSE42",
+    "SSSE3",
+    "X86_V2",
+    "X86_V3"
+   ],
+   "env": {
+    "NPY_DISABLE_CPU_FEATURES": null,
+    "OPENBLAS_CORETYPE": null
+   },
+   "glibc": "glibc 2.39",
+   "machine": "x86_64",
+   "numpy": "2.5.4",
+   "processor": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+   "python": "3.14.7",
+   "runtime_module": "numpy",
+   "scipy": "1.18.1"
+  },
+  "kernels": {
+   "chi2_sf": "1a16f8d015ab40c575bfbedc6f817e8804260d020b876c0d01390c5cb4c6b8d9",
+   "corrected_z": "90f6dddacb7233880b0d1bf5e2710d1af6098f5be934215544e0bad47ace363b",
+   "expm_stack": "b91a0f07e82ba4f05295024738929c1d71a74dba50933c5f3e18365deca783a1",
+   "fit_gamma_rate": "cefdf06540daecbd191fcbd0e4b36a6fa41f467fdc0bf4ddc92d8b8433d30507",
+   "math_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "math_pow": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70",
+   "matmul_single": "fc3e70be324fd4fc8951d6d60d459dcba079d7978aec391ad8c31d6ed14c254d",
+   "matmul_stack": "7fdfb3c6d09b3130e2db61b31896f5452e05b04fea778cfb0dbc6d4958f6a980",
+   "matrix_power_16": "3b1af9c95ef7090d524ec05673bb623c039a3c89dffdb95862da633e1c46b50d",
+   "np_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "np_power": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70"
+  },
+  "stderr": ""
+ },
+ "numpy-no-avx512": {
+  "environment": {
+   "blas": [
+    {
+     "architecture": "Haswell",
+     "internal_api": "openblas",
+     "version": "0.3.34.106.0"
+    }
+   ],
+   "cpu_features": [
+    "AVX",
+    "AVX2",
+    "BMI",
+    "BMI2",
+    "CX16",
+    "F16C",
+    "FMA3",
+    "LAHF",
+    "LZCNT",
+    "MMX",
+    "MOVBE",
+    "POPCNT",
+    "SSE",
+    "SSE2",
+    "SSE3",
+    "SSE41",
+    "SSE42",
+    "SSSE3",
+    "X86_V2",
+    "X86_V3"
+   ],
+   "env": {
+    "NPY_DISABLE_CPU_FEATURES": "X86_V4 AVX512_ICL AVX512_SPR",
+    "OPENBLAS_CORETYPE": null
+   },
+   "glibc": "glibc 2.39",
+   "machine": "x86_64",
+   "numpy": "2.5.4",
+   "processor": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+   "python": "3.14.7",
+   "runtime_module": "numpy",
+   "scipy": "1.18.1"
+  },
+  "kernels": {
+   "chi2_sf": "1a16f8d015ab40c575bfbedc6f817e8804260d020b876c0d01390c5cb4c6b8d9",
+   "corrected_z": "90f6dddacb7233880b0d1bf5e2710d1af6098f5be934215544e0bad47ace363b",
+   "expm_stack": "b91a0f07e82ba4f05295024738929c1d71a74dba50933c5f3e18365deca783a1",
+   "fit_gamma_rate": "cefdf06540daecbd191fcbd0e4b36a6fa41f467fdc0bf4ddc92d8b8433d30507",
+   "math_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "math_pow": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70",
+   "matmul_single": "fc3e70be324fd4fc8951d6d60d459dcba079d7978aec391ad8c31d6ed14c254d",
+   "matmul_stack": "7fdfb3c6d09b3130e2db61b31896f5452e05b04fea778cfb0dbc6d4958f6a980",
+   "matrix_power_16": "3b1af9c95ef7090d524ec05673bb623c039a3c89dffdb95862da633e1c46b50d",
+   "np_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "np_power": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70"
+  },
+  "stderr": ""
+ },
+ "openblas-haswell": {
+  "environment": {
+   "blas": [
+    {
+     "architecture": "Haswell",
+     "internal_api": "openblas",
+     "version": "0.3.34.106.0"
+    }
+   ],
+   "cpu_features": [
+    "AVX",
+    "AVX2",
+    "BMI",
+    "BMI2",
+    "CX16",
+    "F16C",
+    "FMA3",
+    "LAHF",
+    "LZCNT",
+    "MMX",
+    "MOVBE",
+    "POPCNT",
+    "SSE",
+    "SSE2",
+    "SSE3",
+    "SSE41",
+    "SSE42",
+    "SSSE3",
+    "X86_V2",
+    "X86_V3"
+   ],
+   "env": {
+    "NPY_DISABLE_CPU_FEATURES": null,
+    "OPENBLAS_CORETYPE": "Haswell"
+   },
+   "glibc": "glibc 2.39",
+   "machine": "x86_64",
+   "numpy": "2.5.4",
+   "processor": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+   "python": "3.14.7",
+   "runtime_module": "numpy",
+   "scipy": "1.18.1"
+  },
+  "kernels": {
+   "chi2_sf": "1a16f8d015ab40c575bfbedc6f817e8804260d020b876c0d01390c5cb4c6b8d9",
+   "corrected_z": "90f6dddacb7233880b0d1bf5e2710d1af6098f5be934215544e0bad47ace363b",
+   "expm_stack": "b91a0f07e82ba4f05295024738929c1d71a74dba50933c5f3e18365deca783a1",
+   "fit_gamma_rate": "cefdf06540daecbd191fcbd0e4b36a6fa41f467fdc0bf4ddc92d8b8433d30507",
+   "math_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "math_pow": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70",
+   "matmul_single": "fc3e70be324fd4fc8951d6d60d459dcba079d7978aec391ad8c31d6ed14c254d",
+   "matmul_stack": "7fdfb3c6d09b3130e2db61b31896f5452e05b04fea778cfb0dbc6d4958f6a980",
+   "matrix_power_16": "3b1af9c95ef7090d524ec05673bb623c039a3c89dffdb95862da633e1c46b50d",
+   "np_exp": "b614736bbde984436320276cdc46361c08bd67c199901073d8f7437e5a585a07",
+   "np_power": "7c847efa35863b341abcc82532054623eeb0a570468d5f5000cc0a84e9d9ec70"
+  },
+  "stderr": ""
+ }
+}
