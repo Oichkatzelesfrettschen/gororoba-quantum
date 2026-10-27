@@ -256,12 +256,16 @@ build-host Python stack in
   drift); its case states why Aer cannot answer it.
 - Every `--submit` waits for the user's approval of a written case: what the
   run measures, why noise simulation cannot answer it, and its expected
-  seconds. The sequence is a submit-free dry run, its analysis, the written
-  case, the approval, and then `--submit` with `--approved-record` (the dry
-  run's record), `--approved-record-sha256` (its record.json digest) and
-  `--max-execution-seconds` (the case's seconds). The fresh plan must match the
-  record or the run writes an `approval_required` record and sends nothing; the
-  first batch consumes the approval by writing `approval-consumed.json`.
+  seconds. The case is written against a submit-free dry run, and the owner
+  approves its rule and bounds. The binding dry run and `--submit` then run
+  back to back in one invocation, `sh scripts/approved_run.sh --check CMD --
+  FLAGS`, which plans, runs the case's mechanical checks and submits with
+  `--approved-record`, `--approved-record-sha256` and the case's
+  `--max-execution-seconds` without an operator step in between; the case's
+  binding table is filled from the records after the submit. The fresh plan
+  must match the record or the run writes an `approval_required` record and
+  sends nothing, and the runner plans again; the first batch consumes the
+  approval by writing `approval-consumed.json`.
 - Calibration is a property of the run. live_run.py fetches each backend's
   Target and properties afresh in the process that decides, compiles,
   simulates and submits, and no calibration value is cached or read back from

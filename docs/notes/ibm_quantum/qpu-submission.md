@@ -109,6 +109,20 @@ and the Kaggle noise-snapshot rule.
   invocation on the same record sends nothing. Calibration reads,
   transpilation, noise simulation, result retrieval, and `--preserve-raw`
   need no approval.
+- The binding dry run and its submit run as one command,
+  `sh scripts/approved_run.sh [--attempts N] [--check CMD] [--log DIR] -- FLAGS`
+  from the repository root, with FLAGS the case's live_run.py flags. It plans,
+  runs CMD from gororoba_quantum/ with RUN set to the dry run's directory (a
+  self-check, a placement check, a digest or budget comparison), and on success
+  submits with the identical flags, the record and its digest. A backend
+  republishes its calibration many times a day, and any changed value
+  touching the packed circuits refuses the submit, so the plan and the submit
+  run with no operator review between them: the review belongs to the case
+  and its rehearsal dry run, and the binding run's checks are mechanical. A
+  refusal sends nothing and leaves the approval unconsumed, and the runner
+  plans again up to N times (default 3). Independent jobs of one case run as
+  parallel invocations, each with its own seeds and account. The case's binding
+  table records the dry run, its digest and calibration after the submit.
 - Calibration is a property of the run. live_run.py fetches each backend's
   Target and properties afresh in the process that decides, compiles,
   simulates, and submits; no calibration value is cached or read back from a
