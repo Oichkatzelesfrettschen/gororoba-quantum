@@ -14,7 +14,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 44 licensed PDFs and two aliases;
+license evidence. The library publishes 45 licensed PDFs and two aliases;
 186 external sources retain citations and optional ignored local reading copies.
 Five licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
