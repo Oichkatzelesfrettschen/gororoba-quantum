@@ -83,8 +83,13 @@ synthetic run laid out by construction. Per qubit:
 3. **The readout-event link.** P(`remeasure` first read 1 | `x_remeasure` first read 0) against the same given a
    read of 1, as a two-proportion test, with the second read of `x_remeasure` as a second conditioning. The
    readout-event hypothesis predicts the first fraction above the second, as in stage 2 (0.095 against 0.051,
-   z -4.62); the end-state hypothesis predicts the opposite order or none. The same conditioning one shot later
-   (`remeasure` at shot s against `x_remeasure` at shot s + 1) is the null arm and predicts no link.
+   z -4.62); the end-state hypothesis predicts the opposite order or none. The pairing of shots across PUBs
+   rests on the execution order, which the service does not guarantee, so the script reports the cross-PUB
+   block only when the raw result metadata's `executor.chunk_timing` records one chunk holding the three PUBs
+   in submitted order (case 3's stage-2 job recorded one chunk of its 105 PUBs in that order) and marks it
+   unpaired otherwise. The same conditioning one shot later (`remeasure` at shot s against `x_remeasure` at
+   shot s + 1) is the null arm: a successor cannot act on its predecessor, so a null arm at |z| of 3 or more
+   marks the forward link ambiguous, and the verdict reads forward_link only with a flat null arm.
 4. **The successor.** P(`prep0` at shot s + 1 | `remeasure` reads at shot s), the |0> readout event's effect on
    the next circuit, against prep0's pooled case-3 fraction of 0.0008 on q147.
 5. **q142.** The same four readings. The stage-2 excess of 0.085 against controls of 0.027 predicts, under the

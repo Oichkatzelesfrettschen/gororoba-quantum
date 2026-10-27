@@ -15,6 +15,15 @@ Per qubit the report gives:
 - the readout-event link: remeasure's first read conditioned on the same shot's x_remeasure first read (0 or 1),
   as a two-proportion test, and prep0's read at shot s + 1 conditioned on remeasure's first read at shot s.
 
+The cross-PUB statistics pair shots across PUBs, which the service's execution order sets, and the note above
+guarantees neither the PUB order nor that a job runs as one batch. The pairing therefore rests on two checks
+before any cross-PUB value is reported: the raw result metadata's ``executor.chunk_timing`` (the executor's own
+record of how the PUBs were batched) holds exactly one chunk whose parts are the three PUBs in submitted order,
+as case 3's stage-2 job recorded for its 105 PUBs; and the one-shot-later conditioning (remeasure at shot s
+against x_remeasure at shot s + 1), which a successor cannot act on, reads no link at |z| below 3. A run that
+fails the chunk check reports the cross-PUB block as unpaired, with the chunk record, and a run whose null arm
+reads a link reports the forward link as ambiguous.
+
 Decision rule, fixed before the run (the case names the qubit it applies to): a population the first read found
 reads 1 again, so pi sits near (1 - e01) exp(-t_measure / T1); a misassigned first read is followed by a read
 of the prepared |0>, so pi sits near the one-read excited fraction. The reading is "population" when the lower
@@ -47,6 +56,7 @@ from scipy import stats
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
+import parallel  # noqa: E402
 from diagnostic_experiments import STATE_PREP_FAMILY, STATE_PREP_REMEASURE_ARMS  # noqa: E402
 
 SCHEMA = "remeasure-history-v1"
@@ -56,6 +66,9 @@ DECISION_THRESHOLD = 0.5
 # ibm_kingston's measure duration on every qubit in the case-3 stage-2 snapshot
 # (docs/evidence/primorial_cover/case3/stage2-snapshot-a.json, instructions.measure).
 DEFAULT_MEASURE_US = 2.18
+RESULT_METADATA = "result_metadata.json"
+# A null arm (the one-shot-later conditioning) past this |z| marks the forward link ambiguous.
+NULL_ARM_Z = 3.0
 
 
 def require(condition: bool, message: str) -> None:
@@ -139,8 +152,16 @@ def register_bits(pub: dict[str, Any], register: str, bits: int) -> list[list[in
     return [[int(s[-1 - b]) for s in strings] for b in range(bits)]
 
 
-def load_reads(run: Path) -> tuple[dict[str, Any], dict[int, dict[str, list[list[int]]]]]:
-    """The run record and, per qubit and arm, the shot-ordered bit lists of its register."""
+def execution_order(metadata: dict[str, Any], pubs: int) -> dict[str, Any]:
+    """Whether the executor batched the PUBs as one chunk in submitted order, from executor.chunk_timing."""
+    chunks = metadata.get("executor", {}).get("chunk_timing")
+    parts = [[int(part["idx_item"]) for part in chunk.get("parts", [])] for chunk in chunks or []]
+    ordered = parts == [list(range(pubs))]
+    return {"chunks": parts, "one_chunk_in_submitted_order": ordered}
+
+
+def load_reads(run: Path) -> tuple[dict[str, Any], dict[int, dict[str, list[list[int]]]], dict[str, Any]]:
+    """The run record, per qubit and arm the shot-ordered bit lists of its register, and the execution order."""
     record = json.loads((run / "record.json").read_text(encoding="utf-8"))
     configuration = record["family_configuration"]
     require(configuration.get("name") == STATE_PREP_FAMILY, f"{run}: not a state-prep-control record")
@@ -154,6 +175,8 @@ def load_reads(run: Path) -> tuple[dict[str, Any], dict[int, dict[str, list[list
     index = json.loads((jobs[0] / "index.json").read_text(encoding="utf-8"))
     files = sorted((name for name in index["files"] if name.startswith("pub_")), key=lambda n: int(n[4:-5]))
     require(len(files) == 3, f"{run}: {len(files)} raw PUB files")
+    require(RESULT_METADATA in index["files"], f"{run}: no {RESULT_METADATA} in the raw index")
+    order = execution_order(json.loads((jobs[0] / RESULT_METADATA).read_text(encoding="utf-8")), len(files))
     reads: dict[int, dict[str, list[list[int]]]] = {}
     for position, (manifest, name) in enumerate(zip(pubs, files, strict=True)):
         pub = json.loads((jobs[0] / name).read_text(encoding="utf-8"))
@@ -170,7 +193,7 @@ def load_reads(run: Path) -> tuple[dict[str, Any], dict[int, dict[str, list[list
         require(set(by_arm) == set(ARMS), f"qubit {qubit}: arms {sorted(by_arm)}")
         shots = {len(bits[0]) for bits in by_arm.values()}
         require(len(shots) == 1, f"qubit {qubit}: shot counts {shots} differ between arms")
-    return record, reads
+    return record, reads, order
 
 
 def population_prediction(e01: float, t1_us: float, measure_us: float) -> float:
@@ -178,7 +201,47 @@ def population_prediction(e01: float, t1_us: float, measure_us: float) -> float:
     return (1.0 - e01) * math.exp(-measure_us / t1_us)
 
 
-def analyze_qubit(by_arm: dict[str, list[list[int]]]) -> dict[str, Any]:
+def cross_pub(
+    prep0: list[int], x_first: list[int], x_second: list[int], r_first: list[int], r_second: list[int]
+) -> dict[str, Any]:
+    """The cross-PUB conditionals, valid only under one chunk in submitted order, with the null arm's verdict."""
+    forward = conditional(r_first, x_first)
+    # The successor cannot act on its predecessor: the same conditioning one shot later reads no link.
+    null_arm = conditional(r_first[:-1], x_first[1:])
+    if math.isnan(null_arm["z"]) or math.isnan(forward["z"]):
+        verdict = "undecided"
+    elif abs(null_arm["z"]) >= NULL_ARM_Z:
+        verdict = "ambiguous"
+    elif abs(forward["z"]) >= NULL_ARM_Z:
+        verdict = "forward_link"
+    else:
+        verdict = "no_link"
+    return {
+        "status": "paired",
+        # The remeasure shot follows the same shot's x_remeasure read.
+        "remeasure_first_given_x_remeasure_first": forward,
+        "remeasure_first_given_x_remeasure_second": conditional(r_first, x_second),
+        # The prep0 shot s + 1 follows the remeasure shot s.
+        "next_prep0_given_remeasure_first": conditional(prep0[1:], r_first[:-1]),
+        "next_prep0_given_remeasure_second": conditional(prep0[1:], r_second[:-1]),
+        "remeasure_first_given_next_x_remeasure_first": null_arm,
+        "null_arm_z_limit": NULL_ARM_Z,
+        "verdict": verdict,
+    }
+
+
+class AnalyzeQubit:
+    """Picklable worker: (qubit, its arms' reads) -> the qubit's report, for parallel.ordered_map."""
+
+    def __init__(self, paired: bool) -> None:
+        self.paired = paired
+
+    def __call__(self, item: tuple[int, dict[str, list[list[int]]]]) -> tuple[str, dict[str, Any]]:
+        qubit, by_arm = item
+        return str(qubit), analyze_qubit(by_arm, self.paired)
+
+
+def analyze_qubit(by_arm: dict[str, list[list[int]]], paired: bool = True) -> dict[str, Any]:
     (prep0,) = by_arm["prep0"]
     x_first, x_second = by_arm["x_remeasure"]
     r_first, r_second = by_arm["remeasure"]
@@ -204,32 +267,30 @@ def analyze_qubit(by_arm: dict[str, list[list[int]]]) -> dict[str, Any]:
             "second_one_given_first_zero": fraction(sum(r_second[s] for s in r_first_zero), len(r_first_zero)),
             "reading": decide(persist_hits, len(r_first_one)),
         },
-        "link": {
-            # The remeasure shot follows the same shot's x_remeasure read.
-            "remeasure_first_given_x_remeasure_first": conditional(r_first, x_first),
-            "remeasure_first_given_x_remeasure_second": conditional(r_first, x_second),
-            # The prep0 shot s + 1 follows the remeasure shot s.
-            "next_prep0_given_remeasure_first": conditional(prep0[1:], r_first[:-1]),
-            "next_prep0_given_remeasure_second": conditional(prep0[1:], r_second[:-1]),
-            # The successor cannot act on its predecessor: the same conditioning one shot later reads no link.
-            "remeasure_first_given_next_x_remeasure_first": conditional(r_first[:-1], x_first[1:]),
-        },
+        "link": (
+            cross_pub(prep0, x_first, x_second, r_first, r_second)
+            if paired
+            else {"status": "unpaired", "reason": "the executor did not run the three PUBs as one chunk in order"}
+        ),
     }
 
 
 def analyze(run: Path, prediction: dict[str, float] | None) -> dict[str, Any]:
-    record, reads = load_reads(run)
+    record, reads, order = load_reads(run)
+    paired = bool(order["one_chunk_in_submitted_order"])
+    reports = parallel.ordered_map(AnalyzeQubit(paired), sorted(reads.items()), min_items=1)
     out: dict[str, Any] = {
         "schema": SCHEMA,
         "run": run.name,
         "experiment_digest": record.get("experiment_digest"),
         "rep_delay_seconds": record["policy"].get("rep_delay_seconds"),
+        "execution_order": order,
         "decision": {
             "alpha": DECISION_ALPHA,
             "threshold": DECISION_THRESHOLD,
             "rule": "population when the 99 percent interval of pi lies above 0.5, misassignment when below",
         },
-        "qubits": {str(qubit): analyze_qubit(by_arm) for qubit, by_arm in sorted(reads.items())},
+        "qubits": dict(reports),
     }
     if prediction is not None:
         out["population_prediction"] = {
@@ -239,24 +300,32 @@ def analyze(run: Path, prediction: dict[str, float] | None) -> dict[str, Any]:
     return out
 
 
-def _synthetic_run(root: Path) -> tuple[Path, dict[str, Any]]:
-    """A run whose bits are laid out by construction; returns the run and the counts the layout fixes."""
+def _synthetic_run(root: Path, chunks: list[list[int]] | None = None) -> tuple[Path, dict[str, Any]]:
+    """A run whose bits are laid out by construction; returns the run and the counts the layout fixes.
+
+    chunks is the executor's chunk timing as lists of PUB indices; None records one chunk in submitted order.
+    """
     shots = 1000
     # x_remeasure: 940 shots read 1 then 1; 40 read 1 then 0; 19 read 0 then 1 (misassigned, population kept);
-    # 1 reads 0 then 0.
-    x_pairs = [(1, 1)] * 940 + [(1, 0)] * 40 + [(0, 1)] * 19 + [(0, 0)] * 1
+    # 1 reads 0 then 0. The 20 first-read-0 shots sit on every other index from 960, so no two are adjacent
+    # and the one-shot-later null arm pairs none of them with a remeasure read of 1.
+    x_pairs = [(1, 1)] * 940 + [(1, 0)] * 60
+    zero_reads = list(range(960, 1000, 2))
+    for index in zero_reads[:19]:
+        x_pairs[index] = (0, 1)
+    x_pairs[zero_reads[19]] = (0, 0)
     # remeasure: the first read is 1 in 60 shots, 54 of which read 1 again; 2 of the 940 first-read-0 shots read
-    # 1 second. The first-read-1 shots sit on the 20 x_remeasure first-read-0 shots (indices 980 to 999) and on
-    # 40 of its first-read-1 shots, so the link reads 20 / 20 against 40 / 980.
+    # 1 second. The first-read-1 shots sit on the 20 x_remeasure first-read-0 shots and on 40 of its
+    # first-read-1 shots (indices 0 to 39), so the link reads 20 / 20 against 40 / 980.
     r_pairs = [(0, 0)] * shots
-    for index in range(980, 1000):
+    for index in zero_reads:
         r_pairs[index] = (1, 1)
     for index in range(0, 40):
         r_pairs[index] = (1, 1) if index < 34 else (1, 0)
     r_pairs[500] = (0, 1)
     r_pairs[501] = (0, 1)
     # prep0: reads 1 in 10 shots, 8 of them right after a remeasure first read of 1 (shots 1 to 8 follow shots 0
-    # to 7) and 2 after a first read of 0 (shots 600 and 601); shot 999's remeasure read has no successor.
+    # to 7) and 2 after a first read of 0 (shots 600 and 601); shot 999 reads 0 on remeasure and has no successor.
     prep0 = [0] * shots
     for index in (1, 2, 3, 4, 5, 6, 7, 8, 600, 601):
         prep0[index] = 1
@@ -290,6 +359,9 @@ def _synthetic_run(root: Path) -> tuple[Path, dict[str, Any]]:
         }
         (job / name).write_text(json.dumps(payload), encoding="utf-8")
         files[name] = ""
+    timing = [{"parts": [{"idx_item": i, "size": 1} for i in chunk]} for chunk in (chunks or [[0, 1, 2]])]
+    (job / RESULT_METADATA).write_text(json.dumps({"executor": {"chunk_timing": timing}}), encoding="utf-8")
+    files[RESULT_METADATA] = ""
     (job / "index.json").write_text(json.dumps({"files": files, "job_id": "job_synthetic"}), encoding="utf-8")
     expected = {
         "shots": shots,
@@ -300,7 +372,7 @@ def _synthetic_run(root: Path) -> tuple[Path, dict[str, Any]]:
         "r_persist": (54, 60),
         "r_second_given_first_zero": (2, 940),
         "link_given_x_first": (20, 20, 40, 980),
-        "next_prep0": (8, 59, 2, 940),
+        "next_prep0": (8, 60, 2, 939),
     }
     return run, expected
 
@@ -330,6 +402,8 @@ def self_test() -> None:
         "reading": qubit["remeasure"]["reading"] == "population",
         "x first-zero reading": qubit["x_remeasure"]["first_zero_reading"] == "population",
     }
+    checks["paired"] = qubit["link"]["status"] == "paired" and report["execution_order"]["chunks"] == [[0, 1, 2]]
+    checks["verdict"] = qubit["link"]["verdict"] == "forward_link"
     link = qubit["link"]["remeasure_first_given_x_remeasure_first"]
     a, n_a, b, n_b = expected["link_given_x_first"]
     checks["link"] = (link["n_given_0"], link["n_given_1"]) == (n_a, n_b) and math.isclose(
@@ -342,6 +416,15 @@ def self_test() -> None:
     )
     failed = [name for name, passed in checks.items() if not passed]
     require(not failed, f"synthetic counts differ: {failed}")
+    with tempfile.TemporaryDirectory() as scratch:
+        split_run, _ = _synthetic_run(Path(scratch), chunks=[[0, 1], [2]])
+        split = analyze(split_run, None)
+    require(
+        split["execution_order"]["one_chunk_in_submitted_order"] is False
+        and split["qubits"]["7"]["link"]["status"] == "unpaired"
+        and split["qubits"]["7"]["remeasure"]["reading"] == "population",
+        "a job executed as two chunks must report the cross-PUB block unpaired and keep the within-PUB readings",
+    )
     # The decision rule against closed forms: 54 of 60 has a 99 percent lower end above 0.5, 15 of 60 an upper
     # end below 0.5, and 30 of 60 straddles it.
     require(decide(54, 60) == "population", "54 of 60 is a population")
@@ -359,8 +442,8 @@ def self_test() -> None:
     require(math.isclose(pi, (1 - 0.0076) * math.exp(-DEFAULT_MEASURE_US / 350.0)), "the population prediction moved")
     print(
         f"remeasure_history: the synthetic run reproduces every count, pi 54/60 reads population, the link "
-        f"reads 20/20 against 40/980, the rule's three verdicts match closed forms, and a q147-like population "
-        f"predicts pi {pi:.4f}"
+        f"reads 20/20 against 40/980 with an empty null arm, a two-chunk execution leaves the cross-PUB block "
+        f"unpaired, the rule's three verdicts match closed forms, and a q147-like population predicts pi {pi:.4f}"
     )
 
 
