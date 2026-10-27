@@ -1,0 +1,2542 @@
+{
+  "falsifier": "A closure-derived incidence is absent; an exact point leaves its boundary orbit or source closure; a point has the wrong nullity; a kernel frame has a nonzero scalar-coordinate row; an antiholomorphic restriction is nonzero; a moved point reverses the verdict; or the input mutation survives.",
+  "incidence_derivation": {
+    "authority": "verify_regularity_independent.LOWER and .NULLITY",
+    "boundary_orbit_count": 7,
+    "complex_linear_incidence_count": 33,
+    "counts_by_passage": {
+      "12->16": 8,
+      "8->12": 15,
+      "8->16": 10
+    },
+    "incidence_count": 33,
+    "point_count": 21
+  },
+  "incidences": [
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "B9",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "E8bar->B9",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "B9:canonical",
+        "B9:unipotent",
+        "B9:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "E8bar"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "V",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "E8bar->V",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "V:canonical",
+        "V:unipotent",
+        "V:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "E8bar"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "VB",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "E8bar->VB",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "VB:canonical",
+        "VB:unipotent",
+        "VB:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "E8bar"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "Va+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "E8bar->Va+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "Va+:canonical",
+        "Va+:unipotent",
+        "Va+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "E8bar"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "Va-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "E8bar->Va-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "Va-:canonical",
+        "Va-:unipotent",
+        "Va-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "E8bar"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "B9",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "Iso->B9",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "B9:canonical",
+        "B9:unipotent",
+        "B9:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "Iso"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "VB",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "Iso->VB",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "VB:canonical",
+        "VB:unipotent",
+        "VB:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "Iso"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "B9",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "W8->B9",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "B9:canonical",
+        "B9:unipotent",
+        "B9:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "W8"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "VB",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "W8->VB",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "VB:canonical",
+        "VB:unipotent",
+        "VB:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "W8"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "B9",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "X+->B9",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "B9:canonical",
+        "B9:unipotent",
+        "B9:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "X+"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "VB",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "X+->VB",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "VB:canonical",
+        "VB:unipotent",
+        "VB:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "X+"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "Va+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "X+->Va+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "Va+:canonical",
+        "Va+:unipotent",
+        "Va+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "X+"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "B9",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "X-->B9",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "B9:canonical",
+        "B9:unipotent",
+        "B9:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "X-"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "VB",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "X-->VB",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "VB:canonical",
+        "VB:unipotent",
+        "VB:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "X-"
+    },
+    {
+      "boundary_nullity": 12,
+      "boundary_orbit": "Va-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "X-->Va-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->12",
+      "point_keys": [
+        "Va-:canonical",
+        "Va-:unipotent",
+        "Va-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "X-"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "B9->N+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "12->16",
+      "point_keys": [
+        "N+:canonical",
+        "N+:unipotent",
+        "N+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 12,
+      "source_orbit": "B9"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "B9->N-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "12->16",
+      "point_keys": [
+        "N-:canonical",
+        "N-:unipotent",
+        "N-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 12,
+      "source_orbit": "B9"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "V->N+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "12->16",
+      "point_keys": [
+        "N+:canonical",
+        "N+:unipotent",
+        "N+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 12,
+      "source_orbit": "V"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "V->N-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "12->16",
+      "point_keys": [
+        "N-:canonical",
+        "N-:unipotent",
+        "N-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 12,
+      "source_orbit": "V"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "VB->N+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "12->16",
+      "point_keys": [
+        "N+:canonical",
+        "N+:unipotent",
+        "N+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 12,
+      "source_orbit": "VB"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "VB->N-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "12->16",
+      "point_keys": [
+        "N-:canonical",
+        "N-:unipotent",
+        "N-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 12,
+      "source_orbit": "VB"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "Va+->N+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "12->16",
+      "point_keys": [
+        "N+:canonical",
+        "N+:unipotent",
+        "N+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 12,
+      "source_orbit": "Va+"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "Va-->N-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "12->16",
+      "point_keys": [
+        "N-:canonical",
+        "N-:unipotent",
+        "N-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 12,
+      "source_orbit": "Va-"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "E8bar->N+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->16",
+      "point_keys": [
+        "N+:canonical",
+        "N+:unipotent",
+        "N+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "E8bar"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "E8bar->N-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->16",
+      "point_keys": [
+        "N-:canonical",
+        "N-:unipotent",
+        "N-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "E8bar"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "Iso->N+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->16",
+      "point_keys": [
+        "N+:canonical",
+        "N+:unipotent",
+        "N+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "Iso"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "Iso->N-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->16",
+      "point_keys": [
+        "N-:canonical",
+        "N-:unipotent",
+        "N-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "Iso"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "W8->N+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->16",
+      "point_keys": [
+        "N+:canonical",
+        "N+:unipotent",
+        "N+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "W8"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "W8->N-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->16",
+      "point_keys": [
+        "N-:canonical",
+        "N-:unipotent",
+        "N-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "W8"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "X+->N+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->16",
+      "point_keys": [
+        "N+:canonical",
+        "N+:unipotent",
+        "N+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "X+"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "X+->N-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->16",
+      "point_keys": [
+        "N-:canonical",
+        "N-:unipotent",
+        "N-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "X+"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N+",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "X-->N+",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->16",
+      "point_keys": [
+        "N+:canonical",
+        "N+:unipotent",
+        "N+:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "X-"
+    },
+    {
+      "boundary_nullity": 16,
+      "boundary_orbit": "N-",
+      "boundary_orbit_membership": [
+        true,
+        true,
+        true
+      ],
+      "complex_linear_first_order": true,
+      "complex_linearity_verdicts": [
+        true,
+        true,
+        true
+      ],
+      "incidence": "X-->N-",
+      "moved_point_verdict_stable": true,
+      "pass": true,
+      "passage": "8->16",
+      "point_keys": [
+        "N-:canonical",
+        "N-:unipotent",
+        "N-:boost"
+      ],
+      "source_closure_membership": [
+        true,
+        true,
+        true
+      ],
+      "source_nullity": 8,
+      "source_orbit": "X-"
+    }
+  ],
+  "inputs": {
+    "docs/design/a5-kernel-attachments-program.md": "b68a204a44d1e2f5e1a9b496659e506828a50314269af79facf56570802cb7e3",
+    "docs/evidence/a5-kernel-attachments/incidence_census.py": "125e11f5a7d179e0c3bfc082f1e070eba0507c1e62d86b046fa13c706743372c",
+    "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "f7d978febf6a286b11df3ea25b30b7c8dcd9e28763a46769a153f0246419b387",
+    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+    "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+  },
+  "mechanism": {
+    "antiholomorphic_support": "the scalar border of A(z,conjugate(z))",
+    "certificate": "Every exact boundary-kernel frame has zero scalar-coordinate row, so F^T A^(0,1)(dbar) F vanishes identically in all fifteen ambient directions."
+  },
+  "movement_certificate": {
+    "boost_c": "5/4",
+    "boost_identity_verified": true,
+    "boost_s": "3/4",
+    "movements": [
+      "canonical",
+      "unipotent",
+      "boost"
+    ],
+    "nilpotent_derivations_found": 60,
+    "nilpotent_span_dimension": 14,
+    "unipotent_product_is_automorphism": true
+  },
+  "mutation_control": {
+    "baseline_antiholomorphic_restriction_zero": true,
+    "detected": true,
+    "input_change": "add a_1 times the skew basis wedge E_12-E_21 to the antiholomorphic derivative input",
+    "mutated_antiholomorphic_restriction": "[[0, 34*I*a1, 0, 13*I*a1, 0, 29*a1], [-34*I*a1, 0, -51*a1, 0, -85*a1, 0], [0, 51*a1, 0, 39*a1/2, 0, -87*I*a1/2], [-13*I*a1, 0, -39*a1/2, 0, -65*a1/2, 0], [0, 85*a1, 0, 65*a1/2, 0, -145*I*a1/2], [-29*a1, 0, 87*I*a1/2, 0, 145*I*a1/2, 0]]",
+    "mutated_antiholomorphic_restriction_zero": false,
+    "name": "anti_interior_wedge",
+    "target": "B9:canonical"
+  },
+  "pass": true,
+  "points": [
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "B9",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "111111000000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, I*(-44*h1 - 2*h11 - h12 + h14 + 44*h3 - 75*h4 + 75*h6 + 2*h9), 0, 3*I*(-148*h1 - 28*h11 + 27*h12 - 27*h14 + 148*h3 - 237*h4 + 237*h6 + 28*h9)/26, 0, -38*h1 - 2*h11 - 3*h12/2 + 3*h14/2 + 38*h3 - 123*h4/2 + 123*h6/2 + 2*h9], [I*(44*h1 + 2*h11 + h12 - h14 - 44*h3 + 75*h4 - 75*h6 - 2*h9), 0, 50*h1 + 20*h11 - 29*h12 + 29*h14 - 50*h3 + 87*h4 - 87*h6 - 20*h9, 3*h10 - 87*h13/26 - 41*h15/26 - 211*h2/26 + 229*h5/26 + 7*h7/2 - 7*h8/13, 85*h1 - 5*h11 + 17*h12 - 17*h14 - 85*h3 + 144*h4 - 144*h6 + 5*h9, I*(-10*h10 + 11*h13 + 5*h15 + 27*h2 - 29*h5 - 11*h7 + 2*h8)/2], [0, -50*h1 - 20*h11 + 29*h12 - 29*h14 + 50*h3 - 87*h4 + 87*h6 + 20*h9, 0, -268*h1/13 - 128*h11/13 + 349*h12/26 - 349*h14/26 + 268*h3/13 - 839*h4/26 + 839*h6/26 + 128*h9/13, 0, I*(88*h1 + 32*h11 - 41*h12 + 41*h14 - 88*h3 + 139*h4 - 139*h6 - 32*h9)/2], [3*I*(148*h1 + 28*h11 - 27*h12 + 27*h14 - 148*h3 + 237*h4 - 237*h6 - 28*h9)/26, -3*h10 + 87*h13/26 + 41*h15/26 + 211*h2/26 - 229*h5/26 - 7*h7/2 + 7*h8/13, 268*h1/13 + 128*h11/13 - 349*h12/26 + 349*h14/26 - 268*h3/13 + 839*h4/26 - 839*h6/26 - 128*h9/13, 0, 63*h1/2 + 3*h11/2 + 3*h12/2 - 3*h14/2 - 63*h3/2 + 51*h4 - 51*h6 - 3*h9/2, -2*I*h8/13], [0, -85*h1 + 5*h11 - 17*h12 + 17*h14 + 85*h3 - 144*h4 + 144*h6 - 5*h9, 0, -63*h1/2 - 3*h11/2 - 3*h12/2 + 3*h14/2 + 63*h3/2 - 51*h4 + 51*h6 + 3*h9/2, 0, 13*I*(11*h1 - h11 + 3*h12 - 3*h14 - 11*h3 + 18*h4 - 18*h6 + h9)/2], [38*h1 + 2*h11 + 3*h12/2 - 3*h14/2 - 38*h3 + 123*h4/2 - 123*h6/2 - 2*h9, I*(10*h10 - 11*h13 - 5*h15 - 27*h2 + 29*h5 + 11*h7 - 2*h8)/2, I*(-88*h1 - 32*h11 + 41*h12 - 41*h14 + 88*h3 - 139*h4 + 139*h6 + 32*h9)/2, 2*I*h8/13, 13*I*(-11*h1 + h11 - 3*h12 + 3*h14 + 11*h3 - 18*h4 + 18*h6 - h9)/2, 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "B9:canonical",
+      "membership_pattern": "111111000000",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9"
+      ],
+      "movement": "canonical",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "10816",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10,
+        12
+      ],
+      "pivot_pfaffian": "-104",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1",
+        "0",
+        "1",
+        "2",
+        "0",
+        "2",
+        "0",
+        "0",
+        "3",
+        "0",
+        "3",
+        "5",
+        "0",
+        "5",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "B9",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "111111000000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 91*h1/3 - h10/3 + 2*h11/3 + h12/3 - 4*h14/3 - h15 - 82*h2 - 337*h3/3 + 82*h4 - 155*h6/3 + 91*h7/3 - h9, I*(-4475*h1 + 79*h10 - 104*h11 - 79*h12 + 262*h14 + 183*h15 + 11724*h2 + 16199*h3 - 11724*h4 + 7249*h6 - 4475*h7 + 183*h9)/126, 53*h1/2 + 3*h10/2 + 10*h11/3 - 3*h12/2 - h14/3 - 11*h15/6 - 208*h2/3 - 575*h3/6 + 208*h4/3 - 257*h6/6 + 53*h7/2 - 11*h9/6, 4475*h1/126 - 79*h10/126 + 52*h11/63 + 79*h12/126 - 131*h14/63 - 61*h15/42 - 1954*h2/21 - 16199*h3/126 + 1954*h4/21 - 7249*h6/126 + 4475*h7/126 - 61*h9/42, I*(-4475*h1 + 79*h10 - 104*h11 - 79*h12 + 262*h14 + 183*h15 + 11724*h2 + 16199*h3 - 11724*h4 + 7249*h6 - 4475*h7 + 183*h9)/126], [-91*h1/3 + h10/3 - 2*h11/3 - h12/3 + 4*h14/3 + h15 + 82*h2 + 337*h3/3 - 82*h4 + 155*h6/3 - 91*h7/3 + h9, 0, I*(-4114*h1 + 10393*h10 + 17953*h11 - 15733*h12 + 3768*h13 + 8173*h14 - 4740*h15 + 19911*h2 + 16939*h3 - 5463*h4 - 10206*h5 + 8435*h6 - 4390*h7 + 324*h8 - 5040*h9)/252, 59*h1/6 - 391*h10/12 - 679*h11/12 + 595*h12/12 - 12*h13 - 307*h14/12 + 15*h15 - 219*h2/4 - 505*h3/12 + 35*h4/4 + 65*h5/2 - 257*h6/12 + 65*h7/6 - h8 + 16*h9, -1303*h1/126 - 16525*h10/252 - 26605*h11/252 + 21865*h12/252 - 314*h13/21 - 11785*h14/252 + 605*h15/21 - 505*h2/84 + 8177*h3/252 - 1437*h4/28 + 81*h5/2 + 463*h6/36 - 1165*h7/126 - 9*h8/7 + 30*h9, I*(5378*h1 - 2123*h10 + 1153*h11 - 3217*h12 + 3768*h13 - 59*h14 - 456*h15 - 5289*h2 - 17753*h3 + 19737*h4 - 10206*h5 - 7273*h6 + 5102*h7 + 324*h8 - 756*h9)/252], [I*(4475*h1 - 79*h10 + 104*h11 + 79*h12 - 262*h14 - 183*h15 - 11724*h2 - 16199*h3 + 11724*h4 - 7249*h6 + 4475*h7 - 183*h9)/126, I*(4114*h1 - 10393*h10 - 17953*h11 + 15733*h12 - 3768*h13 - 8173*h14 + 4740*h15 - 19911*h2 - 16939*h3 + 5463*h4 + 10206*h5 - 8435*h6 + 4390*h7 - 324*h8 + 5040*h9)/252, 0, I*(566*h1 + 1121*h10 + 1575*h11 - 1121*h12 + 667*h14 - 454*h15 - 1429*h2 - 1995*h3 + 1429*h4 - 863*h6 + 566*h7 + 24*h8 - 454*h9)/252, I*(4174*h1 + 4345*h10 + 6199*h11 - 4345*h12 + 2491*h14 - 1854*h15 - 10725*h2 - 14899*h3 + 10725*h4 - 6551*h6 + 4174*h7 - 1854*h9)/126, 793*h1/18 - 845*h10/18 - 3952*h11/63 + 845*h12/18 - 1963*h14/63 + 221*h15/14 - 2470*h2/21 - 20371*h3/126 + 2470*h4/21 - 9269*h6/126 + 793*h7/18 + 221*h9/14], [-53*h1/2 - 3*h10/2 - 10*h11/3 + 3*h12/2 + h14/3 + 11*h15/6 + 208*h2/3 + 575*h3/6 - 208*h4/3 + 257*h6/6 - 53*h7/2 + 11*h9/6, -59*h1/6 + 391*h10/12 + 679*h11/12 - 595*h12/12 + 12*h13 + 307*h14/12 - 15*h15 + 219*h2/4 + 505*h3/12 - 35*h4/4 - 65*h5/2 + 257*h6/12 - 65*h7/6 + h8 - 16*h9, I*(-566*h1 - 1121*h10 - 1575*h11 + 1121*h12 - 667*h14 + 454*h15 + 1429*h2 + 1995*h3 - 1429*h4 + 863*h6 - 566*h7 - 24*h8 + 454*h9)/252, 0, -2867*h1/126 - 5809*h10/252 - 395*h11/12 + 5809*h12/252 - 3323*h14/252 + 1243*h15/126 + 14741*h2/252 + 325*h3/4 - 14741*h4/252 + 9007*h6/252 - 2867*h7/126 + 2*h8/21 + 1243*h9/126, I*(7624*h1 - 9311*h10 - 12495*h11 + 9311*h12 - 6127*h14 + 3184*h15 - 20411*h2 - 28035*h3 + 20411*h4 - 12787*h6 + 7624*h7 - 24*h8 + 3184*h9)/252], [-4475*h1/126 + 79*h10/126 - 52*h11/63 - 79*h12/126 + 131*h14/63 + 61*h15/42 + 1954*h2/21 + 16199*h3/126 - 1954*h4/21 + 7249*h6/126 - 4475*h7/126 + 61*h9/42, 1303*h1/126 + 16525*h10/252 + 26605*h11/252 - 21865*h12/252 + 314*h13/21 + 11785*h14/252 - 605*h15/21 + 505*h2/84 - 8177*h3/252 + 1437*h4/28 - 81*h5/2 - 463*h6/36 + 1165*h7/126 + 9*h8/7 - 30*h9, I*(-4174*h1 - 4345*h10 - 6199*h11 + 4345*h12 - 2491*h14 + 1854*h15 + 10725*h2 + 14899*h3 - 10725*h4 + 6551*h6 - 4174*h7 + 1854*h9)/126, 2867*h1/126 + 5809*h10/252 + 395*h11/12 - 5809*h12/252 + 3323*h14/252 - 1243*h15/126 - 14741*h2/252 - 325*h3/4 + 14741*h4/252 - 9007*h6/252 + 2867*h7/126 - 2*h8/21 - 1243*h9/126, 0, I*(153*h1 - 1140*h10 - 1567*h11 + 1140*h12 - 713*h14 + 427*h15 - 455*h2 - 608*h3 + 455*h4 - 302*h6 + 153*h7 + 427*h9)/14], [I*(4475*h1 - 79*h10 + 104*h11 + 79*h12 - 262*h14 - 183*h15 - 11724*h2 - 16199*h3 + 11724*h4 - 7249*h6 + 4475*h7 - 183*h9)/126, I*(-5378*h1 + 2123*h10 - 1153*h11 + 3217*h12 - 3768*h13 + 59*h14 + 456*h15 + 5289*h2 + 17753*h3 - 19737*h4 + 10206*h5 + 7273*h6 - 5102*h7 - 324*h8 + 756*h9)/252, -793*h1/18 + 845*h10/18 + 3952*h11/63 - 845*h12/18 + 1963*h14/63 - 221*h15/14 + 2470*h2/21 + 20371*h3/126 - 2470*h4/21 + 9269*h6/126 - 793*h7/18 - 221*h9/14, I*(-7624*h1 + 9311*h10 + 12495*h11 - 9311*h12 + 6127*h14 - 3184*h15 + 20411*h2 + 28035*h3 - 20411*h4 + 12787*h6 - 7624*h7 + 24*h8 - 3184*h9)/252, I*(-153*h1 + 1140*h10 + 1567*h11 - 1140*h12 + 713*h14 - 427*h15 + 455*h2 + 608*h3 - 455*h4 + 302*h6 - 153*h7 - 427*h9)/14, 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "B9:unipotent",
+      "membership_pattern": "111111000000",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9"
+      ],
+      "movement": "unipotent",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "1016064",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        9,
+        10,
+        11
+      ],
+      "pivot_pfaffian": "1008",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1",
+        "-3",
+        "4",
+        "3",
+        "0",
+        "2",
+        "1",
+        "0",
+        "3",
+        "-8",
+        "11",
+        "8",
+        "0",
+        "5",
+        "3"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "B9",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "111111000000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, I*(-14990*h1 - 200*h11 - 112*h12 + 112*h14 + 14990*h3 - 26181*h4 + 26181*h6 + 200*h9)/112, 0, 33*I*(-173*h1 - 33*h11 + 32*h12 - 32*h14 + 173*h3 - 277*h4 + 277*h6 + 33*h9)/364, 0, -977*h1/28 - 53*h11/28 - 9*h12/7 + 9*h14/7 + 977*h3/28 - 1581*h4/28 + 1581*h6/28 + 53*h9/28], [I*(14990*h1 + 200*h11 + 112*h12 - 112*h14 - 14990*h3 + 26181*h4 - 26181*h6 - 200*h9)/112, 0, 2015*h1/28 + 1625*h11/28 - 793*h12/8 + 793*h14/8 - 2015*h3/28 + 7137*h4/56 - 7137*h6/56 - 1625*h9/28, 429*h10/16 - 957*h13/32 - 5609*h15/416 - 7031*h2/208 + 15583*h5/416 + 523*h7/32 - 523*h8/208, 7037*h1/56 - 212*h11/7 + 227*h12/4 - 227*h14/4 - 7037*h3/56 + 24471*h4/112 - 24471*h6/112 + 212*h9/7, I*(-1642*h10 + 1829*h13 + 821*h15 + 2070*h2 - 2291*h5 - 995*h7 + 158*h8)/32], [0, -2015*h1/28 - 1625*h11/28 + 793*h12/8 - 793*h14/8 + 2015*h3/28 - 7137*h4/56 + 7137*h6/56 + 1625*h9/28, 0, -862*h1/91 - 722*h11/91 + 2131*h12/182 - 2131*h14/182 + 862*h3/91 - 2621*h4/182 + 2621*h6/182 + 722*h9/91, 0, I*(268*h1 + 212*h11 - 311*h12 + 311*h14 - 268*h3 + 409*h4 - 409*h6 - 212*h9)/14], [33*I*(173*h1 + 33*h11 - 32*h12 + 32*h14 - 173*h3 + 277*h4 - 277*h6 - 33*h9)/364, -429*h10/16 + 957*h13/32 + 5609*h15/416 + 7031*h2/208 - 15583*h5/416 - 523*h7/32 + 523*h8/208, 862*h1/91 + 722*h11/91 - 2131*h12/182 + 2131*h14/182 - 862*h3/91 + 2621*h4/182 - 2621*h6/182 - 722*h9/91, 0, 375*h1/28 - 45*h11/28 + 30*h12/7 - 30*h14/7 - 375*h3/28 + 615*h4/28 - 615*h6/28 + 45*h9/28, -2*I*h8/13], [0, -7037*h1/56 + 212*h11/7 - 227*h12/4 + 227*h14/4 + 7037*h3/56 - 24471*h4/112 + 24471*h6/112 - 212*h9/7, 0, -375*h1/28 + 45*h11/28 - 30*h12/7 + 30*h14/7 + 375*h3/28 - 615*h4/28 + 615*h6/28 - 45*h9/28, 0, 13*I*(67*h1 - 17*h11 + 36*h12 - 36*h14 - 67*h3 + 111*h4 - 111*h6 + 17*h9)/28], [977*h1/28 + 53*h11/28 + 9*h12/7 - 9*h14/7 - 977*h3/28 + 1581*h4/28 - 1581*h6/28 - 53*h9/28, I*(1642*h10 - 1829*h13 - 821*h15 - 2070*h2 + 2291*h5 + 995*h7 - 158*h8)/32, I*(-268*h1 - 212*h11 + 311*h12 - 311*h14 + 268*h3 - 409*h4 + 409*h6 + 212*h9)/14, 2*I*h8/13, 13*I*(-67*h1 + 17*h11 - 36*h12 + 36*h14 + 67*h3 - 111*h4 + 111*h6 - 17*h9)/28, 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "B9:boost",
+      "membership_pattern": "111111000000",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9"
+      ],
+      "movement": "boost",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "132496",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        7,
+        9,
+        10,
+        12
+      ],
+      "pivot_pfaffian": "-364",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "7/2",
+        "0",
+        "7/2",
+        "25/4",
+        "0",
+        "25/4",
+        "0",
+        "0",
+        "9/2",
+        "0",
+        "9/2",
+        "31/4",
+        "0",
+        "31/4",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 8,
+      "boundary_orbit": "N+",
+      "complex_kernel_dimension": 8,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 8,
+      "expected_membership_pattern": "111111111010",
+      "expected_real_left_nullity": 16,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h3), -h12 + h14 + h4 - h6, 0, h10 - h2 + h8, I*(-h1 - h11 + h3 + h9), I*(h10 - h2 + h8), h1 - h11 - h3 + h9], [2*I*(-h1 + h3), 0, I*(-h13 + h15 + h5 - h7), 0, I*(h1 + h11 - h3 - h9), h10 - h2 + h8, -h1 + h11 + h3 - h9, I*(h10 - h2 + h8)], [h12 - h14 - h4 + h6, I*(h13 - h15 - h5 + h7), 0, 2*I*(h1 + h11 - h3 - h9), 2*h14 - 2*h6, 2*I*(h15 - h7), I*(h12 + h14 - h4 - h6), -h13 - h15 + h5 + h7], [0, 0, 2*I*(-h1 - h11 + h3 + h9), 0, 2*I*(-h13 + h15 + h5 - h7), 2*h12 - 2*h14 - 2*h4 + 2*h6, 2*h13 - 2*h15 - 2*h5 + 2*h7, 2*I*(h12 - h14 - h4 + h6)], [-h10 + h2 - h8, I*(-h1 - h11 + h3 + h9), -2*h14 + 2*h6, 2*I*(h13 - h15 - h5 + h7), 0, 2*I*(h1 - h9), I*(-h10 + h2 + h8), -h1 + h11 - h3 + h9], [I*(h1 + h11 - h3 - h9), -h10 + h2 - h8, 2*I*(-h15 + h7), -2*h12 + 2*h14 + 2*h4 - 2*h6, 2*I*(-h1 + h9), 0, h1 - h11 + h3 - h9, I*(-h10 + h2 + h8)], [I*(-h10 + h2 - h8), h1 - h11 - h3 + h9, I*(-h12 - h14 + h4 + h6), -2*h13 + 2*h15 + 2*h5 - 2*h7, I*(h10 - h2 - h8), -h1 + h11 - h3 + h9, 0, 2*I*(-h1 + h11)], [-h1 + h11 + h3 - h9, I*(-h10 + h2 - h8), h13 + h15 - h5 - h7, 2*I*(-h12 + h14 + h4 - h6), h1 - h11 + h3 - h9, I*(h10 - h2 - h8), 2*I*(h1 - h11), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "N+:canonical",
+      "membership_pattern": "111111111010",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9",
+        "V",
+        "VB",
+        "Va+",
+        "N+"
+      ],
+      "movement": "canonical",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "16",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-4",
+      "real_left_nullity": 16,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 8,
+      "boundary_orbit": "N+",
+      "complex_kernel_dimension": 8,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 8,
+      "expected_membership_pattern": "111111111010",
+      "expected_real_left_nullity": 16,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h2 - 2*h3 + h4 + h7), h11 - 2*h12 + h13 + h14 - h3 + 2*h4 - h5 - h6 - h8, I*(h10 + 2*h12 - h13 - h14 - h15 - h2 - 2*h4 + h5 + h6 + h7 + 2*h8), -h1 + h10 + h12 - h15 - h2 - h4 + h7 + 2*h8 + h9, I*(-h1 - h11 + h12 + h3 - h4 + h8 + h9), I*(h10 + h11 - h15 - h2 - h3 + h7 + h8), h1 - h10 - h11 - h12 + h13 + h14 + h15 - h2 - 3*h3 + 3*h4 - h5 - h6 + h7 - h8 + h9], [2*I*(-h1 + h2 + 2*h3 - h4 - h7), 0, 2*I*(-h11 + h12 - h13 + h15 + h3 - h4 + h5 - h7), -h1 + h10 - 2*h11 + 3*h12 - 2*h13 + h15 - h2 + 2*h3 - 3*h4 + 2*h5 - h7 + 2*h8 + h9, 2*I*(h1 + h11 - h12 - h3 + h4 - h8 - h9), -h1 + h10 + h12 - h15 - h2 - h4 + h7 + 2*h8 + h9, -h1 + h10 + 2*h11 - h12 - h15 + h2 + 2*h3 - h4 - h7 - h9, 2*I*(h10 + h12 - h13 - h2 - h4 + h5 + h8)], [-h11 + 2*h12 - h13 - h14 + h3 - 2*h4 + h5 + h6 + h8, 2*I*(h11 - h12 + h13 - h15 - h3 + h4 - h5 + h7), 0, 2*I*(h1 + h10 + 2*h11 - h2 - 2*h3 - h9), 2*h11 + 2*h13 + 2*h14 - 2*h3 - 2*h5 - 2*h6, 2*I*(h12 + h15 - h4 - h7), I*(h11 + h13 + h14 - 2*h15 - h3 - h5 - h6 + 2*h7 - h8), -2*h12 + 2*h14 - 2*h15 + 2*h4 - 2*h6 + 2*h7], [I*(-h10 - 2*h12 + h13 + h14 + h15 + h2 + 2*h4 - h5 - h6 - h7 - 2*h8), h1 - h10 + 2*h11 - 3*h12 + 2*h13 - h15 + h2 - 2*h3 + 3*h4 - 2*h5 + h7 - 2*h8 - h9, 2*I*(-h1 - h10 - 2*h11 + h2 + 2*h3 + h9), 0, 2*I*(h10 - 2*h13 + h15 - h2 + 2*h5 - h7), 4*h12 - 2*h14 - 4*h4 + 2*h6, -h10 - 2*h12 + 3*h13 + h14 - 3*h15 + h2 + 2*h4 - 3*h5 - h6 + 3*h7 - 2*h8, I*(-h1 - h10 - 2*h11 + 5*h12 - 2*h13 - 4*h14 + h15 + h2 + 2*h3 - 5*h4 + 2*h5 + 4*h6 - h7 + 2*h8 + h9)], [h1 - h10 - h12 + h15 + h2 + h4 - h7 - 2*h8 - h9, 2*I*(-h1 - h11 + h12 + h3 - h4 + h8 + h9), -2*h11 - 2*h13 - 2*h14 + 2*h3 + 2*h5 + 2*h6, 2*I*(-h10 + 2*h13 - h15 + h2 - 2*h5 + h7), 0, 2*I*(h1 - h12 + h4 - h9), I*(-h1 - h10 + h12 + h15 + h2 - h4 - h7 + 2*h8 + h9), -2*h1 + 2*h12 - 2*h13 - 2*h14 - 2*h4 + 2*h5 + 2*h6 + 2*h8 + 2*h9], [I*(h1 + h11 - h12 - h3 + h4 - h8 - h9), h1 - h10 - h12 + h15 + h2 + h4 - h7 - 2*h8 - h9, 2*I*(-h12 - h15 + h4 + h7), -4*h12 + 2*h14 + 4*h4 - 2*h6, 2*I*(-h1 + h12 - h4 + h9), 0, h1 - h11 - h12 + h3 + h4 - h8 - h9, I*(-h1 - h10 - h12 - h15 + h2 + h4 + h7 + 2*h8 + h9)], [I*(-h10 - h11 + h15 + h2 + h3 - h7 - h8), h1 - h10 - 2*h11 + h12 + h15 - h2 - 2*h3 + h4 + h7 + h9, I*(-h11 - h13 - h14 + 2*h15 + h3 + h5 + h6 - 2*h7 + h8), h10 + 2*h12 - 3*h13 - h14 + 3*h15 - h2 - 2*h4 + 3*h5 + h6 - 3*h7 + 2*h8, I*(h1 + h10 - h12 - h15 - h2 + h4 + h7 - 2*h8 - h9), -h1 + h11 + h12 - h3 - h4 + h8 + h9, 0, I*(-2*h1 + 2*h10 + 3*h11 - h13 - h14 + h3 - 2*h4 + h5 + h6 - 2*h7 + h8)], [-h1 + h10 + h11 + h12 - h13 - h14 - h15 + h2 + 3*h3 - 3*h4 + h5 + h6 - h7 + h8 - h9, 2*I*(-h10 - h12 + h13 + h2 + h4 - h5 - h8), 2*h12 - 2*h14 + 2*h15 - 2*h4 + 2*h6 - 2*h7, I*(h1 + h10 + 2*h11 - 5*h12 + 2*h13 + 4*h14 - h15 - h2 - 2*h3 + 5*h4 - 2*h5 - 4*h6 + h7 - 2*h8 - h9), 2*h1 - 2*h12 + 2*h13 + 2*h14 + 2*h4 - 2*h5 - 2*h6 - 2*h8 - 2*h9, I*(h1 + h10 + h12 + h15 - h2 - h4 - h7 - 2*h8 - h9), I*(2*h1 - 2*h10 - 3*h11 + h13 + h14 - h3 + 2*h4 - h5 - h6 + 2*h7 - h8), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "N+:unipotent",
+      "membership_pattern": "111111111010",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9",
+        "V",
+        "VB",
+        "Va+",
+        "N+"
+      ],
+      "movement": "unipotent",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "256",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-16",
+      "real_left_nullity": 16,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1",
+        "-1",
+        "2",
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "1",
+        "-1",
+        "2",
+        "1",
+        "0",
+        "0",
+        "1"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 8,
+      "boundary_orbit": "N+",
+      "complex_kernel_dimension": 8,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 8,
+      "expected_membership_pattern": "111111111010",
+      "expected_real_left_nullity": 16,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h3), -h12 + h14 + h4 - h6, 0, h10 - h2 + h8, I*(-h1 - h11 + h3 + h9), I*(h10 - h2 + h8), h1 - h11 - h3 + h9], [2*I*(-h1 + h3), 0, I*(-h13 + h15 + h5 - h7), 0, I*(h1 + h11 - h3 - h9), h10 - h2 + h8, -h1 + h11 + h3 - h9, I*(h10 - h2 + h8)], [h12 - h14 - h4 + h6, I*(h13 - h15 - h5 + h7), 0, 2*I*(h1 + h11 - h3 - h9), 2*h14 - 2*h6, 2*I*(h15 - h7), I*(h12 + h14 - h4 - h6), -h13 - h15 + h5 + h7], [0, 0, 2*I*(-h1 - h11 + h3 + h9), 0, 2*I*(-h13 + h15 + h5 - h7), 2*h12 - 2*h14 - 2*h4 + 2*h6, 2*h13 - 2*h15 - 2*h5 + 2*h7, 2*I*(h12 - h14 - h4 + h6)], [-h10 + h2 - h8, I*(-h1 - h11 + h3 + h9), -2*h14 + 2*h6, 2*I*(h13 - h15 - h5 + h7), 0, 2*I*(h1 - h9), I*(-h10 + h2 + h8), -h1 + h11 - h3 + h9], [I*(h1 + h11 - h3 - h9), -h10 + h2 - h8, 2*I*(-h15 + h7), -2*h12 + 2*h14 + 2*h4 - 2*h6, 2*I*(-h1 + h9), 0, h1 - h11 + h3 - h9, I*(-h10 + h2 + h8)], [I*(-h10 + h2 - h8), h1 - h11 - h3 + h9, I*(-h12 - h14 + h4 + h6), -2*h13 + 2*h15 + 2*h5 - 2*h7, I*(h10 - h2 - h8), -h1 + h11 - h3 + h9, 0, 2*I*(-h1 + h11)], [-h1 + h11 + h3 - h9, I*(-h10 + h2 - h8), h13 + h15 - h5 - h7, 2*I*(-h12 + h14 + h4 - h6), h1 - h11 + h3 - h9, I*(h10 - h2 - h8), 2*I*(h1 - h11), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "N+:boost",
+      "membership_pattern": "111111111010",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9",
+        "V",
+        "VB",
+        "Va+",
+        "N+"
+      ],
+      "movement": "boost",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "4096",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-64",
+      "real_left_nullity": 16,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "2",
+        "0",
+        "2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "0",
+        "2",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 8,
+      "boundary_orbit": "N-",
+      "complex_kernel_dimension": 8,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 8,
+      "expected_membership_pattern": "111111110101",
+      "expected_real_left_nullity": 16,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h3), -h12 + h14 - h4 + h6, 0, h10 + h2 + h8, I*(h1 - h11 - h3 + h9), I*(h10 + h2 + h8), -h1 - h11 + h3 + h9], [2*I*(-h1 + h3), 0, I*(-h13 + h15 - h5 + h7), 0, I*(-h1 + h11 + h3 - h9), h10 + h2 + h8, h1 + h11 - h3 - h9, I*(h10 + h2 + h8)], [h12 - h14 + h4 - h6, I*(h13 - h15 + h5 - h7), 0, 2*I*(h1 - h11 - h3 + h9), -2*h14 - 2*h6, 2*I*(-h15 - h7), I*(-h12 - h14 - h4 - h6), h13 + h15 + h5 + h7], [0, 0, 2*I*(-h1 + h11 + h3 - h9), 0, 2*I*(h13 - h15 + h5 - h7), -2*h12 + 2*h14 - 2*h4 + 2*h6, -2*h13 + 2*h15 - 2*h5 + 2*h7, 2*I*(-h12 + h14 - h4 + h6)], [-h10 - h2 - h8, I*(h1 - h11 - h3 + h9), 2*h14 + 2*h6, 2*I*(-h13 + h15 - h5 + h7), 0, 2*I*(h1 + h9), I*(h10 + h2 - h8), -h1 - h11 - h3 - h9], [I*(-h1 + h11 + h3 - h9), -h10 - h2 - h8, 2*I*(h15 + h7), 2*h12 - 2*h14 + 2*h4 - 2*h6, 2*I*(-h1 - h9), 0, h1 + h11 + h3 + h9, I*(h10 + h2 - h8)], [I*(-h10 - h2 - h8), -h1 - h11 + h3 + h9, I*(h12 + h14 + h4 + h6), 2*h13 - 2*h15 + 2*h5 - 2*h7, I*(-h10 - h2 + h8), -h1 - h11 - h3 - h9, 0, 2*I*(-h1 - h11)], [h1 + h11 - h3 - h9, I*(-h10 - h2 - h8), -h13 - h15 - h5 - h7, 2*I*(h12 - h14 + h4 - h6), h1 + h11 + h3 + h9, I*(-h10 - h2 + h8), 2*I*(h1 + h11), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "N-:canonical",
+      "membership_pattern": "111111110101",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9",
+        "V",
+        "VB",
+        "Va-",
+        "N-"
+      ],
+      "movement": "canonical",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "16",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-4",
+      "real_left_nullity": 16,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 8,
+      "boundary_orbit": "N-",
+      "complex_kernel_dimension": 8,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 8,
+      "expected_membership_pattern": "111111110101",
+      "expected_real_left_nullity": 16,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h2 - 2*h3 + h4 + h7), h11 - 2*h12 + h13 + h14 + h3 - 2*h4 + h5 + h6 - h8, I*(h10 + 2*h12 - h13 - h14 - h15 + h2 + 2*h4 - h5 - h6 - h7 + 2*h8), h1 + h10 + h12 - h15 + h2 + h4 - h7 + 2*h8 + h9, I*(h1 - h11 + h12 - h3 + h4 + h8 + h9), I*(h10 + h11 - h15 + h2 + h3 - h7 + h8), -h1 - h10 - h11 - h12 + h13 + h14 + h15 + h2 + 3*h3 - 3*h4 + h5 + h6 - h7 - h8 + h9], [2*I*(-h1 + h2 + 2*h3 - h4 - h7), 0, 2*I*(-h11 + h12 - h13 + h15 - h3 + h4 - h5 + h7), h1 + h10 - 2*h11 + 3*h12 - 2*h13 + h15 + h2 - 2*h3 + 3*h4 - 2*h5 + h7 + 2*h8 + h9, 2*I*(-h1 + h11 - h12 + h3 - h4 - h8 - h9), h1 + h10 + h12 - h15 + h2 + h4 - h7 + 2*h8 + h9, h1 + h10 + 2*h11 - h12 - h15 - h2 - 2*h3 + h4 + h7 - h9, 2*I*(h10 + h12 - h13 + h2 + h4 - h5 + h8)], [-h11 + 2*h12 - h13 - h14 - h3 + 2*h4 - h5 - h6 + h8, 2*I*(h11 - h12 + h13 - h15 + h3 - h4 + h5 - h7), 0, 2*I*(h1 - h10 - 2*h11 - h2 - 2*h3 + h9), -2*h11 - 2*h13 - 2*h14 - 2*h3 - 2*h5 - 2*h6, 2*I*(-h12 - h15 - h4 - h7), I*(-h11 - h13 - h14 + 2*h15 - h3 - h5 - h6 + 2*h7 + h8), 2*h12 - 2*h14 + 2*h15 + 2*h4 - 2*h6 + 2*h7], [I*(-h10 - 2*h12 + h13 + h14 + h15 - h2 - 2*h4 + h5 + h6 + h7 - 2*h8), -h1 - h10 + 2*h11 - 3*h12 + 2*h13 - h15 - h2 + 2*h3 - 3*h4 + 2*h5 - h7 - 2*h8 - h9, 2*I*(-h1 + h10 + 2*h11 + h2 + 2*h3 - h9), 0, 2*I*(-h10 + 2*h13 - h15 - h2 + 2*h5 - h7), -4*h12 + 2*h14 - 4*h4 + 2*h6, h10 + 2*h12 - 3*h13 - h14 + 3*h15 + h2 + 2*h4 - 3*h5 - h6 + 3*h7 + 2*h8, I*(-h1 + h10 + 2*h11 - 5*h12 + 2*h13 + 4*h14 - h15 + h2 + 2*h3 - 5*h4 + 2*h5 + 4*h6 - h7 - 2*h8 - h9)], [-h1 - h10 - h12 + h15 - h2 - h4 + h7 - 2*h8 - h9, 2*I*(h1 - h11 + h12 - h3 + h4 + h8 + h9), 2*h11 + 2*h13 + 2*h14 + 2*h3 + 2*h5 + 2*h6, 2*I*(h10 - 2*h13 + h15 + h2 - 2*h5 + h7), 0, 2*I*(h1 + h12 + h4 + h9), I*(-h1 + h10 - h12 - h15 + h2 - h4 - h7 - 2*h8 - h9), -2*h1 - 2*h12 + 2*h13 + 2*h14 - 2*h4 + 2*h5 + 2*h6 - 2*h8 - 2*h9], [I*(-h1 + h11 - h12 + h3 - h4 - h8 - h9), -h1 - h10 - h12 + h15 - h2 - h4 + h7 - 2*h8 - h9, 2*I*(h12 + h15 + h4 + h7), 4*h12 - 2*h14 + 4*h4 - 2*h6, 2*I*(-h1 - h12 - h4 - h9), 0, h1 + h11 + h12 + h3 + h4 + h8 + h9, I*(-h1 + h10 + h12 + h15 + h2 + h4 + h7 - 2*h8 - h9)], [I*(-h10 - h11 + h15 - h2 - h3 + h7 - h8), -h1 - h10 - 2*h11 + h12 + h15 + h2 + 2*h3 - h4 - h7 + h9, I*(h11 + h13 + h14 - 2*h15 + h3 + h5 + h6 - 2*h7 - h8), -h10 - 2*h12 + 3*h13 + h14 - 3*h15 - h2 - 2*h4 + 3*h5 + h6 - 3*h7 - 2*h8, I*(h1 - h10 + h12 + h15 - h2 + h4 + h7 + 2*h8 + h9), -h1 - h11 - h12 - h3 - h4 - h8 - h9, 0, I*(-2*h1 - 2*h10 - 3*h11 + h13 + h14 + h3 - 2*h4 + h5 + h6 - 2*h7 - h8)], [h1 + h10 + h11 + h12 - h13 - h14 - h15 - h2 - 3*h3 + 3*h4 - h5 - h6 + h7 + h8 - h9, 2*I*(-h10 - h12 + h13 - h2 - h4 + h5 - h8), -2*h12 + 2*h14 - 2*h15 - 2*h4 + 2*h6 - 2*h7, I*(h1 - h10 - 2*h11 + 5*h12 - 2*h13 - 4*h14 + h15 - h2 - 2*h3 + 5*h4 - 2*h5 - 4*h6 + h7 + 2*h8 + h9), 2*h1 + 2*h12 - 2*h13 - 2*h14 + 2*h4 - 2*h5 - 2*h6 + 2*h8 + 2*h9, I*(h1 - h10 - h12 - h15 - h2 - h4 - h7 + 2*h8 + h9), I*(2*h1 + 2*h10 + 3*h11 - h13 - h14 - h3 + 2*h4 - h5 - h6 + 2*h7 + h8), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "N-:unipotent",
+      "membership_pattern": "111111110101",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9",
+        "V",
+        "VB",
+        "Va-",
+        "N-"
+      ],
+      "movement": "unipotent",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "256",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-16",
+      "real_left_nullity": 16,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1",
+        "-1",
+        "2",
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "-1",
+        "1",
+        "-2",
+        "-1",
+        "0",
+        "0",
+        "-1"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 8,
+      "boundary_orbit": "N-",
+      "complex_kernel_dimension": 8,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 8,
+      "expected_membership_pattern": "111111110101",
+      "expected_real_left_nullity": 16,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h3), -h12 + h14 - h4 + h6, 0, h10 + h2 + h8, I*(h1 - h11 - h3 + h9), I*(h10 + h2 + h8), -h1 - h11 + h3 + h9], [2*I*(-h1 + h3), 0, I*(-h13 + h15 - h5 + h7), 0, I*(-h1 + h11 + h3 - h9), h10 + h2 + h8, h1 + h11 - h3 - h9, I*(h10 + h2 + h8)], [h12 - h14 + h4 - h6, I*(h13 - h15 + h5 - h7), 0, 2*I*(h1 - h11 - h3 + h9), -2*h14 - 2*h6, 2*I*(-h15 - h7), I*(-h12 - h14 - h4 - h6), h13 + h15 + h5 + h7], [0, 0, 2*I*(-h1 + h11 + h3 - h9), 0, 2*I*(h13 - h15 + h5 - h7), -2*h12 + 2*h14 - 2*h4 + 2*h6, -2*h13 + 2*h15 - 2*h5 + 2*h7, 2*I*(-h12 + h14 - h4 + h6)], [-h10 - h2 - h8, I*(h1 - h11 - h3 + h9), 2*h14 + 2*h6, 2*I*(-h13 + h15 - h5 + h7), 0, 2*I*(h1 + h9), I*(h10 + h2 - h8), -h1 - h11 - h3 - h9], [I*(-h1 + h11 + h3 - h9), -h10 - h2 - h8, 2*I*(h15 + h7), 2*h12 - 2*h14 + 2*h4 - 2*h6, 2*I*(-h1 - h9), 0, h1 + h11 + h3 + h9, I*(h10 + h2 - h8)], [I*(-h10 - h2 - h8), -h1 - h11 + h3 + h9, I*(h12 + h14 + h4 + h6), 2*h13 - 2*h15 + 2*h5 - 2*h7, I*(-h10 - h2 + h8), -h1 - h11 - h3 - h9, 0, 2*I*(-h1 - h11)], [h1 + h11 - h3 - h9, I*(-h10 - h2 - h8), -h13 - h15 - h5 - h7, 2*I*(h12 - h14 + h4 - h6), h1 + h11 + h3 + h9, I*(-h10 - h2 + h8), 2*I*(h1 + h11), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "N-:boost",
+      "membership_pattern": "111111110101",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9",
+        "V",
+        "VB",
+        "Va-",
+        "N-"
+      ],
+      "movement": "boost",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "1/16",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-1/4",
+      "real_left_nullity": 16,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1/2",
+        "0",
+        "1/2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1/2",
+        "0",
+        "-1/2",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "V",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "010000100000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(3*h1 + 4*h8 - 5*h9)/3, 10*h14/3 + 8*h15/3 - 50*h6/9 - 40*h7/9, 2*I*(12*h14 + 15*h15 - 20*h6 - 25*h7)/9, 2*I*(15*h12 - 12*h13 - 25*h4 + 20*h5)/9, 8*h12/3 - 10*h13/3 - 40*h4/9 + 50*h5/9], [2*I*(-3*h1 - 4*h8 + 5*h9)/3, 0, 2*I*(12*h14 + 15*h15 - 20*h6 - 25*h7)/9, -10*h14/3 - 8*h15/3 + 50*h6/9 + 40*h7/9, -8*h12/3 + 10*h13/3 + 40*h4/9 - 50*h5/9, 2*I*(15*h12 - 12*h13 - 25*h4 + 20*h5)/9], [-10*h14/3 - 8*h15/3 + 50*h6/9 + 40*h7/9, 2*I*(-12*h14 - 15*h15 + 20*h6 + 25*h7)/9, 0, 2*I*(3*h1 + 4*h8 - 5*h9)/3, 2*I*(-15*h10 + 12*h11 + 25*h2 - 20*h3)/9, -8*h10/3 + 10*h11/3 + 40*h2/9 - 50*h3/9], [2*I*(-12*h14 - 15*h15 + 20*h6 + 25*h7)/9, 10*h14/3 + 8*h15/3 - 50*h6/9 - 40*h7/9, 2*I*(-3*h1 - 4*h8 + 5*h9)/3, 0, 8*h10/3 - 10*h11/3 - 40*h2/9 + 50*h3/9, 2*I*(-15*h10 + 12*h11 + 25*h2 - 20*h3)/9], [2*I*(-15*h12 + 12*h13 + 25*h4 - 20*h5)/9, 8*h12/3 - 10*h13/3 - 40*h4/9 + 50*h5/9, 2*I*(15*h10 - 12*h11 - 25*h2 + 20*h3)/9, -8*h10/3 + 10*h11/3 + 40*h2/9 - 50*h3/9, 0, 2*I*(-3*h1 - 4*h8 + 5*h9)/3], [-8*h12/3 + 10*h13/3 + 40*h4/9 - 50*h5/9, 2*I*(-15*h12 + 12*h13 + 25*h4 - 20*h5)/9, 8*h10/3 - 10*h11/3 - 40*h2/9 + 50*h3/9, 2*I*(15*h10 - 12*h11 - 25*h2 + 20*h3)/9, 2*I*(3*h1 + 4*h8 - 5*h9)/3, 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "V:canonical",
+      "membership_pattern": "010000100000",
+      "memberships": [
+        "E8bar",
+        "V"
+      ],
+      "movement": "canonical",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-1822500",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-1350*I",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "3",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "4",
+        "5",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "V",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "010000100000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(4749*h1 + 2595*h10 + 3390*h11 - 2112*h12 - 564*h13 + 2592*h14 + 1152*h15 - 4749*h2 - 6498*h3 + 4792*h4 + 940*h5 - 5168*h6 - 1496*h7 - 636*h8 - 2595*h9)/1197, 4084*h1/399 + 1132*h10/399 + 2326*h11/399 - 172*h12/133 + 1298*h13/399 + 598*h14/133 + 3812*h15/399 - 4084*h2/399 - 1306*h3/63 + 2484*h4/133 - 6490*h5/1197 - 1166*h6/63 - 4156*h7/399 - 3296*h8/399 - 1132*h9/399, 2*I*(36*h1 + 12*h10 + 12*h11 + 3*h12 + 12*h14 + 27*h15 - 36*h2 - 52*h3 + 43*h4 - 52*h6 - 29*h7 - 24*h8 - 12*h9)/9, 2*I*(3552*h1 + 600*h10 + 198*h11 + 3075*h12 - 564*h13 - 600*h14 + 2349*h15 - 3552*h2 - 5434*h3 + 2531*h4 + 940*h5 - 4104*h6 - 1363*h7 - 3828*h8 - 600*h9)/1197, 2300*h1/399 + 332*h10/133 + 334*h11/399 + 172*h12/133 - 1298*h13/399 + 866*h14/399 + 148*h15/133 - 2300*h2/399 - 290*h3/63 + 1060*h4/399 + 6490*h5/1197 - 430*h6/63 - 100*h7/399 - 320*h8/133 - 332*h9/133], [2*I*(-4749*h1 - 2595*h10 - 3390*h11 + 2112*h12 + 564*h13 - 2592*h14 - 1152*h15 + 4749*h2 + 6498*h3 - 4792*h4 - 940*h5 + 5168*h6 + 1496*h7 + 636*h8 + 2595*h9)/1197, 0, 2*I*(1326*h1 + 4119*h10 + 1932*h11 - 2898*h12 - 1518*h13 + 3888*h14 + 129*h15 - 6281*h2 - 2052*h3 + 3078*h4 + 2530*h5 - 5312*h6 - 799*h7 + 876*h8 - 1146*h9)/1197, 892*h1/399 - 44*h10/57 - 344*h11/399 + 1528*h12/399 - 986*h14/399 + 36*h15/19 - 796*h2/1197 - 328*h3/133 - 632*h4/1197 + 86*h6/399 - 76*h7/63 - 1168*h8/399 - 68*h9/399, -20*h1/3 - 16*h10/3 - 744*h11/133 + 292*h12/57 + 214*h13/133 - 744*h14/133 - 928*h15/399 + 80*h2/9 + 1240*h3/133 - 1460*h4/171 - 1070*h5/399 + 1240*h6/133 + 4640*h7/1197 + 4*h9, 2*I*(-90*h1 - 1197*h10 - 300*h11 + 1185*h12 + 156*h13 - 1926*h14 + 150*h15 + 1835*h2 + 180*h3 - 1495*h4 - 260*h5 + 2890*h6 - 90*h7 - 240*h8 + 150*h9)/1197], [-4084*h1/399 - 1132*h10/399 - 2326*h11/399 + 172*h12/133 - 1298*h13/399 - 598*h14/133 - 3812*h15/399 + 4084*h2/399 + 1306*h3/63 - 2484*h4/133 + 6490*h5/1197 + 1166*h6/63 + 4156*h7/399 + 3296*h8/399 + 1132*h9/399, 2*I*(-1326*h1 - 4119*h10 - 1932*h11 + 2898*h12 + 1518*h13 - 3888*h14 - 129*h15 + 6281*h2 + 2052*h3 - 3078*h4 - 2530*h5 + 5312*h6 + 799*h7 - 876*h8 + 1146*h9)/1197, 0, 2*I*(-2805*h1 - 1302*h10 + 1572*h11 - 4635*h12 + 24*h14 - 4494*h15 + 6050*h2 + 5140*h3 - 3915*h4 + 7720*h6 + 3610*h7 + 5820*h8 - 645*h9)/1197, 2*I*(5058*h1 - 129*h10 + 3888*h11 - 2898*h12 + 3066*h13 + 1932*h14 + 5151*h15 - 1433*h2 - 9776*h3 + 9774*h4 - 5110*h5 - 6516*h6 - 6937*h7 - 2472*h8 - 2046*h9)/1197, -892*h1/399 - 2132*h10/399 + 278*h11/133 - 172*h12/133 + 766*h13/399 - 2294*h14/399 - 652*h15/399 + 76*h2/7 + 502*h3/1197 - 492*h4/133 - 3830*h5/1197 + 2306*h6/171 + 44*h7/57 + 1168*h8/399 + 68*h9/399], [2*I*(-36*h1 - 12*h10 - 12*h11 - 3*h12 - 12*h14 - 27*h15 + 36*h2 + 52*h3 - 43*h4 + 52*h6 + 29*h7 + 24*h8 + 12*h9)/9, -892*h1/399 + 44*h10/57 + 344*h11/399 - 1528*h12/399 + 986*h14/399 - 36*h15/19 + 796*h2/1197 + 328*h3/133 + 632*h4/1197 - 86*h6/399 + 76*h7/63 + 1168*h8/399 + 68*h9/399, 2*I*(2805*h1 + 1302*h10 - 1572*h11 + 4635*h12 - 24*h14 + 4494*h15 - 6050*h2 - 5140*h3 + 3915*h4 - 7720*h6 - 3610*h7 - 5820*h8 + 645*h9)/1197, 0, -4084*h1/399 - 36*h10/19 - 986*h11/399 - 1528*h12/399 - 344*h14/399 - 412*h15/57 + 10372*h2/1197 + 6038*h3/399 - 12136*h4/1197 + 1656*h6/133 + 412*h7/63 + 3296*h8/399 + 1132*h9/399, 2*I*(786*h1 - 1701*h10 - 24*h11 + 951*h12 - 1572*h14 + 294*h15 + 2459*h2 - 712*h3 - 457*h4 + 1868*h6 - 114*h7 - 564*h8 - 246*h9)/1197], [2*I*(-3552*h1 - 600*h10 - 198*h11 - 3075*h12 + 564*h13 + 600*h14 - 2349*h15 + 3552*h2 + 5434*h3 - 2531*h4 - 940*h5 + 4104*h6 + 1363*h7 + 3828*h8 + 600*h9)/1197, 20*h1/3 + 16*h10/3 + 744*h11/133 - 292*h12/57 - 214*h13/133 + 744*h14/133 + 928*h15/399 - 80*h2/9 - 1240*h3/133 + 1460*h4/171 + 1070*h5/399 - 1240*h6/133 - 4640*h7/1197 - 4*h9, 2*I*(-5058*h1 + 129*h10 - 3888*h11 + 2898*h12 - 3066*h13 - 1932*h14 - 5151*h15 + 1433*h2 + 9776*h3 - 9774*h4 + 5110*h5 + 6516*h6 + 6937*h7 + 2472*h8 + 2046*h9)/1197, 4084*h1/399 + 36*h10/19 + 986*h11/399 + 1528*h12/399 + 344*h14/399 + 412*h15/57 - 10372*h2/1197 - 6038*h3/399 + 12136*h4/1197 - 1656*h6/133 - 412*h7/63 - 3296*h8/399 - 1132*h9/399, 0, 2*I*(-4479*h1 - 2394*h10 - 864*h11 - 222*h12 + 1704*h13 - 2490*h14 - 555*h15 + 4894*h2 + 3248*h3 - 2342*h4 - 2840*h5 + 5958*h6 + 21*h7 + 1356*h8 + 2145*h9)/1197], [-2300*h1/399 - 332*h10/133 - 334*h11/399 - 172*h12/133 + 1298*h13/399 - 866*h14/399 - 148*h15/133 + 2300*h2/399 + 290*h3/63 - 1060*h4/399 - 6490*h5/1197 + 430*h6/63 + 100*h7/399 + 320*h8/133 + 332*h9/133, 2*I*(90*h1 + 1197*h10 + 300*h11 - 1185*h12 - 156*h13 + 1926*h14 - 150*h15 - 1835*h2 - 180*h3 + 1495*h4 + 260*h5 - 2890*h6 + 90*h7 + 240*h8 - 150*h9)/1197, 892*h1/399 + 2132*h10/399 - 278*h11/133 + 172*h12/133 - 766*h13/399 + 2294*h14/399 + 652*h15/399 - 76*h2/7 - 502*h3/1197 + 492*h4/133 + 3830*h5/1197 - 2306*h6/171 - 44*h7/57 - 1168*h8/399 - 68*h9/399, 2*I*(-786*h1 + 1701*h10 + 24*h11 - 951*h12 + 1572*h14 - 294*h15 - 2459*h2 + 712*h3 + 457*h4 - 1868*h6 + 114*h7 + 564*h8 + 246*h9)/1197, 2*I*(4479*h1 + 2394*h10 + 864*h11 + 222*h12 - 1704*h13 + 2490*h14 + 555*h15 - 4894*h2 - 3248*h3 + 2342*h4 + 2840*h5 - 5958*h6 - 21*h7 - 1356*h8 - 2145*h9)/1197, 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "V:unipotent",
+      "membership_pattern": "010000100000",
+      "memberships": [
+        "E8bar",
+        "V"
+      ],
+      "movement": "unipotent",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-12895281",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-3591*I",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "3/2",
+        "-3/2",
+        "3",
+        "9/2",
+        "0",
+        "3",
+        "3/2",
+        "4",
+        "5/2",
+        "-5/2",
+        "5",
+        "15/2",
+        "0",
+        "5",
+        "5/2"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "V",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "010000100000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(15*h1 + 8*h8 - 17*h9)/15, 34*h14/15 + 16*h15/15 - 578*h6/225 - 272*h7/225, 2*I*(120*h14 + 255*h15 - 136*h6 - 289*h7)/225, 2*I*(255*h12 - 120*h13 - 289*h4 + 136*h5)/225, 16*h12/15 - 34*h13/15 - 272*h4/225 + 578*h5/225], [2*I*(-15*h1 - 8*h8 + 17*h9)/15, 0, 2*I*(120*h14 + 255*h15 - 136*h6 - 289*h7)/225, -34*h14/15 - 16*h15/15 + 578*h6/225 + 272*h7/225, -16*h12/15 + 34*h13/15 + 272*h4/225 - 578*h5/225, 2*I*(255*h12 - 120*h13 - 289*h4 + 136*h5)/225], [-34*h14/15 - 16*h15/15 + 578*h6/225 + 272*h7/225, 2*I*(-120*h14 - 255*h15 + 136*h6 + 289*h7)/225, 0, 2*I*(15*h1 + 8*h8 - 17*h9)/15, 2*I*(-255*h10 + 120*h11 + 289*h2 - 136*h3)/225, -16*h10/15 + 34*h11/15 + 272*h2/225 - 578*h3/225], [2*I*(-120*h14 - 255*h15 + 136*h6 + 289*h7)/225, 34*h14/15 + 16*h15/15 - 578*h6/225 - 272*h7/225, 2*I*(-15*h1 - 8*h8 + 17*h9)/15, 0, 16*h10/15 - 34*h11/15 - 272*h2/225 + 578*h3/225, 2*I*(-255*h10 + 120*h11 + 289*h2 - 136*h3)/225], [2*I*(-255*h12 + 120*h13 + 289*h4 - 136*h5)/225, 16*h12/15 - 34*h13/15 - 272*h4/225 + 578*h5/225, 2*I*(255*h10 - 120*h11 - 289*h2 + 136*h3)/225, -16*h10/15 + 34*h11/15 + 272*h2/225 - 578*h3/225, 0, 2*I*(-15*h1 - 8*h8 + 17*h9)/15], [-16*h12/15 + 34*h13/15 + 272*h4/225 - 578*h5/225, 2*I*(-255*h12 + 120*h13 + 289*h4 - 136*h5)/225, 16*h10/15 - 34*h11/15 - 272*h2/225 + 578*h3/225, 2*I*(255*h10 - 120*h11 - 289*h2 + 136*h3)/225, 2*I*(15*h1 + 8*h8 - 17*h9)/15, 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "V:boost",
+      "membership_pattern": "010000100000",
+      "memberships": [
+        "E8bar",
+        "V"
+      ],
+      "movement": "boost",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-951356390625/256",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-975375*I/16",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "15/2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "4",
+        "17/2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "VB",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "111111110000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h3), -2*h12 + 2*h14, 0, 0, -2*h11 + 2*h9], [2*I*(-h1 + h3), 0, 2*I*(-h13 + h15), 0, 2*h11 - 2*h9, 0], [2*h12 - 2*h14, 2*I*(h13 - h15), 0, 2*I*(h1 - h3), 0, 0], [0, 0, 2*I*(-h1 + h3), 0, 0, 0], [0, -2*h11 + 2*h9, 0, 0, 0, 2*I*(-h1 + h3)], [2*h11 - 2*h9, 0, 0, 0, 2*I*(h1 - h3), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "VB:canonical",
+      "membership_pattern": "111111110000",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9",
+        "V",
+        "VB"
+      ],
+      "movement": "canonical",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-4",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        12,
+        13
+      ],
+      "pivot_pfaffian": "-2*I",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "VB",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "111111110000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h2 - 2*h3 + h4 + h7), -2*h12 + 2*h13 + 2*h14 + 2*h9, I*(-h10 - 2*h11 + h12 + h15 + h9), I*(h10 + 2*h11 - 3*h12 + 2*h13 + 2*h14 - h15 + h9), -2*h12 + 2*h13 + 2*h14 + 2*h9], [2*I*(-h1 + h2 + 2*h3 - h4 - h7), 0, 2*I*(h10 + h12 - 2*h13 + h15 - h9), 0, 4*h11 - 4*h12 + 4*h13 - 4*h15, 2*I*(h10 + h12 - 2*h13 + h15 - h9)], [2*h12 - 2*h13 - 2*h14 - 2*h9, 2*I*(-h10 - h12 + 2*h13 - h15 + h9), 0, I*(-h1 + h2 + 2*h3 - h4 - h7), I*(h1 - h2 - 2*h3 + h4 + h7), 2*h1 - 2*h2 - 4*h3 + 2*h4 + 2*h7], [I*(h10 + 2*h11 - h12 - h15 - h9), 0, I*(h1 - h2 - 2*h3 + h4 + h7), 0, -2*h1 + 2*h2 + 4*h3 - 2*h4 - 2*h7, I*(h1 - h2 - 2*h3 + h4 + h7)], [I*(-h10 - 2*h11 + 3*h12 - 2*h13 - 2*h14 + h15 - h9), -4*h11 + 4*h12 - 4*h13 + 4*h15, I*(-h1 + h2 + 2*h3 - h4 - h7), 2*h1 - 2*h2 - 4*h3 + 2*h4 + 2*h7, 0, I*(h1 - h2 - 2*h3 + h4 + h7)], [2*h12 - 2*h13 - 2*h14 - 2*h9, 2*I*(-h10 - h12 + 2*h13 - h15 + h9), -2*h1 + 2*h2 + 4*h3 - 2*h4 - 2*h7, I*(-h1 + h2 + 2*h3 - h4 - h7), I*(-h1 + h2 + 2*h3 - h4 - h7), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "VB:unipotent",
+      "membership_pattern": "111111110000",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9",
+        "V",
+        "VB"
+      ],
+      "movement": "unipotent",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-256",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        11
+      ],
+      "pivot_pfaffian": "16*I",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1",
+        "-1",
+        "2",
+        "1",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "VB",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "111111110000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h3), -25*h12/17 + 25*h14/17 + 15*h4/17 - 15*h6/17, 0, 0, -2*h11 + 2*h9], [2*I*(-h1 + h3), 0, 5*I*(-5*h13 + 5*h15 + 3*h5 - 3*h7)/17, 0, 2*h11 - 2*h9, 0], [25*h12/17 - 25*h14/17 - 15*h4/17 + 15*h6/17, 5*I*(5*h13 - 5*h15 - 3*h5 + 3*h7)/17, 0, 2*I*(5*h1 + 3*h11 - 5*h3 - 3*h9)/5, 3*I*(5*h12 - 5*h14 - 3*h4 + 3*h6)/17, -15*h13/17 + 15*h15/17 + 9*h5/17 - 9*h7/17], [0, 0, 2*I*(-5*h1 - 3*h11 + 5*h3 + 3*h9)/5, 0, 0, 0], [0, -2*h11 + 2*h9, 3*I*(-5*h12 + 5*h14 + 3*h4 - 3*h6)/17, 0, 0, 2*I*(-h1 + h3)], [2*h11 - 2*h9, 0, 15*h13/17 - 15*h15/17 - 9*h5/17 + 9*h7/17, 0, 2*I*(h1 - h3), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "VB:boost",
+      "membership_pattern": "111111110000",
+      "memberships": [
+        "W8",
+        "E8bar",
+        "Iso",
+        "X+",
+        "X-",
+        "B9",
+        "V",
+        "VB"
+      ],
+      "movement": "boost",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-7225/256",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        12,
+        13
+      ],
+      "pivot_pfaffian": "-85*I/16",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "5/4",
+        "0",
+        "5/4",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "3/4",
+        "0",
+        "3/4",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "Va+",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "010100101000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h9), 2*h14 - 2*h6, 2*I*(h15 - h7), 2*I*(h12 - h4), -2*h13 + 2*h5], [2*I*(-h1 + h9), 0, 2*I*(h15 - h7), -2*h14 + 2*h6, 2*h13 - 2*h5, 2*I*(h12 - h4)], [-2*h14 + 2*h6, 2*I*(-h15 + h7), 0, 2*I*(h1 - h9), 2*I*(-h10 + h2), 2*h11 - 2*h3], [2*I*(-h15 + h7), 2*h14 - 2*h6, 2*I*(-h1 + h9), 0, -2*h11 + 2*h3, 2*I*(-h10 + h2)], [2*I*(-h12 + h4), -2*h13 + 2*h5, 2*I*(h10 - h2), 2*h11 - 2*h3, 0, 2*I*(-h1 + h9)], [2*h13 - 2*h5, 2*I*(-h12 + h4), -2*h11 + 2*h3, 2*I*(h10 - h2), 2*I*(h1 - h9), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "Va+:canonical",
+      "membership_pattern": "010100101000",
+      "memberships": [
+        "E8bar",
+        "X+",
+        "V",
+        "Va+"
+      ],
+      "movement": "canonical",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-4",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-2*I",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "Va+",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "010100101000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 + h10 + 2*h11 - h2 - 2*h3 - h9), 6*h11 + 2*h13 + 2*h14 - 6*h3 - 2*h5 - 2*h6, 2*I*(h12 + h15 - h4 - h7), 2*I*(2*h11 + h12 - h15 - 2*h3 - h4 + h7), -2*h11 - 2*h13 + 2*h14 + 2*h3 + 2*h5 - 2*h6], [2*I*(-h1 - h10 - 2*h11 + h2 + 2*h3 + h9), 0, 2*I*(3*h10 - 2*h13 + h15 - 3*h2 + 2*h5 - h7), 4*h12 - 2*h14 - 4*h4 + 2*h6, -4*h10 + 2*h13 - 4*h15 + 4*h2 - 2*h5 + 4*h7, 2*I*(-h10 + h12 - 2*h14 + h2 - h4 + 2*h6)], [-6*h11 - 2*h13 - 2*h14 + 6*h3 + 2*h5 + 2*h6, 2*I*(-3*h10 + 2*h13 - h15 + 3*h2 - 2*h5 + h7), 0, 2*I*(h1 - 3*h12 + 3*h4 - h9), 2*I*(-h10 + 2*h13 + 3*h15 + h2 - 2*h5 - 3*h7), 2*h11 - 2*h13 - 6*h14 - 2*h3 + 2*h5 + 6*h6], [2*I*(-h12 - h15 + h4 + h7), -4*h12 + 2*h14 + 4*h4 - 2*h6, 2*I*(-h1 + 3*h12 - 3*h4 + h9), 0, -2*h11 - 4*h12 + 2*h3 + 4*h4, 2*I*(-h10 - h12 + h2 + h4)], [2*I*(-2*h11 - h12 + h15 + 2*h3 + h4 - h7), 4*h10 - 2*h13 + 4*h15 - 4*h2 + 2*h5 - 4*h7, 2*I*(h10 - 2*h13 - 3*h15 - h2 + 2*h5 + 3*h7), 2*h11 + 4*h12 - 2*h3 - 4*h4, 0, 2*I*(-h1 - 2*h14 + h15 + 2*h6 - h7 + h9)], [2*h11 + 2*h13 - 2*h14 - 2*h3 - 2*h5 + 2*h6, 2*I*(h10 - h12 + 2*h14 - h2 + h4 - 2*h6), -2*h11 + 2*h13 + 6*h14 + 2*h3 - 2*h5 - 6*h6, 2*I*(h10 + h12 - h2 - h4), 2*I*(h1 + 2*h14 - h15 - 2*h6 + h7 - h9), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "Va+:unipotent",
+      "membership_pattern": "010100101000",
+      "memberships": [
+        "E8bar",
+        "X+",
+        "V",
+        "Va+"
+      ],
+      "movement": "unipotent",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-25",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-5*I",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1/2",
+        "-1/2",
+        "1",
+        "3/2",
+        "0",
+        "1",
+        "1/2",
+        "0",
+        "1/2",
+        "-1/2",
+        "1",
+        "3/2",
+        "0",
+        "1",
+        "1/2"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "Va+",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "010100101000",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h9), 2*h14 - 2*h6, 2*I*(h15 - h7), 2*I*(h12 - h4), -2*h13 + 2*h5], [2*I*(-h1 + h9), 0, 2*I*(h15 - h7), -2*h14 + 2*h6, 2*h13 - 2*h5, 2*I*(h12 - h4)], [-2*h14 + 2*h6, 2*I*(-h15 + h7), 0, 2*I*(h1 - h9), 2*I*(-h10 + h2), 2*h11 - 2*h3], [2*I*(-h15 + h7), 2*h14 - 2*h6, 2*I*(-h1 + h9), 0, -2*h11 + 2*h3, 2*I*(-h10 + h2)], [2*I*(-h12 + h4), -2*h13 + 2*h5, 2*I*(h10 - h2), 2*h11 - 2*h3, 0, 2*I*(-h1 + h9)], [2*h13 - 2*h5, 2*I*(-h12 + h4), -2*h11 + 2*h3, 2*I*(h10 - h2), 2*I*(h1 - h9), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "Va+:boost",
+      "membership_pattern": "010100101000",
+      "memberships": [
+        "E8bar",
+        "X+",
+        "V",
+        "Va+"
+      ],
+      "movement": "boost",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-4096",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-64*I",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "Va-",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "010010100100",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 + h9), -2*h14 - 2*h6, 2*I*(-h15 - h7), 2*I*(-h12 - h4), 2*h13 + 2*h5], [2*I*(-h1 - h9), 0, 2*I*(-h15 - h7), 2*h14 + 2*h6, -2*h13 - 2*h5, 2*I*(-h12 - h4)], [2*h14 + 2*h6, 2*I*(h15 + h7), 0, 2*I*(h1 + h9), 2*I*(h10 + h2), -2*h11 - 2*h3], [2*I*(h15 + h7), -2*h14 - 2*h6, 2*I*(-h1 - h9), 0, 2*h11 + 2*h3, 2*I*(h10 + h2)], [2*I*(h12 + h4), 2*h13 + 2*h5, 2*I*(-h10 - h2), -2*h11 - 2*h3, 0, 2*I*(-h1 - h9)], [-2*h13 - 2*h5, 2*I*(h12 + h4), 2*h11 + 2*h3, 2*I*(-h10 - h2), 2*I*(h1 + h9), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "Va-:canonical",
+      "membership_pattern": "010010100100",
+      "memberships": [
+        "E8bar",
+        "X-",
+        "V",
+        "Va-"
+      ],
+      "movement": "canonical",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-4",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-2*I",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "Va-",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "010010100100",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 - h10 - 2*h11 - h2 - 2*h3 + h9), -6*h11 - 2*h13 - 2*h14 - 6*h3 - 2*h5 - 2*h6, 2*I*(-h12 - h15 - h4 - h7), 2*I*(-2*h11 - h12 + h15 - 2*h3 - h4 + h7), 2*h11 + 2*h13 - 2*h14 + 2*h3 + 2*h5 - 2*h6], [2*I*(-h1 + h10 + 2*h11 + h2 + 2*h3 - h9), 0, 2*I*(-3*h10 + 2*h13 - h15 - 3*h2 + 2*h5 - h7), -4*h12 + 2*h14 - 4*h4 + 2*h6, 4*h10 - 2*h13 + 4*h15 + 4*h2 - 2*h5 + 4*h7, 2*I*(h10 - h12 + 2*h14 + h2 - h4 + 2*h6)], [6*h11 + 2*h13 + 2*h14 + 6*h3 + 2*h5 + 2*h6, 2*I*(3*h10 - 2*h13 + h15 + 3*h2 - 2*h5 + h7), 0, 2*I*(h1 + 3*h12 + 3*h4 + h9), 2*I*(h10 - 2*h13 - 3*h15 + h2 - 2*h5 - 3*h7), -2*h11 + 2*h13 + 6*h14 - 2*h3 + 2*h5 + 6*h6], [2*I*(h12 + h15 + h4 + h7), 4*h12 - 2*h14 + 4*h4 - 2*h6, 2*I*(-h1 - 3*h12 - 3*h4 - h9), 0, 2*h11 + 4*h12 + 2*h3 + 4*h4, 2*I*(h10 + h12 + h2 + h4)], [2*I*(2*h11 + h12 - h15 + 2*h3 + h4 - h7), -4*h10 + 2*h13 - 4*h15 - 4*h2 + 2*h5 - 4*h7, 2*I*(-h10 + 2*h13 + 3*h15 - h2 + 2*h5 + 3*h7), -2*h11 - 4*h12 - 2*h3 - 4*h4, 0, 2*I*(-h1 + 2*h14 - h15 + 2*h6 - h7 - h9)], [-2*h11 - 2*h13 + 2*h14 - 2*h3 - 2*h5 + 2*h6, 2*I*(-h10 + h12 - 2*h14 - h2 + h4 - 2*h6), 2*h11 - 2*h13 - 6*h14 + 2*h3 - 2*h5 - 6*h6, 2*I*(-h10 - h12 - h2 - h4), 2*I*(h1 - 2*h14 + h15 - 2*h6 + h7 + h9), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "Va-:unipotent",
+      "membership_pattern": "010010100100",
+      "memberships": [
+        "E8bar",
+        "X-",
+        "V",
+        "Va-"
+      ],
+      "movement": "unipotent",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-25",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-5*I",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1/2",
+        "-1/2",
+        "1",
+        "3/2",
+        "0",
+        "1",
+        "1/2",
+        "0",
+        "-1/2",
+        "1/2",
+        "-1",
+        "-3/2",
+        "0",
+        "-1",
+        "-1/2"
+      ]
+    },
+    {
+      "antiholomorphic_restriction": "[[0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]]",
+      "antiholomorphic_restriction_zero": true,
+      "bordered_matrix_rank": 10,
+      "boundary_orbit": "Va-",
+      "complex_kernel_dimension": 6,
+      "complex_linear_first_order": true,
+      "expected_bordered_matrix_rank": 10,
+      "expected_membership_pattern": "010010100100",
+      "expected_real_left_nullity": 12,
+      "frame_identity_verified": true,
+      "holomorphic_restriction": "[[0, 2*I*(h1 + h9), -2*h14 - 2*h6, 2*I*(-h15 - h7), 2*I*(-h12 - h4), 2*h13 + 2*h5], [2*I*(-h1 - h9), 0, 2*I*(-h15 - h7), 2*h14 + 2*h6, -2*h13 - 2*h5, 2*I*(-h12 - h4)], [2*h14 + 2*h6, 2*I*(h15 + h7), 0, 2*I*(h1 + h9), 2*I*(h10 + h2), -2*h11 - 2*h3], [2*I*(h15 + h7), -2*h14 - 2*h6, 2*I*(-h1 - h9), 0, 2*h11 + 2*h3, 2*I*(h10 + h2)], [2*I*(h12 + h4), 2*h13 + 2*h5, 2*I*(-h10 - h2), -2*h11 - 2*h3, 0, 2*I*(-h1 - h9)], [-2*h13 - 2*h5, 2*I*(h12 + h4), 2*h11 + 2*h3, 2*I*(-h10 - h2), 2*I*(h1 + h9), 0]]",
+      "holomorphic_restriction_zero": false,
+      "key": "Va-:boost",
+      "membership_pattern": "010010100100",
+      "memberships": [
+        "E8bar",
+        "X-",
+        "V",
+        "Va-"
+      ],
+      "movement": "boost",
+      "movement_is_distinct": true,
+      "mutation": "",
+      "pass": true,
+      "pivot_determinant": "-1/256",
+      "pivot_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "pivot_pfaffian": "-I/16",
+      "real_left_nullity": 12,
+      "scalar_coordinate_row": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "scalar_coordinate_zero": true,
+      "split_coordinates": [
+        "1/2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1/2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ]
+    }
+  ],
+  "schema": "a5-kernel-attachments-incidence-census-v1",
+  "scope": {
+    "claim_boundary": "The certificate decides the first-order complex-linearity probe at three exact points per boundary orbit. It does not determine a Gauss-graph fiber, its higher-order limits, or variation over the whole boundary orbit.",
+    "included_nullity_passages": [
+      "8->12",
+      "12->16",
+      "8->16"
+    ],
+    "same_nullity_incidences": "excluded by the program's constant-rank inference"
+  }
+}
