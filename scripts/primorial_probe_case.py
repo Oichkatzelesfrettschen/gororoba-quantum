@@ -848,22 +848,66 @@ def run() -> dict[str, Any]:
     }
 
 
-class ExcitedArmLaw(noise.ArmLaw):
-    """noise.ArmLaw with every active qubit initialized through an X error of probability ``prep_excitation``.
+def with_qubit_excitation(circuit: QuantumCircuit, initial: dict[int, float]) -> QuantumCircuit:
+    """circuit preceded by an X error of probability ``initial[q]`` on each active physical qubit q, for Aer.
 
-    The excitation enters the noisy law only (dynamic_density.with_prep_excitation, the channel live_run's
-    --prep-excitation plans with); the noiseless check runs on the bare circuit, and zero leaves the law of
-    noise.ArmLaw unchanged.
+    dynamic_density.with_prep_excitation with one probability per qubit; a qubit absent from ``initial`` or at
+    zero gets no channel, and an all-zero map returns circuit itself.
+    """
+    from qiskit_aer.noise import pauli_error
+
+    active = [
+        q for q in dynamic_density._active(circuit) if dynamic_density.validate_prep_excitation(initial.get(q, 0))
+    ]
+    if not active:
+        return circuit
+    out = circuit.copy_empty_like()
+    for q in active:
+        out.append(pauli_error([("X", initial[q]), ("I", 1.0 - initial[q])]).to_instruction(), [out.qubits[q]])
+    for item in circuit.data:
+        out.append(item)
+    return out
+
+
+def with_readout_excess(snapshot: dict[str, Any], readout: dict[int, float]) -> dict[str, Any]:
+    """The snapshot with ``readout[q]`` added to qubit q's e10, the terminal |0>-reads-1 flip of its channel."""
+    if not any(readout.values()):
+        return snapshot
+    qubits = list(snapshot["qubits"])
+    for q, add in readout.items():
+        if not 0.0 <= add < 1.0 - qubits[q]["e10"] - qubits[q]["e01"]:
+            raise SystemExit(f"q{q}: readout excess {add} leaves no invertible channel")
+        qubits[q] = {**qubits[q], "e10": qubits[q]["e10"] + add}
+    return {**snapshot, "qubits": qubits}
+
+
+# A path's excitation: one probability for every qubit (the path-maximum rule), or the split law's per-qubit
+# {"initial": {q: hd}, "readout": {q: excess over e10}}.
+Excitation = float | dict[str, dict[int, float]]
+
+
+class ExcitedArmLaw(noise.ArmLaw):
+    """noise.ArmLaw with the path's preparation excitation in the noisy law.
+
+    A float initializes every active qubit through an X error of that probability
+    (dynamic_density.with_prep_excitation, the channel live_run's --prep-excitation plans with); a split map applies
+    its ``initial`` part per qubit the same way and adds its ``readout`` part to each qubit's e10. The noiseless
+    check runs on the bare circuit, and zero leaves the law of noise.ArmLaw unchanged.
     """
 
-    def __call__(self, item: tuple[dict[str, Any], QuantumCircuit, QuantumCircuit, float]) -> dict[str, Any]:  # type: ignore[override]
+    def __call__(self, item: tuple[dict[str, Any], QuantumCircuit, QuantumCircuit, Excitation]) -> dict[str, Any]:  # type: ignore[override]
         meta, logical, compiled, prep_excitation = item
         expected = noise.ideal_law(logical)
         noiseless = snapshot_laws.outcome_law(self.snapshot, compiled, self.device, noisy=False)
         if not np.allclose(noiseless, expected, atol=1e-9):
             raise SystemExit(f"{meta}: compiled noiseless law {noiseless} against {expected}")
-        excited = dynamic_density.with_prep_excitation(compiled, prep_excitation)
-        law = snapshot_laws.outcome_law(self.snapshot, excited, self.device)
+        if isinstance(prep_excitation, dict):
+            snapshot = with_readout_excess(self.snapshot, prep_excitation["readout"])
+            excited = with_qubit_excitation(compiled, prep_excitation["initial"])
+        else:
+            snapshot = self.snapshot
+            excited = dynamic_density.with_prep_excitation(compiled, prep_excitation)
+        law = snapshot_laws.outcome_law(snapshot, excited, self.device)
         return {
             **meta,
             "ideal": [round(float(v), 12) for v in expected],
@@ -874,7 +918,7 @@ class ExcitedArmLaw(noise.ArmLaw):
 
 
 def path_budgets(
-    snapshot: dict[str, Any], layouts: list[list[int]], excitation: list[float] | None = None
+    snapshot: dict[str, Any], layouts: list[list[int]], excitation: list[Excitation] | None = None
 ) -> list[dict[str, Any]]:
     """The gap-88 null-subtracted budget of each path: primorial_cover_noise's noisy analysis on that layout.
 
@@ -890,7 +934,7 @@ def path_budgets(
     ]
     jobs = [(c, layout) for layout in layouts for _, c in logical]
     compiled = parallel.ordered_map(noise.ArmCompile(snapshot), jobs, min_items=1)
-    eps = [0.0] * len(layouts) if excitation is None else excitation
+    eps: list[Excitation] = [0.0] * len(layouts) if excitation is None else excitation
     items = [
         (meta, circuit, isa, eps[k // len(logical)])
         for k, ((meta, circuit), isa) in enumerate(zip(logical * len(layouts), compiled, strict=True))
@@ -964,7 +1008,8 @@ def decide_many(
     probe_shots: int,
     gap88_shots: int,
     family_size: int = 1,
-    excitation: list[float] | None = None,
+    excitation: list[Excitation] | None = None,
+    envelope: list[dict[str, float]] | None = None,
 ) -> list[dict[str, Any]]:
     """The preregistered stage-2 decision for each (path, probe summary) at ``probe_shots`` shots per circuit.
 
@@ -984,7 +1029,8 @@ def decide_many(
     Gaussian errors. The band is the prediction plus or minus z of that spread, z = z(1 - 0.025 / (7
     family_size)) and at least 3, so the bands hold simultaneously over every coefficient and path at
     family-wise level 0.05 under that approximation. ``excitation`` gives each path's preparation excitation
-    (path_budgets).
+    (path_budgets); ``envelope`` adds to each coefficient's half-width the largest change of its incoherent shift
+    over the excitation's confidence set (split_envelope), so a band covers every excitation in that set.
     """
     view = calibration_snapshot.snapshot_backend(snapshot)
     logical = [(m, c) for m, c in noise.arms() if m["family"] == "gradient" and m["cost"] in ("gap88", "null")]
@@ -1004,12 +1050,13 @@ def decide_many(
         rows = flat[k * len(points) : (k + 1) * len(points)]
         max_z = [r["max_z"] for r in rows]
         shots = [math.inf if r["shots_identify_all"] is None else float(r["shots_identify_all"]) for r in rows]
-        bands = {}
+        bands, centers, spreads = {}, {}, {}
         for key, sd in fit.sd.items():
             coherent = [r["null_subtracted_shift"][key] for r in rows]
-            center = statistics.fmean(coherent) + budget["incoherent_shift"][key]
-            half = z * math.hypot(sd, statistics.stdev(coherent))
-            bands[key] = [center - half, center + half]
+            centers[key] = statistics.fmean(coherent) + budget["incoherent_shift"][key]
+            spreads[key] = math.hypot(sd, statistics.stdev(coherent))
+            half = z * spreads[key] + (0.0 if envelope is None else envelope[k][key])
+            bands[key] = [centers[key] - half, centers[key] + half]
         p95_shots = _quantile(shots, 0.95)
         out.append(
             {
@@ -1030,7 +1077,14 @@ def decide_many(
                     "proceed": _quantile(max_z, 0.95) < 1.0 and p95_shots <= per_reading,
                 },
                 "prep_excitation": 0.0 if excitation is None else excitation[k],
-                "falsifier": {"family_size": family_size, "z": z, "shift_bands": bands},
+                "falsifier": {
+                    "family_size": family_size,
+                    "z": z,
+                    "excitation_envelope": None if envelope is None else envelope[k],
+                    "shift_center": centers,
+                    "shift_spread": spreads,
+                    "shift_bands": bands,
+                },
             }
         )
     return out
@@ -1135,7 +1189,120 @@ def path_excitation(excess: dict[str, Any], record: dict[str, Any], paths: list[
     return out
 
 
-def decide_paths(snapshot: dict[str, Any], run_dir: Path, excess: dict[str, Any] | None = None) -> dict[str, Any]:
+# state_prep_split.SCHEMA: the split law's output, which decide_paths reads in place of a path-maximum eps.
+SPLIT_SCHEMA = "state-prep-split-v1"
+
+
+def instruction_errors(snapshot: dict[str, Any], name: str) -> dict[tuple[int, ...], Any]:
+    return {tuple(row["qargs"]): row["error"] for row in snapshot["instructions"].get(name, [])}
+
+
+def split_identity(split: dict[str, Any], snapshot: dict[str, Any], qubits: list[int]) -> list[str]:
+    """Every readout, x and T1 channel of ``qubits`` where a control's execution calibration and the snapshot differ.
+
+    The split law sets prep0's excited fraction against the snapshot's e10 and reads hd through the controls' e01, so
+    it holds only when the controls ran under the snapshot's channel values; equal values pass whatever calibration
+    label either carries.
+    """
+    x_error = instruction_errors(snapshot, "x")
+    differences = []
+    for q in qubits:
+        row = snapshot["qubits"][q]
+        expected = {
+            "prob_meas1_prep0": row["e10"],
+            "prob_meas0_prep1": row["e01"],
+            "T1_seconds": row["t1"],
+            "x_error": x_error[(q,)],
+        }
+        for arm, replicates in split["qubits"][str(q)]["readouts"].items():
+            for values in replicates:
+                for value in values:
+                    for field, want in expected.items():
+                        if value[field] != want:
+                            differences.append(f"q{q} {arm} {field} {value[field]} against {want}")
+    return differences
+
+
+def split_excitation(split: dict[str, Any], snapshot: dict[str, Any], path: list[int], bound: str) -> Excitation:
+    """The split law on one path at its point estimates (``bound`` "point") or at an end of one qubit's hd interval.
+
+    ``bound`` "point" gives hd as the initial X error and prep0's excess over the snapshot's e10 as a readout flip;
+    "terminal" moves every qubit's hd to the readout as well, the alternative in which no excess precedes the
+    circuit; "q<Q>:lower" and "q<Q>:upper" set qubit Q's initial part to that end of its interval.
+    """
+    rows = {q: split["qubits"][str(q)] for q in path}
+    initial = {q: float(rows[q]["hd"]) for q in path}
+    readout = {q: max(0.0, float(rows[q]["fractions"]["prep0"]) - snapshot["qubits"][q]["e10"]) for q in path}
+    if bound == "terminal":
+        readout = {q: readout[q] + initial[q] for q in path}
+        initial = {}
+    elif bound != "point":
+        name, end = bound.split(":")
+        q = int(name.removeprefix("q"))
+        initial[q] = float(rows[q]["hd_interval"][0 if end == "lower" else 1])
+    return {"initial": initial, "readout": readout}
+
+
+def split_envelope(
+    split: dict[str, Any], snapshot: dict[str, Any], paths: list[list[int]]
+) -> tuple[list[dict[str, float]], list[dict[str, float]]]:
+    """Each path's excitation envelope and its terminal-readout shifts.
+
+    The envelope of a coefficient sums, over the path's qubits, the larger change of its incoherent shift when that
+    qubit's hd moves to either end of its interval: a box bound over the simultaneous confidence set of the three
+    hd values, exact when the shift is additive across qubits and monotone in each hd. The terminal shifts are the
+    incoherent shifts with every hd read as a readout flip (split_excitation's "terminal"), the prediction the
+    in-job inversion would leave if no excess preceded the circuit.
+    """
+    variants = [(k, "point") for k in range(len(paths))] + [(k, "terminal") for k in range(len(paths))]
+    for k, path in enumerate(paths):
+        for q in path:
+            row = split["qubits"][str(q)]
+            variants += [
+                (k, f"q{q}:{end}")
+                for end, value in zip(("lower", "upper"), row["hd_interval"], strict=True)
+                if value != row["hd"]
+            ]
+    budgets = path_budgets(
+        snapshot, [paths[k] for k, _ in variants], [split_excitation(split, snapshot, paths[k], b) for k, b in variants]
+    )
+    shifts = {(k, b): budget["incoherent_shift"] for (k, b), budget in zip(variants, budgets, strict=True)}
+    envelope = []
+    for k, path in enumerate(paths):
+        point = shifts[(k, "point")]
+        width = {key: 0.0 for key in point}
+        for q in path:
+            ends = [shifts[(j, b)] for j, b in shifts if j == k and b.startswith(f"q{q}:")]
+            for key in point:
+                width[key] += max((abs(end[key] - point[key]) for end in ends), default=0.0)
+        envelope.append(width)
+    return envelope, [shifts[(k, "terminal")] for k in range(len(paths))]
+
+
+def channel_digest(snapshot: dict[str, Any], qubits: list[int]) -> str:
+    """sha256 of every channel value the stage-2 law reads on ``qubits``: each qubit's e10, e01, T1, T2 and
+    frequency, and the duration and error of every instruction on those qubits alone, keyed by name and qargs."""
+    touched = set(qubits)
+    payload = {
+        "qubits": {str(q): snapshot["qubits"][q] for q in sorted(touched)},
+        "instructions": {
+            name: sorted(
+                ([row["qargs"], row["duration"], row["error"]] for row in rows if set(row["qargs"]) <= touched),
+                key=lambda entry: entry[0],
+            )
+            for name, rows in sorted(snapshot["instructions"].items())
+        },
+    }
+    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+
+
+def decide_paths(
+    snapshot: dict[str, Any],
+    run_dir: Path,
+    excess: dict[str, Any] | None = None,
+    gap88_cap: int | None = None,
+    positive: list[list[int]] | None = None,
+) -> dict[str, Any]:
     """The preregistered multi-path stage-2 rule from a collected coherence-probe run.
 
     The snapshot must carry the calibration every probe member executed under, with no change during its
@@ -1145,7 +1312,18 @@ def decide_paths(snapshot: dict[str, Any], run_dir: Path, excess: dict[str, Any]
     per-replica summary (live_run's summary_per_replica, the raw distributions with that path's own in-job
     readout inversion); the paths that proceed set the stage-2 shots, the smallest multiple of 100 between
     GAP88_FLOOR and GAP88_CAP that covers their largest 95th-percentile identification need, and are decided
-    again at that count with falsifier bands simultaneous over the paths that proceed.
+    again at that count with falsifier bands simultaneous over the paths that proceed. ``gap88_cap`` replaces
+    GAP88_CAP as the count of the first decision and the ceiling of the second.
+
+    A state_prep_split output as ``excess`` decides with the split law (split_excitation at its point estimates):
+    its controls must have run under the snapshot's readout, x and T1 values on every path qubit (split_identity),
+    a path whose pooled prep0 excited fraction exceeds PREP0_DROP on any qubit is voided, and each band widens by
+    the path's split_envelope; each decision also records the terminal-readout shifts of the alternative and the
+    centers they give (``terminal_center``).
+
+    A path of ``positive`` enters stage 2 whatever its max_z, when its identification need is covered: its probes
+    predict a coherent shift the null subtraction leaves visible, and its bands test that prediction. Stage 2 then
+    runs at the cap, the count at which the split and terminal centers separate furthest within the approval.
     """
     record, entry, paths = _group_record(run_dir, "coherence_probes")
     executed = {
@@ -1154,31 +1332,67 @@ def decide_paths(snapshot: dict[str, Any], run_dir: Path, excess: dict[str, Any]
     }
     if executed != {(str(snapshot["calibration"]), False)}:
         raise SystemExit(f"probe members executed under {sorted(executed)}, the snapshot is {snapshot['calibration']}")
-    if excess is None and (record.get("policy") or {}).get("rep_delay_seconds") is not None:
+    delay = (record.get("policy") or {}).get("rep_delay_seconds")
+    if excess is None and delay is not None:
         raise SystemExit("a run at a set repetition delay needs its state-prep excess")
-    eps_all = [0.0] * len(paths) if excess is None else path_excitation(excess, record, paths)
+    cap = GAP88_CAP if gap88_cap is None else gap88_cap
+    split = excess if excess is not None and excess.get("schema") == SPLIT_SCHEMA else None
     probe_shots = int(record["shots"])
     readout = readout_by_path(entry, paths)
     summaries = entry["measured_statistics"]["summary_per_replica"]
     valid = [k for k, row in enumerate(readout) if row["passed"]]
+    envelope: dict[int, dict[str, float]] = {}
+    terminal: dict[int, dict[str, float]] = {}
+    if split is not None:
+        if delay is None or not math.isclose(float(split["rep_delay_seconds"]), float(delay)):
+            raise SystemExit(f"state-prep split at {split['rep_delay_seconds']} s, the run at {delay} s")
+        differences = split_identity(split, snapshot, sorted({q for path in paths for q in path}))
+        if differences:
+            raise SystemExit(f"the controls ran under other channel values: {differences[:8]}")
+        valid = [k for k in valid if all(split["qubits"][str(q)]["fractions"]["prep0"] <= PREP0_DROP for q in paths[k])]
+        eps_all: list[Excitation] = [split_excitation(split, snapshot, path, "point") for path in paths]
+        widths, alternatives = split_envelope(split, snapshot, [paths[k] for k in valid])
+        envelope = dict(zip(valid, widths, strict=True))
+        terminal = dict(zip(valid, alternatives, strict=True))
+    else:
+        eps_all = [0.0] * len(paths) if excess is None else list(path_excitation(excess, record, paths))
 
     def decide(indices: list[int], shots: int, family: int) -> list[dict[str, Any]]:
         if not indices:
             return []
         chosen = [(paths[k], summaries[k]) for k in indices]
-        return decide_many(snapshot, chosen, probe_shots, shots, family, [eps_all[k] for k in indices])
+        widths = [envelope[k] for k in indices] if split is not None else None
+        rows = decide_many(snapshot, chosen, probe_shots, shots, family, [eps_all[k] for k in indices], widths)
+        for k, row in zip(indices, rows, strict=True):
+            row["entry"] = "positive" if k in chosen_positive and not row["decision"]["proceed"] else "proceed"
+            if split is not None:
+                row["terminal_shift"] = terminal[k]
+                row["terminal_center"] = {
+                    key: center - row["budget"]["incoherent_shift"][key] + terminal[k][key]
+                    for key, center in row["falsifier"]["shift_center"].items()
+                }
+        return rows
 
-    first = decide(valid, GAP88_CAP, 1)
-    proceeding = [k for k, v in zip(valid, first, strict=True) if v["decision"]["proceed"]]
+    chosen_positive = {k for k in valid if paths[k] in (positive or [])}
+
+    def enters(k: int, row: dict[str, Any]) -> bool:
+        need = row["decision"]["p95_shots_identify_all"]
+        covered = need is not None and need <= row["shots_per_reading"]
+        return bool(row["decision"]["proceed"]) or (k in chosen_positive and covered)
+
+    first = decide(valid, cap, 1)
+    proceeding = [k for k, v in zip(valid, first, strict=True) if enters(k, v)]
     need = max(
         (v["decision"]["p95_shots_identify_all"] for k, v in zip(valid, first, strict=True) if k in proceeding),
         default=None,
     )
-    shots = None if need is None else min(GAP88_CAP, max(GAP88_FLOOR, 100 * math.ceil(need / 200)))
+    shots = None if need is None else min(cap, max(GAP88_FLOOR, 100 * math.ceil(need / 200)))
+    if shots is not None and chosen_positive & set(proceeding):
+        shots = cap
     final = [] if shots is None else decide(proceeding, shots, len(proceeding))
     # A smaller shot count raises every coefficient's standard deviation, so max_z only falls, and the count covers
     # each proceeding path's identification need: every path that proceeds at the cap proceeds again.
-    stage2 = [paths[k] for k, v in zip(proceeding, final, strict=True) if v["decision"]["proceed"]]
+    stage2 = [paths[k] for k, v in zip(proceeding, final, strict=True) if enters(k, v)]
     if len(stage2) != len(proceeding):
         raise SystemExit(f"paths proceeding at the cap failed at {shots} shots: {proceeding} against {stage2}")
     return {
@@ -1186,6 +1400,10 @@ def decide_paths(snapshot: dict[str, Any], run_dir: Path, excess: dict[str, Any]
         "probe_shots": probe_shots,
         "paths": paths,
         "prep_excitation": eps_all,
+        "excitation_law": "split" if split is not None else "path_max" if excess is not None else "none",
+        "gap88_cap": cap,
+        "positive_paths": positive or [],
+        "channel_digest": channel_digest(snapshot, sorted({q for path in stage2 for q in path})),
         "readout": readout,
         "voided": [paths[k] for k in range(len(paths)) if k not in valid],
         "at_cap": first,
@@ -1304,7 +1522,41 @@ def rank_paths(snapshot: dict[str, Any], excluded: list[int]) -> dict[str, Any]:
     }
 
 
-def falsify(run_dir: Path, decision: dict[str, Any], crosstalk_verdict: dict[str, Any] | None) -> dict[str, Any]:
+# A path discriminates the split law from its terminal alternative when their centers lie this many spreads apart.
+DISCRIMINATION_FLOOR = 2.0
+
+
+def discrimination(observed: dict[str, float], decision: dict[str, Any]) -> dict[str, float]:
+    """Where the observed biases fall on the line from the terminal center (0) to the split center (1).
+
+    lambda is the weighted least-squares fraction sum (o - t)(c - t) / s^2 over sum (c - t)^2 / s^2 across the
+    coefficients, s each coefficient's band spread; its standard error is 1 / d with d = sqrt(sum (c - t)^2 / s^2),
+    the separation in spreads, under independent Gaussian coefficients. lambda near 1 reads the history-dependent
+    excess as a population before the circuit, near 0 as a flip the in-job inversion absorbs, and between them as
+    an initial population scaled by how often the previous shot left the qubit excited.
+    """
+    center = decision["falsifier"]["shift_center"]
+    spread = decision["falsifier"]["shift_spread"]
+    terminal = decision["terminal_center"]
+    numerator = sum((observed[k] - terminal[k]) * (center[k] - terminal[k]) / spread[k] ** 2 for k in center)
+    weight = sum((center[k] - terminal[k]) ** 2 / spread[k] ** 2 for k in center)
+    if weight == 0.0:
+        return {"separation": 0.0, "numerator": 0.0, "weight": 0.0}
+    return {
+        "separation": math.sqrt(weight),
+        "lambda": numerator / weight,
+        "lambda_se": 1.0 / math.sqrt(weight),
+        "numerator": numerator,
+        "weight": weight,
+    }
+
+
+def falsify(
+    run_dir: Path,
+    decision: dict[str, Any],
+    crosstalk_verdict: dict[str, Any] | None,
+    stage2_snapshots: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     """The stage-2 falsification: each path's null-subtracted coefficient biases against its decision bands.
 
     The stage-2 run must pin the decision's stage-2 paths in order at its N2. primorial_campaigns.summarize's
@@ -1312,7 +1564,10 @@ def falsify(run_dir: Path, decision: dict[str, Any], crosstalk_verdict: dict[str
     repeat against null and its repeat) is the quantity decide_many's bands predict. A coefficient outside its
     band falsifies the coherent-error model on that path. The result supports a device-question claim only when
     every member executed under the decision's calibration with no change during its shots and the crosstalk
-    check (``crosstalk_verdict``) reads consistent; otherwise it is descriptive.
+    check (``crosstalk_verdict``) reads consistent; otherwise it is descriptive. A member that executed under
+    another calibration label still counts as the decision's when the decision records a channel_digest and every
+    snapshot of ``stage2_snapshots`` (exported at that member's execution start, read again after an interval)
+    carries the same digest over the stage-2 qubits and covers that label.
     """
     record, entry, paths = _group_record(run_dir, "primorial_gap88")
     if paths != decision["stage2_paths"]:
@@ -1320,19 +1575,35 @@ def falsify(run_dir: Path, decision: dict[str, Any], crosstalk_verdict: dict[str
     if int(record["shots"]) != decision["gap88_shots"]:
         raise SystemExit(f"stage 2 ran {record['shots']} shots, the decision set {decision['gap88_shots']}")
     bands = {tuple(v["layout"]): v["falsifier"]["shift_bands"] for v in decision["decisions"]}
+    decided = {tuple(v["layout"]): v for v in decision["decisions"]}
     summaries = entry["measured_statistics"]["summary_per_replica"]
     rows = []
     for path, summary in zip(paths, summaries, strict=True):
         observed = {key: float(summary[f"bias_{key}"]) for key in bands[tuple(path)]}
         outside = sorted(key for key, (low, high) in bands[tuple(path)].items() if not low <= observed[key] <= high)
-        rows.append({"path": path, "observed_bias": observed, "bands": bands[tuple(path)], "outside": outside})
+        row = {"path": path, "observed_bias": observed, "bands": bands[tuple(path)], "outside": outside}
+        if "terminal_center" in decided[tuple(path)]:
+            row["discrimination"] = discrimination(observed, decided[tuple(path)])
+        rows.append(row)
     executed = {
         (str(item["calibration"]), bool(item["calibration_changed_during_shots"]))
         for item in entry["executed"].values()
     }
     reasons = []
-    if executed != {(str(decision["calibration"]), False)}:
-        reasons.append(f"stage 2 executed under {sorted(executed)}, the decision read {decision['calibration']}")
+    qubits = sorted({q for path in paths for q in path})
+    digests = {str(s["calibration"]): channel_digest(s, qubits) for s in (stage2_snapshots or [])}
+    same = {str(decision["calibration"])} | {
+        label for label, digest in digests.items() if digest == decision.get("channel_digest")
+    }
+    if any(changed for _, changed in executed):
+        reasons.append(f"a stage-2 member's calibration changed during its shots: {sorted(executed)}")
+    if not {label for label, _ in executed} <= same or any(
+        d != decision.get("channel_digest") for d in digests.values()
+    ):
+        reasons.append(
+            f"stage 2 executed under {sorted(executed)}, the decision read {decision['calibration']}; "
+            f"channel digests {digests} against {decision.get('channel_digest')}"
+        )
     outcome = None if crosstalk_verdict is None else crosstalk_verdict.get("outcome")
     if outcome != "consistent":
         reasons.append(f"crosstalk check {outcome or 'not supplied'}")
@@ -1341,8 +1612,25 @@ def falsify(run_dir: Path, decision: dict[str, Any], crosstalk_verdict: dict[str
         "gap88_shots": decision["gap88_shots"],
         "paths": rows,
         "falsified": [{"path": row["path"], "coefficients": row["outside"]} for row in rows if row["outside"]],
+        "stage2_channel_digests": digests,
+        "discrimination": pooled_discrimination(rows),
         "claim": "device" if not reasons else "descriptive",
         "descriptive_reasons": reasons,
+    }
+
+
+def pooled_discrimination(rows: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """lambda pooled over the paths whose separation reaches DISCRIMINATION_FLOOR, one common fraction."""
+    chosen = [r for r in rows if r.get("discrimination", {}).get("separation", 0.0) >= DISCRIMINATION_FLOOR]
+    if not chosen:
+        return None
+    weight = sum(r["discrimination"]["weight"] for r in chosen)
+    numerator = sum(r["discrimination"]["numerator"] for r in chosen)
+    return {
+        "paths": [r["path"] for r in chosen],
+        "lambda": numerator / weight,
+        "lambda_se": 1.0 / math.sqrt(weight),
+        "floor": DISCRIMINATION_FLOOR,
     }
 
 
@@ -1386,7 +1674,16 @@ def main() -> int:
     parser.add_argument(
         "--excitation-check", type=float, metavar="EPS", help="probe-estimate shifts under preparation excitation EPS"
     )
+    parser.add_argument("--gap88-cap", type=int, help="--decide-paths: the stage-2 shot target in place of GAP88_CAP")
+    parser.add_argument("--positive-paths", help="--decide-paths: paths that enter stage 2 whatever their max_z")
     parser.add_argument("--falsify", type=Path, metavar="RUN", help="test a collected stage-2 run against its decision")
+    parser.add_argument(
+        "--stage2-snapshot",
+        type=Path,
+        action="append",
+        default=[],
+        help="--falsify: a snapshot exported at a stage-2 execution start; repeat for the re-read",
+    )
     parser.add_argument("--decision", type=Path, help="--falsify: the --decide-paths output")
     parser.add_argument("--crosstalk-verdict", type=Path, help="--falsify: the --crosstalk output on the stage-2 run")
     parser.add_argument(
@@ -1400,7 +1697,15 @@ def main() -> int:
         if args.snapshot is None or args.out is None:
             parser.error("--decide-paths needs --snapshot and --out")
         excess = None if args.excess is None else json.loads(args.excess.read_text(encoding="utf-8"))
-        verdict = decide_paths(json.loads(args.snapshot.read_text(encoding="utf-8")), args.decide_paths, excess)
+        verdict = decide_paths(
+            json.loads(args.snapshot.read_text(encoding="utf-8")),
+            args.decide_paths,
+            excess,
+            args.gap88_cap,
+            None
+            if args.positive_paths is None
+            else [[int(q) for q in p.split(",")] for p in args.positive_paths.split("/")],
+        )
         _write(args.out, verdict)
         print(
             f"stage 2: {len(verdict['stage2_paths'])} of {len(verdict['paths'])} paths at "
@@ -1429,7 +1734,12 @@ def main() -> int:
         crosstalk_verdict = (
             None if args.crosstalk_verdict is None else json.loads(args.crosstalk_verdict.read_text(encoding="utf-8"))
         )
-        verdict = falsify(args.falsify, json.loads(args.decision.read_text(encoding="utf-8")), crosstalk_verdict)
+        verdict = falsify(
+            args.falsify,
+            json.loads(args.decision.read_text(encoding="utf-8")),
+            crosstalk_verdict,
+            [json.loads(path.read_text(encoding="utf-8")) for path in args.stage2_snapshot],
+        )
         _write(args.out, verdict)
         print(f"stage 2: {len(verdict['falsified'])} falsified paths, claim {verdict['claim']}")
         return 0
