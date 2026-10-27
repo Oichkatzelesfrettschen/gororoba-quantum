@@ -19,7 +19,7 @@
   },
   "scope": "Acquisition: job-06 submits theta2-x-arm0 (configuration 13 of job-00) 96 times at 32,768 samples and 32,768 max_shots per iteration, the seed-0 mesh of job-00 at every eighth position (12 anchors) and 84 positions at fresh ANU QRNG seeds drawn after this plan's predictors are pushed (nonzero, repeats and every seed of jobs 02, 04 and 05 skipped, index order). Job-07 runs 96 iterations at the next 84 usable values when job-06 completed with every iteration counted, and 88 iterations (job-07-i88, 77 seeds) otherwise; 88 iterations of 32,768 samples completed in 265 s in job-05, and 80 in 243 s in job-04, so 96 projects to about 287 s by those two points against the 300 s max_duration, whose expiry behavior is undocumented. The rule reads completion alone, never an X count. Credits: 1.032768 per job, 2.065536 for both, of 126.55 free credits left before the 1 November reset. Predictors, frozen in docs/evidence/ascella-order-coefficients/replication-offsets.json, family heater_0.3_coupler_0.1_offsets: R-B, P-B of new-mesh-offsets.json unchanged; R-C, the same family refitted on job-00, the 56 meshes of jobs 02 and 03 and the 147 scored meshes of jobs 04 and 05 (233 training meshes, 258 free offsets). Score, scripts/ascella_replication_score.py on the contract of scripts/ascella_new_mesh_score.py: references exactly jobs 00, 02, 03, 04 and 05-i88, whose meshes are excluded; job-05-i88's anchors set the baseline; each new run's cases.json equals its frozen case; the new runs are job-06 followed by the job-07 variant the rule admits; a partial job stays descriptive and the primary reads the other alone. Primary per predictor: within-job-centered Pearson r, one-sided t on n - 1 - J degrees of freedom at alpha 0.005 each (Bonferroni 0.01); Fisher-z bounds at 99.5 %; positive-direction share r^2 / c^2 with the plug-in ceiling. Anchor control: the anchor mean less job-05-i88's reads steady when its whole 99 % interval lies within +-s_c (0.0119). Outcomes in order: not read; both carried; R-B carried only; R-C carried only; inconclusive: anticorrelated; inconclusive: anchors moved; bounded when both upper shares lie below 10.5 %, P-B's new-seed share; otherwise inconclusive. R-B carried replicates the new-seed reading on independent meshes; R-C carried alone places the gain in the 147 meshes jobs 04 and 05 added; bounded refutes the 10.5 % share. Sizing under ascella_new_seed_sizing.branch with the new-seed counting variance: 96 + 96 iterations give 168 meshes, critical r 0.199, power 0.946 at latent r 0.318 and 0.741 at 0.25, and a bounded reading at r 0 with probability 0.946 per predictor; 96 + 88 give 161 meshes and power 0.935; job-07-i88 alone 77 meshes and power 0.583.",
   "owner": "ascella signed-coherence analysis",
-  "next_action": "None; the remaining two thirds of the per-mesh error await the applied voltages of Perceval#799.",
+  "next_action": "None; the mesh-dependent variation outside the offsets awaits the applied voltages of Perceval#799.",
   "related": [
     "ascella-new-seed-meshes-case",
     "ascella-fixed-mesh-confirmation"
@@ -167,6 +167,46 @@
           "observed_at": "2026-10-27T01:06:02+00:00",
           "revision": "5acdda793eb8319259f86f4a31b03b422e3d6da0",
           "scope_sha256": "3761a353e8835262422487094ae72236a0ae329ae6cf533068e1afeedb38dbe0"
+        },
+        {
+          "result": "Revalidation after the critical peer review (orchestrator plus Codex, Grok and agy referees under docs/runbooks/critical-peer-review.md): the claim now states the share as an affine-rescaled correlation share beside slopes 0.20 and 0.44 and R^2 at slope one -0.83 and -0.10, counts R-C's training as 233 configurations, labels the t p-values model-based, discloses the in-block background term, and cites replication-sensitivity.json (circular-shift p 0.0014 and 0.00014, background-free r 0.231 and 0.386, zero-offset r 0.016); replication-score.json is unchanged.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-score.json",
+              "sha256": "ae5a109a1c0e19aced9d5c25fda807b269d56b72eeb91fbbc7cbba857de1e2af"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-sensitivity.json",
+              "sha256": "32030fe6015ec3fef4b604003438f1dc60a554922e064967c0a908abf2073b9d"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=ascella-signed-coherence-replication-offsets",
+              "sha256": "f68fc3e77a0b4162f87e30cf7da0c91c6c36fe90345389913e4a230ab358e6ae"
+            }
+          ],
+          "observed_at": "2026-10-27T02:36:48+00:00",
+          "revision": "cac75978111d594fbfbd8234473d1c1ffb7a84f2",
+          "scope_sha256": "3761a353e8835262422487094ae72236a0ae329ae6cf533068e1afeedb38dbe0"
+        },
+        {
+          "result": "Revalidation after agy's review: the boundary adds the offset stability (heater offsets r 0.82, coupler offsets r 0.15 between R-B and R-C), the partial r given the zero-offset prediction (0.207, p 0.0037; 0.395), and the unretained proximity refit (r 0.445); replication-sensitivity.json gains those deterministic fields; replication-score.json is unchanged.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-score.json",
+              "sha256": "ae5a109a1c0e19aced9d5c25fda807b269d56b72eeb91fbbc7cbba857de1e2af"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-sensitivity.json",
+              "sha256": "43ef37f541d94921edee5442dfec83611d85eb4dc706558fe1230f99c1e68d94"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=ascella-signed-coherence-replication-offsets",
+              "sha256": "789044e6ec16e958d5313704c9bc7d69a5c298826eb3355d8e53d69cdad728c5"
+            }
+          ],
+          "observed_at": "2026-10-27T02:44:00+00:00",
+          "revision": "cac75978111d594fbfbd8234473d1c1ffb7a84f2",
+          "scope_sha256": "3761a353e8835262422487094ae72236a0ae329ae6cf533068e1afeedb38dbe0"
         }
       ]
     }
@@ -175,7 +215,7 @@
   "claims": [
     "ascella-signed-coherence-replication-offsets"
   ],
-  "resolution": "On 168 meshes no fit had seen (jobs d54d0e9d and f27ad639, 96 iterations each), the P-B offsets unchanged carry the fixed per-mesh error again at within-job r 0.240 (p 8.8e-4, share 6.0 %, 0.2 to 18.2 %), and the same family refitted on 233 meshes carries more at r 0.404 (p 3.1e-8, share 16.9 %, 5.2 to 32.2 %). Outcome both carried.",
+  "resolution": "On 168 meshes no fit had seen (jobs d54d0e9d and f27ad639, 96 iterations each), the P-B offsets unchanged are associated with the fixed per-mesh variation of X again at within-job r 0.240 (model-based p 8.8e-4, circular-shift p 0.0014; share after affine rescaling 6.0 %, slope 0.20), and the same family refitted on 233 training configurations reads r 0.404 (p 3.1e-8, circular-shift p 0.00014; share 16.9 %, slope 0.44); the difference between the two is descriptive (post hoc Williams p 0.031, confounded with calibration proximity). Outcome both carried.",
   "receipts": [
     {
       "result": "All four steps are done; the runs, the score and its replay gate are retained, and claim ascella-signed-coherence-replication-offsets registers the result.",

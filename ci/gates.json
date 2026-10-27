@@ -4315,6 +4315,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_replication_sensitivity.py docs/evidence/ascella-order-coefficients/replication-offsets.json docs/evidence/ascella-order-coefficients/replication-score.json results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04 results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88 -- results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06 results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96 docs/evidence/ascella-order-coefficients/replication-sensitivity.json --check",
+   "name": "core-ascella-signed-coherence-replication-sensitivity-replay",
+   "seconds": 30.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
