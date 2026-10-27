@@ -53,6 +53,22 @@
             }
           ],
           "scope_sha256": "8864c9ae88f4975e04a3eb88015f726a0e6b38c293966ec7357234f853331dbe"
+        },
+        {
+          "result": "Width-32 envelope dry run on the merged code and the 2026-10-27 07:53 PDT Kingston calibration; --check-envelope replays its layout.",
+          "observed_at": "2026-10-27T15:44:52+00:00",
+          "revision": "84355f16db71e570aabebabd2f1ab31d0b7d79b7",
+          "evidence": [
+            {
+              "ref": "results/live/2026-10-27T153449.309331Z/record.json",
+              "sha256": "dc8a95e036d8b8a2bd979ac22a47fb9f7d2cbd150892095f83026032aa486a4b"
+            },
+            {
+              "ref": "docs/design/measurement-sequence-adaptive-envelope.md",
+              "sha256": "19ecd4bddc3b6ab91ed977fe701b427101e50d926b0a0df8e8cfa9fcb67c9287"
+            }
+          ],
+          "scope_sha256": "8864c9ae88f4975e04a3eb88015f726a0e6b38c293966ec7357234f853331dbe"
         }
       ]
     },
