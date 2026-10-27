@@ -13,7 +13,7 @@
   },
   "scope": "Evidence bundle docs/evidence/a5-kernel-bundles (scripts, result.json, README, ledger) and the program file docs/design/a5-kernel-bundles-program.md; nullity >= 12 orbits first, nullity 8 as stretch. Attachments, global model and uniform structure (items 6-8) stay out of scope.",
   "owner": "repository maintainer",
-  "next_action": "Codex (gpt-daybreak-blue-latest, xhigh) in tmux pursues the program file; the orchestrator reviews each local commit, answers owner decisions recorded as BLOCKED in the ledger, and opens the pull request.",
+  "next_action": "Open the pull request for geometry/a5-kernel-bundles, run the Codex review loop with the four pr.yml checks green, merge, and close the plan; the nullity-8 stretch follows in its own plan.",
   "related": [
     "a5-strata-regularity"
   ],
@@ -25,37 +25,127 @@
   "steps": [
     {
       "id": "kernel-symmetry-group",
-      "state": "todo",
+      "state": "done",
       "action": "Compute the Lie algebra of the real group K transporting ker L_y, test which directions of G_2(C) x SO(2, C) x C^* lift, and the K-orbit dimensions on each nullity >= 12 orbit.",
-      "acceptance": "Fails if a direction claimed to lift fails kernel transport at any representative, or a claimed non-lifting direction transports kernels."
+      "acceptance": "Fails if a direction claimed to lift fails kernel transport at any representative, or a claimed non-lifting direction transports kernels.",
+      "receipts": [
+        {
+          "result": "kernel_symmetry.py --check passes: constant symmetry algebra g_2 plus four central directions, no boost lift, visible S_3 x Z_2 components; the independent verifier confirms the algebra and the generic orbit dimensions.",
+          "observed_at": "2026-10-27T02:39:06+00:00",
+          "revision": "448cdd0ed60c8de9370bfa5c732eb730cd01a809",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-bundles/result.json",
+              "sha256": "9552c02507ed39750dfbf55874fd682c3ed059c868515251e6dc9cf9ca012a37"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles/verification.json",
+              "sha256": "b4b7a54514cb451f83468d47ea452adb97bbd6a8d8e95e01ca02d5a8a4e5fa18"
+            }
+          ],
+          "scope_sha256": "6aeb6784a1afeaaf4cdf60562cdd02bd9522ee65a580a525a3d139c4521511ed"
+        }
+      ]
     },
     {
       "id": "closed-form-frames",
-      "state": "todo",
+      "state": "done",
       "action": "Give kernel frames polynomial or rational in (z, conj z) on each nullity >= 12 orbit with their degeneracy loci.",
-      "acceptance": "Fails if L_y x != 0 for a frame vector, or the frame loses rank at an orbit point outside the stated locus."
+      "acceptance": "Fails if L_y x != 0 for a frame vector, or the frame loses rank at an orbit point outside the stated locus.",
+      "receipts": [
+        {
+          "result": "kernel_frames.py --check passes: principal Pfaffian charts cover every nullity >= 12 piece with rational frames degenerating exactly on pf(B_I) = 0.",
+          "observed_at": "2026-10-27T02:39:06+00:00",
+          "revision": "448cdd0ed60c8de9370bfa5c732eb730cd01a809",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-bundles/frames-result.json",
+              "sha256": "07cb7c0db4bace6961a06063a36bb638ae4639bcfe1ade041ba726f6f2307476"
+            }
+          ],
+          "scope_sha256": "0091f6fb8ec25f22e544319203e4801ad3d27b0d77878135c7b003cbaa666a93"
+        }
+      ]
     },
     {
       "id": "unit-section-topology",
-      "state": "todo",
+      "state": "done",
       "action": "Determine pi_1 and the cohomology needed for the invariants of the unit sections of B9, V, VB, V^a_+- and N_+-.",
-      "acceptance": "Fails if a stated group disagrees with an explicit fibration or homogeneous-space computation."
+      "acceptance": "Fails if a stated group disagrees with an explicit fibration or homogeneous-space computation.",
+      "receipts": [
+        {
+          "result": "aligned_orbit_moduli, v_topology_representation and isotropic_orbit_data --check pass: V^a_+- unit section S^13 minus the quadric link, V homotopy equivalent to S^1 times the antipodal mapping torus of S^6, B9 G_2 x open three-ball, VB V_2(R^7) x S^1; the verifier confirms them as arguments with checked inputs.",
+          "observed_at": "2026-10-27T02:39:06+00:00",
+          "revision": "448cdd0ed60c8de9370bfa5c732eb730cd01a809",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json",
+              "sha256": "8afd5a4d1426c90e90e7388312ed10c7af20a707a7da192e72a8c6762cfc205d"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles/v-topology-representation-result.json",
+              "sha256": "9058800227cc21177306182ac547f976dbeae0b94c77099d6f380d65048317d1"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json",
+              "sha256": "6b8b6840861ff0a676707733c3b2be24339aaacee44a9f0be8d0e57d4ff376f2"
+            }
+          ],
+          "scope_sha256": "3dd50bb8fa2aa8258e8cfeb148376638d9eab5c3a31034ac2f092c215e74d17e"
+        }
+      ]
     },
     {
       "id": "transition-data",
-      "state": "todo",
+      "state": "done",
       "action": "Build an exact atlas of kernel frames over each smooth piece of D_(5,12), verify the cocycle on overlaps and identify the structure group.",
-      "acceptance": "Fails if a transition function fails the cocycle identity exactly or leaves the stated structure group."
+      "acceptance": "Fails if a transition function fails the cocycle identity exactly or leaves the stated structure group.",
+      "receipts": [
+        {
+          "result": "transition_atlas.py --check passes: exact cocycle on Pfaffian overlaps, structure groups U(6), U(8), SU(2) on N_+-.",
+          "observed_at": "2026-10-27T02:39:06+00:00",
+          "revision": "448cdd0ed60c8de9370bfa5c732eb730cd01a809",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-bundles/transition-atlas-result.json",
+              "sha256": "d08050b050151c5b3aa1686043c8b940492d37000fc79bd643a37e277d76409a"
+            }
+          ],
+          "scope_sha256": "26d46266d6a22864f19a270dd8621575a47811bbc2253234e44ac826c7e7f42d"
+        }
+      ]
     },
     {
       "id": "invariants",
-      "state": "todo",
+      "state": "done",
       "action": "Compute characteristic classes and monodromy and decide triviality or identification with named bundles.",
-      "acceptance": "Fails if an invariant contradicts an explicit global section or frame."
+      "acceptance": "Fails if an invariant contradicts an explicit global section or frame.",
+      "receipts": [
+        {
+          "result": "bundle_invariants.py and nullity_sixteen_bundle.py --check pass with conclusions derived from producer records: nullity-twelve complex bundles trivial, N_+- complex bundle C^2 + 3 xi with the order-two K-class, real bundles trivial; the verifier confirms the N_+- branching and K-group.",
+          "observed_at": "2026-10-27T02:39:06+00:00",
+          "revision": "448cdd0ed60c8de9370bfa5c732eb730cd01a809",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-bundles/bundle-invariants-result.json",
+              "sha256": "d6c35f96844dea3f1b447eb4b8e4f7aa0c4563fe1bed8f7696d68d0d795f5faf"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json",
+              "sha256": "33196fa92daa52bc9a30142674235182fa6875df7d2c6b3fde58bbfa726b66ec"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles/verification.json",
+              "sha256": "b4b7a54514cb451f83468d47ea452adb97bbd6a8d8e95e01ca02d5a8a4e5fa18"
+            }
+          ],
+          "scope_sha256": "5785e1ea859bd09aa7d44addbbd63465552592c288a764a9d162b3ab0ab1a5ac"
+        }
+      ]
     },
     {
       "id": "review-and-admission",
-      "state": "todo",
+      "state": "doing",
       "action": "Independent verification, critical review and a claim for confirmed results only, through a pull request and the Codex review loop.",
       "acceptance": "research_state.py --check and plan_tracker.py check pass and the four pr.yml checks are green on the PR head."
     }
