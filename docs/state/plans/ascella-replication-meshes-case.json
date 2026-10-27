@@ -29,13 +29,27 @@
       "id": "frozen-offsets",
       "action": "Copy P-B and refit the family on all 233 retained meshes, and push the record before any replication seed is drawn.",
       "acceptance": "replication-offsets.json replays under --check, R-B equals P-B of new-mesh-offsets.json, and the commit carrying it is on the remote before the draw file exists.",
-      "state": "doing"
+      "state": "done",
+      "receipts": [
+        {
+          "result": "replication-offsets.json carries R-B, P-B of new-mesh-offsets.json unchanged (86 training meshes), and R-C, the family refitted on 233 meshes, 258 free offsets each; it replays under --check, and commit bc15673 carrying it was on the remote before draw-2026-10-27T003715Z.json was retrieved.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-offsets.json",
+              "sha256": "b541d774066373141dc1fcec175d20e43c0e98d51d8732e47735751adf6c7d0a"
+            }
+          ],
+          "observed_at": "2026-10-27T00:36:00+00:00",
+          "revision": "bc1567336ac3c51d6e74c8da856a4eba2ebbb5e7",
+          "scope_sha256": "0fafa7eb28111246cac50a83d5f6d40e38e98fce87ee7f695b4ddcfa78647618"
+        }
+      ]
     },
     {
       "id": "request-builder",
       "action": "Draw the seeds from the ANU QRNG and register job-06 and job-07-i88 and -i96 with stride-8 anchors, frozen bodies and a preflight that sends nothing.",
       "acceptance": "--check reproduces the frozen bytes of jobs 00 to 05 and validates the new jobs; no new seed is zero or a seed of jobs 02, 04 or 05.",
-      "state": "todo",
+      "state": "doing",
       "depends_on": [
         "frozen-offsets"
       ]
