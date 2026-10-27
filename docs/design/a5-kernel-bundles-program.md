@@ -116,7 +116,9 @@ replaced by better ones:
 - The sandbox keeps git metadata and `~/.cache/gororoba-quantum` read-only, so the agent does not stage or commit and
   does not run `ci/pr_checks.sh`. At each sub-step boundary it leaves the files in the worktree, adds the ledger row,
   and ends the turn. The orchestrator reviews, runs the repository lanes and commits with the trailer
-  `Assisted-by: Codex CLI (gpt-daybreak-blue-latest)`.
+  `Assisted-by: Codex CLI (gpt-daybreak-blue-latest)`. An uncommitted or staged completed sub-step never blocks the
+  next one: continue immediately with the next item, keep each sub-step in its own new files where possible, and
+  never treat a pending orchestrator commit as a blocker.
 
 ## Standing rules
 
