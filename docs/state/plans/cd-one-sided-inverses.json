@@ -1,0 +1,156 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-one-sided-inverses",
+  "kind": "investigation",
+  "summary": "Prove and replay that every Cayley-Dickson algebra has ker L_a = ker R_a, so a b = 1 forces b a = 1; index the Rocq proof sources in a root formalization.yaml.",
+  "sources": [
+    "docs/notes/topics/cd-one-sided-inverses.md",
+    "docs/evidence/cd-one-sided-inverses/README.md",
+    "formalization.yaml"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Opened from the openai/math crosswalk: family 197 claims a counterexample to direct finiteness in an untwisted group algebra of a torsion-free group; the twisted group algebras R^sigma[Z_2^n] of cd_core keep it at every n (Corollary 9.3 of math/0511691), which the note proves and the record checks."
+  },
+  "scope": "The written proof in docs/notes/topics/cd-one-sided-inverses.md, the exact replay scripts/cd_one_sided_inverses.py with its retained record under docs/evidence/cd-one-sided-inverses/ and gate core-record-check-08, and the root formalization.yaml indexing the fourteen Rocq sources. A Rocq proof of the kernel equality and dimensions above 32 stay out of scope.",
+  "owner": "repository maintainer",
+  "next_action": "None; the plan is closed. A Rocq statement of Lemma 4 and the theorem against CdTowerBasisSign.v is the open follow-up (action item 7 of math-0511691.md).",
+  "related": [
+    "rocq-certificate-statement-split"
+  ],
+  "steps": [
+    {
+      "id": "written-proof",
+      "state": "done",
+      "action": "Write Lemmas 1 to 4, the kernel-equality theorem and the inverse corollary by induction on the doubling, with no use of associativity.",
+      "acceptance": "Fails if any lemma step uses an identity that the doubling does not preserve, or if a checked element violates the theorem.",
+      "receipts": [
+        {
+          "result": "Lemmas 1 to 4, the theorem and the corollary are written by induction on the doubling with the zero cases split and the kernel equality credited to Corollary 9.3 of math/0511691; every checked element of the record satisfies them.",
+          "observed_at": "2026-10-27T16:17:43+00:00",
+          "revision": "bbfd30cd4795bb1317afc34388c19cff14466ea6",
+          "evidence": [
+            {
+              "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+              "sha256": "3ed5afc421f7dcc449f9610a9818fce99909b9ca2d30362ad47b7d59103bfffb"
+            }
+          ],
+          "scope_sha256": "5cdec5df38ff69009c02a286ca33d4272e94fd8340ca75ef8e9263d32cfd62a9"
+        }
+      ]
+    },
+    {
+      "id": "exact-replay",
+      "state": "done",
+      "action": "Check the basis identities through dimension 128 and the kernel equality with the two-sided inverse law on every signed two-blade, three-unit sum and doubly pure grid element at dimension 16 and every signed two-blade at dimension 32; retain the record and gate it.",
+      "acceptance": "Fails if --check departs from the retained bytes, if pooled and serial runs differ, or if any element raises.",
+      "receipts": [
+        {
+          "result": "--check reproduces the record pooled and serial (GOROROBA_WORKERS=1, identical bytes); 0 strictly one-sided inverses among 1554 checked zero-divisor family instances and 8904 inverse offsets; gate core-record-check-08 runs in about 10 s serial.",
+          "observed_at": "2026-10-27T16:17:43+00:00",
+          "revision": "bbfd30cd4795bb1317afc34388c19cff14466ea6",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-one-sided-inverses/record.json",
+              "sha256": "72da8d44264f05683345614e5b4187bd9162ed2cb97a3813697570d0ace6d9c9"
+            },
+            {
+              "ref": "scripts/cd_one_sided_inverses.py",
+              "sha256": "8e61523042ba170cf9fefd38a20f9290feec9e22a8d6881cf0ea4e4d6d32c364"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=core-record-check-08",
+              "sha256": "2aeb3194834389ad04337ae89d99a1b5c68086c2008fc7846d5179f74477684f"
+            }
+          ],
+          "scope_sha256": "ff284f20260d975b2318474503efd2047cce6b95f4a2fdc25b58bca14b455aca"
+        }
+      ]
+    },
+    {
+      "id": "formalization-index",
+      "state": "done",
+      "action": "Write the root formalization.yaml in the mathlib-initiative v0.4 schema with selected main-result declarations, their files and their theorem-specific Print Assumptions lists, and retain the schema bytes.",
+      "acceptance": "Fails if the file does not validate against v0.4.schema.json or names a declaration, file or source that the tree lacks.",
+      "receipts": [
+        {
+          "result": "formalization.yaml validates against the retained v0.4.schema.json with jsonschema 4.26.0; all 20 listed declarations exist in their files and every named source exists in the tree.",
+          "observed_at": "2026-10-27T16:17:43+00:00",
+          "revision": "bbfd30cd4795bb1317afc34388c19cff14466ea6",
+          "evidence": [
+            {
+              "ref": "formalization.yaml",
+              "sha256": "0452a21edfadd87a55ca9ee8463ee4ccba32f04c07309d97db34b8af64e2e992"
+            },
+            {
+              "ref": "docs/evidence/formalization-yaml-schema/v0.4.schema.json",
+              "sha256": "25ff6b25ca4511635aff4443cf20480c15e59dddf19591c730950b442ea54fce"
+            }
+          ],
+          "scope_sha256": "38a78b0e32a989c69af542b1fa3d8bf76de04f175ab09150e8e0e8a2999dc13d"
+        },
+        {
+          "result": "formalization.yaml validates against the retained v0.4.schema.json with jsonschema 4.26.0; the 20 listed declarations exist in their files, their proved statements sit under alignment, and every named source exists in the tree.",
+          "observed_at": "2026-10-27T16:56:43+00:00",
+          "revision": "7ce36d1f2733dba175c488fb73418b71c2c47fae",
+          "evidence": [
+            {
+              "ref": "formalization.yaml",
+              "sha256": "944f8ca2628b5fd0027b4c695ded13e86ea2115cb8e453245dd77a9537a4ae58"
+            },
+            {
+              "ref": "docs/evidence/formalization-yaml-schema/v0.4.schema.json",
+              "sha256": "25ff6b25ca4511635aff4443cf20480c15e59dddf19591c730950b442ea54fce"
+            }
+          ],
+          "scope_sha256": "38a78b0e32a989c69af542b1fa3d8bf76de04f175ab09150e8e0e8a2999dc13d"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "The note proves the theorem, gate core-record-check-08 replays the record, and formalization.yaml validates; all three steps carry receipts at the committed revision.",
+  "receipts": [
+    {
+      "result": "All three steps are done with receipts at the review-fix revision: the attributed proof, the gated derived record and the validated formalization.yaml with its retained schema.",
+      "observed_at": "2026-10-27T16:17:43+00:00",
+      "revision": "bbfd30cd4795bb1317afc34388c19cff14466ea6",
+      "evidence": [
+        {
+          "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+          "sha256": "3ed5afc421f7dcc449f9610a9818fce99909b9ca2d30362ad47b7d59103bfffb"
+        },
+        {
+          "ref": "docs/evidence/cd-one-sided-inverses/record.json",
+          "sha256": "72da8d44264f05683345614e5b4187bd9162ed2cb97a3813697570d0ace6d9c9"
+        },
+        {
+          "ref": "formalization.yaml",
+          "sha256": "0452a21edfadd87a55ca9ee8463ee4ccba32f04c07309d97db34b8af64e2e992"
+        }
+      ],
+      "scope_sha256": "809badae45058c580f3efdc8ce5b0c6fa02a7a8a25ed6e2aac4066e3d0225bdf"
+    },
+    {
+      "result": "All three steps are done with receipts: the attributed proof, the gated derived record with a pooled-versus-serial test, and the validated formalization.yaml with its retained schema and alignment block.",
+      "observed_at": "2026-10-27T16:56:43+00:00",
+      "revision": "7ce36d1f2733dba175c488fb73418b71c2c47fae",
+      "evidence": [
+        {
+          "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+          "sha256": "3ed5afc421f7dcc449f9610a9818fce99909b9ca2d30362ad47b7d59103bfffb"
+        },
+        {
+          "ref": "docs/evidence/cd-one-sided-inverses/record.json",
+          "sha256": "72da8d44264f05683345614e5b4187bd9162ed2cb97a3813697570d0ace6d9c9"
+        },
+        {
+          "ref": "formalization.yaml",
+          "sha256": "944f8ca2628b5fd0027b4c695ded13e86ea2115cb8e453245dd77a9537a4ae58"
+        }
+      ],
+      "scope_sha256": "809badae45058c580f3efdc8ce5b0c6fa02a7a8a25ed6e2aac4066e3d0225bdf"
+    }
+  ]
+}

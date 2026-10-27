@@ -1,0 +1,149 @@
+{
+  "schema_version": 7,
+  "schema_contract": "live-target-statistical-design-invocation-budget-v1",
+  "state": "approval_required",
+  "started": "2026-10-26T08:38:00.427156+00:00",
+  "experiment_digest": "91501d8729dd0d70ae41692f78f669e6aa3816c58cac521177d7b969a2b33ab6",
+  "system_inventory": {
+    "ibm_kingston": {
+      "eligibility": "eligible",
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 17,
+      "calibration": "2026-10-26T00:48:55-07:00",
+      "fetched_at": "2026-10-26T08:38:04+00:00",
+      "backend_version": "1.0.0",
+      "processor_type": {
+        "family": "Heron",
+        "revision": "2"
+      },
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 258.0049117660371,
+        "t2_us": 163.0270806285709,
+        "readout_error": 0.0087890625,
+        "cz_error": 0.0016695922450558481
+      },
+      "excluded_qubits": {
+        "113": "readout error 0.132",
+        "115": "T1=230.7us T2=15.2us",
+        "121": "missing calibration: \"Couldn't find the property 'T2' for qubit 121.\"",
+        "131": "sx error 0.0244",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
+      },
+      "excluded_edges": {
+        "85-86": "cz error 0.05580215918149037",
+        "86-85": "cz error 0.05580215918149037",
+        "86-87": "cz error 0.057438907819177154",
+        "87-86": "cz error 0.057438907819177154",
+        "111-112": "cz error 0.2025390308479963",
+        "112-111": "cz error 0.2025390308479963",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.04673203884538307",
+        "120-121": "cz error 0.05897084015191334",
+        "121-116": "cz error 0.04673203884538307",
+        "121-120": "cz error 0.05897084015191334",
+        "121-122": "cz error 0.051862147216969995",
+        "122-121": "cz error 0.051862147216969995",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    }
+  },
+  "skipped_backends": {},
+  "approved_record": {
+    "run": "2026-10-26T055648.326039Z",
+    "record_sha256": "d27a2aa95dadd7b6e94f6c4045f689f627f5641e4253cfe4455bd2e20f2ae38a",
+    "qpy_archive_sha256": "4f784d5f83a913b973699d48ceed90a9223afd729b5e71454c0031c222586683",
+    "calibration_preflight": {
+      "compared_at": "2026-10-26T08:38:05+00:00",
+      "accepted_timestamp_changes": [],
+      "mismatches": [
+        "msq_static_q91: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:91 0.0458984375 -> 0.005859375; e10:91 0.001953125 -> 0.00244140625; target:measure(91,):error 0.02392578125 -> 0.004150390625)",
+        "msq_dynamic_q91: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:91 0.0458984375 -> 0.005859375; e10:91 0.001953125 -> 0.00244140625; target:measure(91,):error 0.02392578125 -> 0.004150390625)",
+        "msq_static_q118: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:118 0.0068359375 -> 0.01171875; e10:118 0.00244140625 -> 0.00146484375; target:measure(118,):error 0.0040283203125 -> 0.006591796875)",
+        "msq_dynamic_q118: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:118 0.0068359375 -> 0.01171875; e10:118 0.00244140625 -> 0.00146484375; target:measure(118,):error 0.0040283203125 -> 0.006591796875)",
+        "msq_static_q95: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:95 0.00830078125 -> 0.013671875; e10:95 0.00341796875 -> 0.0009765625; target:measure(95,):error 0.005859375 -> 0.00732421875)",
+        "msq_dynamic_q95: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:95 0.00830078125 -> 0.013671875; e10:95 0.00341796875 -> 0.0009765625; target:measure(95,):error 0.005859375 -> 0.00732421875)",
+        "msq_static_q61: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:61 0.017822265625 -> 0.00439453125; e10:61 0.003662109375 -> 0.00390625; target:measure(61,):error 0.0107421875 -> 0.004150390625)",
+        "msq_dynamic_q61: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:61 0.017822265625 -> 0.00439453125; e10:61 0.003662109375 -> 0.00390625; target:measure(61,):error 0.0107421875 -> 0.004150390625)",
+        "msq_static_q147: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:147 0.0166015625 -> 0.00732421875; e10:147 0 -> 0.00048828125; target:measure(147,):error 0.00830078125 -> 0.00390625)",
+        "msq_dynamic_q147: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:147 0.0166015625 -> 0.00732421875; e10:147 0 -> 0.00048828125; target:measure(147,):error 0.00830078125 -> 0.00390625)",
+        "msq_static_q151: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:151 0.00830078125 -> 0.0078125; e10:151 0.007080078125 -> 0.00341796875; target:measure(151,):error 0.0076904296875 -> 0.005615234375)",
+        "msq_dynamic_q151: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:151 0.00830078125 -> 0.0078125; e10:151 0.007080078125 -> 0.00341796875; target:measure(151,):error 0.0076904296875 -> 0.005615234375)",
+        "msq_static_q59: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:59 0.0068359375 -> 0.0126953125; e10:59 0.000244140625 -> 0.00537109375; target:measure(59,):error 0.0035400390625 -> 0.009033203125)",
+        "msq_dynamic_q59: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:59 0.0068359375 -> 0.0126953125; e10:59 0.000244140625 -> 0.00537109375; target:measure(59,):error 0.0035400390625 -> 0.009033203125)",
+        "msq_static_q89: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:89 0.007568359375 -> 0.00537109375; e10:89 0.0029296875 -> 0.00439453125; target:measure(89,):error 0.0052490234375 -> 0.0048828125)",
+        "msq_dynamic_q89: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:89 0.007568359375 -> 0.00537109375; e10:89 0.0029296875 -> 0.00439453125; target:measure(89,):error 0.0052490234375 -> 0.0048828125)"
+      ]
+    },
+    "mismatches": [
+      "msq_static_q91: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:91 0.0458984375 -> 0.005859375; e10:91 0.001953125 -> 0.00244140625; target:measure(91,):error 0.02392578125 -> 0.004150390625)",
+      "msq_dynamic_q91: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:91 0.0458984375 -> 0.005859375; e10:91 0.001953125 -> 0.00244140625; target:measure(91,):error 0.02392578125 -> 0.004150390625)",
+      "msq_static_q118: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:118 0.0068359375 -> 0.01171875; e10:118 0.00244140625 -> 0.00146484375; target:measure(118,):error 0.0040283203125 -> 0.006591796875)",
+      "msq_dynamic_q118: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:118 0.0068359375 -> 0.01171875; e10:118 0.00244140625 -> 0.00146484375; target:measure(118,):error 0.0040283203125 -> 0.006591796875)",
+      "msq_static_q95: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:95 0.00830078125 -> 0.013671875; e10:95 0.00341796875 -> 0.0009765625; target:measure(95,):error 0.005859375 -> 0.00732421875)",
+      "msq_dynamic_q95: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:95 0.00830078125 -> 0.013671875; e10:95 0.00341796875 -> 0.0009765625; target:measure(95,):error 0.005859375 -> 0.00732421875)",
+      "msq_static_q61: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:61 0.017822265625 -> 0.00439453125; e10:61 0.003662109375 -> 0.00390625; target:measure(61,):error 0.0107421875 -> 0.004150390625)",
+      "msq_dynamic_q61: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:61 0.017822265625 -> 0.00439453125; e10:61 0.003662109375 -> 0.00390625; target:measure(61,):error 0.0107421875 -> 0.004150390625)",
+      "msq_static_q147: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:147 0.0166015625 -> 0.00732421875; e10:147 0 -> 0.00048828125; target:measure(147,):error 0.00830078125 -> 0.00390625)",
+      "msq_dynamic_q147: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:147 0.0166015625 -> 0.00732421875; e10:147 0 -> 0.00048828125; target:measure(147,):error 0.00830078125 -> 0.00390625)",
+      "msq_static_q151: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:151 0.00830078125 -> 0.0078125; e10:151 0.007080078125 -> 0.00341796875; target:measure(151,):error 0.0076904296875 -> 0.005615234375)",
+      "msq_dynamic_q151: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:151 0.00830078125 -> 0.0078125; e10:151 0.007080078125 -> 0.00341796875; target:measure(151,):error 0.0076904296875 -> 0.005615234375)",
+      "msq_static_q59: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:59 0.0068359375 -> 0.0126953125; e10:59 0.000244140625 -> 0.00537109375; target:measure(59,):error 0.0035400390625 -> 0.009033203125)",
+      "msq_dynamic_q59: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:59 0.0068359375 -> 0.0126953125; e10:59 0.000244140625 -> 0.00537109375; target:measure(59,):error 0.0035400390625 -> 0.009033203125)",
+      "msq_static_q89: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:89 0.007568359375 -> 0.00537109375; e10:89 0.0029296875 -> 0.00439453125; target:measure(89,):error 0.0052490234375 -> 0.0048828125)",
+      "msq_dynamic_q89: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:89 0.007568359375 -> 0.00537109375; e10:89 0.0029296875 -> 0.00439453125; target:measure(89,):error 0.0052490234375 -> 0.0048828125)"
+    ]
+  },
+  "renewed_approval": {
+    "required_at": "2026-10-26T08:38:05+00:00",
+    "reason": "the approved circuits read changed calibration values at the first discovery, before planning",
+    "mismatches": [
+      "msq_static_q91: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:91 0.0458984375 -> 0.005859375; e10:91 0.001953125 -> 0.00244140625; target:measure(91,):error 0.02392578125 -> 0.004150390625)",
+      "msq_dynamic_q91: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:91 0.0458984375 -> 0.005859375; e10:91 0.001953125 -> 0.00244140625; target:measure(91,):error 0.02392578125 -> 0.004150390625)",
+      "msq_static_q118: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:118 0.0068359375 -> 0.01171875; e10:118 0.00244140625 -> 0.00146484375; target:measure(118,):error 0.0040283203125 -> 0.006591796875)",
+      "msq_dynamic_q118: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:118 0.0068359375 -> 0.01171875; e10:118 0.00244140625 -> 0.00146484375; target:measure(118,):error 0.0040283203125 -> 0.006591796875)",
+      "msq_static_q95: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:95 0.00830078125 -> 0.013671875; e10:95 0.00341796875 -> 0.0009765625; target:measure(95,):error 0.005859375 -> 0.00732421875)",
+      "msq_dynamic_q95: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:95 0.00830078125 -> 0.013671875; e10:95 0.00341796875 -> 0.0009765625; target:measure(95,):error 0.005859375 -> 0.00732421875)",
+      "msq_static_q61: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:61 0.017822265625 -> 0.00439453125; e10:61 0.003662109375 -> 0.00390625; target:measure(61,):error 0.0107421875 -> 0.004150390625)",
+      "msq_dynamic_q61: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:61 0.017822265625 -> 0.00439453125; e10:61 0.003662109375 -> 0.00390625; target:measure(61,):error 0.0107421875 -> 0.004150390625)",
+      "msq_static_q147: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:147 0.0166015625 -> 0.00732421875; e10:147 0 -> 0.00048828125; target:measure(147,):error 0.00830078125 -> 0.00390625)",
+      "msq_dynamic_q147: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:147 0.0166015625 -> 0.00732421875; e10:147 0 -> 0.00048828125; target:measure(147,):error 0.00830078125 -> 0.00390625)",
+      "msq_static_q151: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:151 0.00830078125 -> 0.0078125; e10:151 0.007080078125 -> 0.00341796875; target:measure(151,):error 0.0076904296875 -> 0.005615234375)",
+      "msq_dynamic_q151: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:151 0.00830078125 -> 0.0078125; e10:151 0.007080078125 -> 0.00341796875; target:measure(151,):error 0.0076904296875 -> 0.005615234375)",
+      "msq_static_q59: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:59 0.0068359375 -> 0.0126953125; e10:59 0.000244140625 -> 0.00537109375; target:measure(59,):error 0.0035400390625 -> 0.009033203125)",
+      "msq_dynamic_q59: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:59 0.0068359375 -> 0.0126953125; e10:59 0.000244140625 -> 0.00537109375; target:measure(59,):error 0.0035400390625 -> 0.009033203125)",
+      "msq_static_q89: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:89 0.007568359375 -> 0.00537109375; e10:89 0.0029296875 -> 0.00439453125; target:measure(89,):error 0.0052490234375 -> 0.0048828125)",
+      "msq_dynamic_q89: calibration 2026-10-25T22:31:11-07:00 -> 2026-10-26T00:48:55-07:00: 3 calibration values changed (e01:89 0.007568359375 -> 0.00537109375; e10:89 0.0029296875 -> 0.00439453125; target:measure(89,):error 0.0052490234375 -> 0.0048828125)"
+    ]
+  }
+}

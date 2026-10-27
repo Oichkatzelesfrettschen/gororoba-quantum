@@ -10,6 +10,7 @@ the supplied eigenstate label as an observed first bit.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from fractions import Fraction
@@ -866,8 +867,8 @@ def window_bracket_violations(isa: QuantumCircuit, inside: frozenset[str] = froz
     ]
 
 
-def ideal_compiled_probabilities(circuit: QuantumCircuit, *, max_active_qubits: int = 12) -> tuple[float, ...]:
-    """Check a bounded ISA circuit after removing idle physical wires through public DAG APIs.
+def compact_ideal_circuit(circuit: QuantumCircuit, *, max_active_qubits: int = 12) -> QuantumCircuit:
+    """The circuit ideal_compiled_probabilities computes on: barriers and idle physical wires removed.
 
     Barriers impose scheduling constraints and act as the identity in the
     ideal branch calculation. Classical registers retain their recorded-bit
@@ -887,7 +888,36 @@ def ideal_compiled_probabilities(circuit: QuantumCircuit, *, max_active_qubits: 
             f"{circuit.name}: ideal ISA gate needs {compact.num_qubits} active qubits, "
             f"above the explicit limit {max_active_qubits}"
         )
-    return ideal_branch_probabilities(compact)
+    return compact
+
+
+def ideal_compiled_probabilities(circuit: QuantumCircuit, *, max_active_qubits: int = 12) -> tuple[float, ...]:
+    """The exact branch law of a bounded ISA circuit over its classical bits (compact_ideal_circuit)."""
+    return ideal_branch_probabilities(compact_ideal_circuit(circuit, max_active_qubits=max_active_qubits))
+
+
+def oracle_key(compact: QuantumCircuit) -> str | None:
+    """sha256 of everything ideal_branch_probabilities reads from a compact circuit, or None for control flow.
+
+    The key holds each instruction's name, parameters, unit, and qubit and clbit positions, and the bit counts; the
+    circuit's name and register names stay out. Two circuits with one key share their exact branch law, so a check
+    over many compiled copies of one member on different physical qubits computes the law once.
+    """
+    rows: list[Any] = [compact.num_qubits, compact.num_clbits]
+    for instruction in compact.data:
+        operation = instruction.operation
+        if isinstance(operation, ControlFlowOp):
+            return None
+        rows.append(
+            [
+                operation.name,
+                [repr(float(value)) if isinstance(value, (int, float)) else repr(value) for value in operation.params],
+                getattr(operation, "unit", None),
+                [compact.find_bit(qubit).index for qubit in instruction.qubits],
+                [compact.find_bit(clbit).index for clbit in instruction.clbits],
+            ]
+        )
+    return hashlib.sha256(json.dumps(rows, separators=(",", ":")).encode()).hexdigest()
 
 
 def _check_herald_structure(heralded: QuantumCircuit, twin: QuantumCircuit, windowed: bool = True) -> None:
