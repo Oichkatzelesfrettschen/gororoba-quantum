@@ -6289,6 +6289,13 @@ def main(argv: list[str] | None = None) -> int:
         "--ground-control-split and their sweeps",
     )
     parser.add_argument(
+        "--detuning-sign",
+        action="store_true",
+        help="with --window-doses-dt and --init-herald: the detuning-sign test, the free-idle pair's no-feedback "
+        "member in both quadratures at every dose, the echo's at the largest dose, and Ramsey arms of the work bits "
+        "for 1 and 16 in X and Y at every dose, all without feed-forward",
+    )
+    parser.add_argument(
         "--segmented-delays-dt",
         type=_dt_list,
         metavar="D,D,...",
@@ -6595,6 +6602,8 @@ def main(argv: list[str] | None = None) -> int:
         ):
             if given:
                 parser.error(f"--window-doses-dt and {flag} are separate n21-orbit-rca configurations")
+    if args.detuning_sign and (args.window_doses_dt is None or not args.init_herald):
+        parser.error("--detuning-sign requires --window-doses-dt and --init-herald")
     args.segmented_sweep = None
     segmented_flags = (args.segments, args.backaction_delays_dt, args.backaction_pre_idle_dt)
     if args.segmented_delays_dt is None and any(value is not None for value in segmented_flags):

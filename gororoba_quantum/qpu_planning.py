@@ -76,6 +76,7 @@ from qpe_diagnostics import (
     n21_dose_violations,
     n21_ramsey_multiple,
     n21_segmented_key,
+    n21_work_ramsey_key,
 )
 
 # The ground Ramsey sweep's preregistered analysis. Its source closure (the
@@ -181,7 +182,9 @@ def settings(args: Any) -> dict[str, Any]:
     sweep = getattr(args, "segmented_sweep", None)
     segmented = {"segmented_sweep": sweep, "segmented_analyzer_closure": segmented_analyzer_closure()} if sweep else {}
     doses = getattr(args, "window_doses_dt", None)
-    dosed = {"window_doses": list(doses)} if doses else {}
+    dosed: dict[str, Any] = {"window_doses": list(doses)} if doses else {}
+    if getattr(args, "detuning_sign", False):
+        dosed["detuning_sign"] = True
     latency = {
         name: getattr(args, name) for name in ("latency_dt", "window_dt") if getattr(args, name, None) is not None
     }
@@ -457,6 +460,11 @@ def window_doses_of(members: Any) -> tuple[int, ...]:
     return tuple(sorted({key[1] for key in found if key is not None}))
 
 
+def detuning_sign_of(members: Any) -> bool:
+    """Whether a group is the detuning-sign test, which alone holds work Ramsey arms."""
+    return any(n21_work_ramsey_key(member.name) is not None for member in members)
+
+
 def window_dose_timing_violations(runtime: Any, snapshot: Any, doses: tuple[int, ...]) -> None:
     """Raise unless every dose, and every echo quarter of it, plays as a Target delay."""
     target = snapshot.backend.target
@@ -549,6 +557,7 @@ def _control_windows(
         ramsey_windows=ramsey,
         segmented=segmented,
         window_doses=doses,
+        detuning_sign=detuning_sign_of(candidate.group.members),
     )
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
@@ -1119,6 +1128,7 @@ def family_candidates(
                         ramsey_windows=ramsey,
                         segmented=sweep,
                         window_doses=doses,
+                        detuning_sign=bool(getattr(args, "detuning_sign", False)),
                     )
                     placed = runtime.select_candidates(group, [snapshot], args.seeds, local, pinned)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
@@ -1205,7 +1215,10 @@ def family_candidates(
                                         ),
                                     }
                                     if getattr(args, "ground_control_split", False)
-                                    else {"window_doses": list(doses)}
+                                    else {
+                                        "window_doses": list(doses),
+                                        **({"detuning_sign": True} if getattr(args, "detuning_sign", False) else {}),
+                                    }
                                     if doses
                                     else {"window_sweep": True}
                                     if args.family == "n21-orbit-rca"

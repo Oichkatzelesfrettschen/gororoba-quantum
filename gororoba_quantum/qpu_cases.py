@@ -382,6 +382,12 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             "window_doses is recorded only for n21-orbit-rca without another sweep",
         )
         arguments.extend(["--window-doses-dt", ",".join(str(value) for value in doses)])
+    if "detuning_sign" in design:
+        _require(
+            design["detuning_sign"] is True and "window_doses" in design and design.get("init_herald") is True,
+            "detuning_sign is recorded as true only with window_doses and init_herald",
+        )
+        arguments.append("--detuning-sign")
     if "segmented_sweep" in design:
         from diagnostic_experiments import n21_segmented_config
 
@@ -1997,7 +2003,23 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "echo's restoration of it.",
                 "",
             ]
-            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("window_doses")
+            if family == "n21-orbit-rca"
+            and record.get("family_configuration", {}).get("window_doses")
+            and not record.get("family_configuration", {}).get("detuning_sign")
+            else []
+        ),
+        *(
+            [
+                "--detuning-sign replaces the window-dose sweep with its free-idle no-feedback member at each dose D "
+                "read in two quadratures, the cosine and, through P(-pi/2) on the control before the second-round "
+                "Hadamard, the sine of the work superposition's relative phase; the echo member in both quadratures "
+                "at the largest dose; and Ramsey arms of the work bits for 1 and for 16 over the same idles in X and "
+                "Y. The relative phase turns at the frame offset of the bit for 16 minus that of the bit for 1, so "
+                "the two readings of that difference in one job test the frame-offset account of the sweep's "
+                "residual with its sign.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("detuning_sign")
             else []
         ),
         *(
