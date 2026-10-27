@@ -50,27 +50,33 @@ n_opp in the opposite class (n_same + n_opp = 30):
 
 ## Isolated probes and b
 
-20 of the 62 probes (8 targets reading spectators, 12 spectators reading targets; 10 in each class of P1) have no
+20 of the 62 probes (8 targets reading spectators, 12 spectators reading targets; 10 in each class under both
+partitions, from 7 isolated pairs in A and 8 in B) have no
 other pair's reader within three hops. For them `near` is identically zero, `c_p` is structurally absent, and
 `Q_p = b n_opp / 30`. Their `30 Q_p / n_opp` estimate b; the residuals of the remaining isolated probes about that
 estimate are a far-field homogeneity diagnostic and enter no share.
 
 - **b functional**: the median over isolated physical pairs of the pair's mean `30 Q_p / n_opp` across its isolated
-  roles (15 pairs; five contribute both roles), per partition, and pooled over partitions as the median of the two
-  per-partition values' mean.
-- **Class agreement**: b from class A isolated pairs and from class B isolated pairs, each with its cluster
-  bootstrap interval; the pooled b is used only when the two intervals overlap, else b is reported per class and
-  every decision below reads "unresolved".
+  roles (15 pairs; five contribute both roles), per partition; the pooled b is the mean of the two per-partition
+  medians.
+- **Class agreement** (diagnostic): b from class A and from class B isolated pairs, each with its bootstrap
+  interval. With 7 and 8 isolated pairs per class it detects only a disagreement several times b's own interval
+  width; non-overlapping intervals mark every decision below "unresolved", and overlap establishes no
+  homogeneity.
 - **Coefficients**: `a_p = R_p - b n_same / 30` and, for non-isolated probes, `c_p = Q_p - b n_opp / 30`, per
   partition and averaged over the two partitions.
 
 ## Resampling
 
-A pair-cluster bootstrap: 4000 replicates, each drawing 31 physical pairs with replacement, keeping both roles of
-a pair together, and recomputing within the replicate the per-probe contrasts from the drawn pairs' laws resampled
+A stratified pair-cluster bootstrap: 4000 replicates, each drawing physical pairs with replacement within three
+strata (isolated pairs of P1 class A, isolated pairs of P1 class B, the 16 non-isolated pairs), so no replicate
+lacks the isolated pairs b and class agreement need; both roles of a pair stay together; and recomputing within the replicate the per-probe contrasts from the drawn pairs' laws resampled
 multinomially at their shot counts, b, every coefficient, the D_p selection, the shares and the residual.
 Intervals are percentile 95%. The generator is numpy's `default_rng` seeded by one value from an ANU draw, spelled
-`qrng:<draw>#<index>` in the case and the analysis record, with replicates drawn in a fixed order. All pairs share
+`qrng:<draw>#<index>` in the case and the analysis record. Every replicate's pair indices and multinomial draws
+come from that one generator in a fixed order before any estimate runs; the estimates are batched across
+replicates with numpy and pooled through parallel.py, and a gate proves the batched path returns the scalar
+reference's bits ([vectorized-fits.md](../runbooks/vectorized-fits.md)). All pairs share
 each wide PUB's shots, so the bootstrap describes pair-to-pair and shot variation and makes no claim of
 independence across PUBs.
 
@@ -118,8 +124,10 @@ Total: 55 PUBs.
    - b, class agreement, a_p, c_p, the residual, the shares and the bootstrap above;
    - the exposure gate per class: within a class every replica shares one schedule, and every quiet replica's
      probe window contains every reading replica's train in absolute schedule time (`scheduler_timing`);
-   - a readout digest over the 23 retained members' replica-0 per-role ISA sequences, which the probe run's
-     records also yield, for the replication comparison.
+   - a readout digest over the retained members' replica-0 per-role ISA sequences, excluding the placement anchor
+     `idle_cz_kick` as `campaign_digest` does (`PLACEMENT_ANCHORS`: a pinned compile commutes the partner's X
+     through the CZ), which the unpinned probe run's records also yield, for the replication comparison;
+   - the batched bootstrap and its bit-equality gate against the scalar reference.
 
 Collection itself needs no new decoding: `_archived_entries` splits replicas by register and decodes each
 replica's laws regardless of body.
@@ -137,8 +145,10 @@ collects on its own code, and this branch merges into it only after both collect
   on uniform bodies in the probe (all 31 windows from 1700 to 11700 dt, trains from 4392 to 11391 dt) and untested
   on mixed bodies. The dry run must show it in a local ALAP schedule of every mixed PUB; the post-collection
   exposure gate refuses a run whose service schedule breaks it.
-- **Self-check**: Aer has no readout crosstalk, so the dry run's predictions must read every R_p, Q_p, D_p, a_p,
-  c_p and b inside +-0.3 kHz and the residual inside +-0.3 kHz.
+- **Self-check**: Aer has no readout crosstalk, and the dry run's predicted laws are shot-sampled at the job's
+  shots, so the null is checked at cohort level: b's interval contains zero, the counts of "resolved" a_p and c_p
+  labels do not exceed the 99th percentile of a binomial count at the label's two-sided rate (0.001) over the
+  family, the median residual's interval lies inside [-0.5, 0.5] kHz, and decision 4 reads "mixed".
 
 ## Placement, shots and seconds
 
@@ -187,6 +197,7 @@ descriptive; the cohort decisions use the bootstrap.
 
 ## Open before a case
 
-- The advisor's review of this revision.
-- The implementation, the mutation test, the mixed-PUB schedule check and the self-check.
+- The analyzer and its planted-law mutation test, on synthetic laws over the pinned geometry, before any change
+  to experiments, packing or live_run.
+- The execution changes, the mixed-PUB schedule check and the self-check.
 - A written case with the binding dry run, and the owner's approval of that case before any submit.
