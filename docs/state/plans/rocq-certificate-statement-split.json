@@ -32,8 +32,8 @@
     },
     {
       "id": "design-statement-check",
-      "action": "Write the mechanism: a statement file that defines only what the theorem type needs and states it as a Prop, a check file that requires the proof and the statement and ascribes the theorem (Definition check : Statement := theorem), and an allow-list of assumptions compared with Print Assumptions output. Decide how duplicated definitions in the statement file are proved convertible with the proof file's definitions without editing the proof.",
-      "acceptance": "A design note under docs/design/ that names the trusted base (the statement files, the allow-list, the pinned Rocq toolchain and rocq check), the failure each check catches, and a falsifier: a mutated statement and a proof-side redefinition of a statement definition each make the check fail.",
+      "action": "Write the mechanism: a statement file that defines only what the theorem type needs and states it as a Prop, a check file that requires the proof and the statement and ascribes the theorem (Definition check : Statement := theorem), and an allow-list of assumptions compared with Print Assumptions output. Rocq inductive types are generative, so a statement file that re-declares an Inductive of the proof file creates a distinct type that never converts; decide between module-type ascription of the unchanged proof (Module Check : StatementSig := ProofLib), a statement file the proof already requires, and plain Definitions that convert by unfolding.",
+      "acceptance": "A design note under docs/design/ that names the trusted base (the statement files, the allow-list, the pinned Rocq toolchain and rocq check), the failure each check catches, and three falsifiers that each make the check fail: a mutated statement, a proof-side redefinition of a statement definition, and a statement whose type mentions an inductive declared in the proof file handled by the rejected route.",
       "state": "todo",
       "depends_on": [
         "inventory-statements"

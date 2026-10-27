@@ -76,10 +76,20 @@ names two Comparator challenges, both in the namespace `OAI.Erdos970`:
 - [I] Notation. This paper's `h(k)` is the maximum over every modulus with at most `k` prime factors. Ziller's
   `h(k)` in [2007.01808.md](2007.01808.md) is the primorial value `j(P_k)`, which is also the largest element of his
   difference set `D(k)`. So `Ziller h(k) = j(P_k) <= h(k)` here, with equality for `k <= 23` by Hajdu and Saradha.
-- [I] Problem. The Lean namespace places the bound under Erdos Problem 970, the size of the largest gap. The
-  [primorial cover defects](../topics/primorial-cover-defects.md) concern Erdos Problem 854, the even gaps that never
-  occur below that maximum ([erdos-854-consecutive-coprime-gaps.md](erdos-854-consecutive-coprime-gaps.md)). Both
-  rest on the same covering of an interval by one residue class per prime.
+- [P] Problem record. The Lean namespace `OAI.Erdos970` names [Erdos Problem 970](https://www.erdosproblems.com/970)
+  (read 27 October 2026): determine the order of magnitude of `h(k)`, defined as here over every `n` with at most
+  `k` prime factors, and decide whether `h(k) << k^2`. The page credits the conjecture to Jacobsthal, lists
+  Iwaniec's `h(k) << (k log k)^2`, and calls the problem a more general form of Problem 687, which was not read.
+- [I] Lower-bound discrepancy. The Problem 970 page displays the Ford-Green-Konyagin-Maynard-Tao bound as
+  `h(k) >> k log k log log log k / (log log k)^2`, while equation (1.1) of the paper gives
+  `j(P_k) >> k (log k)^2 log log log k / log log k`. The paper derives its form from the covered-interval bound
+  `x log x log log log x / log log x` at `x = p_k ~ k log k`, and that substitution yields (1.1); the cited
+  Ford-Green-Konyagin-Maynard-Tao paper was not read, so which display matches its theorem is unchecked.
+- [I] Problem. Problem 970 asks for the size of the uniform maximum. The
+  [primorial cover defects](../topics/primorial-cover-defects.md) concern Erdos Problem 854, the even gaps between
+  integers coprime to a primorial that never occur below the primorial maximum
+  ([erdos-854-consecutive-coprime-gaps.md](erdos-854-consecutive-coprime-gaps.md)). Both rest on the same covering
+  of an interval by one residue class per prime.
 - [I] Numbers. Theorem 1.1 has no explicit constant, so it bounds no instance at `k = 6, 8, 14`; Ziller's Table 1
   already gives exact `h(k)` through `k = 44`. The theorem fixes only the growth scale of the range in which
   missing gaps can sit.

@@ -65,8 +65,10 @@ PDF page indices.
   QFT whose classically conditioned phases include angles finer than `pi/2`, on the Heron r2 basis `cz, rz, sx, x`
   with continuous `rz`. The paper's phases stop at `S`, and its exactness is a property of the ideal gate model;
   device noise removes probability one on any hardware.
-- [I] Dynamic circuits. Lemma 2.2 is the deferred-measurement principle; Heron r2 executes the measured form directly
-  as a dynamic circuit, so the paper's unitary form and the repository's feed-forward form share one distribution.
+- [I] Dynamic circuits. Lemma 2.2 is the deferred-measurement principle: the paper's own procedure has the same
+  output distribution in its measured and its unitary form. Heron r2 could run the measured form as a dynamic
+  circuit with mid-circuit measurement and feed-forward. The statement concerns the paper's construction only; the
+  hybrid Shor circuits of this repository are a different algorithm with a different output distribution.
 - [I] Resources. With `n >= 128` the transition cap `n^10` exceeds `10^21`, so the construction offers nothing to the
   resource floor of [factoring-notes.md](../../design/factoring-notes.md); Gidney's estimate remains the cost
   reference there.
