@@ -2172,6 +2172,149 @@ def _verify_state_prep_only() -> None:
     )
 
 
+def _verify_measurement_sequence_family() -> None:
+    """measurement-sequence pins each member to its qubit, fuses 30 static and 20 dynamic PUBs, admits 8192 shots."""
+    backend = _ProbeBackend("measurement_sequence_fixture", FakeFez())
+    service = _ProbeService([backend])
+    with redirect_stdout(io.StringIO()):
+        snapshot = live_run.take_snapshot(cast(Any, service), backend.name)
+    qubits = [qubit for qubit in range(40, 156, 7) if qubit not in snapshot.excluded_qubits][:3]
+    _require(len(qubits) == 3, "FakeFez lacks 3 admitted fixture qubits")
+    base = {
+        "optimize": True,
+        "shot_tiers": [4096, 8192, 16384],
+        "optimizer_candidates": 1,
+        "max_execution_seconds": 90,
+        "max_total_execution_seconds": 200.0,
+        "reserve_seconds": 0.0,
+    }
+    trace: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(
+        live_run, [snapshot], _args("measurement-sequence", layout=qubits, **base), trace
+    )
+    _require(len(candidates) == 1, f"the declared layout produced {len(candidates)} candidates: {trace}")
+    choices, configuration = candidates[0]
+    _require(configuration["qubits"] == qubits and configuration["layout_source"] == "declared", "layout lost")
+    _require(set(configuration["measurement_delay_dt"]) == {str(q) for q in qubits}, "measure durations lost")
+    _require(set(configuration["settle_delay_dt"]) == {str(q) for q in qubits}, "settle durations lost")
+    target = snapshot.backend.target
+    granularity = max(1, int(target.granularity))
+    for key in ("settle_delay_dt", "prereadout_delay_dt"):
+        _require(set(configuration[key]) == {str(q) for q in qubits}, f"{key} lost")
+        for qubit in qubits:
+            dt_count = configuration[key][str(qubit)]
+            _require(
+                dt_count % granularity == 0
+                and dt_count * target.dt >= 2.0e-6
+                and (dt_count - granularity) * target.dt < 2.0e-6,
+                f"{key} {dt_count} dt is not 2 us rounded up to the granularity",
+            )
+    t1_delays = configuration["t1_delays_dt"]
+    _require(len(t1_delays) == 5 and t1_delays[0] == 0, f"t1 idles {t1_delays}")
+    for microseconds, dt_count in zip((0, 20, 50, 100, 200), t1_delays, strict=True):
+        _require(
+            dt_count % granularity == 0
+            and dt_count * target.dt >= microseconds * 1e-6
+            and (dt_count == 0 or (dt_count - granularity) * target.dt < microseconds * 1e-6),
+            f"t1 idle {dt_count} dt is not {microseconds} us rounded up to the granularity",
+        )
+    _require(len(choices) == 2 * len(qubits), "each qubit needs one static and one dynamic group")
+    for choice in choices:
+        qubit = int(choice.group.name.rsplit("_q", 1)[1])
+        _require([r.qubits for r in choice.replicas] == [[qubit]], f"{choice.group.name}: moved off qubit {qubit}")
+    pubs = live_run.execution_pubs(choices)
+    _require(
+        sorted(pub.kind for pub in pubs) == ["dynamic"] * 20 + ["static"] * 30, "the members fused into other PUBs"
+    )
+    for pub in pubs:
+        covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
+        _require(covered == sorted(qubits), f"{pub.name}: measures {covered}, not every named qubit")
+        members = {component.entry.name.split("_q")[0] for component in pub.components}
+        _require(len(members) == 1, f"{pub.name}: mixes members {members}")
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require([g.name for g in rebuilt] == [c.group.name for c in choices], "record_groups lost the per-qubit groups")
+    try:
+        qpu_planning.family_candidates(live_run, [snapshot], _args("measurement-sequence", **base), {})
+    except live_run.LiveRunError as error:
+        _require("--layout" in str(error), f"the planner refused for another reason: {error}")
+    else:
+        raise RuntimeError("measurement-sequence was planned without --layout")
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+    single = _args("measurement-sequence", layout=qubits[:1], **base)
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        _selected, metadata = qpu_planning.prepare(live_run, [snapshot], single, usage, {})
+    _require(single.shots == 8192, f"the optimizer selected {single.shots} shots")
+    rejected = {
+        int(row["proxy_metadata"]["shots"]) for row in metadata["optimization"]["candidates"] if not row["feasible"]
+    }
+    # 16384 shots exceed the fixture's 90 s per-job ceiling over the 49 PUBs; 8192 shots fit (about 99 s of charge).
+    _require(rejected == {4096, 16384}, f"the optimizer rejected tiers {rejected}, not 4096 and 16384")
+    _require(len(metadata["observable_contracts"]) == 17, "the plan lost a per-qubit endpoint")
+
+
+def _verify_measurement_sequence_diagnostic_family() -> None:
+    """The diagnostic pins six static members per qubit, fuses six PUBs over all qubits and refuses a coupled pair."""
+    import measurement_sequence_scatter as scatter
+
+    backend = _ProbeBackend("measurement_sequence_diagnostic_fixture", FakeFez())
+    service = _ProbeService([backend])
+    with redirect_stdout(io.StringIO()):
+        snapshot = live_run.take_snapshot(cast(Any, service), backend.name)
+    calibration = scatter.calibration_from_snapshot(snapshot)
+    qubits = scatter.select_extra_qubits(calibration, (), 12)
+    base = {
+        "optimize": True,
+        "shot_tiers": [4096, 8192, 16384],
+        "optimizer_candidates": 1,
+        "max_execution_seconds": 90,
+        "max_total_execution_seconds": 200.0,
+        "reserve_seconds": 0.0,
+    }
+    trace: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(
+        live_run, [snapshot], _args("measurement-sequence-diagnostic", layout=qubits, **base), trace
+    )
+    _require(len(candidates) == 1, f"the diagnostic layout produced {len(candidates)} candidates: {trace}")
+    choices, configuration = candidates[0]
+    _require(configuration["qubits"] == qubits and configuration["layout_source"] == "declared", "layout lost")
+    _require(configuration["main_qubits"] == [] and configuration["extra_qubits"] == qubits, "qubit roles lost")
+    _require(set(configuration["plan_calibration"]) == {str(q) for q in qubits}, "plan calibration lost")
+    _require(len(choices) == len(qubits), "each qubit needs one static group")
+    pubs = live_run.execution_pubs(choices)
+    _require(sorted(pub.kind for pub in pubs) == ["static"] * 6, "the members fused into other PUBs")
+    for pub in pubs:
+        covered = sorted(q for component in pub.components for q in component.manifest()["physical_qubits"])
+        _require(covered == sorted(qubits), f"{pub.name}: measures {covered}, not every named qubit")
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require([g.name for g in rebuilt] == [c.group.name for c in choices], "record_groups lost the per-qubit groups")
+    edge = calibration["edges"][0]
+    coupled = _args("measurement-sequence-diagnostic", layout=[edge[0], edge[1]], **base)
+    refused: dict[str, Any] = {}
+    _require(not qpu_planning.family_candidates(live_run, [snapshot], coupled, refused), "a coupled pair was planned")
+    _require("coupled pairs" in str(refused.get("family_rejections")), f"refused for another reason: {refused}")
+    usage = {"usage_limit_reached": False, "usage_remaining_seconds": 300.0}
+    single = _args("measurement-sequence-diagnostic", layout=qubits, **base)
+    with patch.object(live_run, "simulate", _ideal_predictions):
+        _selected, metadata = qpu_planning.prepare(live_run, [snapshot], single, usage, {})
+    _require(single.shots == 8192, f"the optimizer selected {single.shots} shots")
+    _require(len(metadata["observable_contracts"]) == 2 * len(qubits), "the plan lost a per-qubit endpoint")
+
+
+def _verify_measurement_sequence_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _verify_measurement_sequence_family()
+        _verify_measurement_sequence_diagnostic_family()
+    print(
+        "QPU planning: measurement-sequence pins each member to its named qubit with the qubit's calibrated "
+        "measure duration, fuses 30 static and 20 dynamic PUBs over every qubit, plans nothing without --layout and "
+        "admits 8192 shots; measurement-sequence-diagnostic fuses six static PUBs over uncoupled qubits, refuses a "
+        "coupled pair and admits 8192 shots"
+    )
+
+
 def _verify_rep_delay_only() -> None:
     with (
         patch.object(live_run, "QiskitRuntimeService", _forbid_service),
@@ -2730,6 +2873,243 @@ def _verify_ground_ramsey_sweep(snapshot: live_run.Snapshot) -> None:
         with redirect_stderr(stderr), contextlib.suppress(SystemExit):
             live_run.main(argv)
         _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}, not {message!r}")
+
+
+WINDOW_DOSES = [0, 3500, 7000]
+
+
+def _verify_window_dose_packing(snapshot: live_run.Snapshot) -> None:
+    """Unpinned, a window-dose sweep takes the replica tiers; the window variants stay at one replica."""
+    packed = _args(
+        "n21-orbit-rca",
+        init_herald=True,
+        window_doses_dt=WINDOW_DOSES,
+        optimize=True,
+        replica_tiers=[4],
+        max_replicas=4,
+    )
+    packed_candidates = qpu_planning.family_candidates(live_run, [snapshot], packed, {})
+    _require(
+        any(config.get("replica_cap") == 4 and len(choices[0].replicas) >= 2 for choices, config in packed_candidates),
+        "an unpinned window-dose sweep places one replica under a four-replica tier",
+    )
+
+
+def _verify_window_dose_sweep(snapshot: live_run.Snapshot) -> None:
+    """A window-dose plan keeps each dose as a top-level delay on all four wires and binds the doses.
+
+    The group holds a window_dose feedback pair at every dose and a
+    window_dose_echo pair at every nonzero dose. After the transpiler, every
+    qubit of a window_dose arm holds one delay of exactly the dose, and in
+    a window_dose_echo arm the control and the work bit for 4 hold the dose
+    and the other work bits delay a quarter, play X, delay a half, play X and
+    delay a quarter; no if_else body holds a delay. The policy and the
+    configuration carry the sorted doses and no window_sweep, record_groups,
+    family_contracts and the written command rebuild them, a dose that
+    breaks the Target's delay timing refuses the snapshot, and live_run
+    refuses the flag on another family or beside another sweep.
+    """
+    _require("window_doses" not in qpu_planning.settings(_args("n21-orbit-rca")), "absent doses entered the policy")
+    pin = {"backend": snapshot.name, "qubits": PINNED_ORBIT_LAYOUT}
+    arguments = _args("n21-orbit-rca", init_herald=True, window_doses_dt=WINDOW_DOSES, pin_layout=pin)
+    settings = qpu_planning.settings(arguments)
+    _require(settings.get("window_doses") == WINDOW_DOSES, f"the policy binds {settings.get('window_doses')}")
+    with tempfile.TemporaryDirectory() as scratch:
+        approved_dir = Path(scratch)
+        approved: dict[str, Any] = {"state": "planned", "policy": {"design": settings}, "groups": []}
+        (approved_dir / "record.json").write_text(json.dumps(approved))
+        (approved_dir / "isa.qpy").write_bytes(b"dose")
+        digest = hashlib.sha256(b"dose").hexdigest()
+        _require(
+            not live_run.approved_record_mismatches(approved_dir, json.loads(json.dumps(approved)), digest),
+            "an unchanged window-dose plan differs from its own approved record",
+        )
+        moved = qpu_planning.settings(_args("n21-orbit-rca", init_herald=True, window_doses_dt=[0, 3500, 7004]))
+        _require(
+            "policy differs"
+            in live_run.approved_record_mismatches(approved_dir, {**approved, "policy": {"design": moved}}, digest),
+            "a changed dose list leaves the approved record's policy equal",
+        )
+    traces: dict[str, Any] = {}
+    candidates = qpu_planning.family_candidates(live_run, [snapshot], arguments, traces)
+    _require(bool(candidates), f"FakeFez refuses the window-dose sweep: {traces.get('family_rejections')}")
+    (choice,), configuration = candidates[0]
+    expected = [
+        qpe_diagnostics.n21_dose_name(variant, dose, feedback)
+        for dose in WINDOW_DOSES
+        for variant in ("window_dose", "window_dose_echo")
+        if dose or variant == "window_dose"
+        for feedback in (True, False)
+    ]
+    names = [member.name for member in choice.group.members]
+    _require(names == expected, f"the window-dose sweep plans {names}")
+    _require(
+        configuration.get("window_doses") == WINDOW_DOSES
+        and "window_sweep" not in configuration
+        and configuration.get("init_herald") is True,
+        f"the window-dose configuration reads {configuration}",
+    )
+    for name, isa in zip(names, choice.isas, strict=True):
+        key = qpe_diagnostics.n21_dose_key(name)
+        _require(key is not None, f"{name} is not a window-dose member")
+        variant, dose, _feedback = cast(tuple[str, int, bool], key)
+        for instruction in isa.data:
+            if instruction.operation.name == "if_else":
+                for body in instruction.operation.blocks:
+                    _require(
+                        not any(inner.operation.name == "delay" for inner in body.data),
+                        f"{name} holds a delay inside an if_else body",
+                    )
+        names_in_order = [inner.operation.name for inner in isa.data]
+        # The barriers bracket the control's mid-circuit measure and reset;
+        # a nonzero dose opens with a full-width barrier after the reset, so
+        # its delays and echo pulses start once the reset ends. Instruction
+        # order on one wire is the program order, and across wires is not.
+        reset = names_in_order.index("reset")
+        opened = reset - names_in_order[reset::-1].index("barrier")
+        closed = reset + 1
+        while closed < len(names_in_order) and names_in_order[closed] in ("delay", "x", "barrier"):
+            closed += 1
+        tail = isa.data[reset + 1 : closed]
+        first_dose = next((k for k, inner in enumerate(tail) if inner.operation.name in ("delay", "x")), None)
+        if dose:
+            _require(
+                first_dose is not None
+                and any(
+                    inner.operation.name == "barrier" and len(inner.qubits) == len(PINNED_ORBIT_LAYOUT)
+                    for inner in tail[:first_dose]
+                ),
+                f"{name} starts its dose without a full-width barrier after the reset",
+            )
+        window = [inner for inner in isa.data[opened + 1 : closed] if inner.operation.name in ("delay", "x")]
+        programs = {
+            wire: [
+                (inner.operation.name, int(inner.operation.duration) if inner.operation.name == "delay" else None)
+                for inner in window
+                if any(isa.find_bit(q).index == wire for q in inner.qubits)
+            ]
+            for wire in PINNED_ORBIT_LAYOUT
+        }
+        plain = [("delay", dose)] if dose else []
+        quarter = dose // 4
+        echoed = [("delay", quarter), ("x", None), ("delay", 2 * quarter), ("x", None), ("delay", quarter)]
+        # The echo moves the superposition's work bits for 1 and 16 through
+        # X pulses; the control and the bit for 4, which stays in |0>, idle.
+        echo_arm = variant == "window_dose_echo"
+        want = {PINNED_ORBIT_LAYOUT[role]: echoed if echo_arm and role in (1, 3) else plain for role in range(4)}
+        _require(programs == want, f"{name} plays {programs}, not {want}")
+    rebuilt = diagnostic_experiments.record_groups({"family_configuration": configuration})
+    _require([member.name for member in rebuilt[0].members] == names, "record_groups does not rebuild the doses")
+    contracts = diagnostic_experiments.family_contracts("n21-orbit-rca", 0.08, 0.05, 0.8, configuration=configuration)
+    _require(
+        [contract.name for contract in contracts]
+        == [
+            f"n21_orbit_{variant}_d{dose}_feedback_contrast"
+            for dose in WINDOW_DOSES
+            for variant in ("window_dose", "window_dose_echo")
+            if dose or variant == "window_dose"
+        ]
+        and all(contract.precision_half_width == 0.08 and len(contract.terms) == 2 for contract in contracts),
+        f"the window-dose family contracts read {[contract.name for contract in contracts]}",
+    )
+    fixture = qpu_cases._fixture()
+    location = Path("results/live/fixture/record.json")
+    fixture["policy"]["design"]["family"] = "n21-orbit-rca"
+    fixture["policy"]["design"]["window_doses"] = WINDOW_DOSES
+    fixture["family_configuration"] = {
+        **fixture.get("family_configuration", {}),
+        "name": "n21-orbit-rca",
+        "window_doses": WINDOW_DOSES,
+    }
+    replay = qpu_cases._reproduction_arguments(fixture, location)
+    case = " ".join(qpu_cases._scientific_case("n21-orbit-rca", fixture))
+    _require(
+        "--window-doses-dt" in replay
+        and replay[replay.index("--window-doses-dt") + 1] == "0,3500,7000"
+        and "--window-doses-dt is the window-dose sweep" in case,
+        f"a window-dose record's written command or case text omits the doses: {replay}",
+    )
+    for doses, reason in (([0, 3500, 7001], "the echo needs"), ([0, 3500, 1], "is not a multiple of granularity")):
+        try:
+            qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-rca", window_doses_dt=doses), {})
+        except (live_run.LiveRunError, ValueError) as error:
+            _require(reason in str(error), f"doses {doses} are refused as {error}")
+        else:
+            raise RuntimeError(f"the planner accepted doses {doses}")
+    _require(
+        qpe_diagnostics.n21_dose_violations([0, 4096], 16, 2) == []
+        and len(qpe_diagnostics.n21_dose_violations([0, 4097], 16, 2)) == 1
+        and len(qpe_diagnostics.n21_dose_violations([0, 4112], 16, 2)) == 1,
+        "the timing check ignores the Target's granularity",
+    )
+    for kwargs in (
+        {"window_sweep": True},
+        {"overlap_split": True, "reset_dt": 520},
+        {"ground_control_split": True, "reset_dt": 520},
+        {"ramsey_windows": (1, 2)},
+        {"segmented": SEGMENTED_SWEEP},
+    ):
+        try:
+            diagnostic_experiments.n21_orbit_rca_group(415, 502, window_doses=tuple(WINDOW_DOSES), **kwargs)
+        except ValueError as error:
+            _require("window_doses excludes" in str(error), f"the group refused {kwargs} as {error}")
+        else:
+            raise RuntimeError(f"the group accepted window_doses beside {kwargs}")
+    ceilings = ["--max-execution-seconds", "10", "--max-total-execution-seconds", "10"]
+    pinned = ["--pin-layout", f"{snapshot.name}:{','.join(str(q) for q in PINNED_ORBIT_LAYOUT)}"]
+    for argv, message in (
+        (["--family", "n21-feedback", "--window-doses-dt", "0,3500,7000", *ceilings], "n21-orbit-rca family only"),
+        (["--family", "n21-orbit-rca", "--window-doses-dt", "0,3500", *ceilings], "window_doses needs 0"),
+        (["--family", "n21-orbit-rca", "--window-doses-dt", "3500,7000,14000", *ceilings], "window_doses needs 0"),
+        (["--family", "n21-orbit-rca", "--window-doses-dt", "0,1,3500", *ceilings], "window_doses needs 0"),
+        (["--family", "n21-orbit-rca", "--window-doses-dt", "0,3500,3500", *ceilings], "window_doses needs 0"),
+        (
+            ["--family", "n21-orbit-rca", "--window-doses-dt", "0,3500,7000", "--overlap-split", *pinned, *ceilings],
+            "separate n21-orbit-rca configurations",
+        ),
+        (
+            [
+                "--family",
+                "n21-orbit-rca",
+                "--window-doses-dt",
+                "0,3500,7000",
+                "--ground-control-split",
+                "--init-herald",
+                *pinned,
+                *ceilings,
+            ],
+            "separate n21-orbit-rca configurations",
+        ),
+    ):
+        stderr = io.StringIO()
+        with redirect_stderr(stderr), contextlib.suppress(SystemExit):
+            live_run.main(argv)
+        _require(message in stderr.getvalue(), f"live_run {argv} reads {stderr.getvalue()!r}, not {message!r}")
+
+
+def _verify_window_dose_packing_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_window_dose_packing(snapshot)
+    print("QPU planning: an unpinned n21-orbit-rca window-dose sweep places several replicas under a replica tier")
+
+
+def _verify_window_dose_sweep_only() -> None:
+    with (
+        patch.object(live_run, "QiskitRuntimeService", _forbid_service),
+        patch.object(live_run, "configure_sampler", _forbid_service),
+    ):
+        _service, snapshot = _fixture()
+        _verify_window_dose_sweep(snapshot)
+    print(
+        "QPU planning: an n21-orbit-rca window-dose sweep plans a window_dose pair at every dose and a "
+        "window_dose_echo pair at every nonzero dose, keeps each dose as a top-level delay on all four wires, "
+        "binds the sorted doses in the configuration, policy, contracts and written command, and refuses doses "
+        "that break the Target's delay timing, another family and every other sweep"
+    )
 
 
 SEGMENTED_SWEEP: dict[str, Any] = {
@@ -3333,6 +3713,9 @@ if __name__ == "__main__":
     parser.add_argument("--rep-delay", action="store_true", help="run only the requested repetition-delay contracts")
     parser.add_argument("--state-prep", action="store_true", help="run only the state-prep-control planning contract")
     parser.add_argument(
+        "--measurement-sequence", action="store_true", help="run only the measurement-sequence planning contract"
+    )
+    parser.add_argument(
         "--prep-excitation", action="store_true", help="run only the declared initial-excitation contracts"
     )
     parser.add_argument(
@@ -3395,6 +3778,8 @@ if __name__ == "__main__":
         _verify_rep_delay_only()
     elif parsed.state_prep:
         _verify_state_prep_only()
+    elif parsed.measurement_sequence:
+        _verify_measurement_sequence_only()
     elif parsed.prep_excitation:
         _verify_prep_excitation_only()
     elif parsed.submit_reuse:

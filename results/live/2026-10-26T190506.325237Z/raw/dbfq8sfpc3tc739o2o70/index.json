@@ -1,0 +1,14 @@
+{
+ "files": {
+  "pub_00.json": "b00ef44d2a05f761373bca3e3d2f5c05b91683b58a59cfefc1c7152cdf39878e",
+  "result_metadata.json": "e158671e6a8e9fdda5e7b82b2100717a8d228601a76bf68e2bc407762f3d97fc"
+ },
+ "job_id": "dbfq8sfpc3tc739o2o70",
+ "metrics": [
+  "job_metrics.json"
+ ],
+ "metrics_latest": "job_metrics.json",
+ "metrics_sha256": [
+  "79175cf313d64a212754e04258e162bc4ab37ac6dcc5cd34324ea4881ab9a011"
+ ]
+}

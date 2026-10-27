@@ -32,10 +32,10 @@ acquisition of every provider:
 | --- | --- | ---: |
 | circuit-conformance check | established | 8 |
 | exact finite certificate | established | 25 |
-| exploratory reanalysis | exploratory | 85 |
+| exploratory reanalysis | exploratory | 86 |
 | exploratory reanalysis | superseded | 2 |
 | machine-checked proof | established | 10 |
-| mathematical claim | established | 29 |
+| mathematical claim | established | 30 |
 | mathematical claim | open | 2 |
 | numerical or stochastic simulation | established | 11 |
 | numerical or stochastic simulation | superseded | 1 |
@@ -356,6 +356,7 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 | [2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching](results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching) | IQM Resonance | IQM measurement-sequence pinching | garnet | 1 | 57 | completed | 5.0 credits |
 | [2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept](results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept) | IQM Resonance | IQM QET compensated ladder | garnet:mock | 1 | 22 | failed | 0.0 credits |
 | [2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00](results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00) | Quandela Cloud | single-chip teleportation rehearsal on qpu:belenos | qpu:belenos | 1 | 6 | completed | 2.2 credits |
+| [2026-10-26T031010.724660Z](results/live/2026-10-26T031010.724660Z) | IBM Quantum | measurement-sequence-diagnostic | ibm_kingston | 1 | 6 | DONE | 15 s |
 | [2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03](results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03) | Quandela Cloud | photonic signed-coherence seed repeat | qpu:ascella | 1 | 64 | completed | 1.032768 credits |
 | [2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept](results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept) | IQM Resonance | IQM QET compensated ladder | garnet:mock | 1 | 24 | failed | 0.0 credits |
 | [2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept](results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept) | IQM Resonance | IQM QET compensated ladder | garnet:mock | 1 | 24 | completed | 0.0 credits |
@@ -368,7 +369,7 @@ cross-branch coverage, denominator gaps and unresolved dependencies separately f
 
 The IBM service inventory observed at 2026-10-26T22:47:13.538509+00:00 holds 41 physical jobs with 499 settled seconds; the account then reported 499 of 600 s consumed in the rolling window ending 2026-10-26T22:47:13.488Z. That is an observation, not a current balance or an authorization.
 
-The IBM service inventory observed at 2026-10-25T23:36:01.130164+00:00 holds 4 physical jobs with 150 settled seconds; the account then reported 150 of 600 s consumed in the rolling window ending 2026-10-25T23:36:01.079Z. That is an observation, not a current balance or an authorization.
+The IBM service inventory observed at 2026-10-26T03:17:03.514437+00:00 holds 5 physical jobs with 165 settled seconds; the account then reported 165 of 600 s consumed in the rolling window ending 2026-10-26T03:17:03.462Z. That is an observation, not a current balance or an authorization.
 
 The Quantum Inspire ledger retrieved at 2026-10-23T08:28:26+00:00 lists 420 jobs with 7770112 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 

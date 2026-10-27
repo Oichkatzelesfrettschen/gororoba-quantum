@@ -1,0 +1,2163 @@
+{
+ "script_sha256": "45aca619e78bd6a18129c81fdeb49460e899807027522b077fb7e4e5cf05a985",
+ "versions": {
+  "python": "3.14.8",
+  "python_flint": "0.9.0"
+ },
+ "workers": 12,
+ "compact_g2_dimension": 14,
+ "rotation_generator": {
+  "skew": true,
+  "central_in_K_H": true,
+  "equals_i_times_split_boost": true
+ },
+ "statement_1": {
+  "points": {
+   "W8/rep": {
+    "orbit": "W8",
+    "nullity": 8,
+    "H_orbit_complex_dim": 12,
+    "compact_tangent_rank": 12
+   },
+   "W8/g1": {
+    "orbit": "W8",
+    "nullity": 8,
+    "H_orbit_complex_dim": 12,
+    "compact_tangent_rank": 15
+   },
+   "W8/g2": {
+    "orbit": "W8",
+    "nullity": 8,
+    "H_orbit_complex_dim": 12,
+    "compact_tangent_rank": 15
+   },
+   "W8/g3": {
+    "orbit": "W8",
+    "nullity": 8,
+    "H_orbit_complex_dim": 12,
+    "compact_tangent_rank": 15
+   },
+   "E8bar/rep": {
+    "orbit": "E8bar",
+    "nullity": 8,
+    "H_orbit_complex_dim": 11,
+    "compact_tangent_rank": 12
+   },
+   "E8bar/g1": {
+    "orbit": "E8bar",
+    "nullity": 8,
+    "H_orbit_complex_dim": 11,
+    "compact_tangent_rank": 15
+   },
+   "E8bar/g2": {
+    "orbit": "E8bar",
+    "nullity": 8,
+    "H_orbit_complex_dim": 11,
+    "compact_tangent_rank": 15
+   },
+   "E8bar/g3": {
+    "orbit": "E8bar",
+    "nullity": 8,
+    "H_orbit_complex_dim": 11,
+    "compact_tangent_rank": 15
+   },
+   "Iso/rep": {
+    "orbit": "Iso",
+    "nullity": 8,
+    "H_orbit_complex_dim": 11,
+    "compact_tangent_rank": 15
+   },
+   "Iso/g1": {
+    "orbit": "Iso",
+    "nullity": 8,
+    "H_orbit_complex_dim": 11,
+    "compact_tangent_rank": 15
+   },
+   "Iso/g2": {
+    "orbit": "Iso",
+    "nullity": 8,
+    "H_orbit_complex_dim": 11,
+    "compact_tangent_rank": 15
+   },
+   "Iso/g3": {
+    "orbit": "Iso",
+    "nullity": 8,
+    "H_orbit_complex_dim": 11,
+    "compact_tangent_rank": 15
+   },
+   "X+/rep": {
+    "orbit": "X+",
+    "nullity": 8,
+    "H_orbit_complex_dim": 10,
+    "compact_tangent_rank": 12
+   },
+   "X+/g1": {
+    "orbit": "X+",
+    "nullity": 8,
+    "H_orbit_complex_dim": 10,
+    "compact_tangent_rank": 15
+   },
+   "X+/g2": {
+    "orbit": "X+",
+    "nullity": 8,
+    "H_orbit_complex_dim": 10,
+    "compact_tangent_rank": 15
+   },
+   "X+/g3": {
+    "orbit": "X+",
+    "nullity": 8,
+    "H_orbit_complex_dim": 10,
+    "compact_tangent_rank": 15
+   },
+   "X-/rep": {
+    "orbit": "X-",
+    "nullity": 8,
+    "H_orbit_complex_dim": 10,
+    "compact_tangent_rank": 12
+   },
+   "X-/g1": {
+    "orbit": "X-",
+    "nullity": 8,
+    "H_orbit_complex_dim": 10,
+    "compact_tangent_rank": 15
+   },
+   "X-/g2": {
+    "orbit": "X-",
+    "nullity": 8,
+    "H_orbit_complex_dim": 10,
+    "compact_tangent_rank": 15
+   },
+   "X-/g3": {
+    "orbit": "X-",
+    "nullity": 8,
+    "H_orbit_complex_dim": 10,
+    "compact_tangent_rank": 15
+   }
+  },
+  "rep_ranks": {
+   "W8": 12,
+   "E8bar": 12,
+   "Iso": 15,
+   "X+": 12,
+   "X-": 12
+  },
+  "claimed_rep_ranks": {
+   "W8": 12,
+   "E8bar": 12,
+   "Iso": 15,
+   "X+": 12,
+   "X-": 12
+  },
+  "max_moved_rank": {
+   "W8": 15,
+   "E8bar": 15,
+   "Iso": 15,
+   "X+": 15,
+   "X-": 15
+  },
+  "all_points_in_their_orbit_nullity_8": true,
+  "generic_argument": "rank 15 at one point of the connected complex orbit makes rank 15 an open nonempty real-analytic condition, hence generic; stabilizer 0 makes the kernel representation 4 V_0",
+  "verdict": "confirmed"
+ },
+ "statement_2": {
+  "su2_strata": {
+   "W8": {
+    "rep": {
+     "stabilizer_dim": 3,
+     "derived_killing_negative_definite": true,
+     "su2_on_kernel": {
+      "V_1": 2
+     },
+     "su2_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "su2_on_14": {
+      "V_0": 3,
+      "V_1": 4,
+      "V_2": 1
+     }
+    },
+    "off_rep_points": {
+     "W8/so3_boost_a": {
+      "orbit": "W8",
+      "stabilizer_dim": 3,
+      "derived_killing_negative_definite": true,
+      "su2_on_kernel": {
+       "V_1": 2
+      },
+      "su2_on_7": {
+       "V_0": 3,
+       "V_1": 2
+      },
+      "su2_on_14": {
+       "V_0": 3,
+       "V_1": 4,
+       "V_2": 1
+      },
+      "hermitian_invariants": [
+       "1955/2694",
+       "739/2694",
+       "434/4041",
+       "351/898",
+       "0"
+      ]
+     },
+     "W8/so3_boost_b": {
+      "orbit": "W8",
+      "stabilizer_dim": 3,
+      "derived_killing_negative_definite": true,
+      "su2_on_kernel": {
+       "V_1": 2
+      },
+      "su2_on_7": {
+       "V_0": 3,
+       "V_1": 2
+      },
+      "su2_on_14": {
+       "V_0": 3,
+       "V_1": 4,
+       "V_2": 1
+      },
+      "hermitian_invariants": [
+       "1/2",
+       "1/2",
+       "0",
+       "3807/8770",
+       "0"
+      ]
+     }
+    },
+    "off_rep_points_outside_K_R+_orbit_of_rep": 2,
+    "claimed_kernel": {
+     "V_1": 2
+    },
+    "ok": true
+   },
+   "E8bar": {
+    "rep": {
+     "stabilizer_dim": 3,
+     "derived_killing_negative_definite": true,
+     "su2_on_kernel": {
+      "V_0": 2,
+      "V_1": 1
+     },
+     "su2_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "su2_on_14": {
+      "V_0": 3,
+      "V_1": 4,
+      "V_2": 1
+     }
+    },
+    "off_rep_points": {
+     "E8bar/so3_boost_a": {
+      "orbit": "E8bar",
+      "stabilizer_dim": 3,
+      "derived_killing_negative_definite": true,
+      "su2_on_kernel": {
+       "V_0": 2,
+       "V_1": 1
+      },
+      "su2_on_7": {
+       "V_0": 3,
+       "V_1": 2
+      },
+      "su2_on_14": {
+       "V_0": 3,
+       "V_1": 4,
+       "V_2": 1
+      },
+      "hermitian_invariants": [
+       "44657/97097",
+       "50840/97097",
+       "3572/97097",
+       "47514/97097",
+       "1600/97097"
+      ]
+     },
+     "E8bar/so3_boost_b": {
+      "orbit": "E8bar",
+      "stabilizer_dim": 3,
+      "derived_killing_negative_definite": true,
+      "su2_on_kernel": {
+       "V_0": 2,
+       "V_1": 1
+      },
+      "su2_on_7": {
+       "V_0": 3,
+       "V_1": 2
+      },
+      "su2_on_14": {
+       "V_0": 3,
+       "V_1": 4,
+       "V_2": 1
+      },
+      "hermitian_invariants": [
+       "17571/37126",
+       "2735321/5457522",
+       "0",
+       "126571/259882",
+       "69632/2728761"
+      ]
+     }
+    },
+    "off_rep_points_outside_K_R+_orbit_of_rep": 2,
+    "claimed_kernel": {
+     "V_0": 2,
+     "V_1": 1
+    },
+    "ok": true
+   },
+   "X+": {
+    "rep": {
+     "stabilizer_dim": 3,
+     "derived_killing_negative_definite": true,
+     "su2_on_kernel": {
+      "V_0": 2,
+      "V_1": 1
+     },
+     "su2_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "su2_on_14": {
+      "V_0": 3,
+      "V_1": 4,
+      "V_2": 1
+     }
+    },
+    "off_rep_points": {
+     "X+/so3_boost_a": {
+      "orbit": "X+",
+      "stabilizer_dim": 3,
+      "derived_killing_negative_definite": true,
+      "su2_on_kernel": {
+       "V_0": 2,
+       "V_1": 1
+      },
+      "su2_on_7": {
+       "V_0": 3,
+       "V_1": 2
+      },
+      "su2_on_14": {
+       "V_0": 3,
+       "V_1": 4,
+       "V_2": 1
+      },
+      "hermitian_invariants": [
+       "3193/5885",
+       "2692/5885",
+       "216/5885",
+       "584/1177",
+       "0"
+      ]
+     },
+     "X+/so3_boost_b": {
+      "orbit": "X+",
+      "stabilizer_dim": 3,
+      "derived_killing_negative_definite": true,
+      "su2_on_kernel": {
+       "V_0": 2,
+       "V_1": 1
+      },
+      "su2_on_7": {
+       "V_0": 3,
+       "V_1": 2
+      },
+      "su2_on_14": {
+       "V_0": 3,
+       "V_1": 4,
+       "V_2": 1
+      },
+      "hermitian_invariants": [
+       "28549/58442",
+       "29893/58442",
+       "0",
+       "145223/292210",
+       "0"
+      ]
+     },
+     "X+/core": {
+      "orbit": "X+",
+      "stabilizer_dim": 3,
+      "derived_killing_negative_definite": true,
+      "su2_on_kernel": {
+       "V_0": 2,
+       "V_1": 1
+      },
+      "su2_on_7": {
+       "V_0": 3,
+       "V_1": 2
+      },
+      "su2_on_14": {
+       "V_0": 3,
+       "V_1": 4,
+       "V_2": 1
+      },
+      "hermitian_invariants": [
+       "1/2",
+       "1/2",
+       "0",
+       "-1/6",
+       "0"
+      ]
+     }
+    },
+    "off_rep_points_outside_K_R+_orbit_of_rep": 3,
+    "claimed_kernel": {
+     "V_0": 2,
+     "V_1": 1
+    },
+    "ok": true
+   },
+   "X-": {
+    "rep": {
+     "stabilizer_dim": 3,
+     "derived_killing_negative_definite": true,
+     "su2_on_kernel": {
+      "V_0": 2,
+      "V_1": 1
+     },
+     "su2_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "su2_on_14": {
+      "V_0": 3,
+      "V_1": 4,
+      "V_2": 1
+     }
+    },
+    "off_rep_points": {
+     "X-/so3_boost_a": {
+      "orbit": "X-",
+      "stabilizer_dim": 3,
+      "derived_killing_negative_definite": true,
+      "su2_on_kernel": {
+       "V_0": 2,
+       "V_1": 1
+      },
+      "su2_on_7": {
+       "V_0": 3,
+       "V_1": 2
+      },
+      "su2_on_14": {
+       "V_0": 3,
+       "V_1": 4,
+       "V_2": 1
+      },
+      "hermitian_invariants": [
+       "121/797",
+       "676/797",
+       "-180/797",
+       "164/797",
+       "0"
+      ]
+     },
+     "X-/so3_boost_b": {
+      "orbit": "X-",
+      "stabilizer_dim": 3,
+      "derived_killing_negative_definite": true,
+      "su2_on_kernel": {
+       "V_0": 2,
+       "V_1": 1
+      },
+      "su2_on_7": {
+       "V_0": 3,
+       "V_1": 2
+      },
+      "su2_on_14": {
+       "V_0": 3,
+       "V_1": 4,
+       "V_2": 1
+      },
+      "hermitian_invariants": [
+       "22021/45386",
+       "23365/45386",
+       "0",
+       "112327/226930",
+       "0"
+      ]
+     },
+     "X-/core": {
+      "orbit": "X-",
+      "stabilizer_dim": 3,
+      "derived_killing_negative_definite": true,
+      "su2_on_kernel": {
+       "V_0": 2,
+       "V_1": 1
+      },
+      "su2_on_7": {
+       "V_0": 3,
+       "V_1": 2
+      },
+      "su2_on_14": {
+       "V_0": 3,
+       "V_1": 4,
+       "V_2": 1
+      },
+      "hermitian_invariants": [
+       "1/2",
+       "1/2",
+       "0",
+       "1/6",
+       "0"
+      ]
+     }
+    },
+    "off_rep_points_outside_K_R+_orbit_of_rep": 3,
+    "claimed_kernel": {
+     "V_0": 2,
+     "V_1": 1
+    },
+    "ok": true
+   }
+  },
+  "iso_coassociative_points_in_Iso": {
+   "Iso/beta_basis": {
+    "orbit": "Iso",
+    "three_form_values": [
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "stabilizer_dim": 1,
+    "circle_phase_coefficient_t": "1",
+    "circle_base_weights": [
+     "-1",
+     "-1",
+     "-1",
+     "-1",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "3",
+     "3",
+     "3",
+     "3"
+    ],
+    "kernel_weights_native": [
+     "-1",
+     "1",
+     "2",
+     "2"
+    ],
+    "kernel_weights_converted_-(w+t)": [
+     "-3",
+     "-3",
+     "-2",
+     "0"
+    ],
+    "circle_g2_part_squared_weights": [
+     "0",
+     "1",
+     "4"
+    ]
+   },
+   "Iso/beta_mixed": {
+    "orbit": "Iso",
+    "three_form_values": [
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "stabilizer_dim": 1,
+    "circle_phase_coefficient_t": "1",
+    "circle_base_weights": [
+     "-1",
+     "-1",
+     "-1",
+     "-1",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "3",
+     "3",
+     "3",
+     "3"
+    ],
+    "kernel_weights_native": [
+     "-1",
+     "1",
+     "2",
+     "2"
+    ],
+    "kernel_weights_converted_-(w+t)": [
+     "-3",
+     "-3",
+     "-2",
+     "0"
+    ],
+    "circle_g2_part_squared_weights": [
+     "0",
+     "1",
+     "4"
+    ]
+   },
+   "Iso/beta_conjugate_basis": {
+    "orbit": "Iso",
+    "three_form_values": [
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "stabilizer_dim": 1,
+    "circle_phase_coefficient_t": "1",
+    "circle_base_weights": [
+     "-1",
+     "-1",
+     "-1",
+     "-1",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "3",
+     "3",
+     "3",
+     "3"
+    ],
+    "kernel_weights_native": [
+     "-1",
+     "1",
+     "2",
+     "2"
+    ],
+    "kernel_weights_converted_-(w+t)": [
+     "-3",
+     "-3",
+     "-2",
+     "0"
+    ],
+    "circle_g2_part_squared_weights": [
+     "0",
+     "1",
+     "4"
+    ]
+   },
+   "Iso/beta_swapped_scaled": {
+    "orbit": "Iso",
+    "three_form_values": [
+     "0",
+     "0",
+     "0",
+     "0"
+    ],
+    "stabilizer_dim": 1,
+    "circle_phase_coefficient_t": "1",
+    "circle_base_weights": [
+     "-1",
+     "-1",
+     "-1",
+     "-1",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "0",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "1",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "2",
+     "3",
+     "3",
+     "3",
+     "3"
+    ],
+    "kernel_weights_native": [
+     "-1",
+     "1",
+     "2",
+     "2"
+    ],
+    "kernel_weights_converted_-(w+t)": [
+     "-3",
+     "-3",
+     "-2",
+     "0"
+    ],
+    "circle_g2_part_squared_weights": [
+     "0",
+     "1",
+     "4"
+    ]
+   }
+  },
+  "coassociative_pairs_outside_Iso": {
+   "Iso/alpha_basis": "B9",
+   "Iso/alpha_mixed": "B9"
+  },
+  "iso_nonvanishing_points": [
+   {
+    "label": "Iso/rep",
+    "three_form_values": [
+     "1",
+     "0",
+     "0",
+     "0"
+    ],
+    "stabilizer_dim": 0
+   },
+   {
+    "label": "Iso/g1",
+    "three_form_values": [
+     "1036947/80",
+     "-904163/160",
+     "404941/80",
+     "676273/80"
+    ],
+    "stabilizer_dim": 0
+   },
+   {
+    "label": "Iso/g2",
+    "three_form_values": [
+     "12553/54",
+     "93533/648",
+     "-35009/216",
+     "3841/18"
+    ],
+    "stabilizer_dim": 0
+   },
+   {
+    "label": "Iso/g3",
+    "three_form_values": [
+     "7515/64",
+     "34813/64",
+     "-24313/16",
+     "1585/4"
+    ],
+    "stabilizer_dim": 0
+   }
+  ],
+  "claimed_circle_weights_converted": [
+   "-3",
+   "-3",
+   "-2",
+   "0"
+  ],
+  "weight_normalization": "primitive circle generator Z, integer base weights of gcd 1, positive phase coefficient t; native kernel weight w means Z = w J; converted weight -(w + t)",
+  "verdict": "confirmed"
+ },
+ "statement_3": {
+  "incidences": {
+   "E8bar->V": {
+    "curves": [
+     {
+      "incidence": "E8bar->V",
+      "curve": "sheet+_v_moves_n1",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "V",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     },
+     {
+      "incidence": "E8bar->V",
+      "curve": "sheet+_v_moves_n2",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "V",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     },
+     {
+      "incidence": "E8bar->V",
+      "curve": "sheet+_u_moves_n1",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "V",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     },
+     {
+      "incidence": "E8bar->V",
+      "curve": "sheet+_mixed",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "V",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     },
+     {
+      "incidence": "E8bar->V",
+      "curve": "sheet-_v_moves_n1",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "V",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     }
+    ],
+    "valid_curves": 5,
+    "common_endpoint": true,
+    "all_curves_valid": true,
+    "distinct_limits": 4,
+    "classes": [
+     [
+      "sheet+_v_moves_n1",
+      "sheet+_u_moves_n1"
+     ],
+     [
+      "sheet+_v_moves_n2"
+     ],
+     [
+      "sheet+_mixed"
+     ],
+     [
+      "sheet-_v_moves_n1"
+     ]
+    ],
+    "pairwise_extra_dims": {
+     "sheet+_v_moves_n1|sheet+_v_moves_n2": 2,
+     "sheet+_v_moves_n1|sheet+_u_moves_n1": 0,
+     "sheet+_v_moves_n1|sheet+_mixed": 2,
+     "sheet+_v_moves_n1|sheet-_v_moves_n1": 4,
+     "sheet+_v_moves_n2|sheet+_u_moves_n1": 2,
+     "sheet+_v_moves_n2|sheet+_mixed": 2,
+     "sheet+_v_moves_n2|sheet-_v_moves_n1": 4,
+     "sheet+_u_moves_n1|sheet+_mixed": 2,
+     "sheet+_u_moves_n1|sheet-_v_moves_n1": 4,
+     "sheet+_mixed|sheet-_v_moves_n1": 4
+    }
+   },
+   "E8bar->Va+": {
+    "curves": [
+     {
+      "incidence": "E8bar->Va+",
+      "curve": "sheet+_u_linear",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "Va+",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     },
+     {
+      "incidence": "E8bar->Va+",
+      "curve": "sheet+_v_linear",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "Va+",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     },
+     {
+      "incidence": "E8bar->Va+",
+      "curve": "sheet+_mixed_n2",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "Va+",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     },
+     {
+      "incidence": "E8bar->Va+",
+      "curve": "sheet+_opposite_mu",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "Va+",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     },
+     {
+      "incidence": "E8bar->Va+",
+      "curve": "sheet-_v_linear",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "Va+",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     },
+     {
+      "incidence": "E8bar->Va+",
+      "curve": "sheet-_u_linear",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "E8bar",
+       "E8bar"
+      ],
+      "endpoint_orbit": "Va+",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 3,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false,
+       false,
+       false
+      ]
+     }
+    ],
+    "valid_curves": 6,
+    "common_endpoint": true,
+    "all_curves_valid": true,
+    "distinct_limits": 3,
+    "classes": [
+     [
+      "sheet+_u_linear",
+      "sheet+_v_linear",
+      "sheet+_opposite_mu"
+     ],
+     [
+      "sheet+_mixed_n2"
+     ],
+     [
+      "sheet-_v_linear",
+      "sheet-_u_linear"
+     ]
+    ],
+    "pairwise_extra_dims": {
+     "sheet+_u_linear|sheet+_v_linear": 0,
+     "sheet+_u_linear|sheet+_mixed_n2": 2,
+     "sheet+_u_linear|sheet+_opposite_mu": 0,
+     "sheet+_u_linear|sheet-_v_linear": 4,
+     "sheet+_u_linear|sheet-_u_linear": 4,
+     "sheet+_v_linear|sheet+_mixed_n2": 2,
+     "sheet+_v_linear|sheet+_opposite_mu": 0,
+     "sheet+_v_linear|sheet-_v_linear": 4,
+     "sheet+_v_linear|sheet-_u_linear": 4,
+     "sheet+_mixed_n2|sheet+_opposite_mu": 2,
+     "sheet+_mixed_n2|sheet-_v_linear": 4,
+     "sheet+_mixed_n2|sheet-_u_linear": 4,
+     "sheet+_opposite_mu|sheet-_v_linear": 4,
+     "sheet+_opposite_mu|sheet-_u_linear": 4,
+     "sheet-_v_linear|sheet-_u_linear": 0
+    }
+   },
+   "X+->B9": {
+    "curves": [
+     {
+      "incidence": "X+->B9",
+      "curve": "s_linear_w",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X+",
+       "X+"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     },
+     {
+      "incidence": "X+->B9",
+      "curve": "s_linear_w_plus_2m",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X+",
+       "X+"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     },
+     {
+      "incidence": "X+->B9",
+      "curve": "s_linear_i_w",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X+",
+       "X+"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     },
+     {
+      "incidence": "X+->B9",
+      "curve": "s_linear_w_plus_n",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X+",
+       "X+"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     },
+     {
+      "incidence": "X+->B9",
+      "curve": "s_quadratic_w_then_m",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X+",
+       "X+"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     },
+     {
+      "incidence": "X+->B9",
+      "curve": "s_tangent_then_w",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X+",
+       "X+"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 2,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     },
+     {
+      "incidence": "X+->B9",
+      "curve": "s_tangent_then_i_w",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X+",
+       "X+"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 2,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     }
+    ],
+    "valid_curves": 7,
+    "common_endpoint": true,
+    "all_curves_valid": true,
+    "distinct_limits": 1,
+    "classes": [
+     [
+      "s_linear_w",
+      "s_linear_w_plus_2m",
+      "s_linear_i_w",
+      "s_linear_w_plus_n",
+      "s_quadratic_w_then_m",
+      "s_tangent_then_w",
+      "s_tangent_then_i_w"
+     ]
+    ],
+    "pairwise_extra_dims": {
+     "s_linear_w|s_linear_w_plus_2m": 0,
+     "s_linear_w|s_linear_i_w": 0,
+     "s_linear_w|s_linear_w_plus_n": 0,
+     "s_linear_w|s_quadratic_w_then_m": 0,
+     "s_linear_w|s_tangent_then_w": 0,
+     "s_linear_w|s_tangent_then_i_w": 0,
+     "s_linear_w_plus_2m|s_linear_i_w": 0,
+     "s_linear_w_plus_2m|s_linear_w_plus_n": 0,
+     "s_linear_w_plus_2m|s_quadratic_w_then_m": 0,
+     "s_linear_w_plus_2m|s_tangent_then_w": 0,
+     "s_linear_w_plus_2m|s_tangent_then_i_w": 0,
+     "s_linear_i_w|s_linear_w_plus_n": 0,
+     "s_linear_i_w|s_quadratic_w_then_m": 0,
+     "s_linear_i_w|s_tangent_then_w": 0,
+     "s_linear_i_w|s_tangent_then_i_w": 0,
+     "s_linear_w_plus_n|s_quadratic_w_then_m": 0,
+     "s_linear_w_plus_n|s_tangent_then_w": 0,
+     "s_linear_w_plus_n|s_tangent_then_i_w": 0,
+     "s_quadratic_w_then_m|s_tangent_then_w": 0,
+     "s_quadratic_w_then_m|s_tangent_then_i_w": 0,
+     "s_tangent_then_w|s_tangent_then_i_w": 0
+    }
+   },
+   "X-->B9": {
+    "curves": [
+     {
+      "incidence": "X-->B9",
+      "curve": "d_linear_w",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X-",
+       "X-"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     },
+     {
+      "incidence": "X-->B9",
+      "curve": "d_linear_i_w",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X-",
+       "X-"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     },
+     {
+      "incidence": "X-->B9",
+      "curve": "d_linear_w_plus_2m",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X-",
+       "X-"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     },
+     {
+      "incidence": "X-->B9",
+      "curve": "d_quadratic_w_then_m",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X-",
+       "X-"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     },
+     {
+      "incidence": "X-->B9",
+      "curve": "d_tangent_then_w",
+      "degree": 2,
+      "closure_identity_samples": 9,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "X-",
+       "X-"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 2,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       true
+      ]
+     }
+    ],
+    "valid_curves": 5,
+    "common_endpoint": true,
+    "all_curves_valid": true,
+    "distinct_limits": 1,
+    "classes": [
+     [
+      "d_linear_w",
+      "d_linear_i_w",
+      "d_linear_w_plus_2m",
+      "d_quadratic_w_then_m",
+      "d_tangent_then_w"
+     ]
+    ],
+    "pairwise_extra_dims": {
+     "d_linear_w|d_linear_i_w": 0,
+     "d_linear_w|d_linear_w_plus_2m": 0,
+     "d_linear_w|d_quadratic_w_then_m": 0,
+     "d_linear_w|d_tangent_then_w": 0,
+     "d_linear_i_w|d_linear_w_plus_2m": 0,
+     "d_linear_i_w|d_quadratic_w_then_m": 0,
+     "d_linear_i_w|d_tangent_then_w": 0,
+     "d_linear_w_plus_2m|d_quadratic_w_then_m": 0,
+     "d_linear_w_plus_2m|d_tangent_then_w": 0,
+     "d_quadratic_w_then_m|d_tangent_then_w": 0
+    }
+   },
+   "W8->B9": {
+    "curves": [
+     {
+      "incidence": "W8->B9",
+      "curve": "d_only_a",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "W8",
+       "W8"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false
+      ]
+     },
+     {
+      "incidence": "W8->B9",
+      "curve": "d_only_b",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "W8",
+       "W8"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false
+      ]
+     },
+     {
+      "incidence": "W8->B9",
+      "curve": "s_and_d_a",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "W8",
+       "W8"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false
+      ]
+     },
+     {
+      "incidence": "W8->B9",
+      "curve": "s_and_d_b",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "W8",
+       "W8"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false
+      ]
+     },
+     {
+      "incidence": "W8->B9",
+      "curve": "s_a_d_b",
+      "degree": 1,
+      "closure_identity_samples": 5,
+      "closure_identity_ok": true,
+      "generic_orbit_at_t=1/2,1/3": [
+       "W8",
+       "W8"
+      ],
+      "endpoint_orbit": "B9",
+      "valid": true,
+      "boundary_kernel_dim": 12,
+      "chain_order": 1,
+      "limit_dim": 8,
+      "limit_in_boundary_kernel": true,
+      "limit_J_invariant": true,
+      "endpoint_compact_stabilizer_dim": 1,
+      "limit_invariant_under_endpoint_stabilizer": [
+       false
+      ]
+     }
+    ],
+    "valid_curves": 5,
+    "common_endpoint": true,
+    "all_curves_valid": true,
+    "distinct_limits": 3,
+    "classes": [
+     [
+      "d_only_a",
+      "s_and_d_a"
+     ],
+     [
+      "d_only_b",
+      "s_a_d_b"
+     ],
+     [
+      "s_and_d_b"
+     ]
+    ],
+    "pairwise_extra_dims": {
+     "d_only_a|d_only_b": 2,
+     "d_only_a|s_and_d_a": 0,
+     "d_only_a|s_and_d_b": 2,
+     "d_only_a|s_a_d_b": 2,
+     "d_only_b|s_and_d_a": 2,
+     "d_only_b|s_and_d_b": 2,
+     "d_only_b|s_a_d_b": 0,
+     "s_and_d_a|s_and_d_b": 2,
+     "s_and_d_a|s_a_d_b": 2,
+     "s_and_d_b|s_a_d_b": 2
+    }
+   }
+  },
+  "path_dependent_incidences": [
+   "E8bar->V",
+   "E8bar->Va+",
+   "W8->B9"
+  ],
+  "X+-->B9_single_limit": true,
+  "every_incidence_has_3_valid_curves": true,
+  "containment_note": "containment of every limit in the boundary kernel is automatic (L_(y_0) x_0 = 0)",
+  "canonical_note": "finite tests can only falsify canonicity: no counterexample among the listed X+ approaches",
+  "verdict": "confirmed"
+ },
+ "statement_4": {
+  "orbits": {
+   "W8": {
+    "h_z_complex_dim_rep_moved": [
+     4,
+     4
+    ],
+    "claimed_h_z_dim": 4,
+    "reductive_quotient_dim_rep_moved": [
+     4,
+     4
+    ],
+    "core_dim_16_minus_reductive": 12,
+    "claimed_core": [
+     "V_2(R^7) x S^1",
+     12
+    ],
+    "K_H_stabilizer_at_core_point": {
+     "label": "W8/core",
+     "KH_stabilizer_dim": 4,
+     "K_stabilizer_dim": 3,
+     "central_projection_rank_(phase,rot)": 1,
+     "derived_dim": 3,
+     "derived_killing_negative_definite": true,
+     "derived_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "K_H_orbit_dim": 12,
+     "K_orbit_dim": 12
+    },
+    "K_H_stabilizer_at_rep": {
+     "label": "W8/rep",
+     "KH_stabilizer_dim": 4,
+     "K_stabilizer_dim": 3,
+     "central_projection_rank_(phase,rot)": 1,
+     "derived_dim": 3,
+     "derived_killing_negative_definite": true,
+     "derived_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "K_H_orbit_dim": 12,
+     "K_orbit_dim": 12
+    },
+    "core_point_orbit": "W8",
+    "ok": true
+   },
+   "E8bar": {
+    "h_z_complex_dim_rep_moved": [
+     5,
+     5
+    ],
+    "claimed_h_z_dim": 5,
+    "reductive_quotient_dim_rep_moved": [
+     3,
+     3
+    ],
+    "core_dim_16_minus_reductive": 13,
+    "claimed_core": [
+     "V_2(R^7) x T^2",
+     13
+    ],
+    "K_H_stabilizer_at_core_point": {
+     "label": "E8bar/core",
+     "KH_stabilizer_dim": 3,
+     "K_stabilizer_dim": 3,
+     "central_projection_rank_(phase,rot)": 0,
+     "derived_dim": 3,
+     "derived_killing_negative_definite": true,
+     "derived_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "K_H_orbit_dim": 13,
+     "K_orbit_dim": 12
+    },
+    "K_H_stabilizer_at_rep": {
+     "label": "E8bar/rep",
+     "KH_stabilizer_dim": 3,
+     "K_stabilizer_dim": 3,
+     "central_projection_rank_(phase,rot)": 0,
+     "derived_dim": 3,
+     "derived_killing_negative_definite": true,
+     "derived_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "K_H_orbit_dim": 13,
+     "K_orbit_dim": 12
+    },
+    "core_point_orbit": "E8bar",
+    "ok": true
+   },
+   "Iso": {
+    "h_z_complex_dim_rep_moved": [
+     5,
+     5
+    ],
+    "claimed_h_z_dim": 5,
+    "reductive_quotient_dim_rep_moved": [
+     2,
+     2
+    ],
+    "core_dim_16_minus_reductive": 14,
+    "claimed_core": [
+     "G_2",
+     14
+    ],
+    "K_H_stabilizer_at_core_point": {
+     "label": "Iso/core",
+     "KH_stabilizer_dim": 2,
+     "K_stabilizer_dim": 1,
+     "central_projection_rank_(phase,rot)": 2,
+     "derived_dim": 0,
+     "K_H_orbit_dim": 14,
+     "K_orbit_dim": 14
+    },
+    "K_H_stabilizer_at_rep": {
+     "label": "Iso/rep",
+     "KH_stabilizer_dim": 0,
+     "K_stabilizer_dim": 0,
+     "central_projection_rank_(phase,rot)": 0,
+     "derived_dim": 0,
+     "K_H_orbit_dim": 16,
+     "K_orbit_dim": 15
+    },
+    "core_point_orbit": "Iso",
+    "ok": true
+   },
+   "X+": {
+    "h_z_complex_dim_rep_moved": [
+     6,
+     6
+    ],
+    "claimed_h_z_dim": 6,
+    "reductive_quotient_dim_rep_moved": [
+     4,
+     4
+    ],
+    "core_dim_16_minus_reductive": 12,
+    "claimed_core": [
+     "V_2(R^7) x S^1",
+     12
+    ],
+    "K_H_stabilizer_at_core_point": {
+     "label": "X+/core",
+     "KH_stabilizer_dim": 4,
+     "K_stabilizer_dim": 3,
+     "central_projection_rank_(phase,rot)": 1,
+     "derived_dim": 3,
+     "derived_killing_negative_definite": true,
+     "derived_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "K_H_orbit_dim": 12,
+     "K_orbit_dim": 12
+    },
+    "K_H_stabilizer_at_rep": {
+     "label": "X+/rep",
+     "KH_stabilizer_dim": 3,
+     "K_stabilizer_dim": 3,
+     "central_projection_rank_(phase,rot)": 0,
+     "derived_dim": 3,
+     "derived_killing_negative_definite": true,
+     "derived_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "K_H_orbit_dim": 13,
+     "K_orbit_dim": 12
+    },
+    "core_point_orbit": "X+",
+    "ok": true
+   },
+   "X-": {
+    "h_z_complex_dim_rep_moved": [
+     6,
+     6
+    ],
+    "claimed_h_z_dim": 6,
+    "reductive_quotient_dim_rep_moved": [
+     4,
+     4
+    ],
+    "core_dim_16_minus_reductive": 12,
+    "claimed_core": [
+     "V_2(R^7) x S^1",
+     12
+    ],
+    "K_H_stabilizer_at_core_point": {
+     "label": "X-/core",
+     "KH_stabilizer_dim": 4,
+     "K_stabilizer_dim": 3,
+     "central_projection_rank_(phase,rot)": 1,
+     "derived_dim": 3,
+     "derived_killing_negative_definite": true,
+     "derived_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "K_H_orbit_dim": 12,
+     "K_orbit_dim": 12
+    },
+    "K_H_stabilizer_at_rep": {
+     "label": "X-/rep",
+     "KH_stabilizer_dim": 3,
+     "K_stabilizer_dim": 3,
+     "central_projection_rank_(phase,rot)": 0,
+     "derived_dim": 3,
+     "derived_killing_negative_definite": true,
+     "derived_on_7": {
+      "V_0": 3,
+      "V_1": 2
+     },
+     "K_H_orbit_dim": 13,
+     "K_orbit_dim": 12
+    },
+    "core_point_orbit": "X-",
+    "ok": true
+   }
+  },
+  "levi_rows": [
+   {
+    "label": "W8/rep",
+    "h_z_complex_dim": 4,
+    "radical_complex_dim": 1,
+    "unipotent_radical_complex_dim": 0,
+    "unipotent_part_nilpotent": true,
+    "unipotent_part_ideal": true,
+    "radical_mod_unipotent_abelian": true,
+    "reductive_quotient_complex_dim": 4
+   },
+   {
+    "label": "W8/g1",
+    "h_z_complex_dim": 4,
+    "radical_complex_dim": 1,
+    "unipotent_radical_complex_dim": 0,
+    "unipotent_part_nilpotent": true,
+    "unipotent_part_ideal": true,
+    "radical_mod_unipotent_abelian": true,
+    "reductive_quotient_complex_dim": 4
+   },
+   {
+    "label": "E8bar/rep",
+    "h_z_complex_dim": 5,
+    "radical_complex_dim": 2,
+    "unipotent_radical_complex_dim": 2,
+    "unipotent_part_nilpotent": true,
+    "unipotent_part_ideal": true,
+    "radical_mod_unipotent_abelian": true,
+    "reductive_quotient_complex_dim": 3
+   },
+   {
+    "label": "E8bar/g1",
+    "h_z_complex_dim": 5,
+    "radical_complex_dim": 2,
+    "unipotent_radical_complex_dim": 2,
+    "unipotent_part_nilpotent": true,
+    "unipotent_part_ideal": true,
+    "radical_mod_unipotent_abelian": true,
+    "reductive_quotient_complex_dim": 3
+   },
+   {
+    "label": "Iso/rep",
+    "h_z_complex_dim": 5,
+    "radical_complex_dim": 5,
+    "unipotent_radical_complex_dim": 3,
+    "unipotent_part_nilpotent": true,
+    "unipotent_part_ideal": true,
+    "radical_mod_unipotent_abelian": true,
+    "reductive_quotient_complex_dim": 2
+   },
+   {
+    "label": "Iso/g1",
+    "h_z_complex_dim": 5,
+    "radical_complex_dim": 5,
+    "unipotent_radical_complex_dim": 3,
+    "unipotent_part_nilpotent": true,
+    "unipotent_part_ideal": true,
+    "radical_mod_unipotent_abelian": true,
+    "reductive_quotient_complex_dim": 2
+   },
+   {
+    "label": "X+/rep",
+    "h_z_complex_dim": 6,
+    "radical_complex_dim": 3,
+    "unipotent_radical_complex_dim": 2,
+    "unipotent_part_nilpotent": true,
+    "unipotent_part_ideal": true,
+    "radical_mod_unipotent_abelian": true,
+    "reductive_quotient_complex_dim": 4
+   },
+   {
+    "label": "X+/g1",
+    "h_z_complex_dim": 6,
+    "radical_complex_dim": 3,
+    "unipotent_radical_complex_dim": 2,
+    "unipotent_part_nilpotent": true,
+    "unipotent_part_ideal": true,
+    "radical_mod_unipotent_abelian": true,
+    "reductive_quotient_complex_dim": 4
+   },
+   {
+    "label": "X-/rep",
+    "h_z_complex_dim": 6,
+    "radical_complex_dim": 3,
+    "unipotent_radical_complex_dim": 2,
+    "unipotent_part_nilpotent": true,
+    "unipotent_part_ideal": true,
+    "radical_mod_unipotent_abelian": true,
+    "reductive_quotient_complex_dim": 4
+   },
+   {
+    "label": "X-/g1",
+    "h_z_complex_dim": 6,
+    "radical_complex_dim": 3,
+    "unipotent_radical_complex_dim": 2,
+    "unipotent_part_nilpotent": true,
+    "unipotent_part_ideal": true,
+    "radical_mod_unipotent_abelian": true,
+    "reductive_quotient_complex_dim": 4
+   }
+  ],
+  "dim_V2_R7_from_g2_orbit_of_orthonormal_pair": 11,
+  "dim_G2": 14,
+  "core_dims_from_claims": {
+   "V_2 x S^1": 12,
+   "V_2 x T^2": 13,
+   "G_2": 14
+  },
+  "verdict": "confirmed (dimensions computed; homotopy steps are arguments)"
+ },
+ "statement_5": {
+  "measured_restrictions_7": {
+   "W8": {
+    "0": 3,
+    "1": 2
+   },
+   "E8bar": {
+    "0": 3,
+    "1": 2
+   },
+   "X+": {
+    "0": 3,
+    "1": 2
+   },
+   "X-": {
+    "0": 3,
+    "1": 2
+   }
+  },
+  "measured_restrictions_14": {
+   "W8": {
+    "0": 3,
+    "1": 4,
+    "2": 1
+   },
+   "E8bar": {
+    "0": 3,
+    "1": 4,
+    "2": 1
+   },
+   "X+": {
+    "0": 3,
+    "1": 4,
+    "2": 1
+   },
+   "X-": {
+    "0": 3,
+    "1": 4,
+    "2": 1
+   }
+  },
+  "rings": {
+   "W8": {
+    "rho7_minus_7_in_x": [
+     0,
+     2
+    ],
+    "rho14_minus_14_in_x": [
+     0,
+     8,
+     1
+    ],
+    "x_squared_equals_(rho14-14)-4(rho7-7)": true,
+    "smith_free_rank_degree_le_8": 1,
+    "smith_torsion": [
+     2
+    ],
+    "tor_2_zero": true,
+    "reduced_quotient": "Z/2"
+   },
+   "E8bar": {
+    "rho7_minus_7_in_x": [
+     0,
+     2
+    ],
+    "rho14_minus_14_in_x": [
+     0,
+     8,
+     1
+    ],
+    "x_squared_equals_(rho14-14)-4(rho7-7)": true,
+    "smith_free_rank_degree_le_8": 1,
+    "smith_torsion": [
+     2
+    ],
+    "tor_2_zero": true,
+    "reduced_quotient": "Z/2"
+   },
+   "X+": {
+    "rho7_minus_7_in_x": [
+     0,
+     2
+    ],
+    "rho14_minus_14_in_x": [
+     0,
+     8,
+     1
+    ],
+    "x_squared_equals_(rho14-14)-4(rho7-7)": true,
+    "smith_free_rank_degree_le_8": 1,
+    "smith_torsion": [
+     2
+    ],
+    "tor_2_zero": true,
+    "reduced_quotient": "Z/2"
+   },
+   "X-": {
+    "rho7_minus_7_in_x": [
+     0,
+     2
+    ],
+    "rho14_minus_14_in_x": [
+     0,
+     8,
+     1
+    ],
+    "x_squared_equals_(rho14-14)-4(rho7-7)": true,
+    "smith_free_rank_degree_le_8": 1,
+    "smith_torsion": [
+     2
+    ],
+    "tor_2_zero": true,
+    "reduced_quotient": "Z/2"
+   }
+  },
+  "classes_from_core_fibers": {
+   "W8": {
+    "core_point": "W8/rep",
+    "bundle": "C^0 + 2 xi",
+    "reduced_class": "0 x"
+   },
+   "E8bar": {
+    "core_point": "E8bar/rep",
+    "bundle": "C^2 + 1 xi",
+    "reduced_class": "1 x"
+   },
+   "X+": {
+    "core_point": "X+/core",
+    "bundle": "C^2 + 1 xi",
+    "reduced_class": "1 x"
+   },
+   "X-": {
+    "core_point": "X-/core",
+    "bundle": "C^2 + 1 xi",
+    "reduced_class": "1 x"
+   }
+  },
+  "E8bar_full_core": {
+   "rotation_orthogonal": true,
+   "rotated_orbit": "E8bar",
+   "rotated_hermitian_invariants": [
+    "209/500",
+    "473/1500",
+    "22/125",
+    "19/60",
+    "4/15"
+   ],
+   "rep_hermitian_invariants": [
+    "11/60",
+    "11/20",
+    "0",
+    "19/60",
+    "4/15"
+   ],
+   "rotated_outside_K_orbit": true,
+   "same_K_stabilizer_subalgebra": true,
+   "rotated_fiber": {
+    "V_0": 2,
+    "V_1": 1
+   }
+  },
+  "Iso_core": {
+   "phase_coefficient_t": "1",
+   "g2_part_weights_on_R7": [
+    "0",
+    "1",
+    "2"
+   ],
+   "circle_meets_G2_trivially": true,
+   "K_H_stabilizer": {
+    "label": "Iso/core",
+    "KH_stabilizer_dim": 2,
+    "K_stabilizer_dim": 1,
+    "central_projection_rank_(phase,rot)": 2,
+    "derived_dim": 0,
+    "K_H_orbit_dim": 14,
+    "K_orbit_dim": 14
+   }
+  },
+  "W8_note": "2 xi has reduced class 2x = 0, so it is stably trivial; rank 4 over a 12-dimensional core lies outside the stable range, so actual triviality is undecided",
+  "verdict": "confirmed (fibers and K-bookkeeping computed; bundle identifications are arguments)"
+ },
+ "total_s": 23.4
+}

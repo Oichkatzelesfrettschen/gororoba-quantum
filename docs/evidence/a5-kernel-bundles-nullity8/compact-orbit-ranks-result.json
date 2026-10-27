@@ -1,0 +1,353 @@
+{
+  "all_points_keep_nullity_and_open_orbit": true,
+  "every_orbit_reaches_full_compact_rank": true,
+  "group_checks": {
+    "boost_hyperbola_identity": true,
+    "generator_dimension_matches_derivations_plus_phase": true,
+    "second_boost_hyperbola_identity": true,
+    "selected_unipotents_are_automorphisms": true
+  },
+  "group_dimensions": {
+    "compact_derivation_dimension": 14,
+    "compact_generator_dimension": 15
+  },
+  "independent_rank_implementations_agree": true,
+  "inputs": {
+    "docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py": "fa5d010de34b95bf67a7445ec1e196c9926dc320d6ba888b293a2a2f6f627900",
+    "docs/evidence/a5-kernel-bundles/kernel_symmetry.py": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
+    "docs/evidence/a5-kernel-bundles/stabilizer_representation.py": "b73ff8e652b57390254cda541b6c02ac35809d2a5a3942a43899d891ae656342",
+    "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280"
+  },
+  "mutation": null,
+  "orbit_summaries": [
+    {
+      "full_compact_rank_observed": true,
+      "generic_local_quotient_dimension_if_maximal_rank_is_open": 8,
+      "maximum_observed_rank": 15,
+      "minimum_observed_rank": 12,
+      "moved_ranks": {
+        "composite": 15,
+        "unipotent": 15,
+        "unipotent_boost": 15
+      },
+      "orbit": "W8",
+      "representative_rank": 12
+    },
+    {
+      "full_compact_rank_observed": true,
+      "generic_local_quotient_dimension_if_maximal_rank_is_open": 6,
+      "maximum_observed_rank": 15,
+      "minimum_observed_rank": 12,
+      "moved_ranks": {
+        "composite": 15,
+        "unipotent": 12,
+        "unipotent_boost": 15
+      },
+      "orbit": "E8bar",
+      "representative_rank": 12
+    },
+    {
+      "full_compact_rank_observed": true,
+      "generic_local_quotient_dimension_if_maximal_rank_is_open": 6,
+      "maximum_observed_rank": 15,
+      "minimum_observed_rank": 15,
+      "moved_ranks": {
+        "composite": 15,
+        "unipotent": 15,
+        "unipotent_boost": 15
+      },
+      "orbit": "Iso",
+      "representative_rank": 15
+    },
+    {
+      "full_compact_rank_observed": true,
+      "generic_local_quotient_dimension_if_maximal_rank_is_open": 4,
+      "maximum_observed_rank": 15,
+      "minimum_observed_rank": 12,
+      "moved_ranks": {
+        "composite": 15,
+        "unipotent": 12,
+        "unipotent_boost": 15
+      },
+      "orbit": "X+",
+      "representative_rank": 12
+    },
+    {
+      "full_compact_rank_observed": true,
+      "generic_local_quotient_dimension_if_maximal_rank_is_open": 4,
+      "maximum_observed_rank": 15,
+      "minimum_observed_rank": 12,
+      "moved_ranks": {
+        "composite": 15,
+        "unipotent": 12,
+        "unipotent_boost": 15
+      },
+      "orbit": "X-",
+      "representative_rank": 12
+    }
+  ],
+  "pass": true,
+  "rows": [
+    {
+      "closure_membership_pattern": "100000000000",
+      "direct_complex_block_tangent_rank": 12,
+      "local_quotient_dimension": 11,
+      "matrix_tangent_rank": 12,
+      "move": "representative",
+      "nullity_Ly": 8,
+      "orbit": "W8",
+      "ranks_agree": true,
+      "representative_membership_pattern": "100000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 23
+    },
+    {
+      "closure_membership_pattern": "100000000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 8,
+      "matrix_tangent_rank": 15,
+      "move": "unipotent",
+      "nullity_Ly": 8,
+      "orbit": "W8",
+      "ranks_agree": true,
+      "representative_membership_pattern": "100000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 23
+    },
+    {
+      "closure_membership_pattern": "100000000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 8,
+      "matrix_tangent_rank": 15,
+      "move": "unipotent_boost",
+      "nullity_Ly": 8,
+      "orbit": "W8",
+      "ranks_agree": true,
+      "representative_membership_pattern": "100000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 23
+    },
+    {
+      "closure_membership_pattern": "100000000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 8,
+      "matrix_tangent_rank": 15,
+      "move": "composite",
+      "nullity_Ly": 8,
+      "orbit": "W8",
+      "ranks_agree": true,
+      "representative_membership_pattern": "100000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 23
+    },
+    {
+      "closure_membership_pattern": "010000000000",
+      "direct_complex_block_tangent_rank": 12,
+      "local_quotient_dimension": 9,
+      "matrix_tangent_rank": 12,
+      "move": "representative",
+      "nullity_Ly": 8,
+      "orbit": "E8bar",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 21
+    },
+    {
+      "closure_membership_pattern": "010000000000",
+      "direct_complex_block_tangent_rank": 12,
+      "local_quotient_dimension": 9,
+      "matrix_tangent_rank": 12,
+      "move": "unipotent",
+      "nullity_Ly": 8,
+      "orbit": "E8bar",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 21
+    },
+    {
+      "closure_membership_pattern": "010000000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 6,
+      "matrix_tangent_rank": 15,
+      "move": "unipotent_boost",
+      "nullity_Ly": 8,
+      "orbit": "E8bar",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 21
+    },
+    {
+      "closure_membership_pattern": "010000000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 6,
+      "matrix_tangent_rank": 15,
+      "move": "composite",
+      "nullity_Ly": 8,
+      "orbit": "E8bar",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 21
+    },
+    {
+      "closure_membership_pattern": "101000000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 6,
+      "matrix_tangent_rank": 15,
+      "move": "representative",
+      "nullity_Ly": 8,
+      "orbit": "Iso",
+      "ranks_agree": true,
+      "representative_membership_pattern": "101000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 21
+    },
+    {
+      "closure_membership_pattern": "101000000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 6,
+      "matrix_tangent_rank": 15,
+      "move": "unipotent",
+      "nullity_Ly": 8,
+      "orbit": "Iso",
+      "ranks_agree": true,
+      "representative_membership_pattern": "101000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 21
+    },
+    {
+      "closure_membership_pattern": "101000000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 6,
+      "matrix_tangent_rank": 15,
+      "move": "unipotent_boost",
+      "nullity_Ly": 8,
+      "orbit": "Iso",
+      "ranks_agree": true,
+      "representative_membership_pattern": "101000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 21
+    },
+    {
+      "closure_membership_pattern": "101000000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 6,
+      "matrix_tangent_rank": 15,
+      "move": "composite",
+      "nullity_Ly": 8,
+      "orbit": "Iso",
+      "ranks_agree": true,
+      "representative_membership_pattern": "101000000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 21
+    },
+    {
+      "closure_membership_pattern": "010100000000",
+      "direct_complex_block_tangent_rank": 12,
+      "local_quotient_dimension": 7,
+      "matrix_tangent_rank": 12,
+      "move": "representative",
+      "nullity_Ly": 8,
+      "orbit": "X+",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010100000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 19
+    },
+    {
+      "closure_membership_pattern": "010100000000",
+      "direct_complex_block_tangent_rank": 12,
+      "local_quotient_dimension": 7,
+      "matrix_tangent_rank": 12,
+      "move": "unipotent",
+      "nullity_Ly": 8,
+      "orbit": "X+",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010100000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 19
+    },
+    {
+      "closure_membership_pattern": "010100000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 4,
+      "matrix_tangent_rank": 15,
+      "move": "unipotent_boost",
+      "nullity_Ly": 8,
+      "orbit": "X+",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010100000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 19
+    },
+    {
+      "closure_membership_pattern": "010100000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 4,
+      "matrix_tangent_rank": 15,
+      "move": "composite",
+      "nullity_Ly": 8,
+      "orbit": "X+",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010100000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 19
+    },
+    {
+      "closure_membership_pattern": "010010000000",
+      "direct_complex_block_tangent_rank": 12,
+      "local_quotient_dimension": 7,
+      "matrix_tangent_rank": 12,
+      "move": "representative",
+      "nullity_Ly": 8,
+      "orbit": "X-",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010010000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 19
+    },
+    {
+      "closure_membership_pattern": "010010000000",
+      "direct_complex_block_tangent_rank": 12,
+      "local_quotient_dimension": 7,
+      "matrix_tangent_rank": 12,
+      "move": "unipotent",
+      "nullity_Ly": 8,
+      "orbit": "X-",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010010000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 19
+    },
+    {
+      "closure_membership_pattern": "010010000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 4,
+      "matrix_tangent_rank": 15,
+      "move": "unipotent_boost",
+      "nullity_Ly": 8,
+      "orbit": "X-",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010010000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 19
+    },
+    {
+      "closure_membership_pattern": "010010000000",
+      "direct_complex_block_tangent_rank": 15,
+      "local_quotient_dimension": 4,
+      "matrix_tangent_rank": 15,
+      "move": "composite",
+      "nullity_Ly": 8,
+      "orbit": "X-",
+      "ranks_agree": true,
+      "representative_membership_pattern": "010010000000",
+      "same_open_orbit": true,
+      "unit_section_dimension": 19
+    }
+  ],
+  "schema": "a5-kernel-bundles-nullity8-compact-orbit-ranks-v1"
+}
