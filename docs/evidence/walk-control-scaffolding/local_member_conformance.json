@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 1223,
+ "groups": 1224,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",
@@ -17,7 +17,7 @@
    "missing_field": "measure_dt"
   }
  ],
- "distinct_members": 7284,
+ "distinct_members": 7308,
  "entangling_members": 950,
  "unchecked": {
   "more than 12 mid-circuit measurements, resets or classical bits": [
@@ -54420,8 +54420,41 @@
    "declared": null
   },
   {
+   "member": "n21_orbit_window_dose_d0_feedback",
+   "digest": "453f45eb6328f6d6",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
    "member": "n21_orbit_window_dose_d0_no_feedback",
    "digest": "692abca99703e218",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_d10500_feedback",
+   "digest": "d3b64d960dedf0d3",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_d10500_no_feedback",
+   "digest": "853b045eef989458",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
@@ -54453,8 +54486,41 @@
    "declared": null
   },
   {
+   "member": "n21_orbit_window_dose_d14000_feedback",
+   "digest": "81b2e62836ac3724",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_d14000_no_feedback",
+   "digest": "d1b46c864177409a",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
    "member": "n21_orbit_window_dose_d14016_no_feedback",
    "digest": "6ca9b96307c5d7f9",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_d1752_feedback",
+   "digest": "e5d2f94ac0091ba2",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
@@ -54475,6 +54541,28 @@
    "declared": null
   },
   {
+   "member": "n21_orbit_window_dose_d3500_feedback",
+   "digest": "99a7ac918ab158c1",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_d3500_no_feedback",
+   "digest": "85b0870a6570d1ad",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
    "member": "n21_orbit_window_dose_d3504_no_feedback",
    "digest": "9364b1788fbaf2e9",
    "kind": "dynamic_law",
@@ -54486,8 +54574,52 @@
    "declared": null
   },
   {
+   "member": "n21_orbit_window_dose_d5252_feedback",
+   "digest": "1734130cd85a2830",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_d5252_no_feedback",
+   "digest": "4854f5f7ffa1656e",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
    "member": "n21_orbit_window_dose_d5256_no_feedback",
    "digest": "890db61454ca413c",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_d7000_feedback",
+   "digest": "e5b6784baf3302f5",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_d7000_no_feedback",
+   "digest": "f4e87a48a5dc7d6b",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
@@ -54519,8 +54651,140 @@
    "declared": null
   },
   {
+   "member": "n21_orbit_window_dose_echo_d10500_feedback",
+   "digest": "1af71ea7da83a462",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d10500_no_feedback",
+   "digest": "1346d60a66f420a3",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d14000_feedback",
+   "digest": "e415d7ad80077e4d",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d14000_no_feedback",
+   "digest": "92e1ecdd539c7b72",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
    "member": "n21_orbit_window_dose_echo_d14016_no_feedback",
    "digest": "6d580082a6575142",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d1752_feedback",
+   "digest": "07602c2a8ca91248",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d1752_no_feedback",
+   "digest": "d571a4ad4de25b23",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d3500_feedback",
+   "digest": "024bf523b3255a5c",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d3500_no_feedback",
+   "digest": "d1d3b350e7a1d1d6",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d5252_feedback",
+   "digest": "15f2d57b800e8db9",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d5252_no_feedback",
+   "digest": "a3c42febf72312a2",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d7000_feedback",
+   "digest": "caf42b436ac4e2bd",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "correlated",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": false,
+   "cz": 28,
+   "declared": null
+  },
+  {
+   "member": "n21_orbit_window_dose_echo_d7000_no_feedback",
+   "digest": "56cc870f6821cbac",
    "kind": "dynamic_law",
    "templated": false,
    "law": "correlated",
