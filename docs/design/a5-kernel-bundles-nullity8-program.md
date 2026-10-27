@@ -120,6 +120,10 @@ probe and the result, and run the cheap ones. Seeds:
 - Branch `geometry/a5-kernel-bundles-nullity8` from main after PR 571 (the nullity >= 12 record) merged, with this
   program file and the ledger stub added by the orchestrator.
 - No jobs in flight.
+- Orchestrator note: an earlier draft of `compact_orbit_ranks.py` appeared at the worktree root; it is moved to the
+  trash. Create every file inside `docs/evidence/a5-kernel-bundles-nullity8/` only, scratch drafts included. The
+  first sub-step (compact ranks 12, 12, 15, 12, 12 at the representatives, 15 generically) is reproduced by the
+  orchestrator's independent rank check.
 
 ## Order
 
