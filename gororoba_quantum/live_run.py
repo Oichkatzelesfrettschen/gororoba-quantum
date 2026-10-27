@@ -192,6 +192,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "parallel.py",
     "placement_feasibility.py",
     "predict.py",
+    "pub_calibration.py",
     "pub_shot_allocation.py",
     "qpe_diagnostics.py",
     "patch_characterization.py",
