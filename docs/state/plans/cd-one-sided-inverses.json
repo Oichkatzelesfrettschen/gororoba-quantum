@@ -1,0 +1,42 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-one-sided-inverses",
+  "kind": "investigation",
+  "summary": "Prove and replay that every Cayley-Dickson algebra has ker L_a = ker R_a, so a b = 1 forces b a = 1; index the Rocq proof sources in a root formalization.yaml.",
+  "sources": [
+    "docs/notes/topics/cd-one-sided-inverses.md",
+    "docs/evidence/cd-one-sided-inverses/README.md",
+    "formalization.yaml"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Opened from the openai/math crosswalk: family 197 refutes direct finiteness in untwisted group algebras of torsion-free groups; the twisted group algebras R^sigma[Z_2^n] of cd_core keep it at every n, which the note proves and the record checks."
+  },
+  "scope": "The written proof in docs/notes/topics/cd-one-sided-inverses.md, the exact replay scripts/cd_one_sided_inverses.py with its retained record under docs/evidence/cd-one-sided-inverses/ and gate core-record-check-08, and the root formalization.yaml indexing the fourteen Rocq sources. A Rocq proof of the kernel equality and dimensions above 32 stay out of scope.",
+  "owner": "repository maintainer",
+  "next_action": "Attach the receipts of the three steps at the committed revision and land the pull request.",
+  "related": [
+    "rocq-certificate-statement-split"
+  ],
+  "steps": [
+    {
+      "id": "written-proof",
+      "state": "doing",
+      "action": "Write Lemmas 1 to 4, the kernel-equality theorem and the inverse corollary by induction on the doubling, with no use of associativity.",
+      "acceptance": "Fails if any lemma step uses an identity that the doubling does not preserve, or if a checked element violates the theorem."
+    },
+    {
+      "id": "exact-replay",
+      "state": "todo",
+      "action": "Check the basis identities through dimension 128 and the kernel equality with the two-sided inverse law on every signed two-blade, three-unit sum and doubly pure grid element at dimensions 16 and 32; retain the record and gate it.",
+      "acceptance": "Fails if --check departs from the retained bytes, if pooled and serial runs differ, or if any element raises."
+    },
+    {
+      "id": "formalization-index",
+      "state": "todo",
+      "action": "Write the root formalization.yaml in the mathlib-initiative v0.4 schema with every exported theorem, its file and its kernel-checked axiom list.",
+      "acceptance": "Fails if the file does not validate against v0.4.schema.json or names a declaration, file or source that the tree lacks."
+    }
+  ]
+}

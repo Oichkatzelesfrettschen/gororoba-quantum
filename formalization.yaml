@@ -1,0 +1,233 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# Index of the Rocq proof sources under proofs/ in the mathlib-initiative
+# formalization.yaml schema. Each main result names its exported theorem, the
+# file that proves it and the axioms its kernel receipt lists; the evidence
+# bundle under docs/evidence/ named in each note retains the receipts and the
+# replay script. Paths are relative to the repository root.
+version: "v0.4"
+
+project:
+  name: "gororoba-quantum Rocq certificates"
+  description: >-
+    Kernel-checked Rocq 9.3 proofs about the Cayley-Dickson sign function of
+    gororoba_quantum/cd_core.py (basis products, sign-row and associator
+    algebraic normal forms, the skew conference property of the imaginary
+    sum, the Python semantics of cd_sign), an A_6 Stiefel witness, N = 21
+    target-flip networks, and two information-loss certificates.
+  authors: ["Oichkatzelesfrettschen (repository owner)"]
+  license: "none declared (no LICENSE file; default copyright)"
+  responsible_maintainers: ["Oichkatzelesfrettschen"]
+
+sources:
+  - title: "Quasialgebra structure of the octonions"
+    authors: ["Helena Albuquerque", "Shahn Majid"]
+    id: arXiv:math/9802116
+    type: article
+    relationship: formalizes
+    location: docs/notes/math-9802116.md
+    note: >-
+      Corollary 4.3 cochain recursion and Proposition 4.4(ii), (iii);
+      am_sign proves (-1)^f_k(a, b) = sigma_k(b, a) and
+      am_octonion_printed_differs records the printed cubic term that
+      differs from f_3.
+    author_endorsement: not-contacted
+
+  - title: "Algebraic degree of Cayley-Dickson sign rows and associator phases"
+    authors: ["gororoba-quantum"]
+    id: docs/notes/cd_phase_degree.md
+    type: repository note
+    relationship: formalizes
+    note: >-
+      Theorem 1 (sign-row degree), Theorem 2 (associator-phase degree),
+      Proposition 4 (right rows), Proposition 5 (point-indicator pairs) and
+      the census by degree.
+
+  - title: "Non-associating basis triples along the Cayley-Dickson ladder"
+    authors: ["gororoba-quantum"]
+    id: docs/notes/topics/cd_associator_defect_census.md
+    type: repository note
+    relationship: background
+    note: "Theorem 5 is the pair law the point-indicator proof formalizes in the degree note's terms."
+
+  - title: "Cayley-Dickson star lattices: Tuna-17 and its lifts"
+    authors: ["gororoba-quantum"]
+    id: docs/notes/topics/cd-star-lattice-tower.md
+    type: repository note
+    relationship: formalizes
+    note: "The skew conference property of right multiplication by the imaginary sum, for every dimension."
+
+  - title: "gororoba_quantum/cd_core.py"
+    authors: ["gororoba-quantum"]
+    id: gororoba_quantum/cd_core.py
+    type: source code
+    relationship: formalizes
+    note: >-
+      The cd_sign function is the formalized object: its syntax tree, run
+      under a semantics of the Python int subset it uses, returns the tower
+      sign and raises on invalid arguments.
+
+  - title: "Generic invertibility of normalized A_6 Stiefel elements"
+    authors: ["gororoba-quantum"]
+    id: docs/notes/stiefel_generic_invertibility.md
+    type: repository note
+    relationship: formalizes
+    note: "The finite step: the retained integer Stiefel witness of A_6 has an invertible left-multiplication matrix."
+
+  - title: "Constructing zero divisors in the higher dimensional Cayley-Dickson algebras"
+    authors: ["Guillermo Moreno"]
+    id: arXiv:math/0512517
+    type: article
+    relationship: background
+    location: docs/notes/math-0512517.md
+    note: "Section 5 asks whether every Stiefel element is a zero divisor; the witness answers no at A_6."
+    author_endorsement: not-contacted
+
+  - title: "Formal evidence dependencies"
+    authors: ["gororoba-quantum"]
+    id: docs/notes/formal_evidence_dependencies.md
+    type: repository note
+    relationship: formalizes
+    note: >-
+      The fold-average descent obstruction, the terminal-channel separation
+      in rational and real semantics, and the N = 21 target-flip networks.
+
+related_formalizations:
+  - id: https://github.com/Oichkatzelesfrettschen/open_gororoba
+    relationship: builds-on
+    note: >-
+      The folding, C881 and Stiefel bundles under docs/evidence/ replay
+      sources of this repository at a pinned commit; its cd_sign_fuel is the
+      sign function the Stiefel witness proof evaluates.
+
+status:
+  scope: >-
+    Every theorem below is kernel-checked by rocq check on the toolchain of
+    its bundle's toolchain.txt. Sources over nat, Z and Q close with no
+    axioms; the real-valued terminal-channel source uses the two axioms
+    listed. The one-sided inverse theorem of
+    docs/notes/topics/cd-one-sided-inverses.md has no Rocq source.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms:
+    - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
+    - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
+  main_results:
+    - declaration: basis_mul
+      file: proofs/CdTowerBasisSign.v
+      axioms: []
+      literature_dependencies:
+        - statement: "e_a e_b = sigma_k(a, b) e_(a XOR b) in the integer pair tower, sigma_k the cd_sign loop"
+          source: docs/evidence/cd-tower-basis-sign/README.md
+    - declaration: am_sign
+      file: proofs/CdTowerBasisSign.v
+      axioms: []
+      literature_dependencies:
+        - statement: "(-1)^f_k(a, b) = sigma_k(b, a) for the Corollary 4.3 cochain of Albuquerque and Majid"
+          source: docs/notes/math-9802116.md
+    - declaration: isum_skew
+      file: proofs/CdImaginarySumConference.v
+      axioms: []
+    - declaration: isum_conference
+      file: proofs/CdImaginarySumConference.v
+      axioms: []
+      literature_dependencies:
+        - statement: "<x s, y s> = (2^k - 1) <x, y>: right multiplication by the imaginary sum is a skew conference matrix"
+          source: docs/notes/topics/cd-star-lattice-tower.md
+    - declaration: sign_row_degree_all
+      file: proofs/CdSignRowAnf.v
+      axioms: []
+      literature_dependencies:
+        - statement: "Theorem 1: the left sign row of e_m, m != 0, has algebraic degree max(1, k - 1)"
+          source: docs/notes/cd_phase_degree.md
+    - declaration: right_row_degree
+      file: proofs/CdSignRowAnf.v
+      axioms: []
+      literature_dependencies:
+        - statement: "Proposition 4: the right sign row of e_m has degree 1 at a power of two and max(1, bitlen(m) - 2) otherwise"
+          source: docs/notes/cd_phase_degree.md
+    - declaration: assoc_degree_is
+      file: proofs/CdAssociatorAnf.v
+      axioms: []
+      literature_dependencies:
+        - statement: "Theorem 2: the associator phase of distinct nonzero p, q has degree max(1, bitlen(max(p, q)) - 2)"
+          source: docs/notes/cd_phase_degree.md
+    - declaration: census_degree
+      file: proofs/CdAssociatorCensus.v
+      axioms: []
+      literature_dependencies:
+        - statement: "3 2^d (2^(d+1) - 1) unordered basis pairs have associator-phase degree d for 2 <= d <= k - 2, and 21 have degree 1"
+          source: docs/notes/cd_phase_degree.md
+    - declaration: census_total
+      file: proofs/CdAssociatorCensus.v
+      axioms: []
+    - declaration: point_indicator_degree
+      file: proofs/CdAssociatorPointIndicators.v
+      axioms: []
+      literature_dependencies:
+        - statement: "Proposition 5: the point-indicator pair (2^(n-1), 2^(n-1) + 2^(n-2)) has degree n - 2"
+          source: docs/notes/cd_phase_degree.md
+    - declaration: cd_sign_spec
+      file: proofs/CdSignPythonSemantics.v
+      axioms: []
+      literature_dependencies:
+        - statement: "the syntax tree of cd_core.cd_sign returns the tower sign on valid int arguments and raises otherwise"
+          source: docs/evidence/cd-sign-python-semantics/README.md
+    - declaration: function_semantic_preservation
+      file: proofs/CdSignAstTranslation.v
+      axioms: []
+    - declaration: cd_sign_source_spec
+      file: proofs/CdSignSourceCertificate.v
+      axioms: []
+      literature_dependencies:
+        - statement: "the raw serialized source of cd_sign, under an independent interpreter, satisfies the same specification"
+          source: docs/evidence/cd-sign-python-translation/README.md
+    - declaration: Lv_integer_kernel_trivial
+      file: proofs/StiefelWitnessInvertible.v
+      axioms: []
+      literature_dependencies:
+        - statement: "the retained A_6 Stiefel witness has an invertible left-multiplication matrix"
+          source: docs/notes/stiefel_generic_invertibility.md
+    - declaration: network_16_correct
+      file: proofs/TargetFlipN21.v
+      axioms: []
+      literature_dependencies:
+        - statement: "the N = 21 target-flip networks for multipliers 2, 4 and 16 are correct on all 64 packed inputs"
+          source: docs/notes/formal_evidence_dependencies.md
+    - declaration: average_product_does_not_descend
+      file: proofs/FoldAverageDescent.v
+      axioms: []
+      literature_dependencies:
+        - statement: "no operation on averages alone reproduces projected scalar-pair multiplication"
+          source: docs/evidence/formal_certificates/README.md
+    - declaration: observed_means_exclude_common_binary_channel
+      file: proofs/TerminalChannelSeparation.v
+      axioms: []
+    - declaration: observed_means_exclude_common_binary_channel
+      file: proofs/TerminalChannelSeparationReal.v
+      axioms:
+        - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
+        - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
+      literature_dependencies:
+        - statement: "the observed terminal means exclude a common appended binary channel, in real semantics"
+          source: docs/evidence/formal_certificates/README.md
+
+automation:
+  methods:
+    - method: agent
+      models: ["claude-opus-5-5"]
+      framework: "Claude Code"
+      tool_setup: "Rocq 9.3.0 with OCaml 5.5.1 and Stdlib 9.2.0; proofs replayed by each bundle's replay_rocq.sh with -w +all and rocq check"
+    - method: manual
+  notes: >-
+    Commit trailers under proofs/ record Claude Code (claude-opus-5-5) on
+    most sources and OpenAI ChatGPT on one; the owner reviewed and replayed
+    every source.
+
+review:
+  status: self-assessed
+  notes: >-
+    Each bundle retains the compile output under -w +all, the rocq check
+    kernel receipt, and the Print Assumptions output of every exported
+    theorem; docs/evidence/rocq_kaggle_replay/README.md records an
+    independent replay of the formal_certificates, c881_exhaustive,
+    stiefel_witness, folding_proofs and TargetFlipN21 bundles on Kaggle.
