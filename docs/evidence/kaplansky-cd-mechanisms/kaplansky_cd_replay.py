@@ -132,21 +132,26 @@ def _off_skeleton_zero_products(job: tuple[int, int]) -> int:
     return found
 
 
+def _chi_invariant_under_flip(job: tuple[int, int, tuple[tuple[int, int, int, int, int, int], ...]]) -> bool:
+    """Whether chi on every skeleton row survives the re-signing e_a -> -e_a."""
+    dim, a, rows = job
+    table = sign_table(dim)
+    f = [-1 if x == a else 1 for x in range(dim)]
+    for i, j, k, el, chi, _ in rows:
+        resigned = 1
+        for p, q in ((i, k), (j, el), (i, el), (j, k)):
+            resigned *= f[p] * f[q] * f[p ^ q] * table[p][q]
+        if resigned != chi:
+            return False
+    return True
+
+
 def skeleton_facts(dim: int) -> dict[str, Any]:
     rows = [row for group in ordered_map(_skeleton_rows, [(dim, i) for i in range(1, dim)]) for row in group]
     off = sum(ordered_map(_off_skeleton_zero_products, [(dim, i) for i in range(1, dim)]))
     if any(lifts != (2 if chi == 1 else 0) for *_, chi, lifts in rows):
         raise SystemExit(f"kaplansky-cd: chi does not predict the sign lift at D = {dim}")
-    table = sign_table(dim)
-    invariant = True
-    for a in range(1, dim):
-        f = [-1 if x == a else 1 for x in range(dim)]
-        for i, j, k, el, chi, _ in rows:
-            resigned = 1
-            for p, q in ((i, k), (j, el), (i, el), (j, k)):
-                resigned *= f[p] * f[q] * f[p ^ q] * table[p][q]
-            if resigned != chi:
-                invariant = False
+    invariant = all(ordered_map(_chi_invariant_under_flip, [(dim, a, tuple(rows)) for a in range(1, dim)]))
     lifted = [(i, j, k, el) for i, j, k, el, chi, _ in rows if chi == 1]
     by_m = Counter(i ^ j for i, j, _, _ in lifted)
     weights = Counter(bin(i ^ j).count("1") for i, j, _, _ in lifted)
@@ -165,15 +170,17 @@ def skeleton_facts(dim: int) -> dict[str, Any]:
     }
 
 
-def affine_rows(dim: int) -> int:
+def _affine_row(job: tuple[int, int]) -> bool:
+    """Whether x -> cd_sign(dim, m, x) is affine over F_2."""
+    dim, m = job
     bits = dim.bit_length() - 1
-    count = 0
-    for m in range(1, dim):
-        f = [0 if cd_sign(dim, m, x) == 1 else 1 for x in range(dim)]
-        lin = [f[1 << b] ^ f[0] for b in range(bits)]
-        if all(f[x] == f[0] ^ (sum(lin[b] for b in range(bits) if x >> b & 1) & 1) for x in range(dim)):
-            count += 1
-    return count
+    f = [0 if cd_sign(dim, m, x) == 1 else 1 for x in range(dim)]
+    lin = [f[1 << b] ^ f[0] for b in range(bits)]
+    return all(f[x] == f[0] ^ (sum(lin[b] for b in range(bits) if x >> b & 1) & 1) for x in range(dim))
+
+
+def affine_rows(dim: int) -> int:
+    return sum(ordered_map(_affine_row, [(dim, m) for m in range(1, dim)]))
 
 
 def _pure_kernel_annihilated(job: tuple[int, int, int, int]) -> tuple[int, bool]:
@@ -262,27 +269,27 @@ def qubit_facts(dim: int, elements: list[tuple[int, int, int]]) -> dict[str, Any
     }
 
 
+def _scalar_square(job: tuple[int, tuple[int, ...]]) -> bool:
+    """Whether L_u^2 = -|u|^2 I for u the sum of the listed basis units."""
+    dim, units = job
+    table = sign_table(dim)
+    mat = [[0] * dim for _ in range(dim)]
+    for p in units:
+        for x in range(dim):
+            mat[p ^ x][x] += table[p][x]
+    sq = [[sum(mat[r][k] * mat[k][c] for k in range(dim)) for c in range(dim)] for r in range(dim)]
+    norm = len(units)
+    return all(sq[r][c] == (-norm if r == c else 0) for r in range(dim) for c in range(dim))
+
+
 def square_facts() -> dict[str, Any]:
     dim = SQUARE_DIMENSION
-    table = sign_table(dim)
     zd = {(i, j) for i, j, _ in zero_divisor_elements(dim)}
-
-    def left(u: dict[int, int]) -> list[list[int]]:
-        mat = [[0] * dim for _ in range(dim)]
-        for p, c in u.items():
-            for x in range(dim):
-                mat[p ^ x][x] += c * table[p][x]
-        return mat
-
-    def scalar_square(u: dict[int, int]) -> bool:
-        mat = left(u)
-        sq = [[sum(mat[r][k] * mat[k][c] for k in range(dim)) for c in range(dim)] for r in range(dim)]
-        norm = sum(c * c for c in u.values())
-        return all(sq[r][c] == (-norm if r == c else 0) for r in range(dim) for c in range(dim))
-
-    scalar: Counter[tuple[str, bool]] = Counter()
-    for i, j in itertools.combinations(range(1, dim), 2):
-        scalar[("zero divisor" if (i, j) in zd else "invertible", scalar_square({i: 1, j: 1}))] += 1
+    pairs = list(itertools.combinations(range(1, dim), 2))
+    squares = ordered_map(_scalar_square, [(dim, pair) for pair in pairs])
+    scalar: Counter[tuple[str, bool]] = Counter(
+        ("zero divisor" if pair in zd else "invertible", sq) for pair, sq in zip(pairs, squares, strict=True)
+    )
     witness = [Fraction(0)] * dim
     for p in (1, 2, 12):
         witness[p] = Fraction(1)
@@ -292,7 +299,7 @@ def square_facts() -> dict[str, Any]:
         "two_unit_zero_divisor_scalar_square": scalar[("zero divisor", True)],
         "two_unit_zero_divisor_nonscalar_square": scalar[("zero divisor", False)],
         "e1_e2_e12_determinant": str(left_mult_determinant_exact(dim, witness)),
-        "e1_e2_e12_scalar_square": scalar_square({1: 1, 2: 1, 12: 1}),
+        "e1_e2_e12_scalar_square": _scalar_square((dim, (1, 2, 12))),
     }
 
 

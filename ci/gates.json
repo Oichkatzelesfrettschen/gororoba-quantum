@@ -3441,7 +3441,10 @@
    "cmd": "\"$PYTHON\" -B -W error docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py --check",
    "name": "sources-412",
    "seconds": 3.1,
-   "tier": "pr"
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/kaplansky-cd-mechanisms/result.json"
+   ]
   },
   {
    "suite": "sources",
