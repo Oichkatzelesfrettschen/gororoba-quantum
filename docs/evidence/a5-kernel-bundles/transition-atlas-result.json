@@ -1,7 +1,7 @@
 {
   "pass": true,
   "schema": "a5-high-nullity-transition-atlas-v1",
-  "script_sha256": "d7e0aae2af5675c99d94bc740904541e1724f196cfd9426d3ad5ac2b84a3277c",
+  "script_sha256": "80f9eacbb0743e999531585dcd703169533d90b120467551390bd825cb6872d8",
   "transition_atlas": {
     "atlas": {
       "chart_domain": "U_I={y:pf(A(z,conjugate(z))_I,I)!=0}",
@@ -27,12 +27,12 @@
     },
     "constant_vertical_complex_only": true,
     "input_digests": {
-      "frames_result_sha256": "5a598df791c4998cee4ddedddadfd87a9f434f5826050ac028405c868e98f245",
-      "frames_script_sha256": "2334427156633d87271eca8ebc4f15dd483733ca3e9a3a40c5ea39a8092e361f",
-      "nullity_sixteen_bundle_result_sha256": "017574b5a87e8dcd2481d22c69e343988cc5f314b0bed4dbc9d8f799040b0f43",
-      "nullity_sixteen_bundle_script_sha256": "d1cfcd28f547f9174396af71e8e41f340db7901b03dd0b946c9dd494c239aaae",
-      "symmetry_result_sha256": "0e10a92b0a6aa185ffe78f74807167f5cdfd38bcad95c164daa90108438ab390",
-      "symmetry_script_sha256": "c7443882f68b3cb1be3808b3af70426c7c96ff4e96479287662bf80d0de5dd92"
+      "frames_result_sha256": "07cb7c0db4bace6961a06063a36bb638ae4639bcfe1ade041ba726f6f2307476",
+      "frames_script_sha256": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+      "nullity_sixteen_bundle_result_sha256": "33196fa92daa52bc9a30142674235182fa6875df7d2c6b3fde58bbfa726b66ec",
+      "nullity_sixteen_bundle_script_sha256": "5056c561fda79f7f3995eda0a56278a318b1b0d65a1d4d41a9da9aa8e574a766",
+      "symmetry_result_sha256": "9552c02507ed39750dfbf55874fd682c3ed059c868515251e6dc9cf9ca012a37",
+      "symmetry_script_sha256": "47365da1e1ffc659ab322f0bed7a1f7376afa33e942e43663682ed20c5f95249"
     },
     "mutation": "",
     "nullity_sixteen_reduction_matches_committed_result": true,

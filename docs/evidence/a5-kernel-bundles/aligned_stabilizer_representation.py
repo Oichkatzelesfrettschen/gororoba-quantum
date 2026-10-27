@@ -496,14 +496,26 @@ def build_result() -> dict[str, Any]:
     }
 
 
+def _self_test_mutation_task(mutation: str) -> tuple[str, dict[str, Any]]:
+    """Build one independent representation mutation for the parent self-test."""
+    return mutation, representation_checks(mutation)
+
+
 def self_test() -> None:
     baseline = representation_checks()
     if not baseline["pass"]:
         raise RuntimeError("baseline aligned stabilizer-representation check failed")
-    moving_mutation = representation_checks("include_moving_direction")
+    mutations = dict(
+        symmetry.parallel.ordered_map(
+            _self_test_mutation_task,
+            ["include_moving_direction", "perturb_fiber_action"],
+            min_items=1,
+        )
+    )
+    moving_mutation = mutations["include_moving_direction"]
     if moving_mutation["pass"] or all(moving_mutation["rows"][0]["point_fixed"]):
         raise RuntimeError("moving-generator mutation survived the point-stabilizer check")
-    fiber_mutation = representation_checks("perturb_fiber_action")
+    fiber_mutation = mutations["perturb_fiber_action"]
     if fiber_mutation["pass"] or fiber_mutation["rows"][0]["representation_commutators_match"]:
         raise RuntimeError("fiber-action mutation survived the bracket check")
 
@@ -511,17 +523,28 @@ def self_test() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
     arguments = parser.parse_args()
+    if arguments.check is not None and (arguments.self_test or arguments.out is not None):
+        parser.error("--check cannot be combined with --self-test or --out")
     if arguments.self_test:
         self_test()
         print("PASS: aligned stabilizer-representation self-test")
-    if arguments.out is not None:
+    if arguments.out is not None or arguments.check is not None:
         result = build_result()
-        arguments.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"wrote {arguments.out}")
-    if not arguments.self_test and arguments.out is None:
-        parser.error("choose --self-test or --out")
+        payload = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode()
+        if arguments.check is not None:
+            if payload != arguments.check.read_bytes():
+                raise SystemExit(
+                    f"aligned_stabilizer_representation.py: fresh JSON differs byte-for-byte from {arguments.check}"
+                )
+            print(f"aligned_stabilizer_representation.py: fresh JSON matches {arguments.check}")
+        else:
+            arguments.out.write_bytes(payload)
+            print(f"wrote {arguments.out}")
+    if not arguments.self_test and arguments.out is None and arguments.check is None:
+        parser.error("choose --self-test, --out, or --check")
     return 0
 
 

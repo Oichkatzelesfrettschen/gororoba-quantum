@@ -27,6 +27,13 @@ class IsotropicOrbitDataTests(unittest.TestCase):
         rows = [row for row in self.baseline["rows"] if row["orbit"] == "B9"]
         self.assertEqual(len(rows), 4)
         self.assertTrue(all(row["inside_B9"] and row["compact_gram_stationary"] for row in rows))
+        self.assertTrue(self.baseline["B9"]["coassociative_frames_verified"])
+        self.assertTrue(all(row["coassociative_span"]["pass"] for row in rows))
+        self.assertEqual({row["coassociative_span"]["real_span_dimension"] for row in rows}, {4})
+        self.assertEqual(
+            {tuple(row["coassociative_span"]["associative_three_form_values"]) for row in rows},
+            {("0", "0", "0", "0")},
+        )
         self.assertTrue(all(Fraction(row["normalized_ball_radius_squared"]) < 1 for row in rows))
         self.assertEqual(
             {row["stabilizer_representation"]["compact_tangent_rank"] for row in rows},

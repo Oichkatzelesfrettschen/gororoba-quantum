@@ -211,7 +211,7 @@ def _load_inputs() -> tuple[dict[str, str], dict[str, Any]]:
             "nullity_sixteen_bundle",
             NULLITY_SIXTEEN_RESULT,
             NULLITY_SIXTEEN_SCRIPT,
-            "a5-nullity-sixteen-bundle-invariants-v1",
+            "a5-nullity-sixteen-bundle-invariants-v2",
             "script_sha256",
         ),
     )
@@ -308,11 +308,23 @@ def build_result() -> dict[str, Any]:
     }
 
 
+def _self_test_mutation_task(mutation: str) -> tuple[str, dict[str, Any]]:
+    """Build one independent atlas mutation for the parent self-test."""
+    return mutation, transition_atlas_checks(mutation)
+
+
 def self_test() -> None:
     baseline = transition_atlas_checks()
     if not baseline["pass"]:
         raise RuntimeError("baseline high-nullity transition-atlas check failed")
-    transition_mutation = transition_atlas_checks("perturb_transition")
+    mutations = dict(
+        symmetry.parallel.ordered_map(
+            _self_test_mutation_task,
+            ["perturb_transition", "transpose_metric"],
+            min_items=1,
+        )
+    )
+    transition_mutation = mutations["perturb_transition"]
     transition_row = transition_mutation["rows"][0]
     if (
         transition_mutation["pass"]
@@ -321,7 +333,7 @@ def self_test() -> None:
         or transition_row["transition_cocycle"]
     ):
         raise RuntimeError("transition-entry mutation survived reconstruction, inverse, or cocycle checks")
-    metric_mutation = transition_atlas_checks("transpose_metric")
+    metric_mutation = mutations["transpose_metric"]
     if metric_mutation["pass"] or metric_mutation["rows"][0]["hermitian_gram_transport"]:
         raise RuntimeError("transpose-instead-of-adjoint mutation survived Hermitian Gram transport")
 
@@ -329,17 +341,26 @@ def self_test() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
     arguments = parser.parse_args()
+    if arguments.check is not None and (arguments.self_test or arguments.out is not None):
+        parser.error("--check cannot be combined with --self-test or --out")
     if arguments.self_test:
         self_test()
         print("PASS: high-nullity transition-atlas self-test")
-    if arguments.out is not None:
+    if arguments.out is not None or arguments.check is not None:
         result = build_result()
-        arguments.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"wrote {arguments.out}")
-    if not arguments.self_test and arguments.out is None:
-        parser.error("choose --self-test or --out")
+        payload = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode()
+        if arguments.check is not None:
+            if payload != arguments.check.read_bytes():
+                raise SystemExit(f"transition_atlas.py: fresh JSON differs byte-for-byte from {arguments.check}")
+            print(f"transition_atlas.py: fresh JSON matches {arguments.check}")
+        else:
+            arguments.out.write_bytes(payload)
+            print(f"wrote {arguments.out}")
+    if not arguments.self_test and arguments.out is None and arguments.check is None:
+        parser.error("choose --self-test, --out, or --check")
     return 0
 
 

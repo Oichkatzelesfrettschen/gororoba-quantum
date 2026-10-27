@@ -404,14 +404,26 @@ def build_result() -> dict[str, Any]:
     }
 
 
+def _self_test_mutation_task(mutation: str) -> tuple[str, dict[str, Any]]:
+    """Build one independent compact-orbit mutation for the parent self-test."""
+    return mutation, orbit_moduli_checks(mutation)
+
+
 def self_test() -> None:
     baseline = orbit_moduli_checks()
     if not baseline["pass"]:
         raise RuntimeError("baseline V compact-orbit moduli check failed")
-    phase_mutation = orbit_moduli_checks("delete_phase_generator")
+    mutations = dict(
+        symmetry.parallel.ordered_map(
+            _self_test_mutation_task,
+            ["delete_phase_generator", "drop_i_on_v"],
+            min_items=1,
+        )
+    )
+    phase_mutation = mutations["delete_phase_generator"]
     if phase_mutation["pass"] or phase_mutation["rows"][0]["compact_tangent_rank"] == 12:
         raise RuntimeError("phase-generator deletion survived the V orbit-rank check")
-    coordinate_mutation = orbit_moduli_checks("drop_i_on_v")
+    coordinate_mutation = mutations["drop_i_on_v"]
     if coordinate_mutation["pass"] or coordinate_mutation["rows"][0]["inside_open_V"]:
         raise RuntimeError("missing-i mutation survived the V coordinate check")
 
@@ -419,17 +431,26 @@ def self_test() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
     arguments = parser.parse_args()
+    if arguments.check is not None and (arguments.self_test or arguments.out is not None):
+        parser.error("--check cannot be combined with --self-test or --out")
     if arguments.self_test:
         self_test()
         print("PASS: V compact-orbit moduli self-test")
-    if arguments.out is not None:
+    if arguments.out is not None or arguments.check is not None:
         result = build_result()
-        arguments.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"wrote {arguments.out}")
-    if not arguments.self_test and arguments.out is None:
-        parser.error("choose --self-test or --out")
+        payload = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode()
+        if arguments.check is not None:
+            if payload != arguments.check.read_bytes():
+                raise SystemExit(f"v_orbit_moduli.py: fresh JSON differs byte-for-byte from {arguments.check}")
+            print(f"v_orbit_moduli.py: fresh JSON matches {arguments.check}")
+        else:
+            arguments.out.write_bytes(payload)
+            print(f"wrote {arguments.out}")
+    if not arguments.self_test and arguments.out is None and arguments.check is None:
+        parser.error("choose --self-test, --out, or --check")
     return 0
 
 

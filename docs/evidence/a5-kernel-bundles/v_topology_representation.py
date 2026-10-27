@@ -19,6 +19,8 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
+import sympy as sp
+
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE))
@@ -108,12 +110,44 @@ def _circle_mapping_torus_groups(monodromy_degree: int) -> dict[str, Any]:
     }
 
 
+def _zero_order(polynomial: sp.Expr, variable: sp.Symbol, root: sp.Expr) -> int:
+    derivative = sp.expand(polynomial)
+    order = 0
+    degree = int(sp.Poly(polynomial, variable).degree())
+    while sp.simplify(derivative.subs(variable, root)) == 0:
+        order += 1
+        _require(order <= degree, "zero-order computation exceeded the polynomial degree")
+        derivative = sp.diff(derivative, variable)
+    return order
+
+
+def _square_root_divisor(mutation: str) -> dict[str, Any]:
+    projective_ratio = sp.Symbol("lambda")
+    coefficient_quadratic = 1 + projective_ratio**2
+    if mutation == "trivialize_monodromy":
+        coefficient_quadratic = sp.expand(coefficient_quadratic**2)
+    orders = {
+        "+i": _zero_order(coefficient_quadratic, projective_ratio, sp.I),
+        "-i": _zero_order(coefficient_quadratic, projective_ratio, -sp.I),
+    }
+    _require(len(set(orders.values())) == 1, "deleted points have different divisor orders")
+    return {
+        "coefficient_polynomial": sp.sstr(coefficient_quadratic),
+        "factorization": sp.sstr(sp.factor(coefficient_quadratic, extension=sp.I)),
+        "deleted_point_orders": orders,
+        "common_order": next(iter(orders.values())),
+        "mutation": mutation if mutation == "trivialize_monodromy" else "",
+    }
+
+
 def _topology_certificate(mutation: str = "") -> dict[str, Any]:
     if mutation not in ("", "trivialize_monodromy"):
         raise ValueError(f"unknown topology mutation {mutation!r}")
-    square_root_winding = 2 if mutation == "trivialize_monodromy" else 1
+    divisor = _square_root_divisor(mutation)
+    square_root_winding = int(divisor["common_order"])
     monodromy_sign = 1 if square_root_winding % 2 == 0 else -1
-    monodromy_degree = monodromy_sign
+    sphere_dimension = 6
+    monodromy_degree = monodromy_sign ** (sphere_dimension + 1)
     groups = _circle_mapping_torus_groups(monodromy_degree)
     expected_cohomology = {
         "0": "Z",
@@ -142,6 +176,7 @@ def _topology_certificate(mutation: str = "") -> dict[str, Any]:
         "global_phase_factor": "mu/abs(mu) in S^1",
         "base": "CP^1 minus {+i,-i}, homotopy equivalent to S^1",
         "square_root_cover": "b=sqrt(1+lambda^2)*a with q(b)=-1",
+        "divisor_computation": divisor,
         "divisor_order_around_each_deleted_point": square_root_winding,
         "square_root_monodromy": monodromy_sign,
         "affine_quadric": "q(b)=-1 is diffeomorphic to T S^6 and retracts to S^6",
@@ -149,7 +184,11 @@ def _topology_certificate(mutation: str = "") -> dict[str, Any]:
         "monodromy_degree_on_H6": monodromy_degree,
         "homotopy_type": "S^1 x mapping_torus(-id:S^6->S^6)",
         "fundamental_group": "Z^2",
+        "topology_argument_status": (
+            "inferred from the exact divisor order, affine-quadric model, Wang sequence, and Kunneth theorem"
+        ),
         **groups,
+        "unit_section_cohomology_status": "inferred",
         "wang_map_on_H6": top_wang_entry if (top_wang_entry := 1 - monodromy_degree) else 0,
         "wang_map_on_reduced_K0_of_S6": top_wang_entry,
         "k_theory_pass": k_theory_pass,
@@ -400,24 +439,36 @@ def topology_representation_checks(mutation: str = "") -> dict[str, Any]:
 def build_result() -> dict[str, Any]:
     result = topology_representation_checks()
     return {
-        "schema": "a5-v-topology-stabilizer-representation-v1",
+        "schema": "a5-v-topology-stabilizer-representation-v2",
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "v_topology_stabilizer_representation": result,
         "pass": result["pass"],
     }
 
 
+def _self_test_mutation_task(mutation: str) -> tuple[str, dict[str, Any]]:
+    """Build one independent topology or representation mutation for the parent self-test."""
+    return mutation, topology_representation_checks(mutation)
+
+
 def self_test() -> None:
     baseline = topology_representation_checks()
     if not baseline["pass"]:
         raise RuntimeError("baseline V topology and stabilizer-representation check failed")
-    topology_mutation = topology_representation_checks("trivialize_monodromy")
+    mutations = dict(
+        symmetry.parallel.ordered_map(
+            _self_test_mutation_task,
+            ["trivialize_monodromy", "include_moving_direction", "perturb_fiber_action"],
+            min_items=1,
+        )
+    )
+    topology_mutation = mutations["trivialize_monodromy"]
     if topology_mutation["pass"] or topology_mutation["topology"]["unit_section_cohomology"].get("8") == "Z/2":
         raise RuntimeError("trivial-monodromy mutation survived the V topology check")
-    moving_mutation = topology_representation_checks("include_moving_direction")
+    moving_mutation = mutations["include_moving_direction"]
     if moving_mutation["pass"] or all(moving_mutation["rows"][0]["point_fixed"]):
         raise RuntimeError("moving-generator mutation survived the V point-stabilizer check")
-    fiber_mutation = topology_representation_checks("perturb_fiber_action")
+    fiber_mutation = mutations["perturb_fiber_action"]
     if fiber_mutation["pass"] or fiber_mutation["rows"][0]["representation_commutators_match"]:
         raise RuntimeError("fiber-action mutation survived the V representation check")
 
@@ -425,17 +476,28 @@ def self_test() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
     arguments = parser.parse_args()
+    if arguments.check is not None and (arguments.self_test or arguments.out is not None):
+        parser.error("--check cannot be combined with --self-test or --out")
     if arguments.self_test:
         self_test()
         print("PASS: V topology and stabilizer-representation self-test")
-    if arguments.out is not None:
+    if arguments.out is not None or arguments.check is not None:
         result = build_result()
-        arguments.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"wrote {arguments.out}")
-    if not arguments.self_test and arguments.out is None:
-        parser.error("choose --self-test or --out")
+        payload = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode()
+        if arguments.check is not None:
+            if payload != arguments.check.read_bytes():
+                raise SystemExit(
+                    f"v_topology_representation.py: fresh JSON differs byte-for-byte from {arguments.check}"
+                )
+            print(f"v_topology_representation.py: fresh JSON matches {arguments.check}")
+        else:
+            arguments.out.write_bytes(payload)
+            print(f"wrote {arguments.out}")
+    if not arguments.self_test and arguments.out is None and arguments.check is None:
+        parser.error("choose --self-test, --out, or --check")
     return 0
 
 

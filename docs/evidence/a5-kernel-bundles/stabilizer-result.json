@@ -1,7 +1,7 @@
 {
   "pass": true,
   "schema": "a5-nullity-sixteen-stabilizer-representation-v1",
-  "script_sha256": "613a9ffc88af07bae1d2af43c1df4546111ccca92a9405f6436fad6ed9f88788",
+  "script_sha256": "b73ff8e652b57390254cda541b6c02ac35809d2a5a3942a43899d891ae656342",
   "stabilizer_representation": {
     "equivalent_decompositions": true,
     "mutation": "",

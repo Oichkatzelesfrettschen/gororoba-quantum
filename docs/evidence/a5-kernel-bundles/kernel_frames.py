@@ -440,6 +440,16 @@ def build_result() -> dict[str, Any]:
     return result
 
 
+def _self_test_mutation_task(item: tuple[str, str]) -> tuple[str, dict[str, Any]]:
+    """Build one independent frame mutation for the parent self-test."""
+    nullity, mutation = item
+    if nullity == "sixteen":
+        return nullity, nullity_sixteen_frame_checks(mutation=mutation)
+    if nullity == "twelve":
+        return nullity, nullity_twelve_frame_checks(mutation=mutation)
+    raise ValueError(f"unknown nullity family {nullity!r}")
+
+
 def self_test() -> None:
     baseline_sixteen = nullity_sixteen_frame_checks()
     if not baseline_sixteen["pass"]:
@@ -447,10 +457,17 @@ def self_test() -> None:
     baseline_twelve = nullity_twelve_frame_checks()
     if not baseline_twelve["pass"]:
         raise RuntimeError("baseline nullity-twelve frame check failed")
-    mutated_sixteen = nullity_sixteen_frame_checks(mutation="flip_border_sign")
+    mutations = dict(
+        parallel.ordered_map(
+            _self_test_mutation_task,
+            [("sixteen", "flip_border_sign"), ("twelve", "flip_border_sign")],
+            min_items=1,
+        )
+    )
+    mutated_sixteen = mutations["sixteen"]
     if mutated_sixteen["pass"] or all(row["frame_identity_verified"] for row in mutated_sixteen["orbits"]):
         raise RuntimeError("nullity-sixteen bordered-sign mutation escaped detection")
-    mutated_twelve = nullity_twelve_frame_checks(mutation="flip_border_sign")
+    mutated_twelve = mutations["twelve"]
     if mutated_twelve["pass"] or all(row["frame_identity_verified"] for row in mutated_twelve["orbits"]):
         raise RuntimeError("nullity-twelve bordered-sign mutation escaped detection")
 
@@ -458,8 +475,11 @@ def self_test() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
     arguments = parser.parse_args()
+    if arguments.check is not None and (arguments.self_test or arguments.out is not None):
+        parser.error("--check cannot be combined with --self-test or --out")
     if arguments.self_test:
         self_test()
         print("high-nullity kernel-frame self-test: pass")
@@ -468,7 +488,11 @@ def main() -> int:
     if not result["pass"]:
         raise RuntimeError("high-nullity kernel-frame result failed")
     payload = json.dumps(result, indent=2, sort_keys=True) + "\n"
-    if arguments.out is None:
+    if arguments.check is not None:
+        if payload.encode() != arguments.check.read_bytes():
+            raise SystemExit(f"kernel_frames.py: fresh JSON differs byte-for-byte from {arguments.check}")
+        print(f"kernel_frames.py: fresh JSON matches {arguments.check}")
+    elif arguments.out is None:
         print(payload, end="")
     else:
         arguments.out.write_text(payload, encoding="utf-8")

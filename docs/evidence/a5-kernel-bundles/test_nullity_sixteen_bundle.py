@@ -26,6 +26,9 @@ class NullitySixteenBundleTests(unittest.TestCase):
         topology = result["base_topology"]
         k_theory = result["representation_ring_k_theory"]
 
+        self.assertEqual(topology["sphere_cell_degrees"], [0, 6])
+        self.assertEqual(topology["sphere_euler_characteristic"], 2)
+        self.assertEqual(topology["euler_boundary"], 2)
         self.assertEqual(topology["cell_degrees"], [0, 5, 6, 11])
         self.assertEqual(topology["cellular_boundary_maps"], {"6_to_5": 2})
         self.assertEqual(topology["integral_homology"], {"0": "Z", "5": "Z/2", "11": "Z"})
@@ -35,6 +38,17 @@ class NullitySixteenBundleTests(unittest.TestCase):
         self.assertEqual(k_theory["k1"], "Z")
         self.assertTrue(k_theory["first_syzygy_verified"])
         self.assertTrue(k_theory["second_koszul_boundary_is_x_times_first_syzygy"])
+
+    def test_actual_stabilizer_casimirs_derive_both_branching_rules(self) -> None:
+        branching = nullity_sixteen_bundle.bundle_checks()["branching"]
+        self.assertTrue(branching["pass"])
+        self.assertEqual(branching["derived_stabilizer_dimension"], 3)
+        self.assertEqual(branching["fundamental_7_casimir_spectrum"], {"0": 3, "3/8": 4})
+        self.assertEqual(branching["adjoint_14_casimir_spectrum"], {"0": 3, "3/8": 8, "1": 3})
+        self.assertEqual(branching["measured_fundamental_multiplicities"], [3, 2])
+        self.assertEqual(branching["measured_adjoint_multiplicities"], [3, 4, 1])
+        self.assertEqual(branching["downstream_fundamental_character_in_V1"], [3, 2])
+        self.assertEqual(branching["downstream_adjoint_character_in_V1"], [2, 4, 1])
 
     def test_reduced_transitions_and_each_irreducible_have_the_claimed_types(self) -> None:
         result = nullity_sixteen_bundle.bundle_checks()
@@ -76,8 +90,12 @@ class NullitySixteenBundleTests(unittest.TestCase):
         self.assertFalse(rank_mutation["pass"])
         self.assertEqual(rank_mutation["transition"]["complex_transition_dimension"], 6)
         self.assertFalse(topology_mutation["pass"])
+        self.assertEqual(topology_mutation["base_topology"]["sphere_cell_degrees"], [0])
+        self.assertEqual(topology_mutation["base_topology"]["sphere_euler_characteristic"], 1)
         self.assertNotEqual(topology_mutation["base_topology"]["integral_cohomology"].get("6"), "Z/2")
         self.assertFalse(k_theory_mutation["pass"])
+        self.assertEqual(k_theory_mutation["branching"]["measured_fundamental_multiplicities"], [3, 2])
+        self.assertEqual(k_theory_mutation["branching"]["downstream_fundamental_multiplicities"], [5, 1])
         self.assertFalse(k_theory_mutation["representation_ring_k_theory"]["generator_nonzero"])
 
 

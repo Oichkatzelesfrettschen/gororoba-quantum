@@ -1,15 +1,16 @@
-"""Focused contracts for the high-nullity bundle classification."""
+"""Focused contracts for producer-bound high-nullity bundle inputs."""
 
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 from typing import Any
 
 import bundle_invariants
 
 
 class BundleInvariantTests(unittest.TestCase):
-    """Catch denominator gaps, hidden torsion, and false clutching claims."""
+    """Separate computed prerequisites from written classification arguments."""
 
     baseline: dict[str, Any]
 
@@ -20,11 +21,11 @@ class BundleInvariantTests(unittest.TestCase):
     def _pieces(self) -> dict[str, dict[str, Any]]:
         return {row["piece"]: row for row in self.baseline["pieces"]}
 
-    def test_all_seven_pieces_have_exactly_one_classification(self) -> None:
+    def test_producers_cover_each_declared_piece(self) -> None:
         self.assertTrue(self.baseline["pass"])
-        self.assertTrue(self.baseline["denominator_exact"])
         self.assertEqual(tuple(self.baseline["declared_denominator"]), bundle_invariants.PIECES)
-        self.assertEqual(self.baseline["declared_denominator"], self.baseline["classified_keys"])
+        self.assertEqual(tuple(self.baseline["producer_piece_keys"]), bundle_invariants.PIECES)
+        self.assertTrue(self.baseline["observed_checks"]["producer_denominator_exact"])
         self.assertEqual(self.baseline["residual_open_keys"], [])
         residuals = self.baseline["out_of_denominator_residuals"]
         self.assertEqual(
@@ -33,88 +34,131 @@ class BundleInvariantTests(unittest.TestCase):
         )
         self.assertTrue(all(row["next_action"] for row in residuals))
 
-    def test_nullity_twelve_complex_bundles_are_actually_trivial(self) -> None:
+    def test_every_piece_classification_is_explicitly_inferred(self) -> None:
+        pieces = self._pieces()
+        self.assertEqual(tuple(pieces), bundle_invariants.PIECES)
+        for piece in bundle_invariants.PIECES:
+            with self.subTest(piece=piece):
+                self.assertEqual(pieces[piece]["classification_status"], "inferred")
+                self.assertTrue(pieces[piece]["classification_argument"])
+
+    def test_nullity_twelve_ranks_are_producer_derived(self) -> None:
         pieces = self._pieces()
         for piece in ("B9", "V", "VB", "V^a_+", "V^a_-"):
             with self.subTest(piece=piece):
                 self.assertEqual(pieces[piece]["complex_rank"], 6)
-                self.assertTrue(pieces[piece]["complex_stably_trivial"])
-                self.assertTrue(pieces[piece]["complex_actually_trivial"])
                 self.assertEqual(pieces[piece]["ordinary_complex_bundle"], "C^6")
-                self.assertEqual(pieces[piece]["characteristic_classes"]["total_chern_class"], "1")
-                self.assertEqual(
-                    pieces[piece]["characteristic_classes"]["total_stiefel_whitney_class"],
-                    "1",
-                )
 
-    def test_vb_torsion_cancels_before_the_moduli_circle_is_attached(self) -> None:
+    def test_vb_multiplicities_give_zero_order_two_residue(self) -> None:
+        derived = self.baseline["derived_inputs"]["VB"]
         vb = self._pieces()["VB"]
+        self.assertEqual(derived["trivial_lines"], 2)
+        self.assertEqual(derived["standard_doublets"], 2)
+        self.assertEqual(derived["irreducible_multiplicities"], [1, 2, 1])
+        self.assertEqual(derived["commutant_dimension"], 6)
         self.assertEqual(vb["ordinary_bundle_on_stiefel_factor"], "C^2 + 2 xi")
-        self.assertEqual(vb["reduced_complex_k_class"], "2x=0 in Z/2")
-        self.assertTrue(vb["stable_cancellation_on_stiefel_factor"]["pass"])
-        self.assertEqual(vb["equivariant_automorphism_group"], "GL(1,C) x GL(2,C) x GL(1,C)")
-        self.assertEqual(vb["irreducible_multiplicities"], [1, 2, 1])
-        self.assertEqual(vb["commutant_dimension"], 6)
+        self.assertEqual(vb["k_generator_order"], 2)
+        self.assertEqual(vb["reduced_k_residue"], 0)
         self.assertTrue(vb["equivariant_automorphism_group_connected"])
-        self.assertEqual(vb["natural_clutching"]["moduli_generator"], "I_6")
+        self.assertEqual(vb["cancellation"]["inequality"], "11<=12")
+        self.assertTrue(vb["cancellation"]["inequality_verified"])
 
-    def test_open_v_phase_lift_kills_both_available_reduced_classes(self) -> None:
+    def test_complex_cancellation_uses_the_closed_stable_range(self) -> None:
+        boundary = bundle_invariants._complex_cancellation(6, 12)
+        outside = bundle_invariants._complex_cancellation(6, 13)
+        self.assertEqual(boundary["range_condition"], "d<=2k")
+        self.assertEqual(boundary["inequality"], "12<=12")
+        self.assertTrue(boundary["inequality_verified"])
+        self.assertEqual(outside["inequality"], "13<=12")
+        self.assertFalse(outside["inequality_verified"])
+
+    def test_open_v_uses_exact_phase_and_mapping_torus_inputs(self) -> None:
+        derived = self.baseline["derived_inputs"]
         open_v = self._pieces()["V"]
-        phase = open_v["phase_pullback_certificate"]
-        self.assertTrue(phase["pass"])
-        self.assertEqual(phase["right_phase_square"], "-I_32")
-        self.assertEqual(phase["ambient_period"], "2 pi")
-        self.assertEqual(phase["fiber_clutching_after_one_period"], "I_6")
-        self.assertTrue(open_v["pulled_back_from_mapping_torus_factor"])
-        self.assertEqual(open_v["reduced_complex_k_class_coordinates"], {"free": 0, "order_two": 0})
+        self.assertEqual(derived["phase"]["right_phase_square"], "-I_32")
+        self.assertEqual(derived["phase"]["ambient_period"], "2 pi")
+        self.assertEqual(derived["phase"]["fiber_return_after_one_period"], "identity")
+        self.assertEqual(derived["mapping_torus_reduced_k0"], {"free_rank": 0, "torsion_orders": []})
+        self.assertEqual(open_v["pulled_back_class_coordinates"], {"free": [0], "torsion": [0]})
+        self.assertTrue(open_v["phase_pullback_input"])
 
-    def test_antipodal_clutching_is_null_homotopic_inside_su6(self) -> None:
-        clutching = self.baseline["antipodal_clutching"]
-        self.assertEqual(clutching["natural_clutching"], "-I_6")
-        self.assertEqual(clutching["determinant"], 1)
-        self.assertEqual(clutching["path_integer_weights"], [1, 1, 1, 1, 1, -5])
-        self.assertEqual(clutching["weight_sum"], 0)
-        self.assertTrue(all(isinstance(sign, int) for sign in clutching["endpoint_signs"]))
-        self.assertTrue(clutching["null_homotopic_in_SU"])
-
-    def test_nullity_sixteen_complex_class_remains_nonzero(self) -> None:
-        pieces = self._pieces()
+    def test_nullity_sixteen_multiplicities_retain_nonzero_residue(self) -> None:
+        derived = self.baseline["derived_inputs"]["N"]
+        self.assertEqual(derived["trivial_lines"], 2)
+        self.assertEqual(derived["standard_doublets"], 3)
+        self.assertEqual(derived["complex_rank"], 8)
         for piece in ("N_+", "N_-"):
             with self.subTest(piece=piece):
-                self.assertFalse(pieces[piece]["complex_stably_trivial"])
-                self.assertFalse(pieces[piece]["complex_actually_trivial"])
-                self.assertEqual(pieces[piece]["ordinary_complex_bundle"], "E_C=C^2+3 xi")
-                self.assertEqual(pieces[piece]["reduced_complex_k_class"], "3x=x != 0")
-                self.assertEqual(pieces[piece]["characteristic_classes"]["total_chern_class"], "1")
+                row = self._pieces()[piece]
+                self.assertEqual(row["ordinary_complex_bundle"], "C^2 + 3 xi")
+                self.assertEqual(row["reduced_k_residue"], 1)
+
+    def test_adjacent_boundaries_add_one_doublet_and_two_complex_dimensions(self) -> None:
+        adjacency = self.baseline["adjacent_strata"]
+        self.assertEqual(adjacency["VB_to_N_standard_doublet_change"], 1)
+        self.assertEqual(adjacency["aligned_to_N_standard_doublet_change"], 1)
+        self.assertEqual(adjacency["VB_to_N_complex_rank_change"], 2)
+        self.assertEqual(adjacency["aligned_to_N_complex_rank_change"], 2)
+
+    def test_characteristic_arrays_are_inferred_and_rank_sized(self) -> None:
+        for row in self.baseline["pieces"]:
+            with self.subTest(piece=row["piece"]):
+                rank = int(row["complex_rank"])
+                characteristics = row["characteristic_classes"]
+                self.assertEqual(characteristics["status"], "inferred")
+                self.assertEqual(len(characteristics["chern_coefficients_c0_through_c_rank"]), rank + 1)
                 self.assertEqual(
-                    pieces[piece]["underlying_real_bundle"], "trivial rank 16 by stable-range cancellation"
+                    len(characteristics["stiefel_whitney_coefficients_w0_through_w_real_rank"]),
+                    2 * rank + 1,
                 )
-                self.assertFalse(pieces[piece]["quaternionic_actually_trivial"])
+                self.assertEqual(
+                    len(characteristics["pontryagin_coefficients_p0_through_p_floor_real_rank_over_4"]),
+                    rank // 2 + 1,
+                )
 
-    def test_adjacent_rank_jumps_add_exactly_one_standard_doublet(self) -> None:
-        comparisons = self.baseline["adjacent_strata"]["comparisons"]
-        rank_jumps = [row for row in comparisons if row["rank_change"] == 2]
-        self.assertEqual(len(rank_jumps), 2)
-        self.assertTrue(all(row["added_bundle"] == "xi" for row in rank_jumps))
-        self.assertTrue(all(row["standard_doublet_change"] == 1 for row in rank_jumps))
-        self.assertTrue(self.baseline["adjacent_strata"]["pass"])
+    def test_mutations_change_bound_inputs_and_fail_downstream_checks(self) -> None:
+        extra_doublet = bundle_invariants.bundle_checks("add_vb_standard_doublet")
+        self.assertFalse(extra_doublet["pass"])
+        self.assertGreater(extra_doublet["mutation"]["rows_changed"], 0)
+        self.assertEqual(extra_doublet["derived_inputs"]["VB"]["standard_doublets"], 3)
+        self.assertFalse(extra_doublet["observed_checks"]["VB_fiber_dimension_is_six"])
 
-    def test_all_three_mutations_are_rejected_for_the_intended_reason(self) -> None:
-        missing_doublet = bundle_invariants.bundle_checks("drop_vb_standard_doublet")
-        torsion_twist = bundle_invariants.bundle_checks("inject_v_torsion")
-        odd_rank = bundle_invariants.bundle_checks("odd_rank_antipodal_clutching")
+        mapping_generator = bundle_invariants.bundle_checks("add_mapping_torus_k0_generator")
+        self.assertFalse(mapping_generator["pass"])
+        self.assertEqual(mapping_generator["derived_inputs"]["mapping_torus_reduced_k0"]["free_rank"], 1)
+        self.assertFalse(mapping_generator["observed_checks"]["mapping_torus_reduced_K0_is_zero"])
 
-        self.assertFalse(missing_doublet["pass"])
-        mutated_vb = next(row for row in missing_doublet["pieces"] if row["piece"] == "VB")
-        self.assertEqual(mutated_vb["reduced_complex_k_class"], "1x=1 in Z/2")
+        killed_generator = bundle_invariants.bundle_checks("kill_k_generator")
+        self.assertFalse(killed_generator["pass"])
+        self.assertEqual(killed_generator["derived_inputs"]["k_generator_order"], 1)
+        self.assertFalse(killed_generator["observed_checks"]["nullity_sixteen_stable_class_is_nonzero"])
 
-        self.assertFalse(torsion_twist["pass"])
-        mutated_v = next(row for row in torsion_twist["pieces"] if row["piece"] == "V")
-        self.assertEqual(mutated_v["reduced_complex_k_class_coordinates"]["order_two"], 1)
+    def test_false_antipodal_clutching_criterion_is_absent(self) -> None:
+        self.assertNotIn("antipodal_clutching", self.baseline)
+        for row in self.baseline["pieces"]:
+            self.assertNotIn("natural_clutching", row)
 
-        self.assertFalse(odd_rank["pass"])
-        self.assertEqual(odd_rank["antipodal_clutching"]["determinant"], -1)
-        self.assertFalse(odd_rank["antipodal_clutching"]["lies_in_SU"])
+    def test_readme_uses_source_grounded_obstruction_arguments(self) -> None:
+        readme = Path(__file__).with_name("README.md").read_text(encoding="utf-8")
+        for required_text in (
+            "is a special triple",
+            "unit section is connected",
+            "d<=2k",
+            "pi_6(U(6))=pi_6(U)=0",
+            "Dale Husemoller",
+            "Luke Hodgkin",
+            "Raoul Bott",
+        ):
+            with self.subTest(required_text=required_text):
+                self.assertIn(required_text, readme)
+        for rejected_text in (
+            "2*6>11",
+            "natural geometric clutching",
+            "only natural nonidentity clutching",
+            "joins `I_6` to `-I_6`",
+        ):
+            with self.subTest(rejected_text=rejected_text):
+                self.assertNotIn(rejected_text, readme)
 
 
 if __name__ == "__main__":

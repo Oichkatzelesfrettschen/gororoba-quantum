@@ -1,9 +1,10 @@
 {
   "isotropic_orbit_data": {
     "B9": {
+      "coassociative_frames_verified": true,
       "compact_orbit_space": "positive-definite Hermitian 2x2 matrices of trace one, the open 3-ball",
       "complete_compact_invariant": "H=(u,w)^*(u,w)/trace(H)",
-      "completeness_argument": "Hermitian polar normalization turns (u,w) into an orthonormal totally null cross-zero frame; its four real columns are an oriented coassociative frame, and G_2 acts simply transitively on such frames",
+      "completeness_argument": "Hermitian polar normalization turns (u,w) into an orthonormal totally null cross-zero frame; its four real columns are a coassociative frame. The first three columns form a special triple; G_2 acts simply transitively on special triples, orientation fixes the fourth column, and connectedness of the B9 unit section fixes one orientation",
       "connected_stabilizer": "U(1), the graph of the common phase circle inside G_2 x U(1)",
       "fiber_representation": "3 C_(-1) + 3 C_(-2)",
       "representations_constant": true,
@@ -24,19 +25,29 @@
     },
     "common_original_coordinate_model": "put w=-i*v; then u dot u=w dot w=u dot w=0 and u cross w=0",
     "input_digests": {
-      "aligned_orbit_moduli_script_sha256": "fea6c7522b991d58c2d4cec39665c4207168b53ae05879851f8d706352f4bb85",
-      "aligned_stabilizer_representation_script_sha256": "11f89f7d47c434bba1759e75ac2a8c2df5009f917a739ff20d0f9f27e13b486a",
-      "kernel_symmetry_result_sha256": "0e10a92b0a6aa185ffe78f74807167f5cdfd38bcad95c164daa90108438ab390",
-      "kernel_symmetry_script_sha256": "c7443882f68b3cb1be3808b3af70426c7c96ff4e96479287662bf80d0de5dd92",
-      "nullity_sixteen_stabilizer_result_sha256": "94e69a84e565a9014eb18a523d023a7e6a2158e413b25e02372684411928044e",
-      "nullity_sixteen_stabilizer_script_sha256": "613a9ffc88af07bae1d2af43c1df4546111ccca92a9405f6436fad6ed9f88788",
-      "v_orbit_moduli_result_sha256": "243ca2bfe5f973255c251d15532d06c812a19d0f5c8d1ad2c36253dafc08ee9c",
-      "v_orbit_moduli_script_sha256": "f082f8c92c808945dfa4bb9f533c575487c09d168ee1ffff29d095885840344d"
+      "aligned_orbit_moduli_script_sha256": "c4b9fec07e4881ad9884bfdb48e0d3a83ffa741aed65f4702a4001c4f078769c",
+      "aligned_stabilizer_representation_script_sha256": "66b900530f8ff547ccd49e7450da556405fa246c336b551945890ab4e3188376",
+      "kernel_symmetry_result_sha256": "9552c02507ed39750dfbf55874fd682c3ed059c868515251e6dc9cf9ca012a37",
+      "kernel_symmetry_script_sha256": "47365da1e1ffc659ab322f0bed7a1f7376afa33e942e43663682ed20c5f95249",
+      "nullity_sixteen_stabilizer_result_sha256": "52feb8e0fc3bbc7f1c8a413ba03733fa0b65f44cf4442b87de36ce58e9d87092",
+      "nullity_sixteen_stabilizer_script_sha256": "b73ff8e652b57390254cda541b6c02ac35809d2a5a3942a43899d891ae656342",
+      "v_orbit_moduli_result_sha256": "7af3b87311bbed91cbbd357fc25358b795e0e7f0c545b7edc392d044e1a3d79c",
+      "v_orbit_moduli_script_sha256": "3a579c9406e556a2b2cbd44973d693b369b44eb93b30d45708bc9d5fbb63d4b0"
     },
     "mutation": "",
     "pass": true,
     "rows": [
       {
+        "coassociative_span": {
+          "associative_three_form_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "real_span_dimension": 4
+        },
         "compact_gram_stationary": true,
         "cross_zero": true,
         "determinant_ball_identity": true,
@@ -124,6 +135,16 @@
         ]
       },
       {
+        "coassociative_span": {
+          "associative_three_form_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "real_span_dimension": 4
+        },
         "compact_gram_stationary": true,
         "cross_zero": true,
         "determinant_ball_identity": true,
@@ -211,6 +232,16 @@
         ]
       },
       {
+        "coassociative_span": {
+          "associative_three_form_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "real_span_dimension": 4
+        },
         "compact_gram_stationary": true,
         "cross_zero": true,
         "determinant_ball_identity": true,
@@ -298,6 +329,16 @@
         ]
       },
       {
+        "coassociative_span": {
+          "associative_three_form_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "real_span_dimension": 4
+        },
         "compact_gram_stationary": true,
         "cross_zero": true,
         "determinant_ball_identity": true,
@@ -385,6 +426,16 @@
         ]
       },
       {
+        "coassociative_span": {
+          "associative_three_form_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": false,
+          "real_span_dimension": 2
+        },
         "compact_gram_stationary": true,
         "cross_zero": true,
         "determinant_ball_identity": true,
@@ -521,6 +572,16 @@
         ]
       },
       {
+        "coassociative_span": {
+          "associative_three_form_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": false,
+          "real_span_dimension": 2
+        },
         "compact_gram_stationary": true,
         "cross_zero": true,
         "determinant_ball_identity": true,
@@ -657,6 +718,16 @@
         ]
       },
       {
+        "coassociative_span": {
+          "associative_three_form_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": false,
+          "real_span_dimension": 2
+        },
         "compact_gram_stationary": true,
         "cross_zero": true,
         "determinant_ball_identity": true,
@@ -793,6 +864,16 @@
         ]
       },
       {
+        "coassociative_span": {
+          "associative_three_form_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": false,
+          "real_span_dimension": 2
+        },
         "compact_gram_stationary": true,
         "cross_zero": true,
         "determinant_ball_identity": true,
@@ -933,5 +1014,5 @@
   },
   "pass": true,
   "schema": "a5-isotropic-orbit-data-v1",
-  "script_sha256": "41232a380dff22f9b774d4512ae17b6972dad2eaca2b495623f4c541ad2d5a57"
+  "script_sha256": "09496d0c4e0a6da4db4ecf25f90f26f4f11f238a20b48c0f25b6102a20fa2628"
 }

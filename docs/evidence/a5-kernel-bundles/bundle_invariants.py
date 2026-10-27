@@ -1,18 +1,20 @@
-"""Exact classification certificate for all high-nullity A_5 kernel bundles.
+"""Producer-bound inputs for the high-nullity A_5 bundle classification.
 
-The certificate binds the committed compact-orbit, topology, stabilizer,
-transition, and nullity-sixteen results.  It then performs the finite K-class,
-stable-cancellation, phase-period, clutching, and adjacency calculations that
-decide the ordinary complex and real bundles on all seven smooth pieces.
+The script recomputes the discrete inputs to the written bundle arguments:
+fiber multiplicities, K-class residues, CW dimensions, cancellation
+inequalities, phase periodicity, and adjacent-stratum rank jumps. Topological
+classification steps that use a theorem or a geometric argument remain marked
+``inferred`` and do not masquerade as machine-verified pass-flag literals.
 """
 
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import sys
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -25,8 +27,6 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import kernel_symmetry as symmetry  # noqa: E402
 
 DIMENSION = 32
-COMPLEX_RANK = 6
-NULLITY_SIXTEEN_COMPLEX_RANK = 8
 PIECES = ("B9", "V", "VB", "V^a_+", "V^a_-", "N_+", "N_-")
 OUT_OF_DENOMINATOR_RESIDUALS = (
     {
@@ -61,17 +61,22 @@ INPUTS = {
     "open_v_topology": (
         "v-topology-representation-result.json",
         "v_topology_representation.py",
-        "a5-v-topology-stabilizer-representation-v1",
+        "a5-v-topology-stabilizer-representation-v2",
     ),
     "isotropic_orbit_data": (
         "isotropic-orbit-data-result.json",
         "isotropic_orbit_data.py",
         "a5-isotropic-orbit-data-v1",
     ),
+    "nullity_sixteen_stabilizer": (
+        "stabilizer-result.json",
+        "stabilizer_representation.py",
+        "a5-nullity-sixteen-stabilizer-representation-v1",
+    ),
     "nullity_sixteen_bundle": (
         "nullity-sixteen-bundle-result.json",
         "nullity_sixteen_bundle.py",
-        "a5-nullity-sixteen-bundle-invariants-v1",
+        "a5-nullity-sixteen-bundle-invariants-v2",
     ),
     "transition_atlas": (
         "transition-atlas-result.json",
@@ -82,9 +87,9 @@ INPUTS = {
 
 MUTATIONS = (
     "",
-    "drop_vb_standard_doublet",
-    "inject_v_torsion",
-    "odd_rank_antipodal_clutching",
+    "add_vb_standard_doublet",
+    "add_mapping_torus_k0_generator",
+    "kill_k_generator",
 )
 
 RationalMatrix = symmetry.RationalMatrix
@@ -99,7 +104,34 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _load_inputs() -> tuple[dict[str, dict[str, Any]], dict[str, str]]:
+def _apply_input_mutation(inputs: dict[str, dict[str, Any]], mutation: str) -> dict[str, Any]:
+    if mutation == "":
+        return {"name": "", "target": None}
+    if mutation == "add_vb_standard_doublet":
+        rows = inputs["isotropic_orbit_data"]["isotropic_orbit_data"]["rows"]
+        changed = 0
+        for row in rows:
+            if row["orbit"] != "VB":
+                continue
+            irreducibles = row["stabilizer_representation"]["representation"]["irreducible_decomposition"]
+            doublet = next(item for item in irreducibles if int(item["sl2_highest_weight"]) == 1)
+            doublet["multiplicity"] = int(doublet["multiplicity"]) + 1
+            doublet["joint_dimension"] = int(doublet["joint_dimension"]) + int(doublet["irreducible_dimension"])
+            changed += 1
+        _require(changed > 0, "VB input mutation found no producer row")
+        return {"name": mutation, "target": "isotropic VB irreducible multiplicity", "rows_changed": changed}
+    if mutation == "add_mapping_torus_k0_generator":
+        topology = inputs["open_v_topology"]["v_topology_stabilizer_representation"]["topology"]
+        topology["mapping_torus_K0"] = "Z^2"
+        return {"name": mutation, "target": "open-V producer mapping_torus_K0"}
+    if mutation == "kill_k_generator":
+        k_theory = inputs["nullity_sixteen_bundle"]["bundle"]["representation_ring_k_theory"]
+        k_theory["generator_order"] = 1
+        return {"name": mutation, "target": "nullity-sixteen producer generator_order"}
+    raise ValueError(f"unknown mutation {mutation!r}")
+
+
+def _load_inputs(mutation: str) -> tuple[dict[str, dict[str, Any]], dict[str, str], dict[str, Any]]:
     loaded: dict[str, dict[str, Any]] = {}
     digests: dict[str, str] = {}
     for name, (result_name, script_name, expected_schema) in INPUTS.items():
@@ -113,7 +145,9 @@ def _load_inputs() -> tuple[dict[str, dict[str, Any]], dict[str, str]]:
         loaded[name] = result
         digests[f"{name}_result_sha256"] = _sha256(result_path)
         digests[f"{name}_script_sha256"] = script_digest
-    return loaded, digests
+    mutated = copy.deepcopy(loaded)
+    mutation_record = _apply_input_mutation(mutated, mutation)
+    return mutated, digests, mutation_record
 
 
 def _matrix_product(first: RationalMatrix, second: RationalMatrix) -> RationalMatrix:
@@ -152,403 +186,451 @@ def _right_phase_certificate(symmetry_result: dict[str, Any]) -> dict[str, Any]:
     right_phase_squared = _matrix_product(right_phase, right_phase)
     skew_symmetric = _matrix_transpose(right_phase) == tuple(tuple(-entry for entry in row) for row in right_phase)
     square_is_negative_identity = right_phase_squared == _identity_matrix(DIMENSION, -1)
-    phase_period_is_two_pi = square_is_negative_identity
     return {
         "committed_constant_triple": "base_phase_lift has domain action R_(e_16)",
         "base_phase_lift_verified": base_phase_lift_verified,
         "right_phase_is_skew_symmetric": skew_symmetric,
         "right_phase_square": "-I_32" if square_is_negative_identity else "not -I_32",
         "exact_exponential": "exp(theta R)=cos(theta) I+sin(theta) R",
-        "ambient_period": "2 pi" if phase_period_is_two_pi else "undetermined",
-        "fiber_clutching_after_one_period": "I_6" if phase_period_is_two_pi else "undetermined",
-        "pass": base_phase_lift_verified and skew_symmetric and square_is_negative_identity and phase_period_is_two_pi,
+        "ambient_period": "2 pi" if square_is_negative_identity else "undetermined",
+        "fiber_return_after_one_period": "identity" if square_is_negative_identity else "undetermined",
+        "pass": base_phase_lift_verified and skew_symmetric and square_is_negative_identity,
     }
 
 
-def _antipodal_clutching_certificate(mutation: str) -> dict[str, Any]:
-    rank = 5 if mutation == "odd_rank_antipodal_clutching" else COMPLEX_RANK
-    weights = [1] * (rank - 1) + [-(rank - 1)]
-    endpoint_signs = [-1 if weight % 2 else 1 for weight in weights]
-    determinant = (-1) ** rank
-    lies_in_special_unitary_group = determinant == 1
-    path_stays_special_unitary = sum(weights) == 0
-    endpoint_is_negative_identity = endpoint_signs == [-1] * rank
-    null_homotopy_verified = (
-        lies_in_special_unitary_group and path_stays_special_unitary and endpoint_is_negative_identity
+def _parse_abelian_group(group: str) -> tuple[int, tuple[int, ...]]:
+    if group == "0":
+        return 0, ()
+    free_rank = 0
+    torsion: list[int] = []
+    for term in group.split(" + "):
+        if term == "Z":
+            free_rank += 1
+        elif term.startswith("Z^"):
+            free_rank += int(term.removeprefix("Z^"))
+        elif term.startswith("Z/"):
+            torsion.append(int(term.removeprefix("Z/")))
+        else:
+            raise ValueError(f"unsupported abelian-group term {term!r}")
+    return free_rank, tuple(torsion)
+
+
+def _uniform(values: Iterable[int], label: str) -> int:
+    distinct = set(values)
+    _require(len(distinct) == 1, f"{label} is not constant: {sorted(distinct)}")
+    return distinct.pop()
+
+
+def _u2_counts(rows: Sequence[dict[str, Any]]) -> tuple[int, int, tuple[int, ...], int]:
+    doublet_counts: list[int] = []
+    trivial_counts: list[int] = []
+    multiplicity_signatures: list[tuple[int, ...]] = []
+    commutant_dimensions: list[int] = []
+    for row in rows:
+        representation = row["stabilizer_representation"]["representation"]
+        irreducibles = representation["irreducible_decomposition"]
+        doublet_counts.append(
+            sum(int(item["multiplicity"]) for item in irreducibles if int(item["sl2_highest_weight"]) == 1)
+        )
+        trivial_counts.append(
+            sum(int(item["multiplicity"]) for item in irreducibles if int(item["sl2_highest_weight"]) == 0)
+        )
+        multiplicity_signatures.append(tuple(int(item["multiplicity"]) for item in irreducibles))
+        commutant_dimensions.append(int(representation["projectors"]["commutant_dimension"]))
+    signatures = set(multiplicity_signatures)
+    _require(len(signatures) == 1, "U(2) irreducible multiplicities vary between producer rows")
+    return (
+        _uniform(trivial_counts, "U(2) trivial-line count"),
+        _uniform(doublet_counts, "U(2) standard-doublet count"),
+        signatures.pop(),
+        _uniform(commutant_dimensions, "U(2) commutant dimension"),
     )
-    return {
-        "rank": rank,
-        "natural_clutching": f"-I_{rank}",
-        "determinant": determinant,
-        "path_integer_weights": weights,
-        "path": "diag(exp(i*w_j*t)), 0<=t<=pi",
-        "weight_sum": sum(weights),
-        "endpoint_signs": endpoint_signs,
-        "lies_in_SU": lies_in_special_unitary_group,
-        "null_homotopic_in_SU": null_homotopy_verified,
-        "pass": rank == COMPLEX_RANK and null_homotopy_verified,
-    }
+
+
+def _nullity_u2_counts(rows: Sequence[dict[str, Any]]) -> tuple[int, int, tuple[int, ...], int]:
+    doublets: list[int] = []
+    trivials: list[int] = []
+    signatures: list[tuple[int, ...]] = []
+    commutants: list[int] = []
+    for row in rows:
+        irreducibles = row["irreducible_decomposition"]
+        doublets.append(sum(int(item["multiplicity"]) for item in irreducibles if int(item["sl2_highest_weight"]) == 1))
+        trivials.append(sum(int(item["multiplicity"]) for item in irreducibles if int(item["sl2_highest_weight"]) == 0))
+        signatures.append(tuple(int(item["multiplicity"]) for item in irreducibles))
+        commutants.append(int(row["invariant_projectors"]["commutant_dimension"]))
+    signature_set = set(signatures)
+    _require(len(signature_set) == 1, "nullity-sixteen irreducible multiplicities vary")
+    return (
+        _uniform(trivials, "nullity-sixteen trivial-line count"),
+        _uniform(doublets, "nullity-sixteen doublet count"),
+        signature_set.pop(),
+        _uniform(commutants, "nullity-sixteen commutant dimension"),
+    )
+
+
+def _su2_counts(rows: Sequence[dict[str, Any]]) -> tuple[int, int]:
+    return (
+        _uniform((int(row["representation"]["trivial_lines"]) for row in rows), "SU(2) trivial-line count"),
+        _uniform((int(row["representation"]["standard_doublets"]) for row in rows), "SU(2) doublet count"),
+    )
 
 
 def _complex_cancellation(complex_rank: int, cw_dimension: int) -> dict[str, Any]:
-    in_stable_range = 2 * complex_rank > cw_dimension
+    inequality_verified = cw_dimension <= 2 * complex_rank
     return {
+        "status": "inferred",
+        "lemma": "a stably trivial complex rank-k bundle on a CW complex of dimension d<=2k is trivial",
+        "range_condition": "d<=2k",
         "complex_rank": complex_rank,
         "cw_dimension": cw_dimension,
-        "stable_range_inequality": f"2*{complex_rank}>{cw_dimension}",
-        "stable_class_determines_actual_bundle": in_stable_range,
-        "pass": in_stable_range,
+        "inequality": f"{cw_dimension}<={2 * complex_rank}",
+        "inequality_verified": inequality_verified,
     }
 
 
-def _trivial_characteristics(real_rank: int) -> dict[str, Any]:
+def _inferred_zero_characteristics(complex_rank: int, reason: str) -> dict[str, Any]:
+    real_rank = 2 * complex_rank
     return {
-        "total_chern_class": "1",
-        "all_positive_chern_classes": "zero",
-        "underlying_real_rank": real_rank,
-        "total_stiefel_whitney_class": "1",
-        "all_positive_stiefel_whitney_classes": "zero",
-        "all_pontryagin_classes": "zero",
+        "status": "inferred",
+        "reason": reason,
+        "chern_coefficients_c0_through_c_rank": [1, *([0] * complex_rank)],
+        "stiefel_whitney_coefficients_w0_through_w_real_rank": [1, *([0] * real_rank)],
+        "pontryagin_coefficients_p0_through_p_floor_real_rank_over_4": [1, *([0] * (real_rank // 4))],
     }
 
 
-def _validate_bound_results(inputs: dict[str, dict[str, Any]]) -> dict[str, bool]:
-    isotropic = inputs["isotropic_orbit_data"]["isotropic_orbit_data"]
-    aligned_moduli = inputs["aligned_orbit_moduli"]["aligned_orbit_moduli"]
-    aligned_stabilizer = inputs["aligned_stabilizer"]["aligned_stabilizer_representation"]
-    open_v = inputs["open_v_topology"]["v_topology_stabilizer_representation"]
-    nullity_sixteen = inputs["nullity_sixteen_bundle"]["bundle"]
-    transition = inputs["transition_atlas"]["transition_atlas"]
-    validations = {
-        "B9_product": isotropic["B9"]["unit_section_product"] == "G_2 x open(B^3)",
-        "B9_representation": isotropic["B9"]["fiber_representation"] == "3 C_(-1) + 3 C_(-2)",
-        "VB_product": isotropic["VB"]["unit_section_product"] == "V_2(R^7) x (CP^1 minus {+i,-i}), noncanonically",
-        "VB_representation": isotropic["VB"]["su2_restriction"] == "2 V_0 + 2 V_1",
-        "aligned_topology": aligned_moduli["topology"]["fundamental_group"] == "Z",
-        "aligned_endpoint_representation": aligned_stabilizer["endpoint_representation"] == "3 + conjugate(3) of SU(3)",
-        "aligned_principal_representation": aligned_stabilizer["principal_representation"]
-        == "2 V_0 + 2 V_1 on every 0<rho<1 orbit",
-        "open_V_topology": open_v["topology"]["homotopy_type"] == "S^1 x mapping_torus(-id:S^6->S^6)",
-        "open_V_reduced_K0": open_v["topology"]["unit_section_reduced_K0"] == "Z + Z/2",
-        "mapping_torus_reduced_K0_zero": open_v["topology"]["mapping_torus_K0"] == "Z",
-        "nullity_sixteen_class": nullity_sixteen["topology_and_characteristics"]["kernel_bundle_reduced_k_class"]
-        == "3x=x != 0",
-        "nullity_sixteen_real_trivial": nullity_sixteen["topology_and_characteristics"]["real_bundle"]
-        == "trivial rank 16 by stable-range cancellation",
-        "nullity_twelve_structure_group": transition["structure_groups"]["nullity_twelve_metric_reduction"] == "U(6)",
-        "nullity_sixteen_structure_group": transition["structure_groups"]["nullity_sixteen_further_reduction"]
-        == "diagonal SU(2)=Sp(1) inside Sp(4) and SU(8)",
-    }
-    _require(all(validations.values()), "a bound input no longer has the classification used by this certificate")
-    return validations
+def _producer_piece_keys(inputs: dict[str, dict[str, Any]]) -> tuple[str, ...]:
+    isotropic_rows = inputs["isotropic_orbit_data"]["isotropic_orbit_data"]["rows"]
+    aligned_rows = inputs["aligned_stabilizer"]["aligned_stabilizer_representation"]["rows"]
+    nullity_rows = inputs["nullity_sixteen_stabilizer"]["stabilizer_representation"]["rows"]
+    observed = {str(row["orbit"]) for row in isotropic_rows}
+    observed.add("V")
+    observed.update(str(row["component"]) for row in aligned_rows)
+    observed.update({"Np": "N_+", "Nm": "N_-"}[str(row["orbit"])] for row in nullity_rows)
+    return tuple(piece for piece in PIECES if piece in observed)
 
 
-def _b9_classification(inputs: dict[str, dict[str, Any]]) -> dict[str, Any]:
-    isotropic = inputs["isotropic_orbit_data"]["isotropic_orbit_data"]["B9"]
-    representation_matches = isotropic["fiber_representation"] == "3 C_(-1) + 3 C_(-2)"
-    graph_circle_section = True
-    return {
-        "piece": "B9",
-        "base": "G_2 x open(B^3)",
-        "fundamental_group": "0",
-        "complex_rank": COMPLEX_RANK,
-        "orbitwise_fiber": isotropic["fiber_representation"],
-        "principal_bundle": "(G_2 x U(1)) -> (G_2 x U(1))/graph(U(1)) = G_2",
-        "global_section": "g -> [(g,1)]",
-        "global_section_verified": graph_circle_section,
-        "ordinary_complex_bundle": "C^6",
-        "reduced_complex_k_class": "0",
-        "complex_stably_trivial": True,
-        "complex_actually_trivial": True,
-        "natural_clutching": {},
-        "characteristic_classes": _trivial_characteristics(12),
-        "quaternionic_structure": "no canonical Sp(3) reduction is established",
-        "pass": representation_matches and graph_circle_section,
-    }
-
-
-def _vb_classification(inputs: dict[str, dict[str, Any]], mutation: str) -> dict[str, Any]:
-    isotropic_result = inputs["isotropic_orbit_data"]["isotropic_orbit_data"]
-    isotropic = isotropic_result["VB"]
-    vb_rows = [row for row in isotropic_result["rows"] if row["orbit"] == "VB"]
-    irreducible_multiplicities = [
-        row["multiplicity"]
-        for row in vb_rows[0]["stabilizer_representation"]["representation"]["irreducible_decomposition"]
-    ]
-    committed_commutant_dimension = vb_rows[0]["stabilizer_representation"]["representation"]["projectors"][
-        "commutant_dimension"
-    ]
-    calculated_commutant_dimension = sum(multiplicity * multiplicity for multiplicity in irreducible_multiplicities)
-    standard_doublets = 1 if mutation == "drop_vb_standard_doublet" else 2
-    reduced_class = standard_doublets % 2
-    cancellation = _complex_cancellation(COMPLEX_RANK, 11)
-    equivariant_automorphism_group = "GL(1,C) x GL(2,C) x GL(1,C)"
-    moduli_clutching_connected = (
-        irreducible_multiplicities == [1, 2, 1] and committed_commutant_dimension == calculated_commutant_dimension == 6
+def _derive_inputs(inputs: dict[str, dict[str, Any]], phase: dict[str, Any]) -> dict[str, Any]:
+    isotropic_rows = inputs["isotropic_orbit_data"]["isotropic_orbit_data"]["rows"]
+    b9_rows = [row for row in isotropic_rows if row["orbit"] == "B9"]
+    vb_rows = [row for row in isotropic_rows if row["orbit"] == "VB"]
+    b9_rank = _uniform(
+        (int(row["stabilizer_representation"]["complex_kernel_dimension"]) for row in b9_rows),
+        "B9 complex rank",
     )
-    stable_trivial = reduced_class == 0
-    actual_trivial = stable_trivial and cancellation["pass"] and moduli_clutching_connected
+    vb_rank = _uniform(
+        (int(row["stabilizer_representation"]["complex_kernel_dimension"]) for row in vb_rows),
+        "VB complex rank",
+    )
+    vb_trivials, vb_doublets, vb_multiplicities, vb_commutant = _u2_counts(vb_rows)
+
+    aligned_rows = inputs["aligned_stabilizer"]["aligned_stabilizer_representation"]["rows"]
+    aligned_principal = [row for row in aligned_rows if row["orbit_type"] == "principal"]
+    aligned_boundary = [row for row in aligned_rows if row["orbit_type"] == "null_boundary"]
+    aligned_rank = _uniform((int(row["complex_kernel_dimension"]) for row in aligned_principal), "aligned rank")
+    aligned_trivials, aligned_doublets = _su2_counts(aligned_principal)
+    boundary_trivials, boundary_doublets = _su2_counts(aligned_boundary)
+
+    open_v_result = inputs["open_v_topology"]["v_topology_stabilizer_representation"]
+    open_v_principal = [row for row in open_v_result["rows"] if row["orbit_type"] == "principal"]
+    open_v_rank = _uniform((int(row["complex_kernel_dimension"]) for row in open_v_principal), "open-V rank")
+    open_v_trivials, open_v_doublets = _su2_counts(open_v_principal)
+
+    nullity_rows = inputs["nullity_sixteen_stabilizer"]["stabilizer_representation"]["rows"]
+    nullity_rank = _uniform((int(row["complex_fiber_dimension"]) for row in nullity_rows), "nullity-sixteen rank")
+    nullity_trivials, nullity_doublets, nullity_multiplicities, nullity_commutant = _nullity_u2_counts(nullity_rows)
+
+    topology = open_v_result["topology"]
+    mapping_k0_free, mapping_k0_torsion = _parse_abelian_group(str(topology["mapping_torus_K0"]))
+    unit_reduced_free, unit_reduced_torsion = _parse_abelian_group(str(topology["unit_section_reduced_K0"]))
+    aligned_cohomology = inputs["aligned_orbit_moduli"]["aligned_orbit_moduli"]["topology"]["integral_cohomology"]
+    aligned_cw_dimension = max(int(degree) for degree in aligned_cohomology)
+    stiefel_cells = inputs["nullity_sixteen_bundle"]["bundle"]["base_topology"]["cell_degrees"]
+    stiefel_cw_dimension = max(int(degree) for degree in stiefel_cells)
+    k_theory = inputs["nullity_sixteen_bundle"]["bundle"]["representation_ring_k_theory"]
+    generator_order = int(k_theory["generator_order"])
+    _require(generator_order > 0, "K-theory generator order must be positive")
+
     return {
-        "piece": "VB",
-        "base": "V_2(R^7) x (CP^1 minus {+i,-i})",
-        "fundamental_group": "Z",
-        "complex_rank": COMPLEX_RANK,
-        "su2_restriction": isotropic["su2_restriction"],
-        "ordinary_bundle_on_stiefel_factor": f"C^2 + {standard_doublets} xi",
-        "reduced_k_group_on_stiefel_factor": "Z/2 generated by x=[xi]-2",
-        "reduced_complex_k_class": f"{standard_doublets}x={reduced_class} in Z/2",
-        "equivariant_automorphism_group": equivariant_automorphism_group,
-        "irreducible_multiplicities": irreducible_multiplicities,
-        "commutant_dimension": calculated_commutant_dimension,
-        "equivariant_automorphism_group_connected": moduli_clutching_connected,
-        "moduli_clutching_homotopy_class": "identity" if moduli_clutching_connected else "undetermined",
-        "stable_cancellation_on_stiefel_factor": cancellation,
-        "complex_stably_trivial": stable_trivial,
-        "complex_actually_trivial": actual_trivial,
-        "ordinary_complex_bundle": "C^6" if actual_trivial else "nontrivial",
-        "natural_clutching": {"moduli_generator": "I_6" if actual_trivial else "undetermined"},
-        "characteristic_classes": _trivial_characteristics(12) if actual_trivial else "not classified",
-        "quaternionic_structure": "no canonical Sp(3) reduction is established",
-        "pass": standard_doublets == 2 and stable_trivial and actual_trivial,
+        "piece_keys": list(_producer_piece_keys(inputs)),
+        "phase": phase,
+        "B9": {"complex_rank": b9_rank},
+        "VB": {
+            "complex_rank": vb_rank,
+            "trivial_lines": vb_trivials,
+            "standard_doublets": vb_doublets,
+            "irreducible_multiplicities": list(vb_multiplicities),
+            "commutant_dimension": vb_commutant,
+        },
+        "aligned": {
+            "complex_rank": aligned_rank,
+            "trivial_lines": aligned_trivials,
+            "standard_doublets": aligned_doublets,
+            "boundary_trivial_lines": boundary_trivials,
+            "boundary_standard_doublets": boundary_doublets,
+            "cw_dimension": aligned_cw_dimension,
+        },
+        "V": {
+            "complex_rank": open_v_rank,
+            "trivial_lines": open_v_trivials,
+            "standard_doublets": open_v_doublets,
+            "unit_reduced_k0": {"free_rank": unit_reduced_free, "torsion_orders": list(unit_reduced_torsion)},
+        },
+        "N": {
+            "complex_rank": nullity_rank,
+            "trivial_lines": nullity_trivials,
+            "standard_doublets": nullity_doublets,
+            "irreducible_multiplicities": list(nullity_multiplicities),
+            "commutant_dimension": nullity_commutant,
+        },
+        "mapping_torus_reduced_k0": {
+            "free_rank": mapping_k0_free - 1,
+            "torsion_orders": list(mapping_k0_torsion),
+        },
+        "stiefel_cw_dimension": stiefel_cw_dimension,
+        "k_generator_order": generator_order,
     }
 
 
-def _aligned_classification(
-    piece: str,
-    inputs: dict[str, dict[str, Any]],
-    antipodal_clutching: dict[str, Any],
-) -> dict[str, Any]:
-    aligned_stabilizer = inputs["aligned_stabilizer"]["aligned_stabilizer_representation"]
-    endpoint_representation = aligned_stabilizer["endpoint_representation"]
-    stable_cancellation = _complex_cancellation(COMPLEX_RANK, 7)
-    stable_trivial = True
-    actual_trivial = stable_trivial and stable_cancellation["pass"] and antipodal_clutching["pass"]
-    return {
-        "piece": piece,
-        "base": "mapping_torus(-id:S^6->S^6)",
-        "fundamental_group": "Z",
-        "complex_rank": COMPLEX_RANK,
-        "endpoint_bundle_on_S6": "T S^6 tensor C",
-        "endpoint_representation": endpoint_representation,
-        "reduced_complex_k_group": "0",
-        "reduced_complex_k_class": "0",
-        "complex_stably_trivial": stable_trivial,
-        "stable_cancellation": stable_cancellation,
-        "complex_actually_trivial": actual_trivial,
-        "ordinary_complex_bundle": "C^6" if actual_trivial else "undetermined",
-        "natural_clutching": {"mapping_torus_generator": antipodal_clutching},
-        "characteristic_classes": _trivial_characteristics(12) if actual_trivial else "not classified",
-        "quaternionic_structure": "no canonical Sp(3) reduction is established",
-        "pass": endpoint_representation == "3 + conjugate(3) of SU(3)" and actual_trivial,
-    }
+def _classification(derived: dict[str, Any]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    generator_order = int(derived["k_generator_order"])
+    mapping_group = derived["mapping_torus_reduced_k0"]
+    mapping_group_zero = mapping_group == {"free_rank": 0, "torsion_orders": []}
 
+    b9_rank = int(derived["B9"]["complex_rank"])
+    vb_rank = int(derived["VB"]["complex_rank"])
+    aligned_rank = int(derived["aligned"]["complex_rank"])
+    open_v_rank = int(derived["V"]["complex_rank"])
+    nullity_rank = int(derived["N"]["complex_rank"])
+    vb_doublets = int(derived["VB"]["standard_doublets"])
+    aligned_doublets = int(derived["aligned"]["standard_doublets"])
+    nullity_doublets = int(derived["N"]["standard_doublets"])
+    vb_residue = vb_doublets % generator_order
+    nullity_residue = nullity_doublets % generator_order
 
-def _open_v_classification(
-    inputs: dict[str, dict[str, Any]],
-    phase: dict[str, Any],
-    antipodal_clutching: dict[str, Any],
-    mutation: str,
-) -> dict[str, Any]:
-    topology = inputs["open_v_topology"]["v_topology_stabilizer_representation"]["topology"]
-    reduced_class = (0, 1) if mutation == "inject_v_torsion" else (0, 0)
-    pulled_back_from_mapping_torus = phase["pass"]
-    stable_cancellation = _complex_cancellation(COMPLEX_RANK, 7)
-    stable_trivial = pulled_back_from_mapping_torus and reduced_class == (0, 0)
-    actual_trivial = stable_trivial and stable_cancellation["pass"] and antipodal_clutching["pass"]
-    return {
-        "piece": "V",
-        "base": topology["homotopy_type"],
-        "fundamental_group": topology["fundamental_group"],
-        "complex_rank": COMPLEX_RANK,
-        "reduced_complex_k_group": topology["unit_section_reduced_K0"],
-        "phase_pullback_certificate": phase,
-        "pulled_back_from_mapping_torus_factor": pulled_back_from_mapping_torus,
-        "mapping_torus_reduced_k_group": "0",
-        "reduced_complex_k_class_coordinates": {"free": reduced_class[0], "order_two": reduced_class[1]},
-        "complex_stably_trivial": stable_trivial,
-        "stable_cancellation_on_mapping_torus": stable_cancellation,
-        "complex_actually_trivial": actual_trivial,
-        "ordinary_complex_bundle": "C^6" if actual_trivial else "undetermined",
-        "natural_clutching": {
-            "global_phase_generator": phase["fiber_clutching_after_one_period"],
-            "projective_generator": antipodal_clutching,
-        },
-        "characteristic_classes": _trivial_characteristics(12) if actual_trivial else "not classified",
-        "quaternionic_structure": "no canonical Sp(3) reduction is established",
-        "pass": reduced_class == (0, 0) and actual_trivial,
-    }
+    vb_cancellation = _complex_cancellation(vb_rank, int(derived["stiefel_cw_dimension"]))
+    aligned_cancellation = _complex_cancellation(aligned_rank, int(derived["aligned"]["cw_dimension"]))
+    open_v_cancellation = _complex_cancellation(open_v_rank, int(derived["aligned"]["cw_dimension"]))
+    vb_automorphism_connected = int(derived["VB"]["commutant_dimension"]) == sum(
+        int(multiplicity) * int(multiplicity) for multiplicity in derived["VB"]["irreducible_multiplicities"]
+    )
+    phase_pullback_input = bool(derived["phase"]["pass"])
 
-
-def _nullity_sixteen_classification(
-    piece: str,
-    inputs: dict[str, dict[str, Any]],
-) -> dict[str, Any]:
-    committed = inputs["nullity_sixteen_bundle"]["bundle"]["topology_and_characteristics"]
-    stable_nontrivial = committed["complex_stable_triviality"] is False
-    actual_nontrivial = committed["complex_triviality"] == "nontrivial"
-    return {
-        "piece": piece,
-        "base": "V_2(R^7)",
-        "fundamental_group": "0",
-        "complex_rank": NULLITY_SIXTEEN_COMPLEX_RANK,
-        "ordinary_complex_bundle": committed["ordinary_complex_bundle"],
-        "reduced_complex_k_group": committed["reduced_complex_k_group"],
-        "reduced_complex_k_class": committed["kernel_bundle_reduced_k_class"],
-        "complex_stably_trivial": not stable_nontrivial,
-        "complex_actually_trivial": not actual_nontrivial,
-        "natural_clutching": {},
-        "characteristic_classes": {
-            "total_chern_class": "1",
-            "all_positive_chern_classes": committed["all_ordinary_chern_classes"],
-            "c3_mod_2": committed["total_c3_mod_2"],
-            "total_stiefel_whitney_class": "1",
-            "all_positive_stiefel_whitney_classes": "zero",
-            "all_pontryagin_classes": committed["pontryagin_classes_of_E_R"],
-        },
-        "underlying_real_bundle": committed["real_bundle"],
-        "quaternionic_bundle": committed["quaternionic_bundle"],
-        "quaternionic_stably_trivial": committed["quaternionic_stable_triviality"],
-        "quaternionic_actually_trivial": False,
-        "pass": stable_nontrivial and actual_nontrivial and committed["real_bundle"].startswith("trivial rank 16"),
-    }
-
-
-def _adjacency_certificate(rows: dict[str, dict[str, Any]], mutation: str) -> dict[str, Any]:
-    vb_doublets = 1 if mutation == "drop_vb_standard_doublet" else 2
-    nullity_sixteen_doublets = 3
-    aligned_doublets = 2
-    comparisons = [
+    rows = [
         {
-            "specialization": "B9 -> VB",
-            "rank_change": 0,
-            "ordinary_complex_classes": [rows["B9"]["ordinary_complex_bundle"], rows["VB"]["ordinary_complex_bundle"]],
-            "pass": rows["B9"]["complex_actually_trivial"] and rows["VB"]["complex_actually_trivial"],
+            "piece": "B9",
+            "complex_rank": b9_rank,
+            "ordinary_complex_bundle": f"C^{b9_rank}",
+            "classification_status": "inferred",
+            "classification_argument": "the graph-circle principal bundle has a section over each G_2 orbit",
+            "characteristic_classes": _inferred_zero_characteristics(
+                b9_rank, "the inferred complex trivialization also trivializes the underlying real bundle"
+            ),
         },
         {
-            "specialization": "V -> VB",
-            "rank_change": 0,
-            "ordinary_complex_classes": [rows["V"]["ordinary_complex_bundle"], rows["VB"]["ordinary_complex_bundle"]],
-            "pass": rows["V"]["complex_actually_trivial"] and rows["VB"]["complex_actually_trivial"],
+            "piece": "V",
+            "complex_rank": open_v_rank,
+            "ordinary_complex_bundle": f"C^{open_v_rank}" if mapping_group_zero else "not inferred trivial",
+            "classification_status": "inferred",
+            "classification_argument": "the exact periodic phase lift makes the bundle a pullback from M_-",
+            "phase_pullback_input": phase_pullback_input,
+            "mapping_torus_reduced_k0": mapping_group,
+            "unit_reduced_k0": derived["V"]["unit_reduced_k0"],
+            "pulled_back_class_coordinates": {
+                "free": [0] * int(derived["V"]["unit_reduced_k0"]["free_rank"]),
+                "torsion": [0] * len(derived["V"]["unit_reduced_k0"]["torsion_orders"]),
+            },
+            "cancellation": open_v_cancellation,
+            "characteristic_classes": _inferred_zero_characteristics(
+                open_v_rank, "pullback from reduced K-class zero plus stable-range cancellation"
+            ),
         },
         {
-            "specialization": "VB -> N_+ or N_-",
-            "rank_change": 2,
-            "added_bundle": "xi",
-            "added_reduced_k_class": "x",
-            "standard_doublet_change": nullity_sixteen_doublets - vb_doublets,
-            "pass": nullity_sixteen_doublets - vb_doublets == 1,
+            "piece": "VB",
+            "complex_rank": vb_rank,
+            "ordinary_bundle_on_stiefel_factor": (f"C^{int(derived['VB']['trivial_lines'])} + {vb_doublets} xi"),
+            "k_generator_order": generator_order,
+            "reduced_k_residue": vb_residue,
+            "irreducible_multiplicities": derived["VB"]["irreducible_multiplicities"],
+            "commutant_dimension": derived["VB"]["commutant_dimension"],
+            "equivariant_automorphism_group_connected": vb_automorphism_connected,
+            "cancellation": vb_cancellation,
+            "ordinary_complex_bundle": f"C^{vb_rank}" if vb_residue == 0 else "not inferred trivial",
+            "classification_status": "inferred",
+            "classification_argument": "zero stable class, cancellation on V_2(R^7), and trivial multiplicity bundles",
+            "characteristic_classes": _inferred_zero_characteristics(
+                vb_rank, "the inferred complex trivialization also trivializes the underlying real bundle"
+            ),
         },
-        {
-            "specialization": "V^a_+ -> N_+ and V^a_- -> N_-",
-            "rank_change": 2,
-            "added_bundle": "xi",
-            "added_reduced_k_class": "x",
-            "standard_doublet_change": nullity_sixteen_doublets - aligned_doublets,
-            "pass": nullity_sixteen_doublets - aligned_doublets == 1,
-        },
+        *[
+            {
+                "piece": piece,
+                "complex_rank": aligned_rank,
+                "mapping_torus_reduced_k0": mapping_group,
+                "cancellation": aligned_cancellation,
+                "ordinary_complex_bundle": f"C^{aligned_rank}" if mapping_group_zero else "not inferred trivial",
+                "classification_status": "inferred",
+                "classification_argument": "reduced K^0(M_-)=0 plus stable-range cancellation",
+                "characteristic_classes": _inferred_zero_characteristics(
+                    aligned_rank, "zero reduced K-class plus stable-range cancellation"
+                ),
+            }
+            for piece in ("V^a_+", "V^a_-")
+        ],
+        *[
+            {
+                "piece": piece,
+                "complex_rank": nullity_rank,
+                "ordinary_complex_bundle": f"C^{int(derived['N']['trivial_lines'])} + {nullity_doublets} xi",
+                "k_generator_order": generator_order,
+                "reduced_k_residue": nullity_residue,
+                "classification_status": "inferred",
+                "classification_argument": "Hodgkin edge map sends x to [xi]-2",
+                "underlying_real_bundle": f"R^{2 * nullity_rank}",
+                "real_classification_status": "inferred",
+                "characteristic_classes": _inferred_zero_characteristics(
+                    nullity_rank, "the complex summands have zero Chern classes and the total real bundle is trivial"
+                ),
+                "quaternionic_bundle": f"H + {nullity_doublets} xi_H",
+                "quaternionic_classification_status": "inferred",
+            }
+            for piece in ("N_+", "N_-")
+        ],
     ]
-    return {"comparisons": comparisons, "pass": all(row["pass"] for row in comparisons)}
+
+    rows_by_piece = {row["piece"]: row for row in rows}
+    adjacency = {
+        "VB_to_N_standard_doublet_change": nullity_doublets - vb_doublets,
+        "aligned_to_N_standard_doublet_change": nullity_doublets - aligned_doublets,
+        "VB_to_N_complex_rank_change": nullity_rank - vb_rank,
+        "aligned_to_N_complex_rank_change": nullity_rank - aligned_rank,
+    }
+    observed_checks = {
+        "producer_denominator_exact": tuple(derived["piece_keys"]) == PIECES,
+        "phase_period_verified": phase_pullback_input,
+        "B9_complex_rank_is_six": b9_rank == 6,
+        "VB_fiber_dimension_is_six": int(derived["VB"]["trivial_lines"]) + 2 * vb_doublets == vb_rank == 6,
+        "VB_stable_class_is_zero": vb_residue == 0,
+        "VB_commutant_matches_multiplicities": vb_automorphism_connected,
+        "mapping_torus_reduced_K0_is_zero": mapping_group_zero,
+        "aligned_fiber_dimension_is_six": (
+            int(derived["aligned"]["trivial_lines"]) + 2 * aligned_doublets == aligned_rank == 6
+        ),
+        "open_V_fiber_dimension_is_six": (
+            int(derived["V"]["trivial_lines"]) + 2 * int(derived["V"]["standard_doublets"]) == open_v_rank == 6
+        ),
+        "nullity_sixteen_fiber_dimension_is_eight": (
+            int(derived["N"]["trivial_lines"]) + 2 * nullity_doublets == nullity_rank == 8
+        ),
+        "nullity_sixteen_stable_class_is_nonzero": nullity_residue != 0,
+        "VB_cancellation_inequality": bool(vb_cancellation["inequality_verified"]),
+        "aligned_cancellation_inequality": bool(aligned_cancellation["inequality_verified"]),
+        "open_V_cancellation_inequality": bool(open_v_cancellation["inequality_verified"]),
+        "VB_boundary_adds_one_doublet": adjacency["VB_to_N_standard_doublet_change"] == 1,
+        "aligned_boundary_adds_one_doublet": adjacency["aligned_to_N_standard_doublet_change"] == 1,
+    }
+    _require(set(rows_by_piece) == set(PIECES), "classification rows do not cover the declared pieces")
+    return rows, {"observed_checks": observed_checks, "adjacent_strata": adjacency}
 
 
 def bundle_checks(mutation: str = "") -> dict[str, Any]:
     if mutation not in MUTATIONS:
         raise ValueError(f"unknown mutation {mutation!r}")
-    inputs, input_digests = _load_inputs()
-    bound_result_validations = _validate_bound_results(inputs)
+    inputs, input_digests, mutation_record = _load_inputs(mutation)
     phase = _right_phase_certificate(inputs["kernel_symmetry"])
-    antipodal_clutching = _antipodal_clutching_certificate(mutation)
-
-    ordered_rows = [
-        _b9_classification(inputs),
-        _open_v_classification(inputs, phase, antipodal_clutching, mutation),
-        _vb_classification(inputs, mutation),
-        _aligned_classification("V^a_+", inputs, antipodal_clutching),
-        _aligned_classification("V^a_-", inputs, antipodal_clutching),
-        _nullity_sixteen_classification("N_+", inputs),
-        _nullity_sixteen_classification("N_-", inputs),
-    ]
-    rows = {row["piece"]: row for row in ordered_rows}
-    denominator_exact = tuple(rows) == PIECES and len(rows) == len(PIECES)
-    adjacency = _adjacency_certificate(rows, mutation)
-    mutation_absent = mutation == ""
+    derived = _derive_inputs(inputs, phase)
+    rows, classification = _classification(derived)
+    observed_checks = classification["observed_checks"]
     return {
-        "mutation": mutation,
+        "mutation": mutation_record,
         "declared_denominator": list(PIECES),
-        "classified_keys": list(rows),
-        "denominator_exact": denominator_exact,
+        "producer_piece_keys": derived["piece_keys"],
         "residual_open_keys": [],
         "out_of_denominator_residuals": list(OUT_OF_DENOMINATOR_RESIDUALS),
         "input_digests": input_digests,
-        "bound_result_validations": bound_result_validations,
-        "phase": phase,
-        "antipodal_clutching": antipodal_clutching,
-        "pieces": ordered_rows,
-        "adjacent_strata": adjacency,
-        "monodromy_scope": (
-            "The displayed matrices are natural geometric clutching representatives, not holonomy from a "
-            "canonical connection; only their homotopy classes are bundle invariants."
+        "derived_inputs": derived,
+        "pieces": rows,
+        "adjacent_strata": classification["adjacent_strata"],
+        "observed_checks": observed_checks,
+        "inference_scope": (
+            "Piece triviality, Hodgkin's edge map, stable-range cancellation, and the graph-circle section are "
+            "written mathematical arguments. The pass flag covers their producer-derived numeric prerequisites, "
+            "not those theorems themselves."
         ),
-        "pass": (
-            mutation_absent
-            and denominator_exact
-            and not tuple(set(PIECES) - set(rows))
-            and all(bound_result_validations.values())
-            and phase["pass"]
-            and antipodal_clutching["pass"]
-            and all(row["pass"] for row in ordered_rows)
-            and adjacency["pass"]
-        ),
+        "pass": all(observed_checks.values()),
     }
 
 
 def build_result() -> dict[str, Any]:
     result = bundle_checks()
     return {
-        "schema": "a5-high-nullity-bundle-invariants-v1",
+        "schema": "a5-high-nullity-bundle-invariants-v2",
         "script_sha256": _sha256(Path(__file__)),
         "bundle_invariants": result,
         "pass": result["pass"],
     }
 
 
+def _self_test_mutation_task(mutation: str) -> tuple[str, dict[str, Any]]:
+    """Build one independent producer-input mutation for the parent self-test."""
+    return mutation, bundle_checks(mutation)
+
+
 def self_test() -> None:
     baseline = bundle_checks()
     if not baseline["pass"]:
-        raise RuntimeError("baseline bundle classification failed")
+        raise RuntimeError("baseline producer-bound invariant inputs failed")
 
-    missing_doublet = bundle_checks("drop_vb_standard_doublet")
-    if missing_doublet["pass"]:
-        raise RuntimeError("missing-VB-doublet mutation survived")
-    mutated_vb = next(row for row in missing_doublet["pieces"] if row["piece"] == "VB")
-    if mutated_vb["reduced_complex_k_class"] == "2x=0 in Z/2":
-        raise RuntimeError("missing-VB-doublet mutation did not change the torsion class")
+    mutations = dict(
+        symmetry.parallel.ordered_map(
+            _self_test_mutation_task,
+            ["add_vb_standard_doublet", "add_mapping_torus_k0_generator", "kill_k_generator"],
+            min_items=1,
+        )
+    )
+    extra_doublet = mutations["add_vb_standard_doublet"]
+    if extra_doublet["pass"] or extra_doublet["derived_inputs"]["VB"]["standard_doublets"] != 3:
+        raise RuntimeError("mutated VB producer multiplicity survived")
+    if extra_doublet["observed_checks"]["VB_fiber_dimension_is_six"]:
+        raise RuntimeError("mutated VB producer multiplicity left the fiber dimension unchanged")
 
-    torsion_twist = bundle_checks("inject_v_torsion")
-    if torsion_twist["pass"]:
-        raise RuntimeError("open-V torsion-twist mutation survived")
-    mutated_v = next(row for row in torsion_twist["pieces"] if row["piece"] == "V")
-    if mutated_v["reduced_complex_k_class_coordinates"]["order_two"] != 1:
-        raise RuntimeError("open-V torsion-twist mutation was not injected")
+    mapping_generator = mutations["add_mapping_torus_k0_generator"]
+    if mapping_generator["pass"]:
+        raise RuntimeError("mutated mapping-torus K^0 input survived")
+    if mapping_generator["derived_inputs"]["mapping_torus_reduced_k0"]["free_rank"] != 1:
+        raise RuntimeError("mapping-torus input mutation did not reach the reduced K-group")
 
-    odd_rank = bundle_checks("odd_rank_antipodal_clutching")
-    if odd_rank["pass"] or odd_rank["antipodal_clutching"]["determinant"] != -1:
-        raise RuntimeError("odd-rank antipodal-clutching mutation survived")
+    killed_generator = mutations["kill_k_generator"]
+    if killed_generator["pass"]:
+        raise RuntimeError("mutated K-theory relation survived")
+    nullity_row = next(row for row in killed_generator["pieces"] if row["piece"] == "N_+")
+    if nullity_row["reduced_k_residue"] != 0:
+        raise RuntimeError("K-theory relation mutation did not change the nullity-sixteen class")
 
 
 def main(arguments: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
     parsed = parser.parse_args(arguments)
+    if parsed.check is not None and (parsed.self_test or parsed.out is not None):
+        parser.error("--check cannot be combined with --self-test or --out")
     if parsed.self_test:
         self_test()
-        print("PASS: high-nullity bundle invariant self-test")
-    if parsed.out is not None:
+        print("PASS: producer-bound bundle-invariant input self-test")
+    if parsed.out is not None or parsed.check is not None:
         result = build_result()
-        parsed.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"wrote {parsed.out}")
-    if not parsed.self_test and parsed.out is None:
-        parser.error("choose --self-test or --out")
+        payload = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode()
+        if parsed.check is not None:
+            if payload != parsed.check.read_bytes():
+                raise SystemExit(f"bundle_invariants.py: fresh JSON differs byte-for-byte from {parsed.check}")
+            print(f"bundle_invariants.py: fresh JSON matches {parsed.check}")
+        else:
+            parsed.out.write_bytes(payload)
+            print(f"wrote {parsed.out}")
+    if not parsed.self_test and parsed.out is None and parsed.check is None:
+        parser.error("choose --self-test, --out, or --check")
     return 0
 
 

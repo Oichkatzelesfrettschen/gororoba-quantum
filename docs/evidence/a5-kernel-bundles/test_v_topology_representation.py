@@ -20,9 +20,12 @@ class VTopologyRepresentationTests(unittest.TestCase):
     def test_unit_section_is_the_phase_circle_times_an_antipodal_mapping_torus(self) -> None:
         topology = self.baseline["topology"]
         self.assertTrue(topology["pass"])
+        self.assertEqual(topology["divisor_computation"]["deleted_point_orders"], {"+i": 1, "-i": 1})
+        self.assertEqual(topology["divisor_order_around_each_deleted_point"], 1)
         self.assertEqual(topology["square_root_monodromy"], -1)
         self.assertEqual(topology["homotopy_type"], "S^1 x mapping_torus(-id:S^6->S^6)")
         self.assertEqual(topology["fundamental_group"], "Z^2")
+        self.assertEqual(topology["unit_section_cohomology_status"], "inferred")
         self.assertEqual(
             topology["unit_section_cohomology"],
             {"0": "Z", "1": "Z^2", "2": "Z", "7": "Z/2", "8": "Z/2"},
@@ -67,6 +70,7 @@ class VTopologyRepresentationTests(unittest.TestCase):
         moving = v_topology_representation.topology_representation_checks("include_moving_direction")
         fiber = v_topology_representation.topology_representation_checks("perturb_fiber_action")
         self.assertFalse(topology["pass"])
+        self.assertEqual(topology["topology"]["divisor_computation"]["deleted_point_orders"], {"+i": 2, "-i": 2})
         self.assertNotEqual(topology["topology"]["unit_section_cohomology"].get("8"), "Z/2")
         self.assertFalse(moving["pass"])
         self.assertFalse(all(moving["rows"][0]["point_fixed"]))

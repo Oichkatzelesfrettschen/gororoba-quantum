@@ -19,10 +19,10 @@
       "real_gram_trace_preserved_by_phase": true
     },
     "input_digests": {
-      "kernel_symmetry_result_sha256": "0e10a92b0a6aa185ffe78f74807167f5cdfd38bcad95c164daa90108438ab390",
-      "kernel_symmetry_script_sha256": "c7443882f68b3cb1be3808b3af70426c7c96ff4e96479287662bf80d0de5dd92",
-      "nullity_sixteen_stabilizer_result_sha256": "94e69a84e565a9014eb18a523d023a7e6a2158e413b25e02372684411928044e",
-      "nullity_sixteen_stabilizer_script_sha256": "613a9ffc88af07bae1d2af43c1df4546111ccca92a9405f6436fad6ed9f88788"
+      "kernel_symmetry_result_sha256": "9552c02507ed39750dfbf55874fd682c3ed059c868515251e6dc9cf9ca012a37",
+      "kernel_symmetry_script_sha256": "47365da1e1ffc659ab322f0bed7a1f7376afa33e942e43663682ed20c5f95249",
+      "nullity_sixteen_stabilizer_result_sha256": "52feb8e0fc3bbc7f1c8a413ba03733fa0b65f44cf4442b87de36ce58e9d87092",
+      "nullity_sixteen_stabilizer_script_sha256": "b73ff8e652b57390254cda541b6c02ac35809d2a5a3942a43899d891ae656342"
     },
     "mutation": "",
     "nullity_sixteen_boundary": "rho=0 with stabilizer Lie algebra su(2)+u(1) and dimension 11",
@@ -190,5 +190,5 @@
   },
   "pass": true,
   "schema": "a5-aligned-nullity-twelve-orbit-moduli-v1",
-  "script_sha256": "fea6c7522b991d58c2d4cec39665c4207168b53ae05879851f8d706352f4bb85"
+  "script_sha256": "c4b9fec07e4881ad9884bfdb48e0d3a83ffa741aed65f4702a4001c4f078769c"
 }

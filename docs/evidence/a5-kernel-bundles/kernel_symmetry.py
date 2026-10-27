@@ -559,35 +559,63 @@ def _rank(vectors: Sequence[Sequence[Fraction]]) -> int:
     return equations.qrank(vectors) if vectors else 0
 
 
+def _center_commutator_block(
+    item: tuple[int, LieTriple, tuple[LieTriple, ...]],
+) -> tuple[int, tuple[tuple[int, int, int], ...]]:
+    """Return the sparse center constraints contributed by one fixed triple."""
+    fixed_index, fixed, triples = item
+    commutator_vectors = [_flatten_triple(_triple_commutator(candidate, fixed)) for candidate in triples]
+    entries: list[tuple[int, int, int]] = []
+    for coordinate_index in range(3 * MATRIX_COORDINATES):
+        for candidate_index, commutator_vector in enumerate(commutator_vectors):
+            value = commutator_vector[coordinate_index]
+            if value.denominator != 1:
+                raise ArithmeticError("expected integral commutator coefficient")
+            if value:
+                entries.append((coordinate_index, candidate_index, value.numerator))
+    return fixed_index, tuple(entries)
+
+
 def _center_dimension(triples: Sequence[LieTriple]) -> int:
+    triple_tuple = tuple(triples)
+    blocks = parallel.ordered_map(
+        _center_commutator_block,
+        [(fixed_index, fixed, triple_tuple) for fixed_index, fixed in enumerate(triple_tuple)],
+        min_items=1,
+    )
     entries: dict[tuple[int, int], int] = {}
-    row_index = 0
-    for fixed in triples:
-        commutator_vectors = [_flatten_triple(_triple_commutator(candidate, fixed)) for candidate in triples]
-        for coordinate_index in range(3 * MATRIX_COORDINATES):
-            for candidate_index, commutator_vector in enumerate(commutator_vectors):
-                value = commutator_vector[coordinate_index]
-                if value.denominator != 1:
-                    raise ArithmeticError("expected integral commutator coefficient")
-                if value:
-                    entries[(row_index, candidate_index)] = value.numerator
-            row_index += 1
-    center = DomainMatrix.from_dok(entries, (row_index, len(triples)), ZZ).to_field().nullspace()
+    rows_per_block = 3 * MATRIX_COORDINATES
+    for fixed_index, block_entries in blocks:
+        row_offset = fixed_index * rows_per_block
+        for coordinate_index, candidate_index, value in block_entries:
+            entries[(row_offset + coordinate_index, candidate_index)] = value
+    row_count = len(triple_tuple) * rows_per_block
+    center = DomainMatrix.from_dok(entries, (row_count, len(triple_tuple)), ZZ).to_field().nullspace()
     return center.shape[0]
 
 
+def _orbit_dimension_task(
+    item: tuple[str, tuple[RationalMatrix, ...]],
+) -> tuple[str, dict[str, int]]:
+    """Compute the compact and radially extended tangent ranks at one named representative."""
+    orbit, base_generators = item
+    point = tuple(equations.y_from_split([Fraction(value) for value in regularity.REPS[orbit]]))
+    tangent_vectors = [_rational_matrix_vector_product(generator, point) for generator in base_generators]
+    radial_vector = _rational_matrix_vector_product(_identity_matrix(), point)
+    return orbit, {
+        "unit_section": _rank(tangent_vectors),
+        "cone": _rank([*tangent_vectors, radial_vector]),
+    }
+
+
 def _orbit_dimensions(base_generators: Sequence[RationalMatrix]) -> dict[str, dict[str, int]]:
-    radial = _identity_matrix()
-    rows: dict[str, dict[str, int]] = {}
-    for orbit in HIGH_NULLITY_ORBITS:
-        point = tuple(equations.y_from_split([Fraction(value) for value in regularity.REPS[orbit]]))
-        tangent_vectors = [_rational_matrix_vector_product(generator, point) for generator in base_generators]
-        radial_vector = _rational_matrix_vector_product(radial, point)
-        rows[orbit] = {
-            "unit_section": _rank(tangent_vectors),
-            "cone": _rank([*tangent_vectors, radial_vector]),
-        }
-    return rows
+    generator_tuple = tuple(base_generators)
+    rows = parallel.ordered_map(
+        _orbit_dimension_task,
+        [(orbit, generator_tuple) for orbit in HIGH_NULLITY_ORBITS],
+        min_items=1,
+    )
+    return dict(rows)
 
 
 @lru_cache(maxsize=2)
@@ -1045,26 +1073,51 @@ def build_result() -> dict[str, Any]:
     }
 
 
+def _self_test_mutation_task(item: tuple[str, str]) -> tuple[str, dict[str, Any]]:
+    """Build one independent mutation control for the parent self-test."""
+    check, mutation = item
+    if check == "representative":
+        return mutation, representative_kernel_checks(mutation=mutation)
+    if check == "lie_algebra":
+        return mutation, lie_algebra_checks(mutation=mutation)
+    if check == "finite_symmetry":
+        return mutation, finite_symmetry_checks(mutation=mutation)
+    raise ValueError(f"unknown self-test check {check!r}")
+
+
 def self_test() -> None:
     baseline = representative_kernel_checks()
     if not baseline["pass"]:
         raise RuntimeError("baseline kernel transport or J check failed")
-    missing_conjugation = representative_kernel_checks(mutation="omit_input_conjugation")
-    if missing_conjugation["pass"]:
-        raise RuntimeError("transport mutation without input conjugation passed")
-    wrong_j_phase = representative_kernel_checks(mutation="wrong_j_phase")
-    if wrong_j_phase["pass"]:
-        raise RuntimeError("J-phase mutation passed")
     lie_algebra = lie_algebra_checks()
     if not lie_algebra["pass"]:
         raise RuntimeError("constant-triple Lie algebra check failed")
-    structure_mutation = lie_algebra_checks(mutation="flip_structure_sign")
-    if structure_mutation["all_expected_triples_verified"]:
-        raise RuntimeError("multiplication-structure mutation preserved every expected Lie triple")
     finite_symmetries = finite_symmetry_checks()
     if not finite_symmetries["pass"]:
         raise RuntimeError("visible finite symmetry check failed")
-    finite_mutation = finite_symmetry_checks(mutation="break_lower_psi")
+
+    mutations = dict(
+        parallel.ordered_map(
+            _self_test_mutation_task,
+            [
+                ("representative", "omit_input_conjugation"),
+                ("representative", "wrong_j_phase"),
+                ("lie_algebra", "flip_structure_sign"),
+                ("finite_symmetry", "break_lower_psi"),
+            ],
+            min_items=1,
+        )
+    )
+    missing_conjugation = mutations["omit_input_conjugation"]
+    if missing_conjugation["pass"]:
+        raise RuntimeError("transport mutation without input conjugation passed")
+    wrong_j_phase = mutations["wrong_j_phase"]
+    if wrong_j_phase["pass"]:
+        raise RuntimeError("J-phase mutation passed")
+    structure_mutation = mutations["flip_structure_sign"]
+    if structure_mutation["all_expected_triples_verified"]:
+        raise RuntimeError("multiplication-structure mutation preserved every expected Lie triple")
+    finite_mutation = mutations["break_lower_psi"]
     if finite_mutation["all_lower_s3_automorphisms"]:
         raise RuntimeError("mutated lower order-three map remained an automorphism")
 
@@ -1073,18 +1126,27 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--self-test", action="store_true")
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path)
     args = parser.parse_args()
-    if not args.self_test and args.out is None:
-        parser.error("choose --self-test and/or --out")
+    if args.check is not None and (args.self_test or args.out is not None):
+        parser.error("--check cannot be combined with --self-test or --out")
+    if not args.self_test and args.out is None and args.check is None:
+        parser.error("choose --self-test, --out, or --check")
     if args.self_test:
         self_test()
         print("kernel transport and symmetry self-test: pass")
-    if args.out is not None:
+    if args.out is not None or args.check is not None:
         result = build_result()
         if not result["pass"]:
             raise RuntimeError("kernel transport or symmetry result failed")
-        args.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"wrote {args.out}")
+        payload = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode()
+        if args.check is not None:
+            if payload != args.check.read_bytes():
+                raise SystemExit(f"kernel_symmetry.py: fresh JSON differs byte-for-byte from {args.check}")
+            print(f"kernel_symmetry.py: fresh JSON matches {args.check}")
+        else:
+            args.out.write_bytes(payload)
+            print(f"wrote {args.out}")
     return 0
 
 

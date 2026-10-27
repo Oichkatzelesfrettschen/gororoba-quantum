@@ -1,95 +1,11 @@
 {
   "bundle_invariants": {
     "adjacent_strata": {
-      "comparisons": [
-        {
-          "ordinary_complex_classes": [
-            "C^6",
-            "C^6"
-          ],
-          "pass": true,
-          "rank_change": 0,
-          "specialization": "B9 -> VB"
-        },
-        {
-          "ordinary_complex_classes": [
-            "C^6",
-            "C^6"
-          ],
-          "pass": true,
-          "rank_change": 0,
-          "specialization": "V -> VB"
-        },
-        {
-          "added_bundle": "xi",
-          "added_reduced_k_class": "x",
-          "pass": true,
-          "rank_change": 2,
-          "specialization": "VB -> N_+ or N_-",
-          "standard_doublet_change": 1
-        },
-        {
-          "added_bundle": "xi",
-          "added_reduced_k_class": "x",
-          "pass": true,
-          "rank_change": 2,
-          "specialization": "V^a_+ -> N_+ and V^a_- -> N_-",
-          "standard_doublet_change": 1
-        }
-      ],
-      "pass": true
+      "VB_to_N_complex_rank_change": 2,
+      "VB_to_N_standard_doublet_change": 1,
+      "aligned_to_N_complex_rank_change": 2,
+      "aligned_to_N_standard_doublet_change": 1
     },
-    "antipodal_clutching": {
-      "determinant": 1,
-      "endpoint_signs": [
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1
-      ],
-      "lies_in_SU": true,
-      "natural_clutching": "-I_6",
-      "null_homotopic_in_SU": true,
-      "pass": true,
-      "path": "diag(exp(i*w_j*t)), 0<=t<=pi",
-      "path_integer_weights": [
-        1,
-        1,
-        1,
-        1,
-        1,
-        -5
-      ],
-      "rank": 6,
-      "weight_sum": 0
-    },
-    "bound_result_validations": {
-      "B9_product": true,
-      "B9_representation": true,
-      "VB_product": true,
-      "VB_representation": true,
-      "aligned_endpoint_representation": true,
-      "aligned_principal_representation": true,
-      "aligned_topology": true,
-      "mapping_torus_reduced_K0_zero": true,
-      "nullity_sixteen_class": true,
-      "nullity_sixteen_real_trivial": true,
-      "nullity_sixteen_structure_group": true,
-      "nullity_twelve_structure_group": true,
-      "open_V_reduced_K0": true,
-      "open_V_topology": true
-    },
-    "classified_keys": [
-      "B9",
-      "V",
-      "VB",
-      "V^a_+",
-      "V^a_-",
-      "N_+",
-      "N_-"
-    ],
     "declared_denominator": [
       "B9",
       "V",
@@ -99,25 +15,119 @@
       "N_+",
       "N_-"
     ],
-    "denominator_exact": true,
-    "input_digests": {
-      "aligned_orbit_moduli_result_sha256": "f3226abdddd2996e2b34398f4312a21ed86957f1dd2ce7b497721a3d1218c53b",
-      "aligned_orbit_moduli_script_sha256": "fea6c7522b991d58c2d4cec39665c4207168b53ae05879851f8d706352f4bb85",
-      "aligned_stabilizer_result_sha256": "affa511ba8560db9bacda0150a26582bec33514e6d00b4b6328fffdf3371186d",
-      "aligned_stabilizer_script_sha256": "11f89f7d47c434bba1759e75ac2a8c2df5009f917a739ff20d0f9f27e13b486a",
-      "isotropic_orbit_data_result_sha256": "e61c0c15a4a15744c1f27c45c366a3c4188cb539615a9ccff6af57aad49dd18e",
-      "isotropic_orbit_data_script_sha256": "41232a380dff22f9b774d4512ae17b6972dad2eaca2b495623f4c541ad2d5a57",
-      "kernel_symmetry_result_sha256": "0e10a92b0a6aa185ffe78f74807167f5cdfd38bcad95c164daa90108438ab390",
-      "kernel_symmetry_script_sha256": "c7443882f68b3cb1be3808b3af70426c7c96ff4e96479287662bf80d0de5dd92",
-      "nullity_sixteen_bundle_result_sha256": "017574b5a87e8dcd2481d22c69e343988cc5f314b0bed4dbc9d8f799040b0f43",
-      "nullity_sixteen_bundle_script_sha256": "d1cfcd28f547f9174396af71e8e41f340db7901b03dd0b946c9dd494c239aaae",
-      "open_v_topology_result_sha256": "00e2c03eb6086e5f859d579f902b2d47553ace611b95b90ebd56385e9f084f82",
-      "open_v_topology_script_sha256": "d91ff99cfe4847d51f6e206daa8a2e95bd291818b4f75b70e919a6cdd487797b",
-      "transition_atlas_result_sha256": "b77d3af7b395bc50838df93b6737f5cfe5fb634a54aa03303c82fd8e01227c33",
-      "transition_atlas_script_sha256": "d7e0aae2af5675c99d94bc740904541e1724f196cfd9426d3ad5ac2b84a3277c"
+    "derived_inputs": {
+      "B9": {
+        "complex_rank": 6
+      },
+      "N": {
+        "commutant_dimension": 7,
+        "complex_rank": 8,
+        "irreducible_multiplicities": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "standard_doublets": 3,
+        "trivial_lines": 2
+      },
+      "V": {
+        "complex_rank": 6,
+        "standard_doublets": 2,
+        "trivial_lines": 2,
+        "unit_reduced_k0": {
+          "free_rank": 1,
+          "torsion_orders": [
+            2
+          ]
+        }
+      },
+      "VB": {
+        "commutant_dimension": 6,
+        "complex_rank": 6,
+        "irreducible_multiplicities": [
+          1,
+          2,
+          1
+        ],
+        "standard_doublets": 2,
+        "trivial_lines": 2
+      },
+      "aligned": {
+        "boundary_standard_doublets": 3,
+        "boundary_trivial_lines": 2,
+        "complex_rank": 6,
+        "cw_dimension": 7,
+        "standard_doublets": 2,
+        "trivial_lines": 2
+      },
+      "k_generator_order": 2,
+      "mapping_torus_reduced_k0": {
+        "free_rank": 0,
+        "torsion_orders": []
+      },
+      "phase": {
+        "ambient_period": "2 pi",
+        "base_phase_lift_verified": true,
+        "committed_constant_triple": "base_phase_lift has domain action R_(e_16)",
+        "exact_exponential": "exp(theta R)=cos(theta) I+sin(theta) R",
+        "fiber_return_after_one_period": "identity",
+        "pass": true,
+        "right_phase_is_skew_symmetric": true,
+        "right_phase_square": "-I_32"
+      },
+      "piece_keys": [
+        "B9",
+        "V",
+        "VB",
+        "V^a_+",
+        "V^a_-",
+        "N_+",
+        "N_-"
+      ],
+      "stiefel_cw_dimension": 11
     },
-    "monodromy_scope": "The displayed matrices are natural geometric clutching representatives, not holonomy from a canonical connection; only their homotopy classes are bundle invariants.",
-    "mutation": "",
+    "inference_scope": "Piece triviality, Hodgkin's edge map, stable-range cancellation, and the graph-circle section are written mathematical arguments. The pass flag covers their producer-derived numeric prerequisites, not those theorems themselves.",
+    "input_digests": {
+      "aligned_orbit_moduli_result_sha256": "8afd5a4d1426c90e90e7388312ed10c7af20a707a7da192e72a8c6762cfc205d",
+      "aligned_orbit_moduli_script_sha256": "c4b9fec07e4881ad9884bfdb48e0d3a83ffa741aed65f4702a4001c4f078769c",
+      "aligned_stabilizer_result_sha256": "23274d75b6a5b68b162b1d81450113c30b54f724f4543883f90f402e40921194",
+      "aligned_stabilizer_script_sha256": "66b900530f8ff547ccd49e7450da556405fa246c336b551945890ab4e3188376",
+      "isotropic_orbit_data_result_sha256": "6b8b6840861ff0a676707733c3b2be24339aaacee44a9f0be8d0e57d4ff376f2",
+      "isotropic_orbit_data_script_sha256": "09496d0c4e0a6da4db4ecf25f90f26f4f11f238a20b48c0f25b6102a20fa2628",
+      "kernel_symmetry_result_sha256": "9552c02507ed39750dfbf55874fd682c3ed059c868515251e6dc9cf9ca012a37",
+      "kernel_symmetry_script_sha256": "47365da1e1ffc659ab322f0bed7a1f7376afa33e942e43663682ed20c5f95249",
+      "nullity_sixteen_bundle_result_sha256": "33196fa92daa52bc9a30142674235182fa6875df7d2c6b3fde58bbfa726b66ec",
+      "nullity_sixteen_bundle_script_sha256": "5056c561fda79f7f3995eda0a56278a318b1b0d65a1d4d41a9da9aa8e574a766",
+      "nullity_sixteen_stabilizer_result_sha256": "52feb8e0fc3bbc7f1c8a413ba03733fa0b65f44cf4442b87de36ce58e9d87092",
+      "nullity_sixteen_stabilizer_script_sha256": "b73ff8e652b57390254cda541b6c02ac35809d2a5a3942a43899d891ae656342",
+      "open_v_topology_result_sha256": "9058800227cc21177306182ac547f976dbeae0b94c77099d6f380d65048317d1",
+      "open_v_topology_script_sha256": "e1e12d7dd1f0301045a1f838eeb3ceda002c2ee5cf7872987321a27acb3cb448",
+      "transition_atlas_result_sha256": "d08050b050151c5b3aa1686043c8b940492d37000fc79bd643a37e277d76409a",
+      "transition_atlas_script_sha256": "80f9eacbb0743e999531585dcd703169533d90b120467551390bd825cb6872d8"
+    },
+    "mutation": {
+      "name": "",
+      "target": null
+    },
+    "observed_checks": {
+      "B9_complex_rank_is_six": true,
+      "VB_boundary_adds_one_doublet": true,
+      "VB_cancellation_inequality": true,
+      "VB_commutant_matches_multiplicities": true,
+      "VB_fiber_dimension_is_six": true,
+      "VB_stable_class_is_zero": true,
+      "aligned_boundary_adds_one_doublet": true,
+      "aligned_cancellation_inequality": true,
+      "aligned_fiber_dimension_is_six": true,
+      "mapping_torus_reduced_K0_is_zero": true,
+      "nullity_sixteen_fiber_dimension_is_eight": true,
+      "nullity_sixteen_stable_class_is_nonzero": true,
+      "open_V_cancellation_inequality": true,
+      "open_V_fiber_dimension_is_six": true,
+      "phase_period_verified": true,
+      "producer_denominator_exact": true
+    },
     "out_of_denominator_residuals": [
       {
         "boundary": "equivariant refinement outside the ordinary seven-piece bundle classification",
@@ -136,326 +146,406 @@
       }
     ],
     "pass": true,
-    "phase": {
-      "ambient_period": "2 pi",
-      "base_phase_lift_verified": true,
-      "committed_constant_triple": "base_phase_lift has domain action R_(e_16)",
-      "exact_exponential": "exp(theta R)=cos(theta) I+sin(theta) R",
-      "fiber_clutching_after_one_period": "I_6",
-      "pass": true,
-      "right_phase_is_skew_symmetric": true,
-      "right_phase_square": "-I_32"
-    },
     "pieces": [
       {
-        "base": "G_2 x open(B^3)",
         "characteristic_classes": {
-          "all_pontryagin_classes": "zero",
-          "all_positive_chern_classes": "zero",
-          "all_positive_stiefel_whitney_classes": "zero",
-          "total_chern_class": "1",
-          "total_stiefel_whitney_class": "1",
-          "underlying_real_rank": 12
+          "chern_coefficients_c0_through_c_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pontryagin_coefficients_p0_through_p_floor_real_rank_over_4": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "reason": "the inferred complex trivialization also trivializes the underlying real bundle",
+          "status": "inferred",
+          "stiefel_whitney_coefficients_w0_through_w_real_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
         },
-        "complex_actually_trivial": true,
+        "classification_argument": "the graph-circle principal bundle has a section over each G_2 orbit",
+        "classification_status": "inferred",
         "complex_rank": 6,
-        "complex_stably_trivial": true,
-        "fundamental_group": "0",
-        "global_section": "g -> [(g,1)]",
-        "global_section_verified": true,
-        "natural_clutching": {},
-        "orbitwise_fiber": "3 C_(-1) + 3 C_(-2)",
         "ordinary_complex_bundle": "C^6",
-        "pass": true,
-        "piece": "B9",
-        "principal_bundle": "(G_2 x U(1)) -> (G_2 x U(1))/graph(U(1)) = G_2",
-        "quaternionic_structure": "no canonical Sp(3) reduction is established",
-        "reduced_complex_k_class": "0"
+        "piece": "B9"
       },
       {
-        "base": "S^1 x mapping_torus(-id:S^6->S^6)",
-        "characteristic_classes": {
-          "all_pontryagin_classes": "zero",
-          "all_positive_chern_classes": "zero",
-          "all_positive_stiefel_whitney_classes": "zero",
-          "total_chern_class": "1",
-          "total_stiefel_whitney_class": "1",
-          "underlying_real_rank": 12
-        },
-        "complex_actually_trivial": true,
-        "complex_rank": 6,
-        "complex_stably_trivial": true,
-        "fundamental_group": "Z^2",
-        "mapping_torus_reduced_k_group": "0",
-        "natural_clutching": {
-          "global_phase_generator": "I_6",
-          "projective_generator": {
-            "determinant": 1,
-            "endpoint_signs": [
-              -1,
-              -1,
-              -1,
-              -1,
-              -1,
-              -1
-            ],
-            "lies_in_SU": true,
-            "natural_clutching": "-I_6",
-            "null_homotopic_in_SU": true,
-            "pass": true,
-            "path": "diag(exp(i*w_j*t)), 0<=t<=pi",
-            "path_integer_weights": [
-              1,
-              1,
-              1,
-              1,
-              1,
-              -5
-            ],
-            "rank": 6,
-            "weight_sum": 0
-          }
-        },
-        "ordinary_complex_bundle": "C^6",
-        "pass": true,
-        "phase_pullback_certificate": {
-          "ambient_period": "2 pi",
-          "base_phase_lift_verified": true,
-          "committed_constant_triple": "base_phase_lift has domain action R_(e_16)",
-          "exact_exponential": "exp(theta R)=cos(theta) I+sin(theta) R",
-          "fiber_clutching_after_one_period": "I_6",
-          "pass": true,
-          "right_phase_is_skew_symmetric": true,
-          "right_phase_square": "-I_32"
-        },
-        "piece": "V",
-        "pulled_back_from_mapping_torus_factor": true,
-        "quaternionic_structure": "no canonical Sp(3) reduction is established",
-        "reduced_complex_k_class_coordinates": {
-          "free": 0,
-          "order_two": 0
-        },
-        "reduced_complex_k_group": "Z + Z/2",
-        "stable_cancellation_on_mapping_torus": {
+        "cancellation": {
           "complex_rank": 6,
           "cw_dimension": 7,
-          "pass": true,
-          "stable_class_determines_actual_bundle": true,
-          "stable_range_inequality": "2*6>7"
+          "inequality": "7<=12",
+          "inequality_verified": true,
+          "lemma": "a stably trivial complex rank-k bundle on a CW complex of dimension d<=2k is trivial",
+          "range_condition": "d<=2k",
+          "status": "inferred"
+        },
+        "characteristic_classes": {
+          "chern_coefficients_c0_through_c_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pontryagin_coefficients_p0_through_p_floor_real_rank_over_4": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "reason": "pullback from reduced K-class zero plus stable-range cancellation",
+          "status": "inferred",
+          "stiefel_whitney_coefficients_w0_through_w_real_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "classification_argument": "the exact periodic phase lift makes the bundle a pullback from M_-",
+        "classification_status": "inferred",
+        "complex_rank": 6,
+        "mapping_torus_reduced_k0": {
+          "free_rank": 0,
+          "torsion_orders": []
+        },
+        "ordinary_complex_bundle": "C^6",
+        "phase_pullback_input": true,
+        "piece": "V",
+        "pulled_back_class_coordinates": {
+          "free": [
+            0
+          ],
+          "torsion": [
+            0
+          ]
+        },
+        "unit_reduced_k0": {
+          "free_rank": 1,
+          "torsion_orders": [
+            2
+          ]
         }
       },
       {
-        "base": "V_2(R^7) x (CP^1 minus {+i,-i})",
-        "characteristic_classes": {
-          "all_pontryagin_classes": "zero",
-          "all_positive_chern_classes": "zero",
-          "all_positive_stiefel_whitney_classes": "zero",
-          "total_chern_class": "1",
-          "total_stiefel_whitney_class": "1",
-          "underlying_real_rank": 12
+        "cancellation": {
+          "complex_rank": 6,
+          "cw_dimension": 11,
+          "inequality": "11<=12",
+          "inequality_verified": true,
+          "lemma": "a stably trivial complex rank-k bundle on a CW complex of dimension d<=2k is trivial",
+          "range_condition": "d<=2k",
+          "status": "inferred"
         },
+        "characteristic_classes": {
+          "chern_coefficients_c0_through_c_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pontryagin_coefficients_p0_through_p_floor_real_rank_over_4": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "reason": "the inferred complex trivialization also trivializes the underlying real bundle",
+          "status": "inferred",
+          "stiefel_whitney_coefficients_w0_through_w_real_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "classification_argument": "zero stable class, cancellation on V_2(R^7), and trivial multiplicity bundles",
+        "classification_status": "inferred",
         "commutant_dimension": 6,
-        "complex_actually_trivial": true,
         "complex_rank": 6,
-        "complex_stably_trivial": true,
-        "equivariant_automorphism_group": "GL(1,C) x GL(2,C) x GL(1,C)",
         "equivariant_automorphism_group_connected": true,
-        "fundamental_group": "Z",
         "irreducible_multiplicities": [
           1,
           2,
           1
         ],
-        "moduli_clutching_homotopy_class": "identity",
-        "natural_clutching": {
-          "moduli_generator": "I_6"
-        },
+        "k_generator_order": 2,
         "ordinary_bundle_on_stiefel_factor": "C^2 + 2 xi",
         "ordinary_complex_bundle": "C^6",
-        "pass": true,
         "piece": "VB",
-        "quaternionic_structure": "no canonical Sp(3) reduction is established",
-        "reduced_complex_k_class": "2x=0 in Z/2",
-        "reduced_k_group_on_stiefel_factor": "Z/2 generated by x=[xi]-2",
-        "stable_cancellation_on_stiefel_factor": {
-          "complex_rank": 6,
-          "cw_dimension": 11,
-          "pass": true,
-          "stable_class_determines_actual_bundle": true,
-          "stable_range_inequality": "2*6>11"
-        },
-        "su2_restriction": "2 V_0 + 2 V_1"
+        "reduced_k_residue": 0
       },
       {
-        "base": "mapping_torus(-id:S^6->S^6)",
-        "characteristic_classes": {
-          "all_pontryagin_classes": "zero",
-          "all_positive_chern_classes": "zero",
-          "all_positive_stiefel_whitney_classes": "zero",
-          "total_chern_class": "1",
-          "total_stiefel_whitney_class": "1",
-          "underlying_real_rank": 12
-        },
-        "complex_actually_trivial": true,
-        "complex_rank": 6,
-        "complex_stably_trivial": true,
-        "endpoint_bundle_on_S6": "T S^6 tensor C",
-        "endpoint_representation": "3 + conjugate(3) of SU(3)",
-        "fundamental_group": "Z",
-        "natural_clutching": {
-          "mapping_torus_generator": {
-            "determinant": 1,
-            "endpoint_signs": [
-              -1,
-              -1,
-              -1,
-              -1,
-              -1,
-              -1
-            ],
-            "lies_in_SU": true,
-            "natural_clutching": "-I_6",
-            "null_homotopic_in_SU": true,
-            "pass": true,
-            "path": "diag(exp(i*w_j*t)), 0<=t<=pi",
-            "path_integer_weights": [
-              1,
-              1,
-              1,
-              1,
-              1,
-              -5
-            ],
-            "rank": 6,
-            "weight_sum": 0
-          }
-        },
-        "ordinary_complex_bundle": "C^6",
-        "pass": true,
-        "piece": "V^a_+",
-        "quaternionic_structure": "no canonical Sp(3) reduction is established",
-        "reduced_complex_k_class": "0",
-        "reduced_complex_k_group": "0",
-        "stable_cancellation": {
+        "cancellation": {
           "complex_rank": 6,
           "cw_dimension": 7,
-          "pass": true,
-          "stable_class_determines_actual_bundle": true,
-          "stable_range_inequality": "2*6>7"
-        }
-      },
-      {
-        "base": "mapping_torus(-id:S^6->S^6)",
-        "characteristic_classes": {
-          "all_pontryagin_classes": "zero",
-          "all_positive_chern_classes": "zero",
-          "all_positive_stiefel_whitney_classes": "zero",
-          "total_chern_class": "1",
-          "total_stiefel_whitney_class": "1",
-          "underlying_real_rank": 12
+          "inequality": "7<=12",
+          "inequality_verified": true,
+          "lemma": "a stably trivial complex rank-k bundle on a CW complex of dimension d<=2k is trivial",
+          "range_condition": "d<=2k",
+          "status": "inferred"
         },
-        "complex_actually_trivial": true,
+        "characteristic_classes": {
+          "chern_coefficients_c0_through_c_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pontryagin_coefficients_p0_through_p_floor_real_rank_over_4": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "reason": "zero reduced K-class plus stable-range cancellation",
+          "status": "inferred",
+          "stiefel_whitney_coefficients_w0_through_w_real_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "classification_argument": "reduced K^0(M_-)=0 plus stable-range cancellation",
+        "classification_status": "inferred",
         "complex_rank": 6,
-        "complex_stably_trivial": true,
-        "endpoint_bundle_on_S6": "T S^6 tensor C",
-        "endpoint_representation": "3 + conjugate(3) of SU(3)",
-        "fundamental_group": "Z",
-        "natural_clutching": {
-          "mapping_torus_generator": {
-            "determinant": 1,
-            "endpoint_signs": [
-              -1,
-              -1,
-              -1,
-              -1,
-              -1,
-              -1
-            ],
-            "lies_in_SU": true,
-            "natural_clutching": "-I_6",
-            "null_homotopic_in_SU": true,
-            "pass": true,
-            "path": "diag(exp(i*w_j*t)), 0<=t<=pi",
-            "path_integer_weights": [
-              1,
-              1,
-              1,
-              1,
-              1,
-              -5
-            ],
-            "rank": 6,
-            "weight_sum": 0
-          }
+        "mapping_torus_reduced_k0": {
+          "free_rank": 0,
+          "torsion_orders": []
         },
         "ordinary_complex_bundle": "C^6",
-        "pass": true,
-        "piece": "V^a_-",
-        "quaternionic_structure": "no canonical Sp(3) reduction is established",
-        "reduced_complex_k_class": "0",
-        "reduced_complex_k_group": "0",
-        "stable_cancellation": {
-          "complex_rank": 6,
-          "cw_dimension": 7,
-          "pass": true,
-          "stable_class_determines_actual_bundle": true,
-          "stable_range_inequality": "2*6>7"
-        }
+        "piece": "V^a_+"
       },
       {
-        "base": "V_2(R^7)",
-        "characteristic_classes": {
-          "all_pontryagin_classes": "all zero",
-          "all_positive_chern_classes": "zero",
-          "all_positive_stiefel_whitney_classes": "zero",
-          "c3_mod_2": 0,
-          "total_chern_class": "1",
-          "total_stiefel_whitney_class": "1"
+        "cancellation": {
+          "complex_rank": 6,
+          "cw_dimension": 7,
+          "inequality": "7<=12",
+          "inequality_verified": true,
+          "lemma": "a stably trivial complex rank-k bundle on a CW complex of dimension d<=2k is trivial",
+          "range_condition": "d<=2k",
+          "status": "inferred"
         },
-        "complex_actually_trivial": false,
+        "characteristic_classes": {
+          "chern_coefficients_c0_through_c_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pontryagin_coefficients_p0_through_p_floor_real_rank_over_4": [
+            1,
+            0,
+            0,
+            0
+          ],
+          "reason": "zero reduced K-class plus stable-range cancellation",
+          "status": "inferred",
+          "stiefel_whitney_coefficients_w0_through_w_real_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "classification_argument": "reduced K^0(M_-)=0 plus stable-range cancellation",
+        "classification_status": "inferred",
+        "complex_rank": 6,
+        "mapping_torus_reduced_k0": {
+          "free_rank": 0,
+          "torsion_orders": []
+        },
+        "ordinary_complex_bundle": "C^6",
+        "piece": "V^a_-"
+      },
+      {
+        "characteristic_classes": {
+          "chern_coefficients_c0_through_c_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pontryagin_coefficients_p0_through_p_floor_real_rank_over_4": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "reason": "the complex summands have zero Chern classes and the total real bundle is trivial",
+          "status": "inferred",
+          "stiefel_whitney_coefficients_w0_through_w_real_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "classification_argument": "Hodgkin edge map sends x to [xi]-2",
+        "classification_status": "inferred",
         "complex_rank": 8,
-        "complex_stably_trivial": false,
-        "fundamental_group": "0",
-        "natural_clutching": {},
-        "ordinary_complex_bundle": "E_C=C^2+3 xi",
-        "pass": true,
+        "k_generator_order": 2,
+        "ordinary_complex_bundle": "C^2 + 3 xi",
         "piece": "N_+",
-        "quaternionic_actually_trivial": false,
-        "quaternionic_bundle": "E_H=H+3 xi_H",
-        "quaternionic_stably_trivial": false,
-        "reduced_complex_k_class": "3x=x != 0",
-        "reduced_complex_k_group": "Z/2 generated by x=[xi]-2",
-        "underlying_real_bundle": "trivial rank 16 by stable-range cancellation"
+        "quaternionic_bundle": "H + 3 xi_H",
+        "quaternionic_classification_status": "inferred",
+        "real_classification_status": "inferred",
+        "reduced_k_residue": 1,
+        "underlying_real_bundle": "R^16"
       },
       {
-        "base": "V_2(R^7)",
         "characteristic_classes": {
-          "all_pontryagin_classes": "all zero",
-          "all_positive_chern_classes": "zero",
-          "all_positive_stiefel_whitney_classes": "zero",
-          "c3_mod_2": 0,
-          "total_chern_class": "1",
-          "total_stiefel_whitney_class": "1"
+          "chern_coefficients_c0_through_c_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "pontryagin_coefficients_p0_through_p_floor_real_rank_over_4": [
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "reason": "the complex summands have zero Chern classes and the total real bundle is trivial",
+          "status": "inferred",
+          "stiefel_whitney_coefficients_w0_through_w_real_rank": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
         },
-        "complex_actually_trivial": false,
+        "classification_argument": "Hodgkin edge map sends x to [xi]-2",
+        "classification_status": "inferred",
         "complex_rank": 8,
-        "complex_stably_trivial": false,
-        "fundamental_group": "0",
-        "natural_clutching": {},
-        "ordinary_complex_bundle": "E_C=C^2+3 xi",
-        "pass": true,
+        "k_generator_order": 2,
+        "ordinary_complex_bundle": "C^2 + 3 xi",
         "piece": "N_-",
-        "quaternionic_actually_trivial": false,
-        "quaternionic_bundle": "E_H=H+3 xi_H",
-        "quaternionic_stably_trivial": false,
-        "reduced_complex_k_class": "3x=x != 0",
-        "reduced_complex_k_group": "Z/2 generated by x=[xi]-2",
-        "underlying_real_bundle": "trivial rank 16 by stable-range cancellation"
+        "quaternionic_bundle": "H + 3 xi_H",
+        "quaternionic_classification_status": "inferred",
+        "real_classification_status": "inferred",
+        "reduced_k_residue": 1,
+        "underlying_real_bundle": "R^16"
       }
+    ],
+    "producer_piece_keys": [
+      "B9",
+      "V",
+      "VB",
+      "V^a_+",
+      "V^a_-",
+      "N_+",
+      "N_-"
     ],
     "residual_open_keys": []
   },
   "pass": true,
-  "schema": "a5-high-nullity-bundle-invariants-v1",
-  "script_sha256": "47918f7f658a1ff61eecba019087961483a093a888bd998c87033612e0c0f4af"
+  "schema": "a5-high-nullity-bundle-invariants-v2",
+  "script_sha256": "283d678806bcfbbeb8b4dd93169ed88368ed71bbd3d3ae5535079bd76c136c75"
 }

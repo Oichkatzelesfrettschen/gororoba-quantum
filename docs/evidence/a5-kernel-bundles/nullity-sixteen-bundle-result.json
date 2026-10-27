@@ -13,6 +13,7 @@
       },
       "complex_k_ahss": "K^0=Z+(Z/2), K^1=Z; all differentials vanish by degree and torsion",
       "euler_boundary": 2,
+      "euler_boundary_derivation": "absolute Euler characteristic of the standard two-cell CW model of S^6",
       "integral_cohomology": {
         "0": "Z",
         "11": "Z",
@@ -26,7 +27,50 @@
       "pass": true,
       "pi_1": "0",
       "positive_degree_cup_products": "zero by degree",
+      "sphere_cell_degrees": [
+        0,
+        6
+      ],
+      "sphere_euler_characteristic": 2,
       "sphere_fibration": "S^5 -> V_2(R^7) -> S^6"
+    },
+    "branching": {
+      "adjoint_14_casimir_spectrum": {
+        "0": 3,
+        "1": 3,
+        "3/8": 8
+      },
+      "casimir_normalization": "V_n has eigenvalue n(n+2)/8",
+      "derived_stabilizer_dimension": 3,
+      "downstream_adjoint_character_in_V1": [
+        2,
+        4,
+        1
+      ],
+      "downstream_fundamental_character_in_V1": [
+        3,
+        2
+      ],
+      "downstream_fundamental_multiplicities": [
+        3,
+        2
+      ],
+      "fundamental_7_casimir_spectrum": {
+        "0": 3,
+        "3/8": 4
+      },
+      "measured_adjoint_multiplicities": [
+        3,
+        4,
+        1
+      ],
+      "measured_fundamental_multiplicities": [
+        3,
+        2
+      ],
+      "mutation": "",
+      "pass": true,
+      "source_orbit": "N_+ representative"
     },
     "components": [
       "Np",
@@ -36,7 +80,7 @@
     "input_digests": {
       "sedenion_bundle_result_sha256": "b3c0d1a57365f2cdc2a49c4dbdd620679911fc8279a4116b0411cdab7a6ec078",
       "sedenion_bundle_script_sha256": "3a91184309103022c1c7db8a02f03ea75721af6187fb8428a960d74e1cf17179",
-      "stabilizer_result_sha256": "94e69a84e565a9014eb18a523d023a7e6a2158e413b25e02372684411928044e"
+      "stabilizer_result_sha256": "52feb8e0fc3bbc7f1c8a413ba03733fa0b65f44cf4442b87de36ce58e9d87092"
     },
     "mutation": "",
     "pass": true,
@@ -146,6 +190,6 @@
     }
   },
   "pass": true,
-  "schema": "a5-nullity-sixteen-bundle-invariants-v1",
-  "script_sha256": "d1cfcd28f547f9174396af71e8e41f340db7901b03dd0b946c9dd494c239aaae"
+  "schema": "a5-nullity-sixteen-bundle-invariants-v2",
+  "script_sha256": "5056c561fda79f7f3995eda0a56278a318b1b0d65a1d4d41a9da9aa8e574a766"
 }

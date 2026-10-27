@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import itertools
 import json
 import math
 import sys
@@ -132,6 +133,38 @@ def _complex_vector_zero(vector: Sequence[ComplexRational]) -> bool:
     return all(value == (Fraction(0), Fraction(0)) for value in vector)
 
 
+def _associative_three_form(
+    first: Sequence[Fraction],
+    second: Sequence[Fraction],
+    third: Sequence[Fraction],
+) -> Fraction:
+    """Return phi(first,second,third)=<first cross second,third> in Im(O)."""
+    value = Fraction(0)
+    for left_index, left in enumerate(first, start=1):
+        for right_index, right in enumerate(second, start=1):
+            result_index = left_index ^ right_index
+            if result_index:
+                value += left * right * cd_sign(8, left_index, right_index) * third[result_index - 1]
+    return value
+
+
+def _coassociative_span_certificate(
+    lower: Sequence[ComplexRational],
+    rotated_upper: Sequence[ComplexRational],
+) -> dict[str, Any]:
+    """Check that the four real and imaginary columns span a coassociative four-plane."""
+    columns = tuple(
+        tuple(value[component] for value in vector) for vector in (lower, rotated_upper) for component in (0, 1)
+    )
+    associative_values = [_associative_three_form(*triple) for triple in itertools.combinations(columns, 3)]
+    real_span_dimension = symmetry._rank(columns)
+    return {
+        "real_span_dimension": real_span_dimension,
+        "associative_three_form_values": [str(value) for value in associative_values],
+        "pass": real_span_dimension == 4 and all(value == 0 for value in associative_values),
+    }
+
+
 def _canonical_plane() -> tuple[tuple[ComplexRational, ...], tuple[ComplexRational, ...]]:
     zero = (Fraction(0), Fraction(0))
     first = [zero for _ in range(7)]
@@ -220,6 +253,7 @@ def _pair_invariants(point: Sequence[Fraction]) -> dict[str, Any]:
     determinant_identity = Fraction(1) - ball_radius_squared == Fraction(4) * determinant / (trace * trace)
     original_lambda_text, original_lambda, collinear = _projective_ratio(lower, rotated_upper)
     excluded_ratio = original_lambda in ((Fraction(0), Fraction(1)), (Fraction(0), Fraction(-1)))
+    coassociative_span = _coassociative_span_certificate(lower, rotated_upper)
     common_equations = (
         middle == (Fraction(0), Fraction(0))
         and lower_square == (Fraction(0), Fraction(0))
@@ -227,7 +261,7 @@ def _pair_invariants(point: Sequence[Fraction]) -> dict[str, Any]:
         and mutual_square == (Fraction(0), Fraction(0))
         and _complex_vector_zero(cross)
     )
-    inside_b9 = common_equations and determinant > 0
+    inside_b9 = common_equations and determinant > 0 and coassociative_span["pass"]
     inside_vb = common_equations and determinant == 0 and collinear and not excluded_ratio
     return {
         "middle_zero": middle == (Fraction(0), Fraction(0)),
@@ -244,6 +278,7 @@ def _pair_invariants(point: Sequence[Fraction]) -> dict[str, Any]:
         "normalized_ball_coordinates": [str(value) for value in ball_coordinates],
         "normalized_ball_radius_squared": str(ball_radius_squared),
         "determinant_ball_identity": determinant_identity,
+        "coassociative_span": coassociative_span,
         "rank_one_blocks_collinear": collinear,
         "original_projective_ratio_lambda": original_lambda_text,
         "lambda_avoids_plus_minus_i": not excluded_ratio,
@@ -720,6 +755,7 @@ def orbit_data_checks(mutation: str = "") -> dict[str, Any]:
     b9_rows = [row for row in rows if row["orbit"] == "B9"]
     vb_rows = [row for row in rows if row["orbit"] == "VB"]
     b9_representations_constant = len({_representation_signature(row) for row in b9_rows}) == 1
+    b9_coassociative_frames_verified = all(row["coassociative_span"]["pass"] for row in b9_rows)
     vb_representations_constant = len({_representation_signature(row) for row in vb_rows}) == 1
     nullity_sixteen_rows = inputs["nullity_sixteen_stabilizer"]["stabilizer_representation"]["rows"]
     boundary_decomposition = nullity_sixteen_rows[0]["irreducible_decomposition"]
@@ -738,9 +774,11 @@ def orbit_data_checks(mutation: str = "") -> dict[str, Any]:
             "unit_section_homotopy_type": "G_2",
             "completeness_argument": (
                 "Hermitian polar normalization turns (u,w) into an orthonormal totally null cross-zero frame; "
-                "its four real columns are an oriented coassociative frame, and G_2 acts simply transitively on "
-                "such frames"
+                "its four real columns are a coassociative frame. The first three columns form a special triple; "
+                "G_2 acts simply transitively on special triples, orientation fixes the fourth column, and "
+                "connectedness of the B9 unit section fixes one orientation"
             ),
+            "coassociative_frames_verified": b9_coassociative_frames_verified,
             "connected_stabilizer": "U(1), the graph of the common phase circle inside G_2 x U(1)",
             "fiber_representation": "3 C_(-1) + 3 C_(-2)",
             "representations_constant": b9_representations_constant,
@@ -762,6 +800,7 @@ def orbit_data_checks(mutation: str = "") -> dict[str, Any]:
         ),
         "rows": rows,
         "pass": all(row["pass"] for row in rows)
+        and b9_coassociative_frames_verified
         and b9_representations_constant
         and vb_representations_constant
         and boundary_restriction_matches,
@@ -778,20 +817,32 @@ def build_result() -> dict[str, Any]:
     }
 
 
+def _self_test_mutation_task(mutation: str) -> tuple[str, dict[str, Any]]:
+    """Build one independent B9 or VB mutation for the parent self-test."""
+    return mutation, orbit_data_checks(mutation)
+
+
 def self_test() -> None:
     baseline = orbit_data_checks()
     if not baseline["pass"]:
         raise RuntimeError("baseline B9/VB orbit-data check failed")
-    phase_mutation = orbit_data_checks("drop_common_phase")
+    mutations = dict(
+        symmetry.parallel.ordered_map(
+            _self_test_mutation_task,
+            ["drop_common_phase", "force_rank_one", "include_moving_direction", "perturb_fiber_action"],
+            min_items=1,
+        )
+    )
+    phase_mutation = mutations["drop_common_phase"]
     if phase_mutation["pass"] or phase_mutation["rows"][0]["compact_gram_stationary"]:
         raise RuntimeError("one-block phase mutation survived the Gram-invariant check")
-    rank_mutation = orbit_data_checks("force_rank_one")
+    rank_mutation = mutations["force_rank_one"]
     if rank_mutation["pass"] or rank_mutation["rows"][0]["inside_B9"]:
         raise RuntimeError("rank-one mutation survived the B9 membership check")
-    moving_mutation = orbit_data_checks("include_moving_direction")
+    moving_mutation = mutations["include_moving_direction"]
     if moving_mutation["pass"] or all(moving_mutation["rows"][0]["stabilizer_representation"]["point_fixed"]):
         raise RuntimeError("moving-generator mutation survived the stabilizer check")
-    fiber_mutation = orbit_data_checks("perturb_fiber_action")
+    fiber_mutation = mutations["perturb_fiber_action"]
     if (
         fiber_mutation["pass"]
         or fiber_mutation["rows"][0]["stabilizer_representation"]["representation_commutators_match"]
@@ -802,17 +853,26 @@ def self_test() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
     arguments = parser.parse_args()
+    if arguments.check is not None and (arguments.self_test or arguments.out is not None):
+        parser.error("--check cannot be combined with --self-test or --out")
     if arguments.self_test:
         self_test()
         print("PASS: B9/VB compact-orbit and kernel-representation self-test")
-    if arguments.out is not None:
+    if arguments.out is not None or arguments.check is not None:
         result = build_result()
-        arguments.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"wrote {arguments.out}")
-    if not arguments.self_test and arguments.out is None:
-        parser.error("choose --self-test or --out")
+        payload = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode()
+        if arguments.check is not None:
+            if payload != arguments.check.read_bytes():
+                raise SystemExit(f"isotropic_orbit_data.py: fresh JSON differs byte-for-byte from {arguments.check}")
+            print(f"isotropic_orbit_data.py: fresh JSON matches {arguments.check}")
+        else:
+            arguments.out.write_bytes(payload)
+            print(f"wrote {arguments.out}")
+    if not arguments.self_test and arguments.out is None and arguments.check is None:
+        parser.error("choose --self-test, --out, or --check")
     return 0
 
 

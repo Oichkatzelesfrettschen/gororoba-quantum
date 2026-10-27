@@ -13,11 +13,13 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from collections.abc import Sequence
 from fractions import Fraction
 from itertools import product
 from pathlib import Path
 from typing import Any
 
+import stabilizer_representation as stabilizer
 import sympy as sp
 
 HERE = Path(__file__).resolve().parent
@@ -278,16 +280,125 @@ def _polynomial_multiply(first: IntegerPolynomial, second: IntegerPolynomial) ->
     return _trim_polynomial(tuple(output))
 
 
-def _representation_ring_checks(mutation: str) -> dict[str, Any]:
-    # The point stabilizer fixes Im(H)=R^3 and acts on H-perp as its real
-    # quaternionic standard module.  Complexification therefore restricts the
-    # seven-dimensional G2 module to 3 V_0 + 2 V_1.  The adjoint restriction is
-    # the isotropy V_2 plus T(V_2(R^7))_C = 3 V_0 + 4 V_1.
-    mutate_k_theory = mutation == "kill_k_theory_torsion"
-    fundamental_restriction: IntegerPolynomial = (3, 2)
-    if mutate_k_theory:
-        fundamental_restriction = (5, 1)
-    adjoint_restriction: IntegerPolynomial = (2, 4, 1)
+def _octonion_block(matrix: RationalMatrix) -> RationalMatrix:
+    return tuple(tuple(matrix[row][column] for column in range(8)) for row in range(8))
+
+
+def _square_matrix_commutator(first: RationalMatrix, second: RationalMatrix) -> RationalMatrix:
+    first_second = _matrix_product(first, second)
+    second_first = _matrix_product(second, first)
+    return tuple(
+        tuple(left - right for left, right in zip(first_row, second_row, strict=True))
+        for first_row, second_row in zip(first_second, second_first, strict=True)
+    )
+
+
+def _su2_character_polynomial(multiplicities: IntegerPolynomial) -> IntegerPolynomial:
+    irreducibles: list[IntegerPolynomial] = [(1,)]
+    if len(multiplicities) > 1:
+        irreducibles.append((0, 1))
+    for highest_weight in range(2, len(multiplicities)):
+        irreducibles.append(
+            _polynomial_add(
+                _polynomial_multiply((0, 1), irreducibles[highest_weight - 1]),
+                tuple(-coefficient for coefficient in irreducibles[highest_weight - 2]),
+            )
+        )
+    character: IntegerPolynomial = (0,)
+    for multiplicity, irreducible in zip(multiplicities, irreducibles, strict=True):
+        character = _polynomial_add(character, tuple(multiplicity * coefficient for coefficient in irreducible))
+    return character
+
+
+def _casimir_restriction(
+    derived_domains: Sequence[RationalMatrix], representation: Sequence[sp.Matrix]
+) -> tuple[IntegerPolynomial, dict[str, int]]:
+    killing_inverse = stabilizer._killing_matrix(derived_domains).inv()
+    dimension = representation[0].rows
+    casimir = sp.zeros(dimension)
+    for row, left in enumerate(representation):
+        for column, right in enumerate(representation):
+            casimir += killing_inverse[row, column] * left * right
+    eigenvalues = sp.simplify(casimir).eigenvals()
+    multiplicities: dict[int, int] = {}
+    for eigenvalue, eigenspace_dimension in eigenvalues.items():
+        highest_weight = stabilizer._highest_weight(eigenvalue)
+        irreducible_dimension = highest_weight + 1
+        _require(
+            eigenspace_dimension % irreducible_dimension == 0,
+            "Casimir eigenspace dimension is not divisible by its irreducible dimension",
+        )
+        multiplicities[highest_weight] = eigenspace_dimension // irreducible_dimension
+    restriction = tuple(multiplicities.get(highest_weight, 0) for highest_weight in range(max(multiplicities) + 1))
+    _require(
+        sum(coefficient * (degree + 1) for degree, coefficient in enumerate(restriction)) == dimension,
+        "Casimir restriction does not recover the representation dimension",
+    )
+    spectrum = {sp.sstr(value): int(eigenspace_dimension) for value, eigenspace_dimension in eigenvalues.items()}
+    return _trim_polynomial(restriction), spectrum
+
+
+def _branching_certificate(mutation: str) -> dict[str, Any]:
+    point = stabilizer._representative("Np")
+    compact = stabilizer._compact_triples()
+    compact_domains = [triple[1] for _name, triple in compact]
+    stabilizer_coefficients = stabilizer._stabilizer_coefficients(point)
+    stabilizer_domains = [
+        stabilizer._linear_combination(coefficients, compact_domains) for coefficients in stabilizer_coefficients
+    ]
+    derived_domains = stabilizer._derived_basis(stabilizer_domains)
+    derived_octonion_blocks = [_octonion_block(matrix) for matrix in derived_domains]
+    fundamental_representation = [
+        sp.Matrix([[matrix[row][column] for column in range(1, 8)] for row in range(1, 8)])
+        for matrix in derived_octonion_blocks
+    ]
+
+    g2_octonion_blocks = [_octonion_block(matrix) for matrix in compact_domains[:14]]
+    flattened_g2 = [stabilizer._flatten(matrix) for matrix in g2_octonion_blocks]
+    adjoint_representation: list[sp.Matrix] = []
+    for left in derived_octonion_blocks:
+        columns = [
+            stabilizer._coordinates(
+                flattened_g2,
+                stabilizer._flatten(_square_matrix_commutator(left, right)),
+            )
+            for right in g2_octonion_blocks
+        ]
+        adjoint_representation.append(
+            sp.Matrix(
+                14,
+                14,
+                lambda row, column, values=columns: stabilizer._sympy_rational(values[column][row]),
+            )
+        )
+
+    measured_fundamental, fundamental_spectrum = _casimir_restriction(derived_domains, fundamental_representation)
+    measured_adjoint, adjoint_spectrum = _casimir_restriction(derived_domains, adjoint_representation)
+    downstream_fundamental_multiplicities = (5, 1) if mutation == "kill_k_theory_torsion" else measured_fundamental
+    fundamental_character = _su2_character_polynomial(downstream_fundamental_multiplicities)
+    adjoint_character = _su2_character_polynomial(measured_adjoint)
+    return {
+        "source_orbit": "N_+ representative",
+        "derived_stabilizer_dimension": len(derived_domains),
+        "casimir_normalization": "V_n has eigenvalue n(n+2)/8",
+        "fundamental_7_casimir_spectrum": fundamental_spectrum,
+        "adjoint_14_casimir_spectrum": adjoint_spectrum,
+        "measured_fundamental_multiplicities": list(measured_fundamental),
+        "measured_adjoint_multiplicities": list(measured_adjoint),
+        "downstream_fundamental_multiplicities": list(downstream_fundamental_multiplicities),
+        "downstream_fundamental_character_in_V1": list(fundamental_character),
+        "downstream_adjoint_character_in_V1": list(adjoint_character),
+        "mutation": mutation if mutation == "kill_k_theory_torsion" else "",
+        "pass": mutation != "kill_k_theory_torsion"
+        and len(derived_domains) == 3
+        and measured_fundamental == (3, 2)
+        and measured_adjoint == (3, 4, 1),
+    }
+
+
+def _representation_ring_checks(branching: dict[str, Any]) -> dict[str, Any]:
+    fundamental_restriction = tuple(int(value) for value in branching["downstream_fundamental_character_in_V1"])
+    adjoint_restriction = tuple(int(value) for value in branching["downstream_adjoint_character_in_V1"])
     fundamental_dimension = sum(coefficient * 2**degree for degree, coefficient in enumerate(fundamental_restriction))
     adjoint_dimension = sum(coefficient * 2**degree for degree, coefficient in enumerate(adjoint_restriction))
     fundamental_augmentation_relation = list(fundamental_restriction)
@@ -323,7 +434,7 @@ def _representation_ring_checks(mutation: str) -> dict[str, Any]:
         and second_koszul_boundary == syzygy_times_x
     )
     representation_pass = (
-        not mutate_k_theory
+        branching["pass"]
         and fundamental_dimension == 7
         and adjoint_dimension == 14
         and torsion_order == 2
@@ -333,7 +444,7 @@ def _representation_ring_checks(mutation: str) -> dict[str, Any]:
     return {
         "representation_ring": "R(SU(2))=Z[t], t=V_1; x=t-2",
         "method": "Hodgkin Tor spectral sequence for simply connected G_2 and connected SU(2)",
-        "restriction_of_g2_fundamental_7": "5 V_0 + V_1" if mutate_k_theory else "3 V_0 + 2 V_1",
+        "restriction_of_g2_fundamental_7": ("3 V_0 + 2 V_1" if fundamental_restriction == (3, 2) else "5 V_0 + V_1"),
         "restriction_of_g2_adjoint_14": "3 V_0 + 4 V_1 + V_2",
         "fundamental_dimension": fundamental_dimension,
         "adjoint_dimension": adjoint_dimension,
@@ -384,8 +495,10 @@ def _base_topology_checks(mutation: str) -> dict[str, Any]:
     # The unit tangent sphere fibration S^5 -> S(TS^6) -> S^6 has Euler
     # boundary chi(S^6)=2.  Its standard product-cell filtration has one cell
     # in degrees 0,5,6,11 and the sole nonzero cellular boundary d_6=2.
+    sphere_cell_degrees = [0] if mutation == "change_euler_boundary" else [0, 6]
+    sphere_euler_characteristic = sum((-1) ** degree for degree in sphere_cell_degrees)
     cell_degrees = [0, 5, 6, 11]
-    euler_boundary = 1 if mutation == "change_euler_boundary" else 2
+    euler_boundary = abs(sphere_euler_characteristic)
     boundary_by_source = {6: euler_boundary}
     cellular_groups = _rank_one_cellular_groups(cell_degrees, boundary_by_source)
     integral_homology = cellular_groups["homology"]
@@ -400,6 +513,9 @@ def _base_topology_checks(mutation: str) -> dict[str, Any]:
     return {
         "base": "V_2(R^7)=S(TS^6)",
         "sphere_fibration": "S^5 -> V_2(R^7) -> S^6",
+        "sphere_cell_degrees": sphere_cell_degrees,
+        "sphere_euler_characteristic": sphere_euler_characteristic,
+        "euler_boundary_derivation": "absolute Euler characteristic of the standard two-cell CW model of S^6",
         "euler_boundary": euler_boundary,
         "cell_degrees": cell_degrees,
         "cellular_boundary_maps": {"6_to_5": euler_boundary},
@@ -506,7 +622,8 @@ def bundle_checks(mutation: str = "") -> dict[str, Any]:
         raise ValueError(f"unknown mutation {mutation!r}")
     stabilizer_result, input_digests = _load_inputs()
     topology = _base_topology_checks(mutation)
-    k_theory = _representation_ring_checks(mutation)
+    branching = _branching_certificate(mutation)
+    k_theory = _representation_ring_checks(branching)
     fiber = _fiber_classification(stabilizer_result, k_theory)
     standard_doublets = 2 if mutation == "drop_standard_doublet" else 3
     transition = _transition_checks(standard_doublets)
@@ -517,6 +634,7 @@ def bundle_checks(mutation: str = "") -> dict[str, Any]:
         "input_digests": input_digests,
         "homogeneous_reduction": ("(G_2 x U(1)) x_(U(2)) V reduces along G_2 -> V_2(R^7) to G_2 x_(SU(2)) Res(V)"),
         "base_topology": topology,
+        "branching": branching,
         "representation_ring_k_theory": k_theory,
         "transition": transition,
         "topology_and_characteristics": fiber,
@@ -527,24 +645,36 @@ def bundle_checks(mutation: str = "") -> dict[str, Any]:
 def build_result() -> dict[str, Any]:
     result = bundle_checks()
     return {
-        "schema": "a5-nullity-sixteen-bundle-invariants-v1",
+        "schema": "a5-nullity-sixteen-bundle-invariants-v2",
         "script_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "bundle": result,
         "pass": result["pass"],
     }
 
 
+def _self_test_mutation_task(mutation: str) -> tuple[str, dict[str, Any]]:
+    """Build one independent bundle mutation for the parent self-test."""
+    return mutation, bundle_checks(mutation)
+
+
 def self_test() -> None:
     baseline = bundle_checks()
     if not baseline["pass"]:
         raise RuntimeError("baseline nullity-sixteen bundle invariant check failed")
-    rank_mutation = bundle_checks("drop_standard_doublet")
+    mutations = dict(
+        stabilizer.symmetry.parallel.ordered_map(
+            _self_test_mutation_task,
+            ["drop_standard_doublet", "kill_k_theory_torsion", "change_euler_boundary"],
+            min_items=1,
+        )
+    )
+    rank_mutation = mutations["drop_standard_doublet"]
     if rank_mutation["pass"] or rank_mutation["transition"]["complex_transition_dimension"] == COMPLEX_RANK:
         raise RuntimeError("representation-rank mutation survived the invariant check")
-    torsion_mutation = bundle_checks("kill_k_theory_torsion")
+    torsion_mutation = mutations["kill_k_theory_torsion"]
     if torsion_mutation["pass"] or torsion_mutation["representation_ring_k_theory"]["generator_nonzero"]:
         raise RuntimeError("K-theory torsion mutation survived the invariant check")
-    topology_mutation = bundle_checks("change_euler_boundary")
+    topology_mutation = mutations["change_euler_boundary"]
     if topology_mutation["pass"] or topology_mutation["base_topology"]["integral_cohomology"].get("6") == "Z/2":
         raise RuntimeError("Euler-boundary mutation survived the invariant check")
 
@@ -552,17 +682,26 @@ def self_test() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
     arguments = parser.parse_args()
+    if arguments.check is not None and (arguments.self_test or arguments.out is not None):
+        parser.error("--check cannot be combined with --self-test or --out")
     if arguments.self_test:
         self_test()
         print("PASS: nullity-sixteen bundle invariant self-test")
-    if arguments.out is not None:
+    if arguments.out is not None or arguments.check is not None:
         result = build_result()
-        arguments.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"wrote {arguments.out}")
-    if not arguments.self_test and arguments.out is None:
-        parser.error("choose --self-test or --out")
+        payload = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode()
+        if arguments.check is not None:
+            if payload != arguments.check.read_bytes():
+                raise SystemExit(f"nullity_sixteen_bundle.py: fresh JSON differs byte-for-byte from {arguments.check}")
+            print(f"nullity_sixteen_bundle.py: fresh JSON matches {arguments.check}")
+        else:
+            arguments.out.write_bytes(payload)
+            print(f"wrote {arguments.out}")
+    if not arguments.self_test and arguments.out is None and arguments.check is None:
+        parser.error("choose --self-test, --out, or --check")
     return 0
 
 

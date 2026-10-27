@@ -372,17 +372,29 @@ def build_result() -> dict[str, Any]:
     }
 
 
+def _self_test_mutation_task(mutation: str) -> tuple[str, dict[str, Any]]:
+    """Build one independent orbit-moduli mutation for the parent self-test."""
+    return mutation, orbit_moduli_checks(mutation)
+
+
 def self_test() -> None:
     baseline = orbit_moduli_checks()
     if not baseline["pass"]:
         raise RuntimeError("baseline aligned-orbit moduli check failed")
-    phase_mutation = orbit_moduli_checks("delete_phase_generator")
+    mutations = dict(
+        symmetry.parallel.ordered_map(
+            _self_test_mutation_task,
+            ["delete_phase_generator", "trivialize_monodromy"],
+            min_items=1,
+        )
+    )
+    phase_mutation = mutations["delete_phase_generator"]
     principal_mutation_ranks = [
         row["compact_tangent_rank"] for row in phase_mutation["rows"] if row["orbit_type"] == "principal"
     ]
     if phase_mutation["pass"] or principal_mutation_ranks == [12, 12]:
         raise RuntimeError("phase-generator deletion survived the orbit-rank check")
-    monodromy_mutation = orbit_moduli_checks("trivialize_monodromy")
+    monodromy_mutation = mutations["trivialize_monodromy"]
     if monodromy_mutation["pass"] or monodromy_mutation["topology"]["integral_cohomology"].get("7") == "Z/2":
         raise RuntimeError("trivial-monodromy mutation survived the topology check")
 
@@ -390,17 +402,26 @@ def self_test() -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path)
     parser.add_argument("--self-test", action="store_true")
     arguments = parser.parse_args()
+    if arguments.check is not None and (arguments.self_test or arguments.out is not None):
+        parser.error("--check cannot be combined with --self-test or --out")
     if arguments.self_test:
         self_test()
         print("PASS: aligned nullity-twelve orbit-moduli self-test")
-    if arguments.out is not None:
+    if arguments.out is not None or arguments.check is not None:
         result = build_result()
-        arguments.out.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(f"wrote {arguments.out}")
-    if not arguments.self_test and arguments.out is None:
-        parser.error("choose --self-test or --out")
+        payload = (json.dumps(result, indent=2, sort_keys=True) + "\n").encode()
+        if arguments.check is not None:
+            if payload != arguments.check.read_bytes():
+                raise SystemExit(f"aligned_orbit_moduli.py: fresh JSON differs byte-for-byte from {arguments.check}")
+            print(f"aligned_orbit_moduli.py: fresh JSON matches {arguments.check}")
+        else:
+            arguments.out.write_bytes(payload)
+            print(f"wrote {arguments.out}")
+    if not arguments.self_test and arguments.out is None and arguments.check is None:
+        parser.error("choose --self-test, --out, or --check")
     return 0
 
 
