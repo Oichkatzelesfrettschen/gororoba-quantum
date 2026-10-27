@@ -14,6 +14,22 @@ run's cohort, so the dropped pair leaves the comparison. A validation dry run of
 2026-10-27T07:53:14-07:00 calibration (not retained) admitted all 30 paths against a live export, passed
 `--self-check` and carried campaign digest `bf6be296...`. Every count below refers to the amended cohort.
 
+**Amendment of 2026-10-27: a two-point series.** Kingston's reported T1 and T2 still carried the
+2026-10-26T07:32-07:00 stamp at the 2026-10-27T07:53:14-07:00 calibration, past the hour at which the daily
+refreshes of 2026-10-10 to 2026-10-25 landed. The owner approved on 2026-10-27 running the repeat at once as the
+first of two points:
+
+- Point 1 runs under the current calibration with the first run's reported T1 and T2. It is admitted by the
+  exposure gate, one execution calibration whose stamp differs from the first run's, and the `--compare`
+  identity checks; decision 1's T1/T2 count reads "not admitted" by construction and is recorded, not applied.
+  Both runs normalize against the same reported values, so each kappa ratio between them equals the ratio of
+  the fitted physical rates: decision 2 reads as device drift over about 19 hours, and the two normalization
+  outcomes under "What the outcomes mean" do not apply to this point.
+- Point 2 runs after the refresh under decision 1 as written, compared against the first run, on the primary
+  account when its remaining seconds less 60 cover the 25 s ceiling, else on the backup account.
+
+Decisions 2 to 5 apply to both points, and the focal jobs run in point 1's calibration window.
+
 ## Question
 
 The first run, Kingston job `dbfrg3fpc3tc739o4kag` ([findings](IDLE_PENALTY_PROBE_FINDINGS.md), case
