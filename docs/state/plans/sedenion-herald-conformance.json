@@ -6,32 +6,130 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "planned",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
     "note": "Scope follows the approved five-experiment plan and checked repository sources; acquisition authority stays with provider cases."
   },
   "scope": "Implement certified sedenion LCU dark, bright and sign-mutation controls with unconditional herald probabilities. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Certify the five-qubit LCU and restricted optical block.",
+  "next_action": "Use the retained review procedure to qualify and separately approve a prospective provider acquisition; the completed implementation authorizes no execution.",
   "steps": [
     {
       "id": "certify-operator",
       "action": "Certify the five-qubit LCU and restricted optical block.",
       "acceptance": "Complete operators reproduce the signed product and mutation changes the ideal herald law.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "b00c4831baba644a0ee3f3da5b20c8aac1c4f3bcec3448d4c36c6bda160be4d3",
+          "result": "The full five-qubit witness, kernel/bright probabilities and sign-mutation sensitivity pass; four-mode dark/bright and eight-mode fixture restrictions preserve the complete signed-witness supports.",
+          "observed_at": "2026-10-27T20:24:35.784707+00:00",
+          "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/experiment_references.py",
+              "sha256": "f8e9d874da893e63c0e96d50f5cd317c2677023fd8529676748a657d2bbee0d7"
+            },
+            {
+              "ref": "scripts/experiment_cases.py",
+              "sha256": "b21ed9eadc384758ebdf9df7f6ca928ac867a856649448fbbbc966d1d881a61e"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/cases/reference.json",
+              "sha256": "9439f7af9c6e63795da74b2760ca2e6608d8a02fdc78dd707c650303802c8b07"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_cases.py",
+              "sha256": "fecbc66a3e4291b9fcaa9e2b7ade315660745d0047c19195df4c446c1dda8bb8"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "compile-controls",
       "action": "Generate routed Tuna and QX payloads and admitted Ascella dilation controls.",
       "acceptance": "Payloads validate topology, normalization, port maps and full operator contracts.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "225470f7c0d29cd51ec8dd4daa334b0b6d2457e21ec9e6724d25b9656184ec29",
+          "result": "Tuna and compact QX cases plus Ascella restrictions pass full operator and byte replay admission. Distinct repeated-arm directories reproduce their named source or mesh.",
+          "observed_at": "2026-10-27T20:24:35.784707+00:00",
+          "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+          "evidence": [
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/cases/campaign.json",
+              "sha256": "533e3ada05a344a727d92edaf39c41c1d655b92c9d2eda8cca8ce59d2ab9db85"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json",
+              "sha256": "444c161023e21640b17ac38ad4505d7b1361b1ca843c97e7117e40ab475e37ef"
+            },
+            {
+              "ref": "scripts/experiment_cases.py",
+              "sha256": "b21ed9eadc384758ebdf9df7f6ca928ac867a856649448fbbbc966d1d881a61e"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "record-decision",
       "action": "Record device question, executed-order rule and analysis gates.",
       "acceptance": "Cases and analysis preserve unconditional denominators and distinguish requested from observed contrast order.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "a765dfced03e077b4a03febcbb64296cf842e9c6e74c6bb94784b8f64ac68ada",
+          "result": "The review states the residual-device-error question; analysis separates unconditional heralds and descriptive contrasts and admits execution-dependent contrasts only after order, identity and control checks.",
+          "observed_at": "2026-10-27T20:24:35.784707+00:00",
+          "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+          "evidence": [
+            {
+              "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+              "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
+            },
+            {
+              "ref": "scripts/experiment_analysis.py",
+              "sha256": "57878292585a9305515f4646277540ae2908cdd3d9c9362b10f78c9f158c484c"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_analysis.py",
+              "sha256": "8683d35d71f80ac9c8448d0321ed1bbecda95df6e6cd486111c0bb3da69e587d"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Completed the bounded software and investigation obligations with exact references, validated cases, analyzers and retained receipts. Provider acquisition, runtime forecasts, optical qualification and approval remain separate authorities and are explicitly pending in the acquisition review.",
+  "receipts": [
+    {
+      "scope_sha256": "13a93077856c14a7a6cfbb749c0a1e9ca2d3b699094ba79e0d674b2a832db5cc",
+      "result": "All three scoped obligations have fresh receipts; deterministic implementation and investigation completion excludes provider execution.",
+      "observed_at": "2026-10-27T20:24:35.784707+00:00",
+      "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+      "evidence": [
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+          "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+        },
+        {
+          "ref": "docs/design/quantum-experiment-conformance.md",
+          "sha256": "b66ee555e3355445ae669f134d1cf6ca7e4d0edb5993ff21fe8cd85ef6ed4603"
+        },
+        {
+          "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+          "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json",
+          "sha256": "444c161023e21640b17ac38ad4505d7b1361b1ca843c97e7117e40ab475e37ef"
+        }
+      ]
     }
   ]
 }

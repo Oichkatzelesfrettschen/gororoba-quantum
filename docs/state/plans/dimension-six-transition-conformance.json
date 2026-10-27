@@ -6,32 +6,130 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "planned",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
     "note": "Scope follows the approved five-experiment plan and checked repository sources; acquisition authority stays with provider cases."
   },
   "scope": "Implement ideal, compiled and measured dimension-six transition conformance on Tuna-17, QX and Ascella. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Certify the three bases, Tao candidate and qubit embedding.",
+  "next_action": "Use the retained review procedure to qualify and separately approve a prospective provider acquisition; the completed implementation authorizes no execution.",
   "steps": [
     {
       "id": "certify-bases",
       "action": "Certify the three bases, Tao candidate and qubit embedding.",
       "acceptance": "Exact orthonormality, 1/6 overlaps, Tao residuals and leakage identities pass.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "010bd836988ef26b303a3ce1084917f7742cd972a35d93f48c11b44755898eda",
+          "result": "Exact orthonormality, reference cross-overlaps 1/6, Tao candidate residuals and leakage-preserving embeddings pass.",
+          "observed_at": "2026-10-27T20:24:35.784707+00:00",
+          "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/experiment_references.py",
+              "sha256": "f8e9d874da893e63c0e96d50f5cd317c2677023fd8529676748a657d2bbee0d7"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/cases/reference.json",
+              "sha256": "9439f7af9c6e63795da74b2760ca2e6608d8a02fdc78dd707c650303802c8b07"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_references.py",
+              "sha256": "ee1f94173910604fe36372e686ac6c3e1c7a949293af9e55b61ce55dfeb0b33e"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "compile-settings",
       "action": "Generate 54 native transition settings per primary platform.",
       "acceptance": "Full requested and compiled operators, payload hashes and output maps validate.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "9c2c016af6dbb9bd0db3331a7e6ae7dfc710821f98440c63fb150ace3957866d",
+          "result": "54 settings per primary platform retain full operators, quantized native predictions, all optical ports and payload digests; companion replay reproduces every non-provenance byte.",
+          "observed_at": "2026-10-27T20:24:35.784707+00:00",
+          "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+          "evidence": [
+            {
+              "ref": "scripts/experiment_cases.py",
+              "sha256": "b21ed9eadc384758ebdf9df7f6ca928ac867a856649448fbbbc966d1d881a61e"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/cases/campaign.json",
+              "sha256": "533e3ada05a344a727d92edaf39c41c1d655b92c9d2eda8cca8ce59d2ab9db85"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json",
+              "sha256": "444c161023e21640b17ac38ad4505d7b1361b1ca843c97e7117e40ab475e37ef"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "analyze-counts",
       "action": "Analyze counts and size written acquisition cases.",
       "acceptance": "Fixtures cover denominator, mapping, leakage, missing data and precision failures; cases state ceilings and pending approval.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "aeb547ee0cdd692e5872e181f65968eb7d87d53e4fa713ec1dead9d5d5c76ab0",
+          "result": "Analysis fixtures cover maps, missing/short data, leakage, detected-event denominators and native/template attribution. The written cases freeze precision/ceilings and identify pending runtime forecasts and optical qualification.",
+          "observed_at": "2026-10-27T20:24:35.784707+00:00",
+          "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+          "evidence": [
+            {
+              "ref": "scripts/experiment_analysis.py",
+              "sha256": "57878292585a9305515f4646277540ae2908cdd3d9c9362b10f78c9f158c484c"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_analysis.py",
+              "sha256": "8683d35d71f80ac9c8448d0321ed1bbecda95df6e6cd486111c0bb3da69e587d"
+            },
+            {
+              "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+              "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+              "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "Completed the bounded software and investigation obligations with exact references, validated cases, analyzers and retained receipts. Provider acquisition, runtime forecasts, optical qualification and approval remain separate authorities and are explicitly pending in the acquisition review.",
+  "receipts": [
+    {
+      "scope_sha256": "e809669c685ae5af1454f49b74dc85703b3437f227b98231dc10b0c84ca96e81",
+      "result": "All three scoped obligations have fresh receipts; deterministic implementation and investigation completion excludes provider execution.",
+      "observed_at": "2026-10-27T20:24:35.784707+00:00",
+      "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+      "evidence": [
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+          "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+        },
+        {
+          "ref": "docs/design/quantum-experiment-conformance.md",
+          "sha256": "b66ee555e3355445ae669f134d1cf6ca7e4d0edb5993ff21fe8cd85ef6ed4603"
+        },
+        {
+          "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+          "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json",
+          "sha256": "444c161023e21640b17ac38ad4505d7b1361b1ca843c97e7117e40ab475e37ef"
+        }
+      ]
     }
   ]
 }

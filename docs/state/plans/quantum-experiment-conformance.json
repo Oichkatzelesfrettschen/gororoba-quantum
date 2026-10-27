@@ -6,32 +6,94 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
     "note": "Scope follows the approved five-experiment plan and checked repository sources; acquisition authority stays with provider cases."
   },
   "scope": "Implement finite quantum experiment references, guarded cases, analysis and correction records across five proposals. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Audit sources and establish the five bounded outcomes.",
+  "next_action": "Use the retained review procedure to qualify and separately approve a prospective provider acquisition; the completed implementation authorizes no execution.",
   "steps": [
     {
       "id": "audit-contracts",
       "action": "Audit sources and establish the five bounded outcomes.",
       "acceptance": "The correction document names valid cores, counterexamples and evidence boundaries.",
-      "state": "doing"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "d7a5192f50ae6713983f9a29a4bb116e2c4e0b32f3803705e039fef12837c731",
+          "result": "The correction document grounds all five outcomes in repository sources and separates finite identities, compiler predictions, device questions and unresolved physical claims.",
+          "observed_at": "2026-10-27T20:24:35.784707+00:00",
+          "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+          "evidence": [
+            {
+              "ref": "docs/design/quantum-experiment-conformance.md",
+              "sha256": "b66ee555e3355445ae669f134d1cf6ca7e4d0edb5993ff21fe8cd85ef6ed4603"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/cases/reference.json",
+              "sha256": "9439f7af9c6e63795da74b2760ca2e6608d8a02fdc78dd707c650303802c8b07"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "integrate-suites",
       "action": "Integrate references, cases and analyzers.",
       "acceptance": "Focused deterministic tests and operator checks pass with guarded execution interfaces.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "3a0fa5f817e409d0098d8095dd4881dff80333879ab31a2c33108577702c6208",
+          "result": "85 focused tests pass; full Ruff and mypy pass; the complete 187-case campaign and immutable regeneration receipt pass both registered gates.",
+          "observed_at": "2026-10-27T20:24:35.784707+00:00",
+          "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+          "evidence": [
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+              "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/cases/campaign.json",
+              "sha256": "533e3ada05a344a727d92edaf39c41c1d655b92c9d2eda8cca8ce59d2ab9db85"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json",
+              "sha256": "444c161023e21640b17ac38ad4505d7b1361b1ca843c97e7117e40ab475e37ef"
+            }
+          ]
+        }
+      ]
     },
     {
       "id": "retain-validation",
       "action": "Retain generated evidence, cases and scope-bound validation receipts.",
       "acceptance": "Evidence checks, documentation links and planning validation pass.",
-      "state": "todo"
+      "state": "done",
+      "receipts": [
+        {
+          "scope_sha256": "a839223c8df9d0e5da6780acdc7f8755fcc2f060f3e45f415d7fc1656bcb22c6",
+          "result": "Validation, source-bound receipts, provider observations, cases and acquisition review are retained; seed provenance and all Markdown links pass.",
+          "observed_at": "2026-10-27T20:24:35.784707+00:00",
+          "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+          "evidence": [
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+              "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+            },
+            {
+              "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+              "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/provider-observation.json",
+              "sha256": "873a909ce8b6a2a0612140aa9f21238c1ae4719f5afa89d79888b3f2ea872e7c"
+            }
+          ]
+        }
+      ]
     }
   ],
   "related": [
@@ -40,5 +102,33 @@
     "fano-sign-lift-investigation",
     "spectral-projection-estimands",
     "quarter-mass-amplification-conformance"
+  ],
+  "disposition": "completed",
+  "resolution": "Completed the bounded software and investigation obligations with exact references, validated cases, analyzers and retained receipts. Provider acquisition, runtime forecasts, optical qualification and approval remain separate authorities and are explicitly pending in the acquisition review.",
+  "receipts": [
+    {
+      "scope_sha256": "bb1024a5b0389efc3d7c4362bbcdcf9614189bd5df8ed2d4a6aa975603511f84",
+      "result": "All three scoped obligations have fresh receipts; deterministic implementation and investigation completion excludes provider execution.",
+      "observed_at": "2026-10-27T20:24:35.784707+00:00",
+      "revision": "9470dd9282bc10a79dfa0f6d8d2b6d205691fe01",
+      "evidence": [
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+          "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+        },
+        {
+          "ref": "docs/design/quantum-experiment-conformance.md",
+          "sha256": "b66ee555e3355445ae669f134d1cf6ca7e4d0edb5993ff21fe8cd85ef6ed4603"
+        },
+        {
+          "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+          "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json",
+          "sha256": "444c161023e21640b17ac38ad4505d7b1361b1ca843c97e7117e40ab475e37ef"
+        }
+      ]
+    }
   ]
 }

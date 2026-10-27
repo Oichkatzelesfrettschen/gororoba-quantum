@@ -25,6 +25,9 @@ The Fano and spectral outputs complete bounded mathematical investigations. Thei
 remain outside the admitted cases. The primary dimension-six hardware family uses the three reference bases;
 Tao is an offline candidate comparison. Hardware results remain prospective throughout this bundle.
 
+The [validation receipt](validation.json) records source revision, runtime versions, 85 focused tests,
+full lint/types, gate measurements and the measured compiler-only probability shifts.
+
 ## Deterministic replay
 
 Use the repository's pinned interpreter and constrain worker/native-library concurrency. The generator
