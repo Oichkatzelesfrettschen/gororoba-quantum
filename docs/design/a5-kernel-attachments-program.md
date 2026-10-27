@@ -268,3 +268,15 @@ Sub-steps, one per turn:
   removal of the largest common power of the exceptional coordinate. The fiber is the union of the images of the
   exceptional divisors. Use the Rees algebra in Singular only as a cross-check on small incidences, modulo 32003
   first.
+
+## Orchestrator note after 2h
+
+- 2h is committed (`cce2f07`). The superseded real-coordinate drafts of 2e-2g are in the trash.
+- Producer inputs: hash only files a computation reads (cd_core, the imported evidence scripts, upstream result
+  records). Never hash this program file or the README; commit `1b38200` removed it from every producer because each
+  steering note staled their records.
+- The docs-wide type check is the gate's exact command, `MYPYPATH=docs "$PYTHON" ci/pinned_tool.py mypy
+  --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs/evidence`, which must report no
+  issues; mypy over all of `docs/` is a different, wider scope and is not the gate.
+- Next sub-step: **2i** as specified above, starting with the eight first-order-resolved incidences (cheapest, a check
+  of the method against the committed first-order images), then the seven higher-order rows in a later sub-step.
