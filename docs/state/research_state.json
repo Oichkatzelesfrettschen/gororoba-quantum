@@ -2,6 +2,27 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qi-tuna-destination-zero-baseline-before",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the baseline-before position of the approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-rotated",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the rotated-destinations position of the approved destination comparison?"
+    },
+    {
+      "id": "qi-tuna-destination-zero-baseline-after",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after",
+      "family": "nominal-zero classical-destination response prefix",
+      "question": "What early/final binary response does the nominal-zero control return in the baseline-after position of the approved destination comparison?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-replication-job-06",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06",
@@ -2194,6 +2215,110 @@
     }
   ],
   "claims": [
+    {
+      "domain": "hardware",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md"
+      ],
+      "gates": {
+        "core-qi-tuna-destination-prefix": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-zero-baseline-before",
+        "qi-tuna-destination-zero-rotated",
+        "qi-tuna-destination-zero-baseline-after"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "qi-tuna-destination-case-deadline",
+      "statement": "The approved six-job destination comparison stopped at its 3600-second request deadline after three nominal-zero submissions. All 12,288 submitted shots were retained in 14.356782 reported execution seconds with zero charges; the frozen whole-case decision is implementation route unavailable because the nominal-one acquisitions are absent.",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Operational incomplete-case outcome. Read-only recovery collected the third already submitted job after the executor stopped. The whole-case equivalence/departure endpoint remains unavailable; further submissions require a separately approved case.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json",
+          "sha256": "ab4f4b9f9a5669eebce38be49da4f3fc440ec440ec536719d2a6431de960f38e"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/execution-state.json",
+          "sha256": "8956ff400539f04972751c53d5f762e4e40a64b3702f8b015ad038a5c078224b"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/read-only-recovery-receipt.json",
+          "sha256": "7ed20c380814d7a1df6f5c66c3aa5783e6274418b2297e8cf400c73f1a6fc660"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/completion-admission.json",
+          "sha256": "01635028b4276f2d5bc78b2df62362b6f26e3f73f0856921938ba678d9b41048"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/completion-admission.json",
+          "sha256": "97bc60ca2a29ebcc850da60aee80b001e969a6f3d1e5604fac74a4144f77bb55"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/completion-admission.json",
+          "sha256": "d888483de2a3dad1e61c321088c3c2979a5da7143f20b0548396e0daf829f14a"
+        }
+      ],
+      "assumptions": [
+        "Provider timestamp fields and result identities describe the recorded service operations.",
+        "The frozen complete-case decision requires both nominal preparations."
+      ],
+      "related_claims": [
+        "qi-tuna-destination-zero-prefix-response",
+        "qi-tuna-projector-register-qualification"
+      ]
+    },
+    {
+      "domain": "hardware",
+      "documents": [
+        "docs/evidence/tuna-projector-geometry/ordered-response-acquisition.md"
+      ],
+      "gates": {
+        "core-qi-tuna-destination-prefix": "replay"
+      },
+      "acquisitions": [
+        "qi-tuna-destination-zero-baseline-before",
+        "qi-tuna-destination-zero-rotated",
+        "qi-tuna-destination-zero-baseline-after"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "qi-tuna-destination-zero-prefix-response",
+      "statement": "In the retained posthoc nominal-zero prefix, q6 terminal-one counts are 938, 2525 and 969 out of 4096 before, during and after rotation; the maximum empirical early/final joint-cell contrast is 0.43896484375. The q4 and q11 maximum contrasts are 0.0052490234375 and 0.001708984375.",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Descriptive frequencies from the incomplete case. A transformation restricted to stored early labels leaves each dataset terminal marginal unchanged; broader reconstruction/scheduling changes and a coincident transient remain alternatives. Neither statistical acceptance of the six-job case nor physical causation or populations is established.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-descriptive.json",
+          "sha256": "c4cae4aff5e27d56b2513fae4af31b9db60f0b4b3cf1329bce82ad4b4b450782"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-before/stored-source-observation.json",
+          "sha256": "3f919abc1ca2418aa1699ad26f451e837032d017f45c846b250534b614525955"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-rotated-destinations/stored-source-observation.json",
+          "sha256": "f417decd2d03dfedef2c145fae537439280bb78531cee6b5df2953912dece90e"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/prepared-zero-baseline-after/stored-source-observation.json",
+          "sha256": "602e8d35d66f3d93174aeb13f13654a0e511be4589ab8c309aa6952c954d81ec"
+        }
+      ],
+      "assumptions": [
+        "The documented rightmost classical-bit-zero convention supplies the decoder.",
+        "Stored source identity establishes transport bytes, while served analog schedules remain unavailable."
+      ],
+      "related_claims": [
+        "qi-tuna-destination-case-deadline",
+        "qi-tuna-readout-response-mixture"
+      ]
+    },
     {
       "id": "ascella-signed-coherence-permuted-repeat",
       "statement": "The approved permuted repeat on qpu:ascella (job 6ef8e8db) ran job-00's 64 circuits, all 64 compiled circuits equal to job-00's, in ANU QRNG order at 16384 samples per iteration: 1048576 samples in 186 s, job-00's duration, for 1.032768 free credits, and all 27 endpoints qualify again. Under the preregistered comparison the outside-block clicks follow the execution sequence, not the setting: per-setting Spearman against job-00 -0.075 (p 0.56), lag-1 autocorrelation -0.653 in the new order (p below 1e-4), compiled-phase change Spearman 0.12 (p 0.35), and the median count grows with the budget (log2 ratio 0.83). The per-setting analyzer residuals reproduce, Pearson 0.974 on X and 0.802 on Y (p below 1e-4), at contrast 0.9719 against 0.9699 on X and 0.9669 against 0.9702 on Y.",

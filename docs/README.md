@@ -69,6 +69,9 @@ The [approval-time observation](evidence/tuna-projector-geometry/readout-ordered
 refreshes availability for the same case; every dispatch still requires fresh admission.
 The [source-scope revalidation](evidence/tuna-projector-geometry/source-scope-revalidation.md)
 corrects historical prospective/unmeasured wording through an addendum while preserving retained source bytes.
+The approved [ordered-response acquisition](evidence/tuna-projector-geometry/ordered-response-acquisition.md)
+ended at its request deadline after three nominal-zero jobs. All 12,288 submitted shots were retained;
+the whole-case endpoint is unavailable and the descriptive prefix leaves causal attribution unresolved.
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized

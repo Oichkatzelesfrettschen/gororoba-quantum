@@ -13,7 +13,7 @@
   },
   "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
   "owner": "codex-tuna-projector-geometry",
-  "next_action": "Obtain owner approval of campaign 53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76; refresh admission before each dispatch. Preserve causal limits and track terms-schema reuse separately.",
+  "next_action": "Verify and retain the incomplete-case refusal and posthoc nominal-zero prefix; reconcile all three acquired jobs and usage. A future complete comparison needs a separately approved case sized for measured provider waits.",
   "steps": [
     {
       "id": "source-and-instrument-audit",
@@ -250,6 +250,30 @@
             }
           ],
           "scope_sha256": "9553e1137da84da7a4eb5341b592f2039292a9a2830e76a23db3c0d8c063cf5b"
+        },
+        {
+          "result": "Revalidated the unchanged qualification jobs and retained refusal against the refreshed account ledger. All 426 previous ledger rows are unchanged; the three new rows belong to the separately approved destination case. Scope-bound evidence now cites the immutable ledger-row comparison rather than the unrelated future account total.",
+          "observed_at": "2026-10-27T21:09:59.563706+00:00",
+          "revision": "efb5f6b6e5e0cb5fee4fbef0de314b1f7a42a13f",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/qualification-ledger-revalidation.json",
+              "sha256": "f9d4ff3aa92d5f270da6d34cb0cd62876e59184b151ef270cfe809765720843f"
+            }
+          ],
+          "scope_sha256": "9553e1137da84da7a4eb5341b592f2039292a9a2830e76a23db3c0d8c063cf5b"
         }
       ]
     },
@@ -282,6 +306,30 @@
             {
               "ref": "docs/evidence/quantum_inspire/usage.json",
               "sha256": "64d4432ba59eec56c98953ba398e3511941f2764d24694bf7eb017208bfb16ca"
+            }
+          ],
+          "scope_sha256": "aa5fabc2a68cc35929d0115bf086778b8dabb34a531f117486cf4a21eef11bdf"
+        },
+        {
+          "result": "Revalidated the unchanged qualification jobs and retained refusal against the refreshed account ledger. All 426 previous ledger rows are unchanged; the three new rows belong to the separately approved destination case. Scope-bound evidence now cites the immutable ledger-row comparison rather than the unrelated future account total.",
+          "observed_at": "2026-10-27T21:09:59.563706+00:00",
+          "revision": "efb5f6b6e5e0cb5fee4fbef0de314b1f7a42a13f",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/qualification-ledger-revalidation.json",
+              "sha256": "f9d4ff3aa92d5f270da6d34cb0cd62876e59184b151ef270cfe809765720843f"
             }
           ],
           "scope_sha256": "aa5fabc2a68cc35929d0115bf086778b8dabb34a531f117486cf4a21eef11bdf"
@@ -458,6 +506,30 @@
             {
               "ref": "docs/evidence/quantum_inspire/usage.json",
               "sha256": "64d4432ba59eec56c98953ba398e3511941f2764d24694bf7eb017208bfb16ca"
+            }
+          ],
+          "scope_sha256": "acc5a78580d0ad541639fcd1057bd0ec667ad3fac4e39a506adb5eb44b428bd5"
+        },
+        {
+          "result": "Revalidated the unchanged qualification jobs and retained refusal against the refreshed account ledger. All 426 previous ledger rows are unchanged; the three new rows belong to the separately approved destination case. Scope-bound evidence now cites the immutable ledger-row comparison rather than the unrelated future account total.",
+          "observed_at": "2026-10-27T21:09:59.563706+00:00",
+          "revision": "efb5f6b6e5e0cb5fee4fbef0de314b1f7a42a13f",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/qualification-ledger-revalidation.json",
+              "sha256": "f9d4ff3aa92d5f270da6d34cb0cd62876e59184b151ef270cfe809765720843f"
             }
           ],
           "scope_sha256": "acc5a78580d0ad541639fcd1057bd0ec667ad3fac4e39a506adb5eb44b428bd5"
@@ -836,15 +908,77 @@
     },
     {
       "id": "destination-owner-approval",
-      "state": "todo",
+      "state": "done",
       "action": "Obtain owner approval of the frozen six-job descriptive response case",
-      "acceptance": "Explicit owner approval names the reviewed campaign, written case, zero-credit budget and remaining causal limits before provider dispatch"
+      "acceptance": "Explicit owner approval names the reviewed campaign, written case, zero-credit budget and remaining causal limits before provider dispatch",
+      "receipts": [
+        {
+          "result": "Owner approved the exact frozen six-job descriptive case with the stated zero-credit condition and remaining causal limits.",
+          "observed_at": "2026-10-27T19:47:42.405731+00:00",
+          "revision": "efb5f6b6e5e0cb5fee4fbef0de314b1f7a42a13f",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/ordered-response-owner-approval.json",
+              "sha256": "82b4c46593c073fdced8ce9d06d79b0ad5f690ce54dd435bdcdb1f8ddbdb4ea5"
+            }
+          ],
+          "scope_sha256": "815a5748d99fe67a4b3ebcb08a06f8be0b1552004c39b4db26b2a034f4e8a903"
+        }
+      ]
     },
     {
       "id": "destination-terms-schema-reuse",
       "state": "todo",
       "action": "Validate the policy receipt schema explicitly before reusing the validators for another packet",
       "acceptance": "Shared schema admission and a prebinding malformed-schema test pass; the new packet receives its own frozen identities and approval"
+    },
+    {
+      "id": "destination-approved-acquisition",
+      "state": "done",
+      "action": "Execute and collect the approved six-job serial destination comparison",
+      "acceptance": "Each dispatch binds approved hashes and fresh admission; complete raw results or preserved failure identities remain within six jobs and stated ceilings",
+      "receipts": [
+        {
+          "result": "The approved request window stopped after three nominal-zero submissions. Read-only recovery collected the third existing job; all 12,288 submitted shots and 14.356782 reported seconds are retained with zero transaction charges. The nominal-one jobs remained undispatched and the frozen whole-case endpoint is unavailable.",
+          "observed_at": "2026-10-27T21:05:27.112509+00:00",
+          "revision": "efb5f6b6e5e0cb5fee4fbef0de314b1f7a42a13f",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/sequence-plan.json",
+              "sha256": "53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/execution-state.json",
+              "sha256": "8956ff400539f04972751c53d5f762e4e40a64b3702f8b015ad038a5c078224b"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/read-only-recovery-receipt.json",
+              "sha256": "7ed20c380814d7a1df6f5c66c3aa5783e6274418b2297e8cf400c73f1a6fc660"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json",
+              "sha256": "ab4f4b9f9a5669eebce38be49da4f3fc440ec440ec536719d2a6431de960f38e"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-descriptive.json",
+              "sha256": "c4cae4aff5e27d56b2513fae4af31b9db60f0b4b3cf1329bce82ad4b4b450782"
+            }
+          ],
+          "scope_sha256": "dd8f7fb8bce39744309d60c09c98f970a6289d807b21e5010a53a815d7999d65"
+        }
+      ]
+    },
+    {
+      "id": "destination-acquired-analysis",
+      "state": "doing",
+      "action": "Verify and interpret the frozen destination-response analysis",
+      "acceptance": "Ordering, raw identity, statistical endpoint and causal limits are verified from acquired evidence"
+    },
+    {
+      "id": "destination-acquisition-registration",
+      "state": "todo",
+      "action": "Register acquired jobs, refresh usage and verify evidence consistency",
+      "acceptance": "Usage, research registry, retained replay, links and plan receipts account for every dispatched job"
     }
   ]
 }

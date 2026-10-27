@@ -1,0 +1,29 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-27T19:48:10+00:00",
+ "approval": "Owner said approved! for campaign 53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76: six serial Tuna-17 jobs,4096shots each,24576total,1800seconds aggregate provider ceiling,zero expected credits,no retries,descriptive response only.",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "cases_sha256": "b8ec020a157d48b414c10a544b8f692fd26fa721edd4745d2d91da4382f3eabe",
+ "backend_status_at_submit": "executing",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 0,
+  "min_wait_time_in_queue_secs": 0.0,
+  "avg_wait_time_in_queue_secs": 0.0,
+  "max_wait_time_in_queue_secs": 0.0
+ },
+ "queue_user_only": true,
+ "queue_limit_at_submit": 1,
+ "batch_job": 895781,
+ "project": 795459,
+ "shots": 4096,
+ "jobs": [
+  {
+   "file": "baseline-before.cq",
+   "job": 1618109,
+   "sha256": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267"
+  }
+ ],
+ "submitted_utc": "2026-10-27T19:48:10+00:00"
+}

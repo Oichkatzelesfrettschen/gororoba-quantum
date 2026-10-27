@@ -54,3 +54,7 @@ hash-bound descriptive case after those repairs; causal inference remains unadmi
 The [model provenance](tuna-ordered-response-review-provenance.json) binds both reports.
 The correct frozen policy receipt passes the exact case; explicit terms-schema
 validation before future packet reuse remains a nonblocking follow-up in the work plan.
+
+The [acquired destination-data review](tuna-destination-acquired-data-review.md)
+independently verifies the three nominal-zero jobs, deadline stop, raw counts and
+causal limits, and requests stronger automated recovery/source-receipt validation.

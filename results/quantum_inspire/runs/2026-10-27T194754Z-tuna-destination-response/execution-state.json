@@ -1,0 +1,43 @@
+{
+ "schema": "qi-tuna-sequential-state-v1",
+ "phase": "stopped",
+ "completed": [
+  {
+   "schema": "qi-tuna-sequential-completion-v1",
+   "batch": "prepared-zero-baseline-before",
+   "job": 1618109,
+   "batch_job": 895781,
+   "created_on": "2026-10-27T19:48:10.217552Z",
+   "queued_at": "2026-10-27T20:05:15.896312Z",
+   "finished_at": "2026-10-27T20:05:21.294659Z",
+   "execution_seconds_decimal": "5.17682",
+   "inputs": {
+    "cases.json": "b8ec020a157d48b414c10a544b8f692fd26fa721edd4745d2d91da4382f3eabe",
+    "baseline-before.cq": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+    "submission.json": "0b194c48b31125f07d7afa2b4e31b3e0a719bb83ea9e51393b83991e6ad888ec",
+    "results.json": "c03601af55bfb2660e8a3e1cb22d530f0be9b6b07dd30524a7b210c50006f755",
+    "raw/baseline-before.cq.json": "98f99ea38c68851a310a01623c1ba038976e644d647bdfa94bb7a34b689e607c"
+   }
+  },
+  {
+   "schema": "qi-tuna-sequential-completion-v1",
+   "batch": "prepared-zero-rotated-destinations",
+   "job": 1618345,
+   "batch_job": 895833,
+   "created_on": "2026-10-27T20:06:09.920424Z",
+   "queued_at": "2026-10-27T20:22:36.995677Z",
+   "finished_at": "2026-10-27T20:22:41.917425Z",
+   "execution_seconds_decimal": "4.710931",
+   "inputs": {
+    "cases.json": "2396adc9c5eef41452655d41bbc4df7cfb26a76f78e3e6b9a8d2d9e3327a9eb5",
+    "rotated-destinations.cq": "3084eef16a0d32a23d7b3fa41c92f27fa3ce4f3d84791d128a10246728ad6d5d",
+    "submission.json": "e611ba73026478fcae475e4dff96cc4731dd2acaead5b41a379ab02679bb4ab5",
+    "results.json": "dc55839b064b367f9c66fb6b9bfbe8858639e442b373eeacafc4dc4adb23db73",
+    "raw/rotated-destinations.cq.json": "1ad6fef1d35da152e7c52963673ebbaa545e8e2963f04c219e43f9f03fe08417"
+   }
+  }
+ ],
+ "active_batch": "prepared-zero-baseline-after",
+ "error_type": "TimeoutError",
+ "observed_utc": "2026-10-27T20:47:55+00:00"
+}
