@@ -309,6 +309,26 @@ def runtime_consumption(manifest_root: Path) -> tuple[dict[tuple[str, int], set[
     return consumed, stray
 
 
+def ledger_consumers(row: dict[str, Any], problems: list[str]) -> set[Consumer]:
+    """The consumers one runtime row admits: its experiment and the resubmissions it declares.
+
+    A resubmission is the approved dry run of a later submission of the same approved envelope, re-planned on the
+    calibration then in force after an earlier submission that sent nothing usable; it repeats the experiment's
+    question and so its QRNG values. A row that lists resubmissions names that envelope.
+    """
+    resubmissions = row.get("resubmissions", [])
+    slot = f"index {row['index']} of {row['record']}"
+    if resubmissions:
+        if not (isinstance(resubmissions, list) and all(isinstance(e, str) and e for e in resubmissions)):
+            problems.append(f"runtime ledger: {slot} lists resubmissions that are not experiment names")
+            return set()
+        if len(set(resubmissions)) != len(resubmissions) or row["experiment"] in resubmissions:
+            problems.append(f"runtime ledger: {slot} repeats an experiment among its resubmissions")
+        if not isinstance(row.get("envelope"), str) or not row["envelope"]:
+            problems.append(f"runtime ledger: {slot} lists resubmissions without the envelope that approves them")
+    return {(row["script"], row["flag"], e) for e in [row["experiment"], *resubmissions]}
+
+
 def check_runtime(
     consumed: dict[tuple[str, int], set[Consumer]],
     stray: list[str],
@@ -336,14 +356,15 @@ def check_runtime(
         if not 0 <= slot[1] < len(values) or values[slot[1]] != row["value"]:
             problems.append(f"runtime ledger: value {row['value']} is not index {slot[1]} of {slot[0]}")
     for slot, consumers in sorted(consumed.items()):
-        if len(consumers) > 1:
-            problems.append(f"index {slot[1]} of {slot[0]} seeds {len(consumers)} experiments: {sorted(consumers)}")
         ledger_row = rows.get(slot)
+        expected = None if ledger_row is None else ledger_consumers(ledger_row, problems)
+        if len(consumers) > 1 and consumers != expected:
+            problems.append(f"index {slot[1]} of {slot[0]} seeds {len(consumers)} experiments: {sorted(consumers)}")
         if ledger_row is None:
             problems.append(
                 f"index {slot[1]} of {slot[0]} has no runtime ledger row; run ci/seed_provenance.py --add-runtime"
             )
-        elif {(ledger_row["script"], ledger_row["flag"], ledger_row["experiment"])} != consumers:
+        elif expected != consumers:
             problems.append(f"runtime ledger: index {slot[1]} of {slot[0]} names another consumer than its records")
     problems += [
         f"runtime ledger: index {i} of {r} has no retained reference" for r, i in sorted(set(rows) - set(consumed))
@@ -905,6 +926,8 @@ def runtime_self_test(record_path: str, record: dict[str, Any]) -> int:
         check_runtime(consumed, stray, rows, code, claimed, lambda path: record)
 
     run(consumed, [], [row], [], set())
+    resubmitted = {(record_path, 1): {consumer, ("scripts/x.py", "--seed", "case-b")}}
+    run(resubmitted, [], [dict(row, resubmissions=["case-b"], envelope="docs/design/x.md")], [], set())
     refusals = {
         "outside a seed_source": (consumed, ["results/x.json"], [row], [], set()),
         "experiments": ({(record_path, 1): {consumer, ("scripts/x.py", "--seed", "case-b")}}, [], [row], [], set()),
@@ -914,6 +937,14 @@ def runtime_self_test(record_path: str, record: dict[str, Any]) -> int:
         "belongs to a case": (consumed, [], [row], [], {Path(record_path).name}),
         "no retained reference": ({}, [], [row], [], set()),
         "another consumer": (consumed, [], [dict(row, experiment="case-b")], [], set()),
+        "without the envelope": (
+            {(record_path, 1): {consumer, ("scripts/x.py", "--seed", "case-b")}},
+            [],
+            [dict(row, resubmissions=["case-b"])],
+            [],
+            set(),
+        ),
+        "repeats an experiment": (consumed, [], [dict(row, resubmissions=["case-a"], envelope="d.md")], [], set()),
     }
     for fragment, arguments in refusals.items():
         try:
@@ -934,7 +965,7 @@ def runtime_self_test(record_path: str, record: dict[str, Any]) -> int:
         raise SystemExit("self-test: a seed_source entry was not found")
     if Path(record_path).name in DRAW_NAME.findall(qrng_seeds.REF.sub("", text)):
         raise SystemExit("self-test: an indexed reference claimed its whole draw")
-    return len(refusals) + 1
+    return len(refusals) + 2
 
 
 def main() -> int:

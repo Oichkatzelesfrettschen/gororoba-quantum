@@ -1,0 +1,224 @@
+{
+  "finite_symmetries": {
+    "a5_extension_failures": 0,
+    "all_a5_extensions_verified": true,
+    "all_lower_s3_automorphisms": true,
+    "classification_status": "visible subgroup, not an exhaustive component census",
+    "connected_center_domain_algebra_rank": 4,
+    "factors_commute": true,
+    "finite_generators_centralize_lie_algebra": true,
+    "lower_automorphism_failures": 0,
+    "lower_s3_base_determinants": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "lower_s3_center_extension_ranks": [
+      4,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "lower_s3_order": 6,
+    "mutation": "",
+    "nonidentity_lower_s3_outside_identity_component": true,
+    "outer_reflection_base_determinant": -1,
+    "outer_reflection_relation": true,
+    "pass": true,
+    "s3_relations": true,
+    "visible_component_cosets": 12
+  },
+  "kernel_transport": {
+    "mutation": "",
+    "pass": true,
+    "program_formula": "phi(y*x) = A(z, conjugate(z)) * phi(x)",
+    "program_formula_status": "refuted",
+    "proved_formula": "phi(y*x) = A(z, conjugate(z)) * conjugate(phi(x))",
+    "representatives_refuting_program_formula": [
+      "B9",
+      "V",
+      "VB",
+      "Vap",
+      "Vam",
+      "Np",
+      "Nm"
+    ],
+    "rows": [
+      {
+        "complex_nullity": 6,
+        "conjugate_phi_j_equals_minus_i_conjugate_phi": true,
+        "j_preserves_kernel": true,
+        "kernel_basis_vectors": 12,
+        "orbit": "B9",
+        "pass": true,
+        "phi_j_equals_i_phi": true,
+        "real_nullity": 12,
+        "transport_failures": 0,
+        "transport_with_input_conjugation": true,
+        "transport_without_input_conjugation": false
+      },
+      {
+        "complex_nullity": 6,
+        "conjugate_phi_j_equals_minus_i_conjugate_phi": true,
+        "j_preserves_kernel": true,
+        "kernel_basis_vectors": 12,
+        "orbit": "V",
+        "pass": true,
+        "phi_j_equals_i_phi": true,
+        "real_nullity": 12,
+        "transport_failures": 0,
+        "transport_with_input_conjugation": true,
+        "transport_without_input_conjugation": false
+      },
+      {
+        "complex_nullity": 6,
+        "conjugate_phi_j_equals_minus_i_conjugate_phi": true,
+        "j_preserves_kernel": true,
+        "kernel_basis_vectors": 12,
+        "orbit": "VB",
+        "pass": true,
+        "phi_j_equals_i_phi": true,
+        "real_nullity": 12,
+        "transport_failures": 0,
+        "transport_with_input_conjugation": true,
+        "transport_without_input_conjugation": false
+      },
+      {
+        "complex_nullity": 6,
+        "conjugate_phi_j_equals_minus_i_conjugate_phi": true,
+        "j_preserves_kernel": true,
+        "kernel_basis_vectors": 12,
+        "orbit": "Vap",
+        "pass": true,
+        "phi_j_equals_i_phi": true,
+        "real_nullity": 12,
+        "transport_failures": 0,
+        "transport_with_input_conjugation": true,
+        "transport_without_input_conjugation": false
+      },
+      {
+        "complex_nullity": 6,
+        "conjugate_phi_j_equals_minus_i_conjugate_phi": true,
+        "j_preserves_kernel": true,
+        "kernel_basis_vectors": 12,
+        "orbit": "Vam",
+        "pass": true,
+        "phi_j_equals_i_phi": true,
+        "real_nullity": 12,
+        "transport_failures": 0,
+        "transport_with_input_conjugation": true,
+        "transport_without_input_conjugation": false
+      },
+      {
+        "complex_nullity": 8,
+        "conjugate_phi_j_equals_minus_i_conjugate_phi": true,
+        "j_preserves_kernel": true,
+        "kernel_basis_vectors": 16,
+        "orbit": "Np",
+        "pass": true,
+        "phi_j_equals_i_phi": true,
+        "real_nullity": 16,
+        "transport_failures": 0,
+        "transport_with_input_conjugation": true,
+        "transport_without_input_conjugation": false
+      },
+      {
+        "complex_nullity": 8,
+        "conjugate_phi_j_equals_minus_i_conjugate_phi": true,
+        "j_preserves_kernel": true,
+        "kernel_basis_vectors": 16,
+        "orbit": "Nm",
+        "pass": true,
+        "phi_j_equals_i_phi": true,
+        "real_nullity": 16,
+        "transport_failures": 0,
+        "transport_with_input_conjugation": true,
+        "transport_without_input_conjugation": false
+      }
+    ]
+  },
+  "lie_algebra": {
+    "all_expected_triples_verified": true,
+    "all_solution_basis_triples_verified": true,
+    "base_projection_dimension": 16,
+    "boost_base_rank_with_projection": 17,
+    "boost_lifts": false,
+    "center_dimension": 4,
+    "constraint_nonzero_coefficients": 115440,
+    "constraint_rows": 29820,
+    "constraint_unknowns": 2048,
+    "decomposition": {
+      "base_phase_lift": 1,
+      "base_scaling": 1,
+      "compact_g2": 14,
+      "domain_scaling": 1,
+      "vertical_j_phase": 1
+    },
+    "derived_algebra_dimension": 14,
+    "dimension": 18,
+    "domain_projection_dimension": 17,
+    "expected_span_dimension": 18,
+    "expected_span_equals_solution": true,
+    "expected_triple_verification": {
+      "base_phase_lift": true,
+      "base_scaling": true,
+      "compact_g2_1": true,
+      "compact_g2_10": true,
+      "compact_g2_11": true,
+      "compact_g2_12": true,
+      "compact_g2_13": true,
+      "compact_g2_14": true,
+      "compact_g2_2": true,
+      "compact_g2_3": true,
+      "compact_g2_4": true,
+      "compact_g2_5": true,
+      "compact_g2_6": true,
+      "compact_g2_7": true,
+      "compact_g2_8": true,
+      "compact_g2_9": true,
+      "domain_scaling": true,
+      "vertical_j_phase": true
+    },
+    "mutation": "",
+    "orbit_dimensions": {
+      "B9": {
+        "cone": 15,
+        "unit_section": 14
+      },
+      "Nm": {
+        "cone": 12,
+        "unit_section": 11
+      },
+      "Np": {
+        "cone": 12,
+        "unit_section": 11
+      },
+      "V": {
+        "cone": 8,
+        "unit_section": 7
+      },
+      "VB": {
+        "cone": 12,
+        "unit_section": 11
+      },
+      "Vam": {
+        "cone": 8,
+        "unit_section": 7
+      },
+      "Vap": {
+        "cone": 8,
+        "unit_section": 7
+      }
+    },
+    "pass": true,
+    "vertical_dimension": 2
+  },
+  "pass": true,
+  "schema": "a5-kernel-symmetry-v3",
+  "script_sha256": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194"
+}
