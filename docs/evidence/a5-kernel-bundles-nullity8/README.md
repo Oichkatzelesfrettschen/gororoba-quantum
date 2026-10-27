@@ -5,7 +5,7 @@ This evidence directory executes the
 computes the connected compact `G_2 x U(1)` tangent ranks on the five complex nullity-eight orbits from the
 [regularity record](../a5-strata-regularity/README.md): `W8`, E8-bar, the isotropic orbit `Iso`, and the two branches
 `X_+` and `X_-`. The record also gives complete compact-orbit invariants and moduli spaces for all five orbits.
-Stabilizer representations, topology, transition data, and bundle classes remain open.
+Unit-section topology, transition data, and bundle classes remain open.
 
 Every calculation uses integer or rational arithmetic. [`compact-orbit-ranks-result.json`](compact-orbit-ranks-result.json)
 is the output of [`compact_orbit_ranks.py`](compact_orbit_ranks.py) `--out`, and
@@ -276,6 +276,70 @@ exact compact rank, or survival of a three-form or phase-projection mutation. Th
 canonical rows satisfy the classification. Ignoring the three-form vector misclassifies sampled `Iso` points, and
 deleting the measured phase projection misclassifies every coassociative `Iso` point.
 
+## Thirteen boundary incidences have path-dependent kernel limits
+
+[`boundary-specializations-result.json`](boundary-specializations-result.json) covers all fifteen incidences from a
+nullity-eight orbit to a nullity-twelve orbit in its committed closure table. The 33 exact paths include at least two
+approaches to one verified point of every boundary orbit. After substitution into the closure generators, a path of
+degree `e` gives polynomials of degree at most `e` times the largest generator degree. Vanishing at one more rational
+parameter than that bound proves containment of the whole curve. Each boundary point has left nullity twelve, and
+the samples at parameters one, two, and three have left nullity eight and the expected open-orbit pattern.
+
+Write the bordered skew matrix along a path as
+
+`A(t) = A_0 + t A_1 + t^2 A_2`.
+
+The nullity-twelve boundary kernel `K_0` has complex dimension six. When the restriction of `A_1` to `K_0` has rank
+two, its four-dimensional kernel is the limiting nullity-eight kernel. When the first restriction vanishes, the
+producer instead takes the kernel of the second-order effective skew form
+
+`D_2 + C_1^T B_0^-1 C_1`,
+
+where `B_0` is an invertible principal block of `A_0`, `C_1` is the first-order coupling to that block, and `D_2` is
+the restriction of `A_2` to `K_0`. Every effective form has rank two. Every resulting four-plane lies in `K_0`,
+admits the required formal first-order lift, and has an exact two-dimensional complement in `K_0`.
+
+Exact approaches to the same boundary point give different limiting four-planes in these thirteen incidences:
+
+- E8-bar to `B9`, `V`, `VB`, `V^a_+`, and `V^a_-`;
+- `Iso` to `B9` and `VB`;
+- `W8` to `B9` and `VB`;
+- `X_+` to `VB` and `V^a_+`;
+- `X_-` to `VB` and `V^a_-`.
+
+Each unequal pair is an **Observed** counterexample to a path-independent inclusion. The two remaining incidences,
+`X_+` to `B9` and `X_-` to `B9`, have equal limits on the two exact approaches. **Inferred:** the inclusion is
+canonical because the committed reduced transverse germ is a smooth one-dimensional normal line, rescaling its
+nonzero normal parameter leaves the restricted-matrix kernel unchanged, changes along the orbit arise from group
+curves tending to the identity, and the full three-dimensional constant-lift stabilizer of the boundary point
+preserves the limiting plane. Thus a nullity-eight kernel is not canonically a subspace of the adjacent
+nullity-twelve kernel in general; only these two incidences carry the canonical inclusion established here.
+
+The two middle-coordinate sheets approaching each aligned E8-bar boundary `V^a_+` and `V^a_-` have the same
+four-plane for the tested normal direction. A boundary-stabilizer unipotent move produces a four-plane whose
+intersection with that sheet limit has dimension three, so each full incidence remains path-dependent. Equality of
+the two tested sheet limits therefore supplies local attaching data but does not establish equality of the bundles
+over the two sheets.
+
+For each path, the producer also solves the connected compact stabilizer fixing every coefficient of the path and
+decomposes the limiting plane, its quotient, and the full boundary kernel. Fourteen paths preserve `SU(2)` and give
+
+`(2 V_0 + V_1) + V_1 = 2 V_0 + 2 V_1`.
+
+The other nineteen paths have trivial preserved connected stabilizer and give
+
+`4 V_0 + 2 V_0 = 6 V_0`.
+
+All represented brackets agree, every limiting plane is invariant under its path stabilizer, and every direct sum
+matches the independently decomposed boundary representation.
+
+The falsifier was a missing declared incidence, an unproved degeneration, a boundary or nearby nullity other than
+twelve or eight, a limiting or quotient dimension other than four or two, a plane escaping the boundary kernel, a
+claimed canonical plane changed by another approach, a preserved stabilizer moving the plane, a representation sum
+different from the boundary representation, or a surviving mutation. Adding a middle-coordinate term to the
+`W8`-to-`B9` path breaks closure containment. Deleting the second-order Schur correction on the
+E8-bar-to-`V^a_+` path changes the effective rank from two to six. Both mutations fail downstream checks.
+
 ## No nullity-eight orbit is compact homogeneous
 
 **Inferred.** A connected compact orbit has dimension at most fifteen. Each nullity-eight unit section has dimension
@@ -312,6 +376,10 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py \
     --check docs/evidence/a5-kernel-bundles-nullity8/stabilizer-strata-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py \
+    --check docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json
 ```
 
 The measured `--check` wall times were 7.84 seconds for the compact-rank producer and 3.18 seconds for the `W8`
@@ -319,4 +387,4 @@ moduli producer, and 1.94 seconds for the remaining-orbit producer on the 2026-1
 The sampled stabilizer and representation producer checked in 9.19 seconds. Each check builds the sorted,
 two-space-indented JSON plus its final newline in memory, compares the UTF-8 bytes with the retained record, writes
 no repository file, and exits nonzero on a difference. The exhaustive stabilizer-stratum producer checked in 8.23
-seconds.
+seconds. The boundary-specialization producer checked in 9.91 seconds.
