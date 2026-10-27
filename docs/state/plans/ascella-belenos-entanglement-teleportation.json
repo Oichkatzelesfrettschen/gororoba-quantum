@@ -225,8 +225,8 @@
     {
       "id": "recovered-chip-rehearsal",
       "state": "todo",
-      "action": "Write and retain teleportation_rehearsal/job-01 for a recovered qpu:belenos: job-00's six inputs with new ANU QRNG compilation seeds, a written case quoting the fresh platform record, and the live model gate at F* = 0.86.",
-      "acceptance": "The owner approves job-01's written case after the qpu:belenos performance record changes from its 2026-10-25 18:47 UTC state; a fresh plan admits it under the live gate; the run is collected and both analyzers record their preregistered outputs."
+      "action": "Write and retain teleportation_rehearsal/job-01 for a recovered qpu:belenos as the descriptive rule (descriptive-v2): twelve iterations in two blocks, block B mirrored, JOB_01_COMPILATION_SEEDS (Outshift 2026-10-26T204106Z and ANU 2026-10-26T230602Z, indices 0 to 5 each), 1200 samples per iteration, preregistered at its own fresh read by --prepare job-01, admitted only while the live record equals that read. The design section Recovered-chip rehearsal (job-01) and docs/archive/handoffs/belenos-recovery-watch.md hold the procedure.",
+      "acceptance": "The owner approves job-01's written case after the qpu:belenos performance record changes from its 2026-10-25 18:47 UTC state; a fresh plan admits it; the run is collected and both analyzers record their preregistered outputs: the pooled correctness with its anytime-valid lower bound, the block homogeneity test, and the two labeled comparisons."
     }
   ],
   "pause": {

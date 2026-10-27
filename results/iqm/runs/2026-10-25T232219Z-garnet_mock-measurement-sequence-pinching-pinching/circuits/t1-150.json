@@ -1,0 +1,107 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 3.141592653589793,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB6"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.141592653589793,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB9"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.141592653589793,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB13"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.141592653589793,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB15"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.141592653589793,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB18"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 3.141592653589793,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB20"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "duration": 0.00015
+   },
+   "locus": [
+    "QB6",
+    "QB9",
+    "QB13",
+    "QB15",
+    "QB18",
+    "QB20"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB6",
+    "QB9",
+    "QB13",
+    "QB15",
+    "QB18",
+    "QB20"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "key": "f"
+   },
+   "locus": [
+    "QB6",
+    "QB9",
+    "QB13",
+    "QB15",
+    "QB18",
+    "QB20"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "t1-150"
+}

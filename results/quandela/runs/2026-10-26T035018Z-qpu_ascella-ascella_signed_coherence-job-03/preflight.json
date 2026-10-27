@@ -1,0 +1,93 @@
+{
+ "admitted_statuses": [
+  "available"
+ ],
+ "availability_at_plan": {
+  "max_concurrent_jobs": 1,
+  "max_jobs_in_queue": 1,
+  "max_running_qt_jobs": 10,
+  "num_concurrent_jobs": 0,
+  "num_jobs_in_queue": 0,
+  "num_running_qt_jobs": 0
+ },
+ "body_sha256": "02411e08a42c25b4e080ed5b13830808149dac869b455c3ce303dece4f3a2f4c",
+ "body_sha256_without_process_id": "32ee44db6e710353f829bee0a19062b068f0db9135f0fb1839f0160bd0370857",
+ "case": "2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03",
+ "cases_sha256": "2fec6bf15d642a930b46c10a3d7c3f641368c18198926ea4166bb90f7fcc062e",
+ "credit_ceiling": 1.032768,
+ "estimated_credits": 1.032768,
+ "estimated_shots": 1048576,
+ "expected_seconds": 200.0,
+ "max_credits": 1.032768,
+ "max_samples": 1048576,
+ "max_shots": 2097152,
+ "payload_version_basis": "declared",
+ "per_job_credits": 1.0,
+ "perfs_at_plan": {
+  "Clock (MHz)": 13.33,
+  "Dark counts (detection/s)": [
+   311.0,
+   305.0,
+   291.0,
+   102.0,
+   116.0,
+   414.0,
+   214.0,
+   570.0,
+   2717.0,
+   3178.0,
+   4267.0,
+   587.0
+  ],
+  "HOM (%)": 87.02,
+  "g2 (%)": 2.0
+ },
+ "planned_utc": "2026-10-26T03:57:15+00:00",
+ "platform": "qpu:ascella",
+ "platform_at_plan": {
+  "bookable": true,
+  "description": "Ascella QPU",
+  "is_locked": false,
+  "is_offer_platform": true,
+  "maintenance": null,
+  "max_duration": 300,
+  "name": "qpu:ascella",
+  "price_per_shot": 1e-06,
+  "statistic": {
+   "2026-10-19": {
+    "availability": 89.93
+   },
+   "2026-10-20": {
+    "availability": 89.97
+   },
+   "2026-10-21": {
+    "availability": 89.4
+   },
+   "2026-10-22": {
+    "availability": 89.83
+   },
+   "2026-10-23": {
+    "availability": 90.81
+   },
+   "2026-10-24": {
+    "availability": 92.25
+   },
+   "2026-10-25": {
+    "availability": 92.22000000000001
+   },
+   "2026-10-26": {
+    "availability": 92.13
+   }
+  },
+  "status": "available",
+  "type": "qpu"
+ },
+ "status_at_plan": {
+  "explorer": "available",
+  "processor": "available"
+ },
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}

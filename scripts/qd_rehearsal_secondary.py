@@ -1,15 +1,16 @@
-"""Secondary and exploratory analyses of the single-chip teleportation rehearsal on qpu:belenos (job-00).
+"""Secondary and exploratory analyses of the single-chip teleportation rehearsal on qpu:belenos.
 
 docs/design/ascella-belenos-entanglement-teleportation.md, section "Secondary analyses of job-00", preregisters the
-three analyses; none of them enters the verdict of qd_teleportation_rehearsal.analyze_results.
+three analyses; none of them enters the verdict of qd_teleportation_rehearsal.analyze_results. A run's cases.json
+names its job, and the job's Request supplies the layout, the request parts and the anchor read of every analysis.
 
 - record_state compares the three-click samples a run returned with the samples it requested. Every iteration
   stops at its max_shots, so a chip near the anchor state returns its 900 samples per iteration and a chip in the
   state the held platform record describes returns almost none.
 - in_situ_fit estimates HOM, g2 and the uniform transmittance scale T from the category mix of the returned
   three-click events (correct, wrong, and the five rejection reasons of qd_teleportation_rehearsal.classify), by
-  maximum likelihood over a fixed grid of Perceval's noise model, once with the anchor read's t_out profile and once
-  with the profile of the run's platform-before read.
+  maximum likelihood over a fixed grid of Perceval's noise model, once with the job's anchor read's t_out profile and
+  once with the profile of the run's platform-before read.
 - cd_lens is exploratory. It maps each event whose clicks lie on the eight logical modes to the basis element e_i
   of a Cayley-Dickson algebra, i the click pattern with logical mode b on bit b, and asks whether the Cayley-Dickson
   sign table (cd_core.cd_sign, checked against cd_core.cd_multiply on every basis pair) separates the run from the
@@ -88,9 +89,9 @@ def record_state(manifest: Mapping[str, Any], results: Mapping[str, Any]) -> dic
 # ---------------------------------------------------------------- in-situ fit
 
 
-def category(label: str, basis: str, clicks: Sequence[int]) -> str | None:
-    """The fit category of a click vector of input `label`, or None below three clicks."""
-    outcome, pattern, raw = rehearsal.classify(clicks)
+def category(label: str, basis: str, clicks: Sequence[int], layout: Sequence[int]) -> str | None:
+    """The fit category of a click vector of input `label` under the case's layout, or None below three clicks."""
+    outcome, pattern, raw = rehearsal.classify(clicks, layout)
     if outcome == "below":
         return None
     if outcome != "accepted" or pattern is None or raw is None:
@@ -100,10 +101,10 @@ def category(label: str, basis: str, clicks: Sequence[int]) -> str | None:
 
 
 def category_probabilities(
-    item: tuple[dict[str, Any], dict[str, Any], float, float, list[list[float]], list[float]],
+    item: tuple[dict[str, Any], dict[str, Any], float, float, list[list[float]], list[float], tuple[int, ...]],
 ) -> list[list[list[float]]]:
     """[profile][T][category] probabilities of one setting at (HOM, g2), conditioned on three clicks or more."""
-    setting, circuit, hom, g2, profiles, scales = item
+    setting, circuit, hom, g2, profiles, scales, layout = item
     photons = rehearsal.photon_distribution(setting, circuit, hom, g2)
     out: list[list[list[float]]] = []
     for t_out in profiles:
@@ -112,7 +113,7 @@ def category_probabilities(
             mass = dict.fromkeys(CATEGORIES, 0.0)
             clicks = rehearsal.detected_clicks(photons, rehearsal.detection_efficiency(t_out, scale))
             for vector, probability in clicks.items():
-                name = category(setting["label"], setting["basis"], vector)
+                name = category(setting["label"], setting["basis"], vector, layout)
                 if name is not None:
                     mass[name] += probability
             total = sum(mass.values())
@@ -128,10 +129,12 @@ def category_table(
     homs: Sequence[float] = HOM_GRID,
     g2s: Sequence[float] = G2_GRID,
     scales: Sequence[float] = T_GRID,
+    *,
+    layout: Sequence[int],
 ) -> np.ndarray:
     """Model category probabilities indexed [input, HOM, g2, profile, T, category]; one process per grid cell."""
     items = [
-        (dict(setting), dict(circuit), hom, g2, [list(p) for p in profiles], list(scales))
+        (dict(setting), dict(circuit), hom, g2, [list(p) for p in profiles], list(scales), tuple(layout))
         for setting in settings
         for hom in homs
         for g2 in g2s
@@ -144,15 +147,15 @@ def category_table(
 def observed_categories(manifest: Mapping[str, Any], results: Mapping[str, Any]) -> np.ndarray:
     """Counts indexed [input, category] in manifest order; an uncounted iteration leaves its input's row zero."""
     settings = manifest["settings"]
+    layout = tuple(manifest["layout"]["chip_modes"])
     counts = np.zeros((len(settings), len(CATEGORIES)), dtype=np.int64)
     for entry in results.get("iterations") or []:
         if "counts" not in entry:
             continue
-        values = entry["iteration"]["circuit_params"]
-        index = next(k for k, s in enumerate(settings) if rehearsal.parameters_equal(values, s["circuit_params"]))
+        index = rehearsal.bound_setting(settings, entry)
         setting = settings[index]
         for key, count in entry["counts"].items():
-            name = category(setting["label"], setting["basis"], rehearsal.event_vector(key))
+            name = category(setting["label"], setting["basis"], rehearsal.event_vector(key), layout)
             if name is None:
                 raise ProtocolError(f"event {key} carries fewer than {rehearsal.MIN_CLICKS} clicks")
             counts[index, CATEGORIES.index(name)] += count
@@ -219,7 +222,8 @@ def profile_of(catalogue_path: Path) -> list[float]:
 
 
 def in_situ_fit(manifest: Mapping[str, Any], results: Mapping[str, Any], run: Path) -> dict[str, Any]:
-    """The grid fit under the anchor t_out profile (primary) and the run's platform-before profile."""
+    """The grid fit under the job's anchor t_out profile (primary) and the run's platform-before profile."""
+    request = rehearsal.JOBS[manifest["job"]].request
     counts = observed_categories(manifest, results)
     total = int(counts.sum())
     record: dict[str, Any] = {
@@ -230,7 +234,7 @@ def in_situ_fit(manifest: Mapping[str, Any], results: Mapping[str, Any], run: Pa
     if total < FIT_MIN_SAMPLES:
         record["status"] = f"{total} three-click samples, below the {FIT_MIN_SAMPLES} the fit needs"
         return record
-    profiles = {"anchor": profile_of(ROOT / rehearsal.ANCHOR_READ)}
+    profiles = {"anchor": profile_of(ROOT / request.anchor_read)}
     before = run / rehearsal.BEFORE / "catalogue.json"
     if before.is_file():
         profiles["platform_before"] = profile_of(before)
@@ -238,8 +242,8 @@ def in_situ_fit(manifest: Mapping[str, Any], results: Mapping[str, Any], run: Pa
         record["platform_before"] = (
             f"{rehearsal.BEFORE}/catalogue.json is absent (a --simulate run); anchor profile only"
         )
-    settings, circuit = rehearsal.request_parts()
-    table = category_table(settings, circuit, list(profiles.values()))
+    settings, circuit = rehearsal.request_parts(request)
+    table = category_table(settings, circuit, list(profiles.values()), layout=request.layout)
     record["status"] = "fitted"
     record["fits"] = {name: fit_from_table(counts, table[:, :, :, k]) for k, name in enumerate(profiles)}
     return record
@@ -248,21 +252,23 @@ def in_situ_fit(manifest: Mapping[str, Any], results: Mapping[str, Any], run: Pa
 # ---------------------------------------------------------------- exploratory Cayley-Dickson lens
 
 
-def basis_index(clicks: Sequence[int], dim: int) -> int | None:
+def basis_index(clicks: Sequence[int], dim: int, layout: Sequence[int]) -> int | None:
     """e_i of a click vector: logical mode b on bit b of i; None for a click off the logical modes or above dim."""
     flags = [1 if count else 0 for count in clicks]
-    if sum(flags[mode] for mode in rehearsal.LAYOUT) != sum(flags):
+    if sum(flags[mode] for mode in layout) != sum(flags):
         return None
-    index = sum(flags[mode] << bit for bit, mode in enumerate(rehearsal.LAYOUT))
+    index = sum(flags[mode] << bit for bit, mode in enumerate(layout))
     return index if index < dim else None
 
 
-def lens_vectors(distributions: Sequence[Mapping[tuple[int, ...], float]], dim: int) -> np.ndarray | None:
+def lens_vectors(
+    distributions: Sequence[Mapping[tuple[int, ...], float]], dim: int, layout: Sequence[int]
+) -> np.ndarray | None:
     """[input, dim] normalized vectors of the events that map into dim, or None when an input has none."""
     out = np.zeros((len(distributions), dim), dtype=np.float64)
     for k, distribution in enumerate(distributions):
         for vector, weight in distribution.items():
-            index = basis_index(vector, dim)
+            index = basis_index(vector, dim, layout)
             if index is not None:
                 out[k, index] += weight
         total = out[k].sum()
@@ -358,10 +364,10 @@ def model_distribution(
     return {vector: p for vector, p in clicks.items() if sum(vector) >= rehearsal.MIN_CLICKS}
 
 
-def model_distributions() -> list[dict[tuple[int, ...], float]]:
+def model_distributions(request: rehearsal.Request) -> list[dict[tuple[int, ...], float]]:
     """The anchor noise variant's distribution of each setting in manifest order, one process per setting."""
-    settings, circuit = rehearsal.request_parts()
-    variant = next(v for v in rehearsal.variants() if v.name == "anchor per-mode transmission")
+    settings, circuit = rehearsal.request_parts(request)
+    variant = next(v for v in rehearsal.variants(request) if v.name == "anchor per-mode transmission")
     return ordered_map(model_distribution, [(dict(s), dict(circuit), variant) for s in settings], min_items=1)
 
 
@@ -373,8 +379,7 @@ def observed_distributions(
     for entry in results.get("iterations") or []:
         if "counts" not in entry:
             continue
-        values = entry["iteration"]["circuit_params"]
-        index = next(k for k, s in enumerate(settings) if rehearsal.parameters_equal(values, s["circuit_params"]))
+        index = rehearsal.bound_setting(settings, entry)
         for key, count in entry["counts"].items():
             vector = rehearsal.event_vector(key)
             out[index][vector] = out[index].get(vector, 0.0) + float(count)
@@ -384,6 +389,7 @@ def observed_distributions(
 def cd_lens(
     observed: Sequence[Mapping[tuple[int, ...], float]],
     model: Callable[[], Sequence[Mapping[tuple[int, ...], float]]],
+    layout: Sequence[int],
     seed: int = CONTROL_SEED,
     count: int = CONTROLS,
     dims: Sequence[int] = CD_DIMENSIONS,
@@ -400,10 +406,10 @@ def cd_lens(
     }
     available = []
     for dim in dims:
-        x = lens_vectors(observed, dim)
+        x = lens_vectors(observed, dim, layout)
         if x is not None and reference is None:
             reference = model()
-        y = None if x is None or reference is None else lens_vectors(reference, dim)
+        y = None if x is None or reference is None else lens_vectors(reference, dim, layout)
         if x is None or y is None:
             record["dimensions"][str(dim)] = {"status": "an input has no event inside this dimension"}
             continue
@@ -423,12 +429,15 @@ def analyze(run: Path, replay: bool = False) -> int:
     three analyses within bdsc_certificate.close's tolerance."""
     manifest = json.loads((run / "cases.json").read_text(encoding="utf-8"))
     results = json.loads((run / "results.json").read_text(encoding="utf-8"))
+    request = rehearsal.JOBS[manifest["job"]].request
     record: dict[str, Any] = {
         "schema": "qd-teleportation-secondary-v1",
         "design": rehearsal.DESIGN,
         "record_state": record_state(manifest, results),
         "in_situ_fit": in_situ_fit(manifest, results, run),
-        "cd_lens": cd_lens(observed_distributions(manifest, results), model_distributions),
+        "cd_lens": cd_lens(
+            observed_distributions(manifest, results), lambda: model_distributions(request), request.layout
+        ),
     }
     if replay:
         retained = json.loads((run / OUTPUT).read_text(encoding="utf-8"))

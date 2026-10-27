@@ -452,6 +452,158 @@ Cayley-Dickson table near 1 even on model-consistent data, so the lens tests the
 structure; on the simulated anchor-state run the percentiles are 0.87, 0.40 and 0.48 for n = 6, 7 and 8. A flag
 motivates a designed probe that passes the mutation test of the algebra rules and enters no registry from this run.
 
+## Recovered-chip rehearsal (job-01)
+
+**What job-01 measures.** Job-01 runs the rehearsal's six known-input teleportation circuits again on a chip whose
+performance record has left the degraded state. Job-00 returned no three-click sample, so it says nothing about the
+circuits. Job-01 is a descriptive acquisition. It reports how often an accepted event decodes to the input's
+eigenvalue in twelve independently compiled known-input circuits, with an anytime-valid lower confidence bound that
+holds under any memory or drift of the chip. Two comparisons with classical bounds follow, each valid only under the
+assumptions it names. Job-01 keeps job-00's inputs, readout bases, eligibility rule, `min_detected_photons` 3,
+`mitigations: []`, `max_duration` 300 s and `sample_count`.
+
+**Why the record admits no applicable classical bound.** The Codex research consult
+([report](../archive/reviews/2026-10-26-belenos-job-01-redesign-consult.md)), the operator's research, and the source
+notes of the ten registered papers settle three obstructions on this service contract:
+- **The input is visible to the device.** Each input's preparation, Ralph CNOT, analyzer and receiver rotation
+  compile into one mesh per iteration, so a classical operation indexed by the circuit can prepare the expected
+  output and score 1. Iteration order, randomized or not, does not hide the input. The six-state benchmark assumes
+  one label-blind instrument, the "same quality for all bases" assumption that [Ma et al.](../notes/papers/1210.1282.md)
+  state. The martingale analyses also require each trial's input to be randomized and unknown to the null
+  ([Gill](../notes/papers/quant-ph-0301059.md), [Zhang, Glancy and Knill](../notes/papers/1108.2468.md),
+  [Bierhorst](../notes/papers/1312.2999.md), whose Appendix 1 shows a fixed-configuration block failing).
+- **Extra input copies.** Under free postselection, the six-state classical value is the largest accepted
+  photon-number sector's value, 2/3, 3/4 and 5/6 at one, two and three copies
+  ([Chiribella and Xie](../notes/papers/1301.1170.md)). An efficiency constraint restores a weighted value
+  ([Specht et al.](../notes/papers/1103.1528.md), [Gündoğan et al.](../notes/papers/1201.4149.md)). The service
+  reports no optical attempts, and the model's acceptance per attempt, about 3e-6, lies far below the source's
+  two-copy probability of 0.0056 per attempt. So a classical device may accept two-copy attempts only, and the
+  bound is at least 3/4.
+- **The attempt profile is unknown.** B at the modeled attempts (0.6937 for job-00) is a forecast. Equal returned
+  samples are compatible with attempt profiles that raise the bound, and `physical_perf` moves with the requested
+  budget ([strategy.md](../notes/quandela/strategy.md)), so no record field measures attempts.
+
+The accepted multiphoton share is 2.0 % in the source-only model and 7.8 % under the anchor read's per-mode
+transmission; the review's earlier 1.4 to 2.5 % used HOM 1.0. A `beats-classical` verdict, and C1 conformance, are
+not available for job-01.
+
+**Preregistration at its own read.** On 2026-10-26 the owner chose to preregister job-01 at its own platform read:
+the first read after the record recovers, retained as
+`results/quandela/cases/teleportation_rehearsal/job-01/platform-read/catalogue.json`, is both the case's fresh read
+and its anchor read. The layout, the model forecasts, the attempt-box bound and the sample probabilities come from
+that read, and `estimate_required_shots` under its perfs sizes `max_shots`.
+
+The submission gate `binding` refuses whenever the live performance record differs from that read, compared by the
+sha256 of its canonical perfs object. The written case quotes that read, so a changed record calls for a new
+preparation and a new approval. An unchanged record most likely describes the last published calibration rather
+than the chip ([calibration.md](../notes/quandela/calibration.md)), so the gate guards the case's identity, not the
+chip's state. It also holds at read time only: `qd_platform.submit` POSTs after the last authenticated read, and no
+provider precondition binds that read to execution. `--anchor` refuses a case anchored at its own read. The record
+watch keeps triggering on job-00's F* = 0.86; it decides when to read.
+
+**Iterations and blocks.** Twelve template iterations, two blocks of the six inputs:
+- block A runs +Z, -Z, +X, -X, +Y, -Y, and block B runs the mirrored order -Y, +Y, -X, +X, -Z, +Z, which balances
+  a linear drift across inputs without a randomizer;
+- each iteration carries its own compilation seed, so a block contrast mixes time with recompilation;
+- the analysis binds a result iteration to its setting by `circuit_params` and `compilation_seed` together.
+
+The preregistered budget is 1200 samples per iteration (14,400 in all). At job-00's modeled probabilities that
+expects about 1150 accepted outcomes at the least accepted share, and 240 s by job-00's seconds model: 10 s of
+compilation per iteration, plus samples over the 4.94 MHz clock times the modeled three-click probability, times
+1.25, rounded up to whole minutes. `--prepare` refuses a read whose expected seconds exceed the 300 s `max_duration`,
+or for which Perceval estimates no shots. It retains nothing then, because a job the service cuts off bills its
+`max_shots`. The seconds model is unverified on the chip: job-00, predicted under 100 s, ran 292 s in the degraded
+state with every iteration at its `max_shots`.
+
+**Compilation seeds.** Block A takes 8608, 30481, 4339, 55973, 12504 and 37710 for +Z, -Z, +X, -X, +Y, -Y: indices 0
+to 5 of the Cisco Outshift QRNG draw
+[`draw-2026-10-26T204106Z.json`](../evidence/outshift_qrng/draw-2026-10-26T204106Z.json). On 2026-10-26 the
+operator observed the keyed ANU service answer `success` with an empty data array and the keyless service time out
+twice; neither failure was retained as a receipt. Block B takes 5573, 39099, 45322, 55527, 43939 and 10803 for -Y,
++Y, -X, +X, -Z, +Z, in block order: indices 0 to 5 of the keyed ANU draw
+[`draw-2026-10-26T230602Z.json`](../evidence/anu_qrng/draw-2026-10-26T230602Z.json). Both appear in
+[`allocations.json`](../evidence/qrng_seeds/allocations.json) as `JOB_01_COMPILATION_SEEDS` of
+`scripts/qd_teleportation_rehearsal.py`, and none repeats a job-00 seed.
+
+**Analysis (`--analyze RUN`, schema `qd-teleportation-analysis-v2`).**
+- **Descriptive record.** For every block and input: accepted and correct counts, every rejection category,
+  returned samples, acceptance per returned sample, and the provider fields `nb_shots_used` and `physical_perf`. No
+  field is read as optical attempts. The pooled accepted-event correctness `F_hat` covers all twelve iterations.
+- **Anytime-valid lower bound.** With alpha 0.01, the planned accepted count `n*` (the model's expected accepted
+  outcomes at the read) and `lambda = sqrt(8 ln(1/alpha) / n*)` fixed before acquisition, the capital
+  `prod_j exp(lambda (X_j - mu_j) - lambda^2 / 8)` over accepted events is a nonnegative supermartingale for any
+  conditional means `mu_j`, by Hoeffding's lemma and Ville's inequality ([Howard et al.](../notes/papers/1810.08240.md),
+  Sec. 2). So `L = F_hat - lambda / 8 - ln(1/alpha) / (lambda n)` lower-bounds the average conditional correctness
+  of the n accepted events, at whatever count the run ends, under any memory or drift. At `n = n*` it equals the
+  Hoeffding radius. Rejected events leave the capital unchanged.
+- **Block homogeneity.** For each input, a chi-square test of block against outcome category (correct, wrong and the
+  five rejections, empty categories dropped) at alpha 0.01 / 6. A rejection sets the flag `blocks-differ`, which
+  vetoes both comparisons; a pass establishes neither stationarity nor independence.
+- **Model-conditional comparisons.** Each reports `L - B` and a label, `exceeds-under-assumptions` when `L > B`;
+  neither subtracts an allowance, since the data are the realized circuits' correctness:
+  - **(a) two-copy bound, B = 3/4:** one label-blind instrument; equal optical attempts per input, since unequal
+    priors raise the six-state value (to 0.6937 already for single copies at job-00's modeled profile); a source with
+    at most two input copies per attempt, Perceval's truncated model; free photon-number-dependent postselection. A
+    three-copy tail raises the bound to 5/6.
+  - **(b) attempt-box bound, B = B_box(1.1):** one label-blind instrument; single-copy inputs (photon-number-blind
+    acceptance); each input's attempts within a factor 1.1 of the modeled profile. The maximum over the box lies at
+    one of its 64 vertices, because for a fixed instrument the pooled score is a linear-fractional function of the
+    attempts, and the maximum over instruments of such functions is quasi-convex. The record also reports the
+    break-even ratio `r_BE`, the largest factor at which `L` still exceeds the box bound.
+- **Partial jobs.** An errored or canceled job keeps every count descriptive, and it reports no comparison label.
+
+**Derived at the read.** `qd_teleportation_rehearsal.py --prepare job-01` writes:
+- `noise-model.json`, holding the five noise variants, the accepted shares, `n*`, `lambda`, B_box(1.1), the model's
+  forecast of `F_hat` and the forecast of `L` at `n*`;
+- `shot-estimate.json`, holding `max_shots` at 1.25 times the largest per-iteration estimate, rounded up to 100,000;
+- the printed `REQUESTS` and `JOBS` rows, together with the forecast against each comparison.
+
+The charge is 1 + `max_shots` * 1e-06 credits.
+
+**Procedure.** Each step reads the platform and sends no job until the owner approves the written case.
+1. `"$PYTHON" scripts/qd_platform.py snapshot --out results/quandela/cases/teleportation_rehearsal/job-01/platform-read`
+   retains the read.
+2. `"$PYTHON" scripts/qd_teleportation_rehearsal.py --prepare job-01` retains the derivation and the estimate. Its
+   two printed rows go below `JOBS` in the script.
+3. `"$PYTHON" scripts/qd_teleportation_rehearsal.py job-01` writes `cases.json` and `circuit.json`, and `--check`
+   validates every registered case.
+4. `--body job-01` freezes `job-body.json`, and `--plan job-01` retains `plan.json` or `plan-refused.json`.
+5. A written-case paragraph below states:
+   - what the run measures and the claim it supports;
+   - the backend `qpu:belenos`;
+   - the samples, `max_shots`, seconds and credits.
+6. After the owner approves, `--submit RUN APPROVAL` sends job-01 once. `qd_platform.py collect RUN`,
+   `--analyze RUN` and `qd_rehearsal_secondary.py RUN` follow, and retention mirrors job-00.
+
+**Review of 2026-10-26.** An owner-requested Codex deep peer review
+([report and disposition](../archive/reviews/2026-10-26-belenos-teleportation-rehearsal-review.md)) changed the shared
+analysis before job-01's preregistration:
+- a partial job (errored or canceled) is `inconclusive` even when every input has counts, because a stop the service
+  chose may depend on the outcomes;
+- `at-or-below-classical` requires `F_hat + r` below the *smaller* of the two candidate bounds (the bound at the
+  reported shots, 2/3 at equal shots, and the bound at the modeled attempts), so neither verdict direction rests on
+  the attempt profile that favors it;
+- `--check` refuses a registered job whose case is absent.
+
+Job-00's retained verdict (`inconclusive`, no accepted event) replays unchanged. F* is the noise model's power
+forecast: it sizes the budget and never enters the verdict, which compares the data with B.
+
+The review also named the open questions below. The owner chose a redesign on 2026-10-26, and the job-01 section
+above records how each was settled:
+- **The verdict supports a narrower claim than C1.** It establishes accepted-event pooled conditional fidelity above
+  the bound; the acceptance rate and the rejection mix are reported, but no preregistered tolerance tests them.
+- **Multiphoton sectors leave the single-copy benchmark.** Threshold-accepted multiphoton events (2.0 % of accepted
+  mass at g2 1.1 % with ideal detection and 7.8 % under per-mode transmission; the 1.4 to 2.5 % first stated here
+  used HOM 1.0) carry extra input copies or failed CNOT branches, outside the single-copy Choi-cone
+  benchmark; no registered bound covers them.
+- **The modeled attempts are a forecast, not an upper bound.** The service reports no optical attempts
+  ([Perceval #798](https://github.com/Quandela/Perceval/issues/798)), so B at the modeled attempts does not
+  upper-bound the classical optimum over the attempt profiles the record allows.
+- **Independence is assumed.** The Hoeffding radius treats accepted events as independent, while each input runs as
+  one compiled block.
+- **The allowance is stated, not derived.** The 0.02 allowance is not a derived bound on compilation error or
+  three-photon distinguishability.
+
 ## Provider request
 
 The request splits by channel. Items 2 and 3 concern the open-source client's

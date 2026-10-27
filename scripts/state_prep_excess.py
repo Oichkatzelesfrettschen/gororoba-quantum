@@ -1,4 +1,4 @@
-"""Preregistered initial excitation of an n21 placement from state-prep-control raw shots.
+"""Preregistered initial excitation of an n21 or pinned-campaign placement from state-prep-control raw shots.
 
 The Sampler's implicit initialization (init_qubits) is imperfect: the
 residual excitation it leaves depends on the state the previous shot ended
@@ -137,6 +137,8 @@ from diagnostic_experiments import (  # noqa: E402
 )
 
 SCHEMA = "state-prep-excess-v2"
+# live_run.PINNED_CAMPAIGNS: campaigns pinned to named paths, whose plans this rule also bounds.
+PINNED_CAMPAIGNS = frozenset({"coherence_probes", "primorial_gap88"})
 OUTPUT_NAME = "state-prep-excess.json"
 READOUT_SCHEMA = "state-prep-readout-v1"
 READOUT_NAME = "state-prep-readout.json"
@@ -208,13 +210,14 @@ def _label(delay: float) -> str:
     return DELAY_LABELS.get(delay) or f"{delay!r}s"
 
 
-def rule_cells(delay: float) -> tuple[tuple[tuple[str, float], ...], tuple[float, ...], float]:
+def rule_cells(delay: float, single: bool = False) -> tuple[tuple[tuple[str, float], ...], tuple[float, ...], float]:
     """The control cells the rule bounds for a plan at delay, the x_history delays among them and prep0's delay.
 
-    A plan at 50 or 250 us takes the two-delay rule; a plan at any other
-    delay D takes x_history upper and prep0 lower at D alone.
+    An n21 plan at 50 or 250 us takes the two-delay rule; a plan at any other
+    delay D, and a pinned-campaign plan (single) at any delay, takes
+    x_history upper and prep0 lower at D alone.
     """
-    if delay in DELAY_LABELS:
+    if delay in DELAY_LABELS and not single:
         return REQUIRED_CELLS, (SHORT_DELAY, LONG_DELAY), LONG_DELAY
     return ((STATE_PREP_HISTORY_ARM, delay), ("prep0", delay)), (delay,), delay
 
@@ -517,12 +520,24 @@ def fetch_readout(run_dir: Path) -> Path:
 
 
 def read_placement(record_path: Path, root: Path) -> dict[str, Any]:
-    """Placed qubits, their model readout calibration, the plan's delay and the excitation it was planned with."""
+    """Placed qubits, their model readout calibration, the plan's delay and the excitation it was planned with.
+
+    The plan is an n21 family record, or a pinned-campaign record (live_run --pin-layout on PINNED_CAMPAIGNS),
+    whose placement is the union of its pinned paths and which takes the single-delay rule at any delay.
+    """
     data = record_path.read_bytes()
     record = json.loads(data)
     family = (record.get("family_configuration") or {}).get("name")
-    require(family in N21_FAMILIES, f"{record_path}: family {family} is not an n21 family")
     groups = record.get("groups") or []
+    pinned = sorted({str(group.get("group")) for group in groups}) if family is None else []
+    campaign = bool(pinned) and set(pinned) <= PINNED_CAMPAIGNS
+    if campaign:
+        require(
+            "pin_layout" in ((record.get("policy") or {}).get("design") or {}),
+            f"{record_path}: campaigns {pinned} without a pinned layout",
+        )
+        family = "+".join(pinned)
+    require(family in N21_FAMILIES or campaign, f"{record_path}: family {family} is neither n21 nor a pinned campaign")
     require(bool(groups), f"{record_path}: the record places no group")
     backends = {str(group["backend"]) for group in groups}
     require(len(backends) == 1, f"{record_path}: groups span backends {sorted(backends)}")
@@ -551,7 +566,7 @@ def read_placement(record_path: Path, root: Path) -> dict[str, Any]:
         "calibration": {q: calibration[q] for q in qubits},
         "rep_delay_seconds": _delay(contract[0]["repetition_delay_seconds"], f"{record_path} plan"),
         "planned_prep_excitation": 0.0 if planned is None else float(planned),
-    }
+    } | ({"single_delay": True} if campaign else {})
 
 
 def _round_up(value: float) -> float:
@@ -601,7 +616,9 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             cell_readouts.setdefault((arm, delay), {}).update(control["readouts"][arm])
     qubits = placement["qubits"]
     target = placement["rep_delay_seconds"]
-    required, history_delays, prep0_delay = rule_cells(target)
+    single = bool(placement.get("single_delay"))
+    plan = "plan" if single else "n21"
+    required, history_delays, prep0_delay = rule_cells(target, single)
     legacy = required == REQUIRED_CELLS
     missing = {
         f"{arm}@{_label(delay)}": [q for q in qubits if q not in cells.get((arm, delay), {})] for arm, delay in required
@@ -721,7 +738,10 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             "bound_count": bound_count,
             "alpha_per_bound": level,
             "bounds": bounds,
-            "readout": "e10 the smallest and e01 the largest of the n21 model's and every execution calibration's "
+            "readout": f"e10 the smallest and e01 the largest of the {plan} model's and every execution "
+            "calibration's reported values"
+            if single
+            else "e10 the smallest and e01 the largest of the n21 model's and every execution calibration's "
             "reported values",
             "eps": f"u / ((1 - u)(1 - delta)), u = max(0, (U - b) / (1 - e01 - b)), b = min(prep0_{label}_lower, e10), "
             "delta = max(x_error + (x_duration + measure_duration) / T1) over the x_history execution calibrations; "
@@ -730,7 +750,9 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
             "diagnostic outside the bound family",
         },
         "inputs": {
-            "n21_record": {key: placement[key] for key in placement if key not in ("calibration", "qubits")},
+            f"{plan}_record": {
+                key: placement[key] for key in placement if key not in ("calibration", "qubits", "single_delay")
+            },
             "controls": sorted(
                 (
                     {key: value for key, value in control.items() if key not in ("counts", "bits", "readouts")}
@@ -744,10 +766,10 @@ def excess(placement: dict[str, Any], controls: list[dict[str, Any]], alpha: flo
         "joint_coincidences": joint,
         "calibration_scope": {
             "control_execution_calibrations": control_calibrations,
-            "n21_noise_model_calibrations": plan_calibrations,
+            f"{plan}_noise_model_calibrations": plan_calibrations,
             "matched": set(plan_calibrations) <= set(control_calibrations),
             "scope": "eps bounds the initialization at the control's execution calibrations; applying it to the "
-            "n21 plan assumes that initialization channel unchanged until the n21 shots run",
+            f"{plan} plan assumes that initialization channel unchanged until the {plan} shots run",
         },
         "fixed_point": {
             "planned_prep_excitation": planned,
@@ -826,7 +848,7 @@ def check(root: Path) -> int:
         recomputed = json.loads(
             encode(
                 evaluate(
-                    root / inputs["n21_record"]["path"],
+                    root / (inputs.get("n21_record") or inputs["plan_record"])["path"],
                     [root / control["path"] for control in inputs["controls"]],
                     float(payload["rule"]["alpha"]),
                     root,
@@ -1009,6 +1031,34 @@ def _synthetic_placement(
                 "placed_qubit_calibration": {
                     str(q): {"prob_meas1_prep0": calibration[q][0], "prob_meas0_prep1": calibration[q][1]}
                     for q in qubits
+                },
+            }
+        ],
+    }
+    path = run / "record.json"
+    path.write_bytes(encode(record))
+    return path
+
+
+def _synthetic_campaign(root: Path, paths: list[list[int]], calibration: dict[int, tuple[float, float]]) -> Path:
+    """A pinned-campaign plan record at the 50 us delay, one replica per path."""
+    run = root / "results" / "live" / "campaign-plan"
+    run.mkdir(parents=True)
+    pin = {"backend": "fake_backend", "qubits": paths[0], "replicas": paths}
+    record = {
+        "experiment_digest": "0" * 64,
+        "policy": {"design": {"pin_layout": pin}, "rep_delay_seconds": SHORT_DELAY},
+        "execution_contract": {"backends": [{"name": "fake_backend", "repetition_delay_seconds": SHORT_DELAY}]},
+        "groups": [
+            {
+                "group": "coherence_probes",
+                "backend": "fake_backend",
+                "noise_model_calibration": SYNTHETIC_CALIBRATION,
+                "replicas": [{"physical_qubits": path} for path in paths],
+                "placed_qubit_calibration": {
+                    str(q): {"prob_meas1_prep0": calibration[q][0], "prob_meas0_prep1": calibration[q][1]}
+                    for path in paths
+                    for q in path
                 },
             }
         ],
@@ -1232,6 +1282,20 @@ def _self_test(scratch: Path) -> None:
         root / "results/live/n21-plan/record.json", sorted((root / "results/live").glob("[hp]*")), DEFAULT_ALPHA, root
     )
     require(check(root) == 1, "the single-delay output does not replay")
+    # A pinned-campaign plan takes the single-delay rule even at 50 us, over the union of its paths.
+    root = next(roots)
+    campaign = _synthetic_campaign(root, [[3, 4], [7, 9]], calibration | {9: (0.0060, 0.0110)})
+    controls = [
+        _synthetic_run(root, "h50", STATE_PREP_HISTORY_ARM, SHORT_DELAY, base["history50"], readout_base),
+        _synthetic_run(root, "p50", "prep0", SHORT_DELAY, base["prep0_250"], readout_base),
+    ]
+    pinned = evaluate(campaign, controls, DEFAULT_ALPHA, root)
+    require(pinned["rule"]["bound_count"] == 8 and "eps50" not in pinned, f"campaign rule {pinned['rule']}")
+    require(pinned["placement"]["qubits"] == [3, 4, 7, 9], f"campaign placement {pinned['placement']}")
+    require("plan_record" in pinned["inputs"] and "n21_record" not in pinned["inputs"], "campaign plan key")
+    require(pinned["inputs"]["plan_record"]["family"] == "coherence_probes", f"{pinned['inputs']['plan_record']}")
+    write(campaign, controls, DEFAULT_ALPHA, root)
+    require(check(root) == 1, "the campaign output does not replay")
     root, _ = run()
     (root / "results/live/h250" / READOUT_NAME).unlink()
     _expect_refusal(lambda: check_inputs(root), f"no {READOUT_NAME}")
@@ -1243,7 +1307,8 @@ def _self_test(scratch: Path) -> None:
         "state_prep_excess: Clopper-Pearson bounds match the binomial-tail inversion to 1e-9; 3|C| bounds share "
         "alpha over the controlled set; eps rises with the history fraction, e01 and the x flip failure, falls with "
         "the baseline, takes the readout envelope, clamps at 0; the joint diagnostic and prep0 at 50 us stay "
-        "outside the rule; a plan at another delay takes x_history and prep0 at that delay alone; the fixed point "
+        "outside the rule; a plan at another delay, and a pinned-campaign plan at any delay, takes x_history and "
+        "prep0 at that delay alone; the fixed point "
         "never lowers eps; refusals hold and the replay holds to the build tolerance"
     )
 
@@ -1258,7 +1323,11 @@ def check_inputs(root: Path) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--n21-record", type=Path, help="record.json of the n21 plan whose placement S is bounded")
+    parser.add_argument(
+        "--n21-record",
+        type=Path,
+        help="record.json of the n21 or pinned-campaign plan whose placement S is bounded",
+    )
     parser.add_argument("--control", type=Path, action="append", default=[], help="collected control run directory")
     parser.add_argument("--alpha", type=float, default=DEFAULT_ALPHA)
     parser.add_argument(

@@ -1,0 +1,17 @@
+{
+ "approval": "garnet is approved.",
+ "body_sha256": "aebd13412dc1482c584d88316cf412be35c832b85f65b80a0d4c4486653c8936",
+ "cases_sha256": "4e319aed7b4f06dacaa0fed39acda570f77046e984be5745eab3588f15b5b394",
+ "credit_before": {
+  "currentBalance": "16.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 6.348,
+ "job": "pinching",
+ "job_id": "01a17474-d704-754e-9f02-88a9801da412",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T19:06:16Z"
+}

@@ -1,0 +1,33 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB5",
+    "QB7",
+    "QB11",
+    "QB14",
+    "QB17",
+    "QB19"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "key": "f"
+   },
+   "locus": [
+    "QB5",
+    "QB7",
+    "QB11",
+    "QB14",
+    "QB17",
+    "QB19"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "ro0"
+}

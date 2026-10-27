@@ -1,0 +1,1041 @@
+{
+ "instructions": [
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m0"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m1"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m2"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m3"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m4"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m5"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m6"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m7"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m8"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m9"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m10"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m11"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m12"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m13"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m14"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB1"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB3"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB7"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "angle": 0.17453292519943295,
+    "phase": 0.0
+   },
+   "locus": [
+    "QB14"
+   ],
+   "name": "prx"
+  },
+  {
+   "args": {
+    "key": "m15"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  },
+  {
+   "args": {
+    "duration": 2e-06
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "delay"
+  },
+  {
+   "args": {
+    "key": "f"
+   },
+   "locus": [
+    "QB1",
+    "QB3",
+    "QB7",
+    "QB14"
+   ],
+   "name": "measure"
+  }
+ ],
+ "name": "settle-n16-s3p"
+}

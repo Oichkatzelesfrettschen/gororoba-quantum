@@ -1,0 +1,17 @@
+{
+ "approval": "Mock validation of the calibration-only selection and the gate-model systematic (the coordinator allowed one mock job because the case changed)",
+ "body_sha256": "60993ea3b662c44a1446fc4403fd7c0ee2e8483326a50cc2a5d70aa1485d29a6",
+ "cases_sha256": "918d7bd50b852f8e025fe94b351bb5a5927a135231d1dd53ff89ae190f88fb78",
+ "credit_before": {
+  "currentBalance": "14.50",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 5.241,
+ "job": "pinching",
+ "job_id": "01a17585-dd26-7086-9e63-655882ecc988",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-26T00:04:29Z"
+}
