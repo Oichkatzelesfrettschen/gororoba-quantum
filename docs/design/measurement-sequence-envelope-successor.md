@@ -1,8 +1,9 @@
 # Measurement-sequence envelope successor: relaxation to the ground state, crosstalk-free carryover readers
 
-Status: design v3.4, the frozen v3.3 with two corrections its implementation forced (a per-qubit shape bound at
-the fitted T, and a per-qubit settle test against the other qubits' median and MAD); it needs a
-deduplicated `collect.json` (each PUB's placed calibration stored once), built in its own pull request first. The
+Status: design v3.5, the frozen v3.3 with the corrections its implementation forced: a per-qubit shape bound at
+the fitted T and a per-qubit settle test against the other qubits' median and MAD (v3.4), and a reader statistic
+stratified by reader and divided by the squared readout contrast (v3.5). It builds on the deduplicated
+`collect.json` (each PUB's placed calibration stored once), which main carries. The
 width-32 envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`) executed as planned, billed 38 s, and
 returned no device verdict because its reset screen withheld all 32 qubits
 ([findings](../../results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md)). This successor keeps the envelope contract
@@ -101,17 +102,22 @@ power 0.9; on healthy simulated gaps it withholds a given qubit about 0.3 % of t
 Twelve new members read ground only: measure, then the terminal reset. Each runs directly after a measure-arm row
 that ends near 50/50 (four after the N = 2 rows, P1 near 0.47; four after N = 4, P1 near 0.31; four after N = 8, P1
 near 0.18). Under column-wise execution a reader's shot j follows the predecessor's shot j, so a qubit's reader P1
-after a predecessor final 1, minus after a final 0, divided by the qubit's readout contrast, is D_q, the excitation
-an |1> end state leaves at the next shot's start. Every qubit reads ground in both conditioning classes, so readout
-crosstalk cannot enter the contrast, and conditioning on the measured bit only dilutes D by the contrast the analysis
-divides out. Sized from the retained run's ro0 P1 (0.006) at 8192 shots, the twelve readers give a per-qubit standard
-error near 0.00056.
+after a predecessor final 1, minus after a final 0, estimates D_q, the excitation an |1> end state leaves at the next
+shot's start, diluted twice: the reader reads it through its own contrast c, and the predecessor's measured bit
+separates the predecessor's end states by at most c (exactly c under discrimination overlap, nearly 1 when the
+readout error is decay). Each reader gives its own conditional difference, the twelve combine by inverse variance
+(so a baseline that differs between the N = 2, 4 and 8 blocks, whose predecessors end at different P1, cannot enter
+through pooling), and the combination divided by c^2 bounds |D_q| from above. Every qubit reads ground in both
+conditioning classes, so readout crosstalk cannot enter the contrast. Sized from the retained run's ro0 P1 (0.006) at
+8192 shots, the twelve readers give a per-qubit standard error near 0.0006.
 
 Screen: a qubit stays usable when B_q = A_q * U_q lies below 0.25 * 0.0188 = 0.0047, with U_q the one-sided upper
 confidence bound of |D_q| (Bonferroni over W) and A_q the qubit's departure shift per unit excitation at the
 allocation vertex: the vertex is chosen from the signs of single-class sensitivities, then
-`scripts/msq_carryover_sensitivity.py` (gaining this vertex mode at q = 1) plants U_q at the vertex and its mirror,
-refits on the run's own counts and takes the larger absolute shift. At D near 0.0002, B reaches about 0.0029 at the
+`msq_successor_analysis.carryover_allocation` plants U_q at the vertex and its mirror, refits on the run's own counts
+at q = 1 and takes the larger absolute shift. The vertex bounds every allocation whose carryover keeps one sign
+across predecessor classes; a carryover whose sign differs between classes can reach 1.6 to 1.8 times A_q * U_q, and
+the case states the one-sign assumption, since the readers measure D only after measure-arm predecessors. At D near 0.0002, B reaches about 0.0029 at the
 retained run's median allocation coefficient (1.59) and 0.0043 at its largest (2.31). The pattern-row estimator stays
 a reported cross-check. The carryover screen replaces `msq_envelope_analysis.reset_screen` as a gate; the reset
 controls rc1 and rc0 stay as a reported diagnostic.
@@ -147,7 +153,8 @@ calibration resampled from the retained run's 30 informative qubits (T1, T2, rea
 resampled from the retained run's admitted shapes with T equal to that calibration's T1, the sx-error residual as
 before (common +0.011, independent SD 0.0105), and a true carryover D_q, and runs device counts with binomial shot
 noise, the pattern screen, the admission gate, the reader-based carryover screen (from joint predecessor and reader
-outcomes drawn shot by shot, since the reader statistic conditions on the predecessor's bit), the equilibrium bound,
+outcomes drawn shot by shot from a latent predecessor end state read through the qubit's assignment errors, since
+the reader statistic conditions on the predecessor's measured bit and the carryover follows its end state), the equilibrium bound,
 the settle veto with its random-effects fit, and the departure, count-rule and mutation verdicts. The calibrations
 come from the rehearsal dry run's live layout snapshot, not from the retained run, and shapes are drawn log-uniform
 over the admitted grid, so the null covers the qubits the case selects.
@@ -178,8 +185,9 @@ over the admitted grid, so the null covers the qubits the case selects.
   domain the null covered, and a refusal sends nothing.
 - Availability: every null rate is conditional on the order conditions passing, since a member-count simulator has no
   shot order. The order sentinels read incidental phase noise, not a marker the circuit creates; no deterministic
-  cross-shot marker exists under `init_qubits`. The case states plainly that a run whose sub-millisecond frequency
-  noise falls about five-fold below the retained level fails the sentinels and withholds every qubit.
+  cross-shot marker exists under `init_qubits`. The retained run's head segment reaches pooled z 24.7 against the
+  threshold 3, so the case states plainly that a run whose sub-millisecond frequency noise falls about eight-fold
+  below the retained level fails the sentinels and withholds every qubit.
 
 ## What the run can detect
 
@@ -194,7 +202,9 @@ states it as what the run measures.
 ## Cost, size and approval scope
 
 The equilibrium row costs about 8192 x (400 + 20 + 9) us = 3.5 s, the twelve readers about 3.3 s and the eight
-sentinel rows added in the middle and tail thirds about 3 to 4 s, so attempt 1 at width 32 expects about 49 s; the dry run's planner sets the ceilings (on the retained dry run: attempt 1 57 s,
+sentinel rows added in the middle and tail thirds about 3 to 4 s, so attempt 1 at width 32 expects about 49 s against
+the retained run's 38 s bill; the planner prices the 109-PUB job at 39.88 s against its 31.18 s for the retained
+88 PUBs (`results/live/2026-10-27T225534.897899Z`). The dry run's planner sets the ceilings (on the retained dry run: attempt 1 57 s,
 fallback 90 s, 147 s for both) and the case quotes the expected charge against attempt 1's ceiling. Storing each
 PUB's placed calibration once removes 22.1 MB of the retained run's 42.4 MB `collect.json`, so the 21 added rows fit
 under the 45 MB limit with room for the wider width tiers; the dry run measures record, collection and raw sizes
@@ -219,6 +229,9 @@ beyond 3; fewer than 8 selected qubits; either order condition failing; a carryo
 
 ## Superseded designs
 
+- v3.4 pooled the twelve readers into one conditional difference and divided it by the readout contrast once; the
+  bit conditioning dilutes D by a second contrast factor (understating D by up to 1 - c), and pooling admits a
+  composition bias of about 0.21 times a baseline that differs between reader blocks.
 - v3.3 bound the shape term over a layout-wide lifetime domain (0.0074 on the retained run, 40 % of the floor)
   and tested each qubit's settle gap against a scatter fitted with that qubit inside it, which caps two equal
   outliers among 16 below z = 3; it also sized the sparse settle arm below the per-qubit test's detectable gap.
