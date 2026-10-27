@@ -360,6 +360,13 @@
    "index": 0
   },
   {
+   "path": "tests/scripts/test_idle_readout_attribution.py",
+   "name": "BOOTSTRAP_SEED",
+   "value": 16771,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T034547Z.json",
+   "index": 0
+  },
+  {
    "path": "scripts/n21_detuning_sign.py",
    "name": "SELF_TEST_SEED",
    "value": 39927,
@@ -399,6 +406,14 @@
    "script": "gororoba_quantum/live_run.py",
    "flag": "--seed-simulator",
    "experiment": "2026-10-26T202236.647959Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T034547Z.json",
+   "index": 3,
+   "value": 31650,
+   "script": "scripts/idle_readout_attribution.py",
+   "flag": "--seed",
+   "experiment": "results/live/2026-10-27T191953.122214Z"
   },
   {
    "record": "docs/evidence/anu_qrng/draw-2026-10-27T155928Z.json",
@@ -447,6 +462,22 @@
    "script": "gororoba_quantum/live_run.py",
    "flag": "--seed-simulator",
    "experiment": "2026-10-27T160617.546354Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T191741Z.json",
+   "index": 0,
+   "value": 11449,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-27T191809.705421Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-27T191741Z.json",
+   "index": 1,
+   "value": 2156,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-27T191809.705421Z"
   }
  ],
  "reserved": [
