@@ -173,8 +173,8 @@ even-under-sign gate error the model propagates), the same-run rms floor, the in
 withholding, and both verdict directions of both the pooled test and the count rule. Null devices pass execution-time
 eligibility by construction, so that screen only removes qubits and is left out. Its seed is ANU QRNG draw
 2026-10-26T220128Z index 1; each replicate runs the scalar pipeline under its own `SeedSequence` child, and the
-replicates map through the pool. The per-qubit fits keep the replicates from a numpy batch, so the batched-estimator
-rule of AGENTS.md does not apply to this null. Its result is the one-sided 95 % Clopper-Pearson upper bound on the
+replicates map through the pool. AGENTS.md requires a null calibration batched across replicates with numpy and a
+scalar bit-identity gate; issue #579 carries that batching, which lands before the successor case's null runs. Its result is the one-sided 95 % Clopper-Pearson upper bound on the
 family-wise false-fire rate, which must lie below 0.01: 299 clean replicates reach it. An exploratory unseeded run of the
 pooled test and count rule alone fired zero times in 20000 replicates per cell at W = 8 to 44 (95% upper bound 1.5e-4);
 the preregistered replay replaces it.

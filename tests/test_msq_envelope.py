@@ -573,6 +573,26 @@ def test_envelope_fallback_setup(tmp_path: Any, job: FakeJob, remaining: float, 
             live_run.envelope_fallback_setup(FakeService(job, remaining), args)
 
 
+def test_send_admission_keeps_an_unbilled_attempt_reserved() -> None:
+    import live_run
+
+    contract = {
+        "reserve_seconds": 0.0,
+        "envelope_cap_seconds": 90.0,
+        "ceiling_seconds": {"attempt_1": 30.0, "attempt_2": 60.0},
+    }
+
+    def record(billed: float | None) -> dict[str, Any]:
+        return {"envelope": {"contract": contract, "attempt": 2, "fallback_evidence": {"billed_seconds": billed}}}
+
+    check(live_run.envelope_send_refusals(record(None), 70.0) != [], "an unbilled attempt 1 needs 90 s, not 60 s")
+    check(live_run.envelope_send_refusals(record(None), 90.0) == [], "both ceilings fit")
+    check(live_run.envelope_send_refusals(record(2.0), 70.0) == [], "a billed attempt 1 is already deducted")
+    first = {"envelope": {"contract": contract}}
+    check(live_run.envelope_send_refusals(first, 90.0) == [], "attempt 1 needs the whole cap")
+    check(live_run.envelope_send_refusals(first, 89.0) != [], "attempt 1 short of the cap")
+
+
 def test_envelope_fallback_finds_the_approval_under_another_out(tmp_path: Any) -> None:
     import argparse
     import hashlib

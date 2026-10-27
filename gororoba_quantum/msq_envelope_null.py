@@ -8,8 +8,8 @@ same-run rms floor and both directions of the pooled test and the count rule the
 replicate fires when any device verdict fires. The family-wise false-fire rate's one-sided 95 % Clopper-Pearson upper
 bound must lie below FALSE_FIRE_CEILING.
 
-The pipeline fits per qubit, so replicates are not numpy-batched: each replicate runs the scalar pipeline itself,
-and the replicates map through parallel.ordered_map with per-replicate generators spawned up front from one QRNG seed.
+Each replicate runs the scalar pipeline itself, and the replicates map through parallel.ordered_map with
+per-replicate generators spawned up front from one QRNG seed.
 """
 
 from __future__ import annotations

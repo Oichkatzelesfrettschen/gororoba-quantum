@@ -4434,6 +4434,26 @@ def envelope_batch_replan(
     raise EnvelopeReplan(f"{batch} {'; '.join(moved)}")
 
 
+def envelope_send_refusals(record: Mapping[str, Any], remaining: Any) -> list[str]:
+    """Reasons the envelope's aggregate cap refuses this attempt at its send, read from the record and live quota.
+
+    Attempt 2 carries attempt 1's billed charge, or attempt 1's ceiling while the fallback setup found it unbilled;
+    that ceiling then stays reserved against the quota, as envelope_fallback_setup reserved it.
+    """
+    contract = record["envelope"]["contract"]
+    attempt_index = int(record["envelope"].get("attempt", 1))
+    earlier = record["envelope"].get("fallback_evidence", {}).get("billed_seconds") if attempt_index == 2 else 0.0
+    return msq_envelope.attempt_admission(
+        attempt_index,
+        float(remaining) if remaining is not None else math.nan,
+        float(contract["reserve_seconds"] or 0.0),
+        float(contract["envelope_cap_seconds"]),
+        float(contract["ceiling_seconds"][f"attempt_{attempt_index}"]),
+        float(earlier if earlier is not None else contract["ceiling_seconds"]["attempt_1"]),
+        earlier_unsettled=attempt_index == 2 and earlier is None,
+    )
+
+
 def job_error_code(message: Any) -> int | None:
     """The service's numeric error code in a job's error text ("Error code 1305; ..."), or None."""
     match = re.search(r"[Ee]rror code (\d+)", str(message or ""))
@@ -5462,18 +5482,7 @@ def submit(
                 f"{name}: {batch_tag} execution ceiling {ceiling} s exceeds the {remaining} s of QPU time remaining"
             )
         if envelope:
-            contract = record["envelope"]["contract"]
-            attempt_index = int(record["envelope"].get("attempt", 1))
-            evidence = record["envelope"].get("fallback_evidence", {})
-            earlier = evidence.get("billed_seconds") if attempt_index == 2 else 0.0
-            refused = msq_envelope.attempt_admission(
-                attempt_index,
-                float(remaining) if remaining is not None else math.nan,
-                float(contract["reserve_seconds"] or 0.0),
-                float(contract["envelope_cap_seconds"]),
-                float(contract["ceiling_seconds"][f"attempt_{attempt_index}"]),
-                float(earlier if earlier is not None else contract["ceiling_seconds"]["attempt_1"]),
-            )
+            refused = envelope_send_refusals(record, remaining)
             if refused:
                 raise LiveRunError(f"{name}: {batch_tag} {'; '.join(refused)}; no circuit in this batch was submitted")
         if approved_dir is not None and plan_index == runtime_batches[0][0]:
