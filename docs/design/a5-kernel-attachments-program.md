@@ -317,3 +317,8 @@ in the Rees elimination and times out at 15 minutes with `slimgb`; it remains op
   ideal, which must change the fiber or break an arc containment. Every Singular call runs under
   `prlimit --as=4294967296` with a 300 s timeout; the whole run stays under one minute. Write the README section
   and ledger row; replace the withdrawn 2j text with the bounded `E8bar` to `VB` blocker and its measured costs.
+
+- **Memory cap for msolve (owner decision).** One msolve process may run under `prlimit --as=34359738368` (32 GiB)
+  when a modular elimination exhausts 16 GiB, with a guard that stops it when `MemAvailable` falls below 4 GiB.
+  Singular processes keep the 16 GiB single-process cap. msolve works over prime fields only: take
+  `p = 1073741789` (`p = 1 mod 4`) and `i = 140687844`, a square root of -1 modulo `p`.
