@@ -172,11 +172,9 @@ complete decision pipeline at the chosen W: binomial shot noise on every member 
 even-under-sign gate error the model propagates), the same-run rms floor, the informative filter, the reset and pattern
 withholding, and both verdict directions of both the pooled test and the count rule. Null devices pass execution-time
 eligibility by construction, so that screen only removes qubits and is left out. Its seed is ANU QRNG draw
-2026-10-26T220128Z index 1; each replicate draws its counts under its own `SeedSequence` child with the scalar
-code, and blocks of `NULL_BLOCK` replicates then analyse each kept qubit together in numpy (`evaluate_batch`), the
-blocks mapping through the pool. The batched path returns the scalar `replicate()`'s bits, so the retained width-32
-record regenerates byte for byte ([vectorized-fits.md](../runbooks/vectorized-fits.md#batched-null-of-the-measurement-sequence-envelope)).
-Its result is the one-sided 95 % Clopper-Pearson upper bound on the
+2026-10-26T220128Z index 1; each replicate runs the scalar pipeline under its own `SeedSequence` child, and the
+replicates map through the pool. AGENTS.md requires a null calibration batched across replicates with numpy and a
+scalar bit-identity gate; issue #579 carries that batching, which lands before the successor case's null runs. Its result is the one-sided 95 % Clopper-Pearson upper bound on the
 family-wise false-fire rate, which must lie below 0.01: 299 clean replicates reach it. An exploratory unseeded run of the
 pooled test and count rule alone fired zero times in 20000 replicates per cell at W = 8 to 44 (95% upper bound 1.5e-4);
 the preregistered replay replaces it.
