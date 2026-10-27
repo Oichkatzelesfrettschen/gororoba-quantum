@@ -125,6 +125,17 @@ an error common to them moves the fitted rates, and a per-qubit error outside th
   plain loss in second order and so enters delta as well.
 - **Per replica.** Each replica's kappa_P,r and its interval are reported, not decided.
 
+**Amendment: all-idle rate (secondary).** Written from the scheduler timing the completed job returned, before any
+decision was read. The service runs the 19 replicas' feed-forward branches one after another: the dose-0 feedback
+PUB is scheduled over 152 us against 23 us without feedback, and the 14,000 dt echo feedback PUB over 1,212 us
+against 79 us, about 19 times a replica's dose and branch. A replica therefore waits through the doses of the
+replicas before it, and that wait is inserted scheduler idle the replay charges at the Target's rate. The
+preregistered D2 and D3 stand as written: they scale the dose delays only. The amendment refits both with every
+idle multiplied by k (`scheduled_idle_replay.py --idle-scales`, `idle_scaled_exact_laws`), dose 0 included, since
+the hypothesis that idle decays at kappa times the Target's rate covers the waits as well; `dose-decisions.json`
+reports it under `amended_all_idle`. Where the two disagree, the reading names the disagreement rather than
+choosing one.
+
 The self-test (`n21_dose_decisions.py --self-test`) decides synthetic sweeps drawn inside and outside the fitted
 family: Target rates (unresolved), kappa 1.9 against 1.2 (refocusing), a common rate 1.5 (unresolved), an
 oscillating plain arm (scale factor above 5), a flat sweep (no idle response), a rate beyond the fitted range

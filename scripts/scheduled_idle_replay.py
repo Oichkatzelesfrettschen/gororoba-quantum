@@ -31,7 +31,9 @@ leakage and any other effect the Target's T1, T2 and gate errors do not express.
 
 With --dose-scales, every member whose ISA states a delay (the dose of a window-dose sweep) also gets its exact law
 with those delays multiplied by each factor and the scheduler idle unchanged (`dose_scaled_exact_laws`), the
-relaxation-rate family scripts/n21_dose_decisions.py fits.
+relaxation-rate family scripts/n21_dose_decisions.py fits. With --idle-scales, every member also gets its exact law
+with all of its idle, the ISA delays and the inserted scheduler idle alike, multiplied by each factor
+(`idle_scaled_exact_laws`), the family of the all-idle amendment.
 
 Usage:
     "$PYTHON" scripts/scheduled_idle_replay.py RUN_DIR --out RUN_DIR/idle-replay.json [--dose-scales K1,K2,...]
@@ -140,6 +142,7 @@ def padded_replica(
     registers: list[str],
     insert: bool = True,
     dose_scale: float = 1.0,
+    idle_scale: float = 1.0,
 ) -> tuple[QuantumCircuit, dict[int, int]]:
     """The replica's instructions on its physical qubits with the scheduled idle inserted as delays.
 
@@ -147,7 +150,8 @@ def padded_replica(
     same matching checks and no inserted delay. dose_scale multiplies the duration of every delay the ISA states
     (in a window-dose member these are exactly the dose delays) and leaves the inserted scheduler idle and the
     schedule itself unchanged, so the exact law at dose_scale k is the law with the dose's relaxation charged k
-    times over.
+    times over. idle_scale multiplies each inserted scheduler idle the same way, per qubit with the rounding carried,
+    so dose_scale = idle_scale = k charges every idle k times over.
     """
     keep = set(qubits)
     by_name = {register.name: register for register in fused.cregs}
@@ -159,6 +163,8 @@ def padded_replica(
     inserted = dict.fromkeys(qubits, 0)
     stated = dict.fromkeys(qubits, 0)
     emitted = dict.fromkeys(qubits, 0)
+    waited = dict.fromkeys(qubits, 0)
+    charged_idle = dict.fromkeys(qubits, 0)
     for instruction in fused.data:
         physical = [fused.find_bit(bit).index for bit in instruction.qubits]
         if not set(physical) <= keep:
@@ -203,7 +209,11 @@ def padded_replica(
             if cursor[q] >= 0 and t0 > cursor[q]:
                 gap = t0 - cursor[q]
                 if insert:
-                    out.append(Delay(gap, unit="dt"), [fused.qubits[q]])
+                    waited[q] += gap
+                    charged = round(idle_scale * waited[q]) - charged_idle[q]
+                    charged_idle[q] += charged
+                    if charged > 0:
+                        out.append(Delay(charged, unit="dt"), [fused.qubits[q]])
                 inserted[q] += gap
             cursor[q] = max(t1, t0)
         out.append(instruction)
@@ -297,6 +307,13 @@ def dose_scaled_replica(item: tuple[ReplicaItem, float]) -> bytes:
     """The qpy bytes of one replica's idle-padded circuit with its ISA delays scaled (padded_replica dose_scale)."""
     (fused, rows, qubits, registers), scale = item
     circuit, _ = padded_replica(fused, rows, qubits, registers, dose_scale=scale)
+    return _serialized(circuit)
+
+
+def idle_scaled_replica(item: tuple[ReplicaItem, float]) -> bytes:
+    """The qpy bytes of one replica's idle-padded circuit with every delay, ISA and scheduler idle, scaled."""
+    (fused, rows, qubits, registers), scale = item
+    circuit, _ = padded_replica(fused, rows, qubits, registers, dose_scale=scale, idle_scale=scale)
     return _serialized(circuit)
 
 
@@ -401,7 +418,9 @@ def contract_values(contracts: list[dict[str, Any]], laws: dict[str, list[list[f
     return values
 
 
-def replay(run_dir: Path, out: Path, dose_scales: tuple[float, ...] = ()) -> dict[str, Any]:
+def replay(
+    run_dir: Path, out: Path, dose_scales: tuple[float, ...] = (), idle_scales: tuple[float, ...] = ()
+) -> dict[str, Any]:
     from qiskit_ibm_runtime import QiskitRuntimeService
 
     import dynamic_density
@@ -502,6 +521,25 @@ def replay(run_dir: Path, out: Path, dose_scales: tuple[float, ...] = ()) -> dic
     )
     for (scale, member), law in zip(scaled_keys, scaled_laws, strict=True):
         dose_scaled.setdefault(repr(scale), {}).setdefault(member, []).append(law)
+    # Idle-scaled exact laws: every replica of every member with all of its idle charged at each scale.
+    idle_keys: list[tuple[float, str]] = []
+    idle_items: list[tuple[ReplicaItem, float]] = []
+    idle_noise: list[Any] = []
+    for pub in record["execution_pubs"]:
+        noise = simulators[job["pub_timing"][pub["name"]]["execution_window_start"]].options.noise_model
+        for component in pub["components"]:
+            for item in items_by_member[component["member"]]:
+                for scale in idle_scales:
+                    idle_keys.append((scale, component["member"]))
+                    idle_items.append((item, scale))
+                    idle_noise.append(noise)
+    idle_bytes = parallel.ordered_map(idle_scaled_replica, idle_items, min_items=2)
+    idle_laws = parallel.ordered_map(
+        _exact_law, [(b, n, prep_excitation) for b, n in zip(idle_bytes, idle_noise, strict=True)], min_items=2
+    )
+    idle_scaled: dict[str, dict[str, list[list[float]]]] = {}
+    for (scale, member), law in zip(idle_keys, idle_laws, strict=True):
+        idle_scaled.setdefault(repr(scale), {}).setdefault(member, []).append(law)
     gaps_to_exact = [
         float(np.max(np.abs(np.asarray(sampled) - np.asarray(law))))
         for member, laws in padded.items()
@@ -529,6 +567,7 @@ def replay(run_dir: Path, out: Path, dose_scales: tuple[float, ...] = ()) -> dic
         "idle_padded_laws": {name: [law.tolist() for law in laws] for name, laws in padded.items()},
         "exact_laws": exact,
         "dose_scaled_exact_laws": dose_scaled,
+        "idle_scaled_exact_laws": idle_scaled,
         "sampled_to_exact": {"max_gap": max(gaps_to_exact), "radius": radius, "tail": HOEFFDING_TAIL},
     }
     if contracts:
@@ -584,13 +623,19 @@ def main() -> int:
         default=(),
         help="comma-separated factors; each dosed member also gets its exact law with the ISA delays so scaled",
     )
+    parser.add_argument(
+        "--idle-scales",
+        type=lambda text: tuple(float(value) for value in text.split(",")),
+        default=(),
+        help="comma-separated factors; every member also gets its exact law with all of its idle so scaled",
+    )
     args = parser.parse_args()
     if args.local_schedule:
         for member, rows in local_schedule(args.run_dir.resolve(), args.out)["members"].items():
             for row in rows:
                 print(member, "service", json.dumps(row["service"]), "local", json.dumps(row["local"]))
         return 0
-    report = replay(args.run_dir.resolve(), args.out, args.dose_scales)
+    report = replay(args.run_dir.resolve(), args.out, args.dose_scales, args.idle_scales)
     print("sampled_to_exact", json.dumps(report["sampled_to_exact"]))
     for source, values in report.get("contracts", {}).items():
         print(source, json.dumps(values))

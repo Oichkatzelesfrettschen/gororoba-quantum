@@ -215,8 +215,10 @@ def measured_from_raw(run_dir: Path, record: Mapping[str, Any], collected_laws: 
             outcomes = n21_exact_planning.replica_outcomes(registers[pub_name], names)
             frequency = np.bincount(outcomes, minlength=len(values)) / outcomes.size
             marginal = np.asarray(law_encoding.dense(collected_laws[member][r]), dtype=float)
+            # The collector stores each law rounded to six decimals; one shot moves a frequency by 1 / shots, so
+            # half a count separates a binding error from that rounding.
             require(
-                np.allclose(frequency, marginal / marginal.sum(), rtol=0.0, atol=1e-12),
+                np.allclose(frequency, marginal / marginal.sum(), rtol=0.0, atol=0.5 / outcomes.size),
                 f"{member} replica {r}: register frequencies differ from the collected marginal",
             )
             phase_bits = len(registers[pub_name][names[0]][0])
@@ -250,16 +252,24 @@ def contract_estimates(
 
 
 def contract_models(
-    contracts: Sequence[Mapping[str, Any]], replay: Mapping[str, Any], phase_bits: Mapping[str, int]
+    contracts: Sequence[Mapping[str, Any]],
+    replay: Mapping[str, Any],
+    phase_bits: Mapping[str, int],
+    source: str = "dose_scaled_exact_laws",
 ) -> dict[str, dict[float, np.ndarray]]:
-    """{contract: {k: replica vector of herald-conditioned exact values}}; an undosed contract holds k = 1 only."""
+    """{contract: {k: replica vector of herald-conditioned exact values}}.
+
+    The dose family scales the dose delays only, so an undosed contract holds k = 1 alone; the idle family scales
+    every idle, so every contract holds every scale.
+    """
     import law_encoding
 
     base = replay["exact_laws"]["idle_padded"]
-    scaled = replay.get("dose_scaled_exact_laws", {})
+    scaled = replay.get(source, {})
+    every = source == "idle_scaled_exact_laws"
     out: dict[str, dict[float, np.ndarray]] = {}
     for contract in contracts:
-        dose = int(NAME.fullmatch(contract["name"])["dose"])  # type: ignore[index]
+        dose = int(NAME.fullmatch(contract["name"])["dose"]) or every  # type: ignore[index]
         sources = {1.0: base} | ({float(k): scaled[k] for k in scaled} if dose else {})
         if dose:
             require({float(k) for k in scaled} >= set(DOSE_SCALES), f"idle-replay.json lacks the scales {DOSE_SCALES}")
@@ -439,8 +449,15 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     df = sum(m["blocks"] - 1 for m in moments.values())
     statistic = sum((m["blocks"] - 1) * m["dispersion"] for m in moments.values())
     measured = contract_estimates(contracts, moments)
-    models = contract_models(contracts, replay, {member: m["phase_bits"] for member, m in moments.items()})
+    phases = {member: m["phase_bits"] for member, m in moments.items()}
+    models = contract_models(contracts, replay, phases)
     out = decide(measured, models)
+    # Amendment, written from the returned scheduler timing before any decision was read: the service runs the
+    # replicas' feed-forward branches one after another, so a replica waits through the doses of the replicas
+    # before it, and the hypothesis that idle decays at kappa times the Target's rate covers those waits too.
+    if replay.get("idle_scaled_exact_laws"):
+        idle_models = contract_models(contracts, replay, phases, "idle_scaled_exact_laws")
+        out["amended_all_idle"] = {key: value for key, value in decide(measured, idle_models).items() if key != "arms"}
     out["drift"] = {
         "batches": BATCHES,
         "dispersion_ratio": ratios,

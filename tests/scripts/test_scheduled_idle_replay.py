@@ -212,3 +212,21 @@ def test_scaled_split_dose_sums_to_the_rounded_scaled_total() -> None:
     delays = [int(i.operation.duration) for i in padded.data if i.operation.name == "delay"]
     if sum(delays) != round(0.25 * 1752) or len(delays) != 3:
         raise AssertionError(f"scaled segments {delays} miss round(0.25 * 1752) = 438")
+
+
+def test_idle_scale_multiplies_the_inserted_scheduler_idle_as_well() -> None:
+    qubits = QuantumRegister(1, "q")
+    bits = ClassicalRegister(1, "g0_r0_m")
+    circuit = QuantumCircuit(qubits, bits, name="pub")
+    circuit.sx(0)
+    circuit.delay(100, 0, unit="dt")
+    circuit.sx(0)
+    schedule: list[Row] = [
+        ("main", "INIT_0", "Qubit 0", 0, 100, "play"),
+        ("main", "sx_0", "Qubit 0", 100, 8, "play"),
+        ("main", "sx_0", "Qubit 0", 300, 8, "play"),
+    ]
+    padded, inserted = replay.padded_replica(circuit, schedule, [0], ["g0_r0_m"], dose_scale=2.0, idle_scale=2.0)
+    delays = [int(i.operation.duration) for i in padded.data if i.operation.name == "delay"]
+    if delays != [200, 184] or inserted != {0: 92}:
+        raise AssertionError(f"all-idle scale 2: delays {delays}, inserted {inserted}")
