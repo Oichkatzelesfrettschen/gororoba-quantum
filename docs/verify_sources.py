@@ -218,6 +218,33 @@ def capture_relative_path(rights: dict[str, Any]) -> str:
     return relative
 
 
+def verify_dmgaa_capture(entry: dict[str, Any], rights: dict[str, Any], raw_response: bytes, doi: str) -> None:
+    """Bind an archived Discussiones Mathematicae article page to the archived PDF route of the same article.
+
+    The journal pages carry no citation metadata, so the page identity is its own PDF link and its heading,
+    which prints the registered title in capitals. Its journal-wide license link names no article, so the route
+    admits external-only records alone.
+    """
+    require(
+        re.fullmatch(
+            rf"https://web\.archive\.org/web/\d{{14}}id_/https://www\.dmgaa\.uz\.zgora\.pl/publish/article\.php\?doi={doi}",
+            rights["evidence_url"],
+        )
+        is not None,
+        "captured DMGAA article evidence identity",
+    )
+    require(rights.get("decision") == "external_only", "captured DMGAA article decision")
+    try:
+        html = raw_response.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError("captured external HTML encoding") from error
+    links = re.findall(r'href="https://www\.dmgaa\.uz\.zgora\.pl/publish/pdf\.php\?doi=(\d+)"', html)
+    require(links == [doi], "captured DMGAA article PDF identity")
+    title = require_text(entry.get("title"), "captured DMGAA article registered title")
+    headings = [re.sub(r"\s+", " ", text).strip() for text in re.findall(r"<h2[^>]*>(.*?)</h2>", html, re.I | re.S)]
+    require(title.upper() in headings, "captured DMGAA article title identity")
+
+
 def verify_external_article_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any]) -> None:
     """Bind a retained external article capture to its bytes and publisher identity."""
     relative = capture_relative_path(rights)
@@ -229,6 +256,13 @@ def verify_external_article_evidence(root: Path, entry: dict[str, Any], rights: 
     require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured external retrieval timestamp")
     raw_response = source.read_bytes()
     require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured external evidence SHA-256")
+    archived = re.fullmatch(
+        r"https://web\.archive\.org/web/\d{14}id_/https://www\.dmgaa\.uz\.zgora\.pl/publish/pdf\.php\?doi=([1-9]\d*)",
+        entry["source_url"],
+    )
+    if archived is not None:
+        verify_dmgaa_capture(entry, rights, raw_response, archived[1])
+        return
     article = re.fullmatch(
         r"https://pmihes\.centre-mersenne\.org/item/(10\.1007/[A-Za-z0-9_.-]+)\.pdf", entry["source_url"]
     )
@@ -405,6 +439,165 @@ def verify_nature_evidence(root: Path, entry: dict[str, Any], article: str) -> N
     require(parser.fields["citation_pdf_url"] == [entry["source_url"]], "captured Nature PDF identity")
 
 
+def verify_inspire_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any], record_id: str) -> None:
+    """Bind a SCOAP3 version-of-record PDF to its INSPIRE record, DOI and article license."""
+    relative = f"docs/evidence/source_rights/inspire-{record_id}.json"
+    require(rights.get("evidence_path") == relative, "captured INSPIRE evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured INSPIRE evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured INSPIRE retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured INSPIRE evidence SHA-256")
+    try:
+        decoded = json.loads(raw_response)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("captured INSPIRE JSON") from error
+    captured = require_mapping(decoded, "captured INSPIRE record")
+    require(captured.get("id") == record_id, "captured INSPIRE record identity")
+    require(
+        rights["evidence_url"] == f"https://inspirehep.net/api/literature/{record_id}", "captured INSPIRE record URL"
+    )
+    metadata = require_mapping(captured.get("metadata"), "captured INSPIRE metadata")
+    require(
+        type(metadata.get("control_number")) is int and metadata["control_number"] == int(record_id),
+        "captured INSPIRE control number",
+    )
+
+    def entries(field: str) -> list[dict[str, Any]]:
+        values = metadata.get(field)
+        if not isinstance(values, list):
+            raise ValueError(f"captured INSPIRE {field}")
+        return [require_mapping(value, f"captured INSPIRE {field}") for value in values]
+
+    doi = require_text(rights.get("doi"), "captured INSPIRE registered DOI")
+    require(any(item.get("value") == doi for item in entries("dois")), "captured INSPIRE DOI identity")
+    title = require_text(rights.get("publisher_title"), "captured INSPIRE registered title")
+    require(
+        any(item.get("source") == "Springer" and item.get("title") == title for item in entries("titles")),
+        "captured INSPIRE title identity",
+    )
+    documents = [item for item in entries("documents") if item.get("url") == entry["source_url"]]
+    require(len(documents) == 1, "captured INSPIRE matching document")
+    require(documents[0].get("source") == "SCOAP3", "captured INSPIRE document source")
+    require(
+        re.fullmatch(r"[0-9a-f]{32}", str(documents[0].get("key"))) is not None
+        and entry["source_url"] == f"https://inspirehep.net/files/{documents[0]['key']}",
+        "captured INSPIRE document route",
+    )
+    # A license entry carrying a material qualifier (the arXiv preprint grant) leaves the article untouched.
+    article_licenses = [item for item in entries("license") if "material" not in item]
+    require(len(article_licenses) == 1, "captured INSPIRE article license count")
+    require(
+        article_licenses[0].get("license") == rights["license_identifier"] == "CC-BY-4.0"
+        and article_licenses[0].get("imposing") == "Springer",
+        "captured INSPIRE article license identity",
+    )
+
+
+def verify_pdg_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any], record_id: str) -> None:
+    """Bind a Review of Particle Physics chapter to the INSPIRE record of the licensed review."""
+    relative = f"docs/evidence/source_rights/inspire-{record_id}.json"
+    require(rights.get("evidence_path") == relative, "captured PDG evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured PDG evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured PDG retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured PDG evidence SHA-256")
+    require(
+        re.fullmatch(r"https://pdg\.lbl\.gov/2024/reviews/rpp2024-rev-[a-z0-9-]+\.pdf", entry["source_url"])
+        is not None,
+        "captured PDG chapter route",
+    )
+    try:
+        decoded = json.loads(raw_response)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("captured PDG JSON") from error
+    hits = require_mapping(require_mapping(decoded, "captured PDG search").get("hits"), "captured PDG hits")
+    records = hits.get("hits")
+    if not isinstance(records, list) or len(records) != 1:
+        raise ValueError("captured PDG record count")
+    record = require_mapping(records[0], "captured PDG record")
+    require(record.get("id") == record_id, "captured PDG record identity")
+    metadata = require_mapping(record.get("metadata"), "captured PDG metadata")
+    require(
+        type(metadata.get("control_number")) is int and metadata["control_number"] == int(record_id),
+        "captured PDG control number",
+    )
+
+    def entries(field: str) -> list[dict[str, Any]]:
+        values = metadata.get(field)
+        if not isinstance(values, list):
+            raise ValueError(f"captured PDG {field}")
+        return [require_mapping(value, f"captured PDG {field}") for value in values]
+
+    doi = require_text(rights.get("doi"), "captured PDG registered DOI")
+    require(
+        any(item.get("value") == doi and item.get("material") == "publication" for item in entries("dois")),
+        "captured PDG DOI identity",
+    )
+    title = require_text(rights.get("publisher_title"), "captured PDG registered title")
+    require(
+        any(item.get("source") == "APS" and item.get("title") == title for item in entries("titles")),
+        "captured PDG title identity",
+    )
+    article_licenses = [item for item in entries("license") if item.get("material") == "publication"]
+    require(len(article_licenses) == 1, "captured PDG license count")
+    require(
+        article_licenses[0].get("license") == "CC BY 4.0"
+        and rights["license_identifier"] == "CC-BY-4.0"
+        and article_licenses[0].get("url") == LICENSE_URLS["CC-BY-4.0"],
+        "captured PDG license identity",
+    )
+
+
+# OSF license identifiers resolved through https://api.osf.io/v2/licenses/ID/ (attribute "name").
+OSF_LICENSES = {"563c1cf88c5e4a3877f9e96c": "CC0-1.0"}
+
+
+def verify_osf_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any], preprint_id: str) -> None:
+    """Bind an OSF preprint file to its DOI, title and registered license."""
+    relative = f"docs/evidence/source_rights/osf-{preprint_id}.json"
+    require(rights.get("evidence_path") == relative, "captured OSF evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured OSF evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured OSF retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured OSF evidence SHA-256")
+    try:
+        decoded = json.loads(raw_response)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("captured OSF JSON") from error
+    data = require_mapping(require_mapping(decoded, "captured OSF record").get("data"), "captured OSF data")
+    require(data.get("id") == preprint_id, "captured OSF record identity")
+    links = require_mapping(data.get("links"), "captured OSF links")
+    doi = require_text(rights.get("doi"), "captured OSF registered DOI")
+    require(links.get("preprint_doi") == f"https://doi.org/{doi}", "captured OSF DOI identity")
+    attributes = require_mapping(data.get("attributes"), "captured OSF attributes")
+    title = require_text(rights.get("publisher_title"), "captured OSF registered title")
+    require(attributes.get("title") == title, "captured OSF title identity")
+    relationships = require_mapping(data.get("relationships"), "captured OSF relationships")
+
+    def related(name: str) -> str:
+        reference = require_mapping(relationships.get(name), f"captured OSF {name}")
+        target = require_mapping(reference.get("data"), f"captured OSF {name}")
+        return require_text(target.get("id"), f"captured OSF {name} identifier")
+
+    require(
+        OSF_LICENSES.get(related("license")) == rights["license_identifier"],
+        "captured OSF license identity",
+    )
+    require(entry["source_url"] == f"https://osf.io/download/{related('primary_file')}/", "captured OSF file identity")
+
+
 def verify_zenodo_evidence(root: Path, rights: dict[str, Any], licensed_file: dict[str, Any], record_id: str) -> None:
     """Bind the declared license and deposit identity to the retained endpoint response."""
     relative = f"docs/evidence/source_rights/zenodo-record-{record_id}.json"
@@ -505,11 +698,28 @@ def verify_source_rights(
         verify_dagstuhl_evidence(root, entry, document[1])
     elif published and urlsplit(rights["evidence_url"]).netloc == "www.nature.com":
         article = re.fullmatch(
-            r"https://www\.nature\.com/articles/(s415[0-9]{2}-[0-9]{3}-[0-9]{5}-[0-9x])", rights["evidence_url"]
+            r"https://www\.nature\.com/articles/(s415[0-9]{2}-[0-9]{3}-[0-9]{4,5}-[0-9x])", rights["evidence_url"]
         )
         if article is None:
             raise ValueError("published Nature evidence route")
         verify_nature_evidence(root, entry, article[1])
+    elif published and urlsplit(rights["evidence_url"]).netloc == "inspirehep.net":
+        inspire = re.fullmatch(r"https://inspirehep\.net/api/literature/([1-9]\d*)", rights["evidence_url"])
+        review = re.fullmatch(
+            r"https://inspirehep\.net/api/literature\?q=recid%3A([1-9]\d*)&fields=control_number,dois,titles,license",
+            rights["evidence_url"],
+        )
+        if inspire is not None:
+            verify_inspire_evidence(root, entry, rights, inspire[1])
+        elif review is not None:
+            verify_pdg_evidence(root, entry, rights, review[1])
+        else:
+            raise ValueError("published INSPIRE evidence route")
+    elif published and urlsplit(rights["evidence_url"]).netloc == "api.osf.io":
+        osf = re.fullmatch(r"https://api\.osf\.io/v2/preprints/([a-z0-9]{5}_v[1-9]\d*)/", rights["evidence_url"])
+        if osf is None:
+            raise ValueError("published OSF evidence route")
+        verify_osf_evidence(root, entry, rights, osf[1])
     elif published:
         record = re.fullmatch(r"https://zenodo\.org/api/records/([1-9]\d*)", rights["evidence_url"])
         if record is None:

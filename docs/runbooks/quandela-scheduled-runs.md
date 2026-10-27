@@ -144,3 +144,44 @@ retained run directory to appear there.
   running or queued job, which is the only guard between them.
 - The provider's credit balance is read nowhere before a submit; the per-job
   and total ceilings bound what a schedule can spend.
+
+## Record watch
+
+`.github/workflows/quandela-record-watch.yml` reads the `qpu:belenos` processor
+record every two hours at minute 41, in the `quandela` environment and on main
+only, and submits, stages and plans nothing. `scripts/qd_record_watch.py check`
+hashes the record's `perfs` object (sorted, compact JSON) and compares it with
+`results/quandela/watch/qpu-belenos-held.json`, which names the held state of
+2026-10-25 18:47 UTC that every later retained read reproduces. A read in the
+held state, or one missing a figure the rehearsal model reads, ends the run
+quietly, as does a changed record whose figures the model rejects with
+ValueError (state `unscorable`, such as Perceval's refusal of
+emission_probability * g2 above 0.5), which leaves the watch armed for a later
+scorable record. A changed record runs `qd_teleportation_rehearsal.model_at` on the
+same perfs object the read classified, opens the issue "qpu:belenos performance record changed" (or
+comments on an open one) with both sets of figures and the model's pooled
+fidelity against F* = 0.86, and disables the workflow. A run on the recovered
+chip stays plan step `recovered-chip-rehearsal` (job-01), with its own written
+case and the owner's approval.
+
+With `--booking results/quandela/watch/qpu-belenos-booking.json` the same run
+reads the platform's public explorer row and compares its maintenance window
+with the booked one (`qd_record_watch.booking_event`). The window ending
+(no window, another window, `maintenance_ended`, or a status other than
+`maintenance`), overrunning its listed end, or moving its end posts one comment
+each, keyed on the window and never on the read time, with the record's class
+at that read. A failed run comments once per commit with its URL. Every comment
+goes to the open issue titled "qpu:belenos performance record changed" (#556)
+and mentions the repository owner. The procedure for each comment is the
+[Belenos recovery handoff](../archive/handoffs/belenos-recovery-watch.md).
+
+Re-arm the watch for a later held state by writing a new held file from a
+retained catalogue and enabling the workflow. `first_seen_utc` takes the
+catalogue's `retrieved_utc` unless `--first-seen` names an earlier retained
+read of the same state:
+
+```sh
+"$PYTHON" scripts/qd_record_watch.py held RUN/platform-after/catalogue.json qpu:belenos \
+  --out results/quandela/watch/qpu-belenos-held.json [--first-seen UTC]
+gh api -X PUT repos/Oichkatzelesfrettschen/gororoba-quantum/actions/workflows/quandela-record-watch.yml/enable
+```

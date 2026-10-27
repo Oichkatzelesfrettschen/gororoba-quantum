@@ -1,0 +1,17 @@
+{
+ "approval": "Mock, then Garnet (Recommended)",
+ "body_sha256": "0b373e6b4544f062f9c117b6b1bf8a543db701c8a196f325d778f228d73bc19a",
+ "cases_sha256": "cd8202b4ba2a95192441b77df64782c9c4d046d60c8229ede925abf71613c835",
+ "credit_before": {
+  "currentBalance": "9.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 0.081,
+ "job": "accept",
+ "job_id": "01a17621-1452-701f-8874-ba08a138aec4",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-26T02:54:02Z"
+}

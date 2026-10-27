@@ -1,0 +1,258 @@
+{
+ "case": "measurement-sequence-pinching",
+ "jobs": [
+  {
+   "circuits": [
+    {
+     "file": "circuits/measure-n1-s0p.json",
+     "sha256": "c6f63fc2220ca851e914eb4d1e78f4755210c665b9ea46f010d53c9f9e256d79"
+    },
+    {
+     "file": "circuits/measure-n1-s1m.json",
+     "sha256": "d7b32c74f0466307239611bab904db24942f3578645f5337457695c4a489cdc8"
+    },
+    {
+     "file": "circuits/measure-n1-s2m.json",
+     "sha256": "200b088fb8f27d22f6a99f60fc99bbe62965c0d2b36e1a49c9d6e7b657a9ec42"
+    },
+    {
+     "file": "circuits/measure-n1-s3p.json",
+     "sha256": "526b74348fc6803d1a2328a5307ddd1a264499251b9056a7bbe1e5a668e19400"
+    },
+    {
+     "file": "circuits/delay-n1-s0p.json",
+     "sha256": "37ef4473dd9b40e3b18177da00117ef0575953d732f3aff7080d9db1bfaecbc9"
+    },
+    {
+     "file": "circuits/delay-n1-s1m.json",
+     "sha256": "b196d7168b0110391d733454b3ea33c6601bca431f0855a44877690f390b8c03"
+    },
+    {
+     "file": "circuits/delay-n1-s2m.json",
+     "sha256": "e190ae486121618dcf16c3d1910429f7ce68a4beb0ad44e60714f7fcd3bda341"
+    },
+    {
+     "file": "circuits/delay-n1-s3p.json",
+     "sha256": "f01d2188fe0e70f9214f2ee28cc191a0850c2d266f961d818b037facc9f53a0f"
+    },
+    {
+     "file": "circuits/measure-n2-s0p.json",
+     "sha256": "e5f4d848baea3ca93928698f380947b427c18dd12b952ee8541aa96c86655b66"
+    },
+    {
+     "file": "circuits/measure-n2-s1m.json",
+     "sha256": "9f7b9909fcfb44effe7e27f72d7e3b3908d2651fe17b209a5f738e0e40712796"
+    },
+    {
+     "file": "circuits/measure-n2-s2m.json",
+     "sha256": "1d16dfa666e625a1e5536fcb8db41767db169c3a2aff3fd4d93fafb75ecca65b"
+    },
+    {
+     "file": "circuits/measure-n2-s3p.json",
+     "sha256": "f5911be068a9cca6ee0dccea12dcdbd13eec1d8212884f1c5b48d1748fcb5e4f"
+    },
+    {
+     "file": "circuits/delay-n2-s0p.json",
+     "sha256": "45626d7bf6f3281c7a29ff8e828bfd9c5d2265110c1ff05f967bfa3fd2269bfd"
+    },
+    {
+     "file": "circuits/delay-n2-s1m.json",
+     "sha256": "8fa438c83d72728115b6ff7695695b1219f7b92bc1012cd2e62a1b757042a339"
+    },
+    {
+     "file": "circuits/delay-n2-s2m.json",
+     "sha256": "e1c9baac56224c4f70df541e71ac406b3b912be8293f313f9a52eb46d806bc29"
+    },
+    {
+     "file": "circuits/delay-n2-s3p.json",
+     "sha256": "232a42d452d4b21530a972515bd08daa571b15899948eb17fb32b3b626bdca84"
+    },
+    {
+     "file": "circuits/measure-n4-s0p.json",
+     "sha256": "90629b07441df9d83d8dba6537de2b425d9aab7d5e410fe8a103868238e13690"
+    },
+    {
+     "file": "circuits/measure-n4-s1m.json",
+     "sha256": "35a84f021d0218b25784a7127b9dd96bbababefa291d5b0bf96ddb4956d9e7cd"
+    },
+    {
+     "file": "circuits/measure-n4-s2m.json",
+     "sha256": "7002b861f5e3712b2021afb49e71736ba7db2175d513c96fa6836ca2609e99c8"
+    },
+    {
+     "file": "circuits/measure-n4-s3p.json",
+     "sha256": "d5613c771325f40f4bc053b9d8f061874bda215ff314853d77aaac305e140110"
+    },
+    {
+     "file": "circuits/delay-n4-s0p.json",
+     "sha256": "11b677e3502643686eda42c9fe924f199ad43fc4da0dfd5dae859b5f6816f790"
+    },
+    {
+     "file": "circuits/delay-n4-s1m.json",
+     "sha256": "65822352132f9a10d6a2be660e059b2a7de63a7d13000ad11a05ad3445f6231e"
+    },
+    {
+     "file": "circuits/delay-n4-s2m.json",
+     "sha256": "3d99d7ffd6385af7471ac09c53ace202e78b47f0314d3df2845b715c79d3a42c"
+    },
+    {
+     "file": "circuits/delay-n4-s3p.json",
+     "sha256": "f268fa3cc8a720f37566445f7f00726e673a410e3ec871b47ac963599b60797e"
+    },
+    {
+     "file": "circuits/measure-n8-s0p.json",
+     "sha256": "eaeb78fb38b4c3621356a2e99a4ec797b482c87a9951bbdf357a8ac530f1c7a8"
+    },
+    {
+     "file": "circuits/measure-n8-s1m.json",
+     "sha256": "30cf2db91e248d7d6c6315cd4b02e151532156ea4bee98a781ea2cffbd8ea711"
+    },
+    {
+     "file": "circuits/measure-n8-s2m.json",
+     "sha256": "ca30d47685641f8d9af5b0ab8d0dca9a354d14693c4a025f0afc8ee25732306b"
+    },
+    {
+     "file": "circuits/measure-n8-s3p.json",
+     "sha256": "5f1a1b558f18da6fa0233a083eb71307f1c9eab93e47cd29419182ff00fe8e50"
+    },
+    {
+     "file": "circuits/delay-n8-s0p.json",
+     "sha256": "22533dde5fcda1e7c8dddc03a939ade43c2d528c7a5abc95c5dc43b2831f4ad7"
+    },
+    {
+     "file": "circuits/delay-n8-s1m.json",
+     "sha256": "216762208f02a585956649720dd46217495294922e1ef5ff8c05b22310e9263f"
+    },
+    {
+     "file": "circuits/delay-n8-s2m.json",
+     "sha256": "bccd82451e69e137ad50e347d2787f546433737d891b39f3ea9a571b69b17a17"
+    },
+    {
+     "file": "circuits/delay-n8-s3p.json",
+     "sha256": "c40cea94a8f05f1fdac534bc76867c693a0013c095f4e19ce734801e1915b28b"
+    },
+    {
+     "file": "circuits/measure-n16-s0p.json",
+     "sha256": "7d91fef8bf6bd9d74fe9d57ffee1f6c018e8ab24997a2fe2dfbce40746a2af40"
+    },
+    {
+     "file": "circuits/measure-n16-s1m.json",
+     "sha256": "f5b489da803f7dcf77239ba4d6efddcf853db1336d06774f21e50e3977896c99"
+    },
+    {
+     "file": "circuits/measure-n16-s2m.json",
+     "sha256": "518103acfb8e951d6295e1587df4ea4bc7e353add91505e5dd6bb9d9aff6a013"
+    },
+    {
+     "file": "circuits/measure-n16-s3p.json",
+     "sha256": "559571d23f154740044f3c55a762fa74289a9484fa8bc95a08e0d85b1a9221cd"
+    },
+    {
+     "file": "circuits/delay-n16-s0p.json",
+     "sha256": "4017987a38d96287fea7cce4de735916eebce89ff18bd3d83480037dd5532feb"
+    },
+    {
+     "file": "circuits/delay-n16-s1m.json",
+     "sha256": "4593f4ec6691e9ba092cfa25f6df7c9db77f985e2564c19aa1e5174a7e796646"
+    },
+    {
+     "file": "circuits/delay-n16-s2m.json",
+     "sha256": "4f8a20ca8458d605046c608885310919fafc96e3d37e9d39bf696219a1a19bfc"
+    },
+    {
+     "file": "circuits/delay-n16-s3p.json",
+     "sha256": "7d427cb8417691150c9ed7e4b3367b815860ea6bfd14cf169cf942066b45e76a"
+    },
+    {
+     "file": "circuits/unitary-n16-s0p.json",
+     "sha256": "d80f5954b6fc5d3faa050507c6a550f7dbbec54aeeff015ea23d9e0f6f95b161"
+    },
+    {
+     "file": "circuits/unitary-n16-s1m.json",
+     "sha256": "e96a2fe001e841a9a50229fc934a8f0a022e0fd5705304a02253bf7ed3e4bb6f"
+    },
+    {
+     "file": "circuits/unitary-n16-s2m.json",
+     "sha256": "a542490aeff01efe9614b4cc14f9125e1e699a90b157d0707b325cd1b9cd8cdc"
+    },
+    {
+     "file": "circuits/unitary-n16-s3p.json",
+     "sha256": "95e7cab78026683654386380b99ffbcda3adb77d764b58e5d999285fb2da7af3"
+    },
+    {
+     "file": "circuits/settle-n16-s0p.json",
+     "sha256": "964ff1822157aefe6b5d58123b8044ce3aebde1d7899a2d1ed939d7f86baac86"
+    },
+    {
+     "file": "circuits/settle-n16-s1m.json",
+     "sha256": "094c97342c1cc75a7c88ef09eda334d0ec09fdc96b7cc2ed284a7cdf531d873b"
+    },
+    {
+     "file": "circuits/settle-n16-s2m.json",
+     "sha256": "b3d22e2d1cba27dc1f17cfa60648100e49578c9e509b6aba8c00927561adae69"
+    },
+    {
+     "file": "circuits/settle-n16-s3p.json",
+     "sha256": "3bbd2cd8d78b8e6360f0497e50b4e7568e439b787ca46eb7074e45b969ceccb9"
+    },
+    {
+     "file": "circuits/ro0.json",
+     "sha256": "3ac811e1a1945029256f660b504db5d983e68465fba01a34bca918bdf19255f0"
+    },
+    {
+     "file": "circuits/ro1.json",
+     "sha256": "7508504d3fe9d2257efa0654f778e8e4896f0bae1b9e14a7c7271cff2ecba179"
+    },
+    {
+     "file": "circuits/t1-004.json",
+     "sha256": "98ea37458a0ca883be3fc8742cfd04ecc68a6e479721702f87dce9f017af6c70"
+    },
+    {
+     "file": "circuits/t1-010.json",
+     "sha256": "6a62ff6f077afefe7145805c8a2c717d54f05236f5ea9b31c89afb9bba017497"
+    },
+    {
+     "file": "circuits/t1-020.json",
+     "sha256": "884b5edbfcc72010b410526587a2d3d3c8ba808bc29e3648b66c094b50db6b1e"
+    },
+    {
+     "file": "circuits/t1-040.json",
+     "sha256": "87bc03c66e293ed6c4cf670303e41d7d0d40db82edfe2093a044e07186619803"
+    },
+    {
+     "file": "circuits/t1-060.json",
+     "sha256": "1919142ea7c0dd5409e5fa76d9a0012fb67ea0945913e33eebc0dc4ad0a5eb45"
+    },
+    {
+     "file": "circuits/t1-100.json",
+     "sha256": "6a2ae647755aabd35ead1a4962d2fe37e9628737fd7f953d13fdad2ab2b60b36"
+    },
+    {
+     "file": "circuits/t1-150.json",
+     "sha256": "a6f56792380fde89d0dcd399c719496168d9cb6a0f2ed4a374c27b3ad20e40ca"
+    }
+   ],
+   "expected_seconds": 5.241,
+   "job": "pinching",
+   "max_credits": {
+    "garnet": 5.0,
+    "garnet:mock": 0.0
+   },
+   "options": {
+    "active_reset_cycles": 1,
+    "calibration_set_id": {
+     "garnet": "be070414-7624-4943-ac7e-1e2678f05684"
+    },
+    "heralding_mode": "none"
+   },
+   "shots": 3000
+  }
+ ],
+ "prediction_sha256": "39b4dbd9ba19e1d85ca22357f349a54c53f23254728e3c7fac7363557dd4c0b8",
+ "qcs": [
+  "garnet:mock",
+  "garnet"
+ ],
+ "question": "Does a Garnet mid-circuit measurement act as ideal pinching, a nonselective projective measurement in Z, on QB6, QB9, QB13, QB15, QB18, QB20, read by the Zeno build-up of N rotations of 8 pi/9 over N against the same rotations with no measurement, with a delay of the measure duration and a settled readout as controls, and with T1 and the initialization excitation measured in the job?",
+ "schema": "iqm-circuit-case-v1"
+}

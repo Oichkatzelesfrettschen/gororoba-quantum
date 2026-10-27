@@ -1,0 +1,8 @@
+{
+ "schema": "qd-record-watch-v1",
+ "platform": "qpu:belenos",
+ "maintenance_title": "Maintenance",
+ "start_time": "2026-10-26T08:30:00Z",
+ "end_time": "2026-10-29T11:30:00Z",
+ "source": "docs/evidence/quandela/live-processor-qpu-belenos-2026-10-26T12-58-09Z.json"
+}

@@ -1,0 +1,192 @@
+{
+  "schema": "work-plan-v1",
+  "id": "ascella-heater-coupling-families",
+  "kind": "investigation",
+  "summary": "Fit heater-coupling error families (neighbor crosstalk, coupler-angle error, power-dependent loss) on Ascella job-00 alone and score each on job-02's 56 served meshes of one setting, under readings fixed before any job-02 score.",
+  "sources": [
+    "docs/design/ascella-signed-coherence-conformance.md",
+    "docs/state/plans/ascella-perturbed-compilation-case.json",
+    "scripts/ascella_compilation_reading.py",
+    "scripts/ascella_physical_models.py",
+    "docs/evidence/ascella-order-coefficients/compilation-reading.json"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "The families, priors, training set and reading below are fixed in this record before any coupling family is scored on job-02. job-02's 56 per-mesh X statistics were already read by the compilation reading, so only a fit that never sees them and is scored on them is confirmatory; the joint job-00 plus job-02 fits are identification only. A nuisance screen of job-02 (execution index, its parity, lag-1 and the outside-block count against the X statistic, no mesh feature) found no association, every p above 0.19, so the reading carries no sequence term. Before this record was written, a feasibility screen sized the kernel and loss priors against job-02's served phases and its observed X spread, checking that each family at its prior scale could produce a compilation-induced spread near 0.010; that choice favors the families, so it makes a shortfall conservative. The reading ran as fixed; every family reads shortfall."
+  },
+  "scope": "Training set: job-00 alone, as in the compilation reading's R2. Test set: the 56 perturbed iterations of job-02, one distinct mesh each. Families, each fitted from the zero start: (C1) the uniform thermal_crosstalk family of scripts/ascella_physical_models.py, one coefficient on the sum of mesh.neighbours phases, with dephasing; (C2) its uniform coupler_offset family with dephasing; (C3) static per-coupler offsets, tau 0.1; (C4) static heater offsets tau 0.3 with coupler offsets tau 0.1; (C5) a crosstalk kernel of three shared coefficients, each heater's phase gaining c_d times the sum of the returned phases in [0, 2 pi) of the heaters d modes away (d = 0, 1, 2, self excluded) within two layout columns, prior N(0, 0.01^2) per coefficient; (C6) C5 with C4's offsets; (C7) power-dependent loss, the heater's mode transmitting intensity exp(-gamma phi) with one shared gamma under N(0, 0.05^2), block renormalized; (C8) C7 with C4's offsets. Assumptions stated: heater power is linear in the returned phase in [0, 2 pi) (the passive offset is absent from the returned circuit), and logical layout distance stands in for physical distance. Reading per family at alpha 0.01: the joint quadratic form of job-02's residuals in diag(v) + G C G^T, C the job-00 fit covariance; at or above 94.46 (chi-square 0.999 on 56) reads shortfall; below 77.52 (0.97) with median prediction-to-counting variance ratio at most 1 reads predicted; otherwise between the thresholds. A predicted family names the coupling candidate; a shortfall for all eight moves the question to provider applied-voltage data or a new written hardware case. The R3 form (fit on job-00 plus job-02, leave each of the 19 scored job-00 configurations out) is reported for C5 to C8 as identification and decides nothing.",
+  "owner": "ascella signed-coherence analysis",
+  "next_action": "None; the conformance plan names the owner's choice among further offline families, a provider data request and a new hardware case.",
+  "related": [
+    "ascella-signed-coherence-conformance",
+    "ascella-perturbed-compilation-case"
+  ],
+  "steps": [
+    {
+      "id": "existing-families-on-job-02",
+      "action": "Fit C1 to C4 on job-00 and score each on job-02's 56 meshes under the joint quadratic form, restricting the low-dimensional path to the X readout job-02 carries.",
+      "acceptance": "A retained record with each family's quadratic form, diagonal sum, median variance ratio and reading, replayed by a gate within the fit bounds.",
+      "state": "done",
+      "receipts": [
+        {
+          "result": "Fitted on job-00 alone and scored on job-02's 56 meshes, uniform crosstalk (937), uniform coupler offset (952), static coupler offsets (762) and heater with coupler offsets (327) all read shortfall against 94.46; core-ascella-signed-coherence-heater-coupling-replay replays the record within the fit bounds.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/heater-coupling.json",
+              "sha256": "df0a0543d8e6b215f1b31d289fc840c95cd6948bced0c499a4e5c6fa877c1857"
+            },
+            {
+              "ref": "scripts/ascella_heater_coupling.py",
+              "sha256": "c1e842da4f429b4225afd65d9ad1fb3511aba7d9f04f5d699df6ebd34d3e7c06"
+            }
+          ],
+          "observed_at": "2026-10-26T00:42:03+00:00",
+          "revision": "d5c389813f638d6e0aebfb1699ecbcc99a44f60a",
+          "scope_sha256": "3f3dc62bff5f9e12cec16cfd3fbac2994c0ebddd3021a2a0d7037f8c0506c11d"
+        }
+      ]
+    },
+    {
+      "id": "kernel-and-loss-families",
+      "action": "Implement C5 to C8 with analytic Jacobians, fit each on job-00 and score it on job-02 under the same reading; report the R3-form identification folds descriptively.",
+      "acceptance": "The same record carries C5 to C8 with their readings and fitted coefficients; a test checks each new Jacobian against central differences.",
+      "state": "done",
+      "depends_on": [
+        "existing-families-on-job-02"
+      ],
+      "receipts": [
+        {
+          "result": "The crosstalk kernel (1107), kernel with offsets (359), drive loss (785) and loss with offsets (348) read shortfall; their identification folds on job-00 plus job-02 keep the left-out X shortfall (180 to 347 on 10, median ratios 0.01 to 0.60); test_shared_basis_and_drive_loss_are_the_shifted_attenuated_mesh checks the new light and Jacobian against a hand-built mesh and central differences.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/heater-coupling.json",
+              "sha256": "df0a0543d8e6b215f1b31d289fc840c95cd6948bced0c499a4e5c6fa877c1857"
+            },
+            {
+              "ref": "scripts/ascella_physical_models.py",
+              "sha256": "d485cc7095ea0d72df0844714d14568fd8cfe8e6d3ea56b7d6b2cdd9d8ee35f5"
+            },
+            {
+              "ref": "tests/scripts/test_ascella_physical_models.py",
+              "sha256": "ce795ae659096399fd4f49e028cb169e9d0426a0945c5043b9bcbe623c644c36"
+            }
+          ],
+          "observed_at": "2026-10-26T00:42:03+00:00",
+          "revision": "d5c389813f638d6e0aebfb1699ecbcc99a44f60a",
+          "scope_sha256": "5cd1532877d56b997292b2055a1cb676482934286c5c2bc17395ee1bbe3280f2"
+        }
+      ]
+    },
+    {
+      "id": "reading-and-design-section",
+      "action": "Write the design-document section, the research-registry claim and the conformance plan's next action from the record.",
+      "acceptance": "The section states each family's reading and the confidence it moves; scripts/plan_tracker.py check and the link checker pass.",
+      "state": "done",
+      "depends_on": [
+        "kernel-and-loss-families"
+      ],
+      "receipts": [
+        {
+          "result": "The design section and claim ascella-signed-coherence-heater-coupling state every reading, the counting-free spread comparison, the pre-plan prior sizing and the gamma >= 0 reduction; the conformance plan's next action names the owner's choice of lever; plan_tracker check and the link checker pass.",
+          "evidence": [
+            {
+              "ref": "docs/design/ascella-signed-coherence-conformance.md",
+              "sha256": "88e43833f21fa5fff80e874a63ae793ea79a64fb8762ecde316d3abe5e07ac6c"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "aa468a3282e21f801ff5bf4dc1d033068682b742bd76a4699d7702d15c77be7f"
+            },
+            {
+              "ref": "docs/state/plans/ascella-signed-coherence-conformance.json",
+              "sha256": "b0e734baccebe1aa280e3c729eb8c1112575758c6fa9ab17f20bc8e1d7495b50"
+            }
+          ],
+          "observed_at": "2026-10-26T00:42:03+00:00",
+          "revision": "d5c389813f638d6e0aebfb1699ecbcc99a44f60a",
+          "scope_sha256": "33410abf939434da8bee2d778096d9725f510fa5bf0a1c26b087b011bacfd405"
+        },
+        {
+          "result": "Revalidated at 6765b115: claim ascella-signed-coherence-heater-coupling equals its d5c38981 record; research_state.json changed only through other claims and additions; plan_tracker.py check and check_markdown_links.py pass.",
+          "observed_at": "2026-10-26T03:16:45.530392+00:00",
+          "revision": "6765b11589672fd85bfe05401800a9e075667168",
+          "evidence": [
+            {
+              "ref": "docs/design/ascella-signed-coherence-conformance.md",
+              "sha256": "88e43833f21fa5fff80e874a63ae793ea79a64fb8762ecde316d3abe5e07ac6c"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "61ebc74ffdb7a6204cfb1b427949cf090bf7141c41adaa7b8973450fd57b8b9b"
+            },
+            {
+              "ref": "docs/state/plans/ascella-signed-coherence-conformance.json",
+              "sha256": "b0e734baccebe1aa280e3c729eb8c1112575758c6fa9ab17f20bc8e1d7495b50"
+            }
+          ],
+          "scope_sha256": "33410abf939434da8bee2d778096d9725f510fa5bf0a1c26b087b011bacfd405"
+        },
+        {
+          "result": "Revalidated at 2b7690d7 after merging main: research_state.json gained claims primorial-bound-residuals-joint and qd-belenos-teleportation-rehearsal-job-00 and changed only primorial-null-residuals-zz-tilt, so every claim record this plan cites keeps its bytes; core-270 research_state.py --check passes.",
+          "observed_at": "2026-10-26T03:29:52.921698+00:00",
+          "revision": "2b7690d78bde7ad11ba4d159af9e71ebbe2f5a49",
+          "evidence": [
+            {
+              "ref": "docs/design/ascella-signed-coherence-conformance.md",
+              "sha256": "88e43833f21fa5fff80e874a63ae793ea79a64fb8762ecde316d3abe5e07ac6c"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "04391f498de69b65b74540b639bd2b31b62f045bb8c3ab63292d1b20b84ace4d"
+            },
+            {
+              "ref": "docs/state/plans/ascella-signed-coherence-conformance.json",
+              "sha256": "b0e734baccebe1aa280e3c729eb8c1112575758c6fa9ab17f20bc8e1d7495b50"
+            }
+          ],
+          "scope_sha256": "33410abf939434da8bee2d778096d9725f510fa5bf0a1c26b087b011bacfd405"
+        },
+        {
+          "result": "Revalidated at 5717aefa after merging main: research_state.json added claim a5-zero-divisor-strata, appended one boundary sentence to a5-nonzero-divisor-two-dimension-gap crediting it with the global mu direction, and extended dimension32-global-topology; ascella-signed-coherence-conformance.md gained 75 lines and lost none, and its heater-coupling section keeps every family's reading; plan_tracker.py check and check_markdown_links.py pass.",
+          "observed_at": "2026-10-26T04:04:56.060818+00:00",
+          "revision": "5717aefa7dfeff4951e0f22c52fec1fb0531f248",
+          "evidence": [
+            {
+              "ref": "docs/design/ascella-signed-coherence-conformance.md",
+              "sha256": "2785947695b3b774fa2e37b33ee6891c64127fd1dafa088a1d661a90f9b023d0"
+            },
+            {
+              "ref": "docs/state/research_state.json",
+              "sha256": "74583155e98e282e6e3e4d25343d6e8e8a7036ded46ef0bf4ffb5074c2e2c9d9"
+            },
+            {
+              "ref": "docs/state/plans/ascella-signed-coherence-conformance.json",
+              "sha256": "b0e734baccebe1aa280e3c729eb8c1112575758c6fa9ab17f20bc8e1d7495b50"
+            }
+          ],
+          "scope_sha256": "33410abf939434da8bee2d778096d9725f510fa5bf0a1c26b087b011bacfd405"
+        }
+      ]
+    }
+  ],
+  "disposition": "completed",
+  "claims": [
+    "ascella-signed-coherence-heater-coupling"
+  ],
+  "resolution": "No heater-coupling family fitted on job-00 predicts job-02's 56 served meshes: uniform and kernel crosstalk, coupler offsets and drive-power loss, alone or with static offsets, all read shortfall (327 to 1107 against 94.46), so couplings over the logical layout linear in the returned phase do not carry the configuration response.",
+  "receipts": [
+    {
+      "result": "All three steps are done; the reading record and its replay gate are retained.",
+      "observed_at": "2026-10-26T00:42:13+00:00",
+      "revision": "d5c389813f638d6e0aebfb1699ecbcc99a44f60a",
+      "evidence": [
+        {
+          "ref": "docs/evidence/ascella-order-coefficients/heater-coupling.json",
+          "sha256": "df0a0543d8e6b215f1b31d289fc840c95cd6948bced0c499a4e5c6fa877c1857"
+        }
+      ],
+      "scope_sha256": "d7158282cf0f0f22b361be7cc8a5cdf3787d25c614871848ba989fd255c8c10e"
+    }
+  ]
+}

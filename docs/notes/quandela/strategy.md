@@ -1070,6 +1070,7 @@ Not yet used:
 | 2026-10-22 02:17 | ee6fc975 | qpu:belenos | bdsc_qualification tc-def-e2, repeat under the default policy with new seeds | 1.60 | 42 min queue, 92 s; f and g within 0.0033, superpositions -0.071 to +0.041 against epoch 1 |
 | 2026-10-24 09:18 | 739a5271 | qpu:ascella | ascella_signed_coherence job-00, 64 settings at 8192 samples | 1.016384 | 186 s; 27 of 27 endpoints qualify; 1.27 % of events outside the logical block, 4 to 586 per setting |
 | 2026-10-24 15:31 | 6ef8e8db | qpu:ascella | ascella_signed_coherence job-01, job-00's 64 circuits in ANU QRNG order at 16384 samples | 1.032768 | 186 s at twice the samples; 27 of 27 qualify; outside-block clicks follow execution order (lag-1 -0.65), not the setting (Spearman -0.08); X and Y analyzer residuals reproduce (r 0.97, 0.80) |
+| 2026-10-26 02:54 | 55479252 | qpu:belenos | teleportation_rehearsal job-00, six Pauli eigenstates, anchor gate while the platform record held one state | 2.2 | 292 s; 0 three-click samples in all six iterations, each reporting its max_shots 1,200,000 as nb_shots_used; verdict inconclusive, record state degraded-as-recorded |
 
 A QPU approval quotes the expected credits, the expected seconds and why a
 local Perceval simulation cannot answer the question. Job 4e208d22's quotes

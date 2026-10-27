@@ -11,7 +11,9 @@
     "docs/evidence/bdsc/provider_contract.json",
     "scripts/qd_classical_benchmark.py",
     "scripts/qd_teleportation_rehearsal.py",
-    "tests/scripts/test_qd_teleportation_rehearsal.py"
+    "tests/scripts/test_qd_teleportation_rehearsal.py",
+    "scripts/qd_rehearsal_secondary.py",
+    "tests/scripts/test_qd_rehearsal_secondary.py"
   ],
   "state": "paused",
   "reconciliation": {
@@ -194,9 +196,37 @@
     },
     {
       "id": "single-chip-rehearsal",
-      "state": "todo",
+      "state": "done",
       "action": "Acquire the single-chip teleportation rehearsal on qpu:belenos: six Pauli eigenstates, each read in its matching basis, from one 3-photon job of 6 template iterations (scripts/qd_teleportation_rehearsal.py, results/quandela/cases/teleportation_rehearsal/job-00).",
-      "acceptance": "The owner approved the section 'Single-chip rehearsal (job-00)' in writing on 2026-10-25; 'qd_teleportation_rehearsal.py --submit RUN APPROVAL' sends the job once a fresh plan admits the request and the model pooled fidelity at the live figures reaches F* = 0.86, the job is collected, and 'qd_teleportation_rehearsal.py --analyze' returns beats-classical (C1 local conformance only, no C2 or C3), at-or-below-classical, or inconclusive; the verdict is recorded without a cross-device claim."
+      "acceptance": "The owner approved the section 'Single-chip rehearsal (job-00)' on 2026-10-25 and its anchor gate on 2026-10-26 for one job-00 submission: 'qd_teleportation_rehearsal.py --submit RUN APPROVAL --anchor' sends the job with the frozen body under the anchor read's performance figures, the job is collected, 'qd_teleportation_rehearsal.py --analyze' returns beats-classical (C1 local conformance only, no C2 or C3), at-or-below-classical, or inconclusive, and 'qd_rehearsal_secondary.py RUN' records the preregistered record state, in-situ fit and exploratory Cayley-Dickson lens; the verdict is recorded without a cross-device claim, and a later run is job-01.",
+      "receipts": [
+        {
+          "result": "Job 55479252-d907-45ac-b1e1-84f19d21a131 collected: 0 of 5400 three-click samples, each iteration ended by its max_shots of 1,200,000; analyze verdict inconclusive (no accepted event), secondary record state degraded-as-recorded; recorded without a cross-device claim.",
+          "observed_at": "2026-10-26T03:00:02+00:00",
+          "revision": "af8004449a2c0c1776638035f8539c41cb3b35b0",
+          "evidence": [
+            {
+              "ref": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
+              "sha256": "c517763c77c48192551dfcb133b422d404b5bba403c3c4dd6eb2d4699ded520d"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json",
+              "sha256": "e9b27dfa955ac53bcce60fd679a14eeee2758eed41cfb765d5ef08cc7cd5967b"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/results.json",
+              "sha256": "0263dbe81e6d4aa97ded1429130fb0b984e11e8d8074fe819a57e6e960b1fe13"
+            }
+          ],
+          "scope_sha256": "a0f9df1fe43f1d1c2e03119f1eb2069ef3b3f0261f6c19fa71d5b6a75ca464ea"
+        }
+      ]
+    },
+    {
+      "id": "recovered-chip-rehearsal",
+      "state": "todo",
+      "action": "Write and retain teleportation_rehearsal/job-01 for a recovered qpu:belenos as the descriptive rule (descriptive-v2): twelve iterations in two blocks, block B mirrored, JOB_01_COMPILATION_SEEDS (Outshift 2026-10-26T204106Z and ANU 2026-10-26T230602Z, indices 0 to 5 each), 1200 samples per iteration, preregistered at its own fresh read by --prepare job-01, admitted only while the live record equals that read. The design section Recovered-chip rehearsal (job-01) and docs/archive/handoffs/belenos-recovery-watch.md hold the procedure.",
+      "acceptance": "The owner approves job-01's written case after the qpu:belenos performance record changes from its 2026-10-25 18:47 UTC state; a fresh plan admits it; the run is collected and both analyzers record their preregistered outputs: the pooled correctness with its anytime-valid lower bound, the block homogeneity test, and the two labeled comparisons."
     }
   ],
   "pause": {

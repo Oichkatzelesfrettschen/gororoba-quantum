@@ -143,6 +143,10 @@ class Index:
             held.acquisition = acquisition["id"]
         for claim in self.claims.values():
             for acquisition_id in claim["acquisitions"]:
+                if acquisition_id not in self.acquisitions:
+                    raise SystemExit(
+                        f"claim {claim['id']} cites acquisition {acquisition_id}, which the registry lacks"
+                    )
                 run_path = self.acquisitions[acquisition_id]["run"]
                 if run_path in self.runs:
                     self.runs[run_path].claims.append(claim["id"])
@@ -178,7 +182,11 @@ class Index:
         claim = self.claims.get(claim_id)
         if claim is None:
             raise SystemExit(f"no claim {claim_id} in {research_state.REGISTRY.relative_to(ROOT)}")
-        runs = [self.runs[self.acquisitions[a]["run"]].row() for a in claim["acquisitions"]]
+        paths = {a: self.acquisitions[a]["run"] for a in claim["acquisitions"]}
+        missing = [f"acquisition {a} names run {path}" for a, path in paths.items() if path not in self.runs]
+        if missing:
+            raise SystemExit(f"claim {claim_id} cites runs the tree does not hold: {'; '.join(missing)}")
+        runs = [self.runs[path].row() for path in paths.values()]
         return {
             "id": claim_id,
             "status": claim["status"],

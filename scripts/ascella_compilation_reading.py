@@ -171,6 +171,16 @@ def r2(item: tuple[dict[str, Any], dict[str, Any], dict[str, Any]]) -> dict[str,
     data = with_family_basis(perturbed, kind, order)
     covariance = np.linalg.inv(planted["hessian"])
     light, dlight = models.static_light(data, planted["offsets"], planted["free"])
+    return mesh_score(planted["family"], data, light, dlight, covariance)
+
+
+def mesh_score(
+    family: str, data: dict[str, Any], light: np.ndarray, dlight: np.ndarray, covariance: np.ndarray
+) -> dict[str, Any]:
+    """Every mesh's pooled statistic against a fit that never saw it, all residuals in one quadratic form.
+
+    The meshes share the fitted coefficients, so the residuals r carry diag(v) + G C G^T, G the statistic gradients
+    (dlight's columns are the fit's free parameters) and C the fit covariance."""
     rows = []
     gradients = []
     for k in range(len(data["keys"])):
@@ -203,7 +213,7 @@ def r2(item: tuple[dict[str, Any], dict[str, Any], dict[str, Any]]) -> dict[str,
     else:
         reading = "between the thresholds"
     return {
-        "family": planted["family"],
+        "family": family,
         "meshes": meshes,
         "quadratic_form": total,
         "diagonal_sum": diagonal,

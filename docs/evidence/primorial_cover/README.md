@@ -1,6 +1,6 @@
 # Primorial cover defects: certificates and the Kingston noise prediction
 
-Four records live here.
+Six records live here.
 
 - `certificates.json` is the output of `gororoba_quantum/primorial_cover.py
   --out`, recomputed byte for byte by gate `core-688` (about 5 s). It holds the
@@ -48,6 +48,25 @@ Four records live here.
   `core-primorial-null-residuals-replay` requires the file to equal the
   collected output, recomputes it, and requires the pulse identity, budgets
   and verdicts to match exactly and every bias to 1e-8.
+- `bound_residuals.json` is the output of
+  `scripts/primorial_bound_residuals.py`, run as Kaggle CPU kernel version 4
+  of `gororoba-primorial-bound-residuals` under `push --ci-env` and retained
+  under `results/kaggle/2026-10-25T221805Z-gororoba-primorial-bound-residuals/`,
+  whose `collect.json` binds the file's bytes. It reads `noise.json`,
+  `null_residuals.json` and the snapshot and records their sha256s. Gate
+  `core-primorial-bound-residuals-replay` requires the file to equal the
+  collected output, recomputes it, and requires every boolean, count and
+  string to match exactly and every float to 1e-8 (376 s wall and 3,326
+  CPU-s on the build host). The Kaggle record and a build-host run of the same commit agree
+  with no departure at that tolerance.
+- `probe_case.json` is the output of `scripts/primorial_probe_case.py`, run as Kaggle CPU kernel version 4
+  of `gororoba-primorial-probe-case` under `push --ci-env` with the private dataset
+  `gororoba-primorial-evidence` (noise.json, bound_residuals.json and the ibm_kingston snapshot,
+  results/kaggle/datasets/gororoba-primorial-evidence.json) attached, and retained under
+  `results/kaggle/2026-10-26T032845Z-gororoba-primorial-probe-case/`, whose `collect.json` binds the file's
+  bytes. Gate `core-primorial-probe-case-replay` requires the file to equal the collected output, recomputes
+  it, and requires every count, boolean and string to match and every float to 1e-8 (720 s wall and
+  2,244 CPU-s on the build host under load).
 
 ## Ziller Table 1 through k = 20
 
@@ -186,3 +205,103 @@ differ. ZZ enters the null-subtracted fit at second order (the residual
 grows about sixteenfold from 5 to 20 kHz), and so does tilt. The record
 covers the gap-88 cost on Heron r2 timing; crosstalk and leakage remain
 outside it.
+That verdict holds one family at a time; tilt and CZ phase jointly at their
+bounds exceed it, as [Joint coherent bounds](#joint-coherent-bounds) records.
+
+## Joint coherent bounds
+
+`bound_residuals.json` tests the gap-88 null-subtracted fit against coherent
+errors jointly and per coefficient, on the arms and paths above; the design
+reading is
+[primorial-cover-joint-coherent-bounds.md](../../design/primorial-cover-joint-coherent-bounds.md).
+A numpy statevector of the three path qubits replays the timed compiled arms
+and must reproduce every scenario of `null_residuals.json` and every
+coherent sensitivity of `noise.json` to 1e-9 before any new scenario is read
+(departure at most 1.6e-15). Each scenario reports:
+
+- `max_z`, the largest null-subtracted coefficient bias divided by that
+  coefficient's own standard deviation at the retained budget (0.0103 to
+  0.0188);
+- `shots_identify_all`, the budget rule of `primorial_cover_noise.phase_fit`
+  with the scenario's bias in place of the incoherent one, None when the bias
+  reaches 1/16.
+
+Families at the gate-error bounds: drive-axis tilt and sx/x amplitude
+error under the sx budget and under the tighter sx-and-x budget (the x
+pulse's tilt infidelity is (2/3) sin^2(beta)), the CZ conditional phase at
+acos(1 - 10 r / 3), all 8^3 qubit directions jointly with the 4 coupler
+signs, a 5^5 interior grid over tilt and CZ phase with a coordinate-ascent
+refinement, and the CZ phase replaced by its Pauli twirl with ideal frames.
+Static detuning on all three qubits (5 and 30 kHz) and static ZZ in both
+frames (2 and 20 kHz), which no gate error bounds, enter alone and in pairs
+with the bounded families, every sign pattern.
+The record adds the signal-arm-only mismatch at which max_z crosses 1, a
+coherent-fraction scan (worst of 32 sign patterns per cell), and every
+three-qubit path of the snapshot at its own bounds.
+
+| | best (45-46-47) | median (117-125-126) |
+| --- | ---: | ---: |
+| tilt alone, sx bound, max_z | 0.79 | 0.89 |
+| CZ phase alone at its bound, max_z | 0.72 | 0.77 |
+| tilt and CZ phase jointly, max_z / bias | 2.61 / 0.049 | 2.84 / 0.050 |
+| refined interior maximum, max_z | 2.62 | 2.85 |
+| shots to identify at that bias (retained) | 53,363 (2,803) | 76,596 (3,169) |
+| joint under the sx-and-x budget, max_z | 1.90 | 2.06 |
+| twirled CZ phase alone / with tilt, max_z | 0.27 / 1.07 | 0.29 / 1.20 |
+| fraction scan, tilt 0.1 of bound and CZ phase at bound, max_z | 0.84 | 0.90 |
+| fraction scan, tilt 0.2 of bound and CZ phase at bound, max_z | 0.98 | 1.04 |
+| detuning 30 kHz alone / with CZ phase 0.04 rad, max_z | 0.13 / 0.43 | 0.14 / 0.45 |
+| detuning 30 kHz with the CZ-phase / tilt bound, max_z | 1.32 / 1.59 | 1.40 / 1.75 |
+| partner-in-0 ZZ 20 kHz with the tilt / CZ-phase bound, max_z | 1.03 / 0.98 | 1.15 / 1.04 |
+| q0 detuning mismatch reaching max_z 1 (kHz) | 2.4 | 2.2 |
+
+All 226 working paths reach max_z 1 at their own bounds and 82 exceed the
+identification radius; eight paths through qubits 113, 121 and 146 (sx and x
+error 1.0) are dropped. The path sweep compiles every path, finds 9 distinct
+gate streams, and reads every path against the best path's standard
+deviations. The twirled rows idealize the twirl as ideal Pauli frames around
+the CZ, leaving the sx and x stream unchanged. An exploratory build-host run
+preceded the per-coefficient reading and every row after the joint
+families, and the detuning and ZZ pairs followed a review of the first
+retained run; the record's docstring lists the order.
+
+## Probe case
+
+`probe_case.json` designs the hardware case
+[PRIMORIAL_COHERENCE_CASE.md](../../../results/live/PRIMORIAL_COHERENCE_CASE.md) on the best and median
+paths of `noise.json`:
+
+- **Detuning mapping.** A constant-amplitude pulse under a detuning Delta equals the record's tilt
+  Delta / Omega to an infidelity of 3.6e-10 over 0 to 60 kHz, so predictions put tilt on pulses and
+  detuning on idles and CZs only.
+- **Probes.** The circuits of `gororoba_quantum/coherence_probes.py` recover injected tilt, CZ phase,
+  detuning and ZZ, every family at once, within 5.2e-5 rad of x tilt, 4.1e-5 rad of sx tilt, 4e-6 rad of
+  CZ phase, 2.6 Hz of detuning and 1.3 Hz of ZZ. Under the snapshot's noise every estimate's bias stays
+  below its standard error; the shots that resolve each decision threshold at three standard deviations
+  are 2 (CZ phase at 0.7 of its bound), at most 18 (tilt at 0.2 of its sx and x bounds), at most 60
+  (detuning of 5 kHz) and 757 (ZZ of 2 kHz, which sets the 98-circuit job at 757 shots per circuit).
+- **Twirl instances.** The client-side Sampler's boxing and samplomatic 0.21.0's `build`, sampled at 32
+  randomizations (QRNG seed 2441) and 512 (seed 50280), reproduce the ideal law to 3e-7. Independent
+  randomizations of the signal and null arms leave their coherent errors unshared: at the gate-error
+  bounds the 32-instance joint max_z is 5.4 and 6.5 against 2.6 and 2.8 untwirled, and 512 instances
+  bring it to 1.03 and 1.11. The case runs untwirled.
+- **Noise model.** The decisive scenarios under the snapshot's noise give a null-subtracted bias of 0.051
+  and 0.053 at the joint bound against 0.049 and 0.050 noise-free, the difference the incoherent floor
+  (0.0026 and 0.0033).
+
+[PRIMORIAL_COHERENCE_CASE_2.md](../../../results/live/PRIMORIAL_COHERENCE_CASE_2.md) carries the same probes and
+gap-88 circuits to 23 one-hop-separated Kingston paths per PUB at a short repetition delay, bounds the
+paths' preparation excitation with the state-prep-control family and `scripts/state_prep_excess.py`, and decides
+per path (`primorial_probe_case.py --decide-paths`, `--crosstalk`, `--falsify`); [case2/](case2/README.md)
+holds its path ranking and probe excitation check.
+- **Schedule.** The probe job runs a 25.0 ms column of 98 circuits, about 20.9 s of QPU time at 757 shots;
+  the untwirled gap-88 job of 104 circuits (gap-88, null, null, gap-88 per setting and 8 basis
+  preparations) a 26.3 ms column, 75.8 and 85.4 s at the paths' budgets.
+- **Decision rule.** The untwirled predicted max_z over 128 Sobol points of the estimates' uncertainty
+  has a 95th percentile of 0.0004 and 0.0005 at zero error (proceed), 0.069 and 0.072 at the repository's
+  measured scales (proceed) and 1.07 and 1.14 at the decision thresholds (stop).
+
+An exploratory build-host run came before the retained one and changed the design: it found the sx tilt
+cells biased by ZZ between neighbors flipping together (now run on the outer pair and the middle qubit
+separately), the twirled mode's harm, and the need for the balanced gap-88 order and the noise-model
+check, all added before the retained run.

@@ -482,6 +482,9 @@
     "core-642": [
       "results/iqm/cases/kernel-cancellation-probe/**"
     ],
+    "core-697": [
+      "results/iqm/cases/qet-compensated-ladder/**"
+    ],
     "core-644": [
       "results/iqm/cases/signed-kernel-null-retest/**"
     ],
@@ -544,15 +547,106 @@
       "docs/evidence/anu_qrng/draw-2026-10-25T182813Z.json",
       "docs/evidence/ascella-order-coefficients/compilation-reading.json"
     ],
+    "core-ascella-signed-coherence-seed-repeat-reading-replay": [
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/**",
+      "docs/evidence/anu_qrng/draw-2026-10-26T033936Z.json",
+      "docs/evidence/ascella-order-coefficients/heater-coupling.json",
+      "docs/evidence/ascella-order-coefficients/seed-repeat-reading.json"
+    ],
+    "core-ascella-signed-coherence-heater-coupling-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/ascella-order-coefficients/heater-coupling.json"
+    ],
+    "core-ascella-signed-coherence-mesh-split-replay": [
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/anu_qrng/draw-2026-10-26T012622Z.json",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json"
+    ],
+    "core-ascella-signed-coherence-mesh-decomposition-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/ascella-order-coefficients/mesh-decomposition.json"
+    ],
+    "core-ascella-signed-coherence-mesh-exploration-replay": [
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/anu_qrng/draw-2026-10-26T012622Z.json",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json",
+      "docs/evidence/ascella-order-coefficients/mesh-exploration.json"
+    ],
+    "core-ascella-signed-coherence-twelve-output-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json",
+      "docs/evidence/ascella-order-coefficients/twelve-output.json"
+    ],
+    "core-ascella-signed-coherence-source-detector-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json",
+      "docs/evidence/ascella-order-coefficients/source-detector.json"
+    ],
+    "core-ascella-signed-coherence-fixed-mesh-error-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/**",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json",
+      "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json"
+    ],
+    "core-ascella-signed-coherence-fixed-mesh-confirmation-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/**",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json",
+      "docs/evidence/ascella-order-coefficients/fixed-mesh-frozen-predictions.json",
+      "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+      "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json"
+    ],
+    "core-ascella-signed-coherence-new-mesh-offsets-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/**",
+      "docs/evidence/ascella-order-coefficients/mesh-split.json",
+      "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json"
+    ],
+    "core-ascella-signed-coherence-new-seed-sizing-replay": [
+      "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+      "docs/evidence/ascella-order-coefficients/heater-coupling.json",
+      "docs/evidence/ascella-order-coefficients/new-seed-sizing.json"
+    ],
+    "core-ascella-signed-coherence-new-seed-score-replay": [
+      "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/**",
+      "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/**",
+      "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/**",
+      "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04/**",
+      "results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88/**",
+      "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json",
+      "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+      "docs/evidence/ascella-order-coefficients/new-seed-score.json"
+    ],
     "core-primorial-null-residuals-replay": [
       "docs/evidence/calibration/**",
       "docs/evidence/primorial_cover/**",
       "results/kaggle/2026-10-25T185707Z-gororoba-primorial-null-residuals/**"
     ],
+    "core-primorial-bound-residuals-replay": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/primorial_cover/**",
+      "results/kaggle/2026-10-25T221805Z-gororoba-primorial-bound-residuals/**"
+    ],
     "core-692": [
       "docs/evidence/stiefel-pfaffian-higher/**"
     ],
-    "core-695": [
+    "core-primorial-probe-case-replay": [
+      "docs/evidence/calibration/**",
+      "docs/evidence/primorial_cover/**",
+      "results/kaggle/2026-10-26T032845Z-gororoba-primorial-probe-case/**"
+    ],
+    "core-694": [
+      "docs/evidence/a5-zero-divisor-strata/**"
+    ],
+    "core-local-idle-falsifier-full": [
       "docs/evidence/local_idle_padding/**",
       "docs/evidence/calibration/history/**",
       "results/live/2026-10-12T055624.091217Z/**",

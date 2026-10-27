@@ -2,11 +2,32 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-signed-coherence-new-seeds-job-04",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04",
+      "family": "photonic signed-coherence new-seed meshes",
+      "question": "Do heater and coupler offsets frozen from jobs 00, 02 and 03 predict the analyzer statistic of 70 meshes no fit has seen, served by theta2-x-arm0 at fresh QRNG compilation seeds beside 10 seed-0 anchors?"
+    },
+    {
+      "id": "qd-ascella-signed-coherence-new-seeds-job-05",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88",
+      "family": "photonic signed-coherence new-seed meshes",
+      "question": "Do the same frozen offsets predict 77 further unseen meshes in the 88-iteration variant that job-04's duration admitted under the frozen rule?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-repeat",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-24T153028Z-qpu_ascella-ascella_signed_coherence-job-01",
       "family": "photonic signed-coherence permuted repeat",
       "question": "Do job-00's outside-block clicks and analyzer residuals follow the setting, the execution order or the sample budget when the same 64 circuits run in a QRNG-drawn order at twice the samples?"
+    },
+    {
+      "id": "qd-ascella-signed-coherence-seed-repeat",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03",
+      "family": "photonic signed-coherence seed repeat",
+      "question": "Does each served mesh of job-02 return its analyzer statistic again when job-02's 56 compilation seeds and 8 seed-0 anchors rerun in a QRNG-drawn order at twice the samples after a platform calibration?"
     },
     {
       "id": "qd-ascella-signed-coherence-compilations",
@@ -1892,6 +1913,139 @@
       "question": "Does Garnet schedule a circuit job's gates as soon or as late as possible, and what over-rotation does each qubit's prx carry when fitted with its own readout?"
     },
     {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 54-circuit measurement-sequence case, whose leakage circuits read only measure_012? It fails validation: circuit 45 contains no measurements."
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-50",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 50-circuit measurement-sequence case (cases.json a1ab2596), return every key in the documented format, and compile to the schedule the case predicts?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-57",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the hardened 57-circuit measurement-sequence case (cases.json 84fd16f8), with pre-readout delays and the in-job T1 series, and compile it to the predicted schedule?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-57-qpu-window",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T203241Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit case rebuilt at the QPU-measured 1.096 us window (cases.json 2a49b954), and does analyze --mock keep the planned window when the mock's own compiler (1.772 us window) puts the schedule ratio at 1.304?"
+    },
+    {
+      "id": "iqm-garnet-qpu-window-probe-unitary",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does Garnet's compiler estimate per shot for the N = 16 unitary-arm circuit of the pinching case on QB5, QB7, QB11, QB14, QB17 and QB19, with its 2 us pre-readout delay?"
+    },
+    {
+      "id": "iqm-garnet-qpu-window-probe-measure",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does Garnet's compiler estimate per shot for the N = 16 measure-arm circuit of the pinching case on the same six qubits, and so what mid-circuit measure window does it compile?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-diagnostic",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the eight-circuit unitary-arm diagnostic (cases.json 47a3675d), with pi/2-pair steps and a circuit without the pre-readout delay, and return the final key of every circuit?"
+    },
+    {
+      "id": "iqm-garnet-qpu-measurement-diagnostic",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Is the N = 16 unitary excess of the window probes an axis phase per small-angle prx pulse or |1> loss before the readout, read from eight circuits with in-situ readout on QB5, QB7, QB11, QB14, QB17 and QB19?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-pairs",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit pinching case rebuilt with pi/2-pair steps on QB1, QB5, QB8, QB12, QB14 and QB19 (cases.json 6b94d0db), and return every key?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-pairs-all-n",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit pinching case with pi/2-pair steps at every N on QB6, QB9, QB13, QB15, QB18 and QB20 (cases.json ba32d095), and return every key?"
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-sequence-pinching-systematic",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock pipeline accept the 57-circuit pinching case with the calibration-only selection (QB1, QB5, QB8, QB14, QB17, QB19) and the gate-model systematic (cases.json 918d7bd5), and return every key?"
+    },
+    {
+      "id": "iqm-garnet-qpu-measurement-pinching-probe",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T004628Z-garnet-measurement-sequence-pinching-probe-probe",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Do the ro0, ro1, N = 16 unitary and N = 16 measure circuits of the pinching case read on QB1, QB5, QB8, QB14, QB17 and QB19 within their raw model bands at 1000 shots, with every key returned?"
+    },
+    {
+      "id": "iqm-garnet-qpu-measurement-pinching",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does a Garnet mid-circuit measurement act as ideal pinching on QB1, QB5, QB8, QB14, QB17 and QB19, read by the Zeno build-up of N rotations of 8 pi/9 over N against the unitary null, with a delay of the measure duration and a settled readout as controls and with T1 and the initialization excitation measured in the job (cases.json e9896a89)?"
+    },
+    {
+      "id": "iqm-garnet-mock-measure-012-probe",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe",
+      "family": "IQM measurement-sequence pinching",
+      "question": "Does the garnet:mock circuit API return outcomes for a four-qubit measure_012 beside a plain measure?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-unitary-n16",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191223Z-garnet_mock-measurement-timing-probe-unitary-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the unitary-n16 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-measure-n16",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191233Z-garnet_mock-measurement-timing-probe-measure-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the measure-n16 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-delay-n16",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191238Z-garnet_mock-measurement-timing-probe-delay-n16-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the delay-n16 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-measure-n1",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191247Z-garnet_mock-measurement-timing-probe-measure-n1-s0p",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the measure-n1 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
+      "id": "iqm-garnet-mock-timing-ro0",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-25T191250Z-garnet_mock-measurement-timing-probe-ro0",
+      "family": "IQM measurement-sequence pinching",
+      "question": "What does the garnet:mock compiler estimate for the ro0 timing-probe circuit on QB1, QB3, QB7 and QB14 at 100 shots?"
+    },
+    {
       "id": "iqm-garnet-kernel-cancellation",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-23T073147Z-garnet-kernel-cancellation-probe-cancellation",
@@ -1967,6 +2121,48 @@
       "run": "results/live/2026-10-25T233207.284563Z",
       "family": "qet-ladder",
       "question": "Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?"
+    },
+    {
+      "id": "iqm-garnet-mock-qet-ladder-accept",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station pipeline accept the cc_prx-fed QET ladder circuits (five packed pairs, a feedback_key distinct from the measure key, cc_prx at angle 0 and 2 phi*, barrier) under one active-reset cycle with all-zeros heralding?"
+    },
+    {
+      "id": "iqm-garnet-mock-qet-ladder-accept-passive",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station accept the passive-reset, unheralded cc_prx QET ladder circuits whose five pairs were chosen without the fast-feedback probe-line wiring?"
+    },
+    {
+      "id": "iqm-garnet-mock-qet-ladder-accept-wired",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the garnet:mock station accept the passive-reset cc_prx QET ladder circuits on five probe-line-compatible pairs, and what does it estimate?"
+    },
+    {
+      "id": "iqm-garnet-qet-compensated-ladder",
+      "provider": "iqm",
+      "run": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder",
+      "family": "IQM QET compensated ladder",
+      "question": "Does the record-steered rotation of the two-qubit QET ladder, fed forward by cc_prx on IQM Garnet, lower Bob's local energy below every record-independent unitary (H1) and below the vacuum value (H2), is the non-pi conditional angle realized (H3), and does Bob carry a coherent window phase (H4)?"
+    },
+    {
+      "id": "qd-qpu-belenos-teleportation-rehearsal-job-00",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00",
+      "family": "single-chip teleportation rehearsal on qpu:belenos",
+      "question": "job-00 of the teleportation rehearsal, sent under the anchor gate while the platform record held one state: does the chip teleport the six Pauli eigenstates above the classical bound, and does it return the requested three-click samples (near the anchor state) or almost none (the state the held record describes)?"
+    },
+    {
+      "id": "kingston-idle-penalty-probe",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T202817.431767Z",
+      "family": "idle-penalty",
+      "question": "On 31 coupled ibm_kingston pairs in one dynamic job, does relaxation, free or echoed dephasing, or readout elsewhere on the chip charge an idle qubit more than the reported T1 and Hahn-echo T2 predict, per physical qubit?"
     }
   ],
   "claims": [
@@ -2210,6 +2406,137 @@
       "superseded_by": null
     },
     {
+      "id": "ascella-signed-coherence-seed-repeat",
+      "statement": "Job-02's 64 settings of theta2-x-arm0 rerun on qpu:ascella (job e2f30d83, 2026-10-26 03:57 UTC, nine hours after job-02 and after a platform calibration state at 03:50 UTC) at the same compilation seeds, the perturbed meshes in a QRNG-drawn order at 16,384 samples, return every one of job-02's 57 served meshes and repeat each mesh's analyzer statistic: the 56 perturbed block-conditioned X statistics correlate with job-02's at r 0.885 (label-permutation p 5e-5, alpha 0.01) against the 0.880 attenuation ceiling of a fully fixed per-mesh error and its 0.01 lower bound 0.784, the seed-0 anchors stay within 1.48 standard errors (0.8858 against 0.8829), the compilation dependence replicates (dispersion ratio 36.8, p 0.00025), and the perturbed mean reads 0.8869 against job-02's 0.8868.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting and two jobs nine hours apart; the readings M, A, P1 and P2 were fixed in plan ascella-seed-repeat-case before the acquisition, and the dark-output and predecessor correlations are exploratory. The ceiling takes job-02's compilation-induced standard deviation and counting variance from heater-coupling.json. The result establishes that the per-mesh deviation is a deterministic function of the served mesh across the interval and the calibration between the jobs; it names no mechanism and leaves open whether the error follows the applied voltages or a quantity the returned circuit omits.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+          "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/results.json",
+          "sha256": "337f9e9539e332f1713679b7a94501700ef9edbc308cfe9feea6e622c51a04ff"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/seed-repeat-reading.json",
+          "sha256": "a631dd14d30c487746a8d0d457b50aa84622090b5239403b768ea9636eeb0e73"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-seed-repeat-reading-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-compilations",
+        "qd-ascella-signed-coherence-seed-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-compilation-dependence"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "ascella-signed-coherence-new-seed-offsets",
+      "statement": "Heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on job-00 plus all 56 perturbed meshes of jobs 02 and 03 and frozen before any new seed was drawn (P-B), predict the X statistic of 147 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs be11a4b0 (70 meshes, 80 iterations) and 690c6e49 (77 meshes, 88 iterations): the within-job-centered Pearson r is 0.319 (t 4.04 on 144 degrees of freedom, one-sided p 4.4e-5, alpha 0.005), carried. Its positive-direction share of the compilation-induced variance is 10.5 % against the 0.983 attenuation ceiling, with one-sided 99.5 % Fisher-z bounds of 1.4 % and 25.6 %. The same family fitted on job-00 plus the 28 exploration meshes alone (P-A) reads r 0.157 (p 0.030): not carried. Both jobs' anchors stayed within the gross-shift margin (shifts -0.0028 and -0.0018 against job-03, 99 % half-widths 0.0034, margin 0.0119).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_new_mesh_score.py, whose contract, frozen offsets and duration rule were committed and pushed before submission after two Codex CLI reviews, two GitHub Codex rounds, a final gpt-daybreak-blue-latest high review and the advisor. The outcome is P-B carried only: the offsets carry about a tenth of the per-mesh error, the 28 exploration meshes leave them underdetermined, and the remaining nine tenths of the fixed per-mesh error stay unexplained by any element offset on the returned circuit. The share is a plug-in estimate conditional on the retained compilation variance. Job-05's size followed job-04's provider-reported duration alone (243 s, admitting 88 iterations). The result names no physical mechanism for the offsets and spends these 147 meshes for confirmatory use.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04/results.json",
+          "sha256": "c5a9e2f442c5e525372ce66f6f1a6b75aed842c7f9de9131ce2efed154340223"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88/results.json",
+          "sha256": "dc664063904e984933dfdfdcd54a963fd67076183ab531f24166ab131c374be1"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/new-mesh-offsets.json",
+          "sha256": "bbf0ff9417275275ae17f4b1394e8843ca84fd388eb67e278c4c2af89a9172f1"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/new-seed-sizing.json",
+          "sha256": "a6d9ca0ea7af66ec9888d32f958c37adf36043fd629f4addfc4c4a682a80c5b7"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/new-seed-score.json",
+          "sha256": "fa4a2982afb3e01ec71f78b8aa999752dcfd374459388258f51b88cfbb029610"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-new-mesh-offsets-replay": "replay",
+        "core-ascella-signed-coherence-new-seed-sizing-replay": "replay",
+        "core-ascella-signed-coherence-new-seed-score-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-new-seeds-job-04",
+        "qd-ascella-signed-coherence-new-seeds-job-05"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-fixed-mesh-offsets",
+        "ascella-signed-coherence-seed-repeat"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "ascella-signed-coherence-fixed-mesh-offsets",
+      "statement": "Static heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on job-00 plus the 28 exploration meshes of jobs 02 and 03, predict the 28 held-out served meshes' pooled X statistics at Pearson r 0.318 (one-sided t p 0.050 on 26 degrees of freedom), below the preregistered alpha 0.01: not carried. The point estimate of the explained share is 10.6 % of the compilation-induced variance against the 0.978 attenuation ceiling, with a one-sided 99 % Fisher-z upper bound of 45.7 % (r 0.661); the fit overshoots the spread (predicted 0.0147 against observed 0.0102) and reads shortfall in both quadratic forms. The coupler offsets alone fail the exploration leave-one-out gate (sum 1133 against 56.9, r 0.08).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, 56 served meshes split by mesh-split.json, two element-offset families. The held-out predictions were frozen and their digest committed in plan ascella-fixed-mesh-confirmation before scoring, after the plan ascella-fixed-mesh-error-model gates had barred its quadratic-form reading; the held-out X statistics had been seen through job-02's readings and job-03's P1. The exploration leave-one-out correlation of 0.59 is exploratory. The result bounds what static element offsets on the returned circuit carry; it names no mechanism for the fixed per-mesh error, and both plans spent the held-out half.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+          "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03/results.json",
+          "sha256": "337f9e9539e332f1713679b7a94501700ef9edbc308cfe9feea6e622c51a04ff"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/fixed-mesh-error.json",
+          "sha256": "c3e1d2c5c8d68a173d1635a017f379cfb931a6c5d26a12943577d83446660532"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/fixed-mesh-frozen-predictions.json",
+          "sha256": "648fb4043ac2bb559c5020362519bc6bfdb26d82bcbbb48352e5760edea85475"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json",
+          "sha256": "bd24a2cc5d2fdef2cdef93088fe76c5ac67c87cc593258df79bfd7015ba75bf2"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-fixed-mesh-error-replay": "replay",
+        "core-ascella-signed-coherence-fixed-mesh-confirmation-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-compilations",
+        "qd-ascella-signed-coherence-seed-repeat"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-seed-repeat"
+      ],
+      "supersedes": []
+    },
+    {
       "id": "ascella-signed-coherence-compilation-dependence",
       "statement": "Theta2-x-arm0 run 64 times on qpu:ascella (job 788097fb), at 56 QRNG-drawn compilation seeds that served 56 distinct meshes (heaters a median 1.58 rad from job-00's) and 8 seed-0 anchors that served job-00's mesh, reads a block-conditioned X statistic that moves with the served mesh: the perturbed dispersion per degree of freedom is 7.08 times the anchors' (label-permutation p 0.0049, alpha 0.01), the perturbed statistics span 0.865 to 0.915 around a mean of 0.888 against the ideal 0.9045 and the anchors' 0.883. Every family fitted on job-00 misses the 56 meshes: the residuals' joint quadratic forms in counting plus shared fitted-prediction covariance read 1150 (static heater offsets), 649 (drive-linear), 771 (order-1 polynomial) and 201 (order-1 harmonic) against the chi-square 0.999 quantile 94.5. Refitted on job-00 plus the perturbed iterations, every family is identified on the 19 training-only folds (median variance ratios 0.22 to 0.86) and keeps the left-out X shortfall (sums 85 to 377 on 10), three of four also on Y.",
       "domain": "hardware",
@@ -2252,6 +2579,43 @@
       "assumptions": [],
       "depends_on": [
         "ascella-signed-coherence-conformance"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "ascella-signed-coherence-heater-coupling",
+      "statement": "Eight heater-coupling families of the returned 12-mode Ascella mesh, fitted on job-00 alone (uniform neighbor crosstalk and uniform coupler offset with dephasing, static coupler offsets, static heater with coupler offsets, a three-coefficient crosstalk kernel by mode distance and a drive-power loss, the last two also with the static offsets), each miss the pooled X statistics of job-02's 56 served meshes: the residuals' joint quadratic forms in counting plus shared fitted-prediction covariance read 327 to 1107 against the chi-square 0.999 quantile 94.5 on 56. Coupling-only fits predict noise-free X spreads of 0.0017 to 0.0059 against the observed compilation-induced 0.0104 (0.0113 with counting noise); offset-carrying fits predict 0.014 to 0.028 at positions uncorrelated with the observations (predicted-observed correlation -0.04 to 0.19). Refitted on job-00 plus job-02, the kernel and loss families are identified (median variance ratios 0.01 to 0.60) and keep the left-out X shortfall (sums 180 to 347 on 10).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Families, priors, training set and reading were fixed in plan ascella-heater-coupling-families (commit 249c26a) after the compilation reading had already exposed job-02's per-mesh statistics, so the confirmatory content is that no family saw job-02 before scoring. A feasibility screen sized the kernel and loss priors against job-02's served phases and observed spread before the plan; that favors the families, so the shortfall is conservative. The returned phase in [0, 2 pi) stands for heater drive power and the logical (mode, column) layout for physical distance; crosstalk nonlinear in power, crosstalk over the physical layout and errors outside the mesh remain untested. Both drive-loss fits put gamma below zero, which no heater loss produces; the loss-alone posterior rises monotonically for gamma at or above zero, so a fit held to physical loss reduces to the nominal mesh or, with offsets, to the offsets family. The predicted-observed correlations and the identification folds are descriptive and decide nothing. One setting, one job; the fits follow the OpenBLAS Haswell kernel and numpy's x86-64-v3 dispatch that ci/run_gates.py sets and replay within 1e-3 relative plus 1e-8 absolute.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00/results.json",
+          "sha256": "3ce8753bde5172a89d0b8465e47d0270e3b6207a8df13a8fbb5f18a9b6c8c255"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02/results.json",
+          "sha256": "3343f9d9acf679c8a0f7c6bab77c54693a98a1ac06eebe525c0bcc177887add2"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/heater-coupling.json",
+          "sha256": "df0a0543d8e6b215f1b31d289fc840c95cd6948bced0c499a4e5c6fa877c1857"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-heater-coupling-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence",
+        "qd-ascella-signed-coherence-compilations"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-compilation-dependence"
       ],
       "supersedes": []
     },
@@ -2972,7 +3336,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.",
+      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; item 4 (smooth strata, singular loci and normal links) is discharged by a5-strata-regularity, which decomposes R_8 minus 0 into twelve orbits of G_2(C) x SO(2, C) x C^* and gives a Whitney stratification with every transverse germ; kernel bundles, attachments and integral invariants (roadmap items 5-8) remain open.",
       "evidence": [],
       "documents": [
         "docs/RESEARCH_ROADMAP.md",
@@ -2987,7 +3351,10 @@
         "four-support-topology",
         "principal-skew-atlas",
         "kernel-limit-slice",
-        "nullity-twelve-cone"
+        "nullity-twelve-cone",
+        "a5-zero-divisor-strata",
+        "a5-rank-strata-equations",
+        "a5-strata-regularity"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -4034,7 +4401,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "d3996987bc5d7433ed1d22140d74b28c815517073c3dba06352df7acb8ec778d"
+          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
         }
       ],
       "documents": [
@@ -5228,7 +5595,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "d3996987bc5d7433ed1d22140d74b28c815517073c3dba06352df7acb8ec778d"
+          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -5788,7 +6155,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "established",
-      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md, local to the twelve recorded witnesses 1, 4, 5, 6, 8, 11, 12, 13, 15, 18, 19 and 20 of rank_locus_local_dimension. At each, exact integer kernels give the family nullity, the Schur tangent cone dimension 16, 22 or 28, e_8 and e_24 in T(x) and dim T(x) cap H_5^perp = dim T(x) - 2, and a smooth piece of that dimension through x lies in R_k: the quadric cone V at 1, 8, 15 (a5-nullity12-quadric-germ); the Stiefel cone Q = 0 at 6, 13, 20 and the quartic G = 0 at 5, 12, 19, each with real Jacobian rank 4 and inside R_4 by Pf A = -(z.t) Q G; at 4, 11, 18 the image of s exp(D_X) z(k) for the 14 octonion derivations D_X on both halves and a degree-2 curve z(k) through x whose rank C_z <= 10 holds identically by 13 exact points against degree 12, with complex orbit rank 11. The Schur sandwich makes each piece the germ of S_k. The family dimensions are imported from the local-dimension record; the result covers no point off these witnesses, no covering of D_(5,4), D_(5,8) or D_(5,12), and is not formalized in Rocq.",
+      "boundary": "Written proof in docs/evidence/a5-stiefel-pfaffian-germs/README.md, local to the twelve recorded witnesses 1, 4, 5, 6, 8, 11, 12, 13, 15, 18, 19 and 20 of rank_locus_local_dimension. At each, exact integer kernels give the family nullity, the Schur tangent cone dimension 16, 22 or 28, e_8 and e_24 in T(x) and dim T(x) cap H_5^perp = dim T(x) - 2, and a smooth piece of that dimension through x lies in R_k: the quadric cone V at 1, 8, 15 (a5-nullity12-quadric-germ); the Stiefel cone Q = 0 at 6, 13, 20 and the quartic G = 0 at 5, 12, 19, each with real Jacobian rank 4 and inside R_4 by Pf A = -(z.t) Q G; at 4, 11, 18 the image of s exp(D_X) z(k) for the 14 octonion derivations D_X on both halves and a degree-2 curve z(k) through x whose rank C_z <= 10 holds identically by 13 exact points against degree 12, with complex orbit rank 11. The Schur sandwich makes each piece the germ of S_k. The family dimensions are imported from the local-dimension record; the result covers no point off these witnesses, no covering of D_(5,4), D_(5,8) or D_(5,12), and is not formalized in Rocq. a5-zero-divisor-strata identifies the two extra directions globally as the complex coordinate mu = (y_8, y_24) transverse to H_5^perp.",
       "evidence": [
         {
           "path": "docs/evidence/rank_locus_second_order/result.json",
@@ -5831,6 +6198,104 @@
         "nullity-twelve-cone",
         "a5-nullity12-quadric-germ",
         "a5-stiefel-universal"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-zero-divisor-strata",
+      "statement": "The zero divisors of A_5 are the doubly pure y = (p, q) with Q G = 0 for z = p + i q, a union of two absolutely irreducible hypersurfaces of C^15 of complex dimension 14; nullity L_y = 28 - 2 rank C_z, so nullity 4, 8, 12, 16 is the rank 12, 10, 8, 6 locus of C_z. Each rank stratum has two irreducible pieces (complex dimension, unit dimension): R_16 = N_+ u N_- (6, 11 each), R_12 = V (8, 15) u B9 (9, 17) meeting in dimension (7, 13), R_8 = W8 (12, 23) u E8-bar (11, 21); V and B9 lie in E8-bar, B9 in W8, N_+ and N_- in V n B9, W8 in V(G) off V(Q) generically and the other pieces in V(Q) n V(G). D_(5,4) and D_(5,12) are connected and D_(5,8) and D_(5,16) have two connected components.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-zero-divisor-strata/README.md; gate core-694 recomputes result.json (Groebner membership and radical-power certificates of the Pfaffian ideals of orders 12, 10, 8 on six G_2-slice families, is_groebner re-verified) and core-695 rejects its mutation controls. The covering of each stratum by its two pieces rests on those slice certificates and the G_2 orbit facts; the V n B9 dimension, the piece dimensions and the component counts are asserted literals in the script whose support is the independent cd_core verification (verification.md: tangent dimension equals parametrization rank at random points, the V n B9 upper bound by counting, and an orbit-free argument for the two components of D_(5,8)), which is not a gate and checks the slice tables over F_11 and F_13 only. a5-rank-strata-equations gives E8-bar its equations and re-derives the covering over Q with Singular and independent G_2 orbit facts. Open: singular loci of the pieces, normal links, kernel bundles, attachments and homology (roadmap items 4-8); not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-zero-divisor-strata/result.json",
+          "sha256": "5813f0d814cff8c819ebb94f3e5a37555e62e92b63fcd3fa3b5c7c5794b31d6c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-zero-divisor-strata/README.md",
+        "docs/evidence/a5-zero-divisor-strata/verification.md"
+      ],
+      "gates": {
+        "core-694": "replay",
+        "core-695": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-stiefel-universal",
+        "a5-nullity12-quadric-germ",
+        "a5-nonzero-divisor-two-dimension-gap"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-rank-strata-equations",
+      "statement": "In the coordinates z = p + i q of a doubly pure y in A_5, the rank strata of C_z have closed equations: R_8 = W8 u Ehat, R_12 = V u B9, R_16 = N_+ u N_-, with Ehat = {Q = 0, Delta = 0, rank [u; v; u ^ v] <= 2}. Ehat equals E8-bar and is irreducible of complex dimension 11, its projectivization of degree 24. Every principal Pfaffian of C_z of order 12, 10 or 8 lies in the ideal of each piece of its stratum, so V and B9 lie in E8-bar.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-rank-strata-equations/README.md. rederive_strata_equations.py imports nothing from the author's strata script or its verifier; the covering (Lemma A) re-derives the G_2 orbit facts from the split octonion table and decides the six slice tables by radical equality over Q in Singular 4.4.1, and Ehat = E8-bar rests on a saturation over Q and a case analysis. The record is a retained replay and not a gate, because Singular is absent from the hosted CI image. Not decided: radicality of the Ehat ideal. Inherited from a5-zero-divisor-strata: irreducibility of W8, V, B9 and N_+-, and the nullity identity of Theorem 2 (gate core-690 transport). Open: roadmap items 4-8; not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-rank-strata-equations/result.json",
+          "sha256": "d0aefa47d1bd2751bb573dd192cd2bab2527b568d89ddaa5207f5cc7bc9a7daa"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-rank-strata-equations/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "Singular 4.4.1 std, radical, intersect, sat and minor over Q"
+      ],
+      "depends_on": [
+        "a5-zero-divisor-strata"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-strata-regularity",
+      "statement": "Under H = G_2(C) x SO(2, C) x C^* (the boost of split coordinates), R_8 minus 0 of the A_5 rank strata is the disjoint union of twelve H-orbits, five of nullity 8 (W8, E8-bar, Iso, X_+, X_-) and seven of nullity at least 12 (B9, V, VB = V n B9, V^a_+, V^a_-, N_+, N_-), with W8 n E8-bar = B9 and W8 n V = VB. The singular loci are Sing V = Sing W8 = N_+ u N_-, Sing Iso = VB, Sing X_+- = V^a_+-, Sing E8-bar = V u B9, Sing V(G) = W8 u V, and B9, VB, N_+-, V(Q) are smooth off 0. The orbits, the origin, three nullity-4 strata and the complement form a Whitney stratification of C^15 refining the nullity strata, and the normal link of R_12 = V u B9 along VB, at x0 = e_1 + e_18, is S^1 disjoint union S^3.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proof in docs/evidence/a5-strata-regularity/README.md. strata_regularity.py decides the orbit certificate on the six slice families, the closure dimensions, the nullity-4 radicals and the transverse germ of every closure along every orbit over Q in Singular 4.4.1, and its pass flag compares every germ invariant with a constant germ table. verify_regularity_independent.py re-derives every statement from cd_core with separate code and other slices; it corroborates the orbit-dimension certificate (computation 5) by an exhaustive slice search rather than re-proving it. The record is a retained replay and not a gate, because Singular is absent from the hosted CI image. Open: the link topology of the germs marked open in the germ table, analytic branch counts where a germ has one minimal prime, kernel bundles, attachments and homology (roadmap items 5-8); not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-strata-regularity/result.json",
+          "sha256": "dee5af58e0312225420e88c7d3e0692fb8534592686d85e4a20de01825fc8093"
+        },
+        {
+          "path": "docs/evidence/a5-strata-regularity/verification.json",
+          "sha256": "bbc65de56c59a05a46064345ea78cf15fec300733be4cb67fb2838178f293c81"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-strata-regularity/README.md",
+        "docs/evidence/a5-strata-regularity/verification.md"
+      ],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "Singular 4.4.1 std, radical, sat, intersect, minAssGTZ and minor over Q"
+      ],
+      "depends_on": [
+        "a5-zero-divisor-strata",
+        "a5-rank-strata-equations"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -9382,6 +9847,395 @@
       "superseded_by": null
     },
     {
+      "id": "iqm-garnet-mock-measure-012",
+      "statement": "garnet:mock rejected the 54-circuit measurement-sequence case (cases.json 4e319aed, job 01a17474) at validation with 'Circuit 45: Circuit contains no measurements', because that circuit's only readout is measure_012, and completed a probe (cases.json 4a14c996, job 01a17476) in which a four-qubit measure_012 beside a plain measure returned only the plain measure's key; the mock's circuit API accepts measure_012 and returns no outcome for it. Both jobs charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock only; a QPU run of measure_012 through the circuit API is untested.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T190614Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "60954db3af5eb6499e0597f8ded2d7c352af525825b1340d728e232ae20f84b0"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T190754Z-garnet_mock-measure-012-probe-probe/results.json",
+          "sha256": "a177ea17ae42bc19c8d09a2fe86bdfb679ce544c3b1e091665828df219914865"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching",
+        "iqm-garnet-mock-measure-012-probe"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-timing",
+      "statement": "garnet:mock (calibration set f04fe114) compiled five single-circuit probes on QB1, QB3, QB7 and QB14 at 100 shots to per-shot qpu_execution estimates of 8.684 us (ro0), 9.324 us (unitary, N = 16), 37.676 us (measure, N = 16), 10.496 us (measure, N = 1) and 25.708 us (delay of 1.024 us, N = 16): 40 ns per prx layer and 1.772 us per mid-circuit measure, 0.75 us longer than the calibration's acquisition_delay plus integration_length. All five charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Compiler estimates of the mock, not measured durations; the QPU job's own estimate is compared in the analysis.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T191223Z-garnet_mock-measurement-timing-probe-unitary-n16-s0p/results.json",
+          "sha256": "0beabc7c6f9fe8e61fae0e5da675d545f4c1bad9028838e3bd9fcd266bd60f13"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191233Z-garnet_mock-measurement-timing-probe-measure-n16-s0p/results.json",
+          "sha256": "30b8b30dbcc3adbb1bbc9f11f630335884325eb24ec147d928b07f31696458f6"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191238Z-garnet_mock-measurement-timing-probe-delay-n16-s0p/results.json",
+          "sha256": "80df61a9751f9d719e616be389ad7f8d3677da95f98f59c8c966ddc31ed10a97"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191247Z-garnet_mock-measurement-timing-probe-measure-n1-s0p/results.json",
+          "sha256": "5846e3b991b9483020d023fd4bc53cabe498aef8e18815a79545aa681463d1be"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T191250Z-garnet_mock-measurement-timing-probe-ro0/results.json",
+          "sha256": "68756dd8f0d72e61b596a1bbaf477203943524461f2ef8bb26becab266d230fd"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-timing-unitary-n16",
+        "iqm-garnet-mock-timing-measure-n16",
+        "iqm-garnet-mock-timing-delay-n16",
+        "iqm-garnet-mock-timing-measure-n1",
+        "iqm-garnet-mock-timing-ro0"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-pipeline",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 50-circuit measurement-sequence case (cases.json a1ab2596, job 01a17484) at 2400 shots: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 2400 shots of four 0/1 outcomes in the locus order QB1, QB3, QB7, QB14, and the compiled qpu_execution estimate of 2.71235 s equals the case's predicted 2.71235 s (ratio 1.0000). The mock's outcomes are uniform random bits (ro0 and ro1 contrasts -0.013 to 0.014), so the mock analysis marks every qubit unusable under the 0.5 readout-contrast floor and decides nothing. The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies the format, the schedule model and the analysis guards, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "79a447ce8e18c6d7698a2728a558b6617559e3adaad6d07ca7b7b86a6be813ef"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_mock_analysis.json",
+          "sha256": "7b14108858d4574bd3b2bfd915dc4418295a119b8414e39610fecc3676fa1498"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-50"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-57",
+      "statement": "garnet:mock (calibration set f04fe114) completed the hardened 57-circuit measurement-sequence case (cases.json 84fd16f8, job 01a174a7) at 3000 shots: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order QB5, QB7, QB11, QB14, QB17, QB19, and the compiled qpu_execution estimate of 5.067636 s equals the case's predicted 5.067636 s (ratio 1.0000). The mock executed in 4.041 s and billed 5 s at 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies the format and the schedule model, not any device property, and its execution time does not carry to the QPU.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T200157Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "d90e20f8a88a49a69e3e9cf14fe79359317e018794cb7ee732a5c33c548e93fe"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-57",
+        "iqm-garnet-mock-measurement-sequence-pinching-57-qpu-window"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-qpu-measure-window",
+      "statement": "On IQM Garnet under calibration set be070414, two single-circuit probes of 100 shots on QB5, QB7, QB11, QB14, QB17 and QB19 (the pinching case's own circuits with a 2 us pre-readout delay) compiled to 7.032 us per shot for the N = 16 unitary circuit (job 01a174be-d1f7-75fc-b324-d27d7133409b) and 24.568 us for the N = 16 measure circuit (job 01a174be-e68b-776e-8241-8bb3d259ae57), so the compiled mid-circuit measure window is (24.568 - 7.032)/16 = 1.096 us, against the 1.772 us that garnet:mock compiles. With the 4.344 us per-circuit base of the retained active-reset pilot job (2026-10-22T212742Z) the unitary circuit's remaining 5.032 - 4.344 = 0.688 us over 16 layers gives 43 ns per prx layer, consistent with the mock's 40 ns. Both jobs billed 1 s and charged 0.50 credits, 1.00 credit in all.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Compiler estimates of one calibration set, not measured durations; the per-circuit base is taken from a different job and circuit family, so the layer time carries that assumption.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T202704Z-garnet-measurement-window-qpu-probe-unitary-n16-s0p/results.json",
+          "sha256": "774e3ecdcecba795df21c654fd60de824bb5451d1fe577b21f11868b45e0d5e3"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-25T202709Z-garnet-measurement-window-qpu-probe-measure-n16-s0p/results.json",
+          "sha256": "6edc51c6bc37df90b11aabfc789aace5647c85d1a4fb63bbc918febe5b52cd41"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-qpu-window-probe-unitary",
+        "iqm-garnet-qpu-window-probe-measure"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-measurement-diagnostic",
+      "statement": "garnet:mock (calibration set f04fe114) completed the eight-circuit unitary-arm diagnostic (cases.json 47a3675d, job 01a17539-b5b7-75f7-9654-8751db6609cd) at 1000 shots: every circuit returned its final key f as 1000 shots of six 0/1 outcomes in the locus order QB5, QB7, QB11, QB14, QB17, QB19, including the 32-pulse pi/2-pair circuit and the circuit without a pre-readout delay. The compiled qpu_execution estimate of 0.086 s is 1.68 times the case's QPU-calibrated 0.0513 s, the 8 x (8.684 - 4.344) us per-circuit base difference between the mock and the QPU. The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T224117Z-garnet_mock-measurement-sequence-diagnostic-diagnostic/results.json",
+          "sha256": "fc5eb10b4bcd81dffdf7d2645319942e719b1171433210a37c8e686729c973d8"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-diagnostic.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-diagnostic"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-qpu-measurement-diagnostic",
+      "statement": "On IQM Garnet (calibration set be070414, job 01a1753f-3b98-7437-9433-83d0b4b87721, eight circuits x 1000 shots, 0.50 credits) the preregistered diagnosis of the unitary-arm excess reads no_excess: no usable qubit's raw N = 16 unitary reading exceeds its raw model by 3 standard errors (QB17 +1.1, QB19 +1.1, QB14 -3.2, QB5 -3.5, QB7 -1.4), and the corrected pi/2-pair circuit lies within 3 standard errors of its model on all five usable qubits (-2.64 to +2.71), so the rebuild criterion holds. QB11 is unusable: its readout scale is 0.384, with |1> reading P(0) = 0.172 at once and 0.522 after the 2 us idle. The compiled schedule was 1.0076 times the QPU-calibrated prediction.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One job at 1000 shots on six qubits; the models use the calibration and an assumed initialization excitation, and the readings below 3 standard errors are descriptive. The stated decision rule omitted the readout-scale exclusion that the approved code applied (usable qubits only, scale at least 0.5); applied as written, QB11 (scale 0.384) enters L, the verdict reads readout_loss instead of no_excess, and the rebuild criterion holds either way (QB11 corrected D6 z +1.45).",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T224718Z-garnet-measurement-sequence-diagnostic-diagnostic/results.json",
+          "sha256": "af099e10887456bc197dc1280e7877a6bd745e9a50b9678985cf53c747e2802c"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_diagnostic_analysis.json",
+          "sha256": "9d14bb8508834cc06cc6570b4ebb809b389aec6f6a46f618d1ad67ceb7976459"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-diagnostic.md"
+      ],
+      "gates": {
+        "core-707": "replay"
+      },
+      "acquisitions": [
+        "iqm-garnet-qpu-measurement-diagnostic"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-pairs",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 57-circuit pinching case rebuilt with pi/2-pair steps (cases.json 6b94d0db, job 01a17548-7e68-72ab-8a27-38f1b6f3d94f) at 3000 shots on QB1, QB5, QB8, QB12, QB14 and QB19: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order. The compiled qpu_execution estimate of 4.847 s is 1.30 times the case's QPU-calibrated 3.723 s, the 57 x (8.684 - 4.344) us per-circuit base and the 188 x (1.772 - 1.096) us measure-window differences between the mock and the QPU (1.12 s). The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T225725Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "f128552db62aab4548ca7a46253679028e722d80caab729a94683dc33d55edac"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-pairs"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-pairs-all-n",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 57-circuit pinching case with pi/2-pair steps at every N (cases.json ba32d095, job 01a1755f-4e86-77ee-81be-7b1de90a3c0a) at 3000 shots on QB6, QB9, QB13, QB15, QB18 and QB20: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order. The compiled qpu_execution estimate of 4.861 s is 1.30 times the case's QPU-calibrated 3.738 s, the 57 x (8.684 - 4.344) us per-circuit base and the 188 x (1.772 - 1.096) us measure-window differences between the mock and the QPU (1.12 s). The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-25T232219Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "e218517ba720a6f68a8d307861623871badeb33ed4e72b124e93eb5ad8797934"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-pairs-all-n"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-mock-pinching-systematic",
+      "statement": "garnet:mock (calibration set f04fe114) completed the 57-circuit pinching case with pi/2-pair steps at every N, the calibration-only qubit selection and the gate-model systematic (cases.json 918d7bd5, job 01a17585-dd26-7086-9e63-655882ecc988) at 3000 shots on QB1, QB5, QB8, QB14, QB17 and QB19: every circuit returned every key (the final f, and m0 to m15 on the measure and settle arms) as 3000 shots of six 0/1 outcomes in the locus order. The compiled qpu_execution estimate is 1.30 times the case's QPU-calibrated 3.738 s, the per-circuit base and measure-window differences between the mock and the QPU. The job charged 0.00 credits.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The mock compiles against its own calibration set and returns random outcomes; it verifies acceptance and the returned keys, not any device property.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T000425Z-garnet_mock-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "55c0244f8a9da4747d2f6e668528cff7b39fcd15d2d3c963d809bc5de82a267a"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "iqm-garnet-mock-measurement-sequence-pinching-systematic"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-pinching-probe",
+      "statement": "On IQM Garnet (calibration set be070414, job 01a175ac-522d-73e4-ae3e-7404b2335bf6, four circuits x 1000 shots, 0.50 credits) the pre-flight probe of the pinching case read all six qubits (QB1, QB5, QB8, QB14, QB17, QB19) within 3 binomial standard errors of their raw model bands, with ro0 minus ro1 contrast 0.79 to 0.95 and every key returned; the largest distance outside a band was 2.69 standard errors (QB14 ro0, 0.997). The rule printed proceed.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One job at 1000 shots. The bands of the two N = 16 circuits are widened by 0.04 for the model scatter the diagnostic found, so the probe stops a collapse and does not test the gate model.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T004628Z-garnet-measurement-sequence-pinching-probe-probe/results.json",
+          "sha256": "7f68b2898381a6d26bacaaad5574c1e05f88a04869b2f3a4e0fb17e766647ef8"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_preflight.json",
+          "sha256": "e2da84da397a68bdeadeee81c4d1a66fde7ee6f3834014ac253abb0a5b1b8519"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {
+        "core-708": "replay"
+      },
+      "acquisitions": [
+        "iqm-garnet-qpu-measurement-pinching-probe"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-pinching-departure",
+      "statement": "On IQM Garnet (calibration set be070414, job 01a175ac-da6c-718e-8efc-438c1bff1c46, 57 circuits x 3000 shots, 5.00 credits, QB1, QB5, QB8, QB14, QB17, QB19) the preregistered departure test of ideal pinching reads none: departs_below and exceeds_prediction both read none at pooled z +1.65, with all six qubits informative (mutation z 36 to 56; the N = 16 measure-minus-unitary contrast 0.80 to 0.83 against the ideal 0.861). The measure arm's N = 16 P0 sits 0.022 to 0.042 above its prediction on every qubit (0.5 to 0.85 standard errors at the departure standard error of 0.044 to 0.049, which carries a gate-model systematic floored at 0.04). By the reach fixed before the data, the none bounds the measurement to a transition probability below about 0.006 per measurement, or to less than about 30 % of the coherence surviving each measurement.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Exploratory. The reach is set by the gate-model floor of 0.04 in P0, not by the shot count, and no tighter bound follows from this run. The unitary arm departs from its model by -0.028 (QB14, statistical z -5.4), -0.026 (QB1) and -0.018 (QB5), beyond 3 statistical standard errors on three qubits, which the widened standard error absorbs. The eps fits to P0(N) have chi-square 58 to 196 on 4 degrees of freedom with negative eps, so the single-transition-loss description fails. Four qubits fit a negative initialization excitation (down to -0.067), which the readout model reads through q and does not separate from a thermal excitation of the idle qubit. The preregistered gate-model systematic evaluated the axis-phase class on the +1 signed circuit only, while the experiment pools the circuits +, -, -, +; the sign-pooled reanalysis (results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json, gate core-710) has an axis-phase ratio of -0.017 to -0.018 against +0.31 to +0.35 one-sign, gate systematics of 0.040 to 0.046 against 0.042 to 0.048, departure standard errors of 0.042 to 0.047 against 0.044 to 0.049, and a pooled departure z of +1.72 against +1.65. The verdict is unchanged: both read none, and the reach (a transition probability below about 0.006 per measurement, or less than about 30 % coherence surviving each measurement) is unchanged at that precision: with the injection scale and the analysis both sign-pooled the smallest detectable shifts are 0.047 to 0.070 in P0 (eps 0.0040 to 0.0061), against 0.049 to 0.073 (0.0042 to 0.0064) preregistered.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "bb227a69d4271554a96caea4639bd79944e6ffffb9a5e0b4efb8016f1a261d12"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_analysis.json",
+          "sha256": "f6015b4b079b6f6f3996b33249a956840ab8a8e3d7b24ca5ce9b8a20f378b42f"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_sign_pooled_analysis.json",
+          "sha256": "e1ece592f5b295e358fcd1e0f9230ac8792327f906c6c0337685307efb99c760"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {
+        "core-709": "replay",
+        "core-710": "replay"
+      },
+      "acquisitions": [
+        "iqm-garnet-qpu-measurement-pinching"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "iqm-garnet-pinching-settle-tail",
+      "statement": "On IQM Garnet (calibration set be070414, job 01a175ac-da6c-718e-8efc-438c1bff1c46, 3000 shots, QB1, QB5, QB8, QB14, QB17, QB19) the preregistered settle-tail rule reads attributed at pooled z +4.81, by the count rule on QB14 (+3.15) and QB5 (+3.43). The rule compares the settle arm's N = 16 P0, which adds a 2.0 us idle after each mid-circuit measure to the measure arm, with the model's prediction from the measure arm's own N = 16 loss and the in-job T1: lengthening the post-measurement idle from zero to 2 us raised P0 beyond that prediction by +0.0066 (QB1), +0.0161 (QB5), +0.0056 (QB8), +0.0156 (QB14) and +0.0125 (QB17) and lowered it by 0.0056 on QB19.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Exploratory observation without a mechanism. The effect may come from a readout tail or from measurement-induced relaxation during the idle, and a tail slower than 2 us stays unexcluded. The tail gap carries its delta-method standard error with no gate-model floor; the settle and measure arms play identical pulses. The preregistration text was inconsistent about the settle arm (conditioned on a departure, decides nothing, or feeds the device verdict); the reported attributed comes from the code's unconditional per-qubit and device rule, and no qubit departs in this run, so under the conditional reading the gap would be descriptive only.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T004701Z-garnet-measurement-sequence-pinching-pinching/results.json",
+          "sha256": "bb227a69d4271554a96caea4639bd79944e6ffffb9a5e0b4efb8016f1a261d12"
+        },
+        {
+          "path": "results/iqm/measurement_sequence_pinching_analysis.json",
+          "sha256": "f6015b4b079b6f6f3996b33249a956840ab8a8e3d7b24ca5ce9b8a20f378b42f"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-measurement-sequence-pinching.md"
+      ],
+      "gates": {
+        "core-709": "replay"
+      },
+      "acquisitions": [
+        "iqm-garnet-qpu-measurement-pinching"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "iqm-garnet-idle-schedule",
       "statement": "On IQM Garnet (calibration set a18a947f, 24 circuits x 4500 shots, one active-reset cycle, no heralding), a circuit job runs its gates as soon as possible: in both idle layouts every qubit uncoupled to the train qubit (QB1, then QB20), pulsed once beside 500 or 1000 identity pi pulses and read in one joint measure, relaxed toward |0>, and all 68 pulsed-qubit arms resolved ASAP against the ALAP prediction of no change, at 13.3 to 58.7 standard errors from the midpoint of the two predictions (H1). Fitted with its own readout pair, QB11's isolated prx train reads a relative over-rotation of -0.30 +- 0.06 %, which excludes the +2.7 % the null-controlled signed probe's prediction attributes to it at 47 standard errors, and QB6's reads -0.18 +- 0.07 % (H2; chi-square 8.1 and 1.2 on three degrees of freedom). The job ran 1.92 s, billed 2 s and charged 1.00 credit.",
       "domain": "hardware",
@@ -9635,8 +10489,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-7/result.json",
-          "sha256": "7fa63ce87a541b1ad61143f6e42e847eec35355c77b894e45ca0638beaec068f"
+          "path": "docs/evidence/algebra-device-conjectures-8/result.json",
+          "sha256": "358a3b6bbf7e6bb77848d1a3648846ec50b34010054a5dd546097b0be502d2cb"
         }
       ],
       "gates": {
@@ -9855,7 +10709,7 @@
       "statement": "On the best and median three-qubit ibm_kingston paths of the primorial noise record, the compiled gap-88 phase-gradient arms and their zero-angle null arms carry identical sx, x, cz and delay streams, differing only in zero-duration rz. Noise-free static ZZ of 2 to 20 kHz on both couplers (partner-in-0 and symmetric frames) biases the raw coefficients by up to 0.078 and the null-subtracted ones by at most 0.00038; a drive-axis tilt of 0.005 or 0.02 rad on one or all path qubits biases them by up to 0.174 raw and at most 0.0055 null-subtracted, both entering at second order; tilt at each path qubit's sx gate-error bound (0.021 to 0.036 rad) in the worst of eight sign patterns leaves 0.0147 (best) and 0.0159 (median) null-subtracted. Every residual stays below one standard deviation of the noisy null-subtracted estimate at the retained budget (0.0188 at 2,803 and 0.0186 at 3,169 shots per setting), so the circuits pose no primorial-specific device question on Heron r2.",
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
-      "status": "established",
+      "status": "superseded",
       "boundary": "Noise-free statevector scenarios of the gap-88 cost on the snapshot's Heron r2 durations, one family at a time; the gate-error tilt bound charges the whole sx error to tilt and leaves a margin of 0.78 and 0.85 standard deviations; crosstalk, leakage and combined families are outside it. The IQM and Tuna-17 rows of the hardware decision rest on the provider guides, not on compiled circuits, and no hardware run exists.",
       "evidence": [
         {
@@ -9878,6 +10732,80 @@
       "assumptions": [],
       "depends_on": [
         "primorial-cover-noise-null-subtraction"
+      ],
+      "supersedes": [],
+      "superseded_by": "primorial-bound-residuals-joint"
+    },
+    {
+      "id": "primorial-bound-residuals-joint",
+      "statement": "On the best (45-46-47) and median (117-125-126) ibm_kingston paths of the primorial noise record, a numpy statevector of the compiled gap-88 phase-gradient and zero-angle null arms reproduces every retained null-residual and coherent-sensitivity scenario to 1.6e-15. Drive-axis tilt at each path qubit's sx gate-error bound and CZ conditional phase at each coupler's CZ bound (0.097 to 0.104 rad), applied jointly, leave a null-subtracted coefficient bias of 0.049 (best) and 0.050 (median), 2.61 and 2.84 standard deviations of that coefficient at the retained budgets, and identifying all seven coefficients at that bias takes 53,363 and 76,596 shots per setting against the retained 2,803 and 3,169; under the sx-and-x budget the joint residual is 1.90 and 2.06 standard deviations. Each family alone stays below one standard deviation (tilt 0.79 and 0.89, CZ phase 0.72 and 0.77). With tilt at 0.1 of its bound no CZ phase within its bound reaches one standard deviation (0.84 and 0.90); at 0.2 the full CZ bound reaches 0.98 and 1.04. Static detuning on all three qubits, which no gate error bounds, pairs the same way: 30 kHz alone reaches 0.13 and 0.14, with the atlas-fitted 0.04 rad CZ phase 0.43 and 0.45, with the CZ-phase bound 1.32 and 1.40 and with the tilt bound 1.59 and 1.75; partner-in-0 ZZ of 20 kHz with the tilt bound reaches 1.03 and 1.15. The single-family gate-error argument therefore does not close the device question; it rests on the coherent tilt, CZ phase and static detuning of the chosen path.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Noise-free scenarios on the snapshot's compiled arms; the gate-error bounds charge each gate's whole reported error to one coherent family and are upper limits on the coherent part; the twirled-CZ rows assume ideal Pauli frames around each CZ; the every-path sweep reads all 226 working paths against the best path's coefficient standard deviations; crosstalk and leakage are outside it, and the coherent tilt and CZ-phase fractions of Kingston paths are unmeasured. The per-coefficient reading and every row after the joint families were added after an exploratory run had shown the joint result, and the detuning and ZZ pairs after a review of the first retained run. No hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/bound_residuals.json",
+          "sha256": "491226721d81588a2d9914fc9880c19ea11d013e40b4663c72405293900b836e"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/null_residuals.json",
+          "sha256": "fdda4701dc8b33fb1122c53658f12a4b4b3870d05cba8e491f684bc722ffabbe"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/noise.json",
+          "sha256": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/README.md",
+        "docs/design/primorial-cover-joint-coherent-bounds.md"
+      ],
+      "gates": {
+        "core-primorial-bound-residuals-replay": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "primorial-cover-noise-null-subtraction"
+      ],
+      "supersedes": [
+        "primorial-null-residuals-zz-tilt"
+      ],
+      "superseded_by": null
+    },
+    {
+      "id": "primorial-probe-case-design",
+      "statement": "On the best and median ibm_kingston paths of the primorial noise record, the coherence probes of gororoba_quantum/coherence_probes.py recover injected drive-axis tilt, CZ conditional phase, static detuning and partner-in-0 ZZ, every family at once, within 5.2e-5 rad of x tilt, 4.1e-5 rad of sx tilt, 3.8e-6 rad of CZ phase, 2.6 Hz of detuning and 1.3 Hz of ZZ; a constant-amplitude detuned pulse equals the tilt Delta / Omega to an infidelity of 3.6e-10 up to 60 kHz. Under the snapshot's noise each estimate's bias stays below its standard error, and the shots that resolve each decision threshold at three standard deviations are 2 for CZ phase at 0.7 of its bound, at most 18 for tilt at 0.2 of its sx and x bounds, at most 60 for 5 kHz detuning and 757 for 2 kHz ZZ. Thirty-two independent samplomatic twirl randomizations of the gap-88 signal and null arms raise the joint tilt and CZ-phase max_z at the gate-error bounds to 5.4 and 6.5 against 2.6 and 2.8 untwirled (512 randomizations: 1.03 and 1.11). The untwirled decision rule's 95th-percentile predicted max_z is 0.0004 and 0.0005 at zero error, 0.069 and 0.072 at the repository's measured coherent scales and 1.07 and 1.14 at the decision thresholds.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Noise-free and noise-model simulations on the retained ibm_kingston snapshot of 2026-10-15; the twirl model samples the client-side Sampler's boxing with independent randomizations per arm, as live_run's packing gives them (one member per PUB, 104 PUBs in the gap-88 dry run); the probe design assumes coherent errors static over a job and the drift monitors of the hardware case flag only drift several times the subtraction tolerance. An exploratory build-host run changed the design before the retained run. No hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/primorial_cover/probe_case.json",
+          "sha256": "757db2030ba888cc21e250f797713f505c7c140eb2e78e957072f080b141fa56"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/bound_residuals.json",
+          "sha256": "491226721d81588a2d9914fc9880c19ea11d013e40b4663c72405293900b836e"
+        },
+        {
+          "path": "docs/evidence/primorial_cover/noise.json",
+          "sha256": "00377e39cdc8b52f968cd2c674018b5eeb80de934744ec362b0dd33b0f985527"
+        }
+      ],
+      "documents": [
+        "docs/evidence/primorial_cover/README.md",
+        "results/live/PRIMORIAL_COHERENCE_CASE.md"
+      ],
+      "gates": {
+        "core-primorial-probe-case-replay": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "primorial-bound-residuals-joint"
       ],
       "supersedes": [],
       "superseded_by": null
@@ -10177,6 +11105,235 @@
       "related_claims": [
         "kingston-qet-window-phase-static",
         "kingston-qet-compensated-information-excess",
+        "hw-n21-feedback-null-scheduled-idle"
+      ]
+    },
+    {
+      "id": "iqm-garnet-cc-prx-feedback-label-limit",
+      "statement": "The garnet:mock station control refused job 01a17621-1452-701f-8874-ba08a138aec4 (22 circuits x 200 shots, active_reset_cycles 1, all-zeros heralding) at compilation, charging 0.00 credits: \"Playlist segment 0 can't be handled by the instruments\" with \"unique feedback signal labels: 2/1\" on the drive AWG of each of the five qubits that receive cc_prx (QB1, QB6, QB13, QB17, QB19) and on no other drive. Each of those drives carried exactly one cc_prx label (its partner's qubit and key) across all 22 circuits, so the second label is the active reset's conditional pulse on the qubit's own readout: on Garnet a qubit whose drive takes another qubit's feedback bit cannot also take active reset, and a cc_prx case runs under passive reset.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One mock compilation under the mock's own calibration set; the limit is the station's instrument constraint as reported, and the QPU station was not exercised. Whether two distinct cc_prx sources on one drive are refused with passive reset was not tested.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "6e2b778a7f69252a74eb1806e2d69b8220cd6bf8f88e5bf7ce746402f3a4ecdb"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept/raw/job.json",
+          "sha256": "5b6fab552ccffd94eb43d44c9c0641d73424a41bb295cfec5b9fac27b5bf48ce"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-mock-qet-ladder-accept"
+      ]
+    },
+    {
+      "id": "iqm-garnet-cc-prx-probe-line-limit",
+      "statement": "The garnet:mock station refused job 01a17675-111d-731e-9c6f-2132756f1686 (24 circuits x 200 shots, passive reset, no heralding) in circuit resolution, charging 0.00 credits: \"QB8 does not support fast feedback from QB3 (probe line: PL-2). Valid source probe lines are ['PL-3']\". The retained channel properties list the drive fast_feedback_sources of QB8, QB13, QB14, QB15, QB18 and QB19 as PL-3 only and of every other qubit as PL-1 and PL-2, and the chip design record places QB3 on PL-2: on Garnet a cc_prx needs its feedback qubit's readout probe line among the target drive's sources.",
+      "domain": "implementation",
+      "evidence_class": "preregistered emulator control",
+      "status": "established",
+      "boundary": "One mock compilation; the error names the first violating circuit and pair only, and the QPU station was not exercised. The wiring is read from the snapshot artifacts, which the QPU and the mock share at this snapshot.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "85c07f6f72e1de69815d892430730353f384e481d6d939959205cdccd738bc73"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T042544Z-garnet_mock-qet-compensated-ladder-accept/raw/job.json",
+          "sha256": "7a244b2059b4ab8c3b8b7a5ca758ddfea746e44c2892767b5f1afd2f690068e3"
+        }
+      ],
+      "documents": [
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-mock-qet-ladder-accept-passive"
+      ],
+      "related_claims": [
+        "iqm-garnet-cc-prx-feedback-label-limit"
+      ]
+    },
+    {
+      "id": "iqm-garnet-qet-compensated-ladder-verdicts",
+      "statement": "On IQM Garnet (calibration set 7b30f37a; one job of 24 circuits x 1600 shots, passive reset, five packed probe-line-compatible pairs with cc_prx feedback, 6.5 credits), the preregistered all-pairs tests read: H1 information excess +0.073 with one-sided 95 percent bounds [-0.070, +0.216], unresolved, with per-pair values +0.005, +0.005, +0.186, -0.100 and +0.268 (between-pair spread 0.150 against per-pair shot noise 0.064 to 0.071); H2 channel floor margin -0.423 (upper bound -0.266), fails, the reference unitary floors 0.25 to 0.73 lying above the vacuum value and above the predicted 0.21 to 0.38; H4 mean window-phase magnitude 0.549 rad (lower bound 0.272), a coherent phase of Kingston's order over Garnet's 1.1 us readout-plus-feedback window. The cc_prx(2 phi*) rotation is present (raw pooled P(1) 0.0968 after a |1> source against sin^2 phi* = 0.100, 0.0089 after |0>); H3's readout-corrected angle band admitted 2 of 5 pairs.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, one job, five pairs, t-bounds across pairs; energies are expectations of an encoded spin Hamiltonian. H3's band failures are attributed, with moderate confidence and no separating arm, to the |11> calibration arm's preparation error inflating the corrected angle. The garnet:mock acceptance job returns random bits and enters no endpoint.",
+      "evidence": [
+        {
+          "path": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/analysis.json",
+          "sha256": "5538b9d9a1052dcb03a031d65ad42230debdce210a08164b593b0683a1edd1c2"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/results.json",
+          "sha256": "e5863ec28bf04f3c2b63317c09b8d2dcb2e2658f136c0250af153fd5aa32f744"
+        },
+        {
+          "path": "results/iqm/runs/2026-10-26T043111Z-garnet_mock-qet-compensated-ladder-accept/results.json",
+          "sha256": "ba1b6cfd654f96fc08e3435eca7348471b790ab4f5c2f133d1dffc8134d457d7"
+        }
+      ],
+      "documents": [
+        "results/iqm/runs/2026-10-26T043142Z-garnet-qet-compensated-ladder-ladder/FINDINGS.md",
+        "docs/design/iqm-garnet-qet-compensated-ladder.md"
+      ],
+      "acquisitions": [
+        "iqm-garnet-qet-compensated-ladder",
+        "iqm-garnet-mock-qet-ladder-accept-wired"
+      ],
+      "related_claims": [
+        "kingston-qet-scheduled-idle-coherent-phase",
+        "iqm-garnet-cc-prx-probe-line-limit",
+        "iqm-garnet-cc-prx-feedback-label-limit"
+      ]
+    },
+    {
+      "id": "qd-belenos-teleportation-rehearsal-job-00",
+      "statement": "The single-chip teleportation rehearsal on qpu:belenos, job 55479252-d907-45ac-b1e1-84f19d21a131 submitted 2026-10-26 02:54:50 UTC under the anchor gate (model pooled fidelity 0.868 at the 2026-10-24 anchor figures, 0.635 at the held live figures), completed in 292 s and returned 0 three-click samples in each of its six iterations, each reporting its full max_shots of 1,200,000 as nb_shots_used. The preregistered verdict is inconclusive: no input has an accepted event, so neither the pooled fidelity nor the classical bound is defined. The preregistered record-state class is degraded-as-recorded (0 of 5400 requested samples, against 5400 expected in the anchor state and about none in the held state); the in-situ fit and the exploratory Cayley-Dickson lens have no event to read. The platform record before and after the job carries the held figures (HOM 83.8 %, g2 16.7 %, Transmittance 0.05 %) unchanged.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One job on one chip in one held calibration state. The record-state class rests on the documented max_shots semantics, which this job is the first retained run to exercise: an iteration ended by its shot budget reports that budget, not a count of optical trials, so the zero count bounds the three-click rate per reported shot (below 4.2e-7 at 95 % over 7.2e6 shots, against about 1e-3 in the anchor state) without fixing the transmittance, whose value depends on what a shot counts. The run establishes nothing about teleportation fidelity, and no C1 conformance; the approval was single-use, and a run on a recovered chip is job-01.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/results.json",
+          "sha256": "0263dbe81e6d4aa97ded1429130fb0b984e11e8d8074fe819a57e6e960b1fe13"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/raw/result.json",
+          "sha256": "0f0e51170c9057855e3fe0369f4ac3093179ab276ce9e3dc7a8b7dfad46aa8cb"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/submission.json",
+          "sha256": "31dd85622c29c3357b0e67ec3f72990d9dd6102b09ea4778ef286474264e3a63"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/submit-model.json",
+          "sha256": "11e84460c354ee561c0a958c991be3a9d37267e0c8d9b6c34d660aaf72264a64"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
+          "sha256": "c517763c77c48192551dfcb133b422d404b5bba403c3c4dd6eb2d4699ded520d"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/secondary-analysis.json",
+          "sha256": "e9b27dfa955ac53bcce60fd679a14eeee2758eed41cfb765d5ef08cc7cd5967b"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-belenos-entanglement-teleportation.md",
+        "docs/notes/quandela/calibration.md",
+        "scripts/qd_teleportation_rehearsal.py",
+        "scripts/qd_rehearsal_secondary.py"
+      ],
+      "gates": {
+        "core-teleportation-rehearsal-job-00-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-qpu-belenos-teleportation-rehearsal-job-00"
+      ]
+    },
+    {
+      "id": "hw-n21-orbit-scheduled-idle-control",
+      "statement": "Replayed with its service-scheduled idle written in as delays under the execution Target, the N=21 orbit run on ibm_fez (4 qubits, 28 CZ before routing; most idle qubit 1,958 dt) gives an idle-padded exact contrast difference of +0.179 against +0.208 unpadded and a measured +0.197 (95 percent interval +-0.030 at 4096 shots per arm), while the encoded N=21 Kingston run (336 CZ; most idle leaf 15,481 dt) gives -0.0007 padded against +0.031 unpadded and a measured +0.0027. The same parameter-free idle model lies inside both measured intervals, so the Kingston null follows the encoded circuit's length rather than N=21 feed-forward.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Two retained runs on two backends and calibrations; the orbit run's predicted idle loss (0.029) equals its interval half-width, so it does not separate the padded from the unpadded model on its own. Incoherent idle only; the orbit runs' fitted work phase (hw-n21-orbit-phase) is coherent and outside this model.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T080216.451663Z/idle-replay.json",
+          "sha256": "f589f9ccf10ae470f45c4d8c101af9969ea022e1187166e554e493419d30ad71"
+        },
+        {
+          "path": "results/live/2026-10-13T080216.451663Z/collect.json",
+          "sha256": "fc50723a9ee530cf9b4869a58da64cfbddf9dc98c999c66145ea7762881b2ddb"
+        },
+        {
+          "path": "results/live/2026-10-18T090603.530638Z/idle-replay.json",
+          "sha256": "218790a98f99de9835fe219061e11a004908ea0809df3c88bea1b4688ac7bd6c"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-18T090603.530638Z/IDLE_REPLAY_FINDINGS.md"
+      ],
+      "acquisitions": [
+        "fez-n21-orbit-feedback",
+        "kingston-n21-feedback-encoded-50us"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-scheduled-idle",
+        "hw-n21-orbit-phase"
+      ]
+    },
+    {
+      "id": "kingston-idle-penalty-multipliers-and-readout-phase",
+      "statement": "On ibm_kingston (execution calibration 2026-10-26T14:25:32-07:00; one job of 44 dynamic PUBs at 4096 shots and a 20 us repetition delay over 31 coupled pairs, 62 qubits) the relaxation multiplier kappa_1 = Gamma_1 T1_reported has median 1.057 [0.978, 1.183], so the preregistered optimistic-T1 decision reads absent or unresolved; Ramsey decay runs faster than the reported Hahn-echo T2 (kappa_2* median 1.451 [1.276, 1.905]) and faster than the measured echo decay (ratio 1.269 [1.170, 1.330], echo gain present); and the readout of every replica's partner during a probe's 40 us idle changes the probe's Ramsey phase rate by -2.72 +- 0.53 kHz against the after arm and -2.73 +- 0.54 kHz against the quiet Ramsey arm in the pair mean, with the quiet null at -0.010 +- 0.020 kHz (decision present). The preregistered visibility decision reads present through the chi-square of pair departures alone: probe 74 loses 0.57 visibility and the pair median is -0.006.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, one job, one fixed placement; pair means of the two probes are the statistical unit, and all pairs share each wide PUB's shots and readout environment. The visibility chi-square uses conditional lower-bound errors, so it establishes pair-to-pair departures, not a device-mean loss. The phase-rate sign is the analyzer's atan2 convention. Every replica's partner reads at once, so the design separates neither a probe's own partner from chip-wide readout nor a readout-tone mechanism from transient excitation or leakage. Medians carry order-statistic intervals over this cohort. The analyzer refuses a run whose service schedule departs from the compiled instructions, the planned idles or the reader trains.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/collect.json",
+          "sha256": "a055a7d4fead2ae05a425cb5c223e275f9b843aaeb56959f1f83bf366813583e"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/record.json",
+          "sha256": "647dd3223df2a1053e01e7190efe325c336af24719ef4398438b1b01352252c6"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
+          "sha256": "2bee55b8eb66048a87ce0673fb8afa51ac3e28a58d4be779719e098ea5b1eb47"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_PROBE_FINDINGS.md",
+        "results/live/IDLE_PENALTY_PROBE_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-probe"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-scheduled-idle",
+        "kingston-qet-scheduled-idle-coherent-phase"
+      ]
+    },
+    {
+      "id": "kingston-idle-penalty-retained-kappa-qubits",
+      "statement": "Exploratory, after the data: on the same run the pure-dephasing multiplier (1/T2_measured - kappa_1 / 2 T1_reported) / (1/T2_reported - 1/2 T1_reported) has cohort median 1.88 free and 1.20 echoed (order statistics over point estimates, per-qubit range -0.67 to 17.9 free); the reader's final excitation after its train is at most 0.038 (median -0.0005), and static ZZ through it predicts at most 0.16 kHz of the phase rate; and of the qubits behind the retained idle kappa near 3 (73, 79, 92, 93, 94, 95), the placed 73 and 94 read nominal on relaxation, dephasing and readout while 95 shows excess free dephasing only.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Chosen after the data; the bands do not propagate shared reference or reported-value uncertainty. The final-excitation bound does not cover transient population during the train. The historical comparison spans two weeks and different circuits, so drift, calibration normalization and circuit context are not separated; 79, 92 and 93 were not placed.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory.json",
+          "sha256": "092d66f8327b62c35ce94c2c273faf06a37df6559d93a86707a253a62acb4cd7"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
+          "sha256": "2bee55b8eb66048a87ce0673fb8afa51ac3e28a58d4be779719e098ea5b1eb47"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_PROBE_FINDINGS.md",
+        "results/live/IDLE_PENALTY_PROBE_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-probe"
+      ],
+      "depends_on": [
+        "kingston-idle-penalty-multipliers-and-readout-phase"
+      ],
+      "related_claims": [
         "hw-n21-feedback-null-scheduled-idle"
       ]
     }

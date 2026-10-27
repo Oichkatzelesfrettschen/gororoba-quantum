@@ -1,0 +1,18 @@
+{
+ "schema": "anu-qrng-draw-v1",
+ "source": "https://api.quantumnumbers.anu.edu.au?length=8&type=uint16",
+ "retrieved_utc": "2026-10-25T231051Z",
+ "raw": "{\"success\": true, \"type\": \"uint16\", \"length\": \"8\", \"data\": [2441, 50280, 65074, 30206, 44519, 54934, 17316, 54452]}",
+ "raw_sha256": "2fc7792d8770e8a97526ff0e19f629e7e26b68e48e4aefcea731c0410e7f683a",
+ "type": "uint16",
+ "values": [
+  2441,
+  50280,
+  65074,
+  30206,
+  44519,
+  54934,
+  17316,
+  54452
+ ]
+}

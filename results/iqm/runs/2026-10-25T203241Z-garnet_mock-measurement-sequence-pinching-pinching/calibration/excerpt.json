@@ -1,0 +1,76 @@
+{
+ "calibration_set": "be070414-7624-4943-ac7e-1e2678f05684",
+ "couplers_among_qubits": [],
+ "qubits": {
+  "QB11": {
+   "acquisition_delay_s": 4.665e-07,
+   "e01": 0.013,
+   "e10": 0.0252,
+   "integration_length_s": 4.84e-07,
+   "probe_duration_s": 4.84e-07,
+   "prx_p": 0.0011325077255159854,
+   "t1_s": 4.7781533297949565e-05,
+   "t2_s": 1.218514437280813e-05
+  },
+  "QB14": {
+   "acquisition_delay_s": 4.6450000000000006e-07,
+   "e01": 0.0124,
+   "e10": 0.0124,
+   "integration_length_s": 4.2e-07,
+   "probe_duration_s": 4.2e-07,
+   "prx_p": 0.000663492310070346,
+   "t1_s": 4.488061124827712e-05,
+   "t2_s": 7.0063340552353605e-06
+  },
+  "QB17": {
+   "acquisition_delay_s": 4.6550000000000003e-07,
+   "e01": 0.0096,
+   "e10": 0.0162,
+   "integration_length_s": 4.2e-07,
+   "probe_duration_s": 4.2e-07,
+   "prx_p": 0.0009426719046679022,
+   "t1_s": 4.628028389450517e-05,
+   "t2_s": 1.4129965435438016e-05
+  },
+  "QB19": {
+   "acquisition_delay_s": 4.6450000000000006e-07,
+   "e01": 0.0376,
+   "e10": 0.038,
+   "integration_length_s": 5.24e-07,
+   "probe_duration_s": 5.24e-07,
+   "prx_p": 0.0009197776575640138,
+   "t1_s": 5.9114854283241813e-05,
+   "t2_s": 7.930177543079434e-06
+  },
+  "QB5": {
+   "acquisition_delay_s": 4.6550000000000003e-07,
+   "e01": 0.0058,
+   "e10": 0.0306,
+   "integration_length_s": 5.56e-07,
+   "probe_duration_s": 5.56e-07,
+   "prx_p": 0.0010199997118700566,
+   "t1_s": 4.577432550446066e-05,
+   "t2_s": 9.32218886620192e-06
+  },
+  "QB7": {
+   "acquisition_delay_s": 4.6550000000000003e-07,
+   "e01": 0.0122,
+   "e10": 0.0392,
+   "integration_length_s": 5.56e-07,
+   "probe_duration_s": 5.56e-07,
+   "prx_p": 0.005449217832772746,
+   "t1_s": 4.178067451526524e-05,
+   "t2_s": 7.76256408852692e-06
+  }
+ },
+ "schema": "iqm-measurement-sequence-calibration-v2",
+ "selection": {
+  "median_t1_s": 3.7962256471572834e-05,
+  "rule": "the 6 qubits of smallest e01 + e10 among those with T1 at least the set's median, taken in that order and skipping any that shares a cz coupler with one already taken"
+ },
+ "source_sha256": {
+  "dynamic-quantum-architecture.json": "0ac8713029672f1fc967ad6fb01dcd549f753d7ab79bd7b0fad45d4164feb1ff",
+  "metrics.json": "b9ec7e20214b8cbfca93d4059289cc3bb08b689db1b99b689d19ab23850a2436",
+  "set.json": "23b1faefcd112c035138c289def9359825173f7c8bb206915e9440191b3b947d"
+ }
+}

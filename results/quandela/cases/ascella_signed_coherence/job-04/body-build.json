@@ -1,0 +1,13 @@
+{
+ "platform": "qpu:ascella",
+ "cases_sha256": "abbe4e5a3bf69ae8fbceefe5607b862fed4a0afdf31276582cc587e8f85718be",
+ "job_body_sha256": "0f905efca9d80cae8933fe187005e18a855c809e1f6336763fbddb8dd9b464b2",
+ "estimated_shots": 2621440,
+ "payload_version_basis": "declared",
+ "versions": {
+  "perceval-quandela": "1.3.1",
+  "exqalibur": "1.4.2"
+ },
+ "built_utc": "2026-10-26T20:28:05+00:00",
+ "sent": false
+}

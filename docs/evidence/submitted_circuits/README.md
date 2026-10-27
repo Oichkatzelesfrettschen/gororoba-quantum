@@ -31,7 +31,23 @@ after `live_run.py` gained its QRNG seed flags; it differs from the latency-reco
 The [QET-campaign successor](comparison-qet-campaigns.json) rebinds the retained-audit comparison offline after
 `live_run.py` listed `qet_ladder.py` in its experiment manifest and refused dynamical decoupling for the three QET
 campaigns; it differs from the seed-flag successor only in the `live_run.py` digest and the offline validation time.
-Gate `core-281` checks it.
+
+The [primorial-campaign successor](comparison-primorial-campaigns.json) rebinds the retained-audit comparison
+offline after `live_run.py` gained the structure-preserving compilation contract, pinned layouts for the
+`coherence_probes` and `primorial_gap88` campaigns and their manifest entries; it differs from the QET-campaign
+successor only in the `live_run.py` digest and the offline validation time.
+
+The [readout-preflight successor](comparison-readout-preflight.json) rebinds the retained-audit comparison
+offline after `live_run.py` listed the `readout_preflight` campaign among its pinned campaigns; it differs from
+the primorial-campaign successor only in the `live_run.py` digest and the offline validation time.
+
+The [idle-penalty retrieval](comparison-idle-penalty-retrieval.json) covers all 41 jobs of the retained-job audit
+after Kingston job `dbfrg3fpc3tc739o4kag` joined it. Seeded from the original comparison, it retrieved the 13 jobs
+that comparison lacks, the earlier twelve and the new one, through the read-only job interface, and every item equals
+its retained circuit in order. [Its collector text](collector-idle-penalty-retrieval.py.txt) keeps the exact
+source. The [idle-penalty successor](comparison-idle-penalty-probe.json) rebinds that retrieval offline after
+`live_run.py` listed `idle_penalty.py` in its experiment manifest and refused dynamical decoupling and twirling for
+the campaign. It binds the direct dependencies. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
@@ -45,7 +61,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-qet-campaigns.json
+  --out docs/evidence/submitted_circuits/comparison-idle-penalty-probe.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0

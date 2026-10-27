@@ -1,0 +1,17 @@
+{
+ "approval": "8 credits, ~1700 shots (Recommended): mock first, then the QPU job; same command after a pair-choice change",
+ "body_sha256": "7afa9534701dc3993247caa73d5a46c84c65ac63408061255ea048e868b4a8d9",
+ "cases_sha256": "3eff494269119187489e931f4d88699beae268cfc48179918b4095fdb98a58f7",
+ "credit_before": {
+  "currentBalance": "9.00",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 1.524,
+ "job": "accept",
+ "job_id": "01a1767a-1251-74d5-9f23-203585ad8770",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-26T04:31:16Z"
+}

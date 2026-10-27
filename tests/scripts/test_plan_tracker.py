@@ -125,6 +125,25 @@ def test_completed_falsification_and_historical_revalidation(root: Path) -> None
     records.validate(root, {item["id"]: item})
     if not records.receipt_freshness(root, item):
         raise RuntimeError("changed receipt inputs must request revalidation")
+    stale = copy.deepcopy(item)
+    newer = receipt(root, item, step) | {"observed_at": "2026-10-24T12:00:00Z"}
+    step["receipts"].append(newer)
+    if records.receipt_freshness(root, item) != [f"{item['id']}: revalidation required for context.md"]:
+        raise RuntimeError("a step revalidation leaves the plan receipt stale")
+    step["receipts"].insert(0, step["receipts"].pop())
+    if records.receipt_freshness(root, item) != [f"{item['id']}: revalidation required for context.md"]:
+        raise RuntimeError("the newest receipt is chosen by observed_at, not list position")
+    tracker.publish(root, {}, item)
+    revalidation = root / "revalidation.json"
+    revalidation.write_text(records.encoded(receipt(root, item) | {"observed_at": "2026-10-24T12:00:00Z"}))
+    invoke(root, "update", item["id"], "--receipt", str(revalidation))
+    revalidated = records.load(root)[item["id"]]
+    if records.receipt_freshness(root, revalidated) or len(revalidated["receipts"]) != 2:
+        raise RuntimeError("update --receipt appends a plan revalidation and keeps the superseded receipt")
+    if records.receipt_freshness(root, stale) != sorted(
+        f"{name}: revalidation required for context.md" for name in (item["id"], step["id"])
+    ):
+        raise RuntimeError("the superseded receipts alone still request revalidation")
     step["acceptance"] = "Prove the universal claim."
     with pytest.raises(ValueError, match="scope differs"):
         records.validate(root, {item["id"]: item})
@@ -281,6 +300,85 @@ def test_receipt_binds_parent_and_closure_members(root: Path) -> None:
     item["steps"].append(another)
     with pytest.raises(ValueError, match="scope differs"):
         records.validate(root, {item["id"]: item})
+
+
+def commit(root: Path, message: str) -> str:
+    subprocess.run(["git", "-C", str(root), "add", "-A"], check=True)
+    subprocess.run(
+        ["git", "-C", str(root), "-c", "user.name=Test", "-c", "user.email=test@example.invalid"]
+        + ["-c", "commit.gpgsign=false", "commit", "-qm", message],
+        check=True,
+    )
+    return plan_inventory.git(root, "rev-parse", "HEAD")
+
+
+def test_check_base_holds_closed_and_receipted_plans_to_fresh_evidence(root: Path) -> None:
+    item = plan()
+    step = item["steps"][0]
+    step.update(state="done", receipts=[receipt(root, item, step)])
+    tracker.publish(root, {}, item)
+    invoke(root, "render", "--write")
+    base = commit(root, "plans: retain the done step")
+    (root / "context.md").write_text("# Expanded context\n")
+    invoke(root, "render", "--write")
+    commit(root, "context: expand the question")
+    if invoke(root, "check", "--base", base) != 0:
+        raise RuntimeError("a stale receipt on a plan the change leaves alone keeps only the view flag")
+    item.update(state="closed", disposition="completed", resolution="Finite claim refuted.")
+    item["receipts"] = [receipt(root, item) | {"observed_at": "2026-10-24T12:00:00Z"}]
+    tracker.publish(root, {}, item)
+    invoke(root, "render", "--write")
+    commit(root, "plans: close over a stale step receipt")
+    with pytest.raises(ValueError, match="find-counterexample: revalidation required for context.md"):
+        invoke(root, "check", "--base", base)
+    step["receipts"].append(receipt(root, item, step) | {"observed_at": "2026-10-24T12:00:00Z"})
+    tracker.publish(root, {}, item)
+    invoke(root, "render", "--write")
+    commit(root, "plans: revalidate the step")
+    if invoke(root, "check", "--base", base) != 0:
+        raise RuntimeError("revalidated receipts admit the closure")
+    step["receipts"].append(receipt(root, item, step) | {"observed_at": "2026-10-25T12:00:00Z", "revision": "0" * 40})
+    tracker.publish(root, {}, item)
+    invoke(root, "render", "--write")
+    commit(root, "plans: cite a revision outside the history")
+    with pytest.raises(ValueError, match="0{40} is not an ancestor of HEAD"):
+        invoke(root, "check", "--base", base)
+
+
+def test_record_selector_binds_one_registry_record(root: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    registry = root / "registry.json"
+    claims = [{"id": "target", "status": "open"}, {"id": "neighbor", "status": "open"}]
+
+    def write(members: list[dict[str, Any]]) -> None:
+        registry.write_text(records.encoded({"claims": members}))
+
+    write(claims)
+    ref = "registry.json#claims/id=target"
+    invoke(root, "digest", ref)
+    printed = capsys.readouterr().out.split()[0]
+    if printed != records.digest(claims[0]):
+        raise RuntimeError("digest prints the canonical digest of the selected record")
+    item = plan()
+    step = item["steps"][0]
+    step.update(state="done", receipts=[receipt(root, item, step)])
+    step["receipts"][0]["evidence"] = [{"ref": ref, "sha256": printed}]
+    records.validate(root, {item["id"]: item})
+    write([claims[0], {"id": "neighbor", "status": "established"}, {"id": "added", "status": "open"}])
+    if records.receipt_freshness(root, item):
+        raise RuntimeError("edits to other records leave a selected record fresh")
+    stale = [f"{step['id']}: revalidation required for {ref}"]
+    for members in (
+        [{"id": "target", "status": "established"}],
+        [{"id": "neighbor", "status": "open"}],
+        [claims[0], claims[0]],
+    ):
+        write(members)
+        if records.receipt_freshness(root, item) != stale:
+            raise RuntimeError(f"a changed, missing or ambiguous record requests revalidation: {members}")
+    for malformed in ("registry.json#claims", "context.md#claims/id=target"):
+        step["receipts"][0]["evidence"] = [{"ref": malformed, "sha256": printed}]
+        with pytest.raises(ValueError, match="evidence selector needs"):
+            records.validate(root, {item["id"]: item})
 
 
 def test_runnable_frontier_and_closed_unfinished_steps(root: Path) -> None:

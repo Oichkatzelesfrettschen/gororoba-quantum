@@ -162,9 +162,12 @@ def repo_relative(path: Path | str) -> str:
 
 
 def self_test() -> int:
-    draw = sorted((ROOT / "docs/evidence/anu_qrng").glob("draw-*.json"))[-1]
+    # The newest retained draw holding the five values the fixture reads; a draw may hold a single value.
+    draws = sorted((ROOT / "docs/evidence/anu_qrng").glob("draw-*.json"), reverse=True)
+    draw, values = next(
+        (path, held) for path in draws if len(held := json.loads(path.read_text(encoding="utf-8"))["values"]) >= 5
+    )
     record_path = draw.relative_to(ROOT).as_posix()
-    values = json.loads(draw.read_text(encoding="utf-8"))["values"]
     # The flag defaults are values of the retained draw, so the fixture holds no hand-picked seed.
     single, pair, value = values[0], values[3:5], values[2]
     parser = argparse.ArgumentParser(exit_on_error=False)

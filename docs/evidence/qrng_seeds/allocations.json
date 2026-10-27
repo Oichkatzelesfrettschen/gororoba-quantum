@@ -1,7 +1,91 @@
 {
  "schema": "anu-qrng-allocations-v1",
- "description": "Seed values taken from retained QRNG draws. allocations: code literals (path, seed name, value, draw record, index). runtime: values a CLI seed flag took as qrng:<draw>#<index> (draw record, index, value, script, flag, experiment), added by ci/seed_provenance.py --add-runtime in the change that retains the run. ci/seed_provenance.py checks every row against its draw and allows each (record, index) once.",
+ "description": "Seed values taken from retained QRNG draws. allocations: code literals (path, seed name, value, draw record, index). runtime: values a CLI seed flag took as qrng:<draw>#<index> (draw record, index, value, script, flag, experiment), added by ci/seed_provenance.py --add-runtime in the change that retains the run. reserved: values a tracked file takes that the literal scan cannot key, such as a helper alias or a mapping (path, value, draw record, index, reason). owned: draws a tracked file consumes whole, as seeds and raw sample values a per-index row cannot key (draw record, path, reason); no other row may take an owned draw's index. ci/seed_provenance.py checks every row against its draw and allows each (record, index) once across the three sections.",
  "allocations": [
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_cz_ranks.py",
+   "name": "default_rng",
+   "value": 9845,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 1
+  },
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_pf_crosslink.py",
+   "name": "Random",
+   "value": 13924,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 2
+  },
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_small.py",
+   "name": "SeedSequence",
+   "value": 55842,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 3
+  },
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/data/serial3.py",
+   "name": "default_rng",
+   "value": 39076,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 0
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 20190,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 0
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 12958,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 4
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 34530,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 5
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 20003,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 6
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 56778,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 7
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 26843,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 8
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "name": "Random",
+   "value": 46053,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 9
+  },
+  {
+   "path": "scripts/bdsc_null_calibration.py",
+   "name": "NULL_SEED",
+   "value": 28807,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
+   "index": 0
+  },
   {
    "path": "scripts/iqm_idle_schedule_probe.py",
    "name": "SYNTHETIC_SEEDS",
@@ -15,13 +99,6 @@
    "value": 40623,
    "record": "docs/evidence/anu_qrng/draw-2026-10-25T001615Z.json",
    "index": 1
-  },
-  {
-   "path": "scripts/bdsc_null_calibration.py",
-   "name": "NULL_SEED",
-   "value": 28807,
-   "record": "docs/evidence/anu_qrng/draw-2026-10-25T015224Z.json",
-   "index": 0
   },
   {
    "path": "scripts/qd_teleportation_rehearsal.py",
@@ -64,6 +141,153 @@
    "value": 17743,
    "record": "docs/evidence/anu_qrng/draw-2026-10-25T204252Z.json",
    "index": 5
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 8608,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 30481,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 4339,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 55973,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 12504,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 37710,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 5
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 5573,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 39099,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 45322,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 55527,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 43939,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 10803,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 5
+  },
+  {
+   "path": "scripts/primorial_probe_case.py",
+   "name": "TWIRL_SEED",
+   "value": 2441,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T231051Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/primorial_probe_case.py",
+   "name": "TWIRL_LIMIT_SEED",
+   "value": 50280,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T231051Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/qd_rehearsal_secondary.py",
+   "name": "CONTROL_SEED",
+   "value": 64095,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T014202Z.json",
+   "index": 0
+  },
+  {
+   "path": "tests/scripts/test_qd_rehearsal_secondary.py",
+   "name": "TEST_SEEDS",
+   "value": 57403,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T021218Z.json",
+   "index": 0
+  },
+  {
+   "path": "tests/scripts/test_qd_rehearsal_secondary.py",
+   "name": "TEST_SEEDS",
+   "value": 35698,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T021218Z.json",
+   "index": 1
+  },
+  {
+   "path": "tests/scripts/test_qd_rehearsal_secondary.py",
+   "name": "TEST_SEEDS",
+   "value": 22313,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T021218Z.json",
+   "index": 2
+  },
+  {
+   "path": "tests/scripts/test_qd_rehearsal_secondary.py",
+   "name": "TEST_SEEDS",
+   "value": 39335,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T021218Z.json",
+   "index": 3
+  },
+  {
+   "path": "tests/scripts/test_qd_rehearsal_secondary.py",
+   "name": "TEST_SEEDS",
+   "value": 24314,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T021218Z.json",
+   "index": 4
+  },
+  {
+   "path": "tests/scripts/test_qd_rehearsal_secondary.py",
+   "name": "LENS_SEED",
+   "value": 44477,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T021247Z.json",
+   "index": 0
   }
  ],
  "runtime": [
@@ -82,6 +306,78 @@
    "script": "gororoba_quantum/live_run.py",
    "flag": "--seed-simulator",
    "experiment": "2026-10-25T223857.467590Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T191135Z.json",
+   "index": 0,
+   "value": 40932,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-26T202236.647959Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T191135Z.json",
+   "index": 1,
+   "value": 16292,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-26T202236.647959Z"
+  }
+ ],
+ "reserved": [
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_det_membership.py",
+   "value": 22315,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 5,
+   "reason": "RNG(22315) seeds through the RNG helper of common.py, which the scan does not key"
+  },
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_small.py",
+   "value": 20108,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 4,
+   "reason": "RNG(20108) seeds through the RNG helper of common.py, which the scan does not key"
+  },
+  {
+   "path": "docs/archive/reviews/das-mergus-checks/algebra/check_strata.py",
+   "value": 7190,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T095947Z.json",
+   "index": 6,
+   "reason": "RNG(7190) seeds through the RNG helper of common.py, which the scan does not key"
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "value": 60101,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 1,
+   "reason": "LINE_SEEDS maps each n to a seed in a dict whose int keys the scan does not read"
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "value": 35443,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 2,
+   "reason": "LINE_SEEDS maps each n to a seed in a dict whose int keys the scan does not read"
+  },
+  {
+   "path": "docs/evidence/stiefel-pfaffian-higher/verify_independent.py",
+   "value": 30416,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-25T221458Z.json",
+   "index": 3,
+   "reason": "LINE_SEEDS maps each n to a seed in a dict whose int keys the scan does not read"
+  }
+ ],
+ "owned": [
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T012526Z.json",
+   "path": "docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py",
+   "reason": "DRAW_A: family-point PCG64 seeds and integer z points read as raw values by runtime index"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T012529Z.json",
+   "path": "docs/evidence/a5-zero-divisor-strata/verify_strata_independent.py",
+   "reason": "DRAW_B: curve, finite-field sample and float-start seeds read by runtime index"
   }
  ]
 }

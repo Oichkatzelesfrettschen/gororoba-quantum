@@ -1,0 +1,58 @@
+{
+ "billed_seconds": 3.0,
+ "calibration_set": "f04fe114-002f-46bd-8fa4-2a577ff56501",
+ "charge": 0.0,
+ "compiled_schedule": {
+  "estimated_qpu_execution_seconds": 2.7123455999999986,
+  "predicted_qpu_execution_seconds": 2.7123455999999995,
+  "ratio": 0.9999999999999997,
+  "runtime_estimates_sha256": "4875d1720b1e40294fcc9e123f34c7f4324c6bad6e2f6ae16eb4fa236df4a30a"
+ },
+ "estimate_seconds": 4.312345599999999,
+ "mock": true,
+ "qubits": {
+  "QB1": {
+   "readout": {
+    "offset": -5.551115123125783e-17,
+    "scale": -0.013333333333333364,
+    "z0": -0.01333333333333342,
+    "z1": 0.013333333333333308
+   },
+   "reason": "readout contrast -0.0133 lies below the 0.5 floor",
+   "usable": false
+  },
+  "QB14": {
+   "readout": {
+    "offset": -0.015833333333333366,
+    "scale": 0.01416666666666666,
+    "z0": -0.0016666666666667052,
+    "z1": -0.030000000000000027
+   },
+   "reason": "readout contrast 0.0142 lies below the 0.5 floor",
+   "usable": false
+  },
+  "QB3": {
+   "readout": {
+    "offset": 0.015000000000000013,
+    "scale": 0.008333333333333304,
+    "z0": 0.023333333333333317,
+    "z1": 0.00666666666666671
+   },
+   "reason": "readout contrast 0.0083 lies below the 0.5 floor",
+   "usable": false
+  },
+  "QB7": {
+   "readout": {
+    "offset": -5.551115123125783e-17,
+    "scale": -0.013333333333333364,
+    "z0": -0.01333333333333342,
+    "z1": 0.013333333333333308
+   },
+   "reason": "readout contrast -0.0133 lies below the 0.5 floor",
+   "usable": false
+  }
+ },
+ "run": "2026-10-25T192310Z-garnet_mock-measurement-sequence-pinching-pinching",
+ "runtime_seconds": 2.352462,
+ "schema": "iqm-measurement-sequence-analysis-v1"
+}

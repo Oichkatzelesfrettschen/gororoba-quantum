@@ -1,0 +1,17 @@
+{
+ "approval": "Mock validation of the pair-everywhere rebuild on the symmetric exclusion (the coordinator allowed one mock job because the case changed)",
+ "body_sha256": "bc9379d1957ca1711276b701ed74dae953e75fb1c5e825842ba1b4cf0612d27e",
+ "cases_sha256": "ba32d095fc4ca4e4d2e7ee53a8ed0a9dedc64374a0bb7009b55bc03113dda0cd",
+ "credit_before": {
+  "currentBalance": "14.50",
+  "expiresAt": "2026-11-01T00:00:00+00:00"
+ },
+ "expected_seconds": 5.241,
+ "job": "pinching",
+ "job_id": "01a1755f-4e86-77ee-81be-7b1de90a3c0a",
+ "max_credits": 0.0,
+ "price_per_second": 0.0,
+ "qc": "garnet:mock",
+ "schema": "iqm-submission-v1",
+ "submitted_at": "2026-10-25T23:22:22Z"
+}

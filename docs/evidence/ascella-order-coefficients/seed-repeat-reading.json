@@ -1,0 +1,54 @@
+{
+ "alpha": 0.01,
+ "anchor_control": {
+  "difference": 0.0028531038782121376,
+  "job_02_mean": 0.8829365564774474,
+  "job_03_mean": 0.8857896603556595,
+  "reading": "steady",
+  "standard_error": 0.001928231716649217,
+  "z": 1.4796478315220933
+ },
+ "dependence": {
+  "p": 0.00024998750062496874,
+  "permutations": 20000,
+  "ratio": 36.828115920668495,
+  "reading": "compilation dependent"
+ },
+ "exploratory": {
+  "dark_output_spearman": {
+   "p": 0.17886828164165477,
+   "rho": 0.18223452623514685
+  },
+  "predecessor_transition_spearman": {
+   "p": 0.6702290054261268,
+   "rho": 0.05816814764183186
+  },
+  "x_means": {
+   "job_02_perturbed": 0.8867852456894624,
+   "job_03_perturbed": 0.8868815580178865
+  }
+ },
+ "mesh_identity": {
+  "anchors": 8,
+  "anchors_identical": 8,
+  "perturbed": 56,
+  "perturbed_identical": 56
+ },
+ "plan": "docs/state/plans/ascella-seed-repeat-case.json",
+ "reproduction": {
+  "bound": 0.7844777365083285,
+  "ceiling": 0.8801553949459568,
+  "meshes": 56,
+  "p": 4.999750012499375e-05,
+  "permutations": 20000,
+  "r": 0.8847182754388417,
+  "reading": "fixed per mesh"
+ },
+ "runs": [
+  "results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02",
+  "results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03"
+ ],
+ "schema": "ascella-seed-repeat-reading-v1",
+ "seed_draw": "docs/evidence/anu_qrng/draw-2026-10-26T033936Z.json",
+ "seed_index": 56
+}
