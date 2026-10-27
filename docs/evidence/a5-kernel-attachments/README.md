@@ -63,6 +63,35 @@ projection, or a surviving input mutation. Flipping the Cayley-Dickson signs for
 skew-symmetry but changes `C_z z` and leaves `-2 u_1 z_2 z_3 + 2 u_2 z_1 z_3` in the projected equation. Evidence:
 [`partner-purity-result.json`](partner-purity-result.json) and the [ledger](ledger.md#ledger-rows).
 
+## The bordered kernel is a Hermitian hyperplane in the holomorphic kernel at every retained sample
+
+For the holomorphic, skew, linear block `C_z`, the proposed replacement for the bordered kernel is
+
+`ker C_z = C z (+) ker A(z, conjugate(z))`,
+
+where the bordered kernel is identified with the Hermitian complement of `z` in `ker C_z`. The exact
+[`holomorphic_kernel_lemma.py`](holomorphic_kernel_lemma.py) replay checks this description at all nine
+path-supported nullity-twelve basepoints and at parameters 1, 2, and 3 on all 33 retained nullity-eight arcs. It also
+checks the coordinate-isotropic-plane representative of each nullity-sixteen orbit so that every claimed rank occurs
+in the retained result.
+
+Gaussian-rational row reduction and an independent python-flint rational rank of the realified matrices agree at all
+110 samples. The nullity-eight arc samples have `rank C_z=10` and `dim ker C_z=5`; the nullity-twelve basepoints have
+rank 8 and kernel dimension 7; the two nullity-sixteen fixtures have rank 6 and kernel dimension 9. At every sample,
+`C_z z=0`, the Hermitian pairing with `z` has rank one on `ker C_z`, and its complement has complex dimensions 4, 6,
+or 8 respectively. Direct exact span comparison identifies that complement with the kernel of the bordered matrix
+and identifies `ker C_z` with its orthogonal direct sum with `C z`.
+
+The falsifier was a wrong `C_z` rank, nonzero `C_z z`, a mismatch between the bordered kernel and the Hermitian
+complement, a failed direct-sum comparison, disagreement between Gaussian-rational and FLINT ranks, or a pairing
+mutation that preserves the bordered kernel. At each sample the producer replaces `z` in the pairing by the first
+recorded vector of `ker C_z` independent of `z`; all 110 mutated complements differ from the bordered kernel. The
+capped producer took 1.55 seconds wall time and 39,100 KiB peak resident memory. This finite verification supports the
+holomorphic reformulation on the retained exact sample set; it neither proves the lemma at every stratum point nor
+computes a holomorphic Gauss fiber. Evidence:
+[`holomorphic-kernel-lemma-result.json`](holomorphic-kernel-lemma-result.json) and the
+[ledger](ledger.md#ledger-rows).
+
 ## Nine exact basepoints support all retained nullity-8 degenerations
 
 The retained nullity-8 paths do not all end at the canonical representatives used by the regularity record. Directly
@@ -179,9 +208,9 @@ fiber, so the producer skipped characteristic zero. The outer `/usr/bin/time -v`
 time and 43,240 KiB peak resident memory for the Python controller. The killed inner timing wrapper emitted no
 Singular peak-resident-memory report, so the elimination process's peak remains unmeasured. This cost record proves
 neither a complex-algebraic exceptional fiber nor the real semialgebraic Gauss fiber. Completion within five minutes
-and 16 GiB, or any claimed fiber from this record, falsifies the recorded outcome. Evidence:
-[`xplus-vb-slice-gauss-graph-result.json`](xplus-vb-slice-gauss-graph-result.json) and the
-[ledger](ledger.md#ledger-rows).
+and 16 GiB, or any claimed fiber from this record, falsifies the recorded outcome. The holomorphic-kernel
+formulation supersedes this real elimination, so its cost record is not retained; the
+[ledger](ledger.md#ledger-rows) row 2g carries the measurement.
 
 ## Investigated questions
 
@@ -262,6 +291,12 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/partner_purity.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-attachments/partner_purity.py \
     --check docs/evidence/a5-kernel-attachments/partner-purity-result.json
+prlimit --as=17179869184 -- "$PYTHON" -B -W error \
+    docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --self-test
+prlimit --as=17179869184 -- "$PYTHON" -B -W error -O \
+    docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py --self-test
+prlimit --as=17179869184 -- "$PYTHON" docs/evidence/a5-kernel-attachments/holomorphic_kernel_lemma.py \
+    --check docs/evidence/a5-kernel-attachments/holomorphic-kernel-lemma-result.json
 "$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --self-test
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-attachments/path_supported_basepoints.py \
