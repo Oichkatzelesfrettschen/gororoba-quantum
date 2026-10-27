@@ -15,7 +15,7 @@
   },
   "owner": "provider-counter audit operator",
   "scope": "Every registered provider and simulator adapter, retained result format and scientific consumer of a shot, sample, cap, billing or exposure counter; Quandela first. Read-only provider retrieval only; no executions, uploads, bookings, QRNG draws or spending. The unmerged five-experiment branch (feature/quantum-experiment-conformance) adopts provider_counters after both merge.",
-  "next_action": "Open the contract pull request (inventory, contract table, provider_counters.py, fixtures and sensitivity replays), then repair qd_teleportation_rehearsal.analyze so an unconditional benchmark verdict needs an observed attempt profile.",
+  "next_action": "Route qd_platform collection and the Quandela analyzers through provider_counters records beside the verbatim raw fields; then qualify the three claim boundaries the audit README marks.",
   "related": [
     "ascella-belenos-entanglement-teleportation"
   ],
@@ -113,6 +113,34 @@
             {
               "ref": "docs/evidence/provider-counter-audit/README.md",
               "sha256": "65029ef3a5d5f8a93c1e1f3eca2a59bd78ed8827f4c8b5cd9ddad6475fd550d0"
+            }
+          ],
+          "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
+        },
+        {
+          "result": "Revalidated after the teleportation row update: counter table and census replay with --check over their frozen inventories.",
+          "observed_at": "2026-10-27T21:59:23+00:00",
+          "revision": "de665b15c274edd3eb296c0ab753db9c72f44614",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+              "sha256": "84b9d15ea4a58a67a1832d4c77a4026617c1f4f0b113fe6eab6edd9253bcef9b"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+              "sha256": "a5f4b993cfab92216dff4a2e7309f0806aa559730a1180af2d35f9cf77b6b969"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
+              "sha256": "167b0156a16b38866e2c96fe276aa91bdeed844464267986d41d446443b00409"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.json",
+              "sha256": "2175aa93e4244b36fb7068566b86347d593f9ed3bde8b5f612f7a6c3e606ffeb"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "7b0b01d447bfe2d1c40b84b1ea389ce76ef611e5781ada81c1d6be8faa70522e"
             }
           ],
           "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
@@ -217,13 +245,39 @@
     },
     {
       "id": "teleportation-benchmark-repair",
-      "state": "doing",
+      "state": "done",
       "action": "Make qd_teleportation_rehearsal.analyze report the benchmark at detection events and modeled attempts as conditional comparisons, with the unconditional verdict inconclusive unless an observed attempt profile exists.",
-      "acceptance": "A fixture with equal detections and differing latent trials keeps the unconditional verdict inconclusive while the conditional statistics replay the retained analysis."
+      "acceptance": "A fixture with equal detections and differing latent trials keeps the unconditional verdict inconclusive while the conditional statistics replay the retained analysis.",
+      "receipts": [
+        {
+          "result": "DECISION_CASES confines the decision rule to job-00; prepare and check refuse it elsewhere; job-00's analysis replays inconclusive.",
+          "observed_at": "2026-10-27T21:59:07+00:00",
+          "revision": "de665b15c274edd3eb296c0ab753db9c72f44614",
+          "evidence": [
+            {
+              "ref": "scripts/qd_teleportation_rehearsal.py",
+              "sha256": "aa145d5252afc88fc9bde7001da82b6c0dc61c0b186b12e0f05e6c0e0782ec9c"
+            },
+            {
+              "ref": "tests/scripts/test_qd_teleportation_rehearsal.py",
+              "sha256": "5a7013bda8f9aea529d67766c237b130bcaf3105ab552d9dd6c76027291a86b6"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
+              "sha256": "c517763c77c48192551dfcb133b422d404b5bba403c3c4dd6eb2d4699ded520d"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "7b0b01d447bfe2d1c40b84b1ea389ce76ef611e5781ada81c1d6be8faa70522e"
+            }
+          ],
+          "scope_sha256": "ad9c4bd424b404312735d59216dedf27a74f86c506284b475e78cc1d1c7c5436"
+        }
+      ]
     },
     {
       "id": "collection-boundaries",
-      "state": "todo",
+      "state": "doing",
       "action": "Route qd_platform collection and the Quandela analyzers through provider_counters records beside the verbatim raw fields.",
       "acceptance": "New records carry counter semantics and iteration scope; retained raw bytes and analyses keep their hashes."
     },
