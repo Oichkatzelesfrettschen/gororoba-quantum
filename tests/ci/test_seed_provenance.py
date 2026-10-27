@@ -16,6 +16,10 @@ def test_tree_seeds_are_accounted(shard: int) -> None:
     seed_provenance.check_tree(shard)
 
 
+def test_owned_draws_and_reserved_rows_validate() -> None:
+    seed_provenance.check_tree_once()
+
+
 def test_reproduction_seeds_only_shrink() -> None:
     seed_provenance.check_shrink()
 
