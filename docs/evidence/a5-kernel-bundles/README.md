@@ -7,12 +7,13 @@ constant kernel-pencil symmetry algebra and a visible twelve-component subgroup,
 rational kernel frames covering all seven pieces of nullity at least twelve. It also identifies the connected compact
 stabilizer and its irreducible kernel representation on both nullity-sixteen components, reduces those two bundles to
 the sedenion `SU(2)` bundle, and determines their ordinary real, complex, and quaternionic classes. An exhaustive
-component census, the non-homogeneous pieces' reduced transitions, the full `V` unit-section topology, and the
-non-homogeneous characteristic classes remain open. The aligned nullity-twelve pieces now have an explicit
+component census, the non-homogeneous pieces' reduced transitions, and the non-homogeneous characteristic classes
+remain open. The aligned nullity-twelve pieces now have an explicit
 one-dimensional compact-orbit quotient, a computed unit-section topology, and exact stabilizer representations on
 their principal and endpoint orbits. The open `V` orbit now has an explicit three-dimensional connected compact-orbit
-quotient and its recorded representative is identified as another collinear endpoint. The `B9` and `VB` quotients,
-stabilizers, and complex rank-six kernel representations are also explicit.
+quotient, a computed unit-section topology and K-groups, and exact stabilizer representations on its principal,
+endpoint, and `VB` boundary orbits. Its recorded representative is another collinear endpoint. The `B9` and `VB`
+quotients, stabilizers, and complex rank-six kernel representations are also explicit.
 
 Every computation uses rational or Gaussian-rational arithmetic. [`result.json`](result.json) is the output of
 [`kernel_symmetry.py`](kernel_symmetry.py) `--out`. [`frames-result.json`](frames-result.json) is the output of
@@ -21,7 +22,8 @@ Every computation uses rational or Gaussian-rational arithmetic. [`result.json`]
 `nullity_sixteen_bundle.py --out`. `aligned-orbit-moduli-result.json` is the output of
 `aligned_orbit_moduli.py --out`. `aligned-stabilizer-result.json` is the output of
 `aligned_stabilizer_representation.py --out`. `v-orbit-moduli-result.json` is the output of
-`v_orbit_moduli.py --out`. `isotropic-orbit-data-result.json` is the output of
+`v_orbit_moduli.py --out`. `v-topology-representation-result.json` is the output of
+`v_topology_representation.py --out`. `isotropic-orbit-data-result.json` is the output of
 `isotropic_orbit_data.py --out`. The focused contracts and mutation controls run without random input.
 
 ## Conventions
@@ -384,6 +386,86 @@ generic tangent rank or stabilizer different from `12` and `su(2)`, an endpoint 
 `su(3)`, dependence on `lambda`, or survival of the phase-deletion or missing-`i` mutations. None occurred. The exact
 rows and input digests are in `v-orbit-moduli-result.json`.
 
+## The open `V` unit section has antipodal quadric monodromy
+
+Put
+
+`B=CP^1 minus {+i,-i}`.
+
+Use homogeneous coefficient coordinates `[alpha:beta]` on `B`. The tautological coefficient line is trivial on
+`B`, because `B` has the homotopy type of a circle, so choose a nowhere-zero coefficient frame
+`(alpha,beta)`. Put `s=alpha^2+beta^2`; the two deleted points are precisely the zeros of `s`. A point of `V` has the
+form
+
+`z=(alpha*u,mu,beta*u),  mu^2=-s q(u),  mu!=0`.
+
+After setting `a=u/mu`, the equation is `q(a)=-1/s`. The unit condition fixes `abs(mu)` uniquely from
+`([alpha:beta],a)`, while `mu/abs(mu)` is a free global phase. Locally choose a square root of `s` and put
+`b=sqrt(s)*a`. Then `q(b)=-1`. A generator of `pi_1(B)` winds once around either deleted point. Since each zero of
+`s` is simple, analytic continuation reverses the square root and sends `b` to `-b`. A different coefficient frame
+multiplies `s` by a square, so it cannot change this winding parity.
+
+Write `b=x+i y`. The affine quadric equation is
+
+`x perpendicular to y, norm(y)^2=1+norm(x)^2`.
+
+Consequently `q(b)=-1` is diffeomorphic to `T S^6`: the base point is `y/norm(y)` and `x` is its tangent vector.
+Radial contraction in each tangent fiber is equivariant for `b -> -b`, and that involution restricts to the
+antipodal map on the zero section. Therefore, with `M_-` denoting the mapping torus of the antipodal map of `S^6`,
+
+`V_unit` is homotopy equivalent to `S^1 x M_-`.
+
+The sphere fiber is simply connected, so
+
+`pi_1(V_unit)=Z^2`.
+
+The cohomological Wang map on `H^6(S^6;Z)` is multiplication by `1-(-1)=2`. The mapping torus has `H^0=H^1=Z`,
+`H^7=Z/2`, and zero cohomology in every other positive degree. The Kunneth theorem then gives
+
+```text
+H^0(V_unit;Z) = Z,
+H^1(V_unit;Z) = Z^2,
+H^2(V_unit;Z) = Z,
+H^7(V_unit;Z) = Z/2,
+H^8(V_unit;Z) = Z/2,
+H^j(V_unit;Z) = 0 otherwise.
+```
+
+The same mapping-torus calculation in complex K-theory acts as `diag(0,2)` on
+`K^0(S^6)=Z{1}+Z{beta}`. Thus
+
+```text
+K^0(M_-) = Z,
+K^1(M_-) = Z + Z/2,
+K^0(V_unit) = K^1(V_unit) = Z^2 + Z/2,
+reduced K^0(V_unit) = Z + Z/2.
+```
+
+The compact stabilizer calculation was repeated at three projective ratios, including the infinity chart, two
+principal Gram types, the collinear endpoint, and the `rho=0` boundary:
+
+| Locus | Connected stabilizer | Complex kernel representation |
+| --- | --- | --- |
+| `0<rho<1` | `SU(2)` | `2 V_0 + 2 V_1` |
+| `rho=1` | `SU(3)` | `3 + conjugate(3)` |
+| `rho=0`, the `VB` boundary | `U(2)` | `V_(0,-4) + 2 V_(1,-3) + V_(0,-2)` |
+
+The principal `SU(2)` fixes the canonical ordered real-imaginary frame and is independent of `lambda`. Its isotypic
+multiplicities are integer-valued and locally constant on the connected principal parameter space, so the sampled
+certificates prove constancy rather than merely agreement at isolated points. At the boundary, the exact joint
+center-Casimir decomposition reproduces the independently committed `VB` module.
+
+The result determines the topology and the connected stabilizer representation on every compact-orbit type. It does
+not yet determine how the rank-six kernel bundle occupies the free and order-two summands of reduced `K^0(V_unit)`,
+or its monodromy along either circle. Those questions require the transition calculation rather than another
+orbitwise representation sample.
+
+The falsifier was a global-phase obstruction, even square-root winding, non-antipodal quadric monodromy, different
+fundamental group, cohomology, or K-groups, a point-stabilizer action that moved the point or escaped the kernel, a
+representation jump, a `VB` boundary module different from the committed result, or survival of a
+trivial-monodromy, moving-generator, or fiber-action mutation. None occurred. The exact rows, Wang maps, input
+digests, and mutation controls are in `v-topology-representation-result.json`.
+
 ## One Hermitian Gram ball unifies `B9` and `VB`
 
 Write the original-coordinate seven-vector blocks as `(u,v)` and put `w=-i v`. The split-coordinate equations for
@@ -734,11 +816,12 @@ irreducible summands. The `SU(2)` reduction then classifies the ordinary real, c
 both `N_+` and `N_-`, including the order-two complex K-class that their zero Chern classes do not detect. The
 computation also decomposes the connected stabilizer representations on the principal and endpoint orbits of both
 aligned nullity-twelve pieces and identifies the extra doublet acquired at their nullity-sixteen boundaries. It has
-classified the connected compact-orbit quotients of `V`, `B9`, and `VB`, the unit-section product types of `B9` and
-`VB`, and the `B9` and `VB` connected stabilizer representations. It has not proved that the visible components
+classified the connected compact-orbit quotients of `V`, `B9`, and `VB`, the unit-section topology and orbitwise
+stabilizer representations of `V`, the unit-section product types of `B9` and `VB`, and the `B9` and `VB` connected
+stabilizer representations. It has not proved that the visible components
 exhaust the group and has not classified an equivariant extension under the disconnected `N_+-` stabilizers, the
-actual real type of the individual four-plane `xi_R`, the full unit-section topology of `V`, or any non-homogeneous
-piece's reduced transition functions and bundle invariants. The compact
+actual real type of the individual four-plane `xi_R`, or any non-homogeneous piece's reduced transition functions
+and bundle invariants. The compact
 symmetry orbits are strictly smaller than the complex rank-stratum orbits outside `N_+-`, so the rank-stratum orbit
 labels do not make those kernel bundles homogeneous under the constant symmetry group.
 
@@ -783,6 +866,11 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/v_orbit_moduli.py --self-test
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/v_orbit_moduli.py \
     --out docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_v_topology_representation.py
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/v_topology_representation.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/v_topology_representation.py --self-test
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/v_topology_representation.py \
+    --out docs/evidence/a5-kernel-bundles/v-topology-representation-result.json
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/test_isotropic_orbit_data.py
 "$PYTHON" -B -W error docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --self-test
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --self-test
