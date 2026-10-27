@@ -1,0 +1,773 @@
+{
+ "decision": {
+  "alpha": 0.01,
+  "rule": "population when the 99 percent interval of pi lies above 0.5, misassignment when below",
+  "threshold": 0.5
+ },
+ "execution_order": {
+  "chunks": [
+   [
+    0,
+    1,
+    2
+   ]
+  ],
+  "one_chunk_in_submitted_order": true
+ },
+ "experiment_digest": "335114fbb0db4d2acec5038ff1483da1f3e9baef79698ec1d7c62e19b314eb8a",
+ "population_prediction": {
+  "e01": 0.009033203125,
+  "measure_us": 2.18,
+  "pi": 0.9848173758866272,
+  "t1_us": 350.21147492944345
+ },
+ "qubits": {
+  "141": {
+   "link": {
+    "next_prep0_given_remeasure_first": {
+     "difference": 0.28485903662298784,
+     "n_given_0": 32739,
+     "n_given_1": 28,
+     "p_given_0": 0.0008552490912978405,
+     "p_given_1": 0.2857142857142857,
+     "p_two_sided": 0.0,
+     "z": 45.480913070811404
+    },
+    "next_prep0_given_remeasure_second": {
+     "difference": 0.22771599657827202,
+     "n_given_0": 32732,
+     "n_given_1": 35,
+     "p_given_0": 0.000855431993156544,
+     "p_given_1": 0.22857142857142856,
+     "p_two_sided": 0.0,
+     "z": 40.64445331986686
+    },
+    "null_arm_z_limit": 3.0,
+    "remeasure_first_given_next_x_remeasure_first": {
+     "difference": 0.000863078725109426,
+     "n_given_0": 325,
+     "n_given_1": 32442,
+     "p_given_0": 0.0,
+     "p_given_1": 0.000863078725109426,
+     "p_two_sided": 0.5962162879018258,
+     "z": 0.529849491395017
+    },
+    "remeasure_first_given_x_remeasure_first": {
+     "difference": 0.0008630521221835219,
+     "n_given_0": 325,
+     "n_given_1": 32443,
+     "p_given_0": 0.0,
+     "p_given_1": 0.0008630521221835219,
+     "p_two_sided": 0.5962219548785453,
+     "z": 0.5298413185653421
+    },
+    "remeasure_first_given_x_remeasure_second": {
+     "difference": -0.00017964316758015489,
+     "n_given_0": 972,
+     "n_given_1": 31796,
+     "p_given_0": 0.00102880658436214,
+     "p_given_1": 0.0008491634167819851,
+     "p_two_sided": 0.8502377461127766,
+     "z": -0.18881508789971996
+    },
+    "status": "paired",
+    "verdict": "no_link"
+   },
+   "prep0": {
+    "excited": {
+     "fraction": 0.0010986328125,
+     "hits": 36,
+     "interval_99": [
+      0.0006843827199758104,
+      0.0016638721126108157
+     ],
+     "trials": 32768
+    }
+   },
+   "remeasure": {
+    "first_read_one": {
+     "fraction": 0.0008544921875,
+     "hits": 28,
+     "interval_99": [
+      0.0004958468518198169,
+      0.001364959958095404
+     ],
+     "trials": 32768
+    },
+    "persistence": {
+     "fraction": 0.6785714285714286,
+     "hits": 19,
+     "interval_99": [
+      0.4191521623906971,
+      0.8767581886207979
+     ],
+     "trials": 28
+    },
+    "reading": "undecided",
+    "second_one_given_first_zero": {
+     "fraction": 0.0004886988393402566,
+     "hits": 16,
+     "interval_99": [
+      0.00023115073907476036,
+      0.0009003021654230128
+     ],
+     "trials": 32740
+    }
+   },
+   "shots": 32768,
+   "x_remeasure": {
+    "first_read_one": {
+     "fraction": 0.990081787109375,
+     "hits": 32443,
+     "interval_99": [
+      0.9885833313355523,
+      0.9914358632687394
+     ],
+     "trials": 32768
+    },
+    "first_zero_reading": "misassignment",
+    "second_one_given_first_one": {
+     "fraction": 0.9798415682889992,
+     "hits": 31789,
+     "interval_99": [
+      0.9777446482667655,
+      0.9817963089063207
+     ],
+     "trials": 32443
+    },
+    "second_one_given_first_zero": {
+     "fraction": 0.021538461538461538,
+     "hits": 7,
+     "interval_99": [
+      0.0063073130261961895,
+      0.05190123532491139
+     ],
+     "trials": 325
+    }
+   }
+  },
+  "142": {
+   "link": {
+    "next_prep0_given_remeasure_first": {
+     "difference": 0.02135489292519295,
+     "n_given_0": 31429,
+     "n_given_1": 1338,
+     "p_given_0": 0.03843583951127939,
+     "p_given_1": 0.059790732436472344,
+     "p_two_sided": 8.258369807141292e-05,
+     "z": 3.9367757936417074
+    },
+    "next_prep0_given_remeasure_second": {
+     "difference": 0.035347135252836795,
+     "n_given_0": 31498,
+     "n_given_1": 1269,
+     "p_given_0": 0.037938916756619465,
+     "p_given_1": 0.07328605200945626,
+     "p_two_sided": 2.1120369234901714e-10,
+     "z": 6.352965067651899
+    },
+    "null_arm_z_limit": 3.0,
+    "remeasure_first_given_next_x_remeasure_first": {
+     "difference": -0.009000697826613585,
+     "n_given_0": 867,
+     "n_given_1": 31900,
+     "p_given_0": 0.049596309111880045,
+     "p_given_1": 0.04059561128526646,
+     "p_two_sided": 0.18639664951573143,
+     "z": -1.3213141149103191
+    },
+    "remeasure_first_given_x_remeasure_first": {
+     "difference": 0.00047602576121548446,
+     "n_given_0": 867,
+     "n_given_1": 31901,
+     "p_given_0": 0.040369088811995385,
+     "p_given_1": 0.04084511457321087,
+     "p_two_sided": 0.9442873817762578,
+     "z": 0.06988224906749664
+    },
+    "remeasure_first_given_x_remeasure_second": {
+     "difference": -0.00020932171646127068,
+     "n_given_0": 1316,
+     "n_given_1": 31452,
+     "p_given_0": 0.041033434650455926,
+     "p_given_1": 0.040824112933994655,
+     "p_two_sided": 0.9700132864477272,
+     "z": -0.03759162379331956
+    },
+    "status": "paired",
+    "verdict": "no_link"
+   },
+   "prep0": {
+    "excited": {
+     "fraction": 0.039306640625,
+     "hits": 1288,
+     "interval_99": [
+      0.03659332775584343,
+      0.04215471316799045
+     ],
+     "trials": 32768
+    }
+   },
+   "remeasure": {
+    "first_read_one": {
+     "fraction": 0.04083251953125,
+     "hits": 1338,
+     "interval_99": [
+      0.03806806735616019,
+      0.04373126682137899
+     ],
+     "trials": 32768
+    },
+    "persistence": {
+     "fraction": 0.5014947683109118,
+     "hits": 671,
+     "interval_99": [
+      0.46595791442951023,
+      0.5370208572206692
+     ],
+     "trials": 1338
+    },
+    "reading": "undecided",
+    "second_one_given_first_zero": {
+     "fraction": 0.01902640789055043,
+     "hits": 598,
+     "interval_99": [
+      0.017098498870452537,
+      0.02110149320764301
+     ],
+     "trials": 31430
+    }
+   },
+   "shots": 32768,
+   "x_remeasure": {
+    "first_read_one": {
+     "fraction": 0.973541259765625,
+     "hits": 31901,
+     "interval_99": [
+      0.9711724080477924,
+      0.9757713751051345
+     ],
+     "trials": 32768
+    },
+    "first_zero_reading": "misassignment",
+    "second_one_given_first_one": {
+     "fraction": 0.9813798940472086,
+     "hits": 31307,
+     "interval_99": [
+      0.9793415246747776,
+      0.9832731325338839
+     ],
+     "trials": 31901
+    },
+    "second_one_given_first_zero": {
+     "fraction": 0.16724336793540945,
+     "hits": 145,
+     "interval_99": [
+      0.135930645812678,
+      0.20228518426334557
+     ],
+     "trials": 867
+    }
+   }
+  },
+  "143": {
+   "link": {
+    "next_prep0_given_remeasure_first": {
+     "difference": 0.046130116913964896,
+     "n_given_0": 32417,
+     "n_given_1": 350,
+     "p_given_0": 0.011012740228892247,
+     "p_given_1": 0.05714285714285714,
+     "p_two_sided": 8.340689335514516e-16,
+     "z": 8.049097339551539
+    },
+    "next_prep0_given_remeasure_second": {
+     "difference": 0.04189888793694444,
+     "n_given_0": 32370,
+     "n_given_1": 397,
+     "p_given_0": 0.0109978375038616,
+     "p_given_1": 0.05289672544080604,
+     "p_two_sided": 7.219976690402399e-15,
+     "z": 7.780567787175393
+    },
+    "null_arm_z_limit": 3.0,
+    "remeasure_first_given_next_x_remeasure_first": {
+     "difference": -0.002000869637301809,
+     "n_given_0": 395,
+     "n_given_1": 32372,
+     "p_given_0": 0.012658227848101266,
+     "p_given_1": 0.010657358210799456,
+     "p_two_sided": 0.7006054872084524,
+     "z": -0.3845032504556996
+    },
+    "remeasure_first_given_x_remeasure_first": {
+     "difference": -0.017376411895050844,
+     "n_given_0": 395,
+     "n_given_1": 32373,
+     "p_given_0": 0.027848101265822784,
+     "p_given_1": 0.01047168937077194,
+     "p_two_sided": 0.0008400719143630623,
+     "z": -3.3392425094939884
+    },
+    "remeasure_first_given_x_remeasure_second": {
+     "difference": -0.0023366354354546464,
+     "n_given_0": 694,
+     "n_given_1": 32074,
+     "p_given_0": 0.012968299711815562,
+     "p_given_1": 0.010631664276360916,
+     "p_two_sided": 0.5535553307427518,
+     "z": -0.592440981216882
+    },
+    "status": "paired",
+    "verdict": "forward_link"
+   },
+   "prep0": {
+    "excited": {
+     "fraction": 0.011505126953125,
+     "hits": 377,
+     "interval_99": [
+      0.010043422530611187,
+      0.013110597366372406
+     ],
+     "trials": 32768
+    }
+   },
+   "remeasure": {
+    "first_read_one": {
+     "fraction": 0.01068115234375,
+     "hits": 350,
+     "interval_99": [
+      0.009274303697223847,
+      0.012232081440240287
+     ],
+     "trials": 32768
+    },
+    "persistence": {
+     "fraction": 0.5857142857142857,
+     "hits": 205,
+     "interval_99": [
+      0.5156543650187358,
+      0.6533932991347895
+     ],
+     "trials": 350
+    },
+    "reading": "population",
+    "second_one_given_first_zero": {
+     "fraction": 0.005922635572829909,
+     "hits": 192,
+     "interval_99": [
+      0.00488208904716179,
+      0.007110935297153121
+     ],
+     "trials": 32418
+    }
+   },
+   "shots": 32768,
+   "x_remeasure": {
+    "first_read_one": {
+     "fraction": 0.987945556640625,
+     "hits": 32373,
+     "interval_99": [
+      0.9863048418088309,
+      0.989442710875573
+     ],
+     "trials": 32768
+    },
+    "first_zero_reading": "misassignment",
+    "second_one_given_first_one": {
+     "fraction": 0.9875513545238316,
+     "hits": 31970,
+     "interval_99": [
+      0.9858751805584482,
+      0.9890823523082504
+     ],
+     "trials": 32373
+    },
+    "second_one_given_first_zero": {
+     "fraction": 0.26329113924050634,
+     "hits": 104,
+     "interval_99": [
+      0.20811446315102505,
+      0.32430608193487737
+     ],
+     "trials": 395
+    }
+   }
+  },
+  "147": {
+   "link": {
+    "next_prep0_given_remeasure_first": {
+     "difference": 0.06255771337116753,
+     "n_given_0": 30501,
+     "n_given_1": 2266,
+     "p_given_0": 0.01996655847349267,
+     "p_given_1": 0.0825242718446602,
+     "p_two_sided": 1.0142312755130944e-77,
+     "z": 18.661715068506272
+    },
+    "next_prep0_given_remeasure_second": {
+     "difference": 0.050216498623885476,
+     "n_given_0": 29501,
+     "n_given_1": 3266,
+     "p_given_0": 0.019287481780278636,
+     "p_given_1": 0.06950398040416411,
+     "p_two_sided": 5.272156691444612e-70,
+     "z": 17.687098052020154
+    },
+    "null_arm_z_limit": 3.0,
+    "remeasure_first_given_next_x_remeasure_first": {
+     "difference": -0.0010782351579335658,
+     "n_given_0": 3237,
+     "n_given_1": 29530,
+     "p_given_0": 0.07012666048810627,
+     "p_given_1": 0.0690484253301727,
+     "p_two_sided": 0.8184535340221674,
+     "z": -0.22953446803428942
+    },
+    "remeasure_first_given_x_remeasure_first": {
+     "difference": -0.021990808483907637,
+     "n_given_0": 3237,
+     "n_given_1": 29531,
+     "p_given_0": 0.08897126969416126,
+     "p_given_1": 0.06698046121025363,
+     "p_two_sided": 2.8482157092665852e-06,
+     "z": -4.681472527956294
+    },
+    "remeasure_first_given_x_remeasure_second": {
+     "difference": -0.037465923327350686,
+     "n_given_0": 9222,
+     "n_given_1": 23546,
+     "p_given_0": 0.0960746042073303,
+     "p_given_1": 0.05860868087997961,
+     "p_two_sided": 2.7581615412659283e-33,
+     "z": -12.020939880400888
+    },
+    "status": "paired",
+    "verdict": "forward_link"
+   },
+   "prep0": {
+    "excited": {
+     "fraction": 0.0242919921875,
+     "hits": 796,
+     "interval_99": [
+      0.022155259645722847,
+      0.026568149347852607
+     ],
+     "trials": 32768
+    }
+   },
+   "remeasure": {
+    "first_read_one": {
+     "fraction": 0.06915283203125,
+     "hits": 2266,
+     "interval_99": [
+      0.06559014290122722,
+      0.0728413286477299
+     ],
+     "trials": 32768
+    },
+    "persistence": {
+     "fraction": 0.8150926743159753,
+     "hits": 1847,
+     "interval_99": [
+      0.7932068407244337,
+      0.8356379131882639
+     ],
+     "trials": 2266
+    },
+    "reading": "population",
+    "second_one_given_first_zero": {
+     "fraction": 0.04652153957117566,
+     "hits": 1419,
+     "interval_99": [
+      0.043469876557934765,
+      0.04971565893650523
+     ],
+     "trials": 30502
+    }
+   },
+   "shots": 32768,
+   "x_remeasure": {
+    "first_read_one": {
+     "fraction": 0.901214599609375,
+     "hits": 29531,
+     "interval_99": [
+      0.8968951066642991,
+      0.9054170392421156
+     ],
+     "trials": 32768
+    },
+    "first_zero_reading": "misassignment",
+    "second_one_given_first_one": {
+     "fraction": 0.7748467711895973,
+     "hits": 22882,
+     "interval_99": [
+      0.7685249957109519,
+      0.7810796807400796
+     ],
+     "trials": 29531
+    },
+    "second_one_given_first_zero": {
+     "fraction": 0.20512820512820512,
+     "hits": 664,
+     "interval_99": [
+      0.187138601313494,
+      0.22399389145825335
+     ],
+     "trials": 3237
+    }
+   }
+  },
+  "148": {
+   "link": {
+    "next_prep0_given_remeasure_first": {
+     "difference": 0.05131775939895569,
+     "n_given_0": 32729,
+     "n_given_1": 38,
+     "p_given_0": 0.0013138195484127227,
+     "p_given_1": 0.05263157894736842,
+     "p_two_sided": 1.3745355122473872e-17,
+     "z": 8.537250332117953
+    },
+    "next_prep0_given_remeasure_second": {
+     "difference": 0.042164120103696204,
+     "n_given_0": 32721,
+     "n_given_1": 46,
+     "p_given_0": 0.0013141407658690137,
+     "p_given_1": 0.043478260869565216,
+     "p_two_sided": 1.1945026990879157e-14,
+     "z": 7.716625167283816
+    },
+    "null_arm_z_limit": 3.0,
+    "remeasure_first_given_next_x_remeasure_first": {
+     "difference": 0.0011684398253489945,
+     "n_given_0": 245,
+     "n_given_1": 32522,
+     "p_given_0": 0.0,
+     "p_given_1": 0.0011684398253489945,
+     "p_two_sided": 0.5924075311576131,
+     "z": 0.5353504724405722
+    },
+    "remeasure_first_given_x_remeasure_first": {
+     "difference": 0.0011684038987793254,
+     "n_given_0": 245,
+     "n_given_1": 32523,
+     "p_given_0": 0.0,
+     "p_given_1": 0.0011684038987793254,
+     "p_two_sided": 0.5924132279146028,
+     "z": 0.5353422325564995
+    },
+    "remeasure_first_given_x_remeasure_second": {
+     "difference": 0.0011867953402667165,
+     "n_given_0": 749,
+     "n_given_1": 32019,
+     "p_given_0": 0.0,
+     "p_given_1": 0.0011867953402667165,
+     "p_two_sided": 0.34549309445543774,
+     "z": 0.9433672385649107
+    },
+    "status": "paired",
+    "verdict": "no_link"
+   },
+   "prep0": {
+    "excited": {
+     "fraction": 0.001373291015625,
+     "hits": 45,
+     "interval_99": [
+      0.000903462514111228,
+      0.001993415962540439
+     ],
+     "trials": 32768
+    }
+   },
+   "remeasure": {
+    "first_read_one": {
+     "fraction": 0.00115966796875,
+     "hits": 38,
+     "interval_99": [
+      0.0007325143477969593,
+      0.0017376391897463595
+     ],
+     "trials": 32768
+    },
+    "persistence": {
+     "fraction": 0.47368421052631576,
+     "hits": 18,
+     "interval_99": [
+      0.2668338968105345,
+      0.6872319988450619
+     ],
+     "trials": 38
+    },
+    "reading": "undecided",
+    "second_one_given_first_zero": {
+     "fraction": 0.0008554842652001222,
+     "hits": 28,
+     "interval_99": [
+      0.000496422631763995,
+      0.0013665442908505118
+     ],
+     "trials": 32730
+    }
+   },
+   "shots": 32768,
+   "x_remeasure": {
+    "first_read_one": {
+     "fraction": 0.992523193359375,
+     "hits": 32523,
+     "interval_99": [
+      0.9912083276058834,
+      0.9936926487519058
+     ],
+     "trials": 32768
+    },
+    "first_zero_reading": "misassignment",
+    "second_one_given_first_one": {
+     "fraction": 0.9845032746056637,
+     "hits": 32019,
+     "interval_99": [
+      0.9826512914867169,
+      0.9862118490487771
+     ],
+     "trials": 32523
+    },
+    "second_one_given_first_zero": {
+     "fraction": 0.0,
+     "hits": 0,
+     "interval_99": [
+      0.0,
+      0.021393624441792873
+     ],
+     "trials": 245
+    }
+   }
+  },
+  "149": {
+   "link": {
+    "next_prep0_given_remeasure_first": {
+     "difference": 0.2588316477748365,
+     "n_given_0": 32740,
+     "n_given_1": 27,
+     "p_given_0": 0.0004276114844227245,
+     "p_given_1": 0.25925925925925924,
+     "p_two_sided": 0.0,
+     "z": 53.121234751124035
+    },
+    "next_prep0_given_remeasure_second": {
+     "difference": 0.27546497690124944,
+     "n_given_0": 32738,
+     "n_given_1": 29,
+     "p_given_0": 0.0003970920642678233,
+     "p_given_1": 0.27586206896551724,
+     "p_two_sided": 0.0,
+     "z": 58.58966641581647
+    },
+    "null_arm_z_limit": 3.0,
+    "remeasure_first_given_next_x_remeasure_first": {
+     "difference": -0.0028361666648014055,
+     "n_given_0": 275,
+     "n_given_1": 32492,
+     "p_given_0": 0.0036363636363636364,
+     "p_given_1": 0.0008001969715622307,
+     "p_two_sided": 0.10262939498640494,
+     "z": -1.6322378268367095
+    },
+    "remeasure_first_given_x_remeasure_first": {
+     "difference": 0.0008309482042286031,
+     "n_given_0": 275,
+     "n_given_1": 32493,
+     "p_given_0": 0.0,
+     "p_given_1": 0.0008309482042286031,
+     "p_two_sided": 0.6324900350507404,
+     "z": 0.47822505005029864
+    },
+    "remeasure_first_given_x_remeasure_second": {
+     "difference": -0.0006198633481248475,
+     "n_given_0": 699,
+     "n_given_1": 32069,
+     "p_given_0": 0.001430615164520744,
+     "p_given_1": 0.0008107518163958964,
+     "p_two_sided": 0.5720508257221676,
+     "z": -0.5650337246242846
+    },
+    "status": "paired",
+    "verdict": "no_link"
+   },
+   "prep0": {
+    "excited": {
+     "fraction": 0.000640869140625,
+     "hits": 21,
+     "interval_99": [
+      0.00033785218720871736,
+      0.0010967430798118208
+     ],
+     "trials": 32768
+    }
+   },
+   "remeasure": {
+    "first_read_one": {
+     "fraction": 0.000823974609375,
+     "hits": 27,
+     "interval_99": [
+      0.0004728122333581379,
+      0.0013270852086123166
+     ],
+     "trials": 32768
+    },
+    "persistence": {
+     "fraction": 0.7407407407407407,
+     "hits": 20,
+     "interval_99": [
+      0.4774155484865009,
+      0.9182715080470156
+     ],
+     "trials": 27
+    },
+    "reading": "undecided",
+    "second_one_given_first_zero": {
+     "fraction": 0.00027488470113924435,
+     "hits": 9,
+     "interval_99": [
+      9.567927726001928e-05,
+      0.0006107041434375179
+     ],
+     "trials": 32741
+    }
+   },
+   "shots": 32768,
+   "x_remeasure": {
+    "first_read_one": {
+     "fraction": 0.991607666015625,
+     "hits": 32493,
+     "interval_99": [
+      0.9902207917946408,
+      0.9928495324181859
+     ],
+     "trials": 32768
+    },
+    "first_zero_reading": "misassignment",
+    "second_one_given_first_one": {
+     "fraction": 0.9865201735758471,
+     "hits": 32055,
+     "interval_99": [
+      0.9847840408044023,
+      0.9881120475568977
+     ],
+     "trials": 32493
+    },
+    "second_one_given_first_zero": {
+     "fraction": 0.05090909090909091,
+     "hits": 14,
+     "interval_99": [
+      0.022941908983911817,
+      0.09531558955554363
+     ],
+     "trials": 275
+    }
+   }
+  }
+ },
+ "rep_delay_seconds": 2e-05,
+ "run": "2026-10-27T204605.871056Z",
+ "schema": "remeasure-history-v1"
+}
