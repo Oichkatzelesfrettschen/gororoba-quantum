@@ -88,12 +88,20 @@ fused PUB is one member row on all 32 qubits, and the executor reports one chunk
   informative qubits). Weighted fits of the corrected series admit, at p >= 0.01: T1 and q free on 23 qubits, decay to
   the ground state (q = 1) with T1 free on 14, the calibrated T1 with q free on 12, and the calibrated T1 with q = 1 on
   2. The T1 rows also correlate one column apart (median 0.0085), and the T1 fitted to each quarter of the shots varies
-  by a median factor 1.13 (q50: 1.54). The decay is not one exponential to the ground state at the calibrated T1: T1
-  moves during the job, and the q fit absorbs that as a plateau below 1, which the analysis reads as a negative
-  initialization excitation.
+  by a median factor 1.13 (q50: 1.54), yet q stays near 0.7 in every quarter (medians 0.71, 0.67, 0.71, 0.73), so slow
+  drift does not produce the plateau. A decay rate that fluctuates faster than the job resolves, gamma-distributed with
+  mean mu and shape k, decays to the ground state as (1 + mu t / k)^(-k) with the same two parameters. It fits 25 of
+  30 qubits at p >= 0.01, more than the (T1, q) fit, with median shape 3.5 (a rate spread of about half its mean) and
+  a mean lifetime 1 / mu equal to the calibrated T1 (median ratio 1.003). The q fit reads the same fluctuation as a
+  plateau below 1, and the analysis converts that plateau into a negative initialization excitation.
+- N = 16 residuals under that nuisance model. Replacing the (T1, q) chain by the same chain averaged over the gamma
+  rate distribution moves the measure arm's residual from +0.0185 (positive on 30 of 30) to +0.0090 (23 of 30), level
+  with the unitary arm's +0.0109, which neither model changes and which is the gate-model residual the null plants.
+  The delay arm's +0.115 is unchanged: its excess is dephasing, which the T1 nuisance does not reach, and the idle
+  model takes the calibrated Hahn-echo T2 for free evolution.
 
-The departure prediction is built from that fit, so its +0.0185 offset is a property of the nuisance model as much as
-of the measure arm; carryover is excluded as its source.
+Half of the +0.0185 departure offset is the (T1, q) nuisance model; the rest matches the gate-model residual the
+unitary arm shows. Carryover is excluded as its source.
 
 ## Retained files
 

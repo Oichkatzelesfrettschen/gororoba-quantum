@@ -18,6 +18,13 @@ weights on the delays after the bracket: T1 and q free; calibrated T1 with q fre
 ground state); calibrated T1 with q = 1. It reports chi-square, degrees of freedom and p-value for each, and the free
 fits on each quarter of the shot index, which execution order maps onto quarters of the job's time.
 
+Gamma-rate model. A decay rate that fluctuates faster than the job resolves, drawn from a gamma distribution of mean mu
+and shape k, gives the survival (1 + mu t / k)^(-k) and decays to the ground state (q = 1) with two parameters, the
+count the (T1, q) fit spends. The fit profiles mu by bounded Brent search at each shape of a fixed geometric grid and
+keeps the grid's best shape. The section reports its lack of fit and the N = 16 residual of the measure, unitary and
+delay arms (measured P0 from the exploratory analysis minus the model chain averaged over the rate distribution at its
+GAMMA_NODES equal-probability midpoint quantiles), beside the analysis's own residuals.
+
 ``--out FILE`` writes the result; ``--check FILE`` recomputes it and requires the retained bytes. No result here is a
 preregistered verdict of the envelope case.
 """
@@ -35,6 +42,7 @@ from typing import Any
 import numpy as np
 from scipy.optimize import minimize_scalar
 from scipy.stats import chi2
+from scipy.stats import gamma as gamma_distribution
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -47,6 +55,10 @@ EXPLORATORY = ROOT / "docs/evidence/measurement_sequence/envelope-run-explorator
 # Lags of the adjacency section: (rows back, shot offset). (1, 0) is the predecessor under column-wise order.
 LAGS = ((1, 0), (2, 0), (5, 0), (1, -1), (1, 1))
 QUARTERS = 4
+# The gamma-rate shape grid; the exponential limit (k -> infinity) is the t1_free_q_1 model.
+GAMMA_SHAPES = tuple(float(k) for k in np.geomspace(0.25, 1000.0, 97))
+GAMMA_NODES = 64
+RESIDUAL_ARMS = ("measure", "unitary", "delay")
 # A conditional difference needs this many shots on each side of the conditioning bit to enter a summary.
 MIN_SIDE = 50
 LARGE_Z = 3.0
@@ -230,8 +242,47 @@ def fit(delays: list[float], y: list[float], se: list[float], t1: float | None, 
     return {"t1_us": t1 * 1e6, "q": plateau, "chi2": statistic}
 
 
-def t1_models(item: tuple[int, list[float], float, np.ndarray]) -> dict[str, Any]:
-    qubit, delays, t1_cal, ones = item
+def gamma_fit(delays: list[float], y: list[float], se: list[float]) -> dict[str, Any]:
+    """Weighted least squares of y_k = 1 - 2 (1 + t_k / (k T))^(-k), the mean lifetime T = 1 / mu profiled per shape."""
+    t = np.array(delays[1:])
+    ys = np.array(y[1:])
+    w = 1 / np.array(se[1:]) ** 2
+    best: dict[str, Any] | None = None
+    for shape in GAMMA_SHAPES:
+
+        def residual(u: float, shape: float = shape) -> float:
+            survival = (1 + t / (shape * math.exp(u))) ** (-shape)
+            return float(np.sum(w * (ys - (1 - 2 * survival)) ** 2))
+
+        found = minimize_scalar(
+            residual,
+            bounds=(math.log(msa.T1_BOUNDS[0]), math.log(msa.T1_BOUNDS[1])),
+            method="bounded",
+            options={"xatol": 1e-10},
+        )
+        if best is None or float(found.fun) < best["chi2"]:
+            best = {"mean_lifetime_us": math.exp(float(found.x)) * 1e6, "shape": shape, "chi2": float(found.fun)}
+    if best is None:
+        raise ValueError("empty gamma shape grid")
+    dof = len(t) - 2
+    return {**best, "dof": dof, "p_value": float(chi2.sf(best["chi2"], dof))}
+
+
+def gamma_p0(arm: str, ctx: dict[str, Any], mean_lifetime_s: float, shape: float) -> float:
+    """The arm's N = 16 P0 on the analysis's chain at q = 1, averaged over a gamma-distributed decay rate."""
+    quantiles = (np.arange(GAMMA_NODES) + 0.5) / GAMMA_NODES
+    rates = gamma_distribution.ppf(quantiles, shape, scale=1 / (shape * mean_lifetime_s))
+    gate = msa.sx_gate(ctx, 0.0)
+    tau = msa.tau_of(arm, ctx, msa.WINDOW_RELAX_FRACTION)
+    total = 0.0
+    for rate in rates.tolist():
+        t1 = 1 / rate
+        total += (1 + msa.corrected_z(arm, msa.TOP_STEPS, t1, min(ctx["t2_s"], 2 * t1), tau, 0.0, gate, 1.0)) / 2
+    return total / GAMMA_NODES
+
+
+def t1_models(item: tuple[int, list[float], float, np.ndarray, dict[str, Any], dict[str, Any]]) -> dict[str, Any]:
+    qubit, delays, t1_cal, ones, ctx, p0 = item
     shots = ones.shape[1]
     y, se = series(ones.sum(axis=1), shots)
     models = {}
@@ -251,7 +302,23 @@ def t1_models(item: tuple[int, list[float], float, np.ndarray]) -> dict[str, Any
         quarters.append(
             {"t1_free_q_free": fit(delays, qy, qse, None, None), "t1_free_q_1": fit(delays, qy, qse, None, 1.0)}
         )
-    return {"qubit": qubit, "t1_calibrated_us": t1_cal * 1e6, "models": models, "quarters": quarters}
+    gamma = gamma_fit(delays, y, se)
+    top = str(msa.TOP_STEPS)
+    residuals = {
+        arm: {
+            "analysis": p0[arm][top]["measured_minus_modeled"],
+            "gamma_rate": p0[arm][top]["p0"] - gamma_p0(arm, ctx, gamma["mean_lifetime_us"] * 1e-6, gamma["shape"]),
+        }
+        for arm in RESIDUAL_ARMS
+    }
+    return {
+        "qubit": qubit,
+        "t1_calibrated_us": t1_cal * 1e6,
+        "models": models,
+        "quarters": quarters,
+        "gamma_rate": gamma,
+        "n16_residuals": residuals,
+    }
 
 
 def t1_section(loaded: dict[str, Any], run: Path) -> dict[str, Any]:
@@ -261,24 +328,44 @@ def t1_section(loaded: dict[str, Any], run: Path) -> dict[str, Any]:
     for entry in collected[1:]:
         executed.update(entry["executed"])
     contexts = msa.contexts_from_record(record, executed)
-    uninformative = {int(q) for q in json.loads(EXPLORATORY.read_text())["analysis"]["device"]["uninformative_qubits"]}
+    exploratory = json.loads(EXPLORATORY.read_text())["analysis"]
+    uninformative = {int(q) for q in exploratory["device"]["uninformative_qubits"]}
     (ro0,) = [k for k, m in enumerate(members) if m == "msq_ro0"]
     rows = [ro0]
     for k in range(msa.T1_COUNT):
         (row,) = [i for i, m in enumerate(members) if m == msa_class(msa.t1_names(0)[k])]
         rows.append(row)
     items = [
-        (q, list(contexts[q]["t1_delays_s"]), float(contexts[q]["t1_cal_s"]), bits[rows, g])
+        (
+            q,
+            list(contexts[q]["t1_delays_s"]),
+            float(contexts[q]["t1_cal_s"]),
+            bits[rows, g],
+            contexts[q],
+            exploratory["qubits"][str(q)]["p0"],
+        )
         for g, q in enumerate(qubits)
         if q not in uninformative
     ]
     fits = ordered_map(t1_models, items, min_items=2)
     admitted = {label: sum(1 for f in fits if f["models"][label]["p_value"] >= 0.01) for label in fits[0]["models"]}
+    admitted["gamma_rate"] = sum(1 for f in fits if f["gamma_rate"]["p_value"] >= 0.01)
+    residuals = {
+        arm: {
+            model: {
+                "median": float(np.median([f["n16_residuals"][arm][model] for f in fits])),
+                "positive": sum(1 for f in fits if f["n16_residuals"][arm][model] > 0),
+            }
+            for model in ("analysis", "gamma_rate")
+        }
+        for arm in RESIDUAL_ARMS
+    }
     return {
         "delays_us": [d * 1e6 for d in items[0][1]],
         "uninformative": sorted(uninformative),
         "per_qubit": {str(f["qubit"]): f for f in fits},
         "admitted_at_p_0_01": admitted,
+        "n16_residuals": residuals,
         "informative": len(fits),
     }
 

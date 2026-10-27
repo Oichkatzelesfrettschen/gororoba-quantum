@@ -2329,7 +2329,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/msq_envelope_raw_diagnostics.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json",
    "name": "core-msq-envelope-raw-diagnostics-replay",
-   "seconds": 2.4,
+   "seconds": 6.3,
    "tier": "pr",
    "replays": [
     "docs/evidence/measurement_sequence/envelope-run-raw-diagnostics.json"
