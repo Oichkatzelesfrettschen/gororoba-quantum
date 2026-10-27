@@ -41,11 +41,9 @@ import idle_penalty as ip  # noqa: E402
 PAIRS = 31
 OTHERS = PAIRS - 1
 NEAR_HOPS = 3
-PARTITIONS = {
-    "p1": "ABABAAABBABABBBBBABBAABAAABBBAA",
-    "p2": "ABBBAAABBBBBBBBBAABBAAAAAABABAA",
-}
-PATTERNS = {"a": "A", "b": "B"}
+# The class strings and member names are idle_penalty's, the campaign's single home for them.
+PARTITIONS = ip.PARTITIONS
+PATTERNS = ip.PATTERNS
 RESOLVED_Z = 3.29
 MATERIAL_KHZ = 0.5
 SHARE_OWNERSHIP = 0.5
@@ -57,9 +55,7 @@ FINITE_FRACTION = 0.975
 ROLES = (ip.TARGET, ip.SPECTATOR)
 
 
-def half_member(probe: int, partition: str, pattern: str, quadrature: str, short: bool = False) -> str:
-    window = "meas_short_half" if short else "meas_half"
-    return f"{ip.probe_prefix(probe)}{window}_{partition}{pattern}_{quadrature}"
+half_member = ip.half_member
 
 
 @dataclass(frozen=True)

@@ -273,6 +273,7 @@ def _verify_isolation_contract() -> None:
             "coherence_probes",
             "primorial_gap88",
             "idle_penalty",
+            "idle_readout",
         }
         and not default_names & standalone_names,
         "the opt-in campaigns must stay outside the default suite",
@@ -296,6 +297,10 @@ def _verify_isolation_contract() -> None:
         ({"groups": ["idle_penalty", "design_a"]}, "isolated campaign"),
         ({"groups": ["idle_penalty"], "dd": "XX"}, "dynamical decoupling"),
         ({"groups": ["idle_penalty"], "twirl": True}, "twirling"),
+        ({"groups": ["idle_readout", "design_a"]}, "isolated campaign"),
+        ({"groups": ["idle_readout"], "dd": "XX"}, "dynamical decoupling"),
+        ({"groups": ["idle_readout"], "twirl": True}, "twirling"),
+        ({"groups": ["idle_readout"]}, "--pin-layout"),
         ({"groups": ["crossed_tile_template", "design_a"]}, "isolated campaign"),
         ({"groups": ["crossed_tile_template"], "dd": "XX", "max_replicas": 2}, "dynamical decoupling"),
         ({"groups": ["crossed_tile_template"], "max_replicas": None}, "one replica per tile"),

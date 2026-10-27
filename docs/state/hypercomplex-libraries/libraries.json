@@ -2843,6 +2843,7 @@
     "scripts/idle_penalty_focal_decisions.py",
     "scripts/idle_penalty_repeat_decisions.py",
     "scripts/idle_penalty_report.py",
+    "scripts/idle_readout_attribution.py",
     "scripts/iqm_cancellation_probe.py",
     "scripts/iqm_idle_schedule_probe.py",
     "scripts/iqm_measurement_diagnostic.py",
@@ -8396,6 +8397,7 @@
   "gororoba_quantum/idle_penalty.py": [
    "__future__",
    "experiments",
+   "itertools",
    "local_compute",
    "numpy",
    "qiskit",
@@ -8706,6 +8708,9 @@
    "__future__",
    "collections",
    "dataclasses",
+   "hashlib",
+   "json",
+   "numbers",
    "qiskit",
    "rustworkx",
    "typing"

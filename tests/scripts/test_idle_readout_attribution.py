@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
+import itertools
 
 import idle_readout_attribution as ra
 import numpy as np
@@ -144,3 +145,20 @@ def test_batched_rows_equal_single_replicate_runs(geo: ra.Geometry) -> None:
                 np.array_equal(batch[key][row : row + 1], value, equal_nan=True),
                 f"row {row} {key} differs from its batch",
             )
+
+
+def test_class_strings_and_member_names_have_one_home() -> None:
+    import idle_penalty as ip
+
+    _expect(ra.PARTITIONS is ip.PARTITIONS and ra.PATTERNS is ip.PATTERNS, "the analyzer holds its own class strings")
+    _expect(ra.half_member is ip.half_member, "the analyzer holds its own member names")
+    group = ip.idle_readout_group()
+    patterned = {m.name: m.replica_bodies for m in group.members if m.replica_bodies is not None}
+    for partition, pattern, probe in itertools.product(ra.PARTITIONS, ra.PATTERNS, ra.ROLES):
+        for short in (False, True):
+            bodies = patterned[ra.half_member(probe, partition, pattern, "x", short)]
+            reading = [
+                b for b, cls in zip(bodies, ra.PARTITIONS[partition], strict=True) if cls == ra.PATTERNS[pattern]
+            ]
+            _expect(all("quiet" not in b for b in reading), "a reading class replica runs a quiet body")
+            _expect(sum("quiet" not in b for b in bodies) == len(reading), "a quiet class replica reads")
