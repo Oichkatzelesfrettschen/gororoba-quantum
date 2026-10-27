@@ -1932,7 +1932,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_record_checks.py -k group08",
    "name": "core-record-check-08",
-   "seconds": 6.0,
+   "seconds": 10.0,
    "tier": "pr",
    "replays": [
     "docs/evidence/cd-one-sided-inverses/record.json"

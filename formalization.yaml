@@ -1,9 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
 # Index of the Rocq proof sources under proofs/ in the mathlib-initiative
-# formalization.yaml schema. Each main result names its exported theorem, the
-# file that proves it and the axioms its kernel receipt lists; the evidence
-# bundle under docs/evidence/ named in each note retains the receipts and the
-# replay script. Paths are relative to the repository root.
+# formalization.yaml schema (retained bytes and validation command in
+# docs/evidence/formalization-yaml-schema/). Each main result names a selected
+# exported declaration, the file that proves it and the theorem-specific
+# Print Assumptions list of its receipt; the imported-library kernel context
+# is a separate surface described under status. The evidence bundle named in
+# each note retains the receipts and the replay script. Paths are relative to
+# the repository root.
 version: "v0.4"
 
 project:
@@ -101,11 +104,19 @@ related_formalizations:
 
 status:
   scope: >-
-    Every theorem below is kernel-checked by rocq check on the toolchain of
-    its bundle's toolchain.txt. Sources over nat, Z and Q close with no
-    axioms; the real-valued terminal-channel source uses the two axioms
-    listed. The one-sided inverse theorem of
-    docs/notes/topics/cd-one-sided-inverses.md has no Rocq source.
+    Selected main-result declarations of fourteen proof sources, not every
+    exported declaration. Each listed declaration is kernel-checked by rocq
+    check on the toolchain of its bundle's toolchain.txt, except
+    proofs/TargetFlipN21.v, whose receipt is the compile and check tail in
+    docs/evidence/rocq_kaggle_replay/result.json under the toolchain of
+    ci/rocq_toolchain.pin. Every axioms list below is the theorem-specific
+    Print Assumptions output; sources over nat, Z and Q close with no
+    axioms, and the real-valued terminal-channel source depends on the two
+    axioms listed while its full imported-library kernel context
+    (TerminalChannelSeparationReal.kernel.txt) also names
+    ClassicalDedekindReals.sig_not_dec and Classical_Prop.classic. The
+    one-sided inverse theorem of docs/notes/topics/cd-one-sided-inverses.md
+    has no Rocq source.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms:
@@ -187,6 +198,12 @@ status:
       literature_dependencies:
         - statement: "the retained A_6 Stiefel witness has an invertible left-multiplication matrix"
           source: docs/notes/stiefel_generic_invertibility.md
+    - declaration: network_2_correct
+      file: proofs/TargetFlipN21.v
+      axioms: []
+    - declaration: network_4_correct
+      file: proofs/TargetFlipN21.v
+      axioms: []
     - declaration: network_16_correct
       file: proofs/TargetFlipN21.v
       axioms: []
@@ -227,7 +244,7 @@ review:
   status: self-assessed
   notes: >-
     Each bundle retains the compile output under -w +all, the rocq check
-    kernel receipt, and the Print Assumptions output of every exported
-    theorem; docs/evidence/rocq_kaggle_replay/README.md records an
+    kernel receipt, and the Print Assumptions output of its exported
+    theorems; docs/evidence/rocq_kaggle_replay/README.md records an
     independent replay of the formal_certificates, c881_exhaustive,
     stiefel_witness, folding_proofs and TargetFlipN21 bundles on Kaggle.

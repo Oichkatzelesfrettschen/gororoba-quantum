@@ -127,20 +127,21 @@ in the [evidence README](../../evidence/primorial_cover/README.md#ziller-table-1
 
 ## The primorial maximum at k = 24
 
-Hajdu and Saradha found `j(P_24) = 234 < 236 = h(24)`, the first `k` at which
-the primorial fails to attain the Jacobsthal maximum
+[T] Hajdu and Saradha found `j(P_24) = 234 < 236 = h(24)`, the first `k` at
+which the primorial fails to attain the Jacobsthal maximum
 ([openai-2026-jacobsthal-quadratic-bound.md](../papers/openai-2026-jacobsthal-quadratic-bound.md),
-History). The same cover search decides both halves of that value at the
-primorial: `cover_exists(117, odd_primes(24))` returns True, so the wheel of
-`P_24` has a gap 234, and `cover_exists(118, odd_primes(24))` returns False,
-so it has no gap 236 ([E], 612 s and 536 s on the build host, not gated):
+History, which cites their paper). [E] The same cover search decides the
+lower bound and excludes 236 at the primorial:
+`cover_exists(117, odd_primes(24))` returns True, so the wheel of `P_24` has
+a gap 234, and `cover_exists(118, odd_primes(24))` returns False, so it has
+no gap 236 (about 600 s each on the build host, not gated):
 
 ```sh
 export PYTHON="${PYTHON:-python3}"
 cd gororoba_quantum && "$PYTHON" -B -c 'import primorial_cover as pc; p = pc.odd_primes(24); print(pc.cover_exists(117, p), pc.cover_exists(118, p))'
 ```
 
-The two calls establish `j(P_24) >= 234` and the absence of 236; the
+[I] The two calls establish `j(P_24) >= 234` and the absence of 236; the
 maximum itself needs every larger even gap excluded, which the search here
 does not run. A set of 24 primes with a gap 236, the other half of
 `h(24) = 236`, lies outside the primorial reduction of this note.

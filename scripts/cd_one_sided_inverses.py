@@ -1,28 +1,36 @@
 """Left and right annihilators agree in every Cayley-Dickson algebra of cd_core, so a b = 1 forces b a = 1.
 
 The trace form is <x, y> = sum_i x_i y_i and conj negates every imaginary
-coordinate. Three identities, each multilinear in its arguments, are checked
-on every basis tuple of the dimensions in IDENTITY_DIMENSIONS, which proves
-them on every element of those algebras:
+coordinate. Four identities are checked on every basis pair of the
+dimensions in IDENTITY_DIMENSIONS. L0, L2 and L2' are multilinear and L1 is
+checked in its polarized bilinear form, so the basis checks decide each
+identity on every element of those algebras:
 
+    (L0) conj(x y) = conj(y) conj(x)                 (basis pairs)
     (L1) a conj(a) = conj(a) a = <a, a> 1            (basis pairs, polarized)
     (L2) <a x, y> = <x, conj(a) y>                   (basis triples)
     (L2') <x a, y> = <x, y conj(a)>                  (basis triples)
 
 The theorem of [the note](../docs/notes/topics/cd-one-sided-inverses.md)
 follows: an element with a nonzero left or right annihilator is pure, its
-annihilated elements are pure, conjugation carries ker L_a onto ker R_a, and
-b = conj(a) / <a, a> + z with z in ker L_a is the only solution of a b = 1,
-so b a = 1. The record checks the kernel equality and the inverse identity
-on every element of three deterministic families, at the dimensions in
-KERNEL_DIMENSIONS:
+annihilated elements are pure, conjugation (L0) carries ker L_a onto
+ker R_a, and b = conj(a) / <a, a> + z with z in ker L_a is the only solution
+of a b = 1, so b a = 1. The record checks the kernel equality and the
+inverse identity on every element of deterministic families, listed by
+`families(dim)` for the dimensions in KERNEL_DIMENSIONS:
 
-- every signed two-blade e_i + s e_j, 1 <= i < j < D, s = +-1;
-- every three-unit sum e_i + e_j + e_k with 1 <= i < j < k < min(D, 16);
-- every doubly pure grid element u + v with u in span(e_1 .. e_(D/2-1)) and v
-  in span(e_(D/2+1) .. e_(D-1)), integer coordinates in {-1, 0, 1}, at most
-  DOUBLY_PURE_SUPPORT[D] nonzero coordinates per half, the first nonzero
-  coordinate of u equal to 1 and <u, u> = <v, v>.
+- `two_blade` (16, 32): every signed two-blade e_i + s e_j, 1 <= i < j < D,
+  s = +-1;
+- `three_unit` (16): every sum e_i + e_j + e_k with 1 <= i < j < k < 16; at
+  D = 32 the same sums are the sedenions embedded as (a, 0), whose L_(a, 0)
+  is L_a (+) R_a, so the family adds nothing there and is omitted;
+- `doubly_pure` (16): every u + v with u in span(e_1 .. e_7), v in
+  span(e_9 .. e_15), exactly two coordinates of each half in {-1, 1} and the
+  first nonzero coordinate of each half equal to 1. The automorphism
+  (p, q) -> (p, -q) of the doubling carries u - v onto u + v, so the sign of
+  v's lead adds no new kernel, and a half of support one makes a two-blade.
+  At D = 32 every such element of support one per half is a two-blade, so
+  the family is omitted there.
 
 Each element is an independent pool item mapped through parallel.ordered_map.
 A worker builds L_a and R_a from cd_core.cd_sign, takes both kernels by exact
@@ -30,9 +38,11 @@ Gauss-Jordan elimination over Fraction, and requires: the two kernels span the
 same subspace; every kernel vector and, when the kernel is nonzero, a itself
 are pure; and for every kernel basis vector z the element b = conj(a)/<a, a> + z
 satisfies a b = b a = 1 through cd_core.cd_multiply_exact. The record keeps
-integer counts only (elements per family, elements with a kernel, the kernel
-dimension histogram), so pooled and serial runs write the same bytes, and any
-violated identity raises before a record is written.
+integer counts and booleans derived from the worker results (elements per
+family, elements with a kernel, the kernel dimension histogram, the inverse
+offsets checked and the count of strictly one-sided inverses, which the
+requirements force to zero before a record is written), so pooled and serial
+runs write the same bytes.
 
 Usage: "$PYTHON" scripts/cd_one_sided_inverses.py (--write PATH | --check PATH | --self-test)
 """
@@ -45,6 +55,7 @@ import itertools
 import json
 import sys
 from collections import Counter
+from collections.abc import Callable
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
@@ -54,11 +65,9 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import parallel  # noqa: E402
 from cd_core import cd_multiply_exact, cd_sign  # noqa: E402
 
-SCHEMA = "cd-one-sided-inverses-v1"
+SCHEMA = "cd-one-sided-inverses-v2"
 IDENTITY_DIMENSIONS = (2, 4, 8, 16, 32, 64, 128)
 KERNEL_DIMENSIONS = (16, 32)
-THREE_UNIT_LIMIT = 16
-DOUBLY_PURE_SUPPORT = {16: 2, 32: 1}
 SIGNS = (1, -1)
 
 
@@ -81,20 +90,25 @@ def conj_sign(index: int) -> int:
 
 
 def identity_record(dim: int) -> dict[str, Any]:
-    """L1, L2 and L2' on every basis pair and triple; each is multilinear, so the basis checks decide them."""
+    """L0, polarized L1, L2 and L2' on every basis pair; each is (multi)linear, so the basis checks decide them."""
     s = sign_table(dim)
     for i in range(dim):
         for j in range(dim):
+            k = i ^ j
             # (L1) e_i conj(e_j) + e_j conj(e_i) = 2 [i = j] e_0, and the same with conj on the left.
             lhs = conj_sign(j) * s[i][j] + conj_sign(i) * s[j][i]
             lhs_left = conj_sign(i) * s[i][j] + conj_sign(j) * s[j][i]
             require(lhs == lhs_left == (2 if i == j else 0), f"D={dim}: L1 fails on the basis pair ({i}, {j})")
             # (L2) <e_i e_j, e_k> = <e_j, conj(e_i) e_k> at the only k = i XOR j carrying either side.
-            k = i ^ j
             require(s[i][j] == conj_sign(i) * s[i][k], f"D={dim}: L2 fails on the basis triple ({i}, {j}, {k})")
             # (L2') <e_j e_i, e_k> = <e_j, e_k conj(e_i)>.
             require(s[j][i] == conj_sign(i) * s[k][i], f"D={dim}: L2' fails on the basis triple ({j}, {i}, {k})")
-    return {"dimension": dim, "basis_pairs": dim * dim, "identities": ["L1", "L2", "L2'"]}
+            # (L0) conj(e_i e_j) = conj(e_j) conj(e_i): sigma(i, j) c_k = c_j c_i sigma(j, i).
+            require(
+                s[i][j] * conj_sign(k) == conj_sign(j) * conj_sign(i) * s[j][i],
+                f"D={dim}: L0 fails on the basis pair ({i}, {j})",
+            )
+    return {"dimension": dim, "basis_pairs": dim * dim, "identities": ["L0", "L1", "L2", "L2'"]}
 
 
 def left_matrix(dim: int, a: tuple[int, ...]) -> list[list[Fraction]]:
@@ -168,12 +182,17 @@ def conj(a: list[Fraction]) -> list[Fraction]:
     return [a[0]] + [-x for x in a[1:]]
 
 
-def element_check(item: tuple[int, tuple[int, ...]]) -> dict[str, Any]:
-    """Pool worker: kernels of L_a and R_a, their equality, purity, and the two-sided inverse law."""
+def element_check(item: tuple[int, tuple[int, ...]]) -> dict[str, int]:
+    """Pool worker: kernels of L_a and R_a, their equality, purity, and the two-sided inverse law.
+
+    Returns the kernel dimension, the number of inverse offsets z checked, and the number of
+    strictly one-sided inverses met (a b = 1 with b a != 1), which the requirement keeps at zero.
+    """
     dim, a = item
     left = kernel(left_matrix(dim, a))
     right = kernel(right_matrix(dim, a))
     require(same_span(left, right), f"D={dim}: ker L_a and ker R_a differ for a = {a}")
+    one_sided = 0
     if left:
         require(a[0] == 0, f"D={dim}: a = {a} has a kernel and a nonzero real part")
         require(all(z[0] == 0 for z in left + right), f"D={dim}: a kernel vector of a = {a} has a real part")
@@ -183,8 +202,9 @@ def element_check(item: tuple[int, tuple[int, ...]]) -> dict[str, Any]:
         for z in left:
             b = [p + q for p, q in zip(inverse, z, strict=True)]
             require(cd_multiply_exact(dim, a, b) == one, f"D={dim}: a b != 1 for a = {a}")
-            require(cd_multiply_exact(dim, b, a) == one, f"D={dim}: a b = 1 but b a != 1 for a = {a}")
-    return {"kernel_dimension": len(left)}
+            one_sided += cd_multiply_exact(dim, b, a) != one
+            require(one_sided == 0, f"D={dim}: a b = 1 but b a != 1 for a = {a}")
+    return {"kernel_dimension": len(left), "inverse_offsets_checked": len(left), "one_sided": one_sided}
 
 
 def two_blades(dim: int) -> list[tuple[int, ...]]:
@@ -199,40 +219,35 @@ def two_blades(dim: int) -> list[tuple[int, ...]]:
 
 def three_units(dim: int) -> list[tuple[int, ...]]:
     out = []
-    for i, j, k in itertools.combinations(range(1, min(dim, THREE_UNIT_LIMIT)), 3):
+    for i, j, k in itertools.combinations(range(1, dim), 3):
         a = [0] * dim
         a[i] = a[j] = a[k] = 1
         out.append(tuple(a))
     return out
 
 
-def pure_grid(half: int, support: int, lead_positive: bool) -> list[tuple[int, ...]]:
-    """Pure elements of the half algebra with at most `support` coordinates in {-1, 1}."""
+def pure_pairs(half: int) -> list[tuple[int, ...]]:
+    """Pure elements of the half algebra with exactly two coordinates in {-1, 1}, the first equal to 1."""
     out = []
-    for size in range(1, support + 1):
-        for indices in itertools.combinations(range(1, half), size):
-            for signs in itertools.product(SIGNS, repeat=size):
-                if lead_positive and signs[0] != 1:
-                    continue
-                u = [0] * half
-                for index, sign in zip(indices, signs, strict=True):
-                    u[index] = sign
-                out.append(tuple(u))
+    for i, j in itertools.combinations(range(1, half), 2):
+        for s in SIGNS:
+            u = [0] * half
+            u[i], u[j] = 1, s
+            out.append(tuple(u))
     return out
 
 
 def doubly_pure(dim: int) -> list[tuple[int, ...]]:
     half = dim // 2
-    support = DOUBLY_PURE_SUPPORT[dim]
-    out = []
-    for u in pure_grid(half, support, lead_positive=True):
-        for v in pure_grid(half, support, lead_positive=False):
-            if sum(x * x for x in u) == sum(x * x for x in v):
-                out.append(u + (0,) + v[1:])
+    return [u + (0,) + v[1:] for u in pure_pairs(half) for v in pure_pairs(half)]
+
+
+def families(dim: int) -> list[tuple[str, Callable[[int], list[tuple[int, ...]]]]]:
+    """The element families checked at each dimension, in record order."""
+    out: list[tuple[str, Callable[[int], list[tuple[int, ...]]]]] = [("two_blade", two_blades)]
+    if dim == 16:
+        out += [("three_unit", three_units), ("doubly_pure", doubly_pure)]
     return out
-
-
-FAMILIES = (("two_blade", two_blades), ("three_unit", three_units), ("doubly_pure", doubly_pure))
 
 
 def family_record(dim: int, name: str, elements: list[tuple[int, ...]]) -> dict[str, Any]:
@@ -243,6 +258,18 @@ def family_record(dim: int, name: str, elements: list[tuple[int, ...]]) -> dict[
         "elements": len(elements),
         "with_kernel": sum(histogram.values()),
         "kernel_dimension_histogram": {str(k): v for k, v in sorted(histogram.items())},
+        "inverse_offsets_checked": sum(r["inverse_offsets_checked"] for r in results),
+        "strictly_one_sided_inverses": sum(r["one_sided"] for r in results),
+    }
+
+
+def dimension_record(dim: int) -> dict[str, Any]:
+    rows = [family_record(dim, name, build(dim)) for name, build in families(dim)]
+    return {
+        "dimension": dim,
+        "families": rows,
+        "annihilators_agree": all(row["strictly_one_sided_inverses"] == 0 for row in rows),
+        "strictly_one_sided_inverses": sum(row["strictly_one_sided_inverses"] for row in rows),
     }
 
 
@@ -250,15 +277,7 @@ def record() -> dict[str, Any]:
     return {
         "schema": SCHEMA,
         "identities": [identity_record(dim) for dim in IDENTITY_DIMENSIONS],
-        "kernels": [
-            {
-                "dimension": dim,
-                "families": [family_record(dim, name, build(dim)) for name, build in FAMILIES],
-                "annihilators_agree": True,
-                "one_sided_inverses": 0,
-            }
-            for dim in KERNEL_DIMENSIONS
-        ],
+        "kernels": [dimension_record(dim) for dim in KERNEL_DIMENSIONS],
     }
 
 
@@ -267,18 +286,18 @@ def render(data: dict[str, Any]) -> str:
 
 
 def self_test() -> None:
-    """A conjugation fixing e_1 breaks L2 at D = 4; e_1 - e_10 and e_1 + e_10 have distinct kernels of one dimension."""
+    """A conjugation fixing e_1 breaks L1 at D = 4; e_1 - e_10 and e_1 + e_10 have distinct four-dimensional kernels."""
     s = sign_table(4)
     fixed = [1, 1, -1, -1]
-    if all(s[i][j] == fixed[i] * s[i][i ^ j] for i in range(4) for j in range(4)):
-        raise ContractError("a conjugation fixing e_1 passes L2 at D = 4")
+    if all(fixed[j] * s[i][j] + fixed[i] * s[j][i] == (2 if i == j else 0) for i in range(4) for j in range(4)):
+        raise ContractError("a conjugation fixing e_1 passes L1 at D = 4")
     a = (0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0)
     partner = (0, 1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0)
     left, other = kernel(left_matrix(16, a)), kernel(right_matrix(16, partner))
-    if len(left) != len(other) or same_span(left, other):
-        raise ContractError("e_1 + e_10 and e_1 - e_10 share a kernel, or their kernel dimensions differ")
+    if len(left) != 4 or len(other) != 4 or same_span(left, other):
+        raise ContractError("e_1 + e_10 and e_1 - e_10 share a kernel, or a kernel dimension differs from 4")
     if element_check((16, a))["kernel_dimension"] != 4:
-        raise ContractError("e_1 + e_10 has annihilator dimension 4")
+        raise ContractError("the checked kernel dimension of e_1 + e_10 differs from 4")
 
 
 def main() -> int:
