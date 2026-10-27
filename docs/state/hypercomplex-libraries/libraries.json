@@ -2623,6 +2623,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/state_prep_split.py",
     "scripts/stiefel_pfaffian_higher.py",
     "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
@@ -2844,6 +2845,7 @@
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/state_prep_split.py",
     "scripts/stiefel_pfaffian_higher.py",
     "scripts/stiefel_pfaffian_identity.py",
     "scripts/substrate_crossover.py",
@@ -4969,6 +4971,7 @@
     "scripts/n21_exact_model_validation.py",
     "scripts/n21_qx_conformance.py",
     "scripts/primorial_cover_noise.py",
+    "scripts/primorial_probe_case.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/signed_kernel_noise.py",
     "scripts/singular_sector_dynamics.py",
@@ -5023,6 +5026,7 @@
     "scripts/n21_exact_model_validation.py",
     "scripts/n21_qx_conformance.py",
     "scripts/primorial_cover_noise.py",
+    "scripts/primorial_probe_case.py",
     "scripts/qi_ibm_noise_replay.py",
     "scripts/signed_kernel_noise.py",
     "scripts/singular_sector_dynamics.py",
@@ -6104,6 +6108,7 @@
     "scripts/rank_sector_endpoint_decomposition.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/state_prep_split.py",
     "scripts/walk_scaffold_channels.py"
    ],
    "qualification": "admit only the documented API and declared convention; installation is not a run",
@@ -6172,6 +6177,7 @@
     "scripts/rank_sector_endpoint_decomposition.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py",
+    "scripts/state_prep_split.py",
     "scripts/walk_scaffold_channels.py"
    ]
   },
@@ -12442,6 +12448,7 @@
    "primorial_null_residuals",
    "primorial_tomography",
    "qiskit",
+   "qiskit_aer",
    "qiskit_ibm_runtime",
    "samplomatic",
    "scipy",
@@ -13724,6 +13731,18 @@
    "scipy",
    "sys",
    "tempfile",
+   "typing"
+  ],
+  "scripts/state_prep_split.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "numpy",
+   "parallel",
+   "pathlib",
+   "scipy",
+   "state_prep_excess",
+   "sys",
    "typing"
   ],
   "scripts/stiefel_pfaffian_higher.py": [
