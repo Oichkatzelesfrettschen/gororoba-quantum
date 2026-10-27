@@ -24,7 +24,7 @@ from typing import Any
 from qiskit import QuantumCircuit, qpy
 
 import law_encoding
-from diagnostic_experiments import MSQ_PRECISION
+from diagnostic_experiments import MSQ_PRECISION, state_prep_arms
 
 CASE_FILENAME = "UNAPPROVED_CASE.md"
 FAMILIES = {
@@ -272,13 +272,16 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         arguments.extend(["--layout", ",".join(str(qubit) for qubit in qubits)])
     if "state_prep_arms" in design:
         arms = design["state_prep_arms"]
+        # live_run records the selection in diagnostic_experiments.state_prep_arms order, so a valid record
+        # round-trips through that rule unchanged.
+        try:
+            canonical = isinstance(arms, list) and list(state_prep_arms(arms)) == arms
+        except ValueError:
+            canonical = False
         _require(
-            isinstance(arms, list)
-            and (
-                arms == ["x_history"]
-                or ("prep0" in arms and set(arms) <= {"prep0", "reset", "x"} and len(set(arms)) == len(arms))
-            ),
-            "state_prep_arms names distinct state-prep-control arms, prep0 among them, or x_history alone",
+            canonical,
+            "state_prep_arms names distinct state-prep-control arms in their recorded order, prep0 or remeasure "
+            "among them, or x_history alone",
         )
         arguments.extend(["--state-prep-arms", ",".join(arms)])
     for name in ("latency_dt", "window_dt"):
@@ -1900,11 +1903,25 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "H initializes, measures and then applies an X, so every shot starts from the implicit "
                 "initialization of a qubit the previous shot left in |1>"
             ),
+            "x_remeasure": "XR applies an X and measures twice (the |1> column, read again by a second measurement)",
+            "remeasure": (
+                "R initializes and measures twice, so the second read separates a population the first read found "
+                "from a misassignment of the first read"
+            ),
         }
+        labels = {"prep0": "A", "reset": "B", "x": "C", "x_history": "H", "x_remeasure": "XR", "remeasure": "R"}
         history = arms == ["x_history"]
+        default = arms == ["prep0", "reset", "x"]
         static = [arm for arm in arms if arm not in ("reset", "x_history")]
         jobs_text = (
-            ("A and C share the static job" if len(static) == 2 else "A runs in one static job") if static else ""
+            (
+                f"{labels[static[0]]} runs in one static job"
+                if len(static) == 1
+                else f"{', '.join(labels[arm] for arm in static[:-1])} and {labels[static[-1]]} share the static job "
+                "in that row order"
+            )
+            if static
+            else ""
         )
         if "reset" in arms:
             jobs_text += ("; " if jobs_text else "") + (
@@ -1922,15 +1939,28 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 ("0.05 on A - B", {"prep0", "reset"}),
                 ("0.025 on C", {"x"}),
                 ("0.025 on H", {"x_history"}),
+                ("0.025 on R's first read", {"remeasure"}),
+                ("0.025 on R's both-reads-1 fraction", {"remeasure"}),
+                ("0.025 on XR's first read", {"x_remeasure"}),
             )
             if needs <= set(arms)
         ]
-        label = "H" if history else "A"
+        label = "H" if history else "A" if "prep0" in arms else "R"
         history_text = (
             " Every shot of H after the first follows a shot that ended in |1> unless that shot's own "
             "initialization left |1> or its X failed; scripts/state_prep_excess.py bounds the excitation after an "
             "all-|1> history from H through that end-state population."
             if history
+            else ""
+        )
+        remeasure_text = (
+            " R reads each shot twice. A measurement projects the qubit onto the state it reads up to "
+            "misassignment, so a population the first read found reads 1 again with probability 1 - e01 less the "
+            "T1 decay over one measurement, while a misassigned first read is followed by a read of the prepared "
+            "state; P(both reads 1) / P(first read 1) therefore separates a population from a misassignment. "
+            "The service runs every circuit of shot s in row order before shot s + 1, so each R shot follows the "
+            "row before it, an XR read of |1> when XR is selected."
+            if "remeasure" in arms
             else ""
         )
         comparison_text = (
@@ -1941,7 +1971,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "outside these contracts; the written addendum states that comparison and its decision rule."
         )
         count = len(endpoints)
-        words = {1: "One", 2: "Two", 3: "Three"}
+        words = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven"}
         reset_text = (
             " The reset benefit A - B is positive only where initialization leaves more excitation than the "
             "reset's own misassignment."
@@ -1949,9 +1979,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             else ""
         )
         selection = (
-            ""
-            if len(arms) == 3
-            else f" The run selects the arms {', '.join(arms)} (`--state-prep-arms {','.join(arms)}`)."
+            "" if default else f" The run selects the arms {', '.join(arms)} (`--state-prep-arms {','.join(arms)}`)."
         )
         return [
             "## Scientific question and interpretation",
@@ -1965,7 +1993,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "active reset before the measure, and C applies an X before the measure (the |1> column of the "
                 "assignment matrix). A and C share the static job; B, which the reset makes dynamic, runs in its "
                 "own job with twirling and dynamical decoupling off."
-                if len(arms) == 3
+                if default
                 else f"{words[len(arms)]} PUB{'s' if len(arms) > 1 else ''} measure{'' if len(arms) > 1 else 's'} "
                 "every qubit in each shot: "
                 + "; ".join(pub_text[arm] for arm in arms)
@@ -1975,13 +2003,13 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             f"Under the readout channel e10 = prob_meas1_prep0, e01 = prob_meas0_prep1, {label} reads "
             f"(1 - eps) e10 + eps (1 - e01), so the initial excitation is eps = ({label} - e10) / (1 - e01 - e10) "
             "(diagnostic_experiments.state_prep_excitation), the value dynamic_density's prep_excitation and "
-            f"live_run's --prep-excitation take.{reset_text}{history_text} The calibration "
+            f"live_run's --prep-excitation take.{reset_text}{history_text}{remeasure_text} The calibration "
             f"noise model starts every qubit in |0>, so it prices {label} at the readout error alone; the residual "
             "excitation is the device property this run measures, and only the device answers it.",
             "",
             f"{words[count]} two-sided precision contract{'s' if count > 1 else ''} per qubit, "
             f"{count * len(qubits)} in all, split the family-wise alpha evenly and admit the design: "
-            f"half-width {'0.025 on A and on C, 0.05 on A - B' if count == 3 else ', '.join(endpoints)}, Hoeffding "
+            f"half-width {'0.025 on A and on C, 0.05 on A - B' if default else ', '.join(endpoints)}, Hoeffding "
             "radii valid under arbitrary dependence between the qubits of one shot. They price resolution, "
             f"not an effect. {comparison_text}",
             "",
@@ -3039,7 +3067,39 @@ def _verify() -> None:
             raise AssertionError
         if not ("only arm of its job" in history_case and "A reads" not in history_case):
             raise AssertionError
-        for refused in (["prep0", "bogus"], ["x"], ["x_history", "prep0"], ["prep0", "x_history"]):
+        remeasure_record = copy.deepcopy(prepared)
+        remeasure_record["policy"]["design"]["state_prep_arms"] = ["prep0", "x_remeasure", "remeasure"]
+        remeasure_record["family_configuration"]["arms"] = {
+            "prep0": "init, measure",
+            "x_remeasure": "x, measure, measure",
+            "remeasure": "init, measure, measure",
+        }
+        remeasure_arguments = " ".join(
+            _reproduction_arguments(remeasure_record, Path("results/live/fixture/record.json"))
+        )
+        if "--layout 104,105 --state-prep-arms prep0,x_remeasure,remeasure" not in remeasure_arguments:
+            raise AssertionError
+        remeasure_case = " ".join(_scientific_case("state-prep-control", remeasure_record))
+        for needed in (
+            "Three PUBs measure every qubit",
+            "R initializes and measures twice",
+            "A, XR and R share the static job in that row order",
+            "P(both reads 1) / P(first read 1)",
+            "8 in all",
+            "0.025 on R's first read, 0.025 on R's both-reads-1 fraction, 0.025 on XR's first read",
+        ):
+            if needed not in remeasure_case:
+                raise AssertionError(f"the remeasure case lacks {needed!r}")
+        if "reset benefit" in remeasure_case or "0.05 on A - B" in remeasure_case:
+            raise AssertionError
+        for refused in (
+            ["prep0", "bogus"],
+            ["x"],
+            ["x_history", "prep0"],
+            ["prep0", "x_history"],
+            ["x_remeasure"],
+            ["remeasure", "prep0"],
+        ):
             prepared["policy"]["design"]["state_prep_arms"] = refused
             try:
                 _reproduction_arguments(prepared, Path("results/live/fixture/record.json"))

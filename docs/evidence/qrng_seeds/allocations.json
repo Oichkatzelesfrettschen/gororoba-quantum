@@ -490,6 +490,22 @@
    "experiment": "2026-10-27T160617.546354Z"
   },
   {
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
+   "index": 0,
+   "value": 34509,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-27T173041.727190Z"
+  },
+  {
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-27T154654Z.json",
+   "index": 1,
+   "value": 63882,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-27T173041.727190Z"
+  },
+  {
    "record": "docs/evidence/anu_qrng/draw-2026-10-27T191741Z.json",
    "index": 0,
    "value": 11449,

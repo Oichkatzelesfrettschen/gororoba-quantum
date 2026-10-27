@@ -94,9 +94,17 @@ in order.
 The [idle-readout repeat successor](comparison-idle-readout-repeat.json) rebinds the idle-penalty repeat retrieval
 offline against the `live_run.py` that adds the role-patterned members and lists `idle_readout.py` in its
 experiment manifest; it differs from that retrieval only in the `live_run.py` digest and the offline validation
-time. Gate `core-281` checks it.
+time. The [state-prep remeasure successor](comparison-state-prep-remeasure.json) rebinds the same retrieval
+offline against the `live_run.py` whose `--state-prep-arms` help names the two-read arms `x_remeasure` and
+`remeasure`; it differs from the retrieval only in that digest and the validation time.
 
-The active successor binds the audit, original seed, current collector, predecessor comparison and archived
+The [detuning-sign retrieval](comparison-detuning-sign-retrieval.json) reads the same 41 jobs afresh through the
+read-only job interface, seeded from the original comparison, after the retention audit added the N=21
+detuning-sign Kingston job `dbge2jpj4t8s73ac6fk0` under `awaiting_observation`, which moves the audit digest every
+earlier comparison binds. Its 41 rows equal the idle-penalty repeat retrieval's. A fresh retrieval binds the audit,
+the original seed and the collector, so a later `live_run.py` change leaves it valid. Gate `core-281` checks it.
+
+An offline rebind successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
 named files and the pinned Qiskit/runtime versions bound the replay; the provenance does not claim a complete
 transitive import closure. Every earlier comparison retains its recorded bytes. Gate `core-281` checks the
@@ -108,7 +116,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-idle-readout-repeat.json
+  --out docs/evidence/submitted_circuits/comparison-detuning-sign-retrieval.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0

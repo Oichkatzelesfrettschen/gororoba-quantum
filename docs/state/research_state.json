@@ -4479,7 +4479,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "6969029977aaf3c759e668a9497b00d3ee97b6a63881a61c0275d15e8ab8dcee"
+          "sha256": "de0922cf9e28c376904536f7a07543e54d824e039e0600954542c20ec2a5287e"
         }
       ],
       "documents": [
@@ -5673,7 +5673,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "6969029977aaf3c759e668a9497b00d3ee97b6a63881a61c0275d15e8ab8dcee"
+          "sha256": "de0922cf9e28c376904536f7a07543e54d824e039e0600954542c20ec2a5287e"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -10757,8 +10757,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-9/result.json",
-          "sha256": "3348b82dc3897dc4616d839c0e2e08ab3d13ebdb55c9b55874797e2ffba84199"
+          "path": "docs/evidence/algebra-device-conjectures-10/result.json",
+          "sha256": "5a14acf6ff2f04ad6e648600a90c3dca8642d4e3c6d9ad6b03766bb3c2a3a0e8"
         }
       ],
       "gates": {
