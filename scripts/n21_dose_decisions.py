@@ -206,29 +206,41 @@ def measured_from_raw(run_dir: Path, record: Mapping[str, Any], collected_laws: 
     for pub in record["execution_pubs"]:
         require(len(pub["components"]) == 1, f"{pub['name']}: a dose PUB holds one member")
         components[pub["components"][0]["member"]] = (pub["name"], pub["components"][0]["registers_by_replica"])
+    import parallel
+
     registers = n21_exact_planning.retained_registers(run_dir, {pub for pub, _ in components.values()})
-    out: dict[str, Any] = {}
+    items = []
     for member, values in scores.items():
         pub_name, replicas = components[member]
         require(pub_name in registers, f"{pub_name}: no retained shot-ordered registers")
-        keep_columns, score_columns = [], []
-        for r, names in enumerate(replicas):
-            outcomes = n21_exact_planning.replica_outcomes(registers[pub_name], names)
-            frequency = np.bincount(outcomes, minlength=len(values)) / outcomes.size
-            marginal = np.asarray(law_encoding.dense(collected_laws[member][r]), dtype=float)
-            # The collector stores each law rounded to six decimals; one shot moves a frequency by 1 / shots, so
-            # half a count separates a binding error from that rounding.
-            require(
-                np.allclose(frequency, marginal / marginal.sum(), rtol=0.0, atol=0.5 / outcomes.size),
-                f"{member} replica {r}: register frequencies differ from the collected marginal",
-            )
-            phase_bits = len(registers[pub_name][names[0]][0])
-            keep_columns.append(outcomes >> phase_bits == 0)
-            score_columns.append(np.asarray(values, dtype=float)[outcomes])
-        moments = member_moments(np.stack(keep_columns, axis=1).astype(float), np.stack(score_columns, axis=1))
-        moments["phase_bits"] = phase_bits
-        out[member] = moments
-    return out
+        laws = [law_encoding.dense(collected_laws[member][r]) for r in range(len(replicas))]
+        items.append((member, values, registers[pub_name], replicas, laws))
+    return dict(zip(scores, parallel.ordered_map(_member_estimate, items, min_items=2), strict=True))
+
+
+def _member_estimate(item: tuple[str, Sequence[float], Mapping[str, Sequence[str]], Any, Any]) -> dict[str, Any]:
+    """One member's herald-conditioned moments from its PUB's registers, bound to its collected marginals."""
+    import n21_exact_planning
+
+    member, values, registers, replicas, laws = item
+    keep_columns, score_columns = [], []
+    phase_bits = 0
+    for r, names in enumerate(replicas):
+        outcomes = n21_exact_planning.replica_outcomes(registers, names)
+        frequency = np.bincount(outcomes, minlength=len(values)) / outcomes.size
+        marginal = np.asarray(laws[r], dtype=float)
+        # The collector stores each law rounded to six decimals; one shot moves a frequency by 1 / shots, so
+        # half a count separates a binding error from that rounding.
+        require(
+            np.allclose(frequency, marginal / marginal.sum(), rtol=0.0, atol=0.5 / outcomes.size),
+            f"{member} replica {r}: register frequencies differ from the collected marginal",
+        )
+        phase_bits = len(registers[names[0]][0])
+        keep_columns.append(outcomes >> phase_bits == 0)
+        score_columns.append(np.asarray(values, dtype=float)[outcomes])
+    moments = member_moments(np.stack(keep_columns, axis=1).astype(float), np.stack(score_columns, axis=1))
+    moments["phase_bits"] = phase_bits
+    return moments
 
 
 def contract_estimates(
@@ -421,17 +433,28 @@ def decide(measured: Mapping[str, Estimate], models: Mapping[str, Mapping[float,
         "verdict": verdict,
     }
 
-    per_replica = []
+    import parallel
+
     zero_models = interpolated(models[zero], grid)
     plain_models = {d: interpolated(models[plain[d]], grid) for d in nonzero}
-    for r in range(replicas):
-        y = np.asarray([measured[plain[d]][0][r] - measured[zero][0][r] for d in nonzero])
-        model = np.stack([plain_models[d][:, r] - zero_models[:, r] for d in nonzero], axis=1)
-        c = response_covariance([measured[plain[d]][1][r, r] for d in nonzero], measured[zero][1][r, r])
-        res = y[None, :] - model
-        per_replica.append(profile_interval(grid, np.einsum("ki,ij,kj->k", res, np.linalg.inv(c), res)))
-    out["kappa_p_per_replica"] = per_replica
+    fits = [
+        (
+            grid,
+            np.asarray([measured[plain[d]][0][r] - measured[zero][0][r] for d in nonzero]),
+            np.stack([plain_models[d][:, r] - zero_models[:, r] for d in nonzero], axis=1),
+            response_covariance([measured[plain[d]][1][r, r] for d in nonzero], measured[zero][1][r, r]),
+        )
+        for r in range(replicas)
+    ]
+    out["kappa_p_per_replica"] = parallel.ordered_map(_replica_fit, fits, min_items=2)
     return out
+
+
+def _replica_fit(item: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]) -> dict[str, Any]:
+    """One replica's kappa_P profile from its plain responses, model curves over the grid and their covariance."""
+    grid, y, model, covariance = item
+    residual = y[None, :] - model
+    return profile_interval(grid, np.einsum("ki,ij,kj->k", residual, np.linalg.inv(covariance), residual))
 
 
 def analyze(run_dir: Path) -> dict[str, Any]:
