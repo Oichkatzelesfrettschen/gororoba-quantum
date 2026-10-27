@@ -161,6 +161,28 @@ inconsistent with exact union rank, an overstated completeness claim, or a survi
 [`schur-degeneracy-witnesses-result.json`](schur-degeneracy-witnesses-result.json) and the
 [ledger](ledger.md#ledger-rows).
 
+## The reduced positive-sign X-to-VB modular elimination exceeds the five-minute gate
+
+The reduced construction parameterizes the smooth transverse germ by three holomorphic conic parameters and three
+formal-conjugate parameters. It forms the fifteen augmented-Pfaffian numerators as Gaussian pairs of python-flint
+`fmpz_mpoly` values, removes the common pivot-Pfaffian factor because its value at the origin is the local unit
+`-60 I`, and presents the Rees graph with fifteen Plucker coordinates and one auxiliary. The resulting elimination
+has 22 variables. The coordinates have total degree at most 26 and at most 560 terms in either Gaussian component.
+
+The exact pre-elimination controls pass: the conic chart has Jacobian rank three and a verified rational inverse; the
+boundary matrix has rank ten; an admitted real sample has bordered rank twelve and rank-two augmented-Pfaffian form;
+all fifteen polynomial Plucker relations vanish; and the retained null-fiber arc has order two and reproduces its
+recorded Schur vector. Zeroing the first nonzero augmented-Pfaffian generator breaks the arc comparison.
+
+Singular modulo 32003 reached the 300-second gate and was terminated after 300.879 seconds without producing a
+fiber, so the producer skipped characteristic zero. The outer `/usr/bin/time -v` measurement reports 5:01.59 wall
+time and 43,240 KiB peak resident memory for the Python controller. The killed inner timing wrapper emitted no
+Singular peak-resident-memory report, so the elimination process's peak remains unmeasured. This cost record proves
+neither a complex-algebraic exceptional fiber nor the real semialgebraic Gauss fiber. Completion within five minutes
+and 16 GiB, or any claimed fiber from this record, falsifies the recorded outcome. Evidence:
+[`xplus-vb-slice-gauss-graph-result.json`](xplus-vb-slice-gauss-graph-result.json) and the
+[ledger](ledger.md#ledger-rows).
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?

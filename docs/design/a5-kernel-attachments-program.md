@@ -237,3 +237,34 @@ packages. Choose granularly, cheapest exact tool first:
   every incidence in memory.
 - Measure before scaling (`/usr/bin/time -v` for peak RSS, `py-spy` for hot spots), and record each producer's peak
   RSS and wall time in its ledger row.
+
+## Orchestrator note after 2g: the holomorphic kernel
+
+Items 2e-2g failed on cost because they eliminate in real and imaginary parts at degree up to 26. The purity record
+already gives a holomorphic formulation. With `A(z, conj z) = [[0, -conj(z)^T], [conj(z), C_z]]` and every kernel vector
+of the form `(0, u)`, `ker A = {u : C_z u = 0, <z, u> = 0}` (Hermitian pairing). Since `C_z z = 0`,
+`ker C_z = C z (+) ker A`, an orthogonal sum, so `dim ker C_z = dim_C ker A + 1`: 5, 7 and 9 at nullity 8, 12 and 16.
+`C_z` is holomorphic and linear in `z`. Along an arc, `ker C_z(t) -> L` gives `ker A(t) -> L cap z_0^perp` with `z_0 != 0`,
+and `P -> P (+) C z_0` inverts this. Hence, if the steps below verify:
+
+- the Gauss fiber `Lambda(X, p)` is homeomorphic to the fiber `Lambda_hol(X, p)` of the closed graph of the
+  holomorphic map `s -> ker C_(z(s))` into `{L in Gr(k+1, ker C_(z_0)) : L contains z_0} = Gr(k, ker C_(z_0) / C z_0)`;
+- that fiber is complex-algebraic, and the Euclidean closure of the graph equals its Zariski closure, because the
+  graph of an algebraic map on an irreducible complex germ is constructible. The real curve-selection obligation (A1)
+  then reduces to this algebraic statement, and arcs serve as a check, not as the lower half of the certificate.
+
+Sub-steps, one per turn:
+
+- **2h. Verify the holomorphic kernel lemma.** At all nine path-supported basepoints and at the sampled arc points of
+  every retained path, verify exactly (python-flint `fmpq_mat` or Gaussian-rational RREF) that `rank C_z` is 10, 8, 6
+  at nullity 8, 12, 16, that `z in ker C_z`, and that `ker A` equals the Hermitian complement of `z` in `ker C_z`.
+  Mutation: replace `z` in the pairing by a vector of `ker C_z` independent of `z`, so the complement changes and the
+  comparison fails. Falsifier: any rank or equality failure.
+- **2i. Holomorphic Gauss fibers by iterated blow-up** (after 2h is committed). On a complex polynomial parameterization
+  of the transverse slice germ (complex coordinates only, no real or imaginary split), take the Schur complement of
+  `C_z` on `ker C_(z_0)` (7 x 7 at nullity 12, rank two on the source orbit), cleared by the Pfaffian of the
+  complementary 8 x 8 block. Its 21 entries have degree about 5 in `z`. Principalize the base ideal of the map to
+  `P^20` by explicit blow-ups at the origin and at each base locus in affine charts, each step a substitution and a
+  removal of the largest common power of the exceptional coordinate. The fiber is the union of the images of the
+  exceptional divisors. Use the Rees algebra in Singular only as a cross-check on small incidences, modulo 32003
+  first.
