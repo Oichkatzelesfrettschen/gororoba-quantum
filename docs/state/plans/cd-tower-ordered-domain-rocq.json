@@ -1,0 +1,347 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-tower-ordered-domain-rocq",
+  "kind": "implementation",
+  "summary": "Restate the Cayley-Dickson pair tower and its annihilator theorems as one Rocq functor over an abstract ordered coefficient domain, instantiated at Z and at the Stdlib reals, so the integer and real developments become two instances of one proof.",
+  "sources": [
+    "proofs/CdImaginarySumConference.v",
+    "proofs/CdAnnihilatorSymmetry.v",
+    "proofs/CdTowerReal.v",
+    "proofs/CdAnnihilatorSymmetryReal.v",
+    "docs/notes/topics/cd-one-sided-inverses.md",
+    "docs/notes/math-0511691.md"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Opened from the Not established section of cd-one-sided-inverses.md, which records that the real tower is Stdlib's R and that a tower over an abstract ordered field has no Rocq source. The signature is read from the tactics the four files use: every vector identity closes with ext and ring; the order enters only through 0 <= x * x, a vanishing sum of squares vanishing termwise (dot_self_nonneg, dot_self_zero) and the cancellation of a nonzero scalar (scale_zero_factor, Z.mul_cancel_l); division enters only the affine inverse family of the real file. Z is a domain and not a field, so the common signature is an ordered integral domain, and the field axioms form an extension."
+  },
+  "scope": "A new proofs/CdTowerDomain.v: a Module Type for the coefficient domain (carrier, 0, 1, +, *, negation, a total order; commutative-ring axioms registered for ring, 0 <= a * a, a * a = 0 -> a = 0, a sum of two nonnegative terms vanishing only termwise, and a * b = 0 -> a = 0 \\/ b = 0) and a functor over it that states cd, zero, one, add, scale, conjugate, mul, re, dot, coord and ext and proves the linear laws, norm_mul, adjoint, re_commutator, re_associator, conj_mul_left, conj_mul_right, lemma_9_2, kernel_equality, purity_left, purity_right, lemma_9_5, annihilator_orthogonal and direct_finiteness with the inverse family in the integer-cleared form <a, a> b = conj(a) + w; a field extension of the signature (multiplicative inverse of a nonzero element) with right_inverse_form in the affine form; the instances at Z and at R with their Print Assumptions receipts (none at Z, the two Stdlib real-construction axioms at R); the bundle docs/evidence/cd-tower-domain/ wired into ci/rocq_changed.sh, the ci.yml replay selection, scripts/rocq_kaggle_replay.py, tests/test_evidence_ledgers.py, a ci/gates.json shellcheck gate and formalization.yaml; and the [R] statements in the two notes. The four existing proof files and their bundles keep their bytes; the functor is a third source, and a theorem of the integer or real file is cited by the file that proves it until a later record retires one. Corollary 2.9 (flexibility) joins the functor only after its own real-tower proof lands.",
+  "owner": "Repository Rocq maintainer",
+  "next_action": "None; the plan is closed.",
+  "related": [
+    "cd-annihilator-symmetry-rocq",
+    "cd-annihilator-symmetry-real-rocq",
+    "cd-annihilator-lemma-9-5-rocq",
+    "cd-one-sided-inverses"
+  ],
+  "steps": [
+    {
+      "id": "signature",
+      "state": "done",
+      "action": "State the coefficient-domain Module Type with the ring, order and cancellation axioms the tower proofs use, declare its ring structure for the ring tactic inside the functor, and prove the Z and R instances from Stdlib lemmas (Z.mul_cancel_l, Z.square_nonneg, Rmult_integral, Rle_0_sqr and their neighbors).",
+      "acceptance": "Fails if either instance needs an axiom beyond Stdlib (Print Assumptions on the instance modules lists nothing at Z and only ClassicalDedekindReals.sig_forall_dec and FunctionalExtensionality.functional_extensionality_dep at R), or if the ring tactic cannot close x * (y + z) = x * y + x * z on the abstract carrier inside the functor. Stop condition: an axiom the tower needs that neither Z nor R proves is recorded and ends the step.",
+      "receipts": [
+        {
+          "result": "OrderedDomain (ring_th, one_neq_zero, sq_nonneg, add_nonneg, nonneg_sum_zero, mul_integral) is proved by ZDomain from Zth, Z.square_nonneg, Zmult_integral and lia, and by RDomain from RTheory, R1_neq_R0, Rmult_le_pos with Rmult_opp_opp, Rplus_le_le_0_compat, Rplus_eq_0_l and Rmult_integral; Add Ring on D.ring_th inside the functor lets ring close every coordinate identity, with the named constants two and neg_one unfolded first by the dring wrapper. The nine integer queries of assumptions_z.txt are closed under the global context and the ten real queries of assumptions_r.txt list exactly the two Stdlib real-construction axioms.",
+          "observed_at": "2026-10-27T20:23:29+00:00",
+          "revision": "698d22484ce487b728f4f02f2ccbcbbbfbc74c1d",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerDomain.v",
+              "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/assumptions_z.txt",
+              "sha256": "308b14375eb599e10c9320eefc5e0fef85a89b5ebeee30d98ec395be842e7d86"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/assumptions_r.txt",
+              "sha256": "679e375bac2ec61564552e3ced3a38c9bd74b64cd6585404f579d3658885808a"
+            }
+          ],
+          "scope_sha256": "5fbef3ae3481c712ba64728c1c726a2c2bd3234990098a848b9816e18802d9b3"
+        },
+        {
+          "result": "Revalidation after the bridges grew to all eighteen functor theorems: the 23 integer queries of assumptions_z.txt are closed under the global context and the 24 real queries of assumptions_r.txt list exactly ClassicalDedekindReals.sig_forall_dec and FunctionalExtensionality.functional_extensionality_dep; the signature, its instances and the ring declaration are unchanged.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerDomain.v",
+              "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/assumptions_z.txt",
+              "sha256": "028c8f49fbae48ce3d2157c4fc70e7365ec811a36aa2f6ea05708feed1750ce6"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/assumptions_r.txt",
+              "sha256": "3a0ca7c63ac0707517f1d7adb4aa30d2ba8fe95b72b981e0d410c1d5a346d421"
+            }
+          ],
+          "scope_sha256": "5fbef3ae3481c712ba64728c1c726a2c2bd3234990098a848b9816e18802d9b3"
+        }
+      ]
+    },
+    {
+      "id": "tower-functor",
+      "state": "done",
+      "action": "Port CdTowerReal.v and CdAnnihilatorSymmetryReal.v into the functor with lia reserved for nat indices and every carrier inequality derived from the signature's order axioms, keeping the integer-cleared inverse family of CdAnnihilatorSymmetry.v as the domain-level statement; then instantiate at Z and R.",
+      "acceptance": "Fails if rocq compile prints any output under -w @all, if a theorem of the functor uses associativity, alternativity or multiplicativity of the norm, or if an instance theorem's statement differs from the corresponding theorem of CdAnnihilatorSymmetry.v or CdAnnihilatorSymmetryReal.v by more than the module path. Stop condition: a tower lemma whose present proof rests on lra or nia and has no derivation from the signature's order axioms is recorded with its lemma name and ends the step.",
+      "depends_on": [
+        "signature"
+      ],
+      "receipts": [
+        {
+          "result": "CdTowerDomain.v, CdTowerDomainZ.v and CdTowerDomainR.v compile under rocq 9.3.0 on OCaml 5.5.1 with -w @all and no output; the functor proves norm_mul, adjoint, re_commutator, re_associator, flex_sum_zero, flexible, conj_mul_left, conj_mul_right, lemma_9_2, kernel_equality, purity_left, purity_right, lemma_9_5, annihilator_orthogonal, right_inverse_affine and direct_finiteness with lia on nat indices only, lra and nia replaced by dot_self_nonneg, dot_self_zero and scale_zero_factor through mul_integral, and no decidable equality on the coefficients; no step uses associativity, alternativity or multiplicativity of the norm. ZBridge and RBridge identify ZTower and RTower with the integer and real tower files by induction on the level and restate kernel_equality, direct_finiteness, flexible, purity_left and lemma_9_5 in those files' vocabulary (CdImaginarySumConference.mul, CdTowerReal.mul), the Z statements with no axiom and the R statements on the two real-construction axioms; rocq check passes over both bridge libraries.",
+          "observed_at": "2026-10-27T20:23:29+00:00",
+          "revision": "698d22484ce487b728f4f02f2ccbcbbbfbc74c1d",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerDomain.v",
+              "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+            },
+            {
+              "ref": "proofs/CdTowerDomainZ.v",
+              "sha256": "6c90611837c38cde6c88ffa0f2ff8927f21879bd9e4d0d343d932d6267bcea17"
+            },
+            {
+              "ref": "proofs/CdTowerDomainR.v",
+              "sha256": "899bf3d877cd9d105201d6f6a24889ad4400b4905c346560199eebb287aef60f"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/kernel.txt",
+              "sha256": "882de7e58a24b8eb660b82644f9bd1351555365ca2c71004e57c6d431a8674e6"
+            }
+          ],
+          "scope_sha256": "1154118d8e5d233ffe751e6cadc9f12a9f1dbc869707bb3d885bf0009ffb727c"
+        },
+        {
+          "result": "Revalidation: CdTowerDomainZ.v and CdTowerDomainR.v compile under rocq 9.3.0 with -w @all and no output; ZBridge and RBridge restate all eighteen functor theorems in the vocabulary of the integer and real tower files, each closing by conversion after the to_tower rewrites; CdTowerDomain.v is unchanged and rocq check reproduces kernel.txt.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerDomain.v",
+              "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+            },
+            {
+              "ref": "proofs/CdTowerDomainZ.v",
+              "sha256": "339f820a5c8395403e75214f82a45efa0860948ca6869f2751b57b9add3b1586"
+            },
+            {
+              "ref": "proofs/CdTowerDomainR.v",
+              "sha256": "ab5fe69e515e52ef9f64227a624ee5f981db1411dec94119f8c93b3959921a45"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/kernel.txt",
+              "sha256": "882de7e58a24b8eb660b82644f9bd1351555365ca2c71004e57c6d431a8674e6"
+            }
+          ],
+          "scope_sha256": "1154118d8e5d233ffe751e6cadc9f12a9f1dbc869707bb3d885bf0009ffb727c"
+        }
+      ]
+    },
+    {
+      "id": "field-extension",
+      "state": "done",
+      "action": "State the field extension of the signature (inverse of a nonzero element with its law) and prove right_inverse_form in the affine form b = conj(a)/<a, a> + w inside a functor over it, instantiated at R.",
+      "acceptance": "Fails if the R instance's right_inverse_form differs from the one of CdAnnihilatorSymmetryReal.v by more than the module path, or if Print Assumptions lists an axiom beyond the two real-construction axioms.",
+      "depends_on": [
+        "tower-functor"
+      ],
+      "receipts": [
+        {
+          "result": "OrderedField includes OrderedDomain and adds inv with inv_l; CdTowerField proves right_inverse_form in the affine form b = conj(a)/<a, a> + w with a w = 0 from right_inverse_affine and inv_l, RField proves the extension from Rinv_l over RDomain, and RFieldBridge.right_inverse_form in CdTowerDomainR.v restates CdAnnihilatorSymmetryReal.right_inverse_form word for word in CdTowerReal's vocabulary with / dot k a a; its Print Assumptions lists exactly the two real-construction axioms.",
+          "observed_at": "2026-10-27T20:23:29+00:00",
+          "revision": "698d22484ce487b728f4f02f2ccbcbbbfbc74c1d",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerDomain.v",
+              "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+            },
+            {
+              "ref": "proofs/CdTowerDomainR.v",
+              "sha256": "899bf3d877cd9d105201d6f6a24889ad4400b4905c346560199eebb287aef60f"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/assumptions_r.txt",
+              "sha256": "679e375bac2ec61564552e3ced3a38c9bd74b64cd6585404f579d3658885808a"
+            }
+          ],
+          "scope_sha256": "6f7ba12042fb275a9570f17786098d7bb4c19bd603f186bacb234f648a935d21"
+        },
+        {
+          "result": "Revalidation: RFieldBridge.right_inverse_form is unchanged and its Print Assumptions lists exactly the two real-construction axioms.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerDomain.v",
+              "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+            },
+            {
+              "ref": "proofs/CdTowerDomainR.v",
+              "sha256": "ab5fe69e515e52ef9f64227a624ee5f981db1411dec94119f8c93b3959921a45"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/assumptions_r.txt",
+              "sha256": "3a0ca7c63ac0707517f1d7adb4aa30d2ba8fe95b72b981e0d410c1d5a346d421"
+            }
+          ],
+          "scope_sha256": "6f7ba12042fb275a9570f17786098d7bb4c19bd603f186bacb234f648a935d21"
+        }
+      ]
+    },
+    {
+      "id": "bundle-and-notes",
+      "state": "done",
+      "action": "Retain assumptions.v, assumptions.txt, kernel.txt, toolchain.txt, source_hashes.sha256 and replay_rocq.sh under docs/evidence/cd-tower-domain/, wire the bundle into every Rocq surface ci/check_rocq_ci_pins.py enforces plus formalization.yaml, and record the [R] statements in cd-one-sided-inverses.md and math-0511691.md with the docs map row.",
+      "acceptance": "Fails if replay_rocq.sh departs from its receipts, if ci/check_rocq_ci_pins.py reports the bundle missing from any surface, if tests/test_evidence_ledgers.py rejects source_hashes.sha256, if formalization.yaml fails the retained v0.4 schema, or if check_markdown_links.py reports a broken link.",
+      "depends_on": [
+        "field-extension"
+      ],
+      "receipts": [
+        {
+          "result": "replay_rocq.sh passes against its receipts in about 80 s and sha256sum -c accepts source_hashes.sha256; ci/check_rocq_ci_pins.py reports 15 bundles agreeing; tests/test_evidence_ledgers.py, tests/ci/test_rocq_ci_pins.py, tests/ci/test_gate_timings.py, tests/ci/test_behavioral_gates.py and tests/ci/test_self_test_gates.py pass under the pinned interpreter (16 unmarked and 49 audit tests); ruff check, ruff format --check and mypy pass on scripts/rocq_kaggle_replay.py and tests/test_evidence_ledgers.py; shellcheck passes on the replay script (gate sources-415); formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0 and lists five bridge declarations; check_markdown_links.py resolves every link of 705 files.",
+          "observed_at": "2026-10-27T20:23:29+00:00",
+          "revision": "698d22484ce487b728f4f02f2ccbcbbbfbc74c1d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-tower-domain/replay_rocq.sh",
+              "sha256": "a0f6e78058cb67f933135f9297d483b9223824869e5b64d72a7c66ab457a106e"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/source_hashes.sha256",
+              "sha256": "4586e66b794a415c5575133bae5b59b5cd48f9d07f01fbf98c75454c22bad95f"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/README.md",
+              "sha256": "aafd28a392081c7f04c0e5f2ec41e4375d1befb49f900d2e35d98e1519e5354e"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-415",
+              "sha256": "c287fc57530d1be9672860d94413eabd45d24dc2c4f7477ed950ce2a3087366c"
+            },
+            {
+              "ref": "ci/rocq_changed.sh",
+              "sha256": "ffb41b72f2528a26380d892f0caae51ef2a9ac6f08a48b929e7482092e8e8d53"
+            },
+            {
+              "ref": "scripts/rocq_kaggle_replay.py",
+              "sha256": "9b63a9a243bdb92f20b53c16d77e05271bfd6356c2fd4fae43232f58c98deeb1"
+            },
+            {
+              "ref": "tests/test_evidence_ledgers.py",
+              "sha256": "ff14450765ebd34ae56bfd0f12d595976197d49337e6e83e2b7106c75b8bedf5"
+            },
+            {
+              "ref": ".github/workflows/ci.yml",
+              "sha256": "9b76a5aac2357bb6657410041a05c792379072aae71453ca7afb23bec6423e87"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "deabc8e7190eafac8420e6cc327679a34d74425b45ab98b38328558d82090379"
+            },
+            {
+              "ref": "docs/notes/math-0511691.md",
+              "sha256": "3b849e287e168d563557224da3cb0e570e07fdaff69265aeb7a697771485c858"
+            },
+            {
+              "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+              "sha256": "f4916450e4f9ce2baff1a6c38e0b2d04352c35e852c6a80f402ff09f29c21044"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "35a98fc4105e87fde8eb63b19f4bc17e2bf449a336f52c463521cc9e1e5d6dcb"
+            }
+          ],
+          "scope_sha256": "49a390d68dd1fb91375e9834225d21f246da2a1f15b3e5229bd56cf068f306d3"
+        },
+        {
+          "result": "Revalidation at the revision that bridges every functor theorem: edits recording Lemma 9.5, Corollary 2.9, the ordered-domain functor and its bridges changed bound note, map and index files, and the acceptance reruns: the cd-annihilator-symmetry, cd-annihilator-symmetry-real and cd-tower-domain replays pass against their receipts and sha256sum -c accepts each ledger; tests/test_evidence_ledgers.py and tests/ci/test_rocq_ci_pins.py pass (16 unmarked, 44 audit) under the pinned interpreter; ci/check_rocq_ci_pins.py reports 15 bundles agreeing; formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link of 705 files.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-tower-domain/replay_rocq.sh",
+              "sha256": "a0f6e78058cb67f933135f9297d483b9223824869e5b64d72a7c66ab457a106e"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/source_hashes.sha256",
+              "sha256": "f53479b57920961ef3d30ba14d02cc3c6e13abd7d5ba4a8b66735fdd4bb1caf5"
+            },
+            {
+              "ref": "docs/evidence/cd-tower-domain/README.md",
+              "sha256": "a7dce394ee40fbb4e4559d83292c87be7912e9adc07e810f5bd58c17ab4403c8"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-415",
+              "sha256": "c287fc57530d1be9672860d94413eabd45d24dc2c4f7477ed950ce2a3087366c"
+            },
+            {
+              "ref": "ci/rocq_changed.sh",
+              "sha256": "ffb41b72f2528a26380d892f0caae51ef2a9ac6f08a48b929e7482092e8e8d53"
+            },
+            {
+              "ref": "scripts/rocq_kaggle_replay.py",
+              "sha256": "9b63a9a243bdb92f20b53c16d77e05271bfd6356c2fd4fae43232f58c98deeb1"
+            },
+            {
+              "ref": "tests/test_evidence_ledgers.py",
+              "sha256": "ff14450765ebd34ae56bfd0f12d595976197d49337e6e83e2b7106c75b8bedf5"
+            },
+            {
+              "ref": ".github/workflows/ci.yml",
+              "sha256": "9b76a5aac2357bb6657410041a05c792379072aae71453ca7afb23bec6423e87"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "5091ed1c757bfb768137331856a75b6d4adfaded62f6e48d2d85489c8440974c"
+            },
+            {
+              "ref": "docs/notes/math-0511691.md",
+              "sha256": "275501f8a4ae7ed3a77e088e89ca0d92dd16d362e95c9827df32f51196bc3295"
+            },
+            {
+              "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+              "sha256": "f4916450e4f9ce2baff1a6c38e0b2d04352c35e852c6a80f402ff09f29c21044"
+            },
+            {
+              "ref": "docs/README.md",
+              "sha256": "35a98fc4105e87fde8eb63b19f4bc17e2bf449a336f52c463521cc9e1e5d6dcb"
+            }
+          ],
+          "scope_sha256": "49a390d68dd1fb91375e9834225d21f246da2a1f15b3e5229bd56cf068f306d3"
+        }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "result": "All four steps are done with receipts at the revision that carries the functor, the bridges, the bundle and the wiring.",
+      "observed_at": "2026-10-27T20:23:29+00:00",
+      "revision": "698d22484ce487b728f4f02f2ccbcbbbfbc74c1d",
+      "evidence": [
+        {
+          "ref": "proofs/CdTowerDomain.v",
+          "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+        },
+        {
+          "ref": "docs/evidence/cd-tower-domain/README.md",
+          "sha256": "aafd28a392081c7f04c0e5f2ec41e4375d1befb49f900d2e35d98e1519e5354e"
+        }
+      ],
+      "scope_sha256": "756570db4feaecafd19d689c578aae9d859aa883c622b48442e12e12e7ec1ccf"
+    },
+    {
+      "result": "Revalidation at the bridge revision; every step carries a fresh receipt.",
+      "observed_at": "2026-10-27T20:58:39+00:00",
+      "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+      "evidence": [
+        {
+          "ref": "proofs/CdTowerDomain.v",
+          "sha256": "d71f220a1e1fa18d5ecc343126a21b1fa082754c9b25d115303e09b66c1da2d3"
+        },
+        {
+          "ref": "docs/evidence/cd-tower-domain/README.md",
+          "sha256": "a7dce394ee40fbb4e4559d83292c87be7912e9adc07e810f5bd58c17ab4403c8"
+        }
+      ],
+      "scope_sha256": "756570db4feaecafd19d689c578aae9d859aa883c622b48442e12e12e7ec1ccf"
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "proofs/CdTowerDomain.v states the pair tower as the functor CdTower over OrderedDomain and proves the linear laws, Lemmas 3.4, 3.6, 2.6, 2.8, 9.2, 9.4 and 9.5, Corollaries 2.9 and 9.3 and direct finiteness with the integer-cleared inverse family on it; ZDomain and RDomain prove the signature from Stdlib, CdTowerField over OrderedField proves the affine inverse family and RField instantiates it; CdTowerDomainZ.v and CdTowerDomainR.v restate the theorems in the vocabulary of CdImaginarySumConference.v and CdTowerReal.v, the integer statements with no axiom and the real ones on the two Stdlib real-construction axioms. The bundle docs/evidence/cd-tower-domain/ replays against its receipts and every Rocq surface, formalization.yaml, the docs map and both notes name it. The four earlier files and their bundles keep their bytes."
+}

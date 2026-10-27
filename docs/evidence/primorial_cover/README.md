@@ -297,7 +297,10 @@ holds its path ranking and probe excitation check.
 [PRIMORIAL_COHERENCE_CASE_3.md](../../../results/live/PRIMORIAL_COHERENCE_CASE_3.md) reruns those paths under a
 per-qubit split of the preparation excess (`scripts/state_prep_split.py`) with counterbalanced controls and a
 channel-digest calibration identity; [case3/](case3/README.md) holds its split, decision, falsification and
-results.
+results. [PRIMORIAL_Q147_REMEASURE_CASE.md](../../../results/live/PRIMORIAL_Q147_REMEASURE_CASE.md) is the
+follow-up case on q147's excess: a two-read control (`scripts/remeasure_history.py`) that separates a population
+from a misassignment; [q147-remeasure/](q147-remeasure/README.md) holds its run, which finds q147's readout
+moving population in both directions.
 - **Schedule.** The probe job runs a 25.0 ms column of 98 circuits, about 20.9 s of QPU time at 757 shots;
   the untwirled gap-88 job of 104 circuits (gap-88, null, null, gap-88 per setting and 8 basis
   preparations) a 26.3 ms column, 75.8 and 85.4 s at the paths' budgets.

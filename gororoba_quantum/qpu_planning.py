@@ -1180,7 +1180,10 @@ def state_prep_candidates(
                         + (
                             "same shots; one dynamic x_history PUB, alone in its job"
                             if arms == (STATE_PREP_HISTORY_ARM,)
-                            else "same shots; static prep0 and x PUBs, dynamic reset PUB"
+                            else "same shots; static "
+                            + " and ".join(arm for arm in arms if arm not in dynamic_arms)
+                            + " PUBs in that row order"
+                            + (", dynamic " + " and ".join(dynamic_arms) + " PUBs" if dynamic_arms else "")
                         )
                     ),
                     "dt_seconds": snapshot.backend.target.dt,

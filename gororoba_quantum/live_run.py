@@ -48,7 +48,7 @@ from datetime import UTC, datetime
 from decimal import ROUND_HALF_EVEN, Decimal, InvalidOperation
 from importlib.metadata import version
 from pathlib import Path
-from typing import Any, NoReturn
+from typing import Any, NamedTuple, NoReturn
 
 import numpy as np
 import rustworkx as rx
@@ -72,6 +72,7 @@ import msq_envelope
 import packing
 import parallel
 import placement_feasibility
+import pub_calibration
 import qpu_planning
 import qrng_seeds
 import variance
@@ -109,6 +110,12 @@ TWIRLING_RANDOMIZATIONS = 32
 # Campaigns whose members carry the structure-preserving compilation contract and run on the paths
 # --pin-layout names: the coherence probes and the primorial gap-88 tomography of those paths.
 PINNED_CAMPAIGNS = frozenset({"coherence_probes", "primorial_gap88"})
+# Campaigns --pin-layout may also place: idle_penalty places by the quality policy, and a pin holds one ordered
+# cohort of (target, spectator) pairs fixed so two runs compare the same qubits in the same roles.
+# idle_readout assigns a body to each replica by its index among the pinned pairs, so it runs only pinned.
+IDLE_CAMPAIGNS = frozenset({"idle_penalty", "idle_readout"})
+PIN_CAPABLE_CAMPAIGNS = PINNED_CAMPAIGNS | IDLE_CAMPAIGNS
+PIN_REQUIRED_CAMPAIGNS = frozenset({"idle_readout"})
 TWIRLING_MIN_SHOTS_PER_RANDOMIZATION = 64
 OPT_LEVEL = 3
 SEED_TRANSPILER = 20261010
@@ -185,6 +192,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "parallel.py",
     "placement_feasibility.py",
     "predict.py",
+    "pub_calibration.py",
     "pub_shot_allocation.py",
     "qpe_diagnostics.py",
     "patch_characterization.py",
@@ -198,6 +206,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "crossed_tile_template.py",
     "diagnostic_controls.py",
     "idle_penalty.py",
+    "idle_readout.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "qrng_seeds.py",
@@ -1009,6 +1018,10 @@ class Entry:
     replicas holds the single-replica circuits split from packed, in replica
     order, each carrying only its own registers; simulation, readout
     correction, and replay run on them, never on the packed width.
+    A patterned entry (Member.replica_bodies) records the body name each
+    replica runs and the packing.body_digest of that body's compiled
+    instruction sequence on the unrelabeled base qubits; both stay None
+    for every other entry, so their records are unchanged.
     """
 
     name: str
@@ -1020,6 +1033,8 @@ class Entry:
     replica_qubits: list[list[int]]
     reference: bool = False
     weights: np.ndarray | None = None
+    replica_bodies: tuple[str, ...] | None = None
+    body_digests: tuple[str, ...] | None = None
 
 
 @dataclass(frozen=True)
@@ -1035,7 +1050,11 @@ class ReplicaPolicy:
 
 @dataclass
 class Choice:
-    """The winning compile of a group, its replica placements, and its PUB entries."""
+    """The winning compile of a group, its replica placements, and its PUB entries.
+
+    template_isas holds the routed Group.body_templates by name; they feed
+    patterned entries and form no entry of their own.
+    """
 
     group: Group
     snap: Snapshot
@@ -1048,6 +1067,7 @@ class Choice:
     replicas: list[Replica] = field(default_factory=list)
     replica_floor: float = DEFAULT_REPLICA_FLOOR
     fusion_index: int | None = None
+    template_isas: dict[str, QuantumCircuit] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -1065,7 +1085,7 @@ class PubComponent:
         ]
         if any(not register_names for register_names in registers_by_replica):
             raise LiveRunError(f"{self.entry.name}: fused component has a replica without result registers")
-        return {
+        manifest: dict[str, Any] = {
             "group": self.choice.group.name,
             "member": self.entry.name,
             "reference": self.entry.reference,
@@ -1073,6 +1093,10 @@ class PubComponent:
             "physical_qubits": sorted({qubit for replica in self.entry.replica_qubits for qubit in replica}),
             "registers_by_replica": registers_by_replica,
         }
+        if self.entry.replica_bodies is not None:
+            manifest["replica_bodies"] = list(self.entry.replica_bodies)
+            manifest["replica_body_sha256"] = list(self.entry.body_digests or ())
+        return manifest
 
 
 @dataclass(frozen=True)
@@ -1113,7 +1137,7 @@ class _FusionPlacementPool:
     candidates: list[Replica]
     original_index: int
     pattern_width: int
-    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] | None = None
+    bases: list[EntryBase] | None = None
     selected: list[Replica] = field(default_factory=list)
     blocked: set[int] = field(default_factory=set)
     physical_graph: Any = None
@@ -1560,10 +1584,46 @@ def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], floor: float, pol
     return replicas
 
 
+class EntryBase(NamedTuple):
+    """One single-copy entry definition: name, compiled base, ideal, score weights and per-replica bodies.
+
+    A patterned member (Member.replica_bodies) adds the body names and the compiled body of each
+    replica in placement order; its isa is the first body's.
+    """
+
+    name: str
+    isa: QuantumCircuit
+    ideal: np.ndarray
+    weights: np.ndarray | None
+    body_names: tuple[str, ...] | None = None
+    bodies: tuple[QuantumCircuit, ...] | None = None
+
+
 def _entry(
-    name: str, base: QuantumCircuit, ideal: np.ndarray, replicas: list[Replica], weights: np.ndarray | None = None
+    name: str,
+    base: QuantumCircuit,
+    ideal: np.ndarray,
+    replicas: list[Replica],
+    weights: np.ndarray | None = None,
+    body_names: tuple[str, ...] | None = None,
+    bodies: tuple[QuantumCircuit, ...] | None = None,
 ) -> Entry:
-    packed = packing.pack(base, replicas, name)
+    """The entry packing base on every replica, or the replica's own body when bodies are given.
+
+    The digest of each body is taken from the compiled body the name selects on the unrelabeled
+    base qubits, so collection can test the archived replica against what the plan named.
+    """
+    digests: tuple[str, ...] | None = None
+    if bodies is not None:
+        if body_names is None or len(bodies) != len(body_names):
+            raise LiveRunError(f"{name}: replica bodies and their names differ in count")
+        if len(bodies) != len(replicas):
+            raise LiveRunError(f"{name}: {len(replicas)} replicas for {len(bodies)} replica bodies")
+        digests = tuple(
+            packing.body_digest(body, {qubit: qubit for qubit in replica.mapping})
+            for body, replica in zip(bodies, replicas, strict=True)
+        )
+    packed = packing.pack(base if bodies is None else bodies, replicas, name)
     return Entry(
         weights=weights,
         name=name,
@@ -1573,26 +1633,63 @@ def _entry(
         replicas=[packing.split(packed, r.prefix, r.qubits, name) for r in replicas],
         prefixes=[r.prefix for r in replicas],
         replica_qubits=[r.qubits for r in replicas],
+        replica_bodies=body_names,
+        body_digests=digests,
     )
 
 
-def _entry_bases(choice: Choice) -> list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]]:
+def _compiled_bodies(choice: Choice, name: str, body_names: tuple[str, ...]) -> tuple[QuantumCircuit, ...]:
+    """The routed circuit of each named body, from the group's unpatterned members and its templates."""
+    compiled = dict(choice.template_isas)
+    if not choice.isas:
+        raise LiveRunError(f"{name}: replica bodies need the group's routed circuits")
+    for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        if member.replica_bodies is None:
+            compiled[member.name] = isa
+    missing = sorted({body for body in body_names if body not in compiled})
+    if missing:
+        raise LiveRunError(f"{name}: no routed circuit for replica bodies {missing}")
+    bodies = tuple(compiled[body] for body in body_names)
+    pattern = packing.pattern(_ops(bodies[0]))
+    for body_name, body in zip(body_names, bodies, strict=True):
+        if packing.pattern(_ops(body)) != pattern:
+            raise LiveRunError(f"{name}: replica body {body_name} touches another qubit set or coupler than the first")
+    return bodies
+
+
+def _entry_bases(choice: Choice) -> list[EntryBase]:
     """Stable non-reference entry definitions for initial and joint placement.
 
     A mirror twin is cut from the member's single-copy ISA. The later entry
     builder packs the member and twin on identical replicas so corresponding
-    samples retain their physical-qubit pairing.
+    samples retain their physical-qubit pairing. A patterned member resolves
+    its replica bodies by name through the group's routed members and templates.
     """
     if choice.entries:
-        return [(entry.name, entry.base, entry.ideal, entry.weights) for entry in choice.entries if not entry.reference]
-    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] = []
+        return [
+            EntryBase(
+                entry.name,
+                entry.base,
+                entry.ideal,
+                entry.weights,
+                entry.replica_bodies,
+                None if entry.replica_bodies is None else _compiled_bodies(choice, entry.name, entry.replica_bodies),
+            )
+            for entry in choice.entries
+            if not entry.reference
+        ]
+    bases: list[EntryBase] = []
     for member, isa in zip(choice.group.members, choice.isas, strict=True):
-        bases.append((member.name, isa, member.ideal, member.weights))
+        if member.replica_bodies is not None:
+            bodies = _compiled_bodies(choice, member.name, member.replica_bodies)
+            bases.append(EntryBase(member.name, bodies[0], member.ideal, member.weights, member.replica_bodies, bodies))
+            continue
+        bases.append(EntryBase(member.name, isa, member.ideal, member.weights))
         if member.mirror:
             name = member.name + MIRROR_SUFFIX
             zeros = np.zeros(2**member.circuit.num_clbits)
             zeros[0] = 1.0
-            bases.append((name, mirror_isa(isa, choice.snap.backend, name), zeros, None))
+            bases.append(EntryBase(name, mirror_isa(isa, choice.snap.backend, name), zeros, None))
     return bases
 
 
@@ -1600,18 +1697,22 @@ def _set_entries(
     choice: Choice,
     replicas: list[Replica],
     policy: ReplicaPolicy,
-    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] | None = None,
+    bases: list[EntryBase] | None = None,
 ) -> Choice:
     """Rebuild one group's logical entries on an already admitted replica set.
 
     bases, the group's single-copy entry definitions with their mirror twins,
     is computed once per routed candidate when the caller passes it, since the
-    twins come from the transpiler.
+    twins come from the transpiler. A patterned member needs exactly one
+    replica per body.
     """
     bases = _entry_bases(choice) if bases is None else bases
     choice.replica_floor = replica_floor(choice.group, policy)
     choice.replicas = replicas
-    choice.entries = [_entry(name, isa, ideal, choice.replicas, w) for name, isa, ideal, w in bases]
+    choice.entries = [
+        _entry(base.name, base.isa, base.ideal, choice.replicas, base.weights, base.body_names, base.bodies)
+        for base in bases
+    ]
     if policy.isolated_reference and len(choice.replicas) > 1:
         primary = choice.entries[0]
         alone = primary.replicas[0].copy(name=primary.name + ISOLATED_SUFFIX)
@@ -1635,7 +1736,7 @@ def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
     """Build one group's independently placed logical entries for candidate selection."""
     bases = _entry_bases(choice)
     floor = replica_floor(choice.group, policy)
-    replicas = place_replicas(choice.snap, [base[1] for base in bases], floor, policy)
+    replicas = place_replicas(choice.snap, [base.isa for base in bases], floor, policy)
     return _set_entries(choice, replicas, policy)
 
 
@@ -1814,7 +1915,7 @@ def allocate_fusion_replicas(
                 graph, candidates, pattern_width, bases = cache[key]
             else:
                 bases = _entry_bases(choice)
-                graph, candidates, pattern_width = _replica_candidates(choice.snap, [base[1] for base in bases], floor)
+                graph, candidates, pattern_width = _replica_candidates(choice.snap, [base.isa for base in bases], floor)
                 if cache is not None:
                     cache[key] = (graph, candidates, pattern_width, bases)
             if not candidates:
@@ -2134,6 +2235,7 @@ def select_candidates(
             try:
                 templates = {id(primary.circuit): isa}
                 isas = []
+                template_isas: dict[str, QuantumCircuit] = {}
                 if group.name == "spectator_wavefront_ramsey":
                     from maximal_experiments import (
                         build_spectator_wavefront_circuits,
@@ -2177,27 +2279,35 @@ def select_candidates(
                         if key not in templates:
                             templates[key] = _compile(member.circuit, snap, seed, layout)
                         isas.append(_bind(templates[key], member))
+                    for template_name, template_circuit, _ in group.body_templates:
+                        key = id(template_circuit)
+                        if key not in templates:
+                            templates[key] = _compile(template_circuit, snap, seed, layout)
+                        template_isas[template_name] = templates[key]
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "layout": layout, "member_compile_error": type(error).__name__})
                 continue
             member_rejections = {
-                member.name: rejected
-                for member, member_isa in zip(group.members, isas, strict=True)
-                if (rejected := compiled_violations(member_isa, snap))
+                name: rejected
+                for name, routed in [
+                    *((member.name, member_isa) for member, member_isa in zip(group.members, isas, strict=True)),
+                    *template_isas.items(),
+                ]
+                if (rejected := compiled_violations(routed, snap))
             }
             if member_rejections:
                 trace.append({"seed": seed, "layout": layout, "member_rejections": member_rejections})
                 continue
             if group.routed_violations is not None:
                 compiled_target = snap.admission_target if snap.admission_target is not None else snap.backend.target
-                routed_rejections = group.routed_violations(isas, compiled_target)
+                routed_rejections = group.routed_violations([*isas, *template_isas.values()], compiled_target)
                 if routed_rejections:
                     trace.append({"seed": seed, "layout": layout, "routed_rejections": routed_rejections})
                     continue
             scores = [layout_score(c, snap.backend.target) for c in isas]
             joint = math.exp(sum(math.log(s) for s in scores) / len(scores))
             trace.append({"seed": seed, "joint_score": joint, "layout": layout})
-            candidates.append(Choice(group, snap, seed, layout, isas, scores, joint))
+            candidates.append(Choice(group, snap, seed, layout, isas, scores, joint, template_isas=template_isas))
     candidates.sort(key=lambda choice: (choice.joint_score, -choice.snap.pending_jobs), reverse=True)
     if candidates:
         return candidates
@@ -2495,7 +2605,8 @@ def simulate_entries(noise: Any, entries: list[Entry], shots: int, seed: int) ->
     draws: the shared replica-0 reference draws independently of packed
     replica 0. Planning batches one choice per call and --collect batches
     one calibration per call (replay_entries), each in a fixed order, so each
-    is deterministic for its inputs.
+    is deterministic for its inputs. Each replica circuit is the replica's own
+    body, so a patterned entry simulates the body its replica runs.
     """
     circuits = [replica for entry in entries for replica in entry.replicas]
     result = local_compute.run(noise, circuits, shots, seed)
@@ -2854,9 +2965,13 @@ def _physical(isa: QuantumCircuit) -> list[int]:
 
 
 def _member_fields(entry: Entry) -> dict[str, Any]:
-    """An entry's record fields that its circuits and oracle fix, before any replica."""
+    """An entry's record fields that its circuits and oracle fix, before any replica.
+
+    Only a patterned entry carries replica_bodies and replica_body_sha256, so every other
+    entry's fields, and the approved records that compare them, are unchanged.
+    """
     dynamic = _is_dynamic(entry.base)
-    return {
+    fields: dict[str, Any] = {
         "name": entry.name,
         "reference": entry.reference,
         "cz": entry.base.count_ops().get("cz", 0),
@@ -2868,6 +2983,10 @@ def _member_fields(entry: Entry) -> dict[str, Any]:
         "replica_qubits": entry.replica_qubits,
         "ideal": encoded_ideal(entry.ideal),
     }
+    if entry.replica_bodies is not None:
+        fields["replica_bodies"] = list(entry.replica_bodies)
+        fields["replica_body_sha256"] = list(entry.body_digests or ())
+    return fields
 
 
 _ENCODED_IDEALS: OrderedDict[bytes, Any] = OrderedDict()
@@ -3032,6 +3151,21 @@ def placed_qubit_calibration(properties: Any, qubits: list[int]) -> dict[str, di
             name: float(values[name]) for name in PLACED_QUBIT_FIELDS if isinstance(values.get(name), (int, float))
         }
     return placed
+
+
+def pub_execution_calibration(
+    properties: Any, pub_manifest: dict[str, Any], *, with_gates: bool
+) -> dict[str, dict[str, dict[str, float]]]:
+    """The calibration values over every qubit of one PUB, as collect.json stores them once per PUB.
+
+    The mapping holds `placed_qubit_calibration` and, when with_gates, `placed_gate_calibration`; a member's
+    `executed` entry takes its own qubits from it through pub_calibration.split_pub_calibration.
+    """
+    qubits = sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]})
+    values = {"placed_qubit_calibration": placed_qubit_calibration(properties, qubits)}
+    if with_gates:
+        values["placed_gate_calibration"] = placed_gate_calibration(properties, qubits)
+    return values
 
 
 def discover_snapshots(
@@ -3668,7 +3802,7 @@ def pinned_replicas(candidate: Choice, paths: list[list[int]]) -> list[Replica]:
     snap = candidate.snap
     bases = _entry_bases(candidate)
     judge = PlacementJudge(
-        tuple(isa for _, isa, _, _ in bases),
+        (*(base.isa for base in bases), *candidate.template_isas.values()),
         snap.backend.target,
         frozenset(snap.excluded_qubits),
         frozenset(snap.excluded_edges),
@@ -3778,11 +3912,38 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             campaigns = sorted(group.name for group in groups if group.name in standalone)
             if campaigns and len(groups) > 1:
                 raise LiveRunError(f"{campaigns[0]} requires an isolated campaign; cannot co-run with other groups")
-            if "idle_penalty" in campaigns and (args.dd or args.twirl):
+            idle_campaigns = sorted(set(campaigns) & IDLE_CAMPAIGNS)
+            if idle_campaigns and (args.dd or args.twirl):
                 # The relaxation, Ramsey and readout-crosstalk idles measure free evolution, which
                 # dynamical decoupling would fill with echo pulses, and twirling would randomize the
                 # coherent phases the during and after arms compare.
-                raise LiveRunError("idle_penalty runs without dynamical decoupling or twirling; omit --dd and --twirl")
+                raise LiveRunError(
+                    f"{idle_campaigns[0]} runs without dynamical decoupling or twirling; omit --dd and --twirl"
+                )
+            for campaign in sorted(set(campaigns) & PIN_REQUIRED_CAMPAIGNS):
+                # A patterned member assigns its bodies to replicas by index, so the replicas are the
+                # pinned paths in pin order and their count is the tuple length of every such member.
+                pin = getattr(args, "pin_layout", None)
+                bodies = {
+                    len(member.replica_bodies)
+                    for group in groups
+                    if group.name == campaign
+                    for member in group.members
+                    if member.replica_bodies is not None
+                }
+                if pin is None:
+                    raise LiveRunError(f"{campaign} runs on the paths --pin-layout names")
+                if bodies and len(pin.get("replicas", [pin["qubits"]])) not in bodies:
+                    raise LiveRunError(
+                        f"{campaign} assigns one body to each of {sorted(bodies)} pinned paths; "
+                        f"--pin-layout names {len(pin.get('replicas', [pin['qubits']]))}"
+                    )
+            if idle_campaigns and (pin := getattr(args, "pin_layout", None)) is not None:
+                paths = len(pin.get("replicas", [pin["qubits"]]))
+                if args.max_replicas != paths:
+                    raise LiveRunError(
+                        f"{idle_campaigns[0]} runs one replica on each pinned path; pass --max-replicas {paths}"
+                    )
             if "qubit_baseline" in campaigns and args.dd:
                 # The Ramsey and relaxation idles measure free evolution, which
                 # dynamical decoupling would fill with echo pulses.
@@ -6127,9 +6288,66 @@ def _validate_archived_pub(pub_manifest: dict[str, Any], circuit: QuantumCircuit
             )
 
 
+def _verified_replica_bodies(
+    group_name: str,
+    member: dict[str, Any],
+    component: dict[str, Any],
+    replicas: list[QuantumCircuit],
+    placements: dict[str, dict[str, int]],
+    declared_bodies: dict[tuple[str, str], tuple[str, ...] | None],
+) -> tuple[tuple[str, ...] | None, tuple[str, ...] | None]:
+    """The recorded body names and digests of a patterned member, after testing each archived replica against them.
+
+    An unpatterned member must carry neither the group record's fields nor the PUB component's.
+    """
+    name = member["name"]
+    recorded = member.get("replica_bodies")
+    digests = member.get("replica_body_sha256")
+    if recorded is None:
+        if digests is not None or component.get("replica_bodies") is not None:
+            raise LiveRunError(f"logical member {name!r} carries replica body fields its group record lacks")
+        if declared_bodies.get((group_name, name)) is not None:
+            raise LiveRunError(
+                f"logical member {name!r} is patterned in code but its group record has no replica bodies"
+            )
+        return None, None
+    if component.get("replica_bodies") != recorded or component.get("replica_body_sha256") != digests:
+        raise LiveRunError(f"logical member {name!r} replica bodies differ between group record and PUB map")
+    code = declared_bodies.get((group_name, name))
+    if code is not None and list(code) != recorded:
+        raise LiveRunError(
+            f"logical member {name!r} replica bodies {recorded} differ from the group definition {list(code)}"
+        )
+    if digests is None or not len(replicas) == len(recorded) == len(digests):
+        raise LiveRunError(
+            f"logical member {name!r} records {len(recorded)} replica bodies for {len(replicas)} replicas"
+        )
+    for index, (replica, body, digest, prefix) in enumerate(
+        zip(replicas, recorded, digests, member["replica_prefixes"], strict=True)
+    ):
+        mapping = placements.get(prefix)
+        if mapping is None:
+            raise LiveRunError(f"logical member {name!r} replica {index} has no recorded placement")
+        to_base = {physical: int(base) for base, physical in mapping.items()}
+        if packing.body_digest(replica, to_base) != digest:
+            raise LiveRunError(
+                f"logical member {name!r} replica {index} ({prefix}): the archived circuit is not the body "
+                f"{body!r} the plan recorded"
+            )
+    return tuple(recorded), tuple(digests)
+
+
 def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -> dict[str, list[Entry]]:
-    """Rebuild logical entries from archived fused PUBs and their component map."""
-    weights = {m.name: m.weights for g in [*all_experiment_groups(), *record_groups(record)] for m in g.members}
+    """Rebuild logical entries from archived fused PUBs and their component map.
+
+    A patterned member (Member.replica_bodies) must read back as recorded: the group record's
+    body names equal the PUB component's and the code's, and each archived replica body, mapped
+    to the unrelabeled base qubits through the recorded placement, matches the digest the plan
+    took from the named compiled body.
+    """
+    known_groups = [*all_experiment_groups(), *record_groups(record)]
+    weights = {m.name: m.weights for g in known_groups for m in g.members}
+    declared_bodies = {(g.name, m.name): m.replica_bodies for g in known_groups for m in g.members}
     planned_jobs = record.get("submission", {}).get("planned_jobs")
     if planned_jobs is None:
         raise LiveRunError("schema-5 collection needs the immutable fused-PUB submission plan")
@@ -6147,6 +6365,7 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
     out: dict[str, list[Entry]] = {}
     for group in record["groups"]:
         entries = out.setdefault(group["group"], [])
+        placements = {placement["prefix"]: placement["mapping"] for placement in group.get("replicas", [])}
         for member in group["members"]:
             member_name = member["name"]
             if member_name not in components:
@@ -6170,6 +6389,9 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                 packing.split(packed, prefix, qubits, member_name)
                 for prefix, qubits in zip(prefixes, member["replica_qubits"], strict=True)
             ]
+            bodies, digests = _verified_replica_bodies(
+                group["group"], member, component, replicas, placements, declared_bodies
+            )
             weight_name = member_name
             if member["reference"] and member_name not in weights:
                 weight_name = member_name.removesuffix(ISOLATED_SUFFIX)
@@ -6184,6 +6406,8 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                     replica_qubits=member["replica_qubits"],
                     reference=member["reference"],
                     weights=weights.get(weight_name),
+                    replica_bodies=bodies,
+                    body_digests=digests,
                 )
             )
     return out
@@ -6396,6 +6620,12 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         props_by_name: dict[str, Any] = {}
         replayed: dict[str, list[np.ndarray]] = {}
         executed: dict[str, dict[str, Any]] = {}
+        pub_values: dict[str, dict[str, dict[str, dict[str, float]]]] = {}
+        gate_calibration_family = record.get("family_configuration", {}).get("name") in (
+            "measurement-sequence",
+            "measurement-sequence-diagnostic",
+            "measurement-sequence-envelope",
+        )
         # Every windowed component of the job replays in one batch per
         # calibration, in manifest order, and replay_entries gives each batch
         # its own seed, so no two components of the job share a (seed,
@@ -6467,26 +6697,22 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 if window is not None:
                     props_then = at[window[0]][0]
                     props_by_name[name] = props_then
-                    # The calibration in force at the PUB's execution start,
-                    # by value, over every qubit the PUB ran, so the fused
-                    # components of one PUB carry one execution evidence.
-                    executed[name]["placed_qubit_calibration"] = placed_qubit_calibration(
-                        props_then,
-                        sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
-                    )
-                    if record.get("family_configuration", {}).get("name") in (
-                        "measurement-sequence",
-                        "measurement-sequence-diagnostic",
-                        "measurement-sequence-envelope",
-                    ):
-                        executed[name]["placed_gate_calibration"] = placed_gate_calibration(
-                            props_then,
-                            sorted({int(q) for part in pub_manifest["components"] for q in part["physical_qubits"]}),
+                    # The calibration in force at the PUB's execution start, by
+                    # value: the PUB's full values go once into the header's pub_calibration
+                    # and the member keeps those of its own qubits.
+                    if pub_manifest["name"] not in pub_values:
+                        pub_values[pub_manifest["name"]] = pub_execution_calibration(
+                            props_then, pub_manifest, with_gates=gate_calibration_family
                         )
+                    executed[name] |= pub_calibration.split_pub_calibration(
+                        pub_values[pub_manifest["name"]], [int(q) for q in component["physical_qubits"]]
+                    )
                     calibration = props_then.last_update_date
                     sims_by_calibration.setdefault(calibration, at[window[0]][1])
                     replay_batches.setdefault(calibration, []).append(entry)
         replayed = replay_entries(sims_by_calibration, replay_batches, shots, seed)
+        if pub_values:
+            out[0].setdefault("pub_calibration", {}).update(pub_values)
         family_measured.update(measured)
         family_replayed.update(replayed)
         family_executed.update(executed)
@@ -6799,9 +7025,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--state-prep-arms",
         type=lambda value: value.split(","),
-        help="state-prep-control arms among prep0, reset, x and x_history, comma-separated: prep0 among "
-        "them, or x_history alone, since it sets the end state every shot of its job leaves; "
-        "omitted, prep0, reset and x; the policy binds a selection",
+        help="state-prep-control arms among prep0, reset, x, x_history, x_remeasure and remeasure, "
+        "comma-separated: prep0 or remeasure among them, or x_history alone, since it sets the end state every "
+        "shot of its job leaves; the remeasure arms read each shot twice; omitted, prep0, reset and x; the "
+        "policy binds a selection",
     )
     parser.add_argument(
         "--latency-dt",
@@ -7170,9 +7397,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.pin_layout is not None and "replicas" in args.pin_layout and args.family is not None:
         parser.error("--pin-layout names one path for a family; several paths apply to the pinned campaigns only")
     if args.pin_layout is not None and args.family != "n21-orbit-rca":
-        if args.family is not None or not args.groups or not set(args.groups) <= PINNED_CAMPAIGNS:
+        if args.family is not None or not args.groups or not set(args.groups) <= PIN_CAPABLE_CAMPAIGNS:
             parser.error(
-                f"--pin-layout applies to the n21-orbit-rca family and the campaigns {sorted(PINNED_CAMPAIGNS)} only"
+                f"--pin-layout applies to the n21-orbit-rca family and the campaigns {sorted(PIN_CAPABLE_CAMPAIGNS)} "
+                "only"
             )
     if args.init_herald and args.family != "n21-orbit-rca":
         parser.error("--init-herald applies to the n21-orbit-rca family only")

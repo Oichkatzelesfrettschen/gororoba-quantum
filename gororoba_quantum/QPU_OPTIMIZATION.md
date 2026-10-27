@@ -671,6 +671,16 @@ conditional-power guarantee. Their replica-based t summaries require
 separate dependence assumptions; the family inference permits arbitrary
 within-shot dependence.
 
+The calibration in force at each PUB's execution start is stored once per
+PUB in the `collect.json` header's `pub_calibration[pub_name]`, as
+`placed_qubit_calibration` (and `placed_gate_calibration` for the
+measurement-sequence families) over every qubit the PUB ran. Each member's
+`executed` entry keeps both mappings restricted to its own physical qubits
+and names the PUB in `pub`. A record collected earlier holds the full-PUB
+values on every member and no map; readers take a member's own qubits from
+its entry in either form, and the union over a PUB's members is the PUB's
+qubit set (`gororoba_quantum/pub_calibration.py`).
+
 ## Verification and sources
 
 The [repository gates](../ci/AGENTS.md#layout-and-gates) run the exact labeled

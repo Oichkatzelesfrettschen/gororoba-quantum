@@ -108,6 +108,30 @@
             }
           ],
           "scope_sha256": "1e2aad9f9684a9ac7c7efe72bc7811d5133656ff1f0243d118f26e9b69ee813c"
+        },
+        {
+          "result": "Revalidation at the revision that bridges every functor theorem: edits recording Lemma 9.5, Corollary 2.9, the ordered-domain functor and its bridges changed bound note, map and index files, and the acceptance reruns: the cd-annihilator-symmetry, cd-annihilator-symmetry-real and cd-tower-domain replays pass against their receipts and sha256sum -c accepts each ledger; tests/test_evidence_ledgers.py and tests/ci/test_rocq_ci_pins.py pass (16 unmarked, 44 audit) under the pinned interpreter; ci/check_rocq_ci_pins.py reports 15 bundles agreeing; formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link of 705 files.",
+          "observed_at": "2026-10-27T20:58:39+00:00",
+          "revision": "aa4103404a34c9752d9c7425986535f8c5dbac46",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry/replay_rocq.sh",
+              "sha256": "bb1f2555fd72ea1b63517b4cb1aa68ec915958ed79d375c4194a38f8ffbc932d"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry/source_hashes.sha256",
+              "sha256": "52faeb651f04fbdd8f4135fa8a3259f007a3b7b6b049a7cce80c188ba3441716"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-413",
+              "sha256": "482834e5ae2cd3d0f0f170e6dfae8cd4c0bfd77ec83131e9f75d983efa0003a3"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "5091ed1c757bfb768137331856a75b6d4adfaded62f6e48d2d85489c8440974c"
+            }
+          ],
+          "scope_sha256": "1e2aad9f9684a9ac7c7efe72bc7811d5133656ff1f0243d118f26e9b69ee813c"
         }
       ]
     }

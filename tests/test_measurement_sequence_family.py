@@ -385,12 +385,9 @@ def _fixture_snapshot() -> Any:
         return live_run.take_snapshot(service, backend.name)
 
 
-@pytest.mark.parametrize("plugin", (None, "ibm_dynamic_circuits"))
-@pytest.mark.parametrize("workers", ("1", "4"))
-def test_member_compilations_match_the_serial_compile(
-    monkeypatch: pytest.MonkeyPatch, workers: str, plugin: str | None
-) -> None:
-    """The pooled compiler returns the member order, pinned qubits and operation counts of live_run._compile."""
+def _compare_member_compiles(monkeypatch: pytest.MonkeyPatch, workers: str, plugin: str | None, count: int) -> None:
+    """The pooled compiler returns the member order, pinned qubits and operation counts of live_run._compile on
+    count members taken at an even stride through the alternating selection, so both qubits enter."""
     import parallel
     import qpu_planning
 
@@ -408,8 +405,9 @@ def test_member_compilations_match_the_serial_compile(
     check(len(members) == 50 * len(qubits))
     # Each member compiles on one of the two qubits, alternating, so every member kind and both qubits enter while
     # the serial and pooled compiles stay inside the pull-request budget.
-    work = [item for k, item in enumerate(members) if (k // 50 + k) % 2 == 0]
-    check(len(work) == 50 and {layout[0] for _, layout in work} == set(qubits))
+    selection = [item for k, item in enumerate(members) if (k // 50 + k) % 2 == 0]
+    work = selection[:: len(selection) // count][:count]
+    check(len(work) == count and {layout[0] for _, layout in work} == set(qubits))
     serial = [live_run._compile(c, snapshot, live_run.SEED_TRANSPILER, layout) for c, layout in work]
     monkeypatch.setenv("GOROROBA_WORKERS", workers)
     compiler = qpu_planning.MemberCompiler(snapshot.admission_target, live_run.SEED_TRANSPILER, plugin)
@@ -418,6 +416,24 @@ def test_member_compilations_match_the_serial_compile(
     check([live_run._physical(c) for c in pooled] == [layout for _, layout in work])
     check([dict(c.count_ops()) for c in pooled] == [dict(c.count_ops()) for c in serial])
     check(all(a == b for a, b in zip(pooled, serial, strict=True)))
+
+
+# A spawned pool of four starts four interpreters that each import Qiskit, which on a contended pull-request runner
+# pushes the full 50-member compile to the per-test budget; that case runs in the audit, and an eight-member
+# counterpart keeps the four-worker order and equality check in every pull request.
+@pytest.mark.parametrize("plugin", (None, "ibm_dynamic_circuits"))
+@pytest.mark.parametrize("workers", ("1", pytest.param("4", marks=pytest.mark.audit)))
+def test_member_compilations_match_the_serial_compile(
+    monkeypatch: pytest.MonkeyPatch, workers: str, plugin: str | None
+) -> None:
+    _compare_member_compiles(monkeypatch, workers, plugin, 50)
+
+
+@pytest.mark.parametrize("plugin", (None, "ibm_dynamic_circuits"))
+def test_four_worker_member_compilations_match_the_serial_compile(
+    monkeypatch: pytest.MonkeyPatch, plugin: str | None
+) -> None:
+    _compare_member_compiles(monkeypatch, "4", plugin, 8)
 
 
 def test_case_text_states_the_settle_gap_as_a_hypothesis() -> None:

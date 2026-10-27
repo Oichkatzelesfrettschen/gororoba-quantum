@@ -1,0 +1,25 @@
+Require CdTowerDomainR.
+Print Assumptions CdTowerDomain.RTower.kernel_equality.
+Print Assumptions CdTowerDomain.RTower.direct_finiteness.
+Print Assumptions CdTowerDomain.RTower.purity_left.
+Print Assumptions CdTowerDomain.RTower.lemma_9_5.
+Print Assumptions CdTowerDomain.RTower.flexible.
+Print Assumptions CdTowerDomainR.RBridge.kernel_equality.
+Print Assumptions CdTowerDomainR.RBridge.direct_finiteness.
+Print Assumptions CdTowerDomainR.RBridge.flexible.
+Print Assumptions CdTowerDomainR.RBridge.purity_left.
+Print Assumptions CdTowerDomainR.RBridge.lemma_9_5.
+Print Assumptions CdTowerDomainR.RBridge.conj_conj.
+Print Assumptions CdTowerDomainR.RBridge.conj_mul.
+Print Assumptions CdTowerDomainR.RBridge.dot_conj.
+Print Assumptions CdTowerDomainR.RBridge.norm_mul.
+Print Assumptions CdTowerDomainR.RBridge.adjoint.
+Print Assumptions CdTowerDomainR.RBridge.re_commutator.
+Print Assumptions CdTowerDomainR.RBridge.re_associator.
+Print Assumptions CdTowerDomainR.RBridge.conj_mul_left.
+Print Assumptions CdTowerDomainR.RBridge.conj_mul_right.
+Print Assumptions CdTowerDomainR.RBridge.lemma_9_2.
+Print Assumptions CdTowerDomainR.RBridge.purity_right.
+Print Assumptions CdTowerDomainR.RBridge.annihilator_orthogonal.
+Print Assumptions CdTowerDomainR.RBridge.right_inverse_affine.
+Print Assumptions CdTowerDomainR.RFieldBridge.right_inverse_form.
