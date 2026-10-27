@@ -25,6 +25,11 @@ The Fano and spectral outputs complete bounded mathematical investigations. Thei
 remain outside the admitted cases. The primary dimension-six hardware family uses the three reference bases;
 Tao is an offline candidate comparison. Hardware results remain prospective throughout this bundle.
 
+The [identity-control validation](validation-identity-controls.json) binds all 634 successor files, one-worker
+and four-worker byte replays, 189 focused and registry tests, the complete local compiler replay, full lint
+and types, and the preserved historical bindings. Its diagnosis names the hosted numerical discrepancy
+and the bounded correction.
+
 The historical [canonical validation receipt](validation-canonical.json) binds the earlier runner baseline, parallel
 regeneration, all 384 local compiler admissions, 169 focused and registry tests, full Ruff and mypy.
 The historical [validation receipt](validation.json) retains its source revision, runtime versions,
