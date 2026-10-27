@@ -1,9 +1,10 @@
 # Provider-counter audit
 
 This audit names what every provider counter in the retained runs counts. It traces each counter to the analyses
-that divide, subtract or benchmark with it, and records which registered claims depend on it. It froze its surface
-at revision `f38f9c8` (main, 2026-10-27) with Perceval 1.3.1, the system package that
-[python-stack.md](../../notes/quandela/python-stack.md) describes. Every retained raw record, manifest and analysis
+that divide, subtract or benchmark with it, and records which registered claims depend on it. Each output lists
+the runs it covers as its `inventory`, taken from main at `d333878` (2026-10-27), and `--check` recomputes exactly
+that inventory, so a run retained later leaves the check valid and enters a later audit. The Perceval definitions
+are those of 1.3.1, the system package that [python-stack.md](../../notes/quandela/python-stack.md) describes. Every retained raw record, manifest and analysis
 keeps its path and bytes. The replays below write only their own outputs. On every run, the audit-marked test
 `tests/gororoba_quantum/test_provider_counters.py::test_audit_replays_reproduce_their_retained_output_without_touching_inputs`
 replays each one with `--check` and requires `git status` over `results/` and `docs/evidence/` to stay unchanged.
@@ -54,7 +55,9 @@ The table supports four findings:
   of 55 completed jobs. The exception is mesh job-14, a one-iteration list whose top-level `shots` equals that
   iteration's `nb_shots_used`.
 
-No retained QPU run ends by its sample budget under a filter above one photon. What `nb_shots_used` counts in that
+Six iterations carry a Perceval `RuntimeError` string instead of a BSCount: the single iterations of six Ascella
+jobs (input readiness checks, order pilots and the BDSC control job) that returned an error and no samples. Their sample counts stay unavailable, while an empty BSCount (`{}`) reads
+zero. No retained QPU run ends by its sample budget under a filter above one photon. What `nb_shots_used` counts in that
 regime therefore rests on the Perceval definition alone.
 
 Accepted samples per detection event is an acceptance fraction. A per-trial rate or a transmittance needs a
@@ -66,7 +69,7 @@ thousand, which gives the same acceptance and different no-detection rates
 
 A gate-model shot is one circuit execution that writes one classical record. All 392 retained Quantum Inspire
 results report equal `number_of_shots`, `shots_requested` and `shots_done`, and that count matches their raw shot
-lists. All 56 retained IBM jobs return, summed over PUBs, the `submitted_pub_shots` their collection records. Of
+lists. All 59 retained IBM jobs return, summed over PUBs, the `submitted_pub_shots` their collection records. Of
 the 776 retained IQM circuits, 547 run without heralding and return exactly their requested shots. The other 229
 run under all-zeros heralding and return a nonempty subset of them, at retention 0.2345 to 0.98925.
 `iqm_jobs.shots_ok` admits that subset, and `iqm_cancellation_probe` weights each heralded circuit equally rather

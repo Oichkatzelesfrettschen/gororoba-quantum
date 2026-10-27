@@ -1,4 +1,12 @@
 {
+ "inventory": [
+  "2026-10-17T213646Z-qpu_belenos-box_kite_photonic_single-job-04",
+  "2026-10-18T025441Z-qpu_belenos-box_kite_photonic_single-job-04",
+  "2026-10-18T042403Z-qpu_belenos-belenos_mesh-job-08",
+  "2026-10-18T090333Z-qpu_belenos-belenos_mesh-job-10",
+  "2026-10-18T090434Z-qpu_belenos-belenos_mesh-job-11",
+  "2026-10-18T155323Z-qpu_belenos-belenos_mesh-job-13"
+ ],
  "one_photon_blocks": [
   {
    "blocks": {
@@ -290,5 +298,5 @@
    }
   ]
  },
- "schema": "quandela-exposure-sensitivity-v1"
+ "schema": "quandela-exposure-sensitivity-v2"
 }
