@@ -65,6 +65,10 @@ The [verification receipt](evidence/tuna-projector-geometry/readout-ordered-resp
 records 116 passing focused tests, static checks, compiler replay and the 59-file historical-byte comparison.
 The [requested high-effort peer review](archive/reviews/tuna-ordered-response-admission-review.md)
 accepts the exact descriptive case for owner approval while retaining its causal limits.
+The [approval-time observation](evidence/tuna-projector-geometry/readout-ordered-response-approval-admission.json)
+refreshes availability for the same case; every dispatch still requires fresh admission.
+The [source-scope revalidation](evidence/tuna-projector-geometry/source-scope-revalidation.md)
+corrects historical prospective/unmeasured wording through an addendum while preserving retained source bytes.
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized

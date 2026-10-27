@@ -13,7 +13,7 @@
   },
   "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
   "owner": "codex-tuna-projector-geometry",
-  "next_action": "Obtain owner approval of campaign 53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76; re-admit immediately before any dispatch. Keep causal attribution unresolved and terms-schema reuse separately tracked.",
+  "next_action": "Obtain owner approval of campaign 53eb49080573b876545b5301b195ee06127625653266fbb64b98a60823e07a76; refresh admission before each dispatch. Preserve causal limits and track terms-schema reuse separately.",
   "steps": [
     {
       "id": "source-and-instrument-audit",
@@ -81,6 +81,34 @@
             {
               "ref": "docs/evidence/tuna-projector-geometry/usage-observation.json",
               "sha256": "bb32387fb3fd779f565c421b70ad557fecb0b3c26755d8c65b7a2327c700626c"
+            }
+          ],
+          "scope_sha256": "17239e90eee1a497c0873137f33ce64e79335ff18de80283383a8cbbaa7918d1"
+        },
+        {
+          "result": "Reassessed actual changes against matching receipt bytes in f6e4ef6: added links preserve source/measurement boundaries. A separate source-scope addendum corrects historical status wording while old bytes remain intact. Datasource and usage evidence hashes match.",
+          "observed_at": "2026-10-27T19:43:49.392161+00:00",
+          "revision": "e17cd829bd65dde0fda0fdbc564eb44701297021",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-projector-geometry.md",
+              "sha256": "96eeb473ad50cb1e6f7eaa51407d16d532e06bbbdc72f699760120b5010be948"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/README.md",
+              "sha256": "432fa77e89441faa871e9267966669e1177d33d482648e48075362f50b82e954"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/datasource-connectivity.json",
+              "sha256": "19f695aac7392c69881481b23c1b326ae0e3ada0124f909da3ca07a50be44f09"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/usage-observation.json",
+              "sha256": "bb32387fb3fd779f565c421b70ad557fecb0b3c26755d8c65b7a2327c700626c"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/source-scope-revalidation.md",
+              "sha256": "f0a1a19424b9edb4e25ac8e04e035970265aa383187e72fe1b20edf92f74ca03"
             }
           ],
           "scope_sha256": "17239e90eee1a497c0873137f33ce64e79335ff18de80283383a8cbbaa7918d1"
@@ -152,6 +180,38 @@
             {
               "ref": "scripts/qi_projector_conformance.py",
               "sha256": "91673afc2ab504a13413d78ec2b512bcd99370fb56b135e35eb7f0ad20b8aff9"
+            }
+          ],
+          "scope_sha256": "a743d65d920e8a4a15665f3818526aabfbd5d834f198c0c655137b50bd207c5a"
+        },
+        {
+          "result": "Reassessed QX report changes against matching receipt bytes in f6e4ef6. Frozen conformance and supplemental full-law replays match; 18 historical qualification/QX tests pass. Addendum scopes QX results separately from the completed failed Tuna qualification.",
+          "observed_at": "2026-10-27T19:43:49.393277+00:00",
+          "revision": "e17cd829bd65dde0fda0fdbc564eb44701297021",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/conformance.json",
+              "sha256": "ceb6efcf570c43a6e772254716119fa8f555d20279832acd5a9d5968ffbc9c62"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/results.json",
+              "sha256": "a0929b26fa2899f2386ee99eccf1226db30c8cd4731dca4de752e1fabf62d3c4"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx/submission.json",
+              "sha256": "cd28627c7c58f068171a8469be80c53a8e6c708d24573a77e720de3106455642"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/qx-conformance.md",
+              "sha256": "881195d241e6f188efdafb1c59fed1226ff0c3f4bcd6b07c80b78f95e2048b96"
+            },
+            {
+              "ref": "scripts/qi_projector_conformance.py",
+              "sha256": "91673afc2ab504a13413d78ec2b512bcd99370fb56b135e35eb7f0ad20b8aff9"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/source-scope-revalidation.md",
+              "sha256": "f0a1a19424b9edb4e25ac8e04e035970265aa383187e72fe1b20edf92f74ca03"
             }
           ],
           "scope_sha256": "a743d65d920e8a4a15665f3818526aabfbd5d834f198c0c655137b50bd207c5a"
@@ -294,6 +354,26 @@
             {
               "ref": "tests/scripts/test_qi_tuna_qualification.py",
               "sha256": "a23f23862c2d7112863c52de6fd085ecd4481028f16e749518d00226691a4376"
+            },
+            {
+              "ref": "docs/design/tuna-projector-qualification-admission.md",
+              "sha256": "e504d9e4962338df58dcdf16b8564cd2ef2677d996bd90bed2a2588cc7da51c4"
+            }
+          ],
+          "scope_sha256": "d48bb06ae9b0eb89764181eac3b9c08cd9b8180ddef98cb8a0d13458acff2ff5"
+        },
+        {
+          "result": "Reassessed the full qualification test file: threshold, malformed collection, bit mapping, ordered-raw binding and retained refusal replay tests pass in the 18-test qualification/QX suite. Historical hardware refusal remains unchanged.",
+          "observed_at": "2026-10-27T19:39:49.941051+00:00",
+          "revision": "e17cd829bd65dde0fda0fdbc564eb44701297021",
+          "evidence": [
+            {
+              "ref": "scripts/qi_tuna_qualification.py",
+              "sha256": "ec1ee8e8cfa09c0beec0e8730b18a935a378a1360c2d1bdfb508cfcbd6dd9b3e"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_qualification.py",
+              "sha256": "943f05cc313788f1dbc7eaea82331c385c61f2c9dcc3c9a8c540259f449b3b6c"
             },
             {
               "ref": "docs/design/tuna-projector-qualification-admission.md",
