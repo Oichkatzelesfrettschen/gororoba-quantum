@@ -1,12 +1,13 @@
 """Preregistered decisions D1-D3 of an N=21 orbit window-dose sweep against its idle-padded exact model.
 
 Data. The run directory holds the submitted record (record.json), the collected result (collect.json), the lossless
-shot-ordered registers --collect writes under raw/<job_id>/, and the scheduled-idle replay (idle-replay.json from
-`scripts/scheduled_idle_replay.py RUN --out RUN/idle-replay.json --dose-scales` with DOSE_SCALES): each replica's
-exact branch-resolved law with the explicit doses and the service-scheduled idle charged under the execution
-Target, at the Target's relaxation (exact_laws.idle_padded) and with the dose delays' relaxation multiplied by each
-factor of DOSE_SCALES (dose_scaled_exact_laws). A collection whose group carries comparisons_withheld (its PUBs
-did not all run under one calibration) is refused.
+shot-ordered registers --collect writes under raw/<job_id>/, the scheduled-idle replay (idle-replay.json from
+`scripts/scheduled_idle_replay.py RUN --out RUN/idle-replay.json`: each replica's exact branch-resolved law with the
+explicit doses and the service-scheduled idle charged under the execution Target, exact_laws.idle_padded) and its
+scaling (idle-scaling.json from `scripts/scheduled_idle_scaling.py RUN --out RUN/idle-scaling.json --dose-scales
+--idle-scales` at DOSE_SCALES: the same laws with the dose delays' relaxation, or every idle's, multiplied by each
+factor, dose_scaled_exact_laws and idle_scaled_exact_laws). A collection whose group carries comparisons_withheld
+(its PUBs did not all run under one calibration) is refused.
 
 Estimates. Each member's PUB packs every replica, so one shot measures all replicas together. A shot enters a
 replica's estimate when that replica's initialization herald reads all zeros, and the replay laws are conditioned
@@ -272,7 +273,7 @@ def contract_models(
         dose = int(NAME.fullmatch(contract["name"])["dose"]) or every  # type: ignore[index]
         sources = {1.0: base} | ({float(k): scaled[k] for k in scaled} if dose else {})
         if dose:
-            require({float(k) for k in scaled} >= set(DOSE_SCALES), f"idle-replay.json lacks the scales {DOSE_SCALES}")
+            require({float(k) for k in scaled} >= set(DOSE_SCALES), f"idle-scaling.json lacks the scales {DOSE_SCALES}")
         family: dict[float, np.ndarray] = {}
         for k, laws in sources.items():
             terms = []
@@ -437,6 +438,13 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     record = json.loads((run_dir / "record.json").read_text(encoding="utf-8"))
     collected = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
     replay = json.loads((run_dir / "idle-replay.json").read_text(encoding="utf-8"))
+    scaling_file = run_dir / "idle-scaling.json"
+    if scaling_file.exists():
+        scaling = json.loads(scaling_file.read_text(encoding="utf-8"))
+        replay = {
+            **replay,
+            **{key: scaling[key] for key in ("dose_scaled_exact_laws", "idle_scaled_exact_laws", "refused")},
+        }
     groups = [g for g in collected if isinstance(g, dict) and "measured" in g]
     require(len(groups) == 1, f"{run_dir}: collect.json holds {len(groups)} measured groups, not one")
     # The collector withholds comparisons across PUBs whose calibration differed or changed during their shots
@@ -455,7 +463,10 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     # Amendment, written from the returned scheduler timing before any decision was read: the service runs the
     # replicas' feed-forward branches one after another, so a replica waits through the doses of the replicas
     # before it, and the hypothesis that idle decays at kappa times the Target's rate covers those waits too.
-    if replay.get("idle_scaled_exact_laws"):
+    refused = {row["family"] for row in replay.get("refused", [])}
+    if "idle_scaled_exact_laws" in refused:
+        out["amended_all_idle"] = {"computed": False, "reason": "the exact model refuses laws of the all-idle family"}
+    elif replay.get("idle_scaled_exact_laws"):
         idle_models = contract_models(contracts, replay, phases, "idle_scaled_exact_laws")
         out["amended_all_idle"] = {key: value for key, value in decide(measured, idle_models).items() if key != "arms"}
     out["drift"] = {
@@ -469,7 +480,7 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         member: (m["kept"] / int(record["shots"])).round(6).tolist() for member, m in moments.items()
     }
     out["run"] = run_dir.name
-    out["model_source"] = "idle-replay.json exact_laws.idle_padded and dose_scaled_exact_laws, herald-conditioned"
+    out["model_source"] = "idle-replay.json exact_laws.idle_padded and idle-scaling.json, herald-conditioned"
     return out
 
 

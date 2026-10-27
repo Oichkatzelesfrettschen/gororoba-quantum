@@ -87,13 +87,15 @@ size, and ends this revision. Any failure after a batch was sent ends the case.
 
 The analysis reads the collected run through three commands:
 ```sh
-"$PYTHON" scripts/scheduled_idle_replay.py RUN --out RUN/idle-replay.json \
-    --dose-scales 0.25,0.5,0.75,1.25,1.5,1.75,2.0,2.5,3.0,3.5,4.0,5.0,6.0
+"$PYTHON" scripts/scheduled_idle_replay.py RUN --out RUN/idle-replay.json
+"$PYTHON" scripts/scheduled_idle_scaling.py RUN --out RUN/idle-scaling.json \
+    --dose-scales 0.25,0.5,0.75,1.25,1.5,1.75,2.0,2.5,3.0,3.5,4.0,5.0,6.0 \
+    --idle-scales 0.25,0.5,0.75,1.25,1.5,1.75,2.0,2.5,3.0,3.5,4.0,5.0,6.0
 "$PYTHON" scripts/n21_dose_decisions.py RUN --out RUN/dose-decisions.json
 ```
 The replay gives each replica's exact branch-resolved law with the explicit doses and the service-scheduled idle
-charged under the execution Target, and the same law with the dose delays' relaxation multiplied by each factor
-(the model family M_r(d; k), k = 1 the Target's T1 and T2). A collection whose comparisons the collector withheld
+charged under the execution Target, and the scaling gives the same law with the dose delays' relaxation multiplied
+by each factor (the model family M_r(d; k), k = 1 the Target's T1 and T2). A collection whose comparisons the collector withheld
 (its PUBs did not run under one calibration) is refused.
 
 **Estimates.** Each shot measures every replica of its PUB together. The analysis reads the shot-ordered
@@ -131,7 +133,7 @@ PUB is scheduled over 152 us against 23 us without feedback, and the 14,000 dt e
 against 79 us, about 19 times a replica's dose and branch. A replica therefore waits through the doses of the
 replicas before it, and that wait is inserted scheduler idle the replay charges at the Target's rate. The
 preregistered D2 and D3 stand as written: they scale the dose delays only. The amendment refits both with every
-idle multiplied by k (`scheduled_idle_replay.py --idle-scales`, `idle_scaled_exact_laws`), dose 0 included, since
+idle multiplied by k (`scheduled_idle_scaling.py --idle-scales`, `idle_scaled_exact_laws`), dose 0 included, since
 the hypothesis that idle decays at kappa times the Target's rate covers the waits as well; `dose-decisions.json`
 reports it under `amended_all_idle`. Where the two disagree, the reading names the disagreement rather than
 choosing one. The exact branch-resolved model refuses this family at the largest factors: a 1.2 ms wait charged six times over

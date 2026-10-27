@@ -4650,6 +4650,7 @@
     "scripts/review_wide_control_job.py",
     "scripts/scaffolding_exposure.py",
     "scripts/scheduled_idle_replay.py",
+    "scripts/scheduled_idle_scaling.py",
     "scripts/signed_kernel_noise.py",
     "scripts/singular_sector_dynamics.py",
     "scripts/substrate_crossover.py",
@@ -5440,6 +5441,7 @@
     "scripts/primorial_probe_case.py",
     "scripts/qpu_runtime_levers.py",
     "scripts/scheduled_idle_replay.py",
+    "scripts/scheduled_idle_scaling.py",
     "scripts/singular_sector_dynamics.py",
     "scripts/state_prep_control_parameters.py",
     "scripts/state_prep_excess.py"
@@ -13569,6 +13571,22 @@
    "pathlib",
    "qiskit",
    "qiskit_ibm_runtime",
+   "sys",
+   "typing"
+  ],
+  "scripts/scheduled_idle_scaling.py": [
+   "__future__",
+   "argparse",
+   "datetime",
+   "ibm_account",
+   "json",
+   "live_run",
+   "local_compute",
+   "parallel",
+   "pathlib",
+   "qiskit",
+   "qiskit_ibm_runtime",
+   "scheduled_idle_replay",
    "sys",
    "typing"
   ],
