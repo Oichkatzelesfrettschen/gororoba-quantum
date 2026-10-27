@@ -9,7 +9,7 @@
  ],
  "optimization_level": 3,
  "seed_transpiler": 11,
- "groups": 964,
+ "groups": 965,
  "superseded_configurations": [
   {
    "run": "results/live/2026-10-13T163154.032617Z",
@@ -17,10 +17,42 @@
    "missing_field": "measure_dt"
   }
  ],
- "distinct_members": 2174,
+ "distinct_members": 2218,
  "entangling_members": 950,
  "unchecked": {
   "more than 12 mid-circuit measurements, resets or classical bits": [
+   {
+    "member": "idle_meas_after_x",
+    "digest": "ae4134e7f18d17f0"
+   },
+   {
+    "member": "idle_meas_after_y",
+    "digest": "a9acf479aeeac9fc"
+   },
+   {
+    "member": "idle_meas_during_x",
+    "digest": "6dd5c7a05d6a8401"
+   },
+   {
+    "member": "idle_meas_during_y",
+    "digest": "985820c85e6bcb7a"
+   },
+   {
+    "member": "idle_s_meas_after_x",
+    "digest": "ec201b483aab91df"
+   },
+   {
+    "member": "idle_s_meas_after_y",
+    "digest": "904b768a4fe05f82"
+   },
+   {
+    "member": "idle_s_meas_during_x",
+    "digest": "99810bddb25cd48c"
+   },
+   {
+    "member": "idle_s_meas_during_y",
+    "digest": "2e7bfbcef03fb3f5"
+   },
    {
     "member": "n21_spectator_segmented_xy_d0",
     "digest": "dc3a4171c75c8316"
@@ -2359,6 +2391,402 @@
    "templated": false,
    "law": "point_mass",
    "outcome": "00000000",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_cz_kick",
+   "digest": "92f979d7ee034347",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "11",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 1,
+   "declared": "idle_cz_kick"
+  },
+  {
+   "member": "idle_echo_x_10000dt",
+   "digest": "503e3b52248e1421",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_echo_x_25000dt",
+   "digest": "53f1e7891773a73f",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_echo_x_2500dt",
+   "digest": "f2c70ef8bccc3093",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_echo_y_10000dt",
+   "digest": "7e69312a15e98859",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_echo_y_25000dt",
+   "digest": "0cca83a12010707e",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_echo_y_2500dt",
+   "digest": "1612cfb136fd5d3c",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_excited",
+   "digest": "e99c3541b1ed3a85",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "11",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_ground",
+   "digest": "1da09510e3b23a8b",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_meas_short_x",
+   "digest": "7f91543dccb87a3d",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_meas_short_y",
+   "digest": "c9b1a4d93963f783",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_ramsey_x_10000dt",
+   "digest": "b416a75d5f74852b",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_ramsey_x_25000dt",
+   "digest": "5e00e14f25b4cb84",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_ramsey_x_2500dt",
+   "digest": "9b3d9c38c88b0175",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_ramsey_y_10000dt",
+   "digest": "0378839c67ba276b",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_ramsey_y_25000dt",
+   "digest": "63509d1c5d09f371",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_ramsey_y_2500dt",
+   "digest": "db1aedd9fa3da4af",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_relax_10000dt",
+   "digest": "da2d52856caa9a77",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "11",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_relax_25000dt",
+   "digest": "728cb01ef3a1771c",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "11",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_relax_2500dt",
+   "digest": "bb0eb485b16484e8",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "11",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_echo_x_10000dt",
+   "digest": "6f4c211171b48d32",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_echo_x_25000dt",
+   "digest": "45812c780f13c038",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_echo_x_2500dt",
+   "digest": "ddfda374a59db305",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_echo_y_10000dt",
+   "digest": "4cc0085f3abe4da9",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_echo_y_25000dt",
+   "digest": "7c1b549d60f0befd",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_echo_y_2500dt",
+   "digest": "52940d661d265fad",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_meas_short_x",
+   "digest": "4da756f6b6ffc49f",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_meas_short_y",
+   "digest": "989cb2c8695e1969",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_ramsey_x_10000dt",
+   "digest": "bd2bb974e6b206a2",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_ramsey_x_25000dt",
+   "digest": "8283495e19f61bd1",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_ramsey_x_2500dt",
+   "digest": "270b9d2390199fdd",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "00",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_ramsey_y_10000dt",
+   "digest": "d5d4bda3373c2432",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_ramsey_y_25000dt",
+   "digest": "ca4713093c4f03d9",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_s_ramsey_y_2500dt",
+   "digest": "9b583d9950d4dc8e",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_zz_x_10000dt",
+   "digest": "2ae01fd3e7e46c24",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "point_mass",
+   "outcome": "10",
+   "same_law_without_multi_qubit_gates": null,
+   "cz": 0,
+   "declared": null
+  },
+  {
+   "member": "idle_zz_y_10000dt",
+   "digest": "19a5d9f1f856dfb7",
+   "kind": "dynamic_law",
+   "templated": false,
+   "law": "bit_product",
+   "outcome": null,
    "same_law_without_multi_qubit_gates": null,
    "cz": 0,
    "declared": null

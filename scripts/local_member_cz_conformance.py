@@ -207,6 +207,12 @@ DYNAMIC_LAW_PROBES: dict[str, str] = {
         "lr_code_property contrast against lr_ff_0 measures the coherence the code preserves, and the CZ "
         "prepare the pair and write that Z record"
     ),
+    "idle_cz_kick": (
+        "CZ phase-kickback probe of the idle-penalty campaign: with the spectator in |1> the target's H-CZ-H flips "
+        "it to |1>, a point mass the CZ itself produces, so P(0) of the target against the excited arm reads the CZ "
+        "phase error; the member also places each replica's spectator on a coupler of its target "
+        "(idle_penalty.idle_penalty_circuits)"
+    ),
     r"coherence_measure_reset_(xy|yx)": (
         "imaginary-part arms of the branch-signed coherence C = (S_XX + S_YY + i (S_XY - S_YX)) / 4: the "
         "round-1 orbit prefix's controlled swaps correlate b0 with the work pair, the ideal Im C = 0 leaves "

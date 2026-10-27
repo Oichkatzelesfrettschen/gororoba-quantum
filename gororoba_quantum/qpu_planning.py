@@ -72,6 +72,8 @@ from qpe_diagnostics import (
     has_herald,
     herald_measurement,
     ideal_compiled_probabilities,
+    n21_dose_key,
+    n21_dose_violations,
     n21_ramsey_multiple,
     n21_segmented_key,
 )
@@ -165,7 +167,7 @@ def settings(args: Any) -> dict[str, Any]:
 
     A declared preparation excitation, the empirical-Bernstein opt-in, a
     state-prep arm selection, the n21-orbit-rca initialization herald, its
-    overlap split, its ground-control split, its pinned layout and the
+    overlap split, its ground-control split, its window doses, its pinned layout and the
     latency-recovery delays join them only when given, so a plan without them keeps its settings unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
@@ -178,6 +180,8 @@ def settings(args: Any) -> dict[str, Any]:
     ramsey = {"ramsey_windows": list(windows), "ramsey_analyzer_closure": ramsey_analyzer_closure()} if windows else {}
     sweep = getattr(args, "segmented_sweep", None)
     segmented = {"segmented_sweep": sweep, "segmented_analyzer_closure": segmented_analyzer_closure()} if sweep else {}
+    doses = getattr(args, "window_doses_dt", None)
+    dosed = {"window_doses": list(doses)} if doses else {}
     latency = {
         name: getattr(args, name) for name in ("latency_dt", "window_dt") if getattr(args, name, None) is not None
     }
@@ -216,6 +220,7 @@ def settings(args: Any) -> dict[str, Any]:
         | ground
         | ramsey
         | segmented
+        | dosed
         | latency
         | (
             {
@@ -431,6 +436,35 @@ def ramsey_windows_of(members: Any) -> tuple[int, ...]:
     return tuple(sorted({key[0] for key in found if key is not None}))
 
 
+def n21_replica_tiers(args: Any) -> list[int]:
+    """The replica tiers an N=21 family plans.
+
+    The orbit-rca window analysis reads one replica's schedule and wires, so its window variants plan one. A
+    window-dose sweep's doses are fixed dt values that no control's calibration sizes, and its replay and decisions
+    read every replica, so it packs as many replicas as the tiers admit.
+    """
+    tiers = list(args.replica_tiers) if args.optimize else [args.max_replicas or 1]
+    if args.family == "n21-orbit-rca" and not getattr(args, "window_doses_dt", None):
+        tiers = [1]
+    if args.max_replicas is not None:
+        tiers = [tier for tier in tiers if tier <= args.max_replicas]
+    return tiers
+
+
+def window_doses_of(members: Any) -> tuple[int, ...]:
+    """The window-dose sweep's doses in dt that a group's member names carry; () for any other group."""
+    found = (n21_dose_key(member.name) for member in members)
+    return tuple(sorted({key[1] for key in found if key is not None}))
+
+
+def window_dose_timing_violations(runtime: Any, snapshot: Any, doses: tuple[int, ...]) -> None:
+    """Raise unless every dose, and every echo quarter of it, plays as a Target delay."""
+    target = snapshot.backend.target
+    reasons = n21_dose_violations(doses, max(1, int(target.granularity)), max(1, int(target.min_length)))
+    if reasons:
+        raise runtime.LiveRunError(f"{snapshot.name}: " + "; ".join(reasons))
+
+
 def spectator_controls(sites: list[tuple[tuple[str, int], ...]]) -> list[int]:
     """Physical qubits of the control's resets in the ground-control split's arms.
 
@@ -488,6 +522,7 @@ def _control_windows(
     ground = ground_split(candidate.group.members)
     ramsey = ramsey_windows_of(candidate.group.members)
     segmented = segmented_config_of(candidate.group.members)
+    doses = window_doses_of(candidate.group.members)
     # A segmented arm never measures or resets the control after its
     # herald; the control is logical qubit 0's initial physical qubit.
     controls = (
@@ -507,12 +542,13 @@ def _control_windows(
         window_dt,
         half_dt,
         has_herald(candidate.group.members[0].circuit),
-        not split and any(member.name.startswith("n21_spectator_") for member in candidate.group.members),
+        not split and not doses and any(member.name.startswith("n21_spectator_") for member in candidate.group.members),
         overlap_split=split and not ground,
         reset_dt=reset_dt,
         ground_control_split=ground,
         ramsey_windows=ramsey,
         segmented=segmented,
+        window_doses=doses,
     )
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
@@ -1044,6 +1080,7 @@ def family_candidates(
         routed = []
         windows: dict[int, dict[str, Any]] = {}
         herald = bool(getattr(args, "init_herald", False))
+        doses = tuple(getattr(args, "window_doses_dt", None) or ())
         if args.family == "n21-orbit-rca":
             # Window durations come from each backend's calibration, so each
             # snapshot routes its own group; per-snapshot traces merge by group.
@@ -1069,16 +1106,19 @@ def family_candidates(
                     pinned = None if pin is None else pinned_orbit_layout(runtime, snapshot, pin)
                     bound = window_durations(runtime, snapshot)
                     reset_bound = reset_window_dt(runtime, snapshot) if split else None
+                    if doses:
+                        window_dose_timing_violations(runtime, snapshot, doses)
                     group = n21_orbit_rca_group(
                         bound[0],
                         bound[1],
                         herald,
-                        window_sweep=not split,
+                        window_sweep=not split and not doses,
                         overlap_split=split and not ground,
                         reset_dt=reset_bound,
                         ground_control_split=ground,
                         ramsey_windows=ramsey,
                         segmented=sweep,
+                        window_doses=doses,
                     )
                     placed = runtime.select_candidates(group, [snapshot], args.seeds, local, pinned)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
@@ -1116,12 +1156,7 @@ def family_candidates(
                 args.seeds,
                 trace,
             )
-        tiers = args.replica_tiers if args.optimize else [args.max_replicas or 1]
-        if args.family == "n21-orbit-rca":
-            # The window analysis reads one replica's schedule and wires.
-            tiers = [1]
-        if args.max_replicas is not None:
-            tiers = [tier for tier in tiers if tier <= args.max_replicas]
+        tiers = n21_replica_tiers(args)
         if not tiers:
             raise runtime.LiveRunError("replica tiers contain no placement within --max-replicas")
         for candidate in routed[: args.optimizer_candidates]:
@@ -1170,6 +1205,8 @@ def family_candidates(
                                         ),
                                     }
                                     if getattr(args, "ground_control_split", False)
+                                    else {"window_doses": list(doses)}
+                                    if doses
                                     else {"window_sweep": True}
                                     if args.family == "n21-orbit-rca"
                                     else {}
