@@ -9,11 +9,11 @@
   "state": "closed",
   "reconciliation": {
     "status": "verified",
-    "note": "The canonical runner baseline and current source pass deterministic and compiler validation; acquisition remains outside the completed implementation scope."
+    "note": "The exact identity-control successor and all scoped references pass deterministic and compiler validation. The historical numerical-synthesis candidates retain their bytes and receipts; acquisition remains separate."
   },
   "scope": "Resolve the Fano parity-to-protection inference with exact rank, commutation and signed-lift counterexamples. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Review separately approved acquisition cases after current runtime, budget and instrument qualification checks.",
+  "next_action": "Reopen after a code-space isometry, logical operators, disjoint register assignment and falsifiable channel or lifetime prediction are specified.",
   "steps": [
     {
       "id": "calculate-incidence",
@@ -104,6 +104,50 @@
               "sha256": "8dd0c6f6c44aff7b5f41bb396d318024a6ad05c3b3be20e39bf6b94f06d60a0a"
             }
           ]
+        },
+        {
+          "scope_sha256": "eeb1a2008a1eb8062b8534370d820d39585ca767851cabd824d336c0002e7735",
+          "result": "The exact incidence report gives binary rank four, common eigenspace dimension eight and odd X/Z intersection parity. Revalidated with exact reversible identity controls, pooled independent constructions, 189 focused and registry tests, full lint/types, one-worker and four-worker runner replay, and the pinned 384-payload compiler replay.",
+          "observed_at": "2026-10-27T22:14:41.277846+00:00",
+          "revision": "b7c610abc697ccbe41ed9c67dbc62e7fc6ec3e6c",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/experiment_references.py",
+              "sha256": "f8e9d874da893e63c0e96d50f5cd317c2677023fd8529676748a657d2bbee0d7"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/reference.json",
+              "sha256": "9439f7af9c6e63795da74b2760ca2e6608d8a02fdc78dd707c650303802c8b07"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_references.py",
+              "sha256": "ee1f94173910604fe36372e686ac6c3e1c7a949293af9e55b61ce55dfeb0b33e"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-identity-controls.json",
+              "sha256": "67b4b3b34670414f2b34c88cdf33b7beb765ca53d411f2812504ce816787f29a"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/provenance.json",
+              "sha256": "2f1c8221e5690acfed5f887b697caf5e6f1f8cb15c5c3f6844fc671295bf0b6c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json",
+              "sha256": "deed1d3b2329d8d31fec1e69b81dff4dfc27a842a27e5b9c3b8a35c613d3a854"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json",
+              "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
+            }
+          ]
         }
       ]
     },
@@ -182,6 +226,46 @@
             {
               "ref": "docs/evidence/quantum-experiment-conformance/runner-toolchain.json",
               "sha256": "8dd0c6f6c44aff7b5f41bb396d318024a6ad05c3b3be20e39bf6b94f06d60a0a"
+            }
+          ]
+        },
+        {
+          "scope_sha256": "ded520994968631ad0933189b88d1b338f204be8c65c6a7e2b29b555bd0e56c0",
+          "result": "A cd_core signed-product counterexample survives over real coefficients despite the matching XOR parity skeleton. Revalidated with exact reversible identity controls, pooled independent constructions, 189 focused and registry tests, full lint/types, one-worker and four-worker runner replay, and the pinned 384-payload compiler replay.",
+          "observed_at": "2026-10-27T22:14:41.277846+00:00",
+          "revision": "b7c610abc697ccbe41ed9c67dbc62e7fc6ec3e6c",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/experiment_references.py",
+              "sha256": "f8e9d874da893e63c0e96d50f5cd317c2677023fd8529676748a657d2bbee0d7"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/reference.json",
+              "sha256": "9439f7af9c6e63795da74b2760ca2e6608d8a02fdc78dd707c650303802c8b07"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-identity-controls.json",
+              "sha256": "67b4b3b34670414f2b34c88cdf33b7beb765ca53d411f2812504ce816787f29a"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/provenance.json",
+              "sha256": "2f1c8221e5690acfed5f887b697caf5e6f1f8cb15c5c3f6844fc671295bf0b6c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json",
+              "sha256": "deed1d3b2329d8d31fec1e69b81dff4dfc27a842a27e5b9c3b8a35c613d3a854"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json",
+              "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
             }
           ]
         }
@@ -264,12 +348,52 @@
               "sha256": "8dd0c6f6c44aff7b5f41bb396d318024a6ad05c3b3be20e39bf6b94f06d60a0a"
             }
           ]
+        },
+        {
+          "scope_sha256": "cef17bb32983620d5fea67192eaf372b1b9b8fa9d3516972b9fce68940f32908",
+          "result": "The correction records the missing isometry, logical operators, disjoint register roles, named channel and protection observable as reopening requirements. Revalidated with exact reversible identity controls, pooled independent constructions, 189 focused and registry tests, full lint/types, one-worker and four-worker runner replay, and the pinned 384-payload compiler replay.",
+          "observed_at": "2026-10-27T22:14:41.277846+00:00",
+          "revision": "b7c610abc697ccbe41ed9c67dbc62e7fc6ec3e6c",
+          "evidence": [
+            {
+              "ref": "docs/design/quantum-experiment-conformance.md",
+              "sha256": "39479f8a73287f79978b7bd087b866ffabe6f3e246b130a6ce11d41915ba7a96"
+            },
+            {
+              "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+              "sha256": "fefcea77e1a00bc38ca6ff02f948210703d412f85432ce5fb8466906216291d0"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-identity-controls.json",
+              "sha256": "67b4b3b34670414f2b34c88cdf33b7beb765ca53d411f2812504ce816787f29a"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/provenance.json",
+              "sha256": "2f1c8221e5690acfed5f887b697caf5e6f1f8cb15c5c3f6844fc671295bf0b6c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json",
+              "sha256": "deed1d3b2329d8d31fec1e69b81dff4dfc27a842a27e5b9c3b8a35c613d3a854"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json",
+              "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
+            }
+          ]
         }
       ]
     }
   ],
   "disposition": "completed",
-  "resolution": "Scoped software and bounded mathematical investigations pass canonical replay, focused and registry tests, lint, types and local compiler admission. Provider acquisition, instrument qualification and physical interpretation retain separate prerequisites.",
+  "resolution": "The scoped implementation and bounded investigations pass complete operator tests, exact identity-control lowering, canonical byte replay, local compiler admission and registry checks. Provider acquisition and physical interpretation retain separate prerequisites.",
   "receipts": [
     {
       "scope_sha256": "08176b7bd2380cf7fd4b11aa1ab5aaad20a17699bbc20ce574e3d7c9dd61ba5f",
@@ -360,6 +484,38 @@
         {
           "ref": "docs/runbooks/quantum-experiment-acquisition.md",
           "sha256": "cbb4f8b6cd7b778cecf154fc98be4b1292605d66e3eb86c2dc90649235e6b452"
+        }
+      ]
+    },
+    {
+      "scope_sha256": "08176b7bd2380cf7fd4b11aa1ab5aaad20a17699bbc20ce574e3d7c9dd61ba5f",
+      "result": "The scoped implementation and bounded investigations pass complete operator tests, exact identity-control lowering, canonical byte replay, local compiler admission and registry checks. Provider acquisition and physical interpretation retain separate prerequisites.",
+      "observed_at": "2026-10-27T22:14:41.277846+00:00",
+      "revision": "b7c610abc697ccbe41ed9c67dbc62e7fc6ec3e6c",
+      "evidence": [
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation-identity-controls.json",
+          "sha256": "67b4b3b34670414f2b34c88cdf33b7beb765ca53d411f2812504ce816787f29a"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json",
+          "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/provenance.json",
+          "sha256": "2f1c8221e5690acfed5f887b697caf5e6f1f8cb15c5c3f6844fc671295bf0b6c"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json",
+          "sha256": "deed1d3b2329d8d31fec1e69b81dff4dfc27a842a27e5b9c3b8a35c613d3a854"
+        },
+        {
+          "ref": "docs/design/quantum-experiment-conformance.md",
+          "sha256": "39479f8a73287f79978b7bd087b866ffabe6f3e246b130a6ce11d41915ba7a96"
+        },
+        {
+          "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+          "sha256": "fefcea77e1a00bc38ca6ff02f948210703d412f85432ce5fb8466906216291d0"
         }
       ]
     }

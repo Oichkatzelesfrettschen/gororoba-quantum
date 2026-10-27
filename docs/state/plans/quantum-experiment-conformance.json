@@ -6,14 +6,14 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "active",
+  "state": "closed",
   "reconciliation": {
     "status": "verified",
-    "note": "Hosted admission exposed a serial sedenion construction stage, a seed-module identity collision, and a canonical replay mismatch under the hosted gate allocation; validation is reopened."
+    "note": "The exact identity-control successor and all scoped references pass deterministic and compiler validation. The historical numerical-synthesis candidates retain their bytes and receipts; acquisition remains separate."
   },
   "scope": "Implement finite quantum experiment references, guarded cases, analysis and correction records across five proposals. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Repair sedenion worker dispatch and module identity, establish worker-count replay invariance, and repeat hosted admission.",
+  "next_action": "Prepare separately approved acquisition cases after current runtime, budget and instrument qualification checks.",
   "steps": [
     {
       "id": "audit-contracts",
@@ -92,6 +92,46 @@
               "sha256": "8dd0c6f6c44aff7b5f41bb396d318024a6ad05c3b3be20e39bf6b94f06d60a0a"
             }
           ]
+        },
+        {
+          "scope_sha256": "d7a5192f50ae6713983f9a29a4bb116e2c4e0b32f3803705e039fef12837c731",
+          "result": "The correction document grounds all five outcomes in repository sources and separates finite identities, compiler predictions, device questions and unresolved physical claims. Revalidated with exact reversible identity controls, pooled independent constructions, 189 focused and registry tests, full lint/types, one-worker and four-worker runner replay, and the pinned 384-payload compiler replay.",
+          "observed_at": "2026-10-27T22:14:41.277846+00:00",
+          "revision": "b7c610abc697ccbe41ed9c67dbc62e7fc6ec3e6c",
+          "evidence": [
+            {
+              "ref": "docs/design/quantum-experiment-conformance.md",
+              "sha256": "39479f8a73287f79978b7bd087b866ffabe6f3e246b130a6ce11d41915ba7a96"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/reference.json",
+              "sha256": "9439f7af9c6e63795da74b2760ca2e6608d8a02fdc78dd707c650303802c8b07"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-identity-controls.json",
+              "sha256": "67b4b3b34670414f2b34c88cdf33b7beb765ca53d411f2812504ce816787f29a"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/provenance.json",
+              "sha256": "2f1c8221e5690acfed5f887b697caf5e6f1f8cb15c5c3f6844fc671295bf0b6c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json",
+              "sha256": "deed1d3b2329d8d31fec1e69b81dff4dfc27a842a27e5b9c3b8a35c613d3a854"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json",
+              "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
+            }
+          ]
         }
       ]
     },
@@ -99,7 +139,7 @@
       "id": "integrate-suites",
       "action": "Integrate references, cases and analyzers.",
       "acceptance": "Focused deterministic tests and operator checks pass with guarded execution interfaces. Local libqasm analysis and OpenSquirrel replay admit every emitted QI payload and preserve its control sequence. Canonical runner-image arithmetic binds the prospective baseline and its replay registry.",
-      "state": "doing",
+      "state": "done",
       "receipts": [
         {
           "scope_sha256": "eeafc951cf19321ebe87c4e1c292a0452c46fae4bc80eff61b7f1f8d67be22de",
@@ -130,6 +170,42 @@
             {
               "ref": "docs/evidence/quantum-experiment-conformance/runner-toolchain.json",
               "sha256": "8dd0c6f6c44aff7b5f41bb396d318024a6ad05c3b3be20e39bf6b94f06d60a0a"
+            }
+          ]
+        },
+        {
+          "scope_sha256": "eeafc951cf19321ebe87c4e1c292a0452c46fae4bc80eff61b7f1f8d67be22de",
+          "result": "Canonical payloads, complete operator references, topology and output maps pass deterministic tests, runner-image byte replay and local parser/pass/control admission. Revalidated with exact reversible identity controls, pooled independent constructions, 189 focused and registry tests, full lint/types, one-worker and four-worker runner replay, and the pinned 384-payload compiler replay.",
+          "observed_at": "2026-10-27T22:14:41.277846+00:00",
+          "revision": "b7c610abc697ccbe41ed9c67dbc62e7fc6ec3e6c",
+          "evidence": [
+            {
+              "ref": "scripts/experiment_cases.py",
+              "sha256": "59f42a3cf3a07d24c949ff33becf148316ee040bc251a2a17462b8cbf72db114"
+            },
+            {
+              "ref": "tests/scripts/test_experiment_cases.py",
+              "sha256": "d6bc3379c5e3cd1b21f1be652e612fcea6f426b0e31923a660e9c8928cca579c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-identity-controls.json",
+              "sha256": "67b4b3b34670414f2b34c88cdf33b7beb765ca53d411f2812504ce816787f29a"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/provenance.json",
+              "sha256": "2f1c8221e5690acfed5f887b697caf5e6f1f8cb15c5c3f6844fc671295bf0b6c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json",
+              "sha256": "deed1d3b2329d8d31fec1e69b81dff4dfc27a842a27e5b9c3b8a35c613d3a854"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json",
+              "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
             }
           ]
         }
@@ -224,6 +300,50 @@
               "sha256": "8dd0c6f6c44aff7b5f41bb396d318024a6ad05c3b3be20e39bf6b94f06d60a0a"
             }
           ]
+        },
+        {
+          "scope_sha256": "a839223c8df9d0e5da6780acdc7f8755fcc2f060f3e45f415d7fc1656bcb22c6",
+          "result": "Validation, source-bound receipts, provider observations, cases and acquisition review are retained; seed provenance and all Markdown links pass. Revalidated with exact reversible identity controls, pooled independent constructions, 189 focused and registry tests, full lint/types, one-worker and four-worker runner replay, and the pinned 384-payload compiler replay.",
+          "observed_at": "2026-10-27T22:14:41.277846+00:00",
+          "revision": "b7c610abc697ccbe41ed9c67dbc62e7fc6ec3e6c",
+          "evidence": [
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
+              "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+            },
+            {
+              "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+              "sha256": "fefcea77e1a00bc38ca6ff02f948210703d412f85432ce5fb8466906216291d0"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/provider-observation.json",
+              "sha256": "873a909ce8b6a2a0612140aa9f21238c1ae4719f5afa89d79888b3f2ea872e7c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
+              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/validation-identity-controls.json",
+              "sha256": "67b4b3b34670414f2b34c88cdf33b7beb765ca53d411f2812504ce816787f29a"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/provenance.json",
+              "sha256": "2f1c8221e5690acfed5f887b697caf5e6f1f8cb15c5c3f6844fc671295bf0b6c"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-pooling-replay.json",
+              "sha256": "509a9b75e389264b23380e61e84281dd3e9fea45bfc91e107ccedebfc11bd30b"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json",
+              "sha256": "deed1d3b2329d8d31fec1e69b81dff4dfc27a842a27e5b9c3b8a35c613d3a854"
+            },
+            {
+              "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json",
+              "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
+            }
+          ]
         }
       ]
     }
@@ -267,6 +387,40 @@
           "sha256": "cbb4f8b6cd7b778cecf154fc98be4b1292605d66e3eb86c2dc90649235e6b452"
         }
       ]
+    },
+    {
+      "scope_sha256": "3dbe28cc9850d87bcedb25f4774cc5adf258c9a2596ce4c78c7fbc8c2dcac8c7",
+      "result": "The scoped implementation and bounded investigations pass complete operator tests, exact identity-control lowering, canonical byte replay, local compiler admission and registry checks. Provider acquisition and physical interpretation retain separate prerequisites.",
+      "observed_at": "2026-10-27T22:14:41.277846+00:00",
+      "revision": "b7c610abc697ccbe41ed9c67dbc62e7fc6ec3e6c",
+      "evidence": [
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/validation-identity-controls.json",
+          "sha256": "67b4b3b34670414f2b34c88cdf33b7beb765ca53d411f2812504ce816787f29a"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/campaign.json",
+          "sha256": "a4d0fb8b668caa70c47f495e83c289b88d17a08d30403b8a036a6f0158c9d768"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/runner-identity-controls/provenance.json",
+          "sha256": "2f1c8221e5690acfed5f887b697caf5e6f1f8cb15c5c3f6844fc671295bf0b6c"
+        },
+        {
+          "ref": "docs/evidence/quantum-experiment-conformance/identity-control-toolchain.json",
+          "sha256": "deed1d3b2329d8d31fec1e69b81dff4dfc27a842a27e5b9c3b8a35c613d3a854"
+        },
+        {
+          "ref": "docs/design/quantum-experiment-conformance.md",
+          "sha256": "39479f8a73287f79978b7bd087b866ffabe6f3e246b130a6ce11d41915ba7a96"
+        },
+        {
+          "ref": "docs/runbooks/quantum-experiment-acquisition.md",
+          "sha256": "fefcea77e1a00bc38ca6ff02f948210703d412f85432ce5fb8466906216291d0"
+        }
+      ]
     }
-  ]
+  ],
+  "disposition": "completed",
+  "resolution": "The scoped implementation and bounded investigations pass complete operator tests, exact identity-control lowering, canonical byte replay, local compiler admission and registry checks. Provider acquisition and physical interpretation retain separate prerequisites."
 }
