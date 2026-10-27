@@ -43,6 +43,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import state_prep_excess as spe  # noqa: E402
 
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import parallel  # noqa: E402
+
 SCHEMA = "state-prep-split-v1"
 ARMS = ("prep0", spe.STATE_PREP_HISTORY_ARM)
 
@@ -79,6 +82,49 @@ def homogeneous(replicates: list[list[int]], level: float) -> tuple[bool, float]
     return bool(p_value >= level), float(p_value)
 
 
+def qubit_split(item: tuple[Any, ...]) -> dict[str, Any]:
+    """One qubit's split: its pooled hd and interval, replicate test and per-pair values.
+
+    ``item`` is (cells, readouts, pair jobs, bound level, replicate level), cells the (ones, shots, segments) of each
+    arm's replicates in order, readouts each arm's per-replicate execution readouts.
+    """
+    cells, readouts, jobs, level, replicate_level = item
+    e01 = max(v["prob_meas0_prep1"] for arm in ARMS for replicate in readouts[arm] for v in replicate)
+    pooled = {arm: [sum(cell[k] for cell in cells[arm]) for k in range(3)] for arm in ARMS}
+    x, p = (pooled[arm][0] / pooled[arm][1] for arm in (spe.STATE_PREP_HISTORY_ARM, "prep0"))
+    hd_interval = interval(pooled[spe.STATE_PREP_HISTORY_ARM], pooled["prep0"], e01, level)
+    tests = {arm: homogeneous(cells[arm], replicate_level) for arm in ARMS}
+    history = cells[spe.STATE_PREP_HISTORY_ARM]
+    pairs = [
+        {
+            "prep0_job": prep0_job,
+            "x_history_job": x_history_job,
+            "hd": history_dependent(history[k][0] / history[k][1], cells["prep0"][k][0] / cells["prep0"][k][1], e01),
+            "hd_interval": interval(history[k], cells["prep0"][k], e01, level),
+        }
+        for k, (prep0_job, x_history_job) in enumerate(jobs)
+    ]
+    uniform = all(ok for ok, _ in tests.values())
+    if not uniform:
+        hd_interval = [
+            min([hd_interval[0], *(pair["hd_interval"][0] for pair in pairs)]),
+            max([hd_interval[1], *(pair["hd_interval"][1] for pair in pairs)]),
+        ]
+    return {
+        "counts": {arm: cells[arm] for arm in ARMS},
+        "fractions": {"prep0": p, spe.STATE_PREP_HISTORY_ARM: x},
+        "e01": e01,
+        "readouts": readouts,
+        "hd": history_dependent(x, p, e01),
+        "hd_interval": hd_interval,
+        "replicates": {
+            "homogeneous": uniform,
+            "p_values": {arm: tests[arm][1] for arm in ARMS},
+            "pairs": pairs,
+        },
+    }
+
+
 def split(controls: list[dict[str, Any]], alpha: float) -> dict[str, Any]:
     """The per-qubit split from read_control outputs, replicates of an arm in the order given."""
     spe.require(0.0 < alpha < 1.0, f"alpha {alpha} lies outside (0, 1)")
@@ -96,47 +142,22 @@ def split(controls: list[dict[str, Any]], alpha: float) -> dict[str, Any]:
     qubits = sorted(set.intersection(*(set(c["counts"][arm]) for arm in ARMS for c in by_arm[arm])))
     spe.require(bool(qubits), "no qubit is read by every control")
     level = alpha / (4 * len(qubits))
-    out: dict[str, Any] = {}
-    for qubit in qubits:
-        cells = {arm: [c["counts"][arm][qubit] for c in by_arm[arm]] for arm in ARMS}
-        readouts = [v for arm in ARMS for c in by_arm[arm] for v in c["readouts"][arm][qubit]]
-        e01 = max(v["prob_meas0_prep1"] for v in readouts)
-        pooled = {arm: [sum(cell[k] for cell in cells[arm]) for k in range(3)] for arm in ARMS}
-        x, p = (pooled[arm][0] / pooled[arm][1] for arm in (spe.STATE_PREP_HISTORY_ARM, "prep0"))
-        hd_interval = interval(pooled[spe.STATE_PREP_HISTORY_ARM], pooled["prep0"], e01, level)
-        tests = {arm: homogeneous(cells[arm], alpha / (2 * len(qubits))) for arm in ARMS}
-        pairs = [
-            {
-                "prep0_job": by_arm["prep0"][k]["job_ids"],
-                "x_history_job": by_arm[spe.STATE_PREP_HISTORY_ARM][k]["job_ids"],
-                "hd": history_dependent(
-                    cells[spe.STATE_PREP_HISTORY_ARM][k][0] / cells[spe.STATE_PREP_HISTORY_ARM][k][1],
-                    cells["prep0"][k][0] / cells["prep0"][k][1],
-                    e01,
-                ),
-                "hd_interval": interval(cells[spe.STATE_PREP_HISTORY_ARM][k], cells["prep0"][k], e01, level),
-            }
-            for k in range(len(by_arm["prep0"]))
-        ]
-        uniform = all(ok for ok, _ in tests.values())
-        if not uniform:
-            hd_interval = [
-                min([hd_interval[0], *(pair["hd_interval"][0] for pair in pairs)]),
-                max([hd_interval[1], *(pair["hd_interval"][1] for pair in pairs)]),
-            ]
-        out[str(qubit)] = {
-            "counts": {arm: cells[arm] for arm in ARMS},
-            "fractions": {"prep0": p, spe.STATE_PREP_HISTORY_ARM: x},
-            "e01": e01,
-            "readouts": {arm: [c["readouts"][arm][qubit] for c in by_arm[arm]] for arm in ARMS},
-            "hd": history_dependent(x, p, e01),
-            "hd_interval": hd_interval,
-            "replicates": {
-                "homogeneous": uniform,
-                "p_values": {arm: tests[arm][1] for arm in ARMS},
-                "pairs": pairs,
-            },
-        }
+    jobs = [
+        (prep0["job_ids"], history["job_ids"])
+        for prep0, history in zip(by_arm["prep0"], by_arm[spe.STATE_PREP_HISTORY_ARM], strict=True)
+    ]
+    items = [
+        (
+            {arm: [c["counts"][arm][qubit] for c in by_arm[arm]] for arm in ARMS},
+            {arm: [c["readouts"][arm][qubit] for c in by_arm[arm]] for arm in ARMS},
+            jobs,
+            level,
+            alpha / (2 * len(qubits)),
+        )
+        for qubit in qubits
+    ]
+    rows = parallel.ordered_map(qubit_split, items)
+    out = {str(qubit): row for qubit, row in zip(qubits, rows, strict=True)}
     return {
         "schema": SCHEMA,
         "rule": {

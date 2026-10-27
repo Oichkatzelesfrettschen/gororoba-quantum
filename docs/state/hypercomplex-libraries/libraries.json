@@ -13429,6 +13429,7 @@
    "argparse",
    "json",
    "numpy",
+   "parallel",
    "pathlib",
    "scipy",
    "state_prep_excess",

@@ -335,7 +335,7 @@ def test_falsify_names_out_of_band_coefficients(tmp_path: Path) -> None:
     record["policy"]["design"]["pin_layout"]["replicas"] = [[58, 71, 72], [33, 39, 53]]
     (tmp_path / "record.json").write_text(json.dumps(record))
     band = {k: [-0.05, 0.05] for k in keys}
-    decision = {
+    decision: dict[str, Any] = {
         "calibration": "C1",
         "gap88_shots": 1600,
         "stage2_paths": [[58, 71, 72], [33, 39, 53]],
