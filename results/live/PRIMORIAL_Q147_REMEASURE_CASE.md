@@ -1,6 +1,8 @@
 # Case: q147's persistent excitation, a two-read control on 147-148-149 and 141-142-143
 
-Status: draft awaiting the owner's approval. No submission has been made. The plan record is
+Status: approved by the owner on 2026-10-27 (UTC) ("approved."), as written: six qubits, the backup account,
+32768 shots at 20 us and the 12 s ceiling. Ran the same day as job `dbggr6giudkc73e4fijg`, 5 s billed; results in
+[q147-remeasure/README.md](../../docs/evidence/primorial_cover/q147-remeasure/README.md). The plan record is
 [primorial-q147-persistent-excitation](../../docs/state/plans/primorial-q147-persistent-excitation.json).
 
 ## The finding this case follows
@@ -124,7 +126,10 @@ record and sha256 fill the table below after the submit.
 
 | record | record.json sha256 | submitted run |
 | --- | --- | --- |
-| | | |
+| `2026-10-27T204540.839611Z` | `d72a0deb434ea9513d9611a87aba126d7ca268d58ebc86de8acc27d70e065054` | `2026-10-27T204605.871056Z` (job `dbggr6giudkc73e4fijg`) |
+
+The binding dry run was made from commit f38f9c8 with `sources_modified` false, under the pinned interpreter
+(qiskit 2.6.0, qiskit-ibm-runtime 0.50.0).
 
 ## Commands
 

@@ -166,8 +166,18 @@ associativity never enters.
   conj(x) = 2 re(x) - x. Its proof terms depend on the two Stdlib
   real-construction axioms and nothing else
   ([real evidence bundle](../../evidence/cd-annihilator-symmetry-real/README.md)).
-  The real tower is Stdlib's R; a tower over an abstract ordered field, which
-  would cover both sources at once, has no Rocq source.
+  [CdTowerDomain.v](../../../proofs/CdTowerDomain.v) covers both at once: the
+  tower is a functor over an ordered integral domain, the signature Z and R
+  share (a commutative ring with 0 <= a a, nonnegative sums vanishing
+  termwise, no zero divisors and 1 != 0), proving Lemmas 1 to 4, the theorem
+  and the corollary in its integer-cleared form on it, and the field
+  extension `CdTowerField` proves the affine family; the bridge files
+  [CdTowerDomainZ.v](../../../proofs/CdTowerDomainZ.v) and
+  [CdTowerDomainR.v](../../../proofs/CdTowerDomainR.v) restate each theorem
+  in the vocabulary of the integer and real files
+  ([functor bundle](../../evidence/cd-tower-domain/README.md)). Z is a domain
+  and not a field, so the shared signature is the domain, and only the
+  affine family needs the field.
 - The record enumerates fixed families; the general element of dimension
   32 or higher is covered by the written argument alone.
 - The falsifier is one element a with ker L_a different from ker R_a, or one
