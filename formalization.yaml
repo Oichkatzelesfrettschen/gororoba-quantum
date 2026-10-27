@@ -87,7 +87,9 @@ sources:
       (xy)y* = (xy*)y and Lemmas 2.6 and 2.8 on real parts
       (CdAnnihilatorSymmetryReal.v), where Lemma 9.5 (a zero divisor and
       its annihilator are orthogonal to C_n = span(1, i_n)) follows by the
-      paper's swap (a, b) -> (b, a).
+      paper's swap (a, b) -> (b, a) and Corollary 2.9 (the flexible law
+      (xy)x = x(yx)) by the paper's self-conjugate trilinear sum and
+      Lemma 2.8.
     author_endorsement: not-contacted
 
   - title: "gororoba_quantum/cd_core.py"
@@ -193,6 +195,11 @@ status:
       axioms:
         - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
         - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
+    - declaration: flexible
+      file: proofs/CdAnnihilatorSymmetryReal.v
+      axioms:
+        - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
+        - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
     - declaration: isum_conference
       file: proofs/CdImaginarySumConference.v
       axioms: []
@@ -287,6 +294,10 @@ alignment:
     - declaration: lemma_9_5
       file: proofs/CdAnnihilatorSymmetryReal.v
       statement: "x y = 0 with y nonzero at level k + 1 makes x orthogonal to 1 and to the adjoined unit i = (0, 1) (Lemma 9.5 of math/0511691); annihilator_orthogonal states the same for every y annihilated by a nonzero x"
+      source: docs/notes/math-0511691.md
+    - declaration: flexible
+      file: proofs/CdAnnihilatorSymmetryReal.v
+      statement: "(x y) x = x (y x) for all x, y with real coordinates at every level (Corollary 2.9 of math/0511691), from flex_sum_zero: x (y z) - (x y) z + z (y x) - (z y) x = 0"
       source: docs/notes/math-0511691.md
     - declaration: sign_row_degree_all
       file: proofs/CdSignRowAnf.v
