@@ -404,14 +404,14 @@ def test_member_compilations_match_the_serial_compile(
     settles = {q: 500 for q in qubits}
     prereadouts = {q: 480 for q in qubits}
     built = de.measurement_sequence_groups(qubits, delays, settles, prereadouts, T1_IDLES)
-    work = [(m.circuit, int(g.name.rsplit("_q", 1)[1])) for g in built for m in g.members]
+    work = [(m.circuit, [int(g.name.rsplit("_q", 1)[1])]) for g in built for m in g.members]
     check(len(work) == 50 * len(qubits))
-    serial = [live_run._compile(c, snapshot, live_run.SEED_TRANSPILER, [q]) for c, q in work]
+    serial = [live_run._compile(c, snapshot, live_run.SEED_TRANSPILER, layout) for c, layout in work]
     monkeypatch.setenv("GOROROBA_WORKERS", workers)
     compiler = qpu_planning.MemberCompiler(snapshot.admission_target, live_run.SEED_TRANSPILER, plugin)
     pooled = parallel.ordered_map(compiler, work, min_items=2)
     check([c.name for c in pooled] == [c.name for c, _ in work])
-    check([live_run._physical(c) for c in pooled] == [[q] for _, q in work])
+    check([live_run._physical(c) for c in pooled] == [layout for _, layout in work])
     check([dict(c.count_ops()) for c in pooled] == [dict(c.count_ops()) for c in serial])
     check(all(a == b for a, b in zip(pooled, serial, strict=True)))
 

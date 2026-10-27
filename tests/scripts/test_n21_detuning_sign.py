@@ -60,6 +60,21 @@ def test_decisions_withhold_below_the_replica_floor() -> None:
     _require(out["d3_echo"]["verdict"].startswith("withheld"), out)
 
 
+def test_flat_sweeps_withhold_the_slope_without_aborting() -> None:
+    # Resolved flat sweeps with equal Ramsey rates predict a zero difference everywhere: D1 has no slope to fit.
+    times = [0.0, 7.0, 14.0, 21.0, 28.0]
+    fit = sign.rate(times, [(0.0, 0.02, 0.5, 0.02)] * len(times))
+    echo = dict.fromkeys(("moved_rad", "returned_rad"), 0.0) | {"moved_se": 0.1, "returned_se": 0.1, "resolved": True}
+    out = sign.decide([{"orbit": fit, "one": fit, "sixteen": fit, "echo": echo}] * sign.MIN_REPLICAS)
+    _require(out["d1_slope"]["verdict"].startswith("withheld: every replica predicts"), out["d1_slope"])
+    _require(out["d2_sign"]["verdict"].startswith("withheld"), out["d2_sign"])
+    # Mutation: one replica with a nonzero prediction defines the slope; equal predictions omit the free fit.
+    tilted = dict(fit, khz=2.0)
+    rows = [{"orbit": tilted, "one": fit, "sixteen": tilted, "echo": echo}] * sign.MIN_REPLICAS
+    slope = sign.decide(rows)["d1_slope"]
+    _require(slope["slope"] == pytest.approx(1.0) and slope["with_intercept"] is None, slope)
+
+
 def test_unresolved_echo_withholds_rather_than_returns() -> None:
     # A moved replica whose echo amplitude sits at its noise has a phase error wide enough to accept any return.
     times = [0.0, 7.0, 14.0, 21.0, 28.0]

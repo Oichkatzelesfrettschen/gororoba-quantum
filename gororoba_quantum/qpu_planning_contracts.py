@@ -3150,8 +3150,12 @@ def _verify_detuning_sign_plan(snapshot: live_run.Snapshot) -> None:
     _require(roles == qpu_planning.dose_roles(choice), f"the configuration binds dose roles {roles}")
     compiled = dict(zip(names, choice.isas, strict=True))
     layout = list(choice.layout)
+    members = {member.name: member for member in choice.group.members}
     for role in ("one", "sixteen"):
         arm = qpe_diagnostics.n21_work_ramsey_name(role, "x", WINDOW_DOSES[-1])
+        # The pooled rebuild compiles each Ramsey arm exactly as live_run._compile does on the plan's layout.
+        serial = live_run._compile(members[arm].circuit, choice.snap, choice.seed, choice.layout)
+        _require(serial == compiled[arm], f"{arm}: the pooled compile differs from live_run._compile")
         (responses,) = qpu_planning._responses(
             layout, [(compiled[arm], compiled[arm.replace("_x_d", "_y_d")])], qpu_planning._ramsey_read
         )

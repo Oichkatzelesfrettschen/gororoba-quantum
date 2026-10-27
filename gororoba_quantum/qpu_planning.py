@@ -620,10 +620,18 @@ def detuning_roles_choice(runtime: Any, candidate: Any, windows: dict[str, Any])
     previous = {member.name: isa for member, isa in zip(candidate.group.members, candidate.isas, strict=True)}
     if [member.name for member in group.members] != list(previous):
         raise runtime.LiveRunError("the dose-role rebuild changed the detuning-sign members")
+    snapshot = candidate.snap
+    if snapshot.admission_target is None:
+        snapshot.admission_target = runtime.build_admission_target(snapshot)
+    get_plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
+    compiler = MemberCompiler(snapshot.admission_target, candidate.seed, get_plugin() if get_plugin else None)
+    # The Ramsey arms are independent compilations; ordered_map returns them in member order.
+    ramsey = [member for member in group.members if n21_work_ramsey_key(member.name) is not None]
+    fresh = iter(
+        parallel.ordered_map(compiler, [(member.circuit, list(candidate.layout)) for member in ramsey], min_items=2)
+    )
     isas = [
-        runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout)
-        if n21_work_ramsey_key(member.name) is not None
-        else previous[member.name]
+        next(fresh) if n21_work_ramsey_key(member.name) is not None else previous[member.name]
         for member in group.members
     ]
     compiled = {member.name: isa for member, isa in zip(group.members, isas, strict=True)}
@@ -1274,7 +1282,7 @@ def prereadout_delay(runtime: Any, snapshot: Any) -> int:
 
 
 class MemberCompiler:
-    """Transpile one (circuit, physical qubit) onto the admission Target, as live_run._compile does for a pinned qubit.
+    """Transpile one (circuit, initial layout) onto the admission Target, as live_run._compile does for that layout.
 
     The worker receives the Target, the seed and the backend's default translation stage plugin
     rather than the backend: a runtime backend holds its service session, which stays in the
@@ -1286,17 +1294,17 @@ class MemberCompiler:
         self.seed = seed
         self.translation_method = translation_method
 
-    def __call__(self, item: tuple[QuantumCircuit, int]) -> QuantumCircuit:
+    def __call__(self, item: tuple[QuantumCircuit, list[int]]) -> QuantumCircuit:
         import live_run
 
-        circuit, qubit = item
+        circuit, layout = item
         try:
             return transpile(
                 circuit,
                 target=self.target,
                 optimization_level=live_run.OPT_LEVEL,
                 seed_transpiler=self.seed,
-                initial_layout=[qubit],
+                initial_layout=layout,
                 translation_method=self.translation_method,
             )
         except BaseException as error:
@@ -1387,7 +1395,7 @@ def measurement_sequence_candidates(
             )
             # The members are independent compilations; ordered_map returns them in member order.
             work = [
-                (member.circuit, int(group.name.rsplit("_q", 1)[1])) for group in groups for member in group.members
+                (member.circuit, [int(group.name.rsplit("_q", 1)[1])]) for group in groups for member in group.members
             ]
             compiled = iter(parallel.ordered_map(compiler, work, min_items=2))
             choices = []

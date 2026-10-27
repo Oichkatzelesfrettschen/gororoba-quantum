@@ -245,15 +245,20 @@ def decide(fits: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         if all(fit[key]["khz"] is not None for key in ("orbit", *ROLES))
     ]  # fmt: skip
     out: dict[str, Any] = {"replicas_with_rates": len(rows)}
+    f_o, se_o, pred, se_p = np.asarray(rows, dtype=float).reshape(-1, 4).T
+    w = 1.0 / (se_o**2 + se_p**2)
+    # The prediction's weighted second moment is the slope's information; it vanishes when every replica predicts
+    # no rate difference, and the line then has no slope to estimate.
+    information = float(np.sum(w * pred * pred))
     if len(rows) < MIN_REPLICAS:
         out["d1_slope"] = {"verdict": f"withheld: {len(rows)} replicas with three rates, below {MIN_REPLICAS}"}
+    elif information == 0.0:
+        out["d1_slope"] = {"verdict": "withheld: every replica predicts a zero rate difference, so no slope is defined"}
     else:
-        f_o, se_o, pred, se_p = (np.asarray(column, dtype=float) for column in zip(*rows, strict=True))
-        w = 1.0 / (se_o**2 + se_p**2)
-        slope = float(np.sum(w * f_o * pred) / np.sum(w * pred * pred))
+        slope = float(np.sum(w * f_o * pred)) / information
         chi2 = float(np.sum(w * (f_o - slope * pred) ** 2))
         df = len(rows) - 1
-        se = math.sqrt(1.0 / float(np.sum(w * pred * pred))) * math.sqrt(max(1.0, chi2 / df))
+        se = math.sqrt(1.0 / information) * math.sqrt(max(1.0, chi2 / df))
         low, high = slope - Z95 * se, slope + Z95 * se
         if 1 - SLOPE_BAND <= low and high <= 1 + SLOPE_BAND:
             verdict = "holds: the orbit precesses at the Ramsey offset of the bit for 16 minus that of the bit for 1"
@@ -262,16 +267,20 @@ def decide(fits: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
         else:
             verdict = "inconclusive: the interval overlaps the band without lying inside it"
         # Reported beside the decision: a free intercept shows a rate common to every replica that the line
-        # through the origin would fold into its slope.
-        design = np.stack([np.ones_like(pred), pred], axis=1)
-        intercept, free_slope = np.linalg.solve(design.T @ (design * w[:, None]), design.T @ (w * f_o))
+        # through the origin would fold into its slope. Equal predictions leave the intercept and slope
+        # inseparable, and the free fit is then omitted.
+        free = None
+        if float(np.ptp(pred)) > 0.0:
+            design = np.stack([np.ones_like(pred), pred], axis=1)
+            intercept, free_slope = np.linalg.solve(design.T @ (design * w[:, None]), design.T @ (w * f_o))
+            free = {"intercept_khz": float(intercept), "slope": float(free_slope)}
         out["d1_slope"] = {
             "slope": slope,
             "lower": low,
             "upper": high,
             "chi2": chi2,
             "df": df,
-            "with_intercept": {"intercept_khz": float(intercept), "slope": float(free_slope)},
+            "with_intercept": free,
             "verdict": verdict,
         }
     resolved = [(o, p) for o, so, p, sp in rows if abs(o) > RESOLVED * so and abs(p) > RESOLVED * sp]
