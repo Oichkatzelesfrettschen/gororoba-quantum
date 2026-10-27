@@ -34,9 +34,9 @@ from statistics import NormalDist
 from typing import Any, NamedTuple
 
 import numpy as np
+from scipy.linalg import eigh_tridiagonal
 from scipy.optimize import brentq, minimize_scalar
 from scipy.stats import chi2
-from scipy.stats import gamma as gamma_distribution
 
 import diagnostic_experiments as de
 import measurement_sequence_analysis as msa
@@ -55,7 +55,7 @@ PROFILE_XATOL = 1e-10
 # Golden-section steps in log k over two grid intervals (about 0.17 wide) leave a bracket below float resolution.
 GOLDEN_STEPS = 40
 GOLDEN_RATIO = (math.sqrt(5) - 1) / 2
-# Equal-probability midpoint quantiles of the gamma rate distribution that the rate-averaged chain averages over.
+# Nodes of the generalized Gauss-Laguerre rule that integrates the rate-averaged chain over the gamma rate distribution.
 GAMMA_NODES = 64
 ADMISSION_ALPHA = 0.01
 # The registered departure bound floor; the q tolerance, the carryover screen and the shape domain take fractions of it.
@@ -261,19 +261,37 @@ def admitted(p_value: float | None, width: int) -> bool:
 # --- shape systematic ---------------------------------------------------------------------------------------
 
 
+@functools.lru_cache(maxsize=256)
+def gamma_rule(shape: float) -> tuple[np.ndarray, np.ndarray]:
+    """(nodes, weights) of the GAMMA_NODES-point Gauss rule for the Gamma(shape, 1) distribution.
+
+    The nodes are the eigenvalues of the Jacobi matrix of the generalized Laguerre polynomials of parameter
+    shape - 1 (diagonal 2 i + shape, off-diagonal sqrt(n (n + shape - 1))) and the weights the squared first
+    components of its eigenvectors (Golub-Welsch), which sum to 1 and need no Gamma(shape). The rule integrates the
+    moments of Gamma(shape, 1) through degree 2 GAMMA_NODES - 1 exactly at every shape of the grid.
+    """
+    i = np.arange(GAMMA_NODES)
+    n = np.arange(1, GAMMA_NODES)
+    nodes, vectors = eigh_tridiagonal(2 * i + shape, np.sqrt(n * (n + shape - 1)))
+    return nodes, vectors[0] ** 2
+
+
 def gamma_measure_p0(ctx: dict[str, Any], t_s: float, shape: float, fraction: float | None = None) -> float:
-    """The measure arm's N = 16 P0 at q = 1 averaged over a gamma-distributed decay rate of mean 1 / t_s."""
+    """The measure arm's N = 16 P0 at q = 1 averaged over a gamma-distributed decay rate of mean 1 / t_s: the rule of
+    `gamma_rule` places the rate at node / (shape t_s) with the node's weight, accumulated in node order."""
     if math.isinf(shape):
         return float(msa.model_tables(t_s, 1.0, ctx, 0.0, fraction)["measure"][str(msa.TOP_STEPS)])
-    quantiles = (np.arange(GAMMA_NODES) + 0.5) / GAMMA_NODES
-    rates = gamma_distribution.ppf(quantiles, shape, scale=1 / (shape * t_s))
+    nodes, weights = gamma_rule(shape)
+    rates = nodes / (shape * t_s)
     gate = msa.sx_gate(ctx, 0.0)
     tau = msa.tau_of("measure", ctx, fraction)
     total = 0.0
-    for rate in rates.tolist():
+    for rate, weight in zip(rates.tolist(), weights.tolist(), strict=True):
         t1 = 1 / rate
-        total += (1 + msa.corrected_z("measure", msa.TOP_STEPS, t1, min(ctx["t2_s"], 2 * t1), tau, 0.0, gate, 1.0)) / 2
-    return total / GAMMA_NODES
+        total += weight * (
+            (1 + msa.corrected_z("measure", msa.TOP_STEPS, t1, min(ctx["t2_s"], 2 * t1), tau, 0.0, gate, 1.0)) / 2
+        )
+    return total
 
 
 def _shape_row(item: tuple[dict[str, Any], tuple[float, ...], tuple[float, ...]]) -> list[float]:

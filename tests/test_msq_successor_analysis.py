@@ -165,6 +165,37 @@ def test_rows_leave_the_registered_analysis_alone() -> None:
 # --- shape systematic ---------------------------------------------------------------------------------------
 
 
+@pytest.mark.parametrize("shape", [0.25, 1.0, 64.0, 1000.0])
+def test_gamma_rule_integrates_the_moments_of_the_gamma_distribution_exactly(shape: float) -> None:
+    nodes, weights = su.gamma_rule(shape)
+    check(len(nodes) == su.GAMMA_NODES and abs(float(weights.sum()) - 1) < 1e-14, f"weights sum {weights.sum()}")
+    for degree in (1, 2, 3):
+        moment = math.prod(shape + k for k in range(degree))
+        got = float(np.sum(weights * nodes**degree))
+        check(abs(got / moment - 1) < 1e-13, f"shape {shape} degree {degree}: {got} against {moment}")
+
+
+@pytest.mark.parametrize("shape", [0.25, 1.0, 4.0])
+@pytest.mark.parametrize("lifetime", [100e-6, 250e-6])
+def test_gamma_measure_p0_agrees_with_a_finer_rule(shape: float, lifetime: float) -> None:
+    ctx = contexts((msa.FIXTURE_QUBITS[0],))[msa.FIXTURE_QUBITS[0]]
+    i = np.arange(256)
+    n = np.arange(1, 256)
+    nodes, vectors = su.eigh_tridiagonal(2 * i + shape, np.sqrt(n * (n + shape - 1)))
+    gate = msa.sx_gate(ctx, 0.0)
+    tau = msa.tau_of("measure", ctx)
+    total = 0.0
+    for x, w in zip(nodes.tolist(), (vectors[0] ** 2).tolist(), strict=True):
+        t1 = shape * lifetime / x
+        total += (
+            w * (1 + msa.corrected_z("measure", msa.TOP_STEPS, t1, min(ctx["t2_s"], 2 * t1), tau, 0.0, gate, 1.0)) / 2
+        )
+    got = su.gamma_measure_p0(ctx, lifetime, shape)
+    # min(T2, 2 T1) kinks the integrand at the rate 2 / T2, so 64 nodes leave up to 5e-6 (T = 100 us, shape 0.25)
+    # against the 256-node value, a tenth of the 64-node midpoint rule's error there and 1 % of the shape bound.
+    check(abs(got - total) < 1e-5, f"shape {shape}, T {lifetime}: {got} against {total}")
+
+
 def test_shape_systematic_is_single_signed_and_grows_toward_low_shape() -> None:
     ctx_map = contexts((msa.FIXTURE_QUBITS[0],))
     wide = su.shape_systematic({"contexts": ctx_map, "shapes": [0.25, 4.0], "t_points": 2})
