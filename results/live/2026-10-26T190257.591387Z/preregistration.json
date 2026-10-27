@@ -1,0 +1,151 @@
+{
+ "approved": "2026-10-26, 20 us with the preregistered fallback to 50 us",
+ "case": "results/live/PRIMORIAL_COHERENCE_CASE_2.md",
+ "commit": "c08555245d6f5f0892cda833dcfdf18ff4c7b5ae",
+ "control_dry_runs": {
+  "prep0": "2026-10-26T190257.591387Z",
+  "x_history": "2026-10-26T190336.832917Z"
+ },
+ "paths": [
+  [
+   58,
+   71,
+   72
+  ],
+  [
+   33,
+   39,
+   53
+  ],
+  [
+   3,
+   16,
+   23
+  ],
+  [
+   17,
+   27,
+   28
+  ],
+  [
+   141,
+   142,
+   143
+  ],
+  [
+   15,
+   19,
+   35
+  ],
+  [
+   60,
+   61,
+   62
+  ],
+  [
+   151,
+   152,
+   153
+  ],
+  [
+   82,
+   83,
+   96
+  ],
+  [
+   38,
+   49,
+   50
+  ],
+  [
+   105,
+   106,
+   107
+  ],
+  [
+   118,
+   129,
+   128
+  ],
+  [
+   100,
+   101,
+   102
+  ],
+  [
+   55,
+   59,
+   75
+  ],
+  [
+   78,
+   89,
+   90
+  ],
+  [
+   66,
+   67,
+   68
+  ],
+  [
+   42,
+   43,
+   44
+  ],
+  [
+   10,
+   11,
+   12
+  ],
+  [
+   79,
+   93,
+   92
+  ],
+  [
+   132,
+   133,
+   134
+  ],
+  [
+   124,
+   125,
+   126
+  ],
+  [
+   98,
+   111,
+   110
+  ],
+  [
+   147,
+   148,
+   149
+  ]
+ ],
+ "rules": {
+  "decision": "primorial_probe_case.py --decide-paths with --excess and a snapshot exported at stage 1's execution start",
+  "excess": "state_prep_excess.py single-delay rule on the stage-1 approval dry run, alpha 0.01, calibration_scope.matched required",
+  "fallback_on_excitation": "the case moves to 50 us when the 20 us excess would stop a path the 50 us rule keeps; at 20 us a path whose decision fails with its eps drops",
+  "falsifier": "per-coefficient bands at z(1 - 0.025/(7k)), at least 3; device claim only with a consistent crosstalk check and an unchanged stage-2 calibration",
+  "minimum_paths": 12,
+  "path_drop_prep0": "a path with a qubit whose prep0 excited fraction exceeds 0.2 drops (primorial_probe_case.py --retained-paths)",
+  "timing_canary": "a control job ending in error 1305 or billing above its 8 s ceiling moves the case to 50 us with its own two controls"
+ },
+ "schema": "primorial-coherence-case-2-preregistration-v1",
+ "sources_sha256": {
+  "docs/evidence/primorial_cover/case2/path-ranking.json": "e9550de68168648c5484a0b7170a9eacdd692517170877b889e82705e92f3aec",
+  "gororoba_quantum/calibration_snapshot.py": "aa7d047a11c7da319cd143e98504026ea9774c147ec1e50c7e49942dcd08d308",
+  "gororoba_quantum/coherence_probes.py": "c6a4daa268fd6cc1ccd3254b3ddef7793da50cbd983a4e9d9ba562586c897b0a",
+  "gororoba_quantum/dynamic_density.py": "3bda5cf1169d4c223696e4c8c0096184ab963b48429df4c49450ff01c3992279",
+  "gororoba_quantum/live_run.py": "85f159500e57921a8fc0e279f1b2eb1c293e5d9d1f6e607616a76a73c73b55b3",
+  "gororoba_quantum/primorial_campaigns.py": "9a25bd47e17da28cef61a92592eaef2fc2954b02bad7a1394af60a97c66a325b",
+  "gororoba_quantum/primorial_tomography.py": "e8c5be162e6362db297587a8b694a6854dbe24efaa2730556de873cc8703f91c",
+  "results/live/PRIMORIAL_COHERENCE_CASE_2.md": "49cae600f7b9b6fd3b7834fc07b133f6744a3af878ceef0e3961a5f6d26dbb8a",
+  "scripts/primorial_bound_residuals.py": "cabcde732f34d71aa2fb8bd83c3666c23247bd58663b91ab6914304836c6d6ef",
+  "scripts/primorial_cover_noise.py": "4a3c03f251bcd215d0a4afd99828274fc19250083f5c5997647735868684a23a",
+  "scripts/primorial_null_residuals.py": "aff76da3109a3d95b8dea0c581284bb85d6801c5ebd3a2f83c97cd6673368398",
+  "scripts/primorial_probe_case.py": "30f405b8086bc3c2cf032207269c608a4389d29ecfb22f0cdb7384619cdb62e8",
+  "scripts/state_prep_excess.py": "f744a8ecf78d9eaeaaae4e864b48a9f70438ca8316a936b99ac77bf6461a3c07"
+ }
+}

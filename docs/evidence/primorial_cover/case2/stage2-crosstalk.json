@@ -1,0 +1,11 @@
+{
+ "chi_square": 9.349276297144478,
+ "degrees_of_freedom": 7,
+ "group": "primorial_gap88",
+ "member": "g88_0_0_X",
+ "outcome": "consistent",
+ "p_value": 0.22854247284264204,
+ "paths": 21,
+ "pooled_columns": 8,
+ "reference": "g88_0_0_X_isolated"
+}
