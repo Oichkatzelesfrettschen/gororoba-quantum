@@ -30,7 +30,7 @@ The IBM service inventory observed at 2026-10-26T22:47:13.538509+00:00 holds 41 
 
 The IBM service inventory observed at 2026-10-25T23:36:01.130164+00:00 holds 4 physical jobs with 150 settled seconds; the account then reported 150 of 600 s consumed in the rolling window ending 2026-10-25T23:36:01.079Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-27T16:25:02+00:00 lists 423 jobs with 7776256 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-27T17:26:01+00:00 lists 426 jobs with 7788544 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
 The Quandela token usage report retrieved at 2026-10-20T08:51:26+00:00 counts 31 jobs, and 81 Quandela run directories are retained. That is an observation, not a credit balance or an authorization.
 
@@ -353,6 +353,7 @@ circuit and charges the account ledger's change.
 | [2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06](../../results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06) | Quandela Cloud | photonic signed-coherence replication meshes | qpu:ascella | 1 | 96 | completed | 1.032768 credits | ascella-signed-coherence-replication-offsets |
 | [2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96](../../results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96) | Quandela Cloud | photonic signed-coherence replication meshes | qpu:ascella | 1 | 96 | completed | 1.032768 credits | ascella-signed-coherence-replication-offsets |
 | [2026-10-27T162203Z-projector-geometry-qx](../../results/quantum_inspire/runs/2026-10-27T162203Z-projector-geometry-qx) | Quantum Inspire | sequential projector geometry remote conformance | QXsinglenodesimulator | 3 | 3 | completed | 0 ledger change | qi-qx-projector-geometry-conformance |
+| [2026-10-27T170500Z-projector-geometry-tuna](../../results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna) | Quantum Inspire | sequential projector physical register qualification | tuna_17 | 3 | 3 | completed | 0 ledger change | qi-tuna-projector-register-qualification |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -666,6 +667,7 @@ circuit and charges the account ledger's change.
 - **qd-ascella-signed-coherence-replication-job-06** (2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06, job d54d0e9d-0d44-421a-a67b-b422f0a8febc, 3145728 samples, 3145728 shots): Do the carried P-B offsets, unchanged, and the same family refitted on all 233 retained meshes predict the analyzer statistic of 84 meshes no fit has seen, served by theta2-x-arm0 at fresh QRNG compilation seeds beside 12 seed-0 anchors?
 - **qd-ascella-signed-coherence-replication-job-07** (2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96, job f27ad639-d947-4b99-84d6-42a9b6536d40, 3145728 samples, 3145728 shots): Do the same frozen predictors carry on 84 further unseen meshes, the job's size of 96 iterations admitted by job-06's completion?
 - **qi-qx-projector-geometry-conformance** (2026-10-27T162203Z-projector-geometry-qx, batch job 895296, 6144 of 6144 shots done): Do the three approved QX terminal circuits reproduce the frozen herald, joint-acceptance and signed-moment tolerances before Tuna qualification?
+- **qi-tuna-projector-register-qualification** (2026-10-27T170500Z-projector-geometry-tuna, batch job 895407, 12288 of 12288 shots done): Does the unchanged three-circuit Tuna case pass the frozen assignment-contrast and early/final register-consistency screens?
 
 ## Established claims
 
@@ -1548,6 +1550,13 @@ circuit and charges the account ledger's change.
   Evidence: [collect.json](../../results/live/2026-10-26T202817.431767Z/collect.json), [record.json](../../results/live/2026-10-26T202817.431767Z/record.json), [idle-penalty-report.json](../../results/live/2026-10-26T202817.431767Z/idle-penalty-report.json), [IDLE_PENALTY_PROBE_FINDINGS.md](../../results/live/IDLE_PENALTY_PROBE_FINDINGS.md), [IDLE_PENALTY_PROBE_CASE.md](../../results/live/IDLE_PENALTY_PROBE_CASE.md).
   Acquisitions: kingston-idle-penalty-probe.
   Related claims: hw-n21-feedback-null-scheduled-idle, kingston-qet-scheduled-idle-coherent-phase.
+- **qi-tuna-projector-register-qualification** (preregistered hardware inference, hardware). The three 4096-shot Tuna qualification jobs completed with zero recorded transaction charges but failed four of twelve required assignment contrasts and all nine early/final consistency checks.
+  Boundary: Failure of the specified zero-wait repeated-readout instrument screen. The data do not identify calibration, scheduling, readout context or acquisition reconstruction as the cause, and support no hardware projector-geometry or causal backaction claim.
+  Assumptions: Classical bit zero is the rightmost character under the recorded Tuna convention.; The frozen pilot thresholds assess the specified instrument path rather than an isolated physical mechanism..
+  Evidence: [qualification.json](../../results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json), [results.json](../../results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json), [qualification-at-approval.md](../../results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification-at-approval.md), [live-admission.json](../../results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/live-admission.json), [tuna-qualification.md](../evidence/tuna-projector-geometry/tuna-qualification.md).
+  Gates: replayed by core-qi-tuna-projector-qualification.
+  Acquisitions: qi-tuna-projector-register-qualification.
+  Related claims: qi-qx-projector-geometry-conformance.
 
 ## Exploratory claims
 

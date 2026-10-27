@@ -1,0 +1,247 @@
+{
+  "analyzer_sha256": "ec1ee8e8cfa09c0beec0e8730b18a935a378a1360c2d1bdfb508cfcbd6dd9b3e",
+  "assignment_contrasts": [
+    {
+      "classical_bit": 0,
+      "difference_count": 3901,
+      "passed": true,
+      "required": false,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 1,
+      "difference_count": 3137,
+      "passed": true,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 2,
+      "difference_count": 3924,
+      "passed": true,
+      "required": false,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 3,
+      "difference_count": 3744,
+      "passed": true,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 4,
+      "difference_count": 3762,
+      "passed": true,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 5,
+      "difference_count": 3796,
+      "passed": true,
+      "required": false,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 6,
+      "difference_count": 1388,
+      "passed": false,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 7,
+      "difference_count": 3588,
+      "passed": true,
+      "required": false,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 8,
+      "difference_count": 3793,
+      "passed": true,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 9,
+      "difference_count": 3659,
+      "passed": true,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 10,
+      "difference_count": 3720,
+      "passed": true,
+      "required": false,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 11,
+      "difference_count": 3682,
+      "passed": true,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 12,
+      "difference_count": 3898,
+      "passed": true,
+      "required": false,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 13,
+      "difference_count": 3614,
+      "passed": true,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 14,
+      "difference_count": 3700,
+      "passed": true,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 15,
+      "difference_count": 3726,
+      "passed": true,
+      "required": false,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 16,
+      "difference_count": 3747,
+      "passed": true,
+      "required": false,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 17,
+      "difference_count": 1552,
+      "passed": false,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 18,
+      "difference_count": -2529,
+      "passed": false,
+      "required": true,
+      "shots_per_arm": 4096
+    },
+    {
+      "classical_bit": 19,
+      "difference_count": -508,
+      "passed": false,
+      "required": true,
+      "shots_per_arm": 4096
+    }
+  ],
+  "boundary": "Bounded register/readout screen; excludes causal mechanism, stationarity, QND and IID claims.",
+  "early_final_disagreements": [
+    {
+      "ancilla_qubit": 4,
+      "count": 1699,
+      "file": "readout-zero.cq",
+      "passed": false,
+      "shots": 4096
+    },
+    {
+      "ancilla_qubit": 11,
+      "count": 3948,
+      "file": "readout-zero.cq",
+      "passed": false,
+      "shots": 4096
+    },
+    {
+      "ancilla_qubit": 6,
+      "count": 1773,
+      "file": "readout-zero.cq",
+      "passed": false,
+      "shots": 4096
+    },
+    {
+      "ancilla_qubit": 4,
+      "count": 919,
+      "file": "readout-one.cq",
+      "passed": false,
+      "shots": 4096
+    },
+    {
+      "ancilla_qubit": 11,
+      "count": 2639,
+      "file": "readout-one.cq",
+      "passed": false,
+      "shots": 4096
+    },
+    {
+      "ancilla_qubit": 6,
+      "count": 1377,
+      "file": "readout-one.cq",
+      "passed": false,
+      "shots": 4096
+    },
+    {
+      "ancilla_qubit": 4,
+      "count": 1370,
+      "file": "geometry.cq",
+      "passed": false,
+      "shots": 4096
+    },
+    {
+      "ancilla_qubit": 11,
+      "count": 3307,
+      "file": "geometry.cq",
+      "passed": false,
+      "shots": 4096
+    },
+    {
+      "ancilla_qubit": 6,
+      "count": 1565,
+      "file": "geometry.cq",
+      "passed": false,
+      "shots": 4096
+    }
+  ],
+  "execution_seconds_decimal": "14.989993",
+  "expected_execution_seconds_decimal": "14.31264",
+  "inputs": {
+    "cases.json": "d9a41a677a2a4bff4e2d3f4e10c4db2017d41ba1ee910da67960333d151dcfb2",
+    "geometry.cq": "069fc4696b40610d4eb963b1898aec24603fe0839d6ea17b868196fc7e5dfe8f",
+    "raw/geometry.cq.json": "a1cfeccfd9ed11e6d6815aa60ecd5b7a8a728321ab76e3b9ae2719f12c5ac76d",
+    "raw/readout-one.cq.json": "c29371f841252c112f915e9ae2a8648159cb01fcafe84480862c19f47b9940b8",
+    "raw/readout-zero.cq.json": "9723bba44c56cceb925ccf09e8c8ed93d1abe91cba1bc5b9ab1f1ebae5066922",
+    "readout-one.cq": "33e344c4b6357d7f4d3ad26e37686614731d5d2c7bf41eb1960abc925f18a44f",
+    "readout-zero.cq": "3ab15a468b5eaa4811a2a06f297754269976f6901dde12370cf3d5fad593f267",
+    "results.json": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615",
+    "submission.json": "15dcea7dc8f89b2bc1874fbc73ea4e3b55dcd89cf4232fee6a66a5d3e5f08f46"
+  },
+  "jobs": [
+    {
+      "execution_seconds_decimal": "4.948185",
+      "file": "readout-zero.cq",
+      "job": 1616329
+    },
+    {
+      "execution_seconds_decimal": "4.89622",
+      "file": "readout-one.cq",
+      "job": 1616330
+    },
+    {
+      "execution_seconds_decimal": "5.145588",
+      "file": "geometry.cq",
+      "job": 1616331
+    }
+  ],
+  "order_boundary": "Raw byte digests bind retained shot order; histogram agreement alone cannot establish provider order.",
+  "passed": false,
+  "schema": "qi-tuna-register-qualification-v1",
+  "shots_total": 12288,
+  "transaction_change_decimal": "0",
+  "zero_recorded_charge": true
+}

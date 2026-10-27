@@ -9,11 +9,11 @@
   "state": "active",
   "reconciliation": {
     "status": "verified",
-    "note": "Source, offline compilation and approved QX conformance have scope-bound receipts. The QX acquisition is registered, all 18 checks pass and recorded charges are zero. Tuna qualification and physical interpretation remain open."
+    "note": "Reviewed QX conformance and Tuna acquisition are retained. The hardware qualification failed four required contrasts and all nine repeated-readout checks. Local mapping is preserved; served timing, calibration and acquisition reconstruction remain unresolved."
   },
   "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
   "owner": "codex-tuna-projector-geometry",
-  "next_action": "Complete the requested independent campaign review, resolve its findings, and execute only the reviewed three-circuit Tuna qualification after live admission.",
+  "next_action": "Design a separately bounded discrimination of repeated-readout context and classical reconstruction after the frozen qualification refusal; further hardware acquisition requires its own admitted case.",
   "steps": [
     {
       "id": "source-and-instrument-audit",
@@ -162,18 +162,70 @@
       "id": "tuna-qualification-case",
       "action": "Execute the authorized unchanged Tuna qualification after reviewed compiler and live admission",
       "acceptance": "Separate approval binds the three-circuit 4096-shot batch before submission and retained raw collection",
-      "state": "doing",
+      "state": "done",
       "depends_on": [
         "qx-conformance-case"
+      ],
+      "receipts": [
+        {
+          "result": "All 12,288 hardware shots collected in 14.989993 seconds with zero recorded charges. Frozen qualification refused four required contrasts and all nine disagreement screens; raw reconstruction and retained replay confirm failure. Protocol inadmissible for hardware geometry inference; cause unresolved and further acquisition stopped.",
+          "observed_at": "2026-10-27T17:27:14.698250+00:00",
+          "revision": "b69ab17d75eefee4424280d9035095b4d2d673a9",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/quantum_inspire/usage.json",
+              "sha256": "64d4432ba59eec56c98953ba398e3511941f2764d24694bf7eb017208bfb16ca"
+            }
+          ],
+          "scope_sha256": "9553e1137da84da7a4eb5341b592f2039292a9a2830e76a23db3c0d8c063cf5b"
+        }
       ]
     },
     {
       "id": "qualification-interpretation",
       "action": "Analyze counts and qualification controls within recorded calibration limits",
       "acceptance": "Report distinguishes illustrative geometry, instrument acceptance, placement confounding and unresolved causal mechanisms",
-      "state": "todo",
+      "state": "done",
       "depends_on": [
         "tuna-qualification-case"
+      ],
+      "receipts": [
+        {
+          "result": "All 12,288 hardware shots collected in 14.989993 seconds with zero recorded charges. Frozen qualification refused four required contrasts and all nine disagreement screens; raw reconstruction and retained replay confirm failure. Protocol inadmissible for hardware geometry inference; cause unresolved and further acquisition stopped.",
+          "observed_at": "2026-10-27T17:27:14.698250+00:00",
+          "revision": "b69ab17d75eefee4424280d9035095b4d2d673a9",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/quantum_inspire/usage.json",
+              "sha256": "64d4432ba59eec56c98953ba398e3511941f2764d24694bf7eb017208bfb16ca"
+            }
+          ],
+          "scope_sha256": "aa5fabc2a68cc35929d0115bf086778b8dabb34a531f117486cf4a21eef11bdf"
+        }
       ]
     },
     {
@@ -254,9 +306,23 @@
     },
     {
       "id": "live-structural-admission",
-      "state": "todo",
+      "state": "done",
       "action": "Check current topology, compiler, terms, queue and account pause",
-      "acceptance": "Timestamped admission passes for the unchanged approved case"
+      "acceptance": "Timestamped admission passes for the unchanged approved case",
+      "receipts": [
+        {
+          "result": "Fresh authenticated structural admission passes; topology, compiler, gates, limits, queue, hardware pause and zero transaction checks admitted unchanged qualification.",
+          "observed_at": "2026-10-27T17:06:34.515536+00:00",
+          "revision": "b69ab17d75eefee4424280d9035095b4d2d673a9",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/live-admission.json",
+              "sha256": "c6db70139af4d05b9a18d134372d437f320c9d177d8f29134197d74dc67b9d66"
+            }
+          ],
+          "scope_sha256": "88c068349757111789ade8b06ef66bdcf6ee6b959db12ae4f33f298c49f35871"
+        }
+      ]
     },
     {
       "id": "review-fix-verification",
@@ -288,9 +354,41 @@
     },
     {
       "id": "retained-result-integration",
-      "state": "todo",
+      "state": "done",
       "action": "Register hardware raw results, analysis and usage",
-      "acceptance": "Registry, retained replay and focused checks pass"
+      "acceptance": "Registry, retained replay and focused checks pass",
+      "receipts": [
+        {
+          "result": "All 12,288 hardware shots collected in 14.989993 seconds with zero recorded charges. Frozen qualification refused four required contrasts and all nine disagreement screens; raw reconstruction and retained replay confirm failure. Protocol inadmissible for hardware geometry inference; cause unresolved and further acquisition stopped.",
+          "observed_at": "2026-10-27T17:27:14.698250+00:00",
+          "revision": "b69ab17d75eefee4424280d9035095b4d2d673a9",
+          "evidence": [
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json",
+              "sha256": "d0bb5275ba8822c2365891629bc903ae3b5938adec80c1d31598c0e879a4d399"
+            },
+            {
+              "ref": "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/results.json",
+              "sha256": "a94de5586e47730250da59668190f40ce9e65d8aab5d07886ee18a4776a0f615"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/tuna-qualification.md",
+              "sha256": "abc1b5a8875f2ecc2111e89eca41fb29448ca48209976b9eb207598deb67a4c2"
+            },
+            {
+              "ref": "docs/evidence/quantum_inspire/usage.json",
+              "sha256": "64d4432ba59eec56c98953ba398e3511941f2764d24694bf7eb017208bfb16ca"
+            }
+          ],
+          "scope_sha256": "acc5a78580d0ad541639fcd1057bd0ec667ad3fac4e39a506adb5eb44b428bd5"
+        }
+      ]
+    },
+    {
+      "id": "repeated-readout-discrimination-design",
+      "state": "todo",
+      "action": "Separate readout context, settling and classical reconstruction alternatives in a successor design",
+      "acceptance": "A source-grounded case distinguishes alternatives, freezes matched controls and stopping rules, and obtains separate acquisition admission before any further provider job"
     }
   ]
 }

@@ -115,3 +115,9 @@ the generated middle data-ancilla-data triple is 13-11-14. Local compilation ver
 compiler acceptance and retained control sequences; remote execution remains a
 separate conformance obligation. The [written case](../../design/tuna-projector-geometry.md)
 freezes finite-shot QX discrepancy tolerances before acquisition.
+
+## Hardware qualification result
+
+The [Tuna register qualification](tuna-qualification.md) completed all 12,288 shots but
+failed its frozen contrast and early/final consistency screens. The record preserves the
+refusal, source-grounded diagnostic alternatives and the boundary on successor acquisition.

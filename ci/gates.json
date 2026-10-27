@@ -5010,6 +5010,17 @@
    "replays": [
     "results/quantum_inspire/proposals/tuna-projector-geometry/compiler-admission.json"
    ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -m pytest -q tests/scripts/test_qi_tuna_qualification.py -k retained_hardware_refusal_replays",
+   "name": "core-qi-tuna-projector-qualification",
+   "seconds": 1.0,
+   "tier": "pr",
+   "replays": [
+    "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna/qualification.json"
+   ]
   }
  ],
  "excluded": [

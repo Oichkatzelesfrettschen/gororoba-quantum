@@ -54,7 +54,8 @@ The [sequential-projector geometry case](design/tuna-projector-geometry.md) deri
 links the [calibration datasource diagnosis](evidence/tuna-projector-geometry/README.md).
 The approved [QX conformance batch](evidence/tuna-projector-geometry/qx-conformance.md) passes all 18 frozen checks;
 The user-authorized [Tuna qualification](design/tuna-projector-qualification-admission.md)
-requires completed peer review and fresh live admission before execution.
+[completed with qualification refusal](evidence/tuna-projector-geometry/tuna-qualification.md):
+all shots were retained, while contrast and repeated-readout consistency screens failed.
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized

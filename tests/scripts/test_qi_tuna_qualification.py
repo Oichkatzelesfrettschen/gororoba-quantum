@@ -141,3 +141,10 @@ def test_order_bound_by_raw_digest(run: Path) -> None:
     after = replay(run)
     if before["inputs"] == after["inputs"]:
         raise AssertionError("equal histograms with reordered shots must change replay binding")
+
+
+def test_retained_hardware_refusal_replays() -> None:
+    retained_run = ROOT / "results/quantum_inspire/runs/2026-10-27T170500Z-projector-geometry-tuna"
+    retained = json.loads((retained_run / "qualification.json").read_text())
+    if replay(retained_run) != retained or retained["passed"] is not False:
+        raise AssertionError("retained hardware qualification refusal differs from the frozen replay")
