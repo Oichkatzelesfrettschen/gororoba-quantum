@@ -1,0 +1,277 @@
+{
+ "affine_sign_rows": {
+  "16": {
+   "affine": 0,
+   "rows": 15
+  },
+  "32": {
+   "affine": 0,
+   "rows": 31
+  },
+  "4": {
+   "affine": 3,
+   "rows": 3
+  },
+  "8": {
+   "affine": 0,
+   "rows": 7
+  }
+ },
+ "annihilators": {
+  "16": {
+   "elements": 84,
+   "kernel_pure_and_right_annihilated": true,
+   "nullities": {
+    "4": 84
+   }
+  },
+  "32": {
+   "elements": 588,
+   "kernel_pure_and_right_annihilated": true,
+   "nullities": {
+    "12": 252,
+    "4": 168,
+    "8": 168
+   }
+  }
+ },
+ "fano": {
+  "complement_intersection_sizes": {
+   "2": 21
+  },
+  "complements": [
+   [
+    4,
+    5,
+    6,
+    7
+   ],
+   [
+    2,
+    3,
+    6,
+    7
+   ],
+   [
+    2,
+    3,
+    4,
+    5
+   ],
+   [
+    1,
+    3,
+    5,
+    7
+   ],
+   [
+    1,
+    3,
+    4,
+    6
+   ],
+   [
+    1,
+    2,
+    5,
+    6
+   ],
+   [
+    1,
+    2,
+    4,
+    7
+   ]
+  ],
+  "complements_are_nontrivial_subgroup_cosets": true,
+  "complements_per_point": {
+   "4": 7
+  },
+  "complements_per_point_pair": {
+   "2": 21
+  },
+  "incidence_gram_mod_2_all_ones": true,
+  "line_intersection_sizes": {
+   "1": 21
+  },
+  "lines": [
+   [
+    1,
+    2,
+    3
+   ],
+   [
+    1,
+    4,
+    5
+   ],
+   [
+    1,
+    6,
+    7
+   ],
+   [
+    2,
+    4,
+    6
+   ],
+   [
+    2,
+    5,
+    7
+   ],
+   [
+    3,
+    4,
+    7
+   ],
+   [
+    3,
+    5,
+    6
+   ]
+  ]
+ },
+ "inverse_and_zero_divisor": {
+  "a": {
+   "e1": "1",
+   "e10": "1"
+  },
+  "a_inverse": {
+   "e1": "-1/2",
+   "e10": "-1/2"
+  },
+  "a_inverse_a_times_b": {
+   "e15": "-1",
+   "e4": "1"
+  },
+  "a_inverse_times_a": {
+   "e0": "1"
+  },
+  "a_inverse_times_a_b": {},
+  "a_times_a_inverse": {
+   "e0": "1"
+  },
+  "a_times_b": {},
+  "a_times_second_inverse": {
+   "e0": "1"
+  },
+  "b": {
+   "e15": "-1",
+   "e4": "1"
+  },
+  "second_inverse": {
+   "e1": "-1/2",
+   "e10": "-1/2",
+   "e15": "-1",
+   "e4": "1"
+  },
+  "second_inverse_times_a": {
+   "e0": "1"
+  }
+ },
+ "left_multiplication_squares": {
+  "e1_e2_e12_determinant": "81",
+  "e1_e2_e12_scalar_square": false,
+  "two_unit_invertible_nonscalar_square": 0,
+  "two_unit_invertible_scalar_square": 63,
+  "two_unit_zero_divisor_nonscalar_square": 42,
+  "two_unit_zero_divisor_scalar_square": 0
+ },
+ "qubit_reading": {
+  "16": {
+   "support_qubits": 228,
+   "support_qubits_with_zero_bloch_vector": 228,
+   "x_string_eigenstates": true
+  },
+  "32": {
+   "support_qubits": 1772,
+   "support_qubits_with_zero_bloch_vector": 1772,
+   "x_string_eigenstates": true
+  }
+ },
+ "schema": "kaplansky-cd-mechanisms-v1",
+ "skeleton": {
+  "16": {
+   "chi_invariant_under_single_index_resigning": true,
+   "chi_plus_one": 168,
+   "chi_plus_one_by_m": {
+    "10": 24,
+    "11": 24,
+    "12": 24,
+    "13": 24,
+    "14": 24,
+    "15": 24,
+    "9": 24
+   },
+   "chi_plus_one_by_weight_of_m": {
+    "2": 72,
+    "3": 72,
+    "4": 24
+   },
+   "min_weight_of_m": 2,
+   "signed_zero_products_on_skeleton": 336,
+   "skeleton_ordered_pairs_of_index_pairs": 630,
+   "two_blade_zero_divisor_elements": 84,
+   "zero_divisor_index_pairs": 42,
+   "zero_products_off_skeleton": 0
+  },
+  "32": {
+   "chi_invariant_under_single_index_resigning": true,
+   "chi_plus_one": 2520,
+   "chi_plus_one_by_m": {
+    "10": 96,
+    "11": 96,
+    "12": 96,
+    "13": 96,
+    "14": 96,
+    "15": 96,
+    "17": 168,
+    "18": 168,
+    "19": 168,
+    "20": 168,
+    "21": 168,
+    "22": 168,
+    "23": 168,
+    "24": 168,
+    "25": 72,
+    "26": 72,
+    "27": 72,
+    "28": 72,
+    "29": 72,
+    "30": 72,
+    "31": 72,
+    "9": 96
+   },
+   "chi_plus_one_by_weight_of_m": {
+    "2": 960,
+    "3": 1008,
+    "4": 480,
+    "5": 72
+   },
+   "min_weight_of_m": 2,
+   "signed_zero_products_on_skeleton": 5040,
+   "skeleton_ordered_pairs_of_index_pairs": 6510,
+   "two_blade_zero_divisor_elements": 588,
+   "zero_divisor_index_pairs": 294,
+   "zero_products_off_skeleton": 0
+  },
+  "8": {
+   "chi_invariant_under_single_index_resigning": true,
+   "chi_plus_one": 0,
+   "chi_plus_one_by_m": {},
+   "chi_plus_one_by_weight_of_m": {},
+   "min_weight_of_m": null,
+   "signed_zero_products_on_skeleton": 0,
+   "skeleton_ordered_pairs_of_index_pairs": 42,
+   "two_blade_zero_divisor_elements": 0,
+   "zero_divisor_index_pairs": 0,
+   "zero_products_off_skeleton": 0
+  }
+ },
+ "units_square_to_minus_one": {
+  "16": true,
+  "32": true,
+  "8": true
+ }
+}
