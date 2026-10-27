@@ -4099,7 +4099,7 @@
       "sha256": "6bc2448ff13557610112e91ae6e713d0b469588cd9e1e3f9b44c04fc422fd612",
       "bytes": 396915,
       "retrieved_at_utc": "2026-10-27T03:46:26+00:00",
-      "reading_scope": "OpenAI, Exact Fourier certificates for complex Hadamard matrices of order six, 24 September 2026, 35 pages at openai/math commit 7ef5c0cc: pp. 1-4 and 24 in full (Theorems 1.1 and 1.2, Corollary 3.1, the Proposition 6.3 bound); Sections 3.2-7.3 for result labels only; the Appendix A verifier not run",
+      "reading_scope": "OpenAI, Exact Fourier certificates for complex Hadamard matrices of order six, 24 September 2026, 35 pages at openai/math commit 7ef5c0cc: pp. 1-4 and 24 in full (Theorems 1.1 and 1.2, Corollary 3.1, the Proposition 6.3 bound); Sections 3.2-7.3 for result labels only; the Appendix A verifier run once, its output identical to the three lines of p. 25",
       "retention": "external_reference; sha256 identifies the release artifact"
     },
     {
@@ -4279,7 +4279,7 @@
       "sha256": "104a7306205b8544c8f913f6afdb59603f2e04a207c9ac592c383b80eb0e2aa9",
       "bytes": 30160,
       "retrieved_at_utc": "2026-10-27T03:49:32+00:00",
-      "reading_scope": "Exact verifier read for its imports and absence of file or network access; not run",
+      "reading_scope": "Exact verifier read for its imports and absence of file or network access, then run once through run.py under an isolated interpreter; output identical to PDF p. 25",
       "retention": "external_reference; sha256 identifies the release artifact"
     },
     {
