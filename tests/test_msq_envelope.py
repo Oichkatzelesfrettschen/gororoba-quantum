@@ -158,6 +158,13 @@ def test_aggregate_cap_bounds_both_attempts() -> None:
     check(env.attempt_admission(1, 400.0, 60.0, 40.0, 20.0, 2.0) != [], "attempt 1 has no earlier charge")
     check(env.attempt_admission(3, 400.0, 60.0, 40.0, 20.0) != [], "no third attempt")
     check(env.attempt_admission(1, math.inf, 60.0, 40.0, 20.0) != [], "non-finite input refused")
+    # An unsettled attempt 1 is not yet deducted from the reported quota, so attempt 2 also needs its ceiling there.
+    check(env.attempt_admission(2, 85.0, 60.0, 40.0, 20.0, 20.0) == [], "a settled attempt 1 is already deducted")
+    check(
+        env.attempt_admission(2, 85.0, 60.0, 40.0, 20.0, 20.0, earlier_unsettled=True) != [],
+        "an unsettled attempt 1 counts against the reserve",
+    )
+    check(env.attempt_admission(2, 100.0, 60.0, 40.0, 20.0, 20.0, earlier_unsettled=True) == [], "both fit")
 
 
 def test_canonical_snapshot_is_order_free() -> None:
@@ -357,6 +364,133 @@ def test_envelope_attempt_two_reads_the_fallback_delay_and_ceiling(tmp_path: Any
     check(live_run.approved_envelope_mismatches(directory, second, sha) != [], "attempt 2 past its ceiling")
 
 
+def test_batch_replan_returns_the_record_to_its_admitted_plan() -> None:
+    import live_run
+
+    record: dict[str, Any] = {"state": "submission_started", "submission": {"jobs": [], "planned_jobs": [{}]}}
+    checkpoints: list[str] = []
+    with pytest.raises(live_run.EnvelopeReplan):
+        live_run.envelope_batch_replan(
+            record, "ibm_kingston: dynamic-1-of-1", "a" * 64, ["layout moved"], lambda: checkpoints.append("x")
+        )
+    check(record["state"] == "planned", "the next submit() pass meets its planned-state guard")
+    check("submission" not in record, "the unsent ledger is dropped")
+    check(checkpoints == ["x"], "the restored record reaches disk before the retry")
+    check(record["envelope"]["replan_snapshots"][0]["snapshot_sha256"] == "a" * 64, "the moved snapshot is kept")
+    check("batch_snapshots" not in record["envelope"], "the moved snapshot claims no sent layout")
+
+
+def test_batch_replan_refuses_after_an_earlier_batch_was_sent() -> None:
+    import live_run
+
+    record: dict[str, Any] = {"state": "submission_started", "submission": {"jobs": [{"job_id": "j1"}]}}
+    with pytest.raises(live_run.LiveRunError):
+        live_run.envelope_batch_replan(record, "ibm_kingston: dynamic-2-of-2", "b" * 64, ["moved"], lambda: None)
+    check(record["state"] == "submission_started" and "submission" in record, "a sent run keeps its ledger")
+
+
+def test_check_envelope_replays_superseded_planning_snapshots(tmp_path: Any) -> None:
+    import json
+    import shutil
+    from pathlib import Path
+
+    import live_run
+
+    retained = Path(__file__).resolve().parent.parent / "results/live/2026-10-27T012214.435220Z"
+    source = json.loads((retained / "record.json").read_text())
+    digest = source["envelope"]["planning_snapshot_sha256"]
+    layout = source["family_configuration"]["qubits"]
+    run = tmp_path / "run"
+    (run / live_run.ENVELOPE_SNAPSHOT_DIRECTORY).mkdir(parents=True)
+    shutil.copy(
+        retained / live_run.ENVELOPE_SNAPSHOT_DIRECTORY / f"{digest}.json",
+        run / live_run.ENVELOPE_SNAPSHOT_DIRECTORY / f"{digest}.json",
+    )
+
+    def violations(superseded_layout: list[int]) -> list[str]:
+        record = {
+            "family_configuration": {"layout_width": 32, "qubits": layout},
+            "envelope": {
+                "planning_snapshot_sha256": digest,
+                "superseded_planning": [{"snapshot_sha256": digest, "layout": superseded_layout}],
+                "replan_snapshots": [{"batch": "b", "snapshot_sha256": "c" * 64, "moved": ["x"]}],
+            },
+        }
+        (run / "record.json").write_text(json.dumps(record))
+        return live_run.envelope_layout_violations(run)
+
+    check(violations(layout) == [], "a superseded snapshot replays the layout it produced")
+    found = violations(layout[1:] + [155])
+    check(len(found) == 1 and found[0].startswith("superseded planning 0"), f"{found}")
+
+
+RETAINED_DRY_RUN = "results/live/2026-10-27T012214.435220Z"
+
+
+def retained_snapshot() -> tuple[dict[str, Any], dict[str, Any]]:
+    """The width-32 dry run's record and its planning snapshot document."""
+    import json
+    from pathlib import Path
+
+    run = Path(__file__).resolve().parent.parent / RETAINED_DRY_RUN
+    record = json.loads((run / "record.json").read_text())
+    digest = record["envelope"]["planning_snapshot_sha256"]
+    return record, json.loads((run / "envelope-snapshots" / f"{digest}.json").read_text())
+
+
+def test_canonical_graph_drops_couplers_the_runtime_target_drops() -> None:
+    import json
+
+    _, document = retained_snapshot()
+    date = "2026-10-26T00:00:00-07:00"
+    cz = next(g for g in document["properties"]["gates"] if g["gate"] == "cz" and 72 not in g["qubits"])
+    cz["parameters"].append({"date": date, "name": "operational", "unit": "", "value": 0})
+    before = {tuple(edge) for edge in env.calibration_from_canonical(json.dumps(document).encode())["edges"]}
+    document["properties"]["qubits"][72].append({"date": date, "name": "operational", "unit": "", "value": 0})
+    rows = env.calibration_from_canonical(json.dumps(document).encode())
+    edges = {tuple(edge) for edge in rows["edges"]}
+    check(72 in rows["excluded"], "a non-operational qubit is excluded")
+    check(not any(72 in edge for edge in edges), "the Target drops every cz on a non-operational qubit")
+    # The Target drops only the named orientation of a non-operational cz and keeps its reverse, so the coupler stays.
+    check(tuple(sorted(cz["qubits"])) in edges, "the reverse orientation keeps the coupler")
+    check(edges == {edge for edge in before if 72 not in edge}, "only qubit 72's couplers leave")
+
+
+def test_check_envelope_applies_operator_exclusions(tmp_path: Any) -> None:
+    import json
+    import shutil
+    from pathlib import Path
+
+    import live_run
+
+    record, _ = retained_snapshot()
+    source = Path(__file__).resolve().parent.parent / RETAINED_DRY_RUN
+    run = tmp_path / "run"
+    shutil.copytree(source / live_run.ENVELOPE_SNAPSHOT_DIRECTORY, run / live_run.ENVELOPE_SNAPSHOT_DIRECTORY)
+    layout = record["family_configuration"]["qubits"]
+    base = {
+        "family_configuration": {"layout_width": 32, "qubits": layout},
+        "envelope": {"planning_snapshot_sha256": record["envelope"]["planning_snapshot_sha256"]},
+    }
+    (run / "record.json").write_text(json.dumps(base))
+    check(live_run.envelope_layout_violations(run) == [], "the retained layout replays")
+    excluded = {**base, "policy": {"operator_excluded_qubits": {"ibm_kingston": [layout[0]]}}}
+    (run / "record.json").write_text(json.dumps(excluded))
+    found = live_run.envelope_layout_violations(run)
+    check(len(found) == 1 and found[0].startswith("planning: the rule"), f"an excluded qubit moves the rule: {found}")
+
+
+def test_approved_structure_resolves_shared_ideal_laws() -> None:
+    import live_run
+
+    law = {"encoding": "support", "length": 4, "support": {"0": 0.5, "3": 0.5}}
+    group = {"group": "g", "members": [{"name": "m", "ideal": {"law_sha256": "d" * 64}, "replicas": []}]}
+    resolved = live_run._approved_structure(group, {"d" * 64: law})
+    check(resolved["members"][0]["ideal"] == law, "a shared reference resolves to the encoded law")
+    inline = live_run._approved_structure({**group, "members": [{"name": "m", "ideal": law, "replicas": []}]}, {})
+    check(inline["members"][0]["ideal"] == law, "an inline law is unchanged")
+
+
 class FakeJob:
     def __init__(self, status: str, message: str | None, circuit_ns: int | None, billed: int | None) -> None:
         self._status, self._message = status, message
@@ -400,6 +534,9 @@ class FakeService:
         (FakeJob("DONE", None, 1_000_000, 4), 400.0, False),
         (FakeJob("ERROR", "Error code 1602; range", 0, 2), 400.0, True),
         (FakeJob("ERROR", "Error code 1305; ran longer", None, 2), 50.0, False),  # ceiling 2 past the quota
+        # An unbilled 1602 counts attempt 1's ceiling (30 s here) against the quota until it settles.
+        (FakeJob("ERROR", "Error code 1602; range", 0, None), 400.0, True),
+        (FakeJob("ERROR", "Error code 1602; range", 0, None), 80.0, False),
     ],
 )
 def test_envelope_fallback_setup(tmp_path: Any, job: FakeJob, remaining: float, admitted: bool) -> None:
@@ -434,6 +571,33 @@ def test_envelope_fallback_setup(tmp_path: Any, job: FakeJob, remaining: float, 
     else:
         with pytest.raises(live_run.LiveRunError):
             live_run.envelope_fallback_setup(FakeService(job, remaining), args)
+
+
+def test_envelope_fallback_finds_the_approval_under_another_out(tmp_path: Any) -> None:
+    import argparse
+    import hashlib
+    import json
+
+    import live_run
+
+    directory, _, approved = approved_envelope(tmp_path)
+    approved["envelope"]["contract"]["reserve_seconds"] = 0.0
+    data = json.dumps(approved).encode()
+    (directory / "record.json").write_bytes(data)
+    sha = hashlib.sha256(data).hexdigest()
+    first = tmp_path / "submits" / "first"
+    first.mkdir(parents=True)
+    meta = {"run": "approved", "record_sha256": sha, "envelope": True}
+    record = {"shots": 8192, "submission": {"jobs": [{"job_id": "j1", "pubs": [{"name": "p"}]}]}}
+    (first / "record.json").write_text(json.dumps({**record, "approved_record": meta}))
+    job = FakeJob("ERROR", "Error code 1305; ran longer", None, 2)
+    with pytest.raises(live_run.LiveRunError, match="not retained beside attempt 1"):
+        live_run.envelope_fallback_setup(FakeService(job, 400.0), argparse.Namespace(envelope_fallback=first))
+    meta["relative_path"] = "../approved"
+    (first / "record.json").write_text(json.dumps({**record, "approved_record": meta}))
+    args = argparse.Namespace(envelope_fallback=first)
+    live_run.envelope_fallback_setup(FakeService(job, 400.0), args)
+    check(args.approved_record == first.parent / "../approved", "the relative path locates the approval")
 
 
 def test_reset_screen_is_an_equivalence_bound() -> None:

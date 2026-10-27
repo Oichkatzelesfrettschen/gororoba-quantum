@@ -2041,7 +2041,7 @@
    "docs/evidence/submitted_circuits/collector-idle-penalty-retrieval.py.txt": "77eaddfaac4f54e8a6986bf92547bbb92a721404507fbd9d529fd3c2596093c9",
    "gororoba_quantum/ibm_account.py": "950cb1b250f92b914acf448fa0088cb1a7bd03214b3aaa9c525102567effb977",
    "gororoba_quantum/parallel.py": "90a8ad476841cbc985e911f5f4eba3494e8594e205cbd1710d0d273c530bab48",
-   "gororoba_quantum/live_run.py": "dee6e1ef9fd4fe942e2e715d006986de7035b30a64f8908eae833395a3943818"
+   "gororoba_quantum/live_run.py": "9d6741e852b02b70978487f6a74ac73b7f3901e2599ed5cd6136531709f14415"
   },
   "seed_file": "docs/evidence/submitted_circuits/comparison.json",
   "retrieved_job_ids": [
@@ -2065,7 +2065,7 @@
   },
   "offline_rebind": {
    "operation": "offline validation and collector-source rebinding; provider reads excluded",
-   "validated_utc": "2026-10-27T03:34:58.251864+00:00",
+   "validated_utc": "2026-10-27T04:14:29.519097+00:00",
    "predecessor_file": "docs/evidence/submitted_circuits/comparison-idle-penalty-retrieval.json",
    "collector_snapshot_file": "docs/evidence/submitted_circuits/collector-idle-penalty-retrieval.py.txt"
   }

@@ -73,14 +73,20 @@ def calibration_from_snapshot(snapshot: Any) -> dict[str, Any]:
     """Per qubit readout error, sx error, T1 and T2 (seconds), the couplers and the excluded qubits of a Snapshot."""
     target = snapshot.backend.target
     properties = snapshot.properties
+
+    def error(name: str, q: int) -> float | None:
+        # The runtime's Target drops an instruction on a non-operational qubit; the qubit then reads ineligible.
+        entry = target[name].get((q,))
+        return None if entry is None else entry.error
+
     qubits: dict[int, dict[str, float | None]] = {}
     for q in range(target.num_qubits):
         qubit = properties.qubit_property(q)
         t1 = qubit.get("T1", (None,))[0]
         t2 = qubit.get("T2", (None,))[0]
         qubits[q] = {
-            "readout_error": target["measure"][(q,)].error,
-            "sx_error": target["sx"][(q,)].error,
+            "readout_error": error("measure", q),
+            "sx_error": error("sx", q),
             "t1_s": None if t1 is None else float(t1),
             "t2_s": None if t2 is None else float(t2),
         }

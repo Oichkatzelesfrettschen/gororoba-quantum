@@ -110,12 +110,15 @@ def calibration_from_canonical(data: bytes) -> dict[str, Any]:
     """The layout rule's inputs rebuilt from canonical snapshot bytes alone, as the rebuild gate replays them.
 
     Rows come from the properties (readout error, sx gate error, T1, T2, prob_meas1_prep0), which
-    live_run.check_snapshot_matches_properties holds equal to the Target's; the edges are the configuration's
-    coupling map; a qubit is excluded when the properties name it faulty or not operational or name one of its
-    single-qubit gates faulty. The live snapshot also excludes qubits outside live_run.QUALITY, all of which the
-    rule's tighter thresholds reject, so the rule returns the same layout on both.
+    live_run.check_snapshot_matches_properties holds equal to the Target's; the edges are the cz couplers of the
+    runtime Target built from the configuration and properties; a qubit is excluded when the properties name it
+    faulty or not operational or name one of its single-qubit gates faulty. The live snapshot also excludes qubits
+    outside live_run.QUALITY, all of which the rule's tighter thresholds reject, so the rule returns the same layout
+    on both.
     """
-    from qiskit_ibm_runtime.models import BackendProperties
+    from qiskit_ibm_runtime.models import BackendConfiguration, BackendProperties
+    from qiskit_ibm_runtime.models.exceptions import BackendPropertyError
+    from qiskit_ibm_runtime.utils.backend_converter import convert_to_target
 
     document = json.loads(data)
     if document.get("schema") != SNAPSHOT_SCHEMA:
@@ -124,6 +127,14 @@ def calibration_from_canonical(data: bytes) -> dict[str, Any]:
     count = int(document["configuration"]["n_qubits"])
     faulty = set(properties.faulty_qubits())
     faulty |= {q for gate in properties.faulty_gates() if gate.gate != "cz" for q in gate.qubits}
+
+    def error(read: Any) -> float | None:
+        # An excluded qubit can lack a value; it never reaches the rule's thresholds.
+        try:
+            return float(read())
+        except BackendPropertyError:
+            return None
+
     rows: dict[int, dict[str, float | None]] = {}
     excluded = []
     for q in range(count):
@@ -131,13 +142,16 @@ def calibration_from_canonical(data: bytes) -> dict[str, Any]:
             excluded.append(q)
         values = properties.qubit_property(q)
         rows[q] = {
-            "readout_error": float(properties.readout_error(q)),
-            "sx_error": float(properties.gate_error("sx", q)),
+            "readout_error": error(lambda q=q: properties.readout_error(q)),
+            "sx_error": error(lambda q=q: properties.gate_error("sx", q)),
             "t1_s": values.get("T1", (None,))[0],
             "t2_s": values.get("T2", (None,))[0],
             "prob_meas1_prep0": values.get("prob_meas1_prep0", (None,))[0],
         }
-    edges = sorted({(min(a, b), max(a, b)) for a, b in document["configuration"]["coupling_map"]})
+    # The live rule reads its edges from the runtime's Target, which drops the faulty orientations of cz; the replay
+    # builds that Target from the same configuration and properties.
+    target = convert_to_target(BackendConfiguration.from_dict(document["configuration"]), properties)
+    edges = sorted({(min(a, b), max(a, b)) for a, b in target["cz"]})
     return {"qubits": rows, "edges": [list(e) for e in edges], "excluded": sorted(excluded)}
 
 
@@ -230,12 +244,14 @@ def attempt_admission(
     envelope_cap: float,
     ceiling: float,
     earlier_attempt_seconds: float = 0.0,
+    earlier_unsettled: bool = False,
 ) -> list[str]:
     """Reasons an attempt is refused under the envelope's aggregate cap; empty admits it.
 
     Attempt 1 needs the whole cap within the remaining quota minus the reserve. Attempt 2 needs attempt 1's
     attributed final charge (its ceiling while the charge is unattributed, earlier_attempt_seconds) plus its own
-    ceiling within the cap, and its own ceiling within the remaining quota minus the reserve.
+    ceiling within the cap. Within the remaining quota minus the reserve it needs its own ceiling, plus attempt 1's
+    seconds while that charge is unsettled, since the quota the service reports has not yet deducted it.
     """
     if attempt not in (1, 2):
         return [f"the envelope has attempts 1 and 2, not {attempt!r}"]
@@ -249,7 +265,7 @@ def attempt_admission(
         reasons.append(
             f"earlier {earlier_attempt_seconds:g} s plus ceiling {ceiling:g} s exceeds envelope_cap {envelope_cap:g} s"
         )
-    needed = envelope_cap if attempt == 1 else ceiling
+    needed = envelope_cap if attempt == 1 else ceiling + (earlier_attempt_seconds if earlier_unsettled else 0.0)
     if remaining_seconds - reserve_seconds < needed:
         reasons.append(
             f"remaining {remaining_seconds:g} s minus reserve {reserve_seconds:g} s is below the {needed:g} s needed"
