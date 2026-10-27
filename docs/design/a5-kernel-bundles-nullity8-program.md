@@ -175,3 +175,9 @@ arrives.
 After the fixes, rerun every `--out` in dependency order until every `--check` holds, every `--self-test` (normal and
 -O), ruff and mypy, and record a ledger row per fix. Same rules: no staging or commits, files only inside the evidence
 directory.
+
+Verifier result (committed): [verification.md](../evidence/a5-kernel-bundles-nullity8/verification.md) confirms all
+five statement groups at independent moved points; no refutation. Add to Round 2: link `verification.md` from the
+evidence README; for SLOPPY 6 use the verifier's explicit X_+- compact-core points (m + e3, 0, -+i m +- i e3),
+m = e1 - i e2, where the compact stabilizer is su(2) + u(1) and the fiber is 2 V_0 + V_1. Do not edit the verifier's
+three files.
