@@ -1,6 +1,6 @@
 # Measurement-sequence envelope successor: relaxation to the ground state, crosstalk-free carryover readers
 
-Status: design v3.2, after the adversarial and advisor reviews of v3 and the Codex review of v3.1; it needs a
+Status: design v3.3, frozen for implementation after the Codex review of v3.2; it needs a
 deduplicated `collect.json` (each PUB's placed calibration stored once), built in its own pull request first. The
 width-32 envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`) executed as planned, billed 38 s, and
 returned no device verdict because its reset screen withheld all 32 qubits
@@ -62,10 +62,12 @@ One row estimates q, and the settle arm vetoes inconsistency.
 Equilibrium row. A new member idles 400 us from the initialized state and reads. With the ro0/t1-0 bracket
 correction, a ground-start row at time t reads the corrected excitation e(t) = (1 - q)(1 - S(t)) / 2, so the analysis
 estimates q_hat = 1 - 2 e(400 us) / (1 - S(400 us; T, k)) with the qubit's own fitted gamma survival, and
-`propagate_many` carries the shared brackets and the fitted (T, k) into its standard error. The departure tolerates
-a q error of 0.25 x 0.0188 / 0.034 = 0.14, so a qubit whose q_hat lower confidence bound (one-sided, Bonferroni over W)
-lies below 0.86 is withheld. The rule needs no power against a 1 to 3 % thermal population, which gives q of at least
-0.94 and a departure shift below 0.002; against q near 0.7 the row reads e near 0.12 at T near 250 us, more than
+`propagate_many` carries the shared brackets and the fitted (T, k) into its standard error; q_hat is not clipped at 1.
+Each qubit's tolerance comes from its own sensitivity: the analysis evaluates |dP0/dq| of the N = 16 measure
+prediction at the qubit's context, and a qubit whose q_hat lower confidence bound (one-sided, Bonferroni over W) lies
+below 1 - 0.25 x 0.0188 / |dP0/dq| is withheld. On the retained contexts |dP0/dq| spans 0.021 to 0.065, so the bound
+runs from about 0.77 to 0.93; the smallest healthy-q lower confidence bound there is 0.988. The rule needs no power against a 1 to 3 % thermal population, which gives q of at least
+0.94 and a departure shift below 0.004 at the largest sensitivity; against q near 0.7 the row reads e near 0.12 at T near 250 us, more than
 twenty standard errors from q = 1. The row runs directly after a carryover reader (below), whose predecessor-
 conditioned excitation the readers measure, so a hot predecessor cannot fake a low q beyond the measured carryover.
 The analysis reports q_hat as a job-local effective relaxation target, not as a thermal population.
@@ -74,11 +76,13 @@ Settle veto. The settle arm differs from the measure arm by sixteen 2 us idles p
 the next rotation, so its gap at the measure arm's implied loss moves with q and also with the uncharacterized
 post-measurement channel the constructor's 2 us gap was built to probe (residual readout photons, detuning during the
 next rotation; [heron-r2-readout-resonator.md](../notes/ibm_quantum/heron-r2-readout-resonator.md)). It is a
-composite q-consistency veto, not an estimate of q: a pooled settle z beyond 3 in either direction withholds the
-device-level departure verdict, and a qubit whose own settle |z| exceeds 3 is withheld. The settle standard error adds
-an independent per-qubit device-scatter term tau, estimated in the job by solving sum g^2 / (s^2 + tau^2) = n over the
-qubits that pass every gate independent of settle (eligibility, pattern, admission, carryover, equilibrium), and
-floored at 0.0019, the retained run's pilot value on the qubits that pass its pattern screen.
+composite q-consistency veto, not an estimate of q. Over the qubits that pass every gate independent of settle
+(eligibility, pattern, admission, carryover, equilibrium), the analysis fits a random-effects model: a common mean gap
+mu and a between-qubit scatter tau, with tau estimated about the weighted mean (DerSimonian-Laird moments) and floored
+at 0.0019, the retained run's pilot value on the qubits that pass its pattern screen. A common-mean z,
+mu / se(mu) with weights 1 / (s^2 + tau^2), beyond 3 in either direction withholds the device-level departure verdict;
+a qubit whose own (g - mu) / sqrt(s^2 + tau^2) exceeds 3 in magnitude is withheld. Because tau is fitted about mu, a
+common gap cannot hide in the scatter term.
 
 ## Carryover readers
 
@@ -130,12 +134,20 @@ exponential edge, and a 400-replicate width-32 benchmark before any cost is quot
 calibration resampled from the retained run's 30 informative qubits (T1, T2, readout errors, sx error), a rate shape
 resampled from the retained run's admitted shapes with T equal to that calibration's T1, the sx-error residual as
 before (common +0.011, independent SD 0.0105), and a true carryover D_q, and runs device counts with binomial shot
-noise, the pattern screen, the admission gate, the reader-based carryover screen, the equilibrium bound, the settle
-veto with its in-job tau, and the departure, count-rule and mutation verdicts.
+noise, the pattern screen, the admission gate, the reader-based carryover screen (from joint predecessor and reader
+outcomes drawn shot by shot, since the reader statistic conditions on the predecessor's bit), the equilibrium bound,
+the settle veto with its random-effects fit, and the departure, count-rule and mutation verdicts. The calibrations
+come from the rehearsal dry run's live layout snapshot, not from the retained run, and shapes are drawn log-uniform
+over the admitted grid, so the null covers the qubits the case selects.
 
-- Carryover arms: true D_q on a grid inside the acceptance boundary (D_q = 0.0047 / A_q minus 0, 1 and 2 reader
-  standard errors), one sign shared by every qubit in an arm, a positive and a negative arm, each at least 299
-  replicates so a zero-fire bound falls below 0.01 per sign.
+- Carryover arms: true D_q three reader standard errors inside the acceptance boundary (D_q = 0.0047 / A_q - 3 SE),
+  one sign shared by every qubit in an arm, a positive and a negative arm, each run until it has issued at least 299
+  verdicts, so a zero-fire bound conditional on issuing falls below 0.01 per sign. A separate boundary arm at 0, 1 and
+  2 standard errors inside calibrates selection failure and is exempt from the issuance requirement.
+- q arm: true q at each selected qubit's tolerance bound (its largest-sensitivity contexts included); the complete
+  pipeline's false-fire bound must stay below 0.01 there too.
+- Settle arms: a common gap and a sparse same-sign gap on two qubits, at 8, 9 and the full selected width, sized to
+  the scatter floor times 4; the common-mean veto and the per-qubit veto must fire with power at least 0.9.
 - Plateau arm: the retained (T1, q) values as truth, q near 0.7; the equilibrium bound and the settle veto must
   withhold its departure verdict.
 - Each arm reports the unconditional false-fire rate, the false-fire rate conditional on a verdict being issued, and
@@ -145,9 +157,14 @@ veto with its in-job tau, and the departure, count-rule and mutation verdicts.
   stay out of the null; a member-count simulator has no shot order.
 - The null's bound is the error guarantee of the whole pipeline; the per-component levels (admission, carryover, q_hat,
   settle) are tuning choices it calibrates.
-- Coverage: the null draws only the retained run's calibrations. At dry run the analysis records the range of each
-  drawn quantity (T1, T2, readout errors, sx error, shape), and a live qubit with any value outside it is withheld
-  from the departure verdict; the case reports how many qubits that rule removes.
+- Coverage: the null runs on the rehearsal dry run's calibrations. The binding run's mechanical check
+  (`scripts/approved_run.sh --check`) refuses the submit when a selected qubit's live T1, T2, readout error or sx error
+  differs from the rehearsal snapshot by more than a factor the case states, so the binding run executes inside the
+  domain the null covered, and a refusal sends nothing.
+- Availability: every null rate is conditional on the order conditions passing, since a member-count simulator has no
+  shot order. The order sentinels read incidental phase noise, not a marker the circuit creates; no deterministic
+  cross-shot marker exists under `init_qubits`. The case states plainly that a run whose sub-millisecond frequency
+  noise falls about five-fold below the retained level fails the sentinels and withholds every qubit.
 
 ## What the run can detect
 
@@ -192,6 +209,9 @@ beyond 3; fewer than 8 selected qubits; either order condition failing; a carryo
   (T1, q) fit and a pooled coin statistic that cannot bound per-class bias, and the device showed carryover near 0.0002.
 - v3 averaged every chain over the gamma rate distribution and added a 400 us T1 delay; review found the shape never
   reaches the prediction, the verdict moving with q, and the settle arm demoted although it responds to q.
+- v3.2 had the settle scatter fitted about zero (a common gap hid in it at 8 or 9 qubits), one median sensitivity
+  for every qubit's q tolerance, carryover null points the screen nearly always rejected, and a min-max calibration
+  coverage rule that a device-wide shift would trip.
 - v3.1 fixed q = 1 and tested it with the settle gap and an equilibrium row; Codex found the settle gap composite,
   the equilibrium row without an estimator, the 4.1e-4 shape term one run's value, the null planting carryover where
   the screen rejects, alternating signs covering neither, the pattern-row estimator confounded by crosstalk, and the
