@@ -262,6 +262,8 @@ differs from it only in the `cd_core.py` digest.
 | [evidence/sedenion-clifford-envelope/README.md](evidence/sedenion-clifford-envelope/README.md) | exact eight-generator Cl(0,8) envelope spanning M16(R) |
 | [evidence/hypercomplex-operators/README.md](evidence/hypercomplex-operators/README.md) | exact replay, probability explorer and distribution inventory |
 | [design/et-rows.md](design/et-rows.md) | ET-row device experiment |
+| [design/measurement-sequence-pinching.md](design/measurement-sequence-pinching.md) | `measurement-sequence` and `measurement-sequence-diagnostic` families: N rotations each followed by a mid-circuit measurement against an elapsed-time-matched delay, ideal pinching law, endpoints, the preregistered decision rule with its model and Aer validation tables, the diagnostic that measures the gate-model scatter floor (qubit rule, floor rule, Aer validation), and Tuna-17 port |
+| [design/measurement-sequence-adaptive-envelope.md](design/measurement-sequence-adaptive-envelope.md) | calibration-adaptive approval envelope for the measurement-sequence family: layout rule re-applied at submit, 20 us repetition delay with a 50 us fallback, herald postselection, in-job gate-model floor, scaling to about 50 qubits |
 | [design/hybrid-shor.md](design/hybrid-shor.md) | hybrid Shor architecture for IBM Heron r2 |
 | [design/n21-orbit-window-dose-envelope.md](design/n21-orbit-window-dose-envelope.md) | calibration-adaptive approval envelope, bounds and decisions D1-D3 of the N=21 orbit window-dose sweep |
 | [design/provider-access-requests.md](design/provider-access-requests.md) | access-request drafts for Quantinuum, D-Wave, Classiq, OQC, Rigetti, SuperQ and Kipu, with the review checklist |

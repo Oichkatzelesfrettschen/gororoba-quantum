@@ -2292,25 +2292,36 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-window-doses.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-adaptive-envelope.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-window-doses.json"
+    "docs/evidence/submitted_circuits/comparison-adaptive-envelope.json"
    ]
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/idle_penalty_report.py results/live/2026-10-26T202817.431767Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-report.json --check && \"$PYTHON\" -B -W error scripts/idle_penalty_exploratory.py results/live/2026-10-26T202817.431767Z --historical results/live/2026-10-12T055624.091217Z results/live/2026-10-13T020454.599853Z results/live/2026-10-18T090603.530638Z results/live/2026-10-25T193443.839527Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory.json --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/idle_penalty_report.py results/live/2026-10-26T202817.431767Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-report-vectorized-encoding.json --check && \"$PYTHON\" -B -W error scripts/idle_penalty_exploratory.py results/live/2026-10-26T202817.431767Z --historical results/live/2026-10-12T055624.091217Z results/live/2026-10-13T020454.599853Z results/live/2026-10-18T090603.530638Z results/live/2026-10-25T193443.839527Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory-vectorized-encoding.json --check",
    "name": "core-idle-penalty-report-replay",
    "seconds": 8.7,
    "tier": "pr",
    "replays": [
-    "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
-    "results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory.json"
+    "results/live/2026-10-26T202817.431767Z/idle-penalty-report-vectorized-encoding.json",
+    "results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory-vectorized-encoding.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/msq_envelope_exploratory.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/envelope-run-exploratory.json",
+   "name": "core-msq-envelope-exploratory-replay",
+   "seconds": 9.2,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/measurement_sequence/envelope-run-exploratory.json"
    ]
   },
   {
@@ -4534,6 +4545,14 @@
    "cmd": "\"$PYTHON\" -B -W error scripts/stiefel_pfaffian_higher.py --self-test && \"$PYTHON\" -B -W error -O scripts/stiefel_pfaffian_higher.py --self-test",
    "name": "core-693",
    "seconds": 4.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/measurement_sequence_scatter.py check results/live/2026-10-26T031010.724660Z docs/evidence/measurement_sequence/scatter-floor.json",
+   "name": "core-msq-scatter-floor-replay",
+   "seconds": 3.5,
    "tier": "pr"
   },
   {
