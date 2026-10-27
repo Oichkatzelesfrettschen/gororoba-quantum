@@ -84,6 +84,30 @@
             }
           ],
           "scope_sha256": "1e2aad9f9684a9ac7c7efe72bc7811d5133656ff1f0243d118f26e9b69ee813c"
+        },
+        {
+          "result": "Revalidation after the merge with main and the automation-model note: replay_rocq.sh passes against its receipts; ci/check_rocq_ci_pins.py reports 13 bundles agreeing; tests/ci/test_rocq_ci_pins.py and tests/test_evidence_ledgers.py pass; formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link.",
+          "observed_at": "2026-10-27T17:30:21+00:00",
+          "revision": "b175b815ce8c09c8afcaade2f68ef4e5169e80ce",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry/replay_rocq.sh",
+              "sha256": "bb1f2555fd72ea1b63517b4cb1aa68ec915958ed79d375c4194a38f8ffbc932d"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry/source_hashes.sha256",
+              "sha256": "52faeb651f04fbdd8f4135fa8a3259f007a3b7b6b049a7cce80c188ba3441716"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-413",
+              "sha256": "482834e5ae2cd3d0f0f170e6dfae8cd4c0bfd77ec83131e9f75d983efa0003a3"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "6e3cc048a5307c9747b7097899872ac305fa814fb0fd505f05b7162a5a961794"
+            }
+          ],
+          "scope_sha256": "1e2aad9f9684a9ac7c7efe72bc7811d5133656ff1f0243d118f26e9b69ee813c"
         }
       ]
     }
