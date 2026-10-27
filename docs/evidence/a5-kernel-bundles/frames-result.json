@@ -1,0 +1,1318 @@
+{
+  "mutation_control": {
+    "mutation": "flip_border_sign",
+    "nullity_sixteen_detected": true,
+    "nullity_sixteen_frame_identity_failure_count": 12,
+    "nullity_twelve_detected": true,
+    "nullity_twelve_frame_identity_failure_count": 1
+  },
+  "nullity_sixteen": {
+    "chart_count": 12870,
+    "chart_domain": "N_sigma intersect {pf(A_I,I) != 0}",
+    "chart_indexing": "all 8-subsets I of {0,...,15}",
+    "coverage_argument": "rank(A)=8 on N_sigma; the principal-rank theorem for skew matrices gives an order-eight principal block with nonzero Pfaffian at every point",
+    "degeneracy_locus": "pf(B_I)=0, equivalently det(B_I)=pf(B_I)^2=0",
+    "fixture_scope": "all 21 coordinate isotropic two-planes for each sign",
+    "mutation": "",
+    "orbits": [
+      {
+        "bordered_rank": 8,
+        "coverage_witness": true,
+        "fixture_count": 21,
+        "frame_columns": 8,
+        "frame_identity_failure_count": 0,
+        "frame_identity_verified": true,
+        "frame_rank_verified": true,
+        "left_kernel_verified": true,
+        "orbit": "N_+",
+        "parameterization_verified": true,
+        "pass": true,
+        "real_frame_rank_verified": true,
+        "representative": {
+          "coverage_witness": true,
+          "fixture": [
+            1,
+            2
+          ],
+          "frame": [
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "I",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "I",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "I",
+              "0",
+              "0",
+              "I",
+              "0",
+              "0",
+              "1"
+            ],
+            [
+              "-I",
+              "0",
+              "0",
+              "0",
+              "0",
+              "I",
+              "-1",
+              "0"
+            ],
+            [
+              "1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "-I",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "1",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1"
+            ]
+          ],
+          "frame_identity_verified": true,
+          "frame_rank_verified": true,
+          "left_kernel_verified": true,
+          "orbit": "N_+",
+          "parameterization_verified": true,
+          "pass": true,
+          "pivot_determinant": "16",
+          "pivot_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            8,
+            9
+          ],
+          "pivot_pfaffian": "4",
+          "real_frame_rank_verified": true
+        },
+        "symbolic_parameterization": {
+          "isotropy_equations": true,
+          "middle_coordinate_zero": true,
+          "second_half_sign": true,
+          "unit_norm_equation": true
+        }
+      },
+      {
+        "bordered_rank": 8,
+        "coverage_witness": true,
+        "fixture_count": 21,
+        "frame_columns": 8,
+        "frame_identity_failure_count": 0,
+        "frame_identity_verified": true,
+        "frame_rank_verified": true,
+        "left_kernel_verified": true,
+        "orbit": "N_-",
+        "parameterization_verified": true,
+        "pass": true,
+        "real_frame_rank_verified": true,
+        "representative": {
+          "coverage_witness": true,
+          "fixture": [
+            1,
+            2
+          ],
+          "frame": [
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "-1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "-I",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "-I",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "I",
+              "0",
+              "0",
+              "-I",
+              "0",
+              "0",
+              "-1"
+            ],
+            [
+              "-I",
+              "0",
+              "0",
+              "0",
+              "0",
+              "-I",
+              "1",
+              "0"
+            ],
+            [
+              "1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "-I",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "1",
+              "0",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "0",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "0",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1",
+              "0"
+            ],
+            [
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "1"
+            ]
+          ],
+          "frame_identity_verified": true,
+          "frame_rank_verified": true,
+          "left_kernel_verified": true,
+          "orbit": "N_-",
+          "parameterization_verified": true,
+          "pass": true,
+          "pivot_determinant": "16",
+          "pivot_indices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            8,
+            9
+          ],
+          "pivot_pfaffian": "4",
+          "real_frame_rank_verified": true
+        },
+        "symbolic_parameterization": {
+          "isotropy_equations": true,
+          "middle_coordinate_zero": true,
+          "second_half_sign": true,
+          "unit_norm_equation": true
+        }
+      }
+    ],
+    "parameterization": "z=(w,0,sigma*i*w), w=a+i*b, a.a=b.b, a.b=0; on the unit section a.a=b.b=1/4",
+    "pass": true,
+    "polynomial_frame": "in pivot/free order, Fhat_I=[-adj(B_I) C_I; det(B_I) I_8]",
+    "rational_frame": "in pivot/free order, F_I=[-B_I^(-1) C_I; I_8]",
+    "schema": "a5-nullity-sixteen-kernel-frames-v1"
+  },
+  "nullity_twelve": {
+    "chart_count": 8008,
+    "chart_domain": "each nullity-twelve orbit intersect {pf(A_I,I) != 0}",
+    "chart_indexing": "all 10-subsets I of {0,...,15}",
+    "coverage_argument": "rank(A)=10 on every nullity-twelve orbit; the principal-rank theorem for skew matrices gives an order-ten principal block with nonzero Pfaffian at every point",
+    "degeneracy_locus": "pf(B_I)=0, equivalently det(B_I)=pf(B_I)^2=0",
+    "mutation": "",
+    "orbits": [
+      {
+        "bordered_rank": 10,
+        "coverage_witness": true,
+        "expected_membership_pattern": [
+          "W8",
+          "Ehat",
+          "Iso",
+          "Xp",
+          "Xm",
+          "B9"
+        ],
+        "frame": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "2*I",
+            "0",
+            "3",
+            "0",
+            "5",
+            "0"
+          ],
+          [
+            "0",
+            "17",
+            "0",
+            "13/2",
+            "0",
+            "-29*I/2"
+          ],
+          [
+            "-2",
+            "0",
+            "3*I",
+            "0",
+            "5*I",
+            "0"
+          ],
+          [
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "39*I/2",
+            "0",
+            "29*I/4",
+            "0",
+            "65/4"
+          ],
+          [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "19/2",
+            "0",
+            "165/52",
+            "0",
+            "-29*I/4"
+          ],
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "-29*I/26",
+            "0",
+            "-1/2"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        ],
+        "frame_columns": 6,
+        "frame_identity_verified": true,
+        "frame_rank_verified": true,
+        "left_kernel_verified": true,
+        "membership_pattern": [
+          "W8",
+          "Ehat",
+          "Iso",
+          "Xp",
+          "Xm",
+          "B9"
+        ],
+        "orbit": "B9",
+        "pass": true,
+        "pivot_determinant": "10816",
+        "pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10,
+          12
+        ],
+        "pivot_pfaffian": "-104",
+        "real_frame_rank_verified": true,
+        "representative_key": "B9",
+        "representative_membership_verified": true
+      },
+      {
+        "bordered_rank": 10,
+        "coverage_witness": true,
+        "expected_membership_pattern": [
+          "Ehat",
+          "V"
+        ],
+        "frame": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "5*I/3",
+            "-4/3",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "4/3",
+            "5*I/3",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "5*I/3",
+            "-4/3",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "4/3",
+            "5*I/3",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "5*I/3",
+            "4/3"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "-4/3",
+            "5*I/3"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        ],
+        "frame_columns": 6,
+        "frame_identity_verified": true,
+        "frame_rank_verified": true,
+        "left_kernel_verified": true,
+        "membership_pattern": [
+          "Ehat",
+          "V"
+        ],
+        "orbit": "V",
+        "pass": true,
+        "pivot_determinant": "-1822500",
+        "pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "pivot_pfaffian": "-1350*I",
+        "real_frame_rank_verified": true,
+        "representative_key": "V",
+        "representative_membership_verified": true
+      },
+      {
+        "bordered_rank": 10,
+        "coverage_witness": true,
+        "expected_membership_pattern": [
+          "W8",
+          "Ehat",
+          "Iso",
+          "Xp",
+          "Xm",
+          "B9",
+          "V",
+          "VB"
+        ],
+        "frame": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        ],
+        "frame_columns": 6,
+        "frame_identity_verified": true,
+        "frame_rank_verified": true,
+        "left_kernel_verified": true,
+        "membership_pattern": [
+          "W8",
+          "Ehat",
+          "Iso",
+          "Xp",
+          "Xm",
+          "B9",
+          "V",
+          "VB"
+        ],
+        "orbit": "VB",
+        "pass": true,
+        "pivot_determinant": "-4",
+        "pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          8,
+          9,
+          12,
+          13
+        ],
+        "pivot_pfaffian": "-2*I",
+        "real_frame_rank_verified": true,
+        "representative_key": "VB",
+        "representative_membership_verified": true
+      },
+      {
+        "bordered_rank": 10,
+        "coverage_witness": true,
+        "expected_membership_pattern": [
+          "Ehat",
+          "Xp",
+          "V",
+          "Vap"
+        ],
+        "frame": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "I",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        ],
+        "frame_columns": 6,
+        "frame_identity_verified": true,
+        "frame_rank_verified": true,
+        "left_kernel_verified": true,
+        "membership_pattern": [
+          "Ehat",
+          "Xp",
+          "V",
+          "Vap"
+        ],
+        "orbit": "V^a_+",
+        "pass": true,
+        "pivot_determinant": "-4",
+        "pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "pivot_pfaffian": "-2*I",
+        "real_frame_rank_verified": true,
+        "representative_key": "Vap",
+        "representative_membership_verified": true
+      },
+      {
+        "bordered_rank": 10,
+        "coverage_witness": true,
+        "expected_membership_pattern": [
+          "Ehat",
+          "Xm",
+          "V",
+          "Vam"
+        ],
+        "frame": [
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-I"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "1",
+            "0",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "1",
+            "0"
+          ],
+          [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "1"
+          ]
+        ],
+        "frame_columns": 6,
+        "frame_identity_verified": true,
+        "frame_rank_verified": true,
+        "left_kernel_verified": true,
+        "membership_pattern": [
+          "Ehat",
+          "Xm",
+          "V",
+          "Vam"
+        ],
+        "orbit": "V^a_-",
+        "pass": true,
+        "pivot_determinant": "-4",
+        "pivot_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "pivot_pfaffian": "-2*I",
+        "real_frame_rank_verified": true,
+        "representative_key": "Vam",
+        "representative_membership_verified": true
+      }
+    ],
+    "parameterizations": {
+      "B9": "(u',0,v') with u',v' independent, isotropic, and u' cross v'=0",
+      "V": "(alpha*w,mu,beta*w) with eta(w)!=0, mu!=0, and (alpha^2-beta^2)*eta(w)=mu^2",
+      "VB": "(alpha*n,0,beta*n) with n!=0 null and alpha^2!=beta^2",
+      "V^a_+": "(w,0,w) with eta(w)!=0",
+      "V^a_-": "(w,0,-w) with eta(w)!=0"
+    },
+    "pass": true,
+    "polynomial_frame": "in pivot/free order, Fhat_I=[-adj(B_I) C_I; det(B_I) I_6]",
+    "rational_frame": "in pivot/free order, F_I=[-B_I^(-1) C_I; I_6]",
+    "schema": "a5-nullity-twelve-kernel-frames-v1"
+  },
+  "pass": true,
+  "schema": "a5-high-nullity-kernel-frames-v2",
+  "source_sha256": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d"
+}

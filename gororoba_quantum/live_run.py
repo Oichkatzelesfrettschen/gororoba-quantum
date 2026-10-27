@@ -196,6 +196,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "primorial_tomography.py",
     "crossed_tile_template.py",
     "diagnostic_controls.py",
+    "idle_penalty.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "qrng_seeds.py",
@@ -3766,6 +3767,11 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             campaigns = sorted(group.name for group in groups if group.name in standalone)
             if campaigns and len(groups) > 1:
                 raise LiveRunError(f"{campaigns[0]} requires an isolated campaign; cannot co-run with other groups")
+            if "idle_penalty" in campaigns and (args.dd or args.twirl):
+                # The relaxation, Ramsey and readout-crosstalk idles measure free evolution, which
+                # dynamical decoupling would fill with echo pulses, and twirling would randomize the
+                # coherent phases the during and after arms compare.
+                raise LiveRunError("idle_penalty runs without dynamical decoupling or twirling; omit --dd and --twirl")
             if "qubit_baseline" in campaigns and args.dd:
                 # The Ramsey and relaxation idles measure free evolution, which
                 # dynamical decoupling would fill with echo pulses.

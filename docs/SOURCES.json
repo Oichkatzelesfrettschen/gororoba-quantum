@@ -1992,6 +1992,40 @@
     },
     "docs/notes/papers/2411.12904.md": {
       "status": "journal-venue-unverified"
+    },
+    "docs/notes/papers/ioannidis-2005-false-findings.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1371/journal.pmed.0020124",
+      "venue": "PLoS Medicine 2(8), e124 (2005)",
+      "receipt_url": "https://api.crossref.org/works/10.1371/journal.pmed.0020124"
+    },
+    "docs/notes/papers/munafo-2017-reproducible-science.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1038/s41562-016-0021",
+      "venue": "Nature Human Behaviour 1, 0021 (2017)",
+      "receipt_url": "https://api.crossref.org/works/10.1038/s41562-016-0021"
+    },
+    "docs/notes/papers/diedenhofen-musch-2015-cocor.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1371/journal.pone.0121945",
+      "venue": "PLOS ONE 10(4), e0121945 (2015)",
+      "receipt_url": "https://api.crossref.org/works/10.1371/journal.pone.0121945"
+    },
+    "docs/notes/papers/asa-2016-p-value-statement.md": {
+      "status": "journal-identity-verified",
+      "doi": "10.1080/00031305.2016.1154108",
+      "venue": "The American Statistician 70(2), 129-133 (2016)",
+      "receipt_url": "https://api.crossref.org/works/10.1080/00031305.2016.1154108"
+    },
+    "docs/notes/papers/1910.06343.md": {
+      "status": "arxiv-journal-reference",
+      "venue": "Nature Reviews Physics 2, 382-390 (2020)",
+      "receipt_url": "https://arxiv.org/abs/1910.06343v2"
+    },
+    "docs/notes/papers/2407.08828.md": {
+      "status": "arxiv-journal-reference",
+      "venue": "Nature Reviews Physics 7, 105-118 (2025)",
+      "receipt_url": "https://arxiv.org/abs/2407.08828v2"
     }
   },
   "web_sources": [
@@ -3891,6 +3925,106 @@
       "note": "docs/notes/papers/1201.4149.md",
       "url": "https://doi.org/10.1103/PhysRevLett.74.1259",
       "status": "Massar and Popescu, Optimal extraction of information from finite quantum ensembles, Phys. Rev. Lett. 74, 1259 (1995): cited for the N-copy bound (N+1)/(N+2) through G\u00fcndo\u011fan et al. Appendix A and Specht et al. Eq. 1; the primary was not retrieved, since the DOI resolver and the APS PDF route answered HTTP 403 on 2026-10-26T22:30:18Z"
+    },
+    {
+      "note": "docs/notes/papers/ioannidis-2005-false-findings.md",
+      "url": "https://api.crossref.org/works/10.1371/journal.pmed.0020124",
+      "retrieved_at_utc": "2026-10-27T01:25:06Z",
+      "sha256": "306fbc008c18b73ad97e320faf2781f69fd3ce882b206414b1e46b982b81756f",
+      "bytes": 12210,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages and issue date",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/munafo-2017-reproducible-science.md",
+      "url": "https://api.crossref.org/works/10.1038/s41562-016-0021",
+      "retrieved_at_utc": "2026-10-27T01:25:06Z",
+      "sha256": "8bbf8302fd077600d5124cfc68d6673d8b88f51638d1259b99d150ebc63eb498",
+      "bytes": 35999,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages and issue date",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/diedenhofen-musch-2015-cocor.md",
+      "url": "https://api.crossref.org/works/10.1371/journal.pone.0121945",
+      "retrieved_at_utc": "2026-10-27T01:25:06Z",
+      "sha256": "66a970d74ff7cadbf45d7dd56601471e3229c88dcc134e6ba4e6d5940bd91720",
+      "bytes": 12422,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages and issue date",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/asa-2016-p-value-statement.md",
+      "url": "https://api.crossref.org/works/10.1080/00031305.2016.1154108",
+      "retrieved_at_utc": "2026-10-27T01:25:05Z",
+      "sha256": "6211eb551df62d7c854e0d2b62f013ce41827652d8abe4a85b5f8c7f8d25622f",
+      "bytes": 10726,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages and issue date",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/munafo-2017-reproducible-science.md",
+      "url": "https://api.crossref.org/works/10.1073/pnas.1708274114",
+      "retrieved_at_utc": "2026-10-27T01:25:05Z",
+      "sha256": "039da4795dc91a9832e6cf1f72f21aa625bf861594a095a874457e011a1e82bc",
+      "bytes": 12107,
+      "reading_scope": "Crossref DOI metadata: title, authors, journal, volume, pages and issue date",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/1910.06343.md",
+      "url": "https://arxiv.org/abs/1910.06343v2",
+      "retrieved_at_utc": "2026-10-27T01:31:10Z",
+      "sha256": "78a611031ff95de6b420b628ca67cdeef042f78328bb9a5ec5b16af015577689",
+      "bytes": 42330,
+      "reading_scope": "arXiv abstract page of the exact version: title, authors, journal reference, DOI and comments; paper body read from the retained PDF",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/2407.08828.md",
+      "url": "https://arxiv.org/abs/2407.08828v2",
+      "retrieved_at_utc": "2026-10-27T01:31:11Z",
+      "sha256": "37c56306f393bcdd8f7b45e0d319a4e6df3a99f1f6ec1054bfe38309f235c0ee",
+      "bytes": 42716,
+      "reading_scope": "arXiv abstract page of the exact version: title, authors, journal reference, DOI and comments; paper body read from the retained PDF",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/diedenhofen-musch-2015-cocor.md",
+      "url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0121945.s001&type=supplementary",
+      "retrieved_at_utc": "2026-10-27T01:31:13Z",
+      "sha256": "00f7462329ce42279bb7b76fd88a89e67e57be090ef041976b9d5a7c497279b3",
+      "bytes": 139505,
+      "reading_scope": "S1 Appendix of the cocor article (14 pages): formulae of every implemented test; read for the independent and dependent-overlapping tests",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/quantum-journal-referee-instructions.md",
+      "url": "https://quantum-journal.org/instructions/referees/",
+      "retrieved_at_utc": "2026-10-27T01:26:27Z",
+      "sha256": "b4278186d6b273a0b1be250e56660b83e410a77d9b00990ee46d85e99c01a74c",
+      "bytes": 74137,
+      "reading_scope": "Guidelines for referees: acceptance criteria and the reviewer form questions; main text read in full",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/quantum-journal-referee-instructions.md",
+      "url": "https://quantum-journal.org/editorial-policies/",
+      "retrieved_at_utc": "2026-10-27T01:26:28Z",
+      "sha256": "fd5231305654e0f4b74b5fb18afc442f343a5793c8df4ced9b2f5b5fbe633f7e",
+      "bytes": 81475,
+      "reading_scope": "Editorial policies: acceptance criteria, review process and referee sections; read through the minimal-number-of-reports rule",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/papers/diedenhofen-musch-2015-cocor.md",
+      "url": "https://doi.org/10.1037/0033-2909.87.2.245",
+      "status": "Steiger, Tests for comparing elements of a correlation matrix, Psychological Bulletin 87, 245-251 (1980): cited for the dependent-correlation tests through S1 Eq. 19 to 21 of the cocor article; the primary was not retrieved"
+    },
+    {
+      "note": "docs/notes/papers/munafo-2017-reproducible-science.md",
+      "url": "https://www.pnas.org/doi/10.1073/pnas.1708274114",
+      "status": "Nosek, Ebersole, DeHaven and Mellor, The preregistration revolution, PNAS 115, 2600-2606 (2018): cited for preregistration; the publisher answered HTTP 403 to automated retrieval on 2026-10-27 and no text was retained"
     },
     {
       "note": "docs/notes/papers/1210.1282.md",
@@ -10539,6 +10673,228 @@
         "evidence_retrieved_at_utc": "2026-10-26T22:29:47+00:00",
         "reading_scope": "Source-specific rights statement and operative terms.",
         "evidence_path": "docs/evidence/source_rights/arxiv-1210.1282v1.html"
+      }
+    },
+    {
+      "title": "Why Most Published Research Findings Are False",
+      "authors": [
+        "John P. A. Ioannidis"
+      ],
+      "version": "PLoS Medicine 2(8): e124, 30 August 2005",
+      "source_url": "https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.0020124&type=printable",
+      "note": "docs/notes/papers/ioannidis-2005-false-findings.md",
+      "audited_at_utc": "2026-10-27T01:36:58+00:00",
+      "sha256": "ffc1005680cb620eec4c913437dfabbf311b535cfe16cbaeb2faec1f92afc362",
+      "bytes": 255629,
+      "pages": 6,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/ioannidis-2005-false-findings.pdf",
+      "local_cache_path": "docs/local_source_cache/ioannidis-2005-false-findings.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Copyright line of the article page and PDF p. 1 (Creative Commons Attribution License, no version), plus the Crossref license field (CC BY 4.0)",
+      "rights_reason": "A Creative Commons Attribution grant is observed, but its version is unnamed in the article and the verifier has no publication route for this host; the PDF stays in the ignored local cache until both gaps close.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "ffc1005680cb620eec4c913437dfabbf311b535cfe16cbaeb2faec1f92afc362",
+        "verified_at_utc": "2026-10-27T01:36:58+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-CC-BY-unversioned",
+        "license_url": null,
+        "evidence_url": "https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124",
+        "evidence_sha256": "d89f3ada51341ac1c76672e840f8007fbc8471a4453ca2b71181209238840ec4",
+        "evidence_locator": "Copyright line of the article page and PDF p. 1 (Creative Commons Attribution License, no version), plus the Crossref license field (CC BY 4.0)",
+        "reading_scope": "Article page copyright line and PDF p. 1 rights notice; Crossref license field; the note carries the content reading scope.",
+        "evidence_summary": "The article page and PDF p. 1 grant the Creative Commons Attribution License without naming a version; Crossref labels the record CC BY 4.0. Hosting is deferred because the exact-version grant rests on Crossref alone and the verifier has no publication route for a PLoS host."
+      }
+    },
+    {
+      "title": "A manifesto for reproducible science",
+      "authors": [
+        "Marcus R. Munafo",
+        "Brian A. Nosek",
+        "Dorothy V. M. Bishop",
+        "Katherine S. Button",
+        "Christopher D. Chambers",
+        "Nathalie Percie du Sert",
+        "Uri Simonsohn",
+        "Eric-Jan Wagenmakers",
+        "Jennifer J. Ware",
+        "John P. A. Ioannidis"
+      ],
+      "version": "Nature Human Behaviour 1, 0021 (2017), published 2017-01-10",
+      "source_url": "https://www.nature.com/articles/s41562-016-0021.pdf",
+      "note": "docs/notes/papers/munafo-2017-reproducible-science.md",
+      "audited_at_utc": "2026-10-27T01:36:58+00:00",
+      "sha256": "607a381bcdaf7d16e5801a570f64c7eb38eeb89bcbf30e343eb00a4ffcfeefd6",
+      "bytes": 481779,
+      "pages": 9,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/munafo-2017-reproducible-science.pdf",
+      "local_cache_path": "docs/local_source_cache/munafo-2017-reproducible-science.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Article-page structured-data license, citation_doi, citation_title and citation_pdf_url, and the PDF p. 9 rights notice (Creative Commons Attribution 4.0 International)",
+      "rights_reason": "A CC BY 4.0 grant covers the retained version, and the PDF stays in the ignored local cache only because the source verifier rejects this article identifier form; it qualifies for publication once the verifier admits it.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "607a381bcdaf7d16e5801a570f64c7eb38eeb89bcbf30e343eb00a4ffcfeefd6",
+        "verified_at_utc": "2026-10-27T01:36:58+00:00",
+        "decision": "external_only",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://www.nature.com/articles/s41562-016-0021",
+        "evidence_sha256": "3f177ff985580d26bb5e65c369567e47dcabd1fa5c472653af93aa05b77995c1",
+        "evidence_locator": "Article-page structured-data license, citation_doi, citation_title and citation_pdf_url, and the PDF p. 9 rights notice (Creative Commons Attribution 4.0 International)",
+        "reading_scope": "Article page structured data and PDF p. 9 rights notice; the note carries the content reading scope.",
+        "evidence_summary": "The publisher page and the PDF carry the same article-level Creative Commons Attribution 4.0 grant. Hosting is deferred because the Nature route of docs/verify_sources.py accepts only s415NN-NNN-NNNNN-C identifiers and s41562-016-0021 does not match."
+      }
+    },
+    {
+      "title": "cocor: A Comprehensive Solution for the Statistical Comparison of Correlations",
+      "authors": [
+        "Birk Diedenhofen",
+        "Jochen Musch"
+      ],
+      "version": "PLOS ONE 10(4): e0121945, 2 April 2015",
+      "source_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0121945&type=printable",
+      "note": "docs/notes/papers/diedenhofen-musch-2015-cocor.md",
+      "audited_at_utc": "2026-10-27T01:36:58+00:00",
+      "sha256": "a21fcdad41b5a9e04b765949e02d7c8bec8229faf5f2059e10758a8ee85d933d",
+      "bytes": 537051,
+      "pages": 12,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/diedenhofen-musch-2015-cocor.pdf",
+      "local_cache_path": "docs/local_source_cache/diedenhofen-musch-2015-cocor.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Copyright line of the article page (link to creativecommons.org/licenses/by/4.0/) and PDF p. 1 rights notice",
+      "rights_reason": "A CC BY 4.0 grant is observed on the article page; the PDF stays in the ignored local cache only because the source verifier has no publication route for this host.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "a21fcdad41b5a9e04b765949e02d7c8bec8229faf5f2059e10758a8ee85d933d",
+        "verified_at_utc": "2026-10-27T01:36:58+00:00",
+        "decision": "external_only",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0121945",
+        "evidence_sha256": "ba5d088589dc406a6104a27ad147b999f19db3532a7db08491d1e00d52ff072e",
+        "evidence_locator": "Copyright line of the article page (link to creativecommons.org/licenses/by/4.0/) and PDF p. 1 rights notice",
+        "reading_scope": "Article page copyright line and PDF p. 1 rights notice; the note carries the content reading scope.",
+        "evidence_summary": "The article page links the Creative Commons Attribution 4.0 license in its copyright line and the PDF carries the Creative Commons Attribution License notice. Hosting is deferred because the verifier has no publication route for a PLOS host."
+      }
+    },
+    {
+      "title": "American Statistical Association Releases Statement on Statistical Significance and P-Values (press release of 2016-03-07)",
+      "authors": [
+        "American Statistical Association"
+      ],
+      "version": "ASA press release, 7 March 2016",
+      "source_url": "https://www.amstat.org/asa/files/pdfs/p-valuestatement.pdf",
+      "note": "docs/notes/papers/asa-2016-p-value-statement.md",
+      "audited_at_utc": "2026-10-27T01:36:58+00:00",
+      "sha256": "5327785901ea402c063458e9d061b131a2f4a81c8a6d46fd9e217238b61f8ca9",
+      "bytes": 242050,
+      "pages": 3,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/asa-2016-p-value-statement-release.pdf",
+      "local_cache_path": "docs/local_source_cache/asa-2016-p-value-statement-release.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Text search of the retained PDF for license or copyright statements",
+      "rights_reason": "The press release prints no license or copyright statement, so no redistribution grant is established.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "5327785901ea402c063458e9d061b131a2f4a81c8a6d46fd9e217238b61f8ca9",
+        "verified_at_utc": "2026-10-27T01:36:58+00:00",
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://www.amstat.org/asa/files/pdfs/p-valuestatement.pdf",
+        "evidence_sha256": "5327785901ea402c063458e9d061b131a2f4a81c8a6d46fd9e217238b61f8ca9",
+        "evidence_locator": "Text search of the retained PDF for license or copyright statements",
+        "reading_scope": "Text search of the PDF for license or copyright statements; the note records the content reading scope.",
+        "evidence_summary": "The PDF prints no license or copyright statement, so no redistribution grant is established."
+      }
+    },
+    {
+      "title": "Quantum certification and benchmarking",
+      "authors": [
+        "J. Eisert",
+        "D. Hangleiter",
+        "N. Walk",
+        "I. Roth",
+        "D. Markham",
+        "R. Parekh",
+        "U. Chabaud",
+        "E. Kashefi"
+      ],
+      "version": "1910.06343v2",
+      "source_url": "https://arxiv.org/pdf/1910.06343v2",
+      "note": "docs/notes/papers/1910.06343.md",
+      "audited_at_utc": "2026-10-27T01:36:58+00:00",
+      "sha256": "f7a8e4df1d960c3e8a2351aab717d8eba53d3f77f6b305c5df8f7c1b94a8d6b7",
+      "bytes": 1191650,
+      "pages": 10,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/1910.06343v2.pdf",
+      "local_cache_path": "docs/local_source_cache/1910.06343v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "f7a8e4df1d960c3e8a2351aab717d8eba53d3f77f6b305c5df8f7c1b94a8d6b7",
+        "verified_at_utc": "2026-10-27T01:36:58+00:00",
+        "evidence_url": "https://arxiv.org/abs/1910.06343v2",
+        "evidence_sha256": "78a611031ff95de6b420b628ca67cdeef042f78328bb9a5ec5b16af015577689",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1910.06343v2.html",
+        "evidence_retrieved_at_utc": "2026-10-27T01:31:10+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "decision": "external_only",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
+      }
+    },
+    {
+      "title": "Benchmarking quantum computers",
+      "authors": [
+        "Timothy Proctor",
+        "Kevin Young",
+        "Andrew D. Baczewski",
+        "Robin Blume-Kohout"
+      ],
+      "version": "2407.08828v2",
+      "source_url": "https://arxiv.org/pdf/2407.08828v2",
+      "note": "docs/notes/papers/2407.08828.md",
+      "audited_at_utc": "2026-10-27T01:36:58+00:00",
+      "sha256": "006bc3f566b1897c5f23a1f65921e3fef4f44e74149a2c3def434abd70516a49",
+      "bytes": 1394576,
+      "pages": 18,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/2407.08828v2.pdf",
+      "local_cache_path": "docs/local_source_cache/2407.08828v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "006bc3f566b1897c5f23a1f65921e3fef4f44e74149a2c3def434abd70516a49",
+        "verified_at_utc": "2026-10-27T01:36:58+00:00",
+        "evidence_url": "https://arxiv.org/abs/2407.08828v2",
+        "evidence_sha256": "37c56306f393bcdd8f7b45e0d319a4e6df3a99f1f6ec1054bfe38309f235c0ee",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2407.08828v2.html",
+        "evidence_retrieved_at_utc": "2026-10-27T01:31:11+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "decision": "external_only",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
       }
     },
     {

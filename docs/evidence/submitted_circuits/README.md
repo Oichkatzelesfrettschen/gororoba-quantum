@@ -48,9 +48,17 @@ it differs from the QET-campaign successor only in the `live_run.py` digest and 
 The [compiled-ideal successor](comparison-pooled-compiled-ideals.json) rebinds it after `live_run.py` and `qpu_planning.py`
 proved the compiled ideals through the process pool; its rows equal the predecessor's.
 
-The [adaptive-envelope successor](comparison-adaptive-envelope.json) rebinds the retained-audit comparison
-offline after `live_run.py` gained the measurement-sequence envelope's approval, fallback and replan contract; it
-differs from the readout-preflight successor only in the `live_run.py` digest and the offline validation time.
+The [idle-penalty retrieval](comparison-idle-penalty-retrieval.json) covers all 41 jobs of the retained-job audit
+after Kingston job `dbfrg3fpc3tc739o4kag` joined it. Seeded from the original comparison, it retrieved the 13 jobs
+that comparison lacks, the earlier twelve and the new one, through the read-only job interface, and every item equals
+its retained circuit in order. [Its collector text](collector-idle-penalty-retrieval.py.txt) keeps the exact
+source. The [idle-penalty successor](comparison-idle-penalty-probe.json) rebinds that retrieval offline after
+`live_run.py` listed `idle_penalty.py` in its experiment manifest and refused dynamical decoupling and twirling for
+the campaign. It binds the direct dependencies.
+
+The [adaptive-envelope successor](comparison-adaptive-envelope.json) rebinds the idle-penalty retrieval offline
+after `live_run.py` gained the measurement-sequence envelope's approval, fallback and replan contract; its 41 rows
+equal the idle-penalty successor's. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These

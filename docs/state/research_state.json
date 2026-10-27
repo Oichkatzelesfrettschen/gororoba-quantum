@@ -2,6 +2,20 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-signed-coherence-replication-job-06",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06",
+      "family": "photonic signed-coherence replication meshes",
+      "question": "Do the carried P-B offsets, unchanged, and the same family refitted on all 233 retained meshes predict the analyzer statistic of 84 meshes no fit has seen, served by theta2-x-arm0 at fresh QRNG compilation seeds beside 12 seed-0 anchors?"
+    },
+    {
+      "id": "qd-ascella-signed-coherence-replication-job-07",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96",
+      "family": "photonic signed-coherence replication meshes",
+      "question": "Do the same frozen predictors carry on 84 further unseen meshes, the job's size of 96 iterations admitted by job-06's completion?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-new-seeds-job-04",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04",
@@ -2163,6 +2177,13 @@
       "run": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00",
       "family": "single-chip teleportation rehearsal on qpu:belenos",
       "question": "job-00 of the teleportation rehearsal, sent under the anchor gate while the platform record held one state: does the chip teleport the six Pauli eigenstates above the classical bound, and does it return the requested three-click samples (near the anchor state) or almost none (the state the held record describes)?"
+    },
+    {
+      "id": "kingston-idle-penalty-probe",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T202817.431767Z",
+      "family": "idle-penalty",
+      "question": "On 31 coupled ibm_kingston pairs in one dynamic job, does relaxation, free or echoed dephasing, or readout elsewhere on the chip charge an idle qubit more than the reported T1 and Hahn-echo T2 predict, per physical qubit?"
     }
   ],
   "claims": [
@@ -2444,11 +2465,11 @@
     },
     {
       "id": "ascella-signed-coherence-new-seed-offsets",
-      "statement": "Heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on job-00 plus all 56 perturbed meshes of jobs 02 and 03 and frozen before any new seed was drawn (P-B), predict the X statistic of 147 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs be11a4b0 (70 meshes, 80 iterations) and 690c6e49 (77 meshes, 88 iterations): the within-job-centered Pearson r is 0.319 (t 4.04 on 144 degrees of freedom, one-sided p 4.4e-5, alpha 0.005), carried. Its positive-direction share of the compilation-induced variance is 10.5 % against the 0.983 attenuation ceiling, with one-sided 99.5 % Fisher-z bounds of 1.4 % and 25.6 %. The same family fitted on job-00 plus the 28 exploration meshes alone (P-A) reads r 0.157 (p 0.030): not carried. Both jobs' anchors stayed within the gross-shift margin (shifts -0.0028 and -0.0018 against job-03, 99 % half-widths 0.0034, margin 0.0119).",
+      "statement": "Heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on 86 training configurations (the 30 configurations of job-00 and the 56 perturbed meshes of jobs 02 and 03) and frozen before any new seed was drawn (P-B), are associated with the X statistic of 147 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs be11a4b0 (70 meshes, 80 iterations) and 690c6e49 (77 meshes, 88 iterations): the within-job-centered Pearson r is 0.319 (t 4.04 on 144 degrees of freedom, model-based one-sided p 4.4e-5, alpha 0.005), carried. Its positive-direction share r^2 / c^2, with c^2 = 0.966 the plug-in attenuation ceiling (c = 0.983), is 10.5 %, with one-sided 99.5 % Fisher-z bounds of 1.4 % and 25.6 %; the share is the centered variance an optimal affine rescaling of the predictions would account for, while the frozen predictions at their own scale have slope 0.32 and within-job R^2 -0.36 at slope one, less accurate than each job's mean. The same family fitted on job-00 plus the 28 exploration meshes alone (P-A) reads r 0.157 (p 0.030): not carried. Both jobs' anchor means passed the gross-shift gate (shifts -0.0028 and -0.0018 against job-03, 99 % half-widths 0.0034, margin 0.0119).",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_new_mesh_score.py, whose contract, frozen offsets and duration rule were committed and pushed before submission after two Codex CLI reviews, two GitHub Codex rounds, a final gpt-daybreak-blue-latest high review and the advisor. The outcome is P-B carried only: the offsets carry about a tenth of the per-mesh error, the 28 exploration meshes leave them underdetermined, and the remaining nine tenths of the fixed per-mesh error stay unexplained by any element offset on the returned circuit. The share is a plug-in estimate conditional on the retained compilation variance. Job-05's size followed job-04's provider-reported duration alone (243 s, admitting 88 iterations). The result names no physical mechanism for the offsets and spends these 147 meshes for confirmatory use.",
+      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_new_mesh_score.py; the frozen offsets reached the remote at 17:42:54 UTC, 13 s before the ANU QRNG draw (new-seed-push-order.json), and the contract and duration rule were committed and pushed before submission after two Codex CLI reviews, two GitHub Codex rounds, a final gpt-daybreak-blue-latest high review and the advisor. The outcome is P-B carried only: the frozen offsets predict the direction of a minor part of the mesh-to-mesh variation of X, not its amplitude, and the 28 exploration meshes leave them underdetermined. The scored prediction also carries each test iteration's in-block background, read from its own outside-block counts (ascella_physical_models.setting_probabilities). The p-value and bounds are model-based; the centered outcomes are heavy-tailed. The share is a plug-in estimate conditional on the retained compilation variance. 258 free offsets on 86 configurations are identified through the prior. Job-05's size followed job-04's provider-reported duration alone (243 s, admitting 88 iterations). The result names no physical mechanism for the offsets and spends these 147 meshes for confirmatory use; claim ascella-signed-coherence-replication-offsets retests P-B unchanged on 168 further meshes.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04/results.json",
@@ -2469,6 +2490,10 @@
         {
           "path": "docs/evidence/ascella-order-coefficients/new-seed-score.json",
           "sha256": "fa4a2982afb3e01ec71f78b8aa999752dcfd374459388258f51b88cfbb029610"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/new-seed-push-order.json",
+          "sha256": "1b9839f5da98c2d0101011f8ef8d98be7719ae6bacfe0890a7ae8eb41c1ee210"
         }
       ],
       "documents": [
@@ -2487,6 +2512,57 @@
       "depends_on": [
         "ascella-signed-coherence-fixed-mesh-offsets",
         "ascella-signed-coherence-seed-repeat"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "ascella-signed-coherence-replication-offsets",
+      "statement": "On 168 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs d54d0e9d and f27ad639 (84 meshes each, 96 iterations each), the heater and coupler offsets of claim ascella-signed-coherence-new-seed-offsets, frozen unchanged (R-B), are associated with the X statistic at within-job-centered Pearson r 0.240 (t 3.18 on 165 degrees of freedom, model-based one-sided p 8.8e-4, alpha 0.005), carried, a positive-direction share r^2 / c^2 of 6.0 % with one-sided 99.5 % Fisher-z bounds of 0.2 % and 18.2 % (together a central 99 % interval). The same family refitted on 233 training configurations (the 30 of job-00, the 56 perturbed meshes of jobs 02 and 03 and the 147 of jobs 04 and 05; R-C) reads r 0.404 (t 5.67, model-based p 3.1e-8), carried, a share of 16.9 % (one-sided bounds 5.2 % and 32.2 %). The shares are the centered variance an optimal affine rescaling of the predictions would account for: at their own scale the predictions have slopes 0.20 and 0.44 and within-job R^2 -0.83 and -0.10 at slope one, less accurate than each job's mean. Both jobs' anchor means passed the gross-shift gate (shifts -0.0020 and -0.0008 against job-05-i88, 99 % half-widths 0.0024, margin 0.0119).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_replication_score.py, whose predictors and contract reached the remote (bc15673, 00:37:09 UTC) six seconds before the ANU QRNG draw that seeded the jobs (replication-push-order.json). The outcome is both carried: frozen static offsets on the returned circuit predict the direction of a replicated, minor part of the mesh-to-mesh variation of X, not its amplitude. Exploratory, post hoc checks (replication-sensitivity.json): the scored prediction carries each test iteration's in-block background, read from its own outside-block counts, and without it R-B reads r 0.231 and R-C 0.386, while the returned circuit at zero offsets reads r 0.016 and each predictor's increment over the zero-offset prediction keeps partial r 0.207 (R-B, one-sided p 0.0037) and 0.395 (R-C); every alignment of 7,056 circular shifts of the outcomes within each job gives p 0.0014 (R-B) and 0.00014 (R-C), consistent with the model-based t; Spearman correlations are 0.241 and 0.305, and R-C reads r 0.290 without its five most influential meshes. Whether R-B's fitted direction is special among offset directions is a weaker, open question: in unretained exploratory Monte Carlo runs, offsets drawn from the family's prior reached R-B's r with probability about 0.004 through the full predictor and 0.01 to 0.025 through its linearization, and never reached R-C's. R-C's higher r than R-B's is descriptive: the preregistration tested neither against the other, a post hoc Williams test reads t 2.17 on 164 degrees of freedom (two-sided p 0.031, Steiger and Meng agreeing, predictor correlation 0.447), and R-C's added training meshes come from the calibrations nearest these jobs, so training size and calibration proximity are confounded; an unretained exploratory refit on the 147 meshes of jobs 04 and 05 alone read r 0.445, above R-C, consistent with proximity rather than size. The family was selected after four heater families and eight heater-coupling families missed job-02's meshes and its first held-out test missed at p 0.050 (claims ascella-signed-coherence-compilation-dependence, ascella-signed-coherence-heater-coupling, ascella-signed-coherence-fixed-mesh-offsets); the new-seed and replication jobs are its prospective retests. The anchor gate excludes a gross additive shift and does not establish calibration equivalence. 258 free offsets on 86 or 233 configurations are identified through the prior: between R-B and R-C the 126 heater offsets correlate 0.82 and the 132 coupler offsets 0.15, so the coupler offsets are not identified. The shares are plug-in estimates conditional on the retained compilation variance. The submitted cases.json files name the new-seed plan as built; the replication plan is their contract. Job-07's size followed job-06's completion alone. The result names no physical mechanism for the offsets and spends these 168 meshes for confirmatory use.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06/results.json",
+          "sha256": "ed728d01a828c59b171c849c5b01fe25f36ce78c6e06155ee55410fd65749e8c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96/results.json",
+          "sha256": "d3083e0fcb7a55b42bffbcea0e96c7fa4ee335c1659d72aad9c3d0f08b4db39b"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-offsets.json",
+          "sha256": "b541d774066373141dc1fcec175d20e43c0e98d51d8732e47735751adf6c7d0a"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-score.json",
+          "sha256": "ae5a109a1c0e19aced9d5c25fda807b269d56b72eeb91fbbc7cbba857de1e2af"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-sensitivity.json",
+          "sha256": "07f719e3930b61e7ab88820c087240294824185c9d79ded02c2b956850282f8e"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-push-order.json",
+          "sha256": "535d1b030968fbdda9aa03be03782cd54cb5028a4ad04c875c1ffd2f59258eeb"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-replication-offsets-replay": "replay",
+        "core-ascella-signed-coherence-replication-score-replay": "replay",
+        "core-ascella-signed-coherence-replication-sensitivity-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-replication-job-06",
+        "qd-ascella-signed-coherence-replication-job-07"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-new-seed-offsets"
       ],
       "supersedes": []
     },
@@ -3336,7 +3412,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; item 4 (smooth strata, singular loci and normal links) is discharged by a5-strata-regularity, which decomposes R_8 minus 0 into twelve orbits of G_2(C) x SO(2, C) x C^* and gives a Whitney stratification with every transverse germ; kernel bundles, attachments and integral invariants (roadmap items 5-8) remain open.",
+      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; item 4 (smooth strata, singular loci and normal links) is discharged by a5-strata-regularity, which decomposes R_8 minus 0 into twelve orbits of G_2(C) x SO(2, C) x C^* and gives a Whitney stratification with every transverse germ; item 5 (kernel bundles) is discharged on D_(5,12) and D_(5,16) by a5-kernel-bundles; kernel bundles on the nullity-8 and nullity-4 strata, attachments and integral invariants (roadmap items 6-8) remain open.",
       "evidence": [],
       "documents": [
         "docs/RESEARCH_ROADMAP.md",
@@ -3354,7 +3430,8 @@
         "nullity-twelve-cone",
         "a5-zero-divisor-strata",
         "a5-rank-strata-equations",
-        "a5-strata-regularity"
+        "a5-strata-regularity",
+        "a5-kernel-bundles"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -4401,7 +4478,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "d3996987bc5d7433ed1d22140d74b28c815517073c3dba06352df7acb8ec778d"
+          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
         }
       ],
       "documents": [
@@ -5595,7 +5672,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "d3996987bc5d7433ed1d22140d74b28c815517073c3dba06352df7acb8ec778d"
+          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -6296,6 +6373,105 @@
       "depends_on": [
         "a5-zero-divisor-strata",
         "a5-rank-strata-equations"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-kernel-bundles",
+      "statement": "Over the smooth pieces of nullity at least 12 of the A_5 zero-divisor set (B9, V, VB, V^a_+, V^a_-, N_+, N_-), the kernel ker L_y is a complex vector bundle under J = L_(e_16), identified with (conj o phi)^-1 ker A(z, conj z). The constant real symmetries transporting kernels form g_2 plus four central directions; the boost of split coordinates has no lift. Under compact G_2 x U(1), N_+- is homogeneous with stabilizer U(2), V^a_+- is cohomogeneity one (invariant rho in (0, 1]), V has orbit quotient (CP^1 minus {+i, -i}) x (0, 1], and B9, VB, N_+- are the open trace-one Hermitian three-ball, its rank-one boundary minus two points, and those two points. The stabilizer acts on the kernel as 2 V_0 + 2 V_1 (SU(2)) on principal V and V^a_+- orbits, 3 + conj(3) (SU(3)) at rho = 1, 3 C_(-1) + 3 C_(-2) (U(1)) on B9, V(0,-4) + 2 V(1,-3) + V(0,-2) (U(2)) on VB, and that module plus V(1,-1) on N_+-. All five nullity-twelve complex kernel bundles are trivial; on N_+- the complex bundle is C^2 + 3 xi over V_2(R^7) with the nonzero class x = [xi] - 2 in reduced K^0(V_2(R^7)) = Z/2, while every real kernel bundle is trivial and every Chern, Stiefel-Whitney and Pontryagin class vanishes.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proofs in docs/evidence/a5-kernel-bundles/README.md, produced by a Codex CLI program (docs/design/a5-kernel-bundles-program.md) under orchestrator review. Eleven producers replay byte for byte (replay gates) and carry mutation self-tests (admission gates); verify_kernel_bundles_independent.py re-derives the symmetry algebra, stabilizers, representations, N_+- branching and K-group, generic orbit dimensions and invariant completeness from cd_core at independent points. Arguments rather than computations: the unit-section homotopy types (fibrations, Wang and Alexander duality), Hodgkin's spectral sequence for V_2(R^7) = G_2/SU(2), the stable-cancellation steps (B9 rests on an explicit section, not cancellation), and simple transitivity of G_2 on the B9 frames. Open: exhaustiveness of the component group (a visible S_3 x Z_2 is found), real triviality of each individual xi, the disconnected equivariance, the nullity-8 and nullity-4 strata, and roadmap items 6-8; not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-kernel-bundles/result.json",
+          "sha256": "fa6af754e697dbf4a7490c1312449477817ca8e69f4c9add577ea3ef23e333d5"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/frames-result.json",
+          "sha256": "07cb7c0db4bace6961a06063a36bb638ae4639bcfe1ade041ba726f6f2307476"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/stabilizer-result.json",
+          "sha256": "52feb8e0fc3bbc7f1c8a413ba03733fa0b65f44cf4442b87de36ce58e9d87092"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json",
+          "sha256": "33196fa92daa52bc9a30142674235182fa6875df7d2c6b3fde58bbfa726b66ec"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json",
+          "sha256": "c36b3c01665608b25a41fa3af2f84c60ff0306b3b7b11621f9e268f93aa083a9"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/aligned-stabilizer-result.json",
+          "sha256": "cb2328d55edff142c61c054d64ff632dada447d7cea585e7185dcb380aaf40c1"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json",
+          "sha256": "07dc79facf758da94b4d3a7a79d441a95c84cc111754acf2be0c6c171eec52d6"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/v-topology-representation-result.json",
+          "sha256": "48497e33226d44bd33c1078495e39272cbc92b2ef3ddbbd3e3541c34c6a63bba"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json",
+          "sha256": "ab251c1601cd6fa9d8e75b95195194dd8a3f9085d3293c962b8c2d613a654550"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/transition-atlas-result.json",
+          "sha256": "3570c30e6f42f9d4cc1cac157611e93eec8f8e87ae692a64ca90971cc484961c"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/bundle-invariants-result.json",
+          "sha256": "e7f783f633339562d78d9d04fd25de9a631ac9b68aab4c2af8d39a80151513d7"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/verification.json",
+          "sha256": "b4b7a54514cb451f83468d47ea452adb97bbd6a8d8e95e01ca02d5a8a4e5fa18"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-kernel-bundles/README.md",
+        "docs/evidence/a5-kernel-bundles/verification.md",
+        "docs/design/a5-kernel-bundles-program.md"
+      ],
+      "gates": {
+        "core-713": "replay",
+        "core-714": "admission",
+        "core-715": "replay",
+        "core-716": "admission",
+        "core-717": "replay",
+        "core-718": "admission",
+        "core-719": "replay",
+        "core-720": "admission",
+        "core-721": "replay",
+        "core-722": "admission",
+        "core-723": "replay",
+        "core-724": "admission",
+        "core-725": "replay",
+        "core-726": "admission",
+        "core-727": "replay",
+        "core-728": "admission",
+        "core-729": "replay",
+        "core-730": "admission",
+        "core-731": "replay",
+        "core-732": "admission",
+        "core-733": "replay",
+        "core-734": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-zero-divisor-strata",
+        "a5-strata-regularity",
+        "a5-stiefel-universal"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -10489,8 +10665,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-7/result.json",
-          "sha256": "7fa63ce87a541b1ad61143f6e42e847eec35355c77b894e45ca0638beaec068f"
+          "path": "docs/evidence/algebra-device-conjectures-8/result.json",
+          "sha256": "358a3b6bbf7e6bb77848d1a3648846ec50b34010054a5dd546097b0be502d2cb"
         }
       ],
       "gates": {
@@ -11306,6 +11482,70 @@
       "related_claims": [
         "hw-n21-feedback-null-scheduled-idle",
         "hw-n21-orbit-phase"
+      ]
+    },
+    {
+      "id": "kingston-idle-penalty-multipliers-and-readout-phase",
+      "statement": "On ibm_kingston (execution calibration 2026-10-26T14:25:32-07:00; one job of 44 dynamic PUBs at 4096 shots and a 20 us repetition delay over 31 coupled pairs, 62 qubits) the relaxation multiplier kappa_1 = Gamma_1 T1_reported has median 1.057 [0.978, 1.183], so the preregistered optimistic-T1 decision reads absent or unresolved; Ramsey decay runs faster than the reported Hahn-echo T2 (kappa_2* median 1.451 [1.276, 1.905]) and faster than the measured echo decay (ratio 1.269 [1.170, 1.330], echo gain present); and the readout of every replica's partner during a probe's 40 us idle changes the probe's Ramsey phase rate by -2.72 +- 0.53 kHz against the after arm and -2.73 +- 0.54 kHz against the quiet Ramsey arm in the pair mean, with the quiet null at -0.010 +- 0.020 kHz (decision present). The preregistered visibility decision reads present through the chi-square of pair departures alone: probe 74 loses 0.57 visibility and the pair median is -0.006.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration, one job, one fixed placement; pair means of the two probes are the statistical unit, and all pairs share each wide PUB's shots and readout environment. The visibility chi-square uses conditional lower-bound errors, so it establishes pair-to-pair departures, not a device-mean loss. The phase-rate sign is the analyzer's atan2 convention. Every replica's partner reads at once, so the design separates neither a probe's own partner from chip-wide readout nor a readout-tone mechanism from transient excitation or leakage. Medians carry order-statistic intervals over this cohort. The analyzer refuses a run whose service schedule departs from the compiled instructions, the planned idles or the reader trains.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/collect.json",
+          "sha256": "a055a7d4fead2ae05a425cb5c223e275f9b843aaeb56959f1f83bf366813583e"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/record.json",
+          "sha256": "647dd3223df2a1053e01e7190efe325c336af24719ef4398438b1b01352252c6"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
+          "sha256": "2bee55b8eb66048a87ce0673fb8afa51ac3e28a58d4be779719e098ea5b1eb47"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_PROBE_FINDINGS.md",
+        "results/live/IDLE_PENALTY_PROBE_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-probe"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-scheduled-idle",
+        "kingston-qet-scheduled-idle-coherent-phase"
+      ]
+    },
+    {
+      "id": "kingston-idle-penalty-retained-kappa-qubits",
+      "statement": "Exploratory, after the data: on the same run the pure-dephasing multiplier (1/T2_measured - kappa_1 / 2 T1_reported) / (1/T2_reported - 1/2 T1_reported) has cohort median 1.88 free and 1.20 echoed (order statistics over point estimates, per-qubit range -0.67 to 17.9 free); the reader's final excitation after its train is at most 0.038 (median -0.0005), and static ZZ through it predicts at most 0.16 kHz of the phase rate; and of the qubits behind the retained idle kappa near 3 (73, 79, 92, 93, 94, 95), the placed 73 and 94 read nominal on relaxation, dephasing and readout while 95 shows excess free dephasing only.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Chosen after the data; the bands do not propagate shared reference or reported-value uncertainty. The final-excitation bound does not cover transient population during the train. The historical comparison spans two weeks and different circuits, so drift, calibration normalization and circuit context are not separated; 79, 92 and 93 were not placed.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory.json",
+          "sha256": "092d66f8327b62c35ce94c2c273faf06a37df6559d93a86707a253a62acb4cd7"
+        },
+        {
+          "path": "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
+          "sha256": "2bee55b8eb66048a87ce0673fb8afa51ac3e28a58d4be779719e098ea5b1eb47"
+        }
+      ],
+      "documents": [
+        "results/live/IDLE_PENALTY_PROBE_FINDINGS.md",
+        "results/live/IDLE_PENALTY_PROBE_CASE.md"
+      ],
+      "acquisitions": [
+        "kingston-idle-penalty-probe"
+      ],
+      "depends_on": [
+        "kingston-idle-penalty-multipliers-and-readout-phase"
+      ],
+      "related_claims": [
+        "hw-n21-feedback-null-scheduled-idle"
       ]
     }
   ]

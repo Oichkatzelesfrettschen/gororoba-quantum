@@ -76,6 +76,11 @@ lacks one, and `--runtime` (run by the `tests` check) requires every qrng
 reference under `results/` to be declared by some `seed_source` entry there
 (a replay command, a copy or a `scripts/kaggle_run.py` submission manifest may
 repeat it), to have one experiment, and to match exactly one row. A
+calibration-adaptive envelope re-plans each submission on the calibration in
+force, so a submission that sent nothing usable and its resubmission carry
+different approved dry runs for one question; the row then lists the later dry
+runs under `resubmissions` and names the approving document under `envelope`,
+and the check admits exactly those experiments for the value. A
 qrng-seeded Kaggle run therefore retains its collected output, which carries
 the `seed_source`, in the same change as its submission manifest. A reference with an index consumes
 that index only; a case manifest that names a draw without an index owns the
