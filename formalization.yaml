@@ -91,7 +91,9 @@ sources:
       its annihilator are orthogonal to C_n = span(1, i_n)) follows by the
       paper's swap (a, b) -> (b, a) and Corollary 2.9 (the flexible law
       (xy)x = x(yx)) by the paper's self-conjugate trilinear sum and
-      Lemma 2.8.
+      Lemma 2.8; the functor CdTowerDomain.v proves all of these over an
+      abstract ordered domain, and its Z instance (CdTowerDomainZ.v) carries
+      Lemmas 9.2 and 9.5 and Corollary 2.9 to the integer tower.
     author_endorsement: not-contacted
 
   - title: "gororoba_quantum/cd_core.py"
