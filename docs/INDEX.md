@@ -12,8 +12,8 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 44 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 192 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/pdf/` | 45 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 193 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -65,6 +65,7 @@ each source license in force.
 | [Levratti: active stabilizers and Cayley-Dickson zero-divisor supports](notes/papers/levratti-2026-active-stabilizers.md) | [levratti-2026-active-stabilizers.pdf](pdf/levratti-2026-active-stabilizers.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [van der Schoot et al. 2023 -- quantum metrics on Quantum Inspire Starmon-5 (arXiv 2310.01120)](notes/papers/2310.01120.md) | [2310.01120v1.pdf](pdf/2310.01120v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Strobel et al. 2024 -- Quantum teleportation with telecom photons from remote quantum emitters (arXiv 2411.12904)](notes/papers/2411.12904.md) | [2411.12904v1.pdf](pdf/2411.12904v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Anderson et al. 2020 -- Quantum teleportation using highly coherent emission from telecom C-band quantum dots (npj Quantum Information 6, 14)](notes/papers/1901.02260.md) | [s41534-020-0249-5.pdf](pdf/s41534-020-0249-5.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Nation et al. 2021 -- scalable measurement-error mitigation, M3 (arXiv 2108.12518)](notes/papers/2108.12518.md) | [2108.12518v1.pdf](pdf/2108.12518v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Chen et al. 2025 -- Quantum subspace verification for error correction codes (arXiv 2410.12551)](notes/papers/2410.12551.md) | [2410.12551v1.pdf](pdf/2410.12551v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Levratti 2026 -- Fano Duality, Projective Orthogonality and the CSS Bridge (author-hosted manuscript)](notes/papers/levratti-2026-fano-css.md) | [levratti-2026-fano-css.pdf](pdf/levratti-2026-fano-css.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
@@ -272,6 +273,7 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Chiribella and Xie 2013 -- Optimal design and quantum benchmarks for coherent state amplifiers (arXiv 1301.1170)](notes/papers/1301.1170.md) | [PDF](https://arxiv.org/pdf/1301.1170v6) | `1301.1170v6.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1301.1170v6) |
 | [Anderson et al. 2020 -- Quantum teleportation using highly coherent emission from telecom C-band quantum dots (arXiv 1901.02260)](notes/papers/1901.02260.md) | [PDF](https://arxiv.org/pdf/1901.02260v1) | `1901.02260v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1901.02260v1) |
 | [Ma et al. 2012 -- Experimental quantum teleportation over a high-loss free-space channel (arXiv 1210.1282)](notes/papers/1210.1282.md) | [PDF](https://arxiv.org/pdf/1210.1282v1) | `1210.1282v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1210.1282v1) |
+| [Ma et al. 2012 -- Experimental quantum teleportation over a high-loss free-space channel (Optics Express 20(21), 23126, version of record)](notes/papers/1210.1282.md) | [DOI](https://doi.org/10.1364/OE.20.023126) | `oe-20-21-23126.pdf` | [OSA Open Access License, non-commercial](https://doi.org/10.1364/OA_License_v1) |
 | [van Enk and Blume-Kohout 2013 -- When quantum tomography goes wrong: drift of quantum sources and other errors (arXiv 1302.0932)](notes/papers/1302.0932.md) | [PDF](https://arxiv.org/pdf/1302.0932v2) | `1302.0932v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1302.0932v2) |
 | [Quandela 2026 -- Roadmap 2026-2033 (March 2026) and the Quandela-Welinq interconnect announcement](notes/quandela/roadmap-2026-03.md) | [PDF](https://www.quandela.com/wp-content/uploads/2026/03/Quandela-Roadmap-190326-web.pdf) | `quandela-roadmap-2026-03.pdf` | [Rehosting permission unestablished](https://www.quandela.com/legal-terms/) |
 | [Ioannidis 2005 -- Why Most Published Research Findings Are False (PLoS Medicine 2(8): e124)](notes/papers/ioannidis-2005-false-findings.md) | [PDF](https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.0020124&type=printable) | `ioannidis-2005-false-findings.pdf` | [Creative Commons Attribution License, version unnamed; no verifier route for the host](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124) |

@@ -1519,6 +1519,50 @@
         "evidence_retrieved_at_utc": "2026-10-26T22:29:40+00:00"
       },
       "redistribution": "explicit_license_verified"
+    },
+    {
+      "title": "Quantum teleportation using highly coherent emission from telecom C-band quantum dots",
+      "authors": [
+        "M. Anderson",
+        "T. M\u00fcller",
+        "J. Huwer",
+        "J. Skiba-Szymanska",
+        "A. B. Krysa",
+        "R. M. Stevenson",
+        "J. Heffernan",
+        "D. A. Ritchie",
+        "A. J. Shields"
+      ],
+      "version": "npj Quantum Information 6, 14 (2020), published online 2020-01-31",
+      "source_url": "https://www.nature.com/articles/s41534-020-0249-5.pdf",
+      "note": "docs/notes/papers/1901.02260.md",
+      "audited_at_utc": "2026-10-27T00:41:07+00:00",
+      "sha256": "938517a810f154364baefe997f214d4291d4f44a411ce812715d618ee09a66d5",
+      "bytes": 1147003,
+      "pages": 7,
+      "acquisition": "download",
+      "path": "docs/pdf/s41534-020-0249-5.pdf",
+      "status": "retained",
+      "redistribution": "explicit_license_verified",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "938517a810f154364baefe997f214d4291d4f44a411ce812715d618ee09a66d5",
+        "verified_at_utc": "2026-10-27T00:41:07+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "evidence_url": "https://www.nature.com/articles/s41534-020-0249-5",
+        "evidence_sha256": "9439048e476216590e7b8b1d7aa29485801a14acbd29f2ec43b120aacb24152c",
+        "evidence_locator": "Article-page structured-data license, citation_doi, citation_title and citation_pdf_url, and PDF Open Access notice",
+        "evidence_path": "docs/evidence/source_rights/nature-s41534-020-0249-5.html",
+        "evidence_retrieved_at_utc": "2026-10-27T00:41:07+00:00",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "reading_scope": "Publisher article page metadata (DOI, title, PDF link, canonical URL, structured-data license) and the PDF Open Access notice; the note carries the content reading scope.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "The publisher page and the PDF carry the same article-level Creative Commons Attribution 4.0 grant for the retained version of record.",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Third-party material in the article is covered only where the article's credit lines say so. Repository licensing does not relabel the source PDF.",
+        "publisher_title": "Quantum teleportation using highly coherent emission from telecom C-band quantum dots"
+      }
     }
   ],
   "aliases": [
@@ -3981,6 +4025,15 @@
       "note": "docs/notes/papers/munafo-2017-reproducible-science.md",
       "url": "https://www.pnas.org/doi/10.1073/pnas.1708274114",
       "status": "Nosek, Ebersole, DeHaven and Mellor, The preregistration revolution, PNAS 115, 2600-2606 (2018): cited for preregistration; the publisher answered HTTP 403 to automated retrieval on 2026-10-27 and no text was retained"
+    },
+    {
+      "note": "docs/notes/papers/1210.1282.md",
+      "url": "https://doi.org/10.1364/OA_License_v1",
+      "retrieved_at_utc": "2026-10-27T00:38:03Z",
+      "sha256": "7113266fbd3422470ac36a26059a323d081db1ef9b88a1c10749ab7d3bccfb66",
+      "bytes": 83016,
+      "reading_scope": "Optica (OSA) license page the Crossref vor license of DOI 10.1364/OE.20.023126 names: the OSA Open Access License permits non-commercial use with attribution",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -10842,6 +10895,34 @@
         "decision": "external_only",
         "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
         "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
+      }
+    },
+    {
+      "source_url": "https://doi.org/10.1364/OE.20.023126",
+      "note": "docs/notes/papers/1210.1282.md",
+      "status": "external_only",
+      "acquisition": "owner browser download from the publisher, 2026-10-27",
+      "sha256": "7d4695c4fefe6d3c0719d31437a84785458673f0108558b2093342701e24c99c",
+      "bytes": 2045416,
+      "pages": 12,
+      "audited_at_utc": "2026-10-27T00:53:19+00:00",
+      "excluded_published_path": "docs/pdf/oe-20-21-23126.pdf",
+      "local_cache_path": "docs/local_source_cache/oe-20-21-23126.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Crossref version-of-record license of DOI 10.1364/OE.20.023126: https://doi.org/10.1364/OA_License_v1",
+      "rights_reason": "The version-of-record license is the OSA Open Access License, which permits use with attribution for non-commercial purposes only; that is no CC BY 4.0 or CC0 grant, and the owner chose a private reading copy.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-OSA-Open-Access-License",
+        "license_url": "https://doi.org/10.1364/OA_License_v1",
+        "evidence_url": "https://api.crossref.org/works/10.1364/OE.20.023126",
+        "evidence_sha256": "38b932c72016b4ab3f0a5c1a4b5624585a42074c4451cfe770f412c1d40cf40e",
+        "evidence_locator": "Crossref message.license entry with content-version vor",
+        "evidence_summary": "The version-of-record license is the OSA Open Access License, which permits use with attribution for non-commercial purposes only; that is no CC BY 4.0 or CC0 grant, and the owner chose a private reading copy.",
+        "verified": true,
+        "pdf_sha256": "7d4695c4fefe6d3c0719d31437a84785458673f0108558b2093342701e24c99c",
+        "verified_at_utc": "2026-10-27T00:53:19+00:00",
+        "reading_scope": "Crossref license entries of the DOI, the license page it names, and the PDF's (C) 2012 OSA notices."
       }
     }
   ],
