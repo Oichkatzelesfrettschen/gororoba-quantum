@@ -74,6 +74,31 @@ def test_transition_operators_dispatch_through_ordered_pool(monkeypatch: pytest.
         raise RuntimeError("pooling must preserve the specified transition order")
 
 
+@pytest.mark.parametrize("family,independent_count", [("sedenion-lcu", 3), ("quarter-mass", 5)])
+def test_control_operators_dispatch_through_ordered_pool(
+    family: str, independent_count: int, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import experiment_cases as cases
+
+    calls = []
+
+    def dispatch(function: Any, jobs: Any, **options: Any) -> Any:
+        calls.append((function, list(jobs), options))
+        return [function(job) for job in jobs]
+
+    monkeypatch.setattr(cases, "ordered_map", dispatch)
+    rows = cases.settings(family)
+    if len(calls) != 1 or len(calls[0][1]) != independent_count or calls[0][2] != {"min_items": 1}:
+        raise RuntimeError("independent control operators must reach the ordered worker pool")
+    expected = (
+        ["dark", "bright", "bright-repeat", "dark-repeat", "fixture"]
+        if family == "sedenion-lcu"
+        else ["preparation", "amplified", "omit_oracle", "omit_reflection", "direct_target"]
+    )
+    if [row["name"] for row in rows] != expected:
+        raise RuntimeError("worker assembly must preserve the registered control sequence")
+
+
 def test_deterministic_native_compilation_retains_layout_and_rounded_operator() -> None:
     from qiskit import QuantumCircuit
     from qiskit.quantum_info import Operator
@@ -149,7 +174,7 @@ def test_optical_cases_keep_all_ports_and_registered_compilation_seed(budgets: B
 
 
 def test_static_seed_identifier_remains_valid_when_case_is_retained(budgets: Budgets, tmp_path: Path) -> None:
-    from ci.seed_provenance import claimed_records, runtime_consumption
+    from seed_provenance import claimed_records, runtime_consumption
 
     files = _qd_cases(settings("sedenion-lcu")[0], budgets)
     for name, text in files.items():

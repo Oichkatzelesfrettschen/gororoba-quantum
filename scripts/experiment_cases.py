@@ -132,92 +132,92 @@ def _mub_setting(arguments: tuple[str, str, int]) -> dict[str, Any]:
     }
 
 
+def _quarter_mass_setting(arguments: tuple[str, Any]) -> dict[str, Any]:
+    from qiskit import QuantumCircuit
+
+    name, matrix = arguments
+    circuit = QuantumCircuit(2)
+    if name == "direct_target":
+        circuit.x([0, 1])
+    else:
+        circuit.h([0, 1])
+        if name != "preparation":
+            circuit.barrier()
+            if name != "omit_oracle":
+                circuit.cz(0, 1)
+            circuit.barrier()
+            if name != "omit_reflection":
+                circuit.h([0, 1])
+                circuit.x([0, 1])
+                circuit.cz(0, 1)
+                circuit.x([0, 1])
+                circuit.h([0, 1])
+                circuit.global_phase = math.pi
+    return {
+        "name": name,
+        "family": "quarter-mass",
+        "matrix": matrix,
+        "source_circuit": circuit,
+        "optical_matrix": matrix,
+        "active_outputs": list(range(4)),
+        "optical_active_outputs": list(range(4)),
+        "success_outputs": [3],
+        "optical_success_outputs": [3],
+        "placement": (11, 13),
+    }
+
+
+def _sedenion_setting(name: str) -> dict[str, Any]:
+    from qiskit.quantum_info import Operator
+
+    (first, second), phase, _ = CASES[name]
+    witness = sedenion_operators()["witness"]
+    source = logical(name)
+    input_indices = [first, second, first + 16, second + 16]
+    outputs = sorted({1 ^ first, 10 ^ first, 1 ^ second, 10 ^ second})
+    output_indices = outputs + [index + 16 for index in outputs]
+    input_data = {index ^ multiplier for index in outputs for multiplier in (1, 10)}
+    complete_inputs = input_data | {index + 16 for index in input_data}
+    input_indices += sorted(complete_inputs - set(input_indices))
+    restricted = witness[np.ix_(output_indices, input_indices)]
+    preparation = np.array([[1, 1], [np.exp(1j * phase), -np.exp(1j * phase)]]) / np.sqrt(2)
+    complete_preparation = np.eye(len(input_indices), dtype=np.complex128)
+    complete_preparation[:4, :4] = np.kron(np.eye(2), preparation)
+    optical = restricted @ complete_preparation
+    identity = np.eye(len(input_indices))
+    if optical.shape != identity.shape or not (
+        np.allclose(optical.conj().T @ optical, identity, atol=1e-12, rtol=0)
+        and np.allclose(optical @ optical.conj().T, identity, atol=1e-12, rtol=0)
+    ):
+        raise ValueError("sedenion complete support restriction must be a square unitary")
+    if not np.allclose(witness[:, input_indices][[i for i in range(32) if i not in output_indices]], 0):
+        raise ValueError("sedenion restriction loses full-space amplitude")
+    return {
+        "name": name,
+        "family": "sedenion-lcu",
+        "matrix": np.asarray(Operator(source).data),
+        "source_circuit": source,
+        "optical_matrix": optical,
+        "active_outputs": list(range(32)),
+        "optical_active_outputs": list(range(len(output_indices))),
+        "success_outputs": list(range(16)),
+        "optical_success_outputs": list(range(len(outputs))),
+        "support_isometry": {"input_indices": input_indices, "output_indices": output_indices},
+        "placement": (7, 8, 11, 13, 14),
+    }
+
+
 def settings(family: str) -> list[dict[str, Any]]:
     """Logical settings include full operators and explicit observable partitions."""
     if family == "mub-six":
         return ordered_map(_mub_setting, _mub_jobs(), min_items=1)
     if family == "quarter-mass":
-        from qiskit import QuantumCircuit
-
         operators = quarter_mass_operators()
         operators["direct_target"] = np.eye(4, dtype=np.complex128)[::-1]
-        circuits = {}
-        for name in ("preparation", "amplified", "omit_oracle", "omit_reflection", "direct_target"):
-            circuit = QuantumCircuit(2)
-            if name == "direct_target":
-                circuit.x([0, 1])
-                circuits[name] = circuit
-                continue
-            circuit.h([0, 1])
-            if name != "preparation":
-                circuit.barrier()
-                if name != "omit_oracle":
-                    circuit.cz(0, 1)
-                circuit.barrier()
-                if name != "omit_reflection":
-                    circuit.h([0, 1])
-                    circuit.x([0, 1])
-                    circuit.cz(0, 1)
-                    circuit.x([0, 1])
-                    circuit.h([0, 1])
-                    circuit.global_phase = math.pi
-            circuits[name] = circuit
-        return [
-            {
-                "name": name,
-                "family": family,
-                "matrix": operators[name],
-                "source_circuit": circuits[name],
-                "optical_matrix": operators[name],
-                "active_outputs": list(range(4)),
-                "optical_active_outputs": list(range(4)),
-                "success_outputs": [3],
-                "optical_success_outputs": [3],
-                "placement": (11, 13),
-            }
-            for name in ("preparation", "amplified", "omit_oracle", "omit_reflection", "direct_target")
-        ]
+        names = ("preparation", "amplified", "omit_oracle", "omit_reflection", "direct_target")
+        return ordered_map(_quarter_mass_setting, [(name, operators[name]) for name in names], min_items=1)
     if family == "sedenion-lcu":
-        from qiskit.quantum_info import Operator
-
-        witness = sedenion_operators()["witness"]
-        rows = []
-        for name, ((first, second), phase, _) in CASES.items():
-            source = logical(name)
-            input_indices = [first, second, first + 16, second + 16]
-            outputs = sorted({1 ^ first, 10 ^ first, 1 ^ second, 10 ^ second})
-            output_indices = outputs + [index + 16 for index in outputs]
-            input_data = {index ^ multiplier for index in outputs for multiplier in (1, 10)}
-            complete_inputs = input_data | {index + 16 for index in input_data}
-            input_indices += sorted(complete_inputs - set(input_indices))
-            restricted = witness[np.ix_(output_indices, input_indices)]
-            preparation = np.array([[1, 1], [np.exp(1j * phase), -np.exp(1j * phase)]]) / np.sqrt(2)
-            complete_preparation = np.eye(len(input_indices), dtype=np.complex128)
-            complete_preparation[:4, :4] = np.kron(np.eye(2), preparation)
-            optical = restricted @ complete_preparation
-            identity = np.eye(len(input_indices))
-            if optical.shape != identity.shape or not (
-                np.allclose(optical.conj().T @ optical, identity, atol=1e-12, rtol=0)
-                and np.allclose(optical @ optical.conj().T, identity, atol=1e-12, rtol=0)
-            ):
-                raise ValueError("sedenion complete support restriction must be a square unitary")
-            if not np.allclose(witness[:, input_indices][[i for i in range(32) if i not in output_indices]], 0):
-                raise ValueError("sedenion restriction loses full-space amplitude")
-            rows.append(
-                {
-                    "name": name,
-                    "family": family,
-                    "matrix": np.asarray(Operator(source).data),
-                    "source_circuit": source,
-                    "optical_matrix": optical,
-                    "active_outputs": list(range(32)),
-                    "optical_active_outputs": list(range(len(output_indices))),
-                    "success_outputs": list(range(16)),
-                    "optical_success_outputs": list(range(len(outputs))),
-                    "support_isometry": {"input_indices": input_indices, "output_indices": output_indices},
-                    "placement": (7, 8, 11, 13, 14),
-                }
-            )
+        rows = ordered_map(_sedenion_setting, list(CASES), min_items=1)
         dark, bright, fixture = rows
         sequenced = [
             dark,
