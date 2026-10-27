@@ -30,6 +30,8 @@ for rational elements. The route is the one of Biss, Dugger and Isaksen
 | `purity_right` | z a = 0 with a != 0 and z != 0 implies re(a) = 0 and re(z) = 0 |
 | `right_inverse_form` | a b = 1 implies b = conj(a)/<a, a> + w for some w with a w = 0 |
 | `direct_finiteness` | a b = 1 implies b a = 1 |
+| `lemma_9_5` | at level k + 1, x y = 0 with y != 0 implies <x, 1> = 0 and <x, i> = 0, where i = (0, 1) is the adjoined unit (Lemma 9.5) |
+| `annihilator_orthogonal` | at level k + 1, x != 0 and x y = 0 imply <y, 1> = 0 and <y, i> = 0 |
 
 The norm and adjoint laws run by induction on the doubling as in the integer
 bundle. The identity of Lemma 9.2 needs no induction: `conj_split` writes
@@ -44,7 +46,15 @@ equivalences in turn. The real parts of commutators and associators are
 <x y, 1> moved through the adjoints, and the purity lemma reads a z = 0 and
 conj(a) z = 0 as (a + conj(a)) z = 2 re(a) z = 0 with z nonzero. The
 corollary applies the theorem to b - conj(a)/<a, a>, which a annihilates,
-and cancels the positive real <a, a>.
+and cancels the positive real <a, a>. Lemma 9.5 is stated one level up,
+where the adjoined unit i = (0, 1) exists: `dot_i_unit` reads <x, i> as the
+real part of the second half of x, and `swap_zero_divisor` is the paper's
+computation that (a, b)(c, d) = 0 with a imaginary gives
+(-conj(d), c)(b, a) = (a c - conj(d) b, conj(d a + b conj(c))) = 0; the
+kernel swap and the purity lemma on (b, a) then make b imaginary, and
+`swap_nonzero` carries the nonzero hypothesis from (c, d) to (-conj(d), c).
+`annihilator_orthogonal` applies the lemma to the annihilated element through
+the kernel equality.
 
 No step uses associativity, alternativity or multiplicativity of the norm,
 which fail from k = 4 on. The real coefficients admit division, so the
@@ -55,7 +65,7 @@ Every theorem rests on the type theory that `rocq check` re-verifies
 ([kernel.txt](kernel.txt)): the Calculus of Inductive Constructions with a
 predicative Set and no rewrite rules, with the equality types `eq`,
 `eq_true` and `eq_dep` and Btauto's `null` typed under the default rule that
-inductive indices do not raise the universe level. Each of the twelve
+inductive indices do not raise the universe level. Each of the fourteen
 assumption queries lists exactly the two axioms of Stdlib's construction of
 the reals, `ClassicalDedekindReals.sig_forall_dec` and
 `FunctionalExtensionality.functional_extensionality_dep`
