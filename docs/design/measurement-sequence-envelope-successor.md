@@ -1,161 +1,179 @@
-# Measurement-sequence envelope successor: relaxation to the ground state, tested in the job
+# Measurement-sequence envelope successor: relaxation to the ground state, crosstalk-free carryover readers
 
-Status: design v3.1, after the adversarial review and the advisor review of v3; Codex review pending. The width-32
-envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`) executed as planned, billed 38 s, and returned
-no device verdict because its reset screen withheld all 32 qubits
+Status: design v3.2, after the adversarial and advisor reviews of v3 and the Codex review of v3.1; it needs a
+deduplicated `collect.json` (each PUB's placed calibration stored once), built in its own pull request first. The
+width-32 envelope run of 2026-10-27 (`results/live/2026-10-27T014422.881898Z`) executed as planned, billed 38 s, and
+returned no device verdict because its reset screen withheld all 32 qubits
 ([findings](../../results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md)). This successor keeps the envelope contract
 of [measurement-sequence-adaptive-envelope.md](measurement-sequence-adaptive-envelope.md): the layout rule and width
 tiers, the 20 us repetition delay with the 50 us fallback, one client-side Sampler job per attempt, the aggregate cap
-and the replan bound. It fixes the relaxation target the departure prediction rests on, tests that target inside the
-job, measures carryover inside the job, and replaces the reset screen.
+and the replan bound. It submits through the one-command binding dry run and submit (`scripts/approved_run.sh`,
+[qpu-submission.md](../notes/ibm_quantum/qpu-submission.md)).
 
 ## What the retained run established
 
 The run's shot-order diagnostics
 ([findings](../../results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md#shot-order-diagnostics-not-preregistered),
-[envelope-run-raw-diagnostics.json](../evidence/measurement_sequence/envelope-run-raw-diagnostics.json)) read the
-shot-ordered bits under `raw/`:
+[envelope-run-raw-diagnostics.json](../evidence/measurement_sequence/envelope-run-raw-diagnostics.json)):
 
 - Execution is column-wise: a row's final bit correlates with the previous PUB's at the same shot index (rms z 3.37)
   and not one column away (rms z 1.19 and 1.20); the executor reported one chunk holding all 88 PUBs.
 - Carryover through the terminal reset, the repetition delay and `init_qubits` is +0.00020 +- 0.00006 over the 26
-  qubits that pass the pattern screen; readout crosstalk inflates it on the six the screen flags.
-- The analysis's (T1, q) fit reads the in-job T1 series with a relaxation target q near 0.7 and converts it into a
-  negative initialization excitation. Fixing q = 1, the physical value, moves the N = 16 measure residual from
-  +0.0185 to +0.0089, level with the unitary arm's +0.0109 gate-model residual, and the settle gap from +0.0198
-  (pooled z 18.7) to -0.0002 (one qubit, q62, at |z| >= 3). The departure offset and the settle excess were the same
-  plateau artifact; the run shows no measurement-induced departure at the scale of the 0.0188 floor.
-- The T1 series is fitted better by a decay rate that fluctuates faster than the job resolves (gamma-distributed,
-  shape median 3.5) than by one exponential to the ground state (25 against 14 qubits at p >= 0.01), but the N = 16
-  arms cannot tell that rate spread from one exponential at its mean lifetime: the two chains differ by at most
-  4.1e-4 on the measure arm, because over the arm's microseconds any rate mixture decays as 1 - mu t.
+  qubits that pass the pattern screen; readout crosstalk confounds the pattern-row estimator on the others.
+- The (T1, q) fit reads the in-job T1 series with a relaxation target q near 0.7. At q = 1 the N = 16 measure
+  residual falls from +0.0185 to +0.0089, level with the unitary arm's +0.0109 gate-model residual, and the settle gap
+  from +0.0198 (pooled z 18.7) to -0.0002. No measurement-induced departure appears at the 0.0188 floor's scale.
+- A gamma-distributed decay rate fits the series better than one exponential to the ground state, and its
+  inverse-mean-rate time T fixes the initial slope exactly (S'(0) = -1 / T); over the measure arm's microseconds the
+  rate-averaged chain and the exponential at T differed by at most 4.1e-4 on that run.
 - Phase-sensitive rows correlate across consecutive circuits about 50 us apart and decorrelate within a column, and
-  the delay arm stands +0.115 above an idle model that takes the calibrated Hahn-echo T2 for free evolution: qubit
-  frequency fluctuates on sub-millisecond time scales. The delay arm stays descriptive.
+  the delay arm stands +0.115 above an idle model that takes the Hahn-echo T2 for free evolution.
 
-## Relaxation model and its assumption
+## Relaxation model
 
-Every model chain of `measurement_sequence_analysis` (the arm tables, `implied_loss`, the settle prediction, the
-gate-model curves, `fit_eps`) runs as now, with q fixed at 1 and T1 the mean lifetime T of a gamma-rate fit of the
-in-job series. The fit scans a fixed geometric shape grid (0.25 to 1000, with the exponential limit as the grid's
-upper edge, reached by q86 on the retained run), profiles T at each shape by the bounded Brent search `fit_t1`
+Every model chain of `measurement_sequence_analysis` runs with q fixed at 1 and T1 replaced by T, the
+inverse-mean-rate time of a gamma-rate fit of the in-job series. The fit scans a fixed geometric shape grid from 0.25
+to 1000 with the exponential limit as its upper edge, profiles T at each shape by the bounded Brent search `fit_t1`
 already uses, and refines the best interval by golden-section search in log k with the same nested profile, so T is
-continuous in the counts that `propagate_many` differentiates. The shape enters no prediction; the rate-averaged
-chain's departure from the exponential chain at T, at most 4.1e-4 on the retained run, adds as a stated systematic in
-quadrature to the departure's standard error. The (T1, q) outputs `q`, `p_init` and `p_init_se` leave the record; the
-fitted `t1_s` becomes T, and the record adds the shape, the fit's chi-square and its p-value.
+continuous in the counts `propagate_many` differentiates. The record drops `q`, `p_init` and `p_init_se`, reports T as
+`t1_s`, and adds the shape, the fit's chi-square and its p-value.
 
-q = 1 is the decisive assumption. q = z_eq / (1 - 2 p_init) in corrected units, so the retained fit's q near 0.7 with
-ro0 P1 near 0.006 would need an equilibrium excited population near 14 %, roughly ten times what a transmon at its
-operating temperature holds. Two in-job tests check it, and either withholds the departure verdict:
-
-- Equilibrium row. A new member idles 400 us from the initialized state and reads, so its bracket-corrected z reads the
-  relaxation target directly. q = 1 predicts an excited population near the ro0 level; the retained fit's q near 0.7
-  predicts about 0.12 after 400 us at T near 250 us, more than twenty standard errors of an 8192-shot row. A qubit
-  whose corrected equilibrium excitation exceeds 0.03 (q below 0.94) at its upper confidence bound is withheld from
-  the departure verdict.
-- Settle gap. The settle arm differs from the measure arm only by sixteen 2 us idles near the ground state, so the
-  settle gap at the measure arm's implied loss reads the relaxation target over those idles. It becomes a
-  preregistered gate on the departure verdict, not a pinching verdict of its own: a pooled settle z beyond 3 in
-  either direction, with a device-scatter term sized from the retained run (0.0019 per qubit with q62 excluded,
-  0.0035 with it), withholds the departure verdict, and a qubit whose own settle z exceeds 3 is withheld.
-
-The planning model's own q is 1 / (1 - 2 x 0.015745) = 1.032; a q error of that size moves the measure prediction by
-0.034 x 0.032 = 0.0011, with the same sign on every qubit, and the case states it beside the departure.
+The shape enters no chain. Its effect is bounded instead: at dry run the planner evaluates the signed difference
+between the rate-averaged and the exponential measure-arm prediction over the admitted domain (shapes 0.25 to the
+exponential edge, T over the live layout's calibrated range with a factor 2.5 either side, the live arm durations),
+and binds its maximum in the dry-run record. By Jensen's inequality rate variance raises survival at every time past
+zero, so the difference has one sign wherever the prediction rises with survival; the analysis adds the bound
+linearly to the departure's shared systematic in `pooled_z`, not in quadrature, and the dry-run evaluation checks
+the sign over the domain.
+At shape 0.25 on the retained contexts it reaches 0.0017, against the 0.0188 floor.
 
 ## Admission gate
 
 A qubit's T1 series enters the analysis when the gamma-rate fit's chi-square, with dof equal to the delays after the
 bracket minus 2, has a p-value at or above 0.01 / W. On the retained run 28 of 30 informative qubits pass. The gate
-rejects fast-decay components and other shapes no rate mixture produces; it does not test q, which the equilibrium row
-and the settle gap carry. The T1 delays stay at 0, 20, 50, 100 and 200 us.
+rejects shapes no rate mixture produces, such as a fast-decay component; it does not test q.
 
-## Carryover inside the job
+## Relaxation target
 
-The pattern rows measure D_q, the excitation an |1> end state leaves at the next shot's start. Each pattern row
-prepares a fixed bit on each qubit (x or nothing, then read), and under column-wise execution consecutive pattern rows
-run at the same shot index one circuit apart. A qubit's P1 on rows that read ground after a row that prepared 1, minus
-after a row that prepared 0, is D_q; on rows that prepare 1 the x flips the carried excitation, which enters with the
-opposite sign; the two combine by inverse variance (`pattern_carryover` in `scripts/msq_envelope_raw_diagnostics.py`).
-Each difference takes the larger of its binomial and between-row standard errors, because a neighbor's current bit is
-not balanced across the two conditioning classes of the 35 consecutive pairs and readout crosstalk adds row-to-row
-scatter.
+q = 1 is the assumption the departure prediction rests on; a q error of dq moves the N = 16 measure prediction by
+about 0.034 dq (median over the retained contexts). q near 0.7 would need an equilibrium excited population near 14 %.
+One row estimates q, and the settle arm vetoes inconsistency.
+
+Equilibrium row. A new member idles 400 us from the initialized state and reads. With the ro0/t1-0 bracket
+correction, a ground-start row at time t reads the corrected excitation e(t) = (1 - q)(1 - S(t)) / 2, so the analysis
+estimates q_hat = 1 - 2 e(400 us) / (1 - S(400 us; T, k)) with the qubit's own fitted gamma survival, and
+`propagate_many` carries the shared brackets and the fitted (T, k) into its standard error. The departure tolerates
+a q error of 0.25 x 0.0188 / 0.034 = 0.14, so a qubit whose q_hat lower confidence bound (one-sided, Bonferroni over W)
+lies below 0.86 is withheld. The rule needs no power against a 1 to 3 % thermal population, which gives q of at least
+0.94 and a departure shift below 0.002; against q near 0.7 the row reads e near 0.12 at T near 250 us, more than
+twenty standard errors from q = 1. The row runs directly after a carryover reader (below), whose predecessor-
+conditioned excitation the readers measure, so a hot predecessor cannot fake a low q beyond the measured carryover.
+The analysis reports q_hat as a job-local effective relaxation target, not as a thermal population.
+
+Settle veto. The settle arm differs from the measure arm by sixteen 2 us idles placed after each pinch and before
+the next rotation, so its gap at the measure arm's implied loss moves with q and also with the uncharacterized
+post-measurement channel the constructor's 2 us gap was built to probe (residual readout photons, detuning during the
+next rotation; [heron-r2-readout-resonator.md](../notes/ibm_quantum/heron-r2-readout-resonator.md)). It is a
+composite q-consistency veto, not an estimate of q: a pooled settle z beyond 3 in either direction withholds the
+device-level departure verdict, and a qubit whose own settle z exceeds 3 is withheld. The settle standard error adds
+an independent per-qubit device-scatter term tau, estimated in the job by solving sum g^2 / (s^2 + tau^2) = n over the
+qubits that pass every gate independent of settle (eligibility, pattern, admission, carryover, equilibrium), and
+floored at 0.0019, the retained run's pilot value on the qubits that pass its pattern screen.
+
+## Carryover readers
+
+Twelve new members read ground only: measure, then the terminal reset. Each runs directly after a measure-arm row
+that ends near 50/50 (four after the N = 2 rows, P1 near 0.47; four after N = 4, P1 near 0.31; four after N = 8, P1
+near 0.18). Under column-wise execution a reader's shot j follows the predecessor's shot j, so a qubit's reader P1
+after a predecessor final 1, minus after a final 0, divided by the qubit's readout contrast, is D_q, the excitation
+an |1> end state leaves at the next shot's start. Every qubit reads ground in both conditioning classes, so readout
+crosstalk cannot enter the contrast, and conditioning on the measured bit only dilutes D by the contrast the analysis
+divides out. Sized from the retained run's ro0 P1 (0.006) at 8192 shots, the twelve readers give a per-qubit standard
+error near 0.00056.
 
 Screen: a qubit stays usable when B_q = A_q * U_q lies below 0.25 * 0.0188 = 0.0047, with U_q the one-sided upper
 confidence bound of |D_q| (Bonferroni over W) and A_q the qubit's departure shift per unit excitation at the
-allocation vertex. The vertex is chosen from the signs of single-class sensitivities, then the procedure plants U_q
-at that vertex and its mirror, refits the analysis on the run's own counts, and takes the larger absolute shift
-(`scripts/msq_carryover_sensitivity.py` gains this vertex mode at q = 1). On the retained run, with the (T1, q)
-allocation coefficients, 29 of 30 informative qubits pass (q100 reaches 0.0051) and 25 pass this screen and the
-pattern screen together. The carryover screen replaces `msq_envelope_analysis.reset_screen` as a gate; the in-job
-reset controls rc1 and rc0 stay as a reported diagnostic.
+allocation vertex: the vertex is chosen from the signs of single-class sensitivities, then
+`scripts/msq_carryover_sensitivity.py` (gaining this vertex mode at q = 1) plants U_q at the vertex and its mirror,
+refits on the run's own counts and takes the larger absolute shift. At D near 0.0002, B reaches about 0.0029 at the
+retained run's median allocation coefficient (1.59) and 0.0043 at its largest (2.31). The pattern-row estimator stays
+a reported cross-check. The carryover screen replaces `msq_envelope_analysis.reset_screen` as a gate; the reset
+controls rc1 and rc0 stay as a reported diagnostic.
 
-The estimator reads about zero under any order but column-wise, so it needs the order established, and it cannot check
-its own order. Two preregistered conditions establish it and fail closed (the carryover screen withholds every qubit
-when either fails): the executor's `chunk_timing` reports one chunk holding every PUB, and the same-shot conditional
-differences of consecutive delay-arm rows exceed their one-column-misaligned counterparts at pooled one-sided z above
-3 (57.9 on the retained run, 29.6 on a quarter of its shots).
+Order. The readers read about zero under any order but column-wise, so two preregistered conditions establish the
+order and fail closed, withholding every qubit when either fails: the executor's `chunk_timing` reports one chunk
+holding every PUB, and order sentinels pass in each third of the job. The constructor places pairs of consecutive
+delay-arm rows (phase-sensitive, the strongest adjacency signal) at the head, between the reader blocks and among the
+pattern rows at the tail; each segment's same-shot conditional differences must exceed their one-column-misaligned
+counterparts at pooled one-sided z above 3 (the retained run's head segment gives 57.9).
 
 ## Verdicts
 
 - Execution-time eligibility, the pattern screen, the admission gate, the carryover screen and the equilibrium-row
-  test select the qubits; the settle gap gates the device-level departure verdict as above.
+  bound select the qubits; the settle veto withholds the device-level departure verdict or a qubit as above.
 - Departure and count rule: preregistered on the selected qubits, with the gate-model systematic of `evaluate_qubit`,
-  the rate-average systematic and the device-scatter widening as before. The device verdict needs 8 selected qubits;
-  below 8 the analysis reports every kept qubit's pinching result and withholds only the device verdict.
+  the shape systematic as a shared term, and the device-scatter widening as before. The device verdict needs 8
+  selected qubits; below 8 the analysis reports every kept qubit's pinching result and withholds only the device
+  verdict.
 - Mutation test: preregistered, unchanged.
 - Delay arm: descriptive, with the free-evolution dephasing time it implies reported beside the calibrated echo T2.
 
 ## Null calibration
 
-`msq_envelope_null.py` is the batched estimator of issue #579 (pull request #589), extended to the gamma-rate fit:
-the shape scan, the nested Brent profile (its masked port already exists) and the golden-section refinement, with the
-scalar bit-identity gate. With q fixed and the shape out of the chains, every chain stays the exponential one the
-batched path already computes, so a replicate costs about what it does now. Each replicate draws, per qubit, a
+`msq_envelope_null.py` is the batched estimator of #589, extended to the gamma-rate fit (shape scan, nested Brent
+profile, golden-section refinement) with scalar bit-identity tests at an interior shape, the 0.25 lower edge and the
+exponential edge, and a 400-replicate width-32 benchmark before any cost is quoted. Each replicate draws, per qubit, a
 calibration resampled from the retained run's 30 informative qubits (T1, T2, readout errors, sx error), a rate shape
-resampled from the retained run's admitted shapes with mean lifetime equal to that calibration's T1, the sx-error
-residual as before (common +0.011, independent SD 0.0105), and carryover at the screen's acceptance limit at the
-allocation vertex, with one sign shared by every qubit and the sign alternating between replicates. Every replicate
-runs device counts with binomial shot noise, the pattern screen, the admission gate, the carryover screen, the
-equilibrium-row test, the settle gate, and the departure, count-rule and mutation verdicts. The family-wise false-fire
-rate's one-sided 95 % Clopper-Pearson bound must stay below 0.01.
+resampled from the retained run's admitted shapes with T equal to that calibration's T1, the sx-error residual as
+before (common +0.011, independent SD 0.0105), and a true carryover D_q, and runs device counts with binomial shot
+noise, the pattern screen, the admission gate, the reader-based carryover screen, the equilibrium bound, the settle
+veto with its in-job tau, and the departure, count-rule and mutation verdicts.
 
-A second arm draws the retained (T1, q) values as the truth, q near 0.7, and must show the equilibrium-row test and
-the settle gate withholding the departure verdict; that arm is the evidence those gates do work. The order conditions
-gate data validity rather than a verdict and stay out of the null: a member-count simulator has no shot order, and the
-run shows no model of the frequency fluctuation that produces the adjacency signal.
+- Carryover arms: true D_q on a grid inside the acceptance boundary (D_q = 0.0047 / A_q minus 0, 1 and 2 reader
+  standard errors), one sign shared by every qubit in an arm, a positive and a negative arm, each at least 299
+  replicates so a zero-fire bound falls below 0.01 per sign.
+- Plateau arm: the retained (T1, q) values as truth, q near 0.7; the equilibrium bound and the settle veto must
+  withhold its departure verdict.
+- Each arm reports the unconditional false-fire rate, the false-fire rate conditional on a verdict being issued, and
+  the informative-device rate (a verdict issued); the gamma arms must issue a verdict in at least 80 % of replicates,
+  so that withholding cannot manufacture a clean bound.
+- The order conditions gate data validity and leave every downstream statistic unevaluated when they fail, so they
+  stay out of the null; a member-count simulator has no shot order.
 
 ## Cost, size and approval scope
 
-The equilibrium row costs about 8192 x (400 + 20 + 9) us = 3.5 s, so attempt 1 at width 32 expects about 41 s; the
-dry run's planner sets the ceilings (on the retained dry run: attempt 1 57 s, fallback 90 s, 147 s for both) and the
-case quotes the expected charge against attempt 1's ceiling. `collect.json` grows by about 0.5 MB from 42.4 MB, under
-the 45 MB limit; the dry run measures record, collection and raw sizes before the case. An attempt stays one job, and
-the change is a constructor and analysis change inside the `msq-envelope-v1` contract, which binds both by digest.
+The equilibrium row costs about 8192 x (400 + 20 + 9) us = 3.5 s and the twelve readers about 3.3 s, so attempt 1 at
+width 32 expects about 45 s; the dry run's planner sets the ceilings (on the retained dry run: attempt 1 57 s,
+fallback 90 s, 147 s for both) and the case quotes the expected charge against attempt 1's ceiling. Storing each
+PUB's placed calibration once removes 22.1 MB of the retained run's 42.4 MB `collect.json`, so 13 more rows fit
+under the 45 MB limit with room for the wider width tiers; the dry run measures record, collection and raw sizes
+before the case. An attempt stays one job, and the change is a constructor and analysis change inside the
+`msq-envelope-v1` contract, which binds both by digest.
 
 ## Sequence
 
-1. Reviews of v3.1: the adversarial review skill and the advisor (done on v3), then Codex gpt-daybreak-blue in tmux.
-2. Pull request #589 (the batched null) merges; then its gamma-rate extension.
-3. Implementation: the gamma-rate fit at q = 1, the equilibrium row, the settle gate, the admission gate, the order
-   conditions, the pattern-row carryover screen with its vertex sensitivity, descriptive delay; tests and lanes.
-4. A sizing replay of every successor screen and verdict over the retained run's counts (no equilibrium row there),
-   then the null at the chosen width with both arms.
-5. Dry run on the live calibration, the written case, approval, run.
+1. The `collect.json` deduplication pull request merges.
+2. Reviews of v3.2: the advisor, then Codex gpt-daybreak-blue in tmux.
+3. Implementation: the gamma-rate fit at q = 1 and its shape systematic, the equilibrium row and q_hat, the settle
+   veto with in-job tau, the admission gate, the carryover readers and their screen with the vertex sensitivity, the
+   order sentinels and the chunk condition, descriptive delay; tests and lanes.
+4. A sizing replay over the retained run's counts of every gate it can evaluate (no readers or equilibrium row there),
+   then the batched null with all arms at the chosen width.
+5. The case on a rehearsal dry run, approval, then `scripts/approved_run.sh`.
 
-Falsifiers: the equilibrium row reading an excited population above 0.03 on most qubits (q = 1 is then wrong, and the
-departure verdict is withheld); a pooled settle z beyond 3; fewer than 8 selected qubits (the device verdict is
-withheld); either order condition failing (every qubit is withheld); a gamma-arm null bound at or above 0.01; a
-plateau-arm null in which the gates fail to withhold.
+Falsifiers: q_hat below 0.86 on most qubits (the departure verdict is withheld and q = 1 is wrong); a pooled settle z
+beyond 3; fewer than 8 selected qubits; either order condition failing; a carryover arm's zero-fire bound at or above
+0.01 or its informative-device rate below 80 %; a plateau arm whose departure verdict is not withheld.
 
 ## Superseded designs
 
-- v1 bounded carryover with two single-circuit history-control jobs. Review found the single-class coefficient
-  understated the allocation bias, the control jobs measured drift larger than the margin, and the null planted a T2
-  error the model shows cannot move the settle gap.
-- v2 equalized every member's end state with an `sx; measure; reset` coin. Codex found the departure verdict resting
-  on the (T1, q) fit and a pooled coin statistic that cannot bound per-class bias; the raw diagnostics then measured
-  carryover at about 0.0002, so the coin answered a bias the device does not show.
-- v3 averaged every chain over the gamma rate distribution and added a 400 us T1-series delay. Review found the shape
-  never reaches the N = 16 prediction, the verdict moving with q, which the admission gate and the tail delay cannot
-  test, and the settle arm demoted although it tests q.
+- v1 bounded carryover with two single-circuit history-control jobs; review found an understated allocation bias,
+  inter-job drift above the margin and a T2 null that cannot move the settle gap.
+- v2 equalized every member's end state with an `sx; measure; reset` coin; Codex found the departure resting on the
+  (T1, q) fit and a pooled coin statistic that cannot bound per-class bias, and the device showed carryover near 0.0002.
+- v3 averaged every chain over the gamma rate distribution and added a 400 us T1 delay; review found the shape never
+  reaches the prediction, the verdict moving with q, and the settle arm demoted although it responds to q.
+- v3.1 fixed q = 1 and tested it with the settle gap and an equilibrium row; Codex found the settle gap composite,
+  the equilibrium row without an estimator, the 4.1e-4 shape term one run's value, the null planting carryover where
+  the screen rejects, alternating signs covering neither, the pattern-row estimator confounded by crosstalk, and the
+  order test reading only the job's head.
