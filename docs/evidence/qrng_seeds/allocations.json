@@ -1,6 +1,6 @@
 {
  "schema": "anu-qrng-allocations-v1",
- "description": "Seed values taken from retained QRNG draws. allocations: code literals (path, seed name, value, draw record, index). runtime: values a CLI seed flag took as qrng:<draw>#<index> (draw record, index, value, script, flag, experiment), added by ci/seed_provenance.py --add-runtime in the change that retains the run. reserved: values a tracked file takes that the literal scan cannot key, such as a helper alias or a mapping (path, value, draw record, index, reason). owned: draws a tracked file consumes whole, as seeds and raw sample values a per-index row cannot key (draw record, path, reason); no other row may take an owned draw's index. ci/seed_provenance.py checks every row against its draw and allows each (record, index) once across the three sections.",
+ "description": "Seed values taken from retained QRNG draws. allocations: code literals (path, seed name, value, draw record, index). runtime: values a CLI seed flag took as qrng:<draw>#<index> (draw record, index, value, script, flag, experiment), added by ci/seed_provenance.py --add-runtime in the change that retains the run; a row may add resubmissions, the approved dry runs of later submissions of one calibration-adaptive envelope, with the envelope that approves them. reserved: values a tracked file takes that the literal scan cannot key, such as a helper alias or a mapping (path, value, draw record, index, reason). owned: draws a tracked file consumes whole, as seeds and raw sample values a per-index row cannot key (draw record, path, reason); no other row may take an owned draw's index. ci/seed_provenance.py checks every row against its draw and allows each (record, index) once across the three sections.",
  "allocations": [
   {
    "path": "docs/archive/reviews/das-mergus-checks/algebra/check_cz_ranks.py",
@@ -143,6 +143,90 @@
    "index": 5
   },
   {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 8608,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 30481,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 4339,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 55973,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 12504,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 37710,
+   "record": "docs/evidence/outshift_qrng/draw-2026-10-26T204106Z.json",
+   "index": 5
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 5573,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 0
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 39099,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 1
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 45322,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 2
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 55527,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 3
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 43939,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 4
+  },
+  {
+   "path": "scripts/qd_teleportation_rehearsal.py",
+   "name": "JOB_01_COMPILATION_SEEDS",
+   "value": 10803,
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T230602Z.json",
+   "index": 5
+  },
+  {
    "path": "scripts/primorial_probe_case.py",
    "name": "TWIRL_SEED",
    "value": 2441,
@@ -222,6 +306,22 @@
    "script": "gororoba_quantum/live_run.py",
    "flag": "--seed-simulator",
    "experiment": "2026-10-25T223857.467590Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T191135Z.json",
+   "index": 0,
+   "value": 40932,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-transpiler",
+   "experiment": "2026-10-26T202236.647959Z"
+  },
+  {
+   "record": "docs/evidence/anu_qrng/draw-2026-10-26T191135Z.json",
+   "index": 1,
+   "value": 16292,
+   "script": "gororoba_quantum/live_run.py",
+   "flag": "--seed-simulator",
+   "experiment": "2026-10-26T202236.647959Z"
   }
  ],
  "reserved": [

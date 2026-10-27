@@ -22,7 +22,7 @@ import ascella_compilation_reading as reading  # noqa: E402
 
 def test_compilation_job_anchors_seed_zero_and_draws_distinct_seeds() -> None:
     rows = request.entries(request.JOBS["job-02"])
-    seeds, indices = request.compilation_seeds()
+    seeds, indices = request.compilation_seeds(request.JOBS["job-02"])
     if len(rows) != 64 or {row["block"] for row in rows} != {"theta2-x"} or {row["arm"] for row in rows} != {0}:
         raise AssertionError("job-02 is not 64 iterations of theta2-x-arm0")
     settings = [request.build_setting((index, row))[1] for index, row in enumerate(rows)]
@@ -142,3 +142,40 @@ def test_one_new_mesh_is_a_collapsed_compilation_not_an_ignored_seed() -> None:
     readings = [reading.served_reading(count) for count in (0, 1, 56)]
     if readings != ["seed ignored", "seeds served one new mesh", "seeds served distinct meshes"]:
         raise AssertionError(f"served readings {readings}")
+
+
+def test_new_seed_jobs_take_disjoint_runs_after_job_02s_seeds() -> None:
+    job_02 = set(request.compilation_seeds(request.JOBS["job-02"])[0])
+    first, first_indices = request.compilation_seeds(request.JOBS["job-04"])
+    rows = request.entries(request.JOBS["job-04"])
+    if [r["compilation_position"] for r in rows if "compilation_seed" not in r] != list(range(0, 80, 8)):
+        raise AssertionError("job-04's ten anchors leave the stride positions")
+    if len(first) != 70 or len(set(first)) != 70 or 0 in first or job_02 & set(first):
+        raise AssertionError("job-04 needs 70 distinct nonzero seeds outside job-02's")
+    for count in (80, 88, 96):
+        job = request.JOBS[f"job-05-i{count}"]
+        seeds, indices = request.compilation_seeds(job)
+        if len(seeds) != count - count // 8 or set(seeds) & (set(first) | job_02) or len(set(seeds)) != len(seeds):
+            raise AssertionError(f"job-05-i{count} must take fresh seeds after job-04's")
+        if indices[0] <= first_indices[-1] or indices != sorted(indices):
+            raise AssertionError(f"job-05-i{count} must consume the draw after job-04, in index order")
+    short = request.compilation_seeds(request.JOBS["job-05-i80"])[0]
+    if request.compilation_seeds(request.JOBS["job-05-i96"])[0][: len(short)] != short:
+        raise AssertionError("every job-05 variant extends one seed sequence")
+
+
+def test_replication_jobs_skip_every_earlier_seed() -> None:
+    earlier = {
+        seed for name in ("job-02", "job-04", "job-05-i96") for seed in request.compilation_seeds(request.JOBS[name])[0]
+    }
+    first, first_indices = request.compilation_seeds(request.JOBS["job-06"])
+    rows = request.entries(request.JOBS["job-06"])
+    if [r["compilation_position"] for r in rows if "compilation_seed" not in r] != list(range(0, 96, 8)):
+        raise AssertionError("job-06's twelve anchors leave the stride positions")
+    if len(first) != 84 or len(set(first)) != 84 or 0 in first or earlier & set(first):
+        raise AssertionError("job-06 needs 84 distinct nonzero seeds outside every earlier job's")
+    second, second_indices = request.compilation_seeds(request.JOBS["job-07-i96"])
+    if len(second) != 84 or set(second) & (set(first) | earlier) or second_indices[0] <= first_indices[-1]:
+        raise AssertionError("job-07-i96 must take fresh seeds after job-06's")
+    if request.compilation_seeds(request.JOBS["job-07-i88"])[0] != second[:77]:
+        raise AssertionError("job-07-i88 takes the first 77 of job-07-i96's seeds")

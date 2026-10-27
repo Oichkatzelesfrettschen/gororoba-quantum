@@ -10,7 +10,12 @@
     "usage_remaining_seconds": 450
   },
   "acquisition_count": 4,
-  "awaiting_observation": [],
+  "awaiting_observation": [
+    "results/live/2026-10-26T190449.023973Z/raw/dbfq8nfsstms73fef260",
+    "results/live/2026-10-26T190506.325237Z/raw/dbfq8sfpc3tc739o2o70",
+    "results/live/2026-10-26T215611.599135Z/raw/dbfsq1pj4t8s73ab4760",
+    "results/live/2026-10-26T221707.355349Z/raw/dbft4b9j4t8s73ab4qig"
+  ],
   "failed_charge_seconds": "0",
   "failed_job_count": 0,
   "final_charge_seconds": "150",

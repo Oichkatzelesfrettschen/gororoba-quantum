@@ -14,8 +14,8 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 43 licensed PDFs and two aliases;
-177 external sources retain citations and optional ignored local reading copies.
+license evidence. The library publishes 45 licensed PDFs and two aliases;
+193 external sources retain citations and optional ignored local reading copies.
 Five licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
@@ -47,6 +47,10 @@ those copies from the registered URLs or from a checkout of the owner's private
 gororoba-quantum-documents repository, which also holds their Markdown
 transcriptions, and admits a file only when its size and SHA-256 match the
 registry.
+[`reading-copies.md`](reading-copies.md), generated from the registry by
+[`scripts/source_reading_copies.py`](../../scripts/source_reading_copies.py)
+and checked by the gate `sources-reading-copies-index`, links each external PDF
+to its note, its public source and its copy in that private repository.
 
 The [Cayley-Dickson survey at dimension 16 and above](cayley-dickson-2n-ion-survey.md) records every candidate source and its disposition.
 
@@ -234,9 +238,26 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [quant-ph-0007058](../notes/papers/quant-ph-0007058.md) | Calsamiglia and Lutkenhaus, Maximum efficiency of a linear-optical Bell-state analyzer, Appl. Phys. B 72, 67 (2001) | none | none | none |
 | [quant-ph-9605038](../notes/papers/quant-ph-9605038.md) | Horodecki, Horodecki and Horodecki, Separability of mixed states: necessary and sufficient conditions, Phys. Lett. A 223, 1 (1996) | none | none | none |
 | [2411.12387](../notes/papers/2411.12387.md) | Laneve et al., Quantum teleportation with dissimilar quantum dots over a hybrid quantum network (2024 preprint) | none | none | none |
+| [1103.1528](../notes/papers/1103.1528.md) | Specht et al., A single-atom quantum memory (2011) | none | none | none |
+| [1201.4149](../notes/papers/1201.4149.md) | Gündoğan et al., Quantum storage of a photonic polarization qubit in a solid (2012) | none | none | none |
+| [quant-ph-0301059](../notes/papers/quant-ph-0301059.md) | Gill, Time, finite statistics, and Bell's fifth position (2003) | medium | none | none |
+| [1108.2468](../notes/papers/1108.2468.md) | Zhang, Glancy and Knill, Asymptotically optimal data analysis for rejecting local realism (2011) | medium | none | none |
+| [1312.2999](../notes/papers/1312.2999.md) | Bierhorst, A robust mathematical model for a loophole-free Clauser-Horne experiment (2015) | medium | none | none |
+| [2310.20521](../notes/papers/2310.20521.md) | Polacchi et al., Teleportation of a genuine single-rail vacuum-one-photon qubit from a quantum dot (2024) | none | none | none |
+| [1301.1170](../notes/papers/1301.1170.md) | Chiribella and Xie, Optimal design and quantum benchmarks for coherent state amplifiers (2013) | none | none | none |
+| [1901.02260](../notes/papers/1901.02260.md) | Anderson et al., Quantum teleportation using telecom C-band quantum dots (2020) | none | none | none |
+| [1210.1282](../notes/papers/1210.1282.md) | Ma et al., Experimental quantum teleportation over a high-loss free-space channel (2012) | none | none | none |
+| [2411.12904](../notes/papers/2411.12904.md) | Strobel et al., Quantum teleportation with telecom photons from remote quantum emitters (2024 preprint) | none | none | none |
 | [1302.0932](../notes/papers/1302.0932.md) | van Enk and Blume-Kohout, When quantum tomography goes wrong: drift of quantum sources and other errors, New J. Phys. 15, 025024 (2013) | low | none | none |
 | [roadmap-2026-03](../notes/quandela/roadmap-2026-03.md) | Quandela, Roadmap 2026-2033 (March 2026) and the Quandela-Welinq interconnect announcement (provider documents) | none | none | none |
 | [2104.05219](../notes/papers/2104.05219.md) | McEwen et al., Resolving catastrophic error bursts from cosmic rays in large arrays of superconducting qubits, Nat. Phys. 18, 107 (2022) | low | none | low |
+| [ioannidis-2005-false-findings](../notes/papers/ioannidis-2005-false-findings.md) | Ioannidis, Why most published research findings are false, PLoS Med. 2, e124 (2005) | none | none | none |
+| [munafo-2017-reproducible-science](../notes/papers/munafo-2017-reproducible-science.md) | Munafo et al., A manifesto for reproducible science, Nat. Hum. Behav. 1, 0021 (2017) | none | none | none |
+| [asa-2016-p-value-statement](../notes/papers/asa-2016-p-value-statement.md) | ASA release on the Statement on Statistical Significance and P-Values, Am. Stat. 70, 129 (2016) | none | none | none |
+| [diedenhofen-musch-2015-cocor](../notes/papers/diedenhofen-musch-2015-cocor.md) | Diedenhofen and Musch, cocor: comparison of correlations, PLOS ONE 10, e0121945 (2015) | none | none | none |
+| [1910.06343](../notes/papers/1910.06343.md) | Eisert et al., Quantum certification and benchmarking, Nat. Rev. Phys. 2, 382 (2020) | low | none | none |
+| [2407.08828](../notes/papers/2407.08828.md) | Proctor et al., Benchmarking quantum computers, Nat. Rev. Phys. 7, 105 (2025) | medium | none | low |
+| [quantum-journal-referee-instructions](../notes/papers/quantum-journal-referee-instructions.md) | Quantum journal, guidelines for referees and editorial policies (web pages) | none | none | none |
 
 The [parallel-experiment synthesis](../notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,

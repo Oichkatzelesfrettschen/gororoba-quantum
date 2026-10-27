@@ -1,0 +1,96 @@
+{
+ "difference_r_c_minus_r_b": {
+  "effective_meshes": 167,
+  "meng_z": 2.1413161775705563,
+  "r_b": 0.24033964554100298,
+  "r_between_predictors": 0.4470621400236725,
+  "r_c": 0.40393507045784266,
+  "steiger_z": 2.1467767085406937,
+  "williams_degrees_of_freedom": 164,
+  "williams_p_two_sided": 0.031478926436509375,
+  "williams_t": 2.169569053969168,
+  "zou_95": [
+   0.014566309818517476,
+   0.31175616320381927
+  ]
+ },
+ "meshes": 168,
+ "offset_stability": {
+  "coupler_offset_r": 0.15067835415519035,
+  "couplers": 132,
+  "heater_offset_r": 0.8218109302769067,
+  "heaters": 126
+ },
+ "plan": "docs/state/plans/ascella-replication-meshes-case.json",
+ "predictors": {
+  "R-B": {
+   "circular_shift_null": {
+    "alignments": 7056,
+    "at_or_above": 10,
+    "p": 0.001417233560090703
+   },
+   "dropped_rows": [
+    3,
+    93,
+    26,
+    51,
+    155
+   ],
+   "leave_one_out_r": [
+    0.20452591199048478,
+    0.26330480139119594
+   ],
+   "partial_p_one_sided": 0.003701084262691494,
+   "partial_r_given_zero_offset": 0.2071729822648444,
+   "pearson_r": 0.24033964554100298,
+   "per_job_r": {
+    "job-06": 0.2605893438625287,
+    "job-07-i96": 0.22282501399323137
+   },
+   "r2_at_slope_one": -0.8349132544143525,
+   "r_offset_component": 0.23112516303292474,
+   "r_without_background": 0.23133129014418377,
+   "r_without_dropped": 0.23408918985062663,
+   "slope": 0.20279170948154213,
+   "spearman": 0.24100910604825854
+  },
+  "R-C": {
+   "circular_shift_null": {
+    "alignments": 7056,
+    "at_or_above": 1,
+    "p": 0.0001417233560090703
+   },
+   "dropped_rows": [
+    3,
+    24,
+    159,
+    126,
+    111
+   ],
+   "leave_one_out_r": [
+    0.3414200784279942,
+    0.4272429624899193
+   ],
+   "partial_p_one_sided": 7.155635482962992e-08,
+   "partial_r_given_zero_offset": 0.3946343748575543,
+   "pearson_r": 0.40393507045784266,
+   "per_job_r": {
+    "job-06": 0.36588620085710327,
+    "job-07-i96": 0.4368101392730907
+   },
+   "r2_at_slope_one": -0.09956709982922307,
+   "r_offset_component": 0.38634281098885215,
+   "r_without_background": 0.38642089437350663,
+   "r_without_dropped": 0.2899965263179198,
+   "slope": 0.440732899541319,
+   "spearman": 0.30500706111023945
+  }
+ },
+ "schema": "ascella-replication-sensitivity-v1",
+ "score": "docs/evidence/ascella-order-coefficients/replication-score.json",
+ "status": "exploratory, post hoc; the preregistered reading is replication-score.json",
+ "zero_offset": {
+  "r_with_background": 0.14905663947872522,
+  "r_without_background": 0.015646094258054997
+ }
+}

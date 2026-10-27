@@ -8,7 +8,8 @@ live record through qd_platform.get and classifies it:
 - held: the perfs object hashes to the held digest;
 - missing: the record carries no perfs object or lacks a figure the rehearsal model reads;
 - changed: any other perfs object. The noise model of qd_teleportation_rehearsal.live_model then scores the
-  rehearsal at the live figures, which tells whether job-01's live gate (F* = 0.86) could admit it;
+  rehearsal at the live figures against job-00's F* = 0.86, the watch's trigger. Job-01 is a descriptive
+  acquisition preregistered at its own fresh read, prepared whenever its modeled seconds fit max_duration;
 - unscorable: any other perfs object whose figures the model rejects with ValueError, as Perceval's source model
   does when emission_probability * g2 exceeds 0.5 (the maintenance record of 2026-10-26 reads g2 66.7 %). The report
   carries the error, and the watch goes on to the next read, so a later scorable record still reports a change.
@@ -98,13 +99,17 @@ def summary(report: Mapping[str, Any]) -> str:
         lines += [
             "",
             f"The rehearsal noise model at the live figures gives pooled fidelity {model['pooled_fidelity']:.4f}, "
-            f"which {verdict} F* = {model['mean_score']}.",
+            f"which {verdict} job-00's F* = {model['mean_score']}. That F* triggers this comment; job-01 is a "
+            "descriptive acquisition preregistered at its own fresh read, prepared whenever its modeled seconds fit "
+            "the 300 s max_duration.",
         ]
     lines += [
         "",
-        "A run on the recovered chip is plan step `recovered-chip-rehearsal` (job-01): new QRNG compilation seeds and "
-        "a written case quoting this record, approved by the owner before any submission. This workflow disabled "
-        "itself after opening the issue.",
+        "A run on the recovered chip is plan step `recovered-chip-rehearsal` (job-01): a fresh snapshot, "
+        "`qd_teleportation_rehearsal.py --prepare job-01` (its compilation seeds are registered), and a written case "
+        "quoting that read and its derived credits and seconds, approved by the owner before any submission. This "
+        "workflow disabled itself after opening the issue. The procedure is [belenos-recovery-watch.md]"
+        "(../blob/main/docs/archive/handoffs/belenos-recovery-watch.md).",
     ]
     return "\n".join(lines) + "\n"
 
@@ -220,7 +225,8 @@ def booking_summary(report: Mapping[str, Any]) -> str:
         verdict = "reaches" if model["inside_justified_range"] else "falls below"
         lines.append(
             f"The rehearsal noise model gives pooled fidelity {model['pooled_fidelity']:.4f}, which {verdict} "
-            f"F* = {model['mean_score']}; the change comment of this run carries the decision."
+            f"job-00's F* = {model['mean_score']}, the watch's trigger; the change comment of this run carries the "
+            "job-01 decision."
         )
     elif report["state"] == "unscorable":
         lines.append(
@@ -338,7 +344,7 @@ def self_test() -> int:
         report = check(held, read, scored)
         if report["state"] != want or bool(calls) != (want in ("changed", "unscorable")):
             raise SystemExit(f"self-test: {record} read {report['state']}, expected {want}")
-        if want == "changed" and "reaches F* = 0.86" not in summary(report):
+        if want == "changed" and "reaches job-00's F* = 0.86" not in summary(report):
             raise SystemExit("self-test: the summary omits the model verdict")
         if want == "unscorable" and "model" in report:
             raise SystemExit("self-test: an unscorable record carries a model")
