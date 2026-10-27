@@ -13,7 +13,7 @@
   },
   "scope": "Derive and validate illustrative projector moments, retain datasource diagnostics, generate compiler-checked qualification cases, and acquire only after approval of each provider case. Algebra-specific certification and causal backaction claims require successor controls.",
   "owner": "codex-tuna-projector-geometry",
-  "next_action": "Seek served acquisition mapping, timing and IQ provenance for jobs 1618109,1618345,1618590 through authorized provider contact. Any further hardware needs a separately approved queue-aware case; the six-job endpoint remains unavailable and q6 prefix causality remains unresolved.",
+  "next_action": "Execute the three exactly approved nominal-one jobs through the reviewed deadline-bound serial runner, preserve every identity and collect all dispatched shots; then analyze/register and inspect QI acquisition artifacts through read-only routes.",
   "steps": [
     {
       "id": "source-and-instrument-audit",
@@ -928,9 +928,91 @@
     },
     {
       "id": "destination-terms-schema-reuse",
-      "state": "todo",
+      "state": "done",
       "action": "Validate the policy receipt schema explicitly before reusing the validators for another packet",
-      "acceptance": "Shared schema admission and a prebinding malformed-schema test pass; the new packet receives its own frozen identities and approval"
+      "acceptance": "Shared schema admission and a prebinding malformed-schema test pass; the new packet receives its own frozen identities and approval",
+      "receipts": [
+        {
+          "result": "Frozen separate three-job nominal-one case preserves predecessor manifests and sources.197combined focused tests pass,pinned Ruff format/check and mypy5files pass,local compiler replay and exact decision/policy/binding preflight pass. Provider execution remains pending requested peer review and fresh admission.",
+          "observed_at": "2026-10-27T22:56:37.513083+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-readout-destination-one-admission.md",
+              "sha256": "b1977fde732b31f7baff82dcecd03d482d0aeb10119ea7537f42167669803d88"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-response-uncertainty.md",
+              "sha256": "18837e2339bbb993f13bf27eebff364a08a056d83b1cca4ba05fdd83720c2c23"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-decision.json",
+              "sha256": "1048f0173c44ef5df668fa1dffe18fe72266b453857981511b8e0062099e4c08"
+            },
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-one/campaign.json",
+              "sha256": "73d79905735724ed936f06d299cb91112109e8fd778b0ce6b0cd2c73e5fce02e"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_analysis.py",
+              "sha256": "d87250e0f07cf4a9a3a7df7c3871722423506d1635cd7a59a50c5bdf117d3c67"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_cases.py",
+              "sha256": "e166bf711926504418dd40024052f32b9022f7c2e9797edacaf2648e644440a4"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_run.py",
+              "sha256": "b2dcdfff9fae2496334bfed2d3fbadbadc6a4804b6d52773df11c824afc23c9f"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_analysis.py",
+              "sha256": "937705fd6a3e4864071caafcd618dccb821171a9149431e80d7558d28a64f85a"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_run.py",
+              "sha256": "7c971d0694943821165fa9628b61d38aaa7b04cfd25175f692f9f066e68b9d1e"
+            }
+          ],
+          "scope_sha256": "ec6e05fe90fa20155b2840ceb21e15388927c5b3803886aae15e68b53604c16b"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:13:19.422499+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "2fd90c24b98eb64e350c1dc4bf6267113f77d71a3a96554a21dde89a3a4891f9"
+            }
+          ],
+          "scope_sha256": "ec6e05fe90fa20155b2840ceb21e15388927c5b3803886aae15e68b53604c16b"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:14:57.666814+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "f7b5613e24f7b2b734db7549d2005716ea77144669317142699a16be8453df51"
+            }
+          ],
+          "scope_sha256": "ec6e05fe90fa20155b2840ceb21e15388927c5b3803886aae15e68b53604c16b"
+        },
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "ec6e05fe90fa20155b2840ceb21e15388927c5b3803886aae15e68b53604c16b"
+        }
+      ]
     },
     {
       "id": "destination-approved-acquisition",
@@ -1031,6 +1113,290 @@
           "scope_sha256": "d547ffe16d9472294fd2f13b9bc19fffc4afaaa5915db6685bd7e7a03bda2d08"
         }
       ]
+    },
+    {
+      "id": "destination-one-case-freeze",
+      "state": "done",
+      "action": "Freeze the approved three-job nominal-one case with measured queue waits and a separate primary endpoint",
+      "acceptance": "Retain a queue-aware written case, 12-cell uncertainty derivation and scope-bound decision; preserve the unavailable six-job endpoint.",
+      "receipts": [
+        {
+          "result": "Frozen separate three-job nominal-one case preserves predecessor manifests and sources.197combined focused tests pass,pinned Ruff format/check and mypy5files pass,local compiler replay and exact decision/policy/binding preflight pass. Provider execution remains pending requested peer review and fresh admission.",
+          "observed_at": "2026-10-27T22:56:37.513083+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-readout-destination-one-admission.md",
+              "sha256": "b1977fde732b31f7baff82dcecd03d482d0aeb10119ea7537f42167669803d88"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-response-uncertainty.md",
+              "sha256": "18837e2339bbb993f13bf27eebff364a08a056d83b1cca4ba05fdd83720c2c23"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-decision.json",
+              "sha256": "1048f0173c44ef5df668fa1dffe18fe72266b453857981511b8e0062099e4c08"
+            },
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-one/campaign.json",
+              "sha256": "73d79905735724ed936f06d299cb91112109e8fd778b0ce6b0cd2c73e5fce02e"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_analysis.py",
+              "sha256": "d87250e0f07cf4a9a3a7df7c3871722423506d1635cd7a59a50c5bdf117d3c67"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_cases.py",
+              "sha256": "e166bf711926504418dd40024052f32b9022f7c2e9797edacaf2648e644440a4"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_run.py",
+              "sha256": "b2dcdfff9fae2496334bfed2d3fbadbadc6a4804b6d52773df11c824afc23c9f"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_analysis.py",
+              "sha256": "937705fd6a3e4864071caafcd618dccb821171a9149431e80d7558d28a64f85a"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_run.py",
+              "sha256": "7c971d0694943821165fa9628b61d38aaa7b04cfd25175f692f9f066e68b9d1e"
+            }
+          ],
+          "scope_sha256": "ce28a03ff9ab7f9e20c836bd3498c519e88c473af2948fa564be54d32811f725"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:13:19.422499+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "2fd90c24b98eb64e350c1dc4bf6267113f77d71a3a96554a21dde89a3a4891f9"
+            }
+          ],
+          "scope_sha256": "ce28a03ff9ab7f9e20c836bd3498c519e88c473af2948fa564be54d32811f725"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:14:57.666814+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "f7b5613e24f7b2b734db7549d2005716ea77144669317142699a16be8453df51"
+            }
+          ],
+          "scope_sha256": "ce28a03ff9ab7f9e20c836bd3498c519e88c473af2948fa564be54d32811f725"
+        },
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "ce28a03ff9ab7f9e20c836bd3498c519e88c473af2948fa564be54d32811f725"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-runner-analysis",
+      "state": "done",
+      "action": "Verify the nominal-one compiler, guarded runner and frozen analyzer",
+      "acceptance": "Pass targeted failure-path, ordering, binding, uncertainty, static and compiler checks on the exact successor packet.",
+      "receipts": [
+        {
+          "result": "Frozen separate three-job nominal-one case preserves predecessor manifests and sources.197combined focused tests pass,pinned Ruff format/check and mypy5files pass,local compiler replay and exact decision/policy/binding preflight pass. Provider execution remains pending requested peer review and fresh admission.",
+          "observed_at": "2026-10-27T22:56:37.513083+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/design/tuna-readout-destination-one-admission.md",
+              "sha256": "b1977fde732b31f7baff82dcecd03d482d0aeb10119ea7537f42167669803d88"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-response-uncertainty.md",
+              "sha256": "18837e2339bbb993f13bf27eebff364a08a056d83b1cca4ba05fdd83720c2c23"
+            },
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-decision.json",
+              "sha256": "1048f0173c44ef5df668fa1dffe18fe72266b453857981511b8e0062099e4c08"
+            },
+            {
+              "ref": "results/quantum_inspire/proposals/tuna-readout-destination-one/campaign.json",
+              "sha256": "73d79905735724ed936f06d299cb91112109e8fd778b0ce6b0cd2c73e5fce02e"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_analysis.py",
+              "sha256": "d87250e0f07cf4a9a3a7df7c3871722423506d1635cd7a59a50c5bdf117d3c67"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_cases.py",
+              "sha256": "e166bf711926504418dd40024052f32b9022f7c2e9797edacaf2648e644440a4"
+            },
+            {
+              "ref": "scripts/qi_tuna_destination_one_run.py",
+              "sha256": "b2dcdfff9fae2496334bfed2d3fbadbadc6a4804b6d52773df11c824afc23c9f"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_analysis.py",
+              "sha256": "937705fd6a3e4864071caafcd618dccb821171a9149431e80d7558d28a64f85a"
+            },
+            {
+              "ref": "tests/scripts/test_qi_tuna_destination_one_run.py",
+              "sha256": "7c971d0694943821165fa9628b61d38aaa7b04cfd25175f692f9f066e68b9d1e"
+            }
+          ],
+          "scope_sha256": "a8e4c2569b81bec2424276b0a84dd1575fafaba45b3bc7fd810f8667e614dea8"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:13:19.422499+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "2fd90c24b98eb64e350c1dc4bf6267113f77d71a3a96554a21dde89a3a4891f9"
+            }
+          ],
+          "scope_sha256": "a8e4c2569b81bec2424276b0a84dd1575fafaba45b3bc7fd810f8667e614dea8"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:14:57.666814+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "f7b5613e24f7b2b734db7549d2005716ea77144669317142699a16be8453df51"
+            }
+          ],
+          "scope_sha256": "a8e4c2569b81bec2424276b0a84dd1575fafaba45b3bc7fd810f8667e614dea8"
+        },
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "a8e4c2569b81bec2424276b0a84dd1575fafaba45b3bc7fd810f8667e614dea8"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-submission-deadlines",
+      "state": "done",
+      "action": "Propagate admission and campaign deadlines through every successor submission request",
+      "acceptance": "Preserve historical qi_platform.py bytes; enforce deadlines on every compute resource write, enqueue and submission read; deterministic clock-crossing regressions preserve partial identities and block subsequent requests.",
+      "receipts": [
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:13:19.422499+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "2fd90c24b98eb64e350c1dc4bf6267113f77d71a3a96554a21dde89a3a4891f9"
+            }
+          ],
+          "scope_sha256": "09db30ea0e20abd2d4112d030e8d6fb481063adf6e1dfff3507e70fe3f7755eb"
+        },
+        {
+          "result": "Deadline-bound successor submission and fresh under-lock admission pass221combined tests and5retained-admission semantic cases,pinned tools,compiler replay and exact bindings.147historical files retain their observed hashes. The repaired packet awaits peer review before execution.",
+          "observed_at": "2026-10-27T23:14:57.666814+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-deadline-repair-verification.json",
+              "sha256": "f7b5613e24f7b2b734db7549d2005716ea77144669317142699a16be8453df51"
+            }
+          ],
+          "scope_sha256": "09db30ea0e20abd2d4112d030e8d6fb481063adf6e1dfff3507e70fe3f7755eb"
+        },
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "09db30ea0e20abd2d4112d030e8d6fb481063adf6e1dfff3507e70fe3f7755eb"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-locked-admission-consumption",
+      "state": "done",
+      "action": "Bind precise locked-admission and collection evidence into completion and final analysis",
+      "acceptance": "Require exact successful locked-admission structure, hashes, limits, heartbeat and chronology; retain its digest in completion and analysis; reject absent and semantically mutated receipts even with refreshed hashes; preserve fractional-second admission/collection chronology and immutable recollection.",
+      "receipts": [
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "fc5707e136828b89265907b07276146be4c6b3f80698fddcf9a971d8c5368762"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-peer-review",
+      "state": "done",
+      "action": "Obtain the requested high-effort Codex review of the three-job case",
+      "acceptance": "Retain the requested model and effort provenance, resolve reachable findings and freeze packet digests.",
+      "receipts": [
+        {
+          "result": "The exact repaired three-job packet passes279focused tests,pinned checks,compiler replay,normal/optimized byte replay and requestedmodelhighpeerreview. Deadline,mandatory locked-receipt consumption and fractional-second chronology are repaired;147historical file hashes match. Existing owner approval binds the exact current packet; execution still awaits fresh admission.",
+          "observed_at": "2026-10-27T23:28:06.508423+00:00",
+          "revision": "b7b53b3feb55be4473823eb7eb3cb73ac3d1006d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/tuna-projector-geometry/destination-one-admission-verification.json",
+              "sha256": "543ebc07066e107a3073140ccea6395a88c8670ddf5d3418f3d3e2d82d4ee0eb"
+            }
+          ],
+          "scope_sha256": "adce7c4938599fb1471d920ef8233a3c8ea832db932096e82fc36f72a3ce2b9e"
+        }
+      ]
+    },
+    {
+      "id": "destination-one-acquisition",
+      "state": "doing",
+      "action": "Execute the three approved nominal-one jobs after fresh admission",
+      "acceptance": "Submit at most three serial 4096-shot jobs within the frozen horizon and zero-credit policy; preserve every dispatched identity and recover only through read-only collection."
+    },
+    {
+      "id": "destination-one-retained-analysis",
+      "state": "todo",
+      "action": "Analyze and register the three-job case with immutable receipts",
+      "acceptance": "Replay the frozen independent primary endpoint, retain raw shots, register acquisitions and refresh scoped usage evidence."
+    },
+    {
+      "id": "destination-job-artifact-research",
+      "state": "todo",
+      "action": "Inspect QI per-job acquisition mapping, thresholds, served schedules and retained IQ",
+      "acceptance": "Document verified read-only routes, returned fields and measured availability for all six retained destination jobs; prepare a job-specific unsent request for missing upstream evidence."
+    },
+    {
+      "id": "destination-one-integration-verification",
+      "state": "todo",
+      "action": "Verify the retained nominal-one and upstream-investigation artifacts",
+      "acceptance": "Run focused tests, byte replays, registry, inventory, link and plan checks; retain a bounded verification receipt."
     }
   ]
 }

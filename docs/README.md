@@ -72,6 +72,12 @@ corrects historical prospective/unmeasured wording through an addendum while pre
 The approved [ordered-response acquisition](evidence/tuna-projector-geometry/ordered-response-acquisition.md)
 ended at its request deadline after three nominal-zero jobs. All 12,288 submitted shots were retained;
 the whole-case endpoint is unavailable and the descriptive prefix leaves causal attribution unresolved.
+The separately approved [nominal-one destination case](design/tuna-readout-destination-one-admission.md)
+uses three serial jobs, a measured-wait allowance and its own
+[12-cell uncertainty contract](evidence/tuna-projector-geometry/destination-one-response-uncertainty.md).
+The [final admission verification](evidence/tuna-projector-geometry/destination-one-admission-verification.json)
+retains the exact packet, 279 focused tests, historical-file comparison and requested high-effort
+[peer-review acceptance](archive/reviews/tuna-destination-one-admission-review.md).
 The [provider API/billing audit](evidence/provider-api-audit/README.md) separates physical capacity,
 native execution limits, billing units and MCP observations. The
 [current-balance packed-response case](design/packed-pauli-response-current-balance.md) compares randomized

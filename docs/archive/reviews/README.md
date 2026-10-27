@@ -63,3 +63,13 @@ identifies the remaining chronology edge; the
 [focused correction review](tuna-destination-recovery-order-review.md) confirms
 that correction and numerical invariance. The
 [review provenance](tuna-destination-acquired-review-provenance.json) binds all three reports.
+
+The [nominal-one deadline review](tuna-destination-one-deadline-review.md) accepts the separate
+three-job statistical contract and holds execution because later resource writes omit the
+admission deadline. Its [provenance](tuna-destination-one-deadline-review.json) binds the reviewed packet.
+The [locked-admission consumer review](tuna-destination-one-locked-admission-review.md) confirms
+the timing repair and requires the under-lock receipt in completion and analysis;
+its [provenance](tuna-destination-one-locked-admission-review.json) identifies the second packet.
+The [final nominal-one admission review](tuna-destination-one-admission-review.md) closes both
+findings and passes the exact three-job case; its
+[provenance](tuna-destination-one-admission-review.json) binds the final packet and requested model.
