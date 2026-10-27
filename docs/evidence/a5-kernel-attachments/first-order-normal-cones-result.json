@@ -1,0 +1,2755 @@
+{
+  "falsifier": "A transverse slice fails to complement the boundary orbit; a germ invariant disagrees with the regularity record; a retained exact path misses the tangent cone or effective-form image; a nondegenerate direction has rank other than two; a first-order plane differs from its retained exact limit; a rank-four Pfaffian survives; or the geometric-input mutation survives.",
+  "incidences": [
+    {
+      "boundary_orbit": "B9",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "2",
+        "0",
+        "2",
+        "0",
+        "0",
+        "3",
+        "0",
+        "3",
+        "5",
+        "0",
+        "5",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "rank-three-cone-line-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "-13/16",
+            "0",
+            "-11/16",
+            "1",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "rank-three-cone-line-2",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "13/16",
+            "0",
+            "11/16",
+            "1",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": true,
+        "projective_dimension": -1
+      },
+      "effective_form": {
+        "ambient_linear_rank": 6,
+        "coordinate_forms": [
+          "-44*I*t1 - 75*I*t3 + 2*I*t6",
+          "-222*I*t1/13 - 711*I*t3/26 + 42*I*t6/13",
+          "-38*t1 - 123*t3/2 + 2*t6",
+          "-211*t2/26 + 229*t4/26 - 7*t5/13",
+          "27*I*t2/2 - 29*I*t4/2 + I*t5",
+          "-2*I*t5/13"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          13
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 2,
+        "component_count": 1,
+        "degree": 2,
+        "generators_in_independent_form_coordinates": [
+          "y3",
+          "y2",
+          "y1",
+          "845*y4^2+(-754*I)*y4*y5-165*y5^2+(1014*I)*y4*y6+494*y5*y6"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 1
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          2,
+          2,
+          3,
+          1
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          2,
+          2,
+          3,
+          1
+        ]
+      },
+      "incidence": "E8bar->B9",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "slice_dimension": 6,
+      "source_orbit": "E8bar",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 2,
+        "generators": [
+          "t6",
+          "t3",
+          "t1",
+          "779*t2^2-1754*t2*t4+987*t4^2-t5^2"
+        ],
+        "multiplicity": 2
+      }
+    },
+    {
+      "boundary_orbit": "V",
+      "boundary_point": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-2",
+        "-2",
+        "-2",
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "boundary-stabilizer-unipotent-21",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "2",
+            "0",
+            "2",
+            "0",
+            "2",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "transverse-line-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "transverse-line-2",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": true,
+        "projective_dimension": -1
+      },
+      "effective_form": {
+        "ambient_linear_rank": 7,
+        "coordinate_forms": [
+          "t3 + t4 - t5 - t6",
+          "I*t3 - I*t4 - I*t5 + I*t6",
+          "2*I*t7",
+          "-2*I*t2",
+          "-2*t3 - 2*t4 + 2*t5 - 2*t6",
+          "-2*I*t3 - 2*I*t4 - 2*I*t5 + 2*I*t6",
+          "-2*I*t1"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          1,
+          2,
+          5,
+          12,
+          13,
+          14
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 3,
+        "component_count": 2,
+        "degree": 2,
+        "generators_in_independent_form_coordinates": [
+          "y3",
+          "y4*y7",
+          "y2*y7",
+          "y1*y7+(I)*y2*y7",
+          "y4*y6",
+          "y2*y6",
+          "y1*y6+(I)*y2*y6",
+          "y4*y5+(I)*y4*y6",
+          "y2*y5+(I)*y2*y6",
+          "y1*y5+(I)*y2*y5+(I)*y1*y6-y2*y6"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 2
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          3,
+          2,
+          6,
+          2
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          3,
+          2,
+          6,
+          2
+        ]
+      },
+      "incidence": "E8bar->V",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "slice_dimension": 7,
+      "source_orbit": "E8bar",
+      "tangent_cone": {
+        "component_count": 2,
+        "dimension": 3,
+        "generators": [
+          "t7",
+          "t4*t5-t4*t6-t5*t6+t6^2",
+          "t3*t5-t5^2-t3*t6+t5*t6",
+          "t2*t5-t2*t6",
+          "t3*t4+t4^2-t3*t6-t4*t6",
+          "t1*t4-t1*t6",
+          "t3^2-t4^2-t5^2+t6^2",
+          "t2*t3+t2*t4",
+          "t1*t3-t1*t5",
+          "t1*t2"
+        ],
+        "multiplicity": 2
+      }
+    },
+    {
+      "boundary_orbit": "VB",
+      "boundary_point": [
+        "0",
+        "-2",
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "transverse-line-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "transverse-line-2",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "4",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 4,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": false,
+        "projective_dimension": 3
+      },
+      "effective_form": {
+        "ambient_linear_rank": 4,
+        "coordinate_forms": [
+          "2*I*t2",
+          "4*t3/5 + 4*t4/5",
+          "-2*t8",
+          "-4*I*t5/5 + 4*I*t6/5"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          1,
+          4,
+          5
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 4,
+        "generators_in_independent_form_coordinates": [
+          "2*y1+(-I)*y3",
+          "y4^2",
+          "y3*y4",
+          "y2*y4",
+          "y3^2",
+          "y2*y3",
+          "y2^2-2*y4^2"
+        ],
+        "identically_zero_on_tangent_cone": true,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": -1
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          4,
+          2,
+          7,
+          1
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          4,
+          2,
+          7,
+          1
+        ]
+      },
+      "incidence": "E8bar->VB",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ],
+      "slice_dimension": 8,
+      "source_orbit": "E8bar",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 4,
+        "generators": [
+          "2*t2+t8",
+          "t8^2",
+          "t5*t8-t6*t8",
+          "t3*t8+t4*t8",
+          "t5^2-2*t5*t6+t6^2",
+          "t3*t5+t4*t5-t3*t6-t4*t6",
+          "2*t1*t5-2*t1*t6-3*t4*t8",
+          "t3*t4+t4^2+t5^2-t5*t6",
+          "t3^2-t4^2-2*t5*t6+2*t6^2",
+          "2*t1*t3+2*t1*t4+3*t5*t8"
+        ],
+        "multiplicity": 2
+      }
+    },
+    {
+      "boundary_orbit": "Va+",
+      "boundary_point": [
+        "1",
+        "1",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "1",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "boundary-stabilizer-unipotent-21",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "middle-coordinate-sheet-+1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "middle-coordinate-sheet--1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 1,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": false,
+        "projective_dimension": 0
+      },
+      "effective_form": {
+        "ambient_linear_rank": 7,
+        "coordinate_forms": [
+          "2*I*t1 + 2*I*t2 - 2*I*t3",
+          "2*t5 - 2*t6",
+          "2*I*t4 - 2*I*t7",
+          "-2*I*t4 - 2*I*t7",
+          "2*t5 + 2*t6",
+          "2*I*t1",
+          "2*I*t2"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          9,
+          10
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 3,
+        "component_count": 2,
+        "degree": 2,
+        "generators_in_independent_form_coordinates": [
+          "y1",
+          "y6*y7",
+          "y4*y7+(I)*y5*y7",
+          "y2*y7+(-I)*y3*y7+(-I)*y4*y7+y5*y7",
+          "2*y3*y6+(2*I)*y5*y6+(I)*y2*y7+y3*y7+y4*y7+(I)*y5*y7",
+          "y2*y6+(I)*y3*y6+(I)*y4*y6-y5*y6",
+          "y3*y4+(I)*y3*y5+(I)*y4*y5-y5^2",
+          "y2*y4+(I)*y3*y4+(I)*y4^2+(I)*y2*y5-y3*y5-2*y4*y5+(-I)*y5^2",
+          "y2*y3+(-I)*y3^2+(-I)*y3*y4+(I)*y2*y5+2*y3*y5+y4*y5+(I)*y5^2",
+          "y2^2+y3^2+2*y3*y4+y4^2+(2*I)*y3*y5+(2*I)*y4*y5-y5^2"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 2
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          4,
+          2,
+          7,
+          2
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          4,
+          2,
+          7,
+          2
+        ]
+      },
+      "incidence": "E8bar->Va+",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "slice_dimension": 8,
+      "source_orbit": "E8bar",
+      "tangent_cone": {
+        "component_count": 2,
+        "dimension": 4,
+        "generators": [
+          "t1+t2-t3",
+          "t5*t6-t5*t7-t6*t7+t7^2",
+          "t4*t6-t6^2-t4*t7+t6*t7",
+          "t2*t6-t3*t6-t2*t7+t3*t7",
+          "t4*t5+t5^2-t4*t7-t5*t7",
+          "t2*t5-t2*t7",
+          "t4^2-t5^2-t6^2+t7^2",
+          "t3*t4+t3*t5-t3*t6-2*t2*t7+t3*t7",
+          "t2*t4-t3*t4-t3*t5+t2*t7",
+          "t2^2-t2*t3"
+        ],
+        "multiplicity": 2
+      }
+    },
+    {
+      "boundary_orbit": "Va-",
+      "boundary_point": [
+        "-1",
+        "1",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "-1",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "boundary-stabilizer-unipotent-20",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "middle-coordinate-sheet-+1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "middle-coordinate-sheet--1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-2"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 1,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": false,
+        "projective_dimension": 0
+      },
+      "effective_form": {
+        "ambient_linear_rank": 7,
+        "coordinate_forms": [
+          "2*I*t1 - 2*I*t2 + 2*I*t3",
+          "-2*t5 - 2*t6",
+          "-2*I*t4 - 2*I*t7",
+          "-2*I*t4 + 2*I*t7",
+          "2*t5 - 2*t6",
+          "2*I*t1",
+          "2*I*t2"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          9,
+          10
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 3,
+        "component_count": 2,
+        "degree": 2,
+        "generators_in_independent_form_coordinates": [
+          "y1",
+          "y6*y7",
+          "y4*y7+(I)*y5*y7",
+          "y2*y7+(-I)*y3*y7+(I)*y4*y7-y5*y7",
+          "2*y3*y6+(-2*I)*y5*y6+(-I)*y2*y7-y3*y7+y4*y7+(I)*y5*y7",
+          "y2*y6+(I)*y3*y6+(-I)*y4*y6+y5*y6",
+          "y3*y4+(I)*y3*y5+(-I)*y4*y5+y5^2",
+          "y2*y4+(I)*y3*y4+(-I)*y4^2+(I)*y2*y5-y3*y5+2*y4*y5+(I)*y5^2",
+          "y2*y3+(-I)*y3^2+(I)*y3*y4+(-I)*y2*y5-2*y3*y5+y4*y5+(I)*y5^2",
+          "y2^2+y3^2-2*y3*y4+y4^2+(-2*I)*y3*y5+(2*I)*y4*y5-y5^2"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 2
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          4,
+          2,
+          7,
+          2
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          4,
+          2,
+          7,
+          2
+        ]
+      },
+      "incidence": "E8bar->Va-",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "slice_dimension": 8,
+      "source_orbit": "E8bar",
+      "tangent_cone": {
+        "component_count": 2,
+        "dimension": 4,
+        "generators": [
+          "t1-t2+t3",
+          "t5*t6-t5*t7+t6*t7-t7^2",
+          "t4*t6+t6^2-t4*t7-t6*t7",
+          "t2*t6-t3*t6-t2*t7+t3*t7",
+          "t4*t5+t5^2+t4*t7+t5*t7",
+          "t2*t5+t2*t7",
+          "t4^2-t5^2-t6^2+t7^2",
+          "t3*t4+t3*t5+t3*t6+2*t2*t7-t3*t7",
+          "t2*t4-t3*t4-t3*t5-t2*t7",
+          "t2^2-t2*t3"
+        ],
+        "multiplicity": 2
+      }
+    },
+    {
+      "boundary_orbit": "B9",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "2",
+        "0",
+        "2",
+        "0",
+        "0",
+        "3",
+        "0",
+        "3",
+        "5",
+        "0",
+        "5",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "isotropic-three-plane-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "-1",
+            "0",
+            "-1",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "isotropic-three-plane-2",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "-1",
+            "0",
+            "1",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": true,
+        "projective_dimension": -1
+      },
+      "effective_form": {
+        "ambient_linear_rank": 6,
+        "coordinate_forms": [
+          "-44*I*t1 - 75*I*t3 + 2*I*t6",
+          "-222*I*t1/13 - 711*I*t3/26 + 42*I*t6/13",
+          "-38*t1 - 123*t3/2 + 2*t6",
+          "-211*t2/26 + 229*t4/26 - 7*t5/13",
+          "27*I*t2/2 - 29*I*t4/2 + I*t5",
+          "-2*I*t5/13"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          13
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 2,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y6",
+          "y3",
+          "y2",
+          "y1"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 1
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          2,
+          1,
+          2,
+          1
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          2,
+          1,
+          2,
+          1
+        ]
+      },
+      "incidence": "Iso->B9",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "slice_dimension": 6,
+      "source_orbit": "Iso",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 2,
+        "generators": [
+          "t6",
+          "t5",
+          "t3",
+          "t1"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "VB",
+      "boundary_point": [
+        "-2",
+        "-2",
+        "-2",
+        "0",
+        "-2",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "-1",
+        "-1",
+        "0",
+        "-1",
+        "0",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "boundary-stabilizer-null-basis-3",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "8",
+            "2",
+            "10",
+            "4",
+            "0",
+            "-4",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "isotropic-line-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "2",
+            "0",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 2,
+        "component_count": 1,
+        "degree": 2,
+        "one_blowup_resolves_first_order_map": false,
+        "projective_dimension": 1
+      },
+      "effective_form": {
+        "ambient_linear_rank": 4,
+        "coordinate_forms": [
+          "2*I*t1 + 2*I*t2 - 2*I*t3",
+          "-2*t1/5 - 6*t2/5 + 2*t3/5 + 4*t4/5 - 4*t5/5 + t8/5",
+          "2*t1/5 + 6*t2/5 - 2*t3/5 - 4*t4/5 + 4*t5/5 + 9*t8/5",
+          "-4*I*t3/5 + 4*I*t4/5 - 4*I*t6/5"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          1,
+          4,
+          5
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 2,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y2+y3",
+          "y1"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 1
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          4,
+          2,
+          5,
+          1
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          4,
+          2,
+          5,
+          1
+        ]
+      },
+      "incidence": "Iso->VB",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8
+      ],
+      "slice_dimension": 8,
+      "source_orbit": "Iso",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 4,
+        "generators": [
+          "t8",
+          "t7",
+          "t1+t2-t3",
+          "2*t2^2-2*t2*t3+t4^2-t5^2+t6^2"
+        ],
+        "multiplicity": 2
+      }
+    },
+    {
+      "boundary_orbit": "B9",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "2",
+        "0",
+        "2",
+        "0",
+        "0",
+        "3",
+        "0",
+        "3",
+        "5",
+        "0",
+        "5",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "opposite-null-directions-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "-15/16",
+            "0",
+            "7/16",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "opposite-null-directions-2",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "-17/16",
+            "0",
+            "-7/16",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": true,
+        "projective_dimension": -1
+      },
+      "effective_form": {
+        "ambient_linear_rank": 6,
+        "coordinate_forms": [
+          "-44*I*t1 - 75*I*t3 + 2*I*t6",
+          "-222*I*t1/13 - 711*I*t3/26 + 42*I*t6/13",
+          "-38*t1 - 123*t3/2 + 2*t6",
+          "-211*t2/26 + 229*t4/26 - 7*t5/13",
+          "27*I*t2/2 - 29*I*t4/2 + I*t5",
+          "-2*I*t5/13"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          13
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 3,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y6",
+          "y3",
+          "y2"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 2
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          3,
+          1,
+          3,
+          1
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          3,
+          1,
+          3,
+          1
+        ]
+      },
+      "incidence": "W8->B9",
+      "mutation_control": {
+        "baseline": {
+          "approach": "opposite-null-directions-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "-15/16",
+            "0",
+            "7/16",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        "detected": true,
+        "input_change": "add the split middle-coordinate basis vector to the exact first-order path coefficient",
+        "mutated": {
+          "approach": "opposite-null-directions-1-middle-coordinate-mutation",
+          "curve_certificate_pass": false,
+          "curve_containment_verified": false,
+          "direction_in_tangent_cone": false,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "-15/16",
+            "0",
+            "7/16",
+            "1",
+            "0"
+          ],
+          "pass": false,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "1",
+            "0",
+            "0"
+          ]
+        },
+        "name": "add_middle_coordinate_to_W8_path",
+        "target": "W8->B9"
+      },
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "slice_dimension": 6,
+      "source_orbit": "W8",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 3,
+        "generators": [
+          "t5",
+          "t3+8*t6",
+          "t1+2*t3+3*t6"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "VB",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "boundary-stabilizer-unipotent-18",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "-1",
+            "-3/2",
+            "0",
+            "-1/2"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "opposite-null-directions-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "-1",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 3,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": false,
+        "projective_dimension": 2
+      },
+      "effective_form": {
+        "ambient_linear_rank": 4,
+        "coordinate_forms": [
+          "-2*I*t1",
+          "-2*t5 + 2*t7",
+          "2*t3",
+          "-2*I*t6 + 2*I*t8"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          1,
+          4,
+          5
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 2,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y3",
+          "y1"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 1
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          5,
+          1,
+          5,
+          1
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          5,
+          1,
+          5,
+          1
+        ]
+      },
+      "incidence": "W8->VB",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        2,
+        7,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14
+      ],
+      "slice_dimension": 8,
+      "source_orbit": "W8",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 5,
+        "generators": [
+          "t3",
+          "t2",
+          "t1"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "B9",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "2",
+        "0",
+        "2",
+        "0",
+        "0",
+        "3",
+        "0",
+        "3",
+        "5",
+        "0",
+        "5",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "fixed-null-fiber-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "105/32",
+            "0",
+            "95/32",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "fixed-null-fiber-2",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "-105/32",
+            "0",
+            "-95/32",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": true,
+        "projective_dimension": -1
+      },
+      "effective_form": {
+        "ambient_linear_rank": 6,
+        "coordinate_forms": [
+          "-44*I*t1 - 75*I*t3 + 2*I*t6",
+          "-222*I*t1/13 - 711*I*t3/26 + 42*I*t6/13",
+          "-38*t1 - 123*t3/2 + 2*t6",
+          "-211*t2/26 + 229*t4/26 - 7*t5/13",
+          "27*I*t2/2 - 29*I*t4/2 + I*t5",
+          "-2*I*t5/13"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          13
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 1,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y6",
+          "13*y4+(-5*I)*y5",
+          "y3",
+          "y2",
+          "y1"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 0
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "incidence": "X+->B9",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "slice_dimension": 6,
+      "source_orbit": "X+",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 1,
+        "generators": [
+          "t6",
+          "t5",
+          "34*t3-19*t6",
+          "19*t2-21*t4",
+          "t1"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "VB",
+      "boundary_point": [
+        "0",
+        "-2",
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "boundary-stabilizer-unipotent-22",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "2",
+            "0",
+            "0",
+            "0",
+            "2",
+            "2",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "null-fiber-line-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 3,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": false,
+        "projective_dimension": 2
+      },
+      "effective_form": {
+        "ambient_linear_rank": 4,
+        "coordinate_forms": [
+          "2*I*t2",
+          "4*t3/5 + 4*t4/5",
+          "-2*t8",
+          "-4*I*t5/5 + 4*I*t6/5"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          1,
+          4,
+          5
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y4",
+          "y3",
+          "y2",
+          "y1"
+        ],
+        "identically_zero_on_tangent_cone": true,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": -1
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          3,
+          1,
+          3,
+          1
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          3,
+          1,
+          3,
+          1
+        ]
+      },
+      "incidence": "X+->VB",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ],
+      "slice_dimension": 8,
+      "source_orbit": "X+",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 3,
+        "generators": [
+          "t8",
+          "t7",
+          "t5-t6",
+          "t3+t4",
+          "t2"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "Va+",
+      "boundary_point": [
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "null-eigenline-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "2",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "null-eigenline-2",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "0",
+            "0",
+            "2",
+            "2",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": true,
+        "projective_dimension": -1
+      },
+      "effective_form": {
+        "ambient_linear_rank": 7,
+        "coordinate_forms": [
+          "2*I*t1",
+          "-2*t6",
+          "-2*I*t7",
+          "-2*I*t4",
+          "2*t5",
+          "2*I*t2",
+          "-2*t3"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          10,
+          11
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 3,
+        "component_count": 2,
+        "degree": 2,
+        "generators_in_independent_form_coordinates": [
+          "y1",
+          "y6^2+y7^2",
+          "y5*y6-y4*y7",
+          "y4*y6+y5*y7",
+          "y3*y6+y2*y7",
+          "y2*y6-y3*y7",
+          "y4^2+y5^2",
+          "y3*y4+y2*y5",
+          "y2*y4-y3*y5",
+          "y2^2+y3^2"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 2
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          3,
+          2,
+          6,
+          2
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          3,
+          2,
+          6,
+          2
+        ]
+      },
+      "incidence": "X+->Va+",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "slice_dimension": 8,
+      "source_orbit": "X+",
+      "tangent_cone": {
+        "component_count": 2,
+        "dimension": 3,
+        "generators": [
+          "t8",
+          "t1",
+          "t6^2-t7^2",
+          "t5*t6+t4*t7",
+          "t4*t6+t5*t7",
+          "t3*t6+t2*t7",
+          "t2*t6+t3*t7",
+          "t4^2-t5^2",
+          "t3*t4-t2*t5",
+          "t2*t4-t3*t5",
+          "t2^2-t3^2"
+        ],
+        "multiplicity": 2
+      }
+    },
+    {
+      "boundary_orbit": "B9",
+      "boundary_point": [
+        "1",
+        "0",
+        "1",
+        "2",
+        "0",
+        "2",
+        "0",
+        "0",
+        "3",
+        "0",
+        "3",
+        "5",
+        "0",
+        "5",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "fixed-null-fiber-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "1551/32",
+            "0",
+            "1353/32",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "fixed-null-fiber-2",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "-1551/32",
+            "0",
+            "-1353/32",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": true,
+        "projective_dimension": -1
+      },
+      "effective_form": {
+        "ambient_linear_rank": 6,
+        "coordinate_forms": [
+          "-44*I*t1 - 75*I*t3 + 2*I*t6",
+          "-222*I*t1/13 - 711*I*t3/26 + 42*I*t6/13",
+          "-38*t1 - 123*t3/2 + 2*t6",
+          "-211*t2/26 + 229*t4/26 - 7*t5/13",
+          "27*I*t2/2 - 29*I*t4/2 + I*t5",
+          "-2*I*t5/13"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          2,
+          4,
+          6,
+          8,
+          13
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 1,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y6",
+          "65*y4+(-33*I)*y5",
+          "y3",
+          "y2",
+          "y1"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 0
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "incidence": "X-->B9",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        3,
+        4,
+        7,
+        8
+      ],
+      "slice_dimension": 6,
+      "source_orbit": "X-",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 1,
+        "generators": [
+          "t6",
+          "t5",
+          "34*t3+41*t6",
+          "41*t2-47*t4",
+          "t1"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "VB",
+      "boundary_point": [
+        "0",
+        "-2",
+        "-2",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "boundary-stabilizer-unipotent-22",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "-6",
+            "0",
+            "0",
+            "0",
+            "-6",
+            "-6",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "null-fiber-line-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
+          "normal_coordinates": [
+            "-6",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 2,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 3,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": false,
+        "projective_dimension": 2
+      },
+      "effective_form": {
+        "ambient_linear_rank": 4,
+        "coordinate_forms": [
+          "2*I*t2",
+          "4*t3/5 + 4*t4/5",
+          "-2*t8",
+          "-4*I*t5/5 + 4*I*t6/5"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          1,
+          4,
+          5
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 1,
+        "generators_in_independent_form_coordinates": [
+          "y4",
+          "y3",
+          "y2",
+          "y1"
+        ],
+        "identically_zero_on_tangent_cone": true,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": -1
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          3,
+          1,
+          3,
+          1
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          3,
+          1,
+          3,
+          1
+        ]
+      },
+      "incidence": "X-->VB",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9
+      ],
+      "slice_dimension": 8,
+      "source_orbit": "X-",
+      "tangent_cone": {
+        "component_count": 1,
+        "dimension": 3,
+        "generators": [
+          "t8",
+          "t7",
+          "t5-t6",
+          "t3+t4",
+          "5*t2-2*t8"
+        ],
+        "multiplicity": 1
+      }
+    },
+    {
+      "boundary_orbit": "Va-",
+      "boundary_point": [
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "-1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "canonical_paths": [
+        {
+          "approach": "null-eigenline-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "2",
+            "2",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        },
+        {
+          "approach": "null-eigenline-2",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 2,
+          "first_order_plane_matches_retained_limit": true,
+          "higher_order_required": false,
+          "normal_coordinates": [
+            "0",
+            "0",
+            "0",
+            "2",
+            "2",
+            "0",
+            "0",
+            "0"
+          ],
+          "pass": true,
+          "retained_leading_order": 1,
+          "tangent_component_restricts_to_zero": true,
+          "tangent_generator_values": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
+          ]
+        }
+      ],
+      "degeneracy_locus": {
+        "affine_dimension": 0,
+        "component_count": 1,
+        "degree": 1,
+        "one_blowup_resolves_first_order_map": true,
+        "projective_dimension": -1
+      },
+      "effective_form": {
+        "ambient_linear_rank": 7,
+        "coordinate_forms": [
+          "2*I*t1",
+          "-2*t6",
+          "-2*I*t7",
+          "-2*I*t4",
+          "2*t5",
+          "2*I*t2",
+          "-2*t3"
+        ],
+        "independent_upper_triangle_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          10,
+          11
+        ],
+        "rank_four_pfaffians_vanish_on_tangent_cone": true
+      },
+      "first_order_image": {
+        "affine_dimension": 3,
+        "component_count": 2,
+        "degree": 2,
+        "generators_in_independent_form_coordinates": [
+          "y1",
+          "y6^2+y7^2",
+          "y5*y6-y4*y7",
+          "y4*y6+y5*y7",
+          "y3*y6+y2*y7",
+          "y2*y6-y3*y7",
+          "y4^2+y5^2",
+          "y3*y4+y2*y5",
+          "y2*y4-y3*y5",
+          "y2^2+y3^2"
+        ],
+        "identically_zero_on_tangent_cone": false,
+        "outcome_consistent_with_retained_paths": true,
+        "projective_dimension": 2
+      },
+      "germ": {
+        "expected_dimension_multiplicity_embedding_components": [
+          3,
+          2,
+          6,
+          2
+        ],
+        "matches_regularity_record": true,
+        "observed_dimension_multiplicity_embedding_components": [
+          3,
+          2,
+          6,
+          2
+        ]
+      },
+      "incidence": "X-->Va-",
+      "mutation_control": null,
+      "pass": true,
+      "slice_columns_zero_based": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "slice_dimension": 8,
+      "source_orbit": "X-",
+      "tangent_cone": {
+        "component_count": 2,
+        "dimension": 3,
+        "generators": [
+          "t8",
+          "t1",
+          "t6^2-t7^2",
+          "t5*t6+t4*t7",
+          "t4*t6+t5*t7",
+          "t3*t6+t2*t7",
+          "t2*t6+t3*t7",
+          "t4^2-t5^2",
+          "t3*t4-t2*t5",
+          "t2*t4-t3*t5",
+          "t2^2-t3^2"
+        ],
+        "multiplicity": 2
+      }
+    }
+  ],
+  "inputs": {
+    "docs/design/a5-kernel-attachments-program.md": "ab11b1ff0ff32e7557aa00a13ba840835633ea9a5f6eddbb54ef88250a373a76",
+    "docs/evidence/a5-kernel-attachments/first_order_normal_cones.py": "160c4d65ff045a939e8e94548f6fc7b2f621074f617a7e16cc958885cf6bd1b8",
+    "docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json": "e765aa453081350ff35e18d57984b48eecef8ee5c733c3a6149e91f76677af4d",
+    "docs/evidence/a5-kernel-attachments/path_supported_basepoints.py": "43970b0be776cdf5a21785b508f3a71e19118d87a154cbebf9e1b6a77c5f6d27",
+    "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json": "78b56be630d124eb59334f6ffce9f1c83ae60dc50b0ec22d4ddf5f675affa1a7",
+    "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "f7d978febf6a286b11df3ea25b30b7c8dcd9e28763a46769a153f0246419b387",
+    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
+    "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
+    "docs/evidence/a5-strata-regularity/result.json": "dee5af58e0312225420e88c7d3e0692fb8534592686d85e4a20de01825fc8093",
+    "docs/evidence/a5-strata-regularity/strata_regularity.py": "fc765d6579744cc3c3297e40d7425b356e9b2ccec57459c7478388cc9687d651",
+    "gororoba_quantum/cd_core.py": "3ca79d18217bf5803725a9726787cf73e170fdd0727f10156d82018cd605e4f0"
+  },
+  "mutation_controls": [
+    {
+      "baseline": {
+        "approach": "opposite-null-directions-1",
+        "curve_certificate_pass": true,
+        "curve_containment_verified": true,
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 2,
+        "first_order_plane_matches_retained_limit": true,
+        "higher_order_required": false,
+        "normal_coordinates": [
+          "0",
+          "-15/16",
+          "0",
+          "7/16",
+          "0",
+          "0"
+        ],
+        "pass": true,
+        "retained_leading_order": 1,
+        "tangent_component_restricts_to_zero": true,
+        "tangent_generator_values": [
+          "0",
+          "0",
+          "0"
+        ]
+      },
+      "detected": true,
+      "input_change": "add the split middle-coordinate basis vector to the exact first-order path coefficient",
+      "mutated": {
+        "approach": "opposite-null-directions-1-middle-coordinate-mutation",
+        "curve_certificate_pass": false,
+        "curve_containment_verified": false,
+        "direction_in_tangent_cone": false,
+        "first_order_effective_rank": 2,
+        "first_order_plane_matches_retained_limit": true,
+        "higher_order_required": false,
+        "normal_coordinates": [
+          "0",
+          "-15/16",
+          "0",
+          "7/16",
+          "1",
+          "0"
+        ],
+        "pass": false,
+        "retained_leading_order": 1,
+        "tangent_component_restricts_to_zero": true,
+        "tangent_generator_values": [
+          "1",
+          "0",
+          "0"
+        ]
+      },
+      "name": "add_middle_coordinate_to_W8_path",
+      "target": "W8->B9"
+    }
+  ],
+  "pass": true,
+  "schema": "a5-kernel-attachments-first-order-normal-cones-v1",
+  "scope": {
+    "claim_boundary": "The record computes the complex-algebraic projective image of the first-order tangent cone and locates directions where that map vanishes. It is an exact upper bound on first-order limits, not a two-sided real semialgebraic certificate for the full Gauss-graph fiber.",
+    "passage": "nullity 8 to nullity 12"
+  },
+  "summary": {
+    "higher_order_required_count": 7,
+    "identically_zero_first_order_count": 3,
+    "incidence_count": 15,
+    "one_blowup_resolves_count": 8
+  },
+  "tools": {
+    "singular": "Singular for x86_64-Linux version 4.4.1 (44105, 64 bit) Jun 30 2026 11:57:00",
+    "sympy": "1.14.0"
+  }
+}

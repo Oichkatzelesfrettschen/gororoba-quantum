@@ -60,6 +60,50 @@ the curve leave the `W8` closure and its tangent cone, so the mutation fails. Ev
 [`path-supported-basepoints-result.json`](path-supported-basepoints-result.json), and the
 [ledger](ledger.md#ledger-rows).
 
+## Eight first-order maps resolve after one blow-up
+
+At each path-supported point, [`first_order_normal_cones.py`](first_order_normal_cones.py) restricts the linear
+bordered-matrix derivative to the exact six-dimensional boundary kernel. A bounded Singular calculation eliminates
+the transverse tangent cone through independent coordinates of that skew form. Every rank-four Pfaffian reduces to
+zero, so each nonzero image form has rank two and its kernel is a four-plane. The retained path limits agree with
+those kernel planes whenever their first-order form is nonzero.
+
+The [retained result](first-order-normal-cones-result.json) gives the following complex-projective first-order images.
+“None” in the degeneracy column means that only the affine cone vertex maps to zero. An empty image means that the
+first-order map vanishes on the whole tangent cone; its displayed affine scheme can still be nonreduced at the origin.
+
+| Incidence | First-order image: dimension, degree, components | Projective degeneracy dimension | First-order outcome |
+| --- | --- | ---: | --- |
+| E8-bar to `B9` | 1, 2, 1 | none | one blow-up resolves |
+| E8-bar to `V` | 2, 2, 2 | none | one blow-up resolves |
+| E8-bar to `VB` | empty; degree-4 origin, 1 component | 3 | identically zero; higher order required |
+| E8-bar to `V^a_+` | 2, 2, 2 | 0 | higher order required at one projective direction |
+| E8-bar to `V^a_-` | 2, 2, 2 | 0 | higher order required at one projective direction |
+| `Iso` to `B9` | 1, 1, 1 | none | one blow-up resolves |
+| `Iso` to `VB` | 1, 1, 1 | 1 | higher order required |
+| `W8` to `B9` | 2, 1, 1 | none | one blow-up resolves |
+| `W8` to `VB` | 1, 1, 1 | 2 | higher order required |
+| `X_+` to `B9` | 0, 1, 1 | none | one blow-up resolves to the known canonical plane |
+| `X_+` to `VB` | empty; reduced origin | 2 | identically zero; higher order required |
+| `X_+` to `V^a_+` | 2, 2, 2 | none | one blow-up resolves |
+| `X_-` to `B9` | 0, 1, 1 | none | one blow-up resolves to the known canonical plane |
+| `X_-` to `VB` | empty; reduced origin | 2 | identically zero; higher order required |
+| `X_-` to `V^a_-` | 2, 2, 2 | none | one blow-up resolves |
+
+Thus eight first-order maps have no projective base direction, while seven need a higher-order exceptional analysis.
+The `VB` passages from E8-bar and both `X` branches are stronger than isolated degeneracies: their full tangent cones
+map to zero at first order. This table is an exact complex-algebraic upper bound on the first-order limits. It does not
+prove that real exact arcs fill each image, and it omits every additional plane produced over a degeneracy direction;
+the table therefore remains short of the two-sided semialgebraic certificate required for deliverable 1.
+
+The falsifier was a basepoint or germ mismatch, a surviving rank-four Pfaffian, a retained path outside the tangent
+cone, a first-order plane differing from its retained exact limit, an incorrectly empty degeneracy locus, or a
+surviving geometric-input mutation. All baseline checks pass. The middle-coordinate mutation of the
+`W8`-to-`B9` path leaves the closure and tangent cone and fails. Evidence:
+[`first_order_normal_cones.py`](first_order_normal_cones.py),
+[`first-order-normal-cones-result.json`](first-order-normal-cones-result.json), and the
+[ledger](ledger.md#ledger-rows).
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
@@ -79,6 +123,15 @@ support all 33 paths and reproduce every tested orbit and germ invariant. The re
 analysis, not kernel transport. A mismatched local invariant or a path outside the recomputed tangent cone falsifies
 the result. Evidence: [`path-supported-basepoints-result.json`](path-supported-basepoints-result.json).
 
+### Does one blow-up resolve every nullity-8 to nullity-12 kernel Gauss map?
+
+The question matters because a projective direction on which the first-order form vanishes carries additional
+higher-order limits. The cheapest decisive probe eliminates each tangent cone through the exact first-order form and
+measures the zero fiber. Eight incidences have no projective zero direction, while seven do. Three of those seven have
+an identically zero first-order map. Therefore one blow-up does not resolve the whole family. A nonempty degeneracy
+locus in any of the eight resolved rows, or an empty locus in a row classified exceptional, falsifies the result.
+Evidence: [`first-order-normal-cones-result.json`](first-order-normal-cones-result.json).
+
 ## Replay
 
 ```sh
@@ -93,6 +146,10 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-attachments/path_supported_basepoints.py \
     --check docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/first_order_normal_cones.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/first_order_normal_cones.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-attachments/first_order_normal_cones.py \
+    --check docs/evidence/a5-kernel-attachments/first-order-normal-cones-result.json
 ```
 
 The `--check` command constructs the sorted, two-space-indented JSON plus its final newline in memory and compares
