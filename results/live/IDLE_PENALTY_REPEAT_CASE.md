@@ -125,7 +125,7 @@ the pin string above and `D` the new ANU draw (seed values at indices 0 and 1):
 ```sh
 "$PYTHON" live_run.py --groups idle_penalty --backends ibm_kingston --max-pending 300 --shots 4096 \
   --rep-delay 0.00002 --no-isolated-reference --max-execution-seconds 25 --max-total-execution-seconds 25 \
-  --pin-layout "$PIN" --max-replicas 31 \
+  --reserve-seconds 60 --pin-layout "$PIN" --max-replicas 31 \
   --seed-transpiler "qrng:$D#0" --seed-simulator "qrng:$D#1" --out ../results/live
 "$PYTHON" calibration_snapshot.py --export ibm_kingston --out SNAPSHOT
 "$PYTHON" ../scripts/idle_penalty_report.py RUN --self-check --check-placement --snapshot SNAPSHOT

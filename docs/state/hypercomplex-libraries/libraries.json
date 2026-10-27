@@ -6152,6 +6152,7 @@
     "scripts/ghost_error_scale_branching.py",
     "scripts/hypercomplex_cases.py",
     "scripts/hypercomplex_evidence.py",
+    "scripts/idle_penalty_focal_decisions.py",
     "scripts/idle_penalty_repeat_decisions.py",
     "scripts/idle_penalty_report.py",
     "scripts/idle_readout_attribution.py",
@@ -11277,6 +11278,7 @@
    "json",
    "numpy",
    "pathlib",
+   "scipy",
    "sys",
    "typing"
   ],
