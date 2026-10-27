@@ -741,6 +741,12 @@
       "docs/evidence/ascella-order-coefficients/replication-score.json",
       "docs/evidence/ascella-order-coefficients/replication-sensitivity.json",
       "docs/notes/papers/diedenhofen-musch-2015-cocor.md"
+    ],
+    "core-742": [
+      "docs/evidence/a5-kernel-bundles-nullity8/**",
+      "docs/evidence/a5-kernel-bundles/**",
+      "docs/evidence/a5-strata-regularity/**",
+      "docs/evidence/a5-rank-strata-equations/**"
     ]
   }
 }
