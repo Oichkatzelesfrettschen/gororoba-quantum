@@ -1,0 +1,63 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-tower-ordered-domain-rocq",
+  "kind": "implementation",
+  "summary": "Restate the Cayley-Dickson pair tower and its annihilator theorems as one Rocq functor over an abstract ordered coefficient domain, instantiated at Z and at the Stdlib reals, so the integer and real developments become two instances of one proof.",
+  "sources": [
+    "proofs/CdImaginarySumConference.v",
+    "proofs/CdAnnihilatorSymmetry.v",
+    "proofs/CdTowerReal.v",
+    "proofs/CdAnnihilatorSymmetryReal.v",
+    "docs/notes/topics/cd-one-sided-inverses.md",
+    "docs/notes/math-0511691.md"
+  ],
+  "state": "planned",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Opened from the Not established section of cd-one-sided-inverses.md, which records that the real tower is Stdlib's R and that a tower over an abstract ordered field has no Rocq source. The signature is read from the tactics the four files use: every vector identity closes with ext and ring; the order enters only through 0 <= x * x, a vanishing sum of squares vanishing termwise (dot_self_nonneg, dot_self_zero) and the cancellation of a nonzero scalar (scale_zero_factor, Z.mul_cancel_l); division enters only the affine inverse family of the real file. Z is a domain and not a field, so the common signature is an ordered integral domain, and the field axioms form an extension."
+  },
+  "scope": "A new proofs/CdTowerDomain.v: a Module Type for the coefficient domain (carrier, 0, 1, +, *, negation, a total order; commutative-ring axioms registered for ring, 0 <= a * a, a * a = 0 -> a = 0, a sum of two nonnegative terms vanishing only termwise, and a * b = 0 -> a = 0 \\/ b = 0) and a functor over it that states cd, zero, one, add, scale, conjugate, mul, re, dot, coord and ext and proves the linear laws, norm_mul, adjoint, re_commutator, re_associator, conj_mul_left, conj_mul_right, lemma_9_2, kernel_equality, purity_left, purity_right, lemma_9_5, annihilator_orthogonal and direct_finiteness with the inverse family in the integer-cleared form <a, a> b = conj(a) + w; a field extension of the signature (multiplicative inverse of a nonzero element) with right_inverse_form in the affine form; the instances at Z and at R with their Print Assumptions receipts (none at Z, the two Stdlib real-construction axioms at R); the bundle docs/evidence/cd-tower-domain/ wired into ci/rocq_changed.sh, the ci.yml replay selection, scripts/rocq_kaggle_replay.py, tests/test_evidence_ledgers.py, a ci/gates.json shellcheck gate and formalization.yaml; and the [R] statements in the two notes. The four existing proof files and their bundles keep their bytes; the functor is a third source, and a theorem of the integer or real file is cited by the file that proves it until a later record retires one. Corollary 2.9 (flexibility) joins the functor only after its own real-tower proof lands.",
+  "owner": "Repository Rocq maintainer",
+  "next_action": "Write the Module Type and prove that Z (ZArith) and R (Stdlib Reals) satisfy it with Stdlib lemmas only, in a scratch compile under rocq 9.3.0 with -w @all, before porting any tower theorem.",
+  "related": [
+    "cd-annihilator-symmetry-rocq",
+    "cd-annihilator-symmetry-real-rocq",
+    "cd-annihilator-lemma-9-5-rocq",
+    "cd-one-sided-inverses"
+  ],
+  "steps": [
+    {
+      "id": "signature",
+      "state": "todo",
+      "action": "State the coefficient-domain Module Type with the ring, order and cancellation axioms the tower proofs use, declare its ring structure for the ring tactic inside the functor, and prove the Z and R instances from Stdlib lemmas (Z.mul_cancel_l, Z.square_nonneg, Rmult_integral, Rle_0_sqr and their neighbors).",
+      "acceptance": "Fails if either instance needs an axiom beyond Stdlib (Print Assumptions on the instance modules lists nothing at Z and only ClassicalDedekindReals.sig_forall_dec and FunctionalExtensionality.functional_extensionality_dep at R), or if the ring tactic cannot close x * (y + z) = x * y + x * z on the abstract carrier inside the functor. Stop condition: an axiom the tower needs that neither Z nor R proves is recorded and ends the step."
+    },
+    {
+      "id": "tower-functor",
+      "state": "todo",
+      "action": "Port CdTowerReal.v and CdAnnihilatorSymmetryReal.v into the functor with lia reserved for nat indices and every carrier inequality derived from the signature's order axioms, keeping the integer-cleared inverse family of CdAnnihilatorSymmetry.v as the domain-level statement; then instantiate at Z and R.",
+      "acceptance": "Fails if rocq compile prints any output under -w @all, if a theorem of the functor uses associativity, alternativity or multiplicativity of the norm, or if an instance theorem's statement differs from the corresponding theorem of CdAnnihilatorSymmetry.v or CdAnnihilatorSymmetryReal.v by more than the module path. Stop condition: a tower lemma whose present proof rests on lra or nia and has no derivation from the signature's order axioms is recorded with its lemma name and ends the step.",
+      "depends_on": [
+        "signature"
+      ]
+    },
+    {
+      "id": "field-extension",
+      "state": "todo",
+      "action": "State the field extension of the signature (inverse of a nonzero element with its law) and prove right_inverse_form in the affine form b = conj(a)/<a, a> + w inside a functor over it, instantiated at R.",
+      "acceptance": "Fails if the R instance's right_inverse_form differs from the one of CdAnnihilatorSymmetryReal.v by more than the module path, or if Print Assumptions lists an axiom beyond the two real-construction axioms.",
+      "depends_on": [
+        "tower-functor"
+      ]
+    },
+    {
+      "id": "bundle-and-notes",
+      "state": "todo",
+      "action": "Retain assumptions.v, assumptions.txt, kernel.txt, toolchain.txt, source_hashes.sha256 and replay_rocq.sh under docs/evidence/cd-tower-domain/, wire the bundle into every Rocq surface ci/check_rocq_ci_pins.py enforces plus formalization.yaml, and record the [R] statements in cd-one-sided-inverses.md and math-0511691.md with the docs map row.",
+      "acceptance": "Fails if replay_rocq.sh departs from its receipts, if ci/check_rocq_ci_pins.py reports the bundle missing from any surface, if tests/test_evidence_ledgers.py rejects source_hashes.sha256, if formalization.yaml fails the retained v0.4 schema, or if check_markdown_links.py reports a broken link.",
+      "depends_on": [
+        "field-extension"
+      ]
+    }
+  ]
+}

@@ -76,6 +76,54 @@
             }
           ],
           "scope_sha256": "3bf75c948099c3c1b6d8392da7f50c1d12ffac1be311c7c7ad82e798bef1130b"
+        },
+        {
+          "result": "Revalidation after the Lemma 9.5 theorems joined the file: both files compile under rocq 9.3.0 with -w @all and no output; the twelve original Print Assumptions queries reproduce their two axioms beside the two new queries, and rocq check reproduces the unchanged kernel.txt.",
+          "observed_at": "2026-10-27T19:42:37+00:00",
+          "revision": "caa1d3720f7c896d929931f2aa4ae2cfd3b6d19a",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerReal.v",
+              "sha256": "5cb866c0e3d34da4d8ae14217ebd47e332cb86ca2e289069651e260b56334251"
+            },
+            {
+              "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+              "sha256": "c0bd8744d258d18c4ea0d056bd195d2951da1dfc3eeb058a21f5e89ba04e2f30"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/assumptions.txt",
+              "sha256": "eb9d156a1fa48d7bf0663d270eaae039231c58487b76c2c31821122ab808c392"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/kernel.txt",
+              "sha256": "882de7e58a24b8eb660b82644f9bd1351555365ca2c71004e57c6d431a8674e6"
+            }
+          ],
+          "scope_sha256": "3bf75c948099c3c1b6d8392da7f50c1d12ffac1be311c7c7ad82e798bef1130b"
+        },
+        {
+          "result": "Revalidation after the Corollary 2.9 theorems joined the file: both files compile under rocq 9.3.0 with -w @all and no output; every earlier Print Assumptions query reproduces its two axioms beside the two new queries, and rocq check reproduces the unchanged kernel.txt.",
+          "observed_at": "2026-10-27T19:54:51+00:00",
+          "revision": "63053de9da2ff443f60fc5f00f51a15f53896b43",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerReal.v",
+              "sha256": "5cb866c0e3d34da4d8ae14217ebd47e332cb86ca2e289069651e260b56334251"
+            },
+            {
+              "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+              "sha256": "70b15f8a9a24b7d089812b513144c124f366d6505a5bfac5472e073d3e3c4fc7"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/assumptions.txt",
+              "sha256": "f64401baa25e0284d6adad97f62f48121d38a42bc9be0575c5e99a35c2816934"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/kernel.txt",
+              "sha256": "882de7e58a24b8eb660b82644f9bd1351555365ca2c71004e57c6d431a8674e6"
+            }
+          ],
+          "scope_sha256": "3bf75c948099c3c1b6d8392da7f50c1d12ffac1be311c7c7ad82e798bef1130b"
         }
       ]
     },
@@ -132,6 +180,54 @@
             }
           ],
           "scope_sha256": "afd3fd722f2be474ff262c32785edd20c347da5d6040f13f539cf1de5d9257d0"
+        },
+        {
+          "result": "Revalidation after the ledger rebind for Lemma 9.5: replay_rocq.sh passes against its regenerated receipts; tests/test_evidence_ledgers.py and tests/ci/test_rocq_ci_pins.py pass (16 tests) under the pinned interpreter; ci/check_rocq_ci_pins.py reports 14 bundles agreeing; formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link of 703 files.",
+          "observed_at": "2026-10-27T19:42:37+00:00",
+          "revision": "caa1d3720f7c896d929931f2aa4ae2cfd3b6d19a",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/replay_rocq.sh",
+              "sha256": "baadc680d44005a4a04d7606a5e9b3ff63ad469e07ce730d967fb06e32662279"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/source_hashes.sha256",
+              "sha256": "b030d38ca5b18dcfa867e5391eb1ebd6a1c822aec07528368904aec12cc85f7d"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-414",
+              "sha256": "12e06a087443cdea1eee593fc570e9e68d5b07b98192bf2bc866a71f2e422e83"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "f25516395d04e28c47f84972920bbf5f2a730ecf13edf7550b89aa447e350c01"
+            }
+          ],
+          "scope_sha256": "afd3fd722f2be474ff262c32785edd20c347da5d6040f13f539cf1de5d9257d0"
+        },
+        {
+          "result": "Revalidation after the ledger rebind for Corollary 2.9: replay_rocq.sh passes against its regenerated receipts; tests/test_evidence_ledgers.py and tests/ci/test_rocq_ci_pins.py pass (16 tests) under the pinned interpreter; ci/check_rocq_ci_pins.py reports 14 bundles agreeing; formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link of 704 files.",
+          "observed_at": "2026-10-27T19:54:51+00:00",
+          "revision": "63053de9da2ff443f60fc5f00f51a15f53896b43",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/replay_rocq.sh",
+              "sha256": "baadc680d44005a4a04d7606a5e9b3ff63ad469e07ce730d967fb06e32662279"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/source_hashes.sha256",
+              "sha256": "6ea3f7c87ffd13e4d807fcfc0fb317d6d4be831533e9ffc7af5927a48523013e"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-414",
+              "sha256": "12e06a087443cdea1eee593fc570e9e68d5b07b98192bf2bc866a71f2e422e83"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "823fa04b25e521d016a504762554ec42b6175f63cda9e2621dbde77d5b3c6366"
+            }
+          ],
+          "scope_sha256": "afd3fd722f2be474ff262c32785edd20c347da5d6040f13f539cf1de5d9257d0"
         }
       ]
     }
@@ -165,6 +261,38 @@
         {
           "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
           "sha256": "06cd51fd16780d395966461bd5939e603ccc0a70bc67a8a3b5e40778ca405275"
+        }
+      ],
+      "scope_sha256": "33d4c1e07653dabf976a8b1862f2341a2b4c0cdcf317bdc84bb3a5152894f6d3"
+    },
+    {
+      "result": "Revalidation at the revision that adds Lemma 9.5 to the same proof file; both steps carry fresh receipts and the plan's own theorems are unchanged.",
+      "observed_at": "2026-10-27T19:42:37+00:00",
+      "revision": "caa1d3720f7c896d929931f2aa4ae2cfd3b6d19a",
+      "evidence": [
+        {
+          "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+          "sha256": "c0bd8744d258d18c4ea0d056bd195d2951da1dfc3eeb058a21f5e89ba04e2f30"
+        },
+        {
+          "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
+          "sha256": "9a7b75f714bd9c37f9508cf1ffc0a1a844f09dcf7a984a0506dc5d8c1bd2ae7d"
+        }
+      ],
+      "scope_sha256": "33d4c1e07653dabf976a8b1862f2341a2b4c0cdcf317bdc84bb3a5152894f6d3"
+    },
+    {
+      "result": "Revalidation at the revision that adds Corollary 2.9 to the same proof file; both steps carry fresh receipts and the plan's own theorems are unchanged.",
+      "observed_at": "2026-10-27T19:54:51+00:00",
+      "revision": "63053de9da2ff443f60fc5f00f51a15f53896b43",
+      "evidence": [
+        {
+          "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+          "sha256": "70b15f8a9a24b7d089812b513144c124f366d6505a5bfac5472e073d3e3c4fc7"
+        },
+        {
+          "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
+          "sha256": "92fe465d58f6c6e5d7d8bd4ecacd4877f752a416eb9af213cdc51734f53eb617"
         }
       ],
       "scope_sha256": "33d4c1e07653dabf976a8b1862f2341a2b4c0cdcf317bdc84bb3a5152894f6d3"

@@ -11,3 +11,7 @@ Print Assumptions CdAnnihilatorSymmetryReal.purity_left.
 Print Assumptions CdAnnihilatorSymmetryReal.purity_right.
 Print Assumptions CdAnnihilatorSymmetryReal.right_inverse_form.
 Print Assumptions CdAnnihilatorSymmetryReal.direct_finiteness.
+Print Assumptions CdAnnihilatorSymmetryReal.lemma_9_5.
+Print Assumptions CdAnnihilatorSymmetryReal.annihilator_orthogonal.
+Print Assumptions CdAnnihilatorSymmetryReal.flex_sum_zero.
+Print Assumptions CdAnnihilatorSymmetryReal.flexible.
