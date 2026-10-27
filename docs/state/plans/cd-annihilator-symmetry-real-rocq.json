@@ -1,0 +1,111 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-annihilator-symmetry-real-rocq",
+  "kind": "investigation",
+  "summary": "Prove in Rocq, on a pair tower with real coefficients at every level, Lemma 9.2 of math/0511691 with its identity x(x*y) = x*(xy) and the kernel equality a z = 0 exactly when z a = 0 by the paper's route, with direct finiteness and the affine inverse family, and retain the kernel receipts.",
+  "sources": [
+    "docs/notes/topics/cd-one-sided-inverses.md",
+    "docs/notes/math-0511691.md",
+    "proofs/CdTowerReal.v",
+    "proofs/CdAnnihilatorSymmetryReal.v",
+    "docs/evidence/cd-annihilator-symmetry-real/README.md"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Opened from the closed plan cd-annihilator-symmetry-rocq, whose resolution left the real-coefficient tower and Lemma 9.2's identity open. Scope read from action item 7 of math-0511691.md (Corollary 9.3 from Lemma 9.2, Lemma 2.6 and Lemma 2.8, Print Assumptions limited to the real-number axioms) and from the note's Not established section."
+  },
+  "scope": "proofs/CdTowerReal.v, the tower of CdImaginarySumConference.v restated over the Stdlib reals with its linear laws and sum-of-squares lemmas, and proofs/CdAnnihilatorSymmetryReal.v: the norm law, the Lemma 3.4 adjoints, Lemmas 2.6 and 2.8, the identity of Lemma 9.2 with its mirror, Lemma 9.2, Corollary 9.3, Lemmas 9.4 and 9.5, direct finiteness and the affine right-inverse family, each for every element with real coordinates at every level; the bundle docs/evidence/cd-annihilator-symmetry-real/ with replay script, receipts and source hashes, wired into the Rocq replay job, the Kaggle replay driver, the ledger test and formalization.yaml. A tower over an abstract ordered field and Corollary 2.9 (flexibility) stay out of scope.",
+  "owner": "Repository Rocq maintainer",
+  "next_action": "None; the plan is closed.",
+  "related": [
+    "cd-annihilator-symmetry-rocq",
+    "cd-one-sided-inverses"
+  ],
+  "steps": [
+    {
+      "id": "tower-proof",
+      "state": "done",
+      "action": "State the real pair tower in CdTowerReal.v and prove in CdAnnihilatorSymmetryReal.v norm_mul, adjoint, re_commutator, re_associator, conj_mul_left, conj_mul_right, lemma_9_2, kernel_equality, purity_left, purity_right, right_inverse_form and direct_finiteness, under rocq 9.3.0 with -w @all.",
+      "acceptance": "Fails if rocq compile prints any output, if any Print Assumptions query lists an axiom other than the two of Stdlib's construction of the reals (ClassicalDedekindReals.sig_forall_dec and FunctionalExtensionality.functional_extensionality_dep), or if a step needs associativity. Stop condition: a doubling case the induction cannot close is recorded and ends the step.",
+      "receipts": [
+        {
+          "result": "CdTowerReal.v and CdAnnihilatorSymmetryReal.v compile under rocq 9.3.0 with -w @all and no output; all twelve Print Assumptions queries list exactly ClassicalDedekindReals.sig_forall_dec and FunctionalExtensionality.functional_extensionality_dep and rocq check passes; the Lemma 9.2 identity closes by the reflection conj(x) = 2 re(x) 1 - x and bilinearity without induction, and no step uses associativity.",
+          "observed_at": "2026-10-27T19:14:40+00:00",
+          "revision": "20f6b29a2816d30da529c8adb2ba65250c7c8b27",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerReal.v",
+              "sha256": "5cb866c0e3d34da4d8ae14217ebd47e332cb86ca2e289069651e260b56334251"
+            },
+            {
+              "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+              "sha256": "f28b93814371c99c627e8d0580873e95bd6fcda51e34a86f450f0b5b6973606f"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/assumptions.txt",
+              "sha256": "9befe6997b2e40f995e81589f3b784b03a676c93a6c6232b81baa106d05754d5"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/kernel.txt",
+              "sha256": "882de7e58a24b8eb660b82644f9bd1351555365ca2c71004e57c6d431a8674e6"
+            }
+          ],
+          "scope_sha256": "3bf75c948099c3c1b6d8392da7f50c1d12ffac1be311c7c7ad82e798bef1130b"
+        }
+      ]
+    },
+    {
+      "id": "bundle-and-wiring",
+      "state": "done",
+      "action": "Retain assumptions.v, assumptions.txt, kernel.txt, toolchain.txt, source_hashes.sha256 and replay_rocq.sh under docs/evidence/cd-annihilator-symmetry-real/, and name the bundle in ci/gates.json (shellcheck gate), ci/rocq_changed.sh, the ci.yml replay selection, scripts/rocq_kaggle_replay.py, tests/test_evidence_ledgers.py and formalization.yaml; record the [R] statements in the one-sided-inverses note and the math/0511691 note.",
+      "acceptance": "Fails if replay_rocq.sh departs from its receipts, if ci/check_rocq_ci_pins.py reports the bundle missing from any surface, if the ledger test rejects source_hashes.sha256, if formalization.yaml fails the retained v0.4 schema, or if check_markdown_links.py reports a broken link.",
+      "receipts": [
+        {
+          "result": "replay_rocq.sh passes against its receipts in 28 s; ci/check_rocq_ci_pins.py reports 14 bundles agreeing; tests/ci/test_rocq_ci_pins.py and tests/test_evidence_ledgers.py pass (59 tests); formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0; check_markdown_links.py resolves every link of 703 files; the pr gates lane passes sources-414.",
+          "observed_at": "2026-10-27T19:14:40+00:00",
+          "revision": "20f6b29a2816d30da529c8adb2ba65250c7c8b27",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/replay_rocq.sh",
+              "sha256": "baadc680d44005a4a04d7606a5e9b3ff63ad469e07ce730d967fb06e32662279"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/source_hashes.sha256",
+              "sha256": "dde2b6b34e3cd98d5855e1da8de7a3c4863a52d1dd759fe5dc156a6f5e54501a"
+            },
+            {
+              "ref": "ci/gates.json#gates/name=sources-414",
+              "sha256": "12e06a087443cdea1eee593fc570e9e68d5b07b98192bf2bc866a71f2e422e83"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "5c146380206192d0249799142d8e80f8788b24fa34ed2ce9f9906d6abe7fa0d1"
+            }
+          ],
+          "scope_sha256": "afd3fd722f2be474ff262c32785edd20c347da5d6040f13f539cf1de5d9257d0"
+        }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "result": "Both steps are done with receipts at the revision that carries the tower, the proof, the bundle and the wiring.",
+      "observed_at": "2026-10-27T19:14:40+00:00",
+      "revision": "20f6b29a2816d30da529c8adb2ba65250c7c8b27",
+      "evidence": [
+        {
+          "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+          "sha256": "f28b93814371c99c627e8d0580873e95bd6fcda51e34a86f450f0b5b6973606f"
+        },
+        {
+          "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
+          "sha256": "06cd51fd16780d395966461bd5939e603ccc0a70bc67a8a3b5e40778ca405275"
+        }
+      ],
+      "scope_sha256": "33d4c1e07653dabf976a8b1862f2341a2b4c0cdcf317bdc84bb3a5152894f6d3"
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "lemma_9_2 and kernel_equality hold for every element with real coordinates at every level in proofs/CdAnnihilatorSymmetryReal.v on the real tower of proofs/CdTowerReal.v, by the paper's route through the identity x(x*y) = x*(xy), with direct_finiteness and the affine inverse family; every assumption query lists only the two Stdlib real-construction axioms, the bundle replays against its receipts and every Rocq surface names it. A tower over an abstract ordered field has no Rocq source."
+}
