@@ -10,7 +10,14 @@
     "usage_remaining_seconds": 450
   },
   "acquisition_count": 4,
-  "awaiting_observation": [],
+  "awaiting_observation": [
+    "results/live/2026-10-27T010741.272123Z/raw/dbfvivljm0ks73efhsm0",
+    "results/live/2026-10-27T010917.104805Z/raw/dbfvjktrd2mc73ctl290",
+    "results/live/2026-10-27T011025.944327Z/raw/dbfvk5drd2mc73ctl3hg",
+    "results/live/2026-10-27T011140.821404Z/raw/dbfvkoljm0ks73efi0jg",
+    "results/live/2026-10-27T011538.241671Z/raw/dbfvntdrd2mc73ctlbo0",
+    "results/live/2026-10-27T013626.332783Z/raw/dbg0118iudkc73e3e100"
+  ],
   "failed_charge_seconds": "0",
   "failed_job_count": 0,
   "final_charge_seconds": "150",
