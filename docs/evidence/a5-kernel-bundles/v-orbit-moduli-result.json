@@ -19,10 +19,10 @@
     ],
     "completeness_argument": "the unit norm and quadric determine the common-line Hermitian norm from (lambda,rho); after matching mu by the global phase, the common vectors have identical real Gram matrices and G_2 transitivity on ordered two-frames (or unit vectors at rho=1) maps one point to the other",
     "input_digests": {
-      "aligned_orbit_moduli_result_sha256": "8afd5a4d1426c90e90e7388312ed10c7af20a707a7da192e72a8c6762cfc205d",
+      "aligned_orbit_moduli_result_sha256": "c36b3c01665608b25a41fa3af2f84c60ff0306b3b7b11621f9e268f93aa083a9",
       "aligned_orbit_moduli_script_sha256": "c4b9fec07e4881ad9884bfdb48e0d3a83ffa741aed65f4702a4001c4f078769c",
-      "kernel_symmetry_result_sha256": "9552c02507ed39750dfbf55874fd682c3ed059c868515251e6dc9cf9ca012a37",
-      "kernel_symmetry_script_sha256": "47365da1e1ffc659ab322f0bed7a1f7376afa33e942e43663682ed20c5f95249"
+      "kernel_symmetry_result_sha256": "fa6af754e697dbf4a7490c1312449477817ca8e69f4c9add577ea3ef23e333d5",
+      "kernel_symmetry_script_sha256": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194"
     },
     "mutation": "",
     "original_coordinate_parameterization": "v=lambda*u, mu^2=-(1+lambda^2)(u dot u), u dot u!=0, mu!=0",

@@ -424,6 +424,10 @@ def _triple_commutator(first: LieTriple, second: LieTriple) -> LieTriple:
     return tuple(_matrix_commutator(first[index], second[index]) for index in range(3))  # type: ignore[return-value]
 
 
+def _flattened_commutator(pair: tuple[LieTriple, LieTriple]) -> tuple[Fraction, ...]:
+    return _flatten_triple(_triple_commutator(pair[0], pair[1]))
+
+
 def _flatten_matrix(matrix: RationalMatrix) -> tuple[Fraction, ...]:
     return tuple(entry for row in matrix for entry in row)
 
@@ -666,11 +670,12 @@ def lie_algebra_checks(mutation: str = "") -> dict[str, Any]:
         solution_dimension == expected_dimension == combined_dimension == len(expected_triples)
     )
 
-    expected_commutators = [
-        _flatten_triple(_triple_commutator(expected_triples[first], expected_triples[second]))
+    pairs = [
+        (expected_triples[first], expected_triples[second])
         for first in range(len(expected_triples))
         for second in range(first + 1, len(expected_triples))
     ]
+    expected_commutators = parallel.ordered_map(_flattened_commutator, pairs, min_items=1)
     derived_dimension = _rank(expected_commutators)
     center_dimension = _center_dimension(expected_triples)
     compact_base_generators = [triple[0] for triple in expected_triples[:14]] + [expected_triples[-1][0]]

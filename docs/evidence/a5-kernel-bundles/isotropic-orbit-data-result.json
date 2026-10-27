@@ -27,11 +27,11 @@
     "input_digests": {
       "aligned_orbit_moduli_script_sha256": "c4b9fec07e4881ad9884bfdb48e0d3a83ffa741aed65f4702a4001c4f078769c",
       "aligned_stabilizer_representation_script_sha256": "66b900530f8ff547ccd49e7450da556405fa246c336b551945890ab4e3188376",
-      "kernel_symmetry_result_sha256": "9552c02507ed39750dfbf55874fd682c3ed059c868515251e6dc9cf9ca012a37",
-      "kernel_symmetry_script_sha256": "47365da1e1ffc659ab322f0bed7a1f7376afa33e942e43663682ed20c5f95249",
+      "kernel_symmetry_result_sha256": "fa6af754e697dbf4a7490c1312449477817ca8e69f4c9add577ea3ef23e333d5",
+      "kernel_symmetry_script_sha256": "1af7fb549bf13b78edadf51762c32e382a7563d573222c0997f3107dd264c194",
       "nullity_sixteen_stabilizer_result_sha256": "52feb8e0fc3bbc7f1c8a413ba03733fa0b65f44cf4442b87de36ce58e9d87092",
       "nullity_sixteen_stabilizer_script_sha256": "b73ff8e652b57390254cda541b6c02ac35809d2a5a3942a43899d891ae656342",
-      "v_orbit_moduli_result_sha256": "7af3b87311bbed91cbbd357fc25358b795e0e7f0c545b7edc392d044e1a3d79c",
+      "v_orbit_moduli_result_sha256": "07dc79facf758da94b4d3a7a79d441a95c84cc111754acf2be0c6c171eec52d6",
       "v_orbit_moduli_script_sha256": "3a579c9406e556a2b2cbd44973d693b369b44eb93b30d45708bc9d5fbb63d4b0"
     },
     "mutation": "",
