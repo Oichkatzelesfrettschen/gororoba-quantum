@@ -1,0 +1,270 @@
+{
+  "pass": true,
+  "schema": "a5-nullity-sixteen-stabilizer-representation-v1",
+  "script_sha256": "b73ff8e652b57390254cda541b6c02ac35809d2a5a3942a43899d891ae656342",
+  "stabilizer_representation": {
+    "equivalent_decompositions": true,
+    "mutation": "",
+    "pass": true,
+    "rows": [
+      {
+        "casimir_characteristic_polynomial": "lambda**2*(8*lambda - 3)**6/262144",
+        "center_characteristic_polynomial": "lambda**8 + 20*I*lambda**7 - 171*lambda**6 - 814*I*lambda**5 + 2351*lambda**4 + 4200*I*lambda**3 - 4509*lambda**2 - 2646*I*lambda + 648",
+        "compact_algebra_dimension": 15,
+        "compact_domain_matrices_skew_symmetric": true,
+        "compact_orbit_dimension": 11,
+        "complex_fiber_dimension": 8,
+        "connected_stabilizer_group": {
+          "central_half_turn_centralizes_su2": true,
+          "central_half_turn_fixes_representative": true,
+          "central_half_turn_is_nonidentity_involution": true,
+          "connected_stabilizer_group": "U(2) = (SU(2) x U(1))/diagonal Z_2",
+          "g2_and_phase_generators_commute": true,
+          "g2_base_characteristic_polynomial": "lambda**8*(lambda**2 + 1)**8*(lambda**2 + 4)**4",
+          "g2_center_generator_satisfies_x_x2_plus_1_x2_plus_4": true,
+          "g2_domain_characteristic_polynomial": "lambda**8*(lambda**2 + 1)**8*(lambda**2 + 4)**4",
+          "pass": true,
+          "phase_generators_square_to_minus_identity": true,
+          "primitive_phase_coefficient": 2
+        },
+        "derived_killing_determinant": "-32768",
+        "derived_killing_eigenvalues": {
+          "-32": 3
+        },
+        "invariant_projectors": {
+          "all_idempotent": true,
+          "all_invariant": true,
+          "commutant_dimension": 7,
+          "pairwise_annihilating": true,
+          "pass": true,
+          "projector_count": 5,
+          "projector_ranks": [
+            1,
+            2,
+            2,
+            1,
+            2
+          ],
+          "projector_weights": [
+            "-4*I",
+            "-3*I",
+            "-3*I",
+            "-2*I",
+            "-I"
+          ],
+          "sum_to_identity": true
+        },
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "central_weight": "-4*I",
+            "irreducible_dimension": 1,
+            "joint_dimension": 1,
+            "multiplicity": 1,
+            "sl2_highest_weight": 0
+          },
+          {
+            "casimir_eigenvalue": "3/8",
+            "central_weight": "-3*I",
+            "irreducible_dimension": 2,
+            "joint_dimension": 4,
+            "multiplicity": 2,
+            "sl2_highest_weight": 1
+          },
+          {
+            "casimir_eigenvalue": "0",
+            "central_weight": "-2*I",
+            "irreducible_dimension": 1,
+            "joint_dimension": 1,
+            "multiplicity": 1,
+            "sl2_highest_weight": 0
+          },
+          {
+            "casimir_eigenvalue": "3/8",
+            "central_weight": "-I",
+            "irreducible_dimension": 2,
+            "joint_dimension": 2,
+            "multiplicity": 1,
+            "sl2_highest_weight": 1
+          }
+        ],
+        "kernel_preserved": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit": "Np",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "primitive_center_coefficients_in_compact_basis": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          2
+        ],
+        "primitive_center_named_coefficients": {
+          "base_phase_lift": 2,
+          "compact_g2_13": 1,
+          "compact_g2_7": 1
+        },
+        "representation_commutators_match": true,
+        "stabilizer_center_dimension": 1,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 4,
+        "stabilizer_lie_algebra": "su(2) + u(1)",
+        "su2_restriction": {
+          "standard_doublets": 3,
+          "trivial_lines": 2
+        },
+        "weights_descend_to_su2_times_u1_mod_diagonal_z2": true
+      },
+      {
+        "casimir_characteristic_polynomial": "lambda**2*(8*lambda - 3)**6/262144",
+        "center_characteristic_polynomial": "lambda**8 + 20*I*lambda**7 - 171*lambda**6 - 814*I*lambda**5 + 2351*lambda**4 + 4200*I*lambda**3 - 4509*lambda**2 - 2646*I*lambda + 648",
+        "compact_algebra_dimension": 15,
+        "compact_domain_matrices_skew_symmetric": true,
+        "compact_orbit_dimension": 11,
+        "complex_fiber_dimension": 8,
+        "connected_stabilizer_group": {
+          "central_half_turn_centralizes_su2": true,
+          "central_half_turn_fixes_representative": true,
+          "central_half_turn_is_nonidentity_involution": true,
+          "connected_stabilizer_group": "U(2) = (SU(2) x U(1))/diagonal Z_2",
+          "g2_and_phase_generators_commute": true,
+          "g2_base_characteristic_polynomial": "lambda**8*(lambda**2 + 1)**8*(lambda**2 + 4)**4",
+          "g2_center_generator_satisfies_x_x2_plus_1_x2_plus_4": true,
+          "g2_domain_characteristic_polynomial": "lambda**8*(lambda**2 + 1)**8*(lambda**2 + 4)**4",
+          "pass": true,
+          "phase_generators_square_to_minus_identity": true,
+          "primitive_phase_coefficient": 2
+        },
+        "derived_killing_determinant": "-32768",
+        "derived_killing_eigenvalues": {
+          "-32": 3
+        },
+        "invariant_projectors": {
+          "all_idempotent": true,
+          "all_invariant": true,
+          "commutant_dimension": 7,
+          "pairwise_annihilating": true,
+          "pass": true,
+          "projector_count": 5,
+          "projector_ranks": [
+            1,
+            2,
+            2,
+            1,
+            2
+          ],
+          "projector_weights": [
+            "-4*I",
+            "-3*I",
+            "-3*I",
+            "-2*I",
+            "-I"
+          ],
+          "sum_to_identity": true
+        },
+        "irreducible_decomposition": [
+          {
+            "casimir_eigenvalue": "0",
+            "central_weight": "-4*I",
+            "irreducible_dimension": 1,
+            "joint_dimension": 1,
+            "multiplicity": 1,
+            "sl2_highest_weight": 0
+          },
+          {
+            "casimir_eigenvalue": "3/8",
+            "central_weight": "-3*I",
+            "irreducible_dimension": 2,
+            "joint_dimension": 4,
+            "multiplicity": 2,
+            "sl2_highest_weight": 1
+          },
+          {
+            "casimir_eigenvalue": "0",
+            "central_weight": "-2*I",
+            "irreducible_dimension": 1,
+            "joint_dimension": 1,
+            "multiplicity": 1,
+            "sl2_highest_weight": 0
+          },
+          {
+            "casimir_eigenvalue": "3/8",
+            "central_weight": "-I",
+            "irreducible_dimension": 2,
+            "joint_dimension": 2,
+            "multiplicity": 1,
+            "sl2_highest_weight": 1
+          }
+        ],
+        "kernel_preserved": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "mutation": "",
+        "orbit": "Nm",
+        "pass": true,
+        "point_fixed": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "primitive_center_coefficients_in_compact_basis": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          2
+        ],
+        "primitive_center_named_coefficients": {
+          "base_phase_lift": 2,
+          "compact_g2_13": 1,
+          "compact_g2_7": 1
+        },
+        "representation_commutators_match": true,
+        "stabilizer_center_dimension": 1,
+        "stabilizer_derived_dimension": 3,
+        "stabilizer_dimension": 4,
+        "stabilizer_lie_algebra": "su(2) + u(1)",
+        "su2_restriction": {
+          "standard_doublets": 3,
+          "trivial_lines": 2
+        },
+        "weights_descend_to_su2_times_u1_mod_diagonal_z2": true
+      }
+    ]
+  }
+}

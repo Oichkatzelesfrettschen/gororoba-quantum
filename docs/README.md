@@ -11,7 +11,7 @@ Placement, naming, linking and immutability rules for every new or moved documen
 | Area | Owns | Entry |
 |---|---|---|
 | Rules | agent doctrine, gate machinery, provider tables | [AGENTS.md](../AGENTS.md), [ci/AGENTS.md](../ci/AGENTS.md) |
-| Sources and papers | PDFs, licenses, one note per source, verifier | [INDEX.md](INDEX.md), [sources/README.md](sources/README.md) |
+| Sources and papers | PDFs, licenses, one note per source, verifier, reading-copy links | [INDEX.md](INDEX.md), [sources/README.md](sources/README.md), [sources/reading-copies.md](sources/reading-copies.md) |
 | Algebra and proofs | Cayley-Dickson conventions, rank strata, Rocq certificates | [algebra_circuit_rules.md](notes/algebra_circuit_rules.md) |
 | Circuit and QPU design | circuit designs, claim boundaries, QPU budgets | [DESIGN_NOTES.md](../gororoba_quantum/DESIGN_NOTES.md) |
 | IBM Heron r2 | Targets, transpilation, dynamic circuits, submission | [ibm_quantum/README.md](notes/ibm_quantum/README.md) |
@@ -180,6 +180,13 @@ differs from it only in the `cd_core.py` digest.
 | [2310.16903.md](notes/papers/2310.16903.md) | Silvestri et al. 2024 -- fiber Sagnac interferometer with two-photon entanglement measures Earth's rotation (715 m^2; 2.8 and 5.5 mrad) |
 | [1807.06205.md](notes/papers/1807.06205.md) | Planck 2018 results I: solar-system dipole velocity relative to the CMB (369.82 km/s) and its direction |
 | [2206.00570.md](notes/papers/2206.00570.md) | Dreissen et al. 2022 -- Yb+ composite-pulse Ramsey bounds on Lorentz violation at the 10^-21 level, sidereal modulation |
+| [ioannidis-2005-false-findings.md](notes/papers/ioannidis-2005-false-findings.md) | Ioannidis 2005 positive predictive value of a significant finding under bias and repeated testing, with the Table 4 reproduction |
+| [munafo-2017-reproducible-science.md](notes/papers/munafo-2017-reproducible-science.md) | Munafo et al. 2017 manifesto: preregistration, outcome switching, disclosure arithmetic, data masking and registered reports |
+| [asa-2016-p-value-statement.md](notes/papers/asa-2016-p-value-statement.md) | ASA 2016 six principles on p-values, from the ASA release (statement body unread) |
+| [diedenhofen-musch-2015-cocor.md](notes/papers/diedenhofen-musch-2015-cocor.md) | Diedenhofen and Musch 2015 cocor: tests for comparing independent and dependent correlations, Williams, Steiger, Meng and Zou formulas with a reproduction check |
+| [1910.06343.md](notes/papers/1910.06343.md) | Eisert et al. 2020 quantum certification and benchmarking: information, assumptions and complexity of each protocol family |
+| [2407.08828.md](notes/papers/2407.08828.md) | Proctor et al. benchmarking quantum computers: benchmark properties, drift and non-Markovian error, compilation gaming and error-mitigated results |
+| [quantum-journal-referee-instructions.md](notes/papers/quantum-journal-referee-instructions.md) | Quantum journal referee questions and editorial policies (web receipts) |
 | [quant-ph-0203033.md](notes/papers/quant-ph-0203033.md) | Peres, Scudo and Terno 2002 -- spin entropy of a free spin-1/2 particle is not Lorentz covariant |
 | [2109.12238.md](notes/papers/2109.12238.md) | Bothwell et al. 2022 -- gravitational redshift gradient resolved within a millimeter strontium sample (-1.09e-19 per mm predicted) |
 | [1105.4531.md](notes/papers/1105.4531.md) | Zych et al. 2011 -- interferometric visibility as a witness of general-relativistic proper time, V = |cos(Delta E Delta V Delta T / 2 hbar c^2)| |
@@ -224,6 +231,8 @@ differs from it only in the `cd_core.py` digest.
 | [evidence/a5-zero-divisor-strata/README.md](evidence/a5-zero-divisor-strata/README.md) | exact rank strata of the A_5 zero-divisor set: V(Q) u V(G), nullity = 28 - 2 rank C_z, two irreducible pieces per stratum, closure incidences and connected components, with an independent cd_core verification ([verification.md](evidence/a5-zero-divisor-strata/verification.md)); explicit equations and an independent covering in [a5-rank-strata-equations](evidence/a5-rank-strata-equations/README.md) |
 | [evidence/a5-rank-strata-equations/README.md](evidence/a5-rank-strata-equations/README.md) | explicit equations for every A_5 rank stratum (R_8 = W8 u Ehat with Ehat = E8-bar = {Q = 0, Delta = 0, rank [u; v; u ^ v] <= 2}, irreducible of dimension 11 and degree 24), the covering re-derived over Q with Singular and independent G_2 orbit facts, and ideal-membership certificates for every piece |
 | [evidence/a5-strata-regularity/README.md](evidence/a5-strata-regularity/README.md) | orbit stratification of the A_5 rank strata under G_2(C) x SO(2, C) x C^* (R_8 minus 0 is twelve orbits), the singular locus of every closure and of V(Q), V(G), a Whitney stratification, transverse germs and the normal link S^1 disjoint union S^3 of R_12 at x0, with an independent cd_core verification ([verification.md](evidence/a5-strata-regularity/verification.md)) |
+| [evidence/a5-kernel-bundles/README.md](evidence/a5-kernel-bundles/README.md) | kernel bundles of the A_5 strata of nullity at least 12 (roadmap item 5): kernel symmetry algebra, compact-orbit moduli, stabilizer representations, exact transition cocycle and equivalence classes, with an independent cd_core verification ([verification.md](evidence/a5-kernel-bundles/verification.md)) |
+| [design/a5-kernel-bundles-program.md](design/a5-kernel-bundles-program.md) | program goal for roadmap item 5, the kernel bundles of the A_5 zero-divisor strata: established facts, gaps (the kernel symmetry group, closed-form frames, unit-section topology, structure group), deliverables, behavior rules, and the [ledger](evidence/a5-kernel-bundles/ledger.md) the program keeps |
 | [coherent-error-families-report.md](notes/topics/coherent-error-families-report.md) | coherent error families, drift and Rocq replays |
 | [relativistic-metrology-scale.md](notes/topics/relativistic-metrology-scale.md) | the Belenos light cone as a mode-reachability set; relativistic and astronomical phases against the measured device instabilities, with the falsifiers of an astronomical coupling |
 | [pais-claims-falsification.md](notes/topics/pais-claims-falsification.md) | the Pais Superforce (c^4/G as unification) decomposed into Planck-unit identities, the measured alpha_s(M_Pl) shortfall, the Friedmann identity and the active-mass and Cherenkov refutations of permittivity engineering; the Pais patent equations against Maxwell, QED and general-relativity bounds; the NAWCAD null; the QET passivity ladder and its information-excess endpoint as the QPU-testable mechanism |
@@ -269,6 +278,7 @@ differs from it only in the `cd_core.py` digest.
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
 | [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
 | [runbooks/provider-credits.md](runbooks/provider-credits.md) | read-only daily snapshot of every provider's free allotment, alert thresholds and the systemd user timer |
+| [runbooks/critical-peer-review.md](runbooks/critical-peer-review.md) | reviewer checklist for quantum-hardware results: preregistration, multiplicity, effect size, dependent correlations, drift, provenance, simulation boundary and claim wording |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
 | [coherence-case-science-review.md](../plans/reviews/coherence-case-science-review.md) | coherence-window case, science review |
 | [coherence-case-submission-review.md](../plans/reviews/coherence-case-submission-review.md) | coherence-window case, submission-path review |
