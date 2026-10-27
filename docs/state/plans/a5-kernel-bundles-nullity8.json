@@ -53,6 +53,30 @@
             }
           ],
           "scope_sha256": "22bffd66deb9265655b056af0b0a0793cdbc17690a4e35a6ab5359870d32bdb5"
+        },
+        {
+          "result": "compact_orbit_ranks, w8_orbit_moduli and remaining_orbit_moduli --check pass: generic rank 15, complete invariants, moduli dimensions 8, 6, 6, 4, 4; the verifier confirms the ranks at independent moved points.",
+          "observed_at": "2026-10-27T06:12:28+00:00",
+          "revision": "21ecb864606f2e415a1afdafd48a13c26b4a673b",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/compact-orbit-ranks-result.json",
+              "sha256": "6f83755e2e2660a8fd2fd18ba4c845916d69cf6445e63e3700b3dcea6cfc2582"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/w8-orbit-moduli-result.json",
+              "sha256": "3a3875c7eeddcccc4af5f3651bb151409313fa6f391e44108fa372808bd6ae6a"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/remaining-orbit-moduli-result.json",
+              "sha256": "a08e1af4daa66a9c55eb89adf24d6e826c4812194ae21face7f61601907710a5"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/verification.json",
+              "sha256": "474b9eb6dc515c27866cf5755d7607be12a662f8e37d9648ca5b8a73ea5efe19"
+            }
+          ],
+          "scope_sha256": "22bffd66deb9265655b056af0b0a0793cdbc17690a4e35a6ab5359870d32bdb5"
         }
       ]
     },
@@ -85,6 +109,30 @@
             }
           ],
           "scope_sha256": "1a868e3a5b408e378c81e0e5311b287c9066c337d77b48477b8361a4c7a932c6"
+        },
+        {
+          "result": "stabilizer_fiber_samples, stabilizer_strata and boundary_specializations --check pass: trivial generic stabilizers, SU(2) strata 2 V_1 (W8) and 2 V_0 + V_1 (E8-bar, X_+-), the Iso circle, component groups, and path-dependent limits at thirteen of fifteen incidences; the verifier confirms them.",
+          "observed_at": "2026-10-27T06:12:28+00:00",
+          "revision": "21ecb864606f2e415a1afdafd48a13c26b4a673b",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/stabilizer-fiber-samples-result.json",
+              "sha256": "3e1dc533998eb53539a894fb2d3713e598f3ba18c34c6d34f502bca2493ea331"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/stabilizer-strata-result.json",
+              "sha256": "c9744fec60c50609378c8c979c2cfa20877f739dabb8e2abc969d16f9bdc20aa"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json",
+              "sha256": "78b56be630d124eb59334f6ffce9f1c83ae60dc50b0ec22d4ddf5f675affa1a7"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/verification.json",
+              "sha256": "474b9eb6dc515c27866cf5755d7607be12a662f8e37d9648ca5b8a73ea5efe19"
+            }
+          ],
+          "scope_sha256": "1a868e3a5b408e378c81e0e5311b287c9066c337d77b48477b8361a4c7a932c6"
         }
       ]
     },
@@ -102,6 +150,22 @@
             {
               "ref": "docs/evidence/a5-kernel-bundles-nullity8/unit-section-topology-result.json",
               "sha256": "1d2ed4bca3fcb761d1084cba7342421b2cb18d1b5cfa9ff2110898706c0eb673"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/verification.json",
+              "sha256": "474b9eb6dc515c27866cf5755d7607be12a662f8e37d9648ca5b8a73ea5efe19"
+            }
+          ],
+          "scope_sha256": "e2c66a0c7ef2b7666e0c8cb885870b7ce06c8650cf33a400c8752ab66496dc05"
+        },
+        {
+          "result": "unit_section_topology --check passes: complex stabilizer dimensions 4, 5, 5, 6, 6 and cores V_2(R^7) x S^1, V_2(R^7) x T^2, G_2; the verifier confirms the dimensions and core points.",
+          "observed_at": "2026-10-27T06:12:28+00:00",
+          "revision": "21ecb864606f2e415a1afdafd48a13c26b4a673b",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/unit-section-topology-result.json",
+              "sha256": "5bcebb5175d9d4e481034c899b698f590dbd67fe3f05dfa0c3b71c36f1c5850d"
             },
             {
               "ref": "docs/evidence/a5-kernel-bundles-nullity8/verification.json",
@@ -130,6 +194,26 @@
             {
               "ref": "docs/evidence/a5-kernel-bundles-nullity8/kernel-bundle-classes-result.json",
               "sha256": "7ae59c3cc87cee63302556be4dcedd905320fc59976aa2a6730e8e6ae2c2f0d3"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/verification.json",
+              "sha256": "474b9eb6dc515c27866cf5755d7607be12a662f8e37d9648ca5b8a73ea5efe19"
+            }
+          ],
+          "scope_sha256": "3407ae7eba8e57b5e8030efd5674f940ce785d6fd6e847ac366db1c772b8db9f"
+        },
+        {
+          "result": "kernel_transition_atlas and kernel_bundle_classes --check pass: U(4) Pfaffian cocycle and classes 2 xi, C^2 + xi with the order-two class, C^4 computed from producer records; the verifier confirms the classes.",
+          "observed_at": "2026-10-27T06:12:28+00:00",
+          "revision": "21ecb864606f2e415a1afdafd48a13c26b4a673b",
+          "evidence": [
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/kernel-transition-atlas-result.json",
+              "sha256": "e1e99192ebb3f99d84c0fed873299840b8da72b87d9a1a5983e8d06bb3f299c9"
+            },
+            {
+              "ref": "docs/evidence/a5-kernel-bundles-nullity8/kernel-bundle-classes-result.json",
+              "sha256": "da9bac66f86e49d920cbaa94ad4932e82192ee488375979e641c42ffbe1f8ca8"
             },
             {
               "ref": "docs/evidence/a5-kernel-bundles-nullity8/verification.json",
