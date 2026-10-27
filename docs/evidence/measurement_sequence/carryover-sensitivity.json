@@ -1,0 +1,67 @@
+{
+ "per_unit_delta": {
+  "every_member@0.002": {
+   "contrast": 0.08500482645779073,
+   "departure": 8.183108518577953e-05,
+   "settle_gap": 7.914099059425084e-05
+  },
+  "every_member@0.01": {
+   "contrast": 0.08642054438972036,
+   "departure": 1.77616159557914e-05,
+   "settle_gap": 1.9636371817455256e-05
+  },
+  "measure_all_only@0.002": {
+   "contrast": 0.7596926692156059,
+   "departure": 0.7596926692156614,
+   "settle_gap": 0.7288367009827823
+  },
+  "measure_all_only@0.01": {
+   "contrast": 0.7597030845251096,
+   "departure": 0.7597030845251207,
+   "settle_gap": 0.7289496180990618
+  },
+  "measure_n16_only@0.002": {
+   "contrast": 0.7596926692156059,
+   "departure": 0.7596926692156614,
+   "settle_gap": 0.7288367009827823
+  },
+  "measure_n16_only@0.01": {
+   "contrast": 0.7597030845251096,
+   "departure": 0.7597030845251207,
+   "settle_gap": 0.7289496180990618
+  },
+  "ro0_only@0.002": {
+   "contrast": 0.8833561264746104,
+   "departure": 0.8751703433597102,
+   "settle_gap": 0.05916603759903438
+  },
+  "ro0_only@0.01": {
+   "contrast": 0.8907198484450207,
+   "departure": 0.8824658280369935,
+   "settle_gap": 0.06049180837951473
+  },
+  "t1_d0_only@0.002": {
+   "contrast": 0.8833561264746104,
+   "departure": 1.0842123259778291,
+   "settle_gap": 1.6598882046944263
+  },
+  "t1_d0_only@0.01": {
+   "contrast": 0.8907198484449985,
+   "departure": 1.110529315144626,
+   "settle_gap": 1.7028601512653396
+  },
+  "unitary_n16_only@0.002": {
+   "contrast": 0.9565940938321416,
+   "departure": 0.0,
+   "settle_gap": 0.0
+  },
+  "unitary_n16_only@0.01": {
+   "contrast": 0.9566045091415676,
+   "departure": 0.0,
+   "settle_gap": 0.0
+  }
+ },
+ "qubits": 8,
+ "schema": "msq-carryover-sensitivity-v1",
+ "shots": 10000000
+}
