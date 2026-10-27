@@ -1,0 +1,119 @@
+{
+  "schema": "work-plan-v1",
+  "id": "cd-annihilator-lemma-9-5-rocq",
+  "kind": "investigation",
+  "summary": "Prove in Rocq, on the real pair tower, Lemma 9.5 of math/0511691: a zero divisor of level k + 1 and the annihilator of a nonzero element are orthogonal to span(1, i) with i = (0, 1) the adjoined unit, by the paper's swap (a, b) -> (b, a), and retain the receipts.",
+  "sources": [
+    "docs/notes/math-0511691.md",
+    "docs/notes/topics/cd-one-sided-inverses.md",
+    "proofs/CdAnnihilatorSymmetryReal.v",
+    "docs/evidence/cd-annihilator-symmetry-real/README.md"
+  ],
+  "state": "closed",
+  "reconciliation": {
+    "status": "verified",
+    "note": "Opened from the closed plan cd-annihilator-symmetry-real-rocq, whose resolution and the math-0511691 note left Lemma 9.5 proved in neither Rocq file. Scope read from the paper's Lemma 9.5 and its proof: (a, b)(c, d) = 0 with a imaginary gives (-d*, c)(b, a) = 0."
+  },
+  "scope": "proofs/CdAnnihilatorSymmetryReal.v: i_unit, dot_i_unit, imaginary_conj, swap_zero_divisor, swap_nonzero, lemma_9_5 and annihilator_orthogonal at every level k + 1 of the real tower of proofs/CdTowerReal.v; the bundle docs/evidence/cd-annihilator-symmetry-real/ with two added assumption queries, regenerated receipts and rebound source hashes; the [R] statements in the math-0511691 note, the one-sided-inverses note, the docs map and formalization.yaml. Corollary 2.9 (flexibility), Lemma 9.5 on the integer tower and a tower over an abstract ordered field stay out of scope.",
+  "owner": "Repository Rocq maintainer",
+  "next_action": "None; the plan is closed.",
+  "related": [
+    "cd-annihilator-symmetry-real-rocq",
+    "cd-annihilator-symmetry-rocq",
+    "cd-one-sided-inverses"
+  ],
+  "steps": [
+    {
+      "id": "lemma-proof",
+      "state": "done",
+      "action": "State i_unit k = (zero k, one k) and prove dot_i_unit, imaginary_conj, swap_zero_divisor, swap_nonzero, lemma_9_5 and annihilator_orthogonal in CdAnnihilatorSymmetryReal.v under rocq 9.3.0 with -w @all, by the paper's route through purity_left and kernel_swap.",
+      "acceptance": "Fails if rocq compile prints any output, if Print Assumptions on lemma_9_5 or annihilator_orthogonal lists an axiom other than ClassicalDedekindReals.sig_forall_dec and FunctionalExtensionality.functional_extensionality_dep, or if a step needs associativity or an induction on the level. Stop condition: a sign in the swap computation the tower's doubling does not close is recorded and ends the step.",
+      "receipts": [
+        {
+          "result": "CdAnnihilatorSymmetryReal.v compiles under rocq 9.3.0 on OCaml 5.5.1 with -w @all and no output; Print Assumptions on lemma_9_5 and annihilator_orthogonal lists exactly ClassicalDedekindReals.sig_forall_dec and FunctionalExtensionality.functional_extensionality_dep, as do the twelve earlier queries, and rocq check passes with an unchanged kernel.txt. swap_zero_divisor closes both halves of (-conj(d), c)(b, a) = 0 from the halves of (a, b)(c, d) = 0 by the linear laws and conj(a) = -a, with no induction on the level and no associativity.",
+          "observed_at": "2026-10-27T19:42:37+00:00",
+          "revision": "caa1d3720f7c896d929931f2aa4ae2cfd3b6d19a",
+          "evidence": [
+            {
+              "ref": "proofs/CdTowerReal.v",
+              "sha256": "5cb866c0e3d34da4d8ae14217ebd47e332cb86ca2e289069651e260b56334251"
+            },
+            {
+              "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+              "sha256": "c0bd8744d258d18c4ea0d056bd195d2951da1dfc3eeb058a21f5e89ba04e2f30"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/assumptions.txt",
+              "sha256": "eb9d156a1fa48d7bf0663d270eaae039231c58487b76c2c31821122ab808c392"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/kernel.txt",
+              "sha256": "882de7e58a24b8eb660b82644f9bd1351555365ca2c71004e57c6d431a8674e6"
+            }
+          ],
+          "scope_sha256": "aa726343e8ff93890669b1b0e0d09762b7d7300e634b8febf94126cb542bde91"
+        }
+      ]
+    },
+    {
+      "id": "bundle-and-notes",
+      "state": "done",
+      "action": "Add the two assumption queries to assumptions.v, regenerate assumptions.txt and kernel.txt, rebind source_hashes.sha256, extend the bundle README table, and record the [R] statements in docs/notes/math-0511691.md, docs/notes/topics/cd-one-sided-inverses.md, docs/README.md and formalization.yaml.",
+      "acceptance": "Fails if replay_rocq.sh departs from its receipts, if sha256sum -c rejects source_hashes.sha256, if tests/test_evidence_ledgers.py or tests/ci/test_rocq_ci_pins.py fails, if formalization.yaml fails the retained v0.4 schema, or if check_markdown_links.py reports a broken link.",
+      "receipts": [
+        {
+          "result": "replay_rocq.sh passes against the regenerated receipts (fourteen assumption queries, two axioms each) and sha256sum -c accepts source_hashes.sha256; tests/test_evidence_ledgers.py and tests/ci/test_rocq_ci_pins.py pass (16 tests) under the pinned interpreter; ci/check_rocq_ci_pins.py reports 14 bundles agreeing; formalization.yaml validates against the retained v0.4 schema with jsonschema 4.26.0 and lists lemma_9_5 among the main results; check_markdown_links.py resolves every link of 703 files.",
+          "observed_at": "2026-10-27T19:42:37+00:00",
+          "revision": "caa1d3720f7c896d929931f2aa4ae2cfd3b6d19a",
+          "evidence": [
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/replay_rocq.sh",
+              "sha256": "baadc680d44005a4a04d7606a5e9b3ff63ad469e07ce730d967fb06e32662279"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/source_hashes.sha256",
+              "sha256": "b030d38ca5b18dcfa867e5391eb1ebd6a1c822aec07528368904aec12cc85f7d"
+            },
+            {
+              "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
+              "sha256": "9a7b75f714bd9c37f9508cf1ffc0a1a844f09dcf7a984a0506dc5d8c1bd2ae7d"
+            },
+            {
+              "ref": "docs/notes/math-0511691.md",
+              "sha256": "823b2583d71162574392775bb3c7b815ade23db4433bce64549e2a0f26a72e43"
+            },
+            {
+              "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+              "sha256": "43de4cde2a285487f965758a5e2091e11e64f57dbd646cc7dbf11180a06bb413"
+            },
+            {
+              "ref": "formalization.yaml",
+              "sha256": "f25516395d04e28c47f84972920bbf5f2a730ecf13edf7550b89aa447e350c01"
+            }
+          ],
+          "scope_sha256": "4b0d921c3d5845dc25a796d2b0dc6f752656228114548905efac53bd9c969776"
+        }
+      ]
+    }
+  ],
+  "receipts": [
+    {
+      "result": "Both steps are done with receipts at the revision that carries the Lemma 9.5 theorems, the regenerated receipts and the note statements.",
+      "observed_at": "2026-10-27T19:42:37+00:00",
+      "revision": "caa1d3720f7c896d929931f2aa4ae2cfd3b6d19a",
+      "evidence": [
+        {
+          "ref": "proofs/CdAnnihilatorSymmetryReal.v",
+          "sha256": "c0bd8744d258d18c4ea0d056bd195d2951da1dfc3eeb058a21f5e89ba04e2f30"
+        },
+        {
+          "ref": "docs/evidence/cd-annihilator-symmetry-real/README.md",
+          "sha256": "9a7b75f714bd9c37f9508cf1ffc0a1a844f09dcf7a984a0506dc5d8c1bd2ae7d"
+        }
+      ],
+      "scope_sha256": "01f0804f4e7a496e9638a15187014ae4cd146489429c211617ff5626e5b9c2af"
+    }
+  ],
+  "disposition": "completed",
+  "resolution": "lemma_9_5 and annihilator_orthogonal hold at every level k + 1 of the real pair tower in proofs/CdAnnihilatorSymmetryReal.v, by the paper's swap (a, b)(c, d) = 0 -> (-conj(d), c)(b, a) = 0 and the purity lemma; every assumption query lists only the two Stdlib real-construction axioms, the bundle replays against its regenerated receipts, and the notes, the docs map and formalization.yaml record the theorem. Corollary 2.9 (flexibility), Lemma 9.5 on the integer tower and a tower over an abstract ordered field remain without a Rocq source."
+}

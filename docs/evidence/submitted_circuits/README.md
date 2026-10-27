@@ -68,6 +68,13 @@ The [pin and window-dose successor](comparison-pin-window-doses.json) rebinds th
 against the `live_run.py` that carries both changes; it differs from its two siblings only in the `live_run.py`
 digest and the offline validation time.
 
+The [idle-readout successor](comparison-idle-readout.json) rebinds the same retrieval offline after `live_run.py`
+gained role-patterned members and listed `idle_readout.py` in its experiment manifest.
+
+The [idle-readout and window-dose successor](comparison-idle-readout-window-doses.json) rebinds the same
+retrieval offline against the `live_run.py` that carries the role-patterned members and the window doses; it
+differs from the idle-readout successor only in the `live_run.py` digest and the offline validation time.
+
 The [adaptive-envelope successor](comparison-adaptive-envelope.json) rebinds the idle-penalty retrieval offline
 after `live_run.py` gained the measurement-sequence envelope's approval, fallback and replan contract beside the
 window doses; its 41 rows equal the window-dose successor's.
