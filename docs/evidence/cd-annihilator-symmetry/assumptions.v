@@ -1,0 +1,12 @@
+Require CdAnnihilatorSymmetry.
+Print Assumptions CdAnnihilatorSymmetry.dot_self_zero.
+Print Assumptions CdAnnihilatorSymmetry.norm_mul.
+Print Assumptions CdAnnihilatorSymmetry.adjoint.
+Print Assumptions CdAnnihilatorSymmetry.dot_mul_self_r.
+Print Assumptions CdAnnihilatorSymmetry.dot_mul_self_l.
+Print Assumptions CdAnnihilatorSymmetry.purity_left.
+Print Assumptions CdAnnihilatorSymmetry.purity_right.
+Print Assumptions CdAnnihilatorSymmetry.kernel_swap.
+Print Assumptions CdAnnihilatorSymmetry.kernel_equality.
+Print Assumptions CdAnnihilatorSymmetry.right_inverse_affine.
+Print Assumptions CdAnnihilatorSymmetry.direct_finiteness.

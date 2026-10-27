@@ -2137,6 +2137,13 @@
       "question": "Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?"
     },
     {
+      "id": "kingston-measurement-sequence-scatter-floor",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T031010.724660Z",
+      "family": "measurement-sequence-diagnostic",
+      "question": "On 38 pairwise uncoupled ibm_kingston qubits (the main pinching family's eight and thirty chosen by a calibration-only rule), how far does the readout-corrected P0 of the 32-sx unitary sequence at N = 16 lie from the pinching analysis's Bloch-iteration prediction, qubit by qubit, and does the residual follow T2 as the drive-dephasing lead from IQM Garnet predicts?"
+    },
+    {
       "id": "iqm-garnet-mock-qet-ladder-accept",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept",
@@ -4472,7 +4479,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
+          "sha256": "6969029977aaf3c759e668a9497b00d3ee97b6a63881a61c0275d15e8ab8dcee"
         }
       ],
       "documents": [
@@ -5666,7 +5673,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
+          "sha256": "6969029977aaf3c759e668a9497b00d3ee97b6a63881a61c0275d15e8ab8dcee"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -10750,8 +10757,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-8/result.json",
-          "sha256": "358a3b6bbf7e6bb77848d1a3648846ec50b34010054a5dd546097b0be502d2cb"
+          "path": "docs/evidence/algebra-device-conjectures-9/result.json",
+          "sha256": "3348b82dc3897dc4616d839c0e2e08ab3d13ebdb55c9b55874797e2ffba84199"
         }
       ],
       "gates": {
@@ -11367,6 +11374,41 @@
         "kingston-qet-window-phase-static",
         "kingston-qet-compensated-information-excess",
         "hw-n21-feedback-null-scheduled-idle"
+      ]
+    },
+    {
+      "id": "kingston-gate-model-scatter-floor",
+      "statement": "On ibm_kingston (calibration 2026-10-25T19:36:09-07:00; one static job of six PUBs at 8192 shots over 38 pairwise uncoupled qubits, 15 s charged) the readout-corrected P0 of the 32-sx unitary sequence at N = 16 differs from the pinching analysis's sign-pooled Bloch-iteration prediction by a root-mean-square of 0.0152 over all 38 informative qubits, 0.0188 over the eight main qubits and 0.0141 over the thirty further qubits, against a statistical root-mean-square standard error of 0.0024. The preregistered floor, the larger of the all-qubit and main-qubit values, is 0.018784. The mean residual is +0.0110: the model underpredicts P0 on 32 of 38 qubits (all eight main qubits), by up to +0.039 on q91 and +0.034 on q45, and overpredicts it on six. The residual does not follow T2 in the drive-dephasing lead's direction: its Spearman correlation with T2 is -0.29 (two-sided p 0.080; 9 of the 12 longest-T2 qubits positive, 2 of the 12 shortest negative) and with the sx error -0.33 (p 0.044).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One calibration window, one job, one backend; the floor is the root-mean-square of a model residual that includes counting noise, and it measures the sign-even part of the gate-model error because the pooled unitary arm is blind to the first-order axis tilt. The mean residual is positive, so the model underpredicts P0 systematically on this device and the floor mixes a common offset (+0.011) with qubit-to-qubit scatter. The correlations come from 38 qubits chosen by readout error, rank-based with a t-approximation p value, and are descriptive: the T2 test does not support the Garnet drive-dephasing lead and neither establishes a mechanism nor excludes one. The model takes the Target T1 at execution and the planning excitation, not a fit.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T031010.724660Z/collect.json",
+          "sha256": "0fd6b3a2213e01f9b7aea7f221631f5c0416ff69becbde14dde1c84ef950af90"
+        },
+        {
+          "path": "results/live/2026-10-26T031010.724660Z/record.json",
+          "sha256": "89d3b609b45284bbdcd38219b5a441752185425420687eefcbc4b0303be3dff5"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/scatter-floor.json",
+          "sha256": "c39c5b7202fd6d2cd44629a86eed1402a0d234e95502540f37c8216bccc3c080"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/minimum-detectable-measured-floor.json",
+          "sha256": "4d3d6a7a4031e3bcda5f4b21c5f5d4c2bc1cc95239874e2973d66ea74a63e33d"
+        }
+      ],
+      "gates": {
+        "core-msq-scatter-floor-replay": "replay"
+      },
+      "documents": [
+        "docs/design/measurement-sequence-pinching.md"
+      ],
+      "acquisitions": [
+        "kingston-measurement-sequence-scatter-floor"
       ]
     },
     {

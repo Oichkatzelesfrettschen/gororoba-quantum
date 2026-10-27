@@ -70,6 +70,7 @@ RECORD_CHECKS = (
     ("scripts/cd_two_blade_blocks.py", ".", "--check docs/evidence/box_kite_census/two_blade_blocks.json", 5),
     ("scripts/bdsc_diagnostic.py", ".", "--check", 5),
     ("scripts/cd_star_lattice.py", ".", "--check docs/evidence/cd-star-lattice/census.json", 6),
+    ("scripts/cd_one_sided_inverses.py", ".", "--check docs/evidence/cd-one-sided-inverses/record.json", 8),
     ("scripts/ascella_coherence_request.py", ".", "--check", 7),
     ("scripts/heron_feedforward_latency.py", ".", "--check", 7),
     ("scripts/box_kite_follow_design.py", ".", "--check docs/evidence/box_kite_follow_design/design.json", 5),

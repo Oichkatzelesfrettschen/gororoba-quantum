@@ -20,13 +20,31 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from qiskit import QuantumCircuit, transpile
 from qiskit.exceptions import QiskitError
+from qiskit.transpiler import Target
 
 import law_encoding
 import local_compute
+import measurement_sequence_analysis
+import measurement_sequence_scatter
+import msq_envelope
+import msq_envelope_analysis
 import n21_exact_planning
 import parallel
 from diagnostic_experiments import (
+    MSQ_ARM_STEPS,
+    MSQ_DYNAMIC_STEPS,
+    MSQ_FAMILY,
+    MSQ_PREREADOUT_SECONDS,
+    MSQ_SETTLE_SECONDS,
+    MSQ_STEPS,
+    MSQ_T1_MICROSECONDS,
+    MSQ_THETA,
+    MSQD_ARM_STEPS,
+    MSQD_FAMILY,
+    MSQE_FAMILY,
+    MSQE_RESET_CONTROLS,
     N21_FAMILIES,
     N21_OVERLAP_ARM,
     PATCH_FAMILIES,
@@ -37,6 +55,10 @@ from diagnostic_experiments import (
     STATE_PREP_SOURCE_RECORD,
     family_contracts,
     folded_group,
+    measurement_sequence_groups,
+    msq_diagnostic_groups,
+    msqe_groups,
+    msqe_pattern_bits,
     n21_group,
     n21_orbit_rca_group,
     state_prep_arms,
@@ -69,13 +91,18 @@ from latency_recovery import (
 )
 from packing import Replica
 from qpe_diagnostics import (
+    compact_ideal_circuit,
     has_herald,
     herald_measurement,
     ideal_compiled_probabilities,
     n21_dose_key,
+    n21_dose_name,
     n21_dose_violations,
     n21_ramsey_multiple,
     n21_segmented_key,
+    n21_work_ramsey_key,
+    oracle_key,
+    phase_marginal,
 )
 
 # The ground Ramsey sweep's preregistered analysis. Its source closure (the
@@ -155,11 +182,15 @@ def analyzer_closure(entry: Path, directories: tuple[Path, ...]) -> dict[str, An
 def contract_configuration(family: str, configuration: dict[str, Any]) -> dict[str, Any]:
     """family_contracts' configuration keyword for a family whose contracts read its candidate's configuration.
 
-    state-prep-control reads its named qubits and n21-orbit-rca its herald
-    outcome width there; prepare and live_run.approved_family_design both
+    state-prep-control and the measurement-sequence families read their named qubits and
+    n21-orbit-rca its herald outcome width there; prepare and live_run.approved_family_design both
     pass this, so a reused approved design rebuilds the approved contracts.
     """
-    return {"configuration": configuration} if family in (STATE_PREP_FAMILY, "n21-orbit-rca") else {}
+    return (
+        {"configuration": configuration}
+        if family in (STATE_PREP_FAMILY, MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY, "n21-orbit-rca")
+        else {}
+    )
 
 
 def settings(args: Any) -> dict[str, Any]:
@@ -167,8 +198,8 @@ def settings(args: Any) -> dict[str, Any]:
 
     A declared preparation excitation, the empirical-Bernstein opt-in, a
     state-prep arm selection, the n21-orbit-rca initialization herald, its
-    overlap split, its ground-control split, its window doses, its pinned layout and the
-    latency-recovery delays join them only when given, so a plan without them keeps its settings unchanged.
+    overlap split, its ground-control split, its window doses, its pinned layout, the latency-recovery delays and
+    the envelope's layout width join them only when given, so a plan without them keeps its settings unchanged.
     """
     excitation = getattr(args, "prep_excitation", None)
     bernstein = {"empirical_bernstein": True} if getattr(args, "empirical_bernstein", False) else {}
@@ -181,11 +212,14 @@ def settings(args: Any) -> dict[str, Any]:
     sweep = getattr(args, "segmented_sweep", None)
     segmented = {"segmented_sweep": sweep, "segmented_analyzer_closure": segmented_analyzer_closure()} if sweep else {}
     doses = getattr(args, "window_doses_dt", None)
-    dosed = {"window_doses": list(doses)} if doses else {}
+    dosed: dict[str, Any] = {"window_doses": list(doses)} if doses else {}
+    if getattr(args, "detuning_sign", False):
+        dosed["detuning_sign"] = True
     latency = {
         name: getattr(args, name) for name in ("latency_dt", "window_dt") if getattr(args, name, None) is not None
     }
     pin = getattr(args, "pin_layout", None)
+    width = getattr(args, "layout_width", None)
     return (
         {
             name: getattr(args, name, default)
@@ -222,6 +256,7 @@ def settings(args: Any) -> dict[str, Any]:
         | segmented
         | dosed
         | latency
+        | ({"layout_width": width} if width is not None else {})
         | (
             {
                 "pin_layout": {"backend": pin["backend"], "qubits": list(pin["qubits"])}
@@ -457,6 +492,169 @@ def window_doses_of(members: Any) -> tuple[int, ...]:
     return tuple(sorted({key[1] for key in found if key is not None}))
 
 
+def detuning_sign_of(members: Any) -> bool:
+    """Whether a group is the detuning-sign test, which alone holds work Ramsey arms."""
+    return any(n21_work_ramsey_key(member.name) is not None for member in members)
+
+
+# A quarter-sized turn keeps every probed phase response inside (-pi, pi).
+DOSE_ROLE_PROBE_RAD = 0.4
+
+
+def _turned(isa: Any, physical: int | None, angle: float) -> Any:
+    """isa reduced to its active qubits, with a Z turn of angle spread over physical's delays by duration."""
+    from qiskit import QuantumCircuit
+
+    def wires(instruction: Any) -> list[int]:
+        return [isa.find_bit(qubit).index for qubit in instruction.qubits]
+
+    active = sorted({q for inner in isa.data if inner.operation.name != "barrier" for q in wires(inner)})
+    index = {q: k for k, q in enumerate(active)}
+    held = sum(
+        int(inner.operation.duration)
+        for inner in isa.data
+        if inner.operation.name == "delay" and physical in wires(inner)
+    )
+    out = QuantumCircuit(len(active))
+    for register in isa.cregs:
+        out.add_register(register)
+    for inner in isa.data:
+        qubits = wires(inner)
+        if inner.operation.name == "barrier":
+            kept = [index[q] for q in qubits if q in index]
+            if kept:
+                out.barrier(*kept)
+        elif inner.operation.name == "delay":
+            if physical in qubits and held:
+                out.rz(angle * int(inner.operation.duration) / held, index[physical])
+        else:
+            out.append(inner.operation, [index[q] for q in qubits], inner.clbits)
+    return out
+
+
+def _probe_marginal(circuit: Any) -> np.ndarray:
+    """The exact phase-register marginal of one reduced probe circuit."""
+    from qiskit_aer.noise import NoiseModel
+
+    import dynamic_density
+
+    return phase_marginal(dynamic_density.probabilities(circuit, NoiseModel()))
+
+
+def _orbit_read(marginal: np.ndarray) -> float:
+    return float(
+        (marginal[0] - marginal[2]) / (marginal[0] + marginal[2])
+        - (marginal[1] - marginal[3]) / (marginal[1] + marginal[3])
+    )
+
+
+def _ramsey_read(marginal: np.ndarray) -> float:
+    return float(marginal[0] - marginal[2])
+
+
+def _responses(layout: list[int], pairs: list[tuple[Any, Any]], read: Callable[[np.ndarray], float]) -> list[list[int]]:
+    """Per (cosine, sine) pair of compiled members, each logical qubit's phase response, in units of the probe turn on
+    its initial physical qubit: -1, 0 or 1.
+
+    Every probe circuit is independent, so the whole batch evaluates in one
+    pooled map, and each pair's phase is atan2 of its sine and cosine reads.
+    """
+    turns: tuple[int | None, ...] = (None, *layout)
+    circuits = [_turned(isa, physical, DOSE_ROLE_PROBE_RAD) for pair in pairs for physical in turns for isa in pair]
+    reads = [read(marginal) for marginal in parallel.ordered_map(_probe_marginal, circuits, min_items=2)]
+    out = []
+    for k in range(len(pairs)):
+        row = reads[2 * len(turns) * k : 2 * len(turns) * (k + 1)]
+        base, *phases = (math.atan2(row[2 * j + 1], row[2 * j]) for j in range(len(turns)))
+        signs = []
+        for physical, phase in zip(layout, phases, strict=True):
+            turn = math.remainder(phase - base, 2 * math.pi) / DOSE_ROLE_PROBE_RAD
+            if abs(turn - round(turn)) > 0.05 or round(turn) not in (-1, 0, 1):
+                raise ValueError(f"the probe turn on qubit {physical} moves the phase by {turn:.3f} turns")
+            signs.append(round(turn))
+        out.append(signs)
+    return out
+
+
+def dose_roles(choice: Any) -> dict[str, int]:
+    """The logical index whose initial qubit holds each work role during the dose of a compiled detuning-sign plan.
+
+    Routing the orbit's controlled swaps moves the work roles, so the roles
+    come from the compiled arms: a Z turn of one initial physical qubit
+    during the dose turns the orbit's quadrature pair by plus the turn on the
+    qubit that holds the work bit for 16, by minus it on the qubit for 1,
+    and leaves it on every other qubit (tests/gororoba_quantum/
+    test_detuning_sign.py), evaluated exactly at every nonzero dose. Every
+    dose must give the same roles.
+    """
+    isas = {member.name: isa for member, isa in zip(choice.group.members, choice.isas, strict=True)}
+    layout = list(choice.layout)
+    pairs = [
+        (isas[n21_dose_name("window_dose", dose, False)], isas[n21_dose_name("window_dose_y", dose, False)])
+        for dose in window_doses_of(choice.group.members)[1:]
+    ]
+    found = {tuple(signs) for signs in _responses(layout, pairs, _orbit_read)}
+    if len(found) != 1:
+        raise ValueError(f"the orbit arms hold the work roles on different qubits across doses: {sorted(found)}")
+    (signs,) = found
+    if sorted(signs) != [-1, 0, 0, 1]:
+        raise ValueError(f"the orbit's dose responds to the initial qubits {layout} as {list(signs)}")
+    return {"one": signs.index(-1), "sixteen": signs.index(1)}
+
+
+def detuning_roles_choice(runtime: Any, candidate: Any, windows: dict[str, Any]) -> tuple[Any, dict[str, Any]]:
+    """Rebuild a routed detuning-sign candidate with its Ramsey arms on the dose-time work qubits.
+
+    The orbit arms keep their compiled circuits; only the Ramsey arms
+    compile again, and each must turn with its own role's qubit alone.
+    """
+    roles = dose_roles(candidate)
+    group = n21_orbit_rca_group(
+        windows["window_delay_dt"],
+        windows["echo_half_dt"],
+        True,
+        window_doses=window_doses_of(candidate.group.members),
+        detuning_sign=True,
+        dose_roles=roles,
+    )
+    previous = {member.name: isa for member, isa in zip(candidate.group.members, candidate.isas, strict=True)}
+    if [member.name for member in group.members] != list(previous):
+        raise runtime.LiveRunError("the dose-role rebuild changed the detuning-sign members")
+    snapshot = candidate.snap
+    if snapshot.admission_target is None:
+        snapshot.admission_target = runtime.build_admission_target(snapshot)
+    get_plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
+    compiler = MemberCompiler(snapshot.admission_target, candidate.seed, get_plugin() if get_plugin else None)
+    # The Ramsey arms are independent compilations; ordered_map returns them in member order.
+    ramsey = [member for member in group.members if n21_work_ramsey_key(member.name) is not None]
+    fresh = iter(
+        parallel.ordered_map(compiler, [(member.circuit, list(candidate.layout)) for member in ramsey], min_items=2)
+    )
+    isas = [
+        next(fresh) if n21_work_ramsey_key(member.name) is not None else previous[member.name]
+        for member in group.members
+    ]
+    compiled = {member.name: isa for member, isa in zip(group.members, isas, strict=True)}
+    arms = [
+        (member.name, key[0])
+        for member in group.members
+        if (key := n21_work_ramsey_key(member.name)) is not None and key[1] == "x" and key[2]
+    ]
+    pairs = [(compiled[name], compiled[name.replace("_x_d", "_y_d")]) for name, _ in arms]
+    for (name, role), signs in zip(arms, _responses(list(candidate.layout), pairs, _ramsey_read), strict=True):
+        if signs != [1 if logical == roles[role] else 0 for logical in range(len(candidate.layout))]:
+            raise runtime.LiveRunError(f"{name} does not turn with the dose-time qubit of {role}")
+    violations = [reason for isa in isas for reason in runtime.compiled_violations(isa, candidate.snap)]
+    if violations:
+        raise runtime.LiveRunError(str(violations))
+    scores = [runtime.layout_score(isa, candidate.snap.backend.target) for isa in isas]
+    if any(score <= 0 for score in scores):
+        raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero on layout {candidate.layout}")
+    joint = math.exp(sum(math.log(score) for score in scores) / len(scores))
+    rebuilt = runtime.Choice(group, candidate.snap, candidate.seed, candidate.layout, isas, scores, joint)
+    return rebuilt, windows | {"dose_roles": roles}
+
+
 def window_dose_timing_violations(runtime: Any, snapshot: Any, doses: tuple[int, ...]) -> None:
     """Raise unless every dose, and every echo quarter of it, plays as a Target delay."""
     target = snapshot.backend.target
@@ -549,6 +747,7 @@ def _control_windows(
         ramsey_windows=ramsey,
         segmented=segmented,
         window_doses=doses,
+        detuning_sign=detuning_sign_of(candidate.group.members),
     )
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
@@ -1063,6 +1262,292 @@ def measurement_delay(runtime: Any, snapshot: Any, physical_qubit: int) -> int:
     return granularity * math.ceil(float(duration) / float(target.dt) / granularity)
 
 
+def rounded_delay(runtime: Any, snapshot: Any, seconds: float) -> int:
+    """seconds in dt, rounded up to the Target's timing granularity; zero stays zero."""
+    target = snapshot.backend.target
+    if target.dt is None or target.dt <= 0:
+        raise runtime.LiveRunError("the measurement-sequence idles need a positive Target dt")
+    granularity = max(1, int(target.granularity))
+    return granularity * math.ceil(seconds / float(target.dt) / granularity)
+
+
+def settle_delay(runtime: Any, snapshot: Any) -> int:
+    """MSQ_SETTLE_SECONDS in dt, rounded up to the Target's timing granularity."""
+    return rounded_delay(runtime, snapshot, MSQ_SETTLE_SECONDS)
+
+
+def prereadout_delay(runtime: Any, snapshot: Any) -> int:
+    """MSQ_PREREADOUT_SECONDS in dt, rounded up to the Target's timing granularity."""
+    return rounded_delay(runtime, snapshot, MSQ_PREREADOUT_SECONDS)
+
+
+class MemberCompiler:
+    """Transpile one (circuit, initial layout) onto the admission Target, as live_run._compile does for that layout.
+
+    The worker receives the Target, the seed and the backend's default translation stage plugin
+    rather than the backend: a runtime backend holds its service session, which stays in the
+    parent. transpile reads the backend for nothing else once a Target is given.
+    """
+
+    def __init__(self, target: Target, seed: int, translation_method: str | None) -> None:
+        self.target = target
+        self.seed = seed
+        self.translation_method = translation_method
+
+    def __call__(self, item: tuple[QuantumCircuit, list[int]]) -> QuantumCircuit:
+        import live_run
+
+        circuit, layout = item
+        try:
+            return transpile(
+                circuit,
+                target=self.target,
+                optimization_level=live_run.OPT_LEVEL,
+                seed_transpiler=self.seed,
+                initial_layout=layout,
+                translation_method=self.translation_method,
+            )
+        except BaseException as error:
+            if type(error).__name__ != "PanicException":
+                raise
+            raise live_run.CompilePanic(f"{circuit.name}: transpiler panic ({error})") from None
+
+
+def measurement_sequence_candidates(
+    runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
+) -> list[tuple[list[Any], dict[str, Any]]]:
+    """Compile every member on its named qubit of each eligible snapshot, or record why the snapshot is refused.
+
+    --layout names the qubits, one pinned placement each. The delay arm idles
+    each step for the qubit's calibrated measure duration (measurement_delay),
+    so groups are built per snapshot and the configuration records the
+    durations that record_groups rebuilds them from. A calibration that
+    excludes a named qubit refuses the snapshot.
+    """
+    diagnostic = args.family == MSQD_FAMILY
+    envelope = args.family == MSQE_FAMILY
+    declared = getattr(args, "layout", None)
+    if declared is None and not envelope:
+        raise runtime.LiveRunError(f"{args.family} needs --layout: it has no retained default qubits")
+    qubits = [int(qubit) for qubit in declared] if declared is not None else []
+    if envelope:
+        width = int(args.layout_width)
+        # Every member holds a terminal reset, so every PUB is dynamic: the main family's rows, two reset controls
+        # and the width tier's patterns.
+        expected_kinds = ["dynamic"] * (
+            4 * len(MSQ_STEPS)
+            + 4
+            + 1
+            + len(MSQ_T1_MICROSECONDS)
+            + 4 * len(MSQ_DYNAMIC_STEPS)
+            + 4
+            + len(MSQE_RESET_CONTROLS)
+            + len(msqe_pattern_bits(width))
+        )
+    elif diagnostic:
+        # Four signed unitary members, ro0 and ro1, all static: six PUBs whatever the qubit count.
+        expected_kinds = ["static"] * 6
+    else:
+        expected_kinds = sorted(
+            ["static"] * (4 * len(MSQ_STEPS) + 4 + 1 + len(MSQ_T1_MICROSECONDS))
+            + ["dynamic"] * (4 * len(MSQ_DYNAMIC_STEPS) + 4)
+        )
+    candidates = []
+    for snapshot in snapshots:
+        try:
+            if envelope:
+                if snapshot.name != msq_envelope.ENVELOPE_BACKEND:
+                    raise runtime.LiveRunError(f"the envelope runs on {msq_envelope.ENVELOPE_BACKEND} only")
+                envelope_calibration = msq_envelope.calibration_from_snapshot(snapshot)
+                qubits = msq_envelope.layout_rule(
+                    envelope_calibration["qubits"],
+                    envelope_calibration["excluded"],
+                    [tuple(edge) for edge in envelope_calibration["edges"]],
+                    width,
+                )
+            outside = [qubit for qubit in qubits if qubit < 0 or qubit >= snapshot.backend.target.num_qubits]
+            excluded = sorted(set(qubits) & set(snapshot.excluded_qubits))
+            if outside or excluded:
+                raise runtime.LiveRunError(f"qubits {outside} lie outside the device; calibration excludes {excluded}")
+            prereadouts = {qubit: prereadout_delay(runtime, snapshot) for qubit in qubits}
+            if diagnostic:
+                delays, settles, t1_delays = {}, {}, [0]
+                calibration = measurement_sequence_scatter.calibration_from_snapshot(snapshot)
+                faults = measurement_sequence_scatter.layout_violations(
+                    qubits, calibration["edges"], set(calibration["excluded"])
+                )
+                if faults:
+                    raise runtime.LiveRunError("; ".join(faults))
+                groups = msq_diagnostic_groups(qubits, prereadouts)
+            else:
+                delays = {qubit: measurement_delay(runtime, snapshot, qubit) for qubit in qubits}
+                settles = {qubit: settle_delay(runtime, snapshot) for qubit in qubits}
+                t1_delays = [
+                    rounded_delay(runtime, snapshot, microseconds * 1e-6) for microseconds in MSQ_T1_MICROSECONDS
+                ]
+                build = msqe_groups if envelope else measurement_sequence_groups
+                groups = build(qubits, delays, settles, prereadouts, t1_delays)
+            if snapshot.admission_target is None:
+                snapshot.admission_target = runtime.build_admission_target(snapshot)
+            get_plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
+            compiler = MemberCompiler(
+                snapshot.admission_target, runtime.SEED_TRANSPILER, get_plugin() if get_plugin else None
+            )
+            # The members are independent compilations; ordered_map returns them in member order.
+            work = [
+                (member.circuit, [int(group.name.rsplit("_q", 1)[1])]) for group in groups for member in group.members
+            ]
+            compiled = iter(parallel.ordered_map(compiler, work, min_items=2))
+            choices = []
+            for group in groups:
+                qubit = int(group.name.rsplit("_q", 1)[1])
+                isas = [next(compiled) for _ in group.members]
+                for member, isa in zip(group.members, isas, strict=True):
+                    if runtime._physical(isa) != [qubit]:
+                        raise runtime.LiveRunError(f"{group.name}: compiled onto {runtime._physical(isa)}")
+                    violations = runtime.compiled_violations(isa, snapshot)
+                    if violations:
+                        raise runtime.LiveRunError(f"{group.name}: {violations}")
+                    operations = isa.count_ops()
+                    arm = member.name.split("_")[1]
+                    # The envelope's terminal resets and the reset controls' mid-circuit reset survive compilation.
+                    resets_expected = (2 if arm in MSQE_RESET_CONTROLS else 1) if envelope else 0
+                    if operations.get("reset", 0) != resets_expected:
+                        raise runtime.LiveRunError(
+                            f"{member.name}: compiled {operations.get('reset', 0)} resets, not {resets_expected}"
+                        )
+                    if arm in MSQE_RESET_CONTROLS:
+                        measures, delays_expected, steps = 2, 1, 0
+                    elif arm.startswith("pat"):
+                        measures, delays_expected, steps = 1, 1, 0
+                    elif arm == "ro0":
+                        measures, delays_expected, steps = 1, 1, 0
+                    elif arm == "t1":
+                        index = int(member.name.split("_d")[1].split("_")[0])
+                        measures, delays_expected = 1, 1 + int(t1_delays[index] > 0)
+                        steps = 0
+                    else:
+                        steps = int(member.name.split("_n")[1].split("_")[0])
+                        measures = {"measure": steps + 1, "delay": 1, "unitary": 1, "settle": steps + 1}[arm]
+                        # Every member idles once before its final measurement.
+                        delays_expected = 1 + (steps if arm in ("delay", "settle") else 0)
+                    if operations.get("measure", 0) != measures or operations.get("delay", 0) != delays_expected:
+                        raise runtime.LiveRunError(
+                            f"{member.name}: the compiled circuit changed its measures or delays"
+                        )
+                    # A generic rx compiles to two sx; the barriers keep the unitary arm's rotations unmerged,
+                    # where without them the run of rx gates fuses into one rotation of two sx in all.
+                    if arm == "unitary" and (
+                        operations.get("sx", 0) != 2 * steps or operations.get("barrier", 0) != steps - 1
+                    ):
+                        raise runtime.LiveRunError(f"{member.name}: the compiled rotations merged: {dict(operations)}")
+                scores = [runtime.layout_score(isa, snapshot.backend.target) for isa in isas]
+                if any(score <= 0 for score in scores):
+                    raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero")
+                choice = runtime.Choice(
+                    group,
+                    snapshot,
+                    runtime.SEED_TRANSPILER,
+                    [qubit],
+                    isas,
+                    scores,
+                    math.exp(sum(math.log(score) for score in scores) / len(scores)),
+                )
+                runtime._set_entries(
+                    choice,
+                    [Replica(0, {qubit: qubit}, min(scores))],
+                    runtime.ReplicaPolicy(args.replica_floor, 1, False, True),
+                )
+                choices.append(choice)
+            pubs = runtime.execution_pubs(choices)
+            kinds = sorted(pub.kind for pub in pubs)
+            if kinds != expected_kinds:
+                raise runtime.LiveRunError(f"the members fused into PUB kinds {kinds}, not {expected_kinds}")
+        except (runtime.LiveRunError, QiskitError, ValueError) as error:
+            trace.setdefault("family_rejections", []).append(
+                {"backend": snapshot.name, "qubits": qubits, "reason": str(error)}
+            )
+            continue
+        if diagnostic:
+            candidates.append(
+                (
+                    choices,
+                    {
+                        "name": MSQD_FAMILY,
+                        "qubits": qubits,
+                        "layout_source": "declared",
+                        "main_qubits": [q for q in qubits if q in measurement_sequence_scatter.MSQD_MAIN_QUBITS],
+                        "extra_qubits": [q for q in qubits if q not in measurement_sequence_scatter.MSQD_MAIN_QUBITS],
+                        "arms": dict(MSQD_ARM_STEPS),
+                        "total_rotation_rad": MSQ_THETA,
+                        "steps": [16],
+                        "prereadout_delay_dt": {str(qubit): dt for qubit, dt in prereadouts.items()},
+                        "t1_delays_dt": t1_delays,
+                        "selection_rule": measurement_sequence_scatter.SELECTION_RULE,
+                        "floor_rule": measurement_sequence_scatter.FLOOR_RULE,
+                        "plan_calibration": {str(q): calibration["qubits"][q] for q in qubits},
+                        "placement_contract": (
+                            "one pinned single-qubit placement per named qubit; every qubit runs each member in the "
+                            "same shots; the six static PUBs hold the four signed unitary members, ro0 and ro1"
+                        ),
+                        "dt_seconds": snapshot.backend.target.dt,
+                    },
+                )
+            )
+            continue
+        if envelope:
+            candidates.append(
+                (
+                    choices,
+                    {
+                        "name": MSQE_FAMILY,
+                        "qubits": qubits,
+                        "layout_source": "msq_envelope.layout_rule",
+                        "layout_width": width,
+                        "plan_calibration": {str(q): envelope_calibration["qubits"][q] for q in qubits},
+                        "arms": dict(MSQ_ARM_STEPS),
+                        "total_rotation_rad": MSQ_THETA,
+                        "steps": list(MSQ_STEPS),
+                        "measurement_delay_dt": {str(qubit): dt for qubit, dt in delays.items()},
+                        "settle_delay_dt": {str(qubit): dt for qubit, dt in settles.items()},
+                        "prereadout_delay_dt": {str(qubit): dt for qubit, dt in prereadouts.items()},
+                        "t1_delays_dt": t1_delays,
+                        "pattern_bits": [list(row) for row in msqe_pattern_bits(width)],
+                        "placement_contract": (
+                            "one single-qubit placement per qubit the layout rule keeps; every qubit runs each member "
+                            "in the same shots; every member ends in a reset, so every PUB is dynamic"
+                        ),
+                        "dt_seconds": snapshot.backend.target.dt,
+                    },
+                )
+            )
+            continue
+        candidates.append(
+            (
+                choices,
+                {
+                    "name": MSQ_FAMILY,
+                    "qubits": qubits,
+                    "layout_source": "declared",
+                    "arms": dict(MSQ_ARM_STEPS),
+                    "total_rotation_rad": MSQ_THETA,
+                    "steps": list(MSQ_STEPS),
+                    "measurement_delay_dt": {str(qubit): dt for qubit, dt in delays.items()},
+                    "settle_delay_dt": {str(qubit): dt for qubit, dt in settles.items()},
+                    "prereadout_delay_dt": {str(qubit): dt for qubit, dt in prereadouts.items()},
+                    "t1_delays_dt": t1_delays,
+                    "placement_contract": (
+                        "one pinned single-qubit placement per named qubit; every qubit runs each member in the "
+                        "same shots; static PUBs hold the one-step measure and every delay member, dynamic PUBs "
+                        "the measure members with two or more steps"
+                    ),
+                    "dt_seconds": snapshot.backend.target.dt,
+                },
+            )
+        )
+    return candidates[: args.optimizer_candidates]
+
+
 def family_candidates(
     runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
 ) -> list[tuple[list[Any], dict[str, Any]]]:
@@ -1119,6 +1604,7 @@ def family_candidates(
                         ramsey_windows=ramsey,
                         segmented=sweep,
                         window_doses=doses,
+                        detuning_sign=bool(getattr(args, "detuning_sign", False)),
                     )
                     placed = runtime.select_candidates(group, [snapshot], args.seeds, local, pinned)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
@@ -1128,6 +1614,8 @@ def family_candidates(
                 for placement in placed:
                     try:
                         choice, window = _control_windows(runtime, placement, bound, reset_bound)
+                        if getattr(args, "detuning_sign", False):
+                            choice, window = detuning_roles_choice(runtime, choice, window)
                         if pinned is not None:
                             if moved := pinned_roles_violations(runtime, choice, pinned):
                                 raise runtime.LiveRunError("; ".join(moved))
@@ -1205,7 +1693,10 @@ def family_candidates(
                                         ),
                                     }
                                     if getattr(args, "ground_control_split", False)
-                                    else {"window_doses": list(doses)}
+                                    else {
+                                        "window_doses": list(doses),
+                                        **({"detuning_sign": True} if getattr(args, "detuning_sign", False) else {}),
+                                    }
                                     if doses
                                     else {"window_sweep": True}
                                     if args.family == "n21-orbit-rca"
@@ -1219,6 +1710,8 @@ def family_candidates(
         return patch_candidates(runtime, snapshots, args, trace)
     if args.family == STATE_PREP_FAMILY:
         return state_prep_candidates(runtime, snapshots, args, trace)
+    if args.family in (MSQ_FAMILY, MSQD_FAMILY, MSQE_FAMILY):
+        return measurement_sequence_candidates(runtime, snapshots, args, trace)
     if args.family == LATENCY_RECOVERY_FAMILY:
         return latency_recovery_candidates(runtime, snapshots, args, trace)
     if args.family != "folded-qpe":
@@ -1455,6 +1948,55 @@ def admitted_family_candidates(
     return admitted
 
 
+# A worker pool starts slower than a handful of small circuits take, while one measurement-sequence member with 17
+# classical bits enumerates 2**17 branches; the check parallelizes from this many circuits.
+IDEAL_PARALLEL_MIN_ITEMS = 16
+
+
+def compiled_ideal_key(replica: QuantumCircuit) -> str | None:
+    """The exact key of a compiled replica's oracle input, or None for an object that is no circuit (module level for
+    the pool); an unkeyed replica keeps a law of its own."""
+    if not isinstance(replica, QuantumCircuit):
+        return None
+    return oracle_key(compact_ideal_circuit(replica))
+
+
+def compiled_ideal_law(replica: QuantumCircuit) -> tuple[float, ...]:
+    """The exact branch law of one compiled replica (module level for the pool)."""
+    return ideal_compiled_probabilities(replica)
+
+
+def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
+    """Prove every replica of every entry equals its labeled ideal, raising for the first entry in order that fails.
+
+    The oracle runs once per distinct oracle input (qpe_diagnostics.oracle_key): compiled copies of one member on
+    different physical qubits compact to one circuit and share its law, while each entry is still compared with its
+    own labeled ideal. Keys and laws map through parallel.ordered_map; a serial proof widens the time between the
+    pre-submit snapshot and the first batch beyond a calibration period.
+    """
+    names = [entry.name for choice in choices for entry in choice.entries for _ in entry.replicas]
+    ideals = [entry.ideal for choice in choices for entry in choice.entries for _ in entry.replicas]
+    replicas = [replica for choice in choices for entry in choice.entries for replica in entry.replicas]
+    keyed = parallel.ordered_map(compiled_ideal_key, replicas, min_items=IDEAL_PARALLEL_MIN_ITEMS)
+    inputs: dict[str, QuantumCircuit] = {}
+    keys = []
+    for index, (key, replica) in enumerate(zip(keyed, replicas, strict=True)):
+        # Control flow has no key; such a replica keeps a law of its own.
+        resolved = key if key is not None else f"unkeyed-{index}"
+        inputs.setdefault(resolved, replica)
+        keys.append(resolved)
+    laws = dict(
+        zip(
+            inputs,
+            parallel.ordered_map(compiled_ideal_law, list(inputs.values()), min_items=IDEAL_PARALLEL_MIN_ITEMS),
+            strict=True,
+        )
+    )
+    for name, key, ideal in zip(names, keys, ideals, strict=True):
+        if not np.allclose(laws[key], ideal, rtol=0, atol=1e-10):
+            raise runtime.LiveRunError(f"{name}: compiled labeled ideal differs from its exact oracle")
+
+
 def prepare(
     runtime: Any, snapshots: list[Any], args: Any, usage: dict[str, Any], trace: dict[str, Any]
 ) -> tuple[list[Any], dict[str, Any]]:
@@ -1562,6 +2104,8 @@ def prepare(
         simulated = iter(list(pool.map(simulate_choice, ordered)))
     for candidate_index, (choices, configuration) in enumerate(candidates):
         predictions: dict[str, tuple[tuple[float, ...], ...]] = {}
+        if args.family != "et-row":
+            check_compiled_ideals(runtime, choices)
         for choice in choices:
             if args.family == "et-row":
                 from et_planning import validate_ideals
@@ -1570,14 +2114,6 @@ def prepare(
                     validate_ideals(choice)
                 except ValueError as error:
                     raise runtime.LiveRunError(str(error)) from error
-            else:
-                for entry in choice.entries:
-                    for replica in entry.replicas:
-                        actual = ideal_compiled_probabilities(replica)
-                        if not np.allclose(actual, entry.ideal, rtol=0, atol=1e-10):
-                            raise runtime.LiveRunError(
-                                f"{entry.name}: compiled labeled ideal differs from its exact oracle"
-                            )
             evidence, noisy = next(simulated)
             local_compute.append_batches(simulators[id(choice.snap)], evidence)
             predictions.update(
@@ -1854,6 +2390,52 @@ def prepare(
 
 
 def measured_family(
+    record: dict[str, Any],
+    distributions: dict[str, list[np.ndarray]],
+    executed: dict[str, Any],
+    runtime: Any,
+    *,
+    correction_evidence: list[dict[str, Any]] | None = None,
+    replica_registers: dict[str, dict[str, list[str]]] | None = None,
+) -> dict[str, Any]:
+    """The family analysis of a collected record: the precision endpoints and, for measurement-sequence, the
+    preregistered pinching decisions beside them.
+
+    The pinching analysis (measurement_sequence_analysis.collected) reads every member of both jobs through one
+    readout correction, so it runs only when the members executed under one calibration
+    (runtime._comparisons_withheld); otherwise it reports the reason.
+    """
+    analysis = _measured_contracts(
+        record,
+        distributions,
+        executed,
+        runtime,
+        correction_evidence=correction_evidence,
+        replica_registers=replica_registers,
+    )
+    name = record.get("family_configuration", {}).get("name")
+    if name == MSQD_FAMILY:
+        members = sorted(name for name in distributions if name.startswith("msq_"))
+        reason = runtime._comparisons_withheld(members, executed) if members else "no measured members"
+        if reason:
+            return {**analysis, "scatter": {"schema": measurement_sequence_scatter.SCHEMA, "withheld": reason}}
+        return {**analysis, "scatter": measurement_sequence_scatter.collected(record, distributions, executed)}
+    if name == MSQE_FAMILY:
+        members = sorted(name for name in distributions if name.startswith("msq"))
+        reason = runtime._comparisons_withheld(members, executed) if members else "no measured members"
+        if reason:
+            return {**analysis, "envelope": {"schema": msq_envelope_analysis.SCHEMA, "withheld": reason}}
+        return {**analysis, "envelope": msq_envelope_analysis.collected(record, distributions, executed)}
+    if name != MSQ_FAMILY:
+        return analysis
+    members = sorted(name for name in distributions if name.startswith("msq_"))
+    reason = runtime._comparisons_withheld(members, executed) if members else "no measured members"
+    if reason:
+        return {**analysis, "pinching": {"schema": measurement_sequence_analysis.SCHEMA, "withheld": reason}}
+    return {**analysis, "pinching": measurement_sequence_analysis.collected(record, distributions, executed)}
+
+
+def _measured_contracts(
     record: dict[str, Any],
     distributions: dict[str, list[np.ndarray]],
     executed: dict[str, Any],
