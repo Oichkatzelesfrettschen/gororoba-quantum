@@ -12,8 +12,8 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 43 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 186 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/pdf/` | 44 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 192 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 5 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -274,6 +274,12 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Ma et al. 2012 -- Experimental quantum teleportation over a high-loss free-space channel (arXiv 1210.1282)](notes/papers/1210.1282.md) | [PDF](https://arxiv.org/pdf/1210.1282v1) | `1210.1282v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1210.1282v1) |
 | [van Enk and Blume-Kohout 2013 -- When quantum tomography goes wrong: drift of quantum sources and other errors (arXiv 1302.0932)](notes/papers/1302.0932.md) | [PDF](https://arxiv.org/pdf/1302.0932v2) | `1302.0932v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1302.0932v2) |
 | [Quandela 2026 -- Roadmap 2026-2033 (March 2026) and the Quandela-Welinq interconnect announcement](notes/quandela/roadmap-2026-03.md) | [PDF](https://www.quandela.com/wp-content/uploads/2026/03/Quandela-Roadmap-190326-web.pdf) | `quandela-roadmap-2026-03.pdf` | [Rehosting permission unestablished](https://www.quandela.com/legal-terms/) |
+| [Ioannidis 2005 -- Why Most Published Research Findings Are False (PLoS Medicine 2(8): e124)](notes/papers/ioannidis-2005-false-findings.md) | [PDF](https://journals.plos.org/plosmedicine/article/file?id=10.1371/journal.pmed.0020124&type=printable) | `ioannidis-2005-false-findings.pdf` | [Creative Commons Attribution License, version unnamed; no verifier route for the host](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020124) |
+| [Munafo et al. 2017 -- A manifesto for reproducible science (Nature Human Behaviour 1, 0021)](notes/papers/munafo-2017-reproducible-science.md) | [PDF](https://www.nature.com/articles/s41562-016-0021.pdf) | `munafo-2017-reproducible-science.pdf` | [CC BY 4.0 on the article page; publication awaits a verifier route for this identifier](https://www.nature.com/articles/s41562-016-0021) |
+| [Diedenhofen and Musch 2015 -- cocor (PLOS ONE 10(4): e0121945)](notes/papers/diedenhofen-musch-2015-cocor.md) | [PDF](https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0121945&type=printable) | `diedenhofen-musch-2015-cocor.pdf` | [CC BY 4.0 on the article page; no verifier route for the host](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0121945) |
+| [ASA 2016 -- release on the Statement on Statistical Significance and P-Values](notes/papers/asa-2016-p-value-statement.md) | [PDF](https://www.amstat.org/asa/files/pdfs/p-valuestatement.pdf) | `asa-2016-p-value-statement-release.pdf` | Rehosting permission unestablished: the PDF prints no license |
+| [Eisert et al. 2020 -- Quantum certification and benchmarking (arXiv 1910.06343)](notes/papers/1910.06343.md) | [PDF](https://arxiv.org/pdf/1910.06343v2) | `1910.06343v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1910.06343v2) |
+| [Proctor et al. -- Benchmarking quantum computers (arXiv 2407.08828)](notes/papers/2407.08828.md) | [PDF](https://arxiv.org/pdf/2407.08828v2) | `2407.08828v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2407.08828v2) |
 | [de Marrais 2008: Voyage by Catamaran, zero-divisor ensembles of the 2^N-ions](notes/papers/0804.3416.md) | [PDF](https://arxiv.org/pdf/0804.3416v2) | `0804.3416v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0804.3416v2) |
 | [Cawagas et al. 2009: subalgebra structure of the 32-dimensional Cayley-Dickson algebra](notes/papers/0907.2047.md) | [PDF](https://arxiv.org/pdf/0907.2047v3) | `0907.2047v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0907.2047v3) |
 | [Moreno 2004: alternative elements in the Cayley-Dickson algebras (arXiv math/0404395)](notes/papers/math-0404395.md) | [PDF](https://arxiv.org/pdf/math/0404395v1) | `math-0404395v1.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/math/0404395v1) |

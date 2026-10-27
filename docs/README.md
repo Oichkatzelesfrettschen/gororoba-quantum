@@ -180,6 +180,13 @@ differs from it only in the `cd_core.py` digest.
 | [2310.16903.md](notes/papers/2310.16903.md) | Silvestri et al. 2024 -- fiber Sagnac interferometer with two-photon entanglement measures Earth's rotation (715 m^2; 2.8 and 5.5 mrad) |
 | [1807.06205.md](notes/papers/1807.06205.md) | Planck 2018 results I: solar-system dipole velocity relative to the CMB (369.82 km/s) and its direction |
 | [2206.00570.md](notes/papers/2206.00570.md) | Dreissen et al. 2022 -- Yb+ composite-pulse Ramsey bounds on Lorentz violation at the 10^-21 level, sidereal modulation |
+| [ioannidis-2005-false-findings.md](notes/papers/ioannidis-2005-false-findings.md) | Ioannidis 2005 positive predictive value of a significant finding under bias and repeated testing, with the Table 4 reproduction |
+| [munafo-2017-reproducible-science.md](notes/papers/munafo-2017-reproducible-science.md) | Munafo et al. 2017 manifesto: preregistration, outcome switching, disclosure arithmetic, data masking and registered reports |
+| [asa-2016-p-value-statement.md](notes/papers/asa-2016-p-value-statement.md) | ASA 2016 six principles on p-values, from the ASA release (statement body unread) |
+| [diedenhofen-musch-2015-cocor.md](notes/papers/diedenhofen-musch-2015-cocor.md) | Diedenhofen and Musch 2015 cocor: tests for comparing independent and dependent correlations, Williams, Steiger, Meng and Zou formulas with a reproduction check |
+| [1910.06343.md](notes/papers/1910.06343.md) | Eisert et al. 2020 quantum certification and benchmarking: information, assumptions and complexity of each protocol family |
+| [2407.08828.md](notes/papers/2407.08828.md) | Proctor et al. benchmarking quantum computers: benchmark properties, drift and non-Markovian error, compilation gaming and error-mitigated results |
+| [quantum-journal-referee-instructions.md](notes/papers/quantum-journal-referee-instructions.md) | Quantum journal referee questions and editorial policies (web receipts) |
 | [quant-ph-0203033.md](notes/papers/quant-ph-0203033.md) | Peres, Scudo and Terno 2002 -- spin entropy of a free spin-1/2 particle is not Lorentz covariant |
 | [2109.12238.md](notes/papers/2109.12238.md) | Bothwell et al. 2022 -- gravitational redshift gradient resolved within a millimeter strontium sample (-1.09e-19 per mm predicted) |
 | [1105.4531.md](notes/papers/1105.4531.md) | Zych et al. 2011 -- interferometric visibility as a witness of general-relativistic proper time, V = |cos(Delta E Delta V Delta T / 2 hbar c^2)| |
@@ -269,6 +276,7 @@ differs from it only in the `cd_core.py` digest.
 | [runbooks/quandela-credit-optimization.md](runbooks/quandela-credit-optimization.md) | Quandela billing rule measured per job, packing limits and cost planning |
 | [runbooks/quandela-scheduled-runs.md](runbooks/quandela-scheduled-runs.md) | unattended submission of approved, spaced Quandela jobs from a committed schedule through GitHub Actions |
 | [runbooks/provider-credits.md](runbooks/provider-credits.md) | read-only daily snapshot of every provider's free allotment, alert thresholds and the systemd user timer |
+| [runbooks/critical-peer-review.md](runbooks/critical-peer-review.md) | reviewer checklist for quantum-hardware results: preregistration, multiplicity, effect size, dependent correlations, drift, provenance, simulation boundary and claim wording |
 | [QUANTUM_DISPATCH.md](../plans/QUANTUM_DISPATCH.md) | quantum dispatch plan |
 | [coherence-case-science-review.md](../plans/reviews/coherence-case-science-review.md) | coherence-window case, science review |
 | [coherence-case-submission-review.md](../plans/reviews/coherence-case-submission-review.md) | coherence-window case, submission-path review |
