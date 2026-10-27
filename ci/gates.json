@@ -5037,13 +5037,13 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" scripts/qi_tuna_destination_prefix.py results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response --check results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-descriptive.json",
+   "cmd": "\"$PYTHON\" scripts/qi_tuna_destination_prefix.py results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response --check results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-receipt-validation.json",
    "name": "core-qi-tuna-destination-prefix",
    "seconds": 1.0,
    "tier": "pr",
    "replays": [
     "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/analysis.json",
-    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-descriptive.json"
+    "results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-receipt-validation.json"
    ]
   }
  ],

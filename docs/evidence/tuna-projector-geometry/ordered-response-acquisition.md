@@ -55,12 +55,19 @@ remained within their ceilings.
 
 ## Descriptive prefix, excluded from the complete-case decision
 
-The [prefix description](../../../results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-descriptive.json)
+The [validated prefix description](../../../results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-receipt-validation.json)
 uses the frozen decoder and per-job operational validators. The separate
 [replay](../../../scripts/qi_tuna_destination_prefix.py) preserves the primary
 refusal and emits counts and exact empirical contrast numerators. It supplies
 neither an acceptance decision nor new confidence intervals for the truncated case.
 All counts below have denominator 4096, and the columns follow actual execution order.
+
+The [initial description](../../../results/quantum_inspire/runs/2026-10-27T194754Z-tuna-destination-response/nominal-zero-prefix-descriptive.json)
+retains its bytes and its producer version in capture commit `1ba7ba8`.
+The validation successor adds semantic checks of recovery schema, job identity,
+stopped-state and completion digests, read-only flags, chronology and all three
+stored-source observations. Its counts, job tables and primary refusal are identical
+to the initial description; the added provenance does not revise the scientific result.
 
 | Physical qubit | Early-one counts before / rotated / after | Terminal-one counts before / rotated / after | Maximum absolute empirical joint-cell contrast |
 |---|---|---|---:|
