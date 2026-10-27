@@ -119,16 +119,28 @@ def predictions(item: tuple[dict[str, Any], dict[str, Any], bool]) -> list[float
     return [row[2] for row in base.evaluated((data, entry))]
 
 
+def leave_one_out(x: np.ndarray, y: np.ndarray, jobs: np.ndarray) -> np.ndarray:
+    """Every leave-one-out within-job-centered r in one batch: deleting row i from its job g of n rows moves that job's
+    centered cross sum to (S_xy - x_i y_i) - (S_x - x_i)(S_y - y_i) / (n - 1), and likewise its centered squares."""
+    names, group = np.unique(jobs, return_inverse=True)
+    count = np.bincount(group).astype(float)
+    sx, sy = np.bincount(group, x), np.bincount(group, y)
+    sxx, syy, sxy = np.bincount(group, x * x), np.bincount(group, y * y), np.bincount(group, x * y)
+    cxx, cyy, cxy = sxx - sx * sx / count, syy - sy * sy / count, sxy - sx * sy / count
+    rest = len(names) > 1
+    g, n = group, count[group] - 1
+    dxx = (sxx[g] - x * x) - (sx[g] - x) ** 2 / n
+    dyy = (syy[g] - y * y) - (sy[g] - y) ** 2 / n
+    dxy = (sxy[g] - x * y) - (sx[g] - x) * (sy[g] - y) / n
+    other = (cxx.sum() - cxx[g], cyy.sum() - cyy[g], cxy.sum() - cxy[g]) if rest else (0.0, 0.0, 0.0)
+    return (other[2] + dxy) / np.sqrt((other[0] + dxx) * (other[1] + dyy))
+
+
 def accuracy(x: np.ndarray, y: np.ndarray, jobs: np.ndarray) -> dict[str, Any]:
     names = sorted(set(jobs))
     r = correlation(x, y)
-    loo = [
-        correlation(
-            base.centered(np.delete(x, i), np.delete(jobs, i)), base.centered(np.delete(y, i), np.delete(jobs, i))
-        )
-        for i in range(len(y))
-    ]
-    order = np.argsort(-np.abs(np.array(loo) - r))[:DROPPED]
+    loo = leave_one_out(x, y, jobs)
+    order = np.argsort(-np.abs(loo - r))[:DROPPED]
     kept = np.setdiff1d(np.arange(len(y)), order)
     trimmed_x, trimmed_y = base.centered(x[kept], jobs[kept]), base.centered(y[kept], jobs[kept])
     return {
@@ -139,7 +151,7 @@ def accuracy(x: np.ndarray, y: np.ndarray, jobs: np.ndarray) -> dict[str, Any]:
         "per_job_r": {
             name: correlation(base.centered(x[jobs == name], jobs[jobs == name]), y[jobs == name]) for name in names
         },
-        "leave_one_out_r": [min(loo), max(loo)],
+        "leave_one_out_r": [float(loo.min()), float(loo.max())],
         "dropped_rows": [int(i) for i in order],
         "r_without_dropped": correlation(trimmed_x, trimmed_y),
     }
@@ -151,7 +163,9 @@ def shift_null(x: np.ndarray, y: np.ndarray, jobs: np.ndarray, observed: float) 
     dots = []
     for name in names:
         xs, ys = x[jobs == name], y[jobs == name]
-        dots.append(np.array([xs @ np.roll(ys, shift) for shift in range(len(ys))]))
+        # Row s holds np.roll(ys, s): position k takes ys[(k - s) mod n], so one gather forms every shift at once.
+        shifts = (np.arange(len(ys))[None, :] - np.arange(len(ys))[:, None]) % len(ys)
+        dots.append(ys[shifts] @ xs)
     total = (dots[0][:, None] + dots[1][None, :]).ravel()
     r = total / math.sqrt((x @ x) * (y @ y))
     return {

@@ -207,6 +207,26 @@
           "observed_at": "2026-10-27T02:44:00+00:00",
           "revision": "cac75978111d594fbfbd8234473d1c1ffb7a84f2",
           "scope_sha256": "3761a353e8835262422487094ae72236a0ae329ae6cf533068e1afeedb38dbe0"
+        },
+        {
+          "result": "Revalidation after the sensitivity record's leave-one-out and circular-shift calculations moved to numpy batches: every value replays, three leave-one-out bounds move in the last bit; replication-score.json is unchanged.",
+          "evidence": [
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-score.json",
+              "sha256": "ae5a109a1c0e19aced9d5c25fda807b269d56b72eeb91fbbc7cbba857de1e2af"
+            },
+            {
+              "ref": "docs/evidence/ascella-order-coefficients/replication-sensitivity.json",
+              "sha256": "07f719e3930b61e7ab88820c087240294824185c9d79ded02c2b956850282f8e"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=ascella-signed-coherence-replication-offsets",
+              "sha256": "eb776173c9ee20aa8a09b58f6ea1fa4411f37e32dc6438a7edeb25ae04aea6c5"
+            }
+          ],
+          "observed_at": "2026-10-27T02:54:51+00:00",
+          "revision": "9ecb6b92c80a138342ad207dcdc8cabed65271bc",
+          "scope_sha256": "3761a353e8835262422487094ae72236a0ae329ae6cf533068e1afeedb38dbe0"
         }
       ]
     }
