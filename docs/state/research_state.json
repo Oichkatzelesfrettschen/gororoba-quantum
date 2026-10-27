@@ -11932,6 +11932,8 @@
         "kingston-primorial-case3-prep0-b",
         "kingston-primorial-case3-probes",
         "kingston-primorial-case3-gap88",
+        "kingston-primorial-case2-prep0",
+        "kingston-primorial-case2-x-history",
         "kingston-primorial-case2-gap88"
       ],
       "depends_on": [
@@ -12051,7 +12053,7 @@
     },
     {
       "id": "kingston-idle-penalty-focal-region",
-      "statement": "On ibm_kingston (backup instance, two jobs of 44 PUBs at 4096 shots, both under the 2026-10-27T09:07:55-07:00 calibration, 16 s billed each) the focal qubits read kappa_1 0.945 (79), 1.583 (92, elevated) and 1.373 (93), with every other focal multiplier nominal or unresolved. The preregistered historical reading over the region 73, 79, 92, 93, 94 and 95 is unresolved: kappa_1 region median 1.399 against 1.070 for the other 64 cohort qubits (one-sided exact p 0.031) and kappa_2* 1.709 against 1.228 (p 0.113), about half the multiplier near 3 the retained 2026-10-12 and 2026-10-13 runs fitted. Within the one calibration window the per-qubit multipliers reproduce at Pearson r 0.91 to 0.99 between placements.",
+      "statement": "On ibm_kingston (backup instance, two jobs of 44 PUBs at 4096 shots, both under the 2026-10-27T09:07:55-07:00 calibration, 16 s billed each) the focal qubits read kappa_1 0.945 (79), 1.583 (92, elevated) and 1.373 (93), with every other focal multiplier nominal or unresolved. The preregistered historical reading over the region 73, 79, 92, 93, 94 and 95 is unresolved: kappa_1 region median 1.399 against 1.070 for the other 64 cohort qubits (one-sided exact p 0.031) and kappa_2* 1.709 against 1.228 (p 0.113), about half the multiplier near 3 the retained 2026-10-12 and 2026-10-13 runs fitted. Within the one calibration window the per-qubit multipliers of qubits that keep role and partner reproduce at Pearson r 0.91 to 0.99 among the three runs (the two placements and the stability repeat), and at 0.91 to 0.95 between the two placements alone.",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
@@ -12068,6 +12070,10 @@
         {
           "path": "results/live/2026-10-27T160529.294491Z/idle-penalty-report.json",
           "sha256": "8c985f3c5a64b663e8c1355c82851747afff27e0b2207dd563878ad3affe8ffc"
+        },
+        {
+          "path": "results/live/2026-10-27T160530.294787Z/idle-penalty-report.json",
+          "sha256": "5e2c3e75774bf7214e27756fc546459a736e2f26808195630d955113aadfe8c3"
         }
       ],
       "documents": [
