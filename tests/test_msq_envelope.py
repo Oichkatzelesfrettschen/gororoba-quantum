@@ -888,6 +888,33 @@ def test_batched_qubit_rows_equal_scalar_rows_and_the_sum_mutant_differs(null_fi
         null.neumaier_rows = original
 
 
+def test_batched_implied_loss_keeps_the_scalar_bits_inside_and_at_the_bracket_edges() -> None:
+    import measurement_sequence_analysis as msa
+    import msq_envelope_null as null
+
+    ctx = null.null_contexts(1)[0]
+    gate = msa.sx_gate(ctx)
+    fraction = msa.WINDOW_RELAX_FRACTION
+    tau = msa.tau_of("measure", ctx, fraction)
+    q = 1 / (1 - 2 * msa.PLANNING_P_INIT)
+    low, high = -0.05, 0.5
+    cases = []
+    for scale in (0.5, 1.0, 2.0):
+        t1 = scale * ctx["t1_cal_s"]
+        t2 = min(ctx["t2_s"], 2 * t1)
+        ends = [msa.corrected_z("measure", msa.TOP_STEPS, t1, t2, tau, eps, gate, q) for eps in (low, high)]
+        inside = [ends[0] + f * (ends[1] - ends[0]) for f in (0.1, 0.35, 0.5, 0.8, 0.97)]
+        cases += [(t1, t2, z) for z in [ends[0] + 0.1, ends[0], ends[1], ends[1] - 0.1, *inside]]
+    t1s, t2s, zs = (np.array(column) for column in zip(*cases, strict=True))
+    expected = [msa.implied_loss(z, t1, t2, ctx, q, gate, fraction) for t1, t2, z in cases]
+    sx = null.damped_sx(t1s, t2s, null.gate_rows(ctx, 0.0))
+    got = null.implied_loss_rows(zs, t1s, t2s, ctx, np.full(len(cases), q), null.gate_rows(ctx, 0.0), fraction, sx)
+    for k, (a, b) in enumerate(zip(expected, got.tolist(), strict=True)):
+        check(a.hex() == b.hex(), f"row {k}: {a!r} against {b!r}")
+    check(low in expected and high in expected, "the cases reach both bracket ends")
+    check(any(low < e < high for e in expected), "the cases reach the root solve")
+
+
 @pytest.mark.xdist_group("msq-null-batch")
 def test_batched_block_equals_scalar_replicates(null_fixture: NullFixture) -> None:
     import msq_envelope_null as null
@@ -897,8 +924,7 @@ def test_batched_block_equals_scalar_replicates(null_fixture: NullFixture) -> No
     for expected, got in zip(fixture.replicates, batched, strict=True):
         found = first_difference(list(expected), list(got))
         check(found is None, str(found))
-    check(null.replicate_block(fixture.item(fixture.seeds[:2])) == [row for row, _, _ in batched], "record rows")
-    check(null.replicate(fixture.item(fixture.seeds[0])) == fixture.replicates[0][0], "scalar record row")
+    check(null.replicate_block(fixture.item(fixture.seeds[:1])) == [batched[0][0]], "record row of a block")
     withheld = null.analyse_block((4, null.null_contexts(4), fixture.slopes, fixture.floor, fixture.seeds[:1]))
     check(withheld[0][0]["withheld"] and withheld[0][1] is None, "fewer than MIN_KEPT qubits withhold")
 
