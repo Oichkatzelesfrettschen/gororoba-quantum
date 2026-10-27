@@ -71,6 +71,22 @@
             }
           ],
           "scope_sha256": "87a9347778034317e67760f3afe5d2ad4bc2bb608bebda6dfe09c04a5ae8a601"
+        },
+        {
+          "result": "scripts/remeasure_history.py --self-test reproduces every synthetic count, the cross-PUB block pairs shots only under a recorded one-chunk execution order with a flat null arm, and the rule's three verdicts match closed forms; the case document states the rule, the order check and both readings' predictions.",
+          "observed_at": "2026-10-27T19:52:07+00:00",
+          "revision": "989d3ec112d3804955f7fec384b197690632cc21",
+          "evidence": [
+            {
+              "ref": "scripts/remeasure_history.py",
+              "sha256": "a598540e2ba00098af8530968f1dd39ec0197874dbf9afe66482f9d9bfaeca93"
+            },
+            {
+              "ref": "results/live/PRIMORIAL_Q147_REMEASURE_CASE.md",
+              "sha256": "6795be8da60492ee25b31967864e728bcb5ea2a20882fd693dd5414a7e118367"
+            }
+          ],
+          "scope_sha256": "87a9347778034317e67760f3afe5d2ad4bc2bb608bebda6dfe09c04a5ae8a601"
         }
       ]
     },
