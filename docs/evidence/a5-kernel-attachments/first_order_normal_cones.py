@@ -10,7 +10,7 @@ import re
 import subprocess
 import sys
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from fractions import Fraction
 from functools import partial
 from pathlib import Path
@@ -354,36 +354,27 @@ def _path_comparison(path: boundary.PathSpec, context: AnalysisContext) -> dict[
     }
 
 
-def _mutated_path(path: boundary.PathSpec) -> boundary.PathSpec:
-    first_order = list(path.coefficients[1])
-    first_order[7] += 1
-    return boundary.PathSpec(
-        path.high_orbit,
-        path.boundary_orbit,
-        f"{path.approach}-middle-coordinate-mutation",
-        (path.coefficients[0], tuple(first_order), path.coefficients[2]),
-    )
-
-
 def _mutation_control(paths: Sequence[boundary.PathSpec], context: AnalysisContext) -> dict[str, Any] | None:
     if context.incidence.name != "W8->B9":
         return None
     baseline_path = paths[0]
-    comparison_tasks = (baseline_path, _mutated_path(baseline_path))
-    comparisons = parallel.ordered_map(partial(_path_comparison, context=context), comparison_tasks, min_items=1)
+    comparison_contexts = (context, replace(context, effective_form=sp.zeros(BOUNDARY_KERNEL_DIMENSION)))
+    comparisons = parallel.ordered_map(partial(_path_comparison, baseline_path), comparison_contexts, min_items=1)
     baseline, mutated = comparisons
     detected = (
         bool(baseline["pass"])
         and not bool(mutated["pass"])
-        and bool(baseline["direction_in_tangent_cone"])
-        and not bool(mutated["direction_in_tangent_cone"])
-        and bool(baseline["curve_containment_verified"])
-        and not bool(mutated["curve_containment_verified"])
+        and baseline["first_order_effective_rank"] == 2
+        and mutated["first_order_effective_rank"] == 0
+        and baseline["first_order_plane_matches_retained_limit"] is True
+        and mutated["first_order_plane_matches_retained_limit"] is None
+        and baseline["tangent_component_restricts_to_zero"] is True
+        and mutated["tangent_component_restricts_to_zero"] is False
     )
     return {
-        "name": "add_middle_coordinate_to_W8_path",
+        "name": "zero_restricted_first_order_form",
         "target": context.incidence.name,
-        "input_change": "add the split middle-coordinate basis vector to the exact first-order path coefficient",
+        "input_change": "replace the exact restricted first-order form by the zero 6-by-6 form",
         "baseline": baseline,
         "mutated": mutated,
         "detected": detected,
@@ -396,7 +387,8 @@ def _analyze_incidence(incidence: Incidence) -> dict[str, Any]:
     )
     slice_columns = tuple(
         regularity.transverse_columns(
-            boundary_point, regularity.COLUMN_ORDER.get(incidence.boundary_key, range(MATRIX_DIMENSION - 1))
+            cast("Sequence[int]", boundary_point),
+            regularity.COLUMN_ORDER.get(incidence.boundary_key, range(MATRIX_DIMENSION - 1)),
         )
     )
     slice_symbols = tuple(sp.symbols(f"t1:{len(slice_columns) + 1}"))
@@ -554,7 +546,7 @@ def build_record() -> dict[str, Any]:
             "A transverse slice fails to complement the boundary orbit; a germ invariant disagrees with the "
             "regularity record; a retained exact path misses the tangent cone or effective-form image; a "
             "nondegenerate direction has rank other than two; a first-order plane differs from its retained exact "
-            "limit; a rank-four Pfaffian survives; or the geometric-input mutation survives."
+            "limit; a rank-four Pfaffian survives; or the restricted-form mutation survives."
         ),
         "pass": passed,
     }

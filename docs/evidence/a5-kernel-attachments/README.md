@@ -37,6 +37,32 @@ verdict changes, and the mutation fails the baseline check. Evidence: [`incidenc
 [`incidence-census-result.json`](incidence-census-result.json), and the
 [item-1 ledger row](ledger.md#ledger-rows).
 
+## Every partner of a nonzero doubly pure element is doubly pure
+
+The zero scalar row seen in the 21 incidence-census frames is structural. Write the repository bordered matrix as
+
+`A(z, conjugate(z)) = [[0, -conjugate(z)^T], [conjugate(z), C_z]]`.
+
+The exact [`partner_purity.py`](partner_purity.py) replay reconstructs `C_z` directly from the repository
+Cayley-Dickson signs and matches the interior block of the bordered-matrix implementation. It verifies symbolically
+that `C_z` is skew and `C_z z=0`; hence `z^T C_z=0`. If the complex kernel vector `(a,u)` represents a partner, its
+lower kernel equation is
+
+`a conjugate(z) + C_z u = 0`.
+
+Multiplication by `z^T` gives `a z^T conjugate(z)=0`. On the real A_5 locus, the second factor is the sum of the 30
+squares of the real and imaginary coordinates of `z`, so the factor is positive for a nonzero left element.
+**Inferred:** `a=0`, and inversion of the split-complex coordinate map gives zero `e_0` and `e_16` coordinates for
+every partner. The antiholomorphic derivative occupies only the scalar border, so its restriction to every such
+kernel vanishes. The item-1 complex-linearity conclusion therefore holds at every nonzero doubly pure boundary point,
+while higher-order and real curve-selection questions remain open.
+
+The falsifier was a mismatch with the repository bordered block, a failure of skew-symmetry or either annihilator
+identity, a Hermitian pairing unequal to the Euclidean sum of squares, a partner-coordinate term surviving the
+projection, or a surviving input mutation. Flipping the Cayley-Dickson signs for the `e_1 e_2` skew pair preserves
+skew-symmetry but changes `C_z z` and leaves `-2 u_1 z_2 z_3 + 2 u_2 z_1 z_3` in the projected equation. Evidence:
+[`partner-purity-result.json`](partner-purity-result.json) and the [ledger](ledger.md#ledger-rows).
+
 ## Nine exact basepoints support all retained nullity-8 degenerations
 
 The retained nullity-8 paths do not all end at the canonical representatives used by the regularity record. Directly
@@ -54,8 +80,8 @@ does not transport a kernel between points and does not yet determine any full l
 
 The falsifier was a missing path-supported point, a wrong orbit pattern or nullity, a non-complementary slice, a local
 invariant differing from the orbit-constant regularity result, an admitted direction outside the recomputed tangent
-cone, or a surviving mutation. Adding the split middle-coordinate direction to the retained `W8`-to-`B9` path makes
-the curve leave the `W8` closure and its tangent cone, so the mutation fails. Evidence:
+cone, or a surviving mutation. Deleting the first independent tangent-cone generator for `W8` to `B9` changes the
+recomputed linear tangent dimension from three to four, so the mutation fails. Evidence:
 [`path_supported_basepoints.py`](path_supported_basepoints.py),
 [`path-supported-basepoints-result.json`](path-supported-basepoints-result.json), and the
 [ledger](ledger.md#ledger-rows).
@@ -98,8 +124,9 @@ the table therefore remains short of the two-sided semialgebraic certificate req
 
 The falsifier was a basepoint or germ mismatch, a surviving rank-four Pfaffian, a retained path outside the tangent
 cone, a first-order plane differing from its retained exact limit, an incorrectly empty degeneracy locus, or a
-surviving geometric-input mutation. All baseline checks pass. The middle-coordinate mutation of the
-`W8`-to-`B9` path leaves the closure and tangent cone and fails. Evidence:
+surviving restricted-form mutation. All baseline checks pass. Replacing the rank-two `W8`-to-`B9` restricted form by
+zero changes the projected effective rank to zero, removes the retained first-order four-plane comparison, and fails.
+Evidence:
 [`first_order_normal_cones.py`](first_order_normal_cones.py),
 [`first-order-normal-cones-result.json`](first-order-normal-cones-result.json), and the
 [ledger](ledger.md#ledger-rows).
@@ -113,6 +140,14 @@ real-linear and would rule out a complex-algebraic description at that order. Th
 bordered-matrix derivative and restricts its antiholomorphic part to exact kernel frames at canonical and moved
 points. The restriction vanishes at all 21 points, for the scalar-row mechanism above. A nonzero restriction at any
 exact point falsifies the result. Evidence: [`incidence-census-result.json`](incidence-census-result.json).
+
+### Is the zero scalar row sampled or structural?
+
+The question matters because a sampled vanishing result gives no control between tested representatives. The cheapest
+decisive probe is the symbolic projection of the bordered-kernel equation above. **Inferred:** every partner of every
+nonzero doubly pure element has zero scalar coordinate, so the antiholomorphic restriction vanishes on the whole
+nonzero locus. A valid partner with nonzero `e_0` or `e_16` coordinate, or a failed identity in the retained proof
+record, falsifies the result. Evidence: [`partner-purity-result.json`](partner-purity-result.json).
 
 ### Can canonical-representative local data be applied to every retained degeneration?
 
@@ -132,6 +167,26 @@ an identically zero first-order map. Therefore one blow-up does not resolve the 
 locus in any of the eight resolved rows, or an empty locus in a row classified exceptional, falsifies the result.
 Evidence: [`first-order-normal-cones-result.json`](first-order-normal-cones-result.json).
 
+### Which exceptional passages are invisible on their whole first-order tangent cone?
+
+The question matters because an isolated base direction needs a local correction, whereas an identically zero map
+needs a full second-order model. The cheapest decisive probe compares the first-order image dimension with the
+tangent-cone and zero-fiber dimensions. E8-bar, `X_+`, and `X_-` into `VB` have empty projective first-order images;
+their zero fibers equal their whole tangent cones. A nonzero effective form on any of those three cones falsifies the
+result. Evidence: [`first-order-normal-cones-result.json`](first-order-normal-cones-result.json).
+
+### Do the two E8-bar sheets collapse to one first-order image component?
+
+The question matters because a collapse would identify the sheetwise attaching data before higher-order corrections.
+The cheapest probe compares the minimal components of each two-sheet germ with the eliminated image. Along `V`,
+`V^a_+`, and `V^a_-`, both the germ and the first-order image have two minimal components. **Inferred:** the sheets
+therefore have distinct first-order image closures: the Zariski-continuous image of an irreducible sheet has
+irreducible closure, so two image components cannot come from one collapsed common closure. The statement does not
+exclude higher-order intersections or equality after adding exceptional limits. A radical replay yielding one image
+component, or a sheet mapping wholly into the other sheet’s image, falsifies the result. Evidence:
+[`first-order-normal-cones-result.json`](first-order-normal-cones-result.json) and the
+[regularity record](../a5-strata-regularity/README.md#theorem-6-transverse-germs).
+
 ## Replay
 
 ```sh
@@ -142,6 +197,10 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/incidence_census.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-attachments/incidence_census.py \
     --check docs/evidence/a5-kernel-attachments/incidence-census-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/partner_purity.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/partner_purity.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-attachments/partner_purity.py \
+    --check docs/evidence/a5-kernel-attachments/partner-purity-result.json
 "$PYTHON" -B -W error docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --self-test
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-attachments/path_supported_basepoints.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-attachments/path_supported_basepoints.py \

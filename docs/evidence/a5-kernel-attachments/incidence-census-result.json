@@ -1038,8 +1038,8 @@
     }
   ],
   "inputs": {
-    "docs/design/a5-kernel-attachments-program.md": "b68a204a44d1e2f5e1a9b496659e506828a50314269af79facf56570802cb7e3",
-    "docs/evidence/a5-kernel-attachments/incidence_census.py": "125e11f5a7d179e0c3bfc082f1e070eba0507c1e62d86b046fa13c706743372c",
+    "docs/design/a5-kernel-attachments-program.md": "fc573781091d7f5041ca965397558dc9da9a3eed376371860c5dd8917a2d3e6c",
+    "docs/evidence/a5-kernel-attachments/incidence_census.py": "b3a359ed13bda74ae3f19d3a80b6349fb02ebe087a287f6e9d386dd0ebc2cea1",
     "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "f7d978febf6a286b11df3ea25b30b7c8dcd9e28763a46769a153f0246419b387",
     "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
     "docs/evidence/a5-strata-regularity/verify_regularity_independent.py": "154a686ccf2f55f101f83cb98d3e5ee2a751c4ecb3c352eeeaac119099925280",

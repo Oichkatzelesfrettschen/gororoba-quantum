@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from fractions import Fraction
 from functools import cache, partial
 from pathlib import Path
-from typing import Any, TypeAlias
+from typing import Any, TypeAlias, cast
 
 import sympy as sp
 
@@ -181,7 +181,9 @@ def _point_certificate(point: PointSpec, mutation: str = "") -> dict[str, Any]:
     boundary_nullity = independent.NULLITY[point.boundary_orbit]
     expected_complex_kernel_dimension = boundary_nullity // 2
     expected_matrix_rank = MATRIX_DIMENSION - expected_complex_kernel_dimension
-    bordered_matrix = kernel_frames._bordered_matrix(kernel_frames._original_z_from_split(point.coordinates))
+    bordered_matrix = kernel_frames._bordered_matrix(
+        kernel_frames._original_z_from_split(cast("Sequence[int]", point.coordinates))
+    )
     matrix_rank = int(bordered_matrix.rank())
     pivot = kernel_frames._find_principal_pivot(bordered_matrix, expected_matrix_rank)
     frame, pivot_determinant, pivot_pfaffian = kernel_frames._principal_frame(bordered_matrix, pivot)

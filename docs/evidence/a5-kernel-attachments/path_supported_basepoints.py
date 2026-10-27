@@ -195,6 +195,12 @@ def _sympy_polynomial(text: str, symbols: Sequence[sp.Symbol]) -> sp.Expr:
     return sp.expand(sp.sympify(text.replace("^", "**"), locals=local_symbols))
 
 
+def _linear_tangent_dimension(generators: Sequence[sp.Expr], slice_symbols: Sequence[sp.Symbol]) -> int:
+    origin = {symbol: 0 for symbol in slice_symbols}
+    jacobian = sp.Matrix(generators).jacobian(slice_symbols).subs(origin)
+    return len(slice_symbols) - int(jacobian.rank())
+
+
 def _normal_basis(point: Sequence[Fraction], slice_columns: Sequence[int]) -> tuple[sp.Matrix, int]:
     tangent_matrix = sp.Matrix(regularity.h_generators(point)).T
     tangent_columns = tangent_matrix.columnspace()
@@ -230,17 +236,6 @@ def _path_projection(
     }
 
 
-def _mutated_path(path: boundary.PathSpec) -> boundary.PathSpec:
-    first_order = list(path.coefficients[1])
-    first_order[7] += 1
-    return boundary.PathSpec(
-        path.high_orbit,
-        path.boundary_orbit,
-        f"{path.approach}-middle-coordinate-mutation",
-        (path.coefficients[0], tuple(first_order), path.coefficients[2]),
-    )
-
-
 def _analyze_incidence(incidence: Incidence) -> dict[str, Any]:
     point, paths = selected_path_group(incidence)
     point_pattern = independent.pattern(point)
@@ -251,7 +246,8 @@ def _analyze_incidence(incidence: Incidence) -> dict[str, Any]:
     expected_orbit_dimension = independent.DIMS[incidence.boundary_orbit]
     slice_columns = tuple(
         regularity.transverse_columns(
-            point, regularity.COLUMN_ORDER.get(incidence.boundary_key, range(SPLIT_DIMENSION))
+            cast("Sequence[int]", point),
+            regularity.COLUMN_ORDER.get(incidence.boundary_key, range(SPLIT_DIMENSION)),
         )
     )
     slice_symbols = tuple(sp.symbols(f"t1:{len(slice_columns) + 1}"))
@@ -283,28 +279,19 @@ def _analyze_incidence(incidence: Incidence) -> dict[str, Any]:
     expected_projection = (expected_germ[0], expected_germ[1], expected_germ[2], expected_germ[4])
     mutation_control = None
     if incidence.name == "W8->B9":
-        comparison_tasks = (paths[0], _mutated_path(paths[0]))
-        comparison_rows = parallel.ordered_map(
-            partial(
-                _path_projection,
-                point=point,
-                slice_columns=slice_columns,
-                slice_symbols=slice_symbols,
-                tangent_generators=tangent_generators,
-            ),
-            comparison_tasks,
-            min_items=1,
+        mutated_generators = (*tangent_generators[1:],)
+        generator_tasks = (tangent_generators, mutated_generators)
+        tangent_dimensions = parallel.ordered_map(
+            partial(_linear_tangent_dimension, slice_symbols=slice_symbols), generator_tasks, min_items=1
         )
-        baseline, mutated = comparison_rows
+        baseline_dimension, mutated_dimension = tangent_dimensions
         mutation_control = {
-            "name": "add_middle_coordinate_to_W8_path",
-            "input_change": "add the split middle-coordinate basis vector to the exact first-order path coefficient",
-            "baseline": baseline,
-            "mutated": mutated,
-            "detected": bool(baseline["pass"])
-            and not bool(mutated["pass"])
-            and bool(baseline["direction_in_tangent_cone"])
-            and not bool(mutated["direction_in_tangent_cone"]),
+            "name": "drop_tangent_cone_generator",
+            "input_change": "delete the first exact tangent-cone generator before recomputing its linear dimension",
+            "baseline_tangent_dimension": baseline_dimension,
+            "mutated_tangent_dimension": mutated_dimension,
+            "expected_tangent_dimension": expected_germ[0],
+            "detected": baseline_dimension == expected_germ[0] and mutated_dimension != baseline_dimension,
         }
     passed = (
         point_pattern == expected_pattern
@@ -386,7 +373,7 @@ def build_record() -> dict[str, Any]:
         "falsifier": (
             "An incidence lacks a path-supported point; a selected point has the wrong orbit pattern or nullity; a "
             "slice fails to complement the orbit tangent space; a germ invariant differs from the orbit-constant "
-            "regularity value; an admitted path misses the transverse tangent cone; or the geometric-input mutation "
+            "regularity value; an admitted path misses the transverse tangent cone; or the tangent-cone-input mutation "
             "survives."
         ),
         "pass": passed,

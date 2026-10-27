@@ -1,5 +1,5 @@
 {
-  "falsifier": "A transverse slice fails to complement the boundary orbit; a germ invariant disagrees with the regularity record; a retained exact path misses the tangent cone or effective-form image; a nondegenerate direction has rank other than two; a first-order plane differs from its retained exact limit; a rank-four Pfaffian survives; or the geometric-input mutation survives.",
+  "falsifier": "A transverse slice fails to complement the boundary orbit; a germ invariant disagrees with the regularity record; a retained exact path misses the tangent cone or effective-form image; a nondegenerate direction has rank other than two; a first-order plane differs from its retained exact limit; a rank-four Pfaffian survives; or the restricted-form mutation survives.",
   "incidences": [
     {
       "boundary_orbit": "B9",
@@ -1450,33 +1450,33 @@
           ]
         },
         "detected": true,
-        "input_change": "add the split middle-coordinate basis vector to the exact first-order path coefficient",
+        "input_change": "replace the exact restricted first-order form by the zero 6-by-6 form",
         "mutated": {
-          "approach": "opposite-null-directions-1-middle-coordinate-mutation",
-          "curve_certificate_pass": false,
-          "curve_containment_verified": false,
-          "direction_in_tangent_cone": false,
-          "first_order_effective_rank": 2,
-          "first_order_plane_matches_retained_limit": true,
-          "higher_order_required": false,
+          "approach": "opposite-null-directions-1",
+          "curve_certificate_pass": true,
+          "curve_containment_verified": true,
+          "direction_in_tangent_cone": true,
+          "first_order_effective_rank": 0,
+          "first_order_plane_matches_retained_limit": null,
+          "higher_order_required": true,
           "normal_coordinates": [
             "0",
             "-15/16",
             "0",
             "7/16",
-            "1",
+            "0",
             "0"
           ],
           "pass": false,
           "retained_leading_order": 1,
-          "tangent_component_restricts_to_zero": true,
+          "tangent_component_restricts_to_zero": false,
           "tangent_generator_values": [
-            "1",
+            "0",
             "0",
             "0"
           ]
         },
-        "name": "add_middle_coordinate_to_W8_path",
+        "name": "zero_restricted_first_order_form",
         "target": "W8->B9"
       },
       "pass": true,
@@ -2666,10 +2666,10 @@
     }
   ],
   "inputs": {
-    "docs/design/a5-kernel-attachments-program.md": "ab11b1ff0ff32e7557aa00a13ba840835633ea9a5f6eddbb54ef88250a373a76",
-    "docs/evidence/a5-kernel-attachments/first_order_normal_cones.py": "160c4d65ff045a939e8e94548f6fc7b2f621074f617a7e16cc958885cf6bd1b8",
-    "docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json": "e765aa453081350ff35e18d57984b48eecef8ee5c733c3a6149e91f76677af4d",
-    "docs/evidence/a5-kernel-attachments/path_supported_basepoints.py": "43970b0be776cdf5a21785b508f3a71e19118d87a154cbebf9e1b6a77c5f6d27",
+    "docs/design/a5-kernel-attachments-program.md": "fc573781091d7f5041ca965397558dc9da9a3eed376371860c5dd8917a2d3e6c",
+    "docs/evidence/a5-kernel-attachments/first_order_normal_cones.py": "3939456f9341309bc866a12d3e853f672669fa44e5ba802ca30d2b8f217c2666",
+    "docs/evidence/a5-kernel-attachments/path-supported-basepoints-result.json": "427deba1f7cc4d471d136f8c16029607d2fed23d54a291d92f555e403f4fcc9f",
+    "docs/evidence/a5-kernel-attachments/path_supported_basepoints.py": "e37fca13aaed86398f71b2a6b6f28ce8fb1add4c8a082411ca5755f1be47cf75",
     "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json": "78b56be630d124eb59334f6ffce9f1c83ae60dc50b0ec22d4ddf5f675affa1a7",
     "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "f7d978febf6a286b11df3ea25b30b7c8dcd9e28763a46769a153f0246419b387",
     "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d",
@@ -2706,33 +2706,33 @@
         ]
       },
       "detected": true,
-      "input_change": "add the split middle-coordinate basis vector to the exact first-order path coefficient",
+      "input_change": "replace the exact restricted first-order form by the zero 6-by-6 form",
       "mutated": {
-        "approach": "opposite-null-directions-1-middle-coordinate-mutation",
-        "curve_certificate_pass": false,
-        "curve_containment_verified": false,
-        "direction_in_tangent_cone": false,
-        "first_order_effective_rank": 2,
-        "first_order_plane_matches_retained_limit": true,
-        "higher_order_required": false,
+        "approach": "opposite-null-directions-1",
+        "curve_certificate_pass": true,
+        "curve_containment_verified": true,
+        "direction_in_tangent_cone": true,
+        "first_order_effective_rank": 0,
+        "first_order_plane_matches_retained_limit": null,
+        "higher_order_required": true,
         "normal_coordinates": [
           "0",
           "-15/16",
           "0",
           "7/16",
-          "1",
+          "0",
           "0"
         ],
         "pass": false,
         "retained_leading_order": 1,
-        "tangent_component_restricts_to_zero": true,
+        "tangent_component_restricts_to_zero": false,
         "tangent_generator_values": [
-          "1",
+          "0",
           "0",
           "0"
         ]
       },
-      "name": "add_middle_coordinate_to_W8_path",
+      "name": "zero_restricted_first_order_form",
       "target": "W8->B9"
     }
   ],

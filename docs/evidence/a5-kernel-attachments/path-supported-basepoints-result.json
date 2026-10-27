@@ -1,5 +1,5 @@
 {
-  "falsifier": "An incidence lacks a path-supported point; a selected point has the wrong orbit pattern or nullity; a slice fails to complement the orbit tangent space; a germ invariant differs from the orbit-constant regularity value; an admitted path misses the transverse tangent cone; or the geometric-input mutation survives.",
+  "falsifier": "An incidence lacks a path-supported point; a selected point has the wrong orbit pattern or nullity; a slice fails to complement the orbit tangent space; a germ invariant differs from the orbit-constant regularity value; an admitted path misses the transverse tangent cone; or the tangent-cone-input mutation survives.",
   "incidences": [
     {
       "boundary_orbit": "B9",
@@ -987,49 +987,12 @@
       "incidence": "W8->B9",
       "membership_pattern": "111111000000",
       "mutation_control": {
-        "baseline": {
-          "approach": "opposite-null-directions-1",
-          "curve_certificate_pass": true,
-          "curve_containment_verified": true,
-          "direction_in_tangent_cone": true,
-          "normal_coordinates": [
-            "0",
-            "-15/16",
-            "0",
-            "7/16",
-            "0",
-            "0"
-          ],
-          "pass": true,
-          "tangent_generator_values": [
-            "0",
-            "0",
-            "0"
-          ]
-        },
+        "baseline_tangent_dimension": 3,
         "detected": true,
-        "input_change": "add the split middle-coordinate basis vector to the exact first-order path coefficient",
-        "mutated": {
-          "approach": "opposite-null-directions-1-middle-coordinate-mutation",
-          "curve_certificate_pass": false,
-          "curve_containment_verified": false,
-          "direction_in_tangent_cone": false,
-          "normal_coordinates": [
-            "0",
-            "-15/16",
-            "0",
-            "7/16",
-            "1",
-            "0"
-          ],
-          "pass": false,
-          "tangent_generator_values": [
-            "1",
-            "0",
-            "0"
-          ]
-        },
-        "name": "add_middle_coordinate_to_W8_path"
+        "expected_tangent_dimension": 3,
+        "input_change": "delete the first exact tangent-cone generator before recomputing its linear dimension",
+        "mutated_tangent_dimension": 4,
+        "name": "drop_tangent_cone_generator"
       },
       "orbit_dimension": 9,
       "pass": true,
@@ -1963,8 +1926,8 @@
     }
   ],
   "inputs": {
-    "docs/design/a5-kernel-attachments-program.md": "ab11b1ff0ff32e7557aa00a13ba840835633ea9a5f6eddbb54ef88250a373a76",
-    "docs/evidence/a5-kernel-attachments/path_supported_basepoints.py": "43970b0be776cdf5a21785b508f3a71e19118d87a154cbebf9e1b6a77c5f6d27",
+    "docs/design/a5-kernel-attachments-program.md": "fc573781091d7f5041ca965397558dc9da9a3eed376371860c5dd8917a2d3e6c",
+    "docs/evidence/a5-kernel-attachments/path_supported_basepoints.py": "e37fca13aaed86398f71b2a6b6f28ce8fb1add4c8a082411ca5755f1be47cf75",
     "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json": "78b56be630d124eb59334f6ffce9f1c83ae60dc50b0ec22d4ddf5f675affa1a7",
     "docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py": "f7d978febf6a286b11df3ea25b30b7c8dcd9e28763a46769a153f0246419b387",
     "docs/evidence/a5-rank-strata-equations/rederive_strata_equations.py": "17994a1fa3c76fe8a1922d47963a5df7fbee6f2866fd53eff42df4b54c0cb57b",
@@ -1974,49 +1937,12 @@
   },
   "mutation_controls": [
     {
-      "baseline": {
-        "approach": "opposite-null-directions-1",
-        "curve_certificate_pass": true,
-        "curve_containment_verified": true,
-        "direction_in_tangent_cone": true,
-        "normal_coordinates": [
-          "0",
-          "-15/16",
-          "0",
-          "7/16",
-          "0",
-          "0"
-        ],
-        "pass": true,
-        "tangent_generator_values": [
-          "0",
-          "0",
-          "0"
-        ]
-      },
+      "baseline_tangent_dimension": 3,
       "detected": true,
-      "input_change": "add the split middle-coordinate basis vector to the exact first-order path coefficient",
-      "mutated": {
-        "approach": "opposite-null-directions-1-middle-coordinate-mutation",
-        "curve_certificate_pass": false,
-        "curve_containment_verified": false,
-        "direction_in_tangent_cone": false,
-        "normal_coordinates": [
-          "0",
-          "-15/16",
-          "0",
-          "7/16",
-          "1",
-          "0"
-        ],
-        "pass": false,
-        "tangent_generator_values": [
-          "1",
-          "0",
-          "0"
-        ]
-      },
-      "name": "add_middle_coordinate_to_W8_path"
+      "expected_tangent_dimension": 3,
+      "input_change": "delete the first exact tangent-cone generator before recomputing its linear dimension",
+      "mutated_tangent_dimension": 4,
+      "name": "drop_tangent_cone_generator"
     }
   ],
   "pass": true,
