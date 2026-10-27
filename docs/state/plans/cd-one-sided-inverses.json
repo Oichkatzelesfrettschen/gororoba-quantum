@@ -89,6 +89,22 @@
             }
           ],
           "scope_sha256": "38a78b0e32a989c69af542b1fa3d8bf76de04f175ab09150e8e0e8a2999dc13d"
+        },
+        {
+          "result": "formalization.yaml validates against the retained v0.4.schema.json with jsonschema 4.26.0; the 20 listed declarations exist in their files, their proved statements sit under alignment, and every named source exists in the tree.",
+          "observed_at": "2026-10-27T16:56:43+00:00",
+          "revision": "7ce36d1f2733dba175c488fb73418b71c2c47fae",
+          "evidence": [
+            {
+              "ref": "formalization.yaml",
+              "sha256": "944f8ca2628b5fd0027b4c695ded13e86ea2115cb8e453245dd77a9537a4ae58"
+            },
+            {
+              "ref": "docs/evidence/formalization-yaml-schema/v0.4.schema.json",
+              "sha256": "25ff6b25ca4511635aff4443cf20480c15e59dddf19591c730950b442ea54fce"
+            }
+          ],
+          "scope_sha256": "38a78b0e32a989c69af542b1fa3d8bf76de04f175ab09150e8e0e8a2999dc13d"
         }
       ]
     }
@@ -112,6 +128,26 @@
         {
           "ref": "formalization.yaml",
           "sha256": "0452a21edfadd87a55ca9ee8463ee4ccba32f04c07309d97db34b8af64e2e992"
+        }
+      ],
+      "scope_sha256": "809badae45058c580f3efdc8ce5b0c6fa02a7a8a25ed6e2aac4066e3d0225bdf"
+    },
+    {
+      "result": "All three steps are done with receipts: the attributed proof, the gated derived record with a pooled-versus-serial test, and the validated formalization.yaml with its retained schema and alignment block.",
+      "observed_at": "2026-10-27T16:56:43+00:00",
+      "revision": "7ce36d1f2733dba175c488fb73418b71c2c47fae",
+      "evidence": [
+        {
+          "ref": "docs/notes/topics/cd-one-sided-inverses.md",
+          "sha256": "3ed5afc421f7dcc449f9610a9818fce99909b9ca2d30362ad47b7d59103bfffb"
+        },
+        {
+          "ref": "docs/evidence/cd-one-sided-inverses/record.json",
+          "sha256": "72da8d44264f05683345614e5b4187bd9162ed2cb97a3813697570d0ace6d9c9"
+        },
+        {
+          "ref": "formalization.yaml",
+          "sha256": "944f8ca2628b5fd0027b4c695ded13e86ea2115cb8e453245dd77a9537a4ae58"
         }
       ],
       "scope_sha256": "809badae45058c580f3efdc8ce5b0c6fa02a7a8a25ed6e2aac4066e3d0225bdf"
