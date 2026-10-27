@@ -96,10 +96,13 @@ from qpe_diagnostics import (
     herald_measurement,
     ideal_compiled_probabilities,
     n21_dose_key,
+    n21_dose_name,
     n21_dose_violations,
     n21_ramsey_multiple,
     n21_segmented_key,
+    n21_work_ramsey_key,
     oracle_key,
+    phase_marginal,
 )
 
 # The ground Ramsey sweep's preregistered analysis. Its source closure (the
@@ -209,7 +212,9 @@ def settings(args: Any) -> dict[str, Any]:
     sweep = getattr(args, "segmented_sweep", None)
     segmented = {"segmented_sweep": sweep, "segmented_analyzer_closure": segmented_analyzer_closure()} if sweep else {}
     doses = getattr(args, "window_doses_dt", None)
-    dosed = {"window_doses": list(doses)} if doses else {}
+    dosed: dict[str, Any] = {"window_doses": list(doses)} if doses else {}
+    if getattr(args, "detuning_sign", False):
+        dosed["detuning_sign"] = True
     latency = {
         name: getattr(args, name) for name in ("latency_dt", "window_dt") if getattr(args, name, None) is not None
     }
@@ -487,6 +492,169 @@ def window_doses_of(members: Any) -> tuple[int, ...]:
     return tuple(sorted({key[1] for key in found if key is not None}))
 
 
+def detuning_sign_of(members: Any) -> bool:
+    """Whether a group is the detuning-sign test, which alone holds work Ramsey arms."""
+    return any(n21_work_ramsey_key(member.name) is not None for member in members)
+
+
+# A quarter-sized turn keeps every probed phase response inside (-pi, pi).
+DOSE_ROLE_PROBE_RAD = 0.4
+
+
+def _turned(isa: Any, physical: int | None, angle: float) -> Any:
+    """isa reduced to its active qubits, with a Z turn of angle spread over physical's delays by duration."""
+    from qiskit import QuantumCircuit
+
+    def wires(instruction: Any) -> list[int]:
+        return [isa.find_bit(qubit).index for qubit in instruction.qubits]
+
+    active = sorted({q for inner in isa.data if inner.operation.name != "barrier" for q in wires(inner)})
+    index = {q: k for k, q in enumerate(active)}
+    held = sum(
+        int(inner.operation.duration)
+        for inner in isa.data
+        if inner.operation.name == "delay" and physical in wires(inner)
+    )
+    out = QuantumCircuit(len(active))
+    for register in isa.cregs:
+        out.add_register(register)
+    for inner in isa.data:
+        qubits = wires(inner)
+        if inner.operation.name == "barrier":
+            kept = [index[q] for q in qubits if q in index]
+            if kept:
+                out.barrier(*kept)
+        elif inner.operation.name == "delay":
+            if physical in qubits and held:
+                out.rz(angle * int(inner.operation.duration) / held, index[physical])
+        else:
+            out.append(inner.operation, [index[q] for q in qubits], inner.clbits)
+    return out
+
+
+def _probe_marginal(circuit: Any) -> np.ndarray:
+    """The exact phase-register marginal of one reduced probe circuit."""
+    from qiskit_aer.noise import NoiseModel
+
+    import dynamic_density
+
+    return phase_marginal(dynamic_density.probabilities(circuit, NoiseModel()))
+
+
+def _orbit_read(marginal: np.ndarray) -> float:
+    return float(
+        (marginal[0] - marginal[2]) / (marginal[0] + marginal[2])
+        - (marginal[1] - marginal[3]) / (marginal[1] + marginal[3])
+    )
+
+
+def _ramsey_read(marginal: np.ndarray) -> float:
+    return float(marginal[0] - marginal[2])
+
+
+def _responses(layout: list[int], pairs: list[tuple[Any, Any]], read: Callable[[np.ndarray], float]) -> list[list[int]]:
+    """Per (cosine, sine) pair of compiled members, each logical qubit's phase response, in units of the probe turn on
+    its initial physical qubit: -1, 0 or 1.
+
+    Every probe circuit is independent, so the whole batch evaluates in one
+    pooled map, and each pair's phase is atan2 of its sine and cosine reads.
+    """
+    turns: tuple[int | None, ...] = (None, *layout)
+    circuits = [_turned(isa, physical, DOSE_ROLE_PROBE_RAD) for pair in pairs for physical in turns for isa in pair]
+    reads = [read(marginal) for marginal in parallel.ordered_map(_probe_marginal, circuits, min_items=2)]
+    out = []
+    for k in range(len(pairs)):
+        row = reads[2 * len(turns) * k : 2 * len(turns) * (k + 1)]
+        base, *phases = (math.atan2(row[2 * j + 1], row[2 * j]) for j in range(len(turns)))
+        signs = []
+        for physical, phase in zip(layout, phases, strict=True):
+            turn = math.remainder(phase - base, 2 * math.pi) / DOSE_ROLE_PROBE_RAD
+            if abs(turn - round(turn)) > 0.05 or round(turn) not in (-1, 0, 1):
+                raise ValueError(f"the probe turn on qubit {physical} moves the phase by {turn:.3f} turns")
+            signs.append(round(turn))
+        out.append(signs)
+    return out
+
+
+def dose_roles(choice: Any) -> dict[str, int]:
+    """The logical index whose initial qubit holds each work role during the dose of a compiled detuning-sign plan.
+
+    Routing the orbit's controlled swaps moves the work roles, so the roles
+    come from the compiled arms: a Z turn of one initial physical qubit
+    during the dose turns the orbit's quadrature pair by plus the turn on the
+    qubit that holds the work bit for 16, by minus it on the qubit for 1,
+    and leaves it on every other qubit (tests/gororoba_quantum/
+    test_detuning_sign.py), evaluated exactly at every nonzero dose. Every
+    dose must give the same roles.
+    """
+    isas = {member.name: isa for member, isa in zip(choice.group.members, choice.isas, strict=True)}
+    layout = list(choice.layout)
+    pairs = [
+        (isas[n21_dose_name("window_dose", dose, False)], isas[n21_dose_name("window_dose_y", dose, False)])
+        for dose in window_doses_of(choice.group.members)[1:]
+    ]
+    found = {tuple(signs) for signs in _responses(layout, pairs, _orbit_read)}
+    if len(found) != 1:
+        raise ValueError(f"the orbit arms hold the work roles on different qubits across doses: {sorted(found)}")
+    (signs,) = found
+    if sorted(signs) != [-1, 0, 0, 1]:
+        raise ValueError(f"the orbit's dose responds to the initial qubits {layout} as {list(signs)}")
+    return {"one": signs.index(-1), "sixteen": signs.index(1)}
+
+
+def detuning_roles_choice(runtime: Any, candidate: Any, windows: dict[str, Any]) -> tuple[Any, dict[str, Any]]:
+    """Rebuild a routed detuning-sign candidate with its Ramsey arms on the dose-time work qubits.
+
+    The orbit arms keep their compiled circuits; only the Ramsey arms
+    compile again, and each must turn with its own role's qubit alone.
+    """
+    roles = dose_roles(candidate)
+    group = n21_orbit_rca_group(
+        windows["window_delay_dt"],
+        windows["echo_half_dt"],
+        True,
+        window_doses=window_doses_of(candidate.group.members),
+        detuning_sign=True,
+        dose_roles=roles,
+    )
+    previous = {member.name: isa for member, isa in zip(candidate.group.members, candidate.isas, strict=True)}
+    if [member.name for member in group.members] != list(previous):
+        raise runtime.LiveRunError("the dose-role rebuild changed the detuning-sign members")
+    snapshot = candidate.snap
+    if snapshot.admission_target is None:
+        snapshot.admission_target = runtime.build_admission_target(snapshot)
+    get_plugin = getattr(snapshot.backend, "get_translation_stage_plugin", None)
+    compiler = MemberCompiler(snapshot.admission_target, candidate.seed, get_plugin() if get_plugin else None)
+    # The Ramsey arms are independent compilations; ordered_map returns them in member order.
+    ramsey = [member for member in group.members if n21_work_ramsey_key(member.name) is not None]
+    fresh = iter(
+        parallel.ordered_map(compiler, [(member.circuit, list(candidate.layout)) for member in ramsey], min_items=2)
+    )
+    isas = [
+        next(fresh) if n21_work_ramsey_key(member.name) is not None else previous[member.name]
+        for member in group.members
+    ]
+    compiled = {member.name: isa for member, isa in zip(group.members, isas, strict=True)}
+    arms = [
+        (member.name, key[0])
+        for member in group.members
+        if (key := n21_work_ramsey_key(member.name)) is not None and key[1] == "x" and key[2]
+    ]
+    pairs = [(compiled[name], compiled[name.replace("_x_d", "_y_d")]) for name, _ in arms]
+    for (name, role), signs in zip(arms, _responses(list(candidate.layout), pairs, _ramsey_read), strict=True):
+        if signs != [1 if logical == roles[role] else 0 for logical in range(len(candidate.layout))]:
+            raise runtime.LiveRunError(f"{name} does not turn with the dose-time qubit of {role}")
+    violations = [reason for isa in isas for reason in runtime.compiled_violations(isa, candidate.snap)]
+    if violations:
+        raise runtime.LiveRunError(str(violations))
+    scores = [runtime.layout_score(isa, candidate.snap.backend.target) for isa in isas]
+    if any(score <= 0 for score in scores):
+        raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero on layout {candidate.layout}")
+    joint = math.exp(sum(math.log(score) for score in scores) / len(scores))
+    rebuilt = runtime.Choice(group, candidate.snap, candidate.seed, candidate.layout, isas, scores, joint)
+    return rebuilt, windows | {"dose_roles": roles}
+
+
 def window_dose_timing_violations(runtime: Any, snapshot: Any, doses: tuple[int, ...]) -> None:
     """Raise unless every dose, and every echo quarter of it, plays as a Target delay."""
     target = snapshot.backend.target
@@ -579,6 +747,7 @@ def _control_windows(
         ramsey_windows=ramsey,
         segmented=segmented,
         window_doses=doses,
+        detuning_sign=detuning_sign_of(candidate.group.members),
     )
     isas = [
         runtime._compile(member.circuit, candidate.snap, candidate.seed, candidate.layout) for member in group.members
@@ -1113,7 +1282,7 @@ def prereadout_delay(runtime: Any, snapshot: Any) -> int:
 
 
 class MemberCompiler:
-    """Transpile one (circuit, physical qubit) onto the admission Target, as live_run._compile does for a pinned qubit.
+    """Transpile one (circuit, initial layout) onto the admission Target, as live_run._compile does for that layout.
 
     The worker receives the Target, the seed and the backend's default translation stage plugin
     rather than the backend: a runtime backend holds its service session, which stays in the
@@ -1125,17 +1294,17 @@ class MemberCompiler:
         self.seed = seed
         self.translation_method = translation_method
 
-    def __call__(self, item: tuple[QuantumCircuit, int]) -> QuantumCircuit:
+    def __call__(self, item: tuple[QuantumCircuit, list[int]]) -> QuantumCircuit:
         import live_run
 
-        circuit, qubit = item
+        circuit, layout = item
         try:
             return transpile(
                 circuit,
                 target=self.target,
                 optimization_level=live_run.OPT_LEVEL,
                 seed_transpiler=self.seed,
-                initial_layout=[qubit],
+                initial_layout=layout,
                 translation_method=self.translation_method,
             )
         except BaseException as error:
@@ -1226,7 +1395,7 @@ def measurement_sequence_candidates(
             )
             # The members are independent compilations; ordered_map returns them in member order.
             work = [
-                (member.circuit, int(group.name.rsplit("_q", 1)[1])) for group in groups for member in group.members
+                (member.circuit, [int(group.name.rsplit("_q", 1)[1])]) for group in groups for member in group.members
             ]
             compiled = iter(parallel.ordered_map(compiler, work, min_items=2))
             choices = []
@@ -1435,6 +1604,7 @@ def family_candidates(
                         ramsey_windows=ramsey,
                         segmented=sweep,
                         window_doses=doses,
+                        detuning_sign=bool(getattr(args, "detuning_sign", False)),
                     )
                     placed = runtime.select_candidates(group, [snapshot], args.seeds, local, pinned)
                 except (runtime.LiveRunError, QiskitError, ValueError) as error:
@@ -1444,6 +1614,8 @@ def family_candidates(
                 for placement in placed:
                     try:
                         choice, window = _control_windows(runtime, placement, bound, reset_bound)
+                        if getattr(args, "detuning_sign", False):
+                            choice, window = detuning_roles_choice(runtime, choice, window)
                         if pinned is not None:
                             if moved := pinned_roles_violations(runtime, choice, pinned):
                                 raise runtime.LiveRunError("; ".join(moved))
@@ -1521,7 +1693,10 @@ def family_candidates(
                                         ),
                                     }
                                     if getattr(args, "ground_control_split", False)
-                                    else {"window_doses": list(doses)}
+                                    else {
+                                        "window_doses": list(doses),
+                                        **({"detuning_sign": True} if getattr(args, "detuning_sign", False) else {}),
+                                    }
                                     if doses
                                     else {"window_sweep": True}
                                     if args.family == "n21-orbit-rca"

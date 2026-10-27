@@ -72,13 +72,17 @@ The [adaptive-envelope successor](comparison-adaptive-envelope.json) rebinds the
 after `live_run.py` gained the measurement-sequence envelope's approval, fallback and replan contract beside the
 window doses; its 41 rows equal the window-dose successor's.
 
+The [detuning-sign successor](comparison-detuning-sign.json) rebinds the idle-penalty retrieval offline after
+`live_run.py` gained `--detuning-sign`; its 41 rows equal the adaptive-envelope successor's, and it differs from that
+successor only in the `live_run.py` digest and the offline validation time.
+
 The [idle-penalty repeat retrieval](comparison-idle-penalty-repeat-retrieval.json) reads the same 41 jobs afresh
 through the read-only job interface, seeded from the original comparison, after the retention audit listed the
 stability repeat's Kingston job `dbgcnp5rd2mc73cuf5p0` under `awaiting_observation`; that audit change ends the
 offline rebind chain, which binds the audit's digest. Its collector equals the archived
 [collector text](collector-idle-penalty-retrieval.py.txt), and it binds the `live_run.py` that carries the pin
-admission, the window doses and the envelope contract. Every item equals its retained circuit in order. Gate
-`core-281` checks it.
+admission, the window doses, the envelope contract and `--detuning-sign`. Every item equals its retained circuit
+in order. Gate `core-281` checks it.
 
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These

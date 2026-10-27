@@ -15,7 +15,7 @@
   },
   "scope": "The written proof in docs/notes/topics/cd-one-sided-inverses.md, the exact replay scripts/cd_one_sided_inverses.py with its retained record under docs/evidence/cd-one-sided-inverses/ and gate core-record-check-08, and the root formalization.yaml indexing the fourteen Rocq sources. A Rocq proof of the kernel equality and dimensions above 32 stay out of scope.",
   "owner": "repository maintainer",
-  "next_action": "None; the plan is closed. A Rocq statement of Lemma 4 and the theorem against CdTowerBasisSign.v is the open follow-up (action item 7 of math-0511691.md).",
+  "next_action": "None; the plan is closed. The Rocq statement of Lemma 4 and the theorem on the integer tower is plan cd-annihilator-symmetry-rocq (proofs/CdAnnihilatorSymmetry.v).",
   "related": [
     "rocq-certificate-statement-split"
   ],

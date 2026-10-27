@@ -683,6 +683,252 @@ def test_null_upper_bound_is_clopper_pearson() -> None:
     check(null.upper_bound(5, 5) == 1.0, "all fired")
 
 
+def first_difference(a: Any, b: Any, path: str = "") -> str | None:
+    """Where two nested results first differ, comparing floats by float.hex and arrays by their bytes."""
+    if isinstance(a, dict) and isinstance(b, dict):
+        if list(a) != list(b):
+            return f"{path}: keys {list(a)} against {list(b)}"
+        for key in a:
+            found = first_difference(a[key], b[key], f"{path}/{key}")
+            if found:
+                return found
+        return None
+    if isinstance(a, np.ndarray) and isinstance(b, np.ndarray):
+        same = a.dtype == b.dtype and a.shape == b.shape and a.tobytes() == b.tobytes()
+        return None if same else f"{path}: array {a.tolist()} against {b.tolist()}"
+    if isinstance(a, (list, tuple)) and type(a) is type(b):
+        if len(a) != len(b):
+            return f"{path}: length {len(a)} against {len(b)}"
+        for i, (x, y) in enumerate(zip(a, b, strict=True)):
+            found = first_difference(x, y, f"{path}[{i}]")
+            if found:
+                return found
+        return None
+    if isinstance(a, float) and isinstance(b, float):
+        return None if a.hex() == b.hex() else f"{path}: {a!r} against {b!r}"
+    return None if type(a) is type(b) and a == b else f"{path}: {a!r} against {b!r}"
+
+
+def test_batched_sums_equal_builtin_and_numpy_rows() -> None:
+    import msq_envelope_null as null
+
+    generator = np.random.default_rng(null.NULL_SEED)
+    scales = np.array([1e-300, 1e-9, 1.0, 1e9, 1e300, 0.0, -0.0])
+    terms = generator.standard_normal((4, 4000)) * generator.choice(scales, size=(4, 4000))
+    batched = null.neumaier_rows(list(terms))
+    for k in range(4000):
+        check(batched[k].hex() == sum(terms[:, k].tolist()).hex(), f"compensated sum of column {k}")
+    for rows in (1, 2, 3, 5, 7, 64, 1000):
+        block = generator.standard_normal((rows, 5)) * generator.choice(scales[:5], size=(rows, 5))
+        check(
+            all(a.hex() == np.sum(block[k]).hex() for k, a in enumerate(np.sum(block, axis=1).tolist())),
+            f"np.sum over axis 1 of {rows} rows equals the sum of each row",
+        )
+    values = generator.standard_normal(5000) * 10.0
+    squares = null.square_rows(values)
+    check(all(a.hex() == (v**2).hex() for a, v in zip(squares.tolist(), values.tolist(), strict=True)), "pow squares")
+    exps = null.exp_rows(values)
+    check(all(a.hex() == math.exp(v).hex() for a, v in zip(exps.tolist(), values.tolist(), strict=True)), "exp")
+
+
+def test_batched_minimizer_replays_scipy_bounded_brent() -> None:
+    from scipy.optimize import minimize_scalar
+
+    import msq_envelope_null as null
+
+    generator = np.random.default_rng(null.NULL_SEED)
+    count = 400
+    center = generator.uniform(-8.0, -3.0, count)
+    width = generator.uniform(0.05, 3.0, count)
+    amplitude = generator.uniform(0.1, 2.0, count)
+    family = generator.integers(0, 4, count)
+
+    def objective(u: np.ndarray, rows: np.ndarray) -> np.ndarray:
+        d = u - center[rows]
+        shapes = [
+            amplitude[rows] * d**2,
+            amplitude[rows] * np.abs(d) + 0.01 * np.sin(40 * u),
+            np.cosh(d * width[rows]) + 0.3 * np.sin(7 * u),
+            amplitude[rows] * d**4 + np.exp(-(d**2)),
+        ]
+        return np.choose(family[rows], shapes)
+
+    seen: dict[int, list[float]] = {row: [] for row in range(count)}
+
+    def recorded(u: np.ndarray, rows: np.ndarray) -> np.ndarray:
+        for x, row in zip(u.tolist(), rows.tolist(), strict=True):
+            seen[row].append(x)
+        return objective(u, rows)
+
+    trace = null.SolverTrace()
+    low, high = math.log(1e-6), math.log(1e-2)
+    found = null.minimize_rows(recorded, count, low, high, 1e-10, trace)
+    for row in range(count):
+        points: list[float] = []
+
+        def scalar(u: float, row: int = row, points: list[float] = points) -> float:
+            points.append(u)
+            return float(objective(np.array([u]), np.array([row]))[0])
+
+        best = minimize_scalar(scalar, bounds=(low, high), method="bounded", options={"xatol": 1e-10})
+        check(points == seen[row], f"row {row}: the objective sees SciPy's sequence of points")
+        check(float(best.x).hex() == found[row].hex(), f"row {row}: the minimizer")
+    for branch in (
+        "parabolic",
+        "parabolic_clamped",
+        "parabolic_rejected",
+        "golden",
+        "better_up",
+        "better_down",
+        "worse_down",
+        "worse_up",
+        "worse_near",
+        "worse_far",
+    ):
+        check(trace.counts.get(branch, 0) > 0, f"the rows take the {branch} branch")
+
+
+def test_batched_brentq_replays_scipy_brentq() -> None:
+    from scipy.optimize import brentq
+
+    import msq_envelope_null as null
+
+    generator = np.random.default_rng(null.NULL_SEED)
+    count = 400
+    root = generator.uniform(0.0, 0.5, count)
+    scale = generator.uniform(0.5, 30.0, count)
+    family = generator.integers(0, 4, count)
+
+    def objective(x: np.ndarray, rows: np.ndarray) -> np.ndarray:
+        d = x - root[rows]
+        shapes = [
+            -d * scale[rows],
+            -np.sinh(scale[rows] * d),
+            -np.tanh(scale[rows] * d) * np.exp(-3 * x),
+            -d * (1 + scale[rows] * d**2),
+        ]
+        return np.choose(family[rows], shapes)
+
+    seen: dict[int, list[float]] = {row: [] for row in range(count)}
+
+    def recorded(x: np.ndarray, rows: np.ndarray) -> np.ndarray:
+        for value, row in zip(x.tolist(), rows.tolist(), strict=True):
+            seen[row].append(value)
+        return objective(x, rows)
+
+    trace = null.SolverTrace()
+    found = null.brentq_rows(recorded, np.full(count, -0.05), np.full(count, 0.5), 1e-13, 1e-13, trace)
+    for row in range(count):
+        points: list[float] = []
+
+        def scalar(x: float, row: int = row, points: list[float] = points) -> float:
+            points.append(x)
+            return float(objective(np.array([x]), np.array([row]))[0])
+
+        expected = brentq(scalar, -0.05, 0.5, xtol=1e-13, rtol=1e-13)
+        check(points == seen[row], f"row {row}: the objective sees SciPy's sequence of points")
+        check(float(expected).hex() == found[row].hex(), f"row {row}: the root")
+    for branch in ("interpolate", "extrapolate", "bisect_rejected", "bisect", "swap", "minimum_step"):
+        check(trace.counts.get(branch, 0) > 0, f"the rows take the {branch} branch")
+    with pytest.raises(ValueError):
+        null.brentq_rows(lambda x, rows: x * 0 + 1.0, np.zeros(2), np.ones(2), 1e-13, 1e-13)
+
+
+class NullFixture:
+    """A width-8 null block with the scalar pipeline's rows, so the batched tests share one reference."""
+
+    def __init__(self) -> None:
+        import measurement_sequence_analysis as msa
+        import msq_envelope_null as null
+
+        floor, reason = msa.bound_floor({"ibm_kingston"})
+        if floor is None:
+            raise AssertionError(str(reason))
+        self.width = 8
+        self.contexts = null.null_contexts(self.width)
+        self.slopes = {q: null.residual_slope(self.contexts[q]) for q in self.contexts}
+        self.floor = floor
+        self.seeds = np.random.SeedSequence(null.NULL_SEED).spawn(3)
+        self.drawn = [null.draw(self.item(seed)) for seed in self.seeds]
+        self.planned = msa.with_planning(self.contexts, floor)
+        self.qubits = (0, 3, 5)
+        self.rows = {
+            q: [msa.evaluate_qubit((q, d.counts[q], self.planned[q])) for d in self.drawn] for q in self.qubits
+        }
+        self.replicates = [null.replicate_detail(self.item(seed)) for seed in self.seeds[:2]]
+
+    def item(self, seed: Any) -> Any:
+        return self.width, self.contexts, self.slopes, self.floor, seed
+
+
+@pytest.fixture(scope="module")
+def null_fixture() -> NullFixture:
+    return NullFixture()
+
+
+@pytest.mark.xdist_group("msq-null-batch")
+def test_batched_qubit_rows_equal_scalar_rows_and_the_sum_mutant_differs(null_fixture: NullFixture) -> None:
+    import msq_envelope_null as null
+
+    fixture = null_fixture
+
+    def mismatches() -> list[str]:
+        found = []
+        for q in fixture.qubits:
+            rows = null.evaluate_qubit_rows(q, fixture.planned[q], [d.counts[q] for d in fixture.drawn])
+            found += [m for a, b in zip(fixture.rows[q], rows, strict=True) if (m := first_difference(a, b))]
+        return found
+
+    check(mismatches() == [], "every field of every row has the scalar bits")
+    original = null.neumaier_rows
+    try:
+        null.neumaier_rows = lambda terms: sum(terms[1:], terms[0] + 0.0)
+        check(len(mismatches()) > 0, "uncompensated sums change a field of a row")
+    finally:
+        null.neumaier_rows = original
+
+
+def test_batched_implied_loss_keeps_the_scalar_bits_inside_and_at_the_bracket_edges() -> None:
+    import measurement_sequence_analysis as msa
+    import msq_envelope_null as null
+
+    ctx = null.null_contexts(1)[0]
+    gate = msa.sx_gate(ctx)
+    fraction = msa.WINDOW_RELAX_FRACTION
+    tau = msa.tau_of("measure", ctx, fraction)
+    q = 1 / (1 - 2 * msa.PLANNING_P_INIT)
+    low, high = -0.05, 0.5
+    cases = []
+    for scale in (0.5, 1.0, 2.0):
+        t1 = scale * ctx["t1_cal_s"]
+        t2 = min(ctx["t2_s"], 2 * t1)
+        ends = [msa.corrected_z("measure", msa.TOP_STEPS, t1, t2, tau, eps, gate, q) for eps in (low, high)]
+        inside = [ends[0] + f * (ends[1] - ends[0]) for f in (0.1, 0.35, 0.5, 0.8, 0.97)]
+        cases += [(t1, t2, z) for z in [ends[0] + 0.1, ends[0], ends[1], ends[1] - 0.1, *inside]]
+    t1s, t2s, zs = (np.array(column) for column in zip(*cases, strict=True))
+    expected = [msa.implied_loss(z, t1, t2, ctx, q, gate, fraction) for t1, t2, z in cases]
+    sx = null.damped_sx(t1s, t2s, null.gate_rows(ctx, 0.0))
+    got = null.implied_loss_rows(zs, t1s, t2s, ctx, np.full(len(cases), q), null.gate_rows(ctx, 0.0), fraction, sx)
+    for k, (a, b) in enumerate(zip(expected, got.tolist(), strict=True)):
+        check(a.hex() == b.hex(), f"row {k}: {a!r} against {b!r}")
+    check(low in expected and high in expected, "the cases reach both bracket ends")
+    check(any(low < e < high for e in expected), "the cases reach the root solve")
+
+
+@pytest.mark.xdist_group("msq-null-batch")
+def test_batched_block_equals_scalar_replicates(null_fixture: NullFixture) -> None:
+    import msq_envelope_null as null
+
+    fixture = null_fixture
+    batched = null.analyse_block(fixture.item(fixture.seeds[:2]))
+    for expected, got in zip(fixture.replicates, batched, strict=True):
+        found = first_difference(list(expected), list(got))
+        check(found is None, str(found))
+    check(null.replicate_block(fixture.item(fixture.seeds[:1])) == [batched[0][0]], "record row of a block")
+    withheld = null.analyse_block((4, null.null_contexts(4), fixture.slopes, fixture.floor, fixture.seeds[:1]))
+    check(withheld[0][0]["withheld"] and withheld[0][1] is None, "fewer than MIN_KEPT qubits withhold")
+
+
 def test_shared_laws_round_trip_and_leave_other_records() -> None:
     import live_run
 

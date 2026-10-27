@@ -2031,7 +2031,7 @@
   }
  ],
  "provenance": {
-  "retrieved_utc": "2026-10-27T17:49:47.974799+00:00",
+  "retrieved_utc": "2026-10-27T18:54:25.408298+00:00",
   "operation": "read existing job inputs; submissions and uploads excluded",
   "sources_sha256": {
    "results/live/qpu-job-retention-audit.json": "6969029977aaf3c759e668a9497b00d3ee97b6a63881a61c0275d15e8ab8dcee",
