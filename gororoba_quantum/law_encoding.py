@@ -45,6 +45,28 @@ def _dependent_bits(values: Sequence[float], width: int) -> list[int]:
     ]
 
 
+def _truthy_indices(values: Sequence[float]) -> list[int]:
+    """Indices of the entries a truth test keeps: nonzero and NaN, never 0, 0.0 or -0.0."""
+    array = np.asarray(values, dtype=float)
+    return [int(i) for i in np.flatnonzero(array != 0)]
+
+
+def _gather_index(count: int, bits: Sequence[int], forward: bool) -> list[int]:
+    """Per k < count, the table or outcome index the bit map sends k to, from integer arrays.
+
+    forward maps table index k to the outcome whose bit bits[j] is bit j of k; otherwise outcome k maps to the table
+    index whose bit j is bit bits[j] of k. Only indices are computed, so the gathered entries keep their objects.
+    """
+    k = np.arange(count, dtype=np.int64)
+    index = np.zeros(count, dtype=np.int64)
+    for j, bit in enumerate(bits):
+        if forward:
+            index |= ((k >> j) & 1) << bit
+        else:
+            index |= ((k >> bit) & 1) << j
+    return [int(i) for i in index]
+
+
 def encode(values: Sequence[float]) -> list[float] | dict[str, Any]:
     """values as a record stores them: a list up to DENSE_LIMIT entries, else the shorter exact form."""
     if len(values) <= DENSE_LIMIT:
@@ -56,10 +78,10 @@ def encode(values: Sequence[float]) -> list[float] | dict[str, Any]:
     support: dict[str, Any] = {
         "encoding": "support",
         "length": length,
-        "support": {str(index): value for index, value in enumerate(values) if value},
+        "support": {str(index): values[index] for index in _truthy_indices(values)},
     }
     bits = _dependent_bits(values, width)
-    table = [values[sum(((k >> j) & 1) << bit for j, bit in enumerate(bits))] for k in range(1 << len(bits))]
+    table = [values[index] for index in _gather_index(1 << len(bits), bits, forward=True)]
     junta: dict[str, Any] = {"encoding": "bits", "length": length, "bits": bits, "table": table}
     # A form stands only when it expands to the same JSON text: 0, 0.0 and
     # -0.0 compare equal and serialize apart.
@@ -87,5 +109,5 @@ def dense(stored: Any) -> list[float]:
         bits, table = stored["bits"], stored["table"]
         if len(table) != 1 << len(bits) or any(not 0 <= bit < length.bit_length() - 1 for bit in bits):
             raise ValueError("a bit-table form names bits outside its register or a table of the wrong size")
-        return [table[sum(((x >> bit) & 1) << j for j, bit in enumerate(bits))] for x in range(length)]
+        return [table[index] for index in _gather_index(length, bits, forward=False)]
     raise ValueError(f"unknown outcome vector encoding {stored.get('encoding')!r}")

@@ -265,7 +265,11 @@ build-host Python stack in
   binding table is filled from the records after the submit. The fresh plan
   must match the record or the run writes an `approval_required` record and
   sends nothing, and the runner plans again; the first batch consumes the
-  approval by writing `approval-consumed.json`.
+  approval by writing `approval-consumed.json`. An envelope record
+  (`msq-envelope-v1`, the measurement-sequence-envelope family) binds its
+  layout rule, bounds, ceilings and constructor instead of the dry run's
+  calibration values, and writes one consumed marker per attempt
+  ([qpu-submission.md](docs/notes/ibm_quantum/qpu-submission.md)).
 - Calibration is a property of the run. live_run.py fetches each backend's
   Target and properties afresh in the process that decides, compiles,
   simulates and submits, and no calibration value is cached or read back from

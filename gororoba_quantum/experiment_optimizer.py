@@ -366,6 +366,22 @@ def _finite(value: float) -> bool:
     return not isinstance(value, bool) and math.isfinite(value)
 
 
+def _bounded_scores(values: tuple[float, ...]) -> bool:
+    """Whether values is nonempty and every entry is a finite non-bool number in [-1, 1] (_finite on each entry).
+
+    One array test replaces the per-entry calls; a vector numpy cannot read as floats takes the per-entry test.
+    """
+    if not values:
+        return False
+    try:
+        array = np.asarray(values, dtype=float)
+    except (TypeError, ValueError):
+        return all(_finite(value) and -1 <= value <= 1 for value in values)
+    if any(type(value) is bool for value in values):
+        return False
+    return bool(np.all(np.isfinite(array)) and np.all(array >= -1) and np.all(array <= 1))
+
+
 def _positive_integer(value: int) -> bool:
     return isinstance(value, int) and not isinstance(value, bool) and value > 0
 
@@ -402,7 +418,7 @@ def _validate_observable_contracts(contracts: tuple[ObservableContract, ...]) ->
             _require(bool(term.member.strip()), f"{contract.name}: member name is required")
             _require(type(term.sign) is int and term.sign in (-1, 1), f"{contract.name}: term sign must be -1 or +1")
             _require(
-                bool(term.values) and all(_finite(value) and -1 <= value <= 1 for value in term.values),
+                _bounded_scores(term.values),
                 f"{contract.name}/{term.member}: score values must be finite and lie in [-1, 1]",
             )
 
@@ -1177,15 +1193,15 @@ def observation_power_radii(
 
 
 def _simulation_comparisons(plans: tuple[CandidatePlan, ...], contracts: tuple[ObservableContract, ...]) -> int:
+    # Whether a term's score varies is a property of the term alone, so it is read once per term, not once per PUB.
+    varying = [term.member for contract in contracts for term in contract.terms if max(term.values) > min(term.values)]
     return sum(
-        len(pub.member_distributions.get(term.member, ()))
+        len(pub.member_distributions.get(member, ()))
         for plan in plans
         for job in plan.jobs
         for pub in job.pubs
         if pub.simulation_shots is not None
-        for contract in contracts
-        for term in contract.terms
-        if max(term.values) > min(term.values)
+        for member in varying
     )
 
 
