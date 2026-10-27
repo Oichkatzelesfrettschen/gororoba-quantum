@@ -322,3 +322,24 @@ in the Rees elimination and times out at 15 minutes with `slimgb`; it remains op
   when a modular elimination exhausts 16 GiB, with a guard that stops it when `MemAvailable` falls below 4 GiB.
   Singular processes keep the 16 GiB single-process cap. msolve works over prime fields only: take
   `p = 1073741789` (`p = 1 mod 4`) and `i = 140687844`, a square root of -1 modulo `p`.
+
+## Orchestrator note after 2j-c: the incidences into nullity 16
+
+`E8bar` to `VB` stays open after msolve (segmentation fault at the 24 GiB cap after 25 minutes), giac over `Q(i)`
+(30-minute timeout at 300 MB), weighted tangent cones (non-reduced under every weighting of `t2, t3+t4, t5-t6, t8`)
+and normalization (3 s, but 115 relations after presolve). Its germ behaves as a branched double cover of the 4-plane
+`(t1, t4, t6, t7)`; it gets its own design round, and no sub-step reformulates it by brute force.
+
+The 18 incidences into nullity 16 (`B9`, `V`, `VB`, `V^a+-` to `N+-`; `E8bar`, `Iso`, `W8`, `X+-` to `N+-`) have no
+basepoints, slices or germ records; `path-supported-basepoints-result.json` and `first-order-normal-cones-result.json`
+cover only the 15 incidences into nullity 12. At nullity 16 `rank C_z = 6`, so the Schur complement lives on the
+9-dimensional `ker C_(z_0)`: rank 2 on a nullity-12 source, with its 36 entries as Plücker coordinates of the row
+plane in `Gr(2,9)`; rank 4 on a nullity-8 source, with its 126 principal 4 x 4 Pfaffians as Plücker coordinates of
+the row 4-plane in `Gr(4,9)`.
+
+- **2k-a.** One producer, `nullity16_basepoints.py`: for each of the 18 incidences, an exact path-supported basepoint
+  on the `N+-` orbit reached by a committed census path, a coordinate slice transverse to the boundary orbit, the
+  source-closure germ there (dimension, multiplicity, embedding dimension, components; global orderings and the
+  normal-cone deformation only), and the Nakayama count `s` of the Schur coordinates above at that basepoint. Pool
+  the rows; every Singular call under `prlimit --as=4294967296` with a 300 s timeout. Report the measured cost per
+  row; a row that exceeds the timeout is recorded as blocked with its stage, and the run continues.
