@@ -152,6 +152,27 @@ records the case's power and null-bound probabilities; and
 [`scripts/ascella_new_mesh_score.py`](../../../scripts/ascella_new_mesh_score.py),
 scores the offsets once on the 147 unseen meshes of jobs 04 and 05
 ([design](../../design/ascella-signed-coherence-conformance.md#new-seed-meshes-case-job-04-and-job-05)).
+[`replication-offsets.json`](replication-offsets.json), from
+[`scripts/ascella_replication_offsets.py`](../../../scripts/ascella_replication_offsets.py),
+carries P-B unchanged and the same family refitted on all 233 retained meshes
+for plan
+[`ascella-replication-meshes-case`](../../state/plans/ascella-replication-meshes-case.json),
+frozen before its seeds were drawn, which
+[`replication-push-order.json`](replication-push-order.json) records: GitHub's
+branch activity shows commit `bc15673` created on the remote at 00:37:09 UTC,
+six seconds before the ANU QRNG draw was retrieved; and
+[`replication-score.json`](replication-score.json), from
+[`scripts/ascella_replication_score.py`](../../../scripts/ascella_replication_score.py),
+scores both once on the 168 unseen meshes of jobs 06 and 07
+([design](../../design/ascella-signed-coherence-conformance.md#replication-case-job-06-and-job-07)).
+[`replication-sensitivity.json`](replication-sensitivity.json), from
+[`scripts/ascella_replication_sensitivity.py`](../../../scripts/ascella_replication_sensitivity.py),
+holds the exploratory, post hoc sensitivity of that score with no random draw:
+the background-free and zero-offset readings, slopes and R^2 at slope one,
+Spearman, per-job and leave-one-out correlations, the exhaustive circular-shift
+null and the dependent-correlation tests of R-C against R-B; and
+[`new-seed-push-order.json`](new-seed-push-order.json) retains GitHub's branch
+activity showing the new-seed offsets on the remote 13 s before that case's draw.
 [`heater-coupling.json`](heater-coupling.json), from
 [`scripts/ascella_heater_coupling.py`](../../../scripts/ascella_heater_coupling.py),
 scores the heater-coupling families of plan

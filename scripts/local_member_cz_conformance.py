@@ -90,6 +90,7 @@ import json
 import re
 import sys
 from collections.abc import Callable
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -161,6 +162,9 @@ PRODUCT_OUTPUT_PROBES: dict[str, str] = {
         "the CZ write into that phase (primorial_campaigns)"
     ),
 }
+# The sine-quadrature arms of the N=21 window-dose orbit, whose ideal phase
+# law is uniform over the two phase bits.
+N21_QUADRATURE_PATTERN = r"n21_orbit_window_dose(_echo)?_y_d\d+_no_feedback"
 # Dynamic members whose ideal law is a point mass or a product over classical
 # bits and that execute CZ, each with the measurement the CZ serves.
 DYNAMIC_LAW_PROBES: dict[str, str] = {
@@ -207,11 +211,24 @@ DYNAMIC_LAW_PROBES: dict[str, str] = {
         "lr_code_property contrast against lr_ff_0 measures the coherence the code preserves, and the CZ "
         "prepare the pair and write that Z record"
     ),
+    "idle_cz_kick": (
+        "CZ phase-kickback probe of the idle-penalty campaign: with the spectator in |1> the target's H-CZ-H flips "
+        "it to |1>, a point mass the CZ itself produces, so P(0) of the target against the excited arm reads the CZ "
+        "phase error; the member also places each replica's spectator on a coupler of its target "
+        "(idle_penalty.idle_penalty_circuits)"
+    ),
     r"coherence_measure_reset_(xy|yx)": (
         "imaginary-part arms of the branch-signed coherence C = (S_XX + S_YY + i (S_XY - S_YX)) / 4: the "
         "round-1 orbit prefix's controlled swaps correlate b0 with the work pair, the ideal Im C = 0 leaves "
         "S_XY = S_YX = 0 and a product law, and a coherent window phase rotates C into these arms "
         "(coherence_window.coherence_circuit)"
+    ),
+    N21_QUADRATURE_PATTERN: (
+        "sine-quadrature arms of the N=21 window-dose orbit (qpe_diagnostics.n21_orbit_diagnostic): P(-pi/2) on "
+        "the control turns the second round onto the sine of the work superposition's relative phase, which the "
+        "ideal program holds at zero, so the two phase bits read fair coins; a frame offset of the work bit for 16 "
+        "against the bit for 1 rotates the orbit's controlled swaps into this arm, which "
+        "diagnostic_experiments.n21_detuning_sign_group reads"
     ),
 }
 DECLARATIONS: dict[str, dict[str, str]] = {
@@ -864,6 +881,7 @@ N21_FAMILIES = frozenset(
     {"n21-feedback", "n21-feedback-encoded", "n21-orbit-feedback", "n21-orbit-rca", "patch-window"}
 )
 N21_MEMBER = re.compile(r"(n21|orbit)_\w*feedback")
+N21_QUADRATURE_MEMBER = re.compile(N21_QUADRATURE_PATTERN)
 
 
 def _branch_law_and_kind(member: Member) -> tuple[tuple[float, ...] | str, str | None]:
@@ -872,7 +890,8 @@ def _branch_law_and_kind(member: Member) -> tuple[tuple[float, ...] | str, str |
 
 
 def cross_check_n21() -> None:
-    """The census's correlated N=21 members enumerate to n21_labeled_law, which does not factor."""
+    """The census's correlated N=21 members enumerate to n21_labeled_law, which does not factor, and its
+    sine-quadrature members to the uniform phase law, a product over the phase bits."""
     for feed_forward in (True, False):
         exact = n21_labeled_law(feed_forward)
         bit0 = exact[1] + exact[3]
@@ -886,7 +905,9 @@ def cross_check_n21() -> None:
     expected = {
         (row["member"], row["digest"])
         for row in rows
-        if row["kind"] == "dynamic_law" and row["law"] == "correlated" and N21_MEMBER.fullmatch(row["member"])
+        if row["kind"] == "dynamic_law"
+        and N21_MEMBER.fullmatch(row["member"])
+        and row["law"] == ("bit_product" if N21_QUADRATURE_MEMBER.fullmatch(row["member"]) else "correlated")
     }
     groups, _superseded = planned_groups(N21_FAMILIES)
     members: dict[tuple[str, str], Member] = {}
@@ -904,20 +925,25 @@ def cross_check_n21() -> None:
     for ((name, _key), member), (law, kind) in zip(ordered, results, strict=True):
         if isinstance(law, str):
             raise SystemExit(f"{name}: unchecked as {law!r}")
+        quadrature = N21_QUADRATURE_MEMBER.fullmatch(name) is not None
         exact = n21_labeled_law(not name.endswith("no_feedback"))
+        if quadrature:
+            exact = tuple(Fraction(1, len(exact)) for _ in exact)
         # A heralded member measures every qubit first, so its ideal law is
         # the phase law lifted onto the herald bits, each reading 0.
         clbits = member.circuit.num_clbits
         ideal = lift_phase_law([float(value) for value in exact], clbits)
         require(
             np.allclose(law, ideal, atol=1e-11, rtol=0),
-            f"{name}: enumerated law {law} differs from n21_labeled_law {exact} lifted onto {clbits} clbits {ideal}",
+            f"{name}: enumerated law {law} differs from the phase law {exact} lifted onto {clbits} clbits {ideal}",
         )
-        require(kind == "correlated", f"{name}: classified {kind}")
+        require(kind == ("bit_product" if quadrature else "correlated"), f"{name}: classified {kind}")
     heralded = sum(member.circuit.num_clbits > 2 for _key, member in ordered)
+    quadratures = sum(N21_QUADRATURE_MEMBER.fullmatch(name) is not None for (name, _key), _member in ordered)
     print(
-        f"local-member conformance: {len(ordered)} correlated N=21 members ({heralded} heralded) enumerate to "
-        "n21_labeled_law"
+        f"local-member conformance: {len(ordered)} N=21 members ({heralded} heralded): "
+        f"{len(ordered) - quadratures} correlated ones enumerate to n21_labeled_law and {quadratures} "
+        "sine-quadrature ones to the uniform phase law"
     )
 
 

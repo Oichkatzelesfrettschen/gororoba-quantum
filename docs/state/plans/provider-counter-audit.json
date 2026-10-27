@@ -1,0 +1,375 @@
+{
+  "schema": "work-plan-v1",
+  "id": "provider-counter-audit",
+  "kind": "implementation",
+  "summary": "Name the population of every provider counter, trace counters to scientific sinks, repair collection and photonic estimators, and reconcile affected historical analyses and claims.",
+  "sources": [
+    "docs/evidence/provider-counter-audit/README.md",
+    "gororoba_quantum/provider_counters.py",
+    "docs/notes/quandela/strategy.md"
+  ],
+  "state": "active",
+  "reconciliation": {
+    "status": "unresolved",
+    "note": "Inventory, contract and sensitivity evidence retained; estimator repairs and claim-boundary qualifications remain open."
+  },
+  "owner": "provider-counter audit operator",
+  "scope": "Every registered provider and simulator adapter, retained result format and scientific consumer of a shot, sample, cap, billing or exposure counter; Quandela first. Read-only provider retrieval only; no executions, uploads, bookings, QRNG draws or spending. The unmerged five-experiment branch (feature/quantum-experiment-conformance) adopts provider_counters after both merge.",
+  "next_action": "Route qd_platform collection and the Quandela analyzers through provider_counters records beside the verbatim raw fields.",
+  "related": [
+    "ascella-belenos-entanglement-teleportation"
+  ],
+  "claims": [
+    "qd-belenos-bright-block-routing-deficit",
+    "qd-belenos-random-meshes-no-class-fits-under-receipt-model",
+    "qd-belenos-q1-leak-needs-single-job-and-large-budget",
+    "qd-belenos-q1-leak-single-job-form-whatever-seed",
+    "qd-belenos-teleportation-rehearsal-job-00"
+  ],
+  "steps": [
+    {
+      "id": "freeze-and-inventory",
+      "state": "done",
+      "action": "Freeze the audit revision and source hashes and tabulate every retained provider counter.",
+      "acceptance": "quandela_counter_table.py and gate_model_counter_census.py replay with --check over every retained Quandela, Quantum Inspire, IQM and IBM run.",
+      "receipts": [
+        {
+          "result": "Counter table of 81 Quandela runs and census of 392 Quantum Inspire results, 776 IQM circuits and 56 IBM jobs replay with --check; revision and source hashes recorded in the README.",
+          "observed_at": "2026-10-27T21:06:12+00:00",
+          "revision": "97efb9badfe3e27ea4630c28762325982d3277c2",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+              "sha256": "3b23db97da519db600cb736524a21ec82abbc5ed2c13002707fd3b3dd1939caa"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+              "sha256": "f0750d81796a502b61302e397d00feafd8af413a3f9f336c97bafba090363b60"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
+              "sha256": "99c40af728f90ceca72235703189bfb69726b1f7e1be0e10eccdfe02637e0bad"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.json",
+              "sha256": "a2095b244a573237b8572f690e073342eceee48b7f224d408f3f5db0acfc8964"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "a7d53d9885cb08556c49478bb71936a18b3e8f5b7e0bf6b18e862b107c70652c"
+            }
+          ],
+          "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
+        },
+        {
+          "result": "Revalidated after the top-level shots repair: counter table and gate-model census replay with --check.",
+          "observed_at": "2026-10-27T21:12:42+00:00",
+          "revision": "a45cfeabb9a685de588ccaf79adfcf21e3577f6d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+              "sha256": "3b23db97da519db600cb736524a21ec82abbc5ed2c13002707fd3b3dd1939caa"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+              "sha256": "f0750d81796a502b61302e397d00feafd8af413a3f9f336c97bafba090363b60"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
+              "sha256": "99c40af728f90ceca72235703189bfb69726b1f7e1be0e10eccdfe02637e0bad"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.json",
+              "sha256": "a2095b244a573237b8572f690e073342eceee48b7f224d408f3f5db0acfc8964"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "0d1a60db1d5f36451be54d28e72b83d27436d5415d93b9b96dbf723884ced0bb"
+            }
+          ],
+          "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
+        },
+        {
+          "result": "Revalidated over frozen inventories from main d333878: 81 Quandela runs (six provider-error iterations unavailable), 392 Quantum Inspire results, 776 IQM circuits and 59 IBM jobs replay with --check.",
+          "observed_at": "2026-10-27T21:52:46+00:00",
+          "revision": "8776ac4a21961a9adfae181b412c379815f50868",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+              "sha256": "84b9d15ea4a58a67a1832d4c77a4026617c1f4f0b113fe6eab6edd9253bcef9b"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+              "sha256": "a5f4b993cfab92216dff4a2e7309f0806aa559730a1180af2d35f9cf77b6b969"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
+              "sha256": "167b0156a16b38866e2c96fe276aa91bdeed844464267986d41d446443b00409"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.json",
+              "sha256": "2175aa93e4244b36fb7068566b86347d593f9ed3bde8b5f612f7a6c3e606ffeb"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "65029ef3a5d5f8a93c1e1f3eca2a59bd78ed8827f4c8b5cd9ddad6475fd550d0"
+            }
+          ],
+          "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
+        },
+        {
+          "result": "Revalidated after the teleportation row update: counter table and census replay with --check over their frozen inventories.",
+          "observed_at": "2026-10-27T21:59:23+00:00",
+          "revision": "de665b15c274edd3eb296c0ab753db9c72f44614",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+              "sha256": "84b9d15ea4a58a67a1832d4c77a4026617c1f4f0b113fe6eab6edd9253bcef9b"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+              "sha256": "a5f4b993cfab92216dff4a2e7309f0806aa559730a1180af2d35f9cf77b6b969"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
+              "sha256": "167b0156a16b38866e2c96fe276aa91bdeed844464267986d41d446443b00409"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.json",
+              "sha256": "2175aa93e4244b36fb7068566b86347d593f9ed3bde8b5f612f7a6c3e606ffeb"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "7b0b01d447bfe2d1c40b84b1ea389ce76ef611e5781ada81c1d6be8faa70522e"
+            }
+          ],
+          "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
+        },
+        {
+          "result": "Revalidated after the reconciliation-table update: counter table and census replay with --check over their frozen inventories.",
+          "observed_at": "2026-10-27T22:06:31+00:00",
+          "revision": "98079a879251e56f87cbc8bbdc0e26fd55a3f8e3",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.py",
+              "sha256": "84b9d15ea4a58a67a1832d4c77a4026617c1f4f0b113fe6eab6edd9253bcef9b"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/quandela_counter_table.json",
+              "sha256": "a5f4b993cfab92216dff4a2e7309f0806aa559730a1180af2d35f9cf77b6b969"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.py",
+              "sha256": "167b0156a16b38866e2c96fe276aa91bdeed844464267986d41d446443b00409"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/gate_model_counter_census.json",
+              "sha256": "2175aa93e4244b36fb7068566b86347d593f9ed3bde8b5f612f7a6c3e606ffeb"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "1b3cead2c63d5f32ce1306158effb324a5b380352032e6c953ea2e264a2675ee"
+            }
+          ],
+          "scope_sha256": "40069b3f8f1ec9be0902197ebda84401ce7b7d4fc61bc7ccb4c41741d0723d8e"
+        }
+      ]
+    },
+    {
+      "id": "counter-contract",
+      "state": "done",
+      "action": "Add gororoba_quantum/provider_counters.py with population, scope, status, ratio and total rules and deterministic fixtures.",
+      "acceptance": "tests/gororoba_quantum/test_provider_counters.py passes in the tests lane and its audit replays pass under -m audit.",
+      "receipts": [
+        {
+          "result": "provider_counters.py added; 13 contract tests pass in the tests lane and 3 audit replays pass under -m audit, with lint, types and the diff-reached gates green.",
+          "observed_at": "2026-10-27T21:06:12+00:00",
+          "revision": "97efb9badfe3e27ea4630c28762325982d3277c2",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/provider_counters.py",
+              "sha256": "cb5729e814acd34bb6a71c10f206e784042636945577c52160b154f77a03278f"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_provider_counters.py",
+              "sha256": "bc0c5465b078685d183323a4da5e3948cc5df948d606ad20de4082d6aac7629b"
+            }
+          ],
+          "scope_sha256": "b6b98abb7782f096e7546b9b9fe059dfa35f740cd99966c934136117f1e114ee"
+        },
+        {
+          "result": "Revalidated: 13 contract tests pass, including mesh job-14's unmatched top-level shots; 3 audit replays pass.",
+          "observed_at": "2026-10-27T21:12:42+00:00",
+          "revision": "a45cfeabb9a685de588ccaf79adfcf21e3577f6d",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/provider_counters.py",
+              "sha256": "baa03d830de398a1bb0e1ab9d26e58b5523bef58be921d0718e749dbd26b8ddf"
+            },
+            {
+              "ref": "tests/gororoba_quantum/test_provider_counters.py",
+              "sha256": "fbb52c001729a5e2f94a92389941f61cb9486c709f37deef177e397c716a67df"
+            }
+          ],
+          "scope_sha256": "b6b98abb7782f096e7546b9b9fe059dfa35f740cd99966c934136117f1e114ee"
+        }
+      ]
+    },
+    {
+      "id": "exposure-sensitivity",
+      "state": "done",
+      "action": "Recompute every retained exposure-dependent dark subtraction under none, physical_perf-model and job-duration exposure.",
+      "acceptance": "exposure_sensitivity.py --check replays and reports each decisive comparison per scenario.",
+      "receipts": [
+        {
+          "result": "Root-cause record conclusions invariant across exposures 0, 0.274 and 13 s; six one-photon blocks replay their retained analyses, a moves at most 2.06e-4 and dark-corrected in_block up to 0.042.",
+          "observed_at": "2026-10-27T21:06:12+00:00",
+          "revision": "97efb9badfe3e27ea4630c28762325982d3277c2",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+              "sha256": "7cd0923f9a730b0d4fa36ea2a33a7e2eb1f977c4a241259430a7c3dc9560d5cf"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.json",
+              "sha256": "d5a5aff861f8fa7032516df33c815ddc6f683bc9581a7ae2b394717091f309c8"
+            }
+          ],
+          "scope_sha256": "0dd0e47dba14ef614ef8d56c07b5c607869527c12346cd4481e78daad0ba9ee6"
+        },
+        {
+          "result": "Revalidated: pooled and serial sensitivity runs reproduce the retained output.",
+          "observed_at": "2026-10-27T21:12:42+00:00",
+          "revision": "a45cfeabb9a685de588ccaf79adfcf21e3577f6d",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+              "sha256": "5069bb87ad4aa98cb8be3d9910f0281bf484eac03a24289c8612afbc0917785e"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.json",
+              "sha256": "d5a5aff861f8fa7032516df33c815ddc6f683bc9581a7ae2b394717091f309c8"
+            }
+          ],
+          "scope_sha256": "0dd0e47dba14ef614ef8d56c07b5c607869527c12346cd4481e78daad0ba9ee6"
+        },
+        {
+          "result": "Revalidated: pooled sensitivity over its frozen six-run inventory replays with --check; root-cause conclusions invariant.",
+          "observed_at": "2026-10-27T21:52:46+00:00",
+          "revision": "8776ac4a21961a9adfae181b412c379815f50868",
+          "evidence": [
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.py",
+              "sha256": "f42c62782b6b27be7bb95ab0edd8289df44030b41fb1166611df0635fa3c5e92"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/exposure_sensitivity.json",
+              "sha256": "eaea41cf0445a8e0fff26f25c9517c499e939196115a76197af717da6d299253"
+            }
+          ],
+          "scope_sha256": "0dd0e47dba14ef614ef8d56c07b5c607869527c12346cd4481e78daad0ba9ee6"
+        }
+      ]
+    },
+    {
+      "id": "teleportation-benchmark-repair",
+      "state": "done",
+      "action": "Make qd_teleportation_rehearsal.analyze report the benchmark at detection events and modeled attempts as conditional comparisons, with the unconditional verdict inconclusive unless an observed attempt profile exists.",
+      "acceptance": "A fixture with equal detections and differing latent trials keeps the unconditional verdict inconclusive while the conditional statistics replay the retained analysis.",
+      "receipts": [
+        {
+          "result": "DECISION_CASES confines the decision rule to job-00; prepare and check refuse it elsewhere; job-00's analysis replays inconclusive.",
+          "observed_at": "2026-10-27T21:59:07+00:00",
+          "revision": "de665b15c274edd3eb296c0ab753db9c72f44614",
+          "evidence": [
+            {
+              "ref": "scripts/qd_teleportation_rehearsal.py",
+              "sha256": "aa145d5252afc88fc9bde7001da82b6c0dc61c0b186b12e0f05e6c0e0782ec9c"
+            },
+            {
+              "ref": "tests/scripts/test_qd_teleportation_rehearsal.py",
+              "sha256": "5a7013bda8f9aea529d67766c237b130bcaf3105ab552d9dd6c76027291a86b6"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
+              "sha256": "c517763c77c48192551dfcb133b422d404b5bba403c3c4dd6eb2d4699ded520d"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "7b0b01d447bfe2d1c40b84b1ea389ce76ef611e5781ada81c1d6be8faa70522e"
+            }
+          ],
+          "scope_sha256": "ad9c4bd424b404312735d59216dedf27a74f86c506284b475e78cc1d1c7c5436"
+        },
+        {
+          "result": "Revalidated after the reconciliation-table update: DECISION_CASES unchanged; job-00's analysis replays inconclusive.",
+          "observed_at": "2026-10-27T22:07:41+00:00",
+          "revision": "98079a879251e56f87cbc8bbdc0e26fd55a3f8e3",
+          "evidence": [
+            {
+              "ref": "scripts/qd_teleportation_rehearsal.py",
+              "sha256": "aa145d5252afc88fc9bde7001da82b6c0dc61c0b186b12e0f05e6c0e0782ec9c"
+            },
+            {
+              "ref": "tests/scripts/test_qd_teleportation_rehearsal.py",
+              "sha256": "5a7013bda8f9aea529d67766c237b130bcaf3105ab552d9dd6c76027291a86b6"
+            },
+            {
+              "ref": "results/quandela/runs/2026-10-26T025336Z-qpu_belenos-teleportation_rehearsal-job-00/analysis.json",
+              "sha256": "c517763c77c48192551dfcb133b422d404b5bba403c3c4dd6eb2d4699ded520d"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "1b3cead2c63d5f32ce1306158effb324a5b380352032e6c953ea2e264a2675ee"
+            }
+          ],
+          "scope_sha256": "ad9c4bd424b404312735d59216dedf27a74f86c506284b475e78cc1d1c7c5436"
+        }
+      ]
+    },
+    {
+      "id": "collection-boundaries",
+      "state": "doing",
+      "action": "Route qd_platform collection and the Quandela analyzers through provider_counters records beside the verbatim raw fields.",
+      "acceptance": "New records carry counter semantics and iteration scope; retained raw bytes and analyses keep their hashes."
+    },
+    {
+      "id": "claim-boundaries",
+      "state": "done",
+      "action": "Qualify the boundaries of the claims the reconciliation table marks conditional or needing qualification, citing the exposure-sensitivity record.",
+      "acceptance": "scripts/research_state.py check passes and each named claim cites docs/evidence/provider-counter-audit/exposure_sensitivity.json.",
+      "receipts": [
+        {
+          "result": "The three claim boundaries the audit marked now state the zeroed dark subtraction, the exactly determined duration fit and the physical_perf timing model, and cite the audit README; research_state.py --check passes.",
+          "observed_at": "2026-10-27T22:06:31+00:00",
+          "revision": "98079a879251e56f87cbc8bbdc0e26fd55a3f8e3",
+          "evidence": [
+            {
+              "ref": "docs/state/research_state.json#claims/id=qd-belenos-random-meshes-no-class-fits-under-receipt-model",
+              "sha256": "db4a0aa73dfba8819a3c77f9bda60176f23208345dd81cc684fd131c8a4f7ced"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=qd-belenos-q1-leak-needs-single-job-and-large-budget",
+              "sha256": "74d7d07654e9073e59a34ebb1ccbfddd3553d401296040ee0554221f5c108740"
+            },
+            {
+              "ref": "docs/state/research_state.json#claims/id=qd-belenos-q1-leak-single-job-form-whatever-seed",
+              "sha256": "c207f9912a1e09994ac0a682c1497fa2d0e37f29a0baaf35f32342bb8ec6984b"
+            },
+            {
+              "ref": "docs/evidence/provider-counter-audit/README.md",
+              "sha256": "1b3cead2c63d5f32ce1306158effb324a5b380352032e6c953ea2e264a2675ee"
+            }
+          ],
+          "scope_sha256": "b9220b767faef10d6a14f53a2b2122c8221f319019d2f232aa291820473e38ce"
+        }
+      ]
+    },
+    {
+      "id": "review-and-merge",
+      "state": "todo",
+      "action": "Run the hosted review and merge procedure for each pull request.",
+      "acceptance": "pr.yml lint, types, tests and gates green and the Codex loop clean on each head."
+    }
+  ]
+}

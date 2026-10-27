@@ -716,6 +716,15 @@ def test_the_decision_rule_refuses_a_read_without_power_and_prepare_an_unseeded_
         rehearsal.prepare("job-00")
 
 
+def test_the_decision_rule_admits_only_its_retained_case(monkeypatch: pytest.MonkeyPatch) -> None:
+    designs = {**rehearsal.CASE_DESIGNS, "job-01": (rehearsal.DECISION, 1)}
+    monkeypatch.setattr(rehearsal, "CASE_DESIGNS", designs)
+    with pytest.raises(ValueError, match="take the decision rule beyond"):
+        rehearsal.check()
+    with pytest.raises(ValueError, match="the decision rule admits only"):
+        rehearsal.prepare("job-01")
+
+
 def test_expected_seconds_reproduce_job_00_and_bound_the_job_by_max_duration() -> None:
     derived = rehearsal.retained_derivation("job-00")
     clock = json.loads((ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))["processors"][rehearsal.PLATFORM][

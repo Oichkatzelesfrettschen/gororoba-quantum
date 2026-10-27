@@ -1,0 +1,24 @@
+Require CdTowerDomainZ.
+Print Assumptions CdTowerDomain.ZTower.kernel_equality.
+Print Assumptions CdTowerDomain.ZTower.direct_finiteness.
+Print Assumptions CdTowerDomain.ZTower.purity_left.
+Print Assumptions CdTowerDomain.ZTower.lemma_9_5.
+Print Assumptions CdTowerDomain.ZTower.flexible.
+Print Assumptions CdTowerDomainZ.ZBridge.kernel_equality.
+Print Assumptions CdTowerDomainZ.ZBridge.direct_finiteness.
+Print Assumptions CdTowerDomainZ.ZBridge.flexible.
+Print Assumptions CdTowerDomainZ.ZBridge.purity_left.
+Print Assumptions CdTowerDomainZ.ZBridge.lemma_9_5.
+Print Assumptions CdTowerDomainZ.ZBridge.conj_conj.
+Print Assumptions CdTowerDomainZ.ZBridge.conj_mul.
+Print Assumptions CdTowerDomainZ.ZBridge.dot_conj.
+Print Assumptions CdTowerDomainZ.ZBridge.norm_mul.
+Print Assumptions CdTowerDomainZ.ZBridge.adjoint.
+Print Assumptions CdTowerDomainZ.ZBridge.re_commutator.
+Print Assumptions CdTowerDomainZ.ZBridge.re_associator.
+Print Assumptions CdTowerDomainZ.ZBridge.conj_mul_left.
+Print Assumptions CdTowerDomainZ.ZBridge.conj_mul_right.
+Print Assumptions CdTowerDomainZ.ZBridge.lemma_9_2.
+Print Assumptions CdTowerDomainZ.ZBridge.purity_right.
+Print Assumptions CdTowerDomainZ.ZBridge.annihilator_orthogonal.
+Print Assumptions CdTowerDomainZ.ZBridge.right_inverse_affine.

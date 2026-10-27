@@ -10,10 +10,12 @@ the supplied eigenstate label as an observed first bit.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from fractions import Fraction
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, transpile
@@ -191,7 +193,24 @@ N21_ORBIT_SWEEP_VARIANTS = ("window_delay_long",)
 # compiler may move work-only gates across the control's measurement and reset.
 # window_delay_unbarriered is window_delay without both barriers.
 N21_UNBARRIERED = ("nominal_unbarriered", "window_delay_unbarriered")
-N21_ORBIT_BUILDABLE = (*N21_ORBIT_VARIANTS, *N21_ORBIT_SWEEP_VARIANTS, "window_barrier", *N21_UNBARRIERED)
+# window_dose idles every qubit for dose_dt after the control's reset, inside
+# the barrier bracket; window_dose_echo spends the same dose as
+# delay(q) X delay(2q) X delay(q) on the work bits that carry the superposition
+# and a plain delay on the rest (n21_dose_name names the members).
+N21_DOSE_VARIANTS = ("window_dose", "window_dose_echo")
+# The quadrature variants are window_dose and window_dose_echo without
+# feed-forward and with P(-pi/2) on the control where the feedback member
+# conditions it, so the second round reads the sine of the work
+# superposition's relative phase where the plain member reads its cosine.
+N21_DOSE_QUADRATURE_VARIANTS = ("window_dose_y", "window_dose_echo_y")
+N21_DOSE_NAMED = (*N21_DOSE_VARIANTS, *N21_DOSE_QUADRATURE_VARIANTS)
+N21_ORBIT_BUILDABLE = (
+    *N21_ORBIT_VARIANTS,
+    *N21_ORBIT_SWEEP_VARIANTS,
+    "window_barrier",
+    *N21_UNBARRIERED,
+    *N21_DOSE_NAMED,
+)
 _DELAY_MULTIPLES = {"window_delay": 1, "window_delay_long": 2, "window_delay_unbarriered": 1}
 
 # Spectator Ramsey members prepare logical qubit 2, the work bit for 4, in
@@ -309,6 +328,145 @@ def phase_marginal(distribution: object) -> np.ndarray:
     return np.asarray(values.reshape(-1, N21_PHASE_OUTCOMES).sum(axis=0))
 
 
+def n21_dose_name(variant: str, dose_dt: int, feedback: bool) -> str:
+    """Member name of a window-dose arm: variant, dose in dt and the feed-forward arm."""
+    if variant not in N21_DOSE_NAMED or type(dose_dt) is not int or dose_dt < 0:
+        raise ValueError(f"a window-dose member needs a variant in {N21_DOSE_NAMED} and a dose >= 0, not {variant!r}")
+    if feedback and variant in N21_DOSE_QUADRATURE_VARIANTS:
+        raise ValueError(f"{variant} has no feed-forward arm")
+    return f"n21_orbit_{variant}_d{dose_dt}_{'feedback' if feedback else 'no_feedback'}"
+
+
+def n21_dose_key(name: str) -> tuple[str, int, bool] | None:
+    """(variant, dose_dt, feedback) of a window-dose member name, or None for any other member."""
+    stem = name.removeprefix("n21_orbit_")
+    if stem == name:
+        return None
+    for suffix in ("_no_feedback", "_feedback"):
+        if stem.endswith(suffix):
+            head = stem.removesuffix(suffix)
+            break
+    else:
+        return None
+    variant, _, dose = head.rpartition("_d")
+    if variant not in N21_DOSE_NAMED or not dose.isdigit() or str(int(dose)) != dose:
+        return None
+    if suffix == "_feedback" and variant in N21_DOSE_QUADRATURE_VARIANTS:
+        return None
+    return variant, int(dose), suffix == "_feedback"
+
+
+# A work Ramsey member puts the qubit that holds the work bit for 1 or for 16
+# during the orbit's dose on the equator with every other qubit in |0>, the
+# condition of that qubit while the orbit's single work excitation sits on
+# it, idles every qubit dose_dt between barriers and reads the qubit in X or
+# Y into clbit 1 of the phase register; clbit 0 stays unwritten and reads 0.
+# Routing the orbit's controlled swaps moves the roles between physical
+# qubits, while a member without two-qubit gates keeps logical qubit k on its
+# initial physical qubit, so the member takes the logical index whose initial
+# qubit holds the role at the dose (qpu_planning.dose_roles); unrouted, the
+# roles sit on logical qubits 1 and 3.
+N21_WORK_RAMSEY_PREFIX = "n21_work_ramsey_"
+N21_WORK_RAMSEY_QUBITS = {"one": 1, "sixteen": 3}
+
+
+def n21_work_ramsey_name(role: str, quadrature: str, dose_dt: int) -> str:
+    """Member name of a work Ramsey arm: the work bit's role, the quadrature and the idle in dt."""
+    if role not in N21_WORK_RAMSEY_QUBITS or quadrature not in N21_SPECTATOR_QUADRATURES:
+        raise ValueError(f"a work Ramsey member needs a role in {tuple(N21_WORK_RAMSEY_QUBITS)}, not {role!r}")
+    if type(dose_dt) is not int or dose_dt < 0 or dose_dt == 1:
+        raise ValueError(f"a work Ramsey idle is an integer of 0 or at least 2 dt, not {dose_dt!r}")
+    return f"{N21_WORK_RAMSEY_PREFIX}{role}_{quadrature}_d{dose_dt}"
+
+
+def n21_work_ramsey_key(name: str) -> tuple[str, str, int] | None:
+    """(role, quadrature, dose_dt) of a work Ramsey member name, or None for any other member."""
+    if not name.startswith(N21_WORK_RAMSEY_PREFIX):
+        return None
+    role, _, rest = name.removeprefix(N21_WORK_RAMSEY_PREFIX).partition("_")
+    quadrature, _, dose = rest.partition("_d")
+    if role not in N21_WORK_RAMSEY_QUBITS or quadrature not in N21_SPECTATOR_QUADRATURES:
+        return None
+    if not dose.isdigit() or str(int(dose)) != dose or int(dose) == 1:
+        return None
+    return role, quadrature, int(dose)
+
+
+def n21_work_ramsey(
+    role: str, quadrature: str, dose_dt: int, *, qubit: int | None = None, init_herald: bool = False
+) -> QuantumCircuit:
+    """Ramsey of one orbit work bit over a free idle of dose_dt, on the orbit's four logical qubits.
+
+    H puts the bit on the equator, a barrier over every qubit opens the
+    idle and a delay of dose_dt on every qubit fills it at the top level of
+    the circuit, and a second barrier closes it; the bit then reads X (h)
+    or Y (sdg, h) into clbit 1. A frame offset f of the bit turns
+    <X> + i<Y> by 2 pi f t, the same sense in which the orbit's quadrature
+    pair turns with the offset of the work bit for 16 minus that of the bit
+    for 1 (tests/gororoba_quantum/test_detuning_sign.py). qubit is the
+    logical index on the equator, N21_WORK_RAMSEY_QUBITS[role] when omitted.
+    init_herald prepends the orbit's herald readouts and barrier, which also
+    makes the member dynamic so it shares the orbit members' job.
+    """
+    name = n21_work_ramsey_name(role, quadrature, dose_dt)
+    qubit = N21_WORK_RAMSEY_QUBITS[role] if qubit is None else qubit
+    if type(qubit) is not int or not 0 <= qubit <= len(N21_ORBIT_BITS):
+        raise ValueError(f"a work Ramsey qubit is a logical index of the orbit's four qubits, not {qubit!r}")
+    control = QuantumRegister(1, "ctrl")
+    work = QuantumRegister(len(N21_ORBIT_BITS), "w")
+    phase = ClassicalRegister(2, "phase")
+    circuit = QuantumCircuit(control, work, phase)
+    if init_herald:
+        herald = ClassicalRegister(circuit.num_qubits, HERALD_REGISTER)
+        circuit.add_register(herald)
+        for index in range(circuit.num_qubits):
+            circuit.measure(index, herald[index])
+        circuit.barrier()
+    circuit.h(qubit)
+    circuit.barrier()
+    if dose_dt:
+        circuit.delay(dose_dt, list(range(circuit.num_qubits)), unit="dt")
+    circuit.barrier()
+    if quadrature == "y":
+        circuit.sdg(qubit)
+    circuit.h(qubit)
+    circuit.measure(qubit, phase[1])
+    circuit.name = name + ("_heralded" if init_herald else "")
+    return circuit
+
+
+def n21_work_ramsey_law(quadrature: str) -> np.ndarray:
+    """Ideal law of a work Ramsey member over the phase register: clbit 1 reads 0 in X, 0 or 1 equally in Y."""
+    if quadrature not in N21_SPECTATOR_QUADRATURES:
+        raise ValueError(f"unknown quadrature {quadrature!r}")
+    return np.array([1.0, 0.0, 0.0, 0.0]) if quadrature == "x" else np.array([0.5, 0.0, 0.5, 0.0])
+
+
+def n21_dose_violations(doses: Any, granularity: int, min_length: int) -> list[str]:
+    """Reasons a window dose list breaks a Target's delay timing; empty when every delay is playable.
+
+    A delay plays only as a multiple of the Target's granularity and of at
+    least min_length dt. The echo splits a nonzero dose into the delays
+    dose/4, dose/2 and dose/4, equal outer halves so that a static detuning
+    accumulates opposite phases in the two X-separated intervals, so
+    dose/4 meets the same two rules.
+    """
+    reasons = []
+    for dose in doses:
+        if dose == 0:
+            continue
+        if dose % granularity or dose < min_length:
+            reasons.append(
+                f"dose {dose} dt is not a multiple of granularity {granularity} dt that is at least {min_length} dt"
+            )
+        elif dose % (4 * granularity) or dose // 4 < min_length:
+            reasons.append(
+                f"the echo needs dose {dose} dt to be a multiple of {4 * granularity} dt of at least "
+                f"{4 * min_length} dt"
+            )
+    return reasons
+
+
 def n21_orbit_diagnostic(
     feed_forward: bool = True,
     variant: str = "nominal",
@@ -316,6 +474,7 @@ def n21_orbit_diagnostic(
     window_delay_dt: int | None = None,
     echo_half_dt: int | None = None,
     init_herald: bool = False,
+    dose_dt: int | None = None,
 ) -> QuantumCircuit:
     """Build the N=21 two-bit diagnostic with multipliers compiled on the orbit of |1>.
 
@@ -338,6 +497,22 @@ def n21_orbit_diagnostic(
     the measurement and reset; a static frequency offset on those qubits
     accumulates opposite phases in the two halves and cancels.
 
+    window_dose and window_dose_echo take dose_dt, an integer of 0 or at
+    least 2 dt, and add idle after the control's reset, inside the bracket.
+    window_dose idles every qubit for dose_dt. window_dose_echo idles the
+    control and the work bit for 4 for dose_dt, and plays delay(dose_dt/4) X
+    delay(dose_dt/2) X delay(dose_dt/4) on the work bits for 1 and 16, which
+    hold the superposition (the bit for 4 stays in |0>); the two X pulses
+    cancel in the ideal law, and a nonzero dose_dt is a multiple of 4 of at
+    least 8. Every dose delay
+    sits at the top level of the circuit, where the relaxation pass of an
+    Aer noise model charges it (it acts on top-level delays, not on
+    if_else bodies). A dose of 0 emits no delay, so both variants then
+    equal the nominal bracketed program. window_dose_y and
+    window_dose_echo_y are those programs without feed-forward and with
+    P(-pi/2) on the control where the feedback member conditions it, so the
+    second round reads the sine of the work superposition's relative phase.
+
     init_herald measures every qubit into the register HERALD_REGISTER, qubit
     k into its bit k, and places a barrier over all qubits before the
     program. Each herald bit reads 1 with the qubit's initial excitation plus
@@ -350,6 +525,16 @@ def n21_orbit_diagnostic(
         raise ValueError(f"{variant} requires a positive integer window_delay_dt from calibration")
     if variant in ("window_echo", "window_barrier") and (type(echo_half_dt) is not int or echo_half_dt <= 0):
         raise ValueError(f"{variant} requires a positive integer echo_half_dt from calibration")
+    dosed = variant.removesuffix("_y") if variant in N21_DOSE_QUADRATURE_VARIANTS else variant
+    if variant in N21_DOSE_NAMED:
+        if type(dose_dt) is not int or dose_dt < 0 or dose_dt == 1:
+            raise ValueError(f"{variant} requires an integer dose_dt of 0 or at least 2, not {dose_dt!r}")
+        if dosed == "window_dose_echo" and dose_dt and (dose_dt % 4 or dose_dt < 8):
+            raise ValueError(f"{variant} requires dose_dt of 0 or a multiple of 4 of at least 8, not {dose_dt}")
+        if feed_forward and variant in N21_DOSE_QUADRATURE_VARIANTS:
+            raise ValueError(f"{variant} reads the second quadrature without feed-forward")
+    elif dose_dt is not None:
+        raise ValueError(f"dose_dt applies to {N21_DOSE_NAMED}, not {variant}")
     control = QuantumRegister(1, "ctrl")
     work = QuantumRegister(len(N21_ORBIT_BITS), "w")
     phase = ClassicalRegister(2, "phase")
@@ -387,6 +572,20 @@ def n21_orbit_diagnostic(
         if window_delay_dt is None:
             raise AssertionError
         circuit.delay(_DELAY_MULTIPLES[variant] * window_delay_dt, 0, unit="dt")
+    if dose_dt:
+        # Without a full-width barrier the work-wire delays share no dependency with the control's reset and an
+        # ASAP schedule starts them beside its readout; the barrier starts every dose after the reset ends.
+        circuit.barrier()
+        if dosed == "window_dose":
+            circuit.delay(dose_dt, list(range(circuit.num_qubits)), unit="dt")
+        else:
+            circuit.delay(dose_dt, [0, four], unit="dt")
+            quarter = dose_dt // 4
+            circuit.delay(quarter, [one, sixteen], unit="dt")
+            circuit.x([one, sixteen])
+            circuit.delay(2 * quarter, [one, sixteen], unit="dt")
+            circuit.x([one, sixteen])
+            circuit.delay(quarter, [one, sixteen], unit="dt")
     if bracketed:
         circuit.barrier()
     circuit.h(0)
@@ -395,9 +594,11 @@ def n21_orbit_diagnostic(
     if feed_forward:
         with circuit.if_test((phase[0], 1)):
             circuit.p(-math.pi / 2, 0)
+    elif variant in N21_DOSE_QUADRATURE_VARIANTS:
+        circuit.p(-math.pi / 2, 0)
     circuit.h(0)
     circuit.measure(0, phase[1])
-    suffix = "" if variant == "nominal" else f"_{variant}"
+    suffix = "" if variant == "nominal" else f"_{variant}_d{dose_dt}" if variant in N21_DOSE_NAMED else f"_{variant}"
     suffix += "_heralded" if init_herald else ""
     circuit.name = "n21_orbit_a4_two_bit_" + ("feed_forward" if feed_forward else "no_feed_forward") + suffix
     return circuit
@@ -768,8 +969,8 @@ def window_bracket_violations(isa: QuantumCircuit, inside: frozenset[str] = froz
     ]
 
 
-def ideal_compiled_probabilities(circuit: QuantumCircuit, *, max_active_qubits: int = 12) -> tuple[float, ...]:
-    """Check a bounded ISA circuit after removing idle physical wires through public DAG APIs.
+def compact_ideal_circuit(circuit: QuantumCircuit, *, max_active_qubits: int = 12) -> QuantumCircuit:
+    """The circuit ideal_compiled_probabilities computes on: barriers and idle physical wires removed.
 
     Barriers impose scheduling constraints and act as the identity in the
     ideal branch calculation. Classical registers retain their recorded-bit
@@ -789,7 +990,36 @@ def ideal_compiled_probabilities(circuit: QuantumCircuit, *, max_active_qubits: 
             f"{circuit.name}: ideal ISA gate needs {compact.num_qubits} active qubits, "
             f"above the explicit limit {max_active_qubits}"
         )
-    return ideal_branch_probabilities(compact)
+    return compact
+
+
+def ideal_compiled_probabilities(circuit: QuantumCircuit, *, max_active_qubits: int = 12) -> tuple[float, ...]:
+    """The exact branch law of a bounded ISA circuit over its classical bits (compact_ideal_circuit)."""
+    return ideal_branch_probabilities(compact_ideal_circuit(circuit, max_active_qubits=max_active_qubits))
+
+
+def oracle_key(compact: QuantumCircuit) -> str | None:
+    """sha256 of everything ideal_branch_probabilities reads from a compact circuit, or None for control flow.
+
+    The key holds each instruction's name, parameters, unit, and qubit and clbit positions, and the bit counts; the
+    circuit's name and register names stay out. Two circuits with one key share their exact branch law, so a check
+    over many compiled copies of one member on different physical qubits computes the law once.
+    """
+    rows: list[Any] = [compact.num_qubits, compact.num_clbits]
+    for instruction in compact.data:
+        operation = instruction.operation
+        if isinstance(operation, ControlFlowOp):
+            return None
+        rows.append(
+            [
+                operation.name,
+                [repr(float(value)) if isinstance(value, (int, float)) else repr(value) for value in operation.params],
+                getattr(operation, "unit", None),
+                [compact.find_bit(qubit).index for qubit in instruction.qubits],
+                [compact.find_bit(clbit).index for clbit in instruction.clbits],
+            ]
+        )
+    return hashlib.sha256(json.dumps(rows, separators=(",", ":")).encode()).hexdigest()
 
 
 def _check_herald_structure(heralded: QuantumCircuit, twin: QuantumCircuit, windowed: bool = True) -> None:

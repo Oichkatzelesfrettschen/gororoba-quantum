@@ -180,3 +180,88 @@ three mutants (naive sum, numpy square, `np.hypot`), each of which must differ; 
 indices (81 and 349) are the ones whose block-change statistic differs between `pow(x, 2)` and `x * x`.
 Gate core-686 runs 3000 replicates (about 6 s serial) and requires every rate within `ALPHA` plus or minus
 three nominal binomial errors (0.0018 each) and no more than the upper bound for a residual beyond the margin.
+
+## Batched null of the measurement-sequence envelope
+
+`gororoba_quantum/msq_envelope_null.py` replays the envelope's decision pipeline on synthetic devices, and each
+replicate of width 32 runs `measurement_sequence_analysis.evaluate_qubit` on 32 qubits. Profiled serially, a scalar
+replicate takes 4.41 s on a quiet host (8.1 s at load average 10); 85 percent of it is `chain_matrix` (173872 calls
+of the 4 x 4 Bloch propagation, reached through `corrected_z`), and the callers split into `propagate_many` 42
+percent, `fit_eps` 40 percent, `gate_curves` 17 percent and, inside `propagate_many`, `implied_loss` 19 percent.
+The two SciPy solvers cost little themselves (bounded Brent of `fit_t1` 7 percent, `brentq` about 0.02 s beyond its
+objective); they need porting because the fitted T1 and q and the root-finder's eps are replicate-dependent inputs
+of every chain call. Draws and screens take under 1 percent.
+
+- **Replicate axis.** `analyse_block` draws a block of `NULL_BLOCK` = 25 replicates with the scalar `draw`, then
+  `evaluate_batch` hands each qubit's replicates to `evaluate_qubit_rows`, which runs the fit on a replicates-long
+  axis. Replicates of a block share every context (`null_contexts`), so only the sx residual and the binomial counts
+  differ.
+- **Perturbation rows.** `propagate_many` evaluates `quantities` at the base point and at 19 up and 19 down points;
+  `propagate_rows` stacks the 39 points of all replicates along one row axis, evaluates them in one pass of
+  `quantities_rows`, and accumulates the delta-method sums in input order. `fit_eps_rows` stacks the 101 grid
+  points, both evaluations of a golden-section step and the three curvature points the same way; `curve_values`
+  stacks the 249 gate points of the eight gate-curve halves.
+- **Stacked Bloch chain.** `chain_rows` builds the products with stacked `@` and `np.linalg.matrix_power` in the
+  scalar association; `sx_rows` calls the cached scalar `sx_map` once per distinct (T1, T2, dephasing, angle) of the
+  rows, and `damped_sx` is computed once per fit and shared by every arm.
+- **Masked solvers.** `minimize_rows` ports SciPy 1.18.1's `_minimize_scalar_bounded` and `brentq_rows` its
+  `brentq` (the algorithm of `scipy/optimize/Zeros/brentq.c`; the wheel ships the compiled routine only). Every
+  branch is a per-row `np.where` whose arms are the scalar expressions, a finished row leaves the live set, and the
+  objective sees live rows only.
+- **Scalar tails.** The gate-curve stops, `gate_propagation`, the row assembly of `evaluate_qubit`
+  (`qubit_row`), `widen_for_device_scatter`, `informative` and `device_verdict` run the scalar functions on the
+  Python floats of the batched arrays; they cost under 1 percent.
+
+### Bitwise-equality rules
+
+Each rule was measured on this host (numpy 2.5.4, SciPy 1.18.1, glibc 2.44) before the code relied on it.
+
+| Rule | Measurement | Consequence |
+|---|---|---|
+| Slices of a stacked `@` and of `np.linalg.matrix_power` equal the single-matrix calls | 0 of 5000 4 x 4 products differ, for stacked, left-broadcast and right-broadcast operands and powers 2, 3, 4, 5, 8, 16, 32 | `chain_rows` stacks every product |
+| A stacked `scipy.linalg.expm` does not | 91 of 300 matrices differ from the single call | `sx_rows` calls `sx_map` per distinct key |
+| `np.sum(a, axis=1)` of a C-contiguous (rows, 5) array equals `np.sum` of each row | 0 of 100000 rows differ; emulating it as `a[0] + (sum of a[1:] left to right)` differs in 23787 | `fit_t1_rows` keeps `np.sum(axis=1)`; a hand-written reduction order is refused |
+| `np.exp` of a (rows, 5) array equals `np.exp` of each row | 0 of 100000 rows differ | `fit_t1_rows` keeps `np.exp` and `** 2` on arrays |
+| Python-float `x ** 2` is libm `pow`; numpy's array `** 2` is `x * x` | 104 of 260224 squares in the `propagate_many` and `fit_eps` steps of 128 qubit-replicates differ between `pow` and `x * x` | the delta-method terms and the `fit_eps` chi-square go through `math.pow`; the array squares of `fit_t1` stay numpy |
+| Builtin `sum()` is compensated | the unit test requires a field of a row to change when `neumaier_rows` is replaced by plain addition | the `fit_eps` chi-square sums with `neumaier_rows` |
+| The `brentq` and `minimize_scalar` points are a sequence, not only a result | the objective sees the same points in the same order for every row | the solver tests compare the whole sequence of points |
+
+### Equivalence gates
+
+The scalar `replicate()` stays the reference. The unmarked tests in `tests/test_msq_envelope.py` run on every pull
+request, in normal and `-O` mode, and name the first differing path of any mismatch:
+
+- the bounded Brent and `brentq` ports replay SciPy on 400 rows each: the objective sees SciPy's points in SciPy's
+  order and the minimizer or root matches by `float.hex`; the rows take the accepted, bound-clamped and rejected
+  parabolic steps, the golden-section step and every bracket and keep-point update of Brent, and the
+  interpolation, extrapolation, rejected-step bisection, plain bisection, endpoint-swap and minimum-step branches
+  of `brentq`, which `SolverTrace` counts;
+- three qubits of eight contexts, three replicates each, through `evaluate_qubit_rows` against
+  `evaluate_qubit`, every field (floats by `float.hex`, the retained gate-curve arrays by bytes), with a mutant
+  that replaces the compensated sum and must differ;
+- a block of two replicates at width 8 through `analyse_block` against `replicate_detail`: record row, per-qubit
+  rows after the device-level widening, and the device verdict, plus the withheld path.
+
+The record `docs/evidence/measurement_sequence/envelope-null-w32.json` (sha256
+6ed17f600fd9bff894b0ae265670f6b355b6af66f34ccf11be4b54f2cd5f6975) regenerates byte for byte from
+`msq_envelope_null.py --width 32 --replicates 400` pooled, with `GOROROBA_WORKERS=1`, and under the hosted lane's
+environment (`OPENBLAS_CORETYPE=Haswell`, `NPY_DISABLE_CPU_FEATURES="X86_V4 AVX512_ICL AVX512_SPR"`). The record
+holds the fire count, the withheld count, the mean kept count and the bound, none of which moves with the last bits
+of a per-qubit row, so the byte match is necessary and does not discriminate; the row-level tests carry the
+bit-equality claim.
+
+### Measured timings
+
+Width 32, build host (12 CPUs shared with other sessions), Python 3.14.7. Load average is the 1-minute value at the
+end of each run.
+
+| Measurement | Load | Scalar | Batched |
+|---|---|---|---|
+| one replicate, single process | 6 to 12 | 4.41 s | 0.33 s per replicate in blocks of 25 (14 times faster) |
+| 48 replicates, `GOROROBA_WORKERS=1` | 10 | 390 s (8.13 s per replicate) | 15.6 s (0.32 s per replicate) |
+| 48 replicates, 12 workers (batched: two blocks, so two busy workers) | 16 / 9 | 60.2 s | 12.2 s |
+| 400 replicates, `GOROROBA_WORKERS=1` | 5 to 14 | not run (extrapolates to 1760 to 3250 s) | 131.5 s in a timing script, 165.6 s for the command (414 s user) |
+| 400 replicates, 12 workers | 14 to 18 | not run | 36.6 s wall, 345 s user |
+
+Block sizes 8, 16, 25 and 50 give 50, 54, 42 and 44 s for the pooled 400 replicates at load 14 to 19; the choice
+of 25 divides 400 into 16 equal blocks.

@@ -15,7 +15,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 `evidence/`. [SOURCES.json](../SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
 license evidence. The library publishes 45 licensed PDFs and two aliases;
-187 external sources retain citations and optional ignored local reading copies.
+193 external sources retain citations and optional ignored local reading copies.
 Five licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](../PDF_SHA256SUMS) verifies the published PDF set from the
@@ -47,6 +47,10 @@ those copies from the registered URLs or from a checkout of the owner's private
 gororoba-quantum-documents repository, which also holds their Markdown
 transcriptions, and admits a file only when its size and SHA-256 match the
 registry.
+[`reading-copies.md`](reading-copies.md), generated from the registry by
+[`scripts/source_reading_copies.py`](../../scripts/source_reading_copies.py)
+and checked by the gate `sources-reading-copies-index`, links each external PDF
+to its note, its public source and its copy in that private repository.
 
 The [Cayley-Dickson survey at dimension 16 and above](cayley-dickson-2n-ion-survey.md) records every candidate source and its disposition.
 
@@ -119,6 +123,13 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [0709.1447](../notes/papers/0709.1447.md) | Luhn, Nasri and Ramond, Simple finite non-abelian flavor groups, J. Math. Phys. 48, 123519 (2007) | none | low | none |
 | [2007.01808](../notes/papers/2007.01808.md) | Ziller, On differences between consecutive numbers coprime to primorials (2020) | none | none | none |
 | [erdos-854-consecutive-coprime-gaps](../notes/papers/erdos-854-consecutive-coprime-gaps.md) | Bloom, Erdos Problem 854: missing even gaps between consecutive integers coprime to a primorial (web record) | none | none | none |
+| [openai-2026-jacobsthal-quadratic-bound](../notes/papers/openai-2026-jacobsthal-quadratic-bound.md) | OpenAI, A quadratic bound for Jacobsthal's function (openai/math manuscript, 2026, unrefereed) | none | none | none |
+| [openai-2026-mub-dimension-six](../notes/papers/openai-2026-mub-dimension-six.md) | OpenAI, The maximum number of mutually unbiased bases in dimension six (openai/math manuscript, 2026, unrefereed) | none | none | none |
+| [openai-2026-hadamard-order-six-fourier-certificates](../notes/papers/openai-2026-hadamard-order-six-fourier-certificates.md) | OpenAI, Exact Fourier certificates for complex Hadamard matrices of order six (openai/math manuscript, 2026, unrefereed) | none | none | none |
+| [openai-2026-exact-quantum-factoring](../notes/papers/openai-2026-exact-quantum-factoring.md) | OpenAI, Exact quantum factoring over a fixed finite gate set (openai/math manuscript, 2026, unrefereed) | none | none | low |
+| [openai-2026-torsion-free-zero-divisors](../notes/papers/openai-2026-torsion-free-zero-divisors.md) | OpenAI, A Torsion-Free Group Algebra with Zero Divisors (openai/math manuscript, 2026, unrefereed) | none | low | none |
+| [openai-2026-torsion-free-not-directly-finite](../notes/papers/openai-2026-torsion-free-not-directly-finite.md) | OpenAI, A Torsion-Free Group Algebra That Is Not Directly Finite (openai/math manuscript, 2026, unrefereed) | none | low | none |
+| [openai-2026-kadison-kaplansky-projection](../notes/papers/openai-2026-kadison-kaplansky-projection.md) | OpenAI, A torsion-free counterexample to the Kadison-Kaplansky projection conjecture (openai/math manuscript, 2026, unrefereed) | none | low | none |
 | [1107.1375](../notes/papers/1107.1375.md) | Bales, Cayley-Dickson and Clifford algebras as twisted group algebras (2003; arXiv 2011) | none | medium | none |
 | [2103.12805](../notes/papers/2103.12805.md) | Flaut and Boboescu, A twisted group algebra structure for an algebra obtained by the Cayley-Dickson process (2021) | none | medium | none |
 | [0804.3416](../notes/papers/0804.3416.md) | de Marrais 2008: Voyage by Catamaran, zero-divisor ensembles of the 2^N-ions | none | high | none |
@@ -247,6 +258,13 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [1302.0932](../notes/papers/1302.0932.md) | van Enk and Blume-Kohout, When quantum tomography goes wrong: drift of quantum sources and other errors, New J. Phys. 15, 025024 (2013) | low | none | none |
 | [roadmap-2026-03](../notes/quandela/roadmap-2026-03.md) | Quandela, Roadmap 2026-2033 (March 2026) and the Quandela-Welinq interconnect announcement (provider documents) | none | none | none |
 | [2104.05219](../notes/papers/2104.05219.md) | McEwen et al., Resolving catastrophic error bursts from cosmic rays in large arrays of superconducting qubits, Nat. Phys. 18, 107 (2022) | low | none | low |
+| [ioannidis-2005-false-findings](../notes/papers/ioannidis-2005-false-findings.md) | Ioannidis, Why most published research findings are false, PLoS Med. 2, e124 (2005) | none | none | none |
+| [munafo-2017-reproducible-science](../notes/papers/munafo-2017-reproducible-science.md) | Munafo et al., A manifesto for reproducible science, Nat. Hum. Behav. 1, 0021 (2017) | none | none | none |
+| [asa-2016-p-value-statement](../notes/papers/asa-2016-p-value-statement.md) | ASA release on the Statement on Statistical Significance and P-Values, Am. Stat. 70, 129 (2016) | none | none | none |
+| [diedenhofen-musch-2015-cocor](../notes/papers/diedenhofen-musch-2015-cocor.md) | Diedenhofen and Musch, cocor: comparison of correlations, PLOS ONE 10, e0121945 (2015) | none | none | none |
+| [1910.06343](../notes/papers/1910.06343.md) | Eisert et al., Quantum certification and benchmarking, Nat. Rev. Phys. 2, 382 (2020) | low | none | none |
+| [2407.08828](../notes/papers/2407.08828.md) | Proctor et al., Benchmarking quantum computers, Nat. Rev. Phys. 7, 105 (2025) | medium | none | low |
+| [quantum-journal-referee-instructions](../notes/papers/quantum-journal-referee-instructions.md) | Quantum journal, guidelines for referees and editorial policies (web pages) | none | none | none |
 
 The [parallel-experiment synthesis](../notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,

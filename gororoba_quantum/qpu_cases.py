@@ -24,6 +24,7 @@ from typing import Any
 from qiskit import QuantumCircuit, qpy
 
 import law_encoding
+from diagnostic_experiments import MSQ_PRECISION, state_prep_arms
 
 CASE_FILENAME = "UNAPPROVED_CASE.md"
 FAMILIES = {
@@ -39,6 +40,8 @@ FAMILIES = {
     "ripple",
     "rank-sector",
     "state-prep-control",
+    "measurement-sequence",
+    "measurement-sequence-diagnostic",
     "latency-recovery",
 }
 # Families that run on one pinned patch and carry its six physical qubits.
@@ -62,6 +65,9 @@ _DESIGN_OPTIONS = (
 _MAPPING_FIELDS = (
     "replica_cap",
     "measurement_delay_dt",
+    "settle_delay_dt",
+    "prereadout_delay_dt",
+    "t1_delays_dt",
     "replaced_measurement_qubits",
     "shared_initial_layout",
     "extra_control",
@@ -255,22 +261,27 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         arguments.append("--optimize")
     arguments.extend(_patch_arguments(record))
     configuration = record["family_configuration"]
-    if family == "state-prep-control" and configuration.get("layout_source") == "declared":
+    if family in ("measurement-sequence", "measurement-sequence-diagnostic") or (
+        family == "state-prep-control" and configuration.get("layout_source") == "declared"
+    ):
         qubits = configuration["qubits"]
         _require(
             isinstance(qubits, list) and bool(qubits) and all(type(q) is int and q >= 0 for q in qubits),
-            "state-prep-control names nonnegative qubits",
+            f"{family} names nonnegative qubits",
         )
         arguments.extend(["--layout", ",".join(str(qubit) for qubit in qubits)])
     if "state_prep_arms" in design:
         arms = design["state_prep_arms"]
+        # live_run records the selection in diagnostic_experiments.state_prep_arms order, so a valid record
+        # round-trips through that rule unchanged.
+        try:
+            canonical = isinstance(arms, list) and list(state_prep_arms(arms)) == arms
+        except ValueError:
+            canonical = False
         _require(
-            isinstance(arms, list)
-            and (
-                arms == ["x_history"]
-                or ("prep0" in arms and set(arms) <= {"prep0", "reset", "x"} and len(set(arms)) == len(arms))
-            ),
-            "state_prep_arms names distinct state-prep-control arms, prep0 among them, or x_history alone",
+            canonical,
+            "state_prep_arms names distinct state-prep-control arms in their recorded order, prep0 or remeasure "
+            "among them, or x_history alone",
         )
         arguments.extend(["--state-prep-arms", ",".join(arms)])
     for name in ("latency_dt", "window_dt"):
@@ -361,6 +372,33 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             design.get("ground_control_split") is True, "ramsey_windows is recorded only with ground_control_split"
         )
         arguments.extend(["--ramsey-windows", ",".join(str(value) for value in windows)])
+    if "window_doses" in design:
+        from diagnostic_experiments import n21_window_doses
+
+        doses = design["window_doses"]
+        try:
+            checked_doses = n21_window_doses(doses) if isinstance(doses, list) else None
+        except ValueError as error:
+            raise ValueError(f"window_doses: {error}") from error
+        _require(
+            checked_doses is not None and list(checked_doses) == doses,
+            "window_doses is a sorted list of distinct doses",
+        )
+        _require(
+            design.get("family") == "n21-orbit-rca"
+            and not any(
+                name in design
+                for name in ("overlap_split", "ground_control_split", "ramsey_windows", "segmented_sweep")
+            ),
+            "window_doses is recorded only for n21-orbit-rca without another sweep",
+        )
+        arguments.extend(["--window-doses-dt", ",".join(str(value) for value in doses)])
+    if "detuning_sign" in design:
+        _require(
+            design["detuning_sign"] is True and "window_doses" in design and design.get("init_herald") is True,
+            "detuning_sign is recorded as true only with window_doses and init_herald",
+        )
+        arguments.append("--detuning-sign")
     if "segmented_sweep" in design:
         from diagnostic_experiments import n21_segmented_config
 
@@ -1530,6 +1568,22 @@ def _gate_count_bias(counts: dict[str, dict[str, int]]) -> str:
     return "; both arms play the same CZ count, so the gate count biases window_overlap_loss in neither direction."
 
 
+# Decimals live_run._member_fields keeps of each recorded ideal probability
+# (round(float(p), 12)); tests/test_measurement_sequence_family.py binds the two.
+IDEAL_DECIMALS = 12
+
+
+def _ideal_law_valid(ideal: list[float]) -> bool:
+    """Whether a recorded ideal is a probability law within the recording's rounding bound.
+
+    live_run records each entry to IDEAL_DECIMALS decimals, so an entry lies within
+    0.5 * 10**-IDEAL_DECIMALS of its exact value and an n-outcome law sums to 1 within
+    n times that bound, on top of the 1e-9 float allowance.
+    """
+    tolerance = 1e-9 + len(ideal) * 0.5 * 10**-IDEAL_DECIMALS
+    return all(0 <= value <= 1 for value in ideal) and math.isclose(math.fsum(ideal), 1.0, rel_tol=0, abs_tol=tolerance)
+
+
 def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
     if family == "et-row":
         from et_campaign import configuration as et_configuration
@@ -1699,6 +1753,132 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "reported only where |C| supports it.",
             "",
         ]
+    if family == "measurement-sequence-diagnostic":
+        configuration = record["family_configuration"]
+        qubits = configuration["qubits"]
+        backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
+        delay = record["policy"].get("rep_delay_seconds")
+        delay_text = (
+            f"a requested repetition delay of {_format_number(delay * 1e6)} us (`--rep-delay {delay}`)"
+            if delay is not None
+            else "the backend's default repetition delay"
+        )
+        return [
+            "## Scientific question and interpretation",
+            "",
+            f"The measurement-sequence-diagnostic family measures, on {len(qubits)} qubits of {backends} at "
+            f"{delay_text}, the scatter of the pinching analysis's gate model: how far the readout-corrected P0 of "
+            "sixteen composite RX(THETA / 16) rotations (THETA = 8 pi / 9, thirty-two sx pulses, no measurement "
+            "and no idle) lies from the analysis's Bloch-iteration prediction, qubit by qubit. The main "
+            "measurement-sequence case bounds what a gate error could do to its measure arm by that residual, and "
+            "a model that overpredicts one class of gate error and underpredicts another can leave the unitary "
+            "residual near zero while the measure arm moves, so the main analysis needs the scatter across "
+            "qubits as a floor "
+            "(docs/design/measurement-sequence-pinching.md, Source of the model-scatter floor). No retained "
+            "Heron run holds single-qubit sx sequences with a known ideal outcome, and a floor that is assumed "
+            "instead of measured is a guessed hardware value. A noise simulation prices the Target's reported "
+            "errors and returns the model's own prediction with counting noise; it cannot show how the device "
+            "departs from that Target-built model, which is the quantity measured here.",
+            "",
+            "Every qubit runs the four signed unitary members in the order +, -, -, +, a zero-pulse member (ro0) "
+            "and the x member at idle 0 (ro1), all with the 2 us pre-readout delay, with circuits identical to "
+            "the main family's. All members are static, so each row fuses across every named qubit into one PUB "
+            "and the run holds six PUBs. The named qubits are the main family's eight and further qubits chosen "
+            "from the live calibration alone by the preregistered rule: "
+            f"{configuration['selection_rule']}. The layout is pinned on the command line, and the planner refuses "
+            "a layout with a coupled pair, an excluded qubit or a repeated qubit. The residual enters the "
+            "floor through the preregistered rule: "
+            f"{configuration['floor_rule']}. The run also reports each qubit's residual against its T2, which "
+            "tests the drive-dephasing lead seen on IQM Garnet. The result is a scatter-floor.json that "
+            "the main analysis binds by digest; until it exists the main analysis withholds. "
+            "A measured floor above about 0.02 raises the smallest per-step transition rate the main case can "
+            "detect from about 0.003 (floor 0.01) to 0.0049 (0.02) and 0.0097 (0.04), at the main design's "
+            "shots; the main design stays admissible at every floor, and the owner decides at the floor's value "
+            "whether the main run is worth its quantum time.",
+            "",
+            "The record binds the IBM Cloud instance of the backup account (instance sha256 prefix "
+            f"{record.get('instance_sha256_12')}): run the dry run and the submission with "
+            "`GOROROBA_IBM_ACCOUNT=backup-ibm-quantum-platform` in the environment, which is the account whose "
+            "600 s rolling quota the run charges.",
+            "",
+            f"Two precision contracts per qubit split the family-wise alpha evenly and admit the design: the "
+            f"unitary P0 pooled over the four signed members and ro1's P1, each at half-width "
+            f"{MSQ_PRECISION['p0']}. They price resolution, not an effect.",
+            "",
+        ]
+    if family == "measurement-sequence":
+        configuration = record["family_configuration"]
+        qubits = configuration["qubits"]
+        steps = ", ".join(str(n) for n in configuration["steps"])
+        backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
+        delay = record["policy"].get("rep_delay_seconds")
+        delay_text = (
+            f"a requested repetition delay of {_format_number(delay * 1e6)} us (`--rep-delay {delay}`)"
+            if delay is not None
+            else "the backend's default repetition delay"
+        )
+        return [
+            "## Scientific question and interpretation",
+            "",
+            f"The measurement-sequence family asks, on {len(qubits)} qubits of {backends} (the declared layout: "
+            f"{', '.join(str(q) for q in qubits)}) at {delay_text}, whether a mid-circuit measurement acts as an "
+            "ideal pinching, a nonselective projective measurement in Z. Each qubit starts in |0> and receives N "
+            f"rotations RX(sign * THETA / N) with THETA = 8 pi / 9 and N in {steps}. "
+            "The measure arm, at N >= 2, follows each "
+            "rotation with a mid-circuit measurement whose outcome the program never reads, then reads the qubit "
+            "into the final register. The delay arm replaces each measurement with an idle of that qubit's "
+            "calibrated measure duration, which keeps the elapsed time and drops the projection; idle dephasing "
+            "pinches the qubit too, so it is the elapsed-time control that quantifies dephasing's share of the rise. "
+            "The unitary arm, at N = 16 only, plays the 16 rotations back to back with a barrier between them so "
+            "the transpiler cannot merge them; it is the mutation null. The settle arm, also at N = 16 only, is the "
+            "measure arm with a 2 us idle after each measurement: a readout-induced frequency shift acts during the "
+            "next pulse at second order, about -2.5e-6 per step in the flip probability. The 2 us gap is an "
+            "experimental hypothesis, not a validated bound, because the repository's Heron r2 sources report no "
+            "device-matched ring-down or residual-photon decay time. The settle arm tests whether lengthening the "
+            "gap after each measurement from zero to 2 us changes the deficit; a deficit that stays unchanged bounds "
+            "only the tail component that decays within 2 us, and a tail slower than 2 us stays unexcluded. Every "
+            "member idles 2 us before its final measurement as a hypothesized allowance for residual readout "
+            "photons of the last mid-circuit measurement; no in-job diagnostic validates it. "
+            "Five t1 "
+            "members (x, an idle of 0, 20, 50, 100 or 200 us, the pre-readout idle, a measurement) measure "
+            "the qubit's relaxation in the job; the case analysis fits T1 from them and uses it, not the Target's "
+            "T1, for the measure-arm and settle predictions. A zero-pulse member (ro0: the pre-readout idle, a "
+            "measurement) and the t1 member at idle 0 bracket the final read's offset and scale, which corrects "
+            "every arm. The signed arms run in the order +, -, -, + "
+            "and share their ideal law because cosine is even.",
+            "",
+            "The measure arm's ideal final P0 is (1 + cos(THETA / N) ** N) / 2 and the delay and unitary arms' is "
+            "cos(THETA / 2) ** 2; the settle arm's is the measure arm's. The state after each measurement is "
+            "diagonal in Z, so a shift of the qubit frequency after readout moves the flip probability only at "
+            "second order; a deficit of the measured P0 below the ideal, which grows with N, measures transitions "
+            "the measurement induces once the unitary and delay controls separate it from rotation error and idle "
+            "dephasing, and the settle arm bounds a readout tail that decays within 2 us. The calibration noise "
+            "model treats a mid-circuit measurement as "
+            "projective, so it prices the measure arm at readout "
+            "and decoherence alone.",
+            "",
+            "Per qubit, seventeen two-sided precision contracts split the family-wise alpha evenly and admit the "
+            "design: the final P0 pooled over the four signed members of each arm at each N (half-width 0.03), "
+            "and the measure minus unitary contrast at N = 16 (half-width 0.055), the mutation-test endpoint. They "
+            "price resolution, not an effect; the Hoeffding radii hold under arbitrary dependence between PUBs.",
+            "",
+            "The preregistered pinching analysis (collect.json, family_analysis.pinching; "
+            "docs/design/measurement-sequence-pinching.md, Decision rule) corrects each read through ro0 and the "
+            "t1 member at idle 0, fits T1 and the equilibrium parameter in the job, and models each arm with a "
+            "Bloch iteration that uses the Target's sx error and the measure duration. Per qubit, the mutation test "
+            "passes when the N = 16 contrast exceeds 0.5 by 3 standard errors; the departure test compares the "
+            "measure arm's N = 16 P0 with the ideal-projective prediction at 3 standard errors, both sides; the "
+            "settle test asks whether lengthening the gap from zero to 2 us changes the deficit. The unitary arm "
+            "tests the gate model in the job: its residual sets the measure-arm shift that a depolarizing, "
+            "drive-dephasing, axis-tilt or over-rotation error could produce, and that shift adds to the "
+            "departure standard error, floored at the model scatter that the measurement-sequence-diagnostic run "
+            "measures (scatter-floor.json, bound to the analysis by digest); without that file the analysis "
+            "withholds. A qubit whose mutation test fails or "
+            "whose widened standard error exceeds twice its planning value is uninformative. A device verdict "
+            "fires when two informative qubits agree or the pooled z reaches 3; with fewer than two informative "
+            "qubits the device reads uninformative, and none always means a clean null.",
+            "",
+        ]
     if family == "state-prep-control":
         configuration = record["family_configuration"]
         qubits = configuration["qubits"]
@@ -1723,11 +1903,25 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "H initializes, measures and then applies an X, so every shot starts from the implicit "
                 "initialization of a qubit the previous shot left in |1>"
             ),
+            "x_remeasure": "XR applies an X and measures twice (the |1> column, read again by a second measurement)",
+            "remeasure": (
+                "R initializes and measures twice, so the second read separates a population the first read found "
+                "from a misassignment of the first read"
+            ),
         }
+        labels = {"prep0": "A", "reset": "B", "x": "C", "x_history": "H", "x_remeasure": "XR", "remeasure": "R"}
         history = arms == ["x_history"]
+        default = arms == ["prep0", "reset", "x"]
         static = [arm for arm in arms if arm not in ("reset", "x_history")]
         jobs_text = (
-            ("A and C share the static job" if len(static) == 2 else "A runs in one static job") if static else ""
+            (
+                f"{labels[static[0]]} runs in one static job"
+                if len(static) == 1
+                else f"{', '.join(labels[arm] for arm in static[:-1])} and {labels[static[-1]]} share the static job "
+                "in that row order"
+            )
+            if static
+            else ""
         )
         if "reset" in arms:
             jobs_text += ("; " if jobs_text else "") + (
@@ -1745,15 +1939,28 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 ("0.05 on A - B", {"prep0", "reset"}),
                 ("0.025 on C", {"x"}),
                 ("0.025 on H", {"x_history"}),
+                ("0.025 on R's first read", {"remeasure"}),
+                ("0.025 on R's both-reads-1 fraction", {"remeasure"}),
+                ("0.025 on XR's first read", {"x_remeasure"}),
             )
             if needs <= set(arms)
         ]
-        label = "H" if history else "A"
+        label = "H" if history else "A" if "prep0" in arms else "R"
         history_text = (
             " Every shot of H after the first follows a shot that ended in |1> unless that shot's own "
             "initialization left |1> or its X failed; scripts/state_prep_excess.py bounds the excitation after an "
             "all-|1> history from H through that end-state population."
             if history
+            else ""
+        )
+        remeasure_text = (
+            " R reads each shot twice. A measurement projects the qubit onto the state it reads up to "
+            "misassignment, so a population the first read found reads 1 again with probability 1 - e01 less the "
+            "T1 decay over one measurement, while a misassigned first read is followed by a read of the prepared "
+            "state; P(both reads 1) / P(first read 1) therefore separates a population from a misassignment. "
+            "The service runs every circuit of shot s in row order before shot s + 1, so each R shot follows the "
+            "row before it, an XR read of |1> when XR is selected."
+            if "remeasure" in arms
             else ""
         )
         comparison_text = (
@@ -1764,7 +1971,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "outside these contracts; the written addendum states that comparison and its decision rule."
         )
         count = len(endpoints)
-        words = {1: "One", 2: "Two", 3: "Three"}
+        words = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven"}
         reset_text = (
             " The reset benefit A - B is positive only where initialization leaves more excitation than the "
             "reset's own misassignment."
@@ -1772,9 +1979,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             else ""
         )
         selection = (
-            ""
-            if len(arms) == 3
-            else f" The run selects the arms {', '.join(arms)} (`--state-prep-arms {','.join(arms)}`)."
+            "" if default else f" The run selects the arms {', '.join(arms)} (`--state-prep-arms {','.join(arms)}`)."
         )
         return [
             "## Scientific question and interpretation",
@@ -1788,7 +1993,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "active reset before the measure, and C applies an X before the measure (the |1> column of the "
                 "assignment matrix). A and C share the static job; B, which the reset makes dynamic, runs in its "
                 "own job with twirling and dynamical decoupling off."
-                if len(arms) == 3
+                if default
                 else f"{words[len(arms)]} PUB{'s' if len(arms) > 1 else ''} measure{'' if len(arms) > 1 else 's'} "
                 "every qubit in each shot: "
                 + "; ".join(pub_text[arm] for arm in arms)
@@ -1798,13 +2003,13 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             f"Under the readout channel e10 = prob_meas1_prep0, e01 = prob_meas0_prep1, {label} reads "
             f"(1 - eps) e10 + eps (1 - e01), so the initial excitation is eps = ({label} - e10) / (1 - e01 - e10) "
             "(diagnostic_experiments.state_prep_excitation), the value dynamic_density's prep_excitation and "
-            f"live_run's --prep-excitation take.{reset_text}{history_text} The calibration "
+            f"live_run's --prep-excitation take.{reset_text}{history_text}{remeasure_text} The calibration "
             f"noise model starts every qubit in |0>, so it prices {label} at the readout error alone; the residual "
             "excitation is the device property this run measures, and only the device answers it.",
             "",
             f"{words[count]} two-sided precision contract{'s' if count > 1 else ''} per qubit, "
             f"{count * len(qubits)} in all, split the family-wise alpha evenly and admit the design: "
-            f"half-width {'0.025 on A and on C, 0.05 on A - B' if count == 3 else ', '.join(endpoints)}, Hoeffding "
+            f"half-width {'0.025 on A and on C, 0.05 on A - B' if default else ', '.join(endpoints)}, Hoeffding "
             "radii valid under arbitrary dependence between the qubits of one shot. They price resolution, "
             f"not an effect. {comparison_text}",
             "",
@@ -1964,6 +2169,35 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
                 "",
             ]
             if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("window_sweep")
+            else []
+        ),
+        *(
+            [
+                "--window-doses-dt is the window-dose sweep: the nominal bracketed pair with D dt of added idle "
+                "after the control's reset on every qubit at each listed dose D, and at each nonzero dose a pair "
+                "that spends the same idle as delay(D/4), X, delay(D/2), X, delay(D/4) on the work bits for 1 and "
+                "16, which refocuses a static detuning of the work superposition; the feed-forward contrast "
+                "difference of each pair against its dose gives the decay of the contrast with added idle and the "
+                "echo's restoration of it.",
+                "",
+            ]
+            if family == "n21-orbit-rca"
+            and record.get("family_configuration", {}).get("window_doses")
+            and not record.get("family_configuration", {}).get("detuning_sign")
+            else []
+        ),
+        *(
+            [
+                "--detuning-sign replaces the window-dose sweep with its free-idle no-feedback member at each dose D "
+                "read in two quadratures, the cosine and, through P(-pi/2) on the control before the second-round "
+                "Hadamard, the sine of the work superposition's relative phase; the echo member in both quadratures "
+                "at the largest dose; and Ramsey arms of the work bits for 1 and for 16 over the same idles in X and "
+                "Y. The relative phase turns at the frame offset of the bit for 16 minus that of the bit for 1, so "
+                "the two readings of that difference in one job test the frame-offset account of the sweep's "
+                "residual with its sign.",
+                "",
+            ]
+            if family == "n21-orbit-rca" and record.get("family_configuration", {}).get("detuning_sign")
             else []
         ),
         *(
@@ -2212,10 +2446,7 @@ def _render(
         for member in group["members"]:
             name = _identifier(member["name"], "member")
             ideal = [_number(value, "ideal probability") for value in law_encoding.dense(member["ideal"])]
-            _require(
-                all(0 <= value <= 1 for value in ideal) and math.isclose(sum(ideal), 1.0, abs_tol=1e-9),
-                "invalid ideal law",
-            )
+            _require(_ideal_law_valid(ideal), "invalid ideal law")
             # A wide law prints in its stored form (law_encoding), which
             # expands to the same labeled array.
             shown = ideal if isinstance(member["ideal"], list) else member["ideal"]
@@ -2836,7 +3067,39 @@ def _verify() -> None:
             raise AssertionError
         if not ("only arm of its job" in history_case and "A reads" not in history_case):
             raise AssertionError
-        for refused in (["prep0", "bogus"], ["x"], ["x_history", "prep0"], ["prep0", "x_history"]):
+        remeasure_record = copy.deepcopy(prepared)
+        remeasure_record["policy"]["design"]["state_prep_arms"] = ["prep0", "x_remeasure", "remeasure"]
+        remeasure_record["family_configuration"]["arms"] = {
+            "prep0": "init, measure",
+            "x_remeasure": "x, measure, measure",
+            "remeasure": "init, measure, measure",
+        }
+        remeasure_arguments = " ".join(
+            _reproduction_arguments(remeasure_record, Path("results/live/fixture/record.json"))
+        )
+        if "--layout 104,105 --state-prep-arms prep0,x_remeasure,remeasure" not in remeasure_arguments:
+            raise AssertionError
+        remeasure_case = " ".join(_scientific_case("state-prep-control", remeasure_record))
+        for needed in (
+            "Three PUBs measure every qubit",
+            "R initializes and measures twice",
+            "A, XR and R share the static job in that row order",
+            "P(both reads 1) / P(first read 1)",
+            "8 in all",
+            "0.025 on R's first read, 0.025 on R's both-reads-1 fraction, 0.025 on XR's first read",
+        ):
+            if needed not in remeasure_case:
+                raise AssertionError(f"the remeasure case lacks {needed!r}")
+        if "reset benefit" in remeasure_case or "0.05 on A - B" in remeasure_case:
+            raise AssertionError
+        for refused in (
+            ["prep0", "bogus"],
+            ["x"],
+            ["x_history", "prep0"],
+            ["prep0", "x_history"],
+            ["x_remeasure"],
+            ["remeasure", "prep0"],
+        ):
             prepared["policy"]["design"]["state_prep_arms"] = refused
             try:
                 _reproduction_arguments(prepared, Path("results/live/fixture/record.json"))

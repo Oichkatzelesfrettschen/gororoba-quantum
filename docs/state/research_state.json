@@ -2,6 +2,20 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-signed-coherence-replication-job-06",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06",
+      "family": "photonic signed-coherence replication meshes",
+      "question": "Do the carried P-B offsets, unchanged, and the same family refitted on all 233 retained meshes predict the analyzer statistic of 84 meshes no fit has seen, served by theta2-x-arm0 at fresh QRNG compilation seeds beside 12 seed-0 anchors?"
+    },
+    {
+      "id": "qd-ascella-signed-coherence-replication-job-07",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96",
+      "family": "photonic signed-coherence replication meshes",
+      "question": "Do the same frozen predictors carry on 84 further unseen meshes, the job's size of 96 iterations admitted by job-06's completion?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-new-seeds-job-04",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04",
@@ -2123,6 +2137,13 @@
       "question": "Does a per-pair record-independent rz on B, fixed by that pair's reference arms, restore the channel floor margin, how large is the information excess in the compensated frame, and what does a 50 us repetition delay cost?"
     },
     {
+      "id": "kingston-measurement-sequence-scatter-floor",
+      "provider": "ibm",
+      "run": "results/live/2026-10-26T031010.724660Z",
+      "family": "measurement-sequence-diagnostic",
+      "question": "On 38 pairwise uncoupled ibm_kingston qubits (the main pinching family's eight and thirty chosen by a calibration-only rule), how far does the readout-corrected P0 of the 32-sx unitary sequence at N = 16 lie from the pinching analysis's Bloch-iteration prediction, qubit by qubit, and does the residual follow T2 as the drive-dephasing lead from IQM Garnet predicts?"
+    },
+    {
       "id": "iqm-garnet-mock-qet-ladder-accept",
       "provider": "iqm",
       "run": "results/iqm/runs/2026-10-26T025359Z-garnet_mock-qet-compensated-ladder-accept",
@@ -2444,11 +2465,11 @@
     },
     {
       "id": "ascella-signed-coherence-new-seed-offsets",
-      "statement": "Heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on job-00 plus all 56 perturbed meshes of jobs 02 and 03 and frozen before any new seed was drawn (P-B), predict the X statistic of 147 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs be11a4b0 (70 meshes, 80 iterations) and 690c6e49 (77 meshes, 88 iterations): the within-job-centered Pearson r is 0.319 (t 4.04 on 144 degrees of freedom, one-sided p 4.4e-5, alpha 0.005), carried. Its positive-direction share of the compilation-induced variance is 10.5 % against the 0.983 attenuation ceiling, with one-sided 99.5 % Fisher-z bounds of 1.4 % and 25.6 %. The same family fitted on job-00 plus the 28 exploration meshes alone (P-A) reads r 0.157 (p 0.030): not carried. Both jobs' anchors stayed within the gross-shift margin (shifts -0.0028 and -0.0018 against job-03, 99 % half-widths 0.0034, margin 0.0119).",
+      "statement": "Heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on 86 training configurations (the 30 configurations of job-00 and the 56 perturbed meshes of jobs 02 and 03) and frozen before any new seed was drawn (P-B), are associated with the X statistic of 147 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs be11a4b0 (70 meshes, 80 iterations) and 690c6e49 (77 meshes, 88 iterations): the within-job-centered Pearson r is 0.319 (t 4.04 on 144 degrees of freedom, model-based one-sided p 4.4e-5, alpha 0.005), carried. Its positive-direction share r^2 / c^2, with c^2 = 0.966 the plug-in attenuation ceiling (c = 0.983), is 10.5 %, with one-sided 99.5 % Fisher-z bounds of 1.4 % and 25.6 %; the share is the centered variance an optimal affine rescaling of the predictions would account for, while the frozen predictions at their own scale have slope 0.32 and within-job R^2 -0.36 at slope one, less accurate than each job's mean. The same family fitted on job-00 plus the 28 exploration meshes alone (P-A) reads r 0.157 (p 0.030): not carried. Both jobs' anchor means passed the gross-shift gate (shifts -0.0028 and -0.0018 against job-03, 99 % half-widths 0.0034, margin 0.0119).",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_new_mesh_score.py, whose contract, frozen offsets and duration rule were committed and pushed before submission after two Codex CLI reviews, two GitHub Codex rounds, a final gpt-daybreak-blue-latest high review and the advisor. The outcome is P-B carried only: the offsets carry about a tenth of the per-mesh error, the 28 exploration meshes leave them underdetermined, and the remaining nine tenths of the fixed per-mesh error stay unexplained by any element offset on the returned circuit. The share is a plug-in estimate conditional on the retained compilation variance. Job-05's size followed job-04's provider-reported duration alone (243 s, admitting 88 iterations). The result names no physical mechanism for the offsets and spends these 147 meshes for confirmatory use.",
+      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_new_mesh_score.py; the frozen offsets reached the remote at 17:42:54 UTC, 13 s before the ANU QRNG draw (new-seed-push-order.json), and the contract and duration rule were committed and pushed before submission after two Codex CLI reviews, two GitHub Codex rounds, a final gpt-daybreak-blue-latest high review and the advisor. The outcome is P-B carried only: the frozen offsets predict the direction of a minor part of the mesh-to-mesh variation of X, not its amplitude, and the 28 exploration meshes leave them underdetermined. The scored prediction also carries each test iteration's in-block background, read from its own outside-block counts (ascella_physical_models.setting_probabilities). The p-value and bounds are model-based; the centered outcomes are heavy-tailed. The share is a plug-in estimate conditional on the retained compilation variance. 258 free offsets on 86 configurations are identified through the prior. Job-05's size followed job-04's provider-reported duration alone (243 s, admitting 88 iterations). The result names no physical mechanism for the offsets and spends these 147 meshes for confirmatory use; claim ascella-signed-coherence-replication-offsets retests P-B unchanged on 168 further meshes.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04/results.json",
@@ -2469,6 +2490,10 @@
         {
           "path": "docs/evidence/ascella-order-coefficients/new-seed-score.json",
           "sha256": "fa4a2982afb3e01ec71f78b8aa999752dcfd374459388258f51b88cfbb029610"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/new-seed-push-order.json",
+          "sha256": "1b9839f5da98c2d0101011f8ef8d98be7719ae6bacfe0890a7ae8eb41c1ee210"
         }
       ],
       "documents": [
@@ -2487,6 +2512,57 @@
       "depends_on": [
         "ascella-signed-coherence-fixed-mesh-offsets",
         "ascella-signed-coherence-seed-repeat"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "ascella-signed-coherence-replication-offsets",
+      "statement": "On 168 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs d54d0e9d and f27ad639 (84 meshes each, 96 iterations each), the heater and coupler offsets of claim ascella-signed-coherence-new-seed-offsets, frozen unchanged (R-B), are associated with the X statistic at within-job-centered Pearson r 0.240 (t 3.18 on 165 degrees of freedom, model-based one-sided p 8.8e-4, alpha 0.005), carried, a positive-direction share r^2 / c^2 of 6.0 % with one-sided 99.5 % Fisher-z bounds of 0.2 % and 18.2 % (together a central 99 % interval). The same family refitted on 233 training configurations (the 30 of job-00, the 56 perturbed meshes of jobs 02 and 03 and the 147 of jobs 04 and 05; R-C) reads r 0.404 (t 5.67, model-based p 3.1e-8), carried, a share of 16.9 % (one-sided bounds 5.2 % and 32.2 %). The shares are the centered variance an optimal affine rescaling of the predictions would account for: at their own scale the predictions have slopes 0.20 and 0.44 and within-job R^2 -0.83 and -0.10 at slope one, less accurate than each job's mean. Both jobs' anchor means passed the gross-shift gate (shifts -0.0020 and -0.0008 against job-05-i88, 99 % half-widths 0.0024, margin 0.0119).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_replication_score.py, whose predictors and contract reached the remote (bc15673, 00:37:09 UTC) six seconds before the ANU QRNG draw that seeded the jobs (replication-push-order.json). The outcome is both carried: frozen static offsets on the returned circuit predict the direction of a replicated, minor part of the mesh-to-mesh variation of X, not its amplitude. Exploratory, post hoc checks (replication-sensitivity.json): the scored prediction carries each test iteration's in-block background, read from its own outside-block counts, and without it R-B reads r 0.231 and R-C 0.386, while the returned circuit at zero offsets reads r 0.016 and each predictor's increment over the zero-offset prediction keeps partial r 0.207 (R-B, one-sided p 0.0037) and 0.395 (R-C); every alignment of 7,056 circular shifts of the outcomes within each job gives p 0.0014 (R-B) and 0.00014 (R-C), consistent with the model-based t; Spearman correlations are 0.241 and 0.305, and R-C reads r 0.290 without its five most influential meshes. Whether R-B's fitted direction is special among offset directions is a weaker, open question: in unretained exploratory Monte Carlo runs, offsets drawn from the family's prior reached R-B's r with probability about 0.004 through the full predictor and 0.01 to 0.025 through its linearization, and never reached R-C's. R-C's higher r than R-B's is descriptive: the preregistration tested neither against the other, a post hoc Williams test reads t 2.17 on 164 degrees of freedom (two-sided p 0.031, Steiger and Meng agreeing, predictor correlation 0.447), and R-C's added training meshes come from the calibrations nearest these jobs, so training size and calibration proximity are confounded; an unretained exploratory refit on the 147 meshes of jobs 04 and 05 alone read r 0.445, above R-C, consistent with proximity rather than size. The family was selected after four heater families and eight heater-coupling families missed job-02's meshes and its first held-out test missed at p 0.050 (claims ascella-signed-coherence-compilation-dependence, ascella-signed-coherence-heater-coupling, ascella-signed-coherence-fixed-mesh-offsets); the new-seed and replication jobs are its prospective retests. The anchor gate excludes a gross additive shift and does not establish calibration equivalence. 258 free offsets on 86 or 233 configurations are identified through the prior: between R-B and R-C the 126 heater offsets correlate 0.82 and the 132 coupler offsets 0.15, so the coupler offsets are not identified. The shares are plug-in estimates conditional on the retained compilation variance. The submitted cases.json files name the new-seed plan as built; the replication plan is their contract. Job-07's size followed job-06's completion alone. The result names no physical mechanism for the offsets and spends these 168 meshes for confirmatory use.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06/results.json",
+          "sha256": "ed728d01a828c59b171c849c5b01fe25f36ce78c6e06155ee55410fd65749e8c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96/results.json",
+          "sha256": "d3083e0fcb7a55b42bffbcea0e96c7fa4ee335c1659d72aad9c3d0f08b4db39b"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-offsets.json",
+          "sha256": "b541d774066373141dc1fcec175d20e43c0e98d51d8732e47735751adf6c7d0a"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-score.json",
+          "sha256": "ae5a109a1c0e19aced9d5c25fda807b269d56b72eeb91fbbc7cbba857de1e2af"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-sensitivity.json",
+          "sha256": "07f719e3930b61e7ab88820c087240294824185c9d79ded02c2b956850282f8e"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-push-order.json",
+          "sha256": "535d1b030968fbdda9aa03be03782cd54cb5028a4ad04c875c1ffd2f59258eeb"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-replication-offsets-replay": "replay",
+        "core-ascella-signed-coherence-replication-score-replay": "replay",
+        "core-ascella-signed-coherence-replication-sensitivity-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-replication-job-06",
+        "qd-ascella-signed-coherence-replication-job-07"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-new-seed-offsets"
       ],
       "supersedes": []
     },
@@ -3336,7 +3412,7 @@
       "domain": "geometry",
       "evidence_class": "mathematical claim",
       "status": "open",
-      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; item 4 (smooth strata, singular loci and normal links) is discharged by a5-strata-regularity, which decomposes R_8 minus 0 into twelve orbits of G_2(C) x SO(2, C) x C^* and gives a Whitney stratification with every transverse germ; kernel bundles, attachments and integral invariants (roadmap items 5-8) remain open.",
+      "boundary": "Roadmap item 3 (components, dimensions, closure incidences and connected components of every rank stratum) is discharged by a5-zero-divisor-strata, with closed equations for every stratum in a5-rank-strata-equations; item 4 (smooth strata, singular loci and normal links) is discharged by a5-strata-regularity, which decomposes R_8 minus 0 into twelve orbits of G_2(C) x SO(2, C) x C^* and gives a Whitney stratification with every transverse germ; item 5 (kernel bundles) is discharged on D_(5,16), D_(5,12) and D_(5,8) by a5-kernel-bundles and a5-kernel-bundles-nullity8; kernel bundles on the nullity-4 strata, attachments and integral invariants (roadmap items 6-8) remain open.",
       "evidence": [],
       "documents": [
         "docs/RESEARCH_ROADMAP.md",
@@ -3354,7 +3430,9 @@
         "nullity-twelve-cone",
         "a5-zero-divisor-strata",
         "a5-rank-strata-equations",
-        "a5-strata-regularity"
+        "a5-strata-regularity",
+        "a5-kernel-bundles",
+        "a5-kernel-bundles-nullity8"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -4401,7 +4479,7 @@
       "evidence": [
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
+          "sha256": "de0922cf9e28c376904536f7a07543e54d824e039e0600954542c20ec2a5287e"
         }
       ],
       "documents": [
@@ -5595,7 +5673,7 @@
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
-          "sha256": "4dce67ce39d77f4bccae33fb8f141b922b040d63a8f09bcd0f8228bd4a78372e"
+          "sha256": "de0922cf9e28c376904536f7a07543e54d824e039e0600954542c20ec2a5287e"
         },
         {
           "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
@@ -6296,6 +6374,196 @@
       "depends_on": [
         "a5-zero-divisor-strata",
         "a5-rank-strata-equations"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-kernel-bundles",
+      "statement": "Over the smooth pieces of nullity at least 12 of the A_5 zero-divisor set (B9, V, VB, V^a_+, V^a_-, N_+, N_-), the kernel ker L_y is a complex vector bundle under J = L_(e_16), identified with (conj o phi)^-1 ker A(z, conj z). The constant real symmetries transporting kernels form g_2 plus four central directions; the boost of split coordinates has no lift. Under compact G_2 x U(1), N_+- is homogeneous with stabilizer U(2), V^a_+- is cohomogeneity one (invariant rho in (0, 1]), V has orbit quotient (CP^1 minus {+i, -i}) x (0, 1], and B9, VB, N_+- are the open trace-one Hermitian three-ball, its rank-one boundary minus two points, and those two points. The stabilizer acts on the kernel as 2 V_0 + 2 V_1 (SU(2)) on principal V and V^a_+- orbits, 3 + conj(3) (SU(3)) at rho = 1, 3 C_(-1) + 3 C_(-2) (U(1)) on B9, V(0,-4) + 2 V(1,-3) + V(0,-2) (U(2)) on VB, and that module plus V(1,-1) on N_+-. All five nullity-twelve complex kernel bundles are trivial; on N_+- the complex bundle is C^2 + 3 xi over V_2(R^7) with the nonzero class x = [xi] - 2 in reduced K^0(V_2(R^7)) = Z/2, while every real kernel bundle is trivial and every Chern, Stiefel-Whitney and Pontryagin class vanishes.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proofs in docs/evidence/a5-kernel-bundles/README.md, produced by a Codex CLI program (docs/design/a5-kernel-bundles-program.md) under orchestrator review. Eleven producers replay byte for byte (replay gates) and carry mutation self-tests (admission gates); verify_kernel_bundles_independent.py re-derives the symmetry algebra, stabilizers, representations, N_+- branching and K-group, generic orbit dimensions and invariant completeness from cd_core at independent points. Arguments rather than computations: the unit-section homotopy types (fibrations, Wang and Alexander duality), Hodgkin's spectral sequence for V_2(R^7) = G_2/SU(2), the stable-cancellation steps (B9 rests on an explicit section, not cancellation), and simple transitivity of G_2 on the B9 frames. Open: exhaustiveness of the component group (a visible S_3 x Z_2 is found), real triviality of each individual xi, the disconnected equivariance, the nullity-8 and nullity-4 strata, and roadmap items 6-8; not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-kernel-bundles/result.json",
+          "sha256": "fa6af754e697dbf4a7490c1312449477817ca8e69f4c9add577ea3ef23e333d5"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/frames-result.json",
+          "sha256": "07cb7c0db4bace6961a06063a36bb638ae4639bcfe1ade041ba726f6f2307476"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/stabilizer-result.json",
+          "sha256": "52feb8e0fc3bbc7f1c8a413ba03733fa0b65f44cf4442b87de36ce58e9d87092"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json",
+          "sha256": "33196fa92daa52bc9a30142674235182fa6875df7d2c6b3fde58bbfa726b66ec"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json",
+          "sha256": "c36b3c01665608b25a41fa3af2f84c60ff0306b3b7b11621f9e268f93aa083a9"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/aligned-stabilizer-result.json",
+          "sha256": "cb2328d55edff142c61c054d64ff632dada447d7cea585e7185dcb380aaf40c1"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json",
+          "sha256": "07dc79facf758da94b4d3a7a79d441a95c84cc111754acf2be0c6c171eec52d6"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/v-topology-representation-result.json",
+          "sha256": "48497e33226d44bd33c1078495e39272cbc92b2ef3ddbbd3e3541c34c6a63bba"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json",
+          "sha256": "ab251c1601cd6fa9d8e75b95195194dd8a3f9085d3293c962b8c2d613a654550"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/transition-atlas-result.json",
+          "sha256": "3570c30e6f42f9d4cc1cac157611e93eec8f8e87ae692a64ca90971cc484961c"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/bundle-invariants-result.json",
+          "sha256": "e7f783f633339562d78d9d04fd25de9a631ac9b68aab4c2af8d39a80151513d7"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles/verification.json",
+          "sha256": "b4b7a54514cb451f83468d47ea452adb97bbd6a8d8e95e01ca02d5a8a4e5fa18"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-kernel-bundles/README.md",
+        "docs/evidence/a5-kernel-bundles/verification.md",
+        "docs/design/a5-kernel-bundles-program.md"
+      ],
+      "gates": {
+        "core-713": "replay",
+        "core-714": "admission",
+        "core-715": "replay",
+        "core-716": "admission",
+        "core-717": "replay",
+        "core-718": "admission",
+        "core-719": "replay",
+        "core-720": "admission",
+        "core-721": "replay",
+        "core-722": "admission",
+        "core-723": "replay",
+        "core-724": "admission",
+        "core-725": "replay",
+        "core-726": "admission",
+        "core-727": "replay",
+        "core-728": "admission",
+        "core-729": "replay",
+        "core-730": "admission",
+        "core-731": "replay",
+        "core-732": "admission",
+        "core-733": "replay",
+        "core-734": "admission",
+        "core-753": "regression",
+        "core-754": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-zero-divisor-strata",
+        "a5-strata-regularity",
+        "a5-stiefel-universal"
+      ],
+      "supersedes": [],
+      "superseded_by": null,
+      "proof_origin": "repository-written"
+    },
+    {
+      "id": "a5-kernel-bundles-nullity8",
+      "statement": "On the five nullity-8 orbits of the A_5 zero-divisor set (W8, E8-bar, Iso, X_+, X_-), compact G_2 x U(1) reaches tangent rank 15 generically, so no orbit is homogeneous and the compact-orbit moduli have dimensions 8, 6, 6, 4, 4 with complete invariants (real-frame Gram data, associative and coassociative form values, and mu on E8-bar). Connected stabilizers are trivial generically, SU(2) at real-frame rank two or associative rank three acting on the complex rank-4 kernel as 2 V_1 on W8 and 2 V_0 + V_1 on E8-bar and X_+-, and a U(1) circle on Iso where all four associative three-form values vanish; the full compact stabilizer component group is Z/2 on W8 and trivial otherwise. Along exact degenerations into nullity 12 the kernel limit depends on the approach at thirteen of fifteen incidences, canonical only for X_+- -> B9. The unit sections retract onto V_2(R^7) x S^1 (W8, X_+-), V_2(R^7) x T^2 (E8-bar) and G_2 (Iso); the kernel bundles have U(4) Pfaffian transition data and complex classes 2 xi (W8, reduced class 0), C^2 + xi with the nonzero order-two class of reduced K^0(V_2(R^7)) (E8-bar, X_+-) and C^4 (Iso), with every Chern, Stiefel-Whitney and Pontryagin class zero.",
+      "domain": "geometry",
+      "evidence_class": "mathematical claim",
+      "status": "established",
+      "boundary": "Written proofs in docs/evidence/a5-kernel-bundles-nullity8/README.md, produced by a Codex CLI program (docs/design/a5-kernel-bundles-nullity8-program.md) under orchestrator review. Nine producers replay byte for byte (replay gates) with mutation self-tests (admission gates); verify_nullity8_independent.py re-derives the ranks, stabilizer strata, boundary path dependence, stabilizer dimensions and cores, and classes from cd_core at independent points. Arguments rather than computations: completeness of the invariants through rank-stratified normal forms, exhaustiveness of the stabilizer strata, the Mostow retractions, the W8 mapping-torus step, the K-theory over the cores, and X_+- -> B9 canonicity through the constant-rank lemma. Open: actual (not only stable) triviality of 2 xi on W8, the set of all boundary limits (the attaching data of roadmap item 6), incidences beyond the exact paths tested by the verifier, nullity 4, and roadmap items 6-8; not formalized in Rocq.",
+      "evidence": [
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/compact-orbit-ranks-result.json",
+          "sha256": "6f83755e2e2660a8fd2fd18ba4c845916d69cf6445e63e3700b3dcea6cfc2582"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/w8-orbit-moduli-result.json",
+          "sha256": "3a3875c7eeddcccc4af5f3651bb151409313fa6f391e44108fa372808bd6ae6a"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/remaining-orbit-moduli-result.json",
+          "sha256": "a08e1af4daa66a9c55eb89adf24d6e826c4812194ae21face7f61601907710a5"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/stabilizer-fiber-samples-result.json",
+          "sha256": "3e1dc533998eb53539a894fb2d3713e598f3ba18c34c6d34f502bca2493ea331"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/stabilizer-strata-result.json",
+          "sha256": "c9744fec60c50609378c8c979c2cfa20877f739dabb8e2abc969d16f9bdc20aa"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json",
+          "sha256": "78b56be630d124eb59334f6ffce9f1c83ae60dc50b0ec22d4ddf5f675affa1a7"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/unit-section-topology-result.json",
+          "sha256": "5bcebb5175d9d4e481034c899b698f590dbd67fe3f05dfa0c3b71c36f1c5850d"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/kernel-transition-atlas-result.json",
+          "sha256": "e1e99192ebb3f99d84c0fed873299840b8da72b87d9a1a5983e8d06bb3f299c9"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/kernel-bundle-classes-result.json",
+          "sha256": "da9bac66f86e49d920cbaa94ad4932e82192ee488375979e641c42ffbe1f8ca8"
+        },
+        {
+          "path": "docs/evidence/a5-kernel-bundles-nullity8/verification.json",
+          "sha256": "8fb07bcdab306e59910d329b20f789be8056b494f16f149bf3fb0ce56b2f4e9b"
+        }
+      ],
+      "documents": [
+        "docs/evidence/a5-kernel-bundles-nullity8/README.md",
+        "docs/evidence/a5-kernel-bundles-nullity8/verification.md",
+        "docs/design/a5-kernel-bundles-nullity8-program.md"
+      ],
+      "gates": {
+        "core-735": "replay",
+        "core-736": "admission",
+        "core-737": "replay",
+        "core-738": "admission",
+        "core-739": "replay",
+        "core-740": "admission",
+        "core-741": "replay",
+        "core-742": "admission",
+        "core-743": "replay",
+        "core-744": "admission",
+        "core-745": "replay",
+        "core-746": "admission",
+        "core-747": "replay",
+        "core-748": "admission",
+        "core-749": "replay",
+        "core-750": "admission",
+        "core-751": "replay",
+        "core-752": "admission",
+        "core-753": "regression",
+        "core-755": "admission"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-kernel-bundles",
+        "a5-strata-regularity",
+        "a5-zero-divisor-strata"
       ],
       "supersedes": [],
       "superseded_by": null,
@@ -7640,7 +7908,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "The preregistered instrument model weights each mode by the receipt's t_out and subtracts the receipt's dark rates; the runs refute both (t_out reads 3 to 6 % on modes 0 to 11 and 194 to 400 % on modes 12 to 23, while modes 0 to 11 collect about twice the clicks of 12 to 23), so the verdict holds for that model and does not name the chip's optical error class.",
+      "boundary": "The preregistered instrument model weights each mode by the receipt's t_out and subtracts the receipt's dark rates, capped per mode at the lowest click fraction over the job's settings, which is zero on every mode of all four analyses, so the fits subtract no dark count (provider-counter audit); the runs refute both (t_out reads 3 to 6 % on modes 0 to 11 and 194 to 400 % on modes 12 to 23, while modes 0 to 11 collect about twice the clicks of 12 to 23), so the verdict holds for that model and does not name the chip's optical error class.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-18T030133Z-qpu_belenos-belenos_mesh-job-03/analysis.json",
@@ -7664,7 +7932,8 @@
         }
       ],
       "documents": [
-        "docs/notes/quandela/strategy.md"
+        "docs/notes/quandela/strategy.md",
+        "docs/evidence/provider-counter-audit/README.md"
       ],
       "gates": {
         "core-537": "replay",
@@ -8113,7 +8382,7 @@
     {
       "id": "qd-belenos-q1-leak-needs-single-job-and-large-budget",
       "statement": "On qpu:belenos mesh 29dc6ef8, Q1's single job kept in_block 0.918 (Wilson 0.903 to 0.931) at 1500 samples (job aa4218f1) against 0.470 and 0.504 at 10000, and every iteration of an iterated job at seed 20 kept 0.896 to 0.995 at 1500 to 60000 samples (job c1eb1cbb; preregistered reading flat). The preregistered readings are D1 intermediate, 0.016 short of 'dwell' after its 0.034 cross-job margin, and D2 flat; the single-job endpoint stays unresolved, and the two cells together do not establish what the single-job leak needs.",
-      "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, so the budget is a sample count, not seconds of heater exposure; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested. The light-cone reading (qd-belenos-light-cone-reading) excludes off-cone clicks: inside the cone every seeded iterated cell on 29dc6ef8 holds 0.990 to 0.995 at every budget and D1 reads 0.918; job-13 (qd-belenos-q1-leak-single-job-form-whatever-seed) settles the single-job endpoint at 10000 samples whatever the seed.",
+      "boundary": "One mesh, one job per cell, jobs about ten hours after Q1. An S job's 13 to 15 s is overhead and acquisition runs near 4 x 10^4 samples per second, the per-sample term of a linear fit of two iterated jobs' durations that two jobs determine exactly and nothing tests, so the budget reads as a sample count rather than seconds of heater exposure under that fit; the single-job mechanism (chunked acquisition or re-settling) is inferred and untested. The light-cone reading (qd-belenos-light-cone-reading) excludes off-cone clicks: inside the cone every seeded iterated cell on 29dc6ef8 holds 0.990 to 0.995 at every budget and D1 reads 0.918; job-13 (qd-belenos-q1-leak-single-job-form-whatever-seed) settles the single-job endpoint at 10000 samples whatever the seed.",
       "evidence": [
         {
           "path": "results/quandela/sessions/2026-10-18T084900Z-qpu_belenos-belenos_mesh-dwell/dwell.json",
@@ -8152,7 +8421,8 @@
       "status": "established",
       "documents": [
         "docs/notes/quandela/strategy.md",
-        "docs/notes/quandela/form-dwell-decomposition.md"
+        "docs/notes/quandela/form-dwell-decomposition.md",
+        "docs/evidence/provider-counter-audit/README.md"
       ],
       "assumptions": [],
       "supersedes": [],
@@ -8407,7 +8677,7 @@
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One job on one mesh, about 6.8 hours after D1 to D4. The single jobs on e296b6a9 and 14a96ca6 hold, so the leak is specific to 29dc6ef8 among the three meshes tested; what a 10000-sample single job does differently from a 1500-sample one (0.924) or an iterated job is not isolated, and acquisition time does not order the cells (0.10 s here against 0.25 s for D1).",
+      "boundary": "One job on one mesh, about 6.8 hours after D1 to D4. The single jobs on e296b6a9 and 14a96ca6 hold, so the leak is specific to 29dc6ef8 among the three meshes tested; what a 10000-sample single job does differently from a 1500-sample one (0.924) or an iterated job is not isolated, and acquisition time does not order the cells (0.10 s here against 0.25 s for D1, estimates of samples / (physical_perf x clock), a timing model no Quandela document confirms, so the ordering is conditional on it).",
       "evidence": [
         {
           "path": "docs/evidence/quandela/belenos_seeded_single.json",
@@ -8423,7 +8693,8 @@
         }
       ],
       "documents": [
-        "docs/notes/quandela/strategy.md"
+        "docs/notes/quandela/strategy.md",
+        "docs/evidence/provider-counter-audit/README.md"
       ],
       "gates": {
         "core-547": "replay",
@@ -10489,8 +10760,8 @@
       "boundary": "The certificate covers its explicit operators, dimensions and instruments. Conditional filtering, a generic complex exceptional point and repeated projections establish no fundamental-physics departure, protected phase, physical squeezing or device benefit.",
       "evidence": [
         {
-          "path": "docs/evidence/algebra-device-conjectures-8/result.json",
-          "sha256": "358a3b6bbf7e6bb77848d1a3648846ec50b34010054a5dd546097b0be502d2cb"
+          "path": "docs/evidence/algebra-device-conjectures-10/result.json",
+          "sha256": "5a14acf6ff2f04ad6e648600a90c3dca8642d4e3c6d9ad6b03766bb3c2a3a0e8"
         }
       ],
       "gates": {
@@ -11106,6 +11377,41 @@
         "kingston-qet-window-phase-static",
         "kingston-qet-compensated-information-excess",
         "hw-n21-feedback-null-scheduled-idle"
+      ]
+    },
+    {
+      "id": "kingston-gate-model-scatter-floor",
+      "statement": "On ibm_kingston (calibration 2026-10-25T19:36:09-07:00; one static job of six PUBs at 8192 shots over 38 pairwise uncoupled qubits, 15 s charged) the readout-corrected P0 of the 32-sx unitary sequence at N = 16 differs from the pinching analysis's sign-pooled Bloch-iteration prediction by a root-mean-square of 0.0152 over all 38 informative qubits, 0.0188 over the eight main qubits and 0.0141 over the thirty further qubits, against a statistical root-mean-square standard error of 0.0024. The preregistered floor, the larger of the all-qubit and main-qubit values, is 0.018784. The mean residual is +0.0110: the model underpredicts P0 on 32 of 38 qubits (all eight main qubits), by up to +0.039 on q91 and +0.034 on q45, and overpredicts it on six. The residual does not follow T2 in the drive-dephasing lead's direction: its Spearman correlation with T2 is -0.29 (two-sided p 0.080; 9 of the 12 longest-T2 qubits positive, 2 of the 12 shortest negative) and with the sx error -0.33 (p 0.044).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "One calibration window, one job, one backend; the floor is the root-mean-square of a model residual that includes counting noise, and it measures the sign-even part of the gate-model error because the pooled unitary arm is blind to the first-order axis tilt. The mean residual is positive, so the model underpredicts P0 systematically on this device and the floor mixes a common offset (+0.011) with qubit-to-qubit scatter. The correlations come from 38 qubits chosen by readout error, rank-based with a t-approximation p value, and are descriptive: the T2 test does not support the Garnet drive-dephasing lead and neither establishes a mechanism nor excludes one. The model takes the Target T1 at execution and the planning excitation, not a fit.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-26T031010.724660Z/collect.json",
+          "sha256": "0fd6b3a2213e01f9b7aea7f221631f5c0416ff69becbde14dde1c84ef950af90"
+        },
+        {
+          "path": "results/live/2026-10-26T031010.724660Z/record.json",
+          "sha256": "89d3b609b45284bbdcd38219b5a441752185425420687eefcbc4b0303be3dff5"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/scatter-floor.json",
+          "sha256": "c39c5b7202fd6d2cd44629a86eed1402a0d234e95502540f37c8216bccc3c080"
+        },
+        {
+          "path": "docs/evidence/measurement_sequence/minimum-detectable-measured-floor.json",
+          "sha256": "4d3d6a7a4031e3bcda5f4b21c5f5d4c2bc1cc95239874e2973d66ea74a63e33d"
+        }
+      ],
+      "gates": {
+        "core-msq-scatter-floor-replay": "replay"
+      },
+      "documents": [
+        "docs/design/measurement-sequence-pinching.md"
+      ],
+      "acquisitions": [
+        "kingston-measurement-sequence-scatter-floor"
       ]
     },
     {

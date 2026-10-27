@@ -12,7 +12,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py",
    "name": "core-001",
    "seconds": 0.6,
    "tier": "pr"
@@ -20,7 +20,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py",
+   "cmd": "\"$PYTHON\" ci/pinned_tool.py ruff format --target-version py313 --check gororoba_quantum scripts kaggle_kernel results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py docs/sources/open_gororoba/check_signed_kite_switching.py results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py docs/notes/build_host/probe_custatevec.py results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py results/local-simulation/ascella-serialized-order-replay/producer.py results/local-simulation/ascella-signed-coherence-replay/producer.py docs/evidence/cd-imaginary-sum-conference/tower_bridge.py docs/evidence/cd-star-lattice/external/nauty_replay.py docs/evidence/cd-star-lattice/external/hadamard_replay.py docs/evidence/ascella-order-coefficients/replay.py docs/evidence/albuquerque-majid-convention/am_convention_replay.py docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py",
    "name": "core-002",
    "seconds": 0.6,
    "tier": "pr"
@@ -196,7 +196,7 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py ../results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py ../results/local-simulation/ascella-serialized-order-replay/producer.py ../docs/evidence/cd-imaginary-sum-conference/tower_bridge.py ../docs/evidence/ascella-order-coefficients/replay.py ../docs/evidence/albuquerque-majid-convention/am_convention_replay.py",
+   "cmd": "\"$PYTHON\" ../ci/pinned_tool.py mypy . ../scripts ../ci ../tests ../kaggle_kernel ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../docs/sources/open_gororoba/check_signed_kite_switching.py ../results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py ../docs/notes/build_host/probe_custatevec.py ../results/quandela/runs/ascella-mosaiq-update-order-retry/analysis.py ../results/local-simulation/ascella-serialized-order-replay/producer.py ../docs/evidence/cd-imaginary-sum-conference/tower_bridge.py ../docs/evidence/ascella-order-coefficients/replay.py ../docs/evidence/albuquerque-majid-convention/am_convention_replay.py ../docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py",
    "name": "core-039",
    "seconds": 51.6,
    "tier": "pr"
@@ -1930,6 +1930,17 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error -m pytest -q tests/test_cli_record_checks.py -k group08",
+   "name": "core-record-check-08",
+   "seconds": 10.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/cd-one-sided-inverses/record.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/calibration_scoped_family_analysis.py results/live/2026-10-15T031229.371738Z --check results/live/2026-10-15T031229.371738Z/calibration-scoped-analysis.json",
    "name": "core-266",
    "seconds": 3.8,
@@ -2292,25 +2303,36 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-idle-penalty-probe.json",
+   "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check --out docs/evidence/submitted_circuits/comparison-detuning-sign-retrieval.json",
    "name": "core-281",
    "seconds": 6.2,
    "tier": "pr",
    "runtime": "qiskit-2.5",
    "replays": [
-    "docs/evidence/submitted_circuits/comparison-idle-penalty-probe.json"
+    "docs/evidence/submitted_circuits/comparison-detuning-sign-retrieval.json"
    ]
   },
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/idle_penalty_report.py results/live/2026-10-26T202817.431767Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-report.json --check && \"$PYTHON\" -B -W error scripts/idle_penalty_exploratory.py results/live/2026-10-26T202817.431767Z --historical results/live/2026-10-12T055624.091217Z results/live/2026-10-13T020454.599853Z results/live/2026-10-18T090603.530638Z results/live/2026-10-25T193443.839527Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory.json --check",
+   "cmd": "\"$PYTHON\" -B -W error scripts/idle_penalty_report.py results/live/2026-10-26T202817.431767Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-report-vectorized-encoding.json --check && \"$PYTHON\" -B -W error scripts/idle_penalty_exploratory.py results/live/2026-10-26T202817.431767Z --historical results/live/2026-10-12T055624.091217Z results/live/2026-10-13T020454.599853Z results/live/2026-10-18T090603.530638Z results/live/2026-10-25T193443.839527Z --out results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory-vectorized-encoding.json --check",
    "name": "core-idle-penalty-report-replay",
    "seconds": 8.7,
    "tier": "pr",
    "replays": [
-    "results/live/2026-10-26T202817.431767Z/idle-penalty-report.json",
-    "results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory.json"
+    "results/live/2026-10-26T202817.431767Z/idle-penalty-report-vectorized-encoding.json",
+    "results/live/2026-10-26T202817.431767Z/idle-penalty-exploratory-vectorized-encoding.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/msq_envelope_exploratory.py results/live/2026-10-27T014422.881898Z --check docs/evidence/measurement_sequence/envelope-run-exploratory.json",
+   "name": "core-msq-envelope-exploratory-replay",
+   "seconds": 9.2,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/measurement_sequence/envelope-run-exploratory.json"
    ]
   },
   {
@@ -3422,6 +3444,30 @@
   {
    "suite": "sources",
    "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-annihilator-symmetry/replay_rocq.sh",
+   "name": "sources-413",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-annihilator-symmetry-real/replay_rocq.sh",
+   "name": "sources-414",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "shellcheck docs/evidence/cd-tower-domain/replay_rocq.sh",
+   "name": "sources-415",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
    "cmd": "sha256sum -c docs/evidence/cd-sign-python-translation/source_hashes-closure-scopes.sha256",
    "name": "sources-410",
    "seconds": 0.1,
@@ -3432,6 +3478,25 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" scripts/cd_sign_source_ast.py --check",
    "name": "sources-411",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/kaplansky-cd-mechanisms/kaplansky_cd_replay.py --check",
+   "name": "sources-412",
+   "seconds": 3.1,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/kaplansky-cd-mechanisms/result.json"
+   ]
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/source_reading_copies.py --check",
+   "name": "sources-reading-copies-index",
    "seconds": 0.2,
    "tier": "pr"
   },
@@ -3779,6 +3844,17 @@
    "name": "core-682",
    "seconds": 35.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/n21_detuning_sign.py results/live/2026-10-27T173602.753176Z --check results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json",
+   "name": "core-n21-detuning-sign-replay",
+   "seconds": 3.0,
+   "tier": "pr",
+   "replays": [
+    "results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json"
+   ]
   },
   {
    "suite": "core",
@@ -4311,6 +4387,30 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_replication_offsets.py results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 docs/evidence/ascella-order-coefficients/mesh-split.json docs/evidence/ascella-order-coefficients/new-mesh-offsets.json results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04 results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88 docs/evidence/ascella-order-coefficients/replication-offsets.json --check",
+   "name": "core-ascella-signed-coherence-replication-offsets-replay",
+   "seconds": 60.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_replication_score.py docs/evidence/ascella-order-coefficients/replication-offsets.json docs/evidence/ascella-order-coefficients/fixed-mesh-confirmation.json results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04 results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88 -- results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06 results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96 docs/evidence/ascella-order-coefficients/replication-score.json --check",
+   "name": "core-ascella-signed-coherence-replication-score-replay",
+   "seconds": 25.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ascella_replication_sensitivity.py docs/evidence/ascella-order-coefficients/replication-offsets.json docs/evidence/ascella-order-coefficients/replication-score.json results/quandela/runs/2026-10-24T091642Z-qpu_ascella-ascella_signed_coherence-job-00 results/quandela/runs/2026-10-25T184636Z-qpu_ascella-ascella_signed_coherence-job-02 results/quandela/runs/2026-10-26T035018Z-qpu_ascella-ascella_signed_coherence-job-03 results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04 results/quandela/runs/2026-10-26T223524Z-qpu_ascella-ascella_signed_coherence-job-05-i88 -- results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06 results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96 docs/evidence/ascella-order-coefficients/replication-sensitivity.json --check",
+   "name": "core-ascella-signed-coherence-replication-sensitivity-replay",
+   "seconds": 30.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/evidence_closure.py --check --fetch-pins",
    "name": "core-666",
    "seconds": 90.0,
@@ -4351,7 +4451,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-8",
+   "cmd": "\"$PYTHON\" -B -W error scripts/algebra_device_conjectures.py --check docs/evidence/algebra-device-conjectures-10",
    "name": "core-670",
    "seconds": 12.0,
    "tier": "pr"
@@ -4507,6 +4607,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error gororoba_quantum/measurement_sequence_scatter.py check results/live/2026-10-26T031010.724660Z docs/evidence/measurement_sequence/scatter-floor.json",
+   "name": "core-msq-scatter-floor-replay",
+   "seconds": 3.5,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/a5_zero_divisor_strata.py --check docs/evidence/a5-zero-divisor-strata/result.json",
    "name": "core-694",
    "seconds": 9.6,
@@ -4551,6 +4659,410 @@
    "name": "core-697",
    "seconds": 4.0,
    "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/kernel_symmetry.py --check docs/evidence/a5-kernel-bundles/result.json",
+   "name": "core-713",
+   "seconds": 25.5,
+   "tier": "full",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/kernel_symmetry.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/kernel_symmetry.py --self-test",
+   "name": "core-714",
+   "seconds": 57.5,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/kernel_frames.py --check docs/evidence/a5-kernel-bundles/frames-result.json",
+   "name": "core-715",
+   "seconds": 8.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/frames-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/kernel_frames.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/kernel_frames.py --self-test",
+   "name": "core-716",
+   "seconds": 23.5,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/stabilizer_representation.py --check docs/evidence/a5-kernel-bundles/stabilizer-result.json",
+   "name": "core-717",
+   "seconds": 8.1,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/stabilizer-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/stabilizer_representation.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/stabilizer_representation.py --self-test",
+   "name": "core-718",
+   "seconds": 25.1,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py --check docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json",
+   "name": "core-719",
+   "seconds": 3.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/nullity-sixteen-bundle-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/nullity_sixteen_bundle.py --self-test",
+   "name": "core-720",
+   "seconds": 14.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py --check docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json",
+   "name": "core-721",
+   "seconds": 9.6,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/aligned_orbit_moduli.py --self-test",
+   "name": "core-722",
+   "seconds": 71.2,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py --check docs/evidence/a5-kernel-bundles/aligned-stabilizer-result.json",
+   "name": "core-723",
+   "seconds": 16.9,
+   "tier": "full",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/aligned-stabilizer-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/aligned_stabilizer_representation.py --self-test",
+   "name": "core-724",
+   "seconds": 39.4,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/v_orbit_moduli.py --check docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json",
+   "name": "core-725",
+   "seconds": 10.6,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/v_orbit_moduli.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/v_orbit_moduli.py --self-test",
+   "name": "core-726",
+   "seconds": 25.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/v_topology_representation.py --check docs/evidence/a5-kernel-bundles/v-topology-representation-result.json",
+   "name": "core-727",
+   "seconds": 16.9,
+   "tier": "full",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/v-topology-representation-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/v_topology_representation.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/v_topology_representation.py --self-test",
+   "name": "core-728",
+   "seconds": 42.9,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --check docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json",
+   "name": "core-729",
+   "seconds": 9.7,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/isotropic_orbit_data.py --self-test",
+   "name": "core-730",
+   "seconds": 26.5,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/transition_atlas.py --check docs/evidence/a5-kernel-bundles/transition-atlas-result.json",
+   "name": "core-731",
+   "seconds": 5.4,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/transition-atlas-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/transition_atlas.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/transition_atlas.py --self-test",
+   "name": "core-732",
+   "seconds": 19.4,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/bundle_invariants.py --check docs/evidence/a5-kernel-bundles/bundle-invariants-result.json",
+   "name": "core-733",
+   "seconds": 0.7,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles/bundle-invariants-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/bundle_invariants.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/bundle_invariants.py --self-test",
+   "name": "core-734",
+   "seconds": 5.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py --check docs/evidence/a5-kernel-bundles-nullity8/compact-orbit-ranks-result.json",
+   "name": "core-735",
+   "seconds": 4.0,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-nullity8/compact-orbit-ranks-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py --self-test",
+   "name": "core-736",
+   "seconds": 9.9,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py --check docs/evidence/a5-kernel-bundles-nullity8/w8-orbit-moduli-result.json",
+   "name": "core-737",
+   "seconds": 1.4,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-nullity8/w8-orbit-moduli-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/w8_orbit_moduli.py --self-test",
+   "name": "core-738",
+   "seconds": 3.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/remaining_orbit_moduli.py --check docs/evidence/a5-kernel-bundles-nullity8/remaining-orbit-moduli-result.json",
+   "name": "core-739",
+   "seconds": 3.2,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-nullity8/remaining-orbit-moduli-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/remaining_orbit_moduli.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/remaining_orbit_moduli.py --self-test",
+   "name": "core-740",
+   "seconds": 9.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py --check docs/evidence/a5-kernel-bundles-nullity8/stabilizer-fiber-samples-result.json",
+   "name": "core-741",
+   "seconds": 4.9,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer-fiber-samples-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/stabilizer_fiber_samples.py --self-test",
+   "name": "core-742",
+   "seconds": 22.9,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py --check docs/evidence/a5-kernel-bundles-nullity8/stabilizer-strata-result.json",
+   "name": "core-743",
+   "seconds": 2.8,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-nullity8/stabilizer-strata-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/stabilizer_strata.py --self-test",
+   "name": "core-744",
+   "seconds": 6.3,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py --check docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json",
+   "name": "core-745",
+   "seconds": 6.3,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-nullity8/boundary-specializations-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/boundary_specializations.py --self-test",
+   "name": "core-746",
+   "seconds": 12.4,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py --check docs/evidence/a5-kernel-bundles-nullity8/unit-section-topology-result.json",
+   "name": "core-747",
+   "seconds": 3.3,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-nullity8/unit-section-topology-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py --self-test",
+   "name": "core-748",
+   "seconds": 6.7,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/kernel_transition_atlas.py --check docs/evidence/a5-kernel-bundles-nullity8/kernel-transition-atlas-result.json",
+   "name": "core-749",
+   "seconds": 5.4,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-nullity8/kernel-transition-atlas-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/kernel_transition_atlas.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/kernel_transition_atlas.py --self-test",
+   "name": "core-750",
+   "seconds": 11.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/kernel_bundle_classes.py --check docs/evidence/a5-kernel-bundles-nullity8/kernel-bundle-classes-result.json",
+   "name": "core-751",
+   "seconds": 0.9,
+   "tier": "pr",
+   "replays": [
+    "docs/evidence/a5-kernel-bundles-nullity8/kernel-bundle-classes-result.json"
+   ]
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/kernel_bundle_classes.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/kernel_bundle_classes.py --self-test",
+   "name": "core-752",
+   "seconds": 1.8,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/rerun_independent_verifications.py",
+   "name": "core-753",
+   "seconds": 28.0,
+   "tier": "full"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles/verify_kernel_bundles_independent.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles/verify_kernel_bundles_independent.py --self-test",
+   "name": "core-754",
+   "seconds": 8.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/a5-kernel-bundles-nullity8/verify_nullity8_independent.py --self-test && \"$PYTHON\" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/verify_nullity8_independent.py --self-test",
+   "name": "core-755",
+   "seconds": 7.2,
+   "tier": "pr"
   }
  ],
  "excluded": [
