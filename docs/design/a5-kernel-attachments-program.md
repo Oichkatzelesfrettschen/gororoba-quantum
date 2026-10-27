@@ -170,3 +170,10 @@ probe and the result, and run the cheap ones. Seeds:
   boundary-kernel frame has a zero scalar row. Test whether this is structural, for example whether every partner of a
   doubly pure `y` is itself pure (zero real part) on the whole nullity >= 8 locus. A proof promotes the complex-linearity
   verdict from 21 tested points to every boundary point at first order; record it as a section 5 question either way.
+- Items 2b and 2c (committed `676a3a4` and the first-order image commit): both producers reuse the `W8`-to-`B9`
+  middle-coordinate path mutation, which fails at closure membership before the new computation runs. Give each new
+  producer at least one mutation of an input to its own core computation (the restricted first-order form, the tangent
+  cone generators, a Schur block), so a reviewer sees the elimination or limit computation itself change.
+- The seven higher-order rows (three identically zero at first order) are the substance of deliverable 1. Prefer the
+  Schur-corrected effective form over the degeneracy locus, restricted to the transverse slice, before any full
+  Gauss-graph elimination.
