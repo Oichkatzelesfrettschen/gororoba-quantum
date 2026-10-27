@@ -101,12 +101,16 @@ W is the largest tier of 32, 24 and 16 that satisfies all of:
 - size: every tracked file the run writes (`record.json`, the plan and snapshot files, `collect.json`) stays under 45 MB
   and the run directory, raw shot files included, under 400 MB (the 8-qubit dry run writes a 17.9 MB `record.json`;
   GitHub refuses files over 100 MB);
-- time: the whole submit invocation, three replans at the measured per-plan proof time included, fits in 20 minutes,
-  under the 30 to 40 minute republish cadence.
+- time: a plan stays valid until the next send. The submit invocation plans once; a republish re-plans only when it
+  moves the rule's qubit set, a dt duration the circuits carry, the capabilities or the exclusions (`envelope_drift`),
+  and the pre-send check reads one snapshot in seconds. The plan must finish before the rule's set moves.
 
-The envelope dry run measures each tier on the live Kingston calibration with the implemented workload (end reset and
-control members included) and records the chosen tier and the losing tiers' measured limits (Findings I, J, K). A tier
-rule replaces an integer search because the size and time limits move with the workload, not with one qubit.
+The width-32 dry run on the live Kingston calibration (implemented workload, end reset and control members included)
+planned in 19.3 min of wall time and 773 s of CPU on a host at load average 21 over 12 CPUs, after the compiled-ideal
+proof, the noise simulation, the record encoding and the delay-noise assembly were made parallel or memoized (from
+41 min). The rule's qubit set at widths 16, 24 and 32 was the same on the 15:18 and 17:47 PDT calibrations of
+2026-10-26, about four republishes apart, so a plan of that length meets an unchanged set. Width 32 passes every
+limit, so the tier rule selects it and the smaller tiers are not measured (Findings I, J, K).
 
 What width buys. `pooled_z` adds the gate-model systematic linearly (shared across qubits), so the pooled departure
 standard error is flat in width (0.0168 at 8 qubits, 0.0167 at 44). Width buys per-qubit coverage and the count rule.
@@ -209,9 +213,9 @@ attempts' summed ceilings, as the most the envelope can bill.
 
 | W | Planner charge at 20 us | Ceiling 1 | Planner charge at 50 us | Ceiling 2 | envelope_cap | Largest tracked file | Run directory | Submit invocation |
 |---|---|---|---|---|---|---|---|---|
-| 16 | | | | | | | | |
-| 24 | | | | | | | | |
-| 32 | | | | | | | | |
+| 16 | not measured | | | | | | | |
+| 24 | not measured | | | | | | | |
+| 32 | 31.2 s (one 88-PUB job) | 50 s | 52.8 s | 80 s | 130 s | 15.3 MB | 20 MB | 19.3 min under load |
 
 The backup instance reports 412 s remaining; the primorial-coherence branch's run (`results/live/2026-10-26T045124.175747Z`,
 job dbfdotnpc3tc739n8nm0, 23 s) shares the instance, and the branch that merges second regenerates its job inventory.
