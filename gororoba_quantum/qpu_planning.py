@@ -94,7 +94,7 @@ from qpe_diagnostics import (
     compact_ideal_circuit,
     has_herald,
     herald_measurement,
-    ideal_branch_probabilities,
+    ideal_compiled_probabilities,
     n21_ramsey_multiple,
     n21_segmented_key,
     oracle_key,
@@ -1742,15 +1742,17 @@ def admitted_family_candidates(
 IDEAL_PARALLEL_MIN_ITEMS = 16
 
 
-def compiled_ideal_key(replica: QuantumCircuit) -> tuple[str | None, QuantumCircuit]:
-    """A compiled replica's oracle input and its exact key (module level for the pool)."""
-    compact = compact_ideal_circuit(replica)
-    return oracle_key(compact), compact
+def compiled_ideal_key(replica: QuantumCircuit) -> str | None:
+    """The exact key of a compiled replica's oracle input, or None for an object that is no circuit (module level for
+    the pool); an unkeyed replica keeps a law of its own."""
+    if not isinstance(replica, QuantumCircuit):
+        return None
+    return oracle_key(compact_ideal_circuit(replica))
 
 
-def compiled_ideal_law(compact: QuantumCircuit) -> tuple[float, ...]:
-    """The exact branch law of one compact oracle input (module level for the pool)."""
-    return ideal_branch_probabilities(compact)
+def compiled_ideal_law(replica: QuantumCircuit) -> tuple[float, ...]:
+    """The exact branch law of one compiled replica (module level for the pool)."""
+    return ideal_compiled_probabilities(replica)
 
 
 def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
@@ -1767,12 +1769,18 @@ def check_compiled_ideals(runtime: Any, choices: list[Any]) -> None:
     keyed = parallel.ordered_map(compiled_ideal_key, replicas, min_items=IDEAL_PARALLEL_MIN_ITEMS)
     inputs: dict[str, QuantumCircuit] = {}
     keys = []
-    for index, (key, compact) in enumerate(keyed):
+    for index, (key, replica) in enumerate(zip(keyed, replicas, strict=True)):
         # Control flow has no key; such a replica keeps a law of its own.
         resolved = key if key is not None else f"unkeyed-{index}"
-        inputs.setdefault(resolved, compact)
+        inputs.setdefault(resolved, replica)
         keys.append(resolved)
-    laws = dict(zip(inputs, parallel.ordered_map(compiled_ideal_law, list(inputs.values()), min_items=2), strict=True))
+    laws = dict(
+        zip(
+            inputs,
+            parallel.ordered_map(compiled_ideal_law, list(inputs.values()), min_items=IDEAL_PARALLEL_MIN_ITEMS),
+            strict=True,
+        )
+    )
     for name, key, ideal in zip(names, keys, ideals, strict=True):
         if not np.allclose(laws[key], ideal, rtol=0, atol=1e-10):
             raise runtime.LiveRunError(f"{name}: compiled labeled ideal differs from its exact oracle")
