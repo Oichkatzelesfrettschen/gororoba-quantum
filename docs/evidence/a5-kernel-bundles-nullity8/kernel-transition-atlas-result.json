@@ -1,0 +1,688 @@
+{
+  "atlas": {
+    "bordered_rank": 12,
+    "chart_domain": "U_I={y:pf(A(z,conjugate(z))_(I,I))!=0}",
+    "chart_indexing": "all 12-subsets I of {0,...,15}",
+    "charts_per_orbit": 1820,
+    "cocycle": "g_IJ g_JK=g_IK",
+    "complex_kernel_rank": 4,
+    "coverage": "a rank-twelve skew matrix has a nonzero principal order-twelve Pfaffian by the principal-rank theorem",
+    "frame": "F_I=[-B_I^(-1) C_I;I_4] in pivot/free rows",
+    "inverse": "g_IJ g_JI=I_4",
+    "metric": "G_J=g_IJ^* G_I g_IJ for G_I=F_I^* F_I",
+    "orbits": [
+      "W8",
+      "E8-bar",
+      "Iso",
+      "X_+",
+      "X_-"
+    ],
+    "transition": "g_IJ=P_I F_J, so F_J=F_I g_IJ"
+  },
+  "inputs": {
+    "docs/evidence/a5-kernel-bundles-nullity8/compact_orbit_ranks.py": "fa5d010de34b95bf67a7445ec1e196c9926dc320d6ba888b293a2a2f6f627900",
+    "docs/evidence/a5-kernel-bundles-nullity8/kernel_transition_atlas.py": "3a0c4b33c4408ea23adfc1cc261ecc9123c10c96d7491bd839e5df53c839f4ab",
+    "docs/evidence/a5-kernel-bundles/frames-result.json": "07cb7c0db4bace6961a06063a36bb638ae4639bcfe1ade041ba726f6f2307476",
+    "docs/evidence/a5-kernel-bundles/kernel_frames.py": "4db614c6b77b61f8a54afaee77a8b6a0c417b85ba1dd016cab99f3456aaeb63d"
+  },
+  "mutation": null,
+  "mutation_control": {
+    "drop_matrix_entry": {
+      "detected": true,
+      "frame_identity_changed": true
+    },
+    "perturb_transition": {
+      "detected": true,
+      "reconstruction_inverse_and_cocycle_changed": true
+    },
+    "transpose_metric": {
+      "detected": true,
+      "hermitian_transport_changed": true
+    }
+  },
+  "pass": true,
+  "rows": [
+    {
+      "chart_count": 1820,
+      "complex_kernel_rank": 4,
+      "dropped_matrix_entry": null,
+      "frame_identities": [
+        true,
+        true,
+        true
+      ],
+      "free_row_identities": [
+        true,
+        true,
+        true
+      ],
+      "hermitian_gram_transport": true,
+      "matrix_rank": 12,
+      "mutation": null,
+      "orbit": "W8",
+      "pass": true,
+      "real_frame_ranks": [
+        8,
+        8,
+        8
+      ],
+      "real_kernel_identities": [
+        true,
+        true,
+        true
+      ],
+      "realified_transitions_commute_with_J": true,
+      "representative_key": "W8",
+      "sample_transition_0_to_1": [
+        [
+          "0",
+          "1",
+          "0",
+          "0"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "1"
+        ]
+      ],
+      "transition_cocycle": true,
+      "transition_determinants": {
+        "0->0": "1",
+        "0->1": "-1",
+        "0->2": "1",
+        "1->0": "-1",
+        "1->1": "1",
+        "1->2": "-1",
+        "2->0": "1",
+        "2->1": "-1",
+        "2->2": "1"
+      },
+      "transition_inverse": true,
+      "transition_reconstruction": true,
+      "transitions_invertible": true,
+      "triple_overlap_determinants": [
+        "16",
+        "16",
+        "16"
+      ],
+      "triple_overlap_pfaffians": [
+        "4",
+        "-4",
+        "4"
+      ],
+      "triple_overlap_pivots": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          9,
+          10,
+          11,
+          13
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
+      ]
+    },
+    {
+      "chart_count": 1820,
+      "complex_kernel_rank": 4,
+      "dropped_matrix_entry": null,
+      "frame_identities": [
+        true,
+        true,
+        true
+      ],
+      "free_row_identities": [
+        true,
+        true,
+        true
+      ],
+      "hermitian_gram_transport": true,
+      "matrix_rank": 12,
+      "mutation": null,
+      "orbit": "E8-bar",
+      "pass": true,
+      "real_frame_ranks": [
+        8,
+        8,
+        8
+      ],
+      "real_kernel_identities": [
+        true,
+        true,
+        true
+      ],
+      "realified_transitions_commute_with_J": true,
+      "representative_key": "Ehat",
+      "sample_transition_0_to_1": [
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "1",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "I"
+        ]
+      ],
+      "transition_cocycle": true,
+      "transition_determinants": {
+        "0->0": "1",
+        "0->1": "I",
+        "0->2": "-I",
+        "1->0": "-I",
+        "1->1": "1",
+        "1->2": "-1",
+        "2->0": "I",
+        "2->1": "-1",
+        "2->2": "1"
+      },
+      "transition_inverse": true,
+      "transition_reconstruction": true,
+      "transitions_invertible": true,
+      "triple_overlap_determinants": [
+        "102400",
+        "-102400",
+        "-102400"
+      ],
+      "triple_overlap_pfaffians": [
+        "-320",
+        "-320*I",
+        "320*I"
+      ],
+      "triple_overlap_pivots": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          12,
+          14
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          12,
+          15
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          13,
+          14
+        ]
+      ]
+    },
+    {
+      "chart_count": 1820,
+      "complex_kernel_rank": 4,
+      "dropped_matrix_entry": null,
+      "frame_identities": [
+        true,
+        true,
+        true
+      ],
+      "free_row_identities": [
+        true,
+        true,
+        true
+      ],
+      "hermitian_gram_transport": true,
+      "matrix_rank": 12,
+      "mutation": null,
+      "orbit": "Iso",
+      "pass": true,
+      "real_frame_ranks": [
+        8,
+        8,
+        8
+      ],
+      "real_kernel_identities": [
+        true,
+        true,
+        true
+      ],
+      "realified_transitions_commute_with_J": true,
+      "representative_key": "Iso",
+      "sample_transition_0_to_1": [
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1",
+          "0"
+        ],
+        [
+          "0",
+          "I",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "1"
+        ]
+      ],
+      "transition_cocycle": true,
+      "transition_determinants": {
+        "0->0": "1",
+        "0->1": "-I",
+        "0->2": "-I",
+        "1->0": "I",
+        "1->1": "1",
+        "1->2": "1",
+        "2->0": "I",
+        "2->1": "1",
+        "2->2": "1"
+      },
+      "transition_inverse": true,
+      "transition_reconstruction": true,
+      "transitions_invertible": true,
+      "triple_overlap_determinants": [
+        "-16",
+        "16",
+        "16"
+      ],
+      "triple_overlap_pfaffians": [
+        "4*I",
+        "-4",
+        "4"
+      ],
+      "triple_overlap_pivots": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          12
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          14
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          12,
+          13
+        ]
+      ]
+    },
+    {
+      "chart_count": 1820,
+      "complex_kernel_rank": 4,
+      "dropped_matrix_entry": null,
+      "frame_identities": [
+        true,
+        true,
+        true
+      ],
+      "free_row_identities": [
+        true,
+        true,
+        true
+      ],
+      "hermitian_gram_transport": true,
+      "matrix_rank": 12,
+      "mutation": null,
+      "orbit": "X_+",
+      "pass": true,
+      "real_frame_ranks": [
+        8,
+        8,
+        8
+      ],
+      "real_kernel_identities": [
+        true,
+        true,
+        true
+      ],
+      "realified_transitions_commute_with_J": true,
+      "representative_key": "Xp",
+      "sample_transition_0_to_1": [
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "1",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "I"
+        ]
+      ],
+      "transition_cocycle": true,
+      "transition_determinants": {
+        "0->0": "1",
+        "0->1": "I",
+        "0->2": "-I",
+        "1->0": "-I",
+        "1->1": "1",
+        "1->2": "-1",
+        "2->0": "I",
+        "2->1": "-1",
+        "2->2": "1"
+      },
+      "transition_inverse": true,
+      "transition_reconstruction": true,
+      "transitions_invertible": true,
+      "triple_overlap_determinants": [
+        "64",
+        "-64",
+        "-64"
+      ],
+      "triple_overlap_pfaffians": [
+        "8",
+        "8*I",
+        "-8*I"
+      ],
+      "triple_overlap_pivots": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          12,
+          14
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          12,
+          15
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          13,
+          14
+        ]
+      ]
+    },
+    {
+      "chart_count": 1820,
+      "complex_kernel_rank": 4,
+      "dropped_matrix_entry": null,
+      "frame_identities": [
+        true,
+        true,
+        true
+      ],
+      "free_row_identities": [
+        true,
+        true,
+        true
+      ],
+      "hermitian_gram_transport": true,
+      "matrix_rank": 12,
+      "mutation": null,
+      "orbit": "X_-",
+      "pass": true,
+      "real_frame_ranks": [
+        8,
+        8,
+        8
+      ],
+      "real_kernel_identities": [
+        true,
+        true,
+        true
+      ],
+      "realified_transitions_commute_with_J": true,
+      "representative_key": "Xm",
+      "sample_transition_0_to_1": [
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "1",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "1",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "I"
+        ]
+      ],
+      "transition_cocycle": true,
+      "transition_determinants": {
+        "0->0": "1",
+        "0->1": "I",
+        "0->2": "-I",
+        "1->0": "-I",
+        "1->1": "1",
+        "1->2": "-1",
+        "2->0": "I",
+        "2->1": "-1",
+        "2->2": "1"
+      },
+      "transition_inverse": true,
+      "transition_reconstruction": true,
+      "transitions_invertible": true,
+      "triple_overlap_determinants": [
+        "64",
+        "-64",
+        "-64"
+      ],
+      "triple_overlap_pfaffians": [
+        "8",
+        "8*I",
+        "-8*I"
+      ],
+      "triple_overlap_pivots": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          12,
+          14
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          12,
+          15
+        ],
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          13,
+          14
+        ]
+      ]
+    }
+  ],
+  "schema": "a5-kernel-bundles-nullity8-transition-atlas-v1",
+  "structure_group": {
+    "metric_reduction": "U(4)",
+    "raw": "GL(4,C)",
+    "realification": "GL(4,C) embeds in GL(8,R) as the centralizer of J",
+    "scope": "the Pfaffian atlas and ambient Hermitian metric establish U(4); orbit-specific smaller reductions require the bundle-class calculation"
+  }
+}

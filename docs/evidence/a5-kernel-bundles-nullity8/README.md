@@ -417,6 +417,138 @@ dimension, or cohomology inconsistent with the committed Stiefel boundary. Delet
 changes the full compact ranks. Replacing the Stiefel boundary `2` by `1` removes the downstream order-two
 cohomology. Both mutations fail the integrated record.
 
+## Order-twelve principal Pfaffians give 1,820 rank-four charts
+
+Let `A=A(z,conjugate(z))` be the bordered skew matrix. Every nullity-eight point has `rank(A)=12`. The
+principal-rank theorem for skew matrices therefore supplies a twelve-index set `I` for which the principal block
+`B_I=A_(I,I)` has nonzero Pfaffian. All twelve-index sets give a finite cover with
+
+`binomial(16,12)=1,820`
+
+charts on each orbit. If `C_I` contains the pivot-to-free entries, the free rows complementary to `I` normalize the
+four-column frame
+
+`F_I=[-B_I^(-1) C_I; I_4]`.
+
+The [`kernel-transition-atlas-result.json`](kernel-transition-atlas-result.json) replay checks three simultaneous
+charts at one exact representative of every orbit. The first three nonzero principal Pfaffians found there are:
+
+| Orbit | Principal Pfaffians |
+| --- | --- |
+| `W8` | `4`, `-4`, `4` |
+| E8-bar | `-320`, `-320 i`, `320 i` |
+| `Iso` | `4 i`, `-4`, `4` |
+| `X_+`, `X_-` | `8`, `8 i`, `-8 i` |
+
+Every frame has complex rank four, lies in `ker(A)`, and realifies through the committed `psi^-1` map to eight
+independent vectors in `ker(L_y)`. The identity `det(B_I)=pf(B_I)^2` makes the Pfaffian zero set exactly the chart
+denominator locus.
+
+Let `P_I` restrict a vector to the four free rows of chart `I`. The normalization `P_I F_I=I_4` gives the overlap
+matrix without another solve:
+
+`g_IJ=P_I F_J`, so `F_J=F_I g_IJ`.
+
+Restricting the reconstruction identity to other free-row sets proves
+
+```text
+g_IJ g_JI = I_4,
+g_IJ g_JK = g_IK.
+```
+
+These formulas are rational-function identities on every overlap. The exact representatives exercise all 45
+ordered double-overlap matrices and all 135 ordered triple-overlap identities. Every transition determinant is
+nonzero, and every realification commutes with the fiber complex structure `J`.
+
+The ambient Euclidean metric induces the Hermitian Gram matrix `G_I=F_I^* F_I`. Frame reconstruction gives
+
+`G_J=g_IJ^* G_I g_IJ`.
+
+The metric-normalized frames therefore have unitary transitions. The raw structure group is `GL(4,C)`, its real
+form is the centralizer of `J` in `GL(8,R)`, and the canonical metric reduction is `U(4)`. Orbit-specific reductions
+and ordinary bundle classes require the class calculation; the sampled determinants alone do not establish a
+global `SU(4)` or symplectic reduction.
+
+The falsifier was a nullity-eight point outside every principal chart, a frame that lost rank or escaped either
+kernel, a singular overlap, failure of reconstruction, inversion, cocycle, complex-linearity, or Hermitian metric
+transport, or a surviving mutation. Deleting an effective bordered-matrix entry breaks a frame identity, perturbing
+one transition entry breaks reconstruction, inversion, and the cocycle, and replacing the Hermitian adjoint by a
+transpose breaks metric transport.
+
+## The order-two Stiefel class occurs on E8-bar and both `X` branches
+
+Put
+
+`xi=G_2 x_(SU(2)) C^2 -> V_2(R^7)`
+
+and `x=[xi]-2`. The committed Hodgkin calculation gives `2x=0` and `x!=0` in
+`reduced K^0(V_2(R^7))=Z/2`. The compact-core stabilizer representations computed above determine the ordinary
+associated bundles on the Stiefel factor:
+
+- `W8` has `2 V_1`, hence `2 xi`;
+- E8-bar, `X_+`, and `X_-` have `2 V_0+V_1`, hence `C^2+xi`;
+- `Iso` uses its graph-torus section and gives `C^4`.
+
+The external circles add no extra class. The exact constant phase lift is right multiplication by `e_16`; its
+matrix squares to `-I_32`, so its exponential has period `2 pi` and returns as the identity on every kernel. The
+external stabilizer projection is the boost circle on `W8`, zero on E8-bar, and the primitive diagonal or
+antidiagonal circle on the two `X` branches. Thus the phase circle supplies the remaining circle on `W8` and each
+`X` branch. On E8-bar the phase lift removes one torus direction. The remaining boost direction is an
+`SU(2)`-equivariant family over `S^1`. Its isotypic automorphism group is `GL(2,C)` for `2 V_1` and
+`GL(2,C) x GL(1,C)` for `2 V_0+V_1`; both groups are connected, so their multiplicity bundles over the circle are
+trivial. The kernel bundles are consequently pullbacks of the displayed Stiefel-factor bundles.
+
+For `Iso`, the maximal compact stabilizer projects onto both external circles. Writing that stabilizer as the graph
+of a two-torus homomorphism gives an explicit section `g -> (g,1,1)` after identifying the quotient with `G_2`.
+Every associated complex bundle is therefore trivial.
+
+The ordinary and stable classifications are:
+
+| Orbit | Compact core | Ordinary complex bundle | Reduced complex K-class | Ordinary conclusion | Underlying real bundle |
+| --- | --- | --- | --- | --- | --- |
+| `W8` | `V_2(R^7) x S^1` | `2 xi` | `(0,2x)=(0,0)` in `Z+Z/2` | stably trivial; the ordinary class remains `2 xi` | `2 xi_R`, stably trivial |
+| E8-bar | `V_2(R^7) x T^2` | `C^2+xi` | free coordinates zero, torsion `(x,0)` | complex nontrivial | `R^4+xi_R=R^8` |
+| `Iso` | `G_2` | `C^4` | `0` in `Z` | complex and real trivial | `R^8` |
+| `X_+`, `X_-` | `V_2(R^7) x S^1` | `C^2+xi` | `(0,x)` in `Z+Z/2` | complex nontrivial | `R^4+xi_R=R^8` |
+
+The rank-four cancellation inequality does not apply to `2 xi` on the eleven-dimensional Stiefel factor because
+`11>2*4`. The result therefore records the ordinary `W8` class as the concrete associated bundle `2 xi` and makes
+no equality claim with `C^4`. The same limitation applies to the actual real triviality of `2 xi_R`. This residual
+is an unstable equivalence question; the zero reduced complex K-class alone cannot decide it.
+
+Each bundle has total Chern class one. The bundle `xi` has `SU(2)` structure, its `c_2` pulls back from
+`H^4(V_2(R^7))=0`, and its higher Chern classes vanish by rank. The phase and boost multiplicity bundles are
+trivial, so the torus factors add no line class. Every underlying real bundle consequently has total
+Stiefel-Whitney and Pontryagin classes one. These characteristic classes do not detect the three nonzero order-two
+complex K-classes.
+
+The associated descriptions reduce the structure group below the canonical `U(4)` atlas. On `W8`, the reduction is
+the diagonal `SU(2)=Sp(1)` inside `Sp(2)` and `SU(4)`. On E8-bar and the `X` branches, it is
+`diag(I_2,Q)`, also inside `Sp(2)` and `SU(4)` after pairing the two trivial complex lines into a quaternionic line.
+The `Iso` graph section reduces the group to the identity.
+
+The order-two class of the nullity-sixteen `N_+` and `N_-` bundles therefore propagates upward as the same Stiefel
+generator on E8-bar, `X_+`, and `X_-`. `W8` contains two copies and cancels stably; `Iso` contains none. The word
+"propagates" identifies the same generator on the compact cores and is not a path-independent restriction across a
+rank jump.
+
+The E8-bar sheet question has two different answers at two different levels. As abstract bundles, both local sheets
+restrict the single global pullback class `C^2+xi`; neither external circle contributes a Kunneth cross-term. As
+attaching data inside a boundary rank-six kernel, the sheets have no canonical global extension: every one of the
+five E8-bar boundary incidences is path-dependent. The two middle-coordinate sheet-normal limits agree at each
+aligned boundary representative, but a boundary-stabilizer unipotent path changes the limiting plane. Thus the
+sheets do not define different abstract rank-four bundles, while their limiting embeddings depend on the approach.
+
+The falsifier was a compact-core representation other than the recorded multiplicities, a nonperiodic phase lift,
+a disconnected isotypic automorphism group, a Stiefel generator order other than two, a nonzero external Kunneth
+coordinate, a Chern class incompatible with the associated description, or a canonical E8-bar attaching plane.
+Adding one E8-bar doublet changes the fiber dimension, killing the order-two generator changes the E8-bar residue,
+flipping one phase-matrix entry breaks the exact square, and removing one E8-bar path-dependence result changes the
+boundary count. All four mutations fail downstream checks in
+[`kernel-bundle-classes-result.json`](kernel-bundle-classes-result.json). The standard associated-bundle, Kunneth,
+and cancellation inputs are the same ones cited in the
+[high-nullity bundle record](../a5-kernel-bundles/README.md#standard-topology-references).
+
 ## No nullity-eight orbit is compact homogeneous
 
 **Inferred.** A connected compact orbit has dimension at most fifteen. Each nullity-eight unit section has dimension
@@ -461,6 +593,14 @@ export PYTHON="${PYTHON:-python3}"
 "$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py --self-test
 "$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/unit_section_topology.py \
     --check docs/evidence/a5-kernel-bundles-nullity8/unit-section-topology-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles-nullity8/kernel_transition_atlas.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/kernel_transition_atlas.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/kernel_transition_atlas.py \
+    --check docs/evidence/a5-kernel-bundles-nullity8/kernel-transition-atlas-result.json
+"$PYTHON" -B -W error docs/evidence/a5-kernel-bundles-nullity8/kernel_bundle_classes.py --self-test
+"$PYTHON" -B -W error -O docs/evidence/a5-kernel-bundles-nullity8/kernel_bundle_classes.py --self-test
+"$PYTHON" docs/evidence/a5-kernel-bundles-nullity8/kernel_bundle_classes.py \
+    --check docs/evidence/a5-kernel-bundles-nullity8/kernel-bundle-classes-result.json
 ```
 
 The measured `--check` wall times were 7.84 seconds for the compact-rank producer and 3.18 seconds for the `W8`
@@ -470,3 +610,5 @@ two-space-indented JSON plus its final newline in memory, compares the UTF-8 byt
 no repository file, and exits nonzero on a difference. The exhaustive stabilizer-stratum producer checked in 8.23
 seconds. The boundary-specialization producer checked in 9.91 seconds.
 The unit-section topology producer checked in 4.45 seconds.
+The nullity-eight transition-atlas producer checked in 7.68 seconds.
+The bundle-class producer checked in 0.68 seconds.
