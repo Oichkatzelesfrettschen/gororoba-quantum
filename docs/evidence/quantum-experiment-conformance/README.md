@@ -67,6 +67,9 @@ and supply neither an independence certificate nor a correction for unobserved d
 
 ## Local provider compiler admission
 
+The [supplemental validation](validation-toolchain.json) records 102 passing focused tests, full lint
+and types, source identities and the required-QI live replay.
+
 [local-toolchain.json](local-toolchain.json) binds all 384 cQASM payloads in the 128 QI cases, their
 manifest and campaign digests, retained compiler configurations, producing sources and pinned stack.
 Local libqasm analysis and OpenSquirrel decomposition admit every payload and preserve every barrier

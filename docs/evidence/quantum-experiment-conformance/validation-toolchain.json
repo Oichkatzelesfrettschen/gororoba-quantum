@@ -1,0 +1,91 @@
+{
+  "boundary": "Local parse, declared compiler passes and control preservation. The source native operators retain unitary predictions; serialized angle changes are recorded. Platform scheduling, runtime forecasts, instrument qualification and provider execution remain separate.",
+  "checks": [
+    {
+      "command": "sh ci/pr_checks.sh lint",
+      "exit_code": 0,
+      "result": "627 files match Ruff; check passes"
+    },
+    {
+      "command": "sh ci/pr_checks.sh types",
+      "exit_code": 0,
+      "result": "mypy: no issues in 606 source files"
+    },
+    {
+      "command": "sh ci/pr_checks.sh tests tests/scripts/test_experiment_references.py tests/scripts/test_experiment_cases.py tests/scripts/test_experiment_analysis.py tests/scripts/test_experiment_toolchain.py tests/scripts/test_hypercomplex_cases.py",
+      "exit_code": 0,
+      "result": "102 passed in 8.37 seconds with warnings and per-test time bound active"
+    },
+    {
+      "command": "ci/run_gates.py --gates core-quantum-experiment-toolchain --requires qi",
+      "exit_code": 0,
+      "result": "actual pinned QI stack recompiled all 384 payloads and matched the retained record byte for byte"
+    }
+  ],
+  "gate_measurements": {
+    "cpu_capacity": 12,
+    "gates": [
+      {
+        "estimated_seconds": 30.0,
+        "name": "core-quantum-experiment-toolchain",
+        "resources": {
+          "max_rss_kib": 57104,
+          "system_seconds": 0.24786999999999998,
+          "user_seconds": 25.402662,
+          "workers": 4
+        },
+        "runtime": "current",
+        "seconds": 11.780623410013504,
+        "status": 0
+      }
+    ],
+    "ledger_audit_misses": [],
+    "schema": "gororoba-gate-timings-v1",
+    "shard": "0/1",
+    "shard_cpus": 4,
+    "skipped": [],
+    "wall_seconds": 11.781533402041532
+  },
+  "observed_at": "2026-10-27T20:44:42.965772+00:00",
+  "preserved_surfaces": {
+    "comparison_revision": "6721a8b5bef4847d898eded220a9b145ee916bf8",
+    "files": [
+      {
+        "baseline_git_blob": "5dce46b78143e00634a74eb0d4a736ae41dc2eb6",
+        "current_git_blob": "5dce46b78143e00634a74eb0d4a736ae41dc2eb6",
+        "equal": true,
+        "path": "scripts/qi_toolchain_check.py"
+      },
+      {
+        "baseline_git_blob": "1513d8c859830bd88cb868c979e959f0a551cb81",
+        "current_git_blob": "1513d8c859830bd88cb868c979e959f0a551cb81",
+        "equal": true,
+        "path": "docs/evidence/quantum_inspire/toolchain-token-recovery.json"
+      }
+    ]
+  },
+  "previous_validation": {
+    "path": "docs/evidence/quantum-experiment-conformance/validation.json",
+    "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
+  },
+  "schema": "quantum-experiment-toolchain-validation-v1",
+  "source_revision": "4a920bc1b33036d19faae033425de5462de5abfd",
+  "source_sha256": {
+    "scripts/experiment_toolchain.py": "1b2a6ee4da268e1424c56a5b0891b35bb1d7d8d34587ef9c19793c04d472edfa",
+    "tests/scripts/test_experiment_toolchain.py": "020a623026601699463bb03290a63c5250494e067ad10ef35f14e38741f9980d"
+  },
+  "toolchain_receipt": {
+    "analysis_failures": 0,
+    "compilation_failures": 0,
+    "control_changes": 0,
+    "path": "docs/evidence/quantum-experiment-conformance/local-toolchain.json",
+    "payloads": 384,
+    "runtime": {
+      "libqasm": "1.2.1",
+      "opensquirrel": "0.9.1",
+      "python": "3.13.15"
+    },
+    "serialized_gate_sequence_changes": 122,
+    "sha256": "0128d96fac75347d23f3cfce0ffdce341a3315d5bf135e5a8034cdbf368fa37a"
+  }
+}
