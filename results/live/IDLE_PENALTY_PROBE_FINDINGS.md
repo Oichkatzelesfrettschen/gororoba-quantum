@@ -173,4 +173,4 @@ multiplier stays near 1.6.
 - **Readout attribution, and whether phase rate and visibility loss share a cause.** This needs a campaign whose
   replica classes differ: focal partner only, background readers only, all readers, and none.
 - **The unplaced historical qubits 79, 92 and 93.** One guarded job cannot hold all three, because 93 neighbors both
-  79 and 92 (`targets.json`).
+  79 and 92 (`targets.json`); [IDLE_PENALTY_FOCAL_CASE.md](IDLE_PENALTY_FOCAL_CASE.md) places them in two jobs.
