@@ -179,7 +179,8 @@ def evaluate(name: str, index: dict[str, Any], plan: bool = False) -> dict[str, 
         return header
     if plan:
         return {**header, "replicas": len(items)}
-    return run_summary(header, keys, parallel.ordered_map(replica_pair, items))
+    # Each exact law takes seconds to minutes, so even a two-replica run fills the pool.
+    return run_summary(header, keys, parallel.ordered_map(replica_pair, items, min_items=2))
 
 
 def check(path: Path, runs: str, index: dict[str, Any]) -> None:

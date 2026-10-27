@@ -4258,6 +4258,22 @@
    "name": "core-693",
    "seconds": 4.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json --runs results/live/2026-10-13T080216.451663Z",
+   "name": "core-694",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_idle_falsifier.py --check docs/evidence/local_idle_padding/result.json --runs results/live/2026-10-12T055624.091217Z,results/live/2026-10-13T020454.599853Z,results/live/2026-10-18T090603.530638Z",
+   "name": "core-695",
+   "seconds": 300.0,
+   "tier": "full"
   }
  ],
  "excluded": [

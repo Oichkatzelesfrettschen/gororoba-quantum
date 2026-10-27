@@ -170,7 +170,7 @@ def run_controls(name: str, index: dict[str, Any]) -> dict[str, Any]:
     events = [ghost_event_scale.event_count(qpy.load(io.BytesIO(item[0]))[0]) > 0 for item in items]
     plans = [grid(has_event) for has_event in events]
     jobs = [(item, point) for item, points in zip(items, plans, strict=True) for point in points]
-    flat = iter(parallel.ordered_map(point_tvd, jobs))
+    flat = iter(parallel.ordered_map(point_tvd, jobs, min_items=2))
     per_replica = [{f"{mode}:{value:g}": next(flat) for mode, value in points} for points in plans]
     labels = list(dict.fromkeys(label for row in per_replica for label in row))
     means = {label: round(float(np.mean([row[label] for row in per_replica if label in row])), 9) for label in labels}
@@ -221,7 +221,7 @@ def service_replay(name: str, index: dict[str, Any]) -> dict[str, Any]:
     retained = json.loads(retained_path.read_text(encoding="utf-8"))
     excitation = float(retained["prep_excitation"])
     header, keys, items = local_idle_falsifier.eligible_items(name, index)
-    rows = parallel.ordered_map(_service_item, [(item, excitation) for item in items])
+    rows = parallel.ordered_map(_service_item, [(item, excitation) for item in items], min_items=2)
     replicas = []
     for (member, k), row in zip(keys, rows, strict=True):
         hardware = np.asarray(row.pop("measured"))
