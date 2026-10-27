@@ -80,8 +80,8 @@ sources:
     relationship: formalizes
     location: docs/notes/math-0511691.md
     note: >-
-      Corollary 9.3 (ker L_x = ker R_x) and the purity Lemmas 9.4 and 9.5:
-      on the integer tower through the trace-form adjoint identities of
+      Corollary 9.3 (ker L_x = ker R_x) and the purity Lemma 9.4 (zero
+      divisors and annihilated elements are imaginary): on the integer tower through the trace-form adjoint identities of
       Lemma 3.4 (CdAnnihilatorSymmetry.v), and on the real tower through
       Lemma 9.2 itself, with its identity x(x*y) = x*(xy), the mirror
       (xy)y* = (xy*)y and Lemmas 2.6 and 2.8 on real parts
