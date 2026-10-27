@@ -31,7 +31,8 @@ guarantee on PUB order, so the analysis reads the order from the data:
 
 Three items were added after the first pass read the output, and are labeled so in the record: the scatter
 chi-square showed the spreads understate the path-to-path scatter, so each delta also carries a standard error
-scaled by sqrt(chi-square / dof) and its significance is judged on that scaled error; the x_history test also
+scaled by sqrt(chi-square / dof) and its significance is judged on that scaled error, against Student's t with
+dof degrees of freedom when the scale is estimated (chi-square above dof); the x_history test also
 conditions at lags 1 to 5 and on the previous two shots; the stage-2 readout-arm test reports each arm alone,
 because a pooled split mixes predecessors with different base rates, and every |0> arm's predecessor leaves
 q147 excited in about 0.8 of its shots, so the arms cannot separate the predecessor's role. A second review
@@ -54,6 +55,7 @@ from pathlib import Path
 from typing import Any
 
 from qiskit import qpy
+from scipy import stats
 
 ROOT = Path.cwd()
 sys.path[:0] = [str(ROOT / "scripts"), str(ROOT / "gororoba_quantum")]
@@ -91,7 +93,10 @@ def pooled(rows: list[tuple[float, float, float]]) -> dict[str, float]:
     se = 1.0 / math.sqrt(weight)
     chi = sum(((o - c - delta) / s) ** 2 for o, c, s in rows)
     positive = sum(1 for o, c, _ in rows if o > c)
-    scaled = se * math.sqrt(max(1.0, chi / (len(rows) - 1)))
+    dof = len(rows) - 1
+    scaled = se * math.sqrt(max(1.0, chi / dof))
+    t = delta / scaled
+    p_scaled = float(2.0 * stats.t.sf(abs(t), dof)) if chi > dof else normal_two_sided(t)
     return {
         "delta": delta,
         "se": se,
@@ -99,7 +104,7 @@ def pooled(rows: list[tuple[float, float, float]]) -> dict[str, float]:
         "p_two_sided": normal_two_sided(delta / se),
         "se_scatter_scaled": scaled,
         "z_scatter_scaled": delta / scaled,
-        "p_two_sided_scatter_scaled": normal_two_sided(delta / scaled),
+        "p_two_sided_scatter_scaled": p_scaled,
         "positive": positive,
         "paths": len(rows),
         "sign_test_p": sign_test(positive, len(rows)),
@@ -263,26 +268,26 @@ def conditional(target: list[int], given: list[int]) -> dict[str, Any]:
     return two_proportion(sum(ones), len(ones), sum(zeros), len(zeros))
 
 
+def x_history_run(run: Path) -> dict[str, Any]:
+    """One x_history control run -> q147's shot-history conditionals."""
+    (where,) = q147_bit(run / "isa.qpy", QUBIT)
+    (pub,) = raw_pubs(run)
+    bits = shot_bits((pub, *where))
+    pairs: dict[str, list[int]] = {}
+    for s in range(2, len(bits)):
+        pairs.setdefault(f"{bits[s - 2]}{bits[s - 1]}", []).append(bits[s])
+    return {
+        "run": run.name,
+        "excited_fraction": statistics.fmean(bits),
+        "by_lag": {str(lag): conditional(bits[lag:], bits[:-lag]) for lag in range(1, 6)},
+        "by_previous_two": {
+            key: {"shots": len(v), "excited_fraction": statistics.fmean(v)} for key, v in sorted(pairs.items())
+        },
+    }
+
+
 def x_history_test() -> dict[str, Any]:
-    out = []
-    for run in X_HISTORY:
-        (where,) = q147_bit(run / "isa.qpy", QUBIT)
-        (pub,) = raw_pubs(run)
-        bits = shot_bits((pub, *where))
-        pairs: dict[str, list[int]] = {}
-        for s in range(2, len(bits)):
-            pairs.setdefault(f"{bits[s - 2]}{bits[s - 1]}", []).append(bits[s])
-        out.append(
-            {
-                "run": run.name,
-                "excited_fraction": statistics.fmean(bits),
-                "by_lag": {str(lag): conditional(bits[lag:], bits[:-lag]) for lag in range(1, 6)},
-                "by_previous_two": {
-                    key: {"shots": len(v), "excited_fraction": statistics.fmean(v)} for key, v in sorted(pairs.items())
-                },
-            }
-        )
-    return {"runs": out}
+    return {"runs": parallel.ordered_map(x_history_run, X_HISTORY, min_items=1)}
 
 
 def stage2_test(split: dict[str, Any]) -> dict[str, Any]:

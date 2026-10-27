@@ -68,9 +68,11 @@ Both use the retained records only and are descriptive; neither is part of the p
 pooled by inverse variance; the excitation envelope stays out of the spread. The scatter chi-square about each
 offset reaches 1.7 to 2.7 per degree of freedom on 0, 01, 1 and 2 (21 degrees of freedom), so the spreads
 understate the path-to-path scatter, and each offset is judged on a standard error scaled by
-sqrt(chi-square / dof) at the Bonferroni level over seven coefficients (alpha 0.05 / 7, |z| 2.69).
-- Offsets on 01 (+0.0080, scaled z 2.86), 02 (+0.0107, 5.73) and 2 (+0.0155, 4.86) pass; 1 (+0.0081, 2.15),
-  0, 12 and 012 do not. Leaving out 147-148-149, or moving its center to its measured lambda, changes no verdict.
+sqrt(chi-square / dof), against Student's t on 21 degrees of freedom where that scale is estimated, at the
+Bonferroni level over seven coefficients (two-sided alpha 0.05 / 7 = 0.0071).
+- Offsets on 02 (+0.0107, scaled t 5.73) and 2 (+0.0155, 4.86) pass; 1 (+0.0081, 2.15), 0, 12 and 012 do not.
+  01 (+0.0080, t 2.86, p 0.0094) passes only with 147-148-149 left out or its center moved to its measured
+  lambda (t 3.10 and 3.09, p 0.0056), the path whose split center the observed lambda already places off.
 - The four misses, each rechecked against its unchanged band after subtracting the offset fitted on the other 21
   paths: 38-49-50 coefficient 2 returns inside under a significant offset (z 4.65); 66-67-68 coefficient 1 and
   132-133-134 coefficient 01 return inside only under offsets that fail the test (z 1.82 and 2.59);
@@ -80,7 +82,8 @@ sqrt(chi-square / dof) at the Bonferroni level over seven coefficients (alpha 0.
   and 012 (case 3's envelope reaches 1.8 spreads on 01) while leaving 0, 1 and 2 within 0.005 spreads, so the
   fit recenters all 21 case-2 paths under the split law from case 2's own two controls, swapping only the
   incoherent shift and keeping every spread; the swapped shifts reproduce the case-2 ablation's split variant on
-  its four paths exactly. Case 2 then gives 01 +0.0085 (scaled z 3.45) and 02 +0.0105 (4.66), both significant,
+  its four paths exactly. Case 2 then gives 01 +0.0085 (scaled t 3.45, p 0.0025) and 02 +0.0105 (4.66), both
+  significant,
   against case 3's +0.0080 and +0.0107; 1 (+0.0072) and 2 (+0.0082) keep case 3's sign without significance. On
   the retained centers case 2's 01 reads -0.0078, the sign the over-applied excitation predicts.
 
@@ -110,7 +113,9 @@ PUB order.
   stage-2 |1> arms read with efficiency 0.873 once their start-excited shots are removed; at that efficiency in
   the x_history jobs, which neither job measures, the ceiling rises to 0.0587 and the reading sits 2.21 standard
   errors above it. q142, uncoupled to q147, reads 0.085 in the same arm against 0.027 in both of its controls
-  (hd 0); the other 64 qubits sit within 0.016 of their prep0 fractions.
+  (hd 0). No other qubit rises above its prep0 fraction by more than 0.016; five fall by more: q125 (-0.041),
+  q92 (-0.040), q153 (-0.035), q58 (-0.028) and q16 (-0.022), q58 and q92 being the two qubits whose controls
+  read heterogeneous.
 - The order-free number. Each circuit has one predecessor, so the mean predecessor end-excited fraction equals
   q147's mean end-excited fraction over the 105 PUBs, 0.399 through the calibration's assignment. Against
   x_history's 0.951 it gives f = 0.42, one standard error below lambda 0.66 +- 0.25, which is consistent, but the
