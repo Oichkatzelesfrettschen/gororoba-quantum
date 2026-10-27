@@ -26,6 +26,7 @@
   "results/iqm/signed_kernel_probe_analysis.json": "b86605792c697b62e46b42a7e79cf902862333c01061574708f7255aec109cc2",
   "results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json": "d49cedd47f6b8423580de053e8768f80016c246ab47a080ca88ffad42a180b0c",
   "results/live/2026-10-21T064222.721454Z/line-switching-759d82d74c57.json": "66f4ab5295eba9c6304a9efb797caf66d902f8f49459ac9e675ee195f0ade9f7",
+  "results/live/2026-10-27T173602.753176Z/detuning-sign-decisions.json": "89358388a379a10ae1613796bf6c131eb7e8c0b87e950a31520afd9ace4231b1",
   "results/quandela/bdsc_diagnostic_readout-runner-image.json": "b4f9881dbd24053938322dffb6db646ad57295846b27cf9b08ed5de19815f4dc",
   "results/quandela/bdsc_drift_series_diagnostic_pinned.json": "699685b4be3be1ed22868854beb7a7746c2c33f9e14a42cf96f41c85d3b2026a",
   "results/quandela/bdsc_drift_series_readout_pinned.json": "b132e49cedced5160a6d046726a61f2c09176b6112559ce77efd79bf2f7ea4c0",
