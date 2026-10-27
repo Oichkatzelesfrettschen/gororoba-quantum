@@ -2,6 +2,20 @@
   "schema": "research-state-v2",
   "acquisitions": [
     {
+      "id": "qd-ascella-signed-coherence-replication-job-06",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06",
+      "family": "photonic signed-coherence replication meshes",
+      "question": "Do the carried P-B offsets, unchanged, and the same family refitted on all 233 retained meshes predict the analyzer statistic of 84 meshes no fit has seen, served by theta2-x-arm0 at fresh QRNG compilation seeds beside 12 seed-0 anchors?"
+    },
+    {
+      "id": "qd-ascella-signed-coherence-replication-job-07",
+      "provider": "quandela",
+      "run": "results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96",
+      "family": "photonic signed-coherence replication meshes",
+      "question": "Do the same frozen predictors carry on 84 further unseen meshes, the job's size of 96 iterations admitted by job-06's completion?"
+    },
+    {
       "id": "qd-ascella-signed-coherence-new-seeds-job-04",
       "provider": "quandela",
       "run": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04",
@@ -2444,11 +2458,11 @@
     },
     {
       "id": "ascella-signed-coherence-new-seed-offsets",
-      "statement": "Heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on job-00 plus all 56 perturbed meshes of jobs 02 and 03 and frozen before any new seed was drawn (P-B), predict the X statistic of 147 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs be11a4b0 (70 meshes, 80 iterations) and 690c6e49 (77 meshes, 88 iterations): the within-job-centered Pearson r is 0.319 (t 4.04 on 144 degrees of freedom, one-sided p 4.4e-5, alpha 0.005), carried. Its positive-direction share of the compilation-induced variance is 10.5 % against the 0.983 attenuation ceiling, with one-sided 99.5 % Fisher-z bounds of 1.4 % and 25.6 %. The same family fitted on job-00 plus the 28 exploration meshes alone (P-A) reads r 0.157 (p 0.030): not carried. Both jobs' anchors stayed within the gross-shift margin (shifts -0.0028 and -0.0018 against job-03, 99 % half-widths 0.0034, margin 0.0119).",
+      "statement": "Heater offsets (N(0, 0.3^2)) with coupler offsets (N(0, 0.1^2)), fitted on 86 training configurations (the 30 configurations of job-00 and the 56 perturbed meshes of jobs 02 and 03) and frozen before any new seed was drawn (P-B), are associated with the X statistic of 147 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs be11a4b0 (70 meshes, 80 iterations) and 690c6e49 (77 meshes, 88 iterations): the within-job-centered Pearson r is 0.319 (t 4.04 on 144 degrees of freedom, model-based one-sided p 4.4e-5, alpha 0.005), carried. Its positive-direction share r^2 / c^2, with c^2 = 0.966 the plug-in attenuation ceiling (c = 0.983), is 10.5 %, with one-sided 99.5 % Fisher-z bounds of 1.4 % and 25.6 %; the share is the centered variance an optimal affine rescaling of the predictions would account for, while the frozen predictions at their own scale have slope 0.32 and within-job R^2 -0.36 at slope one, less accurate than each job's mean. The same family fitted on job-00 plus the 28 exploration meshes alone (P-A) reads r 0.157 (p 0.030): not carried. Both jobs' anchor means passed the gross-shift gate (shifts -0.0028 and -0.0018 against job-03, 99 % half-widths 0.0034, margin 0.0119).",
       "domain": "hardware",
       "evidence_class": "preregistered hardware inference",
       "status": "established",
-      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_new_mesh_score.py, whose contract, frozen offsets and duration rule were committed and pushed before submission after two Codex CLI reviews, two GitHub Codex rounds, a final gpt-daybreak-blue-latest high review and the advisor. The outcome is P-B carried only: the offsets carry about a tenth of the per-mesh error, the 28 exploration meshes leave them underdetermined, and the remaining nine tenths of the fixed per-mesh error stay unexplained by any element offset on the returned circuit. The share is a plug-in estimate conditional on the retained compilation variance. Job-05's size followed job-04's provider-reported duration alone (243 s, admitting 88 iterations). The result names no physical mechanism for the offsets and spends these 147 meshes for confirmatory use.",
+      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_new_mesh_score.py; the frozen offsets reached the remote at 17:42:54 UTC, 13 s before the ANU QRNG draw (new-seed-push-order.json), and the contract and duration rule were committed and pushed before submission after two Codex CLI reviews, two GitHub Codex rounds, a final gpt-daybreak-blue-latest high review and the advisor. The outcome is P-B carried only: the frozen offsets predict the direction of a minor part of the mesh-to-mesh variation of X, not its amplitude, and the 28 exploration meshes leave them underdetermined. The scored prediction also carries each test iteration's in-block background, read from its own outside-block counts (ascella_physical_models.setting_probabilities). The p-value and bounds are model-based; the centered outcomes are heavy-tailed. The share is a plug-in estimate conditional on the retained compilation variance. 258 free offsets on 86 configurations are identified through the prior. Job-05's size followed job-04's provider-reported duration alone (243 s, admitting 88 iterations). The result names no physical mechanism for the offsets and spends these 147 meshes for confirmatory use; claim ascella-signed-coherence-replication-offsets retests P-B unchanged on 168 further meshes.",
       "evidence": [
         {
           "path": "results/quandela/runs/2026-10-26T204432Z-qpu_ascella-ascella_signed_coherence-job-04/results.json",
@@ -2469,6 +2483,10 @@
         {
           "path": "docs/evidence/ascella-order-coefficients/new-seed-score.json",
           "sha256": "fa4a2982afb3e01ec71f78b8aa999752dcfd374459388258f51b88cfbb029610"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/new-seed-push-order.json",
+          "sha256": "1b9839f5da98c2d0101011f8ef8d98be7719ae6bacfe0890a7ae8eb41c1ee210"
         }
       ],
       "documents": [
@@ -2487,6 +2505,57 @@
       "depends_on": [
         "ascella-signed-coherence-fixed-mesh-offsets",
         "ascella-signed-coherence-seed-repeat"
+      ],
+      "supersedes": []
+    },
+    {
+      "id": "ascella-signed-coherence-replication-offsets",
+      "statement": "On 168 meshes no fit had seen, served on qpu:ascella by theta2-x-arm0 at fresh QRNG compilation seeds in jobs d54d0e9d and f27ad639 (84 meshes each, 96 iterations each), the heater and coupler offsets of claim ascella-signed-coherence-new-seed-offsets, frozen unchanged (R-B), are associated with the X statistic at within-job-centered Pearson r 0.240 (t 3.18 on 165 degrees of freedom, model-based one-sided p 8.8e-4, alpha 0.005), carried, a positive-direction share r^2 / c^2 of 6.0 % with one-sided 99.5 % Fisher-z bounds of 0.2 % and 18.2 % (together a central 99 % interval). The same family refitted on 233 training configurations (the 30 of job-00, the 56 perturbed meshes of jobs 02 and 03 and the 147 of jobs 04 and 05; R-C) reads r 0.404 (t 5.67, model-based p 3.1e-8), carried, a share of 16.9 % (one-sided bounds 5.2 % and 32.2 %). The shares are the centered variance an optimal affine rescaling of the predictions would account for: at their own scale the predictions have slopes 0.20 and 0.44 and within-job R^2 -0.83 and -0.10 at slope one, less accurate than each job's mean. Both jobs' anchor means passed the gross-shift gate (shifts -0.0020 and -0.0008 against job-05-i88, 99 % half-widths 0.0024, margin 0.0119).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One logical setting, two jobs and one element-offset family under two training sets, scored once by scripts/ascella_replication_score.py, whose predictors and contract reached the remote (bc15673, 00:37:09 UTC) six seconds before the ANU QRNG draw that seeded the jobs (replication-push-order.json). The outcome is both carried: frozen static offsets on the returned circuit predict the direction of a replicated, minor part of the mesh-to-mesh variation of X, not its amplitude. Exploratory, post hoc checks (replication-sensitivity.json): the scored prediction carries each test iteration's in-block background, read from its own outside-block counts, and without it R-B reads r 0.231 and R-C 0.386, while the returned circuit at zero offsets reads r 0.016 and each predictor's increment over the zero-offset prediction keeps partial r 0.207 (R-B, one-sided p 0.0037) and 0.395 (R-C); every alignment of 7,056 circular shifts of the outcomes within each job gives p 0.0014 (R-B) and 0.00014 (R-C), consistent with the model-based t; Spearman correlations are 0.241 and 0.305, and R-C reads r 0.290 without its five most influential meshes. Whether R-B's fitted direction is special among offset directions is a weaker, open question: in unretained exploratory Monte Carlo runs, offsets drawn from the family's prior reached R-B's r with probability about 0.004 through the full predictor and 0.01 to 0.025 through its linearization, and never reached R-C's. R-C's higher r than R-B's is descriptive: the preregistration tested neither against the other, a post hoc Williams test reads t 2.17 on 164 degrees of freedom (two-sided p 0.031, Steiger and Meng agreeing, predictor correlation 0.447), and R-C's added training meshes come from the calibrations nearest these jobs, so training size and calibration proximity are confounded; an unretained exploratory refit on the 147 meshes of jobs 04 and 05 alone read r 0.445, above R-C, consistent with proximity rather than size. The family was selected after four heater families and eight heater-coupling families missed job-02's meshes and its first held-out test missed at p 0.050 (claims ascella-signed-coherence-compilation-dependence, ascella-signed-coherence-heater-coupling, ascella-signed-coherence-fixed-mesh-offsets); the new-seed and replication jobs are its prospective retests. The anchor gate excludes a gross additive shift and does not establish calibration equivalence. 258 free offsets on 86 or 233 configurations are identified through the prior: between R-B and R-C the 126 heater offsets correlate 0.82 and the 132 coupler offsets 0.15, so the coupler offsets are not identified. The shares are plug-in estimates conditional on the retained compilation variance. The submitted cases.json files name the new-seed plan as built; the replication plan is their contract. Job-07's size followed job-06's completion alone. The result names no physical mechanism for the offsets and spends these 168 meshes for confirmatory use.",
+      "evidence": [
+        {
+          "path": "results/quandela/runs/2026-10-27T004134Z-qpu_ascella-ascella_signed_coherence-job-06/results.json",
+          "sha256": "ed728d01a828c59b171c849c5b01fe25f36ce78c6e06155ee55410fd65749e8c"
+        },
+        {
+          "path": "results/quandela/runs/2026-10-27T004828Z-qpu_ascella-ascella_signed_coherence-job-07-i96/results.json",
+          "sha256": "d3083e0fcb7a55b42bffbcea0e96c7fa4ee335c1659d72aad9c3d0f08b4db39b"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-offsets.json",
+          "sha256": "b541d774066373141dc1fcec175d20e43c0e98d51d8732e47735751adf6c7d0a"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-score.json",
+          "sha256": "ae5a109a1c0e19aced9d5c25fda807b269d56b72eeb91fbbc7cbba857de1e2af"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-sensitivity.json",
+          "sha256": "07f719e3930b61e7ab88820c087240294824185c9d79ded02c2b956850282f8e"
+        },
+        {
+          "path": "docs/evidence/ascella-order-coefficients/replication-push-order.json",
+          "sha256": "535d1b030968fbdda9aa03be03782cd54cb5028a4ad04c875c1ffd2f59258eeb"
+        }
+      ],
+      "documents": [
+        "docs/design/ascella-signed-coherence-conformance.md"
+      ],
+      "gates": {
+        "core-ascella-signed-coherence-replication-offsets-replay": "replay",
+        "core-ascella-signed-coherence-replication-score-replay": "replay",
+        "core-ascella-signed-coherence-replication-sensitivity-replay": "replay"
+      },
+      "acquisitions": [
+        "qd-ascella-signed-coherence-replication-job-06",
+        "qd-ascella-signed-coherence-replication-job-07"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "ascella-signed-coherence-new-seed-offsets"
       ],
       "supersedes": []
     },

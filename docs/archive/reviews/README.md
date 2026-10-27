@@ -34,3 +34,8 @@ repository-relative; a branch name stands for its worktree.
 | [2026-10-26-belenos-job-01-redesign-consult.md](2026-10-26-belenos-job-01-redesign-consult.md) | Codex (gpt-daybreak-blue-latest, high, web search) research consult on the job-01 redesign, with its [brief](2026-10-26-belenos-job-01-redesign-consult-goal.md) |
 | [2026-10-26-belenos-job-01-redesign-operator-research.md](2026-10-26-belenos-job-01-redesign-operator-research.md) | operator's parallel reading of the same questions, superseded in part |
 | [2026-10-26-belenos-job-01-redesign-disposition.md](2026-10-26-belenos-job-01-redesign-disposition.md) | how the consult, the operator reading and the source notes became the descriptive job-01 design |
+| [2026-10-27-ascella-replication-review-audit.md](2026-10-27-ascella-replication-review-audit.md) | audit of four critical peer reviews of the Ascella replication (PR #569) under the [critical-review runbook](../../runbooks/critical-peer-review.md): twenty-two findings and their disposition |
+| [2026-10-27-ascella-replication-review-codex.md](2026-10-27-ascella-replication-review-codex.md) | Codex (gpt-daybreak-blue-latest, high) referee report on the replication, with its [brief](2026-10-27-ascella-replication-review-brief.md) |
+| [2026-10-27-ascella-replication-review-grok.md](2026-10-27-ascella-replication-review-grok.md) | Grok (grok-4.7, high) referee report on the replication |
+| [2026-10-27-ascella-replication-review-agy.md](2026-10-27-ascella-replication-review-agy.md) | agy (Gemini 3.8 Flash, high) referee report on the replication |
+| [2026-10-27-ascella-replication-review-orchestrator.md](2026-10-27-ascella-replication-review-orchestrator.md) | orchestrator's referee report on the replication, corrected by the audit |

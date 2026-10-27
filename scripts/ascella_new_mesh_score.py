@@ -60,6 +60,8 @@ import hashlib
 import json
 import math
 import sys
+from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -106,6 +108,47 @@ def job_05_iterations(first: dict[str, Any]) -> int | None:
     return 8 * math.floor(min(96.0, DURATION_TARGET * FIRST_ITERATIONS / duration) / 8)
 
 
+def new_seed_runs(first: dict[str, Any]) -> list[str]:
+    """The new-seed acquisition job-04's summary admits."""
+    allowed = job_05_iterations(first)
+    return ["job-04"] if allowed is None else ["job-04", f"job-05-i{allowed}"]
+
+
+@dataclass(frozen=True)
+class Design:
+    """One preregistered score: its two frozen predictors and labels, the reference runs whose meshes it excludes and
+    whose last anchors set the baseline, the frozen cases, the acquisition its first new run admits, and the share a
+    bounded reading compares against (reference_record's reference_label share, or fixed-mesh-confirmation.json's
+    held-out share when reference_record is None)."""
+
+    schema: str
+    plan: str
+    predictors: tuple[str, str]
+    labels: tuple[str, str]
+    reference_jobs: tuple[str, ...]
+    baseline_job: str
+    cases_glob: str
+    runs: Callable[[dict[str, Any]], list[str]]
+    first_partial_unread: bool
+    pooled: bool
+    reference_record: str | None = None
+    reference_label: str = ""
+
+
+NEW_SEED = Design(
+    "ascella-new-mesh-score-v1",
+    "docs/state/plans/ascella-new-seed-meshes-case.json",
+    PREDICTORS,
+    ("P-A", "P-B"),
+    REFERENCE_JOBS,
+    BASELINE_JOB,
+    "job-0[45]*/cases.json",
+    new_seed_runs,
+    True,
+    True,
+)
+
+
 def returned(path: Path) -> dict[str, Any]:
     """Job name, manifest iteration count, provider status and duration, and whether every setting carries counts."""
     manifest = json.loads((path / "cases.json").read_text(encoding="utf-8"))
@@ -126,18 +169,18 @@ def returned(path: Path) -> dict[str, Any]:
     }
 
 
-def acquisition(summaries: list[dict[str, Any]], frozen: dict[str, str]) -> None:
-    """Refuse a new-run set other than the frozen acquisition: frozen case bytes, job-04 first, and the job-05 variant
-    the duration rule admits exactly when it admits one. frozen maps a job name to its frozen cases.json digest."""
+def acquisition(summaries: list[dict[str, Any]], frozen: dict[str, str], design: Design = NEW_SEED) -> None:
+    """Refuse a new-run set other than the frozen acquisition: frozen case bytes, the design's first job, and the
+    second job its rule admits exactly when it admits one. frozen maps a job name to its frozen cases.json digest."""
     names = [summary["job"] for summary in summaries]
     models.require(len(set(names)) == len(names), f"the new runs repeat a job: {names}")
     for summary in summaries:
         expected = frozen.get(summary["job"])
         models.require(expected == summary["cases_sha256"], f"{summary['job']}: cases.json is not the frozen case")
-    models.require(names[:1] == ["job-04"], f"the new runs start {names[:1]}, not job-04")
-    allowed = job_05_iterations(summaries[0])
-    wanted = ["job-04"] if allowed is None else ["job-04", f"job-05-i{allowed}"]
-    models.require(names == wanted, f"job-04's duration {summaries[0]['duration']} requires {wanted}, not {names}")
+    models.require(bool(summaries), "no new run")
+    wanted = design.runs(summaries[0])
+    models.require(names[:1] == wanted[:1], f"the new runs start {names[:1]}, not {wanted[0]}")
+    models.require(names == wanted, f"{wanted[0]}'s summary requires {wanted}, not {names}")
 
 
 def loaded(item: tuple[Path, bool]) -> dict[str, Any] | None:
@@ -167,19 +210,21 @@ def admitted(keys: list[str], perturbed: list[int], seen: set[str]) -> tuple[lis
     return [c for c in perturbed if keys[c] in seen], [c for c in perturbed if keys[c] not in seen]
 
 
-def job_rows(data: dict[str, Any], keep: list[int], offsets: dict[str, Any]) -> list[dict[str, Any]]:
+def job_rows(
+    data: dict[str, Any], keep: list[int], offsets: dict[str, Any], predictors: tuple[str, ...] = PREDICTORS
+) -> list[dict[str, Any]]:
     """Observed and predicted X of the kept configurations, one row per mesh."""
     settings = np.flatnonzero(np.isin(data["configuration"], keep) & ~reading.anchors_of(data))
     part = reading.subset(data, settings)
-    results = ordered_map(evaluated, [(part, offsets[name]) for name in PREDICTORS], min_items=1)
-    predicted = {name: [row[2] for row in result] for name, result in zip(PREDICTORS, results, strict=True)}
+    results = ordered_map(evaluated, [(part, offsets[name]) for name in predictors], min_items=1)
+    predicted = {name: [row[2] for row in result] for name, result in zip(predictors, results, strict=True)}
     observed = [(row[0], row[1]) for row in results[0]]
     return [
         {
             "mesh": list(part["keys"][i]),
             "observed": observed[i][0],
             "counting_variance": observed[i][1],
-            **{f"predicted_{name}": predicted[name][i] for name in PREDICTORS},
+            **{f"predicted_{name}": predicted[name][i] for name in predictors},
         }
         for i in range(len(part["keys"]))
     ]
@@ -233,54 +278,60 @@ def primary(predicted: np.ndarray, observed: np.ndarray, jobs: np.ndarray, ceili
     }
 
 
-def outcome(readings: dict[str, dict[str, Any]], steady: bool, reference: float) -> str:
-    carried = {name: readings[name].get("reading") == "carried" for name in PREDICTORS}
-    if any(readings[name].get("reading") == "not read" for name in PREDICTORS):
+def outcome(readings: dict[str, dict[str, Any]], steady: bool, reference: float, design: Design = NEW_SEED) -> str:
+    names = design.predictors
+    carried = {name: readings[name].get("reading") == "carried" for name in names}
+    if any(readings[name].get("reading") == "not read" for name in names):
         return "not read"
     if all(carried.values()):
         return "both carried"
-    if carried["exploration"]:
-        return "P-A carried only"
-    if carried["all-meshes"]:
-        return "P-B carried only"
-    if any(readings[name]["r_upper"] < 0 for name in PREDICTORS):
+    for name, label in zip(names, design.labels, strict=True):
+        if carried[name]:
+            return f"{label} carried only"
+    if any(readings[name]["r_upper"] < 0 for name in names):
         return "inconclusive: anticorrelated"
     if not steady:
         return "inconclusive: anchors moved"
-    if all(readings[name]["share_upper"] < reference for name in PREDICTORS):
+    if all(readings[name]["share_upper"] < reference for name in names):
         return "bounded"
     return "inconclusive"
 
 
-def frozen_cases() -> dict[str, str]:
+def frozen_cases(design: Design = NEW_SEED) -> dict[str, str]:
     return {
         path.parent.name: hashlib.sha256(path.read_bytes()).hexdigest()
-        for path in sorted(CASES.glob("job-0[45]*/cases.json"))
+        for path in sorted(CASES.glob(design.cases_glob))
     }
 
 
 def score(
-    offsets_path: Path, confirmation_path: Path, references: list[Path], runs: list[Path], enforce: bool = True
+    offsets_path: Path,
+    confirmation_path: Path,
+    references: list[Path],
+    runs: list[Path],
+    enforce: bool = True,
+    design: Design = NEW_SEED,
 ) -> dict[str, Any]:
     """The score record. enforce applies the frozen reference and acquisition sets; the retained-run tests lift it to
     drive the pipeline with earlier jobs standing in for new ones."""
+    names, labels = design.predictors, dict(zip(design.predictors, design.labels, strict=True))
     frozen = json.loads(offsets_path.read_text(encoding="utf-8"))
     offsets = {entry["name"]: entry for entry in frozen["predictors"]}
-    models.require(sorted(offsets) == sorted(PREDICTORS), f"{offsets_path.name} holds {sorted(offsets)}")
+    models.require(sorted(offsets) == sorted(names), f"{offsets_path.name} holds {sorted(offsets)}")
     confirmation = json.loads(confirmation_path.read_text(encoding="utf-8"))
     reference_data = ordered_map(models.job_data, references)
     by_job = {d["record"]["manifest"]["job"]: d for d in reference_data}
     if enforce:
-        models.require(sorted(by_job) == list(REFERENCE_JOBS), f"the references are {sorted(by_job)}")
-    models.require(BASELINE_JOB in by_job, f"the reference runs omit {BASELINE_JOB}, the anchor baseline")
-    baseline, baseline_variance = anchor_mean(by_job[BASELINE_JOB])
+        models.require(sorted(by_job) == sorted(design.reference_jobs), f"the references are {sorted(by_job)}")
+    models.require(design.baseline_job in by_job, f"the reference runs omit {design.baseline_job}, the anchor baseline")
+    baseline, baseline_variance = anchor_mean(by_job[design.baseline_job])
     critical = float(stats.norm.ppf(0.5 + ANCHOR_LEVEL / 2))
     seen = {key for d in reference_data for key in mesh_keys(d)}
     margin = math.sqrt(confirmation["explained_share"]["compilation_variance"])
     summaries = ordered_map(returned, runs)
     if enforce:
-        acquisition(summaries, frozen_cases())
-    first_partial = enforce and not summaries[0]["complete"]
+        acquisition(summaries, frozen_cases(design), design)
+    first_partial = enforce and design.first_partial_unread and not summaries[0]["complete"]
     datasets = ordered_map(loaded, [(path, summary["complete"]) for path, summary in zip(runs, summaries, strict=True)])
     jobs: list[dict[str, Any]] = []
     rows: list[dict[str, Any]] = []
@@ -318,35 +369,39 @@ def score(
             }
         )
         if jobs[-1]["scored"]:
-            rows.extend({"job": name, **row} for row in job_rows(data, keep, offsets))
-    labels = np.array([row["job"] for row in rows])
+            rows.extend({"job": name, **row} for row in job_rows(data, keep, offsets, names))
+    groups = np.array([row["job"] for row in rows])
     observed = np.array([row["observed"] for row in rows])
     compilation = confirmation["explained_share"]["compilation_variance"]
     steady = all(job["anchor_control"]["reading"] == "steady" for job in jobs if job["scored"])
     reference = confirmation["explained_share"]["share_of_ceiling"]
+    if design.reference_record is not None:
+        earlier = json.loads((ROOT / design.reference_record).read_text(encoding="utf-8"))
+        reference = earlier["primary"][design.reference_label]["share"]
     held = confirmation["rows"]
     # With no scored mesh the ceiling and every correlation are unavailable, and the record says so in place of NaN.
     counting: float | None = None
     ceiling_sq: float | None = None
     unread = {"meshes": 0, "jobs": 0, "reading": "not read"}
-    readings = {LABELS[name]: unread for name in PREDICTORS}
+    readings = {labels[name]: unread for name in names}
     pooled: dict[str, Any] = unread
     if rows and not first_partial:
         counting = float(np.mean([row["counting_variance"] for row in rows]))
         ceiling_sq = compilation / (compilation + counting)
         readings = {
-            LABELS[name]: primary(np.array([row[f"predicted_{name}"] for row in rows]), observed, labels, ceiling_sq)
-            for name in PREDICTORS
+            labels[name]: primary(np.array([row[f"predicted_{name}"] for row in rows]), observed, groups, ceiling_sq)
+            for name in names
         }
-        pooled = primary(
-            np.concatenate([[row["predicted_exploration"] for row in rows], [row["predicted"] for row in held]]),
-            np.concatenate([observed, [row["observed"] for row in held]]),
-            np.concatenate([labels, ["held-out"] * len(held)]),
-            ceiling_sq,
-        )
-    return {
-        "schema": "ascella-new-mesh-score-v1",
-        "plan": "docs/state/plans/ascella-new-seed-meshes-case.json",
+        if design.pooled:
+            pooled = primary(
+                np.concatenate([[row["predicted_exploration"] for row in rows], [row["predicted"] for row in held]]),
+                np.concatenate([observed, [row["observed"] for row in held]]),
+                np.concatenate([groups, ["held-out"] * len(held)]),
+                ceiling_sq,
+            )
+    record = {
+        "schema": design.schema,
+        "plan": design.plan,
         "offsets": offsets_path.relative_to(ROOT).as_posix(),
         "references": [path.relative_to(ROOT).as_posix() for path in references],
         "alpha": ALPHA,
@@ -358,20 +413,23 @@ def score(
         },
         "reference_share": reference,
         "primary": readings,
-        "outcome": outcome({name: readings[LABELS[name]] for name in PREDICTORS}, steady, reference),
-        "exploratory_pooled_with_held_out": pooled,
+        "outcome": outcome({name: readings[labels[name]] for name in names}, steady, reference, design),
         "rows": rows,
     }
+    if design.pooled:
+        record["exploratory_pooled_with_held_out"] = pooled
+    return record
 
 
-def main(argv: list[str]) -> int:
+def run(argv: list[str], design: Design) -> int:
+    """The entry point of a design: OFFSETS CONFIRMATION REFERENCE_RUNS... -- NEW_RUNS... OUT [--check]."""
     check = argv[-1:] == ["--check"]
     args = argv[:-1] if check else argv
     models.require("--" in args and len(args) >= 6, f"usage: see the module docstring, not {argv}")
     split = args.index("--")
     paths = [Path(arg).resolve() for arg in args]
     out = paths[-1]
-    record = score(paths[0], paths[1], paths[2:split], paths[split + 1 : -1])
+    record = score(paths[0], paths[1], paths[2:split], paths[split + 1 : -1], design=design)
     text = json.dumps(record, indent=1, sort_keys=True) + "\n"
     if check:
         models.replay(json.loads(text), json.loads(out.read_text(encoding="utf-8")), out.name)
@@ -379,6 +437,10 @@ def main(argv: list[str]) -> int:
     models.require(not out.exists(), f"{out} exists; the score is written once")
     out.write_text(text, encoding="utf-8")
     return 0
+
+
+def main(argv: list[str]) -> int:
+    return run(argv, NEW_SEED)
 
 
 if __name__ == "__main__":
