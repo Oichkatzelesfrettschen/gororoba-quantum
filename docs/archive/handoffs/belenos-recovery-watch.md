@@ -1,7 +1,7 @@
 # Belenos recovery watch and the job-01 rehearsal
 
 This handoff carries the single-chip teleportation rehearsal on Quandela's `qpu:belenos` from its first run (job-00,
-retained) to its second (job-01, not yet written). It stands alone for a reader with no access to the session that
+retained) to its second (job-01, machinery and seeds in the tree, case files pending the recovered record). It stands alone for a reader with no access to the session that
 wrote it. Issue [#556](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/issues/556) is the live thread:
 the scheduled watch posts every event there, and the owner reads it. The plan record
 [ascella-belenos-entanglement-teleportation.json](../../state/plans/ascella-belenos-entanglement-teleportation.json),
@@ -79,8 +79,20 @@ A window that overran or moved leaves the watch armed for the next event. If the
 `unscorable` for more than a day, the owner decides whether to ask Quandela about the published figures; the draft
 contact text lives only in the owner's checkout under the ignored `docs/local/`.
 
-**Record `changed`, pooled fidelity below 0.86.** Job-01 stays held; the workflow has disabled itself. Re-arm it for
-the new state through one pull request:
+**Record `changed`.** The workflow has disabled itself. Its comment gives job-00's model pooled fidelity at the new
+figures, a guide to the chip's state and no admission threshold. Job-01 is a descriptive acquisition preregistered
+at its own read (design section "Recovered-chip rehearsal (job-01)"). `--prepare` refuses only a read whose modeled
+seconds exceed the 300 s `max_duration`, or for which Perceval estimates no shots. At job-00's modeled
+probabilities the preregistered 1200 samples per iteration in twelve iterations take 240 s.
+
+- Prepare job-01 by the procedure of [Building job-01](#building-job-01). Its written case carries the forecast
+  correctness, the forecast lower bound against each comparison, and the derived credits and seconds, so the owner
+  weighs the expected result and the cost before approving.
+- When `--prepare` refuses, report the refusal and re-arm the watch for the new state.
+- Re-arm the watch in either case when the owner wants later reads reported. Nothing is submitted before the owner
+  approves the written case; the job-00 approval covered one submission and does not carry over.
+
+Re-arm the watch for a new state through one pull request:
 
 1. `"$PYTHON" scripts/qd_platform.py snapshot --out DIR` (needs `QUANDELA_TOKEN_FILE`) writes `DIR/catalogue.json`;
    retain it under `docs/evidence/quandela/` or a run directory.
@@ -90,38 +102,54 @@ the new state through one pull request:
 4. Replace or drop `qpu-belenos-booking.json` (and the workflow's `--booking` arguments) when no window is pending.
 5. After the merge, `gh api -X PUT repos/Oichkatzelesfrettschen/gororoba-quantum/actions/workflows/quandela-record-watch.yml/enable`.
 
-**Record `changed`, pooled fidelity at or above 0.86.** Build job-01 as plan step `recovered-chip-rehearsal`
-describes, and submit nothing before the owner approves its written case. The job-00 approval covered one
-submission and does not carry over.
-
 **Run failed.** Read the run log, fix the cause in a pull request, and confirm the next run. The failure marker keys
 on the commit, so the fixed commit posts again if it fails.
 
 ## Building job-01
 
-`scripts/qd_teleportation_rehearsal.py` serves job-00 only, and each of these places needs a job parameter:
+The job-01 machinery and seeds are in the tree; the case files wait for the recovered record. The design section
+[Recovered-chip rehearsal (job-01)](../../design/ascella-belenos-entanglement-teleportation.md#recovered-chip-rehearsal-job-01)
+holds the question, the preregistration rule and the six-step procedure. The facts it rests on:
 
-- `COMPILATION_SEEDS` is one tuple of six seeds, and `check_setting` and `validate_body` require exactly those values. Job-01 takes six new values from a fresh ANU draw
-  (`"$PYTHON" scripts/anu_qrng.py draw --out docs/evidence/anu_qrng`), registered as rows of
-  `docs/evidence/qrng_seeds/allocations.json` with the draw file and index of each value, in index order
-  (root AGENTS.md "Seeds"; `ci/seed_provenance.py` enforces it).
-- `JOBS` holds one `Job("job-00", 900, 1_200_000, 2.2, 120.0)`; job-01 needs its row, with `max_shots` re-derived from
-  `estimate_required_shots` under the fresh record.
-- `CASES / "job-00"` is fixed in `variants` (the platform read), `retained_derivation` (noise-model.json),
-  `shot_estimate`, `write_estimate`, `write_justification` and `simulate`; each takes the job's directory,
-  `results/quandela/cases/teleportation_rehearsal/job-01/`.
+- The owner chose on 2026-10-26 to preregister job-01 at its own platform read, and then to redesign it. The
+  record admits no applicable classical bound: each input compiles into its own circuit, multiphoton inputs under
+  free postselection raise the bound to 3/4 or more, and the service reports no optical attempts. Job-01 is
+  therefore descriptive: an anytime-valid lower confidence bound on the accepted events' correctness, a block
+  homogeneity veto, and two comparisons, against 3/4 and against the attempt-box bound at ratio 1.1, each valid
+  only under its named assumptions. The record behind this is the
+  [consult](../reviews/2026-10-26-belenos-job-01-redesign-consult.md) and its
+  [disposition](../reviews/2026-10-26-belenos-job-01-redesign-disposition.md).
+- Twelve iterations, two blocks: block A in design order and block B mirrored. `JOB_01_COMPILATION_SEEDS` holds the
+  twelve seeds, from the Outshift draw `draw-2026-10-26T204106Z.json` (block A) and the ANU draw
+  `draw-2026-10-26T230602Z.json` (block B), indices 0 to 5 of each, registered in
+  `docs/evidence/qrng_seeds/allocations.json`.
+- `scripts/qd_teleportation_rehearsal.py` carries both rules: each `Request` names its rule and block count
+  (`CASE_DESIGNS`).
+  - The descriptive rule's analysis writes schema `qd-teleportation-analysis-v2`, and binds result iterations by
+    circuit parameters and compilation seed.
+  - Its `binding` gate admits only a live performance record whose perfs digest equals the prepared read's.
+  - `scripts/qd_rehearsal_secondary.py` binds the same way.
+- `--prepare job-01` derives the layout, `noise-model.json` and `shot-estimate.json` from
+  `results/quandela/cases/teleportation_rehearsal/job-01/platform-read/catalogue.json`, prints the forecast, then
+  prints the `REQUESTS` and `JOBS` rows.
 
-The job-01 case then follows the job-00 sequence: retain the fresh platform read, `--justify` and `--estimate` under
-it, write the case, run `--check`, plan it with `--plan job-01` and `--body job-01` (no `--anchor`: the live gate
-applies), and write the case paragraph in the design. The written case states what the run measures, why a noise
-simulation cannot answer it (only the chip shows whether its Bell pair and analyzer beat B), the backend
-`qpu:belenos`, the shots, the expected seconds (job-00 took 292 s) and the credits (an iterated job bills
-1 + largest `max_shots` * 1e-6, 2.2 for 1,200,000). After the owner's approval, `--submit RUN APPROVAL` sends it
-once; `binding` refuses a body that differs from the retained `job-body.json` or a live model below F*. Retention
-mirrors PR #538: the run directory with both analyses, `--check` replays, a replay gate modeled on
-`core-teleportation-rehearsal-job-00-replay` with its `ci/runner_image_records.json` exempt entries, a registry
-acquisition and claim inserted as text into the hand-formatted `docs/state/research_state.json`, and the plan step's
-receipt. These code changes and the seed draw depend on no record and can land before the chip recovers.
+When the watch posts a scorable change, take step 1 of the design's procedure (the snapshot), then step 2, and open
+one pull request with:
+- the read, the derivation and the estimate;
+- the two rows and the case files;
+- the frozen body and the plan record;
+- the written-case paragraph.
+
+The written case then goes to the owner. If the live record changes between preparation and submission, `binding`
+refuses, and the case is prepared again from the new read. A split into several jobs is a different experiment and
+needs its own reviewed case. The twelve seeds stay reserved for job-01.
+
+Two details matter when job-01 is retained:
+- **Break-even replay.** `break_even_ratio` bisects on strict comparisons against certified solver values, so a
+  last-digit difference between runners can move it by one bisection step, 0.005. Exempt that field from the replay
+  gate's byte comparison, or compare it on the 0.005 grid.
+- **Shot estimate.** `shot-estimate.json` keys its `inputs` by label, so block B's estimates replace block A's in
+  the record. Both blocks run identical parameters, so the shot ceiling is unaffected.
 
 ## References
 
@@ -137,6 +165,7 @@ receipt. These code changes and the seed draw depend on no record and can land b
 | PR #541 | the scheduled record watch |
 | PR #555 | the `unscorable` class |
 | the pull request adding this file | booking events, comment deduplication, failure comments, this handoff |
+| the pull request adding job-01 | per-case `Request` (layout, seeds, anchor read), `--prepare`, job-01 seeds, the design's job-01 section |
 | issue #556 | the live thread the watch posts to |
 | [Perceval #798](https://github.com/Quandela/Perceval/issues/798) | remote result contract (computed_circuit, count provenance, mitigations); no reply on 2026-10-26 |
 | [Perceval #799](https://github.com/Quandela/Perceval/issues/799) | Ascella per-job calibration; one cross-reference comment from the owner |

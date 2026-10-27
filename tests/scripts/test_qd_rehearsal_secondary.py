@@ -80,12 +80,17 @@ def test_fit_reports_a_grid_without_support() -> None:
 
 
 def test_category_table_reproduces_the_variant_scores() -> None:
-    settings, circuit = rehearsal.request_parts()
+    request = rehearsal.REQUESTS["job-00"]
+    settings, circuit = rehearsal.request_parts(request)
     anchor = json.loads((rehearsal.ROOT / rehearsal.ANCHOR_READ).read_text(encoding="utf-8"))
     t_out, _, figures = rehearsal.read_perfs(anchor)
-    table = secondary.category_table(settings, circuit, [t_out], (0.888,), (0.011,), (figures["transmittance"],))
+    table = secondary.category_table(
+        settings, circuit, [t_out], (0.888,), (0.011,), (figures["transmittance"],), layout=request.layout
+    )
     variant = rehearsal.Variant("check", 0.888, 0.011, tuple(rehearsal.detection_efficiency(t_out, 0.055)))
-    rows = ordered_map(rehearsal.variant_scores, [(variant, s["label"], s, circuit) for s in settings], min_items=1)
+    rows = ordered_map(
+        rehearsal.variant_scores, [(variant, s["label"], s, circuit, request.layout) for s in settings], min_items=1
+    )
     for k, row in enumerate(rows):
         cell = table[k, 0, 0, 0, 0]
         accepted = cell[0] + cell[1]
@@ -127,7 +132,7 @@ def test_controls_are_deterministic_support_matched_tables() -> None:
 def test_lens_of_the_model_against_itself_ranks_at_one() -> None:
     event = tuple(1 if mode == rehearsal.LAYOUT[rehearsal.Q0] else 0 for mode in range(rehearsal.MODES))
     model: list[dict[tuple[int, ...], float]] = [{event: 1.0}] * 6
-    record = secondary.cd_lens(model, lambda: model, seed=LENS_SEED, count=9, dims=(64,))
+    record = secondary.cd_lens(model, lambda: model, rehearsal.LAYOUT, seed=LENS_SEED, count=9, dims=(64,))
     if record["dimensions"]["64"]["percentile"] != 1.0 or record["flag"] != "no algebra-specific separation":
         raise AssertionError(record)
 
@@ -148,11 +153,12 @@ def test_basis_index_places_logical_mode_b_on_bit_b() -> None:
     for mode in (rehearsal.Q0, rehearsal.A1, rehearsal.H1):
         clicks[rehearsal.LAYOUT[mode]] = 1
     index = (1 << rehearsal.Q0) | (1 << rehearsal.A1) | (1 << rehearsal.H1)
-    if secondary.basis_index(clicks, 256) != index or secondary.basis_index(clicks, 128) is not None:
-        raise AssertionError(secondary.basis_index(clicks, 256))
+    layout = rehearsal.LAYOUT
+    if secondary.basis_index(clicks, 256, layout) != index or secondary.basis_index(clicks, 128, layout) is not None:
+        raise AssertionError(secondary.basis_index(clicks, 256, layout))
     outside = [0] * rehearsal.MODES
     outside[0] = 1
-    if secondary.basis_index(outside, 256) is not None:
+    if secondary.basis_index(outside, 256, layout) is not None:
         raise AssertionError("a click off the logical modes maps into the algebra")
 
 
@@ -171,7 +177,7 @@ def test_fitted_pooled_fidelity_weights_inputs_by_their_samples() -> None:
 def test_in_situ_fit_of_a_simulated_run_uses_the_anchor_profile(tmp_path: Any, monkeypatch: pytest.MonkeyPatch) -> None:
     calls: list[int] = []
 
-    def table(settings: Any, circuit: Any, profiles: Any, *args: Any) -> np.ndarray:
+    def table(settings: Any, circuit: Any, profiles: Any, *args: Any, **kwargs: Any) -> np.ndarray:
         calls.append(len(profiles))
         cells = np.zeros((6, 1, 1, len(profiles), 1, len(secondary.CATEGORIES)))
         cells[..., 0] = 1.0
@@ -200,6 +206,6 @@ def test_lens_without_events_builds_no_model() -> None:
     def model() -> list[dict[tuple[int, ...], float]]:
         raise AssertionError("the model ran for a run without events")
 
-    record = secondary.cd_lens([{}] * 6, model, seed=LENS_SEED, count=3, dims=(64,))
+    record = secondary.cd_lens([{}] * 6, model, rehearsal.LAYOUT, seed=LENS_SEED, count=3, dims=(64,))
     if record["dimensions"]["64"]["status"] == "computed":
         raise AssertionError(record)

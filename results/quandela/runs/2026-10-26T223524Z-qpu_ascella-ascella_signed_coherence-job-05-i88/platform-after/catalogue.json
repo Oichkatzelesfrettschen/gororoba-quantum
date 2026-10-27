@@ -1,0 +1,873 @@
+{
+ "account": {
+  "availability": {
+   "max_concurrent_jobs": 1,
+   "max_jobs_in_queue": 1,
+   "max_running_qt_jobs": 10,
+   "num_concurrent_jobs": 0,
+   "num_jobs_in_queue": 0,
+   "num_running_qt_jobs": 0
+  },
+  "token_usage": [
+   {
+    "total_jobs": 79,
+    "usage": [
+     {
+      "credits": 0.0,
+      "duration_seconds": 1283,
+      "free_credits": 7.180223999999999,
+      "nb_jobs": 13,
+      "platform_name": "qpu:ascella"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 1128,
+      "free_credits": 16.0,
+      "nb_jobs": 17,
+      "platform_name": "sim:belenos"
+     },
+     {
+      "credits": 0.0,
+      "duration_seconds": 5570,
+      "free_credits": 50.26742,
+      "nb_jobs": 49,
+      "platform_name": "qpu:belenos"
+     }
+    ]
+   }
+  ]
+ },
+ "api": "https://api.cloud.quandela.com",
+ "api_version": "v2.10.1-rc1",
+ "architecture_carried": [],
+ "architecture_observed_utc": {
+  "qpu:ascella": "2026-10-26T22:43:17+00:00",
+  "qpu:belenos": "2026-10-26T22:43:17+00:00",
+  "sim:ascella": "2026-10-26T22:43:17+00:00",
+  "sim:belenos": "2026-10-26T22:43:17+00:00"
+ },
+ "explorer_platforms": [
+  {
+   "bookable": true,
+   "description": "Ascella QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "qpu:ascella",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-19": {
+     "availability": 89.93
+    },
+    "2026-10-20": {
+     "availability": 89.97
+    },
+    "2026-10-21": {
+     "availability": 89.4
+    },
+    "2026-10-22": {
+     "availability": 89.83
+    },
+    "2026-10-23": {
+     "availability": 90.81
+    },
+    "2026-10-24": {
+     "availability": 92.25
+    },
+    "2026-10-25": {
+     "availability": 92.22000000000001
+    },
+    "2026-10-26": {
+     "availability": 92.02000000000001
+    }
+   },
+   "status": "available",
+   "type": "qpu"
+  },
+  {
+   "bookable": true,
+   "description": "Belenos QPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": {
+    "end_time": "2026-10-29T11:30:00Z",
+    "maintenance_title": "Maintenance",
+    "start_time": "2026-10-26T08:30:00Z",
+    "time_zone": "Europe/Paris"
+   },
+   "max_duration": 300,
+   "name": "qpu:belenos",
+   "price_per_shot": 1e-06,
+   "statistic": {
+    "2026-10-19": {
+     "availability": 74.5
+    },
+    "2026-10-20": {
+     "availability": 81.96000000000001
+    },
+    "2026-10-21": {
+     "availability": 82.28
+    },
+    "2026-10-22": {
+     "availability": 81.74
+    },
+    "2026-10-23": {
+     "availability": 80.98
+    },
+    "2026-10-24": {
+     "availability": 83.07
+    },
+    "2026-10-25": {
+     "availability": 88.65
+    },
+    "2026-10-26": {
+     "availability": 34.25
+    }
+   },
+   "status": "maintenance",
+   "type": "qpu"
+  },
+  {
+   "bookable": false,
+   "description": "Arcturus simulator",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:ascella",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-19": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-20": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-21": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-22": {
+     "availability": 99.91000000000001
+    },
+    "2026-10-23": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-24": {
+     "availability": 99.91
+    },
+    "2026-10-25": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-26": {
+     "availability": 99.98
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  {
+   "bookable": false,
+   "description": "Belenos simulator",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:belenos",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-19": {
+     "availability": 99.86
+    },
+    "2026-10-20": {
+     "availability": 99.89999999999999
+    },
+    "2026-10-21": {
+     "availability": 99.87
+    },
+    "2026-10-22": {
+     "availability": 99.9
+    },
+    "2026-10-23": {
+     "availability": 99.9
+    },
+    "2026-10-24": {
+     "availability": 99.9
+    },
+    "2026-10-25": {
+     "availability": 99.9
+    },
+    "2026-10-26": {
+     "availability": 101.35
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  {
+   "bookable": false,
+   "description": "Clifford on GPU",
+   "is_locked": true,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:gpu:medium",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-19": {
+     "availability": 0.0
+    },
+    "2026-10-20": {
+     "availability": 0.0
+    },
+    "2026-10-21": {
+     "availability": 0.0
+    },
+    "2026-10-22": {
+     "availability": 0.0
+    },
+    "2026-10-23": {
+     "availability": 0.0
+    },
+    "2026-10-24": {
+     "availability": 0.0
+    },
+    "2026-10-25": {
+     "availability": 0.0
+    },
+    "2026-10-26": {
+     "availability": 0.0
+    }
+   },
+   "status": "decommissioned",
+   "type": "simulator"
+  },
+  {
+   "bookable": false,
+   "description": "Clifford on GPU",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:gpu:small",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-19": {
+     "availability": 99.91
+    },
+    "2026-10-20": {
+     "availability": 99.9
+    },
+    "2026-10-21": {
+     "availability": 99.88
+    },
+    "2026-10-22": {
+     "availability": 99.9
+    },
+    "2026-10-23": {
+     "availability": 99.91
+    },
+    "2026-10-24": {
+     "availability": 99.91
+    },
+    "2026-10-25": {
+     "availability": 99.9
+    },
+    "2026-10-26": {
+     "availability": 99.96
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  {
+   "bookable": true,
+   "description": "Boson sampler simulator with Clifford&Clifford 2017 backend",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:sampling",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-19": {
+     "availability": 99.92
+    },
+    "2026-10-20": {
+     "availability": 99.91
+    },
+    "2026-10-21": {
+     "availability": 99.9
+    },
+    "2026-10-22": {
+     "availability": 99.91
+    },
+    "2026-10-23": {
+     "availability": 99.91
+    },
+    "2026-10-24": {
+     "availability": 99.92
+    },
+    "2026-10-25": {
+     "availability": 99.91
+    },
+    "2026-10-26": {
+     "availability": 99.96
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  {
+   "bookable": false,
+   "description": "Simulator with SLOS backend",
+   "is_locked": false,
+   "is_offer_platform": true,
+   "maintenance": null,
+   "max_duration": 300,
+   "name": "sim:slos",
+   "price_per_shot": 0.0,
+   "statistic": {
+    "2026-10-19": {
+     "availability": 99.91000000000001
+    },
+    "2026-10-20": {
+     "availability": 99.9
+    },
+    "2026-10-21": {
+     "availability": 99.9
+    },
+    "2026-10-22": {
+     "availability": 99.9
+    },
+    "2026-10-23": {
+     "availability": 99.91
+    },
+    "2026-10-24": {
+     "availability": 99.9
+    },
+    "2026-10-25": {
+     "availability": 99.9
+    },
+    "2026-10-26": {
+     "availability": 99.96
+    }
+   },
+   "status": "available",
+   "type": "simulator"
+  }
+ ],
+ "processors": {
+  "qpu:ascella": {
+   "perfs": {
+    "Clock (MHz)": 13.33,
+    "Dark counts (detection/s)": [
+     340.0,
+     303.0,
+     288.0,
+     101.0,
+     119.0,
+     360.0,
+     208.0,
+     528.0,
+     2643.0,
+     2990.0,
+     4195.0,
+     615.0
+    ],
+    "HOM (%)": 86.86,
+    "g2 (%)": 2.1
+   },
+   "specs": {
+    "architecture": ":PCVL:zip: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",
+    "available_commands": [
+     "probs",
+     "samples",
+     "sample_count",
+     "entropy",
+     "entropy_demo"
+    ],
+    "commands": "pcvlar:zip:eJydkEsKwjAURbdyl9CktZ+x4Aqcl2iDBvKjeQW7e19/WBUcOAmPm5OTmyCDQAZrEiHnUfJ6DM4p33GcwyunUSCZm1c09BoHqBjt2GpHKL9RcdixovwNy2wHS/EGJ+r5rtiHS9raVajR4BKCxRk0RKunyvwAASFfQf4ZFGswKXly6tEm5XgzgcY4IcbT4j3NULMw90BpOVTiGlw0VpEJvk1ad3NeYfNs/1dB1BDN3+3kamyvYeBOq1ZKSF6LP7RP2d6MsA==",
+    "connected_input_modes": [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10
+    ],
+    "constraints": {
+     "max_mode_count": 12,
+     "max_photon_count": 6,
+     "max_sample_count": null,
+     "min_mode_count": 1,
+     "min_photon_count": 1,
+     "support_multi_photon": false
+    },
+    "default_mitigations": "pcvlar:zip:eJxTMFAwVDBQyMksLlEwAAAS5AMe",
+    "description": "Ascella QPU",
+    "detector": "threshold",
+    "documentation": "<p><strong>qpu:ascella</strong></p>\n\n<p>QPU Ascella is one of our online quantum computers. It features 12 available modes and up to 6 photons. With Ascella, you can implement any unitary transform on 12 modes -- it is universal. A schematic of the chip is shown above.</p>\n\n<p>The detectors are not number-resolving (i.e. cannot differentiate between 1- and n-photon states).</p>\n\n<p>Depending on your algorithm, you may be interested in the n-photon coincidence rate. You can calculate it as Clock [MHz] x (Transmittance)^n.</p>\n\n<p>The QPU supports sampling commands: samples and sample_count.</p>\n\n<p>For more information about the Quandela Cloud and how to get started, refer to the <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://cloud.quandela.com/webide/documentation\" target=\"_blank\">Documentation</a>. Information about using Perceval to interact with our cloud computers is available <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/index.html\" target=\"_blank\">here</a>. And if you have any questions, send us a message by clicking the Support button in the bottom right of any Cloud page.</p>\n",
+    "known_mitigations": [
+     "PhotonRecycling",
+     "CompilationAveraging",
+     "DistinguishablePhoton",
+     "DetectorBalancing"
+    ],
+    "min_client_version": "0.10.0",
+    "parameters": {
+     "final_mode_number": "number of modes of the output states. States having a photon on unused modes will be ignored. Useful when using computed circuits (default input_state.m)",
+     "use_photon_recycling": "Legacy - Use the mitigation setter instead - boolean enabling the Photon Recycling noise mitigation process. Replaces default mitigation if no user-defined mitigation is given, else it is ignored (Default False)"
+    },
+    "pcvl_version": "1.3.0",
+    "pre_shots_compatibility": false,
+    "processor_name": "qpu:ascella",
+    "software_versions": {
+     "exqalibur": "1.4.1",
+     "hardware-core-quandela": "3.9.11",
+     "mosaiq-arcturus": "2.1.5.2.post4",
+     "pcvl-worker": "2.1.1",
+     "perceval-quandela": "1.3.0",
+     "universalchipworker": "2.1.3"
+    },
+    "type": "qpu"
+   },
+   "status": "available",
+   "type": "qpu"
+  },
+  "qpu:belenos": {
+   "perfs": {
+    "Clock (MHz)": 4.94,
+    "Dark counts (detection/s)": [
+     35.2,
+     19.0,
+     10.5,
+     12.3,
+     22.2,
+     42792.3,
+     13.9,
+     12.5,
+     11.1,
+     106.7,
+     15.4,
+     18.0,
+     15.8,
+     10.1,
+     15.9,
+     13.7,
+     62.3,
+     45.1,
+     37.4,
+     51.9,
+     81.5,
+     25.7,
+     29.5,
+     30.2
+    ],
+    "HOM (%)": 83.8,
+    "Transmission per mode (%)": {
+     "t_in": [
+      0.01,
+      0.0,
+      0.01,
+      0.0,
+      0.01,
+      0.0,
+      0.03,
+      0.0,
+      0.02,
+      0.02,
+      0.0,
+      0.0,
+      0.02,
+      0.02,
+      0.0,
+      0.0,
+      0.02,
+      0.0,
+      0.02,
+      0.0,
+      0.02,
+      0.0,
+      0.01,
+      0.0
+     ],
+     "t_out": [
+      128.77,
+      154.77,
+      136.21,
+      148.37,
+      98.47,
+      172.41,
+      76.21,
+      68.71,
+      84.78,
+      77.74,
+      101.53,
+      86.71,
+      76.07,
+      77.31,
+      71.71,
+      113.1,
+      92.4,
+      126.1,
+      108.43,
+      109.18,
+      53.43,
+      95.79,
+      102.21,
+      111.82
+     ]
+    },
+    "Transmittance (%)": 0.06,
+    "g2 (%)": 66.7
+   },
+   "specs": {
+    "architecture": ":PCVL:zip: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",
+    "available_commands": [
+     "probs",
+     "samples",
+     "sample_count",
+     "entropy"
+    ],
+    "commands": "pcvlar:zip:eJydkEsKwjAURbdyl9CktZ+x4Aqcl2iDBvKjeQW7e19/WBUcOAmPm5OTmyCDQAZrEiHnUfJ6DM4p33GcwyunUSCZm1c09BoHqBjt2GpHKL9RcdixovwNy2wHS/EGJ+r5rtiHS9raVajR4BKCxRk0RKunyvwAASFfQf4ZFGswKXly6tEm5XgzgcY4IcbT4j3NULMw90BpOVTiGlw0VpEJvk1ad3NeYfNs/1dB1BDN3+3kamyvYeBOq1ZKSF6LP7RP2d6MsA==",
+    "connected_input_modes": [
+     0,
+     2,
+     4,
+     6,
+     8,
+     9,
+     12,
+     13,
+     16,
+     18,
+     20,
+     22
+    ],
+    "constraints": {
+     "max_mode_count": 24,
+     "max_photon_count": 12,
+     "max_sample_count": null,
+     "min_mode_count": 1,
+     "min_photon_count": 1,
+     "support_multi_photon": false
+    },
+    "default_mitigations": "pcvlar:zip:eJxTMFAwVDBQyMksLgEyDBVcUktSk0vyi5wScxLzkjPz0oGSBgC/8grp",
+    "description": "Belenos QPU",
+    "detector": "threshold",
+    "documentation": "<p><strong>qpu:belenos</strong></p>\n\n<p>QPU Belenos is our online quantum computer. It features 24 available modes and up to 12 photons. Belenos chip architecture is universal, meaning any unitary transform can be implemented. A schematic of the chip is shown above.</p>\n\n<p>Some of the detectors are quasi number-resolving (i.e. they can differentiate between 1- and n-photon states).</p>\n\n<p>Depending on your algorithm, you may be interested in the n-photon coincidence rate. You can calculate it as Clock [MHz] x (Transmittance x Brightness)^n.</p>\n\n<p>For more information about the Quandela Cloud and how to get started, refer to the <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://cloud.quandela.com/webide/documentation\" target=\"_blank\">Documentation</a>. Information about using Perceval to interact with our cloud computers is available <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/index.html\" target=\"_blank\">here</a>. And if you have any questions, send us a message by clicking the Support button in the bottom right of any Cloud page.</p>\n",
+    "known_mitigations": [
+     "PhotonRecycling",
+     "CompilationAveraging",
+     "DistinguishablePhoton",
+     "DetectorBalancing"
+    ],
+    "min_client_version": "0.10.0",
+    "parameters": {
+     "final_mode_number": "number of modes of the output states. States having a photon on unused modes will be ignored. Useful when using computed circuits (default input_state.m)",
+     "use_photon_recycling": "Legacy - Use the mitigation setter instead - boolean enabling the Photon Recycling noise mitigation process. Replaces default mitigation if no user-defined mitigation is given, else it is ignored (Default False)"
+    },
+    "pcvl_version": "1.3.0",
+    "pre_shots_compatibility": false,
+    "processor_name": "qpu:belenos",
+    "software_versions": {
+     "exqalibur": "1.4.2",
+     "hardware-core-quandela": "3.9.10",
+     "mosaiq-belenos": "2.9.5",
+     "pcvl-worker": "2.1.1",
+     "perceval-quandela": "1.3.0",
+     "universalchipworker": "2.1.1"
+    },
+    "type": "qpu"
+   },
+   "status": "maintenance",
+   "type": "qpu"
+  },
+  "sim:ascella": {
+   "perfs": {},
+   "specs": {
+    "architecture": ":PCVL:zip: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",
+    "available_commands": [
+     "probs",
+     "samples",
+     "sample_count"
+    ],
+    "commands": "pcvlar:zip:eJydkEsKwjAURbdyl9CktZ+x4Aqcl2iDBvKjeQW7e19/WBUcOAmPm5OTmyCDQAZrEiHnUfJ6DM4p33GcwyunUSCZm1c09BoHqBjt2GpHKL9RcdixovwNy2wHS/EGJ+r5rtiHS9raVajR4BKCxRk0RKunyvwAASFfQf4ZFGswKXly6tEm5XgzgcY4IcbT4j3NULMw90BpOVTiGlw0VpEJvk1ad3NeYfNs/1dB1BDN3+3kamyvYeBOq1ZKSF6LP7RP2d6MsA==",
+    "connected_input_modes": [
+     0,
+     2,
+     4,
+     6,
+     8,
+     10
+    ],
+    "constraints": {
+     "max_mode_count": 12,
+     "max_photon_count": 6,
+     "max_sample_count": null,
+     "min_mode_count": 1,
+     "min_photon_count": 1,
+     "support_multi_photon": false
+    },
+    "default_mitigations": "pcvlar:zip:eJxTMFAwVDBQyMksLgEyDBVcUktSk0vyi5wScxLzkjPz0oGSBgC/8grp",
+    "description": "Arcturus simulator",
+    "detector": "threshold",
+    "documentation": "<div>\n<p><strong>sim:ascella</strong></p>\n<p>SIM Ascella is one of our online QPU simulators. It can simulate up to 6 photons in 12 modes, assuming both perfect and imperfect sources, so that you can estimate the performance of your QPU jobs. A schematics of the simulated chip is shown above. To be consistent with the QPU's threshold detectors, detectors simulated as threshold too.</p>\n\n<p>SLOS is used as computation back-end, which allows you to fully characterize an output distribution without the need for sampling individual shots.</p>\n\n<p>The simulator natively supports sampling commands: samples and sample_count.</p>\n\n<p>For more information about the Quandela Cloud and how to get started, refer to the <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://cloud.quandela.com/webide/documentation\" target=\"_blank\">Documentation</a>. Information about using Perceval to interact with our cloud computers is available <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/index.html\" target=\"_blank\">here</a>. And if you have any questions, send us a message by clicking the Support button in the bottom right of any Cloud page.</p>\n</div>",
+    "known_mitigations": [
+     "PhotonRecycling",
+     "CompilationAveraging",
+     "DistinguishablePhoton",
+     "DetectorBalancing"
+    ],
+    "min_client_version": "0.10.0",
+    "parameters": {
+     "final_mode_number": "number of modes of the output states. States having a photon on unused modes will be ignored. Useful when using computed circuits (default input_state.m)",
+     "use_photon_recycling": "Legacy - Use the mitigation setter instead - boolean enabling the Photon Recycling noise mitigation process. Replaces default mitigation if no user-defined mitigation is given, else it is ignored (Default False)"
+    },
+    "pcvl_version": "1.3.1",
+    "pre_shots_compatibility": true,
+    "processor_name": "sim:ascella",
+    "software_versions": {},
+    "type": "simulator"
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  "sim:belenos": {
+   "perfs": {},
+   "specs": {
+    "architecture": ":PCVL:zip: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",
+    "available_commands": [
+     "probs",
+     "samples",
+     "sample_count",
+     "entropy"
+    ],
+    "commands": "pcvlar:zip:eJydkEsKwjAURbdyl9CktZ+x4Aqcl2iDBvKjeQW7e19/WBUcOAmPm5OTmyCDQAZrEiHnUfJ6DM4p33GcwyunUSCZm1c09BoHqBjt2GpHKL9RcdixovwNy2wHS/EGJ+r5rtiHS9raVajR4BKCxRk0RKunyvwAASFfQf4ZFGswKXly6tEm5XgzgcY4IcbT4j3NULMw90BpOVTiGlw0VpEJvk1ad3NeYfNs/1dB1BDN3+3kamyvYeBOq1ZKSF6LP7RP2d6MsA==",
+    "connected_input_modes": [
+     0,
+     2,
+     4,
+     6,
+     8,
+     9,
+     12,
+     13,
+     16,
+     18,
+     20,
+     22
+    ],
+    "constraints": {
+     "max_mode_count": 24,
+     "max_photon_count": 12,
+     "max_sample_count": null,
+     "min_mode_count": 1,
+     "min_photon_count": 1,
+     "support_multi_photon": false
+    },
+    "default_mitigations": "pcvlar:zip:eJxTMFAwVDBQyMksLgEyDBVcUktSk0vyi5wScxLzkjPz0oGSBgC/8grp",
+    "description": "Belenos simulator",
+    "detector": "threshold",
+    "documentation": "<div>\n<p><strong>sim:belenos</strong></p>\n\n<p>sim:belenos is our online QPU simulator, with computational power supported by OVHcloud. It can simulate up to 12 photons in 24 modes, assuming both perfect and imperfect sources, so that you can estimate the performance of your QPU jobs. A schematics of the simulated chip is shown above. To be consistent with the QPU's detectors, detectors simulated as threshold or quasi-pnr depending on the qpu configuration.</p>\n\n<p>SLOS is used as computation back-end, which allows you to fully characterize an output distribution without the need for sampling individual shots.</p>\n\n<p>For more information about the Quandela Cloud and how to get started, refer to the <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://cloud.quandela.com/webide/documentation\" target=\"_blank\">Documentation</a>. Information about using Perceval to interact with our cloud computers is available <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/index.html\" target=\"_blank\">here</a>. And if you have any questions, send us a message by clicking the Support button in the bottom right of any Cloud page.</p>\n</div>\n",
+    "known_mitigations": [
+     "PhotonRecycling",
+     "CompilationAveraging",
+     "DistinguishablePhoton",
+     "DetectorBalancing"
+    ],
+    "min_client_version": "0.10.0",
+    "parameters": {
+     "final_mode_number": "number of modes of the output states. States having a photon on unused modes will be ignored. Useful when using computed circuits (default input_state.m)",
+     "use_photon_recycling": "Legacy - Use the mitigation setter instead - boolean enabling the Photon Recycling noise mitigation process. Replaces default mitigation if no user-defined mitigation is given, else it is ignored (Default False)"
+    },
+    "pcvl_version": "1.3.0",
+    "pre_shots_compatibility": true,
+    "processor_name": "sim:belenos",
+    "software_versions": {
+     "exqalibur": "1.4.2",
+     "hardware-core": "3.9.3",
+     "mosaiq-belenos": "2.9.1",
+     "pcvl-worker": "2.1.1",
+     "perceval-quandela": "1.3.0",
+     "universalchipworker": "2.1.0"
+    },
+    "type": "simulator"
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  "sim:gpu:medium": {
+   "perfs": {
+    "current_noise": 0,
+    "message": "I'm a perfect chip !"
+   },
+   "specs": {
+    "available_commands": [
+     "samples",
+     "sample_count"
+    ],
+    "constraints": {
+     "max_photon_count": 24,
+     "min_photon_count": 2,
+     "support_multi_photon": true
+    },
+    "documentation": "",
+    "min_client_version": "0.10.0",
+    "pcvl_version": "0.13.0"
+   },
+   "status": "decommissioned",
+   "type": "simulator"
+  },
+  "sim:gpu:small": {
+   "perfs": {
+    "current_noise": 0,
+    "message": "I'm a perfect chip !"
+   },
+   "specs": {
+    "available_commands": [
+     "probs",
+     "samples",
+     "sample_count"
+    ],
+    "commands": "pcvlar:zip:eJyVkF1qwzAQhK8yR7AkW46fCz1B343iKKlAf1hrSG7fteXQJIXSvggx+zEzu2gg0MC7QlD8lfy+pRBMPLGsEE2waFHcJRpaZosOJmd/G20g6J+oODywYvgdluoBlu0TXGjmrDynY6ntWvQ4YIBocEzJ4wO0ZG/X1gJCQqhvoYXongT9KvS7sMYMHGMnV1yKoFtedzz7ZKjmvG8MZwRzHYsJbFAqpuAi7Q7b8DNRqbTGlEJ23hCbjsXa06b3uBvsB5cNJB9dvlTXf2zOa1fDcUoLd7m7dpAasv+/6xeQKJt1",
+    "constraints": {
+     "accepted_state_kinds": [
+      "FS",
+      "NFS",
+      "SVD"
+     ],
+     "max_photon_count": 24,
+     "min_photon_count": 2,
+     "support_multi_photon": true
+    },
+    "documentation": "",
+    "known_mitigations": [
+     "PhotonRecycling",
+     "CompilationAveraging",
+     "DistinguishablePhoton",
+     "DetectorBalancing"
+    ],
+    "min_client_version": "0.10.0",
+    "parameters": {
+     "compute_physical_logical_perf": "bool. If True, physical and logical performances will be returned. Else, only a global performance will be returned."
+    },
+    "pcvl_version": "1.3.0",
+    "software_versions": {
+     "clifford-gpu-worker": "1.3.1",
+     "exqalibur": "1.4.2",
+     "pcvl-worker": "2.1.1",
+     "perceval-quandela": "1.3.0"
+    },
+    "type": "simulator"
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  "sim:sampling": {
+   "perfs": {},
+   "specs": {
+    "available_commands": [
+     "probs",
+     "samples",
+     "sample_count"
+    ],
+    "commands": "pcvlar:zip:eJyVkF1qwzAQhK8yR7AkW46fCz1B343iKKlAf1hrSG7fteXQJIXSvggx+zEzu2gg0MC7QlD8lfy+pRBMPLGsEE2waFHcJRpaZosOJmd/G20g6J+oODywYvgdluoBlu0TXGjmrDynY6ntWvQ4YIBocEzJ4wO0ZG/X1gJCQqhvoYXongT9KvS7sMYMHGMnV1yKoFtedzz7ZKjmvG8MZwRzHYsJbFAqpuAi7Q7b8DNRqbTGlEJ23hCbjsXa06b3uBvsB5cNJB9dvlTXf2zOa1fDcUoLd7m7dpAasv+/6xeQKJt1",
+    "constraints": {
+     "accepted_state_kinds": [
+      "FS",
+      "NFS",
+      "SVD"
+     ],
+     "max_photon_count": 12,
+     "min_photon_count": 2,
+     "support_multi_photon": true
+    },
+    "documentation": "<div>\n<p><strong>sim:sampling</strong></p>\n\n<p>A Clifford & Clifford 2017 based simulator which allows you to run simulations using between 2 and 12 photons, with\n    computational power supported by OVHcloud. It uses the Clifford & Clifford algorithm to produce provably correct\n    random samples from a particular quantum mechanical distribution, with a time complexity of n1.8^n for dual-rail\n    encoding. See:  <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/backends.html\" target=\"_blank\">\n        https://perceval.quandela.net/docs/backends.html\n    </a>.\n</p>\n\n<p>The simulator supports all available commands interchangeably: samples, sample_count and probs.</p>\n\n<p>The simulator computes ideal as well as noisy computations and supports post-selection and heralding.</p>\n\n<p>For more information about the Quandela Cloud and how to get started, refer to the\n    <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://cloud.quandela.com/webide/documentation\" target=\"_blank\">\n        Documentation\n    </a>.\n    Information about using Perceval to interact with our cloud computers is available0\n    <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/index.html\" target=\"_blank\">here</a>.\n    And if you have any questions, send us a message by clicking the Support button in the bottom right of any Cloud\n    page.\n</p>\n</div>\n",
+    "known_mitigations": [
+     "PhotonRecycling",
+     "CompilationAveraging",
+     "DistinguishablePhoton",
+     "DetectorBalancing"
+    ],
+    "min_client_version": "0.10.0",
+    "parameters": {
+     "compute_physical_logical_perf": "bool. If True, physical and logical performances will be returned. Else, only a global performance will be returned."
+    },
+    "pcvl_version": "1.3.0",
+    "software_versions": {
+     "default-simulator-worker": "1.3.1",
+     "exqalibur": "1.4.2",
+     "pcvl-worker": "2.1.1",
+     "perceval-quandela": "1.3.0"
+    },
+    "type": "simulator"
+   },
+   "status": "available",
+   "type": "simulator"
+  },
+  "sim:slos": {
+   "perfs": {},
+   "specs": {
+    "available_commands": [
+     "probs",
+     "samples",
+     "sample_count"
+    ],
+    "commands": "pcvlar:zip:eJyVkF1qwzAQhK8yR7AkW46fCz1B343iKKlAf1hrSG7fteXQJIXSvggx+zEzu2gg0MC7QlD8lfy+pRBMPLGsEE2waFHcJRpaZosOJmd/G20g6J+oODywYvgdluoBlu0TXGjmrDynY6ntWvQ4YIBocEzJ4wO0ZG/X1gJCQqhvoYXongT9KvS7sMYMHGMnV1yKoFtedzz7ZKjmvG8MZwRzHYsJbFAqpuAi7Q7b8DNRqbTGlEJ23hCbjsXa06b3uBvsB5cNJB9dvlTXf2zOa1fDcUoLd7m7dpAasv+/6xeQKJt1",
+    "constraints": {
+     "accepted_state_kinds": [
+      "FS",
+      "NFS",
+      "SVD",
+      "AFS",
+      "SV"
+     ],
+     "max_photon_count": 12,
+     "min_photon_count": 2,
+     "support_multi_photon": true
+    },
+    "documentation": "<div>\n<p><strong>sim:slos</strong></p>\n\n<p>A SLOS based simulator which allows you to run simulations using between 2 and 12 photons, with\n    computational power supported by OVHcloud. It uses a strong simulation algorithm to produce provably correct\n    random samples from a particular quantum mechanical distribution. See:  <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/backends.html\" target=\"_blank\">\n        https://perceval.quandela.net/docs/backends.html\n    </a>.\n</p>\n\n<p>The simulator supports all available commands interchangeably: samples, sample_count and probs.</p>\n\n<p>The simulator computes ideal as well as noisy computations and supports post-selection and heralding.</p>\n\n<p>For more information about the Quandela Cloud and how to get started, refer to the\n    <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://cloud.quandela.com/webide/documentation\" target=\"_blank\">\n        Documentation\n    </a>.\n    Information about using Perceval to interact with our cloud computers is available0\n    <a style=\"color: #0052cc;\n      padding: 3px;\n      background-color: rgba(123, 163, 215, 0.3);\n      border-radius: 3px;\" href=\"https://perceval.quandela.net/docs/index.html\" target=\"_blank\">here</a>.\n    And if you have any questions, send us a message by clicking the Support button in the bottom right of any Cloud\n    page.\n</p>\n</div>\n",
+    "known_mitigations": [
+     "PhotonRecycling",
+     "CompilationAveraging",
+     "DistinguishablePhoton",
+     "DetectorBalancing"
+    ],
+    "min_client_version": "0.10.0",
+    "parameters": {
+     "compute_physical_logical_perf": "bool. If True, physical and logical performances will be returned. Else, only a global performance will be returned."
+    },
+    "pcvl_version": "1.3.0",
+    "software_versions": {
+     "default-simulator-worker": "1.3.1",
+     "exqalibur": "1.4.2",
+     "pcvl-worker": "2.1.1",
+     "perceval-quandela": "1.3.0"
+    },
+    "type": "simulator"
+   },
+   "status": "available",
+   "type": "simulator"
+  }
+ },
+ "public_platforms": [
+  {
+   "name": "qpu:ascella",
+   "status": "available",
+   "type": "qpu"
+  },
+  {
+   "name": "qpu:belenos",
+   "status": "maintenance",
+   "type": "qpu"
+  }
+ ],
+ "retrieved_utc": "2026-10-26T22:43:17+00:00",
+ "schema": "qd-catalogue-v1",
+ "versions": {
+  "exqalibur": "1.4.2",
+  "perceval-quandela": "1.3.1"
+ }
+}
