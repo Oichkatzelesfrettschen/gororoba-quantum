@@ -1,0 +1,345 @@
+{
+ "calibrations": {
+  "results/live/2026-10-27T160529.294491Z": "2026-10-27T09:07:55-07:00",
+  "results/live/2026-10-27T160530.294787Z": "2026-10-27T09:07:55-07:00",
+  "results/live/2026-10-27T160738.258133Z": "2026-10-27T09:07:55-07:00"
+ },
+ "context": {
+  "104": [
+   {
+    "kappa_1": {
+     "cohort_rank": 0.15,
+     "se": 0.014192356122438798,
+     "value": 0.6417741419512225,
+     "verdict": "unresolved"
+    },
+    "kappa_2echo": {
+     "cohort_rank": 0.26666666666666666,
+     "se": 0.07049303845299294,
+     "value": 0.8768487744888623,
+     "verdict": "nominal"
+    },
+    "kappa_2star": {
+     "cohort_rank": 0.35,
+     "se": 0.07728920466652167,
+     "value": 1.1152271655796537,
+     "verdict": "nominal"
+    },
+    "partner": 103,
+    "role": "target",
+    "run": "results/live/2026-10-27T160738.258133Z"
+   }
+  ],
+  "106": [
+   {
+    "kappa_1": {
+     "cohort_rank": 0.5666666666666667,
+     "se": 0.01978574058044675,
+     "value": 1.093453531433189,
+     "verdict": "nominal"
+    },
+    "kappa_2echo": {
+     "cohort_rank": 0.4666666666666667,
+     "se": 0.07023390727887002,
+     "value": 1.0094049170448078,
+     "verdict": "nominal"
+    },
+    "kappa_2star": {
+     "cohort_rank": 0.25,
+     "se": 0.07130452195167906,
+     "value": 1.0773589121098444,
+     "verdict": "nominal"
+    },
+    "partner": 107,
+    "role": "target",
+    "run": "results/live/2026-10-27T160738.258133Z"
+   }
+  ],
+  "124": [
+   {
+    "kappa_1": {
+     "cohort_rank": 0.0,
+     "se": 0.008433983142346257,
+     "value": 0.33547289472656583,
+     "verdict": "unresolved"
+    },
+    "kappa_2echo": {
+     "cohort_rank": 0.3548387096774194,
+     "se": 0.06074460713216773,
+     "value": 1.0295154028046978,
+     "verdict": "nominal"
+    },
+    "kappa_2star": {
+     "cohort_rank": 0.24193548387096775,
+     "se": 0.06087112053545144,
+     "value": 1.070493647794487,
+     "verdict": "nominal"
+    },
+    "partner": 123,
+    "role": "target",
+    "run": "results/live/2026-10-27T160529.294491Z"
+   }
+  ],
+  "125": [
+   {
+    "kappa_1": {
+     "cohort_rank": 0.6166666666666667,
+     "se": 0.02714012291312869,
+     "value": 1.1072881112609267,
+     "verdict": "nominal"
+    },
+    "kappa_2echo": {
+     "cohort_rank": 0.2833333333333333,
+     "se": 0.07857862952214398,
+     "value": 0.8783637848421801,
+     "verdict": "nominal"
+    },
+    "kappa_2star": {
+     "cohort_rank": 0.36666666666666664,
+     "se": 0.08783593485387405,
+     "value": 1.1231382430499661,
+     "verdict": "nominal"
+    },
+    "partner": 126,
+    "role": "spectator",
+    "run": "results/live/2026-10-27T160738.258133Z"
+   }
+  ],
+  "126": [
+   {
+    "kappa_1": {
+     "cohort_rank": 0.03333333333333333,
+     "se": 0.009078438920155769,
+     "value": 0.47383964755252045,
+     "verdict": "unresolved"
+    },
+    "kappa_2echo": {
+     "cohort_rank": 0.0,
+     "se": 0.021538391751524624,
+     "value": 0.2868735415370246,
+     "verdict": "unresolved"
+    },
+    "kappa_2star": {
+     "cohort_rank": 0.4166666666666667,
+     "se": 0.056076392695654925,
+     "value": 1.1538610558794697,
+     "verdict": "nominal"
+    },
+    "partner": 125,
+    "role": "target",
+    "run": "results/live/2026-10-27T160738.258133Z"
+   }
+  ]
+ },
+ "focal": {
+  "79": [
+   {
+    "kappa_1": {
+     "cohort_rank": 0.31666666666666665,
+     "se": 0.02320796931140339,
+     "value": 0.9451372837217826,
+     "verdict": "nominal"
+    },
+    "kappa_2echo": {
+     "cohort_rank": 0.48333333333333334,
+     "se": 0.0466674300069838,
+     "value": 1.0176962173311348,
+     "verdict": "nominal"
+    },
+    "kappa_2star": {
+     "cohort_rank": 0.23333333333333334,
+     "se": 0.05034431972374006,
+     "value": 1.0288215844990112,
+     "verdict": "nominal"
+    },
+    "partner": 73,
+    "role": "target",
+    "run": "results/live/2026-10-27T160738.258133Z"
+   }
+  ],
+  "92": [
+   {
+    "kappa_1": {
+     "cohort_rank": 0.8333333333333334,
+     "se": 0.0305094070609757,
+     "value": 1.5833888071739,
+     "verdict": "elevated"
+    },
+    "kappa_2echo": {
+     "cohort_rank": 0.8,
+     "se": 0.08649401977074318,
+     "value": 1.3305724146047193,
+     "verdict": "unresolved"
+    },
+    "kappa_2star": {
+     "cohort_rank": 0.65,
+     "se": 0.09587275447370143,
+     "value": 1.5980156492084703,
+     "verdict": "unresolved"
+    },
+    "partner": 91,
+    "role": "target",
+    "run": "results/live/2026-10-27T160738.258133Z"
+   }
+  ],
+  "93": [
+   {
+    "kappa_1": {
+     "cohort_rank": 0.7741935483870968,
+     "se": 0.029480431813298593,
+     "value": 1.3732999624626894,
+     "verdict": "nominal"
+    },
+    "kappa_2echo": {
+     "cohort_rank": 0.6290322580645161,
+     "se": 0.059318668708570076,
+     "value": 1.1874195263330578,
+     "verdict": "nominal"
+    },
+    "kappa_2star": {
+     "cohort_rank": 0.4838709677419355,
+     "se": 0.06482840865205598,
+     "value": 1.3274254322736043,
+     "verdict": "nominal"
+    },
+    "partner": 94,
+    "role": "target",
+    "run": "results/live/2026-10-27T160529.294491Z"
+   }
+  ]
+ },
+ "historical_kappa_near_3": {
+  "kappa_1": {
+   "n_region": 6,
+   "n_rest": 64,
+   "p_greater": 0.03114455495262457,
+   "region_median": 1.3993837253120012,
+   "rest_median": 1.069581994714629
+  },
+  "kappa_2star": {
+   "n_region": 6,
+   "n_rest": 64,
+   "p_greater": 0.11297125213222477,
+   "region_median": 1.7085484172449514,
+   "rest_median": 1.2276907392861658
+  },
+  "missing": [],
+  "region": [
+   "73",
+   "79",
+   "92",
+   "93",
+   "94",
+   "95"
+  ],
+  "verdict": "unresolved"
+ },
+ "retest": [
+  {
+   "first": "results/live/2026-10-27T160530.294787Z",
+   "kappa_1": {
+    "n": 50,
+    "pearson_r": 0.9747085442652668,
+    "ratio": {
+     "high": 1.0292224335892384,
+     "low": 0.9870125998648595,
+     "median": 1.0090607287169933,
+     "n": 50
+    }
+   },
+   "kappa_2echo": {
+    "n": 50,
+    "pearson_r": 0.9423263438277467,
+    "ratio": {
+     "high": 1.0231573254610713,
+     "low": 0.9674532507243992,
+     "median": 1.0004020019016142,
+     "n": 50
+    }
+   },
+   "kappa_2star": {
+    "n": 50,
+    "pearson_r": 0.985795182620083,
+    "ratio": {
+     "high": 0.994801666038121,
+     "low": 0.929919042023085,
+     "median": 0.9685055979166617,
+     "n": 50
+    }
+   },
+   "n": 50,
+   "second": "results/live/2026-10-27T160738.258133Z"
+  },
+  {
+   "first": "results/live/2026-10-27T160530.294787Z",
+   "kappa_1": {
+    "n": 58,
+    "pearson_r": 0.9202713438115915,
+    "ratio": {
+     "high": 1.0570409610411278,
+     "low": 0.9907103134479274,
+     "median": 1.0256570150000637,
+     "n": 58
+    }
+   },
+   "kappa_2echo": {
+    "n": 58,
+    "pearson_r": 0.9345608706955504,
+    "ratio": {
+     "high": 1.0317251328391808,
+     "low": 0.9674920046073031,
+     "median": 1.001197258872168,
+     "n": 58
+    }
+   },
+   "kappa_2star": {
+    "n": 58,
+    "pearson_r": 0.9658532515646742,
+    "ratio": {
+     "high": 1.0562741575424301,
+     "low": 0.9995697741434073,
+     "median": 1.019074054812542,
+     "n": 58
+    }
+   },
+   "n": 58,
+   "second": "results/live/2026-10-27T160529.294491Z"
+  },
+  {
+   "first": "results/live/2026-10-27T160738.258133Z",
+   "kappa_1": {
+    "n": 48,
+    "pearson_r": 0.9357554586888174,
+    "ratio": {
+     "high": 1.033778389538885,
+     "low": 0.9867972274177578,
+     "median": 1.0093948692875947,
+     "n": 48
+    }
+   },
+   "kappa_2echo": {
+    "n": 48,
+    "pearson_r": 0.9136490137099125,
+    "ratio": {
+     "high": 1.0870229259913489,
+     "low": 0.9911849020267852,
+     "median": 1.0116248285083547,
+     "n": 48
+    }
+   },
+   "kappa_2star": {
+    "n": 48,
+    "pearson_r": 0.9532403892647442,
+    "ratio": {
+     "high": 1.106517602828637,
+     "low": 1.0164314098355525,
+     "median": 1.0583000490280536,
+     "n": 48
+    }
+   },
+   "n": 48,
+   "second": "results/live/2026-10-27T160529.294491Z"
+  }
+ ],
+ "same_window": true
+}

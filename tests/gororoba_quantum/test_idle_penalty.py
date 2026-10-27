@@ -92,3 +92,12 @@ def test_a_slow_measure_rejects_the_placement() -> None:
     reasons = ip.routed_pair_violations(members, target)
     if len(reasons) != 3 * len(ip.QUADRATURES):
         raise AssertionError(f"a {slow} dt measure left the readout arms admitted: {reasons}")
+
+
+def test_pin_layout_admits_idle_penalty_and_still_refuses_unpinned_campaigns() -> None:
+    import live_run
+
+    if "idle_penalty" not in live_run.PIN_CAPABLE_CAMPAIGNS or "idle_penalty" in live_run.PINNED_CAMPAIGNS:
+        raise AssertionError("idle_penalty must accept a pin without requiring one")
+    with pytest.raises(SystemExit):
+        live_run.main(["--groups", "qubit_baseline", "--pin-layout", "ibm_kingston:150,149/21,36"])

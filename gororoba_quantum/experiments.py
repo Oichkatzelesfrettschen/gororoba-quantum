@@ -51,7 +51,12 @@ class Member:
     two-qubit content (live_run.mirror_isa); summaries find its distribution
     under the member's name plus MIRROR_SUFFIX. weights scores each outcome in
     [0, 1] for the variance decomposition (variance.score); without it the
-    score follows the ideal.
+    score follows the ideal. replica_bodies makes the member patterned: it
+    names, in placement order, the member or Group.body_templates circuit that
+    each replica runs, so one fused PUB carries a different body on each
+    replica. The member's circuit is the first body's circuit, which fixes the
+    placement pattern and the compiled base of the entry; the bodies share
+    width, classical registers and ideal law, so one ideal scores every replica.
     """
 
     name: str
@@ -60,6 +65,7 @@ class Member:
     binding: dict[Parameter, float] | None = None
     mirror: bool = False
     weights: np.ndarray | None = None
+    replica_bodies: tuple[str, ...] | None = None
 
 
 MIRROR_SUFFIX = "_mirror"
@@ -84,9 +90,13 @@ class Group:
     quasi-probabilities M p together with each circuit's one-shot covariance
     M (diag(p) - p p^T) M^T, so a summary that propagates the multinomial
     covariance itself stays exact through live_run.corrected_summary.
-    routed_violations, when set, rejects a candidate whose routed members
-    break a physical-placement invariant of the group's model
+    routed_violations, when set, rejects a candidate whose routed members and
+    body templates break a physical-placement invariant of the group's model
     (live_run.select_candidates).
+    body_templates are (name, circuit, ideal) circuits that patterned members
+    name in replica_bodies. They compile, pass the routed checks and the
+    Target checks with the members, and are part of the group's source, but
+    form no entry and no PUB.
     """
 
     name: str
@@ -99,8 +109,10 @@ class Group:
     execution_rows: tuple[int, ...] | None = None
     summarize_with_covariance: CovarianceSummary | None = None
     routed_violations: RoutedCheck | None = None
+    body_templates: tuple[tuple[str, QuantumCircuit, np.ndarray], ...] = ()
 
     def __post_init__(self) -> None:
+        self._check_patterned_members()
         if self.execution_rows is None:
             return
         if not isinstance(self.execution_rows, tuple):
@@ -113,6 +125,54 @@ class Group:
             raise ValueError(f"{self.name}: execution rows must be unique within a group")
         if any(member.mirror for member in self.members):
             raise ValueError(f"{self.name}: explicit execution rows prohibit automatic mirrors")
+
+    def _check_patterned_members(self) -> None:
+        """Refuse a body template or a patterned member whose bodies are not interchangeable on one ideal law."""
+        if not isinstance(self.body_templates, tuple):
+            raise ValueError(f"{self.name}: body templates must be an immutable tuple")
+        patterned = [member for member in self.members if member.replica_bodies is not None]
+        if not patterned and not self.body_templates:
+            return
+        member_names = [member.name for member in self.members]
+        template_names = [template[0] for template in self.body_templates]
+        if len(set(member_names)) != len(member_names):
+            raise ValueError(f"{self.name}: member names must be unique")
+        if len(set(template_names)) != len(template_names) or set(template_names) & set(member_names):
+            raise ValueError(f"{self.name}: body template names must be unique and differ from every member name")
+        bodies: dict[str, tuple[QuantumCircuit, np.ndarray]] = {
+            member.name: (member.circuit, member.ideal) for member in self.members if member.replica_bodies is None
+        }
+        bodies |= {name: (circuit, ideal) for name, circuit, ideal in self.body_templates}
+        for member in patterned:
+            names = member.replica_bodies
+            if not isinstance(names, tuple) or not names or not all(isinstance(name, str) for name in names):
+                raise ValueError(f"{self.name}: {member.name} replica bodies must be a nonempty tuple of names")
+            if member is self.members[0]:
+                raise ValueError(f"{self.name}: the first member fixes the placement and cannot be patterned")
+            if member.mirror:
+                raise ValueError(f"{self.name}: {member.name} is patterned and cannot take a mirror twin")
+            unknown = sorted({name for name in names if name not in bodies})
+            if unknown:
+                raise ValueError(
+                    f"{self.name}: {member.name} names {unknown}, neither an unpatterned member nor a template"
+                )
+            reference = (member.circuit, member.ideal)
+            if bodies[names[0]][0] is not member.circuit:
+                raise ValueError(f"{self.name}: {member.name} must take its first body {names[0]} as its circuit")
+            for name in dict.fromkeys(names):
+                circuit, ideal = bodies[name]
+                if circuit.num_qubits != reference[0].num_qubits:
+                    raise ValueError(f"{self.name}: {member.name} body {name} differs in width")
+                if _register_shape(circuit) != _register_shape(reference[0]):
+                    raise ValueError(f"{self.name}: {member.name} body {name} differs in classical registers")
+                if np.shape(ideal) != np.shape(reference[1]) or not np.allclose(
+                    ideal, reference[1], atol=1e-12, rtol=0
+                ):
+                    raise ValueError(f"{self.name}: {member.name} body {name} differs in ideal law")
+
+
+def _register_shape(circuit: QuantumCircuit) -> list[tuple[str, int]]:
+    return [(register.name, register.size) for register in circuit.cregs]
 
 
 def tvd(p: np.ndarray, q: np.ndarray) -> float:
@@ -414,6 +474,7 @@ def standalone_campaign_groups() -> list[Group]:
     from crossed_tile_template import crossed_group
     from diagnostic_controls import readout_delay_group, scaffold_ab_group
     from idle_penalty import idle_penalty_group
+    from idle_readout import idle_readout_group
     from maximal_experiments import spectator_wavefront_ramsey_group
     from primorial_campaigns import coherence_probe_group, gap88_group
     from qet_ladder import qet_compensated_ladder_group, qet_frame_diagnostic_group, qet_ladder_group
@@ -434,6 +495,7 @@ def standalone_campaign_groups() -> list[Group]:
         qet_frame_diagnostic_group(),
         qet_compensated_ladder_group(),
         idle_penalty_group(),
+        idle_readout_group(),
     ]
 
 
