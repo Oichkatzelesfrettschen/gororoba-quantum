@@ -14,7 +14,10 @@ initialization, scaled by the readout contrast. The pattern rows read the same q
 each prepares a fixed bit on each qubit (x or nothing, then read), so among consecutive pattern rows a qubit's P1 on
 rows that read ground after a row that prepared 1, minus after one that prepared 0, is D; on rows that prepare 1 the
 carried excitation is flipped by the x and enters with the opposite sign. The two estimates combine by inverse
-variance. Both rest on column-wise order; under any other order they read about zero.
+variance. Both rest on column-wise order; under any other order they read about zero. A neighbor's current bit is
+not balanced across the conditioning classes of the 35 consecutive pairs, so readout crosstalk enters D on qubits the
+pattern screen flags: the section reports each qubit's retained pattern-screen outcome, a between-row standard error
+beside the binomial one, the pooled D over qubits that pass, and the carryover screen sized with the larger error.
 
 T1 series. The analysis corrects the t1 rows through the ro0 and t1-0 brackets and fits y_k = q (1 - e_k) - e_k with
 e_k = exp(-t_k / T1). This section fits four nuisance models per informative qubit with inverse binomial-variance
@@ -27,7 +30,10 @@ and shape k, gives the survival (1 + mu t / k)^(-k) and decays to the ground sta
 count the (T1, q) fit spends. The fit profiles mu by bounded Brent search at each shape of a fixed geometric grid and
 keeps the grid's best shape. The section reports its lack of fit and the N = 16 residual of the measure, unitary and
 delay arms (measured P0 from the exploratory analysis minus the model chain averaged over the rate distribution at its
-GAMMA_NODES equal-probability midpoint quantiles), beside the analysis's own residuals.
+GAMMA_NODES equal-probability midpoint quantiles), beside the analysis's own residuals. It also reports the residuals of
+the plain exponential chain at the gamma fit's mean lifetime and q = 1, which the N = 16 arms cannot tell from the
+rate-averaged chain over their microseconds, and the settle gap at q = 1: the settle arm's P0 minus the settle chain
+at the loss that matches the measure arm, as `quantities` computes it with the fitted (T1, q).
 
 ``--out FILE`` writes the result; ``--check FILE`` recomputes it and requires the retained bytes. No result here is a
 preregistered verdict of the envelope case.
@@ -45,7 +51,7 @@ from typing import Any
 
 import numpy as np
 from scipy.optimize import minimize_scalar
-from scipy.stats import chi2
+from scipy.stats import chi2, norm
 from scipy.stats import gamma as gamma_distribution
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -64,6 +70,10 @@ QUARTERS = 4
 GAMMA_SHAPES = tuple(float(k) for k in np.geomspace(0.25, 1000.0, 97))
 GAMMA_NODES = 64
 RESIDUAL_ARMS = ("measure", "unitary", "delay")
+SENSITIVITY = ROOT / "docs/evidence/measurement_sequence/carryover-sensitivity.json"
+# The successor's carryover screen: a quarter of the bound floor, one-sided bounds Bonferroni over the layout width.
+CARRYOVER_MARGIN = 0.25 * 0.0188
+FAMILY_ALPHA = 0.05
 # A conditional difference needs this many shots on each side of the conditioning bit to enter a summary.
 MIN_SIDE = 50
 LARGE_Z = 3.0
@@ -214,7 +224,9 @@ def carryover(bits: np.ndarray, members: list[str], qubits: list[int]) -> dict[s
     }
 
 
-def pattern_carryover(bits: np.ndarray, members: list[str], qubits: list[int]) -> dict[str, Any]:
+def pattern_carryover(
+    bits: np.ndarray, members: list[str], qubits: list[int], screens: dict[str, Any]
+) -> dict[str, Any]:
     """Per-qubit carryover D from consecutive pattern rows, conditioned on the predecessor row's prepared bit."""
     pattern = msqe_pattern_bits(len(qubits))
     prefix = "msqe_pat"
@@ -225,29 +237,48 @@ def pattern_carryover(bits: np.ndarray, members: list[str], qubits: list[int]) -
         if k and member.startswith(prefix) and members[k - 1].startswith(prefix)
     ]
     for g, qubit in enumerate(qubits):
-        cells = {(a, b): [0, 0] for a in (0, 1) for b in (0, 1)}
+        cells: dict[tuple[int, int], list[float]] = {(a, b): [] for a in (0, 1) for b in (0, 1)}
         for previous, current, row in pairs:
-            cell = cells[(pattern[previous][g], pattern[current][g])]
-            cell[0] += int(bits[row, g].sum())
-            cell[1] += int(bits.shape[2])
+            cells[(pattern[previous][g], pattern[current][g])].append(float(bits[row, g].mean()))
+        shots = int(bits.shape[2])
         estimates = []
         # Ground rows: P1 after a 1 minus after a 0. Excited rows: the x flips carried excitation to 0, so P1 after a 0
-        # minus after a 1. Keys are (previous prepared bit, current prepared bit).
+        # minus after a 1. Keys are (previous prepared bit, current prepared bit). Every row holds the same shots, so
+        # the mean of row P1 is the pooled P1.
         for larger, smaller in (((1, 0), (0, 0)), ((0, 1), (1, 1))):
-            (ka, na), (kb, nb) = cells[larger], cells[smaller]
-            pa, pb = ka / na, kb / nb
-            se = math.sqrt(max(pa * (1 - pa), 1.0 / na) / na + max(pb * (1 - pb), 1.0 / nb) / nb)
-            estimates.append((pa - pb, se))
-        weights = [1 / se**2 for _, se in estimates]
-        value = sum(w * d for w, (d, _) in zip(weights, estimates, strict=True)) / sum(weights)
+            a, b = np.array(cells[larger]), np.array(cells[smaller])
+            pa, pb = float(a.mean()), float(b.mean())
+            na, nb = a.size * shots, b.size * shots
+            binomial = math.sqrt(max(pa * (1 - pa), 1.0 / na) / na + max(pb * (1 - pb), 1.0 / nb) / nb)
+            between = math.sqrt(float(a.var(ddof=1)) / a.size + float(b.var(ddof=1)) / b.size)
+            estimates.append((pa - pb, binomial, between))
+        value = {}
+        for label, column in (("binomial", 1), ("larger", None)):
+            ses = [e[1] if column else max(e[1], e[2]) for e in estimates]
+            weights = [1 / se**2 for se in ses]
+            value[label] = (
+                sum(w * e[0] for w, e in zip(weights, estimates, strict=True)) / sum(weights),
+                1 / math.sqrt(sum(weights)),
+            )
         per_qubit[str(qubit)] = {
-            "difference": value,
-            "se": 1 / math.sqrt(sum(weights)),
-            "ground_rows": {"difference": estimates[0][0], "se": estimates[0][1]},
-            "excited_rows": {"difference": estimates[1][0], "se": estimates[1][1]},
-            "shots": {f"previous_{a}_current_{b}": cells[(a, b)][1] for a, b in sorted(cells)},
+            "difference": value["binomial"][0],
+            "se": value["binomial"][1],
+            "difference_larger_se": value["larger"][0],
+            "se_larger": value["larger"][1],
+            "pattern_screen_passes": bool(screens[str(qubit)]["patterns"]["passes"]),
+            "ground_rows": dict(zip(("difference", "se", "se_between_rows"), estimates[0], strict=True)),
+            "excited_rows": dict(zip(("difference", "se", "se_between_rows"), estimates[1], strict=True)),
+            "rows": {f"previous_{a}_current_{b}": len(cells[(a, b)]) for a, b in sorted(cells)},
         }
     values = [v["difference"] for v in per_qubit.values()]
+    clean = {q: v for q, v in per_qubit.items() if v["pattern_screen_passes"]}
+    allocation = json.loads(SENSITIVITY.read_text())["run"]["allocation_coefficient"]["per_qubit"]
+    z = float(norm.ppf(1 - FAMILY_ALPHA / len(qubits)))
+    bias = {
+        q: allocation[q] * (abs(v["difference_larger_se"]) + z * v["se_larger"])
+        for q, v in per_qubit.items()
+        if q in allocation
+    }
     return {
         "row_pairs": len(pairs),
         "per_qubit": per_qubit,
@@ -255,6 +286,22 @@ def pattern_carryover(bits: np.ndarray, members: list[str], qubits: list[int]) -
         "median_se": float(np.median([v["se"] for v in per_qubit.values()])),
         "mean_difference": float(np.mean(values)),
         "mean_se": math.sqrt(sum(v["se"] ** 2 for v in per_qubit.values())) / len(per_qubit),
+        "pattern_screen_passing": {
+            "qubits": len(clean),
+            "mean_difference": float(np.mean([v["difference_larger_se"] for v in clean.values()])),
+            "mean_se": math.sqrt(sum(v["se_larger"] ** 2 for v in clean.values())) / len(clean),
+        },
+        "screen": {
+            "margin": CARRYOVER_MARGIN,
+            "bonferroni_z": z,
+            "allocation_model": "t1_q (carryover-sensitivity.json run section)",
+            "bias_bound": bias,
+            "passing": sum(1 for b in bias.values() if b < CARRYOVER_MARGIN),
+            "passing_with_pattern_screen": sum(
+                1 for q, b in bias.items() if b < CARRYOVER_MARGIN and per_qubit[q]["pattern_screen_passes"]
+            ),
+            "evaluated": len(bias),
+        },
     }
 
 
@@ -353,12 +400,25 @@ def t1_models(item: tuple[int, list[float], float, np.ndarray, dict[str, Any], d
         )
     gamma = gamma_fit(delays, y, se)
     top = str(msa.TOP_STEPS)
+    lifetime = gamma["mean_lifetime_us"] * 1e-6
+    exponential = msa.model_tables(lifetime, 1.0, ctx, 0.0, msa.WINDOW_RELAX_FRACTION)
     residuals = {
         arm: {
             "analysis": p0[arm][top]["measured_minus_modeled"],
-            "gamma_rate": p0[arm][top]["p0"] - gamma_p0(arm, ctx, gamma["mean_lifetime_us"] * 1e-6, gamma["shape"]),
+            "gamma_rate": p0[arm][top]["p0"] - gamma_p0(arm, ctx, lifetime, gamma["shape"]),
+            "exponential_at_gamma_lifetime": p0[arm][top]["p0"] - exponential[arm][top],
         }
         for arm in RESIDUAL_ARMS
+    }
+    t2 = min(ctx["t2_s"], 2 * lifetime)
+    gate = msa.sx_gate(ctx, 0.0)
+    loss = msa.implied_loss(2 * p0["measure"][top]["p0"] - 1, lifetime, t2, ctx, 1.0, gate, msa.WINDOW_RELAX_FRACTION)
+    settle_tau = msa.tau_of("settle", ctx, msa.WINDOW_RELAX_FRACTION)
+    settle = msa.corrected_z("settle", msa.TOP_STEPS, lifetime, t2, settle_tau, loss, gate, 1.0)
+    settle_gap = {
+        "gap_q_1": p0["settle"][top]["p0"] - (1 + settle) / 2,
+        "implied_loss_q_1": loss,
+        "statistical_se": math.hypot(p0["settle"][top]["se"], p0["measure"][top]["se"]),
     }
     return {
         "qubit": qubit,
@@ -367,12 +427,12 @@ def t1_models(item: tuple[int, list[float], float, np.ndarray, dict[str, Any], d
         "quarters": quarters,
         "gamma_rate": gamma,
         "n16_residuals": residuals,
+        "settle": settle_gap,
     }
 
 
-def t1_section(loaded: dict[str, Any], run: Path) -> dict[str, Any]:
+def t1_section(loaded: dict[str, Any], collected: list[Any]) -> dict[str, Any]:
     record, bits, members, qubits = loaded["record"], loaded["bits"], loaded["members"], loaded["qubits"]
-    collected = json.loads((run / "collect.json").read_text())
     executed: dict[str, Any] = {}
     for entry in collected[1:]:
         executed.update(entry["executed"])
@@ -405,7 +465,7 @@ def t1_section(loaded: dict[str, Any], run: Path) -> dict[str, Any]:
                 "median": float(np.median([f["n16_residuals"][arm][model] for f in fits])),
                 "positive": sum(1 for f in fits if f["n16_residuals"][arm][model] > 0),
             }
-            for model in ("analysis", "gamma_rate")
+            for model in ("analysis", "gamma_rate", "exponential_at_gamma_lifetime")
         }
         for arm in RESIDUAL_ARMS
     }
@@ -415,6 +475,19 @@ def t1_section(loaded: dict[str, Any], run: Path) -> dict[str, Any]:
         "per_qubit": {str(f["qubit"]): f for f in fits},
         "admitted_at_p_0_01": admitted,
         "n16_residuals": residuals,
+        "rate_average_effect": {
+            arm: max(
+                abs(f["n16_residuals"][arm]["gamma_rate"] - f["n16_residuals"][arm]["exponential_at_gamma_lifetime"])
+                for f in fits
+            )
+            for arm in RESIDUAL_ARMS
+        },
+        "settle_gap_q_1": {
+            "median": float(np.median([f["settle"]["gap_q_1"] for f in fits])),
+            "abs_z_at_least_3": sum(
+                1 for f in fits if abs(f["settle"]["gap_q_1"]) >= 3 * f["settle"]["statistical_se"]
+            ),
+        },
         "informative": len(fits),
     }
 
@@ -422,6 +495,8 @@ def t1_section(loaded: dict[str, Any], run: Path) -> dict[str, Any]:
 def run(path: Path) -> dict[str, Any]:
     loaded = load(path)
     bits, members, qubits = loaded["bits"], loaded["members"], loaded["qubits"]
+    collected = json.loads((path / "collect.json").read_text())
+    screens = collected[0]["family_analysis"]["envelope"]["screens"]
     return {
         "schema": SCHEMA,
         "run": path.relative_to(ROOT).as_posix(),
@@ -432,8 +507,8 @@ def run(path: Path) -> dict[str, Any]:
         "executor_chunks": loaded["chunks"],
         "adjacency": adjacency(bits, members),
         "carryover": carryover(bits, members, qubits),
-        "pattern_carryover": pattern_carryover(bits, members, qubits),
-        "t1_series": t1_section(loaded, path),
+        "pattern_carryover": pattern_carryover(bits, members, qubits, screens),
+        "t1_series": t1_section(loaded, collected),
     }
 
 

@@ -60,7 +60,7 @@ is a result of the case.
 - Settle arm: 16 qubits (15 informative, pooled z 18.7) read `reduced_by_gap`. The measure arm shows no deficit for a
   gap to reduce, so this is the settle arm's P0 standing above the model's prediction for its sixteen 2 us gaps, the
   same direction as the delay arm's idle-model shortfall (measured minus modeled N = 16 dephasing, median +0.11, positive
-  on 31 qubits). It is an unexplained excess over the idle model, not a readout-tail attribution.
+  on 31 qubits). It is not a readout-tail attribution; the shot-order diagnostics below trace it to the (T1, q) fit.
 - Qubits 149 and 154 are uninformative: departure standard errors 0.068 and 0.046 exceed twice their planning values.
 
 ## Shot-order diagnostics (not preregistered)
@@ -79,7 +79,10 @@ fused PUB is one member row on all 32 qubits, and the executor reports one chunk
   standard errors), too small to produce the +0.0185 departure offset through any member allocation (at most 2.31
   per unit, [carryover-sensitivity.json](../../docs/evidence/measurement_sequence/carryover-sensitivity.json)). The 35
   consecutive pattern-row pairs, conditioned on the predecessor's prepared bit, read it per qubit at a median standard
-  error of 0.0003: median +0.00025, mean +0.00045 +- 0.00006. Carryover is real and about 0.0005.
+  error of 0.0003: median +0.00025, mean +0.00045 +- 0.00006. A neighbor's current bit is not balanced across the
+  conditioning classes, so readout crosstalk enters on the six qubits the pattern screen flags (q154 reads +0.0037
+  by the binomial error and +0.0009 by the spread between rows); over the 26 qubits that pass it, D is
+  +0.00020 +- 0.00006. Carryover is real and about 0.0002.
 - Phase-sensitive adjacency. Consecutive delay-arm rows correlate at the same shot by a median 0.034 (19 row pairs)
   and consecutive unitary rows by 0.051 (3 pairs), against 0.003 and -0.001 one column away; measure and settle rows
   read 0.004 and 0.006, pattern rows near zero. Outcomes that depend on the qubit's phase stay correlated across
@@ -95,15 +98,25 @@ fused PUB is one member row on all 32 qubits, and the executor reports one chunk
   mean mu and shape k, decays to the ground state as (1 + mu t / k)^(-k) with the same two parameters. It fits 25 of
   30 qubits at p >= 0.01, more than the (T1, q) fit, with median shape 3.5 (a rate spread of about half its mean) and
   a mean lifetime 1 / mu equal to the calibrated T1 (median ratio 1.003). The q fit reads the same fluctuation as a
-  plateau below 1, and the analysis converts that plateau into a negative initialization excitation.
+  plateau below 1, and the analysis converts that plateau into a negative initialization excitation. Per qubit the
+  mean lifetime ranges from 0.59 to 2.12 times the calibrated T1, a spread no tighter than the (T1, q) fit's, and over
+  five delays the two models fit about equally; what separates them is q, not the shape.
 - N = 16 residuals under that nuisance model. Replacing the (T1, q) chain by the same chain averaged over the gamma
   rate distribution moves the measure arm's residual from +0.0185 (positive on 30 of 30) to +0.0090 (23 of 30), level
   with the unitary arm's +0.0109, which neither model changes and which is the gate-model residual the null plants.
+  The shift comes from q = 1, not from the rate spread: the plain exponential chain at the gamma fit's mean lifetime
+  gives +0.0089, within 4.1e-4 of the rate-averaged chain on every qubit, because over the arm's microseconds any rate
+  mixture decays as 1 - mu t.
+- Settle gap at q = 1. The settle arm's P0 minus the settle chain at the loss that matches the measure arm, which the
+  (T1, q) fit put at +0.0198 (median, pooled z 18.7), is -0.0002 at q = 1, with one qubit at |z| >= 3 (q62, the
+  qubit whose shot-history excess the 2026-10-18 controls also flagged). The settle excess and half the departure
+  offset are the same artifact of the plateau.
   The delay arm's +0.115 is unchanged: its excess is dephasing, which the T1 nuisance does not reach, and the idle
   model takes the calibrated Hahn-echo T2 for free evolution.
 
-Half of the +0.0185 departure offset is the (T1, q) nuisance model; the rest matches the gate-model residual the
-unitary arm shows. Carryover is excluded as its source.
+Half of the +0.0185 departure offset and all of the settle excess are the (T1, q) plateau; the rest of the departure
+offset matches the gate-model residual the unitary arm shows. Carryover is excluded as their source. q = 1 is the
+physical reading: q near 0.7 would need an equilibrium excited population near 14 %, against ro0 P1 near 0.006.
 
 ## Retained files
 
