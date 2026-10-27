@@ -439,6 +439,26 @@
             }
           ],
           "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "Revalidated after live_run.py binds msq_successor_analysis.py into the experiment source manifest; the retained envelope run, its family and its findings are unchanged.",
+          "observed_at": "2026-10-27T23:15:24+00:00",
+          "revision": "a2a673b41f3af534225049c271cf71c56d66e1be",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "c46a289de7e48b36f192f4bc58ace13d22fc9ad565251058bdd3cde8a0a89295"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
         }
       ]
     },
