@@ -261,6 +261,43 @@ and 16 GiB, or any claimed fiber from this record, falsifies the recorded outcom
 formulation supersedes this real elimination, so its cost record is not retained; the
 [ledger](ledger.md#ledger-rows) row 2g carries the measurement.
 
+## Nakayama-reduced Rees fibers of six higher-order incidences
+
+[`nakayama_rees_fibers.py`](nakayama_rees_fibers.py) computes the fiber over the boundary point `p` of the closed
+holomorphic Gauss graph for `X+->VB`, `X-->VB`, `Iso->VB`, `W8->VB`, `E8bar->Va+` and `E8bar->Va-`, writing
+[`nakayama-rees-fibers-result.json`](nakayama-rees-fibers-result.json). The fiber is the special fiber
+`Proj (+)_d I^d / m I^d` of the blow-up of the ideal `I` of the 21 Schur coordinates in the germ ring `k[t]/J`; each
+graded piece is annihilated by `m`, so the polynomial ring in a global ordering computes it exactly. The producer
+picks Schur coordinates whose classes form a basis of `I / (m I + J)`, so by Nakayama they generate `I` at `p`;
+removes the slice variables that `J` solves linearly (`elimpart`); eliminates `a` from `J + (y_i - a g_i)`; sets
+`t = 0`; saturates by the target variables; and decomposes with `minAssGTZ`. The constant terms of `lift(J + m I +
+(g), f)` give the `21 x s` matrix that embeds the reduced fiber in `P^20`; its rank equals `s` on every row. Each
+committed target comes from the full first and second arc coefficients in the fixed boundary `C_z` frame, because
+substituting those coefficients into the coordinate-slice variables changes the second-order Schur correction of
+an arc that leaves the slice.
+
+| Incidence | Minimal generators `s` | Fiber over `p` in the reduced coordinates | Committed arcs in the fiber |
+| --- | --- | --- | --- |
+| `X+->VB`, `X-->VB` | 3 | all of `P^2` | 2 of 2 each |
+| `Iso->VB` | 4 | all of `P^3` | 2 of 2 |
+| `W8->VB` | 5 | all of `P^4` | 2 of 2 |
+| `E8bar->Va+`, `E8bar->Va-` | 6 | two disjoint planes, `{y1=y2=y6=0}` and `{y3=y4=y5=0}` | 2 of 2 each, both in the second plane |
+
+The modulo-32003 and `Q(i)` calculations agree on every row. On the four `VB` rows `s` equals the germ dimension
+and the fiber is the whole projective space of the span, which accounts for the second-order dependence of the
+`W8`-to-`VB` limit plane in `schur-degeneracy-witnesses-result.json`. The two `E8bar` planes match the two smooth
+sheets of the source germ; no committed arc witnesses the first plane. A standard basis point outside each embedding
+column span fails the containment test, and deleting one generator of the `W8`-to-`VB` Rees ideal changes the fiber
+and breaks both committed arc containments. A changed generator count, embedding rank, fiber component, arc
+containment or characteristic comparison falsifies the record.
+
+`E8bar->VB` stays open. Its minimal generator count is 10 against a germ of dimension 4 whose tangent cone is
+non-reduced (`t8^2` lies in it, `t8` does not), so its fiber is a proper subvariety of `P^9`. Modulo 32003 the
+reduced Rees elimination exhausts 4 GiB; `slimgb` reaches a 15-minute timeout at 346 MB; plain `std` under 16 GiB
+reaches a 30-minute timeout at 14 GB; and the degree-by-degree fiber cone takes 107 s for degree 2 and exhausts
+8 GiB in degree 3. The withdrawn iterated-blow-up draft took `sat(...)[1]`, which in Singular 4.4 keeps one
+generator of the saturation, so its earlier E8-bar residual-base measurement carries no information.
+
 ## Investigated questions
 
 ### Does the antiholomorphic first-order part survive on a boundary kernel?
