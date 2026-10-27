@@ -15,7 +15,10 @@ independence; inference must state its dependence assumptions.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Iterable, Sequence
+import hashlib
+import json
+import numbers
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
@@ -170,30 +173,46 @@ def relabel(isa: QuantumCircuit, mapping: dict[int, int], prefix: str, name: str
     return out
 
 
-def pack(isa: QuantumCircuit, replicas: Sequence[Replica], name: str) -> QuantumCircuit:
+def pack(isa: QuantumCircuit | Sequence[QuantumCircuit], replicas: Sequence[Replica], name: str) -> QuantumCircuit:
     """One circuit running isa once per replica, each on its own qubits and registers.
 
+    isa is one circuit that every replica runs, or one circuit per replica in
+    replica order, each relabeled onto its own replica; the circuits then
+    share their width and quantum registers.
     Every replica's body precedes every replica's terminal measurements -- the
-    trailing run of measurements and barriers of isa's instruction list -- so
+    trailing run of measurements and barriers of that replica's circuit -- so
     a packed static circuit keeps all its measurements after all its gates and
     stays static; replicas share no qubit or clbit, so the reordering leaves
     each replica's computation unchanged.
     """
-    tail_start = _measurement_tail_start(isa)
-    out = QuantumCircuit(*isa.qregs, name=name)
-    moved = [relabel(isa, replica.mapping, replica.prefix) for replica in replicas]
+    if isinstance(isa, QuantumCircuit):
+        first = isa
+        isas = [isa] * len(replicas)
+    else:
+        isas = list(isa)
+        if not isas or len(isas) != len(replicas):
+            raise ValueError(f"{name}: {len(isas)} replica circuits for {len(replicas)} replicas")
+        first = isas[0]
+    shape = [(register.name, register.size) for register in first.qregs]
+    for other in isas[1:]:
+        if other.num_qubits != first.num_qubits or [(r.name, r.size) for r in other.qregs] != shape:
+            raise ValueError(f"{name}: replica circuit {other.name} differs from {first.name} in width or registers")
+    tail_starts = [_measurement_tail_start(circuit) for circuit in isas]
+    out = QuantumCircuit(*first.qregs, name=name)
+    moved = [relabel(circuit, replica.mapping, replica.prefix) for circuit, replica in zip(isas, replicas, strict=True)]
     for circuit in moved:
         out.global_phase += circuit.global_phase
         for register in circuit.cregs:
             out.add_register(register)
-    for part in (slice(0, tail_start), slice(tail_start, None)):
-        for circuit in moved:
+    for tail in (False, True):
+        for circuit, tail_start in zip(moved, tail_starts, strict=True):
+            part = slice(tail_start, None) if tail else slice(0, tail_start)
             piece = circuit.copy_empty_like()
             # The output owns each replica's phase once across both slices.
             piece.global_phase = 0
             for inst in circuit.data[part]:
                 piece.append(inst)
-            out.compose(piece, qubits=range(isa.num_qubits), clbits=circuit.clbits, inplace=True)
+            out.compose(piece, qubits=range(first.num_qubits), clbits=circuit.clbits, inplace=True)
     return out
 
 
@@ -332,6 +351,51 @@ def _measurement_tail_start(circuit: QuantumCircuit) -> int:
     while tail_start > 0 and circuit.data[tail_start - 1].operation.name in ("measure", "barrier"):
         tail_start -= 1
     return tail_start
+
+
+def _canonical_param(value: Any) -> str:
+    if isinstance(value, numbers.Real):
+        return repr(float(value))
+    raise TypeError(f"instruction parameter {value!r} is not a bound number")
+
+
+def body_digest(circuit: QuantumCircuit, to_base: Mapping[int, int]) -> str:
+    """sha256 of circuit's instruction sequence on base qubits: operation, parameters, qubits and clbits.
+
+    to_base maps each qubit index of circuit to the base qubit it stands for,
+    so a body relabeled onto a replica (to_base = the inverted placement) and
+    the unrelabeled body (to_base = the identity on the placement's base
+    qubits) give one digest. Barriers keep only the qubits to_base names, as
+    relabel does, and drop out when none remains; any other instruction on an
+    unnamed qubit raises. Clbit indices are positions in circuit, which equal
+    the base positions for a body split from a packed circuit by one replica's
+    registers. Parameters enter as floats, so a number that an archive
+    round-trip returns as another numeric type digests the same; the global
+    phase is not part of the sequence.
+    """
+    sequence: list[list[Any]] = []
+    for instruction in circuit.data:
+        operation = instruction.operation
+        qubits = [circuit.find_bit(qubit).index for qubit in instruction.qubits]
+        if operation.name == "barrier":
+            qubits = sorted(to_base[q] for q in qubits if q in to_base)
+            if not qubits:
+                continue
+        else:
+            unnamed = [q for q in qubits if q not in to_base]
+            if unnamed:
+                raise ValueError(f"{circuit.name}: {operation.name} acts on qubits {unnamed} outside the placement")
+            qubits = [to_base[q] for q in qubits]
+        sequence.append(
+            [
+                operation.name,
+                [_canonical_param(parameter) for parameter in operation.params],
+                qubits,
+                [circuit.find_bit(clbit).index for clbit in instruction.clbits],
+                getattr(operation, "unit", "") if operation.name == "delay" else "",
+            ]
+        )
+    return hashlib.sha256(json.dumps(sequence, separators=(",", ":")).encode()).hexdigest()
 
 
 def registers(circuit: QuantumCircuit, prefix: str) -> list[str]:
