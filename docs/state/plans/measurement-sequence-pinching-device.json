@@ -379,6 +379,26 @@
             }
           ],
           "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
+        },
+        {
+          "result": "PR #516 merged as bd6fb9e after four Codex rounds (clean at 12f85c4); revalidated after merging main, whose live_run.py adds the one-command binding run.",
+          "observed_at": "2026-10-27T19:05:00+00:00",
+          "revision": "985180110702ea11fa59a4c94808f0a9ceba443a",
+          "evidence": [
+            {
+              "ref": "gororoba_quantum/live_run.py",
+              "sha256": "d5c991dd40443743a5258b7c397c1401920ecf5e8992c6f207bc92b38e6d5600"
+            },
+            {
+              "ref": "gororoba_quantum/msq_envelope.py",
+              "sha256": "d95530080addecffa7891617567d65ed3945a258df40af204c60d38a89c31a1f"
+            },
+            {
+              "ref": "results/live/MEASUREMENT_SEQUENCE_ENVELOPE_FINDINGS.md",
+              "sha256": "3c8b104b4b1ba19bb64c11d8371c62d533eef75f1ace7ba569aedd2becf260ab"
+            }
+          ],
+          "scope_sha256": "aff94b3b5635f3e236172a8750cb00ce3919f7233e5e6bc2bd752b54e82b01b1"
         }
       ]
     },
