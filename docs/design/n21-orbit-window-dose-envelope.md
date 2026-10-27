@@ -142,7 +142,8 @@ T2echo), a gap of 0.31 that sets the scale of the effect this design is built to
 The values below come from the dry run named here and illustrate the envelope; the submitted plan replaces them
 with its own calibration's.
 
-Dry run `results/live/2026-10-26T223508.256543Z` (record.json SHA-256
+Dry run `2026-10-26T223508.256543Z`, not retained because its QRNG seeds belong to the submitted plan's own dry
+run, the experiment the runtime ledger names (record.json SHA-256
 `dcc6a7e7077f03b78c50e0a39c68a9d79e64451bd225edb96dec2132e35dbb1f`, commit `fc94e2f`, one routed candidate):
 ibm_kingston, calibration 2026-10-26T15:18:32-07:00, 19 replicas, 26 PUBs x 8,192 shots at a 20 us repetition
 delay, an estimated 17.1 s against the 30 s ceiling on the backup instance, whose rolling window held 390 s at the
