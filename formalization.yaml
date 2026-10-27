@@ -290,14 +290,14 @@ alignment:
 automation:
   methods:
     - method: agent
-      models: ["claude-opus-5-5"]
+      models: ["claude-opus-5-5", "claude-fable-5-1"]
       framework: "Claude Code"
       tool_setup: "Rocq 9.3.0 with OCaml 5.5.1 and Stdlib 9.2.0; proofs replayed by each bundle's replay_rocq.sh with -w +all and rocq check"
     - method: manual
   notes: >-
     Commit trailers under proofs/ record Claude Code (claude-opus-5-5) on
-    most sources and OpenAI ChatGPT on one; the owner reviewed and replayed
-    every source.
+    most sources, Claude Code (claude-fable-5-1) on CdAnnihilatorSymmetry.v
+    and OpenAI ChatGPT on one; the owner reviewed and replayed every source.
 
 review:
   status: self-assessed
