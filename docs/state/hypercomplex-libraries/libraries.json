@@ -10526,6 +10526,20 @@
    "predict",
    "sys"
   ],
+  "scripts/cd_one_sided_inverses.py": [
+   "__future__",
+   "argparse",
+   "cd_core",
+   "collections",
+   "fractions",
+   "functools",
+   "itertools",
+   "json",
+   "parallel",
+   "pathlib",
+   "sys",
+   "typing"
+  ],
   "scripts/cd_phase_degree.py": [
    "__future__",
    "argparse",
