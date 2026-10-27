@@ -74,8 +74,8 @@ Bonferroni level over seven coefficients (two-sided alpha 0.05 / 7 = 0.0071).
   01 (+0.0080, t 2.86, p 0.0094) passes only with 147-148-149 left out or its center moved to its measured
   lambda (t 3.10 and 3.09, p 0.0056), the path whose split center the observed lambda already places off.
 - The four misses, each rechecked against its unchanged band after subtracting the offset fitted on the other 21
-  paths: 38-49-50 coefficient 2 returns inside under a significant offset (z 4.65); 66-67-68 coefficient 1 and
-  132-133-134 coefficient 01 return inside only under offsets that fail the test (z 1.82 and 2.59);
+  paths: 38-49-50 coefficient 2 returns inside under a significant offset (t 4.65); 66-67-68 coefficient 1 and
+  132-133-134 coefficient 01 return inside only under offsets that fail the test (t 1.82 and 2.59);
   132-133-134 coefficient 1 stays outside (1.08 half-widths). No new miss appears.
 - The same fit on case 2 (`../case2/`, the same circuits, estimators, paths and delay). Case 2's retained
   centers applied each path's largest excitation to all three qubits, and the excitation term moves 01, 02, 12
@@ -83,8 +83,7 @@ Bonferroni level over seven coefficients (two-sided alpha 0.05 / 7 = 0.0071).
   fit recenters all 21 case-2 paths under the split law from case 2's own two controls, swapping only the
   incoherent shift and keeping every spread; the swapped shifts reproduce the case-2 ablation's split variant on
   its four paths exactly. Case 2 then gives 01 +0.0085 (scaled t 3.45, p 0.0025) and 02 +0.0105 (4.66), both
-  significant,
-  against case 3's +0.0080 and +0.0107; 1 (+0.0072) and 2 (+0.0082) keep case 3's sign without significance. On
+  significant, against case 3's +0.0080 and +0.0107; 1 (+0.0072) and 2 (+0.0082) keep case 3's sign without significance. On
   the retained centers case 2's 01 reads -0.0078, the sign the over-applied excitation predicts.
 
 The positive 01 and 02 offsets are therefore a fixed offset of the shared model, repeated at the same size on
