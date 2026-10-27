@@ -194,3 +194,7 @@ probe and the result, and run the cheap ones. Seeds:
   germ where the regularity record gives one (quadric cones, smooth sheets), so the base ring is a polynomial ring.
   Singular's `reesclos.lib` or a direct elimination in global orderings both fit. A single Singular process may use up
   to 16 GiB (`prlimit --as=17179869184`) for this item, one such process at a time; the 15-minute stop rule stands.
+- Memory rule (supersedes the Singular-only cap): an inline `python3 -c` probe for item 2f reached 44 GB resident on
+  the shared 62 GiB host and pushed the system into memory pressure. Run every Python, Singular or sympy computation,
+  inline probes and background terminals included, under `prlimit --as=17179869184` (16 GiB) or less. A computation
+  that hits the cap counts as a failed attempt and calls for a smaller formulation.
