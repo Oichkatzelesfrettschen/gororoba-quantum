@@ -71,7 +71,9 @@ sources:
       the affine inverse family is stated in its integer-cleared form
       <a, a> b = conj(a) + w) and on the real pair tower of CdTowerReal.v
       (CdAnnihilatorSymmetryReal.v, with the family conj(a)/<a, a> + w as
-      the note states it).
+      the note states it), and once on the functor CdTowerDomain.v over an
+      abstract ordered domain, whose Z and R instances the bridges
+      CdTowerDomainZ.v and CdTowerDomainR.v identify with the two towers.
 
   - title: "Large annihilators in Cayley-Dickson algebras"
     authors: ["Daniel K. Biss", "Daniel Dugger", "Daniel C. Isaksen"]
@@ -137,7 +139,7 @@ related_formalizations:
 
 status:
   scope: >-
-    Selected main-result declarations of seventeen proof sources, not every
+    Selected main-result declarations of twenty proof sources, not every
     exported declaration. Each listed declaration is kernel-checked by rocq
     check on the toolchain of its bundle's toolchain.txt, except
     proofs/TargetFlipN21.v, whose receipt is the compile and check tail in
@@ -152,8 +154,11 @@ status:
     ClassicalDedekindReals.sig_not_dec and Classical_Prop.classic. The
     one-sided inverse theorem of docs/notes/topics/cd-one-sided-inverses.md
     is proved over the integer tower, which covers every rational element by
-    clearing denominators, and over the real tower, which is the note's
-    statement.
+    clearing denominators, over the real tower, which is the note's
+    statement, and once more on the functor CdTowerDomain.v over an abstract
+    ordered domain, whose Z instance (CdTowerDomainZ.v) closes with no axiom
+    and whose R instance (CdTowerDomainR.v) depends on the two axioms
+    listed.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms:
@@ -197,6 +202,25 @@ status:
         - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
     - declaration: flexible
       file: proofs/CdAnnihilatorSymmetryReal.v
+      axioms:
+        - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
+        - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
+    - declaration: ZBridge.kernel_equality
+      file: proofs/CdTowerDomainZ.v
+      axioms: []
+    - declaration: ZBridge.lemma_9_5
+      file: proofs/CdTowerDomainZ.v
+      axioms: []
+    - declaration: ZBridge.flexible
+      file: proofs/CdTowerDomainZ.v
+      axioms: []
+    - declaration: RBridge.kernel_equality
+      file: proofs/CdTowerDomainR.v
+      axioms:
+        - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
+        - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
+    - declaration: RFieldBridge.right_inverse_form
+      file: proofs/CdTowerDomainR.v
       axioms:
         - Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep
         - Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec
@@ -299,6 +323,26 @@ alignment:
       file: proofs/CdAnnihilatorSymmetryReal.v
       statement: "(x y) x = x (y x) for all x, y with real coordinates at every level (Corollary 2.9 of math/0511691), from flex_sum_zero: x (y z) - (x y) z + z (y x) - (z y) x = 0"
       source: docs/notes/math-0511691.md
+    - declaration: ZBridge.kernel_equality
+      file: proofs/CdTowerDomainZ.v
+      statement: "a z = 0 exactly when z a = 0 in the integer tower of CdImaginarySumConference.v, from the functor CdTower of CdTowerDomain.v over an abstract ordered domain instantiated at Z"
+      source: docs/notes/topics/cd-one-sided-inverses.md
+    - declaration: ZBridge.lemma_9_5
+      file: proofs/CdTowerDomainZ.v
+      statement: "x y = 0 with y nonzero at level k + 1 of the integer tower makes x orthogonal to 1 and to the adjoined unit (0, 1) (Lemma 9.5 of math/0511691), through the Z instance of the functor"
+      source: docs/notes/math-0511691.md
+    - declaration: ZBridge.flexible
+      file: proofs/CdTowerDomainZ.v
+      statement: "(x y) x = x (y x) in the integer tower at every level (Corollary 2.9 of math/0511691), through the Z instance of the functor"
+      source: docs/notes/math-0511691.md
+    - declaration: RBridge.kernel_equality
+      file: proofs/CdTowerDomainR.v
+      statement: "a z = 0 exactly when z a = 0 in the real tower of CdTowerReal.v, from the functor CdTower instantiated at R"
+      source: docs/notes/topics/cd-one-sided-inverses.md
+    - declaration: RFieldBridge.right_inverse_form
+      file: proofs/CdTowerDomainR.v
+      statement: "a b = 1 in the real tower implies b = conj(a)/<a, a> + w for some w with a w = 0, from the field extension CdTowerField of CdTowerDomain.v instantiated at R"
+      source: docs/notes/topics/cd-one-sided-inverses.md
     - declaration: sign_row_degree_all
       file: proofs/CdSignRowAnf.v
       statement: "Theorem 1: the left sign row of e_m, m != 0, has algebraic degree max(1, k - 1)"
@@ -354,8 +398,9 @@ automation:
   notes: >-
     Commit trailers under proofs/ record Claude Code (claude-opus-5-5) on
     most sources, Claude Code (claude-fable-5-1) on CdAnnihilatorSymmetry.v,
-    CdTowerReal.v and CdAnnihilatorSymmetryReal.v, and OpenAI ChatGPT on
-    one; the owner reviewed and replayed every source.
+    CdTowerReal.v, CdAnnihilatorSymmetryReal.v, CdTowerDomain.v,
+    CdTowerDomainZ.v and CdTowerDomainR.v, and OpenAI ChatGPT on one; the
+    owner reviewed and replayed every source.
 
 review:
   status: self-assessed
