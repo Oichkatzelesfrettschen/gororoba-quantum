@@ -1880,7 +1880,10 @@
    "imported_by": [
     "scripts/kaggle_run.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_run.py"
+   ]
   },
   {
    "distribution": "kagglesdk",
@@ -1894,7 +1897,10 @@
    "imported_by": [
     "scripts/kaggle_run.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_run.py"
+   ]
   },
   {
    "distribution": "kingdon",
@@ -2636,6 +2642,7 @@
     "scripts/lsq_conditioning_study.py",
     "scripts/measurement_sequence_scatter_validation.py",
     "scripts/mod15_signed_multiplier_census.py",
+    "scripts/msq_envelope_exploratory.py",
     "scripts/n21_exact_crosscheck.py",
     "scripts/n21_exact_model_validation.py",
     "scripts/n21_orbit_context_refit.py",
@@ -2746,6 +2753,8 @@
     "gororoba_quantum/measurement_sequence_analysis.py",
     "gororoba_quantum/measurement_sequence_scatter.py",
     "gororoba_quantum/modular_arithmetic.py",
+    "gororoba_quantum/msq_envelope_analysis.py",
+    "gororoba_quantum/msq_envelope_null.py",
     "gororoba_quantum/n21_exact_planning.py",
     "gororoba_quantum/native_preflight_contracts.py",
     "gororoba_quantum/order_finding.py",
@@ -5470,6 +5479,7 @@
     "gororoba_quantum/linear_conjugation_challenger.py",
     "gororoba_quantum/live_run.py",
     "gororoba_quantum/maximal_contracts.py",
+    "gororoba_quantum/msq_envelope.py",
     "gororoba_quantum/native_preflight_contracts.py",
     "gororoba_quantum/parameter_binding_contracts.py",
     "gororoba_quantum/pub_shot_runtime_contracts.py",
@@ -6207,6 +6217,8 @@
     "gororoba_quantum/hypercomplex_dynamics.py",
     "gororoba_quantum/measurement_sequence_analysis.py",
     "gororoba_quantum/measurement_sequence_scatter.py",
+    "gororoba_quantum/msq_envelope_analysis.py",
+    "gororoba_quantum/msq_envelope_null.py",
     "gororoba_quantum/placement_feasibility.py",
     "gororoba_quantum/primorial_cover.py",
     "gororoba_quantum/variance.py",
@@ -6340,7 +6352,10 @@
    "imported_by": [
     "scripts/kaggle_sessions.py"
    ],
-   "qualification": "admit only the documented API and declared convention; installation is not a run"
+   "qualification": "admit only the documented API and declared convention; installation is not a run",
+   "historical_imported_by": [
+    "scripts/kaggle_sessions.py"
+   ]
   },
   {
    "distribution": "setuptools",
@@ -11969,6 +11984,18 @@
    "math",
    "pathlib",
    "random",
+   "sys",
+   "typing"
+  ],
+  "scripts/msq_envelope_exploratory.py": [
+   "__future__",
+   "argparse",
+   "json",
+   "law_encoding",
+   "measurement_sequence_analysis",
+   "msq_envelope_analysis",
+   "numpy",
+   "pathlib",
    "sys",
    "typing"
   ],
