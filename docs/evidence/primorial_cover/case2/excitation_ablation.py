@@ -8,6 +8,7 @@ Centers swap the retained incoherent shift for the variant's; half-widths are th
 """
 
 import copy
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -18,6 +19,7 @@ import primorial_cover_noise as noise  # noqa: E402
 import primorial_probe_case as ppc  # noqa: E402
 from qiskit_aer.noise import pauli_error  # noqa: E402
 
+import calibration_snapshot  # noqa: E402
 import dynamic_density  # noqa: E402
 import parallel  # noqa: E402
 import primorial_tomography as tomo  # noqa: E402
@@ -42,6 +44,18 @@ def with_vector(circuit, eps):
     return out
 
 
+VIEWS: dict[str, object] = {}
+
+
+def compile_item(item):
+    """One (snapshot, logical, path) arm -> its compile_arm circuit; each process builds a snapshot's view once."""
+    snapshot, logical, path = item
+    key = hashlib.sha256(json.dumps(snapshot, sort_keys=True).encode()).hexdigest()
+    if key not in VIEWS:
+        VIEWS[key] = calibration_snapshot.snapshot_backend(snapshot)
+    return noise.compile_arm(VIEWS[key], logical, path)
+
+
 def law(item):
     snapshot, meta, logical, compiled, eps = item
     expected = noise.ideal_law(logical)
@@ -50,24 +64,44 @@ def law(item):
     return {**meta, "ideal": [round(float(v), 12) for v in expected], "law": [float(v) for v in values]}
 
 
-def shifts(variant):
-    """variant: per path, (per-qubit leading-X dict, per-qubit terminal e10 additions)."""
+def fit(rows):
+    exact = tomo.coefficients(tomo.cost_table("gap88"))
+    recovered = tomo.gradient_analysis(rows, "gap88")["null_subtracted"]["recovered_coefficients"]
+    return {k: float(recovered[k] - exact[k]) for k in KEYS}
+
+
+def shifts(variants):
+    """variants: name -> per path, (per-qubit leading-X dict, per-qubit terminal e10 additions).
+
+    Every (variant, path) unit is independent, so compilation, the noisy laws and the fits each run as one
+    order-preserving map over all units.
+    """
     logical = [
         (m, c)
         for m, c in noise.arms()
         if (m["family"] == "gradient" and m["cost"] in ("gap88", "null")) or m["family"] == "readout3"
     ]
-    exact = tomo.coefficients(tomo.cost_table("gap88"))
-    out = []
-    for path, (lead, term) in zip(PATHS, variant, strict=True):
-        snap = copy.deepcopy(SNAP)
-        for q, add in term.items():
-            snap["qubits"][q]["e10"] = snap["qubits"][q]["e10"] + add
-        compiled = parallel.ordered_map(noise.ArmCompile(snap), [(c, path) for _, c in logical], min_items=1)
-        items = [(snap, m, c, isa, lead) for (m, c), isa in zip(logical, compiled, strict=True)]
-        rows = parallel.ordered_map(law, items, min_items=1)
-        fit = tomo.gradient_analysis(rows, "gap88")["null_subtracted"]
-        out.append({k: float(fit["recovered_coefficients"][k] - exact[k]) for k in KEYS})
+    units = []
+    for name, variant in variants.items():
+        for path, (lead, term) in zip(PATHS, variant, strict=True):
+            snap = copy.deepcopy(SNAP)
+            for q, add in term.items():
+                snap["qubits"][q]["e10"] = snap["qubits"][q]["e10"] + add
+            units.append((name, path, lead, snap))
+    compiled = parallel.ordered_map(
+        compile_item, [(snap, c, path) for _, path, _, snap in units for _, c in logical], min_items=1
+    )
+    items = [
+        (snap, m, c, compiled[u * len(logical) + a], lead)
+        for u, (_, _, lead, snap) in enumerate(units)
+        for a, (m, c) in enumerate(logical)
+    ]
+    laws = parallel.ordered_map(law, items, min_items=1)
+    blocks = [laws[u * len(logical) : (u + 1) * len(logical)] for u in range(len(units))]
+    fits = parallel.ordered_map(fit, blocks, min_items=1)
+    out: dict[str, list] = {name: [] for name in variants}
+    for (name, _, _, _), row in zip(units, fits, strict=True):
+        out[name].append(row)
     return out
 
 
@@ -97,7 +131,7 @@ def main():
         "V5 all terminal e10": [({}, {qq: per[qq]["point"] for qq in p}) for p in PATHS],
     }
     retained = {tuple(r["path"]): r for r in FAL["paths"]}
-    results = {name: shifts(v) for name, v in variants.items()}
+    results = shifts(variants)
     base = results["V1 path-max upper X"]
     report = {"per_qubit": per, "variants": {}}
     for name, rows in results.items():
