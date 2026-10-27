@@ -6312,7 +6312,7 @@
       "evidence": [
         {
           "path": "docs/evidence/a5-kernel-bundles/result.json",
-          "sha256": "9552c02507ed39750dfbf55874fd682c3ed059c868515251e6dc9cf9ca012a37"
+          "sha256": "fa6af754e697dbf4a7490c1312449477817ca8e69f4c9add577ea3ef23e333d5"
         },
         {
           "path": "docs/evidence/a5-kernel-bundles/frames-result.json",
@@ -6328,31 +6328,31 @@
         },
         {
           "path": "docs/evidence/a5-kernel-bundles/aligned-orbit-moduli-result.json",
-          "sha256": "8afd5a4d1426c90e90e7388312ed10c7af20a707a7da192e72a8c6762cfc205d"
+          "sha256": "c36b3c01665608b25a41fa3af2f84c60ff0306b3b7b11621f9e268f93aa083a9"
         },
         {
           "path": "docs/evidence/a5-kernel-bundles/aligned-stabilizer-result.json",
-          "sha256": "23274d75b6a5b68b162b1d81450113c30b54f724f4543883f90f402e40921194"
+          "sha256": "cb2328d55edff142c61c054d64ff632dada447d7cea585e7185dcb380aaf40c1"
         },
         {
           "path": "docs/evidence/a5-kernel-bundles/v-orbit-moduli-result.json",
-          "sha256": "7af3b87311bbed91cbbd357fc25358b795e0e7f0c545b7edc392d044e1a3d79c"
+          "sha256": "07dc79facf758da94b4d3a7a79d441a95c84cc111754acf2be0c6c171eec52d6"
         },
         {
           "path": "docs/evidence/a5-kernel-bundles/v-topology-representation-result.json",
-          "sha256": "9058800227cc21177306182ac547f976dbeae0b94c77099d6f380d65048317d1"
+          "sha256": "48497e33226d44bd33c1078495e39272cbc92b2ef3ddbbd3e3541c34c6a63bba"
         },
         {
           "path": "docs/evidence/a5-kernel-bundles/isotropic-orbit-data-result.json",
-          "sha256": "6b8b6840861ff0a676707733c3b2be24339aaacee44a9f0be8d0e57d4ff376f2"
+          "sha256": "ab251c1601cd6fa9d8e75b95195194dd8a3f9085d3293c962b8c2d613a654550"
         },
         {
           "path": "docs/evidence/a5-kernel-bundles/transition-atlas-result.json",
-          "sha256": "d08050b050151c5b3aa1686043c8b940492d37000fc79bd643a37e277d76409a"
+          "sha256": "3570c30e6f42f9d4cc1cac157611e93eec8f8e87ae692a64ca90971cc484961c"
         },
         {
           "path": "docs/evidence/a5-kernel-bundles/bundle-invariants-result.json",
-          "sha256": "d6c35f96844dea3f1b447eb4b8e4f7aa0c4563fe1bed8f7696d68d0d795f5faf"
+          "sha256": "e7f783f633339562d78d9d04fd25de9a631ac9b68aab4c2af8d39a80151513d7"
         },
         {
           "path": "docs/evidence/a5-kernel-bundles/verification.json",
