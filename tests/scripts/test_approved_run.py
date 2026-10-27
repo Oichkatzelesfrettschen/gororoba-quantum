@@ -13,8 +13,10 @@ ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts/approved_run.sh"
 
 # Stands in for "$PYTHON live_run.py ARGS": a plan writes a run directory and prints its audit record; a submit
-# consumes the approval unless REFUSALS names more refusals than the calls file holds.
+# consumes the approval unless REFUSALS names more refusals than the calls file holds, and then records
+# `submission.complete` as COMPLETE and exits SUBMIT_EXIT. "$PYTHON -c CODE RECORD" reads that completion state.
 FAKE = """#!/bin/sh
+if [ "$1" = -c ]; then grep -q '"complete": true' "$3"; exit $?; fi
 shift
 echo "$*" >> "$CALLS"
 n=$(wc -l < "$CALLS")
@@ -25,7 +27,13 @@ case " $* " in
 *" --submit "*)
   approved=$(echo "$*" | sed -n 's/.*--approved-record \\([^ ]*\\).*/\\1/p')
   submits=$(grep -c -- '--submit' "$CALLS")
-  if [ "$submits" -gt "${REFUSALS:-0}" ]; then : > "$approved/approval-consumed.json"; else echo approval_required; fi
+  if [ "$submits" -gt "${REFUSALS:-0}" ]; then
+    : > "$approved/approval-consumed.json"
+    echo "{\\"submission\\": {\\"complete\\": ${COMPLETE:-true}}}" > "$run/record.json"
+    echo "audit record: $run"
+    exit "${SUBMIT_EXIT:-0}"
+  fi
+  echo approval_required
   ;;
 esac
 echo "audit record: $run"
@@ -37,15 +45,23 @@ def _expect(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
-def _run(tmp_path: Path, *args: str, refusals: int = 0) -> tuple[subprocess.CompletedProcess[str], list[str]]:
+def _run(
+    tmp_path: Path, *args: str, refusals: int = 0, complete: str = "true", submit_exit: int = 0, log: str | None = None
+) -> tuple[subprocess.CompletedProcess[str], list[str]]:
     (tmp_path / "gororoba_quantum").mkdir(exist_ok=True)
     fake = tmp_path / "fake_python"
     fake.write_text(FAKE)
     fake.chmod(fake.stat().st_mode | stat.S_IXUSR)
     calls = tmp_path / "calls"
-    env = os.environ | {"PYTHON": str(fake), "CALLS": str(calls), "REFUSALS": str(refusals)}
+    env = os.environ | {
+        "PYTHON": str(fake),
+        "CALLS": str(calls),
+        "REFUSALS": str(refusals),
+        "COMPLETE": complete,
+        "SUBMIT_EXIT": str(submit_exit),
+    }
     done = subprocess.run(
-        ["sh", str(SCRIPT), "--log", str(tmp_path / "log"), *args],
+        ["sh", str(SCRIPT), "--log", log or str(tmp_path / "log"), *args],
         cwd=tmp_path,
         env=env,
         capture_output=True,
@@ -85,3 +101,15 @@ def test_refusals_past_the_attempts_exit_3(tmp_path: Path) -> None:
 def test_submit_flags_belong_to_the_runner(tmp_path: Path, flag: str) -> None:
     done, calls = _run(tmp_path, "--", "--groups", "g", flag)
     _expect(done.returncode == 2 and not calls, f"{done.returncode} {calls}")
+
+
+@pytest.mark.parametrize(("complete", "submit_exit"), [("false", 0), ("true", 1)])
+def test_a_consumed_approval_with_a_failed_submission_exits_4(tmp_path: Path, complete: str, submit_exit: int) -> None:
+    done, calls = _run(tmp_path, "--", "--groups", "g", complete=complete, submit_exit=submit_exit)
+    _expect(done.returncode == 4 and len(calls) == 2, f"{done.returncode} {calls}")
+    _expect("approval consumed" in done.stdout, done.stdout)
+
+
+def test_a_relative_log_directory_resolves_from_the_repository_root(tmp_path: Path) -> None:
+    done, _ = _run(tmp_path, "--", "--groups", "g", log="logs")
+    _expect(done.returncode == 0 and (tmp_path / "logs" / "dry-1.log").is_file(), done.stdout + done.stderr)

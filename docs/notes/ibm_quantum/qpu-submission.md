@@ -120,7 +120,9 @@ and the Kaggle noise-snapshot rule.
   run with no operator review between them: the review belongs to the case
   and its rehearsal dry run, and the binding run's checks are mechanical. A
   refusal sends nothing and leaves the approval unconsumed, and the runner
-  plans again up to N times (default 3). Independent jobs of one case run as
+  plans again up to N times (default 3). A consumed approval ends the run:
+  success needs a zero exit and `submission.complete` in the submit's record,
+  and a failed or partial submission exits 4 with no retry. Independent jobs of one case run as
   parallel invocations, each with its own seeds and account. The case's binding
   table records the dry run, its digest and calibration after the submit.
 - Calibration is a property of the run. live_run.py fetches each backend's
