@@ -6,14 +6,14 @@
   "sources": [
     "docs/design/quantum-experiment-conformance.md"
   ],
-  "state": "closed",
+  "state": "active",
   "reconciliation": {
     "status": "verified",
     "note": "All scoped mathematical, operator, payload, analysis and local compiler checks pass at the recorded source. Acquisition and physical interpretation remain outside this completed software scope."
   },
   "scope": "Implement finite quantum experiment references, guarded cases, analysis and correction records across five proposals. Provider execution and acquisition completion are separate obligations.",
   "owner": "quantum experiment implementer",
-  "next_action": "Use the retained acquisition review to qualify and separately approve a prospective run; software completion grants no execution authority.",
+  "next_action": "Bind the canonical successor cases in the runner-image ledger, refresh import/replay registries, and validate the complete pipeline.",
   "steps": [
     {
       "id": "audit-contracts",
@@ -62,46 +62,8 @@
     {
       "id": "integrate-suites",
       "action": "Integrate references, cases and analyzers.",
-      "acceptance": "Focused deterministic tests and operator checks pass with guarded execution interfaces. Local libqasm analysis and OpenSquirrel replay admit every emitted QI payload and preserve its control sequence.",
-      "state": "done",
-      "receipts": [
-        {
-          "scope_sha256": "11bd944b0a4d806a6b460f75c81e5fa62d05ff19a87567b3982638faf1c58e5a",
-          "result": "Complete native-operator and immutable campaign replay admission passes. Local libqasm/OpenSquirrel admit all 384 QI payloads with every control sequence preserved. The 102-test focused suite, full lint and full mypy pass.",
-          "observed_at": "2026-10-27T20:45:20.558303+00:00",
-          "revision": "548e36f241a9fe1a33c086b0bccc111ec3eaa375",
-          "evidence": [
-            {
-              "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
-              "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
-            },
-            {
-              "ref": "docs/evidence/quantum-experiment-conformance/cases/campaign.json",
-              "sha256": "533e3ada05a344a727d92edaf39c41c1d655b92c9d2eda8cca8ce59d2ab9db85"
-            },
-            {
-              "ref": "docs/evidence/quantum-experiment-conformance/regeneration-route-admission.json",
-              "sha256": "444c161023e21640b17ac38ad4505d7b1361b1ca843c97e7117e40ab475e37ef"
-            },
-            {
-              "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
-              "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
-            },
-            {
-              "ref": "docs/evidence/quantum-experiment-conformance/local-toolchain.json",
-              "sha256": "0128d96fac75347d23f3cfce0ffdce341a3315d5bf135e5a8034cdbf368fa37a"
-            },
-            {
-              "ref": "scripts/experiment_toolchain.py",
-              "sha256": "1b2a6ee4da268e1424c56a5b0891b35bb1d7d8d34587ef9c19793c04d472edfa"
-            },
-            {
-              "ref": "tests/scripts/test_experiment_toolchain.py",
-              "sha256": "020a623026601699463bb03290a63c5250494e067ad10ef35f14e38741f9980d"
-            }
-          ]
-        }
-      ]
+      "acceptance": "Focused deterministic tests and operator checks pass with guarded execution interfaces. Local libqasm analysis and OpenSquirrel replay admit every emitted QI payload and preserve its control sequence. Canonical runner-image arithmetic binds the prospective baseline and its replay registry.",
+      "state": "doing"
     },
     {
       "id": "retain-validation",
@@ -162,45 +124,5 @@
     "fano-sign-lift-investigation",
     "spectral-projection-estimands",
     "quarter-mass-amplification-conformance"
-  ],
-  "disposition": "completed",
-  "resolution": "Completed bounded software and investigation scope with exact references, 187 prospective provider cases, validated analysis, full local QI parser/compiler replay and retained receipts. Runtime forecasts, independent optical qualification, approval and acquisition remain separate authorities.",
-  "receipts": [
-    {
-      "scope_sha256": "1919578f4b9549d306f4073bd09c2e33b0aa90add1b72379a0e97829def0cf92",
-      "result": "All three obligations have current receipts. Local QI parser/compiler admission closes the completion-audit gap; 102 tests, full lint/types and recorded gates pass.",
-      "observed_at": "2026-10-27T20:45:20.558303+00:00",
-      "revision": "548e36f241a9fe1a33c086b0bccc111ec3eaa375",
-      "evidence": [
-        {
-          "ref": "docs/evidence/quantum-experiment-conformance/validation.json",
-          "sha256": "540444033e1dd53b5612d6b7a4e1a7694fae6f045f1609b4e4d851bc3b436849"
-        },
-        {
-          "ref": "docs/evidence/quantum-experiment-conformance/validation-toolchain.json",
-          "sha256": "08ceb0a245d35122f0ec722dee4858d2dfdb9f79f0b38f3ac2320a767eb14b97"
-        },
-        {
-          "ref": "docs/evidence/quantum-experiment-conformance/local-toolchain.json",
-          "sha256": "0128d96fac75347d23f3cfce0ffdce341a3315d5bf135e5a8034cdbf368fa37a"
-        },
-        {
-          "ref": "scripts/experiment_toolchain.py",
-          "sha256": "1b2a6ee4da268e1424c56a5b0891b35bb1d7d8d34587ef9c19793c04d472edfa"
-        },
-        {
-          "ref": "tests/scripts/test_experiment_toolchain.py",
-          "sha256": "020a623026601699463bb03290a63c5250494e067ad10ef35f14e38741f9980d"
-        },
-        {
-          "ref": "docs/design/quantum-experiment-conformance.md",
-          "sha256": "ca73bafcf4a2481b2e7a4919043b1f2d375568cf3f5feb0d65fd5077223f9f88"
-        },
-        {
-          "ref": "docs/runbooks/quantum-experiment-acquisition.md",
-          "sha256": "a05bc8e60effd777b47ad92d39cab2be76c4af8bfbcd36d56d7a489e6ecfe694"
-        }
-      ]
-    }
   ]
 }
