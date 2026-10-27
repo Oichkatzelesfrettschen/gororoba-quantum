@@ -85,7 +85,12 @@ the bound each contribute; none of them changes the circuit.
    excitation after shots that end near `|0>`, and x_history (init,
    measure, x) after shots that end near `|1>`, the worst case an n21 shot
    can leave. prep0 alone underestimates n21's excitation, because n21's
-   end states are arbitrary.
+   end states are arbitrary. The static arms x_remeasure (x, measure,
+   measure) and remeasure (init, measure, measure) read each shot twice, so
+   the second read separates a population the first read found from a
+   misassignment of the first read, and their row order in the shared job
+   puts each remeasure shot after an x_remeasure read of `|1>`
+   (`results/live/PRIMORIAL_Q147_REMEASURE_CASE.md`).
 
 8. **The worst qubit's readout sets the control's resolution.** The
    binomial variance of an excited fraction grows with e10, and the excess

@@ -94,7 +94,9 @@ in order.
 The [idle-readout repeat successor](comparison-idle-readout-repeat.json) rebinds the idle-penalty repeat retrieval
 offline against the `live_run.py` that adds the role-patterned members and lists `idle_readout.py` in its
 experiment manifest; it differs from that retrieval only in the `live_run.py` digest and the offline validation
-time.
+time. The [state-prep remeasure successor](comparison-state-prep-remeasure.json) rebinds the same retrieval
+offline against the `live_run.py` whose `--state-prep-arms` help names the two-read arms `x_remeasure` and
+`remeasure`; it differs from the retrieval only in that digest and the validation time.
 
 The [detuning-sign retrieval](comparison-detuning-sign-retrieval.json) reads the same 41 jobs afresh through the
 read-only job interface, seeded from the original comparison, after the retention audit added the N=21

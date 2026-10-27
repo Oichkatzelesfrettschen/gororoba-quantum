@@ -22,6 +22,8 @@ for rational elements. The route is the one of Biss, Dugger and Isaksen
 | `adjoint` | <x y, z> = <y, conj(x) z> and <x y, z> = <x, z conj(y)> (Lemma 3.4) |
 | `re_commutator` | re(x y) = re(y x) (Lemma 2.6) |
 | `re_associator` | re((x y) z) = re(x (y z)) (Lemma 2.8) |
+| `flex_sum_zero` | x (y z) - (x y) z + z (y x) - (z y) x = 0, the identity of Corollary 2.9 |
+| `flexible` | (x y) x = x (y x) (Corollary 2.9) |
 | `conj_mul_left` | x (conj(x) y) = conj(x) (x y), the identity of Lemma 9.2 |
 | `conj_mul_right` | (x y) conj(y) = (x conj(y)) y |
 | `lemma_9_2` | x y = 0 exactly when conj(x) y = 0, and exactly when x conj(y) = 0 |
@@ -54,7 +56,15 @@ computation that (a, b)(c, d) = 0 with a imaginary gives
 kernel swap and the purity lemma on (b, a) then make b imaginary, and
 `swap_nonzero` carries the nonzero hypothesis from (c, d) to (-conj(d), c).
 `annihilator_orthogonal` applies the lemma to the annihilated element through
-the kernel equality.
+the kernel equality. Corollary 2.9 follows the paper's proof: `flex_sum` is
+the trilinear sum x (y z) - (x y) z + z (y x) - (z y) x; `conj_split` and
+the `alg` database show it vanishes at a real argument, so conjugating one
+argument negates it (`flex_sum_conj_l`, `_m`, `_r`), while the
+anti-automorphism law conjugates the sum to minus the sum of the conjugates
+(`conj_flex_sum`); together the sum is its own conjugate, hence re(F) 1 by
+`add_conj`, and `re_flex_sum` cancels its real part with `re_associator` on
+(x, y, z) and on (z, y, x). `flexible` reads F(x, y, x) = 2 (x (y x) - (x y) x)
+coordinatewise.
 
 No step uses associativity, alternativity or multiplicativity of the norm,
 which fail from k = 4 on. The real coefficients admit division, so the
@@ -65,7 +75,7 @@ Every theorem rests on the type theory that `rocq check` re-verifies
 ([kernel.txt](kernel.txt)): the Calculus of Inductive Constructions with a
 predicative Set and no rewrite rules, with the equality types `eq`,
 `eq_true` and `eq_dep` and Btauto's `null` typed under the default rule that
-inductive indices do not raise the universe level. Each of the fourteen
+inductive indices do not raise the universe level. Each of the sixteen
 assumption queries lists exactly the two axioms of Stdlib's construction of
 the reals, `ClassicalDedekindReals.sig_forall_dec` and
 `FunctionalExtensionality.functional_extensionality_dep`
