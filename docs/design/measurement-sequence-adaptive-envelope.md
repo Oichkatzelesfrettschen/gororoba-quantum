@@ -1,6 +1,6 @@
 # Measurement-sequence pinching: calibration-adaptive approval envelope
 
-Status: design v3.1. v1 and v2 each received an adversarial self-review, a Codex (gpt-daybreak-blue-latest) review and
+Status: design v3.3. v1 and v2 each received an adversarial self-review, a Codex (gpt-daybreak-blue-latest) review and
 an advisor review (reports under the ignored `docs/local/reviews/`); v3 answers the v2 review's five P1 and eleven P2/P3
 findings (A to P), v3.1 answers the scoped v3 re-check (B, C and E refuted, a new aggregate-cap P1), and v3.2 answers
 the v3.1 re-check (E refuted again, a fallback falsifier that contradicted the trigger); v3.3 replaces the random
@@ -224,7 +224,7 @@ attempts' summed ceilings, as the most the envelope can bill.
 | 24 | not measured | | | | | | | |
 | 32 | 31.2 s (one 88-PUB job); expected 37.7 s | 57 s | 52.8 s; expected 59.3 s | 90 s | 147 s | 15.3 MB | 20 MB | 19.3 min under load |
 
-The backup instance reports 412 s remaining; the primorial-coherence branch's run (`results/live/2026-10-26T045124.175747Z`,
+The backup instance reported 369 s remaining at the width-32 dry run (`results/live/2026-10-27T012214.435220Z`); the primorial-coherence branch's run (`results/live/2026-10-26T045124.175747Z`,
 job dbfdotnpc3tc739n8nm0, 23 s) shares the instance, and the branch that merges second regenerates its job inventory.
 
 ## Sequence

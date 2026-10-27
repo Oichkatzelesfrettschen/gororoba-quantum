@@ -48,6 +48,10 @@ it differs from the QET-campaign successor only in the `live_run.py` digest and 
 The [compiled-ideal successor](comparison-pooled-compiled-ideals.json) rebinds it after `live_run.py` and `qpu_planning.py`
 proved the compiled ideals through the process pool; its rows equal the predecessor's.
 
+The [adaptive-envelope successor](comparison-adaptive-envelope.json) rebinds the retained-audit comparison
+offline after `live_run.py` gained the measurement-sequence envelope's approval, fallback and replan contract; it
+differs from the readout-preflight successor only in the `live_run.py` digest and the offline validation time.
+
 The active successor binds the audit, original seed, current collector, predecessor comparison and archived
 collector text, plus the direct repository dependencies `ibm_account.py`, `parallel.py` and `live_run.py`. These
 named files and the pinned Qiskit/runtime versions bound the replay; the provenance does not claim a complete
@@ -60,7 +64,7 @@ Replay from the repository root with the interpreter qualified against `ci/requi
 export PYTHON="${REPLAY_PYTHON:?Set REPLAY_PYTHON to the qualified qiskit-2.5 interpreter}"
 export GLIBC_TUNABLES=glibc.rtld.optional_static_tls=4096
 "$PYTHON" -B -W error scripts/compare_submitted_circuits.py --check \
-  --out docs/evidence/submitted_circuits/comparison-readout-preflight.json
+  --out docs/evidence/submitted_circuits/comparison-adaptive-envelope.json
 ```
 
 QPY reserialization depends on the Qiskit version: Qiskit 2.5.2 reproduces all 28 original rows, while Qiskit 2.6.0
