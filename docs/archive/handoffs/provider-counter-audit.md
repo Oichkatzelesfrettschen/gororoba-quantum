@@ -81,7 +81,9 @@ Task C0 chose between two designs, and C1 to C7 follow from it.
   `~/worktrees/IBMQuantum/quandela-record-view`): `provider_counters.quandela_record(results, budgets)` takes
   `qd_platform.iteration_budgets(cases.json)` instead of parsing the job body, because the job body's job-level
   `max_shots` equals the largest per-iteration `max_shots` on every retained iterated job, and an audit-marked
-  test checks that equality on all 81 inventoried runs.
+  test checks that equality on all 81 inventoried runs. Because records stay unchanged under (a), the plan
+  record's `collection-boundaries` action and acceptance are restated to the view before the step takes its
+  receipt (PR #613, commit `2541e72`); the receipt binds that restated obligation.
   - Under (a): `quandela_record` returns one `IterationCounters` per counted iteration, using `quandela_iteration`
     with each iteration's `max_shots` and `max_samples` from the job body; `quandela_top_level_shots` with the job
     body's job-level `max_shots`; and an unavailable sample counter for an error payload or a partial answer.
